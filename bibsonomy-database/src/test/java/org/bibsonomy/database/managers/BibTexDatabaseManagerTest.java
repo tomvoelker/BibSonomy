@@ -891,7 +891,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * tests {@link BibTexDatabaseManager#getPostsByFollowedUsers(String, List, int, int, org.bibsonomy.database.util.DBSession)}
+	 * tests {@link BibTexDatabaseManager#getPostsByFollowedUsers(String, List, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
 	public void getBibTexByFollowedUsers() {
@@ -909,7 +909,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * tests if {@link BibTexDatabaseManager#createPost(Post, org.bibsonomy.database.util.DBSession)}
+	 * tests if {@link BibTexDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
 	 * respects the max field length of table columns
 	 */
 	@Test
