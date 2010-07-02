@@ -20,6 +20,7 @@ import javax.sql.DataSource;
  *   for your DB methods
  *
  */
+@Deprecated
 public abstract class DBManager {
 	
 	/**
@@ -81,6 +82,7 @@ public abstract class DBManager {
 	 * 
 	 *
 	 */
+	@Deprecated
 	protected static class DBContext {
 		public Connection         conn = null;
 		public ResultSet           rst = null;
