@@ -52,6 +52,7 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  */
 public class WebUtils {
+	private static final Log log = LogFactory.getLog(WebUtils.class);
 
 	/**
 	 * maximal number of redirects to follow in {@link #getRedirectUrl(URL)}
@@ -62,8 +63,6 @@ public class WebUtils {
 	 * The user agent used for all requests with {@link HttpURLConnection}.
 	 */
 	private static final String USER_AGENT_PROPERTY_VALUE = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";
-
-	private static final Log log = LogFactory.getLog(WebUtils.class);
 
 	private static final String CHARSET			= "charset=";
 	private static final String DEFAULT_CHARSET	= "UTF-8";
@@ -266,9 +265,7 @@ public class WebUtils {
 	 * 
 	 * @throws IOException
 	 */
-	public static String getContentAsString(final String url, final String cookie, 
-			final String postData, final String visitBefore) throws IOException {
-		
+	public static String getContentAsString(final String url, final String cookie, final String postData, final String visitBefore) throws IOException {
 		HttpMethod method;
 		
 		if (visitBefore != null) {
@@ -326,12 +323,13 @@ public class WebUtils {
 		 */
 		final BufferedReader in = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
 		final StringBuilder content = new StringBuilder();
-		String _s = null;
-		while ((_s = in.readLine()) != null) {
-			content.append(_s + NEWLINE);
+		String line = null;
+		while ((line = in.readLine()) != null) {
+			content.append(line).append(NEWLINE);
 		}
 		
 		method.releaseConnection();
+		in.close();
 		
 		if (content.length() > 0) {
 			return content.toString();
@@ -519,9 +517,6 @@ public class WebUtils {
 		 */
 		return DEFAULT_CHARSET;
 	}
-
-
-
 
 	/** Copies the stream into the string writer.
 	 * 

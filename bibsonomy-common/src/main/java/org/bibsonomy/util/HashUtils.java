@@ -73,7 +73,7 @@ public class HashUtils {
 	 * @return hex string representation of buffer
 	 */
 	public static String toHexString(byte[] buffer) {
-		final StringBuffer result = new StringBuffer();
+		final StringBuilder result = new StringBuilder();
 		for (int i = 0; i < buffer.length; i++) {
 			String hex = Integer.toHexString(buffer[i]);
 			if (hex.length() == 1) {
