@@ -24,14 +24,17 @@ import org.bibsonomy.model.Resource;
 public class GetResourcesByHash<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected boolean canHandle(P param) {
-		return (present(param.getHash()) && param.canHandle() && param.getGrouping() == GroupingEntity.ALL &&
-				!present(param.getRequestedUserName()) && !present(param.getTagIndex()) &&
-				!present(param.getOrder()) && !present(param.getSearch()));
+	protected boolean canHandle(final P param) {
+		return (present(param.getHash()) &&
+				param.getGrouping() == GroupingEntity.ALL &&
+				!present(param.getRequestedUserName()) &&
+				!present(param.getTagIndex()) &&
+				!present(param.getOrder()) &&
+				!present(param.getSearch()));
 	}
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		return this.getDatabaseManagerForType(param.getClass()).getPostsByHash(param.getHash(), HashID.getSimHash(param.getSimHash()), GroupID.PUBLIC.getId(), param.getLimit(), param.getOffset(), session);
 	}
 

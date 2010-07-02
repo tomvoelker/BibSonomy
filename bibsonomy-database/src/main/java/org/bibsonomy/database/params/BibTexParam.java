@@ -1,7 +1,5 @@
 package org.bibsonomy.database.params;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.BibTex;
 
@@ -12,11 +10,11 @@ import org.bibsonomy.model.BibTex;
  * @version $Id$
  */
 public class BibTexParam extends ResourceParam<BibTex> {
-	
+
 	private String firstYear;
 	private String lastYear;
 	private String year;
-	
+
 	@Override
 	public int getContentType() {
 		return ConstantID.BIBTEX_CONTENT_TYPE.getId();
@@ -31,7 +29,7 @@ public class BibTexParam extends ResourceParam<BibTex> {
 		if (this.resource == null) {
 			this.resource = new BibTex(); // TODO: why not returning null??! only for the bibtexExtraManager?!
 		}
-		
+
 		return this.resource;
 	}
 
@@ -47,7 +45,7 @@ public class BibTexParam extends ResourceParam<BibTex> {
 	 * @param firstYear the firstYear to set
 	 */
 	@Deprecated
-	public void setFirstYear(String firstYear) {
+	public void setFirstYear(final String firstYear) {
 		this.firstYear = firstYear;
 	}
 
@@ -63,7 +61,7 @@ public class BibTexParam extends ResourceParam<BibTex> {
 	 * @param lastYear the lastYear to set
 	 */
 	@Deprecated
-	public void setLastYear(String lastYear) {
+	public void setLastYear(final String lastYear) {
 		this.lastYear = lastYear;
 	}
 
@@ -79,13 +77,8 @@ public class BibTexParam extends ResourceParam<BibTex> {
 	 * @param year the year to set
 	 */
 	@Deprecated
-	public void setYear(String year) {
+	public void setYear(final String year) {
 		this.year = year;
-	}
-	
-	@Override
-	public boolean canHandle() {
-		return !present(this.getBibtexKey());
-	}
+	}	
 
 }

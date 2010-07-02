@@ -25,9 +25,8 @@ import org.bibsonomy.model.enums.Order;
 public class GetResourcesPopular<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected boolean canHandle(P param) {
+	protected boolean canHandle(final P param) {
 		return (param.getGrouping() == GroupingEntity.ALL &&
-				param.canHandle() &&
 				param.getDays() >= 0 &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.POPULAR) &&
@@ -37,7 +36,7 @@ public class GetResourcesPopular<R extends Resource, P extends ResourceParam<R>>
 	}
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		return this.getDatabaseManagerForType(param.getClass()).getPostsPopular(param.getDays(), param.getLimit(), param.getOffset(), HashID.getSimHash(param.getSimHash()), session);
 	}
 

@@ -80,7 +80,8 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getPublicationsFromBasketForUser = new GetBibtexFromBasketForUser();
 		this.getPublicationsByFollowedUsers = new GetResourcesByFollowedUsers<BibTex, BibTexParam>();
 		this.getPublicationsFromInbox = new GetResourcesFromInbox<BibTex, BibTexParam>();
-		
+
+		this.getPublicationsByKey.setNext(this.getPublicationsForHomepage);
 		this.getPublicationsForHomepage.setNext(this.getPublicationsForPopular);
 		this.getPublicationsForPopular.setNext(this.getPublicationsForUser);
 		this.getPublicationsForUser.setNext(this.getPublicationsByTagNames);
@@ -98,12 +99,11 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getPublicationsByFollowedUsers.setNext(this.getPublicationsByResourceSearch);
 		this.getPublicationsByResourceSearch.setNext(this.getPublicationsByConceptByTag);
 		this.getPublicationsByConceptByTag.setNext(this.getPublicationsByConceptForGroup);
-		this.getPublicationsByConceptForGroup.setNext(this.getPublicationsByKey);
-		this.getPublicationsByKey.setNext(this.getPublicationsFromBasketForUser);
+		this.getPublicationsByConceptForGroup.setNext(this.getPublicationsFromBasketForUser);
 		this.getPublicationsFromBasketForUser.setNext(this.getPublicationsFromInbox);
 	}
 
 	public ChainElement<Post<BibTex>, BibTexParam> getFirstElement() {
-		return this.getPublicationsForHomepage;
+		return this.getPublicationsByKey;
 	}
 }

@@ -24,9 +24,8 @@ import org.bibsonomy.model.enums.Order;
 public class GetResourcesByConceptByTag<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected boolean canHandle(P param) {
+	protected boolean canHandle(final P param) {
 		return (param.getGrouping() == GroupingEntity.ALL &&
-				param.canHandle() &&
 				present(param.getTagIndex()) &&
 				param.getNumSimpleConcepts() > 0 &&
 				param.getNumSimpleTags() == 0 &&
@@ -39,7 +38,7 @@ public class GetResourcesByConceptByTag<R extends Resource, P extends ResourcePa
 	}
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		return this.getDatabaseManagerForType(param.getClass()).getPostsByConceptByTag(param.getTagIndex(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 

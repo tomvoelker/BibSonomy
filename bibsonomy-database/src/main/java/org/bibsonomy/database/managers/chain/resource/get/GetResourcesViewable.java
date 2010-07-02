@@ -28,9 +28,8 @@ import org.bibsonomy.model.enums.Order;
 public class GetResourcesViewable<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected boolean canHandle(P param) {
+	protected boolean canHandle(final P param) {
 		return (present(param.getUserName()) &&
-				param.canHandle() &&
 				param.getGrouping() == GroupingEntity.VIEWABLE &&
 				present(param.getRequestedGroupName()) &&
 				present(param.getRequestedUserName()) &&
@@ -42,17 +41,17 @@ public class GetResourcesViewable<R extends Resource, P extends ResourceParam<R>
 	}
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		final Integer groupId = this.groupDb.getGroupIdByGroupNameAndUserName(param.getRequestedGroupName(), param.getUserName(), session);
 		if (groupId == GroupID.INVALID.getId()) {
 			log.debug("groupId " + param.getRequestedGroupName() + " not found");
 			return new ArrayList<Post<R>>(0);
 		}
-		
+
 		if (present(param.getTagIndex())) {
 			return this.getDatabaseManagerForType(param.getClass()).getPostsViewableByTag(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), groupId, param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 		}
-		
+
 		return this.getDatabaseManagerForType(param.getClass()).getPostsViewable(param.getRequestedGroupName(), param.getUserName(), groupId, HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 

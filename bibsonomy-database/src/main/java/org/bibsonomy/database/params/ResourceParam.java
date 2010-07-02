@@ -11,13 +11,13 @@ import org.bibsonomy.model.Resource;
  * @version $Id$
  */
 public class ResourceParam<T extends Resource> extends GenericParam {
-	
+
 	protected T resource;
 
 	/**
 	 * @param resource the resource to set
 	 */
-	public void setResource(T resource) {
+	public void setResource(final T resource) {
 		this.resource = resource;
 	}
 
@@ -26,13 +26,6 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	 */
 	public T getResource() {
 		return resource;
-	}
-	
-	/**
-	 * @return TODO
-	 */
-	public boolean canHandle() {
-		return true;
 	}
 
 }

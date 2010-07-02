@@ -29,9 +29,8 @@ import org.bibsonomy.model.enums.Order;
 public class GetResourcesOfFriendsByTags<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected boolean canHandle(P param) {
+	protected boolean canHandle(final P param) {
 		return (present(param.getUserName()) &&
-				param.canHandle() &&
 				param.getGrouping() == GroupingEntity.FRIEND &&
 				present(param.getRequestedUserName()) &&
 				present(param.getTagIndex()) &&
@@ -46,7 +45,7 @@ public class GetResourcesOfFriendsByTags<R extends Resource, P extends ResourceP
 	}
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		/*
 		 * if the requested user has the current user in his/her friend list, he may 
 		 * see the posts

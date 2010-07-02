@@ -26,9 +26,8 @@ import org.bibsonomy.model.enums.Order;
 public class GetResourcesForUser<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected boolean canHandle(P param) {
+	protected boolean canHandle(final P param) {
 		return (param.getGrouping() == GroupingEntity.USER &&
-				param.canHandle() &&
 				present(param.getRequestedUserName()) &&
 				!presentValidGroupId(param.getGroupId()) &&
 				!present(param.getTagIndex()) &&
@@ -40,7 +39,7 @@ public class GetResourcesForUser<R extends Resource, P extends ResourceParam<R>>
 	}
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		return this.getDatabaseManagerForType(param.getClass()).getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 

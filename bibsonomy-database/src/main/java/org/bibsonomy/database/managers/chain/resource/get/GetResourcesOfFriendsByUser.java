@@ -29,11 +29,10 @@ import org.bibsonomy.model.enums.Order;
 public class GetResourcesOfFriendsByUser<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected boolean canHandle(P param) {
+	protected boolean canHandle(final P param) {
 		return (present(param.getUserName()) &&
 				param.getGrouping() == GroupingEntity.FRIEND &&
 				present(param.getRequestedUserName()) &&
-				param.canHandle() &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
@@ -43,7 +42,7 @@ public class GetResourcesOfFriendsByUser<R extends Resource, P extends ResourceP
 	}
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		/*
 		 * if the requested user has the current user in his/her friend list, he may 
 		 * see the posts
@@ -52,7 +51,7 @@ public class GetResourcesOfFriendsByUser<R extends Resource, P extends ResourceP
 			final int groupId = GroupID.FRIENDS.getId();
 			return this.getDatabaseManagerForType(param.getClass()).getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), groupId, param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 		}
-		
+
 		return new ArrayList<Post<R>>();
 	}
 

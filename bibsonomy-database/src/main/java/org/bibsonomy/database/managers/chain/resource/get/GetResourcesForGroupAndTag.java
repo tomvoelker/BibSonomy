@@ -25,9 +25,8 @@ import org.bibsonomy.model.Resource;
 public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected boolean canHandle(P param) {
+	protected boolean canHandle(final P param) {
 		return (param.getGrouping() == GroupingEntity.GROUP &&
-				param.canHandle() &&
 				present(param.getRequestedGroupName()) &&
 				!present(param.getRequestedUserName()) &&
 				present(param.getTagIndex()) &&
@@ -42,7 +41,7 @@ public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourcePa
 	}
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
 		if (group == null || group.getGroupId() == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(group.getGroupId())) {
 			log.debug("groupId " + param.getRequestedGroupName() + " not found or special group");

@@ -30,9 +30,8 @@ import org.bibsonomy.model.enums.Order;
 public class GetResourcesByFriends<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected boolean canHandle(P param) {
+	protected boolean canHandle(final P param) {
 		return (present(param.getUserName()) &&
-				param.canHandle() &&
 				param.getGrouping() == GroupingEntity.FRIEND &&
 				!present(param.getRequestedGroupName()) &&
 				!present(param.getRequestedUserName()) &&
@@ -43,7 +42,7 @@ public class GetResourcesByFriends<R extends Resource, P extends ResourceParam<R
 	}
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		return this.getDatabaseManagerForType(param.getClass()).getPostsByUserFriends(param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 

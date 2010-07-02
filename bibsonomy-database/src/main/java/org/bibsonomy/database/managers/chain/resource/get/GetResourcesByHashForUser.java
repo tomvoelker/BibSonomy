@@ -23,9 +23,8 @@ import org.bibsonomy.model.Resource;
 public class GetResourcesByHashForUser<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected boolean canHandle(P param) {
+	protected boolean canHandle(final P param) {
 		return (present(param.getHash()) &&
-				param.canHandle() &&
 				param.getGrouping() == GroupingEntity.USER &&
 				present(param.getRequestedGroupName()) &&
 				!present(param.getTagIndex()) &&
@@ -34,7 +33,7 @@ public class GetResourcesByHashForUser<R extends Resource, P extends ResourcePar
 	}
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		return this.getDatabaseManagerForType(param.getClass()).getPostsByHashForUser(param.getUserName(), param.getHash(), param.getRequestedUserName(), param.getGroups(), HashID.getSimHash(param.getSimHash()), session);
 	}
 
