@@ -64,7 +64,7 @@ public class URLGeneratorTest {
 	}
 	
 	@Test
-	public void testMatch() throws Exception {
+	public void testMatch() {
 		assertTrue(ug.matchesPage("http://www.bibsonomy.org/inbox", URLGenerator.Page.INBOX));
 		assertTrue(ug.matchesPage("http://www.bibsonomy.org/basket", URLGenerator.Page.BASKET));
 		assertTrue(ug.matchesPage("http://www.bibsonomy.org/basket?start=0", URLGenerator.Page.BASKET));

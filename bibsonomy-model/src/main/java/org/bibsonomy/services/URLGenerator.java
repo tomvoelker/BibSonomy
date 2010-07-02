@@ -23,10 +23,10 @@
 
 package org.bibsonomy.services;
 
-import java.io.UnsupportedEncodingException;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -35,7 +35,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.util.UrlUtils;
 
 /**
  * Generates the URLs used by the web application.
@@ -63,25 +63,25 @@ public class URLGenerator {
 		 */
 		BASKET("basket");
 		
-		private final String p; 
+		private final String path; 
 		
-		private Page(final String p) {
-			this.p = p;
+		private Page(final String path) {
+			this.path = path;
 		}
 		
 		/**
 		 * @return The string representation of this page
 		 */
 		public String getPath() {
-			return p;
+			return path;
 		}
 	}
 	
 	private static final String USER_PREFIX = "user";
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String BOOKMARK_PREFIX = "url";
-	private static final String PUBLICATION_INTRA_HASH_ID = new Integer(HashID.INTRA_HASH.getId()).toString();
-	private static final String PUBLICATION_INTER_HASH_ID = new Integer(HashID.INTER_HASH.getId()).toString();
+	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
+	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
 
 	/**
 	 * The default gives relative URLs.
@@ -91,17 +91,7 @@ public class URLGenerator {
 	/**
 	 * Per default, generated URLs are not checked.
 	 */
-	private boolean checkUrls = false; 
-
-	/**
-	 * Sets up a new URLGenerator with the given projectHome.
-	 * 
-	 * @param projectHome
-	 */
-	public URLGenerator(final String projectHome) {
-		super();
-		this.projectHome = projectHome;
-	}
+	private boolean checkUrls = false;
 	
 	/**
 	 * Sets up a new URLGenerator with the default projectHome ("/") and no 
@@ -112,13 +102,23 @@ public class URLGenerator {
 	}
 
 	/**
+	 * Sets up a new URLGenerator with the given projectHome.
+	 * 
+	 * @param projectHome
+	 */
+	public URLGenerator(final String projectHome) {
+		super();
+		this.projectHome = projectHome;
+	}
+
+	/**
 	 * Creates an absolute URL for the given path.
 	 * 
 	 * @param path - the path part of the URL (TODO: with or without leading "/"?)
 	 * @return The absolute URL.
 	 */
 	public String getAbsoluteUrl(final String path) {
-		return getUrl(projectHome + path);
+		return this.getUrl(projectHome + path);
 	}
 
 	/**
@@ -132,9 +132,9 @@ public class URLGenerator {
 	public String getPostUrl(final Post<? extends Resource> post) {
 		final Resource resource = post.getResource();
 		if (resource instanceof Bookmark) {
-			return getBookmarkUrl(((Bookmark) resource), post.getUser());
+			return this.getBookmarkUrl(((Bookmark) resource), post.getUser());
 		} else if (resource instanceof BibTex) {
-			return getPublicationUrl(((BibTex) resource), post.getUser());
+			return this.getPublicationUrl(((BibTex) resource), post.getUser());
 		} else {
 			throw new UnsupportedResourceTypeException();
 		}	
@@ -157,10 +157,11 @@ public class URLGenerator {
 		/*
 		 * no user given
 		 */
-		if (!ValidationUtils.present(user) || !ValidationUtils.present(user.getName())){
-			return getUrl(projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTER_HASH_ID + publication.getInterHash());
+		if (!present(user) || !present(user.getName())){
+			return this.getUrl(projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTER_HASH_ID + publication.getInterHash());
 		}
-		return getUrl(projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + "/" + encode(user.getName()));
+		
+		return this.getUrl(projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName()));
 	}
 
 
@@ -180,10 +181,10 @@ public class URLGenerator {
 		/*
 		 * no user given
 		 */
-		if (!ValidationUtils.present(user) || !ValidationUtils.present(user.getName())){
-			return getUrl(projectHome + BOOKMARK_PREFIX + "/" + bookmark.getInterHash());
+		if (!present(user) || !present(user.getName())){
+			return this.getUrl(projectHome + BOOKMARK_PREFIX + "/" + bookmark.getInterHash());
 		}
-		return getUrl(projectHome + BOOKMARK_PREFIX + "/" + bookmark.getIntraHash() + "/" + encode(user.getName()));
+		return this.getUrl(projectHome + BOOKMARK_PREFIX + "/" + bookmark.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName()));
 	}
 
 
@@ -194,7 +195,7 @@ public class URLGenerator {
 	 * @return The URL for the user's page.
 	 */
 	public String getUserUrl(final User user) {
-		return getUrl(projectHome + USER_PREFIX + "/" + encode(user.getName()));
+		return this.getUrl(projectHome + USER_PREFIX + "/" + UrlUtils.safeURIEncode(user.getName()));
 	}
 	
 	/**
@@ -204,7 +205,7 @@ public class URLGenerator {
 	 * @return The URL for the user's page.
 	 */
 	public String getUserUrl(final String userName) {
-		return getUrl(projectHome + USER_PREFIX + "/" + encode(userName));
+		return this.getUrl(projectHome + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
 	}
 
 	/**
@@ -225,14 +226,6 @@ public class URLGenerator {
 			}
 		}
 		return url;
-	}
-	
-	private static String encode(final String s) {
-		try {
-			return URLEncoder.encode(s, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			return s;
-		}
 	}
 
 	/**
