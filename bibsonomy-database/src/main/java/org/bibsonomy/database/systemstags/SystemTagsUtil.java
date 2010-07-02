@@ -167,6 +167,9 @@ public class SystemTagsUtil {
 	 * 		   or null, if the given tag does not describe a systemTag
 	 */
 	public static ExecutableSystemTag createExecutableTag(final Tag tag) {
+		if( !isSystemTag(tag.getName()) ) {
+			return null;
+		}
 		final String name = extractName(tag.getName());
 		if (present(name)) {
 			final ExecutableSystemTag sysTag = sysTagFactory.getExecutableSystemTag(name);
