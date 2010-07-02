@@ -2,6 +2,7 @@ package org.bibsonomy.database.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -84,19 +85,30 @@ public class DatabaseSchemaInformation {
 	 * @return the schema information of the column of the table
 	 */
 	@SuppressWarnings("unchecked")
-	private static <R> R getSchemaInformation(final Class<R> resultClass, final String tableNamePattern, final String columnNamePattern, final String columnLabel) {
+	private static <R> R getSchemaInformation(@SuppressWarnings("unused") /* only used for the cast*/ final Class<R> resultClass, final String tableNamePattern, final String columnNamePattern, final String columnLabel) {
 		final SqlMapSession sqlMap = IbatisDBSessionFactory.getSqlMapClient().openSession();
 		final DataSource dataSource = sqlMap.getDataSource();
 		
+		Connection connection = null;
+		
 		try {
-			final DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
+			connection = dataSource.getConnection();
+			final DatabaseMetaData metaData = connection.getMetaData();
 			final ResultSet columns = metaData.getColumns(null, null, tableNamePattern, columnNamePattern);
 		    while (columns.next()) {
 		    	return (R) columns.getObject(columnLabel);
 		    }
 		} catch (SQLException ex) {
 			log.warn("can't get schema informations for column '" + columnNamePattern + "' of table '" + tableNamePattern + "'", ex);
-		}	    
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException ex) {
+					log.warn("can't close connection", ex);
+				}
+			}
+		}
 	    
 	    return null;
 	}
