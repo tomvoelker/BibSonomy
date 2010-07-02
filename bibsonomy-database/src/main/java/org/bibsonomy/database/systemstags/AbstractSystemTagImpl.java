@@ -8,16 +8,12 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  */
 public abstract class AbstractSystemTagImpl implements SystemTag {
-
 	protected static final Log log = LogFactory.getLog(SystemTag.class);
 
 	private String argument;
-	
-	@Override
-	public abstract String getName();
 
 	/**
-	 * @param value the value to set
+	 * @param argument the argument to set
 	 */
 	@Override
 	public void setArgument(String argument) {
@@ -28,5 +24,4 @@ public abstract class AbstractSystemTagImpl implements SystemTag {
 	public String getArgument() {
 		return this.argument;
 	}
-
 }

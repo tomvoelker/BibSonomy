@@ -8,8 +8,7 @@ import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
  * @author sdo
  * @version $Id$
  */
-public class GroupSystemTag extends AbstractSystemTagImpl implements
-		SearchSystemTag {
+public class GroupSystemTag extends AbstractSystemTagImpl implements SearchSystemTag {
 
 	public static final String NAME = "group";
 

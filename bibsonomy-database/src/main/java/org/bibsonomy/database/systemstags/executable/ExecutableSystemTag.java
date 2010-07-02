@@ -10,7 +10,7 @@ import org.bibsonomy.model.Resource;
  * @author sdo
  * @version $Id$
  */
-public interface ExecutableSystemTag extends SystemTag{
+public interface ExecutableSystemTag extends SystemTag {
 
 	/**
 	 * Action to perform before the creation of a post
@@ -54,7 +54,7 @@ public interface ExecutableSystemTag extends SystemTag{
 
 	/**
 	 * Creates a new instance of this kind of ExecutableSystemTag
-	 * @return
+	 * @return the new instance
 	 */
 	public ExecutableSystemTag newInstance();
 

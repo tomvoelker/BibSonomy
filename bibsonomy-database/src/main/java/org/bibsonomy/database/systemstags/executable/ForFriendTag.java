@@ -39,19 +39,20 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 		return NAME;
 	}
 	
+	/**
+	 * @param tag the tag to set
+	 */
 	public void setTag(Tag tag) {
 		this.tag = tag;
 	}
 
 	@Override
 	public <T extends Resource> void performBeforeCreate(final Post<T> post, final DBSession session) {
-		log.debug("performing before acess");
 		// nothing is performed
 	}
 
 	@Override
 	public <T extends Resource> void performBeforeUpdate(Post<T> newPost, final Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
-		log.debug("performing before acess");
 		// nothing is performed
 	}
 
@@ -80,7 +81,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 		 * Rename forFriendTag from send:userName to sent:userName
 		 * We deactivate the systemTag to avoid sending the Message again and again each time the sender updates his post
 		 */
-		TagDatabaseManager tagDb = TagDatabaseManager.getInstance();
+		final TagDatabaseManager tagDb = TagDatabaseManager.getInstance();
 		tagDb.deleteTags(post, session);		// 1. delete all tags from the database (will be replaced by new ones)
 		this.tag.setName("from:" + sender);	// 2. rename this tag for the receiver (store senderName)
 		try {
@@ -107,8 +108,8 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	 * @return true iff sender is allowed to use the tag
 	 */
 	private boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
-		GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-		GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
+		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+		final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
 		if ( !( generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size()>0 ) ) {
 			final String defaultMessage = this.getName()+ ": "  + receiver + " did not add you as a friend and is not a member of any of your groups.";
 			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.notFriend", new String[]{receiver}));

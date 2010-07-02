@@ -54,7 +54,10 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		return NAME;
 	}
 
-	public void setDBSessionFactory(DBSessionFactory dbSessionFactory) {
+	/**
+	 * @param dbSessionFactory the dbSessionFactory to set
+	 */
+	public void setDBSessionFactory(final DBSessionFactory dbSessionFactory) {
 		this.dbSessionFactory = dbSessionFactory;
 	}
 	
@@ -72,7 +75,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	}
 
 	@Override
-	public <T extends Resource> void performBeforeUpdate(Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session) {
+	public <T extends Resource> void performBeforeUpdate(final Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session) {
 		if (operation == PostUpdateOperation.UPDATE_TAGS) {
 			/*
 			 *  in this case, newPost is not a valid post but contains the new tags, while oldPost is a valid post containing the old tags
@@ -87,7 +90,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	}
 
 	@Override
-	public <T extends Resource> void performAfterUpdate(Post<T> oldPost, final Post<T> newPost, final PostUpdateOperation operation, final DBSession session) {
+	public <T extends Resource> void performAfterUpdate(final Post<T> oldPost, final Post<T> newPost, final PostUpdateOperation operation, final DBSession session) {
 		// nothing is performed after post was updated
 		log.debug("performing after access");
 	}
@@ -99,7 +102,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	 * @param userTags the tags for the post
 	 * @param session
 	 */
-	private <T extends Resource> void perform(Post<T> userPost, Set<Tag> userTags, final DBSession session) {
+	private <T extends Resource> void perform(final Post<T> userPost, final Set<Tag> userTags, final DBSession session) {
 		log.debug("performing after access");
 		final String groupName = this.getArgument(); // the group's name
 		final String userName = userPost.getUser().getName();
@@ -112,14 +115,14 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		/*
 		 * Make a DBLogic for the group
 		 */
-		DBLogicNoAuthInterfaceFactory logicFactory = new DBLogicNoAuthInterfaceFactory();
+		final DBLogicNoAuthInterfaceFactory logicFactory = new DBLogicNoAuthInterfaceFactory();
 		logicFactory.setDbSessionFactory(this.dbSessionFactory);
-		LogicInterface groupDBLogic = logicFactory.getLogicAccess(groupName, "");
+		final LogicInterface groupDBLogic = logicFactory.getLogicAccess(groupName, "");
 		/*
 		 *  Check if the group exists and whether it owns the post already
 		 */
 		if (!present(groupDBLogic.getGroupDetails(groupName))) {
-			String defaultMessage = this.getName()+": " + groupName + "does not exist.";
+			final String defaultMessage = this.getName()+": " + groupName + "does not exist.";
 			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.noSuchGroup", new String[] {groupName}));
 			log.warn("Added SystemTagErrorMessage (for group: Unknown Group) for post " + intraHash);
 			return; // this tag can not be used => abort
@@ -129,7 +132,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 				log.debug("Given post already owned by group. Skipping...");
 				return;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			// ignore
 		}
 		/*
@@ -137,7 +140,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		 *  => Copy the post and store it for the group
 		 */
 		//FIXME: How do we properly clone a post?
-		Post<T> groupPost = new Post<T>();
+		final Post<T> groupPost = new Post<T>();
 		groupPost.setResource(userPost.getResource());
 		groupPost.setDescription(userPost.getDescription());
 		groupPost.setDate(new Date());
@@ -171,12 +174,12 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		posts.add(groupPost);
 		try {
 			groupDBLogic.createPosts(posts);
-		} catch (DatabaseException dbex) {
+		} catch (final DatabaseException dbex) {
 			/*
 			 *  Add the DatabaseException of the copied post to the Exception of the original one
 			 */
-			for (String hash: dbex.getErrorMessages().keySet()) {
-				for (ErrorMessage errorMessage: dbex.getErrorMessages(hash)) {
+			for (final String hash: dbex.getErrorMessages().keySet()) {
+				for (final ErrorMessage errorMessage: dbex.getErrorMessages(hash)) {
 					errorMessage.setDefaultMessage("This error occured while executing the for: tag: "+errorMessage.getDefaultMessage());
 					errorMessage.setErrorCode("database.exception.systemTag.forGroup.copy");
 					session.addError(intraHash, errorMessage);
@@ -197,7 +200,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	 * @return true iff user is allowed to use the tag
 	 */
 	private boolean hasPermissions(final String intraHash, final DBSession session, final String groupName, final String userName) {
-		PermissionDatabaseManager permissionDb = PermissionDatabaseManager.getInstance();
+		final PermissionDatabaseManager permissionDb = PermissionDatabaseManager.getInstance();
 		if (permissionDb.isSpecialGroup(groupName) ) {
 			final String defaultMessage = this.getName() + ": "+ groupName + ": is a special group. You are not allowed to forward posts to special groups.";
 			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.specialGroup", new String[] {groupName}));

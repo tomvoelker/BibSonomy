@@ -14,16 +14,25 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @version $Id$
  */
 public class SystemTagFactory {
-	
-    private static final SystemTagFactory singleton = new SystemTagFactory();
+    private static final String SYSTEM_TAG_CONFIG_FILE = "systemtags-context.xml";
+    
+	private static final SystemTagFactory singleton = new SystemTagFactory();
 
-    // The map that contains all executable systemTags
+	/**
+ 	 * @return the singleton 
+	 */
+	public static SystemTagFactory getInstance() {
+		return singleton;
+	}
+	
+
+    /** The map that contains all executable systemTags */
 	private final Map<String, ExecutableSystemTag> executableSystemTagMap;
 	
-	// The set that contains all searchSystemTags
+	/** The set that contains all searchSystemTags */
 	private final Map<String, SearchSystemTag> searchSystemTagMap;
 	
-	// The DBSessionFactory (we need it for the forGroup tag)
+	/** The DBSessionFactory (we need it for the forGroup tag) */
 	private DBSessionFactory dbSessionFactory;
 	
 	/**
@@ -34,7 +43,7 @@ public class SystemTagFactory {
 		/*
 		 * FIXME: shouldn't we configure this from the outside?
 		 */
-		final ClassPathXmlApplicationContext springBeanFactory = new ClassPathXmlApplicationContext("systemtags-context.xml");
+		final ClassPathXmlApplicationContext springBeanFactory = new ClassPathXmlApplicationContext(SYSTEM_TAG_CONFIG_FILE);
 		this.executableSystemTagMap = new HashMap<String, ExecutableSystemTag>();
 		this.fillExecutableSystemTagMap( (Set<ExecutableSystemTag>)springBeanFactory.getBean("executableSystemTagSet") );
 		this.searchSystemTagMap = new HashMap<String, SearchSystemTag>();
@@ -55,15 +64,10 @@ public class SystemTagFactory {
 	}
 	
 	/**
- 	 * @return the singleton 
-	 */
-	public static SystemTagFactory getInstance() {
-		return singleton;
-	}
-	
-	/**
 	 * Returns a new instance of the required systemTag
-	 * @param tagName = the tag describing the systemTag e. g. send:xyz or for:xyz
+	 * 
+	 * @param tagType = the tag describing the systemTag e. g. send:xyz or for:xyz
+	 * @return an executable system tag
 	 */
 	public ExecutableSystemTag getExecutableSystemTag(final String tagType) {
 		if (isExecutableSystemTag(tagType.toLowerCase())) {
@@ -74,7 +78,9 @@ public class SystemTagFactory {
 
 	/**
 	 * Returns a new instance of the required systemTag
-	 * @param tagName = the tag describing the systemTag e. g. send:xyz or for:xyz
+	 * 
+	 * @param tagType = the tag describing the systemTag e. g. send:xyz or for:xyz
+	 * @return a search system tag
 	 */
 	public SearchSystemTag getSearchSystemTag(final String tagType) {
 		if (isSearchSystemTag(tagType.toLowerCase())) {
@@ -84,18 +90,20 @@ public class SystemTagFactory {
 	}
 
 	/**
-	 * Determins whether a tag (given by name) is an executable systemTag
-	 * @param tagName
-	 * @return
+	 * Determines whether a tag (given by name) is an executable systemTag
+	 * 
+	 * @param tagType
+	 * @return <code>true</code> iff it's an executable system tag
 	 */
 	public boolean isExecutableSystemTag(final String tagType) {
 		return this.executableSystemTagMap.containsKey(tagType.toLowerCase());
 	}
 	
 	/**
-	 * Determins whether a tag (given by name) is a systemTag
-	 * @param tagName
-	 * @return
+	 * Determines whether a tag (given by name) is a systemTag
+	 * 
+	 * @param tagType
+	 * @return <code>true</code> iff it's a search system tag
 	 */
 	public boolean isSearchSystemTag(final String tagType) {
 		return this.searchSystemTagMap.containsKey(tagType.toLowerCase());
