@@ -1,7 +1,7 @@
 package org.bibsonomy.database.common.params;
 
 /**
- * TODO: replace the 3 code copies in lucene, recommender and community
+ * TODO: replace the 2 code copies in recommender and community
  * 
  * @author ?
  * @version $Id$
@@ -18,14 +18,14 @@ public class Pair <T, U> {
 	 */
 	public Pair() {
 	}
-	
+
 	/**
 	 * build constructor
 	 * 
 	 * @param first
 	 * @param second
 	 */
-	public Pair( T first, U second ) {
+	public Pair( final T first, final U second ) {
 		this.first = first;
 		this.second = second;
 	}
@@ -40,7 +40,7 @@ public class Pair <T, U> {
 	/**
 	 * @param first the first to set
 	 */
-	public void setFirst(T first) {
+	public void setFirst(final T first) {
 		this.first = first;
 	}
 
@@ -54,7 +54,7 @@ public class Pair <T, U> {
 	/**
 	 * @param second the second to set
 	 */
-	public void setSecond(U second) {
+	public void setSecond(final U second) {
 		this.second = second;
 	}
 
@@ -74,7 +74,7 @@ public class Pair <T, U> {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -84,7 +84,7 @@ public class Pair <T, U> {
 		if (!(obj instanceof Pair<?,?>)) {
 			return false;
 		}
-		Pair<?,?> other = (Pair<?,?>) obj;
+		final Pair<?,?> other = (Pair<?,?>) obj;
 		if (first == null) {
 			if (other.first != null) {
 				return false;
@@ -102,5 +102,5 @@ public class Pair <T, U> {
 		return true;
 	}
 
-	
+
 } 

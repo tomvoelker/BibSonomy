@@ -19,6 +19,7 @@ public abstract class AbstractDatabaseManager {
 
 	/**
 	 * Can be used to start a query that retrieves a list of objects of a certain type.
+	 * PLEASE NOTE: this methods never returns null, only an empty list if the queryForList returns null
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> List<T> queryForList(final String query, final Object param, @SuppressWarnings("unused") final Class<T> type, final DBSession session) {
@@ -28,8 +29,6 @@ public abstract class AbstractDatabaseManager {
 	
 	/**
 	 * short form of queryForList without Type argument
-	 * 
-	 * XXX: do we really want to use these?
 	 */
 	@SuppressWarnings("unchecked")
 	protected List queryForList(final String query, final Object param, final DBSession session) {
@@ -47,6 +46,11 @@ public abstract class AbstractDatabaseManager {
 	@SuppressWarnings("unchecked")
 	protected <T> T queryForObject(final String query, final Object param, @SuppressWarnings("unused") final Class<T> type, final DBSession session) {
 		return (T) session.queryForObject(query, param);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T> T queryForObject(final String query, @SuppressWarnings("unused") final Class<T> type, final DBSession session) {
+		return (T) session.queryForObject(query, null);
 	}
 
 	/**

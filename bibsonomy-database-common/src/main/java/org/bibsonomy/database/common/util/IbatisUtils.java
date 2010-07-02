@@ -20,7 +20,7 @@ public final class IbatisUtils {
 	 */
 	public static SqlMapClient loadSqlMap(final String filename) {
 		try {
-			// initialize database client for lucene queries
+			// initialize database client
 			final Reader reader = Resources.getResourceAsReader(filename);
 			return SqlMapClientBuilder.buildSqlMapClient(reader);
 		} catch (final Exception e) {

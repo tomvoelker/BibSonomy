@@ -14,7 +14,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
  * @version $Id$
  */
 public interface DBSession {
-	
+
 	/**
 	 * Starts a virtual transaction (a real one if no real transaction has been
 	 * started yet). At least endTransaction (probably also commitTransaction
@@ -43,7 +43,7 @@ public interface DBSession {
 	 * MUST be called to release the db-connection
 	 */
 	public void close();
-	
+
 	/**
 	 * adds a error message to the provided key
 	 * 
@@ -51,7 +51,7 @@ public interface DBSession {
 	 * @param errorMessage
 	 */
 	public void addError(String key, ErrorMessage errorMessage);
-	
+
 	/**
 	 * 
 	 * @param query
@@ -59,10 +59,10 @@ public interface DBSession {
 	 * @return the result of the query
 	 */
 	public Object queryForObject(final String query, final Object param);
-	
+
 	/**
 	 * queries for an object in the database, the result will be stored in the
-	 * provided store
+	 * provided store object
 	 * 
 	 * @param query
 	 * @param param
@@ -70,7 +70,7 @@ public interface DBSession {
 	 * @return the result of the query
 	 */
 	public Object queryForObject(final String query, final Object param, final Object store);
-	
+
 	/**
 	 * queries for a list in the database
 	 *  
@@ -96,7 +96,7 @@ public interface DBSession {
 	 * @param param
 	 */
 	public void update(final String query, final Object param);
-	
+
 	/**
 	 * deletes the param from the database
 	 * 

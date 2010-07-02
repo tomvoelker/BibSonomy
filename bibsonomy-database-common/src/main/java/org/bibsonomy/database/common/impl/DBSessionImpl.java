@@ -29,18 +29,21 @@ import com.mysql.jdbc.exceptions.MySQLTimeoutException;
  */
 public class DBSessionImpl implements DBSession {
 	private static final Log log = LogFactory.getLog(DBSessionImpl.class);
-	
+
 	/** Communication with the database is done with the sqlMap */
 	private final SqlMapSession sqlMap;
+
 	/** how many commit-calls have to be made for getting the real transaction to become committed */
 	private int transactionDepth;
 	private int uncommittedDepth;
+
 	/**
 	 * if one virtual transaction is aborted, no other virtual transaction will
 	 * become committed until all virtual transactions are ended
 	 */
 	private boolean aborted;
 	private boolean closed;
+
 	private final Map<String, List<ErrorMessage>> errorMessages;
 
 	protected DBSessionImpl(final SqlMapSession sqlMap) {
@@ -49,7 +52,7 @@ public class DBSessionImpl implements DBSession {
 		this.uncommittedDepth = 0;
 		this.aborted = false;
 		this.closed = false;
-		
+
 		this.errorMessages = new HashMap<String, List<ErrorMessage>>();
 	}
 
@@ -169,7 +172,7 @@ public class DBSessionImpl implements DBSession {
 	public boolean isAborted() {
 		return this.aborted;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.common.DBSession#queryForObject(java.lang.String, java.lang.Object)
@@ -183,7 +186,7 @@ public class DBSessionImpl implements DBSession {
 		}
 		return null;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.common.DBSession#queryForList(java.lang.String, java.lang.Object)
@@ -198,7 +201,7 @@ public class DBSessionImpl implements DBSession {
 		}
 		return null;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.common.DBSession#insert(java.lang.String, java.lang.Object)
@@ -212,7 +215,7 @@ public class DBSessionImpl implements DBSession {
 		}
 		return null;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.common.DBSession#update(java.lang.String, java.lang.Object)
@@ -221,11 +224,11 @@ public class DBSessionImpl implements DBSession {
 	public void update(final String query, final Object param) {
 		try {
 			this.sqlMap.update(query, param);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			this.handleException(e, query);
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.common.DBSession#delete(java.lang.String, java.lang.Object)
@@ -234,12 +237,12 @@ public class DBSessionImpl implements DBSession {
 	public void delete(final String query, final Object param) {
 		try {
 			this.sqlMap.delete(query, param);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			this.handleException(e, query);
 		}
 	}
-	
-	private void handleException(final Exception e, String query) {
+
+	private void handleException(final Exception e, final String query) {
 		// XXX: :(
 		if (e instanceof NestedSQLException) {
 			this.handleException((NestedSQLException)e, query);
@@ -248,8 +251,8 @@ public class DBSessionImpl implements DBSession {
 			this.logException(query, e);
 		}		
 	}
-	
-	private void handleException(final NestedSQLException ex, String query) {
+
+	private void handleException(final NestedSQLException ex, final String query) {
 		if (!this.errorMessages.isEmpty()) {
 			if ("22001".equals(ex.getSQLState())) {
 				/*
@@ -295,7 +298,7 @@ public class DBSessionImpl implements DBSession {
 				break;
 			}
 		}
-		
+
 		if (cause != null && cause.getClass().equals(MySQLTimeoutException.class)) {
 			log.info("MySQL Query timeout for query " + query);
 			throw new QueryTimeoutException(ex, query);
@@ -309,23 +312,23 @@ public class DBSessionImpl implements DBSession {
 	 * @param ex
 	 */
 	private void logException(final String query, final Exception ex) {
-		String msg = "Couldn't execute query '" + query + "'";
+		final String msg = "Couldn't execute query '" + query + "'";
 		this.somethingWentWrong();
 		ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, msg);
 	}
 
 	@Override
-	public void addError(String key, ErrorMessage errorMessage) {
+	public void addError(final String key, final ErrorMessage errorMessage) {
 		List<ErrorMessage> errorMessages = this.errorMessages.get(key);
-		
+
 		if (errorMessages == null) {
 			errorMessages = new LinkedList<ErrorMessage>();
 			this.errorMessages.put(key, errorMessages);
 		}
-		
+
 		errorMessages.add(errorMessage);
 	}
-	
+
 	@Override
 	protected void finalize() throws Throwable {
 		// Try to take care of other peoples mistakes. It may take a while
@@ -338,13 +341,13 @@ public class DBSessionImpl implements DBSession {
 	}
 
 	@Override
-	public Object queryForObject(String query, Object param, Object store) {
+	public Object queryForObject(final String query, final Object param, final Object store) {
 		try {
 			return this.sqlMap.queryForObject(query, param, store);
 		} catch (final Exception e) {
 			this.handleException(e, query);
 		}
-		
+
 		return null;
 	}
 
