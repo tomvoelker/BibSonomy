@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
@@ -45,12 +45,16 @@ public class TestDatabaseLoader {
 		return INSTANCE;
 	}
 	
+	private boolean firstRun = true;
+	
 	/** Stores the create table statements  */
 	private final List<String> createStatements;
 	/** Stores the insert statements  */
 	private final List<String> insertStatements;
 	/** Stores the delete statements  */
-	private final List<String> deleteStatements;	
+	private final List<String> deleteStatements;
+	
+	private final List<String> tableNames;
 
 	/**
 	 * Loads the SQL statements from the script.
@@ -59,6 +63,7 @@ public class TestDatabaseLoader {
 		// parse all sql scripts
 		long start = System.currentTimeMillis();
 		log.debug("parsing create statements");
+		this.tableNames = new LinkedList<String>();
 		this.createStatements = this.parseInputStream(DBLogic.class.getClassLoader().getResourceAsStream(SCHEMA_FILENAME));
 		
 		log.debug("parsing insert statements");
@@ -78,7 +83,7 @@ public class TestDatabaseLoader {
 	 * @return
 	 */
 	private List<String> parseInputStream(InputStream scriptStream) {
-		final List<String> statements = new ArrayList<String>();
+		final List<String> statements = new LinkedList<String>();
 		if (scriptStream == null) throw new RuntimeException("Can't get SQL script.");
 				
 		/*
@@ -99,7 +104,15 @@ public class TestDatabaseLoader {
 			if (currentLine.startsWith("--")) continue;        // skip comments				
 			if (currentLine.startsWith("DELIMITER")) continue; // exclude trigger-related statements
 			if (currentLine.startsWith("/*!50003")) continue;  
-			
+			if (currentLine.startsWith("CREATE TABLE")) {
+				final String[] split = currentLine.split("`");
+				if (split.length != 3) {
+					log.error(currentLine);
+				} else {
+
+					this.tableNames.add(split[1]);
+				}
+			}
 
 			spanningLineBuf.append(" " + currentLine);
 			final String wholeLine = spanningLineBuf.toString().trim();
@@ -123,13 +136,16 @@ public class TestDatabaseLoader {
 			 * do initialization: drop database, create it, use it
 			 */
 			final String database = jdbc.getDatabaseConfig().getDatabase();
-			if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
-				log.debug("Starting to drop + create database" + database);
-				start = System.currentTimeMillis();
-				jdbc.execute("DROP DATABASE IF EXISTS `" + database + "`;");
-				jdbc.execute("CREATE DATABASE `" + database + "`;");
-				elapsed = (System.currentTimeMillis() - start ) / 1000;
-				log.debug("Done; took " + elapsed + " seconds.");
+			
+			if (firstRun) {
+				if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
+					log.debug("Starting to drop + create database" + database);
+					start = System.currentTimeMillis();
+					jdbc.execute("DROP DATABASE IF EXISTS `" + database + "`;");
+					jdbc.execute("CREATE DATABASE `" + database + "`;");
+					elapsed = (System.currentTimeMillis() - start ) / 1000;
+					log.debug("Done; took " + elapsed + " seconds.");
+				}
 			}
 	
 			log.debug("Switch to database " + database);
@@ -137,26 +153,48 @@ public class TestDatabaseLoader {
 			jdbc.execute("USE `" + database + "`;");
 			elapsed = (System.currentTimeMillis() - start ) / 1000;
 			log.debug("Done; took " + elapsed + " seconds.");
+			
 			/*
 			 * execute statements from script
 			 */
-			final List<String> statements = new ArrayList<String>();
-			if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
-				statements.addAll(this.createStatements);
-			} else {
-				statements.addAll(this.deleteStatements);
-			}
-			statements.addAll(this.insertStatements);
-
-			for (final String statement : statements) {
+			if (firstRun) {				
+				final List<String> statements = new LinkedList<String>();
+				
+				if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
+					statements.addAll(this.createStatements);
+				} else {
+					statements.addAll(this.deleteStatements);
+				}
+				
 				start = System.currentTimeMillis();
-				log.debug("executing SQL statement: " + statement);
+
+				for (final String statement : statements) {
+					log.debug("executing SQL statement: " + statement);
+					jdbc.execute(statement);
+				}
+				elapsed = (System.currentTimeMillis() - start );
+				log.debug("Done; took " + elapsed + " mseconds.");
+			} else {
+				// loop through all databases and delete contents
+				start = System.currentTimeMillis();
+
+				for (final String tableName : this.tableNames) {
+					jdbc.execute("TRUNCATE " + tableName);
+				}
+				elapsed = (System.currentTimeMillis() - start );
+				log.debug("Done; took " + elapsed + " mseconds.");
+			}
+			
+			
+			start = System.currentTimeMillis();
+			for (final String statement : this.insertStatements) {
 				jdbc.execute(statement);
-				elapsed = (System.currentTimeMillis() - start ) / 1000;
-				log.debug("Done; took " + elapsed + " seconds.");				
-			}			
+			}
+			elapsed = (System.currentTimeMillis() - start );
+			log.debug(">>> Done; took " + elapsed + " mseconds.");
 			
 			jdbc.close();
+			firstRun = false;
 		} catch (final IOException ex) {
 			throw new RuntimeException(ex);
 		}
