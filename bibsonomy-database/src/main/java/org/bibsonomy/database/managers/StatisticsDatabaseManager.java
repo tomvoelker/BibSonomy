@@ -25,18 +25,18 @@ import org.bibsonomy.util.ValidationUtils;
  */
 public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 
-	private final static StatisticsDatabaseManager singleton = new StatisticsDatabaseManager();
-	
+	private static final StatisticsDatabaseManager singleton = new StatisticsDatabaseManager();
+
 	private static final PostStatisticChain postchain = new PostStatisticChain();
 	private static final TagStatisticChain tagChain = new TagStatisticChain();
-	
+
 	/**
 	 * @return StatisticsDatabaseManager
 	 */
 	public static StatisticsDatabaseManager getInstance() {
 		return singleton;
 	}
-	
+
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private final Map<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>> postDatabaseManager;
@@ -44,7 +44,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	private StatisticsDatabaseManager() {
 		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
-		
+
 		// TODO: refactor @see DBLogic
 		this.postDatabaseManager = new HashMap<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>>();
 		this.postDatabaseManager.put(Bookmark.class, this.bookmarkDBManager);
@@ -110,7 +110,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	public int getNumberOfResourcesForHash(final Class<? extends Resource> resourceType, final String requHash, final HashID simHash, final DBSession session) {
 		return this.getDatabaseManagerForResourceType(resourceType).getPostsByHashCount(requHash, simHash, session);	
 	}
-	
+
 	/**
 	 * @param resourceType
 	 * @param requHash 
@@ -134,7 +134,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return number of resources for given group
 	 */
-	public int getNumberOfResourcesForGroup(final Class<? extends Resource> resourceType, final String requestedUserName, final String userName, int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public int getNumberOfResourcesForGroup(final Class<? extends Resource> resourceType, final String requestedUserName, final String userName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
 		return this.getDatabaseManagerForResourceType(resourceType).getPostsForGroupCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
 	}
 
@@ -178,7 +178,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		if (resourceType == BibTex.class) {
 			return this.bibtexDBManager.getPostsDuplicateCount(requestedUserName, session);
 		}
-		
+
 		throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 	}
 
@@ -188,7 +188,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param tagName
 	 * @return tag global count
 	 */
-	public int getTagGlobalCount(String tagName) {
+	public int getTagGlobalCount(final String tagName) {
 		// FIXME: implement me...
 		return 0;
 	}	
@@ -228,12 +228,12 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	public int getPopularDays(final Class<? extends Resource> resourceType, final int days, final DBSession session){
 		return this.getDatabaseManagerForResourceType(resourceType).getPostPopularDays(days, session);
 	}
-	
+
 	private PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>> getDatabaseManagerForResourceType(final Class<? extends Resource> resourceType) {
 		if (this.postDatabaseManager.containsKey(resourceType)) {
 			return this.postDatabaseManager.get(resourceType);
 		}
-		
+
 		throw new UnsupportedResourceTypeException("Resource type " + resourceType.getSimpleName() + " not supported for this query.");
 	}
 }

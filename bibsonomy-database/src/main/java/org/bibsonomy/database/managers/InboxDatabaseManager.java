@@ -67,7 +67,7 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 		return queryForObject("getNumInboxMessagesByType", param, Integer.class, session);
 	}	
 	
-	private int getInboxMessages(final InboxParam param, final DBSession session) {
+	private int getNumberOfInboxMessages(final InboxParam param, final DBSession session) {
 		return queryForObject("getNumInboxMessagesByHashAndSenderAndReceiver", param, Integer.class, session);
 	}
 	
@@ -82,7 +82,7 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 		final InboxParam param = new InboxParam();
 		final String intraHash = post.getResource().getIntraHash();
 		// get a new Message Id
-		this.getInboxMessages(param, session);
+		this.getNumberOfInboxMessages(param, session);
 		param.setMessageId(this.generalDb.getNewContentId(ConstantID.IDS_INBOX_MESSAGE_ID, session));
 		/*
 		 * store the Message (without tags)
@@ -91,7 +91,7 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 		param.setContentId(post.getContentId());
 		param.setIntraHash(intraHash);
 		param.setReceiver(receiver);
-		if (this.getInboxMessages(param, session) != 0) {
+		if (this.getNumberOfInboxMessages(param, session) != 0) {
 			this.deleteInboxMessage(sender, receiver, intraHash, session);
 		}
 		if(post.getResource().getClass().isAssignableFrom(BibTex.class)) {
