@@ -35,13 +35,13 @@ import org.bibsonomy.webapp.view.Views;
 public class UrlPageController extends SingleResourceListController implements MinimalisticController<UrlCommand> {
 	private static final Log log = LogFactory.getLog(UrlPageController.class);
 
-	public View workOn(UrlCommand command) {
+	public View workOn(final UrlCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
-		
+
 		final GroupingEntity groupingEntity;
 		final String groupingName;
-		
+
 		if(command.getRequestedUser() != null && !command.getRequestedUser().equals("")){
 			/*
 			 * handle /url/HASH/USER
@@ -55,24 +55,25 @@ public class UrlPageController extends SingleResourceListController implements M
 			groupingEntity = GroupingEntity.ALL;
 			groupingName = null;
 		}
-		
+
 		// no URL hash given -> error
 		final String requHash = command.getRequUrlHash();
 		if (!ValidationUtils.present(command.getRequUrl()) && !ValidationUtils.present(requHash)) {
 			throw new MalformedURLSchemeException("error.url_no_hash");
 		}		
-		
+
 		// handle the case when only tags are requested
 		command.setResourcetype(ResourceType.BOOKMARK.getLabel());
 		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, requHash, 1000, null);
-		
+
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
-		
+
 		// send redirect to /url/HASH
 		if (ValidationUtils.present(command.getRequUrl())) {
 			// TODO: add format in front of /url/? (probably not, this URL should only be called by input form)
+			// FIXME: remove call to old method
 			return new ExtendedRedirectView("/url/" + resources.Resource.hash(command.getRequUrl()));
 		}
 
@@ -80,10 +81,10 @@ public class UrlPageController extends SingleResourceListController implements M
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			
+
 			this.setList(command, resourceType, groupingEntity, groupingName, null, requHash, null, null, null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
-			
+
 			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, requHash, null, null, null, entriesPerPage, null);
 		}
 
@@ -94,7 +95,7 @@ public class UrlPageController extends SingleResourceListController implements M
 		}
 
 		this.endTiming();
-		
+
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			// FIXME: here we assume, bookmarks are handled, further above we use listsToInitialize ...
@@ -102,7 +103,7 @@ public class UrlPageController extends SingleResourceListController implements M
 
 			return Views.URLPAGE;	
 		}
-		
+
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());				
 	}

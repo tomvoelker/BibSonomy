@@ -23,7 +23,7 @@ import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
  * @author Jens Illig
  */
 public abstract class SingleResourceListController extends ResourceListController {
-		
+
 	/**
 	 * do some post processing with the retrieved resources
 	 * 
@@ -39,15 +39,15 @@ public abstract class SingleResourceListController extends ResourceListControlle
 			}			
 		}
 	}
-	
+
 	/** 
 	 * returns a list of concepts, namely those tags of the requestedTags that the user groupingName has as concepts
-	 * 
+	 * FIXME: cmd unused
 	 */
-	protected <T extends SimpleResourceViewCommand> List<Tag> getConceptsForSidebar (final T cmd, GroupingEntity groupingEntity, String groupingName, List<String> requTags) {
-		List<Tag> concepts = new ArrayList<Tag>();
-		for (String requTag : requTags) {
-			Tag conceptDetails = this.logic.getConceptDetails(requTag, groupingEntity, groupingName);
+	protected <T extends SimpleResourceViewCommand> List<Tag> getConceptsForSidebar (final T cmd, final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
+		final List<Tag> concepts = new ArrayList<Tag>();
+		for (final String requTag : requTags) {
+			final Tag conceptDetails = this.logic.getConceptDetails(requTag, groupingEntity, groupingName);
 			if (present(conceptDetails)) {
 				concepts.add(conceptDetails);
 			}
@@ -55,17 +55,17 @@ public abstract class SingleResourceListController extends ResourceListControlle
 		// concepts is not empty if groupingName has at least one of the requested Tags as a concept
 		return concepts;
 	}
-	
-	
+
+
 	/** 
 	 * returns the number of posts tagged with all of requTags by groupingName. 
 	 * 
 	 */
-	protected int getPostCountForSidebar (GroupingEntity groupingEntity, String groupingName, List<String> requTags) {
+	protected int getPostCountForSidebar (final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
 		int a = 0;
 		a += this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, Order.ADDED, FilterEntity.UNFILTERED, 0, 999, null, null);
 		a += this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, Order.ADDED, FilterEntity.UNFILTERED, 0, 999, null, null);
 		return a;
 	}
-	
+
 }
