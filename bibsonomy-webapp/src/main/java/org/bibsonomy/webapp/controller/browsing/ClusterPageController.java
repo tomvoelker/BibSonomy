@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.controller.browsing;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.webapp.command.ClusterSettingsCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -12,8 +10,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author fei
  * @version $Id$
  */
-public class ClusterPageController extends SingleResourceListControllerWithTags implements MinimalisticController<ClusterSettingsCommand>{
-	private static final Log log = LogFactory.getLog(ClusterPageController.class);
+public class ClusterPageController extends SingleResourceListControllerWithTags implements MinimalisticController<ClusterSettingsCommand> {
 	
 	private String baseUrl;
 	private Integer maxClusterCount;
@@ -28,21 +25,31 @@ public class ClusterPageController extends SingleResourceListControllerWithTags 
 		return new ClusterSettingsCommand();
 	}
 
+	/**
+	 * @return the baseUrl
+	 */
+	public String getBaseUrl() {
+		return this.baseUrl;
+	}
+
+	/**
+	 * @param baseUrl the baseUrl to set
+	 */
 	public void setBaseUrl(String baseUrl) {
 		this.baseUrl = baseUrl;
 	}
 
-	public String getBaseUrl() {
-		return baseUrl;
+	/**
+	 * @return the maxClusterCount
+	 */
+	public Integer getMaxClusterCount() {
+		return this.maxClusterCount;
 	}
 
+	/**
+	 * @param maxClusterCount the maxClusterCount to set
+	 */
 	public void setMaxClusterCount(Integer maxClusterCount) {
 		this.maxClusterCount = maxClusterCount;
-	}
-
-	public Integer getMaxClusterCount() {
-		return maxClusterCount;
-	}
-	
-	
+	}	
 }
