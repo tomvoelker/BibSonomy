@@ -53,16 +53,6 @@
 			<artifactId>bibsonomy-model</artifactId>
 			<scope>test</scope>
 			<type>test-jar</type>
-		</dependency>		
-		<dependency>
-			<groupId>org.apache.ibatis</groupId>
-			<artifactId>ibatis-sqlmap</artifactId>
-			<version>SNAPSHOT</version>
-			<classifier>r737724</classifier>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -70,11 +60,20 @@
 			<version>2.4</version>
 		</dependency>
 		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.mockejb</groupId>
 			<artifactId>mockejb</artifactId>
 			<version>0.6-beta2</version>
 			<scope>test</scope>
-		</dependency>	
+		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<site>
