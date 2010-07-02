@@ -27,8 +27,7 @@ import java.util.Date;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id: ResourceNotFoundException.java,v 1.2 2007-10-30 17:37:35 jillig
- *          Exp $
+ * @version $Id$
  */
 public class ResourceMovedException extends Exception {
 
