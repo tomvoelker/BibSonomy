@@ -38,11 +38,11 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @param visibleGroupIDs
 	 * @param session
 	 * 
-	 * @throws {@link ResourceMovedException} - when no resource 
+	 * @throws ResourceMovedException - when no resource 
 	 * with that hash exists for that user, but once a resource 
 	 * with that hash existed that has been moved. The new hash 
 	 * is returned inside the exception. 
-	 * @throws {@link ResourceNotFoundException}
+	 * @throws ResourceNotFoundException
 	 * 
 	 * @return list of posts
 	 */
@@ -58,7 +58,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @return true, if entry existed and was deleted
 	 */
 	public boolean deletePost(String userName, String resourceHash, DBSession session);
-	
+
 	/**
 	 * create
 	 * 
@@ -67,7 +67,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @return true if entry was created
 	 */
 	public boolean createPost(Post<T> post, DBSession session);
-	
+
 	/**
 	 * update
 	 * 
