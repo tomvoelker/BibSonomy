@@ -244,9 +244,9 @@
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<version>1.0-beta-1</version>
 				<configuration>
-					<server>tomcat_${tomcat-server}</server>
+				<server>tomcat_gromit</server>
 					<url>
-						${tomcat-manager-url}
+						http://gromit.cs.uni-kassel.de:8080/manager
 					</url>
 				</configuration>
 			</plugin>
