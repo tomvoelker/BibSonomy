@@ -33,14 +33,14 @@ public abstract class AbstractDatabaseManagerTest {
 	protected static final int INVALID_GROUP_ID = GroupID.INVALID.getId();
 	protected static final int TESTGROUP1_ID = 3;
 	protected static final int TESTGROUP2_ID = 4;
-	
+
 	private static DBSessionFactory dbSessionFactory;
 	protected static DatabasePluginRegistry pluginRegistry;
 	protected static DatabaseManagerInitializer dbManagerInitializer;
-	
+
 	protected DatabasePluginMock pluginMock;
 	protected DBSession dbSession;
-	
+
 	/**
 	 * Initializes the test database.
 	 */
@@ -48,25 +48,25 @@ public abstract class AbstractDatabaseManagerTest {
 	public static void initDatabase() {
 		// bind datasource access via JNDI
 		JNDIBinder.bind();
-		
+
 		TestDatabaseLoader.getInstance().load();
-		
+
 		// set searchmode to lucene
 		System.setProperty("searchMode", "lucene");
-		
+
 		dbSessionFactory = new IbatisDBSessionFactory();
-		
+
 		pluginRegistry = DatabasePluginRegistry.getInstance();
-		
+
 		// init SystemTagFactory
-		SystemTagFactory sysTagFactory = SystemTagFactory.getInstance();
+		final SystemTagFactory sysTagFactory = SystemTagFactory.getInstance();
 		sysTagFactory.setDbSessionFactory(dbSessionFactory);
 
 		// init managers
-	
+
 		dbManagerInitializer = new DatabaseManagerInitializer();
 	}
-	
+
 	/**
 	 * unbinds jndi
 	 */
@@ -81,11 +81,11 @@ public abstract class AbstractDatabaseManagerTest {
 	@Before
 	public final void setUp() {		
 		this.dbSession = dbSessionFactory.getDatabaseSession();
-		
+
 		// load plugins (some tests are removing plugins from the plugin registry
 		this.pluginMock = new DatabasePluginMock();
 		pluginRegistry.clearPlugins();
-		
+
 		pluginRegistry.add(pluginMock);
 		for (final DatabasePlugin plugin : DatabasePluginRegistry.getDefaultPlugins()) {
 			pluginRegistry.add(plugin);
@@ -103,7 +103,7 @@ public abstract class AbstractDatabaseManagerTest {
 		}
 	}
 
-	protected DBSessionFactory getDbSessionFactory() {
+	protected static DBSessionFactory getDbSessionFactory() {
 		return dbSessionFactory;
 	}
 }
