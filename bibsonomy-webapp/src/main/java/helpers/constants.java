@@ -1,5 +1,6 @@
 package helpers;
 
+@Deprecated
 public final class constants {
 	
 	/* ***********************************************************************
