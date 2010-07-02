@@ -2,7 +2,11 @@ package helpers.database;
 
 import helpers.constants;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +15,7 @@ import java.util.Set;
 
 import resources.Resource;
 
+@Deprecated
 public class DBTagManager {
 	
 	/*

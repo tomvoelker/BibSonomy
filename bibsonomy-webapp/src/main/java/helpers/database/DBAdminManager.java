@@ -18,6 +18,7 @@ import beans.AdminBean;
  * @author rja
  * @version $Id$
  */
+@Deprecated
 public class DBAdminManager extends DBManager {
 	
 	/*

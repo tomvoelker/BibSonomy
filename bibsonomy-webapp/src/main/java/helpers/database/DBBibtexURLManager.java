@@ -11,6 +11,7 @@ import org.bibsonomy.model.extra.BibTexExtra;
 
 import resources.Bibtex;
 
+@Deprecated
 public class DBBibtexURLManager extends DBManager {
 	
 	private static final String SQL_SELECT_CONTENTID = "SELECT content_id FROM bibtex WHERE simhash" + Bibtex.INTRA_HASH + " = ? AND user_name = ?";

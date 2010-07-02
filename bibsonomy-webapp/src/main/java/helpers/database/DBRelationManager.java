@@ -19,6 +19,7 @@ import resources.TagRelation;
  * Inserts and deletes relatoins.
  *
  */
+@Deprecated
 public class DBRelationManager extends DBManager {
 	
 	private static final String SQL_UPDATE_TAGREL_ID = "UPDATE ids SET value=value+1 WHERE name = " + constants.SQL_IDS_TAGREL_ID;

@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 
 import resources.Bibtex;
 
-
+@Deprecated
 public class DBPrivnoteManager extends DBManager {
 
 	private final static Log log = LogFactory.getLog(DBPrivnoteManager.class);

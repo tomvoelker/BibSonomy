@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import resources.Bibtex;
 import resources.Bookmark;
 
-
+@Deprecated
 public class DBStatisticsManager extends DBManager {
 
 	private static final String DBLP = "dblp";
