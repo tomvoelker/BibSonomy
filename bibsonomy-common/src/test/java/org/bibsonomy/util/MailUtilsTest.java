@@ -24,7 +24,6 @@
 package org.bibsonomy.util;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -52,8 +51,6 @@ public class MailUtilsTest {
 		final Properties props = new Properties();
 		props.load(MailUtilsTest.class.getClassLoader().getResourceAsStream("project.properties"));
 		mailUtils = getMailUtils(props);
-		
-		
 	}
 	
 	private MailUtils getMailUtils(final Properties props) {
@@ -75,15 +72,12 @@ public class MailUtilsTest {
 
 	/**
 	 * Test, if sending registration mails works.
+	 * @throws Exception 
 	 */
 	@Test
 	@Ignore
-	public void testSendRegistrationMail() {
-		try {
-			assertTrue(mailUtils.sendRegistrationMail("testuser", "devnull@cs.uni-kassel.de","00000000000000000000000000000000", "255.255.255.255", new Locale("en")));
-		} catch (Exception e) {
-			fail();
-		}
+	public void testSendRegistrationMail() throws Exception {
+		assertTrue(mailUtils.sendRegistrationMail("testuser", "devnull@cs.uni-kassel.de","00000000000000000000000000000000", "255.255.255.255", new Locale("en")));
 	}
 
 }
