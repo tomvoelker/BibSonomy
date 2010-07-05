@@ -1,7 +1,7 @@
 /*
  * Created on 19.08.2007
  */
-package org.bibsonomy.community.webapp.util.spring.factorybeans;
+package org.bibsonomy.webapp.util.spring.factorybeans;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;

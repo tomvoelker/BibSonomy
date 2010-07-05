@@ -8,7 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
-import org.bibsonomy.community.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.InMemoryNonceVerifier;
 import org.openid4java.consumer.VerificationResult;
