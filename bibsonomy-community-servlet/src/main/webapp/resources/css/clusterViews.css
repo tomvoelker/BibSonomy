@@ -1,3 +1,64 @@
+.clusterLeftItemCloud {
+	font-size:100%;
+	overflow:hidden;
+	text-align:justify;
+	float:left;
+	width:47%;
+}
+
+.clusterRightItemCloud {
+	font-size:100%;
+	overflow:hidden;
+	text-align:justify;
+	float:right;
+	width:47%;
+}
+
+
+/*--------------------------------------------------------------------------*/
+/* user specific layouts                                                    */  
+/*--------------------------------------------------------------------------*/
+.usertiny a, .usertiny {
+	color: #8D9964 ! important;
+	font-size: 85%;
+}
+
+.usernormal a, .usernormal {
+	color: #8C9963 ! important;
+	font-size: 95%;
+}
+
+.userlarge a, .userlarge {
+    color: #383d27 ! important;
+    font-size: 105%;
+}
+
+.userhuge a, .userhuge {
+	color: #2F3321 ! important;
+	font-size: 115%;
+}
+
+.usercloud {
+	overflow: hidden;
+	text-align: justify;
+	font-size: 70%;
+}
+
+.usercloud li {
+	display: inline;
+	padding: 0em .1em 0em .1em;
+	line-height: 1.5em;
+}
+
+.usercloud a,.taglist a {
+	color: #069;
+}
+
+.usercloud a:hover,.taglist a:hover {
+	color: #000000;
+	text-decoration: none;
+}
+
 .centeredImage {
   text-align:center;
   margin-top:0px;

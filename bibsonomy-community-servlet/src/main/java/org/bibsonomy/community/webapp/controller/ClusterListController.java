@@ -25,15 +25,18 @@ import org.bibsonomy.community.model.Cluster;
 import org.bibsonomy.community.model.Post;
 import org.bibsonomy.community.model.ResourceCluster;
 import org.bibsonomy.community.model.Tag;
+import org.bibsonomy.community.model.User;
 import org.springframework.web.servlet.ModelAndView;
 
 public class ClusterListController extends AbstractBaseController<ResourceClusterViewCommand> {
 	private final static Log log = LogFactory.getLog(ClusterListController.class);
 
 	private static final Integer CLUSTERLIMIT = 6;
+	private static final int USERCLOUDLIMIT   = 25;
 	private static final int TAGCLOUDLIMIT    = 25;
 	private static final int BIBTEXLIMIT      = 5;
 	private static final int BOOKMARKLIMIT    = 5;
+
 	
 	/** bibtex posts */
 	private BibTexPostManager bibTexManager;
@@ -60,20 +63,21 @@ public class ClusterListController extends AbstractBaseController<ResourceCluste
 
 	@Override
 	public ModelAndView workOn(ResourceClusterViewCommand command) {
-		final int runId = 19;
-		
 		if( command.getContext().isUserLoggedIn() ) {
 			final int limit  = (command.getLimit()==null)?CLUSTERLIMIT:command.getLimit();
 			final int offset = (command.getOffset()==null)?0:command.getOffset();
+			org.bibsonomy.model.User user = command.getContext().getLoginUser(); 
+			Integer runId = 0; 
 			try {
+				runId = this.userSettingsManager.getCurrentAlgorithm(user.getName());
 				Integer communityCount = this.communityManager.getNumberOfCommunities(runId);
 				command.setTotal(communityCount);
 			} catch (Exception e) {
 				log.error("Error fetching number of clusters", e);
 			}
-			Collection<ResourceCluster> communities = this.communityManager.getCommunities(runId, TAGCLOUDLIMIT, BIBTEXLIMIT, BOOKMARKLIMIT, limit, offset);
+			Collection<ResourceCluster> communities = this.communityManager.getCommunities(runId, USERCLOUDLIMIT, TAGCLOUDLIMIT, BIBTEXLIMIT, BOOKMARKLIMIT, limit, offset);
 			command.setClusters(communities);
-			populateResources(command,25);
+			// populateResources(command,25);
 		} else {
 			command.setClusters(new ArrayList<ResourceCluster>());
 		}

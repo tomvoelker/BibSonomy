@@ -52,8 +52,6 @@ public class ResourceQueryController extends AbstractBaseController<ResourceClus
 
 	@Override
 	public ModelAndView workOn(ResourceClusterViewCommand command) {
-		final int runId = 19;
-		
 		if( command.getContext().isUserLoggedIn() ) {
 			List<Post<BibTex>> bibTexPosts = new LinkedList<Post<BibTex>>();
 			List<Post<Bookmark>> bookmarkPosts = new LinkedList<Post<Bookmark>>();
@@ -64,13 +62,13 @@ public class ResourceQueryController extends AbstractBaseController<ResourceClus
 			int i = 0;
 			for( ResourceCluster cluster : command.getClusters() ) {
 				log.info("Querying for community "+cluster.getClusterID()+"...");
-				Collection<Post<BibTex>> btposts = this.bibTexManager.getPostsForCommunity(runId, cluster.getClusterID(), Ordering.POPULAR, limit, offset);
+				Collection<Post<BibTex>> btposts = this.bibTexManager.getPostsForCommunity(cluster.getClusterID(), Ordering.POPULAR, limit, offset);
 				for( Post<?> post : btposts ) {
 					post.setCustomFlag(i);
 				}
 				cluster.setBibtex(btposts);
 				bibTexPosts.addAll(btposts);
-				Collection<Post<Bookmark>> bmposts = this.bookmarkManager.getPostsForCommunity(runId, cluster.getClusterID(), Ordering.POPULAR, limit, offset); 
+				Collection<Post<Bookmark>> bmposts = this.bookmarkManager.getPostsForCommunity(cluster.getClusterID(), Ordering.POPULAR, limit, offset); 
 				for( Post<?> post : bmposts ) {
 					post.setCustomFlag(i);
 				}
