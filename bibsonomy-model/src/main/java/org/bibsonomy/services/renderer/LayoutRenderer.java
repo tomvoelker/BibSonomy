@@ -59,7 +59,6 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 * @param <T>
 	 * @param layout
 	 * @param posts
-	 * @param quicknav - show a quicknav for grouped field
 	 * @param embeddedLayout - if possible, the rendering result should be embeddable into
 	 * a page (i.e., for HTML based layouts: don't render &lt;html&gt; tags) 
 	 * @return The buffer the layout has been rendered to.
@@ -67,7 +66,7 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 * @throws IOException - if there was an internal problem rendering the layout
 	 * @throws LayoutRenderingException - if the layout contains errors
 	 */
-	public <T extends Resource> StringBuffer renderLayout(final LAYOUT layout, final List<Post<T>> posts, final boolean embeddedLayout, final boolean quicknav) throws LayoutRenderingException, IOException;
+	public <T extends Resource> StringBuffer renderLayout(final LAYOUT layout, final List<Post<T>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException;
 
 	/** Checks, if the renderer supports the given resource type.
 	 * 
