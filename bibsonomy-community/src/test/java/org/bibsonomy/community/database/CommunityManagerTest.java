@@ -73,7 +73,7 @@ public class CommunityManagerTest {
 	
 	@Test
 	public void testCommunityUsers() throws Exception {
-		Collection<String> users = communityLogic.getUsersForCommunity(17, 44, Ordering.POPULAR, 10, 0);
+		Collection<String> users = communityLogic.getUserNamesForCommunity(17, 44, Ordering.POPULAR, 10, 0);
 	}
 
 	@Test

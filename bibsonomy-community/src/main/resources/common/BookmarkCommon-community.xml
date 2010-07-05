@@ -16,7 +16,7 @@
 
 	<resultMap id="communityBookmarkPost" class="communityPost" extends="BookmarkCommon.bookmarkPost">
 		<result property="weight"         column="weight"      javaType="double" />
-		<result property="communityId"    column="community_id" />
+		<result property="communityId"    column="community_uid" />
 	</resultMap>
 
 	<sql id="commonBookmarkAttributes">

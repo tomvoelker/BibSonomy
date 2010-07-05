@@ -106,7 +106,10 @@ public class MockupImporter implements CommunityImporter {
 			Collection<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>(); 
 			int nPosts = (int)Math.floor(Math.random()*N_RESOURCES);
 			for( int j=0; j<nPosts; j++ ) {
-				Post<? extends Resource> post = new Post<Bookmark>();
+				Bookmark resource = new Bookmark();
+				resource.setIntraHash((new Long(Math.round(Math.random()*10000))).toString());
+				Post<Bookmark> post = new Post<Bookmark>();
+				post.setResource(resource);
 				post.setContentId(idx++);
 				post.setWeight(Math.random());
 				posts.add(post);

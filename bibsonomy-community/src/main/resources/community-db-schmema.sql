@@ -116,6 +116,7 @@ CREATE TABLE `topics` (
   `community_id` int(11) NOT NULL,
   `topic_id` int(11) NOT NULL,
   `tag_name` varchar(255) NOT NULL default '',
+  `count` int(11) NOT NULL,
   `p` double default NULL,
   PRIMARY KEY  (`run_id`,`community_id`,`topic_id`,`tag_name`),
   KEY `community_id` (`community_id`),

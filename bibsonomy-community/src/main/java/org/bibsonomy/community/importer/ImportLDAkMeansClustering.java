@@ -44,6 +44,7 @@ public class ImportLDAkMeansClustering {
 		String username = args[2];
 		String password = args[3];
 		JNDITestDatabaseBinder.bind("bibsonomy_community", url, database, username, password);
+		JNDITestDatabaseBinder.bind("bibsonomy_community_posts", url, database, username, password);
 		//JNDITestDatabaseBinder.bind();
 		DBManageInterface dbLogic = CommunityManager.getInstance();
 		
