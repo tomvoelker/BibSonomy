@@ -35,6 +35,7 @@
 		<property name="tagManager" ref="tagLogic"/>
 		<property name="communityManager" ref="communityLogic"/>
 		<property name="userSettingsManager" ref="userSettingsLogic"/>
+  		<property name="algorithmSelector" ref="randomAlgorithmSelector"/>
 	</bean>
 
 	<bean id="clusterListController" class="org.bibsonomy.community.webapp.controller.ClusterListController">
@@ -53,6 +54,11 @@
 	<bean id="communityLogic" class="org.bibsonomy.community.database.CommunityManager">
 	</bean>
 	<bean id="userSettingsLogic" class="org.bibsonomy.community.database.UserSettingsManager">
+	</bean>
+
+    <!--  #################### helper beans #################### -->
+	<bean id="randomAlgorithmSelector" class="org.bibsonomy.community.algorithm.RandomSelector">
+		<property name="userLogic" ref="userSettingsLogic"/>
 	</bean>
     
 
