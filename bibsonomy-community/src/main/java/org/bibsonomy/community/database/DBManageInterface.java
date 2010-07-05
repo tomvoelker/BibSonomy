@@ -74,7 +74,7 @@ public interface DBManageInterface {
 	 * @param topic_id
 	 * @param tag_name
 	 */
-	public void addTagToCommunity(final int run_id, final int community_id, final int topic_id, final String tag_name, final double p) throws Exception;
+	public void addTagToCommunity(final int run_id, final int community_id, final int topic_id, final String tag_name, final int count, final double p) throws Exception;
 	
 	/**
 	 * add given resource to given community for given run_id
@@ -82,7 +82,7 @@ public interface DBManageInterface {
 	 * @param community_id
 	 * @param content_type
 	 */
-	public void addResourceToCommunity(final int run_id, final int community_id, final int content_id, final int content_type, final double p) throws Exception;
+	public void addResourceToCommunity(final int run_id, final int community_id, final String hash, final Integer content_id, final int content_type, final double p) throws Exception;
 	
 	/** convenient method */
 	public void addCommunities(final int run_id, final Collection<Cluster<User>> communities) throws Exception;
@@ -110,7 +110,15 @@ public interface DBManageInterface {
 	 * @param order
 	 * @return
 	 */
-	public Collection<String> getUsersForCommunity(final int run_id, final int community_id, final Ordering order, final int limit, final int offset);
+	public Collection<String> getUserNamesForCommunity(final int run_id, final int community_id, final Ordering order, final int limit, final int offset);
+
+	/**
+	 * get community members for given community
+	 * @param community_uid
+	 * @param order
+	 * @return
+	 */
+	public Collection<User> getUsersForCommunity(final int community_uid, final Ordering order, final int limit, final int offset);
 
 	/**
 	 * get the number of different communities for the given run id
@@ -144,5 +152,5 @@ public interface DBManageInterface {
 	 * @param offset number of communities to skip
 	 * @return
 	 */
-	public Collection<ResourceCluster> getCommunities(final int runId, final int tagCloudLimit, final int bibTexLimit, final int bookmarkLimit, final int limit, final int offset);
+	public Collection<ResourceCluster> getCommunities(final int runId, final int userCloudLimit, final int tagCloudLimit, final int bibTexLimit, final int bookmarkLimit, final int limit, final int offset);
 }

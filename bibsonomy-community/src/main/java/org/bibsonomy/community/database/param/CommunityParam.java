@@ -15,6 +15,7 @@ public class CommunityParam extends GenericParam {
 	private int blockID;
 	private int runID;
 	private int communityID;
+	private int communityUID;
 	private int topicID;
 	private int contentID;
 	
@@ -28,6 +29,7 @@ public class CommunityParam extends GenericParam {
 	private int contentType;
 	private int clusterCount;
 	private int topicCount;
+	private int globalcount;
 	
 	//------------------------------------------------------------------------
 	// getter/setter
@@ -122,5 +124,18 @@ public class CommunityParam extends GenericParam {
 	public int getCommunityID() {
 		return communityID;
 	}
+	public void setGlobalcount(int globalcount) {
+		this.globalcount = globalcount;
+	}
+	public int getGlobalcount() {
+		return globalcount;
+	}
+	public void setCommunityUID(int communityUID) {
+		this.communityUID = communityUID;
+	}
+	public int getCommunityUID() {
+		return communityUID;
+	}
+
 	
 }

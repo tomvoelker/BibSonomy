@@ -94,6 +94,7 @@ public final class JNDITestDatabaseBinder extends CommunityBase {
 	
 	public static final void bind(final String contextName, final String url, final String database, final String username, final String password) {
 		bindDatabaseContext(contextName, "jdbc:mysql://"+url+"/"+database, database, username, password);
+		bindContextConfiguration(CONTEXT_CONFIG_BEAN, getCommunityConfig("database.properties"));
 	}
 
 	private static void bindDatabaseContext(final String contextName, final String url, final String database, final String username, final String password) {

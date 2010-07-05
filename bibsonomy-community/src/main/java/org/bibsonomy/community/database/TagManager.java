@@ -28,10 +28,9 @@ public class TagManager extends AbstractDBManager {
 	//------------------------------------------------------------------------
 	// get posts
 	//------------------------------------------------------------------------
-	public Collection<Tag> getTagCloudForCommunity(final Integer runId, final Integer communityId, final Ordering ordering, final int limit, final int offset) {
+	public Collection<Tag> getTagCloudForCommunity(final Integer communityUId, final Ordering ordering, final int limit, final int offset) {
 		final CommunityResourceParam<Resource> param = new CommunityResourceParam<Resource>();
-		param.setRunId(runId);
-		param.setCommunityId(communityId);
+		param.setCommunityId(communityUId);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		return ensureList(queryForTagList("getTagCloudPopularForCommunity", param));

@@ -17,6 +17,9 @@ import org.bibsonomy.model.Bookmark;
 public class ResourceCluster {
 	private final static Log log = LogFactory.getLog(ResourceCluster.class);
 
+	/** collection of users belonging to this cluster */
+	private Collection<User> members;
+
 	/** collection of tags a user has assigned to this cluster */
 	private Collection<Tag> annotation;
 	
@@ -95,5 +98,13 @@ public class ResourceCluster {
 
 	public Collection<Tag> getTags() {
 		return tags;
+	}
+
+	public void setMembers(Collection<User> members) {
+		this.members = members;
+	}
+
+	public Collection<User> getMembers() {
+		return members;
 	}
 }

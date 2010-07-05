@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class CommunityBase {
 	/** the naming context for community classes */
-	public static final String CONTEXT_ENV_NAME    = "java:/comp/env";
+	public static final String CONTEXT_ENV_NAME    = "java:comp/env";
 	/** context variable containing community configuration */
 	public static final String CONTEXT_CONFIG_BEAN = "communityConfig";
 	

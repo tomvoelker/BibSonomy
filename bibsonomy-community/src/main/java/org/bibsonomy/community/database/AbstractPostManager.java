@@ -44,9 +44,8 @@ public abstract class AbstractPostManager<R extends Resource> extends AbstractDB
 	 * @param offset
 	 * @return
 	 */
-	public Collection<Post<R>> getPostsForCommunity(final Integer runId, final Integer communityId, final Ordering ordering, final int limit, final int offset) {
+	public Collection<Post<R>> getPostsForCommunity(final Integer communityId, final Ordering ordering, final int limit, final int offset) {
 		final CommunityResourceParam<R> param = getResourceParam();
-		param.setRunId(runId);
 		param.setCommunityId(communityId);
 		param.setOrdering(ordering);
 		param.setLimit(limit);
