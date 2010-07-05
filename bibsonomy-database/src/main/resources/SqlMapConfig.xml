@@ -16,10 +16,10 @@
 
 	<typeHandler javaType="url" callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />
 	<typeHandler javaType="InetAddress" callback="org.bibsonomy.database.common.typehandler.InetAddressTypeHandlerCallback" />
-    <typeHandler javaType="InetAddressStatus" callback="org.bibsonomy.database.common.typehandler.InetAddressStatusTypeHandlerCallback" />
-    <typeHandler javaType="Role" callback="org.bibsonomy.database.common.typehandler.RoleTypeHandlerCallback" />
-    <typeHandler javaType="Privlevel" callback="org.bibsonomy.database.common.typehandler.PrivlevelTypeHandlerCallback" />
-    <typeHandler javaType="ProfilePrivlevel" callback="org.bibsonomy.database.common.typehandler.ProfilePrivlevelTypeHandlerCallback" />
+  <typeHandler javaType="InetAddressStatus" callback="org.bibsonomy.database.common.typehandler.InetAddressStatusTypeHandlerCallback" />
+  <typeHandler javaType="Role" callback="org.bibsonomy.database.common.typehandler.RoleTypeHandlerCallback" />
+  <typeHandler javaType="Privlevel" callback="org.bibsonomy.database.common.typehandler.PrivlevelTypeHandlerCallback" />
+  <typeHandler javaType="ProfilePrivlevel" callback="org.bibsonomy.database.common.typehandler.ProfilePrivlevelTypeHandlerCallback" />
     
 	<transactionManager type="JDBC">
 		<dataSource type="JNDI">
@@ -39,7 +39,6 @@
 	<sqlMap resource="common/DocumentCommon.xml" />
 	<sqlMap resource="common/AdminCommon.xml" />
 	<sqlMap resource="common/AuthorCommon.xml"/>
-	<sqlMap resource="common/InboxCommon.xml"/>
 
 	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />
