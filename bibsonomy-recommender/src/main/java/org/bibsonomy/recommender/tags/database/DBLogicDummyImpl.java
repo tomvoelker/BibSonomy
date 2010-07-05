@@ -304,12 +304,6 @@ public class DBLogicDummyImpl implements DBLogic {
 	}
 
 	@Override
-	public void removeRecommender(long sid) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void updateRecommenderUrl(long sid, URL url) throws SQLException {
 		// TODO Auto-generated method stub
 		
@@ -320,6 +314,24 @@ public class DBLogicDummyImpl implements DBLogic {
 			List<Long> disabledRecs) throws SQLException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void removeRecommender(String url) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Long> getLocalRecommenderSettingIds() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Long> getDistantRecommenderSettingIds() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

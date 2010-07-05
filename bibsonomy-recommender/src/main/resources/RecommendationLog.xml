@@ -54,6 +54,12 @@
 	    WHERE status = #status#
 	</select>
 	
+	<select id="getSettingIdsByType" resultClass="long" parameterClass="integer">
+	    SELECT setting_id FROM recommender_status
+	    WHERE type = #type#
+	    AND status != 2
+	</select>
+	
 	<select id="getAverageLatencyForSettingID" resultClass="long" parameterClass="latencyParam">
 		SELECT ROUND(AVG(t.rec_latency)) as rec_latency FROM
 			(SELECT rec_latency FROM recommender_querymap q
@@ -70,8 +76,8 @@
    <update id="activateRecommender" parameterClass="long">
        UPDATE recommender_status SET status=1 WHERE setting_id=#sid#
    </update>
-   <update id="removeRecommender" parameterClass="long">
-       UPDATE recommender_status SET status=2 WHERE setting_id=#sid#
+   <update id="removeRecommender" parameterClass="String">
+       UPDATE recommender_status SET status=2 WHERE url=#url#
    </update>
    <update id="updateRecommenderStatusUrl" parameterClass="recSetting">
        UPDATE recommender_status SET url=#recId# WHERE setting_id=#setting_id#
@@ -79,9 +85,13 @@
    <update id="updateRecommenderSettingUrl">
        UPDATE recommender_settings SET rec_id=#recId#, rec_meta=#recMeta# WHERE setting_id=#setting_id#
    </update>
-   <insert id="createStatusForNewRecommender" parameterClass="recSetting">
-       INSERT INTO recommender_status (setting_id, url, status)
-            values (#setting_id#, #recId#, 1)
+   <insert id="createStatusForNewLocalRecommender" parameterClass="recSetting">
+       INSERT INTO recommender_status (setting_id, url, status, type)
+            values (#setting_id#, #recId#, 1, 1)
+   </insert>
+   <insert id="createStatusForNewDistantRecommender" parameterClass="recSetting">
+       INSERT INTO recommender_status (setting_id, url, status, type)
+            values (#setting_id#, #recId#, 1, 0)
    </insert>
 	
 	

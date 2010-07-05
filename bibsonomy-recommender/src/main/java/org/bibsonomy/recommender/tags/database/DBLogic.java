@@ -381,6 +381,20 @@ public interface DBLogic {
 	 * @throws SQLException
 	 */
 	public Long getAverageLatencyForRecommender(Long sid, Long numberOfQueries) throws SQLException;
+
+	/**
+	 * Get all setting-ids which are flagged as a distant recommender
+	 * @return setting-ids of all distant recommenders
+	 * @throws SQLException
+	 */
+	public List<Long> getDistantRecommenderSettingIds() throws SQLException;
+	
+	/**
+	 * Get all setting-ids which are flagged as a local recommender
+	 * @return setting-ids of all local recommenders
+	 * @throws SQLException
+	 */
+	public List<Long> getLocalRecommenderSettingIds() throws SQLException;
 	
 	/**
 	 * Get all settingids which are set to status 'active'
@@ -414,10 +428,10 @@ public interface DBLogic {
 		
 	/**
 	 * Set a recommender to status 'removed'.
-	 * @param sid setting-id of the recommender
+	 * @param url recommender-id
 	 * @throws SQLException
 	 */
-	public void removeRecommender(long sid) throws SQLException;
+	public void removeRecommender(String url) throws SQLException;
 	
 	/**
 	 * Change the url of a recommender which is already contained in the database.

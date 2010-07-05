@@ -37,6 +37,7 @@ import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
 import org.bibsonomy.recommender.tags.database.params.SelectorQueryMapParam;
 import org.bibsonomy.recommender.tags.database.params.SelectorSettingParam;
 import org.bibsonomy.recommender.tags.database.params.SelectorTagParam;
+import org.bibsonomy.recommender.tags.database.params.StatusTypeParam;
 import org.bibsonomy.recommender.tags.database.params.TasEntry;
 import org.bibsonomy.recommender.tags.database.params.TasParam;
 
@@ -170,6 +171,8 @@ public class DBAccess implements DBLogic {
 		
 		return settingId;
 	}
+	
+	
 
 	/**
 	 * adds given recommender (identified by it's id) to given query
@@ -574,6 +577,22 @@ public class DBAccess implements DBLogic {
 		LatencyParam param = new LatencyParam(sid,numberOfQueries);
 		return (Long)getSqlMapInstance().queryForObject("getAverageLatencyForSettingID", param);
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getLocalRecommenderSettingIds()
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Long> getLocalRecommenderSettingIds() throws SQLException{
+		return getSqlMapInstance().queryForList("getSettingIdsByType", 1);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getDistantRecommenderSettingIds()
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Long> getDistantRecommenderSettingIds() throws SQLException{
+		return getSqlMapInstance().queryForList("getSettingIdsByType", 0);
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getActiveRecommenderSettingIds()
@@ -617,11 +636,11 @@ public class DBAccess implements DBLogic {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.recommender.tags.database.DBLogic#removeRecommender(java.lang.Long)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#removeRecommender(java.lang.String)
 	 */
-	public void removeRecommender(long sid) throws SQLException{
+	public void removeRecommender(String url) throws SQLException{
 		SqlMapClient sqlMap = getSqlMapInstance();
-		sqlMap.update("removeRecommender", sid);
+		sqlMap.update("removeRecommender", url);
 	}
 
 	/* (non-Javadoc)
@@ -776,7 +795,11 @@ public class DBAccess implements DBLogic {
 			log.debug("Given setting not found -> adding new");
 			settingId = (Long) sqlMap.insert("addRecommenderSetting", setting);
 			setting.setSetting_id(settingId);
-			sqlMap.insert("createStatusForNewRecommender", setting);
+			
+			if (setting.getRecMeta() == null) {
+			    sqlMap.insert("createStatusForNewLocalRecommender", setting);
+			} else sqlMap.insert("createStatusForNewDistantRecommender", setting);
+			
 			log.debug("Setting and status added @" + settingId);
 		} else {
 			log.debug("Given setting found in DB at " + settingId +" -> setting status to 'active'");

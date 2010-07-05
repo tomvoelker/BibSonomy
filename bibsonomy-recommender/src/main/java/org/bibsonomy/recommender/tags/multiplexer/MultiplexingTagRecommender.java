@@ -2,6 +2,7 @@ package org.bibsonomy.recommender.tags.multiplexer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Map.Entry;
@@ -93,7 +95,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	
 	/** map recommender systems to their corresponding setting ids */
 	private  ConcurrentHashMap<TagRecommender,Long> activeRecommenders;
-	private  ConcurrentHashMap<Long, TagRecommender> localRecommenderLookup;
+	private  ConcurrentHashMap<Long, TagRecommender> localRecommenderAccessMap;
 	
 	/** we speed up the multiplexer by caching query results */
 	private RecommendedTagResultManager resultCache;
@@ -136,6 +138,36 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 */
 	public void init() {
 		//
+		// Initialize local recommender map
+		//
+		if(localRecommenderAccessMap == null || localRecommenderAccessMap.isEmpty()) {
+			this.localRecommenderAccessMap = new ConcurrentHashMap<Long, TagRecommender>();
+			
+			for (TagRecommender rec : localRecommenders) {
+				Long sid = null;
+				String recId = rec.getClass().getCanonicalName();
+					
+				// Add recommender to database and retrieve settingId
+				try {
+					sid = dbLogic.insertRecommenderSetting(recId, rec.getInfo(), null);
+				} catch (SQLException ex) {
+					log.warn("Database-error while adding local recommender " + recId + " to the access-map ", ex);
+				} finally {
+					//On success save recommender in local backup-map so it can be accessed by its settingId
+					if (sid != null) {
+					    this.localRecommenderAccessMap.put(sid, rec);
+					} else {
+						log.warn("Could not retrieve settingId for local recommender " + recId);
+					}
+			    }
+			}
+		}
+
+		// Reset local recommender list so only those which are activated will be contained
+		// after the initializing-process.
+		localRecommenders = new ArrayList<TagRecommender>();
+		
+		//
 		// 0. Initialize data structures 
 		//
 		activeRecommenders = new ConcurrentHashMap<TagRecommender, Long>();
@@ -148,7 +180,10 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			// each recommender is identified by an unique id:
 			registerRecommender(con, con.getId(), con.getInfo(), con.getMeta());
 		}
+		/*
+		*/
 		for( TagRecommender rec: getLocalRecommenders() ) {
+			//if(activeLocalRecommenderMap.containsValue(rec.getClass().getCanonicalName()))
 			// each recommender is identified by an unique id
 			registerRecommender(
 					rec, 
@@ -178,13 +213,78 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	//------------------------------------------------------------------------
 	// Implementation of recommender registration
 	//------------------------------------------------------------------------
+	
 	/**
-	 * Adds recommender.
+	 * Add a new recommender-url to database and multiplexer.
+	 * @param url recommender-address
+	 * @return true on success
+	 */
+	public boolean addRecommender(URL url){
+	    String urlString = url.toString();
+	    long sid = 0;
+	    
+		try {
+			sid = dbLogic.insertRecommenderSetting(urlString, "Webservice", urlString.getBytes());
+		} catch (SQLException ex) {
+			log.warn(ex);
+			return false;
+		}
+		if(sid == 0) return false;
+		return enableRecommender(sid);
+	}
+	
+	/**
+	 * Delete a recommender identified by its url.
+	 * This method will remove the recommender from the multiplexer
+	 * and database so it's not accessible anymore.
+	 * However if a recommender with the same address is added again,
+	 * the old data (e.g. its setting-id) will be recovered.
+	 * @param url recommender-address
+	 * @return true on success
+	 */
+	public boolean removeRecommender(URL url){
+	    String urlString = url.toString();
+	    boolean result = false;
+
+		//find the recommender which will be removed
+		TagRecommenderConnector delRec = null;
+		for(TagRecommenderConnector rec: distRecommenders){
+			if(rec.getId().equals(urlString)){
+				delRec = rec;
+				break;
+			}
+		}
+		
+		if (delRec != null){
+			// disconnect
+			try {
+				delRec.disconnect();
+			} catch (Exception ex) {
+				log.debug("Could not disconnect recommender ", ex);
+			}
+			
+			//remove from list, hashmap and database
+			distRecommenders.remove(delRec);
+			activeRecommenders.remove(delRec);
+		}
+		
+	    try {
+	    	dbLogic.removeRecommender(urlString);
+	    	result = true;
+	    } catch (SQLException e){ log.debug(e); }
+	    
+	    return result;
+	}
+	
+	
+	
+	/**
+	 * Enable a local recommender.
 	 * @param recommender
 	 * @return true on success, false otherwise
 	 */
 	public boolean enableLocalRecommender(TagRecommender recommender){
-		log.info("adding local recommender: "+recommender.getInfo());
+		log.info("activating local recommender: "+recommender.getInfo());
 		if(!activeRecommenders.containsKey(recommender))
 		    getLocalRecommenders().add(recommender);
 		if( initialized ) {
@@ -195,12 +295,12 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	
 	
 	/**
-	 * Adds distant recommender.
+	 * Enable a distant recommender.
 	 * @param recommender
 	 * @return true on success, false otherwise
 	 */
 	public boolean enableDistantRecommender(TagRecommenderConnector recommender) {
-		log.info("adding distant recommender: "+recommender.getInfo());
+		log.info("activating distant recommender: "+recommender.getInfo());
 		if(!activeRecommenders.containsKey(recommender))
 		    getDistRecommenders().add(recommender);
 		if( initialized ) {
@@ -212,7 +312,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	}
 	
 	/**
-	 * Enable a recommender identified by its settingid and regardless of its type (distant or local).
+	 * Enable/activate a recommender identified by its settingid and regardless of its type (distant or local).
 	 * @param sid
 	 * @return true on success
 	 */
@@ -220,9 +320,9 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		if(sid == null) return false;
 		
 		// Local Setting
-		if(localRecommenderLookup.containsKey(sid)){
+		if(localRecommenderAccessMap.containsKey(sid)){
 			if(!activeRecommenders.containsValue(sid))
-				return this.enableLocalRecommender(localRecommenderLookup.get(sid));
+				return this.enableLocalRecommender(localRecommenderAccessMap.get(sid));
 			else return false;
 		}
 		
@@ -252,7 +352,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 
 	
 	/** 
-	 *  Disable a recommender (distant or local).
+	 *  Disable/deactivate a recommender (distant or local).
 	 *  @param sid SettingId
 	 *  @return true if this recommender was activated (and is now deactivated)
 	 *  */ 
@@ -587,10 +687,10 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	// getter/setter
 	//------------------------------------------------------------------------
 	public void setDistRecommenders(List<TagRecommenderConnector> distRecommenders) {
-		if (getDistRecommenders()!=null) 
+		if (getDistRecommenders()!=null)  
 			disconnectRecommenders();
 		this.distRecommenders = distRecommenders;
-		if( initialized )
+		if (initialized)
 			init();
 		connectRecommenders();
 	}
@@ -608,13 +708,15 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	
 	/** 
 	 *  Save all accessible local recommenders and their corresponding settingIds to a private Hashmap.  
+	 * @param localRecommenderLookup 
 	 */
-	public void setLocalRecommenderLookup(List<TagRecommender> localRecommenderLookup){
-		if(localRecommenderLookup == null || localRecommenderLookup.isEmpty())  return;
+	/*
+	public void setLocalRecommenderLookup(List<TagRecommender> localRecommenderLookup) {
+		if (localRecommenderLookup == null || localRecommenderLookup.isEmpty())  return;
 		
-		this.localRecommenderLookup = new ConcurrentHashMap<Long, TagRecommender>();
+		this.localRecommenderAccessMap = new ConcurrentHashMap<Long, TagRecommender>();
 		
-		for(TagRecommender rec: localRecommenderLookup){
+		for (TagRecommender rec : localRecommenderLookup) {
 			if(rec == null) continue;
 			
 			Long sid = null;
@@ -623,22 +725,23 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			// Add recommender to database and retrieve settingId
 			try {
 				sid = dbLogic.insertRecommenderSetting(recId, rec.getInfo(), null);
-			}
-			catch (SQLException ex) {
+			} catch (SQLException ex) {
 				log.warn("Database-error while adding local recommender " + recId + " to the lookup-map ", ex);
-			}
-			// On success save recommender in local backup-map so it can be accessed by its settingId
-			finally {
-				if(sid == null){
-				  log.warn("Could not retrieve settingId for local recommender " + recId);
-				} else {
-				  this.localRecommenderLookup.put(sid, rec); }
+			} finally {
+				//On success save recommender in local backup-map so it can be accessed by its settingId
+				if (sid != null) {
+			        this.localRecommenderAccessMap.put(sid, rec);
+			    } else {
+				    log.warn("Could not retrieve settingId for local recommender " + recId);
+			    }
 			}
 		}
 		
 	}
-	public List<TagRecommender> getLocalRecommenderLookup(){
-		return new ArrayList<TagRecommender>(this.localRecommenderLookup.values());
+	*/
+	
+	public List<TagRecommender> getLocalRecommenderLookup() {
+		return new ArrayList<TagRecommender>(this.localRecommenderAccessMap.values());
 	}
 	
 	public List<TagRecommender> getLocalRecommenders() {
