@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -62,7 +63,7 @@ import bibtex.parser.ParseException;
  * Servlet implementation class for Servlet: ScrapingServlet
  * @version $Id$
  */
-public class ScrapingServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
+public class ScrapingServlet extends HttpServlet {
 
 	/**
 	 * 
@@ -78,10 +79,6 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 	private static final Scraper ieScraper = new IEScraper();
 	private static final UrlCompositeScraper urlCompositeScraper = new KDEUrlCompositeScraper();
 
-	
-	public ScrapingServlet() {
-		super();
-	}   	
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
