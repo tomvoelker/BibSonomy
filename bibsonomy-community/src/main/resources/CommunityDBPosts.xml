@@ -8,13 +8,12 @@
 	    
 	<!-- get list of all public non-spam bibtex posts belonging to given community -->
 	<select id="getBibTexForCommunity" parameterClass="resourceParam" resultMap="BibTexCommon.communityBibtexPost">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, r.p as weight, r.community_id
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, r.p as weight, m.community_uid
 		FROM $communityDBName$.resources AS r
-		JOIN bibtex AS b USING (content_id)
-		JOIN tas AS t USING (content_id)
-		JOIN $communityDBName$.tmp_post_count AS c ON (b.simhash1=c.hash AND c.community_id=r.community_id)
-		WHERE r.run_id = #runId#
-		  AND r.community_id = #communityId#
+		JOIN $communityDBName$.community_mapping m ON (r.run_id = m.run_id AND r.community_id = m.community_id)
+		JOIN bibtex AS b ON (r.hash = b.simhash1)
+		JOIN tas AS t ON (b.content_id = t.content_id)
+		WHERE m.community_uid = #communityId#
 		  AND r.content_type = 2
 		  AND b.group = 0
 		GROUP BY b.simhash1
@@ -24,14 +23,13 @@
 	
 	<!-- get list of all public non-spam bookmarks belonging to given community -->
 	<select id="getBookmarksForCommunity" parameterClass="resourceParam" resultMap="BookmarkCommon.communityBookmarkPost">
-		SELECT <include refid ="bookmarkAttributes"/>, t.tag_name, u.book_url, r.p as weight, r.community_id
+		SELECT <include refid ="bookmarkAttributes"/>, t.tag_name, u.book_url, r.p as weight, m.community_uid
 		FROM $communityDBName$.resources AS r
-		JOIN bookmark AS b USING (content_id)
-		JOIN tas AS t USING (content_id)
+		JOIN $communityDBName$.community_mapping m ON (r.run_id = m.run_id AND r.community_id = m.community_id)
+		JOIN bookmark AS b ON (r.hash = b.book_url_hash)
+		JOIN tas AS t ON (b.content_id = t.content_id)
 		JOIN urls AS u USING (book_url_hash)
-		JOIN $communityDBName$.tmp_post_count AS c ON (b.book_url_hash=c.hash AND c.community_id=r.community_id) 
-		WHERE r.run_id = #runId#
-		  AND r.community_id = #communityId#
+		WHERE m.community_uid = #communityId#
 		  AND r.content_type = 1
 		  AND b.group = 0
 		GROUP BY b.book_url_hash
@@ -41,27 +39,12 @@
 	
 	<!-- get list of most popular tags for given community -->
 	<select id="getTagCloudPopularForCommunity" parameterClass="resourceParam" resultMap="Common.tagCount">
-		SELECT c.tag_name AS name, c.count, t.p as weight
-		FROM $communityDBName$.tmp_tag_count c
-		JOIN $communityDBName$.topics t ON (t.community_id=c.community_id AND t.tag_name=c.tag_name)
-		WHERE c.community_id = #communityId#
-		  AND t.run_id = #runId#
-		GROUP BY c.tag_name
-		ORDER BY count DESC
+		SELECT t.tag_name AS name, t.count AS count, t.p as weight
+		FROM $communityDBName$.topics t
+		JOIN $communityDBName$.community_mapping m ON (t.run_id = m.run_id AND t.community_id = m.community_id)
+		WHERE m.community_uid = #communityId#
+		ORDER BY t.p DESC
 		LIMIT #offset#, #limit#
 	</select>
-	
-	
-	<select id="listCommunitiesBookmark" parameterClass="resourceParam" resultMap="Common.communityBookmarks">
-		SELECT c.community_id, <include refid ="bookmarkAttributes"/>,r.p as weight, t.tag_name, u.book_url 
-		FROM $communityDBName$.community c
-		JOIN (SELECT * FROM $communityDBName$.resources r WHERE r.run_id=#runId# ORDER BY r.p DESC LIMIT 10) as r
-		JOIN bookmark b USING (content_id)
-		JOIN tas t USING (content_id)
-		JOIN urls AS u USING (book_url_hash)
-		WHERE c.run_id = #runId#
-		ORDER BY r.p DESC
-		LIMIT #limit#
-	</select>
-	
+
 </sqlMap>

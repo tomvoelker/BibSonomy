@@ -32,10 +32,13 @@
 		<result property="name" column="user_name" javaType="string" />
 	</resultMap>
 	
+	<resultMap id="communityMember" class="user" groupBy="name">
+		<result property="name" column="user_name" javaType="string" />
+		<result property="weight" column="weight" javaType="double" />
+	</resultMap>
 
 	<resultMap id="communityAffiliation" class="communityParam">
-		<result property="runID" column="run_id" javaType="integer"/>
-		<result property="communityID" column="community_id" javaType="integer"/>
+		<result property="communityID" column="community_uid" javaType="integer"/>
 		<result property="weight" column="weight" javaType="double"/>
 	</resultMap>
 	

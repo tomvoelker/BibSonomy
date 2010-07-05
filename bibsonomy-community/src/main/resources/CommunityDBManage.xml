@@ -50,6 +50,21 @@
 			SELECT LAST_INSERT_ID() AS value
 	    </selectKey>
 	</insert>
+
+	<!--+
+	    | int addCommunityToAlgorithm
+	    |
+		| WARNING: LAST_INSERT_ID() is not thread-safe, but while iBatis doesn't
+		|          support JDBC 3.0's getGeneratedKeys(), this is the technique of 
+		|          choice (see http://issues.apache.org/jira/browse/IBATIS-142)
+	  	+-->
+	<insert id="addCommunityToAlgorithm" parameterClass="communityParam">
+		INSERT INTO community_mapping (run_id, community_id)
+		VALUES ( #runID#, #communityID# )
+ 		<selectKey resultClass="integer" keyProperty="communityID">
+			SELECT LAST_INSERT_ID() AS value
+	    </selectKey>
+	</insert>
 	    
 	<!--+
 	    | void addUserToCommunity(final int run_id, final int community_id, final String user_name, final double p); 
@@ -63,16 +78,16 @@
 	    | void addTagToCommunity(final int run_id, final int community_id, final int topic_id, final String tag_name);
 	    +-->
 	<insert id="addTagToCommunity" parameterClass="communityParam">
-		INSERT INTO topics (run_id, community_id, topic_id, tag_name, p)
-		VALUES ( #runID#, #communityID#, #topicID#, #tagName#, #weight# )
+		INSERT INTO topics (run_id, community_id, topic_id, tag_name, count, p)
+		VALUES ( #runID#, #communityID#, #topicID#, #tagName#, #globalcount#, #weight# )
 	</insert>
 
 	<!--+
 	    | void addResourceToCommunity(final int run_id, final int, community_id, final ConstantID content_type);
 	    +-->
 	<insert id="addResourceToCommunity" parameterClass="communityParam">
-		INSERT INTO resources (run_id, community_id, content_id, content_type, p)
-		VALUES ( #runID#, #communityID#, #contentID#, #contentType#, #weight# )
+		INSERT INTO resources (run_id, hash, community_id, content_id, content_type, p)
+		VALUES ( #runID#, #hash#, #communityID#, #contentID#, #contentType#, #weight# )
 	</insert>
 
 
@@ -85,12 +100,22 @@
 		WHERE name = #algorithmName# AND meta = #algorithmMeta#
 	</select>
 	
-	<select id="getUsersForCommunity" parameterClass="communityParam" resultClass="string">
+	<select id="getUserNamesForCommunity" parameterClass="communityParam" resultClass="string">
 		SELECT user_name
 		FROM community
 		WHERE run_id = #runID#
 		  AND community_id = #communityID#
 		ORDER BY p DESC 
+		LIMIT #offset#, #limit#  
+	</select>
+
+	<select id="getUsersForCommunity" parameterClass="communityParam" resultMap="Common.communityMember">
+		SELECT user_name, p AS weight 
+		FROM community c
+		JOIN community_mapping m ON (c.run_id=m.run_id AND c.community_id=m.community_id) 
+		WHERE m.community_uid = #communityUID#
+		ORDER BY p DESC 
+		LIMIT #offset#, #limit#  
 	</select>
 	
 	<select id="getNumberOfCommunities" parameterClass="communityParam" resultClass="integer">
@@ -100,8 +125,8 @@
 	</select>
 	
 	<select id="listCommunities" parameterClass="communityParam" resultClass="integer">
-		SELECT distinct community_id
-		FROM community
+		SELECT community_uid
+		FROM community_mapping
 		WHERE run_id = #runID#
 		LIMIT #offset#, #limit#  
 	</select>

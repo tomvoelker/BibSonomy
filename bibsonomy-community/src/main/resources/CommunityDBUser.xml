@@ -6,13 +6,18 @@
 	    |                            insert                                |
 	    +================================================================= +-->
 	<insert id="setUserAffiliation" parameterClass="communityParam">
-		REPLACE INTO user_community_settings (user_name,run_id,community_id,weight)
+		REPLACE INTO user_community_settings (user_name,run_id,community_uid,weight)
 		VALUES ( #userName#, #runID#, #communityID#, #weight# )
 	</insert>	  
 	   
 	<insert id="addUserAffiliation" parameterClass="communityParam">
-		REPLACE INTO user_community_settings (user_name,run_id,community_id,weight)
-		VALUES ( #userName#, #runID#, #communityID#, #weight# )
+		REPLACE INTO user_community_settings (user_name,community_uid,weight)
+		VALUES ( #userName#, #communityID#, #weight# )
+	</insert>
+	
+	<insert id="setAlgorithmForUser" parameterClass="communityParam">
+		INSERT INTO user_algorithm_settings (user_name,run_id) 
+		VALUES ( #userName#, #runID# )
 	</insert>
 	
 	<!--+ =================================================================+ 
@@ -22,16 +27,35 @@
 		DELETE 
 		FROM user_community_settings
 		WHERE user_name = #userName#
-		  AND run_id = #runID#
-		  AND community_id = #communityID#
+		  AND community_uid = #communityUID#
 	</delete>
 	
 	<!--+ =================================================================+ 
 	    |                            lookup                                |
 	    +================================================================= +-->
 	<select id="getUserAffiliation" parameterClass="communityParam" resultMap="Common.communityAffiliation">
-		SELECT run_id, community_id, weight
-		FROM user_community_settings
+		SELECT community_uid, weight
+		FROM user_community_settings s 
 		WHERE user_name = #userName#
 	</select>
+	
+	<select id="getClusteringsForRunSet" parameterClass="communityParam" resultClass="integer">
+		SELECT r.run_id
+		FROM run_settings r
+		WHERE r.block_id = #blockID#
+	</select> 
+	
+	<select id="getNewestRunSet" resultClass="integer">
+		SELECT MAX(block_id)
+		FROM run_settings
+	</select> 
+	
+	<select id="getCurrentAlgorithmForUser" parameterClass="string" resultClass="integer">
+		SELECT run_id
+		FROM user_algorithm_settings
+		ORDER BY id DESC
+		LIMIT 0,1 
+	</select> 
+	
+	
 </sqlMap>
