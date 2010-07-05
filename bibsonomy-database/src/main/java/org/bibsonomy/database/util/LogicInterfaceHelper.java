@@ -10,7 +10,6 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchEntity;
-import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -25,6 +24,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.UserUtils;
+
 /**
  * Supplies methods to adapt the LogicInterface to the database layer.
  * 
@@ -33,7 +33,7 @@ import org.bibsonomy.model.util.UserUtils;
  * @version $Id$
  */
 public class LogicInterfaceHelper {	
-	private static final Log logger = LogFactory.getLog(ChainElement.class);
+	private static final Log logger = LogFactory.getLog(LogicInterfaceHelper.class);
 
 	/**
 	 * 
