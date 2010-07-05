@@ -19,27 +19,74 @@
 	</parent>
 
 	<dependencies>
+	  		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-recommender</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-scraper</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-layout</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-client</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-importer</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-community</artifactId>
-			<version>2.0.7-SNAPSHOT</version>
+			<artifactId>bibsonomy-common</artifactId>
+			<scope>test</scope>
+			<type>test-jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
+		</dependency>			
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>			
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-bibtex-parser
+			</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-database</artifactId>
+			<artifactId>bibsonomy-logging</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-layout</artifactId>
+			<artifactId>bibsonomy-lucene</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-community</artifactId>
+			<version>2.0.7-SNAPSHOT</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.openid4java</groupId>
 			<artifactId>openid4java</artifactId>
@@ -112,13 +159,6 @@
 			<artifactId>spring-modules-springmvc-extra</artifactId>
 			<version>0.8a</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-database-common</artifactId>
-			<version>2.0.7-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -131,6 +171,21 @@
 		</extensions>
 		<plugins>
 			<plugin>
+       			<groupId>org.antlr</groupId>
+       			<artifactId>antlr3-maven-plugin</artifactId>
+       			<version>3.1.3-1</version>
+        		<executions>
+         			<execution>
+            			<goals>
+              				<goal>antlr</goal>
+            			</goals>
+            			<configuration>
+          					<sourceDirectory>src/main/antlr</sourceDirectory>
+          				</configuration>
+          			</execution>
+        		</executions>
+    		</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -138,6 +193,21 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+			<plugin>
+    			<artifactId>maven-clean-plugin</artifactId>
+    		    <configuration>
+      				<filesets>
+        				<fileset>
+       						<directory>src/main/webapp/WEB-INF/lib</directory>
+       						<includes>
+            					<include>**/*.jar</include>
+          					</includes>
+          					<followSymlinks>false</followSymlinks>
+        				</fileset>
+      				</filesets>
+    			</configuration>
+  			</plugin>
+
 		</plugins>
 	</build>
 

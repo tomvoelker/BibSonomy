@@ -68,7 +68,7 @@ public class Functions  {
 	static {
 		try {
 			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
-			layoutRenderer = JabrefLayoutRenderer.getInstance();
+			//layoutRenderer = JabrefLayoutRenderer.getInstance();
 		} catch (final IOException e) {
 			throw new RuntimeException(e.getMessage());
 		}	    	    		
@@ -567,6 +567,7 @@ public class Functions  {
 	 * @param layoutName
 	 * @return The rendered output as string.
 	 */
+	/*
 	public static String renderLayout(final Post<BibTex> post, String layoutName) {
 		ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 		posts.add(post);
@@ -574,7 +575,7 @@ public class Functions  {
 		return renderLayouts(posts, layoutName);
 		
 	}
-	
+	*/
 	/**
 	 * Helper method to access JabRef layouts via taglib function
 	 * 
@@ -582,6 +583,7 @@ public class Functions  {
 	 * @param layoutName
 	 * @return The rendered output as string.
 	 */
+	/*
 	public static String renderLayouts(final List<Post<BibTex>> posts, String layoutName) {
 		try {
 			final JabrefLayout layout = layoutRenderer.getLayout(layoutName, "");
@@ -597,7 +599,7 @@ public class Functions  {
 			return "An I/O error occured while trying to convert to layout '" + layoutName  + "'."; 
 		}
 	}
-	
+	*/
 	
 	/** Checks if the given set contains the given object.
 	 * 

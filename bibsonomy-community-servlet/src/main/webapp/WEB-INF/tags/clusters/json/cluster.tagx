@@ -17,13 +17,22 @@
 		"clusterID" : "${cluster.clusterID}",
 		"clusterPos": "${clusterStatus.count-1}",
 		"weight"    : "${cluster.weight}",
+		"users": [
+			<c:forEach var="user" varStatus="userStatus" items="${cluster.members}">
+	            {
+	            	"name"        : "${mtl:quoteJSON(user.name)}",
+	            	"weight"      : ${mtl:quoteJSON(user.weight)},
+	            }
+	            <c:if test="${not userStatus.last}">,</c:if>
+			</c:forEach>
+		],
 		"tags" : [
 			<c:forEach var="tag" varStatus="tagStatus" items="${cluster.tags}">
 	            {
 	            	"name"        : "${mtl:quoteJSON(tag.name)}",
-	            	"count"       : "${mtl:quoteJSON(tag.globalcount)}",
-	            	"globalcount" : "${mtl:quoteJSON(tag.globalcount)}",
-	            	"weight"      : "${mtl:quoteJSON(tag.weight)}",
+	            	"count"       : ${mtl:quoteJSON(tag.globalcount)},
+	            	"globalcount" : ${mtl:quoteJSON(tag.globalcount)},
+	            	"weight"      : ${mtl:quoteJSON(tag.weight)},
 	            }
 	            <c:if test="${not tagStatus.last}">,</c:if>
 			</c:forEach>
