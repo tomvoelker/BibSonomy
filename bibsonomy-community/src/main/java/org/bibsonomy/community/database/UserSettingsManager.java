@@ -1,8 +1,10 @@
 package org.bibsonomy.community.database;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,15 +44,13 @@ public class UserSettingsManager extends AbstractDBManager {
 	 */
 	public void setUserAffiliation(final User user) throws Exception {
 		getSqlMap().startBatch();
-		for( Map.Entry<Pair<Integer,Integer>, Double> entry : user.getCommunityAffiliation().entrySet() ) {
-			final Integer runId       = entry.getKey().getFirst();
-			final Integer communityId = entry.getKey().getSecond();
+		for( Entry<Integer, Double> entry : user.getCommunityAffiliation().entrySet() ) {
+			final Integer communityUId = entry.getKey();
 			final Double weight       = entry.getValue();
 			
 			CommunityParam param = new CommunityParam();
 			param.setUserName(user.getName());
-			param.setRunID(runId);
-			param.setCommunityID(communityId);
+			param.setCommunityID(communityUId);
 			param.setWeight(weight);
 			getSqlMap().insert("setUserAffiliation", param);
 		}
@@ -63,12 +63,10 @@ public class UserSettingsManager extends AbstractDBManager {
 	public void removeUserAffiliation(User user, Collection<ResourceCluster> clusters) throws Exception {
 		getSqlMap().startBatch();
 		
-		int runId = 17;
 		for( ResourceCluster cluster : clusters ) {
 			CommunityParam param = new CommunityParam();
 			param.setUserName(user.getName());
-			param.setRunID(runId);
-			param.setCommunityID(cluster.getClusterID());
+			param.setCommunityUID(cluster.getClusterID());
 			
 			getSqlMap().delete("removeUserAffiliation", param);
 		};
@@ -79,11 +77,9 @@ public class UserSettingsManager extends AbstractDBManager {
 	public void addUserAffiliation(User user, Collection<ResourceCluster> clusters) throws Exception {
 		getSqlMap().startBatch();
 		
-		int runId = 17;
 		for( ResourceCluster cluster : clusters ) {
 			CommunityParam param = new CommunityParam();
 			param.setUserName(user.getName());
-			param.setRunID(runId);
 			param.setCommunityID(cluster.getClusterID());
 			param.setWeight(cluster.getWeight());
 		
@@ -92,7 +88,12 @@ public class UserSettingsManager extends AbstractDBManager {
 		getSqlMap().executeBatch();
 	}
 	
-	
+	public void setAlgorithmForUser(String userName, Integer runId) throws Exception {
+		CommunityParam param = new CommunityParam();
+		param.setUserName(userName);
+		param.setRunID(runId);
+		getSqlMap().insert("setAlgorithmForUser", param);
+	}
 	//------------------------------------------------------------------------
 	// get
 	//------------------------------------------------------------------------
@@ -108,8 +109,38 @@ public class UserSettingsManager extends AbstractDBManager {
 		param.setUserName(user.getName());
 		List<CommunityParam> entries = (List<CommunityParam>) getSqlMap().queryForList("getUserAffiliation", param);
 		for( CommunityParam entry : entries ) {
-			user.setAffiliation(entry.getRunID(), entry.getCommunityID(), entry.getWeight());
+			user.setAffiliation(entry.getCommunityID(), entry.getWeight());
 		}
+	}
+
+	/**
+	 * returns the id for the newest set of clusterings
+	 * @throws Exception 
+	 */
+	public Integer getNewestRunSet() throws Exception {
+		return (Integer) getSqlMap().queryForObject("getNewestRunSet");
+	}
+
+	/**
+	 * returns the id for the newest set of clusterings
+	 * @throws Exception 
+	 */
+	public Integer getCurrentAlgorithm(String userName) throws Exception {
+		return (Integer) getSqlMap().queryForObject("getCurrentAlgorithmForUser", userName);
+	}
+
+	/**
+	 * returns ids for all available clusterings in the given run set
+	 * 
+	 * @param runSet
+	 * @return
+	 * @throws Exception 
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Integer> getAlgorithmsForRunSet(Integer runSet) throws Exception {
+		CommunityParam param = new CommunityParam();
+		param.setBlockID(runSet);
+		return (List<Integer>)getSqlMap().queryForList("getClusteringsForRunSet", param);
 	}
 
 }

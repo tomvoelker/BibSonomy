@@ -83,8 +83,8 @@ public class ImportDBTest {
 	public void testImport() throws Exception {
 		this.dbLogic.getAlgorithmID(algorithm);
 
-		CommunityImporter importer = new LDAkMeansImporter(FILE_USERMAP, FILE_CONTENTIDS, FILE_CLUSTERING, FILE_COMMUNITYRESOURCES, FILE_COMMUNITYTOPICS);
-		// new MockupImporter();
+		//CommunityImporter importer = new LDAkMeansImporter(FILE_USERMAP, FILE_CONTENTIDS, FILE_CLUSTERING, FILE_COMMUNITYRESOURCES, FILE_COMMUNITYTOPICS);
+		CommunityImporter importer = new MockupImporter();
 		
 		int nClusters = importer.getClusterCount();
 		int nTopics   = importer.getTopicCount();

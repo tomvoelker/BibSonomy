@@ -10,7 +10,11 @@ public class User extends org.bibsonomy.model.User {
 	
 	private double weight;
 	
-	private Map<Pair<Integer,Integer>,Double>  communityAffiliation = new HashMap<Pair<Integer,Integer>, Double>();
+	private Map<Integer,Double>  communityAffiliation = new HashMap<Integer, Double>();
+	
+	public User() {
+		super();
+	}
 	
 	public User(String userName) {
 		super(userName);
@@ -20,8 +24,8 @@ public class User extends org.bibsonomy.model.User {
 		setName(user.getName());
 	}
 
-	public void setAffiliation(final Integer runId, final Integer clusterId, final Double weight) {
-		this.communityAffiliation.put(new Pair<Integer,Integer>(runId,clusterId), weight);
+	public void setAffiliation(final Integer clusterId, final Double weight) {
+		this.communityAffiliation.put(clusterId, weight);
 	}
 
 	public void unSetAffiliation(final Integer runId, final Integer clusterId, final Double weight) {
@@ -36,11 +40,11 @@ public class User extends org.bibsonomy.model.User {
 		return weight;
 	}
 
-	public void setCommunityAffiliation(Map<Pair<Integer,Integer>,Double> communityAffiliation) {
+	public void setCommunityAffiliation(Map<Integer,Double> communityAffiliation) {
 		this.communityAffiliation = communityAffiliation;
 	}
 
-	public Map<Pair<Integer,Integer>,Double> getCommunityAffiliation() {
+	public Map<Integer,Double> getCommunityAffiliation() {
 		return communityAffiliation;
 	}
 }

@@ -108,8 +108,19 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 		param.setBlockID(block_id);
 		param.setClusterCount(clusters);
 		param.setTopicCount(topics);
+		Integer runSet = (Integer) getSqlMap().insert("addAlgorithmToRunSet", param);
 		
-		return (Integer) getSqlMap().insert("addAlgorithmToRunSet", param);
+		getSqlMap().startBatch();
+		
+		for( int i=0; i<clusters; i++ ) {
+			param.setRunID(runSet);
+			param.setCommunityID(i);
+			getSqlMap().insert("addCommunityToAlgorithm", param);
+		}
+		
+		getSqlMap().executeBatch();
+		
+		return runSet;
 	}
 
 	public int addAlgorithmToRunSet(Algorithm algorithm, int block_id, final int nClusters, final int nTopics) throws Exception {
@@ -130,12 +141,15 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 		getSqlMap().insert("addUserToCommunity", param);
 	}
 
-	public void addResourceToCommunity(int run_id, int community_id,
-			final int content_id, final int content_type, final double p) throws Exception {
+	public void addResourceToCommunity(int run_id, int community_id, final String hash,
+			final Integer content_id, final int content_type, final double p) throws Exception {
 
 		CommunityParam param = new CommunityParam();
 		param.setRunID(run_id);
-		param.setContentID(content_id);
+		param.setHash(hash);
+		if( content_id != null ) {
+			param.setContentID(content_id);
+		}
 		param.setCommunityID(community_id);
 		param.setContentType(content_type);
 		param.setWeight(p);
@@ -143,41 +157,51 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 		getSqlMap().insert("addResourceToCommunity", param);
 	}
 
-	public void addTagToCommunity(int run_id, int community_id, int topic_id,
-			String tag_name, final double p) throws Exception {
-
+	public void addTagToCommunity(int run_id, int community_id, int topic_id,String tag_name, final int count, final double p) throws Exception {
+		
 		CommunityParam param = new CommunityParam();
 		param.setRunID(run_id);
 		param.setCommunityID(community_id);
 		param.setTopicID(topic_id);
 		param.setTagName(tag_name);
+		param.setGlobalcount(count);
 		param.setWeight(p);
 		
 		getSqlMap().insert("addTagToCommunity", param);
 	}
 
 	public void addCommunities(int run_id, Collection<Cluster<User>> communities) throws Exception {
+		getSqlMap().startBatch();
 		for( Cluster<User> community : communities ) {
 			for( User user : community.getInstances() ) {
 				this.addUserToCommunity(run_id, community.getClusterID(), user.getName(), user.getWeight());
 			}
 		}
+		getSqlMap().executeBatch();
 	}
 
 	public void addTopics(int run_id, Collection<Cluster<Tag>> topics) throws Exception {
+		getSqlMap().startBatch();
 		for( Cluster<Tag> topic : topics ) {
 			for( Tag tag : topic.getInstances() ) {
-				this.addTagToCommunity(run_id, topic.getClusterID(), tag.getTopicId(), tag.getName(), tag.getWeight());
+				this.addTagToCommunity(run_id, topic.getClusterID(), tag.getTopicId(), tag.getName(), tag.getGlobalcount(), tag.getWeight());
 			}
 		}		
+		getSqlMap().executeBatch();
 	}	
 
 	public void addResources(final int run_id, final Collection<Cluster<Post<? extends org.bibsonomy.model.Resource>>> posts) throws Exception {
-	 for( Cluster<Post<? extends org.bibsonomy.model.Resource>> cluster : posts) {	
+		getSqlMap().startBatch();
+		for( Cluster<Post<? extends org.bibsonomy.model.Resource>> cluster : posts) {	
 			for( Post<? extends org.bibsonomy.model.Resource> post : cluster.getInstances() ) {
-				this.addResourceToCommunity(run_id, cluster.getClusterID(), post.getContentId(), post.getContentType(), post.getWeight());
+				String hash = null;
+				if( post.getResource() != null ) {
+					hash = post.getResource().getInterHash();
+				}
+				this.addResourceToCommunity(run_id, cluster.getClusterID(), hash, post.getContentId(), post.getContentType(), post.getWeight());
 			}
 		}	
+		getSqlMap().executeBatch();
 	}	
 	//------------------------------------------------------------------------
 	// lookup
@@ -193,13 +217,20 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 		return algorithmID;
 	}
 
-	public Collection<String> getUsersForCommunity(int run_id, int community_id, Ordering order, int limit, int offset) {
+	public Collection<String> getUserNamesForCommunity(int run_id, int community_id, Ordering order, int limit, int offset) {
 		CommunityParam param = new CommunityParam();
 		param.setRunID(run_id);
 		param.setCommunityID(community_id);
+		return queryForList("getUserNamesForCommunity", param);
+	}
+
+	public Collection<User> getUsersForCommunity(int community_uid, Ordering order, int limit, int offset) {
+		CommunityParam param = new CommunityParam();
+		param.setCommunityUID(community_uid);
 		return queryForList("getUsersForCommunity", param);
 	}
 
+	
 	public Integer getNumberOfCommunities(int runId) throws Exception {
 		CommunityParam param = new CommunityParam();
 		param.setRunID(runId);
@@ -220,7 +251,7 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 		return queryForList("listAllCommunities", param);
 	}
 
-	public Collection<ResourceCluster> getCommunities(int runId, int tagCloudLimit, int bibTexLimit, int bookmarkLimit, int limit, int offset) {
+	public Collection<ResourceCluster> getCommunities(int runId, int userCloudLimit, int tagCloudLimit, int bibTexLimit, int bookmarkLimit, int limit, int offset) {
 		// get list of all community ids
 		final CommunityParam communityParam = new CommunityParam();
 		communityParam.setRunID(runId);
@@ -228,18 +259,21 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 		
 		// fetch each community
 		Collection<ResourceCluster> communities = new ArrayList<ResourceCluster>();
-		for( final Integer communityId : communityIdx ) {
+		for( final Integer communityUId : communityIdx ) {
 			ResourceCluster community = new ResourceCluster();
-			community.setClusterID(communityId);
+			community.setClusterID(communityUId);
 			Collection<Post<Bookmark>> bookmarks = new LinkedList<Post<Bookmark>>();
 			//bookmarkLogic.getPostsForCommunity(runId, communityId, Ordering.POPULAR, bookmarkLimit, 0);
 			Collection<Post<BibTex>> bibTex = new LinkedList<Post<BibTex>>(); 
 			//bibtexLogic.getPostsForCommunity(runId, communityId, Ordering.POPULAR, bibTexLimit, 0);
-			Collection<Tag> tagCloud = tagLogic.getTagCloudForCommunity(runId, communityId, Ordering.POPULAR, tagCloudLimit, 0);
+			Collection<Tag> tagCloud = tagLogic.getTagCloudForCommunity(communityUId, Ordering.POPULAR, tagCloudLimit, 0);
+			
+			Collection<User> communityMembers = this.getUsersForCommunity(communityUId, Ordering.POPULAR, userCloudLimit, 0);
 			
 			community.setBookmark(bookmarks);
 			community.setBibtex(bibTex);
 			community.setTags(tagCloud);
+			community.setMembers(communityMembers);
 			
 			// store community
 			communities.add(community);
