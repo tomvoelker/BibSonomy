@@ -27,7 +27,7 @@
 		<property name="tagModifiers" ref="tagFilterList"/>
 		<property name="resultSelector" ref="selectOneWithoutReplacement"/>
 		<property name="dbLogic" ref="recoDBLogic"/>
-	    <property name="localRecommenderLookup" ref="localRecommenderList"/>
+	    <property name="localRecommenders" ref="localRecommenderList"/>
 	</bean>	  
 
 	<util:list id="localRecommenderList" list-class="java.util.ArrayList">

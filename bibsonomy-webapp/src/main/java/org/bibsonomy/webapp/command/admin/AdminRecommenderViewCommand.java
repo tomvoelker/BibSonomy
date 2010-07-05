@@ -33,8 +33,9 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	private Tab tab;
 	private Map<Long, String> activeRecommenders;
 	private Map<Long, String> disabledRecommenders;
-	
-	private long deletesid;
+
+	private long editSid;
+	private String deleteRecId;
 	private String newrecurl;
 	
 	
@@ -212,17 +213,32 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 		return this.disabledRecs;
 	}
 	
+
 	/**
-	 * @param sid setting-id of recommender to be deleted
+	 * @param editSid setting-id of recommender to be edited
 	 */
-	public void setDeletesid(long sid){
-		this.deletesid = sid;
+	public void setEditSid(long editSid) {
+		this.editSid = editSid;
 	}
 	/**
-	 * @return setting-id of recommender to be deleted
+	 * @return setting-id of recommender to be edited
 	 */
-	public long getDeletesid(){
-		return this.deletesid;
+	public long getEditSid() {
+		return this.editSid;
+	}
+
+	/**
+	 * @return id/url of recommender to be deleted
+	 */
+	public String getDeleteRecId() {
+		return this.deleteRecId;
+	}
+
+	/**
+	 * @param deleteRecId id/url of recommender to be edited
+	 */
+	public void setDeleteRecId(String deleteRecId) {
+		this.deleteRecId = deleteRecId;
 	}
 	/**
 	 * @param recurl url of new recommender to be added

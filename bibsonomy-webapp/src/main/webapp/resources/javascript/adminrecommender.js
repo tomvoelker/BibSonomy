@@ -30,14 +30,14 @@ function deselectAll(selectField){
 }
 
 function openEditForm(){
-	recommenderSelect = document.recommenderRemove.deletesid;
+	recommenderSelect = document.recommenderRemove.deleteRecId;
     selectedRecommender = recommenderSelect.options[recommenderSelect.selectedIndex];
     
     hiddenSettingId = document.getElementById("editId");
-    hiddenSettingId.value = selectedRecommender.value;
+    hiddenSettingId.value = selectedRecommender.text.substr(0, selectedRecommender.text.indexOf('-') - 1);
   
     recurl = document.getElementById("editedRecurl");
-    recurl.value = selectedRecommender.text.substr(selectedRecommender.text.indexOf('-') + 2);
+    recurl.value = selectedRecommender.value;
     
 	div = document.getElementById("recommenderEditDiv");
 	div.style.display = "block";

@@ -47,7 +47,6 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private LogicInterface logic;
 	private UserSettings userSettings;
 	private MultiplexingTagRecommender mp;
-	private List<TagRecommender> localRecommenders;
     
 	
 	/** 
@@ -92,11 +91,8 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		else if(command.getAction().equals(CMD_ADDRECOMMENDER)){
 			try{
 				if(!UrlUtils.isValid(command.getNewrecurl())) throw new MalformedURLException();
-				
-			    Long sid = db.insertRecommenderSetting(command.getNewrecurl(), "Webservice", command.getNewrecurl().getBytes());
-			    
-			    mp.enableRecommender(sid);
-				command.setAdminResponse("Successfully added and activated new recommender with setting_id "+sid+"!");
+			    mp.addRecommender(new URL(command.getNewrecurl()));
+				command.setAdminResponse("Successfully added and activated new recommender!");
 			}
 			catch(MalformedURLException e){
 				command.setAdminResponse("Could not add new recommender. Please check if '"+ command.getNewrecurl() +"' is a valid url.");
@@ -110,15 +106,19 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 			
 		} // Remove
 		else if(command.getAction().equals(CMD_REMOVERECOMMENDER)){
-			mp.disableRecommender(command.getDeletesid());
-			
-			//update database
-			try{
-			    db.removeRecommender(command.getDeletesid());
-				command.setAdminResponse("Successfully removed recommender with settingId " + command.getDeletesid() +".");
-			} catch(Exception e){
-				command.setAdminResponse("Failed to remove recommender with settingId " + command.getDeletesid());
-				log.error("Error updating database",e);
+			URL url = null;
+			try {
+				url = new URL(command.getDeleteRecId());
+				boolean success = mp.removeRecommender(url);
+				
+				if(success){
+					command.setAdminResponse("Successfully removed recommender '" + command.getDeleteRecId() +"'.");
+				} else {
+					command.setAdminResponse("Failed to remove recommender '" + command.getDeleteRecId() + "'");
+				}
+			} catch (MalformedURLException ex) {
+				log.warn("Invalid url '" + command.getDeleteRecId() + "'" +
+						 "in removeRecommender ", ex);
 			}
 
 			command.setTab(Tab.ADD);
@@ -146,18 +146,18 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 				if(!UrlUtils.isValid(command.getNewrecurl())) throw new MalformedURLException();
 				URL newRecurl = new URL(command.getNewrecurl());
 
-				long sid = command.getDeletesid();
-				mp.disableRecommender(sid);
-				db.updateRecommenderUrl(command.getDeletesid(), newRecurl);
-				mp.enableRecommender(sid);
+				long sid = command.getEditSid();
+				boolean recommenderEnabled = mp.disableRecommender(sid);
+				db.updateRecommenderUrl(command.getEditSid(), newRecurl);
+				if(recommenderEnabled) mp.enableRecommender(sid);
 				
-				command.setAdminResponse("Successfully Updated Recommenderurl!");
+				command.setAdminResponse("Changed url of recommender #"+command.getEditSid()+" to " + command.getNewrecurl()+".");
 			}
 			catch (MalformedURLException ex) {
 				command.setAdminResponse("Could not edit recommender. Please check if '"+ command.getNewrecurl() +"' is a valid url.");
 			}
 			catch(SQLException e){
-		        e.printStackTrace();
+		        log.warn("SQLException while editing recommender",e);
 			}
 			command.setNewrecurl(null);
 			command.setTab(Tab.ADD);
@@ -222,15 +222,14 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		 * Remove or add distant recommenders.
 		 * Deleted recommender will get a seperate status-value in the database
 		 */
-		else if((int)command.getTab() == Tab.ADD.ordinal()){
-			try{
-		      
-			  List<Long> recs = db.getActiveRecommenderSettingIds();
-			  recs.addAll(db.getDisabledRecommenderSettingIds());
+		else if ((int)command.getTab() == Tab.ADD.ordinal()) {
+			try {
+				
+			  List<Long> recs = db.getDistantRecommenderSettingIds();
 			  Map<Long, String> recMap = db.getRecommenderIdsForSettingIds(recs);
 			  
 			  command.setActiveRecommenders(recMap);
-			} catch(SQLException e){
+			} catch (SQLException e) {
 			  log.debug(e);
 			}
 		} 
@@ -260,10 +259,6 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	/** @param mp */
 	public void setMultiplexingTagRecommender(MultiplexingTagRecommender mp){
 		this.mp = mp;
-	}
-	/** @param localRecommenders */
-	public void setLocalRecommenders(List<TagRecommender> localRecommenders){
-		this.localRecommenders = localRecommenders;
 	}
 
 }

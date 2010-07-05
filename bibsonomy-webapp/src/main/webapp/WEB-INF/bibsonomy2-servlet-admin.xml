@@ -94,7 +94,8 @@
 								<value>action</value>
 								<value>queriesPerLatency</value>
 								<value>newrecurl</value>
-								<value>deletesid</value>
+								<value>editSid</value>
+								<value>deleteRecId</value>
 								<value>activeRecs</value>
 								<value>disabledRecs</value>
 								<value>tab</value>
