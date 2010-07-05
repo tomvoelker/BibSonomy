@@ -88,8 +88,7 @@ public class JabrefLayouts {
 		".electronic",
 		".periodical",
 		".misc",
-		".other",
-		"." + LayoutPart.QUICKNAV.name().toLowerCase()
+		".other"
 	};
 
 	/**
