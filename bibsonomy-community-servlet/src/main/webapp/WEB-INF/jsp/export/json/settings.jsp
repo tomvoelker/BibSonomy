@@ -12,7 +12,7 @@
 	
 <jsp:directive.page contentType="application/json; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<c:set var="includes" value="${fn:split('clusters.annotation,clusters.bookmark,clusters.bibtex,clusters.tags',',')}"/>
+	<c:set var="includes" value="${fn:split('clusters.annotation,clusters.bookmark,clusters.bibtex,clusters.tags,clusters.members',',')}"/>
 	<c:set var="excludes" value="${fn:split('*.stem,bibtex,bookmark,context,tagcloud,commandName,duplicates,filter,layout,restrictToTags,sortPageOrder,sortPage,tagstype,requestedUser,pageTitle,notags,loginMethod,*.class',',')}"/>
 
 	${mtl:serializeJSON(command, includes, excludes, false, true)}
