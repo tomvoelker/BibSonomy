@@ -37,7 +37,6 @@ import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
 import org.bibsonomy.recommender.tags.database.params.SelectorQueryMapParam;
 import org.bibsonomy.recommender.tags.database.params.SelectorSettingParam;
 import org.bibsonomy.recommender.tags.database.params.SelectorTagParam;
-import org.bibsonomy.recommender.tags.database.params.StatusTypeParam;
 import org.bibsonomy.recommender.tags.database.params.TasEntry;
 import org.bibsonomy.recommender.tags.database.params.TasParam;
 
