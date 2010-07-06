@@ -2,8 +2,6 @@ package org.bibsonomy.community.webapp.command;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
