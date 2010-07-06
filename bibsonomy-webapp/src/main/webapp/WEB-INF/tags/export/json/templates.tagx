@@ -1,6 +1,6 @@
 <!--+
     | templates for rendering json objects to html
-    | FIXME: this could be done nicely, if we had an effective solution for createing hash maps in jstl...
+    | FIXME: this could be done nicely, if we had an effective solution for creating hash maps in jstl...
     +-->
 <jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -10,115 +10,22 @@
 	<!--+ =============================================================== +
 	    |                            Posts                                |
 	    + =============================================================== +-->
-	<!--+
-	    | list of publications 
-	    +-->
-	<c:set var="jsonBibTexResourceList">
-              <![CDATA[
-   	      			{# This is a comment and will be removed from the output.}
-   	      			{.section items}
-   	      			  <div id="bibtexList" class="bookbox">
-   	      			  <div class="bboxheader">
-   	      			     <h2 class="listh">publications</h2>
-   	      			  </div>
-   	      			  <div class="kiste">
-					  	<span class="actions">&nbsp;</span>
-					  </div>   
-   	      			  <ul id="bibtex">
-   	      			     {.repeated section @}
-   	      			     <li class="bm cluster{clusterPos|html-attr-value}">
-	   	      			     <div class="bmtitle"><a href="/bibtex/{intraHash|html-attr-value}">{label}</a></div>
-							 <div class="bmdesc">
-							 	<span style="color: rgb(85, 85, 85);">
-								 	{.section author}
-								 	{.repeated section @}
-								 		{@|html}
-								 	{.end}
-								 	{.or}
-								 	{.end}
-								</span>
-								<em>{journal}</em>(<em>{year}</em>) 
-							 </div>
-							 <span class="bmmeta">
-							 	<span class="bmtags">
-							 		{.section tags}
-							 		{.repeated section @}
-							 		<a href="user/{user|html-attr-value}/{@|html-attr-value}">{@|html}</a>
-							 		{.end}
-							 		{.or}
-							 		{.end}
-							 	</span>
-								by <a name="{user}" href="/user/{user|html-attr-value}">{user|html}</a>
-							 </span>
-							 <div class="bmfoot">
-							    <span class="bmaction">
-							    	<a>pick</a>|
-									<a>edit</a>|
-									<a>delete</a>|
-									<a>BibTeX</a>
-								</span>
-							 </div>
-   	      			     </li>
-   	      			     {.end}
-   	      			  </table>
-   	      			  </div>
-   	      			{.or}
-   	      			  <p><em>(No page content matches)</em></p>
-   	      			{.end}					
-              ]]> 
-		  </c:set>
-          <c:set var="jsonBookmarkResourceList">
-              <![CDATA[
-   	      			{# This is a comment and will be removed from the output.}
-   	      			{.section items}
-   	      			  <div id="bibtexList" class="bookbox">
-   	      			  <div class="bboxheader">
-   	      			     <h2 class="listh">bookmarks</h2>
-   	      			  </div>   
-   	      			  <div class="kiste">
-					  	<span class="actions">&nbsp;</span>
-					  </div>   
-   	      			  <ul id="bibtex">
-   	      			     {.repeated section @}
-   	      			     <li class="bm cluster{clusterPos|html-attr-value}">
-	   	      			     <div class="bmtitle"><a href="/bibtex/{intraHash|html-attr-value}">{label}</a></div>
-							 <div class="bmdesc">
-							 	{description|html} 
-							 </div>
-							 <span class="bmmeta">
-							 	<span class="bmtags">
-							 		{.section tags}
-							 		{.repeated section @}
-							 		<a href="user/{user|html-attr-value}/{@|html-attr-value}">{@|html}</a>
-							 		{.end}
-							 		{.or}
-							 		{.end}
-							 	</span>
-								by <a name="{user}" href="/user/{user|html-attr-value}">{user|html}</a>
-							 </span>
-							 <div class="bmfoot">
-							    <span class="bmaction">
-							    	<a>pick</a>|
-									<a>edit</a>|
-								</span>
-							 </div>
-   	      			     </li>
-   	      			     {.end}
-   	      			  </table>
-   	      			  </div>
-   	      			{.or}
-   	      			  <p><em>(No page content matches)</em></p>
-   	      			{.end}					    
-	          ]]> 
-		  </c:set>
-    
     <!--+
 	    | single BibTex entry 
 	    +-->
 	<c:set var="jsonBibTexEntry">
 		<![CDATA[
-			<li class="bm">
-				<div class="bmtitle"><a href="/bibtex/{intraHash|html-attr-value}">{label}</a></div>
+			{.section clusterPos exists?}
+				<li class="bm cluster{@|html-attr-value}">
+			{.or}
+				<li class="bm">
+			{.end}
+				<div class="bmicon_unselected" title="Copy this post.">
+					<a href="/editPublication?hash={intraHash|html-attr-value}&user={user|html-attr-value}&copytag={tags|html-param-list}" title=""></a>
+				</div>
+				<div class="bmtitle">
+					<a href="/bibtex/{intraHash|html-attr-value}">{label}</a>
+				</div>
 				<div class="bmdesc">
 					<span style="color: rgb(85, 85, 85);">
 						{.section author}
@@ -128,29 +35,22 @@
 						{.or}
 						{.end}
 					</span>
-					(<em>{year}</em>) 
-					</div>
-					<span class="bmmeta">
-						<span class="bmtags">
-							{.section tags}
-							{.repeated section @}
-								<a href="user/{user|html-attr-value}/{@|html-attr-value}">{@|html}</a>
-							 {.end}
-							 {.or}
-							 {.end}
-						</span>
-						by <a name="{user}" href="/user/{user|html-attr-value}">{user|html}</a>
+					(<em>{year}</em>)
+					<a onclick="$('.resource_{intraHash|html-attr-value}').toggle();">[+]</a> 
+				</div>
+				<span class="bmmeta">
+					<span class="bmtags">
+						{.section tags}
+						{.repeated section @}
+							<a href="user/{user|html-attr-value}/{@|html-attr-value}">{@|html}</a>
+						{.end}
+						{.or}
+						{.end}
 					</span>
-					<div class="bmfoot">
-						<span class="bmaction">
-							<a>pick</a>|
-							<a>edit</a>|
-							<a>delete</a>|
-							<a>BibTeX</a>
-							</span>
-					</div>
-   	      		</li>
-              ]]>
+					by <a name="{user}" href="/user/{user|html-attr-value}">{user|html}</a>
+				</span>
+   	      	</li>
+		]]>
 	</c:set>
 
 	<!--+
@@ -158,9 +58,19 @@
 	    +-->
 	<c:set var="jsonBookmarkEntry">
 		<![CDATA[
-			<li class="bm">
-				<div class="bmtitle"><a href="/bibtex/{intraHash|html-attr-value}">{label}</a></div>
-				<div class="bmdesc">
+			{.section clusterPos exists?}
+				<li class="bm cluster{@|html-attr-value}">
+			{.or}
+				<li class="bm">
+			{.end}
+				<div class="bmicon_unselected" title="Copy this post.">
+					<a href="/editPublication?hash={intraHash|html-attr-value}&user={user|html-attr-value}&copytag={tags|html-param-list}" title=""></a>
+				</div>
+				<span class="bmtitle">
+					<a href="/bibtex/{intraHash|html-attr-value}">{label}</a>					 
+				</span>
+				<a onclick="$('.resource_{intraHash|html-attr-value}').toggle();">[+]</a>
+				<div class="bmdesc resource_{intraHash|html-attr-value}" style="display:none;">
 				 	{description|html} 
 				</div>
 				<span class="bmmeta">
@@ -174,12 +84,6 @@
 				 	</span>
 					by <a name="{user}" href="/user/{user|html-attr-value}">{user|html}</a>
 				</span>
-				<div class="bmfoot">
-					<span class="bmaction">
-				    	<a>pick</a>|
-						<a>edit</a>|
-					</span>
-				 </div>
 			</li>
 		]]>
 	</c:set>
@@ -241,6 +145,22 @@
 	</c:set>
 	
 	<!--+ =============================================================== +
+	    |                            Users                                |
+	    + =============================================================== +-->
+	<c:set var="jsonUserCloud">
+		<![CDATA[
+			<ul class="usercloud">
+            {.repeated section @}
+            	<li class="{@|userSize}">
+	            	<a title="Score = {weight|html-attr-value}" 
+		    	       href="/user/{name|html-attr-value}">{name|html}</a>
+            	</li>
+            {.end}
+            </ul>
+		]]>
+	</c:set>
+	
+	<!--+ =============================================================== +
 	    |                          Clusters                               |
 	    + =============================================================== +-->
 	<c:set var="jsonClusterSettings">
@@ -269,6 +189,9 @@
 	<c:set var="jsonClusterOverview">
 		<![CDATA[
 			<h1>Communities</h1><br/>
+			<span class="clusteringReload">
+				<a onclick="resetClusterView();reloadClustering();">[reload clustering]</a>
+			</span><br/>
 			{.repeated section clusters}
 				<hr/>
 				{.section clusterID}
@@ -279,10 +202,17 @@
 					{.end}
 				{.end}
 				<br/>
-				{tags|tagCloud}
-				<center>
+				<div>
+				<div class="clusterLeftItemCloud">
+					{tags|tagCloud}
+				</div>
+				<div class="clusterRightItemCloud">
+					{users|userCloud}
+				</div>
+				</div><br/>
+				<div style="text-align:center;clear:both;">
 					<a onclick="$('#clusterResources{clusterPos|html-attr-value}').toggle();loadClusterResources('clusterResources{clusterPos|html-attr-value}', {clusterPos|html-attr-value});">Toggle Resources</a>
-				</center>
+				</div>
 				<div style="display:none;" id="clusterResources{clusterPos|html-attr-value}">
 					<p class="centeredImage">
 						<img  id="wait_clusterResources{clusterPos|html-attr-value}" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader.gif"/>
@@ -330,6 +260,11 @@
 			// BibSonomy tag objects
 			//----------------------------------------------------------------
 			"tagCloud"        : "${mtl:quoteJSON(jsonTagCloud)}",
+
+			//----------------------------------------------------------------
+			// BibSonomy user objects
+			//----------------------------------------------------------------
+			"userCloud"       : "${mtl:quoteJSON(jsonUserCloud)}",
 			
 			//----------------------------------------------------------------
 			// BibSonomy cluster views
@@ -343,8 +278,10 @@
 		var bibSonomyJsonFormatters = {
 			"listAnchors" : function(x){ return generateListAnchors(x) },
 			"tagSize"     : function(x){ normalizeTags(clusterSettings.clusters); return getTagSize(x) },
+			"userSize"    : function(x){ normalizeUsers(clusterSettings.clusters); return getUserSize(x) },
 			"tagFontSize" : function(x){ normalizeClusterSettings(clusterSettings.clusters); return getTagFontSize(x) },
-			"html-attr-value" : function(x){ if( x!=undefined ) { return encodeURIComponent(x.toString()) } else { return "[[]]" } }
+			"html-attr-value" : function(x){ if( x!=undefined ) { return encodeURIComponent(x.toString()) } else { return "" } },
+			"html-param-list" : function(x){ if( x!=undefined ) { return htmlParameterList(x) } else { return "" } }
 		};
 
 
@@ -416,116 +353,11 @@
 		]]> 
         //</mtl:cdata>
 	</script>
-	
+
 	<!--+ =============================================================== +
 	    |                  custom java script functions                   |
 	    + =============================================================== +-->
-	<script type="text/javascript">
-	//<mtl:cdata>
-        <![CDATA[
-            /**
-             * check if given cluster is already enabled by the logged in user
-             */
-			function isClusterEnabled(x) {
-				if( clusterSettings == undefined ) {
-					alert("No cluster settings loaded");
-					return false;
-				} else {
-					for( var i=0; i<clusterSettings.clusters.length; i++ ) {
-						if( clusterSettings.clusters[i].clusterID == x ) {
-							return true;
-						} 
-					}
-					return false;
-				}
-			}
+	<!--  script for handling cluster based navigateion -->
+	<script type="text/javascript" src="${resdir}/javascript/clusterTemplateLayout.js">&amp;nbsp;</script>
 
-			/**
-			 * add given cluster to logged in user's settings
-				<a href="bibsonomy-community-servlet/clusterSettings?action=ADDCLUSTERS&clusters[0]={clusterID|html-attr-value}">[add cluster]</a>
-		     */
-			function addCluster(clusterId, weight) {
-				$.getJSON('/bibsonomy-community-servlet/clusterSettings?action=ADDCLUSTERS&clusters[0].clusterID='+clusterId+'&clusters[0].weight='+weight+'&format=json', function(data) {
-           			clusterSettings = data;
-    				reloadSettings(true);
-    				showClusterPage();
-       	  		});
-		     }
-		     
-		     /**
-			  * remove given cluster from logged in user's settings
-		      */
-			function removeCluster(clusterId) {
-				$.getJSON('/bibsonomy-community-servlet/clusterSettings?action=REMOVECLUSTERS&clusters[0].clusterID='+clusterId+'&format=json', function(data) {
-					clusterSettings = data;
-					reloadSettings();
-					showClusterPage();
-	       	  	});
-			}
-
-			/**
-			 * returns the css Class for a given tag
-			 * @param tag the current Tag
-			 * @return the css class for the tag
-			 */
-			function getTagSize(tag) {
-				var tagCount    = tag.globalcount;
-				var maxTagCount = tag.maxTagCount;
-					
-				/*
-				 * catch incorrect values
-				 */
-				if (tagCount == 0 || maxTagCount == 0) return "tagtiny";
-
-				var percentage = ((tagCount * 100) / maxTagCount);
-
-				if (percentage < 25) {
-					return  "tagtiny";
-				} else if (percentage >= 25 && percentage < 50) {
-					return  "tagnormal";
-				} else if (percentage >= 50 && percentage < 75) {
-					return  "taglarge";
-				} else if (percentage >= 75) {
-					return  "taghuge";
-				}
-
-				return "";
-			}
-
-			/**
-			 * compute the resulting tag font size
-			 */
-			function getTagFontSize(tag) {
-				var tagFrequency    = tag.globalcount;
-				var tagMaxFrequency = tag.maxTagCount;
-				/*
-				 * we expect 0 < tagFrequency < tagMaxFrequency 
-				 * and normalize f to 0 < f 100 as percentage of tagMaxFrequency
-				 */
-				f = 1.0*tagFrequency / tagMaxFrequency * 100;
-				t = f > 100 ? 100 : f;
-				t /= 5;
-				t = Math.log(t) * 100;
-				return (Math.round(t)<100) ? 100 : Math.round(t);		
-			}	
-
-			/**
-			 * print list of direct links to pages
-			 */	
-			function generateListAnchors(listView) {
-				var listNavigation = "";
-				var cnt=1;
-				for( var i=0; i<listView.total; i+=1.0*listView.limit ) {
-					listNavigation +="<a onclick='showClusters("+i+","+listView.limit+");'>"+cnt+"</a>";
-					if( i<listView.total ) {
-						listNavigation +="&nbsp;|&nbsp;";
-					}
-					cnt++;
-				}
-
-				return listNavigation;
-			} 
-		]]> 
-        //</mtl:cdata>
-	</script>
 </jsp:root>
