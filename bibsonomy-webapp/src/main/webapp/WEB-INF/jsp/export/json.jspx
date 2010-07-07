@@ -61,7 +61,7 @@
          "label" : "${mtl:quoteJSON(post.resource.title)}",
          "user" : "${mtl:quoteJSON(post.user.name)}",
          "description" : "${mtl:quoteJSON(post.description)}",
-         "date" : "<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd hh:mm:ss"/>",
+         "date" : "<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd HH:mm:ss"/>",
          "count" : ${post.resource.count},
          "tags" : [
             <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
