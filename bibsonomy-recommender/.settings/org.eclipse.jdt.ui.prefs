@@ -1,4 +1,4 @@
-#Fri Dec 21 17:55:20 CET 2007
+#Wed Jul 07 19:09:08 CEST 2010
 cleanup.add_default_serial_version_id=true
 cleanup.add_generated_serial_version_id=false
 cleanup.add_missing_annotations=true
@@ -48,7 +48,7 @@ cleanup.use_this_for_non_static_method_access_only_if_necessary=false
 cleanup_profile=_Clean Up for BibSonomy
 cleanup_settings_version=2
 eclipse.preferences.version=1
-formatter_profile=_Java Conventions for Bibsonomy
+formatter_profile=org.eclipse.jdt.ui.default.sun_profile
 formatter_settings_version=11
 org.eclipse.jdt.ui.exception.name=ex
 org.eclipse.jdt.ui.gettersetter.use.is=true
