@@ -49,14 +49,17 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 	// startElement callback method to use it in the endElement method	
 	private String languageAttribute;
 	
+	@Override
 	public void startDocument() {
 		 layoutDefinitions = new LinkedList<JabrefLayout>();
 	}
 
+	@Override
 	public void endDocument() {
 		// nothing to do
 	}
 
+	@Override
 	public void startElement (final String uri, final String name, final String qName, final Attributes atts) {
 		buf = new StringBuffer();
 		if ("layout".equals(name)) {
@@ -74,6 +77,7 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 	 * 
 	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
 	 */
+	@Override
 	public void characters (final char ch[], final int start, final int length) {
 		/*
 		 * replace arbitrary long sequences of whitespace by one space.
@@ -83,6 +87,7 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 		
 	}
 
+	@Override
 	public void endElement (final String uri, final String name, final String qName) {
 		
 		if ("layout".equals(name)) {

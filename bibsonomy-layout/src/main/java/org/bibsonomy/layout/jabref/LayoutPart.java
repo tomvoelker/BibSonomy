@@ -82,6 +82,7 @@ public enum LayoutPart {
 		return ITEM;
 	}
 
+	@Override
 	public String toString() {
 		return name;
 	}
