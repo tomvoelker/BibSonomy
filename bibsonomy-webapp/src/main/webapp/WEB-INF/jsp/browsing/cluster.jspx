@@ -64,27 +64,34 @@
 		<jsp:attribute name="sidebar">
 			
 			<ul id="sidebar">
-				<li>
-					<a onclick="setRanking('random')">Random Sample</a> | 
-					<a onclick="setRanking('weight')">Sort by relevance</a> | 
-					<a onclick="setRanking('date')">Sort by date</a>
+				<li class="listhButtons">
+					<a class="clusterNavigation" onclick="setRanking('random')">Random Sample</a> 
+					<a class="clusterNavigation" onclick="setRanking('weight')">Sort by relevance</a> 
+					<a class="clusterNavigation" onclick="setRanking('date')">Sort by date</a>
 				</li>
 				<li>
-					<a onclick="reloadContent()">Update Resources</a>
+					<!-- <a onclick="reloadContent()">Update Resources</a>  -->
 					<img  id="wait_reloadContent" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader2.gif" style="display: none;"/>
 				</li>
 				<li>
-					<a onclick="reloadSettings()">Update Settings</a>
+					<!-- <a onclick="reloadSettings()">Update Settings</a>  -->
 					<img  id="wait_reloadSettings" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader2.gif" style="display: none;"/>
+					<img  id="wait_showClusterPage" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader2.gif" style="display: none;"/>
 				</li>
 				<li>
 					<div id="clusterSettings"><c:out value=" "/></div>
 				</li>
 				
-				<li id="addClustersNavigation">
-					<a onclick="resetClusterView();showClusterPage()">Add Communities</a>
-					<img  id="wait_showClusterPage" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader2.gif" style="display: none;"/>
+				<li class="listhButtons" id="addClustersNavigation">
+					<a class="clusterNavigation" onclick="resetClusterView();showClusterPage()">Add Communities</a>
 				</li>
+				<li class="listhButtons" id="addClusterRecommendation">
+					<a class="clusterNavigation" onclick="addRecommendedCluster();">Get Recommendation</a>
+				</li>
+				<li class="listhButtons">
+					<a class="clusterNavigation" onclick="saveClusterSettings();">Save Settings</a>
+				</li>
+				<li><br>&amp;nbsp;</br></li>
 			</ul>
 
 		</jsp:attribute>

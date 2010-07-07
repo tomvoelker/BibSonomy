@@ -34,40 +34,6 @@ function isClusterEnabled(x) {
 }
 
 /**
- * add given cluster to logged in user's settings
-				<a href="bibsonomy-community-servlet/clusterSettings?action=ADDCLUSTERS&clusters[0]={clusterID|html-attr-value}">[add cluster]</a>
- */
-function addCluster(clusterId, weight) {
-	$.getJSON('/bibsonomy-community-servlet/clusterSettings?action=ADDCLUSTERS&clusters[0].clusterID='+clusterId+'&clusters[0].weight='+weight+'&format=json', function(data) {
-		clusterSettings = data;
-		reloadSettings(true);
-		showClusterPage();
-	});
-}
-
-/**
- * remove given cluster from logged in user's settings
- */
-function removeCluster(clusterId) {
-	$.getJSON('/bibsonomy-community-servlet/clusterSettings?action=REMOVECLUSTERS&clusters[0].clusterID='+clusterId+'&format=json', function(data) {
-		clusterSettings = data;
-		reloadSettings();
-		showClusterPage();
-	});
-}
-
-/**
- * change clustering
- */
-function reloadClustering() {
-	$.getJSON('/bibsonomy-community-servlet/clusterSettings?action=CHANGEALGORITHM&format=json', function(data) {
-		clusterSettings = data;
-		reloadSettings();
-		showClusterPage();
-	});
-}
-
-/**
  * returns the css Class for a given tag
  * @param tag the current Tag
  * @return the css class for the tag
@@ -149,7 +115,11 @@ function generateListAnchors(listView) {
 	var listNavigation = "";
 	var cnt=1;
 	for( var i=0; i<listView.total; i+=1.0*listView.limit ) {
-		listNavigation +="<a onclick='showClusters("+i+","+listView.limit+");'>"+cnt+"</a>";
+		listNavigation +="<a class='clusterNavigation";
+		if( i>=listView.offset && i<listView.offset+listView.limit ) {
+			listNavigation += " clusterNavigationActive";
+		}
+		listNavigation +="' onclick='showClusters("+i+","+listView.limit+");'>"+cnt+"</a>";
 		if( i<listView.total ) {
 			listNavigation +="&nbsp;|&nbsp;";
 		}

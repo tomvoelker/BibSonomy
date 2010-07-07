@@ -46,6 +46,9 @@ function updateContent() {
 
 	var bt = renderJson(bibTexEntries.items, 'bibTexList');
 	var bm = renderJson(bookmarkEntries.items, 'bookmarkList');
+	
+	//var encodedText = encodeURIComponent(bt);
+	//content.document.location.replace("data:text/html,"+encodedText);
 
 	document.getElementById("bmEntries").innerHTML = bm;
 	document.getElementById("btEntries").innerHTML = bt;
@@ -351,8 +354,9 @@ function initializeSettings() {
 	// little hack for dealing with call by reference semantics 
 	function createContext(idx) {
 		id = idx;
+		weight = clusterSettings.clusters[idx].weight;
 		return {
-			value: 50,
+			value: weight,
 			change: function(event, ui) { changeClusterWeight(id, ui.value) }
 		}
 	}
@@ -540,6 +544,72 @@ function showPreviousClusters() {
  * resource view for cluster tooltips
  */
 function showClusterTooltip(cluster) {
+}
+//----------------------------------------------------------
+// cluster settings
+//----------------------------------------------------------
+/**
+ * add given cluster to logged in user's settings
+				<a href="bibsonomy-community-servlet/clusterSettings?action=ADDCLUSTERS&clusters[0]={clusterID|html-attr-value}">[add cluster]</a>
+ */
+function addCluster(clusterId, weight) {
+	$.getJSON('/bibsonomy-community-servlet/clusterSettings?action=ADDCLUSTERS&clusters[0].clusterID='+clusterId+'&clusters[0].weight='+weight+'&format=json', function(data) {
+		clusterSettings = data;
+		reloadSettings(true);
+		showClusterPage();
+	});
+}
+
+/**
+ * adds the most appropriate community to the given users settings (if not included already)
+ */
+function addRecommendedCluster() {
+	$.getJSON('/bibsonomy-community-servlet/clusterSettings?action=ADDRECOMMENDEDCLUSTER&format=json', function(data) {
+		clusterSettings = data;
+		reloadSettings(true);
+	});
+}
+
+/**
+ * remove given cluster from logged in user's settings
+ */
+function removeCluster(clusterId) {
+	$.getJSON('/bibsonomy-community-servlet/clusterSettings?action=REMOVECLUSTERS&clusters[0].clusterID='+clusterId+'&format=json', function(data) {
+		clusterSettings = data;
+		reloadSettings();
+		showClusterPage();
+	});
+}
+
+/**
+ * change clustering
+ */
+function reloadClustering() {
+	$.getJSON('/bibsonomy-community-servlet/clusterSettings?action=CHANGEALGORITHM&format=json', function(data) {
+		clusterSettings = data;
+		reloadSettings();
+		showClusterPage();
+	});
+}
+
+/**
+ * add given cluster to logged in user's settings
+				<a href="bibsonomy-community-servlet/clusterSettings?action=ADDCLUSTERS&clusters[0]={clusterID|html-attr-value}">[add cluster]</a>
+ */
+function saveClusterSettings() {
+	// build query parameters
+	var queryParams = "";
+	for( i=0; i<numberOfClusters; i++ ) {
+		queryParams += "clusters["+i+"].clusterID="+clusterSettings.clusters[i].clusterID;
+		queryParams += "&clusters["+i+"].weight="+clusterSettings.clusters[i].weight;
+		if( i<numberOfClusters-1 ) {
+			queryParams += "&";
+		}
+	}
+	
+	// query server for resources
+	$.getJSON(communityBaseUrl+'/clusterSettings?action=SAVECLUSTERSETTINGS&'+queryParams+'&format=json', function(data) {
+	});
 }
 
 //----------------------------------------------------------
