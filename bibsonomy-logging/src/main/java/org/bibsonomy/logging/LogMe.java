@@ -57,6 +57,7 @@ public class LogMe extends HttpServlet {
 	} 
 
 	
+	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -221,6 +222,7 @@ public class LogMe extends HttpServlet {
 		}
 	}
 
+	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse response)
 	throws ServletException, IOException {
 		log.debug("POST-Request");
