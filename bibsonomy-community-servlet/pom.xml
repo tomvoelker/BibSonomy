@@ -19,35 +19,6 @@
 	</parent>
 
 	<dependencies>
-	  		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-recommender</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-rest-server</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-rest-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-scraper</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-layout</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-rest-client</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-importer</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-common</artifactId>
@@ -72,14 +43,6 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-bibtex-parser
 			</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-lucene</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
