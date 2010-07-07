@@ -80,6 +80,7 @@ public class ImportDBTest {
 	 * @throws Exception 
 	 */
 	@Test
+	@Ignore
 	public void testImport() throws Exception {
 		this.dbLogic.getAlgorithmID(algorithm);
 

@@ -38,4 +38,5 @@ public class RandomSelector implements AlgorithmSelectionStrategy {
 		return userLogic;
 	}
 
+
 }
