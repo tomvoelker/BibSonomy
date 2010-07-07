@@ -6,8 +6,8 @@
 	    |                            insert                                |
 	    +================================================================= +-->
 	<insert id="setUserAffiliation" parameterClass="communityParam">
-		REPLACE INTO user_community_settings (user_name,run_id,community_uid,weight)
-		VALUES ( #userName#, #runID#, #communityID#, #weight# )
+		REPLACE INTO user_community_settings (user_name,community_uid,weight)
+		VALUES ( #userName#, #communityID#, #weight# )
 	</insert>	  
 	   
 	<insert id="addUserAffiliation" parameterClass="communityParam">

@@ -118,6 +118,16 @@
 		LIMIT #offset#, #limit#  
 	</select>
 	
+	<select id="getCommunitiesForUser" parameterClass="communityParam" resultClass="integer">
+		SELECT m.community_uid 
+		FROM (SELECT run_id FROM user_algorithm_settings WHERE user_name = #userName# ORDER BY id DESC LIMIT 1) s
+		JOIN community c USING (run_id)
+		JOIN community_mapping m ON (c.run_id=m.run_id AND c.community_id=m.community_id) 
+		WHERE c.user_name = #userName#
+		ORDER BY p DESC 
+		LIMIT #offset#, #limit#  
+	</select>
+	
 	<select id="getNumberOfCommunities" parameterClass="communityParam" resultClass="integer">
 		SELECT clusters
 		FROM run_settings

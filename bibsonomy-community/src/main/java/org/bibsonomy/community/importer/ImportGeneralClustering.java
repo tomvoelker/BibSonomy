@@ -1,28 +1,19 @@
 package org.bibsonomy.community.importer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.community.importer.MockupImporter;
 import org.bibsonomy.community.database.CommunityManager;
 import org.bibsonomy.community.database.DBManageInterface;
+import org.bibsonomy.community.model.Cluster;
 import org.bibsonomy.community.model.Post;
 import org.bibsonomy.community.model.Tag;
 import org.bibsonomy.community.model.User;
-import org.bibsonomy.community.util.CommunityConfig;
 import org.bibsonomy.community.util.JNDITestDatabaseBinder;
 import org.bibsonomy.community.util.PropertyLoader;
-import org.bibsonomy.community.model.Cluster;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.util.ValidationUtils;
 
 public class ImportGeneralClustering {
 	private static final Log log = LogFactory.getLog(ImportGeneralClustering.class);
