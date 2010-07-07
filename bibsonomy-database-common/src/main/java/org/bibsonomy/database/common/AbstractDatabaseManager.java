@@ -22,7 +22,7 @@ public abstract class AbstractDatabaseManager {
 	 * PLEASE NOTE: this methods never returns null, only an empty list if the queryForList returns null
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> List<T> queryForList(final String query, final Object param, @SuppressWarnings("unused") final Class<T> type, final DBSession session) {
+	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final DBSession session) {
 		final List<T> list = (List<T>) session.queryForList(query, param);
 		return list != null ? list : new LinkedList<T>();
 	}
@@ -44,12 +44,12 @@ public abstract class AbstractDatabaseManager {
 	 * cast.
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> T queryForObject(final String query, final Object param, @SuppressWarnings("unused") final Class<T> type, final DBSession session) {
+	protected <T> T queryForObject(final String query, final Object param, final Class<T> type, final DBSession session) {
 		return (T) session.queryForObject(query, param);
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected <T> T queryForObject(final String query, @SuppressWarnings("unused") final Class<T> type, final DBSession session) {
+	protected <T> T queryForObject(final String query, final Class<T> type, final DBSession session) {
 		return (T) session.queryForObject(query, null);
 	}
 
