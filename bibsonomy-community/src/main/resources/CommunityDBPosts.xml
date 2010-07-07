@@ -8,31 +8,29 @@
 	    
 	<!-- get list of all public non-spam bibtex posts belonging to given community -->
 	<select id="getBibTexForCommunity" parameterClass="resourceParam" resultMap="BibTexCommon.communityBibtexPost">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, r.p as weight, m.community_uid
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, r.p as weight, m.community_uid
 		FROM $communityDBName$.resources AS r
 		JOIN $communityDBName$.community_mapping m ON (r.run_id = m.run_id AND r.community_id = m.community_id)
 		JOIN bibtex AS b ON (r.hash = b.simhash1)
-		JOIN tas AS t ON (b.content_id = t.content_id)
 		WHERE m.community_uid = #communityId#
 		  AND r.content_type = 2
 		  AND b.group = 0
-		GROUP BY b.simhash1
+		GROUP BY r.hash
 		ORDER BY r.p DESC
 		LIMIT #offset#, #limit#
 	</select>
 	
 	<!-- get list of all public non-spam bookmarks belonging to given community -->
 	<select id="getBookmarksForCommunity" parameterClass="resourceParam" resultMap="BookmarkCommon.communityBookmarkPost">
-		SELECT <include refid ="bookmarkAttributes"/>, t.tag_name, u.book_url, r.p as weight, m.community_uid
+		SELECT <include refid ="bookmarkAttributes"/>, u.book_url, r.p as weight, m.community_uid
 		FROM $communityDBName$.resources AS r
 		JOIN $communityDBName$.community_mapping m ON (r.run_id = m.run_id AND r.community_id = m.community_id)
 		JOIN bookmark AS b ON (r.hash = b.book_url_hash)
-		JOIN tas AS t ON (b.content_id = t.content_id)
 		JOIN urls AS u USING (book_url_hash)
 		WHERE m.community_uid = #communityId#
 		  AND r.content_type = 1
 		  AND b.group = 0
-		GROUP BY b.book_url_hash
+		GROUP BY r.hash
 		ORDER BY r.p DESC
 		LIMIT #offset#, #limit#
 	</select>
