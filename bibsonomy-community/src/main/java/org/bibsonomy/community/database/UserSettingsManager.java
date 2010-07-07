@@ -74,7 +74,24 @@ public class UserSettingsManager extends AbstractDBManager {
 		
 	}
 	
+	public void addUserAffiliation(User user, ResourceCluster cluster) throws Exception {
+		CommunityParam param = new CommunityParam();
+		param.setUserName(user.getName());
+		param.setCommunityID(cluster.getClusterID());
+		param.setWeight(cluster.getWeight());
+		getSqlMap().insert("addUserAffiliation", param);
+	}
+
 	public void addUserAffiliation(User user, Collection<ResourceCluster> clusters) throws Exception {
+		getSqlMap().startBatch();
+		
+		for( ResourceCluster cluster : clusters ) {
+			addUserAffiliation(user, cluster);
+		};
+		getSqlMap().executeBatch();
+	}
+
+	public void updateUserAffiliation(User user, Collection<ResourceCluster> clusters) throws Exception {
 		getSqlMap().startBatch();
 		
 		for( ResourceCluster cluster : clusters ) {
@@ -83,7 +100,7 @@ public class UserSettingsManager extends AbstractDBManager {
 			param.setCommunityID(cluster.getClusterID());
 			param.setWeight(cluster.getWeight());
 		
-			getSqlMap().insert("addUserAffiliation", param);
+			getSqlMap().insert("setUserAffiliation", param);
 		};
 		getSqlMap().executeBatch();
 	}
@@ -142,5 +159,4 @@ public class UserSettingsManager extends AbstractDBManager {
 		param.setBlockID(runSet);
 		return (List<Integer>)getSqlMap().queryForList("getClusteringsForRunSet", param);
 	}
-
 }

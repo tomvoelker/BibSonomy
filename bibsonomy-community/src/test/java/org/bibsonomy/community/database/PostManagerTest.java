@@ -3,12 +3,14 @@ package org.bibsonomy.community.database;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -18,6 +20,7 @@ import org.bibsonomy.community.algorithm.Algorithm;
 import org.bibsonomy.community.algorithm.MockAlgorithm;
 import org.bibsonomy.community.database.CommunityManager;
 import org.bibsonomy.community.database.DBManageInterface;
+import org.bibsonomy.community.enums.Ordering;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -29,6 +32,7 @@ import org.bibsonomy.community.model.ResourceCluster;
 import org.bibsonomy.community.model.Tag;
 import org.bibsonomy.community.model.User;
 import org.bibsonomy.community.util.JNDITestDatabaseBinder;
+import org.bibsonomy.community.util.PropertyLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -46,9 +50,22 @@ public class PostManagerTest {
 	BookmarkPostManager bookmarkLogic;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws IOException {
 		// bind datasource access via JNDI
-		JNDITestDatabaseBinder.bind();
+		
+		Properties config = PropertyLoader.openPropertyFile("community.properties");
+
+		String url               = config.getProperty("url");
+		String postDatabase      = config.getProperty("postDatabase");
+		String communityDatabase = config.getProperty("communityDatabase");
+		String username          = config.getProperty("username");
+		String password          = config.getProperty("password");
+		
+		// initialize database manager
+		JNDITestDatabaseBinder.bind("bibsonomy_community", url, communityDatabase, username, password);
+		JNDITestDatabaseBinder.bind("bibsonomy_community_posts", url, postDatabase, username, password);
+		
+		// JNDITestDatabaseBinder.bind();
 		bibTexLogic = BibTexPostManager.getInstance();
 		bookmarkLogic = BookmarkPostManager.getInstance();
 	}
@@ -64,9 +81,9 @@ public class PostManagerTest {
 	 * @throws Exception 
 	 */
 	@Test
-	@Ignore
 	public void testBibTexPosts() throws Exception {
-		Collection<Post<BibTex>> posts = this.bibTexLogic.getPostsForCommunity(17, 11, null, 10, 0);
+		Collection<Post<BibTex>> posts = this.bibTexLogic.getPostsForCommunity(278, Ordering.POPULAR, 10, 0);
+		log.debug("Got " + posts.size() + " posts.");
 	}	
 
 	/**
@@ -74,9 +91,9 @@ public class PostManagerTest {
 	 * @throws Exception 
 	 */
 	@Test
-	@Ignore
 	public void testBookmarkPosts() throws Exception {
-		Collection<Post<Bookmark>> posts = this.bookmarkLogic.getPostsForCommunity(17, 0, null, 10, 0);
+		Collection<Post<Bookmark>> posts = this.bookmarkLogic.getPostsForCommunity(61, Ordering.POPULAR, 10, 0);
+		log.debug("Got " + posts.size() + " posts.");
 	}	
 	
 	//------------------------------------------------------------------------

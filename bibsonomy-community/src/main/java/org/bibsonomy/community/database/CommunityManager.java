@@ -283,4 +283,17 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 		return communities;
 	}
 
+	public Collection<Integer> getCommunitiesForUser(final String userName, int limit, int offset) {
+		Collection<Integer> communities;
+		CommunityParam param = new CommunityParam();
+		param.setUserName(userName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		communities = queryForList("getCommunitiesForUser", param);
+		if( communities==null ) {
+			return new ArrayList<Integer>();
+		} else {
+			return communities;
+		}
+	}
 }
