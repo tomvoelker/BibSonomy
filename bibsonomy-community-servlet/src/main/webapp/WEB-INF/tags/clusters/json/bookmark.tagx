@@ -16,6 +16,7 @@
          "type" : "Bookmark",
          "id"   : "${projectHome}url/${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",
          "intraHash" : "${post.resource.intraHash}",
+         "interHash" : "${post.resource.interHash}",
          "weight" : ${mtl:quoteJSON(post.weight)},
          "label" : "${mtl:quoteJSONcleanBibTeX(post.resource.title)}",
          "user" : "${mtl:quoteJSON(post.user.name)}",

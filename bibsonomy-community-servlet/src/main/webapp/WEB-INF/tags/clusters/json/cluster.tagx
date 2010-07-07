@@ -7,16 +7,16 @@
 	<jsp:directive.attribute name="command" type="org.bibsonomy.community.webapp.command.ResourceClusterViewCommand" required="true" />
 	{
 	"listView" : {
-		"limit"  : "${command.limit}",
-		"offset" : "${command.offset}",
-		"total"  : "${command.total}"
+		"limit"  : ${command.limit},
+		"offset" : ${command.offset},
+		"total"  : ${command.total}
 	},	
 	"clusters" : [
 	<c:forEach var="cluster" varStatus="clusterStatus" items="${command.clusters}">
 		{
-		"clusterID" : "${cluster.clusterID}",
-		"clusterPos": "${clusterStatus.count-1}",
-		"weight"    : "${cluster.weight}",
+		"clusterID" : ${cluster.clusterID},
+		"clusterPos": ${clusterStatus.count-1},
+		"weight"    : ${cluster.weight},
 		"users": [
 			<c:forEach var="user" varStatus="userStatus" items="${cluster.members}">
 	            {
