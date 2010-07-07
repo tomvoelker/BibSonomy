@@ -465,7 +465,7 @@ public class Tag implements Cloneable {
 	 * tags separated by space.
 	 * 
 	 * @return a string representation of this object
-	 * @see toString()
+	 * @see #toString()
 	 */
 	public String getTagString(){
 		StringBuffer buffer = new StringBuffer();
