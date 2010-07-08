@@ -1,8 +1,5 @@
 target
-.classpath
-.settings
 .springBeans
-.project
 pom.xml.sav
 updateModules.sh
 pom.xml.sav2
