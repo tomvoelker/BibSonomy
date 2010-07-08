@@ -54,16 +54,17 @@ public class GoogleScholarScraper extends AbstractUrlScraper {
 	
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH + ".*")));
 	
-	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
+	@Override
+	protected boolean scrapeInternal(final ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
 		
 		try {
 			// get cookie
 			String cookie = WebUtils.getCookies(sc.getUrl());
 			
-			if(cookie != null){
+			if (cookie != null) {
 				// add :CF=4 to cookie value GSP=ID=
-				int index = cookie.indexOf(";", cookie.indexOf("GSP=ID="));
+				final int index = cookie.indexOf(";", cookie.indexOf("GSP=ID="));
 				cookie = cookie.substring(0, index) + ":CF=4" + cookie.substring(index);
 				
 				// download bibtex
@@ -76,13 +77,15 @@ public class GoogleScholarScraper extends AbstractUrlScraper {
 					// add downloaded bibtex to result 
 					sc.setBibtexResult(bibtex);
 					return true;
-				}else
-					throw new ScrapingFailureException("bibtex download failed");
+				}
 				
-			}else
-				throw new ScrapingFailureException("Cannot get cookie");
+				throw new ScrapingFailureException("bibtex download failed");
+				
+			}
 			
-		} catch (IOException ex) {
+			throw new ScrapingFailureException("Cannot get cookie");
+			
+		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 		
@@ -92,6 +95,7 @@ public class GoogleScholarScraper extends AbstractUrlScraper {
 		return INFO;
 	}
 
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
