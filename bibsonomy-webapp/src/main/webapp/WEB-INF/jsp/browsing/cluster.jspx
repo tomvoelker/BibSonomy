@@ -36,6 +36,8 @@
 				var bibTexEntries   = {};
           		var bookmarkEntries = {};
 
+          		var dateFormat       = "yyyy-MM-dd HH:mm:ss";
+
            	  	var communityBaseUrl = "${command.communityBaseUrl}";
           		var projectHome      = "${projectHome}";
           		var maxClusterCount  = "${command.maxClusterCount}";           	  
@@ -58,6 +60,9 @@
 
 			<!--  script for handling cluster based navigateion -->
 			<script type="text/javascript" src="${resdir}/javascript/clusterNavigation.js">&amp;nbsp;</script>
+
+			<!--  script for parsing and comparing dates -->
+			<script type="text/javascript" src="${resdir}/javascript/date.js">&amp;nbsp;</script>
 			
 		</jsp:attribute>
 		

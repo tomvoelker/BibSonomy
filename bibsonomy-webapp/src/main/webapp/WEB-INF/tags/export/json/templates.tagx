@@ -24,7 +24,7 @@
 					<a href="/editPublication?hash={intraHash|html-attr-value}&user={user|html-attr-value}&copytag={tags|html-param-list}" title=""></a>
 				</div>
 				<div class="bmtitle">
-					<a href="/bibtex/{intraHash|html-attr-value}">{label}</a>
+					<a href="/bibtex/{interHash|html-attr-value}">{label}</a>
 				</div>
 				<div class="bmdesc">
 					<span style="color: rgb(85, 85, 85);">
@@ -36,7 +36,7 @@
 						{.end}
 					</span>
 					(<em>{year}</em>)
-					<a onclick="$('.resource_{intraHash|html-attr-value}').toggle();">[+]</a> 
+					<a onclick="$('.resource_{interHash|html-attr-value}').toggle();">[+]</a> 
 				</div>
 				<span class="bmmeta">
 					<span class="bmtags">
@@ -48,6 +48,7 @@
 						{.end}
 					</span>
 					by <a name="{user}" href="/user/{user|html-attr-value}">{user|html}</a>
+					on {date|html}
 				</span>
    	      	</li>
 		]]>
@@ -67,10 +68,10 @@
 					<a href="/editPublication?hash={intraHash|html-attr-value}&user={user|html-attr-value}&copytag={tags|html-param-list}" title=""></a>
 				</div>
 				<span class="bmtitle">
-					<a href="/bibtex/{intraHash|html-attr-value}">{label}</a>					 
+					<a href="/bibtex/{interHash|html-attr-value}">{label}</a>					 
 				</span>
-				<a onclick="$('.resource_{intraHash|html-attr-value}').toggle();">[+]</a>
-				<div class="bmdesc resource_{intraHash|html-attr-value}" style="display:none;">
+				<a onclick="$('.resource_{interHash|html-attr-value}').toggle();">[+]</a>
+				<div class="bmdesc resource_{interHash|html-attr-value}" style="display:none;">
 				 	{description|html} 
 				</div>
 				<span class="bmmeta">
@@ -83,6 +84,7 @@
 				 		{.end}
 				 	</span>
 					by <a name="{user}" href="/user/{user|html-attr-value}">{user|html}</a>
+					on {date|html}
 				</span>
 			</li>
 		]]>
@@ -189,17 +191,19 @@
 	<c:set var="jsonClusterOverview">
 		<![CDATA[
 			<h1>Communities</h1><br/>
-			<span class="clusteringReload">
-				<a onclick="resetClusterView();reloadClustering();">[reload clustering]</a>
+			<span class="listhButtons clusteringReload">
+				<a class="clusterNavigation" onclick="resetClusterView();reloadClustering();">reload clustering</a>
 			</span><br/>
 			{.repeated section clusters}
 				<hr/>
 				{.section clusterID}
+					<span class="listhButtons clusterAddRemove">
 					{.if isClusterEnabled}
-						<a onclick="resetClusterView();removeCluster({clusterID|html-attr-value})">[remove cluster]</a>
+						<a class="clusterNavigation" onclick="resetClusterView();removeCluster({clusterID|html-attr-value})">remove cluster</a>
 					{.or}
-						<a onclick="addCluster({clusterID|html-attr-value},0.5)">[add cluster]</a>
+						<a class="clusterNavigation" onclick="addCluster({clusterID|html-attr-value},0.5)">add cluster</a>
 					{.end}
+					</span>
 				{.end}
 				<br/>
 				<div>
@@ -211,7 +215,7 @@
 				</div>
 				</div><br/>
 				<div style="text-align:center;clear:both;">
-					<a onclick="$('#clusterResources{clusterPos|html-attr-value}').toggle();loadClusterResources('clusterResources{clusterPos|html-attr-value}', {clusterPos|html-attr-value});">Toggle Resources</a>
+					<a class="clusterNavigation" onclick="$('#clusterResources{clusterPos|html-attr-value}').toggle();loadClusterResources('clusterResources{clusterPos|html-attr-value}', {clusterPos|html-attr-value});">Toggle Resources</a>
 				</div>
 				<div style="display:none;" id="clusterResources{clusterPos|html-attr-value}">
 					<p class="centeredImage">
@@ -233,9 +237,9 @@
 	    + =============================================================== +-->
 	<c:set var="jsonListNavigation">
 		<![CDATA[
-			<a onclick="showPreviousClusters()">prev</a>
+			<a class="clusterNavigation" onclick="showPreviousClusters()">prev</a>
 			|{@|listAnchors}
-			<a onclick="showNextClusters()">next</a>		
+			<a class="clusterNavigation" onclick="showNextClusters()">next</a>		
 		]]>
 	</c:set>
 	    

@@ -17,16 +17,19 @@ function loadContentCallback(response, status, xhr) {
 function reloadContent() {
 	// display the waiting circle
 	startWaiting('#wait_reloadContent');
+	
+	// determine in which ordering posts should be retrieved
+	var ordering = currentResourceOrdering;
 
 	// build query parameters
 	var queryParams = "";
 	for( i=0; i<numberOfClusters; i++ ) {
 		queryParams += "clusters["+i+"].clusterID="+clusterSettings.clusters[i].clusterID;
 		queryParams += "&clusters["+i+"].weight="+clusterSettings.clusters[i].weight;
-		if( i<numberOfClusters-1 ) {
-			queryParams += "&";
-		}
-	}
+		queryParams += "&";
+	};
+	
+	queryParams += "ordering="+ordering;
 
 	// query server for resources
 	$.getJSON(communityBaseUrl+'/queryResources?'+queryParams+'&format=json', function(data) {
@@ -96,15 +99,23 @@ var resourceRankings = {
 		"date"   : rankPostsByDate
 };
 
+var resourceOrderings = {
+		"weight" : "POPULAR",
+		"random" : "RANDOM",
+		"date"   : "ADDED"
+};
+
 /** determines which ranking should be applied */
-var currentResourceRanking = rankPostsByWeight;
+var currentResourceRanking  = rankPostsByWeight;
+var currentResourceOrdering = resourceOrderings["weight"];
 
 /**
  * sets the ranking to use
  */
 function setRanking(rankingId) {
 	if( rankingId in resourceRankings ) {
-		currentResourceRanking = resourceRankings[rankingId];
+		currentResourceRanking  = resourceRankings[rankingId];
+		currentResourceOrdering = resourceOrderings[rankingId];
 	}
 	reloadContent();
 }
@@ -204,7 +215,7 @@ function rankPostsByRandom(clusterResources) {
 			bibtexSampleCache[next] = 1;
 
 			post = cluster.bibtex[next];
-			post.clusterPos = cluster.clusterPos;
+			post.clusterPos = cluster.clusterPos.toString();
 			if( post.journal == undefined ) {
 				post.journal = "";
 			}
@@ -220,7 +231,7 @@ function rankPostsByRandom(clusterResources) {
 			bookmarkSampleCache[next] = 1;
 
 			post = cluster.bookmarks[next];
-			post.clusterPos = cluster.clusterPos;
+			post.clusterPos = cluster.clusterPos.toString();
 			bookmarkEntries.items.push(post);
 		}
 	}	
@@ -228,11 +239,25 @@ function rankPostsByRandom(clusterResources) {
 	shuffleArray(bibTexEntries.items);
 	shuffleArray(bookmarkEntries.items);
 }
-
 /**
- * get a random sample of the posts
+ * display newest posts first
  */
-function rankPostsByRandom2(clusterResources) {
+function rankPostsByDate(clusterResources) {
+	// helper for sorting resources
+	function dateComparator(obj1, obj2) {
+		var retVal = compareDates(obj2.date,dateFormat,obj1.date,dateFormat);
+		return retVal;
+	};
+
+	// helper for merging lists of resources 
+	function addPosts(arr1, arr2, clusterPos, weight) {
+		for( i=0; i<arr2.length; i++ ) {
+			normalizePost(arr2[i], clusterPos);
+			arr2[i].weight = arr2[i].weight * weight;
+			arr1.push(arr2[i]);
+		}
+	}
+
 	// init data structures
 	clusters = clusterResources.clusters;
 	bibTexEntries.items   = new Array();
@@ -247,52 +272,26 @@ function rankPostsByRandom2(clusterResources) {
 		weightSum += clusterSettings.clusters[i].weight;
 	}
 
-	// draw a random sample from each cluster, sized
-	// proportional to the user given weights
-	for( i=0; i<clusters.length; i++ ) {
-		cluster = clusters[i];
-		// create random index sequence
-		cluster.rndBibTexSeq   = new Array();
-		cluster.rndBookmarkSeq = new Array();
-		for( j=0; j<cluster.bookmarks.length; j++ ) {
-			cluster.rndBookmarkSeq[j] = j;
-		};
-		for( j=0; j<cluster.bibtex.length; j++ ) {
-			cluster.rndBibTexSeq[j] = j;
-		};
-		shuffleArray(cluster.rndBookmarkSeq);
-		shuffleArray(cluster.rndBibTexSeq);
+	for( j=0; j<clusters.length; j++ ) {
+		cluster = clusters[j];
 
-		// determine number of posts to sample
-		clusterPostCount     = Math.round(numberOfPosts * (clusterSettings.clusters[i].weight/weightSum));
+		// determine number of posts to display
+		clusterPostCount     = Math.round(numberOfPosts * (clusterSettings.clusters[j].weight/weightSum));
 		clusterBibTexCount   = Math.min(clusterPostCount, cluster.bibtex.length);
 		clusterBookmarkCount = Math.min(clusterPostCount, cluster.bookmarks.length);
 
-		// create BibTex sample
-		for( j=0; j<clusterBibTexCount; j++ ) {
-			post = cluster.bibtex[cluster.rndBibTexSeq[j]];
-			post.clusterPos = cluster.clusterPos;
-			if( post.journal == undefined ) {
-				post.journal = "";
-			}
-			bibTexEntries.items.push(post);
-		}
-
-		// create Bookmark sample
-		for( j=0; j<clusterBookmarkCount; j++ ) {
-			post = cluster.bookmarks[cluster.rndBookmarkSeq[j]];
-			post.clusterPos = cluster.clusterPos;
-			bookmarkEntries.items.push(post);
-		}
+		// sort resources by weight and copy the most important posts
+		// bibtex
+		// cluster.bibtex.sort(dateComparator);
+		addPosts(bibTexEntries.items, cluster.bibtex.slice(0, clusterBibTexCount), j.toString(), clusterSettings.clusters[j].weight);
+		// bookmark
+		// cluster.bookmarks.sort(dateComparator);
+		addPosts(bookmarkEntries.items, cluster.bookmarks.slice(0, clusterBookmarkCount), j.toString(), clusterSettings.clusters[j].weight);
 	}
-	// finally shuffle all posts
-	shuffleArray(bibTexEntries.items);
-	shuffleArray(bookmarkEntries.items);
-}
-/**
- * display newest posts first
- */
-function rankPostsByDate(clusterResources) {
+
+	// finally sort posts across clusters
+	bibTexEntries.items.sort(dateComparator);
+	bookmarkEntries.items.sort(dateComparator);
 }
 
 /**
