@@ -51,7 +51,7 @@ public class LdapUserinfo {
 	 */
 	public String generatePicaHash(String s) {
 		String prefix = "{PICA}";
-		byte[] b = s.getBytes();
+		byte[] b = s.toUpperCase().getBytes();
 
 		Integer hash = 0;
 
