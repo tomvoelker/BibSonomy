@@ -49,7 +49,7 @@
     </c:choose>
   </c:forEach>
 </p>
-   
+
 <div id="fullscreen">
     <div class="bluebox">
     
@@ -59,7 +59,7 @@
 	  </c:if>
 	
 	<!-- name of current tab -->
-    <h2>${command.tabDescription}</h2><br />
+    <h2><c:out value="${command.tabDescription}"/></h2><br />
     
     
     <!-- Tab: Status  -->
@@ -68,9 +68,9 @@
 	      <tr><th>SettingID</th><th>RecommenderID</th><th>average Latency</th></tr>
 	      <c:forEach var="recommender" items="${command.recOverview}">
 	        <tr>
-	          <td> ${recommender.settingID}</td>
-	          <td> ${recommender.recID}</td>
-	          <td> ${recommender.latency}ms</td>
+	          <td> <c:out value="${recommender.settingID}"/></td>
+	          <td> <c:out value="${recommender.recID}" /></td>
+	          <td> <c:out value="${recommender.latency}"/>ms</td>
 	        </tr>
 	      </c:forEach>
 	    </table>
@@ -78,7 +78,7 @@
 	    <br />
         <form:form name="latencyCalculation" action="/admin/recommender">
 		    <form:label path="queriesPerLatency"><fmt:message key="admin.recommender.latencyvalues"/></form:label>
-  		    <form:input path="queriesPerLatency">${command.queriesPerLatency}</form:input>
+  		    <form:input path="queriesPerLatency"><c:out value="${command.queriesPerLatency}"/></form:input>
   	        <input class="adminBtn" type="submit" />
 	    </form:form>
 	</c:if>
@@ -98,11 +98,11 @@
 	    <hr />
         <div class="compound">
         <form:form name="recommenderRemove" action="/admin/recommender?action=removerecommender">
-            <form:label path="deletesid"><fmt:message key="admin.recommender.remove"/></form:label><br />
+            <form:label path="deleteRecId"><fmt:message key="admin.recommender.remove"/></form:label><br />
             
-		  	<select name="deletesid" size="15">
+		  	<select name="deleteRecId" size="15">
 				<c:forEach var="rec" items="${command.activeRecommenders}">
-				  <option value="${rec.key}">${rec.key} - ${rec.value}</option>
+				  <option value="${rec.value}">${rec.key} - ${rec.value}</option>
 				</c:forEach>
 		  	</select>
 		  	
@@ -116,8 +116,8 @@
             <div class="compound">
  		    <br />
  		    <form:form name="recommenderEdit" action="/admin/recommender?action=editRecommender">
- 		    <form:label path="deletesid"><fmt:message key="admin.recommender.edit"/></form:label><br />
- 		    <input type="hidden" id="editId" name="deletesid"  />
+ 		    <form:label path="editSid"><fmt:message key="admin.recommender.edit"/></form:label><br />
+ 		    <input type="hidden" id="editId" name="editSid"  />
  		    <input type="text" id="editedRecurl" name="newrecurl" />
  		    <input type="submit" class="adminBtn" />
  		    </form:form>

@@ -78,7 +78,9 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	 * @return Entryset of currently deactivated recommenders 
 	 */
 	public Set<Entry<Long, String>> getDisabledRecommenders(){
-		if (disabledRecommenders == null) return null;
+		if (disabledRecommenders == null) {
+			return null;
+		}
 		return disabledRecommenders.entrySet();
 	}
 	
@@ -86,8 +88,9 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	 * @param t ordinal number of tab to be activated
 	 */
 	public void setTab(Integer t){
-		if(t>=0 && t<Tab.values().length)
+		if (t>=0 && t<Tab.values().length) {
 		  this.tab = Tab.values()[t];
+		}
 	}
 	/**
 	 * @param t Tab to be activated
@@ -163,8 +166,9 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	 */
 	public void setQueriesPerLatency(Long queriesPerLatency){
 		//only accept positive values
-		if(queriesPerLatency > 0)
+		if(queriesPerLatency > 0) {
 		   this.queriesPerLatency = queriesPerLatency;
+		}
 	}
 	/**
 	 * @return number of values which will be fetched from the database to calculate average recommender-latencies
