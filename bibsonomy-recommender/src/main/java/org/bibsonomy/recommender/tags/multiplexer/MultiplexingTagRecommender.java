@@ -30,6 +30,7 @@ import org.bibsonomy.recommender.tags.multiplexer.modifiers.PostModifier;
 import org.bibsonomy.recommender.tags.multiplexer.modifiers.RecommendedTagModifier;
 import org.bibsonomy.recommender.tags.multiplexer.strategy.RecommendationSelector;
 import org.bibsonomy.recommender.tags.multiplexer.strategy.SelectAll;
+import org.bibsonomy.recommender.tags.multiplexer.util.RecommenderUtil;
 import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
@@ -178,7 +179,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		//
 		for( TagRecommenderConnector con: getDistRecommenders() ) {
 			// each recommender is identified by an unique id:
-			registerRecommender(con, con.getId(), con.getInfo(), con.getMeta());
+			registerRecommender(con, RecommenderUtil.getRecommenderId(con), con.getInfo(), con.getMeta());
 		}
 		/*
 		*/
@@ -187,10 +188,10 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			// each recommender is identified by an unique id
 			registerRecommender(
 					rec, 
-					rec.getClass().getCanonicalName(), 
+					RecommenderUtil.getRecommenderId(rec), 
 					rec.getInfo(), 
 					null);
-		};
+		}
 		
 		//
 		// 2. Store the result selection strategy
@@ -705,40 +706,6 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			init();
 		}
 	}
-	
-	/** 
-	 *  Save all accessible local recommenders and their corresponding settingIds to a private Hashmap.  
-	 * @param localRecommenderLookup 
-	 */
-	/*
-	public void setLocalRecommenderLookup(List<TagRecommender> localRecommenderLookup) {
-		if (localRecommenderLookup == null || localRecommenderLookup.isEmpty())  return;
-		
-		this.localRecommenderAccessMap = new ConcurrentHashMap<Long, TagRecommender>();
-		
-		for (TagRecommender rec : localRecommenderLookup) {
-			if(rec == null) continue;
-			
-			Long sid = null;
-			String recId = rec.getClass().getCanonicalName();
-			
-			// Add recommender to database and retrieve settingId
-			try {
-				sid = dbLogic.insertRecommenderSetting(recId, rec.getInfo(), null);
-			} catch (SQLException ex) {
-				log.warn("Database-error while adding local recommender " + recId + " to the lookup-map ", ex);
-			} finally {
-				//On success save recommender in local backup-map so it can be accessed by its settingId
-				if (sid != null) {
-			        this.localRecommenderAccessMap.put(sid, rec);
-			    } else {
-				    log.warn("Could not retrieve settingId for local recommender " + recId);
-			    }
-			}
-		}
-		
-	}
-	*/
 	
 	public List<TagRecommender> getLocalRecommenderLookup() {
 		return new ArrayList<TagRecommender>(this.localRecommenderAccessMap.values());
