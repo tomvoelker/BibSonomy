@@ -4,13 +4,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
@@ -25,9 +23,7 @@ import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.ScraperMetadata;
-import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * Used to create, read, update and delete BibTexs from the database.
@@ -73,7 +69,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	@Override
 	@Deprecated // TODO: remove search is done by lucene 
-	public List<Post<BibTex>> getPostsSearchForGroup(final String groupName, Collection<String> visibleGroups, final String search, final String requestedUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<BibTex>> getPostsSearchForGroup(final String groupName, final Collection<String> visibleGroups, final String search, final String requestedUserName, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		/*
 		 * do lucene search
 		 */
@@ -92,34 +88,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
-	 * TODO: remove method
-	 * 
-	 * @param groupId
-	 * @param tagIndex
-	 * @param simHash
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @deprecated use {@link #getPostsViewable(String, String, int, HashID, int, int, Collection, DBSession)} instead
-	 * @return list of bibtex posts
-	 */
-	@Deprecated 
-	public List<Post<BibTex>> getPostsViewableByTag(final int groupId, final List<TagIndex> tagIndex, final HashID simHash, final int limit, final int offset, final DBSession session) {
-		final BibTexParam param = this.createParam(limit, offset);
-		param.setGroupId(groupId);
-		param.setTagIndex(tagIndex);
-		param.setSimHash(simHash);
-		
-		if (GroupID.isSpecialGroupId(param.getGroupId())) {
-			// show users own publications, which are private, public or for friends
-			param.setRequestedUserName(param.getUserName());
-			return this.getPostsByTagNamesForUser(param, session);
-		}
-		
-		return this.postList("getBibTexViewableByTag", param, session);
-	}
-	
-	/**
 	 * Prepares a query which returns all BibTex posts with the provided title.
 	 * 
 	 * @param title
@@ -135,36 +103,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setGrouping(GroupingEntity.ALL);
 		return this.postList("getBibTexByTitle", param, session);
 	}
-	
-	/**
-	 * TODO: document me
-	 * 
-	 * @param search
-	 * @param groupId
-	 * @param requestedUserName
-	 * @param userName 
-	 * @param requestedGroupName 
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of publication entries
-	 */
-	@Deprecated // TODO: remove; (old code)
-	public List<Post<BibTex>> getPostsByTitleLucene(final String search, final int groupId, final String requestedUserName, final String userName, final Set<String> requestedGroupName, final int limit, final int offset, final DBSession session) {
-		final ResourceSearch<BibTex> resourceSearch = this.getResourceSearch();
-		if (!present(resourceSearch)) {
-			log.error("No resource searcher available.");	
-			return new ResultList<Post<BibTex>>();
-		}
-		
-		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-		String group = groupDb.getGroupNameByGroupId(groupId, session);
-		
-		final long starttimeQuery = System.currentTimeMillis();
-		final List<Post<BibTex>> posts = resourceSearch.getPosts(userName, requestedUserName, group, null, search, null, null, null, null, null, null, limit, offset);
-		log.debug("LuceneBibTex complete query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
-		return posts;
-	}
 
 	/**
 	 * Prepares a query which returns all duplicate BibTex posts of the
@@ -179,7 +117,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param systemTags
 	 * @return list of bibtex posts
 	 */
-	public List<Post<BibTex>> getPostsDuplicate(final String requestedUserName, final List<Integer> visibleGroupIDs, final HashID simHash, final DBSession session, Collection<SystemTag> systemTags) {
+	public List<Post<BibTex>> getPostsDuplicate(final String requestedUserName, final List<Integer> visibleGroupIDs, final HashID simHash, final DBSession session, final Collection<SystemTag> systemTags) {
 		final BibTexParam param = this.getNewParam();
 		param.setRequestedUserName(requestedUserName);
 		param.setGroups(visibleGroupIDs);
@@ -354,49 +292,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		
 		return this.postList("getBibTexByAuthor", param, session);
 	}
-
-	/**
-	 * TODO: replace param firstYear LastYear Year with a SystemTag
-	 * TODO: improve doc
-	 * FIXME: check method
-	 * TODO: move time logging into Lucene!? @see {@link PostDatabaseManager#getPostsSearchLucene(int, String, String, String, java.util.Set, int, int, DBSession)}
-	 * 
-	 * FIXME: align method signature with {@link #getPostsByAuthor(String, int, String, String, int, int, Collection, DBSession)}
-	 * FIXME: remove tagIndex param
-	 * 
-	 * @param search
-	 * @param groupId
-	 * @param requestedUserName
-	 * @param requestedGroupName 
-	 * @param year 
-	 * @param firstYear 
-	 * @param lastYear 
-	 * @param limit
-	 * @param offset
-	 * @param simHash 
-	 * @param tagIndex 
-	 * @param session
-	 * @return list of bibtex entries
-	 */
-	@Deprecated // TODO: remove old code
-	public List<Post<BibTex>> getPostsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int limit, final int offset, final int simHash, final List<String> tagIndex, final DBSession session) {
-		if (!present(this.getResourceSearch())) {
-			log.error("No resource searcher available.");
-			return new ResultList<Post<BibTex>>();
-		}
-		
-		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-		String group = groupDb.getGroupNameByGroupId(groupId, session);
-		
-		final long starttimeQuery = System.currentTimeMillis();
-
-		final List<Post<BibTex>> postBibtexList = 
-			this.getResourceSearch().getPosts(null, null, group, null, null, null, search, tagIndex, year, firstYear, lastYear, limit, offset);
-			//searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
-		log.debug("LuceneBibTex complete query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
-			
-		return postBibtexList;
-	}
     
     /** 
      * <em>/author/MaxMustermann</em><br/><br/>
@@ -524,7 +419,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#insertPost(org.bibsonomy.database.params.ResourcesParam, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void insertPost(BibTexParam param, DBSession session) {
+	protected void insertPost(final BibTexParam param, final DBSession session) {
 		/*
 		 * store scraper meta data
 		 */
@@ -569,7 +464,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#onPostUpdate(java.lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void onPostUpdate(Integer oldContentId, Integer newContentId, DBSession session) {
+	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
 		this.plugins.onBibTexUpdate(oldContentId, newContentId, session);
 	}
 	
@@ -578,7 +473,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#onPostDelete(java.lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void onPostDelete(Integer contentId, DBSession session) {
+	protected void onPostDelete(final Integer contentId, final DBSession session) {
 		this.plugins.onBibTexDelete(contentId, session);
 	}
 
@@ -605,7 +500,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getInsertParam(org.bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected BibTexParam getInsertParam(Post<? extends BibTex> post, DBSession session) {
+	protected BibTexParam getInsertParam(final Post<? extends BibTex> post, final DBSession session) {
 		final BibTexParam insert = this.getNewParam();
 		insert.setResource(post.getResource());
 		insert.setRequestedContentId(post.getContentId());

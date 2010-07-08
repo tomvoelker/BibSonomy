@@ -1,7 +1,6 @@
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -103,7 +101,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * @param resourceSearch
 	 */
-	public void setResourceSearch(ResourceSearch<R> resourceSearch) {
+	public void setResourceSearch(final ResourceSearch<R> resourceSearch) {
 		this.resourceSearch = resourceSearch;
 	}
 
@@ -214,7 +212,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsByConceptForUser(final String loginUser, final String requestedUserName, final List<Integer> visibleGroupIDs, final List<TagIndex> tagIndex, boolean caseSensitive, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsByConceptForUser(final String loginUser, final String requestedUserName, final List<Integer> visibleGroupIDs, final List<TagIndex> tagIndex, final boolean caseSensitive, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(loginUser, requestedUserName, limit, offset);
 		param.setGroups(visibleGroupIDs);
 		param.setTagIndex(tagIndex);
@@ -427,7 +425,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForHomepage(final FilterEntity filter, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForHomepage(final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(limit, offset);
 		param.setGroupId(GroupID.PUBLIC);
 		param.setSimHash(HashID.INTER_HASH);
@@ -570,7 +568,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return list of posts
 	 */
 	@Deprecated // TODO: remove me; search is done by lucene (code for lucene also obsolete)
-	public List<Post<R>> getPostsSearchForGroup(final String groupName, final Collection<String> visibleGroups, final String search, final String loginUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsSearchForGroup(final String groupName, final Collection<String> visibleGroups, final String search, final String loginUserName, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if (this.isDoLuceneSearch()) {
 			final ResourceSearch<R> lucene = this.getResourceSearch();
 			if (!present(lucene)) {
@@ -591,8 +589,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		Integer groupId = this.groupDb.getGroupIdByGroupName(groupName, session);
 		param.setGroupId(groupId);
 		param.setSearch(search);
-		Collection<Integer> visibleGroupIDs = new LinkedList<Integer>();
-		for( String group : visibleGroups ) {
+		final Collection<Integer> visibleGroupIDs = new LinkedList<Integer>();
+		for( final String group : visibleGroups ) {
 			groupId = this.groupDb.getGroupIdByGroupName(group, session);
 			visibleGroupIDs.add(groupId);
 		}
@@ -621,50 +619,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param offset
 	 * @return a list of posts
 	 */
-	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, String requestedGroupName, final Collection<String> allowedGroups,final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, int limit, int offset) {
+	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups,final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final int limit, final int offset) {
 		if (this.isDoLuceneSearch() && present(this.resourceSearch)) {
 			return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
 		}
 
 		log.error("lucene search is maybe disabled (" + this.isDoLuceneSearch() + ") or no resource searcher is set");	
 		return new LinkedList<Post<R>>();
-	}
-
-	/**
-	 * TODO: check implementation
-	 * TODO: improve documentation
-	 * 
-	 * @param groupId
-	 * @param search
-	 * @param requestedUserName
-	 * @param loginUserName 
-	 * @param groupNames 
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of posts
-	 */
-	@Deprecated // TODO: remove me; old lucene method
-	public List<Post<R>> getPostsSearchLucene(final int groupId, final String search, final String requestedUserName, final String loginUserName, final Set<String> groupNames,  final int limit, final int offset, final DBSession session) {
-		final ResourceSearch<R> lucene = this.getResourceSearch();
-		if (!present(lucene)) {
-			log.error("No resource searcher available.");
-			return new LinkedList<Post<R>>();
-		}
-
-		String group = null;
-		if (presentValidGroupId(groupId)) {
-			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-			group = groupDb.getGroupNameByGroupId(groupId, session);
-		}
-
-		// get search results from lucene
-		final long starttimeQuery = System.currentTimeMillis();
-		final List<Post<R>> postList = lucene.getPosts(loginUserName, requestedUserName, group, null, search, null, null, null, null, null, null, limit, offset);
-		final long endtimeQuery = System.currentTimeMillis();
-		log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-
-		return postList;
 	}
 
 	/**
@@ -701,7 +662,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsViewable(final String requestedGroupName, final String loginUserName, int groupId, final HashID simHash, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsViewable(final String requestedGroupName, final String loginUserName, final int groupId, final HashID simHash, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if (GroupID.isSpecialGroupId(groupId)) {
 			// show users own posts, which are private, public or for friends
 			return this.getPostsForUser(loginUserName, loginUserName, HashID.INTER_HASH, groupId, new LinkedList<Integer>(), null, limit, offset, null, session);
@@ -767,7 +728,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName, final HashID simHash, final FilterEntity filter, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName, final HashID simHash, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
@@ -820,7 +781,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForMyGroupPosts(final String requestedUserName, final String loginUserName, final int limit, final int offset, final List<Integer> visibleGroupIDs, Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForMyGroupPosts(final String requestedUserName, final String loginUserName, final int limit, final int offset, final List<Integer> visibleGroupIDs, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
 		param.setGroups(visibleGroupIDs);
 		param.addAllToSystemTags(systemTags);
@@ -841,7 +802,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForMyGroupPostsByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final int limit, final int offset, final List<Integer> visibleGroupIDs, Collection<SystemTag> systemTags, final DBSession session){
+	public List<Post<R>> getPostsForMyGroupPostsByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final int limit, final int offset, final List<Integer> visibleGroupIDs, final Collection<SystemTag> systemTags, final DBSession session){
 		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
 		param.setTagIndex(tagIndex);
 		param.setGroups(visibleGroupIDs);
@@ -867,7 +828,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroupByTag(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName,  List<TagIndex> tagIndex, FilterEntity filter, int limit, int offset, Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForGroupByTag(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName,  final List<TagIndex> tagIndex, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setGroupId(groupId); 
 		param.setGroups(visibleGroupIDs);
@@ -1015,7 +976,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(loginUserName, requestedUserName);
 		param.setGroups(visibleGroupIDs);
 
-		Integer result = this.queryForObject("getGroup" + this.resourceClassName + "Count", param, Integer.class, session);
+		final Integer result = this.queryForObject("getGroup" + this.resourceClassName + "Count", param, Integer.class, session);
 		return present(result) ? result : 0;
 	}
 
@@ -1045,7 +1006,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @see org.bibsonomy.database.managers.CrudableContent#getPosts(org.bibsonomy.database.params.P, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public List<Post<R>> getPosts(P param, DBSession session) {
+	public List<Post<R>> getPosts(final P param, final DBSession session) {
 		return this.getChain().getFirstElement().perform(param, session);
 	}
 
@@ -1094,7 +1055,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * systemtags perform before create
 			 */
-			List<ExecutableSystemTag> systemTags = SystemTagsUtil.extractExecutableSystemTags(post.getTags(), new HashSet<Tag>());
+			final List<ExecutableSystemTag> systemTags = SystemTagsUtil.extractExecutableSystemTags(post.getTags(), new HashSet<Tag>());
 			for (final ExecutableSystemTag systemTag: systemTags) {
 				systemTag.performBeforeCreate(post, session);
 			}
@@ -1109,7 +1070,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			Post<R> postInDB = null;
 			try {
 				postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
-			} catch(ResourceMovedException ex) {
+			} catch(final ResourceMovedException ex) {
 				/*
 				 * getPostDetails() throws a ResourceMovedException for hashes for which
 				 * no actual post exists, but an old post has existed with that hash.
@@ -1175,7 +1136,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				// if yes, check if a post exists with the old intrahash
 				try {
 					oldPost = this.getPostDetails(userName, oldHash, userName, new ArrayList<Integer>(), session);
-				} catch(ResourceMovedException ex) {
+				} catch(final ResourceMovedException ex) {
 					/*
 					 * getPostDetails() throws a ResourceMovedException for hashes for which
 					 * no actual post exists, but an old post has existed with that hash.
@@ -1233,7 +1194,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			Post<R> newPostInDB = null; 
 			try {
 				newPostInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
-			} catch(ResourceMovedException ex) {
+			} catch (final ResourceMovedException ex) {
 				/*
 				 * getPostDetails() throws a ResourceMovedException for hashes for which
 				 * no actual post exists, but an old post has existed with that hash.
@@ -1305,7 +1266,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.validator.validateFieldLength(resource, resource.getIntraHash(), session);			
 	}
 
-	private void performUpdateAll(Post<R> post, Post<R> oldPost, DBSession session) {
+	private void performUpdateAll(final Post<R> post, final Post<R> oldPost, final DBSession session) {
 		session.beginTransaction();
 		try {
 
@@ -1394,12 +1355,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected void insertPost(final Post<R> post, final DBSession session) {
 		boolean errors = false;
 		if (!present(post.getResource())) {
-			ErrorMessage errorMessage = new MissingFieldErrorMessage("Resource");
+			final ErrorMessage errorMessage = new MissingFieldErrorMessage("Resource");
 			session.addError(post.getResource().getIntraHash(), errorMessage);
 			errors = true;
 		}
 		if (!present(post.getGroups())) {
-			ErrorMessage errorMessage = new MissingFieldErrorMessage("Groups");
+			final ErrorMessage errorMessage = new MissingFieldErrorMessage("Groups");
 			session.addError(post.getResource().getIntraHash(), errorMessage);
 			errors = true;
 		}
@@ -1475,13 +1436,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @see org.bibsonomy.database.managers.CrudableContent#deletePost(java.lang.String, java.lang.String, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean deletePost(String userName, String resourceHash, DBSession session) {
+	public boolean deletePost(final String userName, final String resourceHash, final DBSession session) {
 		Post<R> post = null;
 		try {
 			post = this.getPostDetails(userName, resourceHash, userName, new ArrayList<Integer>(), session);
-		} catch (ResourceMovedException ex) {
+		} catch (final ResourceMovedException ex) {
 			// ignore
-		} catch (ResourceNotFoundException ex) {
+		} catch (final ResourceNotFoundException ex) {
 			// ignore
 		}
 
@@ -1502,7 +1463,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return true iff the post was deleted successfully
 	 */
-	protected boolean deletePost(final Post<? extends R> post, boolean update, DBSession session) {
+	protected boolean deletePost(final Post<? extends R> post, final boolean update, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final String userName = post.getUser().getName();
