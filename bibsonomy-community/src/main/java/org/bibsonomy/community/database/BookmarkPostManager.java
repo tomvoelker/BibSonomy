@@ -29,7 +29,16 @@ public class BookmarkPostManager extends AbstractPostManager<Bookmark> {
 	
 	@Override
 	protected Collection<Post<Bookmark>> getPostsForCommunityInternal(CommunityResourceParam<Bookmark> param) {
-		return queryForList("getBookmarksForCommunity", param);
+		Collection<Post<Bookmark>> resources;
+		switch( param.getOrdering() ) {
+		case ADDED:
+			resources = queryForList("getNewestBookmarksForCommunity", param);
+			break;
+		default:
+			resources = queryForList("getBookmarksForCommunity", param);
+		};
+		
+		return resources;
 	}
 
 	@Override

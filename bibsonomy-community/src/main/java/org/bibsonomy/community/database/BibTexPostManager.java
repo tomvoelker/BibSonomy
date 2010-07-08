@@ -29,7 +29,16 @@ public class BibTexPostManager extends AbstractPostManager<BibTex> {
 	
 	@Override
 	protected Collection<Post<BibTex>> getPostsForCommunityInternal(CommunityResourceParam<BibTex> param) {
-		return queryForList("getBibTexForCommunity", param);
+		Collection<Post<BibTex>> resources;
+		switch( param.getOrdering() ) {
+		case ADDED:
+			resources = queryForList("getNewestBibTexForCommunity", param);
+			break;
+		default:
+			resources = queryForList("getBibTexForCommunity", param);
+		};
+		
+		return resources;
 	}
 
 	@Override

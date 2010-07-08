@@ -82,7 +82,7 @@ public class PostManagerTest {
 	 */
 	@Test
 	public void testBibTexPosts() throws Exception {
-		Collection<Post<BibTex>> posts = this.bibTexLogic.getPostsForCommunity(278, Ordering.POPULAR, 10, 0);
+		Collection<Post<BibTex>> posts = this.bibTexLogic.getPostsForCommunity(278, Ordering.ADDED, 10, 0);
 		log.debug("Got " + posts.size() + " posts.");
 	}	
 
@@ -92,7 +92,7 @@ public class PostManagerTest {
 	 */
 	@Test
 	public void testBookmarkPosts() throws Exception {
-		Collection<Post<Bookmark>> posts = this.bookmarkLogic.getPostsForCommunity(61, Ordering.POPULAR, 10, 0);
+		Collection<Post<Bookmark>> posts = this.bookmarkLogic.getPostsForCommunity(61, Ordering.ADDED, 10, 0);
 		log.debug("Got " + posts.size() + " posts.");
 	}	
 	

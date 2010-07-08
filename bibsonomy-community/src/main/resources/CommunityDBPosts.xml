@@ -19,6 +19,18 @@
 		ORDER BY r.p DESC
 		LIMIT #offset#, #limit#
 	</select>
+
+	<!-- get list of all public non-spam bibtex posts belonging to given community -->
+	<select id="getNewestBibTexForCommunity" parameterClass="resourceParam" resultMap="BibTexCommon.communityBibtexPost">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, 1 AS weight, m.community_uid
+		FROM $communityDBName$.community_mapping m
+		JOIN $communityDBName$.community c ON(m.run_id = c.run_id AND m.community_id = c.community_id) 
+		JOIN bibtex AS b ON (c.user_name = b.user_name)
+		WHERE m.community_uid = #communityId#
+		  AND b.group = 0
+		ORDER BY b.content_id DESC
+		LIMIT #offset#, #limit#
+	</select>
 	
 	<!-- get list of all public non-spam bookmarks belonging to given community -->
 	<select id="getBookmarksForCommunity" parameterClass="resourceParam" resultMap="BookmarkCommon.communityBookmarkPost">
@@ -32,6 +44,19 @@
 		  AND b.group = 0
 		GROUP BY r.hash
 		ORDER BY r.p DESC
+		LIMIT #offset#, #limit#
+	</select>
+
+	<!-- get list of all public non-spam bookmarks belonging to given community -->
+	<select id="getNewestBookmarksForCommunity" parameterClass="resourceParam" resultMap="BookmarkCommon.communityBookmarkPost">
+		SELECT <include refid ="bookmarkAttributes"/>, u.book_url, 1 AS weight, m.community_uid
+		FROM $communityDBName$.community_mapping m 
+		JOIN $communityDBName$.community c ON (m.run_id = c.run_id AND m.community_id = c.community_id)
+		JOIN bookmark AS b ON (c.user_name = b.user_name)
+		JOIN urls AS u USING (book_url_hash)
+		WHERE m.community_uid = #communityId#
+		  AND b.group = 0
+		ORDER BY b.content_id DESC
 		LIMIT #offset#, #limit#
 	</select>
 	
