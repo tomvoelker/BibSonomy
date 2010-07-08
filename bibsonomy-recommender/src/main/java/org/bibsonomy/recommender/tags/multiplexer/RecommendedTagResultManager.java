@@ -63,8 +63,8 @@ public class RecommendedTagResultManager {
 	 * @param qid
 	 */
 	public void stopQuery(Long qid) {
-		if( !resultStore.containsKey(qid) )
-			log.error("Tried to stop non-existant query");
+		if(qid == null || !resultStore.containsKey(qid) )
+			log.error("Tried to stop non-existant query " + qid);
 		else {
 			monitorFlag.put(qid, false);
 		}
