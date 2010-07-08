@@ -5,7 +5,6 @@
 	All aliases are collected here, because they must not exist twice (i.e. their names).
 -->
 <sqlMap namespace="TypeAliases">
-
 	<!-- Model types -->
 	<typeAlias alias="tag"                type="org.bibsonomy.model.Tag" />
 	<typeAlias alias="bookmark"           type="org.bibsonomy.model.Bookmark" />
@@ -20,6 +19,7 @@
 	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
 	<typeAlias alias="author"			  			type="org.bibsonomy.model.Author" />
 	<typeAlias alias="scraperMetadata"	  type="org.bibsonomy.model.ScraperMetadata" />
+	
 	<!-- Extras -->
 	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />
 	<typeAlias alias="extendedFields"     type="org.bibsonomy.model.extra.ExtendedFields" />
@@ -32,17 +32,13 @@
 	<typeAlias alias="statisticParam"     type="org.bibsonomy.database.params.StatisticsParam" />	
 	<typeAlias alias="userParam"          type="org.bibsonomy.database.params.UserParam" />
 	<typeAlias alias="groupParam"         type="org.bibsonomy.database.params.GroupParam" />
-	<typeAlias alias="tagParam"           type="org.bibsonomy.database.params.TagParam" />	
-	<typeAlias alias="tagTagBatchParam"   type="org.bibsonomy.database.params.beans.TagTagBatchParam" />
+	<typeAlias alias="tagParam"           type="org.bibsonomy.database.params.TagParam" />
 	<typeAlias alias="tagRelationParam"   type="org.bibsonomy.database.params.TagRelationParam" />
 	<typeAlias alias="documentParam"      type="org.bibsonomy.database.params.DocumentParam" />	
 	<typeAlias alias="adminParam"         type="org.bibsonomy.database.params.AdminParam" />
 	<typeAlias alias="statisticsParam"    type="org.bibsonomy.database.params.StatisticsParam" />	
 	<typeAlias alias="tagSetParam"    	  type="org.bibsonomy.database.params.TagSetParam" />
-	<typeAlias alias="authorParam"    	  type="org.bibsonomy.database.params.AuthorParam" />
 	<typeAlias alias="basketParam"    	  type="org.bibsonomy.database.params.BasketParam" />	
 	<typeAlias alias="inboxParam"		  		type="org.bibsonomy.database.params.InboxParam" />
 	<typeAlias alias="loggingParam"		  	type="org.bibsonomy.database.params.LoggingParam" />
-		
-
 </sqlMap>

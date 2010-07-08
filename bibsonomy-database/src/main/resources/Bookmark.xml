@@ -322,25 +322,6 @@
 		ORDER BY bb.inbox_date DESC, bb.content_id
 	</select>
 
-
-	<select id="getBookmarkSearchLucene" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam" >
-		SELECT	b2.content_id, b2.book_url_hash AS interhash, b2.book_url_hash AS intrahash, title, description, b2.date,
-				b2.user_name, b2.book_url, b2.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name
-		FROM 	(
-					SELECT b.content_id, b.book_url_hash, b.book_description AS title, b.book_extended AS description, b.date,
-						b.user_name, u.book_url, u.book_url_ctr
-	
-					FROM bookmark b, urls u, tempcids tids
-					WHERE
-							tids.cid = b.content_id
-						AND
-							u.book_url_hash = b.book_url_hash
-				) AS b2
-		LEFT OUTER JOIN tas AS t ON t.content_id = b2.content_id
-		ORDER BY b2.date DESC, b2.content_id
-	</select>
-
-
 	<select id="getBookmarkSearchCount" resultClass="int" parameterClass="bookmarkParam" timeout="1">
 		SELECT count(*)
 		FROM search_bookmark s
@@ -350,7 +331,6 @@
 		        s.user_name = #requestedUserName#
 		      </isNotNull>
 	</select>
-
 	
 	<!-- 
 		get the bookmarks in case of a fulltext search

@@ -20,13 +20,13 @@
 	<typeHandler javaType="Role" callback="org.bibsonomy.database.common.typehandler.RoleTypeHandlerCallback" />
 	<typeHandler javaType="Privlevel" callback="org.bibsonomy.database.common.typehandler.PrivlevelTypeHandlerCallback" />
 	<typeHandler javaType="ProfilePrivlevel" callback="org.bibsonomy.database.common.typehandler.ProfilePrivlevelTypeHandlerCallback" />
-    
+	
 	<transactionManager type="JDBC">
 		<dataSource type="JNDI">
 			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy_slave"/>
 		</dataSource>
 	</transactionManager>
-
+	
 	<sqlMap resource="common/TypeAliases.xml" />
 	<sqlMap resource="common/Common.xml" />
 	<sqlMap resource="common/BookmarkCommon.xml" />
@@ -54,7 +54,6 @@
 	<sqlMap resource="Admin.xml"/>
 	<sqlMap resource="Statistics.xml"/>
 	<sqlMap resource="Author.xml"/>
-	<sqlMap resource="Lucene.xml"/>
 	<sqlMap resource="Inbox.xml"/>
 	<sqlMap resource="Permission.xml"/>
 

@@ -54,7 +54,6 @@
 	<sqlMap resource="Admin.xml"/>
 	<sqlMap resource="Statistics.xml"/>
 	<sqlMap resource="Author.xml"/>
-	<sqlMap resource="Lucene.xml"/>
 	<sqlMap resource="Inbox.xml"/>
 	<sqlMap resource="Permission.xml"/>
 

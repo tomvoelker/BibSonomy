@@ -428,22 +428,6 @@
 		ORDER BY bb.date DESC, bb.content_id DESC								<!-- order for output -->
 	</select> 
 	
-	
-	<select id="getBibTexSearchLucene" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam" >
-		SELECT	<include refid ="allBibtexAttributes"/>, t.tag_name, b.ctr AS count,
-		        b.interHash, b.intraHash, NULL AS `group`, NULL AS group_name
-		FROM 	(
-					SELECT <include refid ="bibtexAttributes2"/>, h.ctr
-	
-					FROM bibtex b2, bibhash h, tempcids tids
-					WHERE
-							tids.cid = b2.content_id
-						AND	<include refid="bibtexSimHash2"/>
-				) AS b
-		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id
-		ORDER BY b.date DESC, b.content_id
-	</select>	
-
 	<select id="getBibTexSearchCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
 		SELECT count(*)
 		FROM search_bibtex s
