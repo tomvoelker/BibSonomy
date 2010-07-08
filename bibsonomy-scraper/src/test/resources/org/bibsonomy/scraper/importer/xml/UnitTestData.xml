@@ -1099,4 +1099,10 @@
 		<BibFile>ACMBasicScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_185">
+		<TestDescription>URL scraping test with publication from siencedirect</TestDescription>
+		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B758F-4YXK4HW-1&amp;_user=616166&amp;_coverDate=07%2F31%2F2010&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000032339&amp;_version=1&amp;_urlVersion=0&amp;_userid=616166&amp;md5=f5c400363dcb6cc7cfddf6c637c3484c</URL>
+		<BibFile>ScienceDirectScraperUnitURLTest6.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
+	</URLTest>
 </test:Tests>

@@ -85,6 +85,13 @@ public class ScienceDirectScraperTest {
 	}
 	
 	@Test
+	@Ignore
+	public void url6TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_185"));
+	}
+	
+	@Test
 	public void testCleanBibtex() {
 		final ScienceDirectScraper s = new ScienceDirectScraper();
 
