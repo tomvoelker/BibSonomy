@@ -814,7 +814,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**  
 	 * <em>/group/EineGruppe/EinTag+NochEinTag</em><br/><br/>
 	 * 
-	 * Does basically the same as getPostsForGroup with the additionaly
+	 * Does basically the same as getPostsForGroup with the additionally
 	 * possibility to restrict the tags the posts have to have.
 	 * 
 	 * @param groupId
@@ -828,11 +828,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroupByTag(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName,  final List<TagIndex> tagIndex, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForGroupByTag(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName, final List<TagIndex> tagIndex, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setGroupId(groupId); 
 		param.setGroups(visibleGroupIDs);
 		param.setTagIndex(tagIndex);
+		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
 
 		return getPostsForGroupByTag(param, session);
