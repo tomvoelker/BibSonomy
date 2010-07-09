@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-	<!--
-		Example: <systemtag> <name>tag</name>
-		<format>\\d{-2}:\\d{-2}:\\d{-4}</format> <attribute>
-		<name>Grouping</name> <value>User</value> </attribute> </systemtag>
-	-->
-<systemTagsCollection>
-</systemTagsCollection>
