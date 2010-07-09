@@ -66,6 +66,7 @@ public class UserChain implements FirstChainElement<User, UserParam> {
         this.getPendingUserByUsername.setNext(this.getPendingUserByActivationCode);
 	}
 
+	@Override
 	public ChainElement<User, UserParam> getFirstElement() {
 		return this.getUsersByGroup;
 	}

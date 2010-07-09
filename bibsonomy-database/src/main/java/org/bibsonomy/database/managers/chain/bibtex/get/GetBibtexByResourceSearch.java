@@ -8,6 +8,8 @@ import java.util.List;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByResourceSearch;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByResourceSearch;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -21,10 +23,10 @@ import org.bibsonomy.model.Post;
 public class GetBibtexByResourceSearch extends BibTexChainElement {
 
 	@Override
-	protected List<Post<BibTex>> handle(final BibTexParam param, DBSession session) {
+	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		// convert tag index to tag list
 		List<String> tagIndex = null;
-		if(present(param.getTagIndex())) {
+		if (present(param.getTagIndex())) {
 			tagIndex = extractTagNames(param.getTagIndex());
 		}
 		
@@ -43,14 +45,15 @@ public class GetBibtexByResourceSearch extends BibTexChainElement {
 	 * extracts list of tag names from given list of TagIndex instances
 	 * 
 	 * TODO: could we fill and use Generic.tags instead? 
+	 * TODO: code copy @see {@link GetBookmarksByResourceSearch#extractTagNames} and @see {@link GetTagsByResourceSearch#extractTagNames}
 	 * 
 	 * @param tagIndex
 	 * @return
 	 */
 	private List<String> extractTagNames(final List<TagIndex> tagIndex) {
-		List<String> retVal = new LinkedList<String>();
+		final List<String> retVal = new LinkedList<String>();
 		
-		for( TagIndex tagIdx : tagIndex ) {
+		for (final TagIndex tagIdx : tagIndex) {
 			retVal.add(tagIdx.getTagName());
 		}
 		

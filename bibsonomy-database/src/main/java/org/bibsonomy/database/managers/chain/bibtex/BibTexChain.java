@@ -103,6 +103,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getPublicationsFromBasketForUser.setNext(this.getPublicationsFromInbox);
 	}
 
+	@Override
 	public ChainElement<Post<BibTex>, BibTexParam> getFirstElement() {
 		return this.getPublicationsByKey;
 	}

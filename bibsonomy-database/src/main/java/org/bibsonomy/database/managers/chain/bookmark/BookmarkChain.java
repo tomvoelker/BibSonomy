@@ -95,6 +95,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 		this.getBookmarksByConceptForGroup.setNext(this.getBookmarksFromInbox);
 	}
 
+	@Override
 	public ChainElement<Post<Bookmark>, BookmarkParam> getFirstElement() {
 		return this.getBookmarksForHomePage;
 	}

@@ -34,6 +34,7 @@ public class ConceptChain implements FirstChainElement<Tag, TagRelationParam> {
 		this.getAllConceptsForUser.setNext(this.getPickedConceptsForUser);
 	}
 
+	@Override
 	public ChainElement<Tag, TagRelationParam> getFirstElement() {
 		return this.getAllConcepts;
 	}

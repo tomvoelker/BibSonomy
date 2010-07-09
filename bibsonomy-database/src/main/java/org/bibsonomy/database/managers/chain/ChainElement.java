@@ -48,6 +48,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 		this.next = nextElement;
 	}
 
+	@Override
 	public final List<L> perform(final P param, final DBSession session) {
 		return this.perform(param, session, null);
 	}
@@ -65,11 +66,15 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	 */
 	public final List<L> perform(final P param, final DBSession session, final ChainStatus chainStatus) {
 		if (this.canHandle(param)) {
-			if (chainStatus != null) chainStatus.setChainElement(this);
+			if (chainStatus != null) {
+				chainStatus.setChainElement(this);
+			}
 			log.debug("Handling Chain element: " + this.getClass().getSimpleName());
 			return this.handle(param, session);
 		}
-		if (this.next != null) return this.next.perform(param, session, chainStatus);
+		if (this.next != null) {
+			return this.next.perform(param, session, chainStatus);
+		}
 		throw new RuntimeException("Can't handle request for param object: " + param.toStringByReflection());
 	}
 

@@ -75,7 +75,8 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 		this.getPopularTags.setNext(this.getTagsByBibtexkey);
 		
 	}
-
+	
+	@Override
 	public ChainElement<Tag, TagParam> getFirstElement() {
 		return this.getTagsByUser;
 	}
