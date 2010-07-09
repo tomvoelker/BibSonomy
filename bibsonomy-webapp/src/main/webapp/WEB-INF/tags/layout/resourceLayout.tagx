@@ -17,7 +17,7 @@
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>	
-    <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
+    <jsp:directive.attribute name="beforeBodyClose" fragment="true" required="false"/>
 	
 	<!-- 
 		store some locale messages in variables to be
