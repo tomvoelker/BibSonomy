@@ -13,18 +13,28 @@
 	
 	<jsp:directive.attribute name="posts" type="java.util.Collection" required="true" description="some bookmarks"/>
 	<jsp:directive.attribute name="cssClass" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="showDescription" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="showMeta" type="java.lang.Boolean" required="false"/>
 
 	<ul class="${cssClass}">
 		<c:forEach items="${posts}" var="post">
 			<!-- <bm:title post="${post}"/> -->
 			<li>
 				<a class="bmtitle" href="${fn:escapeXml(post.resource.url)}"><c:out value="${post.resource.title}"/></a>
-				<span class="bmmeta">
+				<c:if test="${not empty showDescription and showDescription == true and not empty post.description}">
+					<span class="bmdesc">
+					<c:out value="${post.description}"/>
+					</span> 
 					<c:out value=" "/>
-					<fmt:message key="post.meta.taggedOn"/>
-					<c:out value=" "/>
-					<fmt:formatDate type="date" dateStyle="medium" value="${post.date}"/>
-				</span>
+				</c:if>
+				<c:if test="${empty showMeta or showMeta == true}">
+					<span class="bmmeta">
+						<c:out value=" "/>
+						<fmt:message key="post.meta.taggedOn"/>
+						<c:out value=" "/>
+						<fmt:formatDate type="date" dateStyle="medium" value="${post.date}"/>
+					</span>
+				</c:if>
 			</li>
 		</c:forEach>
 	</ul>
