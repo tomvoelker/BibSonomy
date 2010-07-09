@@ -417,7 +417,6 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			
 			return content;
 		}
-			
 		
 		return content;
 	}
@@ -549,10 +548,11 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			// and extract the bibtex entry
 			for (int i = 0; i < pres.getLength(); i++) {
 				final Node currNode = pres.item(i);
-				final NodeList childnodes = currNode.getChildNodes();
-				if (childnodes.getLength() > 0) {
-					bibtexEntries.append(" " + currNode.getChildNodes().item(0).getNodeValue().trim());
-				}
+//				final NodeList childnodes = currNode.getChildNodes();
+				bibtexEntries.append(XmlUtils.getText(currNode));
+//				if (childnodes.getLength() > 0) {
+//					bibtexEntries.append(" " + currNode.getChildNodes().item(0).getNodeValue().trim());
+//				}
 			}
 		}
 		

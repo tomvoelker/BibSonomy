@@ -1105,4 +1105,10 @@
 		<BibFile>ScienceDirectScraperUnitURLTest6.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_186">
+		<TestDescription>acm url test</TestDescription>
+		<URL>http://portal.acm.org/citation.cfm?id=1082036.1082037&amp;coll=Portal&amp;dl=GUIDE&amp;CFID=88775871&amp;CFTOKEN=40392553#</URL>
+		<BibFile>ACMBasicScraperUnitURLTest6.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
+	</URLTest>
 </test:Tests>

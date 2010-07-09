@@ -95,6 +95,13 @@ public class ACMBasicScraperTest {
 	
 	@Test
 	@Ignore
+	public void urlTestRun6(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_186"));
+	}
+	
+	@Test
+	@Ignore
 	public void test2() throws MalformedURLException {
 		
 		String url = "http://portal.acm.org/citation.cfm?id=500737.500755"; // abstract works
