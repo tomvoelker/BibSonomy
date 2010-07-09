@@ -61,6 +61,7 @@ public class DBSessionImpl implements DBSession {
 	 * started yet). Either transactionSuccess or transactionFailure MUST be
 	 * called hereafter.
 	 */
+	@Override
 	public void beginTransaction() {
 		if (this.aborted) {
 			// TODO: log message?!?
@@ -85,6 +86,7 @@ public class DBSessionImpl implements DBSession {
 	 * completed. If the transaction isn't virtual a following call to
 	 * endTransaction will do a commit on the real transaction.
 	 */
+	@Override
 	public void commitTransaction() {
 		if (this.uncommittedDepth > 0) {
 			--this.uncommittedDepth;
@@ -102,6 +104,7 @@ public class DBSessionImpl implements DBSession {
 	 * beginTransaction, sometimes with a preceeding call to commitTransaction,
 	 * sometimes (in case of an exception) without.
 	 */
+	@Override
 	public void endTransaction() {
 		if (this.transactionDepth > 0) {
 			--this.transactionDepth;
@@ -145,6 +148,7 @@ public class DBSessionImpl implements DBSession {
 	/**
 	 * MUST be called to release the db-connection
 	 */
+	@Override
 	public void close() {
 		try {
 			this.sqlMap.endTransaction();
@@ -191,7 +195,7 @@ public class DBSessionImpl implements DBSession {
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.common.DBSession#queryForList(java.lang.String, java.lang.Object)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List queryForList(final String query, final Object param) {
 		try {
