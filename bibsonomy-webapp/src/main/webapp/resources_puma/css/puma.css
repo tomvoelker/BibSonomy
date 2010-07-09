@@ -86,7 +86,7 @@ color:#FFFFFF;
 
 
 .sidebarroundcorner {
-background-color:#9ADFCF;
+background-color:#DF430D;
 float:right;
 padding:3px;
 width:23%;
@@ -107,14 +107,14 @@ margin-right:2ex;
 }
 
 .sidebarBoxInner {
-	padding: 5px;
 	background-color: #FBF7F4;
 	width: 100%;
 	padding: 0px;
+	padding-bottom: 1px;
 }
 
 .sidebarBoxOuter {
-	background-color: #9adfcf; 
+	background-color: #DF430D; 
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
@@ -303,3 +303,24 @@ input[type="submit"], input[type="button"], input[type="reset"] {
 div.help > a, div.help > b {
 	color:#DF430D;
 }
+
+
+.news .bmtitle {
+	font-size: 90%;
+	margin-bottom: 0.5ex;
+}
+
+.news .bmdesc {
+	font-size: 90%;
+	color: #000000;
+	display: block;
+}
+
+ul.news  {
+ margin-left: 5px !important;
+}
+
+.news li {
+	 list-style:none outside none;
+}
+

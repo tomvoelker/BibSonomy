@@ -59,7 +59,7 @@ function pumainit(){
 		}
 		else
 		{
-			$("#helpbox").toggle("slow");
+			$("#helpbox").toggle();
 		}
 	})
 

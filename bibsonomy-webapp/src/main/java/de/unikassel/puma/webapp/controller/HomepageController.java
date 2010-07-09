@@ -1,10 +1,13 @@
 package de.unikassel.puma.webapp.controller;
 
+import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.HomepageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -16,11 +19,11 @@ import org.bibsonomy.webapp.view.Views;
  * @author Dominik Benz
  * @version $Id$
  */
-public class HomepageController extends SingleResourceListController implements MinimalisticController<SimpleResourceViewCommand> {
+public class HomepageController extends SingleResourceListController implements MinimalisticController<HomepageCommand> {
 	private static final int MAX_TAGS = 50;
 	private static final Log log = LogFactory.getLog(HomepageController.class);
 
-	public View workOn(final SimpleResourceViewCommand command) {
+	public View workOn(final HomepageCommand command) {
 		/*
 		 * FIXME: implement filter=no parameter
 		 */
@@ -48,6 +51,12 @@ public class HomepageController extends SingleResourceListController implements 
 			command.setPageTitle("home");
 			command.setApplicationName("puma");
 			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
+
+			/*
+			 * add news posts (= latest blog posts) FIXME: make configurable
+			 */
+			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "puma", Arrays.asList("pumanews"), null, null, null, 0, 3, null));
+			
 			this.endTiming();
 			return Views.PUMAHOMEPAGE;		
 		}
@@ -66,7 +75,7 @@ public class HomepageController extends SingleResourceListController implements 
 		return MAX_TAGS;
 	}
 	
-	public SimpleResourceViewCommand instantiateCommand() {
-		return new SimpleResourceViewCommand();
+	public HomepageCommand instantiateCommand() {
+		return new HomepageCommand();
 	}
 }
