@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.model.util.PersonNameUtils;
 
 import bibtex.dom.BibtexAbstractValue;
 import bibtex.dom.BibtexEntry;
@@ -190,11 +191,11 @@ public class BibtexParserUtils {
 	 * @return
 	 */
 	private static String getFormattedPersonString(final BibtexEntry entry, final personField field) {
-		final StringBuilder personBuffer = new StringBuilder();
 		final BibtexAbstractValue fieldValue = entry.getFieldValue(field.getLabel());
 		log.debug("fieldValue: " + fieldValue);
 		if (fieldValue instanceof BibtexPersonList) {
 			final BibtexPersonList personsString = (BibtexPersonList) fieldValue;
+			final StringBuilder personBuffer = new StringBuilder();
 			log.debug("personsString: " + personsString);
 			if (personsString != null) {
 				@SuppressWarnings("unchecked") // BibtexPersonList.getList specified to return a list of BibtexPersons
@@ -220,23 +221,23 @@ public class BibtexParserUtils {
 						personString.append(" ").append(last);
 					}
 
-					personBuffer.append(personString).append(" and ");
+					personBuffer.append(personString).append(PersonNameUtils.PERSON_NAME_DELIMITER);
 					log.debug("personString: " + personString);
 				}
 				/* remove last " and " */
 				if (!personList.isEmpty()) {
-					return (personBuffer.substring(0, personBuffer.lastIndexOf(" and ")));
+					return (personBuffer.substring(0, personBuffer.lastIndexOf(PersonNameUtils.PERSON_NAME_DELIMITER)));
 				}
+				
 				// this means there was an error when trying to format this person
 				log.error(BIBTEX_IS_INVALID_MSG + "Error while trying to format person list: " + personsString);
 				throw new ValidationException(BIBTEX_IS_INVALID_MSG + "Error while trying to format person list: " + personsString);
 			}
-			// this means no author was given
-			return null;
 		} else if (fieldValue instanceof BibtexString) {
 			log.error(BIBTEX_IS_INVALID_MSG + "Error while trying to format person list: " + fieldValue);
 			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "Error while trying to format person list: " + fieldValue);
 		}
+		// this means no author was given
 		return null;
 	}		
 }
