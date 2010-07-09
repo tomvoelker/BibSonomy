@@ -1,0 +1,53 @@
+/**
+ *  
+ *  BibSonomy-Rest-Common - Common things for the REST-client and server.
+ *   
+ *  Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group, 
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *  
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ * 
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+package org.bibsonomy.common.exceptions;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+/**
+ * @author rja
+ * @version $Id$
+ */
+public class UnsupportedFileTypeExceptionTest {
+
+	@Test
+	public void testUnsupportedFileTypeException() {
+		
+		try {
+			throw new UnsupportedFileTypeException(new String[] {"pdf", "ps", "djv", "djvu"});
+		} catch (UnsupportedFileTypeException e) {
+			assertEquals("Please check your file. Only PDF, PS, DJV, or DJVU files are accepted.", e.getMessage());
+		}
+		
+		try {
+			throw new UnsupportedFileTypeException(new String[] { "html" });
+		} catch (UnsupportedFileTypeException e) {
+			assertEquals("Please check your file. Only HTML files are accepted.", e.getMessage());
+		}
+		
+	}
+
+}
