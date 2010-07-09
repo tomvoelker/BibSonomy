@@ -1111,4 +1111,11 @@
 		<BibFile>ACMBasicScraperUnitURLTest6.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_187">
+		<TestDescription>test for springerlink</TestDescription>
+		<URL>http://springerlink.metapress.com/content/rwcpxjqvqukhr76y/?p=ff5ebc2d45ad4c7ea5496fac12f85a05&amp;pi=25</URL>
+		<BibFile>SpringerLinkScraperUnitURLTest6.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
+		<Enabled>false</Enabled>
+	</URLTest>
 </test:Tests>
