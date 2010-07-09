@@ -20,6 +20,7 @@ public class DBLogicNoAuthInterfaceFactory implements LogicInterfaceFactory {
 
 	private DBSessionFactory dbSessionFactory;
 
+	@Override
 	public LogicInterface getLogicAccess(final String loginName, final String password) {
 		if (loginName != null) {
 			/*
@@ -37,7 +38,7 @@ public class DBLogicNoAuthInterfaceFactory implements LogicInterfaceFactory {
 	 * @param dbSessionFactory
 	 *            the {@link DBSessionFactory} to use
 	 */
-	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
+	public void setDbSessionFactory(final DBSessionFactory dbSessionFactory) {
 		this.dbSessionFactory = dbSessionFactory;
 	}
 
