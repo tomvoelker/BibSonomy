@@ -18,36 +18,48 @@ public class BasketPlugin extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				BasketDatabaseManager.getInstance().deleteItems(contentId, session);
 			}
+			
 		};
 	}
 	
 	@Override
 	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				BasketDatabaseManager.getInstance().deleteItems(contentId, session);
 			}
+			
 		};
 	}
 	
 	@Override
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				BasketDatabaseManager.getInstance().updateItems(newContentId, contentId, session);
 			}
+			
 		};
 	}
 	
 	@Override
 	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session){
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				BasketDatabaseManager.getInstance().updateItems(newContentId, contentId, session);
 			}
+			
 		};
 	}
 }

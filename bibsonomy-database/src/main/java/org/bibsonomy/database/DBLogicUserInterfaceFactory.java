@@ -29,6 +29,7 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	 * @see org.bibsonomy.model.logic.LogicInterfaceFactory#getLogicAccess(java.lang.String,
 	 *      java.lang.String)
 	 */
+	@Override
 	public LogicInterface getLogicAccess(final String loginName, final String password) {
 		if (loginName != null) {
 			final User loggedInUser = getLoggedInUser(loginName, password);
@@ -78,7 +79,7 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	 * @param dbSessionFactory
 	 *            the {@link DBSessionFactory} to use
 	 */
-	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
+	public void setDbSessionFactory(final DBSessionFactory dbSessionFactory) {
 		this.dbSessionFactory = dbSessionFactory;
 	}
 

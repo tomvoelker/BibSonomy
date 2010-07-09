@@ -22,6 +22,7 @@ public class TagStatisticChain implements FirstChainElement<Integer, StatisticsP
 		getRelationCountByUser = new GetRelationCountByUser();
 	}
 	
+	@Override
 	public ChainElement<Integer, StatisticsParam> getFirstElement() {
 		return this.getRelationCountByUser;
 	}

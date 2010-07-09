@@ -59,6 +59,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		getResourcesForUserInboxCount.setNext(defaultCatchAllCount);
 	}
 	
+	@Override
 	public ChainElement<Integer, StatisticsParam> getFirstElement() {
 		return this.getResourcesForGroupCount;
 	}

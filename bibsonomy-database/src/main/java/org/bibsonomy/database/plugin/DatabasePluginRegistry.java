@@ -66,7 +66,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 */
 	public void add(final DatabasePlugin plugin) {
 		final String key = plugin.getClass().getName();
-		if (this.plugins.containsKey(key)) throw new RuntimeException("Plugin already present " + key);
+		if (this.plugins.containsKey(key)) {
+			throw new RuntimeException("Plugin already present " + key);
+		}
 		this.plugins.put(key, plugin);
 	}
 
@@ -79,7 +81,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 
 	private void executeRunnable(final Runnable runnable) {
 		// If the runnable is null -> do nothing
-		if (runnable == null) return;
+		if (runnable == null) {
+			return;
+		}
 		// this.executor.execute(runnable);
 		runnable.run();
 	}
@@ -148,7 +152,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public Runnable onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, DBSession session) {
+	public Runnable onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onGoldStandardPublicationReferenceDelete(userName, interHashPublication, interHashReference, session));
 		}
@@ -183,6 +187,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		return null;
 	}
 
+	@Override
 	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onTagRelationDelete(upperTagName, lowerTagName, userName, session));
@@ -210,7 +215,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public Runnable onRemoveUserFromGroup(final String username, final int groupId, DBSession session) {
+	public Runnable onRemoveUserFromGroup(final String username, final int groupId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onRemoveUserFromGroup(username, groupId, session));
 		}

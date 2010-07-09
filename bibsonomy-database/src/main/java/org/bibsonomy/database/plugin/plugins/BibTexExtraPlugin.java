@@ -20,6 +20,8 @@ public class BibTexExtraPlugin extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				final BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 				// Delete link to related document
@@ -29,18 +31,22 @@ public class BibTexExtraPlugin extends AbstractDatabasePlugin {
 				// Delete id in bibtexturl table
 				bibtexExtraDb.deleteAllURLs(contentId, session);
 			}
+			
 		};
 	}
 
 	@Override
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				final BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 				bibtexExtraDb.updateURL(contentId, newContentId, session);
 				bibtexExtraDb.updateDocument(contentId, newContentId, session);
 				bibtexExtraDb.updateExtendedFieldsData(contentId, newContentId, session);
 			}
+			
 		};
 	}
 }

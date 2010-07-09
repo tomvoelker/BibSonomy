@@ -18,96 +18,113 @@ import org.bibsonomy.database.params.UserParam;
  */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
+	@Override
 	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
 		return null;
 	}
 
+	@Override
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
 		return null;
 	}
 
+	@Override
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return null;
 	}
 
 	@Override
-	public Runnable onGoldStandardPublicationCreate(String interhash, DBSession session) {
+	public Runnable onGoldStandardPublicationCreate(final String interhash, final DBSession session) {
 		return null;
 	}
 
 	@Override
-	public Runnable onGoldStandardPublicationDelete(String interhash, DBSession session) {
+	public Runnable onGoldStandardPublicationDelete(final String interhash, final DBSession session) {
 		return null;
 	}
 
 	@Override
-	public Runnable onGoldStandardPublicationUpdate(String newInterhash, String interhash, DBSession session) {
+	public Runnable onGoldStandardPublicationUpdate(final String newInterhash, final String interhash, final DBSession session) {
 		return null;
 	}
 	
 	@Override
-	public Runnable onGoldStandardPublicationReferenceCreate(String userName, String interHashPublication, String interHashReference) {
+	public Runnable onGoldStandardPublicationReferenceCreate(final String userName, final String interHashPublication, final String interHashReference) {
 		return null;
 	}
 
 	@Override
-	public Runnable onGoldStandardPublicationReferenceDelete(String userName, String interHashPublication, String interHashReference, DBSession session) {
+	public Runnable onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, final DBSession session) {
 		return null;
 	}
 
+	@Override
 	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
 		return null;
 	}
 
+	@Override
 	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
 		return null;
 	}
 
+	@Override
 	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return null;
 	}
 
+	@Override
 	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		return null;
 	}
 
-	public Runnable onConceptDelete(String conceptName, String userName, DBSession session) {
+	@Override
+	public Runnable onConceptDelete(final String conceptName, final String userName, final DBSession session) {
 		return null;
 	}
 	
+	@Override
 	public Runnable onTagDelete(final int contentId, final DBSession session) {
 		return null;
 	}
 
+	@Override
 	public Runnable onRemoveUserFromGroup(final String userName, final int groupId, final DBSession session) {
 		return null;
 	}
 
-	public Runnable onUserDelete(String userName, DBSession session) {
+	@Override
+	public Runnable onUserDelete(final String userName, final DBSession session) {
 		return null;
 	}
 
-	public Runnable onUserInsert(String userName, DBSession session) {
+	@Override
+	public Runnable onUserInsert(final String userName, final DBSession session) {
 		return null;
 	}
 
-	public Runnable onUserUpdate(String userName, DBSession session) {
+	@Override
+	public Runnable onUserUpdate(final String userName, final DBSession session) {
 		return null;
 	}
 
-	public Runnable onDeleteFellowship(UserParam param, DBSession session) {
+	@Override
+	public Runnable onDeleteFellowship(final UserParam param, final DBSession session) {
 		return null;
 	}
 
-	public Runnable onDeleteFriendship(UserParam param, DBSession session) {
+	@Override
+	public Runnable onDeleteFriendship(final UserParam param, final DBSession session) {
 		return null;
 	}
 
-	public Runnable onDeleteBasketItem(BasketParam param, DBSession session) {
+	@Override
+	public Runnable onDeleteBasketItem(final BasketParam param, final DBSession session) {
 		return null;
 	}
 	
-	public Runnable onDeleteAllBasketItems(String userName, DBSession session) {
+	@Override
+	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session) {
 		return null;
 	}
 }

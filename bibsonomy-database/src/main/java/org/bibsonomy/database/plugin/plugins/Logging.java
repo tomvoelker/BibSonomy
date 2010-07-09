@@ -28,6 +28,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				final BibTexParam param = new BibTexParam();
 				param.setRequestedContentId(contentId);
@@ -39,6 +41,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				final BibTexParam param = new BibTexParam();
 				param.setRequestedContentId(contentId);
@@ -96,6 +100,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				final BookmarkParam param = new BookmarkParam();
 				param.setRequestedContentId(contentId);
@@ -107,6 +113,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				final BookmarkParam param = new BookmarkParam();
 				param.setRequestedContentId(contentId);
@@ -120,6 +128,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				final TagRelationParam trp = new TagRelationParam();
 				trp.setOwnerUserName(userName);
@@ -133,6 +143,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onConceptDelete(final String conceptName, final String userName, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				final TagRelationParam trp = new TagRelationParam();
 				trp.setOwnerUserName(userName);
@@ -145,6 +157,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onTagDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				final TagParam param = new TagParam();
 				param.setRequestedContentId(contentId);
@@ -156,6 +170,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onRemoveUserFromGroup(final String userName, final int groupId, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				final GroupParam groupParam = new GroupParam();
 				groupParam.setGroupId(groupId);
@@ -169,6 +185,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onUserUpdate(final String userName, final DBSession session) {
 		return new Runnable() {
+			
+			@Override
 			public void run() {
 				insert("logUser", userName, session);
 			}
@@ -178,6 +196,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onDeleteFellowship(final UserParam param, final DBSession session){
 		return new Runnable(){
+			
+			@Override
 			public void run(){
 				insert("logFollowerDelete", param, session);
 			}
@@ -187,6 +207,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onDeleteFriendship(final UserParam param, final DBSession session){
 		return new Runnable(){
+			
+			@Override
 			public void run(){
 				insert("logFriendDelete", param, session);
 			}
@@ -196,6 +218,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onDeleteBasketItem(final BasketParam param, final DBSession session){
 		return new Runnable(){
+			
+			@Override
 			public void run(){
 				insert("logBasketItemDelete", param, session);
 			}
@@ -205,6 +229,8 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session){
 		return new Runnable(){
+			
+			@Override
 			public void run(){
 				insert("logDeleteAllFromBasket", userName, session);
 			}
