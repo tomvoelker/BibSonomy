@@ -105,7 +105,7 @@
              <![CDATA[
                 // vanishing error boxes
                 $(document).ready(function() {
-                	prepareErrorBoxes('.dissError');
+                	prepareErrorBoxes('dissError');
                 });
              ]]> 
              //</mtl:cdata>
