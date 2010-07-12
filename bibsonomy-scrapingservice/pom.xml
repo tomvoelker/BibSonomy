@@ -50,7 +50,7 @@
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.hp.hpl.jena</groupId>
 			<artifactId>jena</artifactId>
@@ -62,7 +62,7 @@
 			<version>2.2</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -74,10 +74,26 @@
 						<exclude>src/main/webapp/**</exclude>
 					</excludes>
 				</configuration>
-			</plugin>		
+			</plugin>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>
+								src/main/webapp/WEB-INF/lib
+							</directory>
+							<includes>
+								<include>**/*.jar</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-	
+
 	<distributionManagement>
 		<site>
 			<!-- copy site documentation via scp to gromit -->
@@ -87,7 +103,7 @@
 			</url>
 		</site>
 	</distributionManagement>
-	
+
 	<reporting>
 		<plugins>
 			<plugin>
