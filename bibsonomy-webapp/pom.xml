@@ -16,6 +16,7 @@
 	<description>The webapplication for Bibsonomy.</description>
 	<build>
 		<plugins>
+		<!--
 		<plugin>
 			<groupId>org.apache.myfaces.trinidadbuild</groupId>
 			<artifactId>maven-javascript-plugin</artifactId>
@@ -42,6 +43,7 @@
 					<warSourceExclude>*javascript/*.js</warSourceExclude>
 				</configuration>
 			</plugin>
+			-->
 			<plugin>
        			<groupId>org.antlr</groupId>
        			<artifactId>antlr3-maven-plugin</artifactId>
