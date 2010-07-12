@@ -129,6 +129,11 @@
 						<property name="controllerBeanName" value="tagPageController"/>
 					</bean>
 				</entry>
+				<entry key="/cluster">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="clusterPageController"/>
+					</bean>
+				</entry>
 				<entry key="/author">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="authorPageController"/>
@@ -412,6 +417,9 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</list>
 		</property>
+	</bean>
+
+	<bean id="clusterPageController" class="org.bibsonomy.webapp.controller.browsing.ClusterPageController" scope="request">
 	</bean>
 	
 	<bean id="authorPageController" class="org.bibsonomy.webapp.controller.AuthorPageController" scope="request">
