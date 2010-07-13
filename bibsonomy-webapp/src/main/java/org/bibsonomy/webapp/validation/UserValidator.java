@@ -28,7 +28,8 @@ public class UserValidator implements Validator<User> {
 	 *  
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
+	@Override
 	public boolean supports(final Class clazz) {
 		if (clazz != null) {
 			return User.class.isAssignableFrom(clazz);
@@ -40,6 +41,7 @@ public class UserValidator implements Validator<User> {
 	 * 
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
 	 */
+	@Override
 	public void validate(final Object userObj, final Errors errors) {
 
 		final User user = (User) userObj;

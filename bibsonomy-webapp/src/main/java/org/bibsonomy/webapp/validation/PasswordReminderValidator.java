@@ -14,11 +14,13 @@ import org.springframework.validation.ValidationUtils;
  */
 public class PasswordReminderValidator implements Validator<PasswordReminderCommand>{
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
+	@Override
 	public boolean supports(final Class arg0) {
 		return PasswordReminderCommand.class.equals(arg0);
 	}
 
+	@Override
 	public void validate(Object obj, Errors errors) {
 		
 		Assert.notNull(obj);

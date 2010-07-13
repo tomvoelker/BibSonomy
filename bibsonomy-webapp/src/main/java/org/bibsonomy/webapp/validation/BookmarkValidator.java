@@ -12,11 +12,13 @@ import org.springframework.validation.ValidationUtils;
  */
 public class BookmarkValidator implements Validator<Bookmark> {
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
+	@Override
 	public boolean supports(final Class clazz) {
 		return Bookmark.class.equals(clazz);
 	}
-
+	
+	@Override
 	public void validate(final Object obj, final Errors errors) {
 		
 		Assert.notNull(obj);

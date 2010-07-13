@@ -15,7 +15,7 @@ import org.springframework.validation.ValidationUtils;
  */
 public class UserLDAPRegistrationValidator implements Validator<UserLDAPRegistrationCommand>{
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean supports(Class clazz) {
 		return UserLDAPRegistrationCommand.class.equals(clazz);

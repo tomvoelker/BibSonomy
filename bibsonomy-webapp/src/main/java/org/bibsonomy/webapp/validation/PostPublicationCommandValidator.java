@@ -15,7 +15,8 @@ import org.springframework.validation.Errors;
  */
 public class PostPublicationCommandValidator implements Validator<PostPublicationCommand> {
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
+	@Override
 	public boolean supports(Class clazz) {
 		return PostPublicationCommand.class.equals(clazz);
 	}
@@ -23,6 +24,7 @@ public class PostPublicationCommandValidator implements Validator<PostPublicatio
 	/** This method names the errors of its target items "<resource.getInterHash()>".resource.<XYZ>
 	 * 
 	 */
+	@Override
 	public void validate(final Object target, final Errors errors) {
 		final PostPublicationCommand command = (PostPublicationCommand) target;
 		errors.pushNestedPath("bibtex");

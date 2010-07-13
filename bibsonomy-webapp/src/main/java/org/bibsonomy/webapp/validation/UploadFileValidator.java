@@ -12,11 +12,13 @@ import org.springframework.validation.Errors;
  */
 public class UploadFileValidator implements Validator<UploadFileCommand> {
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
+	@Override
 	public boolean supports(final Class arg0) {
 		return UploadFileCommand.class.equals(arg0);
 	}
 
+	@Override
 	public void validate(Object obj, final Errors errors) {
 		Assert.notNull(obj);
 		

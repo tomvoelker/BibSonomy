@@ -32,7 +32,8 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
+	@Override
 	public boolean supports(final Class clazz) {
 		return EditPostCommand.class.isAssignableFrom(clazz);
 	}
@@ -42,6 +43,7 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 	 * 
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
 	 */
+	@Override
 	public void validate(final Object obj, final Errors errors) {
 		/*
 		 * To ensure that the received command is not null, we throw an

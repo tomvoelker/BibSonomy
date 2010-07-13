@@ -2,8 +2,8 @@ package org.bibsonomy.webapp.validation;
 
 import org.bibsonomy.webapp.command.actions.ImportCommand;
 import org.bibsonomy.webapp.util.Validator;
-import org.springframework.validation.Errors;
 import org.springframework.util.Assert;
+import org.springframework.validation.Errors;
 
 /**
  * @author mwa
@@ -11,7 +11,8 @@ import org.springframework.util.Assert;
  */
 public class ImportValidator implements Validator<ImportCommand>{
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
+	@Override
 	public boolean supports(final Class clazz) {
 		return ImportCommand.class.equals(clazz);
 	}

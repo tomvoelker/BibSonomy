@@ -21,7 +21,7 @@ import bibtex.parser.ParseException;
  */
 public class PublicationValidator implements Validator<BibTex> {
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean supports(final Class clazz) {
 		return BibTex.class.isAssignableFrom(clazz);

@@ -25,7 +25,7 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 
 	private static final List<String> ALLOWED_GENDERS = Arrays.asList("f", "m");
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean supports(final Class clazz) {
 		return SettingsViewCommand.class.equals(clazz);
