@@ -12,7 +12,7 @@ import org.springframework.validation.ValidationUtils;
  */
 public class DeleteUserValidator implements Validator<SettingsViewCommand>{
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean supports(Class arg0) {
 		return SettingsViewCommand.class.equals(arg0);

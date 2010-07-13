@@ -12,11 +12,13 @@ import org.springframework.validation.ValidationUtils;
  */
 public class PasswordChangeOnRemindValidator implements Validator<PasswordChangeOnRemindCommand>{
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
+	@Override
 	public boolean supports(Class arg0) {
 		return PasswordChangeOnRemindCommand.class.equals(arg0);
 	}
-
+	
+	@Override
 	public void validate(Object arg0, Errors errors) {
 		// if command is null fail
 		Assert.notNull(arg0);
