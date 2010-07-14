@@ -43,7 +43,7 @@
 					<warSourceExclude>*javascript/*.js</warSourceExclude>
 				</configuration>
 			</plugin>
-			-->
+			 -->
 			<plugin>
        			<groupId>org.antlr</groupId>
        			<artifactId>antlr3-maven-plugin</artifactId>
@@ -67,6 +67,13 @@
        						<directory>src/main/webapp/WEB-INF/lib</directory>
        						<includes>
             					<include>**/*.jar</include>
+          					</includes>
+          					<followSymlinks>false</followSymlinks>
+        				</fileset>
+        				<fileset>
+       						<directory>src/main/webapp/WEB-INF/classes</directory>
+       						<includes>
+            					<include>**/*</include>
           					</includes>
           					<followSymlinks>false</followSymlinks>
         				</fileset>
