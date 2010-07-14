@@ -23,14 +23,13 @@ import org.springframework.web.servlet.view.AbstractView;
  * @author mwa
  * @version $Id$
  */
-public class ExportLayoutView extends AbstractView{
+public class ExportLayoutView extends AbstractView {
 
-	private static final Log log = LogFactory.getLog(LayoutView.class);
+	private static final Log log = LogFactory.getLog(ExportLayoutView.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
 		log.debug("ExportLayoutView - renderMergedOutputModel called");
 		/*
 		 * get the command data
@@ -52,15 +51,23 @@ public class ExportLayoutView extends AbstractView{
 			 * put each layout into a JSON-object and add it to the JSON-array
 			 */
 			final Map<String, JabrefLayout> layoutMap = command.getLayoutMap();
-			for (final String layoutName: layoutMap.keySet()){	
+			
+			for (final JabrefLayout layout : layoutMap.values()) {
 				/*
 				 * we return only public layouts
 				 */
+				if (layout.isPublicLayout()) {
+					jsonLayouts.put(JSONObject.fromObject(layout));
+				}
+			}
+			/* TODO remove?!
+			for (final String layoutName : layoutMap.keySet()){	
+				
 				final JabrefLayout layout = layoutMap.get(layoutName);
 				if (layout.isPublicLayout()){
 					jsonLayouts.put(JSONObject.fromObject(layout));
 				}
-			}
+			}*/
 
 			final JSONObject json = new JSONObject();
 			json.put("layouts", jsonLayouts);

@@ -37,7 +37,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 public class CSVView extends AbstractView {
 	private static final Log log = LogFactory.getLog(CSVView.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected void renderMergedOutputModel(final Map model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		/*
@@ -247,7 +247,7 @@ public class CSVView extends AbstractView {
 	 * @param model
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private BindingResult getBindingResult(final Map model){
 		for (final Object key : model.keySet() ){
 			if (((String)key).startsWith(BindingResult.MODEL_KEY_PREFIX)) {

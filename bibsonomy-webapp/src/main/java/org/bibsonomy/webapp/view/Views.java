@@ -570,6 +570,7 @@ public enum Views implements View {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.util.View#getName()
 	 */
+	@Override
 	public String getName() {
 		return this.name;
 	}

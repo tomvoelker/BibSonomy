@@ -36,7 +36,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 
 	private LayoutRenderer<LAYOUT> layoutRenderer;
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected void renderMergedOutputModel(final Map model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		/*
@@ -127,7 +127,6 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 	 * @throws IOException
 	 */
 	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<T>> posts, final String loginUserName, final HttpServletResponse response, final boolean formatEmbedded) throws LayoutRenderingException, IOException {
-
 		final LAYOUT layout = layoutRenderer.getLayout(layoutName, loginUserName);
 
 		log.info("got layout " + layout);
@@ -153,7 +152,6 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		 * write the buffer to the response
 		 */
 		response.getOutputStream().write(buf.toString().getBytes("UTF-8"));
-		
 	}
 
 	
@@ -161,11 +159,12 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
      * @param model
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
 	private BindingResult getBindingResult(final Map model){
         for (Object key : model.keySet() ){
-            if(((String)key).startsWith(BindingResult.MODEL_KEY_PREFIX))
-                return (BindingResult) model.get(key);
+            if (((String)key).startsWith(BindingResult.MODEL_KEY_PREFIX)) {
+            	return (BindingResult) model.get(key);
+            }             
         }
         return null;
     }

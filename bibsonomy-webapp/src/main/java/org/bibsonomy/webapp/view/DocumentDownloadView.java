@@ -24,7 +24,7 @@ import org.springframework.web.servlet.view.AbstractView;
  */
 public class DocumentDownloadView extends AbstractView{
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
