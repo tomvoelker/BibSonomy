@@ -27,6 +27,7 @@ public class ServersideModelValidator implements ModelValidator {
 	
 	private ServersideModelValidator() {}
 	
+	@Override
 	public void checkPublication(final BibTex publication) {
 		// parse Bibtex so see whether the entry is valid
 		final BibtexParserUtils bibutil = new BibtexParserUtils( BibTexUtils.toBibtexString(publication) );	
