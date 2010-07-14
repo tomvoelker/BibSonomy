@@ -36,17 +36,17 @@ public class PasswordChangeOnRemindValidatorTest {
 	/**
 	 * Tests if the validator fails if the're no arguments
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testValidateNullArgument() {
 		final PasswordChangeOnRemindValidator validator = new PasswordChangeOnRemindValidator();
+		@SuppressWarnings("rawtypes")
 		final Errors errors = new MapBindingResult(new HashMap(), "user");
 		
 		try {
 			validator.validate(null, errors);
 			fail("Should raise an IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
-			
+			// ok
 		}
 	}
 	
