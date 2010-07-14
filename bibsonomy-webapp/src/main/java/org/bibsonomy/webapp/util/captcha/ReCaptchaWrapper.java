@@ -13,7 +13,7 @@ import net.tanesha.recaptcha.ReCaptchaImpl;
  */
 public class ReCaptchaWrapper implements Captcha {
 
-	private ReCaptchaImpl reCaptcha;
+	private final ReCaptchaImpl reCaptcha;
 	
 	/**
 	 * Create a new instance of the CaptchaImplementation, which is a wrapper
@@ -23,10 +23,12 @@ public class ReCaptchaWrapper implements Captcha {
 		this.reCaptcha = new ReCaptchaImpl();
 	}
 	
+	@Override
 	public CaptchaResponse checkAnswer(String challenge, String response, String remoteAddr) {
 		return new ReCaptchaResponseWrapper(reCaptcha.checkAnswer(remoteAddr, challenge, response));
 	}
 
+	@Override
 	public String createCaptchaHtml(final Locale locale) {
 		final Properties props = new Properties();
 		/*

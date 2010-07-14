@@ -8,10 +8,12 @@ package org.bibsonomy.webapp.util.captcha;
  */
 public class MockCaptchaResponse implements CaptchaResponse {
 
+	@Override
 	public String getErrorMessage() {
 		return "No error occured.";
 	}
 
+	@Override
 	public boolean isValid() {
 		return true;
 	}
