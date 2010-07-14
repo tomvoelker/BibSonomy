@@ -27,71 +27,73 @@ import org.bibsonomy.recommender.tags.database.params.TasEntry;
  */
 public class DBLogicDummyImpl implements DBLogic {
 
-	private Map<Pair<Long, Long>, Collection<RecommendedTag>> recoMap = new HashMap<Pair<Long,Long>, Collection<RecommendedTag>>(); 
+	private final Map<Pair<Long, Long>, Collection<RecommendedTag>> recoMap = new HashMap<Pair<Long,Long>, Collection<RecommendedTag>>(); 
 	
-	private Map<String, Long> recos = new HashMap<String, Long>();
+	private final Map<String, Long> recos = new HashMap<String, Long>();
 	
 	
 	@Override
-	public Long addQuery(String userName, Date date, Post<? extends Resource> post, int postID, int queryTimeout) throws SQLException {
-		return new Long(0);
+	public Long addQuery(final String userName, final Date date, final Post<? extends Resource> post, final int postID, final int queryTimeout) throws SQLException {
+		return 0l;
 	}
 
 	@Override
-	public int addRecommendation(Long queryId, Long settingsId, SortedSet<RecommendedTag> tags, long latency) throws SQLException {
+	public int addRecommendation(final Long queryId, final Long settingsId, final SortedSet<RecommendedTag> tags, final long latency) throws SQLException {
 		return recoMap.put(new Pair<Long, Long>(queryId, settingsId), tags).size();
 	}
 
 	@Override
-	public Long addRecommender(Long queryId, String recId, String recDescr, byte[] recMeta) throws SQLException {
-		if (!recos.containsKey(recId)) recos.put(recId, new Long(recos.size())); 
+	public Long addRecommender(final Long queryId, final String recId, final String recDescr, final byte[] recMeta) throws SQLException {
+		if (!recos.containsKey(recId)) {
+			recos.put(recId, Long.valueOf(recos.size()));
+		} 
 		return recos.get(recId);
 	}
 
 	@Override
-	public Long addResultSelector(Long qid, String selectorInfo, byte[] selectorMeta) throws SQLException {
-		return new Long(0);
+	public Long addResultSelector(final Long qid, final String selectorInfo, final byte[] selectorMeta) throws SQLException {
+		return 0l;
 	}
 
 	@Override
-	public void addSelectedRecommender(Long qid, Long sid) throws SQLException {
+	public void addSelectedRecommender(final Long qid, final Long sid) throws SQLException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void connectWithPost(Post<? extends Resource> post, int postID) throws SQLException {
+	public void connectWithPost(final Post<? extends Resource> post, final int postID) throws SQLException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public List<Long> getActiveRecommenderIDs(Long qid) throws SQLException {
+	public List<Long> getActiveRecommenderIDs(final Long qid) throws SQLException {
 		return new LinkedList<Long>(recos.values());
 	}
 
 	@Override
-	public List<Long> getAllNotSelectedRecommenderIDs(Long qid) throws SQLException {
+	public List<Long> getAllNotSelectedRecommenderIDs(final Long qid) throws SQLException {
 		return new LinkedList<Long>();
 	}
 
 	@Override
-	public List<Long> getAllRecommenderIDs(Long qid) throws SQLException {
+	public List<Long> getAllRecommenderIDs(final Long qid) throws SQLException {
 		return new LinkedList<Long>(recos.values());
 	}
 
 	@Override
-	public Integer getContentIDForQuery(Long queryID) throws SQLException {
+	public Integer getContentIDForQuery(final Long queryID) throws SQLException {
 		return 0; // TODO
 	}
 
 	@Override
-	public Integer getContentIDForQuery(String userName, Date date, Integer postID) {
+	public Integer getContentIDForQuery(final String userName, final Date date, final Integer postID) {
 		return 0; // TODO
 	}
 
 	@Override
-	public <T extends Resource> List<Pair<String, Integer>> getMostPopularTagsForResource(Class<T> resourceType, String intraHash, int range) throws SQLException {
+	public <T extends Resource> List<Pair<String, Integer>> getMostPopularTagsForResource(final Class<T> resourceType, final String intraHash, final int range) throws SQLException {
 		final List<Pair<String, Integer>> mostPopularTagsForResource = new LinkedList<Pair<String,Integer>>();
 
 		mostPopularTagsForResource.add(new Pair<String, Integer>("mpResource1", 10));
@@ -105,7 +107,7 @@ public class DBLogicDummyImpl implements DBLogic {
 	}
 
 	@Override
-	public List<Pair<String, Integer>> getMostPopularTagsForUser(String username, int range) throws SQLException {
+	public List<Pair<String, Integer>> getMostPopularTagsForUser(final String username, final int range) throws SQLException {
 		final List<Pair<String, Integer>> mostPopularTagsForUser = new LinkedList<Pair<String,Integer>>();
 
 		mostPopularTagsForUser.add(new Pair<String, Integer>("mpUser1", 10));
@@ -119,153 +121,149 @@ public class DBLogicDummyImpl implements DBLogic {
 	}
 
 	@Override
-	public List<TasEntry> getNewestEntries(Integer offset, Integer range) throws SQLException {
+	public List<TasEntry> getNewestEntries(final Integer offset, final Integer range) throws SQLException {
 		return new LinkedList<TasEntry>(); // TODO
 	}
 
 	@Override
-	public <T extends Resource> Integer getNumberOfTagsForResource(Class<T> resourceType, String intraHash) throws SQLException {
+	public <T extends Resource> Integer getNumberOfTagsForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
 		return 5;
 	}
 
 	@Override
-	public Integer getNumberOfTagsForUser(String username) throws SQLException {
+	public Integer getNumberOfTagsForUser(final String username) throws SQLException {
 		return 5;
 	}
 
 	@Override
-	public <T extends Resource> Integer getNumberOfTasForResource(Class<T> resourceType, String intraHash) throws SQLException {
+	public <T extends Resource> Integer getNumberOfTasForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
 		return 5;
 	}
 
 	@Override
-	public Integer getNumberOfTasForUser(String username) throws SQLException {
+	public Integer getNumberOfTasForUser(final String username) throws SQLException {
 		return 5;
 	}
 
 	@Override
-	public List<RecQueryParam> getQueriesForRecommender(Long sid) throws SQLException {
+	public List<RecQueryParam> getQueriesForRecommender(final Long sid) throws SQLException {
 		return new LinkedList<RecQueryParam>();	
 	}
 
 	@Override
-	public RecQueryParam getQuery(Long qid) throws SQLException {
+	public RecQueryParam getQuery(final Long qid) throws SQLException {
 		return new RecQueryParam();
 	}
 
 	@Override
-	public Long getQueryForPost(String user_name, Date date, Integer postID) throws SQLException {
-		return new Long(0);
+	public Long getQueryForPost(final String user_name, final Date date, final Integer postID) throws SQLException {
+		return 0l;
 	}
 
 	@Override
-	public SortedSet<RecommendedTag> getRecommendations(Long qid, Long sid) throws SQLException {
+	public SortedSet<RecommendedTag> getRecommendations(final Long qid, final Long sid) throws SQLException {
 		return new TreeSet<RecommendedTag>(recoMap.get(new Pair<Long, Long>(qid, sid)));
 	}
 
 	@Override
-	public void getRecommendations(Long qid, Long sid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+	public void getRecommendations(final Long qid, final Long sid, final Collection<RecommendedTag> recommendedTags) throws SQLException {
 		recommendedTags.addAll(recoMap.get(new Pair<Long, Long>(qid, sid)));
 	}
 
 	@Override
-	public SortedSet<RecommendedTag> getRecommendations(Long qid) throws SQLException {
+	public SortedSet<RecommendedTag> getRecommendations(final Long qid) throws SQLException {
 		return new TreeSet<RecommendedTag>();
 	}
 
 	@Override
-	public void getRecommendations(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+	public void getRecommendations(final Long qid, final Collection<RecommendedTag> recommendedTags) throws SQLException {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public RecSettingParam getRecommender(Long sid) throws SQLException {
+	public RecSettingParam getRecommender(final Long sid) throws SQLException {
 		return new RecSettingParam();
 	}
 
 	@Override
-	public List<Pair<Long, Long>> getRecommenderSelectionCount(Long qid) throws SQLException {
+	public List<Pair<Long, Long>> getRecommenderSelectionCount(final Long qid) throws SQLException {
 		return new LinkedList<Pair<Long,Long>>();
 	}
 
 	@Override
-	public List<Long> getSelectedRecommenderIDs(Long qid) throws SQLException {
+	public List<Long> getSelectedRecommenderIDs(final Long qid) throws SQLException {
 		return new LinkedList<Long>();
 	}
 
 	@Override
-	public List<RecommendedTag> getSelectedTags(Long qid) throws SQLException {
+	public List<RecommendedTag> getSelectedTags(final Long qid) throws SQLException {
 		return new LinkedList<RecommendedTag>();
 	}
 
 	@Override
-	public SelectorSettingParam getSelector(Long sid) throws SQLException {
+	public SelectorSettingParam getSelector(final Long sid) throws SQLException {
 		return new SelectorSettingParam();
 	}
 
 	@Override
-	public List<String> getTagNamesForPost(Integer cid) throws SQLException {
+	public List<String> getTagNamesForPost(final Integer cid) throws SQLException {
 		return new LinkedList<String>();
 	}
 
 	@Override
-	public List<String> getTagNamesForRecQuery(Long sid, Long qid) throws SQLException {
+	public List<String> getTagNamesForRecQuery(final Long sid, final Long qid) throws SQLException {
 		return new LinkedList<String>();
 	}
 
 	@Override
-	public Integer guessPostFromQuery(Long query_id) throws SQLException {
+	public Integer guessPostFromQuery(final Long query_id) throws SQLException {
 		return 0;
 	}
 
 	@Override
-	public Long guessQueryFromPost(Integer content_id) throws SQLException {
-		return new Long(0);
+	public Long guessQueryFromPost(final Integer content_id) throws SQLException {
+		return 0l;
 	}
 
 	@Override
-	public boolean logRecommendation(Long qid, Long sid, long latency, SortedSet<RecommendedTag> tags, SortedSet<RecommendedTag> preset) throws SQLException {
+	public boolean logRecommendation(final Long qid, final Long sid, final long latency, final SortedSet<RecommendedTag> tags, final SortedSet<RecommendedTag> preset) throws SQLException {
 		return false;
 	}
 
 	@Override
-	public int storeRecommendation(Long qid, Long rid, Collection<RecommendedTag> result) throws SQLException {
+	public int storeRecommendation(final Long qid, final Long rid, final Collection<RecommendedTag> result) throws SQLException {
 		return recoMap.put(new Pair<Long, Long>(qid, rid), result).size();
 	}
 
 	@Override
-	public Integer getUserIDByName(String userName) {
+	public Integer getUserIDByName(final String userName) {
 		return 0;
 	}
 
 	@Override
-	public String getUserNameByID(int userID) {
+	public String getUserNameByID(final int userID) {
 		return "nouser";
 	}
 
-
-	public void addRecommenderToQuery(Long qid, Long sid) throws SQLException {
+	@Override
+	public void addRecommenderToQuery(final Long qid, final Long sid) throws SQLException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public Long insertRecommenderSetting(String recId, String recDescr,
-			byte[] recMeta) throws SQLException {
+	public Long insertRecommenderSetting(final String recId, final String recDescr, final byte[] recMeta) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Long insertSelectorSetting(String selectorInfo, byte[] selectorMeta)
-			throws SQLException {
+	public Long insertSelectorSetting(final String selectorInfo, final byte[] selectorMeta) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setResultSelectorToQuery(Long qid, Long rid)
-			throws SQLException {
+	public void setResultSelectorToQuery(final Long qid, final Long rid) throws SQLException {
 		// TODO Auto-generated method stub
 		
 	}
@@ -277,8 +275,7 @@ public class DBLogicDummyImpl implements DBLogic {
 	}
 
 	@Override
-	public Long getAverageLatencyForRecommender(Long sid, Long numberOfQueries)
-			throws SQLException {
+	public Long getAverageLatencyForRecommender(final Long sid, final Long numberOfQueries) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -290,36 +287,30 @@ public class DBLogicDummyImpl implements DBLogic {
 	}
 
 	@Override
-	public RecAdminOverview getRecommenderAdminOverview(String id)
-			throws SQLException {
+	public RecAdminOverview getRecommenderAdminOverview(final String id) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Map<Long, String> getRecommenderIdsForSettingIds(List<Long> sids)
-			throws SQLException {
+	public Map<Long, String> getRecommenderIdsForSettingIds(final List<Long> sids) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void updateRecommenderUrl(long sid, URL url) throws SQLException {
+	public void updateRecommenderUrl(final long sid, final URL url) throws SQLException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public void updateRecommenderstatus(List<Long> activeRecs,
-			List<Long> disabledRecs) throws SQLException {
+	public void updateRecommenderstatus(final List<Long> activeRecs, final List<Long> disabledRecs) throws SQLException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public void removeRecommender(String url) throws SQLException {
+	public void removeRecommender(final String url) throws SQLException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
