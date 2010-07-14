@@ -138,7 +138,7 @@ public class XMLRenderer implements Renderer {
 
 		this.validateXMLInput = "true".equals( properties.get(VALIDATE_XML_INPUT) );
 		this.validateXMLOutput = "true".equals( properties.get(VALIDATE_XML_OUTPUT) );
-		ModelFactory.getInstance().setModelValidator(properties.geModelValidator());
+		ModelFactory.getInstance().setModelValidator(properties.getModelValidator());
 
 		// we only need to load the XML schema if we validate input or output
 		if (this.validateXMLInput || this.validateXMLOutput) {
@@ -249,6 +249,7 @@ public class XMLRenderer implements Renderer {
 		}
 	}
 
+	@Override
 	public void serializePosts(final Writer writer, final List<? extends Post<? extends Resource>> posts, final ViewModel viewModel) throws InternServerException {
 		final PostsType xmlPosts = new PostsType();
 		if (viewModel != null) {
@@ -262,16 +263,21 @@ public class XMLRenderer implements Renderer {
 			xmlPosts.setStart(BigInteger.valueOf(0));
 			xmlPosts.setEnd(BigInteger.valueOf(0));
 		}
-		for (final Post<? extends Resource> post : posts) {
-			final PostType xmlPost = createXmlPost(post);
-			xmlPosts.getPost().add(xmlPost);
+		
+		if (present(posts)) {
+			for (final Post<? extends Resource> post : posts) {
+				final PostType xmlPost = createXmlPost(post);
+				xmlPosts.getPost().add(xmlPost);
+			}
 		}
+		
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setPosts(xmlPosts);
 		serialize(writer, xmlDoc);
 	}
 
+	@Override
 	public void serializePost(final Writer writer, final Post<? extends Resource> post, final ViewModel model) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -442,6 +448,7 @@ public class XMLRenderer implements Renderer {
 		if (post.getResource() == null) throw new InternServerException("error no ressource assigned!");
 	}
 
+	@Override
 	public void serializeUsers(final Writer writer, final List<User> users, final ViewModel viewModel) throws InternServerException {
 		final UsersType xmlUsers = new UsersType();
 		if (viewModel != null) {
@@ -455,15 +462,20 @@ public class XMLRenderer implements Renderer {
 			xmlUsers.setStart(BigInteger.valueOf(0));
 			xmlUsers.setEnd(BigInteger.valueOf(0));
 		}
-		for (final User user : users) {
-			xmlUsers.getUser().add(createXmlUser(user));
+		
+		if (present(users)) {
+			for (final User user : users) {
+				xmlUsers.getUser().add(createXmlUser(user));
+			}
 		}
+		
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUsers(xmlUsers);
 		serialize(writer, xmlDoc);
 	}
 
+	@Override
 	public void serializeUser(final Writer writer, final User user, final ViewModel viewModel) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -509,6 +521,7 @@ public class XMLRenderer implements Renderer {
 		return xmlUser;
 	}
 
+	@Override
 	public void serializeTags(final Writer writer, final List<Tag> tags, final ViewModel viewModel) throws InternServerException {
 		final TagsType xmlTags = new TagsType();
 		if (viewModel != null) {
@@ -522,15 +535,20 @@ public class XMLRenderer implements Renderer {
 			xmlTags.setStart(BigInteger.valueOf(0));
 			xmlTags.setEnd(BigInteger.valueOf(0));
 		}
-		for (final Tag tag : tags) {
-			xmlTags.getTag().add(createXmlTag(tag));
+		
+		if (present(tags)) {
+			for (final Tag tag : tags) {
+				xmlTags.getTag().add(createXmlTag(tag));
+			}
 		}
+		
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setTags(xmlTags);
 		serialize(writer, xmlDoc);
 	}
 
+	@Override
 	public void serializeTag(final Writer writer, final Tag tag, final ViewModel model) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -593,6 +611,7 @@ public class XMLRenderer implements Renderer {
 		return xmlTag;
 	}
 
+	@Override
 	public void serializeGroups(final Writer writer, final List<Group> groups, final ViewModel viewModel) throws InternServerException {
 		final GroupsType xmlGroups = new GroupsType();
 		if ( viewModel != null ) {
@@ -606,15 +625,20 @@ public class XMLRenderer implements Renderer {
 			xmlGroups.setStart(BigInteger.valueOf(0));
 			xmlGroups.setEnd(BigInteger.valueOf(0));
 		}
-		for (final Group group : groups) {
-			xmlGroups.getGroup().add(createXmlGroup(group));
+		
+		if (present(groups)) {
+			for (final Group group : groups) {
+				xmlGroups.getGroup().add(createXmlGroup(group));
+			}
 		}
+		
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setGroups(xmlGroups);
 		serialize(writer, xmlDoc);
 	}
 
+	@Override
 	public void serializeGroup(final Writer writer, final Group group, final ViewModel model) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -641,18 +665,21 @@ public class XMLRenderer implements Renderer {
 		return xmlGroup;
 	}
 
+	@Override
 	public void serializeOK(final Writer writer) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		serialize(writer, xmlDoc);
 	}
 
+	@Override
 	public void serializeFail(final Writer writer) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.FAIL);
 		serialize(writer, xmlDoc);
 	}	
 
+	@Override
 	public void serializeError(final Writer writer, final String errorMessage) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.FAIL);
@@ -660,6 +687,7 @@ public class XMLRenderer implements Renderer {
 		serialize(writer, xmlDoc);
 	}
 
+	@Override
 	public void serializeGroupId(final Writer writer, final String groupId) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -667,6 +695,7 @@ public class XMLRenderer implements Renderer {
 		serialize(writer, xmlDoc);		
 	}
 
+	@Override
 	public void serializeResourceHash(final Writer writer, final String hash) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -674,6 +703,7 @@ public class XMLRenderer implements Renderer {
 		serialize(writer, xmlDoc);		
 	}
 
+	@Override
 	public void serializeUserId(final Writer writer, final String userId) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -681,6 +711,7 @@ public class XMLRenderer implements Renderer {
 		serialize(writer, xmlDoc);		
 	}
 
+	@Override
 	public void serializeURI(final Writer writer, final String uri) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -688,6 +719,7 @@ public class XMLRenderer implements Renderer {
 		serialize(writer, xmlDoc);		
 	}	
 
+	@Override
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getError() != null) {
@@ -696,6 +728,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no error defined.");
 	}
 
+	@Override
 	public User parseUser(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 
@@ -706,6 +739,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user defined.");
 	}
 
+	@Override
 	public Post<? extends Resource> parsePost(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		
@@ -729,6 +763,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no post defined.");
 	}
 
+	@Override
 	public Group parseGroup(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 
@@ -739,6 +774,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no group defined.");
 	}
 
+	@Override
 	public List<Group> parseGroupList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getGroups() != null) {
@@ -753,6 +789,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of groups defined.");
 	}
 
+	@Override
 	public List<Post<? extends Resource>> parsePostList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getPosts() != null) {
@@ -767,6 +804,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of posts defined.");
 	}
 
+	@Override
 	public List<Tag> parseTagList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTags() != null) {
@@ -781,6 +819,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of tags defined.");
 	}
 
+	@Override
 	public List<User> parseUserList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getUsers() != null) {
@@ -817,6 +856,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of references defined.");
 	}
 	
+	@Override
 	public Tag parseTag(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTag() != null) {
@@ -826,6 +866,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no tag defined.");
 	}
 
+	@Override
 	public String parseStat(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getStat() != null) {
@@ -835,6 +876,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no status defined.");
 	}
 
+	@Override
 	public String parseGroupId(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getGroupid() != null) {
@@ -844,6 +886,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no group id.");
 	}
 
+	@Override
 	public String parseResourceHash(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getResourcehash() != null) {
@@ -853,6 +896,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no resource hash defined.");
 	}
 
+	@Override
 	public String parseUserId(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getUserid() != null) {
@@ -862,6 +906,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user id defined.");
 	}
 
+	@Override
 	public RecommendedTag parseRecommendedTag(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTag() != null) {
@@ -871,6 +916,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no tag defined.");
 	}
 
+	@Override
 	public SortedSet<RecommendedTag> parseRecommendedTagList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTags() != null) {
@@ -885,6 +931,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of tags defined.");
 	}
 
+	@Override
 	public void serializeRecommendedTag(final Writer writer, final RecommendedTag tag) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -892,10 +939,11 @@ public class XMLRenderer implements Renderer {
 		serialize(writer, xmlDoc);		
 	}
 	
+	@Override
 	public void serializeRecommendedTags(final Writer writer, final Collection<RecommendedTag> tags) {		
 		final TagsType xmlTags = new TagsType();
 		xmlTags.setStart(BigInteger.valueOf(0));
-		xmlTags.setEnd(BigInteger.valueOf(tags.size()));
+		xmlTags.setEnd(BigInteger.valueOf(tags != null ? tags.size() : 0));
 		if (tags != null) {
 			for (final RecommendedTag tag : tags) {
 				xmlTags.getTag().add(createXmlRecommendedTag(tag));

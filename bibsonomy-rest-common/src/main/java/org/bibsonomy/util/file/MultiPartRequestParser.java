@@ -40,9 +40,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
  * @version $Id$
  */
 public class MultiPartRequestParser {
-
 	// initialize the max size ~50MB
-	private final int MAX_REQUEST_SIZE = 1024 * 1024 * 51;
+	private static final int MAX_REQUEST_SIZE = 1024 * 1024 * 51;
+	
 	private List<FileItem> items;
 
 	/**

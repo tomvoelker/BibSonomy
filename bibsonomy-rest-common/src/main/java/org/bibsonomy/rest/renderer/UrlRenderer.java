@@ -43,30 +43,9 @@ import org.bibsonomy.rest.RestProperties.Property;
  * @version $Id$
  */
 public class UrlRenderer {
-	private static final String SLASH = "/";
-	
-	private final String userUrlPrefix;
-	private final String groupUrlPrefix;
-	private final String tagUrlPrefix;
-
-	private final String partsDelimiter = SLASH;
-	private final String postsUrlDelimiter;
-	private final String documentsUrlDelimiter;
-	
-	private final DateFormat dateFormat;
+	private static final String PARTS_DELIMITER = "/";
 	
 	private static UrlRenderer urlRenderer;
-	
-	private UrlRenderer() {
-		final RestProperties properties = RestProperties.getInstance();
-		final String apiUrl = properties.get(API_URL);
-		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + partsDelimiter;
-		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + partsDelimiter;
-		this.tagUrlPrefix = apiUrl + properties.get(URL_TAGS) + partsDelimiter;
-		this.postsUrlDelimiter = partsDelimiter + properties.get(URL_POSTS) + partsDelimiter;
-		this.documentsUrlDelimiter = partsDelimiter + properties.get(Property.URL_DOCUMENTS) + partsDelimiter;
-		this.dateFormat = new SimpleDateFormat(properties.get(Property.URL_DATE_FORMAT));
-	}
 
 	/**
 	 * @return An instance of {@link UrlRenderer}.
@@ -78,6 +57,26 @@ public class UrlRenderer {
 		return urlRenderer;
 	}
 	
+	
+	private final String userUrlPrefix;
+	private final String groupUrlPrefix;
+	private final String tagUrlPrefix;
+	
+	private final String postsUrlDelimiter;
+	private final String documentsUrlDelimiter;
+	
+	private final DateFormat dateFormat;
+	
+	private UrlRenderer() {
+		final RestProperties properties = RestProperties.getInstance();
+		final String apiUrl = properties.get(API_URL);
+		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + PARTS_DELIMITER;
+		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + PARTS_DELIMITER;
+		this.tagUrlPrefix = apiUrl + properties.get(URL_TAGS) + PARTS_DELIMITER;
+		this.postsUrlDelimiter = PARTS_DELIMITER + properties.get(URL_POSTS) + PARTS_DELIMITER;
+		this.documentsUrlDelimiter = PARTS_DELIMITER + properties.get(Property.URL_DOCUMENTS) + PARTS_DELIMITER;
+		this.dateFormat = new SimpleDateFormat(properties.get(Property.URL_DATE_FORMAT));
+	}	
 
 	/** Creates a URL which points to the given user. 
 	 * 
@@ -124,7 +123,7 @@ public class UrlRenderer {
 	 * @return A URL which points to the given resource.
 	 */
 	public String createHrefForResource(final String userName, final String intraHash, final Date date) {
-		return this.userUrlPrefix + userName + this.postsUrlDelimiter + intraHash + this.partsDelimiter + dateFormat.format(date);
+		return this.userUrlPrefix + userName + this.postsUrlDelimiter + intraHash + PARTS_DELIMITER + dateFormat.format(date);
 	}
 	
 	/** Creates a URL which points to the given document attached to the given resource.
