@@ -23,25 +23,28 @@ import org.bibsonomy.services.recommender.TagRecommender;
  */
 public class DummyTagRecommender implements TagRecommender, TagRecommenderConnector {
 	private static final Log log = LogFactory.getLog(DummyTagRecommender.class);
+	
+	
 	private boolean init = false;
-	private long wait = (long)(Math.random()*1000); 
+	private long wait = (long) (Math.random() * 1000); 
 	private Integer id = 0;
 	
 	/**  
 	 * Do nothing.
 	 * @see org.bibsonomy.services.recommender.TagRecommender#addRecommendedTags(java.util.Collection, org.bibsonomy.model.Post)
 	 */
+	@Override
 	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		log.info("Dummy recommender: addRecommendedTags.");
 
 		// create informative recommendation:
-		for( int i=0; i</*(int)(7*Math.random())+*/5; i++) {
+		for (int i = 0; i < 5; i++) {
 			double score = Math.random();
 			double confidence = Math.random();
 			DecimalFormat df = new DecimalFormat( "0.00" );
 			String re = "Dummy("+df.format(score)+","+df.format(confidence)+"["+getWait()+"])";
 			recommendedTags.add(new RecommendedTag(re, score, confidence));
-		};
+		}
 		
 		try {
 			Thread.sleep(getWait());
@@ -51,21 +54,20 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 		
 	}
 
+	@Override
 	public String getInfo() {
 		return "Dummy recommender which does nothing at all.";
 	}
 
+	@Override
 	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
 		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 		addRecommendedTags(recommendedTags, post);
 		return recommendedTags;
 	}
-
-	//------------------------------------------------------------------------
-	// RecommenderConnector interface implementation
-	//------------------------------------------------------------------------
+	
+	@Override
 	public boolean connect() throws Exception {
-		// TODO Auto-generated method stub
 		if( init )
 			log.info("connected!");
 		else
@@ -74,21 +76,21 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 		return true;
 	}
 
+	@Override
 	public boolean disconnect() throws Exception {
-		// TODO Auto-generated method stub
 		log.info("disconnected!");
 		return true;
 	}
 
+	@Override
 	public boolean initialize(Properties props) throws Exception {
-		// TODO Auto-generated method stub
 		log.info("initialized!");
 		init = true;
 		return true;
 	}
 
+	@Override
 	public byte[] getMeta() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -104,14 +106,23 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 		 */
 	}
 
+	/**
+	 * @return the wait
+	 */
+	public long getWait() {
+		return this.wait;
+	}
+
+	/**
+	 * @param wait the wait to set
+	 */
 	public void setWait(long wait) {
 		this.wait = wait;
-	}
-
-	public long getWait() {
-		return wait;
-	}
-
+	}	
+	
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(Integer id) {
 		this.id = id;
 	}

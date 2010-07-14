@@ -20,14 +20,14 @@ import org.bibsonomy.recommender.tags.simple.termprocessing.TermProcessingIterat
  * @version $Id$
  */
 public class SimpleContentBasedTagRecommender extends AbstractTagRecommender {
-
-
+	
 	/** Simply adds tags from the post's title to the given collection. The score of each tag
 	 * is its inverse position in the title, such that tags coming earlier will have a higher
 	 * score. 
 	 * 
 	 * @see org.bibsonomy.services.recommender.TagRecommender#addRecommendedTags(java.util.Collection, org.bibsonomy.model.Post)
 	 */
+	@Override
 	protected void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		final String title = post.getResource().getTitle();
 		if (title != null) {
@@ -52,7 +52,8 @@ public class SimpleContentBasedTagRecommender extends AbstractTagRecommender {
 			}
 		}
 	}
-
+	
+	@Override
 	public String getInfo() {
 		return "Simple content based recommender which extracts tags from title, description, URL.";
 	}

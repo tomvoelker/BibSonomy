@@ -19,6 +19,9 @@ public class TermProcessingIterator implements Iterator<String> {
 	private String next;
 	private final StopWordRemover stopwordRemover = StopWordRemover.getInstance();
 
+	/**
+	 * @param words
+	 */
 	public TermProcessingIterator(Iterator<String> words) {
 		this.words = words;
 		fetchNext();
@@ -42,10 +45,12 @@ public class TermProcessingIterator implements Iterator<String> {
 		}
 	}
 	
+	@Override
 	public boolean hasNext() {
 		return (next != null);
 	}
 
+	@Override
 	public String next() {
 		final String rVal;
 		if (next != null) {
@@ -58,6 +63,7 @@ public class TermProcessingIterator implements Iterator<String> {
 		return rVal;
 	}
 
+	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}

@@ -17,10 +17,14 @@ import org.apache.commons.logging.LogFactory;
  */
 public class StopWordRemover implements TermProcessor {
 	private static final Log log = LogFactory.getLog(StopWordRemover.class);
-	private static Collection<String> stopWords = null;
+	
 	private static final String stopWordFile = "multilangST.txt";
+	
 	private static StopWordRemover instance;
 	
+	/**
+	 * @return the {@link StopWordRemover} instance
+	 */
 	public static StopWordRemover getInstance() {
 		if (instance == null) {
 			instance = new StopWordRemover();
@@ -28,35 +32,37 @@ public class StopWordRemover implements TermProcessor {
 		return instance;
 	}
 	
+	private final Collection<String> stopWords;
+	
 	private StopWordRemover() {
-		if (stopWords == null) {
-			stopWords = new HashSet<String>();
-			try {
-				InputStream is = getClass().getResourceAsStream(stopWordFile);
-				if (is == null) {
-					throw new IOException("is == null");
-				}
-				BufferedReader r = new BufferedReader(new InputStreamReader(is,Charset.forName("UTF-8")));
-				String sw = r.readLine();
-				while (sw != null) {
-					stopWords.add(sw);
-					sw = r.readLine();
-				}
-			} catch (IOException e) {
-				log.fatal("Stopwordfile could not be loaded");
-				throw new RuntimeException(e);
+		this.stopWords = new HashSet<String>();
+		try {
+			InputStream is = getClass().getResourceAsStream(stopWordFile);
+			if (is == null) {
+				throw new IOException("is == null");
 			}
+			final BufferedReader r = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			String sw = null;
+			while ((sw = r.readLine()) != null) {
+				this.stopWords.add(sw);
+			}
+			
+			r.close();
+		} catch (IOException e) {
+			log.fatal("Stopwordfile could not be loaded");
+			throw new RuntimeException(e);
 		}
 	}
-
+	
+	@Override
 	public String process(String term) {
-		if (stopWords.contains(term) == false) {
+		if (!stopWords.contains(term)) {
 			log.debug("not removed word '" + term + "' with length " + term.length());
 			return term;
-		} else {
-			log.debug("removed stopword '" + term + "' with length " + term.length());
-			return null;
 		}
+		
+		log.debug("removed stopword '" + term + "' with length " + term.length());
+		return null;
 	}
 
 }

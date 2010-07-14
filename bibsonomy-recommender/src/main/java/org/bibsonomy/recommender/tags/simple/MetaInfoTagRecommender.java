@@ -29,6 +29,7 @@ import org.w3c.dom.NodeList;
 public class MetaInfoTagRecommender extends AbstractTagRecommender implements TagRecommenderConnector {
 	private static final Log log = LogFactory.getLog(MetaInfoTagRecommender.class);
 	
+	@Override
 	protected void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) ) {
 			String url = ((Bookmark)post.getResource()).getUrl();
@@ -57,6 +58,7 @@ public class MetaInfoTagRecommender extends AbstractTagRecommender implements Ta
 		}
 	}
 
+	@Override
 	public String getInfo() {
 		return "Recommender using html <meta> informations.";
 	}
@@ -88,21 +90,25 @@ public class MetaInfoTagRecommender extends AbstractTagRecommender implements Ta
 	}
 	
 
+	@Override
 	public boolean connect() throws Exception {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	@Override
 	public boolean disconnect() throws Exception {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	@Override
 	public byte[] getMeta() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public boolean initialize(Properties props) throws Exception {
 		// TODO Auto-generated method stub
 		return false;
