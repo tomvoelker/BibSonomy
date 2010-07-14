@@ -15,7 +15,8 @@ import org.bibsonomy.rest.strategy.concepts.GetConceptsStrategy;
  */
 public class ConceptsHandler implements ContextHandler {
 	
-	public Strategy createStrategy(Context context, StringTokenizer urlTokens, HttpMethod httpMethod) {
+	@Override
+	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
 		final int numTokensLeft = urlTokens.countTokens();
 
 		switch (numTokensLeft) {
@@ -28,7 +29,7 @@ public class ConceptsHandler implements ContextHandler {
 		case 1:
 			// /concepts/[conceptname]
 			if (HttpMethod.GET == httpMethod) {
-				String conceptName = urlTokens.nextToken();
+				final String conceptName = urlTokens.nextToken();
 				return new GetConceptDetailsStrategy(context, conceptName);
 			}
 			break;
