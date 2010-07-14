@@ -109,7 +109,7 @@ public class PublicationValidatorTest {
 		posts.add(post2);
 		posts.add(post1);
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		final MapBindingResult errors = new MapBindingResult(new HashMap(), "command");
 
 		final PostListValidator valid = new PostListValidator();
@@ -140,7 +140,7 @@ public class PublicationValidatorTest {
 		 * validate the post
 		 */
 		final BibTex resource = posts.get(0).getResource();
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		final MapBindingResult errors = new MapBindingResult(new HashMap(), "bibtex");
 		
 		ValidationUtils.invokeValidator(new PublicationValidator(), resource, errors);
@@ -153,20 +153,19 @@ public class PublicationValidatorTest {
 	}
 
 
-	public static class PostListValidator implements Validator {
+	private static class PostListValidator implements Validator {
 		private final PublicationValidator postValidator = new PublicationValidator();
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		@Override
 		public boolean supports(Class clazz) {
 			return true;
 		}
-
 		
 		@Override
 		public void validate(Object target, Errors errors) {
 			if (target instanceof List<?>) {
-				@SuppressWarnings("unchecked")
+				@SuppressWarnings({ "rawtypes", "unchecked" })
 				final List<Post<BibTex>> posts = (List) target;
 
 				final ListIterator<Post<BibTex>> listIterator = posts.listIterator();
@@ -200,7 +199,7 @@ public class PublicationValidatorTest {
 	}
 	
 	private MapBindingResult validate(EditPostCommand<BibTex> command) {
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		final MapBindingResult errors = new MapBindingResult(new HashMap(), "user");
 		postValidator.validate(command, errors);
 		return errors;

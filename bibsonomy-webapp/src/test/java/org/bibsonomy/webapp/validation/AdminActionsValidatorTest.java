@@ -40,7 +40,7 @@ public class AdminActionsValidatorTest {
 			validator.validate(null, errors);
 			Assert.fail("Should raise an IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
-			
+			// ignore
 		}
 	}
 	

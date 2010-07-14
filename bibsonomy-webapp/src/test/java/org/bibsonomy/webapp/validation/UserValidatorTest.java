@@ -40,7 +40,7 @@ public class UserValidatorTest {
 			validator.validate(null, errors);
 			Assert.fail("Should raise an IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
-			
+			// ok
 		}
 	}
 

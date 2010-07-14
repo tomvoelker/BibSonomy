@@ -47,9 +47,9 @@ public class UserRegistrationValidatorTest {
 	/**
 	 * tests, if null can be validated
 	 */
-	@SuppressWarnings("unchecked")
 	@Test(expected = IllegalArgumentException.class)
 	public void testValidateNullArgument() {
+		@SuppressWarnings("rawtypes")
 		final Errors errors = new MapBindingResult(new HashMap(), "user");
 		
 		validator.validate(null, errors);
@@ -58,9 +58,9 @@ public class UserRegistrationValidatorTest {
 	/**
 	 * registerUser = null should not pass validation
 	 */
-	@SuppressWarnings("unchecked")
 	@Test(expected = IllegalArgumentException.class)
 	public void testValidateNullUser() {
+		@SuppressWarnings("rawtypes")
 		final Errors errors = new MapBindingResult(new HashMap(), "user");
 		
 		final UserRegistrationCommand command = new UserRegistrationCommand();
