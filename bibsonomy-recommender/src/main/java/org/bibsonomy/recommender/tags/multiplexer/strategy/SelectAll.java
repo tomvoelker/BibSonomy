@@ -28,21 +28,25 @@ public class SelectAll implements RecommendationSelector {
 		dbLogic.getRecommendations(qid, recommendedTags);
 	}
 
+	@Override
 	public String getInfo() {
 		// TODO Auto-generated method stub
 		return info;
 	}
 
+	@Override
 	public void setInfo(String info) {
 		this.info = info;
 	}
 
 
+	@Override
 	public byte[] getMeta() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public void setMeta(byte[] meta) {
 		// TODO Auto-generated method stub
 		

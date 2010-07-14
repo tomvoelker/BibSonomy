@@ -33,8 +33,6 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 	 */
 	@Override
 	public void selectResult(Long qid, RecommendedTagResultManager resultCache, Collection<RecommendedTag> recommendedTags) throws SQLException {
-		// TODO Auto-generated method stub
-		
 		log.debug("("+qid+")Selecting result.");
 		
 		// get list of recommenders which delivered tags in given query
@@ -66,14 +64,12 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 		log.debug("("+qid+")Selecting result #3");
 
 		// if no recommendation available, append nothing
-		if( listAll.size()==0 || listActive.size()==0 ) {
+		if( listAll.size() == 0 || listActive.size() == 0 ) {
 			log.debug("("+qid+")No results available!");
 			return;
 		}
 		// select recommender
-		Long sid = listAll.get(
-					new Double(Math.floor((Math.random()*listAll.size()))).intValue()
-				);
+		Long sid = listAll.get((int) Math.floor((Math.random() * listAll.size())));
 		// store selection in database
 		dbLogic.addSelectedRecommender(qid, sid);
 		log.debug("("+qid+")Selected setting " + sid + " out of "+listActive.size()+"/"+listAll.size());
@@ -84,18 +80,16 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 			Long next = i.next();
 			if( next.equals(sid) ) 
 				isActive = true;
-		};
+		}
 		// if not, select a fall back recommender
 		if( !isActive ) {
-			sid = listActive.get(
-					new Double(Math.floor((Math.random()*listActive.size()))).intValue()
-				);
+			sid = listActive.get((int) Math.floor((Math.random()*listActive.size())));
 			log.debug("("+qid+")Selected setting not active, fall back is " + sid);
-		};
+		}
 		
 		// finally get recommended tags
 		SortedSet<RecommendedTag> cachedResult = resultCache.getResults(qid,sid);
-		if( cachedResult!=null ) {
+		if( cachedResult != null ) {
 			recommendedTags.addAll(cachedResult);
 		} else {
 			// this shouldn't happen!
@@ -105,20 +99,24 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 			
 	}	
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	public void setInfo(String info) {
 		this.info = info;
 	}
 
 
+	@Override
 	public byte[] getMeta() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public void setMeta(byte[] meta) {
 		// TODO Auto-generated method stub
 		

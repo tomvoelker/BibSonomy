@@ -134,7 +134,6 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * 
 	 * IMPORTANT: this init method has to be set in the spring bean definition
 	 * <bean id="..." class="..." init-method="init"/>
-	 * @throws SQLException 
 	 */
 	public void init() {
 		//

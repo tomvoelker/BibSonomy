@@ -12,7 +12,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.AbstractTagRecommender;
 import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.database.params.Pair;
-import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
  * Returns the most popular (i.e., most often attached) tags of the resource as 
@@ -21,11 +20,13 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * @author fei
  * @version $Id$
  */
-public class MostPopularByResourceTagRecommender extends AbstractTagRecommender implements TagRecommender {
+public class MostPopularByResourceTagRecommender extends AbstractTagRecommender {
 	private static final Log log = LogFactory.getLog(MostPopularByResourceTagRecommender.class);
 
+	
 	private DBLogic dbLogic;
 	
+	@Override
 	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 
 		final Resource resource = post.getResource();
@@ -63,15 +64,22 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 			log.debug("Could not get recommendations, because no intraHash was given.");
 		}
 	}
-
+	
+	@Override
 	public String getInfo() {
 		return "Most Popular Tags By Resource Recommender";
 	}
 
+	/**
+	 * @return the dbLogic
+	 */
 	public DBLogic getDbLogic() {
 		return this.dbLogic;
 	}
 
+	/**
+	 * @param dbLogic the dbLogic to set
+	 */
 	public void setDbLogic(DBLogic dbLogic) {
 		this.dbLogic = dbLogic;
 	}

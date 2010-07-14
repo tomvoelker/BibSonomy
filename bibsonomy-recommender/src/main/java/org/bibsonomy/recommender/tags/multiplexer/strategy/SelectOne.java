@@ -30,8 +30,6 @@ public class SelectOne implements RecommendationSelector {
 	 */
 	@Override
 	public void selectResult(Long qid, RecommendedTagResultManager resultCache, Collection<RecommendedTag> recommendedTags) throws SQLException {
-		// TODO Auto-generated method stub
-		
 		log.debug("Selecting result.");
 		
 		// get list of recommenders which delivered tags in given query
@@ -41,57 +39,57 @@ public class SelectOne implements RecommendationSelector {
 		
 		
 		// if no recommendation available, append nothing
-		if( listAll.size()==0 || listActive.size()==0 ) {
+		if (listAll.size() == 0 || listActive.size() == 0) {
 			log.debug("No results available!");
 			return;
-		};
+		}
 		
 		// select recommender
-		Long sid = listAll.get(
-					new Double(Math.floor((Math.random()*listAll.size()))).intValue()
-				);
+		Long sid = listAll.get((int) Math.floor((Math.random() * listAll.size())));
 		// store selection in database
 		dbLogic.addSelectedRecommender(qid, sid);
 		log.debug("Selected setting " + sid + " out of "+listActive.size()+"/"+listAll.size());
 		
 		// check if selected recommender delivered tags
 		boolean isActive = false;
-		for(Iterator<Long> i = listActive.iterator(); i.hasNext(); ) {
+		for (Iterator<Long> i = listActive.iterator(); i.hasNext(); ) {
 			Long next = i.next();
 			if( next.equals(sid) ) 
 				isActive = true;
-		};
+		}
 		// if not, select a fall back recommender
 		if( !isActive ) {
-			sid = listActive.get(
-					new Double(Math.floor((Math.random()*listActive.size()))).intValue()
-				);
+			sid = listActive.get((int) Math.floor((Math.random() * listActive.size())));
 			log.debug("Selected setting not active, fall back is " + sid);
-		};
+		}
 		
 		// finally get recommended tags
 		dbLogic.getRecommendations(qid, sid, recommendedTags);
 	}	
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	public void setInfo(String info) {
 		this.info = info;
 	}
 
 
+	@Override
 	public byte[] getMeta() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public void setMeta(byte[] meta) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	public DBLogic getDbLogic() {
 		return this.dbLogic;
 	}
@@ -99,6 +97,5 @@ public class SelectOne implements RecommendationSelector {
 	public void setDbLogic(DBLogic dbLogic) {
 		this.dbLogic = dbLogic;
 	}
-
 
 }
