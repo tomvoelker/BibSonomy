@@ -1,6 +1,8 @@
 package org.bibsonomy.webapp.validation;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.bibsonomy.webapp.command.ajax.AdminAjaxCommand;
 import org.junit.Test;
@@ -21,11 +23,11 @@ public class AdminActionsValidatorTest {
 	public void testSupports() {
 		final AdminActionsValidator validator = new AdminActionsValidator();
 		
-		Assert.assertFalse(validator.supports(String.class));
+		assertFalse(validator.supports(String.class));
 		
-		Assert.assertFalse(validator.supports(null));
+		assertFalse(validator.supports(null));
 		
-		Assert.assertTrue(validator.supports(AdminAjaxCommand.class));
+		assertTrue(validator.supports(AdminAjaxCommand.class));
 	}
 	
 	/**
@@ -38,9 +40,9 @@ public class AdminActionsValidatorTest {
 		
 		try {
 			validator.validate(null, errors);
-			Assert.fail("Should raise an IllegalArgumentException");
+			fail("Should raise an IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
-			// ignore
+			// ok
 		}
 	}
 	
@@ -61,14 +63,14 @@ public class AdminActionsValidatorTest {
 		settings.setValue("?i)foo");
 		
 
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 
 		/*
 		 * should produce no errors
 		 */
 		validator.validate(settings, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -87,14 +89,14 @@ public class AdminActionsValidatorTest {
 		settings.setValue("t*est");
 		
 
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 
 		/*
 		 * should produce no errors
 		 */
 		validator.validate(settings, errors);
 		
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 	}
 	
 	
