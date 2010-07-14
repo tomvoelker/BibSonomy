@@ -59,7 +59,6 @@ public class LogicInterfaceHelper {
 		
 		return param;
 	}
-
 	
 	/**
 	 * Builds a param object for the given parameters from the LogicInterface.
@@ -138,18 +137,11 @@ public class LogicInterfaceHelper {
 				logger.debug("working on input tag: " + tag);
 
 				if (tag.length() > 2) {
-					//if (SystemTagsUtil.isSearchSystemTag(tag)) {
-						final SearchSystemTag searchTag = SystemTagsUtil.createSearchSystemTag(tag);
-						if (present(searchTag)) {
-							searchTag.handleParam(param);
-							continue;
-						}
-					//}
-					/*SDOif (tag.contains(":")) {
-						if (handleSystemTag(tag, param)) {
-							continue;
-						}
-					}*/
+					final SearchSystemTag searchTag = SystemTagsUtil.createSearchSystemTag(tag);
+					if (present(searchTag)) {
+						searchTag.handleParam(param);
+						continue;
+					}
 
 					if (tag.charAt(0) != '-' && tag.charAt(0) != '<' && tag.charAt(tag.length() - 1) != '>') {
 						param.addTagName(tag);
@@ -195,150 +187,12 @@ public class LogicInterfaceHelper {
 			} // end for
 
 		} // end if (tags != null)
-		else
-		{
+		else {
 			logger.debug("input tags are null");
 		}
 
 		return param;
 	}
-
-	
-	
-/*	TODO: remove old code
- * @SuppressWarnings("deprecation") // TODO: lucene can't handle system tags
- 
-	private static boolean handleSystemTag(String tag, GenericParam param) {
-		logger.debug("working on possible system tag " + tag);
- 		String tagName;
-		String tagValue;
-		String[] tags = tag.split(":");
-		if (tag.startsWith("sys:") || tag.startsWith("system:")) {
-			tagName = tags[1];
-			tagValue = StringUtils.implodeStringArray(Arrays.copyOfRange(tags, 2, tags.length), ":").trim();
-		} else {
-			tagName = tags[0];
-			tagValue = StringUtils.implodeStringArray(Arrays.copyOfRange(tags, 1, tags.length), ":").trim();
-		}
-		
-/*
- * rja, 2010-02-09: turned off, since currently no system tags of this kind are
- * contained in the SystemTagFactory
- *
-//		SystemTagType sTag = SystemTagFactory.createTag(tagName, tag.substring(tag.indexOf(tagName) + tagName.length()));
-//		if (sTag != null && SystemTagsUtil.getAttributeValue(sTag, SystemTagFactory.GROUPING) != null) {
-//			GroupingEntity ge = GroupingEntity.getGroupingEntity(SystemTagsUtil.getAttributeValue(sTag, SystemTagFactory.GROUPING));
-//			if (ge != null) {
-//				param.setGrouping(ge);
-//				logger.debug("set grouping entity to " + ge);
-//				if (GroupingEntity.USER.equals(ge)) {
-//					param.setRequestedUserName(tagValue);
-//				}
-//				if (GroupingEntity.GROUP.equals(ge)) {
-//					param.setRequestedGroupName(tagValue);
-//				}
-//			}
-//			return true;
-//		} else 
-		if (tagName.equals("bibtexkey")) {
-			// :bibtexkey: add bibtex key to param object
-			param.setBibtexKey(tagValue);
-			logger.debug("set bibtex key to " + tagValue + " after matching for bibtexkey system tag");
-			return true;
-		} else if (tagName.equals("days")) {
-			// :days: clear the tagindex and set the value
-			param.getTagIndex().clear();
-			param.setDays(Integer.parseInt(tagValue));
-			logger.debug("set days to " + tagValue + " after matching for days system tag");
-			return true;
-		} else if (tagName.equals("title")) {
-			// :title: set the title to tagValue
-			String oldValue = param.getTitle();
-			if( !ValidationUtils.present(oldValue) ) {
-				oldValue = tagValue;
-			} else {
-				oldValue += LIST_SEPARATOR + tagValue;
-			}
-			param.setTitle(oldValue);
-			param.setGrouping(GroupingEntity.ALL);
-			logger.debug("set title to " + oldValue + " after matching for title system tag");
-			return true;
-		} else if (tagName.equals("author")) {
-			// sys:author: set search entity accordingly
-			param.setAuthor(tagValue);
-			logger.debug("set search to " + tagValue + " after matching for author system tag");
-			return true;
-		} else if (tagName.equals("user")) {
-			// this is just a workaround until the SystemTagFactory stuff above is working
-			param.setGrouping(GroupingEntity.USER);
-			param.setRequestedUserName(tagValue);
-			logger.debug("set grouping to 'user' and requestedUserName to " + tagValue + " after matching for user system tag");
-			return true;
-		} else if (tagName.equals("group")) {
-			// this is just a workaround until the SystemTagFactory stuff above is working
-			param.setGrouping(GroupingEntity.GROUP);
-			param.setRequestedGroupName(tagValue);
-			logger.debug("set grouping to 'group' and requestedGroupName to " + tagValue + " after matching for group system tag");
-			return true;
-		} else if (tagName.equals("year")) {
-			// this just another workaround until the System Tags implementation works correctly
-			if (! (param instanceof BibTexParam) ) {
-				// do nothing for bookmarks here
-				return true;
-			}
-			
-			final BibTexParam bibTexParam = (BibTexParam) param;
-			
-			// TODO: factory!!
-			final YearSystemTag yearTag = new YearSystemTag();
-			yearTag.setName("Year");
-			param.addToSystemTags(yearTag);
-			
-			// 1st case: year explicitly given
-            if (tagValue.matches("[12]{1}[0-9]{3}")) {
-            	yearTag.setYear(tagValue);
-            	bibTexParam.setYear(tagValue); // TODO: lucene can't handle system tags
-            	logger.debug("Set year to " + tagValue + " after matching year system tag");
-            	return true;
-            } 
-            // 2nd case: range (e.g. 2001-2006)
-            else if (tagValue.matches("[12]{1}[0-9]{3}-[12]{1}[0-9]{3}")) {
-                String[] years = tagValue.split("-");
-                yearTag.setFirstYear(years[0]);
-                yearTag.setLastYear(years[1]);
-                bibTexParam.setFirstYear(tagValue); // TODO: lucene can't handle system tags
-                bibTexParam.setLastYear(tagValue); // TODO: lucene can't handle system tags
-            	logger.debug("Set firstyear/lastyear to " + years[0] + "/" + years[1] + "after matching year system tag");
-            	return true;
-            }
-            // 3rd case: upper bound (e.g -2005) means all years before 2005 
-            else if(tagValue.matches("-[12]{1}[0-9]{3}")) {
-            	yearTag.setLastYear(tagValue.substring(1,tagValue.length()));
-            	bibTexParam.setLastYear(tagValue.substring(1,tagValue.length())); // TODO: lucene can't handle system tags
-            	logger.debug("Set lastyear to " + tagValue + "after matching year system tag");
-            	return true;
-            }
-            // 4th case: lower bound (e.g 1998-) means all years since 1998 
-            else if(tagValue.matches("[12]{1}[0-9]{3}-")) {
-            	yearTag.setFirstYear(tagValue.substring(0,tagValue.length()-1));
-            	bibTexParam.setFirstYear(tagValue.substring(0,tagValue.length()-1)); // TODO: lucene can't handle system tags
-            	logger.debug("Set firstyear to " + tagValue + "after matching year system tag");
-            	return true;            	
-            }			
-		} else if (tagName.equals("entrytype")){
-			// TODO: this should be done by a factory!!!
-			//final EntryTypeSystemTag sysTag = new EntryTypeSystemTag();
-			//sysTag.setEntryType(tagValue);
-			//sysTag.setArgument(tagValue);
-			//sysTag.setName("EntryType");
-			
-			//param.addToSystemTags(sysTag);
-			logger.debug("Set entry type to '" + tagValue +"' after matching entrytype system tag");
-			return true;
-		}
-		
-		return false;
-	}*/
 
 	/**
 	 * Instatiates a param object for the given class.
