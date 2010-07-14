@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!DOCTYPE sqlMap      
-    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
-    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="BibLog">
 
@@ -77,21 +75,7 @@ GRANT ALL PRIVILEGES ON *.* TO logger@localhost IDENTIFIED BY 'loggerpassword'
   <select id="selectAllLogdata" resultMap="LogResult">
     select * from CLICKLOG
   </select>
-
-  <!-- A simpler select example without the result map.  Note the 
-       aliases to match the properties of the target result class. -->
- <!--  
-  <select id="selectLogdataById" parameterClass="int" resultClass="Log">
-    select
-      ACC_ID as id,
-      ACC_FIRST_NAME as firstName,
-      ACC_LAST_NAME as lastName,
-      ACC_EMAIL as emailAddress
-    from ACCOUNT
-    where ACC_ID = #id#
-  </select>
--->   
-  <!-- Insert example, using the Account parameter class -->
+  
   <insert id="insertLogdata" parameterClass="Log">
     insert into clicklog (
 		LOGDATE,
@@ -138,23 +122,4 @@ GRANT ALL PRIVILEGES ON *.* TO logger@localhost IDENTIFIED BY 'loggerpassword'
       #referer#
     )
   </insert>
-
-  <!-- Update example, using the Account parameter class -->
- <!-- 
-  <update id="updateAccount" parameterClass="Account">
-    update ACCOUNT set
-      ACC_FIRST_NAME = #firstName#,
-      ACC_LAST_NAME = #lastName#,
-      ACC_EMAIL = #emailAddress#
-    where
-      ACC_ID = #id#
-  </update>
- -->
-  <!-- Delete example, using an integer as the parameter class -->
- 
- <!--
-  <delete id="deleteAccountById" parameterClass="int">
-    delete from ACCOUNT where ACC_ID = #id#
-  </delete>
- -->
 </sqlMap>
