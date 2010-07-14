@@ -5,11 +5,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
-import java.util.Map.Entry;
 
 /**
  * @author rja
@@ -67,6 +67,7 @@ public class HeaderUtils {
 
 		// maps the q-value to output format (reverse order)
 		final SortedMap<Double,Vector<String>> preferredTypes = new TreeMap<Double,Vector<String>>(new Comparator<Double>() {
+			@Override
 			public int compare(Double o1, Double o2) {
 				if (o1.doubleValue() > o2.doubleValue())
 					return -1;

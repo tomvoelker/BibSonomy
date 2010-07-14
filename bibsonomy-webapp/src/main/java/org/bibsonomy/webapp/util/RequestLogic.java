@@ -27,14 +27,15 @@ import org.springframework.web.servlet.support.RequestContext;
  * @version $Id$
  */
 public class RequestLogic {
+	private static final Log log = LogFactory.getLog(RequestLogic.class);
+	
 	/*
 	 * HTTP header definitions
 	 */
 	private static final String HEADER_REFERER = "Referer";
 	private static final String HEADER_X_FORWARDED_FOR = "x-forwarded-for";
 	private static final String HEADER_ACCEPT = "accept";
-
-	private static final Log log = LogFactory.getLog(RequestLogic.class);
+	
 
 	/**
 	 * The HTTP request this object is handling.
@@ -45,6 +46,7 @@ public class RequestLogic {
 	 * Default constructor.
 	 */
 	public RequestLogic() {
+		// noop
 	}
 
 	/**
@@ -165,7 +167,7 @@ public class RequestLogic {
 	/**
 	 * @return Parameter map
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Map getParameterMap() {
 		return request.getParameterMap();
 	}
