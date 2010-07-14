@@ -1,10 +1,11 @@
 package org.bibsonomy.recommender.tags.meta;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -34,36 +35,34 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 		secondFixedTags.add(new RecommendedTag("bar", 0.6, 0.2));
 		secondFixedTags.add(new RecommendedTag("foo", 0.7, 0.2));
 		secondFixedTags.add(new RecommendedTag("net", 0.8, 0.2));
-		
+
 
 		final TagsFromFirstWeightedBySecondFilledByThirdTagRecommender merger = new TagsFromFirstWeightedBySecondFilledByThirdTagRecommender();
-		
+
 		merger.setFirstTagRecommender(new FixedTagsTagRecommender(firstFixedTags));
 		merger.setSecondTagRecommender(new FixedTagsTagRecommender(secondFixedTags));
 		merger.setThirdTagRecommender(new FixedTagsTagRecommender(secondFixedTags));
 		merger.setNumberOfTagsToRecommend(5);
-		
+
 		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(null);
-		
-		
+
+
 		/*
 		 *  check containment and order of top tags
 		 */
 		final Iterator<RecommendedTag> iterator = recommendedTags.iterator();
-		Assert.assertEquals("sieben", iterator.next().getName());
-		Assert.assertEquals("vier", iterator.next().getName());
-		Assert.assertEquals("eins", iterator.next().getName());
-		Assert.assertEquals("drei", iterator.next().getName());
-		Assert.assertEquals("zwei", iterator.next().getName());
-		Assert.assertFalse(iterator.hasNext());
+		assertEquals("sieben", iterator.next().getName());
+		assertEquals("vier", iterator.next().getName());
+		assertEquals("eins", iterator.next().getName());
+		assertEquals("drei", iterator.next().getName());
+		assertEquals("zwei", iterator.next().getName());
+		assertFalse(iterator.hasNext());
 	}
-	
-	
+
 	@Test
-	public void test2() throws Exception {
-		
+	public void test2() {
 		final String[] usersTags = new String[]{"semantic", "web", "social", "net", "graph", "tool", "folksonomy", "holiday"};
-		
+
 		final TagsFromFirstWeightedBySecondFilledByThirdTagRecommender merger = new TagsFromFirstWeightedBySecondFilledByThirdTagRecommender();
 		final SimpleContentBasedTagRecommender simpleContentBasedTagRecommender = new SimpleContentBasedTagRecommender();
 		final FixedTagsTagRecommender fixedTagsTagRecommender = new FixedTagsTagRecommender(usersTags);
@@ -72,36 +71,34 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 		merger.setSecondTagRecommender(fixedTagsTagRecommender);
 		merger.setThirdTagRecommender(fixedTagsTagRecommender);
 		merger.setNumberOfTagsToRecommend(5);
-		
-		
+
+
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setTitle("NEPOMUK: the social semantic desktop");
-		
+
 		final Post<Bookmark> post = new Post<Bookmark>();
 		post.setResource(bookmark);
-		
-		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(post);
 
+		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(post);
 
 		/*
 		 *  check containment and order of top tags
 		 */
 		final Iterator<RecommendedTag> iterator = recommendedTags.iterator();
-		Assert.assertEquals("semantic", iterator.next().getName());
-		Assert.assertEquals("social", iterator.next().getName());
-		Assert.assertEquals("nepomuk", iterator.next().getName());
-		Assert.assertEquals("desktop", iterator.next().getName());
-		Assert.assertEquals("web", iterator.next().getName());
-		Assert.assertFalse(iterator.hasNext());
+		assertEquals("semantic", iterator.next().getName());
+		assertEquals("social", iterator.next().getName());
+		assertEquals("nepomuk", iterator.next().getName());
+		assertEquals("desktop", iterator.next().getName());
+		assertEquals("web", iterator.next().getName());
+		assertFalse(iterator.hasNext());
 	}
-	
-	
+
+
 	@Test
-	public void test3() throws Exception {
-		
+	public void test3() {
 		final String[] usersTags = new String[]{"semantic", "web", "social", "net", "graph", "tool", "folksonomy", "holiday"};
 		final String[] resourceTags = new String[]{"project"};
-		
+
 		final TagsFromFirstWeightedBySecondFilledByThirdTagRecommender merger = new TagsFromFirstWeightedBySecondFilledByThirdTagRecommender();
 		final SimpleContentBasedTagRecommender simpleContentBasedTagRecommender = new SimpleContentBasedTagRecommender();
 		final FixedTagsTagRecommender fixedTagsTagRecommender = new FixedTagsTagRecommender(usersTags);
@@ -111,28 +108,27 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 		merger.setSecondTagRecommender(fixedTagsTagRecommender);
 		merger.setThirdTagRecommender(fillupTagRecommender);
 		merger.setNumberOfTagsToRecommend(5);
-		
-		
+
+
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setTitle("NEPOMUK: the social semantic desktop");
-		
+
 		final Post<Bookmark> post = new Post<Bookmark>();
 		post.setResource(bookmark);
-		
+
 		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(post);
 
-		
 		/*
 		 *  check containment and order of top tags
 		 */
 		final Iterator<RecommendedTag> iterator = recommendedTags.iterator();
-		Assert.assertEquals("semantic", iterator.next().getName());
-		Assert.assertEquals("social", iterator.next().getName());
-		Assert.assertEquals("nepomuk", iterator.next().getName());
-		Assert.assertEquals("desktop", iterator.next().getName());
-		Assert.assertEquals("project", iterator.next().getName());
-		Assert.assertFalse(iterator.hasNext());
+		assertEquals("semantic", iterator.next().getName());
+		assertEquals("social", iterator.next().getName());
+		assertEquals("nepomuk", iterator.next().getName());
+		assertEquals("desktop", iterator.next().getName());
+		assertEquals("project", iterator.next().getName());
+		assertFalse(iterator.hasNext());
 	}
-	
+
 
 }

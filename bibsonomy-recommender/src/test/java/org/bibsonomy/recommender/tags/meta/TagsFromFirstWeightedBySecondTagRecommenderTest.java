@@ -1,10 +1,12 @@
 package org.bibsonomy.recommender.tags.meta;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -34,37 +36,36 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		secondFixedTags.add(new RecommendedTag("bar", 0.6, 0.2));
 		secondFixedTags.add(new RecommendedTag("foo", 0.7, 0.2));
 		secondFixedTags.add(new RecommendedTag("net", 0.8, 0.2));
-		
+
 
 		final FixedTagsTagRecommender first = new FixedTagsTagRecommender(firstFixedTags);
 		final FixedTagsTagRecommender second = new FixedTagsTagRecommender(secondFixedTags);
 		final TagsFromFirstWeightedBySecondTagRecommender merger = new TagsFromFirstWeightedBySecondTagRecommender();
-		
+
 		merger.setFirstTagRecommender(first);
 		merger.setSecondTagRecommender(second);
 		merger.setNumberOfTagsToRecommend(5);
-		
+
 		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(null);
-		
+
 
 		/*
 		 *  check containment and order of top tags
 		 */
 		final Iterator<RecommendedTag> iterator = recommendedTags.iterator();
-		Assert.assertEquals("sieben", iterator.next().getName());
-		Assert.assertEquals("vier", iterator.next().getName());
-		Assert.assertEquals("eins", iterator.next().getName());
-		Assert.assertEquals("drei", iterator.next().getName());
-		Assert.assertEquals("zwei", iterator.next().getName());
-		Assert.assertFalse(iterator.hasNext());
+		assertEquals("sieben", iterator.next().getName());
+		assertEquals("vier", iterator.next().getName());
+		assertEquals("eins", iterator.next().getName());
+		assertEquals("drei", iterator.next().getName());
+		assertEquals("zwei", iterator.next().getName());
+		assertFalse(iterator.hasNext());
 	}
-	
-	
+
+
 	@Test
 	public void test2() throws Exception {
-		
 		final String[] usersTags = new String[]{"semantic", "web", "social", "net", "graph", "tool", "folksonomy", "holiday"};
-		
+
 		final TagsFromFirstWeightedBySecondTagRecommender merger = new TagsFromFirstWeightedBySecondTagRecommender();
 		final SimpleContentBasedTagRecommender simpleContentBasedTagRecommender = new SimpleContentBasedTagRecommender();
 		final FixedTagsTagRecommender fixedTagsTagRecommender = new FixedTagsTagRecommender(usersTags);
@@ -72,32 +73,28 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		merger.setFirstTagRecommender(simpleContentBasedTagRecommender);
 		merger.setSecondTagRecommender(fixedTagsTagRecommender);
 		merger.setNumberOfTagsToRecommend(5);
-		
-		
+
+
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setTitle("NEPOMUK: the social semantic desktop");
-		
+
 		final Post<Bookmark> post = new Post<Bookmark>();
 		post.setResource(bookmark);
-		
+
 		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(post);
 
-		
 		/*
 		 *  check containment and order of top tags
 		 */
 		final Iterator<RecommendedTag> iterator = recommendedTags.iterator();
-		Assert.assertEquals("semantic", iterator.next().getName());
-		Assert.assertEquals("social", iterator.next().getName());
-		Assert.assertEquals("nepomuk", iterator.next().getName());
-		Assert.assertEquals("desktop", iterator.next().getName());
-		Assert.assertEquals("web", iterator.next().getName());
-		Assert.assertFalse(iterator.hasNext());
-		
+		assertEquals("semantic", iterator.next().getName());
+		assertEquals("social", iterator.next().getName());
+		assertEquals("nepomuk", iterator.next().getName());
+		assertEquals("desktop", iterator.next().getName());
+		assertEquals("web", iterator.next().getName());
+		assertFalse(iterator.hasNext());
 	}
-	
-	
-	
+
 	/**
 	 * 
 	 * If no tags from first reco are in second reco, we must ensure proper 
@@ -112,18 +109,16 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		secondFixedTags.add(new RecommendedTag("b", 0.2, 0.2));
 		secondFixedTags.add(new RecommendedTag("c", 0.5, 0.2));
 		secondFixedTags.add(new RecommendedTag("d", 0.6, 0.2));
-		
 
 		final FixedTagsTagRecommender first = new FixedTagsTagRecommender(firstFixedTags);
 		final FixedTagsTagRecommender second = new FixedTagsTagRecommender(secondFixedTags);
 		final TagsFromFirstWeightedBySecondTagRecommender merger = new TagsFromFirstWeightedBySecondTagRecommender();
-		
+
 		merger.setFirstTagRecommender(first);
 		merger.setSecondTagRecommender(second);
 		merger.setNumberOfTagsToRecommend(5);
-		
+
 		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(null);
-		
 
 		/*
 		 *  check containment and order of top tags
@@ -134,12 +129,12 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		/*
 		 * score should be smaller than 1
 		 */
-		Assert.assertTrue(score < 1.0);
-		Assert.assertEquals("eins", tag1.getName());
-		Assert.assertEquals("zwei", iterator.next().getName());
-		Assert.assertEquals("drei", iterator.next().getName());
-		Assert.assertEquals("vier", iterator.next().getName());
-		Assert.assertEquals("fünf", iterator.next().getName());
-		Assert.assertFalse(iterator.hasNext());
+		assertTrue(score < 1.0);
+		assertEquals("eins", tag1.getName());
+		assertEquals("zwei", iterator.next().getName());
+		assertEquals("drei", iterator.next().getName());
+		assertEquals("vier", iterator.next().getName());
+		assertEquals("fünf", iterator.next().getName());
+		assertFalse(iterator.hasNext());
 	}
 }
