@@ -53,7 +53,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	// service's address
 	private URI address;
 	// serializes post
-	Renderer renderer;
+	private Renderer renderer;
 	
 	// FIXME: These values are also used in TagRecommenderServlet and should
 	//        be defined in a class commonly accessible
@@ -67,11 +67,12 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	
 
 	// MultiThreadedHttpConnectionManager 
-	IdleClosingConnectionManager connectionManager;
-	IdleConnectionTimeoutThread idleConnectionHandler;
-	//------------------------------------------------------------------------
-	// constructors
-	//------------------------------------------------------------------------	
+	private IdleClosingConnectionManager connectionManager;
+	private IdleConnectionTimeoutThread idleConnectionHandler;
+	
+	/**
+	 * inits the recommender
+	 */
 	public WebserviceTagRecommender() {
 		// Create an instance of HttpClient.
 		connectionManager = new IdleClosingConnectionManager();// MultiThreadedHttpConnectionManager();
@@ -103,23 +104,25 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		this.setAddress(address);
 	}
 	
-	//------------------------------------------------------------------------
-	// WebserviceTagRecommender interface
-	//------------------------------------------------------------------------
-	public void setAddress(final URI address) {
+	/**
+	 * @return the address
+	 */
+	public URI getAddress() {
+		return this.address;
+	}
+
+	/**
+	 * @param address the address to set
+	 */
+	public void setAddress(URI address) {
 		this.address = address;
 	}
-	
-	public URI getAddress() {
-		return address;
-	}
-	
+
 	//------------------------------------------------------------------------
 	// TagRecommender interface
 	//------------------------------------------------------------------------
-	public void addRecommendedTags(
-			final Collection<RecommendedTag> recommendedTags,
-			final Post<? extends Resource> post) {
+	@Override
+	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 		// render post
 		// FIXME: choose buffer size
 		final StringWriter sw = new StringWriter(100);
@@ -199,10 +202,12 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		cnct.releaseConnection();
 	}
 
+	@Override
 	public byte[] getMeta() {
 		return getAddress().toString().getBytes();
 	}
 
+	@Override
 	public String getInfo() {
 		return "Webservice";
 	}
