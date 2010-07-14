@@ -24,14 +24,14 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class RequestWrapperContextHandlerInterceptor implements HandlerInterceptor {
 
+	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-		// TODO Auto-generated method stub
-
+		// nothing to do
 	}
 
+	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-		// TODO Auto-generated method stub
-
+		// nothing to do
 	}
 
 	/** Puts a {@link RequestWrapperContext} as attribute into the request. 
@@ -40,6 +40,7 @@ public class RequestWrapperContextHandlerInterceptor implements HandlerIntercept
 	 * 
 	 * @see org.springframework.web.servlet.HandlerInterceptor#preHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
 	 */
+	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		/*
 		 * create context and populate it with the request

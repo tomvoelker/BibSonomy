@@ -17,6 +17,7 @@ public class UserSettingsFactoryBean implements FactoryBean {
 	private UserSettings instance;
 	private User user;
 	
+	@Override
 	public Object getObject() throws Exception {
 		if (instance == null) {
 			if (this.user.getSettings() == null) {
@@ -29,6 +30,7 @@ public class UserSettingsFactoryBean implements FactoryBean {
 		return instance;
 	}
 
+	@Override
 	public Class<?> getObjectType() {
 		return UserSettings.class;
 	}
@@ -40,6 +42,7 @@ public class UserSettingsFactoryBean implements FactoryBean {
 		this.user = user;
 	}
 
+	@Override
 	public boolean isSingleton() {
 		return false;  // TODO: check if singleton is really only singleton in the scope of the factorybean 
 	}

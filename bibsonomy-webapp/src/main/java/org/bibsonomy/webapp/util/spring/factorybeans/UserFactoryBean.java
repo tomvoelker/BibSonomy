@@ -23,6 +23,7 @@ public class UserFactoryBean implements FactoryBean {
 		this.requestLogic = requestLogic;
 	}
 
+	@Override
 	public Object getObject() throws Exception {
 		if (instance == null) {
 			instance = requestLogic.getLoginUser();
@@ -30,10 +31,12 @@ public class UserFactoryBean implements FactoryBean {
 		return instance;
 	}
 
+	@Override
 	public Class<?> getObjectType() {
 		return User.class;
 	}
-
+	
+	@Override
 	public boolean isSingleton() {
 		return false;  // TODO: check if singleton is really only singleton in the scope of the factorybean 
 	}

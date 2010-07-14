@@ -23,7 +23,7 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class AdminLogicFactoryBean extends DBLogicUserInterfaceFactory implements FactoryBean {
 
-	private User user;
+	private final User user;
 	private LogicInterface instance = null;
 	
 	/**
@@ -35,6 +35,7 @@ public class AdminLogicFactoryBean extends DBLogicUserInterfaceFactory implement
 		user.setRole(Role.ADMIN);
 	}
 	
+	@Override
 	public Object getObject() throws Exception {
 		if (instance == null) {
 			instance = this.getLogicAccess(user.getName(), "");
@@ -48,10 +49,12 @@ public class AdminLogicFactoryBean extends DBLogicUserInterfaceFactory implement
 		return user;
 	}
 
+	@Override
 	public Class<?> getObjectType() {
 		return LogicInterface.class;
 	}
 
+	@Override
 	public boolean isSingleton() {
 		return false;  // TODO: check if singleton is really only singleton in the scope of the factorybean 
 	}

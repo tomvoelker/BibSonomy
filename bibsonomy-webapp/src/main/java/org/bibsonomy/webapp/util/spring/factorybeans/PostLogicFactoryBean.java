@@ -20,6 +20,7 @@ public class PostLogicFactoryBean extends DBLogicUserInterfaceFactory implements
 	private User user;
 	private PostLogicInterface instance;
 	
+	@Override
 	public Object getObject() throws Exception {
 		if (instance == null) {
 			instance = this.getLogicAccess(user.getName(), "");
@@ -33,10 +34,12 @@ public class PostLogicFactoryBean extends DBLogicUserInterfaceFactory implements
 		return user;
 	}
 
+	@Override
 	public Class<?> getObjectType() {
 		return PostLogicInterface.class;
 	}
 
+	@Override
 	public boolean isSingleton() {
 		return false;  // TODO: check if singleton is really only singleton in the scope of the factorybean 
 	}

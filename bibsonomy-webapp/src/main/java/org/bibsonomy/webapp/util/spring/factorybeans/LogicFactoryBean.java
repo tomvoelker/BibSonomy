@@ -20,6 +20,7 @@ public class LogicFactoryBean extends DBLogicUserInterfaceFactory implements Fac
 	private User user;
 	private LogicInterface instance;
 	
+	@Override
 	public Object getObject() throws Exception {
 		if (instance == null) {
 			instance = this.getLogicAccess(user.getName(), "");
@@ -33,10 +34,12 @@ public class LogicFactoryBean extends DBLogicUserInterfaceFactory implements Fac
 		return user;
 	}
 
+	@Override
 	public Class<?> getObjectType() {
 		return LogicInterface.class;
 	}
 
+	@Override
 	public boolean isSingleton() {
 		return false;  // TODO: check if singleton is really only singleton in the scope of the factorybean 
 	}

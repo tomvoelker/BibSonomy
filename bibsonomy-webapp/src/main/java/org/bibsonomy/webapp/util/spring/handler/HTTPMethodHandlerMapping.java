@@ -20,6 +20,7 @@ public class HTTPMethodHandlerMapping implements HandlerMapping {
 	private Object onPut;
 	private Object onDelete;
 	
+	@Override
 	public HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
 		final String method = request.getMethod();
 		final Object handler;
