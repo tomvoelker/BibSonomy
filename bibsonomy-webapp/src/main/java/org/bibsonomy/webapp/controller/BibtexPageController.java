@@ -31,11 +31,12 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 	private static final String GOLD_STANDARD_USER_NAME = "";
 	private static final int TAG_LIMIT = 1000;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public View workOn(final BibtexResourceViewCommand command) {
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
-		
+
 		final String hash = command.getRequBibtex();
 		/*
 		 * if no hash given -> error
@@ -56,9 +57,9 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		 */
 		command.setResourcetype("bibtex");
 		this.handleTagsOnly(command, groupingEntity, requUser, null, null, hash, TAG_LIMIT, null);
-		
+
 		// for getting the goldstandard
-		String goldHash = hash.substring(1); // remove leading 1
+		String goldHash = hash.substring(1); // remove leading 1 TODODZ
 
 		/*
 		 * retrieve and set the requested publication(s)
@@ -67,7 +68,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();		
 			this.setList(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage);
-			
+
 			if (GroupingEntity.ALL.equals(groupingEntity)) {
 				/* 
 				 * retrieve total count with given hash 
@@ -82,20 +83,20 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 				final List<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
 				for (final Post<BibTex> b : command.getBibtex().getList()) {
 					final BibTex publication = b.getResource();
-					@SuppressWarnings("unchecked")
+
 					Post<BibTex> postDetails = null;
 					try {
 						postDetails = (Post<BibTex>) this.logic.getPostDetails(publication.getIntraHash(), b.getUser().getName());
-					} catch (ResourceNotFoundException ex) {
+					} catch (final ResourceNotFoundException ex) {
 						// ignore
-					} catch (ResourceMovedException ex) {
+					} catch (final ResourceMovedException ex) {
 						// ignore
 					}
 					bibtex.add(postDetails);
-					
+
 					goldHash = postDetails.getResource().getInterHash();
 				}
-				
+
 				command.getBibtex().setList(bibtex);
 			}
 			/*
@@ -103,17 +104,19 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			 */
 			this.postProcessAndSortList(command, resourceType);
 		}
-		
+
 		/*
 		 * get the gold standard
 		 */
-		@SuppressWarnings("unchecked")
+
+
 		Post<GoldStandardPublication> goldStandard = null;
 		try {
+
 			goldStandard = (Post<GoldStandardPublication>) this.logic.getPostDetails(goldHash, GOLD_STANDARD_USER_NAME);
-		} catch (ResourceNotFoundException ex) {
+		} catch (final ResourceNotFoundException ex) {
 			// ignore
-		} catch (ResourceMovedException ex) {
+		} catch (final ResourceMovedException ex) {
 			// ignore
 		}
 		command.setGoldStandardPublication(goldStandard);
@@ -140,7 +143,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			this.endTiming();
 
 			command.setPageTitle("bibtex :: " + command.getTitle() );
-			
+
 			if (GroupingEntity.USER.equals(groupingEntity) || present(goldStandard)) {
 				/*
 				 * fetch posts of all users with the given hash, add users to related
@@ -152,7 +155,8 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 				}
 			}
 
-			if (GroupingEntity.USER.equals(groupingEntity)) { //bibtex/HASH/USER
+			if (GroupingEntity.USER.equals(groupingEntity)) {
+				// bibtex/HASH/USER
 				/* 
 				 * set "correct" count .This is the number of ALL users having the publication
 				 * with the interHash of firstBibtex in their collection. In allPosts, only public posts

@@ -9,7 +9,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -22,7 +21,7 @@ import org.springframework.validation.Errors;
  * @author cvo
  * @version $Id$
  */
-public class UpdateUserController implements MinimalisticController<SettingsViewCommand>, ErrorAware, ValidationAwareController<SettingsViewCommand> {
+public class UpdateUserController implements ErrorAware, ValidationAwareController<SettingsViewCommand> {
 
 
 	private static final Log log = LogFactory.getLog(UpdateUserController.class);

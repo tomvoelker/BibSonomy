@@ -11,7 +11,6 @@ import org.bibsonomy.webapp.command.actions.UserOpenIDRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -34,8 +33,9 @@ import org.springframework.validation.Errors;
  * @author Stefan Stützer
  * @version $Id$
  */
-public class UserOpenIDRegistrationController implements MinimalisticController<UserOpenIDRegistrationCommand>, ErrorAware, ValidationAwareController<UserOpenIDRegistrationCommand>, RequestAware, CookieAware{
-
+public class UserOpenIDRegistrationController implements ErrorAware, ValidationAwareController<UserOpenIDRegistrationCommand>, RequestAware, CookieAware{
+	private static final Log log = LogFactory.getLog(UserOpenIDRegistrationController.class);
+	
 	protected LogicInterface logic;
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
@@ -49,9 +49,8 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 	 * After successful registration, the user is redirected to this page. 
 	 */
 	private String successRedirect = "";
-	
-	private static final Log log = LogFactory.getLog(UserOpenIDRegistrationController.class);
 
+	@Override
 	public View workOn(UserOpenIDRegistrationCommand command) {
 		log.debug("workOn() called");
 
@@ -241,6 +240,7 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 		return Views.REGISTER_USER_OPENID;
 	}
 
+	@Override
 	public UserOpenIDRegistrationCommand instantiateCommand() {
 		final UserOpenIDRegistrationCommand userOpenIDRegistrationCommand = new UserOpenIDRegistrationCommand();
 		/*
@@ -249,24 +249,37 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 		userOpenIDRegistrationCommand.setRegisterUser(new User());
 		return userOpenIDRegistrationCommand;		
 	}
+	
+	@Override
 	public Errors getErrors() {
 		return this.errors;
 	}
+	
+	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
 	}
+	
+	@Override
 	public Validator<UserOpenIDRegistrationCommand> getValidator() {
 		return new UserOpenIDRegistrationValidator();
 	}
+	
+	@Override
 	public boolean isValidationRequired(UserOpenIDRegistrationCommand command) {
 		return true;
 	}
+	
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
+	
+	@Override
 	public void setCookieLogic(CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
 	}
+	
 	/**
 	 * @param logic logic interface
 	 */

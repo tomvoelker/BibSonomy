@@ -11,7 +11,6 @@ import org.bibsonomy.webapp.command.actions.PasswordChangeOnRemindCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
@@ -29,7 +28,7 @@ import org.springframework.validation.Errors;
  * @author daill
  * @version $Id$
  */
-public class PasswordChangeOnRemindController implements MinimalisticController<PasswordChangeOnRemindCommand>, ErrorAware, ValidationAwareController<PasswordChangeOnRemindCommand>, RequestAware, CookieAware{
+public class PasswordChangeOnRemindController implements ErrorAware, ValidationAwareController<PasswordChangeOnRemindCommand>, RequestAware, CookieAware{
 	private static final Log log = LogFactory.getLog(PasswordChangeOnRemindController.class);
 
 	private LogicInterface adminLogic;
@@ -38,6 +37,7 @@ public class PasswordChangeOnRemindController implements MinimalisticController<
 
 	private Errors errors;
 
+	@Override
 	public View workOn(PasswordChangeOnRemindCommand command) {
 		log.debug("starting work");
 		command.setPageTitle("password change");
@@ -98,30 +98,37 @@ public class PasswordChangeOnRemindController implements MinimalisticController<
 		return new ExtendedRedirectView("/");
 	}
 
+	@Override
 	public Errors getErrors() {
 		return this.errors;
 	}
 
+	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
 	}
 
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
+	@Override
 	public void setCookieLogic(CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
 	}
 
+	@Override
 	public PasswordChangeOnRemindCommand instantiateCommand() {
 		return new PasswordChangeOnRemindCommand();
 	}
 
+	@Override
 	public Validator<PasswordChangeOnRemindCommand> getValidator() {
 		return new PasswordChangeOnRemindValidator();
 	}
 
+	@Override
 	public boolean isValidationRequired(PasswordChangeOnRemindCommand command) {
 		return true;
 	}

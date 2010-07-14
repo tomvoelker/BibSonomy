@@ -30,10 +30,10 @@ import org.bibsonomy.webapp.view.Views;
  * @author Michael Wagner
  * @version $Id$
  */
-
 public class TagPageController extends SingleResourceListControllerWithTags implements MinimalisticController<TagResourceViewCommand>{
 	private static final Log log = LogFactory.getLog(TagPageController.class);
 	
+	@Override
 	public View workOn(final TagResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
@@ -122,6 +122,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		
 	}
 	
+	@Override
 	public TagResourceViewCommand instantiateCommand() {
 		return new TagResourceViewCommand();
 	}

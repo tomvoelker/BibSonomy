@@ -12,12 +12,14 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class AuthorsPageController extends SingleResourceListController implements MinimalisticController<AuthorsCommand>{
 
+	@Override
 	public View workOn(AuthorsCommand command) {
 		command.setPageTitle("Authors");
 		command.setAuthorList(this.logic.getAuthors(GroupingEntity.ALL, null, null, null, null, null, 0, Integer.MAX_VALUE, null));
 		return Views.AUTHORSPAGE;
 	}
 
+	@Override
 	public AuthorsCommand instantiateCommand() {
 		return new AuthorsCommand();
 	}

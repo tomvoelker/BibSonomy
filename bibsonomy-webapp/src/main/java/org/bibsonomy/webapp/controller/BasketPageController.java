@@ -20,6 +20,7 @@ public class BasketPageController extends SingleResourceListController implement
 
 	private Errors errors;
 
+	@Override
 	public View workOn(BibtexResourceViewCommand command) {
 
 		this.startTiming(this.getClass(), command.getFormat());
@@ -68,6 +69,7 @@ public class BasketPageController extends SingleResourceListController implement
 
 	}
 
+	@Override
 	public BibtexResourceViewCommand instantiateCommand() {
 		return new BibtexResourceViewCommand();
 	}

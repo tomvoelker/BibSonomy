@@ -101,18 +101,22 @@ public class DeleteUserController implements ValidationAwareController<SettingsV
 		this.logic = logic;
 	}
 
+	@Override
 	public Errors getErrors() {
 		return this.errors;
 	}
 
+	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
+	@Override
 	public Validator<SettingsViewCommand> getValidator() {
 		return new DeleteUserValidator();
 	}
 
+	@Override
 	public boolean isValidationRequired(SettingsViewCommand command) {
 		return true;
 	}	

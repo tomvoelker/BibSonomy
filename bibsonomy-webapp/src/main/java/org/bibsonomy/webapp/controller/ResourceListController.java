@@ -124,7 +124,6 @@ public abstract class ResourceListController {
 	protected int getFixedTagMax(final int tagMax) {
 		return tagMax;
 	}
-	
 
 	/**
 	 * Initialize tag list, depending on chosen resourcetype
@@ -148,7 +147,7 @@ public abstract class ResourceListController {
 		if (tagsType != null) {
 
 			// if tags are requested (not related tags), remove non-systemtags from tags list
-			if (tagsType.equalsIgnoreCase(TagsType.DEFAULT.getName() ) && tags != null ) {
+			if (tagsType.equalsIgnoreCase(TagsType.DEFAULT.getName()) && tags != null ) {
 				SystemTagsUtil.removeAllNonSystemTags(tags);
 			}
 
@@ -156,8 +155,7 @@ public abstract class ResourceListController {
 			Class<? extends Resource> resourcetype = Resource.class;
 			if (this.isBibtexOnlyRequested(cmd)) {
 				resourcetype = BibTex.class;
-			}
-			else if (this.isBookmarkOnlyRequested(cmd)) {
+			} else if (this.isBookmarkOnlyRequested(cmd)) {
 				resourcetype = Bookmark.class;
 			}
 
@@ -193,8 +191,6 @@ public abstract class ResourceListController {
 			BibTexUtils.sortBibTexList(bibtexList, SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
 		}
 	}
-
-
 
 	/**
 	 * retrieve a list of posts from the database logic and add them to the command object
@@ -236,7 +232,6 @@ public abstract class ResourceListController {
 		final int totalCount = this.logic.getPostStatistics(resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search, constraint);
 		listCommand.setTotalCount(totalCount);
 	}
-
 
 	/**
 	 * @param userSettings the loginUsers userSettings
@@ -307,7 +302,7 @@ public abstract class ResourceListController {
 	 * @param cmd - the current command object
 	 * @return true if only bibtexs are requested, false otherwise
 	 */
-	private  <V extends ResourceViewCommand> Boolean isBibtexOnlyRequested(V cmd) {
+	private <V extends ResourceViewCommand> Boolean isBibtexOnlyRequested(V cmd) {
 		if (ResourceType.BIBTEX.getLabel().equalsIgnoreCase(cmd.getResourcetype()) || 
 				(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(BibTex.class)) ) {
 			return true;
@@ -322,7 +317,7 @@ public abstract class ResourceListController {
 	 * @param cmd - the current command object
 	 * @return true if only bookmarks are requested, false otherwise
 	 */
-	private  <V extends ResourceViewCommand> Boolean isBookmarkOnlyRequested(V cmd) {
+	private <V extends ResourceViewCommand> Boolean isBookmarkOnlyRequested(V cmd) {
 		if (ResourceType.BOOKMARK.getLabel().equalsIgnoreCase(cmd.getResourcetype()) || 
 				(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(Bookmark.class)) ) {
 			return true;

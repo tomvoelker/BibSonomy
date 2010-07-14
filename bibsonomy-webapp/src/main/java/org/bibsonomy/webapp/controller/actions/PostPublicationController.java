@@ -39,8 +39,6 @@ import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
-import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostPublicationCommandValidator;
@@ -56,7 +54,7 @@ import bibtex.parser.ParseException;
  * @author ema
  * @version $Id$
  */
-public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> implements MinimalisticController<PostPublicationCommand>, ErrorAware {
+public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
 	/**
 	 * the log...
 	 */
@@ -77,10 +75,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * Extracts the line number from the parser error messages.
 	 */
 	private static final Pattern lineNumberPattern = Pattern.compile("([0-9]+)");
+
 	/**
 	 * the factory used to get an instance of a FileUploadHandler.
 	 */
 	private FileUploadFactory uploadFactory;
+
 	/**
 	 * TODO: we could inject this object using Spring.
 	 */
@@ -182,16 +182,15 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		if (errors.hasErrors()) {
 			log.debug("errors found, returning to view");
-			if (log.isDebugEnabled()) log.debug(errors);
+			if (log.isDebugEnabled()) {
+				log.debug(errors);
+			}
 			return Views.POST_PUBLICATION;
 		}
-
 
 		/*
 		 * Extract posts from snippet ...
 		 */
-
-
 
 		/*
 		 * configure the parser
@@ -241,17 +240,17 @@ public class PostPublicationController extends AbstractEditPublicationController
 			return Views.POST_PUBLICATION;
 		}
 
-
-
 		/*
 		 * If exactly one post has been extracted, and there were no parse exceptions, 
 		 * the edit post controller can handle the remaining work.
 		 */
 		if (posts.size() == 1 && !errors.hasErrors()) {
-			command.setPost(posts.get(0));
-			return super.workOn(command);
+			final Post<BibTex> post = posts.get(0);
+			if (post != null) {
+				command.setPost(post);
+				return super.workOn(command);
+			}
 		}
-
 
 		/*
 		 * Complete the posts with missing information:
@@ -262,8 +261,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 		for (final Post<BibTex> post: posts) {
 			post.setUser(context.getLoginUser());
 			post.setDescription(command.getDescription());
-			if (!present(post.getTags()))
+			if (!present(post.getTags())) {
 				post.setTags(Collections.singleton(TagUtils.getImportedTag()));
+			}
 			/*
 			 * set visibility of this post for the groups, the user specified 
 			 */
@@ -273,8 +273,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * (we check for presence of a date, because DBLP is
 			 * allowed to specify a date)
 			 */
-			if(!present(post.getDate()))
+			if(!present(post.getDate())) {
 				setDate(post, context.getLoginUser().getName());
+			}
 			/*
 			 * hashes have to be set, in order to call the validator
 			 */
@@ -337,17 +338,18 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 */
 			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, posts);
 		}
-		
+
 		/*
 		 * If the user wants to store the posts permanently AND (his posts have
 		 * no errors OR he ignores the errors OR the number of bibtexes is
 		 * greater than the treshold, we will forward him to the appropriate
 		 * site, where he can delete posts (they were saved)
 		 */
-		if (!command.isEditBeforeImport() && (!errors.hasErrors() || posts.size() > MAXCOUNT_ERRORHANDLING))
+		if (!command.isEditBeforeImport() && (!errors.hasErrors() || posts.size() > MAXCOUNT_ERRORHANDLING)) {
 			command.setDeleteCheckedPosts(true); //posts will have to get saved, because the user decided to
-		else
+		} else {
 			command.setDeleteCheckedPosts(false);
+		}
 
 		/*
 		 * If there are errors now or not - we return to the post
@@ -396,15 +398,17 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @param parseExceptions
 	 */
 	private void handleParseExceptions(final ParseException[] parseExceptions) {
-		final StringBuffer buf = new StringBuffer("");
+		final StringBuilder buf = new StringBuilder();
 		boolean lineFound = false;
-		for (final ParseException parseException: parseExceptions) {
+		for (final ParseException parseException : parseExceptions) {
 			final Matcher m = lineNumberPattern.matcher(parseException.getMessage());
 			if (m.find()) {
 				/*
 				 * if we have already found a broken line, append ", "
 				 */
-				if (lineFound) buf.append(", ");
+				if (lineFound) {
+					buf.append(", ");
+				}
 				/*
 				 * we have found a line number -> add it
 				 */
@@ -465,7 +469,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			}
 			errors.reject("error.upload.failed.emptyFile", "The specified file is empty.");
 			return null;
-			
+
 		} catch (final ConversionException e) {
 			errors.reject("error.upload.failed.conversion", "An error occurred during converting your EndNote file to BibTeX.");
 		} catch (final UnsupportedFileTypeException e) {
@@ -481,7 +485,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * FIXME: is this method always called?
 			 */
 			log.debug("deleting uploaded temp file");
-			if (file != null) file.delete();
+			if (file != null) {
+				file.delete();
+			}
 		}
 		return null;
 	}
@@ -566,8 +572,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 					 * If the post has no errors, but is a duplicate, we add it to
 					 * the list of posts which should be updated. 
 					 */
-					if (!hasErrors && hasDuplicate)
+					if (!hasErrors && hasDuplicate) {
 						postsForUpdate.add(post);
+					}
 				}
 			}
 
@@ -632,7 +639,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	/**
 	 * @param uploadFactory the uploadFactory to set
 	 */
-	public void setUploadFactory(FileUploadFactory uploadFactory) {
+	public void setUploadFactory(final FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
 	}
 }

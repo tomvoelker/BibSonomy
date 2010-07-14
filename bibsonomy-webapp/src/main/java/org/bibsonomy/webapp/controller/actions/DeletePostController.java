@@ -81,6 +81,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	/**
 	 * @return errors
 	 */
+	@Override
 	public Errors getErrors() {
 		return this.errors;
 	}
@@ -88,6 +89,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	/**
 	 * @param errors
 	 */
+	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}

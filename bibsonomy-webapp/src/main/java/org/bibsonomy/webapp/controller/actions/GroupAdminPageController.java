@@ -8,7 +8,6 @@ import org.bibsonomy.webapp.command.actions.GroupAdminCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
@@ -23,9 +22,10 @@ import org.springframework.validation.Errors;
  * @author mwa
  * @version $Id$
  */
-public class GroupAdminPageController extends SingleResourceListController implements MinimalisticController<GroupAdminCommand>, ErrorAware, ValidationAwareController<GroupAdminCommand>, RequestAware {
+public class GroupAdminPageController extends SingleResourceListController implements ErrorAware, ValidationAwareController<GroupAdminCommand>, RequestAware {
 	private static final Log log = LogFactory.getLog(GroupAdminPageController.class);
 	
+	@Override
 	public View workOn(final GroupAdminCommand command) {
 		log.debug("GroupAdminPageController: workOn() called");
 		
@@ -42,30 +42,36 @@ public class GroupAdminPageController extends SingleResourceListController imple
 		return Views.ADMIN_GROUP;
 	}
 	
+	@Override
 	public GroupAdminCommand instantiateCommand() {
 		return new GroupAdminCommand();
 	}
 	
+	@Override
 	public Errors getErrors() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
+	@Override
 	public void setErrors(Errors errors) {
 		// TODO Auto-generated method stub
 		
 	}
 	
+	@Override
 	public Validator<GroupAdminCommand> getValidator() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
+	@Override
 	public boolean isValidationRequired(GroupAdminCommand command) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 	
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		// TODO Auto-generated method stub
 	}

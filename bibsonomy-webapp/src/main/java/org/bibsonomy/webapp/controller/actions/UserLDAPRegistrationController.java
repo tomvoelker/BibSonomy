@@ -10,7 +10,6 @@ import org.bibsonomy.webapp.command.actions.UserLDAPRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -34,7 +33,7 @@ import filters.InitUserFilter;
  * @author Sven Stefani
  * @version $Id$
  */
-public class UserLDAPRegistrationController implements MinimalisticController<UserLDAPRegistrationCommand>, ErrorAware, ValidationAwareController<UserLDAPRegistrationCommand>, RequestAware, CookieAware {
+public class UserLDAPRegistrationController implements ErrorAware, ValidationAwareController<UserLDAPRegistrationCommand>, RequestAware, CookieAware {
 	private static final Log log = LogFactory.getLog(UserLDAPRegistrationController.class);
 	
 	

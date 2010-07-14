@@ -34,9 +34,9 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class MySearchController extends SingleResourceListControllerWithTags implements MinimalisticController<MySearchCommand> {
-
 	private static final Log log = LogFactory.getLog(MySearchController.class);
 
+	@Override
 	public View workOn(final MySearchCommand command) {
 		/*
 		 * FIXME: implement this for a group!
@@ -241,6 +241,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		command.setSimHash(HashID.getSimHash(2).getId());
 	}
 
+	@Override
 	public MySearchCommand instantiateCommand() {
 		return new MySearchCommand();
 	}

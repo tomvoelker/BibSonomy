@@ -34,6 +34,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @param command
 	 * @return the view
 	 */
+	@Override
 	public View workOn(final SettingsViewCommand command) {
 		if (!command.getContext().isUserLoggedIn()) {
 			return new ExtendedRedirectView("/login");
@@ -157,9 +158,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	/**
 	 * @return the current command
 	 */
+	@Override
 	public SettingsViewCommand instantiateCommand() {
-		final SettingsViewCommand command = new SettingsViewCommand();
-		return command;
+		return new SettingsViewCommand();
 	}
 
 	@Override

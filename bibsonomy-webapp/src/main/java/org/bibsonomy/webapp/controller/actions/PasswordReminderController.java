@@ -17,7 +17,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
@@ -39,7 +38,7 @@ import resources.Resource;
  * @author daill
  * @version $Id$
  */
-public class PasswordReminderController implements MinimalisticController<PasswordReminderCommand>, ErrorAware, ValidationAwareController<PasswordReminderCommand>, RequestAware {
+public class PasswordReminderController implements ErrorAware, ValidationAwareController<PasswordReminderCommand>, RequestAware {
 	private static final Log log = LogFactory.getLog(PasswordReminderController.class);
 	
 	private static final String success = "/login";
@@ -173,24 +172,28 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 		return new ExtendedRedirectView(success);
 	}
 
+	@Override
 	public Errors getErrors() {
 		return errors;
 	}
 
+	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
+	@Override
 	public Validator<PasswordReminderCommand> getValidator() {
 		return new PasswordReminderValidator();
 	}
 
+	@Override
 	public boolean isValidationRequired(final PasswordReminderCommand command) {
 		return true;
 	}
-
-
+	
 	@Required
+	@Override
 	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}

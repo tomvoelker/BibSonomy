@@ -92,14 +92,16 @@ public class UploadFileController implements ValidationAwareController<UploadFil
 	/**
 	 * Get errors
 	 */
-	public Errors getErrors() {
+    @Override
+    public Errors getErrors() {
 		return errors;
 	}
 
 	/**
 	 * Set errors
 	 */
-	public void setErrors(Errors errors) {
+    @Override
+    public void setErrors(Errors errors) {
 		this.errors = errors;
 	}
 
@@ -118,10 +120,12 @@ public class UploadFileController implements ValidationAwareController<UploadFil
 		return new UploadFileCommand();
 	}
 
+	@Override
 	public Validator<UploadFileCommand> getValidator() {
 		return new UploadFileValidator();
 	}
 
+	@Override
 	public boolean isValidationRequired(UploadFileCommand command) {
 		return true;
 	}

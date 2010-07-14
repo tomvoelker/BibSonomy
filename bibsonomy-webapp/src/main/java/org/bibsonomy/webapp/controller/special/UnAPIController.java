@@ -24,6 +24,7 @@ public class UnAPIController implements MinimalisticController<UnAPICommand>, Re
 	private ResponseLogic responseLogic;
 	private Errors errors;
 	
+	@Override
 	public View workOn(final UnAPICommand command) {
 		final String unapiFormat = command.getFormat();
 		final String id     = command.getId();
@@ -97,22 +98,28 @@ public class UnAPIController implements MinimalisticController<UnAPICommand>, Re
 		return null;
 	}
 
-
+	@Override
 	public UnAPICommand instantiateCommand() {
 		return new UnAPICommand();
 	}
+	
 	/** 
 	 * Supplies the responseLogic to this controller. The controller needs it to 
 	 * set the correct HTTP status codes according to the UnAPI specification.
 	 * 
 	 * @see org.bibsonomy.webapp.util.ResponseAware#setResponseLogic(org.bibsonomy.webapp.util.ResponseLogic)
 	 */
+	@Override
 	public void setResponseLogic(final ResponseLogic responseLogic) {
 		this.responseLogic = responseLogic;
 	}
+	
+	@Override
 	public Errors getErrors() {
 		return errors;
 	}
+	
+	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}

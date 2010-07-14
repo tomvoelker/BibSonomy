@@ -10,7 +10,7 @@ import org.bibsonomy.webapp.view.Views;
 /**
  * Creates a JSON list about the available JabRef layouts on the /layoutinfo page.
  * 
- * @author mwa,dbe
+ * @author mwa, dbe
  * @version $Id$
  */
 public class ExportLayoutController implements MinimalisticController<ExportPageCommand> {
@@ -25,6 +25,7 @@ public class ExportLayoutController implements MinimalisticController<ExportPage
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
+	@Override
 	public ExportPageCommand instantiateCommand() {		
 		return new ExportPageCommand();
 	}
@@ -32,8 +33,8 @@ public class ExportLayoutController implements MinimalisticController<ExportPage
 	/** 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.BaseCommand)
 	 */
+	@Override
 	public View workOn(ExportPageCommand command) {
-		
 		command.setLayoutMap(this.layoutRenderer.getJabrefLayouts());
 		command.setLang(this.requestLogic.getLocale().getLanguage());
 		

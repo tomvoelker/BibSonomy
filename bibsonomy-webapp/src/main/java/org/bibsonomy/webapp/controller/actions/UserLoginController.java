@@ -23,7 +23,6 @@ import org.bibsonomy.webapp.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.TeerGrube;
@@ -57,7 +56,7 @@ import filters.InitUserFilter;
  * @author rja
  * @version $Id$
  */
-public class UserLoginController implements MinimalisticController<UserLoginCommand>, ErrorAware, ValidationAwareController<UserLoginCommand>, RequestAware, CookieAware {
+public class UserLoginController implements ErrorAware, ValidationAwareController<UserLoginCommand>, RequestAware, CookieAware {
 	private static final Log log = LogFactory.getLog(UserLoginController.class);
 
 	
@@ -82,6 +81,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
+	@Override
 	public UserLoginCommand instantiateCommand() {
 		return new UserLoginCommand();
 	}
@@ -175,14 +175,9 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		try {
 			initContext = new InitialContext();
 			envContext = (Context) initContext.lookup("java:/comp/env");
-		} catch (NamingException ex) {
-			log.error("Error when trying create initContext lookup for java:/comp/env via JNDI.", ex);
-		}
-		try {
 			useLDAP = (Boolean) envContext.lookup("useLdapPasswordforBibsonomyLogin");
 		} catch (NamingException ex) {
 			log.error("Error when trying to read environment variable 'useLdapPasswordforBibsonomyLogin' via JNDI.");
-			useLDAP = false;
 		}
 
 		User user = null;
@@ -553,10 +548,12 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		return false;
 	}
 
+	@Override
 	public Errors getErrors() {
 		return errors;
 	}
 
+	@Override
 	public void setErrors(final Errors errors) {
 		/*
 		 * here: check for binding errors
@@ -569,6 +566,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 	 * 
 	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.BaseCommand)
 	 */
+	@Override
 	public boolean isValidationRequired(final UserLoginCommand command) {
 		/*
 		 * TODO: When is validation really required?
@@ -576,6 +574,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		return true;
 	}
 
+	@Override
 	public Validator<UserLoginCommand> getValidator() {
 		return new UserLoginValidator();
 	}
@@ -583,6 +582,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 	/**
 	 * @see org.bibsonomy.webapp.util.RequestAware#setRequestLogic(org.bibsonomy.webapp.util.RequestLogic)
 	 */
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
@@ -620,14 +620,13 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		this.maxMinutesPasswordReminderValid = maxMinutesPasswordReminderValid;
 	}
 
-
 	/**
 	 * @param cookieLogic
 	 */
+	@Override
 	public void setCookieLogic(CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
 	}
-
 
 	/**
 	 * @param openIDLogic

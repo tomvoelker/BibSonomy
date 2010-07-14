@@ -129,6 +129,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 	/**
 	 * @return errors
 	 */
+	@Override
 	public Errors getErrors() {
 		return this.errors;
 	}
@@ -136,6 +137,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 	/**
 	 * @param errors
 	 */
+	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}

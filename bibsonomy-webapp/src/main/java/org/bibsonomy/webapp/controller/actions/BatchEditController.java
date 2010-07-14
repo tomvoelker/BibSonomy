@@ -194,7 +194,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			/*
 			 * short check if hash is correct
 			 */
-			if (intraHash.length() != HASH_LENGTH) continue;
+			if (intraHash.length() != HASH_LENGTH) {
+				continue;
+			}
 			/*
 			 * has this post been flagged by the user? 
 			 */
@@ -277,9 +279,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 			} catch (final RecognitionException ex) {
 				log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
-			} catch (InstantiationException ex) {
+			} catch (final InstantiationException ex) {
 				log.debug("can't instantiate post with hash " + intraHash + " for user " + loginUserName, ex);
-			} catch (IllegalAccessException ex) {
+			} catch (final IllegalAccessException ex) {
 				log.debug("can't instantiate post with hash " + intraHash + " for user " + loginUserName, ex);
 			}
 		}
@@ -294,7 +296,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			log.debug("deleting "  + postsToDelete.size() + " posts for user " + loginUserName);
 			try {
 				this.logic.deletePosts(loginUserName, postsToDelete);
-			} catch (IllegalStateException e) {
+			} catch (final IllegalStateException e) {
 				// ignore - posts were already deleted
 			}
 		}
@@ -393,7 +395,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @param overwrite
 	 * @param loginUserName TODO
 	 */
-	private void storePosts(final List<Post<? extends Resource>> posts, final String resourceType, final Map<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final boolean overwrite, String loginUserName) {
+	private void storePosts(final List<Post<? extends Resource>> posts, final String resourceType, final Map<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final boolean overwrite, final String loginUserName) {
 		final List<Post<?>> postsForUpdate  = new LinkedList<Post<?>>();
 		try {
 			/*
@@ -447,7 +449,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 						 * add post to list of erroneous posts
 						 * (only if it has no errors already, to not add it twice) 
 						 */
-						if (!hasErrors) postsWithErrors.add(post);
+						if (!hasErrors) {
+							postsWithErrors.add(post);
+						}
 						hasErrors = true;
 						errors.rejectValue(resourceType+".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
@@ -497,7 +501,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				/*
 				 * if there are no errors, continue
 				 */
-				if (!present(postErrorMessages)) continue;
+				if (!present(postErrorMessages)) {
+					continue;
+				}
 				/*
 				 * Error messages are connected with the erroneous posts
 				 * via the post's position in the error list.
@@ -539,9 +545,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							 */
 							try {
 								post = logic.getPostDetails(postHash, loginUserName);
-							} catch (ResourceNotFoundException ex1) {
+							} catch (final ResourceNotFoundException ex1) {
 								// ignore
-							} catch (ResourceMovedException ex1) {
+							} catch (final ResourceMovedException ex1) {
 								// i
 							}
 							/*
@@ -622,14 +628,16 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			 * we remove this prefix to get back to the simple resource view in the group or user section
 			 */
 			final Matcher prefixMatcher = BATCH_EDIT_URL_PATTERN.matcher(referer);
-			if (prefixMatcher.find())
+			if (prefixMatcher.find()) {
 				redirectUrl = prefixMatcher.replaceFirst("");
+			}
 		}
 		/*
 		 * if no URL is given, we redirect to the user's page
 		 */
-		if (!present(redirectUrl)) 
+		if (!present(redirectUrl)) {
 			redirectUrl = UrlUtils.safeURIEncode("/user" + loginUserName); // TODO: should be done by the URLGenerator
+		}
 		return new ExtendedRedirectView(redirectUrl);
 	}
 
@@ -640,7 +648,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
@@ -663,7 +671,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * sets the requestLogic
 	 * @param requestLogic the RequestLogic
 	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 

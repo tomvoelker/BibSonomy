@@ -64,14 +64,17 @@ public class InboxPageController extends SingleResourceListController implements
 		return Views.getViewByFormat(format);	
 	}
 
+	@Override
 	public UserResourceViewCommand instantiateCommand() {
 		return new UserResourceViewCommand();
 	}
 
+	@Override
 	public Errors getErrors() {
 		return this.errors;
 	}
 
+	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
 	}

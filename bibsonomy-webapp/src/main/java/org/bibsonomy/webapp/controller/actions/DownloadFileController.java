@@ -118,6 +118,7 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 	 * 
 	 * @param errors
 	 */
+	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
 	}

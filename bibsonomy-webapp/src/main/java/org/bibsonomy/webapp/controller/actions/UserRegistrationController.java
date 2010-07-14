@@ -20,7 +20,6 @@ import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -41,7 +40,7 @@ import org.springframework.validation.Errors;
  * @author rja
  * @version $Id$
  */
-public class UserRegistrationController implements MinimalisticController<UserRegistrationCommand>, ErrorAware, ValidationAwareController<UserRegistrationCommand>, RequestAware, CookieAware {
+public class UserRegistrationController implements ErrorAware, ValidationAwareController<UserRegistrationCommand>, RequestAware, CookieAware {
 
 	/**
 	 * After successful registration, the user is redirected to this page. 
@@ -83,6 +82,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
+	@Override
 	public UserRegistrationCommand instantiateCommand() {
 		final UserRegistrationCommand userRegistrationCommand = new UserRegistrationCommand();
 		/*
@@ -97,6 +97,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.BaseCommand)
 	 */
+	@Override
 	public View workOn(UserRegistrationCommand command) {
 		log.debug("workOn() called");
 
@@ -299,10 +300,12 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		}
 	}
 
+	@Override
 	public Errors getErrors() {
 		return errors;
 	}
 
+	@Override
 	public void setErrors(final Errors errors) {
 		/*
 		 * here: check for binding errors
@@ -315,6 +318,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	 * 
 	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.BaseCommand)
 	 */
+	@Override
 	public boolean isValidationRequired(final UserRegistrationCommand command) {
 		return true; // TODO: When is validation really required?
 	}
@@ -334,7 +338,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		return InetAddressStatus.UNKNOWN;
 	}
 
-
+	@Override
 	public Validator<UserRegistrationCommand> getValidator() {
 		return new UserRegistrationValidator();
 	}
@@ -352,6 +356,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	 * @param requestLogic 
 	 */
 	@Required
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
@@ -361,6 +366,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	 * @param cookieLogic
 	 */
 	@Required
+	@Override
 	public void setCookieLogic(CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
 	}

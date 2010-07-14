@@ -39,8 +39,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 	private static final Log log = LogFactory.getLog(RedirectController.class);
 	private Errors errors;
 
-
-
+	@Override
 	public View workOn(final RedirectCommand command) {
 		log.debug("handling /redirect URLs");
 		String redirectUrl = "/login";
@@ -198,26 +197,30 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		 * we could not create an appropriate URL -> return null
 		 */
 		return null;
-	}	
-
-
-
+	}
 	
+	@Override
 	public RedirectCommand instantiateCommand() {
 		return new RedirectCommand();
 	}
+	
 	/** 
 	 * Supplies the requestLogic to this controller. The controller needs it to 
 	 * get the HTTP "accept" header.
 	 * 
 	 * @see org.bibsonomy.webapp.util.ResponseAware#setResponseLogic(org.bibsonomy.webapp.util.ResponseLogic)
 	 */
+	@Override
 	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
+	
+	@Override
 	public Errors getErrors() {
 		return errors;
 	}
+	
+	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}

@@ -26,6 +26,7 @@ import org.bibsonomy.webapp.view.Views;
 public class ConceptPageController extends SingleResourceListController implements MinimalisticController<ConceptResourceViewCommand>{
 	private static final Log log = LogFactory.getLog(ConceptPageController.class);
 
+	@Override
 	public View workOn(final ConceptResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
@@ -107,8 +108,6 @@ public class ConceptPageController extends SingleResourceListController implemen
 			command.getConcepts().setConceptList(concepts);
 			command.getConcepts().setNumConcepts(concepts.size());
 		}
-
-		
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
@@ -125,6 +124,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		return Views.getViewByFormat(command.getFormat());
 	}
 
+	@Override
 	public ConceptResourceViewCommand instantiateCommand() {
 		return new ConceptResourceViewCommand();
 	}	

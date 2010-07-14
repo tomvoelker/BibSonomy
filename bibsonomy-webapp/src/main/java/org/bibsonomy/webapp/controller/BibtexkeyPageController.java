@@ -27,6 +27,7 @@ import org.bibsonomy.webapp.view.Views;
 public class BibtexkeyPageController extends SingleResourceListController implements MinimalisticController<BibtexkeyCommand> {
 	private static final Log log = LogFactory.getLog(BibtexkeyPageController.class);
 
+	@Override
 	public View workOn(BibtexkeyCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
@@ -92,6 +93,7 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
+	@Override
 	public BibtexkeyCommand instantiateCommand() {
 		return new BibtexkeyCommand();
 	}

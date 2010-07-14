@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -35,6 +37,7 @@ import org.bibsonomy.webapp.view.Views;
 public class UrlPageController extends SingleResourceListController implements MinimalisticController<UrlCommand> {
 	private static final Log log = LogFactory.getLog(UrlPageController.class);
 
+	@Override
 	public View workOn(final UrlCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
@@ -58,7 +61,7 @@ public class UrlPageController extends SingleResourceListController implements M
 
 		// no URL hash given -> error
 		final String requHash = command.getRequUrlHash();
-		if (!ValidationUtils.present(command.getRequUrl()) && !ValidationUtils.present(requHash)) {
+		if (!present(command.getRequUrl()) && !present(requHash)) {
 			throw new MalformedURLSchemeException("error.url_no_hash");
 		}		
 
@@ -71,7 +74,7 @@ public class UrlPageController extends SingleResourceListController implements M
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
 
 		// send redirect to /url/HASH
-		if (ValidationUtils.present(command.getRequUrl())) {
+		if (present(command.getRequUrl())) {
 			// TODO: add format in front of /url/? (probably not, this URL should only be called by input form)
 			// FIXME: remove call to old method
 			return new ExtendedRedirectView("/url/" + resources.Resource.hash(command.getRequUrl()));
@@ -97,7 +100,7 @@ public class UrlPageController extends SingleResourceListController implements M
 		this.endTiming();
 
 		// html format - retrieve tags and return HTML view
-		if (command.getFormat().equals("html")) {
+		if ("html".equals(command.getFormat())) {
 			// FIXME: here we assume, bookmarks are handled, further above we use listsToInitialize ...
 			setTags(command, Bookmark.class, groupingEntity, groupingName, null, null, requHash, 1000, null);
 
@@ -108,6 +111,7 @@ public class UrlPageController extends SingleResourceListController implements M
 		return Views.getViewByFormat(command.getFormat());				
 	}
 
+	@Override
 	public UrlCommand instantiateCommand() {
 		return new UrlCommand();
 	}

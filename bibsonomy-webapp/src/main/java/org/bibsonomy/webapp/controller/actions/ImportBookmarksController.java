@@ -30,7 +30,6 @@ import org.bibsonomy.services.importer.RelationImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
 import org.bibsonomy.webapp.command.actions.ImportCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -43,10 +42,9 @@ import org.springframework.validation.Errors;
 
 /**
  * @author mwa
- * @version $Id: ImportController.java,v 1.3 2009-06-23 14:23:15 voigtmannc Exp
- *          $
+ * @version $Id$
  */
-public class ImportBookmarksController implements MinimalisticController<ImportCommand>, ErrorAware, ValidationAwareController<ImportCommand> {
+public class ImportBookmarksController implements ErrorAware, ValidationAwareController<ImportCommand> {
 	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);
 	
 
@@ -67,6 +65,7 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 
 	private Errors errors = null;
 
+	@Override
 	public View workOn(final ImportCommand command) {
 		final RequestWrapperContext context = command.getContext();
 
@@ -144,9 +143,9 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 		/*
 		 * FIXME: too general error keys!
 		 */
-		} catch (UnsupportedFileTypeException ex) {
+		} catch (final UnsupportedFileTypeException ex) {
 			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
 			log.warn("Delicious/Firefox-Import failed: " + ex.getMessage());
 		}
@@ -173,9 +172,9 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 	 * @param relations
 	 * @param command
 	 */
-	private void storeRelations(List<Tag> relations, ImportCommand command) {
+	private void storeRelations(final List<Tag> relations, final ImportCommand command) {
 		command.setStoredConcepts(new LinkedList<String>());
-		for (Tag tag : relations) {
+		for (final Tag tag : relations) {
 			final String conceptName = this.logic.createConcept(tag, GroupingEntity.USER, command.getContext().getLoginUser().getName());
 			command.getStoredConcepts().add(conceptName);
 		}
@@ -188,7 +187,7 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 	 * @param posts
 	 */
 	@SuppressWarnings("unchecked")
-	private void storePosts(ImportCommand command, List<Post<Bookmark>> posts) {
+	private void storePosts(final ImportCommand command, final List<Post<Bookmark>> posts) {
 
 		// stores all newly added bookmarks
 		final Map<String, String> newBookmarkEntries = new HashMap<String, String>();
@@ -213,10 +212,10 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 				// system
 				final List<String> createdPostHash = logic.createPosts((List<Post<?>>) singletonList);
 				newBookmarkEntries.put(createdPostHash.get(0), title);
-			} catch (DatabaseException de) {
+			} catch (final DatabaseException de) {
 				// an error occured: handle duplicates throw all other 
-				for (String hash: de.getErrorMessages().keySet()) {
-					for (ErrorMessage errorMessage: de.getErrorMessages(hash)) {
+				for (final String hash: de.getErrorMessages().keySet()) {
+					for (final ErrorMessage errorMessage: de.getErrorMessages(hash)) {
 						if (errorMessage instanceof DuplicatePostErrorMessage) {
 							// duplicate post detected => handle this
 							// check whether the update bookmarks checkbox is checked
@@ -257,6 +256,7 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 	/**
 	 * Return a new instance of an ImportCommand
 	 */
+	@Override
 	public ImportCommand instantiateCommand() {
 		final ImportCommand command = new ImportCommand();
 		command.setImportData("posts");
@@ -267,10 +267,9 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 	 * @param logic
 	 *            logic interface
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
-
 
 	@Override
 	public Errors getErrors() {
@@ -278,7 +277,7 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
@@ -297,7 +296,7 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 	 * @param importerFactory
 	 */
 	@Required
-	public void setImporterFactory(DeliciousImporterFactory importerFactory) {
+	public void setImporterFactory(final DeliciousImporterFactory importerFactory) {
 		this.importerFactory = importerFactory;
 	}
 
@@ -307,7 +306,7 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 	}
 
 	@Override
-	public boolean isValidationRequired(ImportCommand command) {
+	public boolean isValidationRequired(final ImportCommand command) {
 		return false;
 	}
 
@@ -321,7 +320,7 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 	/**
 	 * @param uploadFactory
 	 */
-	public void setUploadFactory(FileUploadFactory uploadFactory) {
+	public void setUploadFactory(final FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
 	}
 
