@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  */
 public class IdleClosingConnectionManager extends MultiThreadedHttpConnectionManager {
-	final Log log = LogFactory.getLog(IdleClosingConnectionManager.class);
+	private static final Log log = LogFactory.getLog(IdleClosingConnectionManager.class);
 	
 	@Override
 	public void releaseConnection(HttpConnection conn) {
