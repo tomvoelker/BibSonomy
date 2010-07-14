@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender.tags.multiplexer.modifiers;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,14 +18,13 @@ import org.bibsonomy.recommender.tags.database.DBLogic;
  */
 public class DC09NameToIDMapping implements PostModifier {
 	private static final Log log = LogFactory.getLog(DC09NameToIDMapping.class);
-	private static final String UNKOWNUSER = null;
 	private static final Integer UNKNOWNID = Integer.MIN_VALUE;
 	
 	/** used for mapping user names to ids and vice versa */
 	private DBLogic dbLogic;
 	
 	/** used for caching name->id mappings */
-	private HashMap<String,Integer> nameMap;
+	private Map<String, Integer> nameMap;
 	
 	//------------------------------------------------------------------------
 	// public interface 
@@ -44,25 +44,27 @@ public class DC09NameToIDMapping implements PostModifier {
 	@Override
 	public void alterPost(Post<? extends Resource> post) {
 		String userName = post.getUser().getName();
-		Integer userID = null;
-		if( (userID = nameMap.get(userName))==null )
+		Integer userID = nameMap.get(userName);
+		if( userID == null )
 			userID = this.getDbLogic().getUserIDByName(userName);
 		
-		if( userID==null )
+		if( userID == null )
 			userID = UNKNOWNID;
 		post.getUser().setName(userID.toString());
 		log.debug("Mapping user "+userName+" to id "+userID);
 	}
 
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
+	/**
+	 * @return the dbLogic
+	 */
+	public DBLogic getDbLogic() {
+		return this.dbLogic;
+	}
+
+	/**
+	 * @param dbLogic the dbLogic to set
+	 */
 	public void setDbLogic(DBLogic dbLogic) {
 		this.dbLogic = dbLogic;
 	}
-
-	public DBLogic getDbLogic() {
-		return dbLogic;
-	}
-
 }
