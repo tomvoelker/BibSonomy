@@ -21,6 +21,7 @@ import org.bibsonomy.rest.strategy.groups.UpdateGroupDetailsStrategy;
  */
 public class GroupsHandler implements ContextHandler {
 
+	@Override
 	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
 		final int numTokensLeft = urlTokens.countTokens();
 		final String groupName;

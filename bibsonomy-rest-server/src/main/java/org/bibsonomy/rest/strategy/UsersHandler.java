@@ -17,10 +17,10 @@ import org.bibsonomy.rest.strategy.users.GetUserConceptsStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserListStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserPostsStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserStrategy;
+import org.bibsonomy.rest.strategy.users.PostPostDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.PostPostStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserStrategy;
-import org.bibsonomy.rest.strategy.users.PostPostDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.PutPostStrategy;
 import org.bibsonomy.rest.strategy.users.PutUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.PutUserStrategy;
@@ -32,6 +32,7 @@ import org.bibsonomy.rest.strategy.users.PutUserStrategy;
  */
 public class UsersHandler implements ContextHandler {
 
+	@Override
 	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
 		final int numTokensLeft = urlTokens.countTokens();
 		final String userName;
@@ -92,7 +93,7 @@ public class UsersHandler implements ContextHandler {
 				final String resourceHash = urlTokens.nextToken();
 
 				if (RestProperties.getInstance().getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())){
-					String filename = urlTokens.nextToken();
+					final String filename = urlTokens.nextToken();
 					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash, filename);
 				}
 			}

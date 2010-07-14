@@ -21,6 +21,7 @@ import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
  */
 public class PostsHandler implements ContextHandler {
 
+	@Override
 	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
 		switch (urlTokens.countTokens()) {
 		case 0:
