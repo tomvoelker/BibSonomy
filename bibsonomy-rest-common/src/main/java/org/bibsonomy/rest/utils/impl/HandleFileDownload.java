@@ -61,6 +61,7 @@ public class HandleFileDownload implements FileDownloadInterface {
 	/*
 	 * @see org.bibsonomy.util.fileutil.FileDownloadInterface#getBuf()
 	 */
+	@Override
 	public BufferedInputStream getBuf() {
 		return this.buf;
 	}
