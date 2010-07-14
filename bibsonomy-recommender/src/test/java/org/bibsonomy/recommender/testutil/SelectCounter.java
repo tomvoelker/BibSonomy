@@ -16,56 +16,66 @@ import org.bibsonomy.recommender.tags.multiplexer.strategy.RecommendationSelecto
  */
 public class SelectCounter implements RecommendationSelector {
 	private static final Log log = LogFactory.getLog(SelectCounter.class);
+
+
 	private String info = "Strategy for selecting all recommended Tags.";
-	
 	private DBLogic dbLogic;
-	
 	private int recoCounter;
-	
+
 	/**
 	 * Selection strategy which simply selects each recommended tag
 	 */
-	public void selectResult(Long qid, RecommendedTagResultManager resultCache, Collection<RecommendedTag> recommendedTags) throws SQLException {
+	@Override
+	public void selectResult(final Long qid, final RecommendedTagResultManager resultCache, final Collection<RecommendedTag> recommendedTags) throws SQLException {
 		log.debug("Selecting result.");
 		dbLogic.getRecommendations(qid, recommendedTags);
 		setRecoCounter(dbLogic.getActiveRecommenderIDs(qid).size());
 	}
 
+	@Override
 	public String getInfo() {
-		// TODO Auto-generated method stub
 		return info;
 	}
 
-	public void setInfo(String info) {
+	@Override
+	public void setInfo(final String info) {
 		this.info = info;
 	}
 
-
+	@Override
 	public byte[] getMeta() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void setMeta(byte[] meta) {
-		// TODO Auto-generated method stub
-		
+	@Override
+	public void setMeta(final byte[] meta) {
 	}
 
+	/**
+	 * @return the dbLogic
+	 */
 	public DBLogic getDbLogic() {
 		return this.dbLogic;
 	}
 
-	public void setDbLogic(DBLogic dbLogic) {
+	/**
+	 * @param dbLogic the dbLogic to set
+	 */
+	public void setDbLogic(final DBLogic dbLogic) {
 		this.dbLogic = dbLogic;
 	}
 
-	public void setRecoCounter(int recoCounter) {
+	/**
+	 * @return the recoCounter
+	 */
+	public int getRecoCounter() {
+		return this.recoCounter;
+	}
+
+	/**
+	 * @param recoCounter the recoCounter to set
+	 */
+	public void setRecoCounter(final int recoCounter) {
 		this.recoCounter = recoCounter;
 	}
-
-	public int getRecoCounter() {
-		return recoCounter;
-	}
-
-
 }

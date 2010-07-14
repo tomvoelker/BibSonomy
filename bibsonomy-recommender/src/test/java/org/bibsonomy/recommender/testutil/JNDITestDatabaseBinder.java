@@ -16,14 +16,11 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 /**
  * Helper class for binding a test database resource via JNDI to enable database access
  * without a running application server, which usually provides the JNDI tree.
- * 
+ * @author bkr
  * @author Dominik Benz
  * @version $Id$
  */
-/**
- * @author bkr
- *
- */
+@Deprecated
 public final class JNDITestDatabaseBinder {
 
 	private static final Log log = LogFactory.getLog(JNDITestDatabaseBinder.class);
