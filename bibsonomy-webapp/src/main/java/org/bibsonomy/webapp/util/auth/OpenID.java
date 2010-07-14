@@ -77,7 +77,7 @@ public class OpenID implements Serializable {
 		/*
 		 *  perform discovery on the user-supplied identifier
 		 */
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		List discoveries = manager.discover(openID);
 		manager.setNonceVerifier(new InMemoryNonceVerifier(100000));
 		

@@ -40,14 +40,14 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 	/**
 	 * Logger
 	 */
-	private final Log log = LogFactory.getLog(Ldap.class);
+	private static final Log log = LogFactory.getLog(Ldap.class);
 
 
 	/** name of the property file which configures ldap */
 	//private final String LDAPPropertyFilename = "ldap.properties";
 
-    public Object getObjectInstance( Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment)
-    		    throws NamingException {
+    @Override
+	public Object getObjectInstance( Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws NamingException {
 
     		        Hashtable<String, String> env = new Hashtable<String, String>();
     		        Reference ref = (Reference) obj;
@@ -189,8 +189,7 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 					if (ldapUserinfo.checkPasswordHash(ldapCredentials)) {
 						// password is correct
 						log.info("Password is CORRECT");
-					}
-					else {
+					} else {
 						// password is not correct
 						log.info("Password is NOT correct");
 						ldapUserinfo = null;
@@ -207,9 +206,7 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 				ldapUserinfo = null;
 			}
 
-		}
-		else
-		{ // can't get context
+		} else { // can't get context
 			log.warn("LDAP context not available. Wrong authentication within JNDI-LDAP-Resource!?");
 			ldapUserinfo = null;
 		}
