@@ -36,7 +36,7 @@ public class MultiResourceViewCommand extends ResourceViewCommand {
 	 * @param resourceType type of the entities in the list
 	 * @return the list with entities of type resourceType
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T extends Resource> List<ListCommand<Post<T>>> getListCommand(final Class<T> resourceType) {
 		if (resourceType == BibTex.class) {
 			return (List) getListsBibTeX();

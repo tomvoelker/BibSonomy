@@ -19,6 +19,7 @@ public class AjaxRecommenderCommand<RESOURCE extends Resource> extends EditPostC
 	/**
 	 * @return the responseString
 	 */
+	@Override
 	public String getResponseString() {
 		return this.responseString;
 	}
@@ -26,6 +27,7 @@ public class AjaxRecommenderCommand<RESOURCE extends Resource> extends EditPostC
 	/**
 	 * @param responseString the responseString to set
 	 */
+	@Override
 	public void setResponseString(String responseString) {
 		this.responseString = responseString;
 	}
