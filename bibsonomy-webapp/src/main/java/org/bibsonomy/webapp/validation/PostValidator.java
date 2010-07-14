@@ -163,11 +163,10 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 				 * TODO: more detailed error messages for different errors
 				 */
 				errors.rejectValue("post.groups", "error.field.valid.groups");
-			}
-			/*
-			 * TODO: allow multiple groups
-			 */
-			if (groups.size() > 1) {
+			} else if (groups.size() > 1) {
+				/*
+				 * TODO: allow multiple groups
+				 */
 				errors.rejectValue("post.groups", "error.field.valid.groups");
 			}
 		} else {
