@@ -11,23 +11,25 @@ import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
  * @version $Id$
  */
 public interface RecommendationSelector {
+	
 	/**
 	 * Selects recommendations for given query
 	 * 
 	 * @param qid
 	 * @param resultCache 
-	 * @return
-	 * @throws Exception
+	 * @param recommendedTags 
+	 * @throws SQLException
 	 */
 	public void selectResult(Long qid, RecommendedTagResultManager resultCache, Collection<RecommendedTag> recommendedTags) throws SQLException;
 	
 	/**
 	 * selector specific meta informations
+	 * @param info 
 	 */
 	public void setInfo(String info);
+	
 	/**
-	 * selector specific meta informations
-	 * @return 
+	 * @return selector specific meta informations
 	 */
 	public String getInfo();
 	
@@ -36,11 +38,9 @@ public interface RecommendationSelector {
 	 * @param meta 
 	 */
 	public void setMeta(byte[] meta);
+	
 	/**
-	 * short text describing this strategy
-	 * @return 
+	 * @return short text describing this strategy
 	 */
 	public byte[] getMeta();
-	
-	
 }
