@@ -69,6 +69,9 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	private String recaptcha_challenge_field;
 	private String recaptcha_response_field;
 	private String captchaHTML;
+	
+	/** should the edit view be shown before the post is stored into the db? */
+	private boolean editBeforeSaving;
 
 	/**
 	 * @return the post
@@ -342,5 +345,19 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	 */
 	public void setCaptchaHTML(String captchaHTML) {
 		this.captchaHTML = captchaHTML;
+	}
+
+	/**
+	 * @return the editBeforeSaving
+	 */
+	public boolean isEditBeforeSaving() {
+		return this.editBeforeSaving;
+	}
+
+	/**
+	 * @param editBeforeSaving the editBeforeSaving to set
+	 */
+	public void setEditBeforeSaving(boolean editBeforeSaving) {
+		this.editBeforeSaving = editBeforeSaving;
 	}
 }

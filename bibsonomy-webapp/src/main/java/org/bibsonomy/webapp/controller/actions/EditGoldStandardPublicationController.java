@@ -16,80 +16,103 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
+ * controller for the edit gold standard publication form
+ * 	- editGoldStandardPublication
+ * 
  * @author dzo
  * @version $Id$
  */
 public class EditGoldStandardPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
-	
+
 	@Override
 	protected View getPostView() {
 		return Views.EDIT_GOLD_STANDARD_PUBLICATION;
 	}
-	
+
 	@Override
-	protected Post<BibTex> getPostDetails(String intraHash, String userName) {
+	protected Post<BibTex> getPostDetails(final String intraHash, final String userName) {
 		/*
 		 * get goldstandard post; username must be empty!
 		 */
 		return super.getPostDetails(intraHash, "");
 	}
-	
+
 	@Override
-	protected Post<BibTex> getCopyPost(User loginUser, String hash, String user) {
-		@SuppressWarnings("unchecked")
+	protected void prepareResourceForDatabase(final BibTex resource) {
+		// noop
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Post<BibTex> getCopyPost(final User loginUser, final String hash, final String user) {
 		Post<BibTex> post = null;
 		try {
 			post = (Post<BibTex>) this.logic.getPostDetails(hash, user);
-		} catch (ResourceNotFoundException ex) {
+		} catch (final ResourceNotFoundException ex) {
 			// ignore
-		} catch (ResourceMovedException ex) {
+		} catch (final ResourceMovedException ex) {
 			// ignore		
 		}
-		return this.convertToGoldStandard(post);
-	}
-	
-	@Override
-	protected boolean canEditPost(RequestWrapperContext context) {
-		return super.canEditPost(context) && Role.ADMIN.equals(context.getLoginUser().getRole());
-	}
-	
-	@Override
-	protected View getAccessDeniedView(final PostPublicationCommand command) {
-		throw new AccessDeniedException("You are not allowed to edit Goldstandards!!!");
-	}
-	
-	private Post<BibTex> convertToGoldStandard(Post<BibTex> post) {
-		if (!present(post)) {
+
+		if (post == null) {
 			return null;
 		}
 		
+		return this.convertToGoldStandard(post);
+	}
+
+	@Override
+	protected boolean canEditPost(final RequestWrapperContext context) {
+		return super.canEditPost(context) && Role.ADMIN.equals(context.getLoginUser().getRole());
+	}
+
+	@Override
+	protected View getAccessDeniedView(final PostPublicationCommand command) {
+		throw new AccessDeniedException("You are not allowed to edit Goldstandards!");
+	}
+
+	@Override
+	protected View finalRedirect(final String userName, final String referer) {
+		if (referer == null || referer.matches(".*/editGoldStandardPublication.*")) {
+			return new ExtendedRedirectView("/"); // TODO
+		}
+
+		return super.finalRedirect(userName, referer);
+	}
+
+	private Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
+		if (!present(post)) {
+			return null;
+		}
+
 		final Post<BibTex> gold = new Post<BibTex>();
-		
+
 		final GoldStandardPublication goldP = new GoldStandardPublication();
 		ObjectUtils.copyPropertyValues(post.getResource(), goldP);
 		gold.setResource(goldP);
-		
+
 		return gold;
 	}
-	
+
 	@Override
 	protected PostPublicationCommand instantiateEditPostCommand() {
 		return new PostPublicationCommand();
 	}
-	
+
 	@Override
 	protected BibTex instantiateResource() {
 		return new GoldStandardPublication();
 	}
-	
+
 	@Override
 	protected PostValidator<BibTex> getValidator() {
 		return new GoldStandardPostValidator<BibTex>();
 	}
-	
+
 	@Override
 	protected void setRecommendationFeedback(final Post<BibTex> post, final int postID) {
 		// noop gold standards have no tags

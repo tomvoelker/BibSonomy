@@ -68,11 +68,6 @@ import org.springframework.validation.ValidationUtils;
 public abstract class EditPostController<RESOURCE extends Resource,COMMAND extends EditPostCommand<RESOURCE>> extends SingleResourceListController implements MinimalisticController<COMMAND>, ErrorAware {
 	private static final Log log = LogFactory.getLog(EditPostController.class);
 	
-	/**
-	 * FIXME: system tag handling should be done by system tags ... not by this
-	 * controller.
-	 */
-	
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 	
@@ -183,10 +178,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			// the user can be empty => goldstandard
 			final Post<RESOURCE> post = this.getCopyPost(loginUser, hash, user);
 			
-			/* 
-			 * FIXME: what to do if the post can't be found? 
-			 * getCopyPost will return null and anytime a npe can be thrown!
-			 */
 			command.setPost(post);
 		} else {			
 			/*
@@ -379,6 +370,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 */
 	private View handleUpdatePost(final EditPostCommand<RESOURCE> command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post, final String intraHashToUpdate) {
 		final String loginUserName = loginUser.getName();
+		
 		/*
 		 * we're editing an existing post
 		 */
@@ -644,7 +636,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 *        
 	 * @return
 	 */
-	private View finalRedirect(final String userName, final String referer) {
+	protected View finalRedirect(final String userName, final String referer) {
 		/*
 		 * If there is no referer URL given, or if we come from a postBookmark/postPublication page, 
 		 * redirect to the user's home page. 
@@ -691,6 +683,13 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			log.debug("returning to view because of errors: " + errors.getErrorCount());
 			log.debug("post is " + post.getResource());
 			return getEditPostView(command, loginUser);
+		}
+		
+		/*
+		 * should the edit view been shown before saving the post?
+		 */
+		if (command.isEditBeforeSaving()) {
+			return this.getEditPostView(command, loginUser);
 		}
 
 		/*
@@ -853,7 +852,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 				 * ignore groups the user is not a member of
 				 */
 				if (groups.contains(new Group(relevantGroup))) {
-					tags.add( new Tag( SystemTagsUtil.buildSystemTagString(SystemTagsUtil.RELEVANT_FOR, relevantGroup) ) );
+					tags.add(new Tag(SystemTagsUtil.buildSystemTagString(SystemTagsUtil.RELEVANT_FOR, relevantGroup)));
 				} else {
 					log.info("ignored relevantFor group '" + relevantGroup + "' because user is not member of it");
 				}
@@ -894,7 +893,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * if the user owns the resource => diff post will be set
 	 * 
 	 * @param command
-	 * @return  if user already owns resource
+	 * @return <code>true</code> iff user already owns resource
 	 */
 	protected boolean setDiffPost(final EditPostCommand<RESOURCE> command) {
 		final RequestWrapperContext context = command.getContext();
@@ -903,9 +902,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		final RESOURCE resource = post.getResource();
 		resource.recalculateHashes();
 		
-		if (resource instanceof GoldStandard<?>) {
-			resource.setIntraHash(SimHash.getSimHash(resource, HashID.INTRA_HASH));
-		}
+		this.prepareResourceForDatabase(resource);
 		
 		/*
 		 * is resource already owned by the user?
@@ -931,6 +928,13 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		}
 		
 		return false;		
+	}
+
+	// FIXME: find a more suitable name for this method
+	protected void prepareResourceForDatabase(final RESOURCE resource) {
+		if (resource instanceof GoldStandard<?>) {
+			resource.setIntraHash(SimHash.getSimHash(resource, HashID.INTRA_HASH));
+		}
 	}
 
 	/**
@@ -1040,10 +1044,12 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 
 	protected abstract PostValidator<RESOURCE> getValidator();
 
+	@Override
 	public Errors getErrors() {
 		return errors;
 	}
 
+	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
