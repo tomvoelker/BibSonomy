@@ -10,10 +10,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
@@ -470,7 +469,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 				// apply post modifiers
 				for( PostModifier pm : getPostModifiers() ) {
 					pm.alterPost(filteredPost);
-				};
+				}
 				// query remote recommender
 				for( TagRecommenderConnector con: getDistRecommenders() ) {
 					// each recommender is identified by an unique id:
@@ -508,7 +507,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 				} else {
 					log.fatal("("+qid+")Didn't find recommender id - THIS SHOULD NEVER HAPPEN");
 				}
-			};
+			}
 
 		} catch (SQLException ex) {
 			log.error("("+qid+")"+ex.getMessage(), ex);
@@ -526,7 +525,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		// tell dispatchers that they are late
 		for( RecommenderDispatcher disp: dispatchers ) {
 			disp.abortQuery();
-		};
+		}
 		log.debug("("+qid+")Waited for "+(System.currentTimeMillis()-startSleep)+" ms");
 
 		if( qid!=null ) {
@@ -535,7 +534,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			} catch (SQLException ex) {
 				log.error("("+qid+")"+ex.getMessage(), ex);
 			}
-		};
+		}
 		log.debug("("+qid+") Running threads: "+queryThreadCounter+" query threads and "+feedbackThreadCounter+" feedback threads");
 	}
 
@@ -547,6 +546,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * 
 	 * @see org.bibsonomy.services.recommender.TagRecommender#addRecommendedTags(java.util.Collection, org.bibsonomy.model.Post)
 	 */	
+	@Override
 	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		addRecommendedTags(recommendedTags, post, UNKNOWN_POSTID);
 	}
@@ -554,9 +554,10 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	/**
 	 * get recommendation
 	 */
+	@Override
 	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
 		return getRecommendedTags(post, UNKNOWN_POSTID);
-	};
+	}
 
 	/**
 	 * Extends TagRecommender's interface with a parameter which is used to map
@@ -621,10 +622,11 @@ public class MultiplexingTagRecommender implements TagRecommender {
 				new FeedbackDispatcher(rec, post);
 			dispatchers.add(dispatcher);
 			dispatcher.start();
-		};
+		}
 	}
 	
 
+	@Override
 	public String getInfo() {
 		return "Multiplexing recommender for querying several independent recommenders.";
 	}
@@ -652,7 +654,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 				pos++;
 				if( pos>getNumberOfTagsToRecommend() )
 					itr.remove();
-			};
+			}
 		}
 		
 		// remove query from result cache
@@ -918,6 +920,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		/**
 		 * Dispatch and collect query.
 		 */
+		@Override
 		public void run() {
 			// for query-time logging
 			long time = System.currentTimeMillis();
