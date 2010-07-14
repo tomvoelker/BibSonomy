@@ -26,13 +26,16 @@ public class XMLHandler extends DefaultHandler {
 	private String authorFirstName;
 	private String authorLastName;
 
+	@Override
 	public void startDocument() {
 		list = new LinkedList<Post<BibTex>>();
 	}
 
+	@Override
 	public void endDocument() {
 	}
 
+	@Override
 	public void startElement (final String uri, final String name, final String qName, final Attributes atts) {
 		if ("submission".equals(qName)) {
 			post = new Post<BibTex>();
@@ -55,10 +58,12 @@ public class XMLHandler extends DefaultHandler {
 	 * 
 	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
 	 */
+	@Override
 	public void characters (final char ch[], final int start, final int length) {
 		buf.append(ch, start, length);
 	}
 
+	@Override
 	public void endElement (final String uri, final String name, final String qName) {
 		if ("submission".equals(qName)) {
 			list.add(post);
