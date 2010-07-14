@@ -284,9 +284,9 @@ public class DBLogic implements LogicInterface {
 	 * java.util.List, java.lang.String, org.bibsonomy.model.enums.Order,
 	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, String search) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 
 		// check allowed start-/end-values
 		if (grouping.equals(GroupingEntity.ALL) && !present(tags) && !present(search)) {
@@ -686,9 +686,9 @@ public class DBLogic implements LogicInterface {
 	 *            - a post of type T
 	 * @return an appropriate database manager
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private <T extends Resource> CrudableContent<T, GenericParam> getFittingDatabaseManager(final Post<T> post) {
-		final Class resourceClass = post.getResource().getClass();
+		final Class<?> resourceClass = post.getResource().getClass();
 		CrudableContent<? extends Resource, ? extends GenericParam> man = this.allDatabaseManagers.get(resourceClass);
 		if (man == null) {
 			for (final Map.Entry<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> entry : this.allDatabaseManagers.entrySet()) {
@@ -831,9 +831,9 @@ public class DBLogic implements LogicInterface {
 			for (final Post<?> post : posts) {
 				try {
 					hashes.add(this.createPost(post, session));
-				} catch (DatabaseException dbex) {
+				} catch (final DatabaseException dbex) {
 					collectedException.addErrors(dbex);
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 					// some exception other than those covered in the DatabaseException was thrown					
 					collectedException.addToErrorMessages(post.getResource().getIntraHash(), new UnspecifiedErrorMessage(ex));
 				}
@@ -853,7 +853,7 @@ public class DBLogic implements LogicInterface {
 	/**
 	 * Adds a post in the database.
 	 */
-	private <T extends Resource> String createPost(final Post<T> post, DBSession session) {
+	private <T extends Resource> String createPost(final Post<T> post, final DBSession session) {
 		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 		post.getResource().recalculateHashes();
 
@@ -906,9 +906,9 @@ public class DBLogic implements LogicInterface {
 			for (final Post<?> post : posts) {
 				try {
 					hashes.add(this.updatePost(post, operation, session));
-				} catch (DatabaseException dbex) {
+				} catch (final DatabaseException dbex) {
 					collectedException.addErrors(dbex);
-				} catch (Exception ex){
+				} catch (final Exception ex){
 					// some exception other than those covered in the DatabaseException was thrown					
 					collectedException.addToErrorMessages(post.getResource().getIntraHash(), new UnspecifiedErrorMessage(ex));
 				}
@@ -969,8 +969,9 @@ public class DBLogic implements LogicInterface {
 		try {
 			
 			if(updateRelations) {
-				if(tagsToReplace.size() != 1 || replacementTags.size() != 1)
+				if(tagsToReplace.size() != 1 || replacementTags.size() != 1) {
 					throw new ValidationException("TODO");
+				}
 				
 				this.tagRelationsDBManager.updateTagRelations(user, tagsToReplace.get(0), replacementTags.get(0), session);
 
@@ -1150,7 +1151,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
 	 */
 	@Override
-	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
+	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		/*
 		 * FIXME: implement a chain or something similar
 		 */
@@ -1193,9 +1194,9 @@ public class DBLogic implements LogicInterface {
 				Post<BibTex> post = null;
 				try {
 					post = publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				} catch (ResourceMovedException ex) {
+				} catch (final ResourceMovedException ex) {
 					// ignore
-				} catch (ResourceNotFoundException ex) {
+				} catch (final ResourceNotFoundException ex) {
 					// ignore
 				}
 				if (present(post)) {
@@ -1280,9 +1281,9 @@ public class DBLogic implements LogicInterface {
 				Post<BibTex> post = null;
 				try {
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				} catch (ResourceMovedException ex) {
+				} catch (final ResourceMovedException ex) {
 					// ignore
-				} catch (ResourceNotFoundException ex) {
+				} catch (final ResourceNotFoundException ex) {
 				// ignore
 				}
 				if (post != null && post.getResource().getDocuments() != null) {
@@ -1339,9 +1340,9 @@ public class DBLogic implements LogicInterface {
 				Post<BibTex> post = null;
 				try {
 					post = publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				} catch (ResourceMovedException ex) {
+				} catch (final ResourceMovedException ex) {
 					//ignore
-				} catch (ResourceNotFoundException ex) {
+				} catch (final ResourceNotFoundException ex) {
 					// ignore
 				}
 				if (post != null) {
@@ -1442,7 +1443,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.StatisticsConstraint)
 	 */
 	@Override
-	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint) {
+	public int getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
 		final DBSession session = openSession();
 
 		try {
@@ -1488,8 +1489,6 @@ public class DBLogic implements LogicInterface {
 	}
 
 	/**
-	 * @param String conceptName, GroupingEntity grouping, String groupingName
-	 * 			
 	 * @return a concept, i.e. a tag with its assigned subtags
 	 * 
 	 * in both queries getConceptForUser and getGlobalConceptByName 
@@ -1583,8 +1582,9 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
-		if (!GroupingEntity.USER.equals(grouping))
+		if (!GroupingEntity.USER.equals(grouping)) {
 			throw new UnsupportedOperationException("Currently only user's can have concepts.");
+		}
 
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, groupingName);
 
@@ -1644,7 +1644,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.UserRelation, java.lang.String, int, int)
 	 */
 	@Override
-	public List<User> getUsers(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, final List<String> tags, String hash, final Order order, UserRelation relation, String search, final int start, final int end) {
+	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
 		// assemle param object
 		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, grouping, groupingName, tags, hash, order, start, end, search, null, loginUser);
 		param.setUserRelation(relation);
@@ -1772,7 +1772,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.model.logic.LogicInterface#getOpenIDUser(java.lang.String)
 	 */
 	@Override
-	public String getOpenIDUser(String openID) {
+	public String getOpenIDUser(final String openID) {
 		final DBSession session = openSession();
 		try {
 			final String username = this.userDBManager.getOpenIDUser(openID, session);
@@ -1810,7 +1810,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.ConceptStatus, int, int)
 	 */
 	@Override
-	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		Integer result;
 
 		final DBSession session = openSession();
@@ -1851,7 +1851,8 @@ public class DBLogic implements LogicInterface {
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserRelationship(java.lang.String, org.bibsonomy.common.enums.UserRelation)
 	 */
-	public List<User> getUserRelationship(String sourceUser, UserRelation relation) {
+	@Override
+	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation) {
 		this.ensureLoggedIn();
 		List<User> targetUsers;
 		// ask Robert about this method
@@ -1899,13 +1900,15 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#createBasketItems()
 	 */
 	@Override
-	public int createBasketItems(List<Post<? extends Resource>> posts) {
+	public int createBasketItems(final List<Post<? extends Resource>> posts) {
 		this.ensureLoggedIn();
 
 		final DBSession session = openSession();
 		try {
 			for (final Post<? extends Resource> post : posts) {
-				if (post.getResource() instanceof Bookmark) throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");
+				if (post.getResource() instanceof Bookmark) {
+					throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");
+				}
 				/*
 				 * get the complete post from the database
 				 */
@@ -1932,7 +1935,7 @@ public class DBLogic implements LogicInterface {
 
 			// get actual basket size
 			return this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			log.error(ex);
 		} finally {
 			session.close();
@@ -1947,7 +1950,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteBasketItems()
 	 */
 	@Override
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, final boolean clearBasket) {
+	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearBasket) {
 		this.ensureLoggedIn();
 
 		final DBSession session = openSession();
@@ -1960,7 +1963,9 @@ public class DBLogic implements LogicInterface {
 			} else {
 				// delete specific post
 				for (final Post<? extends Resource> post : posts) {
-					if (post.getResource() instanceof Bookmark) throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");
+					if (post.getResource() instanceof Bookmark) {
+						throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");
+					}
 					/*
 					 * get the complete post from the database
 					 */
@@ -1986,7 +1991,7 @@ public class DBLogic implements LogicInterface {
 
 			// get actual basketsize
 			return this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			log.error(ex);
 		} finally {
 			session.close();
@@ -2052,7 +2057,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createReferences(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void createReferences(String postHash, Set<String> references) {
+	public void createReferences(final String postHash, final Set<String> references) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can create references
 		
 		final DBSession session = this.openSession();
@@ -2068,7 +2073,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#deleteReferences(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void deleteReferences(String postHash, Set<String> references) {
+	public void deleteReferences(final String postHash, final Set<String> references) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can delete references
 		
 		final DBSession session = this.openSession();
