@@ -15,6 +15,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.recommender.tags.database.DBAccess;
+import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.recommender.tags.multiplexer.util.RecommenderUtil;
@@ -32,13 +33,15 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class AdminRecommenderController implements MinimalisticController<AdminRecommenderViewCommand> {
+	private static final Log log = LogFactory.getLog(AdminRecommenderController.class);
+	
 	private static final String CMD_EDITRECOMMENDER = "editRecommender";
 	private static final String CMD_UPDATE_RECOMMENDERSTATUS = "updateRecommenderstatus";
 	private static final String CMD_REMOVERECOMMENDER = "removerecommender";
 	private static final String CMD_ADDRECOMMENDER = "addrecommender";
-	private static final Log log = LogFactory.getLog(AdminRecommenderController.class);
-	private static final DBAccess db = (DBAccess) DBAccess.getInstance();
-
+	
+	private static final DBLogic db = DBAccess.getInstance();
+	
 	private LogicInterface logic;
 	private UserSettings userSettings;
 	private MultiplexingTagRecommender mp;
@@ -57,6 +60,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		}
 	}
 
+	@Override
 	public View workOn(AdminRecommenderViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
@@ -93,11 +97,11 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 
 		/* ---------------------- Tabs ---------------------------- */
 
-		if ((int) command.getTab() == Tab.STATUS.ordinal()) {
+		if (command.getTab() == Tab.STATUS.ordinal()) {
 			showStatusTab(command);
-		} else if ((int) command.getTab() == Tab.ACTIVATE.ordinal()) {
+		} else if (command.getTab() == Tab.ACTIVATE.ordinal()) {
 			showActivationTab(command);
-		} else if ((int) command.getTab() == Tab.ADD.ordinal()) {
+		} else if (command.getTab() == Tab.ADD.ordinal()) {
 			showAddTab(command);
 		}
 
@@ -227,6 +231,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		command.setTab(Tab.ADD);
 	}
 
+	@Override
 	public AdminRecommenderViewCommand instantiateCommand() {
 		return new AdminRecommenderViewCommand();
 	}

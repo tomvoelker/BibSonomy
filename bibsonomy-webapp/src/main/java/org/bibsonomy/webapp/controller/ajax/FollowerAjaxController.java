@@ -6,7 +6,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.ajax.FollowerAjaxCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -23,9 +22,8 @@ import org.springframework.validation.Errors;
  * @author Christian Kramer
  * @version $Id$
  */
-public class FollowerAjaxController extends AjaxController implements MinimalisticController<FollowerAjaxCommand>, ErrorAware{
+public class FollowerAjaxController extends AjaxController implements MinimalisticController<FollowerAjaxCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(FollowerAjaxController.class);
-	private LogicInterface logic;
 	
 	private Errors errors;
 
@@ -61,6 +59,7 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 				
 		// forward to a certain page, if requested 
 		if (present(command.getForward())) {
+			// TODO: remove?!?
 //			if (EnumUtils.searchEnumByName(Views.values(), command.getForward()) == null) {
 //				errors.reject("error.invalid_forward_page");
 //				return Views.ERROR;
@@ -69,14 +68,6 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 		}
 		
 		return Views.AJAX;
-	}
-	
-	/**
-	 * set the logic interface
-	 */
-	@Override
-	public void setLogic(LogicInterface logic){
-		this.logic = logic;
 	}
 	
 	/**

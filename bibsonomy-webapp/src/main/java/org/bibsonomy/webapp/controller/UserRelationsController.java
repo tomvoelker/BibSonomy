@@ -24,6 +24,7 @@ import org.bibsonomy.webapp.view.Views;
 public class UserRelationsController extends SingleResourceListControllerWithTags implements MinimalisticController<UserRelationCommand> {
 	private static final Log LOGGER = LogFactory.getLog(AuthorPageController.class);
 
+	@Override
 	public View workOn(final UserRelationCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 
@@ -81,6 +82,7 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		return Views.USERRELATED;
 	}
 
+	@Override
 	public UserRelationCommand instantiateCommand() {
 		return new UserRelationCommand();
 	}

@@ -20,6 +20,7 @@ import org.bibsonomy.webapp.view.Views;
 public class ViewablePageController extends SingleResourceListControllerWithTags implements MinimalisticController<GroupResourceViewCommand>{
 	private static final Log log = LogFactory.getLog(GroupPageController.class);
 	
+	@Override
 	public View workOn(GroupResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
@@ -88,6 +89,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		cmd.setGroup(group);
 	}
 	
+	@Override
 	public GroupResourceViewCommand instantiateCommand() {
 		return new GroupResourceViewCommand();
 	}	

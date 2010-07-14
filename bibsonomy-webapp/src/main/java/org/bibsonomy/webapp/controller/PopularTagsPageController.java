@@ -19,6 +19,7 @@ import org.bibsonomy.webapp.view.Views;
 public class PopularTagsPageController extends SingleResourceListController implements MinimalisticController<TagCloudCommand> {
 	private static final Log log = LogFactory.getLog(PopularTagsPageController.class);
 
+	@Override
 	public View workOn(TagCloudCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		
@@ -31,6 +32,7 @@ public class PopularTagsPageController extends SingleResourceListController impl
 		return Views.POPULAR_TAGS;
 	}
 
+	@Override
 	public TagCloudCommand instantiateCommand() {
 		return new TagCloudCommand();
 	}

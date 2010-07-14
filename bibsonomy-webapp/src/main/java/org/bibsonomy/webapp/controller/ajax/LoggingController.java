@@ -13,6 +13,7 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class LoggingController extends AjaxController implements MinimalisticController<LoggingCommand> {
 
+	@Override
 	public View workOn(final LoggingCommand command) {
 		// TODO: implement me
 		return Views.AJAX;

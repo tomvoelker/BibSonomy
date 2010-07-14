@@ -32,11 +32,11 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  * 
  */
-
 public class EditTagsPageViewController extends SingleResourceListControllerWithTags implements MinimalisticController<EditTagsPageViewCommand> {
 
 	private RequestLogic requestLogic;
 
+	@Override
 	public View workOn(EditTagsPageViewCommand command) {
 		/*
 		 * no user given -> error
@@ -181,6 +181,7 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		return new ExtendedRedirectView("/edit_tags");
 	}
 
+	@Override
 	public EditTagsPageViewCommand instantiateCommand() {
 		return new EditTagsPageViewCommand();
 	}
@@ -188,7 +189,7 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 	/**
 	 * redirect to the login page - and back
 	 * 
-	 * @param command the command
+	 * @param command the command FIXME: unused
 	 * @param notice a notice to display at the login page
 	 * @return
 	 */

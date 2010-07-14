@@ -133,10 +133,12 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		return post;
 	}
 
+	@Override
 	public Errors getErrors() {
 		return this.errors;
 	}
 
+	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}

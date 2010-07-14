@@ -15,12 +15,14 @@ public class ClusterPageController extends SingleResourceListControllerWithTags 
 	private String baseUrl;
 	private Integer maxClusterCount;
 
+	@Override
 	public View workOn(ClusterSettingsCommand command) {
 		command.setCommunityBaseUrl("/bibsonomy-community-servlet");
 		command.setMaxClusterCount(3);
 		return Views.CLUSTERPAGE;
 	}
 	
+	@Override
 	public ClusterSettingsCommand instantiateCommand() {
 		return new ClusterSettingsCommand();
 	}

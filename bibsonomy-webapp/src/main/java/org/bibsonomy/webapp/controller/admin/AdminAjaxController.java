@@ -43,6 +43,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	
 	private Errors errors;
 
+	@Override
 	public View workOn(final AdminAjaxCommand command) {
 
 		final RequestWrapperContext context = command.getContext();
@@ -208,6 +209,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		}
 	}
 
+	@Override
 	public AdminAjaxCommand instantiateCommand() {
 		return new AdminAjaxCommand();
 	}

@@ -31,8 +31,7 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for lucene admin page
  * 
  * @author Sven Stefani
- * @version $Id: AdminLuceneController.java,v 1.14 2009-04-27 18:22:16 beatekr Exp
- *          $
+ * @version $Id$
  */
 public class AdminLuceneController implements MinimalisticController<AdminLuceneViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminLuceneController.class);
@@ -44,6 +43,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	@SuppressWarnings("unused") // FIXME: currently unused
 	private UserSettings userSettings;
 
+	@Override
 	public View workOn(AdminLuceneViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 
@@ -107,6 +107,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		return Views.ADMIN_LUCENE;
 	}
 
+	@Override
 	public AdminLuceneViewCommand instantiateCommand() {
 		return new AdminLuceneViewCommand();
 	}

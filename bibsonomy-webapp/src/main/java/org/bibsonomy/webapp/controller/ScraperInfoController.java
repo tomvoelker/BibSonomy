@@ -19,12 +19,13 @@ public class ScraperInfoController extends MultiResourceListController implement
 	 */
 	private static final Collection<Scraper> scraperList = new KDEScraperFactory().getScraper().getScraper();
 	
-	
+	@Override
 	public View workOn(final ScraperInfoCommand command) {
 		command.setScraperList(scraperList);
 		return Views.SCRAPER_INFO;			
 	}
 	
+	@Override
 	public ScraperInfoCommand instantiateCommand() {
 		return new ScraperInfoCommand();
 	}
