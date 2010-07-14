@@ -21,6 +21,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
+	@Override
 	public ExportPageCommand instantiateCommand() {		
 		return new ExportPageCommand();
 	}
@@ -29,6 +30,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.BaseCommand)
 	 */
+	@Override
 	public View workOn(final ExportPageCommand command) {
 		command.setLayoutMap(this.layoutRenderer.getJabrefLayouts());
 		command.setLang(this.requestLogic.getLocale().getLanguage());
