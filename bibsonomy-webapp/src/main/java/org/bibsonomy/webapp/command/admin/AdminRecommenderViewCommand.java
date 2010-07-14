@@ -2,9 +2,9 @@ package org.bibsonomy.webapp.command.admin;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
@@ -29,7 +29,7 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	 * @author bsc
 	 *
 	 */
-	public enum Tab{ STATUS, ACTIVATE, ADD };
+	public enum Tab{ STATUS, ACTIVATE, ADD }
 	private Tab tab;
 	private Map<Long, String> activeRecommenders;
 	private Map<Long, String> disabledRecommenders;

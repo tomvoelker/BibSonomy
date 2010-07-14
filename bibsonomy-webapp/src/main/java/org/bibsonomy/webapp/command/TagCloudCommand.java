@@ -23,22 +23,7 @@ public class TagCloudCommand extends BaseCommand {
 	private TagCloudStyle style = TagCloudStyle.CLOUD;
 	private TagCloudSort sort = TagCloudSort.ALPHA;
 	private int maxTagCount;
-	private int maxUserTagCount;	
-	
-	/**
-	 * default bean constructor
-	 */
-	public TagCloudCommand() {
-	}
-	
-	/**
-	 * @param tags a list of tags
-	 */
-	public TagCloudCommand(final List<Tag> tags) {
-		this.tags = tags;
-		
-		calculateMaxTagCount();
-	}
+	private int maxUserTagCount;
 	
 	/**
 	 * @return the maxUserTagCount

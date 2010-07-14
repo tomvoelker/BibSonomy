@@ -73,6 +73,7 @@ public class BaseCommand implements ContextCommand {
 	 * 
 	 * @return The context.
 	 */
+	@Override
 	public RequestWrapperContext getContext() {
 		return this.context;
 	}
@@ -80,6 +81,7 @@ public class BaseCommand implements ContextCommand {
 	/** Add a context to this command.
 	 * @param context
 	 */
+	@Override
 	public void setContext(RequestWrapperContext context) {
 		this.context = context;
 	}

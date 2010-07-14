@@ -88,6 +88,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * @return The index of the currently selected tab.
 	 */
+	@Override
 	public Integer getSelTab() {
 		return selTab;
 	}
@@ -95,6 +96,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * @param selectedTab 
 	 */
+	@Override
 	public void setSelTab(final Integer selectedTab) {
 		this.selTab = selectedTab;
 	}
