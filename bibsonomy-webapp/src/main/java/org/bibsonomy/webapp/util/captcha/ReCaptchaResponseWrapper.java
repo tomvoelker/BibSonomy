@@ -8,7 +8,7 @@ import net.tanesha.recaptcha.ReCaptchaResponse;
  */
 public class ReCaptchaResponseWrapper implements CaptchaResponse {
 	
-	private ReCaptchaResponse response;
+	private final ReCaptchaResponse response;
 	
 	/**
 	 * @param response A response from a ReCaptchaImplementation.
@@ -17,10 +17,12 @@ public class ReCaptchaResponseWrapper implements CaptchaResponse {
 		this.response = response;
 	}
 
+	@Override
 	public String getErrorMessage() {
 		return response.getErrorMessage();
 	}
 
+	@Override
 	public boolean isValid() {
 		return response.isValid();
 	}
