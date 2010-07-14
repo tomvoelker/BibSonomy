@@ -5,14 +5,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -27,8 +24,9 @@ import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
 import org.bibsonomy.recommender.tags.database.params.SelectorSettingParam;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.recommender.testutil.JNDITestDatabaseBinder;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,37 +35,24 @@ import org.junit.Test;
  * @version $Id$
  */
 public class DBAccessTest {
-	private static final Log log = LogFactory.getLog(DBAccessTest.class);
 
-	private DBLogic dbLogic;
-
+	private static DBLogic dbLogic;
 	
 	/**
-	 * Method for interactive testing.
+	 * binds jndi and sets the dbLogic
 	 */
-	
-	public static void main( String[] args ) throws Exception {
-		DBAccessTest obj = new DBAccessTest();
-		JNDITestDatabaseBinder.bind();
-		/*
-		obj.testAddNewSelector2();
-		obj.testAddNewSelector();
-		obj.testAddSelectedTags();
-		obj.testAddQuery();
-		*/
-		obj.testGetPostDataForQuery();
-		JNDITestDatabaseBinder.unbind();
-    }
-	
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		// bind datasource access via JNDI
 		JNDITestDatabaseBinder.bind();
 		dbLogic = DBAccess.getInstance();
 	}
 	
-	@After
-	public void tearDown() {
+	/**
+	 * unbins jndi
+	 */
+	@AfterClass
+	public static void tearDown() {
 		JNDITestDatabaseBinder.unbind();
 	}
 	
@@ -77,14 +62,14 @@ public class DBAccessTest {
 	 */
 	@Test
 	public void testAddQuery() throws SQLException {
-		Post<? extends Resource> post = createPost();
-		Timestamp ts = new Timestamp(System.currentTimeMillis());
+		final Post<? extends Resource> post = createPost();
+		final Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		// store and retrieve query
-		Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, MultiplexingTagRecommender.getUnknownPID(), 1234);
-		RecQueryParam retVal = dbLogic.getQuery(qid);
+		final Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, MultiplexingTagRecommender.getUnknownPID(), 1234);
+		final RecQueryParam retVal = dbLogic.getQuery(qid);
 		
-		String    queryUN = retVal.getUserName();
+		final String queryUN = retVal.getUserName();
 		assertEquals(post.getUser().getName(), queryUN);
 	}
 	
@@ -94,10 +79,10 @@ public class DBAccessTest {
 	 */
 	@Test
 	public void testAddNewRecommender() throws SQLException  {
-		Long qid       = new Long(0);
-		String recInfo = "TestCase-non-Recommender";
-		String recMeta = "NON-NULL-META";
-		String recId   = "mypackage.classname";
+		final Long qid = Long.valueOf(0);
+		final String recInfo = "TestCase-non-Recommender";
+		final String recMeta = "NON-NULL-META";
+		final String recId = "mypackage.classname";
 		// store and retrieve recommender informations
 		Long sid;
 		RecSettingParam retVal = null;
@@ -113,9 +98,9 @@ public class DBAccessTest {
 	 */
 	@Test
 	public void testAddNewSelector() throws SQLException  {
-		Long qid       = new Long(0);
-		String selectorInfo = "TestCase-non-Selector";
-		String selectorMeta = "NON-NULL-META";
+		final Long qid = Long.valueOf(0);
+		final String selectorInfo = "TestCase-non-Selector";
+		final String selectorMeta = "NON-NULL-META";
 		// store and retrieve recommender informations
 		Long sid = null;
 		SelectorSettingParam retVal = null;
@@ -131,9 +116,9 @@ public class DBAccessTest {
 	 */
 	@Test
 	public void testAddNewSelector2() throws SQLException  {
-		Long qid       = new Long(0);
-		String selectorInfo = "TestCase-non-Selector";
-		byte[] selectorMeta = null;
+		final Long qid = Long.valueOf(0);
+		final String selectorInfo = "TestCase-non-Selector";
+		final byte[] selectorMeta = null;
 		// store and retrieve recommender informations
 		Long sid = null;
 		SelectorSettingParam retVal = null;
@@ -148,24 +133,24 @@ public class DBAccessTest {
 	 */
 	@Test
 	public void testAddSelectedTags() throws SQLException  {
-		Long qid = new Long(0);
-		Long rid = new Long(0);
-		int nr = 5;
+		final Long qid = Long.valueOf(0);
+		final Long rid = Long.valueOf(0);
+		final int nr = 5;
 		
 		// create tags
-		SortedSet<RecommendedTag> tags = createRecommendedTags(nr);
+		final SortedSet<RecommendedTag> tags = createRecommendedTags(nr);
 		// store tags
-		int count = dbLogic.storeRecommendation(qid, rid, tags);
+		final int count = dbLogic.storeRecommendation(qid, rid, tags);
 		// fetch tags
-		List<RecommendedTag> result = dbLogic.getSelectedTags(new Long(0));
+		final List<RecommendedTag> result = dbLogic.getSelectedTags(Long.valueOf(0));
 		
 		// compare tags
-		SortedSet<RecommendedTag> sort = new TreeSet<RecommendedTag>();
+		final SortedSet<RecommendedTag> sort = new TreeSet<RecommendedTag>();
 		assertEquals(nr, count);
 		sort.addAll(result);
-		int i=0;
-		for( RecommendedTag tag : sort ) {
-			assertEquals(tag.getName(), "Tag"+(new Integer(i)).toString());
+		final int i=0;
+		for( final RecommendedTag tag : sort ) {
+			assertEquals(tag.getName(), "Tag" + (new Integer(i)).toString());
 			assertEquals((1.0*i)/count, tag.getScore());
 			assertEquals(1.0/count, tag.getConfidence());
 		}
@@ -176,16 +161,18 @@ public class DBAccessTest {
 	 * @throws SQLException 
 	 */
 	@Test
+	@Ignore
 	public void testAddRecommenderResult() throws SQLException  {
-		/*
-		*/
+		// TODO: implement a test
 	}	
 	
 	/**
 	 * Test registering an already known recommender
 	 */
 	@Test
+	@Ignore
 	public void testAddKnownRecommender() {
+		// TODO: implement a test
 	}
 	
 	/**
@@ -197,13 +184,13 @@ public class DBAccessTest {
 		/*
 		 *  add query
 		 */
-		Post<? extends Resource> post = createPost();
-		Timestamp ts = new Timestamp(System.currentTimeMillis());
-		int postID = (int)Math.floor(Math.random()*Integer.MAX_VALUE);
+		final Post<? extends Resource> post = createPost();
+		final Timestamp ts = new Timestamp(System.currentTimeMillis());
+		final int postID = (int)Math.floor(Math.random()*Integer.MAX_VALUE);
 		
 		// store and retrieve query
-		Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, postID, 1234);
-		Long  id = dbLogic.getQueryForPost(post.getUser().getName(), (Date)ts, postID);
+		final Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, postID, 1234);
+		final Long  id = dbLogic.getQueryForPost(post.getUser().getName(), ts, postID);
 		
 		assertEquals(qid, id);
 	}
@@ -213,8 +200,8 @@ public class DBAccessTest {
 	 * @throws SQLException 
 	 */
 	@Test
+	@Ignore
 	public void testGetPostDataForQuery() throws SQLException {
-		// Integer contentID = DBAccess.getContentIDForQuery(new Long(3033));
 	}
 
 	
@@ -244,7 +231,7 @@ public class DBAccessTest {
 		bibtex.setBibtexKey("test");
 		bibtex.setEntrytype("twse");
 		post.setResource(bibtex);
-		post.setContentId(new Integer(0));
+		post.setContentId(Integer.valueOf(0));
 		return post;
 	}
 	
@@ -253,17 +240,16 @@ public class DBAccessTest {
 	 * 
 	 * @return
 	 */
-	protected SortedSet<RecommendedTag> createRecommendedTags(int nr) {
-		TreeSet<RecommendedTag> extracted = new TreeSet<RecommendedTag>();
+	protected SortedSet<RecommendedTag> createRecommendedTags(final int nr) {
+		final TreeSet<RecommendedTag> extracted = new TreeSet<RecommendedTag>();
 
 		// create informative recommendation:
 		for( int i=0; i<nr; i++) {
-			double score = (1.0*i)/nr;
-			double confidence = 1.0/nr;
-			DecimalFormat df = new DecimalFormat( "0.00" );
-			String re = "Tag"+(new Integer(i)).toString();
+			final double score = (1.0*i)/nr;
+			final double confidence = 1.0/nr;
+			final String re = "Tag" + String.valueOf(i);
 			extracted.add(new RecommendedTag(re, score, confidence));
-		};
+		}
 		return extracted;
 	}		
 }

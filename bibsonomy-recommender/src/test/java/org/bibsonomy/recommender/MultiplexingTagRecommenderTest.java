@@ -31,8 +31,8 @@ import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
 import org.bibsonomy.recommender.tags.simple.DummyTagRecommender;
 import org.bibsonomy.recommender.testutil.JNDITestDatabaseBinder;
 import org.bibsonomy.recommender.testutil.SelectCounter;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -41,45 +41,28 @@ import org.junit.Test;
  */
 public class MultiplexingTagRecommenderTest {
 	private static final Log log = LogFactory.getLog(MultiplexingTagRecommenderTest.class);
-	private DBLogic dbLogic;
+
+
 	private static final int NROFRECOS = 10;
 	private static final int MSTOWAIT = 1000;
 	private static final int MAXSTOREITERATIONS  = 100;
 	private static final int MAXSTORERECOMMENDER = 50;
 	private static final int MAXSTORENROFTAGS    = 5;
 
-	//------------------------------------------------------------------------
-	// junit setup
-	//------------------------------------------------------------------------
+	private static DBLogic dbLogic;
 
-	/**
-	 * Method for interactive testing.
-	 */
-	public static void main( String[] args ) throws Exception {
-		DBAccessTest obj = new DBAccessTest();
-		JNDITestDatabaseBinder.bind();
-		/*
-		obj.testAddNewSelector2();
-		obj.testAddNewSelector();
-		obj.testAddSelectedTags();
-		obj.testAddQuery();
-		*/
-		obj.testGetPostDataForQuery();
-		JNDITestDatabaseBinder.unbind();
-    }
-	
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		// bind datasource access via JNDI
 		JNDITestDatabaseBinder.bind();
 		dbLogic = DBAccess.getInstance();
 	}
-	
-	@After
-	public void tearDown() {
+
+	@AfterClass
+	public static void tearDown() {
 		JNDITestDatabaseBinder.unbind();
 	}
-	
+
 	//------------------------------------------------------------------------
 	// test cases
 	//------------------------------------------------------------------------
@@ -89,117 +72,100 @@ public class MultiplexingTagRecommenderTest {
 		private final Long qid;
 		private final Long sid;
 		private final long timeout;
-		
-		public ResultStoreProducer(RecommendedTagResultManager store, 
-				Long qid, Long sid, int nrOfTags, long timeout) {
+
+		public ResultStoreProducer(final RecommendedTagResultManager store, final Long qid, final Long sid, final int nrOfTags, final long timeout) {
 			this.store    = store;
 			this.nrOfTags = nrOfTags;
 			this.qid      = qid;
 			this.sid      = sid;
 			this.timeout  = timeout;
 		}
-		
+
+		@Override
 		public void run() {
-			SortedSet<RecommendedTag> result = 
+			final SortedSet<RecommendedTag> result = 
 				new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-			for( int i=0; i<nrOfTags; i++ )
-				result.add(new RecommendedTag("TAG_"+i,1.0*i/(nrOfTags+1),0.5));
-			
+			for( int i = 0; i < nrOfTags; i++ ) {
+				result.add(new RecommendedTag("TAG_"+ i, 1.0*i/(nrOfTags+1), 0.5));
+			}
+
 			try {
 				Thread.sleep(timeout);
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 			}
-			
+
 			store.addResult(qid, sid, result);
 		}
 	}
-	
+
 	/**
 	 * Test the concurrent result cache 
-	 * @throws Exception 
 	 */
 	@Test
 	public void testResultStore() {
 		// generate a set with different random ids 
-		Set<Long> queryIDs = new TreeSet<Long>();
-		while( queryIDs.size()<MAXSTOREITERATIONS )
-			 queryIDs.add(Math.round(Math.random()*(Long.MAX_VALUE)));
-		
+		final Set<Long> queryIDs = new TreeSet<Long>();
+		while( queryIDs.size() < MAXSTOREITERATIONS ) {
+			queryIDs.add(Math.round(Math.random()*(Long.MAX_VALUE)));
+		}
+
 		// create store to test
-		RecommendedTagResultManager store = new RecommendedTagResultManager();
-		
+		final RecommendedTagResultManager store = new RecommendedTagResultManager();
+
 		//
 		// spawn MAXSTORERECOMMENDER for each query id
 		//
-		Collection<ResultStoreProducer> producers = new LinkedList<ResultStoreProducer>();
+		final Collection<ResultStoreProducer> producers = new LinkedList<ResultStoreProducer>();
 		Iterator<Long> iterator = queryIDs.iterator();
 		for( int i=0; i<MAXSTOREITERATIONS; i++ ) {
-			Long qid = iterator.next();
+			final Long qid = iterator.next();
 			store.startQuery(qid);
-			System.out.println("STARTING QUERY " + qid);
+			log.debug("STARTING QUERY " + qid);
 			for( int j=0; j<MAXSTORERECOMMENDER; j++ ) { 
-				ResultStoreProducer producer = 
-					new ResultStoreProducer(store,qid,new Long(j),MAXSTORENROFTAGS,Math.round(Math.random()*1000)+1);
+				final ResultStoreProducer producer = 
+					new ResultStoreProducer(store, qid, Long.valueOf(j), MAXSTORENROFTAGS, Math.round(Math.random()*1000)+1);
 				producers.add(producer);
 				producer.start();
 			}
 		}
 		try {
 			Thread.sleep(5000);
-		} catch (InterruptedException ex) {
+		} catch (final InterruptedException ex) {
 		}
-		
+
 		//
 		// run tests
 		//
 		iterator = queryIDs.iterator();
 		while( iterator.hasNext() ) {
-			Long qid = iterator.next();
+			final Long qid = iterator.next();
 			store.stopQuery(qid);
 			// all producers should have delivered results
-			assertEquals(
-					"Resultstore missed a recommender.",
-					MAXSTORERECOMMENDER,
-					store.getActiveRecommender(qid).size()
-				  );
+			assertEquals("Resultstore missed a recommender.", MAXSTORERECOMMENDER, store.getActiveRecommender(qid).size());
 			// sum up the total number of recommended tags (from all producers in the query)
-			Collection<SortedSet<RecommendedTag>> resultsForQuery = store.getResultForQuery(qid);
+			final Collection<SortedSet<RecommendedTag>> resultsForQuery = store.getResultForQuery(qid);
 			int counter = 0;
-			for( SortedSet<RecommendedTag> result : resultsForQuery )
+			for( final SortedSet<RecommendedTag> result : resultsForQuery ) {
 				counter += result.size();
-			assertEquals(
-					"Resultstore missed a result.",
-					MAXSTORERECOMMENDER*MAXSTORENROFTAGS,
-					counter
-				  );
+			}
+			assertEquals("Resultstore missed a result.", MAXSTORERECOMMENDER * MAXSTORENROFTAGS, counter);
 			// try to add a result to a stopped query
-			store.addResult(qid, new Long(42), new TreeSet<RecommendedTag>());
-			assertEquals(
-					"Resultstore added a result after query timed out.",
-					MAXSTORERECOMMENDER,
-					store.getActiveRecommender(qid).size()
-				  );
+			store.addResult(qid, Long.valueOf(42), new TreeSet<RecommendedTag>());
+			assertEquals("Resultstore added a result after query timed out.", MAXSTORERECOMMENDER, store.getActiveRecommender(qid).size());
 		}
-		
+
 		iterator = queryIDs.iterator();
-		for( int i=0; i<MAXSTOREITERATIONS; i++ ) {
-			Long qid = iterator.next();
+		for( int i = 0; i < MAXSTOREITERATIONS; i++ ) {
+			final Long qid = iterator.next();
 			store.releaseQuery(qid);
 			// assure that a released query doesn't deliver tags
-			assertNull(
-					"Resultstore delivered result for released query.",
-					store.getResultForQuery(qid)
-				  );
+			assertNull("Resultstore delivered result for released query.", store.getResultForQuery(qid));
 			// assure that a released query is removed
-			assertEquals(
-					"Result store did not release query.",
-					MAXSTOREITERATIONS-(i+1),
-					store.getNrOfCachedQueries()
-					);
+			assertEquals("Result store did not release query.", MAXSTOREITERATIONS-(i+1), store.getNrOfCachedQueries());
 		}
 	}
-	
-	
+
+
 	/**
 	 * Test querying a lot of recommender in parallel 
 	 * @throws Exception 
@@ -207,45 +173,46 @@ public class MultiplexingTagRecommenderTest {
 	@Test
 	public void testMultiThreading() throws Exception {
 		// create dummy recommenders
-		List<TagRecommenderConnector> recos = new ArrayList<TagRecommenderConnector>(NROFRECOS);
-		for( int i=0; i<NROFRECOS; i++ ) {
-			DummyTagRecommender reco = new DummyTagRecommender();
+		final List<TagRecommenderConnector> recos = new ArrayList<TagRecommenderConnector>(NROFRECOS);
+		for( int i = 0; i < NROFRECOS; i++ ) {
+			final DummyTagRecommender reco = new DummyTagRecommender();
 			reco.setWait(MSTOWAIT);
 			reco.setId(i);
 			reco.initialize(null);
 			reco.connect();
 			recos.add(reco);
 		}
-		
+
 		// create recommender counter which counts the number of
 		// recommenders which delivered tags
-		SelectCounter selector = new SelectCounter();
+		final SelectCounter selector = new SelectCounter();
 		selector.setDbLogic(dbLogic);
-		
+
 		// create multiplexer
-		MultiplexingTagRecommender multi = new MultiplexingTagRecommender();
+		final MultiplexingTagRecommender multi = new MultiplexingTagRecommender();
 		multi.setDbLogic(dbLogic);
 		multi.setResultSelector(selector);
 		multi.setQueryTimeout(5*MSTOWAIT);
-		
+
 		// add dummy recommender
 		multi.setDistRecommenders(recos);
-		
+
 		// initialize multiplexer
 		multi.init();
-		
+
 		// query recommender
-		Post<? extends Resource> post = createPost();
+		final Post<? extends Resource> post = createPost();
 		multi.getRecommendedTags(post);
-		
+
 		// shut down
-		for( TagRecommenderConnector reco : recos )
+		for( final TagRecommenderConnector reco : recos ) {
 			reco.disconnect();
-		
+		}
+
 		// test
 		assertEquals("Not all recommenders delivered results", NROFRECOS, selector.getRecoCounter());
 	}
-	
+
 	//------------------------------------------------------------------------
 	// private helpers
 	//------------------------------------------------------------------------
@@ -272,7 +239,7 @@ public class MultiplexingTagRecommenderTest {
 		bibtex.setBibtexKey("test");
 		bibtex.setEntrytype("twse");
 		post.setResource(bibtex);
-		post.setContentId(new Integer(0));
+		post.setContentId(0);
 		post.addGroup("public");
 		return post;
 	}
