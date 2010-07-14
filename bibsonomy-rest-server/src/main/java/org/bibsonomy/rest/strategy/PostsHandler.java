@@ -41,13 +41,17 @@ public class PostsHandler implements ContextHandler {
 						} else if (RestProperties.getInstance().getPopularPostsUrl().equalsIgnoreCase(path)) {
 							return new GetPopularPostsStrategy(context);
 						}
+						break;
 				case POST:
 					// /posts/standard
 					if (RestProperties.getInstance().getStandardPostsUrl().equalsIgnoreCase(path)) {
 						return new PostStandardPostStrategy(context, context.getLogic().getAuthenticatedUser().getName());
 					}
+					break;
+				default:
+					// no such resource
+					break;
 				}
-			
 				break;
 			}
 		case 2: {
@@ -87,6 +91,8 @@ public class PostsHandler implements ContextHandler {
 						return new PostReferencesStrategy(context, hash);
 					case DELETE:
 						return new DeleteReferencesStrategy(context, hash);
+					default:
+						break;
 				}
 			}
 		}
