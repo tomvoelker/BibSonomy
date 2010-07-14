@@ -135,7 +135,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void updateApiKeyForUser(final String username, final DBSession session) {
 		final User user = new User(username);
-		if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update API key for nonexistent user");
+		if (!present(this.getUserDetails(user.getName(), session).getName())) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update API key for nonexistent user");
+		}
 		user.setApiKey(UserUtils.generateApiKey());
 		this.update("updateApiKeyForUser", user, session);
 	}
@@ -147,7 +149,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return the user's name
 	 */
 	public String updatePasswordForUser(final User user, final DBSession session) {
-		if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update password for nonexistent user");
+		if (!present(this.getUserDetails(user.getName(), session).getName())) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update password for nonexistent user");
+		}
 		this.update("updatePasswordForUser", user, session);
 		return user.getName();
 	}
@@ -158,8 +162,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return the user's name
 	 */
-	public String updateUserSettingsForUser(User user, final DBSession session) {
-		if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user settings for nonexistent user");
+	public String updateUserSettingsForUser(final User user, final DBSession session) {
+		if (!present(this.getUserDetails(user.getName(), session).getName())) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user settings for nonexistent user");
+		}
 		this.update("updateUserSettings", user, session);
 		return user.getName();
 	}
@@ -170,10 +176,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return the user's name
 	 */
-	public String updateUserProfile(User user, final DBSession session) {
+	public String updateUserProfile(final User user, final DBSession session) {
 		session.beginTransaction();
 		try {
-			if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user profile for nonexistent user");
+			if (!present(this.getUserDetails(user.getName(), session).getName())) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user profile for nonexistent user");
+			}
 			this.checkUser(user, session);
 			this.update("updateUserProfile", user, session);
 			session.commitTransaction();
@@ -228,7 +236,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * Insert attributes for new user account including new Api key.
 	 */
 	private void insertUser(final User user, final DBSession session) {
-		if (!present(user)) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
+		if (!present(user)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
+		}
 		user.setApiKey(UserUtils.generateApiKey());
 		
 		// Generates the activationCode
@@ -437,13 +447,17 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final User notLoggedInUser = new User();
 
 		// either username or password not given -> user is not logged in
-		if (!present(apiKey) || !present(username)) return notLoggedInUser;
+		if (!present(apiKey) || !present(username)) {
+			return notLoggedInUser;
+		}
 
 		// get user from database
 		final User foundUser = this.getUserDetails(username, session);
 
 		// user exists and api key is correct and user is no spammer
-		if (foundUser.getName() != null && !foundUser.isSpammer() && foundUser.getApiKey() != null && foundUser.getApiKey().equals(apiKey)) return foundUser;
+		if (foundUser.getName() != null && !foundUser.isSpammer() && foundUser.getApiKey() != null && foundUser.getApiKey().equals(apiKey)) {
+			return foundUser;
+		}
 
 		// fallback: user is not logged in
 		return notLoggedInUser;
@@ -470,13 +484,17 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final User notLoggedInUser = new User();
 
 		// either username or password not given -> user is not logged in
-		if (!present(password) || !present(username)) return notLoggedInUser;
+		if (!present(password) || !present(username)) {
+			return notLoggedInUser;
+		}
 
 		// get user from database
 		final User foundUser = this.getUserDetails(username, session);
 
 		// user exists and password is correct
-		if ((foundUser.getName() != null) && (foundUser.getPassword().equals(password))) return foundUser;
+		if ((foundUser.getName() != null) && (foundUser.getPassword().equals(password))) {
+			return foundUser;
+		}
 		
 		// fallback: user is not logged in
 		return notLoggedInUser;
@@ -526,7 +544,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of users, related by folkrank for a given list of tags
 	 */
 	public List<User> getRelatedUsersByFolkrankAndTags(final  List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
-		UserParam param = new UserParam();
+		final UserParam param = new UserParam();
 		param.setTagIndex(tagIndex);
 		param.setLimit(limit);
 		param.setOffset(offset);
@@ -539,7 +557,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return username
 	 */
-	public String getOpenIDUser(String openID, DBSession session) {
+	public String getOpenIDUser(final String openID, final DBSession session) {
 		return this.queryForObject("getOpenIDUser", openID, String.class, session);
 	}
 	
@@ -549,7 +567,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return ldapUserId
 	 */
-	public String getLdapUserByUsername(String username, DBSession session) {
+	public String getLdapUserByUsername(final String username, final DBSession session) {
 		return this.queryForObject("getLdapUserIdByUsername", username, String.class, session);
 	}
 	
@@ -559,7 +577,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return username
 	 */
-	public String getUsernameByLdapUser(String ldapUser, DBSession session) {
+	public String getUsernameByLdapUser(final String ldapUser, final DBSession session) {
 		return this.queryForObject("getUsernameByLdapUser", ldapUser, String.class, session);
 	}
 	
@@ -699,7 +717,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session - the DB session
 	 * @return a list of users, related by folkrank to the given user. 
 	 */
-	public List<User> getRelatedUsersByFolkrankAndUser(final String requestedUsername, final String loginUserName, int limit, int offset, final DBSession session) {
+	public List<User> getRelatedUsersByFolkrankAndUser(final String requestedUsername, final String loginUserName, final int limit, final int offset, final DBSession session) {
 		final UserParam param = new UserParam();
 		param.setRequestedUserName(requestedUsername);
 		param.setUserName(loginUserName);
@@ -709,14 +727,14 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Returns a a list of related users to a given users, bassed on a similarity computation
+	 * Returns a a list of related users to a given users, based on a similarity computation
 	 * between users.
 	 * 
 	 * @param requestedUserName - the requested user
 	 * @param relation - the type of user relation
 	 * @param loginUserName - the name of the logged-in user
-	 * @param limit
-	 * @param offset
+	 * @param limit FIXME: unused
+	 * @param offset FIXME: unused
 	 * @param session
 	 * @return a list of users, related to the requestedUser by the given relation
 	 */
@@ -735,7 +753,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a list of user by given parameter
 	 */
-	public List<User> getUsers(UserParam param, final DBSession session) {
+	public List<User> getUsers(final UserParam param, final DBSession session) {
 		return chain.getFirstElement().perform(param, session);
 	}
 	
@@ -747,7 +765,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session - DB session
 	 * @return true if sourceUser follows the possible
 	 */
-	public boolean isFollowerOfUser(User possibleFollower, User targetUser, final DBSession session) {
+	public boolean isFollowerOfUser(final User possibleFollower, final User targetUser, final DBSession session) {
 		if (!present(possibleFollower) || !present(targetUser)) {
 			return false;
 		}
