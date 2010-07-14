@@ -32,6 +32,7 @@ import net.sf.jabref.export.layout.LayoutFormatter;
  */
 public class SeparatedAuthorsFormatter implements LayoutFormatter {
 
+	@Override
 	public String format(String fieldText) {
 		final StringBuffer fin = new StringBuffer();
 

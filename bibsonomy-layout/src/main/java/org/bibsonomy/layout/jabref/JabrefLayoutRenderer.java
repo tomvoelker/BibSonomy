@@ -56,19 +56,53 @@ import org.springframework.beans.factory.annotation.Required;
  * 
  */
 public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
-
     private static final Log log = LogFactory.getLog(JabrefLayoutRenderer.class);
+    
+    /**
+     * This is a singleton! 
+     * FIXME: is this really neccessary? At least until the old code from LayoutHandler
+     * is moved we need an instance if the JabrefLayoutRenderer there to unload custom
+     * user layouts. The easiest way to do this is via a singleton.
+     * 
+     */
+    private static JabrefLayoutRenderer instance = new JabrefLayoutRenderer();
+
+    public static JabrefLayoutRenderer getInstance() {
+        return instance;
+    }
 
     /**
      * saves all loaded layouts (html, bibtexml, tablerefs, hash(user.username), ...)
      */
     private final JabrefLayouts layouts = new JabrefLayouts();
 
+    private JabrefLayoutRenderer() {
+        this.init();
+    }
 
+    /**
+     * Initializes the bean by loading default layouts.
+     */
+    private void init() {
+        /* 
+         * initialize JabRef preferences. This is neccessary ... because they use global 
+         * preferences and if we don't initialize them, we get NullPointerExceptions later 
+         */
+        GlobalsSuper.prefs = JabRefPreferences.getInstance();
+
+        // load default filters 
+        try {
+            layouts.init();
+        } catch (IOException e) {
+            log.fatal("Could not load default layout filters.", e);
+        }
+    }
+    
     /** Returns the requested layout.
      *  
      * @see org.bibsonomy.services.renderer.LayoutRenderer#getLayout(java.lang.String, java.lang.String)
      */
+    @Override
     public JabrefLayout getLayout(final String layout, final String loginUserName) throws LayoutRenderingException, IOException {
         final JabrefLayout jabrefLayout;
         if ("custom".equals(layout)) {
@@ -96,6 +130,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
      * 
      * @see org.bibsonomy.services.renderer.LayoutRenderer#renderLayout(org.bibsonomy.model.Layout, java.util.List, java.io.OutputStream)
      */
+    @Override
     public <T extends Resource> StringBuffer renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException {
         log.debug("rendering " + posts.size() + " posts with " + layout.getName() + " layout");
         /*
@@ -115,50 +150,6 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
          */
         return renderDatabase(database, layout, embeddedLayout);
     }
-
-
-
-    /**
-     * This is a singleton! 
-     * FIXME: is this really neccessary? At least until the old code from LayoutHandler
-     * is moved we need an instance if the JabrefLayoutRenderer there to unload custom
-     * user layouts. The easiest way to do this is via a singleton.
-     * 
-     */
-    private static JabrefLayoutRenderer instance = new JabrefLayoutRenderer();
-
-    public static JabrefLayoutRenderer getInstance() {
-        return instance;
-    }
-
-    private JabrefLayoutRenderer() {
-        this.init();
-    }
-
-    /**
-     * Initializes the bean by loading default layouts.
-     */
-    private void init() {
-        /* 
-         * initialize JabRef preferences. This is neccessary ... because they use global 
-         * preferences and if we don't initialize them, we get NullPointerExceptions later 
-         */
-        GlobalsSuper.prefs = JabRefPreferences.getInstance();
-
-        // load default filters 
-        try {
-            layouts.init();
-        } catch (IOException e) {
-            log.fatal("Could not load default layout filters.", e);
-        }
-    }
-
-    @Override
-    public Object clone()throws CloneNotSupportedException {
-        throw new CloneNotSupportedException(); 
-    }
-
-
 
     /**
      * This is the export method for BibTeX entries to any available format. 
@@ -249,10 +240,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 
 
         }
-
-
-
-
+        
         /* 
          * *************** rendering the footer ***************** 
          */
@@ -365,6 +353,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
      * 
      * @see org.bibsonomy.services.renderer.LayoutRenderer#supportsResourceType(java.lang.Class)
      */
+    @Override
     public boolean supportsResourceType(final Class<? extends Resource> clazz) {
         return BibTex.class.equals(clazz);
     }

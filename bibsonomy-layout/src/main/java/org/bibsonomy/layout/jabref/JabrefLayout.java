@@ -66,12 +66,15 @@ public class JabrefLayout extends org.bibsonomy.model.Layout {
 	public String getDirectory() {
 		return directory;
 	}
+	
 	public void setDirectory(String directory) {
 		this.directory = directory;
 	}
+	
 	public String getBaseFileName() {
 		return baseFileName;
 	}
+	
 	public void setBaseFileName(String baseFileName) {
 		this.baseFileName = baseFileName;
 	}
