@@ -48,7 +48,7 @@ public class WeightedMergingTagRecommender extends AbstractTagRecommender {
 		};
 	}
 
-
+	@Override
 	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 
 		if (tagRecommenders == null) {
@@ -71,7 +71,6 @@ public class WeightedMergingTagRecommender extends AbstractTagRecommender {
 			for (final RecommendedTag recommendedTag: tempRecommendedTags) {
 				addTag(result, recommendedTag, scoreWeight);
 			}
-
 		}
 
 		/*
@@ -79,7 +78,6 @@ public class WeightedMergingTagRecommender extends AbstractTagRecommender {
 		 */
 		recommendedTags.addAll(result.getTopTags());
 	}
-
 
 	/**
 	 * Adds a tag to the result.
@@ -114,10 +112,10 @@ public class WeightedMergingTagRecommender extends AbstractTagRecommender {
 		}
 	}
 	
+	@Override
 	public String getInfo() {
 		return "Merges and weights the recommendations of the given recommenders.";
 	}
-
 
 	/**
 	 * @return The weights used to weight the score/confidence of each recommended tag of each recommender.
@@ -150,7 +148,6 @@ public class WeightedMergingTagRecommender extends AbstractTagRecommender {
 	public void setTagRecommenders(TagRecommender[] tagRecommenders) {
 		this.tagRecommenders = tagRecommenders;
 	}
-
 
 	@Override
 	protected void setFeedbackInternal(Post<? extends Resource> post) {

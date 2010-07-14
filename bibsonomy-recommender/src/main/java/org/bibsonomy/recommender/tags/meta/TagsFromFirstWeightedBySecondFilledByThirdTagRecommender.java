@@ -43,6 +43,7 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommender extends Ta
 		super(); 
 	}
 
+	@Override
 	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 
 		if (firstTagRecommender == null || secondTagRecommender == null || thirdTagRecommender == null) {
@@ -90,7 +91,7 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommender extends Ta
 
 	}
 
-
+	@Override
 	public String getInfo() {
 		return "Using the tags from the second recommender to weight the tags from the first recommender; if necessary, fill up with tags from third recommender.";
 	}

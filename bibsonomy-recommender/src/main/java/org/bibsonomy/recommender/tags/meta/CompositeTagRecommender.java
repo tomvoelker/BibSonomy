@@ -30,12 +30,14 @@ public class CompositeTagRecommender implements TagRecommender {
 		this.comparator = comparator;
 	}
 	
+	@Override
 	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
 		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(comparator);
 		addRecommendedTags(recommendedTags, post);
 		return recommendedTags;
 	}
 
+	@Override
 	public String getInfo() {
 		return "Generic composite scraper.";
 	}
@@ -48,6 +50,7 @@ public class CompositeTagRecommender implements TagRecommender {
 		this.recommender.add(tagRecommender);
 	}
 
+	@Override
 	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		for (final TagRecommender t: recommender) {
 			t.addRecommendedTags(recommendedTags, post);

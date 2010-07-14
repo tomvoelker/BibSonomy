@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Problem Having a set, one might want to access objects of the set, given 
@@ -22,7 +21,7 @@ import java.util.Set;
  * @param <K> The type of the keys.
  * @param <V> The type of the values. 
  */
-public class MapBackedSet<K, V> extends AbstractSet<V> implements Set<V> {
+public class MapBackedSet<K, V> extends AbstractSet<V> {
 
 	private final Map<K, V> map;
 	private final KeyExtractor<K, V> keyExtractor;
@@ -34,12 +33,10 @@ public class MapBackedSet<K, V> extends AbstractSet<V> implements Set<V> {
 		this.map = new HashMap<K, V>();
 		this.keyExtractor = keyExtractor;
 	}
-
 	
 	private K getKey(final V e) {
 		return keyExtractor.getKey(e);
 	}
-
 	
 	@Override
 	public boolean add(final V e) {

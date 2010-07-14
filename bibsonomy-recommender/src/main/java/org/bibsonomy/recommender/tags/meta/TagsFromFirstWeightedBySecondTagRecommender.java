@@ -47,6 +47,7 @@ public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagReco
 		super();
 	}
 	
+	@Override
 	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 
 		if (firstTagRecommender == null || secondTagRecommender == null) {
@@ -210,6 +211,7 @@ public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagReco
 		return newScore;
 	}
 	
+	@Override
 	public String getInfo() {
 		return "Using the tags from the second recommender to weight the recommended tags from the first recommender.";
 	}
