@@ -13,10 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
-
 package filters;
-
 
 import java.io.IOException;
 
@@ -26,8 +23,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-
 
 /**
  * <p>Example filter that sets the character encoding to be used in parsing the
@@ -57,19 +52,12 @@ import javax.servlet.ServletResponse;
  * @author Craig McClanahan
  * @version $Revision$ $Date$
  */
-
 public class SetCharacterEncodingFilter implements Filter {
-
-
-    // ----------------------------------------------------- Instance Variables
-
-
-    /**
+	/**
      * The default character encoding to set for requests that pass through
      * this filter.
      */
     protected String encoding = null;
-
 
     /**
      * The filter configuration object we are associated with.  If this value
@@ -77,26 +65,20 @@ public class SetCharacterEncodingFilter implements Filter {
      */
     protected FilterConfig filterConfig = null;
 
-
     /**
      * Should a character encoding specified by the client be ignored?
      */
     protected boolean ignore = true;
-
-
-    // --------------------------------------------------------- Public Methods
-
-
+    
     /**
      * Take this filter out of service.
      */
+    @Override
     public void destroy() {
-
         this.encoding = null;
         this.filterConfig = null;
 
     }
-
 
     /**
      * Select and set (if specified) the character encoding to be used to
@@ -109,12 +91,14 @@ public class SetCharacterEncodingFilter implements Filter {
      * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    @Override
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         // Conditionally select and set the character encoding to be used
         if (ignore || (request.getCharacterEncoding() == null)) {
-            String encoding = selectEncoding(request);
-            if (encoding != null)
-                request.setCharacterEncoding(encoding);
+            final String encoding = selectEncoding(request);
+            if (encoding != null) {
+				request.setCharacterEncoding(encoding);
+			}
         }
    
         
@@ -122,31 +106,28 @@ public class SetCharacterEncodingFilter implements Filter {
         chain.doFilter(request, response);
     }
 
-
     /**
      * Place this filter into service.
      *
      * @param filterConfig The filter configuration object
      */
-    public void init(FilterConfig filterConfig) throws ServletException {
-	this.filterConfig = filterConfig;
+    @Override
+    public void init(final FilterConfig filterConfig) throws ServletException {
+    	this.filterConfig = filterConfig;
         this.encoding = filterConfig.getInitParameter("encoding");
-        String value = filterConfig.getInitParameter("ignore");
-        if (value == null)
-            this.ignore = true;
-        else if (value.equalsIgnoreCase("true"))
-            this.ignore = true;
-        else if (value.equalsIgnoreCase("yes"))
-            this.ignore = true;
-        else
-            this.ignore = false;
+        final String value = filterConfig.getInitParameter("ignore");
+        if (value == null) {
+			this.ignore = true;
+		} else if (value.equalsIgnoreCase("true")) {
+			this.ignore = true;
+		} else if (value.equalsIgnoreCase("yes")) {
+			this.ignore = true;
+		} else {
+			this.ignore = false;
+		}
 
     }
-
-
-    // ------------------------------------------------------ Protected Methods
-
-
+    
     /**
      * Select an appropriate character encoding to be used, based on the
      * characteristics of the current request and/or filter initialization
@@ -159,7 +140,7 @@ public class SetCharacterEncodingFilter implements Filter {
      *
      * @param request The servlet request we are processing
      */
-    protected String selectEncoding(@SuppressWarnings("unused") ServletRequest request) {
+    protected String selectEncoding(@SuppressWarnings("unused") final ServletRequest request) {
         return (this.encoding);
     }
 
