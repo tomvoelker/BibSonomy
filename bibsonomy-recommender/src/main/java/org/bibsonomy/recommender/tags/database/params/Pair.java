@@ -8,6 +8,7 @@ package org.bibsonomy.recommender.tags.database.params;
  * @param <T>
  * @param <U>
  */
+@Deprecated // TODO: remove copy
 public class Pair <T extends Comparable<T>, U extends Comparable<U>> implements Comparable<Pair<T,U>>
 {
 	private T first;
@@ -71,6 +72,7 @@ public class Pair <T extends Comparable<T>, U extends Comparable<U>> implements 
 	/**
 	 * implements lexicographic ordering
 	 */
+	@Override
 	public int compareTo(Pair<T, U> o) {
 		int left = getFirst().compareTo(o.getFirst());
 		int right= getSecond().compareTo(o.getSecond());
