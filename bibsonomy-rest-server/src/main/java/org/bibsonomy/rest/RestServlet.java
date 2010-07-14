@@ -44,6 +44,7 @@ import org.bibsonomy.util.file.MultiPartRequestParser;
  * @version $Id$
  */
 public final class RestServlet extends HttpServlet {
+	private static final Log log = LogFactory.getLog(RestServlet.class);
 
 	/**
 	 * Used in {@link #validateAuthorization(String)} to identify HTTP basic authentication.
@@ -52,11 +53,10 @@ public final class RestServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Log log = LogFactory.getLog(RestServlet.class);
-
 	/** name of the servlet-parameter that configures the logicFactoryClass to use */
 	public static final String PARAM_LOGICFACTORY_CLASS = "logicFactoryClass";
 
+	
 	private LogicInterfaceFactory logicFactory;
 	
 	// store some infos about the specific request or the webservice (i.e. rootPath)
