@@ -40,6 +40,7 @@ public class TagCountComparator implements Comparator<Tag> {
 	/**
 	 * compares two given tags based on the corresponding global counts
 	 */
+	@Override
 	public int compare(Tag o1, Tag o2) {
 		if( !present(o1) ) {
 			if( present(o2) ) {

@@ -59,6 +59,7 @@ public class BookmarkPostComparator extends PostComparator implements Comparator
 	 * 
 	 * main comparison method
 	 */
+	@Override
 	public int compare(final Post<Bookmark> post1, final Post<Bookmark> post2) {
 		for (final SortCriterium crit : this.sortCriteria) {
 			try {				

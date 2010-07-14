@@ -38,7 +38,7 @@ import org.bibsonomy.model.util.UserUtils;
  * 
  * @version $Id$
  */
-public class User implements Serializable{
+public class User implements Serializable {
 	/*
 	 * WARNING: When adding new fields make sure to integrate them into the updateUser method
 	 * {@link UserUtils#updateUser}
@@ -222,6 +222,7 @@ public class User implements Serializable{
 	 * The temporary password the user can request when asking for a password reminder.
 	 */
 	private String reminderPassword;
+	
 	/**
 	 * The time at which the user requested a password reminder.
 	 */
@@ -242,7 +243,7 @@ public class User implements Serializable{
 	public User(final String name) {
 		this.setName(name); 
 		this.basket = new Basket();
-		this.inbox=new Inbox();
+		this.inbox = new Inbox();
 		this.settings = new UserSettings();
 		this.role = Role.NOBODY; // TODO: check, if this has any bad implications!
 	}
@@ -286,11 +287,7 @@ public class User implements Serializable{
 	 * @param name
 	 */
 	public void setName(String name) {
-		if (name != null) {
-			this.name = name.toLowerCase();
-		} else {
-			this.name = name;			
-		}
+		this.name = name == null ? null : name.toLowerCase();
 	}
 
 	/**
@@ -613,7 +610,6 @@ public class User implements Serializable{
 	public void setBasket(Basket basket) {
 		this.basket = basket;
 	}
-
 	
 	/**
 	 * @return inbox
@@ -643,7 +639,6 @@ public class User implements Serializable{
 		this.activationCode = activationCode;
 	}
 	
-	
 	/**
 	 * @return a List of friends
 	 */
@@ -654,21 +649,20 @@ public class User implements Serializable{
 		return this.friends;
 	}
 	
-	
 	/**
+	 * TODO: unused?
 	 * @return a List with names of user's friends
 	 */
-	public List<String> getFriendsAsString(){
-		if (this.friends==null) {
-			this.friends=new LinkedList<User>();
+	public List<String> getFriendsAsString() {
+		if (this.friends == null) {
+			this.friends = new LinkedList<User>();
 		}
 		final List<String> friendsAsString = new LinkedList<String>();
-		for (final User friend:friends) {
+		for (final User friend : friends) {
 			friendsAsString.add(friend.getName());
 		}
 		return friendsAsString;
 	}
-	
 	
 	/**
 	 * Returns the first friend of this user.<br/>
@@ -699,7 +693,7 @@ public class User implements Serializable{
 	 * 
 	 * @param friends
 	 */
-	public void addFriends (final List<User> friends) {
+	public void addFriends(final List<User> friends) {
 		// call getFriends to initialize this.friends
 		this.getFriends();
 		this.friends.addAll(friends);

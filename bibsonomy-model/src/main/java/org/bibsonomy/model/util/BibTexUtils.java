@@ -46,6 +46,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
@@ -64,6 +66,7 @@ import org.bibsonomy.util.tex.TexDecode;
  * @version $Id$
  */
 public class BibTexUtils {
+	private static final Log log = LogFactory.getLog(BibTexUtils.class);
 
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
@@ -162,17 +165,7 @@ public class BibTexUtils {
 	/** assignment operator to assign keys to values; i.e. key OP val, ...*/
 	public static final char ASSIGNMENT_OPERATOR = '=';
 	/** indentation used for key/value pairs when converted to a bibtex string */
-	public static final String KEYVALUE_INDENT = "  ";		
-	
-	
-	/**
-	 * @return The available types for bibtex entries.
-	 */
-	public static String[] getEntryTypes() {
-		return ENTRYTYPES;
-	}
-	
-
+	public static final String KEYVALUE_INDENT = "  ";
 
 	/**
 	 * Builds a string from a given bibtex object which can be used to build an OpenURL
@@ -263,8 +256,7 @@ public class BibTexUtils {
 			appendOpenURL(openurl, "volume", bib.getVolume());
 			appendOpenURL(openurl, "issue", bib.getNumber());
 		} catch (final UnsupportedEncodingException ex) {
-			// TODO please improve me ASAP...
-			ex.printStackTrace();
+			log.error("error while generating openURL", ex);
 		}
 
 		return openurl.toString();
@@ -306,7 +298,7 @@ public class BibTexUtils {
 			/*
 			 * start with entrytype and key
 			 */
-			final StringBuffer buffer = new StringBuffer("@" + bib.getEntrytype() + "{" + bib.getBibtexKey() + ",\n");
+			final StringBuilder buffer = new StringBuilder("@" + bib.getEntrytype() + "{" + bib.getBibtexKey() + ",\n");
 
 			/*
 			 * append all other fields
@@ -334,7 +326,7 @@ public class BibTexUtils {
 			/*
 			 * process miscFields map, if present
 			 */
-			if ( present(bib.getMiscFields()) ) {
+			if (present(bib.getMiscFields())) {
 				if ( mode.equals(SerializeBibtexMode.PARSED_MISCFIELDS) && !bib.isMiscFieldParsed()) {
 					// parse misc field, if not yet done
 					bib.parseMiscField();
@@ -345,7 +337,7 @@ public class BibTexUtils {
 			/*
 			 * include plain misc fields if desired
 			 */
-			if ( mode.equals(SerializeBibtexMode.PLAIN_MISCFIELDS)  && present(bib.getMisc())) {
+			if (mode.equals(SerializeBibtexMode.PLAIN_MISCFIELDS) && present(bib.getMisc())) {
 				buffer.append("  " + bib.getMisc() + ",\n");
 			}
 			/*
@@ -499,7 +491,7 @@ public class BibTexUtils {
 		 * How to extract the first RELEVANT word of the title?
 		 * remove Sonderzeichen, LaTeX markup!
 		 */
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 
 		/* get author */
 		String first = getFirstPersonsLastName(authors);
@@ -535,7 +527,7 @@ public class BibTexUtils {
 	 */
 	private static String getFirstRelevantWord(final String title) {
 		final String[] split = title.split("\\s");
-		for (final String s: split) {
+		for (final String s : split) {
 			final String ss = s.replaceAll("[^a-zA-Z0-9]", "");
 			if (ss.length() > 4) {
 				return ss;
@@ -557,7 +549,7 @@ public class BibTexUtils {
 			/*
 			 * check, if there is more than one author
 			 */
-			final int firstand = person.indexOf(" and ");
+			final int firstand = person.indexOf(PersonNameUtils.PERSON_NAME_DELIMITER);
 			if (firstand < 0) {
 				firstauthor = person;
 			} else {
@@ -596,7 +588,7 @@ public class BibTexUtils {
 		bibtex = TexDecode.decode(bibtex).trim();
 
 		// convert non-ASCII into HTML entities
-		final StringBuffer buffer = new StringBuffer(bibtex.length());
+		final StringBuilder buffer = new StringBuilder(bibtex.length());
 		char c;		
 		for (int i = 0; i < bibtex.length(); i++) {
 			c = bibtex.charAt(i);
@@ -792,12 +784,12 @@ public class BibTexUtils {
 	 *  
 	 * for all defined miscFields to the return string.
 	 * 
-	 * @param miscFields - a hashmap containing key/value pairs
+	 * @param miscFields - a map containing key/value pairs
 	 * @param appendTrailingSeparator - whether to append a trailing separator at the end of the string
 	 * @return - a string representation of the given object.
 	 */
 	public static String serializeMiscFields(Map<String,String> miscFields, boolean appendTrailingSeparator) {
-		final StringBuffer miscFieldsSerialized = new StringBuffer();
+		final StringBuilder miscFieldsSerialized = new StringBuilder();
 		// loop over misc fields, if any
 		if (present(miscFields)) {
 			String currKey;

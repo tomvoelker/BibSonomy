@@ -309,6 +309,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 		return this.getName().hashCode();
 	}
 
+	@Override
 	public int compareTo(Tag tag) {
 		// FIXME: what about upper vs. lower case?
 		return this.getName().compareTo(tag.getName());

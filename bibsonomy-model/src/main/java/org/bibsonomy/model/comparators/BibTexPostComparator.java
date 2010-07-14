@@ -61,6 +61,7 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 	 * 
 	 * main comparison method
 	 */
+	@Override
 	public int compare(final Post<BibTex> post1, final Post<BibTex> post2) {
 		for (final SortCriterium crit : this.sortCriteria) {
 			try {
