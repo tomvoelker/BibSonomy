@@ -35,13 +35,13 @@ public interface TagRecommenderConnector extends TagRecommender {
 	/**
 	 * Arbitrary auxiliary informations.
 	 *  
-	 * @return
+	 * @return the meta informations
 	 */
 	public byte[] getMeta();
 
 	/**
 	 * Description for identifying this recommender.
-	 * @return
+	 * @return the id
 	 */
 	public String getId();
 }

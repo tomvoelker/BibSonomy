@@ -1,6 +1,5 @@
 package org.bibsonomy.recommender.tags;
 
-
 import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -21,15 +20,17 @@ import org.bibsonomy.util.TagStringUtils;
  * @version $Id$
  */
 public abstract class AbstractTagRecommender implements TagRecommender {
-
 	private static final Log log = LogFactory.getLog(AbstractTagRecommender.class);
 	
 	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
+	
+	
 	/**
 	 * The maximal number of tags the recommender shall return on a call to
 	 * {@link #getRecommendedTags(Post)}.
 	 */
 	protected int numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;
+	
 	/**
 	 * Should the recommender return only tags cleaned according to 
 	 * {@link TagStringUtils#cleanTag(String)} and removed according to
@@ -42,10 +43,11 @@ public abstract class AbstractTagRecommender implements TagRecommender {
 	 * 
 	 * @see org.bibsonomy.services.recommender.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
 	 */
+	@Override
 	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
 		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-		addRecommendedTags(recommendedTags, post);
-		// all done
+		this.addRecommendedTags(recommendedTags, post);
+		
 		return recommendedTags;
 	}
 
@@ -67,7 +69,7 @@ public abstract class AbstractTagRecommender implements TagRecommender {
 	@Override
 	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 		log.debug("Getting tag recommendations for " + post);
-		addRecommendedTagsInternal(recommendedTags, post);
+		this.addRecommendedTagsInternal(recommendedTags, post);
 		if (log.isDebugEnabled()) log.debug("Recommending tags " + recommendedTags);
 	}
 	
@@ -76,7 +78,7 @@ public abstract class AbstractTagRecommender implements TagRecommender {
 	@Override
 	public void setFeedback(Post<? extends Resource> post) {
 		log.debug("got post with id " + post.getContentId() + " as feedback.");
-		setFeedbackInternal(post);
+		this.setFeedbackInternal(post);
 	}
 
 	protected abstract void setFeedbackInternal(Post<? extends Resource> post);
@@ -121,9 +123,11 @@ public abstract class AbstractTagRecommender implements TagRecommender {
 			final String cleanedTag = TagStringUtils.cleanTag(tag);
 			if (TagStringUtils.isIgnoreTag(cleanedTag)) {
 				return null;
-			} else 
-				return cleanedTag;
+			}
+			
+			return cleanedTag;
 		}
+		
 		return tag;
 	}
 

@@ -21,6 +21,11 @@ public class DefaultTagRecommender extends CompositeTagRecommender {
 		addTagRecommender(new SimpleContentBasedTagRecommender());
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.meta.CompositeTagRecommender#getInfo()
+	 */
+	@Override
 	public String getInfo() {
 		return "Default tag recommender.";
 	}
