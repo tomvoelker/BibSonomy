@@ -1,5 +1,9 @@
 package org.bibsonomy.logging;
 
+/**
+ * @author sst
+ * @version $Id$
+ */
 public class Log {
 
 	/** unique id */
@@ -65,10 +69,8 @@ public class Log {
 	/** referrer - where does user come from  */
 	private String referer;
 	
-
-
+	@Override
 	public String toString() {
-
 		return	"id: "+ this.id +
 				"\nlogdate: "+ this.logdate +
 				"\ndompath: "+ this.dompath +
@@ -90,10 +92,7 @@ public class Log {
 				"\nlistpos: " +this.listpos + 
 				"\nabmown: " +this.abmown + 
 				"\nreferer: " +this.referer;		
-	}
-
-	
-	
+	}	
 
 	/**
 	 * @return the id
@@ -102,16 +101,12 @@ public class Log {
 		return id;
 	}
 
-
-
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(int id) {
 		this.id = id;
 	}
-
-
 
 	/**
 	 * @return the logdate
@@ -120,16 +115,12 @@ public class Log {
 		return logdate;
 	}
 
-
-
 	/**
 	 * @param logdate the logdate to set
 	 */
 	public void setLogdate(String logdate) {
 		this.logdate = logdate;
 	}
-
-
 
 	/**
 	 * @return the dompath
@@ -138,16 +129,12 @@ public class Log {
 		return dompath;
 	}
 
-
-
 	/**
 	 * @param dompath the dompath to set
 	 */
 	public void setDompath(String dompath) {
 		this.dompath = dompath;
 	}
-
-
 
 	/**
 	 * @return the pageurl
@@ -156,16 +143,12 @@ public class Log {
 		return pageurl;
 	}
 
-
-
 	/**
 	 * @param pageurl the pageurl to set
 	 */
 	public void setPageurl(String pageurl) {
 		this.pageurl = pageurl;
 	}
-
-
 
 	/**
 	 * @return the acontent
@@ -174,16 +157,12 @@ public class Log {
 		return acontent;
 	}
 
-
-
 	/**
 	 * @param acontent the acontent to set
 	 */
 	public void setAcontent(String acontent) {
 		this.acontent = acontent;
 	}
-
-
 
 	/**
 	 * @return the anumberofposts
@@ -192,28 +171,17 @@ public class Log {
 		return anumberofposts;
 	}
 
-
-
 	/**
 	 * @param anumberofposts the anumberofposts to set
 	 */
 	public void setAnumberofposts(String anumberofposts) {
-		
-		try
-		{
+		try {
 			Integer.parseInt(anumberofposts);
 			this.anumberofposts = anumberofposts;
-		}
-			catch(NumberFormatException e)
-		{
-				this.anumberofposts = "0";
-		}
-
-		
-		
+		} catch(NumberFormatException e) {
+			this.anumberofposts = "0";
+		}	
 	}
-
-
 
 	/**
 	 * @return the ahref
@@ -222,16 +190,12 @@ public class Log {
 		return ahref;
 	}
 
-
-
 	/**
 	 * @param ahref the ahref to set
 	 */
 	public void setAhref(String ahref) {
 		this.ahref = ahref;
 	}
-
-
 
 	/**
 	 * @return the useragent
@@ -240,16 +204,12 @@ public class Log {
 		return useragent;
 	}
 
-
-
 	/**
 	 * @param useragent the useragent to set
 	 */
 	public void setUseragent(String useragent) {
 		this.useragent = useragent;
 	}
-
-
 
 	/**
 	 * @return the username
@@ -258,16 +218,12 @@ public class Log {
 		return username;
 	}
 
-
-
 	/**
 	 * @param username the username to set
 	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
-
 
 	/**
 	 * @return the sessionid
@@ -276,16 +232,12 @@ public class Log {
 		return sessionid;
 	}
 
-
-
 	/**
 	 * @param sessionid the sessionid to set
 	 */
 	public void setSessionid(String sessionid) {
 		this.sessionid = sessionid;
 	}
-
-
 
 	/**
 	 * @return the host
@@ -294,8 +246,6 @@ public class Log {
 		return host;
 	}
 
-
-
 	/**
 	 * @param host the host to set
 	 */
@@ -303,34 +253,26 @@ public class Log {
 		this.host = host;
 	}
 
-
-
 	/**
 	 * @return the completeheader
 	 */
 	public String getCompleteheader() {
 		return completeheader;
 	}
-
-
-
+	
 	/**
 	 * @param completeheader the completeheader to set
 	 */
 	public void setCompleteheader(String completeheader) {
 		this.completeheader = completeheader;
 	}
-
-
-
+	
 	/**
 	 * @return the xforwardedfor
 	 */
 	public String getXforwardedfor() {
 		return xforwardedfor;
 	}
-
-
 
 	/**
 	 * @param xforwardedfor the xforwardedfor to set
@@ -339,16 +281,12 @@ public class Log {
 		this.xforwardedfor = xforwardedfor;
 	}
 
-
-
 	/**
 	 * @return the type
 	 */
 	public String getType() {
 		return type;
 	}
-
-
 
 	/**
 	 * @param type the type to set
@@ -357,16 +295,12 @@ public class Log {
 		this.type = type;
 	}
 
-
-
 	/**
 	 * @return the dompath2
 	 */
 	public String getDompath2() {
 		return dompath2;
 	}
-
-
 
 	/**
 	 * @param dompath2 the dompath2 to set
@@ -375,16 +309,12 @@ public class Log {
 		this.dompath2 = dompath2;
 	}
 
-
-
 	/**
 	 * @return the windowsize
 	 */
 	public String getWindowsize() {
 		return windowsize;
 	}
-
-
 
 	/**
 	 * @param windowsize the windowsize to set
@@ -393,16 +323,12 @@ public class Log {
 		this.windowsize = windowsize;
 	}
 
-
-
 	/**
 	 * @return the mousedocumentpos
 	 */
 	public String getMousedocumentpos() {
 		return mousedocumentpos;
 	}
-
-
 
 	/**
 	 * @param mousedocumentpos the mousedocumentpos to set
@@ -411,16 +337,12 @@ public class Log {
 		this.mousedocumentpos = mousedocumentpos;
 	}
 
-
-
 	/**
 	 * @return the mouseclientpos
 	 */
 	public String getMouseclientpos() {
 		return mouseclientpos;
 	}
-
-
 
 	/**
 	 * @param mouseclientpos the mouseclientpos to set
@@ -429,16 +351,12 @@ public class Log {
 		this.mouseclientpos = mouseclientpos;
 	}
 
-
-
 	/**
 	 * @return the listpos
 	 */
 	public String getListpos() {
 		return listpos;
 	}
-
-
 
 	/**
 	 * @param listpos the listpos to set
@@ -447,15 +365,12 @@ public class Log {
 		this.listpos = listpos;
 	}
 
-
 	/**
 	 * @return the abmown
 	 */
 	public String getAbmown() {
 		return abmown;
 	}
-
-
 
 	/**
 	 * @param abmown the abmown to set
@@ -464,8 +379,6 @@ public class Log {
 		this.abmown = abmown;
 	}
 
-
-
 	/**
 	 * @return the referer
 	 */
@@ -473,14 +386,10 @@ public class Log {
 		return referer;
 	}
 
-
-
 	/**
 	 * @param referer the referer to set
 	 */
 	public void setReferer(String referer) {
 		this.referer = referer;
 	}
-
-	
 }
