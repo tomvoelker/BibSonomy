@@ -117,6 +117,10 @@ public class BibTexUtils {
 	/**
 	 * the supported entrytypes of a bibtex
 	 * be careful when changing order some code uses the order to map entrytypes to (swrc|ris) entrytypes
+	 * 
+	 * e.g., in {@link tags.EntryType} 
+	 * 
+	 * FIXME: this is bad. Please fix this behaviour. 
 	 */
 	public static final String[] ENTRYTYPES = {"article", "book", "booklet", "conference", "electronic", "inbook", "incollection", "inproceedings",
 		"manual", "mastersthesis", "misc", "patent", "periodical", "phdthesis", "preamble", "presentation", "proceedings", "standard", "techreport", "unpublished"
