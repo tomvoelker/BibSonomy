@@ -134,7 +134,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * TODO: i18n
 		 */
-		command.setPageTitle("edit a post");
+		command.setPageTitle("edit a post"); // TODO: i18n
 		/*
 		 * We store the referer in the command, to send the user back to the 
 		 * page he's coming from at the end of the posting process. 
@@ -178,6 +178,11 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			// the user can be empty => goldstandard
 			final Post<RESOURCE> post = this.getCopyPost(loginUser, hash, user);
 			
+			if (!present(post)) {
+				errors.reject("error.post.notfound");
+				return getEditPostView(command, loginUser);
+			}
+			
 			command.setPost(post);
 		} else {			
 			/*
@@ -191,10 +196,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * this is the post we're working on for now ...
 		 */
 		final Post<RESOURCE> post = command.getPost();
-		if (!present(post)) {
-			errors.reject("error.post.notfound");
-			return getEditPostView(command, loginUser);
-		}
 		
 		/*
 		 * set user, init post groups, relevant for tags (FIXME: candidate for 
