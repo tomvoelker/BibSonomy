@@ -118,9 +118,8 @@ public class BibTexUtils {
 	 * the supported entrytypes of a bibtex
 	 * be careful when changing order some code uses the order to map entrytypes to (swrc|ris) entrytypes
 	 */
-	public static final String[] ENTRYTYPES = {"article", "book", "booklet", "conference", "inbook", "incollection", "inproceedings",
-		"manual", "mastersthesis", "misc", "periodical", "phdthesis", "preamble", "presentation", "proceedings", "techreport", "unpublished"
-		
+	public static final String[] ENTRYTYPES = {"article", "book", "booklet", "conference", "electronic", "inbook", "incollection", "inproceedings",
+		"manual", "mastersthesis", "misc", "patent", "periodical", "phdthesis", "preamble", "presentation", "proceedings", "standard", "techreport", "unpublished"
 	};
 	
 	/*
