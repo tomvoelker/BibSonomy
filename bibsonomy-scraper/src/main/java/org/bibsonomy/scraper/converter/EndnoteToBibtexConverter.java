@@ -412,7 +412,7 @@ public class EndnoteToBibtexConverter {
 		endnoteToBibtexEntryTypeMap.put("%0 Map",                   "misc");
 		endnoteToBibtexEntryTypeMap.put("%0 Online Database",       "misc");
 		endnoteToBibtexEntryTypeMap.put("%0 Online Multimedia",     "misc");
-		endnoteToBibtexEntryTypeMap.put("%0 Patent",                "misc");
+		endnoteToBibtexEntryTypeMap.put("%0 Patent",                "patent");
 		endnoteToBibtexEntryTypeMap.put("%0 Personal Communication","misc");
 		endnoteToBibtexEntryTypeMap.put("%0 Report",                "misc");
 		endnoteToBibtexEntryTypeMap.put("%0 Statute",               "misc");
