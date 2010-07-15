@@ -22,8 +22,8 @@ public class EntryType extends TagSupport {
 	private static final long serialVersionUID = 234345234589762349l;
 	
 	/** Definition of adapted types @see {@link BibTexUtils#ENTRYTYPES}**/	
-	private static String [] mappedEntryNames = {"Article", "Book", "Booklet", "InBook", "InCollection", "InProceedings", "Manual", "MasterThesis", "Misc", "PhDThesis", "Proceedings", "TechnicalReport", "Unpublished"}; 
-	
+	private static String [] mappedEntryNames = {"Article", "Book", "Booklet", "Misc", "Misc", "InBook", "InCollection", "InProceedings", "Manual", "MasterThesis", "Misc", "Misc", "PhDThesis", "Misc", "Misc", "Proceedings", "Misc", "TechnicalReport", "Unpublished"};
+
 	private String value;
 	
 	/**
