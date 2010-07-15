@@ -49,8 +49,8 @@ public class Functions  {
 	 * Mapping of BibTeX entry types to SWRC entry types
 	 * @see BibTexUtils#ENTRYTYPES
 	 */
-	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
-	private static String[] risEntryTypes    = {"Journal Article","Book", "Book", "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis", "Generic", "Thesis", "Conference Proceedings", "Report", "Unpublished Work"};
+	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","Misc","Misc","InBook", "InCollection","InProceedings","Manual","MasterThesis","Misc","Misc","PhDThesis","Misc","Misc","Proceedings","Misc","TechnicalReport","Unpublished"};
+	private static String[] risEntryTypes    = {"Journal Article","Book", "Book", "Generic","Generic", "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis", "Generic", "Generic", "Thesis", "Generic", "Generic", "Conference Proceedings", "Report", "Unpublished Work"};
 	
 	/**
 	 * Fields over which are iterated in the JSP to output BibTeX.
