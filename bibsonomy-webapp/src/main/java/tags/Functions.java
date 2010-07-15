@@ -47,6 +47,7 @@ public class Functions  {
 
 	/**
 	 * Mapping of BibTeX entry types to SWRC entry types
+	 * FIXME: this duplicates the ones from EntryType.java!
 	 * @see BibTexUtils#ENTRYTYPES
 	 */
 	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","Misc","Misc","InBook", "InCollection","InProceedings","Manual","MasterThesis","Misc","Misc","PhDThesis","Misc","Misc","Proceedings","Misc","TechnicalReport","Unpublished"};
