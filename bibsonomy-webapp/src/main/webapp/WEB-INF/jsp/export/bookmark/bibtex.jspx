@@ -24,7 +24,7 @@ BibTeX output for bookmarks
    url         = {${bookmark.url}},
    biburl      = {${projectHome}url/${bookmark.intraHash}/${post.user['name']}},
    keywords    = {${mtl:toTagString(post.tags)}},
-   added-at    = {${post.date}},
+   added-at    = {<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ"/>},
    description = {${post.description}},
    interhash   = {${bookmark.interHash}}, 
    intrahash   = {${bookmark.intraHash}}
