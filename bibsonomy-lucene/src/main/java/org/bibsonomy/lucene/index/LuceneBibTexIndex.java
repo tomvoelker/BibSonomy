@@ -4,6 +4,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 
 /**
+ * TODO: rename to LucenePublicationIndex
  * class for managing the lucene bibtex index
  * 
  * @author fei

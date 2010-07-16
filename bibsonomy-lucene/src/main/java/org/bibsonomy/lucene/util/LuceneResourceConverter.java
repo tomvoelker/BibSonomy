@@ -1,5 +1,14 @@
 package org.bibsonomy.lucene.util;
 
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_FLDINDEX;
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_FLDSTORE;
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_FULLTEXT_FLAG;
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_LIST_DELIMITER;
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENENAME;
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_PRIVATE_FLAG;
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_TYPEHANDLER;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_MERGEDFIELDS;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_PRIVATEFIELDS;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,11 +36,11 @@ import org.bibsonomy.util.tex.TexDecode;
  * 
  * @param <R> the resource to convert
  */
-public abstract class LuceneResourceConverter<R extends Resource> extends LuceneBase {
+public abstract class LuceneResourceConverter<R extends Resource> {
 	private static final Log log = LogFactory.getLog(LuceneResourceConverter.class);
 
 	/** property map for configuring and mapping post model properties to lucene fields and vice versa */
-	private Map<String,Map<String,Object>> postPropertyMap;
+	private Map<String,Map<String, Object>> postPropertyMap;
 	
 	/**
 	 * read property values from given lucene document and creates post model
@@ -39,13 +48,13 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 	 * @param doc
 	 * @return the post representation of the lucene document
 	 */
-	public Post<R> writePost(Document doc) {
+	public Post<R> writePost(final Document doc) {
 		// initialize 
 		final Post<R> post = this.createEmptyPost();
 
 		// cycle though all properties and store the corresponding
 		// values in the content hash map
-		for( String propertyName : postPropertyMap.keySet() ) {
+		for (String propertyName : postPropertyMap.keySet()) {
 			// get lucene index properties
 			String fieldName   = (String)postPropertyMap.get(propertyName).get(CFG_LUCENENAME);
 			String propertyStr = doc.get(fieldName); 
@@ -54,7 +63,7 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 				continue;
 			
 			@SuppressWarnings("unchecked")
-			LuceneTypeHandler<Object> typeHandler = (LuceneTypeHandler<Object>)postPropertyMap.get(propertyName).get(CFG_TYPEHANDLER);
+			final LuceneTypeHandler<Object> typeHandler = (LuceneTypeHandler<Object>)postPropertyMap.get(propertyName).get(CFG_TYPEHANDLER);
 
 			Object propertyValue = null;
 			if( typeHandler!=null ) {
@@ -79,8 +88,8 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 	 * @param post
 	 * @return the lucene document representation of the post
 	 */
-	public Document readPost(Post<R> post) {
-		Document retVal = new Document();
+	public Document readPost(final Post<R> post) {
+		final Document retVal = new Document();
 		// FIXME: default values should be configured via spring
 		Index fldDefaultIndex = Field.Index.NOT_ANALYZED;
 		Store fldDefaultStore = Field.Store.YES;
@@ -116,12 +125,13 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 					propertyValue = extractPropertyValue(postPropertyMap, typeHandler, propertyName, property);
 					
 					// get lucene index configuration
-					if( postPropertyMap.get(propertyName).get(CFG_FLDINDEX)!=null) {
-						fldIndex = (Index) postPropertyMap.get(propertyName).get(CFG_FLDINDEX);
+					final Index index = (Index) postPropertyMap.get(propertyName).get(CFG_FLDINDEX);
+					if( index != null) {
+						fldIndex = index;
 					} else {
 						fldIndex = fldDefaultIndex;
 					}
-					if( postPropertyMap.get(propertyName).get(CFG_FLDSTORE)!=null) {
+					if( postPropertyMap.get(propertyName).get(CFG_FLDSTORE) != null) {
 						fldStore = (Store) postPropertyMap.get(propertyName).get(CFG_FLDSTORE);
 					} else {
 						fldStore = fldDefaultStore;
@@ -175,13 +185,10 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
 	 */
-	private String extractPropertyValue( 
-			Map<String, Map<String, Object>> bibTexPropertyMap, LuceneTypeHandler<Object> typeHandler,
-			String propertyName, Object item) 
-	throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+	private String extractPropertyValue(Map<String, Map<String, Object>> bibTexPropertyMap, LuceneTypeHandler<Object> typeHandler, String propertyName, Object item) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		String itemValue = null;
 		// get the string value for the given object
-		if( typeHandler!=null ) {
+		if( typeHandler != null ) {
 			// if a type handler is set, use the type handler for rendering the string
 			itemValue = typeHandler.getValue(item);
 		} else {

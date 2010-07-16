@@ -2,7 +2,6 @@ package org.bibsonomy.lucene.database;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,17 +65,9 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @param fromDate
 	 * @param toDate
 	 * 
-	 * @return get all public posts within a given time range
-	 */
-	@Deprecated // FIXME: use bibsonomy model classes
-	public List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate);
-
-	/**
-	 * @param fromDate
-	 * @param toDate
-	 * 
 	 * @return TODO: improve documentation
 	 */
+	@Deprecated // TODO: really?!
 	public List<Post<R>> getPostsForTimeRange2(Date fromDate, Date toDate);
 	
 	/**
@@ -91,6 +82,7 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return  get list of all posts where in the given time range only the tag assignments
 	 * have changed
 	 */
+	@Deprecated // TODO: really?!
 	public List<Post<R>> getUpdatedPostsForTimeRange(Date fromDate, Date toDate);
 	
 	/**
@@ -119,12 +111,14 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @param groupId
 	 * @return group name to the given groupId
 	 */
+	@Deprecated // TODO: really?!
 	public String getGroupNameByGroupId(int groupId);
 
 	/**
 	 * @param groupId
 	 * @return the members of the group
 	 */
+	@Deprecated // TODO: really?!
 	public List<String> getGroupMembersByGroupId(int groupId);
 
 	/**
@@ -140,6 +134,7 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @param authUserName
 	 * @return get all members of the given group, which have the user as a friend
 	 */
+	@Deprecated // TODO: really?!
 	public List<String> getGroupFriendsByGroupIdForUser(int groupId, String authUserName);	
 	
 	//------------------------------------------------------------------------
@@ -159,6 +154,7 @@ public interface LuceneDBInterface<R extends Resource> {
 	/** 
 	 * @return get number of TAS entries 
 	 */
+	@Deprecated // TODO: really?
 	public int getTasSize();
 	
 	/**
@@ -197,6 +193,7 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @param max The maximum number of results to return
 	 * @return A List of result objects
 	 */
+	@Deprecated
 	public List<GroupTasParam> getGroupTasEntries(Integer skip, Integer max);
 
 	/** 
@@ -210,4 +207,33 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return get map from url-hashes to corresponding urls
 	 */
 	public Map<String,String> getUrlMap();
+
+	/**
+	 * @return the latest date in db
+	 */
+	public Date getLatestDate();
+
+	/**
+	 * TODO: remove or merge with {@link #getNewPosts(Integer)}
+	 * @param from TODO
+	 * @param now TODO
+	 * @return TODO
+	 */
+	public List<LucenePost<R>> getNewPosts(Date from, Date now);
+
+	/**
+	 * @param offset
+	 * @param limit
+	 * @param date
+	 * @return all posts for a resource specified by offset and limit and not older than date
+	 */
+	public List<LucenePost<R>> getPosts(int offset, int limit, Date date);
+
+	/**
+	 * 
+	 * @param from
+	 * @param now
+	 * @return all posts to delete from the index
+	 */
+	public List<LucenePost<R>> getPostsToDelete(Date from, Date now);
 }

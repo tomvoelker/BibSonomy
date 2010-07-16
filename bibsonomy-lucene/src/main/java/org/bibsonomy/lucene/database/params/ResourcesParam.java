@@ -24,6 +24,8 @@ public class ResourcesParam<T extends Resource> extends GenericParam {
 	/** newest change_date during last index update */
 	private Date lastLogDate;
 	
+	private Date lastDate;
+	
 	/**
 	 * @return resources
 	 */
@@ -64,5 +66,19 @@ public class ResourcesParam<T extends Resource> extends GenericParam {
 	 */
 	public void setLastLogDate(Date lastLogDate) {
 		this.lastLogDate = lastLogDate;
+	}
+
+	/**
+	 * @param lastDate the lastDate to set
+	 */
+	public void setLastDate(Date lastDate) {
+		this.lastDate = lastDate;
+	}
+
+	/**
+	 * @return the lastDate
+	 */
+	public Date getLastDate() {
+		return lastDate;
 	}
 }

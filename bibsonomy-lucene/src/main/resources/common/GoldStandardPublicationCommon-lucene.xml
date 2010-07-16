@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GoldStandardPublicationCommon">
+	<resultMap id="goldStandardPublication" class="goldStandardPublication" extends="BibTexCommon.publication_common_without_privnote">
+		<!-- to get a GoldStandardPublication object instead of a normal publication (aka bibtex) -->
+	</resultMap>
+	
+	<resultMap id="posts" class="post" groupBy="contentId">
+		<result property="date"         column="date"           javaType="date" />
+		<result property="user"         resultMap="Common.user" />
+		<result property="description"  column="description"    javaType="string" />
+	</resultMap>
+	
+	<resultMap id="goldStandardPublicationPost" class="post" extends="GoldStandardPublicationCommon.posts">
+		<result property="resource"   resultMap="GoldStandardPublicationCommon.goldStandardPublication" />
+	</resultMap>
+	
+	<!-- TODO: remove TODODZ-->
+	<resultMap id="luceneGoldStandardPublicationPost" class="lucenePost" extends="goldStandardPublicationPost">
+	</resultMap>
+	
+	<sql id="allGoldStandardPublicationAttributesWithSimHashes">
+		<include refid="allGoldStandardPublicationAttributes"/>,
+		<include refid="bibtexSimHashes"/>
+	</sql>
+	
+	<sql id="allGoldStandardPublicationRows">title, entrytype, author, editor, year, journal, volume, chapter,
+		edition, month, bookTitle, howpublished, institution, organization, publisher, address, school, series,
+		bibtexKey, `group`, date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
+		bibtexAbstract, type, day, privnote, simhash0, simhash1, simhash2, simhash3</sql>
+		
+	<sql id="allGoldStandardPublicationValues">(#resource.title#, #resource.entrytype#, #resource.author#, #resource.editor#, #resource.year#,
+		#resource.journal#, #resource.volume#, #resource.chapter#, #resource.edition#,
+		#resource.month#, #resource.booktitle#, #resource.howpublished#, #resource.institution#,
+		#resource.organization#, #resource.publisher#, #resource.address#, #resource.school#,
+        #resource.series#, #resource.bibtexKey#, #groupId#, #date#, #userName#,
+        #resource.url#, #description#, #resource.annote#, #resource.note#, #resource.pages#,
+        #resource.key#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
+        #resource.type#, #resource.day#, #resource.privnote#, #resource.simHash0#, #resource.simHash1#,
+        #resource.simHash2#, #resource.simHash3#)</sql>
+	
+	<sql id="allGoldStandardPublicationAttributes">
+		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype
+	</sql>
+</sqlMap>

@@ -57,7 +57,7 @@ public final class JNDITestDatabaseBinder {
 	 * Main method: read configuration file 'database.properties', create SQL
 	 * Data Source and register it via JNDI
 	 */
-	public static void bind() {
+	public static void bind() {		
 		bindDatabaseContext("bibsonomy_lucene", LUCENEPROPERTYFILENAME);
 		bindLuceneConfig(CONTEXTNAME, LUCENEPROPERTYFILENAME);
 	}
@@ -76,7 +76,7 @@ public final class JNDITestDatabaseBinder {
 
 		// get properties
 		for( Object key : props.keySet() ) {
-			if( !present((key.toString()))||!(key.toString()).startsWith(CONTEXT_CONFIG_BEAN) )
+			if( !present((key.toString())) || !(key.toString()).startsWith(CONTEXT_CONFIG_BEAN) )
 				continue;
 			
 			String propertyName = getPropertyName((String)key);

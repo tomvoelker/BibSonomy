@@ -13,6 +13,7 @@
 	<sqlMap resource="common/Common-lucene.xml" />
 	<sqlMap resource="common/BookmarkCommon-lucene.xml" />
 	<sqlMap resource="common/BibTexCommon-lucene.xml" />
+	<sqlMap resource="common/GoldStandardPublicationCommon-lucene.xml" />
 	<sqlMap resource="common/LuceneCommon.xml" />
 
 	<sqlMap resource="LuceneGenerateIndexQueries.xml" />

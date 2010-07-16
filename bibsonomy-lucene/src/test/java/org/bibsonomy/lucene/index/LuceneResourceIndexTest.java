@@ -20,8 +20,8 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.CommonModelUtils;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -30,12 +30,12 @@ import org.junit.Test;
  * @version $Id$
  */
 public class LuceneResourceIndexTest {
-	private LuceneResourceConverter<BibTex> bibTexConverter;
-	private LuceneResourceConverter<Bookmark> bookmarkConverter;
+	private static LuceneResourceConverter<BibTex> bibTexConverter;
+	private static LuceneResourceConverter<Bookmark> bookmarkConverter;
 	
 	@SuppressWarnings("unchecked")
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		// bind datasource access via JNDI
 		JNDITestDatabaseBinder.bind();
 		
@@ -51,21 +51,21 @@ public class LuceneResourceIndexTest {
 		bookmarkConverter.setPostPropertyMap(postPropertyMap);
 	}
 	
-	@After
-	public void tearDown() {
+	@AfterClass
+	public static void tearDown() {
 		JNDITestDatabaseBinder.unbind();
 	}
 	
 	@Test
 	public void testCache() {
 		final LucenePost<Bookmark> bmPost = generateBookmarkDatabaseManagerTestPost();
-		final LucenePost<BibTex> bibPost  = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
+		final LucenePost<BibTex> bibPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		
 		bmPost.setContentId(0);
 		bibPost.setContentId(0);
 		
-		final Document bmDoc  = this.bookmarkConverter.readPost(bmPost);
-		final Document bibDoc = this.bibTexConverter.readPost(bibPost);
+		final Document bmDoc = bookmarkConverter.readPost(bmPost);
+		final Document bibDoc = bibTexConverter.readPost(bibPost);
 		
 		final LuceneResourceIndex<Bookmark> bmIndex = new LuceneBookmarkIndex(0);
 		final LuceneResourceIndex<BibTex> bibIndex  = new LuceneBibTexIndex(0);
@@ -78,16 +78,17 @@ public class LuceneResourceIndexTest {
 		assertEquals(1, bmIndex.getPostsToInsert().size());
 		assertEquals(1, bibIndex.getPostsToInsert().size());
 		
-		for( int i=1; i<50; i++ ) {
+		final int postSize = 50;
+		for( int i=1; i<postSize; i++ ) {
 			bmPost.setContentId(i);
 			bibPost.setContentId(i);
 
-			bmIndex.insertDocument(this.bookmarkConverter.readPost(bmPost));
-			bibIndex.insertDocument(this.bibTexConverter.readPost(bibPost));
+			bmIndex.insertDocument(bookmarkConverter.readPost(bmPost));
+			bibIndex.insertDocument(bibTexConverter.readPost(bibPost));
 		}
 
-		assertEquals(50, bmIndex.getPostsToInsert().size());
-		assertEquals(50, bibIndex.getPostsToInsert().size());
+		assertEquals(postSize, bmIndex.getPostsToInsert().size());
+		assertEquals(postSize, bibIndex.getPostsToInsert().size());
 	}
 	
 	/**

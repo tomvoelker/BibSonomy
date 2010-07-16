@@ -45,7 +45,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * 
  * @author fei
  * @version $Id$
  */
@@ -188,7 +187,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		// store test post in database
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
-		Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
+		Post<BibTex> bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		
 		bibTexDb.createPost(bibtexPost, this.dbSession);
 
@@ -219,7 +218,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bibTexDb.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), this.dbSession);
 		// FIXME: the updater looks at the tas table to get the newest date, which is
 		//        1815 after deleting the post - so we add another post
-		final Post<BibTex> workaroundInsert = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
+		final Post<BibTex> workaroundInsert = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		bibTexDb.createPost(workaroundInsert, this.dbSession);
 		
 		// update index
@@ -242,10 +241,10 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		//         we set the date almost to the previous one to simulate
 		//         concurrency
 		//--------------------------------------------------------------------
-		final Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
+		final Post<Bookmark> bookmarkPost = generateBookmarkDatabaseManagerTestPost();
 		bookmarkPost.setDate(new Date(workaroundInsert.getDate().getTime()+CONCURRENCY_OFFSET));
 
-		bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
+		bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		bibtexPost.setDate(new Date(workaroundInsert.getDate().getTime()+CONCURRENCY_OFFSET));
 		
 		bookmarkDb.createPost(bookmarkPost, this.dbSession);
@@ -496,48 +495,16 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	public void concurrencyAccess() {
 		// FIXME: implement me
 	}
-
-	//------------------------------------------------------------------------
-	// private helpers
-	//------------------------------------------------------------------------
+	
 	/**
 	 * generates lucene index for the test database
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
 	 * @throws IOException 
 	 */
-	@SuppressWarnings("unchecked")
-	private void generateIndex() throws IOException, ClassNotFoundException, SQLException {
-		// FIXME: configure this via spring
+	private static void generateIndex() throws IOException, ClassNotFoundException, SQLException {
 		final LuceneGenerateResourceIndex<BibTex> bibTexIndexer = LuceneGenerateBibTexIndex.getInstance();
 		final LuceneGenerateResourceIndex<Bookmark> bookmarkIndexer = LuceneGenerateBookmarkIndex.getInstance();
-		
-		bibTexIndexer.createEmptyIndex();
-		bookmarkIndexer.createEmptyIndex();
-		bibTexIndexer.shutdown();
-		bookmarkIndexer.shutdown();
-		
-//		bibTexIndexer.setLogic(LuceneBibTexLogic.getInstance());
-//		bibTexIndexer.setAnalyzer(SpringPerFieldAnalyzerWrapper.getInstance());
-//		bookmarkIndexer.setLogic(LuceneBookmarkLogic.getInstance());
-//		bookmarkIndexer.setAnalyzer(SpringPerFieldAnalyzerWrapper.getInstance());
-//		
-//		
-//		LuceneResourceConverter<BibTex> bibTexConverter;
-//		LuceneResourceConverter<Bookmark> bookmarkConverter;
-//		Map<String,Map<String,Object>> postPropertyMap;
-//
-//		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bibTexPropertyMap");
-//		bibTexConverter = new LuceneBibTexConverter();
-//		bibTexConverter.setPostPropertyMap(postPropertyMap);
-//		
-//		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bookmarkPropertyMap");
-//		bookmarkConverter = new LuceneBookmarkConverter();
-//		bookmarkConverter.setPostPropertyMap(postPropertyMap);
-//		
-//		bibTexIndexer.setResourceConverter(bibTexConverter);
-//		bookmarkIndexer.setResourceConverter(bookmarkConverter);
-//		
 		
 		bibTexIndexer.generateIndex();
 		bookmarkIndexer.generateIndex();
@@ -549,12 +516,19 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * generate a BibTex Post, can't call setBeanPropertiesOn() because private
 	 * so copy & paste the setBeanPropertiesOn() into this method
 	 */
-	private Post <BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID) {
-		
+	private static Post<BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID) {
 		final Post<BibTex> post = new Post<BibTex>();
-
+		post.setContentId(null);
+		post.setDescription("luceneTestPost");
+		post.setDate(new Date(System.currentTimeMillis()));
+		
+		final User user = new User();
+		CommonModelUtils.setBeanPropertiesOn(user);
+		user.setName("testuser1");
+		user.setRole(Role.NOBODY);
+		post.setUser(user);
+		
 		final Group group = new Group(groupID);
-	
 		post.getGroups().add(group);
 
 		Tag tag = new Tag();
@@ -566,44 +540,24 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		tag = new Tag();
 		tag.setName(LUCENE_MAGIC_TAG);
 		post.getTags().add(tag);
-
-		post.setContentId(null); // will be set in storePost()
-		post.setDescription("luceneTestPost");
-		post.setDate(new Date(System.currentTimeMillis()));
-		final User user = new User();
-		CommonModelUtils.setBeanPropertiesOn(user);
-		user.setName("testuser1");
-		user.setRole(Role.NOBODY);
-		post.setUser(user);
-		final BibTex resource;
-
 		
-		final BibTex bibtex = new BibTex();
-		CommonModelUtils.setBeanPropertiesOn(bibtex);
-		bibtex.setCount(0);		
-		bibtex.setEntrytype("inproceedings");
-		bibtex.setAuthor("MegaMan and Lucene GigaWoman "+LUCENE_MAGIC_AUTHOR);
-		bibtex.setEditor("Peter Silie "+LUCENE_MAGIC_EDITOR);
-		bibtex.setTitle("bibtex insertpost test");
-		resource = bibtex;
+		final BibTex publication = new BibTex();
+		CommonModelUtils.setBeanPropertiesOn(publication);
+		publication.setCount(0);		
+		publication.setEntrytype("inproceedings");
+		publication.setAuthor("MegaMan and Lucene GigaWoman "+LUCENE_MAGIC_AUTHOR);
+		publication.setEditor("Peter Silie "+LUCENE_MAGIC_EDITOR);
+		publication.setTitle("title "+ (Math.round(Math.random()*Integer.MAX_VALUE))+" "+LUCENE_MAGIC_TITLE);
+		publication.setYear("test year");
+		publication.setJournal("test journal");
+		publication.setBooktitle("test booktitle");
+		publication.setVolume("test volume");
+		publication.setNumber("test number");
+		publication.setScraperId(-1);
+		publication.setType("2");
+		publication.recalculateHashes();
+		post.setResource(publication);
 		
-		String title, year, journal, booktitle, volume, number = null;
-		title = "title "+ (Math.round(Math.random()*Integer.MAX_VALUE))+" "+LUCENE_MAGIC_TITLE;
-		year = "test year";
-		journal = "test journal";
-		booktitle = "test booktitle";
-		volume = "test volume";
-		number = "test number";
-		bibtex.setTitle(title);
-		bibtex.setYear(year);
-		bibtex.setJournal(journal);
-		bibtex.setBooktitle(booktitle);
-		bibtex.setVolume(volume);
-		bibtex.setNumber(number);
-		bibtex.setScraperId(-1);
-		bibtex.setType("2");
-		bibtex.recalculateHashes();
-		post.setResource(resource);
 		return post;
 	}
 	
@@ -611,7 +565,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * generate a Bookmark Post, can't call setBeanPropertiesOn() because private
 	 * so copy & paste the setBeanPropertiesOn() into this method
 	 */
-	private Post <Bookmark> generateBookmarkDatabaseManagerTestPost() {
+	private static Post<Bookmark> generateBookmarkDatabaseManagerTestPost() {
 		
 		final Post<Bookmark> post = new Post<Bookmark>();
 
@@ -636,18 +590,14 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		user.setName("testuser1");
 		user.setRole(Role.NOBODY);
 		post.setUser(user);
-		final Bookmark resource;
-
 		
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setCount(0);
-		//bookmark.setIntraHash("e44a7a8fac3a70901329214fcc1525aa");
 		bookmark.setTitle("test"+(Math.round(Math.random()*Integer.MAX_VALUE))+" "+LUCENE_MAGIC_TITLE);
 		bookmark.setUrl("http://www.testurl.orgg");
 		bookmark.recalculateHashes();
-		resource = bookmark;
 		
-		post.setResource(resource);
+		post.setResource(bookmark);
 		return post;
 	}
 	

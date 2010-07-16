@@ -14,6 +14,10 @@
 	<bean id="luceneBookmarkConverter" class="org.bibsonomy.lucene.util.LuceneBookmarkConverter">
 		<property name="postPropertyMap" ref="bookmarkPropertyMap"/>
 	</bean>
+	
+	<bean id="luceneGoldStandardPublicationConverter" class="org.bibsonomy.lucene.util.LuceneBibTexConverter">
+		<property name="postPropertyMap" ref="bibTexPropertyMap"/>
+	</bean>
 	    
 	<!--+
 	    | lucene index generator 
@@ -22,12 +26,16 @@
 		<property name="logic" ref="luceneBibTexLogic"/>
 		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
 		<property name="resourceConverter" ref="luceneBibTexConverter"/>
-		
 	</bean>
 	<bean id="luceneBookmarkIndexGenerator" class="org.bibsonomy.lucene.util.generator.LuceneGenerateBookmarkIndex" factory-method="getInstance">
 		<property name="logic" ref="luceneBookmarkLogic"/>
 		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
 		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
+	</bean>
+	<bean id="luceneGoldStandardPublicationIndexGenerator" class="org.bibsonomy.lucene.util.generator.LuceneGenerateGoldStandardPublicationIndex" factory-method="getInstance">
+		<property name="logic" ref="luceneGoldStandardPublicationLogic"/>
+		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter"/>
 	</bean>
 	 
 	<!--+
@@ -55,11 +63,23 @@
 		</bean>
 	</util:list>
 	
+	<util:list id="goldStandardPublicationIndeces">
+		<bean id="goldStandardPublicationIndex0" class="org.bibsonomy.lucene.index.LuceneGoldStandardPublicationIndex">
+			<constructor-arg value="0"/>
+			<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		</bean>
+		<bean id="goldStandardPublicationIndex1" class="org.bibsonomy.lucene.index.LuceneGoldStandardPublicationIndex">
+			<constructor-arg value="1"/>
+			<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		</bean>
+	</util:list>
+	
 	<!--+
 	    | lucene database access logics 
 	    +-->
 	<bean id="luceneBibTexLogic" class="org.bibsonomy.lucene.database.LuceneBibTexLogic" factory-method="getInstance"/>
 	<bean id="luceneBookmarkLogic" class="org.bibsonomy.lucene.database.LuceneBookmarkLogic" factory-method="getInstance"/>
+	<bean id="luceneGoldStandardPublicationLogic" class="org.bibsonomy.lucene.database.LuceneGoldStandardPublicationLogic"/>
 
 	<!--+
 	    | lucene index searcher 
@@ -69,12 +89,18 @@
 		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
 		<property name="resourceConverter" ref="luceneBibTexConverter"/>
 	</bean>
+	
 	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneSearchBookmarks" factory-method="getInstance">
 		<property name="dbLogic" ref="luceneBookmarkLogic"/>
 		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
 		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
 	</bean>
-
+	
+	<bean id="luceneGoldStandardPublicationSearch" class="org.bibsonomy.lucene.search.LuceneSearchGoldStandardPublication" factory-method="getInstance">
+		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic"/>
+		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter"/>
+	</bean>
 	
 	<!--+
 	    | lucene index manager (e.g. spam) 
@@ -92,6 +118,12 @@
 		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
 	</bean>
 	
+	<bean id="luceneGoldStandardPublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneGoldStandardPublicationManager" factory-method="getInstance">
+		<property name="resourceIndeces" ref="goldStandardPublicationIndeces" />
+		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic" />
+		<property name="searcher" ref="luceneGoldStandardPublicationSearch" />
+		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter" />
+	</bean>
 	
 	<!--  #################### imports #################### -->
 	<import resource="LuceneIndexConfig.xml"/>

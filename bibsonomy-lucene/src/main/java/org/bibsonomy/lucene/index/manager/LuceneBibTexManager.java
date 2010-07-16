@@ -22,7 +22,7 @@ public class LuceneBibTexManager extends LuceneResourceManager<BibTex> {
 	/**
 	 * singleton pattern's instantiation method
 	 * 
-	 * @return the {@link LuceneBookmarkManager} instance 
+	 * @return the {@link LuceneBibTexManager} instance 
 	 */
 	public static LuceneBibTexManager getInstance() {
 		if (instance == null) {

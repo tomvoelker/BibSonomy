@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.lucene.database.params.GroupParam;
@@ -17,6 +18,7 @@ import org.bibsonomy.lucene.database.params.GroupTasParam;
 import org.bibsonomy.lucene.database.params.ListParam;
 import org.bibsonomy.lucene.database.params.TasParam;
 import org.bibsonomy.lucene.database.util.LuceneDatabaseSessionFactory;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Resource;
 
 import com.ibatis.common.resources.Resources;
@@ -33,13 +35,14 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * 
  * @param <R> 
  */
-public abstract class LuceneDBGenerateLogic<R extends Resource> implements LuceneDBInterface<R> {
+public abstract class LuceneDBGenerateLogic<R extends Resource> extends AbstractDatabaseManager implements LuceneDBInterface<R> {
 	private static final Log log = LogFactory.getLog(LuceneDBGenerateLogic.class);
 
 	/** path to the ibatis database configuration file */
 	private static final String SQL_MAP_CONFIG = "SqlMapConfig_lucene.xml";
 	
 	/** access to database */
+	@Deprecated // use openSession instead
 	protected final SqlMapClient sqlMap;
 
 	private DBSessionFactory sessionFactory;
@@ -178,5 +181,14 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> implements Lucen
 		}
 		
 		return new HashMap<String,String>();
+	}
+
+	public Date getLatestDate() {
+		return null;
+	}
+	
+	@Override
+	public List<LucenePost<R>> getNewPosts(Date from, Date now) {
+		return null;
 	}
 }

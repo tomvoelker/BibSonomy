@@ -97,6 +97,7 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 		// update the fieldmap
 		this.fieldMap = new HashMap<String,Object>();
 		
+		// TODO: use value entrySet iterator
 		for( String propertyName : propertyMap.keySet() ) {
 			String fieldName       = (String)propertyMap.get(propertyName).get(LuceneBase.CFG_LUCENENAME);
 			Analyzer fieldAnalyzer = (Analyzer)propertyMap.get(propertyName).get(LuceneBase.CFG_ANALYZER);

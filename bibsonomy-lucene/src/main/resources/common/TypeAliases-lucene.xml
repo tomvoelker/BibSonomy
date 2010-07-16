@@ -9,6 +9,7 @@
 	<typeAlias alias="tag"                type="org.bibsonomy.model.Tag" />
 	<typeAlias alias="bookmark"           type="org.bibsonomy.model.Bookmark" />
 	<typeAlias alias="bibtex"             type="org.bibsonomy.model.BibTex" />
+	<typeAlias alias="goldStandardPublication" type="org.bibsonomy.model.GoldStandardPublication" />
 	<typeAlias alias="post"               type="org.bibsonomy.model.Post" />
 	<typeAlias alias="resource"           type="org.bibsonomy.model.Resource" />
 	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
@@ -28,6 +29,7 @@
 	<typeAlias alias="genericParam"       type="org.bibsonomy.lucene.database.params.GenericParam" />
 	<typeAlias alias="bookmarkParam"      type="org.bibsonomy.lucene.database.params.BookmarkParam" />
 	<typeAlias alias="bibtexParam"        type="org.bibsonomy.lucene.database.params.BibTexParam" />
+	<typeAlias alias="goldStandardPublicationParam"        type="org.bibsonomy.lucene.database.params.ResourcesParam" />
 	
 	<!-- Results -->
 	<typeAlias alias="pair"               type="org.bibsonomy.database.common.params.Pair" />

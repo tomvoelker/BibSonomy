@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="BibTexCommon">
-	<resultMap id="bibtex_common" class="bibtex" extends="Common.resource">
+	<resultMap id="publication_common_without_privnote" class="bibtex" extends="Common.resource">
 		<result property="address"        column="address"        javaType="string" />
 		<result property="annote"         column="annote"         javaType="string" />
 		<result property="booktitle"      column="booktitle"      javaType="string" />
@@ -17,7 +17,6 @@
 		<result property="note"           column="note"           javaType="string" />
 		<result property="number"         column="number"         javaType="string" />
 		<result property="organization"   column="organization"   javaType="string" />
-		<result property="privnote"       column="privnote"       javaType="string" />
 		<result property="pages"          column="pages"          javaType="string" />
 		<result property="publisher"      column="publisher"      javaType="string" />
 		<result property="school"         column="school"         javaType="string" />
@@ -33,6 +32,10 @@
 		<result property="editor"         column="editor"         javaType="string" />
 		<result property="year"           column="year"           javaType="string" />
 		<result property="entrytype"      column="entrytype"      javaType="string" />
+	</resultMap>
+
+	<resultMap id="bibtex_common" class="bibtex" extends="publication_common_without_privnote">
+		<result property="privnote"       column="privnote"       javaType="string" />
 	</resultMap>
 	
 	<resultMap id="bibtex" class="bibtex" extends="bibtex_common">

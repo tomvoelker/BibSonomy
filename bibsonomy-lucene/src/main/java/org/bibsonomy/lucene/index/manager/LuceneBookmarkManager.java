@@ -20,7 +20,7 @@ public class LuceneBookmarkManager extends LuceneResourceManager<Bookmark> {
 	/**
 	 * singleton pattern's instantiation method
 	 * 
-	 * @return TODODZ
+	 * @return the {@link LuceneBookmarkManager} instance
 	 */
 	public static LuceneResourceManager<Bookmark> getInstance() {
 		if (instance == null) {

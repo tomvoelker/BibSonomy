@@ -1,14 +1,13 @@
 package org.bibsonomy.lucene.search;
 
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_AUTHOR;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.model.GoldStandardPublication;
 
 /**
@@ -41,12 +40,6 @@ public class LuceneSearchGoldStandardPublication extends LuceneResourceSearch<Go
 		}
 		
 		return searchQuery;
-	}
-	
-	@Override
-	protected QuerySortContainer buildAuthorQuery(String group, String searchTerms, String requestedUserName, String requestedGroupName, List<String> groupMembers, String year, String firstYear, String lastYear, List<String> tagList) {
-		// TODO: remove old code
-		return null;
 	}
 
 	@Override

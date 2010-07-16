@@ -66,6 +66,10 @@
 		FROM log_bookmark
 	</select>
 	
+	<select id="getLastLogGoldStandardPublication" resultClass="date">
+		SELECT MAX(log_date) FROM log_gold_standard_publications
+	</select>
+	
 	<!-- get group ids with corresponding group names --> 
 	<select id="getGroupIDs" resultMap="groupIDs">
 		SELECT `group`, group_name
@@ -271,5 +275,8 @@
 		ORDER BY b2.content_id ASC, t.tas_id DESC
 		LIMIT #limit#
 		 -->
+	</select>
+	<select id="getGoldStandardPublicationForIndex" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count FROM gold_standard_publications b WHERE b.change_date &lt;= #lastDate# LIMIT #limit# OFFSET #offset#
 	</select>
 </sqlMap>

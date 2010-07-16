@@ -29,37 +29,37 @@ import org.bibsonomy.model.User;
  * @version $Id$
  * @param <R> the resource to manage
  */
-public class LuceneResourceManager<R extends Resource> extends LuceneBase {
+public class LuceneResourceManager<R extends Resource> {
 	private static final Log log = LogFactory.getLog(LuceneResourceManager.class);
 
 	/** constant for querying for all posts which have been deleted since the last index update */
-	private static final long QUERY_TIME_OFFSET_MS = 30*1000;
+	protected static final long QUERY_TIME_OFFSET_MS = 30*1000;
 	
 	/** flag indicating whether to update the index or not */
 	private Boolean luceneUpdaterEnabled = true;
 	
 	private boolean useUpdater = false;
 	
-	private int alreadyRunning = 0; // das geht bestimmt irgendwie besser
-	private int maxAlreadyRunningTrys = 20;
+	protected int alreadyRunning = 0; // das geht bestimmt irgendwie besser
+	private final int maxAlreadyRunningTrys = 20;
 
 	/** the resource index */ 
-	private LuceneResourceIndex<R> resourceIndex;
+	protected LuceneResourceIndex<R> resourceIndex;
 
 	/** redundant resource indeces */ 
-	private List<LuceneResourceIndex<R>> resourceIndeces;
+	protected List<LuceneResourceIndex<R>> resourceIndeces;
 	
 	/** the database manager */
-	private LuceneDBInterface<R> dbLogic;
+	protected LuceneDBInterface<R> dbLogic;
 	
 	/** the lucene index searcher */
 	private LuceneResourceSearch<R> searcher;
 	
 	/** converts post model objects to lucene documents */
-	private LuceneResourceConverter<R> resourceConverter;
+	protected LuceneResourceConverter<R> resourceConverter;
 	
 	/** selects current (redundant) index */
-	private int idxSelect;
+	protected int idxSelect;
 
 	/**
 	 * constructor
@@ -75,7 +75,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 * initialize internal data structures
 	 */
 	private void init() {
-		this.luceneUpdaterEnabled = getEnableUpdater();
+		this.luceneUpdaterEnabled = LuceneBase.getEnableUpdater();
 		this.useUpdater           = true;
 	}
 	
@@ -83,8 +83,9 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 * triggers index optimization during next update
 	 */
 	public void optimizeIndex() {
-		if( this.resourceIndex!=null )
+		if( this.resourceIndex!=null ) {
 			this.resourceIndex.optimizeIndex();
+		}
 	}
 	
 	/**
@@ -106,7 +107,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 * 
 	 * @param optimizeindex indicate whether the index should be optimized
 	 */
-	private void updateIndexes()  {
+	protected void updateIndexes()  {
 		synchronized(this) {
 			//----------------------------------------------------------------
 			//  0) initialize variables  
@@ -116,14 +117,14 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 			
 			// current time stamp for storing as 'lastLogDate' in the index
 			// FIXME: get this date from the log_table via 'getContentIdsToDelete'
-			long currentLogDate = System.currentTimeMillis();
+			final long currentLogDate = System.currentTimeMillis();
 			
 			// FIXME: this should be done in the constructor
 			// keeps track of the newest tas_id during last index update 
 			Integer lastTasId = this.resourceIndex.getLastTasId();
 
 			// keeps track of the newest log_date during last index update
-			Long lastLogDate  = this.resourceIndex.getLastLogDate();
+			final Long lastLogDate  = this.resourceIndex.getLastLogDate();
 
 			//----------------------------------------------------------------
 			//  0) flag/unflag spammer  
@@ -133,12 +134,12 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 			//----------------------------------------------------------------
 			//  1) get new posts  
 			//----------------------------------------------------------------
-			List<LucenePost<R>> newPosts = this.dbLogic.getNewPosts(lastTasId);
+			final List<LucenePost<R>> newPosts = this.dbLogic.getNewPosts(lastTasId);
 
 			//----------------------------------------------------------------
 			//  2) get posts to delete  
 			//----------------------------------------------------------------
-			List<Integer> contentIdsToDelete = 
+			final List<Integer> contentIdsToDelete = 
 				this.dbLogic.getContentIdsToDelete(new Date(lastLogDate-QUERY_TIME_OFFSET_MS));
 
 
@@ -146,19 +147,20 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 			//  3) remove posts from 1) & 2) from the index
 			//     and update field 'lastTasId'
 			//----------------------------------------------------------------
-			for( LucenePost<R> post : newPosts ) {
+			for( final LucenePost<R> post : newPosts ) {
 				contentIdsToDelete.add(post.getContentId());
-				if( post.getLastTasId()>lastTasId )
+				if( post.getLastTasId()>lastTasId ) {
 					lastTasId = post.getLastTasId();
+				}
 			}
 			this.resourceIndex.deleteDocumentsInIndex(contentIdsToDelete);
 
 			//----------------------------------------------------------------
 			//  4) add all posts from 1) to the index  
 			//----------------------------------------------------------------
-			for( LucenePost<R> post : newPosts ) {
+			for( final LucenePost<R> post : newPosts ) {
 				post.setLastLogDate(new Date(currentLogDate));
-				Document postDoc = this.resourceConverter.readPost(post);
+				final Document postDoc = this.resourceConverter.readPost(post);
 				this.resourceIndex.insertDocument(postDoc);
 			}
 
@@ -206,8 +208,8 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 		}
 
 		// do the actual work
-		int oldIdxId = this.searcher.getIndexId();
-		int newIdxId = this.resourceIndeces.get(idxSelect).getIndexId();
+		final int oldIdxId = this.searcher.getIndexId();
+		final int newIdxId = this.resourceIndeces.get(idxSelect).getIndexId();
 		log.debug("switching from index "+oldIdxId+" to index "+newIdxId);
 		searcher.reloadIndex(newIdxId);
 		log.debug("reload search index done");
@@ -272,7 +274,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 * reopen index reader - e.g. after the index has changed on the disc
 	 */
 	public void resetIndexReader() {
-		for( LuceneResourceIndex<R> index : this.resourceIndeces ) {
+		for( final LuceneResourceIndex<R> index : this.resourceIndeces ) {
 			index.reset();
 		}
 	}
@@ -306,20 +308,20 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 */
 	protected void updatePredictions() {
 		// keeps track of the newest log_date during last index update
-		Long lastLogDate  = this.resourceIndex.getLastLogDate()-QUERY_TIME_OFFSET_MS;
+		final Long lastLogDate  = this.resourceIndex.getLastLogDate()-QUERY_TIME_OFFSET_MS;
 		
 		// get date of last index update
-		Date fromDate = new Date(lastLogDate);
+		final Date fromDate = new Date(lastLogDate);
 		
 		// get users which where flagged as spammers since then 
-		List<String> lostSpammer    = this.dbLogic.getSpamPredictionForTimeRange(fromDate);
+		final List<String> lostSpammer    = this.dbLogic.getSpamPredictionForTimeRange(fromDate);
 		
 		// get users which where unflagged since then 
-		List<String> lostNonSpammer = this.dbLogic.getNonSpamPredictionForTimeRange(fromDate);
+		final List<String> lostNonSpammer = this.dbLogic.getNonSpamPredictionForTimeRange(fromDate);
 		
 		// flag lost spammers in index
-		User transientUser = new User();
-		for( String spammer : lostSpammer ) {
+		final User transientUser = new User();
+		for( final String spammer : lostSpammer ) {
 			transientUser.setName(spammer);
 			transientUser.setPrediction(1);
 			transientUser.setSpammer(true);
@@ -327,7 +329,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 		}
 
 		// unflag lost nonspammers in index
-		for( String spammer : lostNonSpammer ) {
+		for( final String spammer : lostNonSpammer ) {
 			transientUser.setName(spammer);
 			transientUser.setPrediction(0);
 			transientUser.setSpammer(false);
@@ -343,11 +345,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 		switch( user.getPrediction() ) {
 		case 0:
 			log.debug("unflag non-spammer");
-			List<LucenePost<R>> userPosts = this.getDbLogic().getPostsForUser(
-					user.getName(), user.getName(), 
-					HashID.INTER_HASH, 
-					GroupID.PUBLIC.getId(), new LinkedList<Integer>(), 
-					Integer.MAX_VALUE, 0);
+			final List<LucenePost<R>> userPosts = this.getDbLogic().getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, GroupID.PUBLIC.getId(), new LinkedList<Integer>(),  Integer.MAX_VALUE, 0);
 			unflagEntryAsSpam(userPosts);
 			this.resourceIndex.unFlagUser(user.getName());
 			break;
@@ -363,10 +361,10 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 *  
 	 * @param userPosts all of the user's posts - these will be inserted into the index
 	 */
-	private void unflagEntryAsSpam(List<LucenePost<R>> userPosts) {
+	private void unflagEntryAsSpam(final List<LucenePost<R>> userPosts) {
 		//  insert new records into index
 		if( (userPosts!=null) && (userPosts.size()>0) ) {
-			for (Post<R> post : userPosts ) {
+			for (final Post<R> post : userPosts ) {
 				// cache possible pre existing duplicate for deletion 
 				resourceIndex.deleteDocumentForContentId(post.getContentId());
 				// cache document for writing 
@@ -385,7 +383,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	/**
 	 * @param dbLogic the dbLogic to set
 	 */
-	public void setDbLogic(LuceneDBInterface<R> dbLogic) {
+	public void setDbLogic(final LuceneDBInterface<R> dbLogic) {
 		this.dbLogic = dbLogic;
 	}
 
@@ -399,7 +397,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	/**
 	 * @param searcher the searcher to set
 	 */
-	public void setSearcher(LuceneResourceSearch<R> searcher) {
+	public void setSearcher(final LuceneResourceSearch<R> searcher) {
 		this.searcher = searcher;
 	}
 
@@ -413,7 +411,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	/**
 	 * @param resourceConverter the resourceConverter to set
 	 */
-	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
+	public void setResourceConverter(final LuceneResourceConverter<R> resourceConverter) {
 		this.resourceConverter = resourceConverter;
 	}
 
@@ -427,7 +425,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	/**
 	 * @param resourceIndeces the resourceIndeces to set
 	 */
-	public void setResourceIndeces(List<LuceneResourceIndex<R>> resourceIndeces) {
+	public void setResourceIndeces(final List<LuceneResourceIndex<R>> resourceIndeces) {
 		this.resourceIndeces = resourceIndeces;
 	}
 }

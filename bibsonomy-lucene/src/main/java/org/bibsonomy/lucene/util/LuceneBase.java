@@ -60,11 +60,6 @@ public class LuceneBase {
 	
 	/** context variable containing lucene's configuration */
 	public static final String CONTEXT_CONFIG_BEAN = "luceneConfig";
-		
-	/** name of the property file which configures lucene */
-	public static final String PROPERTYFILENAME    = "lucene.properties";
-	/** TODO: improve documentation */
-	public static final String LUCENE_CONTEXT_XML  = "LuceneIndexConfig.xml";
 
 	// FIXME: configure these fieldnames via spring
 	public static final String FLD_MERGEDFIELDS  = "mergedfields";
@@ -81,6 +76,7 @@ public class LuceneBase {
 	public static final String FLD_TITLE         = "title";	
 	public static final String FLD_LAST_TAS_ID   = "last_tas_id";
 	public static final String FLD_LAST_LOG_DATE = "last_log_date";
+	public static final String FLD_LAST_DATE = "last_date";
 	public static final String FLD_USER_NAME     = "user_name";
 	public static final String FLD_CONTENT_ID    = "content_id";
 	
@@ -122,6 +118,7 @@ public class LuceneBase {
 			// db driver name
 			if( present(config.getDbDriverName()) )
 				dbDriverName = config.getDbDriverName();
+			
 			// maximum field length in the lucene index
 			if( present(config.getMaximumFieldLength())) {
 				String mflIn = config.getMaximumFieldLength();

@@ -400,5 +400,16 @@ WHERE t.change_date > '2009-11-10 01:08:23'
   AND content_type=2
 GROUP BY t.content_id
  -->
+	<select id="getLatestDateGoldStandardPublication" resultClass="date">
+		SELECT MAX(date) FROM gold_standard_publications;
+	</select>
+	
+	<select id="getNewPostsGoldStandardPublication" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count FROM gold_standard_publications b WHERE b.change_date &gt; #first# AND b.change_date &lt;= #second#
+	</select>
+	
+	<select id="getGoldStandardPublicationPostsToDelete" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count FROM log_gold_standard_publications b WHERE b.log_date &gt; #first# AND b.log_date &lt;= #second#
+	</select>
 		
 </sqlMap>

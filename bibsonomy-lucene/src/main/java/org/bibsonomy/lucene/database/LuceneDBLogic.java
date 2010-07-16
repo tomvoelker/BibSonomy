@@ -3,13 +3,13 @@ package org.bibsonomy.lucene.database;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.Pair;
 import org.bibsonomy.lucene.database.params.ResourcesParam;
 import org.bibsonomy.lucene.param.LucenePost;
@@ -272,41 +272,16 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getPostsForTimeRange(java.util.Date, java.util.Date)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	@Deprecated
-	public List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate) {
-		final Pair<Date,Date> param = new Pair<Date,Date>();
-		param.setFirst(fromDate);
-		param.setSecond(toDate);
-		
-		List<HashMap<String,Object>> retVal = null;
-		try {
-			retVal = this.sqlMap.queryForList("get" + this.getResourceName() + "PostsForTimeRange", param);
-		} catch (SQLException e) {
-			log.error("Error fetching " + this.getResourceName() + " for given time range", e);
-		}
-		
-		log.debug("retrieveRecordsFromDatabase: " + ((retVal == null) ? -1 : retVal.size()));
-		return retVal;
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getLastLogDate()
 	 */
 	@Override
 	public Date getLastLogDate() {
-		Date retVal = null;
+		final DBSession session = this.openSession();
 		try {
-			retVal = (Date)sqlMap.queryForObject("getLastLog" + this.getResourceName());
-		} catch (SQLException e) {
-			log.error("Error determining last log date.", e);
+			return this.queryForObject("getLastLog" + this.getResourceName(), Date.class, session);
+		} finally {
+			session.close();
 		}
-		
-		return retVal != null ? retVal : new Date(System.currentTimeMillis());
 	}
 
 	/*
@@ -383,6 +358,33 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		}
 		
 		return new LinkedList<LucenePost<R>>();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<LucenePost<R>> getPosts(int offset, int limit, Date date) {
+		final DBSession session = this.openSession();
+		final ResourcesParam<R> param = this.getResourcesParam();
+		param.setOffset(offset);
+		param.setLimit(limit);
+		param.setLastDate(date);
+		try {
+			return this.queryForList("get" + this.getResourceName() + "ForIndex", param, session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<LucenePost<R>> getPostsToDelete(Date lastLogDate, Date now) {
+		final Pair<Date, Date> param = new Pair<Date, Date>(lastLogDate, now);
+		final DBSession session = this.openSession();
+		try {
+			return this.queryForList("get" + this.getResourceName() + "PostsToDelete", param, session);			
+		} finally {
+			session.close();
+		}
 	}
 	
 	protected abstract String getResourceName();

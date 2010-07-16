@@ -6,8 +6,7 @@
 	<!--+
         | BibTex property mapping configuration
         +-->
-	<bean id="bibTexPropertyMap" parent="postPropertyMap"
-		class="org.springframework.beans.factory.config.MapFactoryBean">
+	<bean id="bibTexPropertyMap" parent="postPropertyMap" class="org.springframework.beans.factory.config.MapFactoryBean">
 		<property name="sourceMap">
 			<map merge="true">
 				<entry key="resource.address">
