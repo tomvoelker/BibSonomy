@@ -10,6 +10,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
@@ -49,7 +50,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		final List<String> requTags = command.getRequestedTagsList();
 
 		//check if system-tag "sys:relevantFor:" exists in taglist
-		final boolean isRelevantFor = SystemTagsUtil.containsSystemTag(requTags, SystemTagsUtil.RELEVANT_FOR, true);
+		final boolean isRelevantFor = SystemTagsUtil.containsSystemTag(requTags, RelevantForSystemTag.NAME);
 		
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags , null, Integer.MAX_VALUE, null);

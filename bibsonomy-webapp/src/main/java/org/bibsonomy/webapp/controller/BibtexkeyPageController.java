@@ -108,7 +108,7 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 	 */
 	private String extractSystemTagUser(List<String> sysTags) {
 		for (String sysTag : sysTags) {
-			if (SystemTagsUtil.isSystemTagWithPrefix(sysTag, UserSystemTag.NAME)) {
+			if (SystemTagsUtil.isSystemTag(sysTag, UserSystemTag.NAME)) {
 				return SystemTagsUtil.extractArgument(sysTag);
 			}
 		}
