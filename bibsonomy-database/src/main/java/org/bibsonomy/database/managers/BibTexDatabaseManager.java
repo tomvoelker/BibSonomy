@@ -220,7 +220,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				case POSTS_WITH_DOCUMENTS:
 					return this.postList("getBibTexForGroupByTagWithPDF", param, session);
 				case JUST_POSTS:
-					return super.getPostsByTagNamesForUser(param, session);
+					return super.getPostsForGroupByTag(param, session);
 				default:
 					throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
