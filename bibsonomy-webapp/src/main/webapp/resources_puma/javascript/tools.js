@@ -40,7 +40,7 @@ function pumainit(){
 	
 	$(".sidebarBoxInner").corner("round 8px").parent().css('padding', '3px').corner("round 8px");
 	
-	$("#helpbox").toggle("slow");
+	$("#helpbox").toggle();
 
 	// help side box toggle
 	$("#nice_tnav").prepend('<div id="navitogglehelp" class="togglehelp">?</div>');
@@ -50,9 +50,9 @@ function pumainit(){
 			if (($("#outer").attr("style") != null) || ($("#sidebarroundcorner").css("display")=="none")){
 				$("#outer").removeAttr("style");
 				$("#sidebarroundcorner").css("display", "block");
-				$("#helpbox").show("slow");
+				$("#helpbox").show();
 			} else {
-				$("#helpbox").hide("slow");
+				$("#helpbox").hide();
 				$("#sidebarroundcorner").css("display", "none");
 				$("#outer").attr("style", $("#outer").attr("oldstyle"));
 			}
