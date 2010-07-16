@@ -58,10 +58,14 @@
 
 	<!--+
 	    |MARKUP SYSTEMTAGS
-	   
-	<util:set id="markUpSystemTagSet" set-class="java.util.HashSet" value-type="java.lang.String">
-		<value>myown</value>
-		<value>relevantfor</value>
-	</util:set>
 	  +-->	  
+	<util:set id="markUpSystemTagSet" set-class="java.util.HashSet">
+		<ref bean="relevantForTag"/>
+	</util:set>
+	
+	<!--+
+	    | beans for the markUp systemTags
+	    +-->
+	<bean id="relevantForTag" class="org.bibsonomy.database.systemstags.markup.RelevantForSystemTag"/>
+
 </beans>

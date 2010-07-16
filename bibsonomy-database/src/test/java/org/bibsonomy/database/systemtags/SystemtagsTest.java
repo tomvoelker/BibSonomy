@@ -81,12 +81,12 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 	public void testSystemTagFactory() {
 		// test initialization of systemTag collections (in constructor of SystemTagFactory)
 		SystemTagFactory sysTagFactory = SystemTagFactory.getInstance();
-		assertNotNull(sysTagFactory.getExecutableSystemTag("for"));
-		assertTrue(sysTagFactory.isExecutableSystemTag("send"));
-		assertTrue(sysTagFactory.isSearchSystemTag("author"));
-		assertTrue(sysTagFactory.isSearchSystemTag("entrytype"));
-		assertFalse(sysTagFactory.isExecutableSystemTag("author"));
-		assertFalse(sysTagFactory.isSearchSystemTag("send"));		
+		assertNotNull(sysTagFactory.getExecutableSystemTag("for:foogroup"));
+		assertTrue(sysTagFactory.isExecutableSystemTag("send:sdo"));
+		assertTrue(sysTagFactory.isSearchSystemTag("sys:author:sdo"));
+		assertTrue(sysTagFactory.isSearchSystemTag("sys:entrytype:article"));
+		assertFalse(sysTagFactory.isExecutableSystemTag("sys:author:sdo"));
+		assertFalse(sysTagFactory.isExecutableSystemTag("send"));		
 	}
 	
 

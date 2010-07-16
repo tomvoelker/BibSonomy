@@ -20,4 +20,11 @@ public interface SystemTag {
 	 * @return the name
 	 */
 	public String getName();
+	
+	/**
+	 * Returns true if the tagName belongs to an instance of the SystemTag
+	 * @param tagName
+	 * @return
+	 */
+	public Boolean isInstance(String tagName);
 }

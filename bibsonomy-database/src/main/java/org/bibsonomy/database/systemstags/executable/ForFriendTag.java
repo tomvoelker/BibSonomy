@@ -1,5 +1,7 @@
 package org.bibsonomy.database.systemstags.executable;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
@@ -10,6 +12,7 @@ import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -23,106 +26,117 @@ import org.bibsonomy.model.Tag;
  * @version $Id$
  */
 public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
-	
-	private static final String NAME = "send";
-	
-	private Tag tag; // the original (regular) tag that this systemTag was created from
-	
-	
-	@Override
-	public ForFriendTag newInstance() {
-		return new ForFriendTag();
-	}
-	
-	@Override
-	public String getName() {
-		return NAME;
-	}
-	
-	/**
-	 * @param tag the tag to set
+
+    private static final String NAME = "send";
+
+    private Tag tag; // the original (regular) tag that this systemTag was created from
+
+
+    @Override
+    public ForFriendTag newInstance() {
+	return new ForFriendTag();
+    }
+
+    @Override
+    public String getName() {
+	return NAME;
+    }
+
+    /**
+     * @param tag the tag to set
+     */
+    public void setTag(Tag tag) {
+	this.tag = tag;
+    }
+
+    @Override
+    public <T extends Resource> void performBeforeCreate(final Post<T> post, final DBSession session) {
+	// nothing is performed
+    }
+
+    @Override
+    public <T extends Resource> void performBeforeUpdate(Post<T> newPost, final Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
+	// nothing is performed
+    }
+
+    @Override
+    public <T extends Resource> void performAfterUpdate(Post<T> newPost, final Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
+	// do exactly the same as in a Creation of a post (i. e. ignore which operation)
+	this.performAfterCreate(newPost, session);
+    }
+
+
+    @Override
+    public <T extends Resource> void performAfterCreate(final Post<T> post, final DBSession session) {
+	log.debug("performing after access");
+	String receiver = this.getArgument().toLowerCase();
+	String sender = post.getUser().getName();
+	String intraHash = post.getResource().getIntraHash();
+	/*
+	 * Check permissions
 	 */
-	public void setTag(Tag tag) {
-		this.tag = tag;
+	if (!this.hasPermissions(sender, receiver, intraHash, session)) {
+	    // sender is not allowed to use this tag, errorMessages were added
+	    return;
 	}
-
-	@Override
-	public <T extends Resource> void performBeforeCreate(final Post<T> post, final DBSession session) {
-		// nothing is performed
-	}
-
-	@Override
-	public <T extends Resource> void performBeforeUpdate(Post<T> newPost, final Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
-		// nothing is performed
-	}
-
-	@Override
-	public <T extends Resource> void performAfterUpdate(Post<T> newPost, final Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
-		// do exactly the same as in a Creation of a post (i. e. ignore which operation)
-		this.performAfterCreate(newPost, session);
-	}
-
-
-	@Override
-	public <T extends Resource> void performAfterCreate(final Post<T> post, final DBSession session) {
-		log.debug("performing after access");
-		String receiver = this.getArgument().toLowerCase();
-		String sender = post.getUser().getName();
-		String intraHash = post.getResource().getIntraHash();
-		/*
-		 * Check permissions
-		 */
-		if (!this.hasPermissions(sender, receiver, intraHash, session)) {
-			// sender is not allowed to use this tag, errorMessages were added
-			return;
-		}
-		log.debug("permissions granted");
-		/*
-		 * Rename forFriendTag from send:userName to sent:userName
-		 * We deactivate the systemTag to avoid sending the Message again and again each time the sender updates his post
-		 */
-		final TagDatabaseManager tagDb = TagDatabaseManager.getInstance();
-		tagDb.deleteTags(post, session);		// 1. delete all tags from the database (will be replaced by new ones)
-		this.tag.setName("from:" + sender);	// 2. rename this tag for the receiver (store senderName)
-		try {
-			InboxDatabaseManager.getInstance().createInboxMessage(sender, receiver, post, session); // 3. store the inboxMessage with tag from:senderName 
-			log.debug("message was created");
-			this.tag.setName("sent:" + receiver);	// 4. rename this tag for the sender (store receiverName)
-		} catch(UnsupportedResourceTypeException urte) {
-			session.addError(intraHash, new UnspecifiedErrorMessage(urte));
-			log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);
-		}
-		tagDb.insertTags(post, session);		// 5. store the tags for the sender with the confirmation tag: sent:userName
-	}
-
-
-	/**
-	 * Checks the preconditions to this tags usage, adds errorMessages
-	 * using the tag is allowed, 
-	 * - if the sender is in the friends list of the receiver or 
-	 * - if a group exists that both sender and receiver are a member of
-	 * @param intraHash
-	 * @param session
-	 * @param sender
-	 * @param receiver
-	 * @return true iff sender is allowed to use the tag
+	log.debug("permissions granted");
+	/*
+	 * Rename forFriendTag from send:userName to sent:userName
+	 * We deactivate the systemTag to avoid sending the Message again and again each time the sender updates his post
 	 */
-	private boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
-		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-		final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
-		if ( !( generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size()>0 ) ) {
-			final String defaultMessage = this.getName()+ ": "  + receiver + " did not add you as a friend and is not a member of any of your groups.";
-			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.notFriend", new String[]{receiver}));
-			log.warn("Added SystemTagErrorMessage (send: not friend nor common group) for post " + intraHash);
-			return false;
-		}
-		if (sender.equals(receiver)) {
-			final String defaultMessage = this.getName()+": You can not send messages to yourself.";
-			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.self", new String[]{receiver}));
-			log.warn("Added SystemTagErrorMessage (send: sender is receiver) for post " + intraHash);
-			return false;
-		}
-		return true;
+	final TagDatabaseManager tagDb = TagDatabaseManager.getInstance();
+	tagDb.deleteTags(post, session);		// 1. delete all tags from the database (will be replaced by new ones)
+	this.tag.setName("from:" + sender);	// 2. rename this tag for the receiver (store senderName)
+	try {
+	    InboxDatabaseManager.getInstance().createInboxMessage(sender, receiver, post, session); // 3. store the inboxMessage with tag from:senderName 
+	    log.debug("message was created");
+	    this.tag.setName("sent:" + receiver);	// 4. rename this tag for the sender (store receiverName)
+	} catch(UnsupportedResourceTypeException urte) {
+	    session.addError(intraHash, new UnspecifiedErrorMessage(urte));
+	    log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);
 	}
+	tagDb.insertTags(post, session);		// 5. store the tags for the sender with the confirmation tag: sent:userName
+    }
+
+
+    /**
+     * Checks the preconditions to this tags usage, adds errorMessages
+     * using the tag is allowed, 
+     * - if the sender is in the friends list of the receiver or 
+     * - if a group exists that both sender and receiver are a member of
+     * @param intraHash
+     * @param session
+     * @param sender
+     * @param receiver
+     * @return true iff sender is allowed to use the tag
+     */
+    private boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
+	final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+	final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
+	if ( !( generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size()>0 ) ) {
+	    final String defaultMessage = this.getName()+ ": "  + receiver + " did not add you as a friend and is not a member of any of your groups.";
+	    session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.notFriend", new String[]{receiver}));
+	    log.warn("Added SystemTagErrorMessage (send: not friend nor common group) for post " + intraHash);
+	    return false;
+	}
+	if (sender.equals(receiver)) {
+	    final String defaultMessage = this.getName()+": You can not send messages to yourself.";
+	    session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.self", new String[]{receiver}));
+	    log.warn("Added SystemTagErrorMessage (send: sender is receiver) for post " + intraHash);
+	    return false;
+	}
+	return true;
+    }
+
+    /*
+     * We overwrite this method because we want to interpret also the send tag 
+     * without prefix (sys/system) as systemTag
+     * @see org.bibsonomy.database.systemstags.AbstractSystemTagImpl#isInstance(java.lang.String)
+     */
+    @Override
+    public Boolean isInstance(String tagName) {
+	// the send tag must have an argument, the prefix is not required
+	return present(SystemTagsUtil.extractArgument(tagName));
+    }
 
 }
