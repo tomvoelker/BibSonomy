@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.view;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +53,8 @@ public class ExportLayoutView extends AbstractView {
 			 */
 			final Map<String, JabrefLayout> layoutMap = command.getLayoutMap();
 			
-			for (final JabrefLayout layout : layoutMap.values()) {
+			for (final Entry<String, JabrefLayout> layoutEntry : layoutMap.entrySet()) {
+				final JabrefLayout layout = layoutEntry.getValue();
 				/*
 				 * we return only public layouts
 				 */
@@ -60,15 +62,7 @@ public class ExportLayoutView extends AbstractView {
 					jsonLayouts.put(JSONObject.fromObject(layout));
 				}
 			}
-			/* TODO remove?!
-			for (final String layoutName : layoutMap.keySet()){	
-				
-				final JabrefLayout layout = layoutMap.get(layoutName);
-				if (layout.isPublicLayout()){
-					jsonLayouts.put(JSONObject.fromObject(layout));
-				}
-			}*/
-
+			
 			final JSONObject json = new JSONObject();
 			json.put("layouts", jsonLayouts);
 			
