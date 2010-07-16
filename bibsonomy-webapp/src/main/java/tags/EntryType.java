@@ -8,8 +8,6 @@ import java.net.URLEncoder;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.bibsonomy.model.util.BibTexUtils;
-
 /**
  * Adaption of SWRC scheme types regarding user given entry types. E.g.: Mapping
  * article --> Article
@@ -21,9 +19,6 @@ import org.bibsonomy.model.util.BibTexUtils;
 public class EntryType extends TagSupport {
 	private static final long serialVersionUID = 234345234589762349l;
 	
-	/** Definition of adapted types @see {@link BibTexUtils#ENTRYTYPES}**/	
-	private static String [] mappedEntryNames = {"Article", "Book", "Booklet", "Misc", "Misc", "InBook", "InCollection", "InProceedings", "Manual", "MasterThesis", "Misc", "Misc", "PhDThesis", "Misc", "Misc", "Proceedings", "Misc", "TechnicalReport", "Unpublished"};
-
 	private String value;
 	
 	/**
@@ -40,13 +35,13 @@ public class EntryType extends TagSupport {
 				/* Comparison with current entrytype value */
 				if (ENTRYTYPES[i].equals(value)) {
 					/* match found -> print and stop loop */
-					pageContext.getOut().print(URLEncoder.encode(mappedEntryNames[i], "UTF-8"));
+					pageContext.getOut().print(URLEncoder.encode(Functions.swrcEntryTypes[i], "UTF-8"));
 					return SKIP_BODY;
 				}
 			}
 			
 			/* default value is misc */
-			pageContext.getOut().print(URLEncoder.encode(mappedEntryNames[8], "UTF-8"));  
+			pageContext.getOut().print(URLEncoder.encode(Functions.swrcEntryTypes[11], "UTF-8"));  
 			return SKIP_BODY;
 		} catch (IOException ioe) {
 			throw new JspException("Error: IOException while writing to client" + ioe.getMessage());
