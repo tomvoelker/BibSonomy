@@ -33,7 +33,7 @@ public final class JNDIBinder {
 	private static final Log log = LogFactory.getLog(JNDIBinder.class);
 	
 	/**
-	 * TODO
+	 * jdbc url start
 	 */
 	public static final String JDBC_URL_START = "jdbc:mysql://";
 
@@ -72,7 +72,9 @@ public final class JNDIBinder {
 	}	
 
 	/**
-	 * TODO
+	 * binds all database property files (ending with _database.properties and in the root class path) to the context before _
+	 * 
+	 * e.g. foobar_database.properties is bind to the context "foobar"
 	 */
 	public static void bind() {
 		// get all propertyFile names
