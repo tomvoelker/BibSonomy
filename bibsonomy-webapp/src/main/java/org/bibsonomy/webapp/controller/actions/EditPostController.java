@@ -131,9 +131,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	@Override
 	public View workOn(final COMMAND command) {
 		final RequestWrapperContext context = command.getContext();
-		/*
-		 * TODO: i18n
-		 */
 		command.setPageTitle("edit a post"); // TODO: i18n
 		/*
 		 * We store the referer in the command, to send the user back to the 
@@ -175,7 +172,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		final String hash = command.getHash();
 		final String user = command.getUser();
 		if (present(hash)) {
-			// the user can be empty => goldstandard
+			// the user can be empty => gold standard
 			final Post<RESOURCE> post = this.getCopyPost(loginUser, hash, user);
 			
 			if (!present(post)) {
@@ -271,7 +268,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 */
 		final List<?> dbPosts = logic.getPosts((Class<? extends Resource>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, 0, Integer.MAX_VALUE, null);
 		if (present(dbPosts)) {
-			for (final Object dbPost: dbPosts) {
+			for (final Object dbPost : dbPosts) {
 				final Post<RESOURCE> castedDbPost = (Post<RESOURCE>) dbPost;
 				/*
 				 * check, if the post is owned by the user whose post we want to copy.
