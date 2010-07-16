@@ -19,11 +19,15 @@ BibTeX output for bookmarks
 	<c:set var="bookmark" value="${post.resource}"/>
   
 <jsp:text>
-@misc{${mtl:getHostName(bookmark.url)},
-   title    = {${bookmark.title}}, 
-   url      = {\url{${bookmark.url}}},
-   biburl   = {${projectHome}url/${bookmark.intraHash}/${post.user['name']}},
-   keywords = {${mtl:toTagString(post.tags)}}
+@electronic{${mtl:getHostName(bookmark.url)},
+   title       = {${bookmark.title}}, 
+   url         = {${bookmark.url}},
+   biburl      = {${projectHome}url/${bookmark.intraHash}/${post.user['name']}},
+   keywords    = {${mtl:toTagString(post.tags)}},
+   added-at    = {${post.date}},
+   description = {${post.description}},
+   interhash   = {${bookmark.interHash}}, 
+   intrahash   = {${bookmark.intraHash}}
 }
 </jsp:text>
   
