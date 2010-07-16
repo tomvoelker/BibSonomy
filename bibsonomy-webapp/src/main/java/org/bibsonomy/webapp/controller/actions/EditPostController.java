@@ -25,6 +25,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -280,7 +281,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		}
 		
 		throw new ResourceNotFoundException(hash);
-	}
+	}	
 	
 	protected abstract void workOnCommand(final COMMAND command, final User loginUser);
 
@@ -819,7 +820,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		final Iterator<Tag> iterator = tags.iterator();
 		while (iterator.hasNext()) {
 			final String name = iterator.next().getName();
-			if (SystemTagsUtil.isSystemTagWithPrefix(name, SystemTagsUtil.RELEVANT_FOR)) {
+			if (SystemTagsUtil.isSystemTag(name, RelevantForSystemTag.NAME)) {
 				relevantGroups.add(SystemTagsUtil.extractArgument(name));
 				/*
 				 * removing the tag from the post such that it is not shown in
@@ -850,7 +851,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 				 * ignore groups the user is not a member of
 				 */
 				if (groups.contains(new Group(relevantGroup))) {
-					tags.add(new Tag(SystemTagsUtil.buildSystemTagString(SystemTagsUtil.RELEVANT_FOR, relevantGroup)));
+					tags.add(new Tag(SystemTagsUtil.buildSystemTagString(RelevantForSystemTag.NAME, relevantGroup)));
 				} else {
 					log.info("ignored relevantFor group '" + relevantGroup + "' because user is not member of it");
 				}
