@@ -26,12 +26,7 @@
 			    	<form:label path="selection" cssClass="fsLabel"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</form:label>
 			    	<form:textarea path="selection" cssClass="fsInput" rows="10"/>
 				</div>
-				
-				<div class="fsRow">
-			    	<form:label cssClass="fsLabel" path="description"><fmt:message key="post.resource.description" />*</form:label>
-					<form:input cssClass="fsInput" path="description"/> 
-  				</div>
-             
+				             
   				<div class="fsLabel"><!--  --></div>
     			<post:groupBox groups="${command.context.loginUser.groups}"/>
 
