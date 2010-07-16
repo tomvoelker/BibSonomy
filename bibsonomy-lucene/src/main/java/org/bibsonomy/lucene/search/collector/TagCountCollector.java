@@ -1,5 +1,6 @@
 package org.bibsonomy.lucene.search.collector;
 
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_TAS;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
@@ -31,12 +32,12 @@ import org.bibsonomy.model.Tag;
  */
 public class TagCountCollector extends Collector {
 	private static final Log log = LogFactory.getLog(TagCountCollector.class);
-
-	private static final String FLD_TAS = "tas";
+	
 	private static final String CFG_LIST_DELIMITER = " ";
 	
 	private Map<Integer,IndexReader> docToReaderMap;
 	private IndexReader lastReader = null;
+	
 	@SuppressWarnings("unused")
 	// TODO: REMOVE ME?
 	private int lastDocBase = 0;
@@ -85,19 +86,20 @@ public class TagCountCollector extends Collector {
 		Map<String,Integer> tagCounter = new HashMap<String,Integer>();
 		
 		log.debug("Start extracting tags from index...");
-		List<Tag> retVal = new LinkedList<Tag>();
-		for( Integer docId : docToReaderMap.keySet() ) {
+		List<Tag> tags = new LinkedList<Tag>();
+		for (Integer docId : docToReaderMap.keySet()) {
 			try {
 				FieldSelector tasSelector = new MapFieldSelector(FLD_TAS); 
 				Document doc = docToReaderMap.get(docId).document(docId, tasSelector);
-				String tags = doc.get(FLD_TAS);
-				if( present(tags) ) {
-					for(String tag : tags.split(CFG_LIST_DELIMITER)) {
+				String tagsString = doc.get(FLD_TAS);
+				if (present(tagsString)) {
+					for (String tag : tagsString.split(CFG_LIST_DELIMITER)) {
 						Integer oldCnt = tagCounter.get(tag);
-						if( !present(oldCnt) )
-							oldCnt=1;
-						else
-							oldCnt+=1;
+						if (!present(oldCnt) ) {
+							oldCnt = 1;
+						} else {
+							oldCnt += 1;
+						}
 						tagCounter.put(tag, oldCnt);
 					}
 				}
@@ -109,17 +111,15 @@ public class TagCountCollector extends Collector {
 		log.debug("Done extracting tags from index...");
 		
 		// extract all tags
-		for( Map.Entry<String,Integer> entry : tagCounter.entrySet() ) {
-			Tag transientTag = new Tag();
+		for (Map.Entry<String,Integer> entry : tagCounter.entrySet()) {
+			final Tag transientTag = new Tag();
 			transientTag.setName(entry.getKey());
 			transientTag.setUsercount(entry.getValue());
-			// FIXME: we set user==global count
-			transientTag.setGlobalcount(entry.getValue());
-			retVal.add(transientTag);
+			transientTag.setGlobalcount(entry.getValue()); // FIXME: we set user==global count
+			tags.add(transientTag);
 		}
 		log.debug("Done converting tag list");
-
-		// all done.
-		return retVal;
+		
+		return tags;
 	}
 }

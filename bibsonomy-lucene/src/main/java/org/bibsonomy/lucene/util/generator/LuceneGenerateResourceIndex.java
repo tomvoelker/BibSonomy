@@ -54,7 +54,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	private IndexWriter.MaxFieldLength mfl;
 	
 	/** writes the bookmark index */
-	private IndexWriter indexWriter;
+	protected IndexWriter indexWriter;
 
 	/** default analyzer */
 	private Analyzer analyzer = null;
@@ -77,6 +77,13 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	private void init() {
 		// initialize run time configuration
 		LuceneBase.initRuntimeConfiguration();
+		
+		// load the db drivers
+		try {
+			Class.forName(LuceneBase.getDbDriverName());
+		} catch( Exception e ) {
+			log.error("Error loading the mysql driver. Please check, that the mysql connector library is available. ["+e.getMessage()+"]");
+		}
 		
 		// 1) index files
 		this.luceneResourceIndexPath = LuceneBase.getIndexBasePath() + CFG_LUCENE_INDEX_PREFIX + getResourceName();//props.getProperty(LUCENE_INDEX_PATH_PREFIX + getResourceName());
@@ -110,6 +117,10 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 
 		// generate index
 		createIndexFromDatabase();
+		
+		// create redundant indeces
+		log.info("Creating "+ LuceneBase.getRedundantCnt() + " redundant indeces.");
+		this.copyRedundantIndeces();
 	}
 	
 	/**
@@ -122,7 +133,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	public void createEmptyIndex() throws CorruptIndexException, LockObtainFailedException, IOException {
 		// create index, possibly overwriting existing index files
 		log.info("Creating empty lucene index...");
-		Directory indexDirectory = FSDirectory.open(new File(this.luceneResourceIndexPath+CFG_INDEX_ID_DELIMITER+"0"));
+		Directory indexDirectory = FSDirectory.open(new File(this.luceneResourceIndexPath + CFG_INDEX_ID_DELIMITER + "0"));
 		indexWriter  = new IndexWriter(indexDirectory, getAnalyzer(), true, mfl); 
 	}
 	
@@ -139,15 +150,14 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 		setUp();
 		
 		// number of post entries
-		log.info("Number of post entries: "+this.dbLogic.getNumberOfPosts());
+		// TODO: a database query only for logging?! isn't it i+is?
+//		log.info("Number of post entries: "+  this.dbLogic.getNumberOfPosts());
 		
 		// initialize variables
-		Integer lastTasId = this.dbLogic.getLastTasId();
-		Date lastLogDate  = this.dbLogic.getLastLogDate();
-
-		//
+		final Integer lastTasId = this.dbLogic.getLastTasId();
+		final Date lastLogDate  = this.dbLogic.getLastLogDate();
+		
 		// get all relevant bookmarks from bookmark table
-		//
 		int i    = 0;		// number of evaluated entries 
 		int is   = 0;		// number of spam entries 
 
@@ -156,12 +166,9 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 		// read block wise all posts
 		List<LucenePost<R>> postList = null;
 		int skip = 0;
-		int max=SQL_BLOCKSIZE;
-		boolean toRead = true;
-		while( toRead ) {
-			postList = this.dbLogic.getPostEntries(skip, max);
-			toRead  = (postList.size()==SQL_BLOCKSIZE);
-			skip += postList.size();
+		do {
+			postList = this.dbLogic.getPostEntries(skip, SQL_BLOCKSIZE);
+			skip += postList.size(); // TODO: += SQL_BLOCKSIZE?!
 			log.info("Read " + skip + " entries.");
 
 			// cycle through all posts of currently read block
@@ -169,14 +176,13 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 				// update management fields
 				postEntry.setLastLogDate(lastLogDate);
 				postEntry.setLastTasId(lastTasId);
-				fillPost(postEntry);
 				
 				// create index document from post model
-				Document post = this.resourceConverter.readPost(postEntry);
+				final Document post = this.resourceConverter.readPost(postEntry);
 
 				// add (non-spam) document to index
 				// FIXME: is this check necessary?
-				if( isSpammer(postEntry) ) {
+				if( isNotSpammer(postEntry) ) {
 					indexWriter.addDocument(post);
 					i++;
 				} else {
@@ -184,7 +190,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 				}			
 			}
 			log.info("Ready.");
-		}
+		} while ( postList.size() == SQL_BLOCKSIZE );
 
 		// optimize index
 		log.info("optimizing index " + luceneResourceIndexPath);
@@ -196,10 +202,6 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 
 		// all done
 		log.info("(" + i + " indexed entries, " + is + " not indexed spam entries)");
-		
-		// create redundant indeces
-		log.info("Creating "+ LuceneBase.getRedundantCnt() + " redundant indeces.");
-		this.copyRedundantIndeces();
 	}
 	
 
@@ -209,7 +211,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	 * @param bibTexEntry
 	 * @return
 	 */
-	private boolean isSpammer(Post<? extends Resource> post) {
+	protected boolean isNotSpammer(Post<? extends Resource> post) {
 		boolean flaggedAsSpammer = false;
 		for( Group group : post.getGroups() ) {
 			if( group.getGroupId()<0 )
@@ -225,10 +227,10 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	 * copy created index to redundant indeces
 	 */
 	protected void copyRedundantIndeces() {
-		File inputFile = new File(this.luceneResourceIndexPath+CFG_INDEX_ID_DELIMITER+"0");
+		final File inputFile = new File(this.luceneResourceIndexPath + CFG_INDEX_ID_DELIMITER + "0");
 		for(int i = 1; i < LuceneBase.getRedundantCnt(); i++ ) {
 			try {
-				File outputFile = new File(this.luceneResourceIndexPath+CFG_INDEX_ID_DELIMITER+i);
+				final File outputFile = new File(this.luceneResourceIndexPath + CFG_INDEX_ID_DELIMITER + i);
 				log.info("Copying index "+i);
 				copyDirectory(inputFile, outputFile);
 				log.info("Done.");
@@ -280,8 +282,8 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	          out.write(buf);
 	 
 	     } finally {
-	          if (in != null)          in.close();
-	          if (out != null)     out.close();
+	          if (in != null) in.close();
+	          if (out != null) out.close();
 	     }
 	}
 	
@@ -289,11 +291,6 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	 * @return get managed resource name
 	 */
 	protected abstract String getResourceName();
-	
-	/** fill given posts with additional data */
-	protected void fillPost(LucenePost<R> postEntry) {
-		// noop
-	}
 	
 	/** set up resource specific data structures */
 	protected void setUp() {

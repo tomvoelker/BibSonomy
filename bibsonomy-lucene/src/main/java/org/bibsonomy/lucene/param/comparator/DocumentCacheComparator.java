@@ -1,10 +1,12 @@
 package org.bibsonomy.lucene.param.comparator;
 
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_CONTENT_ID;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_LAST_LOG_DATE;
+
 import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.lucene.document.Document;
-import org.bibsonomy.lucene.util.LuceneBase;
 
 /**
  * comparator for avoiding duplicates in index-update-cache
@@ -16,7 +18,7 @@ import org.bibsonomy.lucene.util.LuceneBase;
  * @author fei
  * @version $Id$
  */
-public class DocumentCacheComparator extends LuceneBase implements Comparator<Document>, Serializable {
+public class DocumentCacheComparator implements Comparator<Document>, Serializable {
 	private static final long serialVersionUID = -5135628928597791434L;
 
 	@Override
