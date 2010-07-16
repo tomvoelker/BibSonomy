@@ -25,17 +25,12 @@
 				
 
 				<!-- 
-					file, description, group, SUBMIT
+					file, group, SUBMIT
 				 -->
 			  	<div class="fsRow">
 			      	<label class="fsLabel" for="file"><fmt:message key="post_bibtex.upload.my_file" />*</label>
 			      	<input type="file" name="file" class="reqinput fsInput" />
 			    </div>
-		  	 
-			  	<div class="fsRow">
-			      	<form:label cssClass="fsLabel" path="description"><fmt:message key="post.resource.description" />*</form:label>
-			    	<form:input cssClass="fsInput" path="description" />
-				</div>
 		    	
 			    <div class="fsLabel"><!--  --></div>
 			    <post:groupBox groups="${command.context.loginUser.groups}"/>
