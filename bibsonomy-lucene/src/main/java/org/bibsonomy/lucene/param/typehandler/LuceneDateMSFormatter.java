@@ -13,7 +13,7 @@ public class LuceneDateMSFormatter extends AbstractTypeHandler<Date> {
 
 	@Override
 	public String getValue(Date obj) {
-		return new Long(obj.getTime()).toString();
+		return String.valueOf(obj.getTime());
 	}
 
 	@Override
@@ -21,7 +21,7 @@ public class LuceneDateMSFormatter extends AbstractTypeHandler<Date> {
 		try {
 			long ms = Long.parseLong(str);
 			return new Date(ms);
-		} catch( Exception e ) {
+		} catch (final Exception e) {
 			log.error("Error parsing date " + str, e);
 		}
 				
