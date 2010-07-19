@@ -1862,10 +1862,9 @@ function expandBookmarkList(){
 		$(this).css("position","static");
 	}).show("1");
 	
-	$("#optionExpandBookmark").hide();
-	$("#optionShowBoth").show();
-	$("#optionExpandBibtex").show();
-
+	$("#optionExpandBookmark").addClass("expandButtonHide");
+	$("#optionShowBoth").removeClass("expandButtonHide");
+	$("#optionExpandBibtex").removeClass("expandButtonHide");
 }
 
 function expandBibTexList(){
@@ -1878,10 +1877,10 @@ function expandBibTexList(){
 	$("#bibtexList").animate({ 
 		width: "97%", opacity: 1.0
 	}, "slow").show("1");
-				   
-	$("#optionExpandBookmark").show();
-	$("#optionShowBoth").show();
-	$("#optionExpandBibtex").hide();						   
+
+	$("#optionExpandBookmark").removeClass("expandButtonHide");
+	$("#optionShowBoth").removeClass("expandButtonHide");
+	$("#optionExpandBibtex").addClass("expandButtonHide");
 }
 
 function showBothLists(){
@@ -1897,9 +1896,9 @@ function showBothLists(){
 		$(this).css("position","static");
 	} ).show("1");
 	
-	$("#optionExpandBookmark").show();
-	$("#optionShowBoth").hide();
-	$("#optionExpandBibtex").show();
+	$("#optionExpandBookmark").removeClass("expandButtonHide");
+	$("#optionShowBoth").addClass("expandButtonHide");
+	$("#optionExpandBibtex").removeClass("expandButtonHide");
 }
 
 //----------------------------------------------------------------------------

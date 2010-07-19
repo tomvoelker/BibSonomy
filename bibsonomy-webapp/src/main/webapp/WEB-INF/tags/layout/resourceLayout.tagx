@@ -36,7 +36,7 @@
 		<c:set var="disableListNavigation" value="${false}"/>
 	</c:if>	
 		
-	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
+	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
 	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">
 		<jsp:attribute name="headerExt">
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
@@ -49,6 +49,39 @@
             <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="${swrcUrl}" />
             <!-- UnAPI service -->
             <link rel="unapi-server" type="application/xml" title="unAPI" href="${projectHome}unapi"/>
+            <style>
+            	.expandButtonHide{
+            		display:none !important;
+            	}
+            </style>
+            <c:choose>
+            	<c:when test="${command.context.loginUser.settings.showBookmark and command.context.loginUser.settings.showBibtex}">
+            		<c:set var="optionShowBoth"><c:out value="expandButtonHide"/></c:set>
+            	</c:when>
+				<c:when test="${command.context.loginUser.settings.showBookmark and not command.context.loginUser.settings.showBibtex}">
+					<style>
+						#bibtexList {
+							display:none;
+						}
+						#bookmarkList {
+							width:97%;
+						}
+					</style>
+					<c:set var="optionExpandBookmark"><c:out value="expandButtonHide"/></c:set>
+				</c:when>
+				
+				<c:when test="${command.context.loginUser.settings.showBibtex and not command.context.loginUser.settings.showBookmark}">
+					<style>
+						#bookmarkList {
+							display:none;
+						}
+						#bibtexList {
+							width:97%;
+						}
+					</style>
+					<c:set var="optionExpandBibtex"><c:out value="expandButtonHide"/></c:set>
+				</c:when>
+			</c:choose>
             <jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
 		<jsp:attribute name="content">
@@ -58,9 +91,9 @@
 					<fmt:message var="expandBookmarks" key="list.expand.bookmarks"/>
 					<fmt:message var="expandPublications" key="list.expand.publications"/>
 					<fmt:message var="showBoth" key="list.expand.both"/>
-					<li id="optionExpandBookmark"><a href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li>
-					<li id="optionShowBoth" style="display: none;"><a href="javascript:showBothLists();" title="${showBoth}">|</a></li>
-					<li id="optionExpandBibtex"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li>
+					<li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li>
+					<li id="optionShowBoth" class="${optionShowBoth}"><a href="javascript:showBothLists();" title="${showBoth}">|</a></li>
+					<li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li>
 				</ul>
 				<!-- 
 					Some pages show a short introductory text at the top - this text 
@@ -79,19 +112,6 @@
 			</div>
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
-					
-			<c:choose>
-				<c:when test="${command.context.loginUser.settings.showBookmark and not command.context.loginUser.settings.showBibtex}">
-					<script>
-						javascript:expandBookmarkList();
-					</script>
-				</c:when>
-				<c:when test="${command.context.loginUser.settings.showBibtex and not command.context.loginUser.settings.showBookmark}">
-					<script>
-						javascript:expandBibTexList();
-					</script>
-				</c:when>
-			</c:choose>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>
