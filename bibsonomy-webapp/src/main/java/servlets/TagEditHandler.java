@@ -269,7 +269,7 @@ public class TagEditHandler extends HttpServlet {
 							
 							
 							// update upper tags
-							stmtp_select_tas = conn.prepareStatement("UPDATE IGNORE tagtagrelations SET upper = ? WHERE user_name = ? AND upper = ?");
+							stmtp_select_tas = conn.prepareStatement("UPDATE IGNORE tagtagrelations SET upper = ?, SET upper_lcase=LCASE(?) WHERE user_name = ? AND upper = ?");
 							stmtp_select_tas.setString(1, addTag);
 							stmtp_select_tas.setString(2, currUser);
 							stmtp_select_tas.setString(3, delTag);
