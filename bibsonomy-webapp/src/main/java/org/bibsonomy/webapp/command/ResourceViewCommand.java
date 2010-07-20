@@ -21,7 +21,6 @@ public class ResourceViewCommand extends BaseCommand {
 	private String tagstype; // for queries for specific kinds of tags
 	private String format = "html"; 
 	private String layout; // if format="layout", here the requested layout is stored
-	private boolean quicknav; // if format="layout", here u can choose to show quicknav
 	private boolean formatEmbedded; // 
 	private String sortPage = "none";
 	private String sortPageOrder = "asc";
@@ -302,11 +301,4 @@ public class ResourceViewCommand extends BaseCommand {
 		this.referer = referer;
 	}
 
-	public void setQuicknav(boolean quicknav) {
-		this.quicknav = quicknav;
-	}
-
-	public boolean getQuicknav() {
-		return quicknav;
-	}
 }
