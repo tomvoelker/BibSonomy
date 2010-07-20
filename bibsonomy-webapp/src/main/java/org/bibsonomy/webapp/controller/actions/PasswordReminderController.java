@@ -14,6 +14,7 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -31,8 +32,6 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
-
-import resources.Resource;
 
 /**
  * @author daill
@@ -267,7 +266,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		final Random rand = new Random();
 		final byte[] bytes = new byte[8];
 		rand.nextBytes(bytes);
-		return Resource.toHexString(bytes);
+		return HashUtils.toHexString(bytes);
 	}
 
 	/** A message source to format mail messages.
