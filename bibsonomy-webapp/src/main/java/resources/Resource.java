@@ -6,7 +6,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Set;
 
 @Deprecated
 public abstract class Resource implements Cloneable {
@@ -30,7 +29,6 @@ public abstract class Resource implements Cloneable {
 	private String docName  = null;  // real file name of referenced document
 	private Date date = null;
 	private int ctr;
-	protected Tag tag       = new Tag();
 
 	private int rating = 0; // rating of user
 
@@ -50,19 +48,10 @@ public abstract class Resource implements Cloneable {
 
 
 
-	// toString
-	@Override
-	public String toString () {
-		return user + "(" + date  + ") : [" + tag + "] ---> " + title;
-	}
-
 	public static String clean (String s) {
 		return s.replaceAll("\\s+"," ").trim();
 	}
 
-	public String getFullTagString(){
-		return tag.toString();
-	}
 
 	/**
 	 * Calculates the MD5-Hash of a String s and returns it encoded as a hex string of 32 characters length.
@@ -108,55 +97,8 @@ public abstract class Resource implements Cloneable {
 	}
 
 
-	/*
-	 * get/set Methoden
-	 */
-
-	abstract public String getHash (); /*{
-		return hash(title);
-	}*/
 
 
-	/**
-	 * Adds the relation lower-&gt;upper to the resource.
-	 * 
-	 * @param lower the subtag
-	 * @param upper the supertag
-	 * 
-	 * @return <code>true</code> if the relation could be added
-	 */
-	public boolean addTagRelation (String lower, String upper) {
-		return tag.addTagRelation(lower, upper);
-	}
-
-
-	/**
-	 * Sets the tag object from the given tag string. Inside the tag object 
-	 * the string is parsed into tags, relations and users.
-	 *  
-	 * @param tagString string which should be parsed
-	 */
-	public void setTags (String tagString) {
-		tag.setTags(tagString);
-	}
-
-	public boolean isValidtitle () {
-		return validTitle;
-	}
-	public boolean hasValidTags () {
-		return tag.isValid();// false if #elements > 100
-	}
-	public boolean isValidurl () {
-		return validUrl;
-	}
-
-	public void addFromTag (String user) {
-		tag.addFromTag(user);
-	}
-
-	public void addForTag (String user) {
-		tag.addForTag(user);
-	}
 
 
 	/**
@@ -171,7 +113,6 @@ public abstract class Resource implements Cloneable {
 	public Object clone() throws CloneNotSupportedException {
 		Resource copy = (Resource)super.clone();
 		// copy taglist
-		copy.tag = (Tag)tag.clone();
 		return copy;
 	}
 
@@ -276,24 +217,7 @@ public abstract class Resource implements Cloneable {
 		return date;
 	}
 
-	public void addTag(String t){
-		tag.addTag(t);
-	}
 
-	// Tags
-	public Set<String>getTags () {
-		return tag.getTags();
-	}
-
-	// get Set<TagRelation> TagRelations
-	public Set<TagRelation> getTagrelations (){
-		return tag.getTagrelations();
-	}
-
-	/* get Tag object */
-	public Tag getTag() {
-		return tag;
-	}
 
 	// Content-ID
 	public void setContentID (int c) {
@@ -320,10 +244,6 @@ public abstract class Resource implements Cloneable {
 		this.toIns = toIns;
 	}
 
-	// UsersToPost
-	public Set<String> getUsersToPost() {
-		return tag.getForUsers();
-	}
 
 	// GroupID
 	public int getGroupid() {
@@ -350,11 +270,6 @@ public abstract class Resource implements Cloneable {
 	}
 
 
-	public String getTagString(){
-		return tag.getTagString();
-	}
-
-	public abstract int getContentType();
 
 	public String getPrivnote() {
 		return privnote;
@@ -363,13 +278,6 @@ public abstract class Resource implements Cloneable {
 		this.privnote = privnote;
 	}
 
-	/**
-	 * returns the number of tags this resource has
-	 * @return the number of tags this resource has
-	 */
-	public int tagCount() {
-		return tag.tagCount();
-	}
 
 
 	/** Returns the hash for the document belonging to the resource

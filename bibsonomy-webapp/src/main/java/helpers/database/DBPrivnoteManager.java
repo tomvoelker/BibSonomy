@@ -1,12 +1,12 @@
 package helpers.database;
 
 
+import helpers.constants;
+
 import java.sql.SQLException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import resources.Bibtex;
 
 @Deprecated
 public class DBPrivnoteManager extends DBManager {
@@ -25,7 +25,7 @@ public class DBPrivnoteManager extends DBManager {
 		try {
 			if (c.init()) { // initialize database
 				// prepare Statement
-				c.stmt = c.conn.prepareStatement("UPDATE bibtex SET privnote = ? WHERE user_name = ? AND simhash" + Bibtex.INTRA_HASH + " = ?");
+				c.stmt = c.conn.prepareStatement("UPDATE bibtex SET privnote = ? WHERE user_name = ? AND simhash" + constants.INTRA_HASH + " = ?");
 				c.stmt.setString(1, privnote);
 				c.stmt.setString(2, username);
 				c.stmt.setString(3, hash);

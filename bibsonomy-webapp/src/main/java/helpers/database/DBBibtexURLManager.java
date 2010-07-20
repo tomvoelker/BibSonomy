@@ -1,5 +1,7 @@
 package helpers.database;
 
+import helpers.constants;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -14,13 +16,13 @@ import resources.Bibtex;
 @Deprecated
 public class DBBibtexURLManager extends DBManager {
 	
-	private static final String SQL_SELECT_CONTENTID = "SELECT content_id FROM bibtex WHERE simhash" + Bibtex.INTRA_HASH + " = ? AND user_name = ?";
+	private static final String SQL_SELECT_CONTENTID = "SELECT content_id FROM bibtex WHERE simhash" + constants.INTRA_HASH + " = ? AND user_name = ?";
 	private static final String SQL_INSERT_URL       = "INSERT INTO bibtexurls (url, text, content_id) VALUES (?,?,?)";
 	private static final String SQL_DELETE_URL       = "DELETE FROM bibtexurls WHERE content_id = ? AND url = ?";
 	private static final String SQL_SELECT_URL       = "SELECT u.url, u.text, u.date" +
 			                                           "  FROM bibtexurls u " +
 			                                           "    JOIN bibtex b ON u.content_id = b.content_id " +
-			                                           "  WHERE b.simhash" + Bibtex.INTRA_HASH + " = ? " +
+			                                           "  WHERE b.simhash" + constants.INTRA_HASH + " = ? " +
 			                                           "    AND b.user_name = ? " +
 			                                           "  ORDER BY u.date DESC";
 	

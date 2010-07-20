@@ -17,7 +17,7 @@ import org.bibsonomy.model.util.PersonNameUtils;
 
 @Deprecated
 public class Bibtex extends Resource {
-	public static final int CONTENT_TYPE=2;
+
 	private static final int MAX_LEN_AUTHOR = 6000;
 	private static final int MAX_LEN_EDITOR = 6000;
 	private static final int MAX_LEN_YEAR   =   45;
@@ -25,13 +25,7 @@ public class Bibtex extends Resource {
 	private static final int MAX_LEN_JOURNAL = 6000;
 	private static final int MAX_LEN_BOOKTITLE=6000;
 	
-	// similarity hashes
-	private static final int SIM_HASH_0 = 0; // OLD intra-user hash
-	private static final int SIM_HASH_1 = 1; // inter-user hash 1 (actually used!)
-	private static final int SIM_HASH_2 = 2; // NEW intra-user hash
-	private static final int SIM_HASH_3 = 3; // inter-user hash 3 (unused)
-	public static final int INTER_HASH = SIM_HASH_1; // default similarity hash (inter-user hash)
-	public static final int INTRA_HASH = SIM_HASH_2;
+
 
 	public static final String[] entrylist = {"address","annote","author","booktitle","chapter","crossref","edition",
 			"editor","howpublished","institution","journal","key","month","note","number","organization",
@@ -76,57 +70,8 @@ public class Bibtex extends Resource {
 	}
 
 	
-	/* builds a complete BibTeX-Entry and returns it as String */
-	public String getBibtex () throws UnsupportedEncodingException {
-		StringBuffer s = new StringBuffer ("@" + entrytype + "{" + bibtexKey + ",\n");
-		s.append("\ttitle = {" + getTitle() + "},\n");
-		for (String key:entries.keySet()) {
-			String value = getEntry(key);
-			if (value != null && !value.equals("")) {
-				s.append ("\t" + key + " = {" + value + "},\n");
-			}
-		}
-		/* add url to this bibtex entry */
-		s.append("\tbiburl = {http://www.bibsonomy.org/bibtex/" + Bibtex.INTRA_HASH + getHash() + "/" + URLEncoder.encode(this.getUser(), "UTF-9") + "},\n");
-		if (description != null && !description.equals("")) {
-			s.append("\tdescription = {" + description + "},\n");
-		}
-		if (bibtexAbstract != null && !bibtexAbstract.equals("")) {
-			s.append("\tabstract = {" + bibtexAbstract + "},\n");
-		}
-		if (misc != null && ! misc.equals("")) {
-			s.append("\t" + misc + ",\n");	
-		}
-		s.append("\tkeywords = {" + this.getTagString() + "}\n}");
-		return s.toString();
-	}
 	
-	
-	/* builds a compact BibTeX-Entry and returns it as String */
-	public String getChunky () {
-		StringBuffer s = new StringBuffer();
-		if (validA) {
-			if (getAuthor().length() < 20) {
-				s.append("[" + getAuthor() + ", ");
-			} else {
-				s.append("[" + getAuthor().substring(0, 17) + "..., ");
-			}
-		} else if (validE) {
-			if (getEditor().length() < 20){
-				s.append("[" + getEditor() + ", ");
-			} else {
-				s.append("[" + getEditor().substring(0, 17) + "..., ");
-			}
-		}
-		if (getTitle().length() < 50) {
-			s.append(getTitle() + ", ");		
-		} else {
-			s.append(getTitle().substring(0, 47) + "..., ");		
-		}
-		s.append(getYear() + "]");		
-		return s.toString();
-	}
-	
+
 	/** Returns the "misc" fields of this bibtex entry as a map of 
 	 * field-value paris.
 	 *  
@@ -152,16 +97,7 @@ public class Bibtex extends Resource {
 	public boolean isValidyear     () {return validY;}
 	public boolean isValidentrytype() {return validT;}
 	
-	// checks, if this is a valid bibtex entry
-	public boolean isValid () {
-		return (tag.isValid() && isValidBibtex());
-	}
-	public boolean isValidBibtex () {
-		return (isValidyear() &&
-				isValidtitle() &&
-				isValidentrytype() &&
-				isValidbibtexkey());
-	}
+
 	
 	/*
 	 * getter / setter
@@ -431,45 +367,6 @@ public class Bibtex extends Resource {
 		return getNamesSeparated(this.getEditor());
 	}
 		
-
-	
-	
-	@Override
-	public int getContentType () {
-		return Bibtex.CONTENT_TYPE;
-	}
-
-	
-	// every user has exactly one entry with that hash (INTRA-USER-HASH)
-	@Override
-	public String getHash() {
-		// every user hash exactly one entry with that hash
-		return getSimHash(INTRA_HASH);
-	}
-
-	/* similarity hashes */
-	private String getSimHash (int h) {
-		if (h == SIM_HASH_2) {
-			// every user has exactly one entry with that hash (NEW intra-user hash)
-			if (simhash2 == null) {
-				simhash2 = SimHash2.getHash(this);
-			}
-			return simhash2;
-		} else if (h == SIM_HASH_1) {
-			// not so stringent hash - many things removed (inter-user hash)
-			if (simhash1 == null) {
-				simhash1 = SimHash1.getHash(this);
-			}
-			return simhash1;
-		} else if (h == SIM_HASH_0) {
-			// every user has exactly one entry with that hash (intra-user hash)
-			if (simhash0 == null) {
-				simhash0 = SimHash0.getHash(this);
-			}
-			return simhash0;
-		} 
-		return "";
-	}	
 
 	// sets all hashes to null (so they're regenerated at the next getHash() call)
 	private void setHashesToNull() {

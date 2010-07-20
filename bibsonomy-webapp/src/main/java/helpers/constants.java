@@ -7,6 +7,17 @@ public final class constants {
 	 * SQL constants
 	 * ***********************************************************************/
 
+	public static final int BOOKMARK_CONTENT_TYPE=1;
+	public static final int BIBTEX_CONTENT_TYPE=2;
+	
+	// similarity hashes
+	private static final int SIM_HASH_0 = 0; // OLD intra-user hash
+	private static final int SIM_HASH_1 = 1; // inter-user hash 1 (actually used!)
+	private static final int SIM_HASH_2 = 2; // NEW intra-user hash
+	private static final int SIM_HASH_3 = 3; // inter-user hash 3 (unused)
+	public static final int INTER_HASH = SIM_HASH_1; // default similarity hash (inter-user hash)
+	public static final int INTRA_HASH = SIM_HASH_2;
+	
 	/* constant group ids */
 	public static final int SQL_CONST_GROUP_PUBLIC  = 0;
 	public static final int SQL_CONST_GROUP_PRIVATE = 1;

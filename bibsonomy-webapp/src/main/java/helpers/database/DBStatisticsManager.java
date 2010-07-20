@@ -1,15 +1,14 @@
 package helpers.database;
 
 
+import helpers.constants;
+
 import java.sql.SQLException;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import resources.Bibtex;
-import resources.Bookmark;
 
 @Deprecated
 public class DBStatisticsManager extends DBManager {
@@ -21,9 +20,9 @@ public class DBStatisticsManager extends DBManager {
 	private static final String date24    = " DATE_SUB(CURDATE(), INTERVAL 24 HOUR) <= date ";
 	private static final String dateM     = " DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <= date ";
 
-	private static final String interHash = " simhash" + Bibtex.INTER_HASH + " ";
-	private static final String contentTypeBookmark    = "content_type = " + Bookmark.CONTENT_TYPE;
-	private static final String contentTypePublication = "content_type = " + Bibtex.CONTENT_TYPE;
+	private static final String interHash = " simhash" + constants.INTER_HASH + " ";
+	private static final String contentTypeBookmark    = "content_type = " + constants.BOOKMARK_CONTENT_TYPE;
+	private static final String contentTypePublication = "content_type = " + constants.BIBTEX_CONTENT_TYPE;
 
 	private static final Log log = LogFactory.getLog(DBStatisticsManager.class);
 
