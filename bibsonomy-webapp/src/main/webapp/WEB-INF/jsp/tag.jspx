@@ -58,7 +58,7 @@
 			<!-- related tags -->
 			<c:if test="${not empty command.relatedTagCommand.relatedTags}">
 				<li>
-					<span class="sidebar_h"><a href="/help/User Interface#section-User+Interface-WhatIsTheDifferenceBetweenRelatedAndSimilarTags"><fmt:message key="relatedtags"/></a></span>
+					<span class="sidebar_h"><a href="/help/User+Interface#section-User+Interface-WhatIsTheDifferenceBetweenRelatedAndSimilarTags"><fmt:message key="relatedtags"/></a></span>
 					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
 				</li>
 			</c:if>
@@ -66,7 +66,7 @@
 			<!-- related tags -->
 			<c:if test="${not empty command.similarTags.relatedTags}">
 				<li>
-					<span class="sidebar_h"><a href="/help/User Interface#section-User+Interface-WhatIsTheDifferenceBetweenRelatedAndSimilarTags"><fmt:message key="similartags"/></a></span>
+					<span class="sidebar_h"><a href="/help/User+Interface#section-User+Interface-WhatIsTheDifferenceBetweenRelatedAndSimilarTags"><fmt:message key="similartags"/></a></span>
 					<tags:similar requPath="${requPath}" cmd="${command.similarTags}"/>
 				</li>
 			</c:if>			
