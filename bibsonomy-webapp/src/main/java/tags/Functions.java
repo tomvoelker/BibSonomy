@@ -34,8 +34,6 @@ import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
-import resources.Resource;
-
 
 /**
  * Some taglib functions
@@ -179,7 +177,7 @@ public class Functions  {
 			/*
 			 * TODO: in the future this must be dynamic!
 			 */
-			return Resource.hash(input + "security_by_obscurity");
+			return StringUtils.getMD5Hash(input + "security_by_obscurity");
 		}
 		return null;
 	}
