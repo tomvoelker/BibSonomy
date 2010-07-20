@@ -8,6 +8,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UrlCommand;
@@ -77,7 +78,7 @@ public class UrlPageController extends SingleResourceListController implements M
 		if (present(command.getRequUrl())) {
 			// TODO: add format in front of /url/? (probably not, this URL should only be called by input form)
 			// FIXME: remove call to old method
-			return new ExtendedRedirectView("/url/" + resources.Resource.hash(command.getRequUrl()));
+			return new ExtendedRedirectView("/url/" + StringUtils.getMD5Hash(command.getRequUrl()));
 		}
 
 		// retrieve and set the requested resource lists
