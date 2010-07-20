@@ -2,9 +2,9 @@ package org.bibsonomy.webapp.command.admin;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
@@ -35,7 +35,7 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	private Map<Long, String> disabledRecommenders;
 
 	private long editSid;
-	private String deleteRecId;
+	private List<String> deleteRecIds;
 	private String newrecurl;
 	
 	
@@ -232,17 +232,17 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return id/url of recommender to be deleted
+	 * @return ids/urls of recommenders to be deleted
 	 */
-	public String getDeleteRecId() {
-		return this.deleteRecId;
+	public List<String> getDeleteRecIds() {
+		return this.deleteRecIds;
 	}
 
 	/**
-	 * @param deleteRecId id/url of recommender to be edited
+	 * @param deleteRecIds ids/urls of recommenders to be edited
 	 */
-	public void setDeleteRecId(String deleteRecId) {
-		this.deleteRecId = deleteRecId;
+	public void setDeleteRecIds(List<String> deleteRecIds) {
+		this.deleteRecIds = deleteRecIds;
 	}
 	/**
 	 * @param recurl url of new recommender to be added

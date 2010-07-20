@@ -128,7 +128,7 @@ form[name="recConfig"] select{
 	width: 363px;
 }
 
-select[name="deleteRecId"]{
+select[name="deleteRecIds"]{
     width: 100%;
 }
 
