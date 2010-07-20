@@ -2,8 +2,6 @@ package filters;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -32,6 +30,7 @@ import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ResponseLogic;
@@ -237,7 +236,7 @@ public class InitUserFilter implements Filter {
 				final String userCookieParts[] = userCookie.split("%20");
 				
 				if (userCookieParts.length >= 2) {
-					final String userName = decode(userCookieParts[0]);
+					final String userName = UrlUtils.safeURIDecode(userCookieParts[0]);
 					/*
 					 * all two parts of cookie available
 					 */
@@ -333,8 +332,8 @@ public class InitUserFilter implements Filter {
 				 */
 				final String openIdCookieParts[] = openIDCookie.split("%20");
 				if (openIdCookieParts.length >= 3) {
-					final String userName = decode(openIdCookieParts[0]);
-					final String openID = decode(openIdCookieParts[1]);
+					final String userName = UrlUtils.safeURIDecode(openIdCookieParts[0]);
+					final String openID = UrlUtils.safeURIDecode(openIdCookieParts[1]);
 					final String password = openIdCookieParts[2];
 
 					final HttpSession session = httpServletRequest.getSession(true);
@@ -606,24 +605,6 @@ public class InitUserFilter implements Filter {
 			return null;
 		}
 		return uid.substring(idx + 1).trim().toUpperCase().trim();
-	}
-
-
-	/**
-	 * TODO: move to UrlUtils!!
-	 * 
-	 * Decodes a string with {@link URLDecoder#decode(String, String)} with
-	 * UTF-8.
-	 * 
-	 * @param s
-	 * @return
-	 */
-	private static String decode(final String s) {
-		try {
-			return URLDecoder.decode(s, "UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			return s;
-		}
 	}
 
 }
