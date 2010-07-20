@@ -98,9 +98,9 @@
 	    <hr />
         <div class="compound">
         <form:form name="recommenderRemove" action="/admin/recommender?action=removerecommender">
-            <form:label path="deleteRecId"><fmt:message key="admin.recommender.remove"/></form:label><br />
+            <form:label path="deleteRecIds"><fmt:message key="admin.recommender.remove"/></form:label><br />
             
-		  	<select name="deleteRecId" size="15">
+		  	<select name="deleteRecIds" size="15" multiple="multiple">
 				<c:forEach var="rec" items="${command.activeRecommenders}">
 				  <option value="${rec.value}">${rec.key} - ${rec.value}</option>
 				</c:forEach>

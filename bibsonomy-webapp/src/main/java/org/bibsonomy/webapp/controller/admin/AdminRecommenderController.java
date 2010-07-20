@@ -185,11 +185,15 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	}
 
 	private void handleUpdateRecommenderStatus(AdminRecommenderViewCommand command) {
-		for (Long sid : command.getActiveRecs()) {
-			mp.enableRecommender(sid);
+		if (command.getActiveRecs() != null) {
+			for (Long sid : command.getActiveRecs()) {
+				mp.enableRecommender(sid);
+			}
 		}
-		for (Long sid : command.getDisabledRecs()) {
-			mp.disableRecommender(sid);
+		if (command.getDisabledRecs() != null) {
+			for (Long sid : command.getDisabledRecs()) {
+				mp.disableRecommender(sid);
+			}
 		}
 		command.setTab(Tab.ACTIVATE);
 		command.setAdminResponse("Successfully Updated Recommenderstatus!");
@@ -197,16 +201,24 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 
 	private void handleRemoveRecommender(AdminRecommenderViewCommand command) {
 		try {
-			final URL url = new URL(command.getDeleteRecId());
-			final boolean success = mp.removeRecommender(url);
-
-			if (success) {
-				command.setAdminResponse("Successfully removed recommender '" + command.getDeleteRecId() + "'.");
+			int failures = 0;
+			
+			if(command.getDeleteRecIds() == null || command.getDeleteRecIds().isEmpty()) {
+				command.setAdminResponse("Please select a recommender first!");
 			} else {
-				command.setAdminResponse("Failed to remove recommender '" + command.getDeleteRecId() + "'");
+				for(String urlString : command.getDeleteRecIds()) {
+					URL url = new URL(urlString);
+					boolean success = mp.removeRecommender(url);
+					if(!success) failures++;
+				}
+				if (failures == 0) {
+					command.setAdminResponse("Successfully removed all selected recommenders.");
+				} else {
+					command.setAdminResponse(failures + " recommender(s) could not be removed.");
+				}
 			}
 		} catch (MalformedURLException ex) {
-			log.warn("Invalid url '" + command.getDeleteRecId() + "'" + "in removeRecommender ", ex);
+			log.warn("Invalid url in removeRecommender ", ex);
 		}
 
 		command.setTab(Tab.ADD);
