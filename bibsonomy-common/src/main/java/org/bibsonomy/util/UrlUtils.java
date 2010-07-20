@@ -206,7 +206,7 @@ public class UrlUtils {
 	 * @param s
 	 * @return the decoded string (if that fails, returns the string)
 	 */
-	public static String safeURIDecodedecode(final String s) {
+	public static String safeURIDecode(final String s) {
 		try {
 			return URLDecoder.decode(s, "UTF-8");
 		} catch (UnsupportedEncodingException ex) {
