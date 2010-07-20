@@ -15,8 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
-
-import resources.Resource;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * This filter checks the credential of the user and sets a corresponding request 
@@ -112,7 +111,7 @@ public class ActionValidationFilter implements Filter {
 	 * @return
 	 */
 	private String getNewCredential(User user, HttpSession session) {
-		return (Resource.hash(user.getEmail() + session.getId())); 
+		return (StringUtils.getMD5Hash(user.getEmail() + session.getId())); 
 	}
 
 
