@@ -24,6 +24,7 @@
 package org.bibsonomy.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 /**
@@ -192,6 +193,23 @@ public class UrlUtils {
 		try {
 			return URLEncoder.encode(s, "UTF-8");
 		} catch (Exception ex) {
+			return s;
+		}
+	}
+	
+
+	/**
+	 * 
+	 * Decodes a string with {@link URLDecoder#decode(String, String)} with
+	 * UTF-8.
+	 * 
+	 * @param s
+	 * @return the decoded string (if that fails, returns the string)
+	 */
+	public static String safeURIDecodedecode(final String s) {
+		try {
+			return URLDecoder.decode(s, "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
 			return s;
 		}
 	}
