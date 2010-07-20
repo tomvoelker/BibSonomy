@@ -11,8 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.extra.BibTexExtra;
 
-import resources.Bibtex;
-
 @Deprecated
 public class DBBibtexURLManager extends DBManager {
 	
@@ -27,11 +25,65 @@ public class DBBibtexURLManager extends DBManager {
 			                                           "  ORDER BY u.date DESC";
 	
 	private static final Log log = LogFactory.getLog(DBBibtexURLManager.class);
+	private static final int MAX_LEN_URL         = 6000;
+	private static final String BROKEN_URL              = "/brokenurl#";
+	public static final int UNDEFINED_CONTENT_ID =   -1;	
+	/**
+	 * Cleans a URL and makes it valid. This includes 
+	 * <ul>
+	 * <li> checking if it starts with a known protocol (http, ftp, gopher, https) or {@link #BROKEN_URL} (which means it is valid, too),
+	 * <li> checking if it is a <em>BibTeX</em> URL and removing the surrounding macro,
+	 * <li> checking if it is an empty string or 
+	 * <li> else just returning it marked as a broken url (see {@link #BROKEN_URL}).
+	 * </ul>
+	 * 
+	 * 
+	 * @param url the URL which should be checked and cleaned
+	 * @return the checked and cleaned URL
+	 */
+	private static String cleanUrl (String url) {
+		if (url == null) {
+			return null;
+		} 
+		// remove linebreaks, etc.
+		url = url.replaceAll("\\n|\\r", "");
+		// this should be the most common case: a valid URL
+		if (url.startsWith("http://") || 
+				url.startsWith("ftp://") ||
+				url.startsWith("file://") ||
+				url.startsWith(BROKEN_URL) ||
+				url.startsWith("gopher://") ||
+				url.startsWith("https://")) {
+			return cropToLength(url, MAX_LEN_URL);
+		} else if (url.startsWith("\\url{") && url.endsWith("}")) {
+			// remove \\url{...}
+			return cropToLength(url.substring(5,url.length()-1), MAX_LEN_URL);
+		} else if (url.trim().equals("")){
+			// handle an empty URL
+			return "";
+		} else {
+			// URL is neither empty nor valid: mark it as broken
+			return cropToLength(BROKEN_URL + url, MAX_LEN_URL);
+		}
 
+	}
+	
+
+	/* crops s to length if it is longer than length
+	 * 
+	 */
+	private static String cropToLength (String s, int length) {
+		if (s != null && s.length() > length) {
+			return s.substring(0, length);
+		} else {
+			return s;
+		}
+	}
+	
 	public static boolean createURL (BibTexExtra url, String hash, String user, boolean validCkey) {
 		DBContext c = new DBContext();
 		try {
-			String urlstring = Bibtex.cleanUrl(url.getUrl().toString());
+			String urlstring = cleanUrl(url.getUrl().toString());
 			/*
 			 * check, that URL is not empty (otherwise deleting in database ... difficult ;-)
 			 */
@@ -39,7 +91,7 @@ public class DBBibtexURLManager extends DBManager {
 				c.conn.setAutoCommit(false);
 				
 				int content_id = getContentID(hash, user, c);
-				if ( content_id != Bibtex.UNDEFINED_CONTENT_ID) {
+				if ( content_id != UNDEFINED_CONTENT_ID) {
 					/*
 					 * hash + content_id exists --> insert
 					 */
@@ -67,7 +119,7 @@ public class DBBibtexURLManager extends DBManager {
 				c.conn.setAutoCommit(false);
 				
 				int content_id = getContentID(hash, user, c);
-				if (content_id != Bibtex.UNDEFINED_CONTENT_ID) {
+				if (content_id != UNDEFINED_CONTENT_ID) {
 					/*
 					 * hash + content_id exists --> delete
 					 */
@@ -121,7 +173,7 @@ public class DBBibtexURLManager extends DBManager {
 		if (c.rst.next()) {
 			return c.rst.getInt("content_id");
 		}
-		return Bibtex.UNDEFINED_CONTENT_ID;
+		return UNDEFINED_CONTENT_ID;
 	}
 
 }
