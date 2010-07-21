@@ -1234,3 +1234,7 @@ table.report td.value {
 	font-size: 80%;
 	color: #888888;
 }
+
+.hiddenElement {
+	display:none !important;
+}

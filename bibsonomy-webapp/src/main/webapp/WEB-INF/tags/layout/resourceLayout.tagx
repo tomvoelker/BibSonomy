@@ -49,14 +49,9 @@
             <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="${swrcUrl}" />
             <!-- UnAPI service -->
             <link rel="unapi-server" type="application/xml" title="unAPI" href="${projectHome}unapi"/>
-            <style>
-            	.expandButtonHide{
-            		display:none !important;
-            	}
-            </style>
             <c:choose>
             	<c:when test="${command.context.loginUser.settings.showBookmark and command.context.loginUser.settings.showBibtex}">
-            		<c:set var="optionShowBoth"><c:out value="expandButtonHide"/></c:set>
+            		<c:set var="optionShowBoth"><c:out value="hiddenElement"/></c:set>
             	</c:when>
 				<c:when test="${command.context.loginUser.settings.showBookmark and not command.context.loginUser.settings.showBibtex}">
 					<style>
@@ -67,7 +62,7 @@
 							width:97%;
 						}
 					</style>
-					<c:set var="optionExpandBookmark"><c:out value="expandButtonHide"/></c:set>
+					<c:set var="optionExpandBookmark"><c:out value="hiddenElement"/></c:set>
 				</c:when>
 				
 				<c:when test="${command.context.loginUser.settings.showBibtex and not command.context.loginUser.settings.showBookmark}">
@@ -79,7 +74,7 @@
 							width:97%;
 						}
 					</style>
-					<c:set var="optionExpandBibtex"><c:out value="expandButtonHide"/></c:set>
+					<c:set var="optionExpandBibtex"><c:out value="hiddenElement"/></c:set>
 				</c:when>
 			</c:choose>
             <jsp:invoke fragment="headerExt"/>
