@@ -45,6 +45,7 @@
         <c:url var="aparss"  value="/aparss/${requPath}${requQueryString}" context="${projectContext}"/>
         <c:url var="burst"   value="/burst/${requPath}${requQueryString}" context="${projectContext}"/>
         <c:url var="swrc"    value="/swrc/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="json"    value="/json/${requPath}${requQueryString}" context="${projectContext}"/>
         <c:url var="custom"  value="/layout/custom/${requPath}${requQueryString} " context="${projectContext}"/>
 
         <div>
@@ -56,8 +57,9 @@
 			<option value="${fn:escapeXml(publrss)}">RSS</option>
 			<option value="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</option>
 			<option value="${fn:escapeXml(burst)}">BuRST</option>						
-			<option value="${fn:escapeXml(swrc)}">SWRC</option>						
-			<option value="${fn:escapeXml(custom)}">Custom</option>						
+			<option value="${fn:escapeXml(swrc)}">SWRC</option>
+			<option value="${fn:escapeXml(json)}">JSON</option>				
+			<option value="${fn:escapeXml(custom)}">Custom</option>					
 						
 			<c:forEach var="entry" items="${command.layoutMap}">
               <c:if test="${entry.value.publicLayout}">			
@@ -92,6 +94,9 @@
 
           <dt><a href="${fn:escapeXml(swrc)}">SWRC</a></dt>
           <dd><fmt:message key="export.swrc.faq"/></dd>
+          
+          <dt><a href="${fn:escapeXml(json)}">JSON</a></dt>
+          <dd><fmt:message key="export.json.faq"/></dd>
 
     	  <dt><a href="${fn:escapeXml(custom)}">Custom</a></dt>	
     	  <dd><fmt:message key="export.custom.faq"/></dd>
