@@ -3,7 +3,6 @@ package org.bibsonomy.database.systemstags.executable;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.DBSession;
@@ -114,15 +113,19 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 	final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
 	if ( !( generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size()>0 ) ) {
-	    final String defaultMessage = this.getName()+ ": "  + receiver + " did not add you as a friend and is not a member of any of your groups.";
-	    session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.notFriend", new String[]{receiver}));
-	    log.warn("Added SystemTagErrorMessage (send: not friend nor common group) for post " + intraHash);
+	    /*
+	     *  We decided to ignore errors in systemTags. Thus the user is free use any tag.
+	     *  The drawback: If it is the user's intention to use a systemTag, he will never know if there was a typo! 
+	     */
+	    //final String defaultMessage = this.getName()+ ": "  + receiver + " did not add you as a friend and is not a member of any of your groups.";
+	    //session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.notFriend", new String[]{receiver}));
+	    //log.warn("Added SystemTagErrorMessage (send: not friend nor common group) for post " + intraHash);
 	    return false;
 	}
 	if (sender.equals(receiver)) {
-	    final String defaultMessage = this.getName()+": You can not send messages to yourself.";
-	    session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.self", new String[]{receiver}));
-	    log.warn("Added SystemTagErrorMessage (send: sender is receiver) for post " + intraHash);
+	    //final String defaultMessage = this.getName()+": You can not send messages to yourself.";
+	    //session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.self", new String[]{receiver}));
+	    //log.warn("Added SystemTagErrorMessage (send: sender is receiver) for post " + intraHash);
 	    return false;
 	}
 	return true;
