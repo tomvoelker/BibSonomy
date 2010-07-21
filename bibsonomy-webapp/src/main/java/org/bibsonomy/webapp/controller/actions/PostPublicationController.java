@@ -268,14 +268,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * set visibility of this post for the groups, the user specified 
 			 */
 			initPostGroups(command, post);
-			/*
-			 * if not present, a valid date has to be set
-			 * (we check for presence of a date, because DBLP is
-			 * allowed to specify a date)
-			 */
-			if(!present(post.getDate())) {
-				setDate(post, context.getLoginUser().getName());
-			}
+			setDate(post, context.getLoginUser().getName());
 			/*
 			 * hashes have to be set, in order to call the validator
 			 */
