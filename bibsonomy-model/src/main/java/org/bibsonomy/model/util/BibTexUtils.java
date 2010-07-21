@@ -82,6 +82,13 @@ public class BibTexUtils {
 
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
+	 * all fields from the resource). It is needed by the DBLP update to allow
+	 * setting of the post date.
+	 */
+	public static final String ADDITIONAL_MISC_FIELD_DATE = "date";
+	
+	/**
+	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource) 
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_ADDED_AT = "added-at";
