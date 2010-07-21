@@ -67,6 +67,7 @@ public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
 		"title = {Managing publications and bookmarks with BibSonomy},\n" +
 		"url = {http://portal.acm.org/citation.cfm?doid=1557914.1557969#},\n" +
 		"year = {2009},\n" +
+		"date = \"2010-07-19\",\n" + 
 		"isbn = {978-1-60558-486-7},\n" +
 		"doi = {10.1145/1557914.1557969},\n" +
 		"month = jun,\n" +
@@ -110,7 +111,7 @@ public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
 		 * 
 		 */
 		assertEquals("This is a test note!", resource.getPrivnote());
-
+		
 		/*
 		 * If we don't turn expansion of months off (in the 
 		 * MacroReferenceExpander), the parser will change this to "June".
@@ -141,7 +142,7 @@ public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
 		final Post<BibTex> secondParsedPost = parser.parseBibTeXPost(BibTexUtils.toBibtexString(post));
 		secondParsedPost.getResource().recalculateHashes();
 
-		ModelUtils.assertPropertyEquality(post, secondParsedPost, 5, null, new String[]{});
+		ModelUtils.assertPropertyEquality(post, secondParsedPost, 5, null, new String[]{"date"});
 	}
 
 	@Test
