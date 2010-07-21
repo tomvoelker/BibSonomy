@@ -27,6 +27,8 @@ package org.bibsonomy.bibtex.parser;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,6 +65,13 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 * Specifies the whitespace substitute for keywords and tags
 	 */
 	private String whitespace;
+	
+	/**
+	 * To parse the date in the "date" field of BibTeX entries into the
+	 * date attribute of posts, we support the following date format.
+	 * (needed for DBLP import) 
+	 */
+	private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	private Class<? extends BibTex> pubInstanceToCreate = BibTex.class;
 	private final ResourceFactory resourceFactory;
@@ -153,6 +162,17 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 				 * silently ignore tag parsing errors ....
 				 */
 			}
+			
+			try {
+				/*
+				 * The DBLP updater sets the date of posts using the "date" field. Therefore,
+				 * we must parse it here and fill the post's date attribute. 
+				 */
+				post.setDate(dateFormat.parse(bibtex.removeMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_DATE)));
+			} catch (java.text.ParseException ex) {
+				// ignore parse errors
+			}
+			
 			/*
 			 * remove other misc fields which should not be stored as misc field 
 			 * (but rather as regular field/column).
