@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constants>
+	<!-- URL for dblp.xml download -->
+	<url1>file:///home/rja/DBLP/dblp.xml</url1>
+	<url>http://dblp.uni-trier.de/xml/dblp.xml</url>
+	<!-- Name of DBLP-User -->
+	<user>dblp</user>
+	<!-- projecthome -->
+	<home>http://www.bibsonomy.org/</home>
+	<!-- DB -->
+	<db>
+		<!-- DB host -->
+		<mysqlhost>
+		gandalf:6033
+		</mysqlhost>
+		<!-- database -->
+		<mysqldatbase>bibsonomy</mysqldatbase>
+		<!-- DB user -->
+		<mysqluser>bibsonomy</mysqluser>
+		<!-- DB password -->
+		<mysqlpassword></mysqlpassword>
+	</db>	
+</constants>
