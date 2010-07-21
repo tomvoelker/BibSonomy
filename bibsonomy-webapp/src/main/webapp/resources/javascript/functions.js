@@ -1675,18 +1675,23 @@ function unicodeCollation(ersterWert, zweiterWert){
     	return function(){
 	   	  	if( 4 == request.readyState ) {
 	          	if( 200 == request.status ) {
-	          		// get counter
-	           		var pickctr = document.getElementById("pickctr").childNodes[0];
-	           		
-	           		// parse XML input
-	       		    var xml = request.responseText;
-	       		    
-					// update counter   	           		
-   	           		pickctr.nodeValue = xml;
-   	           		
-   	           		// special case for the /basket page
+ 	           		// special case for the /basket page
    	           		if (location.pathname.startsWith("/basket")){
-   	           			document.getElementById("ttlctr").childNodes[0].nodeValue = "("+xml+")";
+   	           			//document.getElementById("ttlctr").childNodes[0].nodeValue = "("+xml+")";
+   	           			window.location.reload()
+   	           		} else {
+   	           			// get counter
+   	           			var pickctr = document.getElementById("pickctr").childNodes[0];
+	           		
+   	           			// parse XML input
+   	           			var xml = request.responseText;
+	       		    
+   	           			// update counter   	           		
+   	           			pickctr.nodeValue = xml;
+   	           		
+   	           			// special case for the /basket page
+   	           			//if (location.pathname.startsWith("/basket")){
+   	           			//document.getElementById("ttlctr").childNodes[0].nodeValue = "("+xml+")";
    	           		}
 	         	}
 	        }
