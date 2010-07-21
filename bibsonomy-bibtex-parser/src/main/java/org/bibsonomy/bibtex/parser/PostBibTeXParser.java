@@ -65,24 +65,24 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 * Specifies the whitespace substitute for keywords and tags
 	 */
 	private String whitespace;
-	
+
 	/**
 	 * To parse the date in the "date" field of BibTeX entries into the
 	 * date attribute of posts, we support the following date format.
 	 * (needed for DBLP import) 
 	 */
 	private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	
+
 	private Class<? extends BibTex> pubInstanceToCreate = BibTex.class;
 	private final ResourceFactory resourceFactory;
-	
+
 	/**
 	 * inits the resource factory
 	 */
 	public PostBibTeXParser() {
 		this.resourceFactory = new ResourceFactory();
 	}
-	
+
 	/**
 	 * sets the publication type to create
 	 * @param pubInstanceToCreate
@@ -91,7 +91,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		this();
 		this.pubInstanceToCreate = pubInstanceToCreate;
 	}
-	
+
 	/**
 	 * Parses the given BibTeX entry and puts fields which are not part of the
 	 * {@link BibTex} class into the Post. See {@link #fillPost(BibTex)} for 
@@ -162,17 +162,12 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 				 * silently ignore tag parsing errors ....
 				 */
 			}
-			
-			try {
-				/*
-				 * The DBLP updater sets the date of posts using the "date" field. Therefore,
-				 * we must parse it here and fill the post's date attribute. 
-				 */
-				post.setDate(dateFormat.parse(bibtex.removeMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_DATE)));
-			} catch (java.text.ParseException ex) {
-				// ignore parse errors
-			}
-			
+			/*
+			 * The DBLP updater sets the date of posts using the "date" field. Therefore,
+			 * we must parse it here and fill the post's date attribute. 
+			 */
+			setDate(bibtex, post);
+
 			/*
 			 * remove other misc fields which should not be stored as misc field 
 			 * (but rather as regular field/column).
@@ -191,6 +186,24 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 */
 		bibtex.serializeMiscFields();
 		return post;
+	}
+
+	/**
+	 * If a date is given in the "date" field, it is parsed and set in
+	 * the post's "date" attribute.
+	 * 
+	 * @param bibtex
+	 * @param post
+	 */
+	private void setDate(final BibTex bibtex, final Post<BibTex> post) {
+		final String dateField = bibtex.removeMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_DATE);
+		if (present(dateField)) {
+			try {
+				post.setDate(dateFormat.parse(dateField));
+			} catch (java.text.ParseException ex) {
+				// ignore parse errors
+			}
+		}
 	}
 
 	/**
@@ -273,8 +286,8 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 * We don't need to copy those fields back, because they're not touched/
 		 * normalized by the parser.
 		 */
-//		post.setTags(copyPost.getTags());
-//		post.setDescription(copyPost.getDescription());
+		//		post.setTags(copyPost.getTags());
+		//		post.setDescription(copyPost.getDescription());
 	}
 
 	/**
@@ -296,7 +309,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 */
 		return this.parseBibTeXPost(BibTexUtils.toBibtexString(post, SerializeBibtexMode.PLAIN_MISCFIELDS));
 	}
-	
+
 	@Override
 	protected BibTex createPublication() {
 		return this.resourceFactory.createPublication(this.pubInstanceToCreate);
