@@ -8,7 +8,7 @@
 	
 	<!-- This tag can be used to support the bookmark import from delicious -->
 	
-	<c:set var="valueButton"><fmt:message key="settings.firefox.button.text"/></c:set>
+	<c:set var="valueButton"><fmt:message key="import"/></c:set>
 	
 	<!-- Display userName and passWord to supply the user's credentials -->
 		<form:form action="/import/delicious" method="post">
