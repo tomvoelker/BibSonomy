@@ -2,6 +2,12 @@
 	list-style-type: disc;
 }
 
+.helpList {
+	list-style-type: disc;
+	list-style-position: inside;
+	margin-left: 2em;
+}
+
 .details {
 	display: none;
 }
