@@ -15,7 +15,7 @@
 	<layout:bibtexLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.bibtex.cap"/></a> :: 
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.publication"/></a> :: 
 			<form action="/search" method="get" class="smallform">
 			  <input type="text" size="20" name="search" value="${fn:escapeXml(command.title)}"/>
 			</form>
