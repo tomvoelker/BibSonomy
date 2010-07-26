@@ -1,5 +1,8 @@
 package org.bibsonomy.webapp.controller.admin;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -11,17 +14,24 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.lucene.index.LuceneBibTexIndex;
+import org.bibsonomy.lucene.index.LuceneResourceIndex;
+import org.bibsonomy.lucene.index.manager.LuceneBibTexManager;
+import org.bibsonomy.lucene.index.manager.LuceneBookmarkManager;
+import org.bibsonomy.lucene.index.manager.LuceneGoldStandardPublicationManager;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.search.LuceneSearchBibTex;
 import org.bibsonomy.lucene.search.LuceneSearchBookmarks;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
 import org.bibsonomy.webapp.command.admin.AdminStatisticsCommand;
 import org.bibsonomy.webapp.command.admin.AdminViewCommand;
+import org.bibsonomy.webapp.command.admin.LuceneIndexSettingsCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -42,6 +52,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	
 	@SuppressWarnings("unused") // FIXME: currently unused
 	private UserSettings userSettings;
+	
+	private List<LuceneBibTexIndex> bibTexIndices;
 
 	@Override
 	public View workOn(AdminLuceneViewCommand command) {
@@ -56,7 +68,38 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
 		
-		command.setPageTitle("admin lucene");
+		
+		
+		LuceneGoldStandardPublicationManager managerGS = LuceneGoldStandardPublicationManager.getInstance();
+		LuceneResourceIndex<GoldStandardPublication> indexGS = managerGS.getResourceIndeces().get(0);		
+
+		
+		/** 
+		 *  Store Bookmark-Index info
+		 * */
+		LuceneBookmarkManager bookmarkManager = (LuceneBookmarkManager) LuceneBookmarkManager.getInstance();
+		LuceneResourceIndex<Bookmark> bookmarkIndex = bookmarkManager.getResourceIndeces().get(0);
+		
+		LuceneIndexSettingsCommand bookmarkIndexCommand = command.getBookmarksIndex();
+		bookmarkIndexCommand.setNumDocs(bookmarkIndex.getNumberOfStoredDocuments());
+		bookmarkIndexCommand.setNumDeletedDocs(bookmarkIndex.getNumberOfDeletedDocuments());
+		bookmarkIndexCommand.setNewestDate(new Date(bookmarkIndex.getLastDate()).toString());
+		bookmarkIndexCommand.setLastModified(bookmarkIndex.getLastLogDate());
+		
+
+		/** 
+		 *  Store Bibtex-Index info
+		 * */
+		LuceneBibTexManager bibTexManager = LuceneBibTexManager.getInstance();
+		LuceneResourceIndex<BibTex> bibTexIndex = bibTexManager.getResourceIndeces().get(0);
+		
+		LuceneIndexSettingsCommand publicationsIndexCommand = command.getPublicationsIndex();
+		publicationsIndexCommand.setNumDocs(bibTexIndex.getNumberOfStoredDocuments());
+		publicationsIndexCommand.setNumDeletedDocs(bibTexIndex.getNumberOfDeletedDocuments());
+		publicationsIndexCommand.setNewestDate(new Date(bibTexIndex.getLastDate()).toString());
+		publicationsIndexCommand.setLastModified(bibTexIndex.getLastLogDate());
+		
+		
 		
 		try {
 			Context initContext = new InitialContext();
@@ -88,6 +131,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			command.setEnvContextString(NOTSET);
 		}
 		
+		//getBibTexIndices().get(0).getNumberOfStoredDocuments();
 		
 		LuceneResourceSearch<Bookmark> bookmarksIndex    = LuceneSearchBookmarks.getInstance();
 		LuceneResourceSearch<BibTex>   publicationsIndex = LuceneSearchBibTex.getInstance();
@@ -139,6 +183,21 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			command.setNumClassifierNoSpammerUnsure(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, interval));
 			command.setNumClassifierNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, interval));
 		}
+	}
+	
+    // TODO: Different way to access indices?
+	/**
+	 * @param bibTexIndices
+	 */
+	public void setBibTexIndices(List<LuceneBibTexIndex> bibTexIndices) {
+		this.bibTexIndices = bibTexIndices;
+	}
+
+	/**
+	 * @return bibtexIndices
+	 */
+	public List<LuceneBibTexIndex> getBibTexIndices() {
+		return bibTexIndices;
 	}
 
 }
