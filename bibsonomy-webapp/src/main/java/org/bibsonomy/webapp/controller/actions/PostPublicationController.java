@@ -34,6 +34,7 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ConversionException;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -156,7 +157,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * The user has entered text into the snippet selection - we use that 
 			 */
 			log.debug("user has filled selection");
-			snippet = selection;
+			snippet = this.handleSelection(selection);
 		} else if(present(command.getFile())) {
 			/*
 			 * The user uploads a BibTeX or EndNote file
@@ -349,6 +350,31 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * publication view to let the user edit his posts. 
 		 */
 		return Views.POST_PUBLICATION;
+	}
+
+	/**
+	 * Convertes a String into a BibTeX String
+	 * if selection is BibTeX nothing happens
+	 * if selection is EndNote is will be converted to BibTex
+	 * @param selection
+	 * @return
+	 */
+	private String handleSelection(final String selection) {
+		// FIXME: at this point we must first convert to bibtex!
+		//snippet = selection;
+		if (EndnoteToBibtexConverter.canHandle(selection)) {
+			// snippet is endnote
+			return this.e2bConverter.endnoteToBibtex(selection);
+		}
+		if (RisToBibtexConverter.canHandle(selection)) {
+			// snippet is Ris
+			/*
+			 * FIXME: Why are there no static methods?
+			 */
+			RisToBibtexConverter r2bConverter = new RisToBibtexConverter();
+			return r2bConverter.RisToBibtex(selection);
+		}
+		return selection;
 	}
 
 	/**
