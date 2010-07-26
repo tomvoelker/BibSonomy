@@ -68,7 +68,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
 		
-		
+		command.setPageTitle("admin lucene");
+
 		
 		LuceneGoldStandardPublicationManager managerGS = LuceneGoldStandardPublicationManager.getInstance();
 		LuceneResourceIndex<GoldStandardPublication> indexGS = managerGS.getResourceIndeces().get(0);		
@@ -131,8 +132,6 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			command.setEnvContextString(NOTSET);
 		}
 		
-		//getBibTexIndices().get(0).getNumberOfStoredDocuments();
-		
 		LuceneResourceSearch<Bookmark> bookmarksIndex    = LuceneSearchBookmarks.getInstance();
 		LuceneResourceSearch<BibTex>   publicationsIndex = LuceneSearchBibTex.getInstance();
 
@@ -183,21 +182,6 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			command.setNumClassifierNoSpammerUnsure(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, interval));
 			command.setNumClassifierNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, interval));
 		}
-	}
-	
-    // TODO: Different way to access indices?
-	/**
-	 * @param bibTexIndices
-	 */
-	public void setBibTexIndices(List<LuceneBibTexIndex> bibTexIndices) {
-		this.bibTexIndices = bibTexIndices;
-	}
-
-	/**
-	 * @return bibtexIndices
-	 */
-	public List<LuceneBibTexIndex> getBibTexIndices() {
-		return bibTexIndices;
 	}
 
 }
