@@ -29,6 +29,7 @@ package org.bibsonomy.scraper.converter;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.id.ISBNUtils;
@@ -60,6 +61,7 @@ public class RisToBibtexConverter {
 
 	}
 
+
 	/**
 	 * String array that maps from month number to month string label
 	 */
@@ -78,25 +80,38 @@ public class RisToBibtexConverter {
 		 */
 
 		String type = "", author = "", editor = "", startPage = "", endPage = "", comment = "";
-		final SortedMap<String,String> hm = new TreeMap<String,String>();
+		final SortedMap<String,String> bibTexMap = new TreeMap<String,String>();
+		
+		// split the Strint into different entries
 		final String[] fields = Ris.split("\n");
 
+		// go through all entries
 		for (int j = 0; j < fields.length; j++) {
 			final StringBuffer current = new StringBuffer(fields[j]);
 			boolean done = false;
+			
 			/*
-			 * what is done here?
+			 * Fieldentries that are longer than one line are put together
+			 * e.g. 
+			 * XY  - fooooooooo
+			 * oooobar
+			 * => XY  - fooooooooooooobar
 			 */
 			while (!done && (j < fields.length - 1)) {
 				/*
-				 * what does this "6" mean?
+				 * FIXME: What is that 6?
+				 * shouldn't this be OR instead of AND?
 				 */
-				if ((fields[j + 1].length() >= 6)
-						&& !fields[j + 1].substring(2, 6).equals("  - ")) {
+				if ( (fields[j + 1].length() >= 6) && !fields[j + 1].substring(2, 6).equals("  - ") ) {
+					/*
+					 *  the next line has more than 6 characters but does not begin with "xy  - "
+					 *  thus, the next line is not a new field
+					 */
 					if ((current.length() > 0)
 							&& !Character.isWhitespace(current.charAt(current.length() - 1))
-							&& !Character.isWhitespace(fields[j + 1].charAt(0)))
-						current.append(' ');
+							&& !Character.isWhitespace(fields[j + 1].charAt(0))) {
+							current.append(' ');
+					}
 					current.append(fields[j + 1].trim());
 					j++;
 				} else
@@ -127,12 +142,12 @@ public class RisToBibtexConverter {
 					else
 						type = "other";
 				} else if (lab.equals("T1") || lab.equals("TI"))
-					hm.put("title", val);//Title
+					bibTexMap.put("title", val);//Title
 				// =
 				// val;
 				else if (lab.equals("T2") || lab.equals("T3")
 						|| lab.equals("BT")) {
-					hm.put("booktitle", val);
+					bibTexMap.put("booktitle", val);
 				} else if (lab.equals("A1") || lab.equals("AU")) {
 					if (author.equals("")) // don't add " and " for the first author
 						author = val;
@@ -146,17 +161,17 @@ public class RisToBibtexConverter {
 				} else if (lab.equals("JA") || lab.equals("JF")
 						|| lab.equals("JO")) {
 					if (type.equals("inproceedings"))
-						hm.put("booktitle", val);
+						bibTexMap.put("booktitle", val);
 					else
-						hm.put("journal", val);
+						bibTexMap.put("journal", val);
 				}
 
 				else if (lab.equals("SP"))
 					startPage = val;
 				else if (lab.equals("PB"))
-					hm.put("publisher", val);
+					bibTexMap.put("publisher", val);
 				else if (lab.equals("AD") || lab.equals("CY"))
-					hm.put("address", val);
+					bibTexMap.put("address", val);
 				else if (lab.equals("EP"))
 					endPage = val;
 				else if (lab.equals("SN")) {
@@ -174,18 +189,18 @@ public class RisToBibtexConverter {
 					}
 					
 					if (_isbn.length() > 0)
-						hm.put("isbn", _isbn.trim());
+						bibTexMap.put("isbn", _isbn.trim());
 					if (_issn.length() > 0)
-						hm.put("issn", _issn.trim());
+						bibTexMap.put("issn", _issn.trim());
 				}
 				else if (lab.equals("VL"))
-					hm.put("volume", val);
+					bibTexMap.put("volume", val);
 				else if (lab.equals("IS"))
-					hm.put("number", val);
+					bibTexMap.put("number", val);
 				else if (lab.equals("N2") || lab.equals("AB"))
-					hm.put("abstract", val);
+					bibTexMap.put("abstract", val);
 				else if (lab.equals("UR"))
-					hm.put("url", val);
+					bibTexMap.put("url", val);
 				else if ((lab.equals("Y1") || lab.equals("PY"))
 						&& val.length() >= 4) {
 
@@ -197,13 +212,13 @@ public class RisToBibtexConverter {
 					}
 					
 					String[] parts = val.split(delim);
-					hm.put("year", parts[0]);
+					bibTexMap.put("year", parts[0]);
 					if ((parts.length > 1) && (parts[1].length() > 0)) {
 						try {
 							int month = Integer.parseInt(parts[1]);
 							if ((month > 0) && (month <= 12)) {
 								// System.out.println(Globals.MONTHS[month-1]);
-								hm.put("month", "#" + MONTHS[month - 1] + "#");
+								bibTexMap.put("month", "#" + MONTHS[month - 1] + "#");
 							}
 						} catch (NumberFormatException ex) {
 							// The month part is unparseable, so we ignore it.
@@ -212,11 +227,11 @@ public class RisToBibtexConverter {
 				}
 
 				else if (lab.equals("KW")) {
-					if (!hm.containsKey("keywords"))
-						hm.put("keywords", val);
+					if (!bibTexMap.containsKey("keywords"))
+						bibTexMap.put("keywords", val);
 					else {
-						String kw = hm.get("keywords");
-						hm.put("keywords", kw + " " + val);
+						String kw = bibTexMap.get("keywords");
+						bibTexMap.put("keywords", kw + " " + val);
 					}
 				} else if (lab.equals("U1") || lab.equals("U2")
 						|| lab.equals("N1")) {
@@ -226,34 +241,34 @@ public class RisToBibtexConverter {
 				}
 				// Added ID import 2005.12.01, Morten Alver:
 				else if (lab.equals("ID"))
-					hm.put("refid", val);
+					bibTexMap.put("refid", val);
 			}
 		}
 		// fix authors
 		//	        if (Author.length() > 0) {
 		//	            Author = AuthorList.fixAuthor_lastNameFirst(Author);
-		hm.put("author", author);
+		bibTexMap.put("author", author);
 		//	        }
 		//	        if (Editor.length() > 0) {
 		//	            Editor = AuthorList.fixAuthor_lastNameFirst(Editor);
-		hm.put("editor", editor);
+		bibTexMap.put("editor", editor);
 		//	        }
 		//	        if (comment.length() > 0) {
-		hm.put("comment", comment);
+		bibTexMap.put("comment", comment);
 		//	        }
 
-		hm.put("pages", startPage + "--" + endPage);
+		bibTexMap.put("pages", startPage + "--" + endPage);
 		//	        BibtexEntry b = new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID, Globals
 		//	                        .getEntryType(Type)); // id assumes an existing database so don't
 
 		// Remove empty fields:
 		boolean first=true;
 		final StringBuffer bibtexString = new StringBuffer();
-		final String bibtexKey = BibTexUtils.generateBibtexKey(hm.get("author"), hm.get("editor"), hm.get("year"), hm.get("title"));
+		final String bibtexKey = BibTexUtils.generateBibtexKey(bibTexMap.get("author"), bibTexMap.get("editor"), bibTexMap.get("year"), bibTexMap.get("title"));
 		bibtexString.append("@").append(type).append("{" + bibtexKey	+ ",\n");
-		final Set<String> keySet = hm.keySet();
+		final Set<String> keySet = bibTexMap.keySet();
 		for (final String key: keySet) {
-			final String content = hm.get(key);
+			final String content = bibTexMap.get(key);
 			if ((content != null) && (content.trim().length() != 0)) {
 				if (first) {
 					first=false;
@@ -267,6 +282,21 @@ public class RisToBibtexConverter {
 		bibtexString.append("\n}\n");
 
 		return bibtexString.toString();
+	}
+
+	/**
+	 * returns true if the snippet contains only ris entries, false otherwise
+	 * WARNING: this is a heuristic!
+	 * @param snippet
+	 * @return true if snippet is ris
+	 */
+	public static boolean canHandle(final String snippet) {
+	
+		// remove leading whitespace and retrieve first line
+		String firstLine = snippet.trim().split("\n", 2)[0];
+		// patter: 1 capital letter + 1 other character (non whitespace) + 2 space + "-"
+		final Pattern eachLinePattern  = Pattern.compile("^[A-Z]\\S\\s{2}-");
+		return firstLine.length()>=5 && eachLinePattern.matcher( firstLine.substring(0, 5)  ).lookingAt();
 	}
 
 }

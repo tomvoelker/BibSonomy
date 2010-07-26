@@ -48,10 +48,20 @@ public class EndnoteToBibtexConverter {
 
 	private static final Log log = LogFactory.getLog(EndnoteToBibtexConverter.class);
 
+	/**
+	 * Maps every endnote entrytype to the corresponding BibTeX entrytype
+	 */
 	private static Map<String,String> endnoteToBibtexEntryTypeMap = new HashMap<String,String>();
+	/**
+	 * Maps every endnote field name to the corresponding BibTeX field name
+	 */
 	private static Map<String,String> endnoteToBibtexFieldMap     = new HashMap<String,String>();
 
-	private static final Pattern _eachLinePattern       = Pattern.compile("(?s)((%\\S)\\s+(([^%]|%\\s)*))");
+	/*
+	 * TODO explain pattern: We should clearly state which kind of Endnote is handled by this Converter
+	 */
+	private static final Pattern LINE_PATTERN       = Pattern.compile("(?s)((%\\S)\\s+(([^%]|%\\s)*))");
+
 
 
 	static {
@@ -61,7 +71,7 @@ public class EndnoteToBibtexConverter {
 	}
 
 	/**
-	 * example for a StackOverFlowException (thos occure only on 32bit Java versions)
+	 * example for a StackOverFlowException (those occure only on 32bit Java versions)
 	 * @param args
 	 */
 	public static void main (String[] args){
@@ -128,7 +138,7 @@ public class EndnoteToBibtexConverter {
 	 * 
 	 * @param endnote
 	 * @return A string of BibTeX entries.
-	 */
+	 */ 
 	public String endnoteToBibtex(final String endnote) {
 		final StringBuffer result = new StringBuffer();
 
@@ -146,14 +156,17 @@ public class EndnoteToBibtexConverter {
 	}
 
 	/**
-	 * method to process the data
+	 * Convert String of one single endnote entry into a String of one BibTeX entry
 	 * @param entry
 	 * @return The processed string.
 	 */
 	public String processEntry(String entry){
 
+		final Map<String,String> map = new HashMap<String,String>();
+
 		/*
-		 * bug fix with large abstract
+		 * Handle abstract first
+		 * = bug fix with large abstract (abstract might consist of more than one line)
 		 */
 		String abstractEntry = null;
 		int startAbstract = entry.indexOf("%X");
@@ -167,24 +180,28 @@ public class EndnoteToBibtexConverter {
 			// build new entry without abstract
 			entry = entryToAbstract + entryAfterAbstract;
 		}
+		if(abstractEntry != null)
+			map.put("abstract", abstractEntry);
 
-		final Map<String,String> map = new HashMap<String,String>();
-
+		/*
+		 * Go through all other fields
+		 */
 		try {
 			// need to get every line (i.e. %T Foo %K bar)
-			final Matcher _eachLineMatcher = _eachLinePattern.matcher(entry);
+			final Matcher eachLineMatcher = LINE_PATTERN.matcher(entry);
 
 			//process each line
-			while (_eachLineMatcher.find()){
+			while (eachLineMatcher.find()){
 
-				final String _tempData = _eachLineMatcher.group(3).trim();
+				// the content of this line's field
+				final String tempData = eachLineMatcher.group(3).trim();
 
-				if (_tempData == null){
+				if (tempData == null){
 					continue;
 				}
-
-				final String _tempLine = _eachLineMatcher.group(0).trim();
-				final String _endnoteType = _eachLineMatcher.group(2).trim();
+				final String _tempLine = eachLineMatcher.group(0).trim();
+				// the type of this lines field
+				final String _endnoteType = eachLineMatcher.group(2).trim();
 
 				/*
 				 * map the reference type
@@ -200,25 +217,21 @@ public class EndnoteToBibtexConverter {
 						if (map.containsKey(bibtexFieldName)) {
 							/*
 							 * field already contained: special handling!
+							 * handle author and editor, ignore others
 							 */
-							if ("author".equals(bibtexFieldName)) {
-								final String newAuthor = map.get(bibtexFieldName) + " and " + _tempData;
-								map.put(bibtexFieldName, newAuthor);
-							}
-
-							if ("editor".equals(bibtexFieldName)) {
-								final String newEditor = map.get(bibtexFieldName) + " and " + _tempData;
-								map.put(bibtexFieldName, newEditor);
+							if ("author".equals(bibtexFieldName) || "editor".equals(bibtexFieldName)) {
+								final String newName = map.get(bibtexFieldName) + " and " + tempData;
+								map.put(bibtexFieldName, newName);
 							}
 						} else {
-							map.put(bibtexFieldName, _tempData);
+							map.put(bibtexFieldName, tempData);
 						}
 					}
 				}
 			}
 
 			/*
-			 * special handling for ISBN/ISSN
+			 * special postprocessing for ISBN/ISSN
 			 */
 			if (map.containsKey("isbn")) {
 				final String isbn = map.get("isbn");
@@ -238,11 +251,6 @@ public class EndnoteToBibtexConverter {
 			}
 			map.put("key", BibTexUtils.generateBibtexKey(map.get("author"), map.get("editor"), year, map.get("title")));
 
-			/*
-			 * build abstract
-			 */
-			if(abstractEntry != null)
-				map.put("abstract", abstractEntry);
 
 		} catch (RuntimeException e){
 			log.fatal("Could not process the data: " + e);
@@ -330,6 +338,18 @@ public class EndnoteToBibtexConverter {
 	}
 
 
+	/**
+	 * returns true if the snippet contains only endnote entries, false otherwise
+	 * WARNING: this is a heuristic!
+	 * @param snippet
+	 * @return true if snippet is endnote
+	 */
+	public static boolean canHandle(final String snippet) {
+		final Matcher _eachLineMatcher = LINE_PATTERN.matcher(snippet.trim());
+		return _eachLineMatcher.find();	// true if the first line looks like endnote with "%"
+	}
+	
+	
 	private static void buildEndnoteToBibtexFieldMap () {
 		endnoteToBibtexFieldMap.put("%A",                     "author"); // Author
 		endnoteToBibtexFieldMap.put("%B",                  "booktitle"); // Secondary Title
