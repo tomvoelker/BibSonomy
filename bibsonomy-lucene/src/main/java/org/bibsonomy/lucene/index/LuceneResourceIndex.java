@@ -145,7 +145,12 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 */
 	public int getNumberOfStoredDocuments() {
 		this.ensureReadAccess();
-		return this.indexReader.maxDoc();
+		return this.indexReader.numDocs();
+	}
+	
+	public int getNumberOfDeletedDocuments() {
+	    this.ensureReadAccess();
+	    return this.indexReader.numDeletedDocs();
 	}
 	
 	/**
