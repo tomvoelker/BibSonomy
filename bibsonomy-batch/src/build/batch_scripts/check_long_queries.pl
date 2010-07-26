@@ -45,5 +45,5 @@ if ($msg) {
 	open MAIL, "| mail -s \"Queries gekillt\" bibsonomy\@cs.uni-kassel.de" or die;
 	print MAIL $msg;
 	close MAIL;
-    print STDERR $msg;
+    #print STDERR $msg;
 }
