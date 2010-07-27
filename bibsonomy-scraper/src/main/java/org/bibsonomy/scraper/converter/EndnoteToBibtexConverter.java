@@ -194,7 +194,7 @@ public class EndnoteToBibtexConverter {
 			while (eachLineMatcher.find()){
 
 				// the content of this line's field
-				final String tempData = eachLineMatcher.group(3).trim();
+				String tempData = eachLineMatcher.group(3).trim();
 
 				if (tempData == null){
 					continue;
@@ -214,6 +214,7 @@ public class EndnoteToBibtexConverter {
 					 */
 					if (endnoteToBibtexFieldMap.containsKey(_endnoteType)) {
 						final String bibtexFieldName = endnoteToBibtexFieldMap.get(_endnoteType);
+						tempData = this.preprocess(bibtexFieldName, tempData);
 						if (map.containsKey(bibtexFieldName)) {
 							/*
 							 * field already contained: special handling!
@@ -270,6 +271,50 @@ public class EndnoteToBibtexConverter {
 		 */
 		return buildBibtex(map);
 	}
+
+	/**
+	 * Preprocessing to clean up some of the entries.
+	 * currently only author and editor fields are processed:
+	 * a field of the form "surname1, firstname1; surname2, firstname2 & surname3, firstname3"
+	 * is transformed into "firstname1 surname1 and firstname2 surname2 and firstname3 surname3"   
+	 * @param bibtexFieldName
+	 * @param tempLine
+	 * @return
+	 */
+	private String preprocess(String bibtexFieldName, String tempLine) {
+		// preprocess author and editor
+		if ("author".equals(bibtexFieldName) || "editor".equals(bibtexFieldName)) {
+			if (tempLine.contains(";") && tempLine.contains("&")) {
+				/*
+				 *  we assume to have the form
+				 *  "author1; author2; author3 & author 4"
+				 */
+				StringBuffer result = new StringBuffer();
+				String[] authors = tempLine.split("[;&]");
+				for (int i = 0; i<authors.length; i++) {
+					/*
+					 * we distinguish the forms
+					 * "surname, firstname" and
+					 * "firstname surname"
+					 */
+					String[] parts = authors[i].split(",");
+					if (parts.length>1) {
+						// we assume "surname, firstname" => add firstname first
+						result.append(parts[1].trim());
+						result.append(" ");
+					}
+					result.append(parts[0].trim());
+					if (i<authors.length-1) {
+						result.append(" and ");
+					}
+				}
+				return result.toString();
+			}
+		}
+		return tempLine;
+
+	}
+
 
 	//method to build a String with the complete Bibtex part
 	private String buildBibtex(Map<String,String> data){
@@ -348,8 +393,8 @@ public class EndnoteToBibtexConverter {
 		final Matcher _eachLineMatcher = LINE_PATTERN.matcher(snippet.trim());
 		return _eachLineMatcher.find();	// true if the first line looks like endnote with "%"
 	}
-	
-	
+
+
 	private static void buildEndnoteToBibtexFieldMap () {
 		endnoteToBibtexFieldMap.put("%A",                     "author"); // Author
 		endnoteToBibtexFieldMap.put("%B",                  "booktitle"); // Secondary Title

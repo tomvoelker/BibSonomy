@@ -1,5 +1,6 @@
 package org.bibsonomy.scraper.converter;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -22,18 +23,17 @@ public class ToBibtexConverterTest {
 	 */
 	@Test
 	public void testRisToBibtex() {
-		// test the conversion
 		try {
-			final String ris = this.readEntryFromFile("test1.ris");
+			String ris = this.readEntryFromFile("test1.ris");
 
 			// test the canHandle heuristic
 			assertTrue(RisToBibtexConverter.canHandle(ris));
 
-
+			// test the conversion
 			final String expectedBibTeX = this.readEntryFromFile("test1_risBibtex.bib");
 			final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
 			final String bibTeX = ris2bConverter.RisToBibtex(ris);
-			assertTrue (expectedBibTeX.equals(bibTeX));
+			assertEquals (expectedBibTeX, bibTeX);
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
@@ -45,6 +45,12 @@ public class ToBibtexConverterTest {
 	 */
 	@Test
 	public void testEndnoteToBibtex() {
+		/*
+		 * Note that in the testfile 2 endnote entries are given
+		 * the first is a regular endnote (like it is exported by BibSonomy)
+		 * the second contains only authors to test the correct conversion of
+		 * the author field to bibtex!
+		 */
 		try {
 			String endnote = this.readEntryFromFile("test1.endnote");
 
@@ -52,10 +58,10 @@ public class ToBibtexConverterTest {
 			assertTrue(EndnoteToBibtexConverter.canHandle(endnote));
 
 			// test the conversion
-			String expectedBibTeX = this.readEntryFromFile("test1_endnoteBibtex.bib");
-			EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
-			String bibTeX = e2bConverter.endnoteToBibtex(endnote);
-			assertTrue (expectedBibTeX.trim().equals(bibTeX.trim()));
+			final String expectedBibTeX = this.readEntryFromFile("test1_endnoteBibtex.bib");
+			final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
+			final String bibTeX = e2bConverter.endnoteToBibtex(endnote);
+			assertEquals(expectedBibTeX.trim(), bibTeX.trim());
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}
