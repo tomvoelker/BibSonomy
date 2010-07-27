@@ -11,6 +11,7 @@ import static org.bibsonomy.lucene.util.LuceneBase.getIndexBasePath;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.lucene.util.LuceneBase;
@@ -140,17 +142,37 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	}
 	
 	/**
-	 * TODO: a general method getStatistics? TODODZ
-	 * @return the number of stored docs in the index
+	 * @return the number of stored documents in this index
 	 */
 	public int getNumberOfStoredDocuments() {
-		this.ensureReadAccess();
-		return this.indexReader.numDocs();
+	    this.ensureReadAccess();
+	    return indexReader.numDocs();
 	}
 	
-	public int getNumberOfDeletedDocuments() {
+	/**
+	 * Get Statistics for this index
+	 * @return LuceneIndexStatistics for this index
+	 */
+	public LuceneIndexStatistics getStatistics() {
 	    this.ensureReadAccess();
-	    return this.indexReader.numDeletedDocs();
+            LuceneIndexStatistics statistics = new LuceneIndexStatistics();
+            
+            statistics.setNumDocs(this.indexReader.numDocs());
+            statistics.setNumDeletedDocs(this.indexReader.numDeletedDocs());
+            statistics.setLastModified(this.getLastLogDate());
+            statistics.setNewestRecordDate(new Date(this.getLastDate()).toString());
+            statistics.setCurrentVersion(indexReader.getVersion());
+            try {
+		statistics.setCurrent(indexReader.isCurrent());
+	    } catch (CorruptIndexException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+    	    
+            return statistics;
 	}
 	
 	/**

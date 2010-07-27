@@ -39,6 +39,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -211,14 +212,6 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		}
 
 	}
-
-	/**
-	 * @return the index statistics
-	 */
-	public LuceneIndexStatistics getStatistics() {
-		// TODO: implement me
-		return null;
-	}	
 	
 	/**
 	 * perform given query, respecting read/write locks

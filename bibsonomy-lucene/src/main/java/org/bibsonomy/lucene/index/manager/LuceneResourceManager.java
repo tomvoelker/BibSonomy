@@ -13,6 +13,7 @@ import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
+import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.lucene.util.LuceneResourceConverter;
 import org.bibsonomy.model.Post;
@@ -85,6 +86,20 @@ public class LuceneResourceManager<R extends Resource> {
 	public void optimizeIndex() {
 		if( this.resourceIndex!=null ) {
 			this.resourceIndex.optimizeIndex();
+		}
+	}
+	
+	/**
+	 * Get statistics for the active index
+	 * @return LuceneIndexStatistics for the active index 
+	 */
+	public LuceneIndexStatistics getStatistics() {
+		LuceneResourceIndex<? extends Resource> index = this.resourceIndeces.get(idxSelect);
+		
+		if(index != null) {
+		    return index.getStatistics();
+		} else {
+			return null;
 		}
 	}
 	
