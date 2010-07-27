@@ -47,7 +47,7 @@
 
 	<div style="width: 100%; margin: .5%;" >
 		<fieldset style="padding:5px;">
-			<legend><label ostyle="font-weight: bold;">General properties (context.xml)</label></legend>
+			<legend><label style="font-weight: bold;">General properties (context.xml)</label></legend>
 			<div class="ls-description">envContextString:</div><div class="ls-value">${command.envContextString}</div>
 			<div class="ls-description">bookmarksPath:</div><div class="ls-value">${command.luceneBookmarksPath}</div>
 			<div class="ls-description">publicationsPath:</div><div class="ls-value">${command.lucenePublicationsPath}</div>
