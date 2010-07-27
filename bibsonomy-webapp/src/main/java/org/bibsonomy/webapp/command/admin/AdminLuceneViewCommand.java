@@ -26,6 +26,8 @@ public class AdminLuceneViewCommand extends BaseCommand {
 
 	private LuceneIndexSettingsCommand bookmarksIndex = new LuceneIndexSettingsCommand();
 	private LuceneIndexSettingsCommand publicationsIndex = new LuceneIndexSettingsCommand();
+	private LuceneIndexSettingsCommand goldstandardIndex = new LuceneIndexSettingsCommand();
+
 
 	/**
 	 * @return the luceneBookmarkPath
@@ -145,6 +147,20 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	 */
 	public void setPublicationsIndex(LuceneIndexSettingsCommand publicationsIndex) {
 		this.publicationsIndex = publicationsIndex;
+	}
+	
+	/**
+	 * @return the goldstandardIndex
+	 */
+	public LuceneIndexSettingsCommand getGoldstandardIndex() {
+		return this.goldstandardIndex;
+	}
+
+	/**
+	 * @param goldstandardIndex the goldstandardIndex to set
+	 */
+	public void setGoldstandardIndex(LuceneIndexSettingsCommand goldstandardIndex) {
+		this.goldstandardIndex = goldstandardIndex;
 	}
 
 }

@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.controller.admin;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.naming.Context;
@@ -15,13 +14,13 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.lucene.index.LuceneBibTexIndex;
-import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.manager.LuceneBibTexManager;
 import org.bibsonomy.lucene.index.manager.LuceneBookmarkManager;
 import org.bibsonomy.lucene.index.manager.LuceneGoldStandardPublicationManager;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.search.LuceneSearchBibTex;
 import org.bibsonomy.lucene.search.LuceneSearchBookmarks;
+import org.bibsonomy.lucene.search.LuceneSearchGoldStandardPublication;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -69,38 +68,6 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		}
 		
 		command.setPageTitle("admin lucene");
-
-		
-		LuceneGoldStandardPublicationManager managerGS = LuceneGoldStandardPublicationManager.getInstance();
-		LuceneResourceIndex<GoldStandardPublication> indexGS = managerGS.getResourceIndeces().get(0);		
-
-		
-		/** 
-		 *  Store Bookmark-Index info
-		 * */
-		LuceneBookmarkManager bookmarkManager = (LuceneBookmarkManager) LuceneBookmarkManager.getInstance();
-		LuceneResourceIndex<Bookmark> bookmarkIndex = bookmarkManager.getResourceIndeces().get(0);
-		
-		LuceneIndexSettingsCommand bookmarkIndexCommand = command.getBookmarksIndex();
-		bookmarkIndexCommand.setNumDocs(bookmarkIndex.getNumberOfStoredDocuments());
-		bookmarkIndexCommand.setNumDeletedDocs(bookmarkIndex.getNumberOfDeletedDocuments());
-		bookmarkIndexCommand.setNewestDate(new Date(bookmarkIndex.getLastDate()).toString());
-		bookmarkIndexCommand.setLastModified(bookmarkIndex.getLastLogDate());
-		
-
-		/** 
-		 *  Store Bibtex-Index info
-		 * */
-		LuceneBibTexManager bibTexManager = LuceneBibTexManager.getInstance();
-		LuceneResourceIndex<BibTex> bibTexIndex = bibTexManager.getResourceIndeces().get(0);
-		
-		LuceneIndexSettingsCommand publicationsIndexCommand = command.getPublicationsIndex();
-		publicationsIndexCommand.setNumDocs(bibTexIndex.getNumberOfStoredDocuments());
-		publicationsIndexCommand.setNumDeletedDocs(bibTexIndex.getNumberOfDeletedDocuments());
-		publicationsIndexCommand.setNewestDate(new Date(bibTexIndex.getLastDate()).toString());
-		publicationsIndexCommand.setLastModified(bibTexIndex.getLastLogDate());
-		
-		
 		
 		try {
 			Context initContext = new InitialContext();
@@ -108,13 +75,13 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			command.setEnvContextString("java:/comp/env");
 			
 			try {
-				command.setLuceneBookmarksPath((String) envContext.lookup("luceneIndexPathBoomarks"));
+				command.setLuceneBookmarksPath((String) envContext.lookup("luceneIndexPathBookmark"));
 			} catch (NamingException e) {
 				command.setLuceneBookmarksPath(NOTSET);
 			}
 			
 			try {
-				command.setLucenePublicationsPath((String) envContext.lookup("luceneIndexPathPublications"));
+				command.setLucenePublicationsPath((String) envContext.lookup("luceneIndexPathBibTex"));
 			} catch (NamingException e) {
 				command.setLucenePublicationsPath(NOTSET);
 			}
@@ -134,18 +101,26 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		
 		LuceneResourceSearch<Bookmark> bookmarksIndex    = LuceneSearchBookmarks.getInstance();
 		LuceneResourceSearch<BibTex>   publicationsIndex = LuceneSearchBibTex.getInstance();
+		LuceneResourceSearch<GoldStandardPublication>   goldstandardPublicationIndex = LuceneSearchGoldStandardPublication.getInstance();
 
+		
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
 		// in extra methode: Parameter=Index
-
-		command.getBookmarksIndex().setInstance(bookmarksIndex.toString());
-		command.getPublicationsIndex().setInstance(publicationsIndex.toString());
 		
-//		command.bookmarksIndex.setIndexStatistics(bookmarksIndex.getStatistics());
-//		command.publicationsIndex.setIndexStatistics(publicationsIndex.getStatistics());
-
+		LuceneIndexSettingsCommand cmdBookmarksIndex    = command.getBookmarksIndex();
+		LuceneIndexSettingsCommand cmdPublicationsIndex = command.getPublicationsIndex();
+		LuceneIndexSettingsCommand cmdGoldstandardIndex = command.getGoldstandardIndex();
 		
+		
+		cmdBookmarksIndex.setInstance(bookmarksIndex.toString());
+		cmdBookmarksIndex.setIndexStatistics(LuceneBookmarkManager.getInstance().getStatistics());
+		
+		cmdPublicationsIndex.setInstance(publicationsIndex.toString());
+		cmdPublicationsIndex.setIndexStatistics(LuceneBibTexManager.getInstance().getStatistics());
+		
+		cmdGoldstandardIndex.setInstance(goldstandardPublicationIndex.toString());
+		cmdGoldstandardIndex.setIndexStatistics(LuceneGoldStandardPublicationManager.getInstance().getStatistics());		
 
 		return Views.ADMIN_LUCENE;
 	}

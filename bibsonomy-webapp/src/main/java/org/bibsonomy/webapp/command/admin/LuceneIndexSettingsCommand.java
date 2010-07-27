@@ -32,6 +32,7 @@ public class LuceneIndexSettingsCommand {
 		setNewestDate(indexStatistics.getNewestRecordDate());
 		setLastModified(indexStatistics.getLastModified());
 		setCurrentVersion(indexStatistics.getCurrentVersion());
+		setCurrent(indexStatistics.isCurrent());
 	}
 	
 	/**
