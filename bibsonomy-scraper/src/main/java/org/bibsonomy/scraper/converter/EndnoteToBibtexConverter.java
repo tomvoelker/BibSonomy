@@ -143,8 +143,7 @@ public class EndnoteToBibtexConverter {
 		final StringBuffer result = new StringBuffer();
 
 		// split the endnote entry by 2 blank lines
-		final String[] _endNoteParts = endnote
-		.split("(?m)^\\n{1}(?=%\\w{1}\\s{1})");
+		final String[] _endNoteParts = endnote.split("(?m)^\\n{1}(?=%\\w{1}\\s{1})");
 
 		// process each endnote entry
 		for (final String part : _endNoteParts) {
@@ -199,21 +198,21 @@ public class EndnoteToBibtexConverter {
 				if (tempData == null){
 					continue;
 				}
-				final String _tempLine = eachLineMatcher.group(0).trim();
+				final String tempLine = eachLineMatcher.group(0).trim();
 				// the type of this lines field
-				final String _endnoteType = eachLineMatcher.group(2).trim();
+				final String endnoteType = eachLineMatcher.group(2).trim();
 
 				/*
 				 * map the reference type
 				 */
-				if (endnoteToBibtexEntryTypeMap.containsKey(_tempLine)) {
-					map.put("type", endnoteToBibtexEntryTypeMap.get(_tempLine));
+				if (endnoteToBibtexEntryTypeMap.containsKey(tempLine)) {
+					map.put("type", endnoteToBibtexEntryTypeMap.get(tempLine));
 				} else {
 					/*
 					 * handle standard fields
 					 */
-					if (endnoteToBibtexFieldMap.containsKey(_endnoteType)) {
-						final String bibtexFieldName = endnoteToBibtexFieldMap.get(_endnoteType);
+					if (endnoteToBibtexFieldMap.containsKey(endnoteType)) {
+						final String bibtexFieldName = endnoteToBibtexFieldMap.get(endnoteType);
 						tempData = this.preprocess(bibtexFieldName, tempData);
 						if (map.containsKey(bibtexFieldName)) {
 							/*
@@ -278,19 +277,19 @@ public class EndnoteToBibtexConverter {
 	 * a field of the form "surname1, firstname1; surname2, firstname2 & surname3, firstname3"
 	 * is transformed into "firstname1 surname1 and firstname2 surname2 and firstname3 surname3"   
 	 * @param bibtexFieldName
-	 * @param tempLine
+	 * @param fieldEntry
 	 * @return
 	 */
-	private String preprocess(String bibtexFieldName, String tempLine) {
+	private String preprocess(String bibtexFieldName, String fieldEntry) {
 		// preprocess author and editor
 		if ("author".equals(bibtexFieldName) || "editor".equals(bibtexFieldName)) {
-			if (tempLine.contains(";") && tempLine.contains("&")) {
+			if (fieldEntry.contains(";") && fieldEntry.contains("&")) {
 				/*
 				 *  we assume to have the form
 				 *  "author1; author2; author3 & author 4"
 				 */
 				StringBuffer result = new StringBuffer();
-				String[] authors = tempLine.split("[;&]");
+				String[] authors = fieldEntry.split("[;&]");
 				for (int i = 0; i<authors.length; i++) {
 					/*
 					 * we distinguish the forms
@@ -311,7 +310,7 @@ public class EndnoteToBibtexConverter {
 				return result.toString();
 			}
 		}
-		return tempLine;
+		return fieldEntry;
 
 	}
 
