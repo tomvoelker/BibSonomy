@@ -91,20 +91,17 @@ public class RisToBibtexConverter {
 			boolean done = false;
 			
 			/*
-			 * Fieldentries that are longer than one line are put together
+			 * Fieldentries that are longer than one line (e.g. the abstract) are put together
 			 * e.g. 
 			 * XY  - fooooooooo
 			 * oooobar
 			 * => XY  - fooooooooooooobar
 			 */
 			while (!done && (j < fields.length - 1)) {
-				/*
-				 * FIXME: What is that 6?
-				 * shouldn't this be OR instead of AND?
-				 */
-				if ( (fields[j + 1].length() >= 6) && !fields[j + 1].substring(2, 6).equals("  - ") ) {
+				if ( fields[j + 1].length() < 2 || !fields[j + 1].substring(2).startsWith("  -") ) {
 					/*
-					 *  the next line has more than 6 characters but does not begin with "xy  - "
+					 *  the next line has less than 2 characters (so no new field) or
+					 *  does not begin with "xy  -"
 					 *  thus, the next line is not a new field
 					 */
 					if ((current.length() > 0)
@@ -268,14 +265,14 @@ public class RisToBibtexConverter {
 		bibtexString.append("@").append(type).append("{" + bibtexKey	+ ",\n");
 		final Set<String> keySet = bibTexMap.keySet();
 		for (final String key: keySet) {
-			final String content = bibTexMap.get(key);
+			final String content = bibTexMap.get(key).trim();
 			if ((content != null) && (content.trim().length() != 0)) {
 				if (first) {
 					first=false;
 				} else {
 					bibtexString.append(",\n");
 				}
-				bibtexString.append(key).append("={").append(content).append(
+				bibtexString.append(key).append(" = {").append(content).append(
 				"}");
 			}
 		}
