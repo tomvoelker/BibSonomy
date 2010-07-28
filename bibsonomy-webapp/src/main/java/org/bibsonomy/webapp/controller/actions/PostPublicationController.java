@@ -157,7 +157,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * The user has entered text into the snippet selection - we use that 
 			 */
 			log.debug("user has filled selection");
-			snippet = this.handleSelection(selection);
+			snippet = this.handleSelection(command, selection);
 		} else if(present(command.getFile())) {
 			/*
 			 * The user uploads a BibTeX or EndNote file
@@ -359,21 +359,33 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @param selection
 	 * @return
 	 */
-	private String handleSelection(final String selection) {
+	private String handleSelection(final PostPublicationCommand command, final String selection) {
 		// FIXME: at this point we must first convert to bibtex!
 		//snippet = selection;
 		if (EndnoteToBibtexConverter.canHandle(selection)) {
 			// snippet is endnote
+			/*
+			 *  we need to null the selection to avoid scraping in one of the following steps
+			 *  FIXME: this is a bad solution
+			 */
+			command.setSelection(null);
 			return this.e2bConverter.endnoteToBibtex(selection);
 		}
 		if (RisToBibtexConverter.canHandle(selection)) {
 			// snippet is Ris
 			/*
-			 * FIXME: Why are there no static methods?
+			 *  we need to null the selection to avoid scraping in one of the following steps
+			 *  FIXME: this is a bad solution
 			 */
+			command.setSelection(null);
 			RisToBibtexConverter r2bConverter = new RisToBibtexConverter();
 			return r2bConverter.RisToBibtex(selection);
 		}
+		/*
+		 * FIXME: Should we disable the scrapers also for bibtex snippets?
+		 * in that case it would not be possible to just enter an url
+		 * i.e. command.setSelection(null);
+		 */
 		return selection;
 	}
 
