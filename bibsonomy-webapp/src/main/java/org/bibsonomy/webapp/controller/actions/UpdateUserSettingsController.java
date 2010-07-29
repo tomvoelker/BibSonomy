@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import java.util.Locale;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
@@ -10,11 +12,13 @@ import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
  * @author cvo
@@ -27,6 +31,8 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	private static final String TAB_URL = "/settings";
 
 	private LogicInterface logic;
+	private RequestLogic requestLogic;
+	
 	private Errors errors;
 	
 	@Override
@@ -131,9 +137,6 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		final UserSettings userSettings = user.getSettings();
 		
 		userSettings.setDefaultLanguage(commandSettings.getDefaultLanguage());
-		/*
-		 * trigger locale change
-		 */
 		userSettings.setListItemcount(commandSettings.getListItemcount());
 		userSettings.setTagboxTooltip(commandSettings.getTagboxTooltip());
 		userSettings.setShowBookmark(commandSettings.isShowBookmark());
@@ -152,6 +155,18 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		
 		final String updatedUser = logic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		log.debug("settings for the layout of tag boxes and post lists of user " + updatedUser + " has been changed successfully");
+		/*
+		 * trigger locale change
+		 * 
+		 * FIXME: There is code in InitUserFilter to change the locale and we
+		 * have Spring classes (i.e., LocaleChangeInterceptor, SessionLocaleResolver) 
+		 * to do this. We must unify this handling!
+		 * 
+		 * Another problem is, that we use low level setSessionAttribute() methods 
+		 * instead of SessionLocaleResolver.setLocale(), because for the latter
+		 * we would need the request + response which we don't have. 
+		 */
+		requestLogic.setSessionAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale(userSettings.getDefaultLanguage()));
 	}
 
 	@Override
@@ -178,5 +193,13 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
+	}
+
+	public RequestLogic getRequestLogic() {
+		return this.requestLogic;
+	}
+
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
 	}
 }
