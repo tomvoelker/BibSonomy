@@ -101,7 +101,7 @@ public class InitUserFilter implements Filter {
 	/**
 	 * TODO: improve documentation
 	 */
-	public static final String REQ_ATTRIB_LANGUAGE = SessionLocaleResolver.class.getName() + ".LOCALE";
+	public static final String REQ_ATTRIB_LANGUAGE = SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME;
 	
 	/**
 	 * Name of the Attribute that stores the default language in the servers context.xml 
