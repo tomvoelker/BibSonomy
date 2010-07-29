@@ -506,9 +506,9 @@ public class BibTexUtils {
 		final StringBuilder buffer = new StringBuilder();
 
 		/* get author */
-		String first = getFirstPersonsLastName(authors);
+		String first = PersonNameUtils.getFirstPersonsLastName(authors);
 		if (first == null) {
-			first = getFirstPersonsLastName(editors);
+			first = PersonNameUtils.getFirstPersonsLastName(editors);
 			if (first == null) {
 				first = "noauthororeditor";
 			}
@@ -549,38 +549,6 @@ public class BibTexUtils {
 	}
 
 
-	/**
-	 * Tries to extract the last name of the first person.
-	 * 
-	 * @param person some string representation of a list of persons with their first- and lastnames  
-	 * @return the last name of the first person
-	 */
-	public static String getFirstPersonsLastName(final String person) {
-		if (person != null) {
-			final String firstauthor;
-			/*
-			 * check, if there is more than one author
-			 */
-			final int firstand = person.indexOf(PersonNameUtils.PERSON_NAME_DELIMITER);
-			if (firstand < 0) {
-				firstauthor = person;
-			} else {
-				firstauthor = person.substring(0, firstand);				
-			}
-			/*
-			 * first author extracted, get its last name
-			 */
-			final int lastspace = firstauthor.lastIndexOf(' ');
-			final String lastname;
-			if (lastspace < 0) {
-				lastname = firstauthor;
-			} else {
-				lastname = firstauthor.substring(lastspace + 1, firstauthor.length());
-			}
-			return lastname;
-		}
-		return null;
-	}	
 
 	/**
 	 * Cleans up a string containing LaTeX markup and converts special chars to HTML special chars.

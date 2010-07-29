@@ -24,7 +24,6 @@
 package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -201,17 +200,6 @@ public class BibtexUtilsTest {
 		assertEquals("silie2005", BibTexUtils.generateBibtexKey(null, "Peter Silie and Hans Dampf", "2005", null));
 	}
 
-	/**
-	 * tests getFirstPersonsLastName
-	 */
-	@Test
-	public void getFirstPersonsLastName() {
-		assertNull(BibTexUtils.getFirstPersonsLastName(null));
-		assertEquals("Dampf", BibTexUtils.getFirstPersonsLastName("Hans Dampf"));
-		assertEquals("Dampf", BibTexUtils.getFirstPersonsLastName("Hans Dampf and Reiner Zufall"));
-		// XXX: this should be "Dampf" instead of "Zufall"
-		assertEquals("Zufall", BibTexUtils.getFirstPersonsLastName("Hans Dampf, Reiner Zufall"));
-	}
 
 	/**
 	 * tests cleanBibTex
