@@ -416,7 +416,7 @@ public class DBLogic implements LogicInterface {
 	final DBSession session = this.openSession();
 	try {
 	    final Group myGroup = this.groupDBManager.getGroupByName(groupName, session);
-	    if (myGroup != null) {
+	    if (present(myGroup)) {
 		myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
 	    }
 	    return myGroup;
