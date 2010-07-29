@@ -1857,7 +1857,6 @@ public class DBLogic implements LogicInterface {
     @Override
     public List<User> getUserRelationship(final String sourceUser, final UserRelation relation) {
 	this.ensureLoggedIn();
-	List<User> targetUsers;
 	// ask Robert about this method
 	// this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);
 	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, sourceUser);
@@ -1865,12 +1864,11 @@ public class DBLogic implements LogicInterface {
 	final DBSession session = openSession();
 	try {
 	    // get all users that are in relation with sourceUser
-	    targetUsers = this.userDBManager.getUserRelation(sourceUser, relation, session);
+	    return this.userDBManager.getUserRelation(sourceUser, relation, session);
 	} finally {
 	    // unsupported Relations will cause an UnsupportedRelationException
 	    session.close();
 	}
-	return targetUsers;
     }
 
     /*
