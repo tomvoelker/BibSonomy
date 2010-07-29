@@ -69,16 +69,22 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 			
 			//do set new settings here
 			final String action = command.getAction();
-			if(action.equals("logging")) {
-				// changes the log level
-				actionLogging(command, user);
-			}else if(action.equals("api")) {
-				// changes the api key of a user
-				actionAPI(command, user);
-			}else if(action.equals("layoutTagPost")) {
-				// changes the layout of tag and post for a user
+			if("logging".equals(action)) {
+				/*
+				 * change the log level
+				 */
+				actionLogging(command.getUser().getSettings(), user);
+			} else if("api".equals(action)) {
+				/*
+				 * change the api key of a user
+				 */
+				actionAPI(user);
+			} else if("layoutTagPost".equals(action)) {
+				/*
+				 * changes the layout of tag and post for a user
+				 */
 				actionLayoutTagPost(command, user);
-			}else {
+			} else {
 				errors.reject("error.invalid_parameter");
 			}
 			
@@ -102,50 +108,52 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		return new ExtendedRedirectView("/settings?selTab=1");
 	}
 	
-	private void actionLogging(final SettingsViewCommand command, final User user) {
-		user.getSettings().setLogLevel(command.getUser().getSettings().getLogLevel());
-		user.getSettings().setConfirmDelete(command.getUser().getSettings().isConfirmDelete());
+	private void actionLogging(final UserSettings commandSettings, final User user) {
+		final UserSettings userSettings = user.getSettings();
+		userSettings.setLogLevel(commandSettings.getLogLevel());
+		userSettings.setConfirmDelete(commandSettings.isConfirmDelete());
 
 		final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
-		log.info("logging settings of user " + updatedUser + " has been changed successfully");
+		log.debug("logging settings of user " + updatedUser + " has been changed successfully");
 	}
 	
-	private void actionAPI(final SettingsViewCommand command, final User user) {
+	private void actionAPI(final User user) {
 		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_API);
 		
-		log.info("api key of " + user.getName() + " has been changed successfully");
+		log.debug("api key of " + user.getName() + " has been changed successfully");
 	}
 	
 	private void actionLayoutTagPost(final SettingsViewCommand command, final User user) {
-		final UserSettings userSettings = user.getSettings();
-		final UserSettings newUserSettings = command.getUser().getSettings();
+		final UserSettings commandSettings = command.getUser().getSettings();
 		
-
-		if(!newUserSettings.isShowBibtex() && !newUserSettings.isShowBookmark()) {
+		if(!commandSettings.isShowBibtex() && !commandSettings.isShowBookmark()) {
 			errors.rejectValue("user.settings.showBookmark", "error.field.oneResourceMin");
 			return;
 		}
+		final UserSettings userSettings = user.getSettings();
 		
-		userSettings.setDefaultLanguage(newUserSettings.getDefaultLanguage());
-		userSettings.setListItemcount(newUserSettings.getListItemcount());
-		userSettings.setTagboxTooltip(newUserSettings.getTagboxTooltip());
-		userSettings.setShowBookmark(newUserSettings.isShowBookmark());
-		userSettings.setShowBibtex(newUserSettings.isShowBibtex());
+		userSettings.setDefaultLanguage(commandSettings.getDefaultLanguage());
+		/*
+		 * trigger locale change
+		 */
+		userSettings.setListItemcount(commandSettings.getListItemcount());
+		userSettings.setTagboxTooltip(commandSettings.getTagboxTooltip());
+		userSettings.setShowBookmark(commandSettings.isShowBookmark());
+		userSettings.setShowBibtex(commandSettings.isShowBibtex());
 		
-		userSettings.setSimpleInterface(newUserSettings.isSimpleInterface());
-		
-		if(newUserSettings.getIsMaxCount()) {
-			userSettings.setIsMaxCount(true);
+		userSettings.setSimpleInterface(commandSettings.isSimpleInterface());
+
+		userSettings.setIsMaxCount(commandSettings.getIsMaxCount());
+		if (userSettings.getIsMaxCount()) {
 			userSettings.setTagboxMaxCount(command.getChangeTo());
 		} else {
-			userSettings.setIsMaxCount(false);
 			userSettings.setTagboxMinfreq(command.getChangeTo());
 		}
-		userSettings.setTagboxSort(newUserSettings.getTagboxSort());
-		userSettings.setTagboxStyle(newUserSettings.getTagboxStyle());
+		userSettings.setTagboxSort(commandSettings.getTagboxSort());
+		userSettings.setTagboxStyle(commandSettings.getTagboxStyle());
 		
 		final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
-		log.info("settings for the layout of tag boxes and post lists of user " + updatedUser + " has been changed successfully");
+		log.debug("settings for the layout of tag boxes and post lists of user " + updatedUser + " has been changed successfully");
 	}
 
 	@Override
