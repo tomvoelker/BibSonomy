@@ -93,7 +93,7 @@ public class SystemTagFactory {
 	}
     }
 
-   /**
+    /**
      * Returns a new instance of the required systemTag
      * 
      * @param tagName = the tag describing the systemTag e. g. "send:xyz" or "sys:for:xyz"
@@ -103,10 +103,12 @@ public class SystemTagFactory {
      */
     public ExecutableSystemTag getExecutableSystemTag(final String tagName) {
 	final String tagType = SystemTagsUtil.extractName(tagName);
-	final ExecutableSystemTag sysTag = this.executableSystemTagMap.get(tagType.toLowerCase());
-	if (present(sysTag) && sysTag.isInstance(tagName)) {
-	    // tagName was found and tagName has the correct structure
-	    return sysTag.newInstance();
+	if (present(tagType)) {
+	    final ExecutableSystemTag sysTag = this.executableSystemTagMap.get(tagType.toLowerCase());
+	    if (present(sysTag) && sysTag.isInstance(tagName)) {
+		// tagName was found and tagName has the correct structure
+		return sysTag.newInstance();
+	    }
 	}
 	return null;
     }
@@ -119,10 +121,12 @@ public class SystemTagFactory {
      */
     public SearchSystemTag getSearchSystemTag(final String tagName) {
 	final String tagType = SystemTagsUtil.extractName(tagName);
-	final SearchSystemTag sysTag = this.searchSystemTagMap.get(tagType.toLowerCase());
-	if (present(sysTag) && sysTag.isInstance(tagName)) {
-	    // tagName was found and tagName has the correct structure
-	    return sysTag.newInstance();
+	if (present(tagType)) {
+	    final SearchSystemTag sysTag = this.searchSystemTagMap.get(tagType.toLowerCase());
+	    if (present(sysTag) && sysTag.isInstance(tagName)) {
+		// tagName was found and tagName has the correct structure
+		return sysTag.newInstance();
+	    }
 	}
 	return null;
     }
@@ -135,13 +139,15 @@ public class SystemTagFactory {
      */
     public boolean isExecutableSystemTag(final String tagName) {
 	final String tagType = SystemTagsUtil.extractName(tagName);
-	final ExecutableSystemTag sysTag = this.executableSystemTagMap.get(tagType.toLowerCase());
-	if (present(sysTag)) {
-	    /*
-	     *  the tagName refers to a systemTag 
-	     *  => check if it also has the required structure
-	     */
-	    return sysTag.isInstance(tagName);
+	if (present(tagType)) {
+	    final ExecutableSystemTag sysTag = this.executableSystemTagMap.get(tagType.toLowerCase());
+	    if (present(sysTag)) {
+		/*
+		 *  the tagName refers to a systemTag 
+		 *  => check if it also has the required structure
+		 */
+		return sysTag.isInstance(tagName);
+	    }
 	}
 	return false;
     }
@@ -154,13 +160,15 @@ public class SystemTagFactory {
      */
     public boolean isSearchSystemTag(final String tagName) {
 	final String tagType = SystemTagsUtil.extractName(tagName);
-	final SearchSystemTag sysTag = this.searchSystemTagMap.get(tagType.toLowerCase());
-	if (present(sysTag)) {
-	    /*
-	     *  the tagName refers to a systemTag 
-	     *  => check if it also has the required structure
-	     */
-	    return sysTag.isInstance(tagName);
+	if (present(tagType)) {
+	    final SearchSystemTag sysTag = this.searchSystemTagMap.get(tagType.toLowerCase());
+	    if (present(sysTag)) {
+		/*
+		 *  the tagName refers to a systemTag 
+		 *  => check if it also has the required structure
+		 */
+		return sysTag.isInstance(tagName);
+	    }
 	}
 	return false;
     }
@@ -173,13 +181,15 @@ public class SystemTagFactory {
      */
     public boolean isMarkUpSystemTag(final String tagName) {
 	final String tagType = SystemTagsUtil.extractName(tagName);
-	final SystemTag sysTag = this.markUpSystemTagMap.get(tagType.toLowerCase());
-	if (present(sysTag)) {
-	    /*
-	     *  the tagName refers to a systemTag 
-	     *  => check if it also has the required structure
-	     */
-	    return sysTag.isInstance(tagName);
+	if (present(tagType)) {
+	    final SystemTag sysTag = this.markUpSystemTagMap.get(tagType.toLowerCase());
+	    if (present(sysTag)) {
+		/*
+		 *  the tagName refers to a systemTag 
+		 *  => check if it also has the required structure
+		 */
+		return sysTag.isInstance(tagName);
+	    }
 	}
 	return false;
     }
