@@ -14,6 +14,7 @@
 	 	| TODO: 
 	 	| - integrate "common groups"
 	 	| - show, if requUser is following login user (privacy?)
+	 	| - TODO: show image/full name, if profile allows it
 	 	|
 	 	+-->
 
@@ -24,42 +25,68 @@
 	<jsp:directive.attribute name="isFollowerOfUser" type="java.lang.Boolean" required="true" description="Does the loginUser follow the requestedUser?"/>
 	<jsp:directive.attribute name="commonGroups" type="java.util.List" required="false"/>
 
-	<ul>
+	<ul class="social">
 		<!--+
-			|
-			| Is the logged in user in the requested user's friend list?
-			|
-			+-->	
-		<c:if test="${isFriendOfUser}">
-			<li>
-				You are a friend of <a href="/user/${fn:escapeXml(requestedUser)}"><c:out value="${requestedUser}"/></a>.
-				See the posts which are <a href="/friend/${fn:escapeXml(requestedUser)}">only visible for <c:out value="${requestedUser}"/>'s friends</a>.
-				<!--+
-					| TODO: was kann man dann noch machen? 
-					|       z.B. dessen "viewable-for-friens"-posts sehen,
-					|       ihm Posts in die Inbox senden, usw.
-					|       > Link auf Hilfe?
-					+-->
-			</li>
-		</c:if>
-	
-		<!--+
-			|
-			| Is the requested user in the logged in user's friend list?
-			|
-			+-->
+			| link to CV
+		 	+-->
 		<li>
-			<c:choose>
-				<c:when test="${isOfFriendUser}">
-					<a href="/user/${fn:escapeXml(requestedUser)}"><c:out value="${requestedUser}"/></a> is your friend. 
-					He/she can see <a href="/viewable/friends">posts you made viewable only for your friends</a>.
-				</c:when>
-				<c:otherwise>
-					<a href="/user/${fn:escapeXml(requestedUser)}"><c:out value="${requestedUser}"/></a> is not your friend. 
-					<a href="/SettingsHandler?ckey=${ckey}&amp;add_friend=${mtl:encodeURI(requestedUser)}">add</a> <c:out value=" ${requestedUser}"/> to your <a href="/friends">friend list</a>.
-				</c:otherwise>
-			</c:choose>
+			<a href="/cv/user/${fn:escapeXml(requestedUser)}"><c:out value="${requestedUser}"/>' CV</a>
 		</li>
+		
+		
+				
+		<!--+ 
+		 	|
+		 	| friendship with icons ...
+		 	|
+		 	+-->
+		<li>
+
+			<!-- set image name -->
+			<c:set var="friendImage" value="noFriends.png"/>
+			<c:choose>
+				<c:when test="${isFriendOfUser and isOfFriendUser}"><c:set var="friendImage" value="friends.png"/></c:when>
+				<c:when test="${isFriendOfUser}"><c:set var="friendImage" value="friendOf.png"/></c:when>
+				<c:when test="${isOfFriendUser}"><c:set var="friendImage" value="ofFriend.png"/></c:when>
+			</c:choose>
+			<img src="${resdir}/image/${friendImage}" width="106" height="48" border="0" alt="friends" usemap="#friends"/>
+	  		<map name="friends">
+
+				<!--+
+					|
+					| Is the logged in user in the requested user's friend list?
+					|
+					+-->	
+				<c:if test="${isFriendOfUser}">
+	    			<area shape="poly" coords="106,48, 106,0, 27,0, 27,24, 76,24, 76,48, 106,48" href="/friend/${fn:escapeXml(requestedUser)}" 
+	    				alt="his/her friend" title="You are a friend of ${fn:escapeXml(requestedUser)}. See the posts which are viewable only for ${fn:escapeXml(requestedUser)}'s friends."/>
+						<!--+
+							| TODO: was kann man dann noch machen? 
+							|       z.B. dessen "viewable-for-friens"-posts sehen,
+							|       ihm Posts in die Inbox senden, usw.
+							|       > Link auf Hilfe?
+							+-->
+	    		</c:if>
+
+				<!--+
+					|
+					| Is the requested user in the logged in user's friend list?
+					|
+					+-->
+	    		<c:choose>
+					<c:when test="${isOfFriendUser}">
+						<area shape="poly" coords="0,48, 76,48, 76,27, 24,27, 24,0, 0,0" href="/viewable/friends" 
+							alt="your friend" title="${fn:escapeXml(requestedUser)} is your friend. See the posts ${fn:escapeXml(requestedUser)} can see you made viewable for friends only."/>
+					</c:when>
+					<c:otherwise>
+						<area shape="poly" coords="0,48, 76,48, 76,27, 24,27, 24,0, 0,0" href="/SettingsHandler?ckey=${ckey}&amp;add_friend=${mtl:encodeURI(requestedUser)}" 
+							alt="your friend" title="${fn:escapeXml(requestedUser)} is not your friend. Add ${fn:escapeXml(requestedUser)} to your friend list."/>
+					</c:otherwise>
+				</c:choose>
+	    	</map>
+			
+		</li>
+		
 		
 		<!--+
 			|
