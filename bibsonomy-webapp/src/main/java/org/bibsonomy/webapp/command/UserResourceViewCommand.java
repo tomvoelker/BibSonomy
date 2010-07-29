@@ -22,6 +22,15 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	private boolean isFollowerOfUser = false;
 	
 	/**
+	 * Has the requested user added the logged in user to her friend list? 
+	 */
+	private boolean friendOfUser = false;
+	/**
+	 * Has the logged in user added the requested user to his friend list?
+	 */
+	private boolean ofFriendUser = false;
+	
+	/**
 	 * defines the similarity measure by which the related users are computed  
 	 * (default is folkrank)
 	 */
@@ -113,6 +122,34 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setFollowerOfUser(boolean isFollowerOfUser) {
 		this.isFollowerOfUser = isFollowerOfUser;
+	}
+
+	/**
+	 * @return <code>true</code> if the logged in user is in the friend list of the requested user.
+	 */
+	public boolean getFriendOfUser() {
+		return this.friendOfUser;
+	}
+
+	/**
+	 * @return <code>true</code> if the requested user is in the friend list of the logged in user.
+	 */
+	public boolean getOfFriendUser() {
+		return this.ofFriendUser;
+	}
+
+	/**
+	 * @param friendOfUser
+	 */
+	public void setFriendOfUser(boolean friendOfUser) {
+		this.friendOfUser = friendOfUser;
+	}
+
+	/**
+	 * @param ofFriendUser
+	 */
+	public void setOfFriendUser(boolean ofFriendUser) {
+		this.ofFriendUser = ofFriendUser;
 	}
 
 }

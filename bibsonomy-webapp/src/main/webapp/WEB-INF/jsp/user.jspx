@@ -16,67 +16,39 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${(command.requestedUser eq command.context.loginUser.name) ? 'nav_my' : ''}">
 	
 		<jsp:attribute name="heading">
-		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
-		<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
-		<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
-		  <input type="text" size="20" name="tag" id="inpf"/>
-		</form>
-		<c:if test="${command.requestedUser ne command.context.loginUser.name}">
-			<c:out value=" "/>
-			<a href="/personalized/user/${fn:escapeXml(command.requestedUser)}">
-				<span class="personalize_text">
-					<fmt:message key="personalize"/>!
-				</span>
-			</a>			
-		</c:if>									
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
+			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
+			<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
+			  <input type="text" size="20" name="tag" id="inpf"/>
+			</form>
+			<c:if test="${command.requestedUser ne command.context.loginUser.name}">
+				<c:out value=" "/>
+				<a href="/personalized/user/${fn:escapeXml(command.requestedUser)}">
+					<span class="personalize_text">
+						<fmt:message key="personalize"/>!
+					</span>
+				</a>			
+			</c:if>									
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
 		<ul id="sidebar">
-			<script type="text/javascript" src="${resdir}/javascript/follower.js">&amp;nbsp;</script>
+		
+			<!--+
+				| only for logged in users: followers, friends, groups, etc.
+			 	-->
 			
-				<!-- we need to switch if the user already follows this user or not -->
-				<c:if test="${command.context.loginUser.name != command.requestedUser}">
-				<c:choose>
-					<c:when test="${command.followerOfUser eq true}">
-					<div style="margin-top: 10px">
-						<div id="removeLink">
-							<fmt:message key="follow.info.text2"/>
-							<a style="cursor: pointer;" 
-							   onclick="javascript:removeFollower('${fn:escapeXml(command.requestedUser)}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(command.requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(command.requestedUser)}">
-							<fmt:message key="follow.link.text.remove"/></a>
-						</div>
-						<div id="followLink" style="visibility:hidden; display:none">
-							<fmt:message key="follow.info.text1"/>
-							<a style="cursor: pointer;" 
-							   onclick="javascript:addFollower('${fn:escapeXml(command.requestedUser)}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(command.requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(command.requestedUser)}">
-							   <fmt:message key="follow.link.text.follow"/></a>
-						</div>
-					</div>
-					</c:when>
-					<c:otherwise>
-					<div style="margin-top: 10px">
-						<div id="removeLink" style="visibility:hidden; display:none">
-							<fmt:message key="follow.info.text2"/>
-							<a style="cursor: pointer;" 
-							   onclick="javascript:removeFollower('${fn:escapeXml(command.requestedUser)}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(command.requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(command.requestedUser)}">
-							   <fmt:message key="follow.link.text.remove"/></a>							
-						</div>
-						<div id="followLink">
-							<fmt:message key="follow.info.text1"/>
-							<a style="cursor: pointer;" 
-							   onclick="javascript:addFollower('${fn:escapeXml(command.requestedUser)}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(command.requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(command.requestedUser)}">
-							   <fmt:message key="follow.link.text.follow"/></a>
-						</div>
-					</div>
-					</c:otherwise>
-				</c:choose>
-				<br/>
-				</c:if>
+			<c:if test="${command.context.userLoggedIn and command.context.loginUser.name ne command.requestedUser}">
+				<li>
+					<span class="sidebar_h">Socializer</span>
+					<users:socializer 
+						loginUser="${command.context.loginUser}" 
+						requestedUser="${command.requestedUser}" 
+						isOfFriendUser="${command.ofFriendUser}" 
+						isFriendOfUser="${command.friendOfUser}" 
+						isFollowerOfUser="${command.followerOfUser}" />
+				</li>
+			</c:if>
 			
 			<!-- display user's tag relations -->			
 			<li>

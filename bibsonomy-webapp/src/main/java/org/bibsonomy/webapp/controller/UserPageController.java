@@ -22,6 +22,7 @@ import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
@@ -59,23 +60,16 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			throw new MalformedURLSchemeException("error.user_page_with_wrong_user_similarity");			
 		}
 		
-		// handle case when only tags are requested
+		/*
+		 * handle case when only tags are requested
+		 */
 		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);
-				
-		FilterEntity filter = null;
-
-		// display only posts which have a document attached
-		if (command.getFilter().equals("myPDF")) {
-			filter = FilterEntity.JUST_PDF;
-		}
-
-		// display duplicate entries
-		if (command.getFilter().equals("myDuplicates")) {
-			filter = FilterEntity.DUPLICATES;
-		}
 		
-		// if user is logged in fetch if the logged in user follows the requested
-		if (command.getContext().getUserLoggedIn()){
+		/*
+		 * if user is logged in, check if the logged in user follows the requested user
+		 */
+		final RequestWrapperContext context = command.getContext();
+		if (context.isUserLoggedIn()){
 			final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
 			for (final User u : followersOfUser){
 				if (u.getName().equals(command.getRequestedUser())){
@@ -89,14 +83,18 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		// and the requested resourcetype
 		this.chooseListsToInitialize(format, command.getResourcetype());
 
-		if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
+		/*
+		 * extract filter
+		 */
+		final FilterEntity filter = getFilter(command.getFilter());
+		if (FilterEntity.JUST_PDF.equals(filter) || FilterEntity.DUPLICATES.equals(filter)) {
 			this.listsToInitialise.remove(Bookmark.class);
 		}
 		
 		// "redirect" to user-user-page controller if requested
 		// TODO: better to this via Spring URL mapping
-		if (command.getContext().isUserLoggedIn() &&  command.isPersonalized()) {
-			UserUserPageController uupc = new UserUserPageController();
+		if (context.isUserLoggedIn() &&  command.isPersonalized()) {
+			final UserUserPageController uupc = new UserUserPageController();
 			uupc.listsToInitialise = this.listsToInitialise;
 			uupc.logic = this.logic;
 			uupc.userSettings = this.userSettings;
@@ -146,7 +144,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			}
 			
 			// retrieve similar users, by the given user similarity measure
-			List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, groupingName, null, null, null, userRelation, null, 0, 10);	
+			final List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, groupingName, null, null, null, userRelation, null, 0, 10);	
 			command.getRelatedUserCommand().setRelatedUsers(similarUsers);
 			
 			if (requTags.size() > 0) {
@@ -155,7 +153,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				this.endTiming();
 
 				// forward to bibtex page if filter is set
-				if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
+				if (FilterEntity.JUST_PDF.equals(filter) || FilterEntity.DUPLICATES.equals(filter)) {
 					return Views.USERDOCUMENTPAGE;
 				}
 				
@@ -174,6 +172,23 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				command.setUser(logic.getUserDetails(command.getRequestedUser()));
 			}
 
+			/*
+			 * For logged users we check, if she is in a friends or group relation
+			 * with the requested user. 
+			 */
+			final String loginUserName = context.getLoginUser().getName();
+			if (context.isUserLoggedIn() && !loginUserName.equalsIgnoreCase(groupingName)) {
+				/*
+				 * Has loginUser this user set as friend?
+				 */
+				final User requestedUser = new User(groupingName);
+				command.setOfFriendUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND).contains(requestedUser));
+				command.setFriendOfUser(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF).contains(requestedUser));
+				/*
+				 * TODO: we need an adminLogic to access the requested user's groups ...
+				 */
+			}
+			
 			this.endTiming();
 
 			// forward to bibtex page if filter is set
@@ -187,6 +202,30 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
+	}
+
+	/**
+	 * Maps a filter string to the corresponding filter enum.
+	 * 
+	 * @param filterString
+	 * @return
+	 */
+	private FilterEntity getFilter(final String filterString) {
+		final FilterEntity filter;
+		if ("myPDF".equals(filterString)) {
+			/*
+			 * display only posts which have a document attached
+			 */
+			filter = FilterEntity.JUST_PDF;
+ 		} else if ("myDuplicates".equals(filterString)) {
+			/*
+			 * display duplicate entries
+			 */
+			filter = FilterEntity.DUPLICATES;
+		} else {
+			filter = null;
+		}
+		return filter;
 	}
 
 	@Override

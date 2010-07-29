@@ -1,0 +1,87 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<!--+ 
+	 	|
+	 	| If the login user looks at a page of the requested user, we show him
+	 	| "social" information, e.g., if the two users are friends or if they
+	 	| are in the same group, if the user follows the other user, and so on.
+	 	| If so, we provide further links, if not, we allow them to "get together".
+	 	|
+	 	| TODO: 
+	 	| - integrate "common groups"
+	 	| - show, if requUser is following login user (privacy?)
+	 	|
+	 	+-->
+
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="isFriendOfUser" type="java.lang.Boolean" required="true" description="Has the requestedUser the loginUser in his friend list?"/>
+	<jsp:directive.attribute name="isOfFriendUser" type="java.lang.Boolean" required="true" description="Has the loginUser the requestedUser in his friend list?"/>
+	<jsp:directive.attribute name="isFollowerOfUser" type="java.lang.Boolean" required="true" description="Does the loginUser follow the requestedUser?"/>
+	<jsp:directive.attribute name="commonGroups" type="java.util.List" required="false"/>
+
+	<ul>
+		<!--+
+			|
+			| Is the logged in user in the requested user's friend list?
+			|
+			+-->	
+		<c:if test="${isFriendOfUser}">
+			<li>
+				You are a friend of <a href="/user/${fn:escapeXml(requestedUser)}"><c:out value="${requestedUser}"/></a>.
+				See the posts which are <a href="/friend/${fn:escapeXml(requestedUser)}">only visible for <c:out value="${requestedUser}"/>'s friends</a>.
+				<!--+
+					| TODO: was kann man dann noch machen? 
+					|       z.B. dessen "viewable-for-friens"-posts sehen,
+					|       ihm Posts in die Inbox senden, usw.
+					|       > Link auf Hilfe?
+					+-->
+			</li>
+		</c:if>
+	
+		<!--+
+			|
+			| Is the requested user in the logged in user's friend list?
+			|
+			+-->
+		<li>
+			<c:choose>
+				<c:when test="${isOfFriendUser}">
+					<a href="/user/${fn:escapeXml(requestedUser)}"><c:out value="${requestedUser}"/></a> is your friend. 
+					He/she can see <a href="/viewable/friends">posts you made viewable only for your friends</a>.
+				</c:when>
+				<c:otherwise>
+					<a href="/user/${fn:escapeXml(requestedUser)}"><c:out value="${requestedUser}"/></a> is not your friend. 
+					<a href="/SettingsHandler?ckey=${ckey}&amp;add_friend=${mtl:encodeURI(requestedUser)}">add</a> <c:out value=" ${requestedUser}"/> to your <a href="/friends">friend list</a>.
+				</c:otherwise>
+			</c:choose>
+		</li>
+		
+		<!--+
+			|
+			| Does loginUser follow requestedUser?
+			|
+		 	-->
+		<script type="text/javascript" src="${resdir}/javascript/follower.js">&amp;nbsp;</script>
+		<!-- we need to switch between the add/remove link if the user already follows this user or not -->
+		<li>
+			<span id="removeLink" style="${isFollowerOfUser ? '' : 'display:none'}">
+				<fmt:message key="follow.info.text2"/>
+				<a onclick="javascript:removeFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
+				   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}">
+				<fmt:message key="follow.link.text.remove"/></a>
+			</span>
+			<span id="followLink" style="${isFollowerOfUser ? 'display:none' : ''}">
+				<fmt:message key="follow.info.text1"/>
+				<a onclick="javascript:addFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
+				   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}">
+				   <fmt:message key="follow.link.text.follow"/></a>
+			</span>
+		</li>
+
+	</ul>
+</jsp:root>
