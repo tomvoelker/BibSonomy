@@ -10,7 +10,6 @@ import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -27,9 +26,8 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 
 	private static final String TAB_URL = "/settings";
 
-	private LogicInterface adminLogic;
+	private LogicInterface logic;
 	private Errors errors;
-	private RequestLogic requestLogic;
 	
 	@Override
 	public SettingsViewCommand instantiateCommand() {
@@ -113,12 +111,12 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		userSettings.setLogLevel(commandSettings.getLogLevel());
 		userSettings.setConfirmDelete(commandSettings.isConfirmDelete());
 
-		final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
+		final String updatedUser = logic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		log.debug("logging settings of user " + updatedUser + " has been changed successfully");
 	}
 	
 	private void actionAPI(final User user) {
-		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_API);
+		logic.updateUser(user, UserUpdateOperation.UPDATE_API);
 		
 		log.debug("api key of " + user.getName() + " has been changed successfully");
 	}
@@ -152,7 +150,7 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		userSettings.setTagboxSort(commandSettings.getTagboxSort());
 		userSettings.setTagboxStyle(commandSettings.getTagboxStyle());
 		
-		final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
+		final String updatedUser = logic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		log.debug("settings for the layout of tag boxes and post lists of user " + updatedUser + " has been changed successfully");
 	}
 
@@ -167,33 +165,18 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	}
 
 	/**
-	 * @return requestLogic
-	 */
-	public RequestLogic getRequestLogic() {
-		return this.requestLogic;
-	}
-
-	/**
-	 * 
-	 * @param requestLogic
-	 */
-	public void setRequestLogic(final RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-
-	/**
 	 * 
 	 * @return requestLogic
 	 */
-	public LogicInterface getAdminLogic() {
-		return this.adminLogic;
+	public LogicInterface getLogic() {
+		return this.logic;
 	}
 
 	/**
 	 * 
-	 * @param adminLogic
+	 * @param logic
 	 */
-	public void setAdminLogic(final LogicInterface adminLogic) {
-		this.adminLogic = adminLogic;
+	public void setLogic(final LogicInterface logic) {
+		this.logic = logic;
 	}
 }
