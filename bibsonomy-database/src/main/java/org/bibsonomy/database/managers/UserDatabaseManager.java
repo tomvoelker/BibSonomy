@@ -634,7 +634,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		switch (relation) {
 		case FOLLOWER_OF:
 			/*
-			 * get all Users, that the sourcerUser follows
+			 * get all Users, that the sourceUser follows
 			 */
 			break;
 		case OF_FOLLOWER:
