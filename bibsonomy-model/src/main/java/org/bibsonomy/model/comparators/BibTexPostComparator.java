@@ -34,6 +34,7 @@ import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 
 /**
  * Comparator used to sort bibtex posts
@@ -70,7 +71,7 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 					// if author not present, take editor
 					final String personList1 = ( present(post1.getResource().getAuthor()) ? post1.getResource().getAuthor() : post1.getResource().getEditor() );
 					final String personList2 = ( present(post2.getResource().getAuthor()) ? post2.getResource().getAuthor() : post2.getResource().getEditor() );
-					return this.nomalizeAndCompare(BibTexUtils.getFirstPersonsLastName(personList1), BibTexUtils.getFirstPersonsLastName(personList2), crit.sortOrder);
+					return this.nomalizeAndCompare(PersonNameUtils.getFirstPersonsLastName(personList1), PersonNameUtils.getFirstPersonsLastName(personList2), crit.sortOrder);
 				}
 				// year
 				else if (SortKey.YEAR.equals(crit.sortKey)) {
@@ -78,7 +79,7 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 				}
 				// editor
 				else if (SortKey.EDITOR.equals(crit.sortKey)) {
-					return this.nomalizeAndCompare(BibTexUtils.getFirstPersonsLastName(post1.getResource().getEditor()), BibTexUtils.getFirstPersonsLastName(post2.getResource().getEditor()), crit.sortOrder);				
+					return this.nomalizeAndCompare(PersonNameUtils.getFirstPersonsLastName(post1.getResource().getEditor()), PersonNameUtils.getFirstPersonsLastName(post2.getResource().getEditor()), crit.sortOrder);				
 				}
 				// entrytype
 				else if (SortKey.ENTRYTYPE.equals(crit.sortKey)) {
