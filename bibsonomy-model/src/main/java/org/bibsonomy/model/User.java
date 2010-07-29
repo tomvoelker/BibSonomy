@@ -843,5 +843,22 @@ public class User implements Serializable {
 	public void setReminderPasswordRequestDate(Date reminderPasswordRequestDate) {
 		this.reminderPasswordRequestDate = reminderPasswordRequestDate;
 	}
+	
+	/**
+	 * Two users are equal, if their name is equal. Users with <code>null</code>
+	 * names are not equal.
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		return obj != null && obj instanceof User && this.name != null && this.name.equals(((User) obj).name);
+	}
+	
+	@Override
+	public int hashCode() {
+		if (this.name != null) return this.name.hashCode();
+		return super.hashCode();
+	}
 
 }
