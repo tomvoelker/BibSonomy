@@ -24,6 +24,8 @@
 package org.bibsonomy.util;
 
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -171,7 +173,9 @@ public class StringUtils {
 
 	/**
 	 * Removes everything which is neither a number nor a letter nor a dot (.)
-	 * nor space.
+	 * nor space. 
+	 * 
+	 * Note: does not remove whitespace around the numbers!
 	 * 
 	 * @param str
 	 *            source string
@@ -182,6 +186,37 @@ public class StringUtils {
 			return normalizeWhitespace(str).replaceAll("[^0-9\\p{L}\\. ]+", "");
 		}
 		return "";
+	}
+	
+	/**
+	 * Removes everything which is neither a number nor a letter nor a dot (.)
+	 * nor a comma nor nor space. 
+	 * 
+	 * Note: does not remove whitespace around the numbers!
+	 * 
+	 * @param str
+	 *            source string
+	 * @return result
+	 */
+	public static String removeNonNumbersOrLettersOrDotsOrCommaOrSpace(final String str) {
+		if (str != null) {
+			return normalizeWhitespace(str).replaceAll("[^0-9\\p{L}\\., ]+", "");
+		}
+		return "";
+	}
+	
+	/**
+	 * Removes numbers which are not "connected" to other characters like in "000 Foo" or 
+	 * "Foo 000 Bar" (but not "Foo000").
+	 * 
+	 * @param str
+	 * @return the cleaned string.
+	 */
+	public static String removeSingleNumbers(final String str) {
+		if (present(str)) {
+			return str.replaceAll("\\b\\d+\\b", "");
+		}
+		return str;
 	}
 
 	/**

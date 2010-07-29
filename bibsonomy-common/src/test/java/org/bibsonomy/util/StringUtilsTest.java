@@ -221,4 +221,17 @@ public class StringUtilsTest {
 		if (fail) {fail("InvalidModelException should have been thrown!");}
 	}
 	
+	@Test
+	public void testRemoveSingleNumbers() throws Exception {
+		assertEquals(null, StringUtils.removeSingleNumbers(null));
+		assertEquals("Foo", StringUtils.removeSingleNumbers("Foo"));
+		assertEquals("Foo ", StringUtils.removeSingleNumbers("Foo "));
+		assertEquals(" Foo ", StringUtils.removeSingleNumbers(" Foo "));
+		assertEquals("Foo Bar", StringUtils.removeSingleNumbers("Foo Bar"));
+		assertEquals("Foo  Bar", StringUtils.removeSingleNumbers("Foo 000 Bar"));
+		assertEquals("Foo Bar ", StringUtils.removeSingleNumbers("Foo Bar 000"));
+		assertEquals(" Foo Bar", StringUtils.removeSingleNumbers("012 Foo Bar"));
+		assertEquals("Foo Bar000", StringUtils.removeSingleNumbers("Foo Bar000"));
+	}
+	
 }
