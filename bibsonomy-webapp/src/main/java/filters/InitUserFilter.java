@@ -1,5 +1,7 @@
 package filters;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -441,22 +443,38 @@ public class InitUserFilter implements Filter {
 		httpServletRequest.setAttribute(REQ_ATTRIB_USER, loginUser);
 
 		// add default language to request if no language is set
-		if (httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE) == null) {
-			if(loginUser.getSettings().getDefaultLanguage() == null) {
-				httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale((String) httpServletRequest.getSession().getServletContext().getAttribute(PROJECT_DEFAULT_LANGUAGE)));
+		final HttpSession session = httpServletRequest.getSession();
+		final String langUser = loginUser.getSettings().getDefaultLanguage();
+		/*
+		if (session.getAttribute(REQ_ATTRIB_LANGUAGE) == null) {
+			if(langUser == null) {
+				session.setAttribute(REQ_ATTRIB_LANGUAGE, new Locale((String) session.getServletContext().getAttribute(PROJECT_DEFAULT_LANGUAGE)));
 			} else {
-				httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(loginUser.getSettings().getDefaultLanguage()));
+				session.setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(langUser));
 
 			}
 			
 		//if user changed language in /settings change the language to the new requested language
 		} else {
-			final String lang = loginUser.getSettings().getDefaultLanguage();
-			final Locale sessionLang = (Locale) httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE);
-			if( lang != null && !sessionLang.getLanguage().equals(new Locale(lang))) {
-				httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(lang));
+			final String lang = langUser;
+			final Locale locale = (Locale) session.getAttribute(REQ_ATTRIB_LANGUAGE);
+			if( present(lang) && !locale.getLanguage().equals(new Locale(lang).getLanguage())) {
+				session.setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(lang));
+			}
+		}*/
+		if (!present(session.getAttribute(REQ_ATTRIB_LANGUAGE))) {
+			log.info("session attribute " + REQ_ATTRIB_LANGUAGE + " not present, setting it to");
+			if (present(langUser)) {
+				final Locale locale = new Locale(langUser);
+				session.setAttribute(REQ_ATTRIB_LANGUAGE, locale);
+				log.info(locale + " from user");
+			} else {
+				final Locale locale = new Locale((String) session.getServletContext().getAttribute(PROJECT_DEFAULT_LANGUAGE));
+				session.setAttribute(REQ_ATTRIB_LANGUAGE, locale);
+				log.info(locale + " from defaults");
 			}
 		}
+
 
 		log.debug("finished: " + loginUser);
 
