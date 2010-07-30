@@ -1030,33 +1030,6 @@ public class DBLogic implements LogicInterface {
 	     */
 	    this.permissionDBManager.ensureIsAdminOrSelf(loginUser, user.getName());
 	}
-	if (UserUpdateOperation.UPDATE_ALL.equals(operation)) {
-	    /*
-	     * update only (!) spammer settings
-	     */
-	    if (user.getPrediction() != null || user.getSpammer() != null) {
-		/*
-		 * only admins are allowed to change spammer settings
-		 */
-		log.debug("Start update this framework");
-
-		this.permissionDBManager.ensureAdminAccess(loginUser);
-		/*
-		 * open session and update spammer settings
-		 */
-		final DBSession session = this.openSession();
-		try {
-		    final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
-		    log.debug("User prediction: " + user.getPrediction());
-		    return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
-		} finally {
-		    session.close();
-		}
-	    }
-
-	    return this.storeUser(user, true);
-	}
-
 	final DBSession session = openSession();
 
 	try {
@@ -1079,7 +1052,31 @@ public class DBLogic implements LogicInterface {
 
 	    case ACTIVATE:
 		return this.userDBManager.activateUser(user, session);
+		
+	    case UPDATE_ALL:
+		/*
+		 * update only (!) spammer settings
+		 * 
+		 * FIXME: use a separate operation for that!
+		 */
+		if (user.getPrediction() != null || user.getSpammer() != null) {
+		    /*
+		     * only admins are allowed to change spammer settings
+		     */
+		    log.debug("Start update this framework");
+
+		    this.permissionDBManager.ensureAdminAccess(loginUser);
+		    /*
+		     * open session and update spammer settings
+		     */
+		    final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
+		    log.debug("User prediction: " + user.getPrediction());
+		    return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
+		}
+
+		return this.storeUser(user, true);
 	    }
+
 
 	} finally {
 	    session.close();
