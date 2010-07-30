@@ -39,7 +39,7 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 	/**
 	 * logic interface
 	 */
-	private LogicInterface adminLogic = null;
+	private LogicInterface logic = null;
 
 	@Override
 	public SettingsViewCommand instantiateCommand() {
@@ -66,8 +66,8 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 		// needed to display the user name on the profile tab of the settings site
 		command.getUser().setName(user.getName());
 
-		command.setUserFriends(adminLogic.getUserFriends(command.getUser()));
-		command.setFriendsOfUser(adminLogic.getFriendsOfUser(command.getUser()));
+		command.setUserFriends(logic.getUserFriends(command.getUser()));
+		command.setFriendsOfUser(logic.getFriendsOfUser(command.getUser()));
 		
 		// check whether the user is a group		
 		if (UserUtils.userIsGroup(user)) {
@@ -90,7 +90,7 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 			log.debug("User is logged in, ckey is valid");
 
 			// update user informations here
-			updateUserProfile(command, user);
+			updateUserProfile(user, command.getUser(), command.getProfilePrivlevel());
 
 		} else {
 			errors.reject("error.field.valid.ckey");
@@ -101,29 +101,29 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 
 	/**
 	 * updates the the profile settings of a user
-	 * @param command
 	 * @param user
+	 * @param command
 	 */
-	private void updateUserProfile(final SettingsViewCommand command, final User user) {
-		user.setRealname(command.getUser().getRealname());
-		user.setGender(command.getUser().getGender());
-		user.setBirthday(command.getUser().getBirthday());
+	private void updateUserProfile(final User user, final User commandUser, final String profilePrivlevel) {
+		user.setRealname(commandUser.getRealname());
+		user.setGender(commandUser.getGender());
+		user.setBirthday(commandUser.getBirthday());
 		
-		user.setEmail(command.getUser().getEmail());
-		user.setHomepage(command.getUser().getHomepage());
-		user.setOpenURL(command.getUser().getOpenURL());
-		user.setProfession(command.getUser().getProfession());
-		user.setInterests(command.getUser().getInterests());
-		user.setHobbies(command.getUser().getHobbies());
-		user.setPlace(command.getUser().getPlace());
+		user.setEmail(commandUser.getEmail());
+		user.setHomepage(commandUser.getHomepage());
+		user.setOpenURL(commandUser.getOpenURL());
+		user.setProfession(commandUser.getProfession());
+		user.setInterests(commandUser.getInterests());
+		user.setHobbies(commandUser.getHobbies());
+		user.setPlace(commandUser.getPlace());
 		
 		/*
 		 * FIXME: use command.user.privlevel instead of string "group"!
 		 */
-		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.getProfilePrivlevel(command.getProfilePrivlevel()));
+		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.getProfilePrivlevel(profilePrivlevel));
 		
-		final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
-		log.info("logging profile of user " + updatedUser + " has been changed successfully");
+		final String updatedUser = logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
+		log.debug("logging profile of user " + updatedUser + " has been changed successfully");
 	}
 
 	@Override
@@ -149,14 +149,14 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 	/**
 	 * @return the adminLogic
 	 */
-	public LogicInterface getAdminLogic() {
-		return this.adminLogic;
+	public LogicInterface getLogic() {
+		return this.logic;
 	}
 
 	/**
-	 * @param adminLogic the adminLogic to set
+	 * @param logic the adminLogic to set
 	 */
-	public void setAdminLogic(LogicInterface adminLogic) {
-		this.adminLogic = adminLogic;
+	public void setLogic(LogicInterface logic) {
+		this.logic = logic;
 	}
 }
