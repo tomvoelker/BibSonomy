@@ -15,6 +15,7 @@
 	 	| - integrate "common groups"
 	 	| - show, if requUser is following login user (privacy?)
 	 	| - TODO: show image/full name, if profile allows it
+	 	| - don't use image map but two separate images and then CSS to show :hover effects
 	 	|
 	 	+-->
 
@@ -56,17 +57,26 @@
 					|
 					| Is the logged in user in the requested user's friend list?
 					|
-					+-->	
-				<c:if test="${isFriendOfUser}">
-	    			<area shape="poly" coords="106,48, 106,0, 27,0, 27,24, 76,24, 76,48, 106,48" href="/friend/${fn:escapeXml(requestedUser)}" 
-	    				alt="his/her friend" title="You are a friend of ${fn:escapeXml(requestedUser)}. See the posts which are viewable only for ${fn:escapeXml(requestedUser)}'s friends."/>
-						<!--+
-							| TODO: was kann man dann noch machen? 
-							|       z.B. dessen "viewable-for-friens"-posts sehen,
-							|       ihm Posts in die Inbox senden, usw.
-							|       > Link auf Hilfe?
-							+-->
-	    		</c:if>
+					+-->
+				<c:choose>
+					<c:when test="${isFriendOfUser}">
+		    			<area shape="poly" coords="106,48, 106,0, 27,0, 27,24, 76,24, 76,48, 106,48" href="/friend/${fn:escapeXml(requestedUser)}" 
+		    				alt="his/her friend" title="You are a friend of ${fn:escapeXml(requestedUser)}. See the posts which are viewable only for ${fn:escapeXml(requestedUser)}'s friends."/>
+							<!--+
+								| TODO: was kann man dann noch machen? 
+								|       z.B. dessen "viewable-for-friens"-posts sehen,
+								|       ihm Posts in die Inbox senden, usw.
+								|       > Link auf Hilfe?
+								+-->
+		    		</c:when>
+		    		<c:otherwise>
+		    			<!-- it's probably not so nice pointing at that ...  
+		    			<area shape="poly" coords="106,48, 106,0, 27,0, 27,24, 76,24, 76,48, 106,48" href="/user/${fn:escapeXml(requestedUser)}" 
+		    				alt="not his/her friend" title="You are a not friend of ${fn:escapeXml(requestedUser)}."/>
+		    			-->
+		    		</c:otherwise>
+				</c:choose>	
+				
 
 				<!--+
 					|
