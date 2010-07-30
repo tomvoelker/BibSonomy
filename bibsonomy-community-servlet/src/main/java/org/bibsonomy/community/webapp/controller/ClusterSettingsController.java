@@ -1,8 +1,6 @@
 package org.bibsonomy.community.webapp.controller;
 
-import static org.bibsonomy.community.webapp.enums.ClusterSettingActions.ADDCLUSTERS;
-import static org.bibsonomy.community.webapp.enums.ClusterSettingActions.CHANGEALGORITHM;
-import static org.bibsonomy.community.webapp.enums.ClusterSettingActions.REMOVECLUSTERS;
+import static org.bibsonomy.community.webapp.enums.ClusterSettingActions.*;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
@@ -52,12 +50,30 @@ public class ClusterSettingsController extends AbstractBaseController<ResourceCl
 		if( command.getContext().isUserLoggedIn() ) {
 			User user = new User(command.getContext().getLoginUser());
 			try {
+				Integer algorithmId = userSettingsManager.getCurrentAlgorithm(user.getName());
+				if( !present(algorithmId) ) {
+					Integer newAlgorithmId = algorithmSelector.getNewClustering(user.getName());
+					userSettingsManager.setAlgorithmForUser(user.getName(), newAlgorithmId);
+				}
+				
 				if( ADDCLUSTERS.toString().equals(command.getAction()) && present(command.getClusters())) {
 					// add given clusters to user settings
 					userSettingsManager.addUserAffiliation(user, command.getClusters());
+				} else if( ADDRECOMMENDEDCLUSTER.toString().equals(command.getAction()) ) {
+					// add most appropriate cluster to given user's settings
+					Collection<Integer> communities = this.communityManager.getCommunitiesForUser(user.getName(),1,0);
+					if( present(communities) ) {
+						ResourceCluster cluster = new ResourceCluster();
+						cluster.setClusterID(communities.iterator().next());
+						cluster.setWeight(50);
+						userSettingsManager.addUserAffiliation(user, cluster);
+					}
 				} else if( REMOVECLUSTERS.toString().equals(command.getAction()) && present(command.getClusters())) {
 					// remove given clusters from user settings
 					userSettingsManager.removeUserAffiliation(user, command.getClusters());
+				} else if( SAVECLUSTERSETTINGS.toString().equals(command.getAction()) && present(command.getClusters())) {
+					// save given cluster settings
+					userSettingsManager.updateUserAffiliation(user, command.getClusters());
 				} else if( CHANGEALGORITHM.toString().equals(command.getAction()) ) {
 					Integer newAlgorithmId = algorithmSelector.getNewClustering(user.getName());
 					userSettingsManager.setAlgorithmForUser(user.getName(), newAlgorithmId);
@@ -90,6 +106,7 @@ public class ClusterSettingsController extends AbstractBaseController<ResourceCl
 			
 			ResourceCluster cluster = new ResourceCluster();
 			cluster.setClusterID(communityUId);
+			cluster.setWeight(weight);
 			Collection<Tag> tags = tagManager.getTagCloudForCommunity(communityUId, Ordering.POPULAR, nTags, 0); 
 			cluster.setTags(tags);
 			Collection<User> members = communityManager.getUsersForCommunity(communityUId, Ordering.POPULAR, nUsers, 0);

@@ -29,16 +29,19 @@ public class ResourceClusterViewCommand extends SimpleResourceViewCommand {
 	private Collection<ResourceCluster> clusters = (Collection<ResourceCluster>)LazyList.decorate(new ArrayList<ResourceCluster>(), new ClusterFactory());
 
 	/** limit */
-	private Integer limit;
+	private Integer limit = 0;
 	
 	/** offset */
-	private Integer offset;
+	private Integer offset = 0;
 	
 	/** total number of clusters */
-	private Integer total;
+	private Integer total = 0;
 	
 	/** action identifier */
 	private String action;
+	
+	/** resource ordering identifier */
+	private String ordering;
 	
 	public ResourceClusterViewCommand() {
 	}
@@ -84,6 +87,14 @@ public class ResourceClusterViewCommand extends SimpleResourceViewCommand {
 
 	public Integer getTotal() {
 		return total;
+	}
+
+	public void setOrdering(String ordering) {
+		this.ordering = ordering;
+	}
+
+	public String getOrdering() {
+		return ordering;
 	}
 
 }

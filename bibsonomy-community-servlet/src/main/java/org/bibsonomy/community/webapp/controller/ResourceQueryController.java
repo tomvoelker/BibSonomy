@@ -56,19 +56,21 @@ public class ResourceQueryController extends AbstractBaseController<ResourceClus
 			List<Post<BibTex>> bibTexPosts = new LinkedList<Post<BibTex>>();
 			List<Post<Bookmark>> bookmarkPosts = new LinkedList<Post<Bookmark>>();
 			
-			final int limit  = (command.getLimit()==null)?RESOURCELIMIT:command.getLimit();
-			final int offset = (command.getOffset()==null)?0:command.getOffset();
+			final int limit  = (command.getLimit()==0)?RESOURCELIMIT:command.getLimit();
+			final int offset = (command.getOffset()==0)?0:command.getOffset();
+			
+			final Ordering ordering = getResourceOrdering(command);
 			
 			int i = 0;
 			for( ResourceCluster cluster : command.getClusters() ) {
 				log.info("Querying for community "+cluster.getClusterID()+"...");
-				Collection<Post<BibTex>> btposts = this.bibTexManager.getPostsForCommunity(cluster.getClusterID(), Ordering.POPULAR, limit, offset);
+				Collection<Post<BibTex>> btposts = this.bibTexManager.getPostsForCommunity(cluster.getClusterID(), ordering, limit, offset);
 				for( Post<?> post : btposts ) {
 					post.setCustomFlag(i);
 				}
 				cluster.setBibtex(btposts);
 				bibTexPosts.addAll(btposts);
-				Collection<Post<Bookmark>> bmposts = this.bookmarkManager.getPostsForCommunity(cluster.getClusterID(), Ordering.POPULAR, limit, offset); 
+				Collection<Post<Bookmark>> bmposts = this.bookmarkManager.getPostsForCommunity(cluster.getClusterID(), ordering, limit, offset); 
 				for( Post<?> post : bmposts ) {
 					post.setCustomFlag(i);
 				}

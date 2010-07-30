@@ -3,9 +3,12 @@ package org.bibsonomy.community.webapp.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bibsonomy.community.enums.Ordering;
 import org.bibsonomy.community.webapp.command.ContextCommand;
+import org.bibsonomy.community.webapp.command.ResourceClusterViewCommand;
 import org.bibsonomy.community.webapp.command.ResourceViewCommand;
 import org.bibsonomy.community.webapp.util.RequestWrapperContext;
+import static org.bibsonomy.util.ValidationUtils.*;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
@@ -76,6 +79,15 @@ public abstract class AbstractBaseController<T extends ContextCommand> extends A
 			return command.getFormat();
 		} else {
 			return OUTPUT_FORMAT;
+		}
+	}
+
+	protected final Ordering getResourceOrdering(ResourceClusterViewCommand command) {
+		if( present(command) && present(command.getOrdering()) ) {
+			Ordering ordering = Ordering.valueOf(command.getOrdering());
+			return ordering;
+		} else {
+			return Ordering.POPULAR;
 		}
 	}
 	

@@ -64,8 +64,8 @@ public class ClusterListController extends AbstractBaseController<ResourceCluste
 	@Override
 	public ModelAndView workOn(ResourceClusterViewCommand command) {
 		if( command.getContext().isUserLoggedIn() ) {
-			final int limit  = (command.getLimit()==null)?CLUSTERLIMIT:command.getLimit();
-			final int offset = (command.getOffset()==null)?0:command.getOffset();
+			final int limit  = (command.getLimit()==0)?CLUSTERLIMIT:command.getLimit();
+			final int offset = (command.getOffset()==0)?0:command.getOffset();
 			org.bibsonomy.model.User user = command.getContext().getLoginUser(); 
 			Integer runId = 0; 
 			try {

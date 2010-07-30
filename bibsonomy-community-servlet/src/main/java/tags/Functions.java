@@ -8,16 +8,11 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.Normalizer;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Properties;
 
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.layout.jabref.JabrefLayout;
-import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -56,8 +51,6 @@ public class Functions  {
 	 */
 	private static String[] bibtexFields     = {"title","address","annote","author","booktitle","chapter","crossref","edition","editor","howpublished","institution","journal","note","number","organization","pages","publisher","school","series","type","volume","year","day","url"};
 	
-	private static JabrefLayoutRenderer layoutRenderer;
-
 	// contains special characters, symbols, etc...
 	private static Properties chars = new Properties();
 	
@@ -68,7 +61,6 @@ public class Functions  {
 	static {
 		try {
 			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
-			//layoutRenderer = JabrefLayoutRenderer.getInstance();
 		} catch (final IOException e) {
 			throw new RuntimeException(e.getMessage());
 		}	    	    		
@@ -559,47 +551,6 @@ public class Functions  {
 	public static String[] getBibtexFields() {
 		return bibtexFields;
 	}
-	
-	/**
-	 * Helper method to access JabRef layouts via taglib function
-	 * 
-	 * @param post
-	 * @param layoutName
-	 * @return The rendered output as string.
-	 */
-	/*
-	public static String renderLayout(final Post<BibTex> post, String layoutName) {
-		ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
-		posts.add(post);
-		
-		return renderLayouts(posts, layoutName);
-		
-	}
-	*/
-	/**
-	 * Helper method to access JabRef layouts via taglib function
-	 * 
-	 * @param posts
-	 * @param layoutName
-	 * @return The rendered output as string.
-	 */
-	/*
-	public static String renderLayouts(final List<Post<BibTex>> posts, String layoutName) {
-		try {
-			final JabrefLayout layout = layoutRenderer.getLayout(layoutName, "");
-			if (! ".html".equals(layout.getExtension())) {
-				return "The requested layout is not valid; only HTML layouts are allowed. Requested extension is: " + layout.getExtension();
-			}
-			return layoutRenderer.renderLayout(layout, posts, true, false).toString();
-		} catch (final LayoutRenderingException ex) {
-			return ex.getMessage();			
-		} catch (final UnsupportedEncodingException ex) {
-			return "An Encoding error occured while trying to convert to layout '" + layoutName  + "'.";
-		} catch (final IOException ex) {
-			return "An I/O error occured while trying to convert to layout '" + layoutName  + "'."; 
-		}
-	}
-	*/
 	
 	/** Checks if the given set contains the given object.
 	 * 
