@@ -31,7 +31,7 @@
 			| link to CV
 		 	+-->
 		<li>
-			<a href="/cv/user/${fn:escapeXml(requestedUser)}"><c:out value="${requestedUser}"/>' CV</a>
+			<a href="/cv/user/${fn:escapeXml(requestedUser)}"><c:out value="${requestedUser}"/>'s CV</a>
 		</li>
 		
 		
