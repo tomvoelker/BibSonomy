@@ -124,6 +124,10 @@ public class User implements Serializable {
 	 */
 	private List<User> friends;
 	/**
+	 * Those are the posts of this user.
+	 */
+	private List<Post<? extends Resource>> posts;
+	/**
 	 * the settings of this user
 	 */
 	private UserSettings settings;
@@ -833,6 +837,14 @@ public class User implements Serializable {
 
 	public void setInstitution(String institution) {
 		this.institution = institution;
+	}
+
+	public List<Post<? extends Resource>> getPosts() {
+		return this.posts;
+	}
+
+	public void setPosts(List<Post<? extends Resource>> posts) {
+		this.posts = posts;
 	}
 
 }
