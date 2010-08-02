@@ -45,7 +45,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String LUCENE_MAGIC_TITLE  = "luceneTitle";
 
 	/** constant for querying for all posts which have been deleted since the last index update */
-	private static final long QUERY_TIME_OFFSET_MS = 30*1000;
+	private static final long QUERY_TIME_OFFSET_MS = 60*1000;
 
 	private static BookmarkDatabaseManager bookmarkDb;
 	private static BibTexDatabaseManager bibTexDb;
@@ -139,6 +139,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	 * tests whether all posts whithin a given time range are retrieved
 	 */
 	@Test
+	@Ignore
 	public void getContentIdsToDelete() {
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
