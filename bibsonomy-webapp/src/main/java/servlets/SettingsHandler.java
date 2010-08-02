@@ -102,14 +102,12 @@ public class SettingsHandler extends HttpServlet{
 			try{
 				conn.setAutoCommit(false);    // deactivate auto-commit to enable transaction
 				String friend = null;
-				String redirectPage = "/settings";
 
 				/*
 				 * remove a friend
 				 */
 				friend = request.getParameter("del_friend");
 				if (friend != null) {
-					redirectPage = "/friends";
 					// logging
 					stmtP = conn.prepareStatement("INSERT INTO log_friends (friends_id, user_name, f_user_name, friendship_date) SELECT * FROM friends WHERE user_name = ? AND f_user_name = ?");
 					stmtP.setString(1, currUser);
@@ -127,7 +125,6 @@ public class SettingsHandler extends HttpServlet{
 				friend = request.getParameter("add_friend");
 				// don't be friend with yourself!
 				if (friend != null && !friend.equals(currUser)) {
-					redirectPage = "/friends";
 					// check, if username exists
 					stmtP = conn.prepareStatement ("SELECT user_name FROM user WHERE user_name = ?");
 					stmtP.setString(1, friend);
@@ -154,7 +151,6 @@ public class SettingsHandler extends HttpServlet{
 				final String addGroupUser = request.getParameter("add_group_user");
 				if (addGroupUser != null) {
 					addUserToGroup(addGroupUser, currUser, stmtP, rst, conn);
-					redirectPage = "/settings?selTab=3";
 				}
 
 				/*
@@ -162,7 +158,6 @@ public class SettingsHandler extends HttpServlet{
 				 */
 				friend = request.getParameter("del_group_user");
 				if (friend != null && !friend.equalsIgnoreCase(currUser)) {
-					redirectPage = "/settings?selTab=3";
 					// check, if user is owner of group and get groupid 
 					stmtP = conn.prepareStatement("SELECT i.group FROM groups g, groupids i WHERE g.user_name = ? AND i.group_name = ? AND g.group = i.group");
 					stmtP.setString(1, currUser);
@@ -216,7 +211,8 @@ public class SettingsHandler extends HttpServlet{
 			
 
 				conn.commit();
-				response.sendRedirect(redirectPage);
+				final String referer = request.getHeader("Referer");
+				response.sendRedirect(referer != null ? referer : "/settings");
 
 			} catch(SQLException e) {
 				conn.rollback();     // rollback all queries
