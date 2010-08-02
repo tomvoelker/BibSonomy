@@ -94,6 +94,10 @@ public class User implements Serializable {
 	 */
 	private String profession;
 	/**
+	 * Institution (company, etc.)
+	 */
+	private String institution;
+	/**
 	 * Interests
 	 */
 	private String interests;
@@ -821,6 +825,14 @@ public class User implements Serializable {
 	public int hashCode() {
 		if (this.name != null) return this.name.hashCode();
 		return super.hashCode();
+	}
+
+	public String getInstitution() {
+		return this.institution;
+	}
+
+	public void setInstitution(String institution) {
+		this.institution = institution;
 	}
 
 }
