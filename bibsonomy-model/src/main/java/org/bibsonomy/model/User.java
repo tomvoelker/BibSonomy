@@ -840,6 +840,9 @@ public class User implements Serializable {
 	}
 
 	public List<Post<? extends Resource>> getPosts() {
+		if (this.posts == null) {
+			this.posts = new LinkedList<Post<? extends Resource>>();
+		}
 		return this.posts;
 	}
 
