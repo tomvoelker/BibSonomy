@@ -40,7 +40,7 @@ import org.bibsonomy.model.util.UserUtils;
  */
 public class User implements Serializable {
 	/*
-	 * WARNING: When adding new fields make sure to integrate them into the updateUser method
+	 * XXX: When adding new fields make sure to integrate them into the updateUser method
 	 * {@link UserUtils#updateUser}
 	 */
 
@@ -53,181 +53,160 @@ public class User implements Serializable {
 	 * The (nick-)name of this user. Is <code>null</code> if the user is not logged in (unknown). 
 	 */
 	private String name;
-
-	/**
-	 * The (real-)name of this user.
-	 */
-	private String realname;
-
-	/**
-	 * This user's email address.
-	 */
-	private String email;
-
 	/**
 	 * This user's password
 	 */
 	private String password;
-
-	/**
-	 * The {@link Date} when this user registered to bibsonomy.
-	 */
-	private Date registrationDate;
-
-	/**
-	 * Ths {@link URL} to this user's homepage.
-	 */
-	private URL homepage;
-
-	/**
-	 * The user belongs to these groups.
-	 */
-	private List<Group> groups;
-
-	/**
-	 * Those are the posts of this user.
-	 */
-	private List<Post<? extends Resource>> posts;
-
 	/**
 	 * The Api Key for this user
 	 */
 	private String apiKey;
-
-	/**
-	 * Indicates if this user is a spammer.
-	 */
-	private Boolean spammer;
-
-	/**
-	 * the settings of this user
-	 */
-	private UserSettings settings;
-
-	/**
-	 * OpenURL url
-	 */
-	private String openURL;
-	
-	/**
-	 * OpenID url for authentication
-	 */
-	private String openID;
-
-	/**
-	 * LDAP userId for authentication
-	 */
-	private String ldapId;
-
-	/**
-	 * Date of last ldap password check or ldap update
-	 */
-	private Date lastLdapUpdate;
-
-	/**
-	 * IP Address
-	 */
-	private String IPAddress;
-
-	/**
-	 * birthday
-	 */
-	private Date birthday;
-
-	/**
-	 * Gender
-	 */
-	private String gender;
-
-	/**
-	 * Profession
-	 */
-	private String profession;
-
-	/**
-	 * Interests
-	 */
-	private String interests;
-
-	/**
-	 * Hobbies
-	 */
-	private String hobbies;
-
-	/**
-	 * Location of this user
-	 */
-	private String place;
-
-	/**
-	 * Basket of this user where he can pick some entries
-	 */
-	private Basket basket;
-
-	/**
-	 * Inbox of this user where he gets Posts sent by other users
-	 */
-	private Inbox inbox;
-
-	/**
-	 * Holds the friends of this user
-	 */
-	private List<User> friends;
-
 	/**
 	 * Which role the user has in the system (e.g. admin, ...)
 	 */
 	private Role role;
 
+	
+	/* ****************************** profile ****************************** */ 
+	
+	/**
+	 * The (real-)name of this user.
+	 */
+	private String realname;
+	/**
+	 * This user's email address.
+	 */
+	private String email;
+	/**
+	 * Ths {@link URL} to this user's homepage.
+	 */
+	private URL homepage;
+	/**
+	 * birthday
+	 */
+	private Date birthday;
+	/**
+	 * Gender
+	 */
+	private String gender;
+	/**
+	 * Profession
+	 */
+	private String profession;
+	/**
+	 * Interests
+	 */
+	private String interests;
+	/**
+	 * Hobbies
+	 */
+	private String hobbies;
+	/**
+	 * Location of this user
+	 */
+	private String place;
+	/**
+	 * OpenURL url
+	 */
+	private String openURL;
+
+	/* ****************************** system properties ****************************** */
+	/**
+	 * The user belongs to these groups.
+	 */
+	private List<Group> groups;
+	/**
+	 * Holds the friends of this user
+	 */
+	private List<User> friends;
+	/**
+	 * the settings of this user
+	 */
+	private UserSettings settings;
+	/**
+	 * Basket of this user where he can pick some entries
+	 */
+	private Basket basket;
+	/**
+	 * Inbox of this user where he gets Posts sent by other users
+	 */
+	private Inbox inbox;
+
+
+	/* ****************************** classification ****************************** */ 
+
+	/**
+	 * Indicates if this user is a spammer.
+	 */
+	private Boolean spammer;
 	/**
 	 * who updated state of the user
 	 */
 	private String updatedBy;
-
 	/**
 	 * date of update
 	 */
 	private Date updatedAt; 
-
 	/**
 	 * flag if the classifier should take this user
 	 * into account for classification
 	 */
 	private Integer toClassify;
-
 	/**
 	 * The classification algortihm the user was classified with
 	 */
 	private String algorithm;
-
 	/**
 	 * The spammer prediction of the classifier
 	 */
 	private Integer prediction;
-	
 	/**
 	 * The confidence of the classifier
 	 */
 	private Double confidence;
-
-	/** The mode of the classifier (day or night) */ 
+	/** 
+	 * The mode of the classifier (day or night)
+	 */ 
 	private String mode;
+	
+	
+	/* ****************************** account management ****************************** */
 	
 	/**
 	 * The Activation Code
 	 */
 	private String activationCode;
-
+	/**
+	 * The {@link Date} when this user registered to bibsonomy.
+	 */
+	private Date registrationDate;
+	/**
+	 * IP Address
+	 */
+	private String IPAddress;
+	/**
+	 * OpenID url for authentication
+	 */
+	private String openID;
+	/**
+	 * LDAP userId for authentication
+	 */
+	private String ldapId;
+	/**
+	 * Date of last ldap password check or ldap update
+	 */
+	private Date lastLdapUpdate;
 	/**
 	 * The temporary password the user can request when asking for a password reminder.
 	 */
 	private String reminderPassword;
-	
 	/**
 	 * The time at which the user requested a password reminder.
 	 */
 	private Date reminderPasswordRequestDate; 
 
+	
+	
 	/**
 	 * Constructor
 	 */
@@ -358,23 +337,6 @@ public class User implements Serializable {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	/**
-	 * @return posts
-	 */
-	public List<Post<? extends Resource>> getPosts() {
-		if (this.posts == null) {
-			this.posts = new LinkedList<Post<? extends Resource>>();
-		}
-		return this.posts;
-	}
-
-	/**
-	 * @param posts
-	 */
-	public void setPosts(List<Post<? extends Resource>> posts) {
-		this.posts = posts;
 	}
 
 	/**
