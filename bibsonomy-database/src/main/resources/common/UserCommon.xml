@@ -24,6 +24,7 @@
 		<result property="password"         column="user_password" javaType="string" />
 		<result property="place"            column="place"         javaType="string" />
 		<result property="profession"       column="profession"    javaType="string" />
+		<result property="institution"      column="institution"   javaType="string" />
 		<result property="registrationDate" column="reg_date"      javaType="date" />
 		<result property="spammer"          column="spammer"       javaType="boolean" />
 		<result property="role"             column="role"          javaType="Role" />	
@@ -68,7 +69,7 @@
 
 	<sql id="commonUserAttributes">
 		user_name, user_email, user_homepage, user_realname, user_password, 
-		api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, 
+		api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, institution, 
 		reg_date, spammer, role, updated_by, updated_at, to_classify, tmp_password, tmp_request_date,
 		ldapUserId, lastAccess
 	</sql>

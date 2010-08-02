@@ -38,12 +38,12 @@
 	
 	<insert id="activateUser" parameterClass="string"> 	
 		INSERT INTO user (user_name, user_email, user_password, user_realname, user_homepage, 
-							api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date,
+							api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, institution, reg_date,
 							spammer, updated_by, updated_at, role, to_classify, lang, tagbox_style, tagbox_sort, tagbox_minfreq, 
 							tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete,
 							tmp_password, tmp_request_date, show_bookmark, show_bibtex, simple_interface)
 		SELECT user_name, user_email, user_password, user_realname, user_homepage, 
-			   	api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date, 
+			   	api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, institution, reg_date, 
 				spammer, updated_by, updated_at, role, to_classify, lang, tagbox_style, tagbox_sort, tagbox_minfreq, 
 				tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete,
 				tmp_password, tmp_request_date, show_bookmark, show_bibtex, simple_interface
@@ -66,7 +66,7 @@
 	<insert id="insertPendingUser" parameterClass="user">
 		INSERT INTO pendingUser ( 
 			user_name, user_email, user_password, user_realname, user_homepage, 
-			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date, 
+			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, institution, reg_date, 
 			spammer, updated_by, updated_at, role, to_classify, tagbox_style, tagbox_sort, tagbox_minfreq, 
 			tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete, activation_code, 
 			show_bookmark, show_bibtex, simple_interface
@@ -74,7 +74,7 @@
 			)
 		VALUES (
 			#name#, #email#, #password#, #realname#, #homepage#, 
-			#apiKey#, #birthday#, #gender#, #hobbies#, #interests#, #IPAddress#, #openURL#, #place#, #profession#, #registrationDate#, 
+			#apiKey#, #birthday#, #gender#, #hobbies#, #interests#, #IPAddress#, #openURL#, #place#, #profession#, #institution#, #registrationDate#, 
 			#spammer#,#updatedBy#, #updatedAt#, #role#, #toClassify#, #settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, 
 			#settings.tagboxMaxCount#, #settings.isMaxCount#, #settings.tagboxTooltip#, #settings.listItemcount#, #settings.logLevel#, 
 			#settings.confirmDelete#, #activationCode#, #settings.showBookmark#, #settings.showBibtex#, #settings.simpleInterface#
@@ -86,7 +86,7 @@
 	<insert id="insertUser" parameterClass="user">
 		INSERT INTO user ( 
 			user_name, user_email, user_password, user_realname, user_homepage, 
-			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date, 
+			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, institution, reg_date, 
 			spammer, updated_by, updated_at, role, to_classify,  tagbox_style, tagbox_sort, tagbox_minfreq, 
 			tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete, 
 			show_bookmark, show_bibtex, simple_interface
@@ -106,7 +106,7 @@
 		UPDATE user
 		SET user_email = #email#, user_password = #password#, user_realname = #realname#, user_homepage = #homepage#, 
 			api_key = #apiKey#, birthday = #birthday#, gender = #gender#, hobbies = #hobbies#, interests = #interests#, 
-			ip_address= #IPAddress#, openurl = #openURL#, place = #place#, profession = #profession#, 
+			ip_address= #IPAddress#, openurl = #openURL#, place = #place#, profession = #profession#, institution = #institution#, 
 			spammer = #spammer#, updated_by = #updatedBy#, updated_at = #updatedAt#
 			<isNotNull property="reminderPassword">,tmp_password = #reminderPassword#, tmp_request_date = #reminderPasswordRequestDate#</isNotNull>		
 		WHERE user_name=#name#
@@ -173,6 +173,7 @@
 		user_homepage = #homepage#,
 		openurl = #openURL#,
 		profession = #profession#,
+		institution = #institution#, 
 		interests = #interests#,
 		hobbies = #hobbies#,
 		place = #place#,

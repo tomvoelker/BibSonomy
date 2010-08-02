@@ -160,7 +160,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final User user = userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
 		newUser.setActivationCode(null);
-		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt" });
+		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "institution", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt" });
 	}
 
 	@Test(expected = Exception.class)
