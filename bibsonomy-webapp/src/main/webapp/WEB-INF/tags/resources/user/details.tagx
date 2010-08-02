@@ -50,6 +50,7 @@
       <tr><th>openURL</th><td><c:out value="${user.openURL}"/></td></tr>
       <tr><th>place</th><td><c:out value="${user.place}"/></td></tr>
       <tr><th>profession</th><td><c:out value="${user.profession}"/></td></tr>
+      <tr><th>institution</th><td><c:out value="${user.institution}"/></td></tr>
 
       <tr><th colspan="2">settings</th></tr>
       <tr><th>defaultLanguage</th><td><c:out value="${user.settings.defaultLanguage}"/></td></tr>

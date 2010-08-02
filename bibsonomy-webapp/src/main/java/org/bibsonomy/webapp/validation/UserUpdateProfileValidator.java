@@ -51,6 +51,7 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 
 		// do not have to be checked
 		// check profession
+		// check institution
 		// check interests
 		// check hobbies
 		// check place

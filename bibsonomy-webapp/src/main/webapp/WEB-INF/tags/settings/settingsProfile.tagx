@@ -114,6 +114,10 @@
 		      <form:input cssClass="fsInput" path="user.profession"/>		        
 		    </div>
 		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.institution"><fmt:message key="user.institution"/></form:label>
+		      <form:input cssClass="fsInput" path="user.institution"/>		        
+		    </div>
+		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.interests"><fmt:message key="user.scientificInterests"/></form:label>
 		      <form:textarea cssClass="fsInput" path="user.interests"/>
 		    </div>
