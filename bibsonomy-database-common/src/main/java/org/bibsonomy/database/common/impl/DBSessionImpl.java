@@ -17,7 +17,6 @@ import org.bibsonomy.util.ExceptionUtils;
 
 import com.ibatis.common.jdbc.exception.NestedSQLException;
 import com.ibatis.sqlmap.client.SqlMapSession;
-import com.mysql.jdbc.exceptions.MySQLTimeoutException;
 
 /**
  * This class wraps the iBatis SqlMap and manages database sessions. Transactions are virtual,
@@ -303,7 +302,13 @@ public class DBSessionImpl implements DBSession {
 			}
 		}
 
-		if (cause != null && cause.getClass().equals(MySQLTimeoutException.class)) {
+		/*
+		 * XXX: this handles a special MySQL exception. We had a check on
+		 * the corresponding class here, which brought in a dependency to
+		 * MySQL. Therefore, the check is now against the class name - 
+		 * which brings problems, if it should change ... 
+		 */
+		if (cause != null && cause.getClass().getSimpleName().equals("MySQLTimeoutException")) {
 			log.info("MySQL Query timeout for query " + query);
 			throw new QueryTimeoutException(ex, query);
 		}
