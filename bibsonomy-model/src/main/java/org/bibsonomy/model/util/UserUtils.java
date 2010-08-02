@@ -231,24 +231,25 @@ public class UserUtils {
 		// code block - so if we add a field to the User bean we don't have to
 		// remember adding it here
 		// The problem with that idea is, that NOT ALL properties are updated (e.g. name, registrationDate)
-		existingUser.setEmail(		!present(updatedUser.getEmail()) 		? existingUser.getEmail() 		: updatedUser.getEmail());
+		existingUser.setEmail(		!present(updatedUser.getEmail()) 	? existingUser.getEmail() 	: updatedUser.getEmail());
 		existingUser.setPassword(	!present(updatedUser.getPassword()) 	? existingUser.getPassword() 	: updatedUser.getPassword());		
 		existingUser.setRealname(	!present(updatedUser.getRealname()) 	? existingUser.getRealname() 	: updatedUser.getRealname());		
 		existingUser.setHomepage(	!present(updatedUser.getHomepage()) 	? existingUser.getHomepage() 	: updatedUser.getHomepage());
-		existingUser.setApiKey(		!present(updatedUser.getApiKey()) 		? existingUser.getApiKey()	 	: updatedUser.getApiKey());		
+		existingUser.setApiKey(		!present(updatedUser.getApiKey()) 	? existingUser.getApiKey()	: updatedUser.getApiKey());		
 		existingUser.setBirthday(	!present(updatedUser.getBirthday()) 	? existingUser.getBirthday() 	: updatedUser.getBirthday());
-		existingUser.setGender(		!present(updatedUser.getGender()) 		? existingUser.getGender() 		: updatedUser.getGender());
-		existingUser.setHobbies(	!present(updatedUser.getHobbies()) 		? existingUser.getHobbies() 	: updatedUser.getHobbies());
+		existingUser.setGender(		!present(updatedUser.getGender()) 	? existingUser.getGender() 	: updatedUser.getGender());
+		existingUser.setHobbies(	!present(updatedUser.getHobbies()) 	? existingUser.getHobbies() 	: updatedUser.getHobbies());
 		existingUser.setInterests(	!present(updatedUser.getInterests()) 	? existingUser.getInterests() 	: updatedUser.getInterests());
 		existingUser.setIPAddress(	!present(updatedUser.getIPAddress()) 	? existingUser.getIPAddress() 	: updatedUser.getIPAddress());
-		existingUser.setOpenURL(	!present(updatedUser.getOpenURL()) 		? existingUser.getOpenURL() 	: updatedUser.getOpenURL());
-		existingUser.setPlace(		!present(updatedUser.getPlace()) 		? existingUser.getPlace() 		: updatedUser.getPlace());
-		existingUser.setProfession(	!present(updatedUser.getProfession()) 	? existingUser.getProfession(): updatedUser.getProfession());
-	
+		existingUser.setOpenURL(	!present(updatedUser.getOpenURL()) 	? existingUser.getOpenURL() 	: updatedUser.getOpenURL());
+		existingUser.setPlace(		!present(updatedUser.getPlace()) 	? existingUser.getPlace() 	: updatedUser.getPlace());
+		existingUser.setProfession(	!present(updatedUser.getProfession()) 	? existingUser.getProfession()  : updatedUser.getProfession());
+		existingUser.setInstitution(	!present(updatedUser.getInstitution()) 	? existingUser.getInstitution() : updatedUser.getInstitution());
+		
 		existingUser.setOpenID(		!present(updatedUser.getOpenID())       ? existingUser.getOpenID()      : updatedUser.getOpenID());
 		existingUser.setLdapId(		!present(updatedUser.getLdapId())       ? existingUser.getLdapId()      : updatedUser.getLdapId());
 		
-		existingUser.setSpammer(	!present(updatedUser.getSpammer()) 		? existingUser.getSpammer() 	: updatedUser.getSpammer());
+		existingUser.setSpammer(	!present(updatedUser.getSpammer()) 	? existingUser.getSpammer() 	: updatedUser.getSpammer());
 
 		existingUser.setUpdatedBy(	!present(updatedUser.getUpdatedBy()) 	? existingUser.getUpdatedBy() 	: updatedUser.getUpdatedBy());
 		existingUser.setUpdatedAt(	!present(updatedUser.getUpdatedAt()) 	? existingUser.getUpdatedAt() 	: updatedUser.getUpdatedAt());
