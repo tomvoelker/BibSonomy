@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+	<!--+
+	    | events
+ 		+-->
+ 	<util:map id="events" key-type="java.lang.String" value-type="org.bibsonomy.events.model.Event">
+ 		<entry key="lwa2010">
+ 			<bean class="org.bibsonomy.events.model.Event">
+ 				<property name="name" value="lwa2010"/>
+ 				<property name="description" value="Workshop 'Lernen, Wissen, Adaption' der GI-Fachgruppen ABIS, IR, KDML, WM"/>
+ 				<property name="location" value="Kassel"/>
+ 				<property name="year" value="2010"/>
+ 				<property name="subEvents">
+ 					<util:list value-type="java.lang.String">
+ 						<value>ABIS</value>
+ 						<value>IR</value>
+ 						<value>KDML</value>
+ 						<value>WM</value>
+ 					</util:list>
+ 				</property>
+ 			</bean>
+ 		</entry>
+ 	</util:map>
+	
+
+</beans>

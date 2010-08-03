@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+	<typeAlias alias="date" type="java.util.Date" />
+	<typeAlias alias="registrationParam" type="org.bibsonomy.events.database.RegistrationParam" />
+
+	<transactionManager type="JDBC">
+		<dataSource type="JNDI">
+			<property name="DataSource" value="java:comp/env/jdbc/events"/>
+		</dataSource>
+	</transactionManager>
+	
+	<sqlMap resource="event-database-config_queries.xml"/>
+		
+</sqlMapConfig>
