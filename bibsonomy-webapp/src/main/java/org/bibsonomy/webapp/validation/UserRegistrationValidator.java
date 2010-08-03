@@ -1,8 +1,5 @@
 package org.bibsonomy.webapp.validation;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
 import org.bibsonomy.webapp.util.Validator;
@@ -37,34 +34,10 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 		final UserRegistrationCommand command = (UserRegistrationCommand) userObj;
 
 		/*
-		 * reCaptchaHTML parameter must not been set!
-		 * 
-		 * This attribute is only used by the controller to provide the HTML for the
-		 * reCaptcha JavaScript. Incoming requests should never have this attribute
-		 * set.
-		 */
-		if (present(command.getCaptchaHTML())) {
-			errors.reject("error.invalid_parameter");
-		}
-
-		/*
 		 * Check the user data. 
 		 */
 		final User user = command.getRegisterUser();
 		Assert.notNull(user);
-
-		/*
-		 * TODO: Check, that ONLY values are set, which the user can enter in a form,
-		 * i.e. that no spammer status or other settings are set!
-		 */
-		if (present(user.getAlgorithm()) || present(user.getApiKey()) ||
-				present(user.getIPAddress()) || present(user.getMode()) ||
-				present(user.getPrediction()) || present(user.getRegistrationDate()) ||
-				present(user.getSpammer()) || present(user.getToClassify()) ||
-				present(user.getUpdatedBy()) || present(user.getUpdatedAt()) ||
-				!Role.NOBODY.equals(user.getRole())) {
-			errors.reject("error.invalid_parameter");
-		}
 
 		/*
 		 * validate user

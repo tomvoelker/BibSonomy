@@ -22,20 +22,13 @@ public class PasswordReminderValidator implements Validator<PasswordReminderComm
 
 	@Override
 	public void validate(Object obj, Errors errors) {
-		
 		Assert.notNull(obj);
-		PasswordReminderCommand command = (PasswordReminderCommand) obj;
-		
-		if (org.bibsonomy.util.ValidationUtils.present(command.getCaptchaHTML())) {
-			errors.reject("error.invalid_parameter");
-		}
 		
 		/*
-		 * password and user name must be given
+		 * user name and email must be given
 		 */
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userName", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userEmail", "error.field.required");
-
 		
 		/*
 		 * check, that challenge response is given

@@ -25,7 +25,7 @@ public class UploadFileValidator implements Validator<UploadFileCommand> {
 		final UploadFileCommand command = (UploadFileCommand) obj;
 
 		if (!ValidationUtils.present(command.getResourceHash())){
-			errors.reject("error.upload.invalid.hash");
+			errors.reject("error.upload.invalid.hash", "no resource hash given");
 		}
 	}
 

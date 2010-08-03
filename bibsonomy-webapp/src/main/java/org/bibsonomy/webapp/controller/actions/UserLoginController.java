@@ -417,7 +417,7 @@ public class UserLoginController implements ErrorAware, ValidationAwareControlle
 		try {
 			return new ExtendedRedirectView(openIDLogic.authOpenIdRequest(requestLogic, openID, projectHome, returnToUrl, false));
 		} catch (OpenIDException ex) {
-			errors.reject("error.invalid_openid");
+			errors.reject("error.invalid_openid", "The given OpenID is invalid.");
 			return Views.ERROR;
 		}
 	}
