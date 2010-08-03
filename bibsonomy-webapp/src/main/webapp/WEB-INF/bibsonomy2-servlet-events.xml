@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+	<!--  #################### url mapping #################### -->
+    <bean id="eventsUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+			    <!-- 
+			        | ############################### registration ###############################
+			        -->
+			  	<entry key="/events/register">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="eventRegistrationController"/>
+						<property name="allowedFields">	
+							<list>
+								<value>event.name</value>
+								<value>user.realname</value>
+								<value>user.gender</value>
+								<value>user.birthday</value>
+								<value>user.email</value>
+								<value>user.homepage</value>
+								<value>user.place</value>
+								<value>user.interests</value>
+								<value>user.profession</value>
+								<value>user.institution</value>
+								<value>user.interests</value>
+								<value>user.hobbies</value>
+								<value>ckey</value>
+								<value>profilePrivlevel</value>
+								<value>registered</value>
+								<value>subEvent</value>
+								<value>address</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+            </map>
+        </property>
+    </bean>
+
+	<!--  #################### controller #################### -->
+
+	<!-- 
+		Handles registration of users.
+	 -->
+	<bean id="eventRegistrationController" class="org.bibsonomy.webapp.controller.events.EventRegistrationController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="eventManager" ref="eventManager"/>
+	</bean>
+
+	<bean id="eventManager" class="org.bibsonomy.events.services.EventManagerProxy" scope="singleton">
+		<property name="eventManagers">
+			<list>
+				<bean class="org.bibsonomy.events.services.SpringBeanEventManager" scope="singleton"/>
+				<!-- bean class="org.bibsonomy.events.services.DatabaseEventManager" scope="singleton"/-->
+			</list>
+		</property>
+	</bean>
+	
+	
+</beans>

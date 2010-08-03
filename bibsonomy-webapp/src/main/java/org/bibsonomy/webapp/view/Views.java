@@ -397,6 +397,14 @@ public enum Views implements View {
 	EDIT_TAGS("actions/edit/edittags"),
 	
 	/* *****************************************************
+	 * views for events (e.g., conferences, workshops 
+	 * *****************************************************/
+	/**
+	 * register a user for an event 
+	 */
+	EVENT_REGISTRATION("events/registration"),
+	
+	/* *****************************************************
 	 * query independent views to show bookmark or 
 	 * publication lists
 	 * *****************************************************/

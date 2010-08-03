@@ -742,4 +742,5 @@
     <import resource="bibsonomy2-servlet-ajax.xml"/>	
     <import resource="bibsonomy2-servlet-admin.xml"/>
 	<import resource="bibsonomy2-servlet-lucene.xml"/>
+	<import resource="bibsonomy2-servlet-events.xml"/>
 </beans>

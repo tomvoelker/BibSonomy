@@ -1,0 +1,179 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+  	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:layout loginUser="${command.context.loginUser}"	searchString="hurz" pageTitle="${command.pageTitle}" requPath="${requPath}">
+
+		<jsp:attribute name="heading">
+      		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.register" /> :: <c:out value="${command.event.name}" /></a>
+    	</jsp:attribute>
+
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+		</jsp:attribute>
+
+		<jsp:attribute name="content">
+        
+      		<div id="general">
+      
+      			<errors:global errors="${errors}" />
+      			
+      			
+				<fmt:message var="saveChanges" key="settings.saveChanges" />
+				<fmt:message var="male" key="settings.male"/>
+				<fmt:message var="female" key="settings.female"/>
+
+				<h2>Welcome to <c:out value="${command.event.name}" /></h2>
+				<p><c:out value="${command.event.description}"/></p>
+       
+				
+				<form:form method="post" action="#">		
+
+	     	      
+	     	    <h2><fmt:message key="settings.generalInformation" /></h2>		
+	
+		       	  <fieldset class="fsInner">
+				    <div class="fsRow">
+				      <form:label cssClass="fsLabel" path="user.gender"><fmt:message key="user.gender"/></form:label>
+				      <form:select cssClass="fsInput fsSmall" path="user.gender">
+				    	<form:option label="${male}" value="m"/>
+				    	<form:option label="${female}" value="f"/>
+				      </form:select>
+				      <div class="dissError"><form:errors path="user.gender" /></div>
+				    </div>
+		            <div class="fsRow">
+				      <form:label cssClass="fsLabel" path="user.realname"><fmt:message key="user.realname"/></form:label>
+				      <form:input cssClass="fsInput fsSmall" path="user.realname"/>
+		              <div class="dissError"><form:errors path="user.realname" /></div>
+		 		    </div>
+		 		    <div class="fsRow">
+				      <form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="user.birthday"/></form:label>
+				      <form:input cssClass="fsInput fsSmall" path="user.birthday"/>
+				      <div class="dissError"><form:errors path="user.birthday" /></div>		      
+				      <form:label cssClass="fsHelp" path="user.birthday">format: YYYY-MM-DD</form:label>
+				    </div>
+				    <div class="fsRow">
+				      <form:label cssClass="fsLabel" path="user.place"><fmt:message key="user.place"/></form:label>
+				      <form:input cssClass="fsInput fsSmall" path="user.place"/>
+				    </div>
+
+				    <div class="fsRow">
+				      <form:label cssClass="fsLabel" path="user.email"><fmt:message key="user.email"/></form:label>
+				      <form:input cssClass="fsInput" path="user.email"/>
+		              <div class="dissError"><form:errors path="user.email" /></div>
+				    </div>
+				    <div class="fsRow">
+				      <form:label cssClass="fsLabel" path="user.homepage"><fmt:message key="user.homepage"/></form:label>
+				      <form:input cssClass="fsInput" path="user.homepage"/>
+				      <div class="dissError"><form:errors path="user.homepage" /></div>
+				    </div>
+
+		  	        <div class="fsRow">
+				      <form:label cssClass="fsLabel" path="user.profession"><fmt:message key="user.profession"/></form:label>
+				      <form:input cssClass="fsInput" path="user.profession"/>		        
+				    </div>
+		  	        <div class="fsRow">
+				      <form:label cssClass="fsLabel" path="user.institution"><fmt:message key="user.institution"/></form:label>
+				      <form:input cssClass="fsInput" path="user.institution"/>		        
+				    </div>
+
+				    <div class="fsRow">
+				      <form:label cssClass="fsLabel" path="user.interests"><fmt:message key="user.scientificInterests"/></form:label>
+				      <form:textarea cssClass="fsInput" path="user.interests"/>
+				    </div>
+				    <div class="fsRow">
+				      <form:label cssClass="fsLabel" path="user.hobbies"><fmt:message key="user.hobbies"/></form:label>
+				      <form:textarea cssClass="fsInput" path="user.hobbies" />
+				    </div>
+
+				    <div class="fsRow">
+				    	Facebook
+				    </div>
+
+				    <div class="fsRow">
+				    	Twitter
+				    </div>
+
+					<div class="fsRow">
+				    	ResearchGate
+				    </div>
+
+
+				    <div class="fsRow">
+				      <form:label cssClass="fsLabel" path="profilePrivlevel"><fmt:message key="settings.profileViewableFor"/></form:label>
+				      <form:select cssClass="fsInput fsSmall" path="profilePrivlevel">
+				    	<form:option label="public" value="public"/>
+				    	<form:option label="private" value="private"/>
+				    	<form:option label="friends" value="friends"/>
+				      </form:select>
+				      <div class="dissError"><form:errors path="profilePrivlevel" /></div>
+				    </div>
+		        	<div class="fsRow">
+		          		<input type="submit" class="fsFormSubmit" value="${saveChanges}"/>
+		          		<input type="hidden" name="ckey" value="${ckey}"/>
+		        	</div>
+				  </fieldset>
+
+
+				  <h2><fmt:message key="settings.generalInformation" /></h2>
+		
+				  <fieldset class="fsInner">
+				  	<div class="fsRow">
+				    	<form:label cssClass="fsLabel" path="registered"><fmt:message key="events.registration.registered"/></form:label>
+				    	<form:checkbox path="registered" value="true"/>
+				    	<div class="dissError"><form:errors path="registered" /></div>
+				    </div>
+				    
+				    <div class="fsRow">
+				    	<form:label cssClass="fsLabel" path="subEvent"><fmt:message key="events.registration.subEvent"/></form:label>
+				    	<form:radiobuttons items="${command.event.subEvents}" path="subEvent"/>
+				    	<div class="dissError"><form:errors path="subEvent" /></div>
+				    </div>
+				    
+				    <div class="fsRow">
+				    	<form:label cssClass="fsLabel" path="subEvent"><fmt:message key="events.registration.address"/></form:label>
+				    	<form:textarea cssClass="fsInput" path="address"/>
+				    	<div class="dissError"><form:errors path="address"/></div>
+				    </div>
+				  </fieldset>
+		
+		      </form:form>
+		
+	
+
+
+	      </div>
+
+    	</jsp:attribute>
+    	
+    	<jsp:attribute name="beforeBodyClose">
+          <script type="text/javascript">
+             //<mtl:cdata>
+             <![CDATA[
+                // vanishing error boxes
+                $(document).ready( function(){
+						prepareErrorBoxes('dissError');
+                	}
+                );
+             ]]> 
+             //</mtl:cdata>
+          </script>
+       
+       </jsp:attribute>
+    	
+
+	</layout:layout>
+</jsp:root>

@@ -778,6 +778,15 @@
 	</rule>
 
 
+	<!-- ############## events ############### -->
+	<rule>
+		<name>/events/register/EVENT</name>
+		<from>^/+events/+register/([^/]+)$</from>
+		<set type="parameter" name="event.name">$1</set>
+		<to last="true">/events/register</to>
+	</rule>
+	
+
 	<!-- ############## new actions - testing! ############### -->
 	<rule><!-- /actions/admin/group/GROUPNAME -->
 		<name>/actions/admin/group/GROUP</name>
