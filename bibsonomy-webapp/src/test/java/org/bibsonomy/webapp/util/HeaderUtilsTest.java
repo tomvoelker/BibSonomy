@@ -13,6 +13,9 @@ import org.junit.Test;
  */
 public class HeaderUtilsTest {
 
+	/**
+	 * Tests the different response formats for given HTTP "Accept" headers.
+	 */
 	@Test
 	public void testGetResponseFormat() {
 		
