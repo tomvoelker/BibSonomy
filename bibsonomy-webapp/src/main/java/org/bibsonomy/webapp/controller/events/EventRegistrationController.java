@@ -12,6 +12,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.events.EventRegistrationCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
@@ -54,8 +55,7 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 
 		final Event event = eventManager.getEvent(command.getEvent().getName());
 		if (!present(event)) {
-			errors.reject("events.error.notexists", "The event " + command.getEvent().getName() + " does not exist."); // FIXME: own message
-			return Views.ERROR;
+			throw new MalformedURLSchemeException("The event " + command.getEvent().getName() + " does not exist."); // FIXME: own message?
 		}
 		
 		log.info("got event " + event);
