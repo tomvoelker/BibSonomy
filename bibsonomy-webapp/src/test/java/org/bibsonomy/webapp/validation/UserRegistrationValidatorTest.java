@@ -47,9 +47,9 @@ public class UserRegistrationValidatorTest {
 	/**
 	 * tests, if null can be validated
 	 */
+	@SuppressWarnings("unchecked")
 	@Test(expected = IllegalArgumentException.class)
 	public void testValidateNullArgument() {
-		@SuppressWarnings("rawtypes")
 		final Errors errors = new MapBindingResult(new HashMap(), "user");
 		
 		validator.validate(null, errors);
@@ -58,9 +58,9 @@ public class UserRegistrationValidatorTest {
 	/**
 	 * registerUser = null should not pass validation
 	 */
+	@SuppressWarnings("unchecked")
 	@Test(expected = IllegalArgumentException.class)
 	public void testValidateNullUser() {
-		@SuppressWarnings("rawtypes")
 		final Errors errors = new MapBindingResult(new HashMap(), "user");
 		
 		final UserRegistrationCommand command = new UserRegistrationCommand();
@@ -93,50 +93,7 @@ public class UserRegistrationValidatorTest {
 		assertTrue(errors.hasErrors());
 		
 	}
-	
-	/**
-	 * If HTML for captcha is set, fail
-	 */
-	@Test
-	public void testValidateFailOnGivenCaptchaHTML() {
-		final UserRegistrationCommand command = new UserRegistrationCommand();
-		
-		final Errors errors = new BindException(command, "command");
-		
-		final User validUser = getValidUser();
-		command.setRegisterUser(validUser);
-		command.setPasswordCheck("foo");
-		command.setRecaptcha_response_field("response");
-		command.setAcceptPrivacy(true);
-		
-		assertFalse(errors.hasErrors());
-		
-		/*
-		 * should not fail
-		 */
-		validator.validate(command, errors);
 
-		/*
-		 * no errors
-		 */
-		assertFalse(errors.hasErrors());
-		
-		/*
-		 * set HTML
-		 */
-		command.setCaptchaHTML("bar");
-
-		/*
-		 * should not fail
-		 */
-		validator.validate(command, errors);
-		
-		/*
-		 * should contain some entries
-		 */
-		assertTrue(errors.hasErrors());
-		
-	}
 	
 	
 	/**

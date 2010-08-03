@@ -38,10 +38,10 @@ public class PasswordReminderValidatorTest {
 	/**
 	 * tests if the validator fails if the're no arguments
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testValidateNullArgument() {
 		final PasswordReminderValidator validator = new PasswordReminderValidator();
-		@SuppressWarnings("rawtypes")
 		final Errors errors = new MapBindingResult(new HashMap(), "user");
 		
 		try {
@@ -74,50 +74,6 @@ public class PasswordReminderValidatorTest {
 		 * should contain some entries
 		 */
 		assertTrue(errors.hasErrors());	
-	}
-	
-	/**
-	 * If HTML for captcha is set, fail
-	 */
-	@Test
-	public void testValidateFailOnGivenCaptchaHTML() {
-		final PasswordReminderValidator validator = new PasswordReminderValidator();
-		final PasswordReminderCommand command = new PasswordReminderCommand();
-		
-		final Errors errors = new BindException(command, "command");
-
-		
-		command.setUserEmail("fooo@bar.de");
-		command.setUserName("foobar");
-		command.setRecaptcha_response_field("response");
-		
-		
-		assertFalse(errors.hasErrors());
-		
-		/*
-		 * should not fail
-		 */
-		validator.validate(command, errors);
-
-		/*
-		 * no errors
-		 */
-		assertFalse(errors.hasErrors());
-		
-		/*
-		 * set HTML
-		 */
-		command.setCaptchaHTML("bar");
-
-		/*
-		 * should not fail
-		 */
-		validator.validate(command, errors);
-		
-		/*
-		 * should contain some entries
-		 */
-		assertTrue(errors.hasErrors());
 	}
 
 }
