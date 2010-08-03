@@ -181,6 +181,7 @@
 		<module>bibsonomy-bibtex-parser</module>
 		<module>bibsonomy-common</module>
 		<module>bibsonomy-database-common</module>
+		<module>bibsonomy-events</module>
 		<module>bibsonomy-batch</module>
 		<module>bibsonomy-model</module>
 		<module>bibsonomy-dl-importer</module>
@@ -425,6 +426,11 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-recommender</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-events</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
