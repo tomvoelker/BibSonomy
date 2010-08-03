@@ -9,6 +9,9 @@ public class Event {
 	private String description;
 	private String year;
 	private String location;
+	private String url;
+	private String userName;
+	
 	private List<String> subEvents = new LinkedList<String>();
 	
 	public String getName() {
@@ -45,6 +48,18 @@ public class Event {
 	@Override
 	public String toString() {
 		return name + ": " + description + " (" + location + ", " + year + ")";
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 }

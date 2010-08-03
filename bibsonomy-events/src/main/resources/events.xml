@@ -19,6 +19,8 @@
  				<property name="description" value="Workshop 'Lernen, Wissen, Adaption' der GI-Fachgruppen ABIS, IR, KDML, WM"/>
  				<property name="location" value="Kassel"/>
  				<property name="year" value="2010"/>
+ 				<property name="url" value="http://www.kde.cs.uni-kassel.de/conf/lwa10"/>
+ 				<property name="userName" value="lwa"/>
  				<property name="subEvents">
  					<util:list value-type="java.lang.String">
  						<value>ABIS</value>
