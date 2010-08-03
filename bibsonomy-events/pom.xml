@@ -39,13 +39,13 @@
 			<version>0.6-beta2</version>
 			<scope>test</scope>
 		</dependency>		
-		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>8.4-701.jdbc4</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>postgresql</groupId>-->
+<!--			<artifactId>postgresql</artifactId>-->
+<!--			<version>8.4-701.jdbc4</version>-->
+<!--			<type>jar</type>-->
+<!--			<scope>compile</scope>-->
+<!--		</dependency>-->
 	</dependencies>
 	
 	<build>

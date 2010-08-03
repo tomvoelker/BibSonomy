@@ -10,7 +10,6 @@ import javax.sql.ConnectionPoolDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mockejb.jndi.MockContextFactory;
-import org.postgresql.ds.PGSimpleDataSource;
 
 /**
  * Helper class for binding a test database resource via JNDI to enable database access
@@ -54,17 +53,17 @@ public final class JNDIBinder {
 		
 		ConnectionPoolDataSource cs;
 		
-		final PGSimpleDataSource dataSource = new PGSimpleDataSource();
-
-		dataSource.setServerName(properties.getProperty("host"));
-		dataSource.setPortNumber(Integer.parseInt(properties.getProperty("port")));
-		dataSource.setDatabaseName(properties.getProperty("database"));
-		dataSource.setUser(properties.getProperty("username"));
-		dataSource.setPassword(properties.getProperty("password"));
-		
-		final String jdbcKey = propFile.substring(0, propFile.lastIndexOf("_"));
-		
-		ctx.bind("java:comp/env/jdbc/" + jdbcKey, dataSource);
+//		final PGSimpleDataSource dataSource = new PGSimpleDataSource();
+//
+//		dataSource.setServerName(properties.getProperty("host"));
+//		dataSource.setPortNumber(Integer.parseInt(properties.getProperty("port")));
+//		dataSource.setDatabaseName(properties.getProperty("database"));
+//		dataSource.setUser(properties.getProperty("username"));
+//		dataSource.setPassword(properties.getProperty("password"));
+//		
+//		final String jdbcKey = propFile.substring(0, propFile.lastIndexOf("_"));
+//		
+//		ctx.bind("java:comp/env/jdbc/" + jdbcKey, dataSource);
 	}
 
 	private static Properties getPropertiesFromFile(String filename) throws IOException {
