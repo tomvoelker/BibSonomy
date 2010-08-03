@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<name>BibSonomy-Events</name>
+	<groupId>org.bibsonomy</groupId>
+	<artifactId>bibsonomy-events</artifactId>
+	<version>2.0.8-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<description>
+		Supporting events (conferences, workshops) with BibSonomy
+	</description>
+	<parent>
+		<groupId>org.bibsonomy</groupId>
+		<artifactId>bibsonomy</artifactId>
+		<version>2.0.8-SNAPSHOT</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockejb</groupId>
+			<artifactId>mockejb</artifactId>
+			<version>0.6-beta2</version>
+			<scope>test</scope>
+		</dependency>		
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>8.4-701.jdbc4</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.6.0</version>
+				<configuration>
+					<excludes>
+						<exclude>**/src/test/resources/**</exclude>
+						<exclude>**/*.txt</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>		
+	</build>
+	
+	<distributionManagement>
+		<site>
+			<!-- copy site documentation via scp to gromit -->
+			<id>bibsonomy-rest-common-website-documentation</id>
+			<url>
+				scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
+			</url>
+		</site>
+	</distributionManagement>
+	
+</project>
