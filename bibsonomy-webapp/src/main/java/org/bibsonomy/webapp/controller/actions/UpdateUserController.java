@@ -1,9 +1,15 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.FieldLengthErrorMessage;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
@@ -90,8 +96,23 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 			log.debug("User is logged in, ckey is valid");
 
 			// update user informations here
-			updateUserProfile(user, command.getUser(), command.getProfilePrivlevel());
-
+			try {
+				updateUserProfile(user, command.getUser(), command.getProfilePrivlevel());
+			} catch(DatabaseException e) {
+				List<ErrorMessage> messages = e.getErrorMessages().get(user.getName());
+				
+				for(ErrorMessage eMsg : messages) {
+					if(eMsg instanceof FieldLengthErrorMessage) {
+						FieldLengthErrorMessage fError = (FieldLengthErrorMessage) eMsg;
+						Iterator<String> it = fError.iteratorFields();
+						while(it.hasNext()) {
+							String current = it.next();
+							String[] values = { String.valueOf(fError.getMaxLengthForField(current)) };
+							errors.rejectValue("user." + current, "error.field.valid.limit_exceeded", values, fError.getDefaultMessage());
+						}
+					}
+				}
+			}
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}
