@@ -52,6 +52,7 @@ import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
@@ -188,30 +189,26 @@ public class BibTexUtils {
 	 */
 	public static String getOpenurl(final BibTex bib) {
 		// stores the completed URL (just the DESCRIPTION part)
-		final StringBuffer openurl = new StringBuffer();
+		final StringBuilder openurl = new StringBuilder();
 
 		/*
 		 * extract first authors parts of the name
 		 */
 		// get first author (if author not present, use editor)
 		String author = bib.getAuthor();
-		if (author == null) {
+		if (!present(author)) {
 			author = bib.getEditor();
 		}
-		// TODO: this is only neccessary because of broken (DBLP) entries which have neither author nor editor!
-		if (author == null) {
+		// TODO: this is only necessary because of broken (DBLP) entries which have neither author nor editor!
+		if (!present(author)) {
 			author = "";
 		}
-		author = author.replaceFirst(" and .*", "").trim();
-		// get first authors last name
-		String aulast = author.replaceFirst(".* ", "");
-		// get first authors first name
-		String aufirst = author.replaceFirst("[\\s\\.].*", "");
+		final PersonName personName = new PersonName(author.replaceFirst(PersonNameUtils.PERSON_NAME_DELIMITER + ".*", "").trim());
 		// check, if first name is just an initial
 		String auinit1 = null;
-		if (aufirst.length() == 1) {
-			auinit1 = aufirst;
-			aufirst = null;
+		if (personName.getFirstName().length() == 1) {
+			auinit1 = personName.getFirstName();
+			personName.setFirstName(null);
 		}
 
 		// parse misc fields
@@ -239,8 +236,8 @@ public class BibTexUtils {
 			appendOpenURL(openurl,"isbn", bib.getMiscField("isbn"));
 			appendOpenURL(openurl,"issn", bib.getMiscField("issn"));
 			// append name information for first author
-			appendOpenURL(openurl, "aulast", aulast);
-			appendOpenURL(openurl, "aufirst", aufirst);
+			appendOpenURL(openurl, "aulast", personName.getLastName());
+			appendOpenURL(openurl, "aufirst", personName.getFirstName());
 			appendOpenURL(openurl, "auinit1", auinit1);
 			// genres == entrytypes
 			if (bib.getEntrytype().toLowerCase().equals("journal")) {
@@ -274,7 +271,7 @@ public class BibTexUtils {
 		return openurl.toString();
 	}
 
-	private static void appendOpenURL(final StringBuffer buffer, final String name, final String value) throws UnsupportedEncodingException {
+	private static void appendOpenURL(final StringBuilder buffer, final String name, final String value) throws UnsupportedEncodingException {
 		if (value != null && !value.trim().equals("")) {
 			buffer.append("&" + name + "=" + URLEncoder.encode(value.trim(), "UTF-8"));
 		}
