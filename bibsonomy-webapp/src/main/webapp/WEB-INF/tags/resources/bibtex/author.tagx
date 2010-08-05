@@ -6,33 +6,33 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	
-	<span style="color:#555555;"> 
+
+	<!-- initialize with empty list -->
+	<c:set var="personList" value="[]"/>	
 	<c:choose>
 		<c:when test="${not empty post.resource.author}">
-			<c:forEach var="author" items="${post.resource.authorList}" varStatus="loopStatus">
-				${mtl:cleanBibtex(author.firstName)}
-				<c:out value=" "/>
-				<c:url var="authorUrl" value="${projectHome}author/${fn:escapeXml(author.lastName)}"/>
-				<a href="${authorUrl}">${mtl:cleanBibtex(author.lastName)}</a>
-				<c:out value=" "/>         	     	 
-				<c:if test="${not loopStatus.last}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
-			</c:forEach>
+			<c:set var="personList" value="${post.resource.authorList}"/>
 		</c:when>
-		<c:otherwise>
-			<c:if test="${not empty post.resource.editor}">
-				<c:forEach var="editor" items="${post.resource.editorList}" varStatus="loopStatus">        	 
-					${mtl:cleanBibtex(editor.firstName)}
-					<c:out value=" "/>			
-					<c:url var="authorUrl" value="${projectHome}author/${fn:escapeXml(editor.lastName)}"/>
-					<a href="${authorUrl}">${mtl:cleanBibtex(editor.lastName)}</a>
-					<c:out value=" "/>
-					<c:if test="${not loopStatus.last}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
-				</c:forEach>
-				(eds.).
-			</c:if>
-		</c:otherwise>
+		<c:when test="${not empty post.resource.editor}">
+			<c:set var="personList" value="${post.resource.editorList}"/>
+		</c:when>
 	</c:choose>
-	<c:out value=" "/>
+
+	<span style="color:#555555;"> 
+		<c:forEach var="person" items="${personList}" varStatus="loopStatus">
+			<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
+		
+			${mtl:cleanBibtex(person.firstName)}
+			<c:out value=" "/>
+			<c:url var="personUrl" value="${projectHome}author/${fn:escapeXml(person.lastName)}"/>
+			<a href="${personUrl}">${mtl:cleanBibtex(person.lastName)}</a>
+			<!-- append separator "," -->
+			<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
+		</c:forEach>
+		<!-- append "(eds.)" -->
+		<c:if test="${empty post.resource.author and not empty post.resource.editor}">
+			<c:out value=" ("/><fmt:message key="bibtex.editors.abbr"/>).
+		</c:if>
+		<c:out value=" "/>
 	</span>
 </jsp:root>
