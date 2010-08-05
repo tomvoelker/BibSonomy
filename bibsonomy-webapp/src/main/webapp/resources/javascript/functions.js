@@ -77,6 +77,8 @@ function add_filter() {
   f.appendChild(tags_filter);
     
   var l = document.createElement("li");
+  l.style.paddingBottom='.5em';
+  l.style.fontSize='80%';
   l.appendChild(f);
   
   sidebar.insertBefore(l, sidebar.childNodes[0]); // first child
@@ -155,7 +157,7 @@ function sz(t) {
 		if (a[x].length >= t.cols) b+= Math.floor(a[x].length/t.cols);
 	}
 	b+= a.length;
-	if (b>t.rows) t.rows=b;
+	//if (b>t.rows) t.rows=b;
 }
 
 // if window is small, maximizes "general" div to 95%
