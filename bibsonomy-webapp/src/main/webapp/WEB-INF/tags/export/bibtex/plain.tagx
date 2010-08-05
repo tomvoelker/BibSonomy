@@ -8,6 +8,13 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.attribute name="bib" type="org.bibsonomy.model.BibTex" required="true"/>
+
+<!--+ 
+	|
+	| Be careful when editing this code: the line breaks/spaces have been
+	| carefully set!
+	|
+ 	+-->
 						  		
 <c:choose>						  		
 <c:when test="${not empty bib.journal}">In: <em><bib:crossref linktext="${bib.journal}" crossref="${bib.crossref}"/></em></c:when>
@@ -15,7 +22,9 @@
 </c:choose> 
 <c:if test="${not empty bib.volume}">, Vol. ${mtl:cleanBibtex(bib.volume)}</c:if> 
 <c:if test="${not empty bib.number}">, Nr. ${mtl:cleanBibtex(bib.number)}</c:if>
-<c:if test="${not empty bib.address}">${mtl:cleanBibtex(bib.address)}:</c:if>
+<c:if test="${not empty bib.address}">
+${mtl:cleanBibtex(bib.address)}:
+</c:if>
 <c:if test="${not empty bib.publisher}">${mtl:cleanBibtex(bib.publisher)}</c:if>
 <c:if test="${not empty bib.year}">
 <c:if test="${not empty bib.month}">, ${mtl:cleanBibtex(bib.month)}</c:if> 
