@@ -12,8 +12,7 @@
 	
 	<jsp:directive.attribute name="url" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="method" type="java.lang.String" required="true"/>
-	<c:set var = "title" />
-	<fmt:message key = "resources.similar" var = "resources_title"/> 
+	<fmt:message key="resources.similar" var="resources_title"/> 
 	<script type="text/javascript">
     <![CDATA[
              $(document).ready(
