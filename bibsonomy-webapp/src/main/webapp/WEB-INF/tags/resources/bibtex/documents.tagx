@@ -9,7 +9,7 @@
 
 	<c:if test='${not empty post.resource.documents}'>
 		<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
-		<a href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(post.resource.documents[0].fileName)}?action=download" title="${downloadPrivDocTitle}"> 
+		<a href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(post.resource.documents[0].fileName)}" title="${downloadPrivDocTitle}"> 
 		  <img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left;"/>
 		  <c:if test="${includeFilename}">
 			<c:out value="${post.resource.documents[0].fileName}"/>
