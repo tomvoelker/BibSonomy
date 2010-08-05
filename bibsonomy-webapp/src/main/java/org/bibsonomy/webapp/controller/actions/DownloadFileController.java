@@ -1,10 +1,13 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.File;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -21,9 +24,7 @@ import org.springframework.validation.Errors;
  */
 public class DownloadFileController implements MinimalisticController<DownloadFileCommand>, ErrorAware {
 
-	private final static String DOWNLOAD = "download";
-
-	private final static String DELETE = "delete";
+	private final static String ACTION_DELETE = "delete";
 
 	/**
 	 * logical interface to BibSonomy's core functionality
@@ -60,57 +61,46 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 
 		final String intrahash     = command.getIntrahash();
 		final String requestedUser = command.getRequestedUser();
-		final String fileName      = command.getFilename();
 
-		if (command.getAction().equals(DOWNLOAD)) {
-			/*
-			 * handle document download
-			 */
-			final Document document = logic.getDocument(requestedUser, intrahash, fileName);
+		final Document document = logic.getDocument(requestedUser, intrahash, command.getFilename());
 
-			if (document != null) {
-				command.setPathToFile(FileUtil.getDocumentPath(docpath, document.getFileHash()));
-				command.setContentType(FileUtil.getContentType(document.getFileName()));
-				/*
-				 * stream document to user
-				 */
-				return Views.DOWNLOAD_FILE;
-			} 
-			
+		if (!present(document)) {
 			errors.reject("error.document_not_found");
+			return Views.ERROR;
+		}
 
-		} else if (command.getAction().equals(DELETE)) {
+		if (ACTION_DELETE.equals(command.getAction())) {
 			/*
 			 * handle document deletion
 			 */
-			if (command.getContext().isValidCkey()) {
-				final Document document = logic.getDocument(requestedUser, intrahash, fileName);
-
-				if (document != null) {
-
-					/*
-					 * delete entry in database
-					 */
-					logic.deleteDocument(document, intrahash);
-					new File(FileUtil.getDocumentPath(docpath, document.getFileHash())).delete();
-					/*
-					 * return to bibtex details page
-					 * FIXME: properly encode user name and intrahash
-					 */
-					return new ExtendedRedirectView(("/bibtex/" + HashID.INTRA_HASH.getId() + intrahash + "/" + requestedUser));
-				}
-				
-				errors.reject("error.document_not_found");
-
-			} else {
+			if (!command.getContext().isValidCkey()) {
 				errors.reject("error.field.valid.ckey");
+				return Views.ERROR;
 			}
-		}
+			/*
+			 * delete entry in database
+			 */
+			logic.deleteDocument(document, intrahash);
+			/*
+			 * delete file on disk
+			 */
+			new File(FileUtil.getDocumentPath(docpath, document.getFileHash())).delete();
+			/*
+			 * return to bibtex details page
+			 */
+			return new ExtendedRedirectView(("/bibtex/" + HashID.INTRA_HASH.getId() + intrahash + "/" + UrlUtils.safeURIEncode(requestedUser)));
+		} 
 
 		/*
-		 * if we arrive here, there MUST be some errors ...
+		 * default: handle document download
 		 */
-		return Views.ERROR;
+		command.setPathToFile(FileUtil.getDocumentPath(docpath, document.getFileHash()));
+		command.setContentType(FileUtil.getContentType(document.getFileName()));
+		/*
+		 * stream document to user
+		 */
+		return Views.DOWNLOAD_FILE;
+
 	}
 
 
