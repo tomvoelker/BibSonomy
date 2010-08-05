@@ -4,38 +4,22 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.attribute name="bib" type="org.bibsonomy.model.BibTex" required="true"/>
 						  		
 <c:choose>						  		
-<c:when test="${not empty bib.journal}">
-In: <i>${mtl:cleanBibtex(bib.journal)}</i>
-</c:when>
-<c:when test="${not empty bib.booktitle}">
-In: <i>${mtl:cleanBibtex(bib.booktitle)}</i>
-</c:when>
+<c:when test="${not empty bib.journal}">In: <em><bib:crossref linktext="${bib.journal}" crossref="${bib.crossref}"/></em></c:when>
+<c:when test="${not empty bib.booktitle}">In: <em><bib:crossref linktext="${bib.booktitle}" crossref="${bib.crossref}"/></em></c:when>
 </c:choose> 
-<c:if test="${not empty bib.volume}">
-, Vol. ${mtl:cleanBibtex(bib.volume)}
-</c:if> 
-<c:if test="${not empty bib.number}">
-, Nr. ${mtl:cleanBibtex(bib.number)}
-</c:if>
-<c:if test="${not empty bib.address}">
-${mtl:cleanBibtex(bib.address)}:
-</c:if>
-<c:if test="${not empty bib.publisher}">
-${mtl:cleanBibtex(bib.publisher)}
-</c:if>
+<c:if test="${not empty bib.volume}">, Vol. ${mtl:cleanBibtex(bib.volume)}</c:if> 
+<c:if test="${not empty bib.number}">, Nr. ${mtl:cleanBibtex(bib.number)}</c:if>
+<c:if test="${not empty bib.address}">${mtl:cleanBibtex(bib.address)}:</c:if>
+<c:if test="${not empty bib.publisher}">${mtl:cleanBibtex(bib.publisher)}</c:if>
 <c:if test="${not empty bib.year}">
-<c:if test="${not empty bib.month}">
-, ${mtl:cleanBibtex(bib.month)}
-</c:if> 
-(${mtl:cleanBibtex(bib.year)})	 
-</c:if> 
-<c:if test="${not empty bib.pages}">
-, p. ${mtl:cleanBibtex(bib.pages)}
-</c:if>.
+<c:if test="${not empty bib.month}">, ${mtl:cleanBibtex(bib.month)}</c:if> 
+(${mtl:cleanBibtex(bib.year)})</c:if> 
+<c:if test="${not empty bib.pages}">, p. ${mtl:cleanBibtex(bib.pages)}</c:if>.
 	  
 </jsp:root>
