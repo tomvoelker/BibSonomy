@@ -151,7 +151,7 @@ function maximizeById(id) {
 function add_hints() {
   // for search input field
   var el = document.getElementById("se");
-  if (el && (el.value == "" || el.value == getString("navi.search.hint"))) {
+  if (validElement(el) && (el.value == "" || el.value == getString("navi.search.hint"))) {
     // add hint
     el.value       = getString("navi.search.hint");
     el.style.color = "#aaaaaa";
@@ -160,7 +160,7 @@ function add_hints() {
   }
   // for username input field
   el = document.getElementById("un");
-  if (el != null && el.name == "username" && (el.value == "" || el.value == getString("navi.username"))) {
+  if (validElement(el, 'input') && el.name == "username" && (el.value == "" || el.value == getString("navi.username"))) {
     el.value = getString("navi.username");
     el.style.color = "#aaaaaa";
     el.onmousedown = clear_input;
@@ -168,7 +168,7 @@ function add_hints() {
   }
   // for password input field
   el = document.getElementById("pw");
-  if (el != null && el.name == "password" && (el.value == "" || el.value == getString("navi.password"))) {
+  if (validElement(el, 'input') && el.name == "password" && (el.value == "" || el.value == getString("navi.password"))) {
 	el.type = "text";
     el.value = getString("navi.password");
     el.style.color = "#aaaaaa";
@@ -177,7 +177,7 @@ function add_hints() {
   }
   // for username ldap input field
   el = document.getElementById("unldap");
-  if (el != null && el.name == "username" && (el.value == "" || el.value == getString("navi.username.ldap"))) {
+  if (validElement(el, 'input') && el.name == "username" && (el.value == "" || el.value == getString("navi.username.ldap"))) {
     el.value = getString("navi.username.ldap");
     el.style.color = "#aaaaaa";
     el.onmousedown = clear_input;
@@ -185,7 +185,7 @@ function add_hints() {
   }
   // for password ldap input field
   el = document.getElementById("pwldap");
-  if (el != null && el.name == "password" && (el.value == "" || el.value == getString("navi.password.ldap"))) {
+  if (validElement(el, 'input') && el.name == "password" && (el.value == "" || el.value == getString("navi.password.ldap"))) {
 	el.type = "text";
     el.value = getString("navi.password.ldap");
     el.style.color = "#aaaaaa";
@@ -194,7 +194,7 @@ function add_hints() {
   }
   // for openid input field
   el = document.getElementById("openID");
-  if (el != null && el.name == "openID" && (el.value == "" || el.value == getString("navi.openid"))) {
+  if (validElement(el, 'input') && el.name == "openID" && (el.value == "" || el.value == getString("navi.openid"))) {
     el.value = getString("navi.openid");
     el.style.color = "#aaaaaa";
     el.onmousedown = clear_input;
@@ -202,14 +202,14 @@ function add_hints() {
   }
   // for tag input field
   el = document.getElementById("inpf");
-  if (el != null && (el.name == "tag" || el.name == "tags") && (el.value == "" || el.value == getString("navi.tag.hint"))) {
+  if (validElement(el, 'input') && (el.name == "tag" || el.name == "tags") && (el.value == "" || el.value == getString("navi.tag.hint"))) {
     el.value = getString("navi.tag.hint");
     el.style.color = "#aaaaaa";
     el.onmousedown = clear_input;
     el.onkeypress  = clear_input;
   }
   // specialsearch (tag, user, group, author, relation)
-  if (el != null && el.name == "search" && (el.value == "" || el.value == getString("navi.author.hint") || el.value == getString("navi.tag.hint") 
+  if (validElement(el, 'input') && el.name == "search" && (el.value == "" || el.value == getString("navi.author.hint") || el.value == getString("navi.tag.hint") 
   		|| el.value == getString("navi.user.hint") || el.value == getString("navi.group.hint") || el.value == getString("navi.concept.hint") || getString("navi.bibtexkey.hint")) || (el != null && el.value == getString("navi.search.hint"))) {
     var scope = document.getElementById("scope");
     // add call to this method to dropdown box, so that hint changes, when box changes
@@ -236,6 +236,21 @@ function add_hints() {
 	    el.onkeypress  = clear_input;
     }        
   }  
+}
+
+/**
+ * check if element's valid and optionally the 
+ * element type for validity (if tagName is provided that is)
+ * 
+ * @param element
+ *            the element to check
+ * @param tagName
+ *            tagName of the element e.g. 'input' or 'div'
+ * @return true if element's valid
+ */
+function validElement(el, tagName) {
+	return (el != null && (!tagName || 
+			el.tagName.toUpperCase() == tagName.toUpperCase()));
 }
 
 /* removes hint and function from node */
@@ -1849,9 +1864,9 @@ function expandBookmarkList(){
 		$(this).css("position","static");
 	}).show("1");
 	
-	$("#optionExpandBookmark").addClass("expandButtonHide");
-	$("#optionShowBoth").removeClass("expandButtonHide");
-	$("#optionExpandBibtex").removeClass("expandButtonHide");
+	$("#optionExpandBookmark").addClass("hiddenElement");
+	$("#optionShowBoth").removeClass("hiddenElement");
+	$("#optionExpandBibtex").removeClass("hiddenElement");
 }
 
 function expandBibTexList(){
@@ -1865,9 +1880,9 @@ function expandBibTexList(){
 		width: "97%", opacity: 1.0
 	}, "slow").show("1");
 
-	$("#optionExpandBookmark").removeClass("expandButtonHide");
-	$("#optionShowBoth").removeClass("expandButtonHide");
-	$("#optionExpandBibtex").addClass("expandButtonHide");
+	$("#optionExpandBookmark").removeClass("hiddenElement");
+	$("#optionShowBoth").removeClass("hiddenElement");
+	$("#optionExpandBibtex").addClass("hiddenElement");
 }
 
 function showBothLists(){
@@ -1883,9 +1898,9 @@ function showBothLists(){
 		$(this).css("position","static");
 	} ).show("1");
 	
-	$("#optionExpandBookmark").removeClass("expandButtonHide");
-	$("#optionShowBoth").addClass("expandButtonHide");
-	$("#optionExpandBibtex").removeClass("expandButtonHide");
+	$("#optionExpandBookmark").removeClass("hiddenElement");
+	$("#optionShowBoth").addClass("hiddenElement");
+	$("#optionExpandBibtex").removeClass("hiddenElement");
 }
 
 //----------------------------------------------------------------------------
