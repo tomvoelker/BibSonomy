@@ -18,6 +18,7 @@
 		<fmt:message var="saveChanges" key="settings.saveChanges" />
 		<fmt:message var="male" key="settings.male"/>
 		<fmt:message var="female" key="settings.female"/>
+		<fmt:message var="upload" key = "settings.picture.upload" />
 		
         <p>
         	<fmt:message key="settings.profileInfo">
@@ -70,10 +71,6 @@
 		    </div>
 		  </fieldset>
 		</div>
-
-
-
-
 
 		
 		<h2><fmt:message key="settings.contact" /></h2>		
@@ -135,7 +132,35 @@
           <input type="hidden" name="selTab" value="0"/>
         </p>
         
-      </form:form>  
+      </form:form> 
+      
+      
+      <!-- picture settings-->
+      <form:form id="settingImportForm" action="uploadPicture?ckey=${ckey}" method="post" enctype="multipart/form-data">
+		<h2><fmt:message key="settings.picture.header" /></h2>		
+		
+		<div id="fsform">
+    	  <fieldset class="fsInner">
+    	  	<div class ="fsRow">
+    	  	<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.current"/></form:label>
+				<img style="clear:both;" src="/picture/user/${command.user.name}"/>
+			</div>
+    	  
+    	  	<div class="fsRow">
+	        	<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.file"/></form:label>
+	        	<buttons:help message="settings.picture.help"/>
+	        	<input type="file" name="file" class="fsInput fsSmall"/>
+		    </div>
+			
+			
+			<div class="fsRow">	
+		   		<input type="submit" value="${upload}" />
+				<!-- <input id="importType" name="importType" type="hidden" value="picture"/>-->
+			</div>
+		    
+		  </fieldset>
+		</div>
+		</form:form> 
 		
 		<h2><fmt:message key="settings.myFriends"/></h2>
 		

@@ -386,6 +386,14 @@
 		<to last="true">/cvpage</to>
 	</rule>
 	
+	<!-- /picture/user/USER -->
+	<rule>
+		<name>/picture/user/USER</name>
+		<from>^/+picture/+user/(.+)$</from>
+		<set type="parameter" name="requestedUser">$1</set>
+		<to last="true">/picture</to>
+	</rule>
+	
 	<!-- /bibtexkey/KEY/USER -->
 	<rule>
 		<name>/bibtexkey/user</name>

@@ -112,7 +112,7 @@
 					   </c:if>
   				    </table>
 	  				<!--foto-->
-	  				<img style="clear:both;" src="${resdir}/image/no_picture2.png"/>
+	  				<img style="clear:both;" src="/picture/user/${command.user.name}"/>
 
 				</div>
 			</c:if>
