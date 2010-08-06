@@ -23,6 +23,7 @@
 
 package org.bibsonomy.rest.client;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -61,6 +62,7 @@ import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
+import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagsQuery;
@@ -222,13 +224,16 @@ public class RestLogic implements LogicInterface {
 	}
 
 	public Document getDocument(final String userName, final String fileHash) {
-		
 		return null;
 	}
-	
+
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
-		// TODO Auto-generated method stub
-		return null;
+		final File file = execute(new GetPostDocumentQuery(userName, resourceHash, fileName, ""));
+		final Document doc = new Document();
+		doc.setFile(file);
+		doc.setFileName(fileName);
+		doc.setUserName(userName);
+		return doc;
 	}
 
 	public void deleteDocument(final Document document, final String resourceHash) {
@@ -331,7 +336,7 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
 		return 0;
 	}
@@ -360,15 +365,15 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation) {
 		// TODO Auto_generated method stub
@@ -386,9 +391,9 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox) {
-	// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -401,14 +406,14 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public void createReferences(final String postHash, final Set<String> references) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void deleteReferences(final String postHash, final Set<String> references) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
+
 }
