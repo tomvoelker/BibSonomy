@@ -23,7 +23,6 @@
 
 package org.bibsonomy.rest.client;
 
-import java.io.File;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -228,12 +227,11 @@ public class RestLogic implements LogicInterface {
 	}
 
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
-		final File file = execute(new GetPostDocumentQuery(userName, resourceHash, fileName, ""));
-		final Document doc = new Document();
-		doc.setFile(file);
-		doc.setFileName(fileName);
-		doc.setUserName(userName);
-		return doc;
+		/*
+		 * FIXME: files are stored in /tmp and thus publicly readable! Make 
+		 * directory configurable!
+		 */
+		return execute(new GetPostDocumentQuery(userName, resourceHash, fileName, "/tmp/"));
 	}
 
 	public void deleteDocument(final Document document, final String resourceHash) {
