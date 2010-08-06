@@ -40,26 +40,6 @@ function stopEvt () {
 	return false;
 }
 
-function toggleSidebar() {
-  if ( $('#sidebarroundcorner').css('visibility') == 'visible' ){
-	  $('#sidebarroundcorner').css({
-		  'visibility' : 'collapse'
-	  });
-
-	  $('#toggleSidebarButton').attr({
-		  'src' : '${resdir}/image/open.png'
-	  });
-  } else {
-	  $('#sidebarroundcorner').css({
-		  'visibility' : 'visible'
-	  });
-
-	  $('#toggleSidebarButton').attr({
-		  'src' : '${resdir}/image/close.png'
-	  });
-  }
-}
-
 function add_filter() {
   var f = document.createElement("form");
   f.onsubmit=stopEvt;
