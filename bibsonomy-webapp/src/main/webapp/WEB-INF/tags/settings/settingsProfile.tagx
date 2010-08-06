@@ -117,10 +117,12 @@
 		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.interests"><fmt:message key="user.scientificInterests"/></form:label>
 		      <form:textarea cssClass="fsInput" path="user.interests"/>
+		      <div class="dissError"><form:errors path="user.interests" /></div>
 		    </div>
 		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.hobbies"><fmt:message key="user.hobbies"/></form:label>
 		      <form:textarea cssClass="fsInput" path="user.hobbies" />
+		      <div class="dissError"><form:errors path="user.hobbies" /></div>
 		    </div>
   		  </fieldset>
 		</div>
