@@ -389,7 +389,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	public void getDocumentOwn() {
 		final String resourceHash = "b77ddd8087ad8856d77c740c8dc2864a";
 		final String documentFileName = "testdocument_1.pdf";
-		final Document document = this.getDbLogic().getDocument("testuser1", resourceHash, documentFileName);
+		final Document document = this.getDbLogic("testuser1").getDocument("testuser1", resourceHash, documentFileName);
 		assertNotNull(document);
 		assertEquals("00000000000000000000000000000000", document.getFileHash());
 		assertEquals(documentFileName, document.getFileName());
@@ -407,15 +407,14 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	}
 
 	/**
-	 * A user wants to get another users document: should be possible, if a group allows this.
+	 * A user wants to get another user's document: should be possible, if a group allows this.
 	 */
-	@Ignore // FIXME NullPointerException
 	@Test
 	public void getDocumentNotOwnButSharedDocuments() {
-		final String resourceHash = "dcf8eef77a3dfbc75f5e5ace931308a1";
-		final String documentFileName = "interest.pdf";
-		final String documentHash = "3ff32569c76b03ea1701e6ba436ffc63";
-		final Document document = this.getDbLogic().getDocument("gromgull", resourceHash, documentFileName);
+		final String resourceHash = "b77ddd8087ad8856d77c740c8dc2864a";
+		final String documentFileName = "testdocument_1.pdf";
+		final String documentHash = "00000000000000000000000000000000";
+		final Document document = this.getDbLogic("testuser2").getDocument("testuser1", resourceHash, documentFileName);
 		assertNotNull(document);
 		assertEquals(documentHash, document.getFileHash());
 		assertEquals(documentFileName, document.getFileName());

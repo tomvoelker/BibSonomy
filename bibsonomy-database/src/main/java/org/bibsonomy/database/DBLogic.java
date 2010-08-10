@@ -1270,7 +1270,7 @@ public class DBLogic implements LogicInterface {
 
 	final DBSession session = openSession();
 	try {
-	    if (resourceHash != null) {
+	    if (present(resourceHash)) {
 		/*
 		 * we just forward this task to getPostDetails from the
 		 * BibTeXDatabaseManager and extract the documents.

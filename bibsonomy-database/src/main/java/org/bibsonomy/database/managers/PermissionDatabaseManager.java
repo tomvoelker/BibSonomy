@@ -126,13 +126,19 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	final Collection<Group> postGroups = post.getGroups();
 
-	// Get the groups in which both users are.
+	/*
+	 * Get the groups in which both users are.
+	 */
 	final List<Group> commonGroups = this.groupDb.getCommonGroups(userName, postUserName, session);
 
-	// Construct the public group.
+	/*
+	 * Construct the public group.
+	 */
 	final Group publicGroup = GroupUtils.getPublicGroup();
 
-	// Find a common group of both users, which allows to share documents.
+	/*
+	 * Find a common group of both users, which allows to share documents.
+	 */
 	for (final Group group : commonGroups) {
 	    if (group.isSharedDocuments()) {
 		// both users are in a group which allows to share documents
