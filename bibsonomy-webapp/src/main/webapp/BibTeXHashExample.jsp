@@ -45,8 +45,8 @@ calculates the resulting hashes for you.</p>
   <% bibtex.recalculateHashes(); %>
   
   <tr><th colspan="2">resulting hashes</th></tr>
-  <tr><td>interhash:</td><td>${bibtex.interHash} &rarr; <a href="/bibtex/<%=Bibtex.INTER_HASH%>${bibtex.interHash}">/bibtex/<b><%=Bibtex.INTER_HASH%></b>${bibtex.interHash}</a></td></tr>
-  <tr><td>intrahash:</td><td>${bibtex.intraHash} &rarr; <a href="/bibtex/<%=Bibtex.INTRA_HASH%>${bibtex.intraHash}">/bibtex/<b><%=Bibtex.INTRA_HASH%></b>${bibtex.intraHash}</a></td></tr>
+  <tr><td>interhash:</td><td><tt>${bibtex.interHash}</tt> &rarr; <tt><a href="/bibtex/<%=org.bibsonomy.common.enums.HashID.INTER_HASH.getId()%>${bibtex.interHash}">/bibtex/<b><%=org.bibsonomy.common.enums.HashID.INTER_HASH.getId()%></b>${bibtex.interHash}</a></tt></td></tr>
+  <tr><td>intrahash:</td><td><tt>${bibtex.intraHash}</tt> &rarr; <tt><a href="/bibtex/<%=org.bibsonomy.common.enums.HashID.INTRA_HASH.getId()%>${bibtex.intraHash}">/bibtex/<b><%=org.bibsonomy.common.enums.HashID.INTRA_HASH.getId()%></b>${bibtex.intraHash}</a></tt></td></tr>
 </table>
 <input type="submit"/>
 </form>
