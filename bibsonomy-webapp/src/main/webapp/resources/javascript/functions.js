@@ -7,6 +7,7 @@ var ckey        = null;
 var currUser    = null;
 var requUser	= null;
 var projectName = null;
+var pwd_id_postfix = "_form_copy";
 
 function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, lckey, lprojectName) {
   add_hints();
@@ -147,6 +148,33 @@ function maximizeById(id) {
   }
 }
 
+/** 
+ * 	create a text form wich we will use to switch between
+ * 	password and text form to circumvent an issue caused
+ * 	by IE's security policy
+ * 
+ * @param el 
+ * 		password/text form element we'd like to switched 
+ * @return 
+ * 		password/text corresponding form element
+**/
+function getFormTextCopy(el) {
+
+	if((el_copy = document.getElementById(el.id+pwd_id_postfix)) == null) {
+		el_copy = document.createElement("input");
+		el_copy.type = "text";
+		el_copy.id = el.id+pwd_id_postfix;
+		el_copy.className = el.className;
+		el_copy.style.width = el.offsetWidth+"px";
+	    el_copy.onmousedown = clear_input_password;
+	    el_copy.onkeypress  = clear_input_password;
+		el.parentNode.insertBefore(el_copy, el);
+	}
+	el.style.display = "none";
+	el_copy.style.display = "";
+	return el_copy;
+}
+
 // adds hints to input fields
 function add_hints() {
   // for search input field
@@ -169,11 +197,9 @@ function add_hints() {
   // for password input field
   el = document.getElementById("pw");
   if (validElement(el, 'input') && el.name == "password" && (el.value == "" || el.value == getString("navi.password"))) {
-	el.type = "text";
+	el = getFormTextCopy(el);
     el.value = getString("navi.password");
     el.style.color = "#aaaaaa";
-    el.onmousedown = clear_input_password;
-    el.onkeypress  = clear_input_password;
   }
   // for username ldap input field
   el = document.getElementById("unldap");
@@ -186,11 +212,9 @@ function add_hints() {
   // for password ldap input field
   el = document.getElementById("pwldap");
   if (validElement(el, 'input') && el.name == "password" && (el.value == "" || el.value == getString("navi.password.ldap"))) {
-	el.type = "text";
+	el = getFormTextCopy(el);
     el.value = getString("navi.password.ldap");
     el.style.color = "#aaaaaa";
-    el.onmousedown = clear_input_password;
-    el.onkeypress  = clear_input_password;
   }
   // for openid input field
   el = document.getElementById("openID");
@@ -264,9 +288,13 @@ function clear_node(node) {
 
 /* clear_node for events (if input field gets clicked) */
 function clear_input_password (event) {
-  clear_node(xget_event(event));
-  node = xget_event(event);
-  node.type="password";
+	  node_txt_form = xget_event(event);
+	  node_pwd_form = document.getElementById(
+			  node_txt_form.id.substr(0, node_txt_form.id.length-pwd_id_postfix.length)
+	  );
+	  node_txt_form.style.display = "none";
+	  node_pwd_form.style.display = "";
+	  clear_node(node_pwd_form);
 }
 
 /* clear_node for events (if input field gets clicked) */
