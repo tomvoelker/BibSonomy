@@ -380,17 +380,18 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		final Post<BibTex> post = super.getPostDetails(authUser, resourceHash, userName, visibleGroupIDs, session);
 		
 		if (present(post)) {
-			if (this.permissionDb.isAllowedToAccessPostsDocuments(userName, post, session)) {
-				post.getResource().setDocuments(this.docDb.getDocumentsForPost(userName, resourceHash, session));
+			final BibTex bibtex = post.getResource();
+			if (this.permissionDb.isAllowedToAccessPostsDocuments(authUser, post, session)) {
+				bibtex.setDocuments(this.docDb.getDocumentsForPost(userName, resourceHash, session));
 			}
 			
-			// add private note
+			// add private notes
 			if (authUser != null && authUser.equalsIgnoreCase(userName)) {
-				post.getResource().setPrivnote(extraDb.getBibTexPrivnoteForUser(resourceHash, userName, session));
+				bibtex.setPrivnote(extraDb.getBibTexPrivnoteForUser(resourceHash, userName, session));
 			}
 			
 			// add extra URLs
-			post.getResource().setExtraUrls(extraDb.getURL(resourceHash, userName, session));
+			bibtex.setExtraUrls(extraDb.getURL(resourceHash, userName, session));
 			
 			return post;
 		}
