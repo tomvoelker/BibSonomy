@@ -318,6 +318,21 @@
         		<version>2.0</version>
         	</plugin>		
 		</plugins>
+		<extensions>
+		 	<extension>
+		 		<!-- 
+		 			 wagon provider to enable deployment of artifacts via webdav (to artifatory,
+		 			 in our case. According to http://docs.codehaus.org/display/MAVENUSER/Deploying+3rd+Party+Jars+With+WebDAV
+		 			 this should not be necessary from Maven 2.0.9, as the wagon-webdav lib should
+		 			 be included in the later maven distributions - but at least for hudson's setup,
+		 			 it only works this way. Maybe when the maven version of hudson (currently 2.2.1)
+		 			 gets updated, we can remove this build extension. (dbe, 20100811)  
+		 		-->
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>
+		</extensions>		
 	</build>
 	<reporting>
 		<plugins>
