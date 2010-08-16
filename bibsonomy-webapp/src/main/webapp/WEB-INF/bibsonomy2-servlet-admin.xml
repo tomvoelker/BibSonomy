@@ -120,7 +120,7 @@
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
-	
+
 	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -131,7 +131,7 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
-	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" init-method="init" scope="singleton">
+	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" scope="singleton">
 	    <property name="multiplexingTagRecommender" ref="multiplexingTagRecommender" />
 	</bean>
 		
