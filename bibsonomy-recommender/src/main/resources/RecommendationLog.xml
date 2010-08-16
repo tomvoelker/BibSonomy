@@ -79,6 +79,12 @@
    <update id="removeRecommender" parameterClass="String">
        UPDATE recommender_status SET status=2 WHERE url=#url#
    </update>
+   <delete id="deleteFromRecommenderStatus" parameterClass="long">
+       DELETE FROM recommender_status WHERE setting_id=#sid#
+   </delete>
+   <delete id="deleteFromRecommenderSettings" parameterClass="long">
+       DELETE FROM recommender_settings WHERE setting_id=#sid#
+   </delete>
    <update id="updateRecommenderStatusUrl" parameterClass="recSetting">
        UPDATE recommender_status SET url=#recId# WHERE setting_id=#setting_id#
    </update>

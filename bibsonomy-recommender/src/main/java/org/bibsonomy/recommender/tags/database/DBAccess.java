@@ -692,6 +692,16 @@ public class DBAccess implements DBLogic {
 		param.setRecMeta(url.toString().getBytes());
 		
 		SqlMapClient sqlMap = getSqlMapInstance();
+		
+		// Check if setting with same url already exists (especially important for 'removed' settings which are not visible)
+		// If this is the case, the old setting will be overwritten!
+		// TODO: is this a good way to behave?
+		Long settingId = (Long) sqlMap.queryForObject("lookupRecommenderSetting", param);
+		if (settingId != null && settingId != sid) {
+		    sqlMap.delete("deleteFromRecommenderSettings", settingId);
+		    sqlMap.delete("deleteFromRecommenderStatus", settingId);
+		}
+		
 		sqlMap.update("updateRecommenderStatusUrl", param);
 		sqlMap.update("updateRecommenderSettingUrl", param);
 	}
