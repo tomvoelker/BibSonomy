@@ -69,3 +69,63 @@ function reloadRecommendation() {
 
     $('#postForm').ajaxSubmit(tagRecoOptions); 
 }
+
+function generateBibTexKey(obj) {
+    var buffer  = "";
+
+    /* get author */
+    buffer += getFirstPersonsLastName(document.getElementById("post.resource.author").value);
+
+    /* the year */ 
+    var year = document.getElementById("post.resource.year").value;
+    if (year != null) {
+        buffer += year.trim();
+    }
+
+    /* first relevant word of the title */
+    var title = document.getElementById("post.resource.title").value;
+	if (title != null) {
+		buffer += getFirstRelevantWord(title).toLowerCase();
+	}
+    
+    document.getElementById("post.resource.bibtexKey").value = buffer.toLowerCase();
+}
+
+function getFirstPersonsLastName(person) {
+    if (person != null) {
+        var firstauthor;
+        /*
+		 * check, if there is more than one author
+		 */
+        var firstand = person.indexOf("\n");
+        if (firstand < 0) {
+            firstauthor = person;
+        } else {
+            firstauthor = person.substring(0, firstand);				
+        }
+        /*
+         * first author extracted, get its last name
+         */
+        var lastspace = firstauthor.lastIndexOf(' ');
+        var lastname;
+        if (lastspace < 0) {
+            lastname = firstauthor;
+        } else {
+            lastname = firstauthor.substring(lastspace + 1, firstauthor.length);
+        }
+        return lastname;
+    }
+    return "";
+}
+
+function getFirstRelevantWord(title) {
+	split = title.split(" ");
+	for (i in split) {
+		var regex = new RegExp("[^a-zA-Z0-9]", "g");
+		ss = split[i].replace(regex, "");
+		if (ss.length > 4) {
+			return ss;
+		}
+	}
+	return "";
+}
