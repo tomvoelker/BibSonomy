@@ -131,7 +131,7 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
-	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" scope="singleton">
+	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" init-method="init" scope="singleton">
 	    <property name="multiplexingTagRecommender" ref="multiplexingTagRecommender" />
 	</bean>
 		

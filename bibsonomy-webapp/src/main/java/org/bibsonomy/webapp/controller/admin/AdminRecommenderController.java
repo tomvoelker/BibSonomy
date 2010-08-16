@@ -45,7 +45,22 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private LogicInterface logic;
 	private UserSettings userSettings;
 	private MultiplexingTagRecommender mp;
+
 	
+	/**
+	 * Initialize Controller and multiplexer
+	 *
+	 * */
+	public void init() {
+		List<Long> recs = null;
+		try {
+			recs = db.getActiveRecommenderSettingIds();
+			for (Long sid : recs)
+				mp.enableRecommender(sid);
+		} catch (SQLException e) {
+			log.debug("Couldn't initialize multiplexer! ", e);
+		}
+	}
 
 	@Override
 	public View workOn(AdminRecommenderViewCommand command) {
