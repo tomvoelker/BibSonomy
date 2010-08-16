@@ -196,6 +196,19 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		//
 		registerResultSelector(getResultSelector());
 		
+		//
+		// Get ids of activated recommenders and enable them 
+		//
+		List<Long> recs = null;
+		try {
+		    recs = dbLogic.getActiveRecommenderSettingIds();
+		    for (Long sid : recs) {
+		        enableRecommender(sid);
+		    }
+		} catch (SQLException e) {
+			log.debug("Error in MultiplexingTagRecommender.init(): Could not retrieve setting-ids from database!", e);
+		}
+		
 		// all done.
 		initialized = true;
 	}
