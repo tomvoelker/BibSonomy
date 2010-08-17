@@ -61,8 +61,9 @@
 					<fmt:message key="navi.login"/>
 					</c:set>
 					<form:form method="POST" action="${loginUrl}">
-						<input type="text" size="15" name="username" id="un" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
-						<input type="password" size="15" name="password" id="pw" autocomplete="off"/>
+						<input type="text" size="15" name="username" id="un"  tabindex="1"/>&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
+						<input type="password" size="15" name="password" style="width:150px;position:fixed;" id="pw" autocomplete="off" tabindex="2"/>
+						<input type="text" id="pw_form_copy" name="" style="position:relative;" autocomplete="off"/>
 						<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" />
 						<c:if test="${authOrder == 'db,openid'}"> 
 							<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>

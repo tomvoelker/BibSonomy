@@ -159,19 +159,10 @@ function maximizeById(id) {
  * 		password/text corresponding form element
 **/
 function getFormTextCopy(el) {
-
-	if((el_copy = document.getElementById(el.id+pwd_id_postfix)) == null) {
-		el_copy = document.createElement("input");
-		el_copy.type = "text";
-		el_copy.id = el.id+pwd_id_postfix;
-		el_copy.className = el.className;
-		el_copy.style.width = el.offsetWidth+"px";
-	    el_copy.onmousedown = clear_input_password;
-	    el_copy.onkeypress  = clear_input_password;
-		el.parentNode.insertBefore(el_copy, el);
-	}
-	el.style.display = "none";
-	el_copy.style.display = "";
+	el_copy = document.getElementById(el.id+pwd_id_postfix);
+	el_copy.style.width = el.offsetWidth+"px";
+    el_copy.onmousedown = clear_input_password;
+    el_copy.onkeypress  = clear_input_password;
 	return el_copy;
 }
 
@@ -193,6 +184,12 @@ function add_hints() {
     el.style.color = "#aaaaaa";
     el.onmousedown = clear_input;
     el.onkeypress  = clear_input;
+    el.onblur = function() {
+    			document.getElementById("pw"+pwd_id_postfix).style.display = "none";
+    			var node_pwd_form = document.getElementById("pw");
+    			node_pwd_form.style.position = "relative";
+    			clear_node(node_pwd_form);
+    		};
   }
   // for password input field
   el = document.getElementById("pw");
@@ -293,7 +290,7 @@ function clear_input_password (event) {
 			  node_txt_form.id.substr(0, node_txt_form.id.length-pwd_id_postfix.length)
 	  );
 	  node_txt_form.style.display = "none";
-	  node_pwd_form.style.display = "";
+	  node_pwd_form.style.position = "relative";
 	  clear_node(node_pwd_form);
 }
 
