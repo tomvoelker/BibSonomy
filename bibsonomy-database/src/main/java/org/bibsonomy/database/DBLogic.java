@@ -1566,6 +1566,7 @@ public class DBLogic implements LogicInterface {
 	    final DBSession session = openSession();
 	    try {
 		this.tagRelationsDBManager.deleteRelation(upper, lower, groupingName, session);
+		return;
 	    } finally {
 		session.close();
 	    }
