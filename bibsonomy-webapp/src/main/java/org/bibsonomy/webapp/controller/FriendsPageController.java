@@ -34,6 +34,9 @@ public class FriendsPageController extends SingleResourceListController implemen
 		
 		// set grouping entity
 		final GroupingEntity groupingEntity = GroupingEntity.FRIEND;
+		
+		// handle case when users are requested
+		this.handleUsers(command);		
 
 		// determine which lists to initalize depending on the output format
 		// and the requested resourcetype
@@ -49,10 +52,6 @@ public class FriendsPageController extends SingleResourceListController implemen
 		command.setPageTitle("friends");
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			command.setUserFriends(logic.getUserFriends(command.getContext().getLoginUser()));
-			command.setFriendsOfUser(logic.getFriendsOfUser(command.getContext().getLoginUser()));
-			// log if a user has reached threshold
-
 			this.endTiming();
 			return Views.FRIENDSPAGE;
 		}

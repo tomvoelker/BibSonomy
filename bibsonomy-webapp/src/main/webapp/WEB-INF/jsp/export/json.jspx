@@ -8,7 +8,8 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"> 
+	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:json="urn:jsptagdir:/WEB-INF/tags/export/json"> 
 	
 <jsp:directive.page contentType="application/json; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -27,7 +28,11 @@
       },
       "Tag" : {
          "pluralLabel" : "Tags"
+      }<c:if test="${mtl:hasProperty(command, 'userFriends') or mtl:hasProperty(command, 'friendsOfUser')}">,
+      "User" : {
+         "pluralLabel" : "Users"
       }
+	  </c:if>
    },
    
    "properties" : {
@@ -52,80 +57,64 @@
    },
    
    "items" : [
+   	  <!-- track, whether a comma has to be placed between list elements of different types -->
+      <c:set var="isCommaNecessary" value="${false}"/>
+   
       <!-- bookmarks -->
       <c:forEach var="post" varStatus="status" items="${command.bookmark.list}">
-      {  
-         "type" : "Bookmark",
-         "id"   : "${projectHome}url/${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",
-         "intraHash" : "${post.resource.intraHash}",
-         "label" : "${mtl:quoteJSON(post.resource.title)}",
-         "user" : "${mtl:quoteJSON(post.user.name)}",
-         "description" : "${mtl:quoteJSON(post.description)}",
-         "date" : "<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd HH:mm:ss"/>",
-         "count" : ${post.resource.count},
-         "tags" : [
-            <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
-         ],
-         "url" : "${mtl:quoteJSON(post.resource.url)}"
-      }<c:if test="${not status.last}">,</c:if>
+      	<json:bookmark post="${post}"/><c:if test="${not status.last}">,</c:if>
+      	<c:if test="${status.last}">
+      		<c:set var="isCommaNecessary" value="${true}"/>
+      	</c:if>
       </c:forEach>
       
       <!-- comma between bibtex & bookmark resources, if both present -->
-      <c:if test="${not empty command.bookmark.list and not empty command.bibtex.list}">,</c:if>
+      <c:if test="${isCommaNecessary and not empty command.bibtex.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
       
       <!-- publications -->
       <c:forEach var="post" varStatus="status" items="${command.bibtex.list}">
-      {  
-         "type" : "Publication",
-         "id"   : "${projectHome}bibtex/2${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",
-         "intraHash" : "${post.resource.intraHash}",
-         "label" : "${mtl:quoteJSONcleanBibTeX(post.resource.title)}",
-         "user" : "${mtl:quoteJSON(post.user.name)}",
-         "description" : "${mtl:quoteJSON(post.description)}",
-         "date" : "<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd hh:mm:ss"/>",
-         "count" : ${post.resource.count},
-         "tags" : [
-            <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
-         ],
-         "pub-type": "${post.resource.entrytype}",
-         <c:if test="${!empty post.resource.journal}">"journal": "${mtl:quoteJSONcleanBibTeX(post.resource.journal)}",</c:if>
-         <c:if test="${!empty post.resource.booktitle}">"booktitle": "${mtl:quoteJSONcleanBibTeX(post.resource.booktitle)}",</c:if>
-         <c:if test="${!empty post.resource.series}">"series": "${mtl:quoteJSONcleanBibTeX(post.resource.series)}",</c:if>
-         <c:if test="${!empty post.resource.publisher}">"publisher":"${mtl:quoteJSONcleanBibTeX(post.resource.publisher)}",</c:if>
-         <c:if test="${!empty post.resource.address}">"address":"${mtl:quoteJSONcleanBibTeX(post.resource.address)}",</c:if>
-         "year": "${mtl:quoteJSON(post.resource.year)}", 
-         "url": "${mtl:quoteJSON(post.resource.url)}", 
-         <c:if test="${! empty post.resource.authorList}">
-         "author": [ 
-            <c:forEach var="author" varStatus="authorStatus" items="${post.resource.authorList}">"${mtl:quoteJSONcleanBibTeX(author.name)}"<c:if test="${not authorStatus.last}">,</c:if></c:forEach>
-         ],
-         </c:if>
-         <c:if test="${! empty post.resource.editorList}">
-         "editor": [ 
-            <c:forEach var="editor" varStatus="editorStatus" items="${post.resource.editorList}">"${mtl:quoteJSONcleanBibTeX(editor.name)}"<c:if test="${not editorStatus.last}">,</c:if></c:forEach>
-         ],
-         </c:if>
-         <c:if test="${!empty post.resource.volume}">"volume": "${mtl:quoteJSONcleanBibTeX(post.resource.volume)}",</c:if>  
-         <c:if test="${!empty post.resource.number}">"number": "${mtl:quoteJSONcleanBibTeX(post.resource.number)}",</c:if>
-         <c:if test="${!empty post.resource.pages}">"pages": "${mtl:quoteJSONcleanBibTeX(post.resource.pages)}",</c:if>
-         <c:if test="${!empty post.resource.note}">"note": "${mtl:quoteJSONcleanBibTeX(post.resource.note)}",</c:if>
-         <c:if test="${!empty post.resource.abstract}">"abstract": "${mtl:quoteJSONcleanBibTeX(post.resource.abstract)}",</c:if>
-         "bibtexKey": "${mtl:quoteJSONcleanBibTeX(post.resource.bibtexKey)}"
-      }<c:if test="${not status.last}">,</c:if>
+      	<json:publication post="${post}"/><c:if test="${not status.last}">,</c:if>      
+      	<c:if test="${status.last}">
+      		<c:set var="isCommaNecessary" value="${true}"/>
+      	</c:if>
       </c:forEach>
       
       <!-- comma if tags are present, preceded by either bookmarks or bibtexs -->
-      <c:if test="${not empty command.tagcloud.tags and (not empty command.bookmark.list or not empty command.bibtex.list)}">,</c:if>
+      <c:if test="${isCommaNecessary and not empty command.tagcloud.tags}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
 
       <!-- tags -->
       <c:forEach var="tag" varStatus="status" items="${command.tagcloud.tags}" >
-      {
-         "type" : "Tag",
-         "label" : "${mtl:quoteJSON(tag.name)}", 
-         "count" : ${tag.usercount}
-      }<c:if test="${not status.last}">,</c:if>
+      	<json:tag tag="${tag}"/><c:if test="${not status.last}">,</c:if>
+      	<c:if test="${status.last}">
+      		<c:set var="isCommaNecessary" value="${true}"/>
+      	</c:if>
       </c:forEach>
 
+	  <!-- comma, if friends exist and (tags exist or resources are present) -->
+      <c:if test="${isCommaNecessary and mtl:hasProperty(command, 'userFriends') and not empty command.userFriends}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+
+      <!-- friends -->
+      <c:if test="${mtl:hasProperty(command, 'userFriends')}">
+	  	<c:forEach var="user" varStatus="status" items="${command.userFriends}" >
+      		<json:user user="${user}"/><c:if test="${not status.last}">,</c:if>
+      		<c:if test="${status.last}">
+      			<c:set var="isCommaNecessary" value="${true}"/>
+      		</c:if>
+      	</c:forEach>
+      </c:if>
+
+	  <!-- comma, if friends exist and (tags exist or resources are present) -->
+      <c:if test="${isCommaNecessary and mtl:hasProperty(command, 'friendsOfUser') and not empty command.friendsOfUser}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+
+      <!-- friends -->
+      <c:if test="${mtl:hasProperty(command, 'friendsOfUser')}">
+	  	<c:forEach var="user" varStatus="status" items="${command.friendsOfUser}" >
+      		<json:user user="${user}"/><c:if test="${not status.last}">,</c:if>
+      		<c:if test="${status.last}">
+      			<c:set var="isCommaNecessary" value="${true}"/>
+      		</c:if>
+      	</c:forEach>
+      </c:if>
    ]
 }
 

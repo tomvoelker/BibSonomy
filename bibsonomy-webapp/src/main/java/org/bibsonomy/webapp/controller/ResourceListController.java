@@ -13,6 +13,7 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.common.enums.TagsType;
+import org.bibsonomy.common.enums.UsersType;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -24,6 +25,8 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.SortUtils;
+import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.webapp.command.FriendsResourceViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.ResourceViewCommand;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
@@ -168,6 +171,35 @@ public abstract class ResourceListController {
 		}
 	}
 
+	/**
+	 * Initialize user list, depending on chosen users type
+	 * 
+	 * @param <V> the command type
+	 * @param command the command object
+	 */
+	protected <V extends FriendsResourceViewCommand> void handleUsers(V command) {
+		final String usersType = command.getUserstype();
+		
+		if ( (!ValidationUtils.present(usersType)) && ("html".equals(command.getFormat())) ) {
+			// this is the default case for the FriendsPageController
+			command.setUserFriends(logic.getUserFriends(command.getContext().getLoginUser()));
+			command.setFriendsOfUser(logic.getFriendsOfUser(command.getContext().getLoginUser()));
+		}
+		
+		if (usersType != null) {
+			if( UsersType.FRIENDS.getName().equalsIgnoreCase(usersType) || UsersType.FRIENDSHIP.getName().equalsIgnoreCase(usersType) ) {
+				command.setUserFriends(logic.getUserFriends(command.getContext().getLoginUser()));
+			};
+			if( UsersType.FRIENDOF.getName().equalsIgnoreCase(usersType) || UsersType.FRIENDSHIP.getName().equalsIgnoreCase(usersType) ) {
+				command.setFriendsOfUser(logic.getFriendsOfUser(command.getContext().getLoginUser()));
+			}
+			
+			// when users only are requested, we don't need bibtexs and bookmarks
+			this.listsToInitialise.remove(BibTex.class);
+			this.listsToInitialise.remove(Bookmark.class);			
+		}
+	}
+	
 
 	/**
 	 * do some post processing with the retrieved resources
