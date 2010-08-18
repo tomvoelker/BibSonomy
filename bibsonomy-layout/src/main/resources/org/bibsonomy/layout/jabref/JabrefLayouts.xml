@@ -434,6 +434,19 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="htmltype">
+		<displayName>htmltype</displayName>
+		<description xml:lang="en">
+			A simple layout with entrytype and number.
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format mit Nummerierung und Anzeige des Entrytypes. 
+		</description>
+		<directory>htmltype</directory>
+		<baseFileName>htmltype</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
 	<layout name="winfoyear_n" >
 		<displayName>DIN 1505 MMS, with endnote entry and display of note, grouped by year</displayName>
 		<description xml:lang="en">
