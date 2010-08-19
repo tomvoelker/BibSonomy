@@ -13,7 +13,7 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.common.enums.TagsType;
-import org.bibsonomy.common.enums.UsersType;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -184,14 +184,11 @@ public abstract class ResourceListController {
 			// this is the default case for the FriendsPageController
 			command.setUserFriends(logic.getUserFriends(command.getContext().getLoginUser()));
 			command.setFriendsOfUser(logic.getFriendsOfUser(command.getContext().getLoginUser()));
-		}
-		
-		if (usersType != null) {
-			if( UsersType.FRIENDS.getName().equalsIgnoreCase(usersType) || UsersType.FRIENDSHIP.getName().equalsIgnoreCase(usersType) ) {
-				command.setUserFriends(logic.getUserFriends(command.getContext().getLoginUser()));
-			};
-			if( UsersType.FRIENDOF.getName().equalsIgnoreCase(usersType) || UsersType.FRIENDSHIP.getName().equalsIgnoreCase(usersType) ) {
+		} else if (usersType != null) {
+			if( UserRelation.OF_FRIEND.name().equalsIgnoreCase(usersType) ) {
 				command.setFriendsOfUser(logic.getFriendsOfUser(command.getContext().getLoginUser()));
+			} else if( UserRelation.FRIEND_OF.name().equalsIgnoreCase(usersType) ) {
+				command.setUserFriends(logic.getUserFriends(command.getContext().getLoginUser()));
 			}
 			
 			// when users only are requested, we don't need bibtexs and bookmarks
