@@ -81,6 +81,11 @@ public enum Views implements View {
 	CLUSTERPAGE("browsing/cluster"),
 	
 	/**
+	 * topics page for browsing resources based on topics
+	 */
+	TOPICSPAGE("browsing/topics"),
+	
+	/**
 	 * inbox page
 	 */
 	INBOX("inbox"),

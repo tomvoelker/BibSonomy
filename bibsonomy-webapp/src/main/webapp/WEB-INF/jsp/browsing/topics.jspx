@@ -1,0 +1,110 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:json="urn:jsptagdir:/WEB-INF/tags/export/json"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<!-- load json templates -->
+	<json:templates>${mtl:ch('nbsp')}</json:templates>
+	
+	<layout:clusterLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	
+		<jsp:attribute name="heading">
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.topics"/></a> ::
+  			
+		   <!--+
+		       | configuration
+		       +-->
+           <script type="text/javascript">
+	      		//------------------------------------------------------------
+           		// global variables
+           		//------------------------------------------------------------
+           		var numberOfClusters;
+           		var clusterSettings;
+           		var clusterResources;
+           		var numberOfPosts = 25;
+
+				var bibTexEntries   = {};
+          		var bookmarkEntries = {};
+
+          		var dateFormat       = "yyyy-MM-dd HH:mm:ss";
+
+           	  	var communityBaseUrl = "${command.communityBaseUrl}";
+          		var projectHome      = "${projectHome}";
+          		var maxClusterCount  = "${command.maxClusterCount}";           	  
+          </script>
+		  
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<!--  style sheets for slidebars -->
+			<link href="${command.communityBaseUrl}/resources/css/ui-lightness/jquery-ui-1.8.1.custom.css" rel="stylesheet" type="text/css"/>
+
+			<!--  coloring according to clustering -->
+			<link href="${command.communityBaseUrl}/resources/css/clusterViews.css" rel="stylesheet" type="text/css"/>
+			
+			<!--  script for slidebars -->
+			<script type="text/javascript" src="${command.communityBaseUrl}/resources/javascript/jquery-ui-1.8.1.custom.min.js">&amp;nbsp;</script>	
+				
+			<!--  script for json templates -->
+			<script type="text/javascript" src="${resdir}/javascript/json-template.js">&amp;nbsp;</script>
+
+			<!--  script for handling cluster based navigateion -->
+			<script type="text/javascript" src="${resdir}/javascript/topicsNavigation.js">&amp;nbsp;</script>
+
+			<!--  script for parsing and comparing dates -->
+			<script type="text/javascript" src="${resdir}/javascript/date.js">&amp;nbsp;</script>
+			
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+			
+			<ul id="sidebar">
+				<li class="listhButtons">
+					<a class="clusterNavigation" onclick="setRanking('random')">Random Sample</a> 
+					<a class="clusterNavigation" onclick="setRanking('weight')">Sort by relevance</a> 
+					<a class="clusterNavigation" onclick="setRanking('date')">Sort by date</a>
+				</li>
+				<li>
+					<!-- <a onclick="reloadContent()">Update Resources</a>  -->
+					<img  id="wait_reloadContent" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader2.gif" style="display: none;"/>
+				</li>
+				<li>
+					<!-- <a onclick="reloadSettings()">Update Settings</a>  -->
+					<img  id="wait_reloadSettings" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader2.gif" style="display: none;"/>
+					<img  id="wait_showClusterPage" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader2.gif" style="display: none;"/>
+				</li>
+				<li>
+					<div id="topicsSettings"><c:out value=" "/></div>
+				</li>
+				
+				<li class="listhButtons" id="addClustersNavigation">
+					<a class="clusterNavigation" onclick="resetClusterView();showClusterPage()">Add Topics</a>
+				</li>
+				<li class="listhButtons" id="addClusterRecommendation">
+					<a class="clusterNavigation" onclick="addRecommendedCluster();">Get Recommendation</a>
+				</li>
+				<li class="listhButtons">
+					<a class="clusterNavigation" onclick="saveClusterSettings();">Save Settings</a>
+				</li>
+				<li><br>&amp;nbsp;</br></li>
+			</ul>
+
+		</jsp:attribute>
+		
+		<jsp:attribute name="contentHeading">
+			<div id="bmEntries">&amp;nbsp;</div>
+			<div id="btEntries">&amp;nbsp;</div>
+		</jsp:attribute>
+	</layout:clusterLayout>
+
+</jsp:root>

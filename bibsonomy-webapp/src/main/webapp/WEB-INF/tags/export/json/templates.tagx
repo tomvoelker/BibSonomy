@@ -233,6 +233,76 @@
 	</c:set>
 	
 	<!--+ =============================================================== +
+	    |                          Topics                                 |
+	    + =============================================================== +-->
+	<c:set var="jsonTopicsSettings">
+		<![CDATA[
+			<h1>Selected Topics</h1><br/><br/>
+			<ul>
+			{.repeated section clusters}
+				<li class="clusterSettings{clusterPos|html-attr-value}">
+					<hr/>
+					<div style="text-align: right;">
+						<a onclick="resetClusterView();removeCluster({clusterID|html-attr-value})">
+							<img  alt="switch cluster..." src="${command.communityBaseUrl}${resdir}/image/button_reload.png"/>
+						</a>
+					</div>
+					<br/>
+					{tags|tagCloud}
+					<br/>
+					<div id="slider{clusterPos|html-attr-value}"> </div>
+				</li>
+			{.end}
+			</ul>
+			<hr/>
+		]]>
+	</c:set>
+	    
+	<c:set var="jsonTopicsOverview">
+		<![CDATA[
+			<h1>Topics</h1><br/>
+			<span class="listhButtons clusteringReload">
+				<a class="clusterNavigation" onclick="resetClusterView();reloadClustering();">reload topics</a>
+			</span><br/>
+			{.repeated section clusters}
+				<hr/>
+				{.section clusterID}
+					<span class="listhButtons clusterAddRemove">
+					{.if isClusterEnabled}
+						<a class="clusterNavigation" onclick="resetClusterView();removeCluster({clusterID|html-attr-value})">remove topic</a>
+					{.or}
+						<a class="clusterNavigation" onclick="addCluster({clusterID|html-attr-value},50)">add topics</a>
+					{.end}
+					</span>
+				{.end}
+				<br/>
+				<div>
+				<div class="clusterLeftItemCloud">
+					{tags|tagCloud}
+				</div>
+				<div class="clusterRightItemCloud">
+					{users|userCloud}
+				</div>
+				</div><br/>
+				<div style="text-align:center;clear:both;">
+					<a class="clusterNavigation" onclick="$('#clusterResources{clusterPos|html-attr-value}').toggle();loadClusterResources('clusterResources{clusterPos|html-attr-value}', {clusterPos|html-attr-value}, 100);">Toggle Resources</a>
+				</div>
+				<div style="display:none;" id="clusterResources{clusterPos|html-attr-value}">
+					<p class="centeredImage">
+						<img  id="wait_clusterResources{clusterPos|html-attr-value}" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader.gif"/>
+					</p>
+					{bookmarks|bookmarkList}
+					{bibtex|bibTexList}
+				</div>
+			{.end}
+			<hr/>
+			<center>      
+				{listView|listNavigation}
+			</center>
+		]]>
+	</c:set>
+	
+	<!--+ =============================================================== +
 	    |                        Navigation                               |
 	    + =============================================================== +-->
 	<c:set var="jsonListNavigation">
@@ -275,7 +345,13 @@
 			//----------------------------------------------------------------
 			"listNavigation"  : "${mtl:quoteJSON(jsonListNavigation)}",
 			"clusterSettings" : "${mtl:quoteJSON(jsonClusterSettings)}",
-			"clusterOverview" : "${mtl:quoteJSON(jsonClusterOverview)}"
+			"clusterOverview" : "${mtl:quoteJSON(jsonClusterOverview)}",
+
+			//----------------------------------------------------------------
+			// BibSonomy cluster views
+			//----------------------------------------------------------------
+			"topicsSettings"  : "${mtl:quoteJSON(jsonTopicsSettings)}",
+			"topicsOverview"  : "${mtl:quoteJSON(jsonTopicsOverview)}"
 		};
 
 		/** custom formatters */

@@ -144,6 +144,11 @@
 						<property name="controllerBeanName" value="clusterPageController"/>
 					</bean>
 				</entry>
+				<entry key="/topics">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="topicsPageController"/>
+					</bean>
+				</entry>
 				<entry key="/author">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="authorPageController"/>
@@ -435,6 +440,9 @@
 	</bean>
 
 	<bean id="clusterPageController" class="org.bibsonomy.webapp.controller.browsing.ClusterPageController" scope="request">
+	</bean>
+	
+	<bean id="topicsPageController" class="org.bibsonomy.webapp.controller.browsing.TopicsPageController" scope="request">
 	</bean>
 	
 	<bean id="authorPageController" class="org.bibsonomy.webapp.controller.AuthorPageController" scope="request">
