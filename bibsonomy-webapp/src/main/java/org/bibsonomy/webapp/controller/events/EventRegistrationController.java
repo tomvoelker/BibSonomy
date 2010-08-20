@@ -45,7 +45,7 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		 * users must be logged in to register for an event
 		 */
 		if (!context.isUserLoggedIn()) {
-			return new ExtendedRedirectView("/login?notice=login.notice.events&referer=/events/register/" + UrlUtils.safeURIEncode(command.getEvent().getName())); 
+			return new ExtendedRedirectView("/login?notice=login.notice.events&referer=/events/register/" + UrlUtils.safeURIEncode(command.getEvent().getId())); 
 		}
 		
 		/*
@@ -53,9 +53,9 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		 */
 		final User loginUser = context.getLoginUser();
 
-		final Event event = eventManager.getEvent(command.getEvent().getName());
+		final Event event = eventManager.getEvent(command.getEvent().getId());
 		if (!present(event)) {
-			throw new MalformedURLSchemeException("The event " + command.getEvent().getName() + " does not exist."); // FIXME: own message?
+			throw new MalformedURLSchemeException("The event " + command.getEvent().getId() + " does not exist."); // FIXME: own message?
 		}
 		
 		log.info("got event " + event);

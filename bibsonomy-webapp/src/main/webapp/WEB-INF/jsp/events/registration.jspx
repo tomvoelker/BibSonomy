@@ -100,19 +100,6 @@
 				    </div>
 
 				    <div class="fsRow">
-				    	Facebook
-				    </div>
-
-				    <div class="fsRow">
-				    	Twitter
-				    </div>
-
-					<div class="fsRow">
-				    	ResearchGate
-				    </div>
-
-
-				    <div class="fsRow">
 				      <form:label cssClass="fsLabel" path="profilePrivlevel"><fmt:message key="settings.profileViewableFor"/></form:label>
 				      <form:select cssClass="fsInput fsSmall" path="profilePrivlevel">
 				    	<form:option label="public" value="public"/>
@@ -133,7 +120,8 @@
 				  <fieldset class="fsInner">
 				  	<div class="fsRow">
 				    	<form:label cssClass="fsLabel" path="registered"><fmt:message key="events.registration.registered"/></form:label>
-				    	<form:checkbox path="registered" value="true"/>
+				    	<form:checkbox path="registered" value="true"/>				    	
+				    	<fmt:message key="events.registration.registered.confirm"/>
 				    	<div class="dissError"><form:errors path="registered" /></div>
 				    </div>
 				    
@@ -154,7 +142,7 @@
 		
 				<ul>
 					<li><a href="${fn:escapeXml(command.event.url)}">homepage</a></li>
-					<li><a href="/user/${fn:escapeXml(command.event.userName)}/${fn:escapeXml(command.event.name)}">accepted papers</a></li>	
+					<li><a href="/user/${fn:escapeXml(command.event.userName)}/${fn:escapeXml(command.event.id)}">accepted papers</a></li>	
 				</ul>
 
 	      </div>

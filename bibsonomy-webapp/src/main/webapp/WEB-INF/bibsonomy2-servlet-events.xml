@@ -19,7 +19,7 @@
 						<property name="controllerBeanName" value="eventRegistrationController"/>
 						<property name="allowedFields">	
 							<list>
-								<value>event.name</value>
+								<value>event.id</value>
 								<value>user.realname</value>
 								<value>user.gender</value>
 								<value>user.birthday</value>

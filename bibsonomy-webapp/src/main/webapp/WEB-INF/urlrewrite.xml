@@ -790,7 +790,7 @@
 	<rule>
 		<name>/events/register/EVENT</name>
 		<from>^/+events/+register/([^/]+)$</from>
-		<set type="parameter" name="event.name">$1</set>
+		<set type="parameter" name="event.id">$1</set>
 		<to last="true">/events/register</to>
 	</rule>
 	
