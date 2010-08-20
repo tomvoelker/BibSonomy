@@ -21,7 +21,7 @@ public class DatabaseEventManagerTest {
 		
 		final DatabaseEventManager manager = new DatabaseEventManager();
 		final Event event = new Event();
-		event.setName("lwa2010");
+		event.setId("lwa2010");
 		
 		manager.registerUser(new User("jaeschke"), event, "kdml", "here");
 		

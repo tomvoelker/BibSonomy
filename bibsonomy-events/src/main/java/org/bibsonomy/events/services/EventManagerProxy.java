@@ -21,10 +21,10 @@ public class EventManagerProxy implements EventManager {
 	private List<EventManager> eventManagers;
 	
 	@Override
-	public Event getEvent(String name) {
+	public Event getEvent(String id) {
 		for (final EventManager eventManager : eventManagers) {
 			try {
-				return eventManager.getEvent(name);
+				return eventManager.getEvent(id);
 			} catch (UnsupportedOperationException e) {
 				// try next event manager in list
 			}

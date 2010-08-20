@@ -33,7 +33,7 @@ public class EventManagerProxyTest {
 			
 		}
 		eventManagerProxy.getEventManagers().add(new SpringBeanEventManager());
-		assertEquals("lwa2010", eventManagerProxy.getEvent("lwa2010").getName());
+		assertEquals("lwa2010", eventManagerProxy.getEvent("lwa2010").getId());
 	}
 
 }

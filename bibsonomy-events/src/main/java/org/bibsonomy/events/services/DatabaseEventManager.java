@@ -13,7 +13,7 @@ public class DatabaseEventManager extends AbstractDatabaseManager implements Eve
 	private final DBSessionFactory dbSessionFactory = new IbatisDBSessionFactory();
 	
 	@Override
-	public Event getEvent(String name) {
+	public Event getEvent(String id) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -26,7 +26,7 @@ public class DatabaseEventManager extends AbstractDatabaseManager implements Eve
 			registrationParam.setUser(user);
 			registrationParam.setSubEvent(subEvent);
 			registrationParam.setAddress(address);
-			this.insert("registerUser_" + event.getName(), registrationParam, session);
+			this.insert("registerUser_" + event.getId(), registrationParam, session);
 		} finally {
 			session.close();
 		}

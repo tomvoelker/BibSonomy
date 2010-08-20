@@ -14,14 +14,14 @@ public class RestEventManager implements EventManager {
 	private String serviceUrl;
 
 	@Override
-	public Event getEvent(String name) {
+	public Event getEvent(String id) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void registerUser(final User user, final Event event, final String subEvent, final String address) {
 		final NameValuePair[] data = {
-				new NameValuePair("event", event.getName()),
+				new NameValuePair("event", event.getId()),
 				new NameValuePair("name", user.getName()),
 				new NameValuePair("subEvent", subEvent),
 				new NameValuePair("address", address)

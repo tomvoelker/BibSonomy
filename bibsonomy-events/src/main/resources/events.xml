@@ -15,7 +15,8 @@
  	<util:map id="events" key-type="java.lang.String" value-type="org.bibsonomy.events.model.Event">
  		<entry key="lwa2010">
  			<bean class="org.bibsonomy.events.model.Event">
- 				<property name="name" value="lwa2010"/>
+ 				<property name="id" value="lwa2010"/>
+ 				<property name="name" value="LWA 2010"/>
  				<property name="description" value="Workshop 'Lernen, Wissen, Adaption' der GI-Fachgruppen ABIS, IR, KDML, WM"/>
  				<property name="location" value="Kassel"/>
  				<property name="year" value="2010"/>

@@ -44,8 +44,8 @@ public class SpringBeanEventManager implements EventManager {
 	}
 	
 	@Override
-	public Event getEvent(String name) {
-		return events.get(name);
+	public Event getEvent(String id) {
+		return events.get(id);
 	}
 
 	/**
