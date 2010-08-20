@@ -348,7 +348,7 @@
 			"clusterOverview" : "${mtl:quoteJSON(jsonClusterOverview)}",
 
 			//----------------------------------------------------------------
-			// BibSonomy cluster views
+			// BibSonomy topic views
 			//----------------------------------------------------------------
 			"topicsSettings"  : "${mtl:quoteJSON(jsonTopicsSettings)}",
 			"topicsOverview"  : "${mtl:quoteJSON(jsonTopicsOverview)}"
