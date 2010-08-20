@@ -11,7 +11,10 @@
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map>
-			    <entry key="/"><ref bean="frontPageController"/></entry>
+				<entry key="/"><ref bean="frontPageController"/></entry>
+				<entry key="/queryTopics"><ref bean="topicQueryController"/></entry>
+				<entry key="/topicsList"><ref bean="topicListController"/></entry>
+				<entry key="/topicsSettings"><ref bean="topicSettingsController"/></entry>
 				<entry key="/queryResources"><ref bean="resourceQueryController"/></entry>
 				<entry key="/clusterSettings"><ref bean="clusterSettingsController"/></entry>
 				<entry key="/clusterList"><ref bean="clusterListController"/></entry>
@@ -22,6 +25,30 @@
 	
     <!--  #################### controller #################### -->
    	<bean id="frontPageController" class="org.bibsonomy.community.webapp.controller.FrontPageController">
+	</bean>
+
+	<bean id="topicQueryController" class="org.bibsonomy.community.webapp.controller.TopicQueryController">
+		<!-- 
+		<property name="bibTexManager" ref="bibTexLogic"/>
+		<property name="bookmarkManager" ref="bookmarkLogic"/>
+		<property name="tagManager" ref="tagLogic"/>
+		<property name="communityManager" ref="communityLogic"/>
+		<property name="topicSearcher" ref="topicSearcherLogic"/>
+		-->
+	</bean>
+	
+	<bean id="topicListController" class="org.bibsonomy.community.webapp.controller.TopicListController">
+		<property name="topicManager" ref="topicLogic"/>
+	</bean>
+	
+	<bean id="topicSettingsController" class="org.bibsonomy.community.webapp.controller.TopicSettingsController">
+		<!-- 
+		<property name="tagManager" ref="tagLogic"/>
+		<property name="communityManager" ref="communityLogic"/>
+		<property name="userSettingsManager" ref="userSettingsLogic"/>
+  		<property name="algorithmSelector" ref="randomAlgorithmSelector"/>
+  		-->
+  		<property name="topicManager" ref="topicLogic"/>
 	</bean>
 	
 	<bean id="resourceQueryController" class="org.bibsonomy.community.webapp.controller.ResourceQueryController">
@@ -45,6 +72,10 @@
 	</bean>
 
     <!--  #################### logic beans #################### -->
+    <bean id="topicSearcherLogic" class="org.bibsonomy.topics.search.TopicSearcher">
+	</bean>
+	<bean id="topicLogic" class="org.bibsonomy.topics.database.TopicManagerLocal">
+	</bean>
 	<bean id="bibTexLogic" class="org.bibsonomy.community.database.BibTexPostManager">
 	</bean>
 	<bean id="bookmarkLogic" class="org.bibsonomy.community.database.BookmarkPostManager">
