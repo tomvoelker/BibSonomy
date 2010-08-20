@@ -24,6 +24,7 @@
         	<fmt:message key="settings.profileInfo">
         		<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
         		<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
+        		<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
         	</fmt:message>
         </p>
 		
@@ -139,7 +140,11 @@
       
       <!-- picture settings-->
       <form:form id="settingImportForm" action="uploadPicture?ckey=${ckey}" method="post" enctype="multipart/form-data">
-		<h2><fmt:message key="settings.picture.header" /></h2>		
+		<h2>
+			<fmt:message key="settings.picture.header" >
+        		<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
+			</fmt:message>		
+		</h2>		
 		
 		<div id="fsform">
     	  <fieldset class="fsInner">
