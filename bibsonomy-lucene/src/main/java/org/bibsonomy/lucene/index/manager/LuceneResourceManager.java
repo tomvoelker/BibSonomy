@@ -93,8 +93,22 @@ public class LuceneResourceManager<R extends Resource> {
 	 * Get statistics for the active index
 	 * @return LuceneIndexStatistics for the active index 
 	 */
-	public LuceneIndexStatistics getStatistics() {
+	public synchronized LuceneIndexStatistics getStatistics() {
 		LuceneResourceIndex<? extends Resource> index = this.resourceIndeces.get(idxSelect);
+		
+		if(index != null) {
+		    return index.getStatistics();
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Get statistics for the active index
+	 * @return LuceneIndexStatistics for the active index 
+	 */
+	public synchronized LuceneIndexStatistics getInactiveIndexStatistics() {
+		LuceneResourceIndex<? extends Resource> index = this.resourceIndeces.get((idxSelect+1)%2);
 		
 		if(index != null) {
 		    return index.getStatistics();

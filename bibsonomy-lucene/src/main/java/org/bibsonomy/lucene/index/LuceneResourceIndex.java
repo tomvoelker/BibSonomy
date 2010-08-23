@@ -160,7 +160,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
             statistics.setNumDocs(this.indexReader.numDocs());
             statistics.setNumDeletedDocs(this.indexReader.numDeletedDocs());
             statistics.setLastModified(this.getLastLogDate());
-            statistics.setNewestRecordDate(new Date(this.getLastDate()).toString());
+            statistics.setNewestRecordDate(this.getLastDate());
             statistics.setCurrentVersion(indexReader.getVersion());
             try {
 		statistics.setCurrent(indexReader.isCurrent());

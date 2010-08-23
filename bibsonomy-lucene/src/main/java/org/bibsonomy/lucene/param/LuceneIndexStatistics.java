@@ -1,6 +1,8 @@
 
 package org.bibsonomy.lucene.param;
 
+import java.util.Date;
+
 /**
  * lucene statistics like current version, number of docs
  *  
@@ -9,7 +11,7 @@ package org.bibsonomy.lucene.param;
  */
 public class LuceneIndexStatistics {
 
-	private String newestRecordDate = null;
+	private long newestRecordDate = 0;
 	private int numDocs = 0;
 	private int numDeletedDocs = 0;
 	private long lastModified = 0;
@@ -33,14 +35,14 @@ public class LuceneIndexStatistics {
 	/**
 	 * @return the newestRecordDate
 	 */
-	public String getNewestRecordDate() {
+	public long getNewestRecordDate() {
 		return this.newestRecordDate;
 	}
 
 	/**
 	 * @param newestRecordDate the newestRecordDate to set
 	 */
-	public void setNewestRecordDate(String newestRecordDate) {
+	public void setNewestRecordDate(long newestRecordDate) {
 		this.newestRecordDate = newestRecordDate;
 	}
 
