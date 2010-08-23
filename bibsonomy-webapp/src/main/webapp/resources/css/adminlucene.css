@@ -1,0 +1,47 @@
+
+.ls-description {
+	clear:left; float: left; width: 11em; margin: 2px;
+}
+.ls-value {
+	float: left; margin: 2px;
+}
+.cgrey {
+	color: grey;
+}
+.csilver {
+	color: silver;
+}
+#outerBox {
+    margin: 8px;
+}
+.indexProperties {
+	width: 100%;
+	margin: .5%;
+	clear: left;
+	margin-bottom: 30px;
+}
+
+legend label {
+   font-weight: bold;
+}
+fieldset div {
+	font-size: 85%;
+}
+fieldset {
+    width: 47%;
+    overflow: hidden;
+    display: inline;
+    float: left;
+    margin-bottom: 0.7%;
+}
+#generalProperties fieldset {
+	width: 100%;
+}
+#generalProperties {
+}
+#bookmarkIndexProperties {
+
+}
+#publicationIndexProperties {
+
+}

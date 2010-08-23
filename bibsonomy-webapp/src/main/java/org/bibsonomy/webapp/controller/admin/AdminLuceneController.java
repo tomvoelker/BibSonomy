@@ -16,14 +16,12 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.lucene.index.LuceneBibTexIndex;
 import org.bibsonomy.lucene.index.manager.LuceneBibTexManager;
 import org.bibsonomy.lucene.index.manager.LuceneBookmarkManager;
-import org.bibsonomy.lucene.index.manager.LuceneGoldStandardPublicationManager;
+import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.search.LuceneSearchBibTex;
 import org.bibsonomy.lucene.search.LuceneSearchBookmarks;
-import org.bibsonomy.lucene.search.LuceneSearchGoldStandardPublication;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -101,7 +99,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		
 		LuceneResourceSearch<Bookmark> bookmarksIndex    = LuceneSearchBookmarks.getInstance();
 		LuceneResourceSearch<BibTex>   publicationsIndex = LuceneSearchBibTex.getInstance();
-		LuceneResourceSearch<GoldStandardPublication>   goldstandardPublicationIndex = LuceneSearchGoldStandardPublication.getInstance();
+		//LuceneResourceSearch<GoldStandardPublication>   goldstandardPublicationIndex = LuceneSearchGoldStandardPublication.getInstance();
 
 		
 		// Infos über die einzelnen Indexe
@@ -109,18 +107,26 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		// in extra methode: Parameter=Index
 		
 		LuceneIndexSettingsCommand cmdBookmarksIndex    = command.getBookmarksIndex();
+		LuceneIndexSettingsCommand cmdBookmarksIndex2    = command.getBookmarksIndex2();
 		LuceneIndexSettingsCommand cmdPublicationsIndex = command.getPublicationsIndex();
+		LuceneIndexSettingsCommand cmdPublicationsIndex2 = command.getPublicationsIndex2();
 		LuceneIndexSettingsCommand cmdGoldstandardIndex = command.getGoldstandardIndex();
+		LuceneIndexSettingsCommand cmdGoldstandardIndex2 = command.getGoldstandardIndex2();
 		
 		
 		cmdBookmarksIndex.setInstance(bookmarksIndex.toString());
 		cmdBookmarksIndex.setIndexStatistics(LuceneBookmarkManager.getInstance().getStatistics());
+		cmdBookmarksIndex2.setIndexStatistics(LuceneBookmarkManager.getInstance().getInactiveIndexStatistics());
 		
 		cmdPublicationsIndex.setInstance(publicationsIndex.toString());
 		cmdPublicationsIndex.setIndexStatistics(LuceneBibTexManager.getInstance().getStatistics());
+		cmdPublicationsIndex2.setIndexStatistics(LuceneBibTexManager.getInstance().getInactiveIndexStatistics());
 		
-		cmdGoldstandardIndex.setInstance(goldstandardPublicationIndex.toString());
-		cmdGoldstandardIndex.setIndexStatistics(LuceneGoldStandardPublicationManager.getInstance().getStatistics());		
+		
+		//cmdGoldstandardIndex.setInstance(goldstandardPublicationIndex.toString());
+		
+		// TODO: replace with real statistics when index is running
+		cmdGoldstandardIndex.setIndexStatistics(new LuceneIndexStatistics());		
 
 		return Views.ADMIN_LUCENE;
 	}

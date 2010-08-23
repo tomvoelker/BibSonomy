@@ -17,7 +17,7 @@
 
 	<c:set var="bookmarksIndex" value="${command.bookmarksIndex}" />
 	<c:set var="publicationsIndex" value="${command.publicationsIndex}" />
-	<c:set var="goldstandardIndex" value="${command.publicationsIndex}" />
+	<c:set var="goldstandardIndex" value="${command.goldstandardIndex}" />
 	
 	<layout:layout 
 		searchString="" 
@@ -27,104 +27,100 @@
 		<jsp:attribute name="heading">
 			<a href="/?filter=no">${projectName} all</a> :: <a rel="path_menu"
 				href="/admin_lucene"><fmt:message key="navi.admin_lucene" /></a>
-		</jsp:attribute>	
+		</jsp:attribute>
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css"
+				href="${resdir}/css/adminlucene.css" />
+		</jsp:attribute>
 		<jsp:attribute name="content">
-	
-
-<style type="text/css">
-.ls-description {clear:left; float: left; width: 11em; margin: 2px;}
-.ls-value {float: left; margin: 2px;}
-.cgrey { color: grey; }
-.csilver { color: silver; }
-
-</style>
 
 
-<div style="margin:8px">
+<div id="outerBox">
 	<h2>
 			Lucene Index Statistics 
 	</h2>
 
-	<div style="width: 100%; margin: .5%;" >
-		<fieldset style="padding:5px;">
-			<legend><label style="font-weight: bold;">General properties (context.xml)</label></legend>
+	<div class="indexProperties" id="generalProperties">
+		<fieldset>
+			<legend><label>General properties (context.xml)</label></legend>
+			<table>
+			  <tr>
+			  
+			  </tr>
+			</table>
 			<div class="ls-description">envContextString:</div><div class="ls-value">${command.envContextString}</div>
 			<div class="ls-description">bookmarksPath:</div><div class="ls-value">${command.luceneBookmarksPath}</div>
 			<div class="ls-description">publicationsPath:</div><div class="ls-value">${command.lucenePublicationsPath}</div>
 			<div class="ls-description">dataSourceUrl:</div><div class="ls-value" title="${command.luceneDataSourceUrl}">${command.luceneDataSourceUrlShort}</div>
 			<div class="ls-description">dataSourceUsername:</div><div class="ls-value">${command.luceneDataSourceUsername}</div>
-
 		</fieldset>
 	</div>
 
-	<div style="width: 33%; float:left; margin: .5%;">
-		<fieldset style="padding:5px;">
-			<legend><label style="font-weight: bold;">Bookmark index</label></legend>
-			<div class="ls-description">Instance-ID:</div><div class="ls-value">${bookmarksIndex.instance}</div>
+	<div class="indexProperties" id="bookmarkIndexProperties">
+		<fieldset>
+			<legend><label>Bookmark index</label></legend>
 			<div class="ls-description">containing docs:</div><div class="ls-value">${bookmarksIndex.numDocs}</div>
 			<div class="ls-description">deleted docs:</div><div class="ls-value">${bookmarksIndex.numDeletedDocs}</div>
-			<div class="ls-description">newest date:</div><div class="ls-value">${bookmarksIndex.newestDate}</div>
+			<div class="ls-description">newest date:</div><div class="ls-value">${bookmarksIndex.newestDateString}</div>
 			<div class="ls-description">last modified date:</div><div class="ls-value">${bookmarksIndex.lastModifiedString}</div>
 			<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${bookmarksIndex.currentVersionString}</div>
-			<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${bookmarksIndex.current} / 
-				<c:choose>
-					<c:when test="${bookmarksIndex.current}">
-						true
-					</c:when>
-					<c:otherwise>
-						false
-					</c:otherwise>
-				</c:choose>
-			</div>
-
+			<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${bookmarksIndex.current}</div>
 		</fieldset>
-	
+		<fieldset>
+			<legend><label>inactive</label></legend>
+			<div class="ls-description">containing docs:</div><div class="ls-value">${bookmarksIndex.numDocs}</div>
+			<div class="ls-description">deleted docs:</div><div class="ls-value">${bookmarksIndex.numDeletedDocs}</div>
+			<div class="ls-description">newest date:</div><div class="ls-value">${bookmarksIndex.newestDateString}</div>
+			<div class="ls-description">last modified date:</div><div class="ls-value">${bookmarksIndex.lastModifiedString}</div>
+			<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${bookmarksIndex.currentVersionString}</div>
+			<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${bookmarksIndex.current}</div>
+		</fieldset>
 	</div>
 
-	<div style="width: 33%; float:right; margin: .5%;">
-		<fieldset style="padding:5px;">
-			<legend><label style="font-weight: bold;">BibTex index</label></legend>
+	<div class="indexProperties" id="publicationIndexProperties">
+		<fieldset>
+			<legend><label>Publication index</label></legend>
 
-			<div class="ls-description">Instance-ID:</div><div class="ls-value">${publicationsIndex.instance}</div>
 			<div class="ls-description">containing docs:</div><div class="ls-value">${publicationsIndex.numDocs}</div>
 			<div class="ls-description">deleted docs:</div><div class="ls-value">${publicationsIndex.numDeletedDocs}</div>
-			<div class="ls-description">newest date:</div><div class="ls-value">${publicationsIndex.newestDate}</div>
+			<div class="ls-description">newest date:</div><div class="ls-value">${publicationsIndex.newestDateString}</div>
 			<div class="ls-description">last modified date:</div><div class="ls-value">${publicationsIndex.lastModifiedString}</div>
 			<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${publicationsIndex.currentVersionString}</div>
-			<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${publicationsIndex.current} / 
-				<c:choose>
-					<c:when test="${publicationsIndex.current}">
-						true
-					</c:when>
-					<c:otherwise>
-						false
-					</c:otherwise>
-				</c:choose>
-			</div>
+			<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${publicationsIndex.current}</div>
+		</fieldset>
+		<fieldset>
+			<legend><label>inactive</label></legend>
+
+			<div class="ls-description">containing docs:</div><div class="ls-value">${publicationsIndex.numDocs}</div>
+			<div class="ls-description">deleted docs:</div><div class="ls-value">${publicationsIndex.numDeletedDocs}</div>
+			<div class="ls-description">newest date:</div><div class="ls-value">${publicationsIndex.newestDateString}</div>
+			<div class="ls-description">last modified date:</div><div class="ls-value">${publicationsIndex.lastModifiedString}</div>
+			<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${publicationsIndex.currentVersionString}</div>
+			<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${publicationsIndex.current}</div>
 		</fieldset>
 
 	</div>
+	
+	<div class="indexProperties" id="publicationIndexProperties">
+		<fieldset>
+			<legend><label>Goldstandard Publication index</label></legend>
 
-	<div style="width: 33%; float:right; margin: .5%;">
-		<fieldset style="padding:5px;">
-			<legend><label style="font-weight: bold;">Gold-Standard index</label></legend>
-
-			<div class="ls-description">Instance-ID:</div><div class="ls-value">${goldstandardIndex.instance}</div>
 			<div class="ls-description">containing docs:</div><div class="ls-value">${goldstandardIndex.numDocs}</div>
 			<div class="ls-description">deleted docs:</div><div class="ls-value">${goldstandardIndex.numDeletedDocs}</div>
-			<div class="ls-description">newest date:</div><div class="ls-value">${goldstandardIndex.newestDate}</div>
+			<div class="ls-description">newest date:</div><div class="ls-value">${goldstandardIndex.newestDateString}</div>
 			<div class="ls-description">last modified date:</div><div class="ls-value">${goldstandardIndex.lastModifiedString}</div>
 			<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${goldstandardIndex.currentVersionString}</div>
-			<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${goldstandardIndex.current} / 
-				<c:choose>
-					<c:when test="${goldstandardIndex.current}">
-						true
-					</c:when>
-					<c:otherwise>
-						false
-					</c:otherwise>
-				</c:choose>
-			</div>
+			<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${goldstandardIndex.current}</div>
+		</fieldset>
+		<fieldset>
+			<legend><label>inactive</label></legend>
+
+			<div class="ls-description">containing docs:</div><div class="ls-value">${goldstandardIndex.numDocs}</div>
+			<div class="ls-description">deleted docs:</div><div class="ls-value">${goldstandardIndex.numDeletedDocs}</div>
+			<div class="ls-description">newest date:</div><div class="ls-value">${goldstandardIndex.newestDateString}</div>
+			<div class="ls-description">last modified date:</div><div class="ls-value">${goldstandardIndex.lastModifiedString}</div>
+			<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${goldstandardIndex.currentVersionString}</div>
+			<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${goldstandardIndex.current}</div>
 		</fieldset>
 
 	</div>

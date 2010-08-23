@@ -25,8 +25,12 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	private String luceneDataSourceUsername;
 
 	private LuceneIndexSettingsCommand bookmarksIndex = new LuceneIndexSettingsCommand();
+	private LuceneIndexSettingsCommand bookmarksIndex2 = new LuceneIndexSettingsCommand();
 	private LuceneIndexSettingsCommand publicationsIndex = new LuceneIndexSettingsCommand();
+	private LuceneIndexSettingsCommand publicationsIndex2 = new LuceneIndexSettingsCommand();
 	private LuceneIndexSettingsCommand goldstandardIndex = new LuceneIndexSettingsCommand();
+	private LuceneIndexSettingsCommand goldstandardIndex2 = new LuceneIndexSettingsCommand();
+
 
 
 	/**
@@ -161,6 +165,47 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	 */
 	public void setGoldstandardIndex(LuceneIndexSettingsCommand goldstandardIndex) {
 		this.goldstandardIndex = goldstandardIndex;
+	}
+	/**
+	 * @return the bookmarksIndex2
+	 */
+	public LuceneIndexSettingsCommand getBookmarksIndex2() {
+		return this.bookmarksIndex2;
+	}
+
+	/**
+	 * @param bookmarksIndex2 the bookmarksIndex2 to set
+	 */
+	public void setBookmarksIndex2(LuceneIndexSettingsCommand bookmarksIndex2) {
+		this.bookmarksIndex2 = bookmarksIndex2;
+	}
+
+	/**
+	 * @return the publicationsIndex2
+	 */
+	public LuceneIndexSettingsCommand getPublicationsIndex2() {
+		return this.publicationsIndex2;
+	}
+
+	/**
+	 * @param publicationsIndex2 the publicationsIndex2 to set
+	 */
+	public void setPublicationsIndex2(LuceneIndexSettingsCommand publicationsIndex2) {
+		this.publicationsIndex2 = publicationsIndex2;
+	}
+
+	/**
+	 * @return the goldstandardIndex2
+	 */
+	public LuceneIndexSettingsCommand getGoldstandardIndex2() {
+		return this.goldstandardIndex2;
+	}
+
+	/**
+	 * @param goldstandardIndex2 the goldstandardIndex2 to set
+	 */
+	public void setGoldstandardIndex2(LuceneIndexSettingsCommand goldstandardIndex2) {
+		this.goldstandardIndex2 = goldstandardIndex2;
 	}
 
 }

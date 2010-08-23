@@ -1,7 +1,7 @@
 package org.bibsonomy.webapp.command.admin;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 
@@ -16,21 +16,21 @@ public class LuceneIndexSettingsCommand {
 	private String instance;
 	private int numDocs;
 	private int numDeletedDocs;
-	private String newestDate;
-	private long lastModified;
-	private String lastModifiedString;
+	private Date newestDate;
+	private Date lastModified;
 	private long currentVersion;
 	private String currentVersionString;
 	private boolean isCurrent;
-	
+	private static SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
 	/**
 	 * @param indexStatistics
 	 */
 	public void setIndexStatistics (LuceneIndexStatistics indexStatistics){
 		setNumDocs(indexStatistics.getNumDocs());
 		setNumDeletedDocs(indexStatistics.getNumDeletedDocs());
-		setNewestDate(indexStatistics.getNewestRecordDate());
-		setLastModified(indexStatistics.getLastModified());
+		setNewestDate(new Date(indexStatistics.getNewestRecordDate()));
+		setLastModified(new Date(indexStatistics.getLastModified()));
 		setCurrentVersion(indexStatistics.getCurrentVersion());
 		setCurrent(indexStatistics.isCurrent());
 	}
@@ -52,15 +52,22 @@ public class LuceneIndexSettingsCommand {
 	/**
 	 * @return the newestDate
 	 */
-	public String getNewestDate() {
+	public Date getNewestDate() {
 		return this.newestDate;
 	}
 
 	/**
 	 * @param newestDate the newestDate to set
 	 */
-	public void setNewestDate(String newestDate) {
+	public void setNewestDate(Date newestDate) {
 		this.newestDate = newestDate;
+	}
+	
+	/**
+	 * @param newestDate the newestDate to set
+	 */
+	public String getNewestDateString() {
+		return dateformat.format(this.newestDate);
 	}
 
 	/**
@@ -94,17 +101,22 @@ public class LuceneIndexSettingsCommand {
 	/**
 	 * @return the lastModified
 	 */
-	public long getLastModified() {
+	public Date getLastModified() {
 		return this.lastModified;
 	}
-
+	
 	/**
 	 * @param lastModified the lastModified to set
 	 */
-	public void setLastModified(long lastModified) {
+	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss,S");
-		setLastModifiedString(df.format(lastModified));
+	}
+
+	/**
+	 * @return lastModified as a String
+	 */
+	public String getLastModifiedString() {
+		return dateformat.format(this.lastModified);
 	}
 
 	/**
@@ -119,8 +131,6 @@ public class LuceneIndexSettingsCommand {
 	 */
 	public void setCurrentVersion(long currentVersion) {
 		this.currentVersion = currentVersion;
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss,S");
-		setCurrentVersionString(df.format(lastModified));
 	}
 
 	/**
@@ -135,20 +145,6 @@ public class LuceneIndexSettingsCommand {
 	 */
 	public void setCurrent(boolean isCurrent) {
 		this.isCurrent = isCurrent;
-	}
-	
-	/**
-	 * @return the lastModifiedString
-	 */
-	public String getLastModifiedString() {
-		return this.lastModifiedString;
-	}
-
-	/**
-	 * @param lastModifiedString the lastModifiedString to set
-	 */
-	private void setLastModifiedString(String lastModifiedString) {
-		this.lastModifiedString = lastModifiedString;
 	}
 
 	/**
