@@ -337,6 +337,11 @@ public enum Views implements View {
 	LOGIN("actions/login"),
 	
 	/**
+	 * remote authentication
+	 */
+	REMOTE_AUTH("actions/remoteAuth"),
+	
+	/**
 	 * The dialog to EDIT a bookmark (big dialog).
 	 */
 	EDIT_BOOKMARK("actions/post/editBookmark"),

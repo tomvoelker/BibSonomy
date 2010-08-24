@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+  
+  <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+  <layout:layout 
+      loginUser="${command.context.loginUser}" 
+      searchString="hurz" 
+      pageTitle="${command.pageTitle}"
+      requPath="${requPath}">
+  
+        <jsp:attribute name="heading">
+          	<fmt:message key="actions.remoteauth.title"/>
+        </jsp:attribute>
+
+        
+        <jsp:attribute name="content">
+
+          	<div id="general">
+
+		   	<!-- show global error messages -->
+           	<errors:global errors="${errors}"/>  
+				
+				<p>
+					<fmt:message key="actions.remoteauth.page_requesting"/>
+				</p>
+				
+				<div class="einrueckung2"><span style="font-size:120%;font-weight:bold">${command.reqUrl}</span></div>
+				
+				<p>
+					<fmt:message key="actions.remoteauth.do_you_trust"/>
+				</p>
+				
+				<table width="100%" border="0">
+					<tr>
+						<td>
+							<a href="${command.authUrl}"><fmt:message key="actions.remoteauth.yes"/></a>
+						</td>
+						<td>
+							<a href="${command.reqUrl}"><fmt:message key="actions.remoteauth.no"/></a>
+						</td>
+					</tr>
+				</table>
+							
+			</div>
+      </jsp:attribute>
+      
+  </layout:layout>
+  
+</jsp:root>
