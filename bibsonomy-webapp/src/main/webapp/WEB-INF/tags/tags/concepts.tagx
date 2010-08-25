@@ -87,9 +87,14 @@
      	  			<!-- display subtags -->
 					<c:forEach var="subtag" items="${concept.subTags}">
 						<li class="box_lowerconcept">
+							<c:set var="subtagTitle">
+								<fmt:message key="tagrelations.showPostsForConcept.title.subtag">
+									<fmt:param>${subtag.name}</fmt:param>
+								</fmt:message>
+							</c:set>
 	    	    			<a style="font-size:${mtl:computeTagFontsize(subtag.usercount, maxCount, 'home')}%" 
 	    	    			   href="/${tagPath}/${fn:escapeXml(subtag.name)}" 
-	    	    			   title="${subtag.usercount}"><c:out value="${subtag.name}"/></a>
+	    	    			   title="${subtagTitle}"><c:out value="${subtag.name}"/></a>
 	          			</li>
 	          			<c:out value=" "/>
 					</c:forEach>
