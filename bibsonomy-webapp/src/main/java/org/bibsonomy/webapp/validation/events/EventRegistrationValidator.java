@@ -23,7 +23,7 @@ public class EventRegistrationValidator implements Validator<EventRegistrationCo
 		Assert.notNull(target);
 		if (!(target instanceof EventRegistrationCommand)) return;
 
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "event.name", "error.field.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "event.id", "error.field.required");
 
 		
 		final EventRegistrationCommand command = (EventRegistrationCommand) target;

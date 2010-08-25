@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+  	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:layout loginUser="${command.context.loginUser}"	searchString="hurz" pageTitle="${command.pageTitle}" requPath="${requPath}">
+
+		<jsp:attribute name="heading">
+      		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.register" /> :: <c:out value="${command.event.name}" /></a>
+    	</jsp:attribute>
+
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+		</jsp:attribute>
+
+		<jsp:attribute name="content">
+        
+      		<div id="general">
+      
+      			<errors:global errors="${errors}" />
+      			
+      			
+				<fmt:message var="saveChanges" key="settings.saveChanges" />
+				<fmt:message var="male" key="settings.male"/>
+				<fmt:message var="female" key="settings.female"/>
+
+				<h2><fmt:message key="events.registration.registered.success.registration" /></h2>
+				<fmt:message key="events.registration.registered.success.message" />
+				<p><a href="${fn:escapeXml(command.event.url)}"><c:out value="${command.event.name}" /></a>, <c:out value="${command.event.description}"/></p>
+       
+                <p>
+				<fmt:message key ="events.registration.registered.success.furtherInfo" />									
+				<ul>
+					<li><a href="${fn:escapeXml(command.event.url)}"><c:out value="${command.event.name}" /></a> Homepage</li>
+					<li><a href="/user/${fn:escapeXml(command.event.userName)}/${fn:escapeXml(command.event.id)}">Accepted Papers</a></li>	
+				</ul>
+				</p>
+
+	      </div>
+
+    	</jsp:attribute>
+    	
+    	<jsp:attribute name="beforeBodyClose">
+          <script type="text/javascript">
+             //<mtl:cdata>
+             <![CDATA[
+                // vanishing error boxes
+                $(document).ready( function(){
+						prepareErrorBoxes('dissError');
+                	}
+                );
+             ]]> 
+             //</mtl:cdata>
+          </script>
+       
+       </jsp:attribute>
+    	
+
+	</layout:layout>
+</jsp:root>

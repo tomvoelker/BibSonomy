@@ -414,6 +414,12 @@ public enum Views implements View {
 	 */
 	EVENT_REGISTRATION("events/registration"),
 	
+	
+	/**
+	 * shown after a user has registered successfully for an event
+	 */
+	EVENT_REGISTRATION_SUCCESS("events/registration_success"),
+	
 	/* *****************************************************
 	 * query independent views to show bookmark or 
 	 * publication lists

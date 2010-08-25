@@ -32,7 +32,7 @@
       			<errors:global errors="${errors}" />
       			
       			
-				<fmt:message var="saveChanges" key="settings.saveChanges" />
+				<fmt:message var="saveChanges" key="events.registration.registered" />
 				<fmt:message var="male" key="settings.male"/>
 				<fmt:message var="female" key="settings.female"/>
 
@@ -108,14 +108,10 @@
 				      </form:select>
 				      <div class="dissError"><form:errors path="profilePrivlevel" /></div>
 				    </div>
-		        	<div class="fsRow">
-		          		<input type="submit" class="fsFormSubmit" value="${saveChanges}"/>
-		          		<input type="hidden" name="ckey" value="${ckey}"/>
-		        	</div>
 				  </fieldset>
 
 
-				  <h2><fmt:message key="settings.generalInformation" /></h2>
+				  <h2><fmt:message key="events.registration.generalInformation" /></h2>
 		
 				  <fieldset class="fsInner">
 				  	<div class="fsRow">
@@ -125,6 +121,14 @@
 				    	<div class="dissError"><form:errors path="registered" /></div>
 				    </div>
 				    
+				    
+				    <div class="fsRow">
+                        <form:label cssClass="fsLabel" path="hasPoster"><fmt:message key="events.registration.registered.poster"/></form:label>
+                        <form:checkbox path="hasPoster" value="true"/>                     
+                        <div class="dissError"><form:errors path="registered" /></div>
+                    </div>
+				    
+				    
 				    <div class="fsRow">
 				    	<form:label cssClass="fsLabel" path="subEvent"><fmt:message key="events.registration.subEvent"/></form:label>
 				    	<form:radiobuttons items="${command.event.subEvents}" path="subEvent"/>
@@ -132,19 +136,21 @@
 				    </div>
 				    
 				    <div class="fsRow">
-				    	<form:label cssClass="fsLabel" path="subEvent"><fmt:message key="events.registration.address"/></form:label>
+				    	<form:label cssClass="fsLabel" path="address"><fmt:message key="events.registration.address"/></form:label>
 				    	<form:textarea cssClass="fsInput" path="address"/>
 				    	<div class="dissError"><form:errors path="address"/></div>
 				    </div>
+				    
+				    <p>
+				    <div class="fsRow">
+                        <input type="submit" class="fsFormSubmit" value="${saveChanges}"/>
+                        <input type="hidden" name="ckey" value="${ckey}"/>
+                    </div>
+                    </p>
 				  </fieldset>
 		
 		      </form:form>
 		
-				<ul>
-					<li><a href="${fn:escapeXml(command.event.url)}">homepage</a></li>
-					<li><a href="/user/${fn:escapeXml(command.event.userName)}/${fn:escapeXml(command.event.id)}">accepted papers</a></li>	
-				</ul>
-
 	      </div>
 
     	</jsp:attribute>

@@ -6,19 +6,19 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author rja
- * @version $Id$
+ * @version $Id: EventRegistrationCommand.java,v 1.1 2010-08-03 07:17:44 rja Exp
+ *          $
  */
 public class EventRegistrationCommand extends BaseCommand {
 
 	private Event event;
 	private User user;
 	private String profilePrivlevel;
-	
+
 	private boolean registered;
+	private boolean hasPoster;
 	private String subEvent;
 	private String address;
-	
-	
 
 	public Event getEvent() {
 		return this.event;
@@ -68,5 +68,12 @@ public class EventRegistrationCommand extends BaseCommand {
 		this.address = address;
 	}
 
-	
+	public boolean getHasPoster() {
+		return this.hasPoster;
+	}
+
+	public void setHasPoster(boolean poster) {
+		this.hasPoster = poster;
+	}
+
 }
