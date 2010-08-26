@@ -25,7 +25,6 @@ package org.bibsonomy.common.enums;
 
 import org.bibsonomy.util.EnumUtils;
 
-
 /**
  * Defines different possibilities of classifiers of a user
  * 
