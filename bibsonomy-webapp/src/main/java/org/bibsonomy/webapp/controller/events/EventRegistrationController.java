@@ -83,7 +83,7 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		 */
 		if (command.getRegistered()) {
 			try {
-			//TODO	eventManager.registerUser(loginUser, event, command.getSubEvent(), command.getAddress());
+			eventManager.registerUser(loginUser, event, command.getSubEvent(), command.getAddress());
 			} catch (final Exception e) {
 				// FIXME: handle case of already registered user!
 				errors.reject("events.error.registration", e.getMessage());
@@ -93,7 +93,7 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		/*
 		 * update user's profile / settings
 		 */
-		//TODO updateUserProfile(loginUser, command.getUser(), command.getProfilePrivlevel());
+		updateUserProfile(loginUser, command.getUser(), command.getProfilePrivlevel());
 		
 		/*
 		 * FIXME: redirect to success page

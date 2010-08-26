@@ -21,6 +21,7 @@ public class EventRegistrationValidator implements Validator<EventRegistrationCo
 	@Override
 	public void validate(Object target, Errors errors) {
 		Assert.notNull(target);
+		// TODO bib registration command
 		if (!(target instanceof EventRegistrationCommand)) return;
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "event.id", "error.field.required");
@@ -29,10 +30,18 @@ public class EventRegistrationValidator implements Validator<EventRegistrationCo
 		final EventRegistrationCommand command = (EventRegistrationCommand) target;
 
 		/*
-		 * required fields
+		 * Bibsonomy info - required fields
 		 */
+		ValidationUtils.rejectIfEmpty(errors, "user.institution", "error.field.required");
+		ValidationUtils.rejectIfEmpty(errors, "user.email", "error.field.required");
+		//ValidationUtils.rejectIfEmpty(errors, "user.realname", "error.field.required");
+				
+		/*
+		 * Registration required fields
+		 */
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "badgename", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "address", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "subEvent", "error.field.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "subEvent", "error.field.required");		
 		
 		if (!command.getRegistered()) errors.rejectValue("registered", "error.field.required"); // FIXME: own message!
 	}

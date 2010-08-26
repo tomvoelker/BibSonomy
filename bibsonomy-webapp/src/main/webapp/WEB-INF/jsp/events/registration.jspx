@@ -87,7 +87,8 @@
 				    </div>
 		  	        <div class="fsRow">
 				      <form:label cssClass="fsLabel" path="user.institution"><fmt:message key="user.institution"/></form:label>
-				      <form:input cssClass="fsInput" path="user.institution"/>		        
+				      <form:input cssClass="fsInput" path="user.institution"/>
+				      <div class="dissError"><form:errors path="user.institution" /></div>	        
 				    </div>
 
 				    <div class="fsRow">
@@ -111,6 +112,14 @@
 				  </fieldset>
 
 
+                 <p>
+                 Bei der LWA planen wir ein Experiment mit RFID-Tags, um die Interaktionen zu steigern, und Ihnen
+                 auf der Konferenz hilfreiche Informationen und Inhalte kontextsensitiv zur Verfügung zu stellen.
+                 <br /> 
+                 Bitte füllen Sie möglichst viele der obigen Felder aus, damit unsere Conferator-Anwendung lebendig wird.
+                 Sie können die Einträge über <a href="http://www.bibsonomy.org">BibSonomy</a> jederzeit ändern oder löschen.
+                 </p>
+
 				  <h2><fmt:message key="events.registration.generalInformation" /></h2>
 		
 				  <fieldset class="fsInner">
@@ -121,13 +130,25 @@
 				    	<div class="dissError"><form:errors path="registered" /></div>
 				    </div>
 				    
-				    
+				    <div class="fsRow">
+                      <form:label cssClass="fsLabel" path="badgename"><fmt:message key="events.registration.registered.badgename"/></form:label>
+                      <form:input cssClass="fsInput" path="badgename"/>
+                      <div class="dissError"><form:errors path="badgename" /></div>
+                    </div>
+                    
 				    <div class="fsRow">
                         <form:label cssClass="fsLabel" path="hasPoster"><fmt:message key="events.registration.registered.poster"/></form:label>
-                        <form:checkbox path="hasPoster" value="true"/>                     
-                        <div class="dissError"><form:errors path="registered" /></div>
+                        <form:checkbox path="hasPoster" value="true"/>
+                        <fmt:message key="events.registration.registered.poster.explanation"/>                     
+                        <div class="dissError"><form:errors path="hasPoster" /></div>
                     </div>
 				    
+				    <div class="fsRow">
+                        <form:label cssClass="fsLabel" path="isPresenter"><fmt:message key="events.registration.registered.presenter"/></form:label>
+                        <form:checkbox path="isPresenter" value="false"/>
+                        <fmt:message key="events.registration.registered.presenter.explanation"/>                    
+                        <div class="dissError"><form:errors path="isPresenter" /></div>
+                    </div>
 				    
 				    <div class="fsRow">
 				    	<form:label cssClass="fsLabel" path="subEvent"><fmt:message key="events.registration.subEvent"/></form:label>

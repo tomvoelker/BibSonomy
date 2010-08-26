@@ -31,7 +31,10 @@
 								<value>user.institution</value>
 								<value>user.interests</value>
 								<value>user.hobbies</value>
+								<value>badgename</value>
 								<value>ckey</value>
+								<value>hasPoster</value>
+								<value>isPresenter</value>
 								<value>profilePrivlevel</value>
 								<value>registered</value>
 								<value>subEvent</value>

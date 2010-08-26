@@ -15,7 +15,9 @@ public class EventRegistrationCommand extends BaseCommand {
 	private User user;
 	private String profilePrivlevel;
 
+	private String badgename;
 	private boolean registered;
+	private boolean isPresenter;
 	private boolean hasPoster;
 	private String subEvent;
 	private String address;
@@ -74,6 +76,22 @@ public class EventRegistrationCommand extends BaseCommand {
 
 	public void setHasPoster(boolean poster) {
 		this.hasPoster = poster;
+	}
+
+	public String getBadgename() {
+		return this.badgename;
+	}
+
+	public void setBadgename(String badgename) {
+		this.badgename = badgename;
+	}
+
+	public boolean getIsPresenter() {
+		return this.isPresenter;
+	}
+
+	public void setPresenter(boolean isPresenter) {
+		this.isPresenter = isPresenter;
 	}
 
 }
