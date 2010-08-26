@@ -9,6 +9,9 @@ public class RegistrationParam {
 	private Event event;
 	private String subEvent;
 	private String address;
+	private String badgename;
+	private boolean isPresenter;
+	private boolean hasPoster;
 	
 	public User getUser() {
 		return user;
@@ -33,6 +36,24 @@ public class RegistrationParam {
 	}
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	public String getBadgename() {
+	    return badgename;
+	}
+	public void setBadgename(String badgename) {
+	    this.badgename = badgename;
+	}
+	public boolean getIsPresenter() {
+	    return isPresenter;
+	}
+	public void setPresenter(boolean isPresenter) {
+	    this.isPresenter = isPresenter;
+	}
+	public boolean isHasPoster() {
+	    return hasPoster;
+	}
+	public void setHasPoster(boolean hasPoster) {
+	    this.hasPoster = hasPoster;
 	}
 
 	
