@@ -3,6 +3,12 @@ package org.bibsonomy.events.model;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 
+ * @author rja
+ *
+ */
+
 public class Event {
 
     private String id;
