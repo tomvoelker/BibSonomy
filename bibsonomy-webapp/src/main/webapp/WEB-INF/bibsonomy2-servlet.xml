@@ -86,17 +86,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>
-				<entry key="/picture">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="pictureController"/>
-						<property name="allowedFields">
-							<list>
-								<value>requestedUser</value>
-							</list>
-						</property>
-					</bean>
-				</entry>		
+				</entry>	
 				<entry key="/relations">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userRelationsController"/>
@@ -358,11 +348,6 @@
 			</list>
 		</property>
 	</bean>
-	
-	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">
-		<property name="path" value="${project.picture.path}"/>
-		<property name="adminLogic" ref="adminLogic"/>
-	</bean>		
 	
 	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request">
 		<property name="logic" ref="logic"/>

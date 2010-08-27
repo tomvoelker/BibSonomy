@@ -112,7 +112,7 @@
 					   </c:if>
   				    </table>
 	  				<!--foto-->
-	  				<img style="clear:both;" src="/picture/user/${command.user.name}"/>
+	  				<img style="clear:both;" src="/picture/user/${fn:escapeXml(command.user.name)}"/> 
 
 				</div>
 			</c:if>
