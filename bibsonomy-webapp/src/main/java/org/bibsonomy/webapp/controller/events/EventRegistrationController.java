@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.events.model.Event;
+import org.bibsonomy.events.model.ParticipantDetails;
 import org.bibsonomy.events.services.EventManager;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -28,7 +29,8 @@ import org.springframework.validation.Errors;
  * Allows users to register for a conference.
  * 
  * @author rja
- * @version $Id$
+ * @version $Id: EventRegistrationController.java,v 1.5 2010-08-26 18:17:01 mat
+ *          Exp $
  */
 public class EventRegistrationController implements ErrorAware, ValidationAwareController<EventRegistrationCommand> {
 
@@ -45,9 +47,9 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		 * users must be logged in to register for an event
 		 */
 		if (!context.isUserLoggedIn()) {
-			return new ExtendedRedirectView("/login?notice=login.notice.events&referer=/events/register/" + UrlUtils.safeURIEncode(command.getEvent().getId())); 
+			return new ExtendedRedirectView("/login?notice=login.notice.events&referer=/events/register/" + UrlUtils.safeURIEncode(command.getEvent().getId()));
 		}
-		
+
 		/*
 		 * we have a logged in user now. :-) --> get current user
 		 */
@@ -55,35 +57,37 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 
 		final Event event = eventManager.getEvent(command.getEvent().getId());
 		if (!present(event)) {
-			throw new MalformedURLSchemeException("The event " + command.getEvent().getId() + " does not exist."); // FIXME: own message?
+			throw new MalformedURLSchemeException("The event " + command.getEvent().getId() + " does not exist."); // FIXME:
+			// own
+			// message?
 		}
-		
+
 		log.info("got event " + event);
 		command.setEvent(event);
 
-		
 		if (!context.isValidCkey()) {
 			/*
-			 * heuristic: no ckey given -> user visits the page the first time -> 
-			 * put him into the command and show him the page
+			 * heuristic: no ckey given -> user visits the page the first time
+			 * -> put him into the command and show him the page
 			 */
 			command.setUser(loginUser);
 			return Views.EVENT_REGISTRATION;
 		}
-		
+
 		/*
-		 * FIXME: field length validation (like in UpdateUserController) missing!
+		 * FIXME: field length validation (like in UpdateUserController)
+		 * missing!
 		 */
 		if (errors.hasErrors()) {
 			return Views.EVENT_REGISTRATION;
 		}
-		
+
 		/*
 		 * register user for the event
 		 */
 		if (command.getRegistered()) {
 			try {
-			eventManager.registerUser(loginUser, event, command.getSubEvent(), command.getAddress());
+				eventManager.registerUser(loginUser, event, command.getParticipantDetails());
 			} catch (final Exception e) {
 				// FIXME: handle case of already registered user!
 				errors.reject("events.error.registration", e.getMessage());
@@ -94,15 +98,20 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		 * update user's profile / settings
 		 */
 		updateUserProfile(loginUser, command.getUser(), command.getProfilePrivlevel());
-		
+
 		/*
 		 * FIXME: redirect to success page
 		 */
 		return Views.EVENT_REGISTRATION_SUCCESS;
 	}
 
+	private boolean isNonEmpty(String test) {
+		return (test != null) && (test != "");
+	}
+
 	/**
 	 * updates the the profile settings of a user
+	 * 
 	 * @param user
 	 * @param command
 	 */
@@ -110,21 +119,25 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		user.setRealname(commandUser.getRealname());
 		user.setGender(commandUser.getGender());
 		user.setBirthday(commandUser.getBirthday());
-		
-		user.setEmail(commandUser.getEmail());
+
+		if (isNonEmpty(commandUser.getEmail())) {
+			user.setEmail(commandUser.getEmail());
+		}
 		user.setHomepage(commandUser.getHomepage());
 		user.setProfession(commandUser.getProfession());
-		user.setInstitution(commandUser.getInstitution());
+		if (isNonEmpty(commandUser.getInstitution())) {
+			user.setInstitution(commandUser.getInstitution());
+		}
 		user.setInterests(commandUser.getInterests());
 		user.setHobbies(commandUser.getHobbies());
 		user.setPlace(commandUser.getPlace());
-		
+
 		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.getProfilePrivlevel(profilePrivlevel));
-		
+
 		logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
 		log.debug("updated profile for user " + user.getName());
 	}
-	
+
 	@Override
 	public Errors getErrors() {
 		return errors;
@@ -150,6 +163,7 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		final EventRegistrationCommand command = new EventRegistrationCommand();
 		command.setEvent(new Event());
 		command.setUser(new User());
+		command.setParticipantDetails(new ParticipantDetails());
 		return command;
 	}
 
@@ -159,7 +173,7 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 	public LogicInterface getLogic() {
 		return this.logic;
 	}
- 
+
 	/**
 	 * The logic interface to be used to access the data base.
 	 * 
