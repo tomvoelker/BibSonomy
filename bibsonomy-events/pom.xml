@@ -26,18 +26,8 @@
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-database-common</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.mockejb</groupId>
-			<artifactId>mockejb</artifactId>
-			<version>0.6-beta2</version>
-			<scope>test</scope>
 		</dependency>		
 <!--		<dependency>-->
 <!--			<groupId>postgresql</groupId>-->
@@ -46,6 +36,13 @@
 <!--			<type>jar</type>-->
 <!--			<scope>compile</scope>-->
 <!--		</dependency>-->
+     <dependency>
+        <groupId>com.googlecode.json-simple</groupId>
+        <artifactId>json-simple</artifactId>
+        <version>1.1</version>
+        <type>jar</type>
+        <scope>compile</scope>
+     </dependency>
 	</dependencies>
 	
 	<build>
