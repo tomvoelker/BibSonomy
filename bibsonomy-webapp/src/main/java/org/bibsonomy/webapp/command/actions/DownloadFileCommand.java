@@ -9,7 +9,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @author cvo
  * @version $Id$
  */
-public class DownloadFileCommand extends BaseCommand implements Serializable {
+public class DownloadFileCommand extends BaseCommand implements Serializable, DownloadCommand {
 	private static final long serialVersionUID = 5650155398969930691L;
 
 	/**
@@ -62,12 +62,13 @@ public class DownloadFileCommand extends BaseCommand implements Serializable {
 	 * 
 	 * @return content type
 	 */
+	@Override
 	public String getContentType() {
 		return this.contentType;
 	}
 
+	
 	/**
-	 * 
 	 * @param contentType
 	 */
 	public void setContentType(String contentType) {
@@ -75,9 +76,9 @@ public class DownloadFileCommand extends BaseCommand implements Serializable {
 	}
 
 	/**
-	 * 
-	 * @return path to file
+	 * @return path to the file
 	 */
+	@Override
 	public String getPathToFile() {
 		return this.pathToFile;
 	}
@@ -110,6 +111,7 @@ public class DownloadFileCommand extends BaseCommand implements Serializable {
 	 * 
 	 * @return filename of the requested file
 	 */
+	@Override
 	public String getFilename() {
 		return this.filename;
 	}

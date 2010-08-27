@@ -59,6 +59,13 @@ public class RequestLogic {
 	}
 
 	/**
+	 * @return the method of the request
+	 */
+	public String getMethod() {
+		return request.getMethod();
+	}
+	
+	/**
 	 * @return The inet address of the requesting host. Since the system 
 	 * typically runs behind a proxy, this is NOT the host address, but 
 	 * rather the contents of the x-forwarded-for header. This also contains

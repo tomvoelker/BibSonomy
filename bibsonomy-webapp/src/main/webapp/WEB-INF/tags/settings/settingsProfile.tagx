@@ -139,7 +139,7 @@
       
       
       <!-- picture settings-->
-      <form:form id="settingImportForm" action="uploadPicture?ckey=${ckey}" method="post" enctype="multipart/form-data">
+      <form:form id="settingImportForm" action="/picture/user/${fn:escapeXml(command.user.name)}?ckey=${ckey}" method="post" enctype="multipart/form-data">
 		<h2>
 			<fmt:message key="settings.picture.header" >
         		<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
@@ -150,7 +150,7 @@
     	  <fieldset class="fsInner">
     	  	<div class ="fsRow">
     	  	<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.current"/></form:label>
-				<img style="clear:both;" src="/picture/user/${command.user.name}"/>
+				<img style="clear:both;" src="/picture/user/${fn:escapeXml(command.user.name)}"/>
 			</div>
     	  
     	  	<div class="fsRow">

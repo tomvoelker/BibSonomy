@@ -12,7 +12,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.webapp.command.actions.DownloadCommand;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -23,6 +25,7 @@ import org.springframework.web.servlet.view.AbstractView;
  * @version $Id$
  */
 public class DocumentDownloadView extends AbstractView{
+	private static final Log log = LogFactory.getLog(DocumentDownloadView.class);
 
 	@SuppressWarnings("rawtypes")
 	@Override
@@ -30,12 +33,12 @@ public class DocumentDownloadView extends AbstractView{
 		
 		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
 		
-		if (object instanceof DownloadFileCommand) {
+		if (object instanceof DownloadCommand) {
 			
 			/*
 			 * command object
 			 */
-			final DownloadFileCommand command = (DownloadFileCommand)object;
+			final DownloadCommand command = (DownloadCommand)object;
 			
 			/*
 			 * file to stream
@@ -65,6 +68,8 @@ public class DocumentDownloadView extends AbstractView{
 				output.close();
 				if (buf != null) buf.close();
 			}
-		}		
+		} else {
+			log.warn("Command is not instanceof DownloadCommand, do nothing");
+		}
 	}
 }
