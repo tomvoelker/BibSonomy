@@ -10,6 +10,7 @@ public class RegistrationParam {
 	private String subEvent;
 	private String address;
 	private String badgename;
+	private String badgeInstitutionName;
 	private boolean isPresenter;
 	private boolean hasPoster;
 	
@@ -54,6 +55,12 @@ public class RegistrationParam {
 	}
 	public void setHasPoster(boolean hasPoster) {
 	    this.hasPoster = hasPoster;
+	}
+	public String getBadgeInstitutionName() {
+	    return badgeInstitutionName;
+	}
+	public void setBadgeInstitutionName(String badgeInstitutionName) {
+	    this.badgeInstitutionName = badgeInstitutionName;
 	}
 
 	
