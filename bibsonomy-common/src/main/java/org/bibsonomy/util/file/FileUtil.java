@@ -88,5 +88,17 @@ public class FileUtil {
 			return m.group(2).toLowerCase();
 		return "";
 	}
+	
+	/**
+	 * Constructs the directory path of the file
+	 * 
+	 * @param filePath 
+	 * @param fileHash
+	 * @return The directory of the file
+	 */
+	public static String getFileDir(final String filePath, final String fileHash) {
+		String test = filePath + fileHash.substring(0, 2) + "/";
+		return test;
+	}
 
 }
