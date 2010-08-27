@@ -43,6 +43,11 @@ public interface FileUploadInterface {
 	public static final String[] fileUploadExt = { "pdf", "ps", "djv", "djvu", "txt" };
 	
 	/**
+	 * png, jpg extensions
+	 */
+	public static final String[] pictureExt = { "png", "jpg" };
+	
+	/**
 	 * layout defintion extension
 	 */
 	public static final String[] fileLayoutExt = { "layout" };
