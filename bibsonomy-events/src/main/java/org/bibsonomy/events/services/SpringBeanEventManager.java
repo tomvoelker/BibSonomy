@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Map;
 
 import org.bibsonomy.events.model.Event;
+import org.bibsonomy.events.model.ParticipantDetails;
 import org.bibsonomy.model.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -13,6 +14,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * Reads the events from a Spring configured bean in form of a String->Event map.
  * 
  * @author rja
+ * @author mat
  *
  */
 public class SpringBeanEventManager implements EventManager {
@@ -81,7 +83,7 @@ public class SpringBeanEventManager implements EventManager {
 	}
 
 	@Override
-	public void registerUser(User user, Event event, String subEvent, String address) {
+	public void registerUser(User user, Event event, ParticipantDetails participantDetails) {
 		throw new UnsupportedOperationException();
 	}
 

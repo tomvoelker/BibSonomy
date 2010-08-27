@@ -3,6 +3,7 @@ package org.bibsonomy.events.services;
 import java.util.List;
 
 import org.bibsonomy.events.model.Event;
+import org.bibsonomy.events.model.ParticipantDetails;
 import org.bibsonomy.model.User;
 
 /**
@@ -14,6 +15,7 @@ import org.bibsonomy.model.User;
  * 
  * 
  * @author rja
+ * @author mat
  *
  */
 public class EventManagerProxy implements EventManager {
@@ -41,10 +43,10 @@ public class EventManagerProxy implements EventManager {
 	}
 
 	@Override
-	public void registerUser(User user, Event event, String subEvent, String address) {
+	public void registerUser(User user, Event event, ParticipantDetails participantDetails) {
 		for (final EventManager eventManager : eventManagers) {
 			try {
-				eventManager.registerUser(user, event, subEvent, address);
+				eventManager.registerUser(user, event, participantDetails);
 				return;
 			} catch (UnsupportedOperationException e) {
 				// try next event manager in list

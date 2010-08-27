@@ -1,12 +1,14 @@
 package org.bibsonomy.events.services;
 
 import org.bibsonomy.events.model.Event;
+import org.bibsonomy.events.model.ParticipantDetails;
 import org.bibsonomy.model.User;
 
 /**
  * The manager is responsible for registering, querying, removing, etc. events.
  * 
  * @author rja
+ * @author mat
  *
  */
 public interface EventManager {
@@ -28,5 +30,5 @@ public interface EventManager {
 	 * @param event
 	 * @param subEvent
 	 */
-	public void registerUser(final User user, final Event event, final String subEvent, final String address);
+	public void registerUser(final User user, final Event event, final ParticipantDetails participantDetails);
 }
