@@ -45,7 +45,7 @@ public class LuceneGoldStandardPublicationManager extends LuceneResourceManager<
 	protected void updateIndexes() {
 		synchronized(this) {
 			// set the active resource index
-			this.resourceIndex = this.resourceIndeces.get(idxSelect);
+			this.resourceIndex = this.resourceIndices.get(idxSelect);
 			
 			final Date now = new Date();
 			final long lastDateLong = this.resourceIndex.getLastDate();

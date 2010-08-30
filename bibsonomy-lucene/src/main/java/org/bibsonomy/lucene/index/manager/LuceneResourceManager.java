@@ -48,7 +48,7 @@ public class LuceneResourceManager<R extends Resource> {
 	protected LuceneResourceIndex<R> resourceIndex;
 
 	/** redundant resource indeces */ 
-	protected List<LuceneResourceIndex<R>> resourceIndeces;
+	protected List<LuceneResourceIndex<R>> resourceIndices;
 	
 	/** the database manager */
 	protected LuceneDBInterface<R> dbLogic;
@@ -93,8 +93,8 @@ public class LuceneResourceManager<R extends Resource> {
 	 * Get statistics for the active index
 	 * @return LuceneIndexStatistics for the active index 
 	 */
-	public synchronized LuceneIndexStatistics getStatistics() {
-		LuceneResourceIndex<? extends Resource> index = this.resourceIndeces.get(idxSelect);
+	public LuceneIndexStatistics getStatistics() {
+		LuceneResourceIndex<? extends Resource> index = this.resourceIndices.get(idxSelect);
 		
 		if(index != null) {
 		    return index.getStatistics();
@@ -104,17 +104,17 @@ public class LuceneResourceManager<R extends Resource> {
 	}
 	
 	/**
-	 * Get statistics for the active index
-	 * @return LuceneIndexStatistics for the active index 
+	 * Get statistics for the inactive index
+	 * @return LuceneIndexStatistics for the inactive index 
 	 */
-	public synchronized LuceneIndexStatistics getInactiveIndexStatistics() {
-		LuceneResourceIndex<? extends Resource> index = this.resourceIndeces.get((idxSelect+1)%2);
+	public LuceneIndexStatistics getInactiveIndexStatistics() {
+		LuceneResourceIndex<? extends Resource> index = this.resourceIndices.get((idxSelect+1)%2);
 		
-		if(index != null) {
-		    return index.getStatistics();
-		} else {
-			return null;
-		}
+    		if(index != null) {
+    		    return index.getStatistics();
+    		} else {
+    			return null;
+    		}
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class LuceneResourceManager<R extends Resource> {
 			//  0) initialize variables  
 			//----------------------------------------------------------------
 			// set the active resource index
-			this.resourceIndex = this.resourceIndeces.get(idxSelect);
+			this.resourceIndex = this.resourceIndices.get(idxSelect);
 			
 			// current time stamp for storing as 'lastLogDate' in the index
 			// FIXME: get this date from the log_table via 'getContentIdsToDelete'
@@ -238,7 +238,7 @@ public class LuceneResourceManager<R extends Resource> {
 
 		// do the actual work
 		final int oldIdxId = this.searcher.getIndexId();
-		final int newIdxId = this.resourceIndeces.get(idxSelect).getIndexId();
+		final int newIdxId = this.resourceIndices.get(idxSelect).getIndexId();
 		log.debug("switching from index "+oldIdxId+" to index "+newIdxId);
 		searcher.reloadIndex(newIdxId);
 		log.debug("reload search index done");
@@ -289,7 +289,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 */
 	public void updateAndReloadIndex() {
 		// switch active index
-		this.idxSelect = (idxSelect + 1) % this.resourceIndeces.size();
+		this.idxSelect = (idxSelect + 1) % this.resourceIndices.size();
 
 		// update passive index
 		updateIndex();
@@ -303,7 +303,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 * reopen index reader - e.g. after the index has changed on the disc
 	 */
 	public void resetIndexReader() {
-		for( final LuceneResourceIndex<R> index : this.resourceIndeces ) {
+		for( final LuceneResourceIndex<R> index : this.resourceIndices ) {
 			index.reset();
 		}
 	}
@@ -448,13 +448,13 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @return the resourceIndeces
 	 */
 	public List<LuceneResourceIndex<R>> getResourceIndeces() {
-		return resourceIndeces;
+		return resourceIndices;
 	}
 
 	/**
 	 * @param resourceIndeces the resourceIndeces to set
 	 */
 	public void setResourceIndeces(final List<LuceneResourceIndex<R>> resourceIndeces) {
-		this.resourceIndeces = resourceIndeces;
+		this.resourceIndices = resourceIndeces;
 	}
 }
