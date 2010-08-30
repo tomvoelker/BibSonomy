@@ -27,7 +27,7 @@ import org.jasypt.util.text.BasicTextEncryptor;
 public class RemoteAuthController implements MinimalisticController<RemoteAuthCommand>, RequestAware {
 
 	private static final Log LOGGER = LogFactory.getLog(RemoteAuthController.class);
-	
+		
 	/** logic to access request information */
 	private RequestLogic requestLogic;
 	/** preshared key for encryption */
@@ -59,7 +59,9 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 		crypt.setPassword(this.generatePassword());
 		final String authData = "USER:" + command.getContext().getLoginUser().getName() + 
 							    " " + 
-							    "PWDHASH:" + command.getContext().getLoginUser().getPassword();
+							    "APIKEY:" + command.getContext().getLoginUser().getApiKey() + 
+							    " " + 
+							    "TIME:" + System.currentTimeMillis();
 		final String authKey = UrlUtils.safeURIEncode(crypt.encrypt(authData));
 		final String authUrl = UrlUtils.setParam(reqUrl, "authKey", authKey);
 		command.setAuthUrl(authUrl);
@@ -101,11 +103,11 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 	 * @return - the generated password
 	 */
 	private String generatePassword() {
-		LOGGER.debug("Creating password based on IP " + requestLogic.getHostInetAddress() + ", user agent " + requestLogic.getUserAgent());
+		System.out.println("******* Creating password based on IP " + requestLogic.getHostInetAddress() + ", user agent " + requestLogic.getUserAgent() + ", priv key is " + this.getCryptKey());
 		String base = requestLogic.getHostInetAddress() +
 					  requestLogic.getUserAgent() + 
 					  this.getCryptKey();
-		LOGGER.debug("Password is: " + StringUtils.getMD5Hash(base));
+		System.out.println("******** Password is: " + StringUtils.getMD5Hash(base));
 		return StringUtils.getMD5Hash(base);
 	}
 
