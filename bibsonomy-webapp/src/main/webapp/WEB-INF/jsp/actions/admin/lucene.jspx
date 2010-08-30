@@ -25,8 +25,8 @@
 		loginUser="${command.context.loginUser}"
 		requPath="">
 		<jsp:attribute name="heading">
-			<a href="/?filter=no">${projectName} all</a> :: <a rel="path_menu"
-				href="/admin_lucene"><fmt:message key="navi.admin_lucene" /></a>
+		    <a href="/admin"><fmt:message key="navi.admin"/></a> ::
+			<a rel="path_menu" href="/admin/lucene">Lucene</a>
 		</jsp:attribute>
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css"
