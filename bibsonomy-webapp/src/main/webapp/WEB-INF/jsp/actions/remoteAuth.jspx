@@ -51,6 +51,13 @@
 						</td>
 					</tr>
 				</table>
+				
+				<p>
+					<fmt:message key="actions.remoteauth.validity">
+						<fmt:param>${command.ip}</fmt:param>
+						<fmt:param>${command.validPeriod}</fmt:param>
+					</fmt:message>					
+				</p>
 							
 			</div>
       </jsp:attribute>

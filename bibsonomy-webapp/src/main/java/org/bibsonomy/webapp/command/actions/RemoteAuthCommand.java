@@ -15,11 +15,22 @@ public class RemoteAuthCommand extends BaseCommand {
 	
 	/**	the URL to the remote host requesting authentication */
 	private String reqUrl;
-		
+	
+	/** the IP for which the auth-key is valid */
+	private String ip;
+	
+	/** the nr. of minutes this authKey is valid */
+	private int validPeriod;
+			
+	// ----------------------------------------------------------
+	// getter - setter
+	// ---------------------------------------------------------
+
 	public void setAuthUrl(String authUrl) {
 		this.authUrl = authUrl;
-	}
 
+	}	
+	
 	public String getAuthUrl() {
 		return authUrl;
 	}
@@ -31,5 +42,21 @@ public class RemoteAuthCommand extends BaseCommand {
 	public String getReqUrl() {
 		return reqUrl;
 	}
+	
+	public String getIp() {
+		return this.ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public int getValidPeriod() {
+		return this.validPeriod;
+	}
+
+	public void setValidPeriod(int validPeriod) {
+		this.validPeriod = validPeriod;
+	}	
 	
 }

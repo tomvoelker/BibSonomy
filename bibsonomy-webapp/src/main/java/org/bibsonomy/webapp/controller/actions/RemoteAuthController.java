@@ -27,6 +27,9 @@ import org.jasypt.util.text.BasicTextEncryptor;
 public class RemoteAuthController implements MinimalisticController<RemoteAuthCommand>, RequestAware {
 
 	private static final Log LOGGER = LogFactory.getLog(RemoteAuthController.class);
+	
+	/** nr. of minutes the generated key is valid */
+	private static final int KEY_VALIDITY = 20;
 		
 	/** logic to access request information */
 	private RequestLogic requestLogic;
@@ -70,6 +73,8 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 		 * set remaining parameters
 		 */
 		command.setPageTitle("Remote Authentication");
+		command.setIp(requestLogic.getHostInetAddress());
+		command.setValidPeriod(KEY_VALIDITY);
 		
 		/*
 		 * return view
