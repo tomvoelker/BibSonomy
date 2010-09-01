@@ -12,7 +12,8 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author ema
- * @version $Id$
+ * @version $Id: GetFriendsForUserStrategy.java,v 1.1 2010-09-01 08:36:22 ema
+ *          Exp $
  */
 public class GetFriendsForUserStrategy extends AbstractGetListStrategy<List<User>> {
 
@@ -32,7 +33,7 @@ public class GetFriendsForUserStrategy extends AbstractGetListStrategy<List<User
 
 		this.userName = userName;
 		relation = context.getStringAttribute(ATTRIBUTE_KEY_RELATION, DEFAULT_ATTRIBUTE_VALUE_RELATION);
-		if (relation == null || (!relation.equals(INCOMING_ATTRIBUTE_VALUE_RELATION) && !relation.equals(INCOMING_ATTRIBUTE_VALUE_RELATION))) {
+		if (relation == null || !(relation.equals(INCOMING_ATTRIBUTE_VALUE_RELATION) || relation.equals(OUTGOING_ATTRIBUTE_VALUE_RELATION))) {
 			relation = DEFAULT_ATTRIBUTE_VALUE_RELATION;
 		}
 	}
