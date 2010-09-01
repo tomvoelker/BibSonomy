@@ -58,6 +58,7 @@ import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
 import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
+import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
@@ -115,11 +116,12 @@ public class RestLogic implements LogicInterface {
 	}
 
 	public void deletePosts(final String userName, final List<String> resourceHashes) {
-		/* 
-		 * FIXME: this iteration should be done on the server, i.e., DeletePostQuery should 
-		 * support several posts ... although it's probably not so simple.
-		 */ 		
-		for (final String resourceHash: resourceHashes) {
+		/*
+		 * FIXME: this iteration should be done on the server, i.e.,
+		 * DeletePostQuery should support several posts ... although it's
+		 * probably not so simple.
+		 */
+		for (final String resourceHash : resourceHashes) {
 			execute(new DeletePostQuery(userName, resourceHash));
 		}
 	}
@@ -179,12 +181,13 @@ public class RestLogic implements LogicInterface {
 	}
 
 	public List<String> createPosts(final List<Post<?>> posts) {
-		/* 
-		 * FIXME: this iteration should be done on the server, i.e., CreatePostQuery should 
-		 * support several posts ... although it's probably not so simple.
-		 */ 
+		/*
+		 * FIXME: this iteration should be done on the server, i.e.,
+		 * CreatePostQuery should support several posts ... although it's
+		 * probably not so simple.
+		 */
 		final List<String> resourceHashes = new LinkedList<String>();
-		for (final Post<?> post: posts) {
+		for (final Post<?> post : posts) {
 			resourceHashes.add(execute(new CreatePostQuery(this.authUser.getName(), post)));
 		}
 		return resourceHashes;
@@ -200,12 +203,13 @@ public class RestLogic implements LogicInterface {
 	}
 
 	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
-		/* 
-		 * FIXME: this iteration should be done on the server, i.e., CreatePostQuery should 
-		 * support several posts ... although it's probably not so simple.
-		 */ 
+		/*
+		 * FIXME: this iteration should be done on the server, i.e.,
+		 * CreatePostQuery should support several posts ... although it's
+		 * probably not so simple.
+		 */
 		final List<String> resourceHashes = new LinkedList<String>();
-		for (final Post<?> post: posts) {
+		for (final Post<?> post : posts) {
 			// hashes are recalculated by the server
 			resourceHashes.add(execute(new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post)));
 		}
@@ -228,7 +232,7 @@ public class RestLogic implements LogicInterface {
 
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		/*
-		 * FIXME: files are stored in /tmp and thus publicly readable! Make 
+		 * FIXME: files are stored in /tmp and thus publicly readable! Make
 		 * directory configurable!
 		 */
 		return execute(new GetPostDocumentQuery(userName, resourceHash, fileName, "/tmp/"));
@@ -237,7 +241,7 @@ public class RestLogic implements LogicInterface {
 	public void deleteDocument(final Document document, final String resourceHash) {
 		// TODO Auto-generated method stub
 
-	}	
+	}
 
 	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
 		// TODO Auto-generated method stub
@@ -290,11 +294,11 @@ public class RestLogic implements LogicInterface {
 			return execute(new GetUserListQuery(start, end));
 		}
 		if (GroupingEntity.GROUP.equals(grouping)) {
-			return execute(new GetUserListOfGroupQuery(groupingName, start, end));	
+			return execute(new GetUserListOfGroupQuery(groupingName, start, end));
 		}
 		log.error("grouping entity " + grouping.name() + " not yet supported in RestLogic implementation.");
 		return null;
-	}	
+	}
 
 	public String getClassifierSettings(final ClassifierSettings key) {
 		// TODO Auto-generated method stub
@@ -344,15 +348,12 @@ public class RestLogic implements LogicInterface {
 		return 0;
 	}
 
-
 	public List<User> getFriendsOfUser(final User loginUser) {
-		// TODO Auto-generated method stub
-		return null;
+		return execute(new GetFriendsQuery(0, 100, GetFriendsQuery.OUTGOING_ATTRIBUTE_VALUE_RELATION));
 	}
 
 	public List<User> getUserFriends(final User loginUser) {
-		// TODO Auto-generated method stub
-		return null;
+		return execute(new GetFriendsQuery(0, 100, GetFriendsQuery.INCOMING_ATTRIBUTE_VALUE_RELATION));
 	}
 
 	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
@@ -412,6 +413,5 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 
 	}
-
 
 }
