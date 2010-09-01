@@ -81,7 +81,7 @@ public class RestProperties {
 					log.info(logMsgBuilder.append(" -> nowhere (not found)").toString());
 				}
 			} catch (final IOException e) {
-				log.error(e.getMessage(),e);
+				log.error(e.getMessage(), e);
 			}
 			singleton = new RestProperties(prop, ctx);
 		}
@@ -89,32 +89,22 @@ public class RestProperties {
 		return singleton;
 	}
 
-	private ModelValidator validator = null; 
+	private ModelValidator validator = null;
 	private final Properties properties;
 	private final Context jndiCtx;
 
 	public static enum Property {
-		CONFIGFILE("RestConfig.cfg"),
-		API_URL("http://www.bibsonomy.org/api/"),   // FIXME: should be configurable
-		SYSTEM_NAME("BibSonomy"),					// FIXME: should be configurable
-		CONTENT_TYPE("text/xml"),
-		PDF_TYPE("application/pdf"),
-		API_USER_AGENT("BibSonomyWebServiceClient"), // TODO: BibSonomy
-		URL_TAGS("tags"),
-		URL_CONCEPTS("concepts"),
-		URL_USERS("users"),
-		URL_GROUPS("groups"),
-		URL_POSTS("posts"),
-		URL_ADDED_POSTS("added"),
-		URL_POPULAR_POSTS("popular"),
-		URL_STANDARD_POSTS("standard"),
-		URL_REFERENCES("references"),
-		URL_DOCUMENTS("documents"),
-		URL_DATE_FORMAT("yyyy-MM-dd'T'HH:mm:ss.SSS"),
-		VALIDATE_XML_INPUT("false"),
-		VALIDATE_XML_OUTPUT("false");
+		CONFIGFILE("RestConfig.cfg"), API_URL("http://www.bibsonomy.org/api/"), // FIXME:
+																				// should
+																				// be
+																				// configurable
+		SYSTEM_NAME("BibSonomy"), // FIXME: should be configurable
+		CONTENT_TYPE("text/xml"), PDF_TYPE("application/pdf"), API_USER_AGENT("BibSonomyWebServiceClient"), // TODO:
+																											// BibSonomy
+		URL_TAGS("tags"), URL_CONCEPTS("concepts"), URL_USERS("users"), URL_FRIENDS("friends"), URL_GROUPS("groups"), URL_POSTS("posts"), URL_ADDED_POSTS("added"), URL_POPULAR_POSTS("popular"), URL_STANDARD_POSTS("standard"), URL_REFERENCES("references"), URL_DOCUMENTS("documents"), URL_DATE_FORMAT("yyyy-MM-dd'T'HH:mm:ss.SSS"), VALIDATE_XML_INPUT("false"), VALIDATE_XML_OUTPUT("false");
 
 		private final String defaultValue;
+
 		private Property(final String defaultValue) {
 			this.defaultValue = defaultValue;
 		}
@@ -180,6 +170,10 @@ public class RestProperties {
 		return this.get(Property.URL_USERS);
 	}
 
+	public String getFriendsUrl() {
+		return this.get(Property.URL_FRIENDS);
+	}
+
 	public String getGroupsUrl() {
 		return this.get(Property.URL_GROUPS);
 	}
@@ -212,7 +206,7 @@ public class RestProperties {
 		return this.get(Property.SYSTEM_NAME);
 	}
 
-	public String getPdfType(){
+	public String getPdfType() {
 		return this.get(Property.PDF_TYPE);
 	}
 
