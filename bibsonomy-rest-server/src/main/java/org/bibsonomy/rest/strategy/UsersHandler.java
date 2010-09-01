@@ -10,6 +10,7 @@ import org.bibsonomy.rest.strategy.users.DeleteDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserStrategy;
+import org.bibsonomy.rest.strategy.users.GetFriendsForUserStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserConceptStrategy;
@@ -48,32 +49,37 @@ public class UsersHandler implements ContextHandler {
 		case 2:
 			userName = urlTokens.nextToken();
 			req = urlTokens.nextToken();
-			
+
 			// /users/[username]/posts
 			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(req)) {
 				return createUserPostsStrategy(context, httpMethod, userName);
 			}
-			
+
 			// /users/[username]/concepts
 			if (RestProperties.getInstance().getConceptUrl().equalsIgnoreCase(req)) {
 				return createUserConceptsStrategy(context, httpMethod, userName);
+			}
+
+			// /users/[username]/friends
+			if (RestProperties.getInstance().getFriendsUrl().equalsIgnoreCase(req)) {
+				return createFriendsForUserStrategy(context, httpMethod, userName);
 			}
 			break;
 		case 3:
 			userName = urlTokens.nextToken();
 			req = urlTokens.nextToken();
-			
+
 			// /users/[username]/posts/[resourceHash]
 			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(req)) {
 				final String resourceHash = urlTokens.nextToken();
 				return createUserPostStrategy(context, httpMethod, userName, resourceHash);
 			}
-			
+
 			// /users/[username]/concepts/[conceptName]
 			if (RestProperties.getInstance().getConceptUrl().equalsIgnoreCase(req)) {
 				final String conceptName = urlTokens.nextToken();
 				return createUserConceptsStrategy(context, httpMethod, userName, conceptName);
-			}			
+			}
 			break;
 		case 4:
 			// /users/[username]/posts/[resourcehash]/documents
@@ -81,7 +87,7 @@ public class UsersHandler implements ContextHandler {
 			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
 				final String resourceHash = urlTokens.nextToken();
 
-				if (RestProperties.getInstance().getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())){
+				if (RestProperties.getInstance().getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
 					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash);
 				}
 			}
@@ -92,14 +98,14 @@ public class UsersHandler implements ContextHandler {
 			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
 				final String resourceHash = urlTokens.nextToken();
 
-				if (RestProperties.getInstance().getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())){
+				if (RestProperties.getInstance().getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
 					final String filename = urlTokens.nextToken();
 					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash, filename);
 				}
 			}
 			break;
 		}
-			
+
 		throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
 	}
 
@@ -150,7 +156,7 @@ public class UsersHandler implements ContextHandler {
 			throw new UnsupportedHttpMethodException(httpMethod, "User");
 		}
 	}
-	
+
 	private Strategy createDocumentPostStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash) {
 		switch (httpMethod) {
 		case POST:
@@ -159,7 +165,7 @@ public class UsersHandler implements ContextHandler {
 			throw new UnsupportedHttpMethodException(httpMethod, "User-Post-Document");
 		}
 	}
-	
+
 	private Strategy createDocumentPostStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash, final String filename) {
 		switch (httpMethod) {
 		case GET:
@@ -170,29 +176,39 @@ public class UsersHandler implements ContextHandler {
 			throw new UnsupportedHttpMethodException(httpMethod, "Document-Get-Delete-Document");
 		}
 	}
-	
+
 	private Strategy createUserConceptsStrategy(final Context context, final HttpMethod httpMethod, final String userName) {
-		switch(httpMethod) {
-		case GET: 
+		switch (httpMethod) {
+		case GET:
 			return new GetUserConceptsStrategy(context, userName);
 		default:
 			throw new UnsupportedHttpMethodException(httpMethod, "Concepts");
-				
+
 		}
 	}
-	
+
+	private Strategy createFriendsForUserStrategy(final Context context, final HttpMethod httpMethod, final String userName) {
+		switch (httpMethod) {
+		case GET:
+			return new GetFriendsForUserStrategy(context, userName);
+		default:
+			throw new UnsupportedHttpMethodException(httpMethod, "Friends");
+
+		}
+	}
+
 	private Strategy createUserConceptsStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String conceptName) {
-		switch(httpMethod) {
-		case GET: 
+		switch (httpMethod) {
+		case GET:
 			return new GetUserConceptStrategy(context, conceptName, userName);
-		case PUT: 
+		case PUT:
 			return new PutUserConceptStrategy(context, userName);
-		case POST: 
+		case POST:
 			return new PostUserConceptStrategy(context, userName);
-		case DELETE: 
+		case DELETE:
 			return new DeleteUserConceptStrategy(context, conceptName, userName);
 		default:
-			throw new UnsupportedHttpMethodException(httpMethod, "Concept-Conceptname");				
+			throw new UnsupportedHttpMethodException(httpMethod, "Concept-Conceptname");
 		}
 	}
 }
