@@ -348,12 +348,12 @@ public class RestLogic implements LogicInterface {
 		return 0;
 	}
 
-	public List<User> getFriendsOfUser(final User loginUser) {
-		return execute(new GetFriendsQuery(0, 100, GetFriendsQuery.OUTGOING_ATTRIBUTE_VALUE_RELATION));
+	public List<User> getFriendsOfUser(final User loginUser, int start, int end) {
+		return execute(new GetFriendsQuery(start, end, GetFriendsQuery.OUTGOING_ATTRIBUTE_VALUE_RELATION));
 	}
 
-	public List<User> getUserFriends(final User loginUser) {
-		return execute(new GetFriendsQuery(0, 100, GetFriendsQuery.INCOMING_ATTRIBUTE_VALUE_RELATION));
+	public List<User> getUserFriends(final User loginUser, int start, int end) {
+		return execute(new GetFriendsQuery(start, end, GetFriendsQuery.INCOMING_ATTRIBUTE_VALUE_RELATION));
 	}
 
 	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
