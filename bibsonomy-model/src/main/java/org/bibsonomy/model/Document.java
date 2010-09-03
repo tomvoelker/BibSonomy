@@ -150,4 +150,9 @@ public class Document {
 	public void setFile(File file) {
 		this.file = file;
 	}
+	
+	@Override
+	public String toString() {
+		return fileName;
+	}
 }
