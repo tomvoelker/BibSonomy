@@ -47,7 +47,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 public abstract class AbstractQuery<T> {
 	protected static final String URL_TAGS = RestProperties.getInstance().getTagsUrl();
 	protected static final String URL_USERS = RestProperties.getInstance().getUsersUrl();
-	protected static final String URL_FRIENDS = RestProperties.getInstance().getUsersUrl();
+	protected static final String URL_FRIENDS = RestProperties.getInstance().getFriendsUrl();
 	protected static final String URL_GROUPS = RestProperties.getInstance().getGroupsUrl();
 	protected static final String URL_POSTS = RestProperties.getInstance().getPostsUrl();
 	protected static final String URL_POSTS_ADDED = RestProperties.getInstance().getAddedPostsUrl();
@@ -60,7 +60,6 @@ public abstract class AbstractQuery<T> {
 	private String proxyHost;
 	private int proxyPort;
 	private int statusCode = -1;
-
 	public int getStatusCode() {
 		return this.statusCode;
 	}
@@ -112,7 +111,6 @@ public abstract class AbstractQuery<T> {
 
 	/**
 	 * Run GET worker to download a file
-	 * 
 	 * @param url
 	 * @param file
 	 * @throws ErrorPerformingRequestException
@@ -176,7 +174,7 @@ public abstract class AbstractQuery<T> {
 	/**
 	 * Execute this query. The query blocks until a result from the server is
 	 * received.
-	 * 
+	 *
 	 * @param username
 	 *            username at bibsonomy.org
 	 * @param apiKey
@@ -193,8 +191,7 @@ public abstract class AbstractQuery<T> {
 
 	/**
 	 * @return result of the query
-	 * @throws ErrorPerformingRequestException
-	 *             if something fails, eg an ioexception occurs (see the cause).
+	 * @throws ErrorPerformingRequestException if something fails, eg an ioexception occurs (see the cause).
 	 */
 	protected abstract T doExecute() throws ErrorPerformingRequestException;
 
@@ -211,9 +208,10 @@ public abstract class AbstractQuery<T> {
 
 	/**
 	 * @return the result of this query, if there is one.
-	 * @throws {@link BadRequestOrResponseException} if the received data is not
-	 *         valid.
-	 * @throws {@link IllegalStateException} if
+	 * @throws {@link BadRequestOrResponseException}
+	 *             if the received data is not valid.
+	 * @throws {@link IllegalStateException}
+	 *             if
 	 * @link {@link #getResult()} gets called before
 	 * @link {@link Bibsonomy#executeQuery(AbstractQuery)}
 	 */
@@ -230,15 +228,17 @@ public abstract class AbstractQuery<T> {
 		this.apiURL = apiURL;
 	}
 
+
+
 	/**
 	 * @return the {@link RenderingFormat} to use.
 	 */
 	protected RenderingFormat getRenderingFormat() {
 		return this.renderingFormat;
 	}
-
-	/*
-	 * @param renderingFormat the {@link RenderingFormat} to use.
+    /*
+	 * @param renderingFormat
+	 *            the {@link RenderingFormat} to use.
 	 */
 	void setRenderingFormat(final RenderingFormat renderingFormat) {
 		this.renderingFormat = renderingFormat;
@@ -253,7 +253,8 @@ public abstract class AbstractQuery<T> {
 	}
 
 	public boolean isSuccess() {
-		if ((this.getHttpStatusCode() == HttpStatus.SC_OK) || (this.getHttpStatusCode() == HttpStatus.SC_CREATED)) return true;
+		if ((this.getHttpStatusCode() == HttpStatus.SC_OK) || (this.getHttpStatusCode() == HttpStatus.SC_CREATED))
+			return true;
 		return false;
 	}
 
