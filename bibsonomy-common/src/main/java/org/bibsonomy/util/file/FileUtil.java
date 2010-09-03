@@ -97,8 +97,7 @@ public class FileUtil {
 	 * @return The directory of the file
 	 */
 	public static String getFileDir(final String filePath, final String fileHash) {
-		String test = filePath + fileHash.substring(0, 2) + "/";
-		return test;
+		return filePath + fileHash.substring(0, 2) + "/";
 	}
 
 }
