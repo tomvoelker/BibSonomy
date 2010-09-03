@@ -104,6 +104,7 @@ public class RestProperties {
 		URL_CONCEPTS("concepts"),
 		URL_USERS("users"),
 		URL_GROUPS("groups"),
+		URL_FRIENDS("friends"),
 		URL_POSTS("posts"),
 		URL_ADDED_POSTS("added"),
 		URL_POPULAR_POSTS("popular"),
