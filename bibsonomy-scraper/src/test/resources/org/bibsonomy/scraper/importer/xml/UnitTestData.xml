@@ -839,6 +839,9 @@
 		<URL>http://www.springerlink.com/link.asp?id=w425794t7433</URL>
 		<BibFile>SpringerLinkScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
+		<!-- could not find "export citation" link on Springer page, thus, no
+		export available -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_144">
 		<TestDescription>test for cell scraper</TestDescription>

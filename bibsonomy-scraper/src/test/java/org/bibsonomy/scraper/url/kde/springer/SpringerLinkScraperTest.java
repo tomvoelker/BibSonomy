@@ -23,11 +23,11 @@
 
 package org.bibsonomy.scraper.url.kde.springer;
 
+import static org.junit.Assert.assertTrue;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Scraper URL tests #30 #41 for SpringerLinkScraper
