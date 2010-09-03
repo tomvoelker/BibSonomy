@@ -16,6 +16,9 @@ public class RemoteAuthCommand extends BaseCommand {
 	/**	the URL to the remote host requesting authentication */
 	private String reqUrl;
 	
+	/** path for the remote application to forward to after logging in */
+	private String forwardPath;
+	
 	/** the IP for which the auth-key is valid */
 	private String ip;
 	
@@ -57,6 +60,14 @@ public class RemoteAuthCommand extends BaseCommand {
 
 	public void setValidPeriod(int validPeriod) {
 		this.validPeriod = validPeriod;
+	}
+
+	public void setForwardPath(String forwardPath) {
+		this.forwardPath = forwardPath;
+	}
+
+	public String getForwardPath() {
+		return forwardPath;
 	}	
 	
 }

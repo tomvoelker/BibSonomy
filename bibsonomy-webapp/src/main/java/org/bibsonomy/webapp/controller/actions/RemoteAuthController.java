@@ -39,10 +39,7 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 
 	@Override
 	public View workOn(RemoteAuthCommand command) {				
-		/*
-		 * works only if we have a referer
-		 */
-		final String reqUrl = command.getReqUrl();
+		String reqUrl = command.getReqUrl();
 		if (!present(reqUrl)) {
 			throw new MalformedURLSchemeException("error.remote_login_without_requrl");
 		}
@@ -51,7 +48,14 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 		 * present login form to user, if not logged in
 		 */
 		if (!command.getContext().isUserLoggedIn()) {
-			return new ExtendedRedirectView("/login?referer=/remoteAuth?reqUrl=" + reqUrl);
+			String redirectURL = "/login";
+			String referer = "/remoteAuth";
+			referer = UrlUtils.setParam(referer, "reqUrl", reqUrl);
+			if( present(command.getForwardPath()) ) {
+				referer = UrlUtils.setParam(referer, "forwardPath", command.getForwardPath());
+			}
+			redirectURL = UrlUtils.setParam(redirectURL, "referer", UrlUtils.safeURIEncode(referer));
+			return new ExtendedRedirectView(redirectURL/*"/login?referer=/remoteAuth?reqUrl=" + reqUrl*/);
 		}
 		
 		/*
@@ -66,7 +70,10 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 							    " " + 
 							    "TIME:" + System.currentTimeMillis();
 		final String authKey = UrlUtils.safeURIEncode(crypt.encrypt(authData));
-		final String authUrl = UrlUtils.setParam(reqUrl, "authKey", authKey);
+		String authUrl = UrlUtils.setParam(reqUrl, "authKey", authKey);
+		if( present(command.getForwardPath()) ) {
+			authUrl = UrlUtils.setParam(authUrl, "forwardPath", command.getForwardPath());
+		}
 		command.setAuthUrl(authUrl);
 		
 		/*
