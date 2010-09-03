@@ -13,6 +13,7 @@ public class ParticipantDetails {
     private String badgeInstitutionName;
     private boolean isPresenter;
     private boolean hasPoster;
+    private boolean vegetarian;
     private String subEvent;
 
     private String facebook;
@@ -158,4 +159,12 @@ public class ParticipantDetails {
     public void setSubEvent(String subEvent) {
         this.subEvent = subEvent;
     }
+
+	public boolean getVegetarian() {
+		return vegetarian;
+	}
+
+	public void setVegetarian(boolean vegetarian) {
+		this.vegetarian = vegetarian;
+	}
 }

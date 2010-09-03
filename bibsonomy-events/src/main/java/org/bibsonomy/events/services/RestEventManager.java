@@ -23,91 +23,91 @@ import org.springframework.beans.factory.annotation.Required;
 
 public class RestEventManager implements EventManager {
 
-    private String serviceUrl;
+	private String serviceUrl;
 
-    public RestEventManager() {
-	super();
-    }
-
-    @Override
-    public Event getEvent(String id) {
-	throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void registerUser(final User user, final Event event,
-	    final ParticipantDetails participantDetails) {
-	JSONObject json = new JSONObject();
-	json.put("name", user.getName());
-	json.put("badgeName", participantDetails.getBadgename());
-	json.put("badgeInstitutionName", participantDetails
-		.getBadgeInstitutionName());
-	json.put("subEvent", participantDetails.getSubEvent());
-	json.put("address", participantDetails.getAddress());
-	json.put("hasPoster", participantDetails.getHasPoster());
-	json.put("isPresenter", participantDetails.getIsPresenter());
-	json.put("icq", participantDetails.getIcq());
-	json.put("jabber", participantDetails.getJabber());
-	json.put("msn", participantDetails.getMsn());
-	json.put("skype", participantDetails.getSkype());
-	json.put("facebook", participantDetails.getFacebook());
-	json.put("flickr", participantDetails.getFlickr());
-	json.put("linkedIn", participantDetails.getLinkedIn());
-	json.put("researchGate", participantDetails.getResearchGate());
-	json.put("twitter", participantDetails.getTwitter());
-	json.put("xing", participantDetails.getXing());
-
-	StringWriter out = new StringWriter();
-	try {
-	    json.writeJSONString(out);
-	} catch (IOException e) {
-	    e.printStackTrace();
+	public RestEventManager() {
+		super();
 	}
-	String jsonText = out.toString();
-	doRequest("register", jsonText);
 
-    }
-
-    private void doRequest(final String method, String body) {
-	final PostMethod post = new PostMethod(serviceUrl + "/" + method);
-	int result = -1;
-	try {
-	    final HttpClient client = new HttpClient();
-	    // FIXME - request entity
-	    post.setRequestEntity(new StringRequestEntity(body, null, null));
-	    result = client.executeMethod(post);
-	} catch (final Exception e) {
-	    // re-throw
-	    throw new RuntimeException(e.getMessage());
-	} finally {
-	    post.releaseConnection();
+	@Override
+	public Event getEvent(String id) {
+		throw new UnsupportedOperationException();
 	}
-	/*
-	 * check response
-	 */
-	switch (result) {
-	case HttpStatus.SC_CREATED:
-	    /*
-	     * user has been successfully registered
-	     */
-	    return;
-	case HttpStatus.SC_FORBIDDEN:
-	    /*
-	     * user is already registered -> throw appropriate exception
-	     */
-	    throw new InvalidModelException("already registered");
-	default:
-	    throw new RuntimeException("got unknown http status code " + result);
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void registerUser(final User user, final Event event, final ParticipantDetails participantDetails) {
+		final JSONObject json = new JSONObject();
+		json.put("name", user.getName());
+		json.put("badgeName", participantDetails.getBadgename());
+		json.put("badgeInstitutionName", participantDetails.getBadgeInstitutionName());
+		json.put("subEvent", participantDetails.getSubEvent());
+		json.put("address", participantDetails.getAddress());
+		json.put("hasPoster", participantDetails.getHasPoster());
+		json.put("isPresenter", participantDetails.getIsPresenter());
+		json.put("icq", participantDetails.getIcq());
+		json.put("jabber", participantDetails.getJabber());
+		json.put("msn", participantDetails.getMsn());
+		json.put("skype", participantDetails.getSkype());
+		json.put("facebook", participantDetails.getFacebook());
+		json.put("flickr", participantDetails.getFlickr());
+		json.put("linkedIn", participantDetails.getLinkedIn());
+		json.put("researchGate", participantDetails.getResearchGate());
+		json.put("twitter", participantDetails.getTwitter());
+		json.put("xing", participantDetails.getXing());
+		json.put("isVegetarian", participantDetails.getVegetarian());
+
+		StringWriter out = new StringWriter();
+		try {
+			json.writeJSONString(out);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String jsonText = out.toString();
+		doRequest("register", jsonText);
+
 	}
-    }
 
-    public String getServiceUrl() {
-	return serviceUrl;
-    }
+	private void doRequest(final String method, String body) {
+		final PostMethod post = new PostMethod(serviceUrl + "/" + method);
+		int result = -1;
+		try {
+			final HttpClient client = new HttpClient();
+			// FIXME - request entity
+			post.setRequestEntity(new StringRequestEntity(body, null, null));
+			result = client.executeMethod(post);
+		} catch (final Exception e) {
+			// re-throw
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			post.releaseConnection();
+		}
+		/*
+		 * check response
+		 */
+		switch (result) {
+		case HttpStatus.SC_CREATED:
+			/*
+			 * user has been successfully registered
+			 */
+			return;
+		case HttpStatus.SC_FORBIDDEN:
+			/*
+			 * user is already registered -> throw appropriate exception
+			 */
+			throw new InvalidModelException("already registered");
+		default:
+			throw new RuntimeException("got unknown http status code " + result);
+		}
+	}
 
-    @Required
-    public void setServiceUrl(String serviceUrl) {
-	this.serviceUrl = serviceUrl;
-    }
+	public String getServiceUrl() {
+		return serviceUrl;
+	}
+
+	@Required
+	public void setServiceUrl(String serviceUrl) {
+		this.serviceUrl = serviceUrl;
+	}
 
 }
