@@ -160,64 +160,6 @@ public class DBLogic implements LogicInterface {
      * (non-Javadoc)
      * 
      * @see
-     * org.bibsonomy.model.logic.LogicInterface#getUserFriends(org.bibsonomy
-     * .model.User) FIXME: use String instead of User
-     */
-    @Override
-    public List<User> getUserFriends(final User user) {
-	/*
-	 * only logged in users can get a friend list
-	 */
-	this.ensureLoggedIn();
-
-	final String userName = user.getName();
-
-	/*
-	 * only admins can access the friend list of another user
-	 */		
-	this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-
-	final DBSession session = this.openSession();
-	try {
-	    return this.userDBManager.getUserRelation(userName, UserRelation.FRIEND_OF, session);
-	} finally {
-	    session.close();
-	}
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.bibsonomy.model.logic.LogicInterface#getFriendsOfUser(org.bibsonomy
-     * .model.User) FIXME: use String instead of User
-     */
-    @Override
-    public List<User> getFriendsOfUser(final User user) {
-	/*
-	 * only logged in users can get a friend list
-	 */
-	this.ensureLoggedIn();
-
-	final String userName = user.getName();
-
-	/*
-	 * only admins can access the friend list of another user
-	 */
-	this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-
-	final DBSession session = this.openSession();
-	try {
-	    return this.userDBManager.getUserRelation(userName, UserRelation.OF_FRIEND, session);
-	} finally {
-	    session.close();
-	}
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
      * org.bibsonomy.model.logic.LogicInterface#getUserDetails(java.lang.String)
      * TODO: if userName = loginUser.getName() we could just return loginUser.
      */
