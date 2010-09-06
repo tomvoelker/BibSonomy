@@ -24,7 +24,6 @@
 package org.bibsonomy.rest.client;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -348,24 +347,6 @@ public class RestLogic implements LogicInterface {
 		return 0;
 	}
 
-	/**
-	 * TODO: think of adding start and end parameter to the getFriends queries
-	 * just as it is done in getUsers queries
-	 */
-	@Override
-	public List<User> getFriendsOfUser(final User loginUser) {
-		return execute(new GetFriendsQuery(0, 100, GetFriendsQuery.OUTGOING_ATTRIBUTE_VALUE_RELATION));
-	}
-
-	/**
-	 * TODO: think of adding start and end parameter to the getFriends queries
-	 * just as it is done in getUsers queries
-	 */
-	@Override
-	public List<User> getUserFriends(final User loginUser) {
-		return execute(new GetFriendsQuery(0, 100, GetFriendsQuery.INCOMING_ATTRIBUTE_VALUE_RELATION));
-	}
-
 	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		// TODO Auto-generated method stub
 		return null;
@@ -385,8 +366,14 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation) {
-		// TODO Auto_generated method stub
-		return new ArrayList<User>();
+		switch (relation) {
+		case FRIEND_OF:
+			return execute(new GetFriendsQuery(0, 100, GetFriendsQuery.INCOMING_ATTRIBUTE_VALUE_RELATION));
+		case OF_FRIEND:
+			return execute(new GetFriendsQuery(0, 100, GetFriendsQuery.OUTGOING_ATTRIBUTE_VALUE_RELATION));
+		default:
+			throw new UnsupportedOperationException("The user relation " + relation + " is currently not supported.");
+		}
 	}
 
 	@Override
