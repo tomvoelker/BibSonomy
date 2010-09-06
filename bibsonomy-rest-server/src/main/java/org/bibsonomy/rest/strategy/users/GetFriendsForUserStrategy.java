@@ -4,7 +4,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
@@ -46,17 +46,15 @@ public class GetFriendsForUserStrategy extends AbstractGetListStrategy<List<User
 
 	@Override
 	protected List<User> getList() {
-		User requestingUser = this.getLogic().getUserDetails(userName);
-		if (requestingUser == null) throw new ResourceNotFoundException("The user with the name '" + userName + "' does not exist.");
-
-		List<User> result = new ArrayList<User>();
+		/*
+		 * TODO: order correct?
+		 */
 		if (relation.equals(INCOMING_ATTRIBUTE_VALUE_RELATION)) {
-			result = this.getLogic().getUserFriends(requestingUser);
+			return this.getLogic().getUserRelationship(userName, UserRelation.FRIEND_OF);
 		} else if (relation.equals(OUTGOING_ATTRIBUTE_VALUE_RELATION)) {
-			result = this.getLogic().getFriendsOfUser(requestingUser);
+			return this.getLogic().getUserRelationship(userName, UserRelation.OF_FRIEND);
 		}
-
-		return result;
+		return new ArrayList<User>();
 	}
 
 	@Override
