@@ -103,7 +103,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 				
 				this.logic.deleteDocument(document, null);
 
-				new File(FileUtil.getDocumentPath(this.uploadFactory.getDocpath(), hash)).delete();
+				new File(FileUtil.getFilePath(this.uploadFactory.getDocpath(), hash)).delete();
 				/*
 				 * delete layout object from exporter
 				 */

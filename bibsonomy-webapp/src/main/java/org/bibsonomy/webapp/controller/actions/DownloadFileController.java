@@ -84,7 +84,7 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 			/*
 			 * delete file on disk
 			 */
-			new File(FileUtil.getDocumentPath(docpath, document.getFileHash())).delete();
+			new File(FileUtil.getFilePath(docpath, document.getFileHash())).delete();
 			/*
 			 * return to bibtex details page
 			 */
@@ -94,7 +94,7 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 		/*
 		 * default: handle document download
 		 */
-		command.setPathToFile(FileUtil.getDocumentPath(docpath, document.getFileHash()));
+		command.setPathToFile(FileUtil.getFilePath(docpath, document.getFileHash()));
 		command.setContentType(FileUtil.getContentType(document.getFileName()));
 		/*
 		 * stream document to user

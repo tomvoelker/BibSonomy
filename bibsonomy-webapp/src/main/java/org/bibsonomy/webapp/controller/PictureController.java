@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -11,6 +13,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.bibsonomy.common.enums.ProfilePrivlevel;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.utils.FileUploadInterface;
@@ -33,153 +36,182 @@ import org.springframework.validation.Errors;
  */
 public class PictureController implements MinimalisticController<PictureCommand> {
 
+	static {
+		/*
+		 * set the headless mode for awt library
+		 * FIXME does it work? Should we really do this here? Better in a 
+		 * Tomcat config file, right?!
+		 */
+		System.setProperty("java.awt.headless", "true");
+	}
+
+	private static final String FILE_EXTENSION = ".jpg";
+	/**
+	 * We need an admin logic to check the friends and the privlevel of the
+	 * requested user.
+	 */
+	private LogicInterface adminLogic;
+	private RequestLogic requestLogic;
+	/**
+	 * the factory used to get an instance of a FileUploadHandler.
+	 */
+	private FileUploadFactory uploadFactory;
+
+	private final Errors errors = null;
+
 	/**
 	 * Path to the picture folder
 	 */
 	private String path;
-	
-	private LogicInterface adminLogic;
-	
-	private RequestLogic requestLogic;
-	
-	/**
-     * the factory used to get an instance of a FileUploadHandler.
-     */
-    private FileUploadFactory uploadFactory;
-    
-    
-    private final Errors errors = null;
-    
-    private int sizeOfLargestSide;
-    
-    private String defaultFileName;
-	
+	private int sizeOfLargestSide;
+	private String defaultFileName;
+
 	@Override
 	public PictureCommand instantiateCommand() {
 		return new PictureCommand();
 	}
-	
+
 	@Override
 	public View workOn(PictureCommand command) {
-		String method = requestLogic.getMethod();
-		if(method.equals("GET")) { //picture requested
+		final String method = requestLogic.getMethod();
+		if ("GET".equals(method)) { 
+			/*
+			 * picture download
+			 */
 			return downloadPicture(command);
-		} else if(method.equals("POST")) { //picture upload requested
-			Views view = uploadPicture(command);
-			if(view == null) {
-				return new ExtendedRedirectView("/settings");
+		} else if("POST".equals(method)) {
+			/*
+			 *  picture upload
+			 */
+			final Views view = uploadPicture(command);
+			if (present(view)) {
+				return view;
 			}
-			return view;
+			return new ExtendedRedirectView("/settings");
 		} else { 
 			return Views.ERROR;
 		}
-		
-	}
-	
-	private View downloadPicture(PictureCommand command) {
-		String name = command.getRequestedUser();
-		String currentUserName = command.getContext().getLoginUser().getName(); //user who started the request
-		User picOwner = adminLogic.getUserDetails(name);
 
-		boolean showpicture = false;
-		
-		 /* 
-		  * if the owner of the picture wasn't  founded 
-		  */
-		if (picOwner == null) {
+	}
+
+	/**
+	 * Returns a view with the requested picture.
+	 * 
+	 * @param command
+	 * @return
+	 */
+	private View downloadPicture(final PictureCommand command) {
+		final String requestedUserName = command.getRequestedUser();
+		final String loginUserName = command.getContext().getLoginUser().getName();
+		final User requestedUser = adminLogic.getUserDetails(requestedUserName);
+
+		/* 
+		 * if the owner of the picture wasn't found 
+		 */
+		if (!present(requestedUser)) {
 			return Views.ERROR;
 		}
-		
-		/*
-		 * request from picture owner himself  
-		 */
-		if (picOwner.getName().equals(currentUserName)) {
-			showPicture(command, name);
-			return Views.DOWNLOAD_FILE;
-		}
-		
-		/*
-		 *Visibility states: 0 = public, 1 = private, 2 = friends
-		 */
-		ProfilePrivlevel visibility = picOwner.getSettings().getProfilePrivlevel();
-		//Stirng test = picOwner.getSettings().getProfilePrivlevel().
-		switch(visibility) {
-			case PUBLIC:
-				showpicture = true;
-				break;
-			case FRIENDS:
-				if (currentUserName != null) {
-					List<User> friends = adminLogic.getFriendsOfUser(picOwner);
-					for (User friend : friends) {
-						if (currentUserName.equals(friend.getName())) { //currentUserName cannot be null here
-							showpicture = true;
-						}
-					}
-				}
-				break;
-			default:
-				break;
-					
-		}
-		
-		if (showpicture) {
-			showPicture(command, name);
+
+		if (pictureVisible(requestedUser, loginUserName)) {
+			setProfilePicture(command, requestedUserName);
 		} else {
-			showDummy(command);
+			setDummyPicture(command);
 		}
 		return Views.DOWNLOAD_FILE;
 	}
-	
+
 	/**
-	 * this method search for user picture and select it to show
-	 * @param command
-	 * @param name
+	 * Checks if the loginUser may see the profile picture of the requested user.
+	 * Depends on the profile privlevel of the requested user.
+	 * 
+	 * @param requestedUser
+	 * @param loginUserName
+	 * @return
 	 */
-	private void showPicture(PictureCommand command, String name) {
+	private boolean pictureVisible(final User requestedUser, final String loginUserName) {
+		final String requestedUserName = requestedUser.getName();
 		/*
-		 * pattern of the name of picture file: "hash(username)"
+		 * Check the visibility depending on the profile privacy level.
 		 */
-		String hash = StringUtils.getMD5Hash(name);
-		
+		final ProfilePrivlevel visibility = requestedUser.getSettings().getProfilePrivlevel();
+		switch(visibility) {
+		case PRIVATE:
+			return requestedUserName.equals(loginUserName);
+		case PUBLIC:
+			return true;
+		case FRIENDS:
+			if (present(loginUserName)) {
+				final List<User> friends = adminLogic.getUserRelationship(requestedUserName, UserRelation.OF_FRIEND);
+				for (final User friend : friends) {
+					if (loginUserName.equals(friend.getName())) {
+						return true;
+					}
+				}
+			}
+		default:
+			return false;
+		}
+	}
+
+	/**
+	 * This method searches for user picture and selects it to show
+	 * 
+	 * @param command
+	 * @param requestedUserName
+	 */
+	private void setProfilePicture(final PictureCommand command, final String requestedUserName) {
+		/*
+		 * verify existence of picture, and set it to view 
+		 */
+		final File picture = new File(getPicturePath(requestedUserName));
+		if (picture.exists()) { 
+			command.setPathToFile(picture.getAbsolutePath());
+			command.setContentType(FileUtil.getContentType(picture.getName()));
+			command.setFilename(picture.getName());
+		} else {
+			setDummyPicture(command);
+		}
+	}
+
+	/**
+	 * Constructs the path to the picture, given the user name.
+	 * 
+	 * @param userName
+	 * @return
+	 */
+	private String getPicturePath(final String userName) {
+		/*
+		 * pattern of the name of picture file: "hash(username).jpg"
+		 */
+		final String fileName = StringUtils.getMD5Hash(userName) + FILE_EXTENSION;
+
 		/*
 		 * pictures are in the different folders, named by the fist
 		 * two signs of hash
 		 */
-		String picturePath = FileUtil.getDocumentPath(path, hash);
-	
-		/*
-		 * verify existence of picture, and set it to view 
-		 */
-		File pic = new File(picturePath);
-		if (pic.exists()) { 
-			command.setPathToFile(picturePath);
-			command.setContentType(FileUtil.getContentType(picturePath));
-			command.setFilename(hash);
-		} else {
-			showDummy(command);
-		}
+		return FileUtil.getFilePath(path, fileName);
 	}
-	
-	
+
+
 	/**
 	 * this method selects a dummy picture to show
 	 * @param command
 	 */
-	private void showDummy(PictureCommand command) {
+	private void setDummyPicture(final PictureCommand command) {
 		command.setPathToFile(path + defaultFileName);
 		command.setContentType(FileUtil.getContentType(command.getPathToFile()));
 		command.setFilename(defaultFileName);
 	}
-	
+
 	/**
 	 * This method manage the picture upload
 	 * 
 	 * @param command
 	 * @return Error view or null if upload successful 
 	 */
-	private Views uploadPicture(PictureCommand command) {
+	private Views uploadPicture(final PictureCommand command) {
 		final RequestWrapperContext context = command.getContext();
-		
+
 		// check if user is logged in, if not throw an error and go directly
 		// back to uploadPage
 		if (!context.isUserLoggedIn()) {
@@ -194,110 +226,109 @@ public class PictureController implements MinimalisticController<PictureCommand>
 			errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
-		
-		if (command.getFile() != null) {
-			/*
-			 * set the headless mode for awt library
-			 * FIXME does it work?
-			 */
-			System.setProperty("java.awt.headless", "true");
-			
-			try {
-				if (command.getFile().getSize() != 0) { //if a file to upload selected
-					/*
-					 * upload file
-					 */
-					final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), FileUploadInterface.pictureExt);
-					File file = uploadFileHandler.writeUploadedFile().getFile();
-					
-					/*
-					 * convert picture
-					 */
-					BufferedImage userPic = convert(file);
-					
-					/*
-					 * delete uploaded file
-					 */
-					file.delete();
-					
-					String username = context.getLoginUser().getName();
-					
-					/*
-					 * pattern of the picture path: /picturefolder/"first two chars of filename"
-					 */
-					String directory = FileUtil.getFileDir(path, StringUtils.getMD5Hash(username)); 
-					/*
-					 * check existence of target folder
-					 */
-					file = new File(directory);
-					if(!file.exists()) {
-						file.mkdir();
-					}
-					
-					/*
-					 * store picture
-					 */
-					file = new File(FileUtil.getDocumentPath(path, StringUtils.getMD5Hash(username)));
-					ImageIO.write(userPic, "jpeg", file);
-				} else { //if no file to upload selected
-					deleteUserPicture(context.getLoginUser().getName());
-				}
 
+		final String loginUserName = context.getLoginUser().getName();
+
+		if (present(command.getFile()) && command.getFile().getSize() > 0) {
+			/*
+			 * a file is given --> save it
+			 */
+			try {
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), FileUploadInterface.pictureExt);
+				final File file = uploadFileHandler.writeUploadedFile().getFile();
+
+				/*
+				 * scale picture
+				 */
+				final BufferedImage scaledPicture = scalePicture(file);
+
+				/*
+				 * delete temporary file
+				 */
+				file.delete();
+
+				/*
+				 * check existence of target folder
+				 */
+				final File directory = new File(FileUtil.getFileDir(path, StringUtils.getMD5Hash(loginUserName)));
+				if (!directory.exists()) {
+					directory.mkdir();
+				}
+				
+				/*
+				 * write scaled image to disk
+				 */
+				ImageIO.write(scaledPicture, "jpeg", new File(getPicturePath(loginUserName)));
 			} catch (Exception ex) {
 				errors.reject("error.upload.failed", new Object[] { ex.getLocalizedMessage() }, "Sorry, we could not process your upload request, an unknown error occurred.");
 				return Views.ERROR;
 			}
+		} else { 
+			/*
+			 * no file given, but POST request --> delete picture
+			 */
+			deleteUserPicture(loginUserName);
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Deletes the picture from the file system
 	 * 
-	 * @param username
+	 * @param userName
 	 */
-	private void deleteUserPicture(String username ) {
-		String path = FileUtil.getDocumentPath(this.path, StringUtils.getMD5Hash(username));
-		File picture = new File(path);
+	private void deleteUserPicture(final String userName) {
+		final File picture = new File(getPicturePath(userName));
 		if (picture.exists()) {
 			picture.delete();
 		}
 	}
-	
+
 	/**
-	 * Converts picture to standard size
+	 * Scales the picture to a standard size.
+	 * 
 	 * @param imageFile
 	 * @return ready to write BufferedImage
 	 * @throws IOException
 	 */
-	private BufferedImage convert(File imageFile) throws IOException {
-		Image image = ImageIO.read(imageFile);
-		Image scaledImage = null;
-		
+	private BufferedImage scalePicture(final File imageFile) throws IOException {
+		final Image image = ImageIO.read(imageFile);
+		final Image scaledImage;
+
 		/*
 		 * convert picture to the standard size with fixed aspect ratio
 		 */
-		if (image.getWidth(null) >= image.getWidth(null)) {
-			scaledImage = image.getScaledInstance(sizeOfLargestSide, 
-					-1, Image.SCALE_SMOOTH);
+		if (image.getWidth(null) > image.getHeight(null)) {
+			/*
+			 *  _________        ____
+			 * |         | ---> |____|
+			 * |_________|
+			 * 
+			 */
+			scaledImage = image.getScaledInstance(sizeOfLargestSide, -1, Image.SCALE_SMOOTH);
 		} else {
-			scaledImage = image.getScaledInstance(-1, sizeOfLargestSide, 
-					Image.SCALE_SMOOTH);
+			/*
+			 *  ____        __
+			 * |    | ---> |  |
+			 * |    |      |__|
+			 * |    |
+			 * |____|
+			 */
+			scaledImage = image.getScaledInstance(-1, sizeOfLargestSide, Image.SCALE_SMOOTH);
 		}
-		
+
 		/*
 		 * create new BufferedImage with converted picture
 		 */
-		BufferedImage outImage = new BufferedImage(scaledImage.getWidth(null),
-				scaledImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
-		Graphics g = outImage.getGraphics();
+		final BufferedImage outImage = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
+		final Graphics g = outImage.getGraphics();
 		g.drawImage(scaledImage, 0, 0, null);
 		g.dispose();
-		
+
 		return outImage;
 	}
-	
+
 	/**
 	 * @param path the path to set
 	 */
@@ -313,6 +344,10 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	}
 
 	/**
+	 * This controller needs an admin logic to check the profile privacy level 
+	 * and the friends of the requested user - something the login user is not
+	 * allowed to do.
+	 * 
 	 * @param adminLogic the adminLogic to set
 	 */
 	public void setAdminLogic(LogicInterface adminLogic) {
