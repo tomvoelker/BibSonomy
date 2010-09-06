@@ -42,15 +42,27 @@ public class FileUtil {
 	/**
 	 * Constructs the file path of a document
 	 * 
-	 * @param documentPath - the absolute path to the document directory in the filesystem
-	 * @param documentFileHash - the filehash of the document 
+	 * @param filePath - the absolute path to the document directory in the file system
+	 * @param fileName - the file name of the document (an MD5 hash) 
 	 * 
 	 * @return The absolute path of the document on the file system.
 	 */
-	public static String getDocumentPath(final String documentPath, final String documentFileHash) {
-		return documentPath + documentFileHash.substring(0, 2) + "/" + documentFileHash;
+	public static String getFilePath(final String filePath, final String fileName) {
+		return getFileDir(filePath, fileName) + fileName;
 	}
 
+	/**
+	 * Constructs the directory path of the file using the first two digits of
+	 * the file name.
+	 * 
+	 * @param filePath - the absolute path to the document directory in the file system
+	 * @param fileName - the file name of the document (an MD5 hash)
+	 * @return The directory of the file
+	 */
+	public static String getFileDir(final String filePath, final String fileName) {
+		return filePath + fileName.substring(0, 2) + "/";
+	}
+	
 	/**
 	 * Depending on the extension of the file, returns the correct MIME content
 	 * type. NOTE: the method looks only at the name of the file not at the
@@ -89,17 +101,6 @@ public class FileUtil {
 		if (m.find())
 			return m.group(2).toLowerCase();
 		return "";
-	}
-	
-	/**
-	 * Constructs the directory path of the file
-	 * 
-	 * @param filePath 
-	 * @param fileHash
-	 * @return The directory of the file
-	 */
-	public static String getFileDir(final String filePath, final String fileHash) {
-		return filePath + fileHash.substring(0, 2) + "/";
 	}
 
 }
