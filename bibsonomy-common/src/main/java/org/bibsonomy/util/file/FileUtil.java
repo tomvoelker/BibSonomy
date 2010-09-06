@@ -69,6 +69,8 @@ public class FileUtil {
 			return "text/plain";
 		} else if (StringUtils.matchExtension(filename, "djv", "djvu")) {
 			return "image/vnd.djvu";
+		} else if (StringUtils.matchExtension(filename, "jpg", "jpeg")) {
+			return "image/jpeg";
 		} else {
 			return "application/octet-stream";
 		}
