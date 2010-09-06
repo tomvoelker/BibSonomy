@@ -23,6 +23,7 @@ public class ParticipantDetails {
 	private String researchGate;
 	private String twitter;
 	private String xing;
+	private String email;
 
 	private String icq;
 	private String jabber;
@@ -175,5 +176,13 @@ public class ParticipantDetails {
 
 	public void setDinner(boolean dinner) {
 		this.dinner = dinner;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }
