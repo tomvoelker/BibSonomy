@@ -8,157 +8,142 @@ package org.bibsonomy.events.model;
 
 public class ParticipantDetails {
 
-    private String address;
-    private String badgename;
-    private String badgeInstitutionName;
-    private boolean isPresenter;
-    private boolean hasPoster;
-    private boolean vegetarian;
-    private String subEvent;
+	private String address;
+	private String badgename;
+	private String badgeInstitutionName;
+	private boolean presenter;
+	private boolean poster;
+	private boolean vegetarian;
+	private boolean dinner;
+	private String subEvent;
 
-    private String facebook;
-    private String flickr;
-    private String linkedIn;
-    private String researchGate;
-    private String twitter;
-    private String xing;
+	private String facebook;
+	private String flickr;
+	private String linkedIn;
+	private String researchGate;
+	private String twitter;
+	private String xing;
 
-    private String icq;
-    private String jabber;
-    private String msn;
-    private String skype;
+	private String icq;
+	private String jabber;
+	private String msn;
+	private String skype;
 
-    public ParticipantDetails() {
-	super();
-    }
+	public ParticipantDetails() {
+		super();
+	}
 
-    public String getAddress() {
-	return address;
-    }
+	public String getAddress() {
+		return address;
+	}
 
-    public void setAddress(String address) {
-	this.address = address;
-    }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
-    public String getBadgename() {
-	return badgename;
-    }
+	public String getBadgename() {
+		return badgename;
+	}
 
-    public void setBadgename(String badgename) {
-	this.badgename = badgename;
-    }
+	public void setBadgename(String badgename) {
+		this.badgename = badgename;
+	}
 
-    public String getBadgeInstitutionName() {
-	return badgeInstitutionName;
-    }
+	public String getBadgeInstitutionName() {
+		return badgeInstitutionName;
+	}
 
-    public void setBadgeInstitutionName(String badgeInstitutionName) {
-	this.badgeInstitutionName = badgeInstitutionName;
-    }
+	public void setBadgeInstitutionName(String badgeInstitutionName) {
+		this.badgeInstitutionName = badgeInstitutionName;
+	}
 
-    public boolean getIsPresenter() {
-	return isPresenter;
-    }
+	public String getFacebook() {
+		return facebook;
+	}
 
-    public void setIsPresenter(boolean isPresenter) {
-	this.isPresenter = isPresenter;
-    }
+	public void setFacebook(String facebook) {
+		this.facebook = facebook;
+	}
 
-    public boolean getHasPoster() {
-	return hasPoster;
-    }
+	public String getFlickr() {
+		return flickr;
+	}
 
-    public void setHasPoster(boolean hasPoster) {
-	this.hasPoster = hasPoster;
-    }
+	public void setFlickr(String flickr) {
+		this.flickr = flickr;
+	}
 
-    public String getFacebook() {
-	return facebook;
-    }
+	public String getLinkedIn() {
+		return linkedIn;
+	}
 
-    public void setFacebook(String facebook) {
-	this.facebook = facebook;
-    }
+	public void setLinkedIn(String linkedIn) {
+		this.linkedIn = linkedIn;
+	}
 
-    public String getFlickr() {
-	return flickr;
-    }
+	public String getResearchGate() {
+		return researchGate;
+	}
 
-    public void setFlickr(String flickr) {
-	this.flickr = flickr;
-    }
+	public void setResearchGate(String researchGate) {
+		this.researchGate = researchGate;
+	}
 
-    public String getLinkedIn() {
-	return linkedIn;
-    }
+	public String getTwitter() {
+		return twitter;
+	}
 
-    public void setLinkedIn(String linkedIn) {
-	this.linkedIn = linkedIn;
-    }
+	public void setTwitter(String twitter) {
+		this.twitter = twitter;
+	}
 
-    public String getResearchGate() {
-	return researchGate;
-    }
+	public String getXing() {
+		return xing;
+	}
 
-    public void setResearchGate(String researchGate) {
-	this.researchGate = researchGate;
-    }
+	public void setXing(String xing) {
+		this.xing = xing;
+	}
 
-    public String getTwitter() {
-	return twitter;
-    }
+	public String getIcq() {
+		return icq;
+	}
 
-    public void setTwitter(String twitter) {
-	this.twitter = twitter;
-    }
+	public void setIcq(String icq) {
+		this.icq = icq;
+	}
 
-    public String getXing() {
-	return xing;
-    }
+	public String getJabber() {
+		return jabber;
+	}
 
-    public void setXing(String xing) {
-	this.xing = xing;
-    }
+	public void setJabber(String jabber) {
+		this.jabber = jabber;
+	}
 
-    public String getIcq() {
-	return icq;
-    }
+	public String getMsn() {
+		return msn;
+	}
 
-    public void setIcq(String icq) {
-	this.icq = icq;
-    }
+	public void setMsn(String msn) {
+		this.msn = msn;
+	}
 
-    public String getJabber() {
-	return jabber;
-    }
+	public String getSkype() {
+		return skype;
+	}
 
-    public void setJabber(String jabber) {
-	this.jabber = jabber;
-    }
+	public void setSkype(String skype) {
+		this.skype = skype;
+	}
 
-    public String getMsn() {
-	return msn;
-    }
+	public String getSubEvent() {
+		return subEvent;
+	}
 
-    public void setMsn(String msn) {
-	this.msn = msn;
-    }
-
-    public String getSkype() {
-	return skype;
-    }
-
-    public void setSkype(String skype) {
-	this.skype = skype;
-    }
-
-    public String getSubEvent() {
-        return subEvent;
-    }
-
-    public void setSubEvent(String subEvent) {
-        this.subEvent = subEvent;
-    }
+	public void setSubEvent(String subEvent) {
+		this.subEvent = subEvent;
+	}
 
 	public boolean getVegetarian() {
 		return vegetarian;
@@ -166,5 +151,29 @@ public class ParticipantDetails {
 
 	public void setVegetarian(boolean vegetarian) {
 		this.vegetarian = vegetarian;
+	}
+
+	public boolean getPresenter() {
+		return presenter;
+	}
+
+	public void setPresenter(boolean presenter) {
+		this.presenter = presenter;
+	}
+
+	public boolean getPoster() {
+		return poster;
+	}
+
+	public void setPoster(boolean poster) {
+		this.poster = poster;
+	}
+
+	public boolean getDinner() {
+		return dinner;
+	}
+
+	public void setDinner(boolean dinner) {
+		this.dinner = dinner;
 	}
 }

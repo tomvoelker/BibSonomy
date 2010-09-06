@@ -43,8 +43,8 @@ public class RestEventManager implements EventManager {
 		json.put("badgeInstitutionName", participantDetails.getBadgeInstitutionName());
 		json.put("subEvent", participantDetails.getSubEvent());
 		json.put("address", participantDetails.getAddress());
-		json.put("hasPoster", participantDetails.getHasPoster());
-		json.put("isPresenter", participantDetails.getIsPresenter());
+		json.put("hasPoster", participantDetails.getPoster());
+		json.put("isPresenter", participantDetails.getPresenter());
 		json.put("icq", participantDetails.getIcq());
 		json.put("jabber", participantDetails.getJabber());
 		json.put("msn", participantDetails.getMsn());
@@ -56,6 +56,7 @@ public class RestEventManager implements EventManager {
 		json.put("twitter", participantDetails.getTwitter());
 		json.put("xing", participantDetails.getXing());
 		json.put("isVegetarian", participantDetails.getVegetarian());
+		json.put("isDinner", participantDetails.getDinner());
 
 		StringWriter out = new StringWriter();
 		try {
