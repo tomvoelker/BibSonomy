@@ -833,16 +833,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return 0;
 	}
 
-	public List<User> getFriendsOfUser(final User loginUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<User> getUserFriends(final User loginUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		// TODO Auto-generated method stub
 		return null;
