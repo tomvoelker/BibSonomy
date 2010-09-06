@@ -20,6 +20,10 @@
 						<property name="allowedFields">	
 							<list>
 								<value>event.id</value>
+								<value>ckey</value>
+								<value>profilePrivlevel</value>
+								<value>registered</value>
+								<value>participantDetails.*</value>
 								<value>user.realname</value>
 								<value>user.gender</value>
 								<value>user.birthday</value>
@@ -31,25 +35,6 @@
 								<value>user.institution</value>
 								<value>user.interests</value>
 								<value>user.hobbies</value>
-								<value>participantDetails.badgename</value>
-								<value>participantDetails.badgeInstitutionName</value>
-								<value>ckey</value>
-								<value>participantDetails.hasPoster</value>
-								<value>participantDetails.isPresenter</value>
-								<value>profilePrivlevel</value>
-								<value>registered</value>
-								<value>participantDetails.subEvent</value>
-								<value>participantDetails.address</value>
-								<value>participantDetails.facebook</value>
-								<value>participantDetails.flickr</value>
-								<value>participantDetails.LinkedIn</value>
-								<value>participantDetails.twitter</value>
-								<value>participantDetails.researchGate</value>
-								<value>participantDetails.xing</value>
-								<value>participantDetails.icq</value>
-								<value>participantDetails.jabber</value>
-								<value>participantDetails.msn</value>
-								<value>participantDetails.skype</value>								
 							</list>
 						</property>
 					</bean>
