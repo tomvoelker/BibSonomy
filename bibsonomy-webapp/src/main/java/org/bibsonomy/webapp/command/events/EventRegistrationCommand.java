@@ -7,8 +7,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author rja
- * @version $Id: EventRegistrationCommand.java,v 1.1 2010-08-03 07:17:44 rja Exp
- *          $
+ * @version $Id$
  */
 public class EventRegistrationCommand extends BaseCommand {
 

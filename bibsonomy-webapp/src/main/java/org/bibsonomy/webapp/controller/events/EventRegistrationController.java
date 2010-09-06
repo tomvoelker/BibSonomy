@@ -47,7 +47,7 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		 * users must be logged in to register for an event
 		 */
 		if (!context.isUserLoggedIn()) {
-			return new ExtendedRedirectView("/login?notice=login.notice.events&referer=/events/register/" + UrlUtils.safeURIEncode(command.getEvent().getId()));
+			return new ExtendedRedirectView("/login?notice=login.notice.events&referer=/events/" + UrlUtils.safeURIEncode(command.getEvent().getId()) + "/register");
 		}
 
 		/*
@@ -105,10 +105,6 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		return Views.EVENT_REGISTRATION_SUCCESS;
 	}
 
-	private boolean isNonEmpty(String test) {
-		return (test != null) && (test != "");
-	}
-
 	/**
 	 * updates the the profile settings of a user
 	 * 
@@ -120,12 +116,18 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		user.setGender(commandUser.getGender());
 		user.setBirthday(commandUser.getBirthday());
 
-		if (isNonEmpty(commandUser.getEmail())) {
+		/*
+		 * FIXME: why do we check presence here? Why not for all attributes?
+		 */
+		if (present(commandUser.getEmail())) {
 			user.setEmail(commandUser.getEmail());
 		}
 		user.setHomepage(commandUser.getHomepage());
 		user.setProfession(commandUser.getProfession());
-		if (isNonEmpty(commandUser.getInstitution())) {
+		/*
+		 * FIXME: why do we check presence here? Why not for all attributes?
+		 */
+		if (present(commandUser.getInstitution())) {
 			user.setInstitution(commandUser.getInstitution());
 		}
 		user.setInterests(commandUser.getInterests());
