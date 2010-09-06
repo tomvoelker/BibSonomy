@@ -45,7 +45,7 @@ public interface FileUploadInterface {
 	/**
 	 * png, jpg extensions
 	 */
-	public static final String[] pictureExt = { "png", "jpg" };
+	public static final String[] pictureExt = { "png", "jpg", "jpeg" };
 	
 	/**
 	 * layout defintion extension

@@ -48,7 +48,7 @@ public class HandleFileDownload implements FileDownloadInterface {
 	 */
 	public HandleFileDownload(final String docPath, final String fileHash) throws FileNotFoundException {
 		// get the file
-		final File document = new File(FileUtil.getDocumentPath(docPath, fileHash));
+		final File document = new File(FileUtil.getFilePath(docPath, fileHash));
 
 		// if the document is readable create a bufferedstream
 		if (document.canRead()) {

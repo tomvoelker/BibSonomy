@@ -115,7 +115,7 @@ public class HandleFileUpload implements FileUploadInterface {
 		if (isTempPath) {
 			documentPath = docPath + "/" + document.getFileHash();
 		} else {
-			documentPath = FileUtil.getDocumentPath(docPath, document.getFileHash());
+			documentPath = FileUtil.getFilePath(docPath, document.getFileHash());
 		}
 		
 		document.setFile(new File(documentPath));
