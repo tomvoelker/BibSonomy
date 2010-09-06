@@ -497,18 +497,6 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 */
 	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end);
 
-	/**
-	 * @param loginUser
-	 * @return All users which have loginUser in their friend list. 
-	 */
-	public List<User> getUserFriends(User loginUser);
-	
-	/**
-	 * @param loginUser
-	 * @return All users which loginUser has in his friend list.
-	 */
-	public List<User> getFriendsOfUser(User loginUser);
-	
 	/** 
 	 * We return all Users that are in (the) relation with the sourceUser
 	 * as targets.
