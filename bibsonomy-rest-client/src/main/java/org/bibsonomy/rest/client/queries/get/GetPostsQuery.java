@@ -129,7 +129,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	public void setTags(final List<String> tags) {
 		this.tags = tags;
 	}
-	
+
 	/**
 	 * @param order
 	 * 				the order to set
@@ -137,7 +137,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	public void setOrder(Order order) {
 		this.order = order;
 	}
-	
+
 	/**
 	 * @param search
 	 * 				the search string to set
@@ -175,6 +175,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		case VIEWABLE:
 			url += "&viewable=" + this.groupingValue;
 			break;
+		default:
+			throw new UnsupportedOperationException("The grouping " + this.grouping + " is currently not supported by this query.");
 		}
 
 		if (this.tags != null && this.tags.size() > 0) {
@@ -192,11 +194,11 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		if (this.resourceHash != null && this.resourceHash.length() > 0) {
 			url += "&resource=" + this.resourceHash;
 		}
-		
+
 		if(this.order != null){
 			url += "&order=" +this.order;
 		}
-		
+
 		if(this.search != null && this.search.length() > 0){
 			url += "&search=" +this.search;
 		}
