@@ -18,7 +18,7 @@
         <jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.friend"/></a> :: 
 			<a href="/friend/${fn:escapeXml(command.requestedUser)}"><c:out value="${command.requestedUser}"/></a> ::
-			<form action="/friend/${fn:escapeXml(command.requestedUser)}" method="g" class="smallform">
+			<form action="/friend/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
 			  <input type="text" size="20" id="inpf" name="tag" value="${fn:escapeXml(command.requestedTags)}"/>
 			</form>
         </jsp:attribute>
