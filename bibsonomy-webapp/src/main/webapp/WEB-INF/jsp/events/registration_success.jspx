@@ -45,6 +45,7 @@
 				<ul>
 					<li><a href="${fn:escapeXml(command.event.url)}"><c:out value="${command.event.name}" /></a> Homepage</li>
 					<li><a href="/user/${fn:escapeXml(command.event.userName)}/${fn:escapeXml(command.event.id)}">Accepted Papers</a></li>	
+					<li><a href="http://www.kde.cs.uni-kassel.de/conf/lwa10/conferator.html">Conferator</a></li>
 				</ul>
 				</p>
 

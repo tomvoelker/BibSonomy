@@ -36,16 +36,20 @@
 				<fmt:message var="male" key="settings.male"/>
 				<fmt:message var="female" key="settings.female"/>
 
-                <h2>
-                  <fmt:message key="events.registration.loggedInAs"/>&amp;nbsp;
-                  <c:url var="userUrl" value="/user/${mtl:encodeURI(command.context.loginUser.name)}" context="${projectContext}"/>
-                  <c:out value="${user.name}" />
-				--
-				Welcome to <a href="${fn:escapeXml(command.event.url)}"><c:out value="${command.event.name}" /></a></h2>
-				<p><c:out value="${command.event.description}"/></p>
+				<h2><c:out value="${command.event.description}"/></h2>
+
+                <p>
+                  <fmt:message key="events.registration.welcome">
+                  	<fmt:param value="${user.name}"/>
+                  	<fmt:param value="${projectName}"/>
+                  	<fmt:param value="${command.event.name}"/>
+                  </fmt:message>
+                </p>
+
+				
        
-				<p>Auf dieser Seite können Sie sich für <c:out value="${command.event.name}" /> registrieren.
-				Darüberhinaus können Sie Daten für das konferenzbegleitende Conferator-System eingeben.</p>
+				<p>Auf dieser Seite können Sie sich für die <a href="${command.event.url}"><c:out value="${command.event.name}" /></a> registrieren.
+				Darüberhinaus können Sie Daten für das konferenzbegleitende <a href="http://www.kde.cs.uni-kassel.de/conf/lwa10/conferator.html">Conferator-System</a> eingeben.</p>
 				
 				
 				<form:form method="post" action="#">		
@@ -54,12 +58,6 @@
         
                 <div id="fsform">
                   <fieldset class="fsInner">
-                    <div class="fsRow">
-                        <form:label cssClass="fsLabel" path="registered"><fmt:message key="events.registration.registered"/></form:label>
-                        <form:checkbox path="registered" value="true"/>                                          
-                        <div class="dissError"><form:errors path="registered" /></div>
-                    </div>
-                    <div class="fsRow"><fmt:message key="events.registration.registered.confirm"/></div>
                     
                     <div class="fsRow">
                       <form:label cssClass="fsLabel" path="participantDetails.badgename"><fmt:message key="events.registration.registered.badgename"/></form:label>
@@ -74,17 +72,17 @@
                     </div>
                     
                     <div class="fsRow">
-                        <form:label cssClass="fsLabel" path="participantDetails.hasPoster"><fmt:message key="events.registration.registered.poster"/></form:label>
-                        <form:checkbox path="participantDetails.hasPoster" value="true"/>
+                        <form:label cssClass="fsLabel" path="participantDetails.poster"><fmt:message key="events.registration.registered.poster"/></form:label>
+                        <form:checkbox path="participantDetails.poster" value="true"/>
                         <fmt:message key="events.registration.registered.poster.explanation"/>                     
-                        <div class="dissError"><form:errors path="participantDetails.hasPoster" /></div>
+                        <div class="dissError"><form:errors path="participantDetails.poster" /></div>
                     </div>
                     
                     <div class="fsRow">
-                        <form:label cssClass="fsLabel" path="participantDetails.isPresenter"><fmt:message key="events.registration.registered.presenter"/></form:label>
-                        <form:checkbox path="participantDetails.isPresenter" value="false"/>
+                        <form:label cssClass="fsLabel" path="participantDetails.presenter"><fmt:message key="events.registration.registered.presenter"/></form:label>
+                        <form:checkbox path="participantDetails.presenter" value="false"/>
                         <fmt:message key="events.registration.registered.presenter.explanation"/>                    
-                        <div class="dissError"><form:errors path="participantDetails.isPresenter" /></div>
+                        <div class="dissError"><form:errors path="participantDetails.presenter" /></div>
                     </div>
                     
                     <div class="fsRow">
@@ -98,6 +96,20 @@
                         <form:textarea cssClass="fsInput" path="participantDetails.address"/>
                         <div class="dissError"><form:errors path="participantDetails.address"/></div>
                     </div>
+
+					<div class="fsRow">
+                        <form:label cssClass="fsLabel" path="participantDetails.dinner"><fmt:message key="events.registration.registered.dinner"/></form:label>
+                        <form:checkbox path="participantDetails.dinner" value="false"/>
+                        <fmt:message key="events.registration.registered.dinner.explanation"/>                    
+                        <div class="dissError"><form:errors path="participantDetails.dinner" /></div>
+                    </div>   
+
+                    <div class="fsRow">
+                        <form:label cssClass="fsLabel" path="participantDetails.vegetarian"><fmt:message key="events.registration.registered.vegetarian"/></form:label>
+                        <form:checkbox path="participantDetails.vegetarian" value="false"/>
+                        <fmt:message key="events.registration.registered.vegetarian.explanation"/>                    
+                        <div class="dissError"><form:errors path="participantDetails.vegetarian" /></div>
+                    </div>                    
                     
                   </fieldset>
                 </div>
@@ -105,65 +117,80 @@
                 <p></p>
                 
                 <div id="fsform">
-                 <p>
-                 Bei der LWA planen wir ein Experiment mit RFID-Tags, um die Interaktionen zu steigern, und Ihnen
-                 auf der Konferenz hilfreiche Informationen und Inhalte kontextsensitiv zur Verfügung zu stellen.
-                 <br /> 
-                 Bitte füllen Sie möglichst viele der folgenden Felder aus, damit unsere Conferator-Anwendung lebendig wird.                 
-                 </p>
 
-                <h2><fmt:message key="events.registration.socialInformation" /></h2>
+
+				<h2>Conferator</h2>
+     			<p>
+                	Bei der LWA planen wir ein <a href="http://www.kde.cs.uni-kassel.de/conf/lwa10/conferator.html">Experiment mit RFID-Tags</a>, 
+                	um die Interaktionen zu steigern, und Ihnen
+                 	auf der Konferenz hilfreiche Informationen und Inhalte kontextsensitiv zur Verfügung zu stellen 
+                 	(z.B. ihre letzten Kontakte in der Kaffeepause, weitere Informationen über den/die Vortragende(n), ...). 
+                 	<br /> 
+                 	Bitte füllen Sie möglichst viele der folgenden Felder aus, damit unsere Conferator-Anwendung lebendig wird.                 
+                 </p>
+			            
+
+                <h3><fmt:message key="events.registration.socialInformation" /></h3>
+
 
                   <fieldset class="fsInner">
-                    Die folgenden Informationen stehen den LWA-Teilnehmern zur Verfügung, werden aber darüberhinaus nicht öffentlich gemacht.
+                    Ihre folgenden Benutzer-IDs stehen den anderen LWA-Teilnehmern zur Verfügung, werden aber 
+                    darüber hinaus nicht öffentlich gemacht. Sie können Sie jederzeit im Conferator ändern. 
+
+
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.facebook">Facebook-Account</form:label>
+                      <form:label cssClass="fsLabel" path="participantDetails.email">E-Mail</form:label>
+                      <form:input cssClass="fsInput" path="participantDetails.email" />
+                    </div>                    
+                     
+                    <div class="fsRow">
+                      <form:label cssClass="fsLabel" path="participantDetails.facebook">Facebook</form:label>
                       <form:input cssClass="fsInput" path="participantDetails.facebook"/>
                     </div>
 
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.flickr">Flickr-Account</form:label>
-                      <form:input cssClass="fsInput" path="participantDetails.flickr"/>
-                    </div>
-                    
-                    <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.linkedIn">LinkedIn-Account</form:label>
+                      <form:label cssClass="fsLabel" path="participantDetails.linkedIn">LinkedIn</form:label>
                       <form:input cssClass="fsInput" path="participantDetails.linkedIn"/>
                     </div>
                     
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.researchGate">Research-Gate-Account</form:label>
+                      <form:label cssClass="fsLabel" path="participantDetails.researchGate">Research-Gate</form:label>
                       <form:input cssClass="fsInput" path="participantDetails.researchGate"/>
                     </div>
     
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.twitter">Twitter-Account</form:label>
+                      <form:label cssClass="fsLabel" path="participantDetails.twitter">Twitter</form:label>
                       <form:input cssClass="fsInput" path="participantDetails.twitter"/>
                     </div>
      
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.xing">Xing-Account</form:label>
+                      <form:label cssClass="fsLabel" path="participantDetails.xing">Xing</form:label>
                       <form:input cssClass="fsInput" path="participantDetails.xing"/>
                     </div>
      
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.icq">ICQ-Account</form:label>
+                      <form:label cssClass="fsLabel" path="participantDetails.icq">ICQ</form:label>
                       <form:input cssClass="fsInput" path="participantDetails.icq"/>
                     </div>
      
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.jabber">Jabber-Account</form:label>
+                      <form:label cssClass="fsLabel" path="participantDetails.jabber">Jabber</form:label>
                       <form:input cssClass="fsInput" path="participantDetails.jabber"/>
                     </div>
      
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.msn">MSN-Account</form:label>
+                      <form:label cssClass="fsLabel" path="participantDetails.msn">MSN</form:label>
                       <form:input cssClass="fsInput" path="participantDetails.msn"/>
                     </div>
                   
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.skype">Skype-Account</form:label>
+                      <form:label cssClass="fsLabel" path="participantDetails.skype">Skype</form:label>
                       <form:input cssClass="fsInput" path="participantDetails.skype"/>
+                    </div>
+
+                    <div class="fsRow">
+                      <form:label cssClass="fsLabel" path="participantDetails.flickr">Flickr</form:label>
+                      <form:input cssClass="fsInput" path="participantDetails.flickr"/>
                     </div>
                   
                   </fieldset>
@@ -172,11 +199,16 @@
                 <p></p>
 	     	      
 	     	    <div id="fsform">
-	     	    <h2><fmt:message key="events.registration.bibsonomyInformation" /></h2>		
+	     	    <h3>
+	     	    	<fmt:message key="events.registration.profileData">
+	     	    		<fmt:param value="${projectName}"/>
+	     	    	</fmt:message>
+	     	    </h3>		
 	              
 		       	  <fieldset class="fsInner">
-		       	  Die folgenden Einträge stehen den Tagungsteilnehmern über das Bibsonomy-Profil zur Verfügung.
-                  Sie können die Einträge über <a href="http://www.bibsonomy.org">BibSonomy</a> jederzeit ändern oder löschen.
+		       	  Die folgenden Einträge stehen den Tagungsteilnehmern über das ${projectName}-Profil zur Verfügung. 
+                  Sie können die Einträge in <a href="/settings">${projectName}</a> jederzeit ändern oder löschen. 
+                  Dort können Sie auch <a href="/settings">ein Bild von sich hochladen</a>.
 				    <div class="fsRow">
 				      <form:label cssClass="fsLabel" path="user.gender"><fmt:message key="user.gender"/></form:label>
 				      <form:select cssClass="fsInput fsSmall" path="user.gender">
@@ -202,11 +234,6 @@
 				    </div>
                     
 				    <div class="fsRow">
-				      <form:label cssClass="fsLabel" path="user.email"><fmt:message key="user.email"/></form:label>
-				      <form:input cssClass="fsInput" path="user.email" />
-		              <div class="dissError"><form:errors path="user.email" /></div>
-				    </div>
-				    <div class="fsRow">
 				      <form:label cssClass="fsLabel" path="user.homepage"><fmt:message key="user.homepage"/></form:label>
 				      <form:input cssClass="fsInput" path="user.homepage"/>
 				      <div class="dissError"><form:errors path="user.homepage" /></div>
@@ -214,7 +241,8 @@
 
 		  	        <div class="fsRow">
 				      <form:label cssClass="fsLabel" path="user.profession"><fmt:message key="user.profession"/></form:label>
-				      <form:input cssClass="fsInput" path="user.profession"/>		        
+				      <form:input cssClass="fsInput" path="user.profession"/>
+				      <div class="dissError"><form:errors path="user.profession" /></div>  
 				    </div>
 		  	        <div class="fsRow">
 				      <form:label cssClass="fsLabel" path="user.institution"><fmt:message key="user.institution"/></form:label>
@@ -225,10 +253,12 @@
 				    <div class="fsRow">
 				      <form:label cssClass="fsLabel" path="user.interests"><fmt:message key="user.scientificInterests"/></form:label>
 				      <form:textarea cssClass="fsInput" path="user.interests"/>
+				      <div class="dissError"><form:errors path="user.interests" /></div>
 				    </div>
 				    <div class="fsRow">
 				      <form:label cssClass="fsLabel" path="user.hobbies"><fmt:message key="user.hobbies"/></form:label>
 				      <form:textarea cssClass="fsInput" path="user.hobbies" />
+				      <div class="dissError"><form:errors path="user.hobbies" /></div>
 				    </div>
 
 				    <div class="fsRow">
@@ -238,6 +268,7 @@
 				    	<form:option label="private" value="private"/>
 				    	<form:option label="friends" value="friends"/>
 				      </form:select>
+				      <buttons:help message="events.registration.profile" iconTextStyle="font-size:larger;"/>
 				      <div class="dissError"><form:errors path="profilePrivlevel" /></div>
 				    </div>
 				  </fieldset>
