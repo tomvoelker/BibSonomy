@@ -11,10 +11,16 @@ import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
 /**
+ * 
+ * Gets the friends for a given user (or the users who have him as friend).
+ * 
+ *  TODO: Should be replaced by a generic strategy which allows to fetch users
+ *  based on the different {@link UserRelation}s.
+ * 
  * @author ema
- * @version $Id: GetFriendsForUserStrategy.java,v 1.1 2010-09-01 08:36:22 ema
- *          Exp $
+ * @version $Id$
  */
+@Deprecated
 public class GetFriendsForUserStrategy extends AbstractGetListStrategy<List<User>> {
 
 	/**
