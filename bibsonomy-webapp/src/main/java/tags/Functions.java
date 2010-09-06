@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -167,7 +166,7 @@ public class Functions  {
 			}
 		}
 		return null;
-	}
+	}	
 
 	/**
 	 * @param input
@@ -697,32 +696,5 @@ public class Functions  {
 	public static String extractDOI(final String doiString){
 		return DOIUtils.extractDOI(doiString);
 	}
-
-    /**
-     * Checks to see if Object 'o' has a property specified in "propertyName"
-     * 
-     * @param obj
-     * @param propertyName
-     * @return true, if given object has a property of given name
-     */
-    public static boolean hasProperty(Object obj, String propertyName) {
-    	if( !present(propertyName) || propertyName.length()==0 ) {
-    		return false;
-    	}
-    	
-        boolean methodFound = false;
-        int i = 0;
-
-        Class<?> myClass = obj.getClass();
-        String methodName = "get" + propertyName.toUpperCase().charAt(0) + propertyName.substring(1);
-        Method[] methods = myClass.getMethods();
-
-        while(i < methods.length && !methodFound) {
-            methodFound = methods[i].getName().compareTo(methodName) == 0;
-            i++;
-        }
-
-        return methodFound;
-    }
 	
 }

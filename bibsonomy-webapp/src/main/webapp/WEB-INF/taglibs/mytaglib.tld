@@ -364,11 +364,5 @@
   	<function-class>tags.Functions</function-class>
   	<function-signature>String getErrorHint(java.lang.String)</function-signature>
   </function>  
-
-  <function>
-     <name>hasProperty</name>
-     <function-class>tags.Functions</function-class>
-     <function-signature>boolean hasProperty(java.lang.Object, java.lang.String)</function-signature>
-  </function>
   
 </taglib>
