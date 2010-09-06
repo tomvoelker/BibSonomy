@@ -25,6 +25,7 @@ package org.bibsonomy.rest.client.queries.get;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -32,18 +33,21 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
- * Use this Class to receive an ordered list of all users bibsonomy has.
+ * Returns a list of users which either the requested user has in his friend list,
+ * or all users, which have the requested user in his friend list.
  * 
- * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id: GetUserListQuery.java,v 1.12 2010-04-27 10:41:36 bibsonomy Exp
- *          $
+ * TODO: Should be replaced by a generic strategy which allows to fetch users
+ *  based on the different {@link UserRelation}s.
+ * 
+ * @version $Id$
  */
+@Deprecated
 public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 
 	/**
 	 * Request Attribute ?relation="incoming/outgoing"
 	 */
-	public static final String ATTRIBUTE_KEY_RELATION = "relation";
+	pstatic final String ATTRIBUTE_KEY_RELATION = "relation";
 	public static final String INCOMING_ATTRIBUTE_VALUE_RELATION = "incoming";
 	public static final String OUTGOING_ATTRIBUTE_VALUE_RELATION = "outgoing";
 	public static final String DEFAULT_ATTRIBUTE_VALUE_RELATION = INCOMING_ATTRIBUTE_VALUE_RELATION;
