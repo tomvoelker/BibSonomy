@@ -144,14 +144,7 @@
     <function-class>tags.Functions</function-class>
     <function-signature>String encodeURI (java.lang.String)</function-signature>
   </function> 
-
-  <function>
-    <name>escapeJavaScript</name>
-    <function-class>tags.Functions</function-class>
-    <function-signature>String escapeJavaScript (java.lang.String)</function-signature>
-  </function> 
-
-   
+ 
   <function>
     <name>makeCredential</name>
     <function-class>tags.Functions</function-class>
