@@ -27,7 +27,6 @@
 								<value>user.realname</value>
 								<value>user.gender</value>
 								<value>user.birthday</value>
-								<value>user.email</value>
 								<value>user.homepage</value>
 								<value>user.place</value>
 								<value>user.interests</value>
@@ -51,6 +50,7 @@
 	<bean id="eventRegistrationController" class="org.bibsonomy.webapp.controller.events.EventRegistrationController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="eventManager" ref="eventManager"/>
+		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 
 	<bean id="eventManager" class="org.bibsonomy.events.services.EventManagerProxy" scope="singleton">
@@ -58,7 +58,7 @@
 			<list>
 				<bean class="org.bibsonomy.events.services.SpringBeanEventManager" scope="singleton"/>
 				<bean class="org.bibsonomy.events.services.RestEventManager" scope="singleton" >
-				    <property name="serviceUrl" value="http://fixme:odie:80/api/talkradar/users/create" />
+				    <property name="serviceUrl" value="http://odie.cs.uni-kassel.de:8080/api/talkradar/users/create" />
 				</bean>
 			</list>
 		</property>
