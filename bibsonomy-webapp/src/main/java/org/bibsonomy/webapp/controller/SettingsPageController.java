@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.layout.jabref.LayoutPart;
 import org.bibsonomy.model.Document;
@@ -93,11 +94,11 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	}
 
 	private void workOnMyProfileTab(final SettingsViewCommand command) {
-		// retrieve friend list of the user
-		command.setUserFriends(logic.getUserFriends(command.getUser()));
-		command.setFriendsOfUser(logic.getFriendsOfUser(command.getUser()));
+		final User user = command.getUser();
+		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF));
+		command.setFriendsOfUser(logic.getUserRelationship(user.getName(), UserRelation.OF_FRIEND));
 		// retrieve profile privacy level setting
-		command.setProfilePrivlevel(command.getUser().getSettings().getProfilePrivlevel().name().toLowerCase());
+		command.setProfilePrivlevel(user.getSettings().getProfilePrivlevel().name().toLowerCase());
 	}
 
 	/**
