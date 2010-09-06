@@ -14,16 +14,7 @@ public class EventRegistrationCommand extends BaseCommand {
 	private Event event;
 	private User user;
 	private String profilePrivlevel;
-	private boolean registered;
 	private ParticipantDetails participantDetails;
-
-	public boolean getRegistered() {
-		return registered;
-	}
-
-	public void setRegistered(boolean registered) {
-		this.registered = registered;
-	}
 
 	public Event getEvent() {
 		return this.event;

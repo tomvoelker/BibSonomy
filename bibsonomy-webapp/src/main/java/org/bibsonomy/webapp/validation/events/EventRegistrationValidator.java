@@ -34,7 +34,6 @@ public class EventRegistrationValidator implements Validator<EventRegistrationCo
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "participantDetails.address", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "participantDetails.subEvent", "error.field.required");		
 		
-		if (!command.getRegistered()) errors.rejectValue("registered", "error.field.required"); // FIXME: own message!
 	}
 
 }

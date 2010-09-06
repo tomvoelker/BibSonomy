@@ -2,10 +2,16 @@ package org.bibsonomy.webapp.controller.events;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.FieldLengthErrorMessage;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.events.model.Event;
 import org.bibsonomy.events.model.ParticipantDetails;
 import org.bibsonomy.events.services.EventManager;
@@ -13,8 +19,10 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.events.EventRegistrationCommand;
+import org.bibsonomy.webapp.controller.actions.UpdateUserController;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -37,6 +45,7 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 	private Errors errors;
 	private LogicInterface logic;
 	private EventManager eventManager;
+	private RequestLogic requestLogic; // to extract the locale
 	private static final Log log = LogFactory.getLog(EventRegistrationController.class);
 
 	@Override
@@ -47,7 +56,7 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		 * users must be logged in to register for an event
 		 */
 		if (!context.isUserLoggedIn()) {
-			return new ExtendedRedirectView("/login?notice=login.notice.events&referer=/events/" + UrlUtils.safeURIEncode(command.getEvent().getId()) + "/register");
+			return new ExtendedRedirectView("/login?notice=login.notice.events&referer=" + UrlUtils.safeURIEncode("/events/" + command.getEvent().getId() + "/register" + "?lang=" + requestLogic.getLocale().getLanguage()));
 		}
 
 		/*
@@ -71,6 +80,7 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 			 * -> put him into the command and show him the page
 			 */
 			command.setUser(loginUser);
+			command.getParticipantDetails().setEmail(loginUser.getEmail());
 			return Views.EVENT_REGISTRATION;
 		}
 
@@ -85,13 +95,11 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		/*
 		 * register user for the event
 		 */
-		if (command.getRegistered()) {
-			try {
-				eventManager.registerUser(loginUser, event, command.getParticipantDetails());
-			} catch (final Exception e) {
-				// FIXME: handle case of already registered user!
-				errors.reject("events.error.registration", e.getMessage());
-			}
+		try {
+			eventManager.registerUser(loginUser, event, command.getParticipantDetails());
+		} catch (final Exception e) {
+			// FIXME: handle case of already registered user!
+			errors.reject("events.error.registration", e.getMessage());
 		}
 
 		/*
@@ -99,6 +107,10 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		 */
 		updateUserProfile(loginUser, command.getUser(), command.getProfilePrivlevel());
 
+		if (errors.hasErrors()) {
+			return Views.EVENT_REGISTRATION;
+		}
+		
 		/*
 		 * FIXME: redirect to success page
 		 */
@@ -115,13 +127,6 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		user.setRealname(commandUser.getRealname());
 		user.setGender(commandUser.getGender());
 		user.setBirthday(commandUser.getBirthday());
-
-		/*
-		 * FIXME: why do we check presence here? Why not for all attributes?
-		 */
-		if (present(commandUser.getEmail())) {
-			user.setEmail(commandUser.getEmail());
-		}
 		user.setHomepage(commandUser.getHomepage());
 		user.setProfession(commandUser.getProfession());
 		/*
@@ -136,8 +141,36 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 
 		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.getProfilePrivlevel(profilePrivlevel));
 
-		logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
+		updateUser(user, errors);
 		log.debug("updated profile for user " + user.getName());
+	}
+	
+	/**
+	 * Updates the user (including field length error checking!).
+	 *
+	 * 
+	 * FIXME: duplicated code from {@link UpdateUserController}.
+	 * 
+	 * @param user
+	 */
+	private void updateUser(final User user, final Errors errors) {
+		try {
+			logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
+		} catch(DatabaseException e) {
+			final List<ErrorMessage> messages = e.getErrorMessages().get(user.getName());
+
+			for(final ErrorMessage eMsg : messages) {
+				if(eMsg instanceof FieldLengthErrorMessage) {
+					final FieldLengthErrorMessage fError = (FieldLengthErrorMessage) eMsg;
+					final Iterator<String> it = fError.iteratorFields();
+					while(it.hasNext()) {
+						final String current = it.next();
+						final String[] values = { String.valueOf(fError.getMaxLengthForField(current)) };
+						errors.rejectValue("user." + current, "error.field.valid.limit_exceeded", values, fError.getDefaultMessage());
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -201,6 +234,14 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 	@Required
 	public void setEventManager(EventManager eventManager) {
 		this.eventManager = eventManager;
+	}
+
+	public RequestLogic getRequestLogic() {
+		return this.requestLogic;
+	}
+
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
 	}
 
 }

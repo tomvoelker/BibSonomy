@@ -58,8 +58,8 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 
 	@Override
 	public View workOn(SettingsViewCommand command) {
-		RequestWrapperContext context = command.getContext();
-		
+		final RequestWrapperContext context = command.getContext();
+
 		/*
 		 * user has to be logged in to delete himself
 		 */
@@ -67,21 +67,21 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 			errors.reject("error.general.login");
 			return Views.SETTINGSPAGE;
 		}
-		
+
 		final User user = context.getLoginUser(); 
-		
+
 		// needed to display the user name on the profile tab of the settings site
 		command.getUser().setName(user.getName());
 
 		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF));
 		command.setFriendsOfUser(logic.getUserRelationship(user.getName(), UserRelation.OF_FRIEND));
-		
+
 		// check whether the user is a group		
 		if (UserUtils.userIsGroup(user)) {
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
 		}
-		
+
 		/**
 		 * go back to the settings page and display errors from command field
 		 * validation
@@ -95,25 +95,8 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 		 */
 		if (context.isValidCkey()) {
 			log.debug("User is logged in, ckey is valid");
-
 			// update user informations here
-			try {
-				updateUserProfile(user, command.getUser(), command.getProfilePrivlevel());
-			} catch(DatabaseException e) {
-				List<ErrorMessage> messages = e.getErrorMessages().get(user.getName());
-				
-				for(ErrorMessage eMsg : messages) {
-					if(eMsg instanceof FieldLengthErrorMessage) {
-						FieldLengthErrorMessage fError = (FieldLengthErrorMessage) eMsg;
-						Iterator<String> it = fError.iteratorFields();
-						while(it.hasNext()) {
-							String current = it.next();
-							String[] values = { String.valueOf(fError.getMaxLengthForField(current)) };
-							errors.rejectValue("user." + current, "error.field.valid.limit_exceeded", values, fError.getDefaultMessage());
-						}
-					}
-				}
-			}
+			updateUserProfile(user, command.getUser(), command.getProfilePrivlevel());
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}
@@ -130,7 +113,7 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 		user.setRealname(commandUser.getRealname());
 		user.setGender(commandUser.getGender());
 		user.setBirthday(commandUser.getBirthday());
-		
+
 		user.setEmail(commandUser.getEmail());
 		user.setHomepage(commandUser.getHomepage());
 		user.setOpenURL(commandUser.getOpenURL());
@@ -139,14 +122,38 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 		user.setInterests(commandUser.getInterests());
 		user.setHobbies(commandUser.getHobbies());
 		user.setPlace(commandUser.getPlace());
-		
+
 		/*
 		 * FIXME: use command.user.privlevel instead of string "group"!
 		 */
 		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.getProfilePrivlevel(profilePrivlevel));
-		
-		final String updatedUser = logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
-		log.debug("logging profile of user " + updatedUser + " has been changed successfully");
+
+		updateUser(user, errors);
+	}
+
+	/**
+	 * Updates the user (including field length error checking!).
+	 * 
+	 * @param user
+	 */
+	private void updateUser(final User user, final Errors errors) {
+		try {
+			logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
+		} catch(DatabaseException e) {
+			final List<ErrorMessage> messages = e.getErrorMessages().get(user.getName());
+
+			for(final ErrorMessage eMsg : messages) {
+				if(eMsg instanceof FieldLengthErrorMessage) {
+					final FieldLengthErrorMessage fError = (FieldLengthErrorMessage) eMsg;
+					final Iterator<String> it = fError.iteratorFields();
+					while(it.hasNext()) {
+						final String current = it.next();
+						final String[] values = { String.valueOf(fError.getMaxLengthForField(current)) };
+						errors.rejectValue("user." + current, "error.field.valid.limit_exceeded", values, fError.getDefaultMessage());
+					}
+				}
+			}
+		}
 	}
 
 	@Override
