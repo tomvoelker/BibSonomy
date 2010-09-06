@@ -2,8 +2,7 @@
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.List;
-
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -52,11 +51,10 @@ public class FOAFController implements MinimalisticController<FOAFCommand> {
 		final User user = this.logic.getUserDetails(requestedUser);
 		
 		/*
-		 * get friends
+		 * add friends
 		 */
 		try {
-			final List<User> friends = this.logic.getFriendsOfUser(user);
-			user.addFriends(friends);
+			user.addFriends(this.logic.getUserRelationship(requestedUser, UserRelation.OF_FRIEND));
 		} catch (final AccessDeniedException ex) {
 			// ignore it
 		}
