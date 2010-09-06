@@ -47,7 +47,7 @@ public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 	/**
 	 * Request Attribute ?relation="incoming/outgoing"
 	 */
-	pstatic final String ATTRIBUTE_KEY_RELATION = "relation";
+	public static final String ATTRIBUTE_KEY_RELATION = "relation";
 	public static final String INCOMING_ATTRIBUTE_VALUE_RELATION = "incoming";
 	public static final String OUTGOING_ATTRIBUTE_VALUE_RELATION = "outgoing";
 	public static final String DEFAULT_ATTRIBUTE_VALUE_RELATION = INCOMING_ATTRIBUTE_VALUE_RELATION;
