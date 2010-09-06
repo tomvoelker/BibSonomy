@@ -1,8 +1,13 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.FriendsResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -59,6 +64,33 @@ public class FriendsPageController extends SingleResourceListController implemen
 		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
+	}
+
+	/**
+	 * Initialize user list, depending on chosen users type
+	 * 
+	 * @param <V> the command type
+	 * @param command the command object
+	 */
+	protected <V extends FriendsResourceViewCommand> void handleUsers(V command) {
+		final String userRelation = command.getUserRelation();
+		
+		final String loginUserName = command.getContext().getLoginUser().getName();
+		if ( (!present(userRelation)) && ("html".equals(command.getFormat())) ) {
+			// this is the default case for the FriendsPageController
+			command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF));
+			command.setFriendsOfUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND));
+		} else if (present(userRelation)) {
+			if( UserRelation.OF_FRIEND.name().equalsIgnoreCase(userRelation) ) {
+				command.setFriendsOfUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND));
+			} else if( UserRelation.FRIEND_OF.name().equalsIgnoreCase(userRelation) ) {
+				command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF));
+			}
+		
+			// when users only are requested, we don't need bibtexs and bookmarks
+			this.listsToInitialise.remove(BibTex.class);
+			this.listsToInitialise.remove(Bookmark.class);			
+		}
 	}
 
 	@Override

@@ -19,8 +19,6 @@ public class ResourceViewCommand extends BaseCommand {
 	private String requestedUser;
 	private String resourcetype;
 	private String tagstype; // for queries for specific kinds of tags
-	/** for queries for specific kinds of users (e.g., friends) */
-	private String userstype;
 	private String format = "html"; 
 	private String layout; // if format="layout", here the requested layout is stored
 	private boolean formatEmbedded; // 
@@ -238,14 +236,6 @@ public class ResourceViewCommand extends BaseCommand {
 	 */
 	public void setTagstype(String tagstype) {
 		this.tagstype = tagstype;
-	}
-
-	public void setUserstype(String userstype) {
-		this.userstype = userstype;
-	}
-
-	public String getUserstype() {
-		return userstype;
 	}
 
 	/**

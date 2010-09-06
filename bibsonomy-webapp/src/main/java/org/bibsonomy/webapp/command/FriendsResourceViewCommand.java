@@ -11,6 +11,8 @@ import org.bibsonomy.model.User;
 public class FriendsResourceViewCommand extends TagResourceViewCommand {
 	private List<User> userFriends;
 	private List<User> friendsOfUser;
+	/** for queries for specific kinds of users (e.g., friends) */
+	private String userRelation;
 
 	/**
 	 * @param userFriends
@@ -40,5 +42,19 @@ public class FriendsResourceViewCommand extends TagResourceViewCommand {
 	public List<User> getUserFriends() {
 		return userFriends;
 	}
-	
+
+	/**
+	 * @return The relation the users to return have with the requested user.
+	 */
+	public String getUserRelation() {
+		return this.userRelation;
+	}
+
+	/**
+	 * @param userRelation
+	 */
+	public void setUserRelation(String userRelation) {
+		this.userRelation = userRelation;
+	}
+
 }
