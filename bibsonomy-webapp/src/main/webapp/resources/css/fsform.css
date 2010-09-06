@@ -137,7 +137,7 @@
 }
 
 div.grippie {
-	background:#006699 url(resources/image/resize_grip.png) no-repeat scroll center 2px;
+	background:#006699 url(/resources/image/resize_grip.png) no-repeat scroll center 2px;
 	border-color:#006699;
 	border-style:solid;
 	border-width:0pt 1px 1px;
