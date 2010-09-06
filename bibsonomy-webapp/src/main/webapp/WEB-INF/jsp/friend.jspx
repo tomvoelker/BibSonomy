@@ -10,20 +10,17 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
+	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<!-- TODO -->
-	<layout:resourceLayout pageTitle="${command.pageTitle}" 
-		command="${command}" requPath="${requPath}" 
-		selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
+
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}"	selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
 		
         <jsp:attribute name="heading">
-		  <h1 id="path"> 
-			<a rel="path_menu" href="/friend"><img src="/resources/image/box_arrow.png" />&amp;nbsp;<fmt:message key="navi.friend"/></a> :: 
-			<a href="/friend/${mtl:encodeURI(param.requestedUser)}"><c:out value="${param.requestedUser}"/></a> ::
-			<form action="/friend/${mtl:encodeURI(param.requestedUser)}" method="GET" class="smallform">
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.friend"/></a> :: 
+			<a href="/friend/${fn:escapeXml(command.requestedUser)}"><c:out value="${command.requestedUser}"/></a> ::
+			<form action="/friend/${fn:escapeXml(command.requestedUser)}" method="g" class="smallform">
 			  <input type="text" size="20" id="inpf" name="tag" value="${fn:escapeXml(command.requestedTags)}"/>
 			</form>
-		  </h1> 		
         </jsp:attribute>
 
         <jsp:attribute name="sidebar">
