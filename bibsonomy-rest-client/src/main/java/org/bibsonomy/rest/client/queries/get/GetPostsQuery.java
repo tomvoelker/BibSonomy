@@ -175,6 +175,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		case VIEWABLE:
 			url += "&viewable=" + this.groupingValue;
 			break;
+		case ALL:
+			break;
 		default:
 			throw new UnsupportedOperationException("The grouping " + this.grouping + " is currently not supported by this query.");
 		}
