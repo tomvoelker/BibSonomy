@@ -46,9 +46,6 @@ public class GetFriendsForUserStrategy extends AbstractGetListStrategy<List<User
 
 	@Override
 	protected List<User> getList() {
-		/*
-		 * TODO: order correct?
-		 */
 		if (relation.equals(INCOMING_ATTRIBUTE_VALUE_RELATION)) {
 			return this.getLogic().getUserRelationship(userName, UserRelation.FRIEND_OF);
 		} else if (relation.equals(OUTGOING_ATTRIBUTE_VALUE_RELATION)) {
