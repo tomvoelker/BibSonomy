@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
@@ -72,8 +73,8 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 		// needed to display the user name on the profile tab of the settings site
 		command.getUser().setName(user.getName());
 
-		command.setUserFriends(logic.getUserFriends(command.getUser()));
-		command.setFriendsOfUser(logic.getFriendsOfUser(command.getUser()));
+		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF));
+		command.setFriendsOfUser(logic.getUserRelationship(user.getName(), UserRelation.OF_FRIEND));
 		
 		// check whether the user is a group		
 		if (UserUtils.userIsGroup(user)) {
