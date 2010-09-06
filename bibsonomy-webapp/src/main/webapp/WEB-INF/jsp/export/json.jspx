@@ -28,11 +28,10 @@
       },
       "Tag" : {
          "pluralLabel" : "Tags"
-      }<c:if test="${mtl:hasProperty(command, 'userFriends') or mtl:hasProperty(command, 'friendsOfUser')}">,
+      },
       "User" : {
          "pluralLabel" : "Users"
       }
-	  </c:if>
    },
    
    "properties" : {
@@ -90,31 +89,31 @@
       	</c:if>
       </c:forEach>
 
-	  <!-- comma, if friends exist and (tags exist or resources are present) -->
-      <c:if test="${isCommaNecessary and mtl:hasProperty(command, 'userFriends') and not empty command.userFriends}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
-
-      <!-- friends -->
-      <c:if test="${mtl:hasProperty(command, 'userFriends')}">
+      <mtl:exists path="command.userFriends">
+      	<!-- comma, if friends exist and (tags exist or resources are present) -->
+      	<c:if test="${isCommaNecessary and not empty command.userFriends}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+      	
+      	<!-- friends -->
 	  	<c:forEach var="user" varStatus="status" items="${command.userFriends}" >
       		<json:user user="${user}"/><c:if test="${not status.last}">,</c:if>
       		<c:if test="${status.last}">
       			<c:set var="isCommaNecessary" value="${true}"/>
       		</c:if>
       	</c:forEach>
-      </c:if>
+      </mtl:exists>
 
-	  <!-- comma, if friends exist and (tags exist or resources are present) -->
-      <c:if test="${isCommaNecessary and mtl:hasProperty(command, 'friendsOfUser') and not empty command.friendsOfUser}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+	  <mtl:exists path="command.friendsOfUser">
+		<!-- comma, if friends exist and (tags exist or resources are present) -->
+      	<c:if test="${isCommaNecessary and not empty command.friendsOfUser}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
 
-      <!-- friends -->
-      <c:if test="${mtl:hasProperty(command, 'friendsOfUser')}">
+	    <!-- friends -->
 	  	<c:forEach var="user" varStatus="status" items="${command.friendsOfUser}" >
       		<json:user user="${user}"/><c:if test="${not status.last}">,</c:if>
       		<c:if test="${status.last}">
       			<c:set var="isCommaNecessary" value="${true}"/>
       		</c:if>
       	</c:forEach>
-      </c:if>
+      </mtl:exists>
    ]
 }
 
