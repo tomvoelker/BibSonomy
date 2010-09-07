@@ -107,8 +107,3 @@ function in_array(array, element) {
 }  
 
 window.onload = changeView;
-/* enable dynamic resizing of textareas */
-$(document).ready(function(){
-  	$('textarea').autoResize();
-});
-
