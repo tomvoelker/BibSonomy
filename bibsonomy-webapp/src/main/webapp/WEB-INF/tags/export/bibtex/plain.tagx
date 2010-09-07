@@ -23,7 +23,7 @@
 <c:if test="${not empty bib.volume}">, Vol. ${mtl:cleanBibtex(bib.volume)}</c:if> 
 <c:if test="${not empty bib.number}">, Nr. ${mtl:cleanBibtex(bib.number)}</c:if>
 <c:if test="${not empty bib.address}">
-${mtl:cleanBibtex(bib.address)}:
+<c:out value=" "/>${mtl:cleanBibtex(bib.address)}:
 </c:if>
 <c:if test="${not empty bib.publisher}">${mtl:cleanBibtex(bib.publisher)}</c:if>
 <c:if test="${not empty bib.year}">
