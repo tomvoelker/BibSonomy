@@ -12,6 +12,7 @@ import org.bibsonomy.database.systemstags.search.BibTexKeySystemTag;
 import org.bibsonomy.database.systemstags.search.UserSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.webapp.command.BibtexkeyCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -49,7 +50,7 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		String groupingName = null;
 				
 		// check for systemtag sys:user:USERNAME
-		List<String> sysTags = SystemTagsUtil.extractSearchSystemTagsFromString(command.getRequestedTags(), " ");		
+		List<String> sysTags = SystemTagsUtil.extractSearchSystemTagsFromString(command.getRequestedTags(), TagUtils.getDefaultListDelimiter());		
 		final String systemTagUser = extractSystemTagUser(sysTags);		
 		if (systemTagUser != null) {
 			command.setRequestedUser(systemTagUser);
