@@ -21,6 +21,7 @@ import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.actions.PictureCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -34,7 +35,7 @@ import org.springframework.validation.Errors;
  * @author wla
  * @version $Id$
  */
-public class PictureController implements MinimalisticController<PictureCommand> {
+public class PictureController implements MinimalisticController<PictureCommand>, ErrorAware {
 
 	static {
 		/*
@@ -57,7 +58,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 */
 	private FileUploadFactory uploadFactory;
 
-	private final Errors errors = null;
+	private Errors errors = null;
 
 	/**
 	 * Path to the picture folder
@@ -285,6 +286,19 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		}
 	}
 
+	@Override
+	public Errors getErrors() {
+		return errors;
+	}
+
+	@Override
+	public void setErrors(final Errors errors) {
+		/*
+		 * here: check for binding errors
+		 */
+		this.errors = errors;
+	}
+	
 	/**
 	 * Scales the picture to a standard size.
 	 * 
