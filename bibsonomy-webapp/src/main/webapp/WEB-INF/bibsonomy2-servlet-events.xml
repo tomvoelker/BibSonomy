@@ -58,7 +58,7 @@
 			<list>
 				<bean class="org.bibsonomy.events.services.SpringBeanEventManager" scope="singleton"/>
 				<bean class="org.bibsonomy.events.services.RestEventManager" scope="singleton" >
-				    <property name="serviceUrl" value="http://odie.cs.uni-kassel.de:8080/api/talkradar/users/create" />
+				    <property name="serviceUrl" value="http://conferator.org/lwa2010/api/talkradar/users" />
 				</bean>
 			</list>
 		</property>
