@@ -11,6 +11,7 @@ import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.events.model.Event;
 import org.bibsonomy.events.model.ParticipantDetails;
@@ -66,12 +67,9 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 
 		final Event event = eventManager.getEvent(command.getEvent().getId());
 		if (!present(event)) {
-			throw new MalformedURLSchemeException("The event " + command.getEvent().getId() + " does not exist."); // FIXME:
-			// own
-			// message?
+			throw new MalformedURLSchemeException("The event " + command.getEvent().getId() + " does not exist."); 
 		}
 
-		log.info("got event " + event);
 		command.setEvent(event);
 
 		if (!context.isValidCkey()) {
@@ -84,10 +82,6 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 			return Views.EVENT_REGISTRATION;
 		}
 
-		/*
-		 * FIXME: field length validation (like in UpdateUserController)
-		 * missing!
-		 */
 		if (errors.hasErrors()) {
 			return Views.EVENT_REGISTRATION;
 		}
@@ -97,9 +91,10 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		 */
 		try {
 			eventManager.registerUser(loginUser, event, command.getParticipantDetails());
+		} catch (final InvalidModelException e) {
+			errors.reject("events.error.registered", e.getMessage());
 		} catch (final Exception e) {
-			// FIXME: handle case of already registered user!
-			errors.reject("events.error.registration", e.getMessage());
+			errors.reject("events.error.registration", new String[]{e.getMessage()}, "An unknown error occured. The error message is " + e.getMessage() + ".");
 		}
 
 		/*
@@ -112,7 +107,7 @@ public class EventRegistrationController implements ErrorAware, ValidationAwareC
 		}
 		
 		/*
-		 * FIXME: redirect to success page
+		 * redirect to success page
 		 */
 		return Views.EVENT_REGISTRATION_SUCCESS;
 	}
