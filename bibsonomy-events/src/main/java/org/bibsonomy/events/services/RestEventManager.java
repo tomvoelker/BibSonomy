@@ -66,7 +66,7 @@ public class RestEventManager implements EventManager {
 			e.printStackTrace();
 		}
 		String jsonText = out.toString();
-		doRequest("register", jsonText);
+		doRequest("create", jsonText);
 
 	}
 
