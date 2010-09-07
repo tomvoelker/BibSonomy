@@ -147,27 +147,28 @@
  	  					</c:forEach>
  	  				</ul>
 				</div>
-			</c:if>
-
-			<script type="text/javascript">
-				var list = document.getElementById("liste");
-				for ( var i = 0; list.childNodes.length > i; i++) {
-					if (list.childNodes[i].childNodes[0].tagName.toLowerCase() == "li") {
-						list.childNodes[i].childNodes[0].childNodes[1].onclick = function(
-								details, pos) {
-							return function() {
-								if (details.style.display == "block") {
-									details.style.display = "none";
-									list.childNodes[pos].childNodes[0].childNodes[1].innerHTML = " "+getString("cv.options.show_details");
-								} else {
-									details.style.display = "block";
-									list.childNodes[pos].childNodes[0].childNodes[1].innerHTML = " "+getString("cv.options.hide_details");
+				<script type="text/javascript">
+					var list = document.getElementById("liste");
+					for ( var i = 0; list.childNodes.length > i; i++) {
+						if (list.childNodes[i].childNodes[0].tagName.toLowerCase() == "li") {
+							list.childNodes[i].childNodes[0].childNodes[1].onclick = function(
+									details, pos) {
+								return function() {
+									if (details.style.display == "block") {
+										details.style.display = "none";
+										list.childNodes[pos].childNodes[0].childNodes[1].innerHTML = " "+getString("cv.options.show_details");
+									} else {
+										details.style.display = "block";
+										list.childNodes[pos].childNodes[0].childNodes[1].innerHTML = " "+getString("cv.options.hide_details");
+									}
 								}
 							}
 						}
 					}
-				}
-			</script>
+				</script>
+			</c:if>
+
+			
 
 			<c:if test="${not empty command.bibtex.list}">
 				<h2><fmt:message key="cv.publications"/></h2>
