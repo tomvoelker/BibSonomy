@@ -8,7 +8,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
 	<!-- initialize with empty list -->
-	<c:set var="personList" value="[]"/>	
+	<c:set var="personList" value=""/>	
 	<c:choose>
 		<c:when test="${not empty post.resource.author}">
 			<c:set var="personList" value="${post.resource.authorList}"/>
