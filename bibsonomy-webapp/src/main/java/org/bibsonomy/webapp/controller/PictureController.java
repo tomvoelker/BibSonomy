@@ -167,7 +167,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		if (picture.exists()) { 
 			command.setPathToFile(picture.getAbsolutePath());
 			command.setContentType(FileUtil.getContentType(picture.getName()));
-			command.setFilename(picture.getName());
+			command.setFilename(requestedUserName + FILE_EXTENSION);
 		} else {
 			setDummyPicture(command);
 		}
