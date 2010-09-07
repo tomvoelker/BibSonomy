@@ -49,7 +49,7 @@ public class DocumentDownloadView extends AbstractView{
 			 * set HTTP headers
 			 */
 			response.setHeader("Content-Disposition","inline; filename*='utf-8'" + URLEncoder.encode(command.getFilename(), "UTF-8"));
-			setContentType(command.getContentType());
+			response.setContentType(command.getContentType());
 			response.setContentLength((int) document.length());
 			
 			/*
