@@ -36,7 +36,6 @@
 	    	<script type="text/javascript" src="${resdir}/javascript/util.js">&amp;nbsp;</script>
 	    	<script type="text/javascript" src="${resdir}/javascript/recommender.js">&amp;nbsp;</script>
 	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script>
-            <script type="text/javascript" src="${resdir}/javascript/jquery.textarearesizer.js">&amp;nbsp;</script>
             <!--
                | one script just for the post page
                -->

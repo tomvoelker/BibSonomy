@@ -34,7 +34,6 @@
 			<!--  scripts for ajax autocompletion -->
 			<script type="text/javascript" src="${resdir}/javascript/jquery_autocomplete.js">&amp;nbsp;</script>
 	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script> 
-			<script type="text/javascript" src="${resdir}/javascript/jquery_textarea_autoresize.js">&amp;nbsp;</script>	
 			
 			<!--  scripts for ajax requests -->
 			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>

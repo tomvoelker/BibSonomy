@@ -67,6 +67,7 @@
 				<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/style.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/chrome.js">&amp;nbsp;</script>
+	            <script type="text/javascript" src="${resdir}/javascript/jquery.textarearesizer.js">&amp;nbsp;</script>
 				
 				<!-- enable logging with user permission -->
 				<c:if test="${loginUser.settings.logLevel != 1}">
@@ -270,12 +271,13 @@
 					<fmt:message key="system.termsOfUse"/>
 					<script type="text/javascript">
 		              <![CDATA[
-						init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${projectName}");
-					  ]]>
-					</script>
-					<script type="text/javascript">
-		              <![CDATA[
-					    $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+					    $(document).ready(
+					    		function() {
+					    			$('textarea').TextAreaResizer();
+								    $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+					    			init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${projectName}");
+					    		}
+					    );					    
 					  ]]>
 					</script>
 				</div>

@@ -34,7 +34,7 @@
 											<tr>
 												<td><form:label path="group.description" ><fmt:message key="description"/>:</form:label></td>
 												<td>
-													<form:textarea path="group.description" tabindex="3" cols="40" rows="3" onkeyup="sz(this);" />
+													<form:textarea path="group.description" tabindex="3" cols="40" rows="3" " />
 												</td>
 											</tr>
 										</table>

@@ -51,7 +51,6 @@
 			<c:if test="${not empty command.requestedUser}">
 				<script type="text/javascript" src="${resdir}/javascript/jquery_autocomplete.js">&amp;nbsp;</script>
 	    		<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script> 
-				<script type="text/javascript" src="${resdir}/javascript/jquery_textarea_autoresize.js">&amp;nbsp;</script>			
 			</c:if>
 		</jsp:attribute>
 	</layout:bibtexLayout>

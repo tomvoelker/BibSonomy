@@ -130,17 +130,6 @@ function getParent(node, clazz) {
    return getParent(node.parentNode, clazz);
 }
 
-// textarea resize
-function sz(t) {
-	a=t.value.split('\n');
-	b=0;
-	for (x=0; x<a.length; x++) {
-		if (a[x].length >= t.cols) b+= Math.floor(a[x].length/t.cols);
-	}
-	b+= a.length;
-	//if (b>t.rows) t.rows=b;
-}
-
 // if window is small, maximizes "general" div to 95%
 function maximizeById(id) {
   if (window.innerWidth < 1200) {

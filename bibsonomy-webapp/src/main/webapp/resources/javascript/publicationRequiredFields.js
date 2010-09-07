@@ -280,9 +280,3 @@ function formatLabel (label) {
 	}
 	return label;
 }
-
-$(document).ready(
-		function() {
-			$('textarea').TextAreaResizer();
-		}
-);

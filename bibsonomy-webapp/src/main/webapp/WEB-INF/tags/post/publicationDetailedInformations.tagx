@@ -147,13 +147,13 @@
 	
 	        <div class="fsRow">
 	          <form:label cssClass="fsLabel" path="post.resource.misc" ><fmt:message key="post.resource.misc"/></form:label><buttons:help message="post.resource.misc.help"/>
-	          <form:textarea cssClass="fsInput" path="post.resource.misc" tabindex="2" rows="3" onkeyup="sz(this);" />
+	          <form:textarea cssClass="fsInput" path="post.resource.misc" tabindex="2" rows="3"/>
 	          <div class="dissError"><form:errors path="post.resource.misc" /></div>
 	        </div>
 	
 	        <div class="fsRow">
 	          <form:label cssClass="fsLabel" path="post.resource.abstract" ><fmt:message key="post.resource.abstract"/></form:label><buttons:help message="post.resource.abstract.help"/>
-	          <form:textarea cssClass="fsInput" path="post.resource.abstract" tabindex="2" rows="3" onkeyup="sz(this);" />
+	          <form:textarea cssClass="fsInput" path="post.resource.abstract" tabindex="2" rows="3"/>
 	          <div class="dissError"><form:errors path="post.resource.abstract" /></div>
 	        </div>
         </jsp:attribute>
@@ -167,12 +167,12 @@
             	-->
             <div class="fsRow">
               <form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label><buttons:help cssStyle="float:left" message="post.resource.description.help"/>
-              <form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" onkeyup="sz(this);" />
+              <form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" />
             </div>
             
             <div class="fsRow">
               <form:label cssClass="fsLabel" path="post.resource.privnote" ><fmt:message key="post.resource.privnote"/></form:label><buttons:help message="post.resource.privnote.help"/>
-              <form:textarea cssClass="fsInput" path="post.resource.privnote" tabindex="2" rows="3" onkeyup="sz(this);" />
+              <form:textarea cssClass="fsInput" path="post.resource.privnote" tabindex="2" rows="3" />
               <div class="dissError"><form:errors path="post.resource.privnote" /></div>
             </div>
             
@@ -184,7 +184,7 @@
 
             <div class="fsRow">
               <form:label cssClass="fsLabel" path="post.resource.note" ><fmt:message key="post.resource.note"/></form:label><buttons:help message="post.resource.note.help"/>
-              <form:textarea cssClass="fsInput" path="post.resource.note" tabindex="2" rows="3" onkeyup="sz(this);" />
+              <form:textarea cssClass="fsInput" path="post.resource.note" tabindex="2" rows="3"/>
               <div class="dissError"><form:errors path="post.resource.note" /></div>
             </div>
     	</jsp:attribute>

@@ -32,7 +32,7 @@
 	                           
             <div class="fsRow">     
 			  <form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
-			  <form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" onkeyup="sz(this);" />
+			  <form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" />
 			  <div class="fsSuggestion" id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
             </div>
 		</jsp:attribute>
