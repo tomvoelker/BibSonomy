@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.common.exceptions.AuthRequiredException;
 import org.bibsonomy.common.exceptions.UnsupportedRelationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -144,6 +143,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Updates only the password of a current user
+	 * 
 	 * @param user 
 	 * @param session
 	 * @return the user's name
@@ -158,6 +158,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Updates the UserSettings object of a user
+	 * 
 	 * @param user
 	 * @param session
 	 * @return the user's name
@@ -172,6 +173,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Updates the users profile (gender, hobbies, …)
+	 * 
 	 * @param user
 	 * @param session
 	 * @return the user's name
@@ -321,6 +323,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Updates a user (NOT his settings).
 	 * For settings update we have {@link UserDatabaseManager#updateUserSettingsForUser(User, DBSession)}
+	 * 
 	 * @param user the user containing all fields to be updated
 	 * @param session
 	 * @return the user's name iff update was successful
@@ -472,10 +475,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param password 
 	 * @param session 
 	 * @return A User object containing the user if the login succeeded. If not, 
-	 * the object contains a <code>null</code> user name. 
-	 * @throws AuthRequiredException 
+	 * the object contains a <code>null</code> user name.
 	 */
-	public User validateUserAccessByPassword(final String username, final String password, final DBSession session) throws AuthRequiredException {
+	public User validateUserAccessByPassword(final String username, final String password, final DBSession session) {
 		// empty user object for not-logged in users
 		final User notLoggedInUser = new User();
 
@@ -569,6 +571,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Gets a username by ldapUserId
+	 * 
 	 * @param ldapUser
 	 * @param session
 	 * @return username
@@ -579,6 +582,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Create a relation between two users
+	 * 
 	 * @param sourceUser (left side of the relation)
 	 * @param targetUser (right side of the relation)
 	 * @param relation currently available: FOLLOWER_OF, OF_FRIEND 
@@ -621,6 +625,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Get every User, that is in a specified relation with a given user:
+	 * 
 	 * @param sourceUser - user on the left side of the relation
 	 * @param relation - currently available: FOLLOWER_OF, OF_FOLLOWER, OF_FRIEND, FRIEND_OF
 	 * @param session 
@@ -661,6 +666,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Delete a relation between two users (if present)
+	 * 
 	 * @param sourceUser (left side of the relation)
 	 * @param targetUser (right side of the relation)
 	 * @param relation currently available: FOLLOWER_OF, OF_FRIEND 
