@@ -8,11 +8,15 @@ import org.bibsonomy.webapp.command.ScraperInfoCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
 /**
+ * controller for the scraper info page
+ * - /scraperinfo
+ * 
  * @author ema
  * @version $Id$
  */
-public class ScraperInfoController extends MultiResourceListController implements MinimalisticController<ScraperInfoCommand>{
+public class ScraperInfoController implements MinimalisticController<ScraperInfoCommand>{
 
 	/*
 	 * TODO: inject the scraper list using Spring
