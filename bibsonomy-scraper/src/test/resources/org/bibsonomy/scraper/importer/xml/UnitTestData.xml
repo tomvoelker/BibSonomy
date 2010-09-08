@@ -203,11 +203,9 @@
 	</URLTest>
 	<URLTest id="url_33">
 		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
-		<URL>http://www3.interscience.wiley.com/journal/104530788/abstract?CRETRY=1&amp;SRETRY=0</URL>
+		<URL>http://onlinelibrary.wiley.com/doi/10.1002/jemt.10338/abstract</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>Sometimes scraping won't work. Dunno why</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_34">
 		<TestDescription>URL scraping test with a citation download page from intersience wiley</TestDescription>
@@ -215,7 +213,7 @@
 		<BibFile>WileyIntersienceScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
 		<Enabled>false</Enabled>
-		<AdditionalInfo>Sometimes scraping won't work. Dunno why</AdditionalInfo>
+		<AdditionalInfo>URL does not work any longer</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_35">
 		<TestDescription>URL (with eutils host) scraping test with publication from pubmed</TestDescription>
@@ -640,11 +638,9 @@
 	</URLTest>
 	<URLTest id="url_109">
 		<TestDescription>URL scraping test with a abstract page (alternate URL pattern) from wiley</TestDescription>
-		<URL>http://www3.interscience.wiley.com/journal/118514708/abstract</URL>
+		<URL>http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2575.2007.00275.x/abstract</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>Sometimes scraping won't work. Dunno why</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_110">
 		<TestDescription>Cambridge Journals Url Test</TestDescription>
@@ -1121,4 +1117,12 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 		<Enabled>false</Enabled>
 	</URLTest>
+	<URLTest id="url_189">
+		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
+		<URL>http://onlinelibrary.wiley.com/doi/10.1002/1521-4095(200011)12:22%3C1655::AID-ADMA1655%3E3.0.CO;2-2/abstract</URL>
+		<BibFile>WileyIntersienceScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
+		<Enabled>true</Enabled>
+		<AdditionalInfo>Sometimes scraping won't work. Dunno why</AdditionalInfo>
+	</URLTest>	
 </test:Tests>

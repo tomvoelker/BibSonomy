@@ -23,11 +23,11 @@
 
 package org.bibsonomy.scraper.url.kde.wileyintersience;
 
+import static org.junit.Assert.assertTrue;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Scraper URL tests #33 #34 #109 for WileyIntersienceScraper
@@ -65,5 +65,14 @@ public class WileyIntersienceScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_109"));
 	}
+	
+	/**
+	 * starts URL test with id url_189
+	 */
+	@Test
+	@Ignore
+	public void url4TestRun(){
+		assertTrue(new UnitTestRunner().runSingleTest("url_189"));
+	}	
 	
 }
