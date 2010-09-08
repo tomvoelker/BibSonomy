@@ -138,7 +138,7 @@ function maximizeById(id) {
 }
 
 /** 
- * 	create a text form wich we will use to switch between
+ * 	create a text form which we will use to switch between
  * 	password and text form to circumvent an issue caused
  * 	by IE's security policy
  * 
@@ -149,7 +149,7 @@ function maximizeById(id) {
 **/
 function getFormTextCopy(el) {
 	el_copy = document.getElementById(el.id+pwd_id_postfix);
-	el_copy.style.width = el.offsetWidth+"px";
+	el_copy.style.width = el.style.width;
     el_copy.onmousedown = clear_input_password;
     el_copy.onkeypress  = clear_input_password;
 	return el_copy;
@@ -1846,15 +1846,6 @@ function editTags(obj, ckey) {
 		parent.insertBefore(form, parent.firstChild);
 	}
 }
- 
-function setTut(tutName) {
-	
-	var w;
-	
-	w = window.open("http://" + window.location.host + "/tutorial/" + tutName + '.htm', "_blank", "width=915, height=735, scrollbars=no");
-	w.focus();
-
-}
 
 String.prototype.startsWith = function(s) { 
 	return this.indexOf(s) == 0; 
@@ -1869,11 +1860,11 @@ function getString( key ) {
 
 function expandBookmarkList(){
 	$("#bibtexList").animate({ 
-	width: 0, opacity: 0.0
+	  width: 0, opacity: 0.0
 	}, "slow" ).hide("1");
 
 	$("#bookmarkList").animate({ 
-	width: "97%", opacity: 1.0
+	  width: "97%", opacity: 1.0
 	}, "slow", function() {
 		$(this).css("position","static");
 	}).show("1");
