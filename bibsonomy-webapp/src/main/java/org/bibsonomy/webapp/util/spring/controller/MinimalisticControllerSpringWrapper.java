@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.webapp.command.BaseCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.exceptions.ServiceUnavailableException;
@@ -177,10 +176,6 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 			// TODO: this exception is only thrown in org.bibsonomy.webapp.controller.actions.UserLoginController;
 			// if desired, add some logging there. Otherwise, our error logs get cluttered.(dbe)
 			// log.warn("Could not complete controller (Service unavailable): " + e.getMessage());
-		} catch (final LuceneException le) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			errors.reject(le.getMessage(), new Object[]{le}, "Internal Server Error (LuceneException)");
-			log.error("Could not complete controller (LuceneException).", le);
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
