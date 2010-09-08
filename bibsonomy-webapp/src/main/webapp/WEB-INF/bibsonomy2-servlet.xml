@@ -569,9 +569,7 @@
 		</property>
 	</bean>
 	
-	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request">
-		<property name="logic" ref="logic"/>
-	</bean>
+	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="singleton" />
 	
     <!--  #################### PUMA Controller #################### -->
 	<bean id="pumaHomepageController" class="de.unikassel.puma.webapp.controller.HomepageController" scope="request">
