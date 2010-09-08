@@ -13,7 +13,7 @@
 	
 	<div id="nice_tnav">
 	<ul>
-		<li >
+		<li>
 			<c:url var="root" value="/" context="${projectContext}"/><a id="nav_home" href="${root}">Home</a>
 		</li>
 		<c:choose>
@@ -85,7 +85,7 @@
 		</li>
 		<li>
 			<c:url var="groupsUrl" value="/groups" context="${projectContext}"/>
-			<a id="nav_groups" href="${groupsUrl}" rel="grp_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.groups"/></a>
+			<a id="nav_groups" href="${groupsUrl}" rel="grp_menu"><c:if test="${not empty loginUser.groups}"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> </c:if><fmt:message key="navi.groups"/></a>
 		</li>
   
         <!-- dropdown menu for groups -->

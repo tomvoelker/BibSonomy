@@ -39,7 +39,7 @@
 	  <a id="nav_relations" href="/relations">relations</a>
 	</li>
 	<li>
-     <a id="nav_urls" href="/groups" rel="grp_menu"><img src="/resources/image/nice_box_arrow.png" alt="" />groups</a>
+     <a id="nav_urls" href="/groups" rel="grp_menu"><c:if test="${not empty loginUser.groups}"><img src="/resources/image/nice_box_arrow.png" alt="" /> </c:if>groups</a>
 	</li>
 	<li>
 	  <%-- dropdown menu for groups --%>		

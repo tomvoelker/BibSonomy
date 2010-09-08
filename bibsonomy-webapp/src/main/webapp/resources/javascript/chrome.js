@@ -1,3 +1,6 @@
+// XXX: this file has been modified by us! Be careful when updating the script
+
+
 //** Chrome Drop Down Menu- Author: Dynamic Drive (http://www.dynamicdrive.com)
 
 //** Updated: July 14th 06' to v2.0
@@ -173,9 +176,12 @@ startchrome:function(){
 				this.addEvent(asscdropdownmenu, function(){cssdropdown.clearhidemenu()}, "mouseover")
 				this.addEvent(asscdropdownmenu, function(e){cssdropdown.dynamichide(this, e)}, "mouseout")
 				this.addEvent(asscdropdownmenu, function(){cssdropdown.delayhidemenu()}, "click")
-				try{
-					menuitems[i].innerHTML=menuitems[i].innerHTML+" "+this.dropdownindicator
-				}catch(e){}
+				// XXX: we aren't using the indicator but
+				// the code adds a space => the layout gets broken
+				// try{
+					// menuitems[i].innerHTML=menuitems[i].innerHTML+" "+this.dropdownindicator
+				// }
+				// }catch(e){}
 				this.addEvent(menuitems[i], function(e){ //show drop down menu when main menu items are mouse over-ed
 					if (!cssdropdown.isContained(this, e)){
 						var evtobj=window.event || e
