@@ -80,7 +80,7 @@ public class RisToBibtexConverter {
 		 */
 
 		String type = "", author = "", editor = "", startPage = "", endPage = "", comment = "";
-		final SortedMap<String,String> bibTexMap = new TreeMap<String,String>();
+		final SortedMap<String,String> bibtexMap = new TreeMap<String,String>();
 		
 		// split the Strint into different entries
 		final String[] fields = Ris.split("\n");
@@ -139,12 +139,12 @@ public class RisToBibtexConverter {
 					else
 						type = "other";
 				} else if (lab.equals("T1") || lab.equals("TI"))
-					bibTexMap.put("title", val);//Title
+					bibtexMap.put("title", val);//Title
 				// =
 				// val;
 				else if (lab.equals("T2") || lab.equals("T3")
 						|| lab.equals("BT")) {
-					bibTexMap.put("booktitle", val);
+					bibtexMap.put("booktitle", val);
 				} else if (lab.equals("A1") || lab.equals("AU")) {
 					if (author.equals("")) // don't add " and " for the first author
 						author = val;
@@ -155,20 +155,27 @@ public class RisToBibtexConverter {
 						editor = val;
 					else
 						editor += " and " + val;
-				} else if (lab.equals("JA") || lab.equals("JF")
-						|| lab.equals("JO")) {
+				} else if (lab.equals("JA") || lab.equals("JF")	|| lab.equals("JO")) {
 					if (type.equals("inproceedings"))
-						bibTexMap.put("booktitle", val);
-					else
-						bibTexMap.put("journal", val);
+						bibtexMap.put("booktitle", val);
+					else {
+						/*
+						 * Since we don't want JA (abbreviated journal) to 
+						 * overwrite JO (long journal), we check for JA, if a
+						 * journal entry already exists.
+						 */
+						if (!lab.equals("JA") || !bibtexMap.containsKey("journal"))
+							bibtexMap.put("journal", val);
+					}
 				}
-
+				else if (lab.equals("DO")) 
+					bibtexMap.put("doi", val);
 				else if (lab.equals("SP"))
 					startPage = val;
 				else if (lab.equals("PB"))
-					bibTexMap.put("publisher", val);
+					bibtexMap.put("publisher", val);
 				else if (lab.equals("AD") || lab.equals("CY"))
-					bibTexMap.put("address", val);
+					bibtexMap.put("address", val);
 				else if (lab.equals("EP"))
 					endPage = val;
 				else if (lab.equals("SN")) {
@@ -186,18 +193,18 @@ public class RisToBibtexConverter {
 					}
 					
 					if (_isbn.length() > 0)
-						bibTexMap.put("isbn", _isbn.trim());
+						bibtexMap.put("isbn", _isbn.trim());
 					if (_issn.length() > 0)
-						bibTexMap.put("issn", _issn.trim());
+						bibtexMap.put("issn", _issn.trim());
 				}
 				else if (lab.equals("VL"))
-					bibTexMap.put("volume", val);
+					bibtexMap.put("volume", val);
 				else if (lab.equals("IS"))
-					bibTexMap.put("number", val);
+					bibtexMap.put("number", val);
 				else if (lab.equals("N2") || lab.equals("AB"))
-					bibTexMap.put("abstract", val);
+					bibtexMap.put("abstract", val);
 				else if (lab.equals("UR"))
-					bibTexMap.put("url", val);
+					bibtexMap.put("url", val);
 				else if ((lab.equals("Y1") || lab.equals("PY"))
 						&& val.length() >= 4) {
 
@@ -209,13 +216,13 @@ public class RisToBibtexConverter {
 					}
 					
 					String[] parts = val.split(delim);
-					bibTexMap.put("year", parts[0]);
+					bibtexMap.put("year", parts[0]);
 					if ((parts.length > 1) && (parts[1].length() > 0)) {
 						try {
 							int month = Integer.parseInt(parts[1]);
 							if ((month > 0) && (month <= 12)) {
 								// System.out.println(Globals.MONTHS[month-1]);
-								bibTexMap.put("month", "#" + MONTHS[month - 1] + "#");
+								bibtexMap.put("month", "#" + MONTHS[month - 1] + "#");
 							}
 						} catch (NumberFormatException ex) {
 							// The month part is unparseable, so we ignore it.
@@ -224,11 +231,11 @@ public class RisToBibtexConverter {
 				}
 
 				else if (lab.equals("KW")) {
-					if (!bibTexMap.containsKey("keywords"))
-						bibTexMap.put("keywords", val);
+					if (!bibtexMap.containsKey("keywords"))
+						bibtexMap.put("keywords", val);
 					else {
-						String kw = bibTexMap.get("keywords");
-						bibTexMap.put("keywords", kw + " " + val);
+						String kw = bibtexMap.get("keywords");
+						bibtexMap.put("keywords", kw + " " + val);
 					}
 				} else if (lab.equals("U1") || lab.equals("U2")
 						|| lab.equals("N1")) {
@@ -238,34 +245,34 @@ public class RisToBibtexConverter {
 				}
 				// Added ID import 2005.12.01, Morten Alver:
 				else if (lab.equals("ID"))
-					bibTexMap.put("refid", val);
+					bibtexMap.put("refid", val);
 			}
 		}
 		// fix authors
 		//	        if (Author.length() > 0) {
 		//	            Author = AuthorList.fixAuthor_lastNameFirst(Author);
-		bibTexMap.put("author", author);
+		bibtexMap.put("author", author);
 		//	        }
 		//	        if (Editor.length() > 0) {
 		//	            Editor = AuthorList.fixAuthor_lastNameFirst(Editor);
-		bibTexMap.put("editor", editor);
+		bibtexMap.put("editor", editor);
 		//	        }
 		//	        if (comment.length() > 0) {
-		bibTexMap.put("comment", comment);
+		bibtexMap.put("comment", comment);
 		//	        }
 
-		bibTexMap.put("pages", startPage + "--" + endPage);
+		bibtexMap.put("pages", startPage + "--" + endPage);
 		//	        BibtexEntry b = new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID, Globals
 		//	                        .getEntryType(Type)); // id assumes an existing database so don't
 
 		// Remove empty fields:
 		boolean first=true;
 		final StringBuffer bibtexString = new StringBuffer();
-		final String bibtexKey = BibTexUtils.generateBibtexKey(bibTexMap.get("author"), bibTexMap.get("editor"), bibTexMap.get("year"), bibTexMap.get("title"));
+		final String bibtexKey = BibTexUtils.generateBibtexKey(bibtexMap.get("author"), bibtexMap.get("editor"), bibtexMap.get("year"), bibtexMap.get("title"));
 		bibtexString.append("@").append(type).append("{" + bibtexKey	+ ",\n");
-		final Set<String> keySet = bibTexMap.keySet();
+		final Set<String> keySet = bibtexMap.keySet();
 		for (final String key: keySet) {
-			final String content = bibTexMap.get(key).trim();
+			final String content = bibtexMap.get(key).trim();
 			if ((content != null) && (content.trim().length() != 0)) {
 				if (first) {
 					first=false;
