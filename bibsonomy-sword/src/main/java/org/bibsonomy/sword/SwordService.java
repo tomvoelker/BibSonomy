@@ -202,13 +202,8 @@ public class SwordService {
 		SwordPost swordPost = new SwordPost();
 		Post<BibTex> bibTexPost = null;
 		
-//		String resourceHash = "545d2292ba08ff5ec34e9ae8e9c5b314"; // localhost 
-		String resourceHash = "44766652af8d63d0f22097b9cb6d2a14"; // bibsonomy
-//		String resourceHash = "1b6dcdc28691f73b443371af0feeca9e"; // puma
-
-//		String apiUrl = "http://localhost:8080/api/";
-		String apiUrl = "http://www.bibsonomy.org/api/";
-//		String apiUrl = "http://puma.uni-kassel.de/api/";
+		String resourceHash = "545d2292ba08ff5ec34e9ae8e9c5b314"; 
+		String apiUrl = "http://localhost:8080/api/";
 		
 		
 		/*
