@@ -7,14 +7,14 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.bibsonomy</groupId>
-	<artifactId>bibsonomy-sword</artifactId>
-	<name>BibSonomy SWORD</name>
-	<version>0.0.2-SNAPSHOT</version>
+	<artifactId>bibsonomy-email-api</artifactId>
+	<name>BibSonomy E-Mail API</name>
+	<version>0.0.1-SNAPSHOT</version>
 	<description>Reads e-mails from STDIN and posts them to BibSonomy.</description>
 
 	<build>
 		<plugins>
-<!--			<plugin>
+			<plugin>
 				<groupId>com.anydoby</groupId>
 				<artifactId>fatjar-maven-plugin</artifactId>
 				<version>0.0.2</version>
@@ -28,7 +28,6 @@
 					</execution>
 				</executions>
 			</plugin>
--->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -47,7 +46,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>org.bibsonomy.sword.SwordMain</mainClass>
+							<mainClass>org.bibsonomy.email.EmailPostingService</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -76,12 +75,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>sword</groupId>
-			<artifactId>sword-common</artifactId>
-			<version>1.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database</artifactId>
 			<version>2.0.8-SNAPSHOT</version>
@@ -104,7 +97,7 @@
 					<groupId>commons-logging</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+		</dependency>		
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
