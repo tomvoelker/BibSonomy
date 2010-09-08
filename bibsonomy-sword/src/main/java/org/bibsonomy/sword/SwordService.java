@@ -59,9 +59,7 @@ public class SwordService {
 		SwordPost swordPost = null;
 		log.info("starting sword");
 				
-		//SwordUser defaultuser = new SwordUser("stefani","adf57971843dac5fec32d8b2b799bd8a"); // localhost:8080
-		//SwordUser defaultuser = new SwordUser("stefani","f9bcad08762104da14d54cf419adb394"); // puma.uni-kassel.de
-		SwordUser defaultuser = new SwordUser("bugsbunny","d254ddbe264a415e181430043ca79cb9"); // www.bibsonomy.org
+		SwordUser defaultuser = new SwordUser("stefani","adf57971843dac5fec32d8b2b799bd8a");
 		
 		
 		
