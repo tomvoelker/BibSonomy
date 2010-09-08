@@ -106,7 +106,7 @@ function getFirstPersonsLastName(person) {
         /*
          * first author extracted, get its last name
          */
-        var lastspace = firstauthor.searchOf(/\s\S+$/);
+        var lastspace = firstauthor.search(/\s\S+$/);
         var lastname;
         if (lastspace < 0) {
             lastname = firstauthor;
