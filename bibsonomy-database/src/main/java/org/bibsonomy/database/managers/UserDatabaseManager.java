@@ -434,15 +434,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * Authenticate a user by comparing his submitted Api key with the one
 	 * stored in the database. Spammers are excluded from accessing the API
 	 * 
-	 * TODO: rename
-	 * 
 	 * @param username 
 	 * @param apiKey 
 	 * @param session 
 	 * @return A User object containing the user if the login succeeded. If not, 
 	 * the object contains a <code>null</code> user name. 
 	 */
-	public User validateUserAccess(final String username, final String apiKey, final DBSession session) {
+	public User validateUserAccessByAPIKey(final String username, final String apiKey, final DBSession session) {
 		// empty user object for not-logged in users
 		final User notLoggedInUser = new User();
 
@@ -468,9 +466,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * stored in the database. If the user exists and the password is correct,
 	 * the returned object contains the users details (including his name). If
 	 * the user does not exist or the password is wrong, the user name of the 
-	 * returned object is NULL. 
-	 * 
-	 * TODO: rename
+	 * returned object is NULL.
 	 * 
 	 * @param username 
 	 * @param password 
@@ -479,7 +475,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * the object contains a <code>null</code> user name. 
 	 * @throws AuthRequiredException 
 	 */
-	public User validateUserUserAccess(final String username, final String password, final DBSession session) throws AuthRequiredException {
+	public User validateUserAccessByPassword(final String username, final String password, final DBSession session) throws AuthRequiredException {
 		// empty user object for not-logged in users
 		final User notLoggedInUser = new User();
 

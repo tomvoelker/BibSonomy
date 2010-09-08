@@ -324,22 +324,22 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * Test the user authentication via API key
-	 */
-	@Test
-	public void validateUserAccess() {
-		// not logged in (wrong apikey) = unknown user
-		assertNull(userDb.validateUserAccess("testuser1", "ThisIsJustAFakeAPIKey", this.dbSession).getName());
-		// the correct key
-		assertEquals("testuser1", userDb.validateUserAccess("testuser1", "11111111111111111111111111111111", this.dbSession).getName());
-
-		// the user "testspammer" hasn't got an Api key
-		for (final String name : new String[] { "", " ", null, "testspammer" }) {
-			for (final String key : new String[] { "", " ", null, "hurz" }) {
-				assertNull(userDb.validateUserAccess(name, key, this.dbSession).getName());
-			}
-		}
-	}
+    	 * Test the user authentication via API key
+    	 */
+    	@Test
+	public void validateUserAccessByAPIKey() {
+    	    // not logged in (wrong apikey) = unknown user
+    	    assertNull(userDb.validateUserAccessByAPIKey("testuser1", "ThisIsJustAFakeAPIKey", this.dbSession).getName());
+    	    // the correct key
+    	    assertEquals("testuser1", userDb.validateUserAccessByAPIKey("testuser1", "11111111111111111111111111111111", this.dbSession).getName());
+    	
+    	    // the user "testspammer" hasn't got an Api key
+    	    for (final String name : new String[] { "", " ", null, "testspammer" }) {
+    		for (final String key : new String[] { "", " ", null, "hurz" }) {
+    		    assertNull(userDb.validateUserAccessByAPIKey(name, key, this.dbSession).getName());
+    		}
+    	    }
+    	}
 	
 	/**
 	 * tests getRelatedUsersBySimilarity 

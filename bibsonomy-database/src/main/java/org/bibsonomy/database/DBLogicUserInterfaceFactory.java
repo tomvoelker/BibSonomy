@@ -72,7 +72,7 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	 * @return
 	 */
 	protected User getLoggedInUserAccess(final String loginName, final String password, final DBSession session) {
-		return this.userDBManager.validateUserUserAccess(loginName, password, session);
+		return this.userDBManager.validateUserAccessByPassword(loginName, password, session);
 	}
 	
 	/**
