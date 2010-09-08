@@ -74,7 +74,7 @@ public class UserSettings implements Serializable {
 	
 	private boolean showBibtex = true;
 	
-	private boolean simpleInterface = false;
+	private boolean simpleInterface = true;
 	
 	/**
 	 * the default language for i18n
