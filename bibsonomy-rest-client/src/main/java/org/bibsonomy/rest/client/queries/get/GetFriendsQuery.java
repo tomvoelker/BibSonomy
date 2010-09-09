@@ -92,7 +92,7 @@ public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 
 	@Override
 	protected List<User> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(URL_FRIENDS + "?" + ATTRIBUTE_KEY_RELATION + "=" + relation + "start=" + this.start + "&end=" + this.end + "&format=" + getRenderingFormat().toString().toLowerCase());
+		this.downloadedDocument = performGetRequest(URL_USERS + "/" + this.username + "/" + URL_FRIENDS + "?" + ATTRIBUTE_KEY_RELATION + "=" + relation + "&start=" + this.start + "&end=" + this.end + "&format=" + getRenderingFormat().toString().toLowerCase());
 		return null;
 	}
 }
