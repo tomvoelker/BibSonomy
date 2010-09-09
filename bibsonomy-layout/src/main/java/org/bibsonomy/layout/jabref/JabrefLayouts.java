@@ -40,6 +40,7 @@ import net.sf.jabref.export.layout.LayoutHelper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.util.file.FileUtil;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -227,18 +228,13 @@ public class JabrefLayouts {
 		 */
 		for (final LayoutPart layoutPart : LayoutPart.layoutParts) {
 			final String hashedName = JabrefLayoutUtils.userLayoutHash(userName, layoutPart);
-			/*
-			 * build path from first two letters of file name hash
-			 */
-			final String docPath = userLayoutFilePath + hashedName.substring(0, 2);
-			final File file = new File(docPath + "/" + hashedName);
+			final File file = new File(FileUtil.getFileDir(userLayoutFilePath, hashedName) + hashedName);
 
 			log.debug("trying to load custom user layout (part " + layoutPart + ") for user " + userName + " from file " + file);
 
 			if (file.exists()) {
 				log.debug("custom layout (part '" + layoutPart + "') found!");
 				final LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")));
-
 				try {
 					jabrefLayout.addSubLayout(layoutPart, layoutHelper.getLayoutFromText(GLOBALS_FORMATTER_PACKAGE));
 				} catch (final Exception e) {
