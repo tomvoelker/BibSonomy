@@ -51,4 +51,17 @@ public class FunctionsTest {
 		tagList.add(new Tag("abc"));
 		assertEquals("test xyz abc", Functions.toTagString(tagList));
 	}
+	
+	@Test
+	public void testGetLowerPath() {
+		assertEquals("/user", Functions.getLowerPath("/user/jaeschke"));
+		assertEquals("/user/jaeschke", Functions.getLowerPath("/user/jaeschke/foo"));
+		assertEquals("/user/jaeschke", Functions.getLowerPath("/user/jaeschke/foo"));
+		assertEquals("/user/thomaslevine", Functions.getLowerPath("/user/thomaslevine/pinyin \\xe4\\xb8\\xad\\xe6\\x96\\x87 education China software korean Language?lang=en&.entriesPerPage=5"));
+		assertEquals("/user/jjohns92%0D/shop_gjw4", Functions.getLowerPath("/user/jjohns92%0D/shop_gjw4/products.aspx?sku=1162318&shbid=18672"));
+		assertEquals("/user/jjohns92\r/shop_gjw4", Functions.getLowerPath("/user/jjohns92\r/shop_gjw4/products.aspx?sku=1162318&shbid=18672"));
+		assertEquals("/search", Functions.getLowerPath("/search/clustering"));
+		assertEquals("", Functions.getLowerPath("/groups"));
+	}
+	
 }

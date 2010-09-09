@@ -42,7 +42,6 @@ import org.bibsonomy.util.id.DOIUtils;
  * @version $Id$
  */
 public class Functions  {
-
 	/**
 	 * Mapping of BibTeX entry types to SWRC entry types
 	 * FIXME: this duplicates the ones from EntryType.java!
@@ -58,12 +57,12 @@ public class Functions  {
 	 *   
 	 */
 	private static String[] bibtexFields     = {"title","address","annote","author","booktitle","chapter","crossref","edition","editor","howpublished","institution","journal","note","number","organization","pages","publisher","school","series","type","volume","year","day","url"};
-	
+
 	private static JabrefLayoutRenderer layoutRenderer;
 
 	// contains special characters, symbols, etc...
 	private static Properties chars = new Properties();
-	
+
 	// used to generate URLs
 	private static URLGenerator urlGenerator;
 
@@ -213,14 +212,20 @@ public class Functions  {
 	 * @param uriString the url
 	 * @return last segment of the url string until last slash
 	 */
-	public static String getLowerPath(String uriString) {
-		uriString = uriString.substring(0, uriString.lastIndexOf("/"));
-		try {
-			final URI uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
-			return uri.getPath();
-		} catch (final Exception ex) {
-			throw new RuntimeException(ex.getMessage());
-		}	
+	public static String getLowerPath(final String uriString) {
+		final int lio = uriString.lastIndexOf("/");
+		if (lio > 0) {
+			try {
+				/*
+				 * FIXME: why do we wrap the result (which is a path!) into a URI
+				 * to then extract the path again? 
+				 */
+				return new URI(UrlUtils.encodeURLExceptReservedChars(uriString.substring(0, lio))).getPath();
+			} catch (final Exception ex) {
+				// ignore
+			}
+		}
+		return "";
 	}
 
 	/**
@@ -255,7 +260,7 @@ public class Functions  {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * @param url the url to check
 	 * @return <code>true</code> iff the url is a link to a pdf or ps file
@@ -285,7 +290,7 @@ public class Functions  {
 			Double t = (tagFrequency > 100 ? 100.0 : tagFrequency.doubleValue() + 6);
 			t /= 5;
 			t = Math.log(t) * 100 + 30;
-			
+
 			return (t.intValue()<100) ? 100 : t.intValue();
 		}
 		if ("popular".equals(tagSizeMode)) {
@@ -377,18 +382,18 @@ public class Functions  {
 	public static String quoteJSON(final String value) {
 		if(value == null)
 			return null;
-        final StringBuffer sb = new StringBuffer();
-        escapeJSON(value, sb);
-        return sb.toString();
+		final StringBuffer sb = new StringBuffer();
+		escapeJSON(value, sb);
+		return sb.toString();
 	}
 
 	/**
 	 * Taken from http://code.google.com/p/json-simple/
 	 * 
-     * @param s - Must not be null.
-     * @param sb
-     */
-    private static void escapeJSON(final String s, final StringBuffer sb) {
+	 * @param s - Must not be null.
+	 * @param sb
+	 */
+	private static void escapeJSON(final String s, final StringBuffer sb) {
 		for(int i=0;i<s.length();i++){
 			char ch=s.charAt(i);
 			switch(ch){
@@ -414,7 +419,7 @@ public class Functions  {
 				sb.append("\\t");
 				break;
 			default:
-                //Reference: http://www.unicode.org/versions/Unicode5.1.0/
+				//Reference: http://www.unicode.org/versions/Unicode5.1.0/
 				if((ch>='\u0000' && ch<='\u001F') || (ch>='\u007F' && ch<='\u009F') || (ch>='\u2000' && ch<='\u20FF')){
 					String ss=Integer.toHexString(ch);
 					sb.append("\\u");
@@ -446,7 +451,7 @@ public class Functions  {
 	public static String[] getBibTeXEntryTypes() {
 		return ENTRYTYPES;
 	}
-	
+
 	/**
 	 * Maps BibTeX entry types to SWRC entry types.
 	 * 
@@ -546,7 +551,7 @@ public class Functions  {
 			return "unknownHost";
 		}
 	}
-	
+
 	/**
 	 * Returns a short (max. 160 characters) description of the post.
 	 * 
@@ -559,17 +564,17 @@ public class Functions  {
 		if (resource != null) {
 			final String title = resource.getTitle();
 			if (title != null) buf.append(shorten(title, 50));
-			
+
 			final String author = resource.getAuthor();
 			if (author != null) buf.append(", " + shorten(author, 20));
-			
+
 			final String year = resource.getYear();
 			if (year != null) buf.append(", " + shorten(year, 4));
 		}
-		
+
 		return buf.toString();
 	}
-	
+
 	/**
 	 * If the string is longer than <code>length</code>: shortens the given string to 
 	 * <code>length - 3</code> and appends <code>...</code>. Else: returns the string.
@@ -581,7 +586,7 @@ public class Functions  {
 		if (s != null && s.length() > length) return s.substring(0, length - 3) + "...";
 		return s;
 	}
-	
+
 	/**
 	 * Access the built-in utility function for bibtex export
 	 * 
@@ -597,7 +602,7 @@ public class Functions  {
 		}
 		return BibTexUtils.toBibtexString(post, urlGenerator) + "\n\n";
 	}
-	
+
 	/**
 	 * Access the built-in utility function for bibtex export
 	 * 
@@ -609,7 +614,7 @@ public class Functions  {
 	public static String getBibtexMonth(final String month) {
 		return BibTexUtils.getMonth(month);
 	}
-	
+
 	/** 
 	 * @return The BibTeX fields which should be printed, excludign 'month' - it
 	 * should be printed using {@link #getBibtexMonth(String)}.
@@ -617,7 +622,7 @@ public class Functions  {
 	public static String[] getBibtexFields() {
 		return bibtexFields;
 	}
-	
+
 	/**
 	 * Helper method to access JabRef layouts via taglib function
 	 * 
@@ -628,10 +633,10 @@ public class Functions  {
 	public static String renderLayout(final Post<BibTex> post, final String layoutName) {
 		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 		posts.add(post);
-		
+
 		return renderLayouts(posts, layoutName);
 	}
-	
+
 	/**
 	 * Helper method to access JabRef layouts via taglib function
 	 * 
@@ -654,7 +659,7 @@ public class Functions  {
 			return "An I/O error occured while trying to convert to layout '" + layoutName  + "'."; 
 		}
 	}
-	
+
 	/** Checks if the given set contains the given object.
 	 * 
 	 * @param set
@@ -664,7 +669,7 @@ public class Functions  {
 	public static Boolean contains(final Collection<?> set, final Object object) {
 		return set.contains(object);
 	}
-	
+
 	/**
 	 * Retrieve the next user similarity, based on the ordering of user similarities
 	 * as described in {@link UserRelation}. For erroneous or invalid input, 
@@ -686,7 +691,7 @@ public class Functions  {
 		final int nextId = (rel.getId() + 1 ) % 4;
 		return UserRelation.getUserRelationById(nextId).name().toLowerCase();
 	}
-	
+
 	/**
 	 * Simply extracts a DOI out of a string
 	 * 
@@ -696,5 +701,5 @@ public class Functions  {
 	public static String extractDOI(final String doiString){
 		return DOIUtils.extractDOI(doiString);
 	}
-	
+
 }
