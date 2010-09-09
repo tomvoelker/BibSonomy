@@ -58,6 +58,7 @@ public class RestEventManager implements EventManager {
 		json.put("xing", participantDetails.getXing());
 		json.put("vegetarian", participantDetails.getVegetarian());
 		json.put("dinner", participantDetails.getDinner());
+		json.put("socialEvent", participantDetails.getSocialEvent());
 		json.put("email", participantDetails.getEmail());
 
 		StringWriter out = new StringWriter();
