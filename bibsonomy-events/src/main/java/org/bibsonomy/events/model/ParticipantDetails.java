@@ -9,7 +9,8 @@ package org.bibsonomy.events.model;
 public class ParticipantDetails {
 
 	private String address;
-	private String badgename;
+	private String badgeTitle;
+	private String badgeName;
 	private String badgeInstitutionName;
 	private boolean presenter;
 	private boolean poster;
@@ -40,14 +41,6 @@ public class ParticipantDetails {
 
 	public void setAddress(String address) {
 		this.address = address;
-	}
-
-	public String getBadgename() {
-		return badgename;
-	}
-
-	public void setBadgename(String badgename) {
-		this.badgename = badgename;
 	}
 
 	public String getBadgeInstitutionName() {
@@ -184,5 +177,21 @@ public class ParticipantDetails {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getBadgeTitle() {
+		return badgeTitle;
+	}
+
+	public void setBadgeTitle(String badgeTitle) {
+		this.badgeTitle = badgeTitle;
+	}
+
+	public String getBadgeName() {
+		return badgeName;
+	}
+
+	public void setBadgeName(String badgeName) {
+		this.badgeName = badgeName;
 	}
 }

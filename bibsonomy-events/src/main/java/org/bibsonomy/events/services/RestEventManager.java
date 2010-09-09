@@ -39,7 +39,8 @@ public class RestEventManager implements EventManager {
 	public void registerUser(final User user, final Event event, final ParticipantDetails participantDetails) {
 		final JSONObject json = new JSONObject();
 		json.put("name", user.getName());
-		json.put("badgeName", participantDetails.getBadgename());
+		json.put("badgeTitle", participantDetails.getBadgeTitle());
+		json.put("badgeName", participantDetails.getBadgeName());
 		json.put("badgeInstitutionName", participantDetails.getBadgeInstitutionName());
 		json.put("subEvent", participantDetails.getSubEvent());
 		json.put("address", participantDetails.getAddress());
