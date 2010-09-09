@@ -91,7 +91,8 @@ function showHideElement(id, display) {
 	var field = document.getElementById("post.resource." + id);			
 	
 	if (field.value == '') {
-	    field.parentNode.style.display = display;
+		// must find closest parent node with class 'fsRow'
+		$(field).closest(".fsRow").css('display', display);
 	}
 }
 	
