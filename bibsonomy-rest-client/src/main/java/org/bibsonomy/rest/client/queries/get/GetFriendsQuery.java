@@ -55,13 +55,7 @@ public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 	private final int start;
 	private final int end;
 	private final String relation;
-
-	/**
-	 * Gets bibsonomy's user list
-	 */
-	public GetFriendsQuery() {
-		this(0, 19, DEFAULT_ATTRIBUTE_VALUE_RELATION);
-	}
+	private final String username;
 
 	/**
 	 * Gets bibsonomy's user list.
@@ -71,9 +65,11 @@ public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 	 * @param end
 	 *            end of the list
 	 */
-	public GetFriendsQuery(int start, int end, String relation) {
+	public GetFriendsQuery(int start, int end, String username, String relation) {
 		if (start < 0) start = 0;
 		if (end < start) end = start;
+		
+		this.username = username;
 
 		if (relation == null)
 			this.relation = DEFAULT_ATTRIBUTE_VALUE_RELATION;
