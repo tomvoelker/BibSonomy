@@ -58,11 +58,17 @@
         
                 <div id="fsform">
                   <fieldset class="fsInner">
+
+                    <div class="fsRow">
+                      <form:label cssClass="fsLabel" path="participantDetails.badgeTitle"><fmt:message key="events.registration.registered.badgeTitle"/></form:label>
+                      <form:select path="participantDetails.badgeTitle" cssClass="fsInput fsSmall" items="${command.participantDetails.badgeTitles}"/>
+                      <div class="dissError"><form:errors path="participantDetails.badgeTitle" /></div>
+                    </div>
                     
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.badgename"><fmt:message key="events.registration.registered.badgename"/></form:label>
-                      <form:input cssClass="fsInput" path="participantDetails.badgename"/>
-                      <div class="dissError"><form:errors path="participantDetails.badgename" /></div>
+                      <form:label cssClass="fsLabel" path="participantDetails.badgeName"><fmt:message key="events.registration.registered.badgeName"/></form:label>
+                      <form:input cssClass="fsInput" path="participantDetails.badgeName"/>
+                      <div class="dissError"><form:errors path="participantDetails.badgeName" /></div>
                     </div>
                     
                      <div class="fsRow">
@@ -111,6 +117,12 @@
                         <div class="dissError"><form:errors path="participantDetails.vegetarian" /></div>
                     </div>                    
                     
+                    <div class="fsRow">
+                        <form:label cssClass="fsLabel" path="participantDetails.socialEvent"><fmt:message key="events.registration.registered.socialEvent"/></form:label>
+                        <form:checkbox path="participantDetails.socialEvent" value="false"/>
+                        <fmt:message key="events.registration.registered.socialEvent.explanation"/>                    
+                        <div class="dissError"><form:errors path="participantDetails.socialEvent" /></div>
+                    </div>  
                   </fieldset>
                 </div>
                 
