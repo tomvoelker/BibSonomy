@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.springframework.web.servlet.support.RequestContext;
 
 /**
@@ -59,13 +60,6 @@ public class RequestLogic {
 	}
 
 	/**
-	 * @return the method of the request
-	 */
-	public String getMethod() {
-		return request.getMethod();
-	}
-	
-	/**
 	 * @return The inet address of the requesting host. Since the system 
 	 * typically runs behind a proxy, this is NOT the host address, but 
 	 * rather the contents of the x-forwarded-for header. This also contains
@@ -88,7 +82,7 @@ public class RequestLogic {
 	 * @see #getInetAddress()
 	 * @return The extracted address of the host.
 	 */
-	public String getHostInetAddress () {
+	public String getHostInetAddress() {
 		final String inetAddress = getInetAddress();
 		if (inetAddress != null) {
 			final int proxyStartPos = inetAddress.indexOf(",");
@@ -246,6 +240,22 @@ public class RequestLogic {
 	 */
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+	
+	/**
+	 * @return the method of the request
+	 * @deprecated use {@link #getHttpMethod()} instead
+	 */
+	@Deprecated
+	public String getMethod() {
+		return request.getMethod();
+	}
+	
+	/**
+	 * @return the http method of the request
+	 */
+	public HttpMethod getHttpMethod() {
+		return HttpMethod.getHttpMethod(this.request.getMethod());
 	}
 
 	/**
