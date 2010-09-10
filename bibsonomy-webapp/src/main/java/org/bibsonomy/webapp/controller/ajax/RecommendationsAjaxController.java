@@ -19,8 +19,9 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.renderer.Renderer;
-import org.bibsonomy.rest.renderer.impl.XMLRenderer;
+import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.ajax.AjaxRecommenderCommand;
@@ -197,7 +198,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	//------------------------------------------------------------------------
 	private void processRecommendedTags(AjaxRecommenderCommand<R> command, SortedSet<RecommendedTag> tags) {
 		command.setRecommendedTags(tags);
-		Renderer renderer = XMLRenderer.getInstance();
+		Renderer renderer = RendererFactory.getRenderer(RenderingFormat.XML);
 		StringWriter sw = new StringWriter(100);
 		renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
 		command.setResponseString(sw.toString());
