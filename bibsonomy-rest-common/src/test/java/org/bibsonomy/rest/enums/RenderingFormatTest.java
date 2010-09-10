@@ -36,8 +36,16 @@ public class RenderingFormatTest {
 
 	@Test
 	public void testGetRenderingFormat() {
-		assertEquals(RenderingFormat.XML, RenderingFormat.getMediaType("xml"));
-		assertEquals(RenderingFormat.XML, RenderingFormat.getMediaType("xMl"));
+		assertEquals(RenderingFormat.XML, RenderingFormat.getMediaTypeByFormat("xml"));
+		assertEquals(RenderingFormat.XML, RenderingFormat.getMediaTypeByFormat("xMl"));
+
+		assertNull(RenderingFormat.getMediaTypeByFormat("someUnsupportedRenderingFormat"));
+	}
+	
+	@Test
+	public void testGetMediaType() {
+		assertEquals(RenderingFormat.XML, RenderingFormat.getMediaType("text/xml"));
+		assertEquals(RenderingFormat.JSON, RenderingFormat.getMediaType("application/json"));
 
 		assertNull(RenderingFormat.getMediaType("someUnsupportedRenderingFormat"));
 	}
