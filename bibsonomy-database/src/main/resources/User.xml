@@ -4,113 +4,94 @@
 <sqlMap namespace="User">
 
 	<select id="getAllUsers" resultMap="Common.user" parameterClass="userParam">
-		SELECT <include refid="commonUserAttributes"/> 
-		FROM user 
-		LEFT JOIN ldapUser USING (user_name) 
-		WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
+		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as lastAccess
+		  FROM user 
+		  WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<select id="getPendingUserByActivationCode" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
-		SELECT <include refid="commonUserAttributes"/>, activation_code
-		FROM pendingUser 
-		LEFT JOIN ldapUser USING (user_name) 
-		WHERE spammer = 0 
-		AND activation_code = #rawSearch#
-		LIMIT #limit# OFFSET #offset#
+		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as lastAccess
+		  FROM pendingUser 
+		  WHERE spammer = 0 
+		    AND activation_code = #rawSearch#
+		  LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getPendingUserByUsername" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
-		SELECT <include refid="commonUserAttributes"/>, activation_code
-		FROM pendingUser 
-		LEFT JOIN ldapUser USING (user_name) 
-		WHERE spammer = 0 
-		AND user_name = #requestedGroupName#
-		LIMIT #limit# OFFSET #offset#
+		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as lastAccess
+		  FROM pendingUser 
+  		  WHERE spammer = 0 
+	    	AND user_name = #requestedGroupName#
+		  LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<select id="getPendingUsers" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
-		SELECT <include refid="commonUserAttributes"/>, activation_code
-		FROM pendingUser 
-		LEFT JOIN ldapUser USING (user_name) 
-		WHERE spammer = 0 
-		LIMIT #limit# OFFSET #offset#
+		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as lastAccess
+		  FROM pendingUser 
+		  WHERE spammer = 0 
+		  LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<insert id="activateUser" parameterClass="string"> 	
-		INSERT INTO user (user_name, user_email, user_password, user_realname, user_homepage, 
-							api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, institution, reg_date,
-							spammer, updated_by, updated_at, role, to_classify, lang, tagbox_style, tagbox_sort, tagbox_minfreq, 
-							tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete,
-							tmp_password, tmp_request_date, show_bookmark, show_bibtex, simple_interface)
-		SELECT user_name, user_email, user_password, user_realname, user_homepage, 
-			   	api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, institution, reg_date, 
-				spammer, updated_by, updated_at, role, to_classify, lang, tagbox_style, tagbox_sort, tagbox_minfreq, 
-				tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete,
-				tmp_password, tmp_request_date, show_bookmark, show_bibtex, simple_interface
-		FROM pendingUser WHERE pendingUser.user_name = #username#
+		INSERT INTO user (<include refid="allUserAttributes"/>)
+		  SELECT <include refid="allUserAttributes"/>
+		    FROM pendingUser 
+		    WHERE pendingUser.user_name = #username#
 	</insert>
 	
 	<select id="getUserDetails" resultMap="UserCommon.userWithSettings" parameterClass="string">
-		SELECT <include refid="allUserAttributes"/>
-		FROM user 
-		LEFT JOIN ldapUser USING (user_name) 
-		WHERE user_name = #username#
+		SELECT <include refid="allUserAttributes"/>, ldapUserId, lastAccess
+		  FROM user 
+		    LEFT JOIN ldapUser USING (user_name) 
+		  WHERE user_name = #username#
 	</select>
 
 	<select id="getUserNamesByGroupId" resultClass="string" parameterClass="int">
 		SELECT user_name 
 		FROM groups 
-		WHERE `group` = $groupId$
+		WHERE `group` = #groupId#
 	</select>
 
 	<insert id="insertPendingUser" parameterClass="user">
-		INSERT INTO pendingUser ( 
-			user_name, user_email, user_password, user_realname, user_homepage, 
-			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, institution, reg_date, 
-			spammer, updated_by, updated_at, role, to_classify, tagbox_style, tagbox_sort, tagbox_minfreq, 
-			tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete, activation_code, 
-			show_bookmark, show_bibtex, simple_interface
-			<isNotNull property="reminderPassword">,tmp_password, tmp_request_date</isNotNull>			   
-			)
-		VALUES (
-			#name#, #email#, #password#, #realname#, #homepage#, 
-			#apiKey#, #birthday#, #gender#, #hobbies#, #interests#, #IPAddress#, #openURL#, #place#, #profession#, #institution#, #registrationDate#, 
-			#spammer#,#updatedBy#, #updatedAt#, #role#, #toClassify#, #settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, 
-			#settings.tagboxMaxCount#, #settings.isMaxCount#, #settings.tagboxTooltip#, #settings.listItemcount#, #settings.logLevel#, 
-			#settings.confirmDelete#, #activationCode#, #settings.showBookmark#, #settings.showBibtex#, #settings.simpleInterface#
-			<isNotNull property="reminderPassword">,#reminderPassword#,#reminderPasswordRequestDate#</isNotNull>	
-			)
+		INSERT INTO pendingUser (<include refid="allUserAttributes"/>, activation_code)
+  		  VALUES (<include refid="insertUserAttributes"/>, #activationCode#)
 	</insert>
 	
-	<!-- TODO: insert other attributes (see allUserAtributes in UserCommon.xml); dbe 20071119 -->
 	<insert id="insertUser" parameterClass="user">
-		INSERT INTO user ( 
-			user_name, user_email, user_password, user_realname, user_homepage, 
-			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, institution, reg_date, 
-			spammer, updated_by, updated_at, role, to_classify,  tagbox_style, tagbox_sort, tagbox_minfreq, 
-			tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete, 
-			show_bookmark, show_bibtex, simple_interface
-			<isNotNull property="reminderPassword">,tmp_password, tmp_request_date</isNotNull>			   
-			)
-		VALUES (
-			#name#, #email#, #password#, #realname#, #homepage#, 
-			#apiKey#, #birthday#, #gender#, #hobbies#, #interests#, #IPAddress#, #openURL#, #place#, #profession#, #registrationDate#, 
-			#spammer#,#updatedBy#, #updatedAt#, #role#, #toClassify#,  #settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, 
-			#settings.tagboxMaxCount#, #settings.isMaxCount#, #settings.tagboxTooltip#, #settings.listItemcount#, #settings.logLevel#, 
-			#settings.confirmDelete#, #settings.showBookmark#, #settings.showBibtex#, #settings.simpleInterface#
-			<isNotNull property="reminderPassword">,#reminderPassword#,#reminderPasswordRequestDate#</isNotNull>	
-			)
+		INSERT INTO user (<include refid="allUserAttributes"/>)
+  		  VALUES (<include refid="insertUserAttributes"/>)
 	</insert>
 	
+	<!--+ 
+		|
+		| FIXME: unify the next three methods and use 
+		|
+	    +-->
 	<update id="updateUser" parameterClass="user">
 		UPDATE user
-		SET user_email = #email#, user_password = #password#, user_realname = #realname#, user_homepage = #homepage#, 
-			api_key = #apiKey#, birthday = #birthday#, gender = #gender#, hobbies = #hobbies#, interests = #interests#, 
-			ip_address= #IPAddress#, openurl = #openURL#, place = #place#, profession = #profession#, institution = #institution#, 
-			spammer = #spammer#, updated_by = #updatedBy#, updated_at = #updatedAt#
+		SET	<include refid="updateUserProfileAttributes"/>,
+			user_password = #password#,
+			api_key = #apiKey#, 
+			ip_address= #IPAddress#,   
+			spammer = #spammer#, 
+			updated_by = #updatedBy#, 
+			updated_at = #updatedAt#
 			<isNotNull property="reminderPassword">,tmp_password = #reminderPassword#, tmp_request_date = #reminderPasswordRequestDate#</isNotNull>		
 		WHERE user_name=#name#
 	</update>
+	
+	<update id="updateUserProfile" parameterClass="user">
+		UPDATE user 
+		  SET <include refid="updateUserProfileAttributes"/>, profilegroup = #settings.profilePrivlevel#
+		  WHERE user_name = #name#
+	</update>
+	
+	<update id="updateUserSettings" parameterClass="user">
+		UPDATE user 
+		  SET <include refid="updateUserSettingsAttributes"/>
+		  WHERE user_name = #name#
+	</update>
+	
 	
 	<insert id="insertOpenIDUser" parameterClass="user">
 		INSERT INTO openIDUser 
@@ -164,41 +145,6 @@
 		WHERE user_name = #userName#
 	</select>
 	
-	<update id="updateUserProfile" parameterClass="user">
-		UPDATE user 
-		SET birthday = #birthday#, 
-		user_realname = #realname#,
-		gender = #gender#,
-		user_email = #email#,
-		user_homepage = #homepage#,
-		openurl = #openURL#,
-		profession = #profession#,
-		institution = #institution#, 
-		interests = #interests#,
-		hobbies = #hobbies#,
-		place = #place#,
-		profilegroup = #settings.profilePrivlevel#
-		WHERE user_name = #name#
-	</update>
-	
-	<update id="updateUserSettings" parameterClass="user">
-		UPDATE user 
-		SET log_level = #settings.logLevel#, 
-		lang = #settings.defaultLanguage#,
-		list_itemcount = #settings.listItemcount#,
-		tagbox_tooltip = #settings.tagboxTooltip#,
-		tagbox_minfreq = #settings.tagboxMinfreq#,
-		tagbox_max_count = #settings.tagboxMaxCount#,
-		tagbox_sort = #settings.tagboxSort#,
-		tagbox_style = #settings.tagboxStyle#,
-		is_max_count = #settings.isMaxCount#,
-		confirmDelete = #settings.confirmDelete#, 
-		show_bookmark = #settings.showBookmark#,
-		show_bibtex = #settings.showBibtex#, 
-		simple_interface = #settings.simpleInterface#
-		WHERE user_name = #name#
-	</update>
-
 	<select id="getApiKeyForUser" resultClass="string" parameterClass="string">
 		SELECT api_key 
 		FROM user 

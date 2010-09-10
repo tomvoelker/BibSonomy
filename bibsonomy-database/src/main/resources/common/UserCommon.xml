@@ -62,20 +62,72 @@
 		<result property="simpleInterface"  column="simple_interface"  	javaType="boolean" />	
 	</resultMap>	
 
+
+	<!-- IMPORTANT: changing this requires you to change "insertUserAttributes", too! -->
 	<sql id="allUserAttributes">
 		<include refid="commonUserAttributes"/>,
-		<include refid="userSettingsAttributes"/> 
+		<include refid="userSettingsAttributes"/>
 	</sql>
 
+	<!-- IMPORTANT: changing this requires you to change "insertUserAttributes", too! -->
 	<sql id="commonUserAttributes">
-		user_name, user_email, user_homepage, user_realname, user_password, 
-		api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, institution, 
-		reg_date, spammer, role, updated_by, updated_at, to_classify, tmp_password, tmp_request_date,
-		ldapUserId, lastAccess
+		user_name, user_realname,
+		user_password, api_key, openurl, tmp_password, tmp_request_date,
+		role, ip_address, reg_date, spammer, updated_by, updated_at, to_classify, 
+		user_email, user_homepage, birthday, gender, hobbies, interests, place, profession, institution
 	</sql>
-
+	
+	<!-- IMPORTANT: changing this requires you to change "insertUserAttributes", too! -->
 	<sql id="userSettingsAttributes">
-		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, lang, log_level, confirmDelete, profilegroup, tagbox_max_count, is_max_count, show_bookmark, show_bibtex, simple_interface
+		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, 
+		lang, log_level, confirmDelete, profilegroup, tagbox_max_count, is_max_count, 
+		show_bookmark, show_bibtex, simple_interface
 	</sql>	
 
+	<!-- 
+		for insert and update statements matching 'allUserAttributes'  
+		-->
+	<sql id="insertUserAttributes">
+		#name#, #realname#,
+		#password#, #apiKey#, #openURL#,
+		<isNotNull property="reminderPassword">#reminderPassword#,#reminderPasswordRequestDate#,</isNotNull>
+		<isNull property="reminderPassword">NULL,DEFAULT(tmp_request_date),</isNull>
+		#role#, #IPAddress#, #registrationDate#, #spammer#, #updatedBy#, #updatedAt#, #toClassify#, 
+		#email#, #homepage#, #birthday#, #gender#, #hobbies#, #interests#, #place#, #profession#, #institution#,
+		#settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, #settings.tagboxTooltip#, #settings.listItemcount#, 
+		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>
+		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
+		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
+		#settings.showBookmark#, #settings.showBibtex#, #settings.simpleInterface#
+	</sql>
+
+	<sql id="updateUserProfileAttributes">
+	    birthday = #birthday#, 
+		user_realname = #realname#,
+		gender = #gender#,
+		user_email = #email#,
+		user_homepage = #homepage#,
+		openurl = #openURL#,
+		profession = #profession#,
+		institution = #institution#, 
+		interests = #interests#,
+		hobbies = #hobbies#,
+		place = #place#
+	</sql>
+	
+	<sql id="updateUserSettingsAttributes">
+		log_level = #settings.logLevel#, 
+		lang = #settings.defaultLanguage#,
+		list_itemcount = #settings.listItemcount#,
+		tagbox_tooltip = #settings.tagboxTooltip#,
+		tagbox_minfreq = #settings.tagboxMinfreq#,
+		tagbox_max_count = #settings.tagboxMaxCount#,
+		tagbox_sort = #settings.tagboxSort#,
+		tagbox_style = #settings.tagboxStyle#,
+		is_max_count = #settings.isMaxCount#,
+		confirmDelete = #settings.confirmDelete#, 
+		show_bookmark = #settings.showBookmark#,
+		show_bibtex = #settings.showBibtex#, 
+		simple_interface = #settings.simpleInterface#
+	</sql>
 </sqlMap>
