@@ -157,32 +157,32 @@
                      
                     <div class="fsRow">
                       <form:label cssClass="fsLabel" path="participantDetails.facebook">Facebook</form:label>
-                      <buttons:help message="events.registration.participantDetails.facebook" iconTextStyle="font-size:larger;"/>
                       <form:input cssClass="fsInput" path="participantDetails.facebook"/>
+                      <buttons:help message="events.registration.participantDetails.facebook" iconTextStyle="font-size:larger;"/>
                     </div>
 
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.linkedIn">LinkedIn</form:label>
-                      <buttons:help message="events.registration.participantDetails.linkedIn" iconTextStyle="font-size:larger;"/>
+                      <form:label cssClass="fsLabel" path="participantDetails.linkedIn">LinkedIn</form:label>                      
                       <form:input cssClass="fsInput" path="participantDetails.linkedIn"/>
+                      <buttons:help message="events.registration.participantDetails.linkedIn" iconTextStyle="font-size:larger;"/>
                     </div>
                     
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.researchGate">Research-Gate</form:label>
-                      <buttons:help message="events.registration.participantDetails.researchGate" iconTextStyle="font-size:larger;"/>
+                      <form:label cssClass="fsLabel" path="participantDetails.researchGate">Research-Gate</form:label>                      
                       <form:input cssClass="fsInput" path="participantDetails.researchGate"/>
+                      <buttons:help message="events.registration.participantDetails.researchGate" iconTextStyle="font-size:larger;"/>
                     </div>
     
                     <div class="fsRow">
                       <form:label cssClass="fsLabel" path="participantDetails.twitter">Twitter</form:label>
-                      <buttons:help message="events.registration.participantDetails.twitter" iconTextStyle="font-size:larger;"/>
                       <form:input cssClass="fsInput" path="participantDetails.twitter"/>
+                      <buttons:help message="events.registration.participantDetails.twitter" iconTextStyle="font-size:larger;"/>
                     </div>
      
                     <div class="fsRow">
-                      <form:label cssClass="fsLabel" path="participantDetails.xing">Xing</form:label>
-                      <buttons:help message="events.registration.participantDetails.xing" iconTextStyle="font-size:larger;"/>
+                      <form:label cssClass="fsLabel" path="participantDetails.xing">Xing</form:label>                      
                       <form:input cssClass="fsInput" path="participantDetails.xing"/>
+                      <buttons:help message="events.registration.participantDetails.xing" iconTextStyle="font-size:larger;"/>
                     </div>
      
                     <div class="fsRow">
