@@ -76,14 +76,14 @@
    <update id="activateRecommender" parameterClass="long">
        UPDATE recommender_status SET status=1 WHERE setting_id=#sid#
    </update>
-   <update id="removeRecommender" parameterClass="String">
-       UPDATE recommender_status SET status=2 WHERE url=#url#
-   </update>
-   <delete id="deleteFromRecommenderStatus" parameterClass="long">
-       DELETE FROM recommender_status WHERE setting_id=#sid#
+   <insert id="unlinkRecommender" parameterClass="String">
+       INSERT INTO recommender_settings_log (SELECT * from recommender_settings where rec_id = #url#)
+   </insert>
+   <delete id="deleteFromRecommenderStatus" parameterClass="String">
+       DELETE FROM recommender_status WHERE url=#url#
    </delete>
-   <delete id="deleteFromRecommenderSettings" parameterClass="long">
-       DELETE FROM recommender_settings WHERE setting_id=#sid#
+   <delete id="deleteFromRecommenderSettings" parameterClass="String">
+       DELETE FROM recommender_settings WHERE rec_id=#url#
    </delete>
    <update id="updateRecommenderStatusUrl" parameterClass="recSetting">
        UPDATE recommender_status SET url=#recId# WHERE setting_id=#setting_id#

@@ -678,7 +678,9 @@ public class DBAccess implements DBLogic {
 	@Override
 	public void removeRecommender(String url) throws SQLException{
 		SqlMapClient sqlMap = getSqlMapInstance();
-		sqlMap.update("removeRecommender", url);
+		sqlMap.insert("unlinkRecommender", url);
+		sqlMap.delete("deleteFromRecommenderStatus", url);
+		sqlMap.delete("deleteFromRecommenderSettings", url);
 	}
 
 	/* (non-Javadoc)
@@ -693,13 +695,9 @@ public class DBAccess implements DBLogic {
 		
 		SqlMapClient sqlMap = getSqlMapInstance();
 		
-		// Check if setting with same url already exists (especially important for 'removed' settings which are not visible)
-		// If this is the case, the old setting will be overwritten!
-		// TODO: is this a good way to behave?
 		Long settingId = (Long) sqlMap.queryForObject("lookupRecommenderSetting", param);
 		if (settingId != null && settingId != sid) {
-		    sqlMap.delete("deleteFromRecommenderSettings", settingId);
-		    sqlMap.delete("deleteFromRecommenderStatus", settingId);
+		    throw new SQLException("Cannot edit recommender-url because recommender-Setting with url '" + url.toString() + "' already exists!");
 		}
 		
 		sqlMap.update("updateRecommenderStatusUrl", param);
