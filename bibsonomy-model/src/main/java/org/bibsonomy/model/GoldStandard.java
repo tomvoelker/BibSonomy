@@ -49,7 +49,7 @@ public interface GoldStandard<R extends Resource> {
 	 * @param resources
 	 * @return <code>true</code> iff the references were changed as a result of the call
 	 */
-	public boolean addAllToReferences(final Set<R> resources);
+	public boolean addAllToReferences(final Set<? extends R> resources);
 
 	/**
 	 * removes a resource from the reference list
@@ -63,7 +63,7 @@ public interface GoldStandard<R extends Resource> {
 	 * @param resources the resources to remove from the references
 	 * @return <code>true</code> iff the references were changed as a result of the call
 	 */
-	public boolean removeAllFromReferences(final Set<R> resources);
+	public boolean removeAllFromReferences(final Set<? extends R> resources);
 	
 	/**
 	 * @return the publications which reference the goldstandard
@@ -82,7 +82,7 @@ public interface GoldStandard<R extends Resource> {
 	 * @param resources
 	 * @return <code>true</code> iff the referenced by set was changed as a result of the call
 	 */
-	public boolean addAllToReferencedBy(final Set<R> resources);
+	public boolean addAllToReferencedBy(final Set<? extends R> resources);
 
 	/**
 	 * removes a resource from the referenced by list
@@ -96,6 +96,6 @@ public interface GoldStandard<R extends Resource> {
 	 * @param resources the resources to remove from the references
 	 * @return <code>true</code> iff the referenced by set was changed as a result of the call
 	 */
-	public boolean removeAllFromReferencedBy(final Set<R> resources);
+	public boolean removeAllFromReferencedBy(final Set<? extends R> resources);
 
 }

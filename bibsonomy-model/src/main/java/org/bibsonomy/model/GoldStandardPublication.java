@@ -76,7 +76,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 * @see org.bibsonomy.model.GoldStandard#addAllToReferences(java.util.Set)
 	 */
 	@Override
-	public boolean addAllToReferences(final Set<BibTex> publications) {
+	public boolean addAllToReferences(final Set<? extends BibTex> publications) {
 		this.lacyLoadReferences();
 		if (publications != null) {
 			return this.references.addAll(publications);
@@ -98,7 +98,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 * @see org.bibsonomy.model.GoldStandard#removeAllFromReferences(java.util.Set)
 	 */
 	@Override
-	public boolean removeAllFromReferences(final Set<BibTex> publications) {
+	public boolean removeAllFromReferences(final Set<? extends BibTex> publications) {
 		return this.references == null ? false : this.references.removeAll(publications);
 	}
 	
@@ -107,7 +107,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 * @see org.bibsonomy.model.GoldStandard#addAllToReferencedBy(java.util.Set)
 	 */
 	@Override
-	public boolean addAllToReferencedBy(Set<BibTex> resources) {
+	public boolean addAllToReferencedBy(Set<? extends BibTex> resources) {
 		this.lacyLoadReferencedBy();
 		if (resources != null) {
 			return this.referencedBy.addAll(resources);
@@ -141,7 +141,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 * @see org.bibsonomy.model.GoldStandard#removeAllFromReferencedBy(java.util.Set)
 	 */
 	@Override
-	public boolean removeAllFromReferencedBy(Set<BibTex> resources) {
+	public boolean removeAllFromReferencedBy(Set<? extends BibTex> resources) {
 		return this.referencedBy == null ? false : this.referencedBy.removeAll(resources);
 	}
 
