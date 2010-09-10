@@ -181,6 +181,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 			command.setAdminResponse("Could not edit recommender. Please check if '" + command.getNewrecurl() + "' is a valid url.");
 		} catch (SQLException e) {
 			log.warn("SQLException while editing recommender", e);
+			command.setAdminResponse(e.getMessage());
 		}
 		command.setNewrecurl(null);
 		command.setTab(Tab.ADD);
