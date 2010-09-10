@@ -154,24 +154,27 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @return LuceneIndexStatistics for this index
 	 */
 	public LuceneIndexStatistics getStatistics() {
-	    this.ensureReadAccess();
             LuceneIndexStatistics statistics = new LuceneIndexStatistics();
             
-            statistics.setNumDocs(this.indexReader.numDocs());
-            statistics.setNumDeletedDocs(this.indexReader.numDeletedDocs());
-            statistics.setLastModified(this.getLastLogDate());
-            statistics.setNewestRecordDate(this.getLastDate());
-            statistics.setCurrentVersion(indexReader.getVersion());
-            try {
-		statistics.setCurrent(indexReader.isCurrent());
-	    } catch (CorruptIndexException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    } catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+	    synchronized(this) {
+    	    	this.ensureReadAccess();
+                
+                statistics.setNumDocs(this.indexReader.numDocs());
+                statistics.setNumDeletedDocs(this.indexReader.numDeletedDocs());
+                statistics.setCurrentVersion(indexReader.getVersion());
+                try {
+    		    statistics.setCurrent(indexReader.isCurrent());
+                    statistics.setLastModified(IndexReader.lastModified(indexReader.directory()));
+		} catch (CorruptIndexException e1) {
+		    // TODO Auto-generated catch block
+		    e1.printStackTrace();
+		} catch (IOException e1) {
+		    // TODO Auto-generated catch block
+		    e1.printStackTrace();
+		}
 	    }
-    	    
+	    statistics.setNewestRecordDate(this.getLastLogDate());
+	    
             return statistics;
 	}
 	
