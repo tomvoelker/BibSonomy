@@ -213,10 +213,12 @@ public class Group implements Serializable{
 
 	/**
 	 * Returns the first member of this group.
-	 * 
+	 * FIXME: maybe we should put this inside a param object
 	 * @see User#getFriend()
+	 * 
 	 * @return first user
 	 */
+	@Deprecated 
 	public User getUser() {
 		if (this.getUsers().size() < 1) return null;
 		return this.users.get(0);
