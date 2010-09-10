@@ -104,30 +104,34 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
-		// in extra methode: Parameter=Index
 		
-		LuceneIndexSettingsCommand cmdBookmarksIndex    = command.getBookmarksIndex();
-		LuceneIndexSettingsCommand cmdBookmarksIndex2    = command.getBookmarksIndex2();
-		LuceneIndexSettingsCommand cmdPublicationsIndex = command.getPublicationsIndex();
-		LuceneIndexSettingsCommand cmdPublicationsIndex2 = command.getPublicationsIndex2();
-		LuceneIndexSettingsCommand cmdGoldstandardIndex = command.getGoldstandardIndex();
-		LuceneIndexSettingsCommand cmdGoldstandardIndex2 = command.getGoldstandardIndex2();
+		List<LuceneIndexSettingsCommand> indices = command.getIndices();
 		
+		LuceneIndexSettingsCommand bookmarksCmd         = new LuceneIndexSettingsCommand();
+		LuceneIndexSettingsCommand bookmarksCmdInactive = new LuceneIndexSettingsCommand();
+		bookmarksCmd.setIndexStatistics(LuceneBookmarkManager.getInstance().getStatistics());
+		bookmarksCmdInactive.setIndexStatistics(LuceneBookmarkManager.getInstance().getInactiveIndexStatistics());
+		bookmarksCmd.setInactiveIndex(bookmarksCmdInactive);
+		bookmarksCmd.setName("Bookmark index");
+		indices.add(bookmarksCmd);
 		
-		cmdBookmarksIndex.setInstance(bookmarksIndex.toString());
-		cmdBookmarksIndex.setIndexStatistics(LuceneBookmarkManager.getInstance().getStatistics());
-		cmdBookmarksIndex2.setIndexStatistics(LuceneBookmarkManager.getInstance().getInactiveIndexStatistics());
-		
-		cmdPublicationsIndex.setInstance(publicationsIndex.toString());
-		cmdPublicationsIndex.setIndexStatistics(LuceneBibTexManager.getInstance().getStatistics());
-		cmdPublicationsIndex2.setIndexStatistics(LuceneBibTexManager.getInstance().getInactiveIndexStatistics());
-		
-		
-		//cmdGoldstandardIndex.setInstance(goldstandardPublicationIndex.toString());
-		
-		// TODO: replace with real statistics when index is running
-		cmdGoldstandardIndex.setIndexStatistics(new LuceneIndexStatistics());		
+		LuceneIndexSettingsCommand publicationsCmd         = new LuceneIndexSettingsCommand();
+		LuceneIndexSettingsCommand publicationsCmdInactive = new LuceneIndexSettingsCommand();
+		publicationsCmd.setIndexStatistics(LuceneBibTexManager.getInstance().getStatistics());
+		publicationsCmdInactive.setIndexStatistics(LuceneBibTexManager.getInstance().getInactiveIndexStatistics());
+		publicationsCmd.setInactiveIndex(publicationsCmdInactive);
+		publicationsCmd.setName("Publication index");
+		indices.add(publicationsCmd);
 
+		// TODO: replace with real statistics when index is running
+		LuceneIndexSettingsCommand goldstandardPublicationsCmd         = new LuceneIndexSettingsCommand();
+		LuceneIndexSettingsCommand goldstandardPublicationsCmdInactive = new LuceneIndexSettingsCommand();
+		goldstandardPublicationsCmd.setIndexStatistics(new LuceneIndexStatistics());
+		goldstandardPublicationsCmdInactive.setIndexStatistics(new LuceneIndexStatistics());
+		goldstandardPublicationsCmd.setInactiveIndex(goldstandardPublicationsCmdInactive);
+		goldstandardPublicationsCmd.setName("Goldstandard Publication index");
+		indices.add(goldstandardPublicationsCmd);
+		
 		return Views.ADMIN_LUCENE;
 	}
 

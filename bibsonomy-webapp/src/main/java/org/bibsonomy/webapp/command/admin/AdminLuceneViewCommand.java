@@ -1,5 +1,8 @@
 package org.bibsonomy.webapp.command.admin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bibsonomy.webapp.command.BaseCommand;
 
 
@@ -23,13 +26,7 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	private String lucenePublicationsPath;
 	private String luceneDataSourceUrl;
 	private String luceneDataSourceUsername;
-
-	private LuceneIndexSettingsCommand bookmarksIndex = new LuceneIndexSettingsCommand();
-	private LuceneIndexSettingsCommand bookmarksIndex2 = new LuceneIndexSettingsCommand();
-	private LuceneIndexSettingsCommand publicationsIndex = new LuceneIndexSettingsCommand();
-	private LuceneIndexSettingsCommand publicationsIndex2 = new LuceneIndexSettingsCommand();
-	private LuceneIndexSettingsCommand goldstandardIndex = new LuceneIndexSettingsCommand();
-	private LuceneIndexSettingsCommand goldstandardIndex2 = new LuceneIndexSettingsCommand();
+	private List<LuceneIndexSettingsCommand> indices = new ArrayList<LuceneIndexSettingsCommand>();
 
 
 
@@ -126,86 +123,17 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the bookmarksIndex
+	 * @param indices the list of indices
 	 */
-	public LuceneIndexSettingsCommand getBookmarksIndex() {
-		return this.bookmarksIndex;
+	public void setIndices(List<LuceneIndexSettingsCommand> indices) {
+		this.indices = indices;
 	}
 
 	/**
-	 * @param bookmarksIndex the bookmarksIndex to set
+	 * @return the list of indices
 	 */
-	public void setBookmarksIndex(LuceneIndexSettingsCommand bookmarksIndex) {
-		this.bookmarksIndex = bookmarksIndex;
-	}
-
-	/**
-	 * @return the publicationsIndex
-	 */
-	public LuceneIndexSettingsCommand getPublicationsIndex() {
-		return this.publicationsIndex;
-	}
-
-	/**
-	 * @param publicationsIndex the publicationsIndex to set
-	 */
-	public void setPublicationsIndex(LuceneIndexSettingsCommand publicationsIndex) {
-		this.publicationsIndex = publicationsIndex;
-	}
-	
-	/**
-	 * @return the goldstandardIndex
-	 */
-	public LuceneIndexSettingsCommand getGoldstandardIndex() {
-		return this.goldstandardIndex;
-	}
-
-	/**
-	 * @param goldstandardIndex the goldstandardIndex to set
-	 */
-	public void setGoldstandardIndex(LuceneIndexSettingsCommand goldstandardIndex) {
-		this.goldstandardIndex = goldstandardIndex;
-	}
-	/**
-	 * @return the bookmarksIndex2
-	 */
-	public LuceneIndexSettingsCommand getBookmarksIndex2() {
-		return this.bookmarksIndex2;
-	}
-
-	/**
-	 * @param bookmarksIndex2 the bookmarksIndex2 to set
-	 */
-	public void setBookmarksIndex2(LuceneIndexSettingsCommand bookmarksIndex2) {
-		this.bookmarksIndex2 = bookmarksIndex2;
-	}
-
-	/**
-	 * @return the publicationsIndex2
-	 */
-	public LuceneIndexSettingsCommand getPublicationsIndex2() {
-		return this.publicationsIndex2;
-	}
-
-	/**
-	 * @param publicationsIndex2 the publicationsIndex2 to set
-	 */
-	public void setPublicationsIndex2(LuceneIndexSettingsCommand publicationsIndex2) {
-		this.publicationsIndex2 = publicationsIndex2;
-	}
-
-	/**
-	 * @return the goldstandardIndex2
-	 */
-	public LuceneIndexSettingsCommand getGoldstandardIndex2() {
-		return this.goldstandardIndex2;
-	}
-
-	/**
-	 * @param goldstandardIndex2 the goldstandardIndex2 to set
-	 */
-	public void setGoldstandardIndex2(LuceneIndexSettingsCommand goldstandardIndex2) {
-		this.goldstandardIndex2 = goldstandardIndex2;
+	public List<LuceneIndexSettingsCommand> getIndices() {
+		return indices;
 	}
 
 }

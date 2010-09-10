@@ -14,6 +14,7 @@ import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 public class LuceneIndexSettingsCommand {
 
 	private String instance;
+	private String name;
 	private int numDocs;
 	private int numDeletedDocs;
 	private Date newestDate;
@@ -22,6 +23,7 @@ public class LuceneIndexSettingsCommand {
 	private String currentVersionString;
 	private boolean isCurrent;
 	private static SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private LuceneIndexSettingsCommand inactiveIndex;
 
 	/**
 	 * @param indexStatistics
@@ -159,5 +161,34 @@ public class LuceneIndexSettingsCommand {
 	 */
 	private void setCurrentVersionString(String currentVersionString) {
 		this.currentVersionString = currentVersionString;
+	}
+
+	/**
+	 * @param inactiveIndex
+	 */
+	public void setInactiveIndex(LuceneIndexSettingsCommand inactiveIndex) {
+		this.inactiveIndex = inactiveIndex;
+		inactiveIndex.setName("inactive");
+	}
+
+	/**
+	 * @return the inactive index
+	 */
+	public LuceneIndexSettingsCommand getInactiveIndex() {
+		return inactiveIndex;
+	}
+
+	/**
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the indexname
+	 */
+	public String getName() {
+		return name;
 	}
 }
