@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.enums.RenderingFormat;
+import org.bibsonomy.rest.renderer.impl.JSONRenderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 import org.junit.Test;
 
@@ -39,6 +40,9 @@ public class RendererFactoryTest {
 	@Test
 	public void testGetRenderer() {
 		assertTrue(RendererFactory.getRenderer(RenderingFormat.XML) instanceof XMLRenderer);
+		assertTrue(RendererFactory.getRenderer(RenderingFormat.PDF) instanceof XMLRenderer);
+		
+		assertTrue(RendererFactory.getRenderer(RenderingFormat.JSON) instanceof JSONRenderer);
 	}
 	
 	@Test(expected = InternServerException.class)

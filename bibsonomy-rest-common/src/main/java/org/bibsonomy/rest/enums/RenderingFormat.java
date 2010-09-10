@@ -24,34 +24,85 @@
 package org.bibsonomy.rest.enums;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.common.exceptions.ValidationException;
 
 /**
  * The supported rendering formats.
- * 
- * PLEASE NOTE: When adding new Rendering Formats, don't forget to update the methods
- * getRenderingFormat and toMimeType!
+ * TODO: rename to MediaType
  * 
  * @author Christian Schenk
  * @version $Id$
  */
 public enum RenderingFormat {
-
+	
 	/**
-	 * currently only XML is supported
+	 * xml format
 	 */
-	XML,
+	XML("text", "xml"), // TODO: why not "application/xml"
+	
+	/**
+	 * json format
+	 */
+	JSON("application", "json"),
 	
 	/**
 	 * TODO: improve documentation
 	 */
-	PDF;
+	PDF("application", "pdf");
+	
+	private final String type;
+	private final String subtype;
+
+	private RenderingFormat(String type, String subtype) {
+		this.type = type;
+		this.subtype = subtype;
+	}
+	
+	/**
+	 * @return the mimeType
+	 */
+	public String getMimeType() {
+		return this.type + "/" + this.subtype;
+	}
+	
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return this.type;
+	}
+
+	/**
+	 * @return the subtype
+	 */
+	public String getSubtype() {
+		return this.subtype;
+	}
+
+	/**
+	 * returns always a valid MediaType 
+	 * default is {@link RenderingFormat#DEFAULT}
+	 * @param mimeType
+	 * @return the media type to the given MIME type
+	 */
+	public static RenderingFormat getMediaType(String mimeType) {
+		if (mimeType != null) {
+			mimeType = mimeType.toLowerCase().trim();
+			
+			for (final RenderingFormat mediaType : RenderingFormat.values()) {
+				if (mimeType.startsWith(mediaType.getMimeType())) {
+					return mediaType;
+				}
+			}
+		}
+		
+		return null;
+	}
 
 	/**
 	 * @param renderingFormat 
 	 * @return the rendering format to the given string.
 	 */
-	public static RenderingFormat getRenderingFormat(final String renderingFormat) {
+	public static RenderingFormat getMediaTypeByFormat(final String renderingFormat) {
 		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
 
 		final String format = renderingFormat.toLowerCase().trim();
@@ -59,23 +110,14 @@ public enum RenderingFormat {
 			return XML;
 		}
 		
+		if ("json".equals(format)) {
+			return JSON;
+		}
+		
 		if ("pdf".equals(format)){
 			return PDF;
 		}
-		throw new ValidationException("Format " + format + " is not supported.");
-	}
-	
-	/**
-	 * Get a string representation of the MIME type of the current rendering format
-	 * (according to http://www.iana.org/assignments/media-types/)
-	 * 
-	 * @return mimeType - a string representation of the content type
-	 */
-	public String toMimeType() {
-		switch (this) {
-			case XML: return "text/xml";
-			case PDF: return "application/pdf";
-		}
-		throw new InternServerException("No MIME-Type defined for format " + this.toString());
+		
+		return null;
 	}
 }

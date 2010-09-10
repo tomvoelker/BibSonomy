@@ -24,10 +24,8 @@
 package org.bibsonomy.rest.enums;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNull;
 
-import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.junit.Test;
 
 /**
@@ -38,20 +36,10 @@ public class RenderingFormatTest {
 
 	@Test
 	public void testGetRenderingFormat() {
-		assertEquals(RenderingFormat.XML, RenderingFormat.getRenderingFormat("xml"));
-		assertEquals(RenderingFormat.XML, RenderingFormat.getRenderingFormat("xMl"));
+		assertEquals(RenderingFormat.XML, RenderingFormat.getMediaType("xml"));
+		assertEquals(RenderingFormat.XML, RenderingFormat.getMediaType("xMl"));
 
-		try {
-			RenderingFormat.getRenderingFormat(null);
-			fail("Should throw exception");
-		} catch (final InternServerException ex) {
-		}
-		
-		try {
-			RenderingFormat.getRenderingFormat("someUnsupportedRenderingFormat");
-			fail("Should throw exception");
-		} catch (final ValidationException ex) {
-		}		
+		assertNull(RenderingFormat.getMediaType("someUnsupportedRenderingFormat"));
 	}
 
 	@Test

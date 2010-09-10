@@ -25,6 +25,7 @@ package org.bibsonomy.rest.renderer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.enums.RenderingFormat;
+import org.bibsonomy.rest.renderer.impl.JSONRenderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
@@ -35,6 +36,9 @@ import org.bibsonomy.rest.renderer.impl.XMLRenderer;
  * @version $Id$
  */
 public class RendererFactory {
+	
+	private static Renderer JSON_RENDERER = new JSONRenderer();
+	private static Renderer XML_RENDERER = new XMLRenderer();
 
 	/**
 	 * Returns the renderer for the given format; it defaults to the XML renderer.
@@ -45,10 +49,14 @@ public class RendererFactory {
 		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
 
 		switch (renderingFormat) {
+		case JSON:
+			return JSON_RENDERER;
 		case XML:
+			// fall through 
 		case PDF:
+			// fall through
 		default:
-			return XMLRenderer.getInstance();
+			return XML_RENDERER;
 		}
 	}
 }
