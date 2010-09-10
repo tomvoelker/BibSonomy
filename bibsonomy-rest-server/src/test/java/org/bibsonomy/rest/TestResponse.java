@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class NullResponse implements HttpServletResponse {
+public class TestResponse implements HttpServletResponse {
 
 	private ServletOutputStream servletOutputStream;
 	private PrintWriter printWriter;

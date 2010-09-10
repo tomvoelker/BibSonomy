@@ -1,5 +1,6 @@
 package org.bibsonomy.rest;
 
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -45,18 +46,20 @@ import org.bibsonomy.util.file.MultiPartRequestParser;
  */
 public final class RestServlet extends HttpServlet {
 	private static final Log log = LogFactory.getLog(RestServlet.class);
+	
+	private static final long serialVersionUID = 1L;
+	
+	
+	private static final String HEADER_ACCEPT = "Accept";
 
 	/**
 	 * Used in {@link #validateAuthorization(String)} to identify HTTP basic authentication.
 	 */
 	private static final String HTTP_AUTH_BASIC_IDENTIFIER = "Basic ";
 
-	private static final long serialVersionUID = 1L;
-
 	/** name of the servlet-parameter that configures the logicFactoryClass to use */
 	public static final String PARAM_LOGICFACTORY_CLASS = "logicFactoryClass";
 
-	
 	private LogicInterfaceFactory logicFactory;
 	
 	// store some infos about the specific request or the webservice (i.e. rootPath)
@@ -176,8 +179,11 @@ public final class RestServlet extends HttpServlet {
 			// parse the request object to retrieve a list with all items of the http request
 			final MultiPartRequestParser parser = new MultiPartRequestParser(request);
 			
+			// choose rendering format (defaults to xml)
+			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HEADER_ACCEPT), request.getContentType());
+			
 			// create Context
-			final Context context = new Context(request.getInputStream(), logic, method, request.getPathInfo(), request.getParameterMap(), parser.getList(), additionalInfos);
+			final Context context = new Context(method, request.getPathInfo(), renderingFormat, request.getInputStream(), parser.getList(), logic, request.getParameterMap(), additionalInfos);
 
 			// validate request
 			context.canAccess();
@@ -195,20 +201,20 @@ public final class RestServlet extends HttpServlet {
 				response.setStatus(HttpServletResponse.SC_OK);
 			}
 			
-			//just define an ByteArrayOutputStream to store all outgoing data
+			// just define an ByteArrayOutputStream to store all outgoing data
 			final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
-			
-			
 			context.perform(cachingStream);
-			// XXX: cachingStream.size() != cachingStream.toString().length() !!
-			// the correct value is the first one!
+			
+			/*
+			 *  XXX: note: cachingStream.size() != cachingStream.toString().length() !!
+			 *  the correct value is the first one!
+			 */
 			response.setContentLength(cachingStream.size());
 			
 			// some more logging
 			log.debug("Size of output sent:" + cachingStream.size());
 			final long elapsed = System.currentTimeMillis() - start;
 			log.debug("Processing time: " + elapsed + " ms");
-			
 
 			cachingStream.writeTo(response.getOutputStream());
 		} catch (final AuthenticationException e) {
@@ -271,15 +277,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
 		// get renderer
-		final String renderingFormatName = Context.getStringAttribute(request.getParameterMap(), "format", "xml");
-		RenderingFormat renderingFormat;
-		try { 
-			renderingFormat = RenderingFormat.getRenderingFormat(renderingFormatName);
-		}
-		catch (final Exception ex) {
-			renderingFormat = RenderingFormat.XML;
-		}
-		final Renderer renderer = RendererFactory.getRenderer(renderingFormat);
+		final Renderer renderer = RendererFactory.getRenderer(RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HEADER_ACCEPT), request.getContentType()));
 
 		// send error
 		response.setStatus(code);

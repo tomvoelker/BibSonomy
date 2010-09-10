@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.strategy.AbstractContextTest;
 import org.bibsonomy.rest.strategy.Context;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class GetPopularPostsStrategyTest extends AbstractContextTest {
 	 */
 	@Test
 	public void testGetPopularPostsStrategy() throws Exception {
-		final Context c = new Context(this.is, this.db, HttpMethod.GET, "/posts/popular", new HashMap<String, String>(), null, null);
+		final Context c = new Context(HttpMethod.GET, "/posts/popular", RenderingFormat.XML, this.is, null, this.db, new HashMap<String, String>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		c.perform(baos);
 

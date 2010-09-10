@@ -20,6 +20,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.enums.RenderingFormat;
@@ -67,10 +68,9 @@ public final class Context {
 	 */
 	private final Strategy strategy;
 
-	private final StringTokenizer urlTokens;
+	
 	private final Map<?, ?> parameterMap;
-	// FIXME: never used locally ?
-	// private final HttpMethod httpMethod;
+	
 	private RenderingFormat renderingFormat;
 
 	/**
@@ -85,24 +85,25 @@ public final class Context {
 	private final Map<String, String> additionalInfos;
 
 	/**
-	 * @param doc 
-	 * @param logic 
-	 * @param url
 	 * @param httpMethod
 	 *            httpMethod used in the request: GET, POST, PUT or DELETE
+	 * @param url
+	 * @param renderingFormat the mediatype of the request and response
+	 * @param doc 
+	 * @param items 
+	 * @param logic 
 	 * @param parameterMap
 	 *            map of the attributes
-	 * @param items 
 	 * @param additionalInfos 
 	 * @throws NoSuchResourceException
 	 *             if the requested url doesnt exist
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final InputStream doc, final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map<?, ?> parameterMap, final List<FileItem> items, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
+	public Context(final HttpMethod httpMethod, final String url, RenderingFormat renderingFormat, final InputStream doc, final List<FileItem> items, final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
-		// FIXME this.httpMethod = httpMethod;
+		
 		if (parameterMap == null) throw new RuntimeException("Parameter map is null");
 		this.parameterMap = parameterMap;
 		
@@ -110,23 +111,23 @@ public final class Context {
 		this.additionalInfos = additionalInfos;
 
 		if (url == null || "/".equals(url)) throw new AccessDeniedException("It is forbidden to access '/'.");
-		this.urlTokens = new StringTokenizer(url, "/");
-
+		
 		// choose rendering format (defaults to xml)
-		this.renderingFormat = RenderingFormat.getRenderingFormat(getStringAttribute("format", "xml"));
+		this.renderingFormat = renderingFormat;
 		this.renderer = RendererFactory.getRenderer(this.renderingFormat);
 
 		// choose the strategy
-		this.strategy = this.chooseStrategy(httpMethod);
+		this.strategy = this.chooseStrategy(httpMethod, url);
 		if (this.strategy == null) throw new NoSuchResourceException("The requested resource does not exist: " + url);
 	}
 
-	private Strategy chooseStrategy(final HttpMethod httpMethod) {
-		if (this.urlTokens.countTokens() > 0) {
-			final String nextElement = (String) this.urlTokens.nextElement();
+	private Strategy chooseStrategy(final HttpMethod httpMethod, final String url) {
+		final StringTokenizer urlTokens = new StringTokenizer(url, "/");
+		if (urlTokens.countTokens() > 0) {
+			final String nextElement = (String) urlTokens.nextElement();
 			final ContextHandler contextHandler = Context.urlHandlers.get(nextElement);
 			if (contextHandler != null) {
-				return contextHandler.createStrategy(this, this.urlTokens, httpMethod);
+				return contextHandler.createStrategy(this, urlTokens, httpMethod);
 			}
 		}
 		return null;
@@ -199,8 +200,7 @@ public final class Context {
 				final String[] tmp = (String[]) obj;
 				if (tmp.length == 1) {
 					try {
-						int tmpStart = Integer.valueOf(tmp[0]);
-						return tmpStart;
+						return Integer.valueOf(tmp[0]);
 					} catch (final NumberFormatException e) {
 						// TODO ignore or throw exception ?
 						return defaultValue;
@@ -218,26 +218,7 @@ public final class Context {
 	 * @return paramter value
 	 */
 	public String getStringAttribute(final String parameterName, final String defaultValue) {
-		return Context.getStringAttribute(this.parameterMap, parameterName, defaultValue);
-	}
-
-	/** 
-	 * @param parameterMap
-	 * @param parameterName
-	 * @param defaultValue
-	 * @return a {@link String} parameter of the request's parametermap, if any.
-	 */
-	public static String getStringAttribute(final Map<?, ?> parameterMap, final String parameterName, final String defaultValue) {
-		if (parameterMap.containsKey(parameterName)) {
-			final Object obj = parameterMap.get(parameterName);
-			if (obj instanceof String[]) {
-				final String[] tmp = (String[]) obj;
-				if (tmp.length == 1) {
-					return tmp[0];
-				}
-			}
-		}
-		return defaultValue;
+		return RESTUtils.getStringAttribute(this.parameterMap, parameterName, defaultValue);
 	}
 
 	/**

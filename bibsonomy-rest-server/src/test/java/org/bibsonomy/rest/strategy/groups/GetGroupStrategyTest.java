@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.strategy.AbstractContextTest;
 import org.bibsonomy.rest.strategy.Context;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class GetGroupStrategyTest extends AbstractContextTest {
 	 */
 	@Test
 	public void testGetGroupStrategy() throws Exception {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/groups/public", new HashMap<Object, Object>(), null, null);
+		final Context ctx = new Context(HttpMethod.GET, "/groups/public", RenderingFormat.XML, this.is, null, this.db, new HashMap<Object, Object>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ctx.perform(baos);
 

@@ -22,16 +22,16 @@ import org.junit.Test;
 public class TestRestServlet {
 
 	private RestServlet servlet;
-	private NullRequest request;
-	private NullResponse response;
+	private TestRequest request;
+	private TestResponse response;
 	
 	@Before
 	public void setUp() {
 		this.servlet = new RestServlet();
 		this.servlet.setLogicInterface(TestDBLogic.factory);
 		
-		this.request = new NullRequest();
-		this.response = new NullResponse();
+		this.request = new TestRequest();
+		this.response = new TestResponse();
 	}
 
 	/**
@@ -78,8 +78,6 @@ public class TestRestServlet {
 
 		this.servlet.doGet(this.request, this.response);
 		compareWithFile(this.response.getContent(), "exampleComplexResult1.txt");
-		System.out.println(this.response.getContentLength());
-		System.out.println( this.response.getContent().length());
 		assertEquals(this.response.getContentLength(), this.response.getContent().length());
 	}
 
@@ -113,6 +111,7 @@ public class TestRestServlet {
 		while ((s = br.readLine()) != null) {
 			sb.append(s + "\n");
 		}
+		br.close();
 		assertEquals(sb.toString(), sw);
 	}
 }

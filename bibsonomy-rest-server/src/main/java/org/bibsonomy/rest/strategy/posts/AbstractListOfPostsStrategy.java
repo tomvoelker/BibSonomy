@@ -41,13 +41,10 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		}
 	}
 
-
 	@Override
 	protected void render(Writer writer, final List<? extends Post<? extends Resource>> resultList) {
 		this.getRenderer().serializePosts(writer, resultList, getView());
 	}
-
-	//protected abstract List<? extends Post<? extends Resource>> getList(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, List<String> tags, String hash, Object object, int start, int end);
 
 	@Override
 	protected abstract StringBuilder getLinkPrefix();
@@ -56,7 +53,6 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	protected final String getContentType() {
 		return "posts";
 	}
-
 
 	@Override
 	protected void appendLinkPostFix(StringBuilder sb) {

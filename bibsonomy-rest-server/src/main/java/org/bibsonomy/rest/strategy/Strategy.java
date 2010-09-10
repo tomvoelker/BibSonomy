@@ -53,13 +53,13 @@ public abstract class Strategy {
 	 */
 	public final String getContentType(final String userAgent) {
 		if (getContentType() == null) {
-			return this.context.getRenderingFormat().toMimeType();
+			return this.context.getRenderingFormat().getMimeType();
 		}
 		// Use special content type if request comes from BibSonomy REST client
 		// (like bibsonomy/post+XML )
 		if (this.context.apiIsUserAgent(userAgent)) 
 			return RestProperties.getInstance().getSystemName().toLowerCase() + "/" + getContentType() + "+" + this.context.getRenderingFormat().toString();
-		return this.context.getRenderingFormat().toMimeType();
+		return this.context.getRenderingFormat().getMimeType();
 	}
 
 	protected abstract String getContentType();

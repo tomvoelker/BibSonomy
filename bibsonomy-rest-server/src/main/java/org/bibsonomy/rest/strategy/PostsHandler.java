@@ -8,11 +8,11 @@ import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.posts.GetListOfPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
-import org.bibsonomy.rest.strategy.posts.standard.DeleteStandardPostStrategy;
 import org.bibsonomy.rest.strategy.posts.standard.PostStandardPostStrategy;
 import org.bibsonomy.rest.strategy.posts.standard.PutStandardPostStrategy;
 import org.bibsonomy.rest.strategy.posts.standard.references.DeleteReferencesStrategy;
 import org.bibsonomy.rest.strategy.posts.standard.references.PostReferencesStrategy;
+import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 
 /**
@@ -70,7 +70,7 @@ public class PostsHandler implements ContextHandler {
 					case PUT:
 						return new PutStandardPostStrategy(context, loggedInUserName, resourceHash);
 					case DELETE:
-						return new DeleteStandardPostStrategy(context, loggedInUserName, resourceHash);
+						return new DeletePostStrategy(context, loggedInUserName, resourceHash);
 					default:
 						break; // no such resource
 				}

@@ -73,6 +73,7 @@ public class TestDBLogic implements LogicInterface {
 	 * a factory for this implementation
 	 */
 	public static final LogicInterfaceFactory factory = new LogicInterfaceFactory() {
+		@Override
 		public LogicInterface getLogicAccess(final String loginName, final String apiKey) {
 			return new TestDBLogic(loginName);
 		}
@@ -99,10 +100,12 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 
+	@Override
 	public User getUserDetails(final String userName) {
 		return this.dbUsers.get(userName);
 	}
 
+	@Override
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) {
 		final User user = this.dbUsers.get(userName);
 		if (user != null) {
@@ -115,12 +118,14 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
+	@Override
 	public List<Group> getGroups(final int start, final int end) {
 		final List<Group> groups = new LinkedList<Group>();
 		groups.addAll(this.dbGroups.values());
 		return groups;
 	}
 
+	@Override
 	public Group getGroupDetails(final String groupName) {
 		return this.dbGroups.get(groupName);
 	}
@@ -128,6 +133,7 @@ public class TestDBLogic implements LogicInterface {
 	/**
 	 * note: the regex is currently not considered
 	 */
+	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags_, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
 		final List<Tag> tags = new LinkedList<Tag>();
 
@@ -156,11 +162,13 @@ public class TestDBLogic implements LogicInterface {
 		return tags;
 	}
 
+	@Override
 	public Tag getTagDetails(final String tagName) {
 		return this.dbTags.get(tagName);
 	}
 
 	/** note: popular and added are not considered */
+	@Override
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		// do grouping stuff
@@ -669,115 +677,141 @@ public class TestDBLogic implements LogicInterface {
 		wwwTag.getPosts().add(post_16);
 	}
 
+	@Override
 	public void addUserToGroup(final String groupName, final String userName) {
 	}
 
+	@Override
 	public void deleteGroup(final String groupName) {
 	}
 
+	@Override
 	public void deletePosts(final String userName, final List<String> resourceHashes) {
 	}
 
+	@Override
 	public void deleteUser(final String userName) {
 	}
 
+	@Override
 	public void deleteUserFromGroup(final String groupName, final String userName) {
 	}
 
+	@Override
 	public String createGroup(final Group group) {
 		return null;
 	}
 
+	@Override
 	public String createUser(final User user) {
 		this.dbUsers.put(user.getName(), user);
 		return null;
 	}
 
+	@Override
 	public User getAuthenticatedUser() {
 		return loginUser;
 	}
 
+	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public String updateUser(final User user, final UserUpdateOperation operation) {
 		this.dbUsers.put(user.getName(), user);
 		return null;
 	}
 
+	@Override
 	public List<String> createPosts(final List<Post<?>> posts) {
 		return null;
 	}
 
+	@Override
 	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 		return null;
 	}
 
+	@Override
 	public String createDocument(final Document doc, final String resourceHash) {
 		return null;
 	}
 
+	@Override
 	public Document getDocument(final String userName, final String fileHash) {
 		
 		return null;
 	}
 	
+	@Override
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		return null;
 	}
 
+	@Override
 	public void deleteDocument(final Document document, final String resourceHash) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void deleteInetAdressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
 		final List<User> users = new LinkedList<User>();
 		if (GroupingEntity.ALL.equals(grouping)) {
@@ -793,65 +827,66 @@ public class TestDBLogic implements LogicInterface {
 
 	}
 
+	@Override
 	public String getClassifierSettings(final ClassifierSettings key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List<User> getClassifierHistory(final String userName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List<User> getClassifierComparison(final int interval) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public int getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
 	public String getOpenIDUser(final String openID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
+	@Override
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
 		return 0;
 	}
 
+	@Override
 	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public List<User> getFriendsOfUser(final User loginUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<User> getUserFriends(final User loginUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	@Override
 	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		// TODO Auto-generated method stub
 		return null;
