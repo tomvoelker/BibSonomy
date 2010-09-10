@@ -29,8 +29,9 @@ import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.tags.database.IdleClosingConnectionManager;
 import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.renderer.Renderer;
-import org.bibsonomy.rest.renderer.impl.XMLRenderer;
+import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Class for encapsulating webservice queries to recommenders
@@ -92,7 +93,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
       	idleConnectionHandler.addConnectionManager(connectionManager);
       	idleConnectionHandler.start();
       	
-		this.renderer = XMLRenderer.getInstance();
+		this.renderer = RendererFactory.getRenderer(RenderingFormat.XML);
 	}
 	
 	/**
