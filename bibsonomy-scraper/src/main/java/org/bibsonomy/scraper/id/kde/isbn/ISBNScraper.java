@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.id.kde.isbn;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,7 +36,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 
 /**
@@ -54,46 +55,46 @@ public class ISBNScraper implements Scraper {
 	public String getInfo() {
 		return INFO;
 	}
-
+	
 	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
+		return Collections.<Scraper>singletonList(this);
 	}
-
+	
 	public boolean scrape(final ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getSelectedText() != null){
 			final String isbn = ISBNUtils.extractISBN(sc.getSelectedText());
 			final String issn = ISBNUtils.extractISSN(sc.getSelectedText());
-
-			// Validationutils
-			if (ValidationUtils.present(isbn)) {
+			
+			if (present(isbn)) {
 				try {
 					String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
 					
-					if (!ValidationUtils.present(bibtex)) {
+					if (!present(bibtex)) {
 						bibtex = AmazonScraper.getBibtexByISBN(isbn);
 					}
 					
-					if(ValidationUtils.present(bibtex)) {
+					if (present(bibtex)) {
 						sc.setBibtexResult(bibtex);
 						sc.setScraper(this);
 						return true;
-					} else
-						throw new ScrapingFailureException("bibtex download from worldcat / amazon failed");
+					}
+					
+					throw new ScrapingFailureException("bibtex download from worldcat / amazon failed");
 				} catch (final IOException ex) {
 					throw new InternalFailureException(ex);
 				}
 
-			} else if (ValidationUtils.present(issn)){
+			} else if (present(issn)){
 				try {
 					String bibtex = WorldCatScraper.getBibtexByISSN(issn+ADV_PARAM);
 					
-					if (ValidationUtils.present(bibtex)){
+					if (present(bibtex)){
 						sc.setBibtexResult(bibtex);
 						sc.setScraper(this);
 						return true;
 					} else {
 						bibtex = WorldCatScraper.getBibtexByISSN(issn);
-						if (ValidationUtils.present(bibtex)){
+						if (present(bibtex)){
 							sc.setBibtexResult(bibtex);
 							sc.setScraper(this);
 							return true;
@@ -109,9 +110,7 @@ public class ISBNScraper implements Scraper {
 		
 		return false;
 	}
-
-
-
+	
 	public boolean supportsScrapingContext(ScrapingContext sc) {
 		if(sc.getSelectedText() != null){
 			final String isbn = ISBNUtils.extractISBN(sc.getSelectedText());
