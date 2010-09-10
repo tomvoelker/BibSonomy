@@ -990,7 +990,7 @@ li.faq dd {
 	padding: 0;
 	margin: 0;
 	border-spacing: 0;
-	width: 400px;
+	max-width: 400px;
 }
 
 #mainHeaderRightBox a {
@@ -1239,7 +1239,6 @@ table.report td.value {
 	display:none !important;
 }
 
-
 /*
  * textarea with autoresize
  */
@@ -1258,6 +1257,7 @@ div.fsRow div.resizable-textarea {
 	width: 73%;
 	float: left;
 }
+
 div.fsRow div.resizable-textarea textarea {
 	float:none;
 	width: 100%;
