@@ -2,6 +2,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<!--+ 
@@ -26,75 +27,37 @@
 	<jsp:directive.attribute name="isFollowerOfUser" type="java.lang.Boolean" required="true" description="Does the loginUser follow the requestedUser?"/>
 	<jsp:directive.attribute name="commonGroups" type="java.util.List" required="false"/>
 
-	<div>
+	<div class="socializer">
 
 		<!--+
 			| link to CV
 	 		+-->
-	 	<c:set var="cvTitle">
-	 		<c:out value="${requestedUser}"/>'s CV
-	 	</c:set>
-		<a href="/cv/user/${fn:escapeXml(requestedUser)}"><img src="${resdir}/image/cv.png" title="${cvTitle}" style="margin-bottom:9px;"/></a>
+	 	<user:cv user="${command.user}"/>
 			
-					
 		<!--+ 
 		 	|
 		 	| friendship with icons ...
 		 	|
+		 	| FIXME: implement this using AJAX or at least some "return false;" magic.
+		 	|
 		 	+-->
-	
-		<!-- set image name -->
-		<c:set var="friendImage" value="noFriends.png"/>
-		<c:choose>
-			<c:when test="${isFriendOfUser and isOfFriendUser}"><c:set var="friendImage" value="friends.png"/></c:when>
-			<c:when test="${isFriendOfUser}"><c:set var="friendImage" value="friendOf.png"/></c:when>
-			<c:when test="${isOfFriendUser}"><c:set var="friendImage" value="ofFriend.png"/></c:when>
+   		<c:choose>
+			<c:when test="${isOfFriendUser}">
+				<!-- remove user from login user's friend list -->
+				<fmt:message key="friends.actions.delete.title" var="delFriend">
+					<fmt:param value="${command.user.name}"/>
+				</fmt:message>
+				<a href="/SettingsHandler?ckey=${ckey}&amp;del_friend=${mtl:encodeURI(requestedUser)}" title="${delFriend}"><button type="button"><img src="${resdir}/image/starblue_selected.png"/><fmt:message key="navi.friend"/></button></a>
+			</c:when>
+			<c:otherwise>
+				<!-- add user from login user's friend list -->
+				<fmt:message key="friends.actions.add.title" var="addFriend">
+					<fmt:param value="${command.user.name}"/>
+				</fmt:message>
+				<a href="/SettingsHandler?ckey=${ckey}&amp;add_friend=${mtl:encodeURI(requestedUser)}" title="${addFriend}"><button type="button"><img src="${resdir}/image/starblue_unselected.png"/><fmt:message key="navi.friend"/></button></a>
+			</c:otherwise>
 		</c:choose>
-		<img src="${resdir}/image/${friendImage}" width="106" height="48" border="0" alt="friends" usemap="#friends"/>
-	 	<map name="friends" style="display:inline;">
-	
-			<!--+
-				|
-				| Is the logged in user in the requested user's friend list?
-				|
-				+-->
-			<c:choose>
-				<c:when test="${isFriendOfUser}">
-	    			<area shape="poly" coords="106,48, 106,0, 27,0, 27,24, 76,24, 76,48, 106,48" href="/friend/${fn:escapeXml(requestedUser)}" 
-	    				alt="his/her friend" title="You are a friend of ${fn:escapeXml(requestedUser)}. See the posts which are viewable only for ${fn:escapeXml(requestedUser)}'s friends."/>
-						<!--+
-							| TODO: was kann man dann noch machen? 
-							|       z.B. dessen "viewable-for-friens"-posts sehen,
-							|       ihm Posts in die Inbox senden, usw.
-							|       > Link auf Hilfe?
-							+-->
-	    		</c:when>
-	    		<c:otherwise>
-	    			<!-- it's probably not so nice pointing at that ...  
-	    			<area shape="poly" coords="106,48, 106,0, 27,0, 27,24, 76,24, 76,48, 106,48" href="/user/${fn:escapeXml(requestedUser)}" 
-	    				alt="not his/her friend" title="You are a not friend of ${fn:escapeXml(requestedUser)}."/>
-	    			-->
-	    		</c:otherwise>
-			</c:choose>	
-			
-	
-			<!--+
-				|
-				| Is the requested user in the logged in user's friend list?
-				|
-				+-->
-	   		<c:choose>
-				<c:when test="${isOfFriendUser}">
-					<area shape="poly" coords="0,48, 76,48, 76,27, 24,27, 24,0, 0,0" href="/viewable/friends" 
-						alt="your friend" title="${fn:escapeXml(requestedUser)} is your friend. See the posts ${fn:escapeXml(requestedUser)} can see you made viewable for friends only."/>
-				</c:when>
-				<c:otherwise>
-					<area shape="poly" coords="0,48, 76,48, 76,27, 24,27, 24,0, 0,0" href="/SettingsHandler?ckey=${ckey}&amp;add_friend=${mtl:encodeURI(requestedUser)}" 
-						alt="your friend" title="${fn:escapeXml(requestedUser)} is not your friend. Add ${fn:escapeXml(requestedUser)} to your friend list."/>
-				</c:otherwise>
-			</c:choose>
-	   	</map>
-			
+		
 		<!--+
 			|
 			| Does loginUser follow requestedUser?
@@ -106,16 +69,18 @@
 			<fmt:message key="follow.info.text2" var="text2"/>
 			<fmt:message key="follow.link.text.remove" var="remF"/>
 			<a onclick="javascript:removeFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
+			   title="${text2} ${remF}"
 			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}">
-			   <img src="${resdir}/image/follow.png" title="${text2} ${remF}" style="margin-bottom:9px"/>
+			   <button type="button"><img src="${resdir}/image/starblue_selected.png"/> <fmt:message key="follow"/></button>
 			</a>
 		</span>
 		<span id="followLink" style="${isFollowerOfUser ? 'display:none' : ''}">
 			<fmt:message key="follow.info.text1" var="text1"/>
 			<fmt:message key="follow.link.text.follow" var="addF"/>
 			<a onclick="javascript:addFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
+			   title="${text1} ${addF}"
 			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}">
-			   <img src="${resdir}/image/noFollow.png" title="${text1} ${addF}" style="margin-bottom:9px"/>
+			   <button type="button"><img src="${resdir}/image/starblue_unselected.png"/> <fmt:message key="follow"/></button>
 			</a>
 		</span>
 	</div>
