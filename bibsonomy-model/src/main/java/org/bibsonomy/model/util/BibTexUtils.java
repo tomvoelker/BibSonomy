@@ -205,10 +205,13 @@ public class BibTexUtils {
 		}
 		final PersonName personName = new PersonName(author.replaceFirst(PersonNameUtils.PERSON_NAME_DELIMITER + ".*", "").trim());
 		// check, if first name is just an initial
-		String auinit1 = null;
-		if (personName.getFirstName().length() == 1) {
-			auinit1 = personName.getFirstName();
+		final String auinit1;
+		final String firstName = personName.getFirstName();
+		if (present(firstName) && firstName.length() == 1) {
+			auinit1 = firstName;
 			personName.setFirstName(null);
+		} else {
+			auinit1 = null;
 		}
 
 		// parse misc fields
@@ -237,7 +240,7 @@ public class BibTexUtils {
 			appendOpenURL(openurl,"issn", bib.getMiscField("issn"));
 			// append name information for first author
 			appendOpenURL(openurl, "aulast", personName.getLastName());
-			appendOpenURL(openurl, "aufirst", personName.getFirstName());
+			appendOpenURL(openurl, "aufirst", firstName);
 			appendOpenURL(openurl, "auinit1", auinit1);
 			// genres == entrytypes
 			if (bib.getEntrytype().toLowerCase().equals("journal")) {
