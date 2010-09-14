@@ -157,13 +157,45 @@
 			
 				<div id="main_header">
 				
-					<!-- Navigation -->
-					<div id="heading" style="float:left">
-						<h1>
+					<!--+
+					 	|
+					 	| show inbox, basket, edit tags links
+					 	|
+					 	+-->
+					<div id="mainHeaderRightBox">
+						<c:url var="loginUrl" value="/login" context="${projectContext}"/>
+						<c:choose>
+							<c:when test="${not empty loginUser.name}">
+								<c:url var="inboxUrl" value="/inbox" context="${projectContext}"/>
+								<a href="${inboxUrl}">
+									<span id="inboxctr">${loginUser.inbox.numPosts}</span><c:out value=" "/>
+									<fmt:message key="navi.inInbox"/><c:out value=" "/>
+									<fmt:message key="navi.inbox"/>
+								</a>
+								<br/>
+								<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
+								<a href="${basketUrl}">
+									<span id="pickctr">${loginUser.basket.numPosts}</span><c:out value=" "/>
+									<fmt:message key="navi.pickedIn"/><c:out value=" "/>
+									<fmt:message key="navi.basket"/>
+								</a>
+							</c:when>
+						<c:otherwise>
+							<parts:login authOrder="${authOrder}" loginUrl="${loginUrl}" login="${login}" projectContext="${projectContext}"/>
+						</c:otherwise>
+						</c:choose>
+					</div>
+				
+				
+					<!--+
+						|
+						| heading
+						|
+						+-->
+					<h1 id="heading">
 							<c:url var="root" value="/" context="${projectContext}"/>
 							<a href="${root}">${projectName}</a> :: <jsp:invoke fragment="heading"/>
-						</h1>															
-					</div>
+					</h1>
 									
 					<!-- dropdown menu for BibSonomy Path -->  
 					<div id="path_menu" class="dropmenudiv">
@@ -199,36 +231,6 @@
 					  cssdropdown.startchrome("heading");
 					</script>
 					
-					<div id="mainHeaderRightBox">
-						<c:url var="loginUrl" value="/login" context="${projectContext}"/>
-						<c:choose>
-							<c:when test="${not empty loginUser.name}">
-								<c:url var="inboxUrl" value="/inbox" context="${projectContext}"/>
-								<a href="${inboxUrl}">
-									<span id="inboxctr">${loginUser.inbox.numPosts}</span><c:out value=" "/>
-									<fmt:message key="navi.inInbox"/><c:out value=" "/>
-									<fmt:message key="navi.inbox"/>
-								</a>
-								<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
-								<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
-								<a href="${basketUrl}">
-									<span id="pickctr">${loginUser.basket.numPosts}</span><c:out value=" "/>
-									<fmt:message key="navi.pickedIn"/><c:out value=" "/>
-									<fmt:message key="navi.basket"/>
-								</a>
-								<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
-								<c:url var="editTagsUrl" value="/edit_tags" context="${projectContext}"/>
-								<a href="${editTagsUrl}">
-									<fmt:message key="navi.editTags"/>
-								</a>
-								<c:out value=" "/>
-							</c:when>
-						<c:otherwise>
-							<parts:login authOrder="${authOrder}" loginUrl="${loginUrl}" login="${login}" projectContext="${projectContext}"/>
-						</c:otherwise>
-						</c:choose>
-						
-					</div>
 					<div id="welcomeTop"><fmt:message key="system.desc"/></div>
 				</div>
 				
