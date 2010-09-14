@@ -16,7 +16,7 @@
 		language="java" pageEncoding="UTF-8" session="true" />
 
 	<layout:paneLayout pageTitle="${command.pageTitle}"
-		command="${command}" requestedUser=""
+		command="${command}" requestedUser="" selectedNaviTab="nav_editTags"
 		requPath="${requPath}">
 
 		
