@@ -1,4 +1,4 @@
-package org.bibsonomy.rest;
+package org.bibsonomy.rest.testutil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,10 +15,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.junit.Ignore;
+
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
+@Ignore
 public class TestRequest implements HttpServletRequest {
 
 	private final Map<String, String> headers;
@@ -315,7 +318,7 @@ public class TestRequest implements HttpServletRequest {
 	/**
 	 * @return the headers
 	 */
-	@Deprecated // please use the putToHeaders method
+	@Deprecated // please use the putIntoHeaders method
 	public Map<String, String> getHeaders() {
 		return headers;
 	}
@@ -325,11 +328,13 @@ public class TestRequest implements HttpServletRequest {
 	 * @param key
 	 * @param value
 	 */
-	public void putToHeaders(final String key, final String value) {
+	public void putIntoHeaders(final String key, final String value) {
 		this.headers.put(key, value);
 	}
 	
 	/**
+	 * TODO: check method
+	 * 
 	 * sets the content Type of the request
 	 * @param contentType
 	 */
@@ -343,7 +348,7 @@ public class TestRequest implements HttpServletRequest {
 	 * @param key
 	 * @param value
 	 */
-	public void putToParamaters(final Object key, final Object value) {
+	public void putIntoParamaters(final Object key, final Object value) {
 		this.parameterMap.put(key, value);
 	}
 }

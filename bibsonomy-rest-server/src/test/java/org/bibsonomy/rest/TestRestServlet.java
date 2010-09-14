@@ -11,6 +11,8 @@ import java.io.IOException;
 import org.bibsonomy.rest.database.TestDBLogic;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.testutil.TestRequest;
+import org.bibsonomy.rest.testutil.TestResponse;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -84,10 +86,10 @@ public class TestRestServlet {
 	@Test
 	@Ignore // FIXME: do we want this to work?
 	public void testUTF8() throws Exception {
-//		final NullRequest request = new NullRequest();
+//		final TestRequest request = new TestRequest();
 //		request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
 //		request.getHeaders().put("User-Agent", RestProperties.getInstance().getApiUserAgent());
-//		final NullResponse response = new NullResponse();
+//		final TestResponse response = new TestResponse();
 //
 //		final RestServlet servlet = new RestServlet();
 //		servlet.setLogicInterface(new TestDBLogic());
