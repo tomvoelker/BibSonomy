@@ -19,6 +19,8 @@
 		command="${command}" requPath="${requPath}" 
 		selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
 		<jsp:attribute name="tabcontent">
+			<!-- display potential errors -->
+		    <errors:global errors="${errors}"/>	
 			<c:choose>
 				<c:when test="${command.selTab == 0}">
 					<settings:settingsProfile command="${command}"/>
@@ -41,16 +43,12 @@
     </jsp:attribute>
 		
         <jsp:attribute name="heading">
-		  <h1 id="path"> 
 		  	<a rel="path_menu" href="/settings"><img src="/resources/image/box_arrow.png"/>&amp;nbsp;<fmt:message key="navi.settings"/></a>
 <!--			<a rel="path_menu" href="/friend"><img src="/resources/image/box_arrow.png" />&amp;nbsp;<fmt:message key="navi.friend"/></a> :: -->
 <!--			<a href="/friend/${mtl:encodeURI(param.requestedUser)}"><c:out value="${param.requestedUser}"/></a> ::-->
 <!--			<form action="/friend/${mtl:encodeURI(param.requestedUser)}" method="GET" class="smallform">-->
 <!--			  <input type="text" size="20" id="inpf" name="tag" value="${command.requestedTags}"/>-->
 <!--			</form>-->
-		  </h1> 	
-		  <!-- display potential errors -->
-		  <errors:global errors="${errors}"/>	
         </jsp:attribute>
 		
         <jsp:attribute name="sidebar">
