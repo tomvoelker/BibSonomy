@@ -1239,6 +1239,7 @@ table.report td.value {
 	display:none !important;
 }
 
+
 /*
  * textarea with autoresize
  */
@@ -1257,10 +1258,31 @@ div.fsRow div.resizable-textarea {
 	width: 73%;
 	float: left;
 }
-
 div.fsRow div.resizable-textarea textarea {
 	float:none;
 	width: 100%;
 	margin-bottom: 0px;
 	border-bottom: none;
+}
+
+
+.socializer {
+	padding: 5px;
+}
+
+.realname {
+	margin-left: .5em;
+	font-weight: normal;
+}
+
+button * {
+	vertical-align: middle;
+}
+
+button {
+	padding: 2px;
+}
+
+a button {
+	cursor: pointer;
 }

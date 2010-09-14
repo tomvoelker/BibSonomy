@@ -56,13 +56,17 @@ function add_filter() {
   tags_filter.onkeyup = filter_tags;
 
   f.appendChild(tags_filter);
-    
+  
   var l = document.createElement("li");
   l.style.paddingBottom='.5em';
   l.style.fontSize='80%';
   l.appendChild(f);
   
-  sidebar.insertBefore(l, sidebar.childNodes[0]); // first child
+  if (document.getElementById("sidebarfilter")) {
+	  sidebar.replaceChild(l, document.getElementById("sidebarfilter")); // first child
+  } else {
+	  sidebar.insertBefore(l, sidebar.childNodes[0]); // first child
+  }
 }
 
 function init_sidebar() {
