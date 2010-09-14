@@ -28,11 +28,6 @@
 	<jsp:directive.attribute name="commonGroups" type="java.util.List" required="false"/>
 
 	<div class="socializer">
-
-		<!--+
-			| link to CV
-	 		+-->
-	 	<user:cv user="${command.user}"/>
 			
 		<!--+ 
 		 	|
@@ -83,5 +78,14 @@
 			   <button type="button"><img src="${resdir}/image/starblue_unselected.png"/> <fmt:message key="follow"/></button>
 			</a>
 		</span>
+		
+		
+		<!--+
+			|
+			| Show "socialize" link with yellow border.
+			|
+			+-->
+			<a href="/personalized/user/${fn:escapeXml(command.requestedUser)}"><button type="button"><fmt:message key="personalize"/></button></a>
+		
 	</div>
 </jsp:root>
