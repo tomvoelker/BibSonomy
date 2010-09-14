@@ -1,4 +1,4 @@
-\begingroup{year}<h3><a name="\year">\year</a></h3>\endgroup{year}
+\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
 <p>
 \format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\year), 
 '\format[HTMLChars]{\title}', <i> \format[HTMLChars]{\journal}</i>
