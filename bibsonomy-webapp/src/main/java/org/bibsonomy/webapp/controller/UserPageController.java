@@ -9,7 +9,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
@@ -72,7 +71,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		if (context.isUserLoggedIn()){
 			final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
 			for (final User u : followersOfUser){
-				if (u.getName().equals(command.getRequestedUser())){
+				if (u.getName().equals(groupingName)){
 					command.setFollowerOfUser(true);
 					break;
 				}
@@ -166,22 +165,22 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			}
 
 			/*
-			 * add user details to command, if loginUser is admin
-			 */
-			if (Role.ADMIN.equals(logic.getAuthenticatedUser().getRole())) {
-				command.setUser(logic.getUserDetails(command.getRequestedUser()));
-			}
-
-			/*
 			 * For logged users we check, if she is in a friends or group relation
 			 * with the requested user. 
 			 */
 			final String loginUserName = context.getLoginUser().getName();
-			if (context.isUserLoggedIn() && !loginUserName.equalsIgnoreCase(groupingName)) {
+			if (context.isUserLoggedIn()) {
+				/*
+				 * Put the user into command to be able to show some details.
+				 * 
+				 * The DBLogic checks, if the login user may see the user's 
+				 * details. 
+				 */
+				final User requestedUser = logic.getUserDetails(groupingName);
+				command.setUser(requestedUser);
 				/*
 				 * Has loginUser this user set as friend?
 				 */
-				final User requestedUser = new User(groupingName);
 				command.setOfFriendUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND).contains(requestedUser));
 				command.setFriendOfUser(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF).contains(requestedUser));
 				/*
