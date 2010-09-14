@@ -23,7 +23,6 @@
 		<property name="allowedFields" ref="allowedFields"/>
 		<property name="disallowedFields" ref="disallowedFields"/>
 	</bean>
-	
 
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
@@ -318,9 +317,6 @@
 	
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
 		<property name="logic" ref="logic"/>
-		<!-- <property name="userSettings" ref="userSettings"/> -->
-		<!-- <property name="docpath"><value>${project.document.path}</value></property>
--->
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request">
@@ -569,7 +565,7 @@
 		</property>
 	</bean>
 	
-	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="singleton" />
+	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request" />
 	
     <!--  #################### PUMA Controller #################### -->
 	<bean id="pumaHomepageController" class="de.unikassel.puma.webapp.controller.HomepageController" scope="request">
@@ -703,10 +699,7 @@
 				<value>messages</value>
 			</list>   
 		</property> 
-	</bean> 
-	
-
-    
+	</bean>
 
 	<!--  #################### view resolver #################### -->
 	<!-- default: JSPs -->
