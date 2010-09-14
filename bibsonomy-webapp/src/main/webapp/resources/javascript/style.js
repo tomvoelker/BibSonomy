@@ -393,7 +393,7 @@ function naviSwitchSpecial(target) {
 	
 	// obtain fundamental informations
 	var body = document.getElementsByTagName("body")[0];	
-	var bar = document.getElementById("heading");
+	var bar = document.getElementById("heading").parentNode;
 	if(bar == null) { 
 		// backwards compatibility
 		bar = document.getElementById("path");
@@ -543,9 +543,8 @@ function naviSwitchSpecial(target) {
 	curr_navi = bar.cloneNode(true);
 
 	// display new path element
-	// TODO: this is ugly as everything breaks, when <h1/> is replaced by
-	//       some other tag. Better use id in layout!!!!
-	bar.replaceChild(headlineNode, bar.getElementsByTagName("h1")[0]);
+	bar.replaceChild(headlineNode, document.getElementById("heading"));
+	headlineNode.id="heading";
 
 	// remove old navigation path
 	// 2008/12/18, fei: commented out, as navigation path is still needed

@@ -973,12 +973,8 @@ li.faq dd {
 	display: none;
 }
 
-#heading h1 {
-	color: #FFFFFF;
-}
-
-#heading h1 a {
-	color: #FFFFFF;
+#heading, #heading a {
+	color: #fff;
 }
 
 #mainHeaderRightBox {
@@ -1121,11 +1117,6 @@ padding-top:1px;
 #exports li {
 	float:left;
 	padding-left: 1em;
-}
-
-.personalize_text {
-  font-size: 65%;
-  color: #ffff99;
 }
 
 .headlogin {
