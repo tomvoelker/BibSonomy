@@ -42,12 +42,6 @@
 				<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 			</li>
       
-            <c:if test="${not empty command.user}">
-              <li>
-                <span class="sidebar_h">user details</span>
-                <user:details user="${command.user}"/>
-              </li>
-            </c:if>
 		</ul>	
 		</jsp:attribute>
 		
