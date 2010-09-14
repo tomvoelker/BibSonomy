@@ -132,6 +132,10 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	private boolean pictureVisible(final User requestedUser, final String loginUserName) {
 		final String requestedUserName = requestedUser.getName();
 		/*
+		 * login user may always see his/her photo
+		 */
+		if (requestedUserName.equals(loginUserName)) return true;
+		/*
 		 * Check the visibility depending on the profile privacy level.
 		 */
 		final ProfilePrivlevel visibility = requestedUser.getSettings().getProfilePrivlevel();
