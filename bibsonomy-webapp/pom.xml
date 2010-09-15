@@ -14,6 +14,13 @@
 	<name>BibSonomy-Webapp</name>
 	<version>2.0.8-SNAPSHOT</version>
 	<description>The webapplication for Bibsonomy.</description>
+	<repositories>
+		<repository>
+			<id>public-repository.wurflpro.com</id>
+			<name>WURFL-Pro Public Repository</name>
+			<url>http://dev.wurflpro.com/nexus/content/repositories/public-releases/</url>
+		</repository>
+	</repositories>
 	<build>
 		<plugins>
 		<!--
@@ -44,6 +51,26 @@
 				</configuration>
 			</plugin>
 			 -->
+			 
+			 <!--  download WURFL zip -->
+  			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<version>1.0-beta-3</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>download-single</goal>
+						</goals>
+						<configuration>
+							<url>http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/latest/</url>
+							<fromFile>wurfl-latest.zip</fromFile>
+							<toFile>src/main/resources/wurfl.zip</toFile>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			
 			<plugin>
     			<artifactId>maven-clean-plugin</artifactId>
@@ -100,6 +127,11 @@
 	    </profile>
 	</profiles>	
 	<dependencies>
+		<dependency>
+			<groupId>net.sourceforge.wurfl</groupId>
+			<artifactId>wurfl</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-recommender</artifactId>
