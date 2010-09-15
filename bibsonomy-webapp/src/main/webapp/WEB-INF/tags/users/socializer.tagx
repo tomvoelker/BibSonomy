@@ -61,19 +61,17 @@
 		<script type="text/javascript" src="${resdir}/javascript/follower.js">&amp;nbsp;</script>
 		<!-- we need to switch between the add/remove link if the user already follows this user or not -->
 		<span id="removeLink" style="${isFollowerOfUser ? '' : 'display:none'}">
-			<fmt:message key="follow.info.text2" var="text2"/>
-			<fmt:message key="follow.link.text.remove" var="remF"/>
+			<fmt:message key="follow.link.text.removeLong" var="removeFollower"/>
 			<a onclick="javascript:removeFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
-			   title="${text2} ${remF}"
+			   title="${removeFollower}"
 			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}">
 			   <button type="button"><img src="${resdir}/image/starblue_selected.png"/> <fmt:message key="follow"/></button>
 			</a>
 		</span>
 		<span id="followLink" style="${isFollowerOfUser ? 'display:none' : ''}">
-			<fmt:message key="follow.info.text1" var="text1"/>
-			<fmt:message key="follow.link.text.follow" var="addF"/>
+			<fmt:message key="follow.link.text.followLong" var="addFollower"/>
 			<a onclick="javascript:addFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
-			   title="${text1} ${addF}"
+			   title="${addFollower}"
 			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}">
 			   <button type="button"><img src="${resdir}/image/starblue_unselected.png"/> <fmt:message key="follow"/></button>
 			</a>
@@ -85,7 +83,8 @@
 			| Show "socialize" link with yellow border.
 			|
 			+-->
-			<a href="/personalized/user/${fn:escapeXml(command.requestedUser)}"><button type="button"><fmt:message key="personalize"/></button></a>
+			<fmt:message key="personalized.info" var="personalized"/>
+			<a title="${personalized }" href="/personalized/user/${fn:escapeXml(command.requestedUser)}"><button type="button"><fmt:message key="personalize"/></button></a>
 		
 	</div>
 </jsp:root>
