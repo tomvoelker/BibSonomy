@@ -179,6 +179,8 @@
 									<fmt:message key="navi.pickedIn"/><c:out value=" "/>
 									<fmt:message key="navi.basket"/>
 								</a>
+								<br/>
+								<a href="/edit_tags"><fmt:message key="navi.editTags"/></a>
 							</c:when>
 						<c:otherwise>
 							<parts:login authOrder="${authOrder}" loginUrl="${loginUrl}" login="${login}" projectContext="${projectContext}"/>

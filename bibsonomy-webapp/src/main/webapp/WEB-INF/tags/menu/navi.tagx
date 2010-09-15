@@ -19,9 +19,13 @@
 		<c:choose>
 			<c:when test="${not empty loginUserName}">
 				<li>
+					<!--+ 
+					 	|
+					 	| dropdown menu for myBibSonomy
+					 	|
+					 	+-->
 					<c:url var="userUrl" value="/user/${mtl:encodeURI(loginUserName)}" context="${projectContext}"/>
 					<a id="nav_my" href="${userUrl}" rel="my_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.my"/>${projectName}</a>
-				      <!-- dropdown menu for myBibSonomy -->  
 
 					  <div id="my_menu" class="nicedropmenudiv">
 					    <a href="/friends">
@@ -40,7 +44,6 @@
 				        	<fmt:message key="navi.my.plural"/>
 				        	<fmt:message key="navi.pdfs"/>
 				        </a>
-
 				        <a href="/user/${fn:escapeXml(user.name)}?filter=myDuplicates">
 				        	<fmt:message key="navi.my.plural"/>
 				        	<fmt:message key="navi.duplicates.cap"/>
@@ -64,16 +67,10 @@
 					  </div>						
 				</li>
 				<li>
-                        <c:url var="postBookUrl" value="/postBookmark" context="${projectContext}"/>
-						<a id="nav_postBook" href="${postBookUrl}"><fmt:message key="navi.postBookmark"/></a>
+					<a id="nav_postBook" href="/postBookmark"><fmt:message key="navi.postBookmark"/></a>
 				</li>
 				<li>
-						<c:url var="postBibUrl" value="/postPublication" context="${projectContext}"/>
-						<a id="nav_postPub" href="${postBibUrl}"><fmt:message key="navi.postPublication"/></a> 
-				</li>
-				<li>
-						<c:url var="editTagsUrl" value="/edit_tags" context="${projectContext}"/>
-						<a id="nav_editTags" href="${editTagsUrl}"><fmt:message key="navi.editTags"/></a>
+					<a id="nav_postPub" href="/postPublication"><fmt:message key="navi.postPublication"/></a>
 				</li>
 			</c:when>
 		</c:choose>	
