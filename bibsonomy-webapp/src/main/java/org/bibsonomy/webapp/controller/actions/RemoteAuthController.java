@@ -63,7 +63,7 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 		 */
 		
 		BasicTextEncryptor crypt = new BasicTextEncryptor();
-		crypt.setPassword(this.generatePassword());
+		crypt.setPassword(this.generatePassword(command.getS()));
 		final String authData = "USER:" + command.getContext().getLoginUser().getName() + 
 							    " " + 
 							    "APIKEY:" + command.getContext().getLoginUser().getApiKey() + 
@@ -114,11 +114,9 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 	 * 
 	 * @return - the generated password
 	 */
-	private String generatePassword() {
+	private String generatePassword(String secret) {
 		System.out.println("******* Creating password based on IP " + requestLogic.getHostInetAddress() + ", user agent " + requestLogic.getUserAgent() + ", priv key is " + this.getCryptKey());
-		String base = requestLogic.getHostInetAddress() +
-					  requestLogic.getUserAgent() + 
-					  this.getCryptKey();
+		String base = secret + this.getCryptKey();
 		System.out.println("******** Password is: " + StringUtils.getMD5Hash(base));
 		return StringUtils.getMD5Hash(base);
 	}

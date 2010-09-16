@@ -24,6 +24,9 @@ public class RemoteAuthCommand extends BaseCommand {
 	
 	/** the nr. of minutes this authKey is valid */
 	private int validPeriod;
+	
+	/** a (more or less) secret key which will be needed to decrypt the authKey */
+	private String s;
 			
 	// ----------------------------------------------------------
 	// getter - setter
@@ -69,5 +72,12 @@ public class RemoteAuthCommand extends BaseCommand {
 	public String getForwardPath() {
 		return forwardPath;
 	}	
+
+	public void setS(String s) {
+		this.s = s;
+	}
+
+	public String getS() {
+		return s;	
 	
 }
