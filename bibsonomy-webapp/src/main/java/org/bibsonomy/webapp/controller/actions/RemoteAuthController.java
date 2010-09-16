@@ -115,10 +115,10 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 	 * @return - the generated password
 	 */
 	private String generatePassword(String secret) {
-		System.out.println("******* Creating password based on IP " + requestLogic.getHostInetAddress() + ", user agent " + requestLogic.getUserAgent() + ", priv key is " + this.getCryptKey());
+		LOGGER.debug("Generating password based on secret " + secret);
 		String base = secret + this.getCryptKey();
-		System.out.println("******** Password is: " + StringUtils.getMD5Hash(base));
+		LOGGER.debug("Password is: " + StringUtils.getMD5Hash(base));
 		return StringUtils.getMD5Hash(base);
 	}
-
+	
 }
