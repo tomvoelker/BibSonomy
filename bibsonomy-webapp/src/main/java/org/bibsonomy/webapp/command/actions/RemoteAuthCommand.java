@@ -79,5 +79,6 @@ public class RemoteAuthCommand extends BaseCommand {
 
 	public String getS() {
 		return s;	
+	}
 	
 }
