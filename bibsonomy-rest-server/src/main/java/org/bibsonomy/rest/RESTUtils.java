@@ -3,9 +3,13 @@ package org.bibsonomy.rest;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.Vector;
 
 import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
  * @author dzo
@@ -38,8 +42,25 @@ public class RESTUtils {
 		}
 		return defaultValue;
 	}
+	
+	private static RenderingFormat getAcceptHeaderMediaType(final String acceptHeader) {
+		// parse the accept header
+		final SortedMap<Double, Vector<String>> preferredTypes = HeaderUtils.getPreferredTypes(acceptHeader);
+		for (Entry<Double, Vector<String>> preferredType : preferredTypes.entrySet()) {
+			for (String mediaTypeString : preferredType.getValue()) {
+				try {
+					return RenderingFormat.getMediaType(mediaTypeString);
+				} catch (final IllegalArgumentException e) {
+					// don't care
+				}
+			}
+		}
+		
+		return null;
+	}
 
-	/**
+	/** 
+	 * 
 	 * if the url contains a format param (in parameterMap) this format is used
 	 * if the a content type is set, this media type is used and must be the
 	 * same as the accept header value
@@ -59,7 +80,7 @@ public class RESTUtils {
 		}
 		
 		// 2. check the accept header of the request
-		final RenderingFormat acceptMediaType = RenderingFormat.getMediaType(acceptHeader);
+		final RenderingFormat acceptMediaType = getAcceptHeaderMediaType(acceptHeader);
 		
 		// 3. check the content type of the request 
 		if (present(contentType)) {
@@ -67,7 +88,7 @@ public class RESTUtils {
 			// check if accept header was sent by the client
 			if (present(acceptHeader)) {
 				// only Chuck Norris can send data to the server in type A and accepts type B
-				if (acceptMediaType != contentTypeMediaType) {
+				if (!acceptMediaType.isCompatible(contentTypeMediaType)) {
 					throw new BadRequestOrResponseException("Only Chuck Norris can send content of another media type than he accepts.");
 				}
 			}

@@ -16,7 +16,7 @@ public class RESTUtilsTest {
 	
 	@Test
 	public void mediaType() {		
-		RenderingFormat format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/json; charset=UTF-8", null);
+		RenderingFormat format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/json", null);
 		assertEquals(RenderingFormat.JSON, format);
 		
 		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/json", "application/json; charset=UTF-8");
@@ -24,10 +24,13 @@ public class RESTUtilsTest {
 		
 		format = RESTUtils.getRenderingFormatForRequest(Collections.singletonMap("format", new String[] { "xml" }), "application/json", "application/json; charset=UTF-8");
 		assertEquals(RenderingFormat.XML, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "*/*", "application/json; charset=UTF-8");
+		assertEquals(RenderingFormat.JSON, format);
 	}
 	
 	@Test(expected = BadRequestOrResponseException.class)
 	public void chuckNorris() {
-		RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/json; charset=UTF-8", "application/xml; charset=UTF-8");
+		RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/json", "application/xml; charset=UTF-8");
 	}
 }
