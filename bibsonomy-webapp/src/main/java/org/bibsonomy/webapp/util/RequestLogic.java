@@ -36,7 +36,6 @@ public class RequestLogic {
 	private static final String HEADER_REFERER = "Referer";
 	private static final String HEADER_X_FORWARDED_FOR = "x-forwarded-for";
 	private static final String HEADER_ACCEPT = "accept";
-	private static final String HEADER_USER_AGENT = "User-Agent";
 	
 
 	/**
@@ -60,6 +59,13 @@ public class RequestLogic {
 	}
 
 	/**
+	 * @return the method of the request
+	 */
+	public String getMethod() {
+		return request.getMethod();
+	}
+	
+	/**
 	 * @return The inet address of the requesting host. Since the system 
 	 * typically runs behind a proxy, this is NOT the host address, but 
 	 * rather the contents of the x-forwarded-for header. This also contains
@@ -82,7 +88,7 @@ public class RequestLogic {
 	 * @see #getInetAddress()
 	 * @return The extracted address of the host.
 	 */
-	public String getHostInetAddress() {
+	public String getHostInetAddress () {
 		final String inetAddress = getInetAddress();
 		if (inetAddress != null) {
 			final int proxyStartPos = inetAddress.indexOf(",");
@@ -212,13 +218,6 @@ public class RequestLogic {
 		}
 		return "";
 	}
-	
-	/**
-	 * @return the user agent associated with the request
-	 */
-	public String getUserAgent() {
-		return request.getHeader(HEADER_USER_AGENT);
-	}
 
 	/**
 	 * @return The User object associated with the logged in user.
@@ -240,15 +239,6 @@ public class RequestLogic {
 	 */
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
-	}
-	
-	/**
-	 * @return the method of the request
-	 * @deprecated use {@link #getHttpMethod()} instead
-	 */
-	@Deprecated
-	public String getMethod() {
-		return request.getMethod();
 	}
 	
 	/**
