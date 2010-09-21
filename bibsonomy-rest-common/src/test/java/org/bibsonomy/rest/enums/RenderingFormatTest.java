@@ -25,6 +25,7 @@ package org.bibsonomy.rest.enums;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -46,12 +47,18 @@ public class RenderingFormatTest {
 	public void testGetMediaType() {
 		assertEquals(RenderingFormat.XML, RenderingFormat.getMediaType("text/xml"));
 		assertEquals(RenderingFormat.JSON, RenderingFormat.getMediaType("application/json"));
-
-		assertNull(RenderingFormat.getMediaType("someUnsupportedRenderingFormat"));
+		try {
+			RenderingFormat.getMediaType("someUnsupportedRenderingFormat");
+			fail();
+		} catch (final IllegalArgumentException e) {
+			// ok
+		}
+		
 	}
 
 	@Test
 	public void testToString() {
+		// this test is an important one for the client!!!
 		assertEquals(RenderingFormat.XML.toString(), "XML");
 	}
 }

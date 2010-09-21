@@ -47,16 +47,12 @@ public class RendererFactory {
 	 */
 	public static Renderer getRenderer(final RenderingFormat renderingFormat) {
 		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
-
-		switch (renderingFormat) {
-		case JSON:
+		
+		if (RenderingFormat.JSON.equals(renderingFormat)) {
 			return JSON_RENDERER;
-		case XML:
-			// fall through 
-		case PDF:
-			// fall through
-		default:
-			return XML_RENDERER;
 		}
+		
+		// default is xml renderer
+		return XML_RENDERER;
 	}
 }
