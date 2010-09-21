@@ -39,7 +39,7 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 
 	@Override
 	public View workOn(RemoteAuthCommand command) {				
-		String reqUrl = command.getReqUrl();
+		final String reqUrl = command.getReqUrl();
 		if (!present(reqUrl)) {
 			throw new MalformedURLSchemeException("error.remote_login_without_requrl");
 		}
@@ -48,27 +48,29 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 		 * present login form to user, if not logged in
 		 */
 		if (!command.getContext().isUserLoggedIn()) {
-			String redirectURL = "/login";
-			String referer = "/remoteAuth";
-			referer = UrlUtils.setParam(referer, "reqUrl", reqUrl);
-			if( present(command.getForwardPath()) ) {
+			/*
+			 * Generate referer URL
+			 */
+			String referer = UrlUtils.setParam("/remoteAuth", "reqUrl", reqUrl);
+			if (present(command.getForwardPath())) {
 				referer = UrlUtils.setParam(referer, "forwardPath", command.getForwardPath());
 			}
-			redirectURL = UrlUtils.setParam(redirectURL, "referer", UrlUtils.safeURIEncode(referer));
-			return new ExtendedRedirectView(redirectURL/*"/login?referer=/remoteAuth?reqUrl=" + reqUrl*/);
+			/*
+			 * send redirect
+			 */
+			return new ExtendedRedirectView(UrlUtils.setParam("/login", "referer", UrlUtils.safeURIEncode(referer)));
 		}
 		
 		/*
 		 * build auth key + auth URL
 		 */
-		
-		BasicTextEncryptor crypt = new BasicTextEncryptor();
+		final BasicTextEncryptor crypt = new BasicTextEncryptor();
 		crypt.setPassword(this.generatePassword(command.getS()));
-		final String authData = "USER:" + command.getContext().getLoginUser().getName() + 
-							    " " + 
-							    "APIKEY:" + command.getContext().getLoginUser().getApiKey() + 
-							    " " + 
+		
+		final String authData = "USER:" + command.getContext().getLoginUser().getName() + " " + 
+							    "APIKEY:" + command.getContext().getLoginUser().getApiKey() + " " + 
 							    "TIME:" + System.currentTimeMillis();
+		
 		final String authKey = UrlUtils.safeURIEncode(crypt.encrypt(authData));
 		String authUrl = UrlUtils.setParam(reqUrl, "authKey", authKey);
 		if( present(command.getForwardPath()) ) {
@@ -108,17 +110,13 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 	}	
 	
 	/**
-	 * generate a password to encrypt the authentication key.
-	 * Currently, it is created by hashing some request headers - not too
-	 * safe, but should suffice for now. 
+	 * Generate a password to encrypt the authentication key. 
+	 * 
 	 * 
 	 * @return - the generated password
 	 */
 	private String generatePassword(String secret) {
-		LOGGER.debug("Generating password based on secret " + secret);
-		String base = secret + this.getCryptKey();
-		LOGGER.debug("Password is: " + StringUtils.getMD5Hash(base));
-		return StringUtils.getMD5Hash(base);
+		return StringUtils.getMD5Hash(secret + this.getCryptKey());
 	}
 	
 }
