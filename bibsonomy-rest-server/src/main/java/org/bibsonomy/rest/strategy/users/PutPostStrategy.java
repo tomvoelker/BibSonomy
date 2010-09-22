@@ -15,10 +15,10 @@ import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
-import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -75,16 +75,8 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 		try {
 			final List<Post<?>> posts = new LinkedList<Post<?>>();
 			posts.add(post);
-			return this.getLogic().updatePosts(posts, PostUpdateOperation.UPDATE_ALL).get(0); //throws DatabaseException
-		}
-/*		these 2 catches shouldn't be reached due to the ExceptionHandling in DBLogic
-  		catch (InvalidModelException ex) {
-			throw new BadRequestOrResponseException(ex);
-		}
-		catch ( ResourceNotFoundException ex ) {
-			throw new NoSuchResourceException(ex.getMessage());
-		}*/		
-		catch (final DatabaseException de) {
+			return this.getLogic().updatePosts(posts, PostUpdateOperation.UPDATE_ALL).get(0);
+		} catch (final DatabaseException de) {
 			for (final String hash: de.getErrorMessages().keySet()) {
 				for (final ErrorMessage em: de.getErrorMessages(hash)) {
 					if (em instanceof DuplicatePostErrorMessage) {
