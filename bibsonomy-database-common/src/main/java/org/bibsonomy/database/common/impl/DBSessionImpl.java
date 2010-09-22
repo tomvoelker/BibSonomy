@@ -10,8 +10,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
-import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.util.ExceptionUtils;
 
