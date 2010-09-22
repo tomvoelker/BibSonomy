@@ -38,11 +38,6 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>amazon</groupId>
-			<artifactId>amazon-a2s-java-library</artifactId>
-			<version>2007-10-29</version>
-		</dependency>
-		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
