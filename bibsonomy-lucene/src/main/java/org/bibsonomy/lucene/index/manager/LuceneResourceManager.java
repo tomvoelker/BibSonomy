@@ -94,27 +94,23 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @return LuceneIndexStatistics for the active index 
 	 */
 	public LuceneIndexStatistics getStatistics() {
-		LuceneResourceIndex<? extends Resource> index = this.resourceIndices.get(idxSelect);
-		
-		if(index != null) {
-		    return index.getStatistics();
-		} else {
-			return null;
-		}
+		return getStatistics(this.resourceIndices.get(idxSelect));
 	}
-	
+
 	/**
 	 * Get statistics for the inactive index
 	 * @return LuceneIndexStatistics for the inactive index 
 	 */
 	public LuceneIndexStatistics getInactiveIndexStatistics() {
-		LuceneResourceIndex<? extends Resource> index = this.resourceIndices.get((idxSelect + 1) % this.resourceIndices.size());
-		
-    		if(index != null) {
-    		    return index.getStatistics();
-    		} else {
-    			return null;
-    		}
+		return getStatistics(this.resourceIndices.get((idxSelect + 1) % this.resourceIndices.size()));
+	}
+	
+	private LuceneIndexStatistics getStatistics(LuceneResourceIndex<? extends Resource> index) {
+		if(index != null) {
+		    return index.getStatistics();
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -456,5 +452,12 @@ public class LuceneResourceManager<R extends Resource> {
 	 */
 	public void setResourceIndeces(final List<LuceneResourceIndex<R>> resourceIndeces) {
 		this.resourceIndices = resourceIndeces;
+	}
+	
+	/**
+	 * @return the name of the managed resource
+	 */
+	public String getResourceName() {
+	    return resourceIndices.get(idxSelect).getResourceName();
 	}
 }

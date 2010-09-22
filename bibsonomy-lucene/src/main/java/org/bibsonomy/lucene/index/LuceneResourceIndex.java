@@ -167,10 +167,10 @@ public abstract class LuceneResourceIndex<R extends Resource> {
                     statistics.setLastModified(IndexReader.lastModified(indexReader.directory()));
 		} catch (CorruptIndexException e1) {
 		    // TODO Auto-generated catch block
-		    e1.printStackTrace();
+		    log.error(e1);
 		} catch (IOException e1) {
 		    // TODO Auto-generated catch block
-		    e1.printStackTrace();
+		    log.error(e1);
 		}
 	    }
 	    statistics.setNewestRecordDate(this.getLastLogDate());
@@ -752,7 +752,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * get managed resource name
 	 * @return
 	 */
-	private String getResourceName() {
+	public String getResourceName() {
 		String name = getResourceType().getCanonicalName();
 		if (name.lastIndexOf('.') > 0) {
 	        name = name.substring(name.lastIndexOf('.')+1);
