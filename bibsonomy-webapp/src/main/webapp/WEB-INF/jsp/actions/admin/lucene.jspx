@@ -36,22 +36,6 @@
 			Lucene Index Statistics 
 	</h2>
 
-	<div class="indexProperties" id="generalProperties">
-		<fieldset>
-			<legend><label>General properties (context.xml)</label></legend>
-			<table>
-			  <tr>
-			  
-			  </tr>
-			</table>
-			<div class="ls-description">envContextString:</div><div class="ls-value">${command.envContextString}</div>
-			<div class="ls-description">bookmarksPath:</div><div class="ls-value">${command.luceneBookmarksPath}</div>
-			<div class="ls-description">publicationsPath:</div><div class="ls-value">${command.lucenePublicationsPath}</div>
-			<div class="ls-description">dataSourceUrl:</div><div class="ls-value" title="${command.luceneDataSourceUrl}">${command.luceneDataSourceUrlShort}</div>
-			<div class="ls-description">dataSourceUsername:</div><div class="ls-value">${command.luceneDataSourceUsername}</div>
-		</fieldset>
-	</div>
-
     <c:forEach var="index" items="${command.indices}">
 	    <div class="indexProperties">
 			<fieldset>

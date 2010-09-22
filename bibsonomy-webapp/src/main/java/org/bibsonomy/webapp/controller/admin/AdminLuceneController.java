@@ -2,32 +2,15 @@ package org.bibsonomy.webapp.controller.admin;
 
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
-import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.lucene.index.LuceneBibTexIndex;
-import org.bibsonomy.lucene.index.manager.LuceneBibTexManager;
-import org.bibsonomy.lucene.index.manager.LuceneBookmarkManager;
-import org.bibsonomy.lucene.param.LuceneIndexStatistics;
-import org.bibsonomy.lucene.search.LuceneResourceSearch;
-import org.bibsonomy.lucene.search.LuceneSearchBibTex;
-import org.bibsonomy.lucene.search.LuceneSearchBookmarks;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
-import org.bibsonomy.webapp.command.admin.AdminStatisticsCommand;
-import org.bibsonomy.webapp.command.admin.AdminViewCommand;
 import org.bibsonomy.webapp.command.admin.LuceneIndexSettingsCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -43,14 +26,9 @@ import org.bibsonomy.webapp.view.Views;
 public class AdminLuceneController implements MinimalisticController<AdminLuceneViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminLuceneController.class);
 	
-	private static final String NOTSET = "not set";
-
-	private LogicInterface logic;
-	
 	@SuppressWarnings("unused") // FIXME: currently unused
 	private UserSettings userSettings;
-	
-	private List<LuceneBibTexIndex> bibTexIndices;
+	private List<LuceneResourceManager<? extends Resource>> luceneResourceManagers;
 
 	@Override
 	public View workOn(AdminLuceneViewCommand command) {
@@ -67,70 +45,23 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		
 		command.setPageTitle("admin lucene");
 		
-		try {
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			command.setEnvContextString("java:/comp/env");
-			
-			try {
-				command.setLuceneBookmarksPath((String) envContext.lookup("luceneIndexPathBookmark"));
-			} catch (NamingException e) {
-				command.setLuceneBookmarksPath(NOTSET);
-			}
-			
-			try {
-				command.setLucenePublicationsPath((String) envContext.lookup("luceneIndexPathBibTex"));
-			} catch (NamingException e) {
-				command.setLucenePublicationsPath(NOTSET);
-			}
-			
-			try {
-				BasicDataSource envDataSource = ((BasicDataSource) initContext.lookup("java:/comp/env/jdbc/bibsonomy_lucene"));
-				command.setLuceneDataSourceUrl(envDataSource.getUrl());
-				command.setLuceneDataSourceUsername(envDataSource.getUsername());
-			} catch (NamingException e) {
-				command.setLuceneDataSourceUrl(NOTSET);
-				command.setLuceneDataSourceUsername(NOTSET);
-			}
-		
-		} catch (NamingException e) {
-			command.setEnvContextString(NOTSET);
-		}
-		
-		LuceneResourceSearch<Bookmark> bookmarksIndex    = LuceneSearchBookmarks.getInstance();
-		LuceneResourceSearch<BibTex>   publicationsIndex = LuceneSearchBibTex.getInstance();
-		//LuceneResourceSearch<GoldStandardPublication>   goldstandardPublicationIndex = LuceneSearchGoldStandardPublication.getInstance();
-
-		
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
 		
 		List<LuceneIndexSettingsCommand> indices = command.getIndices();
 		
-		LuceneIndexSettingsCommand bookmarksCmd         = new LuceneIndexSettingsCommand();
-		LuceneIndexSettingsCommand bookmarksCmdInactive = new LuceneIndexSettingsCommand();
-		bookmarksCmd.setIndexStatistics(LuceneBookmarkManager.getInstance().getStatistics());
-		bookmarksCmdInactive.setIndexStatistics(LuceneBookmarkManager.getInstance().getInactiveIndexStatistics());
-		bookmarksCmd.setInactiveIndex(bookmarksCmdInactive);
-		bookmarksCmd.setName("Bookmark index");
-		indices.add(bookmarksCmd);
-		
-		LuceneIndexSettingsCommand publicationsCmd         = new LuceneIndexSettingsCommand();
-		LuceneIndexSettingsCommand publicationsCmdInactive = new LuceneIndexSettingsCommand();
-		publicationsCmd.setIndexStatistics(LuceneBibTexManager.getInstance().getStatistics());
-		publicationsCmdInactive.setIndexStatistics(LuceneBibTexManager.getInstance().getInactiveIndexStatistics());
-		publicationsCmd.setInactiveIndex(publicationsCmdInactive);
-		publicationsCmd.setName("Publication index");
-		indices.add(publicationsCmd);
+		for(LuceneResourceManager<? extends Resource> manager: luceneResourceManagers) {
+			LuceneIndexSettingsCommand indexCmd         = new LuceneIndexSettingsCommand();
+			LuceneIndexSettingsCommand indexCmdInactive = new LuceneIndexSettingsCommand();
+			
+			indexCmd.setIndexStatistics(manager.getStatistics());
+			indexCmd.setName(manager.getResourceName() + " index");
+			indexCmd.setInactiveIndex(indexCmdInactive);
+			
+			indexCmdInactive.setIndexStatistics(manager.getInactiveIndexStatistics());
 
-		// TODO: replace with real statistics when index is running
-		LuceneIndexSettingsCommand goldstandardPublicationsCmd         = new LuceneIndexSettingsCommand();
-		LuceneIndexSettingsCommand goldstandardPublicationsCmdInactive = new LuceneIndexSettingsCommand();
-		goldstandardPublicationsCmd.setIndexStatistics(new LuceneIndexStatistics());
-		goldstandardPublicationsCmdInactive.setIndexStatistics(new LuceneIndexStatistics());
-		goldstandardPublicationsCmd.setInactiveIndex(goldstandardPublicationsCmdInactive);
-		goldstandardPublicationsCmd.setName("Goldstandard Publication index");
-		indices.add(goldstandardPublicationsCmd);
+			indices.add(indexCmd);
+		}
 		
 		return Views.ADMIN_LUCENE;
 	}
@@ -139,12 +70,12 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	public AdminLuceneViewCommand instantiateCommand() {
 		return new AdminLuceneViewCommand();
 	}
-
+	
 	/**
-	 * @param logic the logic to set
+	 * @param luceneResourceManagers
 	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
+	public void setLuceneResourceManagers(List<LuceneResourceManager<? extends Resource>> luceneResourceManagers) {
+		this.luceneResourceManagers = luceneResourceManagers;
 	}
 
 	/**
@@ -152,21 +83,6 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	 */
 	public void setUserSettings(UserSettings userSettings) {
 		this.userSettings = userSettings;
-	}
-
-	
-	@SuppressWarnings("unused")  // FIXME: currently unused
-	private void setStatistics(AdminViewCommand cmd) {
-		AdminStatisticsCommand command = cmd.getStatisticsCommand();
-
-		for (int interval : cmd.getInterval()) {
-			command.setNumAdminSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.SPAMMER, interval));
-			command.setNumAdminNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.NO_SPAMMER, interval));
-			command.setNumClassifierSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER, interval));
-			command.setNumClassifierSpammerUnsure(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER_NOT_SURE, interval));
-			command.setNumClassifierNoSpammerUnsure(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, interval));
-			command.setNumClassifierNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, interval));
-		}
 	}
 
 }
