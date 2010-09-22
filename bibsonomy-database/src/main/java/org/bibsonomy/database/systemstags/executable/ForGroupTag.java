@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
-import org.bibsonomy.common.exceptions.database.DatabaseException;
+import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
@@ -111,7 +111,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	    // user is not allowed to use this tag, errorMessages were added
 	    return;
 	}
-	/*sysTagMatcher.group(1)) &&
+	/*
 	 * Make a DBLogic for the group
 	 */
 	final DBLogicNoAuthInterfaceFactory logicFactory = new DBLogicNoAuthInterfaceFactory();
@@ -125,9 +125,6 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	     *  We decided to ignore errors in systemTags. Thus the user is free use any tag.
 	     *  The drawback: If it is the user's intention to use a systemTag, he will never know if there was a typo! 
 	     */
-	    //final String defaultMessage = this.getName()+": " + groupName + "does not exist.";
-	    //session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.noSuchGroup", new String[] {groupName}));
-	    //log.warn("Added SystemTagErrorMessage (for group: Unknown Group) for post " + intraHash);
 	    return; // this tag can not be used => abort
 	}
 	try {

@@ -18,7 +18,7 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
-import org.bibsonomy.common.exceptions.database.DatabaseException;
+import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;

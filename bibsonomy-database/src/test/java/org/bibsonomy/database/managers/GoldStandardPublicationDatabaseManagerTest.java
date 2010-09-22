@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
-import org.bibsonomy.common.exceptions.database.DatabaseException;
+import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
