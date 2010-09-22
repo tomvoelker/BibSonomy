@@ -2,13 +2,12 @@ package org.bibsonomy.database.managers.chain.bookmark.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
@@ -25,7 +24,7 @@ public class GetBookmarksByResourceSearch extends BookmarkChainElement {
 		// convert tag index to tag list
 		List<String> tagIndex = null;
 		if(present(param.getTagIndex())) {
-			tagIndex = extractTagNames(param.getTagIndex());
+			tagIndex = DatabaseUtils.extractTagNames(param.getTagIndex());
 		}
 		
 		// query the resource searcher
@@ -40,22 +39,4 @@ public class GetBookmarksByResourceSearch extends BookmarkChainElement {
 	protected boolean canHandle(final BookmarkParam param) {
 		return ( present(param.getSearch()) || present(param.getTitle()) ); 
 	}
-	
-	/**
-	 * extracts list of tag names from given list of TagIndex instances
-	 * 
-	 * TODO: could we fill and use Generic.tags instead? 
-	 * 
-	 * @param tagIndex
-	 * @return
-	 */
-	private List<String> extractTagNames(final List<TagIndex> tagIndex) {
-		List<String> retVal = new LinkedList<String>();
-		
-		for( TagIndex tagIdx : tagIndex ) {
-			retVal.add(tagIdx.getTagName());
-		}
-		
-		return retVal;
-	}	
 }
