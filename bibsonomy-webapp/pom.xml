@@ -54,6 +54,13 @@
 	 		<plugin>
         		<artifactId>maven-antrun-plugin</artifactId>
         		<version>1.4</version>
+        		<dependencies>
+	                <dependency>
+	                    <groupId>ant-contrib</groupId>
+                   		<artifactId>ant-contrib</artifactId>
+                   		<version>20020829</version>
+	                </dependency>
+	            </dependencies>
         		<executions>
           			<execution>
 						<!-- do some processing on your resources files -->
@@ -61,7 +68,7 @@
            		 		<configuration>
               				<tasks>
               					<!-- include commands if, not, then -->
-              					<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="${project.basedir}/src/main/resources/ant-contrib.jar" />
+              					<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
               					<available file="${project.build.directory}/classes/wurfl.zip" property="file.exists" value="true" />
               					<if>
               						<not>
