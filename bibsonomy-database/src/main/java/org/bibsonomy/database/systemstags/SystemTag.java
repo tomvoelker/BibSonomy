@@ -26,5 +26,5 @@ public interface SystemTag {
 	 * @param tagName
 	 * @return
 	 */
-	public Boolean isInstance(String tagName);
+	public boolean isInstance(String tagName);
 }

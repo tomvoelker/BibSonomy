@@ -84,17 +84,22 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	 * We deactivate the systemTag to avoid sending the Message again and again each time the sender updates his post
 	 */
 	final TagDatabaseManager tagDb = TagDatabaseManager.getInstance();
-	tagDb.deleteTags(post, session);		// 1. delete all tags from the database (will be replaced by new ones)
-	this.tag.setName("from:" + sender);	// 2. rename this tag for the receiver (store senderName)
+	// 1. delete all tags from the database (will be replaced by new ones)
+	tagDb.deleteTags(post, session);
+	// 2. rename this tag for the receiver (store senderName)
+	this.tag.setName("from:" + sender);	
 	try {
-	    InboxDatabaseManager.getInstance().createInboxMessage(sender, receiver, post, session); // 3. store the inboxMessage with tag from:senderName 
+		// 3. store the inboxMessage with tag from:senderName 
+	    InboxDatabaseManager.getInstance().createInboxMessage(sender, receiver, post, session);
 	    log.debug("message was created");
-	    this.tag.setName("sent:" + receiver);	// 4. rename this tag for the sender (store receiverName)
-	} catch(UnsupportedResourceTypeException urte) {
+	    // 4. rename this tag for the sender (store receiverName)
+	    this.tag.setName("sent:" + receiver);	
+	} catch (UnsupportedResourceTypeException urte) {
 	    session.addError(intraHash, new UnspecifiedErrorMessage(urte));
 	    log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);
 	}
-	tagDb.insertTags(post, session);		// 5. store the tags for the sender with the confirmation tag: sent:userName
+	// 5. store the tags for the sender with the confirmation tag: sent:userName
+	tagDb.insertTags(post, session);		
     }
 
 
@@ -112,20 +117,15 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
     private boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
 	final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 	final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
+	
+	/*
+     *  We decided to ignore errors in systemTags. Thus the user is free use any tag.
+     *  The drawback: If it is the user's intention to use a systemTag, he will never know if there was a typo! 
+     */
 	if ( !( generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size()>0 ) ) {
-	    /*
-	     *  We decided to ignore errors in systemTags. Thus the user is free use any tag.
-	     *  The drawback: If it is the user's intention to use a systemTag, he will never know if there was a typo! 
-	     */
-	    //final String defaultMessage = this.getName()+ ": "  + receiver + " did not add you as a friend and is not a member of any of your groups.";
-	    //session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.notFriend", new String[]{receiver}));
-	    //log.warn("Added SystemTagErrorMessage (send: not friend nor common group) for post " + intraHash);
 	    return false;
 	}
 	if (sender.equals(receiver)) {
-	    //final String defaultMessage = this.getName()+": You can not send messages to yourself.";
-	    //session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.self", new String[]{receiver}));
-	    //log.warn("Added SystemTagErrorMessage (send: sender is receiver) for post " + intraHash);
 	    return false;
 	}
 	return true;
@@ -137,7 +137,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
      * @see org.bibsonomy.database.systemstags.AbstractSystemTagImpl#isInstance(java.lang.String)
      */
     @Override
-    public Boolean isInstance(String tagName) {
+    public boolean isInstance(String tagName) {
 	// the send tag must have an argument, the prefix is not required
 	return present(SystemTagsUtil.extractArgument(tagName));
     }

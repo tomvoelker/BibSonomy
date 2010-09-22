@@ -226,7 +226,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
      * @see org.bibsonomy.database.systemstags.AbstractSystemTagImpl#isInstance(java.lang.String)
      */
     @Override
-    public Boolean isInstance(String tagName) {
+    public boolean isInstance(String tagName) {
 	// the for tag must have an argument, the prefix is not required
 	return present(SystemTagsUtil.extractArgument(tagName));
     }
