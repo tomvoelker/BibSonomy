@@ -86,7 +86,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>		
+				</entry>	
 				<entry key="/relations">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userRelationsController"/>
@@ -127,6 +127,16 @@
 				<entry key="/tag">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="tagPageController"/>
+					</bean>
+				</entry>
+				<entry key="/cluster">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="clusterPageController"/>
+					</bean>
+				</entry>
+				<entry key="/topics">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="topicsPageController"/>
 					</bean>
 				</entry>
 				<entry key="/author">
@@ -409,6 +419,12 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</list>
 		</property>
+	</bean>
+
+	<bean id="clusterPageController" class="org.bibsonomy.webapp.controller.browsing.ClusterPageController" scope="request">
+	</bean>
+	
+	<bean id="topicsPageController" class="org.bibsonomy.webapp.controller.browsing.TopicsPageController" scope="request">
 	</bean>
 	
 	<bean id="authorPageController" class="org.bibsonomy.webapp.controller.AuthorPageController" scope="request">
