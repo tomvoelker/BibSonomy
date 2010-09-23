@@ -7,21 +7,15 @@
 	<packaging>jar</packaging>
 	<version>2.0.10-SNAPSHOT</version>
 	<name>BibSonomy-Lucene</name>
-
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
 		<version>2.0.10-SNAPSHOT</version>
 	</parent>
-
-
 	<build>
 		<plugins>
 			<plugin>
-				<!--
-					NOTE: We don't need a groupId specification because the group is
-					org.apache.maven.plugins ...which is assumed by default.
-				-->
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.2-beta-5</version>
 				<configuration>
@@ -43,14 +37,8 @@
 				<version>1.0-beta-3</version>
 			</extension>
 		</extensions>
-
 	</build>
-
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -67,7 +55,6 @@
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
@@ -137,7 +124,6 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -175,13 +161,11 @@
 			<artifactId>quartz-all</artifactId>
 			<version>1.6.3</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database-common</artifactId>
 		</dependency>
 	</dependencies>
-
 	<distributionManagement>
 		<!-- deploy site documentation via scp to gromit -->
 		<site>
@@ -192,6 +176,5 @@
 			</url>
 		</site>
 	</distributionManagement>
-
 </project>  
 
