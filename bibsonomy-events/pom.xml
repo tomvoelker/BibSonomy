@@ -25,17 +25,6 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>		
-<!--		<dependency>-->
-<!--			<groupId>postgresql</groupId>-->
-<!--			<artifactId>postgresql</artifactId>-->
-<!--			<version>8.4-701.jdbc4</version>-->
-<!--			<type>jar</type>-->
-<!--			<scope>compile</scope>-->
-<!--		</dependency>-->
      <dependency>
         <groupId>com.googlecode.json-simple</groupId>
         <artifactId>json-simple</artifactId>
