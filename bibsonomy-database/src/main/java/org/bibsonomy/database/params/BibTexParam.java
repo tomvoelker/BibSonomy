@@ -15,4 +15,17 @@ public class BibTexParam extends ResourceParam<BibTex> {
 	public int getContentType() {
 		return ConstantID.BIBTEX_CONTENT_TYPE.getId();
 	}
+
+	/* 
+	 * XXX: iBatis can't get generic informations; thinks that the class of
+	 * the resource field is org.bibsonomy.model.Resource so we override it
+	 * here
+	 * 
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.params.SingleResourceParam#getResource()
+	 */
+	@Override
+	public BibTex getResource() {
+		return super.getResource();
+	}
 }
