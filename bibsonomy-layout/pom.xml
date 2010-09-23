@@ -15,8 +15,6 @@
 		<groupId>org.bibsonomy</groupId>
 		<version>2.0.10-SNAPSHOT</version>
 	</parent>
-
-
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -44,10 +42,6 @@
 			<type>test-jar</type>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>JabRef</groupId>
 			<artifactId>JabRef</artifactId>
 			<version>2.4.3-20</version>
@@ -62,11 +56,6 @@
 			<version>0.9</version>
 		</dependency>
 	</dependencies>
-
-	<properties>
-		<wtpversion>1.5</wtpversion>
-	</properties>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -82,7 +71,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<distributionManagement>
 		<site>
 			<!-- copy site documentation via scp to gromit -->
@@ -92,7 +80,6 @@
 			</url>
 		</site>
 	</distributionManagement>
-
 	<reporting>
 		<plugins>
 			<plugin>
