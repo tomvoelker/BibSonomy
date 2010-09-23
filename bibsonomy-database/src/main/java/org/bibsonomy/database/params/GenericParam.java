@@ -31,7 +31,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * This is the most generic param. All fields which are not specific to
- * bookmarks or BibTexs are collected here. The parameter-objects are used by
+ * bookmarks or publications are collected here. The parameter-objects are used by
  * iBATIS in the SQL-statements to fill in values; they are put at the position
  * of ?-marks.
  * 
@@ -71,7 +71,7 @@ public abstract class GenericParam {
 	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
 	 * or concept.
 	 */
-	private  List<TagIndex> tagIndex;
+	private List<TagIndex> tagIndex;
 	
 	/**
 	 * corresponds to -->[tagName]
@@ -166,9 +166,6 @@ public abstract class GenericParam {
 	private int limit;
 	/** The SQL-Offset which is by default 0 */
 	private int offset;
-	/* FIXME: what the hell does the following comment mean? */
-	/*is a user a friend of person x, true will be true*/
-	private  boolean friendOf;
 	/** The type of a ID is by default DS_CONTENT_ID * */
 	private ConstantID idsType;
 	private int newContentId;
@@ -209,11 +206,11 @@ public abstract class GenericParam {
 		/*
 		 * set groupId to -1
 		 */
-		setGroupId(GroupID.INVALID);
+		this.setGroupId(GroupID.INVALID);
+		
 		this.idsType = ConstantID.IDS_UNDEFINED_CONTENT_ID;
 		this.limit = 10;
 		this.offset = 0;
-		this.friendOf = false;
 		this.simHash = HashID.SIM_HASH; // the default hash type
 		
 		this.grouping = GroupingEntity.ALL;
@@ -610,20 +607,6 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the friendOf
-	 */
-	public boolean getFriendOf() {
-		return this.friendOf;
-	}
-
-	/**
-	 * @param friendOf the friendOf to set
-	 */
-	public void setFriendOf(boolean friendOf) {
-		this.friendOf = friendOf;
-	}
-
-	/**
 	 * @return the description
 	 */
 	public String getDescription() {
@@ -931,7 +914,7 @@ public abstract class GenericParam {
 	 * 
 	 * @param groups - a list of groups
 	 */
-	public void addGroupsAndGroupnames(Collection<Group> groups) {
+	public void addGroupsAndGroupnames(Collection<? extends Group> groups) {
 		// add groupids + groupnames
 		String groupName = "";
 		for (final Group g : groups) {
