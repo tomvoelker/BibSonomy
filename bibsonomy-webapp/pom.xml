@@ -87,27 +87,6 @@
           			</execution>
         		</executions>
      		</plugin>
-			<plugin>
-    			<artifactId>maven-clean-plugin</artifactId>
-    		    <configuration>
-      				<filesets>
-        				<fileset>
-       						<directory>src/main/webapp/WEB-INF/lib</directory>
-       						<includes>
-            					<include>**/*.jar</include>
-          					</includes>
-          					<followSymlinks>false</followSymlinks>
-        				</fileset>
-        				<fileset>
-       						<directory>src/main/webapp/WEB-INF/classes</directory>
-       						<includes>
-            					<include>**/*</include>
-          					</includes>
-          					<followSymlinks>false</followSymlinks>
-        				</fileset>
-      				</filesets>
-    			</configuration>
-  			</plugin>
 		</plugins>
 		<extensions>
 			<extension>
