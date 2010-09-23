@@ -107,9 +107,11 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		final User requestedUser = adminLogic.getUserDetails(requestedUserName);
 
 		/* 
-		 * if the owner of the picture wasn't found 
+		 * if the owner of the picture wasn't found
+		 * FIXME: we check presence of user name not user, because getUserDetails
+		 * ALWAYS returns a user! This is probably not a good idea ... 
 		 */
-		if (!present(requestedUser)) {
+		if (!present(requestedUser.getName())) {
 			return Views.ERROR;
 		}
 
