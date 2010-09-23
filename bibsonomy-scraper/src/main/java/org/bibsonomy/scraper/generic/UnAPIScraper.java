@@ -43,7 +43,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/** Scrapes pages providing BibTeX via the <a href="http://unapi.info/">UN-API</a>.
+/**
+ * Scrapes pages providing BibTeX via the <a href="http://unapi.info/">UN-API</a>.
  * 
  * @author rja
  * @version $Id$
@@ -56,11 +57,11 @@ public class UnAPIScraper implements Scraper {
 	private static final Log log = LogFactory.getLog(UnAPIScraper.class);
 
 	public Collection<Scraper> getScraper() {
-		return Collections.singleton((Scraper) this);
+		return Collections.<Scraper>singleton(this);
 	}
 
 	public boolean scrape(ScrapingContext scrapingContext) throws ScrapingException {
-		if(scrapingContext.getUrl() == null)
+		if (scrapingContext.getUrl() == null)
 			return false;
 		
 		final String pageContents = scrapingContext.getPageContent();

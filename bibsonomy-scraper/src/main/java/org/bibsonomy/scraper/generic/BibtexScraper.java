@@ -39,7 +39,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;
 import bibtex.parser.BibtexParser;
-import bsh.This;
 
 /**
  * Search in sourcecode from the given page for bibtex and scrape it.
@@ -55,7 +54,7 @@ public class BibtexScraper implements Scraper {
 	}
 
 	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
+		return Collections.<Scraper>singletonList(this);
 	}
 
 	/**
@@ -63,7 +62,7 @@ public class BibtexScraper implements Scraper {
 	 * @see org.bibsonomy.scraper.Scraper#scrape(org.bibsonomy.scraper.ScrapingContext)
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null && sc.getUrl() != null) {
+		if (sc != null && sc.getUrl() != null) {
 			
 			final String result = parseBibTeX(sc.getPageContent());
 
@@ -78,7 +77,6 @@ public class BibtexScraper implements Scraper {
 	}
 
 	private String parseBibTeX(final String pageContent) {
-		
 		if (pageContent == null) return null;
 		
 		// html clean up
@@ -96,7 +94,7 @@ public class BibtexScraper implements Scraper {
 			// parse source
 			parser.parse(bibtexFile, sr);
 
-			for (Object potentialEntry:bibtexFile.getEntries()) {
+			for (Object potentialEntry : bibtexFile.getEntries()) {
 				if ((potentialEntry instanceof BibtexEntry)) {
 					return potentialEntry.toString();
 				}
@@ -113,7 +111,7 @@ public class BibtexScraper implements Scraper {
 	}
 	
 	public boolean supportsScrapingContext(final ScrapingContext sc) {
-		if (sc!= null && sc.getUrl() != null) {
+		if (sc != null && sc.getUrl() != null) {
 			try {
 				return parseBibTeX(sc.getPageContent()) != null;
 			} catch (InternalFailureException ex) {

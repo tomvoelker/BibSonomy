@@ -38,6 +38,10 @@ import bibtex.dom.BibtexFile;
 import bibtex.parser.BibtexParser;
 import bibtex.parser.ParseException;
 
+/**
+ * scrapes BibTex from the selected text
+ * @version $Id$
+ */
 public class SnippetScraper implements Scraper {
     private static final String info = "SnippetScraper: This scraper checks passed snippets for " +
     								   "valid BibTeX entries. Author: KDE";
@@ -67,7 +71,7 @@ public class SnippetScraper implements Scraper {
 				}
 			}
 
-		} catch(ParseException pe) {
+		} catch (ParseException pe) {
 			throw new ScrapingException(pe);
 		} catch (IOException ioe) {
 			throw new ScrapingException(ioe);			
@@ -80,7 +84,7 @@ public class SnippetScraper implements Scraper {
 	}
 
 	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
+		return Collections.<Scraper>singletonList(this);
 	}
 
 	public boolean supportsScrapingContext(ScrapingContext sc) {
@@ -135,7 +139,6 @@ public class SnippetScraper implements Scraper {
 	public String getSupportedSiteName(){
 		return null;
 	}
-	
 	
 	/**
 	 * @return site url

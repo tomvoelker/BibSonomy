@@ -46,6 +46,10 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+
+/**
+ * @version $Id$
+ */
 @Deprecated
 public class ScrapingService extends AbstractUrlScraper {
 
@@ -65,10 +69,12 @@ public class ScrapingService extends AbstractUrlScraper {
 		return info;
 	}
 	
+	@Override
 	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
+		return Collections.<Scraper>singletonList(this);
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null) {
 			try {
@@ -95,17 +101,20 @@ public class ScrapingService extends AbstractUrlScraper {
 		return false;
 	}
 
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
 		list.add(new Tuple<Pattern, Pattern>(AbstractUrlScraper.EMPTY_PATTERN, AbstractUrlScraper.EMPTY_PATTERN));
 		return list;
 	}
 
+	@Override
 	public boolean supportsUrl(URL url) {
 		// match every url
 		return true;
 	}
 
+	@Override
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
 		// return false, this scraper is deprecated
 		return false;

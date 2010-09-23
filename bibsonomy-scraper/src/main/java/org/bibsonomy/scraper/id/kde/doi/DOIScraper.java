@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.id.kde.doi;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +33,6 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
@@ -54,13 +55,12 @@ public class DOIScraper implements Scraper {
 	private static final int MAX_SELECTION_LENGTH = 200;
 
 	private static final String SITE_NAME = "DOIScraper";
-	private static final String SITE_URL = "http://dx.doi.org";
 	private static final String INFO 	= "Scraper which follows redirects from " + AbstractUrlScraper.href(DOIUtils.DX_DOI_ORG_URL, DOIUtils.DX_DOI_ORG) + 
 											" and passes the resulting URLs to the following scrapers. Additionally checks, if the given selection" +
 											" text contains (almost only!) a DOI and basically does the same.";
 	
 	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
+		return Collections.<Scraper>singletonList(this);
 	}
 
 	/**
@@ -83,12 +83,12 @@ public class DOIScraper implements Scraper {
 		 */
 		final URL url = scrapingContext.getUrl();
 		final String selection = scrapingContext.getSelectedText();
-		if (!ValidationUtils.present(selection) && DOIUtils.isDOIURL(url)) {
+		if (!present(selection) && DOIUtils.isDOIURL(url)) {
 			/*
 			 * dx.doi.org URL found! --> resolve redirects
 			 */
 			final URL redirectUrl = WebUtils.getRedirectUrl(url);
-			if (ValidationUtils.present(redirectUrl)) {
+			if (present(redirectUrl)) {
 				scrapingContext.setUrl(redirectUrl);
 			}
 			
@@ -102,7 +102,7 @@ public class DOIScraper implements Scraper {
 			 */
 			final String doi = DOIUtils.extractDOI(selection);
 			final URL redirectUrl = WebUtils.getRedirectUrl(DOIUtils.getUrlForDoi(doi));
-			if (ValidationUtils.present(redirectUrl)) {
+			if (present(redirectUrl)) {
 				scrapingContext.setUrl(redirectUrl);
 			}
 			
@@ -128,7 +128,7 @@ public class DOIScraper implements Scraper {
 	private static boolean isSupportedSelection(final String selection) {
 		return selection != null && selection.length() < MAX_SELECTION_LENGTH && DOIUtils.containsOnlyDOI(selection);
 	}
-
+	
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
 		return DOIUtils.isDOIURL(scrapingContext.getUrl()) || isSupportedSelection(scrapingContext.getSelectedText());
 	}

@@ -60,8 +60,8 @@ public class ISBNScraper implements Scraper {
 		return Collections.<Scraper>singletonList(this);
 	}
 	
-	public boolean scrape(final ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getSelectedText() != null){
+	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
+		if (sc != null && sc.getSelectedText() != null) {
 			final String isbn = ISBNUtils.extractISBN(sc.getSelectedText());
 			final String issn = ISBNUtils.extractISSN(sc.getSelectedText());
 			
@@ -126,20 +126,4 @@ public class ISBNScraper implements Scraper {
 		context.setSelectedText("9783608935448");
 		return context;
 	}
-	
-	/**
-	 * @return site name
-	 */
-	public String getSupportedSiteName(){
-		return null;
-	}
-	
-	
-	/**
-	 * @return site url
-	 */
-	public String getSupportedSiteURL(){
-		return null;
-	}
-
 }

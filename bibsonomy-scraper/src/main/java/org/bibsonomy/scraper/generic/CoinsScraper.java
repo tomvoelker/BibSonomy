@@ -448,7 +448,7 @@ public class CoinsScraper implements Scraper {
 	}
 
 	public Collection<Scraper> getScraper() {
-		return Collections.singleton((Scraper) this);
+		return Collections.<Scraper>singleton(this);
 	}
 
 	public boolean supportsScrapingContext(ScrapingContext sc) {

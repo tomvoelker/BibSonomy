@@ -57,7 +57,7 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	 */
 	public boolean supportsUrl(final URL url) {
 		if (url != null) {
-			final List<Tuple<Pattern, Pattern>> urlPatterns = getUrlPatterns();;
+			final List<Tuple<Pattern, Pattern>> urlPatterns = getUrlPatterns();
 
 			/*
 			 * possible matching combinations:
@@ -73,23 +73,24 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 				tuple.getSecond().matcher(url.getPath()).find();
 
 				if (match1 && match2) return true;
-
 			}
 		}
 		return false;
 	}
 
-	/** Builds a href to the URL with the given anchor text.
+	/**
+	 * Builds a href to the URL with the given anchor text.
 	 *  
 	 * @param url
 	 * @param text
-	 * @return
+	 * @return a href html element
 	 */
 	public static String href(final String url, final String text) {
 		return "<a href=\"" + url + "\">" + text + "</a>";
 	}
 
-	/** Scrapes the given context.
+	/**
+	 * Scrapes the given context.
 	 * 
 	 * @see org.bibsonomy.scraper.Scraper#scrape(org.bibsonomy.scraper.ScrapingContext)
 	 */
@@ -111,7 +112,7 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	protected abstract boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException;
 
 	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
+		return Collections.<Scraper>singletonList(this);
 	}
 	
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {

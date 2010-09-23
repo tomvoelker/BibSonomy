@@ -51,6 +51,8 @@ public class EprintScraper implements Scraper {
 	private static final Pattern patternMeta = Pattern.compile("<meta content=\"([^\\\"]*)\" name=\"([^\\\"]*)\" />");
 
 	private final static Map<String, String> eprintToBibtexFields = new HashMap<String, String>();
+	private final static Map<String, String> eprintTypesToBibtexTypes = new HashMap<String, String>();
+	
 	static {
 		eprintToBibtexFields.put("eprints.creators_name", "author");
 		eprintToBibtexFields.put("eprints.editors_name", "editor");
@@ -71,9 +73,7 @@ public class EprintScraper implements Scraper {
 		eprintToBibtexFields.put("eprints.number", "number");
 		eprintToBibtexFields.put("eprints.issn", "issn");
 		eprintToBibtexFields.put("eprints.id_number", "doi");
-	}
-	private final static Map<String, String> eprintTypesToBibtexTypes = new HashMap<String, String>();
-	static {
+		
 		eprintTypesToBibtexTypes.put("book", "book");
 		eprintTypesToBibtexTypes.put("book_section", "inbook");
 		eprintTypesToBibtexTypes.put("article", "article");
@@ -87,7 +87,7 @@ public class EprintScraper implements Scraper {
 	}
 
 	public Collection<Scraper> getScraper() {
-		return Collections.singleton((Scraper) this);
+		return Collections.<Scraper>singleton(this);
 	}
 
 	public boolean scrape(ScrapingContext scrapingContext)throws ScrapingException{
@@ -98,7 +98,7 @@ public class EprintScraper implements Scraper {
 		 */
 		final Map<String, LinkedList<String>> bibtexFields = new HashMap<String, LinkedList<String>>();
 		final Matcher metaMatcher = patternMeta.matcher(scrapingContext.getPageContent());
-		while(metaMatcher.find()){
+		while (metaMatcher.find()) {
 			final String value = metaMatcher.group(1);
 			final String key   = metaMatcher.group(2);
 
@@ -120,12 +120,15 @@ public class EprintScraper implements Scraper {
 		final String bibtextype;
 		if (bibtexFields.containsKey("bibtextype")) {
 			final String type = bibtexFields.get("bibtextype").getFirst();
-			if(eprintTypesToBibtexTypes.containsKey(type))
+			if (eprintTypesToBibtexTypes.containsKey(type)) {
 				bibtextype = eprintTypesToBibtexTypes.get(type);
-			else
+			} else {
 				bibtextype = "misc";
-		} else
+			}
+		} else {
 			bibtextype = "misc";
+		}
+		
 		bibtexFields.remove("bibtextype"); //not needed anymore
 
 
@@ -134,40 +137,46 @@ public class EprintScraper implements Scraper {
 		String year = null;
 		String firstLastname = null;
 		// get components lastname and year
-		if(bibtexFields.containsKey("author")){
+		if (bibtexFields.containsKey("author")) {
 			String author = bibtexFields.get("author").getFirst();
 			Matcher matcherLastname = Pattern.compile("([^,]*)").matcher(author);
-			if(matcherLastname.find())
+			if (matcherLastname.find()) {
 				firstLastname = matcherLastname.group(1);
-		}else if(bibtexFields.containsKey("editor")){
+			}
+		} else if(bibtexFields.containsKey("editor")) {
 			String editor = bibtexFields.get("editor").getFirst();
 			Matcher matcherLastname = Pattern.compile("([^,]*)").matcher(editor);
-			if(matcherLastname.find())
+			if (matcherLastname.find()) {
 				firstLastname = matcherLastname.group(1);
+			}
 		}
 
-		if(bibtexFields.containsKey("year")){
+		if (bibtexFields.containsKey("year")) {
 			String yearField = bibtexFields.get("year").getFirst();
 			Matcher matcherYear = Pattern.compile("(\\d{4})").matcher(yearField);
-			if(matcherYear.find())
+			if (matcherYear.find()) {
 				year = matcherYear.group(1);
+			}
 		}
 		// build bibtex key
-		if(firstLastname != null && year != null){
+		if (firstLastname != null && year != null) {
 			bibtexkey = firstLastname + year;
-		}else
+		} else {
 			bibtexkey = "defaultKey";
+		}
 
 		// build bibtex
 		final StringBuffer bibtexBuffer = new StringBuffer("@" + bibtextype + "{" + bibtexkey + ",\n");
 
 		// iterate over every bibtex field and append it to buffer
-		for(final String bibtexField: bibtexFields.keySet()){
-			if(bibtexField != null){
+		// TODO: inefficient key iterator
+		for (final String bibtexField : bibtexFields.keySet()) {
+			if (bibtexField != null) {
 				String value = null;
 				// special handling for author
-				if(bibtexField.equals("author")){
+				if (bibtexField.equals("author")) {
 					String authorString = "";
+					// TODO: concatenates string using +
 					for(String author: bibtexFields.get("author"))
 						authorString = authorString + author + " and ";
 					// remove last " and "
@@ -176,38 +185,44 @@ public class EprintScraper implements Scraper {
 					value = authorString;
 				}
 				// special handling for editor
-				else if(bibtexField.equals("editor")){
+				else if(bibtexField.equals("editor")) {
 					String editorString = "";
-					for(String editor: bibtexFields.get("editor"))
+					// TODO: concatenates string using +
+					for (final String editor : bibtexFields.get("editor")) {
 						editorString = editorString + editor + " and ";
+					}
 					// remove last " and "
 					editorString = editorString.substring(0, editorString.length()-5);
 				}
 				// special handling for doi
-				else if(bibtexField.equals("doi")){
+				else if (bibtexField.equals("doi")) {
 					String doi = bibtexFields.get(bibtexField).getFirst();
-					if(DOIUtils.isDOI(doi))
+					if (DOIUtils.isDOI(doi)) {
 						value = doi;
+					}
 				}
 				// special handling for year
-				else if(bibtexField.equals("year")){
-					if(year != null)
+				else if(bibtexField.equals("year")) {
+					if (year != null) {
 						value = year;
-					else
+					} else {
 						value = bibtexFields.get(bibtexField).getFirst();
+					}
 				}
 				// rest, simply add 
-				else{
+				else {
 					String bibtexFieldValue = "";
-					for(String singelValue: bibtexFields.get(bibtexField))
+					// TODO: concatenates string using +
+					for (String singelValue : bibtexFields.get(bibtexField)) {
 						bibtexFieldValue = bibtexFieldValue + " " + singelValue;
+					}
 					bibtexFieldValue = bibtexFieldValue.trim();
 
 					value = bibtexFieldValue;
 				}
 
 				// append
-				if(value != null){
+				if (value != null) {
 					bibtexBuffer.append(bibtexField + " = {" + value + "},\n");
 				}
 			}

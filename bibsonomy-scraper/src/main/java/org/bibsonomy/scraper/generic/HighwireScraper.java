@@ -31,8 +31,6 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -40,8 +38,11 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class HighwireScraper implements Scraper {
-	private static final Log log 	= LogFactory.getLog(HighwireScraper.class);
 	private static final String SITE_NAME = "Highwire Scraper Collection";
 	private static final String SITE_URL = "http://highwire.stanford.edu/lists/allsites.dtl";
 	private static final String INFO 	= "This scraper parses a publication page from one of these <a href=\"http://highwire.stanford.edu/lists/allsites.dtl\">journals hosted by Highwire Press</a>  " +
@@ -51,9 +52,7 @@ public class HighwireScraper implements Scraper {
 	private static final Pattern urlPattern = Pattern.compile("/cgi/citmgr\\?gca=[\\w+;/&=.-]+");
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-
-		//-- url shouldn't be null
-		if (sc.getUrl() != null) {
+		if (sc.getUrl() != null) { //-- url shouldn't be null
 
 			/*
 			 * test if the export link is available: /cgi/citmgr?gca=abcd;999/99/99
@@ -112,21 +111,21 @@ public class HighwireScraper implements Scraper {
 					if (bibtexresult != null && !"".equals(bibtexresult)) {
 						sc.setBibtexResult(bibtexresult);
 						return true;
-					}else
-						throw new ScrapingFailureException("getting bibtex failed");
-
-
+					}
+					
+					throw new ScrapingFailureException("getting bibtex failed");
 				}
 
 			} catch (IOException ex) {
-				throw new InternalFailureException(ex);			}
+				throw new InternalFailureException(ex);
+			}
 		}
 		//-- This Scraper can`t handle the specified url
 		return false;
 	}
 
 	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
+		return Collections.<Scraper>singletonList(this);
 	}
 
 	public boolean supportsScrapingContext(ScrapingContext sc) {

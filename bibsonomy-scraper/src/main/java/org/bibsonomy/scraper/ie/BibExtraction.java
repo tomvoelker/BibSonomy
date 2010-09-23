@@ -21,14 +21,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-/**
- * created: Sep 29, 2006
- *
- * this class labels referenzes for bibsonomy 
- * 
- * @author Thomas Steuber
- **/
-
 package org.bibsonomy.scraper.ie;
 
 import java.io.File;
@@ -40,16 +32,20 @@ import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
 
-
 import edu.umass.cs.mallet.base.pipe.CharSequence2TokenSequence;
 import edu.umass.cs.mallet.base.types.Instance;
 import edu.umass.cs.mallet.base.types.TokenSequence;
 import edu.umass.cs.mallet.util.bibsonomy.IEInterface;
 
 
-
-public class BibExtraction
-{
+/**
+ * created: Sep 29, 2006
+ *
+ * this class labels references for bibsonomy 
+ * 
+ * @author Thomas Steuber
+ **/
+public class BibExtraction {
 
 	private static final String reference1 = "E. Tyugu, H-M. Haav, J. Penjam et al. , Multiprocessing Computing System \"Elbrus-1\". System for Generating Problem-oriented Packages of Programs, Algorithms and Programs, Moscow 1982, No. 6(50) (in russian)";
 
@@ -211,13 +207,13 @@ public class BibExtraction
 
 		ieInterface.loadCRF(new File(fileName));
 
-		try{
+		try {
 			Instance instance = new Instance(reference, null, "reference", null);
 			CharSequence2TokenSequence cs2ts = new CharSequence2TokenSequence(regex); 
 						
 			ieInterface.viterbiCRFTokenSequence((TokenSequence)cs2ts.pipe(instance).getData());
 			return ieInterface.printResultInHashMap();
-		}catch(Exception e){
+		} catch(Exception e) {
 			System.err.println();
 			System.err.println("Exception ");
 			e.printStackTrace();
@@ -228,17 +224,19 @@ public class BibExtraction
 
 	}
 
-	public HashMap<String, String> extraction(String reference)throws IOException, ClassNotFoundException, NamingException{
-		IEInterface ieInterface = new IEInterface();
+	
+	public HashMap<String, String> extraction(String reference) throws IOException, ClassNotFoundException, NamingException{
+		final IEInterface ieInterface = new IEInterface();
 		ieInterface.loadCRF(new CRFSingleton().getCrf());
 
-		try{
-			Instance instance = new Instance(reference, null, "reference", null);
+		try {
+			final Instance instance = new Instance(reference, null, "reference", null);
 			CharSequence2TokenSequence cs2ts = new CharSequence2TokenSequence(regex); 
 			
 			ieInterface.viterbiCRFTokenSequence((TokenSequence)cs2ts.pipe(instance).getData());
 			return ieInterface.printResultInHashMap();
-		}catch(Exception e){
+		} catch (Exception e) {
+			// TODO: logging?
 			System.err.println();
 			System.err.println("Exception ");
 			e.printStackTrace();
@@ -249,6 +247,8 @@ public class BibExtraction
 
 	}
 	
+	
+	// TODO: remove?
 	public static void main (String[] args) throws FileNotFoundException
 	{
 		LinkedList<String> referenceList = new LinkedList<String>();

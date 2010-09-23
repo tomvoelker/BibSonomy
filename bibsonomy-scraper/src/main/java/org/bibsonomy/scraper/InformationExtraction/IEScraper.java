@@ -28,7 +28,6 @@ import java.beans.XMLEncoder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -198,7 +197,7 @@ public class IEScraper implements Scraper {
 	}
 
 	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper)this);
+		return Collections.<Scraper>singletonList(this);
 	}
 
 	/** Cleans a String containing person names.
@@ -238,7 +237,6 @@ public class IEScraper implements Scraper {
 		return null;
 	}
 	
-	
 	/**
 	 * @return site url
 	 */
@@ -251,8 +249,7 @@ public class IEScraper implements Scraper {
 	 * @param toConvert A String in ISO format.
 	 * @return the argument in UTF-8 format
 	 */
-	private String convertISO2UTF8(String toConvert)
-	{
+	private String convertISO2UTF8(String toConvert) {
 		String result = null;
 		if( toConvert==null ) return null;
 		try {
