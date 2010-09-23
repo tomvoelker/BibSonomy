@@ -424,18 +424,6 @@ public class DBLogic implements LogicInterface {
 	}
     }
 
-    /**
-     * Checks if the given software key is valid.
-     * 
-     * @param softwareKey
-     *            software key to be validated
-     * @return true iff the given software key is valid.
-     */
-    public boolean validateSoftwareKey(final String softwareKey) {
-	// FIXME: impl. a software key
-	return true;
-    }
-
     /*
      * (non-Javadoc)
      * 
