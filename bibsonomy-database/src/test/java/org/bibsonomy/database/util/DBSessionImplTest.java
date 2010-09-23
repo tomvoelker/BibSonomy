@@ -26,7 +26,7 @@ public class DBSessionImplTest {
 	@Before
 	public void setUp() {
 		JNDIBinder.bind();
-		this.session = (DBSessionImpl) DatabaseUtils.getDBSessionFactory().getDatabaseSession();
+		this.session = (DBSessionImpl) new IbatisDBSessionFactory().getDatabaseSession();
 	}
 
 	/**

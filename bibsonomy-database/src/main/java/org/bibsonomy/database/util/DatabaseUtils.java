@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
@@ -88,19 +87,12 @@ public final class DatabaseUtils {
 	}
 
 	/**
-	 * @return a {@link DBSessionFactory}
-	 */
-	public static DBSessionFactory getDBSessionFactory() {
-		return new IbatisDBSessionFactory();
-	}
-
-	/**
 	 * extracts list of tag names from given list of TagIndex instances
 	 * 
 	 * TODO: could we fill and use Generic.tags instead? 
 	 * 
 	 * @param tagIndex
-	 * @return
+	 * @return a list of tag names
 	 */
 	public static List<String> extractTagNames(final List<TagIndex> tagIndex) {
 		final List<String> retVal = new LinkedList<String>();
