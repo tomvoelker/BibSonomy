@@ -17,11 +17,11 @@
 		<groupId>org.bibsonomy</groupId>
 		<version>2.0.10-SNAPSHOT</version>
 	</parent>
-
 	<dependencies>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -59,10 +59,6 @@
 			<version>0.6-beta2</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<!-- deploy site documentation via scp to gromit -->
@@ -73,9 +69,6 @@
 				scpexe://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
 			</url>
 		</site>		
-	</distributionManagement>	
-	<properties>
-		<wtpversion>1.5</wtpversion>
-	</properties>
+	</distributionManagement>
 </project>
 
