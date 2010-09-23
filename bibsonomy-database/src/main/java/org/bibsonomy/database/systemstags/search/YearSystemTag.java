@@ -76,15 +76,16 @@ public class YearSystemTag extends AbstractSystemTagImpl implements SearchSystem
 	}
 
 	@Override
-	public void handleParam(GenericParam param) {
+	public void handleParam(final GenericParam param) {
 		if (param instanceof BibTexParam ) {
 			param.addToSystemTags(this);
-
-			final BibTexParam bibTexParam = (BibTexParam) param;
+			
+			/*
+			 * extract first-, last- and year from the argument
+			 */
 			// 1st case: year explicitly given (eg. 2006)
 			if (this.getArgument().matches("[12]{1}[0-9]{3}")) {
 				this.year = this.getArgument();
-				bibTexParam.setYear(this.getArgument()); // TODO: lucene can't handle system tags
 				log.debug("Set year to " + this.getArgument() + " after matching year system tag");
 			} 
 			// 2nd case: range (e.g. 2001-2006)
@@ -92,30 +93,20 @@ public class YearSystemTag extends AbstractSystemTagImpl implements SearchSystem
 				String[] years = this.getArgument().split("-");
 				this.firstYear = years[0];
 				this.lastYear = years[1];
-				/*
-				 * FIXME: shouldnt we set FirstYer = years [0], LastYear = years[1]
-				 */
-				bibTexParam.setFirstYear(this.getArgument()); // TODO: lucene can't handle system tags
-				bibTexParam.setLastYear(this.getArgument()); // TODO: lucene can't handle system tags
 				log.debug("Set firstyear/lastyear to " + years[0] + "/" + years[1] + "after matching year system tag");
 			}
 			// 3rd case: upper bound (e.g -2005) means all years before 2005 
 			else if(this.getArgument().matches("-[12]{1}[0-9]{3}")) {
 				// cut off the "-" at the beginning
 				this.lastYear = this.getArgument().substring(1);
-				bibTexParam.setLastYear(this.lastYear); // TODO: lucene can't handle system tags
 				log.debug("Set lastyear to " + this.getArgument() + "after matching year system tag");
 			}
 			// 4th case: lower bound (e.g 1998-) means all years since 1998 
 			else if(this.getArgument().matches("[12]{1}[0-9]{3}-")) {
 				// cut off the "-" at the end
 				this.firstYear = this.getArgument().substring(0, this.getArgument().length()-1);
-				bibTexParam.setFirstYear(this.getArgument().substring(0, this.getArgument().length()-1)); // TODO: lucene can't handle system tags
 				log.debug("Set firstyear to " + this.getArgument() + "after matching year system tag");
-			}			
-
+			}
 		} // for Bookmarks do nothing
 	}
-
-
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.systemstags.search.YearSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -27,8 +28,22 @@ public class GetBibtexByResourceSearch extends BibTexChainElement {
 			tagIndex = DatabaseUtils.extractTagNames(param.getTagIndex());
 		}
 		
+		/*
+		 * extract first-, last- and year from the system tag if present
+		 */
+		String year = null;
+		String firstYear = null;
+		String lastYear = null;
+		
+		final YearSystemTag yearTag = (YearSystemTag) param.getSystemTags().get(YearSystemTag.NAME);
+		if (present(yearTag)) {
+			year = yearTag.getYear();
+			firstYear = yearTag.getFirstYear();
+			lastYear = yearTag.getLastYear();
+		}
+		
 		// query the resource searcher
-		return this.db.getPostsByResourceSearch(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(),  param.getGroupNames(), param.getRawSearch(), param.getTitle(), param.getAuthor(), tagIndex, param.getYear(), param.getFirstYear(), param.getLastYear(),  param.getLimit(), param.getOffset());
+		return this.db.getPostsByResourceSearch(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(),  param.getGroupNames(), param.getRawSearch(), param.getTitle(), param.getAuthor(), tagIndex, year, firstYear, lastYear,  param.getLimit(), param.getOffset());
 	}
 
 	@Override

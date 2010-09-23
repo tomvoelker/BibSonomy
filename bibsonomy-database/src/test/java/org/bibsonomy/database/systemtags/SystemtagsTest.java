@@ -31,6 +31,7 @@ import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
+import org.bibsonomy.database.systemstags.search.YearSystemTag;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -244,19 +245,21 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 	public void testYear() {
 		String systemTag = "sys:Year:1999";
         BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemTag }), "", null, 0, 50, null, null, new User("testuser"));
-		assertEquals("1999", param.getYear());
+        YearSystemTag yearTag = (YearSystemTag) param.getSystemTags().get(YearSystemTag.NAME);
+		assertEquals("1999", yearTag.getYear());
 		systemTag = "sys:year:2000-2010";
 		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemTag }), "", null, 0, 50, null, null, new User("testuser"));
-		assertEquals("2000-2010", param.getFirstYear());
-		assertEquals("2000-2010", param.getLastYear());
-		systemTag = "sys:year:2000-";
+		yearTag = (YearSystemTag) param.getSystemTags().get(YearSystemTag.NAME);
+		assertEquals("2000", yearTag.getFirstYear());
+		assertEquals("2010", yearTag.getLastYear());
+		systemTag = "sys:year:1999-";
 		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemTag }), "", null, 0, 50, null, null, new User("testuser"));
-		assertEquals("2000", param.getFirstYear());
+		yearTag = (YearSystemTag) param.getSystemTags().get(YearSystemTag.NAME);
+		assertEquals("1999", yearTag.getFirstYear());
 		systemTag = "sys:year:-2010";
 		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemTag }), "", null, 0, 50, null, null, new User("testuser"));
-		assertEquals("2010", param.getLastYear());
-		// Test if systemTag was added to param's systemTag Collection
-		assertNotNull(param.getSystemTags().get("year"));
+		yearTag = (YearSystemTag) param.getSystemTags().get(YearSystemTag.NAME);
+		assertEquals("2010", yearTag.getLastYear());
 	}
 	
 	/**
