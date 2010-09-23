@@ -17,8 +17,6 @@
 		<groupId>org.bibsonomy</groupId>
 		<version>2.0.10-SNAPSHOT</version>
 	</parent>
-
-
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -32,10 +30,6 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
@@ -53,11 +47,6 @@
 			<version>0.4-jaeschke</version>
 		</dependency>
 	</dependencies>
-
-	<properties>
-		<wtpversion>1.5</wtpversion>
-	</properties>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -84,10 +73,8 @@
 					</compilerArguments>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
-
 	<distributionManagement>
 		<site>
 			<!-- copy site documentation via scp to gromit -->
@@ -97,7 +84,6 @@
 			</url>
 		</site>
 	</distributionManagement>
-
 	<reporting>
 		<plugins>
 			<plugin>
