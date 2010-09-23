@@ -126,4 +126,20 @@ public class ISBNScraper implements Scraper {
 		context.setSelectedText("9783608935448");
 		return context;
 	}
+	
+	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return null;
+	}
+	
+	
+	/**
+	 * @return site url
+	 */
+	public String getSupportedSiteURL(){
+		return null;
+	}
+
 }
