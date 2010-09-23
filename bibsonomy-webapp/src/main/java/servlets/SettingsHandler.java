@@ -124,7 +124,7 @@ public class SettingsHandler extends HttpServlet{
 				 */
 				friend = request.getParameter("add_friend");
 				// don't be friend with yourself!
-				if (friend != null && !friend.equals(currUser)) {
+				if (friend != null && !friend.equalsIgnoreCase(currUser)) {
 					// check, if username exists
 					stmtP = conn.prepareStatement ("SELECT user_name FROM user WHERE user_name = ?");
 					stmtP.setString(1, friend);
