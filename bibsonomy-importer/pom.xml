@@ -27,10 +27,6 @@
 			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.2</version>
@@ -38,7 +34,6 @@
 	</dependencies>
 
 	<properties>
-		<wtpversion>1.5</wtpversion>
 	</properties>
 
 	<build>
