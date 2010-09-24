@@ -13,7 +13,7 @@ import org.bibsonomy.webapp.view.Views;
 public abstract class MobileViewNameResolver {
 
 	private static View[][] viewsArray = new View[][] {
-	{Views.HOMEPAGE, MobileViews.HOMEPAGE},
+		{Views.HOMEPAGE, MobileViews.HOMEPAGE},
 		{Views.USERPAGE, MobileViews.USERPAGE},
 		{Views.TAGPAGE, MobileViews.TAGPAGE},
 		{Views.SEARCHPAGE, MobileViews.SEARCHPAGE},
@@ -24,7 +24,10 @@ public abstract class MobileViewNameResolver {
 		{Views.LOGIN, MobileViews.LOGIN},
 		{Views.USERTAGPAGE, MobileViews.USERTAGPAGE},
 		{Views.EDIT_BOOKMARK, MobileViews.EDIT_BOOKMARK},
-		{Views.EDIT_PUBLICATION, MobileViews.EDIT_PUBLICATION}
+		{Views.EDIT_PUBLICATION, MobileViews.EDIT_PUBLICATION},
+		{Views.AUTHORPAGE, MobileViews.AUTHORPAGE},
+		{Views.URLPAGE, MobileViews.URLPAGE},
+		{Views.POPULAR_TAGS, MobileViews.POPULAR_TAGS}
 	};
 	
 	private static final Map<String, String> views;

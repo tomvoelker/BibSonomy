@@ -8,6 +8,7 @@ import net.sourceforge.wurfl.core.Device;
 import net.sourceforge.wurfl.core.WURFLManager;
 
 import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.webapp.util.MobileViewNameResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -18,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 
 	private WURFLManager wurflManager;
-	
+
 	private boolean isMobileDevice(HttpServletRequest request) {
 		
 		Device device = wurflManager.getDeviceForRequest(request);
@@ -46,7 +47,7 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 						
 						response.addCookie(new Cookie("mobile", "true"));
 						modelAndView.getModel().put("isMobile", true);
-						//modelAndView.setViewName(MobileViewNameResolver.resolveView(modelAndView.getViewName()));
+						modelAndView.setViewName(MobileViewNameResolver.resolveView(modelAndView.getViewName()));
 					}
 				}
 			}

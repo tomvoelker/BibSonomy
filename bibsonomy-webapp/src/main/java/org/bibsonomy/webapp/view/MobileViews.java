@@ -41,7 +41,7 @@ public enum MobileViews implements View {
 	/**
 	 * details of a publication 
 	 */
-	BIBTEXDETAILS("mobile/publication_details"),
+	BIBTEXDETAILS("mobile/bibtex_details"),
 	
 	/**
 	 * group page showing all resources of a specified group
@@ -62,6 +62,21 @@ public enum MobileViews implements View {
 	 * he dialog to EDIT a publication.
 	 */
 	EDIT_PUBLICATION("mobile/edit_publication"),
+	
+	/**
+	 * authors overview page
+	 */
+	AUTHORPAGE("mobile/author"),
+	
+	/**
+	 * url page, displays all bookmarks for a given url hash  
+	 */
+	URLPAGE("mobile/url"),
+	
+	/**
+	 * popular tags page
+	 */
+	POPULAR_TAGS("mobile/popular_tags"),
 	
 	/**
 	 * 
