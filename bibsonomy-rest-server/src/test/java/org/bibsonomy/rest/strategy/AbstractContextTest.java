@@ -1,7 +1,9 @@
 package org.bibsonomy.rest.strategy;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.database.TestDBLogic;
@@ -14,14 +16,15 @@ import org.junit.Before;
 public abstract class AbstractContextTest {
 
 	protected LogicInterface db;
-	protected InputStream is;
+	protected Reader is;
 
 	/**
 	 * sets up the logic
+	 * @throws UnsupportedEncodingException 
 	 */
 	@Before
-	public final void setUp() {
+	public final void setUp() throws UnsupportedEncodingException {
 		this.db = TestDBLogic.factory.getLogicAccess(this.getClass().getSimpleName(), "apiKey");
-		this.is = new ByteArrayInputStream("".getBytes());
+		this.is = new InputStreamReader(new ByteArrayInputStream("".getBytes()), "UTF-8");
 	}
 }
