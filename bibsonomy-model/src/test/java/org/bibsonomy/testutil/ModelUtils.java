@@ -253,6 +253,8 @@ public final class ModelUtils extends CommonModelUtils {
 			resource = (T) ModelUtils.getBibTex();
 		} else if (resourceType == Bookmark.class) {
 			resource = (T) ModelUtils.getBookmark();
+		} else if (resourceType == GoldStandardPublication.class) {
+			resource = (T) ModelUtils.getGoldStandardPublication();
 		} else {
 			throw new UnsupportedResourceTypeException();
 		}
