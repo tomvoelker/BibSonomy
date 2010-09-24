@@ -38,7 +38,11 @@
 			<artifactId>bibsonomy-model</artifactId>
 			<scope>test</scope>
 			<type>test-jar</type>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
