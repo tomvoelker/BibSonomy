@@ -1,0 +1,88 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mobile="urn:jsptagdir:/WEB-INF/tags/mobile"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<mobile:simple command="${command}" selected="nav_login">
+		<jsp:attribute name="content">
+			<div class="container">
+	            <errors:global errors="${errors}" /> 
+	            
+	            <c:if test="${authOrder == '' or empty authOrder}">
+	 		    	<c:set var="authOrder" value="db,openid" />
+	 		    </c:if>
+	 		    
+	 		    <c:set var="authOrderArray" value="${fn:split(authOrder,',')}" />
+	 		    
+	 		    <c:if test="${authOrder != 'db,openid'}">
+					<form:form action="#" method="POST" id="loginMethod">
+		            	<form:label path="loginMethod">
+							<fmt:message key="login.method" />
+						</form:label>
+		            	<form:select id="loginMethodSelect" size="${fn:length(authOrderArray)}" onchange="switchLogin('${authOrder}', this.options[this.selectedIndex].value)" path="loginMethod">
+			            	<c:forEach items="${authOrderArray}" varStatus="loop">
+			            		<fmt:message var="label" key="login.method.${authOrderArray[loop.index]}" />
+			            		<form:option value="${authOrderArray[loop.index]}" label="${label}" />
+							</c:forEach>
+						</form:select>
+					</form:form>
+				</c:if>
+				
+				<c:forEach items="${authOrderArray}" varStatus="loop">
+					<c:if test="${authOrderArray[loop.index]=='db' }">
+						<div id="logindb" style="display: none">
+							<form:form action="/login" method="POST">
+								<form:hidden id="loginMethoddb" path="loginMethod" />
+									<p>
+										<form:label path="username"><fmt:message key="navi.username" /></form:label>
+										<form:input path="username" /><form:errors cssClass="errmsg" path="username" />
+									</p>
+									<p>
+										<form:label path="password"><fmt:message key="navi.password" /></form:label>
+										<form:password path="password" /><form:errors cssClass="errmsg" path="password" />
+									</p>
+			                  		<p>
+			                    		<form:hidden path="referer" />
+			                    		<fmt:message key="navi.login" var="submit" />
+			                    		<input type="submit" value="${submit}" />
+			                  		</p>
+			            	</form:form>		
+			     	    </div>
+					</c:if>
+					
+					<c:if test="${authOrderArray[loop.index]=='openid' }">
+						<div id="loginopenid" style="display:none">
+							<div style="text-align: center;"><img src="${resdir}/image/openid-logo-small.png"/></div>
+			            	<form:form action="/login" method="POST">
+			            		<form:hidden id="loginMethodopenid" path="loginMethod" />
+		            			<p>
+		            				<form:label path="openID" >OpenID </form:label>
+		            				<form:input path="openID" cssClass="openid" size="30"/>
+		            				<form:errors cssClass="errmsg" path="openID" />
+		            			</p>
+		            			<p>
+				                    <form:hidden path="referer"/>
+				                    <fmt:message key="navi.login" var="submit"/>
+				                    <input type="submit" value="${submit}" />
+				                </p>
+			            	</form:form>
+			            </div>
+					</c:if>
+				</c:forEach>
+				<!-- little script to switch between default login and OpenID login forms -->
+	          	<script type="text/javascript">
+	          	<![CDATA[
+					switchLogin('${authOrder}');
+			  	]]>
+			  	</script>
+		  	</div>	
+		</jsp:attribute>
+	</mobile:simple>
+</jsp:root>
