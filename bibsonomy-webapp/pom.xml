@@ -181,8 +181,11 @@
 		</dependency>			
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-bibtex-parser
-			</artifactId>
+			<artifactId>bibsonomy-bibtex-parser</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-web-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
