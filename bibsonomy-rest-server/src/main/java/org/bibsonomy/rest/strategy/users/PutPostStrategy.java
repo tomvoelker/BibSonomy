@@ -3,9 +3,8 @@ package org.bibsonomy.rest.strategy.users;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Writer;
+import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
@@ -73,9 +72,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 		 * hash - this will be done by the logic behind the LogicInterface!
 		 */ 		
 		try {
-			final List<Post<?>> posts = new LinkedList<Post<?>>();
-			posts.add(post);
-			return this.getLogic().updatePosts(posts, PostUpdateOperation.UPDATE_ALL).get(0);
+			return this.getLogic().updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL).get(0);
 		} catch (final DatabaseException de) {
 			for (final String hash: de.getErrorMessages().keySet()) {
 				for (final ErrorMessage em: de.getErrorMessages(hash)) {
