@@ -3,9 +3,8 @@ package org.bibsonomy.rest.strategy.users;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -60,9 +59,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 		 */
 		post.setDate(new Date());
 		try {
-			final List<Post<?>> posts = new LinkedList<Post<?>>();
-			posts.add(post);
-			return this.getLogic().createPosts(posts).get(0);
+			return this.getLogic().createPosts(Arrays.<Post<?>>asList(post)).get(0);
 		} catch (final DatabaseException de) {
 			for (final String hash: de.getErrorMessages().keySet()) {
 				for (final ErrorMessage em: de.getErrorMessages(hash)) {

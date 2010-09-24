@@ -6,9 +6,9 @@ import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
+import org.bibsonomy.rest.util.EscapingPrintWriter;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>

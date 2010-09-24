@@ -12,9 +12,9 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
-import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
+import org.bibsonomy.rest.util.EscapingPrintWriter;
 
 /**
  * Handle a user concepts request

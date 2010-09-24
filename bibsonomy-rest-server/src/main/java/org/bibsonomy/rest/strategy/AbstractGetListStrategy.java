@@ -7,7 +7,7 @@ import java.util.List;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
+import org.bibsonomy.rest.util.EscapingPrintWriter;
 
 /**
  * @author Jens Illig

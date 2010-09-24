@@ -5,7 +5,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
+import org.bibsonomy.rest.util.EscapingPrintWriter;
 
 /**
  * @author Dominik Benz
