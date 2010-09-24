@@ -2,10 +2,9 @@ package org.bibsonomy.database.systemstags.executable;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -107,8 +106,10 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	final String userName = userPost.getUser().getName();
 	final String intraHash = userPost.getResource().getIntraHash();
 
-	if (!this.hasPermissions(intraHash, session, groupName, userName)) {
-	    // user is not allowed to use this tag, errorMessages were added
+	if (!this.hasPermissions(groupName, userName, session)) {
+	    /*
+	     *  user is not allowed to use this tag
+	     */
 	    return;
 	}
 	/*
@@ -138,8 +139,8 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	/*
 	 *  Permissions are granted and the group doesn't own the post yet
 	 *  => Copy the post and store it for the group
+	 *  FIXME: How do we properly clone a post?
 	 */
-	//FIXME: How do we properly clone a post?
 	final Post<T> groupPost = new Post<T>();
 	groupPost.setResource(userPost.getResource());
 	groupPost.setDescription(userPost.getDescription());
@@ -159,7 +160,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	 *  original != public => copy = dbGroup
 	 *  => check if post.groups has only the public group
 	 */
-	if (userPost.getGroups().size()==1 && userPost.getGroups().contains(GroupUtils.getPublicGroup())) {
+	if ((userPost.getGroups().size() == 1) && (userPost.getGroups().contains(GroupUtils.getPublicGroup()))) {
 	    // public is the only group (if visibility was public, there should be only one group)
 	    groupPost.setGroups(new HashSet<Group>());
 	    groupPost.getGroups().add(GroupUtils.getPublicGroup());
@@ -170,16 +171,14 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	/*
 	 * groupPost is complete and can be stored for the group
 	 */
-	final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
-	posts.add(groupPost);
 	try {
-	    groupDBLogic.createPosts(posts);
+	    groupDBLogic.createPosts(Collections.<Post<?>>singletonList(groupPost));
 	} catch (final DatabaseException dbex) {
 	    /*
 	     *  Add the DatabaseException of the copied post to the Exception of the original one
 	     */
-	    for (final String hash: dbex.getErrorMessages().keySet()) {
-		for (final ErrorMessage errorMessage: dbex.getErrorMessages(hash)) {
+	    for (final String hash : dbex.getErrorMessages().keySet()) {
+		for (final ErrorMessage errorMessage : dbex.getErrorMessages(hash)) {
 		    errorMessage.setDefaultMessage("This error occured while executing the for: tag: "+errorMessage.getDefaultMessage());
 		    errorMessage.setErrorCode("database.exception.systemTag.forGroup.copy");
 		    session.addError(intraHash, errorMessage);
@@ -193,28 +192,21 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 
     /**
      * Checks the preconditions to this tags usage, adds errorMessages
-     * @param intraHash
-     * @param session
      * @param groupName
      * @param userName
+     * @param session
      * @return true iff user is allowed to use the tag
      */
-    private boolean hasPermissions(final String intraHash, final DBSession session, final String groupName, final String userName) {
+    private boolean hasPermissions(final String groupName, final String userName, final DBSession session) {
 	final PermissionDatabaseManager permissionDb = PermissionDatabaseManager.getInstance();
 	if (permissionDb.isSpecialGroup(groupName) ) {
 	    /*
 	     *  We decided to ignore errors in systemTags. Thus the user is free use any tag.
 	     *  The drawback: If it is the user's intention to use a systemTag, he will never know if there was a typo! 
 	     */
-	    //final String defaultMessage = this.getName() + ": "+ groupName + ": is a special group. You are not allowed to forward posts to special groups.";
-	    //session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.specialGroup", new String[] {groupName}));
-	    //log.warn("Added SystemTagErrorMessage (for group: permission denied) for post " + intraHash);
 	    return false;			
 	} 
-	if (!permissionDb.isMemberOfGroup(userName, groupName,  session) ) {
-	    //final String defaultMessage =this.getName() + ": You are not a member of " + groupName + ".";
-	    //session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.member", new String[] {groupName}));
-	    //log.warn("Added SystemTagErrorMessage (for group: not member) for post " + intraHash);
+	if (!permissionDb.isMemberOfGroup(userName, groupName, session)) {
 	    return false;			
 	}
 	return true;
