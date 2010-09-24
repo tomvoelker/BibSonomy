@@ -3,10 +3,10 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -430,11 +430,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * the post to update has the given intra hash
 		 */
 		post.getResource().setIntraHash(command.getIntraHashToUpdate());
-		/*
-		 * create post list for update
-		 */
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
-		posts.add(post);
+		
 		setDate(post, loginUserName);
 
 		List<String> updatePosts = null;
@@ -442,7 +438,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			/*
 			 * update post in DB
 			 */
-			updatePosts = this.logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
+			updatePosts = this.logic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
 		} catch (final DatabaseException ex) {
 			return this.handleDatabaseException(command, loginUser, post, ex, "update");
 		}
@@ -705,18 +701,13 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		}
 
 		this.setDate(post, loginUserName);
-
-		/*
-		 * create list for posting
-		 */
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
-		posts.add(post);
+		
 		/*
 		 * new post -> create
 		 */
 		try {
 			log.debug("finally: creating a new post in the DB");
-			final String createPosts = logic.createPosts(posts).get(0);
+			final String createPosts = logic.createPosts(Collections.<Post<?>>singletonList(post)).get(0);
 			log.debug("created post: " + createPosts);
 		} catch (DatabaseException de) {
 			return handleDatabaseException(command, loginUser, post, de, "create");
@@ -807,7 +798,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		}
 	}
 
-	/** Initializes the relevant for groups in the command from the (system) tags of the 
+	/**
+	 * Initializes the relevant for groups in the command from the (system) tags of the 
 	 * post. Also removes the corresponding system tags from the post such that they're 
 	 * not shown in the tag input field.
 	 * 

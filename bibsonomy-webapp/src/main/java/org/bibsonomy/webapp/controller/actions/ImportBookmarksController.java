@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -154,13 +156,13 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 		command.setTotalCount(posts != null ? posts.size() : 0);
 
 		/** store the posts **/
-		if (posts.size() > 0) {
-			storePosts(command, posts);
+		if (present(posts)) {
+			this.storePosts(command, posts);
 		}
 
 		/** if available store relations **/
-		if (relations.size() > 0) {
-			storeRelations(relations, command);
+		if (present(relations)) {
+			this.storeRelations(relations, command);
 		}
 
 		return Views.IMPORT;
@@ -186,7 +188,6 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	 * @param command
 	 * @param posts
 	 */
-	@SuppressWarnings("unchecked")
 	private void storePosts(final ImportCommand command, final List<Post<Bookmark>> posts) {
 
 		// stores all newly added bookmarks
@@ -204,13 +205,13 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 			if (post.getUser() == null) {
 				post.setUser(command.getContext().getLoginUser());
 			}
-
-			final List<?> singletonList = Collections.singletonList(post);
+			
+			final List<Post<?>> singletonList = Collections.<Post<?>>singletonList(post);
 			final String title = post.getResource().getTitle();
 			try {
 				// throws an exception if the bookmark already exists in the
 				// system
-				final List<String> createdPostHash = logic.createPosts((List<Post<?>>) singletonList);
+				final List<String> createdPostHash = logic.createPosts(singletonList);
 				newBookmarkEntries.put(createdPostHash.get(0), title);
 			} catch (final DatabaseException de) {
 				// an error occured: handle duplicates throw all other 
@@ -220,7 +221,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 							// duplicate post detected => handle this
 							// check whether the update bookmarks checkbox is checked
 							if (command.isOverwrite()) {
-								final List<String> createdPostHash = logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
+								final List<String> createdPostHash = logic.updatePosts(singletonList, PostUpdateOperation.UPDATE_ALL);
 								updatedBookmarkEntries.put(createdPostHash.get(0), title);
 							} else {
 								nonCreatedBookmarkEntries.add(title);
