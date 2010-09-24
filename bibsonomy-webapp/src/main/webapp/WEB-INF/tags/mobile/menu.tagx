@@ -1,0 +1,203 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="selected" required="true"/>
+	<jsp:directive.attribute name="username" required="true"/>
+	<jsp:directive.attribute name="resources" required="true"/>
+	
+	<jsp:body>
+		<ul id="menu">
+			<c:url var="root" value="/"/>
+			<li><a id="nav_home" href="${root}">Home</a></li>
+			
+			<c:choose>
+				<c:when test="${not empty username}">
+					<c:url var="userUrl" value="/user/${mtl:encodeURI(username)}"/>
+					<li><a href="${userUrl}" id="nav_my"><fmt:message key="navi.my"/></a></li>
+					<li><a href="#" id="nav_search">&amp;nbsp;</a></li>
+					<li>
+						<a href="#" id="nav_more"><fmt:message key="more"/> &amp;raquo;</a>
+					</li>
+				</c:when>
+				<c:otherwise>
+					<li><a href="/login" id="nav_login"><fmt:message key="login.title" /></a></li>
+					<li><a href="/tags" id="nav_tags"><fmt:message key="navi.tags"/></a></li>
+				</c:otherwise>
+			</c:choose>
+		</ul>
+		<div id="toolbar">
+			<div id="search-bar">
+				<form id="specialsearch" method="get" action="/redirect">
+					<c:set var="searchlbl"><fmt:message key="navi.search" /></c:set>
+ 					<input type="hidden" name="scope" value="search" />&amp;nbsp;<input type="text" id="inpf-search" name="search" size="25" style="float: left;" />&amp;nbsp;<input type="submit" value="${searchlbl}" style="float: right;" />
+ 					<div style="clear:both; height: 0;">&amp;nbsp;</div>
+				</form>
+			</div>
+			<div id="resources-toggle">
+				<a href="#" id="toggle-bookmarks"><fmt:message key="bookmarks"/></a>
+				<a href="#" id="toggle-publications"><fmt:message key="publications"/></a>
+				<a id="bookmark-add" href="/postBookmark">+</a>
+				<div style="clear: both; height: 0;">&amp;nbsp;</div>
+			</div>
+			<c:if test="${selected == 'nav_login'}">
+				<div id="login-bar">
+					<a style="font-size: 0.8em;" href="javascript:switchLogin('${authOrder}','db');" id="login-method-db"><fmt:message key="login.method.db" /></a>
+					<a style="font-size: 0.8em;" href="javascript:switchLogin('${authOrder}','openid');" id="login-method-openid"><fmt:message key="login.method.openid" /></a>
+					<div style="clear: both; height: 0;">&amp;nbsp;</div>
+				</div>
+			</c:if>
+			<c:if test="${not empty username}">
+				<div id="more-bar">
+					<ul>
+						<li><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
+						<li><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
+						<li><a href="/tags"><fmt:message key="navi.tags"/></a></li>
+						<c:if test="${not empty loginUser.groups}">
+							<li><fmt:message key="navi.groups"/>
+								<ul id="groups-submenu">
+									<c:forEach var="group" items="${loginUser.groups}">
+										<li><a href="/group/${fn:escapeXml(group.name)}"><c:out value='${group.name}'/></a></li>
+									</c:forEach>
+								</ul>
+							</li>
+						</c:if>
+						<li><a href="/logout" style="margin-top: 25px;"><fmt:message key="navi.logout" /></a></li>
+					</ul>
+				</div>
+			</c:if>
+		</div>
+		<script type="text/javascript">
+		<![CDATA[
+		    $(function() {
+		    	
+		    	var selected = "${selected}";
+		    	var resource_toggle = ${resources};
+		    	
+		    	var activeBarID = "resources-toggle";
+		    	var activeMenuID = selected;
+		    	
+		    	$("#more-submenu").hide();
+		    	
+		    	$("#search-bar").hide();
+		    	
+		    	if(resource_toggle != true)
+		    		$("#resources-toggle").hide();
+		    	
+		    	$("#more-bar").hide();
+		    	
+		    	$("#nav_search").click(function() {
+		    	
+		    		var activeBar = "";
+		    		var activeMenu = "";
+		    		
+		    		activeBar = $("#toolbar div:visible").attr("id");
+		    		activeMenu = $("#menu a.active").attr("id");
+		    				    		
+		    		if(activeBar != "search-bar") {
+		    			activeBarID = activeBar;
+		    		}
+		    		
+		    		$("#search-bar").toggle();
+		    		$("#" + activeBarID).toggle();
+		    		
+		    		if(activeMenu != "nav_search") {
+		    			
+		    			activeMenuID = activeMenu;
+		    		}
+		    		
+		    		$("#" + activeMenuID).toggleClass("active");
+		    		$(this).toggleClass("active");
+		    		
+		    		return false;
+		    	});
+		    	
+		    	if(selected != "") {
+		    		$("#"+ selected).addClass("active");
+		    	}
+		    	
+		    	$("#nav_more").click(function() {
+		    		var activeBar = "";
+		    		var activeMenu = "";
+		    		
+		    		activeBar = $("#toolbar div:visible").attr("id");
+		    		activeMenu = $("#menu a.active").attr("id");
+		    				    		
+		    		if(activeBar != "more-bar") {
+		    			activeBarID = activeBar;
+		    		}
+		    		
+		    		$("#more-bar").toggle();
+		    		$("#" + activeBarID).toggle();
+		    		
+		    		if(activeMenu != "nav_more") {
+		    			
+		    			activeMenuID = activeMenu;
+		    		}
+		    		
+		    		$("#" + activeMenuID).toggleClass("active");		    		
+		    		$(this).toggleClass("active");
+		    		return false;
+		    	});
+		    		
+		    	if(sessionStorage.getItem("resourceType") == 'bibtex') {
+		    		$("#toggle-publications").addClass("active");
+		    		$("#bookmark-add").attr("href", "/postPublication");
+		    	} else {
+		    		$("#toggle-bookmarks").addClass("active");
+		    		$("#bookmark-add").attr("href", "/postBookmark");
+		    	}
+		    	
+		    	$("#toggle-bookmarks").click(function() {
+		    		
+		    		
+		    		$(this).toggleClass("active");
+		    		$("#toggle-publications").toggleClass("active");
+		    		
+					$("#bookmarkList").show();
+					$("#bibtexList").hide();
+					
+					sessionStorage.setItem("resourceType", "bookmark");
+					
+					$("#bookmark-add").attr("href", "/postBookmark");
+					
+					return false;
+		    	});
+		    	
+		    	$("#toggle-publications").click(function() {
+		    		
+		    		$(this).toggleClass("active");
+		    		$("#toggle-bookmarks").toggleClass("active");
+		    		
+					$("#bookmarkList").hide();
+					$("#bibtexList").show();
+					
+					sessionStorage.setItem("resourceType", "bibtex");
+					
+					$("#bookmark-add").attr("href", "/postPublication");
+					
+					return false;
+				});
+		    	
+		    	$("#login-method-db").addClass("active");
+		    	
+		    	$("#login-method-db").click(function() {
+		    		
+		    		switchLogin('${authOrder}','db');
+		    		$("#login-bar a").toggleClass("active");
+		    	});
+		    	
+				$("#login-method-openid").click(function() {
+		    		
+		    		switchLogin('${authOrder}','openid');
+		    		$("#login-bar a").toggleClass("active");
+		    	});
+		    });
+		]]>
+		</script>
+	</jsp:body>
+</jsp:root>

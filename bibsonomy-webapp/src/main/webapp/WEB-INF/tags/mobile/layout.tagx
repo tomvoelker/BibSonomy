@@ -1,0 +1,96 @@
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mobile="urn:jsptagdir:/WEB-INF/tags/mobile"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+	
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" />
+	<jsp:directive.attribute name="selected" required="true"/>
+	<jsp:directive.attribute name="resources" required="true"/>
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
+	
+	<jsp:output doctype-root-element="html"	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" omit-xml-declaration="yes" />
+	<jsp:element name="html">
+		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>
+		<jsp:body>
+			<head>
+		 		<c:set var="locale"><fmt:message key="meta.lang"/></c:set>
+				
+				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
+				
+				<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+				
+				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
+				
+				<c:if test="${not empty additionalCSS}">
+					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
+				</c:if>
+				
+				<link rel="stylesheet" type="text/css" href="${resdir}/css/mobile.css" />
+				
+				<script type="text/javascript" src="${resdir}/javascript/jquery_142_min.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale}.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/functions.js">&amp;nbsp;</script>
+				
+				<c:if test="${loginUser.settings.logLevel != 1}">
+					<script type="text/javascript" src="${resdir}/javascript/logging.js">&amp;nbsp;</script>
+					<script type="text/javascript">
+						<![CDATA[
+				         	log_setUsername("${loginUser.name}");
+					  	]]>
+					</script>				  
+				</c:if>
+
+				<c:if test="${loginUser.role eq 'ADMIN'}">
+					<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
+				</c:if>
+	
+				<c:if test="${not empty additionalJS}">
+					<script type="text/javascript" src="${additionalJS}">&amp;nbsp;</script>
+				</c:if>
+				
+				<meta name="email" content="${projectEmail}"/>
+				
+				<parts:meta fieldName="author"/>
+				<parts:meta fieldName="copyright"/>
+				<parts:meta fieldName="keywords"/>
+				<parts:meta fieldName="description"/>
+				
+				<title>${projectName}</title>
+				
+				<jsp:invoke fragment="headerExt"/>
+			</head>
+			<body>
+				<div id="head">
+					<h1>${projectName}</h1>
+					<mobile:menu selected="${selected}" username="${loginUser.name}" resources="${resources}" />
+				</div>
+				<div id="content">
+					<jsp:invoke fragment="content" />
+				</div>
+				<div id="footer">
+					<div id="switch" style="margin-bottom: 10px;">
+						<a href="/?mobile=false"><fmt:message key="mobile.switch" /></a>
+					</div>
+					<div style="width: 70%;">
+						<fmt:message key="system.offeredBy">
+							<fmt:param value="${projectName}"/>
+							<fmt:param value="${kdeHome}"/>
+						</fmt:message>
+						<br />
+						<fmt:message key="system.contact"/>
+						<c:out value=" "/>
+						<parts:email address="${projectEmail}"/>
+						<br />
+						<fmt:message key="system.termsOfUse"/>
+					</div>
+				</div>
+			</body>
+		</jsp:body>
+	</jsp:element>
+</jsp:root>
