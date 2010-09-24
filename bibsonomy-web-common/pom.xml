@@ -16,6 +16,10 @@
   </properties>
   <dependencies>
   	<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+		</dependency>
+  	<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 		</dependency>
