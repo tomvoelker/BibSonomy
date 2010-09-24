@@ -195,6 +195,7 @@
 		<module>bibsonomy-recommender</module>
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-common</module>
+		<module>bibsonomy-web-common</module>
 		<module>bibsonomy-rest-server</module>
 		<module>bibsonomy-webapp</module>
 	</modules>
@@ -487,6 +488,18 @@
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-rest-server</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-web-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-web-common</artifactId>
+				<version>${project.version}</version>
+				<scope>test</scope>
+				<type>test-jar</type>
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
