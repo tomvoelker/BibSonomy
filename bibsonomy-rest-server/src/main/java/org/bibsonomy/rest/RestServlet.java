@@ -4,6 +4,7 @@ package org.bibsonomy.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
@@ -37,7 +38,7 @@ import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.util.file.MultiPartRequestParser;
+import org.bibsonomy.rest.util.MultiPartRequestParser;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -49,13 +50,19 @@ public final class RestServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	
 	private static final String HEADER_ACCEPT = "Accept";
 
 	/**
 	 * Used in {@link #validateAuthorization(String)} to identify HTTP basic authentication.
 	 */
 	private static final String HTTP_AUTH_BASIC_IDENTIFIER = "Basic ";
+	
+	private static final String RESPONSE_ENCODING = "UTF-8";
+	
+	/**
+	 * the request default encoding
+	 */
+	public static final String REQUEST_ENCODING = "UTF-8";
 
 	/** name of the servlet-parameter that configures the logicFactoryClass to use */
 	public static final String PARAM_LOGICFACTORY_CLASS = "logicFactoryClass";
@@ -64,6 +71,8 @@ public final class RestServlet extends HttpServlet {
 	
 	// store some infos about the specific request or the webservice (i.e. rootPath)
 	private final Map<String, String> additionalInfos = new HashMap<String, String>();
+
+	
 
 	@Override
 	public void init() throws ServletException {
@@ -183,14 +192,15 @@ public final class RestServlet extends HttpServlet {
 			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HEADER_ACCEPT), request.getContentType());
 			
 			// create Context
-			final Context context = new Context(method, request.getPathInfo(), renderingFormat, request.getInputStream(), parser.getList(), logic, request.getParameterMap(), additionalInfos);
+			final Reader reader = RESTUtils.getInputReaderForStream(request.getInputStream(), REQUEST_ENCODING);
+			final Context context = new Context(method, request.getPathInfo(), renderingFormat, reader, parser.getList(), logic, request.getParameterMap(), additionalInfos);
 
 			// validate request
 			context.canAccess();
 
 			// set some response headers
 			response.setContentType(context.getContentType(request.getHeader("User-Agent")));
-			response.setCharacterEncoding("UTF-8");
+			response.setCharacterEncoding(RESPONSE_ENCODING);
 
 			// send answer
 			if (method.equals(HttpMethod.POST)) {
@@ -283,10 +293,10 @@ public final class RestServlet extends HttpServlet {
 		response.setStatus(code);
 		response.setContentType(RestProperties.getInstance().getContentType());
 		final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
-		final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName("UTF-8"));
+		final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName(RESPONSE_ENCODING));
 		renderer.serializeError(writer, message);
 		response.setContentLength(cachingStream.size());
-		response.getOutputStream().print(cachingStream.toString("UTF-8"));
+		response.getOutputStream().print(cachingStream.toString(RESPONSE_ENCODING));
 	}
 
 	/**
@@ -301,7 +311,7 @@ public final class RestServlet extends HttpServlet {
 
 		final String basicCookie;
 		try {
-			basicCookie = new String(Base64.decodeBase64(authentication.substring(HTTP_AUTH_BASIC_IDENTIFIER.length()).getBytes()),"UTF-8");
+			basicCookie = new String(Base64.decodeBase64(authentication.substring(HTTP_AUTH_BASIC_IDENTIFIER.length()).getBytes()),RESPONSE_ENCODING);
 		} catch (final IOException e) {
 			throw new BadRequestOrResponseException("error decoding authorization header: " + e.toString());
 		}

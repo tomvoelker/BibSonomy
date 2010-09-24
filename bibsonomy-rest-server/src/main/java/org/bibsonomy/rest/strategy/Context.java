@@ -1,10 +1,7 @@
 package org.bibsonomy.rest.strategy;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,8 +9,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
@@ -34,8 +29,6 @@ import org.bibsonomy.rest.validation.ServersideModelValidator;
  * @version $Id$
  */
 public final class Context {
-
-	private static final Log log = LogFactory.getLog(Context.class);
 	
 	private static final Map<String, ContextHandler> urlHandlers = new HashMap<String, ContextHandler>();
 
@@ -51,7 +44,7 @@ public final class Context {
 		RestProperties.getInstance().setValidator(ServersideModelValidator.getInstance());
 	}
 
-	private final InputStream doc;
+	private final Reader doc;
 	
 	/**
 	 * the logic
@@ -100,7 +93,7 @@ public final class Context {
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final HttpMethod httpMethod, final String url, RenderingFormat renderingFormat, final InputStream doc, final List<FileItem> items, final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
+	public Context(final HttpMethod httpMethod, final String url, RenderingFormat renderingFormat, final Reader doc, final List<FileItem> items, final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
 		
@@ -255,15 +248,7 @@ public final class Context {
 	 * @return TODO: improve documentation
 	 */
 	public Reader getDocument()  {
-		try {
-			// returns InputStream with correct encoding
-			return new InputStreamReader(this.doc, "UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			// returns InputStream with default encoding if a exception
-			// is thrown with utf-8 support
-			log.fatal(ex.getStackTrace());
-			return new InputStreamReader(this.doc);
-		}
+		return this.doc;
 	}
 	
 	/**

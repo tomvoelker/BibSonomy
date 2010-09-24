@@ -2,11 +2,17 @@ package org.bibsonomy.rest;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.utils.HeaderUtils;
@@ -16,6 +22,7 @@ import org.bibsonomy.rest.utils.HeaderUtils;
  * @version $Id$
  */
 public class RESTUtils {
+	private static final Log log = LogFactory.getLog(RESTUtils.class);
 	
 	private static final RenderingFormat DEFAULT_MEDIA_TYPE = RenderingFormat.XML;
 	
@@ -97,6 +104,27 @@ public class RESTUtils {
 		}
 		
 		return acceptMediaType != null ? acceptMediaType : DEFAULT_MEDIA_TYPE;
+	}
+
+	/**
+	 * an inputreader for the provided stream with the provided encoding. If the
+	 * encoding is not supported the default encoding is used
+	 * 
+	 * @param stream
+	 * @param encoding
+	 * @return the inputreader for the stream
+	 */
+	public static Reader getInputReaderForStream(InputStream stream, final String encoding) {
+		if (!present(stream)) return null;
+		try {
+			// returns InputStream with correct encoding
+			return new InputStreamReader(stream, encoding);
+		} catch (UnsupportedEncodingException ex) {
+			// returns InputStream with default encoding if a exception
+			// is thrown with utf-8 support
+			log.fatal(ex.getStackTrace());
+			return new InputStreamReader(stream);
+		}
 	}
 
 }
