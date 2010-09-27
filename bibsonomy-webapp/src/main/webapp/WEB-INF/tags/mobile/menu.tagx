@@ -6,17 +6,20 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
+	<!-- Menu including Toolbar -->
 	<jsp:directive.attribute name="selected" required="true"/>
 	<jsp:directive.attribute name="username" required="true"/>
 	<jsp:directive.attribute name="resources" required="true"/>
 	
 	<jsp:body>
+		<!-- The menu -->
 		<ul id="menu">
 			<c:url var="root" value="/"/>
 			<li><a id="nav_home" href="${root}">Home</a></li>
 			
 			<c:choose>
 				<c:when test="${not empty username}">
+					<!-- sites for logged in users -->
 					<c:url var="userUrl" value="/user/${mtl:encodeURI(username)}"/>
 					<li><a href="${userUrl}" id="nav_my"><fmt:message key="navi.my"/></a></li>
 					<li><a href="#" id="nav_search">&amp;nbsp;</a></li>
@@ -30,7 +33,9 @@
 				</c:otherwise>
 			</c:choose>
 		</ul>
+		<!-- The toolbar -->
 		<div id="toolbar">
+			<!-- search fields -->
 			<div id="search-bar">
 				<form id="specialsearch" method="get" action="/redirect">
 					<c:set var="searchlbl"><fmt:message key="navi.search" /></c:set>
@@ -38,12 +43,16 @@
  					<div style="clear:both; height: 0;">&amp;nbsp;</div>
 				</form>
 			</div>
+			<!-- Toggle between bookmarks and resources -->
 			<div id="resources-toggle">
 				<a href="#" id="toggle-bookmarks"><fmt:message key="bookmarks"/></a>
 				<a href="#" id="toggle-publications"><fmt:message key="publications"/></a>
+				<!-- add a post - will switch between bookmark and publication -->
 				<a id="bookmark-add" href="/postBookmark">+</a>
 				<div style="clear: both; height: 0;">&amp;nbsp;</div>
 			</div>
+			
+			<!-- toggle between authentication modes.  -->
 			<c:if test="${selected == 'nav_login'}">
 				<div id="login-bar">
 					<a style="font-size: 0.8em;" href="javascript:switchLogin('${authOrder}','db');" id="login-method-db"><fmt:message key="login.method.db" /></a>
@@ -51,7 +60,9 @@
 					<div style="clear: both; height: 0;">&amp;nbsp;</div>
 				</div>
 			</c:if>
+			
 			<c:if test="${not empty username}">
+				<!-- Include links of second level of interest -->
 				<div id="more-bar">
 					<ul>
 						<li><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
@@ -81,20 +92,19 @@
 		    	var activeBarID = "resources-toggle";
 		    	var activeMenuID = selected;
 		    	
-		    	$("#more-submenu").hide();
-		    	
+		    	/* hide all toolbars */
 		    	$("#search-bar").hide();
-		    	
 		    	if(resource_toggle != true)
 		    		$("#resources-toggle").hide();
-		    	
 		    	$("#more-bar").hide();
 		    	
+		    	/* triggered on search tab click */
 		    	$("#nav_search").click(function() {
 		    	
 		    		var activeBar = "";
 		    		var activeMenu = "";
 		    		
+		    		/* get visible toolbar */
 		    		activeBar = $("#toolbar div:visible").attr("id");
 		    		activeMenu = $("#menu a.active").attr("id");
 		    				    		
@@ -102,24 +112,27 @@
 		    			activeBarID = activeBar;
 		    		}
 		    		
+		    		/* toggle toolbars */
 		    		$("#search-bar").toggle();
 		    		$("#" + activeBarID).toggle();
 		    		
-		    		if(activeMenu != "nav_search") {
-		    			
+		    		if(activeMenu != "nav_search") {		    			
 		    			activeMenuID = activeMenu;
 		    		}
 		    		
+		    		/* toggle classes */
 		    		$("#" + activeMenuID).toggleClass("active");
 		    		$(this).toggleClass("active");
 		    		
 		    		return false;
 		    	});
 		    	
+		    	/* activate current sites tab */
 		    	if(selected != "") {
 		    		$("#"+ selected).addClass("active");
 		    	}
 		    	
+		    	/* triggered on more tab click */
 		    	$("#nav_more").click(function() {
 		    		var activeBar = "";
 		    		var activeMenu = "";
@@ -141,9 +154,11 @@
 		    		
 		    		$("#" + activeMenuID).toggleClass("active");		    		
 		    		$(this).toggleClass("active");
+		    		
 		    		return false;
 		    	});
 		    		
+		    	/* get the selected resourceType from sessionStorage */
 		    	if(sessionStorage.getItem("resourceType") == 'bibtex') {
 		    		$("#toggle-publications").addClass("active");
 		    		$("#bookmark-add").attr("href", "/postPublication");
@@ -152,15 +167,14 @@
 		    		$("#bookmark-add").attr("href", "/postBookmark");
 		    	}
 		    	
-		    	$("#toggle-bookmarks").click(function() {
-		    		
-		    		
+		    	$("#toggle-bookmarks").click(function() {	    		
 		    		$(this).toggleClass("active");
 		    		$("#toggle-publications").toggleClass("active");
 		    		
 					$("#bookmarkList").show();
 					$("#bibtexList").hide();
 					
+					/* save resourceType */
 					sessionStorage.setItem("resourceType", "bookmark");
 					
 					$("#bookmark-add").attr("href", "/postBookmark");
@@ -183,6 +197,7 @@
 					return false;
 				});
 		    	
+		    	/* activate login method */
 		    	$("#login-method-db").addClass("active");
 		    	
 		    	$("#login-method-db").click(function() {

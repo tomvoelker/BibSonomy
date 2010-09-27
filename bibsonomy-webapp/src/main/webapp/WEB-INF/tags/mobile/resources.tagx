@@ -6,6 +6,7 @@
 	xmlns:mobile="urn:jsptagdir:/WEB-INF/tags/mobile"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources">
 
+	<!-- Layout for sites displaying resources -->
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="selected" type="java.lang.String" required="false"/>
@@ -16,6 +17,7 @@
 			<script type="text/javascript">
 				$(document).ready(function() {
 					
+					/* get the selected resourceType from sessionStorage */
 					if(sessionStorage.getItem("resourceType") == 'bibtex') {
 						$("#bookmarkList").hide();
 						$("#bibtexList").show();	

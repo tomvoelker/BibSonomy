@@ -10,6 +10,7 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
+	<!-- template to edit a post -->
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />	
 	<jsp:directive.attribute name="selected" required="true"/>
@@ -31,6 +32,7 @@
 			<div class="container">
 				<form:form id="postForm" action="/edit${resourceType}" method="post">
 					 <c:if test="${not empty command.diffPost}">
+					 <!-- note for already existing posts -->
 					 	<div class="note">
 					 		<h3><fmt:message key="note"/></h3>
 	                        <span style="font-weight: bold;">
@@ -38,15 +40,18 @@
 	                        </span>
 	   		          </div>
 	   		        </c:if>
+	   		        <!-- general fields placeholder -->
 					<div id="post-general">
 						<jsp:invoke fragment="general" />
 					</div>
+					<!-- tags box -->
 					<div id="post-tags">
 						<p id="post-tags-input">
 							<form:label path="tags"><fmt:message key="tags"/> (<fmt:message key="post.resource.spaceseparated"/>)</form:label>
 	    	    			<form:input cssClass="tagInput reqinput" id="inpf" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" />
 	    	    		</p>
 	    	    		<div class="dissError"><form:errors path="tags" /></div>
+	        	  		<!-- recommendations -->
 	        	  		<div id="post-tags-recommends">
 	        	  			<label for="recommended"><fmt:message key="post.resource.recommendation"/></label>
 	        	  			<!-- we assign post's id to div's class for accessing clicklog data -->
@@ -117,8 +122,8 @@
 						$(document).ready( function(){
 							prepareErrorBoxes('dissError');
 							
+							/* toggle recommendations */
 							$("#post-tags-recommends").hide();
-							
 							$("#post-tags-input label").click(function() {
 								
 								$(this).toggleClass("uncollapsed");

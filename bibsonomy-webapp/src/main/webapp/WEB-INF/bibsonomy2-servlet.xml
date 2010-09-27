@@ -24,6 +24,47 @@
 		<property name="disallowedFields" ref="disallowedFields"/>
 	</bean>
 	
+	<!-- WURFL -->
+	<bean id="wurfl.resource"
+      class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg value="wurfl.zip" />
+    </bean>
+    <bean id="wurfl.springResource" 
+      class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
+        <constructor-arg index="0" ref="wurfl.resource" />
+    </bean>
+	<bean id="wurfl.model" 
+      class="net.sourceforge.wurfl.core.resource.DefaultWURFLModel">
+        <constructor-arg index="0" ref="wurfl.springResource" />
+    </bean>
+    <bean id="wurfl.matcherManager" 
+      class="net.sourceforge.wurfl.core.handlers.matchers.MatcherManager">
+        <constructor-arg ref="wurfl.model" />
+    </bean>
+    <bean id="wurfl.deviceProvider" 
+      class="net.sourceforge.wurfl.core.DefaultDeviceProvider">
+        <constructor-arg ref="wurfl.model" />
+    </bean>
+	<bean id="wurfl.service"
+      class="net.sourceforge.wurfl.core.DefaultWURFLService">
+        <constructor-arg ref="wurfl.matcherManager" />
+        <constructor-arg ref="wurfl.deviceProvider" />
+    </bean>
+    <bean id="wurfl.manager"
+      class="net.sourceforge.wurfl.core.DefaultWURFLManager">
+        <constructor-arg ref="wurfl.service" />
+    </bean>
+    <bean id="wurfl.utils"
+      class="net.sourceforge.wurfl.core.WURFLUtils">
+        <constructor-arg ref="wurfl.model" />
+    </bean>
+    <bean id="wurfl.holder"
+      class="net.sourceforge.wurfl.core.DefaultWURFLHolder">
+        <constructor-arg ref="wurfl.manager" />
+        <constructor-arg ref="wurfl.utils" />
+    </bean>
+    <!-- END WURFL --> 
+	
 
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
@@ -34,6 +75,7 @@
 		         Will be put into the command by the controllerBase
 		        -->
 				<ref local="requestWrapperContextInterceptor"/>
+				<ref local="mobileDetectionHandlerInterceptor"/>
 			</list>
 		</property>
 		<property name="urlMap">
@@ -665,6 +707,10 @@
 	</bean>	
 	
 	<bean id="requestWrapperContextInterceptor" class="org.bibsonomy.webapp.util.spring.RequestWrapperContextHandlerInterceptor">
+	</bean>
+	
+	<bean id="mobileDetectionHandlerInterceptor" class="org.bibsonomy.webapp.util.spring.MobileDetectionHandlerInterceptor">
+		<property name="wurflManager" ref="wurfl.manager" />
 	</bean>
 	
 	

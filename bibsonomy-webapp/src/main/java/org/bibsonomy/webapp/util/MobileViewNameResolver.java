@@ -7,11 +7,14 @@ import org.bibsonomy.webapp.view.MobileViews;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * @author boogie
+ * @author Waldemar Biller <biller@cs.uni-kassel.de>
  * @version $Id$
  */
 public abstract class MobileViewNameResolver {
 
+	/**
+	 * currently supported pages by mobile site
+	 */
 	private static View[][] viewsArray = new View[][] {
 		{Views.HOMEPAGE, MobileViews.HOMEPAGE},
 		{Views.USERPAGE, MobileViews.USERPAGE},
@@ -34,6 +37,7 @@ public abstract class MobileViewNameResolver {
 	
 	static {
 		
+		// convert array to map
 		views = new HashMap<String, String>();
 		
 		for(View[] view : viewsArray) {
