@@ -1277,3 +1277,23 @@ button {
 a button {
 	cursor: pointer;
 }
+
+img#sidebarGrip {
+	background:#EEEEEE url(grip.png) no-repeat scroll center 2px;
+	cursor:ew-resize;
+	height:48px;
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+.sidebarSpacer{
+	float:left;
+	height:60px;
+	width:10px;
+
+}
+			
+.resizableElement {
+	margin-left:0pt;
+	position:relative;
+}

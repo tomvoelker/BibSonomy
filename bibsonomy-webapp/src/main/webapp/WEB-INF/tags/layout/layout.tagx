@@ -68,6 +68,7 @@
 				<script type="text/javascript" src="${resdir}/javascript/style.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/chrome.js">&amp;nbsp;</script>
 	            <script type="text/javascript" src="${resdir}/javascript/jquery.textarearesizer.js">&amp;nbsp;</script>
+	            <script type="text/javascript" src="${resdir}/javascript/jquery.sidebarresizer.js">&amp;nbsp;</script>
 				
 				<!-- enable logging with user permission -->
 				<c:if test="${loginUser.settings.logLevel != 1}">
@@ -247,7 +248,8 @@
 				<!-- sidebar -->
 				<c:if test="${sidebar != null}">
 					<div id="sidebarroundcorner" >
-						<div class="sidebarBoxOuter" id="sidebox">
+						<img id="sidebarGrip" border="0" src="/resources/image/grip.png"/>
+						<div class="sidebarBoxOuter" style="display:inline-block;" id="sidebox">
 							<div class="sidebarBoxInner">
 								<jsp:invoke fragment="sidebar"/>
 							</div>
@@ -279,6 +281,7 @@
 					    		function() {
 					    			$('textarea').TextAreaResizer();
 								    $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+								    $("#sidebarroundcorner").SideBarResizer('#sidebarGrip');
 					    			init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${projectName}");
 					    		}
 					    );					    
