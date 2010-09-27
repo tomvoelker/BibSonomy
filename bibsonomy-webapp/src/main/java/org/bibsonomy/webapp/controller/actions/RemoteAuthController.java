@@ -30,6 +30,9 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 	
 	/** nr. of minutes the generated key is valid */
 	private static final int KEY_VALIDITY = 20;
+	
+	/** the URL to conferator (a URL we trust) */
+	private static final String CONFERATOR_URL = "^http\\:\\/\\/conferator\\.org\\/.*$";
 		
 	/** logic to access request information */
 	private RequestLogic requestLogic;
@@ -84,6 +87,13 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 		command.setPageTitle("Remote Authentication");
 		command.setIp(requestLogic.getHostInetAddress());
 		command.setValidPeriod(KEY_VALIDITY);
+		
+		/*
+		 * if the auth URL comes from conferator, redirect directly
+		 */
+		if (authUrl.matches(CONFERATOR_URL)) {
+			return new ExtendedRedirectView(authUrl);
+		}
 		
 		/*
 		 * return view
