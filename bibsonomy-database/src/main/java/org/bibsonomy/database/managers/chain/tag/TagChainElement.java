@@ -1,7 +1,7 @@
 package org.bibsonomy.database.managers.chain.tag;
 
 import org.bibsonomy.database.managers.TagDatabaseManager;
-import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.managers.chain.ListChainElement;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.Tag;
 
@@ -12,7 +12,7 @@ import org.bibsonomy.model.Tag;
  * @author Miranda Grahl
  * @version $Id$
  */
-public abstract class TagChainElement extends ChainElement<Tag, TagParam> {
+public abstract class TagChainElement extends ListChainElement<Tag, TagParam> {
 
 	protected final TagDatabaseManager db;
 

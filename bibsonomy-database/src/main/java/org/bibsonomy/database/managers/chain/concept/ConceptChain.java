@@ -1,7 +1,7 @@
 package org.bibsonomy.database.managers.chain.concept;
 
-import org.bibsonomy.database.managers.chain.ChainElement;
-import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.FirstListChainElement;
+import org.bibsonomy.database.managers.chain.ListChainElement;
 import org.bibsonomy.database.managers.chain.concept.get.GetAllConcepts;
 import org.bibsonomy.database.managers.chain.concept.get.GetAllConceptsForUser;
 import org.bibsonomy.database.managers.chain.concept.get.GetPickedConceptsForUser;
@@ -14,20 +14,20 @@ import org.bibsonomy.model.Tag;
  * @author Stefan Stützer
  * @version $Id$
  */
-public class ConceptChain implements FirstChainElement<Tag, TagRelationParam> {
+public class ConceptChain implements FirstListChainElement<Tag, TagRelationParam> {
 
-	private final ChainElement<Tag, TagRelationParam> getAllConcepts;
-	private final ChainElement<Tag, TagRelationParam> getAllConceptsForUser;
-	private final ChainElement<Tag, TagRelationParam> getPickedConceptsForUser;
+	private final ListChainElement<Tag, TagRelationParam> getAllConcepts;
+	private final ListChainElement<Tag, TagRelationParam> getAllConceptsForUser;
+	private final ListChainElement<Tag, TagRelationParam> getPickedConceptsForUser;
 
 	/**
 	 * Constructs the chain
 	 */
 	public ConceptChain() {
 		// intialize chain elements
-		this.getAllConcepts 			= new GetAllConcepts();
-		this.getAllConceptsForUser 		= new GetAllConceptsForUser();
-		this.getPickedConceptsForUser 	= new GetPickedConceptsForUser();
+		this.getAllConcepts = new GetAllConcepts();
+		this.getAllConceptsForUser = new GetAllConceptsForUser();
+		this.getPickedConceptsForUser = new GetPickedConceptsForUser();
 
 		// set order of chain elements
 		this.getAllConcepts.setNext(this.getAllConceptsForUser);
@@ -35,7 +35,7 @@ public class ConceptChain implements FirstChainElement<Tag, TagRelationParam> {
 	}
 
 	@Override
-	public ChainElement<Tag, TagRelationParam> getFirstElement() {
+	public ListChainElement<Tag, TagRelationParam> getFirstElement() {
 		return this.getAllConcepts;
 	}
 }

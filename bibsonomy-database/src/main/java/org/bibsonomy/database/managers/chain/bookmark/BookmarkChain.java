@@ -1,7 +1,7 @@
 package org.bibsonomy.database.managers.chain.bookmark;
 
-import org.bibsonomy.database.managers.chain.ChainElement;
-import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.FirstListChainElement;
+import org.bibsonomy.database.managers.chain.ListChainElement;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByResourceSearch;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptByTag;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup;
@@ -29,27 +29,27 @@ import org.bibsonomy.model.Post;
  * @author Miranda Grahl
  * @version $Id$
  */
-public class BookmarkChain implements FirstChainElement<Post<Bookmark>, BookmarkParam> {
+public class BookmarkChain implements FirstListChainElement<Post<Bookmark>, BookmarkParam> {
 
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForUser;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByHash;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByHashForUser;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByTagNames;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByTagNamesAndUser;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForGroup;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForGroupAndTag;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForHomePage;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForPopular;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksViewable;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConcept;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByUserFriends;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByUserAndTagsFriends;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByFriends;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByResourceSearch;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConceptByTag;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConceptForGroup;	
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByFollowedUsers;
-	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksFromInbox;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForUser;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByHash;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByHashForUser;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByTagNames;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByTagNamesAndUser;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForGroup;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForGroupAndTag;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForHomePage;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForPopular;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksViewable;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConcept;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByUserFriends;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByUserAndTagsFriends;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByFriends;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByResourceSearch;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConceptByTag;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConceptForGroup;	
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByFollowedUsers;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksFromInbox;
 	
 	/**
 	 * Constructs the chain
@@ -96,7 +96,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 	}
 
 	@Override
-	public ChainElement<Post<Bookmark>, BookmarkParam> getFirstElement() {
+	public ListChainElement<Post<Bookmark>, BookmarkParam> getFirstElement() {
 		return this.getBookmarksForHomePage;
 	}
 }

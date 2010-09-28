@@ -1,8 +1,5 @@
 package org.bibsonomy.database.managers.chain.statistic.post.get;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -19,15 +16,12 @@ import org.bibsonomy.model.BibTex;
 public class GetResourcesDuplicateCount extends StatisticChainElement {
 
 	@Override
-	protected List<Integer> handle(StatisticsParam param, DBSession session) {
-		List<Integer> counts = new ArrayList<Integer>();
-		
+	protected Integer handle(StatisticsParam param, DBSession session) {
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfDuplicates(BibTex.class, param.getRequestedUserName(), session));
-		} else {
-			throw new UnsupportedResourceTypeException("Resource type not supported for this query.");
+			return this.db.getNumberOfDuplicates(BibTex.class, param.getRequestedUserName(), session);
 		}
-		return counts;
+		
+		throw new UnsupportedResourceTypeException("Resource type not supported for this query.");
 	}
 
 	@Override

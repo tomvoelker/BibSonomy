@@ -5,7 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.FirstListChainElement;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
@@ -82,7 +82,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getChain()
 	 */
 	@Override
-	protected FirstChainElement<Post<Bookmark>, BookmarkParam> getChain() {
+	protected FirstListChainElement<Post<Bookmark>, BookmarkParam> getChain() {
 		return chain;
 	}
 

@@ -1,7 +1,7 @@
 package org.bibsonomy.database.managers.chain.bibtex;
 
-import org.bibsonomy.database.managers.chain.ChainElement;
-import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.FirstListChainElement;
+import org.bibsonomy.database.managers.chain.ListChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByKey;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByResourceSearch;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser;
@@ -31,29 +31,29 @@ import org.bibsonomy.model.Post;
  * @author Miranda Grahl
  * @version $Id$
  */
-public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam> {
+public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexParam> {
 
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByHash;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByHashForUser;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByKey;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByTagNames;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByTagNamesAndUser;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsForGroup;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsForGroupAndTag;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsForHomepage;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsForPopular;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsViewable;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsForUser;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByConceptForUser;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByUserFriends;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByUserAndTagsFriends;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByFriends;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByResourceSearch;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByConceptByTag;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByConceptForGroup;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsFromBasketForUser;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsByFollowedUsers;
-	private final ChainElement<Post<BibTex>, BibTexParam> getPublicationsFromInbox;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByHash;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByHashForUser;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByKey;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByTagNames;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByTagNamesAndUser;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsForGroup;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsForGroupAndTag;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsForHomepage;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsForPopular;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsViewable;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsForUser;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByConceptForUser;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByUserFriends;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByUserAndTagsFriends;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByFriends;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByResourceSearch;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByConceptByTag;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByConceptForGroup;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsFromBasketForUser;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByFollowedUsers;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsFromInbox;
 
 	/**
 	 * Constructs the chain
@@ -104,7 +104,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 	}
 
 	@Override
-	public ChainElement<Post<BibTex>, BibTexParam> getFirstElement() {
+	public ListChainElement<Post<BibTex>, BibTexParam> getFirstElement() {
 		return this.getPublicationsByKey;
 	}
 }

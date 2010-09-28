@@ -26,7 +26,7 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
-import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.FirstListChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -1510,7 +1510,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * @return the chain
 	 */
-	protected abstract FirstChainElement<Post<R>, P> getChain();
+	protected abstract FirstListChainElement<Post<R>, P> getChain();
 
 	/**
 	 * @return the class of the first generic param (<R>, Resource)

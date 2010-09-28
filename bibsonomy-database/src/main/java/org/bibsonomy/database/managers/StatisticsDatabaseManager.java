@@ -16,7 +16,6 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Dominik Benz
@@ -58,9 +57,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 */
 	public int getPostStatistics(final StatisticsParam param, final DBSession session) {
-		// FIXME: this is ugly, but using chain elements forces us to use lists as return types
-		final List<Integer> counts = postchain.getFirstElement().perform(param, session);  
-		final Integer count = (ValidationUtils.present(counts)) ? counts.get(0) : 0;
+		final Integer count = postchain.getFirstElement().perform(param, session);  
 		// to not get NPEs later
 		return count == null ? 0 : count;
 	}
@@ -71,8 +68,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @return The number of tags matching the given params
 	 */
 	public int getTagStatistics(final StatisticsParam param, final DBSession session) {
-		// FIXME: this is ugly, but using chain elements forces us to use lists as return types
-		final Integer count = tagChain.getFirstElement().perform(param, session).get(0);
+		final Integer count = tagChain.getFirstElement().perform(param, session);
 		// to not get NPEs later
 		return count == null ? 0 : count;
 	}

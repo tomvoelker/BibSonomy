@@ -1,7 +1,5 @@
 package org.bibsonomy.database.managers.chain;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.DBSession;
@@ -20,7 +18,7 @@ import org.bibsonomy.database.params.GenericParam;
  * @author Christian Schenk
  * @version $Id$
  */
-public abstract class ChainElement<L, P extends GenericParam> implements ChainPerform<P, List<L>, L> {
+public abstract class ChainElement<L, P extends GenericParam> implements ChainPerform<P, L> {
 	protected static final Log log = LogFactory.getLog(ChainElement.class);
 	
 	
@@ -49,7 +47,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	}
 
 	@Override
-	public final List<L> perform(final P param, final DBSession session) {
+	public final L perform(final P param, final DBSession session) {
 		return this.perform(param, session, null);
 	}
 
@@ -64,7 +62,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	 * XXX: This method is only interesting for unit testing the chain, i.e. if
 	 * you want to know which element executed its <code>handle</code> method.
 	 */
-	public final List<L> perform(final P param, final DBSession session, final ChainStatus chainStatus) {
+	public final L perform(final P param, final DBSession session, final ChainStatus chainStatus) {
 		if (this.canHandle(param)) {
 			if (chainStatus != null) {
 				chainStatus.setChainElement(this);
@@ -81,7 +79,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	/**
 	 * Handles the request.
 	 */
-	protected abstract List<L> handle(P param, DBSession session);
+	protected abstract L handle(P param, DBSession session);
 
 	/**
 	 * Returns true if the request can be handled by the current chain element,

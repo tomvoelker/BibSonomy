@@ -1,7 +1,7 @@
 package org.bibsonomy.database.managers.chain.bibtex;
 
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
-import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.managers.chain.ListChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -13,7 +13,7 @@ import org.bibsonomy.model.Post;
  * @author Miranda Grahl
  * @version $Id$
  */
-public abstract class BibTexChainElement extends ChainElement<Post<BibTex>, BibTexParam> {
+public abstract class BibTexChainElement extends ListChainElement<Post<BibTex>, BibTexParam> {
 
 	protected final BibTexDatabaseManager db;
 

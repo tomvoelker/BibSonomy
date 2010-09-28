@@ -23,7 +23,7 @@ public class GetBookmarksByResourceSearch extends BookmarkChainElement {
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, DBSession session) {
 		// convert tag index to tag list
 		List<String> tagIndex = null;
-		if(present(param.getTagIndex())) {
+		if (present(param.getTagIndex())) {
 			tagIndex = DatabaseUtils.extractTagNames(param.getTagIndex());
 		}
 		
@@ -37,6 +37,6 @@ public class GetBookmarksByResourceSearch extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return ( present(param.getSearch()) || present(param.getTitle()) ); 
+		return (present(param.getSearch()) || present(param.getTitle())); 
 	}
 }

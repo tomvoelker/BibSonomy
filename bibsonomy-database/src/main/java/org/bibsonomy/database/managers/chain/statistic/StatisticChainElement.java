@@ -8,7 +8,7 @@ import org.bibsonomy.database.params.StatisticsParam;
  * @author Stefan Stützer
  * @version $Id$
  */
-public abstract class StatisticChainElement extends ChainElement<Integer, StatisticsParam>{
+public abstract class StatisticChainElement extends ChainElement<Integer, StatisticsParam> {
 
 	protected final StatisticsDatabaseManager db;
 

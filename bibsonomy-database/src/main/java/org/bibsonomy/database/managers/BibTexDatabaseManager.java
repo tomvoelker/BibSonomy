@@ -15,7 +15,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
-import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.FirstListChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.ResourceParam;
@@ -44,7 +44,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	
 	private static final HashID[] hashRange = HashID.getAllHashIDs();
-	private static final FirstChainElement<Post<BibTex>, BibTexParam> chain = new BibTexChain();
+	private static final FirstListChainElement<Post<BibTex>, BibTexParam> chain = new BibTexChain();
 	
 	/**
 	 * @return BibTexDatabaseManager
@@ -483,7 +483,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getChain()
 	 */
 	@Override
-	protected FirstChainElement<Post<BibTex>, BibTexParam> getChain() {
+	protected FirstListChainElement<Post<BibTex>, BibTexParam> getChain() {
 		return chain;
 	}
 

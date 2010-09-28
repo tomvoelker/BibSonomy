@@ -7,7 +7,7 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.PostDatabaseManager;
-import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.managers.chain.ListChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.ResourceParam;
@@ -22,7 +22,7 @@ import org.bibsonomy.model.Resource;
  * @author dzo
  * @version $Id$
  */
-public abstract class ResourceChainElement<R extends Resource, P extends ResourceParam<R>> extends ChainElement<Post<R>, P> {
+public abstract class ResourceChainElement<R extends Resource, P extends ResourceParam<R>> extends ListChainElement<Post<R>, P> {
 
 	// TODO: extract to an external class?!
 	private static final Map<Class<?>, PostDatabaseManager<?, ?>> dbs;

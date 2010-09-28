@@ -1,7 +1,7 @@
 package org.bibsonomy.database.managers.chain.bookmark;
 
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
-import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.managers.chain.ListChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -13,7 +13,7 @@ import org.bibsonomy.model.Post;
  * @author Miranda Grahl
  * @version $Id$
  */
-public abstract class BookmarkChainElement extends ChainElement<Post<Bookmark>, BookmarkParam> {
+public abstract class BookmarkChainElement extends ListChainElement<Post<Bookmark>, BookmarkParam> {
 
 	protected final BookmarkDatabaseManager db;
 

@@ -3,9 +3,6 @@ package org.bibsonomy.database.managers.chain.statistic.post.get;
 import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
@@ -22,15 +19,15 @@ import org.bibsonomy.model.enums.Order;
 public class GetResourcesByTagNamesAndUserCount extends StatisticChainElement {
 
 	@Override
-	protected List<Integer> handle(StatisticsParam param, DBSession session) {
-		List<Integer> counts = new ArrayList<Integer>();
-		
+	protected Integer handle(StatisticsParam param, DBSession session) {
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForUserAndTags(BibTex.class, param.getTagIndex(), param.getRequestedUserName(), param.getUserName(), param.getGroups(), session));
-		} else if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForUserAndTags(Bookmark.class, param.getTagIndex(), param.getRequestedUserName(), param.getUserName(), param.getGroups(), session));
+			return this.db.getNumberOfResourcesForUserAndTags(BibTex.class, param.getTagIndex(), param.getRequestedUserName(), param.getUserName(), param.getGroups(), session);
 		}
-		return counts;
+		
+		if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
+			return this.db.getNumberOfResourcesForUserAndTags(Bookmark.class, param.getTagIndex(), param.getRequestedUserName(), param.getUserName(), param.getGroups(), session);
+		}
+		return Integer.valueOf(0);
 	}
 
 	@Override

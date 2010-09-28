@@ -1,7 +1,7 @@
 package org.bibsonomy.database.managers.chain.tag;
 
-import org.bibsonomy.database.managers.chain.ChainElement;
-import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.FirstListChainElement;
+import org.bibsonomy.database.managers.chain.ListChainElement;
 import org.bibsonomy.database.managers.chain.tag.get.GetAllTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetPopularTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetRelatedTags;
@@ -24,22 +24,22 @@ import org.bibsonomy.model.Tag;
  * @author Miranda Grahl
  * @version $Id$
  */
-public class TagChain implements FirstChainElement<Tag, TagParam> {
+public class TagChain implements FirstListChainElement<Tag, TagParam> {
 
-	private final ChainElement<Tag, TagParam> getTagsByUser;
-	private final ChainElement<Tag, TagParam> getTagsByGroup;
-	private final ChainElement<Tag, TagParam> getTagsViewable;
-	private final ChainElement<Tag, TagParam> getTagsByRegularExpression;
-	private final ChainElement<Tag, TagParam> getAllTags;
-	private final ChainElement<Tag, TagParam> getTagsByResourceSearch;	
-	private final ChainElement<Tag, TagParam> getRelatedTagsForGroup;
-	private final ChainElement<Tag, TagParam> getRelatedTags;
-	private final ChainElement<Tag, TagParam> getSimilarTags;
-	private final ChainElement<Tag, TagParam> getTagsByHash;
-	private final ChainElement<Tag, TagParam> getTagsByHashForUser;
-	private final ChainElement<Tag, TagParam> getPopularTags;
-	private final ChainElement<Tag, TagParam> getTagsByFriendOfUser;
-	private final ChainElement<Tag, TagParam> getTagsByBibtexkey;
+	private final ListChainElement<Tag, TagParam> getTagsByUser;
+	private final ListChainElement<Tag, TagParam> getTagsByGroup;
+	private final ListChainElement<Tag, TagParam> getTagsViewable;
+	private final ListChainElement<Tag, TagParam> getTagsByRegularExpression;
+	private final ListChainElement<Tag, TagParam> getAllTags;
+	private final ListChainElement<Tag, TagParam> getTagsByResourceSearch;	
+	private final ListChainElement<Tag, TagParam> getRelatedTagsForGroup;
+	private final ListChainElement<Tag, TagParam> getRelatedTags;
+	private final ListChainElement<Tag, TagParam> getSimilarTags;
+	private final ListChainElement<Tag, TagParam> getTagsByHash;
+	private final ListChainElement<Tag, TagParam> getTagsByHashForUser;
+	private final ListChainElement<Tag, TagParam> getPopularTags;
+	private final ListChainElement<Tag, TagParam> getTagsByFriendOfUser;
+	private final ListChainElement<Tag, TagParam> getTagsByBibtexkey;
 	
 	/**
 	 * Constructs the chain
@@ -77,7 +77,7 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 	}
 	
 	@Override
-	public ChainElement<Tag, TagParam> getFirstElement() {
+	public ListChainElement<Tag, TagParam> getFirstElement() {
 		return this.getTagsByUser;
 	}
 }
