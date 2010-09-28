@@ -61,7 +61,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	protected LogicInterface getDbLogic(final String userName) {
 		final User user = new User();
 		user.setName(userName);
-		return new DBLogic(user, this.getDbSessionFactory());
+		return new DBLogic(user, getDbSessionFactory());
 	}
 	
 	private static void assertList(final List<Post<BibTex>> posts, final Set<String> checkUserNameOneOf, final Order checkOrder, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
@@ -366,9 +366,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 
 		final LogicInterface testClassAccess = this.getDbLogic(testUserName);
 		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, null, 0, 100, null).size());
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
-		posts.add(post);
-		testClassAccess.createPosts(posts);
+		testClassAccess.createPosts(Collections.<Post<?>>singletonList(post));
 		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, null, 0, 100, null).size());
 		assertEquals(0, this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, null, 0, 100, null).size());
 	}
@@ -594,9 +592,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final Bookmark bookmarkB = post.getResource();
 		final String url = bookmarkB.getUrl();
 		
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
-		posts.add(post);
-		final List<String> createPosts = dbl.createPosts(posts);
+		final List<String> createPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
 		assertEquals(1, createPosts.size());
 		
 		Post<? extends Resource> savedPost = null;
@@ -661,10 +657,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		post.getResource().setUrl("http://www.notest.org");
 		post.getResource().recalculateHashes();
 		
-		final List<Post<?>> create = new LinkedList<Post<?>>();
-		create.add(post);
-		
-		final List<String> createdPosts = dbl.createPosts(create);
+		final List<String> createdPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
 		assertEquals(1, createdPosts.size());
 		
 		Post<?> createdPost = null;
@@ -679,10 +672,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final String newURL = "http://www.testAll2.com";
 		createdBookmark.setUrl(newURL);
 		
-		final List<Post<?>> update = new LinkedList<Post<?>>();
-		update.add(createdPost);
-		
-		final List<String> updatedPosts = dbl.updatePosts(update, PostUpdateOperation.UPDATE_ALL);
+		final List<String> updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_ALL);
 		assertEquals(1, updatedPosts.size());
 		
 		Post<?> updatedPost = null;
