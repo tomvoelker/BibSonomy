@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers.chain.resource.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of resources for a given group.
@@ -32,7 +34,7 @@ public class GetResourcesForGroup<R extends Resource, P extends ResourceParam<R>
 				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
-				!present(param.getOrder()) &&
+				nullOrEqual(param.getOrder(), Order.ADDED) &&
 				!present(param.getSearch()) &&
 				!present(param.getAuthor()) &&
 				!present(param.getTitle()));
