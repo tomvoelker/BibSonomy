@@ -6,13 +6,16 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.UserSettings;
+import org.bibsonomy.webapp.command.ResourceViewCommand;
 import org.bibsonomy.webapp.controller.ResourceListController;
 import org.bibsonomy.webapp.view.Views;
 import org.junit.BeforeClass;
@@ -37,7 +40,7 @@ public class ResourceListControllerTest {
 	
 	private static <T> Set<T> intersection(final Collection<? extends T> col1, final Collection<? extends T> col2) {
 		if (!present(col1) || !present(col2)) {
-			return Collections.<T>emptySet();
+			return Collections.emptySet();
 		}
 		
 		final Set<T> set = new HashSet<T>(col1);
@@ -48,6 +51,7 @@ public class ResourceListControllerTest {
 	private static class NewResourceListController extends ResourceListController {
 		
 		private Set<Class<? extends Resource>> supportedResources;
+		private boolean handleTagsOnly;
 		
 		// made chooseListsToInitialize public
 		@Override
@@ -65,6 +69,16 @@ public class ResourceListControllerTest {
 			
 			// new: supportedResources (the controller only knows which resources he supports)
 			this.supportedResources = new HashSet<Class<? extends Resource>>(listsToInitialise);
+		}
+		
+		@Override
+		public void handleTagsOnly(ResourceViewCommand cmd, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, int max, String search) {
+			// no logic no request
+			// super.handleTagsOnly(cmd, groupingEntity, groupingName, regex, tags, hash, max, search);
+			final String tagstype = cmd.getTagstype();
+			if (present(tagstype)) {
+				this.handleTagsOnly = true;
+			}
 		}
 		
 		// extract the user settings to a set of resources
@@ -90,6 +104,10 @@ public class ResourceListControllerTest {
 		}
 		
 		public Set<Class<? extends Resource>> getListsToInitialize(final String format, final Set<Class<? extends Resource>> urlParamResources) {
+			if (this.handleTagsOnly) {
+				return Collections.emptySet();
+			}
+			
 			final Set<Class<? extends Resource>> supportFormat = intersection(this.supportedResources, this.getResourcesForFormat(format));
 			final Set<Class<? extends Resource>> supportParam = intersection(this.supportedResources, urlParamResources);
 			final Set<Class<? extends Resource>> supportUser = intersection(this.supportedResources, this.getUserResourcesFromSettings());
@@ -157,6 +175,19 @@ public class ResourceListControllerTest {
 	}
 	
 	@Test
+	public void handleTagsOnly() {
+		final NewResourceListController testController = new NewResourceListController();
+		testController.setListsToInitialise(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
+		final ResourceViewCommand cmd = new ResourceViewCommand();
+		cmd.setTagstype("default");
+		testController.handleTagsOnly(cmd, null, null, null, null, null, 0, null);
+		
+		assertEquals(Collections.emptySet(), testController.getListsToInitialize("", null));
+			
+//		assertEquals(Collections.emptySet(), testController.getListsToInitialize());
+	}
+	
+	@Test
 	public void JSONFormat() {
 		final NewResourceListController testController = new NewResourceListController();
 		testController.setListsToInitialise(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
@@ -171,13 +202,15 @@ public class ResourceListControllerTest {
 		/*
 		 * OLD
 		 */
+		// user settings are removing the goldstandardpublication resource class
+		testController.setListsToInitialise(new HashSet<Class<? extends Resource>>(STANDARD_VIEW_CLASSES));
 		// format json is aviable for all resources
 		testController.chooseListsToInitialize(format, "");
 		
 		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize());
 		
 		// reset (not side effect free)
-		testController.setListsToInitialise(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
+		testController.setListsToInitialise(new HashSet<Class<? extends Resource>>(STANDARD_VIEW_CLASSES));
 		testController.chooseListsToInitialize(format, "bibtex");
 		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize());
 	}
@@ -197,9 +230,10 @@ public class ResourceListControllerTest {
 		/*
 		 *  OLD
 		 */
+		// user settings are removing the goldstandardpublication resource class
+		testController.setListsToInitialise(new HashSet<Class<? extends Resource>>(STANDARD_VIEW_CLASSES));
 		// format is bookmark only and requested resource is bibtex
 		testController.chooseListsToInitialize(format, "bibtex");
-		
 		assertEquals(Collections.emptySet(), testController.getListsToInitialize());
 	}
 	
@@ -218,9 +252,10 @@ public class ResourceListControllerTest {
 		/*
 		 *  OLD
 		 */
+		// user settings are removing the goldstandardpublication resource class
+		testController.setListsToInitialise(new HashSet<Class<? extends Resource>>(STANDARD_VIEW_CLASSES));
 		// format is publication only and requested resource is bookmark
 		testController.chooseListsToInitialize(format, "bookmark");
-		
 		assertEquals(Collections.emptySet(), testController.getListsToInitialize());
 	}
 	
@@ -257,6 +292,8 @@ public class ResourceListControllerTest {
 		 * OLD
 		 * (ignores user settings)
 		 */
+		// user settings are removing the goldstandardpublication resource class
+		testController.setListsToInitialise(new HashSet<Class<? extends Resource>>(STANDARD_VIEW_CLASSES));
 		testController.chooseListsToInitialize("html", null);
 		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize());
 	}	
