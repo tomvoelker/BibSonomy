@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp;
+package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 import static org.junit.Assert.assertEquals;
