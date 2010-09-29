@@ -11,7 +11,6 @@ import static org.bibsonomy.lucene.util.LuceneBase.getIndexBasePath;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -166,10 +165,8 @@ public abstract class LuceneResourceIndex<R extends Resource> {
     		    statistics.setCurrent(indexReader.isCurrent());
                     statistics.setLastModified(IndexReader.lastModified(indexReader.directory()));
 		} catch (CorruptIndexException e1) {
-		    // TODO Auto-generated catch block
 		    log.error(e1);
 		} catch (IOException e1) {
-		    // TODO Auto-generated catch block
 		    log.error(e1);
 		}
 	    }
