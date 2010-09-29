@@ -9,7 +9,6 @@ import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UrlCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -92,7 +91,7 @@ public class UrlPageController extends SingleResourceListController implements M
 			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, requHash, null, null, null, entriesPerPage, null);
 		}
 
-		if (ValidationUtils.present(command.getBookmark().getList())) {	
+		if (present(command.getBookmark().getList())) {	
 			command.setPageTitle("url :: " + command.getBookmark().getList().get(0).getResource().getUrl() );
 		} else {
 			command.setPageTitle("url ::");
