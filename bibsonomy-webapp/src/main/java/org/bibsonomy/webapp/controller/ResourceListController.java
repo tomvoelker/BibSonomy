@@ -42,13 +42,11 @@ public abstract class ResourceListController {
 	protected LogicInterface logic;
 	protected UserSettings userSettings;
 	protected Collection<Class<? extends Resource>> listsToInitialise;
-	private Long startTime;
+	private long startTime;
 
 	/**
 	 * Retrieve a set of tags from the database logic and add them to the command object
 	 * 
-	 * @param <T> extends Resource, the resource type
-	 * @param <V> extends ResourceViewCommand, the command
 	 * @param cmd the command
 	 * @param resourceType the resource type
 	 * @param groupingEntity the grouping entity
@@ -58,9 +56,9 @@ public abstract class ResourceListController {
 	 * @param start start parameter
 	 * @param end end parameter
 	 */
-	protected <T extends Resource, V extends ResourceViewCommand> void setTags(final V cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search) {
+	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search) {
 		final TagCloudCommand tagCloudCommand = cmd.getTagcloud();
-		final UserSettings userSettings = cmd.getContext().getLoginUser().getSettings();
+		final UserSettings userSettings = cmd.getContext().getLoginUser().getSettings(); // TODO: use the provided userSettings?!
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
 		Order tagOrder = null;
@@ -80,7 +78,7 @@ public abstract class ResourceListController {
 				tagCloudCommand.setMinFreq(userSettings.getTagboxMinfreq());
 			}
 		} else { //parameter set via URL
-			if(tagCloudCommand.getMinFreq() == 0) {
+			if (tagCloudCommand.getMinFreq() == 0) {
 				tagOrder = Order.FREQUENCY;
 				tagMax = tagCloudCommand.getMaxCount();
 			}
@@ -128,8 +126,6 @@ public abstract class ResourceListController {
 	/**
 	 * Initialize tag list, depending on chosen resourcetype
 	 * 
-	 * @param <T>
-	 * @param <V>
 	 * @param cmd
 	 * @param listResourceType
 	 * @param groupingEntity
@@ -142,7 +138,7 @@ public abstract class ResourceListController {
 	 * @param end
 	 * @param search
 	 */
-	protected <V extends ResourceViewCommand> void handleTagsOnly(V cmd, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, int max, String search) {
+	protected void handleTagsOnly(final ResourceViewCommand cmd, final GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, int max, String search) {
 		final String tagsType = cmd.getTagstype();
 		if (tagsType != null) {
 
@@ -174,7 +170,7 @@ public abstract class ResourceListController {
 	 * 
 	 * @param cmd
 	 */
-	protected <T extends ResourceViewCommand> void postProcessAndSortList(T cmd, final List<Post<BibTex>> bibtexList) {
+	protected void postProcessAndSortList(final ResourceViewCommand cmd, final List<Post<BibTex>> bibtexList) {
 		for (Post<BibTex> post : bibtexList) {
 			// insert openURL into bibtex objects
 			post.getResource().setOpenURL(BibTexUtils.getOpenurl(post.getResource()));
@@ -196,14 +192,13 @@ public abstract class ResourceListController {
 	 * retrieve a list of posts from the database logic and add them to the command object
 	 * 
 	 * @param <T> extends Resource
-	 * @param <V> extends ResourceViewComand
 	 * @param cmd the command object
 	 * @param resourceType the resource type
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
-	protected <T extends Resource, V extends SimpleResourceViewCommand> void setList(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage) {
+	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage) {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
@@ -217,7 +212,6 @@ public abstract class ResourceListController {
 	 * retrieve the number of posts from the database logic and add it to the command object
 	 * 
 	 * @param <T> extends Resource
-	 * @param <V> extends ResourceViewComand
 	 * @param cmd the command object
 	 * @param resourceType the resource type
 	 * @param groupingEntity the grouping entity
@@ -225,7 +219,7 @@ public abstract class ResourceListController {
 	 * @param itemsPerPage number of items to be displayed on each page
 	 * @param constraint
 	 */
-	protected <T extends Resource, V extends SimpleResourceViewCommand> void setTotalCount(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage, StatisticsConstraint constraint) {
+	protected <T extends Resource> void setTotalCount(final SimpleResourceViewCommand cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage, StatisticsConstraint constraint) {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		log.debug("getPostStatistics " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
@@ -275,12 +269,12 @@ public abstract class ResourceListController {
 		format = format.toLowerCase();
 		if (Views.isBibtexOnlyFormat(format.toLowerCase()) 
 				|| (resourcetype != null && resourcetype.equalsIgnoreCase(ResourceType.BIBTEX.getLabel()))) {
-			// bibtex only -> remove bookmark
+			// publication only -> remove bookmark
 			this.listsToInitialise.remove(Bookmark.class);
 		}
 		if (Views.isBookmarkOnlyFormat(format.toLowerCase()) 
 				|| (resourcetype != null && resourcetype.equalsIgnoreCase(ResourceType.BOOKMARK.getLabel()))) {
-			// bookmark only -> remove bibtex
+			// bookmark only -> remove publication
 			this.listsToInitialise.remove(BibTex.class);
 		}
 	}	
@@ -291,18 +285,17 @@ public abstract class ResourceListController {
 	}
 
 	protected void endTiming() {
-		Long elapsed = System.currentTimeMillis() - this.startTime;
+		long elapsed = System.currentTimeMillis() - this.startTime;
 		log.info("Processing time: " + elapsed + " ms");
 	}
 
 	/**
-	 * Check if only Bibtexs are requested
+	 * Check if only publications are requested
 	 * 
-	 * @param <V> - type of the current command object
 	 * @param cmd - the current command object
-	 * @return true if only bibtexs are requested, false otherwise
+	 * @return true if only publications are requested, false otherwise
 	 */
-	private <V extends ResourceViewCommand> Boolean isBibtexOnlyRequested(V cmd) {
+	private boolean isBibtexOnlyRequested(ResourceViewCommand cmd) {
 		if (ResourceType.BIBTEX.getLabel().equalsIgnoreCase(cmd.getResourcetype()) || 
 				(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(BibTex.class)) ) {
 			return true;
@@ -311,13 +304,12 @@ public abstract class ResourceListController {
 	}
 
 	/**
-	 * Check if only Bookmarks are requested
+	 * Check if only bookmarks are requested
 	 * 
-	 * @param <V> - type of the current command object
 	 * @param cmd - the current command object
 	 * @return true if only bookmarks are requested, false otherwise
 	 */
-	private <V extends ResourceViewCommand> Boolean isBookmarkOnlyRequested(V cmd) {
+	private boolean isBookmarkOnlyRequested(ResourceViewCommand cmd) {
 		if (ResourceType.BOOKMARK.getLabel().equalsIgnoreCase(cmd.getResourcetype()) || 
 				(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(Bookmark.class)) ) {
 			return true;
@@ -329,14 +321,12 @@ public abstract class ResourceListController {
 	/**
 	 * Restrict result lists by range from startIndex to endIndex.
 	 * 
-	 * @param <T> - resource type
-	 * @param <V> - command type
 	 * @param cmd - the command object
 	 * @param resourceType - the requested resourcetype
 	 * @param startIndex - start index
 	 * @param endIndex - end index
 	 */
-	protected <V extends SimpleResourceViewCommand> void restrictResourceList(V cmd, Class<? extends Resource> resourceType, final int startIndex, final int endIndex) {			
+	protected void restrictResourceList(SimpleResourceViewCommand cmd, Class<? extends Resource> resourceType, final int startIndex, final int endIndex) {			
 		if (BibTex.class.equals(resourceType)) {
 			cmd.getBibtex().setList(cmd.getBibtex().getList().subList(startIndex, endIndex));
 		}
