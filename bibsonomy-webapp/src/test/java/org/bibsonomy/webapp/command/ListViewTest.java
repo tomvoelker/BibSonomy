@@ -23,13 +23,13 @@ public class ListViewTest {
 		final ListCommand<Integer> lv = new ListCommand<Integer>(new BaseCommand());
 		lv.setEntriesPerPage(15);
 		lv.setStart(0);
-		assertEquals(new Integer(1), lv.getCurPage().getNumber());
+		assertEquals(Integer.valueOf(1), lv.getCurPage().getNumber());
 		lv.setStart(15);
-		assertEquals(new Integer(2), lv.getCurPage().getNumber());
+		assertEquals(Integer.valueOf(2), lv.getCurPage().getNumber());
 		lv.setStart(16);
-		assertEquals(new Integer(3), lv.getCurPage().getNumber());
+		assertEquals(Integer.valueOf(3), lv.getCurPage().getNumber());
 		lv.setStart(29);
-		assertEquals(new Integer(3), lv.getCurPage().getNumber());
+		assertEquals(Integer.valueOf(3), lv.getCurPage().getNumber());
 	}
 
 	/**
@@ -45,17 +45,17 @@ public class ListViewTest {
 		assertEquals(2, prevPages.size());
 
 		assertEquals(30, prevPages.get(0).getStart());
-		assertEquals(new Integer(3), prevPages.get(0).getNumber());
+		assertEquals(Integer.valueOf(3), prevPages.get(0).getNumber());
 
 		assertEquals(45, prevPages.get(1).getStart());
-		assertEquals(new Integer(4), prevPages.get(1).getNumber());
+		assertEquals(Integer.valueOf(4), prevPages.get(1).getNumber());
 
 		lv.setStart(15);
 		prevPages = lv.getPreviousPages();
 		assertEquals(1, prevPages.size());
 
 		assertEquals(0, prevPages.get(0).getStart());
-		assertEquals(new Integer(1), prevPages.get(0).getNumber());
+		assertEquals(Integer.valueOf(1), prevPages.get(0).getNumber());
 	}
 
 	/**
@@ -72,16 +72,16 @@ public class ListViewTest {
 		assertEquals(2, nextPages.size());
 
 		assertEquals(75, nextPages.get(0).getStart());
-		assertEquals(new Integer(6), nextPages.get(0).getNumber());
+		assertEquals(Integer.valueOf(6), nextPages.get(0).getNumber());
 
 		assertEquals(90, nextPages.get(1).getStart());
-		assertEquals(new Integer(7), nextPages.get(1).getNumber());
+		assertEquals(Integer.valueOf(7), nextPages.get(1).getNumber());
 
 		lv.setTotalCount(90);
 		nextPages = lv.getNextPages();
 		assertEquals(1, nextPages.size());
 
 		assertEquals(75, nextPages.get(0).getStart());
-		assertEquals(new Integer(6), nextPages.get(0).getNumber());
+		assertEquals(Integer.valueOf(6), nextPages.get(0).getNumber());
 	}
 }
