@@ -2,8 +2,6 @@ package org.bibsonomy.database.managers.chain.statistic.post;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
@@ -54,8 +52,8 @@ public class PostStatisticChainTest extends AbstractChainTest {
 		this.statisticsParam.setOrder(null);
 		this.statisticsParam.setSearch(null);
 		
-		final List<Integer> counts = postStatisticsChain.getFirstElement().perform(this.statisticsParam, this.dbSession, chainStatus);
-		assertEquals(2, counts.get(0));
+		Integer count = postStatisticsChain.getFirstElement().perform(this.statisticsParam, this.dbSession, chainStatus);
+		assertEquals(2, count);
 		assertEquals(GetResourcesForHashCount.class, chainStatus.getChainElement().getClass());
 	}
 
