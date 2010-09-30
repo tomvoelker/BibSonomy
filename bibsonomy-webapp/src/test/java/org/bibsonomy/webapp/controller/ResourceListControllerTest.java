@@ -16,7 +16,6 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.webapp.command.ResourceViewCommand;
-import org.bibsonomy.webapp.controller.ResourceListController;
 import org.bibsonomy.webapp.view.Views;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,11 +48,13 @@ public class ResourceListControllerTest {
 	}
 	
 	private static class NewResourceListController extends ResourceListController {
-		
+
 		private Set<Class<? extends Resource>> supportedResources;
-		private boolean handleTagsOnly;
+		private Set<Class<? extends Resource>> enforcedResources;
 		
-		// made chooseListsToInitialize public
+		private boolean initializeNoResources;
+		
+		// made chooseListsToInitialize public TODO: remove
 		@Override
 		public void chooseListsToInitialize(String format, String resourcetype) {
 			super.chooseListsToInitialize(format, resourcetype);
@@ -61,6 +62,13 @@ public class ResourceListControllerTest {
 		
 		public Collection<Class<? extends Resource>> getListsToInitialize() {
 			return this.listsToInitialise;
+		}
+		
+		/**
+		 * @param enforcedResources the enforcedResources to set
+		 */
+		public void setEnforcedResources(Set<Class<? extends Resource>> enforcedResources) {
+			this.enforcedResources = enforcedResources;
 		}
 		
 		@Override
@@ -77,10 +85,24 @@ public class ResourceListControllerTest {
 			// super.handleTagsOnly(cmd, groupingEntity, groupingName, regex, tags, hash, max, search);
 			final String tagstype = cmd.getTagstype();
 			if (present(tagstype)) {
-				this.handleTagsOnly = true;
+				this.setInitializeNoResources(true);
 			}
 		}
 		
+		/**
+		 * @param supportedResources the supportedResources to set
+		 */
+		public void setSupportedResources(Set<Class<? extends Resource>> supportedResources) {
+			this.supportedResources = supportedResources;
+		}
+
+		/**
+		 * @param initializeNoResources the noResourcesToInitialize to set
+		 */
+		public void setInitializeNoResources(boolean initializeNoResources) {
+			this.initializeNoResources = initializeNoResources;
+		}
+
 		// extract the user settings to a set of resources
 		public Set<Class<? extends Resource>> getUserResourcesFromSettings() {
 			if (this.userSettings == null) {
@@ -104,8 +126,12 @@ public class ResourceListControllerTest {
 		}
 		
 		public Set<Class<? extends Resource>> getListsToInitialize(final String format, final Set<Class<? extends Resource>> urlParamResources) {
-			if (this.handleTagsOnly) {
+			if (this.initializeNoResources) {
 				return Collections.emptySet();
+			}
+			
+			if (present(this.enforcedResources)) {
+				return this.enforcedResources;
 			}
 			
 			final Set<Class<? extends Resource>> supportFormat = intersection(this.supportedResources, this.getResourcesForFormat(format));
@@ -307,5 +333,14 @@ public class ResourceListControllerTest {
 		
 		testController.chooseListsToInitialize("bookpubl", "bibtex");
 		assertEquals(Collections.emptySet(), testController.getListsToInitialize());
+	}
+	
+	@Test
+	public void enforceTest() {
+		final NewResourceListController testController = new NewResourceListController();
+		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
+		testController.setEnforcedResources(new HashSet<Class<? extends Resource>>(STANDARD_VIEW_CLASSES));
+		
+		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize("bibtex", GOLD_PUB_CLASS));
 	}
 }
