@@ -39,11 +39,11 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
@@ -54,11 +54,9 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeFilter;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.store.FSDirectory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
-import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
 import org.bibsonomy.lucene.util.LuceneBase;
@@ -85,8 +83,10 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	 *	TODO: we should use an implementation, which prefers writers for obtaining the lock 
 	 */
 	private ReadWriteLock lock = new ReentrantReadWriteLock(true);
+	
 	/** write lock, used for blocking  index searcher */
 	private Lock w = lock.writeLock();
+	
 	/** read lock, used for blocking the index update */
 	private Lock r = lock.readLock();
 	
@@ -111,7 +111,8 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	/** post model converter */
 	private LuceneResourceConverter<R> resourceConverter;
 	
-	/** id for identifying redundant resource indeces */
+	/** id for identifying redundant resource indices */
+	// TODO: please use a object representing the index
 	private int indexId;
 	
 	/**
@@ -178,7 +179,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		try {
 			// load and hold index on physical hard disk
 			log.debug("Opening index " + indexId);
-			String indexPath = luceneIndexPath + CFG_INDEX_ID_DELIMITER + indexId;
+			final String indexPath = luceneIndexPath + CFG_INDEX_ID_DELIMITER + indexId;
 			newSearcher = new IndexSearcher(FSDirectory.open(new File(indexPath)));
 		} catch (Exception e) {
 			log.error("Error reloading index, disabling searcher ("+e.getMessage()+") - this should be the case while building a new index");
@@ -265,9 +266,9 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 			 */
 			for (int i = offset; i < hitslimit; i++) {
 				// get document from index
-				Document doc  = searcher.doc(topDocs.scoreDocs[i].doc);
+				final Document doc  = searcher.doc(topDocs.scoreDocs[i].doc);
 				// convert document to bibsonomy post model
-				Post<R> post = this.resourceConverter.writePost(doc); 
+				final Post<R> post = this.resourceConverter.writePost(doc); 
 				
 				// set post frequency
 				starttimeQuery = System.currentTimeMillis();
@@ -297,7 +298,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	 */
 	private List<Tag> doTagSearch(QuerySortContainer qf) {
 		if (!isEnabled() && !getEnableTagClouds()) {
-			return new LinkedList<Tag>();
+		    return new LinkedList<Tag>();
 		}
 		
 		
@@ -315,9 +316,9 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 			int hitsLimit = ((qf.getLimit() < topDocs.totalHits) ? (qf.getLimit()) : topDocs.totalHits);
 			for (int i = 0; i < hitsLimit; i++) {
 				// get document from index
-				Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
+				final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
 				// convert document to bibsonomy post model
-				Post<R> post = this.resourceConverter.writePost(doc); 
+				final Post<R> post = this.resourceConverter.writePost(doc); 
 
 				// set tag count
 				if (present(post.getTags())) {
@@ -381,8 +382,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	 * @return the parsed query term
 	 */
 	protected Query buildFulltextSearchQuery(final String searchTerms) {
-		Query searchTermQuery = parseSearchQuery(FLD_MERGEDFIELDS, searchTerms);
-		return searchTermQuery;
+		return this.parseSearchQuery(FLD_MERGEDFIELDS, searchTerms);
 	}
 
 	/**
@@ -392,7 +392,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	 * @return the parsed query term
 	 */
 	protected Query buildTitleSearchQuery(final String searchTerms) {
-		return parseSearchQuery(FLD_TITLE, searchTerms);
+		return this.parseSearchQuery(FLD_TITLE, searchTerms);
 	}
 	
 	/**
@@ -649,7 +649,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		
 		// search full text 
 		if( present(searchTerms) ) {
-			final Query fulltextQuery = buildFulltextSearchQuery(searchTerms);
+			final Query fulltextQuery = this.buildFulltextSearchQuery(searchTerms);
 			searchQuery.add(fulltextQuery, Occur.SHOULD);
 		}
 		
@@ -785,22 +785,22 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	 * @throws IOException
 	 */
 	protected String parseToken(String fieldName, String param) throws IOException {
-		if (present(param)) {
-			// use lucene's new token stream api (see org.apache.lucene.analysis' javadoc at package level)
-			final TokenStream ts = this.getAnalyzer().tokenStream(fieldName, new StringReader(param));
-		    final TermAttribute termAtt = ts.addAttribute(TermAttribute.class);
-		    ts.reset();
+	    if (present(param)) {
+		// use lucene's new token stream api (see org.apache.lucene.analysis' javadoc at package level)
+		final TokenStream ts = this.getAnalyzer().tokenStream(fieldName, new StringReader(param));
+		final TermAttribute termAtt = ts.addAttribute(TermAttribute.class);
+		ts.reset();
 
-			// analyze the parameter - that is: concatenate its normalized tokens
-		    final StringBuilder analyzedString = new StringBuilder();
-            while (ts.incrementToken()) {
-            	analyzedString.append(" ").append(termAtt.term());
-		    }
-
-            return analyzedString.toString().trim();
+		// analyze the parameter - that is: concatenate its normalized tokens
+		final StringBuilder analyzedString = new StringBuilder();
+		while (ts.incrementToken()) {
+            		analyzedString.append(" ").append(termAtt.term());
 		}
+
+		return analyzedString.toString().trim();
+	    }
 		
-		return "";
+	    return "";
 	}
 	
 	/**

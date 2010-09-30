@@ -96,7 +96,7 @@
 		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
 	</bean>
 	
-	<bean id="luceneGoldStandardPublicationSearch" class="org.bibsonomy.lucene.search.LuceneSearchGoldStandardPublication" factory-method="getInstance">
+	<bean id="luceneGoldStandardPublicationSearch" class="org.bibsonomy.lucene.search.LuceneSearchGoldStandardPublications" factory-method="getInstance">
 		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic"/>
 		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
 		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter"/>
