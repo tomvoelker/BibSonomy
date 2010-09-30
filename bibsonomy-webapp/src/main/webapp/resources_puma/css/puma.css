@@ -9,6 +9,11 @@ body {
 
 }
 
+#mainHeaderRightBox {
+	max-width: 480px;
+	width:480px;
+}
+
 #main_header {
 	background-color:#DF430D;
 	height:70px;
