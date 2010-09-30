@@ -1,7 +1,5 @@
-
 package org.bibsonomy.lucene.param;
 
-import java.util.Date;
 
 /**
  * lucene statistics like current version, number of docs
