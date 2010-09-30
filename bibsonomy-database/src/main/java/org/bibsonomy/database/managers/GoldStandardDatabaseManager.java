@@ -16,12 +16,14 @@ import org.bibsonomy.common.errors.UpdatePostErrorMessage;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.managers.chain.FirstListChainElement;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * Used to create, read, update and delete gold standard posts from the database
@@ -36,14 +38,31 @@ import org.bibsonomy.model.Resource;
 public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends Resource & GoldStandard<RR>, P extends GenericParam> extends AbstractDatabaseManager implements CrudableContent<R, P> {
 	private static final Log log = LogFactory.getLog(GoldStandardDatabaseManager.class);
 	
+	
 	/** simple class name of the resource managed by the class */
 	protected final String resourceClassName;
 	
 	protected final DatabasePluginRegistry plugins;
 	
+	protected ResourceSearch<R> searcher;
+
 	protected GoldStandardDatabaseManager() {
 		this.resourceClassName = this.getResourceClassName();
 		this.plugins = DatabasePluginRegistry.getInstance();
+	}
+	
+	/**
+	 * @return the searcher
+	 */
+	public ResourceSearch<R> getSearcher() {
+	    return this.searcher;
+	}
+
+	/**
+	 * @param searcher the searcher to set
+	 */
+	public void setSearcher(ResourceSearch<R> searcher) {
+	    this.searcher = searcher;
 	}
 	
 	/**
@@ -97,8 +116,13 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	
 	@Override
 	public List<Post<R>> getPosts(final P param, final DBSession session) {
-		throw new UnsupportedOperationException("chain not (yet) available for gold standard posts");
+		return this.getChain().getFirstElement().perform(param, session);
 	}
+
+	/**
+	 * @return the chain
+	 */
+	protected abstract FirstListChainElement<Post<R>, P> getChain();
 
 	@Override
 	public boolean createPost(final Post<R> post, final DBSession session) {

@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.Set;
 
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
@@ -233,14 +232,6 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		final String newInterHash = standard.getInterHash();
 		final Post<GoldStandardPublication> afterUpdate = goldPubManager.getPostDetails("", newInterHash, "", null, this.dbSession);
 		assertEquals(1, afterUpdate.getResource().getReferences().size());
-	}
-	
-	/**
-	 * tests {@link GoldStandardDatabaseManager#getPosts(org.bibsonomy.database.params.GenericParam, org.bibsonomy.database.util.DBSession)}
-	 */
-	@Test(expected = UnsupportedOperationException.class)
-	public void testChain() {
-		goldPubManager.getPosts(new BibTexParam(), this.dbSession);
 	}
 	
 	private void deletePost(final String interhash) {

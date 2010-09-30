@@ -4,6 +4,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.managers.chain.FirstListChainElement;
+import org.bibsonomy.database.managers.chain.goldstandard.publication.GoldStandardPublicationChain;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -17,7 +19,10 @@ import org.bibsonomy.model.Post;
  */
 public final class GoldStandardPublicationDatabaseManager extends GoldStandardDatabaseManager<BibTex, GoldStandardPublication, BibTexParam> {
 	private static final GoldStandardPublicationDatabaseManager INSTANCE = new GoldStandardPublicationDatabaseManager();
-
+	
+	
+	private static final GoldStandardPublicationChain chain = new GoldStandardPublicationChain();
+	
 	/**
 	 * @return the @{link:GoldStandardPublicationDatabaseManager} instance
 	 */
@@ -58,5 +63,10 @@ public final class GoldStandardPublicationDatabaseManager extends GoldStandardDa
 	@Override
 	protected void onGoldStandardReferenceDelete(String userName, String interHash, String interHashRef, DBSession session) {
 		this.plugins.onGoldStandardPublicationReferenceDelete(userName, interHash, interHashRef, session);		
+	}
+
+	@Override
+	protected FirstListChainElement<Post<GoldStandardPublication>, BibTexParam> getChain() {
+	    return chain;
 	}
 }

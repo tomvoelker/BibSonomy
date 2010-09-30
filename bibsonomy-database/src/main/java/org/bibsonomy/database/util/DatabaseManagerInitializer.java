@@ -2,11 +2,13 @@ package org.bibsonomy.database.util;
 
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
+import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -35,6 +37,8 @@ public class DatabaseManagerInitializer {
 	/** the tag database manager */
 	private final TagDatabaseManager tagManager;
 
+	private final GoldStandardPublicationDatabaseManager goldStandardPublicationManager;
+
 	/**
 	 * inits the user and group db manager
 	 */
@@ -49,6 +53,7 @@ public class DatabaseManagerInitializer {
 		this.tagManager      = TagDatabaseManager.getInstance();
 		this.bibTexManager   = BibTexDatabaseManager.getInstance();
 		this.bookmarkManager = BookmarkDatabaseManager.getInstance();
+		this.goldStandardPublicationManager = GoldStandardPublicationDatabaseManager.getInstance();
 	}
 	
 	/**
@@ -87,5 +92,11 @@ public class DatabaseManagerInitializer {
 		return bookmarkSearcher;
 	}
 
-	
+	/**
+	 * sets the searcher for the goldStandardPublication manager
+	 * @param goldStandardPublicationSearcher
+	 */
+	public void setGoldStandardPublicationSearcher(final ResourceSearch<GoldStandardPublication> goldStandardPublicationSearcher) {
+	    this.goldStandardPublicationManager.setSearcher(goldStandardPublicationSearcher);
+	}
 }
