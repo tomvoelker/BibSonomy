@@ -11,7 +11,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
-import org.bibsonomy.lucene.search.LuceneSearchGoldStandardPublication;
+import org.bibsonomy.lucene.search.LuceneSearchGoldStandardPublications;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateGoldStandardPublicationIndex;
@@ -81,7 +81,7 @@ public class LuceneGoldStandardPublicationManagerTest extends AbstractDatabaseMa
 
 		assertEquals(2, manager.getResourceIndeces().get(0).getNumberOfStoredDocuments());
 
-		final ResultList<Post<GoldStandardPublication>> posts = LuceneSearchGoldStandardPublication.getInstance().getPosts("", "", "", allowedGroups, "", "", "luceneTest", new LinkedList<String>(), null, null, null, 10, 0);
+		final ResultList<Post<GoldStandardPublication>> posts = LuceneSearchGoldStandardPublications.getInstance().getPosts("", "", "", allowedGroups, "", "", "luceneTest", new LinkedList<String>(), null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 	}
 
