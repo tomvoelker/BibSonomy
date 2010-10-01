@@ -59,9 +59,14 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 				referer = UrlUtils.setParam(referer, "forwardPath", command.getForwardPath());
 			}
 			/*
+			 * set params
+			 */
+			referer = UrlUtils.setParam(referer, "s", command.getS() );
+			referer = UrlUtils.setParam(referer, "notice", "login.notice.conferator");
+			/*
 			 * send redirect
 			 */
-			return new ExtendedRedirectView(UrlUtils.setParam("/login", "referer", UrlUtils.safeURIEncode(UrlUtils.setParam(referer, "s", command.getS() ) ) ) );
+			return new ExtendedRedirectView( UrlUtils.setParam("/login", "referer", UrlUtils.safeURIEncode(referer)) );
 		}
 		
 		/*
