@@ -31,15 +31,37 @@
 		   	<!-- show global error messages -->
            	<errors:global errors="${errors}"/>  
 				
+				<!-- 
 				<p>
 					<fmt:message key="actions.remoteauth.page_requesting"/>
 				</p>
+				 -->
 				
+				<!-- 
 				<div class="einrueckung2"><span style="font-size:120%;font-weight:bold">${command.reqUrl}</span></div>
+				 -->
 				
+				<div class="einrueckung2">
+					<p>
+					    <!-- 
+					         FIXME the following message is exclusively for use during 
+					         the LWA conference 2010 in Kassel, please change / fix 
+					         after the conference!
+					    -->
+					    <span style="font-size:110%">
+							<fmt:message key="actions.remoteauth.conferator">
+								<fmt:param>${projectName}</fmt:param>
+							</fmt:message>
+						</span>
+					</p>
+				</div>
+				
+				
+				<!-- 
 				<p>
 					<fmt:message key="actions.remoteauth.do_you_trust"/>
 				</p>
+				 -->
 				
 				<table width="100%" border="0">
 					<tr>
@@ -52,12 +74,14 @@
 					</tr>
 				</table>
 				
+				<!-- 
 				<p>
 					<fmt:message key="actions.remoteauth.validity">
 						<fmt:param>${command.ip}</fmt:param>
 						<fmt:param>${command.validPeriod}</fmt:param>
 					</fmt:message>					
 				</p>
+				 -->
 							
 			</div>
       </jsp:attribute>
