@@ -12,7 +12,7 @@
 	
 
 		<form:form action="/import/firefox?ckey=${ckey}" method="post" enctype="multipart/form-data">
-			<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+			<fieldset class="fsOuter" style="padding: 1em; margin-bottom: 1em;">
 				
 				<legend><fmt:message key="import.firefox"/></legend>
 				<h2><fmt:message key="settings.firefox.header"/></h2>

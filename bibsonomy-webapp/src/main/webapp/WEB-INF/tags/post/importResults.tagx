@@ -26,7 +26,7 @@
 						
 			<!-- Show new created resources -->
 			<c:if test="${not empty command.newBookmarks}">
-		  		<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+		  		<fieldset class="fsOuter" style="padding: 1em; margin-bottom: 1em;">
 					<legend>
 				  		<fmt:message key="import.newResources">
 				  				<fmt:param value="${fn:length(command.newBookmarks)}"/>
@@ -44,7 +44,7 @@
 		  
 		  	<!-- Show updated resources -->
 			<c:if test="${not empty command.updatedBookmarks}">
-				<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+				<fieldset class="fsOuter" style="padding: 1em; margin-bottom: 1em;">
 					<legend>
 						<fmt:message key="import.updatedResources">
 							<fmt:param value="${fn:length(command.updatedBookmarks)}"/>
@@ -62,7 +62,7 @@
 			 
 			<!-- Show all resources which couldn't get updated -->
 			<c:if test="${not empty command.nonCreatedBookmarks}">
-				<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+				<fieldset class="fsOuter" style="padding: 1em; margin-bottom: 1em;">
 					<legend><fmt:message key="import.failed"/></legend>
           
 						<fmt:message key="import.nonImportedResources">
@@ -83,7 +83,7 @@
 					<fmt:param value="${concepts}"/>
 				</fmt:message>
 			</h2>
-			<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+			<fieldset class="fsOuter" style="padding: 1em; margin-bottom: 1em;">
 					<legend><fmt:message key="import.created"/></legend>
 
 						<fmt:message key="import.newResources">

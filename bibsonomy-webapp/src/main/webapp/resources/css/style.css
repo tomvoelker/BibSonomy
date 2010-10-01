@@ -1297,3 +1297,16 @@ img#sidebarGrip {
 	margin-left:0pt;
 	position:relative;
 }
+
+/*
+ * fsForm
+ */
+ 
+ 
+.fsOuter, .fsInner, .fsVisible {
+    border: 1px solid #069;
+    background-color: #eee; 
+}
+ 
+
+

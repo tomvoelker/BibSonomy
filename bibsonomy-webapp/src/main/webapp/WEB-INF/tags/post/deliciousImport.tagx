@@ -12,7 +12,7 @@
 	
 	<!-- Display userName and passWord to supply the user's credentials -->
 		<form:form action="/import/delicious" method="post">
-			<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+			<fieldset class="fsOuter" style="padding: 1em; margin-bottom: 1em;">
 		
         		<legend><fmt:message key="import.delicious"/></legend>
 				

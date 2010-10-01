@@ -15,7 +15,7 @@
 	<c:forEach var="group" items="${groups}" varStatus="status">
 		<c:if test="${not empty group.tagSets}">
 			<div id="field_${fn:escapeXml(group.name)}" style="display:none">
-				<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
+				<fieldset class="fsOuter" style="position:relative;">
 					<legend><fmt:message key="actions.admin.group.tagsets"/>${mtl:ch('nbsp')}<fmt:message key="for"/>:${mtl:ch('nbsp')}<c:out value="${group.name}"/></legend> 
 			 		<div align="center">
 		 				<c:forEach var="tagset" items="${group.tagSets}" varStatus="status_t">

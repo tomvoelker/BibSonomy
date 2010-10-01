@@ -29,6 +29,7 @@ body {
 	display: block;
 }
 
+
 #nice_tnav {
 	background-color:  #ecf9f6;
 }
@@ -282,6 +283,10 @@ a.reportingTableHeaderDescription {
 
 .fsOuter, .fsInner {
 	border: 1px solid #DF430D;
+}
+
+div.grippie {
+	 border-color: #DF430D;
 }
 
 input[type="text"], input[type="password"], input[type="file"], textarea, select {
