@@ -61,7 +61,7 @@ public class RemoteAuthController implements MinimalisticController<RemoteAuthCo
 			/*
 			 * send redirect
 			 */
-			return new ExtendedRedirectView(UrlUtils.setParam("/login", "referer", UrlUtils.safeURIEncode(referer)));
+			return new ExtendedRedirectView(UrlUtils.setParam("/login", "referer", UrlUtils.safeURIEncode(UrlUtils.setParam(referer, "s", command.getS() ) ) ) );
 		}
 		
 		/*
