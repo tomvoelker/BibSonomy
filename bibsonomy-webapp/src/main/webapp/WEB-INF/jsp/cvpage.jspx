@@ -95,8 +95,8 @@
 								<td><fmt:message key="cv.name"/></td>
 								<td class="secondTD">
 									<c:choose>
-										<c:when test="${not empty user.homepage}">
-											<a href="${fn:escapeXml(user.homepage)}">
+										<c:when test="${not empty command.user.homepage}">
+											<a href="${fn:escapeXml(command.user.homepage)}">
 												<c:out value="${command.user.realname}" />
 											</a>
 										</c:when>
