@@ -69,10 +69,9 @@ public class FriendsPageController extends SingleResourceListController implemen
 	/**
 	 * Initialize user list, depending on chosen users type
 	 * 
-	 * @param <V> the command type
 	 * @param command the command object
 	 */
-	protected <V extends FriendsResourceViewCommand> void handleUsers(V command) {
+	protected void handleUsers(final FriendsResourceViewCommand command) {
 		final String userRelation = command.getUserRelation();
 		
 		final String loginUserName = command.getContext().getLoginUser().getName();
@@ -87,7 +86,7 @@ public class FriendsPageController extends SingleResourceListController implemen
 				command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF));
 			}
 		
-			// when users only are requested, we don't need bibtexs and bookmarks
+			// when users only are requested, we don't need publications and bookmarks
 			this.listsToInitialise.remove(BibTex.class);
 			this.listsToInitialise.remove(Bookmark.class);			
 		}
