@@ -27,12 +27,12 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.id.DOIUtils;
+import org.bibsonomy.util.upload.FileUploadInterface;
 
 
 /**
