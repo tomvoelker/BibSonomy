@@ -13,8 +13,8 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
-import org.bibsonomy.rest.utils.FileDownloadInterface;
-import org.bibsonomy.rest.utils.impl.HandleFileDownload;
+import org.bibsonomy.util.upload.FileDownloadInterface;
+import org.bibsonomy.util.upload.impl.HandleFileDownload;
 
 /**
  * Handle a document request
