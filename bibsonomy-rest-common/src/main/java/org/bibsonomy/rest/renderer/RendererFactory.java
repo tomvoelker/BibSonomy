@@ -37,8 +37,18 @@ import org.bibsonomy.rest.renderer.impl.XMLRenderer;
  */
 public class RendererFactory {
 	
-	private static Renderer JSON_RENDERER = new JSONRenderer();
-	private static Renderer XML_RENDERER = new XMLRenderer();
+	/*
+	 * for each renderer a instance holder was created to lazy load the renderer
+	 * currently the json renderer isn't available in the rest client
+	 */
+	
+	private static final class JSONRendererInstanceHolder {
+		private static final Renderer JSON_RENDERER = new JSONRenderer();
+	}
+	
+	private static final class XMLRendererInstanceHolder {
+		private static final XMLRenderer XML_RENDERER = new XMLRenderer();
+	}
 
 	/**
 	 * Returns the renderer for the given format; it defaults to the XML renderer.
@@ -49,10 +59,10 @@ public class RendererFactory {
 		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
 		
 		if (RenderingFormat.JSON.equals(renderingFormat)) {
-			return JSON_RENDERER;
+			return JSONRendererInstanceHolder.JSON_RENDERER;
 		}
 		
 		// default is xml renderer
-		return XML_RENDERER;
+		return XMLRendererInstanceHolder.XML_RENDERER;
 	}
 }

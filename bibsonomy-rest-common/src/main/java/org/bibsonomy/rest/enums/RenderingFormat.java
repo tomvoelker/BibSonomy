@@ -69,7 +69,7 @@ public class RenderingFormat {
 	 * @param type
 	 * @param subtype
 	 */
-	public RenderingFormat(String type, String subtype) {
+	public RenderingFormat(final String type, final String subtype) {
 		this.type = type;
 		this.subtype = subtype;
 	}
@@ -100,7 +100,7 @@ public class RenderingFormat {
 	 * @param other
 	 * @return <true> if renderingformat is compatible
 	 */
-	public boolean isCompatible(RenderingFormat other) {
+	public boolean isCompatible(final RenderingFormat other) {
         if (other == null)
             return false;
         // both wildcard?
@@ -121,7 +121,7 @@ public class RenderingFormat {
      * @return true if the subtype is a wildcard  
      */
     public boolean isWildcardSubtype() {
-        return this.getSubtype().equals(TYPE_WILDCARD);
+        return TYPE_WILDCARD.equals(this.getSubtype());
     }
 
 	/* (non-Javadoc)
@@ -194,7 +194,7 @@ public class RenderingFormat {
 		final String[] typeSubType = mediaType.split("/");
 		
 		if (typeSubType.length != 2) {
-			throw new IllegalArgumentException(string + "is not a mediaType string representation");
+			throw new IllegalArgumentException(string + " is not a mediaType string representation");
 		}
 		
 		return new RenderingFormat(typeSubType[0], typeSubType[1]);
