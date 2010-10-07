@@ -18,9 +18,11 @@ import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 
 /**
- * controller for retrieving a windowed list with resources. These are currently the bookmark an the bibtex list
+ * Controller for retrieving a windowed list with resources.
+ * These are currently the bookmark and the publication list
  * 
  * @author Jens Illig
+ * @version $Id$
  */
 public abstract class SingleResourceListController extends ResourceListController {
 
@@ -29,7 +31,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * 
 	 * @param cmd
 	 */
-	protected <T extends SimpleResourceViewCommand> void postProcessAndSortList(final T cmd, final Class<? extends Resource> resourceType) {						
+	protected void postProcessAndSortList(final SimpleResourceViewCommand cmd, final Class<? extends Resource> resourceType) {						
 		if (resourceType == BibTex.class) {
 			postProcessAndSortList(cmd, cmd.getBibtex().getList());
 		}
@@ -44,7 +46,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * returns a list of concepts, namely those tags of the requestedTags that the user groupingName has as concepts
 	 * FIXME: cmd unused
 	 */
-	protected <T extends SimpleResourceViewCommand> List<Tag> getConceptsForSidebar (final T cmd, final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
+	protected List<Tag> getConceptsForSidebar(final SimpleResourceViewCommand cmd, final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
 		final List<Tag> concepts = new ArrayList<Tag>();
 		for (final String requTag : requTags) {
 			final Tag conceptDetails = this.logic.getConceptDetails(requTag, groupingEntity, groupingName);
@@ -61,11 +63,9 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * returns the number of posts tagged with all of requTags by groupingName. 
 	 * 
 	 */
-	protected int getPostCountForSidebar (final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
-		int a = 0;
-		a += this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, Order.ADDED, FilterEntity.UNFILTERED, 0, 999, null, null);
-		a += this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, Order.ADDED, FilterEntity.UNFILTERED, 0, 999, null, null);
-		return a;
+	protected int getPostCountForSidebar(final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
+		return this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, Order.ADDED, FilterEntity.UNFILTERED, 0, 999, null, null)
+				+ this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, Order.ADDED, FilterEntity.UNFILTERED, 0, 999, null, null);
 	}
 
 }
