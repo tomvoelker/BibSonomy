@@ -128,6 +128,17 @@
 							</list>
 						</property>
 					</bean>
+				</entry>
+				<entry key="/groupcvpage">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupCvPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedGroup</value>
+								<value>layout</value>
+							</list>
+						</property>
+					</bean>
 				</entry>	
 				<entry key="/relations">
 					<bean parent="controllerBase">
@@ -385,6 +396,21 @@
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</list>
+		</property>
+	</bean>	
+	
+	<bean id="groupCvPageController" class="org.bibsonomy.webapp.controller.GroupCvPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<!--<value type="java.lang.Class">org.bibsonomy.model.User</value>-->
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+		<property name="entries">
+			<value>3</value>
 		</property>
 	</bean>	
 	

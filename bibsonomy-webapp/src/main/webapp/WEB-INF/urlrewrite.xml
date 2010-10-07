@@ -394,6 +394,14 @@
 		<to last="true">/picture</to>
 	</rule>
 	
+		<!-- /cv/group/GROUPNAME -->
+	<rule>
+		<name>/cv/group/USER</name>
+		<from>^/+cv/+group/(.+)$</from>
+		<set type="parameter" name="requestedGroup">$1</set>
+		<to last="true">/groupcvpage</to>
+	</rule>
+	
 	<!-- /bibtexkey/KEY/USER -->
 	<rule>
 		<name>/bibtexkey/user</name>

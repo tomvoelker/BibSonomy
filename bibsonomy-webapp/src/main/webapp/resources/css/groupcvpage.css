@@ -1,0 +1,22 @@
+.resources {
+	clear: both;
+	margin: 5px 5px 5px 5px;
+	border-top: solid #eee 2px;
+}
+
+.imageContainer {	
+max-width: 200px;
+text-align: center;
+float: left;
+margin: 5px 5px 5px 5px;
+}
+
+.imageCapture {
+text-align: center;
+}
+
+.groupImage {
+max-width: auto;
+text-align: center;
+margin: 0 auto;
+}

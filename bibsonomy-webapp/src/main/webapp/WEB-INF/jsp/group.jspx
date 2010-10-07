@@ -21,6 +21,7 @@
 			  <input type="text" size="20" name="tag" id="inpf"/>
 			</form>
             <group:name group="${command.group}"/>
+			<group:groupcv group="${command.group}"/>
 		</jsp:attribute>		
 			
 		
