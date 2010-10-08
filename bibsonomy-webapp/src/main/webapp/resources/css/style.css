@@ -1152,6 +1152,24 @@ padding-top:1px;
 	color: #D80000!important;
 }
 
+img#sidebarGrip {
+	cursor:e-resize;
+	margin-top:10px;
+	margin-bottom:5px;
+	float:left;
+}
+
+.sidebarSpacer{
+	float:left;
+	height:60px;
+	width:10px;
+}
+			
+.resizableElement {
+	margin-left:0pt;
+	position:relative;
+}
+
 ul.news {
 	list-style: outside disc !important;
 	margin-left: 1.5em !important;
@@ -1278,26 +1296,6 @@ a button {
 	cursor: pointer;
 }
 
-img#sidebarGrip {
-	background:#EEEEEE url(grip.png) no-repeat scroll center 2px;
-	cursor:ew-resize;
-	height:48px;
-	margin-top:20px;
-	margin-bottom:20px;
-}
-
-.sidebarSpacer{
-	float:left;
-	height:60px;
-	width:10px;
-
-}
-			
-.resizableElement {
-	margin-left:0pt;
-	position:relative;
-}
-
 /*
  * fsForm
  */
@@ -1307,6 +1305,3 @@ img#sidebarGrip {
     border: 1px solid #069;
     background-color: #eee; 
 }
- 
-
-
