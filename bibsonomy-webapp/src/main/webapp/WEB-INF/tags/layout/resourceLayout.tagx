@@ -86,9 +86,9 @@
 					<fmt:message var="expandBookmarks" key="list.expand.bookmarks"/>
 					<fmt:message var="expandPublications" key="list.expand.publications"/>
 					<fmt:message var="showBoth" key="list.expand.both"/>
-					<li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li>
-					<li id="optionShowBoth" class="${optionShowBoth}"><a href="javascript:showBothLists();" title="${showBoth}">|</a></li>
-					<li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li>
+					<li id="optionExpandBookmark" class="${optionExpandBookmark}"><a onmouseover="$(this).fontResize(20);"  onmouseout="this.style.fontSize = this.parentNode.style.fontSize;" href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li>
+					<li id="optionShowBoth" class="${optionShowBoth}"><a onmouseover="$(this).fontResize(20);" onmouseout="this.style.fontSize = this.parentNode.style.fontSize;" href="javascript:showBothLists();" title="${showBoth}">|</a></li>
+					<li id="optionExpandBibtex" class="${optionExpandBibtex}"><a onmouseover="$(this).fontResize(20);" onmouseout="this.style.fontSize = this.parentNode.style.fontSize;" href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li>
 				</ul>
 				<!-- 
 					Some pages show a short introductory text at the top - this text 
