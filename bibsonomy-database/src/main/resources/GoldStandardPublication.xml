@@ -19,8 +19,8 @@
 	</select>
 	
 	<insert id="insertGoldStandardPublication" parameterClass="bibtexParam">
-		INSERT INTO gold_standard_publications (<include refid ="allGoldStandardPublicationRows"/>)
-		VALUES <include refid ="allGoldStandardPublicationValues"/>
+		INSERT INTO gold_standard_publications (<include refid ="allGoldStandardPublicationRows"/>, content_id)
+		VALUES (<include refid ="allGoldStandardPublicationValues"/>, #requestedContentId#)
 	</insert>
 	
 	<delete id="deleteGoldStandardPublication">

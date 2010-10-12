@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -43,12 +44,14 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	protected final String resourceClassName;
 	
 	protected final DatabasePluginRegistry plugins;
+	private final GeneralDatabaseManager generalManager;
 	
 	protected ResourceSearch<R> searcher;
 
 	protected GoldStandardDatabaseManager() {
 		this.resourceClassName = this.getResourceClassName();
 		this.plugins = DatabasePluginRegistry.getInstance();
+		this.generalManager = GeneralDatabaseManager.getInstance();
 	}
 	
 	/**
@@ -140,6 +143,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				return false;
 			}
 			
+			post.setContentId(this.generalManager.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
+			
 			this.onGoldStandardCreate(resourceHash, session);
 			this.insertPost(post, session);
 			
@@ -211,6 +216,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				
 				return false;
 			}
+			
+			post.setContentId(this.generalManager.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
 			
 			this.onGoldStandardUpdate(oldHash, resourceHash, session); // logs old post and updates reference table
 			this.deletePost(oldHash, true, session);

@@ -26,7 +26,7 @@
 		bibtexKey, `group`, date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
 		bibtexAbstract, type, day, privnote, simhash0, simhash1, simhash2, simhash3</sql>
 		
-	<sql id="allGoldStandardPublicationValues">(#resource.title#, #resource.entrytype#, #resource.author#, #resource.editor#, #resource.year#,
+	<sql id="allGoldStandardPublicationValues">#resource.title#, #resource.entrytype#, #resource.author#, #resource.editor#, #resource.year#,
 		#resource.journal#, #resource.volume#, #resource.chapter#, #resource.edition#,
 		#resource.month#, #resource.booktitle#, #resource.howpublished#, #resource.institution#,
 		#resource.organization#, #resource.publisher#, #resource.address#, #resource.school#,
@@ -34,7 +34,7 @@
         #resource.url#, #description#, #resource.annote#, #resource.note#, #resource.pages#,
         #resource.key#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
         #resource.type#, #resource.day#, #resource.privnote#, #resource.simHash0#, #resource.simHash1#,
-        #resource.simHash2#, #resource.simHash3#)</sql>
+        #resource.simHash2#, #resource.simHash3#</sql>
 	
 	<sql id="allGoldStandardPublicationAttributes">
 		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,

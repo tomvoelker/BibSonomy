@@ -39,6 +39,7 @@ public final class GoldStandardPublicationDatabaseManager extends GoldStandardDa
 		insert.setResource(post.getResource());
 		insert.setDescription(post.getDescription());
 		insert.setDate(post.getDate());
+		insert.setRequestedContentId(post.getContentId());
 		insert.setUserName((present(post.getUser()) ? post.getUser().getName() : ""));
 		insert.setGroupId(GroupID.PUBLIC); // gold standards are public
 		

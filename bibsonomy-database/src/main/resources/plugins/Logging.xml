@@ -21,8 +21,8 @@
 	</update>
 	
 	<insert id="logGoldStandardPublication">
-		INSERT INTO log_gold_standard_publications (<include refid ="allGoldStandardPublicationRows"/>)
-		SELECT <include refid ="allGoldStandardPublicationRows"/>
+		INSERT INTO log_gold_standard_publications (content_id, <include refid ="allGoldStandardPublicationRows"/>)
+		SELECT content_id, <include refid ="allGoldStandardPublicationRows"/>
 		FROM gold_standard_publications WHERE simhash1 = #oldId#
 	</insert>
 
