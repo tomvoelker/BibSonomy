@@ -78,7 +78,7 @@
 	    <br />
         <form:form name="latencyCalculation" action="/admin/recommender">
 		    <form:label path="queriesPerLatency"><fmt:message key="admin.recommender.latencyvalues"/></form:label>
-  		    <form:input path="queriesPerLatency"><c:out value="${command.queriesPerLatency}"/></form:input>
+  		    <input type="text" id="queriesPerLatency" name="queriesPerLatency" value="${command.queriesPerLatency}" />
   	        <input class="adminBtn" type="submit" />
 	    </form:form>
 	</c:if>
