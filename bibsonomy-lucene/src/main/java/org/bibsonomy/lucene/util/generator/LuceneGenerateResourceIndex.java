@@ -155,7 +155,11 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 		
 		// initialize variables
 		final Integer lastTasId = this.dbLogic.getLastTasId();
-		final Date lastLogDate  = this.dbLogic.getLastLogDate();
+		Date lastLogDate  = this.dbLogic.getLastLogDate();
+		
+		if (lastLogDate == null) {
+		    lastLogDate = new Date(System.currentTimeMillis() - 1000);
+		}
 		
 		// get all relevant bookmarks from bookmark table
 		int i    = 0;		// number of evaluated entries 
@@ -172,7 +176,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 			log.info("Read " + skip + " entries.");
 
 			// cycle through all posts of currently read block
-			for( LucenePost<R> postEntry : postList ) {
+			for (final LucenePost<R> postEntry : postList) {
 				// update management fields
 				postEntry.setLastLogDate(lastLogDate);
 				postEntry.setLastTasId(lastTasId);
@@ -182,7 +186,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 
 				// add (non-spam) document to index
 				// FIXME: is this check necessary?
-				if( isNotSpammer(postEntry) ) {
+				if (isNotSpammer(postEntry)) {
 					indexWriter.addDocument(post);
 					i++;
 				} else {
@@ -190,7 +194,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 				}			
 			}
 			log.info("Ready.");
-		} while ( postList.size() == SQL_BLOCKSIZE );
+		} while (postList.size() == SQL_BLOCKSIZE);
 
 		// optimize index
 		log.info("optimizing index " + luceneResourceIndexPath);
@@ -253,11 +257,10 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
                 dstDir.mkdir();
             }
     
-            String[] children = srcDir.list();
-            for (int i=0; i<children.length; i++) {
-                copyDirectory(new File(srcDir, children[i]),
-                                     new File(dstDir, children[i]));
-            }
+            final String[] children = srcDir.list();
+            for (final String child : children) {
+        	copyDirectory(new File(srcDir, child), new File(dstDir, child));
+	    }
         } else {
             copyFile(srcDir, dstDir);
         }

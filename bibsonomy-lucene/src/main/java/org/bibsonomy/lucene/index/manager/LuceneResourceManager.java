@@ -11,9 +11,9 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
+import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
-import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.lucene.util.LuceneResourceConverter;
 import org.bibsonomy.model.Post;
@@ -34,10 +34,10 @@ public class LuceneResourceManager<R extends Resource> {
 	private static final Log log = LogFactory.getLog(LuceneResourceManager.class);
 
 	/** constant for querying for all posts which have been deleted since the last index update */
-	protected static final long QUERY_TIME_OFFSET_MS = 30*1000;
+	protected static final long QUERY_TIME_OFFSET_MS = 30 * 1000;
 	
 	/** flag indicating whether to update the index or not */
-	private Boolean luceneUpdaterEnabled = true;
+	private boolean luceneUpdaterEnabled = true;
 	
 	private boolean useUpdater = false;
 	
@@ -60,7 +60,7 @@ public class LuceneResourceManager<R extends Resource> {
 	protected LuceneResourceConverter<R> resourceConverter;
 	
 	/** selects current (redundant) index */
-	protected int idxSelect;
+	protected int idxSelect; // TODO use an object representation instead
 
 	/**
 	 * constructor
@@ -68,23 +68,23 @@ public class LuceneResourceManager<R extends Resource> {
 	public LuceneResourceManager() {
 		init();
 		
-		this.idxSelect     = 0;
+		this.idxSelect = 0;
 		this.resourceIndex = null;
 	}
 	
 	/**
 	 * initialize internal data structures
 	 */
-	private void init() {
+	private final void init() {
 		this.luceneUpdaterEnabled = LuceneBase.getEnableUpdater();
-		this.useUpdater           = true;
+		this.useUpdater = true;
 	}
 	
 	/**
 	 * triggers index optimization during next update
 	 */
 	public void optimizeIndex() {
-		if( this.resourceIndex!=null ) {
+		if (this.resourceIndex != null) {
 			this.resourceIndex.optimizeIndex();
 		}
 	}
@@ -94,7 +94,8 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @return LuceneIndexStatistics for the active index 
 	 */
 	public LuceneIndexStatistics getStatistics() {
-		return getStatistics(this.resourceIndices.get(idxSelect));
+		final LuceneResourceIndex<R> index = this.resourceIndices.get(idxSelect);
+		return index == null ? null : index.getStatistics();
 	}
 
 	/**
@@ -102,15 +103,8 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @return LuceneIndexStatistics for the inactive index 
 	 */
 	public LuceneIndexStatistics getInactiveIndexStatistics() {
-		return getStatistics(this.resourceIndices.get((idxSelect + 1) % this.resourceIndices.size()));
-	}
-	
-	private LuceneIndexStatistics getStatistics(LuceneResourceIndex<? extends Resource> index) {
-		if(index != null) {
-		    return index.getStatistics();
-		} else {
-			return null;
-		}
+		final LuceneResourceIndex<R> index = this.resourceIndices.get((idxSelect + 1) % this.resourceIndices.size());
+		return index == null ? null : index.getStatistics();
 	}
 	
 	/**
@@ -134,9 +128,9 @@ public class LuceneResourceManager<R extends Resource> {
 	 */
 	protected void updateIndexes()  {
 		synchronized(this) {
-			//----------------------------------------------------------------
-			//  0) initialize variables  
-			//----------------------------------------------------------------
+			/*
+			 *  initialize variables  
+			 */
 			// set the active resource index
 			this.resourceIndex = this.resourceIndices.get(idxSelect);
 			
@@ -147,62 +141,65 @@ public class LuceneResourceManager<R extends Resource> {
 			// FIXME: this should be done in the constructor
 			// keeps track of the newest tas_id during last index update 
 			Integer lastTasId = this.resourceIndex.getLastTasId();
+			log.debug("lastTasId: " + lastTasId);
 
 			// keeps track of the newest log_date during last index update
-			final Long lastLogDate  = this.resourceIndex.getLastLogDate();
-
-			//----------------------------------------------------------------
-			//  0) flag/unflag spammer  
-			//----------------------------------------------------------------
-			this.updatePredictions();
+			final long lastLogDate = this.resourceIndex.getLastLogDate();
 			
-			//----------------------------------------------------------------
-			//  1) get new posts  
-			//----------------------------------------------------------------
-			final List<LucenePost<R>> newPosts = this.dbLogic.getNewPosts(lastTasId);
+			lastTasId = updateIndex(currentLogDate, lastTasId, lastLogDate);
 
-			//----------------------------------------------------------------
-			//  2) get posts to delete  
-			//----------------------------------------------------------------
-			final List<Integer> contentIdsToDelete = 
-				this.dbLogic.getContentIdsToDelete(new Date(lastLogDate-QUERY_TIME_OFFSET_MS));
-
-
-			//----------------------------------------------------------------
-			//  3) remove posts from 1) & 2) from the index
-			//     and update field 'lastTasId'
-			//----------------------------------------------------------------
-			for( final LucenePost<R> post : newPosts ) {
-				contentIdsToDelete.add(post.getContentId());
-				if( post.getLastTasId()>lastTasId ) {
-					lastTasId = post.getLastTasId();
-				}
-			}
-			this.resourceIndex.deleteDocumentsInIndex(contentIdsToDelete);
-
-			//----------------------------------------------------------------
-			//  4) add all posts from 1) to the index  
-			//----------------------------------------------------------------
-			for( final LucenePost<R> post : newPosts ) {
-				post.setLastLogDate(new Date(currentLogDate));
-				final Document postDoc = this.resourceConverter.readPost(post);
-				this.resourceIndex.insertDocument(postDoc);
-			}
-
-			//----------------------------------------------------------------
-			//  6) commit changes 
-			//----------------------------------------------------------------
+			/*
+			 * commit changes 
+			 */
 			this.resourceIndex.flush();
 			
-			//----------------------------------------------------------------
-			//  7) update variables 
-			//----------------------------------------------------------------
+			/*
+			 * update variables
+			 */
 			this.resourceIndex.setLastLogDate(currentLogDate);
 			this.resourceIndex.setLastTasId(lastTasId);
 		}
-		
-		// all done.
 		alreadyRunning = 0;
+	}
+
+	protected int updateIndex(final long currentLogDate, int lastTasId, final long lastLogDate) {
+	    /*
+	     * 1) flag/unflag spammer 
+	     */
+	    this.updatePredictions();
+	    
+	    /*
+	     * 2) get new posts 
+	     */
+	    final List<LucenePost<R>> newPosts = this.dbLogic.getNewPosts(lastTasId);
+
+	    /*
+	     * 3) get posts to delete
+	     */
+	    final List<Integer> contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(lastLogDate - QUERY_TIME_OFFSET_MS));
+
+
+	    /*
+	     * 4) remove posts from 1) & 2) from the index
+	     *     and update field 'lastTasId'
+	     */
+	    for (final LucenePost<R> post : newPosts) {
+	    	contentIdsToDelete.add(post.getContentId());
+	    	lastTasId = Math.max(post.getLastTasId(), lastTasId);
+	    }
+	    
+	    this.resourceIndex.deleteDocumentsInIndex(contentIdsToDelete);
+
+	    /*
+	     * 5) add all posts from 1) to the index 
+	     */
+	    for (final LucenePost<R> post : newPosts) {
+	    	post.setLastLogDate(new Date(currentLogDate));
+	    	final Document postDoc = this.resourceConverter.readPost(post);
+	    	this.resourceIndex.insertDocument(postDoc);
+	    }
+	    
+	    return lastTasId;
 	}
 	
 	/**
@@ -299,7 +296,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 * reopen index reader - e.g. after the index has changed on the disc
 	 */
 	public void resetIndexReader() {
-		for( final LuceneResourceIndex<R> index : this.resourceIndices ) {
+		for (final LuceneResourceIndex<R> index : this.resourceIndices) {
 			index.reset();
 		}
 	}
@@ -311,27 +308,15 @@ public class LuceneResourceManager<R extends Resource> {
 		this.searcher.reloadIndex(this.idxSelect);
 	}
 	
-	//------------------------------------------------------------------------
-	// private helper methods
-	//------------------------------------------------------------------------
 	/**
-	 * incorporate all database changes before startup which would otherwise
-	 * get lost
-	 */
-	public void recovery() {
-	}
-	
-	//------------------------------------------------------------------------
-	// spam handling
-	//------------------------------------------------------------------------
-	/**
+	 * spam handling
 	 * get spam prediction which were missed since last index update
 	 * 
 	 * FIXME: this code is due to the old spam-flagging-mechanism
 	 *        it is probably more efficient to get all un-flagged-posts directly via 
 	 *        a join with the user table
 	 */
-	protected void updatePredictions() {
+	private void updatePredictions() {
 		// keeps track of the newest log_date during last index update
 		final Long lastLogDate  = this.resourceIndex.getLastLogDate()-QUERY_TIME_OFFSET_MS;
 		
@@ -346,7 +331,7 @@ public class LuceneResourceManager<R extends Resource> {
 		
 		// flag lost spammers in index
 		final User transientUser = new User();
-		for( final String spammer : lostSpammer ) {
+		for (final String spammer : lostSpammer) {
 			transientUser.setName(spammer);
 			transientUser.setPrediction(1);
 			transientUser.setSpammer(true);
@@ -354,7 +339,7 @@ public class LuceneResourceManager<R extends Resource> {
 		}
 
 		// unflag lost nonspammers in index
-		for( final String spammer : lostNonSpammer ) {
+		for (final String spammer : lostNonSpammer) {
 			transientUser.setName(spammer);
 			transientUser.setPrediction(0);
 			transientUser.setSpammer(false);
@@ -367,7 +352,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 */
 	private void flagSpammer(final User user) {
 		log.debug("flagSpammer called for user " + user.getName());
-		switch( user.getPrediction() ) {
+		switch (user.getPrediction()) {
 		case 0:
 			log.debug("unflag non-spammer");
 			final List<LucenePost<R>> userPosts = this.getDbLogic().getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, GroupID.PUBLIC.getId(), new LinkedList<Integer>(),  Integer.MAX_VALUE, 0);
@@ -388,12 +373,12 @@ public class LuceneResourceManager<R extends Resource> {
 	 */
 	private void unflagEntryAsSpam(final List<LucenePost<R>> userPosts) {
 		//  insert new records into index
-		if( (userPosts!=null) && (userPosts.size()>0) ) {
-			for (final Post<R> post : userPosts ) {
+		if ((userPosts != null) && (userPosts.size() > 0)) {
+			for (final Post<R> post : userPosts) {
 				// cache possible pre existing duplicate for deletion 
-				resourceIndex.deleteDocumentForContentId(post.getContentId());
+				this.resourceIndex.deleteDocumentForContentId(post.getContentId());
 				// cache document for writing 
-				resourceIndex.insertDocument(this.resourceConverter.readPost(post));
+				this.resourceIndex.insertDocument(this.resourceConverter.readPost(post));
 			}
 		}
 	}
@@ -444,7 +429,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @return the resourceIndeces
 	 */
 	public List<LuceneResourceIndex<R>> getResourceIndeces() {
-		return resourceIndices;
+		return this.resourceIndices;
 	}
 
 	/**

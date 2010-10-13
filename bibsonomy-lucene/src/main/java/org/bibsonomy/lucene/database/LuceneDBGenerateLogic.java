@@ -3,22 +3,15 @@ package org.bibsonomy.lucene.database;
 import java.io.Reader;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
-import org.bibsonomy.lucene.database.params.GroupParam;
-import org.bibsonomy.lucene.database.params.GroupTasParam;
-import org.bibsonomy.lucene.database.params.ListParam;
-import org.bibsonomy.lucene.database.params.TasParam;
 import org.bibsonomy.lucene.database.util.LuceneDatabaseSessionFactory;
-import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Resource;
 
 import com.ibatis.common.resources.Resources;
@@ -75,77 +68,6 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends Abstract
 		}
 		return 0;
 	}
-	
-	@Override
-	public int getTasSize() {
-		Integer retVal = 0;
-		try {
-			retVal = (Integer)sqlMap.queryForObject("getTasCount");
-		} catch (SQLException e) {
-			log.error("Error determining tas size.", e);
-		}
-		return retVal;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<GroupParam> getGroupIDs() {
-		try {
-			return sqlMap.queryForList("getGroupIDs");
-		} catch (SQLException e) {
-			log.error("Error getting group ids.", e);
-		}
-		
-		return new LinkedList<GroupParam>();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<TasParam> getTasEntries(Integer skip, Integer max) {
-		final ListParam param = new ListParam();
-		param.setOffset(skip);
-		param.setSize(max);
-		
-		try {
-			return sqlMap.queryForList("getTasEntries", param);
-		} catch (SQLException e) {
-			log.error("Error getting Tas entries.", e);
-		}
-		
-		return new LinkedList<TasParam>();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<TasParam> getGroupedTasEntries(int skip, int max) {
-		final ListParam param = new ListParam();
-		param.setOffset(skip);
-		param.setSize(max);
-		
-		try {
-			return sqlMap.queryForList("getGroupedTasEntries", param);
-		} catch (SQLException e) {
-			log.error("Error getting grouped tas entries", e);
-		}
-		
-		return new LinkedList<TasParam>();
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<GroupTasParam> getGroupTasEntries(Integer skip, Integer max) {
-		ListParam param = new ListParam();
-		param.setOffset(skip);
-		param.setSize(max);
-		
-		try {
-			return sqlMap.queryForList("getGroupTasEntries", param);
-		} catch (SQLException e) {
-			log.error("Error getting group tas entries", e);
-		}
-		
-		return new LinkedList<GroupTasParam>();
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override 
@@ -169,26 +91,5 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends Abstract
 		}
 		
 		return new LinkedList<String>();
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Map<String,String> getUrlMap() {		
-		try {
-			return sqlMap.queryForMap("getUrlMap", null, "hash", "url");
-		} catch (SQLException e) {
-			log.error("Error getting url map", e);
-		}
-		
-		return new HashMap<String,String>();
-	}
-
-	public Date getLatestDate() {
-		return null;
-	}
-	
-	@Override
-	public List<LucenePost<R>> getNewPosts(Date from, Date now) {
-		return null;
 	}
 }

@@ -26,23 +26,23 @@ public class LuceneBase {
 	public static final String PARAM_RELEVANCE = "relevance";
 
 	/** TODO: improve documentation */
-	public static final String CFG_LUCENENAME         = "luceneName";
+	public static final String CFG_LUCENENAME = "luceneName";
 	/** TODO: improve documentation */
-	public static final String CFG_ANALYZER           = "fieldAnalyzer";
+	public static final String CFG_ANALYZER = "fieldAnalyzer";
 	/** TODO: improve documentation */
-	public static final String CFG_TYPEHANDLER        = "typeHandler";
+	public static final String CFG_TYPEHANDLER = "typeHandler";
 	/** TODO: improve documentation */
-	public static final String CFG_ITEMPROPERTY       = "itemProperty";
+	public static final String CFG_ITEMPROPERTY = "itemProperty";
 	/** TODO: improve documentation */
-	public static final String CFG_LIST_DELIMITER     = " ";
+	public static final String CFG_LIST_DELIMITER = " ";
 	/** TODO: improve documentation */
-	public static final String CFG_FLDINDEX           = "luceneIndex";
+	public static final String CFG_FLDINDEX = "luceneIndex";
 	/** TODO: improve documentation */
-	public static final String CFG_FLDSTORE           = "luceneStore";
+	public static final String CFG_FLDSTORE = "luceneStore";
 	/** TODO: improve documentation */
-	public static final String CFG_FULLTEXT_FLAG      = "fulltextSearch";
+	public static final String CFG_FULLTEXT_FLAG = "fulltextSearch";
 	/** TODO: improve documentation */
-	public static final String CFG_PRIVATE_FLAG       = "privateSearch";
+	public static final String CFG_PRIVATE_FLAG = "privateSearch";
 	/** TODO: improve documentation */
 	public static final String CFG_INDEX_ID_DELIMITER = "-";
 	
@@ -76,7 +76,6 @@ public class LuceneBase {
 	public static final String FLD_TITLE         = "title";	
 	public static final String FLD_LAST_TAS_ID   = "last_tas_id";
 	public static final String FLD_LAST_LOG_DATE = "last_log_date";
-	public static final String FLD_LAST_DATE = "last_date";
 	public static final String FLD_USER_NAME     = "user_name";
 	public static final String FLD_CONTENT_ID    = "content_id";
 	
@@ -113,19 +112,21 @@ public class LuceneBase {
 			// index base path
 			setIndexBasePath(config.getIndexPath());
 			// search mode
-			if( present(config.getSearchMode()) )
-				searchMode       = config.getSearchMode();
+			if (present(config.getSearchMode())) {
+			    searchMode = config.getSearchMode();
+			}
+			
 			// db driver name
-			if( present(config.getDbDriverName()) )
-				dbDriverName = config.getDbDriverName();
+			if (present(config.getDbDriverName())) {
+			    dbDriverName = config.getDbDriverName();
+			}
 			
 			// maximum field length in the lucene index
-			if( present(config.getMaximumFieldLength())) {
+			if (present(config.getMaximumFieldLength())) {
 				String mflIn = config.getMaximumFieldLength();
-				if( KEY_UNLIMITED.equals(mflIn) ) {
+				if (KEY_UNLIMITED.equals(mflIn)) {
 					maximumFieldLength = IndexWriter.MaxFieldLength.UNLIMITED;
-				}
-				else if( KEY_LIMITED.equals(mflIn) ) {
+				} else if (KEY_LIMITED.equals(mflIn)) {
 					maximumFieldLength = IndexWriter.MaxFieldLength.LIMITED;
 				} else {
 					Integer value;
@@ -139,7 +140,7 @@ public class LuceneBase {
 			}
 			
 			// nr. of redundant indeces
-			if( present(config.getRedundantCnt()) ) {
+			if (present(config.getRedundantCnt())) {
 				Integer value;
 				try {
 					value = Integer.parseInt(config.getRedundantCnt());
@@ -192,8 +193,7 @@ public class LuceneBase {
 	/**
 	 * @param maximumFieldLength the maximumFieldLength to set
 	 */
-	public static void setMaximumFieldLength(
-			IndexWriter.MaxFieldLength maximumFieldLength) {
+	public static void setMaximumFieldLength(IndexWriter.MaxFieldLength maximumFieldLength) {
 		LuceneBase.maximumFieldLength = maximumFieldLength;
 	}
 

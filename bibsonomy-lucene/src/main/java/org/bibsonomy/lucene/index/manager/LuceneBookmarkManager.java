@@ -26,7 +26,6 @@ public class LuceneBookmarkManager extends LuceneResourceManager<Bookmark> {
 		if (instance == null) {
 			instance = new LuceneBookmarkManager();
 			LuceneSpringContextWrapper.init();
-			instance.recovery();
 		}
 		
 		return instance;

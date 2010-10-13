@@ -28,7 +28,6 @@ public class LuceneBibTexManager extends LuceneResourceManager<BibTex> {
 		if (instance == null) {
 			instance = new LuceneBibTexManager();
 			LuceneSpringContextWrapper.init();
-			instance.recovery();
 		}
 		
 		return instance;

@@ -32,13 +32,13 @@
 	<select id="getLastTasId" resultClass="integer">
 		SELECT MAX(tas_id)
 		FROM tas
-	</select>    
-	
-	<!-- get number of tag assignments -->
-	<select id="getTasCount" resultClass="integer">
-		SELECT COUNT(*)
-		FROM tas
 	</select>   
+	
+	<!-- used by the gold standard index instead of getLastTasId -->
+	<select id="getLastContentId" resultClass="integer">
+		SELECT MAX(content_id)
+		FROM gold_standard_publications 
+	</select>
 
 	<!-- get number of public bookmark posts -->
 	<select id="getBookmarkCount" resultClass="integer">
@@ -54,13 +54,12 @@
 		WHERE b.group &gt;= 0
 	</select>   
 	 
-	<!-- get last log_date from bibtex table -->
+	<!-- get last log_date from resource tables -->
 	<select id="getLastLogBibTex" resultClass="date">
 		SELECT MAX(log_date)
 		FROM log_bibtex
 	</select>
 
-	<!-- get last log_date from bibtex table -->
 	<select id="getLastLogBookmark" resultClass="date">
 		SELECT MAX(log_date)
 		FROM log_bookmark
@@ -68,12 +67,6 @@
 	
 	<select id="getLastLogGoldStandardPublication" resultClass="date">
 		SELECT MAX(log_date) FROM log_gold_standard_publications
-	</select>
-	
-	<!-- get group ids with corresponding group names --> 
-	<select id="getGroupIDs" resultMap="groupIDs">
-		SELECT `group`, group_name
-		FROM groupids
 	</select>
 	
 	<!-- get users which where flagged as spammers since last index update --> 
@@ -91,80 +84,9 @@
 		WHERE prediction = 0
 		  AND updated_at &gt;= #date#
 	</select>
-	    
-	
-	<!-- get list of tag assignments -->
-	<select id="getTasEntries" parameterClass="listParam" resultMap="tasEntry">
-		SELECT content_id, tag_name
-		FROM tas
-		LIMIT #offset#,#size#
-	</select>
-	
-	<!-- get postwise concatenated list of tag assignments -->
-	<select id="getGroupedTasEntries" parameterClass="listParam" resultMap="groupedTasEntry">
-		SELECT content_id, GROUP_CONCAT(tag_name SEPARATOR ' ') AS tags 
-		FROM tas 
-		GROUP BY content_id 
-		LIMIT #offset#,#size#
-	</select>
-	
-	<!-- get list of  content id/group id pairs -->
-	<select id="getGroupTasEntries" parameterClass="listParam" resultMap="groupTasEntry">
-		SELECT DISTINCT content_id, `group` 
-		FROM grouptas
-		LIMIT #offset#,#size#
-	</select>
-	
-	<!-- get map for mapping url-hashes to corresponging urls -->
-	<select id="getUrlMap" resultClass="java.util.HashMap">
-		SELECT book_url AS url, book_url_hash AS hash
-		FROM urls
-	</select>
-
-	<!-- get list of all non-spam bookmarks -->
-	<select id="getBookmarksForIndex" parameterClass="bookmarkParam" resultMap="BookmarkCommon.bookmarkPost" resultClass="java.util.HashMap">
-		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
-		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name
-		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
-		             u.book_url, u.book_url_ctr, t1.group, t1.user_name
-		      FROM bookmark t1, urls u
-		      WHERE u.book_url_hash = t1.book_url_hash
-		        AND t1.group &gt;= 0
-		      ORDER BY date DESC
-		      LIMIT #limit# OFFSET #offset#) AS bb
-		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
-		WHERE bb.group = g.group
-		ORDER BY bb.date DESC, bb.content_id DESC
-	</select>		
-	
-		<!-- get list of all non-spam bookmarks -->
-	<select id="getBookmarksForIndex2" parameterClass="bookmarkParam" resultMap="BookmarkCommon.luceneLogBookmarkPost">
-		SELECT <include refid ="luceneBookmarkAttributes"/>, b.change_date AS log_date
-	    FROM tas t
-	      JOIN bookmark b USING (content_id)
-	      JOIN urls u USING (book_url_hash)
-	      JOIN groupids g ON (b.group = g.group)
-	    WHERE b.group &gt;= 0
-	    ORDER BY b.date DESC, b.content_id DESC, t.tas_id DESC
-	    LIMIT #limit# OFFSET #offset#
-	<!-- 
-		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
-		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name
-		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
-		             u.book_url, u.book_url_ctr, t1.group, t1.user_name
-		      FROM bookmark t1, urls u
-		      WHERE u.book_url_hash = t1.book_url_hash
-		        AND t1.group &gt;= 0
-		      ORDER BY date DESC
-		      LIMIT #limit# OFFSET #offset#) AS bb
-		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
-		WHERE bb.group = g.group
-		ORDER BY bb.date DESC, bb.content_id DESC
-	 -->		
-	</select>
 	
 	<!-- get list of all non-spam bookmarks -->
-	<select id="getBookmarkForIndex3" parameterClass="bookmarkParam" resultMap="BookmarkCommon.bookmarkPost">
+	<select id="getBookmarkForIndex" parameterClass="bookmarkParam" resultMap="BookmarkCommon.bookmarkPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
@@ -181,22 +103,7 @@
 		) AS bb
 		LEFT JOIN tas t USING (content_id)
 	    LEFT JOIN groupids g ON (bb.group = g.group)
-	    LEFT JOIN urls u ON (u.book_url_hash=bb.intraHash)
-	<!-- 
-		SELECT 
-			bb.*, 
-			t.tag_name,
-			g.*
-		FROM 
-		( 
-		  SELECT <include refid ="luceneCommonBookmarkAttributes"/>, b.group
-		  FROM bookmark b 
-		  WHERE b.group &gt;= 0
-		  LIMIT #limit# OFFSET #offset#
-		) AS bb
-		LEFT JOIN tas t USING (content_id)
-	    LEFT JOIN groupids g ON (bb.group = g.group)
-    -->
+	    LEFT JOIN urls u ON (u.book_url_hash = bb.intraHash)
  	<!-- 
 		SELECT <include refid ="luceneBookmarkAttributes"/>
 	    FROM tas t
@@ -210,46 +117,8 @@
  	-->
 	</select>
 	
-	<!-- get list of all non-spam bibtex posts -->
-	<select id="getBibTexForIndex" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
-		FROM (SELECT t1.*, h.ctr AS count
-		      FROM bibtex t1, bibhash h
-		      WHERE <include refid="bibtexSimHash3"/>
-		        AND t1.group &gt;= 0
-		      ORDER BY date DESC
-		      LIMIT #limit# OFFSET #offset#) AS b2
-		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
-		WHERE b2.group = g.group
-		ORDER BY b2.date DESC, b2.content_id DESC
-	</select>
-	
-		<!-- get list of all non-spam bibtex posts -->
-	<select id="getBibTexForIndex2" parameterClass="bibtexParam" resultMap="BibTexCommon.luceneLogBibtexPost">
-		SELECT <include refid ="luceneBibtexAttributes2"/>, t.tag_name, g.*, h.ctr AS count, b2.change_date AS log_date
-		FROM tas t
-	      JOIN bibtex b2 USING (content_id)
-	      JOIN bibhash h ON (<include refid="bibtexSimHash4"/>)
-	      JOIN groupids g ON (b2.group = g.group)
-		WHERE b2.group &gt;= 0
-		ORDER BY b2.date DESC, b2.content_id DESC, t.tas_id DESC
-		LIMIT #limit# OFFSET #offset#
-		<!-- 
-		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
-		FROM (SELECT t1.*, h.ctr AS count
-		      FROM bibtex t1, bibhash h
-		      WHERE <include refid="bibtexSimHash3"/>
-		        AND t1.group &gt;= 0
-		      ORDER BY date DESC
-		      LIMIT #limit# OFFSET #offset#) AS b2
-		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
-		WHERE b2.group = g.group
-		ORDER BY b2.date DESC, b2.content_id DESC
-		 -->
-	</select>
-	
-	<!-- get list of all non-spam bibtex posts -->
-	<select id="getBibTexForIndex3" parameterClass="bibtexParam" resultMap="BibTexCommon.bibtexPost">
+	<!-- get list of all non-spam publication posts -->
+	<select id="getBibTexForIndex" parameterClass="bibtexParam" resultMap="BibTexCommon.bibtexPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
@@ -276,7 +145,8 @@
 		LIMIT #limit#
 		 -->
 	</select>
+	
 	<select id="getGoldStandardPublicationForIndex" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count FROM gold_standard_publications b WHERE b.change_date &lt;= #lastDate# LIMIT #limit# OFFSET #offset#
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, b.group, 'public' AS group_name, 1 AS count FROM gold_standard_publications b LIMIT #limit# OFFSET #offset#
 	</select>
 </sqlMap>

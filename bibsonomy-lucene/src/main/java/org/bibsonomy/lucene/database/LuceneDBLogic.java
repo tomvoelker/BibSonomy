@@ -10,10 +10,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.params.Pair;
 import org.bibsonomy.lucene.database.params.ResourcesParam;
 import org.bibsonomy.lucene.param.LucenePost;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
@@ -75,47 +73,6 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getNewestContentIdFromTas()
-	 */
-	@Override
-	public Integer getNewestContentIdFromTas() {
-		Integer retVal = 0;
-		try {
-			retVal = (Integer)this.sqlMap.queryForObject("getNewestContentIdFromTas");
-		} catch (SQLException e) {
-			log.error("Error determining last tas entry", e);
-		}
-		
-		return retVal;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getContentIdsToDelete(java.util.Date, java.util.Date)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Integer> getContentIdsToDelete(Date fromDate, Date toDate) {
-		List<Integer> retVal;
-		
-		Pair<Date,Date> param = new Pair<Date,Date>();
-		param.setFirst(fromDate);
-		param.setSecond(toDate);
-		
-		try {
-			retVal = this.sqlMap.queryForList("get" + this.getResourceName() + "ContentIdsToDelete", param);
-		} catch (SQLException e) {
-			log.error("Error getting content ids to delete", e);
-			retVal = new LinkedList<Integer>();
-		}
-		
-		log.debug("getContentIdsToDelete - count: " + retVal.size());
-
-		return retVal;
-	}
-	
-	/*
-	 * (non-Javadoc)
 	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getContentIdsToDelete(java.util.Date)
 	 */
 	@SuppressWarnings("unchecked")
@@ -124,7 +81,7 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		List<Integer> retVal;
 		
 		try {
-			retVal = this.sqlMap.queryForList("get" + this.getResourceName() + "ContentIdsToDelete2", lastLogDate);
+			retVal = this.sqlMap.queryForList("get" + this.getResourceName() + "ContentIdsToDelete", lastLogDate);
 		} catch (SQLException e) {
 			log.error("Error getting content ids to delete", e);
 			retVal = new LinkedList<Integer>();
@@ -133,33 +90,6 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		log.debug("getContentIdsToDelete - count: " + retVal.size());
 
 		return retVal;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getUpdatedPostsForTimeRange(java.util.Date, java.util.Date)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Post<R>> getUpdatedPostsForTimeRange(Date fromDate, Date toDate) {
-		List<Post<R>> retVal = null;
-		
-		ResourcesParam<R> param = this.getResourcesParam();
-		param.setFromDate(fromDate);
-		param.setToDate(toDate);
-		
-		try {
-			retVal = this.sqlMap.queryForList("getUpdated" + this.getResourceName() + "PostsForTimeRange", param);
-		} catch (SQLException e) {
-			log.error("Error getting content ids to delete", e);
-		}
-		if( retVal==null ) {
-			retVal = new LinkedList<Post<R>>();
-		}
-		
-		log.debug("getContentIdsToDelete - count: " + retVal.size());
-
-		return retVal;	
 	}
 	
 	/*
@@ -182,47 +112,6 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		
 		return retVal;	
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getGroupNameByGroupId(int)
-	 */
-	@Override
-	public String getGroupNameByGroupId(int groupId) {
-		String retVal = null;
-		
-		try {
-			retVal = (String)this.sqlMap.queryForObject("getGroupNameByGroupId", groupId);
-		} catch (SQLException e) {
-			log.error("Error getting group name", e);
-		}
-		if( retVal==null ) {
-			retVal = "";
-		}
-		
-		return retVal;	
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getGroupMembersByGroupId(int)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<String> getGroupMembersByGroupId(int groupId) {
-		List<String> retVal = null;
-		
-		try {
-			retVal = this.sqlMap.queryForList("getGroupMembersByGroupId", groupId);
-		} catch (SQLException e) {
-			log.error("Error getting group members", e);
-		}
-		if( retVal==null ) {
-			retVal = new LinkedList<String>();
-		}
-		
-		return retVal;	
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -237,31 +126,6 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 			retVal = this.sqlMap.queryForList("getGroupMembersByGroupName", groupName);
 		} catch (SQLException e) {
 			log.error("Error getting group members", e);
-		}
-		if( retVal==null ) {
-			retVal = new LinkedList<String>();
-		}
-		
-		return retVal;	
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getGroupFriendsByGroupIdForUser(int, java.lang.String)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<String> getGroupFriendsByGroupIdForUser(int groupId, String authUserName) {
-		List<String> retVal = null;
-		
-		Pair<Integer,String> param = new Pair<Integer, String>();
-		param.setFirst(groupId);
-		param.setSecond(authUserName);
-		
-		try {
-			retVal = this.sqlMap.queryForList("getGroupFriendsByGroupIdForUser", param);
-		} catch (SQLException e) {
-			log.error("Error getting friends of given user for given group", e);
 		}
 		if( retVal==null ) {
 			retVal = new LinkedList<String>();
@@ -301,27 +165,6 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getPostsForTimeRange2(java.util.Date, java.util.Date)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Post<R>> getPostsForTimeRange2(Date fromDate, Date toDate) {
-		final ResourcesParam<R> param = this.getResourcesParam();
-		param.setFromDate(fromDate);
-		param.setToDate(toDate);
-		param.setLimit(Integer.MAX_VALUE);
-		
-		try {
-			return sqlMap.queryForList("get" + this.getResourceName() + "PostsForTimeRange2", param);
-		} catch (SQLException e) {
-			log.error("Error getting " + this.getResourceName() + " entries.", e);
-		}
-		
-		return new LinkedList<Post<R>>();
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getPostEntries(java.lang.Integer, java.lang.Integer)
 	 */
 	@SuppressWarnings("unchecked")
@@ -332,7 +175,7 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		param.setLimit(max);
 		
 		try {
-			return sqlMap.queryForList("get" + this.getResourceName() + "ForIndex3", param);
+			return sqlMap.queryForList("get" + this.getResourceName() + "ForIndex", param);
 		} catch (SQLException e) {
 			log.error("Error getting " + this.getResourceName() + " entries.", e);
 		}
@@ -352,39 +195,12 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		param.setLimit(Integer.MAX_VALUE);
 		
 		try {
-			return sqlMap.queryForList("get" + this.getResourceName() + "PostsForTimeRange3", param);
+			return sqlMap.queryForList("get" + this.getResourceName() + "PostsForTimeRange", param);
 		} catch (SQLException e) {
 			log.error("Error getting " + this.getResourceName() + " entries.", e);
 		}
 		
 		return new LinkedList<LucenePost<R>>();
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<LucenePost<R>> getPosts(int offset, int limit, Date date) {
-		final DBSession session = this.openSession();
-		final ResourcesParam<R> param = this.getResourcesParam();
-		param.setOffset(offset);
-		param.setLimit(limit);
-		param.setLastDate(date);
-		try {
-			return this.queryForList("get" + this.getResourceName() + "ForIndex", param, session);
-		} finally {
-			session.close();
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<LucenePost<R>> getPostsToDelete(Date lastLogDate, Date now) {
-		final Pair<Date, Date> param = new Pair<Date, Date>(lastLogDate, now);
-		final DBSession session = this.openSession();
-		try {
-			return this.queryForList("get" + this.getResourceName() + "PostsToDelete", param, session);			
-		} finally {
-			session.close();
-		}
 	}
 	
 	protected abstract String getResourceName();

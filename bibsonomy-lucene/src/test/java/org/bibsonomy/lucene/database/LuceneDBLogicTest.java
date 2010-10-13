@@ -17,6 +17,8 @@ import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
+import org.bibsonomy.database.plugin.plugins.Logging;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.model.BibTex;
@@ -108,13 +110,13 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void retrieveRecordsFromDatabase() {
 		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
+		DatabasePluginRegistry.getInstance().add(new BibTexExtraPlugin());
 		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it
 		//--------------------------------------------------------------------
 		final Integer lastTasId = luceneBibTexLogic.getLastTasId();
-		for( int i=0; i<5; i++ ) {
+		for (int i = 0; i < 5; i++) {
 			// store test posts in database
 			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 			refPosts.add(bibtexPost);
@@ -142,8 +144,8 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void getContentIdsToDelete() {
 		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.Logging());
+		DatabasePluginRegistry.getInstance().add(new BibTexExtraPlugin());
+		DatabasePluginRegistry.getInstance().add(new Logging());
 		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 
 		//--------------------------------------------------------------------
@@ -151,9 +153,9 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// start time - we ignore milliseconds
 		final long start    = System.currentTimeMillis();
-		final long fromDate = start- start%1000;
+		final long fromDate = start - start % 1000;
 
-		for( int i=0; i<5; i++ ) {
+		for (int i = 0; i < 5; i++) {
 			// store test posts in database
 			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 			refPosts.add(bibtexPost);
@@ -174,7 +176,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	@Ignore // ignored test, as it inherently fails on slow machines
 	public void getNewestRecordDateFromTas() {
 		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
+		DatabasePluginRegistry.getInstance().add(new BibTexExtraPlugin());
 
 		//--------------------------------------------------------------------
 		// TEST 1: insert special post into test database and search for it
@@ -185,13 +187,13 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 
 		Date postDate = luceneBibTexLogic.getNewestRecordDateFromTas();
 		// compare modulo milliseconds 
-		assertEquals(bibtexPost.getDate().getTime()-bibtexPost.getDate().getTime()%100000, postDate.getTime()-postDate.getTime()%100000);
+		assertEquals(bibtexPost.getDate().getTime() - bibtexPost.getDate().getTime() % 100000, postDate.getTime()-postDate.getTime() % 100000);
 
 		final Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
 		bookmarkDb.createPost(bookmarkPost, this.dbSession);
 
 		postDate = luceneBookmarkLogic.getNewestRecordDateFromTas();
-		assertEquals(bookmarkPost.getDate().getTime()-bookmarkPost.getDate().getTime()%100000, postDate.getTime()-postDate.getTime()%100000);
+		assertEquals(bookmarkPost.getDate().getTime() - bookmarkPost.getDate().getTime() % 100000, postDate.getTime()-postDate.getTime() % 100000);
 	}
 
 	/**

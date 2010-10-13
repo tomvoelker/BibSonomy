@@ -35,7 +35,6 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
-import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.model.Resource;
@@ -93,8 +92,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	/** list posts to insert into index */
 	protected Set<Document> postsToInsert;
 	
-	protected List<LucenePost<R>> postsToDeleteFromIndex;
-	
 	/** 
 	 * set of usernames which where flagged as spammers since last update
 	 * which should be removed from index during next update (blocking new posts
@@ -116,21 +113,18 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	
 	/** keeps track of the newest tas_id during last index update */
 	private Integer lastTasId;
-
-	private Long lastDate;
 	
 	/**
 	 * constructor disabled
 	 */
-	protected LuceneResourceIndex(final int indexId){
+	protected LuceneResourceIndex(final int indexId) {
 		// init data structures
 		this.contentIdsToDelete = new LinkedList<Integer>();
-		this.postsToInsert      = new TreeSet<Document>(new DocumentCacheComparator());
-		this.usersToFlag        = new TreeSet<String>();
-		this.postsToDeleteFromIndex = new LinkedList<LucenePost<R>>();
-		this.optimizeIndex      = false;
+		this.postsToInsert = new TreeSet<Document>(new DocumentCacheComparator());
+		this.usersToFlag = new TreeSet<String>();
+		this.optimizeIndex = false;
 		
-		this.indexId            = indexId;
+		this.indexId = indexId;
 		
 
 		try {
@@ -141,20 +135,11 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	}
 	
 	/**
-	 * @return the number of stored documents in this index
-	 */
-	public int getNumberOfStoredDocuments() {
-	    this.ensureReadAccess();
-	    return indexReader.numDocs();
-	}
-	
-	/**
 	 * Get Statistics for this index
 	 * @return LuceneIndexStatistics for this index
 	 */
 	public LuceneIndexStatistics getStatistics() {
-            LuceneIndexStatistics statistics = new LuceneIndexStatistics();
-            
+            final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
 	    synchronized(this) {
     	    	this.ensureReadAccess();
                 
@@ -164,8 +149,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
                 try {
     		    statistics.setCurrent(indexReader.isCurrent());
                     statistics.setLastModified(IndexReader.lastModified(indexReader.directory()));
-		} catch (CorruptIndexException e1) {
-		    log.error(e1);
 		} catch (IOException e1) {
 		    log.error(e1);
 		}
@@ -185,7 +168,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 
 		indexDirectory = FSDirectory.open(new File(luceneIndexPath));
 		try {
-			if( IndexWriter.isLocked(indexDirectory) ) {
+			if (IndexWriter.isLocked(indexDirectory)) {
 				log.error("WARNING: Index "+luceneIndexPath+" is locked - forcibly unlock the index.");
 				IndexWriter.unlock(indexDirectory);
 				log.error("OK. Index unlocked.");
@@ -197,8 +180,8 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		
 		try {
 			openIndexReader();
-		} catch( final IOException e) {
-			log.error("Error opening IndexReader ("+e.getMessage()+") - This is ok while creating a new index.");
+		} catch (final IOException e) {
+			log.error("Error opening IndexReader (" + e.getMessage() + ") - This is ok while creating a new index.");
 			throw e;
 		}
 		
@@ -233,7 +216,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 				try {
 					// parse date
 					return Long.parseLong(doc.get(FLD_LAST_LOG_DATE));
-				} catch(final NumberFormatException e) {
+				} catch (final NumberFormatException e) {
 					log.error("Error parsing last_log_date " + doc.get(FLD_LAST_LOG_DATE));
 				}
 			}
@@ -255,9 +238,9 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 */
 	public Integer getLastTasId() {
 		synchronized(this) {
-			if( !isIndexEnabled() ) {
+			if (!isIndexEnabled()) {
 				return Integer.MAX_VALUE;
-			} else if( this.lastTasId!=null ) {
+			} else if (this.lastTasId != null) {
 				return this.lastTasId;
 			}
 			
@@ -272,53 +255,16 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	
 			Integer lastTasId = null;
 			final Document doc = searchIndex(matchAll, 1, sort);
-			if( doc!=null ) {
+			if (doc != null) {
 				try {
 					lastTasId = Integer.parseInt(doc.get(FLD_LAST_TAS_ID));
-				} catch( final NumberFormatException e) {
+				} catch (final NumberFormatException e) {
 					log.error("Error parsing last_tas_id " + doc.get(FLD_LAST_TAS_ID));
 				}
 			}
 			
 			return lastTasId != null ? lastTasId : Integer.MAX_VALUE;
 		}
-	}
-	
-	/**
-	 * @return the last log Date
-	 */
-	public long getLastDate() {
-		synchronized (this) {
-			if (!isIndexEnabled()) {
-				return Long.MAX_VALUE;
-			} else if (this.lastDate != null) {
-				return this.lastDate;
-			}
-			
-			// get all documents
-			final Query matchAll = new MatchAllDocsQuery();
-			final Sort sort = new Sort(new SortField(LuceneBase.FLD_LAST_DATE, SortField.LONG, true));
-			
-			final Document doc = this.searchIndex(matchAll, 1, sort);
-			if (doc != null) {
-				try {
-					// parse date
-					return Long.parseLong(doc.get(LuceneBase.FLD_LAST_DATE));
-				} catch(final NumberFormatException e) {
-					log.error("Error parsing last_log_date " + doc.get(LuceneBase.FLD_LAST_DATE));
-				}
-			}
-
-			log.error("Can't get any doc from index!");
-			return Long.MAX_VALUE;
-		}
-	}
-	
-	/**
-	 * @param lastDate the lastDate to set
-	 */
-	public void setLastDate(final long lastDate) {
-		this.lastDate = lastDate;
 	}
 	
 	/** 
@@ -409,7 +355,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 */
 	public void flush() {
 		synchronized(this) {
-			if( !isIndexEnabled() ) {
+			if (!isIndexEnabled()) {
 				return;
 			}
 			
@@ -419,25 +365,26 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			// remove cached posts from index
 			//----------------------------------------------------------------
 			log.debug("Performing " + contentIdsToDelete.size() + " delete operations");
-			if( (contentIdsToDelete.size()>0) || (usersToFlag.size()>0) ) {
+			if ((contentIdsToDelete.size() > 0) || (usersToFlag.size() > 0) ) {
 				this.ensureReadAccess();
 				
 				// remove each cached post from index
-				for( final Integer contentId : contentIdsToDelete ) {
+				for (final Integer contentId : this.contentIdsToDelete) {
 					try {
 						this.purgeDocumentForContentId(contentId);
+						log.debug("deleted post " + contentId);
 					} catch (final IOException e) {
-						log.error("Error deleting post "+contentId+" from index", e);
+						log.error("Error deleting post " + contentId + " from index", e);
 					}
 				}
 				
 				// remove spam posts form index
-				for( final String userName : usersToFlag ) {
+				for (final String userName : this.usersToFlag) {
 					try {
 						final int cnt = purgeDocumentsForUser(userName);
-						log.debug("Purged " + cnt + " posts for user " +userName);
+						log.debug("Purged " + cnt + " posts for user " + userName);
 					} catch (final IOException e) {
-						log.error("Error deleting spam posts for user "+userName+" from index", e);
+						log.error("Error deleting spam posts for user " + userName + " from index", e);
 					}
 				}
 				
@@ -469,7 +416,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			// commit reader-changes 
 			//----------------------------------------------------------------
 			// FIXME: this is a bit ugly...
-			if( readUpdate && !writeUpdate ) {
+			if (readUpdate && !writeUpdate) {
 				try {
 					closeIndexReader();
 					openIndexReader();
@@ -488,14 +435,14 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 */
 	public void reset() {
 		synchronized(this) {
-			if( !isIndexEnabled() ) {
+			if (!isIndexEnabled()) {
 				try {
 					init();
 				} catch (final Exception e) {
 					return;
 				}
 			}
-			switch(this.accessMode) {
+			switch (this.accessMode) {
 			case ReadOnly:
 				accessMode = AccessMode.None;
 				try {
@@ -526,9 +473,14 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 				// nothing to do
 			}
 
+			// delete the lists
 			this.postsToInsert.clear();
 			this.contentIdsToDelete.clear();
 			this.usersToFlag.clear();
+			
+			// reset the cached query parameters
+			this.lastLogDate = null;
+			this.lastTasId = null;
 		}
 	}	
 	
@@ -644,7 +596,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		// open index for reading
 		//--------------------------------------------------------------------
 		// close IndexWriter
-		if( accessMode != AccessMode.ReadOnly ) {
+		if (accessMode != AccessMode.ReadOnly) {
 			try {
 				closeIndexWriter();
 			} catch (final IOException e) {
@@ -684,7 +636,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	}
 
 	protected void openIndexReader() throws CorruptIndexException, IOException {
-		log.debug("Opening index "+luceneIndexPath+" for reading");
+		log.debug("Opening index " + luceneIndexPath + " for reading");
 		this.indexReader = IndexReader.open(indexDirectory, false);
 		this.accessMode = AccessMode.ReadOnly;
 	}
@@ -702,13 +654,13 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		// open index for reading
 		//--------------------------------------------------------------------
 		// close IndexWriter
-		if( accessMode != AccessMode.WriteOnly ) {
+		if (this.accessMode != AccessMode.WriteOnly) {
 			try {
 				closeIndexReader();
 			} catch (final IOException e) {
 				log.error("IOException while closing index reader", e);
 			}
-			accessMode = AccessMode.None;
+			this.accessMode = AccessMode.None;
 			try {
 				openIndexWriter();
 			} catch (final IOException e) {
@@ -725,9 +677,9 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	}
 	
 	/**
-	 * disable this index when initialization failed
+	 * enable this index
 	 */
-	private void enableIndex() {
+	public void enableIndex() {
 		this.isReady = true;
 	}
 
@@ -738,7 +690,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	protected boolean isIndexEnabled() {
 		return this.isReady;
 	}
-	
 	
 	/**
 	 * get managed resource type
@@ -798,15 +749,5 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 */
 	public void setIndexId(final int indexId) {
 		this.indexId = indexId;
-	}
-	
-	/**
-	 * TODO TODODZ
-	 * @param posts
-	 */
-	public void addAllToPostsToDeleteFromIndex(final List<LucenePost<R>> posts) {
-		synchronized (this) {
-			this.postsToDeleteFromIndex.addAll(posts);
-		}
 	}
 }

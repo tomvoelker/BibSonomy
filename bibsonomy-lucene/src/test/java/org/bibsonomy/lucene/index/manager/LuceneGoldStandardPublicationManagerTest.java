@@ -1,16 +1,21 @@
 package org.bibsonomy.lucene.index.manager;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
+import java.io.File;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
+import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManagerTest;
+import org.bibsonomy.lucene.LuceneTest;
+import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.search.LuceneSearchGoldStandardPublications;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.lucene.util.LuceneBase;
@@ -18,9 +23,9 @@ import org.bibsonomy.lucene.util.generator.LuceneGenerateGoldStandardPublication
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.testutil.ModelUtils;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -28,77 +33,119 @@ import org.junit.Test;
  * @version $Id$
  */
 public class LuceneGoldStandardPublicationManagerTest extends AbstractDatabaseManagerTest {
-	private static LuceneGoldStandardPublicationManager manager;
-	private static GoldStandardPublicationDatabaseManager goldStandardManager;
+    private static LuceneGoldStandardPublicationManager manager;
+    private static GoldStandardPublicationDatabaseManager goldStandardManager;
 
-	private static final String INTER_HASH = "d9eea4aa159d70ecfabafa0c91bbc9f0";
+    private static final String INTER_HASH = "d9eea4aa159d70ecfabafa0c91bbc9f0";
 
-	/**
-	 * generates the gold standard publication index
-	 * 
-	 * @throws Exception
+    private static final  Set<String> allowedGroups = Collections.singleton(GroupID.PUBLIC.name().toLowerCase());
+    
+    /**
+     * generates the gold standard publication index
+     * 
+     * @throws Exception
+     */
+    @Before
+    public void initLucene() throws Exception {
+	JNDITestDatabaseBinder.bind();
+	LuceneBase.initRuntimeConfiguration();
+	
+	// delete old indices
+	final String path = LuceneBase.getIndexBasePath() + "lucene_GoldStandardPublication-";
+	manager = LuceneGoldStandardPublicationManager.getInstance();
+	final List<LuceneResourceIndex<GoldStandardPublication>> resourceIndices = manager.getResourceIndeces();
+	
+	for (final LuceneResourceIndex<GoldStandardPublication> index : resourceIndices) {
+	    final File file = new File(path + index.getIndexId());
+	    final boolean exists = file.exists();
+	    final boolean delete = LuceneTest.deleteFile(file);
+	    assertTrue(!exists || delete);
+	}
+
+	goldStandardManager = GoldStandardPublicationDatabaseManager.getInstance();
+	
+	/*
+	 * reset database
 	 */
-	@BeforeClass
-	public static void initLucene() throws Exception {
-		JNDITestDatabaseBinder.bind();
-		LuceneBase.initRuntimeConfiguration();
-		
-		goldStandardManager = GoldStandardPublicationDatabaseManager.getInstance();
-		manager = LuceneGoldStandardPublicationManager.getInstance();
-
-		// create index
-		final LuceneGenerateGoldStandardPublicationIndex generator = LuceneGenerateGoldStandardPublicationIndex.getInstance();
-		generator.generateIndex();
-		generator.shutdown();	
+	initDatabase();
+	
+	// create index
+	final LuceneGenerateGoldStandardPublicationIndex generator = LuceneGenerateGoldStandardPublicationIndex.getInstance();
+	generator.generateIndex();
+	generator.shutdown();
+	
+	// now reset the index; was disable while spring initializing
+	for (final LuceneResourceIndex<GoldStandardPublication> index : manager.getResourceIndeces()) {
+	    index.reset();
 	}
 
-	@Test
-	@Ignore // TODO 
-	public void testUpdate() throws IOException {
-		// TODODZ: goldstandards are always public
-		final Set<String> allowedGroups = new TreeSet<String>();
-		allowedGroups.add(GroupID.PUBLIC.name());
+	GoldStandardPublicationDatabaseManagerTest.initDatabase();
+    }
+    
+    @Test
+    public void testInsert() {	
+	final int docCountBefore = manager.getResourceIndeces().get(0).getStatistics().getNumDocs();
+	final Post<GoldStandardPublication> post = ModelUtils.generatePost(GoldStandardPublication.class);
+	final GoldStandardPublication pub = post.getResource();
+	pub.setTitle("Chuck Norris");
+	pub.recalculateHashes();
+	goldStandardManager.createPost(post, this.dbSession);
+	
+	updateIndex();
+	
+	assertEquals(docCountBefore + 1,  manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
+	final ResultList<Post<GoldStandardPublication>> posts = LuceneSearchGoldStandardPublications.getInstance().getPosts("", "", "", allowedGroups, "Chuck*", "","", new LinkedList<String>(), null, null, null, 10, 0);
+	assertEquals(1, posts.size());
+    }
 
-		final Post<GoldStandardPublication> post = goldStandardManager.getPostDetails("", INTER_HASH, "", new LinkedList<Integer>(), this.dbSession);
-		post.getResource().setAuthor("luceneTest");
+    @Test
+    public void testUpdate() {
+	final int docCountBefore = manager.getResourceIndeces().get(0).getStatistics().getNumDocs();
 
-		goldStandardManager.updatePost(post, INTER_HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession);
+	final Post<GoldStandardPublication> post = goldStandardManager.getPostDetails("", INTER_HASH, "", new LinkedList<Integer>(), this.dbSession);
+	post.getResource().setAuthor("luceneTest"); // changes the interhash!!
 
-		post.getResource().recalculateHashes();
-		final String newInterHash = post.getResource().getInterHash();
+	goldStandardManager.updatePost(post, INTER_HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
-		// update index
-		updateIndex();
+	post.getResource().recalculateHashes();
+	final String newInterHash = post.getResource().getInterHash();
+	// update index
+	updateIndex();
+	assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
+	ResultList<Post<GoldStandardPublication>> posts = LuceneSearchGoldStandardPublications.getInstance().getPosts("", "", "", allowedGroups, "", "","lucene*", new LinkedList<String>(), null, null, null, 10, 0);
+	assertEquals(1, posts.size());
 
-		post.getResource().setAbstract("Lorem ipsum dolor logos mundus novus");
-		goldStandardManager.updatePost(post, newInterHash, PostUpdateOperation.UPDATE_ALL, this.dbSession);
+	post.getResource().setAbstract("Lorem ipsum dolor logos mundus novus");
+	goldStandardManager.updatePost(post, newInterHash, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
-		// update index
-		updateIndex();
+	// update index
+	updateIndex();
+	assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
+	posts = LuceneSearchGoldStandardPublications.getInstance().getPosts("", "", "", allowedGroups, "", "","lucene*", new LinkedList<String>(), null, null, null, 10, 0);
+	assertEquals(1, posts.size());
 
-		// update index second call
-		updateIndex();
+	// update index second call
+	updateIndex();
 
-		assertEquals(2, manager.getResourceIndeces().get(0).getNumberOfStoredDocuments());
+	assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
+	
+	// check if the new post is in the lucene index
+	posts = LuceneSearchGoldStandardPublications.getInstance().getPosts("", "", "", allowedGroups, "", "","lucene*", new LinkedList<String>(), null, null, null, 10, 0);
+	assertEquals(1, posts.size());
+	
+	updateIndex();
+	updateIndex();
+	assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
+    }
 
-		final ResultList<Post<GoldStandardPublication>> posts = LuceneSearchGoldStandardPublications.getInstance().getPosts("", "", "", allowedGroups, "", "", "luceneTest", new LinkedList<String>(), null, null, null, 10, 0);
-		assertEquals(1, posts.size());
+    private static void updateIndex() {
+	for (int i = 0; i < LuceneBase.getRedundantCnt(); i++) {
+	    manager.updateAndReloadIndex();
 	}
+    }
 
-	private static void updateIndex() {		
-		for (int i = 0; i < LuceneBase.getRedundantCnt(); i++) {
-			manager.updateAndReloadIndex();
-		}
-	}
-
-	@AfterClass
-	public static void resetIndexReader() {
-		manager.resetIndexReader();
-	}
-
-	@Test
-	@Ignore // TODO
-	public void testInsert() {
-
-	}
+    @AfterClass
+    public static void resetIndexReader() {
+	manager.resetIndexReader();
+    }
 }

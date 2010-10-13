@@ -112,7 +112,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	private LuceneResourceConverter<R> resourceConverter;
 	
 	/** id for identifying redundant resource indices */
-	// TODO: please use a object representing the index
+	// TODO: please use an object representing the index
 	private int indexId;
 	
 	/**
