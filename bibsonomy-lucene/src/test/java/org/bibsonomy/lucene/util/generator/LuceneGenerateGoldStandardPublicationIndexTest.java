@@ -17,8 +17,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id: LuceneGenerateGoldStandardPublicationIndexTest.java,v 1.1
- *          2010-07-16 12:12:01 nosebrain Exp $
+ * @version $Id$
  */
 public class LuceneGenerateGoldStandardPublicationIndexTest extends LuceneTest {
     
