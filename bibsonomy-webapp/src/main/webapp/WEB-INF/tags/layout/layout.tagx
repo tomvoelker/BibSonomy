@@ -69,6 +69,7 @@
 				<script type="text/javascript" src="${resdir}/javascript/chrome.js">&amp;nbsp;</script>
 	            <script type="text/javascript" src="${resdir}/javascript/jquery.textarearesizer.js">&amp;nbsp;</script>
 	            <script type="text/javascript" src="${resdir}/javascript/jquery.sidebarresizer.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/jquery.fontResize.js">&amp;nbsp;</script>
 				
 				<!-- enable logging with user permission -->
 				<c:if test="${loginUser.settings.logLevel != 1}">
