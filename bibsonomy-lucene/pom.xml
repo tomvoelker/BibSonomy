@@ -143,7 +143,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
+			<artifactId>spring-context</artifactId>
 			<version>2.5.6</version>
 		</dependency>
 		<dependency>
