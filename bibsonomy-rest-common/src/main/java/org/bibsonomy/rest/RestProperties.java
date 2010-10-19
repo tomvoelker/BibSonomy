@@ -88,6 +88,33 @@ public class RestProperties {
 
 		return singleton;
 	}
+	
+	private static String getByJndi(final String name, final Context ctx) {
+		if (ctx == null) {
+			return null;
+		}
+		try {
+			return (String) ctx.lookup(name);
+		} catch (final NamingException ex) {
+			if (log.isDebugEnabled()) {
+				log.debug("cannot retrieve java:/comp/env/" + name);
+			}
+			return null;
+		}
+	}
+
+	private static String get(final Property prop, final Properties properties, final Context ctx) {
+		String rVal = getByJndi(prop.name(), ctx);
+		if (rVal == null) {
+			if (properties != null) {
+				rVal = properties.getProperty(prop.name());
+			}
+			if (rVal == null) {
+				rVal = prop.defaultValue;
+			}
+		}
+		return rVal;
+	}
 
 	private ModelValidator validator = null;
 	private final Properties properties;
@@ -95,11 +122,9 @@ public class RestProperties {
 
 	public static enum Property {
 		CONFIGFILE("RestConfig.cfg"),
-		API_URL("http://www.bibsonomy.org/api/"),   // FIXME: should be configurable
-		SYSTEM_NAME("BibSonomy"),					// FIXME: should be configurable
-		CONTENT_TYPE("text/xml"),
-		PDF_TYPE("application/pdf"),
-		API_USER_AGENT("BibSonomyWebServiceClient"), // TODO: BibSonomy
+		API_URL("http://www.bibsonomy.org/api/"),
+		SYSTEM_NAME("BibSonomy"),
+		API_USER_AGENT("BibSonomyWebServiceClient"),
 		URL_TAGS("tags"),
 		URL_CONCEPTS("concepts"),
 		URL_USERS("users"),
@@ -126,43 +151,15 @@ public class RestProperties {
 		this.jndiCtx = jndiCtx;
 	}
 
-	private static String getByJndi(final String name, final Context ctx) {
-		if (ctx == null) {
-			return null;
-		}
-		try {
-			return (String) ctx.lookup(name);
-		} catch (final NamingException ex) {
-			if (log.isDebugEnabled() == true) {
-				log.debug("cannot retrieve java:/comp/env/" + name);
-			}
-			return null;
-		}
-	}
-
-	private static String get(final Property prop, final Properties properties, final Context ctx) {
-		String rVal = getByJndi(prop.name(), ctx);
-		if (rVal == null) {
-			if (properties != null) {
-				rVal = properties.getProperty(prop.name());
-			}
-			if (rVal == null) {
-				rVal = prop.defaultValue;
-			}
-		}
-		return rVal;
-	}
-
 	public String get(final Property prop) {
 		return get(prop, this.properties, this.jndiCtx);
 	}
-
+	
+	/**
+	 * @return the api url
+	 */
 	public String getApiUrl() {
 		return this.get(Property.API_URL);
-	}
-
-	public String getContentType() {
-		return this.get(Property.CONTENT_TYPE);
 	}
 
 	public String getApiUserAgent() {
@@ -215,10 +212,6 @@ public class RestProperties {
 
 	public String getSystemName() {
 		return this.get(Property.SYSTEM_NAME);
-	}
-
-	public String getPdfType() {
-		return this.get(Property.PDF_TYPE);
 	}
 
 	public ModelValidator getModelValidator() {
