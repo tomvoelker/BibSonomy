@@ -215,12 +215,6 @@
 			<version>1.6.3</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springmodules</groupId>
-			<artifactId>spring-modules-springmvc-extra
-			</artifactId>
-			<version>0.8a</version>
-		</dependency>
-		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>provided</scope>
