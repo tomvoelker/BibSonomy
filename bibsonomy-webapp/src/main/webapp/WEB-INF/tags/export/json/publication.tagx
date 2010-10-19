@@ -13,16 +13,18 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
       {
          "type" : "Publication",
-         "id"   : "${projectHome}bibtex/2${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",
+         "id"   : "${projectHome}bibtex/2${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",         
+         "tags" : [
+            <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
+         ],
+         
+         <!-- TODO: refactor TODODZ -->
          "intraHash" : "${post.resource.intraHash}",
          "label" : "${mtl:quoteJSONcleanBibTeX(post.resource.title)}",
          "user" : "${mtl:quoteJSON(post.user.name)}",
          "description" : "${mtl:quoteJSON(post.description)}",
          "date" : "<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd hh:mm:ss"/>",
          "count" : ${post.resource.count},
-         "tags" : [
-            <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
-         ],
          "pub-type": "${post.resource.entrytype}",
          <c:if test="${!empty post.resource.journal}">"journal": "${mtl:quoteJSONcleanBibTeX(post.resource.journal)}",</c:if>
          <c:if test="${!empty post.resource.booktitle}">"booktitle": "${mtl:quoteJSONcleanBibTeX(post.resource.booktitle)}",</c:if>
@@ -46,6 +48,9 @@
          <c:if test="${!empty post.resource.pages}">"pages": "${mtl:quoteJSONcleanBibTeX(post.resource.pages)}",</c:if>
          <c:if test="${!empty post.resource.note}">"note": "${mtl:quoteJSONcleanBibTeX(post.resource.note)}",</c:if>
          <c:if test="${!empty post.resource.abstract}">"abstract": "${mtl:quoteJSONcleanBibTeX(post.resource.abstract)}",</c:if>
+         <c:forEach var="miscEntry" varStatus="miscStatus" items="${post.resource.miscFields}">
+         "${mtl:quoteJSON(miscEntry.key)}" : "${mtl:quoteJSONcleanBibTeX(miscEntry.value)}",
+         </c:forEach>
          "bibtexKey": "${mtl:quoteJSONcleanBibTeX(post.resource.bibtexKey)}"
       }
 </jsp:root>
