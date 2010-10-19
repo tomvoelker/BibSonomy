@@ -206,7 +206,7 @@ public class TestDBLogic implements LogicInterface {
 		}
 
 		// now this cast is ok
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({"unchecked", "rawtypes"})
 		final List<Post<T>> rVal = ((List) posts);
 		// check hash
 		if (hash != null) {

@@ -287,11 +287,12 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
 		// get renderer
-		final Renderer renderer = RendererFactory.getRenderer(RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HEADER_ACCEPT), request.getContentType()));
+		final RenderingFormat mediaType = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HEADER_ACCEPT), request.getContentType());
+		final Renderer renderer = RendererFactory.getRenderer(mediaType);
 
 		// send error
 		response.setStatus(code);
-		response.setContentType(RestProperties.getInstance().getContentType());
+		response.setContentType(mediaType.getMimeType());
 		final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
 		final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName(RESPONSE_ENCODING));
 		renderer.serializeError(writer, message);
