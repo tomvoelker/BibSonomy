@@ -26,7 +26,7 @@ import org.bibsonomy.webapp.view.Views;
 
 
 /**
- * Controller for the edit_tags page (only the view!)
+ * Controller for the edit_tags page 
  * 
  * @author Henrik Bartholmai
  * @version $Id$
@@ -83,6 +83,7 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 	private View workOnEditTagsHandler(EditTagsPageViewCommand cmd) {
 		User user = cmd.getContext().getLoginUser();
 		EditTagsCommand command = cmd.getEditTags();
+		int updatedTags = 0;
 		
 		try {
 			final Set<Tag> tagsToReplace = TagUtils.parse(command.getDelTags());
@@ -122,19 +123,22 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 			
 			if(!command.isUpdateRelations()) {
 				
-			logic.updateTags(user, new LinkedList<Tag>(tagsToReplace), new LinkedList<Tag>(replacementTags), false);
+				updatedTags = logic.updateTags(user, new LinkedList<Tag>(tagsToReplace), new LinkedList<Tag>(replacementTags), false);
 			} else {
 				if(tagsToReplace.size() != 1 || replacementTags.size() != 1) 
 					throw new MalformedURLSchemeException("edittags.main.note");
 				
-				logic.updateTags(user, new LinkedList<Tag>(tagsToReplace), new LinkedList<Tag>(replacementTags), true);
+				updatedTags = logic.updateTags(user, new LinkedList<Tag>(tagsToReplace), new LinkedList<Tag>(replacementTags), true);
 			}
 			
 		} catch (RecognitionException ex) {
 			// TODO How can i handle this
 		}
+		
+		if(command.isUpdateRelations()) 
+			return new ExtendedRedirectView("/edit_tags?updatedRelationsCount=" +updatedTags);
 
-		return new ExtendedRedirectView("/edit_tags");
+		return new ExtendedRedirectView("/edit_tags?updatedTagsCount=" +updatedTags);
 	}
 	
 	private View workOnRelationsHandler(EditTagsPageViewCommand cmd) {

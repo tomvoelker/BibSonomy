@@ -45,19 +45,20 @@
 				<!-- 
 					some resources/relations have been updated
 				 -->
-				<c:if test="${not empty updatedResourcesCount or not empty updatedRelationsCount}">
+				 
+				<c:if test="${command.updatedRelationsCount > 0 or command.updatedTagsCount > 0}">
 		  			<h2><fmt:message key="edittags.update.headline" /></h2>
-		 			<c:if test="${not empty updatedResourcesCount}">
+		 			<c:if test="${command.updatedTagsCount > 0}">
 		   				<p>
 		   					<fmt:message key="edittags.update.resources"> 
-		   						<fmt:param>${updatedResourcesCount}</fmt:param>
+		   						<fmt:param>${command.updatedTagsCount}</fmt:param>
 		   					</fmt:message>
 		   				</p>
 		 			</c:if>
-		 			<c:if test="${not empty updatedRelationsCount}">
+		 			<c:if test="${command.updatedRelationsCount > 0}">
 		    			<p>
 		    				<fmt:message key="edittags.update.relations">
-		    					<fmt:param>${updatedRelationsCount}</fmt:param>
+		    					<fmt:param>${command.updatedRelationsCount}</fmt:param>
 		    				</fmt:message>
 		    			</p>
 		  			</c:if>

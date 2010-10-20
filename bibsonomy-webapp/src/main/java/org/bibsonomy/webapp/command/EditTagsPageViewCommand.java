@@ -19,6 +19,10 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	private final EditTagsCommand editTags;
 	
 	private final RelationsEditCommand relationsEdit;
+
+	private int updatedRelationsCount = 0;
+	
+	private int updatedTagsCount = 0;
 	
 	/**
 	 * which action is wanted ?
@@ -92,6 +96,34 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	 */
 	public int getForcedAction() {
 		return forcedAction;
+	}
+
+	/**
+	 * @param updatedRelationsCount the updatedRelationsCount to set
+	 */
+	public void setUpdatedRelationsCount(int updatedRelationsCount) {
+		this.updatedRelationsCount = updatedRelationsCount;
+	}
+
+	/**
+	 * @return the updatedRelationsCount
+	 */
+	public int getUpdatedRelationsCount() {
+		return updatedRelationsCount;
+	}
+
+	/**
+	 * @param updatedTagsCount the updatedTagsCount to set
+	 */
+	public void setUpdatedTagsCount(int updatedTagsCount) {
+		this.updatedTagsCount = updatedTagsCount;
+	}
+
+	/**
+	 * @return the updatedTagsCount
+	 */
+	public int getUpdatedTagsCount() {
+		return updatedTagsCount;
 	}
 
 }

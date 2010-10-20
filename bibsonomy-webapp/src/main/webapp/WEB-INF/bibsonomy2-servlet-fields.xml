@@ -55,6 +55,8 @@
 				<value>userSimilarity</value>
 				<value>notags</value><!-- boolean (to remove tags from /publ/ page) -->
 				<value>ranking.*</value> <!-- ranking information -->
+				<value>updatedTagsCount</value> <!-- used for the feedback after tag update /edit_tags -->
+				<value>updatedRelationsCount</value> <!-- used for the feedback after relation update /edit_tags -->
 			</list>
 		</constructor-arg>
 	</bean>
