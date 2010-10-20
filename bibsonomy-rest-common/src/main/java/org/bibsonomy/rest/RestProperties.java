@@ -53,13 +53,12 @@ public class RestProperties {
 	 */
 	public static RestProperties getInstance() {
 		if (singleton == null) {
-			Context ctx;
+			Context ctx = null;
 			try {
 				ctx = ((Context) new InitialContext().lookup("java:/comp/env"));
 			} catch (final Throwable ex) {
 				log.warn("unable to initialize jndi context");
 				log.debug(ex.getMessage(), ex);
-				ctx = null;
 			}
 			final String cfgFileName = get(Property.CONFIGFILE, null, ctx);
 			final Properties prop = new Properties();
@@ -67,7 +66,7 @@ public class RestProperties {
 				final InputStream is;
 				final StringBuilder logMsgBuilder = new StringBuilder("reading config file '").append(cfgFileName).append("' from ");
 				final File f = new File(cfgFileName);
-				if (f.exists() == true) {
+				if (f.exists()) {
 					is = new FileInputStream(f);
 					logMsgBuilder.append("filesystem");
 				} else {
@@ -125,6 +124,7 @@ public class RestProperties {
 		API_URL("http://www.bibsonomy.org/api/"),
 		SYSTEM_NAME("BibSonomy"),
 		API_USER_AGENT("BibSonomyWebServiceClient"),
+		BASIC_REALM("BibSonomyWebService"),
 		URL_TAGS("tags"),
 		URL_CONCEPTS("concepts"),
 		URL_USERS("users"),
@@ -212,6 +212,10 @@ public class RestProperties {
 
 	public String getSystemName() {
 		return this.get(Property.SYSTEM_NAME);
+	}
+	
+	public String getBasicRealm() {
+		return this.get(Property.BASIC_REALM);
 	}
 
 	public ModelValidator getModelValidator() {
