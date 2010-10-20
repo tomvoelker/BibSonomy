@@ -19,6 +19,7 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	
 	/** specific action for admin page */
 	private String action;
+	private String adminResponse = "";
 
 	
 	private String envContextString;
@@ -134,6 +135,20 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	 */
 	public List<LuceneIndexSettingsCommand> getIndices() {
 		return indices;
+	}
+
+	/**
+	 * @param adminResponse
+	 */
+	public void setAdminResponse(String adminResponse) {
+		this.adminResponse = adminResponse;
+	}
+
+	/**
+	 * @return the admin response
+	 */
+	public String getAdminResponse() {
+		return adminResponse;
 	}
 
 }

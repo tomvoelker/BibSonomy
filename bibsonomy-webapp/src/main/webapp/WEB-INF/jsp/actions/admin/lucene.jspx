@@ -35,26 +35,42 @@
 	<h2>
 			Lucene Index Statistics 
 	</h2>
-
+	
+	  <c:if test="${not empty command.adminResponse}">
+		<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
+	  </c:if>
+	  
     <c:forEach var="index" items="${command.indices}">
 	    <div class="indexProperties">
 			<fieldset>
 				<legend><label><c:out value="${index.name}" /></label></legend>
-				<div class="ls-description">containing docs:</div><div class="ls-value">${index.numDocs}</div>
-				<div class="ls-description">deleted docs:</div><div class="ls-value">${index.numDeletedDocs}</div>
-				<div class="ls-description">newest date:</div><div class="ls-value">${index.newestDateString}</div>
-				<div class="ls-description">last modified date:</div><div class="ls-value">${index.lastModifiedString}</div>
-				<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${index.currentVersion}</div>
-				<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${index.current}</div>
+				<c:choose>
+				    <c:when test="${index.enabled}">
+					    <div class="ls-description">containing docs:</div><div class="ls-value">${index.numDocs}</div>
+					    <div class="ls-description">deleted docs:</div><div class="ls-value">${index.numDeletedDocs}</div>
+					    <div class="ls-description">newest date:</div><div class="ls-value">${index.newestDateString}</div>
+					    <div class="ls-description">last modified date:</div><div class="ls-value">${index.lastModifiedString}</div>
+					    <div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${index.currentVersion}</div>
+					    <div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${index.current}</div>
+				    </c:when>
+				    <c:otherwise>
+				        Seems to be properly configured but could not physically be found. <br />
+				        <a href="?action=generate${index.resourceName}Index">Generate a new <c:out value="${index.name}" /></a>
+				    </c:otherwise>
+				</c:choose>
 			</fieldset>
 			<fieldset>
 				<legend><label><c:out value="${index.inactiveIndex.name}" /></label></legend>
-				<div class="ls-description">containing docs:</div><div class="ls-value">${index.inactiveIndex.numDocs}</div>
-				<div class="ls-description">deleted docs:</div><div class="ls-value">${index.inactiveIndex.numDeletedDocs}</div>
-				<div class="ls-description">newest date:</div><div class="ls-value">${index.inactiveIndex.newestDateString}</div>
-				<div class="ls-description">last modified date:</div><div class="ls-value">${index.inactiveIndex.lastModifiedString}</div>
-				<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${index.inactiveIndex.currentVersion}</div>
-				<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${index.inactiveIndex.current}</div>
+				<c:choose>
+				    <c:when test="${index.enabled}">
+						<div class="ls-description">containing docs:</div><div class="ls-value">${index.inactiveIndex.numDocs}</div>
+						<div class="ls-description">deleted docs:</div><div class="ls-value">${index.inactiveIndex.numDeletedDocs}</div>
+						<div class="ls-description">newest date:</div><div class="ls-value">${index.inactiveIndex.newestDateString}</div>
+						<div class="ls-description">last modified date:</div><div class="ls-value">${index.inactiveIndex.lastModifiedString}</div>
+						<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${index.inactiveIndex.currentVersion}</div>
+						<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${index.inactiveIndex.current}</div>
+					</c:when>
+				</c:choose>
 			</fieldset>
 	    </div>
     </c:forEach>

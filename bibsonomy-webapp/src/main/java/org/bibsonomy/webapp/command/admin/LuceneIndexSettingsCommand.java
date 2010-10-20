@@ -15,6 +15,7 @@ public class LuceneIndexSettingsCommand {
 
 	private String instance;
 	private String name;
+	private String resourceName;
 	private int numDocs;
 	private int numDeletedDocs;
 	private Date newestDate;
@@ -24,6 +25,8 @@ public class LuceneIndexSettingsCommand {
 	private boolean isCurrent;
 	private static SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private LuceneIndexSettingsCommand inactiveIndex;
+	private int id;
+	private boolean isEnabled;
 
 	/**
 	 * @param indexStatistics
@@ -190,5 +193,47 @@ public class LuceneIndexSettingsCommand {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @param isEnabled the isEnabled to set
+	 */
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
+
+	/**
+	 * @return the isEnabled
+	 */
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
+	/**
+	 * @param resourceName the resourceName to set
+	 */
+	public void setResourceName(String resourceName) {
+		this.resourceName = resourceName;
+	}
+
+	/**
+	 * @return the resourceName
+	 */
+	public String getResourceName() {
+		return resourceName;
 	}
 }

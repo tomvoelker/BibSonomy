@@ -7,6 +7,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
+import org.bibsonomy.lucene.util.generator.LuceneGenerateBibTexIndex;
+import org.bibsonomy.lucene.util.generator.LuceneGenerateBookmarkIndex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
@@ -24,6 +26,9 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class AdminLuceneController implements MinimalisticController<AdminLuceneViewCommand> {
+	private static final String GENERATE_BIBTEX_INDEX = "generateBibTexIndex";
+	private static final String GENERATE_BOOKMARK_INDEX = "generateBookmarkIndex";
+
 	private static final Log log = LogFactory.getLog(AdminLuceneController.class);
 	
 	@SuppressWarnings("unused") // FIXME: currently unused
@@ -45,21 +50,56 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		
 		command.setPageTitle("admin lucene");
 		
+		
+		boolean generatedIndex = false;
+		
+		if(command.getAction() == null) {
+	        // Do nothing.
+		} else if(command.getAction().equals(GENERATE_BOOKMARK_INDEX)) {
+			try {
+				LuceneGenerateBookmarkIndex.run();
+				generatedIndex = true;
+			} catch (Exception ex) {
+				log.error("Could not complete Lucene Index-Generation triggered from lucene-admin-page", ex);
+			}
+		} else if (command.getAction().equals(GENERATE_BIBTEX_INDEX)) {
+			try {
+				LuceneGenerateBibTexIndex.run();
+				generatedIndex = true;
+			} catch (Exception ex) {
+				log.error("Could not complete Lucene Index-Generation triggered from lucene-admin-page", ex);
+			}
+		}
+		
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
-		
 		List<LuceneIndexSettingsCommand> indices = command.getIndices();
 		
-		for(LuceneResourceManager<? extends Resource> manager: luceneResourceManagers) {
+		for (LuceneResourceManager<? extends Resource> manager: luceneResourceManagers) {
+			boolean isIndexEnabled = manager.isIndexEnabled();
 			LuceneIndexSettingsCommand indexCmd         = new LuceneIndexSettingsCommand();
 			LuceneIndexSettingsCommand indexCmdInactive = new LuceneIndexSettingsCommand();
 			
-			indexCmd.setIndexStatistics(manager.getStatistics());
+			// If a new Index was generated, the index and searcher have to be reset
+			if(generatedIndex && !manager.isIndexEnabled()) {
+				manager.resetIndexReader();
+				manager.resetIndexSearcher();
+				isIndexEnabled = manager.isIndexEnabled();
+			}
+			
+			indexCmd.setEnabled(isIndexEnabled);
+			indexCmd.setResourceName(manager.getResourceName());
 			indexCmd.setName(manager.getResourceName() + " index");
 			indexCmd.setInactiveIndex(indexCmdInactive);
+				
+			//TODO: show index-ids
+			//indexCmd.setId(...);
 			
-			indexCmdInactive.setIndexStatistics(manager.getInactiveIndexStatistics());
-
+			if (isIndexEnabled) {
+				indexCmd.setIndexStatistics(manager.getStatistics());
+				indexCmdInactive.setIndexStatistics(manager.getInactiveIndexStatistics());
+			}
+			
 			indices.add(indexCmd);
 		}
 		
