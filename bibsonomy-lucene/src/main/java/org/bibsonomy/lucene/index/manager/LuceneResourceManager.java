@@ -281,14 +281,19 @@ public class LuceneResourceManager<R extends Resource> {
 	 * switches the active index and updates and reloads the index
 	 */
 	public void updateAndReloadIndex() {
-		// switch active index
-		this.idxSelect = (idxSelect + 1) % this.resourceIndices.size();
-
-		// update passive index
-		updateIndex();
-		
-		// make tell searcher to use the updated index
-		reloadIndex();
+	    	// If updater has been disabled temporarily
+	        // (e.g. to generate a new index), do nothing  
+		if (!luceneUpdaterEnabled) {
+		    
+		    // switch active index
+		    this.idxSelect = (idxSelect + 1) % this.resourceIndices.size();
+		    
+		    // update passive index
+		    updateIndex();
+		    
+		    // make tell searcher to use the updated index
+		    reloadIndex();
+		}
 	}
 
 	
@@ -395,6 +400,29 @@ public class LuceneResourceManager<R extends Resource> {
 	 */
 	public void setDbLogic(final LuceneDBInterface<R> dbLogic) {
 		this.dbLogic = dbLogic;
+	}
+	
+	/**
+	 * checks, whether the index is readily initialized
+	 * @return true, if index is ready - false, otherwise
+	 * (e.g. if no lucene-index has been generated yet) 
+	 */
+	public boolean isIndexEnabled() {
+	    return this.resourceIndices.get(idxSelect).isIndexEnabled();
+	}
+	
+	/**
+	 * Disable lucene-updater, e.g. to generate a new lucene-index
+	 */
+	public void disableLuceneUpdater() {
+	    this.luceneUpdaterEnabled = false;
+	}
+	
+	/**
+	 * Reenable lucene-updater
+	 */
+	public void enableLuceneUpdater() {
+	    this.luceneUpdaterEnabled = true;
 	}
 
 	/**

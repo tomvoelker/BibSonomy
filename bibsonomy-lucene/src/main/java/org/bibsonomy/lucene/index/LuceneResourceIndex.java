@@ -153,6 +153,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		    log.error(e1);
 		}
 	    }
+	    
 	    statistics.setNewestRecordDate(this.getLastLogDate());
 	    
             return statistics;
@@ -687,7 +688,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * checks, whether the index is readily initialized
 	 * @return true, if index is ready - false, otherwise
 	 */
-	protected boolean isIndexEnabled() {
+	public boolean isIndexEnabled() {
 		return this.isReady;
 	}
 	
