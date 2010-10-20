@@ -229,10 +229,7 @@ public final class RestServlet extends HttpServlet {
 			cachingStream.writeTo(response.getOutputStream());
 		} catch (final AuthenticationException e) {
 			log.warn(e.getMessage());
-			/*
-			 * FIXME: string "BibSonomy" should never occur in source code!
-			 */
-			response.setHeader("WWW-Authenticate", "Basic realm=\"BibSonomyWebService\"");
+			response.setHeader("WWW-Authenticate", "Basic realm=\"" + RestProperties.getInstance().getBasicRealm() + "\"");
 			sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
 		} catch (final InternServerException e) {
 			log.error(e.getMessage());
