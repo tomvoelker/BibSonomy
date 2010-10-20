@@ -127,6 +127,7 @@
 		    <list>
 				<ref bean="luceneBibTexManager" />
 				<ref bean="luceneBookmarkManager" />
+				<ref bean="luceneGoldStandardPublicationManager" />
 		    </list>
 		</property>
 	</bean>
