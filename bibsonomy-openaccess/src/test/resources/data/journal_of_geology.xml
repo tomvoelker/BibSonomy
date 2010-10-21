@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE romeoapi SYSTEM "http://www.sherpa.ac.uk/romeo/romeoapi24.dtd">
+<romeoapi version="2.4.2">
+  <header>
+    <parameters>
+      <parameter source="specified">
+        <parametername>jtitle</parametername>
+        <parametervalue>Journal of Geology</parametervalue>
+      </parameter>
+
+      <parameter source="default">
+        <parametername>qtype</parametername>
+        <parametervalue>STARTS</parametervalue>
+      </parameter>
+      <parameter source="default">
+        <parametername>showfunder</parametername>
+        <parametervalue>none</parametervalue>
+
+      </parameter>
+      <parameter source="default">
+        <parametername>fIDnum</parametername>
+        <parametervalue>|</parametervalue>
+      </parameter>
+    </parameters>
+    <numhits>1</numhits>
+
+    <apicontrol>journal</apicontrol>
+    <outcome>singleJournal</outcome>
+    <message />
+    <licence>SHERPA/RoMEO data is available for re-use under a Creative Commons Attribution-Non-Commercial-Share Alike 2.5 licence. For more details, please see the 'conditions for re-use' at the &lt;licenceurl /&gt;, and linked-to from the SHERPA/RoMEO home page.</licence>
+    <licenceurl>http://www.sherpa.ac.uk/romeoreuse.html</licenceurl>
+    <disclaimer>All SHERPA/RoMEO information is correct to the best of our knowledge but should not be relied upon for legal advice. SHERPA cannot be held responsible for the re-use of RoMEO data, or for alternative interpretations which are derived from this information.</disclaimer>
+
+    <timestamp>13-Oct-2010:16:04:00</timestamp>
+  </header>
+  <journals>
+    <journal>
+      <jtitle>Journal of Geology -Chicago-</jtitle>
+      <issn>0022-1376</issn>
+      <zetocpub>University of Chicago Press</zetocpub>
+
+      <romeopub>University of Chicago Press</romeopub>
+    </journal>
+  </journals>
+  <publishers>
+    <publisher id="77">
+      <name>University of Chicago Press</name>
+      <alias />
+      <homeurl>http://www.press.uchicago.edu/</homeurl>
+
+      <preprints>
+        <prearchiving>can</prearchiving>
+        <prerestrictions />
+      </preprints>
+      <postprints>
+        <postarchiving>restricted</postarchiving>
+        <postrestrictions>
+          <postrestriction>Some journals impose embargoes varying between 6 months and 3 years, majority are 12 months</postrestriction>
+
+          <postrestriction>Consult journal home page for details</postrestriction>
+        </postrestrictions>
+      </postprints>
+      <conditions>
+        <condition>On a non-profit author, institutional or discipline-specific pre-print server</condition>
+        <condition>Embargo of 12 months to 3 years for use in institutional repository</condition>
+        <condition>Publisher copyright and source must be acknowledged</condition>
+
+        <condition>Publisher's version/PDF may be used (encouraged)</condition>
+        <condition>Encouraged to link to publisher version</condition>
+        <condition>Wellcome Trust and MRC authors may post authors own version in PubMed Central/ PubMed Central UK 6 month after publication</condition>
+        <condition>NIH authors may post authors own version in PubMed Central 12 months after publication</condition>
+      </conditions>
+      <mandates />
+      <paidaccess>
+
+        <paidaccessurl />
+        <paidaccessname />
+        <paidaccessnotes />
+      </paidaccess>
+      <copyrightlinks>
+        <copyrightlink>
+          <copyrightlinktext>Policy</copyrightlinktext>
+          <copyrightlinkurl>http://www.journals.uchicago.edu/rights.html</copyrightlinkurl>
+
+        </copyrightlink>
+      </copyrightlinks>
+      <romeocolour>yellow</romeocolour>
+      <dateadded>2004-01-10 00:00:00</dateadded>
+      <dateupdated>2009-07-22 15:31:43</dateupdated>
+    </publisher>
+  </publishers>
+
+</romeoapi>
