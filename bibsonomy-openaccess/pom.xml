@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<name>BibSonomy-OpenAccess</name>
+	<groupId>org.bibsonomy</groupId>
+	<artifactId>bibsonomy-openaccess</artifactId>
+	<version>2.0.10-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<description>
+		Check Open Access Policies for Publications
+	</description>
+	<parent>
+		<groupId>org.bibsonomy</groupId>
+		<artifactId>bibsonomy</artifactId>
+		<version>2.0.10-SNAPSHOT</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+		</dependency>
+     <dependency>
+        <groupId>com.googlecode.json-simple</groupId>
+        <artifactId>json-simple</artifactId>
+        <version>1.1</version>
+     </dependency>
+     <dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.6.0</version>
+				<configuration>
+					<excludes>
+						<exclude>**/src/test/resources/**</exclude>
+						<exclude>**/*.txt</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>		
+	</build>
+	
+	<distributionManagement>
+		<site>
+			<!-- copy site documentation via scp to gromit -->
+			<id>bibsonomy-rest-common-website-documentation</id>
+			<url>
+				scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
+			</url>
+		</site>
+	</distributionManagement>
+	
+</project>
