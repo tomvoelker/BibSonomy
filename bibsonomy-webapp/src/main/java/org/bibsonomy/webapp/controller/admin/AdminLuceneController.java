@@ -9,6 +9,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateBibTexIndex;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateBookmarkIndex;
+import org.bibsonomy.lucene.util.generator.LuceneGenerateGoldStandardPublicationIndex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
@@ -26,6 +27,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class AdminLuceneController implements MinimalisticController<AdminLuceneViewCommand> {
+	private static final String GENERATE_GOLDSTANDARDPUBLICATION_INDEX = "generateGoldStandardPublicationIndex";
 	private static final String GENERATE_BIBTEX_INDEX = "generateBibTexIndex";
 	private static final String GENERATE_BOOKMARK_INDEX = "generateBookmarkIndex";
 
@@ -65,6 +67,13 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		} else if (command.getAction().equals(GENERATE_BIBTEX_INDEX)) {
 			try {
 				LuceneGenerateBibTexIndex.run();
+				generatedIndex = true;
+			} catch (Exception ex) {
+				log.error("Could not complete Lucene Index-Generation triggered from lucene-admin-page", ex);
+			}
+		} else if (command.getAction().equals(GENERATE_GOLDSTANDARDPUBLICATION_INDEX)) {
+			try {
+				LuceneGenerateGoldStandardPublicationIndex.run();
 				generatedIndex = true;
 			} catch (Exception ex) {
 				log.error("Could not complete Lucene Index-Generation triggered from lucene-admin-page", ex);
