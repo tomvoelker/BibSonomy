@@ -40,6 +40,7 @@ public class PubMedScraperTest {
 	 * starts URL test with id url_27
 	 */
 	@Test
+	@Ignore
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_27"));
@@ -49,6 +50,7 @@ public class PubMedScraperTest {
 	 * starts URL test with id url_35
 	 */
 	@Test
+	@Ignore
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_35"));
@@ -58,6 +60,7 @@ public class PubMedScraperTest {
 	 * starts URL test with id url_91
 	 */
 	@Test
+	@Ignore
 	public void url3TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_91"));
@@ -67,6 +70,7 @@ public class PubMedScraperTest {
 	 * starts URL test with id url_176
 	 */
 	@Test
+	@Ignore
 	public void url4TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_176"));
