@@ -1044,7 +1044,7 @@
 	</URLTest>
 	<URLTest id="url_176">
 		<TestDescription>PubMed new URL pattern</TestDescription>
-		<URL>http://ukpmc.ac.uk/articlerender.cgi?artid=1742356</URL>
+		<URL>http://ukpmc.ac.uk/abstract/MED/19426458</URL>
 		<BibFile>PubMedScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
 	</URLTest>
