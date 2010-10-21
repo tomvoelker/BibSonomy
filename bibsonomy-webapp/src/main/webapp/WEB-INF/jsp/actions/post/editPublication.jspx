@@ -29,10 +29,14 @@
 	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" selectedNaviTab="nav_postPub">
 
 		<jsp:attribute name="generalInformation">
-           <post:publicationRequiredFields post="${post}" autocompletion="$(false)"/>
+        	<post:publicationRequiredFields post="${post}" autocompletion="$(false)"/>
+        	<br />
+        	<br />
+			<a onClick="javascript:checkOpenAccess();" id="checkOpenAccess">check open access policy</a>
+		    <div class="fsRow" id="openAccess">          
+			</div>
 		</jsp:attribute>
-
-
+		
         <jsp:attribute name="detailedInformation">
 			<post:publicationDetailedInformations post="${post}" />
 

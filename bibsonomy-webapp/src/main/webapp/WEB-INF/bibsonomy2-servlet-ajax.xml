@@ -91,6 +91,18 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/ajax/checkOpenAccess">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="OpenAccessController" />
+						<property name="allowedFields">
+							<list>
+								<value>publisher</value>
+								<value>jTitle</value>
+								<value>qType</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -151,4 +163,9 @@
 		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 
+	
+	<bean id="OpenAccessController" class="org.bibsonomy.webapp.controller.ajax.OpenAccessController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>	
+	
 </beans>

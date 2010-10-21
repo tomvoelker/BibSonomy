@@ -107,4 +107,46 @@ function in_array(array, element) {
  	return false;
 }  
 
+/* open access check */
+/* TODO: add error handling, check apicontrol and outcome in response. */
+$(document).ready(function() {    
+    $("#checkOpenAccess").click(function() {
+		var container = $("#openAccess");	
+    	var url = "";
+
+    	// reset
+		container.css('border','0');
+		container.css('padding','0');	
+		
+		container.html("");
+    	container.hide();	
+    	
+		if($("#post\\.resource\\.entrytype").val() == "article")
+			url = "/ajax/checkOpenAccess?jTitle="+$("#post\\.resource\\.title").val();
+		else
+			url = "/ajax/checkOpenAccess?publisher="+$("#post\\.resource\\.editor").val();
+		
+		$.ajax({
+			url: url,
+			dataType: 'html',
+			success: function(data) {
+				data = data.replace(/&#034;/g, '"');				
+				data = eval("("+data+")");
+				data = eval("("+data.publishers+")")
+				$.each(data, function(index, publisher) {
+					var html = '<ul>';
+					html += '<li><b>' + publisher.name + ' (<span style="color: '+publisher.colour+'">' + publisher.colour + '</span>)</b></li>';
+					$.each(publisher.conditions, function(index, value) {
+						html += '<li>'+value+'</li>';
+					});
+					container.append(html + '</ul>');
+					container.css('border','4px solid '+publisher.colour);
+					container.css('padding','5px');					
+				});
+				container.fadeIn();
+			}
+		});
+	});
+});
+
 window.onload = changeView;
