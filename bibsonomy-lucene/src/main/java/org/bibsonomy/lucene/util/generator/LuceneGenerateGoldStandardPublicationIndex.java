@@ -1,5 +1,9 @@
 package org.bibsonomy.lucene.util.generator;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
+import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -35,9 +39,14 @@ public class LuceneGenerateGoldStandardPublicationIndex extends LuceneGenerateRe
 		JNDITestDatabaseBinder.bind();
 		
 		// create index
-		LuceneGenerateResourceIndex<GoldStandardPublication> indexer = LuceneGenerateGoldStandardPublicationIndex.getInstance();
-		indexer.generateIndex();
-		indexer.shutdown();
+		run();
+	}
+
+	public static void run() throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
+	        // FIXME: configure via spring
+	        LuceneGenerateResourceIndex<GoldStandardPublication> indexer = LuceneGenerateGoldStandardPublicationIndex.getInstance();
+	        indexer.generateIndex();
+	        indexer.shutdown();
 	}
 	
 	private LuceneGenerateGoldStandardPublicationIndex() {
