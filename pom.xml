@@ -195,6 +195,7 @@
 		<module>bibsonomy-database</module>
 		<module>bibsonomy-logging</module>
 		<module>bibsonomy-lucene</module>
+		<module>bibsonomy-openaccess</module>
 		<module>bibsonomy-recommender</module>
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-common</module>
@@ -552,6 +553,11 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-lucene</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-openaccess</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
