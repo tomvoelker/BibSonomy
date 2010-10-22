@@ -1,6 +1,9 @@
 package org.bibsonomy.openaccess.sherparomeo;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -23,8 +26,7 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
 
     public SherpaRomeoImpl() {
         try {
-            this.context = JAXBContext
-                    .newInstance("org.bibsonomy.openaccess.sherparomeo.model");
+            this.context = JAXBContext.newInstance(Condition.class.getPackage().getName());
         } catch (JAXBException e) {
             e.printStackTrace();
         }
@@ -33,10 +35,9 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
     @Override
     public String getPolicyForPublisher(String publisher, String qtype) {
         try {
-            String url = "http://www.sherpa.ac.uk/romeo/api24.php?pub="
-                    + publisher;
-            if (qtype != null)
-                url += "&qtype=" + qtype;
+            String url = "http://www.sherpa.ac.uk/romeo/api24.php?pub=" + URLEncoder.encode(publisher, "UTF-8");
+            if (present(qtype))
+                url += "&qtype=" + URLEncoder.encode(qtype, "UTF-8");
 
             return this.doRequest(new URL(url));
         } catch (Exception e) {
@@ -48,10 +49,9 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
     @Override
     public String getPolicyForJournal(String jtitle, String qtype) {
         try {
-            String url = "http://www.sherpa.ac.uk/romeo/api24.php?jtitle="
-                    + jtitle;
-            if (qtype != null)
-                url += "&qtype=" + qtype;
+            String url = "http://www.sherpa.ac.uk/romeo/api24.php?jtitle=" + URLEncoder.encode(jtitle, "UTF-8");
+            if (present(qtype))
+                url += "&qtype=" + URLEncoder.encode(qtype, "UTF-8");
 
             return this.doRequest(new URL(url));
         } catch (Exception e) {
@@ -68,38 +68,36 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private String doRequest(URL url) {
-        String data = "";
+    private String doRequest(final URL url) {
         try {
-            Unmarshaller unmarshaller = this.context.createUnmarshaller();
-            Romeoapi rp = (Romeoapi) unmarshaller.unmarshal(url);
+            final Unmarshaller unmarshaller = this.context.createUnmarshaller();
+            final Romeoapi rp = (Romeoapi) unmarshaller.unmarshal(url);
 
             // log.debug("Checking Open Access: \t" + url);
 
-            List<Publisher> publisherList = rp.getPublishers().getPublisher();
-            JSONObject result = new JSONObject();
-            JSONArray output = new JSONArray();
-            for (Publisher pub : publisherList) {
-                JSONObject pub_json = new JSONObject();
-                JSONArray conditions = new JSONArray();
-                List<Condition> conditionList = pub.getConditions()
-                        .getCondition();
-                for (Condition condition : conditionList)
-                    conditions.add(condition.getvalue());
-
-                pub_json.put("name", pub.getName());
-                pub_json.put("colour", pub.getRomeocolour());
-                pub_json.put("conditions", conditions);
-                output.add(pub_json);
+            final List<Publisher> publishers = rp.getPublishers().getPublisher();
+            final JSONObject result = new JSONObject();
+            final JSONArray publishersJson = new JSONArray();
+            for (final Publisher publisher : publishers) {
+                final JSONObject publisherJson = new JSONObject();
+                publisherJson.put("name", publisher.getName());
+                publisherJson.put("colour", publisher.getRomeocolour());
+                
+                final JSONArray conditionsJson = new JSONArray();
+                final List<Condition> conditions = publisher.getConditions().getCondition();
+                for (final Condition condition : conditions)
+                    conditionsJson.add(condition.getvalue());
+                publisherJson.put("conditions", conditionsJson);
+                publishersJson.add(publisherJson);
             }
-            result.put("publishers", output.toJSONString());
+            result.put("publishers", publishersJson);
 
-            data = result.toJSONString();
+            return result.toJSONString();
 
         } catch (JAXBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return data;
+        return "";
     }
 }
