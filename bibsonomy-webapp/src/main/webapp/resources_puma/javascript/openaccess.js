@@ -4,8 +4,9 @@ var oaBaseUrl = "/ajax/checkOpenAccess";
 /* TODO: add error handling, check apicontrol and outcome in response. */
 function checkOpenAccess () {
 	var container = $("#openAccess");	
-	container.hide(); // TODO: add progress animation	
+	container.empty();
 
+	// TODO: add progress animation
 	var url;
 	if ($("#post\\.resource\\.entrytype").val() == "article")
 		url = oaBaseUrl + "?jTitle=" + $("#post\\.resource\\.journal").val();
