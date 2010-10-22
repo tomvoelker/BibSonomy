@@ -69,6 +69,9 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
     /**
      * Sending request to sherparomeo.
      * 
+     * FIXME: conditions for pre-/postprints missing!
+     * 
+     * 
      * @param url
      * @return
      */
