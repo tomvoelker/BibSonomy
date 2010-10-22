@@ -356,6 +356,9 @@ ul.news  {
 .oa-red {
 	border-left: 5px solid red;	
 }
-.oa-red {
+.oa-blue {
+	border-left: 5px solid blue;	
+}
+.oa-white {
 	border-left: 5px solid white;	
 }
