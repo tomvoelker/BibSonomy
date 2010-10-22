@@ -9,6 +9,10 @@
 	<jsp:directive.attribute name="tabURL" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="tabView" type="org.bibsonomy.webapp.command.TabsCommandInterface" required="true"/>
 
+	<!-- 
+		If the message with key ${tab.title} is empty, the tab is not shown. 
+		This can be used to selectively disable tabs by using message properties.  
+	-->
 
 	<c:if test="${not empty tabView.tabs}">
 
