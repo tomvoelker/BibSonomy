@@ -16,6 +16,11 @@ import org.bibsonomy.openaccess.sherparomeo.model.Romeoapi;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+/**
+ * @version $Id$
+ * @author rja
+ *
+ */
 public class SherpaRomeoImpl implements SherpaRomeoInterface {
 
     /*
@@ -83,11 +88,7 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
                 publisherJson.put("name", publisher.getName());
                 publisherJson.put("colour", publisher.getRomeocolour());
                 
-                final JSONArray conditionsJson = new JSONArray();
-                final List<Condition> conditions = publisher.getConditions().getCondition();
-                for (final Condition condition : conditions)
-                    conditionsJson.add(condition.getvalue());
-                publisherJson.put("conditions", conditionsJson);
+                publisherJson.put("conditions", renderConditions(publisher.getConditions().getCondition()));
                 publishersJson.add(publisherJson);
             }
             result.put("publishers", publishersJson);
@@ -100,4 +101,12 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
         }
         return "";
     }
+
+	@SuppressWarnings("unchecked")
+	private JSONArray renderConditions(final List<Condition> conditions) {
+		final JSONArray conditionsJson = new JSONArray();
+		for (final Condition condition : conditions)
+		    conditionsJson.add(condition.getvalue());
+		return conditionsJson;
+	}
 }
