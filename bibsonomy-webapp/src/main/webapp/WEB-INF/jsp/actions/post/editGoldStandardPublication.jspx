@@ -10,8 +10,8 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
    >
   	  <!--
        | 
@@ -25,11 +25,11 @@
 	<layout:editGoldStandardPostLayout command="${command}" requPath="${requPath}" resourceType="GoldStandardPublication">
 		
 		<jsp:attribute name="generalInformation">
-           <post:publicationRequiredFields post="${post}" autocompletion="$(false)"/>
+           <editpub:required post="${post}" autocompletion="$(false)"/>
 		</jsp:attribute>
 
         <jsp:attribute name="detailedInformation">
-          <post:publicationDetailedInformations post="${post}" />
+          <editpub:details post="${post}" />
        </jsp:attribute>
        
        <jsp:attribute name="headerExtResource">
