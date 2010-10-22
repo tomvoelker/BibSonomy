@@ -334,3 +334,25 @@ ul.news  {
 	 list-style:none outside none;
 }
 
+.oa-publishers {
+}
+
+.oa-publisher {
+	font-weight: bold;
+	padding-left: 3px;	
+}
+
+.oa-conditions {
+	list-style: disc inside;
+	padding-left: 1em;
+}
+	
+.oa-green {
+	border-left: 3px solid green;	
+}
+.oa-yellow {
+	border-left: 3px solid yellow;	
+}
+.oa-red {
+	border-left: 3px solid red;	
+}

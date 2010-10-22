@@ -24,8 +24,12 @@ function checkOpenAccess () {
 			$.each(data.publishers, function(index, publisher) {
 				var li = document.createElement("li");
 				li.className = "oa-" + publisher.colour;
-				li.appendChild(document.createTextNode(publisher.name));
+				var span = document.createElement("span");
+				span.appendChild(document.createTextNode(publisher.name));
+				span.className = "oa-publisher";
+				li.appendChild(span);
 				var ulCond = document.createElement("ul");
+				ulCond.className = "oa-conditions";
 				$.each(publisher.conditions, function(index, condition) {
 					var liCond = document.createElement("li");
 					liCond.appendChild(document.createTextNode(condition));
