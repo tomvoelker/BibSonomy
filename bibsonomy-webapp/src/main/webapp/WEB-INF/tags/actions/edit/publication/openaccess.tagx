@@ -14,7 +14,7 @@
     
 	<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.openaccess" >
 		<jsp:attribute name="content">
-			<a onclick="javascript:checkOpenAccess();">check open access policy</a>
+			<a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a>
 		    
 		    <div class="fsRow" id="openAccess"><c:out value=" "/></div>
 		</jsp:attribute>
