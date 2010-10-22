@@ -32,9 +32,9 @@
 			 	| additional JavaScript code for Open Access (DSpace) integration.
 			 	|
 			 	+-->
-			<spring:theme code="javascript.openaccess" var="javascript.openaccess" text=""/>
-			<c:if test="${not empty javascript.openaccess}">
-				<script type="text/javascript" src="${javascript.openaccess}">&amp;nbsp;</script>
+			<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
+			<c:if test="${not empty jsOpenAccess}">
+				<script type="text/javascript" src="${jsOpenAccess}">&amp;nbsp;</script>
 			</c:if>
 		</jsp:attribute>
 		
