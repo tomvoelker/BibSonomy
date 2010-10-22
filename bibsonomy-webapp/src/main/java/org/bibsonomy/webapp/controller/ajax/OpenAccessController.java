@@ -30,7 +30,7 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 			command.setResponseString(sherpaLogic.getPolicyForJournal(command.getjTitle(), command.getqType()));			
 		}
 		
-		return Views.AJAX;
+		return Views.AJAX_JSON;
 	}
 
 }

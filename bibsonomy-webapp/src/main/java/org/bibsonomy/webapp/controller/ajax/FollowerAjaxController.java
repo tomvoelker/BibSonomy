@@ -67,7 +67,7 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 			return new ExtendedRedirectView("/" + command.getForward());
 		}
 		
-		return Views.AJAX;
+		return Views.AJAX_TEXT;
 	}
 	
 	/**

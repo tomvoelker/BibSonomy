@@ -71,7 +71,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			 * Do not update database as some input fields contain errors
 			 */
 			command.setResponseString("Error in input: " + errors.getFieldError().getObjectName() + " " + errors.getFieldError().getRejectedValue());
-			return Views.AJAX;
+			return Views.AJAX_TEXT;
 		}
 		/*
 		 * 	
@@ -120,7 +120,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		this.setResponse(command, command.getUserName() + " flagged as nonspammer");
 	} */
 		
-		return Views.AJAX;
+		return Views.AJAX_TEXT;
 		
 	}
 	

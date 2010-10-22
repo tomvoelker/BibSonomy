@@ -81,7 +81,7 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		 */
 		command.setResponseString(Integer.toString(basketSize));
 		
-		return Views.AJAX;
+		return Views.AJAX_TEXT;
 	}
 
 	/**

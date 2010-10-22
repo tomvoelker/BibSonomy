@@ -95,7 +95,7 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 		 */
 		command.setResponseString(prepareResponseString(loginUserName, pickedConcepts));
 		
-		return Views.AJAX_RESPONSE;
+		return Views.AJAX_XML;
 	}
 	
 	/*

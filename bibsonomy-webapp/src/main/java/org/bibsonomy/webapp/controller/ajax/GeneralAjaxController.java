@@ -40,7 +40,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 			this.getBibtexKeysForUser(command);
 			return Views.AJAX_GET_BIBTEXKEYS_FOR_USER;
 		}		
-		return Views.AJAX;
+		return Views.AJAX_TEXT;
 	}
 
 	

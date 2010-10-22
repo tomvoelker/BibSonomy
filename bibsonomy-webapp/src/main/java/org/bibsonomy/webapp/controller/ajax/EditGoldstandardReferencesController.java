@@ -34,7 +34,7 @@ public class EditGoldstandardReferencesController extends AjaxController impleme
 		final Set<String> references = command.getReferences();
 		
 		if (!present(hash) || !present(references)) {
-			return Views.AJAX;
+			return Views.AJAX_TEXT;
 		}
 		
 		final String action = command.getAction();
@@ -46,7 +46,7 @@ public class EditGoldstandardReferencesController extends AjaxController impleme
 			command.setResponseString("error");
 		}
 		
-		return Views.AJAX;
+		return Views.AJAX_TEXT;
 	}
 
 }

@@ -214,14 +214,17 @@ public enum Views implements View {
 	 * *****************************************************/
 
 	/**
-	 * response page snippet for ajax requests
+	 * command.responseString is written withOUT (!) c:out 
 	 */
-	AJAX("ajax/snippetPlain"),
-	
+	AJAX_JSON("ajax/snippetJson"),
+	/**
+	 * command.responseString is written with c:out
+	 */
+	AJAX_TEXT("ajax/snippetPlain"),
 	/**
 	 * response page snippet for xml ajax requests
 	 */
-	AJAX_RESPONSE("ajax/snippetXML"),	
+	AJAX_XML("ajax/snippetXML"),	
 	
 	/**
 	 * used by editBookmark to get the details for a given Url

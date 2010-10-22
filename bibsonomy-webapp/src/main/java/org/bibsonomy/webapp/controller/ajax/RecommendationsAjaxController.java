@@ -114,7 +114,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		 */
 		if (!context.isUserLoggedIn()) {
 			command.setResponseString("");
-			return Views.AJAX_RESPONSE;
+			return Views.AJAX_XML;
 		}
 		
 		final User loginUser = context.getLoginUser();
@@ -166,7 +166,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 			}
 		}
 		
-		return Views.AJAX_RESPONSE;
+		return Views.AJAX_XML;
 	}
 	
 	@Override

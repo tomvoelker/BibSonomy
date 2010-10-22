@@ -16,7 +16,7 @@ public class LoggingController extends AjaxController implements MinimalisticCon
 	@Override
 	public View workOn(final LoggingCommand command) {
 		// TODO: implement me
-		return Views.AJAX;
+		return Views.AJAX_TEXT;
 	}	
 
 	@Override
