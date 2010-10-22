@@ -44,15 +44,28 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		if (!command.getContext().isUserLoggedIn()) {
 			return getAccessDeniedView(command, "error.general.login");
 		}
+		
+		int changedResources = 0;
 
 		switch (command.getForcedAction()) {
 
 		case 1:
-			return workOnEditTagsHandler(command);
+			changedResources = workOnEditTagsHandler(command);
+			break;
 			
 		case 2:
-			return workOnRelationsHandler(command);
+			workOnRelationsHandler(command);
+			break;
 		}
+		
+		/*
+		 * clear the input fields
+		 */
+		command.getEditTags().setAddTags("");
+		command.getEditTags().setDelTags("");
+		command.getRelationsEdit().setLower("");
+		command.getRelationsEdit().setUpper("");
+		command.setUpdatedTagsCount(changedResources);
 		
 		/*
 		 * set grouping entity, grouping name, tags
@@ -80,7 +93,7 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		
 	}
 	
-	private View workOnEditTagsHandler(EditTagsPageViewCommand cmd) {
+	private int workOnEditTagsHandler(EditTagsPageViewCommand cmd) {
 		User user = cmd.getContext().getLoginUser();
 		EditTagsCommand command = cmd.getEditTags();
 		int updatedTags = 0;
@@ -89,7 +102,7 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 			final Set<Tag> tagsToReplace = TagUtils.parse(command.getDelTags());
 
 			if(tagsToReplace.size() <= 0) {
-				return Views.EDIT_TAGS;
+				return 0;
 			}
 			
 			final Set<Tag> replacementTags = TagUtils.parse(command.getAddTags());
@@ -134,14 +147,11 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		} catch (RecognitionException ex) {
 			// TODO How can i handle this
 		}
-		
-		if(command.isUpdateRelations()) 
-			return new ExtendedRedirectView("/edit_tags?updatedRelationsCount=" +updatedTags);
 
-		return new ExtendedRedirectView("/edit_tags?updatedTagsCount=" +updatedTags);
+		return updatedTags;
 	}
 	
-	private View workOnRelationsHandler(EditTagsPageViewCommand cmd) {
+	private void workOnRelationsHandler(EditTagsPageViewCommand cmd) {
 		User user = cmd.getContext().getLoginUser();
 		RelationsEditCommand command = cmd.getRelationsEdit();
 		
@@ -178,11 +188,6 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 			break;
 			
 		}
-		
-		/*
-		 * return the appropriate view
-		 */
-		return new ExtendedRedirectView("/edit_tags");
 	}
 
 	@Override
@@ -193,7 +198,7 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 	/**
 	 * redirect to the login page - and back
 	 * 
-	 * @param command the command FIXME: unused
+	 * @param command the command
 	 * @param notice a notice to display at the login page
 	 * @return
 	 */

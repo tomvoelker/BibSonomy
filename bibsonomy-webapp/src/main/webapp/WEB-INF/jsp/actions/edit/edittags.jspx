@@ -45,7 +45,6 @@
 				<!-- 
 					some resources/relations have been updated
 				 -->
-				 
 				<c:if test="${command.updatedRelationsCount > 0 or command.updatedTagsCount > 0}">
 		  			<h2><fmt:message key="edittags.update.headline" /></h2>
 		 			<c:if test="${command.updatedTagsCount > 0}">
