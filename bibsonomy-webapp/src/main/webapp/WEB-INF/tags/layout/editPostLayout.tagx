@@ -27,6 +27,15 @@
 	<layout:editGoldStandardPostLayout generalInformation="${generalInformation}" requPath="${requPath}" resourceType="${resourceType}" command="${command}" detailedInformation="${detailedInformation}" extraInformation="${extraInformation}">
 		<jsp:attribute name="headerExtResource">
 			<script type="text/javascript" src="${resdir}/javascript/edit${resourceType}.js">&amp;nbsp;</script>
+			<!--+ 
+			 	|
+			 	| additional JavaScript code for Open Access (DSpace) integration.
+			 	|
+			 	+-->
+			<spring:theme code="javascript.openaccess" var="javascript.openaccess" text=""/>
+			<c:if test="${not empty javascript.openaccess}">
+				<script type="text/javascript" src="${javascript.openaccess}">&amp;nbsp;</script>
+			</c:if>
 		</jsp:attribute>
 		
 		<jsp:attribute name="tagsAndGroups">
