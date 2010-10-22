@@ -109,44 +109,46 @@ function in_array(array, element) {
 
 /* open access check */
 /* TODO: add error handling, check apicontrol and outcome in response. */
-$(document).ready(function() {    
-    $("#checkOpenAccess").click(function() {
-		var container = $("#openAccess");	
-    	var url = "";
+function checkOpenAccess () {
+	var container = $("#openAccess");	
+	var url = "/ajax/checkOpenAccess";
 
-    	// reset
-		container.css('border','0');
-		container.css('padding','0');	
-		
-		container.html("");
-    	container.hide();	
-    	
-		if($("#post\\.resource\\.entrytype").val() == "article")
-			url = "/ajax/checkOpenAccess?jTitle="+$("#post\\.resource\\.title").val();
-		else
-			url = "/ajax/checkOpenAccess?publisher="+$("#post\\.resource\\.editor").val();
-		
-		$.ajax({
-			url: url,
-			dataType: 'html',
-			success: function(data) {
-				data = data.replace(/&#034;/g, '"');				
-				data = eval("("+data+")");
-				data = eval("("+data.publishers+")")
-				$.each(data, function(index, publisher) {
-					var html = '<ul>';
-					html += '<li><b>' + publisher.name + ' (<span style="color: '+publisher.colour+'">' + publisher.colour + '</span>)</b></li>';
-					$.each(publisher.conditions, function(index, value) {
-						html += '<li>'+value+'</li>';
-					});
-					container.append(html + '</ul>');
-					container.css('border','4px solid '+publisher.colour);
-					container.css('padding','5px');					
+	container.hide(); // TODO: add progress animation	
+	
+	if ($("#post\\.resource\\.entrytype").val() == "article")
+		url += "?jTitle=" + $("#post\\.resource\\.journal").val();
+	else
+		url += "?publisher=" + $("#post\\.resource\\.publisher").val();
+	
+	$.ajax({
+		url: url,
+		dataType: 'json',
+		success: function(data) {
+			/*
+			 * build list with publishers
+			 */
+			var ul = document.createElement("ul");
+			ul.className = "oa-publishers";
+			$.each(data.publishers, function(index, publisher) {
+				var li = document.createElement("li");
+				li.className = "oa-" + publisher.colour;
+				li.appendChild(document.createTextNode(publisher.name));
+				var ulCond = document.createElement("ul");
+				$.each(publisher.conditions, function(index, condition) {
+					var liCond = document.createElement("li");
+					liCond.appendChild(document.createTextNode(condition));
+					ulCond.appendChild(liCond);
 				});
-				container.fadeIn();
-			}
-		});
+				li.appendChild(ulCond);
+				ul.appendChild(li);
+			});
+			container.append(ul);
+			container.fadeIn();
+		},
+		error: function(req, status, e) {
+			alert("check open access: " + status);
+		}
 	});
-});
-
+}
+// FIXME: use jQuery, otherwise this overwrites other methods/is easily overwritten
 window.onload = changeView;

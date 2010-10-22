@@ -1,0 +1,23 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.attribute name="tags" type="java.lang.String" required="false"/>
+    
+    
+	<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.openaccess" >
+		<jsp:attribute name="content">
+			<a onclick="javascript:checkOpenAccess();">check open access policy</a>
+		    
+		    <div class="fsRow" id="openAccess"><c:out value=" "/></div>
+		</jsp:attribute>
+	</parts:fieldset>
+
+</jsp:root>
