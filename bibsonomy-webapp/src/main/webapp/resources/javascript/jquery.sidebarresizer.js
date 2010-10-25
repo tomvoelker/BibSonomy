@@ -14,8 +14,8 @@
 		sidebar = $(this), staticOffset = null;
 		var sidebarSpacer = $('<div class="sidebarSpacer"></div>');
 
-		$(this).wrap('<span class="resizableElement"><span></span></span>')
-		.parent().prepend(sidebarSpacer.height($(this).height()));
+		$(this).wrap('<span class="resizableElement"></span>')
+		.parent().prepend($(sidebarSpacer).height($(this).height()));
 		
 		$(sidebarGrip).bind("mousedown",{element: this, spacer: sidebarSpacer}, startDrag);      
 	};
@@ -33,19 +33,16 @@
 	function performDrag(e) {
 		var thisMousePos = mousePosition(e).x;
 		var gap = thisMousePos - lastMousePos;
-		var maxOffset = parseInt(sidebar.position.left+sidebar.width());
-		var minOffset = parseInt(sidebar.position.left);
-		
-		if(thisMousePos > maxOffset || 
-			thisMousePos < minOffset || 
-				(parseInt(sidebarSpacer.width()) <= 10 && gap < 0) || 
-					(parseInt(sidebar.width()) <= 10 && gap > 0)) {
-			return endDrag(e);
-		}
+		var maxOffset = parseInt($(sidebar).position().left+sidebar.width());
+		var minOffset = parseInt($(sidebar).position().left);
 
-		sidebarSpacer.width(parseInt(sidebarSpacer.width())+gap);
-		sidebar.width(originalWidth-parseInt(sidebarSpacer.width()));
-		lastMousePos = thisMousePos;
+		if(!(thisMousePos > maxOffset || 
+			(parseInt(sidebarSpacer.width()) <= 10 && gap < 0) || 
+				(parseInt(sidebar.width()) <= 10 && gap > 0))) {
+				sidebarSpacer.width(parseInt(sidebarSpacer.width())+gap);
+				sidebar.width(originalWidth-parseInt(sidebarSpacer.width()));
+				lastMousePos = thisMousePos;
+		}
 		return false;
 	}
 
