@@ -76,7 +76,7 @@ public class WorldCatScraperTest {
 	 * test getting URL 
 	 */
 	@Test
-	@Ignore
+//	@Ignore
 	public void getUrlForIsbnTest(){
 		try {
 			assertTrue(WorldCatScraper.getUrlForIsbn("0123456789").toString().equals("http://www.worldcat.org/search?qt=worldcat_org_all&q=0123456789"));
