@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.worldcat;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,18 +67,18 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		return INFO;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
 
 		try {
 			final String bibtex = getBibtex(sc.getUrl(), false);
 
-			if(bibtex != null){
+			if (present(bibtex)) {
 				sc.setBibtexResult(bibtex);
 				return true;
-			}else
+			} else
 				throw new ScrapingFailureException("getting bibtex failed");
-
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
@@ -115,7 +117,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		final String checkISBN = ISBNUtils.extractISBN(isbn);
 
 		// build worldcat.org URL
-		if (checkISBN != null)
+		if (present(checkISBN))
 			return new URL(WORLDCAT_URL + checkISBN);
 		return null;
 	}
@@ -123,19 +125,21 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	private static String getBibtex(final URL publPageURL, final boolean search) throws IOException, ScrapingException {
 		final Matcher matcherFirstSearchResult = PATTERN_GET_FIRST_SEARCH_RESULT.matcher(WebUtils.getContentAsString(publPageURL));
 		
-		URL publUrl = null;
-		if(matcherFirstSearchResult.find())
+		final URL publUrl;
+		if (matcherFirstSearchResult.find())
 			publUrl = new URL(publPageURL.getProtocol() + "://" + publPageURL.getHost() + matcherFirstSearchResult.group(1));
 		else
 			publUrl = publPageURL;
 		
 		
-		String exportUrl = null;
-		if(search)
-			exportUrl = publUrl.getProtocol() + "://" + publUrl.getHost() + publUrl.getPath() + "?" + publUrl.getQuery() + "&page=endnote&client=worldcat.org-detailed_record";
-		else
-			exportUrl = publUrl.getProtocol() + "://" + publUrl.getHost() + publUrl.getPath() + "?page=endnote&client=worldcat.org-detailed_record";
+		String exportUrl = publUrl.getProtocol() + "://" + publUrl.getHost() + publUrl.getPath() + "?page=endnote&client=worldcat.org-detailed_record";
+		/*
+		 * append query
+		 */
+		if (search)
+			exportUrl += "&" + publUrl.getQuery();  
 
+		
 		final String ris = WebUtils.getContentAsString(new URL(exportUrl));
 
 		if (!ris.startsWith("TY")) {
@@ -153,6 +157,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		return BibTexUtils.addFieldIfNotContained(bibtex, "url", publPageURL.toString());
 	}
 
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
