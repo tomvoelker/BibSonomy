@@ -6,6 +6,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
 	xmlns:form="http://www.springframework.org/tags/form">
 
     <!-- 
@@ -29,7 +30,7 @@
 
 		<div id="fsform">
 			<fieldset class="fsOuter" >
-				<post:publicationRequiredFields post="${post}" autocompletion="${true}"/>
+				<editpub:required post="${post}" autocompletion="${true}"/>
 				<fmt:message var="post_button" key="post_bibtex.button_label_post" />
 				<input type="submit" class="fsFormSubmit" style="clear:both; float:left;" name="submit" value="${post_button}"/>
 			</fieldset>
