@@ -67,6 +67,7 @@ public class SnippetScraper implements Scraper {
 			for (Object potentialEntry:bibtexFile.getEntries()) {
 				if ((potentialEntry instanceof BibtexEntry)) {
 					sc.setBibtexResult(selectedText);
+					sc.setScraper(this);
 					return true; 
 				}
 			}
