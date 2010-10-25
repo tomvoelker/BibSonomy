@@ -10,7 +10,8 @@
 	
     <fmt:message key="navi.postPublication" var="postPublication"/>
     <fmt:message key="image.button.postPublication" var="buttonImage"/>
-
+	<span id="image.button.postPublication">
+	</span>
     <script type="text/javascript">
         var title = '${postPublication}';
         var image = '${buttonImage}';
@@ -27,7 +28,7 @@
 	      }
 	      var left  = String.fromCharCode(60);
 	      var right = String.fromCharCode(62);
-	      document.write(left + 'a title="' + title + '" href="' + myurl + '" onclick="return false" class="bookmarklet2"' + right + left + 'img src="' + image + '" alt="' + title + '" title="' + title + '"/' + right  + left + '/a' + right);
+		  $('#image\\.button\\.postPublication').html(left + 'a title="' + title + '" href="' + myurl + '" onclick="return false" class="bookmarklet2"' + right + left + 'img src="' + image + '" alt="' + title + '" title="' + title + '"/' + right  + left + '/a' + right);
 	    ]]>
 	    //</mtl:cdata>
 	</script>

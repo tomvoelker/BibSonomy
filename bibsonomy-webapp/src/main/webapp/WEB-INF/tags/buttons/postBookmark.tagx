@@ -10,7 +10,8 @@
 	
     <fmt:message key="navi.postBookmark" var="postBookmark"/>
     <fmt:message key="image.button.postBookmark" var="buttonImage"/>
-  
+  	<span id="image.button.postBookmark">
+	</span>
     <script type="text/javascript">
       var title = "${postBookmark}";
       var image = "${buttonImage}";
@@ -27,7 +28,7 @@
       }
       var left  = String.fromCharCode(60);
       var right = String.fromCharCode(62);
-      document.write(left + 'a title= "' + title + '" href="' + myurl + '" onclick="return false" class="bookmarklet2"' + right + left + 'img src="' + image + '" alt="' + title + '" title="' + title + '"/' + right  + left + '/a' + right);
+      $('#image\\.button\\.postBookmark').html(left + 'a title= "' + title + '" href="' + myurl + '" onclick="return false" class="bookmarklet2"' + right + left + 'img src="' + image + '" alt="' + title + '" title="' + title + '"/' + right  + left + '/a' + right);
       ]]>
       //</mtl:cdata>
    </script>
