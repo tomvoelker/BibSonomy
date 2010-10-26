@@ -247,8 +247,14 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 */
 		if (posts.size() == 1 && !errors.hasErrors()) {
 			final Post<BibTex> post = posts.get(0);
-			if (post != null) {
+			if (present(post)) {
 				command.setPost(post);
+				/*
+				 * 
+				 * FIXME: calling workOn causes the post to be scraped again, the
+				 * tags to be parsed again (but not put into command.tags!) and
+				 * so on ... it's really a mess! :-(
+				 */
 				return super.workOn(command);
 			}
 		}
