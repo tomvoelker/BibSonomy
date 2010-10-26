@@ -1,7 +1,6 @@
 package org.bibsonomy.lucene.index.manager;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Collections;
@@ -56,10 +55,17 @@ public class LuceneGoldStandardPublicationManagerTest extends AbstractDatabaseMa
 	final List<LuceneResourceIndex<GoldStandardPublication>> resourceIndices = manager.getResourceIndeces();
 	
 	for (final LuceneResourceIndex<GoldStandardPublication> index : resourceIndices) {
-	    final File file = new File(path + index.getIndexId());
-	    final boolean exists = file.exists();
-	    final boolean delete = LuceneTest.deleteFile(file);
-	    assertTrue(!exists || delete);
+	    final File folder = new File(path + index.getIndexId());
+	    LuceneTest.deleteFile(folder);
+	    /*
+	     * XXX: can't check if the folder was deleted successfully
+	     * deleting folders on nfs network drives fails 
+	     * (.nfs files are locked)
+	     */
+	    /*final boolean exists = folder.exists();
+	    final boolean delete = LuceneTest.deleteFile(folder);
+	    assertTrue(!exists || delete);*/
+	    
 	}
 
 	goldStandardManager = GoldStandardPublicationDatabaseManager.getInstance();

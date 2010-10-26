@@ -2,6 +2,8 @@ package org.bibsonomy.lucene;
 
 import java.io.File;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -11,6 +13,8 @@ import org.junit.BeforeClass;
  * @version $Id$
  */
 public abstract class LuceneTest {
+    
+    private static final Log log = LogFactory.getLog(LuceneTest.class);
 
     /**
      * binds bibsonomy_lucene context
@@ -39,7 +43,7 @@ public abstract class LuceneTest {
 	    final File[] children = file.listFiles();
 	    for (final File child : children) {
 		if (!deleteFile(child)) {
-		    return false;
+		    log.warn("couldn't delete file " + file.getAbsolutePath());
 		}
 	    }
 	}
