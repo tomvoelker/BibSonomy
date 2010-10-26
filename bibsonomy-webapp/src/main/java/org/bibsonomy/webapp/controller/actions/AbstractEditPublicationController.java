@@ -69,12 +69,12 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		final String url = command.getUrl();
 		final String selection = command.getSelection();
 
-		if (present(url) || present(selection)) {
-			handleScraper(command, loginUser, command, url, selection);
+		if ((present(url) || present(selection))) {
+			handleScraper(command, loginUser, url, selection);
 		}
 	}
 	
-	private void handleScraper(final COMMAND command, final User loginUser, final COMMAND publicationCommand, final String url, String selection) {
+	private void handleScraper(final COMMAND command, final User loginUser, final String url, String selection) {
 		/*
 		 * We have a URL set which means we shall scrape!
 		 * 
@@ -100,6 +100,8 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 				/*
 				 * When the parser is thread-safe (it currently is not!), we can 
 				 * use the same instance for each invocation.
+				 * TODO: why don't we use the PostBibTeXParser? (There must be 
+				 * reasons for not using it!)
 				 */
 				try {
 					final SimpleBibTeXParser parser = new SimpleBibTeXParser();
@@ -118,30 +120,15 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 						/*
 						 * save result
 						 */
-						publicationCommand.getPost().setResource(parsedBibTex);
+						command.getPost().setResource(parsedBibTex);
 						/*
 						 * if user already owns resource set diff post
 						 */
 						this.setDiffPost(command);
 						/*
-						 * store scraping context to show user meta information
+						 * store scraping context and scraping metadata
 						 */
-						publicationCommand.setScrapingContext(scrapingContext);
-						/*
-						 * clean old scraper metadata
-						 */
-						setSessionAttribute(SESSION_ATTRIBUTE_SCRAPER_METADATA, null);
-						/*
-						 * store scraper metadata in session (to later store it 
-						 * together with the post)
-						 */
-						if (present(scrapingContext.getMetaResult())) {
-							final ScraperMetadata scraperMetadata = new ScraperMetadata();
-							scraperMetadata.setScraperClass(scrapingContext.getScraper().getClass().getName());
-							scraperMetadata.setMetaData(scrapingContext.getMetaResult());
-							scraperMetadata.setUrl(scrapingContext.getUrl());
-							setSessionAttribute(SESSION_ATTRIBUTE_SCRAPER_METADATA, scraperMetadata);
-						}						
+						handleScraperMetadata(command, scrapingContext);						
 					} else { // if (ValidationUtils.present(parsedBibTex))
 						/*
 						 * the parser did not return any result ...
@@ -180,6 +167,28 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			 * wrong url format
 			 */
 			this.getErrors().reject("error.scrape.failed", new Object[]{url, ex.getMessage()}, "Could not scrape the URL {0}.\nMessage was: {1}");
+		}
+	}
+
+	private void handleScraperMetadata(final COMMAND command, final ScrapingContext scrapingContext) {
+		/*
+		 * store scraping context to show user meta information
+		 */
+		command.setScrapingContext(scrapingContext);
+		/*
+		 * clean old scraper metadata
+		 */
+		setSessionAttribute(SESSION_ATTRIBUTE_SCRAPER_METADATA, null);
+		/*
+		 * store scraper metadata in session (to later store it 
+		 * together with the post)
+		 */
+		if (present(scrapingContext.getMetaResult())) {
+			final ScraperMetadata scraperMetadata = new ScraperMetadata();
+			scraperMetadata.setScraperClass(scrapingContext.getScraper().getClass().getName());
+			scraperMetadata.setMetaData(scrapingContext.getMetaResult());
+			scraperMetadata.setUrl(scrapingContext.getUrl());
+			setSessionAttribute(SESSION_ATTRIBUTE_SCRAPER_METADATA, scraperMetadata);
 		}
 	}
 
