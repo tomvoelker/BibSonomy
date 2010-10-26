@@ -146,7 +146,12 @@
 	 			<h2><fmt:message key="cv.hobbies"/></h2>
 		 		<p class="align"><c:out value="${command.user.hobbies}" /></p>
 			</c:if>
-			<c:if test="${not empty command.bookmark.list}">
+			
+<!--			<c:if test="${not empty command.wikiText}">-->
+<!--				<c:out value="${command.wikiText}" escapeXml="false" />-->
+<!--			</c:if>-->
+			
+			<c:if test='${not empty command.bookmark.list}'>
 				<h2><fmt:message key="cv.own_bookmarks"/></h2>
 				<div class="align">
 					<ul id="liste" class="bookmarkList">
@@ -168,73 +173,67 @@
  	  					</c:forEach>
  	  				</ul>
 				</div>
-				<script type="text/javascript">
-					var list = document.getElementById("liste");
-					for ( var i = 0; list.childNodes.length > i; i++) {
-						if (list.childNodes[i].childNodes[0].tagName.toLowerCase() == "li") {
-							list.childNodes[i].childNodes[0].childNodes[1].onclick = function(
-									details, pos) {
-								return function() {
-									if (details.style.display == "block") {
-										details.style.display = "none";
-										list.childNodes[pos].childNodes[0].childNodes[1].innerHTML = " "+getString("cv.options.show_details");
-									} else {
-										details.style.display = "block";
-										list.childNodes[pos].childNodes[0].childNodes[1].innerHTML = " "+getString("cv.options.hide_details");
-									}
-								}
-							}
-						}
+			</c:if>
+
+	<script>
+		$(document).ready( function() {
+			$("a.hand").each(function(index, link) {
+				$(link).click(function() {
+					
+					var result = $(this).next(".details").toggle();
+					if ($(result).is(":visible")) {
+						$(this).html(" " + getString("cv.options.hide_details"));
+							
+					} else {
+						$(this).html(" " + getString("cv.options.show_details"));
 					}
-				</script>
-			</c:if>
+				});
+			});
+		});
+	</script>
 
-			
+	<c:if test="${not empty command.bibtex.list}">
+		<h2><fmt:message key="cv.publications"/></h2>
+		<div class="box align">
 
-			<c:if test="${not empty command.bibtex.list}">
-				<h2><fmt:message key="cv.publications"/></h2>
-				<div class="box align">
+			<!-- selection of citation format for the publications -->
+			<div>
+				<span id="citation_formats"> 				
+					<form name="citation_format_form" action="" style="font-size:80%;">
+						<c:set var="allExportsTitle"><fmt:message key="bibtex.all_exports.title"/></c:set>
+						<fmt:message key="bibtex.citation_format"/><c:out value=" ("/>
+						<!-- 
+							TODO: we should probably make the usage of the "myown" tag configurable
+						 -->
+						<a href="/export/user/${fn:escapeXml(command.user.name)}/myown" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports"/></a><c:out value="): "/>
+						<form:select path="command.layout" onchange="citation_format_form.submit()" size="1">
+							<form:option value="plain"><fmt:message key="cv.options.plain"/></form:option>
+							<form:option value="harvardhtml"><fmt:message key="cv.options.harvard"/></form:option>
+							<form:option value="din1505"><fmt:message key="cv.options.DIN1505"/></form:option>
+							<form:option value="simplehtml"><fmt:message key="cv.options.simpleHTML"/></form:option>
+						</form:select>
+	    				<c:out value=" "/>
+	    				<input type="image"  src="/resources/image/nice_box_arrow_right.png"/>		    
+					</form>						
+				</span>
+			</div>
 
-					<!-- selection of citation format for the publications -->
-					<div>
-						<span id="citation_formats"> 				
-							<form name="citation_format_form" action="" style="font-size:80%;">
-								<c:set var="allExportsTitle"><fmt:message key="bibtex.all_exports.title"/></c:set>
-								<fmt:message key="bibtex.citation_format"/><c:out value=" ("/>
-								<!-- 
-									TODO: we should probably make the usage of the "myown" tag configurable
-								 -->
-								<a href="/export/user/${fn:escapeXml(command.user.name)}/myown" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports"/></a><c:out value="): "/>
-								<form:select path="command.layout" onchange="citation_format_form.submit()" size="1">
-									<form:option value="plain"><fmt:message key="cv.options.plain"/></form:option>
-									<form:option value="harvardhtml"><fmt:message key="cv.options.harvard"/></form:option>
-									<form:option value="din1505"><fmt:message key="cv.options.DIN1505"/></form:option>
-									<form:option value="simplehtml"><fmt:message key="cv.options.simpleHTML"/></form:option>
-								</form:select>
-			    				<c:out value=" "/>
-			    				<input type="image"  src="/resources/image/nice_box_arrow_right.png"/>		    
-							</form>						
-						</span>
-					</div>
+			<!--Render the publications !!-->
+			<div class="entry">
+				<c:choose>
+       					<c:when test="${empty command.layout}">
+						${mtl:renderLayouts(command.bibtex.list, "plain")}
+				        </c:when>
+					<c:otherwise>
+			           ${mtl:renderLayouts(command.bibtex.list, command.layout)}
+       					</c:otherwise>
+  					</c:choose>
+  				</div>
 
-					<!--Render the publications !!-->
-					<div class="entry">
-						<c:choose>
-         					<c:when test="${empty command.layout}">
-								${mtl:renderLayouts(command.bibtex.list, "plain")}
- 					        </c:when>
-							<c:otherwise>
-					           ${mtl:renderLayouts(command.bibtex.list, command.layout)}
-         					</c:otherwise>
-    					</c:choose>
-    				</div>
+		</div>
+	</c:if>
 
-				</div>
-			</c:if>
-
-		</jsp:attribute>
-
-
-	</layout:layout>
+</jsp:attribute>
+</layout:layout>
 	
 </jsp:root>
