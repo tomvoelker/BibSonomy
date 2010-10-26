@@ -4,6 +4,10 @@
 	border-top: solid #eee 2px;
 }
 
+h2 {
+	clear: both;
+}
+
 .imageContainer {	
 max-width: 200px;
 text-align: center;
