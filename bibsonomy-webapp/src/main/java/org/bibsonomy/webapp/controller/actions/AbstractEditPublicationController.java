@@ -101,7 +101,8 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 				 * When the parser is thread-safe (it currently is not!), we can 
 				 * use the same instance for each invocation.
 				 * TODO: why don't we use the PostBibTeXParser? (There must be 
-				 * reasons for not using it!)
+				 * reasons for not using it! E.g., probably because otherwise
+				 * tags are taken from the post and then no edit form appears.)
 				 */
 				try {
 					final SimpleBibTeXParser parser = new SimpleBibTeXParser();
@@ -113,23 +114,14 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 					 */
 					if (present(parsedBibTex)) {						
 						/*
-						 * initialize things needed for page 
-						 * (groups, etc.)
-						 */
-						this.initPost(command, command.getPost(), loginUser);
-						/*
 						 * save result
 						 */
 						command.getPost().setResource(parsedBibTex);
 						/*
-						 * if user already owns resource set diff post
-						 */
-						this.setDiffPost(command);
-						/*
 						 * store scraping context and scraping metadata
 						 */
 						handleScraperMetadata(command, scrapingContext);						
-					} else { // if (ValidationUtils.present(parsedBibTex))
+					} else {
 						/*
 						 * the parser did not return any result ...
 						 */
