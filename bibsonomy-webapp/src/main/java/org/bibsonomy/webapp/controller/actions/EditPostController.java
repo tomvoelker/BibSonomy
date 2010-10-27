@@ -726,27 +726,27 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * are correctly filled.
 	 * 
 	 * @param command
-	 * @param dbPost
+	 * @param post
 	 */
-	protected void populateCommandWithPost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> dbPost) {
+	protected void populateCommandWithPost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
 		/*
 		 * put post into command
 		 */
-		command.setPost(dbPost);
+		command.setPost(post);
 		/*
 		 * populate "relevant for" groups in command
 		 */
-		initCommandRelevantForGroups(command, dbPost.getTags());
+		initCommandRelevantForGroups(command, post.getTags());
 		/*
 		 * populate groups in command
 		 */
-		initCommandGroups(command, dbPost.getGroups());
+		initCommandGroups(command, post.getGroups());
 		/*
 		 * create tag string for view input field (NOTE: this needs to be done
 		 * after initializing the relevantFor groups, because there the
 		 * relevantFor tags are removed from the post)
 		 */
-		command.setTags(TagUtils.toTagString(dbPost.getTags(), " "));
+		command.setTags(TagUtils.toTagString(post.getTags(), " "));
 	}
 
 

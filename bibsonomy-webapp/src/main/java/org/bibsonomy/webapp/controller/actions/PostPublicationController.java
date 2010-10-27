@@ -248,13 +248,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 		if (posts.size() == 1 && !errors.hasErrors()) {
 			final Post<BibTex> post = posts.get(0);
 			if (present(post)) {
-				command.setPost(post);
 				/*
-				 * 
-				 * FIXME: calling workOn causes the post to be scraped again, the
-				 * tags to be parsed again (but not put into command.tags!) and
-				 * so on ... it's really a mess! :-(
+				 * Delete the selection, otherwise the AbstractEditPublicationControllers 
+				 * workOnCommand() method would try to scrape it.
 				 */
+				command.setSelection(null);
+				command.setPost(post);
 				return super.workOn(command);
 			}
 		}
@@ -367,30 +366,14 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 */
 	private String handleSelection(final PostPublicationCommand command, final String selection) {
 		// FIXME: at this point we must first convert to bibtex!
-		//snippet = selection;
 		if (EndnoteToBibtexConverter.canHandle(selection)) {
-			// snippet is endnote
-			/*
-			 *  we need to null the selection to avoid scraping in one of the following steps
-			 *  FIXME: this is a bad solution
-			 */
-			command.setSelection(null);
 			return this.e2bConverter.endnoteToBibtex(selection);
 		}
 		if (RisToBibtexConverter.canHandle(selection)) {
-			// snippet is Ris
-			/*
-			 *  we need to null the selection to avoid scraping in one of the following steps
-			 *  FIXME: this is a bad solution
-			 */
-			command.setSelection(null);
-			RisToBibtexConverter r2bConverter = new RisToBibtexConverter();
-			return r2bConverter.RisToBibtex(selection);
+			return new RisToBibtexConverter().RisToBibtex(selection);
 		}
 		/*
-		 * FIXME: Should we disable the scrapers also for bibtex snippets?
-		 * in that case it would not be possible to just enter an url
-		 * i.e. command.setSelection(null);
+		 * should be BibTeX
 		 */
 		return selection;
 	}
