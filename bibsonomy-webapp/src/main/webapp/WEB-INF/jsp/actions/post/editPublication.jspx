@@ -54,7 +54,9 @@
 		
 		                  <div class="fsRow">
 		                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.scraper"/></span>
-		                    <span class="fsInput"><a href="/scraperinfo#${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</span>
+		                    <!-- for some strange reason, "#" destroys the functionality of "$" and thus "/scraperinfo#${..}" does not work -->
+		                    <c:set var="scraperinfourl" value="/scraperinfo#"/>
+		                    <span class="fsInput"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</span>
 		                  </div>
 		
 		                  <div class="fsRow">
