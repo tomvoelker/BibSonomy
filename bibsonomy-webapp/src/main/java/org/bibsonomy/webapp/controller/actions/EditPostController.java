@@ -26,6 +26,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -807,6 +808,9 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * @param tags
 	 */
 	private void initCommandRelevantForGroups(final EditPostCommand<RESOURCE> command, final Set<Tag> tags) {
+		if (!present(command.getRelevantGroups())) {
+			command.setRelevantGroups(new ArrayList<String>());
+		}
 		final List<String> relevantGroups = command.getRelevantGroups();
 
 		final Iterator<Tag> iterator = tags.iterator();
@@ -906,7 +910,13 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			 * already posted; warn user FIXME: this is bookmark-only and does 
 			 * not work for publications
 			 */
-			errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked", "You have already bookmarked this URL. ");
+			if (post.getResource().getClass().isAssignableFrom(BibTex.class)) {
+				// we have a publication double
+				errors.rejectValue("post.resource.title", "error.field.valid.url.alreadyStoredPublication", "You already have this publication in your collection. ");
+			} else {
+				// we assume to have a bookmark double
+				errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked", "You have already bookmarked this URL. ");
+			}
 
 			// set intraHash, diff post and set dbPost as post of command
 			command.setIntraHashToUpdate(resource.getIntraHash());
