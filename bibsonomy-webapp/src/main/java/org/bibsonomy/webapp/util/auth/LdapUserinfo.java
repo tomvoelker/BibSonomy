@@ -51,7 +51,8 @@ public class LdapUserinfo {
 	 */
 	public String generatePicaHash(String s) {
 		String prefix = "{PICA}";
-		byte[] b = s.toUpperCase().getBytes();
+		// entferne alle Zeichen ausser a-z A-Z 0-9 - _ und wandele sie in GROSSbuchstaben   
+		byte[] b = s.toUpperCase().replaceAll("[^\\w\\d\\-_]", "").getBytes();
 
 		Integer hash = 0;
 
