@@ -287,16 +287,17 @@ a.reportingTableHeaderDescription {
 	border: 1px solid #DF430D;
 }
 
-.fsOuter, .fsInner {
-	border: 1px solid #DF430D;
+.fsOuter, .fsInner, .fsVisible {
+	border: 1px solid #EFAC95;
 }
 
 div.grippie {
-	 border-color: #DF430D;
+	border-color:#EFAC95;
+	background-color:#FFE7DF;
 }
 
 input[type="text"], input[type="password"], input[type="file"], textarea, select {
-	border: 1px solid #DF430D;
+	border: 1px solid #EFAC95;
 }
 		 
 .reqinput {
@@ -313,7 +314,7 @@ input[type="text"], input[type="password"], input[type="file"], textarea, select
 
 
 input[type="submit"], input[type="button"], input[type="reset"] {
-	border:1px solid #df430d;
+	border:1px solid #EFAC95;
 }	 
 
 div.help > a, div.help > b {
