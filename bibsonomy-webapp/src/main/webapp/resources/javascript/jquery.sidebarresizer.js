@@ -6,15 +6,17 @@
 	var cursor = (navigator.appVersion.indexOf("X11")!=-1)?'ew-resize':'e-resize';
   	
 	$.fn.SideBarResizer = function(sidebarGrip) {
-		if(sidebarGrip == null) {
+		if(sidebarGrip == null)
 			return;
-		}
 		sidebar = $(this), originalWidth = parseInt($(sidebar).width());
 		$(sidebar).parent().css('overflow','hidden');
 		$(sidebarGrip).bind("mousedown",{element: this}, startDrag);
 	};
 	
 	function startDrag(e) {
+		if(originalWidth == null) 
+			originalWidth = parseInt($(sidebar).width());
+
 		sidebar = $(e.data.element);
 		sidebar.css('opacity', 0.7).parent().css('cursor', cursor);
 		$(window).bind("resize",{element: sidebar}, resetSize);
@@ -27,18 +29,16 @@
 		var thisMousePos = mousePosition(e).x;
 		var gap = thisMousePos - lastMousePos;
 		lastMousePos = thisMousePos;		
-		if((parseInt(sidebar.width())-gap > 20 && gap > 0) ||
-					(((parseInt(sidebar.width())+Math.abs(gap)) < parseInt(originalWidth)) && gap < 0)) 
+		if((gap > 0 && parseInt(sidebar.width())-gap > 20) ||
+					(gap < 0 && ((parseInt(sidebar.width())+Math.abs(gap)) < parseInt(originalWidth))))
 						sidebar.width((parseInt(sidebar.width())-gap));
 		return false;
 	}
 	
 	function resetSize(e) {
-		$(e.data.element).width('');
 		$(window).unbind("resize", resetSize);
-		console.log(originalWidth);
-		originalWidth = parseInt($(e.data.element).width());
-		console.log(originalWidth);
+		$(e.data.element).width('');
+		originalWidth = null;
 	}
 
 	function endDrag(e) {
