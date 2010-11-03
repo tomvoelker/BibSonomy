@@ -153,7 +153,8 @@ function maximizeById(id) {
 **/
 function getFormTextCopy(el) {
 	el_copy = document.getElementById(el.id+pwd_id_postfix);
-	el_copy.style.width = el.style.width;
+	if(el.style!=null)
+		el_copy.style.width = el.style.width;
     el_copy.onmousedown = clear_input_password;
     el_copy.onkeypress  = clear_input_password;
 	return el_copy;

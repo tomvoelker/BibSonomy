@@ -1145,6 +1145,7 @@ padding-top:1px;
 	float: right;
 	width: 23%;
 	padding: 3px;
+	position:relative;
 	background-color: #D8EBAE;
 }
 
@@ -1155,19 +1156,7 @@ padding-top:1px;
 img#sidebarGrip {
 	cursor:e-resize;
 	margin-top:10px;
-	margin-bottom:5px;
-	float:left;
-}
-
-.sidebarSpacer{
-	float:left;
-	height:60px;
-	width:10px;
-}
-			
-.resizableElement {
-	margin-left:0pt;
-	position:relative;
+	margin-left: 5px;
 }
 
 ul.news {
@@ -1248,7 +1237,6 @@ table.report td.value {
 	display:none !important;
 }
 
-
 /*
  * textarea with autoresize
  */
@@ -1273,7 +1261,6 @@ div.fsRow div.resizable-textarea textarea {
 	margin-bottom: 0px;
 	border-bottom: none;
 }
-
 
 .socializer {
 	padding: 5px;

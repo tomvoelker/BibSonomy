@@ -14,6 +14,12 @@ body {
 	width:480px;
 }
 
+#sidebarGrip{
+	margin-left:-12px;
+	margin-top:3px;
+	float:left;
+}
+
 #main_header {
 	background-color:#DF430D;
 	height:70px;
@@ -28,7 +34,6 @@ body {
 	margin-top:-12px;
 	display: block;
 }
-
 
 #nice_tnav {
 	background-color:  #ecf9f6;
@@ -136,6 +141,7 @@ ul#tagbox {
 #helpbox {
 	background-color: #DF430D; 
 	display: none;
+	overflow:hidden;
 }
 
 .btnHomepage {

@@ -38,7 +38,9 @@ function pumainit(){
 	// add help box as sidebox in front of #sidebarroundcorner's content
 	//$("#sidebarroundcorner").prepend('<div class="sidebarBoxOuter" id="helpbox"><div class="sidebarBoxInner"><div id="helpboxcontent" class="boxcontent"><div id="togglehelp" class="togglehelp closeX">x</div><div class="bc-head">Quicklinks</div><a href="/login">Loggen Sie sich jetzt mit Ihren Bibliotheksausweis ein.</a><br />CV anzeigen: Wählen Sie unter meinPUMA meinLebenslauf aus.<br /><div class="bc-head">Hilfe</div>Weitere Informationen erhalten sie auf den <a href="http://www.ub.uni-kassel.de/puma.html">Projektseiten</a>, in der Hilfe und den beiden Blogs <a href="http://puma-projekt.blogspot.com/">Puma-Projekt</a> und <a href="http://bibsonomy.blogspot.com/">Bibsonomy</a>.</div></div></div>');
 	$("#sidebarroundcorner").prepend('<div class="sidebarBoxOuter" id="helpbox"><div class="sidebarBoxInner"><div id="helpboxcontent" class="boxcontent"><div id="togglehelp" class="togglehelp closeX">x</div><div class="bc-head">Hilfe</div>Weitere Informationen erhalten sie auf den <a href="http://www.ub.uni-kassel.de/puma.html">Projektseiten</a>, in der Hilfe und den beiden Blogs <a href="http://puma-projekt.blogspot.com/">Puma-Projekt</a> und <a href="http://bibsonomy.blogspot.com/">Bibsonomy</a>.</div></div></div>');
-	
+	$('img#sidebarGrip').remove();
+	$('div#helpbox').before('<img id="sidebarGrip" border="0" src="/resources/image/grip.png" />');
+	$("#sidebarroundcorner").SideBarResizer('img#sidebarGrip');
 	$(".sidebarBoxInner").corner("round 8px").parent().css('padding', '3px').corner("round 8px");
 	
 	$("#helpbox").toggle();

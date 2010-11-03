@@ -249,9 +249,9 @@
 				<!-- sidebar -->
 				<c:if test="${sidebar != null}">
 					<div id="sidebarroundcorner" >
+						<img id="sidebarGrip" border="0" src="/resources/image/grip.png"/>
 						<div class="sidebarBoxOuter" id="sidebox">
-							<img id="sidebarGrip" border="0" src="/resources/image/grip.png"/>
-							<div class="sidebarBoxInner" style="overflow:hidden;">
+							<div class="sidebarBoxInner" >
 								<jsp:invoke fragment="sidebar"/>
 							</div>
 						</div>
