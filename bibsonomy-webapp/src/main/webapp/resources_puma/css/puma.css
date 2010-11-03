@@ -14,9 +14,9 @@ body {
 	width:480px;
 }
 
-#sidebarGrip{
+img#sidebarGrip{
 	margin-left:-12px;
-	margin-top:3px;
+	margin-top: 10px;
 	float:left;
 }
 
