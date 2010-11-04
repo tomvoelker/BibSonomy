@@ -1,21 +1,30 @@
 package org.bibsonomy.sword;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.sword.LogicFactory;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.BibTex;
@@ -24,11 +33,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.purl.sword.base.DepositResponse;
+import org.purl.sword.base.SWORDException;
 import org.purl.sword.base.ServiceDocument;
 import org.purl.sword.client.Client;
 import org.purl.sword.client.PostMessage;
 import org.purl.sword.client.SWORDClientException;
-
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -57,9 +68,12 @@ public class SwordService {
 	public static void main(String[] args) {
 		final SwordService service = new SwordService();
 		SwordPost swordPost = null;
+		File swordZipFile = null;
 		log.info("starting sword");
 				
-		SwordUser defaultuser = new SwordUser("stefani","adf57971843dac5fec32d8b2b799bd8a");
+		//SwordUser defaultuser = new SwordUser("stefani","adf57971843dac5fec32d8b2b799bd8a"); // localhost:8080
+		//SwordUser defaultuser = new SwordUser("stefani","273726d18e9f123d89fcd52debde788c"); // puma.uni-kassel.de
+		SwordUser defaultuser = new SwordUser("bugsbunny","e93c5f86a07cdeebd951b8f32e9bb3f6"); // www.bibsonomy.org
 		
 		
 		
@@ -68,13 +82,10 @@ public class SwordService {
 		configureService(args, service);
 
 		log.info("retrievePost");
-		swordPost = service.retrieveSwordPost(user);
+		swordZipFile = service.retrieveSwordPost(user);
 		
-		if (swordPost.hasBibTexPost()) { 
+//		if (swordPost.hasBibTexPost()) { 
 		
-		System.out.println("Title: "+swordPost.getBibTexPost().getResource().getTitle());
-		
-		System.out.println("Author: "+swordPost.getBibTexPost().getResource().getAuthor());
 
 		System.out.println("Hallo");
 		
@@ -83,12 +94,20 @@ public class SwordService {
 		Client swordClient = new Client();
 		
 		// configure sword
-		String swordHttpServer = "dspace.swordapp.org";  //http://dspace.swordapp.org/sword/servicedocument
-		int swordHttpPort = 80;
+		//String swordHttpServer = "dspace.swordapp.org";  //http://dspace.swordapp.org/sword/servicedocument
+		String swordHttpServer = "bib-pc152.bibliothek.uni-kassel.de";  //http://dspace.swordapp.org/sword/servicedocument
+		int swordHttpPort = 8080;
 		String swordHttpUserAgent = "PumaDevSst";
-		String swordHttpUrl = "http://dspace.swordapp.org/sword/servicedocument"; 
+		//String swordHttpUrl = "http://dspace.swordapp.org/sword/servicedocument"; 
+		//String swordHttpUser = "stefani@bibliothek.uni-kassel.de";
+		//String swordHttpPassword = "sspuma10";
+		String swordHttpUrl = "/sword/servicedocument";
+		//String swordHttpUser = "dspace-master@bibliothek.uni-kassel.de";
+		//String swordHttpPassword = "vacuum05";
+
 		String swordHttpUser = "stefani@bibliothek.uni-kassel.de";
-		String swordHttpPassword = "sspuma10";
+		String swordHttpPassword = "123abcd";
+		
 		PostMessage swordMessage = new PostMessage();
 		DepositResponse depositResponse = null; 
 
@@ -109,79 +128,64 @@ public class SwordService {
 		// message meta
 		swordMessage.setNoOp(true);
 		swordMessage.setUserAgent(swordHttpUserAgent+"Post");
-		
-		
-		
-		
-		swordClient.setServer(swordHttpServer, swordHttpPort);
-		swordClient.setUserAgent(swordHttpUserAgent);
-		swordClient.setCredentials(swordHttpUser, swordHttpPassword);
-		
-//		try {
-//			ServiceDocument serviceDocument = swordClient.getServiceDocument(swordHttpUrl);
-//			log.info("serviceDocument: " + serviceDocument.toString());
+		swordMessage.setFilepath(swordZipFile.getAbsolutePath());
+		swordMessage.setFiletype("application/zip");
+		swordMessage.setFormatNamespace("http://purl.org/net/sword-types/METSDSpaceSIP"); // sets packaging!
+		swordMessage.setVerbose(true);
 
-/* http://dspace.swordapp.org/sword/servicedocument
- 
-<?xml version="1.0" encoding="UTF-8"?>
-<app:service xmlns:atom="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:sword="http://purl.org/net/sword/" xmlns:dcterms="http://purl.org/dc/terms/">
-   <sword:version>1.3</sword:version>
-   <sword:verbose>true</sword:verbose>
-   <sword:noOp>true</sword:noOp>
-   <sword:maxUploadSize>-1</sword:maxUploadSize>
-   <app:workspace>
-      <atom:title type="text">DSpace SWORD 1.3 Demo</atom:title>
-      <app:collection href="http://dspace.swordapp.org/sword/deposit/123456789/6">
-         <atom:title type="text">Data sets</atom:title>
-         <app:accept>application/zip</app:accept>
-         <sword:acceptPackaging q="1.0">http://purl.org/net/sword-types/METSDSpaceSIP</sword:acceptPackaging>
-         <sword:collectionPolicy>NOTE: PLACE YOUR OWN LICENSE HERE This sample license is provided for informational purposes only. NON-EXCLUSIVE DISTRIBUTION LICENSE By signing and submitting this license, you (the author(s) or copyright owner) grants to DSpace University (DSU) the non-exclusive right to reproduce, translate (as defined below), and/or distribute your submission (including the abstract) worldwide in print and electronic format and in any medium, including but not limited to audio or video. You agree that DSU may, without changing the content, translate the submission to any medium or format for the purpose of preservation. You also agree that DSU may keep more than one copy of this submission for purposes of security, back-up and preservation. You represent that the submission is your original work, and that you have the right to grant the rights contained in this license. You also represent that your submission does not, to the best of your knowledge, infringe upon anyone's copyright. If the submission contains material for which you do not hold copyright, you represent that you have obtained the unrestricted permission of the copyright owner to grant DSU the rights required by this license, and that such third-party owned material is clearly identified and acknowledged within the text or content of the submission. IF THE SUBMISSION IS BASED UPON WORK THAT HAS BEEN SPONSORED OR SUPPORTED BY AN AGENCY OR ORGANIZATION OTHER THAN DSU, YOU REPRESENT THAT YOU HAVE FULFILLED ANY RIGHT OF REVIEW OR OTHER OBLIGATIONS REQUIRED BY SUCH CONTRACT OR AGREEMENT. DSU will clearly identify your name(s) as the author(s) or owner(s) of the submission, and will not make any alteration, other than as allowed by this license, to your submission. </sword:collectionPolicy>
-         <dcterms:abstract>A collection for depositing data sets</dcterms:abstract>
-         <sword:mediation>true</sword:mediation>
-      </app:collection>
-      <app:collection href="http://dspace.swordapp.org/sword/deposit/123456789/4">
-         <atom:title type="text">Research materials</atom:title>
-         <app:accept>application/zip</app:accept>
-         <sword:acceptPackaging q="1.0">http://purl.org/net/sword-types/METSDSpaceSIP</sword:acceptPackaging>
-         <sword:collectionPolicy>NOTE: PLACE YOUR OWN LICENSE HERE This sample license is provided for informational purposes only. NON-EXCLUSIVE DISTRIBUTION LICENSE By signing and submitting this license, you (the author(s) or copyright owner) grants to DSpace University (DSU) the non-exclusive right to reproduce, translate (as defined below), and/or distribute your submission (including the abstract) worldwide in print and electronic format and in any medium, including but not limited to audio or video. You agree that DSU may, without changing the content, translate the submission to any medium or format for the purpose of preservation. You also agree that DSU may keep more than one copy of this submission for purposes of security, back-up and preservation. You represent that the submission is your original work, and that you have the right to grant the rights contained in this license. You also represent that your submission does not, to the best of your knowledge, infringe upon anyone's copyright. If the submission contains material for which you do not hold copyright, you represent that you have obtained the unrestricted permission of the copyright owner to grant DSU the rights required by this license, and that such third-party owned material is clearly identified and acknowledged within the text or content of the submission. IF THE SUBMISSION IS BASED UPON WORK THAT HAS BEEN SPONSORED OR SUPPORTED BY AN AGENCY OR ORGANIZATION OTHER THAN DSU, YOU REPRESENT THAT YOU HAVE FULFILLED ANY RIGHT OF REVIEW OR OTHER OBLIGATIONS REQUIRED BY SUCH CONTRACT OR AGREEMENT. DSU will clearly identify your name(s) as the author(s) or owner(s) of the submission, and will not make any alteration, other than as allowed by this license, to your submission. </sword:collectionPolicy>
-         <dcterms:abstract>A collection for depositing research materials</dcterms:abstract>
-         <sword:mediation>true</sword:mediation>
-      </app:collection>
-      <app:collection href="http://dspace.swordapp.org/sword/deposit/123456789/5">
-         <atom:title type="text">Teaching materials</atom:title>
-         <app:accept>application/zip</app:accept>
-         <sword:acceptPackaging q="1.0">http://purl.org/net/sword-types/METSDSpaceSIP</sword:acceptPackaging>
-         <sword:collectionPolicy>NOTE: PLACE YOUR OWN LICENSE HERE This sample license is provided for informational purposes only. NON-EXCLUSIVE DISTRIBUTION LICENSE By signing and submitting this license, you (the author(s) or copyright owner) grants to DSpace University (DSU) the non-exclusive right to reproduce, translate (as defined below), and/or distribute your submission (including the abstract) worldwide in print and electronic format and in any medium, including but not limited to audio or video. You agree that DSU may, without changing the content, translate the submission to any medium or format for the purpose of preservation. You also agree that DSU may keep more than one copy of this submission for purposes of security, back-up and preservation. You represent that the submission is your original work, and that you have the right to grant the rights contained in this license. You also represent that your submission does not, to the best of your knowledge, infringe upon anyone's copyright. If the submission contains material for which you do not hold copyright, you represent that you have obtained the unrestricted permission of the copyright owner to grant DSU the rights required by this license, and that such third-party owned material is clearly identified and acknowledged within the text or content of the submission. IF THE SUBMISSION IS BASED UPON WORK THAT HAS BEEN SPONSORED OR SUPPORTED BY AN AGENCY OR ORGANIZATION OTHER THAN DSU, YOU REPRESENT THAT YOU HAVE FULFILLED ANY RIGHT OF REVIEW OR OTHER OBLIGATIONS REQUIRED BY SUCH CONTRACT OR AGREEMENT. DSU will clearly identify your name(s) as the author(s) or owner(s) of the submission, and will not make any alteration, other than as allowed by this license, to your submission. </sword:collectionPolicy>
-         <dcterms:abstract>A collection for depositing teaching materials</dcterms:abstract>
-         <sword:mediation>true</sword:mediation>
-      </app:collection>
-      <app:collection href="http://dspace.swordapp.org/sword/deposit/123456789/217">
-         <atom:title type="text">Workflow</atom:title>
-         <app:accept>application/zip</app:accept>
-         <sword:acceptPackaging q="1.0">http://purl.org/net/sword-types/METSDSpaceSIP</sword:acceptPackaging>
-         <sword:collectionPolicy>NOTE: PLACE YOUR OWN LICENSE HERE This sample license is provided for informational purposes only. NON-EXCLUSIVE DISTRIBUTION LICENSE By signing and submitting this license, you (the author(s) or copyright owner) grants to DSpace University (DSU) the non-exclusive right to reproduce, translate (as defined below), and/or distribute your submission (including the abstract) worldwide in print and electronic format and in any medium, including but not limited to audio or video. You agree that DSU may, without changing the content, translate the submission to any medium or format for the purpose of preservation. You also agree that DSU may keep more than one copy of this submission for purposes of security, back-up and preservation. You represent that the submission is your original work, and that you have the right to grant the rights contained in this license. You also represent that your submission does not, to the best of your knowledge, infringe upon anyone's copyright. If the submission contains material for which you do not hold copyright, you represent that you have obtained the unrestricted permission of the copyright owner to grant DSU the rights required by this license, and that such third-party owned material is clearly identified and acknowledged within the text or content of the submission. IF THE SUBMISSION IS BASED UPON WORK THAT HAS BEEN SPONSORED OR SUPPORTED BY AN AGENCY OR ORGANIZATION OTHER THAN DSU, YOU REPRESENT THAT YOU HAVE FULFILLED ANY RIGHT OF REVIEW OR OTHER OBLIGATIONS REQUIRED BY SUCH CONTRACT OR AGREEMENT. DSU will clearly identify your name(s) as the author(s) or owner(s) of the submission, and will not make any alteration, other than as allowed by this license, to your submission. </sword:collectionPolicy>
-         <dcterms:abstract>Collection with workflow</dcterms:abstract>
-         <sword:mediation>true</sword:mediation>
-      </app:collection>
-   </app:workspace>
-</app:service>
- 
- */
-			
-//			swordHttpUrl = "http://dspace.swordapp.org/sword/deposit/123456789/4"; // Research materials
-			
-			//depositResponse = swordClient.postFile(swordMessage);
-			
-			
-//		} catch (SWORDClientException e) {
-//			log.warn("SWORDClientException");
-			//e.printStackTrace();
-//		}
 		
-		} else {
+		try {
+			// get Service Document 
+			swordClient.setServer(swordHttpServer, swordHttpPort);
+			log.info("serviceDocument-setUA: ");
+			swordClient.setUserAgent(swordHttpUserAgent);
+			log.info("serviceDocument-setCred: ");
+			swordClient.setCredentials(swordHttpUser, swordHttpPassword);
+			log.info("get serviceDocument: ");
+			ServiceDocument serviceDocument = swordClient.getServiceDocument(swordHttpUrl);
+			log.info("serviceDocument: " + serviceDocument.toString());
+
+			
+			//swordHttpUrl = "http://dspace.swordapp.org/sword/deposit/123456789/4"; // Research materials
+			swordHttpUrl = "http://bib-pc152.bibliothek.uni-kassel.de:8080/sword/deposit/urn:nbn:de:hebis:34-6033";
+			
+			swordMessage.setDestination(swordHttpUrl);
+			
+			System.out.println(swordMessage.getPackaging());
+			
+			
+			depositResponse = swordClient.postFile(swordMessage);
+			try {
+				log.info("depositResponse: "+ depositResponse.getErrorDocument().getErrorURI());
+/*
+				System.out.println(depositResponse.getErrorDocument().getErrorURI());
+				System.out.println(depositResponse.getErrorDocument().getId());
+				System.out.println(depositResponse.getErrorDocument().getPackaging());
+				System.out.println(depositResponse.getErrorDocument().getPublished());
+				System.out.println(depositResponse.getErrorDocument().getQualifiedName());
+				System.out.println(depositResponse.getErrorDocument().getTreatment());
+				System.out.println(depositResponse.getErrorDocument().getUserAgent());
+				System.out.println(depositResponse.getErrorDocument().getTitle());
+*/				
+			} catch (SWORDException e) {
+				e.printStackTrace();
+			}
+			
+			
+		} catch (SWORDClientException e) {
+			log.warn("SWORDClientException");
+			e.printStackTrace();
+		}
+
+		
+//		swordZipFile		
+		
+		
+/*		} else {
 			// no posts retrieved
 			log.warn("got no posts for user "+user.getUsername());
 		}
+*/
 	}
 
 	private static void configureService(final String[] args, final SwordService service) {
@@ -196,12 +200,18 @@ public class SwordService {
 
 	
 	@SuppressWarnings("unchecked")
-	private SwordPost retrieveSwordPost(SwordUser swordUser) {
+	private File retrieveSwordPost(SwordUser swordUser) {
 		SwordPost swordPost = new SwordPost();
 		Post<BibTex> bibTexPost = null;
+		File zipFilename = null; 
 		
-		String resourceHash = "545d2292ba08ff5ec34e9ae8e9c5b314"; 
-		String apiUrl = "http://localhost:8080/api/";
+//		String resourceHash = "545d2292ba08ff5ec34e9ae8e9c5b314"; // localhost 
+		String resourceHash = "f6228cdd07e87a6e903bb21eb4e86a59"; // bibsonomy
+//		String resourceHash = "1b6dcdc28691f73b443371af0feeca9e"; // puma
+
+//		String apiUrl = "http://localhost:8080/api/";
+		String apiUrl = "http://www.bibsonomy.org/api/";
+//		String apiUrl = "http://puma.uni-kassel.de/api/";
 		
 		
 		/*
@@ -223,7 +233,6 @@ public class SwordService {
 		try {
 			final Post<? extends Resource> post = logic.getPostDetails(resourceHash, username); 
 
-			final Resource resource = post.getResource();
 			if (post.getResource() instanceof BibTex) {
 				
 				// fileprefix
@@ -233,7 +242,7 @@ public class SwordService {
 				File destinationDirectory = new File(pathToWorkDir+username+"_"+post.getResource().getIntraHash());
 
 				// zip-filename
-				File zipFilename = new File(destinationDirectory.getAbsoluteFile()+"/"+"pumapublication_"+username+"_"+post.getResource().getIntraHash()+".zip");
+				zipFilename = new File(destinationDirectory.getAbsoluteFile()+"/"+"pumapublication_"+username+"_"+post.getResource().getIntraHash()+".zip");
 
 				byte[] buffer = new byte[18024];
 				
@@ -247,102 +256,143 @@ public class SwordService {
 				 * get documents
 				 */
 				// get documents for post
-				final List<Document> documents = ((BibTex) resource).getDocuments();
+				final List<Document> documents = ((BibTex) post.getResource()).getDocuments();
 				System.out.println(documents);
-				for (final Document document : documents) {
-					// get file and store it in hard coded folder "/tmp/"
-					final Document document2 = logic.getDocument(username, bibTexPost.getResource().getIntraHash(), document.getFileName());
-					//System.out.println(document2.getFile());
-					/*
-					 * print file type
-					 */
-/*
-					Process result;
-					try {
-						result = Runtime.getRuntime().exec("file " + document2.getFile().getAbsolutePath());
-						final BufferedReader reader = new BufferedReader(new InputStreamReader(result.getInputStream(), "UTF-8"));
-						String line;
-						while ((line = reader.readLine()) != null) {
-							System.out.println(line);
-						}
-						reader.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				*/
-
-					// move file to user folder with username_resource-hash as folder name
-						
-					// File (or directory) to be moved 
-					File fileToMove = new File(document2.getFile().getAbsolutePath()); 
+				
+				try {
 					// create directory
 				    boolean mkdir_success = (new File(destinationDirectory.getAbsolutePath())).mkdir();
 				    if (mkdir_success) {
 				      System.out.println("Directory: " + destinationDirectory.getAbsolutePath() + " created");
 				    }    
+					
+					
+					// open zip archive to add files to  
+					System.out.println("zipFilename: "+zipFilename);
+					ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFilename));
 	
+					ArrayList fileList = new ArrayList();
 					
-					// Move file to new directory 
-					boolean rename_success = fileToMove.renameTo(new File(destinationDirectory, fileToMove.getName())); 
-					if (!rename_success) { 
-						// File was not successfully moved } 
-						log.info("File was not successfully moved: "+fileToMove.getName());
+					for (final Document document : documents) {
+						// get file and store it in hard coded folder "/tmp/"
+						final Document document2 = logic.getDocument(username, bibTexPost.getResource().getIntraHash(), document.getFileName());
+						//System.out.println(document2.getFile());
+						/*
+						 * print file type
+						 */
+	/*
+						Process result;
+						try {
+							result = Runtime.getRuntime().exec("file " + document2.getFile().getAbsolutePath());
+							final BufferedReader reader = new BufferedReader(new InputStreamReader(result.getInputStream(), "UTF-8"));
+							String line;
+							while ((line = reader.readLine()) != null) {
+								System.out.println(line);
+							}
+							reader.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					*/
+	
+						// move file to user folder with username_resource-hash as folder name
+							
+						// File (or directory) to be moved 
+						File fileToMove = new File(document2.getFile().getAbsolutePath()); 
+		
+						fileList.add(fileToMove.getName());
+						
+						// Move file to new directory 
+						boolean rename_success = fileToMove.renameTo(new File(destinationDirectory, fileToMove.getName())); 
+						if (!rename_success) { 
+							// File was not successfully moved } 
+							log.info("File was not successfully moved: "+fileToMove.getName());
+						}
+						
+							ZipEntry zipEntry = new ZipEntry(fileToMove.getName());
+	
+							
+							// Set the compression ratio
+							zipOutputStream.setLevel(Deflater.DEFAULT_COMPRESSION);
+	
+							FileInputStream in = new FileInputStream(destinationDirectory.getAbsoluteFile()+"/"+fileToMove.getName());
+	
+							// Add ZIP entry to output stream.
+							zipOutputStream.putNextEntry(zipEntry);
+	
+							// Transfer bytes from the current file to the ZIP file
+							//out.write(buffer, 0, in.read(buffer));
+	
+							int len;
+							while ((len = in.read(buffer)) > 0)
+						    {
+								zipOutputStream.write(buffer, 0, len);
+						    }
+	
+							zipOutputStream.closeEntry();
+	
+							// Close the current file input stream
+							in.close();			
+							
+							
 					}
+
+				
+					// create meta data structure
+					BibTex bibTexPostResource = (BibTex) post.getResource();
+					System.out.println(bibTexPostResource.getAuthor());
+					System.out.println(bibTexPostResource.getYear());
+					System.out.println(bibTexPostResource.getBibtexKey());
+					System.out.println(bibTexPostResource.getEntrytype());
+
+					// write meta data into zip archive
+					ZipEntry zipEntry = new ZipEntry("mets.xml");
+					zipOutputStream.putNextEntry(zipEntry);				
+
 					
-					// add file to zip archive  
-					try {
-						ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFilename));
-						ZipEntry zipEntry = new ZipEntry(fileToMove.getName());
+					// create XML-Document
+					// PrintWriter from a Servlet
+					StreamResult streamResult = new StreamResult(zipOutputStream);
 
+					Map<String, String> metadataMap = new HashMap<String, String>();
+					metadataMap.put("Vorname", "Hans");
+					metadataMap.put("Name", "Mustermann");
+					metadataMap.put("Geburtstag", "01.01.01");
+					metadataMap.put("Wohnort", "Musterstadt");
+
+					
+					MetsGenerator metsGenerator = new MetsGenerator();
+					metsGenerator.setFilenameList(fileList);
+					//metsGenerator.setMetadata(metadataMap);
+					metsGenerator.setMetadata(bibTexPost);
+					metsGenerator.setResult(streamResult);
+
+			    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+			    	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+			    	String currentTime = df.format(cal.getTime());
+
+					zipOutputStream.closeEntry();
 						
-						// Set the compression ratio
-						zipOutputStream.setLevel(Deflater.DEFAULT_COMPRESSION);
-
-						FileInputStream in = new FileInputStream(destinationDirectory.getAbsoluteFile()+"/"+fileToMove.getName());
-
-						// Add ZIP entry to output stream.
-						zipOutputStream.putNextEntry(zipEntry);
-
-						// Transfer bytes from the current file to the ZIP file
-						//out.write(buffer, 0, in.read(buffer));
-
-						int len;
-						while ((len = in.read(buffer)) > 0)
-					    {
-							zipOutputStream.write(buffer, 0, len);
-					    }
-
-						zipOutputStream.closeEntry();
-
-						// Close the current file input stream
-						in.close();			
-						
-						zipOutputStream.close();
-						
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						log.info("FileNotFoundException! Could not create zip-archive: "+zipFilename.getAbsolutePath());
-						e.printStackTrace();
+					// close zip archive  
+					zipOutputStream.close();
+									
+					System.out.println("saved to "+zipFilename.getPath());
+					
+					} catch (MalformedURLException e) {
+						// e.printStackTrace();
+						log.info("MalformedURLException! " + e.getMessage());
+					} catch (SAXException e) {
+						// thrown by metsWrapper.validate();
+						log.info("SAXException! " + e.getMessage());
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						log.info("IOException! Could not modify zip-archive: "+zipFilename.getAbsolutePath());
+						//e.printStackTrace();
+						log.info("IOException! " + e.getMessage());
+					} catch (TransformerConfigurationException e) {
+						//e.printStackTrace();
+						log.info("TransformerConfigurationException! " + e.getMessage());
 					}
-				
-				}
-				
-				
-				// create meta data structure
-				
-				
-				// write meta data to file
-				
-				
-				// add metadata files to archive  
-				
-				
-				// remove dir
-
+					
+					
 				
 			}			
 			
@@ -350,18 +400,39 @@ public class SwordService {
 		
 		} catch (ResourceNotFoundException e) {
 			// e.printStackTrace();
-			log.info("ResourceNotFoundException! SwordService-retrievePost");
+			log.warn("ResourceNotFoundException! SwordService-retrievePost");
 		} catch (ResourceMovedException e) {
 			//e.printStackTrace();
-			log.info("ResourceMovedException! SwordService-retrievePost");
+			log.warn("ResourceMovedException! SwordService-retrievePost");
 		}
 		
 		
 		
 		
-		return swordPost;
+		return zipFilename;
 	}
 
+    static private org.w3c.dom.Document createMODS(String title, String genre) throws ParserConfigurationException
+    {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        org.w3c.dom.Document doc = builder.newDocument();
+        Element root = doc.createElementNS("http://www.loc.gov/mods/v3", "mods");
+        doc.appendChild(root);
+        
+        Element ti = doc.createElement("titleInfo");
+        Element t = doc.createElement("title");
+        t.setTextContent(title);
+        ti.appendChild(t);
+        root.appendChild(ti);
+        
+        Element g = doc.createElement("genre");
+        g.setTextContent(genre);
+        root.appendChild(g);
+        
+        return doc;
+    }	
+	
 	public boolean isDirectDatabaseAccess() {
 		return directDatabaseAccess;
 	}
@@ -369,6 +440,7 @@ public class SwordService {
 		this.directDatabaseAccess = directDatabaseAccess;
 	}
 	
+
 	
 }
 
