@@ -10,8 +10,7 @@
 	<!--+
 		| url mapping for ajax request: /ajax/*
 		+-->
-	<bean id="ajaxUrlMapping" parent="urlMapping"
-		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<bean id="ajaxUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
 				<entry key="/generalAjax">
@@ -93,7 +92,7 @@
 				</entry>
 				<entry key="/ajax/checkOpenAccess">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="OpenAccessController" />
+						<property name="controllerBeanName"	value="openAccessController" />
 						<property name="allowedFields">
 							<list>
 								<value>publisher</value>
@@ -109,63 +108,38 @@
 
 
 	<!--+
-		| ajax controller
-		+-->
-
-	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request">
+		  | ajax controller
+	   	+-->		
+	<bean id="ajaxController" class="org.bibsonomy.webapp.controller.ajax.AjaxController" abstract="true">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
-	</bean>	
+		<property name="requestLogic" ref="requestLogic" />
+		<property name="responseLogic" ref="responseLogic"/>
+	</bean>
+
+	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request" parent="ajaxController" />	
 	
-	<bean id="editGoldstandardReferencesController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardReferencesController" scope="request">
-		<property name="logic" ref="logic"/>
-	</bean>	
-		
-		
+	<bean id="editGoldstandardReferencesController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardReferencesController" scope="request" parent="ajaxController" />
+	
 	<!-- controller for handling recommendation requests -->
-	<bean id="ajaxGetBookmarkRecommendedTagsController"
-		class="org.bibsonomy.webapp.controller.ajax.GetBookmarkRecommendedTagsController"
-		scope="request">
-		<property name="logic" ref="logic" />
+	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">
 		<!-- used for accessing spam informations -->
 		<property name="adminLogic" ref="adminLogic"/>  
-		<property name="userSettings" ref="userSettings" />
 		<property name="tagRecommender"	ref="multiplexingTagRecommender" />
 		<!-- tag recommender used for spammer -->
 		<property name="spamTagRecommender" ref="jensRecommender"/>
 	</bean>
 	
-	<bean id="ajaxGetPublicationRecommendedTagsController"
-		class="org.bibsonomy.webapp.controller.ajax.GetPublicationRecommendedTagsController"
-		scope="request">
-		<property name="logic" ref="logic" />
-		<!-- used for accessing spam informations -->
-		<property name="adminLogic" ref="adminLogic"/>
-		<property name="userSettings" ref="userSettings" />
-		<property name="tagRecommender" ref="multiplexingTagRecommender" />
-		<!-- tag recommender used for spammer -->
-		<property name="spamTagRecommender" ref="jensRecommender"/>
-	</bean>
+	<bean id="ajaxGetBookmarkRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetBookmarkRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
 	
+	<bean id="ajaxGetPublicationRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetPublicationRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
 	
-	<bean id="followerAjaxController" class="org.bibsonomy.webapp.controller.ajax.FollowerAjaxController" scope="request">
-		<property name="logic" ref="logic" />
-	</bean>
+	<bean id="followerAjaxController" class="org.bibsonomy.webapp.controller.ajax.FollowerAjaxController" scope="request" parent="ajaxController" />
 	
+	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request" parent="ajaxController" />
 	
-	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request">
-		<property name="logic" ref="logic" />
-		<property name="requestLogic" ref="requestLogic"/>
-	</bean>
+	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
 	
-	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request">
-		<property name="logic" ref="logic" />
-		<property name="requestLogic" ref="requestLogic"/>
-	</bean>
-
-	
-	<bean id="OpenAccessController" class="org.bibsonomy.webapp.controller.ajax.OpenAccessController" scope="request">
-		<property name="logic" ref="logic"/>
-	</bean>	
+	<bean id="openAccessController" class="org.bibsonomy.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController" />	
 	
 </beans>
