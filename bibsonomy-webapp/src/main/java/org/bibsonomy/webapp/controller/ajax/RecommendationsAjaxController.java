@@ -198,8 +198,8 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	//------------------------------------------------------------------------
 	private void processRecommendedTags(AjaxRecommenderCommand<R> command, SortedSet<RecommendedTag> tags) {
 		command.setRecommendedTags(tags);
-		Renderer renderer = RendererFactory.getRenderer(RenderingFormat.XML);
-		StringWriter sw = new StringWriter(100);
+		final Renderer renderer = RendererFactory.getRenderer(RenderingFormat.XML);
+		final StringWriter sw = new StringWriter(100);
 		renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
 		command.setResponseString(sw.toString());
 	}

@@ -4,8 +4,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.webapp.command.ajax.EditGoldstandardReferencesCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -34,16 +37,21 @@ public class EditGoldstandardReferencesController extends AjaxController impleme
 		final Set<String> references = command.getReferences();
 		
 		if (!present(hash) || !present(references)) {
+			this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return Views.AJAX_TEXT;
 		}
 		
-		final String action = command.getAction();
-		if ("add".equals(action)) {
+		final HttpMethod httpMethod = this.requestLogic.getHttpMethod();
+		
+		switch (httpMethod) {
+		case POST: 
 			this.logic.createReferences(hash, references);
-		} else if ("remove".equals(action)) {
+			break;
+		case DELETE: 
 			this.logic.deleteReferences(hash, references);
-		} else {
-			command.setResponseString("error");
+			break;
+		default: 
+			this.responseLogic.setHttpStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		}
 		
 		return Views.AJAX_TEXT;

@@ -12,7 +12,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.ajax.BasketManagerCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -26,8 +25,6 @@ public class BasketController extends AjaxController implements MinimalisticCont
 	private static final Log log = LogFactory.getLog(BasketController.class);
 	
 	private Errors errors;
-	
-	private RequestLogic requestLogic;
 
 	@Override
 	public BasketManagerCommand instantiateCommand() {
@@ -62,7 +59,6 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		
 		// create list of posts by hash data and given username
 		final List<Post<? extends Resource>> posts = createObjects(command);
-
 		
 		/*
 		 * new basket size
@@ -102,7 +98,7 @@ public class BasketController extends AjaxController implements MinimalisticCont
 			/*
 			 * add several posts - "pick all"
 			 */
-			for (final String s:hash.split(" ")){
+			for (final String s : hash.split(" ")){
 				/*
 				 * split string i.e. 1717560e1867fcb75197fe8689e1cc0d/daill
 				 */
@@ -125,10 +121,10 @@ public class BasketController extends AjaxController implements MinimalisticCont
 	 */
 	private Post<BibTex> createPost(final String intraHash, final String userName) {
 		final Post<BibTex> post = new Post<BibTex>();
-		final BibTex bib = new BibTex();
+		final BibTex publication = new BibTex();
 		
-		bib.setIntraHash(intraHash);
-		post.setResource(bib);
+		publication.setIntraHash(intraHash);
+		post.setResource(publication);
 		post.setUser(new User(userName));
 		return post;
 	}
@@ -142,11 +138,4 @@ public class BasketController extends AjaxController implements MinimalisticCont
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
-	
-	/**
-	 * @param requestLogic
-	 */
-	public void setRequestLogic(final RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}	
 }

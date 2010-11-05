@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.controller.ajax;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -64,8 +64,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 		/*
 		 * fetch posts
 		 */		
-		final List<String> tags = new ArrayList<String>();
-		tags.add(SystemTagsUtil.buildSystemTagString(BibTexKeySystemTag.NAME, requestedBibTexKey));
+		final List<String> tags = Collections.singletonList(SystemTagsUtil.buildSystemTagString(BibTexKeySystemTag.NAME, requestedBibTexKey));
 		command.setBibtexPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, requestedUserName, tags, null, null, null, 0, 20, null));
 	}
 	
