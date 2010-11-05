@@ -923,10 +923,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		return false;		
 	}
 
-	protected void foundDuplicatedPost() {
-		// noop
-	}
-
 	// FIXME: find a more suitable name for this method
 	protected void prepareResourceForDatabase(final RESOURCE resource) {
 		if (resource instanceof GoldStandard<?>) {
