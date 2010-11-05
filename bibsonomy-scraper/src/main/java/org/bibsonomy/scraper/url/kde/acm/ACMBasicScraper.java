@@ -424,19 +424,16 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	/**
 	 * Extract the path from the onclick attribute of the <a>-Element including
 	 * the value "BibTex". Watch out for changes of this element on ACM sites
-	 * otherwise our extraction does not work anymore. On 04.09.2006 the element
-	 * looked like this: <a
-	 * href="citation.cfm?id=62605&dl=ACM&coll=ACM&CFID=72100071&CFTOKEN=98542378#"
-	 * onClick="window.open('popBibTex.cfm?id=62605&ids=SERIES326.62597.62605&types=series.proceeding.article&reqtype=article&coll=ACM&dl=ACM&CFID=72100071&CFTOKEN=98542378',
-	 * 'BibTex','width=800,height=100,top=100,left=100,scrollbars=Yes,resizable=yes');"
-	 * class="small-link-text">BibTex</a>
+	 * otherwise our extraction does not work anymore. On 05.11.2010 the element
+	 * looked like this: 
+	 * 	<a class="small-link-text" href="javascript:ColdFusion.Window.show('theformats');ColdFusion.navigate('exportformats.cfm?id=1082037&amp;expformat=bibtex','theformats');">BibTeX</a>
 	 * 
 	 * @param nodeValue
 	 *            the node value to extract the url from
 	 * @return the extracted path
 	 */
 	private String extractPathFromOnclickNode(String nodeValue) {
-		int firstPrimePos = nodeValue.indexOf("'") + 1;
+		int firstPrimePos = nodeValue.indexOf("ColdFusion.navigate('") + 21;
 		return nodeValue.substring(firstPrimePos, nodeValue.indexOf("'", firstPrimePos));
 	}
 	
@@ -485,7 +482,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 
 			if (childnodes.getLength() > 0) {
 				if (BIBTEX_STRING_ON_ACM.equals(currNode.getChildNodes().item(0).getNodeValue())) {
-					pathsToScrape.add(extractPathFromOnclickNode(currNode.getAttributes().getNamedItem("onclick").getNodeValue()));
+					pathsToScrape.add(extractPathFromOnclickNode(currNode.getAttributes().getNamedItem("href").getNodeValue()));
 				}
 			}
 		}

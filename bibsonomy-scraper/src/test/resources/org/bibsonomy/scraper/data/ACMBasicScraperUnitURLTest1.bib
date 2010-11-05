@@ -1,14 +1,15 @@
-@inproceedings{1015428,
+@inproceedings{Dietterich:2004:TCR:1015330.1015428,
  author = {Dietterich, Thomas G. and Ashenfelter, Adam and Bulatov, Yaroslav},
  title = {Training conditional random fields via gradient tree boosting},
- booktitle = {ICML '04: Proceedings of the twenty-first international conference on Machine learning},
+ booktitle = {Proceedings of the twenty-first international conference on Machine learning},
+ series = {ICML '04},
  year = {2004},
  isbn = {1-58113-828-5},
- pages = {28},
  location = {Banff, Alberta, Canada},
+ pages = {28--},
+ url = {10.1145/1015330.1015428},
  doi = {10.1145/1015330.1015428},
+ acmid = {1015428},
  publisher = {ACM},
- address = {New York, NY, USA}
-,url = {http://portal.acm.org/citation.cfm?id=1015428&coll=Portal&dl=ACM&CFID=22531872&CFTOKEN=18437036}
-,abstract = {Conditional Random Fields (CRFs; Lafferty, McCallum, & Pereira, 2001) provide a flexible and powerful model for learning to assign labels to elements of sequences in such applications as part-of-speech tagging, text-to-speech mapping, protein and DNA sequence analysis, and information extraction from web pages. However, existing learning algorithms are slow, particularly in problems with large numbers of potential input features. This paper describes a new method for training CRFs by applying Friedman's (1999) gradient tree boosting method. In tree boosting, the CRF potential functions are represented as weighted sums of regression trees. Regression trees are learned by stage-wise optimizations similar to Adaboost, but with the objective of maximizing the conditional likelihood P(Y|X) of the CRF model. By growing regression trees, interactions among features are introduced only as needed, so although the parameter space is potentially immense, the search algorithm does not explicitly consider the large space. As a result, gradient tree boosting scales linearly in the order of the Markov model and in the order of the feature interactions, rather than exponentially like previous algorithms based on iterative scaling and gradient descent.}
+ address = {New York, NY, USA},
 }
