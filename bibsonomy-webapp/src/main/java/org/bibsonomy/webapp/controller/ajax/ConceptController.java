@@ -20,7 +20,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.webapp.command.ajax.ConceptAjaxCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -41,7 +40,6 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 	private static final Log log = LogFactory.getLog(ConceptController.class);
 	
 	private Errors errors;
-	private RequestLogic requestLogic;
 	
 	@Override
 	public View workOn(ConceptAjaxCommand command) {
@@ -164,15 +162,5 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
-	}
-
-	/**
-	 * 
-	 * @param requestLogic
-	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-	
-	
+	}	
 }
