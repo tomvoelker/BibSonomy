@@ -248,7 +248,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 
 	@Override
 	protected void setDuplicateErrorMessage(final Post<BibTex> post, final Errors errors) {
-		errors.reject("error.duplicate.post", "You already have a post with this hash.");
+		errors.rejectValue("post.resource.title", "error.field.valid.url.alreadyStoredPublication", "You already have this publication in your collection. ");
 	}
 
 	/**

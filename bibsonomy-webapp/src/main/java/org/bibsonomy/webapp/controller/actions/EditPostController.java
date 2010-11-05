@@ -26,7 +26,6 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -410,7 +409,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			/*
 			 * post has changed -> check, if new post has already been posted
 			 */
-			final Post<RESOURCE> dbPost = getPostDetails(post.getResource().getIntraHash(), loginUserName);
+			final Post<RESOURCE> dbPost = this.getPostDetails(post.getResource().getIntraHash(), loginUserName);
 			if (dbPost != null) {
 				log.debug("user already owns this post ... handling update");
 				/*
@@ -481,8 +480,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 				/*
 				 * show error page
 				 */
-				errors.reject("error.post.update", "Could not "+process+" this post.");
-				log.warn("could not "+process+" post because "+em.getDefaultMessage());
+				errors.reject("error.post.update", "Could not " + process + " this post.");
+				log.warn("could not " + process + " post because " + em.getDefaultMessage());
 				return Views.ERROR;
 			}		
 		}
@@ -662,7 +661,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			/*
 			 * post already exists -> let user edit that post
 			 */
-			return getEditPostView(command, loginUser);
+			return this.getEditPostView(command, loginUser);
 		}
 
 		log.debug("wow, post is completely new! So ... return until no errors and then store it");
@@ -907,16 +906,9 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		if (dbPost != null) {
 			log.debug("set diff post");
 			/*
-			 * already posted; warn user FIXME: this is bookmark-only and does 
-			 * not work for publications
+			 * already posted; warn user
 			 */
-			if (post.getResource().getClass().isAssignableFrom(BibTex.class)) {
-				// we have a publication double
-				errors.rejectValue("post.resource.title", "error.field.valid.url.alreadyStoredPublication", "You already have this publication in your collection. ");
-			} else {
-				// we assume to have a bookmark double
-				errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked", "You have already bookmarked this URL. ");
-			}
+			this.setDuplicateErrorMessage(dbPost, errors);
 
 			// set intraHash, diff post and set dbPost as post of command
 			command.setIntraHashToUpdate(resource.getIntraHash());
@@ -929,6 +921,10 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		}
 		
 		return false;		
+	}
+
+	protected void foundDuplicatedPost() {
+		// noop
 	}
 
 	// FIXME: find a more suitable name for this method
