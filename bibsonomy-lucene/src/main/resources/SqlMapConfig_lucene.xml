@@ -8,7 +8,6 @@
 	</transactionManager>
 
 	<!-- queries to include -->
-	<sqlMap resource="common/LuceneGenerateIndexTypeAliases.xml" />
 	<sqlMap resource="common/TypeAliases-lucene.xml" />
 	<sqlMap resource="common/Common-lucene.xml" />
 	<sqlMap resource="common/BookmarkCommon-lucene.xml" />

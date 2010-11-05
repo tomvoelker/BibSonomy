@@ -30,6 +30,8 @@
 	<typeAlias alias="bookmarkParam"      type="org.bibsonomy.lucene.database.params.BookmarkParam" />
 	<typeAlias alias="bibtexParam"        type="org.bibsonomy.lucene.database.params.BibTexParam" />
 	<typeAlias alias="goldStandardPublicationParam"        type="org.bibsonomy.lucene.database.params.ResourcesParam" />
+	<typeAlias alias="groupParam" type="org.bibsonomy.lucene.database.params.GroupParam" />
+ 	<typeAlias alias="listParam" type="org.bibsonomy.lucene.database.params.ListParam" />
 	
 	<!-- Results -->
 	<typeAlias alias="pair"               type="org.bibsonomy.database.common.params.Pair" />

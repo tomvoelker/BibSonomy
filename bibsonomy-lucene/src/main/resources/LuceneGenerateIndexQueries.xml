@@ -3,29 +3,6 @@
  "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="Lucene">
 	<!--+ 
-		| Result mappings.
-	 	+-->
-    <resultMap id="Lucene.groupIDs" class="groupParam">
-        <result property="groupID"   column="group" javaType="integer"/>
-        <result property="groupName" column="group_name" javaType="string"/>
-    </resultMap>
-
-    <resultMap id="Lucene.tasEntry" class="tasParam">
-        <result property="contentID" column="content_id" javaType="integer"/>
-        <result property="tagName"   column="tag_name"   javaType="string"/>
-    </resultMap>
-    
-    <resultMap id="Lucene.groupedTasEntry" class="tasParam">
-        <result property="contentID" column="content_id" javaType="integer"/>
-        <result property="tagName"   column="tags"   javaType="string"/>
-    </resultMap>
-
-    <resultMap id="Lucene.groupTasEntry" class="groupTasParam">
-        <result property="contentID" column="content_id" javaType="integer"/>
-        <result property="groupID"     column="group"   javaType="integer"/>
-    </resultMap>
-    
-	<!--+ 
 		| Queries.
 	 	+-->
 	 <!-- get number of tag assignments -->
