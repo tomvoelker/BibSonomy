@@ -11,7 +11,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @author Dominik Benz
  * @version $Id$
  */
-public class UserFactoryBean implements FactoryBean {
+public class UserFactoryBean implements FactoryBean<User> {
 	private RequestLogic requestLogic;
 	private User instance;
 	
@@ -24,7 +24,7 @@ public class UserFactoryBean implements FactoryBean {
 	}
 
 	@Override
-	public Object getObject() throws Exception {
+	public User getObject() throws Exception {
 		if (instance == null) {
 			instance = requestLogic.getLoginUser();
 		}

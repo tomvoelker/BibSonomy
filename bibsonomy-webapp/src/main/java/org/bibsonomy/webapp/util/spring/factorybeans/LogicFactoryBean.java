@@ -1,6 +1,3 @@
-/*
- * Created on 19.08.2007
- */
 package org.bibsonomy.webapp.util.spring.factorybeans;
 
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
@@ -15,13 +12,13 @@ import org.springframework.beans.factory.FactoryBean;
  * @see FactoryBean
  * @author Jens Illig
  */
-public class LogicFactoryBean extends DBLogicUserInterfaceFactory implements FactoryBean {
+public class LogicFactoryBean extends DBLogicUserInterfaceFactory implements FactoryBean<LogicInterface> {
 
 	private User user;
 	private LogicInterface instance;
 	
 	@Override
-	public Object getObject() throws Exception {
+	public LogicInterface getObject() throws Exception {
 		if (instance == null) {
 			instance = this.getLogicAccess(user.getName(), "");
 		}

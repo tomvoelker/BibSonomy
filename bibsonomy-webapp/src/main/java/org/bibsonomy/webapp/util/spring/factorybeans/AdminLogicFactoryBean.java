@@ -1,6 +1,3 @@
-/*
- * Created on 19.08.2007
- */
 package org.bibsonomy.webapp.util.spring.factorybeans;
 
 import org.bibsonomy.common.enums.Role;
@@ -21,7 +18,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @author rja
  * @version $Id$
  */
-public class AdminLogicFactoryBean extends DBLogicUserInterfaceFactory implements FactoryBean {
+public class AdminLogicFactoryBean extends DBLogicUserInterfaceFactory implements FactoryBean<LogicInterface> {
 
 	private final User user;
 	private LogicInterface instance = null;
@@ -36,7 +33,7 @@ public class AdminLogicFactoryBean extends DBLogicUserInterfaceFactory implement
 	}
 	
 	@Override
-	public Object getObject() throws Exception {
+	public LogicInterface getObject() throws Exception {
 		if (instance == null) {
 			instance = this.getLogicAccess(user.getName(), "");
 		}

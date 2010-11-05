@@ -1,6 +1,3 @@
-/*
- * Created on 19.08.2007
- */
 package org.bibsonomy.webapp.util.spring.factorybeans;
 
 import org.bibsonomy.model.User;
@@ -13,17 +10,16 @@ import org.springframework.beans.factory.FactoryBean;
  * @see FactoryBean
  * @author Jens Illig
  */
-public class UserSettingsFactoryBean implements FactoryBean {
+public class UserSettingsFactoryBean implements FactoryBean<UserSettings> {
 	private UserSettings instance;
 	private User user;
 	
 	@Override
-	public Object getObject() throws Exception {
+	public UserSettings getObject() throws Exception {
 		if (instance == null) {
 			if (this.user.getSettings() == null) {
 				instance = new UserSettings();
-			}
-			else {
+			} else {
 				instance = this.user.getSettings();
 			}
 		}
