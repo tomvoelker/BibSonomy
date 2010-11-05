@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sourceforge.wurfl.core.Device;
+import net.sourceforge.wurfl.core.DeviceNotDefinedException;
 import net.sourceforge.wurfl.core.WURFLManager;
 
 import org.bibsonomy.util.ValidationUtils;
@@ -21,9 +22,12 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 	private WURFLManager wurflManager;
 
 	private boolean isMobileDevice(HttpServletRequest request) {
-		
-		Device device = wurflManager.getDeviceForRequest(request);
-		return ValidationUtils.present(device.getCapability("mobile_browser"));
+		try {
+			final Device device = wurflManager.getDeviceForRequest(request);
+			return ValidationUtils.present(device.getCapability("mobile_browser"));
+		} catch (final DeviceNotDefinedException ex) {
+			return false;
+		}
 	}
 	
 	@Override
@@ -76,8 +80,7 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 	 * @return
 	 */
 	private boolean isMobileCookieSet(HttpServletRequest request) {
-		
-		if(request.getCookies() != null) {
+		if (request.getCookies() != null) {
 			for(Cookie c : request.getCookies()) {
 				
 				// check if mobile has been deactivated
