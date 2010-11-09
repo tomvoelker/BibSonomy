@@ -615,17 +615,14 @@ public enum Views implements View {
 	 * @return true if the corresponding view displays only bibtex posts, false otherwise
 	 */
 	public static boolean isBibtexOnlyFormat(final String format) {
-		if ("bibtex".equals(format) || 
+		return "bibtex".equals(format) || 
 			"publrss".equals(format) ||
 			"publ".equals(format) ||			
 			"aparss".equals(format) ||
 			"burst".equals(format) ||
 			"layout".equals(format) ||
 			"batcheditbib".equals(format) ||
-			"swrc".equals(format)) {
-			return true;
-		}
-		return false;
+			"swrc".equals(format);
 	}
 	
 	/**
@@ -636,13 +633,10 @@ public enum Views implements View {
 	 * @return true if the corresponding view displays only bookmark posts, false otherwise
 	 */
 	public static boolean isBookmarkOnlyFormat(final String format) {
-		if ("xml".equals(format) || 
+		return "xml".equals(format) || 
 			"rss".equals(format) ||
 			"batchediturl".equals(format) ||
-			"bookpubl".equals(format)) {
-				return true;
-			}
-		return false;
+			"bookpubl".equals(format);
 	}
 	
 	/**
