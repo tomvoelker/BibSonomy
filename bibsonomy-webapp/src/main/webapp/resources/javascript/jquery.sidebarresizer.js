@@ -8,7 +8,7 @@
 	$.fn.SideBarResizer = function(sidebarGrip) {
 		if(sidebarGrip == null)
 			return;
-		sidebar = $(this), originalWidth = parseInt($(sidebar).width());
+		sidebar = $(this);
 		$(sidebar).parent().css('overflow','hidden');
 		$(sidebarGrip).bind("mousedown",{element: this}, startDrag);
 	};
