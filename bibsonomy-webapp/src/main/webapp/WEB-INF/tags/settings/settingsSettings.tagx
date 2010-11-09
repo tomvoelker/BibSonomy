@@ -186,7 +186,7 @@
 					</c:when>
 					<c:otherwise>
            				<div class="fsRow">
-							<fmt:message key="settings.yourapikey"/> <tt style="font-size: 14px;">${command.context.loginUser.apiKey}</tt><br/><br/>
+							<fmt:message key="settings.yourapikey"/><c:out value=" " /><tt style="font-size: 14px;">${command.context.loginUser.apiKey}</tt><br/><br/>
 						</div>
            				<div class="fsRow">
 							<fmt:message key="settings.questionsregardingapi">
