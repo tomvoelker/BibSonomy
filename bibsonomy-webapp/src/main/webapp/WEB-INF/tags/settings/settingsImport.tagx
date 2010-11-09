@@ -120,10 +120,9 @@
 		
 		<c:set var="userName">${command.context.loginUser.name}</c:set>
 		
-		<a name="layout"></a>
 		<c:set var="actionJabRef" />
 		
-		<h2><fmt:message key="settings.jabRef.layoutfile"/></h2>
+		<a name="layout"><h2><fmt:message key="settings.jabRef.layoutfile"/></h2></a>
 		<form:form id="settingImportForm" action="/import/jabref?action=create&amp;ckey=${ckey}" method="post" enctype="multipart/form-data">
    		<div id="fsform">
 				<fieldset class="fsInner">
