@@ -31,12 +31,6 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 	}
 
 	@Override
-	public String getContentType() {
-		// TODO no content-contenttype
-		return null;
-	}
-
-	@Override
 	protected void render(final Writer writer, final String userID) {
 		this.getRenderer().serializeUserId(writer, userID);
 	}

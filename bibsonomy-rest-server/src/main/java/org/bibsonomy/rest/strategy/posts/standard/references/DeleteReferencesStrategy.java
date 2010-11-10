@@ -35,10 +35,4 @@ public class DeleteReferencesStrategy extends AbstractDeleteStrategy {
 		return true;
 	}
 
-	@Override
-	protected String getContentType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

@@ -39,10 +39,4 @@ public class PostReferencesStrategy extends AbstractCreateStrategy {
 		this.getRenderer().serializeResourceHash(this.writer, resourceID);
 	}
 
-	@Override
-	protected String getContentType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

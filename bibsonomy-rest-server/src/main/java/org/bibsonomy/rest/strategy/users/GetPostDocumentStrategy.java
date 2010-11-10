@@ -8,9 +8,9 @@ import java.util.Map;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 import org.bibsonomy.util.upload.FileDownloadInterface;
@@ -40,8 +40,11 @@ public class GetPostDocumentStrategy extends Strategy{
 		this.resourceHash = resourceHash;
 		this.fileName = fileName;
 		this.additionalInfos = context.getAdditionalInfos();
-		
-		context.setRenderingFormat(RenderingFormat.PDF);
+	}
+	
+	@Override
+	protected RenderingFormat getRenderingFormat() {
+		return RenderingFormat.PDF;
 	}
 	
 	@Override
@@ -77,10 +80,5 @@ public class GetPostDocumentStrategy extends Strategy{
 		} catch (final IOException ex) {
 			throw new BadRequestOrResponseException("Can't write the file");
 		}
-	}
-
-	@Override
-	protected String getContentType() {
-		return null;
 	}
 }

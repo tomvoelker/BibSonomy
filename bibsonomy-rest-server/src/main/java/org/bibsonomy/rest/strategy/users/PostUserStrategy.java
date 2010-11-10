@@ -22,12 +22,6 @@ public class PostUserStrategy extends AbstractCreateStrategy {
 	}
 
 	@Override
-	public String getContentType() {
-		// TODO no content-contenttype
-		return null;
-	}
-
-	@Override
 	protected String create() throws InternServerException, BadRequestOrResponseException {
 		final User user = this.getRenderer().parseUser(this.doc);
 		// check this here, because its not checked in the renderer

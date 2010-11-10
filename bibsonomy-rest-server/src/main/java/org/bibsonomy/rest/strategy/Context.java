@@ -18,10 +18,10 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.validation.ServersideModelValidator;
 
 /**
@@ -63,8 +63,6 @@ public final class Context {
 
 	
 	private final Map<?, ?> parameterMap;
-	
-	private RenderingFormat renderingFormat;
 
 	/**
 	 * the list with all items out of the http request
@@ -93,7 +91,7 @@ public final class Context {
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final HttpMethod httpMethod, final String url, RenderingFormat renderingFormat, final Reader doc, final List<FileItem> items, final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
+	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final Reader doc, final List<FileItem> items, final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
 		
@@ -106,8 +104,7 @@ public final class Context {
 		if (url == null || "/".equals(url)) throw new AccessDeniedException("It is forbidden to access '/'.");
 		
 		// choose rendering format (defaults to xml)
-		this.renderingFormat = renderingFormat;
-		this.renderer = RendererFactory.getRenderer(this.renderingFormat);
+		this.renderer = RendererFactory.getRenderer(renderingFormat);
 
 		// choose the strategy
 		this.strategy = this.chooseStrategy(httpMethod, url);
@@ -229,13 +226,6 @@ public final class Context {
 	}
 
 	/**
-	 * @return Returns the renderingFormat.
-	 */
-	public RenderingFormat getRenderingFormat() {
-		return this.renderingFormat;
-	}
-
-	/**
 	 * Do not use, only for junit tests
 	 * 
 	 * @return Returns the strategy.
@@ -265,14 +255,5 @@ public final class Context {
 	 */
 	public List<FileItem> getItemList(){
 		return this.items;
-	}
-	
-	/**
-	 * Need to set another RenderingFormat to download .pdf files as pdf files :)
-	 * 
-	 * @param renderingFormat
-	 */
-	public void setRenderingFormat(RenderingFormat renderingFormat) {
-		this.renderingFormat = renderingFormat;
 	}
 }

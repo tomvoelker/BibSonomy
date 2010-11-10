@@ -10,6 +10,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.Renderer;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -52,17 +53,25 @@ public abstract class Strategy {
 	 * @return the contentType of the answer document
 	 */
 	public final String getContentType(final String userAgent) {
-		if (getContentType() == null) {
-			return this.context.getRenderingFormat().getMimeType();
+		final String contentType = this.getContentType();
+		if (contentType != null && this.context.apiIsUserAgent(userAgent)) {
+			// Use special content type if request comes from BibSonomy REST client
+			// (like bibsonomy/post+XML )
+			// TODO: check if the client has ever used this content type
+			return RestProperties.getInstance().getSystemName().toLowerCase() + "/" + contentType + "+" + getRenderingFormat().toString();
 		}
-		// Use special content type if request comes from BibSonomy REST client
-		// (like bibsonomy/post+XML )
-		if (this.context.apiIsUserAgent(userAgent)) 
-			return RestProperties.getInstance().getSystemName().toLowerCase() + "/" + getContentType() + "+" + this.context.getRenderingFormat().toString();
-		return this.context.getRenderingFormat().getMimeType();
+		
+		return this.getRenderingFormat().getMimeType();
 	}
 
-	protected abstract String getContentType();
+	protected RenderingFormat getRenderingFormat() {
+		return this.renderer.getRenderingFormat();
+	}
+
+	@Deprecated
+	protected String getContentType() {
+		return null;
+	}
 
 	/**
 	 * Chooses a GroupingEntity based on the parameterMap in the {@link Context}.

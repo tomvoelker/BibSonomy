@@ -30,11 +30,6 @@ public class DeleteDocumentStrategy extends AbstractDeleteStrategy {
 		this.document.setFileName(fileName);
 		this.resourceHash = resourceHash;
 	}
-	
-	@Override
-	public String getContentType() {
-		return null;
-	}
 
 	@Override
 	protected boolean delete() throws InternServerException {

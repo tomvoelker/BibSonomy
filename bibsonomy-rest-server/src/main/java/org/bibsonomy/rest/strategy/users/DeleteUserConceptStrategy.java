@@ -39,9 +39,4 @@ public class DeleteUserConceptStrategy extends AbstractDeleteStrategy {
 		}
 		return true;
 	}
-
-	@Override
-	protected String getContentType() {
-		return null;
-	}
 }

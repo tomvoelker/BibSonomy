@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.enums.RenderingFormat;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.strategy.AbstractContextTest;
 import org.bibsonomy.rest.strategy.Context;
 import org.junit.Test;

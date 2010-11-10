@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.enums.RenderingFormat;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.junit.Test;
 
 /**

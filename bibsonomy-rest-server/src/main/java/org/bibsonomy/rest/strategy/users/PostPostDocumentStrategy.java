@@ -78,11 +78,5 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	protected void render(final Writer writer, final String uri) {
 		this.getRenderer().serializeURI(writer, uri);
 	}
-
-	@Override
-	protected String getContentType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 }

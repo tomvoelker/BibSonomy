@@ -11,7 +11,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.enums.RenderingFormat;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.strategy.groups.AddGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.AddUserToGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.DeleteGroupStrategy;
