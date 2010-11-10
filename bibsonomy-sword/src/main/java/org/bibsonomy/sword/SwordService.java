@@ -206,9 +206,12 @@ public class SwordService {
 		File zipFilename = null; 
 		
 //		String resourceHash = "545d2292ba08ff5ec34e9ae8e9c5b314"; // localhost 
-		String resourceHash = "f6228cdd07e87a6e903bb21eb4e86a59"; // bibsonomy
+//		String resourceHash = "f6228cdd07e87a6e903bb21eb4e86a59"; // bibsonomy
+		String resourceHash = "51b51e68a4925d30f6eae482d708d0fc"; // bibsonomy
 //		String resourceHash = "1b6dcdc28691f73b443371af0feeca9e"; // puma
 
+		
+		
 //		String apiUrl = "http://localhost:8080/api/";
 		String apiUrl = "http://www.bibsonomy.org/api/";
 //		String apiUrl = "http://puma.uni-kassel.de/api/";
@@ -354,13 +357,6 @@ public class SwordService {
 					// PrintWriter from a Servlet
 					StreamResult streamResult = new StreamResult(zipOutputStream);
 
-					Map<String, String> metadataMap = new HashMap<String, String>();
-					metadataMap.put("Vorname", "Hans");
-					metadataMap.put("Name", "Mustermann");
-					metadataMap.put("Geburtstag", "01.01.01");
-					metadataMap.put("Wohnort", "Musterstadt");
-
-					
 					MetsGenerator metsGenerator = new MetsGenerator();
 					metsGenerator.setFilenameList(fileList);
 					//metsGenerator.setMetadata(metadataMap);
