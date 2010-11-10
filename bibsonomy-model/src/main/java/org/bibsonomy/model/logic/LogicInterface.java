@@ -24,6 +24,7 @@
 package org.bibsonomy.model.logic;
 
 import java.net.InetAddress;
+import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.common.enums.Classifier;
@@ -45,6 +46,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 
 /**
@@ -108,6 +110,39 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @return details about a named user, null else
 	 */
 	public User getUserDetails(String userName);
+	
+	
+
+	/**
+	 * @param userName
+	 * @return
+	 */
+	public List<Date> getWikiVersions(String userName);
+	        
+	/**
+	 * @param userName
+	 * @param date the date of creation from the wikitext, null describe the actual wikitext
+	 * @return the requested wikitext from the given user
+	 */
+	public Wiki getWiki(String userName, Date date); 
+	
+	/**
+	 * @param userName 
+	 * @param wiki 
+	 */
+	public void createWiki(String userName, Wiki wiki); 
+	
+	/**
+	 * @param userName 
+	 * @param wiki
+	 */
+	public void updateWiki(String userName, Wiki wiki); 
+	
+	/**
+	 * @param userName
+	 */
+	public void deleteWiki(String userName); 
+	
 
 	/**
 	 * Returns all groups of the system.
