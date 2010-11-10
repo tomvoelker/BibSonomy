@@ -37,10 +37,4 @@ public class AddUserToGroupStrategy extends Strategy {
 		// no exception -> assume success
 		this.getRenderer().serializeOK(writer);
 	}
-
-	@Override
-	public String getContentType() {
-		// TODO no content-contenttype
-		return null;
-	}
 }

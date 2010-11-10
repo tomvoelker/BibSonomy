@@ -1,6 +1,5 @@
 package org.bibsonomy.rest;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -30,12 +29,12 @@ import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.util.MultiPartRequestParser;
@@ -70,9 +69,7 @@ public final class RestServlet extends HttpServlet {
 	private LogicInterfaceFactory logicFactory;
 	
 	// store some infos about the specific request or the webservice (i.e. rootPath)
-	private final Map<String, String> additionalInfos = new HashMap<String, String>();
-
-	
+	private final Map<String, String> additionalInfos = new HashMap<String, String>();	
 
 	@Override
 	public void init() throws ServletException {
@@ -199,7 +196,9 @@ public final class RestServlet extends HttpServlet {
 			context.canAccess();
 
 			// set some response headers
-			response.setContentType(context.getContentType(request.getHeader("User-Agent")));
+			final String userAgent = request.getHeader("User-Agent");
+			log.debug("[USER-AGENT] " + userAgent);
+			response.setContentType(context.getContentType(userAgent));
 			response.setCharacterEncoding(RESPONSE_ENCODING);
 
 			// send answer
@@ -289,7 +288,7 @@ public final class RestServlet extends HttpServlet {
 
 		// send error
 		response.setStatus(code);
-		response.setContentType(mediaType.getMimeType());
+		response.setContentType(renderer.getRenderingFormat().getMimeType());
 		final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
 		final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName(RESPONSE_ENCODING));
 		renderer.serializeError(writer, message);
@@ -321,7 +320,7 @@ public final class RestServlet extends HttpServlet {
 
 		// check username and password
 		final String username = basicCookie.substring(0, i);		
-		final String apiKey   = basicCookie.substring(i + 1);
+		final String apiKey = basicCookie.substring(i + 1);
 		log.debug("Username/API-key: " + username + " / " + apiKey);
 		try {
 			return logicFactory.getLogicAccess(username, apiKey);

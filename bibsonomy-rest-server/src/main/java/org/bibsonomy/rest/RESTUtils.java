@@ -6,15 +6,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
@@ -24,7 +27,9 @@ import org.bibsonomy.rest.utils.HeaderUtils;
 public class RESTUtils {
 	private static final Log log = LogFactory.getLog(RESTUtils.class);
 	
-	private static final RenderingFormat DEFAULT_MEDIA_TYPE = RenderingFormat.XML;
+	private static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
+	
+	private static final Set<RenderingFormat> SUPPORTED_RENDERING_FORMAT = new HashSet<RenderingFormat>(Arrays.asList(RenderingFormat.XML, RenderingFormat.JSON));
 	
 	/**
 	 * param name for the format of the request and response
@@ -53,10 +58,15 @@ public class RESTUtils {
 	private static RenderingFormat getAcceptHeaderMediaType(final String acceptHeader) {
 		// parse the accept header
 		final SortedMap<Double, Vector<String>> preferredTypes = HeaderUtils.getPreferredTypes(acceptHeader);
-		for (Entry<Double, Vector<String>> preferredType : preferredTypes.entrySet()) {
-			for (String mediaTypeString : preferredType.getValue()) {
+		for (final Entry<Double, Vector<String>> preferredType : preferredTypes.entrySet()) {
+			for (final String mediaTypeString : preferredType.getValue()) {
 				try {
-					return RenderingFormat.getMediaType(mediaTypeString);
+					final RenderingFormat renderingFormat = RenderingFormat.getMediaType(mediaTypeString);
+					for (final RenderingFormat supportedMediaType : SUPPORTED_RENDERING_FORMAT) {
+						if (supportedMediaType.isCompatible(renderingFormat)) {
+							return renderingFormat;
+						}
+					}
 				} catch (final IllegalArgumentException e) {
 					// don't care
 				}
@@ -82,8 +92,8 @@ public class RESTUtils {
 		// 1. check the url for the format parameter (e.g. ?format=xml)
 		final String urlParam = getStringAttribute(parameterMap, FORMAT_PARAM, null);
 		if (present(urlParam)) {
-			final RenderingFormat urlMediaType = RenderingFormat.getMediaTypeByFormat(urlParam);
-			return urlMediaType != null ? urlMediaType : DEFAULT_MEDIA_TYPE;
+			final RenderingFormat urlRenderingFormat = RenderingFormat.getMediaTypeByFormat(urlParam);
+			return urlRenderingFormat != null ? urlRenderingFormat : DEFAULT_RENDERING_FORMAT;
 		}
 		
 		// 2. check the accept header of the request
@@ -100,10 +110,10 @@ public class RESTUtils {
 				}
 			}
 			
-			return contentTypeMediaType != null ? contentTypeMediaType : DEFAULT_MEDIA_TYPE;
+			return contentTypeMediaType != null ? contentTypeMediaType : DEFAULT_RENDERING_FORMAT;
 		}
 		
-		return acceptMediaType != null ? acceptMediaType : DEFAULT_MEDIA_TYPE;
+		return acceptMediaType != null ? acceptMediaType : DEFAULT_RENDERING_FORMAT;
 	}
 
 	/**

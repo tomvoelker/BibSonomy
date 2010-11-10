@@ -25,12 +25,6 @@ public class UpdateGroupDetailsStrategy extends AbstractUpdateStrategy {
 	}
 
 	@Override
-	public String getContentType() {
-		// TODO no content-contenttype
-		return null;
-	}
-
-	@Override
 	protected void render(Writer writer, String groupID) {
 		this.getRenderer().serializeGroupId(writer, groupID);	
 	}

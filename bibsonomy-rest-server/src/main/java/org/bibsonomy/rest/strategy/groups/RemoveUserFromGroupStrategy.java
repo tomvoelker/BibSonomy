@@ -13,8 +13,8 @@ import org.bibsonomy.rest.util.EscapingPrintWriter;
  * @version $Id$
  */
 public class RemoveUserFromGroupStrategy extends Strategy {
-	private String groupName;
-	private String userName;
+	private final String groupName;
+	private final String userName;
 	private Writer writer;
 
 	/**
@@ -34,10 +34,5 @@ public class RemoveUserFromGroupStrategy extends Strategy {
 		this.getLogic().deleteUserFromGroup(this.groupName, this.userName);
 		// no exception -> assume success
 		this.getRenderer().serializeOK(writer);
-	}
-
-	@Override
-	public String getContentType() {
-		return null;
 	}
 }
