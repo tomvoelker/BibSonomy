@@ -37,9 +37,4 @@ public class PutUserConceptStrategy extends AbstractUpdateStrategy {
 	protected void render(Writer writer, String resourceID) {
 		this.getRenderer().serializeResourceHash(writer, resourceID);		
 	}
-
-	@Override
-	protected String getContentType() {
-		return null;
-	}
 }

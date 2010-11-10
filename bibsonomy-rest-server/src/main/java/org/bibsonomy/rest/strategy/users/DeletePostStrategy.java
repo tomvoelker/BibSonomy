@@ -27,11 +27,6 @@ public class DeletePostStrategy extends AbstractDeleteStrategy {
 	}
 
 	@Override
-	public String getContentType() {
-		return null;
-	}
-
-	@Override
 	protected boolean delete() throws InternServerException {
 		this.getLogic().deletePosts(this.userName, Collections.singletonList(this.resourceHash));
 		// no exception -> assume success

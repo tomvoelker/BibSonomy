@@ -22,12 +22,6 @@ public class DeleteUserStrategy extends AbstractDeleteStrategy {
 	}
 
 	@Override
-	public String getContentType() {
-		// TODO no content-contenttype
-		return null;
-	}
-
-	@Override
 	protected boolean delete() throws InternServerException {
 		this.getLogic().deleteUser(this.userName);
 		// no exception -> assume success
