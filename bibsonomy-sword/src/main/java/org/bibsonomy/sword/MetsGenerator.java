@@ -2,7 +2,10 @@ package org.bibsonomy.sword;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -15,7 +18,9 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -34,43 +39,23 @@ public class MetsGenerator {
 	private static final Log log = LogFactory.getLog(MetsGenerator.class);
 
 
-	private Map<String, String> _metadataMap;
+	private Post<BibTex> _post;
 	private Result _result; 
 	private ArrayList<String> _filenameList; 
 
 
 	public MetsGenerator() {
-		
-		// initialize _metadataMap
-		this._metadataMap = new HashMap<String, String>();
-		
-		this._metadataMap.put("title", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-		this._metadataMap.put("", "");  // title of publication
-
+		this._post = new Post<BibTex>();
 	}
 
 	
 	
 	public String getFilename(int elementnumber) {
-		return _filenameList.get(elementnumber);
+		if (_filenameList.size() > elementnumber) {
+			return _filenameList.get(elementnumber);
+		} else {
+			return null;
+		}
 	}
 
 
@@ -80,7 +65,6 @@ public class MetsGenerator {
 	}
 
 
-
 	/**
 	 * Fills url and title of bookmark.
 	 * 
@@ -88,23 +72,104 @@ public class MetsGenerator {
 	 * @return
 	 */
 
-
-	public void setMetadata(Map<String, String> metaDataMap) {
-		_metadataMap = metaDataMap;
-	}
-
 	public void setMetadata(Post<BibTex> post) {
 
-	// set metaDataMap
+		_post = post;
+	}
+	
+	
+	public String toString() {
+		
+		String o = new String(); 
+		o.concat("title: "+_post.getResource().getTitle()+"\n");
+		o.concat("title: "+_post.getResource().getAuthor()+"\n");
+		o.concat("abstract: "+_post.getResource().getAbstract()+"\n");
+		return null;
 
-	System.out.println(post.toString());
-	System.out.println(post.getResource().toString());
 		
 	}
 	
 	
+	/**
+	 * @param hd TransformerHandler
+	 * @param tags set of Tags
+	 * @param element value of element attribute
+	 * @param qualifier value of qualifier attribute
+	 * @param mdschema value of mdschema attribute
+	 * @param language value of element attribute, if available
+	 */
+	public void addDimField(TransformerHandler hd, Set<Tag> tags, String element, String qualifier, String mdschema, String language) {
+		for (Iterator<Tag> iter = tags.iterator(); iter.hasNext();) {
+			addDimField(hd, iter.next().getName(), element, qualifier, mdschema, language);
+		}
+	}
 	
+	/**
+	 * @param hd TransformerHandler
+	 * @param personNameList List of personName values
+	 * @param element value of element attribute
+	 * @param qualifier value of qualifier attribute
+	 * @param mdschema value of mdschema attribute
+	 * @param language value of element attribute, if available
+	 */
+	public void addDimField(TransformerHandler hd, List <PersonName> personNameList, String element, String qualifier, String mdschema, String language) {
+		for (Iterator<PersonName> iter = personNameList.iterator(); iter.hasNext();) {
+			addDimField(hd, iter.next(), element, qualifier, mdschema, language);
+		}
+	}
+
+	/**
+	 * @param hd TransformerHandler
+	 * @param personName 
+	 * @param element value of element attribute
+	 * @param qualifier value of qualifier attribute
+	 * @param mdschema value of mdschema attribute
+	 * @param language value of element attribute, if available
+	 */
+	public void addDimField(TransformerHandler hd, PersonName personName, String element, String qualifier, String mdschema, String language) {
+		addDimField(hd, personName.getLastName()+", "+personName.getFirstName(), element, qualifier, mdschema, language);
+	}
 	
+	/**
+	 * @param hd TransformerHandler
+	 * @param contents array of strings
+	 * @param element value of element attribute
+	 * @param qualifier value of qualifier attribute
+	 * @param mdschema value of mdschema attribute
+	 * @param language value of element attribute, if available
+	 */
+	public void addDimField(TransformerHandler hd, String[] contents, String element, String qualifier, String mdschema, String language) {
+		for (int i=0; i<contents.length; i++) {
+			addDimField(hd, contents[i], element, qualifier, mdschema, language);
+		}
+	}
+
+	/**
+	 * @param hd TransformerHandler
+	 * @param content Text
+	 * @param element value of element attribute
+	 * @param qualifier value of qualifier attribute
+	 * @param mdschema value of mdschema attribute
+	 * @param language value of element attribute, if available
+	 */
+	public void addDimField(TransformerHandler hd, String content, String element, String qualifier, String mdschema, String language) {
+		AttributesImpl atts = new AttributesImpl();
+		atts.clear();
+		if (element != null) atts.addAttribute("","","element","CDATA",element);
+		if (qualifier != null) atts.addAttribute("","","qualifier","CDATA",qualifier);
+		if (mdschema != null) atts.addAttribute("","","mdschema","CDATA",mdschema);
+		if (language != null) atts.addAttribute("","","language","CDATA",language);
+
+		try {
+			hd.startElement("","","dim:field",atts);
+			hd.characters(content.toCharArray(),0,content.length());
+			hd.endElement("","","dim:field");
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 	
 	
 	
@@ -181,8 +246,7 @@ public class MetsGenerator {
 		atts.clear();
 		atts.addAttribute("","","MIMETYPE","CDATA","text/xml");
 		atts.addAttribute("","","MDTYPE","CDATA","OTHER");
-		atts.addAttribute("","","OTHERMDTYPE","CDATA","EPDCX");
-		atts.addAttribute("","","LABEL","CDATA","SWAP Metadata");
+		atts.addAttribute("","","OTHERMDTYPE","CDATA","DIM");
 		hd.startElement("","","mdWrap",atts);
 
 
@@ -190,223 +254,168 @@ public class MetsGenerator {
 		atts.clear();
 		hd.startElement("","","xmlData",atts);
 
-		// epdcx:descriptionSet
+		// dim:dim
 		atts.clear();
-		atts.addAttribute("","","xmlns:epdcx","CDATA","http://purl.org/eprint/epdcx/2006-11-16/");
-		atts.addAttribute("","","xmlns:xsi","CDATA","http://www.w3.org/2001/XMLSchema-instance");
-		atts.addAttribute("","","xsi:schemaLocation","CDATA","http://purl.org/eprint/epdcx/2006-11-16/ http://purl.org/eprint/epdcx/xsd/2006-11-16/epdcx.xsd");
-		hd.startElement("","","epdcx:descriptionSet",atts);
+		atts.addAttribute("","","dspaceType","CDATA","ITEM");
+		hd.startElement("","","dim:dim",atts);
 
-		// epdcx:description
-		atts.clear();
-		atts.addAttribute("","","epdcx:resourceId","CDATA","sword-mets-epdcx-1");
-		hd.startElement("","","epdcx:description",atts);
+		// dim:field  -  Author
+		if (null != _post.getResource().getAuthorList() && !_post.getResource().getAuthorList().isEmpty()) 
+			addDimField(hd, _post.getResource().getAuthorList(), "contributor", "author", "dc", null);
+		
+		// dim:field  -  Title
+		if (null != _post.getResource().getTitle() && !_post.getResource().getTitle().isEmpty()) 
+			addDimField(hd, _post.getResource().getTitle(), "title", null, "dc", null);
 
-		// dc.TYPE
-		// epdcx:statement/
-		// see http://www.ukoln.ac.uk/repositories/digirep/index/Eprints_EntityType_Vocabulary_Encoding_Scheme
-		atts.clear();
-		atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/dc/elements/1.1/type");
-		atts.addAttribute("","","epdcx:valueURI","CDATA","http://purl.org/eprint/entityType/ScholarlyWork");
-		hd.startElement("","","epdcx:statement",atts);
-		hd.endElement("","","epdcx:statement");
+		// dim:field  -  Abstract
+		if (null != _post.getResource().getAbstract() && !_post.getResource().getAbstract().isEmpty()) 
+			addDimField(hd, _post.getResource().getAbstract(), "description", "abstract", "dc", null);
 
-		// dc.TITLE
-		// epdcx:statement/
-		atts.clear();
-		atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/dc/elements/1.1/title");
-		hd.startElement("","","epdcx:statement",atts);
-			// epdcx:valueString/
-			atts.clear();
-			hd.startElement("","","epdcx:valueString",atts);
-			cdatacontent = "TEST-Title"; 
-			hd.characters(cdatacontent.toCharArray(),0,cdatacontent.length());
-			hd.endElement("","","epdcx:valueString");
-		hd.endElement("","","epdcx:statement");
+		// dim:field  -  date issued
+		if (null != _post.getResource().getYear() && !_post.getResource().getYear().isEmpty()) 
+			addDimField(hd, _post.getResource().getYear()+((null == _post.getResource().getMonth() || _post.getResource().getMonth().isEmpty())?"":"-"+_post.getResource().getMonth()+((null == _post.getResource().getDay() || _post.getResource().getDay().isEmpty())?"":"-"+_post.getResource().getDay())), "date", "issued", "dc", null);
 
-		// dc.ABSTRACT
-		// epdcx:statement/
-		atts.clear();
-		atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/dc/terms/abstract");
-		hd.startElement("","","epdcx:statement",atts);
-			// epdcx:valueString/
-			atts.clear();
-			hd.startElement("","","epdcx:valueString",atts);
-			cdatacontent = "TEST-Abstract"; 
-			hd.characters(cdatacontent.toCharArray(),0,cdatacontent.length());
-			hd.endElement("","","epdcx:valueString");
-		hd.endElement("","","epdcx:statement");
-		
-		// dc.CREATOR
-		atts.clear();
-		atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/dc/elements/1.1/creator");
-		hd.startElement("","","epdcx:statement",atts);
-			// epdcx:valueString/
-			atts.clear();
-			hd.startElement("","","epdcx:valueString",atts);
-			cdatacontent = "Hollies, C.R."; 
-			hd.characters(cdatacontent.toCharArray(),0,cdatacontent.length());
-			hd.endElement("","","epdcx:valueString");
-		hd.endElement("","","epdcx:statement");
-		
-		// dc.CREATOR (2nd)
-		atts.clear();
-		atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/dc/elements/1.1/creator");
-		hd.startElement("","","epdcx:statement",atts);
-			// epdcx:valueString/
-			atts.clear();
-			hd.startElement("","","epdcx:valueString",atts);
-			cdatacontent = "Monckton, D.G."; 
-			hd.characters(cdatacontent.toCharArray(),0,cdatacontent.length());
-			hd.endElement("","","epdcx:valueString");
-		hd.endElement("","","epdcx:statement");
+		// dim:field  -  Publisher
+		if (null != _post.getResource().getPublisher() && !_post.getResource().getPublisher().isEmpty()) 
+			addDimField(hd, _post.getResource().getPublisher(), "publisher", null, "dc", null);
 
-		// dc.IDENTIFIER
-		atts.clear();
-		atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/dc/elements/1.1/identifier");
-		hd.startElement("","","epdcx:statement",atts);
-			// epdcx:valueString/
-			atts.clear();
-			atts.addAttribute("","","epdcx:sesURI","CDATA","http://purl.org/dc/terms/URI");
-			hd.startElement("","","epdcx:valueString",atts);
-			cdatacontent = "http://puma.uni-kassel.de/__URL_oder_BibTeX-Key_As_Identifier"; 
-			hd.characters(cdatacontent.toCharArray(),0,cdatacontent.length());
-			hd.endElement("","","epdcx:valueString");
-		hd.endElement("","","epdcx:statement");
+		// dim:field  -  Type
+		if (null != _post.getResource().getType() && !_post.getResource().getType().isEmpty()) 
+			addDimField(hd, _post.getResource().getType(), "type", null, "dc", "en");
 		
-		// REF isExpressedAs (Expression)
-		atts.clear();
-		atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/eprint/terms/isExpressedAs");
-		atts.addAttribute("","","epdcx:valueRef","CDATA","sword-mets-expr-1");
-		hd.startElement("","","epdcx:statement",atts);
-		hd.endElement("","","epdcx:statement");
+		// dim:field  -  description.everything
+		if (null != _post.getDescription() && !_post.getDescription().isEmpty()) 
+			addDimField(hd, _post.getDescription(), "description", "everything", "dc", null);
+		
+		// dim:field  -  tags - Schlagwoerter
+		if (null != _post.getTags() && !_post.getTags().isEmpty()) 
+			addDimField(hd, _post.getTags(), "subject", "swd", "dc", null);
+		
+		// dim:field  -  url 
+		if (null != _post.getResource().getUrl() && !_post.getResource().getUrl().isEmpty()) 
+			addDimField(hd, _post.getResource().getUrl(), "identifier", "url", "dc", null);
+		
 
-		// /epdcx:description
-		hd.endElement("","","epdcx:description");
-		
-		// Expression
-		// epdcx:description
-		atts.clear();
-		atts.addAttribute("","","epdcx:resourceId","CDATA","sword-mets-expr-1");
-		hd.startElement("","","epdcx:description",atts);
-		
-		// dc.type (Expression)
-		atts.clear();
-		atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/dc/elements/1.1/type");
-		atts.addAttribute("","","epdcx:valueURI","CDATA","http://purl.org/eprint/entityType/Expression");
-		hd.startElement("","","epdcx:statement",atts);
-		hd.endElement("","","epdcx:statement");
+		// auswertung des misc-feldes
+		// may contain some identifiers like ean, issn, and so on
+		// may contain some classification data in formats ddc, pacs, msc, ccs
+		// parse misc-filed to compute different fields to property miscField
+		_post.getResource().parseMiscField();
+		if (null != _post.getResource().getMiscFields() && !_post.getResource().getMiscFields().isEmpty()){ 
 
-		// dc.LANGUAGE
-		atts.clear();
-		atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/dc/elements/1.1/language");
-		atts.addAttribute("","","epdcx:vesURI","CDATA","http://purl.org/dc/terms/RFC3066");
-		hd.startElement("","","epdcx:statement",atts);
-			// epdcx:valueString/
-			atts.clear();
-			hd.startElement("","","epdcx:valueString",atts);
-			cdatacontent = "en"; 
-			hd.characters(cdatacontent.toCharArray(),0,cdatacontent.length());
-			hd.endElement("","","epdcx:valueString");
-		hd.endElement("","","epdcx:statement");
-		
-		// dc.type
-		atts.clear();
-		atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/dc/elements/1.1/type");
-		atts.addAttribute("","","epdcx:vesURI","CDATA","http://purl.org/eprint/terms/Type");
-		atts.addAttribute("","","epdcx:valueURI","CDATA","http://purl.org/eprint/type/JournalArticle");
-		hd.startElement("","","epdcx:statement",atts);
-		hd.endElement("","","epdcx:statement");
-		
-		// dc.date.issued
-		atts.clear();
-		atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/dc/terms/available");
-		hd.startElement("","","epdcx:statement",atts);
-			// epdcx:valueString/
-			atts.clear();
-			atts.addAttribute("","","epdcx:sesURI","CDATA","http://purl.org/dc/terms/W3CDTF");
-			hd.startElement("","","epdcx:valueString",atts);
-			cdatacontent = "2001-02"; 
-			hd.characters(cdatacontent.toCharArray(),0,cdatacontent.length());
-			hd.endElement("","","epdcx:valueString");
-		hd.endElement("","","epdcx:statement");
-		
-		// dc.description.version
-		
-		// dc.rights.holder
+			Map<String,String> miscData = _post.getResource().getMiscFields();
+			
+			for (Iterator<String> iter = miscData.keySet().iterator(); iter.hasNext();) {
+				String key = iter.next();
+				if (key.equalsIgnoreCase("ean")) {
+					addDimField(hd, miscData.get(key).split(" "), "identifier", "ean", "dc", null);
+				}
 
-		
-		
-		// /epdcx:description
-		hd.endElement("","","epdcx:description");
+				else if (key.equalsIgnoreCase("isbn")) {
+					addDimField(hd, miscData.get(key).split(" "), "identifier", "isbn", "dc", null);
+				}
+				
+				else if (key.equalsIgnoreCase("issn")) {
+					addDimField(hd, miscData.get(key).split(" "), "identifier", "issn", "dc", null);
+				}
+				
+				else if (key.equalsIgnoreCase("doi")) {
+					addDimField(hd, miscData.get(key).split(" "), "identifier", "doi", "dc", null);
+				}
 
+				else if (key.equalsIgnoreCase("classification.ddc")) {
+					addDimField(hd, miscData.get(key).split(" "), "subject", "ddc", "dc", null);
+				}
+				
+				else if (key.equalsIgnoreCase("classification.ccs")) {
+					addDimField(hd, miscData.get(key).split(" "), "subject", "ccs", "dc", null);
+				}
+				
+				else if (key.equalsIgnoreCase("classification.pacs")) {
+					addDimField(hd, miscData.get(key).split(" "), "subject", "pacs", "dc", null);
+				}
+				
+				else if (key.equalsIgnoreCase("classification.msc")) {
+					addDimField(hd, miscData.get(key).split(" "), "subject", "msc", "dc", null);
+				}
+				else {
+					System.out.println("misc field: "+_post.getResource().getMiscFields());
+					log.info("don't know waht to do with key >>"+key+"<< from misc field");
+				}
+				
+			}
+		}
 
-		// /epdcx:descriptionSet
-		hd.endElement("","","epdcx:descriptionSet");
+		hd.endElement("","","dim:dim");
 		hd.endElement("","","xmlData");
 		hd.endElement("","","mdWrap");
 		hd.endElement("","","dmdSec");
 
-		// fileSec
-		atts.clear();
-		hd.startElement("","","fileSec",atts);
+		
+		// add FileSec only if Files are available
+		if (null != this.getFilename(0)) {
+		
+			// fileSec
+			atts.clear();
+			hd.startElement("","","fileSec",atts);
+	
+			// fileGrp
+			atts.clear();
+			atts.addAttribute("","","USE","CDATA","CONTENT");
+			atts.addAttribute("","","ID","CDATA","sword-mets-fgrp-1");
+			hd.startElement("","","fileGrp",atts);
+	
+			// file
+			atts.clear();
+			atts.addAttribute("","","GROUPID","CDATA","sword-mets-fgid-0");
+			atts.addAttribute("","","ID","CDATA","sword-mets-file-1");
+			atts.addAttribute("","","MIMETYPE","CDATA","application/pdf");
+			hd.startElement("","","file",atts);
+	
+	
+			// FLocat
+			atts.clear();
+			atts.addAttribute("","","LOCTYPE","CDATA","URL");
+			atts.addAttribute("","","xlink:href","CDATA", this.getFilename(0));
+			hd.startElement("","","FLocat",atts);
+			hd.endElement("","","FLocat");
+	
+	
+			hd.endElement("","","file");
+			hd.endElement("","","fileGrp");
+			hd.endElement("","","fileSec");
 
-		// fileGrp
-		atts.clear();
-		atts.addAttribute("","","USE","CDATA","CONTENT");
-		atts.addAttribute("","","ID","CDATA","sword-mets-fgrp-1");
-		hd.startElement("","","fileGrp",atts);
+			// structMap
+			atts.clear();
+			atts.addAttribute("","","ID","CDATA","sword-mets-struct-1");
+			atts.addAttribute("","","LABEL","CDATA","structure");
+			atts.addAttribute("","","TYPE","CDATA","LOGICAL");
+			hd.startElement("","","structMap",atts);
+	
+			// div
+			atts.clear();
+			atts.addAttribute("","","ID","CDATA","sword-mets-div-1");
+			atts.addAttribute("","","DMDID","CDATA","sword-mets-dmd-1");
+			atts.addAttribute("","","TYPE","CDATA","SWORD Object");
+			hd.startElement("","","div",atts);
+	
+			// div
+			atts.clear();
+			atts.addAttribute("","","ID","CDATA","sword-mets-div-2");
+			atts.addAttribute("","","TYPE","CDATA","File");
+			hd.startElement("","","div",atts);
+	
+			// fptr
+			atts.clear();
+			atts.addAttribute("","","FILEID","CDATA","sword-mets-file-1");
+			hd.startElement("","","fptr",atts);
+	
+			hd.endElement("","","fptr");
+			hd.endElement("","","div");
+			hd.endElement("","","div");
+			hd.endElement("","","structMap");
 
-		// file
-		atts.clear();
-		atts.addAttribute("","","GROUPID","CDATA","sword-mets-fgid-0");
-		atts.addAttribute("","","ID","CDATA","sword-mets-file-1");
-		atts.addAttribute("","","MIMETYPE","CDATA","application/pdf");
-		hd.startElement("","","file",atts);
-
-
-		// FLocat
-		atts.clear();
-		atts.addAttribute("","","LOCTYPE","CDATA","URL");
-		atts.addAttribute("","","xlink:href","CDATA", this.getFilename(0));
-		hd.startElement("","","FLocat",atts);
-		hd.endElement("","","FLocat");
-
-
-		hd.endElement("","","file");
-		hd.endElement("","","fileGrp");
-		hd.endElement("","","fileSec");
-
-		// structMap
-		atts.clear();
-		atts.addAttribute("","","ID","CDATA","sword-mets-struct-1");
-		atts.addAttribute("","","LABEL","CDATA","structure");
-		atts.addAttribute("","","TYPE","CDATA","LOGICAL");
-		hd.startElement("","","structMap",atts);
-
-		// div
-		atts.clear();
-		atts.addAttribute("","","ID","CDATA","sword-mets-div-1");
-		atts.addAttribute("","","DMDID","CDATA","sword-mets-dmd-1");
-		atts.addAttribute("","","TYPE","CDATA","SWORD Object");
-		hd.startElement("","","div",atts);
-
-		// div
-		atts.clear();
-		atts.addAttribute("","","ID","CDATA","sword-mets-div-2");
-		atts.addAttribute("","","TYPE","CDATA","File");
-		hd.startElement("","","div",atts);
-
-		// fptr
-		atts.clear();
-		atts.addAttribute("","","FILEID","CDATA","sword-mets-file-1");
-		hd.startElement("","","fptr",atts);
-
-		hd.endElement("","","fptr");
-		hd.endElement("","","div");
-		hd.endElement("","","div");
-		hd.endElement("","","structMap");
-
+		}
 
 
 		hd.endElement("","","mets");
