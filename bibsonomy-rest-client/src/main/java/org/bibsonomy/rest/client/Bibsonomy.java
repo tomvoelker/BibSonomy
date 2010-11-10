@@ -23,10 +23,12 @@
 
 package org.bibsonomy.rest.client;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
-import org.bibsonomy.rest.enums.RenderingFormat;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 
 /*
  * FIXME: naming this class "Bibsonomy" is bad (large "S" is missing anyway ;-) - 
@@ -74,8 +76,9 @@ public final class Bibsonomy {
 
 		this.setProxyHost(System.getProperty("http.proxyHost"));
 		
-		if (System.getProperty("http.proxyPort") != null){
-			this.setProxyPort(Integer.parseInt(System.getProperty("http.proxyPort")));
+		final String poxyPort = System.getProperty("http.proxyPort");
+		if (present(poxyPort)) {
+			this.setProxyPort(Integer.parseInt(poxyPort));
 		}
 	}
 
@@ -90,8 +93,8 @@ public final class Bibsonomy {
 	 *             if the username or the password has not yet been set
 	 */
 	public void executeQuery(final AbstractQuery<?> query) throws ErrorPerformingRequestException, IllegalStateException {
-		if (this.username == null) throw new IllegalStateException("The username has not yet been set.");
-		if (this.apiKey == null) throw new IllegalStateException("The password has not yet been set.");
+		if (!present(this.username)) throw new IllegalStateException("The username has not yet been set.");
+		if (!present(this.apiKey)) throw new IllegalStateException("The password has not yet been set.");
 		query.setRenderingFormat(this.renderingFormat);
 		query.setApiURL(this.apiURL);
 		query.setProxyHost(this.proxyHost);
@@ -125,7 +128,7 @@ public final class Bibsonomy {
 	 *             if the given username is null or empty
 	 */
 	public void setUsername(final String username) throws IllegalArgumentException {
-		if (username == null || username.length() == 0) throw new IllegalArgumentException("The given username is not valid.");
+		if (!present(username)) throw new IllegalArgumentException("The given username is not valid.");
 		this.username = username;
 	}
 
@@ -136,7 +139,7 @@ public final class Bibsonomy {
 	 *             if the given password is null or empty
 	 */
 	public void setApiKey(final String apiKey) throws IllegalArgumentException {
-		if (apiKey == null || apiKey.length() == 0) throw new IllegalArgumentException("The given apiKey is not valid.");
+		if (!present(apiKey)) throw new IllegalArgumentException("The given apiKey is not valid.");
 		this.apiKey = apiKey;
 	}
 
@@ -151,7 +154,7 @@ public final class Bibsonomy {
 	 *             if the given url is null or empty
 	 */
 	public void setApiURL(String apiURL) throws IllegalArgumentException {
-		if (apiURL == null || apiURL.length() == 0) throw new IllegalArgumentException("The given apiURL is not valid.");
+		if (!present(apiURL)) throw new IllegalArgumentException("The given apiURL is not valid.");
 		if (apiURL.equals("/")) throw new IllegalArgumentException("The given apiURL is not valid.");
 		if (!apiURL.endsWith("/")) apiURL += "/";
 		this.apiURL = apiURL;
@@ -172,8 +175,8 @@ public final class Bibsonomy {
 	 *             If renderingFormat isn't set to XML.
 	 */
 	public void setRenderingFormat(final RenderingFormat renderingFormat) {
-		if (renderingFormat != RenderingFormat.XML) {
-			throw new UnsupportedOperationException("Currently only the xml rendering format is implemented.");
+		if (!renderingFormat.equals(RenderingFormat.XML)) {
+			throw new UnsupportedOperationException("Currently only the xml rendering format is supported.");
 		}
 		this.renderingFormat = renderingFormat;
 	}

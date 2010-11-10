@@ -35,6 +35,7 @@ import org.bibsonomy.util.file.FileUtil;
 
 /**
  * Downloads a document for a specific post.
+ * 
  * @author Waldemar Biller <wbi@cs.uni-kassel.de>
  * @version $Id$
  */
@@ -47,10 +48,14 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 	public GetPostDocumentQuery(final String username, final String resourceHash, final String fileName, final String directory) {
 		this(username, resourceHash, fileName, directory, directory, directory);
 	}
+	
 	/**
 	 * @param username
 	 * @param resourceHash the resource hash of a specific post
 	 * @param fileName the file name of the document
+	 * @param fileDirectory 
+	 * @param pdfDirectory 
+	 * @param psDirectory 
 	 */
 	public GetPostDocumentQuery(final String username, final String resourceHash, final String fileName, final String fileDirectory, final String pdfDirectory, final String psDirectory) {
 		if (!present(username)) throw new IllegalArgumentException("no username given");
@@ -67,7 +72,7 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 			final String extension = FileUtil.getFileExtension(fileName);
 			if ("pdf".equals(extension)) {
 				this.document.setFile(new File(pdfDirectory + "/" + fileName));
-			} else if("ps".equals(extension)) {
+			} else if ("ps".equals(extension)) {
 				this.document.setFile(new File(psDirectory + "/" + fileName));
 			} else {
 				this.document.setFile(new File(fileDirectory + "/" + fileName));
@@ -82,9 +87,9 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 
 	@Override
 	protected Document doExecute() throws ErrorPerformingRequestException {
-		if(!this.fileExists)
+		if (!this.fileExists) {
 			this.performFileDownload(URL_USERS + "/" + this.document.getUserName() + "/posts/" + this.resourceHash + "/documents/" + this.document.getFileName(), this.document.getFile());
-		else {
+		} else {
 			this.setExecuted(true);
 			this.setStatusCode(200);
 		}

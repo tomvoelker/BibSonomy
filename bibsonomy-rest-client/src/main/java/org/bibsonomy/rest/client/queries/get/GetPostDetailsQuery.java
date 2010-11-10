@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.client.AbstractQuery;
@@ -52,8 +54,8 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 	 *             if userName or resourceHash are null or empty
 	 */
 	public GetPostDetailsQuery(final String username, final String resourceHash) throws IllegalArgumentException {
-		if (username == null || username.length() == 0) throw new IllegalArgumentException("no username given");
-		if (resourceHash == null || resourceHash.length() == 0) throw new IllegalArgumentException("no resourceHash given");
+		if (!present(username)) throw new IllegalArgumentException("no username given");
+		if (!present(resourceHash)) throw new IllegalArgumentException("no resourceHash given");
 
 		this.username = username;
 		this.resourceHash = resourceHash;

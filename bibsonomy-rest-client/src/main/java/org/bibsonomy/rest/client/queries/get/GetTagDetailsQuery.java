@@ -39,7 +39,8 @@ public final class GetTagDetailsQuery extends AbstractQuery<Tag> {
 	private final String tagName;
 
 	public GetTagDetailsQuery(final String tagName) {
-		this.tagName = tagName;this.downloadedDocument = null;
+		this.tagName = tagName;
+		this.downloadedDocument = null;
 	}
 
 	

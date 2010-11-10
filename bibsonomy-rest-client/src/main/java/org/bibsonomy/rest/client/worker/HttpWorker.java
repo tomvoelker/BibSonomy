@@ -25,14 +25,13 @@ package org.bibsonomy.rest.client.worker;
 
 import java.io.UnsupportedEncodingException;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.RestProperties;
-
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -42,12 +41,12 @@ public abstract class HttpWorker {
 
 	protected static final Log LOGGER = LogFactory.getLog(HttpWorker.class.getName());
 
-	public static final String HEADER_USER_AGENT = "User-Agent";
+	private static final String HEADER_USER_AGENT = "User-Agent";
 	public static final String HEADER_AUTHORIZATION = "Authorization";
-	public static final String HEADER_AUTH_BASIC = "Basic ";
+	private static final String HEADER_AUTH_BASIC = "Basic ";
 
-	public static final String USER_AGENT_VALUE = RestProperties.getInstance().getApiUserAgent();
-	public static final String UTF8 = "UTF-8";
+	private static final String USER_AGENT_VALUE = RestProperties.getInstance().getApiUserAgent();
+	private static final String UTF8 = "UTF-8";
 
 	private final HttpClient httpClient;
 	protected int httpResult;

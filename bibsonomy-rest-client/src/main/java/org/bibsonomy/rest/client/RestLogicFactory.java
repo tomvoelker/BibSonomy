@@ -26,6 +26,10 @@ package org.bibsonomy.rest.client;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class RestLogicFactory implements LogicInterfaceFactory {
 
 	private final String apiUrl;
@@ -34,10 +38,14 @@ public class RestLogicFactory implements LogicInterfaceFactory {
 		this.apiUrl = null;
 	}
 
+	/**
+	 * @param apiUrl the api base url of the REST service
+	 */
 	public RestLogicFactory(final String apiUrl) {
 		this.apiUrl = apiUrl;
 	}
 
+	@Override
 	public LogicInterface getLogicAccess(final String loginName, final String apiKey) {
 		if (this.apiUrl != null) return new RestLogic(loginName, apiKey, this.apiUrl);
 		return new RestLogic(loginName, apiKey);

@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -48,7 +50,7 @@ public final class GetUserDetailsQuery extends AbstractQuery<User> {
 	 *             if username is null or empty
 	 */
 	public GetUserDetailsQuery(final String username) throws IllegalArgumentException {
-		if (username == null || username.length() == 0) throw new IllegalArgumentException("no username given");
+		if (!present(username)) throw new IllegalArgumentException("no username given");
 
 		this.username = username;
 	}

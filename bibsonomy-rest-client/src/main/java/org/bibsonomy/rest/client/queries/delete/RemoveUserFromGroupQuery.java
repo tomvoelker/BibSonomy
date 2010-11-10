@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.delete;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -50,8 +52,8 @@ public final class RemoveUserFromGroupQuery extends AbstractQuery<String> {
 	 *             if userName or groupName are null or empty
 	 */
 	public RemoveUserFromGroupQuery(final String userName, final String groupName) throws IllegalArgumentException {
-		if (userName == null || userName.length() == 0) throw new IllegalArgumentException("no username given");
-		if (groupName == null || groupName.length() == 0) throw new IllegalArgumentException("no groupname given");
+		if (!present(userName)) throw new IllegalArgumentException("no username given");
+		if (!present(groupName)) throw new IllegalArgumentException("no groupname given");
 
 		this.userName = userName;
 		this.groupName = groupName;

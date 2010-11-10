@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.post;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.StringWriter;
 
 import org.bibsonomy.model.User;
@@ -51,9 +53,9 @@ public final class CreateUserQuery extends AbstractQuery<String> {
 	 *             password specified.
 	 */
 	public CreateUserQuery(final User user) throws IllegalArgumentException {
-		if (user == null) throw new IllegalArgumentException("no user specified");
-		if (user.getName() == null || user.getName().length() == 0) throw new IllegalArgumentException("no username specified");
-		if (user.getPassword() == null || user.getPassword().length() == 0) throw new IllegalArgumentException("no password specified");
+		if (!present(user)) throw new IllegalArgumentException("no user specified");
+		if (!present(user.getName())) throw new IllegalArgumentException("no username specified");
+		if (!present(user.getPassword())) throw new IllegalArgumentException("no password specified");
 
 		this.user = user;
 	}

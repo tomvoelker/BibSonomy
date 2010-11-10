@@ -36,13 +36,14 @@ import org.bibsonomy.rest.client.worker.impl.HeadWorker;
 import org.bibsonomy.rest.client.worker.impl.PostWorker;
 import org.bibsonomy.rest.client.worker.impl.PutWorker;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
+ * @param <T> 
  */
 public abstract class AbstractQuery<T> {
 	protected static final String URL_TAGS = RestProperties.getInstance().getTagsUrl();
@@ -60,13 +61,6 @@ public abstract class AbstractQuery<T> {
 	private String proxyHost;
 	private int proxyPort;
 	private int statusCode = -1;
-	public int getStatusCode() {
-		return this.statusCode;
-	}
-
-	public void setStatusCode(int statusCode) {
-		this.statusCode = statusCode;
-	}
 
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
 	private ProgressCallback callback;
@@ -76,12 +70,32 @@ public abstract class AbstractQuery<T> {
 	private T result;
 	private boolean executed = false;
 
+	/**
+	 * @return <true> iff the query was executed
+	 */
 	public boolean isExecuted() {
 		return this.executed;
 	}
 
+	/**
+	 * @param executed the executed to set
+	 */
 	public void setExecuted(boolean executed) {
 		this.executed = executed;
+	}
+
+	/**
+	 * @return the statusCode
+	 */
+	public int getStatusCode() {
+		return this.statusCode;
+	}
+
+	/**
+	 * @param statusCode the statusCode to set
+	 */
+	public void setStatusCode(int statusCode) {
+		this.statusCode = statusCode;
 	}
 
 	protected final Reader performGetRequest(final String url) throws ErrorPerformingRequestException {
@@ -94,7 +108,6 @@ public abstract class AbstractQuery<T> {
 	}
 
 	protected final Reader performMultipartPostRequest(final String url, final File file) throws ErrorPerformingRequestException {
-
 		final PostWorker worker;
 		final Reader result;
 		final String absoluteUrl;
@@ -208,12 +221,11 @@ public abstract class AbstractQuery<T> {
 
 	/**
 	 * @return the result of this query, if there is one.
-	 * @throws {@link BadRequestOrResponseException}
+	 * @throws BadRequestOrResponseException
 	 *             if the received data is not valid.
-	 * @throws {@link IllegalStateException}
-	 *             if
-	 * @link {@link #getResult()} gets called before
-	 * @link {@link Bibsonomy#executeQuery(AbstractQuery)}
+	 * @throws IllegalStateException
+	 *             if @see #getResult() gets called before 
+	 *             @see Bibsonomy#executeQuery(AbstractQuery)
 	 */
 	public T getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (!this.executed) throw new IllegalStateException("Execute the query first.");
@@ -227,8 +239,6 @@ public abstract class AbstractQuery<T> {
 	void setApiURL(final String apiURL) {
 		this.apiURL = apiURL;
 	}
-
-
 
 	/**
 	 * @return the {@link RenderingFormat} to use.
@@ -263,12 +273,17 @@ public abstract class AbstractQuery<T> {
 		return RendererFactory.getRenderer(this.getRenderingFormat()).parseError(this.downloadedDocument);
 	}
 
-	public void setProxyHost(final String proxyHost) {
+	/**
+	 * @param proxyHost the proxyHost to set
+	 */
+	public void setProxyHost(String proxyHost) {
 		this.proxyHost = proxyHost;
 	}
 
-	public void setProxyPort(final int proxyPort) {
+	/**
+	 * @param proxyPort the proxyPort to set
+	 */
+	public void setProxyPort(int proxyPort) {
 		this.proxyPort = proxyPort;
 	}
-
 }

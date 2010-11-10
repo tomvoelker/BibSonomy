@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.model.User;
@@ -62,7 +64,7 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>> {
 	 *             if the groupname is null or empty
 	 */
 	public GetUserListOfGroupQuery(final String groupname, int start, int end) throws IllegalArgumentException {
-		if (groupname == null || groupname.length() == 0) throw new IllegalArgumentException("no groupname given");
+		if (!present(groupname)) throw new IllegalArgumentException("no groupname given");
 		if (start < 0) start = 0;
 		if (end < start) end = start;
 

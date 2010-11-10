@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.post;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.StringWriter;
 
 import org.bibsonomy.model.Group;
@@ -50,8 +52,8 @@ public final class CreateGroupQuery extends AbstractQuery<String> {
 	 *             if the group has no name is defined
 	 */
 	public CreateGroupQuery(final Group group) throws IllegalArgumentException {
-		if (group == null) throw new IllegalArgumentException("no group specified");
-		if (group.getName() == null || group.getName().length() == 0) throw new IllegalArgumentException("no groupname specified");
+		if (!present(group)) throw new IllegalArgumentException("no group specified");
+		if (!present(group.getName())) throw new IllegalArgumentException("no groupname specified");
 
 		this.group = group;
 	}

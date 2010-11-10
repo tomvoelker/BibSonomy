@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.delete;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -47,7 +49,7 @@ public final class DeleteUserQuery extends AbstractQuery<String> {
 	 *             if userName is null or empty
 	 */
 	public DeleteUserQuery(final String userName) throws IllegalArgumentException {
-		if (userName == null || userName.length() == 0) throw new IllegalArgumentException("no username given");
+		if (!present(userName)) throw new IllegalArgumentException("no username given");
 
 		this.userName = userName;
 	}

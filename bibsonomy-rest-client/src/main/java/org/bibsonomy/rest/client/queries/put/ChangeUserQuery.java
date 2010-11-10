@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.put;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.StringWriter;
 
 import org.bibsonomy.model.User;
@@ -45,7 +47,7 @@ public final class ChangeUserQuery extends AbstractQuery<String> {
 	/**
 	 * Changes details of an existing user account.
 	 * 
-	 * @param username
+	 * @param userName
 	 *            the user to change
 	 * @param user
 	 *            new values
@@ -54,9 +56,9 @@ public final class ChangeUserQuery extends AbstractQuery<String> {
 	 *             specified.
 	 */
 	public ChangeUserQuery(final String userName, final User user) throws IllegalArgumentException {
-		if (userName == null || userName.length() == 0) throw new IllegalArgumentException("no username given");
-		if (user == null) throw new IllegalArgumentException("no user specified");
-		if (user.getName() == null || user.getName().length() == 0) throw new IllegalArgumentException("no username specified");
+		if (!present(userName)) throw new IllegalArgumentException("no username given");
+		if (!present(user)) throw new IllegalArgumentException("no user specified");
+		if (!present(user.getName())) throw new IllegalArgumentException("no username specified");
 
 		this.userName = userName;
 		this.user = user;

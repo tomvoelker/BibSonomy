@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.put;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.StringWriter;
 
 import org.bibsonomy.model.Group;
@@ -54,9 +56,9 @@ public final class ChangeGroupQuery extends AbstractQuery<String> {
 	 *             specified
 	 */
 	public ChangeGroupQuery(final String groupName, final Group group) throws IllegalArgumentException {
-		if (groupName == null || groupName.length() == 0) throw new IllegalArgumentException("no groupName given");
-		if (group == null) throw new IllegalArgumentException("no group specified");
-		if (group.getName() == null || group.getName().length() == 0) throw new IllegalArgumentException("no groupname specified");
+		if (!present(groupName)) throw new IllegalArgumentException("no groupName given");
+		if (!present(group)) throw new IllegalArgumentException("no group specified");
+		if (!present(group.getName())) throw new IllegalArgumentException("no groupname specified");
 
 		this.groupName = groupName;
 		this.group = group;

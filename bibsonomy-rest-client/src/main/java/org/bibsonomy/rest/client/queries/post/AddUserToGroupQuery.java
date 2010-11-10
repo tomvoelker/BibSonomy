@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.post;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.StringWriter;
 
 import org.bibsonomy.common.enums.Status;
@@ -57,9 +59,9 @@ public final class AddUserToGroupQuery extends AbstractQuery<String> {
 	 *             has no name defined
 	 */
 	public AddUserToGroupQuery(final String groupName, final User user) throws IllegalArgumentException {
-		if (groupName == null || groupName.length() == 0) throw new IllegalArgumentException("no groupName given");
-		if (user == null) throw new IllegalArgumentException("no user specified");
-		if (user.getName() == null || user.getName().length() == 0) throw new IllegalArgumentException("no username specified");
+		if (!present(groupName)) throw new IllegalArgumentException("no groupName given");
+		if (!present(user)) throw new IllegalArgumentException("no user specified");
+		if (!present(user.getName())) throw new IllegalArgumentException("no username specified");
 	
 		this.groupName = groupName;
 		this.user = user;

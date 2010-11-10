@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.put;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.StringWriter;
 
 import org.bibsonomy.model.BibTex;
@@ -68,30 +70,26 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 	 *             </ul>
 	 */
 	public ChangePostQuery(final String username, final String resourceHash, final Post<? extends Resource> post) throws IllegalArgumentException {
-		if (username == null || username.length() == 0) throw new IllegalArgumentException("no username given");
-		if (resourceHash == null || resourceHash.length() == 0) throw new IllegalArgumentException("no resourceHash given");
-		if (post == null) throw new IllegalArgumentException("no post specified");
-		if (post.getResource() == null) throw new IllegalArgumentException("no resource specified");
+		if (!present(username)) throw new IllegalArgumentException("no username given");
+		if (!present(resourceHash)) throw new IllegalArgumentException("no resourceHash given");
+		if (!present(post)) throw new IllegalArgumentException("no post specified");
+		if (!present(post.getResource())) throw new IllegalArgumentException("no resource specified");
 
 		if (post.getResource() instanceof Bookmark) {
 			final Bookmark bookmark = (Bookmark) post.getResource();
-			if (bookmark.getUrl() == null || bookmark.getUrl().length() == 0) throw new IllegalArgumentException("no url specified in bookmark");
+			if (!present(bookmark.getUrl())) throw new IllegalArgumentException("no url specified in bookmark");
 		}
 
 		if (post.getResource() instanceof BibTex) {
-			final BibTex bibtex = (BibTex) post.getResource();
-// INTRAhash is enough information when changing a post			
-//			if (bibtex.getInterHash() == null || bibtex.getInterHash().length() == 0) {
-//				throw new IllegalArgumentException("found an bibtex without interhash assigned.");
-//			}
-			if (bibtex.getIntraHash() == null || bibtex.getIntraHash().length() == 0) {
-				throw new IllegalArgumentException("found an bibtex without intrahash assigned.");
+			final BibTex publication = (BibTex) post.getResource();
+			if (!present(publication.getIntraHash())) {
+				throw new IllegalArgumentException("found an publication without intrahash assigned.");
 			}
 		}
 
-		if (post.getTags() == null || post.getTags().size() == 0) throw new IllegalArgumentException("no tags specified");
+		if (!present(post.getTags())) throw new IllegalArgumentException("no tags specified");
 		for (final Tag tag : post.getTags()) {
-			if (tag.getName().length() == 0) throw new IllegalArgumentException("missing tagname");
+			if (!present(tag.getName())) throw new IllegalArgumentException("missing tagname");
 		}
 
 		this.username = username;

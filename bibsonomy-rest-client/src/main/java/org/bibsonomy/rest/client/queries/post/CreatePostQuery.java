@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.post;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.StringWriter;
 
 import org.bibsonomy.model.BibTex;
@@ -64,23 +66,23 @@ public final class CreatePostQuery extends AbstractQuery<String> {
 	 *             </ul>
 	 */
 	public CreatePostQuery(final String username, final Post<? extends Resource> post) throws IllegalArgumentException {
-		if (username == null || username.length() == 0) throw new IllegalArgumentException("no username given");
-		if (post == null) throw new IllegalArgumentException("no post specified");
-		if (post.getResource() == null) throw new IllegalArgumentException("no resource specified");
+		if (!present(username)) throw new IllegalArgumentException("no username given");
+		if (!present(post)) throw new IllegalArgumentException("no post specified");
+		if (!present(post.getResource())) throw new IllegalArgumentException("no resource specified");
 
 		if (post.getResource() instanceof Bookmark) {
 			final Bookmark bookmark = (Bookmark) post.getResource();
-			if (bookmark.getUrl() == null || bookmark.getUrl().length() == 0) throw new IllegalArgumentException("no url specified in bookmark");
+			if (!present(bookmark.getUrl())) throw new IllegalArgumentException("no url specified in bookmark");
 		}
 
 		if (post.getResource() instanceof BibTex) {
-			final BibTex bibtex = (BibTex) post.getResource();
-			if (bibtex.getTitle() == null || bibtex.getTitle().length() == 0) throw new IllegalArgumentException("no title specified in bibtex");
+			final BibTex publication = (BibTex) post.getResource();
+			if (!present(publication.getTitle())) throw new IllegalArgumentException("no title specified in bibtex");
 		}
 
-		if (post.getTags() == null || post.getTags().size() == 0) throw new IllegalArgumentException("no tags specified");
+		if (!present(post.getTags())) throw new IllegalArgumentException("no tags specified");
 		for (final Tag tag : post.getTags()) {
-			if (tag.getName().length() == 0) throw new IllegalArgumentException("missing tagname");
+			if (!present(tag.getName())) throw new IllegalArgumentException("missing tagname");
 		}
 
 		this.username = username;
