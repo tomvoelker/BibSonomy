@@ -36,14 +36,14 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private User user;
 	
+	private String wikiText;
+	
 	private boolean hasOwnGroup;
 	
 	/**
 	 * number of the new maxCount/minFreq
 	 */
 	private int changeTo;
-	
-	
 	
 	/**
 	 * users which added the current login user in their friend list 
@@ -494,5 +494,19 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setGroup(Group group) {
 		this.group = group;
+	}
+
+	/**
+	 * @param wikiText the wikiText to set
+	 */
+	public void setWikiText(String wikiText) {
+		this.wikiText = wikiText;
+	}
+
+	/**
+	 * @return the wikiText
+	 */
+	public String getWikiText() {
+		return wikiText;
 	}
 }

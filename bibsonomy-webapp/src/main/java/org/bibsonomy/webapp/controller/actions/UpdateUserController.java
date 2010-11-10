@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
@@ -97,11 +99,20 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 			log.debug("User is logged in, ckey is valid");
 			// update user informations here
 			updateUserProfile(user, command.getUser(), command.getProfilePrivlevel());
+			updateCvWiki(command.getUser(), command.getWikiText());
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}
 
 		return Views.SETTINGSPAGE;
+	}
+
+	private void updateCvWiki(User user, String wikiText) {
+		Wiki wiki = new Wiki();
+		wiki.setWikiText(wikiText);
+		wiki.setDate(new Date());
+		
+		logic.updateWiki(user.getName(), wiki);
 	}
 
 	/**
@@ -120,7 +131,6 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 		user.setProfession(commandUser.getProfession());
 		user.setInstitution(commandUser.getInstitution());
 		user.setInterests(commandUser.getInterests());
-		user.setHobbies(commandUser.getHobbies());
 		user.setPlace(commandUser.getPlace());
 
 		/*

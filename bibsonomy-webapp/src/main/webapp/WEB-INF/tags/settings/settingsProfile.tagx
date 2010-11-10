@@ -125,6 +125,11 @@
 		      <form:textarea cssClass="fsInput" path="user.hobbies" />
 		      <div class="dissError"><form:errors path="user.hobbies" /></div>
 		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="wikiText"><fmt:message key="user.cvWiki"/></form:label>
+		      <form:textarea cssStyle="height: 5cm" cssClass="fsInput" path="wikiText" />
+		      <div class="dissError"><form:errors path="wikiText" /></div>
+		    </div>
   		  </fieldset>
 		</div>
 

@@ -138,18 +138,18 @@
 				</div>
 			</c:if>
 			
-			<c:if test="${not empty command.user.interests}">
-	 			<h2><fmt:message key="cv.scientificInterests"/></h2>
-	 			<p class="align"><c:out value="${command.user.interests}" /></p>
-			</c:if>
-			<c:if test="${not empty command.user.hobbies}">
-	 			<h2><fmt:message key="cv.hobbies"/></h2>
-		 		<p class="align"><c:out value="${command.user.hobbies}" /></p>
-			</c:if>
-			
-<!--			<c:if test="${not empty command.wikiText}">-->
-<!--				<c:out value="${command.wikiText}" escapeXml="false" />-->
+<!--			<c:if test="${not empty command.user.interests}">-->
+<!--	 			<h2><fmt:message key="cv.scientificInterests"/></h2>-->
+<!--	 			<p class="align"><c:out value="${command.user.interests}" /></p>-->
 <!--			</c:if>-->
+<!--			<c:if test="${not empty command.user.hobbies}">-->
+<!--	 			<h2><fmt:message key="cv.hobbies"/></h2>-->
+<!--		 		<p class="align"><c:out value="${command.user.hobbies}" /></p>-->
+<!--			</c:if>-->
+			
+			<c:if test="${not empty command.wikiText}">
+				<c:out value="${command.wikiText}" escapeXml="false" />
+			</c:if>
 			
 			<c:if test='${not empty command.bookmark.list}'>
 				<h2><fmt:message key="cv.own_bookmarks"/></h2>

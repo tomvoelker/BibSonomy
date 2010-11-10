@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +38,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
@@ -889,6 +891,36 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	@Override
 	public void deleteReferences(final String postHash, final Set<String> references) {
 		// TODO Auto-generated method stub
+	}
+
+
+	@Override
+	public void deleteWiki(String userName) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public List<Date> getWikiVersions(String userName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createWiki(String userName, Wiki wiki) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Wiki getWiki(String userName, Date date) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void updateWiki(String userName, Wiki wiki) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

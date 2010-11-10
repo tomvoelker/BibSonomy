@@ -371,6 +371,8 @@
 	
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="messageSource" ref="messageSource"/>
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request">
@@ -391,6 +393,7 @@
 	<bean id="cvPageController" class="org.bibsonomy.webapp.controller.CvPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
+		<property name="wikiRenderer" ref="wikiRenderer"/>
 		<property name="listsToInitialise">
 			<list>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
@@ -685,6 +688,12 @@
 	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>
+	
+	<!-- provides access to the wikiRenderer -->
+	<bean id="wikiRenderer" class="org.bibsonomy.webapp.util.spring.factorybeans.WikiRendererFactoryBean" scope="request">
+		<property name="user" ref="loginUser"/>
+		<property name="logic" ref="logic"/>
 	</bean>
 
 	<!-- 

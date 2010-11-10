@@ -1,5 +1,10 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Date;
+import java.util.Locale;
+
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
@@ -7,15 +12,18 @@ import org.bibsonomy.layout.jabref.LayoutPart;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
 /**
@@ -30,6 +38,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	private Errors errors = null;
 
 	private LogicInterface logic;
+	private RequestLogic requestLogic;
+	private MessageSource messageSource;
 
 	/**
 	 * @param command
@@ -95,6 +105,25 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 	private void workOnMyProfileTab(final SettingsViewCommand command) {
 		final User user = command.getUser();
+		
+		Wiki wiki = logic.getWiki(user.getName(), null);
+		
+		//if no cvwiki available create default cvwiki
+		if(!present(wiki)) {
+
+			final Locale locale = requestLogic.getLocale();
+			final String wikiText = messageSource.getMessage("cv.default_wiki", null, locale);
+			
+			wiki = new Wiki();
+			wiki.setWikiText(wikiText);
+			wiki.setDate(new Date());
+			logic.createWiki(user.getName(), wiki);
+		}
+		
+		command.setWikiText(wiki.getWikiText());
+		// retrieve friend list of the user
+		command.setUser(logic.getUserDetails(command.getUser().getName()));
+		
 		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF));
 		command.setFriendsOfUser(logic.getUserRelationship(user.getName(), UserRelation.OF_FRIEND));
 		// retrieve profile privacy level setting
@@ -179,5 +208,19 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
+	}
+	
+	/**
+	 * @param requestLogic the requestLogic to set
+	 */
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+
+	/**
+	 * @param messageSource the messageSource to set
+	 */
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 }

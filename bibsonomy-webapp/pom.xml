@@ -344,6 +344,12 @@
 			<artifactId>jasypt</artifactId>
 			<version>1.5</version>
 		</dependency> 
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-wiki</artifactId>
+			<version>2.0.10-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>

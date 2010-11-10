@@ -34,6 +34,7 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class EditTagsPageViewController extends SingleResourceListControllerWithTags implements MinimalisticController<EditTagsPageViewCommand> {
 
+
 	private RequestLogic requestLogic;
 
 	@Override
