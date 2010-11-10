@@ -29,9 +29,9 @@ import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.tags.database.IdleClosingConnectionManager;
 import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 
 /**
  * Class for encapsulating webservice queries to recommenders
