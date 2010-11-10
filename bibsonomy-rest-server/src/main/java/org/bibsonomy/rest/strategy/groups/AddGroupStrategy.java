@@ -21,12 +21,6 @@ public class AddGroupStrategy extends AbstractCreateStrategy {
 	}
 
 	@Override
-	public String getContentType() {
-		// TODO no content-contenttype
-		return null;
-	}
-
-	@Override
 	protected String create() throws InternServerException {
 		final Group group = this.getRenderer().parseGroup(this.doc);
 		return this.getLogic().createGroup(group);
