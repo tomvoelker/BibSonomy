@@ -35,18 +35,16 @@ public class WikiUtil extends AbstractWikiModel {
 		  Configuration.DEFAULT_CONFIGURATION.addTokenTag(PublicationListTag.TAG_NAME, new PublicationListTag());
 	}
 	
-	private final User user;
+	private User user;
 	
-	private final LogicInterface logicInterface;
+	private LogicInterface logic;
 	
 	/**
 	 * @param command 
 	 * 
 	 */
-	public WikiUtil(User user, LogicInterface logicInterface) {
+	public WikiUtil() {
 		super(Configuration.DEFAULT_CONFIGURATION, null, null);
-		this.user = user;
-		this.logicInterface = logicInterface;
 	}
 
 	
@@ -122,15 +120,27 @@ public class WikiUtil extends AbstractWikiModel {
 		
 	}
 
+	/**
+	 * set the LogicInterface
+	 */
+	public void setLogic(LogicInterface logic) {
+		this.logic = logic;
+	}
 
 
 	/**
 	 * @return the LogicInterface
 	 */
 	public LogicInterface getLogic() {
-		return logicInterface;
+		return logic;
 	}
-
+	
+	/**
+	 * set the user
+	 */
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 
 	/**
