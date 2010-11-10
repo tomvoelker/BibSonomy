@@ -114,72 +114,77 @@ public class RisToBibtexConverter {
 				} else
 					done = true;
 			}
-			String entry = current.toString();
+			final String entry = current.toString();
 			if (entry.length() < 6)
 				continue;
 			else {
-				String lab = entry.substring(0, 2);
-				String val = entry.substring(6).trim();
-				if (lab.equals("TY")) {
-					if (val.equals("BOOK"))
+				final String key = entry.substring(0, 2);
+				final String value = entry.substring(6).trim();
+				if (key.equals("TY")) {
+					if (value.equals("BOOK"))
 						type = "book";
-					else if (val.equals("JOUR") || val.equals("MGZN"))
+					else if (value.equals("JOUR") || value.equals("MGZN"))
 						type = "article";
-					else if (val.equals("THES"))
+					else if (value.equals("THES"))
 						type = "phdthesis";
-					else if (val.equals("UNPB"))
+					else if (value.equals("UNPB"))
 						type = "unpublished";
-					else if (val.equals("RPRT"))
+					else if (value.equals("RPRT"))
 						type = "techreport";
-					else if (val.equals("CONF"))
+					else if (value.equals("CONF"))
 						type = "inproceedings";
-					else if (val.equals("CHAP"))
+					else if (value.equals("CHAP"))
 						type = "incollection";//"inbook";
 
 					else
 						type = "other";
-				} else if (lab.equals("T1") || lab.equals("TI"))
-					bibtexMap.put("title", val);//Title
-				// =
-				// val;
-				else if (lab.equals("T2") || lab.equals("T3")
-						|| lab.equals("BT")) {
-					bibtexMap.put("booktitle", val);
-				} else if (lab.equals("A1") || lab.equals("AU")) {
+				} else if (key.equals("T1") || key.equals("TI"))
+					bibtexMap.put("title", value); 
+				else if (key.equals("T2") || key.equals("T3") || key.equals("BT")) {
+					bibtexMap.put("booktitle", value);
+				} else if (key.equals("A1") || key.equals("AU")) {
 					if (author.equals("")) // don't add " and " for the first author
-						author = val;
+						author = value;
 					else
-						author += " and " + val;
-				} else if (lab.equals("A2")) {
+						author += " and " + value;
+				} else if (key.equals("A2")) {
 					if (editor.equals("")) // don't add " and " for the first editor
-						editor = val;
+						editor = value;
 					else
-						editor += " and " + val;
-				} else if (lab.equals("JA") || lab.equals("JF")	|| lab.equals("JO")) {
-					if (type.equals("inproceedings"))
-						bibtexMap.put("booktitle", val);
+						editor += " and " + value;
+				} else if (key.equals("JA") || key.equals("JF")	|| key.equals("JO")) {
+					if ("inproceedings".equals(type))
+						bibtexMap.put("booktitle", value);
 					else {
 						/*
 						 * Since we don't want JA (abbreviated journal) to 
 						 * overwrite JO (long journal), we check for JA, if a
 						 * journal entry already exists.
 						 */
-						if (!lab.equals("JA") || !bibtexMap.containsKey("journal"))
-							bibtexMap.put("journal", val);
+						if (!key.equals("JA") || !bibtexMap.containsKey("journal"))
+							bibtexMap.put("journal", value);
 					}
 				}
-				else if (lab.equals("DO")) 
-					bibtexMap.put("doi", val);
-				else if (lab.equals("SP"))
-					startPage = val;
-				else if (lab.equals("PB"))
-					bibtexMap.put("publisher", val);
-				else if (lab.equals("AD") || lab.equals("CY"))
-					bibtexMap.put("address", val);
-				else if (lab.equals("EP"))
-					endPage = val;
-				else if (lab.equals("SN")) {
-					String[] _s = val.split(" "); 
+				else if (key.equals("DO")) 
+					bibtexMap.put("doi", value);
+				else if (key.equals("SP"))
+					startPage = value;
+				else if ("PB".equals(key)) {
+					/*
+					 * Special handling for techreports: map the publisher to the
+					 * institution field (as discussed in bibsonomy-discuss).
+					 */
+					if ("techreport".equals(type)) {
+						bibtexMap.put("institution", value);
+					} else {
+						bibtexMap.put("publisher", value);
+					}
+				} else if (key.equals("AD") || key.equals("CY"))
+					bibtexMap.put("address", value);
+				else if (key.equals("EP"))
+					endPage = value;
+				else if (key.equals("SN")) {
+					String[] _s = value.split(" "); 
 					String _isbn = "";
 					String _issn = "";
 					
@@ -197,25 +202,27 @@ public class RisToBibtexConverter {
 					if (_issn.length() > 0)
 						bibtexMap.put("issn", _issn.trim());
 				}
-				else if (lab.equals("VL"))
-					bibtexMap.put("volume", val);
-				else if (lab.equals("IS"))
-					bibtexMap.put("number", val);
-				else if (lab.equals("N2") || lab.equals("AB"))
-					bibtexMap.put("abstract", val);
-				else if (lab.equals("UR"))
-					bibtexMap.put("url", val);
-				else if ((lab.equals("Y1") || lab.equals("PY"))
-						&& val.length() >= 4) {
+				else if (key.equals("VL"))
+					bibtexMap.put("volume", value);
+				else if (key.equals("IS"))
+					bibtexMap.put("number", value);
+				else if (key.equals("N2") || key.equals("AB"))
+					bibtexMap.put("abstract", value);
+				else if (key.equals("UR"))
+					bibtexMap.put("url", value);
+				else if (key.equals("AD"))
+					bibtexMap.put("address", value);
+				else if ((key.equals("Y1") || key.equals("PY"))
+						&& value.length() >= 4) {
 
 					// handle the case of spaces instead of slashes (ie. 2007 Jan)
 					String delim = "/";
-					if (val.indexOf("/") == -1
-							&& val.indexOf(" ") != -1) {
+					if (value.indexOf("/") == -1
+							&& value.indexOf(" ") != -1) {
 						delim = " ";
 					}
 					
-					String[] parts = val.split(delim);
+					String[] parts = value.split(delim);
 					bibtexMap.put("year", parts[0]);
 					if ((parts.length > 1) && (parts[1].length() > 0)) {
 						try {
@@ -230,22 +237,22 @@ public class RisToBibtexConverter {
 					}
 				}
 
-				else if (lab.equals("KW")) {
+				else if (key.equals("KW")) {
 					if (!bibtexMap.containsKey("keywords"))
-						bibtexMap.put("keywords", val);
+						bibtexMap.put("keywords", value);
 					else {
 						String kw = bibtexMap.get("keywords");
-						bibtexMap.put("keywords", kw + " " + val);
+						bibtexMap.put("keywords", kw + " " + value);
 					}
-				} else if (lab.equals("U1") || lab.equals("U2")
-						|| lab.equals("N1")) {
+				} else if (key.equals("U1") || key.equals("U2")
+						|| key.equals("N1")) {
 					if (comment.length() > 0)
 						comment = comment + "\n";
-					comment = comment + val;
+					comment = comment + value;
 				}
 				// Added ID import 2005.12.01, Morten Alver:
-				else if (lab.equals("ID"))
-					bibtexMap.put("refid", val);
+				else if (key.equals("ID"))
+					bibtexMap.put("refid", value);
 			}
 		}
 		// fix authors
