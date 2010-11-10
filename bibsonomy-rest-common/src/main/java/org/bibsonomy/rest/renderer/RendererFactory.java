@@ -24,7 +24,6 @@
 package org.bibsonomy.rest.renderer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.renderer.impl.JSONRenderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
@@ -58,7 +57,7 @@ public class RendererFactory {
 	public static Renderer getRenderer(final RenderingFormat renderingFormat) {
 		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
 		
-		if (RenderingFormat.JSON.equals(renderingFormat)) {
+		if (RenderingFormat.JSON.isCompatible(renderingFormat)) {
 			return JSONRendererInstanceHolder.JSON_RENDERER;
 		}
 		

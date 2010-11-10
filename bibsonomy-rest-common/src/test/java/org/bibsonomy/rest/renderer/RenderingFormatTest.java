@@ -21,12 +21,13 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.rest.enums;
+package org.bibsonomy.rest.renderer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.junit.Test;
 
 /**

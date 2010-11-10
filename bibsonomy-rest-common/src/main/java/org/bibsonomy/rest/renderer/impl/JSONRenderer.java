@@ -33,6 +33,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 
 import com.sun.jersey.api.json.JSONConfiguration;
@@ -61,6 +62,11 @@ public class JSONRenderer extends JAXBRenderer {
 	protected JAXBElement<BibsonomyXML> unmarshal(Unmarshaller unmarshaller, Reader reader) throws JAXBException {
 		final JSONUnmarshaller jsonUnmarshaller = (JSONUnmarshaller) unmarshaller;
 		return jsonUnmarshaller.unmarshalJAXBElementFromJSON(reader, BibsonomyXML.class);
+	}
+
+	@Override
+	public RenderingFormat getRenderingFormat() {
+		return RenderingFormat.JSON;
 	}
 
 }
