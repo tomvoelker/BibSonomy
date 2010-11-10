@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -54,6 +55,7 @@ import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.TagRelationDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
+import org.bibsonomy.database.managers.WikiDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -72,6 +74,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
@@ -108,6 +111,7 @@ public class DBLogic implements LogicInterface {
     private final TagRelationDatabaseManager tagRelationsDBManager;
     private final BasketDatabaseManager basketDBManager;
     private final InboxDatabaseManager inboxDBManager;
+    private final WikiDatabaseManager wikiDBManager;
 
     private final User loginUser;
 
@@ -144,6 +148,8 @@ public class DBLogic implements LogicInterface {
 
 	this.basketDBManager = BasketDatabaseManager.getInstance();
 	this.inboxDBManager = InboxDatabaseManager.getInstance();
+	
+	this.wikiDBManager = WikiDatabaseManager.getInstance();
 
 	this.dbSessionFactory = dbSessionFactory;
     }
@@ -170,6 +176,7 @@ public class DBLogic implements LogicInterface {
 	    /*
 	     * We don't use userName but user.getName() in the remaining part of
 	     * this method, since the name gets normalized in getUserDetails().
+	     * 
 	     */
 	    final User user = this.userDBManager.getUserDetails(userName, session);
 
@@ -2012,4 +2019,71 @@ public class DBLogic implements LogicInterface {
 	    session.close();
 	}	
     }
+
+    @Override
+    public void createWiki(final String userName, final Wiki wiki) {
+	this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+	
+	final DBSession session = openSession();
+	try {
+	    this.wikiDBManager.createWiki(userName, wiki, session);
+    	} finally {
+	    session.close();
+	}
+    }
+
+    @Override
+    public void deleteWiki(final String userName) {
+	throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Wiki getWiki(final String userName,final Date date) {
+	final DBSession session = openSession();
+	final User requUser = getUserDetails(userName);
+	
+	if(!this.permissionDBManager.isAllowedToAccessUsersProfile(requUser, this.loginUser, session))
+	    return new Wiki();
+
+	try{
+	    if(date == null) {
+		return this.wikiDBManager.getActualWiki(userName, session);
+	    } else {
+		return this.wikiDBManager.getPreviousWiki(userName, date, session);
+	    }
+    	} finally {
+	    session.close();
+	}
+    }
+
+    @Override
+    public List<Date> getWikiVersions(final String userName) {
+	this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+	
+	final DBSession session = openSession();
+	try {
+	    return this.wikiDBManager.getWikiVersions(userName, session);
+    	} finally {
+	    session.close();
+	}
+    }
+
+    @Override
+    public void updateWiki(final String userName, final Wiki wiki) {
+	this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+	
+	final DBSession session = openSession();
+	
+	try {
+	    Wiki actual = this.getWiki(userName, null);
+	    
+	    if(!actual.getWikiText().equals(wiki.getWikiText())) {
+		this.wikiDBManager.updateWiki(userName, wiki, session);
+		this.wikiDBManager.logWiki(userName, actual, session);
+	    }
+    	} finally {
+	    session.close();
+	}
+    }
+
 }

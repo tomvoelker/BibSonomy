@@ -12,6 +12,7 @@
 	<typeAlias alias="goldStandardPublication" type="org.bibsonomy.model.GoldStandardPublication" />
 	<typeAlias alias="post"               type="org.bibsonomy.model.Post" />
 	<typeAlias alias="resource"           type="org.bibsonomy.model.Resource" />
+	<typeAlias alias="wiki"               type="org.bibsonomy.model.Wiki" />
 	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
 	<typeAlias alias="userSettings"       type="org.bibsonomy.model.UserSettings" />
 	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
@@ -39,6 +40,7 @@
 	<typeAlias alias="statisticsParam"    type="org.bibsonomy.database.params.StatisticsParam" />	
 	<typeAlias alias="tagSetParam"    	  type="org.bibsonomy.database.params.TagSetParam" />
 	<typeAlias alias="basketParam"    	  type="org.bibsonomy.database.params.BasketParam" />	
-	<typeAlias alias="inboxParam"		  		type="org.bibsonomy.database.params.InboxParam" />
-	<typeAlias alias="loggingParam"		  	type="org.bibsonomy.database.params.LoggingParam" />
+	<typeAlias alias="inboxParam"		  type="org.bibsonomy.database.params.InboxParam" />
+	<typeAlias alias="loggingParam"		  type="org.bibsonomy.database.params.LoggingParam" />
+	<typeAlias alias="wikiParam"		  type="org.bibsonomy.database.params.WikiParam" />
 </sqlMap>

@@ -39,6 +39,7 @@
 	<sqlMap resource="common/DocumentCommon.xml" />
 	<sqlMap resource="common/AdminCommon.xml" />
 	<sqlMap resource="common/AuthorCommon.xml"/>
+	<sqlMap resource="common/WikiCommon.xml"/>
 
 	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />
@@ -56,6 +57,7 @@
 	<sqlMap resource="Author.xml"/>
 	<sqlMap resource="Inbox.xml"/>
 	<sqlMap resource="Permission.xml"/>
+	<sqlMap resource="Wiki.xml"/>
 
 	<!-- Plugins -->
 	<sqlMap resource="plugins/Logging.xml"/>
