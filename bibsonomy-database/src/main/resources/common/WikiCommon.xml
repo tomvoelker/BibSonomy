@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="WikiCommon">
+
+	<resultMap id="wiki" class="wiki">
+		<result property="wikiText"         column="user_wiki"  	javaType="string" />		
+		<result property="date"         	column="date"      		javaType="date" />
+	</resultMap>
+	
+	<sql id="commonWikiAttributes">
+		user_wiki, date
+	</sql>
+
+</sqlMap>
