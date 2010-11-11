@@ -624,12 +624,12 @@ public class BibTex extends Resource {
 	}
 
 	/**
-	 * Getter for MiscFields. This returns the hashmap
-	 * containing the key/value pairs of the internal hashmap.
+	 * Getter for MiscFields. This returns the map
+	 * containing the key/value pairs of the internal map.
 	 * 
-	 * FIXME: an unmodifiable hashmap would be good here - but breaks the depthEqualityTester elsewhere (dbe)
+	 * FIXME: an unmodifiable map would be good here - but breaks the depthEqualityTester elsewhere (dbe)
 	 * 
-	 * @return an HashMap containing the miscFields
+	 * @return an map containing the miscFields
 	 */
 	public Map<String, String> getMiscFields() {
 		return this.miscFields;
