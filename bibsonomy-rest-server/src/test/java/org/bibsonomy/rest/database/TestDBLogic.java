@@ -36,6 +36,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
@@ -742,7 +743,6 @@ public class TestDBLogic implements LogicInterface {
 
 	@Override
 	public Document getDocument(final String userName, final String fileHash) {
-		
 		return null;
 	}
 	
@@ -754,19 +754,16 @@ public class TestDBLogic implements LogicInterface {
 	@Override
 	public void deleteDocument(final Document document, final String resourceHash) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void deleteInetAdressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -796,13 +793,11 @@ public class TestDBLogic implements LogicInterface {
 	@Override
 	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -891,7 +886,6 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	
 	@Override
 	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation) {
@@ -904,19 +898,16 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 	}
 
-
 	@Override
 	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		// TODO Auto-generated method stub
 	}
-
 
 	@Override
 	public int createBasketItems(final List<Post<? extends Resource>> posts) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
 
 	@Override
 	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
@@ -928,7 +919,6 @@ public class TestDBLogic implements LogicInterface {
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox) {
 		return 0;
 	}
-
 
 	@Override
 	public String getUsernameByLdapUserId(final String userId) {
@@ -943,6 +933,33 @@ public class TestDBLogic implements LogicInterface {
 
 	@Override
 	public void deleteReferences(final String postHash, final Set<String> references) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public List<Date> getWikiVersions(String userName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Wiki getWiki(String userName, Date date) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createWiki(String userName, Wiki wiki) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void updateWiki(String userName, Wiki wiki) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void deleteWiki(String userName) {
 		// TODO Auto-generated method stub
 	}
 }
