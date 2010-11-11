@@ -107,8 +107,25 @@
  	  					</c:forEach>
  	  				</ul>
 				</div>
+				<script>
+					$(document).ready( function() {
+						$("a.hand").each(function(index, link) {
+							$(link).click(function() {
+								
+								var result = $(this).next(".details").toggle();
+								if ($(result).is(":visible")) {
+									$(this).html(" " + getString("cv.options.hide_details"));
+										
+								} else {
+									$(this).html(" " + getString("cv.options.show_details"));
+								}
+							});
+						});
+					});
+				</script>					
+				
 			</c:if>
-			
+						
 			
 				<c:if test="${not empty command.bibtex.list}">
 					<h2><fmt:message key="group.cv.publications"/></h2>
