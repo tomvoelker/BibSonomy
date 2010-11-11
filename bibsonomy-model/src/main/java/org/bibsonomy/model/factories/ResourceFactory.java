@@ -1,5 +1,11 @@
 package org.bibsonomy.model.factories;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -11,7 +17,51 @@ import org.bibsonomy.model.Resource;
  * @version $Id$
  */
 public class ResourceFactory {
-
+	
+	/**
+	 * all known resource classes
+	 */
+	private static final Map<String, Class<? extends Resource>> RESOURCE_CLASSES_BY_NAME = new HashMap<String, Class<? extends Resource>>();
+	
+	private static final Map<Class<? extends Resource>, String> RESOURCE_CLASS_NAMES = new HashMap<Class<? extends Resource>, String>();
+	
+	static {
+		RESOURCE_CLASSES_BY_NAME.put("bookmark", Bookmark.class);
+		RESOURCE_CLASSES_BY_NAME.put("publication", BibTex.class);
+		RESOURCE_CLASSES_BY_NAME.put("goldStandardPublication", GoldStandardPublication.class);
+		
+		for (final Entry<String, Class<? extends Resource>> entry : RESOURCE_CLASSES_BY_NAME.entrySet()) {
+			RESOURCE_CLASS_NAMES.put(entry.getValue(), entry.getKey());
+		}
+		
+		// XXX: for backward compatibility; note: not added to RESOURCE_CLASS_NAMES
+		RESOURCE_CLASSES_BY_NAME.put("bibtex", BibTex.class); 
+	}
+	
+	/** 
+	 * @param resourceName
+	 * @return the class of the resource class by a name, e.g. "bookmark" returns
+	 */
+	public static final Class<? extends Resource> getResourceClass(final String resourceName) {
+		return RESOURCE_CLASSES_BY_NAME.get(resourceName);
+	}
+	
+	/**
+	 * @param resourceClass
+	 * @return the name of the resource class
+	 */
+	public static final String getResourceName(final Class<? extends Resource> resourceClass) {
+		return RESOURCE_CLASS_NAMES.get(resourceClass);
+	}
+	
+	/**
+	 * all known resources
+	 * @return a set containing the classes of all known resources of this factory
+	 */
+	public static Set<? extends Class<? extends Resource>> getAllResourceClasses() {
+		return Collections.unmodifiableSet(RESOURCE_CLASS_NAMES.keySet());
+	}
+	
 	/**
 	 * @param clazz
 	 * @return a new instance of the clazz
@@ -26,7 +76,7 @@ public class ResourceFactory {
 			return this.createPublication((Class<? extends BibTex>) clazz);
 		}
 		
-		throw new UnsupportedResourceTypeException("resource " + clazz + "not supported");
+		throw new UnsupportedResourceTypeException("resource " + clazz + " not supported");
 	}
 	
 	/**
@@ -56,7 +106,7 @@ public class ResourceFactory {
 			return this.createGoldStandardPublication();
 		}
 		
-		throw new UnsupportedResourceTypeException("resource " + clazz + "not supported");
+		throw new UnsupportedResourceTypeException("resource " + clazz + " not supported");
 	}
 	
 	/**
