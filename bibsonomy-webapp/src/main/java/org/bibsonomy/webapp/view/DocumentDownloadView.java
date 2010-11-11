@@ -24,12 +24,13 @@ import org.springframework.web.servlet.view.AbstractView;
  * @author cvo
  * @version $Id$
  */
+@SuppressWarnings("deprecation")
 public class DocumentDownloadView extends AbstractView{
 	private static final Log log = LogFactory.getLog(DocumentDownloadView.class);
-
-	@SuppressWarnings("rawtypes")
+	
+	
 	@Override
-	protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	protected void renderMergedOutputModel(final Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
 		

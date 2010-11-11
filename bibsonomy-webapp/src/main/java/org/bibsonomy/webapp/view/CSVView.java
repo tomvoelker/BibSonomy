@@ -34,12 +34,12 @@ import au.com.bytecode.opencsv.CSVWriter;
  * @author rja
  * @version $Id$
  */
+@SuppressWarnings("deprecation")
 public class CSVView extends AbstractView {
 	private static final Log log = LogFactory.getLog(CSVView.class);
 	
-	@SuppressWarnings("rawtypes")
 	@Override
-	protected void renderMergedOutputModel(final Map model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+	protected void renderMergedOutputModel(final Map<String, Object> model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		/*
 		 * get the data
 		 */
@@ -159,7 +159,7 @@ public class CSVView extends AbstractView {
 				/*
 				 * get the errors object and add the error message
 				 */
-				final BindingResult errors = getBindingResult(model);
+				final BindingResult errors = ViewUtils.getBindingResult(model);
 				errors.reject("error.layout.rendering", new Object[]{e.getMessage()}, "Could not render layout: " + e.getMessage());
 				/*
 				 * do the rendering ... a bit tricky: we need to get an appropriate JSTL view and give it the 
@@ -168,7 +168,6 @@ public class CSVView extends AbstractView {
 				final JstlView view = new JstlView("/WEB-INF/jsp/error.jspx");
 				view.setApplicationContext(getApplicationContext());
 				view.render(model, request, response);
-
 			}
 		} else {
 			/*
@@ -242,20 +241,4 @@ public class CSVView extends AbstractView {
 		}
 		return buf.toString().trim();
 	}
-
-	/** Gets the BindingResult (containing errors) from the model.
-	 * @param model
-	 * @return
-	 */
-	@SuppressWarnings("rawtypes")
-	private BindingResult getBindingResult(final Map model){
-		for (final Object key : model.keySet() ){
-			if (((String)key).startsWith(BindingResult.MODEL_KEY_PREFIX)) {
-				return (BindingResult) model.get(key);
-			}
-		}
-		
-		return null;
-	}
-
 }

@@ -24,13 +24,12 @@ import org.springframework.web.servlet.view.AbstractView;
  * @author mwa
  * @version $Id$
  */
+@SuppressWarnings("deprecation")
 public class ExportLayoutView extends AbstractView {
-
 	private static final Log log = LogFactory.getLog(ExportLayoutView.class);
 	
-	@SuppressWarnings("rawtypes")
 	@Override
-	protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		log.debug("ExportLayoutView - renderMergedOutputModel called");
 		/*
 		 * get the command data
