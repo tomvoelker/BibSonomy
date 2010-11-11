@@ -55,14 +55,12 @@ public class ResourceUtils {
 	 * @param resourceType
 	 * @return resource
 	 */
+	@Deprecated // please use the ResourceFactory#createResource!!!
 	public static Class<? extends Resource> getResource(final String resourceType) {
 		if (resourceType == null) throw new UnsupportedResourceTypeException("ResourceType is null");
-		Class<? extends Resource> rVal = byStringMap.get(resourceType);
+		Class<? extends Resource> rVal = byStringMap.get(resourceType.trim().toUpperCase());
 		if (rVal == null) {
-			rVal = byStringMap.get(resourceType.trim().toUpperCase());
-			if (rVal == null) {
-				throw new UnsupportedResourceTypeException();
-			}
+			throw new UnsupportedResourceTypeException();
 		}
 		return rVal;
 	}
@@ -76,6 +74,7 @@ public class ResourceUtils {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
+	@Deprecated // please use the ResourceFactory!!!
 	public static Resource getInstance(final String resourceType) throws InstantiationException, IllegalAccessException {
 		return getResource(resourceType).newInstance();
 	}
