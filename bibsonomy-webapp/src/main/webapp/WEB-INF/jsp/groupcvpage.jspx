@@ -66,28 +66,30 @@
 			</div>
 			
 			<c:if test="${not empty command.group.users}">
-				<h2><fmt:message key="members"/>${mtl:ch('nbsp')}</h2>	
-				<c:forEach var="member" items="${command.group.users}">
-					<c:if test="${member.name != command.requestedGroup}">
-			   			<a href="/cv/user/${fn:escapeXml(member.name)}">
-			   				<div class="imageContainer">
-			   					<img src="/picture/user/${fn:escapeXml(member.name)}" height="100px"/>
-			   					<div class="imageCapture">
-			   						<c:choose>
-			   							<c:when test="${not empty member.realname}">${fn:escapeXml(member.realname)}</c:when>
-			   							<c:otherwise>${fn:escapeXml(member.name)}</c:otherwise>	
-			   						</c:choose>				
-			   					</div>
-			   				</div>
-			   			</a>
-					</c:if>
-				</c:forEach>
+				<h2><fmt:message key="members"/>${mtl:ch('nbsp')}</h2>
+				<div class="align">	
+					<c:forEach var="member" items="${command.group.users}">
+						<c:if test="${member.name != command.requestedGroup}">
+				   			<a href="/cv/user/${fn:escapeXml(member.name)}">
+				   				<div class="imageContainer">
+				   					<img src="/picture/user/${fn:escapeXml(member.name)}" height="100px"/>
+				   					<div class="imageCapture">
+				   						<c:choose>
+				   							<c:when test="${not empty member.realname}">${fn:escapeXml(member.realname)}</c:when>
+				   							<c:otherwise>${fn:escapeXml(member.name)}</c:otherwise>	
+				   						</c:choose>				
+				   					</div>
+				   				</div>
+				   			</a>
+						</c:if>
+					</c:forEach>
+				</div>
 			</c:if>
 			
 			
 			<c:if test="${not empty command.bookmark.list}">
 				<h2><fmt:message key="group.cv.bookmarks"/></h2>
-				<div class="resources">
+				<div class="resources align">
 					<ul id="liste" class="bookmarkList">
 						<c:forEach var="post" items="${command.bookmark.list}">
 	    		    		<div style="margin:1.2em;" class="entry">
@@ -129,7 +131,7 @@
 			
 				<c:if test="${not empty command.bibtex.list}">
 					<h2><fmt:message key="group.cv.publications"/></h2>
-					<div class="resources">
+					<div class="resources align">
 						<!-- selection of citation format for the publications -->
 						<div>
 							<span id="citation_formats"> 				
