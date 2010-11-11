@@ -32,6 +32,7 @@ public class GroupCvPageController extends ResourceListController implements Min
 		Group group = logic.getGroupDetails(requestedGroup);
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
 		command.setDuplicates("no");
+		command.setPageTitle("Curriculum vitae");
 		
 		group.setUsers(this.logic.getUsers(null, groupingEntity, requestedGroup, null, null, null, null, null, 0, 1000));
 		command.setGroup(group);
