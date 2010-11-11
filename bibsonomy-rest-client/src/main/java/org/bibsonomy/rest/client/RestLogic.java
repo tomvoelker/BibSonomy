@@ -24,6 +24,7 @@
 package org.bibsonomy.rest.client;
 
 import java.net.InetAddress;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -51,6 +52,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
@@ -101,6 +103,7 @@ public class RestLogic implements LogicInterface {
 		return query.getResult();
 	}
 
+	@Override
 	public void addUserToGroup(final String groupName, final String userName) {
 		// TODO: only the username is used, but a whole user object is
 		// transmitted, so a dummy with only username is used here.
@@ -110,10 +113,12 @@ public class RestLogic implements LogicInterface {
 		execute(new AddUserToGroupQuery(groupName, dummyUserObject));
 	}
 
+	@Override
 	public void deleteGroup(final String groupName) {
 		execute(new DeleteGroupQuery(groupName));
 	}
 
+	@Override
 	public void deletePosts(final String userName, final List<String> resourceHashes) {
 		/*
 		 * FIXME: this iteration should be done on the server, i.e.,
@@ -125,26 +130,32 @@ public class RestLogic implements LogicInterface {
 		}
 	}
 
+	@Override
 	public void deleteUser(final String userName) {
 		execute(new DeleteUserQuery(userName));
 	}
 
+	@Override
 	public User getAuthenticatedUser() {
 		return this.authUser;
 	}
 
+	@Override
 	public Group getGroupDetails(final String groupName) {
 		return execute(new GetGroupDetailsQuery(groupName));
 	}
 
+	@Override
 	public List<Group> getGroups(final int start, final int end) {
 		return execute(new GetGroupListQuery(start, end));
 	}
 
+	@Override
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) {
 		return execute(new GetPostDetailsQuery(userName, resourceHash));
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		// TODO: clientside chain of responsibility
@@ -156,10 +167,12 @@ public class RestLogic implements LogicInterface {
 		return (List) execute(query);
 	}
 
+	@Override
 	public Tag getTagDetails(final String tagName) {
 		return execute(new GetTagDetailsQuery(tagName));
 	}
 
+	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
 		final GetTagsQuery query = new GetTagsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
@@ -167,18 +180,22 @@ public class RestLogic implements LogicInterface {
 		return execute(query);
 	}
 
+	@Override
 	public User getUserDetails(final String userName) {
 		return execute(new GetUserDetailsQuery(userName));
 	}
 
+	@Override
 	public void deleteUserFromGroup(final String groupName, final String userName) {
 		execute(new RemoveUserFromGroupQuery(userName, groupName));
 	}
 
+	@Override
 	public String createGroup(final Group group) {
 		return execute(new CreateGroupQuery(group));
 	}
 
+	@Override
 	public List<String> createPosts(final List<Post<?>> posts) {
 		/*
 		 * FIXME: this iteration should be done on the server, i.e.,
@@ -192,15 +209,18 @@ public class RestLogic implements LogicInterface {
 		return resourceHashes;
 	}
 
+	@Override
 	public String createUser(final User user) {
 		return execute(new CreateUserQuery(user));
 	}
 
+	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		// groups cannot be renamed
 		return execute(new ChangeGroupQuery(group.getName(), group));
 	}
 
+	@Override
 	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 		/*
 		 * FIXME: this iteration should be done on the server, i.e.,
@@ -215,20 +235,24 @@ public class RestLogic implements LogicInterface {
 		return resourceHashes;
 	}
 
+	@Override
 	public String updateUser(final User user, final UserUpdateOperation operation) {
 		// accounts cannot be renamed
 		return execute(new ChangeUserQuery(user.getName(), user));
 	}
 
+	@Override
 	public String createDocument(final Document doc, final String resourceHash) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public Document getDocument(final String userName, final String fileHash) {
 		return null;
 	}
 
+	@Override
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		/*
 		 * FIXME: files are stored in /tmp and thus publicly readable! Make
@@ -237,56 +261,67 @@ public class RestLogic implements LogicInterface {
 		return execute(new GetPostDocumentQuery(userName, resourceHash, fileName, "/tmp/"));
 	}
 
+	@Override
 	public void deleteDocument(final Document document, final String resourceHash) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void deleteInetAdressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
 		// here we just simulate two possible answers of the user chain
 		if (GroupingEntity.ALL.equals(grouping)) {
@@ -299,54 +334,65 @@ public class RestLogic implements LogicInterface {
 		return null;
 	}
 
+	@Override
 	public String getClassifierSettings(final ClassifierSettings key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List<User> getClassifierHistory(final String userName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List<User> getClassifierComparison(final int interval) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public int getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
 	public String getOpenIDUser(final String openID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
 		return 0;
 	}
 
+	@Override
 	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
 	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		// TODO Auto-generated method stub
 		return null;
@@ -388,6 +434,7 @@ public class RestLogic implements LogicInterface {
 		return 0;
 	}
 
+	@Override
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -402,13 +449,38 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public void createReferences(final String postHash, final Set<String> references) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void deleteReferences(final String postHash, final Set<String> references) {
 		// TODO Auto-generated method stub
+	}
 
+	@Override
+	public List<Date> getWikiVersions(String userName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Wiki getWiki(String userName, Date date) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createWiki(String userName, Wiki wiki) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void updateWiki(String userName, Wiki wiki) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void deleteWiki(String userName) {
+		// TODO Auto-generated method stub
 	}
 
 }
