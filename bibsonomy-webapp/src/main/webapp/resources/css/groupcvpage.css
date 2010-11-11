@@ -1,11 +1,12 @@
 .resources {
 	clear: both;
 	margin: 5px 5px 5px 5px;
-	border-top: solid #eee 2px;
 }
 
 h2 {
 	clear: both;
+	margin: 5px 0px 10px 5px;
+	border-bottom: solid #eee 2px;
 }
 
 .imageContainer {	

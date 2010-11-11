@@ -39,6 +39,7 @@
 		
 		<!-- heading -->
 		<jsp:attribute name="heading">
+		    <fmt:message key="navi.cv"/> ::
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.group"/></a> :: 
 			<a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a> ::
 			<form action="/group/${fn:escapeXml(command.requestedGroup)}" method="get" class="smallform">
@@ -49,6 +50,7 @@
 		<jsp:attribute name="content">
 			<h2>
 				<fmt:message key="group.cv.headline"></fmt:message>
+				${mtl:ch('nbsp')}
 				<c:out value="${fn:escapeXml(command.group.realname)}" />
 			</h2>
 
@@ -69,7 +71,7 @@
 					<c:if test="${member.name != command.requestedGroup}">
 			   			<a href="/cv/user/${fn:escapeXml(member.name)}">
 			   				<div class="imageContainer">
-			   					<img src="/picture/user/${fn:escapeXml(member.name)}"/>
+			   					<img src="/picture/user/${fn:escapeXml(member.name)}" height="100px"/>
 			   					<div class="imageCapture">
 			   						<c:choose>
 			   							<c:when test="${not empty member.realname}">${fn:escapeXml(member.realname)}</c:when>
