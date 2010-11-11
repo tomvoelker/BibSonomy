@@ -31,14 +31,14 @@ import tags.Functions;
  * @version $Id$
  * @param <LAYOUT> 
  */
+@SuppressWarnings("deprecation")
 public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 	private static final Log log = LogFactory.getLog(LayoutView.class);
 
 	private LayoutRenderer<LAYOUT> layoutRenderer;
 	
-	@SuppressWarnings("rawtypes")
 	@Override
-	protected void renderMergedOutputModel(final Map model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+	protected void renderMergedOutputModel(final Map<String, Object> model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		/*
 		 * get the data
 		 */
@@ -95,7 +95,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 				/*
 				 * get the errors object and add the error message
 				 */
-				final BindingResult errors = getBindingResult(model);
+				final BindingResult errors = ViewUtils.getBindingResult(model);
 				errors.reject("error.layout.rendering", new Object[]{e.getMessage()}, "Could not render layout: " + e.getMessage());
 				/*
 				 * do the rendering ... a bit tricky: we need to get an appropriate JSTL view and give it the 
@@ -113,8 +113,8 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		}
 	}
 
-
-	/** Renders the layout and prepares the response.
+	/**
+	 * Renders the layout and prepares the response.
 	 * 
 	 * @param <T>
 	 * @param layoutName
@@ -153,22 +153,6 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		 */
 		response.getOutputStream().write(buf.toString().getBytes("UTF-8"));
 	}
-
-	
-    /** Gets the BindingResult (containing errors) from the model.
-     * @param model
-     * @return
-     */
-    @SuppressWarnings("rawtypes")
-	private BindingResult getBindingResult(final Map model){
-        for (Object key : model.keySet() ){
-            if (((String)key).startsWith(BindingResult.MODEL_KEY_PREFIX)) {
-            	return (BindingResult) model.get(key);
-            }             
-        }
-        return null;
-    }
-
 	
 	/**
 	 * @return The layout renderer for this view.
