@@ -102,7 +102,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 				if(!sc.getUrl().toString().matches(".*/beta/.*")){
 					// save path to popup page of current bibtex entry
 					final List<String> pathsToScrape = extractSinglePath(document); // holds the paths to the popup pages
-		
+
 					/*
 					 * Scrape entries from popup BibTeX site. BibTeX entry on these
 					 * pages looks like this: <PRE id="155273">@article{155273,
@@ -117,7 +117,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 				} else {
 					// save path to popup page on the beta acm site
 					final List<String> pathsToScrape = extractSinglePathBeta(document); // holds the paths to the popup pages
-					
+
 					/*
 					 * Scrape entries from popup BibTeX site. BibTeX entry on these
 					 * pages looks like this: <PRE id="155273">@article{155273,
@@ -422,7 +422,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	}
 
 	/**
-	 * Extract the path from the onclick attribute of the <a>-Element including
+	 * Extract the path from the href attribute of the <a>-Element including
 	 * the value "BibTex". Watch out for changes of this element on ACM sites
 	 * otherwise our extraction does not work anymore. On 05.11.2010 the element
 	 * looked like this: 
@@ -432,7 +432,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	 *            the node value to extract the url from
 	 * @return the extracted path
 	 */
-	private String extractPathFromOnclickNode(String nodeValue) {
+	private String extractPathFromHrefNode(String nodeValue) {
 		int firstPrimePos = nodeValue.indexOf("ColdFusion.navigate('") + 21;
 		return nodeValue.substring(firstPrimePos, nodeValue.indexOf("'", firstPrimePos));
 	}
@@ -481,8 +481,8 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			final NodeList childnodes = currNode.getChildNodes();
 
 			if (childnodes.getLength() > 0) {
-				if (BIBTEX_STRING_ON_ACM.equals(currNode.getChildNodes().item(0).getNodeValue())) {
-					pathsToScrape.add(extractPathFromOnclickNode(currNode.getAttributes().getNamedItem("href").getNodeValue()));
+				if (BIBTEX_STRING_ON_ACM.equals(currNode.getChildNodes().item(0).getNodeValue())) {					
+					pathsToScrape.add(extractPathFromHrefNode(currNode.getAttributes().getNamedItem("href").getNodeValue()));
 				}
 			}
 		}
