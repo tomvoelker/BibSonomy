@@ -1157,6 +1157,7 @@ img#sidebarGrip {
 	cursor:e-resize;
 	margin-top:10px;
 	margin-left: 5px;
+	float:left;
 }
 
 ul.news {
