@@ -21,5 +21,5 @@
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
 
-	<layout:layout loginUser="${command.context.loginUser}" beforeBodyClose="${beforeBodyClose}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" headerExt="${headerExt}" requestedUser="${requestedUser}" sidebar="${sidebar}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}" selectedNaviTab="${selectedNaviTab}"/>
+	<layout:layout loginUser="${command.context.loginUser}" beforeBodyClose="${beforeBodyClose}" pageTitle="${pageTitle}" heading="${heading}" headerExt="${headerExt}" requestedUser="${requestedUser}" sidebar="${sidebar}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}" selectedNaviTab="${selectedNaviTab}"/>
 </jsp:root>

@@ -7,9 +7,10 @@
 	xmlns:menuparts="urn:jsptagdir:/WEB-INF/tags/menu/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="searchString" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
+	
+	<c:set var="loginUserName" value="${loginUser.name}" />
 	
 	<div id="nice_tnav">
 	<ul>
