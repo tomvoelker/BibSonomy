@@ -1,10 +1,13 @@
 package org.bibsonomy.sword;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.xml.transform.OutputKeys;
@@ -17,12 +20,17 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.LayoutRenderingException;
+import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.services.URLGenerator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+
 
 /**
  * Generates METS-XML-Files for publication depositing 
@@ -43,12 +51,87 @@ public class MetsGenerator {
 	private Result _result; 
 	private ArrayList<String> _filenameList; 
 
+	private static JabrefLayoutRenderer layoutRenderer;
+
+	// contains special characters, symbols, etc...
+	private static Properties chars = new Properties();
+
+	// load special characters
+	static {
+		layoutRenderer = JabrefLayoutRenderer.getInstance();
+	}
+
+
+	/**
+	 * Helper method to access JabRef layouts via taglib function
+	 * 
+	 * @param post
+	 * @param layoutName
+	 * @return The rendered output as string.
+	 */
+	public static String renderLayout(final Post<BibTex> post, final String layoutName) {
+		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
+		posts.add(post);
+
+		return renderLayouts(posts, layoutName);
+	}
+
+	/**
+	 * Helper method to access JabRef layouts via taglib function
+	 * 
+	 * @param posts
+	 * @param layoutName
+	 * @return The rendered output as string.
+	 */
+	public static String renderLayouts(final List<Post<BibTex>> posts, final String layoutName) {
+		try {
+			final JabrefLayout layout = layoutRenderer.getLayout(layoutName, "");
+			if (! ".xml".equals(layout.getExtension())) {
+				return "The requested layout is not valid; only HTML layouts are allowed. Requested extension is: " + layout.getExtension();
+			}
+			return layoutRenderer.renderLayout(layout, posts, true).toString();
+		} catch (final LayoutRenderingException ex) {
+			return ex.getMessage();			
+		} catch (final UnsupportedEncodingException ex) {
+			return "An Encoding error occured while trying to convert to layout '" + layoutName  + "'.";
+		} catch (final IOException ex) {
+			return "An I/O error occured while trying to convert to layout '" + layoutName  + "'."; 
+		}
+	}
+    
+    
+	public final static HashMap<String, String> BIBTEXT2EPDCX = new HashMap<String, String>();
+	static {
+		BIBTEXT2EPDCX.put("article", "http://purl.org/eprint/type/JournalArticle");
+		BIBTEXT2EPDCX.put("book", "http://purl.org/eprint/type/Book");
+		BIBTEXT2EPDCX.put("booklet", "http://purl.org/eprint/type/ScholarlyText");  		// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("conference", "http://purl.org/eprint/type/ConferencePaper");
+		BIBTEXT2EPDCX.put("electronic", "http://purl.org/eprint/type/ScholarlyText");  		// TODO: change to a more specific type
+		BIBTEXT2EPDCX.put("inbook", "http://purl.org/eprint/type/ScholarlyText");  			// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("incollection", "http://purl.org/eprint/type/ScholarlyText");  	// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("inproceedings", "http://purl.org/eprint/type/ScholarlyText");  	// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("manual", "http://purl.org/eprint/type/ScholarlyText");  			// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("mastersthesis", "http://purl.org/eprint/type/Thesis");
+		BIBTEXT2EPDCX.put("misc", "http://purl.org/eprint/type/ScholarlyText");  			// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("patent", "http://purl.org/eprint/type/Patent");
+		BIBTEXT2EPDCX.put("periodical", "http://purl.org/eprint/type/ScholarlyText");  		// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("phdthesis", "http://purl.org/eprint/type/Thesis");
+		BIBTEXT2EPDCX.put("preamble", "http://purl.org/eprint/type/ScholarlyText");  		// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("presentation", "http://purl.org/eprint/type/ScholarlyText");  	// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("proceedings", "http://purl.org/eprint/type/ScholarlyText");  	// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("standard", "http://purl.org/eprint/type/ScholarlyText");  		// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("techreport", "http://purl.org/eprint/type/ScholarlyText");  		// TODO: change to a more specific type 
+		BIBTEXT2EPDCX.put("unpublished", "http://purl.org/eprint/type/ScholarlyText");  	// TODO: change to a more specific type 
+	};
+	
 
 	public MetsGenerator() {
 		this._post = new Post<BibTex>();
 	}
 
-	
+	private String convertToEpdcxType(String bibTexType) {
+		return BIBTEXT2EPDCX.get(bibTexType);
+	}
 	
 	public String getFilename(int elementnumber) {
 		if (_filenameList.size() > elementnumber) {
@@ -92,78 +175,86 @@ public class MetsGenerator {
 	
 	/**
 	 * @param hd TransformerHandler
-	 * @param tags set of Tags
-	 * @param element value of element attribute
-	 * @param qualifier value of qualifier attribute
-	 * @param mdschema value of mdschema attribute
-	 * @param language value of element attribute, if available
+	 * @param tags set of Tags for content of epdcx:valueString inside epdcx:statement, if necessary
+	 * @param propertyURI value of propertyURI attribute
+	 * @param valueURI value of valueURI attribute
+	 * @param vesURI value of vesURI attribute
+	 * @param valueSesUri value of valueSesUri attribute, if available
 	 */
-	public void addDimField(TransformerHandler hd, Set<Tag> tags, String element, String qualifier, String mdschema, String language) {
+	public void addStatement(TransformerHandler hd, Set<Tag> tags, String propertyURI, String valueURI, String vesURI, String valueSesUri) {
 		for (Iterator<Tag> iter = tags.iterator(); iter.hasNext();) {
-			addDimField(hd, iter.next().getName(), element, qualifier, mdschema, language);
+			addStatement(hd, iter.next().getName(), propertyURI, valueURI, vesURI, valueSesUri);
 		}
 	}
 	
 	/**
 	 * @param hd TransformerHandler
-	 * @param personNameList List of personName values
-	 * @param element value of element attribute
-	 * @param qualifier value of qualifier attribute
-	 * @param mdschema value of mdschema attribute
-	 * @param language value of element attribute, if available
+	 * @param personNameList content of epdcx:valueString inside epdcx:statement
+	 * @param propertyURI value of propertyURI attribute
+	 * @param valueURI value of valueURI attribute
+	 * @param vesURI value of vesURI attribute
+	 * @param valueSesUri value of valueSesUri attribute, if available
 	 */
-	public void addDimField(TransformerHandler hd, List <PersonName> personNameList, String element, String qualifier, String mdschema, String language) {
+	public void addStatement(TransformerHandler hd, List <PersonName> personNameList, String propertyURI, String valueURI, String vesURI, String valueSesUri) {
 		for (Iterator<PersonName> iter = personNameList.iterator(); iter.hasNext();) {
-			addDimField(hd, iter.next(), element, qualifier, mdschema, language);
+			addStatement(hd, iter.next(), propertyURI, valueURI, vesURI, valueSesUri);
 		}
 	}
 
 	/**
 	 * @param hd TransformerHandler
-	 * @param personName 
-	 * @param element value of element attribute
-	 * @param qualifier value of qualifier attribute
-	 * @param mdschema value of mdschema attribute
-	 * @param language value of element attribute, if available
+	 * @param personName content of epdcx:valueString inside epdcx:statement
+ 	 * @param propertyURI value of propertyURI attribute
+	 * @param valueURI value of valueURI attribute
+	 * @param vesURI value of vesURI attribute
+	 * @param valueSesUri value of valueSesUri attribute, if available
 	 */
-	public void addDimField(TransformerHandler hd, PersonName personName, String element, String qualifier, String mdschema, String language) {
-		addDimField(hd, personName.getLastName()+", "+personName.getFirstName(), element, qualifier, mdschema, language);
+	public void addStatement(TransformerHandler hd, PersonName personName, String propertyURI, String valueURI, String vesURI, String valueSesUri) {
+		addStatement(hd, personName.getLastName()+", "+personName.getFirstName(), propertyURI, valueURI, vesURI, valueSesUri);
 	}
 	
 	/**
 	 * @param hd TransformerHandler
-	 * @param contents array of strings
-	 * @param element value of element attribute
-	 * @param qualifier value of qualifier attribute
-	 * @param mdschema value of mdschema attribute
-	 * @param language value of element attribute, if available
+	 * @param contents of epdcx:valueString inside epdcx:statement
+	 * @param propertyURI value of propertyURI attribute
+	 * @param valueURI value of valueURI attribute
+	 * @param vesURI value of vesURI attribute
+	 * @param valueSesUri value of valueSesUri attribute, if available
 	 */
-	public void addDimField(TransformerHandler hd, String[] contents, String element, String qualifier, String mdschema, String language) {
+	public void addStatement(TransformerHandler hd, String[] contents, String propertyURI, String valueURI, String vesURI, String valueSesUri) {
 		for (int i=0; i<contents.length; i++) {
-			addDimField(hd, contents[i], element, qualifier, mdschema, language);
+			addStatement(hd, contents[i], propertyURI, valueURI, vesURI, valueSesUri);
 		}
 	}
 
 	/**
 	 * @param hd TransformerHandler
-	 * @param content Text
-	 * @param element value of element attribute
-	 * @param qualifier value of qualifier attribute
-	 * @param mdschema value of mdschema attribute
-	 * @param language value of element attribute, if available
+	 * @param content Text of epdcx:valueString inside epdcx:statement, if necessary
+	 * @param propertyURI value of propertyURI attribute
+	 * @param valueURI value of valueURI attribute
+	 * @param vesURI value of vesURI attribute
+	 * @param valueSesUri value of valueSesUri attribute, if available
 	 */
-	public void addDimField(TransformerHandler hd, String content, String element, String qualifier, String mdschema, String language) {
+	public void addStatement(TransformerHandler hd, String content, String propertyURI, String valueURI, String vesURI, String valueSesUri) {
 		AttributesImpl atts = new AttributesImpl();
 		atts.clear();
-		if (element != null) atts.addAttribute("","","element","CDATA",element);
-		if (qualifier != null) atts.addAttribute("","","qualifier","CDATA",qualifier);
-		if (mdschema != null) atts.addAttribute("","","mdschema","CDATA",mdschema);
-		if (language != null) atts.addAttribute("","","language","CDATA",language);
+		if (propertyURI != null) atts.addAttribute("","","epdcx:propertyURI","CDATA",propertyURI);
+		if (valueURI != null) atts.addAttribute("","","epdcx:valueURI","CDATA",valueURI);
+		if (vesURI != null) atts.addAttribute("","","epdcx:vesURI","CDATA",vesURI);
 
 		try {
-			hd.startElement("","","dim:field",atts);
-			hd.characters(content.toCharArray(),0,content.length());
-			hd.endElement("","","dim:field");
+			hd.startElement("","","epdcx:statement",atts);
+
+			if ((content != null) && (!content.isEmpty())) {
+				AttributesImpl atts2 = new AttributesImpl();
+				atts2.clear();
+				if (valueSesUri != null) atts2.addAttribute("","","epdcx:sesURI","CDATA",valueSesUri);
+				hd.startElement("","","epdcx:valueString", atts2);
+				hd.characters(content.toCharArray(),0,content.length());
+				hd.endElement("","","epdcx:valueString");
+			}
+			
+			hd.endElement("","","epdcx:statement");
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -246,7 +337,7 @@ public class MetsGenerator {
 		atts.clear();
 		atts.addAttribute("","","MIMETYPE","CDATA","text/xml");
 		atts.addAttribute("","","MDTYPE","CDATA","OTHER");
-		atts.addAttribute("","","OTHERMDTYPE","CDATA","DIM");
+		atts.addAttribute("","","OTHERMDTYPE","CDATA","EPDCX");
 		hd.startElement("","","mdWrap",atts);
 
 
@@ -254,99 +345,155 @@ public class MetsGenerator {
 		atts.clear();
 		hd.startElement("","","xmlData",atts);
 
-		// dim:dim
-		atts.clear();
-		atts.addAttribute("","","dspaceType","CDATA","ITEM");
-		hd.startElement("","","dim:dim",atts);
-
-		// dim:field  -  Author
-		if (null != _post.getResource().getAuthorList() && !_post.getResource().getAuthorList().isEmpty()) 
-			addDimField(hd, _post.getResource().getAuthorList(), "contributor", "author", "dc", null);
-		
-		// dim:field  -  Title
-		if (null != _post.getResource().getTitle() && !_post.getResource().getTitle().isEmpty()) 
-			addDimField(hd, _post.getResource().getTitle(), "title", null, "dc", null);
-
-		// dim:field  -  Abstract
-		if (null != _post.getResource().getAbstract() && !_post.getResource().getAbstract().isEmpty()) 
-			addDimField(hd, _post.getResource().getAbstract(), "description", "abstract", "dc", null);
-
-		// dim:field  -  date issued
-		if (null != _post.getResource().getYear() && !_post.getResource().getYear().isEmpty()) 
-			addDimField(hd, _post.getResource().getYear()+((null == _post.getResource().getMonth() || _post.getResource().getMonth().isEmpty())?"":"-"+_post.getResource().getMonth()+((null == _post.getResource().getDay() || _post.getResource().getDay().isEmpty())?"":"-"+_post.getResource().getDay())), "date", "issued", "dc", null);
-
-		// dim:field  -  Publisher
-		if (null != _post.getResource().getPublisher() && !_post.getResource().getPublisher().isEmpty()) 
-			addDimField(hd, _post.getResource().getPublisher(), "publisher", null, "dc", null);
-
-		// dim:field  -  Type
-		if (null != _post.getResource().getType() && !_post.getResource().getType().isEmpty()) 
-			addDimField(hd, _post.getResource().getType(), "type", null, "dc", "en");
-		
-		// dim:field  -  description.everything
-		if (null != _post.getDescription() && !_post.getDescription().isEmpty()) 
-			addDimField(hd, _post.getDescription(), "description", "everything", "dc", null);
-		
-		// dim:field  -  tags - Schlagwoerter
-		if (null != _post.getTags() && !_post.getTags().isEmpty()) 
-			addDimField(hd, _post.getTags(), "subject", "swd", "dc", null);
-		
-		// dim:field  -  url 
-		if (null != _post.getResource().getUrl() && !_post.getResource().getUrl().isEmpty()) 
-			addDimField(hd, _post.getResource().getUrl(), "identifier", "url", "dc", null);
-		
-
-		// auswertung des misc-feldes
-		// may contain some identifiers like ean, issn, and so on
-		// may contain some classification data in formats ddc, pacs, msc, ccs
-		// parse misc-filed to compute different fields to property miscField
-		_post.getResource().parseMiscField();
-		if (null != _post.getResource().getMiscFields() && !_post.getResource().getMiscFields().isEmpty()){ 
-
-			Map<String,String> miscData = _post.getResource().getMiscFields();
-			
-			for (Iterator<String> iter = miscData.keySet().iterator(); iter.hasNext();) {
-				String key = iter.next();
-				if (key.equalsIgnoreCase("ean")) {
-					addDimField(hd, miscData.get(key).split(" "), "identifier", "ean", "dc", null);
-				}
-
-				else if (key.equalsIgnoreCase("isbn")) {
-					addDimField(hd, miscData.get(key).split(" "), "identifier", "isbn", "dc", null);
-				}
-				
-				else if (key.equalsIgnoreCase("issn")) {
-					addDimField(hd, miscData.get(key).split(" "), "identifier", "issn", "dc", null);
-				}
-				
-				else if (key.equalsIgnoreCase("doi")) {
-					addDimField(hd, miscData.get(key).split(" "), "identifier", "doi", "dc", null);
-				}
-
-				else if (key.equalsIgnoreCase("classification.ddc")) {
-					addDimField(hd, miscData.get(key).split(" "), "subject", "ddc", "dc", null);
-				}
-				
-				else if (key.equalsIgnoreCase("classification.ccs")) {
-					addDimField(hd, miscData.get(key).split(" "), "subject", "ccs", "dc", null);
-				}
-				
-				else if (key.equalsIgnoreCase("classification.pacs")) {
-					addDimField(hd, miscData.get(key).split(" "), "subject", "pacs", "dc", null);
-				}
-				
-				else if (key.equalsIgnoreCase("classification.msc")) {
-					addDimField(hd, miscData.get(key).split(" "), "subject", "msc", "dc", null);
-				}
-				else {
-					System.out.println("misc field: "+_post.getResource().getMiscFields());
-					log.info("don't know waht to do with key >>"+key+"<< from misc field");
-				}
-				
-			}
+       
+		String metsFormat = "BibTexML";
+		String bibTexML = ""; 
+		if (metsFormat.equals("BibTexML")) {
+			// generate BibTexML 
+			System.out.println("generate BibTexML:");
+			bibTexML = renderLayout(_post, "bibtexml");
+			System.out.println("bibTexML:");
+			System.out.println(bibTexML);
+			hd.characters(bibTexML.toCharArray(), 0, bibTexML.length());
 		}
-
-		hd.endElement("","","dim:dim");
+		else if (metsFormat.equals("EPDCX")) {
+	        // epdcx:descriptionSet
+			atts.clear();
+			atts.addAttribute("","","xmlns:epdcx","CDATA","http://purl.org/eprint/epdcx/2006-11-16/");
+			atts.addAttribute("","","xmlns:xsi","CDATA","http://www.w3.org/2001/XMLSchema-instance");
+			atts.addAttribute("","","xsi:schemaLocation","CDATA","http://purl.org/eprint/epdcx/2006-11-16/ http://purl.org/eprint/epdcx/xsd/2006-11-16/epdcx.xsd");
+			hd.startElement("","","epdcx:descriptionSet",atts);
+	
+	        // epdcx:description
+			atts.clear();
+			atts.addAttribute("","","epdcx:resourceId","CDATA","sword-mets-epdcx-1");
+			hd.startElement("","","epdcx:description",atts);
+			
+			//	public void addDimField(TransformerHandler hd, String content, String propertyURI, String valueURI, String vesURI, String valueSesUri) {
+	
+			addStatement(hd, "", "http://purl.org/dc/elements/1.1/type", "http://purl.org/eprint/entityType/ScholarlyWork", null, null);
+	
+			// Title
+			if (null != _post.getResource().getTitle() && !_post.getResource().getTitle().isEmpty()) 
+				addStatement(hd, _post.getResource().getTitle(), "http://purl.org/dc/elements/1.1/title", null, null, null);
+	
+			// Author
+			if (null != _post.getResource().getAuthorList() && !_post.getResource().getAuthorList().isEmpty()) 
+				addStatement(hd, _post.getResource().getAuthorList(), "http://purl.org/dc/elements/1.1/creator", null, null, null);
+	
+			
+			// Abstract
+			if (null != _post.getResource().getAbstract() && !_post.getResource().getAbstract().isEmpty()) 
+				addStatement(hd, _post.getResource().getAbstract(), "http://purl.org/dc/terms/abstract", null, null, null);
+	
+			
+	// url 
+			if (null != _post.getResource().getUrl() && !_post.getResource().getUrl().isEmpty()) 
+				addStatement(hd, _post.getResource().getUrl(), "http://purl.org/dc/elements/1.1/identifier", null, null, "http://purl.org/dc/terms/URI");
+		
+			
+			// name
+			atts.clear();
+			atts.addAttribute("","","epdcx:propertyURI","CDATA","http://purl.org/eprint/terms/isExpressedAs");
+			atts.addAttribute("","","epdcx:valueRef","CDATA","sword-mets-expr-1");
+	
+			hd.startElement("","","epdcx:statement",atts);
+			hd.endElement("","","epdcx:statement");
+	
+			hd.endElement("","","epdcx:description");
+			
+	        // epdcx:description
+			atts.clear();
+			atts.addAttribute("","","epdcx:resourceId","CDATA","sword-mets-expr-1");
+			hd.startElement("","","epdcx:description",atts);
+			
+			addStatement(hd, "", "http://purl.org/dc/elements/1.1/type", "http://purl.org/eprint/entityType/Expression", null, null);
+			
+			addStatement(hd, "en", "http://purl.org/dc/elements/1.1/language", null, "http://purl.org/dc/terms/RFC3066", null);
+	
+			// Type
+			if (null != _post.getResource().getEntrytype() && !_post.getResource().getEntrytype().isEmpty()) {
+				addStatement(hd, "", "http://purl.org/dc/elements/1.1/type", convertToEpdcxType(_post.getResource().getEntrytype()), "http://purl.org/eprint/terms/Type", null);
+			}
+	
+			// date issued
+			if (null != _post.getResource().getYear() && !_post.getResource().getYear().isEmpty()) 
+				addStatement(hd, _post.getResource().getYear()+((null == _post.getResource().getMonth() || _post.getResource().getMonth().isEmpty())?"":"-"+_post.getResource().getMonth()+((null == _post.getResource().getDay() || _post.getResource().getDay().isEmpty())?"":"-"+_post.getResource().getDay())), "http://purl.org/dc/terms/available", null, null, "http://purl.org/dc/terms/W3CDTF");
+	
+			
+			addStatement(hd, "", "http://purl.org/eprint/terms/status", "http://purl.org/eprint/status/PeerReviewed", "http://purl.org/eprint/terms/Status", null);
+			addStatement(hd, "Nature Publishing Group", "http://purl.org/eprint/terms/copyrightHolder", null, null, null);
+			
+			
+			
+			
+			/*
+			// Publisher
+			if (null != _post.getResource().getPublisher() && !_post.getResource().getPublisher().isEmpty()) 
+				addStatement(hd, _post.getResource().getPublisher(), "publisher", null, "dc", null);
+	
+			// description.everything
+			if (null != _post.getDescription() && !_post.getDescription().isEmpty()) 
+				addStatement(hd, _post.getDescription(), "description", "everything", "dc", null);
+			
+			// tags - Schlagwoerter
+			if (null != _post.getTags() && !_post.getTags().isEmpty()) 
+				addStatement(hd, _post.getTags(), "subject", "swd", "dc", null);
+	
+			// auswertung des misc-feldes
+			// may contain some identifiers like ean, issn, and so on
+			// may contain some classification data in formats ddc, pacs, msc, ccs
+			// parse misc-filed to compute different fields to property miscField
+			_post.getResource().parseMiscField();
+			if (null != _post.getResource().getMiscFields() && !_post.getResource().getMiscFields().isEmpty()){ 
+	
+				Map<String,String> miscData = _post.getResource().getMiscFields();
+				
+				for (Iterator<String> iter = miscData.keySet().iterator(); iter.hasNext();) {
+					String key = iter.next();
+					if (key.equalsIgnoreCase("ean")) {
+						addStatement(hd, miscData.get(key).split(" "), "identifier", "ean", "dc", null);
+					}
+	
+					else if (key.equalsIgnoreCase("isbn")) {
+						addStatement(hd, miscData.get(key).split(" "), "identifier", "isbn", "dc", null);
+					}
+					
+					else if (key.equalsIgnoreCase("issn")) {
+						addStatement(hd, miscData.get(key).split(" "), "identifier", "issn", "dc", null);
+					}
+					
+					else if (key.equalsIgnoreCase("doi")) {
+						addStatement(hd, miscData.get(key).split(" "), "identifier", "doi", "dc", null);
+					}
+	
+					else if (key.equalsIgnoreCase("classification.ddc")) {
+						addStatement(hd, miscData.get(key).split(" "), "subject", "ddc", "dc", null);
+					}
+					
+					else if (key.equalsIgnoreCase("classification.ccs")) {
+						addStatement(hd, miscData.get(key).split(" "), "subject", "ccs", "dc", null);
+					}
+					
+					else if (key.equalsIgnoreCase("classification.pacs")) {
+						addStatement(hd, miscData.get(key).split(" "), "subject", "pacs", "dc", null);
+					}
+					
+					else if (key.equalsIgnoreCase("classification.msc")) {
+						addStatement(hd, miscData.get(key).split(" "), "subject", "msc", "dc", null);
+					}
+					else {
+						System.out.println("misc field: "+_post.getResource().getMiscFields());
+						log.info("don't know waht to do with key >>"+key+"<< from misc field");
+					}
+					
+				}
+			}
+	*/
+			hd.endElement("","","epdcx:description");
+			hd.endElement("","","epdcx:descriptionSet");
+		} // end of if EPDCX
+		
 		hd.endElement("","","xmlData");
 		hd.endElement("","","mdWrap");
 		hd.endElement("","","dmdSec");
