@@ -33,7 +33,7 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
 	return this.queryForObject("getActualWikiForUser", userName, Wiki.class, session);
     }
 
-    public List<Date> getWikiVersions(String userName, final DBSession session) {
+    public List<Date> getWikiVersions(final String userName, final DBSession session) {
 	return this.queryForList("getWikiVersionsForUser", userName, Date.class, session);
     }
 
@@ -46,7 +46,7 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
 	this.update("updateWikiForUser", param, session);
     }
 
-    public Wiki getPreviousWiki(String userName, Date date, DBSession session) {
+    public Wiki getPreviousWiki(final String userName, final Date date, final DBSession session) {
 	final WikiParam param = new WikiParam();
 
 	param.setDate(date);
@@ -55,7 +55,7 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
 	return this.queryForObject("getLoggedWiki", param, Wiki.class, session);
     }
 
-    public void createWiki(final String userName,final Wiki wiki, DBSession session) {
+    public void createWiki(final String userName, final Wiki wiki, final DBSession session) {
 	session.beginTransaction();
 	
 	final WikiParam param = new WikiParam();
@@ -71,12 +71,20 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
 	}
     }
 
-    public void logWiki(final String userName, final Wiki wiki, DBSession session) {
+    public void logWiki(final String userName, final Wiki wiki, final DBSession session) {
 	session.beginTransaction();
 	
 	final WikiParam param = new WikiParam();
 	param.setUserName(userName);
 	param.setWikiText(wiki.getWikiText());
+	/*
+	 * FIXME: shouldn't we have an (additional) logging date here?
+	 * 
+	 * I.e., 
+	 * date = wiki.getDate()
+	 * logDate = new Date()
+	 * 
+	 */
 	param.setDate(new Date());
 	
 	try {
