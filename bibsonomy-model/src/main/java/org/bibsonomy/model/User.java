@@ -211,28 +211,26 @@ public class User implements Serializable {
 	/**
 	 * The time at which the user requested a password reminder.
 	 */
-	private Date reminderPasswordRequestDate; 
-
-	
+	private Date reminderPasswordRequestDate;
 	
 	/**
 	 * Constructor
 	 */
 	public User() {
-		this(null);
+		this.basket = new Basket();
+		this.inbox = new Inbox();
+		this.settings = new UserSettings();
+		this.role = Role.NOBODY; // TODO: check, if this has any bad implications!
 	}
 
 	/**
 	 * Constructor
 	 * 
-	 * @param name
+	 * @param name the name of the user
 	 */
 	public User(final String name) {
+		this();
 		this.setName(name); 
-		this.basket = new Basket();
-		this.inbox = new Inbox();
-		this.settings = new UserSettings();
-		this.role = Role.NOBODY; // TODO: check, if this has any bad implications!
 	}
 
 	/**
