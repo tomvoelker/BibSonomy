@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.tags.database.DBLogic;
 
 /**
@@ -50,7 +51,7 @@ public class DC09NameToIDMapping implements PostModifier {
 		
 		if( userID == null )
 			userID = UNKNOWNID;
-		post.getUser().setName(userID.toString());
+		post.setUser(new User(userID.toString()));
 		log.debug("Mapping user "+userName+" to id "+userID);
 	}
 
