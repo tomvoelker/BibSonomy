@@ -4,15 +4,15 @@ import java.io.Serializable;
 
 import org.bibsonomy.webapp.command.BaseCommand;
 
-/** 
- * This command encapsulates the user's name and his password for the login page. 
- * 
- * @author rja
+/**
+ * @author dzo
  * @version $Id$
  */
 public class UserLoginCommand extends BaseCommand implements Serializable {
-	private static final long serialVersionUID = -115425449425900599L;
+
+	private static final long serialVersionUID = -8690852609913391454L;
 	
+	private String message;
 	
 	/**
 	 * The name of the user which wants to login.
@@ -39,27 +39,47 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	 * They can give the user a notice using this param. 
 	 */
 	private String notice;
-	
+
 	/**
-	 * Method for login
-	 * 1) Login with bibsonomy usernamae and password
-	 *    (if user is a ldap user, password is ldap password, otherwise bibsonomy password) 
-	 * 2) Login with LDAP UserID and password 
+	 * @return the referer
 	 */
-	private String loginMethod;
-	
+	public String getReferer() {
+		return this.referer;
+	}
+
+	/**
+	 * @param referer the referer to set
+	 */
+	public void setReferer(String referer) {
+		this.referer = referer;
+	}
+
 	/**
 	 * @return the notice
 	 */
 	public String getNotice() {
 		return this.notice;
 	}
-	
+
 	/**
 	 * @param notice the notice to set
 	 */
 	public void setNotice(String notice) {
 		this.notice = notice;
+	}
+
+	/**
+	 * @param message the message to set
+	 */
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	/**
+	 * @return the message
+	 */
+	public String getMessage() {
+		return message;
 	}
 	
 	/**
@@ -70,13 +90,9 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	}
 
 	/** 
-	 * @param username the username to set (lowercase)
+	 * @param username the username to set
 	 */
 	public void setUsername(String username) {
-		if (username != null) {
-			username = username.toLowerCase();
-		}
-		
 		this.username = username;
 	}
 	
@@ -95,20 +111,6 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	}
 
 	/**
-	 * @return the referer
-	 */
-	public String getReferer() {
-		return this.referer;
-	}
-
-	/**
-	 * @param referer the referer to set
-	 */
-	public void setReferer(String referer) {
-		this.referer = referer;
-	}
-	
-	/**
 	 * @return the openID
 	 */
 	public String getOpenID() {
@@ -120,15 +122,5 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	 */
 	public void setOpenID(String openID) {
 		this.openID = openID;
-	}
-
-	@Override
-	public void setLoginMethod(String loginMethod) {
-		this.loginMethod = loginMethod;
-	}
-	
-	@Override
-	public String getLoginMethod() {
-		return this.loginMethod;
 	}
 }

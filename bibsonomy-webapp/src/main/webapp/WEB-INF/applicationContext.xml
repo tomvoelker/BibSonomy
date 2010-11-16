@@ -3,7 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	                    http://www.springframework.org/schema/beans/spring-beans.xsd">
-
 	<!--
 	   webapp independent bean configurations
 
@@ -11,4 +10,33 @@
        via FactoryBeans
 	
 	-->
+	
+	<bean id="appConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="location">
+			<value>/WEB-INF/project.properties</value>
+		</property> 
+	</bean>
+	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="properties" ref="appConfig" />
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+	</bean>
+	
+	<!-- Teergrube for brute force attacs  -->
+	<bean id="teergrube" class="org.bibsonomy.webapp.util.TeerGrube" scope="singleton">
+		<property name="maxQueueAgeSeconds" value="1800"/>
+		<property name="waitingSecondsPerRetry" value="3"/>
+	</bean>
+	
+	<bean id="dbSessionFactorySec" class="org.bibsonomy.database.util.IbatisDBSessionFactory" scope="singleton"/>
+	
+	<!-- 
+	    This bean provides admin access to the logic interface by predicting 
+	    to be a user with role "admin". 
+	 -->
+	<bean id="adminSecLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="singleton">
+	    <!-- name the admin user will have when accessing the logic interface -->
+		<property name="adminUserName" value="admin"/>
+		<property name="dbSessionFactory" ref="dbSessionFactorySec"/>
+	</bean>	
 </beans>

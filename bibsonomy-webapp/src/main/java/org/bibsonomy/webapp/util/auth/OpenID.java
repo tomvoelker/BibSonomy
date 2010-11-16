@@ -28,6 +28,7 @@ import org.openid4java.message.sreg.SRegResponse;
  * @author Stefan Stützer
  * @version $Id$
  */
+@Deprecated
 public class OpenID implements Serializable {
 	/**
 	 * Logger

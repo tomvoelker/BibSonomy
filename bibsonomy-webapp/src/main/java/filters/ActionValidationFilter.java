@@ -23,6 +23,7 @@ import org.bibsonomy.util.StringUtils;
  * 
  * Resources in /resources are ignored.
  *
+ * @version $Id$
  */
 public class ActionValidationFilter implements Filter {
 	private final static Log log = LogFactory.getLog(ActionValidationFilter.class);
@@ -42,14 +43,24 @@ public class ActionValidationFilter implements Filter {
 
 	protected FilterConfig filterConfig = null;
 
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+	/**
+	 * the resources (css, js) path
+	 */
+	public static final String STATIC_RESOURCES = "/resources";
 
+	/**
+	 * the api path
+	 */
+	public static final String API = "/api";
+
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest httpServletRequest = (HttpServletRequest)request;
 		String requPath = httpServletRequest.getServletPath();
 		/*
 		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ... 
 		 */
-		if (requPath.startsWith(InitUserFilter.STATIC_RESOURCES) || requPath.startsWith(InitUserFilter.API)) {
+		if (requPath.startsWith(ActionValidationFilter.STATIC_RESOURCES) || requPath.startsWith(ActionValidationFilter.API)) {
 			chain.doFilter(request, response);
 			return;
 		} 
@@ -120,6 +131,7 @@ public class ActionValidationFilter implements Filter {
 	 *
 	 * @param filterConfig The filter configuration object
 	 */
+	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.filterConfig = filterConfig;
 	}
@@ -127,6 +139,7 @@ public class ActionValidationFilter implements Filter {
 	/**
 	 * Take this filter out of service.
 	 */
+	@Override
 	public void destroy() {
 		this.filterConfig = null;
 	}

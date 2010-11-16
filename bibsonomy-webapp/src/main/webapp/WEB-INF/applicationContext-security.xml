@@ -1,0 +1,117 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.0.3.xsd">
+	
+	<beans:bean id="loginUrl" class="java.lang.String">
+		<beans:constructor-arg value="/login" />
+	</beans:bean>
+	
+	<http use-expressions="true" entry-point-ref="entryPoint" create-session="never" auto-config="false">
+		<!-- no filtering for css and js -->
+		<intercept-url pattern="/resources/**" filters="none" />
+		<!-- api uses own authentication handling -->
+		<intercept-url pattern="/api/**" filters="none" />
+		<!-- login -->
+		<intercept-url pattern="/login" access="isAnonymous()" />
+		<!-- restrict admin pages to admins -->
+		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<!-- everything else -->
+		<intercept-url pattern="/**" access="permitAll" />
+
+		<!-- filter definitions -->
+		<logout invalidate-session="true" logout-success-url="/" logout-url="/logout" />
+		<custom-filter position="FORM_LOGIN_FILTER" ref="usernameAndPasswordFilter" /> <!-- instead of a form-login tag -->
+		<custom-filter after="FORM_LOGIN_FILTER" ref="ldapUsernameAndPasswordFilter" />
+		<http-basic />
+
+		<openid-login login-processing-url="/doOpenIDLogin" authentication-success-handler-ref="successHandler" authentication-failure-handler-ref="failureHandler" user-service-ref="databaseUserService">
+			<attribute-exchange>
+                <openid-attribute name="email" type="http://schema.openid.net/contact/email" required="true"/>
+                <openid-attribute name="nickname" type="http://openid.net/schema/namePerson/friendly" required="true" />
+                <openid-attribute name="gender" type="http://openid.net/schema/gender"/>
+            </attribute-exchange>
+            
+            <!-- TODO -->
+		</openid-login>
+		
+		<access-denied-handler error-page="/access_denied" />
+	</http>
+
+	<beans:bean id="entryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<beans:property name="loginFormUrl" ref="loginUrl" />
+	</beans:bean>
+	
+	<beans:bean id="openIDUserDetailsService" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.OpenIDDatabaseUserDetailsService">
+		<beans:property name="adminLogic" ref="adminSecLogic" />
+	</beans:bean>
+
+	<beans:bean id="abstractUsernameAndPasswordFilter" class="org.bibsonomy.webapp.util.spring.security.filter.UsernamePasswordAuthenticationFilter" abstract="true">
+		<beans:property name="grube" ref="teergrube" />
+		<beans:property name="authenticationFailureHandler" ref="failureHandler" />
+		<beans:property name="authenticationSuccessHandler" ref="successHandler" />
+		<beans:property name="usernameParameter" value="username" />
+		<beans:property name="passwordParameter" value="password" />
+	</beans:bean>
+
+	<beans:bean id="ldapUsernameAndPasswordFilter" parent="abstractUsernameAndPasswordFilter">
+		<beans:property name="authenticationManager" ref="ldapAuthManager" />
+		<beans:property name="filterProcessesUrl" value="/doLDAPLogin" />
+	</beans:bean>
+	
+	<beans:bean id="usernameAndPasswordFilter" parent="abstractUsernameAndPasswordFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="filterProcessesUrl" value="/doLogin" />
+	</beans:bean>
+
+	<beans:bean id="successHandler" class="org.bibsonomy.webapp.util.spring.security.handler.SuccessHandler" />
+	
+	<beans:bean id="failureHandler" class="org.bibsonomy.webapp.util.spring.security.handler.FailureHandler" scope="singleton">
+		<beans:property name="grube" ref="teergrube" />
+		<beans:property name="defaultFailureUrl" ref="loginUrl" />
+	</beans:bean>
+
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="databaseUserService">
+			<password-encoder hash="md5" />
+		</authentication-provider>
+		<!-- without md5 encoding for http basic -->
+		<authentication-provider user-service-ref="databaseUserService" />
+	</authentication-manager>
+	
+	<beans:bean id="ldapAuthManager" class="org.springframework.security.authentication.ProviderManager">
+		<beans:property name="providers">
+			<beans:list>
+				<beans:ref bean="ldapAuthProvider"/> 
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="ldapBindAuthenticator" class="org.springframework.security.ldap.authentication.BindAuthenticator">
+		<beans:constructor-arg ref="contextSource" />
+		<beans:property name="userDnPatterns">
+			<beans:list>
+				<beans:value>${auth.ldap.userDnPattern}</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="ldapAuthProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
+		<beans:constructor-arg ref="ldapBindAuthenticator" />
+		<beans:property name="userDetailsContextMapper" ref="ldapUserDetailsMapper" />
+		<beans:property name="hideUserNotFoundExceptions" value="false" />
+	</beans:bean>
+	
+	<ldap-server id="contextSource" url="${auth.ldap.server}" />
+
+	<beans:bean id="ldapUserDetailsMapper" class="org.bibsonomy.webapp.util.spring.security.LDAPUserDetailsServiceMapper">
+		<beans:property name="userDetailsService" ref="databaseUserService" />
+		<beans:property name="adminLogic" ref="adminSecLogic" />
+	</beans:bean>
+
+	<beans:bean id="databaseUserService" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.DatabaseUserDetailsService">
+		<beans:property name="adminLogic" ref="adminSecLogic" />
+	</beans:bean>
+</beans:beans>

@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
  * @author stefani
  *
  */
+@Deprecated
 public class LdapUserinfo {
 
 	/**
@@ -157,10 +158,12 @@ public class LdapUserinfo {
 	 */
 	public void setSureName(Attribute sureName) {
 		String sureNameS = "";
-		if (null!=sureName) try {
-			sureNameS = sureName.get().toString();
-		} catch (NamingException ex) {
-			log.error("NamingException in " + this.getClass().getName() + " (setSureName): " + ex.getMessage());
+		if (null != sureName) {
+			try {
+				sureNameS = sureName.get().toString();
+			} catch (NamingException ex) {
+				log.error("NamingException in " + this.getClass().getName() + " (setSureName): " + ex.getMessage());
+			}
 		}
 		this.setSureName(sureNameS);
 	} 
@@ -342,5 +345,9 @@ public class LdapUserinfo {
     	return returnValue;
     }
     
+    public static void main(String[] args) {
+		final LdapUserinfo info = new LdapUserinfo();
+		System.out.println(info.generatePicaHashBase64("test"));
+	}
 
 }
