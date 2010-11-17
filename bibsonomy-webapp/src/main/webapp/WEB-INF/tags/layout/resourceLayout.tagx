@@ -17,7 +17,7 @@
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>	
-    <jsp:directive.attribute name="beforeBodyClose" fragment="true" required="false"/>
+  	<jsp:directive.attribute name="beforeBodyClose" fragment="true" required="false"/>
 	
 	<!-- 
 		store some locale messages in variables to be
@@ -37,8 +37,9 @@
 	</c:if>	
 		
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
-	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">		
 		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/resourceList.js">&amp;nbsp;</script> 
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
 			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
@@ -49,12 +50,20 @@
             <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="${swrcUrl}" />
             <!-- UnAPI service -->
             <link rel="unapi-server" type="application/xml" title="unAPI" href="${projectHome}unapi"/>
-            <c:choose>
-            	<c:when test="${command.context.loginUser.settings.showBookmark and command.context.loginUser.settings.showBibtex}">
+            	<c:if test="${command.context.loginUser.settings.showBookmark and command.context.loginUser.settings.showBibtex}">
             		<c:set var="optionShowBoth"><c:out value="hiddenElement"/></c:set>
-            	</c:when>
-				<c:when test="${command.context.loginUser.settings.showBookmark and not command.context.loginUser.settings.showBibtex}">
-					<style>
+            	</c:if>
+        <!-- set by url parameter -->
+        <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
+        <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
+        
+        <!-- if not set by url parameter use usersettings -->
+				<c:if test="${not showPublication and not showBookmark}">
+					<c:set var="showPublication" value="${command.context.loginUser.settings.showBibtex}" />
+					<c:set var="showBookmark" value="${command.context.loginUser.settings.showBookmark}" />
+				</c:if>
+        <c:if test="${showBookmark and not showPublication }">
+        	<style>
 						#bibtexList {
 							display:none;
 						}
@@ -62,10 +71,10 @@
 							width:97%;
 						}
 					</style>
+					<c:set var="optionShowBoth"><c:out value=""/></c:set>
 					<c:set var="optionExpandBookmark"><c:out value="hiddenElement"/></c:set>
-				</c:when>
-				
-				<c:when test="${command.context.loginUser.settings.showBibtex and not command.context.loginUser.settings.showBookmark}">
+        </c:if>
+				<c:if test="${showPublication and not showBookmark}">
 					<style>
 						#bookmarkList {
 							display:none;
@@ -74,21 +83,25 @@
 							width:97%;
 						}
 					</style>
+					<c:set var="optionShowBoth"><c:out value=""/></c:set>
 					<c:set var="optionExpandBibtex"><c:out value="hiddenElement"/></c:set>
-				</c:when>
-			</c:choose>
+				</c:if>
             <jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
 		<jsp:attribute name="content">
 			<div id="general_100">
-				<!-- expandBookmarkList(), showBothLists(), expandBibTexList() in functions.js -->
+				<!-- expandBookmarkList(), showBothLists(), expandBibTexList() in resourceList.js -->
 				<ul id="bookmarkbibtexoptions">
 					<fmt:message var="expandBookmarks" key="list.expand.bookmarks"/>
 					<fmt:message var="expandPublications" key="list.expand.publications"/>
 					<fmt:message var="showBoth" key="list.expand.both"/>
-					<li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li>
-					<li id="optionShowBoth" class="${optionShowBoth}"><a href="javascript:showBothLists();" title="${showBoth}">|</a></li>
-					<li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li>
+					<!-- TODO: load lists via ajax -->
+					<!-- <li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li> -->
+					<!-- <li id="optionShowBoth" class="${optionShowBoth}"><a href="javascript:showBothLists();" title="${showBoth}">|</a></li> -->
+					<!-- <li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li> -->
+					<li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="?resourcetype=bookmark" title="${expandBookmarks}">&gt;</a></li>
+					<li id="optionShowBoth" class="${optionShowBoth}"><a href="?resourcetype=bookmark&amp;resourcetype=publication" title="${showBoth}">|</a></li>
+					<li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="?resourcetype=publication" title="${expandPublications}">&lt;</a></li>
 				</ul>
 				<!-- 
 					Some pages show a short introductory text at the top - this text 

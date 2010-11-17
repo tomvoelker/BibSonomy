@@ -1,6 +1,3 @@
-/*
- * Created on 07.10.2007
- */
 package org.bibsonomy.webapp.util.spring.controller;
 
 import java.text.SimpleDateFormat;
@@ -15,7 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.webapp.command.BaseCommand;
+import org.bibsonomy.web.spring.classeditor.ClassEditor;
+import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -44,7 +42,8 @@ import org.springframework.web.servlet.mvc.BaseCommandController;
  * @author Jens Illig
  * @version $Id$
  */
-public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends BaseCommandController {
+@SuppressWarnings("deprecation")
+public class MinimalisticControllerSpringWrapper<T extends ContextCommand> extends BaseCommandController {
 	private static final Log log = LogFactory.getLog(MinimalisticControllerSpringWrapper.class);
 	
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
@@ -79,8 +78,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 	public void setDisallowedFields(final String[] disallowedFields) {
 		this.disallowedFields = disallowedFields;
 	}
-		
-	
+
 	/**
 	 * @param controllerBeanName the name of the controller bean in the context
 	 *                           of the renderer
@@ -223,12 +221,14 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		 *  
 		 */
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(DATE_FORMAT, true));
-
+		
+		binder.registerCustomEditor(Class.class, new ClassEditor());
+		
+		
 		/*
 		 * setting the dis/allowed fields for the binder
 		 */
 		binder.setAllowedFields(allowedFields);
 		binder.setDisallowedFields(disallowedFields);
-	}
-	
+	}	
 }

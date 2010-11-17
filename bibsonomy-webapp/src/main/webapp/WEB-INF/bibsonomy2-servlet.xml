@@ -2,11 +2,20 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
-
+	<!--                    http://www.springframework.org/schema/security
+	                    http://www.springframework.org/schema/security/spring-security-3.0.3.xsd">
+	
+	  <security:global-method-security pre-post-annotations="enabled" />
+	
+	<bean id="securityContextHolder" class="org.springframework.security.core.context.SecurityContextHolder" scope="request"/>
+	
+	<bean id="securityContext" class="org.springframework.security.core.context.SecurityContext" factory-bean="securityContextHolder" factory-method="getContext" scope="request" />-->
+	
 	
 	<!-- 
 		extracts properties from the provided file and inserts them into bean 
@@ -25,47 +34,36 @@
 	</bean>
 	
 	<!-- WURFL -->
-	<bean id="wurfl.resource"
-      class="org.springframework.core.io.ClassPathResource">
-        <constructor-arg value="wurfl.zip" />
-    </bean>
-    <bean id="wurfl.springResource" 
-      class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
-        <constructor-arg index="0" ref="wurfl.resource" />
-    </bean>
-	<bean id="wurfl.model" 
-      class="net.sourceforge.wurfl.core.resource.DefaultWURFLModel">
-        <constructor-arg index="0" ref="wurfl.springResource" />
-    </bean>
-    <bean id="wurfl.matcherManager" 
-      class="net.sourceforge.wurfl.core.handlers.matchers.MatcherManager">
-        <constructor-arg ref="wurfl.model" />
-    </bean>
-    <bean id="wurfl.deviceProvider" 
-      class="net.sourceforge.wurfl.core.DefaultDeviceProvider">
-        <constructor-arg ref="wurfl.model" />
-    </bean>
-	<bean id="wurfl.service"
-      class="net.sourceforge.wurfl.core.DefaultWURFLService">
-        <constructor-arg ref="wurfl.matcherManager" />
-        <constructor-arg ref="wurfl.deviceProvider" />
-    </bean>
-    <bean id="wurfl.manager"
-      class="net.sourceforge.wurfl.core.DefaultWURFLManager">
-        <constructor-arg ref="wurfl.service" />
-    </bean>
-    <bean id="wurfl.utils"
-      class="net.sourceforge.wurfl.core.WURFLUtils">
-        <constructor-arg ref="wurfl.model" />
-    </bean>
-    <bean id="wurfl.holder"
-      class="net.sourceforge.wurfl.core.DefaultWURFLHolder">
-        <constructor-arg ref="wurfl.manager" />
-        <constructor-arg ref="wurfl.utils" />
-    </bean>
-    <!-- END WURFL --> 
+	<bean id="wurfl.resource" class="org.springframework.core.io.ClassPathResource">
+		<constructor-arg value="wurfl.zip" />
+	</bean>
+	<bean id="wurfl.springResource" class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
+		<constructor-arg index="0" ref="wurfl.resource" />
+	</bean>
+	<bean id="wurfl.model" class="net.sourceforge.wurfl.core.resource.DefaultWURFLModel">
+		<constructor-arg index="0" ref="wurfl.springResource" />
+	</bean>
+	<bean id="wurfl.matcherManager" class="net.sourceforge.wurfl.core.handlers.matchers.MatcherManager">
+		<constructor-arg ref="wurfl.model" />
+	</bean>
+	<bean id="wurfl.deviceProvider" class="net.sourceforge.wurfl.core.DefaultDeviceProvider">
+		<constructor-arg ref="wurfl.model" />
+	</bean>
+	<bean id="wurfl.service" class="net.sourceforge.wurfl.core.DefaultWURFLService">
+		<constructor-arg ref="wurfl.matcherManager" />
+		<constructor-arg ref="wurfl.deviceProvider" />
+	</bean>
+	<bean id="wurfl.manager" class="net.sourceforge.wurfl.core.DefaultWURFLManager">
+		<constructor-arg ref="wurfl.service" />
+	</bean>
+	<bean id="wurfl.utils" class="net.sourceforge.wurfl.core.WURFLUtils">
+		<constructor-arg ref="wurfl.model" />
+	</bean>
+	<bean id="wurfl.holder" class="net.sourceforge.wurfl.core.DefaultWURFLHolder">
+		<constructor-arg ref="wurfl.manager" />
+		<constructor-arg ref="wurfl.utils" />
+	</bean>
 	
-
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
 			<list>
@@ -229,7 +227,7 @@
 				</entry>	
 				<entry key="/bibtex">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="bibtexPageController"/>
+						<property name="controllerBeanName" value="publicationPageController"/>
 					</bean>
 				</entry>
 				<entry key="/basket">
@@ -341,32 +339,31 @@
 		</property>
 	</bean>
 
-
-
-    <!--  #################### controller #################### -->
-	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
+  	<!--  #################### controller #################### -->
+ 	<bean id="resourceController" class="org.bibsonomy.webapp.controller.ResourceListController" abstract="true">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	</bean>
+	
+	<bean id="multiResourceListController" class="org.bibsonomy.webapp.controller.SingleResourceListController" abstract="true" parent="resourceController" />
+	
+	<bean id="multiResourceListControllerWithTags" class="org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags" abstract="true" parent="multiResourceListController" />
+	
+	<util:set id="allResources" scope="request">
+		<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+		<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+	</util:set>
+	
+	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
 	
-	<bean id="followersPageController" class="org.bibsonomy.webapp.controller.FollowersPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>		
+	<bean id="followersPageController" class="org.bibsonomy.webapp.controller.FollowersPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>	
 	</bean>
 	
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
@@ -375,90 +372,52 @@
 		<property name="messageSource" ref="messageSource"/>
 	</bean>
 
-	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
 	<bean id="fOAFController" class="org.bibsonomy.webapp.controller.FOAFController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
 	
-	<bean id="cvPageController" class="org.bibsonomy.webapp.controller.CvPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
+	<bean id="cvPageController" class="org.bibsonomy.webapp.controller.CvPageController" scope="request" parent="resourceController">
+		<property name="supportedResources" ref="allResources"/>
 		<property name="wikiRenderer" ref="wikiRenderer"/>
-		<property name="listsToInitialise">
-			<list>
+		<property name="forcedResources">
+			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
+			</set>
 		</property>
 	</bean>	
 	
-	<bean id="groupCvPageController" class="org.bibsonomy.webapp.controller.GroupCvPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<!--<value type="java.lang.Class">org.bibsonomy.model.User</value>-->
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	<bean id="groupCvPageController" class="org.bibsonomy.webapp.controller.GroupCvPageController" scope="request" parent="resourceController">
+		<property name="supportedResources" ref="allResources"/>
 		<property name="entries">
 			<value>3</value>
 		</property>
+		<property name="forcedResources">
+			<set>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</set>
+		</property>
 	</bean>	
 	
-	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
-	<bean id="friendsPageController" class="org.bibsonomy.webapp.controller.FriendsPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	<bean id="friendsPageController" class="org.bibsonomy.webapp.controller.FriendsPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
-	<bean id="friendPageController" class="org.bibsonomy.webapp.controller.FriendPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	<bean id="friendPageController" class="org.bibsonomy.webapp.controller.FriendPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
-	<bean id="groupPageController" class="org.bibsonomy.webapp.controller.GroupPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	<bean id="groupPageController" class="org.bibsonomy.webapp.controller.GroupPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
 	<bean id="groupReportingPageController" class="org.bibsonomy.webapp.controller.reporting.GroupReportingPageController" scope="request">
@@ -470,47 +429,28 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>	
 	
-	<bean id="viewablePageController" class="org.bibsonomy.webapp.controller.ViewablePageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	<bean id="viewablePageController" class="org.bibsonomy.webapp.controller.ViewablePageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
-	<bean id="tagPageController" class="org.bibsonomy.webapp.controller.TagPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	<bean id="tagPageController" class="org.bibsonomy.webapp.controller.TagPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 
-	<bean id="clusterPageController" class="org.bibsonomy.webapp.controller.browsing.ClusterPageController" scope="request">
-	</bean>
+	<bean id="clusterPageController" class="org.bibsonomy.webapp.controller.browsing.ClusterPageController" scope="request" />
 	
-	<bean id="topicsPageController" class="org.bibsonomy.webapp.controller.browsing.TopicsPageController" scope="request">
-	</bean>
+	<bean id="topicsPageController" class="org.bibsonomy.webapp.controller.browsing.TopicsPageController" scope="request" />
 	
-	<bean id="authorPageController" class="org.bibsonomy.webapp.controller.AuthorPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
+	<bean id="authorPageController" class="org.bibsonomy.webapp.controller.AuthorPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources">
+			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-			</list>
+			</set>
 		</property>
 	</bean>
 
 	<bean id="authorsPageController" class="org.bibsonomy.webapp.controller.AuthorsPageController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
 	<bean id="userRelationsController" class="org.bibsonomy.webapp.controller.UserRelationsController" scope="request">
@@ -526,43 +466,27 @@
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
-	<bean id="bibtexPageController" class="org.bibsonomy.webapp.controller.BibtexPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
+	<bean id="publicationPageController" class="org.bibsonomy.webapp.controller.BibtexPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources">
+			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-			</list>
+			</set>
 		</property>
 	</bean>
 
-	<bean id="basketPageController" class="org.bibsonomy.webapp.controller.BasketPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
+	<bean id="basketPageController" class="org.bibsonomy.webapp.controller.BasketPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources">
+			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-			</list>
+			</set>
 		</property>
 	</bean>	 
 	
-	<bean id="inboxPageController" class="org.bibsonomy.webapp.controller.InboxPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	<bean id="inboxPageController" class="org.bibsonomy.webapp.controller.InboxPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>	 
 		
 	<bean id="exportLayoutController" class="org.bibsonomy.webapp.controller.ExportLayoutController" scope="request">
@@ -587,72 +511,45 @@
 		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 
-	<bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
+	<bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources">
+			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-			</list>
+			</set>
 		</property>
 	</bean>
 	 
-	<bean id="urlPageController" class="org.bibsonomy.webapp.controller.UrlPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
+	<bean id="urlPageController" class="org.bibsonomy.webapp.controller.UrlPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources">
+			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
+			</set>
 		</property>
 	</bean>
 	
-	<bean id="searchPageController" class="org.bibsonomy.webapp.controller.SearchPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	<bean id="searchPageController" class="org.bibsonomy.webapp.controller.SearchPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
 	<bean id="popularTagsPageController" class="org.bibsonomy.webapp.controller.PopularTagsPageController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
 	<bean id="popularPageController" class="org.bibsonomy.webapp.controller.PopularPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
-		<property name="entriesPerPage">
-			<value type="java.lang.Integer">3</value>
-		</property>
+		<property name="supportedResources" ref="allResources"/>
+		<property name="entriesPerPage" value="3" />
 	</bean>
 	
 	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request" />
 	
     <!--  #################### PUMA Controller #################### -->
-	<bean id="pumaHomepageController" class="de.unikassel.puma.webapp.controller.HomepageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
+	<bean id="pumaHomepageController" class="de.unikassel.puma.webapp.controller.HomepageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
 	<!--  #################### factory beans #################### -->
-
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
 	
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance"/>
@@ -673,29 +570,24 @@
 		<property name="cookieUser" value="_currUser"/>
 		<property name="cookieSpammer" value="_lPost"/>
 	</bean>
-
+	
 	<!-- an instance of the currently logged in user -->
 	<bean id="loginUser" class="org.bibsonomy.webapp.util.spring.factorybeans.UserFactoryBean" scope="request">
 		<property name="requestLogic" ref="requestLogic"/>
-	</bean>	
+	</bean>
 	
 	<!-- the settings of the currently logged in user -->
 	<bean id="userSettings" class="org.bibsonomy.webapp.util.spring.factorybeans.UserSettingsFactoryBean" scope="request">
 		<property name="user" ref="loginUser"/>
 	</bean>
-
-	<!-- provides access to the database for all controllers -->
-	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
-		<property name="user" ref="loginUser"/>
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-	</bean>
 	
 	<!-- provides access to the wikiRenderer -->
-	<bean id="wikiRenderer" class="org.bibsonomy.webapp.util.spring.factorybeans.WikiRendererFactoryBean" scope="request">
+	<bean id="wikiRenderer" class="org.bibsonomy.wiki.WikiUtil" scope="request">
+		<!-- FIXME: shouldn't it be the requested user -->
 		<property name="user" ref="loginUser"/>
 		<property name="logic" ref="logic"/>
 	</bean>
-
+	
 	<!-- 
 	    This bean provides admin access to the logic interface by predicting 
 	    to be a user with role "admin". 
@@ -704,7 +596,13 @@
 	    <!-- name the admin user will have when accessing the logic interface -->
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-	</bean>	
+	</bean>
+
+	<!-- provides access to the database for all controllers -->
+	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
+		<property name="user" ref="loginUser"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>
 
 	<!-- configures given properties in all relevant database managers -->
 	<bean id="resourceSearchInitializer" class="org.bibsonomy.database.util.DatabaseManagerInitializer">
@@ -736,7 +634,6 @@
 	</bean>
 
 	<!--  #################### interceptors #################### -->
-
 	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
 		<property name="paramName" value="lang" />
 	</bean>	
@@ -750,7 +647,6 @@
 	
 	
 	<!--  #################### locale and theme resolver #################### -->
-	
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
 		<property name="defaultLocale"><value>${project.defaultLocale}</value></property>
 	</bean>
@@ -776,10 +672,7 @@
 				<value>messages</value>
 			</list>   
 		</property> 
-	</bean> 
-	
-
-    
+	</bean>
 
 	<!--  #################### view resolver #################### -->
 	<!-- default: JSPs -->

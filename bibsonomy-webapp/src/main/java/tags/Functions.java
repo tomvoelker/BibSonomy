@@ -25,6 +25,7 @@ import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;
@@ -52,9 +53,8 @@ public class Functions  {
 
 	/**
 	 * Fields over which are iterated in the JSP to output BibTeX.
-	 * 'month' is missing, since it is handled separatedly. 
+	 * 'month' is missing, since it is handled separately. 
 	 * TODO: re-use {@link BibTexUtils#toBibtexString(Post, String)} instead. 
-	 *   
 	 */
 	private static String[] bibtexFields     = {"title","address","annote","author","booktitle","chapter","crossref","edition","editor","howpublished","institution","journal","note","number","organization","pages","publisher","school","series","type","volume","year","day","url"};
 
@@ -394,7 +394,7 @@ public class Functions  {
 	 * @param sb
 	 */
 	private static void escapeJSON(final String s, final StringBuffer sb) {
-		for(int i=0;i<s.length();i++){
+		for (int i = 0; i < s.length(); i++) {
 			char ch=s.charAt(i);
 			switch(ch){
 			case '"':
@@ -419,11 +419,11 @@ public class Functions  {
 				sb.append("\\t");
 				break;
 			default:
-				//Reference: http://www.unicode.org/versions/Unicode5.1.0/
-				if((ch>='\u0000' && ch<='\u001F') || (ch>='\u007F' && ch<='\u009F') || (ch>='\u2000' && ch<='\u20FF')){
-					String ss=Integer.toHexString(ch);
+				// Reference: http://www.unicode.org/versions/Unicode5.1.0/
+				if ((ch >= '\u0000' && ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
+					String ss = Integer.toHexString(ch);
 					sb.append("\\u");
-					for(int k=0;k<4-ss.length();k++){
+					for (int k = 0; k < 4 - ss.length(); k++) {
 						sb.append('0');
 					}
 					sb.append(ss.toUpperCase());
@@ -432,7 +432,7 @@ public class Functions  {
 					sb.append(ch);
 				}
 			}
-		}//for
+		}
 	}
 
 	/** First, replaces certain BibTex characters, 
@@ -660,14 +660,23 @@ public class Functions  {
 		}
 	}
 
-	/** Checks if the given set contains the given object.
+	/**
+	 * @param collection
+	 * @param resourceName
+	 * @return <code>true</code> iff the resourceClass is in the collection
+	 */
+	public static boolean containsResourceClass(final Collection<?> collection, final String resourceName) {
+		return contains(collection, ResourceFactory.getResourceClass(resourceName));
+	}
+	
+	/** Checks if the given collection contains the given object.
 	 * 
-	 * @param set
+	 * @param collection
 	 * @param object
 	 * @return <code>true</code>, if object is contained in set.
 	 */
-	public static Boolean contains(final Collection<?> set, final Object object) {
-		return set.contains(object);
+	public static Boolean contains(final Collection<?> collection, Object object) {
+		return collection != null && collection.contains(object);
 	}
 
 	/**
