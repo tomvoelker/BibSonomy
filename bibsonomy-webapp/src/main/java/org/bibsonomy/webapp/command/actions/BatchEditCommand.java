@@ -26,10 +26,6 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	 */
 	private boolean overwrite;
 	/**
-	 * The type of resource edited on the batchedit page (bookmark or bibtex) 
-	 */
-	private String resourcetype;
-	/**
 	 * these tags will be added to all resources
 	 */
 	private String tags;
@@ -138,16 +134,6 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	 */
 	public void setEditBeforeImport(final boolean editBeforeImport) {
 		this.editBeforeImport = editBeforeImport;
-	}
-
-	@Override
-	public String getResourcetype() {
-		return this.resourcetype;
-	}
-
-	@Override
-	public void setResourcetype(final String resourcetype) {
-		this.resourcetype = resourcetype;
 	}
 
 	/**

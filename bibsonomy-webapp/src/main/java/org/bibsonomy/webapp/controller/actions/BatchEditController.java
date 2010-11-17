@@ -28,8 +28,8 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -54,6 +54,7 @@ import org.springframework.validation.Errors;
  * </ol>
  * 
  * @author dzo
+ * @author ema
  * @version $Id$
  */
 public class BatchEditController implements MinimalisticController<BatchEditCommand>, ErrorAware {
@@ -68,6 +69,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 */
 	private static final Pattern BATCH_EDIT_URL_PATTERN = Pattern.compile("(bedit[a-z,A-Z]+/)");
 
+	/*
+	 * TODO: inject using spring?!
+	 */
+	private static final ResourceFactory RESOURCE_FACTORY = new ResourceFactory();
+	
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
 
@@ -121,17 +127,23 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		log.debug("batch edit for user " + loginUserName + " started");
 
-
-
-
 		/* *******************************************************
 		 * FIRST: determine some flags which control the operation
 		 * *******************************************************/
 		/*
 		 * the type of resource we're dealing with 
 		 */
-		final String resourceType = command.getResourcetype();
-		final boolean postsArePublications = BibTex.class.getSimpleName().equalsIgnoreCase(resourceType);
+		final Set<Class<? extends Resource>> resourceTypes = command.getResourcetype();
+		boolean postsArePublications = false;
+		Class<? extends Resource> resourceClass = null;
+		if (resourceTypes.size() == 1) {
+			postsArePublications = resourceTypes.contains(BibTex.class);
+			resourceClass = resourceTypes.iterator().next();
+		} else {
+			// TODO: exception 
+			throw new IllegalArgumentException("please provide a resource type");
+		}
+		
 		/*
 		 * FIXME: rename/check setting of that flag in the command
 		 */
@@ -145,7 +157,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		final boolean updatePosts = flagMeansDelete;
 
-		log.debug("resourceType: " + resourceType + ", delete: " + flagMeansDelete + ", update: " + updatePosts);
+		log.debug("resourceType: " + resourceTypes + ", delete: " + flagMeansDelete + ", update: " + updatePosts);
 
 		/* *******************************************************
 		 * SECOND: get the data we're working on
@@ -252,8 +264,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					 * we need only a "mock" posts containing the hash, the date
 					 * and the tags, since only the post's tags are updated 
 					 */
-					post = PostUtils.getInstance(resourceType);
-					post.getResource().setIntraHash(intraHash);
+					final Post<Resource> postR = new Post<Resource>();
+					postR.setResource(RESOURCE_FACTORY.createResource(resourceTypes.iterator().next()));
+					postR.getResource().setIntraHash(intraHash);
+					post = postR;
 				} else {
 					/*
 					 * we get the complete post from the session, and store
@@ -279,10 +293,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 			} catch (final RecognitionException ex) {
 				log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
-			} catch (final InstantiationException ex) {
-				log.debug("can't instantiate post with hash " + intraHash + " for user " + loginUserName, ex);
-			} catch (final IllegalAccessException ex) {
-				log.debug("can't instantiate post with hash " + intraHash + " for user " + loginUserName, ex);
 			}
 		}
 
@@ -316,10 +326,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		if (updatePosts) {
 			log.debug("updating " + postsToUpdate.size() + " posts for user " + loginUserName);
-			updatePosts(postsToUpdate, resourceType, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS, loginUserName);
+			updatePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS, loginUserName);
 		} else {
 			log.debug("storing "  + postsToUpdate.size() + " posts for user " + loginUserName);
-			storePosts(postsToUpdate, resourceType, postMap, postsWithErrors, command.isOverwrite(), loginUserName);
+			storePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, command.isOverwrite(), loginUserName);
 		}
 
 		log.debug("finished batch edit for user " + loginUserName);
@@ -395,7 +405,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @param overwrite
 	 * @param loginUserName TODO
 	 */
-	private void storePosts(final List<Post<? extends Resource>> posts, final String resourceType, final Map<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final boolean overwrite, final String loginUserName) {
+	private void storePosts(final List<Post<? extends Resource>> posts, final Class<? extends Resource> resourceType, final Map<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final boolean overwrite, final String loginUserName) {
 		final List<Post<?>> postsForUpdate  = new LinkedList<Post<?>>();
 		try {
 			/*
@@ -453,7 +463,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							postsWithErrors.add(post);
 						}
 						hasErrors = true;
-						errors.rejectValue(resourceType+".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+						errors.rejectValue(ResourceFactory.getResourceName(resourceType) + ".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
 					if (!hasErrors && hasDuplicate) {
 						/*
@@ -484,7 +494,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @param operation - the type of operation that should be performed with the posts in the database. 
 	 * @param loginUserName - to complete the post from the database, we need the user's name 
 	 */
-	private void updatePosts(final List<Post<? extends Resource>> posts, final String resourceType, final Map<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final PostUpdateOperation operation, final String loginUserName) {
+	private void updatePosts(final List<Post<? extends Resource>> posts, final Class<? extends Resource> resourceType, final Map<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final PostUpdateOperation operation, final String loginUserName) {
 		try {
 			this.logic.updatePosts(posts, operation);
 		} catch (final DatabaseException ex) {
@@ -545,16 +555,16 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							 */
 							try {
 								post = logic.getPostDetails(postHash, loginUserName);
+								/*
+								 * we must add the tags from the post we tried to update - 
+								 * since those tags probably caused the error 
+								 */
+								post.setTags(updatedPost.getTags());
 							} catch (final ResourceNotFoundException ex1) {
 								// ignore
 							} catch (final ResourceMovedException ex1) {
-								// i
+								// ignore
 							}
-							/*
-							 * we must add the tags from the post we tried to update - 
-							 * since those tags probably caused the error 
-							 */
-							post.setTags(updatedPost.getTags());
 						}
 						/*
 						 * finally add the post
@@ -562,7 +572,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 						postsWithErrors.add(post);
 					}
 					hasErrors = true;
-					errors.rejectValue(resourceType + ".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+					errors.rejectValue(ResourceFactory.getResourceName(resourceType) + ".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 				}
 			}
 		}
