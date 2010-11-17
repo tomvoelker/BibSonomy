@@ -1,6 +1,6 @@
 package org.bibsonomy.webapp.util;
 
-import org.bibsonomy.webapp.command.BaseCommand;
+import org.bibsonomy.webapp.command.ContextCommand;
 
 
 /**
@@ -11,7 +11,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @version $Id$
  * @author Jens Illig
  */
-public interface ValidationAwareController<T extends BaseCommand> extends MinimalisticController<T> {
+public interface ValidationAwareController<T extends ContextCommand> extends MinimalisticController<T> {
 	
 	/**
 	 * @param command a command object initialized by the framework based on
