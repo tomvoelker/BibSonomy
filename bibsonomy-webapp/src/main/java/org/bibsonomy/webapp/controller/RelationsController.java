@@ -47,7 +47,8 @@ public class RelationsController extends SingleResourceListControllerWithTags im
 		this.startTiming(this.getClass(), command.getFormat());
 
 		// html format - retrieve tags and return HTML view
-		if (command.getFormat().equals("html")) {
+		if ("html".equals(command.getFormat())) {
+			command.setPageTitle("relations"); // TODO: i18n
 			/*
 			 * request the concepts
 			 */
