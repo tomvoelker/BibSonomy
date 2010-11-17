@@ -9,7 +9,7 @@
 		<beans:constructor-arg value="/login" />
 	</beans:bean>
 	
-	<http use-expressions="true" entry-point-ref="entryPoint" create-session="never" auto-config="false">
+	<http use-expressions="true" entry-point-ref="entryPoint" auto-config="false" security-context-repository-ref="contextRepository">
 		<!-- no filtering for css and js -->
 		<intercept-url pattern="/resources/**" filters="none" />
 		<!-- api uses own authentication handling -->
@@ -26,26 +26,21 @@
 		<custom-filter position="FORM_LOGIN_FILTER" ref="usernameAndPasswordFilter" /> <!-- instead of a form-login tag -->
 		<custom-filter after="FORM_LOGIN_FILTER" ref="ldapUsernameAndPasswordFilter" />
 		<http-basic />
-
-		<openid-login login-processing-url="/doOpenIDLogin" authentication-success-handler-ref="successHandler" authentication-failure-handler-ref="failureHandler" user-service-ref="databaseUserService">
-			<attribute-exchange>
-                <openid-attribute name="email" type="http://schema.openid.net/contact/email" required="true"/>
-                <openid-attribute name="nickname" type="http://openid.net/schema/namePerson/friendly" required="true" />
-                <openid-attribute name="gender" type="http://openid.net/schema/gender"/>
-            </attribute-exchange>
-            
-            <!-- TODO -->
-		</openid-login>
+		
+		<remember-me key="a1d0c6e83f027327d8461063f4ac58a6" services-ref="dbRememberMeServices" />
+		<custom-filter after="OPENID_FILTER" ref="openIDRememberMeFilter" />
+		
+		<custom-filter position="OPENID_FILTER" ref="openIDFilter" />
 		
 		<access-denied-handler error-page="/access_denied" />
 	</http>
+	
+	<beans:bean id="contextRepository" class="org.bibsonomy.webapp.util.spring.security.UsernameSecurityContextRepository">
+		<beans:property name="service" ref="databaseUserService" />
+	</beans:bean>
 
 	<beans:bean id="entryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
 		<beans:property name="loginFormUrl" ref="loginUrl" />
-	</beans:bean>
-	
-	<beans:bean id="openIDUserDetailsService" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.OpenIDDatabaseUserDetailsService">
-		<beans:property name="adminLogic" ref="adminSecLogic" />
 	</beans:bean>
 
 	<beans:bean id="abstractUsernameAndPasswordFilter" class="org.bibsonomy.webapp.util.spring.security.filter.UsernamePasswordAuthenticationFilter" abstract="true">
@@ -56,22 +51,30 @@
 		<beans:property name="passwordParameter" value="password" />
 	</beans:bean>
 
-	<beans:bean id="ldapUsernameAndPasswordFilter" parent="abstractUsernameAndPasswordFilter">
-		<beans:property name="authenticationManager" ref="ldapAuthManager" />
-		<beans:property name="filterProcessesUrl" value="/doLDAPLogin" />
-	</beans:bean>
-	
-	<beans:bean id="usernameAndPasswordFilter" parent="abstractUsernameAndPasswordFilter">
-		<beans:property name="authenticationManager" ref="authenticationManager" />
-		<beans:property name="filterProcessesUrl" value="/doLogin" />
-	</beans:bean>
-
 	<beans:bean id="successHandler" class="org.bibsonomy.webapp.util.spring.security.handler.SuccessHandler" />
 	
 	<beans:bean id="failureHandler" class="org.bibsonomy.webapp.util.spring.security.handler.FailureHandler" scope="singleton">
 		<beans:property name="grube" ref="teergrube" />
 		<beans:property name="defaultFailureUrl" ref="loginUrl" />
 	</beans:bean>
+	
+	<!-- database login -->
+	<beans:bean id="usernameAndPasswordFilter" parent="abstractUsernameAndPasswordFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="filterProcessesUrl" value="/doLogin" />
+		<beans:property name="rememberMeServices" ref="dbRememberMeServices" />
+	</beans:bean>
+	
+	<beans:bean id="dbRememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
+  		<beans:property name="userDetailsService" ref="databaseUserService"/>
+  		<beans:property name="key" value="a1d0c6e83f027327d8461063f4ac58a6"/>
+  		<beans:property name="alwaysRemember" value="true" />
+  		<beans:property name="cookieName" value="db_user" />
+	</beans:bean>
+	
+	<beans:bean id="databaseUserService" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.DatabaseUserDetailsService">
+		<beans:property name="adminLogic" ref="adminSecLogic" />
+	</beans:bean>	
 
 	<authentication-manager alias="authenticationManager">
 		<authentication-provider user-service-ref="databaseUserService">
@@ -80,6 +83,47 @@
 		<!-- without md5 encoding for http basic -->
 		<authentication-provider user-service-ref="databaseUserService" />
 	</authentication-manager>
+	
+	<!-- Open ID -->
+	
+	<beans:bean id="openIDFilter" class="org.springframework.security.openid.OpenIDAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="openIDAuthenticatorManager" />
+		<beans:property name="filterProcessesUrl" value="/doOpenIDLogin" />
+		<beans:property name="authenticationSuccessHandler" ref="successHandler" />
+		<beans:property name="authenticationFailureHandler" ref="failureHandler" />
+		<beans:property name="rememberMeServices" ref="openIDRememberMeService" />
+	</beans:bean>
+	
+	<beans:bean id="openIDRememberMeService" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.OpenIDRememberMeService" />
+	
+	<beans:bean id="openIDAuthenticationProvider" class="org.springframework.security.openid.OpenIDAuthenticationProvider">
+		<beans:property name="userDetailsService" ref="openIDUserDetailsService" />
+	</beans:bean>
+	
+	<beans:bean id="openIDRememberMeFilter" class="org.bibsonomy.webapp.util.spring.security.filter.RememberMeOpeniDAuthenticationFilter">
+		<beans:property name="filterProcessesUrl" value="/doOpenIDLogin" />
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="repo" ref="contextRepository" />
+		<beans:property name="projectRoot" value="${project.home}" />
+	</beans:bean>
+	
+	<beans:bean id="openIDUserDetailsService" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.OpenIDDatabaseUserDetailsService">
+		<beans:property name="adminLogic" ref="adminSecLogic" />
+	</beans:bean>
+	
+	<beans:bean id="openIDAuthenticatorManager" class="org.springframework.security.authentication.ProviderManager">
+		<beans:property name="providers">
+			<beans:list>
+				<beans:ref bean="openIDAuthenticationProvider"/> 
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<!-- LDAP -->
+	<beans:bean id="ldapUsernameAndPasswordFilter" parent="abstractUsernameAndPasswordFilter">
+		<beans:property name="authenticationManager" ref="ldapAuthManager" />
+		<beans:property name="filterProcessesUrl" value="/doLDAPLogin" />
+	</beans:bean>
 	
 	<beans:bean id="ldapAuthManager" class="org.springframework.security.authentication.ProviderManager">
 		<beans:property name="providers">
@@ -106,12 +150,8 @@
 	
 	<ldap-server id="contextSource" url="${auth.ldap.server}" />
 
-	<beans:bean id="ldapUserDetailsMapper" class="org.bibsonomy.webapp.util.spring.security.LDAPUserDetailsServiceMapper">
+	<beans:bean id="ldapUserDetailsMapper" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.LDAPUserDetailsServiceMapper">
 		<beans:property name="userDetailsService" ref="databaseUserService" />
-		<beans:property name="adminLogic" ref="adminSecLogic" />
-	</beans:bean>
-
-	<beans:bean id="databaseUserService" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.DatabaseUserDetailsService">
 		<beans:property name="adminLogic" ref="adminSecLogic" />
 	</beans:bean>
 </beans:beans>
