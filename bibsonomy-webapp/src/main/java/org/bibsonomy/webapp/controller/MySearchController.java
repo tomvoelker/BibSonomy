@@ -42,7 +42,8 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		 * FIXME: implement this for a group!
 		 */
 		log.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 
 		/*
 		 * only users which are logged in might post bookmarks -> send them to
@@ -72,13 +73,9 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			groupingEntity = GroupingEntity.USER;
 		}
 
-		// determine which lists to initalize depending on the output format
-		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
-
 		// retrieve and set the requested resource lists, along with total
 		// counts
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			// FIXME: we should deliver items dynamically via ajax,
 			// displaying a 'wheel of fortune' until all items are loaded
 			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, Integer.MAX_VALUE);

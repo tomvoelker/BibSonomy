@@ -2,10 +2,11 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.StringUtils;
@@ -45,7 +46,7 @@ public class UrlPageController extends SingleResourceListController implements M
 		final GroupingEntity groupingEntity;
 		final String groupingName;
 
-		if(command.getRequestedUser() != null && !command.getRequestedUser().equals("")){
+		if (present(command.getRequestedUser())) {
 			/*
 			 * handle /url/HASH/USER
 			 */
@@ -66,22 +67,17 @@ public class UrlPageController extends SingleResourceListController implements M
 		}		
 
 		// handle the case when only tags are requested
-		command.setResourcetype(ResourceType.BOOKMARK.getLabel());
+		command.setResourcetype(Collections.<Class<? extends Resource>>singleton(Bookmark.class));
 		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, requHash, 1000, null);
-
-		// determine which lists to initalize depending on the output format 
-		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
-
+		
 		// send redirect to /url/HASH
 		if (present(command.getRequUrl())) {
 			// TODO: add format in front of /url/? (probably not, this URL should only be called by input form)
-			// FIXME: remove call to old method
 			return new ExtendedRedirectView("/url/" + StringUtils.getMD5Hash(command.getRequUrl()));
 		}
 
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 
@@ -90,11 +86,13 @@ public class UrlPageController extends SingleResourceListController implements M
 
 			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, requHash, null, null, null, entriesPerPage, null);
 		}
-
+		
+		/*
+		 * build page title
+		 */
+		command.setPageTitle("url ::");
 		if (present(command.getBookmark().getList())) {	
-			command.setPageTitle("url :: " + command.getBookmark().getList().get(0).getResource().getUrl() );
-		} else {
-			command.setPageTitle("url ::");
+			command.setPageTitle(command.getPageTitle() + command.getBookmark().getList().get(0).getResource().getUrl());
 		}
 
 		this.endTiming();
@@ -103,7 +101,6 @@ public class UrlPageController extends SingleResourceListController implements M
 		if ("html".equals(command.getFormat())) {
 			// FIXME: here we assume, bookmarks are handled, further above we use listsToInitialize ...
 			setTags(command, Bookmark.class, groupingEntity, groupingName, null, null, requHash, 1000, null);
-
 			return Views.URLPAGE;	
 		}
 

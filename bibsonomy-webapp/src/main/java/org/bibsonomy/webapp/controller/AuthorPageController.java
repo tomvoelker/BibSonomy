@@ -30,7 +30,8 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 	@Override
 	public View workOn(AuthorResourceCommand command) {
 		log.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 
 		// get author query - it might still contain some system tags at this point!
 		String authorQuery = command.getRequestedAuthor();
@@ -71,13 +72,9 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, 1000, null);
-				
-		// determine which lists to initalize depending on the output format 
-		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
@@ -94,7 +91,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		}		
 		
 		// html format - retrieve tags and return HTML view
-		if ("html".equals(command.getFormat())) {
+		if ("html".equals(format)) {
 			this.setTags(command, BibTex.class, groupingEntity, null, null, sysTags, null, 1000, null);
 			this.endTiming();
 			if(hasTags){
@@ -105,7 +102,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		}
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());		
+		return Views.getViewByFormat(format);		
 	}
 	
 	@Override

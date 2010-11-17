@@ -185,7 +185,13 @@
     <name>isNumeric</name>
     <function-class>tags.Functions</function-class>
     <function-signature>Boolean isNumeric (java.lang.String)</function-signature>
-  </function>  
+  </function> 
+  
+  <function>
+    <name>containsResourceClass</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>Boolean containsResourceClass (java.util.Collection, java.lang.String)</function-signature>
+  </function>    
   
   <function>
     <name>computeTagFontsize</name>

@@ -36,7 +36,8 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 	@Override
 	public View workOn(GroupResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 
 		final String groupingName = command.getRequestedGroup();
 		
@@ -57,21 +58,17 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 
 		// special group given - return empty page
 		if (GroupID.isSpecialGroup(groupingName)) return Views.GROUPPAGE;
-
-		// determine which lists to initalize depending on the output format 
-		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
-
+		
 		FilterEntity filter = null;
 
 		// display only posts, which have a document attached
 		if ("myGroupPDF".equals(command.getFilter())) {
 			filter = FilterEntity.JUST_PDF;
-			this.listsToInitialise.remove(Bookmark.class);
+			this.supportedResources.remove(Bookmark.class);
 		}
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, entriesPerPage);
@@ -84,19 +81,19 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		}
 
 		// html format - retrieve tags and return HTML view
-		if ("html".equals(command.getFormat())) {
+		if ("html".equals(format)) {
 			if (isRelevantFor && filter != FilterEntity.JUST_PDF) {
 				/*
 				 * handle the "relevant for group" pages
 				 */
-				command.setPageTitle("relevant for :: " + groupingName);	
+				command.setPageTitle("relevant for :: " + groupingName); // TODO: i18n
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
 				this.endTiming();
 				return Views.RELEVANTFORPAGE;
 			} 
 
 			// set title
-			command.setPageTitle("group :: " + groupingName); // TODO: localize
+			command.setPageTitle("group :: " + groupingName); // TODO: i18n
 
 			// always retrieve all tags of this group
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
@@ -111,9 +108,10 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			// forward to bibtex page if PDF filter is set
 			if (filter == FilterEntity.JUST_PDF) {
 				return Views.GROUPDOCUMENTPAGE;
-			} else if(requTags.size() > 0){
-				
-				//get the information on tags and concepts for the sidebar
+			} else if (requTags.size() > 0) {
+				/*
+				 * get the information on tags and concepts for the sidebar
+				 */
 				command.setConceptsOfGroup(this.getConceptsForSidebar(command, GroupingEntity.GROUP, groupingName, requTags));
 				command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
 				command.setPostCountForTagsForAll(this.getPostCountForSidebar(GroupingEntity.ALL, "", requTags));
@@ -126,7 +124,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());		
+		return Views.getViewByFormat(format);		
 	}
 
 	@Override
@@ -137,11 +135,10 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 	/**
 	 * Retrieve all members of the given group in dependence of the group privacy level
 	 * FIXME: duplicated in ViewablePageController!
-	 * @param <V> extends ResourceViewCommand, the command
 	 * @param cmd the command
 	 * @param groupName the name of the group
 	 */
-	private <V extends GroupResourceViewCommand> void setGroupDetails(V cmd, String groupName) {
+	private void setGroupDetails(final GroupResourceViewCommand cmd, final String groupName) {
 		final Group group = this.logic.getGroupDetails(groupName);
 		if (present(group)) {
 			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000));

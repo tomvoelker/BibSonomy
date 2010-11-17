@@ -34,7 +34,7 @@ import org.bibsonomy.webapp.view.Views;
 public class UserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
 	private static final int THRESHOLD = 20000; // TODO: move constant to a more general class (other controller also need this value)
 	private static final Log LOGGER = LogFactory.getLog(UserPageController.class);
-
+	
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
@@ -68,33 +68,29 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		 * if user is logged in, check if the logged in user follows the requested user
 		 */
 		final RequestWrapperContext context = command.getContext();
-		if (context.isUserLoggedIn()){
+		if (context.isUserLoggedIn()) {
 			final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
 			for (final User u : followersOfUser){
-				if (u.getName().equals(groupingName)){
+				if (u.getName().equals(groupingName)) {
 					command.setFollowerOfUser(true);
 					break;
 				}
 			}
 		}
-
-		// determine which lists to initalize depending on the output format
-		// and the requested resourcetype
-		this.chooseListsToInitialize(format, command.getResourcetype());
-
+		
 		/*
 		 * extract filter
 		 */
 		final FilterEntity filter = getFilter(command.getFilter());
 		if (FilterEntity.JUST_PDF.equals(filter) || FilterEntity.DUPLICATES.equals(filter)) {
-			this.listsToInitialise.remove(Bookmark.class);
+			this.supportedResources.remove(Bookmark.class);
 		}
 		
 		// "redirect" to user-user-page controller if requested
 		// TODO: better to this via Spring URL mapping
-		if (context.isUserLoggedIn() &&  command.isPersonalized()) {
+		if (context.isUserLoggedIn() && command.isPersonalized()) {
 			final UserUserPageController uupc = new UserUserPageController();
-			uupc.listsToInitialise = this.listsToInitialise;
+			uupc.supportedResources = this.supportedResources;
 			uupc.logic = this.logic;
 			uupc.userSettings = this.userSettings;
 			return uupc.workOn(command);
@@ -104,7 +100,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 
 		// retrieve and set the requested resource lists, along with total
 		// counts
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
@@ -119,7 +115,6 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				totalNumPosts += listCommand.getTotalCount();
 			}
 		}
-
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
@@ -210,21 +205,18 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 	 * @return
 	 */
 	private FilterEntity getFilter(final String filterString) {
-		final FilterEntity filter;
 		if ("myPDF".equals(filterString)) {
 			/*
 			 * display only posts which have a document attached
 			 */
-			filter = FilterEntity.JUST_PDF;
+			return FilterEntity.JUST_PDF;
  		} else if ("myDuplicates".equals(filterString)) {
 			/*
 			 * display duplicate entries
 			 */
-			filter = FilterEntity.DUPLICATES;
-		} else {
-			filter = null;
+			return FilterEntity.DUPLICATES;
 		}
-		return filter;
+		return null;
 	}
 
 	@Override

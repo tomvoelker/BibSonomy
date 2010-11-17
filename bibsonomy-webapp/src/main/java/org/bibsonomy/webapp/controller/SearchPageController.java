@@ -24,7 +24,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Beate Krause
  * @version $Id$
  */
-public class SearchPageController extends SingleResourceListController implements MinimalisticController<SearchViewCommand>{
+public class SearchPageController extends SingleResourceListController implements MinimalisticController<SearchViewCommand> {
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
 	
 	/**
@@ -36,7 +36,9 @@ public class SearchPageController extends SingleResourceListController implement
 	@Override
 	public View workOn(final SearchViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		
+		this.startTiming(this.getClass(), format);
 		
 		// no search given -> error 
 		if (!present(command.getRequestedSearch())){
@@ -62,7 +64,9 @@ public class SearchPageController extends SingleResourceListController implement
 				// extract name of grouping entity
 				int start = search.indexOf(groupingEntString + ":");
 				int end  = search.indexOf(" ", start);
-				if (end == -1) {end = search.length();} // if group:* is last word
+				if (end == -1) {
+					end = search.length();
+				} // if group:* is last word
 				
 				groupingName = search.substring(start + (groupingEntString + ":").length(), end);
 				
@@ -79,17 +83,16 @@ public class SearchPageController extends SingleResourceListController implement
 			}
 		}
 		
-		//When GroupingEntity.ALL database allows only 1000 tags maximum
-		if(groupingEntity.equals(GroupingEntity.ALL)) {
+		// if grouping entity set to GroupingEntity.ALL, database only allows 1000 tags maximum
+		if (groupingEntity.equals(GroupingEntity.ALL)) {
 			maximumTags = 1000;
 		}
 		
-		// // determine which lists to initalize depending on the output format and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
+		final List<String> requestedTags = command.getRequestedTagsList();
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			this.setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, null, search, command.getListCommand(resourceType).getEntriesPerPage());
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+			this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, null, null, search, command.getListCommand(resourceType).getEntriesPerPage());
 
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final List<?> list = listCommand.getList();
@@ -98,15 +101,15 @@ public class SearchPageController extends SingleResourceListController implement
 				@SuppressWarnings("unchecked")
 				final ResultList<Post<?>> resultList = (ResultList<Post<?>>) list;
 				listCommand.setTotalCount(resultList.getTotalCount()); 
-				log.debug("SearchPageController: resultList.getTotalCount()=" + resultList.getTotalCount());
+				log.debug("resultList.getTotalCount() = " + resultList.getTotalCount());
 			}			
 			
 			this.postProcessAndSortList(command, resourceType);
 		}
 		
 		// html format - retrieve tags and return HTML view
-		if ("html".equals(command.getFormat())) {
-			command.setPageTitle("search");
+		if ("html".equals(format)) {
+			command.setPageTitle("search"); // TODO: i18n
 			// fill the tag cloud with all tag assignments of the relevant documents
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search);
 			this.endTiming();
@@ -116,7 +119,7 @@ public class SearchPageController extends SingleResourceListController implement
 		this.endTiming();
 		
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());		
+		return Views.getViewByFormat(format);		
 	}
 
 	@Override

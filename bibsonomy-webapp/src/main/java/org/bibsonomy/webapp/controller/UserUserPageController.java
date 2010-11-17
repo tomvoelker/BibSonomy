@@ -18,8 +18,8 @@ import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RankingUtil;
-import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
+import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -57,10 +57,6 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		final int entriesPerPage = Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
 		command.setSortPage("ranking");
 		command.setSortPageOrder("desc");
-				
-		// determine which lists to initalize depending on the output format
-		// and the requested resourcetype
-		this.chooseListsToInitialize(format, command.getResourcetype());
 
 		// fetch all tags of logged-in user
 		final List<Tag> loginUserTags = this.logic.getTags(Resource.class, groupingEntity, command.getContext().getLoginUser().getName(), null, null, null, null, 0, Integer.MAX_VALUE, null, null);
@@ -70,7 +66,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		
 		// retrieve and set the requested resource lists, along with total
 		// counts
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 						
 			final int origEntriesPerPage = listCommand.getEntriesPerPage();

@@ -155,6 +155,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 					}
 				}
 			}
+			//$FALL-THROUGH$
 		default:
 			return false;
 		}

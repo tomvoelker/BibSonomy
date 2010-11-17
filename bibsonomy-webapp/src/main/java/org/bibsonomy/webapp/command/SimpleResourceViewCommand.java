@@ -20,6 +20,8 @@ import org.bibsonomy.model.Resource;
 public class SimpleResourceViewCommand extends ResourceViewCommand {
 	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>(this);
 	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>(this);
+	private ListCommand<Post<GoldStandardPublication>> goldStandardPublications = new ListCommand<Post<GoldStandardPublication>>(this);
+	// TODO: move to listcommand or use the listCommand
 	private Post<GoldStandardPublication> goldStandardPublication;
 	
 	/**
@@ -31,8 +33,14 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	public <T extends Resource> ListCommand<Post<T>> getListCommand(final Class<T> resourceType) {
 		if (resourceType == BibTex.class) {
 			return (ListCommand) getBibtex();
-		} else if (resourceType == Bookmark.class) {
+		}
+		
+		if (resourceType == Bookmark.class) {
 			return (ListCommand) getBookmark();
+		}
+		
+		if (resourceType == GoldStandardPublication.class) {
+			return (ListCommand) getGoldStandardPublications();
 		}
 		
 		throw new UnsupportedResourceTypeException(resourceType.getName());
@@ -78,6 +86,20 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	 */
 	public Post<GoldStandardPublication> getGoldStandardPublication() {
 		return goldStandardPublication;
+	}
+
+	/**
+	 * @param goldStandardPublications the goldStandardPublications to set
+	 */
+	public void setGoldStandardPublications(ListCommand<Post<GoldStandardPublication>> goldStandardPublications) {
+		this.goldStandardPublications = goldStandardPublications;
+	}
+
+	/**
+	 * @return the goldStandardPublications
+	 */
+	public ListCommand<Post<GoldStandardPublication>> getGoldStandardPublications() {
+		return goldStandardPublications;
 	}
 	
 }

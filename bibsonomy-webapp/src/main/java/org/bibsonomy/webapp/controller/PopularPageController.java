@@ -1,6 +1,6 @@
 package org.bibsonomy.webapp.controller;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -16,6 +16,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
+ * Controller for the popular page:
  * 
  * @author mwa
  * @version $Id$
@@ -45,7 +46,8 @@ public class PopularPageController extends MultiResourceListController implement
 	@Override
 	public View workOn(final MultiResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 				
 		// set the grouping entity and the order
 		final GroupingEntity groupingEntity = GroupingEntity.ALL;
@@ -56,19 +58,11 @@ public class PopularPageController extends MultiResourceListController implement
 		
 		// the value of the field 'popular_days' in the database
 		int days = 0;
-		
-		// the system tags
-		final List<String> tags = new ArrayList<String>();
-		// insert an empty tag
-		tags.add("");
-				
-		// determine which lists to initalize depending on the output format 
-		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
+
 		do {
-			for (final Class<? extends Resource> resourceType : listsToInitialise) {
-				// overwrite with systemtag
-				tags.set(0, SystemTagsUtil.buildSystemTagString(DaysSystemTag.NAME, begin));
+			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+				// build day systemtag
+				final List<String> tags = Collections.singletonList(SystemTagsUtil.buildSystemTagString(DaysSystemTag.NAME, begin));
 				// determine the value of popular days, e.g. the last 10 days
 				days = this.logic.getPostStatistics(resourceType, groupingEntity, null, tags, null, order, null, 0, this.getEntriesPerPage(), null, null);
 				
@@ -84,10 +78,12 @@ public class PopularPageController extends MultiResourceListController implement
 			}
 			
 			begin++;
-		} while (days > 0 && begin < 10); //show max 10 entries
+		} while (days > 0 && begin < 10); // show max 10 entries
 
 		// only html format, exports are not possible atm 
 		this.setTags(command, Resource.class, groupingEntity, null, null, null, null, MAX_TAGS, null);
+		command.setPageTitle("popular"); // TODO: i18n
+		
 		this.endTiming();
 		return Views.POPULAR;
 	}

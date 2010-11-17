@@ -1,14 +1,18 @@
 package org.bibsonomy.webapp.controller;
 
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
@@ -20,6 +24,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
@@ -29,20 +34,47 @@ import org.bibsonomy.webapp.command.ResourceViewCommand;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.bibsonomy.webapp.command.TagCloudCommand;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  * controller for retrieving multiple windowed lists with resources. 
  * These are currently the bookmark an the bibtex list
  * 
  * @author Jens Illig
+ * @version $Id$
  */
 public abstract class ResourceListController {
 	private static final Log log = LogFactory.getLog(ResourceListController.class);
 
+	protected static <T> Set<T> intersection(final Collection<? extends T> col1, final Collection<? extends T> col2) {
+		if (!present(col1) || !present(col2)) {
+			return Collections.emptySet();
+		}
+		
+		final Set<T> set = new HashSet<T>(col1);
+		set.retainAll(col2);
+		return set;
+	}
+	
 	protected LogicInterface logic;
 	protected UserSettings userSettings;
-	protected Collection<Class<? extends Resource>> listsToInitialise;
 	private long startTime;
+	
+	/**
+	 * these resource classes are supported by the controller
+	 */
+	protected Set<Class<? extends Resource>> supportedResources;
+	
+	/**
+	 * these resource classes the controller should always initialize
+	 */
+	private Set<Class<? extends Resource>> forcedResources;
+	
+	/**
+	 * if <code>true</code> the controller should not initalize any resource
+	 * (e.g. only tags are handled)
+	 */
+	private boolean initializeNoResources;
 
 	/**
 	 * Retrieve a set of tags from the database logic and add them to the command object
@@ -58,7 +90,6 @@ public abstract class ResourceListController {
 	 */
 	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search) {
 		final TagCloudCommand tagCloudCommand = cmd.getTagcloud();
-		final UserSettings userSettings = cmd.getContext().getLoginUser().getSettings(); // TODO: use the provided userSettings?!
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
 		Order tagOrder = null;
@@ -66,16 +97,16 @@ public abstract class ResourceListController {
 		/*
 		 * check parameters from URL
 		 */
-		if (tagCloudCommand.getMinFreq() == 0 && tagCloudCommand.getMaxCount() == 0) { //no parameter set via URL
+		if (tagCloudCommand.getMinFreq() == 0 && tagCloudCommand.getMaxCount() == 0) { // no parameter was set via URL
 			/*
 			 * check user's settings
 			 */
-			if (userSettings.getIsMaxCount()) {
+			if (this.userSettings.getIsMaxCount()) {
 				tagOrder = Order.FREQUENCY;
-				tagMax = Math.min(max, userSettings.getTagboxMaxCount());
+				tagMax = Math.min(max, this.userSettings.getTagboxMaxCount());
 			} else {
 				// overwrite minFreq because it is not explicitly set by URL param
-				tagCloudCommand.setMinFreq(userSettings.getTagboxMinfreq());
+				tagCloudCommand.setMinFreq(this.userSettings.getTagboxMinfreq());
 			}
 		} else { //parameter set via URL
 			if (tagCloudCommand.getMinFreq() == 0) {
@@ -88,14 +119,13 @@ public abstract class ResourceListController {
 		 * allow controllers to overwrite max and order
 		 * FIXME: In the hurry I found no nice way to do this. :-( 
 		 */
-		tagMax = getFixedTagMax(tagMax);
-		tagOrder = getFixedTagOrder(tagOrder);
+		tagMax = this.getFixedTagMax(tagMax);
+		tagOrder = this.getFixedTagOrder(tagOrder);
 		
-
-		tagCloudCommand.setTags( this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, hash, tagOrder, 0, tagMax, search, null));
+		tagCloudCommand.setTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, hash, tagOrder, 0, tagMax, search, null));
 		// retrieve tag cloud settings
-		tagCloudCommand.setStyle(TagCloudStyle.getStyle(userSettings.getTagboxStyle()));
-		tagCloudCommand.setSort(TagCloudSort.getSort(userSettings.getTagboxSort()));
+		tagCloudCommand.setStyle(TagCloudStyle.getStyle(this.userSettings.getTagboxStyle()));
+		tagCloudCommand.setSort(TagCloudSort.getSort(this.userSettings.getTagboxSort()));
 		tagCloudCommand.setMaxFreq(TagUtils.getMaxUserCount(tagCloudCommand.getTags()));
 	}
 
@@ -149,7 +179,7 @@ public abstract class ResourceListController {
 
 			// check if limitation to a single resourcetype is requested			
 			Class<? extends Resource> resourcetype = Resource.class;
-			if (this.isBibtexOnlyRequested(cmd)) {
+			if (this.isPublicationOnlyRequested(cmd)) {
 				resourcetype = BibTex.class;
 			} else if (this.isBookmarkOnlyRequested(cmd)) {
 				resourcetype = Bookmark.class;
@@ -158,9 +188,8 @@ public abstract class ResourceListController {
 			// fetch tags, store them in bean
 			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, tags, hash, max, search);
 
-			// when tags only are requested, we don't need bibtexs and bookmarks
-			this.listsToInitialise.remove(BibTex.class);
-			this.listsToInitialise.remove(Bookmark.class);			
+			// when tags only are requested, we don't need any resources
+			this.setInitializeNoResources(true);	
 		}
 	}
 
@@ -170,13 +199,13 @@ public abstract class ResourceListController {
 	 * 
 	 * @param cmd
 	 */
-	protected void postProcessAndSortList(final ResourceViewCommand cmd, final List<Post<BibTex>> bibtexList) {
-		for (Post<BibTex> post : bibtexList) {
+	protected void postProcessAndSortList(final ResourceViewCommand cmd, final List<Post<BibTex>> posts) {
+		for (final Post<BibTex> post : posts) {
 			// insert openURL into bibtex objects
 			post.getResource().setOpenURL(BibTexUtils.getOpenurl(post.getResource()));
 		}
 		if ("no".equals(cmd.getDuplicates())) {
-			BibTexUtils.removeDuplicates(bibtexList);
+			BibTexUtils.removeDuplicates(posts);
 			// re-sort list by date in descending order, if nothing else requested
 			if ("none".equals(cmd.getSortPage())) {
 				cmd.setSortPage("date");
@@ -184,7 +213,7 @@ public abstract class ResourceListController {
 			}
 		}
 		if (!"none".equals(cmd.getSortPage())) {
-			BibTexUtils.sortBibTexList(bibtexList, SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
+			BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
 		}
 	}
 
@@ -203,7 +232,7 @@ public abstract class ResourceListController {
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
-		listCommand.setList( this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search) );
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search));
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}
@@ -227,58 +256,6 @@ public abstract class ResourceListController {
 		listCommand.setTotalCount(totalCount);
 	}
 
-	/**
-	 * @param userSettings the loginUsers userSettings
-	 */
-	public void setUserSettings(UserSettings userSettings) {
-		this.userSettings = userSettings;
-	}
-
-	/**
-	 * @param listsToInitialise which lists shall be initialised by this controller instance
-	 */
-	public void setListsToInitialise(final Collection<Class<? extends Resource>> listsToInitialise) {
-		this.listsToInitialise = listsToInitialise;
-	}
-
-	/**
-	 * @param logic logic interface
-	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-	}
-
-	/**
-	 * Choose which lists of resources to load for the current view. By default,
-	 * bibtex and bookmark resources are loaded.  
-	 * 
-	 * There are some views which are "resource-specific"; when one of these is used,
-	 * (e.g., a bibtex-specific one), then all not-needed resource types (e.g., boomark) 
-	 * are removed from the lists which are to be initialised.
-	 * 
-	 * In addition, one can restrict explicitly to resourcetypes via URL parameter; in such 
-	 * a case, only the requested resourcetype is kept.
-	 * 
-	 * 
-	 * @param format 
-	 * 			- a string describing the requested format (e.g. "html")
-	 * @param resourcetype 
-	 * 			- a string describing the requested resourcetype (e.g. "bibtex")
-	 */
-	protected void chooseListsToInitialize(String format, String resourcetype) {
-		format = format.toLowerCase();
-		if (Views.isBibtexOnlyFormat(format.toLowerCase()) 
-				|| (resourcetype != null && resourcetype.equalsIgnoreCase(ResourceType.BIBTEX.getLabel()))) {
-			// publication only -> remove bookmark
-			this.listsToInitialise.remove(Bookmark.class);
-		}
-		if (Views.isBookmarkOnlyFormat(format.toLowerCase()) 
-				|| (resourcetype != null && resourcetype.equalsIgnoreCase(ResourceType.BOOKMARK.getLabel()))) {
-			// bookmark only -> remove publication
-			this.listsToInitialise.remove(BibTex.class);
-		}
-	}	
-
 	protected void startTiming(Class<? extends ResourceListController> controller, String format) {
 		log.info("Handling Controller: " + controller.getSimpleName() + ", format: " + format);
 		this.startTime = System.currentTimeMillis();
@@ -295,12 +272,9 @@ public abstract class ResourceListController {
 	 * @param cmd - the current command object
 	 * @return true if only publications are requested, false otherwise
 	 */
-	private boolean isBibtexOnlyRequested(ResourceViewCommand cmd) {
-		if (ResourceType.BIBTEX.getLabel().equalsIgnoreCase(cmd.getResourcetype()) || 
-				(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(BibTex.class)) ) {
-			return true;
-		}
-		return false;
+	private boolean isPublicationOnlyRequested(final ResourceViewCommand cmd) {
+		final Set<Class<? extends Resource>> listsToInitialize = this.getListsToInitialize(cmd.getFormat(), cmd.getResourcetype());
+		return listsToInitialize.size() == 1 && listsToInitialize.contains(BibTex.class);
 	}
 
 	/**
@@ -309,14 +283,10 @@ public abstract class ResourceListController {
 	 * @param cmd - the current command object
 	 * @return true if only bookmarks are requested, false otherwise
 	 */
-	private boolean isBookmarkOnlyRequested(ResourceViewCommand cmd) {
-		if (ResourceType.BOOKMARK.getLabel().equalsIgnoreCase(cmd.getResourcetype()) || 
-				(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(Bookmark.class)) ) {
-			return true;
-		}
-		return false;
-	}	
-
+	private boolean isBookmarkOnlyRequested(final ResourceViewCommand cmd) {
+		final Set<Class<? extends Resource>> listsToInitialize = this.getListsToInitialize(cmd.getFormat(), cmd.getResourcetype());
+		return listsToInitialize.size() == 1 && listsToInitialize.contains(Bookmark.class);
+	}
 
 	/**
 	 * Restrict result lists by range from startIndex to endIndex.
@@ -333,5 +303,111 @@ public abstract class ResourceListController {
 		if (Bookmark.class.equals(resourceType)) {
 			cmd.getBookmark().setList(cmd.getBookmark().getList().subList(startIndex, endIndex));
 		}				
+	}
+
+	/**
+	 * @param supportedResources the supportedResources to set
+	 */
+	public void setSupportedResources(final Set<Class<? extends Resource>> supportedResources) {
+		this.supportedResources = supportedResources;
+	}
+
+	/**
+	 * @param initializeNoResources the noResourcesToInitialize to set
+	 */
+	public void setInitializeNoResources(boolean initializeNoResources) {
+		this.initializeNoResources = initializeNoResources;
+	}
+
+	private Set<Class<? extends Resource>> getUserResourcesFromSettings() {		
+		final Set<Class<? extends Resource>> resources = new HashSet<Class<? extends Resource>>();
+		
+		if (this.userSettings.isShowBookmark()) {
+			resources.add(Bookmark.class);
+		}
+		
+		if (this.userSettings.isShowBibtex()) {
+			resources.add(BibTex.class);
+		}
+		
+		return resources;
+	}
+
+	private Set<? extends Class<? extends Resource>> getResourcesForFormat(final String format) {
+		if (Views.isBibtexOnlyFormat(format)) {
+			return Collections.singleton(BibTex.class);
+		}
+		
+		if (Views.isBookmarkOnlyFormat(format)) {
+			return Collections.singleton(Bookmark.class);
+		}
+		
+		return new HashSet<Class<? extends Resource>>(ResourceFactory.getAllResourceClasses());
+	}
+	
+	/**
+	 * @param format e.g. "json"
+	 * @param urlParamResources ?resourcetype=bookmark&resourcetype=publication
+	 * @return all resources that must be initialized by this controller
+	 */
+	public Set<Class<? extends Resource>> getListsToInitialize(final String format, final Set<Class<? extends Resource>> urlParamResources) {
+		if (this.initializeNoResources) {
+			return Collections.emptySet();
+		}
+		
+		if (present(this.forcedResources)) {
+			return this.forcedResources;
+		}
+		
+		final Set<Class<? extends Resource>> supportFormat = intersection(this.supportedResources, this.getResourcesForFormat(format));
+		final Set<Class<? extends Resource>> supportParam = intersection(this.supportedResources, urlParamResources);
+		final Set<Class<? extends Resource>> supportUser = intersection(this.supportedResources, this.getUserResourcesFromSettings());
+		
+		if (!present(supportFormat) && !present(supportParam)) {
+			return Collections.emptySet();
+		}
+		
+		if (present(supportFormat)) {
+			final Set<Class<? extends Resource>> supportFormatParam = intersection(supportFormat, supportParam);
+			if (present(supportFormatParam)) {
+				return supportFormatParam;
+			}
+			
+			final Set<Class<? extends Resource>> supportFormatUser = intersection(supportFormat, supportUser);
+			if (present(supportFormatUser)) {
+				return supportFormatUser;
+			}
+			
+			return supportFormat;
+		}
+		
+		if (!present(supportFormat) && present(supportParam)) {
+			return Collections.emptySet();
+		}
+		
+		return this.supportedResources;
+	}
+	
+	/**
+	 * @param userSettings the loginUsers userSettings
+	 */
+	@Required
+	public void setUserSettings(UserSettings userSettings) {
+		this.userSettings = userSettings;
+	}
+
+	/**
+	 * @param logic logic interface
+	 */
+	@Required
+	public void setLogic(LogicInterface logic) {
+		this.logic = logic;
+	}
+	
+	/**
+	 * @param forcedResources the forcedResources to set
+	 */
+	public void setForcedResources(Set<Class<? extends Resource>> forcedResources) {
+		this.forcedResources = forcedResources;
 	}
 }

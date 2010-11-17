@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -55,17 +56,16 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		 * handle case when only tags are requested
 		 * retrieve only TAG_LIMIT tags for this resource
 		 */
-		command.setResourcetype("bibtex");
+		command.setResourcetype(Collections.<Class<? extends Resource>>singleton(BibTex.class));
 		this.handleTagsOnly(command, groupingEntity, requUser, null, null, hash, TAG_LIMIT, null);
 
-		// for getting the goldstandard
+		// for getting the gold standard
 		String goldHash = hash.substring(1); // remove leading 1 TODODZ
 
 		/*
 		 * retrieve and set the requested publication(s)
 		 */
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();		
 			this.setList(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage);
 
@@ -87,16 +87,15 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 					Post<BibTex> postDetails = null;
 					try {
 						postDetails = (Post<BibTex>) this.logic.getPostDetails(publication.getIntraHash(), b.getUser().getName());
+						bibtex.add(postDetails);
+
+						goldHash = postDetails.getResource().getInterHash();
 					} catch (final ResourceNotFoundException ex) {
 						// ignore
 					} catch (final ResourceMovedException ex) {
 						// ignore
 					}
-					bibtex.add(postDetails);
-
-					goldHash = postDetails.getResource().getInterHash();
 				}
-
 				command.getBibtex().setList(bibtex);
 			}
 			/*
@@ -105,27 +104,25 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			this.postProcessAndSortList(command, resourceType);
 		}
 
-		/*
-		 * get the gold standard
-		 */
-
-
 		Post<GoldStandardPublication> goldStandard = null;
 		try {
-
+			/*
+			 * get the gold standard
+			 */
 			goldStandard = (Post<GoldStandardPublication>) this.logic.getPostDetails(goldHash, GOLD_STANDARD_USER_NAME);
+			command.setGoldStandardPublication(goldStandard);
 		} catch (final ResourceNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
 			// ignore
 		}
-		command.setGoldStandardPublication(goldStandard);
+		
 
 		/*
 		 * extract first bibtex; if list is empty, return blank page
 		 */
 		final BibTex firstBibtex;
-		if (command.getBibtex().getList() != null && command.getBibtex().getList().size() > 0){
+		if (present(command.getBibtex().getList())){
 			firstBibtex = command.getBibtex().getList().get(0).getResource();			
 		} else {
 			if ("html".equals(format)) {
@@ -138,12 +135,10 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		 * Set page title to title of first publication 
 		 */
 		command.setTitle(firstBibtex.getTitle());
-
+		this.endTiming();
 		if ("html".equals(format)) {
-			this.endTiming();
-
-			command.setPageTitle("bibtex :: " + command.getTitle() );
-
+			command.setPageTitle("publication :: " + command.getTitle()); // TODO: i18n
+			
 			if (GroupingEntity.USER.equals(groupingEntity) || present(goldStandard)) {
 				/*
 				 * fetch posts of all users with the given hash, add users to related
@@ -177,9 +172,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			 */
 			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, hash, TAG_LIMIT, null);			
 			return Views.BIBTEXPAGE;
-
 		}
-		this.endTiming();
 
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);

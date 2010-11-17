@@ -7,17 +7,17 @@ package org.bibsonomy.webapp.command;
  */
 public class CvPageViewCommand extends UserResourceViewCommand {
 
-	String wikiText;
+	private String wikiText;
 
 	/**
-	 * @return the wiki
+	 * @return the wikiText
 	 */
 	public String getWikiText() {
 		return this.wikiText;
 	}
 
 	/**
-	 * @param wiki the wiki to set
+	 * @param wikiText the wikiText to set
 	 */
 	public void setWikiText(String wikiText) {
 		this.wikiText = wikiText;

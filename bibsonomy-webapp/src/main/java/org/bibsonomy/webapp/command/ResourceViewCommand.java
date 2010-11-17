@@ -1,8 +1,8 @@
-/*
- * Created on 26.08.2007
- */
 package org.bibsonomy.webapp.command;
 
+import java.util.Set;
+
+import org.bibsonomy.model.Resource;
 
 /**
  * command with fields for the resource lists.
@@ -17,7 +17,7 @@ package org.bibsonomy.webapp.command;
 public class ResourceViewCommand extends BaseCommand {
 	private TagCloudCommand tagcloud = new TagCloudCommand();
 	private String requestedUser;
-	private String resourcetype;
+	private Set<Class<? extends Resource>> resourcetype;
 	private String tagstype; // for queries for specific kinds of tags
 	private String format = "html"; 
 	private String layout; // if format="layout", here the requested layout is stored
@@ -25,7 +25,6 @@ public class ResourceViewCommand extends BaseCommand {
 	private String sortPage = "none";
 	private String sortPageOrder = "asc";
 	private String duplicates = "yes";
-	private String applicationName = "";
 	private boolean notags = false;
 
 	/**
@@ -115,14 +114,14 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @return the resourcetype
 	 */
-	public String getResourcetype() {
+	public Set<Class<? extends Resource>> getResourcetype() {
 		return this.resourcetype;
 	}
 
 	/**
 	 * @param resourcetype the resourcetype to set
 	 */
-	public void setResourcetype(String resourcetype) {
+	public void setResourcetype(Set<Class<? extends Resource>> resourcetype) {
 		this.resourcetype = resourcetype;
 	}
 
@@ -271,20 +270,6 @@ public class ResourceViewCommand extends BaseCommand {
 	 */
 	public Boolean isPersonalized() {
 		return personalized;
-	}
-	
-	/**
-	 * @return the applicationName
-	 */
-	public String getApplicationName() {
-		return this.applicationName;
-	}
-
-	/**
-	 * @param applicationName the applicationName to set
-	 */
-	public void setApplicationName(String applicationName) {
-		this.applicationName = applicationName;
 	}
 
 	/**
