@@ -9,7 +9,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * Creates a JSON list about the available JabRef layouts on the /layoutinfo page.
- * 
+ * FIXME: complete clone of {@link ExportPageController} 
  * @author mwa, dbe
  * @version $Id$
  */
