@@ -40,6 +40,7 @@ import net.sf.jabref.imports.BibtexParser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
+import org.bibsonomy.layout.util.JabRefModelConverter;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -139,10 +140,6 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
          * renderer 
          * new code: duplicate removal in controller, no sorting by year - must be enforced 
          * by another parameter
-         */
-        /*
-         * convert posts into Jabref BibtexDatabase ... in a horribly inefficient way
-         * FIXME: well ... in the future we will use wrapper objects instead ...
          */
         final BibtexDatabase database = bibtex2JabrefDB(posts);
         /*
@@ -267,7 +264,6 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
         return output;
     }
 
-
     /**
      * This method converts BibSonomy BibTeX entries to JabRef entries and stores
      * them into a JabRef specific BibtexDatabase! 
@@ -277,45 +273,11 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
      * @throws KeyCollisionException If two entries have exactly the same BibTeX key
      */
     private <T extends Resource> BibtexDatabase bibtex2JabrefDB(final List<Post<T>> bibtexList) {
-        /*
-         * put all bibtex together as string
-         */
-        final StringBuffer bibtexStrings = new StringBuffer();
-        for (final Post<T> post : bibtexList) {
-            final T resource = post.getResource();
-            
-            if (resource instanceof BibTex) {
-                @SuppressWarnings("unchecked")
-                final Post<BibTex> bibPost = (Post<BibTex>) post;
-                final BibTex bib = bibPost.getResource();
-                 
-                
-                // parse misc field
-                bib.parseMiscField();
-                
-                // rename id field to 'misc_id', as it has a special meaning inside jabref
-                if (bib.getMiscField("id") != null) {
-                    bib.addMiscField("misc_id", bib.getMiscField("id"));
-                    bib.removeMiscField("id");
-                }
-                bib.serializeMiscFields();
-                
-                // set some fields so we can easily access them later in the export filters
-                bib.addMiscField("bibsonomyUsername", post.getUser().getName());   // bibsonomy username
-                bib.addMiscField("comment", post.getDescription());                // used at least by openoffice-csv
-                // description field is added automatically
-                bibtexStrings.append("\n" + BibTexUtils.toBibtexString(bibPost));
-            }
-        }
-        /*
-         * parse them!
-         */
-        try {
-            return BibtexParser.parse(new StringReader(bibtexStrings.toString())).getDatabase();
-        } catch (final Exception e) {
-            log.warn("Error parsing BibTeX objects for JabRef output: " + e);
-            throw new LayoutRenderingException("Error parsing BibTeX entries: " + e.getMessage());
-        }
+	final BibtexDatabase db = new BibtexDatabase();
+	for (final Post<T> post : bibtexList) {
+	    db.insertEntry(JabRefModelConverter.convertPost(post));
+	}
+	return db;
     }
 
     /**
