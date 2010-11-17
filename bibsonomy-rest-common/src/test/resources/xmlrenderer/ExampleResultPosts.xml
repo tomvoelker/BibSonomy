@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<bibsonomy stat="ok">
+<ns2:bibsonomy stat="ok" xmlns:ns2="http://www.bibsonomy.org/2010/11/BibSonomy">
     <posts next="www.bibsonomy.org/foo/bar" end="10" start="0">
         <post>
             <user href="http://www.bibsonomy.org/api/users/foo" name="foo"/>
@@ -13,4 +13,4 @@
             <bookmark href="http://www.bibsonomy.org/api/users/foo/posts/12345678" intrahash="12345678" interhash="12345678" url="www.foobar.de" title="bookmarktitle"/>
         </post>
     </posts>
-</bibsonomy>
+</ns2:bibsonomy>

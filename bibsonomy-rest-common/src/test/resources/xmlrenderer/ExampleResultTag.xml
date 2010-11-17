@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<bibsonomy stat="ok">
+<ns2:bibsonomy stat="ok" xmlns:ns2="http://www.bibsonomy.org/2010/11/BibSonomy">
     <tag href="http://www.bibsonomy.org/api/tags/foo" usercount="0" globalcount="0" name="foo"/>
-</bibsonomy>
+</ns2:bibsonomy>

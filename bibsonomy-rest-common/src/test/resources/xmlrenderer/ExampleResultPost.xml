@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<bibsonomy stat="ok">
+<ns2:bibsonomy stat="ok" xmlns:ns2="http://www.bibsonomy.org/2010/11/BibSonomy">
     <post>
         <user href="http://www.bibsonomy.org/api/users/foo" name="foo"/>
         <tag href="http://www.bibsonomy.org/api/tags/bar" name="bar"/>
         <bookmark href="http://www.bibsonomy.org/api/users/foo/posts/aabbcc" intrahash="aabbcc" interhash="aabbcc" url="www.foobar.org" title="bookmarktitle"/>
     </post>
-</bibsonomy>
+</ns2:bibsonomy>
