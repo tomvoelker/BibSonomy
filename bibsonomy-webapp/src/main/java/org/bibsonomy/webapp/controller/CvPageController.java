@@ -48,15 +48,15 @@ public class CvPageController extends ResourceListController implements Minimali
 
 		this.setTags(command, Resource.class, groupingEntity, requUser, null, command.getRequestedTagsList(), null, 1000, null);
 
-		/*
+		/* TODO: remove (lists are loaded by wiki tags)
 		 * retrieve and set the requested publication(s) / bookmark(s) with the "myown" tag
 		 */
-		for (final Class<? extends Resource> resourceType : this.listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();		
 			this.setList(command, resourceType, groupingEntity, requUser, Collections.singletonList(SystemTagsUtil.CV_TAG), null, Order.ADDED, null, null, entriesPerPage);
 		}
 		
-		/*
+		/* TODO: fix NPE (unknow user)
 		 * convert the wiki syntax
 		 */
 		final User user = command.getUser();

@@ -28,7 +28,7 @@ public abstract class MultiResourceListController extends ResourceListController
 	 * @param cmd
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends MultiResourceViewCommand> void postProcessAndSortList(T cmd, Class<? extends Resource> resourceType) {				
+	protected void postProcessAndSortList(final MultiResourceViewCommand cmd, Class<? extends Resource> resourceType) {				
 		for (ListCommand<?> listCommand: cmd.getListCommand(resourceType)) {
 			if (resourceType == BibTex.class) {
 				// TODO: how can we do this in a clean way without SuppressWarnings?
@@ -48,7 +48,7 @@ public abstract class MultiResourceListController extends ResourceListController
 	 * @param groupingName the grouping name
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
-	protected <T extends Resource, V extends MultiResourceViewCommand> void addList(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage) {
+	protected <T extends Resource> void addList(final MultiResourceViewCommand cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage) {
 		// new list command to put result list into
 		final ListCommand<Post<T>> listCommand = new ListCommand<Post<T>>(cmd);
 		// retrieve posts		
@@ -60,7 +60,7 @@ public abstract class MultiResourceListController extends ResourceListController
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}
 	
-	protected <T extends Resource, V extends MultiResourceViewCommand> void addDescription(V cmd, Class<T> resourceType, String description) {
+	protected void addDescription(final MultiResourceViewCommand cmd, Class<? extends Resource> resourceType, String description) {
 		cmd.getListsDescription(resourceType).add(description);
 	}
 

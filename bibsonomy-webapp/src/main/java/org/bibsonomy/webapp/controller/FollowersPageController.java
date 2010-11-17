@@ -64,11 +64,6 @@ public class FollowersPageController extends SingleResourceListController implem
 		command.setPersonalized(true);
 		command.setDuplicates("no");
 		
-		
-		// determine which lists to initalize depending on the output format
-		// and the requested resourcetype
-		this.chooseListsToInitialize(format, command.getResourcetype());
-		
 		// fetch all tags of logged-in user
 		final String username = command.getContext().getLoginUser().getName();
 		final List<Tag> loginUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, username, null, null, null, null, 0, Integer.MAX_VALUE, null, null);
@@ -78,7 +73,7 @@ public class FollowersPageController extends SingleResourceListController implem
 		
 		// retrieve and set the requested resource lists, along with total
 		// counts
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 						
 			final int origEntriesPerPage = listCommand.getEntriesPerPage();

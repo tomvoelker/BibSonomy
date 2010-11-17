@@ -31,11 +31,8 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 	@Override
 	public View workOn(BibtexkeyCommand command) {
 		log.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
-		
-		// determine which lists to initalize depending on the output format 
-		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);		
 		
 		if (!present(command.getRequestedKey())) {
 			throw new MalformedURLSchemeException("error.bibtexkey_no_key");
@@ -63,13 +60,13 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		}
 						
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());			
 			postProcessAndSortList(command, resourceType);
 		}
 						
 		// html format - fetch tags and return HTML view
-		if (command.getFormat().equals("html")) {
+		if (format.equals("html")) {
 			// tags
 			setTags(command, BibTex.class, groupingEntity, groupingName, null, command.getRequestedTagsList(), null, 1000, null);
 			if (command.getTagcloud().getTags().size() > 999) {
@@ -87,7 +84,7 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		
 		// export - return the appropriate view
 		this.endTiming();
-		return Views.getViewByFormat(command.getFormat());				
+		return Views.getViewByFormat(format);				
 	}
 
 	

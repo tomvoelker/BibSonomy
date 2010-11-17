@@ -13,7 +13,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * Controller for Homepage * 
+ * Controller for Homepage
  *
  * @author Dominik Benz
  * @version $Id$
@@ -35,12 +35,8 @@ public class HomepageController extends SingleResourceListController implements 
 		// handle the case when only tags are requested
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
 		
-		// determine which lists to initalize depending on the output format 
-		// and the requested resourcetype
-		this.chooseListsToInitialize(format, command.getResourcetype());		
-		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			// disable manual setting of start value for homepage
 			command.getListCommand(resourceType).setStart(0);
 			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, null, 20);
@@ -49,7 +45,7 @@ public class HomepageController extends SingleResourceListController implements 
 												
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			command.setPageTitle("home");
+			command.setPageTitle("home"); // TODO: i18n
 			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
 			
 			/*
@@ -57,7 +53,8 @@ public class HomepageController extends SingleResourceListController implements 
 			 */
 			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "kde", Arrays.asList("bibsonomynews"), null, null, null, 0, 3, null));
 			this.endTiming();
-			return Views.HOMEPAGE;
+			
+			return Views.HOMEPAGE; // TODO: make configurable 
 		}
 		
 		this.endTiming();

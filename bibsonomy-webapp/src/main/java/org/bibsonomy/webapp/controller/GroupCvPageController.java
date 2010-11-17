@@ -20,7 +20,7 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class GroupCvPageController extends ResourceListController implements MinimalisticController<GroupResourceViewCommand>{
 	
-	/*
+	/**
 	 * the count of publications and bookmarks to show
 	 */
 	private int entries;
@@ -32,7 +32,7 @@ public class GroupCvPageController extends ResourceListController implements Min
 		Group group = logic.getGroupDetails(requestedGroup);
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
 		command.setDuplicates("no");
-		command.setPageTitle("Curriculum vitae");
+		command.setPageTitle("Curriculum vitae"); // TODO: i18n
 		
 		group.setUsers(this.logic.getUsers(null, groupingEntity, requestedGroup, null, null, null, null, null, 0, 1000));
 		command.setGroup(group);
@@ -45,7 +45,7 @@ public class GroupCvPageController extends ResourceListController implements Min
 		/*
 		 *  retrieve and set the requested resource lists
 		 */
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
 			this.setList(command, resourceType, groupingEntity, requestedGroup, Collections.singletonList(SystemTagsUtil.CV_TAG), null, null, null, null, entries);
 		}
 		

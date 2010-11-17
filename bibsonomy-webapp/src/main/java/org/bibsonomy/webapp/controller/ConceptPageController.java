@@ -29,7 +29,8 @@ public class ConceptPageController extends SingleResourceListController implemen
 	@Override
 	public View workOn(final ConceptResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 		
 		// if no concept given -> error
 		if(!present(command.getRequestedTags())) {
@@ -45,52 +46,45 @@ public class ConceptPageController extends SingleResourceListController implemen
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
 		
-		//get the information on tags and concepts needed for the sidebar
+		// get the information on tags and concepts; needed for the sidebar
 		command.setPostCountForTagsForAll(this.getPostCountForSidebar(GroupingEntity.ALL, "", requTags));
 		if (present(requUser)) {
 			command.setPostCountForTagsForRequestedUser(this.getPostCountForSidebar(GroupingEntity.USER, requUser, requTags));
 			command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
-		}
-		else if (present(requGroup)) {
+		} else if (present(requGroup)) {
 			command.setPostCountForTagsForGroup(this.getPostCountForSidebar(GroupingEntity.GROUP, requGroup, requTags));
 			command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
-		}
-		else if (present(loginUser)) {
+		} else if (present(loginUser)) {
 			command.setPostCountForTagsForLoginUser(this.getPostCountForSidebar(GroupingEntity.USER, loginUser, requTags));
 			command.setConceptsOfLoginUser(this.getConceptsForSidebar(command, GroupingEntity.USER, loginUser, requTags));
 		}
-		
 		
 		for (int i = 0; i < requTags.size(); i++){
 			requTags.set(i, "->" + requTags.get(i));
 		}
 		
 		// title
-		final StringBuilder pageTitle = new StringBuilder("concept :: ");
+		final StringBuilder pageTitle = new StringBuilder("concept :: "); // TODO: i18n
 		
 		//if URI looks like concept/USER/USERNAME/TAGNAME, change GroupingEntity to USER
-		if(present(requUser)){
+		if (present(requUser)) {
 			groupingEntity = GroupingEntity.USER;
 			groupingName = requUser;
-			pageTitle.append(" user :: ");
+			pageTitle.append(" user :: "); // TODO: i18n
 		}
 		
 		//if URI looks like concept/GROUP/GROUPNAME/TAGNAME, change GroupingEntity to GROUP 
 		if (present(requGroup)) {
 			groupingEntity = GroupingEntity.GROUP;
 			groupingName = requGroup;
-			pageTitle.append(" group :: ");
+			pageTitle.append(" group :: "); // TODO: i18n
 		}
 		
 		pageTitle.append(groupingName + " :: " + StringUtils.implodeStringCollection(requTags, " "));		
 		command.setPageTitle(pageTitle.toString());
-	
-		// determine which lists to initalize depending on the output format 
-		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.listsToInitialise) {			
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 		}	
@@ -110,7 +104,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		}
 		
 		// html format - retrieve tags and return HTML view
-		if ("html".equals(command.getFormat())) {
+		if ("html".equals(format)) {
 			if(groupingEntity != GroupingEntity.ALL) {
 				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 1000, null);
 			}
@@ -121,7 +115,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());
+		return Views.getViewByFormat(format);
 	}
 
 	@Override

@@ -26,7 +26,6 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for tag pages
  * /tag/TAGNAME
  * 
- * 
  * @author Michael Wagner
  * @version $Id$
  */
@@ -36,10 +35,11 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 	@Override
 	public View workOn(final TagResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 		
 		// if no tags given return
-		if (command.getRequestedTags() == null || command.getRequestedTags().length() == 0) {
+		if (!present(command.getRequestedTags())) {
 			throw new MalformedURLSchemeException("error.tag_page_without_tag");
 		}
 		
@@ -56,28 +56,23 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		Order order = Order.ADDED;
 		try {
 			order = Order.getOrderByName(command.getOrder());
-		} catch (IllegalArgumentException ex) {
+		} catch (final IllegalArgumentException ex) {
 			// TODO: why rethrowing the exception and not just don't catch it?
 			throw new MalformedURLSchemeException(ex.getMessage());
 		}
 
-		//get the information on tags and concepts needed for the sidebar
+		// get the information on tags and concepts needed for the sidebar
 		command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
 		final String loginUser = command.getContext().getLoginUser().getName();
 		if (present(loginUser)) {
 			command.setConceptsOfLoginUser(this.getConceptsForSidebar(command, GroupingEntity.USER, loginUser, requTags));
 			command.setPostCountForTagsForLoginUser(this.getPostCountForSidebar(GroupingEntity.USER, loginUser, requTags));
 		}
-
-		
-		// determine which lists to initalize depending on the output format 
-		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
 		int totalNumPosts = 1; 
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 
@@ -100,8 +95,8 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			this.setRelatedUsers(command, GroupingEntity.ALL, requTags, order, UserRelation.FOLKRANK, 0, Parameters.NUM_RELATED_USERS);
 		}
 		
-		// html format - retrieve relted tags and return HTML view
-		if (command.getFormat().equals("html")) {
+		// html format - retrieve related tags and return HTML view
+		if ("html".equals(format)) {
 			command.setPageTitle("tag :: " + StringUtils.implodeStringCollection(requTags, " "));		
 			if (tagCount > 0) {
 				this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
@@ -118,7 +113,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());
+		return Views.getViewByFormat(format);
 		
 	}
 	
@@ -130,17 +125,15 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 	/**
 	 * retrieve related user by tag
 	 * 
-	 * @param <T>
-	 * @param <V>
 	 * @param cmd
 	 * @param tags
 	 * @param order
 	 * @param start
 	 * @param end
 	 */
-	protected <T extends Resource, V extends TagResourceViewCommand> void setRelatedUsers(V cmd, GroupingEntity grouping, List<String> tags, Order order, UserRelation relation, int start, int end) {
-		RelatedUserCommand relatedUserCommand = cmd.getRelatedUserCommand();
-		relatedUserCommand.setRelatedUsers(this.logic.getUsers(null, grouping,null,tags, null, order, relation, null, start, end));
+	protected void setRelatedUsers(final TagResourceViewCommand cmd, final GroupingEntity grouping, final List<String> tags, final Order order, final UserRelation relation, final int start, final int end) {
+		final RelatedUserCommand relatedUserCommand = cmd.getRelatedUserCommand();
+		relatedUserCommand.setRelatedUsers(this.logic.getUsers(null, grouping, null, tags, null, order, relation, null, start, end));
 	}
 	
 }

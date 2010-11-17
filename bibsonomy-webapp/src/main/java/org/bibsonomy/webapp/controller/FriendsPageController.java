@@ -6,8 +6,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.FriendsResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -41,20 +39,16 @@ public class FriendsPageController extends SingleResourceListController implemen
 		final GroupingEntity groupingEntity = GroupingEntity.FRIEND;
 		
 		// handle case when users are requested
-		this.handleUsers(command);		
-
-		// determine which lists to initalize depending on the output format
-		// and the requested resourcetype
-		this.chooseListsToInitialize(format, command.getResourcetype());
-
+		this.handleUsers(command);
+		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			this.setList(command, resourceType, groupingEntity, null, null, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 		}
 
 		// set page title
-		command.setPageTitle("friends");
+		command.setPageTitle("friends"); // TODO: i18n
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			this.endTiming();
@@ -86,9 +80,8 @@ public class FriendsPageController extends SingleResourceListController implemen
 				command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF));
 			}
 		
-			// when users only are requested, we don't need publications and bookmarks
-			this.listsToInitialise.remove(BibTex.class);
-			this.listsToInitialise.remove(Bookmark.class);			
+			// when users only are requested, we don't need resources
+			this.setInitializeNoResources(true);		
 		}
 	}
 

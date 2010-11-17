@@ -33,13 +33,10 @@ public class InboxPageController extends SingleResourceListController implements
 		
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
-
-		// determine which lists to initialize depending on the output format 
-		// and the requested resource type
-		this.chooseListsToInitialize(format, command.getResourcetype());		
+				
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
 			this.setList(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, entriesPerPage);
 			postProcessAndSortList(command, resourceType);
@@ -56,7 +53,7 @@ public class InboxPageController extends SingleResourceListController implements
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			command.setPageTitle("inbox");
+			command.setPageTitle("inbox"); // TODO: i18n
 			return Views.INBOX;		
 		}
 

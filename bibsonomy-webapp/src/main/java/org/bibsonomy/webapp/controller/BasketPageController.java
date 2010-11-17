@@ -22,8 +22,8 @@ public class BasketPageController extends SingleResourceListController implement
 
 	@Override
 	public View workOn(BibtexResourceViewCommand command) {
-
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 
 		// if user is not logged in, redirect him to login page
 		if (command.getContext().isUserLoggedIn() == false) {
@@ -35,12 +35,8 @@ public class BasketPageController extends SingleResourceListController implement
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		final GroupingEntity groupingEntity = GroupingEntity.BASKET;
 
-		// determine which lists to initalize depending on the output format 
-		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
-
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
 
 			this.setList(command, resourceType, groupingEntity, loginUserName, null, null, null, null, null, entriesPerPage);
@@ -59,13 +55,13 @@ public class BasketPageController extends SingleResourceListController implement
 		}	
 
 		this.endTiming();			
-		if ("html".equals(command.getFormat())) {
+		if ("html".equals(format)) {
 			command.setPageTitle(" :: basket" );
 			return Views.BASKETPAGE;	
 		}
 
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());
+		return Views.getViewByFormat(format);
 
 	}
 
