@@ -206,7 +206,7 @@ public class MetsBibTexMLGenerator {
 		xmlDocument += "</agent>\n";
 		xmlDocument += "</metsHdr>\n";
 		xmlDocument += "<dmdSec ID=\"sword-mets-dmd-1\" GROUPID=\"sword-mets-dmd-1_group-1\">\n";
-		xmlDocument += "<mdWrap MIMETYPE=\"text/xml\" MDTYPE=\"OTHER\" OTHERMDTYPE=\"bibtex\">\n";
+		xmlDocument += "<mdWrap MIMETYPE=\"text/xml\" MDTYPE=\"OTHER\" OTHERMDTYPE=\"BIBTEXML\">\n";
 		xmlDocument += "<xmlData>\n";
 
 		
@@ -224,7 +224,7 @@ public class MetsBibTexMLGenerator {
 		System.out.println(bibTexML);
 		*/
 		
-		bibTexML += "<bibtex:entry id=\""+_post.getResource().getBibtexKey()+"\">\n";
+		bibTexML += "<bibtex:entry id=\""+_post.getResource().getBibtexKey()+"\" xmlns:bibtex=\"http://puma.uni-kassel.de\">\n";
 		bibTexML += "<bibtex:"+_post.getResource().getEntrytype()+">\n";
 
 		// Title
@@ -429,6 +429,9 @@ public class MetsBibTexMLGenerator {
 
 		xmlDocument += bibTexML;
 
+		xmlDocument += "</xmlData>\n";
+		xmlDocument += "</mdWrap>\n";
+		xmlDocument += "</dmdSec>\n";
 		
 		// add FileSec only if Files are available
 		if (null != this.getFilename(0)) {
