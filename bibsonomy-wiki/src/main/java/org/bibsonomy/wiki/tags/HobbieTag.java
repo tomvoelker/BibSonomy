@@ -17,14 +17,16 @@ public class HobbieTag extends AbstractTag {
         }
 
 		@Override
-		StringBuffer render() {
-			StringBuffer renderedHTML = new StringBuffer();
-        	String hobbies = wikiUtil.getUser().getHobbies();
+		protected StringBuilder render() {
+			final StringBuilder renderedHTML = new StringBuilder();
+        	final String hobbies = this.requestedUser.getHobbies();
         	
-        	if(!present(hobbies))
+        	if (!present(hobbies))
         		return renderedHTML;
         	
-        	renderedHTML.append("<p class='align'>" +Utils.escapeXmlChars(hobbies) +"</p>");
+        	renderedHTML.append("<p class='align'>");
+        	renderedHTML.append(Utils.escapeXmlChars(hobbies));
+        	renderedHTML.append("</p>");
         	
         	return renderedHTML;
 		}

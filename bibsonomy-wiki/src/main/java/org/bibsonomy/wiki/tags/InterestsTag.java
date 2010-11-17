@@ -2,6 +2,7 @@ package org.bibsonomy.wiki.tags;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 import info.bliki.htmlcleaner.Utils;
+
 /**
  * @author philipp
  * @version $Id$
@@ -18,14 +19,17 @@ public class InterestsTag extends AbstractTag {
 	}
 
 	@Override
-	StringBuffer render() {
-		StringBuffer renderedHTML = new StringBuffer();
-     	String interests = wikiUtil.getUser().getInterests();
+	protected StringBuilder render() {
+		StringBuilder renderedHTML = new StringBuilder();
+     	final String interests = this.requestedUser.getInterests();
      	
-     	if(!present(interests))
+     	if (!present(interests)) {
      		return renderedHTML;
-
-     	renderedHTML.append("<p class='align'>" +Utils.escapeXmlChars(interests) +"</p>");
+     	}
+     	
+     	renderedHTML.append("<p class='align'>");
+     	renderedHTML.append(Utils.escapeXmlChars(interests));
+     	renderedHTML.append("</p>");
      	
      	return renderedHTML;
 	}

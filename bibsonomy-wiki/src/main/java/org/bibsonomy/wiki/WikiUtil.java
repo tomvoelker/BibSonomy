@@ -46,8 +46,6 @@ public class WikiUtil extends AbstractWikiModel {
 	public WikiUtil() {
 		super(Configuration.DEFAULT_CONFIGURATION, null, null);
 	}
-
-	
 	
 	@Override
 	public ITableOfContent appendHead(String rawHead, int headLevel, boolean noToC, int headCounter, int startPosition, int endPosition) {
@@ -88,32 +86,22 @@ public class WikiUtil extends AbstractWikiModel {
 	}
 	
 	private void addToTableOfContents(List<Object> toc, SectionHeader strPair, int headLevel) {
-//		if (headLevel == 1) {
-//			toc.add(strPair);
-//		} else {
-//			if (toc.size() > 0) {
-//				if (toc.get(toc.size() - 1) instanceof List<?>) {
-//					addToTableOfContents((List<Object>) toc.get(toc.size() - 1), strPair, --headLevel);
-//					return;
-//				}
-//			}
-//			List<Object> list = new ArrayList<Object>();
-//			toc.add(list);
-//			addToTableOfContents(list, strPair, --headLevel);
-//		}
 	}
 
 
+	@Override
 	public Set<String> getLinks() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public INamespace getNamespace() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public void parseInternalImageLink(String imageNamespace,
 			String rawImageLink) {
 		// TODO Auto-generated method stub
