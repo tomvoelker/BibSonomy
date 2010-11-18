@@ -39,12 +39,12 @@
 	  <a id="nav_relations" href="/relations">relations</a>
 	</li>
 	<li>
-     <a id="nav_urls" href="/groups" rel="grp_menu"><c:if test="${not empty loginUser.groups}"><img src="/resources/image/nice_box_arrow.png" alt="" /> </c:if>groups</a>
+     <a id="nav_urls" href="/groups" rel="grp_menu"><c:if test="${not empty user.groups}"><img src="/resources/image/nice_box_arrow.png" alt="" /> </c:if>groups</a>
 	</li>
 	<li>
 	  <%-- dropdown menu for groups --%>		
   	  <div id="grp_menu" class="nicedropmenudiv">
-  	  	<c:if test="${not empty loginUser.groups}">
+  	  	<c:if test="${not empty user.groups}">
 	    	<c:forEach var="grp" items="${user.groups}">
 		  	<a href="/group/<mtl:encode value='${grp.name}'/>"><c:out value='${grp.name}'/></a>
 			</c:forEach>
