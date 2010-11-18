@@ -61,11 +61,11 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 	}
 	
 	private void setLoginUser(final HttpServletRequest request, final Authentication authentication) {
-		if (authenticationTrustResolver.isAnonymous(authentication)) {
+		if (this.authenticationTrustResolver.isAnonymous(authentication)) {
             return;
         }
 		
-		if (present(authentication)) {
+		if (present(authentication) && !this.containsContext(request)) {
 			final UserDetails user = (UserDetails) authentication.getPrincipal();
 			final String loginUsername = user.getUsername();
 			final HttpSession session = request.getSession(true);
