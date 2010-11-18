@@ -22,18 +22,37 @@
 		<intercept-url pattern="/**" access="permitAll" />
 
 		<!-- filter definitions -->
-		<logout invalidate-session="true" logout-success-url="/" logout-url="/logout" />
-		<custom-filter position="FORM_LOGIN_FILTER" ref="usernameAndPasswordFilter" /> <!-- instead of a form-login tag -->
-		<custom-filter after="FORM_LOGIN_FILTER" ref="ldapUsernameAndPasswordFilter" />
-		<http-basic />
+		<custom-filter position="LOGOUT_FILTER" ref="logoutFilter" />
 		
-		<remember-me key="a1d0c6e83f027327d8461063f4ac58a6" services-ref="dbRememberMeServices" />
-		<custom-filter after="OPENID_FILTER" ref="openIDRememberMeFilter" />
+		<custom-filter position="FORM_LOGIN_FILTER" ref="usernameAndPasswordFilter" />
+		
+		<custom-filter after="FORM_LOGIN_FILTER" ref="ldapUsernameAndPasswordFilter" />
 		
 		<custom-filter position="OPENID_FILTER" ref="openIDFilter" />
 		
+		<http-basic />
+		
+		<custom-filter after="OPENID_FILTER" ref="openIDRememberMeFilter" />
+		
+		<custom-filter position="REMEMBER_ME_FILTER" ref="dbRememberMeFilter" />
+		
 		<access-denied-handler error-page="/access_denied" />
 	</http>
+	
+	<beans:bean id="logoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<beans:constructor-arg type="java.lang.String" value="/" />
+		<beans:constructor-arg>
+			<beans:list>
+				<beans:ref bean="securityContextLogoutHandler" />
+				<beans:ref bean="openIDRememberMeServices" /> <!-- TODO: extract openid config -->
+				<beans:ref bean="dbRememberMeServices" /> <!-- TODO: extract db config -->
+			</beans:list>
+		</beans:constructor-arg>
+		<beans:property name="filterProcessesUrl" value="/logout" />
+	</beans:bean>
+	
+	<!-- invalidates the session -->
+	<beans:bean id="securityContextLogoutHandler" class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
 	
 	<beans:bean id="contextRepository" class="org.bibsonomy.webapp.util.spring.security.UsernameSecurityContextRepository">
 		<beans:property name="service" ref="databaseUserService" />
@@ -41,6 +60,10 @@
 
 	<beans:bean id="entryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
 		<beans:property name="loginFormUrl" ref="loginUrl" />
+	</beans:bean>
+	
+	<beans:bean id="cookieKey" class="java.lang.String">
+		<beans:constructor-arg value="a1d0c6e83f027327d8461063f4ac58a6" /> <!-- TODO config -->
 	</beans:bean>
 
 	<beans:bean id="abstractUsernameAndPasswordFilter" class="org.bibsonomy.webapp.util.spring.security.filter.UsernamePasswordAuthenticationFilter" abstract="true">
@@ -65,17 +88,24 @@
 		<beans:property name="rememberMeServices" ref="dbRememberMeServices" />
 	</beans:bean>
 	
+	<!-- sets a remember me cookie for the database -->
 	<beans:bean id="dbRememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
   		<beans:property name="userDetailsService" ref="databaseUserService"/>
-  		<beans:property name="key" value="a1d0c6e83f027327d8461063f4ac58a6"/>
+  		<beans:property name="key" ref="cookieKey"/>
   		<beans:property name="alwaysRemember" value="true" />
   		<beans:property name="cookieName" value="db_user" />
 	</beans:bean>
 	
+	<!-- filter for the db remember me cookie -->
+	<beans:bean id="dbRememberMeFilter" class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
+		<beans:property name="rememberMeServices" ref="dbRememberMeServices" />
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+	</beans:bean>
+	
 	<beans:bean id="databaseUserService" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.DatabaseUserDetailsService">
 		<beans:property name="adminLogic" ref="adminSecLogic" />
-	</beans:bean>	
-
+	</beans:bean>
+	
 	<authentication-manager alias="authenticationManager">
 		<authentication-provider user-service-ref="databaseUserService">
 			<password-encoder hash="md5" />
@@ -84,27 +114,44 @@
 		<authentication-provider user-service-ref="databaseUserService" />
 	</authentication-manager>
 	
-	<!-- Open ID -->
-	
-	<beans:bean id="openIDFilter" class="org.springframework.security.openid.OpenIDAuthenticationFilter">
-		<beans:property name="authenticationManager" ref="openIDAuthenticatorManager" />
-		<beans:property name="filterProcessesUrl" value="/doOpenIDLogin" />
-		<beans:property name="authenticationSuccessHandler" ref="successHandler" />
-		<beans:property name="authenticationFailureHandler" ref="failureHandler" />
-		<beans:property name="rememberMeServices" ref="openIDRememberMeService" />
+	<!-- Open ID login -->
+	<beans:bean id="openIDLoginUrl" class="java.lang.String">
+		<beans:constructor-arg value="/doOpenIDLogin" />
 	</beans:bean>
 	
-	<beans:bean id="openIDRememberMeService" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.OpenIDRememberMeService" />
+	<!-- open id consumer -->
+	<beans:bean id="openIDConsumer" class="org.springframework.security.openid.OpenID4JavaConsumer" />
+	
+	<!-- filter -->
+	<beans:bean id="openIDFilter" class="org.springframework.security.openid.OpenIDAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="openIDAuthenticatorManager" />
+		<beans:property name="filterProcessesUrl" ref="openIDLoginUrl" />
+		<beans:property name="authenticationSuccessHandler" ref="successHandler" />
+		<beans:property name="authenticationFailureHandler" ref="failureHandler" />
+		<beans:property name="rememberMeServices" ref="openIDRememberMeServices" />
+		<beans:property name="consumer" ref="openIDConsumer" />
+	</beans:bean>
+	
+	<!-- open id remember me filter -->
+	<beans:bean id="openIDRememberMeFilter" class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
+		<beans:property name="rememberMeServices" ref="openIDRememberMeServices" />
+		<beans:property name="authenticationManager" ref="openIDAuthenticatorManager" />
+	</beans:bean>
+	
+	<!-- open id remember me service -->
+	<beans:bean id="openIDRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.OpenIDRememberMeService">
+		<beans:property name="userDetailsService" ref="databaseUserService"/>
+  		<beans:property name="key" ref="cookieKey"/>
+  		<beans:property name="alwaysRemember" value="true" />
+  		<beans:property name="cookieName" value="openID_user" />
+  		<beans:property name="filterUrl" ref="openIDLoginUrl" />
+		<beans:property name="projectRoot" value="${project.home}" />
+		<beans:property name="consumer" ref="openIDConsumer" />
+		<beans:property name="repo" ref="contextRepository" />
+	</beans:bean>
 	
 	<beans:bean id="openIDAuthenticationProvider" class="org.springframework.security.openid.OpenIDAuthenticationProvider">
 		<beans:property name="userDetailsService" ref="openIDUserDetailsService" />
-	</beans:bean>
-	
-	<beans:bean id="openIDRememberMeFilter" class="org.bibsonomy.webapp.util.spring.security.filter.RememberMeOpeniDAuthenticationFilter">
-		<beans:property name="filterProcessesUrl" value="/doOpenIDLogin" />
-		<beans:property name="authenticationManager" ref="authenticationManager" />
-		<beans:property name="repo" ref="contextRepository" />
-		<beans:property name="projectRoot" value="${project.home}" />
 	</beans:bean>
 	
 	<beans:bean id="openIDUserDetailsService" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.OpenIDDatabaseUserDetailsService">
@@ -119,7 +166,7 @@
 		</beans:property>
 	</beans:bean>
 	
-	<!-- LDAP -->
+	<!-- LDAP login -->
 	<beans:bean id="ldapUsernameAndPasswordFilter" parent="abstractUsernameAndPasswordFilter">
 		<beans:property name="authenticationManager" ref="ldapAuthManager" />
 		<beans:property name="filterProcessesUrl" value="/doLDAPLogin" />

@@ -17,6 +17,8 @@ import org.bibsonomy.util.StringUtils;
  * @version $Id$
  */
 public class CookieLogic implements RequestAware, ResponseAware {
+	private static final String SPLIT = "%20";
+
 	private static final Log log = LogFactory.getLog(CookieLogic.class);
 	
 	/**
@@ -35,7 +37,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	/**
 	 * The cookie which authenticates an openID user
 	 */
-	private String openIDCookie = "_openIDUser";
+	private final String openIDCookie = "_openIDUser";
 	/**
 	 * The name of the cookie which holds the spammer cookie.
 	 */
@@ -43,7 +45,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	/**
 	 * The character, which the cookie only contains, if the user is a spammer.
 	 */
-	private char SPAMMER_COOKIE_CONTAINS = '3';
+	private final char SPAMMER_COOKIE_CONTAINS = '3';
 	/**
 	 * The age (in seconds) a cookie will stay at most in the browser. Default: One year.  
 	 */
@@ -73,7 +75,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * 
 	 * @return <code>true</code> if cookie contained in request
 	 */
-	public boolean hasSpammerCookie () {
+	public boolean hasSpammerCookie() {
 		final String cookie = getCookie(requestLogic.getCookies(), cookieSpammer); 
 		return cookie != null && cookie.contains(String.valueOf(SPAMMER_COOKIE_CONTAINS));
 	}
@@ -85,7 +87,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * @param name
 	 * @return The value of the named cookie or <code>null</code>, if the cookie could not be found.
 	 */
-	private static String getCookie (final Cookie[] cookies, final String name) {
+	private static String getCookie(final Cookie[] cookies, final String name) {
 		if (cookies != null) {			
 			for (final Cookie cookie:cookies) {
 				if (name.equals(cookie.getName())) {
@@ -101,7 +103,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * 
 	 * @param spammer - a boolean indicating wether the user is a spammer or not.
 	 */
-	public void addSpammerCookie (final boolean spammer) {
+	public void addSpammerCookie(final boolean spammer) {
 		/*
 		 * build cookie value as first 10 characters of hashed date
 		 */
@@ -132,7 +134,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * @param passwordHash - the user's password, already MD5-hashed!
 	 */
 	public void addUserCookie(final String username, final String passwordHash) {
-		addCookie(cookieUser, encode(username) + "%20" + passwordHash);
+		addCookie(cookieUser, encode(username) + SPLIT + passwordHash);
 	}
 	
 	/** Add the openID cookie.
@@ -142,7 +144,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * @param passwordHash
 	 */
 	public void addOpenIDCookie(final String username, final String openID, final String passwordHash) {
-		addCookie(openIDCookie, encode(username) + "%20" + encode(openID) + "%20" + passwordHash); 
+		addCookie(openIDCookie, encode(username) + SPLIT + encode(openID) + SPLIT + passwordHash); 
 	}
 	
 	/** Adds a cookie to the response. Sets default values for path and maxAge. 
@@ -150,7 +152,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * @param key - The key identifying this cookie.
 	 * @param value - The value of the cookie.
 	 */
-	private void addCookie (final String key, final String value) {
+	private void addCookie(final String key, final String value) {
 		log.debug("Adding cookie " + key + ": " + value);
 		final Cookie cookie = new Cookie(key, value);
 		cookie.setPath(cookiePath);
@@ -159,7 +161,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	}
 	
 	/** Encodes a string with {@link URLEncoder#encode(String, String)} with UTF-8.
-	 * 
+	 * TODO: extract method
 	 * @param s
 	 * @return
 	 */
@@ -185,7 +187,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	private void deleteCookie(final String key) {
 		log.debug("Delete cookie " + key);
 		final Cookie cookie = new Cookie(key, "");
-		cookie.setPath("/");
+		cookie.setPath(this.cookiePath);
 		cookie.setMaxAge(0);
 		responseLogic.addCookie(cookie);
 	}
@@ -199,17 +201,21 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		return cookies != null && cookies.length > 0;
 	}
 		
-	/** The logic to access the HTTP request. Neccessary for getting cookies.
-	 * 
+	/**
+	 * The logic to access the HTTP request. Neccessary for getting cookies.
+	 *
 	 * @param requestLogic
 	 */
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 	
-	/** The logic to access the HTTP response. Neccessary for setting cookies.
+	/**
+	 * The logic to access the HTTP response. Neccessary for setting cookies.
 	 * @param responseLogic
 	 */
+	@Override
 	public void setResponseLogic(ResponseLogic responseLogic) {
 		this.responseLogic = responseLogic;
 	}
