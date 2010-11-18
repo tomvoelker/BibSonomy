@@ -8,7 +8,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
-import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -18,6 +17,11 @@ import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
+ * implements {@link SecurityContextRepository}
+ * - saves the <code>username</code> of the logged in user in the session attribute {@value #ATTRIBUTE_LOGIN_USER_NAME}
+ * - loads the security context by retrieving the username from the session and loading the userdetails from the provided
+ * UserdetailsSerivce {@link #service}
+ * 
  * @author dzo
  * @version $Id$
  */
@@ -44,7 +48,7 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 		final String username = getLoginUser(request);
 		if (present(username)) {
 			final UserDetails user = this.service.loadUserByUsername(username);
-			final Authentication authentication = new RememberMeAuthenticationToken("aaa", user, user.getAuthorities()); // TODO:key or own Token!?
+			final Authentication authentication = new SessionAuthenticationToken(user, user.getAuthorities());
 			securityContext.setAuthentication(authentication);
 		}
 		
