@@ -230,8 +230,9 @@ public abstract class JAXBRenderer implements Renderer {
 			// TODO log
 			// log.debug("");
 		} catch (final JAXBException e) {
-			if (e.getLinkedException().getClass() == SAXParseException.class) {
-				final SAXParseException ex = (SAXParseException) e.getLinkedException();
+			final Throwable linkedException = e.getLinkedException();
+			if (present(linkedException) && linkedException.getClass() == SAXParseException.class) {
+				final SAXParseException ex = (SAXParseException) linkedException;
 				throw new BadRequestOrResponseException(
 						"Error while parsing XML (Line " 
 						+ ex.getLineNumber() + ", Column "
@@ -285,8 +286,13 @@ public abstract class JAXBRenderer implements Renderer {
 		serialize(writer, xmlDoc);
 	}
 
-	private PostType createXmlPost(final Post<? extends Resource> post) throws InternServerException {
+	protected PostType createXmlPost(final Post<? extends Resource> post) throws InternServerException {
 		final PostType xmlPost = new PostType();
+		fillXmlPost(xmlPost, post);
+		return xmlPost;
+	}
+	
+	protected void fillXmlPost(final PostType xmlPost, final Post<? extends Resource> post) {
 		checkPost(post);
 
 		// set user
@@ -392,7 +398,7 @@ public abstract class JAXBRenderer implements Renderer {
 			xmlPost.setGoldStandardPublication(xmlPublication);
 		}
 		
-		return xmlPost;
+
 	}
 
 	private void fillPublicationXML(final BibTex publication, final BibtexType xmlPublication) {
