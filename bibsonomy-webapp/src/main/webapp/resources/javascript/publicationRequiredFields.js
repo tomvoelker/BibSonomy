@@ -280,3 +280,30 @@ function formatLabel (label) {
 	}
 	return label;
 }
+
+function myownTagInit(chkbox, tagbox) {
+	if(!(chkbox.length > 0 
+			&& tagbox.length > 0)) 
+		return;
+
+	if(tagbox.val().search(/myown[ ]?/gi) != -1) {
+		chkbox.attr('checked', 'true');
+	} 
+		
+	chkbox.click(
+		function() {
+			clear_tags ();
+			if(this.checked 
+					&& tagbox.val().search(/myown[ ]?/gi) == -1){
+					tagbox.val('myown '+tagbox.val());
+			} else {
+				tagbox.val(tagbox.val().replace(/myown[ ]?/gi, ''));
+			}
+	}).parent().removeClass('hiddenElement');
+}
+
+$(document).ready(
+ 		function(){
+ 			myownTagInit($('#myownChkBox'), $('#inpf'));
+     	}
+ );

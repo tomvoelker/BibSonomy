@@ -59,7 +59,11 @@
 		  <div class="fsRow">
             <form:label cssClass="fsLabel" path="post.resource.year" ><fmt:message key="post.resource.year"/>* </form:label><buttons:help message="post.resource.year.help"/>
             <form:input cssClass="fsInput fsSmall reqinput" path="post.resource.year" tabindex="2"/>
-            <div class="dissError"><form:errors path="post.resource.year" /></div>    
+            <div class="dissError"><form:errors path="post.resource.year" /></div>
+            <div class="hiddenElement">
+				<label class="fsLabel"><fmt:message key="post.resource.myown"/>*</label><buttons:help message="post.resource.myown.help"/>
+				<input type="checkbox" id="myownChkBox" tabindex="2"/>
+          	</div>    
           </div>
 
 		<c:if test="${autocompletion}">
