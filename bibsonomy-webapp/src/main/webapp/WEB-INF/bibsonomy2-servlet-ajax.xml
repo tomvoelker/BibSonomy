@@ -140,6 +140,6 @@
 	
 	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
 	
-	<bean id="openAccessController" class="org.bibsonomy.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController" />	
+	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController" />	
 	
 </beans>
