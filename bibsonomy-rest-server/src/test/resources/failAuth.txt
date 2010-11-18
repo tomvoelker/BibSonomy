@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<bibsonomy stat="fail">
+<ns2:bibsonomy stat="fail" xmlns:ns2="http://www.bibsonomy.org/2010/11/BibSonomy">
     <error>Please authenticate yourself.</error>
-</bibsonomy>
+</ns2:bibsonomy>
