@@ -28,9 +28,12 @@ import org.springframework.security.openid.OpenIDConsumerException;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
-import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
+ * - saves on login success the username, openid and a signature (username, openid, password, 
+ *   key) in a value
+ * - it auto logins the user by redirecting the user to his open id provider
+ * 
  * @author dzo
  * @version $Id$
  */
@@ -40,7 +43,6 @@ public class OpenIDRememberMeService extends AbstractRememberMeServices {
 	private static final Log log = LogFactory.getLog(OpenIDRememberMeService.class);
 	
 	private OpenIDConsumer consumer;
-	private SecurityContextRepository repo;
 	private Map<String,String> realmMapping = Collections.emptyMap();
     private Set<String> returnToUrlParameters = Collections.emptySet();
 	private String projectRoot;
@@ -105,50 +107,45 @@ public class OpenIDRememberMeService extends AbstractRememberMeServices {
         if (isTokenExpired(tokenExpiryTime)) {
             throw new InvalidCookieException("Cookie token[3] has expired (expired on '"  + new Date(tokenExpiryTime) + "'; current time is '" + new Date() + "')");
         }
-        
-        /*
-         * if user is not logged in, redirect user to his open id provider
-         */
-        if (!this.repo.containsContext(request)) {
-        	/*
-        	 *  extract open id and user name
-        	 */
-        	final String username = cookieTokens[0];
-        	final String claimedIdentity = cookieTokens[1] + ":" + cookieTokens[2];
-        	
-        	final UserDetails userDetails = this.getUserDetailsService().loadUserByUsername(username);
-        	
-        	/*
-        	 * check token signature
-        	 * TODO: use the openID from the userDetails
-        	 */
-        	final String password = userDetails.getPassword();
-        	final String expectedTokenSignature = this.makeTokenSignature(tokenExpiryTime, username, claimedIdentity, password);
-        	final String signature = cookieTokens[4];
-			if (!expectedTokenSignature.equals(signature)) {
-                throw new InvalidCookieException("Cookie token[4] contained signature '" + signature  + "' but expected '" + expectedTokenSignature + "'");
-            }
-        	
-        	
-			final String returnToUrl = this.buildReturnToUrl(request);
-            final String realm = this.lookupRealm(returnToUrl);
-            String openIdUrl = null;
-            try {
-            	openIdUrl = this.consumer.beginConsumption(request, claimedIdentity, returnToUrl, realm);
-            	if (log.isDebugEnabled()) {
-            		log.debug("return_to is '" + returnToUrl + "', realm is '" + realm + "'");
-            		log.debug("Redirecting to " + openIdUrl);
-            	}
-            	response.sendRedirect(openIdUrl);
-            } catch (final IOException ex) {
-				log.warn("could not set redirect url " + openIdUrl, ex);
-			} catch (final OpenIDConsumerException e) {
-            	log.debug("Failed to consume claimedIdentity: " + claimedIdentity, e);
-            	throw new AuthenticationServiceException("Unable to process claimed identity '" + claimedIdentity + "'");
-			}
+       
+    	/*  if user is not logged in, redirect user to his open id provider
+    	 *  extract open id and user name
+    	 */
+    	final String username = cookieTokens[0];
+    	final String claimedIdentity = cookieTokens[1] + ":" + cookieTokens[2];
+    	
+    	final UserDetails userDetails = this.getUserDetailsService().loadUserByUsername(username);
+    	
+    	/*
+    	 * check token signature
+    	 * TODO: use the openID from the userDetails
+    	 */
+    	final String password = userDetails.getPassword();
+    	final String expectedTokenSignature = this.makeTokenSignature(tokenExpiryTime, username, claimedIdentity, password);
+    	final String signature = cookieTokens[4];
+		if (!expectedTokenSignature.equals(signature)) {
+            throw new InvalidCookieException("Cookie token[4] contained signature '" + signature  + "' but expected '" + expectedTokenSignature + "'");
         }
+    	
+    	
+		final String returnToUrl = this.buildReturnToUrl(request);
+        final String realm = this.lookupRealm(returnToUrl);
+        String openIdUrl = null;
+        try {
+        	openIdUrl = this.consumer.beginConsumption(request, claimedIdentity, returnToUrl, realm);
+        	if (log.isDebugEnabled()) {
+        		log.debug("return_to is '" + returnToUrl + "', realm is '" + realm + "'");
+        		log.debug("Redirecting to " + openIdUrl);
+        	}
+        	response.sendRedirect(openIdUrl);
+        } catch (final IOException ex) {
+			log.warn("could not set redirect url " + openIdUrl, ex);
+		} catch (final OpenIDConsumerException e) {
+        	log.debug("Failed to consume claimedIdentity: " + claimedIdentity, e);
+        	throw new AuthenticationServiceException("Unable to process claimed identity '" + claimedIdentity + "'");
+		}
         
-        // TODO comment
+        // throw an exception to redirect the user
         throw new RememberMeAuthenticationException("redirect was sent");
 	}
 
@@ -229,13 +226,6 @@ public class OpenIDRememberMeService extends AbstractRememberMeServices {
 	 */
 	public void setReturnToUrlParameters(Set<String> returnToUrlParameters) {
 		this.returnToUrlParameters = returnToUrlParameters;
-	}
-
-	/**
-	 * @param repo the repo to set
-	 */
-	public void setRepo(SecurityContextRepository repo) {
-		this.repo = repo;
 	}
 
 	/**

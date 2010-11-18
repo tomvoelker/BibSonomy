@@ -150,7 +150,6 @@
   		<property name="filterUrl" ref="openIDLoginUrl" />
 		<property name="projectRoot" value="${project.home}" />
 		<property name="consumer" ref="openIDConsumer" />
-		<property name="repo" ref="contextRepository" />
 	</bean>
 	
 	<bean id="openIDAuthenticationProvider" class="org.springframework.security.openid.OpenIDAuthenticationProvider">
