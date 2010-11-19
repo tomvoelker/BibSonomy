@@ -141,17 +141,17 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			final List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, groupingName, null, null, null, userRelation, null, 0, 10);	
 			command.getRelatedUserCommand().setRelatedUsers(similarUsers);
 			
-			if (requTags.size() > 0) {
+			if (present(requTags)) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				this.endTiming();
 
-				// forward to bibtex page if filter is set
+				// forward to publication page if filter is set
 				if (FilterEntity.JUST_PDF.equals(filter) || FilterEntity.DUPLICATES.equals(filter)) {
 					return Views.USERDOCUMENTPAGE;
 				}
 				
-				//get the information needed for the sidebar
+				// get the information needed for the sidebar
 				command.setConceptsOfRequestedUser(this.getConceptsForSidebar(command, GroupingEntity.USER, groupingName, requTags));
 				command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
 				command.setPostCountForTagsForAll(this.getPostCountForSidebar(GroupingEntity.ALL, "", requTags));
