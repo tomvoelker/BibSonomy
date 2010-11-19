@@ -28,7 +28,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +44,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
-import org.bibsonomy.util.id.DOIUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -62,7 +60,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	private static final String SITE_URL  = "http://portal.acm.org/";
 	private static final String info      = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
-	private Log log = LogFactory.getLog(ACMBasicScraper.class);
+	private final Log log = LogFactory.getLog(ACMBasicScraper.class);
 
 	private static final String BIBTEX_STRING_ON_ACM = "BibTeX";
 
@@ -83,6 +81,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	private static final String HTML_TAG             = "\\<.*?\\>";
 	private static final String MULTIPLE_WHITESPACE  = "\\s{2,}";
 	
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		
@@ -140,6 +139,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 				if (indexOf > 0) {
 					bibtexEntries.replace(indexOf, bibtexEntries.length(), "}\n}");
 				}
+
 				
 				/*
 				 * append URL
@@ -157,8 +157,13 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 					BibTexUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstrct);
 				} else // log if abstract is not available
 					log.info("ACMBasicScraper: Abstract not available");
-	
-				final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
+
+				/*
+				 * FIXME: unfortunately this also "cleans" the "url" field. :-(
+				 * Thus, I disabled it (rja, 2010-11-19)
+				 */
+//				final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
+				final String result = bibtexEntries.toString().trim();
 	
 				if (!"".equals(result)) {
 					sc.setBibtexResult(result);
@@ -560,6 +565,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 		return info;
 	}
 
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns; 
 	}
