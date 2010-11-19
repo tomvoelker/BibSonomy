@@ -74,6 +74,20 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 */
 	private static final ResourceFactory RESOURCE_FACTORY = new ResourceFactory();
 	
+	/**
+	 * 
+	 * @param resourceClass
+	 * @return the old resource name
+	 */
+	@Deprecated // TODO: remove as soon as bibtex is renamed to puplications in SimpleResourceViewCommand
+	public static String getOldResourceName(Class<? extends Resource> resourceClass) {
+		if (BibTex.class.equals(resourceClass)) {
+			return "bibtex";
+		}
+		return ResourceFactory.getResourceName(resourceClass);
+	}
+	
+	
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
 
@@ -463,7 +477,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							postsWithErrors.add(post);
 						}
 						hasErrors = true;
-						errors.rejectValue(ResourceFactory.getResourceName(resourceType) + ".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+						errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
 					if (!hasErrors && hasDuplicate) {
 						/*
