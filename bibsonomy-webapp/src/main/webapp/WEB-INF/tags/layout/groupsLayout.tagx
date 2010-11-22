@@ -27,7 +27,7 @@
 	</c:if>	
 		
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.context.loginUser.name}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.context.loginUser.name}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
 		<jsp:attribute name="headerExt">
 			<jsp:invoke fragment="headerExt"/>		
 		</jsp:attribute>

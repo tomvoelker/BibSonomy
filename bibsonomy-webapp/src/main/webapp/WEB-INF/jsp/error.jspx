@@ -12,11 +12,8 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:layout 
-		searchString="" 
-		pageTitle="An error occured!" 
-		loginUser="${command.context.loginUser}"
-		requPath="">
+	<!-- TODO: i18n -->
+	<layout:layout pageTitle="An error occured!" loginUser="${command.context.loginUser}" requPath="">
 		<jsp:attribute name="heading">
 			<fmt:message key="error"/>
 		</jsp:attribute>	

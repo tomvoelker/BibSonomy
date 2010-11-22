@@ -8,8 +8,10 @@
 	
 	<!-- Menu including Toolbar -->
 	<jsp:directive.attribute name="selected" required="true"/>
-	<jsp:directive.attribute name="username" required="true"/>
+	<jsp:directive.attribute name="loginUser" required="true" type="org.bibsonomy.model.User"/>
 	<jsp:directive.attribute name="resources" required="true"/>
+	
+	<c:set var="username" value="${loginUser.name}" />
 	
 	<jsp:body>
 		<!-- The menu -->

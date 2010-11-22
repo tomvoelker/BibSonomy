@@ -15,11 +15,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:layout 
-		searchString="" 
-		pageTitle="${command.pageTitle}" 
-		loginUser="${command.context.loginUser}"
-		requPath="">
+	<layout:layout pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requPath="">
 		<jsp:attribute name="heading">
 		    <a href="/admin"><fmt:message key="navi.admin"/></a> ::
 			<a rel="path_menu" href="/admin/recommender">Recommender</a>

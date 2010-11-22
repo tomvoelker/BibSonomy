@@ -63,7 +63,7 @@
 				<div id="head">
 					<h1>${projectName}</h1>
 					<!-- menu including toolbar -->
-					<mobile:menu selected="${selected}" username="${loginUser.name}" resources="${resources}" />
+					<mobile:menu selected="${selected}" loginUser="${loginUser}" resources="${resources}" />
 				</div>
 				<!-- content placeholder -->
 				<div id="content">

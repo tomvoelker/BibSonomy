@@ -11,7 +11,9 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<fmt:message key="navi.login" var="loginTitle" /> 
+	
+	<fmt:message key="navi.login" var="loginTitle" />
+	
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${loginTitle}" requPath="${requPath}">
 
 		<jsp:attribute name="headerExt">
@@ -148,9 +150,8 @@
       						<form:form action="/doOpenIDLogin" method="POST">
       		              <table>
       		                <tr>
-      		                  <td><label for="openID">OpenID:</label></td>
-      		                  <td><input name="openid_identifier"
-									cssClass="openid" type="text" size="30" /></td>
+      		                  <td><form:label path="openID">OpenID:</form:label></td>
+      		                  <td><form:input path="openID" cssClass="openid" type="text" size="30" /><form:errors cssClass="errmsg" path="openID" /></td>
       		                </tr>
 
       		                <tr>

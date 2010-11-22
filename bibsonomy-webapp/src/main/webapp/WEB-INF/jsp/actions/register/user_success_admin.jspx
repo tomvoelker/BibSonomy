@@ -12,16 +12,11 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:layout 
-      loginUser="${command.context.loginUser}" 
-      searchString="hurz" 
-      pageTitle="${command.pageTitle}" 
-      requPath="${requPath}">
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}"  requPath="${requPath}">
   
         <jsp:attribute name="heading">
           <fmt:message key="navi.register"/>
         </jsp:attribute>
-      
         
         <jsp:attribute name="content">
 

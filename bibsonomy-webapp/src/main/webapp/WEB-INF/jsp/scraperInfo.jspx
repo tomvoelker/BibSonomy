@@ -11,9 +11,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
+	<!-- TODO: i18n -->
 	<layout:layout 
-		searchString="hurz" 
 		pageTitle="scraper info" 
 		loginUser="${command.context.loginUser}"
 		requPath="${requPath}">

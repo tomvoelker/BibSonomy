@@ -37,7 +37,7 @@
      	<jsp:attribute name="title">  <bib:title post="${post}"/></jsp:attribute>
      	<jsp:attribute name="desc">   <bib:desc post="${post}"/></jsp:attribute>
      	<jsp:attribute name="bmicon"> <bib:bmicon post="${post}" /></jsp:attribute>
-     	<jsp:attribute name="actions"><bib:actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
+     	<jsp:attribute name="actions"><bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
    </batch:skeleton>
     	
 </jsp:root>

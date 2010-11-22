@@ -18,7 +18,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" searchString="">
+	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}">
 			
 		<!--+
     	 	| html header extension: page specific stylesheet

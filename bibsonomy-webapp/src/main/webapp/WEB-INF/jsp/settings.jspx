@@ -31,6 +31,7 @@
 				<c:when test="${command.selTab == 2}">
 					<settings:settingsImport command="${command}"/>
 				</c:when>
+				<!-- TODO: user request attribute used?! -->
 				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq user.name))}">
 					<settings:settingsGroup command="${command}"/>
 				</c:when>
@@ -67,7 +68,7 @@
 			<!-- loginUser.groups -->
 			<li>    
 				<span class="sidebar_h"><a href="/groups"><fmt:message key="groups"/></a></span>
-				<ul><c:forEach var="group" items="${user.groups}">
+				<ul><c:forEach var="group" items="${command.context.groups}">
 			  	<li><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/></a></li>
 				</c:forEach></ul>
 			</li>

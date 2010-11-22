@@ -12,7 +12,7 @@
 	<jsp:directive.attribute name="projectContext" type="java.lang.String" required="true"/>	
 		
 	<c:if test="${authOrder == '' or empty authOrder}">
-	   	<c:set var="authOrder" value="db,openid"/>
+	   	<c:set var="authOrder" value="ldap,db,openid"/>
 	</c:if>
 
  	<c:set var="authOrderArray" value="${fn:split(authOrder,',')}"/>

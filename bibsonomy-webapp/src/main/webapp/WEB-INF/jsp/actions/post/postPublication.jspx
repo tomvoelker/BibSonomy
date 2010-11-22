@@ -18,12 +18,10 @@
 >
     
 	
-    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
- 	
-	
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
 	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
 	
-	<layout:tabLayout command="${command}"	pageTitle="${msgPostPublication}" requPath="${requPath}" selectedNaviTab="nav_postPub">
+	<layout:tabLayout command="${command}" pageTitle="${msgPostPublication}" requPath="${requPath}" selectedNaviTab="nav_postPub">
 			 
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${msgPostPublication}"/></a>
@@ -32,10 +30,6 @@
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 	    </jsp:attribute>
-			
-			
-			
-			
 			
 	  <jsp:attribute name="tabcontent">
 
@@ -123,7 +117,7 @@
 						      		</jsp:attribute>
 						      		
 						      		<jsp:attribute name="actions">
-						      			<actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/>
+						      			<actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
 						      		</jsp:attribute>
 					        </batch:content>
 				        </fieldset>

@@ -15,7 +15,6 @@
 
   <layout:layout 
       loginUser="${command.context.loginUser}" 
-      searchString="hurz" 
       pageTitle="${command.pageTitle}" 
       requPath="${requPath}">
   

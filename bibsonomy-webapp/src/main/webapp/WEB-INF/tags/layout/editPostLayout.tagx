@@ -46,12 +46,12 @@
             <!--
                | groups 
       			       -->
-	        <post:groupBox groups="${loginUser.groups}"/>
-			<c:if test="${not empty loginUser.groups}">
-				<post:relevantForBox groups="${loginUser.groups}"/>
+	        <post:groupBox groups="${command.context.loginUser.groups}"/>
+			<c:if test="${not empty command.context.loginUser.groups}">
+				<post:relevantForBox groups="${command.context.loginUser.groups}"/>
 			</c:if>	
 			<div class="clearfloat p">
-				<post:tagSets groups="${loginUser.groups}"/>
+				<post:tagSets groups="${command.context.loginUser.groups}"/>
 			</div>
 		</jsp:attribute>
 	</layout:editGoldStandardPostLayout>
