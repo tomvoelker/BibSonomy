@@ -6,17 +6,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	                    http://www.springframework.org/schema/util 
-	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
-	<!--                    http://www.springframework.org/schema/security
-	                    http://www.springframework.org/schema/security/spring-security-3.0.3.xsd">
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
-	  <security:global-method-security pre-post-annotations="enabled" />
-	
-	<bean id="securityContextHolder" class="org.springframework.security.core.context.SecurityContextHolder" scope="request"/>
-	
-	<bean id="securityContext" class="org.springframework.security.core.context.SecurityContext" factory-bean="securityContextHolder" factory-method="getContext" scope="request" />-->
-	
-	
+	 
 	<!-- 
 		extracts properties from the provided file and inserts them into bean 
 		properties using "${property.name}" notation  
