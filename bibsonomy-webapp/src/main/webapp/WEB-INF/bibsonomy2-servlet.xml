@@ -592,7 +592,7 @@
 	    This bean provides admin access to the logic interface by predicting 
 	    to be a user with role "admin". 
 	 -->
-	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="request">
+	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean">
 	    <!-- name the admin user will have when accessing the logic interface -->
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
@@ -645,7 +645,6 @@
 		<property name="wurflManager" ref="wurfl.manager" />
 	</bean>
 	
-	
 	<!--  #################### locale and theme resolver #################### -->
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
 		<property name="defaultLocale"><value>${project.defaultLocale}</value></property>
@@ -670,7 +669,7 @@
 			<list>
 				<value>${project.name}_messages</value>
 				<value>messages</value>
-			</list>   
+			</list>
 		</property> 
 	</bean>
 
@@ -715,4 +714,5 @@
     <import resource="bibsonomy2-servlet-admin.xml"/>
 	<import resource="bibsonomy2-servlet-lucene.xml"/>
 	<import resource="bibsonomy2-servlet-events.xml"/>
+	<import resource="bibsonomy2-servlet-security.xml"/>
 </beans>
