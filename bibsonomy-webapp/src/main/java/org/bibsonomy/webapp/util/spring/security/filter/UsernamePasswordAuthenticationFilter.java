@@ -5,9 +5,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.webapp.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.TeerGrube;
+import org.bibsonomy.webapp.util.spring.security.ServiceUnavailableException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
@@ -54,7 +54,7 @@ public class UsernamePasswordAuthenticationFilter extends org.springframework.se
 			log.warn("user " + username + " from IP " + inetAddress + " tried to login but still has to wait for max(" 
 					+ remainingWaitSecondsName + ", " + remainingWaitSecondsIP + ") = " + waitingSeconds + " seconds.");
 
-			/*
+			/* 
 			 * Send user error message.
 			 */
 			throw new ServiceUnavailableException("error.service_unavailable", waitingSeconds);

@@ -16,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 
+import filters.InitUserFilter;
+
 /**
  * implements {@link SecurityContextRepository}
  * - saves the <code>username</code> of the logged in user in the session attribute {@value #ATTRIBUTE_LOGIN_USER_NAME}
@@ -50,6 +52,8 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 			final UserDetails user = this.service.loadUserByUsername(username);
 			final Authentication authentication = new SessionAuthenticationToken(user, user.getAuthorities());
 			securityContext.setAuthentication(authentication);
+			
+			request.setAttribute(InitUserFilter.REQ_ATTRIB_USER, ((UserAdapter)user).getUser());
 		}
 		
 		return securityContext;

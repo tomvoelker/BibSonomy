@@ -25,6 +25,7 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+		// TODO: remove instanceof chain
 		if (exception instanceof BadCredentialsException) {
 			/*
 			 * log failure

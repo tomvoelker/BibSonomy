@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 
 /**
+ * maps ldap users to BibSonomy system users
+ * 
  * @author dzo
  * @version $Id$
  */
@@ -21,20 +23,35 @@ public class LDAPUserDetailsServiceMapper implements UserDetailsContextMapper {
 	private UserDetailsService userDetailsService;
 	private LogicInterface adminLogic;
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.security.ldap.userdetails.UserDetailsContextMapper#mapUserFromContext(org.springframework.ldap.core.DirContextOperations, java.lang.String, java.util.Collection)
+	 */
 	@Override
-	public UserDetails mapUserFromContext(final DirContextOperations ctx, final String username, final Collection<GrantedAuthority> authority) {
+	public UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<GrantedAuthority> authority) {
 		final String systemName = this.adminLogic.getUsernameByLdapUserId(username);
 		if (systemName == null) {
-			throw new UsernameNotFoundException("no user found", ctx); // TODO
+			throw new UsernameNotFoundException("no user found", ctx);
 		}
 		
 		final UserDetails loadUserByUsername = this.userDetailsService.loadUserByUsername(systemName);
 		if (!loadUserByUsername.isEnabled()) {
 			throw new DisabledException("user was deleted");
 		}
+		
 		return loadUserByUsername;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.security.ldap.userdetails.UserDetailsContextMapper#mapUserToContext(org.springframework.security.core.userdetails.UserDetails, org.springframework.ldap.core.DirContextAdapter)
+	 */
+	@Override
+	public void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
+		throw new UnsupportedOperationException();
+	}
+	
+	
 	/**
 	 * @return the adminLogic
 	 */
@@ -47,11 +64,6 @@ public class LDAPUserDetailsServiceMapper implements UserDetailsContextMapper {
 	 */
 	public void setAdminLogic(LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
-	}
-
-	@Override
-	public void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
-		// TODO what to do?!
 	}
 
 	/**
