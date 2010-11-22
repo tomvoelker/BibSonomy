@@ -176,7 +176,7 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<properties>
-		<spring.version>3.0.4.RELEASE</spring.version>
+		<spring.version>3.0.5.RELEASE</spring.version>
 	</properties>
 	<modules>
 		<module>bibsonomy-bibtex-parser</module>
