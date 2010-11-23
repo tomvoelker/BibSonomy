@@ -444,6 +444,11 @@ public class InitUserFilter implements Filter {
 	
 	/**
 	 * Small helper method for Servlets to easily retrieve User.
+	 * 
+	 * FIXME: How does this work? Using a static method to retrieve thread-specific
+	 * information? Looks like some Java magic. :-O
+	 * 
+	 * 
 	 * @return the user
 	 */
 	public static User getUser() {
