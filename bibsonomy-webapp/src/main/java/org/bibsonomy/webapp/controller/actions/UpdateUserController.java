@@ -131,6 +131,7 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 		user.setProfession(commandUser.getProfession());
 		user.setInstitution(commandUser.getInstitution());
 		user.setInterests(commandUser.getInterests());
+		user.setHobbies(commandUser.getHobbies());
 		user.setPlace(commandUser.getPlace());
 
 		/*
