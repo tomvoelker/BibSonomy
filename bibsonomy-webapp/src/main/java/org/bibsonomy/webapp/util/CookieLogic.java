@@ -133,6 +133,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * @param username - the user's name.
 	 * @param passwordHash - the user's password, already MD5-hashed!
 	 */
+	@Deprecated
 	public void addUserCookie(final String username, final String passwordHash) {
 		addCookie(cookieUser, encode(username) + SPLIT + passwordHash);
 	}
@@ -143,6 +144,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * @param openID
 	 * @param passwordHash
 	 */
+	@Deprecated
 	public void addOpenIDCookie(final String username, final String openID, final String passwordHash) {
 		addCookie(openIDCookie, encode(username) + SPLIT + encode(openID) + SPLIT + passwordHash); 
 	}
@@ -171,25 +173,6 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		} catch (UnsupportedEncodingException ex) {
 			return s;
 		}
-	}
-	
-	/**
-	 * Deletes the OpenID cookie
-	 */
-	public void deleteOpenIDCookie() {
-		deleteCookie(openIDCookie);
-	}
-	
-	/**
-	 * Deletes a cookie 
-	 * @param key name of the cookie
-	 */
-	private void deleteCookie(final String key) {
-		log.debug("Delete cookie " + key);
-		final Cookie cookie = new Cookie(key, "");
-		cookie.setPath(this.cookiePath);
-		cookie.setMaxAge(0);
-		responseLogic.addCookie(cookie);
 	}
 	
 	/** Checks, if the request contains any cookies.
@@ -223,6 +206,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	/** The cookie which authenticates the user.
 	 * @param cookieUser
 	 */
+	@Deprecated
 	public void setCookieUser(String cookieUser) {
 		this.cookieUser = cookieUser;
 	}
