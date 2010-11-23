@@ -432,11 +432,6 @@ public enum Views implements View {
 	 * query independent views to show bookmark or 
 	 * publication lists
 	 * *****************************************************/
-
-	/**
-	 * error page
-	 */
-	ERROR("error"),
 	
 	/**
 	 * bibtex output
@@ -567,6 +562,10 @@ public enum Views implements View {
 	/*
 	 * Error pages
 	 */
+	/**
+	 * error page
+	 */
+	ERROR("error"),
 	
 	/**
 	 * 404
