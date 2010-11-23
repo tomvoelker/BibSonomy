@@ -11,6 +11,8 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
+ * Wrapper around our user object to make it available as UserDetails.
+ * 
  * @author dzo
  * @version $Id$
  */
