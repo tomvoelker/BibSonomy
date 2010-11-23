@@ -60,7 +60,7 @@ public class ActionValidationFilter implements Filter {
 		/*
 		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ... 
 		 */
-		if (requPath.startsWith(ActionValidationFilter.STATIC_RESOURCES) || requPath.startsWith(ActionValidationFilter.API)) {
+		if (requPath.startsWith(STATIC_RESOURCES) || requPath.startsWith(API)) {
 			chain.doFilter(request, response);
 			return;
 		} 
@@ -68,7 +68,7 @@ public class ActionValidationFilter implements Filter {
 		/*
 		 * This filter makes only sense, if user is logged in.
 		 */
-		User user = InitUserFilter.getUser(httpServletRequest);
+		User user = FilterUtils.getUser();
 		if (user != null && user.getName() != null) {
 			/*
 			 * get sessions credential storage variable

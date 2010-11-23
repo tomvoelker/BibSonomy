@@ -1,5 +1,6 @@
 package servlets;
 
+import filters.FilterUtils;
 import helpers.mail;
 
 import java.io.IOException;
@@ -30,9 +31,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
 
 import servlets.listeners.InitialConfigListener;
-import filters.InitUserFilter;
 
-
+@Deprecated
 public class JoinGroupHandler extends HttpServlet {
 
 	private static final long serialVersionUID = 385676755112385793L;
@@ -71,7 +71,7 @@ public class JoinGroupHandler extends HttpServlet {
 		/* Get the session attribute of current user  */
 		HttpSession session = request.getSession(true);
 
-		User userBean = InitUserFilter.getUser(request);
+		final User userBean = FilterUtils.getUser();
 		String currUser = userBean.getName(); 
 		if (currUser == null) {
 			// TODO: does this work on bibsonomy.org? I guess, /bibsonomy/ is added, because

@@ -16,10 +16,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.util.spring.security.UserAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
@@ -30,18 +26,18 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 public class InitUserFilter implements Filter {
 	private final static Log log = LogFactory.getLog(InitUserFilter.class);
 	
-	/*
-	 * All X.509 users get the same password in the database, since it is never
-	 * used for authentication.
-	 */
-	@Deprecated
-	private static final String X509_GENERIC_PASSWORD = "*";
-	
-	/**
-	 * The filter configuration object we are associated with. If this value is
-	 * null, this filter instance is not currently configured.
-	 */
-	protected FilterConfig filterConfig = null;
+//	/*
+//	 * All X.509 users get the same password in the database, since it is never
+//	 * used for authentication.
+//	 */
+//	@Deprecated
+//	private static final String X509_GENERIC_PASSWORD = "*";
+//	
+//	/**
+//	 * The filter configuration object we are associated with. If this value is
+//	 * null, this filter instance is not currently configured.
+//	 */
+//	protected FilterConfig filterConfig = null;
 	
 	/**
 	 * TODO: improve documentation
@@ -82,28 +78,28 @@ public class InitUserFilter implements Filter {
 	 */
 	public static boolean useX509forAuth = false;
 
-	/**
-	 * Take this filter out of service.
+	/*
+	 * (non-Javadoc)
+	 * @see javax.servlet.Filter#destroy()
 	 */
 	@Override
 	public void destroy() {
-		this.filterConfig = null;
+//		this.filterConfig = null;
 	}
 
-	/**
-	 * Place this filter into service.
-	 * 
-	 * @param filterConfig
-	 *            The filter configuration object
+	/*
+	 * (non-Javadoc)
+	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
 	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		this.filterConfig = filterConfig;
-		/*
-		 * if true, we use X.509 certificates instead of passwords in DB for
-		 * authentication
-		 */
-		useX509forAuth = Boolean.parseBoolean(this.filterConfig.getInitParameter("useX509forAuth"));
+//		this.filterConfig = filterConfig;
+//		TODO: must be Configurable in spring security
+//		/*
+//		 * if true, we use X.509 certificates instead of passwords in DB for
+//		 * authentication
+//		 */
+//		useX509forAuth = Boolean.parseBoolean(filterConfig.getInitParameter("useX509forAuth"));
 	}
 
 	/**
@@ -114,8 +110,6 @@ public class InitUserFilter implements Filter {
 	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-
 //		final String requPath = httpServletRequest.getServletPath();
 //		/*
 //		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ...
@@ -221,7 +215,7 @@ public class InitUserFilter implements Filter {
 //						Date userLastAccess = loginUser.getLastLdapUpdate();
 //						
 //						// TODO: get timeToReAuth from tomcat's environment, so a user can adjust it without editing code  
-//						int timeToReAuth =  18  *60*60; // seconds
+//						int timeToReAuth =  18 * 60 * 60; // seconds
 //						Date dateNow = new Date();
 //						// timeDiff is in seconds
 //						long timeDiff = (dateNow.getTime() - userLastAccess.getTime())/1000;						
@@ -395,10 +389,17 @@ public class InitUserFilter implements Filter {
 //		 * as request attribute (used by old servlets and JSPs).
 //		 */
 //		httpServletRequest.setAttribute(REQ_ATTRIB_USER, loginUser);
-
+		/*
+		 * TODO: SEC: extract
+		 * why was the locale handling put into this filter?
+		 * wouldn't it make sense to write a spring LocalResolver?!
+		 * the old views don't need the locale, or?!
+		 */
+		
 		// add default language to request if no language is set
+		final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 		final HttpSession session = httpServletRequest.getSession();
-		final String langUser = getUser().getSettings().getDefaultLanguage();
+		final String langUser = FilterUtils.getUser().getSettings().getDefaultLanguage();
 		/*
 		if (session.getAttribute(REQ_ATTRIB_LANGUAGE) == null) {
 			if(langUser == null) {
@@ -430,38 +431,6 @@ public class InitUserFilter implements Filter {
 		}
 		// pass control on to the next filter
 		chain.doFilter(request, response);
-	}
-	
-	/**
-	 * Small helper method for Servlets to easily retrieve User.
-	 * @param request
-	 * @return the user
-	 */
-	@Deprecated
-	public static User getUser(HttpServletRequest request) {
-		return getUser();
-	}
-	
-	/**
-	 * Small helper method for Servlets to easily retrieve User.
-	 * 
-	 * FIXME: How does this work? Using a static method to retrieve thread-specific
-	 * information? Looks like some Java magic. :-O
-	 * 
-	 * 
-	 * @return the user
-	 */
-	public static User getUser() {
-		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null) {
-			final Object principal = authentication.getPrincipal();
-			if (principal != null && principal instanceof UserAdapter) {
-				UserAdapter adapter = (UserAdapter) principal;
-				return adapter.getUser();
-			}
-		}
-		
-		return new User();
 	}
 
 //	/**

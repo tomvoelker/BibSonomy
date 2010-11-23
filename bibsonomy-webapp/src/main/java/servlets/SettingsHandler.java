@@ -33,11 +33,12 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
 
 import filters.ActionValidationFilter;
-import filters.InitUserFilter;
+import filters.FilterUtils;
 
 /**
  * @author Serak
  */
+@Deprecated
 public class SettingsHandler extends HttpServlet{
 
 	private static final long serialVersionUID = 4051324539558769200L;
@@ -71,7 +72,7 @@ public class SettingsHandler extends HttpServlet{
 		PreparedStatement stmtP = null;
 
 		HttpSession session = request.getSession(true);
-		User user = InitUserFilter.getUser(request);
+		final User user = FilterUtils.getUser();
 		String currUser = user.getName(); 
 
 		/*

@@ -18,7 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
 
-import filters.InitUserFilter;
+import filters.FilterUtils;
 
 
 /**
@@ -26,6 +26,7 @@ import filters.InitUserFilter;
  * gather statistics for the admin_statistics.jsp page
  *
  */
+@Deprecated
 public class AdminHandler extends HttpServlet {
 	
 	private static final long serialVersionUID = 3691036578076309554L;
@@ -52,7 +53,7 @@ public class AdminHandler extends HttpServlet {
 		/*
 		 * check user name (only admins are allowed)
 		 */
-		User user = InitUserFilter.getUser(request);
+		final User user = FilterUtils.getUser();
 		String userName = user.getName();
 
 		if (!(allowedUsers.contains(userName))) {
