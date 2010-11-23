@@ -23,6 +23,8 @@
 
 package org.bibsonomy.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -212,5 +214,58 @@ public class UrlUtils {
 		} catch (UnsupportedEncodingException ex) {
 			return s;
 		}
+	}
+	
+	/**
+	 * Normalizes the URL by trimming whitespace and appending "http://", if it
+	 * is not present.
+	 * 
+	 * FIXME: the URL is converted to lower case - this might break some URLs.
+	 * 
+	 * This is mainly for normalizing the OpenID of a user for matching.
+	 * 
+	 * @param url - the URL that shall be normalized. 
+	 * @return normalized URL
+	 */
+	public static String normalizeURL(String url) {
+
+		/*
+		 * do nothing if url is empty
+		 */
+		if (!present(url)) {
+			return url;
+		}
+
+		/*
+		 * remove leading and trailing whitespaces
+		 */
+		url = url.trim();
+
+		/*
+		 * append http suffix if not set
+		 */
+		if (!url.startsWith("http://") && !url.startsWith("https://")) {
+			url = "http://" + url;
+		}
+
+		/*
+		 * append last backslash if not exist
+		 */
+		// FIXME: 2010/02/03, fei: Removed appending of a '/' as this prevents 
+		//                         http://openid-provider.appspot.com/<googleid> 
+		//                         from working (see issue 1030).
+		//                         Why should we append a '/' anyway? 
+		// if (!url.endsWith("/")) {
+		// 	url += "/";
+		// }
+
+		/*
+		 * convert to lower case
+		 * FIXME: This could break some URLs!
+		 * 
+		 */
+		url = url.toLowerCase();
+
+		return url;
 	}
 }
