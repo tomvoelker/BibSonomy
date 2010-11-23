@@ -1,14 +1,14 @@
 package org.bibsonomy.webapp.util.spring;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sourceforge.wurfl.core.Device;
 import net.sourceforge.wurfl.core.DeviceNotDefinedException;
 import net.sourceforge.wurfl.core.WURFLManager;
 
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.util.MobileViewNameResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,43 +21,39 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 
 	private WURFLManager wurflManager;
 
+	@Override
+	public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3) throws Exception {}
+
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object object, ModelAndView modelAndView) throws Exception {
+
+		if (
+				present(modelAndView.getViewName()) && 
+				isMobileCookieSet(request) && 
+				!disabledMobile(request, response) && 
+				isMobileDevice(request)
+		) {
+
+			if(request.getParameterMap().containsKey("manual")) {
+				modelAndView.getModel().put("manual", true);
+			}
+
+			response.addCookie(new Cookie("mobile", "true"));
+			modelAndView.getModel().put("isMobile", true);
+			modelAndView.setViewName(MobileViewNameResolver.resolveView(modelAndView.getViewName()));
+		}
+	}
+
+
 	private boolean isMobileDevice(HttpServletRequest request) {
 		try {
-			final Device device = wurflManager.getDeviceForRequest(request);
-			return ValidationUtils.present(device.getCapability("mobile_browser"));
+			return present(wurflManager.getDeviceForRequest(request).getCapability("mobile_browser"));
 		} catch (final DeviceNotDefinedException ex) {
 			return false;
 		}
 	}
-	
-	@Override
-	public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3) throws Exception {}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object object, ModelAndView modelAndView) throws Exception {
-		
-		boolean isMobile = isMobileDevice(request);
-		if(ValidationUtils.present(modelAndView.getViewName())) {
-			
-			if(isMobileCookieSet(request)) {
-				
-				if(!disabledMobile(request, response)) {
-					
-					if(isMobile) {
-						
-						if(request.getParameterMap().containsKey("manual"))
-							modelAndView.getModel().put("manual", true);
-						
-						response.addCookie(new Cookie("mobile", "true"));
-						modelAndView.getModel().put("isMobile", true);
-						modelAndView.setViewName(MobileViewNameResolver.resolveView(modelAndView.getViewName()));
-					}
-				}
-			}
-		}
-	}
-	
+
 	/**
 	 * checks whether mobile parameter is present or not and if the value of this is false
 	 * @param request
@@ -65,36 +61,41 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 	 * @return
 	 */
 	private boolean disabledMobile(HttpServletRequest request, HttpServletResponse response) {
-		
-		if(request.getParameterMap().containsKey("mobile") && "false".equals(request.getParameter("mobile"))) {
-			//disable mobile site for the session
+
+		if (request.getParameterMap().containsKey("mobile") && "false".equals(request.getParameter("mobile"))) {
+			/*
+			 * disable mobile site for the session
+			 */
 			response.addCookie(new Cookie("mobile", "false"));
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * checks the cookies for the mobile cookie and if it's value is false
 	 * @param request
 	 * @return
 	 */
 	private boolean isMobileCookieSet(HttpServletRequest request) {
-		if (request.getCookies() != null) {
-			for(Cookie c : request.getCookies()) {
-				
-				// check if mobile has been deactivated
-				if("mobile".equals(c.getName()) && "false".equals(c.getValue()))
+		if (present(request.getCookies())) {
+			for (final Cookie cookie : request.getCookies()) {
+
+				/*
+				 * check if mobile device has been deactivated
+				 */
+				if ("mobile".equals(cookie.getName()) && "false".equals(cookie.getValue()))
 					return false;
 			}
 		}
-		
 		return true;
 	}
 
+	/**
+	 * @see org.springframework.web.servlet.HandlerInterceptor#preHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
+	 */
 	@Override
 	public boolean preHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2) throws Exception {
-		
 		return true;
 	}
 
