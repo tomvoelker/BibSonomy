@@ -29,7 +29,48 @@ import filters.InitUserFilter;
  */
 public class UsernameSecurityContextRepository implements SecurityContextRepository {
 	private static final String ATTRIBUTE_LOGIN_USER_NAME = "LOGIN_USER_NAME";
-	
+
+	/**
+	 * Delivers details for each given user.
+	 */
+	private UserDetailsService service;
+	private final AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl();
+
+	/**
+	 * Checks for a user name in the session. If one is found, the corresponding
+	 * user details are extracted and the user is stored as request attribute.
+	 * 
+	 * @see org.springframework.security.web.context.SecurityContextRepository#loadContext(org.springframework.security.web.context.HttpRequestResponseHolder)
+	 */
+	@Override
+	public SecurityContext loadContext(final HttpRequestResponseHolder requestResponseHolder) {
+		final HttpServletRequest request = requestResponseHolder.getRequest();
+		final SecurityContextImpl securityContext = new SecurityContextImpl();
+		
+		final String username = getLoginUser(request);
+		if (present(username)) {
+			/*
+			 * user name found in session -> get the corresponding user
+			 */
+			final UserDetails user = this.service.loadUserByUsername(username);
+			final Authentication authentication = new SessionAuthenticationToken(user, user.getAuthorities());
+			securityContext.setAuthentication(authentication);
+			/*
+			 * FIXME: for the "old" way of accessing the user?!
+			 */
+			request.setAttribute(InitUserFilter.REQ_ATTRIB_USER, ((UserAdapter)user).getUser());
+		}
+		
+		return securityContext;
+	}
+
+	/**
+	 * The name of the logged in user is stored in the session. This method 
+	 * extracts the name from the session.
+	 * 
+	 * @param request
+	 * @return
+	 */
 	private static String getLoginUser(final HttpServletRequest request) {
 		final HttpSession session = request.getSession();
 		if (session == null) {
@@ -39,26 +80,7 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 		return (String) session.getAttribute(ATTRIBUTE_LOGIN_USER_NAME);
 	}
 	
-	private UserDetailsService service;
-	private final AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl();
-
-	@Override
-	public SecurityContext loadContext(final HttpRequestResponseHolder requestResponseHolder) {
-		final HttpServletRequest request = requestResponseHolder.getRequest();
-		final SecurityContextImpl securityContext = new SecurityContextImpl();
-		
-		final String username = getLoginUser(request);
-		if (present(username)) {
-			final UserDetails user = this.service.loadUserByUsername(username);
-			final Authentication authentication = new SessionAuthenticationToken(user, user.getAuthorities());
-			securityContext.setAuthentication(authentication);
-			
-			request.setAttribute(InitUserFilter.REQ_ATTRIB_USER, ((UserAdapter)user).getUser());
-		}
-		
-		return securityContext;
-	}
-
+	
 	@Override
 	public void saveContext(final SecurityContext context, final HttpServletRequest request, final HttpServletResponse response) {
 		this.setLoginUser(request, context.getAuthentication());
