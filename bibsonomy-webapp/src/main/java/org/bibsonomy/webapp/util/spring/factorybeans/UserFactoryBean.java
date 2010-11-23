@@ -4,8 +4,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.springframework.beans.factory.FactoryBean;
 
-import filters.InitUserFilter;
-
 /**
  * fishes the {@link User} out of the request
  *  
@@ -28,7 +26,7 @@ public class UserFactoryBean implements FactoryBean<User> {
 	@Override
 	public User getObject() throws Exception {
 		if (instance == null) {
-			instance = InitUserFilter.getUser();
+			instance = this.requestLogic.getLoginUser();
 		}
 		return instance;
 	}

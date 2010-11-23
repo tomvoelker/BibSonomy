@@ -3,10 +3,11 @@ package org.bibsonomy.webapp.util;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.model.User;
-import org.tuckey.web.filters.urlrewrite.UrlRewriter;
+import org.bibsonomy.webapp.util.spring.security.UserAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import filters.ActionValidationFilter;
-import filters.InitUserFilter;
 
 /**
  * <p>
@@ -17,8 +18,7 @@ import filters.InitUserFilter;
  * </p>
  * 
  * <p>Using this class is only a <em>workaround</em> to transfer request attributes
- * from the filters {@link UrlRewriter}, {@link ActionValidationFilter}, and
- * {@link InitUserFilter} to the command and later to the Views.
+ * from the filters {@link ActionValidationFilter} to the command and later to the Views.
  * </p>
  * 
  * @author rja
@@ -27,8 +27,6 @@ import filters.InitUserFilter;
 public class RequestWrapperContext {
 
 	private HttpServletRequest request;
-
-	
 	
 	/** The request this wrapper provides access to.
 	 * 
@@ -43,7 +41,17 @@ public class RequestWrapperContext {
 	 * @return An instance of the logged in user.
 	 */
 	public User getLoginUser() {
-		return InitUserFilter.getUser();
+		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null) {
+			final Object principal = authentication.getPrincipal();
+			
+			if (principal != null && principal instanceof UserAdapter) {
+				final UserAdapter adapter = (UserAdapter) principal;
+				return adapter.getUser();
+			}
+		}
+		
+		return new User();
 	}
 	
 	/**
@@ -68,7 +76,7 @@ public class RequestWrapperContext {
 	 * @return A ckey. 
 	 */
 	public String getCkey() {
-		return (String) getRequestAttribute(ActionValidationFilter.REQUEST_ATTRIB_CREDENTIAL);
+		return getRequestAttribute(ActionValidationFilter.REQUEST_ATTRIB_CREDENTIAL, String.class);
 	}
 	
 	/** Returns <code>true</code> only, when the user request contained a valid ckey.
@@ -76,12 +84,13 @@ public class RequestWrapperContext {
 	 * @return <code>true</code>, when the request contained a valid ckey.
 	 */
 	public boolean isValidCkey() {
-		Object isValidCkey = getRequestAttribute(ActionValidationFilter.REQUEST_ATTRIB_VALID_CREDENTIAL);
-		return isValidCkey != null && (Boolean) isValidCkey;
+		Boolean isValidCkey = getRequestAttribute(ActionValidationFilter.REQUEST_ATTRIB_VALID_CREDENTIAL, Boolean.class);
+		return isValidCkey != null && isValidCkey;
 	}
 	
-	private Object getRequestAttribute(final String name) {
-		return request.getAttribute(name);
+	@SuppressWarnings("unchecked")
+	private <T> T getRequestAttribute(final String name, @SuppressWarnings("unused") final Class<T> clazz) {
+		return (T) request.getAttribute(name);
 	}
 	
 	/**

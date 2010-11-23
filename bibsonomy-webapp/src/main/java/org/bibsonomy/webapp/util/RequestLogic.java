@@ -223,12 +223,11 @@ public class RequestLogic {
 	 * @return The User object associated with the logged in user.
 	 */
 	public User getLoginUser() {
-		/*
-		 * this method was located in UserFactoryBean ... comments have been transfered.
-		 */
+		// TODO: instead of using the RequestWrapperContext we could use the authentication provided in the request
+		// but then we must set the user of the context in the minimalistic controller spring wrapper
 		// FIXME: IoC break: use user object instead of accessing request
 		// FIXME: use bibsonomy2 user object and check password again
-		return ((RequestWrapperContext) request.getAttribute(RequestWrapperContext.class.getName())).getLoginUser();
+		return ((RequestWrapperContext) this.request.getAttribute(RequestWrapperContext.class.getName())).getLoginUser();
 	}
 
 
