@@ -1,6 +1,3 @@
-/*
- * Created on 14.10.2007
- */
 package org.bibsonomy.webapp.command;
 
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -14,11 +11,13 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
  * which it creates. Views use the information in commands for rendering.
  * 
  * @author Jens Illig
+ * @version $Id$
  */
 public class BaseCommand implements ContextCommand {
 	
 	/*
 	 * needed for reading value for use in login switch
+	 * TODO: SEC: remove
 	 */
 	private String loginMethod = "";
 
@@ -99,6 +98,4 @@ public class BaseCommand implements ContextCommand {
 	public String getLoginMethod() {
 		return loginMethod;
 	}
-	
-	
 }
