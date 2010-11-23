@@ -122,7 +122,7 @@
 		
 		<c:set var="actionJabRef" />
 		
-		<a name="layout"><h2><fmt:message key="settings.jabRef.layoutfile"/></h2></a>
+		<h2 id="layout"><fmt:message key="settings.jabRef.layoutfile"/></h2>
 		<form:form id="settingImportForm" action="/import/jabref?action=create&amp;ckey=${ckey}" method="post" enctype="multipart/form-data">
    		<div id="fsform">
 				<fieldset class="fsInner">
