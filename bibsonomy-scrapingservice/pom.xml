@@ -62,6 +62,15 @@
 			<version>2.2</version>
 		</dependency>
 		<!--+
+		    | Otherwise, the log4j.properties from jena will be loaded. :-(
+		    +-->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!--+
 			|
 			| For testing Pingback
 			|
