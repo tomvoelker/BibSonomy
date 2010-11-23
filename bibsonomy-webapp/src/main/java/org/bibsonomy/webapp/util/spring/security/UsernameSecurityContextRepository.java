@@ -63,6 +63,17 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 		
 		return securityContext;
 	}
+	
+	
+	/**
+	 * Stores the user name in the session.
+	 * 
+	 * @see org.springframework.security.web.context.SecurityContextRepository#saveContext(org.springframework.security.core.context.SecurityContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+	public void saveContext(final SecurityContext context, final HttpServletRequest request, final HttpServletResponse response) {
+		this.setLoginUser(request, context.getAuthentication());
+	}
 
 	/**
 	 * The name of the logged in user is stored in the session. This method 
@@ -80,11 +91,7 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 		return (String) session.getAttribute(ATTRIBUTE_LOGIN_USER_NAME);
 	}
 	
-	
-	@Override
-	public void saveContext(final SecurityContext context, final HttpServletRequest request, final HttpServletResponse response) {
-		this.setLoginUser(request, context.getAuthentication());
-	}
+
 	
 	private void setLoginUser(final HttpServletRequest request, final Authentication authentication) {
 		if (this.authenticationTrustResolver.isAnonymous(authentication)) {
