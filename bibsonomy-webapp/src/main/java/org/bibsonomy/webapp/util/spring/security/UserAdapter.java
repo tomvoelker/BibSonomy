@@ -82,6 +82,11 @@ public class UserAdapter implements UserDetails {
 		private static final long serialVersionUID = 1174129644241951251L;
 
 		public UnmodifiableUser(final User user) {
+			/*
+			 * FIXME: Do we really need this? It's another place where we need
+			 * to copy user properties. And every time we add a new one, we must
+			 * not forget to add it here. :-(
+			 */
 			super();
 			this.setActivationCode(user.getActivationCode());
 			this.setAlgorithm(user.getAlgorithm());
