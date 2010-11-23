@@ -43,7 +43,7 @@ public class RequestWrapperContext {
 	 * @return An instance of the logged in user.
 	 */
 	public User getLoginUser() {
-		return (User) getRequestAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER); 
+		return InitUserFilter.getUser();
 	}
 	
 	/**
