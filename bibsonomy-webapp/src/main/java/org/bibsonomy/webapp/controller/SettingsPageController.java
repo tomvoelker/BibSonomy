@@ -19,6 +19,7 @@ import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -30,7 +31,7 @@ import org.springframework.validation.Errors;
  * @author Steffen
  * @version $Id$
  */
-public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
+public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware, RequestAware {
 
 	/**
 	 * hold current errors
@@ -51,7 +52,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			return new ExtendedRedirectView("/login");
 		}
 
-		command.setPageTitle("settings");
+		command.setPageTitle("settings"); // TODO: i18n
 		
 		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
@@ -213,6 +214,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	/**
 	 * @param requestLogic the requestLogic to set
 	 */
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
