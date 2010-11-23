@@ -8,7 +8,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** This class collects entities in a queue and counts how often they're added. 
+/**
+ * This class collects entities in a queue and counts how often they're added. 
  * Every add-call increases the penalty waiting time of that entity.
  *     
  * @author rja
@@ -26,7 +27,7 @@ public class TeerGrube {
 	 */
 	private int maxQueueAgeSeconds = 30 * 60;
 	
-	private Map<String, WaitingEntity> waitQueue;
+	private final Map<String, WaitingEntity> waitQueue;
 	
 
 	/**
@@ -75,12 +76,12 @@ public class TeerGrube {
 				 * entity is in queue and younger than max age
 				 */
 				long waitingTimeInSeconds = entity.getRetryCounter() * waitingSecondsPerRetry;
+				
 				/*
 				 * restrict max waiting time to 90 seconds
 				 */
-				if (waitingTimeInSeconds > 90) {
-					waitingTimeInSeconds = 90;
-				}
+				waitingTimeInSeconds = Math.min(waitingTimeInSeconds, 90);
+				
 				/*
 				 * return difference between waiting time and time since last access
 				 * if waitingTime > timeSinceLastAccess result is positive, access forbidden
@@ -102,7 +103,7 @@ public class TeerGrube {
 	 * @author rja
 	 */
 	private static class WaitingEntity {
-		private String id;
+		private final String id;
 		private int retryCounter;
 		private long lastAccessTime; // number of miliseconds since 1970
 		
