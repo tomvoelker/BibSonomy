@@ -141,55 +141,6 @@ public class UserUtils {
 	}	
 
 	/**
-	 * Normalizes the OpenID of a user for matching
-	 *
-	 * TODO: was hat diese Methode in dieser Klasse verloren? Die ist ziemlich
-	 * User-unspezifisch!
-	 * 
-	 * @param url the OpenID url
-	 * @return normalized OpenID
-	 */
-	public static String normalizeURL(String url) {
-
-		/*
-		 * do nothing if url is empty
-		 */
-		if (url == null || url == "") {
-			return url;
-		}
-
-		/*
-		 * remove leading and trailing whitespaces
-		 */
-		url = url.trim();
-
-		/*
-		 * append http suffix if not set
-		 */
-		if (!url.startsWith("http://") && !url.startsWith("https://")) {
-			url = "http://" + url;
-		}
-
-		/*
-		 * append last backslash if not exist
-		 */
-		// FIXME: 2010/02/03, fei: Removed appending of a '/' as this prevents 
-		//                         http://openid-provider.appspot.com/<googleid> 
-		//                         from working (see issue 1030).
-		//                         Why should we append a '/' anyway? 
-		// if (!url.endsWith("/")) {
-		// 	url += "/";
-		// }
-
-		/*
-		 * convert to lower case
-		 */
-		url = url.toLowerCase();
-
-		return url;
-	}
-
-	/**
 	 * Check whether the user is a group by comparing his name with the names
 	 * of all groups he belongs to. If a group exists with the user's name, the
 	 * user is a group.

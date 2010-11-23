@@ -31,7 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.util.UrlUtils;
 
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
@@ -534,7 +534,7 @@ public class User implements Serializable {
 	 * @param openID
 	 */
 	public void setOpenID(String openID) {
-		this.openID = UserUtils.normalizeURL(openID);
+		this.openID = UrlUtils.normalizeURL(openID);
 	}
 
 	/**
