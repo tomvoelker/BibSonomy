@@ -321,6 +321,26 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Deletes a user from the openID table
+	 * 
+	 * @param user user authenticating via OpenID
+	 * @param session
+	 */
+	private void deleteOpenIDUser(final String userName, final DBSession session) {
+		this.delete("deleteOpenIDUser", userName, session);
+	}
+	
+	/**
+	 * Deletes a user from the ldapUser table
+	 * 
+	 * @param user user authenticating via ldap
+	 * @param session
+	 */
+	private void deleteLdapUserId(final String userName, final DBSession session) {
+		this.delete("deleteLdapUser", userName, session);
+	}
+
+	/**
 	 * Updates a user (NOT his settings).
 	 * For settings update we have {@link UserDatabaseManager#updateUserSettingsForUser(User, DBSession)}
 	 * 
@@ -422,9 +442,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		/*
-		 * FIXME: we must remove the user's open ID from the corresponding table, 
-		 * otherwise a new registration with that ID is not possible.
+		 * We remove the user's open ID and LDAP entry from the corresponding table. 
+		 * Otherwise, a new registration with that ID is not possible.
 		 */
+		this.deleteLdapUserId(user.getName(), session);
+		this.deleteOpenIDUser(user.getName(), session);
 		
 		/*
 		 * flag user as spammer & all his posts as spam
