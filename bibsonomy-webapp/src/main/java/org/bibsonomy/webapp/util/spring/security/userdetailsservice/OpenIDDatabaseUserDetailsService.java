@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.util.spring.security.userdetailsservice;
 
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.spring.security.UserAdapter;
 import org.springframework.dao.DataAccessException;
@@ -19,15 +18,16 @@ public class OpenIDDatabaseUserDetailsService extends DatabaseUserDetailsService
 		final String username = this.adminLogic.getOpenIDUser(openID);
 		
 		if (username == null) {
-			throw new UsernameNotFoundException(""); // TODO
+			throw new UsernameNotFoundException("user wasn't found");
 		}
 		
 		final User user = this.getUserFromDatabase(username);
+		final UserAdapter userAdapter = new UserAdapter(user);
 		
-		if (Role.DELETED.equals(user.getRole())) {
-			throw new DisabledException("User was deleted");
+		if (!userAdapter.isEnabled()) {
+			throw new DisabledException("user was deleted");
 		}
 		
-		return new UserAdapter(user);
+		return userAdapter;
 	}
 }
