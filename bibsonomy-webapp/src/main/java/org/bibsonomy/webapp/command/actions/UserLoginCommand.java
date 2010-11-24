@@ -41,6 +41,11 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	private String notice;
 
 	/**
+	 * For users who want to stay logged in for longer time with a cookie
+	 */
+	private boolean rememberMe;
+	
+	/**
 	 * @return the referer
 	 */
 	public String getReferer() {
@@ -122,5 +127,19 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	 */
 	public void setOpenID(String openID) {
 		this.openID = openID;
+	}
+
+	/**
+	 * @return If user wants to stay logged in using a cookie.
+	 */
+	public boolean isRememberMe() {
+		return this.rememberMe;
+	}
+
+	/**
+	 * @param rememberMe
+	 */
+	public void setRememberMe(boolean rememberMe) {
+		this.rememberMe = rememberMe;
 	}
 }
