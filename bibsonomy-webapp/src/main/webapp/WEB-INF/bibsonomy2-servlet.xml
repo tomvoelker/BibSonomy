@@ -638,7 +638,7 @@
 	</bean>
 	
 	<!--  #################### locale and theme resolver #################### -->
-	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+	<bean id="localeResolver" class="org.bibsonomy.webapp.util.spring.i18n.SecurityContextAwareSessionLocaleResolver">
 		<property name="defaultLocale"><value>${project.defaultLocale}</value></property>
 	</bean>
 	
