@@ -94,6 +94,10 @@
 		                  		<td><form:label path="password" ><fmt:message key="navi.password"/>:</form:label></td>
 		                 		<td><form:password path="password" /><form:errors cssClass="errmsg" path="password" /></td>
 		                	</tr>
+		                	<tr>
+		                		<td><form:label path="rememberMe"><fmt:message key="login.rememberMe"/>:</form:label></td>
+		                		<td><form:checkbox path="rememberMe" /><form:errors cssClass="errmsg" path="rememberMe"/></td>
+		                	</tr>
       		                <tr>
       		                  <td colspan="3">
       		                    <form:hidden path="referer"/>

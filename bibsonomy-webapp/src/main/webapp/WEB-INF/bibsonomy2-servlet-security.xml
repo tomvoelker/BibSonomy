@@ -103,7 +103,7 @@
 	<bean id="dbRememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
   		<property name="userDetailsService" ref="databaseUserService"/>
   		<property name="key" ref="cookieKey"/>
-  		<property name="alwaysRemember" value="true" />
+  		<property name="parameter" value="rememberMe"/>
   		<property name="cookieName" value="db_user" />
   		<property name="tokenValiditySeconds" value="31536000" /> <!-- 3600 * 24 * 365 -->
 	</bean>
@@ -177,7 +177,7 @@
 		<property name="consumer" ref="openIDConsumer" />
 	</bean>
 	
-	<bean id="openIDAuthenticationProvider" class="org.springframework.security.openid.OpenIDAuthenticationProvider">
+	<bean id="openIDAuthenticationProvider" class="org.bibsonomy.webapp.util.spring.security.provider.OpenIDAuthenticationProvider">
 		<property name="userDetailsService" ref="openIDUserDetailsService" />
 	</bean>
 	
@@ -221,10 +221,11 @@
   		<property name="key" ref="cookieKey"/>
   		<property name="alwaysRemember" value="true" />
   		<property name="cookieName" value="ldap_user" />
-  		<property name="encrptor" ref="encrptor" />
+  		<property name="encryptor" ref="encryptor" />
 	</bean>
 	
-	<bean id="encrptor" class="org.jasypt.util.text.StrongTextEncryptor">
+	<bean id="encryptor" class="org.jasypt.util.text.StrongTextEncryptor">
+		<!-- TODO: password into project.properties -->
 		<property name="password" value="3c10e6f066a00989bf8e16a508485671" />
 	</bean>
 	
