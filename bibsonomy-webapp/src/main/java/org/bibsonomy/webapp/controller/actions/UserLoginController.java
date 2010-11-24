@@ -60,7 +60,6 @@ public class UserLoginController implements ValidationAwareController<UserLoginC
 
 	@Override
 	public boolean isValidationRequired(UserLoginCommand command) {
-		// TODO check
 		return true;
 	}
 
