@@ -105,6 +105,7 @@
   		<property name="key" ref="cookieKey"/>
   		<property name="alwaysRemember" value="true" />
   		<property name="cookieName" value="db_user" />
+  		<property name="tokenValiditySeconds" value="31536000" /> <!-- 3600 * 24 * 365 -->
 	</bean>
 	
 	<!-- filter for the db remember me cookie -->
