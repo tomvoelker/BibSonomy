@@ -25,7 +25,7 @@ public class UserAdapter implements UserDetails {
 	 * @param user the user to adapt
 	 */
 	public UserAdapter(final User user) {
-		this.user = new UnmodifiableUser(user);
+		this.user = user;
 	}
 	
 	/**
@@ -73,63 +73,6 @@ public class UserAdapter implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		// TODO: is logic.getUserDetails also returning deleted users?!
 		return !Role.DELETED.equals(this.user.getRole()) ;
-	}
-	
-	private static class UnmodifiableUser extends User {
-		
-		private static final long serialVersionUID = 1174129644241951251L;
-
-		public UnmodifiableUser(final User user) {
-			/*
-			 * FIXME: Do we really need this? It's another place where we need
-			 * to copy user properties. And every time we add a new one, we must
-			 * not forget to add it here. :-(
-			 */
-			super();
-			this.setActivationCode(user.getActivationCode());
-			this.setAlgorithm(user.getAlgorithm());
-			this.setApiKey(user.getApiKey());
-			this.setBasket(user.getBasket());
-			this.setBirthday(user.getBirthday());
-			this.setConfidence(user.getConfidence());
-			this.addFriends(user.getFriends());
-			this.setRole(user.getRole());
-			this.setEmail(user.getEmail());
-			this.setGender(user.getGender());
-			this.setGroups(user.getGroups());
-			this.setHobbies(user.getHobbies());
-			this.setHomepage(user.getHomepage());
-			this.setInbox(user.getInbox());
-			this.setInstitution(user.getInstitution());
-			this.setInterests(user.getInterests());
-			this.setIPAddress(user.getIPAddress());
-			this.setLastLdapUpdate(user.getLastLdapUpdate());
-			this.setLdapId(user.getLdapId());
-			this.setMode(user.getMode());
-			this.setOpenID(user.getOpenID());
-			this.setOpenURL(user.getOpenURL());
-			this.setPassword(user.getPassword());
-			this.setPlace(user.getPlace());
-			this.setPosts(user.getPosts());
-			this.setPrediction(user.getPrediction());
-			this.setProfession(user.getProfession());
-			this.setRealname(user.getRealname());
-			this.setReminderPassword(user.getReminderPassword());
-			this.setReminderPasswordRequestDate(user.getReminderPasswordRequestDate());
-			this.setSettings(user.getSettings());
-			this.setSpammer(user.isSpammer());
-			this.setToClassify(user.getToClassify());
-			this.setUpdatedAt(user.getUpdatedAt());
-			this.setUpdatedBy(user.getUpdatedBy());
-			
-			super.setName(user.getName());
-		}
-		
-		@Override
-		public void setName(String name) {
-			throw new UnsupportedOperationException();
-		}
 	}
 }

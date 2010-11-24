@@ -16,8 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 
-import filters.InitUserFilter;
-
 /**
  * implements {@link SecurityContextRepository}
  * - saves the <code>username</code> of the logged in user in the session attribute {@value #ATTRIBUTE_LOGIN_USER_NAME}
@@ -27,9 +25,12 @@ import filters.InitUserFilter;
  * @author dzo
  * @version $Id$
  */
-public class UsernameSecurityContextRepository implements SecurityContextRepository {
+public class UsernameSecurityContextRepository implements SecurityContextRepository {	
 	private static final String ATTRIBUTE_LOGIN_USER_NAME = "LOGIN_USER_NAME";
 
+	@Deprecated
+	private static final String REQ_ATTRIB_USER = "user";
+	
 	/**
 	 * Delivers details for each given user.
 	 */
@@ -55,10 +56,13 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 			final UserDetails user = this.service.loadUserByUsername(username);
 			final Authentication authentication = new SessionAuthenticationToken(user, user.getAuthorities());
 			securityContext.setAuthentication(authentication);
+
 			/*
-			 * FIXME: for the "old" way of accessing the user?!
+			 * For backwards compatibility, we add the user
+			 * as request attribute (used by old servlets and JSPs).
+			 * TODO: remove when all old jsp sites are ported to the new spring system
 			 */
-			request.setAttribute(InitUserFilter.REQ_ATTRIB_USER, ((UserAdapter)user).getUser());
+			request.setAttribute(REQ_ATTRIB_USER, ((UserAdapter)user).getUser());
 		}
 		
 		return securityContext;
@@ -90,8 +94,6 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 		
 		return (String) session.getAttribute(ATTRIBUTE_LOGIN_USER_NAME);
 	}
-	
-
 	
 	private void setLoginUser(final HttpServletRequest request, final Authentication authentication) {
 		if (this.authenticationTrustResolver.isAnonymous(authentication)) {
