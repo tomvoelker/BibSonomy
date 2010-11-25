@@ -42,7 +42,7 @@ import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.util.UrlUtils;
-import org.bibsonomy.webapp.command.BaseCommand;
+import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController;
@@ -127,7 +127,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	/**
 	 * Main method which does the posting-procedure.
 	 * 
-	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(BaseCommand)
+	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(ContextCommand)
 	 */
 	@Override
 	public View workOn(final COMMAND command) {
