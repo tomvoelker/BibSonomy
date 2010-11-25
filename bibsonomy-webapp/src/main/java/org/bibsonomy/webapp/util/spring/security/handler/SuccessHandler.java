@@ -13,8 +13,6 @@ import org.bibsonomy.webapp.util.spring.security.UserAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
-import filters.InitUserFilter;
-
 /**
  * @author dzo
  * @version $Id$
@@ -34,11 +32,6 @@ public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandle
 			final CookieLogic logic = new CookieLogic();
 			logic.setResponseLogic(new ResponseLogic(response));
 			logic.addSpammerCookie(user.isSpammer());
-			
-			/*
-			 * TODO: remove when all old jsp sites are ported to the new spring system
-			 */
-			request.setAttribute(InitUserFilter.REQ_ATTRIB_USER, user);
 		}
 		
 		super.onAuthenticationSuccess(request, response, authentication);
