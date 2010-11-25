@@ -3,16 +3,20 @@ package org.bibsonomy.webapp.util.spring.security.handler;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.TeerGrube;
+import org.bibsonomy.webapp.util.spring.security.exceptionmapper.UsernameNotFoundExceptionMapper;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 /**
@@ -21,7 +25,10 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
  */
 public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 	
+	public static final String USER_TO_BE_REGISTERED = "register_this_user"; 
+	
 	private TeerGrube grube;
+	private Set<UsernameNotFoundExceptionMapper> usernameNotFoundExceptionMapper;
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
@@ -40,8 +47,36 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 				this.grube.add(username);
 				this.grube.add(requestLogic.getInetAddress());
 			}
+			/*
+			 * 
+			 */
 		}
-		
+		/*
+		 * redirect to registration (LDAP and OpenID)
+		 */
+		if (exception instanceof UsernameNotFoundException) {
+			final UsernameNotFoundException unne = (UsernameNotFoundException) exception;
+			/*
+			 * Find the correct mapper which handles the specific 
+			 * exception (LDAP/OpenID) and "converts" the user data to our 
+			 * user object.
+			 */
+			for (final UsernameNotFoundExceptionMapper mapper : usernameNotFoundExceptionMapper) {
+				if (mapper.supports(unne)) {
+					/*
+					 * store user data and authentication in session
+					 */
+					final HttpSession session = request.getSession(true);
+					session.setAttribute(USER_TO_BE_REGISTERED, mapper.mapToUser(unne));
+//					session.setAttribute(USER_AUTHENTICATION, authentication);
+					/*
+					 * redirect to the correct registration page
+					 */
+					getRedirectStrategy().sendRedirect(request, response, mapper.getRedirectUrl());
+					return;
+				}
+			}
+		}
 		super.onAuthenticationFailure(request, response, exception);
 	}
 
@@ -50,5 +85,12 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 	 */
 	public void setGrube(TeerGrube grube) {
 		this.grube = grube;
+	}
+
+	/**
+	 * @param usernameNotFoundExceptionMapper
+	 */
+	public void setUsernameNotFoundExceptionMapper(Set<UsernameNotFoundExceptionMapper> usernameNotFoundExceptionMapper) {
+		this.usernameNotFoundExceptionMapper = usernameNotFoundExceptionMapper;
 	}
 }

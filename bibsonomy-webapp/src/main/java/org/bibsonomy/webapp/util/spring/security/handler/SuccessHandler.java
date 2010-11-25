@@ -35,7 +35,9 @@ public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandle
 			logic.setResponseLogic(new ResponseLogic(response));
 			logic.addSpammerCookie(user.isSpammer());
 			
-			// TODO: remove when all old jsp sites are ported to the new spring system
+			/*
+			 * TODO: remove when all old jsp sites are ported to the new spring system
+			 */
 			request.setAttribute(InitUserFilter.REQ_ATTRIB_USER, user);
 		}
 		
