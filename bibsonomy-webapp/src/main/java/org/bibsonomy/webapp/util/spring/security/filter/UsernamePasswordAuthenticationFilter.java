@@ -34,6 +34,13 @@ public class UsernamePasswordAuthenticationFilter extends org.springframework.se
 		return super.attemptAuthentication(request, response);
 	}
 	
+	/**
+	 * If the user or IP has to wait, this happens here ...
+	 * 
+	 * @param username
+	 * @param inetAddress
+	 * @throws ServiceUnavailableException
+	 */
 	private void handleWaiting(final String username, final String inetAddress) throws ServiceUnavailableException {
 		/*
 		 * get the number of seconds the user has to wait
@@ -60,19 +67,6 @@ public class UsernamePasswordAuthenticationFilter extends org.springframework.se
 			throw new ServiceUnavailableException("error.service_unavailable", waitingSeconds);
 		}
 	}
-	
-	/*
-	 * username to lower case
-	 */
-	@Override
-	protected String obtainUsername(final HttpServletRequest request) {
-		final String username = super.obtainUsername(request);
-		if (username != null) {
-			username.toLowerCase();
-		}
-		return username;
-	}
-
 	/**
 	 * @param grube the grube to set
 	 */
