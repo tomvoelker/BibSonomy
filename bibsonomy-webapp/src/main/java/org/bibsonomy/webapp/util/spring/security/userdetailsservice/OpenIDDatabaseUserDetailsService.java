@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.util.spring.security.userdetailsservice;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.spring.security.UserAdapter;
+import org.bibsonomy.webapp.util.spring.security.exceptions.OpenIdUsernameNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +19,7 @@ public class OpenIDDatabaseUserDetailsService extends DatabaseUserDetailsService
 		final String username = this.adminLogic.getOpenIDUser(openID);
 		
 		if (username == null) {
-			throw new UsernameNotFoundException("user wasn't found");
+			throw new OpenIdUsernameNotFoundException("OpenID not found in database"); 
 		}
 		
 		final User user = this.getUserFromDatabase(username);

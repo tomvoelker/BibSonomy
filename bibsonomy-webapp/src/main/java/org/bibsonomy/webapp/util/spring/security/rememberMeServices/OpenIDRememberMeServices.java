@@ -28,7 +28,7 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 
 /**
- * - saves on login success the username, openid and a signature (username, openid, password, 
+ * - saves on login success the username, openid and a signature (username, openid,  
  *   key) in a cookie
  * - it auto logins the user by redirecting the user to his open id provider
  * 
@@ -60,12 +60,11 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
 				final UserDetails userDetails = (UserDetails) principal;
 				final String username = userDetails.getUsername();
 				final String openID = token.getIdentityUrl();
-				final String passwordHash = userDetails.getPassword(); // TODO: @see UserOpenIDRegistrationController
 				
 				final int tokenLifetime = this.getTokenValiditySeconds();
 				long expiryTime = this.calculateExpiryTime(tokenLifetime);
 				
-				final String signatureValue = this.makeTokenSignature(new String[] { Long.toString(expiryTime), username, openID, passwordHash });
+				final String signatureValue = this.makeTokenSignature(new String[] { Long.toString(expiryTime), username, openID});
 				
 				this.setCookie(new String[] {openID, username, Long.toString(expiryTime), signatureValue}, tokenLifetime, request, response);
 
@@ -78,8 +77,8 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
 
 	@Override
 	protected UserDetails processAutoLoginCookie(final String[] cookieTokens, final HttpServletRequest request, final HttpServletResponse response) throws RememberMeAuthenticationException, UsernameNotFoundException {
-		if (cookieTokens.length != 4) {
-            throw new InvalidCookieException("Cookie token did not contain 4 tokens, but contained '" + Arrays.asList(cookieTokens) + "'");
+		if (cookieTokens.length != 3) {
+            throw new InvalidCookieException("Cookie token did not contain 3 tokens, but contained '" + Arrays.asList(cookieTokens) + "'");
         }
 
         long tokenExpiryTime = this.getExpiryTime(cookieTokens[2]);
@@ -100,8 +99,7 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
     	 * check token signature
     	 * TODO: use the openID from the userDetails
     	 */
-    	final String password = userDetails.getPassword();
-    	final String expectedTokenSignature = this.makeTokenSignature(new String[] { Long.toString(tokenExpiryTime), username, claimedIdentity, password });
+    	final String expectedTokenSignature = this.makeTokenSignature(new String[] { Long.toString(tokenExpiryTime), username, claimedIdentity});
     	final String signature = cookieTokens[3];
 		if (!expectedTokenSignature.equals(signature)) {
             throw new InvalidCookieException("Cookie token[3] contained signature '" + signature  + "' but expected '" + expectedTokenSignature + "'");

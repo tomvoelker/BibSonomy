@@ -3,13 +3,13 @@ package org.bibsonomy.webapp.util.spring.security.userdetailsservice;
 import java.util.Collection;
 
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.webapp.util.spring.security.exceptions.LdapUsernameNotFoundException;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 
 /**
@@ -31,7 +31,7 @@ public class LDAPUserDetailsServiceMapper implements UserDetailsContextMapper {
 	public UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<GrantedAuthority> authority) {
 		final String systemName = this.adminLogic.getUsernameByLdapUserId(username);
 		if (systemName == null) {
-			throw new UsernameNotFoundException("no user found", ctx);
+			throw new LdapUsernameNotFoundException("LDAP id not found in database", ctx);
 		}
 		
 		final UserDetails loadUserByUsername = this.userDetailsService.loadUserByUsername(systemName);

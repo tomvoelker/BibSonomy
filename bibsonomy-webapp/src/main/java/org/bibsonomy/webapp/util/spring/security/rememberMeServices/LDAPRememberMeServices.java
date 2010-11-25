@@ -109,7 +109,7 @@ public class LDAPRememberMeServices extends AbstractRememberMeServices {
 	/**
 	 * @param encryptor the encryptor to set
 	 */
-	public void setEncrptor(final TextEncryptor encryptor) {
+	public void setEncryptor(final TextEncryptor encryptor) {
 		this.encryptor = encryptor;
 	}
 }
