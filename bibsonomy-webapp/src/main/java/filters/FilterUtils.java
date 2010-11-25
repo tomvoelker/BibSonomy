@@ -20,6 +20,7 @@ public class FilterUtils {
 	 * 
 	 * @return the user
 	 */
+	@Deprecated
 	public static User getUser() {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null) {

@@ -1,31 +1,14 @@
 package filters;
 
-import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-
-/**
- * This Filter reads user information/settings from DB or Cookies and makes it
- * available for following filters/servlets/JSPs.
- * 
- */
-public class InitUserFilter implements Filter {
-	private final static Log log = LogFactory.getLog(InitUserFilter.class);
-	
+///**
+// * This Filter reads user information/settings from DB or Cookies and makes it
+// * available for following filters/servlets/JSPs.
+// * 
+// */
+public class InitUserFilter { // implements Filter {
+//	private final static Log log = LogFactory.getLog(InitUserFilter.class);
+//	
 //	/*
 //	 * All X.509 users get the same password in the database, since it is never
 //	 * used for authentication.
@@ -38,29 +21,22 @@ public class InitUserFilter implements Filter {
 //	 * null, this filter instance is not currently configured.
 //	 */
 //	protected FilterConfig filterConfig = null;
-	
-	/**
-	 * TODO: improve documentation
-	 */
-	@Deprecated
-	public static final String OPENID_COOKIE_NAME = "_openIDUser";
-	
-	/**
-	 * TODO: improve documentation
-	 */
-	@Deprecated
-	public static final String REQ_ATTRIB_USER = "user";
-	
-	/**
-	 * TODO: improve documentation
-	 */
-	public static final String REQ_ATTRIB_LANGUAGE = SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME;
-	
-	/**
-	 * Name of the Attribute that stores the default language in the servers context.xml 
-	 */
-	private static final String PROJECT_DEFAULT_LANGUAGE = "project.defaultLocale";
-	
+//	
+//	/**
+//	 * TODO: improve documentation
+//	 */
+//	@Deprecated
+//	public static final String OPENID_COOKIE_NAME = "_openIDUser";
+//	
+//	/**
+//	 * TODO: improve documentation
+//	 */
+//	@Deprecated
+//	public static final String REQ_ATTRIB_USER = "user";
+//	
+//	private static final String REQ_ATTRIB_LANGUAGE = SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME;
+//	private static final String PROJECT_DEFAULT_LANGUAGE = "project.defaultLocale";
+//	
 	/**
 	 * TODO: improve documentation
 	 */
@@ -73,26 +49,26 @@ public class InitUserFilter implements Filter {
 	@Deprecated
 	public static final String REQ_ATTRIB_LOGIN_USER_PASSWORD = "loginUserPassword";
 	
-	/**
-	 * Enables X.509 authentication.
-	 */
-	public static boolean useX509forAuth = false;
-
-	/*
-	 * (non-Javadoc)
-	 * @see javax.servlet.Filter#destroy()
-	 */
-	@Override
-	public void destroy() {
+//	/**
+//	 * Enables X.509 authentication.
+//	 */
+//	public static boolean useX509forAuth = false;
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * @see javax.servlet.Filter#destroy()
+//	 */
+//	@Override
+//	public void destroy() {
 //		this.filterConfig = null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
-	 */
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
+//	}
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+//	 */
+//	@Override
+//	public void init(FilterConfig filterConfig) throws ServletException {
 //		this.filterConfig = filterConfig;
 //		TODO: must be Configurable in spring security
 //		/*
@@ -100,16 +76,16 @@ public class InitUserFilter implements Filter {
 //		 * authentication
 //		 */
 //		useX509forAuth = Boolean.parseBoolean(filterConfig.getInitParameter("useX509forAuth"));
-	}
-
-	/**
-	 * This method does the main work
-	 * 
-	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
-	 *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
-	 */
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+//	}
+//
+//	/**
+//	 * This method does the main work
+//	 * 
+//	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+//	 *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
+//	 */
+//	@Override
+//	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 //		final String requPath = httpServletRequest.getServletPath();
 //		/*
 //		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ...
@@ -389,50 +365,44 @@ public class InitUserFilter implements Filter {
 //		 * as request attribute (used by old servlets and JSPs).
 //		 */
 //		httpServletRequest.setAttribute(REQ_ATTRIB_USER, loginUser);
-		/*
-		 * TODO: SEC: extract
-		 * why was the locale handling put into this filter?
-		 * wouldn't it make sense to write a spring LocalResolver?!
-		 * the old views don't need the locale, or?!
-		 */
-		
-		// add default language to request if no language is set
-		final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-		final HttpSession session = httpServletRequest.getSession();
-		final String langUser = FilterUtils.getUser().getSettings().getDefaultLanguage();
-		/*
-		if (session.getAttribute(REQ_ATTRIB_LANGUAGE) == null) {
-			if(langUser == null) {
-				session.setAttribute(REQ_ATTRIB_LANGUAGE, new Locale((String) session.getServletContext().getAttribute(PROJECT_DEFAULT_LANGUAGE)));
-			} else {
-				session.setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(langUser));
-
-			}
-			
-		//if user changed language in /settings change the language to the new requested language
-		} else {
-			final String lang = langUser;
-			final Locale locale = (Locale) session.getAttribute(REQ_ATTRIB_LANGUAGE);
-			if( present(lang) && !locale.getLanguage().equals(new Locale(lang).getLanguage())) {
-				session.setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(lang));
-			}
-		}*/
-		if (!present(session.getAttribute(REQ_ATTRIB_LANGUAGE))) {
-			log.info("session attribute " + REQ_ATTRIB_LANGUAGE + " not present, setting it to");
-			if (present(langUser)) {
-				final Locale locale = new Locale(langUser);
-				session.setAttribute(REQ_ATTRIB_LANGUAGE, locale);
-				log.info(locale + " from user");
-			} else {
-				final Locale locale = new Locale((String) session.getServletContext().getAttribute(PROJECT_DEFAULT_LANGUAGE));
-				session.setAttribute(REQ_ATTRIB_LANGUAGE, locale);
-				log.info(locale + " from defaults");
-			}
-		}
-		// pass control on to the next filter
-		chain.doFilter(request, response);
-	}
-
+//		
+//		// add default language to request if no language is set
+//		final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+//		final HttpSession session = httpServletRequest.getSession();
+//		final String langUser = FilterUtils.getUser().getSettings().getDefaultLanguage();
+//		/*
+//		if (session.getAttribute(REQ_ATTRIB_LANGUAGE) == null) {
+//			if(langUser == null) {
+//				session.setAttribute(REQ_ATTRIB_LANGUAGE, new Locale((String) session.getServletContext().getAttribute(PROJECT_DEFAULT_LANGUAGE)));
+//			} else {
+//				session.setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(langUser));
+//
+//			}
+//			
+//		//if user changed language in /settings change the language to the new requested language
+//		} else {
+//			final String lang = langUser;
+//			final Locale locale = (Locale) session.getAttribute(REQ_ATTRIB_LANGUAGE);
+//			if( present(lang) && !locale.getLanguage().equals(new Locale(lang).getLanguage())) {
+//				session.setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(lang));
+//			}
+//		}*/
+//		if (!present(session.getAttribute(REQ_ATTRIB_LANGUAGE))) {
+//			log.info("session attribute " + REQ_ATTRIB_LANGUAGE + " not present, setting it to");
+//			if (present(langUser)) {
+//				final Locale locale = new Locale(langUser);
+//				session.setAttribute(REQ_ATTRIB_LANGUAGE, locale);
+//				log.info(locale + " from user");
+//			} else {
+//				final Locale locale = new Locale((String) session.getServletContext().getAttribute(PROJECT_DEFAULT_LANGUAGE));
+//				session.setAttribute(REQ_ATTRIB_LANGUAGE, locale);
+//				log.info(locale + " from defaults");
+//			}
+//		}
+//		// pass control on to the next filter
+//		chain.doFilter(request, response);
+//	}
+//
 //	/**
 //	 * Creates a user in the database for X.509.
 //	 * 
