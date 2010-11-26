@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.util.spring.security;
+package org.bibsonomy.webapp.util.spring.security.authentication;
 
 import java.util.Collection;
 
@@ -15,7 +15,7 @@ public class SessionAuthenticationToken extends AbstractAuthenticationToken {
 	private final Object principal;
 	
 	/**
-	 * builds a session token
+	 * builds a session authentication token
 	 * 
 	 * @param principal
 	 * @param authorities
