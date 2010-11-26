@@ -3,8 +3,6 @@
         "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
 
 <urlrewrite>
-
-
 	<!-- TODO: why do we need this rule? -->
 	<rule>
 		<name>/brokenurl</name>
@@ -19,8 +17,6 @@
 		<from>^(/resources/.+)$</from>
 		<to last="true">$1</to>
 	</rule>
-	
-	
 		
 	<!-- store all parameters -->
 	<!--
@@ -39,7 +35,6 @@
 		<from>^/+(.+)$</from>
 		<set name="requQueryString">?%{query-string}</set>
 	</rule>
-	
 	
 	<!-- ############## feeds / export formats ############### -->
 
@@ -186,8 +181,6 @@
 		<to>/$1</to>
 	</rule>
 
-
-
 	<!--  store requested path for each query -->
 	<!-- 
 		WARNING: please never put this after the quick tag editing rules, because there
@@ -209,8 +202,6 @@
 		<set type="parameter" name="format">batchedit$1</set>
 		<to>/$2</to>
 	</rule>
-
-
 
 	<!-- ensure compatibility to old bookmark / bibtex start / end and tagbox minfreq params -->
 	<rule>
@@ -337,7 +328,6 @@
 		<to type="redirect" last="true">/user/${escape:%1}</to>
 	</rule>
 
-
 	<!-- /user/USER/TAG -->
 	<rule>
 		<name>/user/USER/TAG</name>
@@ -437,7 +427,6 @@
 		<to last="true">/downloadFile</to>
 	</rule>
 
-
 	<!-- ############## viewable pages ############### -->
 	<!-- /viewable/GROUP/TAG -->
 	<rule>
@@ -512,7 +501,6 @@
 		<to type="redirect" last="true">/group/${escape:$1}</to>
 	</rule>
 
-
 	<!-- redirect for tag formular on /relevantfor/group/GROUP/TAG page -->
 	<rule>
 		<name>redirect /relevantfor/group/GROUP/TAG</name>
@@ -584,7 +572,6 @@
 		<to type="redirect" last="true">/friend/${escape:$1}</to>
 	</rule>
 
-
 	<!-- ############## tag pages ############### -->
 	<!-- redirect for tag formular on /tag page -->
 	<rule>
@@ -611,7 +598,6 @@
 		<set type="parameter" name="requestedTags">$1</set>
 		<to last="true">/tag</to>
 	</rule>
-
 
 	<!-- ############## author pages ############### -->
 	<!-- /author/AUTHOR/TAG -->
@@ -645,9 +631,6 @@
 		<from>^/+author/*$</from>
 		<to type="redirect" last="true">/author/${escape:%1}</to>
 	</rule>
-
-
-
 
 	<!-- ############## url hashes ############### -->
 	<!-- on empty URL, redirect to start page -->
@@ -774,13 +757,13 @@
 	<rule>
 		<name>/import/delicious</name>
 		<from>^/import/delicious</from>
-		<set type="parameter" name="type">delicious</set>
+		<set type="parameter" name="importType">delicious</set>
 		<to last="true">/import/bookmarks</to>
 	</rule>
 	<rule>
 		<name>/import/firefox</name>
 		<from>^/import/firefox</from>
-		<set type="parameter" name="type">firefox</set>
+		<set type="parameter" name="importType">firefox</set>
 		<to last="true">/import/bookmarks</to>
 	</rule>
 	

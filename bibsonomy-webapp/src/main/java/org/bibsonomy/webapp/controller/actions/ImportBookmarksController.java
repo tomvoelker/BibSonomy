@@ -141,6 +141,8 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 				 * clear temporary file
 				 */
 				document.getFile().delete();
+			} else {
+				log.warn("unknown import type '" + importType + "'");
 			}
 		/*
 		 * FIXME: too general error keys!

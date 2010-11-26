@@ -17,7 +17,7 @@ public class ImportCommand extends BaseCommand {
 	
 	/** the import-type describes which kind of import will be used 
 	 *  e.g. FireFox import, Delicious import etc.. **/
-	private String type;
+	private String importType;
 	
 	/** in case of an import from a remote service 
 	 *  userName and passWord are required **/
@@ -61,14 +61,14 @@ public class ImportCommand extends BaseCommand {
 	 * @return the actual import-type
 	 */
 	public String getImportType() {
-		return this.type;
+		return this.importType;
 	}
 	
 	/**
-	 * @param type
+	 * @param importType
 	 */
-	public void setImportType(String type) {
-		this.type = type;
+	public void setImportType(String importType) {
+		this.importType = importType;
 	}
 	
 	/**
