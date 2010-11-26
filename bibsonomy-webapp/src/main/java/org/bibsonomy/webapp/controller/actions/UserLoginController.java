@@ -7,7 +7,7 @@ import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.spring.security.ServiceUnavailableException;
+import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.validation.UserLoginValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.web.WebAttributes;
