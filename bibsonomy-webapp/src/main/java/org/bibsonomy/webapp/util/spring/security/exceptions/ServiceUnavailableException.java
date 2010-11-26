@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.util.spring.security;
+package org.bibsonomy.webapp.util.spring.security.exceptions;
 
 import org.springframework.security.core.AuthenticationException;
 

@@ -7,11 +7,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.TeerGrube;
-import org.bibsonomy.webapp.util.spring.security.ServiceUnavailableException;
+import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
 /**
+ * TODO: document me
+ * 
  * @author dzo
  * @version $Id$
  */
@@ -22,7 +24,7 @@ public class UsernamePasswordAuthenticationFilter extends org.springframework.se
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-		/**
+		/*
 		 * get username and inetAddress for look up in grube
 		 */
 		final String username = this.obtainUsername(request);
@@ -67,10 +69,11 @@ public class UsernamePasswordAuthenticationFilter extends org.springframework.se
 			throw new ServiceUnavailableException("error.service_unavailable", waitingSeconds);
 		}
 	}
+	
 	/**
 	 * @param grube the grube to set
 	 */
-	public void setGrube(TeerGrube grube) {
+	public void setGrube(final TeerGrube grube) {
 		this.grube = grube;
 	}
 }
