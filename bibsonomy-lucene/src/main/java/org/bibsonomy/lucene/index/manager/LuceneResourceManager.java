@@ -39,6 +39,9 @@ public class LuceneResourceManager<R extends Resource> {
 	/** flag indicating whether to update the index or not */
 	private boolean luceneUpdaterEnabled = true;
 	
+	/** flag indicating that an index-generation is currently running */
+	private boolean generatingIndex = false;
+	
 	private boolean useUpdater = false;
 	
 	protected int alreadyRunning = 0; // das geht bestimmt irgendwie besser
@@ -94,6 +97,9 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @return LuceneIndexStatistics for the active index 
 	 */
 	public LuceneIndexStatistics getStatistics() {
+	        if(generatingIndex) {
+		    return null;
+	        }
 		final LuceneResourceIndex<R> index = this.resourceIndices.get(idxSelect);
 		return index == null ? null : index.getStatistics();
 	}
@@ -103,6 +109,9 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @return LuceneIndexStatistics for the inactive index 
 	 */
 	public LuceneIndexStatistics getInactiveIndexStatistics() {
+	        if(generatingIndex) {
+		    return null;
+	        }
 		final LuceneResourceIndex<R> index = this.resourceIndices.get((idxSelect + 1) % this.resourceIndices.size());
 		return index == null ? null : index.getStatistics();
 	}
@@ -206,8 +215,8 @@ public class LuceneResourceManager<R extends Resource> {
 	 * reload each registered searcher's index 
 	 */
 	public void reloadIndex() {
-		// if lucene updater is disabled, return without doing something
-		if (!luceneUpdaterEnabled) {
+		// if lucene updater is disabled or index-generation running, return without doing something
+		if (!luceneUpdaterEnabled || generatingIndex) {
 			log.debug("lucene updater is disabled by user");
 			return;
 		}
@@ -281,6 +290,9 @@ public class LuceneResourceManager<R extends Resource> {
 	 * switches the active index and updates and reloads the index
 	 */
 	public void updateAndReloadIndex() {
+	    // Do not update indexes during index-generation
+	    if(generatingIndex) return;
+	    
 		    // switch active index
 		    this.idxSelect = (idxSelect + 1) % this.resourceIndices.size();
 		    
@@ -290,22 +302,41 @@ public class LuceneResourceManager<R extends Resource> {
 		    // make tell searcher to use the updated index
 		    reloadIndex();
 	}
+	
+	/** Prepare Searcher and Manager for a new index-generation. */
+	public synchronized void prepareIndexGeneration() {
+	    // Set updateAndReload-cronjob to be ignored 
+	    generatingIndex = true;
 
+	    //  Select index 1
+	    if(searcher.getIndexId() != 1) {
+		searcher.reloadIndex(1);
+	    }
+	}
+	
+	/** Boolean indicating whether an index-generation is currently running. */
+	public boolean isIndexGeneratingRunning() {
+	    return generatingIndex;
+	}
 	
 	/**
 	 * reopen index reader - e.g. after the index has changed on the disc
 	 */
 	public void resetIndexReader() {
+	    if(!generatingIndex) {
 		for (final LuceneResourceIndex<R> index : this.resourceIndices) {
 			index.reset();
 		}
+	    }
 	}
 
 	/**
 	 * reopen index searcher - e.g. after the index has changed on the disc
 	 */
 	public void resetIndexSearcher() {
+	    if(!generatingIndex) {
 		this.searcher.reloadIndex(this.idxSelect);
+	    }
 	}
 	
 	/**
