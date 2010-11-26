@@ -12,8 +12,6 @@
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-	<!-- TODO: remove searchString attribute in all view files and remove it here -->
-	<jsp:directive.attribute name="searchString" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>	
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
