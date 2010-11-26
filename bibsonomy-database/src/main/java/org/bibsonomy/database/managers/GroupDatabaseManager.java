@@ -26,7 +26,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.util.ExceptionUtils;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Used to retrieve groups from the database.
@@ -293,7 +292,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return A list of groupids
 	 */
 	public List<Integer> getGroupIdsForUser(final String userName, final DBSession session) {
-		if (present(userName) == false) return new ArrayList<Integer>();
+		if (!present(userName)) return new ArrayList<Integer>();
 		return this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
 	}
 
@@ -317,7 +316,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return groupid if user is in group, GroupID.GROUP_INVALID otherwise
 	 */
 	public Integer getGroupIdByGroupNameAndUserName(final String groupname, final String username, final DBSession session) {
-		if (present(groupname) == false) {
+		if (!present(groupname)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "groupname isn't set");
 		}
 		try {
@@ -515,7 +514,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove user from nonexistent group");
 		}
 		// make sure that the user is a member of the group
-		if (this.isUserInGroup(username, groupname, session) == false) {
+		if (!this.isUserInGroup(username, groupname, session)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 		// XXX: the next line is semantically incorrect
@@ -533,7 +532,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateGroupSettings (Group groupToUpdate, final DBSession session) {
-		if(!ValidationUtils.present(groupToUpdate)) {
+		if(!present(groupToUpdate)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The parameter groupToUpdate was null. (required argument)");
 		}
 
