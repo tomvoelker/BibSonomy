@@ -13,13 +13,15 @@
   >
   
   <jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
-  
+  	
 	<!-- ############################################# profile tab ############################################# -->	
 		<fmt:message var="saveChanges" key="settings.saveChanges" />
 		<fmt:message var="male" key="settings.male"/>
 		<fmt:message var="female" key="settings.female"/>
 		<fmt:message var="upload" key = "settings.picture.upload" />
 		
+		<c:set var="user" value="${command.user}" />
+        
         <p>
         	<fmt:message key="settings.profileInfo">
         		<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
@@ -98,10 +100,6 @@
 		    </div>
 		  </fieldset>
 		</div>
-
-
-
-
 		
 		<h2><fmt:message key="settings.aboutMe"/></h2>
 		
@@ -144,7 +142,7 @@
       
       
       <!-- picture settings-->
-      <form:form id="settingImportForm" action="/picture/user/${fn:escapeXml(command.user.name)}?ckey=${ckey}" method="post" enctype="multipart/form-data">
+      <form:form id="settingImportForm" action="/picture/user/${fn:escapeXml(user.name)}?ckey=${ckey}" method="post" enctype="multipart/form-data">
 		<h2>
 			<fmt:message key="settings.picture.header" >
         		<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
@@ -155,7 +153,7 @@
     	  <fieldset class="fsInner">
     	  	<div class ="fsRow">
     	  	<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.current"/></form:label>
-				<img style="clear:both;" src="/picture/user/${fn:escapeXml(command.user.name)}"/>
+				<img style="clear:both;" src="/picture/user/${fn:escapeXml(user.name)}"/>
 			</div>
     	  
     	  	<div class="fsRow">

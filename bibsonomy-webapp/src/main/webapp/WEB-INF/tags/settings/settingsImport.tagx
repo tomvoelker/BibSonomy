@@ -15,15 +15,11 @@
   
 	<!--   ############################################# import tab ############################################# -->
 		<!-- firefox import -->
+		<!-- TODO: please merge this form with the firefoxImport.tagx and use the tagx here -->
 		
-		<c:set var="viewableFor" />
-		<c:set var="filepath" />
-		<c:set var="overwriteBiblicious" />
 		<fmt:message var="private" key="post.resource.private"/>
 		<fmt:message var="public" key="post.resource.public"/>
 		<fmt:message var="valueButton" key="settings.import.button"/>
-		
-		<input name="ckey" type="hidden" value="${command.context.ckey}"/>
 		
 		<h2><fmt:message key="settings.firefox.header"/></h2>
 		<form:form id="settingImportForm" action="/import/firefox?ckey=${ckey}" method="post" enctype="multipart/form-data">
@@ -62,6 +58,8 @@
 		
 
 		<!-- delicious import -->
+		<!-- TODO: please merge this form with the deliciousImport.tagx and use the tagx here -->
+		
 		
 		<h2><fmt:message key="settings.delicious.header" /></h2>
 		<form:form id="settingImportForm" action="/import/bookmarks?ckey=${ckey}" method="post">
@@ -106,8 +104,6 @@
 	    	    	</div>
 	    	    	
 		  			<div class="fsRow">
-	    	     		<!-- <input type="hidden" name="ckey" value="${ckey}"/>-->
-	      				<!-- <input type="hidden" name="import" value="delicious"/> -->
 	      				<input type="submit" value="${valueButton}"/>
 	    			 	<input id="importType" name="importType" type="hidden" value="delicious"/>
 	  				</div>

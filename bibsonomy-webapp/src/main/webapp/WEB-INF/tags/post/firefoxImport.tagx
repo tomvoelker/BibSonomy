@@ -6,7 +6,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form">
 	
-	<!-- This tag can be used to support the bookmark import from delicious -->
+	<!-- This tag can be used to support the bookmark import from a firefox bookmark export file -->
 	
 	<c:set var="valueButton"><fmt:message key="import"/></c:set>
 	
@@ -56,7 +56,6 @@
 						</td>
 					</tr>
 				</table>
-                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 				<input type="submit" value="${valueButton}" />
 			</fieldset>
 		</form:form>
