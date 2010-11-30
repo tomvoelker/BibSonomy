@@ -12,6 +12,7 @@ import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -24,12 +25,10 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
  * @author cvo
  * @version $Id$
  */
-public class UpdateUserSettingsController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
-	
+public class UpdateUserSettingsController implements MinimalisticController<SettingsViewCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(DeletePostController.class);
-
-	private static final String TAB_URL = "/settings";
-
+	
+	
 	private LogicInterface logic;
 	private RequestLogic requestLogic;
 	
@@ -38,15 +37,12 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	@Override
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setTabURL(TAB_URL);
 		command.setUser(new User());
 		return command;
 	}
 
 	@Override
-	public View workOn(final SettingsViewCommand command) {
-		// mit regenerate API key
-				
+	public View workOn(final SettingsViewCommand command) {		
 		final RequestWrapperContext context = command.getContext();
 
 		/*
@@ -59,8 +55,8 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		
 		final User user = context.getLoginUser(); 
 		
-		//check whether the user is a group		
-		if(UserUtils.userIsGroup(user)) {
+		// check whether the user is a group		
+		if (UserUtils.userIsGroup(user)) {
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
 		}
@@ -73,17 +69,17 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 			
 			//do set new settings here
 			final String action = command.getAction();
-			if("logging".equals(action)) {
+			if ("logging".equals(action)) {
 				/*
 				 * change the log level
 				 */
 				actionLogging(command.getUser().getSettings(), user);
-			} else if("api".equals(action)) {
+			} else if ("api".equals(action)) {
 				/*
 				 * change the api key of a user
 				 */
 				actionAPI(user);
-			} else if("layoutTagPost".equals(action)) {
+			} else if ("layoutTagPost".equals(action)) {
 				/*
 				 * changes the layout of tag and post for a user
 				 */
@@ -91,7 +87,6 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 			} else {
 				errors.reject("error.invalid_parameter");
 			}
-			
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}
@@ -107,8 +102,8 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 			return Views.SETTINGSPAGE;
 		}
 		
-		
 		// success: go back where you've come from
+		// TODO: inform the user about the success!
 		return new ExtendedRedirectView("/settings?selTab=1");
 	}
 	
@@ -122,8 +117,7 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	}
 	
 	private void actionAPI(final User user) {
-		logic.updateUser(user, UserUpdateOperation.UPDATE_API);
-		
+		this.logic.updateUser(user, UserUpdateOperation.UPDATE_API);
 		log.debug("api key of " + user.getName() + " has been changed successfully");
 	}
 	
@@ -153,7 +147,7 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		userSettings.setTagboxSort(commandSettings.getTagboxSort());
 		userSettings.setTagboxStyle(commandSettings.getTagboxStyle());
 		
-		final String updatedUser = logic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
+		final String updatedUser = this.logic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		log.debug("settings for the layout of tag boxes and post lists of user " + updatedUser + " has been changed successfully");
 		/*
 		 * trigger locale change
@@ -180,25 +174,13 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	}
 
 	/**
-	 * 
-	 * @return requestLogic
-	 */
-	public LogicInterface getLogic() {
-		return this.logic;
-	}
-
-	/**
-	 * 
-	 * @param logic
+	 * @param logic the logic to set
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 
-	public RequestLogic getRequestLogic() {
-		return this.requestLogic;
-	}
-
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}

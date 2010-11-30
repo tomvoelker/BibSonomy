@@ -31,14 +31,7 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class UpdateUserController implements ErrorAware, ValidationAwareController<SettingsViewCommand> {
-
-
 	private static final Log log = LogFactory.getLog(UpdateUserController.class);
-
-	/**
-	 * maps the settings url
-	 */
-	private static final String TAB_URL = "/settings";
 
 	/**
 	 * hold current errors
@@ -53,7 +46,6 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 	@Override
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setTabURL(TAB_URL);
 		command.setUser(new User());
 		return command;
 	}

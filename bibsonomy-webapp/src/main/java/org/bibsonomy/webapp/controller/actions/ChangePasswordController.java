@@ -8,26 +8,30 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
+import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.spring.security.UserAdapter;
+import org.bibsonomy.webapp.util.spring.security.rememberMeServices.CookieBasedRememberMeServices;
 import org.bibsonomy.webapp.validation.ChangePasswordValidator;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.Errors;
 
 /**
  * @author cvo
  * @version $Id$
  */
-public class ChangePasswordController implements ValidationAwareController<SettingsViewCommand>, ErrorAware {
-
+public class ChangePasswordController implements ValidationAwareController<SettingsViewCommand>, ErrorAware, CookieAware, RequestAware {
 	private static final Log log = LogFactory.getLog(ChangePasswordController.class);
-
-	private static final String TAB_URL = "/settings";
 
 	/**
 	 * hold current errors
@@ -38,22 +42,29 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 	 * logic interface
 	 */
 	private LogicInterface adminLogic = null;
-
-	/**
-	 * cookie logic
-	 */
-	private CookieLogic cookieLogic = null;
-
+	
 	/**
 	 * request logic interface
 	 */
 	private RequestLogic requestLogic;
+	
+	/**
+	 * to update the user password cookie
+	 */
+	private CookieLogic cookieLogic;
+	
+	private CookieBasedRememberMeServices rememberMeServices;
+
+	/**
+	 * @param rememberMeServices the rememberMeServices to set
+	 */
+	public void setRememberMeServices(CookieBasedRememberMeServices rememberMeServices) {
+		this.rememberMeServices = rememberMeServices;
+	}
 
 	@Override
 	public SettingsViewCommand instantiateCommand() {
-		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setTabURL(TAB_URL);
-		return command;
+		return new SettingsViewCommand();
 	}
 
 	@Override
@@ -104,7 +115,6 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 	}
 
 	private void changePassword(final User loginUser, final SettingsViewCommand command) {
-
 		/*
 		 * first, check given current password
 		 */
@@ -118,18 +128,19 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 			/*
 			 * update password of user
 			 */
-			final String updatedUser = adminLogic.updateUser(loginUser, UserUpdateOperation.UPDATE_PASSWORD);
+			final String updatedUser = this.adminLogic.updateUser(loginUser, UserUpdateOperation.UPDATE_PASSWORD);
 			
 			/*
-			 * set a new cookie
+			 * change the cookie
 			 */
-			cookieLogic.addUserCookie(loginUser.getName(), newPasswordHash);
-
-			requestLogic.invalidateSession();
-
-			log.debug("password of " + updatedUser + " has been changed successfully");
+			final UserDetails userDetails = new UserAdapter(loginUser);
+			final Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, newPasswordHash);
 			
-		} else {// old password is wrong
+			this.cookieLogic.updateRememberMeCookie(this.rememberMeServices, authentication);
+			this.requestLogic.invalidateSession(); // TODO: why invalidate the session?!
+			log.debug("password of " + updatedUser + " has been changed successfully");
+		} else {
+			// old password is wrong
 			errors.rejectValue("oldPassword", "error.settings.password.incorect");
 		}
 	}
@@ -153,24 +164,6 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 		this.adminLogic = adminLogic;
 	}
 
-	/**
-	 * sets the cookie logic interface
-	 * 
-	 * @param cookieLogic
-	 */
-	public void setCookieLogic(final CookieLogic cookieLogic) {
-		this.cookieLogic = cookieLogic;
-	}
-
-	/**
-	 * sets the request logic interface
-	 * 
-	 * @param requestLogic
-	 */
-	public void setRequestLogic(final RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-
 	@Override
 	public Validator<SettingsViewCommand> getValidator() {
 		return new ChangePasswordValidator();
@@ -179,5 +172,21 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 	@Override
 	public boolean isValidationRequired(final SettingsViewCommand command) {
 		return true;
+	}
+
+	/**
+	 * @param requestLogic the requestLogic to set
+	 */
+	@Override
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+
+	/**
+	 * @param cookieLogic the cookieLogic to set
+	 */
+	@Override
+	public void setCookieLogic(CookieLogic cookieLogic) {
+		this.cookieLogic = cookieLogic;
 	}
 }

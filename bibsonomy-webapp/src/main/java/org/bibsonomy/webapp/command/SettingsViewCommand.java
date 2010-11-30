@@ -24,6 +24,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int IMPORTS_IDX = 2;
 	public final static int GROUP_IDX = 3;
 	
+	private static final String TAB_URL = "/settings";
+	
 	/**
 	 * action can be logging, api or layoutTagPost
 	 * this three types determine the different possible actions which will be handled 
@@ -70,6 +72,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * settings for groups
 	 */
 	private int privlevel;
+	// TODO: why not boolean?
 	private int sharedDocuments;
 	private Group group;
 	
@@ -129,10 +132,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * Constructor.
 	 */
 	public SettingsViewCommand() {
-		addTab(MY_PROFILE_IDX, "navi.myprofile");
-		addTab(SETTINGS_IDX, "navi.settings");
-		addTab(IMPORTS_IDX, "navi.imports");
-		setSelTab(MY_PROFILE_IDX);
+		this.addTab(MY_PROFILE_IDX, "navi.myprofile");
+		this.addTab(SETTINGS_IDX, "navi.settings");
+		this.addTab(IMPORTS_IDX, "navi.imports");
+		this.setSelTab(MY_PROFILE_IDX);
+		this.setTabURL(TAB_URL);
 	}
 	
 	/**

@@ -21,18 +21,14 @@ import org.springframework.validation.Errors;
 public class DeleteUserController implements ValidationAwareController<SettingsViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(DeleteUserController.class);
 	
-	private static final String TAB_URL = "/settings";
-	
 	private LogicInterface logic;
 	private Errors errors;
 
 	@Override
 	public SettingsViewCommand instantiateCommand() {
-		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setTabURL(TAB_URL);
-		return command;
+		return new SettingsViewCommand();
 	}
-
+	
 	@Override
 	public View workOn(SettingsViewCommand command) {
 		final RequestWrapperContext context = command.getContext();

@@ -14,7 +14,6 @@ import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SearchPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -27,22 +26,16 @@ import org.springframework.validation.Errors;
  */
 public class GroupSettingsController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
-	
-	private static final String TAB_URL = "/settings";
 
 	/**
 	 * hold current errors
 	 */
 	private Errors errors;
-	private RequestLogic requestLogic;
 	private LogicInterface logic;
-	
 
 	@Override
 	public SettingsViewCommand instantiateCommand() {
-		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setTabURL(TAB_URL);
-		return command;
+		return new SettingsViewCommand();
 	}
 
 	@Override
@@ -58,10 +51,8 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		final User loginUser = context.getLoginUser();
 		command.setUser(loginUser);
 		
-		//used to set the user specific value of maxCount/minFreq 
-		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? 
-				loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
-		
+		// used to set the user specific value of maxCount/minFreq 
+		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
 		
 		// check whether the user is a group		
 		if (UserUtils.userIsGroup(loginUser))  {
@@ -71,69 +62,54 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 			// if he is not, he will be forwarded to the first settings tab
 			command.showGroupTab(false);
 			command.setSelTab(SettingsViewCommand.MY_PROFILE_IDX);
-			errors.reject("settings.group.error.groupDoesNotExist");
+			this.errors.reject("settings.group.error.groupDoesNotExist");
 			return Views.SETTINGSPAGE;
 		}
 			
 		/*
 		 * check the ckey
 		 */
-		if (context.isValidCkey()) {
-			log.debug("User is logged in, ckey is valid");
-		} else {
-			errors.reject("error.field.valid.ckey");
+		if (!context.isValidCkey()) {
+			this.errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
 		
-		//the group properties to update
+		log.debug("User is logged in, ckey is valid");
+		// the group properties to update
 		final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
 		final boolean sharedDocs = command.getSharedDocuments() == 1;
 		
-		//the group to update
-		final Group groupToModify = logic.getGroupDetails(loginUser.getName());
+		// the group to update
+		final Group groupToUpdate = this.logic.getGroupDetails(loginUser.getName());
 		
-		if (!present(groupToModify)) {
+		if (!present(groupToUpdate)) {
+			// TODO: are these statements unreachable? @see if (UserUtils.userIsGroup())
 			command.showGroupTab(false);
 			command.setSelTab(SettingsViewCommand.MY_PROFILE_IDX);
-			errors.reject("settings.group.error.groupDoesNotExist");
+			this.errors.reject("settings.group.error.groupDoesNotExist");
 			return Views.SETTINGSPAGE;
 		}
 		
-		//update the bean
-		groupToModify.setPrivlevel(priv);
-		groupToModify.setSharedDocuments(sharedDocs);
+		// update the bean
+		groupToUpdate.setPrivlevel(priv);
+		groupToUpdate.setSharedDocuments(sharedDocs);
 		
 		try {
-			logic.updateGroup(groupToModify, GroupUpdateOperation.UPDATE_SETTINGS);
+			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS);
 		} catch (final Exception ex) {
 			// TODO: what exceptions can be thrown?!
 		}
-		
 		return Views.SETTINGSPAGE;
 	}
 
 	@Override
 	public Errors getErrors() {
-		return errors;
+		return this.errors;
 	}
 
 	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
-	}
-
-	/**
-	 * @return the requestLogic
-	 */
-	public RequestLogic getRequestLogic() {
-		return this.requestLogic;
-	}
-
-	/**
-	 * @param requestLogic the requestLogic to set
-	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
 	}
 
 	/**

@@ -109,8 +109,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		
 		Wiki wiki = logic.getWiki(user.getName(), null);
 		
-		//if no cvwiki available create default cvwiki
-		if(!present(wiki)) {
+		// if no cvwiki available create default cvwiki
+		if (!present(wiki)) {
 
 			final Locale locale = requestLogic.getLocale();
 			final String wikiText = messageSource.getMessage("cv.default_wiki", null, locale);
