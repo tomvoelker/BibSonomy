@@ -30,6 +30,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.AdminActionsValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 
 /**
  * Controller for ajax requests on admin pages
@@ -61,7 +62,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		/*
 		 * validate fields before values are entered into database
 		 */
-		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
+		ValidationUtils.invokeValidator(getValidator(), command, errors);
 		
 		/*
 		 * return to form until validation passes
