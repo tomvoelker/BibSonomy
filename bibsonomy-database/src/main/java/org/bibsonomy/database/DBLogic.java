@@ -176,7 +176,6 @@ public class DBLogic implements LogicInterface {
 	    /*
 	     * We don't use userName but user.getName() in the remaining part of
 	     * this method, since the name gets normalized in getUserDetails().
-	     * 
 	     */
 	    final User user = this.userDBManager.getUserDetails(userName, session);
 
@@ -236,17 +235,16 @@ public class DBLogic implements LogicInterface {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
-
 	// check allowed start-/end-values
 	if (grouping.equals(GroupingEntity.ALL) && !present(tags) && !present(search)) {
 	    this.permissionDBManager.checkStartEnd(loginUser, start, end, "post");
 	}
+	
 	// check maximum number of allowed tags
 	if (this.permissionDBManager.exceedsMaxmimumSize(tags)) {
 	    return new ArrayList<Post<T>>();
 	}
-
-	final List<Post<T>> result;
+	
 	final DBSession session = this.openSession();
 	try {
 	    /*
@@ -265,7 +263,6 @@ public class DBLogic implements LogicInterface {
 	     * result.addAll(bookmarkDBManager.getPosts(authUser, grouping,
 	     * groupingName, tags, hash, popular, added, start, end, false));
 	     * 
-	     * } else
 	     */
 	    if (resourceType == BibTex.class) {
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
@@ -280,9 +277,10 @@ public class DBLogic implements LogicInterface {
 
 		// this is save because of RTTI-check of resourceType argument
 		// which is of class T
-		result = ((List) this.publicationDBManager.getPosts(param, session));
-	    } else if (resourceType == Bookmark.class) {
-
+		return (List) this.publicationDBManager.getPosts(param, session);
+	    } 
+	    
+	    if (resourceType == Bookmark.class) {
 		// check filters
 		// can not add filter to BookmarkParam yet, but need to add
 		// group before buildParam
@@ -297,20 +295,22 @@ public class DBLogic implements LogicInterface {
 		}
 
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
-
-		// this is save because of RTTI-check of resourceType argument
-		// which is of class T
-		result = ((List) this.bookmarkDBManager.getPosts(param, session));
-	    } else {
-		throw new UnsupportedResourceTypeException();
+		
+		return (List) this.bookmarkDBManager.getPosts(param, session);
 	    }
+	    
+	    if (resourceType == GoldStandardPublication.class) {
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
+		return (List) this.goldStandardPublicationDBManager.getPosts(param, session);
+	    }
+	    
+	    throw new UnsupportedResourceTypeException();
 	} catch (final QueryTimeoutException ex) {
 	    // if a query times out, we return an empty list
 	    return new ArrayList<Post<T>>();
 	} finally {
 	    session.close();
 	}
-	return result;
     }
 
     /*
@@ -1583,7 +1583,7 @@ public class DBLogic implements LogicInterface {
      */
     @Override
     public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
-	// assemle param object
+	// assemble param object
 	final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, grouping, groupingName, tags, hash, order, start, end, search, null, loginUser);
 	param.setUserRelation(relation);
 
@@ -2037,29 +2037,20 @@ public class DBLogic implements LogicInterface {
 	throw new UnsupportedOperationException();
     }
 
-    /**
-     * 
-     * @param date - if <code>null</code>, the latest version of the wiki is 
-     * returned. Otherwise, the latest version before <code>date</code>.
-     * 
-     * @see org.bibsonomy.model.logic.LogicInterface#getWiki(java.lang.String, java.util.Date)
-     */
     @Override
     public Wiki getWiki(final String userName, final Date date) {
 	final DBSession session = openSession();
-	/*
-	 * We return an empty wiki for users which are not allowed to access
-	 * this wiki.
-	 */
-	if(!this.permissionDBManager.isAllowedToAccessUsersProfile(getUserDetails(userName), this.loginUser, session))
-	    return new Wiki();
+	final User requUser = this.getUserDetails(userName); // FIXME: Nullpointer
+	
+	if (!this.permissionDBManager.isAllowedToAccessUsersProfile(requUser, this.loginUser, session)) {
+		return new Wiki();
+	}   
 
 	try{
-	    if (!present(date)) {
+	    if (date == null) {
 		return this.wikiDBManager.getActualWiki(userName, session);
-	    } else {
-		return this.wikiDBManager.getPreviousWiki(userName, date, session);
 	    }
+		return this.wikiDBManager.getPreviousWiki(userName, date, session);
     	} finally {
 	    session.close();
 	}
@@ -2084,12 +2075,9 @@ public class DBLogic implements LogicInterface {
 	final DBSession session = openSession();
 	
 	try {
-	    final Wiki actual = this.wikiDBManager.getActualWiki(userName, session);
-	    /*
-	     * Check, if the wiki has changed (otherwise we don't update it).
-	     */
-	    final String actualWikiText = actual.getWikiText();
-	    if (present(actualWikiText) && !actualWikiText.equals(wiki.getWikiText())) {
+	    Wiki actual = this.getWiki(userName, null);
+	    
+	    if(!actual.getWikiText().equals(wiki.getWikiText())) {
 		this.wikiDBManager.updateWiki(userName, wiki, session);
 		this.wikiDBManager.logWiki(userName, actual, session);
 	    }
