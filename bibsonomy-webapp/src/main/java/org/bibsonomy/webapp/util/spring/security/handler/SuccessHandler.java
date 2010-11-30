@@ -11,9 +11,14 @@ import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.spring.security.UserAdapter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 /**
+ * after the user was successfully authenticated we need to set the spammer cookie
+ * this {@link AuthenticationSuccessHandler} sets the spammer cookie before redirecting
+ * the user
+ * 
  * @author dzo
  * @version $Id$
  */
@@ -26,7 +31,7 @@ public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandle
 			final UserAdapter adapter = (UserAdapter) principal;
 			final User user = adapter.getUser();
 			
-			/*
+			/* 
 			 * add spammer cookie
 			 */
 			final CookieLogic logic = new CookieLogic();
