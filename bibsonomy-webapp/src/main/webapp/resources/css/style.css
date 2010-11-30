@@ -1299,33 +1299,33 @@ a button {
  */
 
 div.ui-tabs div.ui-tabs-panel {
-		border: 1px solid #069;
-		margin-top: 1.8em;
+	border: 1px solid #069;
+	margin-top: 1.8em;
 }
 
 div.ui-tabs ul.ui-tabs-nav {
-		padding: 0px;
+	padding: 0px;
 }
 
 div.ui-tabs ul.ui-tabs-nav li {
-		border: 1px solid #bbb;
-		margin: 0px;
-		background-color: #eee;
-		top: 0px;
-		font-size: 80%;
+	border: 1px solid #bbb;
+	margin: 0px;
+	background-color: #eee;
+	top: 0px;
+	font-size: 80%;
 }
 
 div.ui-tabs ul.ui-tabs-nav li:hover {
-		background-color: #fff;
+	background-color: #fff;
 }
 
 div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
-		background-color: #fff;
-		border: 1px solid #069;
+	background-color: #fff;
+	border: 1px solid #069;
 }
 
 div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
-		color: #069;
+	color: #069;
 }
 
 /*
