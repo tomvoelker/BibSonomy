@@ -18,9 +18,9 @@
 
 		<jsp:attribute name="headerExt">
   			<link rel="stylesheet" type="text/css" href="${resdir}/css/jquery_ui/jquery.ui.tabs.css" />
-				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.core.min.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.widget.min.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.tabs.min.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.core.min.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.widget.min.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.tabs.min.js">&amp;nbsp;</script>
   			<script type="text/javascript">
 				<![CDATA[
 						$(function() {
@@ -31,12 +31,10 @@
   	</jsp:attribute>
 
 		<jsp:attribute name="heading">
-       <c:out value="loginTitle" />
+       <c:out value="${loginTitle}" />
     </jsp:attribute>
-
+		 <div id="general">
 		<jsp:attribute name="content">
-			
-          <div id="general">
           	<mtl:exists path="command.notice">
             	<c:if test="${not empty command.notice}">
               		<div style="border: 1px solid #006699; padding: 1em; margin-bottom: 1em;">
@@ -60,27 +58,26 @@
            <errors:global errors="${errors}" />
            
  		    <c:if test="${not empty command.message}">
- 		    	<fmt:message key="login.error.${command.message}" var="message" />
- 		    
- 		    <!--<c:if test="${not fn:startsWith(message, '?') }">-->
- 		    	<c:out value="${message}" />
- 		    <!--</c:if>-->
+ 		    	<div id="errorBox"><fmt:message key="login.error.${command.message}" var="message" />
+ 		    	<c:out value="${message}" /></div>
  		    </c:if>
  		    
- 		    
+ 		     
  		    <div id="logins">
           <ul>
 			<c:forEach var="authMethod" items="${authConfig.authOrder}">
-              <li><a href="#login_${authMethod}"><fmt:message key="login.${authMethod}.label" /></a></li>
+			  <c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+              <li><a href="#login_${authMethodName}"><fmt:message key="login.${authMethodName}.label" /></a></li>
             </c:forEach>
           </ul>
           <fmt:message key="navi.login" var="submit" />
           
 		  <c:forEach var="authMethod" items="${authConfig.authOrder}">
-            <div id="login_${authMethod}">
+            <c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+            <div id="login_${authMethodName}">           
            
-              <c:if test="${authMethod == 'DB'}">
-               <form:form action="/doLogin" method="POST">
+              <c:if test="${authMethod == 'INTERNAL'}">
+               <form:form action="/login_${authMethodName}" method="POST">
       		           <!-- Default login form -->
       		              <table>                           
       		                <tr>
@@ -120,7 +117,7 @@
       				</c:if>
 
       				<c:if test="${authMethod == 'LDAP'}">
-      				 <form:form action="/doLDAPLogin" method="POST">
+      				 <form:form action="/login_${authMethodName}" method="POST">
       		        <table>
       		          <tr>
 		                  <td><form:label path="username" ><fmt:message key="navi.username"/>:</form:label></td>
@@ -143,12 +140,10 @@
       				</c:if>
 
       				<c:if test="${authMethod == 'OPENID'}">
-      				 
-      					
       					<!-- OpenID logo -->
       					<img src="${resdir}/image/openid-logo-small.png" />
 									<!-- OpenID login form -->
-      						<form:form action="/doOpenIDLogin" method="POST">
+      						<form:form action="/login_${authMethodName}" method="POST">
       		              <table>
       		                <tr>
       		                  <td><form:label path="openID">OpenID:</form:label></td>

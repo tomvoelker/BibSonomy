@@ -13,7 +13,7 @@ public enum AuthMethod {
 	/**
 	 * TODO
 	 */
-	INTERN,
+	INTERNAL,
 	
 	/**
 	 * TODO
