@@ -2037,20 +2037,30 @@ public class DBLogic implements LogicInterface {
 	throw new UnsupportedOperationException();
     }
 
+    /**
+     * @param date - if <code>null</code>, the latest version of the wiki is 
+     * returned. Otherwise, the latest version before <code>date</code>.
+     * 
+     * @see org.bibsonomy.model.logic.LogicInterface#getWiki(java.lang.String, java.util.Date)
+     */
     @Override
     public Wiki getWiki(final String userName, final Date date) {
 	final DBSession session = openSession();
 	final User requUser = this.getUserDetails(userName); // FIXME: Nullpointer
-	
+	/*
+	 * We return an empty wiki for users which are not allowed to access
+	 * this wiki.
+	 */
 	if (!this.permissionDBManager.isAllowedToAccessUsersProfile(requUser, this.loginUser, session)) {
 		return new Wiki();
 	}   
 
-	try{
+	try {
 	    if (date == null) {
 		return this.wikiDBManager.getActualWiki(userName, session);
 	    }
-		return this.wikiDBManager.getPreviousWiki(userName, date, session);
+	    
+	    return this.wikiDBManager.getPreviousWiki(userName, date, session);
     	} finally {
 	    session.close();
 	}
@@ -2075,9 +2085,12 @@ public class DBLogic implements LogicInterface {
 	final DBSession session = openSession();
 	
 	try {
-	    Wiki actual = this.getWiki(userName, null);
-	    
-	    if(!actual.getWikiText().equals(wiki.getWikiText())) {
+	    final Wiki actual = this.wikiDBManager.getActualWiki(userName, session);
+	    /*
+	     * Check, if the wiki has changed (otherwise we don't update it).
+	     */
+	    final String actualWikiText = actual.getWikiText();
+	    if (present(actualWikiText) && !actualWikiText.equals(wiki.getWikiText())) {
 		this.wikiDBManager.updateWiki(userName, wiki, session);
 		this.wikiDBManager.logWiki(userName, actual, session);
 	    }
