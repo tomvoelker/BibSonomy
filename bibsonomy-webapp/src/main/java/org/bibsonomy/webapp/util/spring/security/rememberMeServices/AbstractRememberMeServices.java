@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.rememberme.InvalidCookieE
  * @author dzo
  * @version $Id$
  */
-public abstract class AbstractRememberMeServices extends org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices {
+public abstract class AbstractRememberMeServices extends org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices implements CookieBasedRememberMeServices {
 	private static final String TOKEN_SIGNATURE_SEPERATOR = ":";
 	
 	protected String makeTokenSignature(final String[] values) {
@@ -58,5 +58,10 @@ public abstract class AbstractRememberMeServices extends org.springframework.sec
 		// SEC-949
 	    expiryTime += 1000L * (tokenLifetime < 0 ? TWO_WEEKS_S : tokenLifetime);
 	    return expiryTime;
+	}
+	
+	@Override
+	public String getCookieName() {
+		return super.getCookieName();
 	}
 }

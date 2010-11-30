@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.util;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Random;
 
@@ -10,46 +8,42 @@ import javax.servlet.http.Cookie;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.webapp.util.spring.security.rememberMeServices.CookieBasedRememberMeServices;
+import org.springframework.security.core.Authentication;
 
-/** Some methods to help handling cookies.
+/**
+ * Some methods to help handling cookies.
  * 
  * @author rja
  * @version $Id$
  */
 public class CookieLogic implements RequestAware, ResponseAware {
-	private static final String SPLIT = "%20";
-
 	private static final Log log = LogFactory.getLog(CookieLogic.class);
-	
+		
 	/**
 	 * Used to generate random cookies.
 	 */
-	private static Random generator = new Random();
+	private static Random GENERATOR = new Random();
 	
-	
+
 	private RequestLogic requestLogic;
 	private ResponseLogic responseLogic;
-
-	/**
-	 * The cookie which authenticates the user.
-	 */
-	private String cookieUser = "_currUser";
-	/**
-	 * The cookie which authenticates an openID user
-	 */
-	private final String openIDCookie = "_openIDUser";
+	
 	/**
 	 * The name of the cookie which holds the spammer cookie.
 	 */
 	private String cookieSpammer = "_lPost";
+	
 	/**
 	 * The character, which the cookie only contains, if the user is a spammer.
 	 */
-	private final char SPAMMER_COOKIE_CONTAINS = '3';
+	private char spammerCookieContains = '3';
+
 	/**
 	 * The age (in seconds) a cookie will stay at most in the browser. Default: One year.  
 	 */
 	private int cookieAge = 3600 * 24 * 365;
+	
 	/**
 	 * The path on the server the cookie is valid for. Default: root path. 
 	 */
@@ -59,25 +53,28 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * Default Constructor 
 	 */
 	public CookieLogic() {
+		// request and/or response logic must be set through the setters
 	}
 	
-	/** Constructor to set request and response logic.
+	/**
+	 * Constructor to set request and response logic.
 	 * @param requestLogic
 	 * @param responseLogic
 	 */
-	public CookieLogic(RequestLogic requestLogic, ResponseLogic responseLogic) {
+	public CookieLogic(final RequestLogic requestLogic, final ResponseLogic responseLogic) {
 		this.requestLogic = requestLogic;
 		this.responseLogic = responseLogic;
 	}
 	
-	/** Checks, if a request contains a spammer cookie. 
+	/**
+	 * Checks, if a request contains a spammer cookie. 
 	 * A spammer cookie always contains a "3", other cookies not.
 	 * 
 	 * @return <code>true</code> if cookie contained in request
 	 */
 	public boolean hasSpammerCookie() {
 		final String cookie = getCookie(requestLogic.getCookies(), cookieSpammer); 
-		return cookie != null && cookie.contains(String.valueOf(SPAMMER_COOKIE_CONTAINS));
+		return cookie != null && cookie.contains(String.valueOf(spammerCookieContains));
 	}
 	
 	/** 
@@ -113,16 +110,16 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		 */
 		if (spammer) {
 			/* A SPAMMER: make sure, that spammer value is contained */
-			int pos = generator.nextInt(value.length());
-			value = value.substring(0, pos) + SPAMMER_COOKIE_CONTAINS + value.substring(pos + 1, value.length());
+			int pos = GENERATOR.nextInt(value.length());
+			value = value.substring(0, pos) + this.spammerCookieContains + value.substring(pos + 1, value.length());
 		} else {
 			/* NOT A SPAMMER: replace spammer value */
-			value = value.replace(SPAMMER_COOKIE_CONTAINS, '0');
+			value = value.replace(this.spammerCookieContains, '0');
 		}
 		/*
 		 * create cookie
 		 */
-		addCookie(cookieSpammer, value);
+		addCookie(this.cookieSpammer, value);
 	}
 	
 	/**
@@ -135,9 +132,30 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 */
 	@Deprecated
 	public void addUserCookie(final String username, final String passwordHash) {
-		addCookie(cookieUser, encode(username) + SPLIT + passwordHash);
+		// noop
 	}
 	
+	/**
+	 * @param services the services to use
+	 * @param authentication
+	 */
+	public void createRememberMeCookie(final CookieBasedRememberMeServices services, final Authentication authentication) {
+		services.loginSuccess(this.requestLogic.getRequest(), this.responseLogic.getResponse(), authentication);
+	}
+	
+	/**
+	 * @param services
+	 * @param authentication
+	 */
+	public void updateRememberMeCookie(final CookieBasedRememberMeServices services, final Authentication authentication) {
+		/*
+		 * first check if remember me was checked by the user when he logged in
+		 */
+		if (this.containsCookies(services.getCookieName())) {
+			this.createRememberMeCookie(services, authentication);
+		}
+	}	
+
 	/** Add the openID cookie.
 	 * 
 	 * @param username
@@ -146,7 +164,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 */
 	@Deprecated
 	public void addOpenIDCookie(final String username, final String openID, final String passwordHash) {
-		addCookie(openIDCookie, encode(username) + SPLIT + encode(openID) + SPLIT + passwordHash); 
+		// noop
 	}
 	
 	/** Adds a cookie to the response. Sets default values for path and maxAge. 
@@ -162,17 +180,8 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		responseLogic.addCookie(cookie);
 	}
 	
-	/** Encodes a string with {@link URLEncoder#encode(String, String)} with UTF-8.
-	 * TODO: extract method
-	 * @param s
-	 * @return
-	 */
-	private static String encode(final String s) {
-		try {
-			return URLEncoder.encode(s, "UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			return s;
-		}
+	private boolean containsCookies(final String name) {
+		return getCookie(this.requestLogic.getCookies(), name) != null;
 	}
 	
 	/** Checks, if the request contains any cookies.
@@ -203,32 +212,31 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		this.responseLogic = responseLogic;
 	}
 
-	/** The cookie which authenticates the user.
-	 * @param cookieUser
-	 */
-	@Deprecated
-	public void setCookieUser(String cookieUser) {
-		this.cookieUser = cookieUser;
-	}
-
 	/** The name of the cookie which holds the spammer cookie.
 	 * @param cookieSpammer
 	 */
-	public void setCookieSpammer(String cookieSpammer) {
+	public void setCookieSpammer(final String cookieSpammer) {
 		this.cookieSpammer = cookieSpammer;
 	}
 
 	/** The age (in seconds) a cookie will stay at most in the browser. Default: One year.
 	 * @param cookieAge
 	 */
-	public void setCookieAge(int cookieAge) {
+	public void setCookieAge(final int cookieAge) {
 		this.cookieAge = cookieAge;
 	}
 
 	/** The path on the server the cookie is valid for. Default: root path ("/").
 	 * @param cookiePath
 	 */
-	public void setCookiePath(String cookiePath) {
+	public void setCookiePath(final String cookiePath) {
 		this.cookiePath = cookiePath;
+	}
+	
+	/**
+	 * @param spammerCookieContains the spammerCookieContains to set
+	 */
+	public void setSpammerCookieContains(char spammerCookieContains) {
+		this.spammerCookieContains = spammerCookieContains;
 	}
 }

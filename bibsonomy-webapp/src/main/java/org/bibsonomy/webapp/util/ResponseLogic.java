@@ -50,5 +50,16 @@ public class ResponseLogic {
 	public void setHttpStatus(final int status) {
 		this.response.setStatus(status);
 	}
+
+	/**
+	 * XXX: don't change the visibility of this method
+	 * if you need the response add a method in this logic delegating the action to the
+	 * {@link #response} attribute
+	 * 
+	 * @return the response
+	 */
+	HttpServletResponse getResponse() {
+		return this.response;
+	}
 	
 }

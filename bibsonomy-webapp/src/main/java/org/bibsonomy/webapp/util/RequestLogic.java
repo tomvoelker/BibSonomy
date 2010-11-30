@@ -249,33 +249,46 @@ public class RequestLogic {
 
 	/**
 	 * Builds query string from parameter map
-	 * 
+	 * TODO unused; remove?
 	 * @return querystring
 	 */
 	public String getParametersAsQueryString() {
 		final StringBuilder buf = new StringBuilder("?");
 		try {
-			Enumeration<?> paramNames = request.getParameterNames();
+			final Enumeration<?> paramNames = request.getParameterNames();
 			while (paramNames.hasMoreElements()) {
-				String param = (String) paramNames.nextElement();
-				buf.append(param + "=" );
-				String paramValues[] = request.getParameterValues(param);
-				if ( paramValues.length == 1 ) {
+				final String param = (String) paramNames.nextElement();
+				buf.append(param + "=");
+				final String paramValues[] = request.getParameterValues(param);
+				if (paramValues.length == 1) {
 					String paramValue = paramValues[0];
-					if ( paramValue.length() == 0 )
+					if (paramValue.length() == 0) {
 						buf.append("");
-					else
+					} else {
 						buf.append(paramValue);
+					}
 				} else {
-					for (int i = 0; i < paramValues.length; i++ )
-						buf.append(paramValues[i] + "%20" ) ;
+					for (int i = 0; i < paramValues.length; i++ ) {
+						buf.append(paramValues[i] + "%20" );
+					}
 				}
 				buf.append("&");
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			log.warn("Could not build query string.", ex);
 		}
 		return buf.toString();
+	}
+
+	/**
+	 * XXX: don't change the visibility of this method
+	 * if you need the request add a method in this logic delegating the action to the
+	 * {@link #request} attribute
+	 * 
+	 * @return the request
+	 */
+	HttpServletRequest getRequest() {
+		return this.request;
 	}
 
 }
