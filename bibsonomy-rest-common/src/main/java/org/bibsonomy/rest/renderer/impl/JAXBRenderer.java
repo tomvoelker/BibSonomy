@@ -331,18 +331,19 @@ public abstract class JAXBRenderer implements Renderer {
 		if (resource instanceof BibTex && !(resource instanceof GoldStandardPublication)) {
 			final BibTex publication = (BibTex) post.getResource();
 			checkPublication(publication);
+			final String userName = post.getUser().getName();
 			final BibtexType xmlBibtex = new BibtexType();
 
-			xmlBibtex.setHref(urlRenderer.createHrefForResource(post.getUser().getName(), publication.getIntraHash()));
-
-			fillPublicationXML(publication, xmlBibtex);
-
+			xmlBibtex.setHref(urlRenderer.createHrefForResource(userName, publication.getIntraHash()));
+			
+			fillXmlPublicationDetails(publication, xmlBibtex);
+			
 			xmlPost.setBibtex(xmlBibtex);
 			
 			// if the publication has documents …
 			final List<Document> documents = publication.getDocuments();
 			if (documents != null) {
-
+			
 				checkPublication(publication);
 				// … put them into the xml output
 				final DocumentsType xmlDocuments = new DocumentsType();
@@ -350,7 +351,7 @@ public abstract class JAXBRenderer implements Renderer {
 					final DocumentType xmlDocument = new DocumentType();
 					xmlDocument.setFilename(document.getFileName());
 					xmlDocument.setMd5Hash(document.getMd5hash());
-					xmlDocument.setHref(urlRenderer.createHrefForResourceDocument(post.getUser().getName(), publication.getIntraHash(), document.getFileName()));
+					xmlDocument.setHref(urlRenderer.createHrefForResourceDocument(userName, publication.getIntraHash(), document.getFileName()));
 					xmlDocuments.getDocument().add(xmlDocument);
 				}
 				xmlPost.setDocuments(xmlDocuments);
@@ -378,7 +379,7 @@ public abstract class JAXBRenderer implements Renderer {
 			final GoldStandardPublication publication = (GoldStandardPublication) post.getResource();
 			
 			final GoldStandardPublicationType xmlPublication = new GoldStandardPublicationType();
-			this.fillPublicationXML(publication, xmlPublication);
+			this.fillXmlPublicationDetails(publication, xmlPublication);
 			
 			/*
 			 * add references
@@ -401,7 +402,7 @@ public abstract class JAXBRenderer implements Renderer {
 
 	}
 
-	private void fillPublicationXML(final BibTex publication, final BibtexType xmlPublication) {
+	protected void fillXmlPublicationDetails(final BibTex publication, final BibtexType xmlPublication) {
 		xmlPublication.setAddress(publication.getAddress());
 		xmlPublication.setAnnote(publication.getAnnote());
 		xmlPublication.setAuthor(publication.getAuthor());
