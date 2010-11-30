@@ -90,9 +90,14 @@ ul#gold_menu li a:hover {
 }
 
 
-#gold_exports. #postUsers {
+#gold_exports, #postUsers {
 	margin-top: 15px;
 }
+
+
+/*
+ * TODO: merge tab styles (style.css)
+ */
 
 #gold_exports div.ui-tabs-panel {
 	border: 1px solid rgb(233, 233, 233);
