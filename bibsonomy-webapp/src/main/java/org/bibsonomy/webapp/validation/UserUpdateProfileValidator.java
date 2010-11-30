@@ -18,8 +18,7 @@ import org.springframework.validation.Errors;
  * TODO: some check methods were copied from the UserValidator!
  * 
  * @author cvo
- * @version $Id: UserUpdateProfileValidator.java,v 1.1 2009-12-14 13:50:03
- *          voigtmannc Exp $
+ * @version $Id$
  */
 public class UserUpdateProfileValidator implements Validator<SettingsViewCommand> {
 
@@ -71,7 +70,7 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 	}
 
 	private void checkUserOpenURL(String str_URL, final Errors errors) {
-		if (present(str_URL)) { // this field do not has to be set
+		if (present(str_URL)) { // this field is optional
 			str_URL = str_URL.trim();
 			try {
 				new URL(str_URL);
@@ -88,7 +87,7 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 	}
 
 	private void checkUserEmailAdress(String email, final Errors errors) {
-		if (present(email)) { // email address do not have to be set
+		if (present(email)) { // email address is optional
 			email = email.trim();
 			if (email.indexOf(' ') != -1 || email.indexOf('@') == -1 || email.length() > 255 || email.lastIndexOf(".") < email.lastIndexOf("@") || email.lastIndexOf("@") != email.indexOf("@") || email.length() - email.lastIndexOf(".") < 2) {
 				errors.rejectValue("user.email", "error.field.valid.user.email");
@@ -97,7 +96,7 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 	}
 
 	private void checkUserRealName(final String realname, final Errors errors) {
-		if (present(realname)) { // real name do not have to be set
+		if (present(realname)) { // real name is optional
 			if (realname.length() > 255) { 
 				errors.rejectValue("user.realname", "error.field.valid.user.realname.length");
 			}
