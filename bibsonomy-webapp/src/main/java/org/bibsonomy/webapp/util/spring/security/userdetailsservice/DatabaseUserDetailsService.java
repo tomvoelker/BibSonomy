@@ -32,8 +32,8 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 	}
 
 	protected User getUserFromDatabase(String username) throws UsernameNotFoundException {
-		if (username != null) {
-			username = username.toLowerCase();
+		if (username == null) {
+			throw new UsernameNotFoundException("username was null");
 		}
 		
 		final User user = this.adminLogic.getUserDetails(username);
