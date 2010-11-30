@@ -69,18 +69,7 @@
 						<c:set var="goldstandard" value="${command.goldStandardPublication.resource}"/>
 						<ul class="goldstandard">
 							<a href="/bibtex/1${goldstandard.interHash}"><c:out value="${goldstandard.title}"/></a>
-							<c:if test="${not empty goldstandard.references}">
-								<div class="goldstandard_references">
-									<span class="gold_standard_references_info"><fmt:message key="goldstandard.references.info"/></span>
-									<ul>
-										<c:forEach var="reference" items="${goldstandard.references}">
-											<li><a href="/bibtex/1${reference.interHash}"><c:out value="${reference.title}"/></a></li>
-										</c:forEach>
-									</ul>
-								</div>
-							</c:if>
 						</ul>
-						
 					</li>			
 				</c:if>
 			</ul>
