@@ -197,7 +197,7 @@ public final class RestServlet extends HttpServlet {
 
 			// set some response headers
 			final String userAgent = request.getHeader("User-Agent");
-			log.debug("[USER-AGENT] " + userAgent);
+			log.info("[USER-AGENT] " + userAgent);
 			response.setContentType(context.getContentType(userAgent));
 			response.setCharacterEncoding(RESPONSE_ENCODING);
 
