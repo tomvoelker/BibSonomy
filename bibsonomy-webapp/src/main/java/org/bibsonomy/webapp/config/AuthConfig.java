@@ -1,42 +1,45 @@
 package org.bibsonomy.webapp.config;
 
-import org.apache.commons.lang.StringUtils;
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import org.springframework.beans.factory.InitializingBean;
 
 /**
- * Bean for managing runtime configuration of the authorization process.
+ * 
  * 
  * @author folke
  * @version $Id$
  */
-public class AuthConfig {
-	/** delimiter for concatenated lists */
-	public final static String DELIMITER = ",";
+public class AuthConfig implements InitializingBean {
 	
-	/** 
-	 * configures which authentication methods are available and determines 
-	 * their presentation order
-	 * @see{#AuthMethods} 
+	private List<AuthMethod> authOrder;
+	private String[] authOrderString;
+	
+	/**
+	 * @return the authOrder
 	 */
-	private String[] authOrder;
-	
-
-	public void setAuthOrderString(String authOrder) {
-		this.setAuthOrder(authOrder.split(DELIMITER));
+	public List<AuthMethod> getAuthOrder() {
+		return this.authOrder;
 	}
 
-	public String getAuthOrderString() {
-		return StringUtils.join(getAuthOrder(), DELIMITER);
+	/**
+	 * @param authOrderString the authOrderString to set
+	 */
+	public void setAuthOrderString(String[] authOrderString) {
+		this.authOrderString = authOrderString;
 	}
 
-	public void setAuthOrder(String[] authOrder) throws IllegalArgumentException {
-		// parse input strings to ensure that only supported methods are supported
-		this.authOrder = new String[authOrder.length];
-		for( int i=0; i<authOrder.length; i++ ) {
-			this.authOrder[i] = AuthMethods.getAuthMethodByName(authOrder[i]).name();
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		if (!present(this.authOrderString)) throw new IllegalArgumentException();
+		
+		// parse auth methods
+		this.authOrder = new LinkedList<AuthMethod>();
+		for (final String authMethodString : this.authOrderString) {
+			this.authOrder.add(AuthMethod.getAuthMethodByName(authMethodString));
 		}
-	}
-
-	public String[] getAuthOrder() {
-		return authOrder;
 	}
 }
