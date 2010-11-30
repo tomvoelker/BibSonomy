@@ -29,7 +29,6 @@ import org.bibsonomy.common.exceptions.InternServerException;
 
 /**
  * The supported rendering formats.
- * TODO: rename to MediaType
  * 
  * @author Christian Schenk
  * @version $Id$
