@@ -2,32 +2,12 @@
 <jsp:root version="2.0"
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+    xmlns:register="urn:jsptagdir:/WEB-INF/tags/actions/register"
+	>
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" requPath="${requPath}">
-  
-        <jsp:attribute name="heading">
-          <fmt:message key="navi.register"/>
-        </jsp:attribute>
-      
-        
-        <jsp:attribute name="content">
-        	<div id="general">
-	            <h2><fmt:message key="register.welcome"/> <a href="/">${projectName}</a>!</h2>
-  
-    	        <p><fmt:message key="register.activate"/> </p>
-			</div>
-	    </jsp:attribute>
-      
-	</layout:layout>
+	<register:user_success/>
+
 
 </jsp:root>
