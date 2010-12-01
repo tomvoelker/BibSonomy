@@ -73,7 +73,6 @@
               				<li><a href="#login_${authMethodName}"><fmt:message key="login.${authMethodName}.label" /></a></li>
             			</c:forEach>
           			</ul>
-          			<fmt:message key="navi.login" var="submit" />
           
 		  			<c:forEach var="authMethod" items="${authConfig.authOrder}">
             			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
