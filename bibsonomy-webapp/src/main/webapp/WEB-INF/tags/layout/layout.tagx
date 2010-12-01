@@ -184,9 +184,8 @@
 								<a href="/edit_tags"><fmt:message key="navi.editTags"/></a>
 							</c:when>
 						<c:otherwise>
-							Please use the login site for now
 							<!-- TODO: adapt to spring security -->
-							<!-- <parts:login authOrder="${authOrder}" loginUrl="${loginUrl}" login="${login}" projectContext="${projectContext}"/> -->
+							<parts:login loginUrl="${loginUrl}" login="${login}" projectContext="${projectContext}"/>
 						</c:otherwise>
 						</c:choose>
 					</div>

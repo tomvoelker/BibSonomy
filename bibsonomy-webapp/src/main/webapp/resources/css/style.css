@@ -371,7 +371,7 @@ div.bibentry {
 }
 
 #welcomeTop {
-	clear: both;
+	clear: left;
 	font-size: 80%;
 	color: #fff;
 	padding: 3px 0px 9px 0px;
