@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+>
+
+	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="LDAP Login Form" description="Renders the login form for LDAP login." />
+
+	<table>
+		<tr>
+			<td><form:label path="username"><fmt:message key="navi.username" />:</form:label></td>
+			<td><form:input path="username" /><form:errors cssClass="errmsg" path="username" /></td>
+		</tr>
+		<tr>
+			<td><form:label path="password"><fmt:message key="navi.password" />:</form:label></td>
+			<td><form:password path="password" /><form:errors cssClass="errmsg" path="password" /></td>
+		</tr>
+		<tr>
+			<td><form:label path="rememberMe"><fmt:message key="login.rememberMe" />:</form:label></td>
+			<td><form:checkbox path="rememberMe" /><form:errors	cssClass="errmsg" path="rememberMe" /></td>
+		</tr>
+		<tr>
+			<td colspan="3"><form:hidden path="referer" /> <input type="submit" value="${submit}" /></td>
+		</tr>
+	</table>
+</jsp:root>

@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+>
+
+	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="Internal Login Form" description="Renders the login form for internal login. This includes links to the registration page and the password reminder page." />
+
+	<table>
+		<tr>
+			<td><form:label path="username"><fmt:message key="navi.username" />:</form:label></td>
+			<td><form:input path="username" /><form:errors cssClass="errmsg" path="username" /></td>
+		</tr>
+		<tr>
+			<td><form:label path="password"><fmt:message key="navi.password" />:</form:label></td>
+			<td><form:password path="password" /><form:errors cssClass="errmsg" path="password" /></td>
+		</tr>
+		<tr>
+			<td><form:label path="rememberMe"><fmt:message key="login.rememberMe" />:</form:label></td>
+			<td><form:checkbox path="rememberMe" /><form:errors	cssClass="errmsg" path="rememberMe" /></td>
+		</tr>
+		<tr>
+			<td colspan="3"><form:hidden path="referer" /> <input type="submit" value="${submit}" /></td>
+		</tr>
+	</table>
+	
+	<h2><fmt:message key="navi.register" /></h2>
+	<p>
+		<fmt:message key="login.notRegistered_1" /> <c:out value=" " />
+		<a href="/register"><fmt:message key="login.notRegistered_2" /></a>.
+	</p>
+
+	<h2><fmt:message key="login.lostPassword" /></h2>
+	<p>
+		<fmt:message key="login.lostPassword_1" /> <c:out value=" " />
+		<a href="/reminder"><fmt:message key="login.lostPassword_2" /></a>
+	</p>
+</jsp:root>

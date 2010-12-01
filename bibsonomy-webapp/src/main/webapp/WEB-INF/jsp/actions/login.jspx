@@ -8,6 +8,7 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -26,151 +27,68 @@
 						$(function() {
 							$('#logins').tabs();
 						});
-		  	]]>
-		  </script>	
-  	</jsp:attribute>
+		  		]]>
+		  	</script>	
+  		</jsp:attribute>
 
 		<jsp:attribute name="heading">
-       <c:out value="${loginTitle}" />
-    </jsp:attribute>
+       		<c:out value="${loginTitle}" />
+    	</jsp:attribute>
+		
+		
 		<jsp:attribute name="content">
-		 <div id="general">
-          	<mtl:exists path="command.notice">
-            	<c:if test="${not empty command.notice}">
-              		<div style="border: 1px solid #006699; padding: 1em; margin-bottom: 1em;">
-                		<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="/">${projectName}</a>, <fmt:message key="login.notice.welcome_2" />
-                		<br />
-                		<br />
-                		<b><fmt:message key="${command.notice}" /></b>
-                		<br />
-                		<br />
-                		<fmt:message key="login.notice.welcome_3" />
-                		<c:out value=" " />
-                		<a style="font-weight: bold;" href="/register" target="_blank"><fmt:message key="login.notice.welcome_4" /></a>.
-                		<fmt:message key="login.notice.welcome_5">
-                			<fmt:param value="${fn:escapeXml(command.referer)}" />
-                		</fmt:message> 
-              		</div>
-            	</c:if>
-            </mtl:exists>
+			<div id="general">
+          		<mtl:exists path="command.notice">
+            		<c:if test="${not empty command.notice}">
+              			<div style="border: 1px solid #006699; padding: 1em; margin-bottom: 1em;">
+                			<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="/">${projectName}</a>, <fmt:message key="login.notice.welcome_2" />
+                			<br />
+                			<br />
+                			<b><fmt:message key="${command.notice}" /></b>
+                			<br />
+                			<br />
+                			<fmt:message key="login.notice.welcome_3" />
+                			<c:out value=" " />
+                			<a style="font-weight: bold;" href="/register" target="_blank"><fmt:message key="login.notice.welcome_4" /></a>.
+                			<fmt:message key="login.notice.welcome_5">
+	                			<fmt:param value="${fn:escapeXml(command.referer)}" />
+    	            		</fmt:message> 
+        	      		</div>
+            		</c:if>
+            	</mtl:exists>
 
-		          <!-- show global error messages -->
-           <errors:global errors="${errors}" />
+				<!-- show global error messages -->
+           		<errors:global errors="${errors}" />
            
- 		    <c:if test="${not empty command.message}">
- 		    	<div id="errorBox"><fmt:message key="login.error.${command.message}" var="message" />
- 		    	<c:out value="${message}" /></div>
- 		    </c:if>
+ 		    	<c:if test="${not empty command.message}">
+ 		    		<div id="errorBox"><fmt:message key="login.error.${command.message}" var="message" />
+ 		    		<c:out value="${message}" /></div>
+ 		    	</c:if>
  		    
  		     
- 		    <div id="logins">
-          <ul>
-			<c:forEach var="authMethod" items="${authConfig.authOrder}">
-			  <c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-              <li><a href="#login_${authMethodName}"><fmt:message key="login.${authMethodName}.label" /></a></li>
-            </c:forEach>
-          </ul>
-          <fmt:message key="navi.login" var="submit" />
+ 		    	<div id="logins">
+          			<ul>
+						<c:forEach var="authMethod" items="${authConfig.authOrder}">
+			  				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+              				<li><a href="#login_${authMethodName}"><fmt:message key="login.${authMethodName}.label" /></a></li>
+            			</c:forEach>
+          			</ul>
+          			<fmt:message key="navi.login" var="submit" />
           
-		  <c:forEach var="authMethod" items="${authConfig.authOrder}">
-            <c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-            <div id="login_${authMethodName}">           
-           
-              <c:if test="${authMethod == 'INTERNAL'}">
-               <form:form action="/login_${authMethodName}" method="POST">
-      		           <!-- Default login form -->
-      		              <table>                           
-      		                <tr>
-		                  		<td><form:label path="username" ><fmt:message key="navi.username"/>:</form:label></td>
-		                  		<td><form:input path="username" /><form:errors cssClass="errmsg" path="username" /></td>
-		                	</tr>
-		                	<tr>
-		                  		<td><form:label path="password" ><fmt:message key="navi.password"/>:</form:label></td>
-		                 		<td><form:password path="password" /><form:errors cssClass="errmsg" path="password" /></td>
-		                	</tr>
-		                	<tr>
-		                		<td><form:label path="rememberMe"><fmt:message key="login.rememberMe"/>:</form:label></td>
-		                		<td><form:checkbox path="rememberMe" /><form:errors cssClass="errmsg" path="rememberMe"/></td>
-		                	</tr>
-      		                <tr>
-      		                  <td colspan="3">
-      		                    <form:hidden path="referer"/>
-      		                    <input type="submit" value="${submit}" />
-      		                  </td>
-      		                </tr>
-      		              </table>
-      		            </form:form>
-
-      		            <h2><fmt:message key="navi.register" /></h2>
-      		            <p>
-      		              <fmt:message key="login.notRegistered_1" />
-      		              <c:out value=" " />
-      		              <a href="/register"><fmt:message key="login.notRegistered_2" /></a>.
-      		            </p>
-
-      		            <h2><fmt:message key="login.lostPassword" /></h2>
-      		            <p>
-      		              <fmt:message key="login.lostPassword_1" /> 
-      		              <c:out value=" " />
-      		              <a href="/reminder"><fmt:message key="login.lostPassword_2" /></a>
-      		            </p>
-      				</c:if>
-
-      				<c:if test="${authMethod == 'LDAP'}">
-      				 <form:form action="/login_${authMethodName}" method="POST">
-      		        <table>
-      		          <tr>
-		                  <td><form:label path="username" ><fmt:message key="navi.username"/>:</form:label></td>
-		                  <td><form:input path="username" /><form:errors cssClass="errmsg" path="username" /></td>
-		                </tr>
-		
-		                <tr>
-		                  <td><form:label path="password" ><fmt:message key="navi.password"/>:</form:label></td>
-		                  <td><form:password path="password" /><form:errors cssClass="errmsg" path="password" /></td>
-		                </tr>
-
-      		          <tr>
-      		              <td colspan="3">
-      		  	              <form:hidden path="referer" />
-      			              <input type="submit" value="${submit}" />
-      		              </td>
-      		           </tr>
-      		         </table>
-      		       </form:form>
-      				</c:if>
-
-      				<c:if test="${authMethod == 'OPENID'}">
-      					<!-- OpenID logo -->
-      					<img src="${resdir}/image/openid-logo-small.png" />
-									<!-- OpenID login form -->
-      						<form:form action="/login_${authMethodName}" method="POST">
-      		              <table>
-      		                <tr>
-      		                  <td><form:label path="openID">OpenID:</form:label></td>
-      		                  <td><form:input path="openID" cssClass="openid" type="text" size="30" /><form:errors cssClass="errmsg" path="openID" /></td>
-      		                </tr>
-
-      		                <tr>
-      		                  <td colspan="3">
-      		                    <form:hidden path="referer"/>
-      		                    <input type="submit" value="${submit}" />
-      		                  </td>
-      		                </tr>
-      		              </table>
-      		            </form:form>
-
-      		            <h2><fmt:message key="navi.register" /></h2>
-      		            <p>
-      		              <fmt:message key="login.notRegistered_1" />
-      		              <c:out value=" " />
-      		              <a href="/registerOpenID"><fmt:message
-						key="login.notRegistered_2" /></a>.
-      		            </p>
-      				</c:if>
-      				</div>
-          </c:forEach>
-          </div> <!-- #logins -->
-          </div>    
-      </jsp:attribute>
+		  			<c:forEach var="authMethod" items="${authConfig.authOrder}">
+            			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+            			<div id="login_${authMethodName}">           
+           					<form:form action="/login_${authMethodName}" method="POST">
+              					<c:if test="${authMethod == 'INTERNAL'}"><user:login_internal/></c:if>
+      							<c:if test="${authMethod == 'LDAP'}">    <user:login_ldap/></c:if>
+      							<c:if test="${authMethod == 'OPENID'}">  <user:login_openid/></c:if>
+      						</form:form>
+						</div>
+          			</c:forEach>
+          		</div>
+          	</div>    
+      	</jsp:attribute>
+      	
+      	
 	</layout:layout>
 </jsp:root>
