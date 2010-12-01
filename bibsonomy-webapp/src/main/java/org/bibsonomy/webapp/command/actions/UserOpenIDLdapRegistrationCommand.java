@@ -9,7 +9,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @author Stefan Stützer
  * @version $Id$
  */
-public class UserOpenIDRegistrationCommand extends BaseCommand implements Serializable {
+public class UserOpenIDLdapRegistrationCommand extends BaseCommand implements Serializable {
 	
 	/**
 	 * serial uid
