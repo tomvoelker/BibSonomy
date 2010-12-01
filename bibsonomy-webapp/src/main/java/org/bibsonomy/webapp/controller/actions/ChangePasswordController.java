@@ -106,7 +106,7 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 			/*
 			 * change password
 			 */
-			this.changePassword(loginUser, command);
+			this.changePassword(loginUser, command.getOldPassword(), command.getNewPassword());
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}
@@ -114,15 +114,15 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 		return Views.SETTINGSPAGE;
 	}
 
-	private void changePassword(final User loginUser, final SettingsViewCommand command) {
+	private void changePassword(final User loginUser, final String oldPassword, final String newPassword) {
 		/*
 		 * first, check given current password
 		 */
-		if (loginUser.getPassword().equals(StringUtils.getMD5Hash(command.getOldPassword()))) {
+		if (loginUser.getPassword().equals(StringUtils.getMD5Hash(oldPassword))) {
 			/*
 			 * compute hash for new password
 			 */
-			final String newPasswordHash = StringUtils.getMD5Hash(command.getNewPassword());
+			final String newPasswordHash = StringUtils.getMD5Hash(newPassword);
 			loginUser.setPassword(newPasswordHash);
 
 			/*
@@ -135,9 +135,14 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 			 */
 			final UserDetails userDetails = new UserAdapter(loginUser);
 			final Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, newPasswordHash);
-			
+
+			/*
+			 * FIXME: This does currently not work, because the rememberMeService 
+			 * sets the cookie only when the corresponding request parameter is
+			 * supplied. Since we can't change request parameters, we probably
+			 * have to add a checkbox to the password change form
+			 */
 			this.cookieLogic.updateRememberMeCookie(this.rememberMeServices, authentication);
-			this.requestLogic.invalidateSession(); // TODO: why invalidate the session?!
 			log.debug("password of " + updatedUser + " has been changed successfully");
 		} else {
 			// old password is wrong

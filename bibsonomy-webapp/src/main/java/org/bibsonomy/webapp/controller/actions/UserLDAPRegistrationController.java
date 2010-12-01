@@ -168,8 +168,6 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 		/*
 		 * before we store the user, we must ensure that he contains the 
 		 * password and the LDAP id
-		 * 
-		 * FIXME: What shall be the password in BibSonomy's database?
 		 */
 		registerUser.setPassword(StringUtils.getMD5Hash(user.getPassword()));
 		registerUser.setLdapId(user.getLdapId());
@@ -178,8 +176,9 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 		 */
 		adminLogic.createUser(registerUser);
 		/*
-		 * FIXME: delete user from session.
+		 * delete user from session.
 		 */
+		requestLogic.setSessionAttribute(FailureHandler.USER_TO_BE_REGISTERED, null);
 
 		/*
 		 * log user into system
