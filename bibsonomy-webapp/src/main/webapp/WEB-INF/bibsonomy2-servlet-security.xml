@@ -176,7 +176,7 @@
 	<bean id="openidRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.OpenIDRememberMeServices">
 		<property name="userDetailsService" ref="databaseUserService"/>
   		<property name="key" ref="cookieKey"/>
-  		<property name="alwaysRemember" value="true" />
+  		<property name="parameter" value="rememberMe"/>
   		<property name="cookieName" value="openID_user" />
   		<property name="filterUrl" ref="openidLoginUrl" />
 		<property name="projectRoot" value="${project.home}" />
@@ -224,7 +224,7 @@
 	<bean id="ldapRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.LDAPRememberMeServices">
 		<property name="userDetailsService" ref="databaseUserService"/>
   		<property name="key" ref="cookieKey"/>
-  		<property name="alwaysRemember" value="true" />
+  		<property name="parameter" value="rememberMe"/>
   		<property name="cookieName" value="ldap_user" />
   		<property name="encryptor" ref="encryptor" />
 	</bean>
@@ -250,8 +250,7 @@
 	</bean>
 	
 	<!--<security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />
-	-->
-<security:ldap-server id="contextSource" url="${auth.ldap.server}" />
+	--> <security:ldap-server id="contextSource" url="${auth.ldap.server}" /> 
 
 
 	<bean id="ldapUserDetailsMapper" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.LDAPUserDetailsServiceMapper">
