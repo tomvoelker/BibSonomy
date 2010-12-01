@@ -292,10 +292,15 @@ public enum Views implements View {
 	REGISTER_USER("actions/register/user"),
 
 	/**
+	 * After a user has successfully registered that must still be activated.
+	 */
+	REGISTER_USER_TO_BE_ACTIVATED("actions/register/user_to_be_activated"),
+
+	/**
 	 * After a user has successfully registered, he will see this view.
 	 */
 	REGISTER_USER_SUCCESS("actions/register/user_success"),
-
+	
 	/**
 	 * After a user has been successfully activated, he will see this view.
 	 */
@@ -319,26 +324,11 @@ public enum Views implements View {
 	REGISTER_USER_OPENID_PROVIDER_FORM("actions/register/openid/provider_form"),
 	
 	/**
-	 * After a user has successfully registered using OpenID, he will see this view.
-	 */
-	REGISTER_USER_OPENID_SUCCESS("actions/register/openid/user_success"),
-	
-	/**
-	 * User registration form for LDAP registering
-	 */
-	REGISTER_USER_LDAP("actions/register/ldap/user"),
-
-	/**
 	 * LDAP register form prefilled with information from LDAP server 
 	 * 
 	 */
 	REGISTER_USER_LDAP_FORM("actions/register/ldap/profile_form"),
-	
-	/**
-	 * After a user has successfully registered using LDAP, he will see this view.
-	 */
-	REGISTER_USER_LDAP_SUCCESS("actions/register/ldap/user_success"),
-	
+		
 	/**
 	 * Log into the system. 
 	 */

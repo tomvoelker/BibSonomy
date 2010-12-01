@@ -1,304 +1,246 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.webapp.command.actions.UserLDAPRegistrationCommand;
+import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.webapp.command.actions.UserOpenIDLdapRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.auth.Ldap;
-import org.bibsonomy.webapp.util.auth.LdapUserinfo;
+import org.bibsonomy.webapp.util.spring.security.UserAdapter;
+import org.bibsonomy.webapp.util.spring.security.handler.FailureHandler;
+import org.bibsonomy.webapp.util.spring.security.rememberMeServices.LDAPRememberMeServices;
 import org.bibsonomy.webapp.validation.UserLDAPRegistrationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
-
-import filters.InitUserFilter;
 
 /**
  * This controller handles the registration of users via LDAP
  * 
  * @author Sven Stefani
+ * @author rja
  * @version $Id$
  */
-public class UserLDAPRegistrationController implements ErrorAware, ValidationAwareController<UserLDAPRegistrationCommand>, RequestAware, CookieAware {
+/**
+ * @author rja
+ *
+ */
+public class UserLDAPRegistrationController implements ErrorAware, ValidationAwareController<UserOpenIDLdapRegistrationCommand>, RequestAware, CookieAware {
 	private static final Log log = LogFactory.getLog(UserLDAPRegistrationController.class);
-	
-	
-	protected LogicInterface logic;
+
+
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
-
-	private String projectHome;
+	private LDAPRememberMeServices ldapRememberMeServices;
 
 	/**
 	 * After successful registration, the user is redirected to this page.
 	 */
 	private String successRedirect = "";
 
+	/**
+	 * Only users which were successfully authenticated using LDAP and whose 
+	 * LDAP ID does not exist in our database are allowed to use this 
+	 * controller.
+	 * 
+	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.ContextCommand)
+	 */
 	@Override
-	public View workOn(UserLDAPRegistrationCommand command) {
+	public View workOn(UserOpenIDLdapRegistrationCommand command) {
 		log.debug("workOn() called");
 
 		command.setPageTitle("LDAP registration");
 
-		final RequestWrapperContext context = command.getContext();
-		final User loginUser = context.getLoginUser();
-
 		/*
-		 * Check user role
-		 * 
-		 * If user is logged in and not an admin: show error message
+		 * If the user is properly logged in: show error message
 		 */
-		if (context.isUserLoggedIn() && !Role.ADMIN.equals(loginUser.getRole())) {
-			log.warn("User " + loginUser.getName() + " tried to access user registration without having role " + Role.ADMIN);
+		if (command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
 
-		log.info("errors"+errors.toString());
-		
-		if (errors.hasErrors()) {
-			log.info("an error occoured: " + errors.toString());
-			
-			if (command.getStep() == 3) {
-				return Views.REGISTER_USER_LDAP_FORM;
-			}
-			
-			return Views.REGISTER_USER_LDAP;
-		}
 
 		/*
-		 * Registration steps
+		 * If the user has been successfully authenticated using LDAP and he
+		 * is not yet registered, his LDAP data is contained in the session.  
 		 */
-		if (command.getStep() == 1) {
-
-			log.debug("step 1: fill ldap form (username/password)");
+		final Object o = requestLogic.getSessionAttribute(FailureHandler.USER_TO_BE_REGISTERED);
+		if (!present(o) || ! (o instanceof User)) {
 			/*
-			 * show form to enter Ldap
+			 * user must first login.
 			 */
-			return Views.REGISTER_USER_LDAP;
-		} else if (command.getStep() == 2) {
-			Views returnView = Views.REGISTER_USER_LDAP;
-			log.debug("step 2: show ldap registration form");
+			return new ExtendedRedirectView("/login"+ 
+					"?notice=" + "register.ldap.step1" + 
+					"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL()));
+		}
+		
 
-			String registerUserName = null;
-			String registerUserPassword = null;
-			
-			
-			// user registration over login process
-			if (null != requestLogic.getSessionAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER)) {
-				log.info("got Userdata via session");
-				// retrieve username and password from session (set in UserLoginController)
-				registerUserName = (String) requestLogic.getSessionAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER);
-				registerUserPassword = (String) requestLogic.getSessionAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER_PASSWORD);
-			} else // user registration over registration process  
-			if (null != requestLogic.getParameter("registerUser.name")) {
-				log.info("got Userdata via http-request");
-				registerUserName = requestLogic.getParameter("registerUser.name");
-				registerUserName = requestLogic.getParameter("registerUser.password");
-			}
-				
+		/*
+		 * user found in session - proceed with the registration 
+		 */
+		log.debug("got user from session");
+		final User user = (User) o;
+
+		/*
+		 * 2 = user has not been on form, yet -> fill it with LDAP data
+		 * 3 = user has seen the form and possibly changed data
+		 */
+		if (command.getStep() == 2) {
+			log.debug("step 3: start LDAP registration");
 			/*
-			 * check, if ldap user id already exists in ldap user table
+			 * fill command with data from LDAP
 			 */
-			if (null != logic.getUsernameByLdapUserId(registerUserName)) {
-				/*
-				 * yes -> user must choose another name
-				 */
-				errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
-			} 
-			
+			command.setRegisterUser(user);
+			/*
+			 * generate a new user name
+			 */
+			user.setName(generateUserName(user));
+			/*
+			 * ensure that we proceed to the next step
+			 */
+			command.setStep(3);
+			/*
+			 * return to form
+			 */
+			return Views.REGISTER_USER_LDAP_FORM;
+		}
+		
+		
+		
+		log.debug("step 3: complete LDAP registration");
+		/* 
+		 * if there are any errors in the form, we return back to fix them.
+		 */
+		if (errors.hasErrors()) {
+			log.info("an error occoured: " + errors.toString());
+			return Views.REGISTER_USER_LDAP_FORM;
+		}
+		/*
+		 * no errors: try to store user
+		 */
+		/*
+		 * user that wants to register (form data)
+		 */
+		final User registerUser = command.getRegisterUser();
+		/*
+		 * check, if user name already exists
+		 */
+		if (present(registerUser.getName()) && present(adminLogic.getUserDetails(registerUser.getName()).getName())) {
+			/*
+			 * yes -> user must choose another name
+			 */
+			errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
+		}
+		/*
+		 * return to form until validation passes
+		 */
+		if (errors.hasErrors()) {
+			/*
+			 * we add the LDAP id since it is shown to the user in the form
+			 */
+			registerUser.setLdapId(user.getLdapId());
+			return Views.REGISTER_USER_LDAP_FORM;
+		}
+		log.info("validation passed with " + errors.getErrorCount() + " errors, proceeding to access database");
+		/*
+		 * set the users inet address
+		 */
+		registerUser.setIPAddress(requestLogic.getInetAddress());
+		/*
+		 * before we store the user, we must ensure that he contains the 
+		 * password and the LDAP id
+		 * 
+		 * FIXME: What shall be the password in BibSonomy's database?
+		 */
+		registerUser.setPassword(StringUtils.getMD5Hash(user.getPassword()));
+		registerUser.setLdapId(user.getLdapId());
+		/*
+		 * create user in DB
+		 */
+		adminLogic.createUser(registerUser);
+		/*
+		 * FIXME: delete user from session.
+		 */
 
-			if (errors.hasErrors()) {
-				/*
-				 * Generate HTML to show captcha.
-				 */
-				log.debug("step 2: hasErrors() -> redirecting to Views.REGISTER_USER_LDAP (step 1)");
-				return Views.REGISTER_USER_LDAP;
-			}
-			
+		/*
+		 * log user into system
+		 */
+		final UserDetails userDetails = new UserAdapter(registerUser);
+		final Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, user.getPassword());
 
-			// check credentials
-			final Ldap ldap = new Ldap();
-			log.info("Trying to login user " + registerUserName + " via LDAP");
-			final LdapUserinfo ldapUserinfo = ldap.checkauth(registerUserName, registerUserPassword);
+		cookieLogic.createRememberMeCookie(ldapRememberMeServices, authentication);
 
-			if (null == ldapUserinfo) {
-				log.info("Login check for registering failed for user " + registerUserName + " via LDAP");
-				// if login failed, return to step 1 - show REGISTER_USER_LDAP
+		/*
+		 * present the success view
+		 */
+		return new ExtendedRedirectView(successRedirect);
+	}
 
-				// set some error messages
-				errors.rejectValue("loginmessage", "error.login.failed");
-				returnView = Views.REGISTER_USER_LDAP;
-			} else {
-				// if login was successful, insert ldap data to command
-				log.info("Login check for registering succeeded for user " + registerUserName + " via LDAP");
-
-				// check if username is already used and try another
-				String newName = ldapUserinfo.getSureName().toLowerCase();
-				int tryCount = 0;
-				log.info("try existence of username: "+newName);
-				while ((newName.equalsIgnoreCase(adminLogic.getUserDetails(newName).getName())) && (tryCount < 101)) {
-					try {
-						if (tryCount == 0) {
-							// try first character of forename concatenated with surename
-							// bugs bunny => bbunny
-							newName = ldapUserinfo.getFirstName().substring(0, 1).toLowerCase().concat(newName);
-						} else if (tryCount == 100) {
-							// now use first character of fore- and first two characters of surename concatenated with ldap user id 
-							// bugs bunny => bbu01234567
-							newName = newName.substring(0, 3).concat(ldapUserinfo.getUserId());
-						} else {
-							// try first character of forename concatenated with surename concatenated with current number
-							// bugs bunny => bbunnyX where X is between 1 and 9
-							if (tryCount==1) {
-								// add trycount to newName
-								newName = newName.concat(Integer.toString(tryCount));
-							} else { 
-								// replace last two characters of string with trycount
-								newName = newName.substring(0, newName.length()-Integer.toString(tryCount-1).length()).concat(Integer.toString(tryCount));
-							}
-						}
-						log.info("try existence of username: "+newName+" ("+tryCount+")");
-						tryCount++;
-					} catch (IndexOutOfBoundsException ex) {
-						/*
-						 * if some substring values are out of range, catch exception and use surename
-						 */
-						newName = ldapUserinfo.getSureName().toLowerCase();
-						tryCount = 99;
+	private String generateUserName(final User user) {
+		/*
+		 * Find user name which does not exist yet in the database.
+		 * 
+		 * check if username is already used and try another
+		 */
+		String newName = user.getRealname().replaceAll(".*\\s+", "").toLowerCase();
+		int tryCount = 0;
+		log.info("try existence of username: "+newName);
+		while ((newName.equalsIgnoreCase(adminLogic.getUserDetails(newName).getName())) && (tryCount < 101)) {
+			try {
+				if (tryCount == 0) {
+					// try first character of forename concatenated with surename
+					// bugs bunny => bbunny
+					newName = user.getName().substring(0, 1).toLowerCase().concat(newName);
+				} else if (tryCount == 100) {
+					// now use first character of fore- and first two characters of surename concatenated with ldap user id 
+					// bugs bunny => bbu01234567
+					newName = newName.substring(0, 3).concat(user.getLdapId());
+				} else {
+					// try first character of forename concatenated with surename concatenated with current number
+					// bugs bunny => bbunnyX where X is between 1 and 9
+					if (tryCount==1) {
+						// add trycount to newName
+						newName = newName.concat(Integer.toString(tryCount));
+					} else { 
+						// replace last two characters of string with trycount
+						newName = newName.substring(0, newName.length()-Integer.toString(tryCount-1).length()).concat(Integer.toString(tryCount));
 					}
 				}
-
-				command.getRegisterUser().setName(newName);
-				command.getRegisterUser().setEmail(ldapUserinfo.getEmail());
-				command.getRegisterUser().setRealname(ldapUserinfo.getFirstName() + " " + ldapUserinfo.getSureName());
-				// command.getRegisterUser().setGender(ldapUserinfo.);
-				command.getRegisterUser().setPlace(ldapUserinfo.getLocation());
-				command.getRegisterUser().setLdapId(ldapUserinfo.getUserId());
-				command.getRegisterUser().setPassword(ldapUserinfo.getPasswordHashMd5Hex());
-				returnView = Views.REGISTER_USER_LDAP_FORM;
-			}
-
-			return returnView;
-		} else if (command.getStep() == 3) {
-
-			log.debug("step 3: complete ldap registration");
-			/*
-			 * complete registration process and save user to database
-			 */
-
-			/*
-			 * Check cookies
-			 * 
-			 * Check, if user has cookies enabled (there should be at least a
-			 * "JSESSIONID" cookie)
-			 */
-			if (!cookieLogic.containsCookies()) {
-				errors.reject("error.cookies_required");
-			}
-
-			/*
-			 * User which wants to register (form data)
-			 */
-			final User registerUser = command.getRegisterUser();
-
-			/*
-			 * Get the hosts IP address.
-			 */
-			final String inetAddress = requestLogic.getInetAddress();
-
-			/*
-			 * If user is an admin, he must provide a valid ckey!
-			 */
-			final boolean adminAccess = context.isUserLoggedIn() && Role.ADMIN.equals(loginUser.getRole());
-			if (adminAccess && !context.isValidCkey()) {
-				errors.reject("error.field.valid.ckey");
-			}
-
-			/*
-			 * check, if user name already exists
-			 */
-			if (null != registerUser.getName() && null != logic.getUserDetails(registerUser.getName()).getName() ) {
+				log.info("try existence of username: "+newName+" ("+tryCount+")");
+				tryCount++;
+			} catch (IndexOutOfBoundsException ex) {
 				/*
-				 * yes -> user must choose another name
+				 * if some substring values are out of range, catch exception and use surename
 				 */
-				errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
+				newName = user.getRealname().replaceAll(".*\\s+", "").toLowerCase();
+				tryCount = 99;
 			}
-
-			/*
-			 * return to form until validation passes
-			 */
-			if (errors.hasErrors()) {
-				/*
-				 * Generate HTML to show captcha.
-				 */
-				return Views.REGISTER_USER_LDAP_FORM;
-			}
-
-			log.info("validation passed with " + errors.getErrorCount() + " errors, proceeding to access database");
-
-			/*
-			 * if the user is not logged in, we need an instance of the logic
-			 * interface with admin access
-			 */
-			if (!context.isUserLoggedIn()) {
-				this.logic = this.adminLogic;
-			}
-
-			/*
-			 * set the full inet address of the user
-			 */
-			registerUser.setIPAddress(inetAddress);
-
-			/*
-			 * generate random password
-			 * *depreciated*
-			 * 
-			 * TODO: choose better random pw
-			 */
-//			String password = StringUtils.getMD5Hash(registerUser.getName() + "LDAP_");
-//			String password = StringUtils.getMD5Hash("we_do_not_need_this_password_while_using_ldap_server");
-//			String password = registerUser.getPassword();
-//			registerUser.setPassword(password);
-
-			/*
-			 * create user in DB
-			 */
-			logic.createUser(registerUser);
-
-			
-			/*
-			 * log user into system
-			 */
-			cookieLogic.addUserCookie(registerUser.getName(), registerUser.getPassword());
-			
-			/*
-			 * present the success view
-			 */
-			return new ExtendedRedirectView(successRedirect);
 		}
-
-		return Views.REGISTER_USER_LDAP;
+		return newName;
 	}
 
 	@Override
-	public UserLDAPRegistrationCommand instantiateCommand() {
-		final UserLDAPRegistrationCommand userLdapRegistrationCommand = new UserLDAPRegistrationCommand();
+	public UserOpenIDLdapRegistrationCommand instantiateCommand() {
+		final UserOpenIDLdapRegistrationCommand userLdapRegistrationCommand = new UserOpenIDLdapRegistrationCommand();
 		/*
 		 * add user to command
 		 */
@@ -317,12 +259,12 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 	}
 
 	@Override
-	public Validator<UserLDAPRegistrationCommand> getValidator() {
+	public Validator<UserOpenIDLdapRegistrationCommand> getValidator() {
 		return new UserLDAPRegistrationValidator();
 	}
 
 	@Override
-	public boolean isValidationRequired(UserLDAPRegistrationCommand command) {
+	public boolean isValidationRequired(UserOpenIDLdapRegistrationCommand command) {
 		return true;
 	}
 
@@ -334,14 +276,6 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 	@Override
 	public void setCookieLogic(CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
-	}
-
-	/**
-	 * @param logic
-	 *            logic interface
-	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
 	}
 
 	/**
@@ -358,20 +292,6 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 		Assert.isTrue(Role.ADMIN.equals(this.adminLogic.getAuthenticatedUser().getRole()), "The provided logic interface must have admin access.");
 	}
 
-	/**
-	 * @param ldapLogic
-	 *            - an instance of the Ldap logic public void setLdapLogic(Ldap
-	 *            ldapLogic) { this.ldapLogic = ldapLogic; }
-	 */
-
-	/**
-	 * The base URL of the project.
-	 * 
-	 * @param projectHome
-	 */
-	public void setProjectHome(String projectHome) {
-		this.projectHome = projectHome;
-	}
 
 	/**
 	 * After successful registration, the user is redirected to this page.
@@ -380,5 +300,19 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 	 */
 	public void setSuccessRedirect(String successRedirect) {
 		this.successRedirect = successRedirect;
+	}
+
+	/**
+	 * @return The remember me service.
+	 */
+	public LDAPRememberMeServices getLdapRememberMeServices() {
+		return this.ldapRememberMeServices;
+	}
+
+	/**
+	 * @param ldapRememberMeServices
+	 */
+	public void setLdapRememberMeServices(LDAPRememberMeServices ldapRememberMeServices) {
+		this.ldapRememberMeServices = ldapRememberMeServices;
 	}
 }

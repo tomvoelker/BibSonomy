@@ -7,7 +7,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.webapp.command.actions.UserOpenIDRegistrationCommand;
+import org.bibsonomy.webapp.command.actions.UserOpenIDLdapRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -33,7 +33,7 @@ import org.springframework.validation.Errors;
  * @author Stefan Stützer
  * @version $Id$
  */
-public class UserOpenIDRegistrationController implements ErrorAware, ValidationAwareController<UserOpenIDRegistrationCommand>, RequestAware, CookieAware{
+public class UserOpenIDRegistrationController implements ErrorAware, ValidationAwareController<UserOpenIDLdapRegistrationCommand>, RequestAware, CookieAware{
 	private static final Log log = LogFactory.getLog(UserOpenIDRegistrationController.class);
 	
 	protected LogicInterface logic;
@@ -51,7 +51,7 @@ public class UserOpenIDRegistrationController implements ErrorAware, ValidationA
 	private String successRedirect = "";
 
 	@Override
-	public View workOn(UserOpenIDRegistrationCommand command) {
+	public View workOn(UserOpenIDLdapRegistrationCommand command) {
 		log.debug("workOn() called");
 
 		command.setPageTitle("OpenID registration");
@@ -241,8 +241,8 @@ public class UserOpenIDRegistrationController implements ErrorAware, ValidationA
 	}
 
 	@Override
-	public UserOpenIDRegistrationCommand instantiateCommand() {
-		final UserOpenIDRegistrationCommand userOpenIDRegistrationCommand = new UserOpenIDRegistrationCommand();
+	public UserOpenIDLdapRegistrationCommand instantiateCommand() {
+		final UserOpenIDLdapRegistrationCommand userOpenIDRegistrationCommand = new UserOpenIDLdapRegistrationCommand();
 		/*
 		 * add user to command
 		 */
@@ -261,12 +261,12 @@ public class UserOpenIDRegistrationController implements ErrorAware, ValidationA
 	}
 	
 	@Override
-	public Validator<UserOpenIDRegistrationCommand> getValidator() {
+	public Validator<UserOpenIDLdapRegistrationCommand> getValidator() {
 		return new UserOpenIDRegistrationValidator();
 	}
 	
 	@Override
-	public boolean isValidationRequired(UserOpenIDRegistrationCommand command) {
+	public boolean isValidationRequired(UserOpenIDLdapRegistrationCommand command) {
 		return true;
 	}
 	

@@ -1,6 +1,6 @@
 package org.bibsonomy.webapp.validation;
 
-import org.bibsonomy.webapp.command.actions.UserOpenIDRegistrationCommand;
+import org.bibsonomy.webapp.command.actions.UserOpenIDLdapRegistrationCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -11,17 +11,17 @@ import org.springframework.validation.ValidationUtils;
  * @author Stefan Stützer
  * @version $Id$
  */
-public class UserOpenIDRegistrationValidator implements Validator<UserOpenIDRegistrationCommand>{
+public class UserOpenIDRegistrationValidator implements Validator<UserOpenIDLdapRegistrationCommand>{
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean supports(Class clazz) {
-		return UserOpenIDRegistrationCommand.class.equals(clazz);
+		return UserOpenIDLdapRegistrationCommand.class.equals(clazz);
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		UserOpenIDRegistrationCommand userObj = (UserOpenIDRegistrationCommand) target;
+		UserOpenIDLdapRegistrationCommand userObj = (UserOpenIDLdapRegistrationCommand) target;
 		
 		/*
 		 * OpeneID has to be entered in the second step
