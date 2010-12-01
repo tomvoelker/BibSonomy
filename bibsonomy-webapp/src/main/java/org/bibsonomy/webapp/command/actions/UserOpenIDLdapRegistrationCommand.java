@@ -26,6 +26,8 @@ public class UserOpenIDLdapRegistrationCommand extends BaseCommand implements Se
 	 */
 	private int step = 1;
 	
+	private boolean rememberMe;
+	
 	/**
 	 * @return register user
 	 */
@@ -54,5 +56,19 @@ public class UserOpenIDLdapRegistrationCommand extends BaseCommand implements Se
 	 */
 	public void setStep(int step) {
 		this.step = step;
+	}
+
+	/**
+	 * @return If the user wants to stay logged in. 
+	 */
+	public boolean getRememberMe() {
+		return this.rememberMe;
+	}
+
+	/**
+	 * @param rememberMe
+	 */
+	public void setRememberMe(boolean rememberMe) {
+		this.rememberMe = rememberMe;
 	}	
 }
