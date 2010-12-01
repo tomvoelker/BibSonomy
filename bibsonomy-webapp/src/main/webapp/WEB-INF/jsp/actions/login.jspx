@@ -33,8 +33,8 @@
 		<jsp:attribute name="heading">
        <c:out value="${loginTitle}" />
     </jsp:attribute>
-		 <div id="general">
 		<jsp:attribute name="content">
+		 <div id="general">
           	<mtl:exists path="command.notice">
             	<c:if test="${not empty command.notice}">
               		<div style="border: 1px solid #006699; padding: 1em; margin-bottom: 1em;">
