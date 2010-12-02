@@ -6,109 +6,159 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-	<jsp:directive.attribute name="authOrder" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="login" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="loginUrl" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="projectContext" type="java.lang.String" required="true"/>	
-		
-	<c:if test="${authOrder == '' or empty authOrder}">
-	   	<c:set var="authOrder" value="ldap,db,openid"/>
-	</c:if>
+	<jsp:directive.attribute name="projectContext" type="java.lang.String" required="true"/>
+	
+	<!--+
+	    | 2010/11/30, fei FIXME: this part depends on the following javascript includes - they shouldn't be placed here...
+	    |
+	      <link rel="stylesheet" type="text/css" href="${resdir}/css/jquery_ui/jquery.ui.tabs.css" />
+				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.core.min.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.widget.min.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.tabs.min.js">&amp;nbsp;</script>
+  			<script type="text/javascript">
+				<![CDATA[
+						$(function() {
+							$('#logins').tabs();
+						});
+		  	]]>
+		  </script>
+		|	
+	    +-->
 
- 	<c:set var="authOrderArray" value="${fn:split(authOrder,',')}"/>
+	<link rel="stylesheet" type="text/css" href="${resdir}/css/jquery_ui/jquery.ui.tabs.css" />
+	<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.core.min.js">&amp;nbsp;</script>
+	<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.widget.min.js">&amp;nbsp;</script>
+	<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.tabs.min.js">&amp;nbsp;</script>
+	<script type="text/javascript">
+		<![CDATA[
+			$(function() {
+				$('#loginParts').tabs();
+				
+			});
+			$(document).ready(function(e) {
+				try {
+					$("#loginSelect").msDropDown();
+				} catch(e) {
+					alert(e.message);
+				}
+			});
+		]]>
+	</script>
+	
+	<!--+
+		| includes for image drop down list
+		+-->
+	<script type="text/javascript" src="${resdir}/javascript/uncompressed.jquery.dd.js">&amp;nbsp;</script>
+	
 
-	<!-- 
-		nicht schoen, aber funktionert. Wie kann man einfach ein Array zuweisen?
-		
-		besser ist es auch, die pfade ueber die konfig reinzureichen
-		vielleicht gleich als string, um dann ein split durchzufuehren 
-	 -->
-	<c:set var="loginMethodSelectImages" value=""/>
-	<c:forEach items="${authOrderArray}" varStatus="loop">
-		<c:set value="${loop.index}" var="loopindex"/>
+	<!--+
+	    | 2010/11/30, fei FIXME: integrate styling information
+	    +-->
+	<link rel="stylesheet" type="text/css" href="${resdir}/css/login_style.css" />
+	<link rel="stylesheet" type="text/css" href="${resdir}/css/dd.css" />
+	
+	<style type="text/css">
+		.dd .ddTitle span.arrow {
+			background:url(${resdir}/image/dd_arrow.png) no-repeat 0 0; float:right; display:inline-block;width:16px; height:16px; cursor:pointer; 
+		}
+	</style>
+	
+	<!--+
+	    | set message strings
+	    +-->
+	<c:set var="login">
+		<fmt:message key="navi.login"/>
+	</c:set>
 
-		<c:if test="${authOrderArray[loop.index]=='db'}">
-			<c:set var="loginMethodSelectImages" value="${loginMethodSelectImages},${resdir}/image/login_bib.png"/>
-		</c:if>
-		<c:if test="${authOrderArray[loop.index]=='ldap'}">
-			<c:set var="loginMethodSelectImages" value="${loginMethodSelectImages},http://www.uni-kassel.de/bib/favicon.ico"/>
-		</c:if>
-		<c:if test="${authOrderArray[loop.index]=='openid'}">
-			<c:set var="loginMethodSelectImages" value="${loginMethodSelectImages},${resdir}/image/login_openid.png"/>
-		</c:if>
-	</c:forEach>
-	<c:set var="loginMethodSelectImagesArray" value="${fn:split(loginMethodSelectImages,',')}"/>
+	<div id="loginParts" class="login">
+		<c:forEach var="authMethod" items="${authConfig.authOrder}">
+			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+    		<div id="loginParts_${authMethod}">
+    			<!-- <fmt:message key="login.${authMethod}.label" /> -->
+    			
+    			<!--+
+    				| database login method 
+    				+-->
+    			<c:if test="${authMethod == 'INTERNAL'}">
+					<div class="headlogin" id="headlogininternal">
+						<c:set var="login">
+						<fmt:message key="navi.login"/>
+						</c:set>
+						<form:form method="POST" action="/login_${authMethodName}">
+							<input type="text" size="15" name="username" id="un"  tabindex="1"/>&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
+							<input type="password" size="15" name="password" style="width:150px; position:absolute;" id="pw" autocomplete="off" tabindex="2"/>
+							<input type="text" id="pw_form_copy" name="" style="position:relative;" autocomplete="off"/>
+							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
+						</form:form>
+					</div>    			
+      			</c:if>
+
+    			<!--+
+    				| ldap login method 
+    				+-->
+      			<c:if test="${authMethod == 'LDAP'}">
+      				<div class="headlogin" id="headloginldap">
+						<c:set var="login">
+						<fmt:message key="navi.login"/>
+						</c:set>
+						<form:form method="POST" action="/login_${authMethodName}">
+							<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">:&amp;nbsp;</span>
+							<input type="password" size="15" name="password" id="pwldap" autocomplete="off"/>
+							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
+						</form:form>
+					</div>
+      			</c:if>
+
+    			<!--+
+    				| openid login method 
+    				+-->
+      			<c:if test="${authMethod == 'OPENID'}">
+      				<div class="headlogin" id="headloginopenid">
+						<form:form action="/login_${authMethodName}" method="POST">
+							<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
+			            	<form:hidden id="headloginMethodopenid" path="loginMethod" />
+		            	</form:form>
+	            	</div>
+      			</c:if>
+			</div>
+    	</c:forEach>
+
+ 		<select name="loginSelect" id="loginSelect" onchange="$('#loginParts').tabs('select',this.value-1);
+ 		">
+			<c:forEach var="authMethod" items="${authConfig.authOrder}" varStatus="status">
+				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+				<option value="${status.count}" title="${resdir}/image/login_logo_${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
+			</c:forEach>
+		</select>
 
 
-	<div class="headlogin" id="headlogin">
-		<form:form action="#" method="POST" id="headloginMethod">
-			<c:if test="${authOrder != 'db,openid'}">
-				<form:select id="headloginMethodSelect" size="1" onchange="switchLogin('${authOrder}', this.options[this.selectedIndex].value,'headlogin')" path="loginMethod" >
-					<c:forEach items="${authOrderArray}" varStatus="loop">
-						<fmt:message var="label" key="login.method.${authOrderArray[loop.index]}"/>
-      	      							<form:option value="${authOrderArray[loop.index]}" label="${label}"/>
-					</c:forEach>
-               				</form:select>
-                		</c:if>
-		</form:form>
+		<ul class="login">
+			<c:forEach var="authMethod" items="${authConfig.authOrder}">
+				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+				<li class="login">
+					<a href="#loginParts_${authMethod}">
+						<!-- method message -->
+						<!-- 2010/11/30, fei FIXME: don't know how to put messages to attributes -->
+						<c:set var="loginMessage">
+							<fmt:message key="login.${authMethodName}.label"/>
+						</c:set>
+	      				<!-- logo -->
+    	  				<img title="${loginMessage}" src="${resdir}/image/login_logo_${authMethod}.png" />
+					</a>
+				</li>
+			</c:forEach>
+		</ul>
 	</div>
 
-	<div style="display: block; margin-top: 7px;">		
-		<c:forEach items="${authOrderArray}" varStatus="loop">
-			<c:if test="${authOrderArray[loop.index]=='db' }">
-				<div class="headlogin" id="headlogindb">
-					<c:set var="login">
-					<fmt:message key="navi.login"/>
-					</c:set>
-					<form:form method="POST" action="${loginUrl}">
-						<input type="text" size="15" name="username" id="un"  tabindex="1"/>&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
-						<input type="password" size="15" name="password" style="width:150px; position:absolute;" id="pw" autocomplete="off" tabindex="2"/>
-						<input type="text" id="pw_form_copy" name="" style="position:relative;" autocomplete="off"/>
-						<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" />
-						<c:if test="${authOrder == 'db,openid'}"> 
-							<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
-						</c:if>
-			            <form:hidden id="headloginMethoddb" path="loginMethod" />
-					</form:form>
-				</div>
-			</c:if>
-			
-			<c:if test="${authOrderArray[loop.index]=='ldap' }">
-				<div class="headlogin" id="headloginldap">
-					<c:set var="login">
-					<fmt:message key="navi.login"/>
-					</c:set>
-					<form:form method="POST" action="${loginUrl}">
-						<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">:&amp;nbsp;</span>
-						<input type="password" size="15" name="password" id="pwldap" autocomplete="off"/>
-						<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" />
-						<c:if test="${authOrder == 'db,openid'}"> 
-							<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
-						</c:if>
-			            <form:hidden id="headloginMethodldap" path="loginMethod" />
-					</form:form>
-				</div>
-			</c:if>
-			
-			<c:if test="${authOrderArray[loop.index]=='openid' }">
-				<div class="headlogin" id="headloginopenid">
-		            <form:form action="${loginUrl}" method="POST">
-		              	<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
-						<c:if test="${authOrder == 'db,openid'}"> 
-							<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
-						</c:if>
-			            <form:hidden id="headloginMethodopenid" path="loginMethod" />
-		            </form:form>
-	            </div>
-			</c:if>
-		</c:forEach>
-	</div>
-      
 	<!-- switch to default login method -->
+	<!-- 
 	<script type="text/javascript">
       <![CDATA[
 	    switchLogin('${authOrder}','','headlogin')
 	  ]]>
-	</script>	
+	</script>
+	 -->
 
 </jsp:root>
