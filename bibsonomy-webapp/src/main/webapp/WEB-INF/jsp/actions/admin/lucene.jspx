@@ -57,16 +57,17 @@
 			</fieldset>
 			<fieldset>
 				<legend><label><c:out value="${index.inactiveIndex.name}" /></label></legend>
-				<c:choose>
-				    <c:when test="${index.enabled}">
+				    <c:if test="${index.enabled &amp;&amp; !index.generatingIndex}">
 						<div class="ls-description">containing docs:</div><div class="ls-value">${index.inactiveIndex.numDocs}</div>
 						<div class="ls-description">deleted docs:</div><div class="ls-value">${index.inactiveIndex.numDeletedDocs}</div>
 						<div class="ls-description">newest date:</div><div class="ls-value">${index.inactiveIndex.newestDateString}</div>
 						<div class="ls-description">last modified date:</div><div class="ls-value">${index.inactiveIndex.lastModifiedString}</div>
 						<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${index.inactiveIndex.currentVersion}</div>
 						<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${index.inactiveIndex.current}</div>
-					</c:when>
-				</c:choose>
+					</c:if>
+					<c:if test="{index.generatingIndex}">
+					    Currently generating new index. ${index.indexGenerationProgress} % done.
+					</c:if>
 			</fieldset>
 	    </div>
     </c:forEach>

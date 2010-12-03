@@ -7,9 +7,19 @@
 	<!--+
 	    | lucene index updater
 	    +-->
-	<bean id="luceneBibTexManager" class="org.bibsonomy.lucene.index.manager.LuceneBibTexManager" factory-method="getInstance"/>
-	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.manager.LuceneBookmarkManager" factory-method="getInstance"/>
-	<bean id="luceneGoldStandardPublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneGoldStandardPublicationManager" factory-method="getInstance"/>
+	<bean id="luceneBibTexManager" class="org.bibsonomy.lucene.index.manager.LuceneBibTexManager" factory-method="getInstance">
+	    <property name="generator" ref="luceneGenerateBibTexIndex" />
+	</bean>
+	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.manager.LuceneBookmarkManager" factory-method="getInstance">
+	    <property name="generator" ref="luceneGenerateBookmarkIndex" />
+	</bean>
+	<bean id="luceneGoldStandardPublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneGoldStandardPublicationManager" factory-method="getInstance">
+	    <property name="generator" ref="luceneGenerateGoldStandardPublicationIndex" />
+	</bean>
+	
+	<bean id="luceneGenerateBibTexIndex" class="org.bibsonomy.lucene.util.generator.LuceneGenerateBibTexIndex" factory-method="getInstance"/>
+	<bean id="luceneGenerateBookmarkIndex" class="org.bibsonomy.lucene.util.generator.LuceneGenerateBookmarkIndex" factory-method="getInstance"/>
+	<bean id="luceneGenerateGoldStandardPublicationIndex" class="org.bibsonomy.lucene.util.generator.LuceneGenerateGoldStandardPublicationIndex" factory-method="getInstance"/>
 
 	<!-- update jobs without index optimization -->
 	<bean id="luceneUpdateBibTexJobWithoutIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">

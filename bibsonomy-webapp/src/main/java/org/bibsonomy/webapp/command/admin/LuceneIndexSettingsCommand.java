@@ -27,17 +27,21 @@ public class LuceneIndexSettingsCommand {
 	private LuceneIndexSettingsCommand inactiveIndex;
 	private int id;
 	private boolean isEnabled;
+	private boolean isGeneratingIndex;
+	private int indexGenerationProgress;
 
 	/**
 	 * @param indexStatistics
 	 */
 	public void setIndexStatistics (LuceneIndexStatistics indexStatistics){
-		setNumDocs(indexStatistics.getNumDocs());
-		setNumDeletedDocs(indexStatistics.getNumDeletedDocs());
-		setNewestDate(new Date(indexStatistics.getNewestRecordDate()));
-		setLastModified(new Date(indexStatistics.getLastModified()));
-		setCurrentVersion(indexStatistics.getCurrentVersion());
-		setCurrent(indexStatistics.isCurrent());
+		if(indexStatistics != null) {
+			setNumDocs(indexStatistics.getNumDocs());
+			setNumDeletedDocs(indexStatistics.getNumDeletedDocs());
+			setNewestDate(new Date(indexStatistics.getNewestRecordDate()));
+			setLastModified(new Date(indexStatistics.getLastModified()));
+			setCurrentVersion(indexStatistics.getCurrentVersion());
+			setCurrent(indexStatistics.isCurrent());
+		}
 	}
 	
 	/**
@@ -72,6 +76,9 @@ public class LuceneIndexSettingsCommand {
 	 * @param newestDate the newestDate to set
 	 */
 	public String getNewestDateString() {
+		if(newestDate == null) {
+			return "";
+		}
 		return dateformat.format(this.newestDate);
 	}
 
@@ -121,6 +128,8 @@ public class LuceneIndexSettingsCommand {
 	 * @return lastModified as a String
 	 */
 	public String getLastModifiedString() {
+		if(lastModified == null)
+			return "";
 		return dateformat.format(this.lastModified);
 	}
 
@@ -235,5 +244,33 @@ public class LuceneIndexSettingsCommand {
 	 */
 	public String getResourceName() {
 		return resourceName;
+	}
+	
+    /**
+     * @param b isGeneratingIndex
+     */
+	public void setGeneratingIndex(boolean b) {
+		isGeneratingIndex = b;
+	}
+	
+	/**
+	 * @return isGeneratingIndex
+	 */
+	public boolean isGeneratingIndex() {
+		return isGeneratingIndex;
+	}
+
+	/**
+	 * @param indexGenerationProgress the progress of the index-generation
+	 */
+	public void setIndexGenerationProgress(int indexGenerationProgress) {
+		this.indexGenerationProgress = indexGenerationProgress;
+	}
+	
+    /**
+     * @return the progress of the index-generation
+     */
+	public int getIndexGenerationProgress() {
+		return indexGenerationProgress;
 	}
 }
