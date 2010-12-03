@@ -16,6 +16,7 @@ import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.lucene.util.LuceneResourceConverter;
+import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -61,6 +62,9 @@ public class LuceneResourceManager<R extends Resource> {
 	
 	/** converts post model objects to lucene documents */
 	protected LuceneResourceConverter<R> resourceConverter;
+	
+	/** the lucene index-generator */
+	protected LuceneGenerateResourceIndex<R> generator;
 	
 	/** selects current (redundant) index */
 	protected int idxSelect; // TODO use an object representation instead
@@ -310,12 +314,28 @@ public class LuceneResourceManager<R extends Resource> {
 
 	    //  Select index 1
 	    if(searcher.getIndexId() != 1) {
-		searcher.reloadIndex(1);
+		    searcher.reloadIndex(1);
+		    idxSelect = 1;
 	    }
 	}
 	
+	/** Prepare Searcher for copying the newly generated index,
+	 * i.e. switch the active index, so the old one can be overwritten. */
+	public void prepareIndexCopy() {
+		if(generatingIndex) {
+			searcher.reloadIndex(0);
+		    idxSelect = 0;
+		}
+	}
+	
+	public void finalizeIndexGeneration() {
+		generatingIndex = false;
+		resetIndexReader();
+		resetIndexSearcher();
+	}
+	
 	/** Boolean indicating whether an index-generation is currently running. */
-	public boolean isIndexGeneratingRunning() {
+	public boolean isGeneratingIndex() {
 	    return generatingIndex;
 	}
 	
@@ -324,9 +344,9 @@ public class LuceneResourceManager<R extends Resource> {
 	 */
 	public void resetIndexReader() {
 	    if(!generatingIndex) {
-		for (final LuceneResourceIndex<R> index : this.resourceIndices) {
-			index.reset();
-		}
+			for (final LuceneResourceIndex<R> index : this.resourceIndices) {
+				index.reset();
+			}
 	    }
 	}
 
@@ -335,7 +355,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 */
 	public void resetIndexSearcher() {
 	    if(!generatingIndex) {
-		this.searcher.reloadIndex(this.idxSelect);
+	    	this.searcher.reloadIndex(this.idxSelect);
 	    }
 	}
 	
@@ -452,6 +472,20 @@ public class LuceneResourceManager<R extends Resource> {
 		this.searcher = searcher;
 	}
 
+	/**
+	 * @return the generator
+	 */
+	public LuceneGenerateResourceIndex<R> getGenerator() {
+		return generator;
+	}
+
+	/** 
+	 * @param generator the generator to set 
+	 */
+	public void setGenerator(LuceneGenerateResourceIndex<R> generator) {
+		this.generator = generator;
+	}
+	
 	/**
 	 * @return the resourceConverter
 	 */

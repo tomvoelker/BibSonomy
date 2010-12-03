@@ -39,14 +39,9 @@ public class LuceneGenerateGoldStandardPublicationIndex extends LuceneGenerateRe
 		JNDITestDatabaseBinder.bind();
 		
 		// create index
-		run();
-	}
-
-	public static void run() throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
-	        // FIXME: configure via spring
-	        LuceneGenerateResourceIndex<GoldStandardPublication> indexer = LuceneGenerateGoldStandardPublicationIndex.getInstance();
-	        indexer.generateIndex();
-	        indexer.shutdown();
+        LuceneGenerateResourceIndex<GoldStandardPublication> indexer = LuceneGenerateGoldStandardPublicationIndex.getInstance();
+        indexer.generateIndex();
+        indexer.shutdown();
 	}
 	
 	private LuceneGenerateGoldStandardPublicationIndex() {

@@ -41,7 +41,7 @@ import org.bibsonomy.model.Resource;
  * 
  * @param <R> the resource of the index to generate
  */
-public abstract class LuceneGenerateResourceIndex<R extends Resource> {
+public abstract class LuceneGenerateResourceIndex<R extends Resource> implements Runnable {
 	protected static final Log log = LogFactory.getLog(LuceneGenerateResourceIndex.class);
 
 	/** database logic */
@@ -61,6 +61,8 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	
 	/** converts post model objects to lucene documents */
 	private LuceneResourceConverter<R> resourceConverter;
+	
+	private GenerateIndexCallback callback = null;
 	
 	/**
 	 * constructor 
@@ -106,12 +108,13 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	 * 
 	 * Database as well as index files are configured in the lucene.properties file.
 	 * 
+	 * @param copyRedundantIndices if set to true, the newly generated index will also be copied to the redunant indices
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void generateIndex() throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
+	public void generateIndex(boolean copyRedundantIndices) throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
 		// open index
 		createEmptyIndex();
 
@@ -119,8 +122,15 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 		createIndexFromDatabase();
 		
 		// create redundant indeces
-		log.info("Creating "+ LuceneBase.getRedundantCnt() + " redundant indeces.");
-		this.copyRedundantIndeces();
+		if(copyRedundantIndices) {
+			log.info("Creating "+ LuceneBase.getRedundantCnt() + " redundant indeces.");
+			this.copyRedundantIndeces();
+		}
+	}
+	
+	/** Generate Index including redundant indices */
+	public void generateIndex() throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
+		generateIndex(true);
 	}
 	
 	/**
@@ -149,9 +159,12 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 		// set up resource specific data structures
 		setUp();
 		
-		// number of post entries
-		// TODO: a database query only for logging?! isn't it i+is?
-//		log.info("Number of post entries: "+  this.dbLogic.getNumberOfPosts());
+		// number of post entries to calculate progress
+		//FIXME: the number of posts is wrong
+		int numberOfPosts = this.dbLogic.getNumberOfPosts();
+		int progressPercentage = 0;
+		log.info("Number of post entries: "+  this.dbLogic.getNumberOfPosts());
+		
 		
 		// initialize variables
 		final Integer lastTasId = this.dbLogic.getLastTasId();
@@ -193,6 +206,10 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 					is++;
 				}			
 			}
+			progressPercentage += skip/(numberOfPosts*100);
+			if(callback != null) {
+			    callback.updateProgress(progressPercentage);
+			}
 			log.info("Ready.");
 		} while (postList.size() == SQL_BLOCKSIZE);
 
@@ -206,6 +223,24 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 
 		// all done
 		log.info("(" + i + " indexed entries, " + is + " not indexed spam entries)");
+	}
+	
+	/** Start index-generation */
+	public void run() {
+        try {
+			generateIndex(false);
+		} catch (Exception e) {
+			log.error("Failed to generate " + getResourceName() + "-index!", e);
+		} finally {
+			try {
+				shutdown();
+				if(callback != null) {
+					callback.done();
+				}
+			} catch (Exception e) {
+				log.error("Failed to close index-writer!", e);
+			}
+		}
 	}
 	
 
@@ -230,7 +265,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	/**
 	 * copy created index to redundant indeces
 	 */
-	protected void copyRedundantIndeces() {
+	public void copyRedundantIndeces() {
 		final File inputFile = new File(this.luceneResourceIndexPath + CFG_INDEX_ID_DELIMITER + "0");
 		for(int i = 1; i < LuceneBase.getRedundantCnt(); i++ ) {
 			try {
@@ -340,5 +375,12 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	 */
 	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
 		this.resourceConverter = resourceConverter;
+	}
+
+	/**
+	 * @param callback the callback to set
+	 *  */
+	public void registerCallback(GenerateIndexCallback callback) {
+		this.callback = callback;
 	}
 }

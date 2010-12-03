@@ -39,11 +39,6 @@ public class LuceneGenerateBookmarkIndex extends LuceneGenerateResourceIndex<Boo
 		JNDITestDatabaseBinder.bind();
 		
 		// create index
-		run();
-	}
-
-	public static void run() throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
-	    // FIXME: configure via spring
 	    LuceneGenerateResourceIndex<Bookmark> indexer = LuceneGenerateBookmarkIndex.getInstance();
 	    indexer.generateIndex();
 	    indexer.shutdown();
