@@ -61,7 +61,9 @@
 		
 		                  <div class="fsRow">
 		                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.result"/></span>
-		                    <pre class="fsInput" style="max-width: 800px; overflow: scroll;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre>
+		                    <div style="overflow: scroll;">
+		                    	<pre class="fsInput" style="width:0px;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre>
+		                    </div>
 		                  </div>
                 	</jsp:attribute>
             	</parts:fieldset>
