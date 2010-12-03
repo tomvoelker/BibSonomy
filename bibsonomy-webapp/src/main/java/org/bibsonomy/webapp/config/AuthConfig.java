@@ -19,6 +19,16 @@ public class AuthConfig implements InitializingBean {
 	private String[] authOrderString;
 	
 	/**
+	 * check whether given authentication method is enabled
+	 * @param methodName name of the authentication method in question
+	 * @return true if given authentication method is configured
+	 */
+	public boolean containsAuthMethod(String methodName) {
+		AuthMethod authMethod = AuthMethod.getAuthMethodByName(methodName);
+		return this.authOrder.contains(authMethod);
+	}
+	
+	/**
 	 * @return the authOrder
 	 */
 	public List<AuthMethod> getAuthOrder() {

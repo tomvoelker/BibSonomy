@@ -10,6 +10,7 @@
   xmlns:spring="http://www.springframework.org/tags"
   xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+  xmlns:atl="urn:jsptld:/WEB-INF/taglibs/authtaglib.tld"
   xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
   xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings">
   
@@ -247,8 +248,10 @@
         
 	</form:form>
   
-	<!-- password change -->
-	<settings:passwordChange command="${command}"/>
+	<!-- show password change dialog only if internal authentication is configured -->
+	<c:if test="${atl:containsAuthMethod(authConfig, 'INTERNAL')}">
+		<settings:passwordChange command="${command}"/>
+	</c:if>
 		
 	<!-- delete account -->
 	<h2><fmt:message key="settings.deletemyaccount"/></h2>		

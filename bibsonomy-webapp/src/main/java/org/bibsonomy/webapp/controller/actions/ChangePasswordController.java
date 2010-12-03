@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
@@ -8,6 +10,8 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
+import org.bibsonomy.webapp.config.AuthConfig;
+import org.bibsonomy.webapp.config.AuthMethod;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -53,6 +57,11 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 	 */
 	private CookieLogic cookieLogic;
 	
+	/**
+	 * determines whether internal authentication (and thus password change) is enabled
+	 */
+	private AuthConfig authConfig;
+	
 	private CookieBasedRememberMeServices rememberMeServices;
 
 	/**
@@ -69,6 +78,11 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 
 	@Override
 	public View workOn(final SettingsViewCommand command) {
+		// throw an exception if internal authentication is not available and someone tries to change his password 
+		if (!(present(this.authConfig) && this.authConfig.containsAuthMethod(AuthMethod.INTERNAL.name())) ) {
+			throw new RuntimeException("Changing the password is not possible."); 
+		}
+		
 		final RequestWrapperContext context = command.getContext();
 	
 		/*
@@ -193,5 +207,13 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 	@Override
 	public void setCookieLogic(CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
+	}
+
+	public void setAuthConfig(AuthConfig authConfig) {
+		this.authConfig = authConfig;
+	}
+
+	public AuthConfig getAuthConfig() {
+		return authConfig;
 	}
 }
