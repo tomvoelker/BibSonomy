@@ -131,7 +131,6 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			
 			@Override
 			public void updateProgress(int percentage) {
-				progressPercentage = new ConcurrentHashMap<String, Integer>();
 				progressPercentage.put(mng.getResourceName(), percentage);
 				log.info(percentage + "% of index-generation done!");
 			}
