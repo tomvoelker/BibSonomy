@@ -27,9 +27,16 @@
 	<!-- get number of public bibtex posts -->
 	<select id="getBibTexCount" resultClass="integer">
 		SELECT count(*) 
-		FROM bibtex b 
+		FROM gold_standard_publications b
 		WHERE b.group &gt;= 0
 	</select>   
+	
+	<!-- get number of public goldstandard posts -->
+	<select id="getGoldStandardPublicationCount" resultClass="integer">
+		SELECT count(*) 
+		FROM bibtex b 
+		WHERE b.group &gt;= 0
+	</select>
 	 
 	<!-- get last log_date from resource tables -->
 	<select id="getLastLogBibTex" resultClass="date">
