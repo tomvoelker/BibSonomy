@@ -10,40 +10,39 @@
 	<jsp:directive.attribute name="loginUrl" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="projectContext" type="java.lang.String" required="true"/>
 	
-	<!--+
-	    | 2010/11/30, fei FIXME: this part depends on the following javascript includes - they shouldn't be placed here...
-	    |
-	      <link rel="stylesheet" type="text/css" href="${resdir}/css/jquery_ui/jquery.ui.tabs.css" />
-				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.core.min.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.widget.min.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.tabs.min.js">&amp;nbsp;</script>
-  			<script type="text/javascript">
-				<![CDATA[
-						$(function() {
-							$('#logins').tabs();
-						});
-		  	]]>
-		  </script>
-		|	
-	    +-->
-
-	<link rel="stylesheet" type="text/css" href="${resdir}/css/jquery_ui/jquery.ui.tabs.css" />
-	<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.core.min.js">&amp;nbsp;</script>
-	<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.widget.min.js">&amp;nbsp;</script>
-	<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.tabs.min.js">&amp;nbsp;</script>
 	<script type="text/javascript">
+		// store number of different authentication methods for later use
+		var authMethodsCount = ${fn:length(authConfig.authOrder)};
+		
 		<![CDATA[
-			$(function() {
-				$('#loginParts').tabs();
-				
-			});
 			$(document).ready(function(e) {
+				//
+				// make iconized dropdown list
+				//
 				try {
 					$("#loginSelect").msDropDown();
 				} catch(e) {
 					alert(e.message);
 				}
 			});
+
+			/**
+			 * show selected login form and hide all others
+			 */
+			function quickSelectAuthMethod(authIndex) {
+				// activate selected login form and hide all others
+				for (var i=1; i<=authMethodsCount; i++) {
+					if (authIndex==i) {
+						// selected login form
+						$('#headLogin'+i).addClass('loginVisible');
+						$('#headLogin'+i).removeClass('loginInvisible');
+					} else {
+						// non-selected login form
+						$('#headLogin'+i).addClass('loginInvisible');
+						$('#headLogin'+i).removeClass('loginVisible');
+					}
+				}
+			}
 		]]>
 	</script>
 	
@@ -63,6 +62,16 @@
 		.dd .ddTitle span.arrow {
 			background:url(${resdir}/image/dd_arrow.png) no-repeat 0 0; float:right; display:inline-block;width:16px; height:16px; cursor:pointer; 
 		}
+		
+		/* show selected login form */
+		.loginVisible {
+			display: block;
+		}
+		
+		/* hide unselected login form */
+		.loginInvisible {
+			display: none;
+		}
 	</style>
 	
 	<!--+
@@ -72,17 +81,20 @@
 		<fmt:message key="navi.login"/>
 	</c:set>
 
+	<!--+
+	    | create a specialized login form for each authentication method
+	    +-->
 	<div id="loginParts" class="login">
-		<c:forEach var="authMethod" items="${authConfig.authOrder}">
+		<c:forEach var="authMethod" items="${authConfig.authOrder}" varStatus="status">
 			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+			
+			<c:set var="visibility" value="${status.first ? 'loginVisible' : 'loginInvisible'}" />
     		<div id="loginParts_${authMethod}">
-    			<!-- <fmt:message key="login.${authMethod}.label" /> -->
-    			
     			<!--+
     				| database login method 
     				+-->
     			<c:if test="${authMethod == 'INTERNAL'}">
-					<div class="headlogin" id="headlogininternal">
+					<div class="headlogin ${visibility}" id="headLogin${status.count}">
 						<c:set var="login">
 						<fmt:message key="navi.login"/>
 						</c:set>
@@ -99,7 +111,7 @@
     				| ldap login method 
     				+-->
       			<c:if test="${authMethod == 'LDAP'}">
-      				<div class="headlogin" id="headloginldap">
+      				<div class="headlogin ${visibility}" id="headLogin${status.count}">
 						<c:set var="login">
 						<fmt:message key="navi.login"/>
 						</c:set>
@@ -115,7 +127,7 @@
     				| openid login method 
     				+-->
       			<c:if test="${authMethod == 'OPENID'}">
-      				<div class="headlogin" id="headloginopenid">
+      				<div class="headlogin ${visibility}" id="headLogin${status.count}">
 						<form:form action="/login_${authMethodName}" method="POST">
 							<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
 			            	<form:hidden id="headloginMethodopenid" path="loginMethod" />
@@ -124,33 +136,20 @@
       			</c:if>
 			</div>
     	</c:forEach>
-
- 		<select name="loginSelect" id="loginSelect" onchange="$('#loginParts').tabs('select',this.value-1);
- 		">
-			<c:forEach var="authMethod" items="${authConfig.authOrder}" varStatus="status">
-				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-				<option value="${status.count}" title="${resdir}/image/login_logo_${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
-			</c:forEach>
-		</select>
-
-
-		<ul class="login">
-			<c:forEach var="authMethod" items="${authConfig.authOrder}">
-				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-				<li class="login">
-					<a href="#loginParts_${authMethod}">
-						<!-- method message -->
-						<!-- 2010/11/30, fei FIXME: don't know how to put messages to attributes -->
-						<c:set var="loginMessage">
-							<fmt:message key="login.${authMethodName}.label"/>
-						</c:set>
-	      				<!-- logo -->
-    	  				<img title="${loginMessage}" src="${resdir}/image/login_logo_${authMethod}.png" />
-					</a>
-				</li>
-			</c:forEach>
-		</ul>
 	</div>
+
+	<!--+
+	    | dropdown selection list for chosing authentication method
+	    +-->
+	<select name="loginSelect" id="loginSelect" onchange="quickSelectAuthMethod(this.value);">
+		<c:forEach var="authMethod" items="${authConfig.authOrder}" varStatus="status">
+			<c:set var="loginMessage">
+				<fmt:message key="login.${authMethodName}.label"/>
+			</c:set>
+			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+			<option value="${status.count}" title="${resdir}/image/login_logo_${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
+		</c:forEach>
+	</select>
 
 	<!-- switch to default login method -->
 	<!-- 

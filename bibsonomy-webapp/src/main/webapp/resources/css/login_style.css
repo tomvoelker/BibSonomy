@@ -1,47 +1,10 @@
 /*****************************************************************************
  * Temporarly styling elements for the login header element
  ****************************************************************************/
-.login.ui-tabs .ui-tabs-panel {
-    background: none repeat scroll 0 0 transparent;
-    border: 0 none;
-    display: block;
-    padding: 1em 0em;
-}
+ .login {
+ 	float: left;
+ }
  
- 
-.ui-tabs .login.ui-tabs-nav li a {
-	float:left;
-	padding: 0 0;
-	text-decoration:none;
-}
-
-div.login.ui-tabs div.ui-tabs-panel {
-	border: 0px; /*1px solid #069;*/
-	margin-top: 0px;
-}
-
-div.ui-tabs ul.login.ui-tabs-nav {
-	padding: 0px;
-	float: right;
-}
-
-div.ui-tabs ul.ui-tabs-nav li.login {
-	border: 0px; /*1px solid #bbb;*/
-	margin: 0px;
-	background-color: transparent;
-	top: 0px;
-	font-size: 80%;
-}
-
-div.ui-tabs ul.ui-tabs-nav li:hover {
-	background-color: #fff;
-}
-
-div.ui-tabs ul.ui-tabs-nav li.login.ui-tabs-selected {
-	background-color: #ffffff;
-	border: 0px; /*1px solid #069;*/
-}
-
-div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
-	color: #069;
+#loginSelect_msdd {
+	margin-left: 1em;
 }
