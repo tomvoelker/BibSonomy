@@ -1,0 +1,44 @@
+package org.bibsonomy.webapp.util.spring.security.handler;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.bibsonomy.model.User;
+import org.bibsonomy.webapp.util.CookieLogic;
+import org.bibsonomy.webapp.util.ResponseLogic;
+import org.bibsonomy.webapp.util.spring.security.UserAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+
+/**
+ * after the user was successfully authenticated we need to set the spammer cookie
+ * this {@link AuthenticationSuccessHandler} sets the spammer cookie before redirecting
+ * the user
+ * 
+ * @author dzo
+ * @version $Id$
+ */
+public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+	
+	@Override
+	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+		final Object principal = authentication.getPrincipal();
+		if (principal instanceof UserAdapter) {
+			final UserAdapter adapter = (UserAdapter) principal;
+			final User user = adapter.getUser();
+			
+			/* 
+			 * add spammer cookie
+			 */
+			final CookieLogic logic = new CookieLogic();
+			logic.setResponseLogic(new ResponseLogic(response));
+			logic.addSpammerCookie(user.isSpammer());
+		}
+		
+		super.onAuthenticationSuccess(request, response, authentication);
+	}
+}
