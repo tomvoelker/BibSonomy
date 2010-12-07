@@ -28,8 +28,13 @@
 		</jsp:attribute>
 			
 		<jsp:attribute name="headerExt">
+			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<c:if test="${not empty additionalFsformCSS}">
+				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
+			</c:if>
 	    </jsp:attribute>
+
 			
 	  <jsp:attribute name="tabcontent">
 
