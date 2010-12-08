@@ -45,7 +45,7 @@ public enum AuthMethod {
 		try {
 			return AuthMethod.valueOf(name.toUpperCase());
 		} catch (final IllegalArgumentException ia) {
-			throw new IllegalArgumentException("Requested order not supported. Possible values are 'DB', 'LDAP', 'OpenId', 'X.509'");
+			throw new IllegalArgumentException("Requested order not supported. Possible values are 'INTERNAL', 'LDAP', 'OpenId', 'X.509'");
 		}
 	}
 
