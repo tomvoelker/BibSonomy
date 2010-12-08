@@ -1,28 +1,36 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Random;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.HashUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.UserOpenIDLdapRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.auth.OpenID;
+import org.bibsonomy.webapp.util.spring.security.UserAdapter;
+import org.bibsonomy.webapp.util.spring.security.handler.FailureHandler;
+import org.bibsonomy.webapp.util.spring.security.rememberMeServices.CookieBasedRememberMeServices;
 import org.bibsonomy.webapp.validation.UserOpenIDRegistrationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-import org.openid4java.OpenIDException;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.openid.OpenIDAuthenticationToken;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
@@ -31,214 +39,168 @@ import org.springframework.validation.Errors;
  * (see http://openid.net/)
  * 
  * @author Stefan Stützer
+ * @author rja
  * @version $Id$
  */
 public class UserOpenIDRegistrationController implements ErrorAware, ValidationAwareController<UserOpenIDLdapRegistrationCommand>, RequestAware, CookieAware{
 	private static final Log log = LogFactory.getLog(UserOpenIDRegistrationController.class);
 	
-	protected LogicInterface logic;
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
-	private OpenID openIDLogic;
-	
-	private String projectHome;
+	private CookieBasedRememberMeServices openIdRememberMeServices;
 	
 	/**
 	 * After successful registration, the user is redirected to this page. 
 	 */
 	private String successRedirect = "";
 
+	/**
+	 * Only users which were successfully authenticated using OpenID and
+	 * whose OpenID does not exist in our database are allowed to use this
+	 * controller.
+	 * 
+	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.ContextCommand)
+	 */
 	@Override
 	public View workOn(UserOpenIDLdapRegistrationCommand command) {
 		log.debug("workOn() called");
 
 		command.setPageTitle("OpenID registration");
 		
-		final RequestWrapperContext context = command.getContext();
-		final User loginUser = context.getLoginUser();
-		
-		/* Check user role
-		 * 
-		 * If user is logged in and not an admin: show error message
+		/* 
+		 * If user is properly logged in: show error message
 		 */
-		if (context.isUserLoggedIn() && !Role.ADMIN.equals(loginUser.getRole())) {
-			log.warn("User " + loginUser.getName() + " tried to access user registration without having role " + Role.ADMIN);
+		if (command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
 
-		if (errors.hasErrors()) {
+		/*
+		 * If the user has been successfully authenticated using OpenID and he
+		 * is not yet registered, his OpenID data is contained in the session.  
+		 */
+		final Object o = requestLogic.getSessionAttribute(FailureHandler.USER_TO_BE_REGISTERED);
+		if (!present(o) || ! (o instanceof User)) {
 			/*
-			 * error in step 4 -> redirect to open id registration form
+			 * user must first login.
 			 */
-			if (command.getStep() == 4)
-				return Views.REGISTER_USER_OPENID_PROVIDER_FORM;
-			
-			return Views.REGISTER_USER_OPENID;
+			return new ExtendedRedirectView("/login"+ 
+					"?notice=" + "register.openid.step1" + 
+					"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL()));
 		}
+		
 		
 		/*
-		 * Registration steps 
+		 * user found in session - proceed with the registration 
 		 */
-		if (command.getStep() == 1) {			
-			
-			log.debug("step 1: fill form");
-			/*
-			 * show form to enter OpenID
-			 */			
-			return Views.REGISTER_USER_OPENID;
-		} else if (command.getStep() == 2) {
-			
-			log.debug("step 2: redirect to provider ");
-			/*
-			 *  if OpenID is present -> redirect to OpenID provider
-			 */
-			try {
-				String redirect = openIDLogic.authOpenIdRequest(requestLogic, command.getRegisterUser().getOpenID(), projectHome, 
-						projectHome + "registerOpenID?step=3", true);
-				return new ExtendedRedirectView(redirect);
-			} catch (OpenIDException ex) {
-				errors.reject("error.invalid_openid");
-				return Views.ERROR;
-			}			
-		} else if (command.getStep() == 3) {
+		log.debug("got user from session");
+		final User user = (User) o;
 		
-			log.debug("step 3: show form");
-			
+		
+		/*
+		 * 2 = user has not been on form, yet -> fill it with OpenID data
+		 * 3 = user has seen the form and possibly changed data
+		 */
+		if (command.getStep() == 2) {
+			log.debug("step 3: start OpenID registration");
 			/*
-			 * get instance of openid logic from session
+			 * fill command with data from OpenID
 			 */
-			openIDLogic = (OpenID) requestLogic.getSessionAttribute(OpenID.OPENID_LOGIC_SESSION_ATTRIBUTE);
-			
+			command.setRegisterUser(user);
 			/*
-			 * show profile form prefilled with information from the openID provider
+			 * ensure that we proceed to the next step
 			 */
-			User openIDUser = openIDLogic.verifyResponse(requestLogic, true);
-			
+			command.setStep(3);
 			/*
-			 * user succesfully authenticated by OpenID provider 
+			 * return to form
 			 */
-			if (openIDUser != null) {
-				command.getRegisterUser().setName(openIDUser.getName());
-				command.getRegisterUser().setEmail(openIDUser.getEmail());
-				command.getRegisterUser().setRealname(openIDUser.getRealname());
-				command.getRegisterUser().setGender(openIDUser.getGender());
-				command.getRegisterUser().setPlace(openIDUser.getPlace());
-				command.getRegisterUser().setOpenID(openIDUser.getOpenID());
-			}			
 			return Views.REGISTER_USER_OPENID_PROVIDER_FORM;
-		} else if (command.getStep() == 4) {
-			
-			log.debug("step 4: complete OpenID registration");
-			/*
-			 * complete registration process and save user to database
-			 */
-						
-			/* Check cookies
-			 * 
-			 * Check, if user has cookies enabled (there should be at least a "JSESSIONID" cookie)
-			 */
-			if (!cookieLogic.containsCookies()) {
-				errors.reject("error.cookies_required");
-			}
-
-			/*
-			 * User which wants to register (form data)
-			 */
-			final User registerUser = command.getRegisterUser();
-
-
-			/*
-			 * Get the hosts IP address.
-			 */
-			final String inetAddress = requestLogic.getInetAddress();
-
-
-			/*
-			 * If user is an admin, he must provide a valid ckey!
-			 */
-			final boolean adminAccess = context.isUserLoggedIn() && Role.ADMIN.equals(loginUser.getRole());
-			if (adminAccess && !context.isValidCkey()) {
-				errors.reject("error.field.valid.ckey");
-			}
-			
-			/*
-			 * check, if user name already exists
-			 */
-			if (registerUser.getName() != null && logic.getUserDetails(registerUser.getName()).getName() != null) {
-				/*
-				 * yes -> user must choose another name
-				 */
-				errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
-			}
-			
-			/*
-			 * check if a user already registered this OpenID 
-			 */
-			if (registerUser.getOpenID() != null && logic.getOpenIDUser(registerUser.getOpenID()) != null) {
-				/*
-				 * OpenID already registered 
-				 */
-				errors.rejectValue("registerUser.openID", "error.field.duplicate.user.openid");
-			}
-			
-			/*
-			 * return to form until validation passes
-			 */
-			if (errors.hasErrors()) {
-				/*
-				 * Generate HTML to show captcha.
-				 */
-				return Views.REGISTER_USER_OPENID_PROVIDER_FORM;
-			}
-
-			log.debug("validation passed with " + errors.getErrorCount() + " errors, proceeding to access database");
-
-			/*
-			 * if the user is not logged in, we need an instance of the logic interface
-			 * with admin access 
-			 */
-			if (!context.isUserLoggedIn()) {
-				this.logic = this.adminLogic;
-			}
-
-			/*
-			 * set the full inet address of the user
-			 */
-			registerUser.setIPAddress(inetAddress);
-
-			/*
-			 * generate random password 
-			 * 
-			 * FIXME: choose better random pw
-			 * This is a severe security hole! We need to update ALL passwords 
-			 * of open ID users in the database when this is fixed. Otherwise,
-			 * users won't be able to log in.
-			 * 
-			 */
-			final String password = StringUtils.getMD5Hash(registerUser.getName() + "OPENID_");
-			registerUser.setPassword(password);
-						
-			/*
-			 * create user in DB
-			 */
-			logic.createUser(registerUser);		
-			
-			/*
-			 * log user into system
-			 */
-			cookieLogic.addOpenIDCookie(registerUser.getName(), command.getRegisterUser().getOpenID(), registerUser.getPassword());
-			openIDLogic.extendOpenIDSession(requestLogic.getSession(),  command.getRegisterUser().getOpenID());
-			
-			/*
-			 * present the success view
-			 */
-			return new ExtendedRedirectView(successRedirect);
 		}
 		
-		return Views.REGISTER_USER_OPENID;
+
+		log.debug("step 3: complete OpenID registration");
+		/* 
+		 * if there are any errors in the form, we return back to fix them.
+		 */
+		if (errors.hasErrors()) {
+			log.info("an error occoured: " + errors.toString());
+			return Views.REGISTER_USER_OPENID_PROVIDER_FORM;
+		}
+		/*
+		 * no errors: try to store user
+		 */
+		/*
+		 * user that wants to register (form data)
+		 */
+		final User registerUser = command.getRegisterUser();
+		/*
+		 * check, if user name already exists
+		 */
+		if (present(registerUser.getName()) && present(adminLogic.getUserDetails(registerUser.getName()).getName())) {
+			/*
+			 * yes -> user must choose another name
+			 */
+			errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
+		}
+		/*
+		 * return to form until validation passes
+		 */
+		if (errors.hasErrors()) {
+			/*
+			 * we add the OpenID since it is shown to the user in the form
+			 */
+			registerUser.setOpenID(user.getOpenID());
+			return Views.REGISTER_USER_OPENID_PROVIDER_FORM;
+		}
+		
+		log.info("validation passed with " + errors.getErrorCount() + " errors, proceeding to access database");
+		/*
+		 * set the users inet address
+		 */
+		registerUser.setIPAddress(requestLogic.getInetAddress());
+		/*
+		 * before we store the user, we must ensure that he contains a proper 
+		 * password and the OpenID
+		 */
+		registerUser.setPassword(generateRandomPassword());
+		registerUser.setOpenID(user.getOpenID());
+		/*
+		 * create user in DB
+		 */
+		adminLogic.createUser(registerUser);
+		/*
+		 * delete user from session.
+		 */
+		requestLogic.setSessionAttribute(FailureHandler.USER_TO_BE_REGISTERED, null);
+
+		/*
+		 * log user into system
+		 * 
+		 */
+		final UserDetails userDetails = new UserAdapter(registerUser);
+		final Authentication authentication = new OpenIDAuthenticationToken(userDetails, userDetails.getAuthorities(), registerUser.getOpenID(), null);
+
+		cookieLogic.createRememberMeCookie(openIdRememberMeServices, authentication);
+		/*
+		 * how dzo did it here
+		 */
+//		cookieLogic.addOpenIDCookie(registerUser.getName(), command.getRegisterUser().getOpenID(), registerUser.getPassword());
+//		openIDLogic.extendOpenIDSession(requestLogic.getSession(),  command.getRegisterUser().getOpenID());
+		
+		/*
+		 * present the success view
+		 */
+		return new ExtendedRedirectView(successRedirect);
 	}
+
+	private String generateRandomPassword() {
+		final byte[] bytes = new byte[16];
+		new Random().nextBytes(bytes);
+		final String randomPassword = HashUtils.getMD5Hash(bytes);
+		return randomPassword;
+	}
+
 
 	@Override
 	public UserOpenIDLdapRegistrationCommand instantiateCommand() {
@@ -281,13 +243,6 @@ public class UserOpenIDRegistrationController implements ErrorAware, ValidationA
 	}
 	
 	/**
-	 * @param logic logic interface
-	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-	}
-
-	/**
 	 * @param adminLogic - an instance of the logic interface with admin access.
 	 */
 	@Required
@@ -300,27 +255,25 @@ public class UserOpenIDRegistrationController implements ErrorAware, ValidationA
 		Assert.isTrue(Role.ADMIN.equals(this.adminLogic.getAuthenticatedUser().getRole()), "The provided logic interface must have admin access.");
 	}	
 
-	/**
-	 *  @param openIDLogic - an instance of the OpenID logic
-	 */
-	public void setOpenIDLogic(OpenID openIDLogic) {
-		this.openIDLogic = openIDLogic;
-	}	
-	
-	/** 
-	 * The base URL of the project.
-	 * 
-	 * @param projectHome
-	 */
-	public void setProjectHome(String projectHome) {
-		this.projectHome = projectHome;
-	}
-
 	/** 
 	 * After successful registration, the user is redirected to this page.
 	 * @param successRedirect
 	 */
 	public void setSuccessRedirect(String successRedirect) {
 		this.successRedirect = successRedirect;
+	}
+
+	/**
+	 * @return The OpenID remember me service of this controller.
+	 */
+	public CookieBasedRememberMeServices getOpenIdRememberMeServices() {
+		return this.openIdRememberMeServices;
+	}
+
+	/**
+	 * @param openIdRememberMeServices
+	 */
+	public void setOpenIdRememberMeServices(CookieBasedRememberMeServices openIdRememberMeServices) {
+		this.openIdRememberMeServices = openIdRememberMeServices;
 	}		
 }

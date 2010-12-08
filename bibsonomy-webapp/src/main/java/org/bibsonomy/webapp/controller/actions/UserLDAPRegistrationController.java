@@ -21,7 +21,7 @@ import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.util.spring.security.handler.FailureHandler;
-import org.bibsonomy.webapp.util.spring.security.rememberMeServices.LDAPRememberMeServices;
+import org.bibsonomy.webapp.util.spring.security.rememberMeServices.CookieBasedRememberMeServices;
 import org.bibsonomy.webapp.validation.UserLDAPRegistrationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -51,7 +51,7 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
-	private LDAPRememberMeServices ldapRememberMeServices;
+	private CookieBasedRememberMeServices ldapRememberMeServices;
 
 	/**
 	 * After successful registration, the user is redirected to this page.
@@ -304,14 +304,14 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 	/**
 	 * @return The remember me service.
 	 */
-	public LDAPRememberMeServices getLdapRememberMeServices() {
+	public CookieBasedRememberMeServices getLdapRememberMeServices() {
 		return this.ldapRememberMeServices;
 	}
 
 	/**
 	 * @param ldapRememberMeServices
 	 */
-	public void setLdapRememberMeServices(LDAPRememberMeServices ldapRememberMeServices) {
+	public void setLdapRememberMeServices(CookieBasedRememberMeServices ldapRememberMeServices) {
 		this.ldapRememberMeServices = ldapRememberMeServices;
 	}
 }
