@@ -2,6 +2,8 @@ package org.bibsonomy.webapp.util.spring.security.exceptionmapper;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.bibsonomy.model.User;
@@ -70,8 +72,14 @@ public class OpenIdUsernameNotFoundExceptionMapper extends UsernameNotFoundExcep
 						user.setGender(value);
 					} else if ("language".equals(name)) {
 						user.getSettings().setDefaultLanguage(value);
-					} else if ("country".equals(name)) {
+					} else if ("city".equals(name)) {
 						user.setPlace(value);
+					} else if ("web".equals(name)) {
+						try {
+							user.setHomepage(new URL(value));
+						} catch (MalformedURLException ex) {
+							// ignore
+						}
 					}
 				}
 			}
