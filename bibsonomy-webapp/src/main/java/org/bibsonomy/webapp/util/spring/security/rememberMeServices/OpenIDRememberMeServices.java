@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.util.spring.security.rememberMeServices;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.webapp.util.spring.security.UserAdapter;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -77,8 +80,8 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
 
 	@Override
 	protected UserDetails processAutoLoginCookie(final String[] cookieTokens, final HttpServletRequest request, final HttpServletResponse response) throws RememberMeAuthenticationException, UsernameNotFoundException {
-		if (cookieTokens.length != 3) {
-            throw new InvalidCookieException("Cookie token did not contain 3 tokens, but contained '" + Arrays.asList(cookieTokens) + "'");
+		if (cookieTokens.length != 4) {
+            throw new InvalidCookieException("Cookie token did not contain 4 tokens, but contained '" + Arrays.asList(cookieTokens) + "'");
         }
 
         final long tokenExpiryTime = this.getExpiryTime(cookieTokens[2]);
@@ -96,10 +99,18 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
     	final UserDetails userDetails = this.getUserDetailsService().loadUserByUsername(username);
 
     	/*
-    	 * check token signature
-    	 * TODO: use the openID from the userDetails
+    	 * extract open ID from the database user
     	 */
-    	final String expectedTokenSignature = this.makeTokenSignature(new String[] { Long.toString(tokenExpiryTime), username, claimedIdentity});
+    	if (!present(userDetails) || !(userDetails instanceof UserAdapter)) {
+			throw new AuthenticationServiceException("User or ID could not be found in database.");
+		}
+
+		final String databaseIdentity = ((UserAdapter) userDetails).getUser().getOpenID();
+
+    	/*
+    	 * check token signature
+    	 */
+    	final String expectedTokenSignature = this.makeTokenSignature(new String[] { Long.toString(tokenExpiryTime), username, databaseIdentity});
     	final String signature = cookieTokens[3];
 		if (!expectedTokenSignature.equals(signature)) {
             throw new InvalidCookieException("Cookie token[3] contained signature '" + signature  + "' but expected '" + expectedTokenSignature + "'");
@@ -134,7 +145,7 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
         // throw an exception to redirect the user
         throw new RememberMeAuthenticationException("redirect was sent");
 	}
-
+	
 	protected String buildReturnToUrl(HttpServletRequest request) {
 		final StringBuilder sb = new StringBuilder(this.projectRoot);
 		sb.append(this.filterUrl.replaceFirst("\\/", "")); // TODO: document or remove?!
