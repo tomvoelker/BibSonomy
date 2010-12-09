@@ -42,18 +42,38 @@ public class OpenIdUsernameNotFoundExceptionMapper extends UsernameNotFoundExcep
 			
 			if (authentication instanceof OpenIDAuthenticationToken) {
 				final OpenIDAuthenticationToken openIdAuthentication = (OpenIDAuthenticationToken) authentication;
+
+				user.setOpenID(openIdAuthentication.getIdentityUrl());
+
 				
 				final List<OpenIDAttribute> attributes = openIdAuthentication.getAttributes();
 				/*
-				 * fill user
+				 * fill user with additional attributes
+				 * 
+				 * FIXME: this works together with the attributes requested
+				 * in bibsonomy2-servlet-security.xml and is fixed to one 
+				 * specific scheme of attribute exchange. This means, it does 
+				 * not work with all OpenID providers. E.g., for Google I got
+				 * only the email address.
 				 */
-//				
-//				user.setName(openIDUser.getName());
-//				user.setEmail(openIDUser.getEmail());
-//				user.setRealname(openIDUser.getRealname());
-//				user.setGender(openIDUser.getGender());
-//				user.setPlace(openIDUser.getPlace());
-				user.setOpenID(openIdAuthentication.getIdentityUrl());
+				for (final OpenIDAttribute openIDAttribute : attributes) {
+					final String name = openIDAttribute.getName();
+					// we pick the first value
+					final String value = openIDAttribute.getValues().get(0);
+					if ("email".equals(name)) {
+						user.setEmail(value);
+					} else if ("nickname".equals(name)) {
+						user.setName(value);
+					} else if ("fullname".equals(name)) {
+						user.setRealname(value);
+					} else if ("gender".equals(name)) {
+						user.setGender(value);
+					} else if ("language".equals(name)) {
+						user.getSettings().setDefaultLanguage(value);
+					} else if ("country".equals(name)) {
+						user.setPlace(value);
+					}
+				}
 			}
 		}
 		

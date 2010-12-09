@@ -152,8 +152,62 @@
 		<constructor-arg value="/login_openid" />
 	</bean>
 	
-	<!-- open id consumer -->
-	<bean id="openidConsumer" class="org.springframework.security.openid.OpenID4JavaConsumer" />
+	<!--+
+		| open id consumer
+		|
+		| TODO: The openid-login XML element of Spring security allows to 
+		|       configure OpenID attribute exchange. We should try to use it,
+		|       because it's much nicer to write/read.
+		+-->
+	<bean id="openidConsumer" class="org.springframework.security.openid.OpenID4JavaConsumer">
+		<constructor-arg>
+			<list>
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="nickname"/>
+					<constructor-arg index="1" value="http://axschema.org/namePerson/friendly"/>
+					<property name="required" value="true"/>
+				</bean>
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="email"/>
+					<constructor-arg index="1" value="http://axschema.org/contact/email"/>
+					<property name="required" value="true"/>
+				</bean>
+				
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="fullname"/>
+					<constructor-arg index="1" value="http://axschema.org/namePerson"/>
+				</bean>
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="gender"/>
+					<constructor-arg index="1" value="http://axschema.org/person/gender"/>
+				</bean>
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="language"/>
+					<constructor-arg index="1" value="http://axschema.org/pref/languagehome"/>
+				</bean>
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="country"/>
+					<constructor-arg index="1" value="http://axschema.org/contact/country/home"/>
+				</bean>
+
+				<!-- old code:
+					/*
+					 *  required attributes
+					 */
+					sregReq.addAttribute("nickname", true);
+					sregReq.addAttribute("email", true);
+					
+					/*
+					 * optional attributes
+					 */
+					sregReq.addAttribute("fullname", false);
+					sregReq.addAttribute("gender", false);
+					sregReq.addAttribute("language", false);
+					sregReq.addAttribute("country", false);
+				 -->
+			</list>
+		</constructor-arg>
+	</bean>
 	
 	<!-- filter -->
 	<bean id="openidFilter" class="org.springframework.security.openid.OpenIDAuthenticationFilter">
@@ -249,8 +303,8 @@
 		<property name="hideUserNotFoundExceptions" value="false" />
 	</bean>
 	
-	<!--<security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />
-	--> <security:ldap-server id="contextSource" url="${auth.ldap.server}" /> 
+	<!--security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />-->
+	<security:ldap-server id="contextSource" url="${auth.ldap.server}" />
 
 
 	<bean id="ldapUserDetailsMapper" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.LDAPUserDetailsServiceMapper">
