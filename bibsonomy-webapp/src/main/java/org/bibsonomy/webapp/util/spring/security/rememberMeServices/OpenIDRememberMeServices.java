@@ -81,7 +81,7 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
             throw new InvalidCookieException("Cookie token did not contain 3 tokens, but contained '" + Arrays.asList(cookieTokens) + "'");
         }
 
-        long tokenExpiryTime = this.getExpiryTime(cookieTokens[2]);
+        final long tokenExpiryTime = this.getExpiryTime(cookieTokens[2]);
        
     	/*  
     	 * if user is not logged in, redirect user to his open id provider
@@ -94,7 +94,7 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
     	 * note: AbstractRememberMeServices#autoLogin checks if the user was deleted
     	 */
     	final UserDetails userDetails = this.getUserDetailsService().loadUserByUsername(username);
-    	
+
     	/*
     	 * check token signature
     	 * TODO: use the openID from the userDetails
