@@ -54,7 +54,7 @@
 	                
 	                <tr>
 	                  <td><form:label path="registerUser.openID" ><fmt:message key="user.settings.openid"/>:</form:label></td>
-	                  <td><c:out value="${command.registerUser.openID}"/><form:errors cssClass="errmsg" path="registerUser.openID" /></td>
+	                  <td><c:out value="${command.registerUser.openID}"/></td>
 	                </tr>
 				</table>
 				

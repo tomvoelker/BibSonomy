@@ -62,7 +62,7 @@
           <div id="bibbox">
 
             <!-- ###################### help graphic ####################### -->
-            <!-- TODO: Bild erneuern, Größe korrekt angeben, lokalisieren -->
+			<!-- TODO: Bild erneuern, Groesse korrekt angeben, lokalisieren -->
             <fmt:message key="register.dragButtons" var="dragButtons"/>
             <fmt:message key="image.register.success" var="successImage"/>
             <img src="${successImage}" style="float:left;" alt="${dragButtons}" title="${dragButtons}"/>
