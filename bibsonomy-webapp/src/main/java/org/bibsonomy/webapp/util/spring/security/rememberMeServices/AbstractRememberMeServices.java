@@ -17,7 +17,7 @@ public abstract class AbstractRememberMeServices extends org.springframework.sec
 	
 	protected String makeTokenSignature(final String[] values) {
 		final StringBuilder sb = new StringBuilder();
-		for (String string : values) {
+		for (final String string : values) {
 			sb.append(string);
 			sb.append(TOKEN_SIGNATURE_SEPERATOR);
 		}
