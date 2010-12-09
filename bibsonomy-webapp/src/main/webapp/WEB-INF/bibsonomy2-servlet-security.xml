@@ -162,49 +162,44 @@
 	<bean id="openidConsumer" class="org.springframework.security.openid.OpenID4JavaConsumer">
 		<constructor-arg>
 			<list>
+				<!--+
+					|
+					| Types with "http://axschema.org/..." don't seem to work - 
+					| replaced them with http://schema.openid.net/ and it worked
+					| on myopenid.net. See also http://forum.springsource.org/showthread.php?t=85078
+					|
+				 	+-->
 				<bean class="org.springframework.security.openid.OpenIDAttribute">
 					<constructor-arg index="0" value="nickname"/>
-					<constructor-arg index="1" value="http://axschema.org/namePerson/friendly"/>
+					<constructor-arg index="1" value="http://schema.openid.net/namePerson/friendly"/>
 					<property name="required" value="true"/>
 				</bean>
 				<bean class="org.springframework.security.openid.OpenIDAttribute">
 					<constructor-arg index="0" value="email"/>
-					<constructor-arg index="1" value="http://axschema.org/contact/email"/>
+					<constructor-arg index="1" value="http://schema.openid.net/contact/email"/>
 					<property name="required" value="true"/>
 				</bean>
 				
 				<bean class="org.springframework.security.openid.OpenIDAttribute">
 					<constructor-arg index="0" value="fullname"/>
-					<constructor-arg index="1" value="http://axschema.org/namePerson"/>
+					<constructor-arg index="1" value="http://schema.openid.net/namePerson"/>
 				</bean>
 				<bean class="org.springframework.security.openid.OpenIDAttribute">
 					<constructor-arg index="0" value="gender"/>
-					<constructor-arg index="1" value="http://axschema.org/person/gender"/>
+					<constructor-arg index="1" value="http://schema.openid.net/person/gender"/>
 				</bean>
 				<bean class="org.springframework.security.openid.OpenIDAttribute">
 					<constructor-arg index="0" value="language"/>
-					<constructor-arg index="1" value="http://axschema.org/pref/languagehome"/>
+					<constructor-arg index="1" value="http://schema.openid.net/pref/languagehome"/>
 				</bean>
 				<bean class="org.springframework.security.openid.OpenIDAttribute">
-					<constructor-arg index="0" value="country"/>
-					<constructor-arg index="1" value="http://axschema.org/contact/country/home"/>
+					<constructor-arg index="0" value="city"/>
+					<constructor-arg index="1" value="http://schema.openid.net/contact/city/home"/>
 				</bean>
-
-				<!-- old code:
-					/*
-					 *  required attributes
-					 */
-					sregReq.addAttribute("nickname", true);
-					sregReq.addAttribute("email", true);
-					
-					/*
-					 * optional attributes
-					 */
-					sregReq.addAttribute("fullname", false);
-					sregReq.addAttribute("gender", false);
-					sregReq.addAttribute("language", false);
-					sregReq.addAttribute("country", false);
-				 -->
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="web"/>
+					<constructor-arg index="1" value="http://schema.openid.net/contact/web/default"/>
+				</bean>
 			</list>
 		</constructor-arg>
 	</bean>
