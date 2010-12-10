@@ -25,7 +25,15 @@
 				href="${resdir}/css/adminlucene.css" />
 		</jsp:attribute>
 		<jsp:attribute name="content">
-
+		<script language="javascript">
+		function generateIndex(resource) { 
+			var box = window.confirm("This will generate a new " + resource +"Index. Are you sure?");
+			if (box == true) { 
+			    window.location.href="?action=generateIndex&amp;resource=" + resource; 
+			}
+		} 
+		</script>
+			<!--   <script type="text/javascript" src="${resdir}/javascript/adminlucene.js">&amp;nbsp;</script> -->
 
 <div id="outerBox">
 	<h2>
@@ -51,9 +59,15 @@
 				    </c:when>
 				    <c:otherwise>
 				        Seems to be properly configured but could not physically be found. <br />
-				        <a href="?action=generate${index.resourceName}Index">Generate a new <c:out value="${index.name}" /></a>
+				        <a href="?action=generateIndex&amp;resource=${index.resourceName}">Generate a new <c:out value="${index.name}" /></a>
 				    </c:otherwise>
 				</c:choose>
+				<c:if test="${!index.generatingIndex}">
+				  <a style="cursor: pointer;">
+					<img src="${resdir}/image/button_reload.png" alt="generate new ${index.name}" title="generate new ${index.name}" onclick="javascript:generateIndex('${index.resourceName}')" />
+					<span style="width: 200px; height: 10px; border: 1px;  "></span>
+				  </a>
+				</c:if>
 			</fieldset>
 			<fieldset>
 				<legend><label><c:out value="${index.inactiveIndex.name}" /></label></legend>
@@ -65,8 +79,12 @@
 						<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${index.inactiveIndex.currentVersion}</div>
 						<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${index.inactiveIndex.current}</div>
 					</c:if>
-					<c:if test="{index.generatingIndex}">
-					    Currently generating new index. ${index.indexGenerationProgress} % done.
+					<c:if test="${index.generatingIndex}">
+					    Currently generating new index. <br />			    
+					<div style="width: 202px; height: 12px; border: 1px solid #999999; background-color: #CCCCCC">
+    					<div style="width: ${index.indexGenerationProgress*2}px; height:10px; border: 1px solid #CCCCCC; background-color: #002244" />
+					</div><br />
+					${index.indexGenerationProgress} % done.
 					</c:if>
 			</fieldset>
 	    </div>

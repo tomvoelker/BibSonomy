@@ -27,9 +27,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class AdminLuceneController implements MinimalisticController<AdminLuceneViewCommand> {
-	private static final String GENERATE_GOLDSTANDARDPUBLICATION_INDEX = "generateGoldStandardPublicationIndex";
-	private static final String GENERATE_BIBTEX_INDEX = "generateBibTexIndex";
-	private static final String GENERATE_BOOKMARK_INDEX = "generateBookmarkIndex";
+	private static final String GENERATE_INDEX = "generateIndex";
 
 	private static final Log log = LogFactory.getLog(AdminLuceneController.class);
 	private static ConcurrentHashMap<String, Integer> progressPercentage = new ConcurrentHashMap<String, Integer>();
@@ -55,18 +53,18 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		command.setPageTitle("admin lucene");
 		
 		
-		boolean generatedIndex = false;
-		
 		if(command.getAction() == null) {
 	        // Do nothing.
-		} else if(command.getAction().equals(GENERATE_BOOKMARK_INDEX) ||
-				  command.getAction().equals(GENERATE_BIBTEX_INDEX) ||
-				  command.getAction().equals(GENERATE_GOLDSTANDARDPUBLICATION_INDEX)) {
-			
-				String resourcename = command.getAction().replace("generate", "").replace("Index", "");
-				LuceneResourceManager<? extends Resource> mng = getManagerByResourceName(resourcename);
+		} else if(command.getAction().equals(GENERATE_INDEX)) {
+				LuceneResourceManager<? extends Resource> mng = getManagerByResourceName(command.getResource());
 				if(mng != null) {
-					doIndexGeneration(mng);
+					if(!mng.isGeneratingIndex()) {
+						doIndexGeneration(mng);
+					} else {
+						command.setAdminResponse("Already building lucene-index for resource \"" + command.getResource() + "\".");
+					}
+				} else {
+					command.setAdminResponse("Cannot build new index because there exists no manager for resource \"" + command.getResource() + "\".");
 				}
 		}
 		
@@ -97,7 +95,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			if(manager.isGeneratingIndex()) {
 				indexCmd.setGeneratingIndex(true);
 				indexCmd.setIndexGenerationProgress(progressPercentage.get(manager.getResourceName()));
-			} else if (isIndexEnabled) {
+			}
+			if (isIndexEnabled) {
 				indexCmd.setIndexStatistics(manager.getStatistics());
 				indexCmdInactive.setIndexStatistics(manager.getInactiveIndexStatistics());
 			}

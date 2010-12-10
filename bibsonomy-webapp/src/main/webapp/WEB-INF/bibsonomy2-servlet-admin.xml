@@ -62,6 +62,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>action</value>
+								<value>resource</value>
 							</list>
 						</property>
 					</bean>

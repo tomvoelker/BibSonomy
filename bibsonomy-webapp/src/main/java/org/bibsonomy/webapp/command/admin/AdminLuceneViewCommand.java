@@ -19,6 +19,7 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	
 	/** specific action for admin page */
 	private String action;
+	private String resource;
 	private String adminResponse = "";
 
 	
@@ -149,6 +150,14 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	 */
 	public String getAdminResponse() {
 		return adminResponse;
+	}
+
+	public void setResource(String resource) {
+		this.resource = resource;
+	}
+
+	public String getResource() {
+		return resource;
 	}
 
 }
