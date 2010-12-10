@@ -16,6 +16,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.MailUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
@@ -26,8 +27,8 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.captcha.Captcha;
 import org.bibsonomy.webapp.util.captcha.CaptchaResponse;
 import org.bibsonomy.webapp.validation.PasswordReminderValidator;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.util.Assert;
@@ -49,6 +50,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	private Captcha captcha;
 	private MailUtils mailUtils;
 	private MessageSource messageSource;
+	private String cryptKey;
 	
 	@Override
 	public PasswordReminderCommand instantiateCommand() {
@@ -161,14 +163,18 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		final String tempPassword = getRandomString();
 		user.setReminderPassword(tempPassword);
 		user.setReminderPasswordRequestDate(new Date());
+		
+		// create reminder hash
+		final String reminderHash = this.encryptReminderHash(user.getName(), tempPassword);
 
 		// update db
 		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
 
 		// send mail
-		mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, tempPassword);
+		mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, reminderHash);		
 
-		return new ExtendedRedirectView(success);
+		command.setSuccess(true);
+		return Views.PASSWORD_REMINDER;
 	}
 
 	@Override
@@ -290,4 +296,27 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	public void setMaxMinutesPasswordReminderValid(final int maxMinutesPasswordReminderValid) {
 		this.maxMinutesPasswordReminderValid = maxMinutesPasswordReminderValid;
 	}
+	
+
+	/**
+	 * encode the reminder hash
+	 * @param username - the username
+	 * @param tempPassword - the temporary password
+	 * @return the encrypted
+	 */
+	private String encryptReminderHash(final String username, final String tempPassword) {
+		final BasicTextEncryptor crypt = new BasicTextEncryptor();
+		crypt.setPassword(this.getCryptKey());
+		final String reminderCred = username + ":" + tempPassword; 		
+		return UrlUtils.safeURIEncode(crypt.encrypt(reminderCred));
+	}
+
+	public void setCryptKey(String cryptKey) {
+		this.cryptKey = cryptKey;
+	}
+
+	public String getCryptKey() {
+		return cryptKey;
+	}
+	
 }

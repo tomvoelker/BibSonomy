@@ -7,14 +7,13 @@ import java.io.Serializable;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
+ * Command for sending password reminder emails.
+ * 
  * @author daill
  * @version $Id$
  */
 public class PasswordReminderCommand extends BaseCommand implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6971611795826344738L;
 
 	/**
@@ -40,6 +39,11 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	 * The response to the captcha, the user entered.
 	 */
 	private String recaptcha_response_field;
+	
+	/**
+	 * true when password reminder has been sent successfully
+	 */
+	private boolean success = false;
 
 	/**
 	 * @return returns a captcha
@@ -47,6 +51,10 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	public String getCaptchaHTML() {
 		return this.captchaHTML;
 	}
+	
+	//**********************************************************************
+	// getter / setter
+	//**********************************************************************	
 	
 	/**
 	 * @param captchaHTML
@@ -109,5 +117,13 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	 */
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
+	public boolean getSuccess() {
+		return success;
 	}
 }
