@@ -29,6 +29,17 @@ public class PasswordChangeOnRemindCommand extends BaseCommand implements Serial
 	private String passwordCheck;
 	
 	/**
+	 * the reminder hash sent to the user (containing his encryped password)
+	 */
+	private String reminderHash;
+	
+	
+	
+	// **********************************************************
+	// getter / setter
+	// **********************************************************	
+	
+	/**
 	 * @return String
 	 */
 	public String getUserName() {
@@ -64,6 +75,12 @@ public class PasswordChangeOnRemindCommand extends BaseCommand implements Serial
 	public void setPasswordCheck(final String passwordCheck) {
 		this.passwordCheck = passwordCheck;
 	}
+	public void setReminderHash(String reminderHash) {
+		this.reminderHash = reminderHash;
+	}
+	public String getReminderHash() {
+		return reminderHash;
+	}	
 
 	
 }
