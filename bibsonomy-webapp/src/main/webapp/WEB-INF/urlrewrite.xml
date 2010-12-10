@@ -260,6 +260,18 @@
 	</rule>
 
 
+	<!-- ############## password reminder ############### -->
+	<!-- /reminder/REMINDER_HASH 
+	FIXME: this doesn't work when the reminder hash contains a '/'
+	<rule>
+		<name>/reminder/REMINDER_HASH</name>
+		<from>^/+reminder/(.+)$</from>
+		<set type="parameter" name="reminderHash">$1</set>
+		<to last="true">/reminder/change_password</to>
+	</rule>
+	-->
+
+
 	<!-- ############## /concept pages ############### -->
 	<!-- /concept/user/USER/TAG -->
 	<rule>
