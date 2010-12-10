@@ -36,6 +36,26 @@
 			<c:if test="${not empty jsOpenAccess}">
 				<script type="text/javascript" src="${jsOpenAccess}">&amp;nbsp;</script>
 			</c:if>
+			
+			<!--+ 
+			 	|
+			 	| additional JavaScript code for Publication Classification integration.
+			 	|
+			 	+-->
+			<spring:theme code="javascript.classification" var="jsClassification" text=""/>
+			<c:if test="${not empty jsClassification}">
+				<script type="text/javascript" src="${jsClassification}">&amp;nbsp;</script>
+			</c:if>
+			
+			<spring:theme code="javascript.t1" var="t1" text=""/>
+			<c:if test="${not empty t1}">
+				<script type="text/javascript" src="${t1}">&amp;nbsp;</script>
+			</c:if>
+			
+			<spring:theme code="javascript.t2" var="t2" text=""/>
+			<c:if test="${not empty t2}">
+				<script type="text/javascript" src="${t2}">&amp;nbsp;</script>
+			</c:if>
 		</jsp:attribute>
 		
 		<jsp:attribute name="tagsAndGroups">

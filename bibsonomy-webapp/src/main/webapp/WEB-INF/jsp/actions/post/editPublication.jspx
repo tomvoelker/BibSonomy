@@ -35,6 +35,7 @@
         <jsp:attribute name="detailedInformation">
 			<editpub:details post="${post}" />
 			<editpub:openaccess/>
+<!--			<editpub:classification/>-->
 
 			<c:if test="${not empty command.scrapingContext}">
           		<parts:fieldset maximized="false" legendKey="post.resource.fields.scraper" >
@@ -65,12 +66,14 @@
 		                    	<pre class="fsInput" style="width:0px;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre>
 		                    </div>
 		                  </div>
+		                  
                 	</jsp:attribute>
             	</parts:fieldset>
          	</c:if>
          	
        </jsp:attribute>
 
+		                  
 	</layout:editPostLayout>
 
 </jsp:root>

@@ -102,14 +102,26 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/ajax/classificatePublication">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="publicationClassificationController" />
+						<property name="allowedFields">
+							<list>
+								<value>classificationName</value>
+								<value>id</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
 
 
+
 	<!--+
 		  | ajax controller
-	   	+-->		
+	   	+-->
 	<bean id="ajaxController" class="org.bibsonomy.webapp.controller.ajax.AjaxController" abstract="true">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -141,5 +153,9 @@
 	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
 	
 	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController" />	
+	
+	<bean id="publicationClassificationController" class="org.bibsonomy.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
+		<property name="classification" ref="classificate"/>
+	</bean>
 	
 </beans>
