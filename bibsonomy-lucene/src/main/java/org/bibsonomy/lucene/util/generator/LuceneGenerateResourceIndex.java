@@ -206,7 +206,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 					is++;
 				}			
 			}
-			progressPercentage += skip/(numberOfPosts*100);
+			progressPercentage = (int) Math.round(100 * ((double)skip/numberOfPosts));
 			if(callback != null) {
 			    callback.updateProgress(progressPercentage);
 			}
