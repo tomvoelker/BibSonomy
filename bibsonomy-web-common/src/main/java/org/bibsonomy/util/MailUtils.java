@@ -137,8 +137,8 @@ public class MailUtils {
 	public boolean sendPasswordReminderMail (final String userName, final String userEmail, final String inetAddress, final Locale locale, final int maxmin, final String tmppw){
 		final Object[] messagesParameters = new Object[]{userName, projectName, projectHome, projectBlog, projectEmail, maxmin, tmppw};
 		
-		final String messageBody	= messageSource.getMessage("mail.reminder.body", messagesParameters, locale);
-		final String messageSubject = messageSource.getMessage("mail.reminder.subject", messagesParameters, locale);
+		final String messageBody	= messageSource.getMessage("reminder.mail.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("reminder.mail.subject", messagesParameters, locale);
 		
 		/*
 		 * set the recipients
