@@ -315,6 +315,10 @@
 					<artifactId>spring-jdbc</artifactId>
 					<groupId>org.springframework</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>nekohtml</artifactId>
+					<groupId>net.sourceforge.nekohtml</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -402,6 +406,13 @@
 			<version>2.0.8</version>
 			<type>jar</type>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.14</version>
+			<type>jar</type>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<properties>
