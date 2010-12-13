@@ -70,7 +70,7 @@
           			<ul>
 						<c:forEach var="authMethod" items="${authConfig.authOrder}">
 			  				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-              				<li><a href="#login_${authMethodName}"><fmt:message key="login.${authMethodName}.label" /></a></li>
+              				<li><a href="#login_${authMethodName}"><fmt:message key="login.method.${authMethodName}" /></a></li>
             			</c:forEach>
           			</ul>
           

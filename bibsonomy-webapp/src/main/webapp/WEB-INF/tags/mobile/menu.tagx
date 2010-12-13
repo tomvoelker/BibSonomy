@@ -57,7 +57,7 @@
 			<!-- toggle between authentication modes.  -->
 			<c:if test="${selected == 'nav_login'}">
 				<div id="login-bar">
-					<a style="font-size: 0.8em;" href="javascript:switchLogin('${authOrder}','db');" id="login-method-db"><fmt:message key="login.method.db" /></a>
+					<a style="font-size: 0.8em;" href="javascript:switchLogin('${authOrder}','db');" id="login-method-db"><fmt:message key="login.method.internal" /></a>
 					<a style="font-size: 0.8em;" href="javascript:switchLogin('${authOrder}','openid');" id="login-method-openid"><fmt:message key="login.method.openid" /></a>
 					<div style="clear: both; height: 0;">&amp;nbsp;</div>
 				</div>
