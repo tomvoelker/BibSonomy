@@ -10,11 +10,8 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.PasswordChangeOnRemindCommand;
 import org.bibsonomy.webapp.exceptions.InvalidPasswordReminderException;
-import org.bibsonomy.webapp.util.CookieAware;
-import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -36,17 +33,16 @@ import org.springframework.validation.Errors;
  * @author Dominik Benz, benz@cs.uni-kassel.de
  * @version $Id$
  */
-public class PasswordChangeOnRemindController implements ErrorAware, ValidationAwareController<PasswordChangeOnRemindCommand>, RequestAware, CookieAware{
+public class PasswordChangeOnRemindController implements ErrorAware, ValidationAwareController<PasswordChangeOnRemindCommand>, RequestAware {
 	private static final Log log = LogFactory.getLog(PasswordChangeOnRemindController.class);
 
 	private LogicInterface adminLogic;
-	private CookieLogic cookieLogic;
 	private RequestLogic requestLogic;
-	private String cryptKey;
 
+	private String cryptKey;
 	private Errors errors;
 	
-	private final int maxMinutesPasswordReminderValid = 60;
+	private int maxMinutesPasswordReminderValid = 60;
 
 	@Override
 	public View workOn(PasswordChangeOnRemindCommand command) {
@@ -64,14 +60,14 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		 * extract the reminder credentials form the reminder hash, fetch 
 		 * corresponding details from DB 
 		 */
-		reminderCredentials cred;
+		final ReminderCredentials cred;
 		try {
 			cred = this.decryptReminderHash(command.getReminderHash());
-		}
-		catch (InvalidPasswordReminderException ex) {
+		} catch (InvalidPasswordReminderException ex) {
 			errors.reject("error.method_not_allowed");
 			return Views.ERROR;
 		}
+		
 		if (! present(cred.username) || ! present(cred.reminderPassword)) {
 			errors.reject("error.method_not_allowed");
 			return Views.ERROR;
@@ -115,11 +111,10 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		user.setReminderPassword("");
 
 		log.debug("writing the new password to the database");
-		// update user in database
+		/*
+		 * update user in database
+		 */
 		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_PASSWORD);
-
-		// create a new cookie with the right login details
-		//cookieLogic.addUserCookie(cred.username, hashedPassword);
 
 		// destroy session
 		requestLogic.invalidateSession();
@@ -142,11 +137,6 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
-	}
-
-	@Override
-	public void setCookieLogic(CookieLogic cookieLogic) {
-		this.cookieLogic = cookieLogic;
 	}
 
 	@Override
@@ -176,13 +166,13 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 	 * @param reminderHash - the reminder hash
 	 * @return the reminder credentials
 	 */
-	private reminderCredentials decryptReminderHash(final String reminderHash) {
+	private ReminderCredentials decryptReminderHash(final String reminderHash) {
 		try {
 			final BasicTextEncryptor crypt = new BasicTextEncryptor();
 			crypt.setPassword(this.getCryptKey());
-			String reminderHashDecrypted = crypt.decrypt(UrlUtils.safeURIDecode(reminderHash));
-			String[] parts = reminderHashDecrypted.split(":");
-			return new reminderCredentials(parts[0], parts[1]);
+			final String reminderHashDecrypted = crypt.decrypt(reminderHash);
+			final String[] parts = reminderHashDecrypted.split(":");
+			return new ReminderCredentials(parts[0], parts[1]);
 		}
 		catch (IndexOutOfBoundsException ex) {
 			throw new InvalidPasswordReminderException();
@@ -202,7 +192,8 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 	}
 	
 	/**
-	 * set crypt key
+	 * Sets the key to decrypt the password reminder
+	 * 
 	 * @param cryptKey - the crypt key
 	 */
 	public void setCryptKey(String cryptKey) {
@@ -211,18 +202,27 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 	
 	/**
 	 * get the crypt key
-	 * @return - the crypt key
+	 * 
+	 * @return - The key to decrypt the password reminder
 	 */
 	public String getCryptKey() {
 		return cryptKey;
+	}
+	
+	/** The maximal number of minutes, a password reminder is valid.
+	 * 
+	 * @param maxMinutesPasswordReminderValid
+	 */
+	public void setMaxMinutesPasswordReminderValid(final int maxMinutesPasswordReminderValid) {
+		this.maxMinutesPasswordReminderValid = maxMinutesPasswordReminderValid;
 	}
 
 
 	/**
 	 * small helper class to hold username and temp-password
 	 */
-	private class reminderCredentials {
-		public reminderCredentials(final String username, final String reminderPassword) {
+	private class ReminderCredentials {
+		public ReminderCredentials(final String username, final String reminderPassword) {
 			this.username=username;
 			this.reminderPassword=reminderPassword;
 		}

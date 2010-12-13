@@ -41,8 +41,6 @@ import org.springframework.validation.Errors;
 public class PasswordReminderController implements ErrorAware, ValidationAwareController<PasswordReminderCommand>, RequestAware {
 	private static final Log log = LogFactory.getLog(PasswordReminderController.class);
 	
-	private static final String success = "/login";
-
 	private int maxMinutesPasswordReminderValid = 60; 
 	private LogicInterface adminLogic;
 	private Errors errors = null;
@@ -171,7 +169,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
 
 		// send mail
-		mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, reminderHash);		
+		mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, UrlUtils.safeURIEncode(reminderHash));		
 
 		command.setSuccess(true);
 		return Views.PASSWORD_REMINDER;
@@ -308,13 +306,21 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		final BasicTextEncryptor crypt = new BasicTextEncryptor();
 		crypt.setPassword(this.getCryptKey());
 		final String reminderCred = username + ":" + tempPassword; 		
-		return UrlUtils.safeURIEncode(crypt.encrypt(reminderCred));
+		return crypt.encrypt(reminderCred);
 	}
 
+	/**
+	 * Sets the key to encrypt the password reminder
+	 * 
+	 * @param cryptKey
+	 */
 	public void setCryptKey(String cryptKey) {
 		this.cryptKey = cryptKey;
 	}
 
+	/**
+	 * @return The key used to encrypt the password reminder.
+	 */
 	public String getCryptKey() {
 		return cryptKey;
 	}
