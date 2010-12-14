@@ -128,7 +128,7 @@
 	<security:authentication-manager alias="internalAuthenticationManager">
 		<security:authentication-provider ref="databaseAuthenticator" />
 		<security:authentication-provider ref="databaseAuthenticatorWithoutEncoding" />
-		<security:authentication-provider ref="remeberMeAuthenticator" />
+		<security:authentication-provider ref="rememberMeAuthenticator" />
 	</security:authentication-manager>
 	
 	<bean id="abstractDatabaseAuthenticator" class="org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider" abstract="true">
@@ -139,7 +139,7 @@
 		<property name="passwordEncoder" ref="md5Encoder" />
 	</bean>
 	
-	<bean id="remeberMeAuthenticator" class="org.springframework.security.authentication.RememberMeAuthenticationProvider">
+	<bean id="rememberMeAuthenticator" class="org.springframework.security.authentication.RememberMeAuthenticationProvider">
 		<property name="key" ref="cookieKey" />
 	</bean>
 	
@@ -206,7 +206,7 @@
 	
 	<!-- filter -->
 	<bean id="openidFilter" class="org.springframework.security.openid.OpenIDAuthenticationFilter">
-		<property name="authenticationManager" ref="openidAuthenticatonManager" />
+		<property name="authenticationManager" ref="openidAuthenticationManager" />
 		<property name="filterProcessesUrl" ref="openidLoginUrl" />
 		<property name="authenticationSuccessHandler" ref="successHandler" />
 		<property name="authenticationFailureHandler" ref="failureHandler" />
@@ -218,7 +218,7 @@
 	<!-- open id remember me filter -->
 	<bean id="openidRememberMeFilter" class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
 		<property name="rememberMeServices" ref="openidRememberMeServices" />
-		<property name="authenticationManager" ref="openidAuthenticatonManager" />
+		<property name="authenticationManager" ref="openidAuthenticationManager" />
 	</bean>
 	
 	<!-- open id remember me service -->
@@ -240,7 +240,7 @@
 		<property name="adminLogic" ref="adminLogic" />
 	</bean>
 	
-	<bean id="openidAuthenticatonManager" class="org.springframework.security.authentication.ProviderManager">
+	<bean id="openidAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
 		<property name="providers">
 			<list>
 				<ref bean="openidAuthenticationProvider"/> 
@@ -250,12 +250,12 @@
 	
 	<!-- LDAP login -->
 	<bean id="ldapUsernamePasswordFilter" parent="abstractUsernamePasswordFilter">
-		<property name="authenticationManager" ref="ldapAuthManager" />
+		<property name="authenticationManager" ref="ldapAuthenticationManager" />
 		<property name="filterProcessesUrl" value="/login_ldap" />
 		<property name="rememberMeServices" ref="ldapRememberMeServices" />
 	</bean>
 	
-	<bean id="ldapAuthManager" class="org.springframework.security.authentication.ProviderManager">
+	<bean id="ldapAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
 		<property name="providers">
 			<list>
 				<ref bean="ldapAuthProvider"/> 
@@ -266,7 +266,7 @@
 	<!-- filter for the ldap remember me cookie -->
 	<bean id="ldapRememberMeFilter" class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
 		<property name="rememberMeServices" ref="ldapRememberMeServices" />
-		<property name="authenticationManager" ref="ldapAuthManager" />
+		<property name="authenticationManager" ref="ldapAuthenticationManager" />
 	</bean>
 	
 	<!-- ldap remember me service -->
@@ -298,7 +298,7 @@
 		<property name="hideUserNotFoundExceptions" value="false" />
 	</bean>
 	
-	<!--security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />-->
+<!--	<security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />-->
 	<security:ldap-server id="contextSource" url="${auth.ldap.server}" />
 
 
