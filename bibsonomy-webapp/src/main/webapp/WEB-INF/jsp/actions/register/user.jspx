@@ -38,7 +38,7 @@
 						
 						<div class="fsRow">
 			  				<form:label cssClass="fsLabel" path="registerUser.name" ><fmt:message key="navi.username"/>*</form:label>
-			  				<form:input cssClass="fsInput reqinput" path="registerUser.name" tabindex="2"/>
+			  				<form:input maxlength="15" cssClass="fsInput reqinput" path="registerUser.name" tabindex="2"/>
 			  				<div class="dissError"><form:errors path="registerUser.name" /></div>
             			</div>
             			
