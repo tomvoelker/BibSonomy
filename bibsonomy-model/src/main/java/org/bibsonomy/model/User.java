@@ -201,10 +201,6 @@ public class User implements Serializable {
 	 */
 	private String ldapId;
 	/**
-	 * Date of last ldap password check or ldap update
-	 */
-	private Date lastLdapUpdate;
-	/**
 	 * The temporary password the user can request when asking for a password reminder.
 	 */
 	private String reminderPassword;
@@ -549,20 +545,6 @@ public class User implements Serializable {
 	 */
 	public String getLdapId() {
 		return ldapId;
-	}
-
-	/**
-	 * @param lastLdapUpdate
-	 */
-	public void setLastLdapUpdate(Date lastLdapUpdate) {
-		this.lastLdapUpdate = lastLdapUpdate;
-	}
-
-	/**
-	 * @return last ldap update date
-	 */
-	public Date getLastLdapUpdate() {
-		return lastLdapUpdate;
 	}
 
 	/**
