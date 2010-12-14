@@ -118,14 +118,6 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
 
-		/* Check cookies
-		 * 
-		 * Check, if user has cookies enabled (there should be at least a "JSESSIONID" cookie)
-		 */
-		if (!cookieLogic.containsCookies()) {
-			errors.reject("error.cookies_required");
-		}
-
 		/*
 		 * User which wants to register (form data)
 		 */
