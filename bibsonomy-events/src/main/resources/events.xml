@@ -32,6 +32,28 @@
  				</property>
  			</bean>
  		</entry>
+ 		<entry key="mygroup">
+            <bean class="org.bibsonomy.events.model.Event">
+                <property name="id" value="mygroup"/>
+                <property name="name" value="MyGroup"/>
+                <property name="description" value="MyGroup - Venus Demonstrator"/>
+                <property name="location" value="Kassel"/>
+                <property name="year" value="2010"/>
+                <property name="url" value="http://mygroup.ubicon.eu"/>
+                <property name="userName" value="mygroup"/>
+                <property name="subEvents">
+                    <util:list value-type="java.lang.String">
+                        <value>ComTech</value>
+                        <value>Recht</value>
+                        <value>Wissensverarbeitung</value>
+                        <value>Mensch-Maschine Systemtechnik</value>
+                        <value>Verteilte Systeme</value>
+                        <value>Wirtschaftsinformatik</value>
+                    </util:list>
+                </property>
+            </bean>
+        </entry>
+ 		
  	</util:map>
 	
 
