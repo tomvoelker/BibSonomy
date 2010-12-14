@@ -48,9 +48,8 @@
 
 				
        
-				<p>Auf dieser Seite können Sie sich für <a href="${command.event.url}"><c:out value="${command.event.name}" /></a> registrieren.
-				Darüberhinaus können Sie weitere Daten eingeben, um die Interaktionen mit anderen Teilnehmern zu steigern, und Ihnen
-                hilfreiche Informationen und Inhalte kontextsensitiv zur Verfügung zu stellen.</p>
+				<p>Auf dieser Seite können Sie sich für die <a href="${command.event.url}"><c:out value="${command.event.name}" /></a> registrieren.
+				Darüberhinaus können Sie Daten für das konferenzbegleitende <a href="http://www.kde.cs.uni-kassel.de/conf/lwa10/conferator.html">Conferator-System</a> eingeben.</p>
 				
 				
 				<form:form method="post" action="#">		
@@ -77,13 +76,53 @@
                       <form:input cssClass="fsInput" path="participantDetails.badgeInstitutionName"/>
                       <div class="dissError"><form:errors path="participantDetails.badgeInstitutionName" /></div>
                     </div>
-                                                           
+                    
+                    <div class="fsRow">
+                        <form:label cssClass="fsLabel" path="participantDetails.poster"><fmt:message key="events.registration.registered.poster"/></form:label>
+                        <form:checkbox path="participantDetails.poster" value="true"/>
+                        <fmt:message key="events.registration.registered.poster.explanation"/>                     
+                        <div class="dissError"><form:errors path="participantDetails.poster" /></div>
+                    </div>
+                    
+                    <div class="fsRow">
+                        <form:label cssClass="fsLabel" path="participantDetails.presenter"><fmt:message key="events.registration.registered.presenter"/></form:label>
+                        <form:checkbox path="participantDetails.presenter" value="false"/>
+                        <fmt:message key="events.registration.registered.presenter.explanation"/>                    
+                        <div class="dissError"><form:errors path="participantDetails.presenter" /></div>
+                    </div>
+                    
                     <div class="fsRow">
                         <form:label cssClass="fsLabel" path="participantDetails.subEvent"><fmt:message key="events.registration.subEvent"/></form:label>
                         <form:radiobuttons items="${command.event.subEvents}" path="participantDetails.subEvent"/>
                         <div class="dissError"><form:errors path="participantDetails.subEvent" /></div>
                     </div>
                     
+                    <div class="fsRow">
+                        <form:label cssClass="fsLabel" path="participantDetails.address"><fmt:message key="events.registration.address"/></form:label>
+                        <form:textarea cssClass="fsInput" path="participantDetails.address"/>
+                        <div class="dissError"><form:errors path="participantDetails.address"/></div>
+                    </div>
+
+					<div class="fsRow">
+                        <form:label cssClass="fsLabel" path="participantDetails.dinner"><fmt:message key="events.registration.registered.dinner"/></form:label>
+                        <form:checkbox path="participantDetails.dinner" value="false"/>
+                        <fmt:message key="events.registration.registered.dinner.explanation"/>                    
+                        <div class="dissError"><form:errors path="participantDetails.dinner" /></div>
+                    </div>   
+
+                    <div class="fsRow">
+                        <form:label cssClass="fsLabel" path="participantDetails.vegetarian"><fmt:message key="events.registration.registered.vegetarian"/></form:label>
+                        <form:checkbox path="participantDetails.vegetarian" value="false"/>
+                        <fmt:message key="events.registration.registered.vegetarian.explanation"/>                    
+                        <div class="dissError"><form:errors path="participantDetails.vegetarian" /></div>
+                    </div>                    
+                    
+                    <div class="fsRow">
+                        <form:label cssClass="fsLabel" path="participantDetails.socialEvent"><fmt:message key="events.registration.registered.socialEvent"/></form:label>
+                        <form:checkbox path="participantDetails.socialEvent" value="false"/>
+                        <fmt:message key="events.registration.registered.socialEvent.explanation"/>                    
+                        <div class="dissError"><form:errors path="participantDetails.socialEvent" /></div>
+                    </div>  
                   </fieldset>
                 </div>
                 
@@ -91,8 +130,15 @@
                 
                 <div id="fsform">
 
+
+				<h2>Conferator</h2>
      			<p>
-                 	Bitte füllen Sie möglichst viele der folgenden Felder aus, damit die Anwendung lebendig wird.                 
+                	Bei der LWA planen wir ein <a href="http://www.kde.cs.uni-kassel.de/conf/lwa10/conferator.html">Experiment mit RFID-Tags</a>, 
+                	um die Interaktionen zu steigern, und Ihnen
+                 	auf der Konferenz hilfreiche Informationen und Inhalte kontextsensitiv zur Verfügung zu stellen 
+                 	(z.B. ihre letzten Kontakte in der Kaffeepause, weitere Informationen über den/die Vortragende(n), ...). 
+                 	<br /> 
+                 	Bitte füllen Sie möglichst viele der folgenden Felder aus, damit unsere Conferator-Anwendung lebendig wird.                 
                  </p>
 			            
 
@@ -100,7 +146,7 @@
 
 
                   <fieldset class="fsInner">
-                    Ihre folgenden Benutzer-IDs stehen den anderen Teilnehmern zur Verfügung, werden aber 
+                    Ihre folgenden Benutzer-IDs stehen den anderen LWA-Teilnehmern zur Verfügung, werden aber 
                     darüber hinaus nicht öffentlich gemacht. Sie können Sie jederzeit im Conferator ändern. 
 
 
@@ -177,7 +223,7 @@
 	     	    </h3>		
 	              
 		       	  <fieldset class="fsInner">
-		       	  Die folgenden Einträge stehen den Teilnehmern über das ${projectName}-Profil zur Verfügung. 
+		       	  Die folgenden Einträge stehen den Tagungsteilnehmern über das ${projectName}-Profil zur Verfügung. 
                   Sie können die Einträge in <a href="/settings">${projectName}</a> jederzeit ändern oder löschen. 
                   Dort können Sie auch <a href="/settings">ein Bild von sich hochladen</a>.
 				    <div class="fsRow">
@@ -247,10 +293,13 @@
 
                  <div id="fsform">
                  <fieldset class="fsInner">
+                   <p>
+                   Die Tagungsgebühr der LWA 2010 beträgt EUR 10, und wird auf der Tagung selbst in bar entrichtet. Hiermit bestätigen Sie Ihre Registrierung.
                     <div class="fsRow">
                         <input type="submit" class="fsFormSubmit" value="${saveChanges}"/>
                         <input type="hidden" name="ckey" value="${ckey}"/>
                     </div>
+                    </p>
 				   </fieldset>
 				   </div>
 		
