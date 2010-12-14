@@ -64,7 +64,7 @@
 	</bean>
 	
 	<bean id="cookieKey" class="java.lang.String">
-		<constructor-arg value="a1d0c6e83f027327d8461063f4ac58a6" /> <!-- TODO config -->
+		<constructor-arg value="${auth.cookie.cryptkey}" />
 	</bean>
 
 	<bean id="abstractUsernamePasswordFilter" class="org.bibsonomy.webapp.util.spring.security.filter.UsernamePasswordAuthenticationFilter" abstract="true">
@@ -103,7 +103,7 @@
 	</bean>
 	
 	<bean id="internalRememberMeServiceCookieName" class="java.lang.String">
-		<constructor-arg value="db_user" /> <!-- TODO: config? -->
+		<constructor-arg value="db_user" />
 	</bean>
 	
 	<!-- sets a remember me cookie for the database -->
@@ -275,12 +275,6 @@
   		<property name="key" ref="cookieKey"/>
   		<property name="parameter" value="rememberMe"/>
   		<property name="cookieName" value="ldap_user" />
-  		<property name="encryptor" ref="encryptor" />
-	</bean>
-	
-	<bean id="encryptor" class="org.jasypt.util.text.StrongTextEncryptor">
-		<!-- TODO: password into project.properties -->
-		<property name="password" value="3c10e6f066a00989bf8e16a508485671" />
 	</bean>
 	
 	<bean id="ldapBindAuthenticator" class="org.springframework.security.ldap.authentication.BindAuthenticator">
