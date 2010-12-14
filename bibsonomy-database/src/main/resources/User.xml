@@ -4,13 +4,13 @@
 <sqlMap namespace="User">
 
 	<select id="getAllUsers" resultMap="Common.user" parameterClass="userParam">
-		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as lastAccess
+		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as openID
 		  FROM user 
 		  WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<select id="getPendingUserByActivationCode" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
-		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as lastAccess
+		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as openID
 		  FROM pendingUser 
 		  WHERE spammer = 0 
 		    AND activation_code = #rawSearch#
@@ -18,7 +18,7 @@
 	</select>
 
 	<select id="getPendingUserByUsername" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
-		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as lastAccess
+		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as openID
 		  FROM pendingUser 
   		  WHERE spammer = 0 
 	    	AND user_name = #requestedGroupName#
@@ -26,7 +26,7 @@
 	</select>
 	
 	<select id="getPendingUsers" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
-		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as lastAccess
+		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as openID
 		  FROM pendingUser 
 		  WHERE spammer = 0 
 		  LIMIT #limit# OFFSET #offset#
@@ -40,9 +40,10 @@
 	</insert>
 	
 	<select id="getUserDetails" resultMap="UserCommon.userWithSettings" parameterClass="string">
-		SELECT <include refid="allUserAttributes"/>, ldapUserId, lastAccess
+		SELECT <include refid="allUserAttributes"/>, ldapUserId, openID
 		  FROM user 
-		    LEFT JOIN ldapUser USING (user_name) 
+		    LEFT JOIN ldapUser USING (user_name)
+		    LEFT JOIN openIDUser USING (user_name)  
 		  WHERE user_name = #username#
 	</select>
 
@@ -130,14 +131,6 @@
 	<select id="getUsernameByLdapUser" resultClass="string" parameterClass="string"> 
 		SELECT user_name FROM ldapUser WHERE ldapUserId = #ldapUser#
 	</select>	
-
-	<select id="getLastLdapRequestByUsername" resultClass="date" parameterClass="string"> 
-		SELECT lastAccess FROM ldapUser WHERE user_name = #userName#
-	</select>
-
-	<update id="updateLastLdapRequestDateForLdapUserIdByUsername" parameterClass="string"> 
-		UPDATE ldapUser SET lastAccess=CURRENT_TIMESTAMP WHERE user_name = #userName#
-	</update>
 
 	<select id="getUserSettings" resultMap="UserCommon.userSettings" parameterClass="userParam">
 		SELECT <include refid="userSettingsAttributes"/>

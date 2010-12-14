@@ -34,7 +34,7 @@
 		<result property="reminderPassword" column="tmp_password"  javaType="string" />
 		<result property="reminderPasswordRequestDate" column="tmp_request_date"  javaType="date" />
 		<result property="ldapId" 			column="ldapUserId"		javaType="string" />
-		<result property="lastLdapUpdate" 	column="lastAccess"  	javaType="date" />			
+		<result property="openID" 			column="openID"  		javaType="string" />			
 	</resultMap>
 	
 	<resultMap id="userWithActivationCode"  class="user" extends="user"> 
