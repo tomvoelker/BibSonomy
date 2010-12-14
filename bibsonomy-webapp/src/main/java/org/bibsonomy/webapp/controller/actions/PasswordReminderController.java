@@ -18,6 +18,8 @@ import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
+import org.bibsonomy.webapp.config.AuthConfig;
+import org.bibsonomy.webapp.config.AuthMethod;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -49,6 +51,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	private MailUtils mailUtils;
 	private MessageSource messageSource;
 	private String cryptKey;
+	private AuthConfig authConfig;
 	
 	@Override
 	public PasswordReminderCommand instantiateCommand() {
@@ -57,6 +60,15 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	
 	@Override
 	public View workOn(final PasswordReminderCommand command) {
+				
+		/*
+		 * check if internal authentication is supported
+		 */
+		if (! authConfig.containsAuthMethod(AuthMethod.INTERNAL) )  {
+			errors.reject("error.method_not_allowed");
+			return Views.ERROR;			
+		}		
+		
 		// get locale
 		final Locale locale = requestLogic.getLocale();
 
@@ -323,6 +335,14 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	 */
 	public String getCryptKey() {
 		return cryptKey;
+	}
+
+	public AuthConfig getAuthConfig() {
+		return this.authConfig;
+	}
+
+	public void setAuthConfig(AuthConfig authConfig) {
+		this.authConfig = authConfig;
 	}
 	
 }

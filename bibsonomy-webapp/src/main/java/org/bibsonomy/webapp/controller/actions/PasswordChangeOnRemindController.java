@@ -11,6 +11,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.actions.PasswordChangeOnRemindCommand;
+import org.bibsonomy.webapp.config.AuthConfig;
+import org.bibsonomy.webapp.config.AuthMethod;
 import org.bibsonomy.webapp.exceptions.InvalidPasswordReminderException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
@@ -41,6 +43,8 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 
 	private String cryptKey;
 	private Errors errors;
+		
+	private AuthConfig authConfig;
 	
 	private int maxMinutesPasswordReminderValid = 60;
 
@@ -50,7 +54,15 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		command.setPageTitle("password change");
 		
 		/*
-		 * no reminder hash given -> 
+		 * check if internal authentication is supported
+		 */
+		if (! authConfig.containsAuthMethod(AuthMethod.INTERNAL) )  {
+			errors.reject("error.method_not_allowed");
+			return Views.ERROR;			
+		}
+		
+		/*
+		 * no reminder hash given -> return input form
 		 */
 		if (!present(command.getReminderHash())) {
 			return Views.PASSWORD_CHANGE_ON_REMIND;
@@ -228,6 +240,15 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		}
 		public String username;
 		public String reminderPassword;
+	}
+
+
+	public AuthConfig getAuthConfig() {
+		return this.authConfig;
+	}
+
+	public void setAuthConfig(AuthConfig authConfig) {
+		this.authConfig = authConfig;
 	}	
 	
 }
