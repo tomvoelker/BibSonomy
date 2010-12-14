@@ -4,7 +4,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,15 +14,20 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.UserActivationCommand;
-import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.Errors;
 
 /**
@@ -38,9 +42,9 @@ public class UserActivationController implements MinimalisticController<UserActi
 
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
-	private CookieLogic cookieLogic;
 	private Errors errors;
 	private MailUtils mailUtils;
+	private AuthenticationManager authenticationManager;
 	
 	private String successRedirect = "/activate_success";
 
@@ -61,11 +65,8 @@ public class UserActivationController implements MinimalisticController<UserActi
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
 		
-		final String inetAddress = requestLogic.getInetAddress();
-		final Locale locale = requestLogic.getLocale();
+		final String activationCode = command.getActivationCode();
 		
-		// TODO: why not getting the activationCode from the command?!
-		final String activationCode = requestLogic.getParameter("activationCode");
 		final List<User> list = logic.getUsers(null, GroupingEntity.PENDING, null, null, null, null, null, activationCode, 0, 1);
 		User pendingUser = null;
 		if (list.size() == 0 || !present(activationCode)) {
@@ -98,23 +99,44 @@ public class UserActivationController implements MinimalisticController<UserActi
 		if (errors.hasErrors()) {
 			return Views.ERROR;
 		}
-		
+
+		/*
+		 * activate user
+		 */
 		logic.updateUser(pendingUser, UserUpdateOperation.ACTIVATE);
-		// user should be activated now
-		
+
 		/*
 		 * send activation confirmation mail
 		 */
 		try {
-			mailUtils.sendActivationMail(pendingUser.getName(), pendingUser.getEmail(), inetAddress, locale);
+			mailUtils.sendActivationMail(pendingUser.getName(), pendingUser.getEmail(), requestLogic.getInetAddress(), requestLogic.getLocale());
 		} catch (final Exception e) {
 			log.error("Could not send activation confirmation mail for user " + pendingUser.getName(), e);
 		}
 		
 		/*
-		 * set cookie so that user is authenticated
+		 * log the user into the system, e.g., authenticate the user
+		 * (luckily, getUsers() includes the password of the user - if not, this
+		 * would not work and we would have to call getUserDetails() first). See
+		 * also the next comment.
 		 */
-		this.cookieLogic.addUserCookie(pendingUser.getName(), pendingUser.getPassword());
+		final UserDetails userDetails = new UserAdapter(pendingUser);
+		final Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, pendingUser.getPassword());
+
+		/*
+		 * In principle we could directly call SecurityContextHolder.getContext().setAuthentication()
+		 * with the constructed authentication. However, the pendingUser 
+		 * returned by getUsers() does not include the user's settings - which 
+		 * are retrieved from the database by calling authenticate() on the 
+		 * authenticationManager.
+		 */
+		final Authentication authenticated = authenticationManager.authenticate(authentication);
+		
+		SecurityContextHolder.getContext().setAuthentication(authenticated);
+
+		/*
+		 * TODO: ask user if "remember me" cookie shall be added
+		 */
 		
 		return new ExtendedRedirectView(successRedirect);
 	}
@@ -165,16 +187,12 @@ public class UserActivationController implements MinimalisticController<UserActi
 	}
 
 	/**
-	 * @return the cookieLogic
+	 * Sets the authentication manager used to authenticate the user after 
+	 * successful activation.
+	 * 
+	 * @param authenticationManager
 	 */
-	public CookieLogic getCookieLogic() {
-		return this.cookieLogic;
-	}
-
-	/**
-	 * @param cookieLogic the cookieLogic to set
-	 */
-	public void setCookieLogic(CookieLogic cookieLogic) {
-		this.cookieLogic = cookieLogic;
+	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+		this.authenticationManager = authenticationManager;
 	}
 }

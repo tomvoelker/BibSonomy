@@ -26,8 +26,10 @@ import org.bibsonomy.webapp.validation.UserLDAPRegistrationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -52,6 +54,7 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
 	private CookieBasedRememberMeServices ldapRememberMeServices;
+	private AuthenticationManager authenticationManager;
 
 	/**
 	 * After successful registration, the user is redirected to this page.
@@ -105,7 +108,7 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 		 * 3 = user has seen the form and possibly changed data
 		 */
 		if (command.getStep() == 2) {
-			log.debug("step 3: start LDAP registration");
+			log.debug("step 2: start LDAP registration");
 			/*
 			 * fill command with data from LDAP
 			 */
@@ -186,7 +189,9 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 		final UserDetails userDetails = new UserAdapter(registerUser);
 		final Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, user.getPassword());
 
-		cookieLogic.createRememberMeCookie(ldapRememberMeServices, authentication);
+		final Authentication authenticated = authenticationManager.authenticate(authentication);
+		SecurityContextHolder.getContext().setAuthentication(authenticated);
+		cookieLogic.createRememberMeCookie(ldapRememberMeServices, authenticated);
 
 		/*
 		 * present the success view
@@ -313,5 +318,15 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 	 */
 	public void setLdapRememberMeServices(CookieBasedRememberMeServices ldapRememberMeServices) {
 		this.ldapRememberMeServices = ldapRememberMeServices;
+	}
+	
+	/**
+	 * Sets the authentication manager used to authenticate the user after 
+	 * successful registration.
+	 * 
+	 * @param authenticationManager
+	 */
+	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+		this.authenticationManager = authenticationManager;
 	}
 }

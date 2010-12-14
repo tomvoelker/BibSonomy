@@ -28,7 +28,9 @@ import org.bibsonomy.webapp.validation.UserOpenIDRegistrationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.openid.OpenIDAuthenticationToken;
 import org.springframework.util.Assert;
@@ -50,6 +52,7 @@ public class UserOpenIDRegistrationController implements ErrorAware, ValidationA
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
 	private CookieBasedRememberMeServices openIdRememberMeServices;
+	private AuthenticationManager authenticationManager;
 	
 	/**
 	 * After successful registration, the user is redirected to this page. 
@@ -98,12 +101,12 @@ public class UserOpenIDRegistrationController implements ErrorAware, ValidationA
 		final User user = (User) o;
 		
 		
-		/*
+		/* 
 		 * 2 = user has not been on form, yet -> fill it with OpenID data
 		 * 3 = user has seen the form and possibly changed data
 		 */
 		if (command.getStep() == 2) {
-			log.debug("step 3: start OpenID registration");
+			log.debug("step 2: start OpenID registration");
 			/*
 			 * fill command with data from OpenID
 			 */
@@ -181,13 +184,10 @@ public class UserOpenIDRegistrationController implements ErrorAware, ValidationA
 		final UserDetails userDetails = new UserAdapter(registerUser);
 		final Authentication authentication = new OpenIDAuthenticationToken(userDetails, userDetails.getAuthorities(), registerUser.getOpenID(), null);
 
-		cookieLogic.createRememberMeCookie(openIdRememberMeServices, authentication);
-		/*
-		 * how dzo did it here
-		 */
-//		cookieLogic.addOpenIDCookie(registerUser.getName(), command.getRegisterUser().getOpenID(), registerUser.getPassword());
-//		openIDLogic.extendOpenIDSession(requestLogic.getSession(),  command.getRegisterUser().getOpenID());
-		
+		final Authentication authenticated = authenticationManager.authenticate(authentication);
+		SecurityContextHolder.getContext().setAuthentication(authenticated);
+		cookieLogic.createRememberMeCookie(openIdRememberMeServices, authenticated);
+
 		/*
 		 * present the success view
 		 */
@@ -275,5 +275,15 @@ public class UserOpenIDRegistrationController implements ErrorAware, ValidationA
 	 */
 	public void setOpenIdRememberMeServices(CookieBasedRememberMeServices openIdRememberMeServices) {
 		this.openIdRememberMeServices = openIdRememberMeServices;
-	}		
+	}
+	
+	/**
+	 * Sets the authentication manager used to authenticate the user after 
+	 * successful registration.
+	 * 
+	 * @param authenticationManager
+	 */
+	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+		this.authenticationManager = authenticationManager;
+	}
 }
