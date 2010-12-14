@@ -1,7 +1,9 @@
 package org.bibsonomy.webapp.validation;
 
+import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.actions.UserOpenIDLdapRegistrationCommand;
 import org.bibsonomy.webapp.util.Validator;
+import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
@@ -24,18 +26,28 @@ public class UserOpenIDRegistrationValidator implements Validator<UserOpenIDLdap
 		UserOpenIDLdapRegistrationCommand userObj = (UserOpenIDLdapRegistrationCommand) target;
 		
 		/*
-		 * OpeneID has to be entered in the second step
+		 * OpenID has to be entered in the second step
 		 */
 		if (userObj.getStep() == 2) {			
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "registerUser.openID", "error.field.required");
 		}
 		
 		/*
-		 * username and email are required for succesful registration
+		 * username and email are required for successful registration
 		 */
-		if (userObj.getStep() == 4) {
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "registerUser.name", "error.field.required");
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "registerUser.email", "error.field.required");
+		if (userObj.getStep() == 3) {
+			/*
+			 * Check the user data. 
+			 */
+			final User user = userObj.getRegisterUser();
+			Assert.notNull(user);
+
+			/*
+			 * validate user
+			 */
+			errors.pushNestedPath("registerUser");
+			ValidationUtils.invokeValidator(new UserValidator(), user, errors);
+			errors.popNestedPath();
 		}
 	}	
 }

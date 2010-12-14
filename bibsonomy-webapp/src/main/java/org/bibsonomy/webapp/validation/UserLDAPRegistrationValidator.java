@@ -41,7 +41,6 @@ public class UserLDAPRegistrationValidator implements Validator<UserOpenIDLdapRe
 			errors.pushNestedPath("registerUser");
 			ValidationUtils.invokeValidator(new UserValidator(), user, errors);
 			errors.popNestedPath();
-		
 		}
 	}	
 }
