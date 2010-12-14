@@ -24,9 +24,4 @@
 		</tr>
 	</table>
 
-	<h2><fmt:message key="navi.register" /></h2>
-	<p>
-		<fmt:message key="login.notRegistered_1" /> <c:out value=" " />
-		<a href="/registerOpenID"><fmt:message key="login.notRegistered_2" /></a>.
-	</p>
 </jsp:root>
