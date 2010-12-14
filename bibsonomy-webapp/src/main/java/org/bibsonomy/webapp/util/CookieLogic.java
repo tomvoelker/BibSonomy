@@ -1,15 +1,19 @@
 package org.bibsonomy.webapp.util;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.util.spring.security.rememberMeServices.CookieBasedRememberMeServices;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 /**
  * Some methods to help handling cookies.
@@ -123,24 +127,29 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	}
 	
 	/**
-	 * Sets a cookie which authenticates the user.
-	 * <br/>
-	 * The cookie contains the username and the hashed password - separated by whitespace (%20).
-	 * 
-	 * @param username - the user's name.
-	 * @param passwordHash - the user's password, already MD5-hashed!
-	 */
-	@Deprecated
-	public void addUserCookie(final String username, final String passwordHash) {
-		// noop
-	}
-	
-	/**
 	 * @param services the services to use
 	 * @param authentication
 	 */
 	public void createRememberMeCookie(final CookieBasedRememberMeServices services, final Authentication authentication) {
 		services.loginSuccess(this.requestLogic.getRequest(), this.responseLogic.getResponse(), authentication);
+	}
+	
+	/**
+	 * After the user has been successfully authenticated (or registered), this
+	 * method should be called.
+	 * 
+	 * @param handler
+	 * @param authentication
+	 */
+	public void onAuthenticationSuccess(final AuthenticationSuccessHandler handler, final Authentication authentication) {
+		try {
+			
+			handler.onAuthenticationSuccess(this.requestLogic.getRequest(), this.responseLogic.getResponse(), authentication);
+		} catch (IOException e) {
+			throw new AuthenticationServiceException("Could not authenticate user " + authentication.getName(), e);
+		} catch (ServletException e) {
+			throw new AuthenticationServiceException("Could not authenticate user " + authentication.getName(), e);			
+		}
 	}
 	
 	/**
@@ -156,17 +165,6 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		}
 	}	
 
-	/** Add the openID cookie.
-	 * 
-	 * @param username
-	 * @param openID
-	 * @param passwordHash
-	 */
-	@Deprecated
-	public void addOpenIDCookie(final String username, final String openID, final String passwordHash) {
-		// noop
-	}
-	
 	/** Adds a cookie to the response. Sets default values for path and maxAge. 
 	 * 
 	 * @param key - The key identifying this cookie.
@@ -182,15 +180,6 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	
 	private boolean containsCookies(final String name) {
 		return getCookie(this.requestLogic.getCookies(), name) != null;
-	}
-	
-	/** Checks, if the request contains any cookies.
-	 * 
-	 * @return <code>true</code>, if the request contains a cookie.
-	 */
-	public boolean containsCookies() {
-		final Cookie[] cookies = requestLogic.getCookies();
-		return cookies != null && cookies.length > 0;
 	}
 		
 	/**
