@@ -19,7 +19,6 @@ import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.util.spring.security.handler.FailureHandler;
 import org.bibsonomy.webapp.util.spring.security.rememberMeServices.CookieBasedRememberMeServices;
 import org.bibsonomy.webapp.validation.UserLDAPRegistrationValidator;
@@ -30,7 +29,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
@@ -186,8 +184,7 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 		/*
 		 * log user into system
 		 */
-		final UserDetails userDetails = new UserAdapter(registerUser);
-		final Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, user.getPassword());
+		final Authentication authentication = new UsernamePasswordAuthenticationToken(user.getLdapId(), user.getPassword());
 
 		final Authentication authenticated = authenticationManager.authenticate(authentication);
 		SecurityContextHolder.getContext().setAuthentication(authenticated);
@@ -211,9 +208,9 @@ public class UserLDAPRegistrationController implements ErrorAware, ValidationAwa
 		while ((newName.equalsIgnoreCase(adminLogic.getUserDetails(newName).getName())) && (tryCount < 101)) {
 			try {
 				if (tryCount == 0) {
-					// try first character of forename concatenated with surename
+					// try first character of forename concatenated with surname
 					// bugs bunny => bbunny
-					newName = user.getName().substring(0, 1).toLowerCase().concat(newName);
+					newName = user.getRealname().substring(0, 1).toLowerCase().concat(newName);
 				} else if (tryCount == 100) {
 					// now use first character of fore- and first two characters of surename concatenated with ldap user id 
 					// bugs bunny => bbu01234567
