@@ -5,9 +5,6 @@ import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
 
-import org.bibsonomy.events.services.EventManager;
-import org.bibsonomy.events.services.EventManagerProxy;
-import org.bibsonomy.events.services.SpringBeanEventManager;
 import org.junit.Test;
 
 public class EventManagerProxyTest {
@@ -33,7 +30,7 @@ public class EventManagerProxyTest {
 			
 		}
 		eventManagerProxy.getEventManagers().add(new SpringBeanEventManager());
-		assertEquals("lwa2010", eventManagerProxy.getEvent("lwa2010").getId());
+		assertEquals("mygroup", eventManagerProxy.getEvent("mygroup").getId());
 	}
 
 }
