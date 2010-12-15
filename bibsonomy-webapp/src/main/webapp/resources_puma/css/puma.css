@@ -10,8 +10,7 @@ body {
 }
 
 #mainHeaderRightBox {
-	max-width: 480px;
-	width:480px;
+	margin-right: 6px;
 }
 
 img#sidebarGrip{
