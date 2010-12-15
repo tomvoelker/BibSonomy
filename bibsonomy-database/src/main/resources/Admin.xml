@@ -18,9 +18,10 @@
 	
 	<select id="getClassifierUserBeforeUpdate" resultMap="UserCommon.user" parameterClass="adminParam">
 		SELECT *
-		FROM user
-		LEFT JOIN ldapUser USING (user_name)
-		WHERE user_name=#userName# FOR UPDATE
+		  FROM user
+		    LEFT JOIN ldapUser USING (user_name)
+		    LEFT JOIN openIDUser USING (user_name)
+		  WHERE user_name=#userName# FOR UPDATE
 	</select>
 
 	<update id="flagSpammer" parameterClass="adminParam">
