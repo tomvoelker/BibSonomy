@@ -61,8 +61,12 @@
            		<errors:global errors="${errors}" />
            
  		    	<c:if test="${not empty command.message}">
- 		    		<div id="errorBox"><fmt:message key="login.error.${command.message}" var="message" />
- 		    		<c:out value="${message}" /></div>
+ 		    		<div style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+                    	<h3><fmt:message key="error"/></h3>
+ 		    			<div class="error">
+ 		    				<fmt:message key="error.login.${command.message}"/>
+ 		    			</div>
+ 		    		</div>
  		    	</c:if>
  		    
  		     
