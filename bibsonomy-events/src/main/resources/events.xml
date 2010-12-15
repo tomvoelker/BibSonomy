@@ -13,7 +13,7 @@
 	    | events
  		+-->
  	<util:map id="events" key-type="java.lang.String" value-type="org.bibsonomy.events.model.Event">
- 		<entry key="lwa2010">
+ 		<!-- <entry key="lwa2010">
  			<bean class="org.bibsonomy.events.model.Event">
  				<property name="id" value="lwa2010"/>
  				<property name="name" value="LWA 2010"/>
@@ -32,6 +32,7 @@
  				</property>
  			</bean>
  		</entry>
+ 		-->
  		<entry key="mygroup">
             <bean class="org.bibsonomy.events.model.Event">
                 <property name="id" value="mygroup"/>
