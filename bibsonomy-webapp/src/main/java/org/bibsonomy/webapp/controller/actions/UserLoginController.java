@@ -2,6 +2,8 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.webapp.command.actions.UserLoginCommand;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
@@ -10,6 +12,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.validation.UserLoginValidator;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.web.WebAttributes;
 
 /**
@@ -21,6 +24,7 @@ import org.springframework.security.web.WebAttributes;
  * @version $Id$
  */
 public class UserLoginController implements ValidationAwareController<UserLoginCommand> {
+	private static final Log log = LogFactory.getLog(UserLoginController.class);
 	
 	private RequestLogic requestLogic;
 
@@ -41,8 +45,17 @@ public class UserLoginController implements ValidationAwareController<UserLoginC
 		 * get last exception from spring security
 		 */
 		if (present(lastException)) {
+			/*
+			 * This means the user tried too often to login (triggered TeerGrube)
+			 */
 			if (lastException instanceof ServiceUnavailableException) {
 				throw (ServiceUnavailableException) lastException;
+			}
+			/*
+			 * We want to log all remaining exceptions, except the trivial ones.
+			 */
+			if (!(lastException instanceof BadCredentialsException)) {
+				log.warn("User " + command.getUsername() + " tried to login with " + command.getLoginMethod() + " and raised exception ", lastException);
 			}
 			final String messageKey = lastException.getClass().getSimpleName().toLowerCase();
 			command.setMessage(messageKey);
