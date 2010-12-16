@@ -8,8 +8,14 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Removes the context path from the request. 
@@ -18,6 +24,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * @version $Id$
  */
 public class ContextPathFilter implements Filter {
+	
+	protected final Log log = LogFactory.getLog(ContextPathFilter.class);
 	
     /**
      * Instances of this class ignore the context path of the application. I.e., 
@@ -59,7 +67,6 @@ public class ContextPathFilter implements Filter {
 		public String getContextPath() {
 			return "";
 		}
-
 		
 		/**
 		 * 
@@ -78,6 +85,21 @@ public class ContextPathFilter implements Filter {
 		}
     }
 	
+    protected static final class LoggingResponse extends HttpServletResponseWrapper {
+    	protected final Log log = LogFactory.getLog(LoggingResponse.class);
+    	
+		public LoggingResponse(HttpServletResponse response) {
+			super(response);
+		}
+		
+		@Override
+		public void addCookie(Cookie cookie) {
+			log.debug("adding cookie " + cookie.getName() + ": " + cookie.getValue());
+			super.addCookie(cookie);
+		}
+    	
+    }
+    
 	@Override
 	public void destroy() {
 	}
