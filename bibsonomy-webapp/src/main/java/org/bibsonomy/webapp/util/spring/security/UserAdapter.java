@@ -75,4 +75,9 @@ public class UserAdapter implements UserDetails {
 	public boolean isEnabled() {
 		return !Role.DELETED.equals(this.user.getRole()) ;
 	}
+	
+	@Override
+	public String toString() {
+		return user == null ? "" : user.toString(); 
+	}
 }
