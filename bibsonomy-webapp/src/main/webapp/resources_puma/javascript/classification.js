@@ -1,64 +1,162 @@
 var oaBaseUrl = "/ajax/classificatePublication";
 
-function populate(classification, t) {
-
+function populate(classification) {
 
 	var url = oaBaseUrl + "?classificationName=" +classification;
 	// perform ajax request
 	$.ajax({
 		dataType: 'json',
 		url: url,
-		success: function(data){
-			var html = []
-			
-			
-			// build the options
-			$.each(data.children, function(i,item){
-				html.push('<option value="'+item.id+'">' +item.id + item.description + '</option>');
-			});
-			$("#"+t).html(html.join(''));
-
+		success: function(data) {
+			createSubSelect(null,data,classification,"");
 		},
 		error: function(req, status, e) {
-			alert("check open access: " + status);
+			alert("There seems to be an error in the ajax request, classifications.js::populate");
 		}
 	});
 }
 
-function test(classification, id ,next) {
-	alert("check open access: " +id);
+function removeNode(node){
+	node.parentNode.removeChild(node);
+	return node;
+}
 
-	var x = document.getElementById("jelClassification");
-	alert(x);
-	for (var i=0;i<x.length;i++) {
-		alert(i);
-		alert(x.elements[i].value);
+function createOptionsTag(atts) {
+	var tag = atts.tag;
+	var value = atts.value;
+	var text = atts.text;
+	
+	var node = document.createElement(tag);
+	
+	node.value = value;
+	node.text = text;
+	
+	return node;
+}
+
+function createNode(atts) {
+	
+	var tag = atts.tag;
+	var parent = atts.parent;
+	var childNodes = atts.childNodes;
+
+	delete atts.tag;
+	delete atts.parent;
+	delete atts.childNodes;
+
+	var node = document.createElement(tag);
+	
+	for(var i = 0; i < childNodes.length; i++) {
+		node.appendChild(createOptionsTag(childNodes[i]));
 	}
 	
-	alert("deon");
-
-	var url = oaBaseUrl + "?classificationName=" +classification +"&id=" +id;
-	// perform ajax request
-	$.ajax({
-		dataType: 'json',
-		url: url,
-		success: function(data){
-			var html = []
-			
-			
-			// build the options
-			$.each(data.children, function(i,item){
-				html.push('<option value="'+item.id+'">' +item.id + item.description + '</option>');
-			});
-
-			$("#"+next).html(html.join(''));
-
-		},
-		error: function(req, status, e) {
-			alert("check open access: " + status);
+	for (var i in atts){
+		try{
+			node[i] = atts[i];
+		}catch(e){
+			alert(e);
 		}
-	});
+	}
+	
+	if(parent)
+		parent.child = node;
+
+	return node;
 }
+
+
+function createSubSelect(parent, data, classification, parentID){
+	if (!data) return;
+	
+	var options = [{tag: "option", value: "", text: "--- bitte auswählen ---"}];
+	
+	$.each(data.children, function(i,item){
+		options.push({tag: "option", value: item.id, text: item.description});
+	});
+	
+	if (options.length == 1) return;
+	
+	var s = createNode({
+		tag: "select",
+		data: data,
+		parent: parent,
+		child: null,
+		childNodes: options,
+		parentID : parentID,
+		classification: classification,
+		onchange: function(){
+		this.deleteChild();
+		
+		var id = parentID +this.value;
+		var url = oaBaseUrl + "?classificationName=" +classification +"&id=" +id;
+		
+		$.ajax({
+			dataType: 'json',
+			url: url,
+			success: function(data) {
+			createSubSelect(s,data,classification,id);
+		},
+			error: function(req, status, e) {
+				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+			}
+		});
+	},
+	deleteChild: function(){
+		if (this.child){
+			
+			if (this.child.deleteChild){
+				this.child.deleteChild();
+			}
+			
+			removeNode(this.child);
+			this.child = null;
+		}
+	}
+	});
+		
+	if (parent) { 
+		parent.child = s;
+	}
+	
+	$("#selectContainer").append(s);
+}
+
+
+//
+//function test(classification, id ,next) {
+//	alert("check open access: " +id);
+//
+//	var x = document.getElementById("jelClassification");
+//	alert(x);
+//	for (var i=0;i<x.length;i++) {
+//		alert(i);
+//		alert(x.elements[i].value);
+//	}
+//	
+//	alert("deon");
+//
+//	var url = oaBaseUrl + "?classificationName=" +classification +"&id=" +id;
+//	// perform ajax request
+//	$.ajax({
+//		dataType: 'json',
+//		url: url,
+//		success: function(data){
+//			var html = []
+//			
+//			
+//			// build the options
+//			$.each(data.children, function(i,item){
+//				html.push('<option value="'+item.id+'">' +item.id + item.description + '</option>');
+//			});
+//
+//			$("#"+next).html(html.join(''));
+//
+//		},
+//		error: function(req, status, e) {
+//			alert("check open access: " + status);
+//		}
+//	});
+//}
 
 //function classificate() {
 //	
