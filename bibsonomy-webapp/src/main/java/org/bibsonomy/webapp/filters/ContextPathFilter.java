@@ -94,10 +94,9 @@ public class ContextPathFilter implements Filter {
 		
 		@Override
 		public void addCookie(Cookie cookie) {
-			log.debug("adding cookie " + cookie.getName() + ": " + cookie.getValue());
+			log.debug("adding cookie " + cookie.getName() + ": " + cookie.getValue() + " with path " + cookie.getPath());
 			super.addCookie(cookie);
 		}
-    	
     }
     
 	@Override
