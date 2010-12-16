@@ -58,7 +58,7 @@
 			<list>
 				<bean class="org.bibsonomy.events.services.SpringBeanEventManager" scope="singleton"/>
 				<bean class="org.bibsonomy.events.services.RestEventManager" scope="singleton" >
-				    <property name="serviceUrl" value="http://mygroup.ubicon.eu/api/users" />
+				    <property name="serviceUrl" value="http://conferator.org/demonstrator/api/talkradar/users" />
 				</bean>
 			</list>
 		</property>

@@ -72,11 +72,12 @@
                       <div class="dissError"><form:errors path="participantDetails.badgeName" /></div>
                     </div>
                     
-                     <div class="fsRow">
+                     <!-- <div class="fsRow">
                       <form:label cssClass="fsLabel" path="participantDetails.badgeInstitutionName"><fmt:message key="events.registration.registered.badgeinstitutionname"/></form:label>
                       <form:input cssClass="fsInput" path="participantDetails.badgeInstitutionName"/>
                       <div class="dissError"><form:errors path="participantDetails.badgeInstitutionName" /></div>
                     </div>
+                     -->
                                                            
                     <div class="fsRow">
                         <form:label cssClass="fsLabel" path="participantDetails.subEvent"><fmt:message key="events.registration.subEvent"/></form:label>
