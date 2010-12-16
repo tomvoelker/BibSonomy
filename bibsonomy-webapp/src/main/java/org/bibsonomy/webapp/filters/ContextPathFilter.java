@@ -110,8 +110,8 @@ public class ContextPathFilter implements Filter {
 		 * If we have HTTP servlet request we wrap it into our own class to 
 		 * modify certain calls which the context path.
 		 */
-		if (request instanceof HttpServletRequest) {
-			chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), response);	
+		if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
+			chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), new LoggingResponse((HttpServletResponse) response));	
 		} else {
 			chain.doFilter(request, response);
 		}
