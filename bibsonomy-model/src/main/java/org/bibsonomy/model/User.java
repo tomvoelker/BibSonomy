@@ -830,4 +830,9 @@ public class User implements Serializable {
 		this.posts = posts;
 	}
 
+	@Override
+	public String toString() {
+		return name;
+	}
+	
 }
