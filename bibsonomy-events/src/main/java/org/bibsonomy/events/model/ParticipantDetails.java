@@ -1,7 +1,7 @@
 package org.bibsonomy.events.model;
 
 /**
- * 
+ *
  * @author mat
  *
  */
@@ -9,11 +9,11 @@ package org.bibsonomy.events.model;
 public class ParticipantDetails {
 
 	private static final String[] badgeTitles = {"", "Mr.", "Ms.", "Mrs.", "Miss", "Dr.", "1sgt.", "1st Lt.", "2nd Lt.", "Adm.", "AIM", "Baron", "Baroness", "Bishop", "Brig. Gen.", "Brother", "Cantor", "Capt.", "Cardinal", "Cmdr.", "Cmst.", "Col.", "Count", "Countess", "Cpl.", "Cpo.", "Dean", "DM", "Duchess", "Duke", "Elder", "Ens.", "Father", "Fleet Adm.", "General", "Governor", "Gysgt.", "Hon.", "Imam", "Judge", "Lady", "Lcpl.", "Lord", "Lt.", "Lt. Cmdr.", "Lt. Col.", "Lt. Gen.", "Lt. Jg.", "Ma.", "Major", "Major Gen.", "Mcpo.", "Mgysgt.", "Minister", "Monsignor", "Most Rev.", "Mother", "Msgt.", "Mstr.", "Pastor", "Petty Off.", "Pfc.", "Po1", "Po2", "Po3", "President", "Prince", "Prof.", "Pvt.", "Rabbi", "Rear Adm.", "Rev.", "Right Rev.", "Scpo.", "Senator", "Sfc.", "Sgt.", "Sgtmaj.", "Sir", "Sister", "Smn.", "Smn1", "Smst.", "Sp4", "Sp5", "Sp6", "Sr.", "Sra.", "Srta.", "Ssgt.", "Swami", "Tech Sgt.", "The Rev.", "The Rev. Dr.", "Very Rev.", "Vice Adm."};
-	
-	private String address;
+
+	private String address = "<required>";
 	private String badgeTitle;
 	private String badgeName;
-	private String badgeInstitutionName;
+	private String badgeInstitutionName = "<required>";
 	private boolean presenter;
 	private boolean poster;
 	private boolean vegetarian;
@@ -205,7 +205,7 @@ public class ParticipantDetails {
 	public void setSocialEvent(boolean socialEvent) {
 		this.socialEvent = socialEvent;
 	}
-	
+
 	public String[] getBadgeTitles() {
 		return badgeTitles;
 	}
