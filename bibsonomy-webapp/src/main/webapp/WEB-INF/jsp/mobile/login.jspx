@@ -38,7 +38,7 @@
 				<c:forEach items="${authOrderArray}" varStatus="loop">
 					<c:if test="${authOrderArray[loop.index]=='db' }">
 						<div id="logindb" style="display: none">
-							<form:form action="/login_INTERNAL" method="POST">
+							<form:form action="/login_internal" method="POST">
 								<form:hidden id="loginMethoddb" path="loginMethod" />
 									<p>
 										<form:label path="username"><fmt:message key="navi.username" /></form:label>
@@ -60,7 +60,7 @@
 					<c:if test="${authOrderArray[loop.index]=='openid' }">
 						<div id="loginopenid" style="display:none">
 							<div style="text-align: center;"><img src="${resdir}/image/openid-logo-small.png"/></div>
-			            	<form:form action="/login_OPENID" method="POST">
+			            	<form:form action="/login_openid" method="POST">
 			            		<form:hidden id="loginMethodopenid" path="loginMethod" />
 		            			<p>
 		            				<form:label path="openID" >OpenID </form:label>
