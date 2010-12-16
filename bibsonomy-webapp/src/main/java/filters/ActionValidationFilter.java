@@ -81,7 +81,7 @@ public class ActionValidationFilter implements Filter {
 				storedCredential = getNewCredential(user, httpServletRequest.getSession());
 				request.setAttribute(REQUEST_ATTRIB_CREDENTIAL, storedCredential);
 			}
-			log.info("credential for " + user.getName() + " = " + storedCredential);
+			log.debug("credential for " + user.getName() + " = " + storedCredential);
 			
 			/*
 			 * get credential from request parameter
