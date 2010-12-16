@@ -31,8 +31,8 @@ public class EventRegistrationValidator implements Validator<EventRegistrationCo
 		 * Registration required fields
 		 */
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "participantDetails.badgeName", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "participantDetails.badgeInstitutionName", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "participantDetails.address", "error.field.required");
+		// ValidationUtils.rejectIfEmptyOrWhitespace(errors, "participantDetails.badgeInstitutionName", "error.field.required");
+		// ValidationUtils.rejectIfEmptyOrWhitespace(errors, "participantDetails.address", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "participantDetails.subEvent", "error.field.required");		
 		
 	}
