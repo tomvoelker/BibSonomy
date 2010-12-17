@@ -16,6 +16,7 @@ import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.lucene.util.LuceneResourceConverter;
+import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -68,6 +69,7 @@ public class LuceneResourceManager<R extends Resource> {
 	
 	/** selects current (redundant) index */
 	protected int idxSelect; // TODO use an object representation instead
+	
 
 	/**
 	 * constructor
@@ -101,11 +103,8 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @return LuceneIndexStatistics for the active index 
 	 */
 	public LuceneIndexStatistics getStatistics() {
-	        if(generatingIndex) {
-		    return null;
-	        }
 		final LuceneResourceIndex<R> index = this.resourceIndices.get(idxSelect);
-		return index == null ? null : index.getStatistics();
+		return index == null || !index.isIndexEnabled() ? null : index.getStatistics();
 	}
 
 	/**
@@ -113,11 +112,8 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @return LuceneIndexStatistics for the inactive index 
 	 */
 	public LuceneIndexStatistics getInactiveIndexStatistics() {
-	        if(generatingIndex) {
-		    return null;
-	        }
 		final LuceneResourceIndex<R> index = this.resourceIndices.get((idxSelect + 1) % this.resourceIndices.size());
-		return index == null ? null : index.getStatistics();
+		return index == null || !index.isIndexEnabled() ? null : index.getStatistics();
 	}
 	
 	/**
@@ -307,31 +303,64 @@ public class LuceneResourceManager<R extends Resource> {
 		    reloadIndex();
 	}
 	
-	/** Prepare Searcher and Manager for a new index-generation. */
-	public synchronized void prepareIndexGeneration() {
-	    // Set updateAndReload-cronjob to be ignored 
-	    generatingIndex = true;
-
-	    //  Select index 1
-	    if(searcher.getIndexId() != 1) {
-		    searcher.reloadIndex(1);
-		    idxSelect = 1;
-	    }
-	}
 	
-	/** Prepare Searcher for copying the newly generated index,
-	 * i.e. switch the active index, so the old one can be overwritten. */
-	public void prepareIndexCopy() {
-		if(generatingIndex) {
-			searcher.reloadIndex(0);
-		    idxSelect = 0;
+	/**
+	 * Perform an index-generation with the searcher
+	 * still active on a redundant index.
+	 **/
+	public void generateIndex() {
+		// Allow only one index-generation at a time
+		if(generatingIndex) return;
+		
+		// Prepare index generation
+		synchronized(this) {
+			generatingIndex = true;
+		    selectActiveIndex(1);
 		}
+		
+		// Register a callback for the finalization of the index-generation
+		generator.registerCallback(new GenerateIndexCallback() {
+			@Override
+			public void done() {
+				selectActiveIndex(0);
+				generator.copyRedundantIndeces();
+				generatingIndex = false;
+				resetIndexReader();
+				resetIndexSearcher();
+			}
+		});
+
+		// Run
+		new Thread(generator).start();
 	}
 	
-	public void finalizeIndexGeneration() {
-		generatingIndex = false;
-		resetIndexReader();
-		resetIndexSearcher();
+	
+	/**
+	 * Select the active index for the searcher by its id and close the other indices,
+	 * so they can be overwritten during index-generation.
+	 * @param id the index-id
+	 * */
+	protected void selectActiveIndex(int id) {
+		if(id >= 0  &&  id < resourceIndices.size() && generatingIndex) {
+			log.info("Switching active lucene-index for resource " + getResourceName() + " to id " + id +".");
+			
+			// load index
+			searcher.reloadIndex(id);
+		    idxSelect = id;
+			this.resourceIndex = this.resourceIndices.get(idxSelect);
+
+		    // Close the other indices
+		    for(LuceneResourceIndex<? extends Resource> index: this.resourceIndices) {
+		    	if(index.getIndexId() != id) {
+		    		try {
+		    			index.close();
+			    		log.info("Successfully closed redundant index.");
+		    		} catch (Throwable e) {
+		    	    	log.warn("Failed to close index.", e);
+		    	    }
+		    	}
+		    }
+		}
 	}
 	
 	/** Boolean indicating whether an index-generation is currently running. */

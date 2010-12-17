@@ -158,6 +158,20 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	    
             return statistics;
 	}
+
+	/** 
+	 * Close index-writer and index-reader and disable this index.
+	 * */
+	public void close() throws CorruptIndexException, IOException{
+	    if(indexWriter != null) {
+	    	this.indexWriter.close();
+	    }
+	    if(indexReader != null) {
+	    	this.indexReader.close();
+	    }
+	    
+	    disableIndex();
+	}
 	
 	/**
 	 * initialize internal data structures

@@ -64,6 +64,12 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 	
 	private GenerateIndexCallback callback = null;
 	
+	/** the progress-percentage if index-generation is running */
+	private int progressPercentage;
+	
+	/** set to true if the generator is currently generating an index */
+	private boolean isRunning;
+	
 	/**
 	 * constructor 
 	 */
@@ -101,6 +107,11 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 	 */
 	public void shutdown() throws CorruptIndexException, IOException {
 		indexWriter.close();
+		
+		if(callback != null) {
+		    callback.done();
+			callback = null;
+		}
 	}
 	
 	/**
@@ -115,6 +126,13 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 	 * @throws SQLException
 	 */
 	public void generateIndex(boolean copyRedundantIndices) throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
+		// Allow only one index-generation at a time.
+		if(isRunning) return;
+		isRunning = true;
+		
+		// Delete the old index, if exists
+    	deleteIndex(0);
+    	
 		// open index
 		createEmptyIndex();
 
@@ -126,6 +144,8 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 			log.info("Creating "+ LuceneBase.getRedundantCnt() + " redundant indeces.");
 			this.copyRedundantIndeces();
 		}
+		
+		isRunning = false;
 	}
 	
 	/** Generate Index including redundant indices */
@@ -162,7 +182,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 		// number of post entries to calculate progress
 		//FIXME: the number of posts is wrong
 		int numberOfPosts = this.dbLogic.getNumberOfPosts();
-		int progressPercentage = 0;
+		progressPercentage = 0;
 		log.info("Number of post entries: "+  this.dbLogic.getNumberOfPosts());
 		
 		
@@ -207,10 +227,8 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 				}			
 			}
 			progressPercentage = (int) Math.round(100 * ((double)skip/numberOfPosts));
-			if(callback != null) {
-			    callback.updateProgress(progressPercentage);
-			}
-			log.info("Ready.");
+			log.info(progressPercentage + "% of index-generation done!");
+			
 		} while (postList.size() == SQL_BLOCKSIZE);
 
 		// optimize index
@@ -225,7 +243,15 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 		log.info("(" + i + " indexed entries, " + is + " not indexed spam entries)");
 	}
 	
-	/** Start index-generation */
+	/**
+	 * Get the progress-percentage
+	 */
+	public int getProgressPercentage() {
+		return progressPercentage;
+	}
+	
+	
+	/** Run the index-generation in a thread. */
 	public void run() {
         try {
 			generateIndex(false);
@@ -234,9 +260,6 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 		} finally {
 			try {
 				shutdown();
-				if(callback != null) {
-					callback.done();
-				}
 			} catch (Exception e) {
 				log.error("Failed to close index-writer!", e);
 			}
@@ -269,6 +292,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 		final File inputFile = new File(this.luceneResourceIndexPath + CFG_INDEX_ID_DELIMITER + "0");
 		for(int i = 1; i < LuceneBase.getRedundantCnt(); i++ ) {
 			try {
+				deleteIndex(i);
 				final File outputFile = new File(this.luceneResourceIndexPath + CFG_INDEX_ID_DELIMITER + i);
 				log.info("Copying index "+i);
 				copyDirectory(inputFile, outputFile);
@@ -276,6 +300,26 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 			} catch( Exception e) {
 				log.error("Error copying index to index file " + i, e);
 			}
+		}
+	}
+	
+	/** 
+	 * Delete one index identified by its id
+	 * @param id the index-id
+	 * */
+	public void deleteIndex(int id) {
+		try {
+			File directory = new File(this.luceneResourceIndexPath + CFG_INDEX_ID_DELIMITER + id);
+			Directory indexDirectory = FSDirectory.open(directory);
+			
+			log.info("Deleting index " + directory.getAbsolutePath() + "...");
+			for(String filename: indexDirectory.listAll()) {
+			    indexDirectory.deleteFile(filename);
+			    log.debug("Deleted " + filename);
+			}
+			log.info("Success.");
+		} catch (IOException e) {
+			log.error("Could not delete directory-content before index-generation or index-copy.", e);
 		}
 	}
 	
