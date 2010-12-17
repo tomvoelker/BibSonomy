@@ -44,7 +44,7 @@
                 			<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="/">${projectName}</a>, <fmt:message key="login.notice.welcome_2" />
                 			<br />
                 			<br />
-                			<b><fmt:message key="${command.notice}" /></b>
+                			<b><fmt:message key="${fn:escapeXml(command.notice)}" /></b>
                 			<br />
                 			<br />
                 			<fmt:message key="login.notice.welcome_3" />
