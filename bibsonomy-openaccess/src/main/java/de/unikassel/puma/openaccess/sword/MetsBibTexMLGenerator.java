@@ -518,23 +518,8 @@ public class MetsBibTexMLGenerator {
 		//"puma", "http://puma.uni-kassel.de/2010/11/PUMA-SWORD"
 		
 		xmlData.getAny().add(derPost);
-
-		
-		
-		
-		
-		
-		
-		
-		
-		
-//			xmlRenderer.serializePost(sw, post, null);
 		
 		xmlRenderer.serializeMets(sw, mets);
-		
-		System.out.println("------------------------------------------------------------------------------------");
-		System.out.println(sw.toString());
-		System.out.println("------------------------------------------------------------------------------------");
 		
 		return sw.toString();
 			
