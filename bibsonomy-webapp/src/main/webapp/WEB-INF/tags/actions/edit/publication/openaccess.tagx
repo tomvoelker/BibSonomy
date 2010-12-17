@@ -16,7 +16,18 @@
 		<jsp:attribute name="content">
 			<a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a>
 		    
-		    <div class="fsRow" id="openAccess"><c:out value=" "/></div>
+            <div class="fsRow">
+            </div>
+		    
+		    <!-- TODO show only if there is at least one repository server is defined -->
+            <div class="fsRow">
+              <!-- TODO if there is no pdf file attached to resource, deactivate checkbox and show message -->
+              <form:label cssClass="fsLabel" path="cbSendToRepository" ><fmt:message key="post.resource.fields.sendToRepository"/></form:label><buttons:help message="cbSendToRepository"/>
+              <form:checkbox cssClass="fsInput" path="cbSendToRepository"/>
+              <div class="dissError"><form:errors path="cbSendToRepository" /></div>
+            </div>
+
+
 		</jsp:attribute>
 	</parts:fieldset>
 
