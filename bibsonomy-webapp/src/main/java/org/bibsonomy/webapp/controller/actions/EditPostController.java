@@ -26,6 +26,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -60,6 +61,8 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import de.unikassel.puma.openaccess.sword.SwordService;
+
 /**
  * @author fba
  * @version $Id$
@@ -73,7 +76,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 	
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
-	
+
+	private String projectDocumentPath;
 	
 	protected Errors errors;
 	private TagRecommender tagRecommender;
@@ -442,6 +446,42 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		} catch (final DatabaseException ex) {
 			return this.handleDatabaseException(command, loginUser, post, ex, "update");
 		}
+		
+		
+		// send publication to repository
+		// TODO: put request into an own thread. so there is no extra response time 
+		// TODO: BUT: how can we tell the user that there is any failure while uploading publication
+		// TODO: check metadata of publication and existence of pdf via Javacript before sending formular via AJAX. On success send form, otherwise print error message.
+		
+		// TODO: get documents into command. is this possible? Is this practicable?
+		//if (command.isCbSendToRepository() && (null != ((BibTex) command.getPost().getResource()).getDocuments()) && ( !(((BibTex) command.getPost().getResource()).getDocuments().isEmpty()) )) {
+
+		// for now, don't check the existence of any document here
+		if (command.isCbSendToRepository()) {
+			log.debug("request to submit publication metadata and pdf via sword to repository");
+			SwordService swordService = new SwordService();
+			if (swordService.submitDocument(post, loginUser, projectDocumentPath)) {
+				log.info("sumission of publication metadata and pdf via sword to repository SUCCEEDED.");
+			} else
+			{
+				log.warn("sumission of publication metadata and pdf via sword to repository FAILED.");
+			}
+				
+		} else {
+			
+			log.debug("NO (successful) request to submit publication metadata and pdf via sword to repository");
+			log.debug("Property isCbSendToRepository is set to " + (command.isCbSendToRepository()?"TRUE":"FALSE"));
+			log.debug("(null != ((BibTex)command.getPost().getResource()).getDocuments()) results in " + ((null != ((BibTex)command.getPost().getResource()).getDocuments())?"TRUE":"FALSE"));
+			
+			if (null != ((BibTex) command.getPost().getResource()).getDocuments()) {
+				log.debug("((BibTex) command.getPost().getResource()).getDocuments()) is not null.");
+				log.debug("((BibTex) command.getPost().getResource()).getDocuments().isEmpty())" + ((((BibTex) command.getPost().getResource()).getDocuments().isEmpty())?"TRUE":"FALSE"));
+			} else {
+				log.debug("((BibTex) command.getPost().getResource()).getDocuments()) IS NULL!");
+			}
+		}
+			
+		
 		
 		if (!present(updatePosts)) {
 			/*
@@ -1116,5 +1156,19 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	@Required
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
+	}
+
+	/**
+	 * @param projectDocumentPath the projectDocumentPath to set
+	 */
+	public void setProjectDocumentPath(String projectDocumentPath) {
+		this.projectDocumentPath = projectDocumentPath;
+	}
+
+	/**
+	 * @return the projectDocumentPath
+	 */
+	public String getProjectDocumentPath() {
+		return projectDocumentPath;
 	}
 }
