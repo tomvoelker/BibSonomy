@@ -19,6 +19,7 @@
 	<security:http use-expressions="true" entry-point-ref="entryPoint" auto-config="false" security-context-repository-ref="contextRepository">
 		<!-- no filtering for css and js -->
 		<security:intercept-url pattern="/resources/**" filters="none" />
+		<security:intercept-url pattern="/logging**" filters="none" />
 		<!-- api uses own authentication handling -->
 		<security:intercept-url pattern="/api/**" filters="none" />
 		<!-- login -->
@@ -292,8 +293,8 @@
 		<property name="hideUserNotFoundExceptions" value="false" />
 	</bean>
 	
-<!--	<security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />-->
-	<security:ldap-server id="contextSource" url="${auth.ldap.server}" />
+	<security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />
+<!--	<security:ldap-server id="contextSource" url="${auth.ldap.server}" />-->
 
 
 	<bean id="ldapUserDetailsMapper" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.LDAPUserDetailsServiceMapper">
