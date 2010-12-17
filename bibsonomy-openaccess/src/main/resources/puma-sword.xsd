@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://puma.uni-kassel.de/2010/11/PUMA-SWORD"
+	elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD"
+	xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+
+	<xsd:import
+		schemaLocation="../../../../bibsonomy-model/src/main/resources/xschema.xsd"
+		namespace="http://www.bibsonomy.org/2010/11/BibSonomy"></xsd:import>
+	<xsd:import schemaLocation="mets.xsd" namespace="http://www.loc.gov/METS/"></xsd:import>
+
+	<xsd:element name="DerPost" xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="puma:MyPostType" />
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="PostType">
+		<xsd:sequence>
+			<xsd:element name="user" type="bib:UserType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="bib:GroupType" />
+			<!-- Note: a post must have at least one tag -->
+			<xsd:element maxOccurs="unbounded" name="tag" type="bib:TagType" />
+			<xsd:element minOccurs="0" maxOccurs="1" name="documents" type="bib:DocumentsType" />
+			<xsd:choice>
+				<xsd:element name="bookmark" maxOccurs="1" type="bib:BookmarkType" />
+				<xsd:element name="bibtex" maxOccurs="1" type="puma:BibtexType" />
+				<xsd:element name="goldStandardPublication" maxOccurs="1" type="bib:GoldStandardPublicationType" />
+			</xsd:choice>
+		</xsd:sequence>
+		<xsd:attribute name="description" type="xsd:string" />
+		<xsd:attribute name="postingdate" type="xsd:dateTime" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="BibtexType">
+		<xsd:complexContent>
+			<xsd:extension base="bib:BibtexType">
+				<xsd:attribute name="xISBN" type="xsd:string"></xsd:attribute>
+				<xsd:attribute name="xISSN" type="xsd:string"></xsd:attribute>
+				<xsd:attribute name="xDOI" type="xsd:string"></xsd:attribute>
+				<xsd:attribute name="xLocation" type="xsd:string"></xsd:attribute>
+				<xsd:attribute name="xDCC" type="xsd:string"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="MyPostType">
+		<xsd:complexContent>
+			<xsd:extension base="puma:PostType">
+				<xsd:attribute name="myAttribute" type="xsd:string"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+</xsd:schema>
