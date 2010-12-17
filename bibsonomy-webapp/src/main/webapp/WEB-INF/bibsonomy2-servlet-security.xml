@@ -293,8 +293,8 @@
 		<property name="hideUserNotFoundExceptions" value="false" />
 	</bean>
 	
-	<security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />
-<!--	<security:ldap-server id="contextSource" url="${auth.ldap.server}" />-->
+<!--	<security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />-->
+	<security:ldap-server id="contextSource" url="${auth.ldap.server}" />
 
 
 	<bean id="ldapUserDetailsMapper" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.LDAPUserDetailsServiceMapper">
