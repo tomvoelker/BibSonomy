@@ -19,6 +19,7 @@ import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.handler.FailureHandler;
 import org.bibsonomy.webapp.util.spring.security.rememberMeServices.CookieBasedRememberMeServices;
+import org.bibsonomy.webapp.validation.UserValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
@@ -238,7 +239,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		 * 
 		 * check if username is already used and try another
 		 */
-		String newName = user.getRealname().replaceAll(".*\\s+", "").toLowerCase();
+		String newName = cleanUserName(user.getRealname());
 		int tryCount = 0;
 		log.debug("try existence of username: " + newName);
 		while ((newName.equalsIgnoreCase(adminLogic.getUserDetails(newName).getName())) && (tryCount < 101)) {
@@ -246,20 +247,20 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 				if (tryCount == 0) {
 					// try first character of forename concatenated with surname
 					// bugs bunny => bbunny
-					newName = user.getRealname().substring(0, 1).toLowerCase().concat(newName);
+					newName = cleanUserName(user.getRealname()).substring(0, 1).concat(newName);
 				} else if (tryCount == 100) {
 					// now use first character of fore- and first two characters of surename concatenated with user id 
 					// bugs bunny => bbu01234567
-					newName = newName.substring(0, 3).concat(user.getLdapId() == null ? user.getOpenID() : user.getLdapId());
+					newName = cleanUserName(newName.substring(0, 3).concat(user.getLdapId() == null ? user.getOpenID() : user.getLdapId()));
 				} else {
 					// try first character of forename concatenated with surename concatenated with current number
 					// bugs bunny => bbunnyX where X is between 1 and 9
 					if (tryCount==1) {
 						// add trycount to newName
-						newName = newName.concat(Integer.toString(tryCount));
+						newName = cleanUserName(newName.concat(Integer.toString(tryCount)));
 					} else { 
 						// replace last two characters of string with trycount
-						newName = newName.substring(0, newName.length()-Integer.toString(tryCount-1).length()).concat(Integer.toString(tryCount));
+						newName = cleanUserName(newName.substring(0, newName.length() - Integer.toString(tryCount-1).length()).concat(Integer.toString(tryCount)));
 					}
 				}
 				log.debug("try existence of username: " + newName + " (" + tryCount + ")");
@@ -268,11 +269,16 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 				/*
 				 * if some substring values are out of range, catch exception and use surename
 				 */
-				newName = user.getRealname().replaceAll(".*\\s+", "").toLowerCase();
+				newName = cleanUserName(user.getRealname());
 				tryCount = 99;
 			}
 		}
 		return newName;
+	}
+	
+	private static String cleanUserName(final String name) {
+		if (!present(name)) return "";
+		return UserValidator.USERNAME_DISALLOWED_CHARACTERS_PATTERN.matcher(name).replaceAll("").toLowerCase();
 	}
 
 	@Override
