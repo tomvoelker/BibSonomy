@@ -8,8 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
-import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
-import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
@@ -59,7 +57,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 				LuceneResourceManager<? extends Resource> mng = getManagerByResourceName(command.getResource());
 				if(mng != null) {
 					if(!mng.isGeneratingIndex()) {
-						doIndexGeneration(mng);
+						mng.generateIndex();
 					} else {
 						command.setAdminResponse("Already building lucene-index for resource \"" + command.getResource() + "\".");
 					}
@@ -94,7 +92,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			//indexCmd.setId(...);
 			if(manager.isGeneratingIndex()) {
 				indexCmd.setGeneratingIndex(true);
-				indexCmd.setIndexGenerationProgress(progressPercentage.get(manager.getResourceName()));
+				indexCmd.setIndexGenerationProgress(manager.getGenerator().getProgressPercentage());
 			}
 			if (isIndexEnabled) {
 				indexCmd.setIndexStatistics(manager.getStatistics());
@@ -115,35 +113,6 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			}
 		}
 		return null;
-	}
-	
-    /** Perform an Index-Generation of the managed resource */
-	private void doIndexGeneration(final LuceneResourceManager<? extends Resource> mng) {
-		// Allow only one index-generation at a time
-		if(mng.isGeneratingIndex())
-			return;
-		
-		final LuceneGenerateResourceIndex<? extends Resource> generator = mng.getGenerator();
-		progressPercentage.put(mng.getResourceName(), 0);
-		
-		generator.registerCallback(new GenerateIndexCallback() {
-			
-			@Override
-			public void updateProgress(int percentage) {
-				progressPercentage.put(mng.getResourceName(), percentage);
-				log.info(percentage + "% of index-generation done!");
-			}
-			
-			@Override
-			public void done() {
-				mng.prepareIndexCopy();
-				generator.copyRedundantIndeces();
-				mng.finalizeIndexGeneration();
-			}
-		});
-		
-		mng.prepareIndexGeneration();
-		new Thread(generator).start();
 	}
 	
 
