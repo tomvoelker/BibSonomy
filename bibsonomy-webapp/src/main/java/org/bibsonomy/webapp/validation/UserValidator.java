@@ -21,7 +21,7 @@ public class UserValidator implements Validator<User> {
 	 * (this covers more than 99% of all usernames before introducing this
 	 * restriction)
 	 */
-	private static final Pattern USERNAME_DISALLOWED_CHARACTERS_PATTERN = Pattern.compile("[^a-zA-Z0-9\\.\\-_]");
+	public static final Pattern USERNAME_DISALLOWED_CHARACTERS_PATTERN = Pattern.compile("[^a-zA-Z0-9\\.\\-_]");
 
 	/** 
 	 * Validates {@link User} and also subclasses of {@link User}. 
