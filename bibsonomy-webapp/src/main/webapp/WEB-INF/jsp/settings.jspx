@@ -21,17 +21,17 @@
 		    <errors:global errors="${errors}"/>	
 			<c:choose>
 				<c:when test="${command.selTab == 0}">
-					<settings:settingsProfile command="${command}"/>
+					<settings:profile command="${command}"/>
 				</c:when>
 				<c:when test="${command.selTab == 1}">
-					<settings:settingsSettings command="${command}"/>
+					<settings:settings command="${command}"/>
 				</c:when>
 				<c:when test="${command.selTab == 2}">
-					<settings:settingsImport command="${command}"/>
+					<settings:import command="${command}"/>
 				</c:when>
 				<!-- TODO: user request attribute used?! -->
 				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq user.name))}">
-					<settings:settingsGroup command="${command}"/>
+					<settings:group command="${command}"/>
 				</c:when>
 			</c:choose>
 		</jsp:attribute>
