@@ -63,7 +63,7 @@
 	<!-- provides access to the wikiRenderer -->
 	<bean id="wikiRenderer" class="org.bibsonomy.wiki.WikiUtil" scope="request">
 		<!-- FIXME: shouldn't it be the requested user -->
-		<property name="user" ref="loginUser"/>
+<!--		<property name="user" ref="loginUser"/>-->
 		<property name="logic" ref="logic"/>
 	</bean>
 	
