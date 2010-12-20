@@ -74,8 +74,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
 
-	private String projectDocumentPath;
-	
 	protected Errors errors;
 	private TagRecommender tagRecommender;
 	private Captcha captcha;
@@ -1136,17 +1134,4 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		this.urlGenerator = urlGenerator;
 	}
 
-	/**
-	 * @param projectDocumentPath the projectDocumentPath to set
-	 */
-	public void setProjectDocumentPath(String projectDocumentPath) {
-		this.projectDocumentPath = projectDocumentPath;
-	}
-
-	/**
-	 * @return the projectDocumentPath
-	 */
-	public String getProjectDocumentPath() {
-		return projectDocumentPath;
-	}
 }
