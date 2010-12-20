@@ -40,8 +40,16 @@ public class PublicationClassificator {
 	
 	
 	private void initialise() {
-		ClassificationChainElement cce = new ClassificationChainElement(new JELClassification());
+		if (!present(classificationFilePath)) {
+			log.warn("No path for classification files configured.");
+			return;
+		}
+		/*
+		 * proceed with normal operation
+		 */
 		final File path = new File(classificationFilePath);
+
+		final ClassificationChainElement cce = new ClassificationChainElement(new JELClassification());
 		
 		if (path.isDirectory()) {
 			
