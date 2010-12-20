@@ -5,9 +5,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
-	<c:set var="login">
-		<fmt:message key="navi.login"/>
-	</c:set>
+	<fmt:message key="navi.login" var="login"/>
 
 	<c:url var="loginUrl" value="/login" context="${projectContext}"/>
 	<form method="POST" action="${loginUrl}" style="display:inline">
