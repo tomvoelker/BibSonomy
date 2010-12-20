@@ -35,7 +35,6 @@
         <jsp:attribute name="detailedInformation">
 			<editpub:details post="${post}" />
 			<editpub:openaccess/>
-<!--			<editpub:classification/>-->
 
 			<c:if test="${not empty command.scrapingContext}">
           		<parts:fieldset maximized="false" legendKey="post.resource.fields.scraper" >

@@ -3,6 +3,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
@@ -10,8 +11,23 @@
 	xmlns:form="http://www.springframework.org/tags/form">
 
     <jsp:directive.attribute name="tags" type="java.lang.String" required="false"/>
+
+	<!--+
+		|
+		| FIXME: we need a check around the whole code below to ensure that it
+		| is only called in PUMA. 
+		|
+	 	+-->
     
-    			
+	<!--+ 
+	 	|
+	 	| additional JavaScript code for Open Access (DSpace) integration.
+	 	|
+	 	+-->
+	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
+	<c:if test="${not empty jsOpenAccess}">
+		<script type="text/javascript" src="${jsOpenAccess}">&amp;nbsp;</script>
+	</c:if>    			
 	<!--+ 
 	 	|
 	 	| additional JavaScript code for Publication Classification integration.
@@ -31,7 +47,7 @@
 	<c:if test="${not empty t2}">
 		<script type="text/javascript" src="${t2}">&amp;nbsp;</script>
 	</c:if>
-    
+ 
 	<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.openaccess" >
 		<jsp:attribute name="content">
 			<a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a>
