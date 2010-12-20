@@ -67,13 +67,6 @@
 		<property name="logic" ref="logic"/>
 	</bean>
 	
-	
-	<!-- handles searching through the publication classifications  -->
-	<!-- FIXME: PUMA-specific; how to configure only there? -->
-	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificator" scope="singleton">
-		<property name="classificationFilePath" value="FIXME"/>
-	</bean>
-	
 	<!-- 
 	    This bean provides admin access to the logic interface by predicting 
 	    to be a user with role "admin". 

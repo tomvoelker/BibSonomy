@@ -154,8 +154,14 @@
 	
 	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController" />	
 	
+	<!-- FIXME: PUMA-specific; how to configure only there? -->
 	<bean id="publicationClassificationController" class="org.bibsonomy.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
-		<property name="classification" ref="classificate"/>
+		<property name="classificator" ref="classificator"/>
 	</bean>
+	<!-- FIXME: PUMA-specific; how to configure only there? -->
+	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificator" scope="singleton">
+		<property name="classificationFilePath" value="FIXME"/>
+	</bean>
+	
 	
 </beans>
