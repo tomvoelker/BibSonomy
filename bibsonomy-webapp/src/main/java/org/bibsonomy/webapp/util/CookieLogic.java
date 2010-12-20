@@ -81,6 +81,16 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		return cookie != null && cookie.contains(String.valueOf(spammerCookieContains));
 	}
 	
+	
+	/** Checks, if the request contains any cookies.
+	 * 
+	 * @return <code>true</code>, if the request contains a cookie.
+	 */
+	public boolean containsCookies() {
+		final Cookie[] cookies = requestLogic.getCookies();
+		return cookies != null && cookies.length > 0;
+	}
+	
 	/** 
 	 * Returns the cookie with the specified name.
 	 * 
