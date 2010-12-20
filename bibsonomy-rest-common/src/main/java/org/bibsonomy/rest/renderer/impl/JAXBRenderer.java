@@ -438,13 +438,13 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlPublication.setPrivnote(publication.getPrivnote());
 	}
 
-	protected XMLGregorianCalendar createXmlCalendar(final Date date) {
+	private XMLGregorianCalendar createXmlCalendar(final Date date) {
 		final GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(date);
 		return datatypeFactory.newXMLGregorianCalendar(cal);
 	}
 
-	protected void checkPost(final Post<? extends Resource> post) throws InternServerException {
+	private void checkPost(final Post<? extends Resource> post) throws InternServerException {
 		if (post.getUser() == null) throw new InternServerException("error no user assigned!");
 		// there may be posts whithout tags
 		// 2009/01/07, fei: as stated above - there are situations where posts don't have tags
