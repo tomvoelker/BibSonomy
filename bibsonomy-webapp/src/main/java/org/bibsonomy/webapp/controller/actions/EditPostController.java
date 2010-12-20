@@ -26,7 +26,6 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -60,8 +59,6 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-
-import de.unikassel.puma.openaccess.sword.SwordService;
 
 /**
  * @author fba
@@ -371,7 +368,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * @param intraHashToUpdate
 	 * @return
 	 */
-	private View handleUpdatePost(final EditPostCommand<RESOURCE> command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post, final String intraHashToUpdate) {
+	private View handleUpdatePost(final COMMAND command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post, final String intraHashToUpdate) {
 		final String loginUserName = loginUser.getName();
 		
 		/*
@@ -447,42 +444,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			return this.handleDatabaseException(command, loginUser, post, ex, "update");
 		}
 		
-		
-		// send publication to repository
-		// TODO: put request into an own thread. so there is no extra response time 
-		// TODO: BUT: how can we tell the user that there is any failure while uploading publication
-		// TODO: check metadata of publication and existence of pdf via Javacript before sending formular via AJAX. On success send form, otherwise print error message.
-		
-		// TODO: get documents into command. is this possible? Is this practicable?
-		//if (command.isCbSendToRepository() && (null != ((BibTex) command.getPost().getResource()).getDocuments()) && ( !(((BibTex) command.getPost().getResource()).getDocuments().isEmpty()) )) {
-
-		// for now, don't check the existence of any document here
-		if (command.isCbSendToRepository()) {
-			log.debug("request to submit publication metadata and pdf via sword to repository");
-			SwordService swordService = new SwordService();
-			if (swordService.submitDocument(post, loginUser, projectDocumentPath)) {
-				log.info("sumission of publication metadata and pdf via sword to repository SUCCEEDED.");
-			} else
-			{
-				log.warn("sumission of publication metadata and pdf via sword to repository FAILED.");
-			}
-				
-		} else {
-			
-			log.debug("NO (successful) request to submit publication metadata and pdf via sword to repository");
-			log.debug("Property isCbSendToRepository is set to " + (command.isCbSendToRepository()?"TRUE":"FALSE"));
-			log.debug("(null != ((BibTex)command.getPost().getResource()).getDocuments()) results in " + ((null != ((BibTex)command.getPost().getResource()).getDocuments())?"TRUE":"FALSE"));
-			
-			if (null != ((BibTex) command.getPost().getResource()).getDocuments()) {
-				log.debug("((BibTex) command.getPost().getResource()).getDocuments()) is not null.");
-				log.debug("((BibTex) command.getPost().getResource()).getDocuments().isEmpty())" + ((((BibTex) command.getPost().getResource()).getDocuments().isEmpty())?"TRUE":"FALSE"));
-			} else {
-				log.debug("((BibTex) command.getPost().getResource()).getDocuments()) IS NULL!");
-			}
-		}
-			
-		
-		
 		if (!present(updatePosts)) {
 			/*
 			 * show error page
@@ -494,12 +455,11 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			return Views.ERROR;
 		}
 		/*
-		 * update recommender table such that recommendations are linked to the final post
+		 * do everything that must be done after a successful create or update
 		 */
-		this.setRecommendationFeedback(post, command.getPostID());
-
+		this.createOrUpdateSuccess(command, loginUser, post);
 		/*
-		 * leave if and reach final redirect
+		 * send final redirect
 		 */
 		return this.finalRedirect(loginUserName, command.getReferer());
 	}
@@ -686,7 +646,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	}
 
 	
-	private View handleCreatePost(final EditPostCommand<RESOURCE> command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
+	private View handleCreatePost(final COMMAND command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
 		final String loginUserName = loginUser.getName();
 
 		/*
@@ -753,13 +713,31 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			return handleDatabaseException(command, loginUser, post, de, "create");
 		}
 		/*
-		 * update recommender table such that recommendations are linked to the final post
+		 * do everything that must be done after a successful create or update
 		 */
-		setRecommendationFeedback(post, command.getPostID());
+		this.createOrUpdateSuccess(command, loginUser, post);
 
 		return finalRedirect(loginUserName, command.getReferer()); 
 	}
 
+	/**
+	 * After the (created or updated) post has been successfully stored in the
+	 * database, this method is called. Subclasses can use it to add additional
+	 * functionality. 
+	 * Per default, this method updates the recommender by giving it feedback 
+	 * about the assigned tags.
+	 * 
+	 * @param command
+	 * @param loginUser
+	 * @param post - the post that has been stored in the database.
+	 */
+	protected void createOrUpdateSuccess(final COMMAND command, final User loginUser, final Post<RESOURCE> post) {
+		/*
+		 * update recommender table such that recommendations are linked to the final post
+		 */
+		setRecommendationFeedback(post, command.getPostID());
+	}
+	
 	/**
 	 * Populates the command with the given post. Ensures, that fields which
 	 * depend on the post (like the tag string, or the groups) in the command

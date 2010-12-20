@@ -74,13 +74,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	private boolean editBeforeSaving;
 
 	/**
-	 * selector to decide if a publication should be send to an repository
-	 */
-	private boolean cbSendToRepository;
-	
-	
-	
-	/**
 	 * @return the post
 	 */
 	public Post<RESOURCE> getPost() {
@@ -366,20 +359,5 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	 */
 	public void setEditBeforeSaving(boolean editBeforeSaving) {
 		this.editBeforeSaving = editBeforeSaving;
-	}
-
-
-	/**
-	 * @param cbSendToRepository the cbSendToRepository to set
-	 */
-	public void setCbSendToRepository(boolean cbSendToRepository) {
-		this.cbSendToRepository = cbSendToRepository;
-	}
-
-	/**
-	 * @return the cbSendToRepository
-	 */
-	public boolean isCbSendToRepository() {
-		return cbSendToRepository;
 	}
 }
