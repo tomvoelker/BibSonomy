@@ -14,9 +14,6 @@ import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.logging.Log;
@@ -63,92 +60,6 @@ public class SwordService {
 	
 	private String projectDocumentPath;
 
-	public SwordService() {
-		init();
-	}
-	
-	private void init() {
-		retrieveSwordConfiguration();
-		
-
-	}
-	
-	private void retrieveSwordConfiguration() {
-		
-		dirTemp = "/tmp/";
-		httpServer = "localhost";
-		httpPort = 80;
-		httpUserAgent = "puma";
-		authUsername = "username";
-		authPassword = "password";
-		httpServicedocumentUrl = "/sword/servicedocument" ;
-		httpDepositUrl = "/no/deposit/url/";
-		
-		/**
-		 * retrieve configuration from environment variables in context.xml if set
-		 */
-		
-		Context initContext = null;
-		Context envContext = null;
-		
-		try {
-			initContext = new InitialContext();
-			envContext = (Context) initContext.lookup("java:/comp/env");
-		} catch (NamingException ex) {
-			log.error("Error when trying create initContext lookup for java:/comp/env via JNDI.", ex);
-		}
-
-		try {
-			dirTemp = (String) envContext.lookup("sword/dirTemp");
-		} catch (NamingException ex) {
-			log.warn("Error when trying to read environment variable 'sword/dirTemp' via JNDI. Using defautl value "+dirTemp, ex);
-		}			
-
-		try {
-			httpPort = (Integer) envContext.lookup("sword/httpPort");
-		} catch (NamingException ex) {
-			log.warn("Error when trying to read environment variable 'sword/httpPort' via JNDI. Using defautl value "+httpPort, ex);
-		}			
-		
-		try {
-			httpServer = (String) envContext.lookup("sword/httpServer");
-		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variable 'sword/dirTemp' via JNDI.", ex);
-		}			
-
-		try {
-			httpUserAgent = (String) envContext.lookup("sword/httpUserAgent");
-		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variable 'sword/dirTemp' via JNDI.", ex);
-		}			
-
-		try {
-			authUsername = (String) envContext.lookup("sword/authUsername");
-		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variable 'sword/authUsername' via JNDI.", ex);
-		}			
-
-		try {
-			authPassword = (String) envContext.lookup("sword/authPassword");
-		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variable 'sword/authPassword' via JNDI.", ex);
-		}			
-
-		try {
-			httpServicedocumentUrl = (String) envContext.lookup("sword/httpServicedocumentUrl");
-		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variable 'sword/httpServicedocumentUrl' via JNDI.", ex);
-		}			
-
-		try {
-			httpDepositUrl = (String) envContext.lookup("sword/httpDepositUrl");
-		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variable 'sword/httpDepositUrl' via JNDI.", ex);
-		}
-		
-		
-	}
-	
 	private String retrieveServicedocument(){
 		return null;
 	}
