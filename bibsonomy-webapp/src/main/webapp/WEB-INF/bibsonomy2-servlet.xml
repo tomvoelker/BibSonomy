@@ -69,8 +69,10 @@
 	
 	
 	<!-- handles searching through the publication classifications  -->
-	<bean id="classificate" class="org.bibsonomy.classification.PublicationClassificator" factory-method="getInstance">
-	</bean>		
+	<!-- FIXME: PUMA-specific; how to configure only there? -->
+	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificator" scope="singleton">
+		<property name="classificationFilePath" value="FIXME"/>
+	</bean>
 	
 	<!-- 
 	    This bean provides admin access to the logic interface by predicting 
@@ -240,7 +242,6 @@
 								<value>importType</value>
 								<value>overwrite</value>
 								<value>file</value> 
-								<value>statusID</value>
 								<value>group</value>
 								<value>delete</value>
 							</list>
@@ -459,6 +460,11 @@
 				<entry key="/layoutinfo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="exportLayoutController"/>
+					</bean>
+				</entry>
+				<entry key="/errors/403">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="error403PageController"/>
 					</bean>
 				</entry>
 				<entry key="/errors/404">
@@ -697,19 +703,22 @@
 
 	<!--  #################### static views #################### -->
 	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="BUTTONS"></property>
+		<property name="view" value="BUTTONS"/>
+	</bean>
+	<bean id="error403PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ERROR403"/>
 	</bean>
 	<bean id="error404PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="ERROR404"></property>
+		<property name="view" value="ERROR404"/>
 	</bean>
 	<bean id="error405PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="ERROR405"></property>
+		<property name="view" value="ERROR405"/>
 	</bean>
 	<bean id="error500PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="ERROR500"></property>
+		<property name="view" value="ERROR500"/>
 	</bean>
 	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="ERROR503"></property>
+		<property name="view" value="ERROR503"/>
 	</bean>
 
 	<!--  #################### imports #################### -->
