@@ -60,6 +60,8 @@ public class SwordService {
 	private String authPassword;
 	private String httpServicedocumentUrl;
 	private String httpDepositUrl;
+	
+	private String projectDocumentPath;
 
 	public SwordService() {
 		init();
@@ -188,7 +190,7 @@ public class SwordService {
 	/**
 	 * collects all informations to send Documents with metadata to repository 
 	 */
-	public boolean submitDocument(Post<?> post, User user, String projectDocumentPath) {
+	public boolean submitDocument(Post<?> post, User user) {
 		log.info("starting sword");
 		File swordZipFile = null;
 
@@ -551,10 +553,14 @@ public class SwordService {
 		this.httpDepositUrl = httpDepositUrl;
 	}
 
-	
-
-
-
+	/**
+	 * The path to the documents.
+	 * 
+	 * @param projectDocumentPath
+	 */
+	public void setProjectDocumentPath(String projectDocumentPath) {
+		this.projectDocumentPath = projectDocumentPath;
+	}
 	
 }
 
