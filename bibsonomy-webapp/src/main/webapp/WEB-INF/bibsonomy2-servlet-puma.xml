@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!--+ 
+		|
+		| PUMA-specific bean configuration
+		| 
+		| FIXME: 
+		| I tried to import this file conditionally depending on the value of 
+		| ${project.theme}. The following methods did not work:
+		|
+		| 1.) <import resource="bibsonomy2-servlet-${project.theme}.xml"/>
+		|     because the imports are handled before the ContextParamConfigurer
+		|     bean is instantiated.
+		| 2.) <bean class="org.springframework.web.context.support.XmlWebApplicationContext">
+		|     	<constructor-arg value="/WEB-INF/bibsonomy2-servlet-${project.theme}.xml"/>
+		|	  </bean>
+		|     because the loaded beans are not merged to the web application
+		|	  context.
+		|
+		| Since both methods do not work, I just added both files - 
+		| bibsonomy2-servlet-bibsonomy.xml and bibsonomy2-servlet-puma.xml.
+		| 
+		| This means, all beans here are actually instantiated (unfortunately!).
+		| At one point I circumvented the creation of a very PUMA-specific bean:
+		| Since in BibSonomy we don't want to have the SwordService activated for
+		| the EditPublicationController, I aliased it using an <alias> definiton
+		| that is theme-aware.
+		|
+	 	+-->
+
+
+	<!--+ 
+	 	|
+	 	| PUMA-specific URL maps 
+	 	|
+	 	+-->
+	<bean id="pumaUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+				<entry key="/ajax/checkOpenAccess">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="openAccessController" />
+						<property name="allowedFields">
+							<list>
+								<value>publisher</value>
+								<value>jTitle</value>
+								<value>qType</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/ajax/classificatePublication">
+					<bean id="publicationClassificationControllerBean" parent="controllerBase">
+						<property name="controllerBeanName" value="publicationClassificationController" />
+						<property name="allowedFields">
+							<list>
+								<value>classificationName</value>
+								<value>id</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<!--+ 
+		|
+		| PUMA-specific beans
+		|
+	 	+-->
+	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController" />	
+	
+	<bean id="publicationClassificationController" class="org.bibsonomy.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
+		<property name="classificator" ref="classificator"/>
+	</bean>
+	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificator" scope="singleton">
+		<property name="classificationFilePath" value="FIXME"/><!-- FIXME: add correct path -->
+	</bean>
+
+	<!--+ 
+		|
+		| PUMA-specific beans that must also be provided for BibSonomy (using
+		| NullFactoryBeanin bibsonomy2-servlet-bibsonomy.xml).
+		|
+	 	+-->
+	<bean id="swordService_puma" class="de.unikassel.puma.openaccess.sword.SwordService" lazy-init="true">
+		<property name="projectDocumentPath" value="${project.document.path}" />
+		<property name="dirTemp" value="/tmp/" />
+		<property name="httpServer" value="localhost" />
+		<property name="httpPort" value="80" />
+		<property name="httpUserAgent" value="puma" />
+		<property name="authUsername" value="username" />
+		<property name="authPassword" value="password" />
+		<property name="httpServicedocumentUrl" value="/sword/servicedocument" />
+		<property name="httpDepositUrl" value="/no/deposit/url/" />
+	</bean>
+
+</beans>
+

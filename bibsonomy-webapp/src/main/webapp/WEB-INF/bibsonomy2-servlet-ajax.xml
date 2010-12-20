@@ -4,7 +4,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	                    http://www.springframework.org/schema/beans/spring-beans.xsd
-	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 
 	<!--+
@@ -90,29 +91,6 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/ajax/checkOpenAccess">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="openAccessController" />
-						<property name="allowedFields">
-							<list>
-								<value>publisher</value>
-								<value>jTitle</value>
-								<value>qType</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/ajax/classificatePublication">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="publicationClassificationController" />
-						<property name="allowedFields">
-							<list>
-								<value>classificationName</value>
-								<value>id</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 			</map>
 		</property>
 	</bean>
@@ -143,25 +121,9 @@
 	</bean>
 	
 	<bean id="ajaxGetBookmarkRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetBookmarkRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
-	
 	<bean id="ajaxGetPublicationRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetPublicationRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
-	
 	<bean id="followerAjaxController" class="org.bibsonomy.webapp.controller.ajax.FollowerAjaxController" scope="request" parent="ajaxController" />
-	
 	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request" parent="ajaxController" />
-	
 	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
-	
-	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController" />	
-	
-	<!-- FIXME: PUMA-specific; how to configure only there? -->
-	<bean id="publicationClassificationController" class="org.bibsonomy.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
-		<property name="classificator" ref="classificator"/>
-	</bean>
-	<!-- FIXME: PUMA-specific; how to configure only there? -->
-	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificator" scope="singleton">
-		<property name="classificationFilePath" value="FIXME"/>
-	</bean>
-	
 	
 </beans>

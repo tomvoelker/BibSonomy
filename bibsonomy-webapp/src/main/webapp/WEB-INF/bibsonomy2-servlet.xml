@@ -723,4 +723,6 @@
 	<import resource="bibsonomy2-servlet-lucene.xml"/>
 	<import resource="bibsonomy2-servlet-events.xml"/>
 	<import resource="bibsonomy2-servlet-security.xml"/>
+	<import resource="bibsonomy2-servlet-bibsonomy.xml"/>
+	<import resource="bibsonomy2-servlet-puma.xml"/>
 </beans>
