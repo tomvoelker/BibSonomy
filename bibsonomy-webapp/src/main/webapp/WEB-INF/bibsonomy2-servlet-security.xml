@@ -31,7 +31,7 @@
 		
 		<security:custom-filter position="LOGOUT_FILTER" ref="logoutFilter" />
 		
-		<security:access-denied-handler error-page="/access_denied" />
+		<security:access-denied-handler error-page="/errors/403" />
 	</security:http>
 	
 	<!-- Teergrube for login handler  -->
@@ -103,16 +103,12 @@
 		<property name="rememberMeServices" ref="internalRememberMeServices" />
 	</bean>
 	
-	<bean id="internalRememberMeServiceCookieName" class="java.lang.String">
-		<constructor-arg value="db_user" />
-	</bean>
-	
 	<!-- sets a remember me cookie for the database -->
 	<bean id="internalRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.TokenBasedRememberMeServices">
   		<property name="userDetailsService" ref="databaseUserService"/>
   		<property name="key" ref="cookieKey"/>
   		<property name="parameter" value="rememberMe"/>
-  		<property name="cookieName" ref="internalRememberMeServiceCookieName" />
+  		<property name="cookieName" value="db_user" />
   		<property name="tokenValiditySeconds" value="31536000" /> <!-- 3600 * 24 * 365 -->
 	</bean>
 	
@@ -128,7 +124,6 @@
 	
 	<security:authentication-manager alias="internalAuthenticationManager">
 		<security:authentication-provider ref="databaseAuthenticator" />
-		<security:authentication-provider ref="databaseAuthenticatorWithoutEncoding" />
 		<security:authentication-provider ref="rememberMeAuthenticator" />
 	</security:authentication-manager>
 	
@@ -137,16 +132,14 @@
 	</bean>
 	
 	<bean id="databaseAuthenticator" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider" parent="abstractDatabaseAuthenticator">
-		<property name="passwordEncoder" ref="md5Encoder" />
+		<property name="passwordEncoder">
+			<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+		</property>
 	</bean>
 	
 	<bean id="rememberMeAuthenticator" class="org.springframework.security.authentication.RememberMeAuthenticationProvider">
 		<property name="key" ref="cookieKey" />
 	</bean>
-	
-	<bean id="databaseAuthenticatorWithoutEncoding" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider" parent="abstractDatabaseAuthenticator" />
-	
-	<bean id="md5Encoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
 	
 	<!-- Open ID login -->
 	<bean id="openidLoginUrl" class="java.lang.String">
@@ -276,6 +269,11 @@
   		<property name="key" ref="cookieKey"/>
   		<property name="parameter" value="rememberMe"/>
   		<property name="cookieName" value="ldap_user" />
+  		<property name="encryptor" ref="encryptor"/>
+	</bean>
+	
+	<bean id="encryptor" class="org.jasypt.util.text.StrongTextEncryptor">
+		<property name="password" value="${auth.cookie.cryptkey}" />
 	</bean>
 	
 	<bean id="ldapBindAuthenticator" class="org.springframework.security.ldap.authentication.BindAuthenticator">

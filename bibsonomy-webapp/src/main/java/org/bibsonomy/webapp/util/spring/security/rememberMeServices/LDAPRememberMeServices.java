@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.spring.security.UserAdapter;
+import org.jasypt.util.text.TextEncryptor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +24,9 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
  */
 public class LDAPRememberMeServices extends AbstractRememberMeServices {
 	private static final Log log = LogFactory.getLog(LDAPRememberMeServices.class);
-
+	
+	private TextEncryptor encryptor;
+	
 	@Override
 	protected UserDetails processAutoLoginCookie(String[] cookieTokens, HttpServletRequest request, HttpServletResponse response) throws RememberMeAuthenticationException, UsernameNotFoundException {
 		if (cookieTokens.length != 5) {
@@ -89,5 +92,22 @@ public class LDAPRememberMeServices extends AbstractRememberMeServices {
 		        }
 			}
 		}
+	}
+	
+	@Override
+	protected String encodeCookie(String[] cookieTokens) {
+		return this.encryptor.encrypt(super.encodeCookie(cookieTokens));
+	}
+
+	@Override
+	protected String[] decodeCookie(String cookieValue) throws InvalidCookieException {
+		return super.decodeCookie(this.encryptor.decrypt(cookieValue));
+	}
+
+	/**
+	 * @param encryptor The encryptor to encrypt cookies.
+	 */
+	public void setEncryptor(final TextEncryptor encryptor) {
+		this.encryptor = encryptor;
 	}
 }

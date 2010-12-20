@@ -558,6 +558,11 @@ public enum Views implements View {
 	ERROR("error"),
 	
 	/**
+	 * 403
+	 */
+	ERROR403("errors/403"),
+
+	/**
 	 * 404
 	 */
 	ERROR404("errors/404"),
