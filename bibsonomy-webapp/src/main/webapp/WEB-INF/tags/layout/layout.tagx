@@ -177,8 +177,7 @@
 								<a href="/edit_tags"><fmt:message key="navi.editTags"/></a>
 							</c:when>
 						<c:otherwise>
-							<!-- TODO: adapt to spring security -->
-							<parts:login loginUrl="${loginUrl}" login="${login}" projectContext="${projectContext}"/>
+							<parts:login/>
 						</c:otherwise>
 						</c:choose>
 					</div>

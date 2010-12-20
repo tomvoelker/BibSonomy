@@ -6,10 +6,6 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-	<jsp:directive.attribute name="login" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="loginUrl" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="projectContext" type="java.lang.String" required="true"/>
-	
 	<script type="text/javascript">
 		// store number of different authentication methods for later use
 		var authMethodsCount = ${fn:length(authConfig.authOrder)};
@@ -77,9 +73,7 @@
 	<!--+
 	    | set message strings
 	    +-->
-	<c:set var="login">
-		<fmt:message key="navi.login"/>
-	</c:set>
+	<fmt:message key="navi.login" var="login"/>
 
 	<!--+
 	    | create a specialized login form for each authentication method
@@ -95,9 +89,6 @@
     				+-->
     			<c:if test="${authMethod == 'INTERNAL'}">
 					<div class="headlogin ${visibility}" id="headLogin${status.count}">
-						<c:set var="login">
-						<fmt:message key="navi.login"/>
-						</c:set>
 						<form:form method="POST" action="/login_${authMethodName}">
 							<input type="text" size="15" name="username" id="un"  tabindex="1"/>&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
 							<input type="password" size="15" name="password" style="width:150px; position:absolute;" id="pw" autocomplete="off" tabindex="2"/>
@@ -112,9 +103,6 @@
     				+-->
       			<c:if test="${authMethod == 'LDAP'}">
       				<div class="headlogin ${visibility}" id="headLogin${status.count}">
-						<c:set var="login">
-						<fmt:message key="navi.login"/>
-						</c:set>
 						<form:form method="POST" action="/login_${authMethodName}">
 							<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">:&amp;nbsp;</span>
 							<input type="password" size="15" name="password" id="pwldap" autocomplete="off"/>
@@ -143,9 +131,7 @@
 	    +-->
 	<select name="loginSelect" id="loginSelect" onchange="quickSelectAuthMethod(this.value);">
 		<c:forEach var="authMethod" items="${authConfig.authOrder}" varStatus="status">
-			<c:set var="loginMessage">
-				<fmt:message key="login.${authMethodName}.label"/>
-			</c:set>
+			<fmt:message key="login.${authMethodName}.label" var="loginMessage"/>
 			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
 			<option value="${status.count}" title="${resdir}/image/login_logo_${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
 		</c:forEach>
