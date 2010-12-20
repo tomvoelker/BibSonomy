@@ -1,4 +1,4 @@
-package org.bibsonomy.classification.chain;
+package de.unikassel.puma.openaccess.classification.chain;
 
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -6,12 +6,13 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.net.URL;
 
-import org.bibsonomy.classification.Classification;
-import org.bibsonomy.classification.ClassificationParser;
-import org.bibsonomy.classification.ClassificationSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+import de.unikassel.puma.openaccess.classification.Classification;
+import de.unikassel.puma.openaccess.classification.ClassificationParser;
+import de.unikassel.puma.openaccess.classification.ClassificationSource;
 
 public class ClassificationChainElement implements ClassificationSource {
 

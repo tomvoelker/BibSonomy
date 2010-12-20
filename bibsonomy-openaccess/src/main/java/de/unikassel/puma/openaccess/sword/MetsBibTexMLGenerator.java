@@ -1,11 +1,6 @@
 package de.unikassel.puma.openaccess.sword;
 
 
-import static org.bibsonomy.model.util.ModelValidationUtils.checkBookmark;
-import static org.bibsonomy.model.util.ModelValidationUtils.checkGroup;
-import static org.bibsonomy.model.util.ModelValidationUtils.checkPublication;
-import static org.bibsonomy.model.util.ModelValidationUtils.checkTag;
-import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.StringWriter;
@@ -19,43 +14,27 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
-import javax.xml.transform.Result;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
-import org.bibsonomy.rest.renderer.xml.BookmarkType;
-import org.bibsonomy.rest.renderer.xml.DocumentType;
-import org.bibsonomy.rest.renderer.xml.DocumentsType;
-import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
-import org.bibsonomy.rest.renderer.xml.GroupType;
-import org.bibsonomy.rest.renderer.xml.ReferenceType;
-import org.bibsonomy.rest.renderer.xml.ReferencesType;
-import org.bibsonomy.rest.renderer.xml.TagType;
-import org.bibsonomy.rest.renderer.xml.UserType;
 import org.xml.sax.SAXParseException;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
-import de.unikassel.puma.openaccess.sword.renderer.xml.BibtexType;
-import de.unikassel.puma.openaccess.sword.renderer.xml.DerPost;
 import de.unikassel.puma.openaccess.sword.renderer.xml.DivType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.FileType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.Mets;
 import de.unikassel.puma.openaccess.sword.renderer.xml.ObjectFactory;
+import de.unikassel.puma.openaccess.sword.renderer.xml.PumaPostType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.StructMapType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.DivType.Fptr;
 import de.unikassel.puma.openaccess.sword.renderer.xml.FileType.FLocat;
@@ -81,11 +60,13 @@ import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr.Agent;
 public class MetsBibTexMLGenerator {
 	private static final Log log = LogFactory.getLog(MetsBibTexMLGenerator.class);
 
-
+	/*
+	 * FIXME: Check if this class should be thread-safe. If so, don't use 
+	 * object attributes to store data.
+	 * 
+	 */
 	private PumaPost<BibTex> _post;
 	private ArrayList<String> _filenameList; 
-
-	private static JabrefLayoutRenderer layoutRenderer;
 
 	// contains special characters, symbols, etc...
 	private static Properties chars = new Properties();
@@ -136,6 +117,10 @@ public class MetsBibTexMLGenerator {
 
 	
 	private class PumaPost<T extends Resource> extends Post<T> {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4560925709698323261L;
 		private String classification;
 
 		public String getClassification() {
@@ -150,144 +135,30 @@ public class MetsBibTexMLGenerator {
 	
 	private class PumaRenderer extends JAXBRenderer {
 		
-		protected DerPost createDerPost(Post<? extends Resource> post)	throws InternServerException {
+		protected PumaPostType createPumaPost(final Post<? extends Resource> post)	throws InternServerException {
 
-			final DerPost myPostType = new DerPost();
+			final PumaPostType myPostType = new PumaPostType();
 			
-			if (post instanceof PumaPost) {
-				final PumaPost pumaPost = (PumaPost) post;
-				myPostType.setMyAttribute(pumaPost.getClassification());
-			}
-			final Resource resource = post.getResource();
-
 			fillXmlPost(myPostType, post);
 			
-			
+			/*
+			 * add additional metadata
+			 */
+			final Resource resource = post.getResource();
 			if (resource instanceof BibTex) {
 				final BibTex bibtex = (BibTex) resource;
 				bibtex.parseMiscField();
 				if (null != myPostType.getBibtex()) {
-					if (null != bibtex.getMiscField("isbn")) 		myPostType.getBibtex().setXISBN(bibtex.getMiscField("isbn")); 
-					if (null != bibtex.getMiscField("issn"))		myPostType.getBibtex().setXISSN(bibtex.getMiscField("issn")); 
-					if (null != bibtex.getMiscField("doi")) 		myPostType.getBibtex().setXDOI(bibtex.getMiscField("doi")); 
-					if (null != bibtex.getMiscField("location"))	myPostType.getBibtex().setXLocation(bibtex.getMiscField("location")); 
-					if (null != bibtex.getMiscField("dcc"))			myPostType.getBibtex().setXDCC(bibtex.getMiscField("dcc")); 
+					if (null != bibtex.getMiscField("isbn")) 		myPostType.setXISBN(bibtex.getMiscField("isbn")); 
+					if (null != bibtex.getMiscField("issn"))		myPostType.setXISSN(bibtex.getMiscField("issn")); 
+					if (null != bibtex.getMiscField("doi")) 		myPostType.setXDOI(bibtex.getMiscField("doi")); 
+					if (null != bibtex.getMiscField("location"))	myPostType.setXLocation(bibtex.getMiscField("location")); 
+					if (null != bibtex.getMiscField("dcc"))			myPostType.setXDCC(bibtex.getMiscField("dcc")); 
 				}
 				
 			}
 			return myPostType;
 		}
-
-		
-		protected void fillXmlPost(final DerPost xmlPost, final Post<? extends Resource> post) {
-			checkPost(post);
-
-			// set user
-			checkUser(post.getUser());
-			final UserType xmlUser = new UserType();
-			xmlUser.setName(post.getUser().getName());
-			xmlUser.setHref(urlRenderer.createHrefForUser(post.getUser().getName()));
-			xmlPost.setUser(xmlUser);
-			if (post.getDate() != null)
-				xmlPost.setPostingdate(createXmlCalendar(post.getDate()));
-
-			// add tags
-			if (post.getTags() != null) {
-				for (final Tag t : post.getTags()) {
-					checkTag(t);
-					final TagType xmlTag = new TagType();
-					xmlTag.setName(t.getName());
-					xmlTag.setHref(urlRenderer.createHrefForTag(t.getName()));
-					xmlPost.getTag().add(xmlTag);
-				}
-			}
-
-			// add groups
-			for (final Group group : post.getGroups()) {
-				checkGroup(group);
-				final GroupType xmlGroup = new GroupType();
-				xmlGroup.setName(group.getName());
-				xmlGroup.setHref(urlRenderer.createHrefForGroup(group.getName()));
-				xmlPost.getGroup().add(xmlGroup);
-			}
-
-			xmlPost.setDescription(post.getDescription());
-			
-			// check if the resource is a publication
-			final Resource resource = post.getResource();
-			if (resource instanceof BibTex && !(resource instanceof GoldStandardPublication)) {
-				final BibTex publication = (BibTex) post.getResource();
-				checkPublication(publication);
-				final BibtexType xmlBibtex = new BibtexType();
-
-				xmlBibtex.setHref(urlRenderer.createHrefForResource(post.getUser().getName(), publication.getIntraHash()));
-
-				fillXmlPublicationDetails(publication, xmlBibtex);
-
-				xmlPost.setBibtex(xmlBibtex);
-				
-				// if the publication has documents …
-				final List<Document> documents = publication.getDocuments();
-				if (documents != null) {
-
-					checkPublication(publication);
-					// … put them into the xml output
-					final DocumentsType xmlDocuments = new DocumentsType();
-					for (final Document document : documents){
-						final DocumentType xmlDocument = new DocumentType();
-						xmlDocument.setFilename(document.getFileName());
-						xmlDocument.setMd5Hash(document.getMd5hash());
-						xmlDocument.setHref(urlRenderer.createHrefForResourceDocument(post.getUser().getName(), publication.getIntraHash(), document.getFileName()));
-						xmlDocuments.getDocument().add(xmlDocument);
-					}
-					xmlPost.setDocuments(xmlDocuments);
-				}
-			}
-			// if resource is a bookmark create a xml representation
-			if (resource instanceof Bookmark) {
-				final Bookmark bookmark = (Bookmark) post.getResource();
-				checkBookmark(bookmark);
-				final BookmarkType xmlBookmark = new BookmarkType();
-				xmlBookmark.setHref(urlRenderer.createHrefForResource(post.getUser().getName(), bookmark.getIntraHash()));
-				xmlBookmark.setInterhash(bookmark.getInterHash());
-				xmlBookmark.setIntrahash(bookmark.getIntraHash());
-				xmlBookmark.setTitle(bookmark.getTitle());
-				xmlBookmark.setUrl(bookmark.getUrl());
-				xmlPost.setBookmark(xmlBookmark);
-			}
-			
-			if (resource instanceof GoldStandardPublication) {
-				/*
-				 * first clear tags; gold standard publications have (currently) no tags
-				 */
-				xmlPost.getTag().clear();
-				
-				final GoldStandardPublication publication = (GoldStandardPublication) post.getResource();
-				
-				final GoldStandardPublicationType xmlPublication = new GoldStandardPublicationType();
-				this.fillXmlPublicationDetails(publication, xmlPublication);
-				
-				/*
-				 * add references
-				 */
-				final ReferencesType xmlReferences = new ReferencesType();
-				xmlPublication.setReferences(xmlReferences);
-
-				final List<ReferenceType> referenceList = xmlReferences.getReference();
-				
-				for (final BibTex reference : publication.getReferences()) {
-					final ReferenceType xmlReference = new ReferenceType();
-					xmlReference.setInterhash(reference.getInterHash());
-					
-					referenceList.add(xmlReference);
-				}
-				
-				xmlPost.setGoldStandardPublication(xmlPublication);
-			}
-			
-
-		}
-
 		
 		@Override
 		protected JAXBContext getJAXBContext() throws JAXBException {
@@ -511,13 +382,13 @@ public class MetsBibTexMLGenerator {
 		/*
 		 * unser Post
 		 */
-		final DerPost derPost = xmlRenderer.createDerPost(_post);
+		final PumaPostType pumaPost = xmlRenderer.createPumaPost(_post);
 		
 		
 		//derPost.set
 		//"puma", "http://puma.uni-kassel.de/2010/11/PUMA-SWORD"
 		
-		xmlData.getAny().add(derPost);
+		xmlData.getAny().add(pumaPost);
 		
 		xmlRenderer.serializeMets(sw, mets);
 		

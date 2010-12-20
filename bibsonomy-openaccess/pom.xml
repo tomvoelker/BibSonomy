@@ -27,10 +27,6 @@
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-layout</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
 			<version>2.2.1.1</version>

@@ -1,11 +1,12 @@
-package org.bibsonomy.classification.chain.parser;
+package de.unikassel.puma.openaccess.classification.chain.parser;
 
 import java.util.LinkedHashMap;
 
-import org.bibsonomy.classification.ClassificationObject;
-import org.bibsonomy.classification.ClassificationParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+
+import de.unikassel.puma.openaccess.classification.ClassificationObject;
+import de.unikassel.puma.openaccess.classification.ClassificationParser;
 
 public class JELClassification extends ClassificationParser {
 
