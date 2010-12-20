@@ -15,8 +15,6 @@ import org.bibsonomy.webapp.config.AuthMethod;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.RequestAware;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -34,7 +32,7 @@ import org.springframework.validation.Errors;
  * @author cvo
  * @version $Id$
  */
-public class ChangePasswordController implements ValidationAwareController<SettingsViewCommand>, ErrorAware, CookieAware, RequestAware {
+public class ChangePasswordController implements ValidationAwareController<SettingsViewCommand>, ErrorAware, CookieAware {
 	private static final Log log = LogFactory.getLog(ChangePasswordController.class);
 
 	/**
@@ -46,11 +44,6 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 	 * logic interface
 	 */
 	private LogicInterface adminLogic = null;
-	
-	/**
-	 * request logic interface
-	 */
-	private RequestLogic requestLogic;
 	
 	/**
 	 * to update the user password cookie
@@ -78,7 +71,10 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 
 	@Override
 	public View workOn(final SettingsViewCommand command) {
-		// throw an exception if internal authentication is not available and someone tries to change his password 
+		/*
+		 * throw an exception if internal authentication is not available and 
+		 * someone tries to change his password 
+		 */
 		if (!(present(this.authConfig) && this.authConfig.containsAuthMethod(AuthMethod.INTERNAL.name())) ) {
 			throw new RuntimeException("Changing the password is not possible."); 
 		}
@@ -86,7 +82,7 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 		final RequestWrapperContext context = command.getContext();
 	
 		/*
-		 * user has to be logged in to delete himself
+		 * user has to be logged in to change his password
 		 */
 		if (!context.isUserLoggedIn()) {
 			errors.reject("error.general.login");
@@ -104,7 +100,24 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 			command.showGroupTab(true);
 		}
 
-		/**
+		/*
+		 * LDAP and OpenID users can't change their password.
+		 */
+		if (present(loginUser.getLdapId())) {
+			/*
+			 * user exists and e-mail-address is fine but user has an LDAP ID
+			 * and thus shall not use the reminder
+			 */
+			errors.reject("error.settings.password.ldap", "You are logged in using LDAP and thus don't have a password you could change.");
+		} else if (present(loginUser.getOpenID())) {
+			/*
+			 * user exists and e-mail-address is fine but user has an OpenID
+			 * and thus shall not use the reminder
+			 */
+			errors.reject("error.settings.password.openid", "You are logged in using OpenID and thus don't have a password you could change.");
+		}
+		
+		/*
 		 * go back to the settings page and display errors from command field
 		 * validation
 		 */
@@ -175,7 +188,7 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 	}
 
 	/**
-	 * sets the adming logic interface
+	 * sets the admin logic interface
 	 * 
 	 * @param adminLogic
 	 */
@@ -194,14 +207,6 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 	}
 
 	/**
-	 * @param requestLogic the requestLogic to set
-	 */
-	@Override
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-
-	/**
 	 * @param cookieLogic the cookieLogic to set
 	 */
 	@Override
@@ -209,11 +214,11 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 		this.cookieLogic = cookieLogic;
 	}
 
+	/**
+	 * @param authConfig
+	 */
 	public void setAuthConfig(AuthConfig authConfig) {
 		this.authConfig = authConfig;
 	}
 
-	public AuthConfig getAuthConfig() {
-		return authConfig;
-	}
 }

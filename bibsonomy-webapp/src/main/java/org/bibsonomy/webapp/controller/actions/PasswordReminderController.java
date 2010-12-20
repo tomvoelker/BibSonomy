@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -60,14 +62,14 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	
 	@Override
 	public View workOn(final PasswordReminderCommand command) {
-				
+
 		/*
 		 * check if internal authentication is supported
 		 */
 		if (! authConfig.containsAuthMethod(AuthMethod.INTERNAL) )  {
 			errors.reject("error.method_not_allowed");
 			return Views.ERROR;			
-		}		
+		}
 		
 		// get locale
 		final Locale locale = requestLogic.getLocale();
@@ -115,7 +117,22 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 			 */
 			errors.rejectValue("userName", "error.field.valid.user.name");
 		} else if (!user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
+			/*
+			 * user exists but email address does not match
+			 */
 			errors.rejectValue("userEmail", "error.field.valid.user.email");
+		} else if (present(existingUser.getLdapId())) {
+			/*
+			 * user exists and e-mail-address is fine but user has an LDAP ID
+			 * and thus shall not use the reminder
+			 */
+			errors.reject("error.passReminder.ldap", "You are registered using LDAP and thus don't have a password we could send you a reminder for.");
+		} else if (present(existingUser.getOpenID())) {
+			/*
+			 * user exists and e-mail-address is fine but user has an OpenID
+			 * and thus shall not use the reminder
+			 */
+			errors.reject("error.passReminder.openid", "You are registered using OpenID and thus don't have a password we could send you a reminder for.");
 		}
 
 		/*
