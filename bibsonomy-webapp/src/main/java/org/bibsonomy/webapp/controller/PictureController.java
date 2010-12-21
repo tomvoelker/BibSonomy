@@ -316,27 +316,32 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	private BufferedImage scalePicture(final File imageFile) throws IOException {
 		final Image image = ImageIO.read(imageFile);
 		final Image scaledImage;
-
-		/*
-		 * convert picture to the standard size with fixed aspect ratio
-		 */
-		if (image.getWidth(null) > image.getHeight(null)) {
+		final int width = image.getWidth(null);
+		final int height = image.getHeight(null);
+		if (height > 200 || width > 200) {
 			/*
-			 *  _________        ____
-			 * |         | ---> |____|
-			 * |_________|
-			 * 
+			 * convert picture to the standard size with fixed aspect ratio
 			 */
-			scaledImage = image.getScaledInstance(sizeOfLargestSide, -1, Image.SCALE_SMOOTH);
+			if (width > height) {
+				/*
+				 *  _________        ____
+				 * |         | ---> |____|
+				 * |_________|
+				 * 
+				 */
+				scaledImage = image.getScaledInstance(sizeOfLargestSide, -1, Image.SCALE_SMOOTH);
+			} else {
+				/*
+			 	*  ____        __
+			 	* |    | ---> |  |
+			 	* |    |      |__|
+			 	* |    |
+			 	* |____|
+			 	*/
+				scaledImage = image.getScaledInstance(-1, sizeOfLargestSide, Image.SCALE_SMOOTH);
+			}
 		} else {
-			/*
-			 *  ____        __
-			 * |    | ---> |  |
-			 * |    |      |__|
-			 * |    |
-			 * |____|
-			 */
-			scaledImage = image.getScaledInstance(-1, sizeOfLargestSide, Image.SCALE_SMOOTH);
+			scaledImage = image;
 		}
 
 		/*
