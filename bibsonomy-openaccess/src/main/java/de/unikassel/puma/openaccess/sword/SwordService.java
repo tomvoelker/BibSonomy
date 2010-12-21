@@ -102,7 +102,7 @@ public class SwordService {
 	 */
 	public DepositResponse submitDocument(Post<?> post, User user) {
 		log.info("starting sword");
-		DepositResponse depositResponse = null; 
+		DepositResponse depositResponse = new DepositResponse(999); 
 		File swordZipFile = null;
 
 		// -------------------------------------------------------------------------------
@@ -262,6 +262,10 @@ public class SwordService {
 			// -- send zip archive
 			// -- delete zip archive
 
+			
+			swordClient.setServer(repositoryConfig.getHttpServer(), repositoryConfig.getHttpPort());
+			swordClient.setUserAgent(repositoryConfig.getHttpUserAgent());
+			swordClient.setCredentials(repositoryConfig.getAuthUsername(), repositoryConfig.getAuthPassword());
 
 			// message meta
 			swordMessage.setNoOp(false);
@@ -291,7 +295,7 @@ public class SwordService {
 				}
 
 			} catch (SWORDClientException e) {
-				log.warn("SWORDClientException");
+				log.warn("SWORDClientException: " + e.getMessage() + "\n" + e.getCause());
 			}
 
 		}
