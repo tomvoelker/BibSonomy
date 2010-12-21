@@ -49,6 +49,9 @@ import org.purl.sword.client.SWORDClientException;
 public class SwordService {
 	private static final Log log = LogFactory.getLog(SwordService.class);
 	
+	private static final String SWORDFILETYPE = "application/zip";
+	private static final String SWORDFORMAT = "http://purl.org/net/sword-types/METSDSpaceSIP"; 
+	
 //	private String dirTemp;
 //	private String httpServer;
 //	private int httpPort;
@@ -61,34 +64,51 @@ public class SwordService {
 	
 	private String projectDocumentPath;
 
-	
-	private String retrieveServicedocument(){
-		return null;
+	/**
+	 * retrieve service document from sword server
+	 * @return
+	 */
+	private ServiceDocument retrieveServicedocument(){
+		ServiceDocument serviceDocument = null;
+		// get an instance of SWORD-Client
+		Client swordClient = new Client();
+		swordClient.setServer(repositoryConfig.getHttpServer(), repositoryConfig.getHttpPort());
+		swordClient.setUserAgent(repositoryConfig.getHttpUserAgent());
+		swordClient.setCredentials(repositoryConfig.getAuthUsername(), repositoryConfig.getAuthPassword());
+		try {
+			serviceDocument = swordClient.getServiceDocument(repositoryConfig.getHttpServicedocumentUrl());
+		} catch (SWORDClientException e) {
+			log.info("SWORDClientException! getServiceDocument" + e.getMessage());
+		}
+		return serviceDocument;
 	}
 	
-	private boolean checkServicedokument(String doc, String url) {
-		return checkServicedokument(doc, url, null);
-	}
-	
-	private boolean checkServicedokument(String doc, String url, String accept) {
-		return false;
+	/**
+	 * Check if servicedocument is available and repository contains configured deposit collection   
+	 * @param doc Servicedocument
+	 * @param url deposit url
+	 * @param accept "application/zip"
+	 * @param acceptPackaging "http://purl.org/net/sword-types/METSDSpaceSIP"
+	 * @return
+	 */
+	private boolean checkServicedokument(ServiceDocument doc, String url, String accept, String acceptPackaging) {
+		// TODO: check service document
+		return true;
 	}
 	
 	
 	/**
 	 * collects all informations to send Documents with metadata to repository 
 	 */
-	public boolean submitDocument(Post<?> post, User user) {
+	public DepositResponse submitDocument(Post<?> post, User user) {
 		log.info("starting sword");
+		DepositResponse depositResponse = null; 
 		File swordZipFile = null;
-
-		//swordZipFile = service.retrieveSwordPost(user);
 
 		// -------------------------------------------------------------------------------
 		/*
 		 * retrieve ZIP-FILE
 		 */
-			
 		if (post.getResource() instanceof BibTex) {
 					
 			// fileprefix
@@ -119,12 +139,12 @@ public class SwordService {
 				// create directory
 				boolean mkdir_success = (new File(destinationDirectory.getAbsolutePath())).mkdir();
 				if (mkdir_success) {
-					System.out.println("Directory: " + destinationDirectory.getAbsolutePath() + " created");
+					log.info("Directory: " + destinationDirectory.getAbsolutePath() + " created");
 				}    
 				
 						
-				// open zip archive to add files to  
-				System.out.println("zipFilename: "+swordZipFile);
+				// open zip archive to add files to
+				log.info("zipFilename: "+swordZipFile);
 				ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(swordZipFile));
 				
 				ArrayList<String> fileList = new ArrayList<String>();
@@ -138,7 +158,7 @@ public class SwordService {
 					// move file to user folder with username_resource-hash as folder name
 					
 					// File (or directory) to be copied 
-					File fileToZip = new File(document.getFileHash());
+					//File fileToZip = new File(document.getFileHash());
 					
 					fileList.add(document.getFileName());
 							
@@ -180,10 +200,6 @@ public class SwordService {
 					in.close();			
 				}
 
-				
-				// create meta data structure
-				BibTex bibTexPostResource = (BibTex) post.getResource();
-				
 				// write meta data into zip archive
 				ZipEntry zipEntry = new ZipEntry("mets.xml");
 				zipOutputStream.putNextEntry(zipEntry);				
@@ -195,20 +211,16 @@ public class SwordService {
 				metsBibTexMLGenerator.setFilenameList(fileList);
 				//metsGenerator.setMetadata(metadataMap);
 				metsBibTexMLGenerator.setMetadata((Post<BibTex>) post);
-				StreamResult streamResult = new StreamResult(zipOutputStream);
+				//StreamResult streamResult = new StreamResult(zipOutputStream);
 						
 				zipOutputStream.write(metsBibTexMLGenerator.generateMets().getBytes());
-						
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-				Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-				String currentTime = df.format(cal.getTime());
 
 				zipOutputStream.closeEntry();
 							
 				// close zip archive  
 				zipOutputStream.close();
 										
-				System.out.println("saved to "+swordZipFile.getPath());
+				log.debug("saved to "+swordZipFile.getPath());
 						
 			} catch (MalformedURLException e) {
 				// e.printStackTrace();
@@ -237,7 +249,6 @@ public class SwordService {
 			Client swordClient = new Client();
 
 			PostMessage swordMessage = new PostMessage();
-			DepositResponse depositResponse = null; 
 
 			// create sword post message
 
@@ -258,42 +269,45 @@ public class SwordService {
 			swordMessage.setFilepath(swordZipFile.getAbsolutePath());
 			swordMessage.setFiletype("application/zip");
 			swordMessage.setFormatNamespace("http://purl.org/net/sword-types/METSDSpaceSIP"); // sets packaging!
-			swordMessage.setVerbose(true);
+			swordMessage.setVerbose(false);
 
 
 			try {
-				// get Service Document 
-				swordClient.setServer(repositoryConfig.getHttpServer(), repositoryConfig.getHttpPort());
-				swordClient.setUserAgent(repositoryConfig.getHttpUserAgent());
-				swordClient.setCredentials(repositoryConfig.getAuthUsername(), repositoryConfig.getAuthPassword());
-				ServiceDocument serviceDocument = swordClient.getServiceDocument(repositoryConfig.getHttpServicedocumentUrl());
-
-				// transmit sword message (zip file with document metadata and document files
-				
-				swordMessage.setDestination(repositoryConfig.getHttpDepositUrl());
-
-				depositResponse = swordClient.postFile(swordMessage);
-				if (depositResponse.getHttpResponse()>=300) {
-					try {
-						log.info("depositResponse: "+ depositResponse.getErrorDocument().getErrorURI());
-					} catch (SWORDException e) {
-						e.printStackTrace();
+				// check depositurl against service document
+				if (checkServicedokument(retrieveServicedocument(), repositoryConfig.getHttpServicedocumentUrl(), SWORDFILETYPE, SWORDFORMAT)) {
+					// transmit sword message (zip file with document metadata and document files
+					swordMessage.setDestination(repositoryConfig.getHttpDepositUrl());
+	
+					depositResponse = swordClient.postFile(swordMessage);
+					if (depositResponse.getHttpResponse()>=300) {
+						try {
+							log.info("depositResponse: "+ depositResponse.getErrorDocument().getErrorURI());
+						} catch (SWORDException e) {
+							log.warn("SWORDException! " + e.getMessage());
+						}
+					} else {
+						log.info("depositResponse: OK!");
 					}
-				} else {
-					log.info("depositResponse: OK!");
 				}
-
 
 			} catch (SWORDClientException e) {
 				log.warn("SWORDClientException");
-			e.printStackTrace();
 			}
 
 		}
 
-		return true;
+		return depositResponse;
 	}
 
+	/*
+	 * returns true, if sword server response is positive (http status is less than 300. status codes 200, 201, and 202 are possible), otherwise false
+	 */
+	public boolean checkDepositResponse(DepositResponse response) {
+		// see http://www.swordapp.org/docs/sword-profile-1.3.html
+		if (response.getHttpResponse() < 300) return true; else return false;
+	}
+	
+	
 	/*
 	 * Workaround method to retrieve 
 	 */
