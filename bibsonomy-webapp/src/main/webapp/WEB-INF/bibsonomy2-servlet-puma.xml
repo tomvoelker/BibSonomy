@@ -90,17 +90,22 @@
 		| NullFactoryBeanin bibsonomy2-servlet-bibsonomy.xml).
 		|
 	 	+-->
-	<bean id="swordService_puma" class="de.unikassel.puma.openaccess.sword.SwordService" lazy-init="true">
-		<property name="projectDocumentPath" value="${project.document.path}" />
-		<property name="dirTemp" value="/tmp/" />
-		<property name="httpServer" value="localhost" />
-		<property name="httpPort" value="80" />
-		<property name="httpUserAgent" value="puma" />
-		<property name="authUsername" value="username" />
-		<property name="authPassword" value="password" />
-		<property name="httpServicedocumentUrl" value="/sword/servicedocument" />
-		<property name="httpDepositUrl" value="/no/deposit/url/" />
+	<bean id="swordConfig_puma" class="de.unikassel.puma.openaccess.sword.SwordConfig">
+		<property name="dirTemp" value="${sword.dirTemp}"/>
+		<property name="httpServer" value="${sword.httpServer}"/>
+		<property name="httpPort" value="${sword.httpPort}"/>
+		<property name="httpUserAgent" value="${sword.httpUserAgent}"/>
+		<property name="authUsername" value="${sword.authUsername}"/>
+		<property name="authPassword" value="${sword.authPassword}"/>
+		<property name="httpServicedocumentUrl" value="${sword.httpServicedocumentUrl}"/>
+		<property name="httpDepositUrl" value="${sword.httpDepositUrl}"/>
 	</bean>
+
+	<bean id="swordService_puma" class="de.unikassel.puma.openaccess.sword.SwordService">
+		<property name="repositoryConfig" ref="swordConfig_puma"/>
+		<property name="projectDocumentPath" value="${project.document.path}"/>
+	</bean>
+
 
 </beans>
 
