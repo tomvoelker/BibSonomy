@@ -296,7 +296,7 @@ function myownTagInit(chkbox, tagbox) {
 			if(this.checked 
 					&& tagbox.val().search(/myown[ ]?/gi) == -1){
 					tagbox.val('myown '+tagbox.val());
-			} else {
+			} else if(!this.checked) {
 				tagbox.val(tagbox.val().replace(/myown[ ]?/gi, ''));
 			}
 	}).parent().removeClass('hiddenElement');
