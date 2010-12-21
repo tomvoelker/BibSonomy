@@ -318,7 +318,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		final Image scaledImage;
 		final int width = image.getWidth(null);
 		final int height = image.getHeight(null);
-		if (height > 200 || width > 200) {
+		if (height > sizeOfLargestSide || width > sizeOfLargestSide) {
 			/*
 			 * convert picture to the standard size with fixed aspect ratio
 			 */
