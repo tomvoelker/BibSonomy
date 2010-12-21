@@ -250,7 +250,7 @@
   
 	<!-- show password change dialog only if internal authentication is configured -->
 	<c:if test="${atl:containsAuthMethod(authConfig, 'INTERNAL')}">
-		<settings:passwordChange command="${command}"/>
+		<settings:passwordChange loginUser="${command.context.loginUser}"/>
 	</c:if>
 		
 	<!-- delete account -->
