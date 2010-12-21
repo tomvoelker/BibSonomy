@@ -218,9 +218,9 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			if (command.getSendToRepository()) {
 				log.debug("request to submit publication metadata and pdf via sword to repository");
 				if (swordService.checkDepositResponse(swordService.submitDocument(post, loginUser))) {
-					log.info("sumission of publication metadata and pdf via sword to repository SUCCEEDED.");
+					log.info("submission of publication metadata and pdf via sword to repository SUCCEEDED.");
 				} else {
-					log.warn("sumission of publication metadata and pdf via sword to repository FAILED.");
+					log.warn("submission of publication metadata and pdf via sword to repository FAILED.");
 				}
 
 			} else {
