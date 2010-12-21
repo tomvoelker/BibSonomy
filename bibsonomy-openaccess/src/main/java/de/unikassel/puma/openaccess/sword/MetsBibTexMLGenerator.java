@@ -6,6 +6,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Properties;
 
@@ -13,6 +14,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
@@ -286,15 +290,24 @@ public class MetsBibTexMLGenerator {
 		 */
 
 		final MetsHdr metsHdr = objectFactory.createMetsTypeMetsHdr();
-		//metsHdr.setCREATEDATE();
-
+		
+		
+		GregorianCalendar c = new GregorianCalendar();
+		XMLGregorianCalendar currentDate;
+		try {
+			currentDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+			metsHdr.setCREATEDATE(currentDate);
+		} catch (DatatypeConfigurationException e) {
+			log.warn("DatatypeConfigurationException");
+		}
+		
 		mets.setMetsHdr(metsHdr);
 
 		final List<Agent> metsHdrAgentList = metsHdr.getAgent();
 		final Agent metsHdrAgent = new Agent();
 		metsHdrAgent.setROLE("CUSTODIAN");
 		metsHdrAgent.setTYPE("ORGANIZATION");
-		metsHdrAgent.setName("Sven Stefani");
+		metsHdrAgent.setName("PUMA");
 		
 		metsHdrAgentList.add(metsHdrAgent);
 		
