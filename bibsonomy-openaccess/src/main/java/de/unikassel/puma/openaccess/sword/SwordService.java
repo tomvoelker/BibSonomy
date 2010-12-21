@@ -49,17 +49,19 @@ import org.purl.sword.client.SWORDClientException;
 public class SwordService {
 	private static final Log log = LogFactory.getLog(SwordService.class);
 	
-	private String dirTemp;
-	private String httpServer;
-	private int httpPort;
-	private String httpUserAgent;
-	private String authUsername;
-	private String authPassword;
-	private String httpServicedocumentUrl;
-	private String httpDepositUrl;
+//	private String dirTemp;
+//	private String httpServer;
+//	private int httpPort;
+//	private String httpUserAgent;
+//	private String authUsername;
+//	private String authPassword;
+//	private String httpServicedocumentUrl;
+//	private String httpDepositUrl;
+	private SwordConfig repositoryConfig;
 	
 	private String projectDocumentPath;
 
+	
 	private String retrieveServicedocument(){
 		return null;
 	}
@@ -72,31 +74,6 @@ public class SwordService {
 		return false;
 	}
 	
-	
-
-	/*
-	 * 
-<?xml version="1.0" encoding="UTF-8"?>
-<app:service xmlns:atom="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:sword="http://purl.org/net/sword/" xmlns:dcterms="http://purl.org/dc/terms/">
-   <sword:version>1.3</sword:version>
-   <sword:verbose>true</sword:verbose>
-   <sword:noOp>true</sword:noOp>
-   <sword:maxUploadSize>-1</sword:maxUploadSize>
-   <atom:generator uri="http://www.dspace.org/ns/sword/1.3.1" version="1.3"/>
-   <app:workspace>
-      <atom:title type="text">DSpace 1.6.1-Test</atom:title>
-      <app:collection href="http://bib-pc152.bibliothek.uni-kassel.de:8080/sword/deposit/urn:nbn:de:hebis:34-2006051211778">
-         <atom:title type="text">Arbeitspapiere</atom:title>
-         <app:accept>application/zip</app:accept>
-         <sword:acceptPackaging q="1.0">http://purl.org/net/sword-types/METSDSpaceSIP</sword:acceptPackaging>
-         <sword:collectionPolicy>NOTE: PLACE YOUR OWN LICENSE HERE This sample license is provided for informational purposes only. NON-EXCLUSIVE DISTRIBUTION LICENSE By signing and submitting this license, you (the author(s) or copyright owner) grants to DSpace University (DSU) the non-exclusive right to reproduce, translate (as defined below), and/or distribute your submission (including the abstract) worldwide in print and electronic format and in any medium, including but not limited to audio or video. You agree that DSU may, without changing the content, translate the submission to any medium or format for the purpose of preservation. You also agree that DSU may keep more than one copy of this submission for purposes of security, back-up and preservation. You represent that the submission is your original work, and that you have the right to grant the rights contained in this license. You also represent that your submission does not, to the best of your knowledge, infringe upon anyone's copyright. If the submission contains material for which you do not hold copyright, you represent that you have obtained the unrestricted permission of the copyright owner to grant DSU the rights required by this license, and that such third-party owned material is clearly identified and acknowledged within the text or content of the submission. IF THE SUBMISSION IS BASED UPON WORK THAT HAS BEEN SPONSORED OR SUPPORTED BY AN AGENCY OR ORGANIZATION OTHER THAN DSU, YOU REPRESENT THAT YOU HAVE FULFILLED ANY RIGHT OF REVIEW OR OTHER OBLIGATIONS REQUIRED BY SUCH CONTRACT OR AGREEMENT. DSU will clearly identify your name(s) as the author(s) or owner(s) of the submission, and will not make any alteration, other than as allowed by this license, to your submission. </sword:collectionPolicy>
-         <dcterms:abstract>working papers</dcterms:abstract>
-         <sword:mediation>true</sword:mediation>
-      </app:collection>	 
-      
-     *
-	 */
-
 	
 	/**
 	 * collects all informations to send Documents with metadata to repository 
@@ -118,7 +95,7 @@ public class SwordService {
 			String fileID = HashUtils.getMD5Hash(user.getName().getBytes()) + "_"+post.getResource().getIntraHash();
 					
 			// Destination directory 
-			File destinationDirectory = new File(dirTemp+"/"+fileID);
+			File destinationDirectory = new File(repositoryConfig.getDirTemp()+"/"+fileID);
 
 			// zip-filename
 			swordZipFile = new File(destinationDirectory.getAbsoluteFile()+"/"+fileID+".zip");
@@ -277,7 +254,7 @@ public class SwordService {
 
 			// message meta
 			swordMessage.setNoOp(false);
-			swordMessage.setUserAgent(httpUserAgent);
+			swordMessage.setUserAgent(repositoryConfig.getHttpUserAgent());
 			swordMessage.setFilepath(swordZipFile.getAbsolutePath());
 			swordMessage.setFiletype("application/zip");
 			swordMessage.setFormatNamespace("http://purl.org/net/sword-types/METSDSpaceSIP"); // sets packaging!
@@ -286,14 +263,14 @@ public class SwordService {
 
 			try {
 				// get Service Document 
-				swordClient.setServer(httpServer, httpPort);
-				swordClient.setUserAgent(httpUserAgent);
-				swordClient.setCredentials(authUsername, authPassword);
-				ServiceDocument serviceDocument = swordClient.getServiceDocument(httpServicedocumentUrl);
+				swordClient.setServer(repositoryConfig.getHttpServer(), repositoryConfig.getHttpPort());
+				swordClient.setUserAgent(repositoryConfig.getHttpUserAgent());
+				swordClient.setCredentials(repositoryConfig.getAuthUsername(), repositoryConfig.getAuthPassword());
+				ServiceDocument serviceDocument = swordClient.getServiceDocument(repositoryConfig.getHttpServicedocumentUrl());
 
 				// transmit sword message (zip file with document metadata and document files
 				
-				swordMessage.setDestination(httpDepositUrl);
+				swordMessage.setDestination(repositoryConfig.getHttpDepositUrl());
 
 				depositResponse = swordClient.postFile(swordMessage);
 				if (depositResponse.getHttpResponse()>=300) {
@@ -352,118 +329,18 @@ public class SwordService {
 		return null;
 	}
 
-	/**
-	 * @return the dirTemp
-	 */
-	public String getDirTemp() {
-		return dirTemp;
-	}
 
 	/**
-	 * @param dirTemp the dirTemp to set
+	 * Configuration of Sword-Server (Repository) 
+	 * 
+	 * @param repositoryConfig the repositoryConfig to set
 	 */
-	public void setDirTemp(String dirTemp) {
-		this.dirTemp = dirTemp;
+	public void setRepositoryConfig(SwordConfig repositoryConfig) {
+		this.repositoryConfig = repositoryConfig;
 	}
 
-	/**
-	 * @return the httpServer
-	 */
-	public String getHttpServer() {
-		return httpServer;
-	}
 
-	/**
-	 * @param httpServer the httpServer to set
-	 */
-	public void setHttpServer(String httpServer) {
-		this.httpServer = httpServer;
-	}
-
-	/**
-	 * @return the httpPort
-	 */
-	public int getHttpPort() {
-		return httpPort;
-	}
-
-	/**
-	 * @param httpPort the httpPort to set
-	 */
-	public void setHttpPort(int httpPort) {
-		this.httpPort = httpPort;
-	}
-
-	/**
-	 * @return the httpUserAgent
-	 */
-	public String getHttpUserAgent() {
-		return httpUserAgent;
-	}
-
-	/**
-	 * @param httpUserAgent the httpUserAgent to set
-	 */
-	public void setHttpUserAgent(String httpUserAgent) {
-		this.httpUserAgent = httpUserAgent;
-	}
-
-	/**
-	 * @return the authUsername
-	 */
-	public String getAuthUsername() {
-		return authUsername;
-	}
-
-	/**
-	 * @param authUsername the authUsername to set
-	 */
-	public void setAuthUsername(String authUsername) {
-		this.authUsername = authUsername;
-	}
-
-	/**
-	 * @return the authPassword
-	 */
-	public String getAuthPassword() {
-		return authPassword;
-	}
-
-	/**
-	 * @param authPassword the authPassword to set
-	 */
-	public void setAuthPassword(String authPassword) {
-		this.authPassword = authPassword;
-	}
-
-	/**
-	 * @return the httpServicedocumentUrl
-	 */
-	public String getHttpServicedocumentUrl() {
-		return httpServicedocumentUrl;
-	}
-
-	/**
-	 * @param httpServicedocumentUrl the httpServicedocumentUrl to set
-	 */
-	public void setHttpServicedocumentUrl(String httpServicedocumentUrl) {
-		this.httpServicedocumentUrl = httpServicedocumentUrl;
-	}
-
-	/**
-	 * @return the httpDepositUrl
-	 */
-	public String getHttpDepositUrl() {
-		return httpDepositUrl;
-	}
-
-	/**
-	 * @param httpDepositUrl the httpDepositUrl to set
-	 */
-	public void setHttpDepositUrl(String httpDepositUrl) {
-		this.httpDepositUrl = httpDepositUrl;
-	}
-
+	
 	/**
 	 * The path to the documents.
 	 * 

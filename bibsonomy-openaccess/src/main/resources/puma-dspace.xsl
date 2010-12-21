@@ -60,32 +60,37 @@
 
     <!-- match the top level bibtex-entry element and kick off the
          template matching process -->
-    <xsl:template match="puma:DerPost">
+    <xsl:template match="puma:PumaPostType">
     	<dim:dim>
     		<xsl:apply-templates/>
-    	</dim:dim>
-    </xsl:template>
-    
-    <!-- dc.subject -->
-    <xsl:template match="puma:tag">
-    	<dim:field mdschema="dc" element="subject">
-    		<xsl:value-of select="@name"/>
-    	</dim:field>
-    </xsl:template>
-
-
-    <xsl:template match="puma:bibtex">
-
-		<xsl:if test="./@entrytype">
-	    	<dim:field mdschema="dc" element="type">
-	    		<xsl:value-of select="@entrytype"/>
+	    <!-- dc.identifier.isbn -->
+		<xsl:if test="./@xISBN">
+	    	<dim:field mdschema="dc" element="identifier" qualifier="isbn">
+	    		<xsl:value-of select="@xISBN"/>
 	    	</dim:field>
 		</xsl:if>
 	
+	    <!-- dc.identifier.issn -->
+		<xsl:if test="./@xISSN">
+	    	<dim:field mdschema="dc" element="identifier" qualifier="issn">
+	    		<xsl:value-of select="@xISSN"/>
+	    	</dim:field>
+		</xsl:if>
+    	</dim:dim>
+    </xsl:template>
+    
+    <xsl:template match="bibtex">
+
 	    <!-- dc.title -->
 		<xsl:if test="./@title">
 	    	<dim:field mdschema="dc" element="title">
 	    		<xsl:value-of select="@title"/>
+	    	</dim:field>
+		</xsl:if>
+	
+		<xsl:if test="./@entrytype">
+	    	<dim:field mdschema="dc" element="type">
+	    		<xsl:value-of select="@entrytype"/>
 	    	</dim:field>
 		</xsl:if>
 	
@@ -115,13 +120,9 @@
 	    	<dim:field mdschema="dc" element="date">
 	    		<xsl:value-of select="@year"/>
 			
-				<xsl:if test="./@month">
-					-<xsl:value-of select="@month"/>
-				</xsl:if>
+				<xsl:if test="./@month">-<xsl:value-of select="@month"/></xsl:if>
 			
-				<xsl:if test="./@day">
-					-<xsl:value-of select="@day"/>
-				</xsl:if>
+				<xsl:if test="./@day">-<xsl:value-of select="@day"/></xsl:if>
 
 	    	</dim:field>
 		</xsl:if>
@@ -160,22 +161,17 @@
 	    		<xsl:value-of select="@description"/>
 	    	</dim:field>
 		</xsl:if>
-	
-	    <!-- dc.identifier.isbn -->
-		<xsl:if test="./@xISBN">
-	    	<dim:field mdschema="dc" element="identifier" qualifier="isbn">
-	    		<xsl:value-of select="@entrytype"/>
-	    	</dim:field>
-		</xsl:if>
-	
-	    <!-- dc.identifier.issn -->
-		<xsl:if test="./@xISSN">
-	    	<dim:field mdschema="dc" element="identifier" qualifier="issn">
-	    		<xsl:value-of select="@entrytype"/>
-	    	</dim:field>
-		</xsl:if>
 
 	</xsl:template>
+
+    <!-- dc.subject -->
+    <xsl:template match="tag">
+    	<dim:field mdschema="dc" element="subject">
+    		<xsl:value-of select="@name"/>
+    	</dim:field>
+    </xsl:template>
+
+
 
 
 </xsl:stylesheet>
