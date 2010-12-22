@@ -1126,27 +1126,20 @@
 		<AdditionalInfo>Sometimes scraping won't work. Dunno why</AdditionalInfo>
 	</URLTest>	
 	<URLTest id="url_190">
-		<TestDescription>test for ACMScraper</TestDescription>
-		<URL>http://portal.acm.org/citation.cfm?doid=1454008.1454053</URL>
-		<BibFile>ACMBasicScraperUnitURLTest7.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>	
-	<URLTest id="url_191">
 		<TestDescription>test for PNASScraper</TestDescription>
 		<URL>http://www.pnas.org/content/106/52/22480.abstract</URL>
 		<BibFile>PNASScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pnas.PNASScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
-	<URLTest id="url_192">
+	<URLTest id="url_191">
 		<TestDescription>test for PNASScraper</TestDescription>
 		<URL>http://www.pnas.org/content/101/22/8281.abstract</URL>
 		<BibFile>PNASScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pnas.PNASScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
-	<URLTest id="url_193">
+	<URLTest id="url_192">
 		<TestDescription>test for ScienceMagScraper</TestDescription>
 		<URL>http://www.sciencemag.org/content/326/5956/1057</URL>
 		<BibFile>ScienceMagScraperUnitURLTest1.bib</BibFile>

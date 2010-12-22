@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Scraper URL test #191 #192 for PNASScraper
+ * Scraper URL test #190 #191 for PNASScraper
  * 
  * @author clemens
  * @version $Id$
@@ -15,22 +15,22 @@ import org.junit.Test;
 public class PNASScraperTest {
 
 	/**
-	 * starts URL test with id url_191
+	 * starts URL test with id url_190
 	 */
 	@Test
 	@Ignore
 	public void urlTest1Run() {
 		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_191"));
+		assertTrue(runner.runSingleTest("url_190"));
 	}
 
 	/**
-	 * starts URL test with id url_192
+	 * starts URL test with id url_191
 	 */
 	@Test
 	@Ignore
 	public void urlTest2Run() {
 		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_192"));
+		assertTrue(runner.runSingleTest("url_191"));
 	}
 }

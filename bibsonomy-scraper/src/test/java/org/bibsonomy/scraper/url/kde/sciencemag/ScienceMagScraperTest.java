@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Scraper URL test #193 for ScienceMagScraper
+ * Scraper URL test #192 for ScienceMagScraper
  * 
  * @author clemens
  * @version $Id$
@@ -15,12 +15,12 @@ import org.junit.Test;
 public class ScienceMagScraperTest {
 
 	/**
-	 * starts URL test with id url_193
+	 * starts URL test with id url_192
 	 */
 	@Test
 	@Ignore
 	public void urlTest1Run() {
 		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_193"));
+		assertTrue(runner.runSingleTest("url_192"));
 	}
 }
