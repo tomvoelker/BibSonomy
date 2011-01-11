@@ -29,7 +29,7 @@ public class GetListOfPostsStrategyTest extends AbstractContextTest {
 
 		// just test length, because the detail rendering output is tested by
 		// the renderer test
-		assertEquals(11067, baos.toString().length());
+		assertEquals(11004, baos.toString().length());
 		assertEquals("text/xml", ctx.getContentType("firefox"));
 		assertEquals("bibsonomy/posts+XML", ctx.getContentType(RestProperties.getInstance().getApiUserAgent()));
 	}

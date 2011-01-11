@@ -29,7 +29,7 @@ public class GetUserListOfGroupStrategyTest extends AbstractContextTest {
 
 		// just test length, because the detail rendering output is tested by
 		// the renderer test
-		assertEquals(185, baos.toString().length());
+		assertEquals(122, baos.toString().length());
 		assertEquals("text/xml", c.getContentType("firefox"));
 		assertEquals("bibsonomy/users+XML", c.getContentType(RestProperties.getInstance().getApiUserAgent()));
 	}
