@@ -53,5 +53,5 @@ gromit: mvn_deploy
 odie: mvn_deploy
 
 mvn_deploy:
-	${MAVEN} -Dmaven.test.skip war:inplace tomcat:undeploy tomcat:deploy
+	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip war:inplace tomcat:undeploy tomcat:deploy
 
