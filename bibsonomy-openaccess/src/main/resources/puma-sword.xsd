@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema targetNamespace="http://puma.uni-kassel.de/2010/11/PUMA-SWORD"
-	elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD"
-	xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
 
 	<xsd:import
 		schemaLocation="../../../../bibsonomy-model/src/main/resources/xschema.xsd"
-		namespace="http://www.bibsonomy.org/2010/11/BibSonomy"></xsd:import>
-	<xsd:import schemaLocation="mets.xsd" namespace="http://www.loc.gov/METS/"></xsd:import>
+	></xsd:import>	
+<!--	<xsd:import namespace="http://www.loc.gov/METS/" schemaLocation="mets.xsd"></xsd:import>-->
 
 	<xsd:element name="PumaPostType" xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD">
 		<xsd:complexType>
 			<xsd:complexContent>
-				<xsd:extension base="bib:PostType" >
+				<xsd:extension base="PostType" >
 					<xsd:attribute name="xDescription" type="xsd:string" />	
 					<xsd:attribute name="xPostingdate" type="xsd:dateTime" />				
 					<xsd:attribute name="xISBN" type="xsd:string"></xsd:attribute>
