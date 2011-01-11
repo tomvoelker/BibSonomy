@@ -2,13 +2,11 @@ package org.bibsonomy.scraper.generic;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -21,17 +19,11 @@ import org.bibsonomy.util.WebUtils;
  * @version $Id$
  */
 public abstract class CitationManagerScraper extends AbstractUrlScraper {
-	
-	public abstract String getSupportedSiteName();
-	
-	public abstract String getSupportedSiteURL();
-	
-	public abstract String getInfo();
-	
+		
+	/**
+	 * @return The pattern to find the download link.
+	 */
 	public abstract Pattern getDownloadLinkPattern();
-
-	@Override
-	public abstract List<Tuple<Pattern, Pattern>> getUrlPatterns();
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {

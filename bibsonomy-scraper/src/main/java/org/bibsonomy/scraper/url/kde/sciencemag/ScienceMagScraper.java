@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Tuple;
-
 import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
@@ -13,41 +12,34 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
  * @version $Id$
  */
 public class ScienceMagScraper extends CitationManagerScraper {
-	public static final Pattern downloadLinkPattern = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">Download Citation</a>");
-	
-	public static final  String SITE_NAME = "Science Magazine";
-	
-	public static final  String SITE_URL = "http://www.sciencemag.org/";
-	
-	public static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	
-	public static final  List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(
+	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">Download Citation</a>");
+	private static final String SITE_NAME = "Science Magazine";
+	private static final String SITE_URL = "http://www.sciencemag.org/";
+	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+	private static final List<Tuple<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Tuple<Pattern, Pattern>(
 			Pattern.compile(".*" + "sciencemag.org"), 
 			Pattern.compile("/content" + ".*")
 		));
 
-	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
-	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
-	@Override
 	public String getInfo() {
-		return info;
+		return INFO;
 	}
 
 	@Override
 	public Pattern getDownloadLinkPattern() {
-		return downloadLinkPattern;
+		return DOWNLOAD_LINK_PATTERN;
 	}
 
 	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+		return URL_PATTERNS;
 	}
 }
