@@ -34,7 +34,7 @@ JARDIR=$TOMCAT"/webapps/bibsonomy-webapp/WEB-INF/lib"
 #
 # directory on the remote continuum machine, where the 
 # bibsonomy-scraper-test*.jar is 
-REPOSI="hudson@hudson:/var/lib/hudson/.m2/repository/org/bibsonomy/bibsonomy-scraper"
+REPOSI="hudson@hudson:/var/lib/hudson/jobs/.m2/repository/org/bibsonomy/bibsonomy-scraper"
 ##########################################################################
 # first: copy latest scraper-test JAR to this machine ...
 # 
