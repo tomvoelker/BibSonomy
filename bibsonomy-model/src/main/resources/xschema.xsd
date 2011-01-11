@@ -24,16 +24,12 @@
 
 -->
 
-<xsd:schema 
-targetNamespace="http://www.bibsonomy.org/2010/11/BibSonomy" 
-xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 	<!--
 		root element
 	-->
-	<xsd:element name="bibsonomy" type="bib:bibsonomyXML" />
+	<xsd:element name="bibsonomy" type="bibsonomyXML" />
 
 
 	<!--
@@ -43,32 +39,32 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 		<xsd:sequence>
 			<xsd:choice>
 				<!-- container -->
-				<xsd:element name="users" type="bib:UsersType" />
-				<xsd:element name="groups" type="bib:GroupsType" />
-				<xsd:element name="tags" type="bib:TagsType" />
-				<xsd:element name="posts" type="bib:PostsType" />
+				<xsd:element name="users" type="UsersType" />
+				<xsd:element name="groups" type="GroupsType" />
+				<xsd:element name="tags" type="TagsType" />
+				<xsd:element name="posts" type="PostsType" />
 				<!-- single elements -->
-				<xsd:element name="user" type="bib:UserType" />
-				<xsd:element name="group" type="bib:GroupType" />
-				<xsd:element name="post" type="bib:PostType" />
-				<xsd:element name="tag" type="bib:TagType" />
-				<xsd:element name="bookmark" type="bib:BookmarkType" />
-				<xsd:element name="bibtex" type="bib:BibtexType" />
+				<xsd:element name="user" type="UserType" />
+				<xsd:element name="group" type="GroupType" />
+				<xsd:element name="post" type="PostType" />
+				<xsd:element name="tag" type="TagType" />
+				<xsd:element name="bookmark" type="BookmarkType" />
+				<xsd:element name="bibtex" type="BibtexType" />
 				<!-- error -->
 				<xsd:element name="error" type="xsd:string" />
 				<!-- hashes to return when creating / updating resources -->
-				<xsd:element name="resourcehash" type="bib:hashType" />
+				<xsd:element name="resourcehash" type="hashType" />
 				<!-- user-/group-ids to return when creating / updating users / groups -->
 				<xsd:element name="userid" type="xsd:string" />
 				<xsd:element name="groupid" type="xsd:string" />
 				<!-- uri to return (i.e. on uploading documents) -->
 				<xsd:element name="uri" type="xsd:anyURI" />
 				<!-- gold standard references -->
-				<xsd:element name="references" type="bib:ReferencesType" />
+				<xsd:element name="references" type="ReferencesType" />
 			</xsd:choice>
 		</xsd:sequence>
 		<!-- status flag: contains "ok" when request was successful, "fail" otherwise -->
-		<xsd:attribute name="stat" type="bib:statType" />
+		<xsd:attribute name="stat" type="statType" />
 	</xsd:complexType>
 
 	<!--
@@ -76,10 +72,10 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	-->
 	<xsd:complexType name="UsersType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="bib:UserType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType" />
 		</xsd:sequence>
-		<xsd:attribute name="start" type="bib:positiveIntegerIncludingZero" use="required" />
-		<xsd:attribute name="end" type="bib:positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
 		<xsd:attribute name="next" type="xsd:anyURI" />
 	</xsd:complexType>
 
@@ -88,7 +84,7 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	-->
 	<xsd:complexType name="UserType">
 		<xsd:sequence>
-			<xsd:element name="groups" type="bib:GroupsType" minOccurs="1" maxOccurs="1">
+			<xsd:element name="groups" type="GroupsType" minOccurs="1" maxOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>
 						The groups, the user is a member of, excluding
@@ -118,10 +114,10 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	-->
 	<xsd:complexType name="GroupsType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="bib:GroupType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="GroupType" />
 		</xsd:sequence>
-		<xsd:attribute name="start" type="bib:positiveIntegerIncludingZero" use="required" />
-		<xsd:attribute name="end" type="bib:positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
 		<xsd:attribute name="next" type="xsd:anyURI" />
 	</xsd:complexType>
 
@@ -130,7 +126,7 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	-->
 	<xsd:complexType name="GroupType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="bib:UserType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="realname" type="xsd:string" />
@@ -145,10 +141,10 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	-->
 	<xsd:complexType name="TagsType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="tag" type="bib:TagType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="tag" type="TagType" />
 		</xsd:sequence>
-		<xsd:attribute name="start" type="bib:positiveIntegerIncludingZero" use="required" />
-		<xsd:attribute name="end" type="bib:positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
 		<xsd:attribute name="next" type="xsd:anyURI" />
 	</xsd:complexType>
 
@@ -157,14 +153,14 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	-->
 	<xsd:complexType name="TagType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="subTags" type="bib:TagsType" />
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="superTags" type="bib:TagsType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="subTags" type="TagsType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="superTags" type="TagsType" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
-		<xsd:attribute name="globalcount" type="bib:positiveIntegerIncludingZero" />
-		<xsd:attribute name="usercount" type="bib:positiveIntegerIncludingZero" />
-		<xsd:attribute name="score" type="bib:probabilityValue" />
-		<xsd:attribute name="confidence" type="bib:probabilityValue" />
+		<xsd:attribute name="globalcount" type="positiveIntegerIncludingZero" />
+		<xsd:attribute name="usercount" type="positiveIntegerIncludingZero" />
+		<xsd:attribute name="score" type="probabilityValue" />
+		<xsd:attribute name="confidence" type="probabilityValue" />
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI" />		
 	</xsd:complexType>
@@ -174,10 +170,10 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	-->
 	<xsd:complexType name="PostsType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="post" type="bib:PostType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="post" type="PostType" />
 		</xsd:sequence>
-		<xsd:attribute name="start" type="bib:positiveIntegerIncludingZero" use="required" />
-		<xsd:attribute name="end" type="bib:positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
 		<xsd:attribute name="next" type="xsd:anyURI" />
 	</xsd:complexType>
 
@@ -186,15 +182,15 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	-->
 	<xsd:complexType name="PostType">
 		<xsd:sequence>
-			<xsd:element name="user" type="bib:UserType" />
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="bib:GroupType" />
+			<xsd:element name="user" type="UserType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="GroupType" />
 			<!-- Note: a post must have at least one tag -->
-			<xsd:element maxOccurs="unbounded" name="tag" type="bib:TagType" />
-			<xsd:element minOccurs="0" maxOccurs="1" name="documents" type="bib:DocumentsType" />
+			<xsd:element maxOccurs="unbounded" name="tag" type="TagType" />
+			<xsd:element minOccurs="0" maxOccurs="1" name="documents" type="DocumentsType" />
 			<xsd:choice>
-				<xsd:element name="bookmark" maxOccurs="1" type="bib:BookmarkType" />
-				<xsd:element name="bibtex" maxOccurs="1" type="bib:BibtexType" />
-				<xsd:element name="goldStandardPublication" maxOccurs="1" type="bib:GoldStandardPublicationType" />
+				<xsd:element name="bookmark" maxOccurs="1" type="BookmarkType" />
+				<xsd:element name="bibtex" maxOccurs="1" type="BibtexType" />
+				<xsd:element name="goldStandardPublication" maxOccurs="1" type="GoldStandardPublicationType" />
 			</xsd:choice>
 		</xsd:sequence>
 		<xsd:attribute name="description" type="xsd:string" />
@@ -215,7 +211,7 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	 -->
 	<xsd:complexType name="DocumentsType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" name="document" type="bib:DocumentType" />
+			<xsd:element maxOccurs="unbounded" name="document" type="DocumentType" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -283,7 +279,7 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	-->
 	<xsd:complexType name="ReferencesType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="reference" type="bib:ReferenceType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="reference" type="ReferenceType" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -293,9 +289,9 @@ xmlns:bib="http://www.bibsonomy.org/2010/11/BibSonomy"
 	
 	<xsd:complexType name="GoldStandardPublicationType">
 		<xsd:complexContent>
-   			<xsd:extension base="bib:BibtexType">
+   			<xsd:extension base="BibtexType">
    				<xsd:sequence>
-					<xsd:element maxOccurs="1" minOccurs="1" name="references" type="bib:ReferencesType" />
+					<xsd:element maxOccurs="1" minOccurs="1" name="references" type="ReferencesType" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
