@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:bibsonomy stat="ok" xmlns:ns2="http://www.bibsonomy.org/2010/11/BibSonomy">
+<bibsonomy stat="ok">
     <groups next="http://www.bibsonomy.org/api/foo/bar" end="30" start="20">
         <group href="http://www.bibsonomy.org/api/groups/testName" description="foo bar ..." name="testName"/>
         <group href="http://www.bibsonomy.org/api/groups/testName2" name="testName2"/>
     </groups>
-</ns2:bibsonomy>
+</bibsonomy>

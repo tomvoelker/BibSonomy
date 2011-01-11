@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:bibsonomy stat="ok" xmlns:ns2="http://www.bibsonomy.org/2010/11/BibSonomy">
+<bibsonomy stat="ok">
     <user href="http://www.bibsonomy.org/api/users/foo" name="foo">
         <groups end="0" start="0"/>
     </user>
-</ns2:bibsonomy>
+</bibsonomy>

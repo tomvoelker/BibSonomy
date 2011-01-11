@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:bibsonomy stat="ok" xmlns:ns2="http://www.bibsonomy.org/2010/11/BibSonomy">
+<bibsonomy stat="ok">
     <tags next="http://www.bibsonomy.org/foo/bar" end="10" start="0">
         <tag href="http://www.bibsonomy.org/api/tags/foo" usercount="0" globalcount="0" name="foo"/>
         <tag href="http://www.bibsonomy.org/api/tags/bar" usercount="5" globalcount="10" name="bar"/>
     </tags>
-</ns2:bibsonomy>
+</bibsonomy>
