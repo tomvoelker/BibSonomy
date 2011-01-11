@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:bibsonomy stat="ok" xmlns:ns2="http://www.bibsonomy.org/2010/11/BibSonomy">
+<bibsonomy stat="ok">
     <users next="http://www.bibsonomy.org/api/foo/bar" end="30" start="20">
         <user href="http://www.bibsonomy.org/api/users/testname" password="raboof" homepage="http://foo.bar.com" email="mail@foo.bar" realname="Dr. FOO BaR" name="testname">
             <groups end="0" start="0"/>
@@ -10,4 +10,4 @@
             </groups>
         </user>
     </users>
-</ns2:bibsonomy>
+</bibsonomy>
