@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:bibsonomy stat="ok" xmlns:ns2="http://www.bibsonomy.org/2010/11/BibSonomy">
+<bibsonomy stat="ok">
     <post>
         <user href="http://www.bibsonomy.org/api/users/foo" name="foo"/>
         <goldStandardPublication interhash="9fbfff0ad07c0382055333d1fd9ffb38" intrahash="9fbfff0ad07c0382055333d1fd9ffb38" year="2004" author="John Doe" bibtexKey="doe2004" title="The ten famoust">
@@ -8,4 +8,4 @@
             </references>
         </goldStandardPublication>
     </post>
-</ns2:bibsonomy>
+</bibsonomy>
