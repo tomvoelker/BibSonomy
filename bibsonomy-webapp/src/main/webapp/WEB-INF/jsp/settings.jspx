@@ -29,8 +29,7 @@
 				<c:when test="${command.selTab == 2}">
 					<settings:import command="${command}"/>
 				</c:when>
-				<!-- TODO: user request attribute used?! -->
-				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq user.name))}">
+				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
 					<settings:group command="${command}"/>
 				</c:when>
 			</c:choose>
