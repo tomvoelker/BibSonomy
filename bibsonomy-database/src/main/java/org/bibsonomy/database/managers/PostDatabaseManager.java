@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -694,7 +695,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	public List<Post<R>> getPostsViewableByTag(final String loginUserName, final String requestedUserName, final List<TagIndex> tagIndex, final int groupId, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if (GroupID.isSpecialGroupId(groupId)) {
-			return this.getPostsByTagNamesForUser(loginUserName, requestedUserName, tagIndex, groupId, null, limit, offset, filter, systemTags, session);
+			return this.getPostsByTagNamesForUser(loginUserName, requestedUserName, tagIndex, groupId, Collections.<Integer>emptyList(), limit, offset, filter, systemTags, session);
 		}
 
 		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
