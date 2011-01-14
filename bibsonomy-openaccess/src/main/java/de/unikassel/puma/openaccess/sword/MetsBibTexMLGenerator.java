@@ -161,7 +161,6 @@ public class MetsBibTexMLGenerator {
 			 *  remove all system tags. they should not be sent to repository
 			 */
 			List<TagType> tags = myPost.getTag();
-			TagType tag = null;
 			Iterator<TagType> tagIterator = tags.iterator();
 			while (tagIterator.hasNext()) {
 				if (tagIterator.next().getName().startsWith("sys:")) {
