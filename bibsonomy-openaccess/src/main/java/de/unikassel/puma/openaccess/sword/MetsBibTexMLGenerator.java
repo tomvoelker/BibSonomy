@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -29,6 +30,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
+import org.bibsonomy.rest.renderer.xml.BibtexType;
+import org.bibsonomy.rest.renderer.xml.TagType;
 import org.xml.sax.SAXParseException;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
@@ -141,27 +144,64 @@ public class MetsBibTexMLGenerator {
 		
 		protected PumaPostType createPumaPost(final Post<? extends Resource> post)	throws InternServerException {
 
-			final PumaPostType myPostType = new PumaPostType();
+			final PumaPostType myPost = new PumaPostType();
 			
-			fillXmlPost(myPostType, post);
+			fillXmlPost(myPost, post);
+
+			
+			/*
+			 * delete unwanted data from post
+			 */
+			
+			/*
+			 * remove from post
+			 */
+			
+			/*
+			 *  remove all system tags. they should not be sent to repository
+			 */
+			List<TagType> tags = myPost.getTag();
+			TagType tag = null;
+			Iterator<TagType> tagIterator = tags.iterator();
+			while (tagIterator.hasNext()) {
+				if (tagIterator.next().getName().startsWith("sys:")) {
+					tagIterator.remove();
+				}
+			}
+			
+			
+			/*
+			 * remove from bibtex 
+			 */
+			
+			/*
+			 * remove url. there is no need for this url to be present in repository
+			 */
+			final BibtexType bibtex = myPost.getBibtex();
+			bibtex.setUrl(null);
+			
+			myPost.setBibtex(bibtex);
+
+			
 			
 			/*
 			 * add additional metadata
 			 */
 			final Resource resource = post.getResource();
 			if (resource instanceof BibTex) {
-				final BibTex bibtex = (BibTex) resource;
-				bibtex.parseMiscField();
-				if (null != myPostType.getBibtex()) {
-					if (null != bibtex.getMiscField("isbn")) 		myPostType.setXISBN(bibtex.getMiscField("isbn")); 
-					if (null != bibtex.getMiscField("issn"))		myPostType.setXISSN(bibtex.getMiscField("issn")); 
-					if (null != bibtex.getMiscField("doi")) 		myPostType.setXDOI(bibtex.getMiscField("doi")); 
-					if (null != bibtex.getMiscField("location"))	myPostType.setXLocation(bibtex.getMiscField("location")); 
-					if (null != bibtex.getMiscField("dcc"))			myPostType.setXDCC(bibtex.getMiscField("dcc")); 
+				final BibTex bibtexResource = (BibTex) resource;
+				bibtexResource.parseMiscField();
+				if (null != myPost.getBibtex()) {
+					if (null != bibtexResource.getMiscField("isbn")) 		myPost.setISBN(bibtexResource.getMiscField("isbn")); 
+					if (null != bibtexResource.getMiscField("issn"))		myPost.setISSN(bibtexResource.getMiscField("issn")); 
+					if (null != bibtexResource.getMiscField("doi")) 		myPost.setDOI(bibtexResource.getMiscField("doi")); 
+					if (null != bibtexResource.getMiscField("location"))	myPost.setLocation(bibtexResource.getMiscField("location")); 
+					if (null != bibtexResource.getMiscField("dcc"))			myPost.setDCC(bibtexResource.getMiscField("dcc")); 
 				}
 				
 			}
-			return myPostType;
+			
+			return myPost;
 		}
 		
 		@Override
