@@ -64,16 +64,16 @@
     	<dim:dim>
     		<xsl:apply-templates/>
 	    <!-- dc.identifier.isbn -->
-		<xsl:if test="./@xISBN">
+		<xsl:if test="./@ISBN">
 	    	<dim:field mdschema="dc" element="identifier" qualifier="isbn">
-	    		<xsl:value-of select="@xISBN"/>
+	    		<xsl:value-of select="@ISBN"/>
 	    	</dim:field>
 		</xsl:if>
 	
 	    <!-- dc.identifier.issn -->
-		<xsl:if test="./@xISSN">
+		<xsl:if test="./@ISSN">
 	    	<dim:field mdschema="dc" element="identifier" qualifier="issn">
-	    		<xsl:value-of select="@xISSN"/>
+	    		<xsl:value-of select="@ISSN"/>
 	    	</dim:field>
 		</xsl:if>
     	</dim:dim>
