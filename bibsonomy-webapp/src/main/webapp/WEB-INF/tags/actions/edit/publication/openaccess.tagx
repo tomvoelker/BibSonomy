@@ -8,7 +8,8 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:form="http://www.springframework.org/tags/form">
+	xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication">
 
     <jsp:directive.attribute name="tags" type="java.lang.String" required="false"/>
 
@@ -62,6 +63,7 @@
 	            <div class="dissError"><form:errors path="sendToRepository" /></div>
             </div>
             
+<!--           <editpub:classification />-->
 		</jsp:attribute>
 	</parts:fieldset>
 

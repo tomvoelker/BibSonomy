@@ -80,8 +80,8 @@
 	<bean id="publicationClassificationController" class="org.bibsonomy.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
 		<property name="classificator" ref="classificator"/>
 	</bean>
-	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificator" scope="singleton">
-		<property name="classificationFilePath" value="FIXME"/><!-- FIXME: add correct path -->
+	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificatorSingleton" scope="singleton">
+		<property name="classificationFilePath" value="${classifications.path}"/>
 	</bean>
 
 	<!--+ 

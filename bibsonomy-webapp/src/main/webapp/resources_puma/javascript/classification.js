@@ -1,4 +1,44 @@
 var oaBaseUrl = "/ajax/classificatePublication";
+var GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";
+
+function initClassifications(mainContainer) {
+	var url = oaBaseUrl + "?classificationName=" +GET_AVAILABLE_CLASSIFICATIONS;
+	
+	$.ajax({
+		dataType: 'json',
+		url: url,
+		success: function(data) {
+			doInitialise(mainContainer, data);
+		},
+		error: function(req, status, e) {
+			alert("There seems to be an error in the ajax request, classifications.js::init");
+		}
+	});
+}
+
+function doInitialise(mainContainer, data) {
+	$.each(data.available, function(i,item){
+
+		var saveNode = document.createElement('div');
+		saveNode.setAttribute('id', item +'saved');
+
+		
+		var mainNode = document.createElement('div');
+		mainNode.setAttribute('id', item);
+		
+		var input = document.createElement('input');
+		input.setAttribute('type', 'text');
+		input.setAttribute('size', '10');
+		input.setAttribute('readonly', 'readonly');
+		input.setAttribute('id',item +'_input');
+		
+		mainNode.appendChild(input);
+
+		$('#' +mainContainer).append(saveNode);
+		$('#' +mainContainer).append(mainNode);
+		populate(item,item);
+	});
+}
 
 function populate(classification, container) {
 
@@ -84,13 +124,20 @@ function createNewClassField(container) {
 	
 }
 
-function addSaved(container, parentID ) {
+function addSaved(container, parentID, description) {
 	var node = document.createElement('div');
 	
 	var save = document.createElement('input');
 	save.type = 'text';
-	save.value = parentID;
-	save.readonly = 'true';
+	save.value = container +' ' +parentID +' ';
+	
+	save.name = 'classification';
+	save.setAttribute('readonly', "readonly");
+	
+	saveName = document.createElement('input');
+	saveName.setAttribute('type', 'text');
+	saveName.setAttribute('disabled', 'true');
+	saveName.setAttribute('value', description);
 	
 	var remove = document.createElement('input');
 	remove.type = 'button';
@@ -99,7 +146,7 @@ function addSaved(container, parentID ) {
 	node.appendChild(save);
 	node.appendChild(remove);
 	
-	$('#classis').append(node);
+	$('#' +container +'saved').append(node);
 	
 	remove.onclick = function() {
 		$(node).remove();
@@ -108,15 +155,6 @@ function addSaved(container, parentID ) {
 }
 
 function createSaveButton(parent, parentID, container) {
-//	var node = document.createElement('input');
-//	node.value = 'save';
-//	
-//	node.type = 'button';
-//	node.parent = parent;
-//	node.onclick = function() {
-//		addSaved(container, parentID);
-//	}
-
 
 	var s = createNode({
 		tag: 'input',
@@ -128,7 +166,7 @@ function createSaveButton(parent, parentID, container) {
 		parentID : parentID,
 		onclick: function(){
 
-		addSaved(container, parentID);
+		addSaved(container, parentID, parent.text);
 	},
 	deleteChild: function(){
 
@@ -153,7 +191,8 @@ function createSubSelect(parent, data, classification, parentID, container){
 		return;
 	}
 
-	$('#' +container +'_input')[0].value = parentID;
+	$('#' +container +'_input')[0].setAttribute('defaultValue', parentID);
+	$('#' +container +'_input')[0].setAttribute('value', parentID);
 	
 	var options = [{tag: "option", value: "", text: classification}];
 	
@@ -173,21 +212,34 @@ function createSubSelect(parent, data, classification, parentID, container){
 		data: data,
 		parent: parent,
 		child: null,
+		size: '1',
 		childNodes: options,
 		parentID : parentID,
 		classification: classification,
 		onchange: function(){
 		this.deleteChild();
 		
+		if(this.value == "")
+			return;
+		
 		var id = parentID +this.value;
 		var url = oaBaseUrl + "?classificationName=" +classification +"&id=" +id;
 		
+		var loadingNode = document.createElement('img');
+		loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
+
 		$.ajax({
 			dataType: 'json',
 			url: url,
+			beforeSend: function(XMLHttpRequest) {
+				$('#' +container).append(loadingNode);
+				
+			},
 			success: function(data) {
-			createSubSelect(s,data,classification,id,container);
-		},
+
+				$(loadingNode).remove();
+				createSubSelect(s,data,classification,id,container);
+			},
 			error: function(req, status, e) {
 				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
 			}

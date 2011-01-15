@@ -9,26 +9,20 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:form="http://www.springframework.org/tags/form">
 
-    <jsp:directive.attribute name="tags" type="java.lang.String" required="false"/>
-    
-	<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.classification" >
-		<jsp:attribute name="content">
+	<div class="fsRow">
 		
-		
-		    <div id="jelClassification" class="fsRow">
-					<select id="t1" name="1st" onchange="javascript:test('JEL',this.options[this.selectedIndex].value,'t2')"></select>
-		
-					<select id="t2" name="2st" onchange="javascript:test('JEL',$(#t1).this.options[$(#t1).selectedIndex].value +[this.selectedIndex].value,'t3')"></select>
-
-					<select id="t3" name="3st" onchange="javascript:test('JEL',this.options[this.selectedIndex].value,'t4')"></select>
-
-			</div>
+	    <style type="text/css">
+			select { width:22%; }
+		</style>
 			
-			<script>
-			javascript:populate('JEL','t1');
-			</script>
+		<div id="classifications" /> 
+		
+		<script type="text/javascript">
+		    $(document).ready(function() {
+				javascript:initClassifications('classifications');
+		    });
+		</script>
 			
-		</jsp:attribute>
-	</parts:fieldset>
-
+	</div>
+			
 </jsp:root>
