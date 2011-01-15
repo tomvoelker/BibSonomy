@@ -48,7 +48,7 @@ function add_filter() {
   f.style.padding='5px';
   f.style.display = "inline";
   f.appendChild(document.createTextNode(getString("filter.label") + "\u00A0"));
-  
+    
   tags_filter = document.createElement("input");
   tags_filter.autocomplete="off";
   tags_filter.type="text";
@@ -67,6 +67,8 @@ function add_filter() {
   } else {
 	  sidebar.insertBefore(l, sidebar.childNodes[0]); // first child
   }
+  
+  f.parentNode.style.marginBottom='5px';
 }
 
 function init_sidebar() {
