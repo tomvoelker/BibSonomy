@@ -6,94 +6,100 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Required;
+import java.util.Set;
 
 import de.unikassel.puma.openaccess.classification.chain.ClassificationChainElement;
+import de.unikassel.puma.openaccess.classification.chain.parser.ACMClassification;
 import de.unikassel.puma.openaccess.classification.chain.parser.JELClassification;
+import de.unikassel.puma.openaccess.classification.PublicationClassification;
 
 public class PublicationClassificator {
-	private static final Log log = LogFactory.getLog(PublicationClassificator.class);
-
-	private String classificationFilePath;
 	
-	private final HashMap<String, Classification> classifications = new HashMap<String, Classification>();
+	private final String xmlPath;
 	
-	public PublicationClassificator() {
-		/*
-		 * read classifications from file
-		 */
+	private HashMap<String, Classification> classifications = new HashMap<String, Classification>();
+	
+	public PublicationClassificator(String xmlPath) {
+		this.xmlPath = xmlPath;
 		initialise();
 	}
 	
 	public final List<PublicationClassification> getChildren(String classification, String name) {
-		return classifications.get(classification).getChildren(name);
+		Classification c = classifications.get(classification);
+		
+		if(present(c)) {
+			return c.getChildren(name);
+		} else {
+			return new ArrayList<PublicationClassification>();
+		}
+	}
+	
+	public Set<String> getAvailableClassifications() {
+		return classifications.keySet();
 	}
 	
 	public String getDescription(String classification, String name) {
-		return classifications.get(classification).getDescription(name);
+		Classification c = classifications.get(classification);
+		
+		if(present(c)) {
+			return c.getDescription(name);
+		} else {
+			return "";
+		}	
 	}
 	
-	
 	private void initialise() {
-		if (!present(classificationFilePath)) {
-			log.warn("No path for classification files configured.");
-			return;
-		}
-		/*
-		 * proceed with normal operation
-		 */
-		final File path = new File(classificationFilePath);
-
-		final ClassificationChainElement cce = new ClassificationChainElement(new JELClassification());
+		ArrayList<ClassificationChainElement> cceList = new ArrayList<ClassificationChainElement>();
+		cceList.add(new ClassificationChainElement(new JELClassification()));
+		cceList.add(new ClassificationChainElement(new ACMClassification()));
 		
-		if (path.isDirectory()) {
+		
+		File path = new File(xmlPath);
+		
+		if(path.isDirectory()) {
 			
-			final File[] files = path.listFiles(new FileFilter() {
+			File[] files = path.listFiles(new FileFilter() {
+				
 				@Override
 				public boolean accept(File pathname) {
-					return pathname.toString().endsWith(".xml");
+					if(pathname.toString().endsWith(".xml")) {
+						return true;
+					}
+					return false;
 				}
 			});
 			
-			for (final File file : files) {
+			for(File f : files) {
 				try {
-					/*
-					 * FIXME toURL() is deprecated - please use the correct 
-					 * method.
-					 */
-					final Classification c = cce.getClassification(file.toURL());
+					Classification c = null;
 					
-					if (!present(c)) {
-						log.error("Unable to parse " +file.getName());
+					for(int i = 0; i < cceList.size() && !present(c); ++i) {
+						c = cceList.get(i).getClassification(f.toURL());
+					}
+					
+					if(!present(c)) {
+						System.out.println("Unable to parse " +f.getName());
 						continue;
 					}
 					
-					log.debug("Found Classification " +c.getClassName());
+					System.out.println("Found Classification " +c.getClassName());
 					classifications.put(c.getClassName(), c);
 				} catch (MalformedURLException e) {
-					log.error("Could not load classifications", e);
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				} catch (IOException e) {
-					log.error("Could not load classifications", e);
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
-			
 		}
-		
 	}
-
-	/**
-	 * Sets the path where the classification XML files reside. 
-	 * 
-	 * @param classificationFilePath
-	 */
-	@Required
-	public void setClassificationFilePath(String classificationFilePath) {
-		this.classificationFilePath = classificationFilePath;
+	
+	public int getNumberOfClassifications() {
+		return classifications.size();
 	}
 
 }
