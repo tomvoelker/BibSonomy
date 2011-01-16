@@ -94,6 +94,30 @@
 		<property name="jobDetail" ref="luceneUpdateGoldStandardPublicationJobWithIndexOptimization" />
 	</bean>
 
+	
+	<!-- Generate index jobs -->
+	<bean id="luceneGenerateBibTexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	  <property name="targetObject" ref="luceneBibTexManager" />
+	  <property name="targetMethod" value="generateIndex" />
+	  <property name="concurrent" value="false" />
+	</bean>
+	<bean id="luceneGenerateBookmarkJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	  <property name="targetObject" ref="luceneBookmarkManager" />
+	  <property name="targetMethod" value="generateIndex" />
+	  <property name="concurrent" value="false" />
+	</bean>
+	
+	<!-- Generate index triggers -->
+	<bean id="luceneGenerateBibTexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="cronExpression" value="0 10 10 * * ?" /> 
+		<property name="jobDetail" ref="luceneGenerateBibTexJob" />
+	</bean>
+	<bean id="luceneGenerateBookmarkCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="cronExpression" value="0 50 9 * * ?" /> 
+		<property name="jobDetail" ref="luceneGenerateBookmarkJob" />
+	</bean>
+	
+
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 	    <property name="triggers">
 	        <list>
