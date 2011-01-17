@@ -32,12 +32,16 @@
 	</select>
 
 	<select id="getAllTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		<!-- we only give out the 100 most popular tags here -->
+		<!-- 
+			the table 'popular_tags' contains only the 100 most popular tags for each content
+			type (bibtex, bookmark, all); that's why we can safely use offset/limit values 
+			here, as nobody can crawl ALL tags via this query (which is visible via the api/tags).
+		 -->
 		SELECT tag_lower AS tag_name, tag_ctr 
 		FROM popular_tags
 		WHERE content_type=#contentType#
 		AND tag_lower != 'imported'
-		LIMIT #limit#		 
+		LIMIT #limit# OFFSET #offset#		 
 	</select>
 	
 	<select id="getTagsByExpression" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
