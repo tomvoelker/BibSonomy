@@ -23,6 +23,8 @@
 
 package org.bibsonomy.util.file;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,6 +63,16 @@ public class FileUtil {
 	 */
 	public static String getFileDir(final String filePath, final String fileName) {
 		return filePath + fileName.substring(0, 2) + "/";
+	}
+	
+	/**
+	 * Generates random hash for file
+	 * @param fileName
+	 * @return The hash for the file
+	 */
+	public static String getRandomFileHash(String fileName) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return StringUtils.getMD5Hash(fileName + Math.random() + df.format(new Date()));
 	}
 	
 	/**
