@@ -27,6 +27,25 @@
 						</property>
 					</bean>
 				</entry>
+				
+				<entry key="/ajax/documents">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="documentsController" />
+						<property name="allowedFields">
+							<list>
+								<value>intraHash</value>
+								<value>fileName</value>
+								<value>fileHash</value>
+								<value>temp</value>
+								<value>ckey</value>
+								<value>action</value>
+								<value>file</value>
+								<value>fileID</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
 				<!-- get recommendations for user -->
 				<entry key="/ajax/getBookmarkRecommendedTags">
 					<bean parent="controllerBase">
@@ -111,6 +130,13 @@
 	
 	<bean id="editGoldstandardReferencesController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardReferencesController" scope="request" parent="ajaxController" />
 	
+	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="requestLogic" ref="requestLogic" />
+		<property name="docPath"><value>${project.document.path}</value></property>
+		<property name="tempPath"><value>${project.document.temp}</value></property>
+	</bean>	
+		
 	<!-- controller for handling recommendation requests -->
 	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">
 		<!-- used for accessing spam informations -->

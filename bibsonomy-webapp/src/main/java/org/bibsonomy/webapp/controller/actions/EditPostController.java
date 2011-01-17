@@ -96,6 +96,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		command.setRelevantTagSets(new HashMap<String, Map<String, List<String>>>());
 		command.setRecommendedTags(new TreeSet<RecommendedTag>());
 		command.setCopytags(new ArrayList<Tag>());
+		command.setFileName(new ArrayList<String>());
 		/*
 		 * initialize post & resource
 		 */
@@ -706,6 +707,11 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		try {
 			log.debug("finally: creating a new post in the DB");
 			final String createPosts = logic.createPosts(Collections.<Post<?>>singletonList(post)).get(0);
+			
+			/*
+			 * store intraHash for some later changes (file upload)
+			 */
+			command.setIntraHashToUpdate(createPosts);
 			log.debug("created post: " + createPosts);
 		} catch (DatabaseException de) {
 			return handleDatabaseException(command, loginUser, post, de, "create");

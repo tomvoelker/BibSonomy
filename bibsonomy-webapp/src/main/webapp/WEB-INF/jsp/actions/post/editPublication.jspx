@@ -33,9 +33,10 @@
 		</jsp:attribute>
 		
         <jsp:attribute name="detailedInformation">
+			<editpub:files post="${post}" />
 			<editpub:details post="${post}" />
 			<editpub:openaccess/>
-
+			
 			<c:if test="${not empty command.scrapingContext}">
           		<parts:fieldset maximized="false" legendKey="post.resource.fields.scraper" >
           			<jsp:attribute name="content">

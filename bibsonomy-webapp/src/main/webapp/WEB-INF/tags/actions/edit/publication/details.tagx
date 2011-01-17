@@ -10,6 +10,7 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
+	
 	<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.detailed">
 		<jsp:attribute name="legendExt">
 	      (<a id="collapse" href="javascript:showAll()"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)

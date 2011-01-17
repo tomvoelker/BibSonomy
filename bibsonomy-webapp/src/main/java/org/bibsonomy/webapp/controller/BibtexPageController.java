@@ -130,7 +130,8 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			} 
 			return Views.getViewByFormat(format);
 		}
-
+		command.setDocuments(firstBibtex.getDocuments());
+		
 		/*
 		 * Set page title to title of first publication 
 		 */

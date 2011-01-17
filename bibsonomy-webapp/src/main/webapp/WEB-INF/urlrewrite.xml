@@ -438,6 +438,15 @@
 		<set type="parameter" name="filename">$3</set>
 		<to last="true">/downloadFile</to>
 	</rule>
+	
+	<!-- delete document -->
+	<!--<rule>
+		<name>/documents/FILEHASH/ÌNTRAHASH</name>
+		<from>^/+documents/+([0-9a-fA-F]+)/+([0-9a-fA-F]+)</from>
+		<set type="parameter" name="fileHash">$1</set>
+		<set type="parameter" name="intraHash">$2</set>
+		<to last="true">/documents</to>
+	</rule>-->
 
 	<!-- ############## viewable pages ############### -->
 	<!-- /viewable/GROUP/TAG -->

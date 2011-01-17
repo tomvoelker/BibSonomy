@@ -1,0 +1,126 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	
+	<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.bibtex.files">
+		
+		<jsp:attribute name="content">
+				<fmt:message var="delete" key="post.bibtex.delete"/>
+				<script type="text/javascript" src="${resdir}/javascript/jquery.documentuploader.js">&amp;nbsp;</script>
+				
+	
+				<c:if test="${not empty command.post.resource.documents}">
+					<fmt:message key="post.bibtex.uploadedFiles"/>
+					<script type="text/javascript">
+						$(function(){
+							$(".deleteDocument").click(function(){
+								var button = $(this);
+								$.get($(button).attr("href"), {}, function(data) {
+									var status=$("status", data).text()
+									if(status=="error"){
+										alert($("reason", data).text());
+									} else {
+										alert($("response", data).text());
+										$(button).closest(".fsRow").remove();
+									}
+								}, "xml");
+								return false;
+							});
+						});
+					</script>
+					<c:forEach var="document" items="${command.post.resource.documents}">
+						<div class="fsRow">
+							<a class="documentFileName" href="/documents/${command.post.resource.intraHash}/${mtl:encodeURI(command.post.user.name)}/${mtl:encodeURI(document.fileName)}">${fn:escapeXml(document.fileName)}
+								<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left;"/>
+							</a>
+							<c:out value=" ("/>
+							<a class="deleteDocument" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete">
+								${delete}
+							</a>
+							<c:out value=")"/>
+						</div>
+					</c:forEach>
+				</c:if>
+				
+
+			<div class="fsRow" id="inputDiv">
+				<script type="text/javascript">
+						$(function(){
+							$(".fu").documentUploader();
+						});
+				</script>
+				<input class="fu" type="file" name="file"/>
+				<buttons:help message="post.bibtex.help"/>
+			</div>
+			
+			<c:if test="${not empty command.fileName}">
+				<c:forEach var="fileN" items="${command.fileName}">
+				<script type="text/javascript">
+					$(function() {
+						var fileName = "${fileN}";
+						var counterInput = $(".counter");	
+						var counter=counterInput.val();
+						var ckey=$(".ck");
+						counter++;
+						counterInput.val(counter);
+						var hiddenFileInput = "&lt;div id='file_"+counter+"'&gt;" +
+						"&lt;input class='tempFileName' name='fileName' value='" + fileName+"'/&gt;"+
+						"&lt;/div&gt;";
+						$(".addedFiles").append($(hiddenFileInput));
+						var fileHash = fileName.substring(0, 63);
+						fileName = fileName.substring(64);
+						var fileDiv = "&lt;div class='fsRow' id='file_"+counter+"'&gt;&lt;span class='documentFileName'&gt;"+fileName+"&lt;/span&gt;"+
+						"&lt;span id='gif_"+counter+"'&gt; (&lt;a class='deleteTempDocument' href='/ajax/documents?fileHash="+fileHash+"&amp;ckey="+
+							ckey.val()+"&amp;temp=true&amp;fileID="+counter+"&amp;action=delete'&gt; "+LocalizedStrings["post.bibtex.delete"]+"&lt;/a&gt;)&lt;/span&gt;&lt;/div&gt;";
+						$("#upload").append(fileDiv);
+						$(".deleteTempDocument").live("click", deleteFunction);
+						$("#upload").show();
+						
+					});
+					
+					function deleteFunction(){
+						var button = $(this);
+						$.get($(button).attr("href"), {}, function(data) {
+							var status=$("status", data).text();
+							var fileID=$("fileid", data).text();
+							if(status=="error"){
+								alert(("reason", data).text);
+							} else {
+								button.parent("div").remove();
+								$("#file_"+fileID).remove();
+								$("#uploadForm_"+fileID).remove();
+							}
+						}, "xml");
+						return false;
+					}
+				</script>
+				</c:forEach>
+			</c:if>
+			
+			<div id="gif" style="display:none;">
+				<img id='uploadGif' alt="uploading..." src="${resdir}/image/ajax_loader.gif" />
+			</div>
+			
+			<div id="upload" style="display:none;">
+				<div class="fsRow">
+					<fmt:message key="post.bibtex.addedFiles"/>
+				</div>
+			</div>
+
+			<input class="ck" type="hidden" name="ckey" value="${ckey}"/>
+			<input class="resdir" type="hidden" name="resdir" value="${resdir}"/>
+			<input class="counter" type="hidden" name="counter" value="0"/>
+			<span class="addedFiles" style="display:none;"></span>
+						
+		</jsp:attribute>
+	</parts:fieldset>
+	
+</jsp:root>

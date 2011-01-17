@@ -27,6 +27,10 @@
 		<jsp:attribute name="generalInformation">
            <editpub:required post="${post}" autocompletion="$(false)"/>
 		</jsp:attribute>
+		
+		 <jsp:attribute name="filesHandling">
+         	<editpub:files post="${post}" />
+      	 </jsp:attribute>
 
         <jsp:attribute name="detailedInformation">
           <editpub:details post="${post}" />

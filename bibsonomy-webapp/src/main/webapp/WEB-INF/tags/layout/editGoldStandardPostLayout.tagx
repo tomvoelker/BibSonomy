@@ -23,6 +23,7 @@
     
     <jsp:directive.attribute name="headerExtResource" fragment="true" required="false" />
     <jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>
+    <jsp:directive.attribute name="filesHandling" fragment="true" required="false"/>
     <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
     <jsp:directive.attribute name="tagsAndGroups" fragment="true" required="false" />
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
@@ -61,7 +62,7 @@
               <!-- 
                  | form starts here
                  -->
-              <form:form id="postForm" action="/edit${resourceType}" method="post">
+              <form:form id="postForm" action="/edit${resourceType}?ckey=${ckey}" method="post">
 	             <div id="fsform">
 	                <fieldset class="fsOuter">
 
@@ -89,7 +90,11 @@
                                 </parts:fieldset>
 								
 								<jsp:invoke fragment="tagsAndGroups" />
-	
+								
+								<c:if test="${not empty filesHandling}">
+                                    <jsp:invoke fragment="filesHandling"/>
+                                </c:if>
+								
                                 <c:if test="${not empty detailedInformation}">
                                     <jsp:invoke fragment="detailedInformation"/>
                                 </c:if>
@@ -133,6 +138,10 @@
               <c:if test="${not empty extraInformation}">
                   <jsp:invoke fragment="extraInformation"/>
               </c:if>
+           </div>
+           
+           <div id="hiddenUpload" style="display:none;">
+           	<!-- temporary content -->
            </div>
 
 		</jsp:attribute>

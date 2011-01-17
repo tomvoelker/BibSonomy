@@ -1,5 +1,9 @@
 package org.bibsonomy.webapp.command;
 
+import java.util.List;
+
+import org.bibsonomy.model.Document;
+
 
 /**
  * @author mwa
@@ -15,7 +19,8 @@ public class BibtexResourceViewCommand extends TagResourceViewCommand {
 	
 	/** the group whode resources are requested*/
 	private ConceptsCommand concepts = new ConceptsCommand();
-
+	
+	private List<Document> documents;
 	/**
 	 * @return the hash of a bibtex
 	 */
@@ -56,5 +61,19 @@ public class BibtexResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setConcepts(ConceptsCommand concepts) {
 		this.concepts = concepts;
+	}
+
+	/**
+	 * @param documents the documents to set
+	 */
+	public void setDocuments(List<Document> documents) {
+		this.documents = documents;
+	}
+
+	/**
+	 * @return the documents
+	 */
+	public List<Document> getDocuments() {
+		return documents;
 	}
 }

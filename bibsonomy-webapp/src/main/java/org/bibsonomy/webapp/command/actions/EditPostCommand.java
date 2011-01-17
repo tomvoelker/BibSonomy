@@ -72,6 +72,10 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	
 	/** should the edit view be shown before the post is stored into the db? */
 	private boolean editBeforeSaving;
+	
+	
+	
+	private List<String> fileName;
 
 	/**
 	 * @return the post
@@ -359,5 +363,19 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	 */
 	public void setEditBeforeSaving(boolean editBeforeSaving) {
 		this.editBeforeSaving = editBeforeSaving;
+	}
+
+	/**
+	 * @param fileName the fileName to set
+	 */
+	public void setFileName(List<String> fileName) {
+		this.fileName = fileName;
+	}
+
+	/**
+	 * @return the fileName
+	 */
+	public List<String> getFileName() {
+		return fileName;
 	}
 }
