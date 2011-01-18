@@ -36,7 +36,8 @@
 <xsl:stylesheet
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:dim="http://www.dspace.org/xmlns/dspace/dim"
-        xmlns:bibtex="http://puma.uni-kassel.de"
+        xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD"
+        xmlns:mets="http://www.loc.gov/METS/"
         version="1.0">
 
 <!-- NOTE: This stylesheet is a work in progress, and does not
@@ -59,112 +60,119 @@
 
     <!-- match the top level bibtex-entry element and kick off the
          template matching process -->
-    <xsl:template match="bibtex:entry">
+    <xsl:template match="puma:PumaPostType">
     	<dim:dim>
+    	
     		<xsl:apply-templates/>
+	    <!-- dc.identifier.isbn -->
+		<xsl:if test="./@ISBN">
+	    	<dim:field mdschema="dc" element="identifier" qualifier="isbn">
+	    		<xsl:value-of select="@ISBN"/>
+	    	</dim:field>
+		</xsl:if>
+	
+	    <!-- dc.identifier.issn -->
+		<xsl:if test="./@ISSN">
+	    	<dim:field mdschema="dc" element="identifier" qualifier="issn">
+	    		<xsl:value-of select="@ISSN"/>
+	    	</dim:field>
+		</xsl:if>
     	</dim:dim>
     </xsl:template>
     
-    <!-- generate dc.type -->
-    <xsl:template match="bibtex:entry/node()">
-	<xsl:if test="local-name()!=''">
-    	<dim:field mdschema="dc" element="type">
-    		<xsl:value-of select="local-name()"/>
-    	</dim:field>
-	</xsl:if>
-    	<xsl:apply-templates/>
-    </xsl:template>
-    
-    <!-- dc.title -->
-    <xsl:template match="bibtex:title">
-    	<dim:field mdschema="dc" element="title">
-    		<xsl:value-of select="."/>
-    	</dim:field>
-    </xsl:template>
-    
-    <!-- dc.contributor.author -->
-    <xsl:template match="bibtex:author">
-    	<dim:field mdschema="dc" element="contributor" qualifier="author">
-    		<xsl:value-of select="."/>
-    	</dim:field>
-    </xsl:template>
+    <xsl:template match="bibtex">
 
-    <!-- dc.contributor.editor -->
-    <xsl:template match="bibtex:editor">
-    	<dim:field mdschema="dc" element="contributor" qualifier="editor">
-    		<xsl:value-of select="."/>
-    	</dim:field>
-    </xsl:template>
+	    <!-- dc.title -->
+		<xsl:if test="./@title">
+	    	<dim:field mdschema="dc" element="title">
+	    		<xsl:value-of select="@title"/>
+	    	</dim:field>
+		</xsl:if>
+	
+		<xsl:if test="./@entrytype">
+	    	<dim:field mdschema="dc" element="type">
+	    		<xsl:value-of select="@entrytype"/>
+	    	</dim:field>
+		</xsl:if>
+	
+	    <!-- dc.contributor.author -->
+		<xsl:if test="./@author">
+	    	<dim:field mdschema="dc" element="contributor" qualifier="author">
+	    		<xsl:value-of select="@author"/>
+	    	</dim:field>
+		</xsl:if>
+	
+	    <!-- dc.contributor.editor -->
+		<xsl:if test="./@editor">
+	    	<dim:field mdschema="dc" element="contributor" qualifier="editor">
+	    		<xsl:value-of select="@editor"/>
+	    	</dim:field>
+		</xsl:if>
+	
+	    <!-- dc.publisher -->
+		<xsl:if test="./@publisher">
+	    	<dim:field mdschema="dc" element="publisher">
+	    		<xsl:value-of select="@publisher"/>
+	    	</dim:field>
+		</xsl:if>
+	
+	    <!-- dc.date -->
+		<xsl:if test="./@year">
+	    	<dim:field mdschema="dc" element="date">
+	    		<xsl:value-of select="@year"/>
+			
+				<xsl:if test="./@month">-<xsl:value-of select="@month"/></xsl:if>
+			
+				<xsl:if test="./@day">-<xsl:value-of select="@day"/></xsl:if>
 
-    <!-- dc.publisher -->
-    <xsl:template match="bibtex:author">
-    	<dim:field mdschema="dc" element="contributor" qualifier="author">
-    		<xsl:value-of select="."/>
-    	</dim:field>
-    </xsl:template>
+	    	</dim:field>
+		</xsl:if>
+	
+	    <!-- dc.identifier.uri -->
+		<xsl:if test="./@href">
+	    	<dim:field mdschema="dc" element="identifier" qualifier="uri">
+	    		<xsl:value-of select="@href"/>
+	    	</dim:field>
+		</xsl:if>
+	
+	    <!-- dc.relation.ispartof .... journal oder booktitle, je nach publikationstyp? ...exklusiv oder? -->
+		<xsl:if test="./@journal">
+	    	<dim:field mdschema="dc" element="relation" qualifier="ispartof">
+	    		<xsl:value-of select="@journal"/>
+	    	</dim:field>
+		</xsl:if>
+	
+	    <!-- dc.relation.ispartof .... journal oder booktitle, je nach publikationstyp? ...exklusiv oder? -->
+		<xsl:if test="./@booktitle">
+	    	<dim:field mdschema="dc" element="relation" qualifier="ispartof">
+	    		<xsl:value-of select="@booktitle"/>
+	    	</dim:field>
+		</xsl:if>
+	
+	    <!-- dc.description.abstract -->
+		<xsl:if test="./@bibtexAbstract">
+	    	<dim:field mdschema="dc" element="description" qualifier="abstract">
+	    		<xsl:value-of select="@bibtexAbstract"/>
+	    	</dim:field>
+		</xsl:if>
+	
+	    <!-- dc.description.everything -->
+		<xsl:if test="./@description">
+	    	<dim:field mdschema="dc" element="description" qualifier="everything">
+	    		<xsl:value-of select="@description"/>
+	    	</dim:field>
+		</xsl:if>
 
-    <!-- dc.date -->
-    <xsl:template match="bibtex:date">
-    	<dim:field mdschema="dc" element="date">
-    		<xsl:value-of select="."/>
-    	</dim:field>
-    </xsl:template>
-
-    <!-- dc.identifier.uri -->
-    <xsl:template match="bibtex:url">
-    	<dim:field mdschema="dc" element="identifier" qualifier="uri">
-    		<xsl:value-of select="."/>
-    	</dim:field>
-    </xsl:template>
-
-    <!-- dc.relation.ispartof .... journal oder booktitle, je nach publikationstyp? ...exklusiv oder? -->
-    <xsl:template match="bibtex:journal">  
-    	<dim:field mdschema="dc" element="contributor" qualifier="author">
-    		<xsl:value-of select="."/>
-    	</dim:field>
-    </xsl:template>
-
-    <!-- dc.relation.ispartof .... journal oder booktitle, je nach publikationstyp? ...exklusiv oder? -->
-    <xsl:template match="bibtex:booktitle">       
-        <dim:field mdschema="dc" element="contributor" qualifier="author">
-                <xsl:value-of select="."/>
-        </dim:field>
-    </xsl:template>
-
-    <!-- dc.description.abstract -->
-    <xsl:template match="bibtex:abstract">
-    	<dim:field mdschema="dc" element="description" qualifier="abstract">
-    		<xsl:value-of select="."/>
-    	</dim:field>
-    </xsl:template>
-
-    <!-- dc.description.everything -->
-    <xsl:template match="bibtex:description">
-    	<dim:field mdschema="dc" element="description" qualifier="everything">
-    		<xsl:value-of select="."/>
-    	</dim:field>
-    </xsl:template>
+	</xsl:template>
 
     <!-- dc.subject -->
-    <xsl:template match="bibtex:keyword">
+    <xsl:template match="tag">
     	<dim:field mdschema="dc" element="subject">
-    		<xsl:value-of select="."/>
+    		<xsl:value-of select="@name"/>
     	</dim:field>
     </xsl:template>
 
-    <!-- dc.identifier.isbn -->
-    <xsl:template match="bibtex:isbn">
-    	<dim:field mdschema="dc" element="identifier" qualifier="isbn">
-    		<xsl:value-of select="."/>
-    	</dim:field>
-    </xsl:template>
 
-    <!-- dc.identifier.issn -->
-    <xsl:template match="bibtex:issn">
-    	<dim:field mdschema="dc" element="identifier" qualifier="issn">
-    		<xsl:value-of select="."/>
-    	</dim:field>
-    </xsl:template>
 
 
 </xsl:stylesheet>

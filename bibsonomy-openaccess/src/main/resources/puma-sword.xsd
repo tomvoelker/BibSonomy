@@ -15,13 +15,11 @@
 		<xsd:complexType>
 			<xsd:complexContent>
 				<xsd:extension base="PostType" >
-					<xsd:attribute name="xDescription" type="xsd:string" />	
-					<xsd:attribute name="xPostingdate" type="xsd:dateTime" />				
-					<xsd:attribute name="xISBN" type="xsd:string"></xsd:attribute>
-					<xsd:attribute name="xISSN" type="xsd:string"></xsd:attribute>
-					<xsd:attribute name="xDOI" type="xsd:string"></xsd:attribute>
-					<xsd:attribute name="xLocation" type="xsd:string"></xsd:attribute>
-					<xsd:attribute name="xDCC" type="xsd:string"></xsd:attribute>
+					<xsd:attribute name="ISBN" type="xsd:string"></xsd:attribute>
+					<xsd:attribute name="ISSN" type="xsd:string"></xsd:attribute>
+					<xsd:attribute name="DOI" type="xsd:string"></xsd:attribute>
+					<xsd:attribute name="location" type="xsd:string"></xsd:attribute>
+					<xsd:attribute name="DCC" type="xsd:string"></xsd:attribute>
 				</xsd:extension>				
 			</xsd:complexContent>
 		</xsd:complexType>
