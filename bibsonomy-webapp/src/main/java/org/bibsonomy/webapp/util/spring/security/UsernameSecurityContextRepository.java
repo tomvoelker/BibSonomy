@@ -101,7 +101,15 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
             return;
         }
 		
-		if (present(authentication) && !this.containsContext(request)) {
+		/*
+		 * If an authentication is present, we store the user name in the 
+		 * session. Note that we /always/ store it - also when it already 
+		 * contained in the session (i.e., we don't check for 
+		 * !this.containsContext(request)). Thus, the session should time out
+		 * after XX minutes of /inactivity/.
+		 * 
+		 */
+		if (present(authentication)) {
 			final UserDetails user = (UserDetails) authentication.getPrincipal();
 			final String loginUsername = user.getUsername();
 			final HttpSession session = request.getSession(true);
