@@ -243,7 +243,7 @@ public class JabRefModelConverter {
 	    return entry;
 
 	} catch (final Exception e) {
-	    log.debug("Could not convert BibSonomy post into a JabRef BibTeX entry.", e);
+	    log.error("Could not convert BibSonomy post into a JabRef BibTeX entry.", e);
 	}
 
 	return null;
