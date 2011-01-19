@@ -38,9 +38,15 @@ import org.xml.sax.SAXParseException;
  * Imports bookmarks and relations from Delicious. To get an instance of this 
  * class, use the {@link DeliciousImporterFactory}.
  * 
- * Additional comment: In case that delicious offers api keys only in combination with OAuth
- * we have to use http basic auth.
- * @see <a href="http://delicious.com/help/api">delicious api help</a>
+ * This currently works only with the /v1-API. 
+ * 
+ * @see http://www.delicious.com/help/api writes:
+ * "All /v1 api's require https requests and HTTP-Auth.
+ * To access data from accounts created using a Yahoo! ID, use the same API's as
+ * below, but change the path to /v2, and make HTTP requests using OAuth as 
+ * provided by the Yahoo! Developer Network."
+ * 
+ * 
  * 
  * @author:  rja
  * @version: $Id$
