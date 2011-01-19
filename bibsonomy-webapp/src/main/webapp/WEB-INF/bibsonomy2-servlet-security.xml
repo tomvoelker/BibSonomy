@@ -124,6 +124,7 @@
 	
 	<security:authentication-manager alias="internalAuthenticationManager">
 		<security:authentication-provider ref="databaseAuthenticator" />
+		<security:authentication-provider ref="databaseAuthenticatorWithoutEncoding" />
 		<security:authentication-provider ref="rememberMeAuthenticator" />
 	</security:authentication-manager>
 	
@@ -137,6 +138,16 @@
 		</property>
 	</bean>
 	
+	<!--+
+		| Required when the user shall be logged in after successful activation
+		| to compare the already md5hashed password from the pendingUser with
+		| the also md5-hashed password from the user table.   
+		|
+		| Note that this also bears some problems: if someone knows another user's
+		| password hash, he can use it to login!
+		+-->
+	<bean id="databaseAuthenticatorWithoutEncoding" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider" parent="abstractDatabaseAuthenticator" />
+		
 	<bean id="rememberMeAuthenticator" class="org.springframework.security.authentication.RememberMeAuthenticationProvider">
 		<property name="key" ref="cookieKey" />
 	</bean>
