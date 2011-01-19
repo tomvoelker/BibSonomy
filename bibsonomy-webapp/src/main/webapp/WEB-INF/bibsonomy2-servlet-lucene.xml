@@ -127,6 +127,8 @@
 	            <ref bean="luceneUpdateBibTexCronTriggerWithIndexOptimization" />
 	            <ref bean="luceneUpdateBookmarkCronTriggerWithIndexOptimization" />
 	            <ref bean="luceneUpdateGoldStandardPublicationCronTriggerWithIndexOptimization" />
+	            <ref bean="luceneGenerateBibTexCronTrigger" />
+	            <ref bean="luceneGenerateBookmarkCronTrigger" />
 	        </list>
 	    </property>
 	</bean>                
