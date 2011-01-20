@@ -211,6 +211,9 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		sendToRepository(command, loginUser, post);
 	}
 	
+	/**
+	 * The temporary files will be stored on the file system and in the database 
+	 */
 	private void handleAddFiles(EditPublicationCommand command, String userName) {
 		//TODO check length of fileHash list and fileName list
 		if (!present(command.getFileName())) {
@@ -225,10 +228,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			/*
 			 * temporary saved file
 			 */
-			File tmpFile = new File(tempPath+command.getFileName().get(i).substring(32, 63));
-			
-
-			
+			File tmpFile = new File(tempPath+command.getFileName().get(i).substring(32, 64));
 			/*
 			 * new file
 			 */
