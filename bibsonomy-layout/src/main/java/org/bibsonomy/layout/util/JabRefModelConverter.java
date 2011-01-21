@@ -155,6 +155,9 @@ public class JabRefModelConverter {
 	     * convert entry type
 	     * (Is never null but getType() returns null for unknown types and 
 	     *  JabRef knows less types than we.)
+	     *  
+	     * FIXME: a nicer solution would be to implement the corresponding
+	     * classes for the missing entrytypes.
 	     */
 	    final BibtexEntryType entryType = BibtexEntryType.getType(bibtex.getEntrytype());
 	    entry.setType(entryType == null ? BibtexEntryType.OTHER : entryType);
