@@ -151,8 +151,13 @@ public class JabRefModelConverter {
 		}
 	    }
 
-	    if (present(bibtex.getEntrytype()))
-		entry.setType(BibtexEntryType.getType(bibtex.getEntrytype()));
+	    /*
+	     * convert entry type
+	     * (Is never null but getType() returns null for unknown types and 
+	     *  JabRef knows less types than we.)
+	     */
+	    final BibtexEntryType entryType = BibtexEntryType.getType(bibtex.getEntrytype());
+	    entry.setType(entryType == null ? BibtexEntryType.OTHER : entryType);
 
 	    if (present(bibtex.getMisc())
 		    || present(bibtex.getMiscFields())) {
