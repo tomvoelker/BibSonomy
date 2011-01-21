@@ -58,13 +58,15 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		 */
 		if (! authConfig.containsAuthMethod(AuthMethod.INTERNAL) )  {
 			errors.reject("error.method_not_allowed");
+			log.warn("authmethod " + AuthMethod.INTERNAL + " missing in config");
 			return Views.ERROR;			
 		}
 		
 		/*
 		 * no reminder hash given -> return input form
 		 */
-		if (!present(command.getReminderHash())) {
+		final String reminderHash = command.getReminderHash();
+		if (!present(reminderHash)) {
 			return Views.PASSWORD_CHANGE_ON_REMIND;
 		}
 
@@ -74,14 +76,16 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		 */
 		final ReminderCredentials cred;
 		try {
-			cred = this.decryptReminderHash(command.getReminderHash());
+			cred = this.decryptReminderHash(reminderHash);
 		} catch (InvalidPasswordReminderException ex) {
 			errors.reject("error.method_not_allowed");
+			log.warn("could not decrypt reminder hash " + reminderHash);
 			return Views.ERROR;
 		}
 		
 		if (! present(cred.username) || ! present(cred.reminderPassword)) {
 			errors.reject("error.method_not_allowed");
+			log.warn("either username " + cred.username + ") or reminderPassword (" + cred.reminderPassword + ") not present");
 			return Views.ERROR;
 		}
 		final User user = adminLogic.getUserDetails(cred.username);
@@ -182,7 +186,11 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		try {
 			final BasicTextEncryptor crypt = new BasicTextEncryptor();
 			crypt.setPassword(this.getCryptKey());
-			final String reminderHashDecrypted = crypt.decrypt(reminderHash);
+			/*
+			 * If the hash contained a "+" it is decoded as " " because of the URL parameter
+			 * decoding. We fix this here.
+			 */ 
+			final String reminderHashDecrypted = crypt.decrypt(reminderHash.replaceAll(" ", "+"));
 			final String[] parts = reminderHashDecrypted.split(":");
 			return new ReminderCredentials(parts[0], parts[1]);
 		}
