@@ -9,7 +9,7 @@ In: \begin{editor}\format[AuthorFirstAbbrLastCommas,HTMLChars]{\editor}, \format
 
 \begin{url}<a href="\format[HTMLChars]{\url}">[doi]</a>&nbsp;\end{url}\begin{pdf}<a
 href="\format[HTMLChars]{\pdf}">[PDF]</a>&nbsp;\end{pdf}\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibtexkey','abstract')">[abstract]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibtexkey','bibtex')">[BibTeX]</a>
-\begin{abstract}<p id="abs_\bibtexkey" style="display:none">\format[Replace("\n, "),HTMLChars,FormatPagesForHTML]{\abstract}</p>\end{abstract}<p id="bib_\bibtexkey" style="display:none;white-space:pre;max-width:100%;">@\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
+\begin{abstract}<div id="abs_\bibtexkey" style="display:none">\format[Replace("\n, "),HTMLChars,FormatPagesForHTML]{\abstract}</div>\end{abstract}<div id="bib_\bibtexkey" style="display:none;white-space:pre;max-width:100%;">@\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
   author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
   title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
   editor = {\format[HTMLChars]{\editor}}\end{editor}\begin{booktitle},
@@ -34,4 +34,4 @@ href="\format[HTMLChars]{\pdf}">[PDF]</a>&nbsp;\end{pdf}\begin{abstract}<a name=
   keywords = {\format[HTMLChars]{\keywords}}\end{keywords}\begin{abstract},
   abstract = {\format[Replace("\n, "),HTMLChars]{\abstract}}\end{abstract}
   }
-</p></div>
+</div></div>
