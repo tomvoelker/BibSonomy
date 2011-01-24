@@ -1,4 +1,4 @@
-<div style="margin-bottom:1em">\begin{title}<b>\format[HTMLChars,FormatPagesForHTML]{\title}</b>\end{title}.
+<div style="margin-bottom:1em">\begin{title}<b>\format[Replace(\n,),HTMLChars,FormatPagesForHTML]{\title}</b>\end{title}.
 <br/>
 Master's thesis\begin{type} (\format[HTMLChars]{\type})\end{type}\begin{school}, \format[HTMLChars]{\school}\end{school}\begin{address}, \format[HTMLChars]{\address}\end{address}\begin{year}, \format[HTMLChars]{\year}\end{year}.
 \begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),HTMLChars]{\note}\end{note}
@@ -9,9 +9,9 @@ Master's thesis\begin{type} (\format[HTMLChars]{\type})\end{type}\begin{school},
 href="\format[HTMLChars]{\pdf}">[PDF]</a>&nbsp;\end{pdf}\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibtexkey','abstract')">[abstract]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibtexkey','bibtex')">[BibTeX]</a>
 \begin{abstract}<div id="abs_\bibtexkey" style="display:none">\format[Replace("\n, "),HTMLChars,FormatPagesForHTML]{\abstract}</div>\end{abstract}<div id="bib_\bibtexkey" style="display:none;white-space:pre;max-width:100%;">@\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
   author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
-  title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
+  title = {\format[Replace(\n,),HTMLChars]{\title}}\end{title}\begin{editor},
   editor = {\format[HTMLChars]{\editor}}\end{editor}\begin{booktitle},
-  booktitle = {\format[HTMLChars]{\booktitle}}\end{booktitle}\begin{series},
+  booktitle = {\format[Replace(\n,),HTMLChars]{\booktitle}}\end{booktitle}\begin{series},
   series = {\format[HTMLChars]{\series}}\end{series}\begin{journal},
   journal = {\format[HTMLChars]{\journal}}\end{journal}\begin{publisher},
   publisher = {\format[HTMLChars]{\publisher}}\end{publisher}\begin{school},
