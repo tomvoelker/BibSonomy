@@ -10,9 +10,9 @@
 \begin{publisher}Verlag/Publisher: \format[HTMLChars]{\publisher}. \end{publisher}
 \begin{year}Erscheinungsjahr/Year: \format[HTMLChars]{\year}.\end{year}
 \begin{pages}Seiten/Pages: \format[FormatPagesForHTML]{\pages}.\end{pages}
-\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\bibsonomyUsername','abstract')">[Kurzfassung]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\bibsonomyUsername','bibtex')">[BibTeX]</a>
-<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\bibsonomyUsername','endnote')">[Endnote]</a>
-\begin{abstract}<p><div id="abs_\intrahash\bibsonomyUsername" style="display:none">\format[HTMLChars,FormatPagesForHTML]{\abstract}</div></p>\end{abstract}<p><div id="bib_\intrahash\bibsonomyUsername" style="display:none;white-space:pre;max-width:100%;">
+\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\username','abstract')">[Kurzfassung]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\username','bibtex')">[BibTeX]</a>
+<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\username','endnote')">[Endnote]</a>
+\begin{abstract}<p><div id="abs_\intrahash\username" style="display:none">\format[HTMLChars,FormatPagesForHTML]{\abstract}</div></p>\end{abstract}<p><div id="bib_\intrahash\username" style="display:none;white-space:pre;max-width:100%;">
 @\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
   author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
   title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
@@ -38,7 +38,7 @@
   abstract = {\format[Replace(\n,)HTMLChars]{\abstract}}\end{abstract}
   }
 </div></p>
-<p><div id="end_\intrahash\bibsonomyUsername" style="display:none;white-space:pre;max-width:100%;">
+<p><div id="end_\intrahash\username" style="display:none;white-space:pre;max-width:100%;">
 %0 = \format[ToLowerCase]{\bibtextype}\begin{author}
 %A = \format[HTMLChars]{\author}\end{author}\begin{booktitle}
 %B = \format[HTMLChars]{\booktitle}\end{booktitle}\begin{address}

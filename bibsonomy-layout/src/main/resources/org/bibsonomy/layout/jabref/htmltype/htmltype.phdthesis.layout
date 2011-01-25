@@ -2,9 +2,9 @@
 	<td style="vertical-align: top;">P</td>
 	<td>
 		<div style="margin-bottom:1em">\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}<i>\begin{title}\format[HTMLChars]{\title}. \end{title}</i>\begin{address}\format[HTMLChars]{\address}, \end{address}\begin{school}\format[HTMLChars]{\school}, \end{school}\begin{type}\format[HTMLChars]{\type}, \end{type}\begin{year}\format[HTMLChars]{\year}\end{year}<br/>
-		\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\bibsonomyUsername','abstract')">[Kurzfassung]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\bibsonomyUsername','bibtex')">[BibTeX]</a>
-		<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\bibsonomyUsername','endnote')">[Endnote]</a>
-		\begin{abstract}<p><div id="abs_\intrahash\bibsonomyUsername" style="display:none">\format[HTMLChars,FormatPagesForHTML]{\abstract}</div></p>\end{abstract}<p><div id="bib_\intrahash\bibsonomyUsername" style="display:none;white-space:pre;max-width:100%;">
+		\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\username','abstract')">[Kurzfassung]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\username','bibtex')">[BibTeX]</a>
+		<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\username','endnote')">[Endnote]</a>
+		\begin{abstract}<p><div id="abs_\intrahash\username" style="display:none">\format[HTMLChars,FormatPagesForHTML]{\abstract}</div></p>\end{abstract}<p><div id="bib_\intrahash\username" style="display:none;white-space:pre;max-width:100%;">
 		@\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
 		  author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
 		  title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
@@ -29,7 +29,7 @@
 		  abstract = {\format[HTMLChars]{\abstract}}\end{abstract}
 		  }
 		</div></p>
-		<p><div id="end_\intrahash\bibsonomyUsername" style="display:none;white-space:pre;max-width:100%;">
+		<p><div id="end_\intrahash\username" style="display:none;white-space:pre;max-width:100%;">
 		%0 = \format[ToLowerCase]{\bibtextype}\begin{author}
 		%A = \format[HTMLChars]{\author}\end{author}\begin{booktitle}
 		%B = \format[HTMLChars]{\booktitle}\end{booktitle}\begin{address}
