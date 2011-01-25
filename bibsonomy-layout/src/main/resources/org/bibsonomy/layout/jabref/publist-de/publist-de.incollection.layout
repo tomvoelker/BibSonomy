@@ -17,5 +17,5 @@ href="\format[Replace(\n,),HTMLChars]{\pdf}">[PDF]</a>&nbsp;\end{pdf}
 \format[Replace("\n, "),HTMLChars]{\abstract}
 </div>
 <div style="position:relative">						
-	<div id="bib_\intrahash\username" style="display:inline;position:absolute;"/>
+	<div id="bib_\intrahash\username" style="display:inline;position:absolute;"></div>
 </div></div>
