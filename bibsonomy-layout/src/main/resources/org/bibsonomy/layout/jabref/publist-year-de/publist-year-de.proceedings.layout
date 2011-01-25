@@ -4,7 +4,7 @@
 \begin{series}\format[Replace(\n,),HTMLChars]{\series}. \end{series}\begin{volume}Band \format[Replace(\n,),HTMLChars]{\volume}.\end{volume}
 \begin{number}Nummer \format[Replace(\n,),HTMLChars]{\number}.\end{number}
 \begin{publisher}\format[Replace(\n,),HTMLChars]{\publisher}, \end{publisher}\begin{address}\format[Replace(\n,),HTMLChars]{\address}, \end{address}\begin{year}\format[Replace(\n,),HTMLChars]{\year}\end{year}.
-\begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),HTMLChars]{\note}.\end{note}
+\begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),Replace(\n,),HTMLChars]{\note}.\end{note}
 \begin{editor}<br/>\format[AuthorFirstFirstCommas,Replace(" and , und "),HTMLChars]{\editor}.\end{editor}
 <br/>
 \begin{url}<a href="\format[Replace(\n,),HTMLChars]{\url}">[doi]</a>&nbsp;\end{url}\begin{pdf}<a

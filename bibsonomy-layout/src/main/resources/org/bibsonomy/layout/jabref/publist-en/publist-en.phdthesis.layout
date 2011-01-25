@@ -1,7 +1,7 @@
 <div style="margin-bottom:1em">\begin{title}<b>\format[Replace(\n,),HTMLChars,FormatPagesForHTML]{\title}</b>\end{title}.
 <br/>
 PhD thesis\begin{school}, \format[Replace(\n,),HTMLChars]{\school}\end{school}\begin{address}, \format[Replace(\n,),HTMLChars]{\address}\end{address}\begin{year}, \format[Replace(\n,),HTMLChars]{\year}\end{year}.
-\begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),HTMLChars]{\note}\end{note}
+\begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),Replace(\n,),HTMLChars]{\note}\end{note}
 <br/>
 \begin{author}\format[AuthorFirstFirstCommas,HTMLChars]{\author}.\end{author}
 <br/>
