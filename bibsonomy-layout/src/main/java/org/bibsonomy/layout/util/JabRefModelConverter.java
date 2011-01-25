@@ -246,7 +246,7 @@ public class JabRefModelConverter {
 	    }
 
 	    if (present(post.getUser()))
-		entry.setField("bibsonomyUsername", post.getUser().getName());
+		entry.setField("username", post.getUser().getName());
 
 	    return entry;
 
