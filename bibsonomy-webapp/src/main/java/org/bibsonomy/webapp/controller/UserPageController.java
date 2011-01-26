@@ -125,7 +125,10 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				command.setPageTitle(command.getPageTitle() + " :: " + StringUtils.implodeStringCollection(requTags, "+"));
 			}
 			
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
+			// only fetch tags if they were not already fetched by handleTagsOnly
+			if (command.getTagstype() == null) {
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
+			}
 
 			// retrieve concepts
 			final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);

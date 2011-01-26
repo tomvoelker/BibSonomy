@@ -55,7 +55,10 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 1000, null);
+			// only fetch tags if they were not already fetched by handleTagsOnly
+			if (command.getTagstype() != null) {
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 1000, null);
+			}
 			this.setGroupDetails(command, groupingName);
 			
 			if (requTags.size() > 0) {

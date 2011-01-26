@@ -96,7 +96,10 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			command.setPageTitle("group :: " + groupingName); // TODO: i18n
 
 			// always retrieve all tags of this group
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
+			// only fetch tags if they were not already fetched by handleTagsOnly
+			if (command.getTagstype() == null) {
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
+			}
 			this.setGroupDetails(command, groupingName);
 
 			if (requTags.size() > 0) {

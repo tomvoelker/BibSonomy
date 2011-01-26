@@ -92,7 +92,10 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			this.setTags(command, BibTex.class, groupingEntity, null, null, sysTags, null, 1000, null);
+			// only fetch tags if they were not already fetched by handleTagsOnly
+			if (command.getTagstype() == null) {
+				this.setTags(command, BibTex.class, groupingEntity, null, null, sysTags, null, 1000, null);
+			}
 			this.endTiming();
 			if(hasTags){
 				this.setRelatedTags(command, BibTex.class, groupingEntity, null, null, requTags, Order.ADDED, 0, 20, null);
