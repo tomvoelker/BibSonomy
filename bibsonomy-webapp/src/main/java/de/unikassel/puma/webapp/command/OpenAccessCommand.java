@@ -1,4 +1,6 @@
-package org.bibsonomy.webapp.command.ajax;
+package de.unikassel.puma.webapp.command;
+
+import org.bibsonomy.webapp.command.ajax.AjaxCommand;
 
 /**
  * @author clemens

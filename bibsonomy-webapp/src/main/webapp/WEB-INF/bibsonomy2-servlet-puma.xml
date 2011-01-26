@@ -66,6 +66,17 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/ajax/swordService">
+					<bean id="swordServiceControllerBean" parent="controllerBase">
+						<property name="controllerBeanName" value="swordServiceController" />
+						<property name="allowedFields">
+							<list>
+								<value>resourceHash</value>
+<!--								<value>id</value>-->
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -77,7 +88,11 @@
 	 	+-->
 	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController" />	
 	
-	<bean id="publicationClassificationController" class="org.bibsonomy.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
+	<bean id="swordServiceController" class="de.unikassel.puma.webapp.controller.ajax.SwordServiceController" scope="request" parent="ajaxController">
+		<property name="swordService" ref="swordService_puma"/>	
+	</bean>
+	
+	<bean id="publicationClassificationController" class="de.unikassel.puma.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
 		<property name="classificator" ref="classificator"/>
 	</bean>
 	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificatorSingleton" scope="singleton">

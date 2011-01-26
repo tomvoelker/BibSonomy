@@ -63,7 +63,7 @@
 	            <div class="dissError"><form:errors path="sendToRepository" /></div>
             </div>
             
-<!--           <editpub:classification />-->
+           <editpub:classification />
 		</jsp:attribute>
 	</parts:fieldset>
 

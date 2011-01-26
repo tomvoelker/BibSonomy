@@ -1,12 +1,12 @@
 package de.unikassel.puma.webapp.controller.ajax;
 
-import org.bibsonomy.webapp.command.ajax.OpenAccessCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 import de.unikassel.puma.openaccess.sherparomeo.SherpaRomeoImpl;
+import de.unikassel.puma.webapp.command.OpenAccessCommand;
 
 /**
  * @author clemens
