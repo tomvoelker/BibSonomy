@@ -59,13 +59,9 @@ function changeView() {
 
 	var requiredFields = getRequiredFieldsForType(document.getElementById('post.resource.entrytype').value);
 	
-	for (var i=0; i<fields.length; i++) {			
-		if (in_array(requiredFields,fields[i])) {
-			showHideElement(fields[i], '');
-		} else {
-			showHideElement(fields[i], 'none');
-		}
-	}			
+    for (var i=0; i<fields.length; i++) {
+        showHideElement(fields[i], in_array(requiredFields,fields[i]) ? '' : 'none');
+    }
 }	
 
 /* toggle to show elements */
@@ -168,5 +164,6 @@ function getFirstRelevantWord(title) {
 }
 
 $(window).load(function() {
-	changeView();
+	// load only, when extended fields are available                                                                                              
+    if (document.getElementById("post.resource.publisher")) changeView();
 });
