@@ -287,9 +287,18 @@ function myownTagInit(chkbox, tagbox) {
 		return;
 
 	if(tagbox.val().search(/myown[ ]?/gi) != -1) {
-		chkbox.attr('checked', 'true');
+		chkbox[0].checked = true;
 	} 
-		
+	
+	tagbox.keyup(function(){
+			if(tagbox.val().search(/myown[ ]?/gi) != -1){
+				chkbox[0].checked = true;
+				return;
+			}
+			chkbox[0].checked = false;
+		}
+	);
+	
 	chkbox.click(
 		function() {
 			clear_tags ();
