@@ -25,6 +25,5 @@
 				(eds.).
 			</c:if>
 		</c:otherwise>
-		<!-- TODO: link -->
-	</c:choose>: <a href="/bibtex/1${publication.interHash}">${mtl:cleanBibtex(publication.title)}</a>. <c:if test="${not empty publication.year}"> <c:out value="${publication.year}"/></c:if>
+	</c:choose>: <a href="/bibtex/${publication.interHash}">${mtl:cleanBibtex(publication.title)}</a>. <c:if test="${not empty publication.year}"> <c:out value="${publication.year}"/></c:if>
 </jsp:root>
