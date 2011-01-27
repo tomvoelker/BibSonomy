@@ -12,7 +12,7 @@
     <table class="${cssClass}">
     
       <tr><th colspan="2">registration form data</th></tr>
-      <tr><th>name</th><td><c:out value="${user.name}"/></td></tr>
+      <tr><th>name</th><td><a href="/admin?aclUserInfo=${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a></td></tr>
       <tr><th>email</th><td><a href="mailto:${fn:escapeXml(user.email)}"><c:out value="${user.email}"/></a></td></tr>
       <tr><th>real name</th><td><c:out value="${user.realname}"/></td></tr>
       <tr><th>homepage</th><td><a href="${fn:escapeXml(user.homepage)}"><c:out value="${user.homepage}"/></a></td></tr>
