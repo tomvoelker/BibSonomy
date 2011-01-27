@@ -32,6 +32,9 @@
 		</c:if>	
 		
 		<div id="gold_resources">
+		
+			<!-- TODO: add link to DOI -->
+		
 			<c:if test="${not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)}">
 			<div id="gold_resources_links">
 				<h3><fmt:message key="goldStandard.resource.info.links" /></h3>
