@@ -24,6 +24,7 @@
 package org.bibsonomy.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -92,6 +93,19 @@ public class WebUtilsTest {
 	public void testBuildCookieString3() {
 		final List<String> cookies = Arrays.asList("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811", "Path=/");
 		assertEquals("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811;Path=/", WebUtils.buildCookieString(cookies));
+	}
+	
+	@Test
+	public void testGetContentAsString1() throws Exception {
+		/*
+		 * Just check, if we get some output from BibSonomy.
+		 */
+		final String s = WebUtils.getContentAsString("http://www.bibsonomy.org/tag/web?items=1000", null, null, null);
+		assertTrue(s.length() > 0);
+		/*
+		 * We have a 1MB limit ... 
+		 */
+		assertTrue(s.length() < 1024 * 1024);
 	}
 	
 }
