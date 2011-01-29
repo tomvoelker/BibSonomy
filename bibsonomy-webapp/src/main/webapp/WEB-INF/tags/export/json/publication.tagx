@@ -20,6 +20,7 @@
          
          <!-- TODO: refactor TODODZ -->
          "intraHash" : "${post.resource.intraHash}",
+         "interHash" : "${post.resource.interHash}",
          "label" : "${mtl:quoteJSONcleanBibTeX(post.resource.title)}",
          "user" : "${mtl:quoteJSON(post.user.name)}",
          "description" : "${mtl:quoteJSON(post.description)}",
