@@ -23,13 +23,14 @@
 
 package org.bibsonomy.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -53,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  */
 public class WebUtils {
-	private static final Log log = LogFactory.getLog(WebUtils.class);
+		private static final Log log = LogFactory.getLog(WebUtils.class);
 
 	/**
 	 * maximal number of redirects to follow in {@link #getRedirectUrl(URL)}
@@ -72,8 +73,17 @@ public class WebUtils {
 	private static final String AMP_SIGN		= "&";
 	private static final String NEWLINE			= "\n";
 	private static final String SEMICOLON		= ";";
-	private static final String USER_AGENT_PROPERTY_NAME = "User-Agent";
-	private static final String COOKIE_PROPERTY_NAME	 = "Cookie";
+	private static final String USER_AGENT_HEADER_NAME   = "User-Agent";
+	private static final String COOKIE_HEADER_NAME  	 = "Cookie";
+	private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
+
+	/*
+	 * The maximum number of characters (~bytes) to read from a HTTP connection.
+	 * We fixed this to 1 MB to avoid that radio streams or huge files
+	 * mess up our heap. If this is not enough, please increase the size
+	 * carefully.
+	 */
+	private static final int MAX_CONTENT_LENGTH = 1 * 1024 * 1024;
 
 	/*
 	 * according to http://hc.apache.org/httpclient-3.x/threading.html
@@ -105,17 +115,17 @@ public class WebUtils {
 		urlConn.setDoOutput(true);
 		urlConn.setUseCaches(false);
 		urlConn.setRequestMethod("POST");
-		urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		urlConn.setRequestProperty(CONTENT_TYPE_HEADER_NAME, "application/x-www-form-urlencoded");
 
 
 		/*
 		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
 		 * pages require it to download content.
 		 */
-		urlConn.setRequestProperty(USER_AGENT_PROPERTY_NAME, USER_AGENT_PROPERTY_VALUE);
+		urlConn.setRequestProperty(USER_AGENT_HEADER_NAME, USER_AGENT_PROPERTY_VALUE);
 
 		if (cookie != null) {
-			urlConn.setRequestProperty(COOKIE_PROPERTY_NAME, cookie);
+			urlConn.setRequestProperty(COOKIE_HEADER_NAME, cookie);
 		}
 
 		
@@ -134,8 +144,13 @@ public class WebUtils {
 			activeCharset = charset;
 		}
 
+		/*
+		 * FIXME: check content type header to ensure that we only read textual 
+		 * content (and not a PDF, radio stream or DVD image ...)
+		 */
+		
 		// write into string writer
-		final StringWriter out = inputStreamToStringWriter(urlConn.getInputStream(), activeCharset);
+		final StringBuilder out = inputStreamToStringBuilder(urlConn.getInputStream(), activeCharset);
 
 		// disconnect
 		urlConn.disconnect();
@@ -213,9 +228,9 @@ public class WebUtils {
 			 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
 			 * pages require it to download content.
 			 */
-			urlConn.setRequestProperty(USER_AGENT_PROPERTY_NAME, USER_AGENT_PROPERTY_VALUE);
+			urlConn.setRequestProperty(USER_AGENT_HEADER_NAME, USER_AGENT_PROPERTY_VALUE);
 			if (cookie != null) {
-				urlConn.setRequestProperty(COOKIE_PROPERTY_NAME, cookie);
+				urlConn.setRequestProperty(COOKIE_HEADER_NAME, cookie);
 			}
 			urlConn.connect();
 
@@ -225,14 +240,17 @@ public class WebUtils {
 			final String charSet = getCharset(urlConn);
 
 			/*
+			 * FIXME: check content type header to ensure that we only read textual 
+			 * content (and not a PDF, radio stream or DVD image ...)
+			 */
+			
+			/*
 			 * write content into string buffer
 			 */
-			StringWriter out = inputStreamToStringWriter(urlConn.getInputStream(), charSet);
+			final StringBuilder out = inputStreamToStringBuilder(urlConn.getInputStream(), charSet);
 
 			urlConn.disconnect();
 
-			out.flush();
-			out.close();
 			return out.toString();
 		} catch (final ConnectException cex) {
 			log.debug("Could not get content for URL " + inputURL.toString() + " : " + cex.getMessage());
@@ -270,37 +288,35 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getContentAsString(final String url, final String cookie, final String postData, final String visitBefore) throws IOException {
-		HttpMethod method;
-		
-		if (visitBefore != null) {
+		if (present(visitBefore)) {
 			/*
-			 * visit url to get cookies if needed
+			 * visit URL to get cookies if needed
 			 */
-			method = new GetMethod(visitBefore);
-			client.executeMethod(method);
+			client.executeMethod(new GetMethod(visitBefore));
 		}
 		
-		if (ValidationUtils.present(postData)) {
+		final HttpMethod method;
+		if (present(postData)) {
 			/*
-			 * do a POST
+			 * do a POST request
 			 */
 			final List<NameValuePair> data = new ArrayList<NameValuePair>();
 			
 			for (final String s : postData.split(AMP_SIGN)) {
-				final String[] _p = s.split(EQUAL_SIGN);
+				final String[] p = s.split(EQUAL_SIGN);
 				
-				if (_p.length != 2) {
+				if (p.length != 2) {
 					continue;
 				} 
 				
-				data.add(new NameValuePair(_p[0], _p[1]));
+				data.add(new NameValuePair(p[0], p[1]));
 			}
 			
 			method = new PostMethod(url);
 			((PostMethod)method).setRequestBody(data.toArray(new NameValuePair[data.size()]));
 		} else {
 			/*
-			 * do a GET
+			 * do a GET request
 			 */
 			method = new GetMethod(url);
 			method.setFollowRedirects(true);
@@ -309,34 +325,34 @@ public class WebUtils {
 		/*
 		 * set cookie
 		 */
-		if (cookie != null) {
-			method.setRequestHeader(COOKIE_PROPERTY_NAME, cookie);
+		if (present(cookie)) {
+			method.setRequestHeader(COOKIE_HEADER_NAME, cookie);
 		}
 		
 		/*
 		 * do request
 		 */
-		int status = client.executeMethod(method);
-		
+		final int status = client.executeMethod(method);
 		if (status != HttpStatus.SC_OK) {
 			throw new IOException(url + " returns: " + status);
 		}
 
 		/*
+		 * FIXME: check content type header to ensure that we only read textual 
+		 * content (and not a PDF, radio stream or DVD image ...)
+		 */
+
+		
+		/*
 		 * collect response
 		 */
-		final BufferedReader in = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
-		final StringBuilder content = new StringBuilder();
-		String line = null;
-		while ((line = in.readLine()) != null) {
-			content.append(line).append(NEWLINE);
-		}
-		
+		final String charset = extractCharset(method.getResponseHeader(CONTENT_TYPE_HEADER_NAME).getValue()); 
+		final StringBuilder content = inputStreamToStringBuilder(method.getResponseBodyAsStream(), charset);
 		method.releaseConnection();
-		in.close();
 		
-		if (content.length() > 0) {
-			return content.toString();
+		final String string = content.toString();
+		if (string.length() > 0) {
+			return string;
 		}
 		
 		return null;
@@ -398,7 +414,7 @@ public class WebUtils {
 				 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
 				 * pages require it to download content.
 				 */
-				urlConn.setRequestProperty(USER_AGENT_PROPERTY_NAME , USER_AGENT_PROPERTY_VALUE);
+				urlConn.setRequestProperty(USER_AGENT_HEADER_NAME , USER_AGENT_PROPERTY_VALUE);
 
 				urlConn.connect();
 
@@ -438,7 +454,7 @@ public class WebUtils {
 		urlConn.setDoOutput(false);
 		urlConn.setUseCaches(false);
 
-		urlConn.setRequestProperty(USER_AGENT_PROPERTY_NAME, USER_AGENT_PROPERTY_VALUE);
+		urlConn.setRequestProperty(USER_AGENT_HEADER_NAME, USER_AGENT_PROPERTY_VALUE);
 
 		urlConn.connect();
 
@@ -493,7 +509,7 @@ public class WebUtils {
 		 * this typically looks like that:
 		 * text/html; charset=utf-8; qs=1
 		 */
-		if (contentType != null) {
+		if (present(contentType)) {
 			final int charsetPosition = contentType.indexOf(CHARSET);
 			if (charsetPosition > -1) {
 				/*
@@ -522,25 +538,33 @@ public class WebUtils {
 		return DEFAULT_CHARSET;
 	}
 
-	/** Copies the stream into the string writer.
+	/** Copies the stream into the string builder.
 	 * 
 	 * @param inputStream
 	 * @return
 	 * @throws IOException
 	 */
-	private static StringWriter inputStreamToStringWriter(final InputStream inputStream, final String charset) throws IOException {
+	private static StringBuilder inputStreamToStringBuilder(final InputStream inputStream, final String charset) throws IOException {
 		final InputStreamReader in;
+		/*
+		 * set charset
+		 */
 		if (charset == null || charset.trim().equals(""))
 			in = new InputStreamReader(inputStream);
 		else 
 			in = new InputStreamReader(inputStream, charset);
-
-		final StringWriter out = new StringWriter();
-		int b;
-		while ((b = in.read()) >= 0) {
-			out.write(b);
+		/*
+		 * use buffered reader (we always assume to have text)
+		 */
+		final BufferedReader buf = new BufferedReader(in);
+		final StringBuilder sb = new StringBuilder();
+		String line = null;
+		while ((line = buf.readLine()) != null && sb.length() + line.length() < MAX_CONTENT_LENGTH) {
+			sb.append(line).append(NEWLINE);
 		}
-		return out;
+		buf.close();
+		
+		return sb;
 	}
 
 	/** Writes the given string to the stream.
