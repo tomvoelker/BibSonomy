@@ -195,22 +195,19 @@ public class DOIUtils {
 	public static String cleanDOI(String s) {
 		final String doi = DOIUtils.extractDOI(s);
 		String replace = null;
-		
 		Matcher _m = CLEAN_DOI_PATTERN.matcher(s);
 		
 		while (_m.find()) {
 			if (_m.group(2) != null && _m.group(3) != null) {
-				replace = _m.group(2) + _m.group(3);
+				replace = _m.group(1) + _m.group(2) + _m.group(3);
 				break;
 			}
 			
-			replace = _m.group(3);
+			replace = _m.group(1) + _m.group(3);
 		}
-		
 		if (replace != null) {
-			s = s.replace(replace, doi);
+			s = s.replace(replace, _m.group(1) + doi);
 		}
-		
 		
 		return s;
 	}
