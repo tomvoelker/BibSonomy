@@ -44,6 +44,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
+import org.bibsonomy.util.id.DOIUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -65,7 +66,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			Pattern.compile("(/beta)?/citation.cfm.*")
 	));
 
-	private static final String BROKEN_END = "},\n }";
+	private static final String BROKEN_END = new String("},\n}");
 	private static final Pattern URL_PARAM_ID_PATTERN = Pattern.compile("id=([0-9\\.]+)");
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div style=\"display:inline\">(\\s*<p>\\s*)?(.+?)(\\s*<\\/p>\\s*)?<\\/div>", Pattern.MULTILINE);
 
@@ -142,18 +143,17 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 				 * Some entries (e.g., http://portal.acm.org/citation.cfm?id=500737.500755) seem
 				 * to have broken BibTeX entries with a "," too much at the end. We remove this
 				 * here.
+				 *
+				 * Some entries have the following end: "},\n} \n" instead of the BROKEN_END String.
+				 * So we have to adjust the starting index by the additional 2 symbols.
 				 */
-				final int indexOf = bibtexEntries.indexOf(BROKEN_END, bibtexEntries.length() - BROKEN_END.length() - 1);
+				final int indexOf = bibtexEntries.indexOf(BROKEN_END, bibtexEntries.length() - BROKEN_END.length() - 2);
 				if (indexOf > 0) {
 					bibtexEntries.replace(indexOf, bibtexEntries.length(), "}\n}");
 				}
 
-				/*
-				 * FIXME: unfortunately this also "cleans" the "url" field. :-(
-				 * Thus, I disabled it (rja, 2010-11-19)
-				 */
-				//				final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
-				final String result = bibtexEntries.toString().trim();
+				final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
+				//final String result = bibtexEntries.toString().trim();
 
 				if (!"".equals(result)) {
 					sc.setBibtexResult(result);
@@ -231,7 +231,9 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 				"http://portal.acm.org/citation.cfm?id=1105676",
 				"http://portal.acm.org/citation.cfm?id=553876",
 				"http://portal.acm.org/beta/citation.cfm?id=359859",
-				"http://portal.acm.org/citation.cfm?id=1082036.1082037&amp;coll=Portal&amp;dl=GUIDE&amp;CFID=88775871&amp;CFTOKEN=40392553#"
+				"http://portal.acm.org/citation.cfm?id=1082036.1082037&amp;coll=Portal&amp;dl=GUIDE&amp;CFID=88775871&amp;CFTOKEN=40392553#",
+				"http://doi.acm.org/10.1145/1105664.1105676",
+				"http://portal.acm.org/citation.cfm?id=500737.500755"
 		};
 		for (String url : urls) {
 			System.out.println("trying url " + url);
