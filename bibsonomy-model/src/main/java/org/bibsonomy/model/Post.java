@@ -73,8 +73,13 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * This is the {@link Date} when this post was lastly modified.
 	 */
+	private String changeDate;
+	
+	/**
+	 * This is the {@link Date} when this post was created.
+	 */
 	private Date date;
-
+	
 	/**
 	 * This is a text describing the post. <br/>
 	 * 
@@ -130,6 +135,20 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	public void setGroups(Set<Group> groups) {
 		this.groups = groups;
+	}
+
+	/**
+	 * @param changeDate the changeDate to set
+	 */
+	public void setChangeDate(String changeDate) {
+		this.changeDate = changeDate;
+	}
+
+	/**
+	 * @return the changeDate
+	 */
+	public String getChangeDate() {
+		return changeDate;
 	}
 
 	/**
