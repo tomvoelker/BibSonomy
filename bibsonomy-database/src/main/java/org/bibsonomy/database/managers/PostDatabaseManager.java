@@ -1232,7 +1232,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 			/*
 			 * now execute the postupdate operation
-			 */	
+			 */
+			post.setDate(oldPost.getDate());
 			if (present(operation)) {
 				switch (operation) {
 				case UPDATE_TAGS:
