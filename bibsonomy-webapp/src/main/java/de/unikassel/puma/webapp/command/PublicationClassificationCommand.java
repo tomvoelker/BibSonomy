@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.command.actions;
+package de.unikassel.puma.webapp.command;
 
 import org.bibsonomy.webapp.command.ajax.AjaxCommand;
 
@@ -39,7 +39,4 @@ public class PublicationClassificationCommand extends AjaxCommand {
 	public String getId() {
 		return this.id;
 	}
-	
-	
-	
 }

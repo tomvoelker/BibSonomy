@@ -62,6 +62,7 @@
 							<list>
 								<value>classificationName</value>
 								<value>id</value>
+								<value>action</value>
 							</list>
 						</property>
 					</bean>

@@ -6,13 +6,13 @@ import java.util.Set;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.bibsonomy.webapp.command.actions.PublicationClassificationCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 import de.unikassel.puma.openaccess.classification.PublicationClassification;
 import de.unikassel.puma.openaccess.classification.PublicationClassificatorSingleton;
+import de.unikassel.puma.webapp.command.PublicationClassificationCommand;
 
 /**
  * @author philipp

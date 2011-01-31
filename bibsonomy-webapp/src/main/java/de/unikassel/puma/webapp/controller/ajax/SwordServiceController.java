@@ -1,5 +1,7 @@
 package de.unikassel.puma.webapp.controller.ajax;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Post;
@@ -34,8 +36,11 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		
 		final User user = command.getContext().getLoginUser();
 		
-		
 		Post<?> post = getPostToHash(command.getResourceHash(), user.getName());
+		
+		if(!present(post)) {
+			
+		}
 		
 		swordService.checkDepositResponse(swordService.submitDocument(post, user));
 		

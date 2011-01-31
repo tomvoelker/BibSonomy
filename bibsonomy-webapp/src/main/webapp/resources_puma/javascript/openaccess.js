@@ -35,7 +35,14 @@ function initialiseOpenAccess(divName, intraHash) {
 		});
 	};
 	
+
+	var classificate = document.createElement('div');
+	classificate.setAttribute('id','classification');
+
 	$('#' +divName).append(sword);
+	$('#' +divName).append(classificate);
+	
+	initClassifications('classification');
 	
 }
 
@@ -88,7 +95,7 @@ function checkOpenAccess () {
 }
 
 function initClassifications(mainContainer) {
-	var url = classificationURL + "?classificationName=" +GET_AVAILABLE_CLASSIFICATIONS;
+	var url = classificationURL + "?action=" +GET_AVAILABLE_CLASSIFICATIONS;
 	
 	$.ajax({
 		dataType: 'json',
