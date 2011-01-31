@@ -430,8 +430,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * the post to update has the given intra hash
 		 */
 		post.getResource().setIntraHash(command.getIntraHashToUpdate());
-		
-		setDate(post, loginUserName);
 
 		List<String> updatePosts = null;
 		try {
