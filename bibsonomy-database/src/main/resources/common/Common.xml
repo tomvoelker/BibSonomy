@@ -12,6 +12,7 @@
 		<result property="contentId"    column="content_id"     javaType="int" />
 		<result property="tags"         resultMap="Common.tag" />
 		<result property="date"         column="date"           javaType="date" />
+		<result property="changeDate"	column="change_date" 	javaType="string" />
 		<result property="groups"       resultMap="Common.group" />
 		<result property="user"         resultMap="Common.user" />
 		<result property="description"  column="description"    javaType="string" />

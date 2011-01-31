@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -500,7 +502,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
 		final List<Post<Bookmark>> posts = bookmarkDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
-		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date" });
+		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate" });
 		toInsert.getResource().setCount(1);
 		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null);
 
@@ -747,9 +749,9 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		 */
 		assertFalse(oldPost.getContentId().equals(newPost.getContentId()));
 		/*
-		 * and the date!
+		 * and the change date!
 		 */
-		assertFalse(oldPost.getDate().equals(newPost.getDate()));
+		assertFalse(oldPost.getChangeDate().equals(newPost.getChangeDate()));
 		/*
 		 * the hashes and so on also should have changed
 		 */

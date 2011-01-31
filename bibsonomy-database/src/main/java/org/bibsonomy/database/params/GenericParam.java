@@ -126,6 +126,8 @@ public abstract class GenericParam {
 	private boolean caseSensitiveTagNames;
 	/** creation-date */
 	private Date date;
+	/** change-date*/
+	private String changeDate;
 	/** If a contentId is updated or deleted we need this as reference */
 	private int requestedContentId;
 	/**
@@ -364,6 +366,20 @@ public abstract class GenericParam {
 	 */
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	/**
+	 * @param changeDate the changeDate to set
+	 */
+	public void setChangeDate(String changeDate) {
+	    this.changeDate = changeDate;
+	}
+
+	/**
+	 * @return the changeDate
+	 */
+	public String getChangeDate() {
+	    return changeDate;
 	}
 
 	/**

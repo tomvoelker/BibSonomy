@@ -718,7 +718,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		param.setSimHash(HashID.INTRA_HASH);
 		final List<Post<BibTex>> posts = bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
-		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date"});
+		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate"});
 		toInsert.getResource().setCount(1);
 		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL"});
 

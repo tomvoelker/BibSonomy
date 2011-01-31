@@ -105,6 +105,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		
 		insert.setResource(post.getResource());
 		insert.setDate(post.getDate());
+		insert.setChangeDate(post.getChangeDate());
 		insert.setRequestedContentId(post.getContentId());
 		insert.setHash(post.getResource().getIntraHash());
 		insert.setDescription(post.getDescription());

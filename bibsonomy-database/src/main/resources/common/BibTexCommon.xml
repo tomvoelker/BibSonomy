@@ -49,12 +49,19 @@
 	<resultMap id="bibtexPostWithDocuments" class="post" extends="Common.posts">
 		<result property="resource"   resultMap="BibTexCommon.bibtexWithDocuments" />
 	</resultMap>	
-
-	<sql id="commonBibtexAttributes">
+	
+	<sql id="commonBibtexAttributes1">
 		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
 		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
 		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
 		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype
+	</sql>
+	
+	<sql id="commonBibtexAttributes">
+		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.change_date, b.title, b.author, b.editor, b.year, b.entrytype
 	</sql>
 
 	<sql id="allBibtexAttributes">
@@ -70,7 +77,7 @@
 		b2.address, b2.annote, b2.booktitle, b2.chapter, b2.crossref, b2.edition, b2.howpublished,
 		b2.institution, b2.journal, b2.bkey, b2.month, b2.note, b2.number, b2.organization, b2.pages, b2.publisher,
 		b2.school, b2.series, b2.type, b2.volume, b2.day, b2.url, b2.content_id, b2.description, b2.bibtexKey,
-		b2.misc, b2.bibtexAbstract, b2.user_name, b2.date, b2.title, b2.author, b2.editor, b2.year, b2.entrytype,
+		b2.misc, b2.bibtexAbstract, b2.user_name, b2.date, b2.change_date, b2.title, b2.author, b2.editor, b2.year, b2.entrytype,
 		<include refid="bibtexSimHashes2"/>
 	</sql>
 

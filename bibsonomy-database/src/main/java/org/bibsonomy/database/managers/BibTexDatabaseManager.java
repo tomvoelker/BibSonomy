@@ -507,6 +507,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		insert.setRequestedContentId(post.getContentId());
 		insert.setDescription(post.getDescription());
 		insert.setDate(post.getDate());
+		insert.setChangeDate(post.getChangeDate());
 		insert.setUserName(((post.getUser() != null) ? post.getUser().getName() : ""));
 		
 		// in field group in table bibtex, insert the id for PUBLIC, PRIVATE or the id of the FIRST group in list

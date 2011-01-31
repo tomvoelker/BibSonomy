@@ -9,8 +9,12 @@
 	<resultMap id="bookmarkPost" class="post" extends="Common.posts">
 		<result property="resource"   resultMap="BookmarkCommon.bookmark" />
 	</resultMap>
-
-	<sql id="bookmarkAttributes">
+	
+	<sql id="bookmarkAttributesNoChangeDate">
 		b.content_id, b.book_description as title, b.book_extended as description, b.user_name, b.date, b.book_url_hash AS intraHash, b.book_url_hash AS interHash
 	</sql>	
+
+	<sql id="bookmarkAttributes">
+		<include refid="bookmarkAttributesNoChangeDate"/>, b.change_date 
+	</sql>
 </sqlMap>
