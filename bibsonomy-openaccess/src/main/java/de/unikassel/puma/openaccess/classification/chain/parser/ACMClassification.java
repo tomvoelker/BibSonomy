@@ -1,7 +1,7 @@
 package de.unikassel.puma.openaccess.classification.chain.parser;
 
-import java.util.LinkedHashMap;
 
+import java.util.LinkedHashMap;
 import de.unikassel.puma.openaccess.classification.ClassificationObject;
 import de.unikassel.puma.openaccess.classification.ClassificationParser;
 import org.xml.sax.Attributes;
@@ -17,6 +17,10 @@ private static final String NAME = "ACM";
 	private String code;
 	private String description;
 	
+	private boolean skip = false;
+	private String skipElement = "";
+	
+	
 	@Override
 	public void startDocument() {
 		classifications = new LinkedHashMap<String, ClassificationObject>();
@@ -31,12 +35,36 @@ private static final String NAME = "ACM";
 
 	@Override
 	public void startElement (final String uri, final String name, final String qName, final Attributes atts) throws SAXException {
+		
+		if(skip)
+			return;
+//		
+//		System.out.println("Start NAME: " +name +" QName: " +qName);
+//		atts.ge
+//		
+//		for(int i = 0; i< atts.getLength(); ++i) {
+//			System.out.print( +" " +atts.getValue(i) +" ");
+//		}
+//		System.out.println();
+//		
 		if ("node".equals(qName)) {
 
+			if(atts.getLength() == 2) {
+				if(atts.getLocalName(0).equals("id") && atts.getLocalName(1).equals("label")) {
+					classificate(atts.getValue(0), atts.getValue(1));
+				}
+			}
+			
 		} else if("isComposedBy".equals(qName)) {
 
-		} else if("isRelatedTo".equals(qName) || "hasNote".equals(qName)) {
-			//no op
+		} else if("isRelatedTo".equals(qName)) {
+			skip = true;
+			skipElement = "isRelatedTo";
+				
+		} else if("hasNote".equals(qName)) {
+			skip = true;
+			skipElement = "hasNote";
+			
 		} else {
 			throw new SAXException("Unable to parse");
 		}
@@ -54,10 +82,24 @@ private static final String NAME = "ACM";
 
 	@Override
 	public void endElement (final String uri, final String name, final String qName) throws SAXException {
+		if(skip) {
+			
+			if(qName.equals(skipElement)) {
+				skip = false;
+				skipElement = "";
+			}
+			
+		} else {
+
+			
+		}
 		
 	}
 	
 	private void requClassificate(String name, String description, ClassificationObject object) {
+		if(name.isEmpty())
+			return;
+		
 		String actual = name.charAt(0) +"";
 		name = name.substring(1);
 	
@@ -78,8 +120,28 @@ private static final String NAME = "ACM";
 		}
 	}
 	
+	private String removeUnusedChars(String name) {
+		StringBuffer str = new StringBuffer(name);
+		
+		int i = 0;
+		while(i < str.length()) {
+			if(str.charAt(i) == '.') {
+				str.deleteCharAt(i);
+				continue;
+			}
+			i++;
+		}
+		
+		return str.toString();
+	}
+	
 	//TODO what if only 1 char in name?
 	private void classificate(String name, String description) {
+		name = removeUnusedChars(name);
+		
+		if(name.length() > 4)
+			return;
+		
 		String actual = name.charAt(0) +"";
 		name = name.substring(1);
 	
