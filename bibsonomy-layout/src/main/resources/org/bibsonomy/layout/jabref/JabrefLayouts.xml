@@ -281,6 +281,21 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="ebie" public="false">
+		<displayName>Electronic Business and Integration Engineering</displayName>
+		<description xml:lang="en">
+			Custom output format provided by the Research Group 
+                        Electronic Business and Integration Engineering, University of Leipzig
+		</description>
+		<description xml:lang="de">
+			Benutzerdefiniertes Ausgabeformat, das von der Abteilung
+			Electronic Business and Integration Engineering, University of Leipzig
+			angeboten wird.
+		</description>
+		<baseFileName>ebie</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
 	<layout name="jucs">
 		<displayName>JUCS</displayName>
 		<description xml:lang="en">
