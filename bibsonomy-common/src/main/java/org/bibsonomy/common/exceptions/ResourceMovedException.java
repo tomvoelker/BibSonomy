@@ -36,6 +36,7 @@ public class ResourceMovedException extends RuntimeException {
 	private final String newIntraHash;
 	private final String userName;
 	private final Date date;
+	private final Class<?> resourceType;
 	
 	/**
 	 * Constructs a new resource moved exception with the specified resource
@@ -45,6 +46,7 @@ public class ResourceMovedException extends RuntimeException {
 	 *            the intra hash of the resource that has been moved. This is written
 	 *            into a detail message which is saved for later retrieval by
 	 *            the {@link #getMessage()} method.
+	 * @param resourceType - type of the resource that has moved
 	 * @param newIntraHash 
 	 * 			  the intra hash of the new resource when the resource changed 
 	 * @param userName 
@@ -53,8 +55,9 @@ public class ResourceMovedException extends RuntimeException {
 	 * 			  the new date of the resource. This is necessary to identify 
 	 *            resources whose date has not changed.  
 	 */
-	public ResourceMovedException(final String intraHash, final String newIntraHash, final String userName, final Date date) {
+	public ResourceMovedException(final String intraHash, final Class<?> resourceType, final String newIntraHash, final String userName, final Date date) {
 		super("The requested resource (with ID " + intraHash + ") has been moved to new ID " + newIntraHash + ". \n");
+		this.resourceType = resourceType;
 		this.newIntraHash = newIntraHash;
 		this.userName = userName;
 		this.date = date;
@@ -79,6 +82,13 @@ public class ResourceMovedException extends RuntimeException {
 	 */
 	public Date getDate() {
 		return this.date;
+	}
+
+	/**
+	 * @return The type of the resource that has moved.
+	 */
+	public Class<?> getResourceType() {
+		return this.resourceType;
 	}
 	
 	
