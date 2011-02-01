@@ -64,7 +64,7 @@ public final class GetUserDetailsQuery extends AbstractQuery<User> {
 	@Override
 	protected User doExecute() throws ErrorPerformingRequestException {
 		/*
-		 * FIXME: throws a NPE
+		 * Fixed by removing @Deprecated from RenderingFormat toString method.
 		 */
 		this.downloadedDocument = performGetRequest(URL_USERS + "/" + this.username + "?format=" + getRenderingFormat().toString().toLowerCase());
 		return null;
