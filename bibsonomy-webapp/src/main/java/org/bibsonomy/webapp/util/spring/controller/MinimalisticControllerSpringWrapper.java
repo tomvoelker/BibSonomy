@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.web.spring.classeditor.ClassEditor;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -52,7 +55,9 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	private String controllerBeanName;
 	
 	private String[] allowedFields;
-	private String[] disallowedFields;	
+	private String[] disallowedFields;
+	
+	private URLGenerator urlGenerator;
 
 	/** 
 	 * Sets the fields which Spring is allowed to bind to command objects.
@@ -174,6 +179,12 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			// TODO: this exception is only thrown in org.bibsonomy.webapp.controller.actions.UserLoginController;
 			// if desired, add some logging there. Otherwise, our error logs get cluttered.(dbe)
 			// log.warn("Could not complete controller (Service unavailable): " + e.getMessage());
+		} catch (final ResourceMovedException e) {
+			response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+			response.setHeader("Location", urlGenerator.getPostUrl(e.getResourceType(), e.getNewIntraHash(), e.getUserName()));
+		} catch (final ResourceNotFoundException e) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			errors.reject("error.post.notfound", e.getMessage()); // FIXME: it would be better, to show the specific 404 view
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
@@ -230,5 +241,13 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 */
 		binder.setAllowedFields(allowedFields);
 		binder.setDisallowedFields(disallowedFields);
+	}
+
+	public URLGenerator getUrlGenerator() {
+		return this.urlGenerator;
+	}
+
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}	
 }

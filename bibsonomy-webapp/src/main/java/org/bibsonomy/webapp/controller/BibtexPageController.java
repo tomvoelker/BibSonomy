@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,11 +37,15 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
 
-		final String hash = command.getRequBibtex();
+		/*
+		 * This hash has 33 characters and contains at the first position the
+		 * type of the hash (see SimHash class).
+		 */
+		final String longHash = command.getRequBibtex();
 		/*
 		 * if no hash given -> error
 		 */
-		if (!present(hash)){
+		if (!present(longHash)) {
 			throw new MalformedURLSchemeException("error.bibtex_no_hash");
 		}
 
@@ -57,53 +60,92 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		 * retrieve only TAG_LIMIT tags for this resource
 		 */
 		command.setResourcetype(Collections.<Class<? extends Resource>>singleton(BibTex.class));
-		this.handleTagsOnly(command, groupingEntity, requUser, null, null, hash, TAG_LIMIT, null);
+		this.handleTagsOnly(command, groupingEntity, requUser, null, null, longHash, TAG_LIMIT, null);
 
-		// for getting the gold standard
-		String goldHash = hash.substring(1); // remove leading 1 TODODZ
+		/*
+		 * The hash without the type of hash identifier at the first position.
+		 * 32 characters long.
+		 */
+		final String shortHash = longHash.substring(1);
+
+		/*
+		 * To later retrieve the corresponding gold standard post. The intra hash
+		 * of gold standard posts equals the inter hash of the corresponding 
+		 * regular posts.
+		 * 
+		 * If an inter hash was queried, this is already the correct hash.
+		 * If an intra hash was queried, we later must overwrite it with the 
+		 * inter hash.
+		 */
+		String goldHash = shortHash; 
 
 		/*
 		 * retrieve and set the requested publication(s)
+		 * 
+		 * We always get the publication(s) as list - also when the GroupingEntity 
+		 * is "USER" (where we will only show one publication!) - because we don't 
+		 * know the type of the requested hash. The getPosts() method of the 
+		 * LogicInterface checks for the type and returns the corresponding post(s). 
 		 */
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
-			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();		
-			this.setList(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage);
+		final int entriesPerPage = command.getListCommand(BibTex.class).getEntriesPerPage();		
+		this.setList(command, BibTex.class, groupingEntity, requUser, null, longHash, null, null, null, entriesPerPage);
 
-			if (GroupingEntity.ALL.equals(groupingEntity)) {
-				/* 
-				 * retrieve total count with given hash 
-				 * (only for /bibtex/HASH)
-				 */
-				this.setTotalCount(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage, null);
-			} else if (GroupingEntity.USER.equals(groupingEntity)) {
-				/*
-				 * complete post details for a single post of a given user 
-				 * (only for /bibtex/HASH/USER)
-				 */
-				final List<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
-				for (final Post<BibTex> b : command.getBibtex().getList()) {
-					final BibTex publication = b.getResource();
-
-					Post<BibTex> postDetails = null;
-					try {
-						postDetails = (Post<BibTex>) this.logic.getPostDetails(publication.getIntraHash(), b.getUser().getName());
-						bibtex.add(postDetails);
-
-						goldHash = postDetails.getResource().getInterHash();
-					} catch (final ResourceNotFoundException ex) {
-						// ignore
-					} catch (final ResourceMovedException ex) {
-						// ignore
-					}
-				}
-				command.getBibtex().setList(bibtex);
-			}
-			/*
-			 * post process and sort list (e.g., insert open URL)
+		if (GroupingEntity.ALL.equals(groupingEntity)) {
+			/* 
+			 * retrieve total count with given hash 
+			 * (only for /bibtex/HASH)
 			 */
-			this.postProcessAndSortList(command, resourceType);
+			this.setTotalCount(command, BibTex.class, groupingEntity, requUser, null, longHash, null, null, null, entriesPerPage, null);
+		} else if (GroupingEntity.USER.equals(groupingEntity)) {
+			/*
+			 * Complete the post details for the first post of a given user 
+			 * (only for /bibtex/HASH/USER)
+			 * 
+			 * We will use the intrahash to get all details for the post using
+			 * getPostDetails().
+			 */
+			final String intraHash;
+			final List<Post<BibTex>> posts = command.getBibtex().getList();
+			if (present(posts)) {
+				/*
+				 * a post was found -> extract the publication
+				 */
+				intraHash = posts.get(0).getResource().getIntraHash();
+			} else {
+				/*
+				 * No post was found: we use the requested hash to query for the
+				 * post. (Note: if an interhash was requested, we won't get a
+				 * post here.) 
+				 */
+				intraHash = shortHash;
+			}
+			final Post<BibTex> post = (Post<BibTex>) this.logic.getPostDetails(intraHash, requUser);
+			/*
+			 * if we did not find a post -> throw an exception
+			 */
+			if (!present(post)) throw new ResourceNotFoundException(intraHash);
+			/*
+			 * Why do we set the goldHash here again?
+			 * Because at first it might have been an intra hash of a 
+			 * user's post. Here we ensure, that it's the post's interhash
+			 * because the intrahashes of gold standard posts are the interhashes. 
+			 */
+			goldHash = post.getResource().getInterHash();
+			/*
+			 * store the post in the command's list (and replace the original 
+			 * list of post)
+			 */
+			command.getBibtex().setList(Collections.singletonList(post));
 		}
+		/*
+		 * post process and sort list (e.g., insert open URL)
+		 */
+		this.postProcessAndSortList(command, BibTex.class);
 
+		/*
+		 * We always get the gold standard post from the database - even for
+		 * user's posts - to show a link to it in the sidebar 
+		 */
 		Post<GoldStandardPublication> goldStandard = null;
 		try {
 			/*
@@ -119,23 +161,29 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		
 
 		/*
-		 * extract first bibtex; if list is empty, return blank page
+		 * If list is empty, send a 404 error.
 		 */
-		final BibTex firstBibtex;
-		if (present(command.getBibtex().getList())){
-			firstBibtex = command.getBibtex().getList().get(0).getResource();			
-		} else {
-			if ("html".equals(format)) {
-				return (GroupingEntity.USER.equals(groupingEntity) ? Views.BIBTEXDETAILS : Views.BIBTEXPAGE);				
-			} 
-			return Views.getViewByFormat(format);
+		if (!present(command.getBibtex().getList())){
+			/*
+			 * We throw a ResourceNotFoundException such that we don't get empty
+			 * resource pages.
+			 */
+			throw new ResourceNotFoundException(shortHash);
 		}
-		command.setDocuments(firstBibtex.getDocuments());
+		
+		/*
+		 * extract first publication
+		 */
+		final BibTex firstPublication = command.getBibtex().getList().get(0).getResource();			
+		command.setDocuments(firstPublication.getDocuments());
 		
 		/*
 		 * Set page title to title of first publication 
 		 */
-		command.setTitle(firstBibtex.getTitle());
+		command.setTitle(firstPublication.getTitle());
+		/*
+		 * Add additional data for HTML view, e.g., tags, other user's posts, ...
+		 */
 		this.endTiming();
 		if ("html".equals(format)) {
 			command.setPageTitle("publication :: " + command.getTitle()); // TODO: i18n
@@ -145,7 +193,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 				 * fetch posts of all users with the given hash, add users to related
 				 * users list				
 				 */
-				final List<Post<BibTex>> allPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, firstBibtex.getInterHash(), null, null, 0, 1000, null);
+				final List<Post<BibTex>> allPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, firstPublication.getInterHash(), null, null, 0, 1000, null);
 				for (final Post<BibTex> post : allPosts) {
 					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
 				}
@@ -158,20 +206,20 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 				 * with the interHash of firstBibtex in their collection. In allPosts, only public posts
 				 * are contained, hence it can be smaller.
 				 */
-				this.setTotalCount(command, BibTex.class, GroupingEntity.ALL, null, null, firstBibtex.getInterHash(), null, null, null, 1000, null);
-				firstBibtex.setCount(command.getBibtex().getTotalCount());
+				this.setTotalCount(command, BibTex.class, GroupingEntity.ALL, null, null, firstPublication.getInterHash(), null, null, null, 1000, null);
+				firstPublication.setCount(command.getBibtex().getTotalCount());
 
 				/*
 				 * show tags by all users for this resource; the ones by the given user
 				 * will be highlighted later
 				 */
-				this.setTags(command, BibTex.class, GroupingEntity.ALL, null, null, null, hash, TAG_LIMIT, null);
+				this.setTags(command, BibTex.class, GroupingEntity.ALL, null, null, null, longHash, TAG_LIMIT, null);
 				return Views.BIBTEXDETAILS;
 			}
 			/*
 			 * get only those tags, related to the resource
 			 */
-			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, hash, TAG_LIMIT, null);			
+			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, longHash, TAG_LIMIT, null);			
 			return Views.BIBTEXPAGE;
 		}
 
