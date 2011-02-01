@@ -1,7 +1,7 @@
 package de.unikassel.puma.openaccess.sword;
 
 /**
- * bean for configuring lucene via JNDI
+ * bean for configuring sword via JNDI
  * 
  * @author
  * @version

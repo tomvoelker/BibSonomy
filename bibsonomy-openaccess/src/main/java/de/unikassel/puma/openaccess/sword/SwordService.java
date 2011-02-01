@@ -5,21 +5,17 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.SwordException;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.BibTex;
@@ -36,9 +32,6 @@ import org.purl.sword.client.Client;
 import org.purl.sword.client.PostMessage;
 import org.purl.sword.client.SWORDClientException;
 
-
-
-
 /**
  * Sword main
  * 
@@ -52,14 +45,6 @@ public class SwordService {
 	private static final String SWORDFILETYPE = "application/zip";
 	private static final String SWORDFORMAT = "http://purl.org/net/sword-types/METSDSpaceSIP"; 
 	
-//	private String dirTemp;
-//	private String httpServer;
-//	private int httpPort;
-//	private String httpUserAgent;
-//	private String authUsername;
-//	private String authPassword;
-//	private String httpServicedocumentUrl;
-//	private String httpDepositUrl;
 	private SwordConfig repositoryConfig;
 	
 	private String projectDocumentPath;
@@ -99,8 +84,9 @@ public class SwordService {
 	
 	/**
 	 * collects all informations to send Documents with metadata to repository 
+	 * @throws SWORDException 
 	 */
-	public DepositResponse submitDocument(Post<?> post, User user) {
+	public void submitDocument(Post<?> post, User user) throws SWORDException {
 		log.info("starting sword");
 		DepositResponse depositResponse = new DepositResponse(999); 
 		File swordZipFile = null;
@@ -134,6 +120,10 @@ public class SwordService {
 			// get documents for post and insert documents into post 
 			((BibTex) post.getResource()).setDocuments(retrieveDocumentsFromDatabase(user, post.getResource().getIntraHash()));
 			
+			if (!((BibTex) post.getResource()).getDocuments().isEmpty()) { 
+				// Wenn kein PDF da, dann Fehlermeldung ausgeben!!
+				throw new SwordException("noPDFattached");
+			}
 					
 			try {
 				// create directory
@@ -283,15 +273,91 @@ public class SwordService {
 					swordMessage.setDestination(repositoryConfig.getHttpDepositUrl());
 	
 					depositResponse = swordClient.postFile(swordMessage);
-					if (depositResponse.getHttpResponse()>=300) {
-						try {
-							log.info("depositResponse: "+ depositResponse.getErrorDocument().getErrorURI());
-						} catch (SWORDException e) {
-							log.warn("SWORDException! " + e.getMessage());
-						}
-					} else {
-						log.info("depositResponse: OK!");
+					log.info("depositResponse: "+ depositResponse.getErrorDocument().getErrorURI());
+
+					/*
+					 * 200 OK Used in response to successful GET operations and
+					 * to Media Resource Creation operations where X-No-Op is
+					 * set to true and the server supports this header.
+					 * 
+					 * 201 Created
+					 * 202 Accepted - One of these MUST be used to indicate that
+					 * a deposit was successful. 202 Accepted is used when
+					 * processing of the data is not yet complete.
+					 * 
+					 * 
+					 * 400 Bad Request - used to indicate that there is some
+					 * problem with the request where there is no more
+					 * appropriate 4xx code.
+					 * 
+					 * 401 Unauthorized - In addition to the usage described in
+					 * HTTP, servers that support mediated deposit SHOULD use
+					 * this status code when the server does not understand the
+					 * value given in the X-Behalf-Of header. In this case a
+					 * human-readable explanation MUST be provided.
+					 * 
+					 * 403 Forbidden - indicates that there was a problem making
+					 * the deposit, it may be that the depositor is not
+					 * authorised to deposit on behalf of the target owner, or
+					 * the target owner does not have permission to deposit into
+					 * the specified collection.
+					 * 
+					 * 412 Precondition failed - MUST be returned by server
+					 * implementations if a calculated checksum does not match a
+					 * value provided by the client in the Content-MD5 header.
+					 * 
+					 * 415 Unsupported Media Type - MUST be used to indicate
+					 * that the format supplied in either a Content-Type header
+					 * or in an X-Packaging header or the combination of the two
+					 * is not accepted by the server.
+					 */
+					
+					switch (depositResponse.getHttpResponse()) {
+					case 200:	// OK (only ok for noOp here)
+						
+						break;
+
+					case 201:	// Created --- this one means all things went fine
+						
+						break;
+
+					case 202:	// Accepted - Processing of data not yet complete
+						
+						break;
+
+					case 400:	// Bad Request
+						
+						break;
+
+					case 401:	// Unauthorized
+						
+						break;
+
+					case 403:	// Forbidden
+						
+						break;
+
+					case 404:	// File Not Found
+						
+						break;
+
+					case 412:	// Precondition failed
+						
+						break;
+
+					case 415:	// Unsupported Media Type
+						
+						break;
+
+					case 500:	// Internal Server Error
+						
+						break;
+
+						// other unknown error
+					default:
+						break;
 					}
+
 				}
 
 			} catch (SWORDClientException e) {
@@ -300,17 +366,8 @@ public class SwordService {
 
 		}
 
-		return depositResponse;
 	}
 
-	/*
-	 * returns true, if sword server response is positive (http status is less than 300. status codes 200, 201, and 202 are possible), otherwise false
-	 */
-	public boolean checkDepositResponse(DepositResponse response) {
-		// see http://www.swordapp.org/docs/sword-profile-1.3.html
-		if (response.getHttpResponse() < 300) return true; else return false;
-	}
-	
 	
 	/*
 	 * Workaround method to retrieve 
