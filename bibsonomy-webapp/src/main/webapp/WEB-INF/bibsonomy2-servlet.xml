@@ -23,6 +23,7 @@
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 		<property name="allowedFields" ref="allowedFields"/>
 		<property name="disallowedFields" ref="disallowedFields"/>
+		<property name="urlGenerator" ref="urlGenerator"/>
 	</bean>
 	
 	<!--  #################### factory beans #################### -->
