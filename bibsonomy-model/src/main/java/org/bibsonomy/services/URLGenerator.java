@@ -140,6 +140,24 @@ public class URLGenerator {
 		}	
 	}
 
+	/**
+	 * Constructs a URL for the given resource's intrahash. If you have the post as
+	 * object, please use {@link #getPostUrl(Post)}.
+	 * 
+	 * @param resourceType - The type of resource. Currently, only URLs for {@link Bookmark} or {@link BibTex} are supported.
+	 * @param intraHash
+	 * @param userName
+	 * @return The URL pointing to the post of that user for the resource represented by the given intrahash.
+	 */
+	public String getPostUrl(final Class<?> resourceType, final String intraHash, final String userName) {
+		if (resourceType == Bookmark.class) {
+			return this.getBookmarkUrl(intraHash, userName);
+		} else if (resourceType == BibTex.class) {
+			return this.getPublicationUrl(intraHash, userName);
+		} else { 
+			throw new UnsupportedResourceTypeException();
+		}
+	}
 
 	/**
 	 * Constructs a URL for the given resource and user. If no user 
@@ -160,11 +178,21 @@ public class URLGenerator {
 		if (!present(user) || !present(user.getName())){
 			return this.getUrl(projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTER_HASH_ID + publication.getInterHash());
 		}
-		
 		return this.getUrl(projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName()));
 	}
 
-
+	/**
+	 * Constructs a new publication URL for the given publication and username.
+	 * If you have the resource as object, please use {@link #getPublicationUrl(BibTex, User)}. 
+	 * @param intraHash
+	 * @param userName
+	 * @return The URL pointing to the post of that user for the publication represented by the given intrahash. 
+	 */
+	public String getPublicationUrl(final String intraHash, final String userName) {
+		return this.getUrl(projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash + "/" + UrlUtils.safeURIEncode(userName));
+	}
+	
+	
 	/**
 	 * Constructs a URL for the given resource and user. If no user 
 	 * is given, the URL points to all posts for that resource.
@@ -184,7 +212,18 @@ public class URLGenerator {
 		if (!present(user) || !present(user.getName())){
 			return this.getUrl(projectHome + BOOKMARK_PREFIX + "/" + bookmark.getInterHash());
 		}
-		return this.getUrl(projectHome + BOOKMARK_PREFIX + "/" + bookmark.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName()));
+		return this.getBookmarkUrl(bookmark.getIntraHash(), user.getName());
+	}
+	
+	/**
+	 * Constructs a bookmark URL for the given intraHash and userName. 
+	 * If you have the resource as object, please use {@link #getBookmarkUrl(Bookmark, User)}
+	 * @param intraHash
+	 * @param userName
+	 * @return The URL pointing to the post of that user for the bookmark represented by the given intrahash.
+	 */
+	public String getBookmarkUrl(final String intraHash, final String userName) {
+		return this.getUrl(projectHome + BOOKMARK_PREFIX + "/" + intraHash + "/" + UrlUtils.safeURIEncode(userName));
 	}
 
 
