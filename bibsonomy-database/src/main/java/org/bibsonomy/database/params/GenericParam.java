@@ -127,7 +127,7 @@ public abstract class GenericParam {
 	/** creation-date */
 	private Date date;
 	/** change-date*/
-	private String changeDate;
+	private Date changeDate;
 	/** If a contentId is updated or deleted we need this as reference */
 	private int requestedContentId;
 	/**
@@ -371,14 +371,14 @@ public abstract class GenericParam {
 	/**
 	 * @param changeDate the changeDate to set
 	 */
-	public void setChangeDate(String changeDate) {
+	public void setChangeDate(Date changeDate) {
 	    this.changeDate = changeDate;
 	}
 
 	/**
 	 * @return the changeDate
 	 */
-	public String getChangeDate() {
+	public Date getChangeDate() {
 	    return changeDate;
 	}
 
