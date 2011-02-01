@@ -10,6 +10,7 @@ import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.purl.sword.base.SWORDException;
 
 import de.unikassel.puma.openaccess.sword.SwordService;
 import de.unikassel.puma.webapp.command.SwordServiceCommand;
@@ -21,7 +22,7 @@ import de.unikassel.puma.webapp.command.SwordServiceCommand;
 public class SwordServiceController extends AjaxController implements MinimalisticController<SwordServiceCommand> {
 
 	private SwordService swordService;
-	
+
 	@Override
 	public SwordServiceCommand instantiateCommand() {
 		return new SwordServiceCommand();
@@ -42,9 +43,16 @@ public class SwordServiceController extends AjaxController implements Minimalist
 			
 		}
 		
-		swordService.checkDepositResponse(swordService.submitDocument(post, user));
+		try {
+			swordService.submitDocument(post, user);
+		} catch (SWORDException ex) {
+			
+			// send message of exception to webpage via ajax to give feedback of submission result
+			// TODO: send message of exception to webpage via ajax to give feedback of submission result
+		}
 		
-		//FIXME is this the right way to return nothing ? 
+		
+		// FIXME is this the right way to return nothing ? 
 		return Views.AJAX_TEXT;
 	}
 	
