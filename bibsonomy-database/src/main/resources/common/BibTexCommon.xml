@@ -49,14 +49,7 @@
 	<resultMap id="bibtexPostWithDocuments" class="post" extends="Common.posts">
 		<result property="resource"   resultMap="BibTexCommon.bibtexWithDocuments" />
 	</resultMap>	
-	
-	<sql id="commonBibtexAttributes1">
-		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
-		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
-		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
-		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype
-	</sql>
-	
+
 	<sql id="commonBibtexAttributes">
 		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
 		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
