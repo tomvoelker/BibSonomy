@@ -28,6 +28,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -44,6 +45,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 	private final int start;
 	private final int end;
 	private String filter = null;
+	private Order order = null;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
 	private ResourceType resourceType = ResourceType.ALL;
@@ -92,6 +94,11 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 		this.groupingValue = groupingValue;
 	}
 	
+	public void setOrder(final Order order) {
+		
+		this.order = order;
+	}
+	
 	/**
 	 * Set the content type of this query, i.e. whether to retrieve only tags 
 	 * beloning to bookmarks or bibtexs
@@ -120,6 +127,9 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
 		String url = URL_TAGS + "?start=" + this.start + "&end=" + this.end;
 
+		if(order != null)
+			url += "&order=" + this.order;
+			
 		switch (this.grouping) {
 		case USER:
 			url += "&user=" + this.groupingValue;
