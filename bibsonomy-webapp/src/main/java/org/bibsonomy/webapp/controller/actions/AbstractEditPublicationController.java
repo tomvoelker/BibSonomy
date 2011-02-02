@@ -208,7 +208,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	protected void createOrUpdateSuccess(final COMMAND command, final User loginUser, final Post<BibTex> post) {
 		super.createOrUpdateSuccess(command, loginUser, post);
 		handleAddFiles(command, loginUser.getName());
-		sendToRepository(command, loginUser, post);
 	}
 	
 	/**
@@ -258,44 +257,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			tmpFile.delete();
 		}
 	}
-
-	private void sendToRepository(final COMMAND command, final User loginUser, final Post<BibTex> post) {
-
-		if (present(swordService)) {
-
-			// send publication to repository
-			// TODO: put request into an own thread. so there is no extra response time 
-			// TODO: BUT: how can we tell the user that there is any failure while uploading publication
-			// TODO: check metadata of publication and existence of pdf via Javacript before sending formular via AJAX. On success send form, otherwise print error message.
-
-			// TODO: get documents into command. is this possible? Is this practicable?
-			//if (command.isCbSendToRepository() && (null != ((BibTex) command.getPost().getResource()).getDocuments()) && ( !(((BibTex) command.getPost().getResource()).getDocuments().isEmpty()) )) {
-
-			// for now, don't check the existence of any document here
-			if (command.getSendToRepository()) {
-				log.debug("request to submit publication metadata and pdf via sword to repository");
-				if (swordService.checkDepositResponse(swordService.submitDocument(post, loginUser))) {
-					log.info("submission of publication metadata and pdf via sword to repository SUCCEEDED.");
-				} else {
-					log.warn("submission of publication metadata and pdf via sword to repository FAILED.");
-				}
-
-			} else {
-
-				log.debug("NO (successful) request to submit publication metadata and pdf via sword to repository");
-				log.debug("Property isCbSendToRepository is set to " + (command.getSendToRepository()?"TRUE":"FALSE"));
-				log.debug("(null != ((BibTex)command.getPost().getResource()).getDocuments()) results in " + ((null != (command.getPost().getResource()).getDocuments())?"TRUE":"FALSE"));
-
-				if (present(command.getPost().getResource().getDocuments())) {
-					log.debug("((BibTex) command.getPost().getResource()).getDocuments()) is not null.");
-					log.debug("((BibTex) command.getPost().getResource()).getDocuments().isEmpty())" + (((command.getPost().getResource()).getDocuments().isEmpty())?"TRUE":"FALSE"));
-				} else {
-					log.debug("((BibTex) command.getPost().getResource()).getDocuments()) IS NULL!");
-				}
-			}
-		}
-	}
-
 
 	/** 
 	 * This controller exchanges the resource by a parsed version of it and 
