@@ -12,8 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -463,6 +461,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		post.setContentId(null); // will be set in createPost or updatePost
 		post.setDescription("Some description");
 		post.setDate(new Date());
+		post.setChangeDate(new Date());
 		
 		final User user = new User();
 		CommonModelUtils.setBeanPropertiesOn(user);
@@ -752,6 +751,10 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		 * and the change date!
 		 */
 		assertFalse(oldPost.getChangeDate().equals(newPost.getChangeDate()));
+		/*
+                 * but not the date!
+                 */
+		assertEquals(oldPost.getDate(), newPost.getDate());
 		/*
 		 * the hashes and so on also should have changed
 		 */

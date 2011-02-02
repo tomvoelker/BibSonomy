@@ -265,15 +265,15 @@
 			SELECT *
 				FROM
 				(
-					SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date,
+					SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date, b.change_date,
 						   b.user_name, b.book_extended AS description, b.book_description AS title, 
-						   b.book_url_hash, b.book_url_hash AS intrahash, b.change_date
+						   b.book_url_hash, b.book_url_hash AS intrahash
 						FROM inboxMail i
 						INNER JOIN bookmark b USING(content_id)
 						WHERE receiver_user=#requestedUserName#
 						AND i.content_type=#contentType#
 					UNION	
-					SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date,
+					SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date, b.change_date,
 						   b.user_name, b.book_extended AS description, b.book_description AS title,
 						   b.book_url_hash, b.book_url_hash AS intrahash
 						FROM inboxMail i

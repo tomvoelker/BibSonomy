@@ -653,6 +653,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		post.setContentId(null); // will be set in storePost()
 		post.setDescription("trallalla");
 		post.setDate(new Date());
+		post.setChangeDate(new Date());
 		final User user = new User();
 		CommonModelUtils.setBeanPropertiesOn(user);
 		user.setName("testuser1");
