@@ -145,8 +145,8 @@
 	</select>-->
 	
 	<select id="getBookmarkPopular" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributesNoChangeDate"/>,0 AS change_date, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
-		FROM (SELECT * FROM temp_bookmark b2 
+		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
+		FROM (SELECT *, date AS change_date FROM temp_bookmark b2 
 			  WHERE b2.popular_days = (SELECT popular_days FROM temp_bookmark GROUP BY popular_days ORDER by popular_days LIMIT 1 OFFSET #days#)
 			  ORDER BY b2.rank LIMIT #limit# OFFSET #offset#) b
 		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id, urls u
@@ -161,7 +161,7 @@
 	<select id="getBookmarkByUserFriends" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, b.book_description AS title,
 		       b.book_extended AS description, bb.date, u.book_url, u.book_url_ctr AS count, t.tag_name, g.group_name,
-		       t.user_name, b.`group`, NULL AS change_date
+		       t.user_name, b.`group`, b.change_date
 	    FROM urls u, bookmark b,
 	         (SELECT content_id, date                 <!-- bookmarks from users of group which currUser may see -->
 	          FROM bookmark b, friends f
@@ -180,7 +180,7 @@
 	<select id="getBookmarkByFollowedUsers" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, b.book_description AS title,
 		       b.book_extended AS description, b.date, u.book_url, u.book_url_ctr AS count, t.tag_name, g.group_name,
-		       t.user_name, b.`group`, NULL AS change_date
+		       t.user_name, b.`group`, b.change_date
 	    FROM (SELECT b.*                               <!-- bookmarks from users of group which currUser may see -->
 	          FROM bookmark b, followers f
 	          WHERE f.user_name = #userName#           <!-- to see, which users are followed by currUser -->
@@ -260,14 +260,14 @@
 
 	<select id="getBookmarkFromInbox" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.interhash, bb.intrahash, bb.description, bb.date, bb.user_name, t.tag_name,
-				bb.inbox_date, u.book_url, bb.title, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, NULL AS change_date
+				bb.inbox_date, u.book_url, bb.title, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, bb.change_date
 		FROM (
 			SELECT *
 				FROM
 				(
 					SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date,
 						   b.user_name, b.book_extended AS description, b.book_description AS title, 
-						   b.book_url_hash, b.book_url_hash AS intrahash
+						   b.book_url_hash, b.book_url_hash AS intrahash, b.change_date
 						FROM inboxMail i
 						INNER JOIN bookmark b USING(content_id)
 						WHERE receiver_user=#requestedUserName#
@@ -455,7 +455,7 @@
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
 		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, NULL AS change_date
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
-		             u.book_url, u.book_url_ctr, t1.group, t1.user_name
+		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
 		      FROM bookmark t1, urls u
 		      WHERE u.book_url_hash = t1.book_url_hash
 		            AND t1.user_name = #requestedUserName#
@@ -525,10 +525,10 @@
 	
 	<select id="getBookmarkByConceptForGroup" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
-		       a.date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name, NULL AS change_date
+		       a.date, a.change_date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name
 		FROM (SELECT b.content_id, u.book_url, b.book_url_hash, 
 					 b.book_description AS title, b.book_extended AS description,
-		       		 b.date, u.book_url_ctr,
+		       		 b.date, b.change_date, u.book_url_ctr,
 					<iterate property="tagIndex" conjunction=",">
 						MAX(IF (LCASE(upper) = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
 					</iterate>
