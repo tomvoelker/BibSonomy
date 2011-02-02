@@ -26,13 +26,6 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	 * The metadata from scraping
 	 */
 	private ScrapingContext scrapingContext;
-
-	/*
-	 * FIXME: when we add an attribute "repositoryMetadata" (or so), we could 
-	 * remove this boolean and where it is used just check, if the metadata is
-	 * filled.
-	 */
-	private boolean sendToRepository;
 	
 	/**
 	 * @return the url
@@ -98,20 +91,6 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	 */
 	public void setScrapingContext(ScrapingContext scrapingContext) {
 		this.scrapingContext = scrapingContext;
-	}
-
-	/**
-	 * @return If the publication shall be send to the institutional repository
-	 */
-	public boolean getSendToRepository() {
-		return this.sendToRepository;
-	}
-
-	/**
-	 * @param sendToRepository
-	 */
-	public void setSendToRepository(boolean sendToRepository) {
-		this.sendToRepository = sendToRepository;
 	}
 }
 
