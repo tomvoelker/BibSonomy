@@ -23,6 +23,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.apache.lucene.store.NoSuchDirectoryException;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.LuceneBase;
@@ -318,7 +319,10 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 			    log.debug("Deleted " + filename);
 			}
 			log.info("Success.");
-		} catch (IOException e) {
+		} catch (NoSuchDirectoryException e) {
+			log.warn("Tried to delete the lucene-index-directory but it could not be found.", e);
+		}
+		catch (IOException e) {
 			log.error("Could not delete directory-content before index-generation or index-copy.", e);
 		}
 	}
