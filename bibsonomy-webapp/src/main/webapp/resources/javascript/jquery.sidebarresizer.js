@@ -1,25 +1,24 @@
 (function($) {
-	var element;
+  	var sidebar = null;
+	var sidebarGrip = null;
 	var lastMousePos = 0;
-	var sidebarGrip;
 	var originalWidth = null;
 	var cursor = (navigator.appVersion.indexOf("X11")!=-1)?'ew-resize':'e-resize';
-  	
+
 	$.fn.SideBarResizer = function(sidebarGrip) {
 		if(sidebarGrip == null)
 			return;
 		sidebar = $(this);
 		$(sidebar).parent().css('overflow','hidden');
-		$(sidebarGrip).bind("mousedown",{element: this}, startDrag);
+		$(sidebarGrip).bind("mousedown", startDrag);
 	};
 	
 	function startDrag(e) {
 		if(originalWidth == null) 
 			originalWidth = parseInt($(sidebar).width());
 
-		sidebar = $(e.data.element);
 		sidebar.css('opacity', 0.7).parent().css('cursor', cursor);
-		$(window).bind("resize",{element: sidebar}, resetSize);
+		$(window).bind("resize", resetSize);
 		lastMousePos = mousePosition(e).x;
 		$(document).mousemove(performDrag).mouseup(endDrag);
 		return false;
@@ -37,7 +36,7 @@
 	
 	function resetSize(e) {
 		$(window).unbind("resize", resetSize);
-		$(e.data.element).width('');
+		$(sidebar).width('');
 		originalWidth = null;
 	}
 
