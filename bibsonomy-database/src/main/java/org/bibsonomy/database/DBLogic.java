@@ -1586,7 +1586,12 @@ public class DBLogic implements LogicInterface {
 	// assemble param object
 	final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, grouping, groupingName, tags, hash, order, start, end, search, null, loginUser);
 	param.setUserRelation(relation);
-
+	
+	// check start/end values
+	if (grouping.equals(GroupingEntity.ALL)) {
+	    this.permissionDBManager.checkStartEnd(loginUser, start, end, "User");
+	}
+	
 	final DBSession session = openSession();
 	try {
 	    // start chain
