@@ -366,7 +366,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	    ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The user is flagged as spammer - cannot create a group with this name");
 	}
 	
-	// check if a group exists with that name
+	// check if a group already exists with that name
 	if (present(this.getGroupByName(group.getName(), session))) {
 	    ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There is already a group with this name ('" + group.getName() + "').");
 	}
@@ -394,7 +394,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
     private void insertTagSet(final TagSet tagset, final String groupname, final DBSession session) {
 
 	final Group group = this.getGroupByName(groupname, session);
-	if (group == null) {
+	if (!present(group)) {
 	    ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
 	}
 	if(tagset.getSetName().length() == 0 || tagset.getTags().size() == 0){
