@@ -29,7 +29,7 @@ package org.bibsonomy.common.exceptions;
  * @version $Id: ResourceNotFoundException.java,v 1.2 2007-10-30 17:37:35 jillig
  *          Exp $
  */
-public class SwordException extends RuntimeException {
+public class SwordException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 	private final String message;
