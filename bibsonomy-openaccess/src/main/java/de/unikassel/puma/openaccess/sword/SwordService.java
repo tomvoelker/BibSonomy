@@ -84,9 +84,9 @@ public class SwordService {
 	
 	/**
 	 * collects all informations to send Documents with metadata to repository 
-	 * @throws SWORDException 
+	 * @throws SwordException 
 	 */
-	public void submitDocument(Post<?> post, User user) throws SWORDException {
+	public void submitDocument(Post<?> post, User user) throws SwordException {
 		log.info("starting sword");
 		DepositResponse depositResponse = new DepositResponse(999); 
 		File swordZipFile = null;
@@ -120,8 +120,9 @@ public class SwordService {
 			// get documents for post and insert documents into post 
 			((BibTex) post.getResource()).setDocuments(retrieveDocumentsFromDatabase(user, post.getResource().getIntraHash()));
 			
-			if (!((BibTex) post.getResource()).getDocuments().isEmpty()) { 
+			if (((BibTex) post.getResource()).getDocuments().isEmpty()) { 
 				// Wenn kein PDF da, dann Fehlermeldung ausgeben!!
+				log.info("throw SwordException: noPDFattached");
 				throw new SwordException("noPDFattached");
 			}
 					
@@ -281,6 +282,7 @@ public class SwordService {
 					 * set to true and the server supports this header.
 					 * 
 					 * 201 Created
+					 * 
 					 * 202 Accepted - One of these MUST be used to indicate that
 					 * a deposit was successful. 202 Accepted is used when
 					 * processing of the data is not yet complete.
@@ -312,56 +314,15 @@ public class SwordService {
 					 * is not accepted by the server.
 					 */
 					
-					switch (depositResponse.getHttpResponse()) {
-					case 200:	// OK (only ok for noOp here)
-						
-						break;
-
-					case 201:	// Created --- this one means all things went fine
-						
-						break;
-
-					case 202:	// Accepted - Processing of data not yet complete
-						
-						break;
-
-					case 400:	// Bad Request
-						
-						break;
-
-					case 401:	// Unauthorized
-						
-						break;
-
-					case 403:	// Forbidden
-						
-						break;
-
-					case 404:	// File Not Found
-						
-						break;
-
-					case 412:	// Precondition failed
-						
-						break;
-
-					case 415:	// Unsupported Media Type
-						
-						break;
-
-					case 500:	// Internal Server Error
-						
-						break;
-
-						// other unknown error
-					default:
-						break;
-					}
+					log.info("throw SwordException: ErrCode"+depositResponse.getHttpResponse());
+					throw new SwordException("ErrCode"+depositResponse.getHttpResponse());
 
 				}
 
 			} catch (SWORDClientException e) {
 				log.warn("SWORDClientException: " + e.getMessage() + "\n" + e.getCause());
+			} catch (SWORDException e) {
+				log.warn("SWORDException: " + e.getMessage() + "\n" + e.getCause());
 			}
 
 		}
