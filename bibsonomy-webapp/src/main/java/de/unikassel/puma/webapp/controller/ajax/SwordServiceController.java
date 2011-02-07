@@ -1,16 +1,17 @@
 package de.unikassel.puma.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import net.sf.json.JSONObject;
 
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.SwordException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.purl.sword.base.SWORDException;
 
 import de.unikassel.puma.openaccess.sword.SwordService;
 import de.unikassel.puma.webapp.command.SwordServiceCommand;
@@ -35,6 +36,9 @@ public class SwordServiceController extends AjaxController implements Minimalist
 			return Views.AJAX_TEXT;
 		}
 		
+		String message = "sentSuccessful";
+		int statuscode = 1; // statuscode=1: ok, =0: error 
+
 		final User user = command.getContext().getLoginUser();
 		
 		Post<?> post = getPostToHash(command.getResourceHash(), user.getName());
@@ -45,15 +49,37 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		
 		try {
 			swordService.submitDocument(post, user);
-		} catch (SWORDException ex) {
+		} catch (SwordException ex) {
 			
 			// send message of exception to webpage via ajax to give feedback of submission result
-			// TODO: send message of exception to webpage via ajax to give feedback of submission result
+			message = ex.getMessage();
+			
+			if (message.equals("ErrCode201")){
+				// transmission complete and successful
+				statuscode = 1;
+			} else {
+				// Error
+				statuscode = 0;
+			}
 		}
+
 		
+		final JSONObject json = new JSONObject();
+		final JSONObject jsonResponse = new JSONObject();
+
+		jsonResponse.set("statuscode", statuscode);
+		jsonResponse.set("message", message);
+		// TODO: get from somewhere localized messages to transmit via ajax
+		// localizedMessage = puma.repository.response.$message
+		jsonResponse.set("localizedMessage", message);
+		json.put("response", jsonResponse);
 		
-		// FIXME is this the right way to return nothing ? 
-		return Views.AJAX_TEXT;
+		/*
+		 * write the output, it will show the JSON-object as a plaintext string
+		 */
+		command.setResponseString(json.toString());
+		
+		return Views.AJAX_JSON;
 	}
 	
 	private Post<?> getPostToHash(String intraHash, String userName) {
