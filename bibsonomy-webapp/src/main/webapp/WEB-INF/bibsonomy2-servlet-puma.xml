@@ -91,6 +91,7 @@
 	
 	<bean id="swordServiceController" class="de.unikassel.puma.webapp.controller.ajax.SwordServiceController" scope="request" parent="ajaxController">
 		<property name="swordService" ref="swordService_puma"/>	
+		<property name="messageSource" ref="messageSource"/>
 	</bean>
 	
 	<bean id="publicationClassificationController" class="de.unikassel.puma.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
