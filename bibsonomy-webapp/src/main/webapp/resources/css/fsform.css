@@ -98,36 +98,16 @@
 	font-style: italic;
 }
 
-#suggestionBox{
-	color:#fff;
-	z-index:999;
-	border:1px solid #006699;
-	border-left:3px solid #006699;	
-}
-
-.suggestionBoxContent{
-	padding:3px;
-	background-color:#006699;
-}
-
-.suggestionDetails{
+.ui-autocomplete-subtext{
 	font-size:10px;
 }
 
-.selectedSuggestionEntry{
-	background-color:#006699;
-	cursor:pointer;
-	color:#fff;
+.ui-menu-item{
+	font-size:11px;
 }
 
-.evenSuggestionEntry{
-	background-color:#fff;
-	color:#006699;
-}
-
-.oddSuggestionEntry{
-	background-color:#eee;
-	color:#006699;
+.ui-state-hover{
+	font-weight:bold;
 }
 
 .dissError{
