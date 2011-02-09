@@ -409,7 +409,17 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			 * Resource has been changed and thus could be found in logging table. We send back the new resource hash. 
 			 */
 			final Post<BibTex> loggedPost = loggedList.get(0);
-			throw new ResourceMovedException(resourceHash, BibTex.class, loggedPost.getResource().getIntraHash(), userName, loggedPost.getDate());
+			final String newIntraHash = loggedPost.getResource().getIntraHash();
+			/*
+			 * If the hash did not change, this is the "last" post and we should not 
+			 * throw the exception - otherwise, clients would enter an infinite loop. 
+			 */
+			if (!resourceHash.equals(newIntraHash)) {
+			    /*
+			     *  
+			     */
+			    throw new ResourceMovedException(resourceHash, BibTex.class, newIntraHash, userName, loggedPost.getDate());
+			}
 		}
 		
 		return null;
