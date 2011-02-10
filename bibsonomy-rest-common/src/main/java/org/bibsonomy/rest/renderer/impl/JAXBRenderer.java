@@ -500,7 +500,6 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlUser.setName(user.getName());
 		xmlUser.setRealname(user.getRealname());
 		xmlUser.setHref(urlRenderer.createHrefForUser(user.getName()));
-		xmlUser.setPassword(user.getPassword());
 		if (user.getSpammer() != null)
 			xmlUser.setSpammer(user.getSpammer());
 		if (user.getPrediction() != null)
