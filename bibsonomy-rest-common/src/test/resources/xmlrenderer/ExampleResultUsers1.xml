@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
     <users next="http://www.bibsonomy.org/api/foo/bar" end="30" start="20">
-        <user href="http://www.bibsonomy.org/api/users/testname" password="raboof" homepage="http://foo.bar.com" email="mail@foo.bar" realname="Dr. FOO BaR" name="testname">
+        <user href="http://www.bibsonomy.org/api/users/testname" homepage="http://foo.bar.com" email="mail@foo.bar" realname="Dr. FOO BaR" name="testname">
             <groups end="0" start="0"/>
         </user>
         <user href="http://www.bibsonomy.org/api/users/foobar" name="foobar">
