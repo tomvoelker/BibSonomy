@@ -77,6 +77,9 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.synch.SynchLogicInterface;
+import org.bibsonomy.model.synch.SynchronizationPost;
+import org.bibsonomy.model.synch.SynchronizationResource;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
@@ -92,7 +95,7 @@ import org.bibsonomy.model.util.UserUtils;
  * 
  * @version $Id$
  */
-public class DBLogic implements LogicInterface {
+public class DBLogic implements LogicInterface, SynchLogicInterface {
     private static final Log log = LogFactory.getLog(DBLogic.class);
 
     private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
@@ -221,6 +224,27 @@ public class DBLogic implements LogicInterface {
 	} finally {
 	    session.close();
 	}
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.synch.SynchLogicInterface#getSynchPosts(java.lang.Class, java.lang.String)
+     */
+    @Override
+    public <T extends SynchronizationResource> List<SynchronizationPost> getSynchPosts (Class<? extends Resource> resourceType, String userName) {
+        final DBSession session = this.openSession();
+        try {
+            
+    		if(resourceType == BibTex.class) {
+    		    this.publicationDBManager.getSynchPostsForUser(userName, session);
+    		} else if(resourceType == Bookmark.class) {
+    		    this.bookmarkDBManager.getSynchPostsForUser(userName, session);
+    		}
+    		
+        } finally {
+            session.close();
+        }
+        return null;
     }
 
     /*
@@ -545,7 +569,7 @@ public class DBLogic implements LogicInterface {
 	    throw new IllegalStateException("The resource(s) with ID(s) " + missingResources + " do(es) not exist and could hence not be deleted.");
 	}
     }
-
+    
     /**
      * Check for each group of a post if the groups actually exist and if the
      * posting user is allowed to post. If yes, insert the correct group ID into

@@ -40,6 +40,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.synch.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.services.searcher.ResourceSearch;
@@ -106,7 +107,18 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.resourceSearch = resourceSearch;
 	}
 
-
+	/**
+	 * 
+	 * @param userName
+	 * @param session
+	 * @return list with all posts of type R
+	 */
+	public List<SynchronizationPost> getSynchPostsForUser (final String userName, final DBSession session) {
+	    //TODO make this method protected
+	   
+	    return this.queryForList("getSynch" +  this.resourceClassName,  this.createParam(userName, userName), session);
+	}
+	
 	@SuppressWarnings("unchecked")
 	protected List<Post<R>> postList(final String query, final P param, final DBSession session) {
 		return this.queryForList(query, param, session);

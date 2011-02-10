@@ -21,6 +21,10 @@
 	<typeAlias alias="author"			  			type="org.bibsonomy.model.Author" />
 	<typeAlias alias="scraperMetadata"	  type="org.bibsonomy.model.ScraperMetadata" />
 	
+	<!-- Synchronization -->
+	<typeAlias alias="synchResource"	  type="org.bibsonomy.model.synch.SynchronizationResource"/>
+	<typeAlias alias="synchPost"		  type="org.bibsonomy.model.synch.SynchronizationPost" />	
+	
 	<!-- Extras -->
 	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />
 	<typeAlias alias="extendedFields"     type="org.bibsonomy.model.extra.ExtendedFields" />

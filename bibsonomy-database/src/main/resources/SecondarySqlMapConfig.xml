@@ -39,6 +39,7 @@
 	<sqlMap resource="common/DocumentCommon.xml" />
 	<sqlMap resource="common/AdminCommon.xml" />
 	<sqlMap resource="common/AuthorCommon.xml"/>
+	<sqlMap resource="common/SynchronizationCommon.xml" />
 	
 	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />

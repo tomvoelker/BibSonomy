@@ -10,6 +10,11 @@
 		WHERE <include refid="bibtexSimHash"/>
 		ORDER BY b.rank
 	</select> -->
+	<select id="getSynchBibTex" resultMap="SynchronizationCommon.synchPost" parameterClass="bibtexParam">
+		SELECT simhash2 AS intrahash, simhash1 AS interhash, date, change_date
+		FROM bibtex
+		WHERE user_name = #userName#
+	</select>
 
 	<select id="getBibTexPopular" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, <include refid="bibtexSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
