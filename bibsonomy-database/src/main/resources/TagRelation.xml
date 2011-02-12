@@ -51,6 +51,7 @@
 		  FROM tagtagrelations
 		  WHERE user_name=#userName#
 			AND picked=true
+		  ORDER BY LCASE(tag_name) ASC
 	</select>
 
 	<!-- the resultMap needs the column subTagCount whose value is always 1, since a 
@@ -63,9 +64,11 @@
 			  FROM tagtagrelations
 			  WHERE user_name=#requestedUserName#
 			  LIMIT #limit#
-			  OFFSET #offset#) AS r
+			  OFFSET #offset#
+			  ) AS r
 		  WHERE t.user_name=r.user_name
-		    AND t.upper=r.tag_name;
+		    AND t.upper=r.tag_name
+		  ORDER BY LCASE(tag_name) ASC;
 	</select>
 
 	<!-- the resultMap needs the column subTagCount whose value is always 1, since a 
