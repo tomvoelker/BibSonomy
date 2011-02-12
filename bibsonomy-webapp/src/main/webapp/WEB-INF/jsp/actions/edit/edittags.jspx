@@ -151,17 +151,24 @@
 				<!-- 
 					edit tag relations 
 				-->
+				<fmt:message var="supertag" key="edittags.supertag"/>
+				<fmt:message var="subtag" key="edittags.subtag"/>
+		
 				<form:form action="/edit_tags" method="post">
 		  
 		 			<fieldset class="fsInner">
 						<h2><fmt:message key="edittags.main.insertRelationsOne" /></h2>
 						<div class="fsRow">
-					      <form:label cssClass="fsLabel" path="relationsEdit.upper"><fmt:message key="edittags.main.insertRelationsTwo" />:<buttons:help message="edittags.help.enterSuperTag" /></form:label>
-					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.upper" id="insert_up" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" /><span style="float:left;">&#8592;</span>
+					      <form:label cssClass="fsLabel" path="relationsEdit.upper">
+					      	<buttons:help message="edittags.help.enterSuperTag" />
+					      </form:label>
+					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.upper" id="insert_up" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" value="${supertag}"/>
+					      <span style="float:left;">&#8592;</span>
 					      		        
-					      <form:label cssClass="fsLabel" path="relationsEdit.lower"><buttons:help message="edittags.help.enterSuperTag" /></form:label>
-					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.lower" id="insert_lo" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" />		        
-					    
+					      <form:label cssClass="fsLabel" path="relationsEdit.lower">
+					      	<buttons:help message="edittags.help.enterSubTag" />
+					      </form:label>
+					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.lower" id="insert_lo" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" value="${subtag}"/>				    
 					    </div>
 
 			    			<fmt:message var="insertRelation" key="edittags.button.insertRelations"/>
@@ -181,11 +188,13 @@
 						<h2><fmt:message key="edittags.main.deleteRelationsOne" /></h2>
 			    		
 						<div class="fsRow">
-					      <form:label cssClass="fsLabel" path="relationsEdit.upper"><fmt:message key="edittags.main.deleteRelationsTwo" />:<buttons:help message="edittags.help.enterSuperTag" /></form:label>
-					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.upper" id="delete_up" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" /><span style="float:left;">&#8592;</span>
+					      <form:label cssClass="fsLabel" path="relationsEdit.upper">
+					      	<buttons:help message="edittags.help.enterSuperTag" />
+					      </form:label>
+					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.upper" id="delete_up" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" value="${supertag}"/>					      <span style="float:left;">&#8592;</span>
 					      		        
-					      <form:label cssClass="fsLabel" path="relationsEdit.lower"><buttons:help message="edittags.help.enterSuperTag" /></form:label>
-					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.lower" id="delete_lo" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" />		        
+					      <form:label cssClass="fsLabel" path="relationsEdit.lower"><buttons:help message="edittags.help.enterSubTag" /></form:label>
+					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.lower" id="delete_lo" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" value="${subtag}"/>		        
 					    
 					    </div>
 			    		
