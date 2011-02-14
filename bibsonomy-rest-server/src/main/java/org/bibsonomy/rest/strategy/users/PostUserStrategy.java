@@ -24,8 +24,12 @@ public class PostUserStrategy extends AbstractCreateStrategy {
 	@Override
 	protected String create() throws InternServerException, BadRequestOrResponseException {
 		final User user = this.getRenderer().parseUser(this.doc);
-		// check this here, because its not checked in the renderer
-		if (user.getPassword() == null || user.getPassword().length() == 0) throw new BadRequestOrResponseException("missing password");
+		// (old comment) check this here, because its not checked in the renderer
+		/*
+		 * FIXME: our renderer does not render the password - thus we can't 
+		 * expect one here. Furthermore, probably more checks are necessary. 
+		 */
+		// if (user.getPassword() == null || user.getPassword().length() == 0) throw new BadRequestOrResponseException("missing password");
 		return this.getLogic().createUser(user);
 	}
 
