@@ -674,10 +674,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void updateUserTest() {
-		createUser(ModelUtils.getUser());
+		updateUser(ModelUtils.getUser(), UserUpdateOperation.UPDATE_ALL);
 	}
 	public String updateUser(final User user, final UserUpdateOperation operation) {
-		EasyMock.expect(serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "activationCode", "apiKey"))).andReturn("rVal");
+		EasyMock.expect(serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, IGNORE2))).andReturn("rVal");
 		EasyMock.replay(serverLogic);
 		assertEquals("rVal", clientLogic.createUser(user));
 		EasyMock.verify(serverLogic);
