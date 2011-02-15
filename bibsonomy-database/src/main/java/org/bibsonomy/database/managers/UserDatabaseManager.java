@@ -16,7 +16,6 @@ import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.user.UserChain;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.database.validation.DatabaseModelValidator;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
@@ -71,10 +70,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of all users
 	 */
 	public List<User> getAllUsers(final int start, final int end, final DBSession session) {
-		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, start, end, null, null, new User());		
+		final UserParam param = new UserParam();
+		param.setOffset(start);
+		param.setLimit(end);
 		return this.queryForList("getAllUsers", param, User.class, session);
 	}
-
 	/**
 	 * Get details for a given user, along with settings. 
 	 * If the user does not exist, an empty user object (not <code>null</code>!) is returned. 
@@ -824,7 +824,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return list of all users
      */
     public List<User> getPendingUsers(final int start, final int end,  final DBSession session) {
-        final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, start, end, null, null, new User());     
+	final UserParam param = new UserParam();
+	param.setOffset(start);
+	param.setLimit(end);        
         return this.queryForList("getPendingUsers", param, User.class, session);
     }
 
@@ -837,9 +839,14 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @param session
      * @return a list of users with the specified activation code (search)
      */
-    public List<User> getPendingUserByActivationCode(final String search, final int start, final int end,  final DBSession session) {	
-    	// FIXME: what to do if search is null
-    	final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, start, end, search, null, new User());     
+    public List<User> getPendingUserByActivationCode(final String search, final int start, final int end,  final DBSession session) {
+	if (search == null) {
+	    ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Cannot execute query getPendingUserByActivationCode without activation code given!");
+	}
+	final UserParam param = new UserParam();
+	param.setOffset(start);
+	param.setLimit(end);
+	param.setSearch(search);
         return this.queryForList("getPendingUserByActivationCode", param, User.class, session);
     }
 
@@ -853,7 +860,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return  a list of users with the username
      */
     public List<User> getPendingUserByUsername(final String username, final int start, final int end,  final DBSession session) {
-        final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, username, null, null, null, start, end, null, null, new User());     
+	final UserParam param = new UserParam();
+	param.setOffset(start);
+	param.setLimit(end);
+	param.setRequestedGroupName(username);
         return this.queryForList("getPendingUserByUsername", param, User.class, session);
     }	
 }
