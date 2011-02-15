@@ -2,9 +2,12 @@ package org.bibsonomy.rest.util;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
+import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.util.XmlUtils;
 
 /**
@@ -29,7 +32,13 @@ public class EscapingPrintWriter extends Writer {
 	 * @param out an OutputStream
 	 */
 	public EscapingPrintWriter(final OutputStream out) {
-		this.pw = new PrintWriter(out);
+		OutputStreamWriter outputStreamWriter;
+		try {
+			outputStreamWriter = new OutputStreamWriter(out, RestServlet.getResponseEncoding());
+		} catch (UnsupportedEncodingException ex) {
+			outputStreamWriter = new OutputStreamWriter(out);
+		}
+		this.pw = new PrintWriter(outputStreamWriter);
 	}
 	
 	/* (non-Javadoc)

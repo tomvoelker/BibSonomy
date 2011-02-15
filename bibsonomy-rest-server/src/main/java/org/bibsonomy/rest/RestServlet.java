@@ -61,7 +61,7 @@ public final class RestServlet extends HttpServlet {
 	/**
 	 * the request default encoding
 	 */
-	private static final String REQUEST_ENCODING = "UTF-8";
+	private static final String REQUEST_ENCODING = "UTF-8";	
 
 	/** name of the servlet-parameter that configures the logicFactoryClass to use */
 	public static final String PARAM_LOGICFACTORY_CLASS = "logicFactoryClass";
@@ -327,5 +327,14 @@ public final class RestServlet extends HttpServlet {
 		} catch (final AccessDeniedException e) {
 			throw new AuthenticationException("Authentication failure: " + e.getMessage());
 		}
+	}
+	
+	/**
+	 * Returns the response encoding used to encode HTTP responses.
+	 * @return The response encoding currently used by the servlet to encode 
+	 * HTTP responses.
+	 */
+	public static String getResponseEncoding() {
+		return RESPONSE_ENCODING;
 	}
 }
