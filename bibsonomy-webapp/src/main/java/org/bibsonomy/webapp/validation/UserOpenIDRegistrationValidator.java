@@ -30,12 +30,10 @@ public class UserOpenIDRegistrationValidator implements Validator<UserIDRegistra
 		 */
 		if (userObj.getStep() == 2) {			
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "registerUser.openID", "error.field.required");
-		}
-		
-		/*
-		 * username and email are required for successful registration
-		 */
-		if (userObj.getStep() == 3) {
+		} else {
+			/*
+			 * username and email are required for successful registration
+			 */
 			/*
 			 * Check the user data. 
 			 */

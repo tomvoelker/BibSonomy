@@ -28,7 +28,7 @@ public class UserLDAPRegistrationValidator implements Validator<UserIDRegistrati
 		/*
 		 * username and email are required for successful registration
 		 */
-		if (userObj.getStep() == 3) {
+		if (userObj.getStep() != 2) {
 			/*
 			 * Check the user data. 
 			 */
