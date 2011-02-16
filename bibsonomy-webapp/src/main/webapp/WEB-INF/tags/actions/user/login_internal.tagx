@@ -27,12 +27,17 @@
 		</tr>
 	</table>
 	
-	<h2><fmt:message key="navi.register" /></h2>
-	<p>
-		<fmt:message key="login.notRegistered_1" /> <c:out value=" " />
-		<a href="/register"><fmt:message key="login.notRegistered_2" /></a>.
-	</p>
-
+	<c:set var="loginRegister">
+		<fmt:message key="login.register"/>
+	</c:set>
+	<c:if test="${not empty loginRegister}">
+		<h2><fmt:message key="login.register" /></h2>
+		<p>
+			<fmt:message key="login.notRegistered_1" /> <c:out value=" " />
+			<a href="/register"><fmt:message key="login.notRegistered_2" /></a> <c:out value=" " />
+			<fmt:message key="login.notRegistered_3" />
+		</p>
+	</c:if>
 	<h2><fmt:message key="login.lostPassword" /></h2>
 	<p>
 		<fmt:message key="login.lostPassword_1" /> <c:out value=" " />
