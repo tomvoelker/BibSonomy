@@ -4,7 +4,11 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags">
+
+	<spring:theme code="image.login.base" var="image_login_base" text="${resdir}/image/login_logo_"/>
+
 
 	<script type="text/javascript">
 		// store number of different authentication methods for later use
@@ -133,7 +137,7 @@
 		<c:forEach var="authMethod" items="${authConfig.authOrder}" varStatus="status">
 			<fmt:message key="login.${authMethodName}.label" var="loginMessage"/>
 			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-			<option value="${status.count}" title="${resdir}/image/login_logo_${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
+			<option value="${status.count}" title="${image_login_base}${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
 		</c:forEach>
 	</select>
 
