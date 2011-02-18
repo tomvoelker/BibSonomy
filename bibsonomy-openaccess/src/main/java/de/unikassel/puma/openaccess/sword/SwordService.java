@@ -123,7 +123,7 @@ public class SwordService {
 			if (((BibTex) post.getResource()).getDocuments().isEmpty()) { 
 				// Wenn kein PDF da, dann Fehlermeldung ausgeben!!
 				log.info("throw SwordException: noPDFattached");
-				throw new SwordException("noPDFattached");
+				throw new SwordException("error.sword.noPDFattached");
 			}
 					
 			try {
@@ -314,8 +314,8 @@ public class SwordService {
 					 * is not accepted by the server.
 					 */
 					
-					log.info("throw SwordException: ErrCode"+depositResponse.getHttpResponse());
-					throw new SwordException("ErrCode"+depositResponse.getHttpResponse());
+					log.info("throw SwordException: errcode"+depositResponse.getHttpResponse());
+					throw new SwordException("error.sword.errcode"+depositResponse.getHttpResponse());
 
 				}
 
