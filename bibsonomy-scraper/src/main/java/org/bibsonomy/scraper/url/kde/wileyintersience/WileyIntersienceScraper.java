@@ -77,15 +77,14 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 			final String doi = doiMatcher.group(1);
 			/*
 			 * build something like 
-			 * doi=10.1002%252F1521-4095%28200011%2912%253A22%253C1655%253A%253AAID-ADMA1655%253E3.0.CO%253B2-2&fileFormat=ENDNOTE&hasAbstract=CITATION_AND_ABSTRACT
+			 * doi=10.1002%252F1521-4095%28200011%2912%253A22%253C1655%253A%253AAID-ADMA1655%253E3.0.CO%253B2-2&fileFormat=BIBTEX&hasAbstract=CITATION_AND_ABSTRACT
 			 */
-			final String postContent = "doi=" + UrlUtils.safeURIEncode(doi) + "&fileFormat=ENDNOTE&hasAbstract=CITATION_AND_ABSTRACT";
+			final String postContent = "doi=" + UrlUtils.safeURIEncode(doi) + "&fileFormat=BIBTEX&hasAbstract=CITATION_AND_ABSTRACT";
 			final String url = SITE_URL + "documentcitationdownloadformsubmit";
 
 			try {
 				final String cookies = WebUtils.getCookies(sc.getUrl());
-				final String ris = WebUtils.getPostContentAsString(cookies, new URL(url), postContent);
-				final String bibtex = new RisToBibtexConverter().RisToBibtex(ris);
+				final String bibtex = WebUtils.getPostContentAsString(cookies, new URL(url), postContent);
 				sc.setBibtexResult(bibtex);
 				return true;
 			}catch (MalformedURLException e) {
