@@ -73,8 +73,8 @@ public class JSONWriter {
 			write(depth, "{\n");
 			
 			depth++;
-			write(depth, "\"host\" : \"" + quoteJSON(tuple.getFirst().toString())  + "\",\n");
-			write(depth, "\"path\" : \"" + quoteJSON(tuple.getSecond().toString()) + "\"\n");
+			write(depth, "\"host\" : \"" + quoteJSON(tuple.getFirst())  + "\",\n");
+			write(depth, "\"path\" : \"" + quoteJSON(tuple.getSecond()) + "\"\n");
 			depth--;
 			
 			write(depth, "}");
@@ -98,11 +98,11 @@ public class JSONWriter {
 	 * @param value
 	 * @return The quoted String.
 	 */
-	public static String quoteJSON(final String value) {
+	public static String quoteJSON(final Pattern value) {
 		if(value == null)
 			return null;
 		final StringBuffer sb = new StringBuffer();
-		escapeJSON(value, sb);
+		escapeJSON(value.toString(), sb);
 		return sb.toString();
 	}
 
