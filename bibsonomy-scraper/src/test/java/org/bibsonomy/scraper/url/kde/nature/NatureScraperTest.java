@@ -40,7 +40,7 @@ public class NatureScraperTest {
 	 * starts URL test with id url_45
 	 */
 	@Test
-	@Ignore
+	//@Ignore
 	public void urlTest1Run(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_45"));
