@@ -73,8 +73,8 @@ public class JSONWriter {
 			write(depth, "{\n");
 			
 			depth++;
-			write(depth, "\"host\" : \"" + tuple.getFirst()  + "\",\n");
-			write(depth, "\"path\" : \"" + tuple.getSecond() + "\"\n");
+			write(depth, "\"host\" : \"" + quoteJSON(tuple.getFirst().toString())  + "\",\n");
+			write(depth, "\"path\" : \"" + quoteJSON(tuple.getSecond().toString()) + "\"\n");
 			depth--;
 			
 			write(depth, "}");
@@ -88,6 +88,72 @@ public class JSONWriter {
 			depth--;
 		}
 		write(depth, "]\n");
+	}
+	
+	/**
+	 * Quotes a String such that it is usable for JSON.
+	 * 
+	 * FIXME: copied from Functions.java
+	 * 
+	 * @param value
+	 * @return The quoted String.
+	 */
+	public static String quoteJSON(final String value) {
+		if(value == null)
+			return null;
+		final StringBuffer sb = new StringBuffer();
+		escapeJSON(value, sb);
+		return sb.toString();
+	}
+
+	/**
+	 * Taken from http://code.google.com/p/json-simple/
+	 * 
+	 * FIXME: copied from Functions.java
+	 * 
+	 * @param s - Must not be null.
+	 * @param sb
+	 */
+	private static void escapeJSON(final String s, final StringBuffer sb) {
+		for (int i = 0; i < s.length(); i++) {
+			char ch=s.charAt(i);
+			switch(ch){
+			case '"':
+				sb.append("\\\"");
+				break;
+			case '\\':
+				sb.append("\\\\");
+				break;
+			case '\b':
+				sb.append("\\b");
+				break;
+			case '\f':
+				sb.append("\\f");
+				break;
+			case '\n':
+				sb.append("\\n");
+				break;
+			case '\r':
+				sb.append("\\r");
+				break;
+			case '\t':
+				sb.append("\\t");
+				break;
+			default:
+				// Reference: http://www.unicode.org/versions/Unicode5.1.0/
+				if ((ch >= '\u0000' && ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
+					String ss = Integer.toHexString(ch);
+					sb.append("\\u");
+					for (int k = 0; k < 4 - ss.length(); k++) {
+						sb.append('0');
+					}
+					sb.append(ss.toUpperCase());
+				}
+				else{
+					sb.append(ch);
+				}
+			}
+		}
 	}
 	
 	public void write(final String s) throws UnsupportedEncodingException, IOException {
