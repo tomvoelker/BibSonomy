@@ -12,6 +12,7 @@
     xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication">
 
     <jsp:directive.attribute name="tags" type="java.lang.String" required="false"/>
+    <jsp:directive.attribute name="bibtex" type="org.bibsonomy.model.BibTex" required="true"/>
 
 	<!--+
 		|
@@ -27,25 +28,73 @@
 	 	+-->
 	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
 	<c:if test="${not empty jsOpenAccess}">
-		<script type="text/javascript" src="${jsOpenAccess}">&amp;nbsp;</script>
+
+<!-- 
+		<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.openaccess" >
+			<jsp:attribute name="content">
+ -->
+				<h2><fmt:message key="post.resource.openaccess.headline"/></h2>
+
+
+				<div>
+					<h3><fmt:message key="post.resource.openaccess.headline.additionalfields"/></h3>
+<p>
+Hier kommen noch die Felder hin, die fuer KOBRA wichtig sind.
+<br />
+</p>				
+				</div>
+
+
+				<div id="pumaAddon" ><!-- used for puma--> </div>
+		
+				<div id="openAccessClassificationContainer">
+					<h3><fmt:message key="post.resource.openaccess.headline.classification"/></h3>
+					<div id="openAccessClassificationList"><!-- openAccessClassificationListContainer --></div>
+					<div id="openAccessClassificationSelect"><!-- openAccessClassificationSelectContainer --></div>
+				</div>
+
+				<script type="text/javascript">
+					$(document).ready(function() {
+						initialiseOpenAccessClassification("openAccessClassification", &quot;${bibtex.intraHash}&quot;);
+						initialiseOpenAccessSendToRepository("oaSubmitContainer", &quot;${bibtex.intraHash}&quot;);
+						setTimeout("checkOpenAccess()", 1);
+				    });
+				</script>
+
+<!-- a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a> -->
+
+
+				<div id="openAccessRomeoSherpaContainer">
+					<h3><fmt:message key="post.resource.openaccess.headline.sherparomeo"/></h3>
+					
+					<c:set var="oaRequestPublisher" value="?publisher=${bibtex.publisher}"/>
+					<c:if test="${bibtex.entrytype=='article'}">
+						<c:set var="oaRequestPublisherUrlParameter" value="?jTitle=${bibtex.journal}"/>
+					</c:if>
+					<input type="hidden" id="oaRequestPublisher" value="${oaRequestPublisher}"/>
+					
+					<div id="openAccessRomeoSherpa"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
+				</div>
+			 
+				<div id="oaSubmitContainer" ><!-- used for puma--> </div>
+
+<!-- 
+				<spring:theme code="javascript.t1" var="t1" text=""/>
+				<c:if test="${not empty t1}">
+					<script type="text/javascript" src="${t1}">&amp;nbsp;</script>
+				</c:if>
+
+
+				<spring:theme code="javascript.t2" var="t2" text=""/>
+				<c:if test="${not empty t2}">
+					<script type="text/javascript" src="${t2}">&amp;nbsp;</script>
+				</c:if>
+ -->
+<!-- 
+			</jsp:attribute>
+		</parts:fieldset>
+ -->
 	</c:if>    			
-	
-	<spring:theme code="javascript.t1" var="t1" text=""/>
-	<c:if test="${not empty t1}">
-		<script type="text/javascript" src="${t1}">&amp;nbsp;</script>
-	</c:if>
-	
-	<spring:theme code="javascript.t2" var="t2" text=""/>
-	<c:if test="${not empty t2}">
-		<script type="text/javascript" src="${t2}">&amp;nbsp;</script>
-	</c:if>
- 
-	<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.openaccess" >
-		<jsp:attribute name="content">
-			<a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a>
-            
-           <editpub:classification />
-		</jsp:attribute>
-	</parts:fieldset>
+
 
 </jsp:root>
