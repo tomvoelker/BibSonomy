@@ -3,62 +3,130 @@ var classificationURL = "/ajax/classificatePublication";
 var swordURL = "/ajax/swordService";
 var GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";
 
-function initialiseOpenAccess(divName, intraHash) {
+function initialiseOpenAccessClassification(divBaseName, intraHash) {
+	// div-structure for classification:
+	// divBaseName+'Container' - outer container - may be defined in html
+	// divBaseName+'List' - list of selected classification elements - must be defined in html
+	// divBaseName+'Select' - classifications to select an element  - must be defined in html
+	var divClassificationContainerName =  divBaseName+'Container';
+	var divClassificationListName =  divBaseName+'List';
+	var divClassificationSelectName =  divBaseName+'Select';
+
+	if ((null == document.getElementById(divClassificationListName)) || (null == document.getElementById(divClassificationListName))) {
+		return;
+	}
+
+	// set to visible
+	if (null != $('#'+divClassificationContainerName)) {
+		$('#'+divClassificationContainerName).show();
+	}
+	// set to visible
+	if (null != $('#'+divClassificationListName)) {
+		$('#'+divClassificationListName).show();
+	}
+	// set to visible
+	if (null != $('#'+divClassificationSelectName)) {
+		$('#'+divClassificationSelectName).show();
+	}
+	
+	
+	// init Classification 
+	initClassifications(divClassificationSelectName, divClassificationListName);
+	
+}
+
+function initialiseOpenAccessSendToRepository(divName, intraHash) {
+	
+	// create Send to repository button 
+	
 	var sword = document.createElement('div');
 	sword.setAttribute('id','pumaSword');
 	
 	var saveSword = document.createElement('input');
 	saveSword.type = 'button';
-	saveSword.value = 'Save to repository';
+	saveSword.className = "ajaxButton",
+	saveSword.value = '(Transmit to institutional repository (KOBRA))';
 	sword.appendChild(saveSword);
 	
-	var url = swordURL +"?resourceHash=" +intraHash;
 
 	var loadingNode = document.createElement('img');
 	loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
 	
-	saveSword.onclick = function() {
+	var url = swordURL +"?resourceHash=" + intraHash;
+	saveSword.onclick = function(data) {
 		$.ajax({
 			url: url,
 			dataType: 'json',
 			beforeSend: function(XMLHttpRequest) {
+				// remove node #swordresponse
+				$('#swordresponse').remove();
 				$('#pumaSword').append(loadingNode);
 				
 			},
 			success: function(data) {
+				// remove loading icon
 				$(loadingNode).remove();
+
+				// response has following format:
+				// {"response":{"message":"error.sword.noPDFattached","localizedMessage":"Keine PDF-Datei zum übermitteln gefunden","statuscode":0}}
+				// statuscode can be 0 (error/warning) or 1 (success)
+				
+				// check and show response to user
+				$.each(data, function(i, response) {
+					if (null == data || null == data.response) {
+						alert ("unknown response error");
+					} else {
+						// create text node behind transmit button, if not exists, to show response text in it
+						// confirmations and warnings get different css-classes  
+						var s = createNode({
+							tag: 'div',
+							parent: null,
+							child: null,
+							childNodes: null,
+							parentID : null,
+							id: 'swordresponse',
+							className: "ajaxresponse"+data.response.statuscode
+						});
+
+						s.appendChild(document.createTextNode(data.response.localizedMessage));
+						$('#pumaSword').append(s);						
+						
+						swordResponseStatusCode = data.response.statuscode; 
+
+						// show response text
+						
+					}
+				});
+
+				
+
+				
+				
+
 			},
 			error: function(req, status, e) {
 				$(loadingNode).remove();
-				alert("Unable to send data to reposity " + status);
+				alert("Unable to send data to reposity: " + status);
 			}
 		});
-	};
+	};	
 	
 
-	var classificate = document.createElement('div');
-	classificate.setAttribute('id','classification');
-
+	// add elements to dom
 	$('#' +divName).append(sword);
-	$('#' +divName).append(classificate);
-	
-	initClassifications('classification');
-	
+
 }
+
 
 /* open access check */
 /* TODO: add error handling, check apicontrol and outcome in response. */
 function checkOpenAccess () {
-	var container = $("#openAccess");	
+	var container = $("#openAccessRomeoSherpa");	
 	container.empty();
 
 	// TODO: add progress animation
-	var url;
-	if ($("#post\\.resource\\.entrytype").val() == "article")
-		url = oaBaseUrl + "?jTitle=" + $("#post\\.resource\\.journal").val();
-	else
-		url = oaBaseUrl + "?publisher=" + $("#post\\.resource\\.publisher").val();
-	
+	var url = "/ajax/checkOpenAccess"+$("#oaRequestPublisher").val();
+
 	$.ajax({
 		url: url,
 		dataType: 'json',
@@ -94,14 +162,13 @@ function checkOpenAccess () {
 	});
 }
 
-function initClassifications(mainContainer) {
+function initClassifications(divClassificationSelectName, divClassificationListName) {
 	var url = classificationURL + "?action=" +GET_AVAILABLE_CLASSIFICATIONS;
-	
 	$.ajax({
 		dataType: 'json',
 		url: url,
 		success: function(data) {
-			doInitialise(mainContainer, data);
+			doInitialise(divClassificationSelectName, divClassificationListName, data);
 		},
 		error: function(req, status, e) {
 			alert("There seems to be an error in the ajax request, classifications.js::init");
@@ -109,7 +176,7 @@ function initClassifications(mainContainer) {
 	});
 }
 
-function doInitialise(mainContainer, data) {
+function doInitialise(divClassificationSelectName, divClassificationListName, data) {
 	$.each(data.available, function(i,item){
 
 		var saveNode = document.createElement('div');
@@ -119,16 +186,15 @@ function doInitialise(mainContainer, data) {
 		var mainNode = document.createElement('div');
 		mainNode.setAttribute('id', item);
 		
-		var input = document.createElement('input');
-		input.setAttribute('type', 'text');
-		input.setAttribute('size', '10');
-		input.setAttribute('readonly', 'readonly');
+		var input = document.createElement('div');
 		input.setAttribute('id',item +'_input');
+		input.setAttribute("class", "classificationInput");
 		
 		mainNode.appendChild(input);
 
-		$('#' +mainContainer).append(saveNode);
-		$('#' +mainContainer).append(mainNode);
+		$('#' +divClassificationListName).append(saveNode);
+		$('#' +divClassificationSelectName).append(mainNode);
+		
 		populate(item,item);
 	});
 }
@@ -178,6 +244,7 @@ function createNode(atts) {
 	delete atts.childNodes;
 
 	var node = document.createElement(tag);
+
 	
 	if(childNodes != null) {
 		for(var i = 0; i < childNodes.length; i++) {
@@ -199,6 +266,10 @@ function createNode(atts) {
 	return node;
 }
 
+/* 
+ * TODO: wird diese Funktion benutzt?
+ * hardcoded #classifications und JEL 
+ */
 function createNewClassField(container) {
 	var node = document.createElement('div');	
 	node.id = container +'1';
@@ -219,30 +290,40 @@ function createNewClassField(container) {
 
 function addSaved(container, parentID, description) {
 	var node = document.createElement('div');
-	
-	var save = document.createElement('input');
-	save.type = 'text';
-	save.value = container +' ' +parentID +' ';
-	
-	save.name = 'classification';
-	save.setAttribute('readonly', "readonly");
-	
-	saveName = document.createElement('input');
-	saveName.setAttribute('type', 'text');
-	saveName.setAttribute('disabled', 'true');
-	saveName.setAttribute('value', description);
-	
-	var remove = document.createElement('input');
-	remove.type = 'button';
-	remove.value = 'remove';
 
-	node.appendChild(save);
-	node.appendChild(remove);
+	/*
+	 * add only a new item, if it does not exist. 
+	 * $().length / if length is 0, element does not exist 
+	 */
+	console.log("#classificationListItemElement"+container+parentID);
+	if (!$("#classificationListItemElement"+container+parentID).length){
+		var saveListItem = document.createElement('div');
+		saveListItem.setAttribute('id', "classificationListItemElement"+container+parentID);
+		saveListItem.setAttribute('class', 'classificationListItem');
+		
+		var save = document.createElement('div');
+		save.type = 'text';
+		save.value = container +' ' +parentID +' ';
+		
+		save.name = 'classification';
+		save.setAttribute('readonly', "readonly");
+		
+		var remove = document.createElement('input');
+		remove.type = 'button';
+		remove.className = 'ajaxButton btnspace';
+		remove.value = 'remove';
+		remove.id	= "classificationListItemRemove"+container+parentID;
 	
-	$('#' +container +'saved').append(node);
+		node.appendChild(saveListItem);
+		node.appendChild(remove);
+		
+		$('#'+container +'saved').append(node);
 	
-	remove.onclick = function() {
-		$(node).remove();
+		$('#'+"classificationListItemElement"+container+parentID).text(container +' ' +parentID +' ');
+		
+		remove.onclick = function() {
+			$(node).remove();
+		}
 	}
 	
 }
@@ -251,6 +332,7 @@ function createSaveButton(parent, parentID, container) {
 
 	var s = createNode({
 		tag: 'input',
+		className: "ajaxButton btnspace",
 		parent: parent,
 		child: null,
 		type: 'button',
@@ -284,8 +366,7 @@ function createSubSelect(parent, data, classification, parentID, container){
 		return;
 	}
 
-	$('#' +container +'_input')[0].setAttribute('defaultValue', parentID);
-	$('#' +container +'_input')[0].setAttribute('value', parentID);
+	$('#' +container +'_input').text(parentID);
 	
 	var options = [{tag: "option", value: "", text: classification}];
 	
@@ -302,6 +383,7 @@ function createSubSelect(parent, data, classification, parentID, container){
 	
 	var s = createNode({
 		tag: "select",
+		className: "classificationSelect",
 		data: data,
 		parent: parent,
 		child: null,
