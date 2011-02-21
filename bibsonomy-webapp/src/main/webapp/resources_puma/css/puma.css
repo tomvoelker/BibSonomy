@@ -4,6 +4,10 @@ body {
 /*	max-width: 1400px; */
 }
 
+h3 {
+	margin-top: .6ex;
+}
+
 #main {
 	border: 0px solid #DF430D;
 
@@ -340,6 +344,20 @@ ul.news  {
 	 list-style:none outside none;
 }
 
+div.ui-tabs div.ui-tabs-panel {
+	border: 1px solid #DF430D;
+}
+
+div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
+	background-color: #fff;
+	border: 1px solid #DF430D;
+}
+
+div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
+	color: #DF430D;
+}
+
+
 .oa-publishers {
 }
 
@@ -367,4 +385,85 @@ ul.news  {
 }
 .oa-white {
 	border-left: 5px solid white;	
+}
+
+.classificationSelect {
+	width: 20%;
+    border-right: medium none;
+    border-top: medium none;
+    margin: 0.5ex;
+ }
+
+div.classificationInput {
+	width: 2.5em;
+	font-weight: normal;
+	display: inline-block;
+}
+
+
+#swordresponse {
+	display: inline;
+	padding-left: 2em;
+	font-size: 90%;
+}
+
+.ajaxresponse0 {
+	color: red; 
+	font-weight: bold;
+}
+
+.ajaxresponse1 {
+	color: green;
+}
+
+
+#openAccessRomeoSherpaContainer, openAccessClassificationContainer{
+	padding: 0.2em;
+	margin-top: 1ex; 
+	margin-bottom: 1ex; 
+}
+
+#openAccessRomeoSherpaContainer {
+	background-color: #EFDBCE; 
+}
+
+
+#divClassificationContainerName {
+	display: none;
+	background-color: #00ffff;
+}
+
+#divClassificationListName {
+	display: none;
+	background-color: #ffff00;;
+}
+
+#divClassificationSelectName {
+	display: none;
+	background-color: #ff00ff;;
+}
+
+input[type="button"].ajaxButton {
+	color: #DF430D;
+	font-weight: normal;
+	margin: 0.2ex;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	border: none;
+	font-size: 80%;
+	font-weight: bold;
+}
+
+.classificationListItem {
+	margin-top: 2px;
+	font-weight: normal;
+	display: inline-block;
+}
+
+#openAccessClassificationList {
+	margin-bottom: 1.5ex;
+}
+#openAccessClassificationSelect {
+	margin-top: 0.5ex;
+	margin-bottom: 0.5ex;
 }
