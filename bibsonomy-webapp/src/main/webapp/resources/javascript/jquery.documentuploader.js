@@ -86,7 +86,6 @@
 		var reason=$("reason", data).text();
 		$("#gif_"+fileID).hide();
 		$("#file_"+fileID).append(reason);
-		alert("Error by uploading file"); //TODO replace with localizedString
 	}
 	
 	function fileUploaded(data) {
