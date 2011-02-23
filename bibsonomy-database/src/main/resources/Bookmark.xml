@@ -126,7 +126,7 @@
 		SELECT <include refid="bookmarkAttributes"/>,
 		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name
 		  FROM (
-		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash
+		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash, b.change_date
 	      	  FROM bookmark b
 	      	  WHERE b.group = #groupId#
   		      ORDER BY date DESC
@@ -292,12 +292,12 @@
 
 	<select id="getBookmarkFromInboxByHash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.interhash, bb.intrahash, bb.description, bb.date, bb.user_name, t.tag_name,
-				bb.inbox_date, u.book_url, bb.title, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
+				bb.inbox_date, u.book_url, bb.title, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, bb.change_date
 		FROM (
 			SELECT *
 				FROM
 				(
-					SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date,
+					SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date, b.change_date,
 						   b.user_name, b.book_extended AS description, b.book_description AS title, 
 						   b.book_url_hash, b.book_url_hash AS intrahash
 						FROM inboxMail i
@@ -306,7 +306,7 @@
 							AND i.content_type=#contentType#
 							AND i.intraHash=#hash#
 					UNION	
-					SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date,
+					SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date, b.change_date,
 						   b.user_name, b.book_extended AS description, b.book_description AS title,
 						   b.book_url_hash, b.book_url_hash AS intrahash
 						FROM inboxMail i
@@ -497,9 +497,9 @@
 	
 	<select id="getBookmarkByConceptByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
-		       a.date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name
+		       a.date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name, a.change_date
 			   FROM (SELECT b.content_id, u.book_url, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
-		                      b.date, u.book_url_ctr,
+		                      b.date, u.book_url_ctr, b.change_date
 							<iterate property="tagIndex" conjunction=",">
 								MAX(IF (LCASE(upper) = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
 							</iterate>
@@ -587,9 +587,9 @@
 	
 	<select id="getBookmarkForMyGroupPosts" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
-			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name 
+			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name, bb.change_date 
 		
-		FROM (SELECT gts.content_id, gts.date, gts.group, b.book_url_hash, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
+		FROM (SELECT gts.content_id, gts.date, gts.group, b.book_url_hash, b.change_date, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
 		      		 FROM (SELECT * FROM grouptas t 
 		      			WHERE t.user_name = #requestedUserName# 
 		      			AND t.group > 1 
@@ -606,10 +606,10 @@
 	</select>
 	
 	<select id="getBookmarkForMyGroupPostsByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date, bb.change_date,
 			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name 
 		
-		FROM (SELECT t1.content_id, t1.date, t1.group, b.book_url_hash, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
+		FROM (SELECT t1.content_id, t1.date, t1.group, b.book_url_hash, b.change_date, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
 		      		 FROM (SELECT * FROM grouptas t 
 		      			WHERE t.user_name = #requestedUserName# 
 		      			AND t.group > 1 
