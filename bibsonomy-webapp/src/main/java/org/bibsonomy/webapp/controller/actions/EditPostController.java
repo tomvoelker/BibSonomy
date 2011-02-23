@@ -802,7 +802,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 						log.warn("Could not validate captcha response: " + res.getErrorMessage());
 					}
 				} catch (final Exception e) {
-					log.fatal("Could not validate captcha response.", e);
+					log.fatal("Could not validate captcha response:" + e.getMessage());
 					throw new InternServerException("error.captcha");
 				}
 			} else {
