@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
@@ -34,6 +36,7 @@ import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.upload.FileUploadInterface;
+import org.bibsonomy.webapp.controller.UserPageController;
 
 
 /**
@@ -43,6 +46,9 @@ import org.bibsonomy.util.upload.FileUploadInterface;
  * @version $Id$
  */
 public class Functions  {
+	
+	private static final Log LOGGER = LogFactory.getLog(Functions.class);
+	
 	/**
 	 * Mapping of BibTeX entry types to SWRC entry types
 	 * FIXME: this duplicates the ones from EntryType.java!
@@ -652,11 +658,17 @@ public class Functions  {
 			}
 			return layoutRenderer.renderLayout(layout, posts, true).toString();
 		} catch (final LayoutRenderingException ex) {
+			LOGGER.error(ex.getMessage());
 			return ex.getMessage();			
 		} catch (final UnsupportedEncodingException ex) {
+			LOGGER.error(ex.getMessage());
 			return "An Encoding error occured while trying to convert to layout '" + layoutName  + "'.";
 		} catch (final IOException ex) {
+			LOGGER.error(ex.getMessage());
 			return "An I/O error occured while trying to convert to layout '" + layoutName  + "'."; 
+		} catch (final Exception ex) {
+			LOGGER.error(ex.getMessage());
+			return "A unknown error occured while processing the layout " + layoutName + ".";
 		}
 	}
 
