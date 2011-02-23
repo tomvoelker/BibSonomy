@@ -499,7 +499,7 @@
 		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
 		       a.date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name, a.change_date
 			   FROM (SELECT b.content_id, u.book_url, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
-		                      b.date, u.book_url_ctr, b.change_date
+		                      b.date, u.book_url_ctr, b.change_date,
 							<iterate property="tagIndex" conjunction=",">
 								MAX(IF (LCASE(upper) = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
 							</iterate>
