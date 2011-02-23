@@ -101,7 +101,7 @@
 		var ckey=$(".ck");
 		$("#file_"+fileID).append(" (");
 		$("#file_"+fileID).append($("<a class='deleteTempDocument' href='/ajax/documents?fileHash="+fileHash+"&amp;ckey="+
-				ckey.val()+"&amp;temp=true&amp;fileID="+fileID+"&amp;action=delete'> "+LocalizedStrings["post.bibtex.delete"]+"</a>"));
+				ckey.val()+"&amp;temp=true&amp;fileID="+fileID+"&amp;action=delete'>"+LocalizedStrings["post.bibtex.delete"]+"</a>"));
 		$("#file_"+fileID).append(")");
 		$(".deleteTempDocument").live("click", deleteFunction);
 	}
