@@ -6,7 +6,7 @@
 	<name>BibSonomy-Events</name>
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-events</artifactId>
-	<version>2.0.12-SNAPSHOT</version>
+	<version>2.0.13-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<description>
 		Supporting events (conferences, workshops) with BibSonomy
@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>2.0.12-SNAPSHOT</version>
+		<version>2.0.13-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
