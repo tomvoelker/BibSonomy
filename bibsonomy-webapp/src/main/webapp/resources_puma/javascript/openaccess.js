@@ -2,6 +2,9 @@ var oaBaseUrl = "/ajax/checkOpenAccess";
 var classificationURL = "/ajax/classificatePublication";
 var swordURL = "/ajax/swordService";
 var GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";
+var SAVE_CLASSIFICATION_ITEM = "SAVE_CLASSIFICATION_ITEM";
+var REMOVE_CLASSIFICATION_ITEM = "REMOVE_CLASSIFICATION_ITEM";
+var publication_intrahash = ""; // will be set during initialisation
 
 function initialiseOpenAccessClassification(divBaseName, intraHash) {
 	// div-structure for classification:
@@ -29,6 +32,7 @@ function initialiseOpenAccessClassification(divBaseName, intraHash) {
 		$('#'+divClassificationSelectName).show();
 	}
 	
+	publication_intrahash = $("#openAccessCurrentPublicationHash").val();
 	
 	// init Classification 
 	initClassifications(divClassificationSelectName, divClassificationListName);
@@ -45,7 +49,7 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 	var saveSword = document.createElement('input');
 	saveSword.type = 'button';
 	saveSword.className = "ajaxButton",
-	saveSword.value = '(Transmit to institutional repository (KOBRA))';
+	saveSword.value =  getString("post.resource.openaccess.button.sendtorepository");
 	sword.appendChild(saveSword);
 	
 
@@ -98,10 +102,6 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 					}
 				});
 
-				
-
-				
-				
 
 			},
 			error: function(req, status, e) {
@@ -122,7 +122,6 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 /* TODO: add error handling, check apicontrol and outcome in response. */
 function checkOpenAccess () {
 	var container = $("#openAccessRomeoSherpa");	
-	container.empty();
 
 	// TODO: add progress animation
 	var url = "/ajax/checkOpenAccess"+$("#oaRequestPublisher").val();
@@ -134,27 +133,30 @@ function checkOpenAccess () {
 			/*
 			 * build list with publishers
 			 */
-			var ul = document.createElement("ul");
-			ul.className = "oa-publishers";
-			$.each(data.publishers, function(index, publisher) {
-				var li = document.createElement("li");
-				li.className = "oa-" + publisher.colour;
-				var span = document.createElement("span");
-				span.appendChild(document.createTextNode(publisher.name));
-				span.className = "oa-publisher";
-				li.appendChild(span);
-				var ulCond = document.createElement("ul");
-				ulCond.className = "oa-conditions";
-				$.each(publisher.conditions, function(index, condition) {
-					var liCond = document.createElement("li");
-					liCond.appendChild(document.createTextNode(condition));
-					ulCond.appendChild(liCond);
+			if ((data.publishers.length>0) && (undefined != data.publishers) && (data.publishers!="")) {
+				container.empty();
+				var ul = document.createElement("ul");
+				ul.className = "oa-publishers";
+				$.each(data.publishers, function(index, publisher) {
+					var li = document.createElement("li");
+					li.className = "oa-" + publisher.colour;
+					var span = document.createElement("span");
+					span.appendChild(document.createTextNode(publisher.name));
+					span.className = "oa-publisher";
+					li.appendChild(span);
+					var ulCond = document.createElement("ul");
+					ulCond.className = "oa-conditions";
+					$.each(publisher.conditions, function(index, condition) {
+						var liCond = document.createElement("li");
+						liCond.appendChild(document.createTextNode(condition));
+						ulCond.appendChild(liCond);
+					});
+					li.appendChild(ulCond);
+					ul.appendChild(li);
 				});
-				li.appendChild(ulCond);
-				ul.appendChild(li);
-			});
-			container.append(ul);
-			container.fadeIn();
+				container.append(ul);
+				container.fadeIn();
+			}
 		},
 		error: function(req, status, e) {
 			alert("check open access: " + status);
@@ -289,41 +291,95 @@ function createNewClassField(container) {
 }
 
 function addSaved(container, parentID, description) {
-	var node = document.createElement('div');
 
 	/*
 	 * add only a new item, if it does not exist. 
 	 * $().length / if length is 0, element does not exist 
 	 */
-	console.log("#classificationListItemElement"+container+parentID);
 	if (!$("#classificationListItemElement"+container+parentID).length){
-		var saveListItem = document.createElement('div');
-		saveListItem.setAttribute('id', "classificationListItemElement"+container+parentID);
-		saveListItem.setAttribute('class', 'classificationListItem');
+
+		// send item via ajax to database
+		var saveurl = classificationURL + "?action=" +SAVE_CLASSIFICATION_ITEM+"&hash="+publication_intrahash+"&key="+container+"&value="+parentID;
 		
-		var save = document.createElement('div');
-		save.type = 'text';
-		save.value = container +' ' +parentID +' ';
+		var loadingNode = document.createElement('img');
+		loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
+
+		$.ajax({
+			dataType: 'json',
+			url: saveurl,
+			beforeSend: function(XMLHttpRequest) {
+				$('#' +container).append(loadingNode);
+				
+			},
+			success: function(data) {
+
+				$(loadingNode).remove();
+
+				var node = document.createElement('div');
+				var saveListItem = document.createElement('div');
+				saveListItem.setAttribute('id', "classificationListItemElement"+container+parentID);
+				saveListItem.setAttribute('class', 'classificationListItem');
+				
+				var save = document.createElement('div');
+				save.type = 'text';
+				save.value = container +' ' +parentID +' ';
+				
+				save.name = 'classification';
+				save.setAttribute('readonly', "readonly");
+				
+				var remove = document.createElement('input');
+				remove.type = 'button';
+				remove.className = 'ajaxButton btnspace';
+				remove.value = getString("post.resource.openaccess.button.removeclassification");
+				remove.id	= "classificationListItemRemove"+container+parentID;
+			
+				node.appendChild(saveListItem);
+				node.appendChild(remove);
+				
+				$('#'+container +'saved').append(node);
+			
+				$('#'+"classificationListItemElement"+container+parentID).text(container +' ' +parentID +' ');
+				
+				remove.onclick = function() {
+
+					var removeurl = classificationURL + "?action=" +REMOVE_CLASSIFICATION_ITEM+"&hash="+publication_intrahash+"&key="+container+"&value="+parentID;
+					
+					var loadingNode = document.createElement('img');
+					loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
+					
+					$.ajax({
+						dataType: 'json',
+						url: removeurl,
+						beforeSend: function(XMLHttpRequest) {
+							$('#classificationListItemRemove'+container+parentID).parent().append(loadingNode);
+							
+						},
+						success: function(data) {
+							$(loadingNode).remove();
+
+							$(node).remove();
+						
+						},
+						error: function(req, status, e) {
+							alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+						}
+					});					
+					
+					
+					
+				}
+			
+			},
+			error: function(req, status, e) {
+				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+			}
+		});
 		
-		save.name = 'classification';
-		save.setAttribute('readonly', "readonly");
+		// show item in list if database save request was successful
 		
-		var remove = document.createElement('input');
-		remove.type = 'button';
-		remove.className = 'ajaxButton btnspace';
-		remove.value = 'remove';
-		remove.id	= "classificationListItemRemove"+container+parentID;
-	
-		node.appendChild(saveListItem);
-		node.appendChild(remove);
+		// otherwise show error
 		
-		$('#'+container +'saved').append(node);
-	
-		$('#'+"classificationListItemElement"+container+parentID).text(container +' ' +parentID +' ');
-		
-		remove.onclick = function() {
-			$(node).remove();
-		}
+
 	}
 	
 }
@@ -336,7 +392,7 @@ function createSaveButton(parent, parentID, container) {
 		parent: parent,
 		child: null,
 		type: 'button',
-		value: 'save',
+		value: getString("post.resource.openaccess.button.saveclassification"),
 		childNodes: null,
 		parentID : parentID,
 		onclick: function(){
@@ -439,3 +495,16 @@ function createSubSelect(parent, data, classification, parentID, container){
 	
 	$('#' +container).append(s);
 }
+
+
+function sendAdditionalMetadataFields() {
+	
+	
+}
+
+
+function loadAdditionalMetadataFields() {
+	
+	
+}
+

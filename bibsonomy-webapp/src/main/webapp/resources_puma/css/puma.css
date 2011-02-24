@@ -294,6 +294,7 @@ a.reportingTableHeaderDescription {
 	border: 1px solid #EFAC95;
 }
 
+
 div.grippie {
 	border-color:#EFAC95;
 	background-color:#FFE7DF;
@@ -452,6 +453,35 @@ input[type="button"].ajaxButton {
 	border: none;
 	font-size: 80%;
 	font-weight: bold;
+	cursor: pointer;
+}
+
+#pumaSword input[type="button"].ajaxButton {
+	background-color: #EFDBCE;
+	border-right: 1px solid #ddccbb;
+	border-top:   1px solid #ddccbb;
+	border-left:  1px solid #edaa93;
+	border-bottom:   1px solid #edaa93;
+	padding: 1px 3px;  
+	
+	font-size: 90%;
+	border: 2px solid red;
+	padding: 1ex 1em;
+	margin-top: 1ex;
+	margin-bottom: 2ex;  
+}
+
+#openAccessClassificationSelect input[type="button"].ajaxButton:hover {
+	color: #438f38;
+}
+
+#openAccessClassificationList input[type="button"].ajaxButton:hover {
+	color: #000000;
+}
+
+#pumaSword input[type="button"].ajaxButton:hover {
+	background-color: #DCC;
+	color: black; 
 }
 
 .classificationListItem {
@@ -466,4 +496,17 @@ input[type="button"].ajaxButton {
 #openAccessClassificationSelect {
 	margin-top: 0.5ex;
 	margin-bottom: 0.5ex;
+}
+
+#openAccessContainer h4 {
+	margin-top: 1ex;
+	margin-bottom: 1.5ex;
+}
+
+#openAccessContainer .fsLabel {
+	width: 16em;
+}
+
+.clearboth {
+	clear:both;
 }
