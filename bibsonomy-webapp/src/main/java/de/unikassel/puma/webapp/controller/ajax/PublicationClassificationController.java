@@ -24,6 +24,8 @@ import de.unikassel.puma.webapp.command.PublicationClassificationCommand;
 public class PublicationClassificationController extends AjaxController implements MinimalisticController<PublicationClassificationCommand> {
 	
 	private static final String GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";
+	private static final String SAVE_CLASSIFICATION_ITEM = "SAVE_CLASSIFICATION_ITEM";
+	private static final String REMOVE_CLASSIFICATION_ITEM = "REMOVE_CLASSIFICATION_ITEM";
 	
 	private PublicationClassificatorSingleton classificator;
 	
@@ -34,6 +36,12 @@ public class PublicationClassificationController extends AjaxController implemen
 
 	@Override
 	public View workOn(PublicationClassificationCommand command) {
+		
+		// check if user is logged in
+		if(!command.getContext().isUserLoggedIn()) {
+			//TODO access denied ex ?
+			return Views.AJAX_TEXT;
+		}
 		
 		if(present(command.getAction()) && command.getAction().equals(GET_AVAILABLE_CLASSIFICATIONS)) {
 
@@ -47,8 +55,21 @@ public class PublicationClassificationController extends AjaxController implemen
 			 * write the output, it will show the JSON-object as a plaintext string
 			 */
 			command.setResponseString(json.toString());
-		} else if(present(command.getAction()) && command.getAction().equals("save")) {
+		} else if(present(command.getAction()) && command.getAction().equals(SAVE_CLASSIFICATION_ITEM)) {
 
+			final JSONObject json = new JSONObject();
+			json.put("saveTEST", "Hello World"+command.getHash()+" / "+command.getKey()+" = "+command.getValue());
+			command.setResponseString(json.toString());
+			
+			return Views.AJAX_JSON;
+			
+		} else if(present(command.getAction()) && command.getAction().equals(REMOVE_CLASSIFICATION_ITEM)) {
+
+			final JSONObject json = new JSONObject();
+			json.put("removeTEST", "Hallo Welt "+command.getHash()+" / "+command.getKey());
+			command.setResponseString(json.toString());
+			
+			return Views.AJAX_JSON;
 			
 		} else {
 

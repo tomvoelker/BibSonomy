@@ -1,6 +1,9 @@
 package de.unikassel.puma.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Locale;
+
 import net.sf.json.JSONObject;
 
 import org.bibsonomy.common.exceptions.ResourceMovedException;
@@ -12,6 +15,7 @@ import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.context.MessageSource;
 
 import de.unikassel.puma.openaccess.sword.SwordService;
 import de.unikassel.puma.webapp.command.SwordServiceCommand;
@@ -23,6 +27,7 @@ import de.unikassel.puma.webapp.command.SwordServiceCommand;
 public class SwordServiceController extends AjaxController implements MinimalisticController<SwordServiceCommand> {
 
 	private SwordService swordService;
+	private MessageSource messageSource;
 
 	@Override
 	public SwordServiceCommand instantiateCommand() {
@@ -54,7 +59,7 @@ public class SwordServiceController extends AjaxController implements Minimalist
 			// send message of exception to webpage via ajax to give feedback of submission result
 			message = ex.getMessage();
 			
-			if (message.equals("ErrCode201")){
+			if (message.equals("error.sword.errcode201")){
 				// transmission complete and successful
 				statuscode = 1;
 			} else {
@@ -67,11 +72,13 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		final JSONObject json = new JSONObject();
 		final JSONObject jsonResponse = new JSONObject();
 
+		final Locale locale = requestLogic.getLocale();
+		
 		jsonResponse.set("statuscode", statuscode);
 		jsonResponse.set("message", message);
 		// TODO: get from somewhere localized messages to transmit via ajax
 		// localizedMessage = puma.repository.response.$message
-		jsonResponse.set("localizedMessage", message);
+		jsonResponse.set("localizedMessage", messageSource.getMessage(message, null, locale));
 		json.put("response", jsonResponse);
 		
 		/*
@@ -96,6 +103,13 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		return post;
 	}
 	
+	/**
+	 * @param messageSource the messageSource to set
+	 */
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
 	/**
 	 * @param swordService
 	 */
