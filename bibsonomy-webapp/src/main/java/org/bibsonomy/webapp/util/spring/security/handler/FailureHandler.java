@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 	
 	public static final String USER_TO_BE_REGISTERED = "register_this_user"; 
+	public static final String USER_AUTHENTICATION = "register_this_user_authentication"; // FIXME: PUMA/BadCredentialAtRegister 
 	
 	private TeerGrube grube;
 	private Set<UsernameNotFoundExceptionMapper> usernameNotFoundExceptionMapper;
@@ -68,7 +69,7 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 					 */
 					final HttpSession session = request.getSession(true);
 					session.setAttribute(USER_TO_BE_REGISTERED, mapper.mapToUser(unne));
-//					session.setAttribute(USER_AUTHENTICATION, authentication);
+					session.setAttribute(USER_AUTHENTICATION, unne.getAuthentication()); // FIXME: PUMA/BadCredentialAtRegister
 					/*
 					 * redirect to the correct registration page
 					 */

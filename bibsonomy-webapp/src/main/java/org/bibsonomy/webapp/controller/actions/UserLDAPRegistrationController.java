@@ -4,6 +4,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.actions.UserIDRegistrationCommand;
 import org.bibsonomy.webapp.util.Validator;
+import org.bibsonomy.webapp.util.spring.security.handler.FailureHandler;
 import org.bibsonomy.webapp.validation.UserLDAPRegistrationValidator;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,7 +36,16 @@ public class UserLDAPRegistrationController extends AbstractUserIDRegistrationCo
 
 	@Override
 	protected Authentication getAuthentication(User user) {
-		return new UsernamePasswordAuthenticationToken(user.getLdapId(), user.getPassword());
+
+		// FIXME: PUMA/BadCredentialAtRegister
+		Object a = this.requestLogic.getSessionAttribute(FailureHandler.USER_AUTHENTICATION);
+		Authentication userSessionAuthentication = null;
+		if ((null != a) && (a instanceof Authentication)) {
+			userSessionAuthentication = (Authentication) a;
+		}
+
+		return new UsernamePasswordAuthenticationToken(user.getLdapId(), userSessionAuthentication.getCredentials());
+//		return new UsernamePasswordAuthenticationToken(user.getLdapId(), user.getPassword());
 	}
 
 	@Override

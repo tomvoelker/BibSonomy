@@ -43,7 +43,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
-	private RequestLogic requestLogic;
+	protected RequestLogic requestLogic;  // FIXME: PUMA/BadCredentialAtRegister (war vorher private statt protected)
 	private CookieLogic cookieLogic;
 	private CookieBasedRememberMeServices rememberMeServices;
 	private AuthenticationManager authenticationManager;
@@ -92,7 +92,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 					"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL()));
 		}
 		
-
+		
 		/*
 		 * user found in session - proceed with the registration 
 		 */
