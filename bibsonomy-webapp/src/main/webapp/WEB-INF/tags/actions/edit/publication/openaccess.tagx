@@ -33,51 +33,106 @@
 		<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.openaccess" >
 			<jsp:attribute name="content">
  -->
-				<h2><fmt:message key="post.resource.openaccess.headline"/></h2>
+				<h3><a href="javascript:foldUnfold('openAccessContainer');"><img id="resourcesImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="post.resource.openaccess.headline"/></a></h3>
 
+				<div id="openAccessContainer">
 
-				<div>
-					<h3><fmt:message key="post.resource.openaccess.headline.additionalfields"/></h3>
-<p>
-Hier kommen noch die Felder hin, die fuer KOBRA wichtig sind.
-<br />
-</p>				
-				</div>
-
-
-				<div id="pumaAddon" ><!-- used for puma--> </div>
+					<div id="openAccessMetaDataContainer">
+						<h4><fmt:message key="post.resource.openaccess.headline.additionalfields"/></h4>
+	
+						<!-- if entrytype == phdthesis -->
+						<!-- TODO: correct if condition /// != to == -->
+						<c:if test="${bibtex.entrytype!='phdthesis'}">
+							<div class="fsRow">
+								<label class="fsLabel" for="post.resource.openaccess.additionalfields.institution"><fmt:message key="post.resource.openaccess.additionalfields.institution"/>*</label>
+								<div class="help" style="">
+									<b class="smalltext" style="">?</b>
+									<div><fmt:message key="post.resource.openaccess.additionalfields.institution.help"/></div>
+								</div>
+								<input type="text" value="" class="fsInput fsSmall reqinput" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
+								<div class="dissError"><!-- do not remove this text --></div>
+							</div>
 		
-				<div id="openAccessClassificationContainer">
-					<h3><fmt:message key="post.resource.openaccess.headline.classification"/></h3>
-					<div id="openAccessClassificationList"><!-- openAccessClassificationListContainer --></div>
-					<div id="openAccessClassificationSelect"><!-- openAccessClassificationSelectContainer --></div>
+							<div class="fsRow">
+								<label class="fsLabel" for="post.resource.openaccess.additionalfields.referee"><fmt:message key="post.resource.openaccess.additionalfields.referee"/>* </label>
+								<div class="help" style="">
+									<b class="smalltext" style="">?</b>
+									<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
+								</div>
+								<input type="text" value="" class="fsInput fsSmall reqinput" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
+								<div class="dissError"><!-- do not remove this text --></div>
+							</div>
+		
+							<div class="fsRow">
+								<label class="fsLabel" for="post.resource.openaccess.additionalfields.phdoralexam"><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam"/>* </label>
+								<div class="help" style="">
+									<b class="smalltext" style="">?</b>
+									<div><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam.help"/></div>
+								</div>
+								<input type="text" value="" class="fsInput fsSmall reqinput" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
+								<div class="dissError"><!-- do not remove this text --></div>
+							</div>
+						</c:if>
+						<!-- /if entrytype == phdthesis -->
+	
+						<div class="fsRow">
+							<label class="fsLabel" for="post.resource.openaccess.additionalfields.sponsor"><fmt:message key="post.resource.openaccess.additionalfields.sponsor"/></label>
+							<div class="help" style="">
+								<b class="smalltext" style="">?</b>
+								<div><fmt:message key="post.resource.openaccess.additionalfields.sponsor.help"/></div>
+							</div>
+							<input type="text" value="" class="fsInput fsSmall" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
+							<div class="dissError"><!-- do not remove this text --></div>
+						</div>
+	
+						<div class="fsRow">
+							<label class="fsLabel" for="post.resource.openaccess.additionalfields.additionaltitle"><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle"/></label>
+							<div class="help" style="">
+								<b class="smalltext" style="">?</b>
+								<div><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle.help"/></div>
+							</div>
+							<input type="text" value="" class="fsInput fsSmall" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
+							<div class="dissError"><!-- do not remove this text --></div>
+						</div>
+
+						<input type="hidden" name="hash" id="openAccessCurrentPublicationHash" value="${fn:escapeXml(bibtex.intraHash)}"/>
+						
+					</div>
+	
+	
+					<div id="pumaAddon" class="clearboth" ><!-- used for puma--> </div>
+			
+					<div id="openAccessClassificationContainer">
+						<h4><fmt:message key="post.resource.openaccess.headline.classification"/></h4>
+						<div id="openAccessClassificationList"><!-- openAccessClassificationListContainer --></div>
+						<div id="openAccessClassificationSelect"><!-- openAccessClassificationSelectContainer --></div>
+					</div>
+	
+					<script type="text/javascript">
+						$(document).ready(function() {
+							initialiseOpenAccessClassification("openAccessClassification", &quot;${bibtex.intraHash}&quot;);
+							initialiseOpenAccessSendToRepository("oaSubmitContainer", &quot;${bibtex.intraHash}&quot;);
+							setTimeout("checkOpenAccess()", 1);
+					    });
+					</script>
+	
+	<!-- a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a> -->
+	
+	
+					<div id="openAccessRomeoSherpaContainer">
+						<h4><fmt:message key="post.resource.openaccess.headline.sherparomeo"/></h4>
+						
+						<c:set var="oaRequestPublisher" value="?publisher=${bibtex.publisher}"/>
+						<c:if test="${bibtex.entrytype=='article'}">
+							<c:set var="oaRequestPublisherUrlParameter" value="?jTitle=${bibtex.journal}"/>
+						</c:if>
+						<input type="hidden" id="oaRequestPublisher" value="${oaRequestPublisher}"/>
+						
+						<div id="openAccessRomeoSherpa"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
+					</div>
+	
+					<div id="oaSubmitContainer" ><!-- used for puma--> </div>
 				</div>
-
-				<script type="text/javascript">
-					$(document).ready(function() {
-						initialiseOpenAccessClassification("openAccessClassification", &quot;${bibtex.intraHash}&quot;);
-						initialiseOpenAccessSendToRepository("oaSubmitContainer", &quot;${bibtex.intraHash}&quot;);
-						setTimeout("checkOpenAccess()", 1);
-				    });
-				</script>
-
-<!-- a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a> -->
-
-
-				<div id="openAccessRomeoSherpaContainer">
-					<h3><fmt:message key="post.resource.openaccess.headline.sherparomeo"/></h3>
-					
-					<c:set var="oaRequestPublisher" value="?publisher=${bibtex.publisher}"/>
-					<c:if test="${bibtex.entrytype=='article'}">
-						<c:set var="oaRequestPublisherUrlParameter" value="?jTitle=${bibtex.journal}"/>
-					</c:if>
-					<input type="hidden" id="oaRequestPublisher" value="${oaRequestPublisher}"/>
-					
-					<div id="openAccessRomeoSherpa"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
-				</div>
-			 
-				<div id="oaSubmitContainer" ><!-- used for puma--> </div>
-
 <!-- 
 				<spring:theme code="javascript.t1" var="t1" text=""/>
 				<c:if test="${not empty t1}">
