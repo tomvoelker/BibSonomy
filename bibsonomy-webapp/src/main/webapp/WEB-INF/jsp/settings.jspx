@@ -11,7 +11,9 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:sql="http://java.sun.com/jsp/jstl/sql"
     xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
-    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors">
+    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:spring="http://www.springframework.org/tags">
+    
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	
@@ -38,6 +40,10 @@
     
     	<jsp:attribute name="headerExt">
       		<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
+			<c:if test="${not empty additionalFsformCSS}">
+				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
+			</c:if>
 	    </jsp:attribute>
 	
 		
