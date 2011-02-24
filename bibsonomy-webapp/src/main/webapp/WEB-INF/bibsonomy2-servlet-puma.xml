@@ -63,6 +63,9 @@
 								<value>classificationName</value>
 								<value>id</value>
 								<value>action</value>
+								<value>hash</value>
+								<value>key</value>
+								<value>value</value>
 							</list>
 						</property>
 					</bean>
