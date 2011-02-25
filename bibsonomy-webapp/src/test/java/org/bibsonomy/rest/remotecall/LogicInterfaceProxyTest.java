@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -921,6 +922,24 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void updateWiki(String userName, Wiki wiki) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void createExtendedField(String userName, String intraHash, String key, String value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteExtendedField(String userName, String intraHash, String key, String value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<String, List<String>> getExtendedFields(String userName, String intraHash, String key) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
