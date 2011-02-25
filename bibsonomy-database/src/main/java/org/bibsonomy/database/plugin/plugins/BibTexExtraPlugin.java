@@ -27,7 +27,7 @@ public class BibTexExtraPlugin extends AbstractDatabasePlugin {
 				// Delete link to related document
 				bibtexExtraDb.deleteDocument(contentId, session);
 				// Delete id in extended fields table
-				bibtexExtraDb.deleteExtendedFieldsData(contentId, session);
+				bibtexExtraDb.deleteAllExtendedFieldsData(contentId, session);
 				// Delete id in bibtexturl table
 				bibtexExtraDb.deleteAllURLs(contentId, session);
 			}

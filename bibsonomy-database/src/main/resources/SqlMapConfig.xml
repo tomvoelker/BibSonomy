@@ -13,7 +13,7 @@
 	<typeAlias alias="Role" type="org.bibsonomy.common.enums.Role" />
 	<typeAlias alias="Privlevel" type="org.bibsonomy.common.enums.Privlevel" />
 	<typeAlias alias="ProfilePrivlevel" type="org.bibsonomy.common.enums.ProfilePrivlevel" />
-
+	
 	<typeHandler javaType="url" callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />
 	<typeHandler javaType="InetAddress" callback="org.bibsonomy.database.common.typehandler.InetAddressTypeHandlerCallback" />
   <typeHandler javaType="InetAddressStatus" callback="org.bibsonomy.database.common.typehandler.InetAddressStatusTypeHandlerCallback" />

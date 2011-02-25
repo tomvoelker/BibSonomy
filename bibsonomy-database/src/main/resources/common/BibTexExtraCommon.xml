@@ -9,14 +9,15 @@
 		<result property="date" column="date" javaType="date" />
 	</resultMap>
 
-	<resultMap id="extendedFields" class="extendedFields">
+	<resultMap id="extendedField" class="extendedBibtex">
 		<result property="created"      column="date_of_create"   javaType="date" />
 		<result property="lastModified" column="date_of_last_mod" javaType="date" />
-		<result property="groupId"      column="group"            javaType="int" />
 		<result property="key"          column="key"              javaType="string" />
 		<result property="value"        column="value"            javaType="string" />
-		<result property="description"  column="description"      javaType="string" />
-		<result property="order"        column="order"            javaType="int" />
+	</resultMap>
+	
+	<resultMap id="exList" class="extendedBibtexList" groupBy="extendedFieldsList">
+		<result property="extendedFieldsList" resultMap="BibTexExtraCommon.extendedField" javaType="java.util.Collection"/>
 	</resultMap>
 
 </sqlMap>

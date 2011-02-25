@@ -2128,4 +2128,45 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 	}
     }
 
+    @Override
+    public void createExtendedField(String userName, String intraHash, String key, String value) {
+	
+	final DBSession session = openSession();
+	
+	try {
+	    this.publicationDBManager.createExtendedField(userName, intraHash, key, value, session);
+    	} finally {
+	    session.close();
+	}
+	
+    }
+
+    @Override
+    public void deleteExtendedField(String userName, String intraHash, String key, String value) {
+	final DBSession session = this.openSession();
+	
+    	try {
+    	    if(!present(key)) {
+    		this.publicationDBManager.deleteAllExtendedFieldsData(userName, intraHash, session);
+    	    } else {
+    		this.publicationDBManager.deleteExtendedField(intraHash, userName, key, value, session);
+    	    }
+    	    
+	} finally {
+	    session.close();
+	}
+	
+    }
+
+    @Override
+    public Map<String, List<String>> getExtendedFields(String userName, String intraHash, String key) {
+	final DBSession session = this.openSession();
+	
+    	try {
+    	    return this.publicationDBManager.getExtendedFields(intraHash, userName, key, session);
+	} finally {
+	    session.close();
+	}
+    }
+
 }

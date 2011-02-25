@@ -58,21 +58,40 @@
 	<delete id="deleteDocument" parameterClass="int">
 		DELETE FROM document WHERE content_id = #requestedContentId#
 	</delete>
+	
+	<insert id="insertExtendedBibtex" parameterClass="bibtexExtendedParam">
+		INSERT INTO extended_fields_data (`key`, `value`, `content_id`, `date_of_create`)
+		VALUES (#extendedField.key#, #extendedField.value#, #requestedContentId#, #extendedField.created#)
+	</insert>
 
-	<select id="getExtendedFields" resultMap="BibTexExtraCommon.extendedFields" parameterClass="bibtexExtraParam">
-		SELECT d.*, m.*
-		FROM extended_fields_map m
-		     JOIN extended_fields_data d ON d.key_id = m.key_id
+	<select id="getExtendedFields" resultMap="BibTexExtraCommon.extendedField" parameterClass="bibtexExtendedParam">
+		SELECT d.*
+		FROM extended_fields_data d
 		     JOIN bibtex b ON b.content_id = d.content_id
 		WHERE b.user_name = #userName# AND b.simhash$simHash$ = #hash#
-		ORDER BY m.order
+		ORDER BY d.date_of_create
+	</select>
+	
+	<select id="getExtendedFieldsByKey" resultMap="BibTexExtraCommon.extendedField" parameterClass="bibtexExtendedParam">
+		SELECT d.*
+		FROM extended_fields_data d
+		     JOIN bibtex b ON b.content_id = d.content_id
+		WHERE b.user_name = #userName# AND b.simhash$simHash$ = #hash# AND d.key = #extendedField.key#
+		ORDER BY d.date_of_create
 	</select>
 
 	<update id="updateExtendedFieldsData" parameterClass="bibtexExtraParam">
 		UPDATE extended_fields_data SET content_id = #newContentId# WHERE content_id = #requestedContentId#
 	</update>
+	
+	<delete id="deleteExtendedField" parameterClass="bibtexExtendedParam">
+		DELETE extended_fields_data
+		FROM extended_fields_data INNER JOIN bibtex 
+		WHERE bibtex.content_id = extended_fields_data.content_id
+		AND bibtex.user_name = #userName# AND bibtex.simhash$simHash$ = #hash#  AND extended_fields_data.key = #extendedField.key# AND extended_fields_data.value = #extendedField.value#
+	</delete>
 
-	<delete id="deleteExtendedFieldsData" parameterClass="int">
+	<delete id="deleteAllExtendedFieldsData" parameterClass="int">
 		DELETE FROM extended_fields_data WHERE content_id = #requestedContentId#
 	</delete>
 

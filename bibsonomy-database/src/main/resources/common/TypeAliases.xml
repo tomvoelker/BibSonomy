@@ -18,7 +18,7 @@
 	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
 	<typeAlias alias="tagset"             type="org.bibsonomy.model.TagSet" />
 	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
-	<typeAlias alias="author"			  			type="org.bibsonomy.model.Author" />
+	<typeAlias alias="author"			  type="org.bibsonomy.model.Author" />
 	<typeAlias alias="scraperMetadata"	  type="org.bibsonomy.model.ScraperMetadata" />
 	
 	<!-- Synchronization -->
@@ -27,13 +27,15 @@
 	
 	<!-- Extras -->
 	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />
-	<typeAlias alias="extendedFields"     type="org.bibsonomy.model.extra.ExtendedFields" />
+	<typeAlias alias="extendedBibtex"     type="org.bibsonomy.model.extra.ExtendedField" />
+	<typeAlias alias="extendedBibtexList" type="org.bibsonomy.model.extra.ExtendedFieldList" />
 
 	<!-- Parameters -->
 	<typeAlias alias="genericParam"       type="org.bibsonomy.database.params.GenericParam" />
 	<typeAlias alias="bookmarkParam"      type="org.bibsonomy.database.params.BookmarkParam" />
 	<typeAlias alias="bibtexParam"        type="org.bibsonomy.database.params.BibTexParam" />
 	<typeAlias alias="bibtexExtraParam"   type="org.bibsonomy.database.params.BibTexExtraParam" />
+	<typeAlias alias="bibtexExtendedParam" type="org.bibsonomy.database.params.BibtexExtendedParam" />
 	<typeAlias alias="statisticParam"     type="org.bibsonomy.database.params.StatisticsParam" />	
 	<typeAlias alias="userParam"          type="org.bibsonomy.database.params.UserParam" />
 	<typeAlias alias="groupParam"         type="org.bibsonomy.database.params.GroupParam" />

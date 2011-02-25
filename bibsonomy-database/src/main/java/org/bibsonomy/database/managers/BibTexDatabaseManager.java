@@ -2,8 +2,11 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +27,7 @@ import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
+import org.bibsonomy.model.extra.ExtendedField;
 
 /**
  * Used to create, read, update and delete BibTexs from the database.
@@ -526,6 +530,45 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		
 		return insert;
 	}
+	
+	    public void createExtendedField(String userName, String intraHash, String key, String value, final DBSession session) {
+		this.extraDb.createExtendedField(intraHash, userName, key, value, session);
+		
+	    }
+	    
+	    public void deleteAllExtendedFieldsData(final String userName,final String hash, final DBSession session) {
+	    	final int contentId = BibTexDatabaseManager.getInstance().getContentIdForPost(hash, userName, session);
+		this.extraDb.deleteAllExtendedFieldsData(contentId, session);
+	    }
+
+	    public void deleteExtendedField(final String userName,final String hash,final String key,final String value, final DBSession session) {
+		this.extraDb.deleteExtendedFieldsData(hash, userName, key, value, session);
+	    }
+
+	    public Map<String, List<String>> getExtendedFields(String hash, String userName, String key, final DBSession session) {
+		List<ExtendedField> list;
+		
+		if(present(key)) {
+		    list = this.extraDb.getExtendedFieldsByKey(hash, userName, key, session);
+		} else {
+		    list = this.extraDb.getExtendedFields(hash, userName, session);
+		}
+		
+		
+		Map<String , List<String>> resultMap = new HashMap<String, List<String>>();
+		
+		for(ExtendedField ex : list) {
+		    if(resultMap.containsKey(ex.getKey())) {
+			resultMap.get(ex.getKey()).add(ex.getValue());
+		    } else {
+			resultMap.put(ex.getKey(), Arrays.asList(ex.getValue()));
+		    }
+		}
+		
+		return resultMap;
+		
+	    }
+	
 
 	/*
 	 * (non-Javadoc)
