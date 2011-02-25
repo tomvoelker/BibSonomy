@@ -26,6 +26,7 @@ package org.bibsonomy.model.logic;
 import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
@@ -501,6 +502,13 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 */
 	public String getOpenIDUser(final String openID);
 
+	public void createExtendedField(String userName, String intraHash, String key,String value);
+
+	public void deleteExtendedField(String userName, String intraHash, String key, String value);
+	
+	public Map<String, List<String>> getExtendedFields(String userName, String intraHash, String key);
+
+	
 	/**
 	 * Retrieve relations
 	 * 

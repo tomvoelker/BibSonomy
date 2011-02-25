@@ -28,15 +28,13 @@ import java.util.Date;
 /**
  * @version $Id$
  */
-public class ExtendedFields {
+public class ExtendedField {
 
 	private Date created;
 	private Date lastModified;
-	private int groupId;
+
 	private String key;
 	private String value;
-	private String description;
-	private int order;
 
 	/**
 	 * @return created
@@ -67,20 +65,6 @@ public class ExtendedFields {
 	}
 
 	/**
-	 * @return groupId
-	 */
-	public int getGroupId() {
-		return this.groupId;
-	}
-
-	/**
-	 * @param groupId
-	 */
-	public void setGroupId(int groupId) {
-		this.groupId = groupId;
-	}
-
-	/**
 	 * @return key
 	 */
 	public String getKey() {
@@ -106,33 +90,5 @@ public class ExtendedFields {
 	 */
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	/**
-	 * @return description
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * @param description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	/**
-	 * @return order
-	 */
-	public int getOrder() {
-		return this.order;
-	}
-
-	/**
-	 * @param order
-	 */
-	public void setOrder(int order) {
-		this.order = order;
 	}
 }
