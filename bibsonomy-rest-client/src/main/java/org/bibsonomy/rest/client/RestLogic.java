@@ -27,6 +27,7 @@ import java.net.InetAddress;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -483,4 +484,21 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public void createExtendedField(String userName, String intraHash, String key, String value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteExtendedField(String userName, String intraHash, String key, String value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<String, List<String>> getExtendedFields(String userName, String intraHash, String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
