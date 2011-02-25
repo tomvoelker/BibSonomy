@@ -1,13 +1,12 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.bibsonomy.model.extra.BibTexExtra;
-import org.bibsonomy.model.extra.ExtendedFields;
+import org.bibsonomy.model.extra.ExtendedField;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -16,11 +15,11 @@ import org.junit.Test;
  * @author Christian Schenk
  * @version $Id$
  */
-@Ignore // FIXME adapt to new test db
+// FIXME adapt to new test db
 public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
-	private final String BIB_TEST_HASH = "2313536a09d3af706469e3d2523fe7ca"; // INTRA-hash
-	private final String TEST_USER = "thomi";
+	private final String BIB_TEST_HASH = "b77ddd8087ad8856d77c740c8dc2864a"; // INTRA-hash
+	private final String TEST_USER = "testuser1";
 	private final String TEST_URL = "http://www.example.com/";
 	private final String TEST_TXT = "This is a test...";
 	
@@ -32,9 +31,10 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	@BeforeClass
 	public static void setupDatabaseManager() {
 		bibTexExtraDb = BibTexExtraDatabaseManager.getInstance();
+		
 	}
 
-	@Test
+	@Ignore @Test
 	public void getURL() {
 		final List<BibTexExtra> extras = bibTexExtraDb.getURL(this.BIB_TEST_HASH, this.TEST_USER, this.dbSession);
 		assertEquals(2, extras.size());
@@ -46,7 +46,7 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		assertEquals("Online Version", extras.get(1).getText());
 	}
 
-	@Test
+	@Ignore @Test
 	public void createURL() {
 		bibTexExtraDb.createURL(this.BIB_TEST_HASH, this.TEST_USER, this.TEST_URL, TEST_TXT, this.dbSession);
 		final List<BibTexExtra> extras = bibTexExtraDb.getURL(this.BIB_TEST_HASH, this.TEST_USER, this.dbSession);
@@ -55,7 +55,7 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		assertEquals(TEST_TXT, extras.get(0).getText());
 	}
 
-	@Test
+	@Ignore @Test
 	public void deleteURL() {
 		bibTexExtraDb.deleteURL(this.BIB_TEST_HASH, this.TEST_USER, "http://localhost/mywiki/literature/BG98.pdf", this.dbSession);
 		final List<BibTexExtra> extras = bibTexExtraDb.getURL(this.BIB_TEST_HASH, this.TEST_USER, this.dbSession);
@@ -63,7 +63,7 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		assertEquals("http://members.pingnet.ch/gamma/junit.htm", extras.get(0).getUrl().toString());
 	}
 
-	@Test
+	@Ignore @Test
 	public void deleteAllURLs() {
 		// 925724 is the contentId for the hash b6c9a44d411bf8101abdf809d5df1431
 		bibTexExtraDb.deleteAllURLs(925724, this.dbSession);
@@ -71,49 +71,76 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		assertEquals(0, extras.size());
 	}
 
-	@Test
+	@Ignore @Test
 	public void updateURL() {
 		bibTexExtraDb.updateURL(925724, 12345678, this.dbSession);
 	}
 
-	@Test
+	@Ignore @Test
 	public void getBibTexPrivnoteForUser() {
 		final String note = bibTexExtraDb.getBibTexPrivnoteForUser("6e955a315951954a8030b79cece1e314", "siko", this.dbSession);
 		assertEquals("test", note);
 	}
 
-	@Test
+	@Ignore @Test
 	public void updateBibTexPrivnoteForUser() {
 		bibTexExtraDb.updateBibTexPrivnoteForUser(this.BIB_TEST_HASH, this.TEST_USER, this.TEST_TXT, this.dbSession);
 		final String note = bibTexExtraDb.getBibTexPrivnoteForUser(this.BIB_TEST_HASH, this.TEST_USER, this.dbSession);
 		assertEquals(this.TEST_TXT, note);
 	}
 
-	@Test
+	@Ignore @Test
 	public void updateDocument() {
 		bibTexExtraDb.updateDocument(813954, 12345678, this.dbSession);
 	}
-
+	
+	@Test 
+	public void insertExtendedField() {
+	    List<ExtendedField> extendedFieldList = bibTexExtraDb.getExtendedFields("b77ddd8087ad8856d77c740c8dc2864a", "testuser1", this.dbSession);
+	    assertEquals(3, extendedFieldList.size());
+	    
+	    bibTexExtraDb.createExtendedField("b77ddd8087ad8856d77c740c8dc2864a", "testuser1", "ACM", "TEST", this.dbSession);
+	    
+	    extendedFieldList = bibTexExtraDb.getExtendedFields("b77ddd8087ad8856d77c740c8dc2864a", "testuser1", this.dbSession);
+	    assertEquals(4, extendedFieldList.size());
+	    
+	}
+	
 	@Test
+	public void getExtendedFieldByKey() {
+	    List<ExtendedField> exFields = bibTexExtraDb.getExtendedFieldsByKey("1b298f199d487bc527a62326573892b8", "testuser2", "JEL", this.dbSession);
+	    assertEquals(3, exFields.size());
+
+	    for(ExtendedField ex : exFields) {	
+		assertTrue(ex.getValue().equals("A12") || ex.getValue().equals("ACN") ||ex.getValue().equals("A33") );
+	    }
+	
+	}
+
+	/**
+	 * Tested in {@link #insertExtendedField()}
+	 */
+	@Ignore @Test
 	public void getExtendedFields() {
-		final List<ExtendedFields> extendedFields = bibTexExtraDb.getExtendedFields("d6f94bd4bebd899dd38cab0873dbcb64", "xamde", this.dbSession);
-		assertEquals(7, extendedFields.size());
-		for (final ExtendedFields extendedField : extendedFields) {
-			assertEquals(10, extendedField.getGroupId());
-			assertTrue(extendedField.getOrder() >= 3 && extendedField.getOrder() <= 9);
-			assertNotNull(extendedField.getKey());
-			assertNotNull(extendedField.getValue());
+		final List<ExtendedField> extendedField = bibTexExtraDb.getExtendedFields("d9eea4aa159d70ecfabafa0c91bbc9f0", "testuser1", this.dbSession);
+//		List<ExtendedField> extendedFields = extendedField.getExtendedFields();
+		assertEquals(2, extendedField.size());
+		for (final ExtendedField ex : extendedField) {
+			assertEquals("JEL", ex.getKey());
+			assertEquals("ACE",ex.getValue());
 		}
 	}
 
 	@Test
 	public void deleteExtendedFieldsData() {
-		bibTexExtraDb.deleteExtendedFieldsData(783786, this.dbSession);
-		final List<ExtendedFields> extendedFields = bibTexExtraDb.getExtendedFields("d6f94bd4bebd899dd38cab0873dbcb64", "xamde", this.dbSession);
-		assertEquals(0, extendedFields.size());
+		bibTexExtraDb.deleteExtendedFieldsData("b77ddd8087ad8856d77c740c8dc2864a", "testuser1", "ACM", "TEST", this.dbSession);
+		
+		final List<ExtendedField> extendedFields = bibTexExtraDb.getExtendedFields("b77ddd8087ad8856d77c740c8dc2864a", "testuser1", this.dbSession);
+		
+		assertEquals(3, extendedFields.size());
 	}
-
-	@Test
+	
+	@Ignore @Test
 	public void updateExtendedFieldsData() {
 		bibTexExtraDb.updateExtendedFieldsData(783786, 12345678, this.dbSession);
 	}
