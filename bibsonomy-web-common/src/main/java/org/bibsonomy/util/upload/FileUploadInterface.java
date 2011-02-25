@@ -12,7 +12,7 @@ public interface FileUploadInterface {
 	/**
 	 * firefox extion
 	 */
-	public static final String[] firefoxImportExt = { "html" };
+	public static final String[] firefoxImportExt = { "html", "htm" };
 	
 	/**
 	 * pdf, ps, djv, djvu, txt extensions
