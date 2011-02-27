@@ -866,4 +866,19 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	param.setRequestedGroupName(username);
         return this.queryForList("getPendingUserByUsername", param, User.class, session);
     }	
+    
+    /**
+     * returns all users with a username starting with searchString
+     * 
+     * @param searchString
+     * @param limit
+     * @param session
+     * @return list of users
+     */
+    public List<User> getUsersBySearch(final String searchString, final int limit, final DBSession session) {
+    	UserParam param = new UserParam();
+    	param.setSearch(searchString);
+    	param.setLimit(limit);
+    	return this.queryForList("getUsersBySearch", param, session);
+    }
 }

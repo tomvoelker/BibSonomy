@@ -16,6 +16,7 @@ import org.bibsonomy.database.managers.chain.user.get.GetRelatedUsersByUser;
 import org.bibsonomy.database.managers.chain.user.get.GetUserFollowers;
 import org.bibsonomy.database.managers.chain.user.get.GetUserFriends;
 import org.bibsonomy.database.managers.chain.user.get.GetUsersByGroup;
+import org.bibsonomy.database.managers.chain.user.get.GetUsersBySearch;
 import org.bibsonomy.database.params.UserParam;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -174,6 +175,19 @@ public class UserChainTest extends AbstractChainTest {
 		param.setUserRelation(UserRelation.FOLLOWER_OF);
 		userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
 		assertEquals(GetFollowersOfUser.class, chainStatus.getChainElement().getClass());
+	}
+	
+	/**
+	 * get users by searchString 
+	 */
+	@Test
+	public void getUsersBySearch(){
+		UserParam param = new UserParam();
+		param.setSearch("testuser");
+		param.setLimit(10);
+		param.setGrouping(GroupingEntity.USER);
+		userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetUsersBySearch.class, chainStatus.getChainElement().getClass());
 	}
 	
 }

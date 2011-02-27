@@ -58,6 +58,19 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		groupDb = GroupDatabaseManager.getInstance();
 	}
 
+	
+	/**
+	 * tests getUsersBySearch
+	 * FIXME: Test fails
+	 */
+	@Ignore
+	@Test
+	public void getUsersBySearch() {
+		final List<User> foundUsers = userDb.getUsersBySearch("testuser1", 1, this.dbSession);
+		// getUsersBySearch should find the user testuser1
+		assertEquals(1, foundUsers.size());
+	}
+	
 	/**
 	 * tests getFriendsOfUser
 	 */

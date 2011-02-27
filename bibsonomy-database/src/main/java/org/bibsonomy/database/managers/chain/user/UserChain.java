@@ -13,6 +13,7 @@ import org.bibsonomy.database.managers.chain.user.get.GetRelatedUsersByUser;
 import org.bibsonomy.database.managers.chain.user.get.GetUserFollowers;
 import org.bibsonomy.database.managers.chain.user.get.GetUserFriends;
 import org.bibsonomy.database.managers.chain.user.get.GetUsersByGroup;
+import org.bibsonomy.database.managers.chain.user.get.GetUsersBySearch;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.User;
 
@@ -35,6 +36,7 @@ public class UserChain implements FirstListChainElement<User, UserParam> {
     private final ListChainElement<User, UserParam> getPendingUsers;
     private final ListChainElement<User, UserParam> getPendingUserByUsername;
     private final ListChainElement<User, UserParam> getPendingUserByActivationCode;
+    private final ListChainElement<User, UserParam> getUsersBySearch;
 
     /**
      * Constructs the chain
@@ -52,6 +54,7 @@ public class UserChain implements FirstListChainElement<User, UserParam> {
 	this.getPendingUsers = new GetPendingUsers();
 	this.getPendingUserByUsername = new GetPendingUserByUsername();
 	this.getPendingUserByActivationCode = new GetPendingUserByActivationCode();
+	this.getUsersBySearch = new GetUsersBySearch();
 
 	// set order of chain elements
 	this.getUsersByGroup.setNext(this.getRelatedUsersByUser);
@@ -65,6 +68,7 @@ public class UserChain implements FirstListChainElement<User, UserParam> {
 	this.getPendingUsers.setNext(this.getPendingUserByUsername);
 	this.getPendingUserByUsername
 		.setNext(this.getPendingUserByActivationCode);
+	this.getPendingUserByActivationCode.setNext(this.getUsersBySearch);
     }
 
     @Override

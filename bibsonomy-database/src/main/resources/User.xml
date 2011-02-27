@@ -9,6 +9,14 @@
 		  WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
 	</select>
 	
+	<select id="getUsersBySearch" resultMap="Common.user" parameterClass="userParam">
+		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as openID
+		  FROM user
+		  WHERE user_name LIKE #search#
+		  AND spammer = 0
+		  LIMIT #limit#
+	</select>
+	
 	<select id="getPendingUserByActivationCode" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
 		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as openID
 		  FROM pendingUser 
