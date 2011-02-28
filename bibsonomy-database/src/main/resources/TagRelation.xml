@@ -51,7 +51,7 @@
 		  FROM tagtagrelations
 		  WHERE user_name=#userName#
 			AND picked=true
-		  ORDER BY LCASE(tag_name) ASC
+		  ORDER BY LCASE(tag_name) ASC, LCASE(subTag) ASC
 	</select>
 
 	<!-- the resultMap needs the column subTagCount whose value is always 1, since a 
@@ -68,7 +68,7 @@
 			  ) AS r
 		  WHERE t.user_name=r.user_name
 		    AND t.upper=r.tag_name
-		  ORDER BY LCASE(tag_name) ASC;
+		  ORDER BY LCASE(tag_name) ASC, LCASE(subTag) ASC;
 	</select>
 
 	<!-- the resultMap needs the column subTagCount whose value is always 1, since a 
@@ -80,6 +80,7 @@
 		  WHERE user_name=#ownerUserName#
 			AND upper_lcase=LCASE(#upperTagName#)
 		  GROUP BY upper_lcase, lower_lcase
+		  ORDER BY LCASE(subTag)
 	</select>
 
 	
@@ -107,6 +108,7 @@
 		  WHERE upper_lcase = #conceptName#
 			AND u.spammer = 0
 		  GROUP BY upper_lcase,	lower_lcase
+		  ORDER by LCASE(subTag)
 	</select>
 
 	<select id="getRelationID" parameterClass="tagRelationParam"
