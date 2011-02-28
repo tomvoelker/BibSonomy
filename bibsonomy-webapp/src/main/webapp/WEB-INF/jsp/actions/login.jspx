@@ -47,12 +47,10 @@
                 			<b><fmt:message key="${fn:escapeXml(command.notice)}" /></b>
                 			<br />
                 			<br />
-                			<fmt:message key="login.notice.welcome_3" />
-                			<c:out value=" " />
-                			<a style="font-weight: bold;" href="/register" target="_blank"><fmt:message key="login.notice.welcome_4" /></a>.
-                			<fmt:message key="login.notice.welcome_5">
-	                			<fmt:param value="${fn:escapeXml(command.referer)}" />
-    	            		</fmt:message> 
+                			<fmt:message key="login.notice.welcome_3">
+                				<fmt:param value="${fn:escapeXml('/register')}" />
+                				<fmt:param value="${fn:escapeXml(command.referer)}" />
+                			</fmt:message>
         	      		</div>
             		</c:if>
             	</mtl:exists>
