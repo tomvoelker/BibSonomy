@@ -115,7 +115,7 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		 * If user is logged in and not an admin: show error message
 		 */
 		if (context.isUserLoggedIn() && !Role.ADMIN.equals(loginUser.getRole())) {
-			throw new AccessDeniedException("error.method_not_allowed");
+			throw new AccessDeniedException("error.logged.in.user.activate");
 		}
 		
 		

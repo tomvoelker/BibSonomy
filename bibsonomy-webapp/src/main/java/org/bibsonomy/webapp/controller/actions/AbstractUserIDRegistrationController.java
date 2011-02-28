@@ -75,7 +75,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		 * If the user is already logged in: show error message
 		 */
 		if (command.getContext().isUserLoggedIn()) {
-			throw new AccessDeniedException("error.method_not_allowed");
+			throw new AccessDeniedException("error.logged.in.user.activate");
 		}
 
 		/*

@@ -62,7 +62,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 		 * user must not be logged in
 		 */
 		if (context.isUserLoggedIn()) {
-			throw new AccessDeniedException("error.method_not_allowed");
+			throw new AccessDeniedException("error.logged.in.user.activate");
 		}
 		
 		final String activationCode = command.getActivationCode();
