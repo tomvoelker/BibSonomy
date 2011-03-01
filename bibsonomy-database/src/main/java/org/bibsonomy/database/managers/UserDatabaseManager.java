@@ -879,6 +879,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
     	UserParam param = new UserParam();
     	param.setSearch(searchString);
     	param.setLimit(limit);
-    	return this.queryForList("getUsersBySearch", param, session);
+    	return this.queryForList("getUsersBySearch", param, User.class, session);
     }
 }
