@@ -118,7 +118,7 @@
 			<input class="ck" type="hidden" name="ckey" value="${ckey}"/>
 			<input class="resdir" type="hidden" name="resdir" value="${resdir}"/>
 			<input class="counter" type="hidden" name="counter" value="0"/>
-			<span class="addedFiles" style="display:none;"></span>
+			<span class="addedFiles" style="display:none;"><!-- something to fill this --></span>
 						
 		</jsp:attribute>
 	</parts:fieldset>
