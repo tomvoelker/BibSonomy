@@ -122,6 +122,9 @@ margin-right:2ex;
 
 .sidebarBoxInner {
 	background-color: #FBF7F4;
+	background-color: #e0e0e0; 
+	background-color: #FFC170;
+	
 	width: 100%;
 	padding: 0px;
 	padding-bottom: 1px;
@@ -129,6 +132,8 @@ margin-right:2ex;
 
 .sidebarBoxOuter {
 	background-color: #DF430D; 
+	background-color: #e0e0e0; 
+	background-color: #FFC170;
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
@@ -143,6 +148,8 @@ ul#tagbox {
 }
 #helpbox {
 	background-color: #DF430D; 
+	background-color: #e0e0e0;
+	background-color: #FFC170;
 	display: none;
 	overflow:hidden;
 }
@@ -509,4 +516,8 @@ input[type="button"].ajaxButton {
 
 .clearboth {
 	clear:both;
+}
+
+.tagnormal a, .tagnormal {
+    color: #222222 !important;
 }
