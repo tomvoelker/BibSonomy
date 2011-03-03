@@ -49,7 +49,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.institution.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput fsSmall reqinput" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 		
@@ -59,7 +59,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput fsSmall reqinput" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 		
@@ -69,7 +69,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput fsSmall reqinput" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 						</c:if>
@@ -81,7 +81,7 @@
 								<b class="smalltext" style="">?</b>
 								<div><fmt:message key="post.resource.openaccess.additionalfields.sponsor.help"/></div>
 							</div>
-							<input type="text" value="" class="fsInput fsSmall" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
+							<input type="text" value="" class="fsInput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
 							<div class="dissError"><!-- do not remove this text --></div>
 						</div>
 	
@@ -91,8 +91,13 @@
 								<b class="smalltext" style="">?</b>
 								<div><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle.help"/></div>
 							</div>
-							<input type="text" value="" class="fsInput fsSmall" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
+							<input type="text" value="" class="fsInput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
 							<div class="dissError"><!-- do not remove this text --></div>
+						</div>
+						
+						<div style="text-align: right;">
+							<a id="saveMetadataButton" href="javascript:sendAdditionalMetadataFields()">save</a>
+						
 						</div>
 
 						<input type="hidden" name="hash" id="openAccessCurrentPublicationHash" value="${fn:escapeXml(bibtex.intraHash)}"/>
@@ -104,6 +109,7 @@
 			
 					<div id="openAccessClassificationContainer">
 						<h4><fmt:message key="post.resource.openaccess.headline.classification"/></h4>
+						<a href="javascript:loadStoredClassificationItems()" >load list</a>
 						<div id="openAccessClassificationList"><!-- openAccessClassificationListContainer --></div>
 						<div id="openAccessClassificationSelect"><!-- openAccessClassificationSelectContainer --></div>
 					</div>

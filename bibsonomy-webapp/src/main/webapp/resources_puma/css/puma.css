@@ -521,3 +521,13 @@ input[type="button"].ajaxButton {
 .tagnormal a, .tagnormal {
     color: #222222 !important;
 }
+
+#saveMetadataButton {
+	color: green;
+	font-weight: bold;
+}
+
+#saveMetadataButton.dataChanged {
+	color: red;
+}
+

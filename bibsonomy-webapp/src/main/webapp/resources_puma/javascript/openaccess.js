@@ -3,7 +3,9 @@ var classificationURL = "/ajax/classificatePublication";
 var swordURL = "/ajax/swordService";
 var GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";
 var SAVE_CLASSIFICATION_ITEM = "SAVE_CLASSIFICATION_ITEM";
+var SAVE_CLASSIFICATION_ITEMS = "SAVE_CLASSIFICATION_ITEMS";
 var REMOVE_CLASSIFICATION_ITEM = "REMOVE_CLASSIFICATION_ITEM";
+var GET_POST_CLASSIFICATION_LIST = "GET_POST_CLASSIFICATION_LIST";
 var publication_intrahash = ""; // will be set during initialisation
 
 function initialiseOpenAccessClassification(divBaseName, intraHash) {
@@ -355,12 +357,12 @@ function addSaved(container, parentID, description) {
 							
 						},
 						success: function(data) {
-							$(loadingNode).remove();
-
 							$(node).remove();
+							$(loadingNode).remove();
 						
 						},
 						error: function(req, status, e) {
+							$(loadingNode).remove();
 							alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
 						}
 					});					
@@ -371,6 +373,8 @@ function addSaved(container, parentID, description) {
 			
 			},
 			error: function(req, status, e) {
+				$(loadingNode).remove();
+
 				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
 			}
 		});
@@ -472,6 +476,7 @@ function createSubSelect(parent, data, classification, parentID, container){
 				createSubSelect(s,data,classification,id,container);
 			},
 			error: function(req, status, e) {
+				$(loadingNode).remove();
 				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
 			}
 		});
@@ -498,8 +503,56 @@ function createSubSelect(parent, data, classification, parentID, container){
 
 
 function sendAdditionalMetadataFields() {
+	// collect metadata
+	var saveMetadataButtonId = "saveMetadataButton";
+	var metadatafields = Array();
+	var i=0;
+	metadatafields[i++] = "post.resource.openaccess.additionalfields.institution";
+	metadatafields[i++] = "post.resource.openaccess.additionalfields.phdreferee";
+	metadatafields[i++] = "post.resource.openaccess.additionalfields.phdoralexam";
+	metadatafields[i++] = "post.resource.openaccess.additionalfields.sponsor";
+	metadatafields[i++] = "post.resource.openaccess.additionalfields.additionaltitle";
 	
+	var collectedMetadataJSONText = '{ ';
+	var collectedMetadataJSON = {};
+	for(var i = 0; i < metadatafields.length; i++) {
+		collectedMetadataJSONText += '"' + metadatafields[i] + '":"' + $("#"+(metadatafields[i].replace(/\./g,'\\.'))).val() +'", '; 
+	}
+	collectedMetadataJSONText += " } ";
+
+	console.log(collectedMetadataJSONText);
+	//collectedMetadataJSON = eval('(' + collectedMetadataJSONText + ')');
 	
+	// send item via ajax to database
+	var saveurl = classificationURL + "?action=" +SAVE_CLASSIFICATION_ITEMS+"&hash="+publication_intrahash;
+	var loadingNode = document.createElement('img');
+	loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
+	
+	// send metadata
+		$.ajax({
+			dataType: 'json',
+			url: saveurl,
+			data: { "value" : collectedMetadataJSONText },
+			type: 'POST',
+			
+			beforeSend: function(XMLHttpRequest) {
+				$('#' +saveMetadataButtonId).append(loadingNode);
+				
+			},
+			success: function(data) {
+				$(loadingNode).remove();
+
+
+			
+			},
+			error: function(req, status, e) {
+				$(loadingNode).remove();
+				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+			}
+		});
+			
+	// change button class (red to green)
+	metadataUnChanged();
 }
 
 
@@ -508,3 +561,39 @@ function loadAdditionalMetadataFields() {
 	
 }
 
+function metadataOnChange() {
+	saveMetadataButtonId = "saveMetadataButton";
+	dataChangedClass = "dataChanged";
+
+	if (!$("#"+saveMetadataButtonId).hasClass(dataChangedClass)) $("#"+saveMetadataButtonId).addClass("dataChanged")
+}
+
+function metadataUnChanged() {
+	saveMetadataButtonId = "saveMetadataButton";
+	dataChangedClass = "dataChanged";
+
+	if ($("#"+saveMetadataButtonId).hasClass(dataChangedClass)) $("#"+saveMetadataButtonId).removeClass("dataChanged")
+}
+
+function loadStoredClassificationItems()
+{
+	// clear list 
+	
+	// get data
+
+	var url = classificationURL + "?action="+GET_POST_CLASSIFICATION_LIST+"&hash="+publication_intrahash+"&key=ACM";
+	// perform ajax request
+	$.ajax({
+		dataType: 'json',
+		url: url,
+		success: function(data) {
+			// iterate over data
+			// add item to list
+			// addSaved()
+		},
+		error: function(req, status, e) {
+			alert("There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
+		}
+	});	
+	
+}
