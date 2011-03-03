@@ -30,6 +30,11 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	private String fileHash;
 	private static final Log log = LogFactory.getLog(DocumentsController.class);
 	
+	/**
+	 * max file size, currently 50mb
+	 */
+	private final long maxFileSize = 52428800;
+	
 	ResourceBundle localizedStrings = ResourceBundle.getBundle("messages");
 	
 	@Override
@@ -46,7 +51,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		 * Check whether user is logged in 
 		 */
 		if (!context.isUserLoggedIn()) {
-			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.general.login"), command.getFileID()));
+			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.general.login"), command.getFileID(), null));
 			return Views.AJAX_XML;
 		}
 		
@@ -54,7 +59,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		 * check ckey
 		 */
 		if (!command.getContext().isValidCkey()) {
-			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.field.valid.ckey"), command.getFileID()));
+			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.field.valid.ckey"), command.getFileID(), null));
 			return Views.AJAX_XML;
 		}
 		
@@ -114,7 +119,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		String documentOwner = document.getUserName();
 		if (!documentOwner.equals(userName)) {
 			
-			command.setResponseString(generateXmlErrorString(localizedStrings.getString("post.bibtex.wrongUser"), command.getFileID())); 
+			command.setResponseString(generateXmlErrorString(localizedStrings.getString("post.bibtex.wrongUser"), command.getFileID(), null)); 
 			return Views.AJAX_XML;
 		}
 		
@@ -157,11 +162,24 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 			}
 			buf.append(allowedExt[allowedExt.length - 1].toUpperCase());
 			
-			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.upload.failed.filetype").replace("{0}", buf.toString()), command.getFileID()));
+			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.upload.failed.filetype").replace("{0}", buf.toString()), command.getFileID(), command.getFile().getFileItem().getName()));
 				
 			
 			return Views.AJAX_XML;
 		}
+		
+		/*
+		 * wrong file size
+		 */
+		long size = command.getFile().getFileItem().getSize();
+		if (size >= maxFileSize) {
+			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.upload.failed.size"), command.getFileID(), command.getFile().getFileItem().getName()));
+			return Views.AJAX_XML;
+		} else if (size == 0) {
+			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.upload.failed.size0"), command.getFileID(), command.getFile().getFileItem().getName()));
+			return Views.AJAX_XML;
+		}
+		
 		File uploadFile;
 		fileHash = FileUtil.getRandomFileHash(command.getFile().getFileItem().getName());
 		if (command.isTemp()) { // /editPublication
@@ -174,7 +192,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 			command.getFile().getFileItem().write(uploadFile);
 		} catch (Exception ex) {
 			log.error("Could not write uploaded file.", ex);
-			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.500"), command.getFileID()));
+			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.500"), command.getFileID(), null));
 			return Views.AJAX_XML;
 		}
 		
@@ -205,9 +223,9 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	 * @param reason error reason
 	 * @return
 	 */
-	private String generateXmlErrorString (String reason, int fileID) {
+	private String generateXmlErrorString (String reason, int fileID, String fileName) {
 		String errorMsg = localizedStrings.getString("error.upload.failed").replace("{0}", reason);
-		return "<root><status>error</status><reason>"+errorMsg+"</reason><fileid>"+ fileID + "</fileid></root>";
+		return "<root><status>error</status><reason>"+errorMsg+"</reason><fileid>"+ fileID + "</fileid><filename>" + fileName + "</filename></root>";
 	}
 	
 	/**
