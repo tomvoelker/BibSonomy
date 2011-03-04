@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.util.spring.security.UserAdapter;
+import org.bibsonomy.util.spring.security.UserAdapter;
 import org.jasypt.util.text.TextEncryptor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
