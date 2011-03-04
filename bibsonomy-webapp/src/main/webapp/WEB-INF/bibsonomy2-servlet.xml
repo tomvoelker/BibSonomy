@@ -726,4 +726,5 @@
 	<import resource="bibsonomy2-servlet-security.xml"/>
 	<import resource="bibsonomy2-servlet-bibsonomy.xml"/>
 	<import resource="bibsonomy2-servlet-puma.xml"/>
+    <import resource="bibsonomy2-servlet-opensocial.xml"/>
 </beans>

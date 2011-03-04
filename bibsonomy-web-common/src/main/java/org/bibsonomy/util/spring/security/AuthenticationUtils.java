@@ -1,16 +1,15 @@
-package filters;
+package org.bibsonomy.util.spring.security;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.util.spring.security.UserAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * @author dzo
- * @version $Id$
+ * class for accessing credentials as provided by spring security
+ * 
+ * @author fei, dzo
  */
-@Deprecated
-public class FilterUtils {
+public class AuthenticationUtils {
 
 	/**
 	 * Small helper method for Servlets to easily retrieve User.
