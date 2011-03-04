@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.spring.security.AuthenticationUtils;
 
 /**
  * This filter checks the credential of the user and sets a corresponding request 
@@ -68,7 +69,7 @@ public class ActionValidationFilter implements Filter {
 		/*
 		 * This filter makes only sense, if user is logged in.
 		 */
-		User user = FilterUtils.getUser();
+		User user = AuthenticationUtils.getUser();
 		if (user != null && user.getName() != null) {
 			/*
 			 * get sessions credential storage variable
