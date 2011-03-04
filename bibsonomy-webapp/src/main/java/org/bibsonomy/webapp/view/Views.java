@@ -208,6 +208,13 @@ public enum Views implements View {
 	 */
 	REPORTING("reporting"),
 	
+	/* *****************************************************
+	 * OpenSocial Views
+	 * *****************************************************/
+	/**
+	 * sample gadget container page
+	 */
+	GADGETCONTAINER("opensocial/container"),
 	
 	/* *****************************************************
 	 * AJAX views

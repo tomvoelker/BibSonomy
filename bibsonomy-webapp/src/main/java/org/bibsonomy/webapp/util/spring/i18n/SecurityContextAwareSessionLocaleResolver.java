@@ -5,7 +5,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.util.spring.security.UserAdapter;
+import org.bibsonomy.util.spring.security.UserAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
