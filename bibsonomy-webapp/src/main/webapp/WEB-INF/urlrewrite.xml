@@ -3,6 +3,7 @@
         "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
 
 <urlrewrite>
+
 	<!-- TODO: why do we need this rule? -->
 	<rule>
 		<name>/brokenurl</name>
@@ -777,8 +778,14 @@
 	<!-- ############## actions ############### -->
 	<rule>
 		<name>/import/delicious</name>
-		<from>^/import/delicious</from>
+		<from>^/import/delicious$</from>
 		<set type="parameter" name="importType">delicious</set>
+		<to last="true">/import/bookmarks</to>
+	</rule>
+	<rule>
+		<name>/import/deliciousV2</name>
+		<from>^/import/deliciousV2$</from>
+		<set type="parameter" name="importType">deliciousV2</set>
 		<to last="true">/import/bookmarks</to>
 	</rule>
 	<rule>
