@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.spring.security.AuthenticationUtils;
 
-import filters.FilterUtils;
 
 
 /**
@@ -53,7 +53,7 @@ public class AdminHandler extends HttpServlet {
 		/*
 		 * check user name (only admins are allowed)
 		 */
-		final User user = FilterUtils.getUser();
+		final User user = AuthenticationUtils.getUser();
 		String userName = user.getName();
 
 		if (!(allowedUsers.contains(userName))) {

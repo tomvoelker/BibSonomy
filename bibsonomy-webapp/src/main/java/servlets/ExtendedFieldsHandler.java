@@ -17,9 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
+import org.bibsonomy.util.spring.security.AuthenticationUtils;
 
 import filters.ActionValidationFilter;
-import filters.FilterUtils;
 import filters.InitUserFilter;
 
 @Deprecated
@@ -34,7 +34,7 @@ public class ExtendedFieldsHandler extends HttpServlet{
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		final User user = FilterUtils.getUser();
+		final User user = AuthenticationUtils.getUser();
 		final String currUser = user.getName(); 
 		if (currUser == null) {
 			response.sendRedirect("/login?referer=/basket");
@@ -75,7 +75,7 @@ public class ExtendedFieldsHandler extends HttpServlet{
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		final User user = FilterUtils.getUser();
+		final User user = AuthenticationUtils.getUser();
 		final String currUser = user.getName(); 
 		if (currUser == null) {
 			response.sendRedirect("/login?referer=/basket");

@@ -31,9 +31,9 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.spring.security.AuthenticationUtils;
 
 import filters.ActionValidationFilter;
-import filters.FilterUtils;
 
 /**
  * @author Serak
@@ -72,7 +72,7 @@ public class SettingsHandler extends HttpServlet{
 		PreparedStatement stmtP = null;
 
 		HttpSession session = request.getSession(true);
-		final User user = FilterUtils.getUser();
+		final User user = AuthenticationUtils.getUser();
 		String currUser = user.getName(); 
 
 		/*
