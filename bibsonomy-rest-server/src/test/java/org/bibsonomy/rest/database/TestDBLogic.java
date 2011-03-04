@@ -962,4 +962,27 @@ public class TestDBLogic implements LogicInterface {
 	public void deleteWiki(String userName) {
 		// TODO Auto-generated method stub
 	}
+
+
+	@Override
+	public void createExtendedField(String userName, String intraHash, String key, String value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void deleteExtendedField(String userName, String intraHash, String key, String value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public Map<String, List<String>> getExtendedFields(String userName, String intraHash, String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }
