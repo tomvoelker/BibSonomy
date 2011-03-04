@@ -54,7 +54,7 @@
 							</div>
 		
 							<div class="fsRow">
-								<label class="fsLabel" for="post.resource.openaccess.additionalfields.referee"><fmt:message key="post.resource.openaccess.additionalfields.referee"/>* </label>
+								<label class="fsLabel" for="post.resource.openaccess.additionalfields.referee">1. <fmt:message key="post.resource.openaccess.additionalfields.referee"/>* </label>
 								<div class="help" style="">
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
@@ -63,6 +63,16 @@
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 		
+							<div class="fsRow">
+								<label class="fsLabel" for="post.resource.openaccess.additionalfields.referee2">2. <fmt:message key="post.resource.openaccess.additionalfields.referee"/>* </label>
+								<div class="help" style="">
+									<b class="smalltext" style="">?</b>
+									<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
+								</div>
+								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
+								<div class="dissError"><!-- do not remove this text --></div>
+							</div>
+
 							<div class="fsRow">
 								<label class="fsLabel" for="post.resource.openaccess.additionalfields.phdoralexam"><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam"/>* </label>
 								<div class="help" style="">
@@ -136,6 +146,12 @@
 						
 						<div id="openAccessRomeoSherpa"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
 					</div>
+	
+					<div id="authorcontract">
+						<span id="authorcontractconfirmcontainer"><input type="checkbox" id="authorcontractconfirm"/></span>Ja, ich habe den <a href="https://kobra.bibliothek.uni-kassel.de/autorenvereinbarung.html">Autorenvertrag</a> ausgef&amp;uuml;llt und werde ihn per Fax oder Post an
+						die <a href="https://kobra.bibliothek.uni-kassel.de/kontakt.jsp">KOBRA-Autorenbetreung</a> &amp;uuml;bermitteln.
+					</div>
+	
 	
 					<div id="oaSubmitContainer" ><!-- used for puma--> </div>
 				</div>

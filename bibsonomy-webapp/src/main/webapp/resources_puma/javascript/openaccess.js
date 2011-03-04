@@ -509,6 +509,7 @@ function sendAdditionalMetadataFields() {
 	var i=0;
 	metadatafields[i++] = "post.resource.openaccess.additionalfields.institution";
 	metadatafields[i++] = "post.resource.openaccess.additionalfields.phdreferee";
+	metadatafields[i++] = "post.resource.openaccess.additionalfields.phdreferee2";
 	metadatafields[i++] = "post.resource.openaccess.additionalfields.phdoralexam";
 	metadatafields[i++] = "post.resource.openaccess.additionalfields.sponsor";
 	metadatafields[i++] = "post.resource.openaccess.additionalfields.additionaltitle";

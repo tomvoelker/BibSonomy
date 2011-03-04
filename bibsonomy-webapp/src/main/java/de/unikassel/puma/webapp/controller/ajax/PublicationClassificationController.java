@@ -84,6 +84,7 @@ public class PublicationClassificationController extends AjaxController implemen
 			ArrayList<String> dataFields = new ArrayList<String>();
 			dataFields.add("post.resource.openaccess.additionalfields.institution");
 			dataFields.add("post.resource.openaccess.additionalfields.phdreferee");
+			dataFields.add("post.resource.openaccess.additionalfields.phdreferee2");
 			dataFields.add("post.resource.openaccess.additionalfields.phdoralexam");
 			dataFields.add("post.resource.openaccess.additionalfields.sponsor");
 			dataFields.add("post.resource.openaccess.additionalfields.additionaltitle");

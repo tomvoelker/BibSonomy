@@ -531,3 +531,12 @@ input[type="button"].ajaxButton {
 	color: red;
 }
 
+input#authorcontractconfirm {
+	margin: 1px;
+	
+}
+
+#authorcontractconfirmcontainer {
+	background-color: red;
+	padding: 3px;
+}
