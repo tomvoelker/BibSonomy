@@ -4,7 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.webapp.util.spring.security.UserAdapter;
+import org.bibsonomy.util.spring.security.UserAdapter;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
