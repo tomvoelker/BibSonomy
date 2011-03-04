@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>bibsonomy-webapp</name>
-	<comment>The webapplication for Bibsonomy.</comment>
+	<comment>The webapplication for Bibsonomy. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
 	<projects>
+		<project>bibsonomy-bibtex-parser</project>
+		<project>bibsonomy-common</project>
+		<project>bibsonomy-database</project>
+		<project>bibsonomy-database-common</project>
+		<project>bibsonomy-events</project>
+		<project>bibsonomy-importer</project>
+		<project>bibsonomy-layout</project>
+		<project>bibsonomy-logging</project>
+		<project>bibsonomy-lucene</project>
+		<project>bibsonomy-model</project>
+		<project>bibsonomy-openaccess</project>
+		<project>bibsonomy-recommender</project>
+		<project>bibsonomy-rest-client</project>
+		<project>bibsonomy-rest-common</project>
+		<project>bibsonomy-rest-server</project>
+		<project>bibsonomy-scraper</project>
+		<project>bibsonomy-web-common</project>
+		<project>bibsonomy-wiki</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -37,8 +55,8 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.maven.ide.eclipse.maven2Nature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>com.javadude.antlr.eclipse.antlr3Nature</nature>
 		<nature>org.springframework.ide.eclipse.core.springnature</nature>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
