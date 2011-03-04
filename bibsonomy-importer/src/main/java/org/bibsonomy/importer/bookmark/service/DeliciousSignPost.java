@@ -19,32 +19,32 @@ public class DeliciousSignPost implements Serializable {
      * 
      */
     private static final long serialVersionUID = -6998612190700927048L;
-	
-	/**
-	 * Key for storing the DeliciousSignPost object into the session
-	 */
-	public static final String OAUTH_KEY = "org.bibsonomy.webapp.controller.DelicioursPinController.oAuthKey";
-
-        private static final String CONSUMERKEY = "dj0yJmk9SFR2YlduTXU3T0p1JmQ9WVdrOU5scFhNV0pxTldrbWNHbzlNVFV3TlRBeU5ERTJNZy0tJnM9Y29uc3VtZXJzZWNyZXQmeD0zZg--";
-        private static final String CONSUMERSECRET = "7757c2c4be015ac123d7ba73a76a1dcf99998d1f";
-        
-        private static final String CALLBACK_URL = "http://www.biblicious.org/import/deliciousV2";
     
 	private OAuthConsumer consumer;
 	private OAuthProvider provider;
 	
-	public DeliciousSignPost() {
-		consumer = new DefaultOAuthConsumer(CONSUMERKEY, CONSUMERSECRET);
-		provider = new DefaultOAuthProvider("https://api.login.yahoo.com/oauth/v2/get_request_token",
-		"https://api.login.yahoo.com/oauth/v2/get_token", "https://api.login.yahoo.com/oauth/v2/request_auth");
+	public DeliciousSignPost(
+		String consumerKey,
+		String consumerSecret,
+		String requestTokenEndpointUrl,
+	    	String accessTokenEndpointUrl,
+	    	String authorizationWebsiteUrl) {
+		consumer = new DefaultOAuthConsumer(
+			consumerKey,
+			consumerSecret);
+		provider = new DefaultOAuthProvider(
+			requestTokenEndpointUrl,
+			accessTokenEndpointUrl,
+			authorizationWebsiteUrl);
 	}
 
 	public String getRequestToken(
+			String callbackBaseUrl,
         		String importData,
         		boolean overwrite,
         		String ckey) {
 		String authUrl;
-		String callbackUrl = CALLBACK_URL;
+		String callbackUrl = callbackBaseUrl;
 		callbackUrl += "?" + "ckey=" + ckey;
 		callbackUrl += "&" + "overwrite=" + overwrite;
 		callbackUrl += "&" + "importData=" + importData;
@@ -108,5 +108,4 @@ public class DeliciousSignPost implements Serializable {
 		}
 		return null;
 	}
-
 }
