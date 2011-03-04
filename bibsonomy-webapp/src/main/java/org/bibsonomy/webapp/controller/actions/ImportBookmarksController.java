@@ -20,6 +20,7 @@ import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.importer.bookmark.file.FirefoxImporter;
 import org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory;
 import org.bibsonomy.importer.bookmark.service.DeliciousSignPost;
+import org.bibsonomy.importer.bookmark.service.DeliciousSignPostManager;
 import org.bibsonomy.importer.bookmark.service.DeliciousV2Importer;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
@@ -68,6 +69,8 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	 * the factory used to get an instance of a FileUploadHandler.
 	 */
 	private FileUploadFactory uploadFactory;
+	
+	private DeliciousSignPostManager signPostManager;
 
 	private Errors errors = null;
 
@@ -135,8 +138,8 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 				 */
 				final String importData = command.getImportData();
 				ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-				DeliciousSignPost oAuth = (DeliciousSignPost) attr.getAttribute(DeliciousSignPost.OAUTH_KEY, ServletRequestAttributes.SCOPE_SESSION);
-				attr.removeAttribute(DeliciousSignPost.OAUTH_KEY, ServletRequestAttributes.SCOPE_SESSION);
+				DeliciousSignPost oAuth = (DeliciousSignPost) attr.getAttribute(signPostManager.getoAuthKey(), ServletRequestAttributes.SCOPE_SESSION);
+				attr.removeAttribute(signPostManager.getoAuthKey(), ServletRequestAttributes.SCOPE_SESSION);
 				oAuth.getAccessToken(command.getOauth_verifier());
 				/*
 				 * import posts/bundles from Delicious
@@ -349,6 +352,20 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	 */
 	public void setUploadFactory(final FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
+	}
+
+	/**
+	 * @param signPostManager
+	 */
+	public void setSignPostManager(DeliciousSignPostManager signPostManager) {
+		this.signPostManager = signPostManager;
+	}
+
+	/**
+	 * @return
+	 */
+	public DeliciousSignPostManager getSignPostManager() {
+		return signPostManager;
 	}
 
 }
