@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	>
+
+	<!-- factory beans -->
+	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory" />
+	
+	<bean id="noAuthLogicFactory" class="org.bibsonomy.database.DBLogicNoAuthInterfaceFactory"/>
+
+	<!--+
+		| OpenSocial Data Provider
+		+-->
+	<bean id="personSpi" class="org.bibsonomy.opensocial.spi.BibSonomyPersonSpi" init-method="init">
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+		<property name="dbLogicFactory" ref="noAuthLogicFactory"/>
+	</bean>
+	
+	<bean id="mockupPersonSpi" class="org.bibsonomy.opensocial.spi.MockPersonSpi"/>
+	
+	<bean id="oAuthDataStore" class="org.bibsonomy.opensocial.spi.MockOAuthDataStore"/>
+
+	<!--+
+		| imports
+		+-->
+	<!-- 
+	<import resource="security-context.xml"/>
+	 -->
+</beans>
