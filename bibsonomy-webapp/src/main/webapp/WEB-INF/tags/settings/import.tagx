@@ -110,6 +110,53 @@
 	  			</fieldset>
 	  		</div>
 		</form:form>
+		
+
+		<!-- delicious import for Yahoo! accounts -->
+		
+		
+		<h2><fmt:message key="settings.delicious2.header" /></h2>
+		<form:form id="settingImportForm" action="/import/delicious/v2?ckey=${ckey}" method="post">
+ 
+    		<div id="fsform">
+				<fieldset class="fsInner">
+	  				<div class="fsRow">
+						<fmt:message key="import.delicious.yahoo">
+						</fmt:message>
+					</div>
+		
+	  				<div class="fsRow">
+	   					<label class="fsLabel" for="overwrite"><fmt:message key="settings.overwrite"/></label>
+	    			    <buttons:help message="settings.overwrite.help.delicious"/>
+	    				<input type="checkbox" name="overwrite" value="yes" />
+	    	    	</div>
+	    	    	
+	    	    	<div class="fsRow">
+						<label class="fsLabel" for="importData"><fmt:message key="import.kind"/></label>
+						<buttons:help message="import.kind.help">
+				        	<jsp:attribute name="helpText">
+				        		<ol>
+				        			<li> <fmt:message key="import.kind.help.bookmarks"/></li>
+				        			<li> <fmt:message key="import.kind.help.bundles"/></li>
+				        		</ol>
+			    	    	</jsp:attribute>
+						</buttons:help>
+						<div style="font-size:80%">
+	                        <form:radiobutton path="importData" value="posts"/>
+	                        <fmt:message key="bookmarks"/>
+	  
+	                        <form:radiobutton path="importData" value="bundles"/>
+	                        <fmt:message key="import.bundles"/>
+                        </div>
+	    	    	</div>
+	    	    	
+		  			<div class="fsRow">
+	      				<input type="submit" value="${valueButton}"/>
+	    			 	<input id="importType" name="importType" type="hidden" value="delicious"/>
+	  				</div>
+	  			</fieldset>
+	  		</div>
+		</form:form>
 	  
 
 		<!-- handle layout file -->
