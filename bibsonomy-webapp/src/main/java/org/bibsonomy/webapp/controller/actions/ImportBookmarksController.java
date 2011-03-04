@@ -19,6 +19,8 @@ import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.importer.bookmark.file.FirefoxImporter;
 import org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory;
+import org.bibsonomy.importer.bookmark.service.DeliciousSignPost;
+import org.bibsonomy.importer.bookmark.service.DeliciousV2Importer;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
@@ -41,6 +43,8 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author mwa
@@ -103,7 +107,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 
 		List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
 		List<Tag> relations = new LinkedList<Tag>();
-
+		
 		final String importType = command.getImportType();
 		try {
 			if ("delicious".equals(importType)) {
@@ -125,6 +129,26 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 					relations = relationImporter.getRelations();
 				} 
 
+			} else if("deliciousV2".equals(importType)) {
+				/*
+				 * TODO: we want to have checkboxes, not radio buttons!
+				 */
+				final String importData = command.getImportData();
+				ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+				DeliciousSignPost oAuth = (DeliciousSignPost) attr.getAttribute(DeliciousSignPost.OAUTH_KEY, ServletRequestAttributes.SCOPE_SESSION);
+				attr.removeAttribute(DeliciousSignPost.OAUTH_KEY, ServletRequestAttributes.SCOPE_SESSION);
+				oAuth.getAccessToken(command.getOauth_verifier());
+				/*
+				 * import posts/bundles from Delicious
+				 */
+				if ("posts".equals(importData)) {
+					final RemoteServiceBookmarkImporter importer = new DeliciousV2Importer(oAuth);
+					posts = importer.getPosts();
+				} 
+				if ("bundles".equals(importData)) {
+					final RelationImporter relationImporter = new DeliciousV2Importer(oAuth);
+					relations = relationImporter.getRelations();
+				} 
 			} else if ("firefox".equals(importType)) {
 				/*
 				 * import posts/relations from Firefox
