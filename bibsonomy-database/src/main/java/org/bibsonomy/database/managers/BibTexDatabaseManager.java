@@ -2,7 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -559,9 +559,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		
 		for(ExtendedField ex : list) {
 		    if(resultMap.containsKey(ex.getKey())) {
-			resultMap.get(ex.getKey()).add(ex.getValue());
+				resultMap.get(ex.getKey()).add(ex.getValue());
 		    } else {
-			resultMap.put(ex.getKey(), Arrays.asList(ex.getValue()));
+				ArrayList<String> valueList = new ArrayList<String>();
+				valueList.add(ex.getValue());
+				resultMap.put(ex.getKey(), valueList);
 		    }
 		}
 		
