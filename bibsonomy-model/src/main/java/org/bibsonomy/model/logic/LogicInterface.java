@@ -502,10 +502,34 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 */
 	public String getOpenIDUser(final String openID);
 
+	/**
+	 * Create an extended field for a publication
+	 * 
+	 * @param userName
+	 * @param intraHash
+	 * @param key
+	 * @param value
+	 */
 	public void createExtendedField(String userName, String intraHash, String key,String value);
 
+	/**
+	 * Delete an extended field for a publication
+	 * 
+	 * @param userName
+	 * @param intraHash
+	 * @param key
+	 * @param value
+	 */
 	public void deleteExtendedField(String userName, String intraHash, String key, String value);
 	
+	/**
+	 * Get all or just specific extended fields for a given publication
+	 * 
+	 * @param userName
+	 * @param intraHash
+	 * @param key
+	 * @return Map with the extended fields
+	 */
 	public Map<String, List<String>> getExtendedFields(String userName, String intraHash, String key);
 
 	
