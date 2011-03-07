@@ -2149,7 +2149,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
     	    if(!present(key)) {
     		this.publicationDBManager.deleteAllExtendedFieldsData(userName, intraHash, session);
     	    } else {
-    		this.publicationDBManager.deleteExtendedField(intraHash, userName, key, value, session);
+    		this.publicationDBManager.deleteExtendedField(userName, intraHash, key, value, session);
     	    }
     	    
 	} finally {
@@ -2163,7 +2163,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 	final DBSession session = this.openSession();
 	
     	try {
-    	    return this.publicationDBManager.getExtendedFields(intraHash, userName, key, session);
+    	    return this.publicationDBManager.getExtendedFields(userName, intraHash, key, session);
 	} finally {
 	    session.close();
 	}

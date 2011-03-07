@@ -531,43 +531,43 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		return insert;
 	}
 	
-	    public void createExtendedField(String userName, String intraHash, String key, String value, final DBSession session) {
-		this.extraDb.createExtendedField(intraHash, userName, key, value, session);
+	    public void createExtendedField(final String userName, final String intraHash, final String key, final String value, final DBSession session) {
+			this.extraDb.createExtendedField(userName, intraHash, key, value, session);
 		
 	    }
 	    
-	    public void deleteAllExtendedFieldsData(final String userName,final String hash, final DBSession session) {
+	    public void deleteAllExtendedFieldsData(final String userName, final String hash, final DBSession session) {
 	    	final int contentId = BibTexDatabaseManager.getInstance().getContentIdForPost(hash, userName, session);
-		this.extraDb.deleteAllExtendedFieldsData(contentId, session);
+	    	this.extraDb.deleteAllExtendedFieldsData(contentId, session);
 	    }
 
-	    public void deleteExtendedField(final String userName,final String hash,final String key,final String value, final DBSession session) {
-		this.extraDb.deleteExtendedFieldsData(hash, userName, key, value, session);
+	    public void deleteExtendedField(final String userName,final String hash, final String key, final String value, final DBSession session) {
+			this.extraDb.deleteExtendedFieldsData(userName, hash, key, value, session);
 	    }
 
-	    public Map<String, List<String>> getExtendedFields(String hash, String userName, String key, final DBSession session) {
-		List<ExtendedField> list;
-		
-		if(present(key)) {
-		    list = this.extraDb.getExtendedFieldsByKey(hash, userName, key, session);
-		} else {
-		    list = this.extraDb.getExtendedFields(hash, userName, session);
-		}
-		
-		
-		Map<String , List<String>> resultMap = new HashMap<String, List<String>>();
-		
-		for(ExtendedField ex : list) {
-		    if(resultMap.containsKey(ex.getKey())) {
-				resultMap.get(ex.getKey()).add(ex.getValue());
-		    } else {
-				ArrayList<String> valueList = new ArrayList<String>();
-				valueList.add(ex.getValue());
-				resultMap.put(ex.getKey(), valueList);
-		    }
-		}
-		
-		return resultMap;
+	    public Map<String, List<String>> getExtendedFields(final String userName, final String hash, final String key, final DBSession session) {
+			List<ExtendedField> list;
+			
+			if(present(key)) {
+			    list = this.extraDb.getExtendedFieldsByKey(hash, userName, key, session);
+			} else {
+			    list = this.extraDb.getExtendedFields(userName, hash, session);
+			}
+			
+			
+			Map<String , List<String>> resultMap = new HashMap<String, List<String>>();
+			
+			for(ExtendedField ex : list) {
+			    if(resultMap.containsKey(ex.getKey())) {
+					resultMap.get(ex.getKey()).add(ex.getValue());
+			    } else {
+					ArrayList<String> valueList = new ArrayList<String>();
+					valueList.add(ex.getValue());
+					resultMap.put(ex.getKey(), valueList);
+			    }
+			}
+			
+			return resultMap;
 		
 	    }
 	
