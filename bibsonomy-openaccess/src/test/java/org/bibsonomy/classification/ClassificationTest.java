@@ -36,8 +36,8 @@ public class ClassificationTest {
 	
 		assertEquals("General Economics: General", description);
 		
-		description  = pubClass.getDescription("acmccs98-1.2.3", "A");
+		description  = pubClass.getDescription("acmccs98-1.2.3", "D.2.11");
 		
-		assertEquals("General Literature", description);
+		assertEquals("Software Architectures", description);
 	}
 }

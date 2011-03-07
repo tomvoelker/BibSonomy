@@ -10,7 +10,9 @@ import org.xml.sax.SAXException;
 
 public class ACMClassification extends ClassificationParser {
 
-private static final String NAME = "ACM";
+	private static final String NAME = "ACM";
+
+	private static final String DELIMITER = ".";
 	
 	private StringBuffer buf = new StringBuffer();
 	
@@ -87,8 +89,16 @@ private static final String NAME = "ACM";
 		if(name.isEmpty())
 			return;
 		
-		String actual = name.charAt(0) +"";
-		name = name.substring(1);
+		int delimiter = name.indexOf('.') +1;
+		String actual;
+		
+		if(delimiter != 0) {
+			actual = name.substring(0, delimiter);
+			name = name.substring(delimiter, name.length());
+		} else {
+			actual = name;
+			name = "";
+		}
 	
 		if(object.getChildren().containsKey(actual)) {
 			requClassificate(name, description, object.getChildren().get(actual));
@@ -107,6 +117,7 @@ private static final String NAME = "ACM";
 		}
 	}
 	
+	/*
 	private String removeUnusedChars(String name) {
 		StringBuffer str = new StringBuffer(name);
 		
@@ -121,15 +132,19 @@ private static final String NAME = "ACM";
 		
 		return str.toString();
 	}
+	*/
 	
 	private void classificate(String name, String description) {
-		name = removeUnusedChars(name);
+		int delimiter = name.indexOf('.') +1;
+		String actual;
 		
-		if(name.length() > 4)
-			return;
-		
-		String actual = name.charAt(0) +"";
-		name = name.substring(1);
+		if(delimiter != 0) {
+			actual = name.substring(0, delimiter);
+			name = name.substring(delimiter, name.length());
+		} else {
+			actual = name;
+			name = "";
+		}
 	
 		if(classifications.containsKey(actual)) {
 			requClassificate(name, description, classifications.get(actual));
@@ -143,6 +158,11 @@ private static final String NAME = "ACM";
 	
 	public String getName() {
 		return NAME;
+	}
+
+	@Override
+	public String getDelimiter() {
+		return DELIMITER;
 	}
 
 

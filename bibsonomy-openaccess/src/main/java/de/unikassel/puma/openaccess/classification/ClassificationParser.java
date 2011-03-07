@@ -14,5 +14,7 @@ public abstract class ClassificationParser extends DefaultHandler {
 	
 	public abstract String getName();
 	
+	public abstract String getDelimiter();
+	
 	
 }

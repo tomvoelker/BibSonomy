@@ -107,4 +107,9 @@ public class JELClassification extends ClassificationParser {
 		return NAME;
 	}
 
+	@Override
+	public String getDelimiter() {
+		return null;
+	}
+
 }

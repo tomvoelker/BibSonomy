@@ -51,7 +51,7 @@ public class ClassificationChainElement implements ClassificationSource {
 				}
 			}
 			
-			return new Classification(classificationParser.getName(), classificationParser.getList());
+			return new Classification(classificationParser.getName(), classificationParser.getList(), classificationParser.getDelimiter());
 		} catch (SAXException e) {
 			//unable to parse
 			if(!present(next)) {
