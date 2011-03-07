@@ -3,8 +3,7 @@ package org.bibsonomy.classification;
 import static org.junit.Assert.*;
 
 import java.util.Set;
-
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.unikassel.puma.openaccess.classification.PublicationClassificator;
@@ -12,22 +11,22 @@ import de.unikassel.puma.openaccess.classification.PublicationClassificatorSingl
 
 public class ClassificationTest {
 	
-	private PublicationClassificator pubClass;
+	private static PublicationClassificator pubClass;
 	
-	@Before
-	public void initialise() {
+	@BeforeClass
+	public static void initialise() {
 		PublicationClassificatorSingleton publClassSingle = new PublicationClassificatorSingleton();
 		publClassSingle.setClassificationFilePath("src/test/resources/classifications");
 		
 		pubClass = publClassSingle.getInstance();
 	}
-
+	
 	@Test
 	public void getAvailableClassificationsTest() {
 		Set<String> available  = pubClass.getAvailableClassifications();
 		
 		assertEquals(2, available.size());
-		assertTrue(available.contains("ACM"));
+		assertTrue(available.contains("acmccs98-1.2.3"));
 		assertTrue(available.contains("JEL"));
 	}
 	
@@ -37,7 +36,7 @@ public class ClassificationTest {
 	
 		assertEquals("General Economics: General", description);
 		
-		description  = pubClass.getDescription("ACM", "A");
+		description  = pubClass.getDescription("acmccs98-1.2.3", "A");
 		
 		assertEquals("General Literature", description);
 	}

@@ -2,8 +2,11 @@ package de.unikassel.puma.openaccess.classification;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -11,12 +14,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import de.unikassel.puma.openaccess.classification.chain.ClassificationChainElement;
 import de.unikassel.puma.openaccess.classification.chain.parser.ACMClassification;
 import de.unikassel.puma.openaccess.classification.chain.parser.JELClassification;
 import de.unikassel.puma.openaccess.classification.PublicationClassification;
 
 public class PublicationClassificator {
+	
+	private static final Log log = LogFactory.getLog(PublicationClassificator.class);
 	
 	private final String xmlPath;
 	
@@ -81,17 +89,40 @@ public class PublicationClassificator {
 					}
 					
 					if(!present(c)) {
-						System.out.println("Unable to parse " +f.getName());
+						log.error("Unable to parse " +f.getName());
 						continue;
 					}
 					
-					System.out.println("Found Classification " +c.getClassName());
-					classifications.put(c.getClassName(), c);
+					
+					log.info("Found Classification " +c.getClassName());
+					
+					//try to read values from .properties file
+					try {
+						BufferedReader propertiesReader = new BufferedReader(new FileReader(f.getAbsolutePath().substring(0,f.getAbsolutePath().length()-4) +".properties"));
+						String firstLine = propertiesReader.readLine();
+						
+						String[] name = firstLine.split(" ");
+						
+						if(name.length >= 2) {
+							String n = name[1];
+							for(int i = 2; i < name.length; ++i) {
+								n += " " + name[i];
+							}
+							
+							classifications.put(n, c);
+						}
+						
+					} catch (FileNotFoundException e) {
+						
+						//no .properties file found, use the file name
+						String fileName = f.getName().substring(0,f.getName().length()-4);
+						classifications.put(fileName, c);
+					}
 				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 			}
