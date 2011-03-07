@@ -12,8 +12,8 @@
 <context-param>
 	<param-name>system.properties</param-name>
 	<param-value>
-		shindig.host=localhost
-		shindig.port=8080
+		shindig.host=www.biblicious.org
+		<!-- shindig.port=8080  -->
 
 		aKey=/shindig/gadgets/proxy?container=default&amp;url=
      </param-value>
