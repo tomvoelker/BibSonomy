@@ -77,7 +77,7 @@ public class PublicationClassificator {
 					Classification c = null;
 					
 					for(int i = 0; i < cceList.size() && !present(c); ++i) {
-						c = cceList.get(i).getClassification(f.toURL());
+						c = cceList.get(i).getClassification(f.toURI().toURL());
 					}
 					
 					if(!present(c)) {
