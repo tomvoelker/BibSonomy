@@ -31,6 +31,8 @@ import de.unikassel.puma.webapp.command.PublicationClassificationCommand;
 public class PublicationClassificationController extends AjaxController implements MinimalisticController<PublicationClassificationCommand> {
 	
 	private static final Log log = LogFactory.getLog(PublicationClassificationController.class);
+	
+	
 	private static final String GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";
 	private static final String SAVE_CLASSIFICATION_ITEM = "SAVE_CLASSIFICATION_ITEM";
 	private static final String SAVE_PUBLICATION_METADATA = "SAVE_CLASSIFICATION_ITEMS";
