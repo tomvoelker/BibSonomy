@@ -541,8 +541,12 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	    	this.extraDb.deleteAllExtendedFieldsData(contentId, session);
 	    }
 
-	    public void deleteExtendedField(final String userName,final String hash, final String key, final String value, final DBSession session) {
-			this.extraDb.deleteExtendedFieldsData(userName, hash, key, value, session);
+	    public void deleteExtendedFieldByKeyValue(final String userName,final String hash, final String key, final String value, final DBSession session) {
+		this.extraDb.deleteExtendedFieldByKeyValue(userName, hash, key, value, session);
+	    }
+	    
+	    public void deleteExtendedFieldsByKey(final String userName,final String hash, final String key, final DBSession session) {
+		this.extraDb.deleteExtendedFieldsByKey(userName, hash, key, session);
 	    }
 
 	    public Map<String, List<String>> getExtendedFields(final String userName, final String hash, final String key, final DBSession session) {

@@ -84,7 +84,14 @@
 		UPDATE extended_fields_data SET content_id = #newContentId# WHERE content_id = #requestedContentId#
 	</update>
 	
-	<delete id="deleteExtendedField" parameterClass="bibtexExtendedParam">
+	<delete id="deleteExtendedFieldByKey" parameterClass="bibtexExtendedParam">
+		DELETE extended_fields_data
+		FROM extended_fields_data INNER JOIN bibtex 
+		WHERE bibtex.content_id = extended_fields_data.content_id
+		AND bibtex.user_name = #userName# AND bibtex.simhash$simHash$ = #hash#  AND extended_fields_data.key = #extendedField.key#
+	</delete>
+	
+	<delete id="deleteExtendedFieldByKeyValue" parameterClass="bibtexExtendedParam">
 		DELETE extended_fields_data
 		FROM extended_fields_data INNER JOIN bibtex 
 		WHERE bibtex.content_id = extended_fields_data.content_id

@@ -137,7 +137,7 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		assertEquals(1, extendedFields.size());
 		
 		
-		bibTexExtraDb.deleteExtendedFieldsData("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", "ACM", "TEST", this.dbSession);
+		bibTexExtraDb.deleteExtendedFieldByKeyValue("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", "ACM", "TEST", this.dbSession);
 		extendedFields = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
 		
 		assertEquals(3, extendedFields.size());

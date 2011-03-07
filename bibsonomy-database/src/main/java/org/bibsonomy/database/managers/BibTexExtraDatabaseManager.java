@@ -246,8 +246,20 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	public void deleteAllExtendedFieldsData(final int contentId, final DBSession session) {
 		this.delete("deleteAllExtendedFieldsData", contentId, session);
 	}
+	
+	public void deleteExtendedFieldsByKey(final String userName,final String hash, final String key, final DBSession session) {
+	    BibtexExtendedParam param = buildExtendedParam(userName, hash, key, null);
 
-	public void deleteExtendedFieldsData(final String userName, final String hash, final String key, final String value, final DBSession session) {
+	    this.delete("deleteExtendedFieldByKey", param, session);
+	}
+
+	public void deleteExtendedFieldByKeyValue(final String userName, final String hash, final String key, final String value, final DBSession session) {
+	    BibtexExtendedParam param = buildExtendedParam(userName, hash, key, value);
+	    
+	    this.delete("deleteExtendedFieldByKeyValue", param, session);
+	}
+
+	private BibtexExtendedParam buildExtendedParam(final String userName, final String hash, final String key, final String value) {
 	    BibtexExtendedParam param = new BibtexExtendedParam();
 	    ExtendedField ex = new ExtendedField();
 	    ex.setKey(key);
@@ -259,15 +271,13 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	    param.setSimHash(HashID.INTRA_HASH);
 	    param.setUserName(userName);
 
-	    this.delete("deleteExtendedField", param, session);
-	    
+	    return param;
 	}
-
+	
 	private BibTexExtraParam buildContentIdParam(final int contentId, final int newContentId) {
 		final BibTexExtraParam param = new BibTexExtraParam();
 		param.setNewContentId(newContentId);
 		param.setRequestedContentId(contentId);
 		return param;
 	}
-
 }
