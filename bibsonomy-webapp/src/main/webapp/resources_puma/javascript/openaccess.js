@@ -6,7 +6,16 @@ var SAVE_CLASSIFICATION_ITEM = "SAVE_CLASSIFICATION_ITEM";
 var SAVE_CLASSIFICATION_ITEMS = "SAVE_CLASSIFICATION_ITEMS";
 var REMOVE_CLASSIFICATION_ITEM = "REMOVE_CLASSIFICATION_ITEM";
 var GET_POST_CLASSIFICATION_LIST = "GET_POST_CLASSIFICATION_LIST";
+var GET_POST_ADDITIONAL_METADATA_FIELDS = "GET_POST_ADDITIONAL_METADATA_FIELDS";
 var publication_intrahash = ""; // will be set during initialisation
+
+
+function _generateId(s) {
+	console.log(s);
+	s.replace(/[^azAZ09_]/g, "");
+	console.log(s);
+   return s;
+}
 
 function initialiseOpenAccessClassification(divBaseName, intraHash) {
 	// div-structure for classification:
@@ -295,28 +304,21 @@ function createNewClassField(container) {
 function _addClassificationItemToList(classificationName, ClassificationValue) {
 	var node = document.createElement('div');
 	var saveListItem = document.createElement('div');
-	saveListItem.setAttribute('id', "classificationListItemElement"+classificationName+ClassificationValue);
+	saveListItem.setAttribute('id', "classificationListItemElement"+_generateId(classificationName+ClassificationValue));
 	saveListItem.setAttribute('class', 'classificationListItem');
-	
-	var save = document.createElement('div');
-	save.type = 'text';
-	save.value = classificationName +' ' +ClassificationValue +' ';
-	
-	save.name = 'classification';
-	save.setAttribute('readonly', "readonly");
 	
 	var remove = document.createElement('input');
 	remove.type = 'button';
 	remove.className = 'ajaxButton btnspace';
 	remove.value = getString("post.resource.openaccess.button.removeclassification");
-	remove.id	= "classificationListItemRemove"+classificationName+ClassificationValue;
+	remove.id	= "classificationListItemRemove"+_generateId(classificationName+ClassificationValue);
 
 	node.appendChild(saveListItem);
 	node.appendChild(remove);
 	
 	$('#'+classificationName +'saved').append(node);
 
-	$('#'+"classificationListItemElement"+classificationName+ClassificationValue).text(classificationName +' ' +ClassificationValue +' ');
+	$('#'+"classificationListItemElement"+_generateId(classificationName+ClassificationValue)).text(classificationName +' ' +ClassificationValue +' ');
 	
 	remove.onclick = function() {
 
@@ -329,7 +331,7 @@ function _addClassificationItemToList(classificationName, ClassificationValue) {
 			dataType: 'json',
 			url: removeurl,
 			beforeSend: function(XMLHttpRequest) {
-				$('#classificationListItemRemove'+classificationName+ClassificationValue).parent().append(loadingNode);
+				$('#classificationListItemRemove'+_generateId(classificationName+ClassificationValue)).parent().append(loadingNode);
 				
 			},
 			success: function(data) {
@@ -345,7 +347,7 @@ function _addClassificationItemToList(classificationName, ClassificationValue) {
 		
 		
 		
-	}
+	};
 }
 
 
@@ -355,7 +357,7 @@ function addSaved(container, parentID, description) {
 	 * add only a new item, if it does not exist. 
 	 * $().length / if length is 0, element does not exist 
 	 */
-	if (!$("#classificationListItemElement"+container+parentID).length){
+	if (!$("#classificationListItemElement"+_generateId(container+parentID)).length){
 
 		// send item via ajax to database
 		var saveurl = classificationURL + "?action=" +SAVE_CLASSIFICATION_ITEM+"&hash="+publication_intrahash+"&key="+container+"&value="+parentID;
@@ -546,7 +548,7 @@ function sendAdditionalMetadataFields() {
 			},
 			success: function(data) {
 				$(loadingNode).remove();
-
+				metadataUnChanged();
 
 			
 			},
@@ -557,36 +559,14 @@ function sendAdditionalMetadataFields() {
 		});
 			
 	// change button class (red to green)
-	metadataUnChanged();
+	
 }
 
 
 function loadAdditionalMetadataFields() {
-	
-	
-}
-
-function metadataOnChange() {
-	saveMetadataButtonId = "saveMetadataButton";
-	dataChangedClass = "dataChanged";
-
-	if (!$("#"+saveMetadataButtonId).hasClass(dataChangedClass)) $("#"+saveMetadataButtonId).addClass("dataChanged")
-}
-
-function metadataUnChanged() {
-	saveMetadataButtonId = "saveMetadataButton";
-	dataChangedClass = "dataChanged";
-
-	if ($("#"+saveMetadataButtonId).hasClass(dataChangedClass)) $("#"+saveMetadataButtonId).removeClass("dataChanged")
-}
-
-function loadStoredClassificationItems()
-{
-	// clear list 
-	
 	// get data
 	// example data set: {"ACM":["C21","C22"],"JEL":["F41"]}
-	var url = classificationURL + "?action="+GET_POST_CLASSIFICATION_LIST+"&hash="+publication_intrahash+"&key=ACM";
+	var url = classificationURL + "?action="+GET_POST_ADDITIONAL_METADATA_FIELDS+"&hash="+publication_intrahash;
 	// perform ajax request
 	$.ajax({
 		dataType: 'json',
@@ -599,7 +579,55 @@ function loadStoredClassificationItems()
 					 * add only a new item, if it does not exist. 
 					 * $().length / if length is 0, element does not exist 
 					 */
-					if (!$("#classificationListItemElement"+classification+item).length){
+					if (!$("#classificationListItemElement"+_generateId(classification+item)).length){
+						_addClassificationItemToList(classification, item);
+					}
+				});		
+			});
+			// add item to list
+			// addSaved()
+		},
+		error: function(req, status, e) {
+			alert("There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
+		}
+	});		
+	
+}
+
+function metadataOnChange() {
+	saveMetadataButtonId = "saveMetadataButton";
+	dataChangedClass = "dataChanged";
+
+	if (!$("#"+saveMetadataButtonId).hasClass(dataChangedClass)) $("#"+saveMetadataButtonId).addClass("dataChanged");
+}
+
+function metadataUnChanged() {
+	saveMetadataButtonId = "saveMetadataButton";
+	dataChangedClass = "dataChanged";
+
+	if ($("#"+saveMetadataButtonId).hasClass(dataChangedClass)) $("#"+saveMetadataButtonId).removeClass("dataChanged");
+}
+
+function loadStoredClassificationItems()
+{
+	// clear list 
+	
+	// get data
+	// example data set: {"ACM":["C21","C22"],"JEL":["F41"]}
+	var url = classificationURL + "?action="+GET_POST_CLASSIFICATION_LIST+"&hash="+publication_intrahash;
+	// perform ajax request
+	$.ajax({
+		dataType: 'json',
+		url: url,
+		success: function(data) {
+			// iterate over data
+			$.each(data, function(classification,classificationData){
+				$.each(classificationData, function(j,item){
+					/*
+					 * add only a new item, if it does not exist. 
+					 * $().length / if length is 0, element does not exist 
+					 */
+					if (!$("#classificationListItemElement"+_generateId(classification+item)).length){
 						_addClassificationItemToList(classification, item);
 					}
 				});		
@@ -613,3 +641,5 @@ function loadStoredClassificationItems()
 	});	
 	
 }
+
+
