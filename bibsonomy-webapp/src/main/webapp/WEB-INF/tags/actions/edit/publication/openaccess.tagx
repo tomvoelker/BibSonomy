@@ -69,7 +69,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.referee2" id="post.resource.openaccess.additionalfields.phdreferee2"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 
@@ -119,7 +119,6 @@
 			
 					<div id="openAccessClassificationContainer">
 						<h4><fmt:message key="post.resource.openaccess.headline.classification"/></h4>
-						<a href="javascript:loadStoredClassificationItems()" >load list</a>
 						<div id="openAccessClassificationList"><!-- openAccessClassificationListContainer --></div>
 						<div id="openAccessClassificationSelect"><!-- openAccessClassificationSelectContainer --></div>
 					</div>
@@ -128,6 +127,8 @@
 						$(document).ready(function() {
 							initialiseOpenAccessClassification("openAccessClassification", &quot;${bibtex.intraHash}&quot;);
 							initialiseOpenAccessSendToRepository("oaSubmitContainer", &quot;${bibtex.intraHash}&quot;);
+							loadStoredClassificationItems();
+							loadAdditionalMetadataFields();
 							setTimeout("checkOpenAccess()", 1);
 					    });
 					</script>

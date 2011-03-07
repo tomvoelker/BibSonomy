@@ -35,7 +35,8 @@ public class PublicationClassificationController extends AjaxController implemen
 	
 	private static final String GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";
 	private static final String SAVE_CLASSIFICATION_ITEM = "SAVE_CLASSIFICATION_ITEM";
-	private static final String SAVE_PUBLICATION_METADATA = "SAVE_CLASSIFICATION_ITEMS";
+	private static final String GET_ADDITIONAL_METADATA = "GET_ADDITIONAL_METADATA";
+	private static final String SAVE_ADDITIONAL_METADATA = "SAVE_ADDITIONAL_METADATA";
 	private static final String REMOVE_CLASSIFICATION_ITEM = "REMOVE_CLASSIFICATION_ITEM";
 	private static final String GET_POST_CLASSIFICATION_LIST = "GET_POST_CLASSIFICATION_LIST"; 
 	
@@ -80,7 +81,7 @@ public class PublicationClassificationController extends AjaxController implemen
 			
 			return Views.AJAX_JSON;
 			
-		} else if(present(command.getAction()) && command.getAction().equals(SAVE_PUBLICATION_METADATA)) {
+		} else if(present(command.getAction()) && command.getAction().equals(SAVE_ADDITIONAL_METADATA)) {
 
 			
 			ArrayList<String> dataFields = new ArrayList<String>();
@@ -104,6 +105,23 @@ public class PublicationClassificationController extends AjaxController implemen
 			// generate json return value
 			final JSONObject json = new JSONObject();
 			json.put("saveTEST", "Hello World"+command.getHash()+" / "+command.getKey()+" = "+command.getValue());
+			command.setResponseString(json.toString());
+			
+			return Views.AJAX_JSON;
+			
+		} else if(present(command.getAction()) && command.getAction().equals(GET_ADDITIONAL_METADATA)) {
+
+			// get extended fields
+			Map<String, List<String>> classificationMap = logic.getExtendedFields(command.getContext().getLoginUser().getName(), command.getHash(), null);
+			
+			// build json output  
+			final JSONObject json = new JSONObject();
+			Set<String> availableClassifications = classificator.getInstance().getAvailableClassifications();
+			for (Entry<String, List<String>> entry : classificationMap.entrySet()) {
+				if ( !availableClassifications.contains(entry.getKey())) {
+					json.put(entry.getKey(), entry.getValue());
+				}
+			}
 			command.setResponseString(json.toString());
 			
 			return Views.AJAX_JSON;

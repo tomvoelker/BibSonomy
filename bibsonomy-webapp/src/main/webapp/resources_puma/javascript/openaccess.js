@@ -3,17 +3,15 @@ var classificationURL = "/ajax/classificatePublication";
 var swordURL = "/ajax/swordService";
 var GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";
 var SAVE_CLASSIFICATION_ITEM = "SAVE_CLASSIFICATION_ITEM";
-var SAVE_CLASSIFICATION_ITEMS = "SAVE_CLASSIFICATION_ITEMS";
+var SAVE_ADDITIONAL_METADATA = "SAVE_ADDITIONAL_METADATA";
+var GET_ADDITIONAL_METADATA = "GET_ADDITIONAL_METADATA";
 var REMOVE_CLASSIFICATION_ITEM = "REMOVE_CLASSIFICATION_ITEM";
 var GET_POST_CLASSIFICATION_LIST = "GET_POST_CLASSIFICATION_LIST";
-var GET_POST_ADDITIONAL_METADATA_FIELDS = "GET_POST_ADDITIONAL_METADATA_FIELDS";
 var publication_intrahash = ""; // will be set during initialisation
 
 
 function _generateId(s) {
-	console.log(s);
 	s.replace(/[^azAZ09_]/g, "");
-	console.log(s);
    return s;
 }
 
@@ -526,12 +524,9 @@ function sendAdditionalMetadataFields() {
 		collectedMetadataJSONText += '"' + metadatafields[i] + '":"' + $("#"+(metadatafields[i].replace(/\./g,'\\.'))).val() +'", '; 
 	}
 	collectedMetadataJSONText += " } ";
-
-	console.log(collectedMetadataJSONText);
-	//collectedMetadataJSON = eval('(' + collectedMetadataJSONText + ')');
 	
 	// send item via ajax to database
-	var saveurl = classificationURL + "?action=" +SAVE_CLASSIFICATION_ITEMS+"&hash="+publication_intrahash;
+	var saveurl = classificationURL + "?action=" +SAVE_ADDITIONAL_METADATA+"&hash="+publication_intrahash;
 	var loadingNode = document.createElement('img');
 	loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
 	
@@ -557,16 +552,14 @@ function sendAdditionalMetadataFields() {
 				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
 			}
 		});
-			
-	// change button class (red to green)
-	
+
 }
 
 
 function loadAdditionalMetadataFields() {
 	// get data
 	// example data set: {"ACM":["C21","C22"],"JEL":["F41"]}
-	var url = classificationURL + "?action="+GET_POST_ADDITIONAL_METADATA_FIELDS+"&hash="+publication_intrahash;
+	var url = classificationURL + "?action="+GET_ADDITIONAL_METADATA+"&hash="+publication_intrahash;
 	// perform ajax request
 	$.ajax({
 		dataType: 'json',
@@ -575,17 +568,9 @@ function loadAdditionalMetadataFields() {
 			// iterate over data
 			$.each(data, function(classification,classificationData){
 				$.each(classificationData, function(j,item){
-					/*
-					 * add only a new item, if it does not exist. 
-					 * $().length / if length is 0, element does not exist 
-					 */
-					if (!$("#classificationListItemElement"+_generateId(classification+item)).length){
-						_addClassificationItemToList(classification, item);
-					}
+					$("#"+(classification.replace(/\./g,'\\.'))).val(item);
 				});		
 			});
-			// add item to list
-			// addSaved()
 		},
 		error: function(req, status, e) {
 			alert("There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
