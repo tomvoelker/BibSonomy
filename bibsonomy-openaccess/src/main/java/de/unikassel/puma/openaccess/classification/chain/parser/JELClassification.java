@@ -77,20 +77,19 @@ public class JELClassification extends ClassificationParser {
 			requClassificate(name, description, object.getChildren().get(actual));
 		
 		} else {
-			//TODO might be cool for fatherdescriptions
 			if(name.isEmpty()) {
 				ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
 				
 			} else {
-				ClassificationObject co = new ClassificationObject(actual, "FatherNode");
+				ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
 				requClassificate(name, description, co);
 			}
 		}
 	}
 	
-	//TODO what if only 1 char in name?
+
 	private void classificate(String name, String description) {
 		String actual = name.charAt(0) +"";
 		name = name.substring(1);
@@ -98,8 +97,7 @@ public class JELClassification extends ClassificationParser {
 		if(classifications.containsKey(actual)) {
 			requClassificate(name, description, classifications.get(actual));
 		} else {
-			//TODO might be cool for fatherdescriptions
-			ClassificationObject co = new ClassificationObject(actual, "FatherNode");
+			ClassificationObject co = new ClassificationObject(actual, description);
 			classifications.put(actual, co);
 			requClassificate(name, description, co);
 		}

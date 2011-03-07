@@ -36,7 +36,7 @@ public class Classification {
 			children = actualObject.getChildren();
 
 		}
-		//TODO sort
+
 		Set<String> keys = children.keySet();
 		for(String s : keys) {
 			PublicationClassification co = new PublicationClassification(s, getDescription(name +s));
@@ -56,7 +56,7 @@ public class Classification {
 			if(!actual.isEmpty()) {
 				actualObject = children.get(actual);
 			} else {
-				actualObject = children.values().iterator().next();
+				return actualObject.getDescription();
 			}
 			
 			if(!name.isEmpty()) {
@@ -67,8 +67,7 @@ public class Classification {
 			}
 			children = actualObject.getChildren();
 		}
-		
-		//TODO if present ? 
+
 		return actualObject.getDescription();
 	}
 

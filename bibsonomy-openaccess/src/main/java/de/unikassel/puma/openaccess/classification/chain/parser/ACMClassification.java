@@ -14,9 +14,6 @@ private static final String NAME = "ACM";
 	
 	private StringBuffer buf = new StringBuffer();
 	
-	private String code;
-	private String description;
-	
 	private boolean skip = false;
 	private String skipElement = "";
 	
@@ -25,8 +22,6 @@ private static final String NAME = "ACM";
 	public void startDocument() {
 		classifications = new LinkedHashMap<String, ClassificationObject>();
 		buf = new StringBuffer();
-		code = "";
-		description = "";
 	}
 
 	@Override
@@ -38,15 +33,7 @@ private static final String NAME = "ACM";
 		
 		if(skip)
 			return;
-//		
-//		System.out.println("Start NAME: " +name +" QName: " +qName);
-//		atts.ge
-//		
-//		for(int i = 0; i< atts.getLength(); ++i) {
-//			System.out.print( +" " +atts.getValue(i) +" ");
-//		}
-//		System.out.println();
-//		
+
 		if ("node".equals(qName)) {
 
 			if(atts.getLength() == 2) {
@@ -107,13 +94,13 @@ private static final String NAME = "ACM";
 			requClassificate(name, description, object.getChildren().get(actual));
 		
 		} else {
-			//TODO might be cool for fatherdescriptions
+
 			if(name.isEmpty()) {
 				ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
 				
 			} else {
-				ClassificationObject co = new ClassificationObject(actual, "FatherNode");
+				ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
 				requClassificate(name, description, co);
 			}
@@ -135,7 +122,6 @@ private static final String NAME = "ACM";
 		return str.toString();
 	}
 	
-	//TODO what if only 1 char in name?
 	private void classificate(String name, String description) {
 		name = removeUnusedChars(name);
 		
@@ -148,8 +134,8 @@ private static final String NAME = "ACM";
 		if(classifications.containsKey(actual)) {
 			requClassificate(name, description, classifications.get(actual));
 		} else {
-			//TODO might be cool for fatherdescriptions
-			ClassificationObject co = new ClassificationObject(actual, "FatherNode");
+			
+			ClassificationObject co = new ClassificationObject(actual, description);
 			classifications.put(actual, co);
 			requClassificate(name, description, co);
 		}
