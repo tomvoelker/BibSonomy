@@ -540,3 +540,7 @@ input#authorcontractconfirm {
 	background-color: red;
 	padding: 3px;
 }
+
+#openAccessMetaDataContainer .fsInput {
+	width: 60%;
+}
