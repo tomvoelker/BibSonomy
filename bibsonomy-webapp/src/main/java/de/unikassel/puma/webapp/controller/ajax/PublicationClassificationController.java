@@ -14,6 +14,7 @@ import net.sf.json.JSONSerializer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -21,7 +22,6 @@ import org.bibsonomy.webapp.view.Views;
 
 import de.unikassel.puma.openaccess.classification.PublicationClassification;
 import de.unikassel.puma.openaccess.classification.PublicationClassificatorSingleton;
-import de.unikassel.puma.openaccess.sword.SwordService;
 import de.unikassel.puma.webapp.command.PublicationClassificationCommand;
 
 /**
@@ -30,10 +30,10 @@ import de.unikassel.puma.webapp.command.PublicationClassificationCommand;
  */
 public class PublicationClassificationController extends AjaxController implements MinimalisticController<PublicationClassificationCommand> {
 	
-	private static final Log log = LogFactory.getLog(SwordService.class);
+	private static final Log log = LogFactory.getLog(PublicationClassificationController.class);
 	private static final String GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";
 	private static final String SAVE_CLASSIFICATION_ITEM = "SAVE_CLASSIFICATION_ITEM";
-	private static final String SAVE_CLASSIFICATION_ITEMS = "SAVE_CLASSIFICATION_ITEMS";
+	private static final String SAVE_PUBLICATION_METADATA = "SAVE_CLASSIFICATION_ITEMS";
 	private static final String REMOVE_CLASSIFICATION_ITEM = "REMOVE_CLASSIFICATION_ITEM";
 	private static final String GET_POST_CLASSIFICATION_LIST = "GET_POST_CLASSIFICATION_LIST"; 
 	
@@ -49,8 +49,7 @@ public class PublicationClassificationController extends AjaxController implemen
 		
 		// check if user is logged in
 		if(!command.getContext().isUserLoggedIn()) {
-			//TODO access denied ex ?
-			return Views.AJAX_TEXT;
+			throw new AccessDeniedException("error.method_not_allowed");
 		}
 		
 		if(present(command.getAction()) && command.getAction().equals(GET_AVAILABLE_CLASSIFICATIONS)) {
@@ -69,7 +68,7 @@ public class PublicationClassificationController extends AjaxController implemen
 
 			// save classification data to database
 			// implement return value to verify storing of classification 
-			logic.deleteExtendedField(command.getContext().getLoginUser().getName(), command.getHash(), command.getKey(), null);				
+			logic.deleteExtendedField(command.getContext().getLoginUser().getName(), command.getHash(), command.getKey(), command.getValue());				
 			logic.createExtendedField(command.getContext().getLoginUser().getName(), command.getHash(), command.getKey(), command.getValue());
 
 			// generate json return value
@@ -79,7 +78,7 @@ public class PublicationClassificationController extends AjaxController implemen
 			
 			return Views.AJAX_JSON;
 			
-		} else if(present(command.getAction()) && command.getAction().equals(SAVE_CLASSIFICATION_ITEMS)) {
+		} else if(present(command.getAction()) && command.getAction().equals(SAVE_PUBLICATION_METADATA)) {
 
 			
 			ArrayList<String> dataFields = new ArrayList<String>();
