@@ -96,7 +96,7 @@ public class PublicationClassificationController extends AjaxController implemen
 			// save classification data to database
 			for ( String key : dataFields ) {
 				// implement return value to verify storing of classification 
-				logic.deleteExtendedField(command.getContext().getLoginUser().getName(), command.getHash(), command.getKey(), null);				
+				logic.deleteExtendedField(command.getContext().getLoginUser().getName(), command.getHash(), key, null);				
 				logic.createExtendedField(command.getContext().getLoginUser().getName(), command.getHash(), key, jsonData.getString(key));
 			}
 			
