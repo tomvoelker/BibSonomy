@@ -198,6 +198,7 @@
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-common</module>
 		<module>bibsonomy-web-common</module>
+		<module>bibsonomy-opensocial</module>
 		<module>bibsonomy-rest-server</module>
 		<module>bibsonomy-webapp</module>
     	<module>bibsonomy-wiki</module>
