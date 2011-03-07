@@ -3,10 +3,10 @@ package de.unikassel.puma.webapp.controller.ajax;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -69,6 +69,7 @@ public class PublicationClassificationController extends AjaxController implemen
 
 			// save classification data to database
 			// implement return value to verify storing of classification 
+			logic.deleteExtendedField(command.getContext().getLoginUser().getName(), command.getHash(), command.getKey(), null);				
 			logic.createExtendedField(command.getContext().getLoginUser().getName(), command.getHash(), command.getKey(), command.getValue());
 
 			// generate json return value
@@ -91,12 +92,11 @@ public class PublicationClassificationController extends AjaxController implemen
 			
 			JSONObject jsonData = null;
 			jsonData = (JSONObject) JSONSerializer.toJSON(command.getValue());
-
+			
 			// save classification data to database
-			Iterator<?> i = dataFields.iterator();
-			while (i.hasNext()) {
-				String key = (String)i.next();
+			for ( String key : dataFields ) {
 				// implement return value to verify storing of classification 
+				logic.deleteExtendedField(command.getContext().getLoginUser().getName(), command.getHash(), command.getKey(), null);				
 				logic.createExtendedField(command.getContext().getLoginUser().getName(), command.getHash(), key, jsonData.getString(key));
 			}
 			
@@ -123,14 +123,15 @@ public class PublicationClassificationController extends AjaxController implemen
 			// get extended fields
 			Map<String, List<String>> classificationMap = logic.getExtendedFields(command.getContext().getLoginUser().getName(), command.getHash(), null);
 			
-			Iterator<?> i = classificationMap.entrySet().iterator();
-			while (i.hasNext()) {
-				Map.Entry<String, List<String>> pairs = (Map.Entry<String, List<String>>)i.next();
-			    log.info(pairs.getKey()+": "+pairs.getValue());
-			}
 			
+			// build json output  
 			final JSONObject json = new JSONObject();
-			json.put("getListTEST", "Hallo Welt");
+			Set<String> availableClassifications = classificator.getInstance().getAvailableClassifications();
+			for (Entry<String, List<String>> entry : classificationMap.entrySet()) {
+				if ( availableClassifications.contains(entry.getKey())) {
+					json.put(entry.getKey(), entry.getValue());
+				}
+			}
 			command.setResponseString(json.toString());
 			
 			return Views.AJAX_JSON;

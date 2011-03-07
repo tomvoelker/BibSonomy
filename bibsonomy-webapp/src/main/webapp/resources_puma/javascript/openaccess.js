@@ -292,6 +292,63 @@ function createNewClassField(container) {
 	
 }
 
+function _addClassificationItemToList(classificationName, ClassificationValue) {
+	var node = document.createElement('div');
+	var saveListItem = document.createElement('div');
+	saveListItem.setAttribute('id', "classificationListItemElement"+classificationName+ClassificationValue);
+	saveListItem.setAttribute('class', 'classificationListItem');
+	
+	var save = document.createElement('div');
+	save.type = 'text';
+	save.value = classificationName +' ' +ClassificationValue +' ';
+	
+	save.name = 'classification';
+	save.setAttribute('readonly', "readonly");
+	
+	var remove = document.createElement('input');
+	remove.type = 'button';
+	remove.className = 'ajaxButton btnspace';
+	remove.value = getString("post.resource.openaccess.button.removeclassification");
+	remove.id	= "classificationListItemRemove"+classificationName+ClassificationValue;
+
+	node.appendChild(saveListItem);
+	node.appendChild(remove);
+	
+	$('#'+classificationName +'saved').append(node);
+
+	$('#'+"classificationListItemElement"+classificationName+ClassificationValue).text(classificationName +' ' +ClassificationValue +' ');
+	
+	remove.onclick = function() {
+
+		var removeurl = classificationURL + "?action=" +REMOVE_CLASSIFICATION_ITEM+"&hash="+publication_intrahash+"&key="+classificationName+"&value="+ClassificationValue;
+		
+		var loadingNode = document.createElement('img');
+		loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
+		
+		$.ajax({
+			dataType: 'json',
+			url: removeurl,
+			beforeSend: function(XMLHttpRequest) {
+				$('#classificationListItemRemove'+classificationName+ClassificationValue).parent().append(loadingNode);
+				
+			},
+			success: function(data) {
+				$(node).remove();
+				$(loadingNode).remove();
+			
+			},
+			error: function(req, status, e) {
+				$(loadingNode).remove();
+				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+			}
+		});					
+		
+		
+		
+	}
+}
+
+
 function addSaved(container, parentID, description) {
 
 	/*
@@ -317,59 +374,7 @@ function addSaved(container, parentID, description) {
 
 				$(loadingNode).remove();
 
-				var node = document.createElement('div');
-				var saveListItem = document.createElement('div');
-				saveListItem.setAttribute('id', "classificationListItemElement"+container+parentID);
-				saveListItem.setAttribute('class', 'classificationListItem');
-				
-				var save = document.createElement('div');
-				save.type = 'text';
-				save.value = container +' ' +parentID +' ';
-				
-				save.name = 'classification';
-				save.setAttribute('readonly', "readonly");
-				
-				var remove = document.createElement('input');
-				remove.type = 'button';
-				remove.className = 'ajaxButton btnspace';
-				remove.value = getString("post.resource.openaccess.button.removeclassification");
-				remove.id	= "classificationListItemRemove"+container+parentID;
-			
-				node.appendChild(saveListItem);
-				node.appendChild(remove);
-				
-				$('#'+container +'saved').append(node);
-			
-				$('#'+"classificationListItemElement"+container+parentID).text(container +' ' +parentID +' ');
-				
-				remove.onclick = function() {
-
-					var removeurl = classificationURL + "?action=" +REMOVE_CLASSIFICATION_ITEM+"&hash="+publication_intrahash+"&key="+container+"&value="+parentID;
-					
-					var loadingNode = document.createElement('img');
-					loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
-					
-					$.ajax({
-						dataType: 'json',
-						url: removeurl,
-						beforeSend: function(XMLHttpRequest) {
-							$('#classificationListItemRemove'+container+parentID).parent().append(loadingNode);
-							
-						},
-						success: function(data) {
-							$(node).remove();
-							$(loadingNode).remove();
-						
-						},
-						error: function(req, status, e) {
-							$(loadingNode).remove();
-							alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
-						}
-					});					
-					
-					
-					
-				}
+				_addClassificationItemToList(container, parentID);
 			
 			},
 			error: function(req, status, e) {
@@ -503,7 +508,6 @@ function createSubSelect(parent, data, classification, parentID, container){
 
 
 function sendAdditionalMetadataFields() {
-	// collect metadata
 	var saveMetadataButtonId = "saveMetadataButton";
 	var metadatafields = Array();
 	var i=0;
@@ -581,7 +585,7 @@ function loadStoredClassificationItems()
 	// clear list 
 	
 	// get data
-
+	// example data set: {"ACM":["C21","C22"],"JEL":["F41"]}
 	var url = classificationURL + "?action="+GET_POST_CLASSIFICATION_LIST+"&hash="+publication_intrahash+"&key=ACM";
 	// perform ajax request
 	$.ajax({
@@ -589,6 +593,17 @@ function loadStoredClassificationItems()
 		url: url,
 		success: function(data) {
 			// iterate over data
+			$.each(data, function(classification,classificationData){
+				$.each(classificationData, function(j,item){
+					/*
+					 * add only a new item, if it does not exist. 
+					 * $().length / if length is 0, element does not exist 
+					 */
+					if (!$("#classificationListItemElement"+classification+item).length){
+						_addClassificationItemToList(classification, item);
+					}
+				});		
+			});
 			// add item to list
 			// addSaved()
 		},
