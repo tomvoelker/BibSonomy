@@ -2035,28 +2035,40 @@ function switchLogin() {
 }
 
 function prepareErrorBoxes(className) {
-	  var el_name = "."+className;
-	  $(el_name).each(
+	var el_name = "."+className;
+	$(el_name).each(
 	          function (){
-	        	  if(parseInt($(this).html().length) == 0) {
-	        		  return true;
-	        	  }
-	        	  
-	        	  $(this).mouseover(function() {
-	        		    $(this).fadeOut('slow');
-	        	  });
-
-	              if(typeof $(this).children(':first') != undefined &&
-	              	$(this).children(':first').attr('id') != undefined) {
-	                  var id = ("#"+($(this).children(':first').attr('id')).substr(0, ($(this).children(':first').attr('id')).length-".errors".length)).replace(/\./g, "\\.");
-		              var copy = $(this);
-		              var callback = function () {copy.fadeOut('slow');};
-		              $(id).keyup(callback).change(callback);
-	                }
-		  		 $(this).fadeIn("slow");    
-	});
+					if(parseInt($(this).html().length) == 0) {
+						  return true;
+					  }
+					  
+					  $(this).mouseover(function() {
+						    $(this).fadeOut('slow');
+					  });
+				
+				    if(typeof $(this).children(':first') != undefined 
+				    	&& $(this).children(':first').attr('id') != undefined
+				    		&& $(this).children(':first').attr('id').length > 0) {
+				        var id = ("#"+($(this).children(':first').attr('id')).substr(0, ($(this).children(':first').attr('id')).length-".errors".length)).replace(/\./g, "\\.");
+				        var copy = $(this);
+				        var callback = function () {copy.fadeOut('slow');};
+				        $(id).keyup(callback).change(callback);
+				      }
+				     if(!$(this).hasClass('initiallyHidden'))
+				    	 $(this).fadeIn("slow");    
+	       	  }
+	);
 	// this is a workaround because the tags input element's id is not 'tags' but 'inpf'
 	$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});  
+}
+
+function errorBoxData(parentId) {
+	this.msg = null;
+	this.parentId = parentId;
+}
+
+function displayFileErrorBox(data) {
+	$(data.parentId).children('div:first').fadeOut('slow', function() {$(this).fadeIn('slow').children(':first').html(data.msg);});
 }
 
 /**

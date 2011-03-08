@@ -1,5 +1,5 @@
 (function($) {
-	
+	var errorData = new errorBoxData("#upload");
 	$.fn.documentUploader = function () {
 		
 		$(this).change(function(e){
@@ -28,20 +28,23 @@
 				duplicate=true;
 			}
 		});
+		
 		var input="<input class='fu' type='file' name='file'/>;";
 		if (duplicate) {
-			alert(LocalizedStrings["post.bibtex.fileExists"]);
+			errorData.msg = LocalizedStrings["post.bibtex.fileExists"];
+			displayFileErrorBox(errorData);
 			$(".fu").remove();
 			var input="<input class='fu' type='file' name='file'/>;";
 			$("#inputDiv").append($(input));
 			$(".fu").documentUploader();
 			return;
 		}
-		
+				
 		// create row with the added file
-		var fileDiv = "<div class='fsRow' id='file_"+counter+"'>\n\t<span class='documentFileName'>"+fileName+"</span>\n"+
-			"<span id='gif_"+counter+"'>\n\t<img alt='uploading...' src='"+resdir.val()+"/image/ajax_loader.gif' />\n</span>\n</div>";
-		$("#upload").append(fileDiv);
+		var fileDiv = $("<li id='file_"+counter+"'>\n\t<span class='documentFileName'>"+fileName+"</span>\n"+
+			"\n\t<img id='gif_"+counter+"' alt='uploading...' src='"+resdir.val()+"/image/ajax_loader.gif' />\n</li>");
+		$("#upload").children('ul').append(fileDiv);
+		
 		
 		// create new form to upload added file
 		form = ("<form class='upform' id='uploadForm_"+counter+"' action='/ajax/documents?ckey="+ckey.val()+"&amp;temp=true' method='POST' enctype='multipart/form-data'></form>");
@@ -53,7 +56,7 @@
 		$(".counter").val(counter);
 		var options = {
 				dataType: "xml",
-				success: uploadRequestSuccessful		
+				success: onRequestComplete		
 		}
 		$("#"+form).ajaxSubmit(options);
 		
@@ -66,28 +69,27 @@
 		
 	};
 	
-	function uploadRequestSuccessful(data) {
-		var status=$("status", data).text();
-		switch (status) {
-			case "error":
-				fileUploadError(data);
-				break;
-			case "ok":
-				fileUploaded(data);
-				break;
-			default:
-				alert("Unknown error!");
-			break;
+	function onRequestComplete(data) {
+		if($("status", data).text() == "ok")
+			return fileUploaded(data);
+		// an error occured, 
+		// display it to the user and hide the animation
+		$("#gif_"+prepareFileErrorBox(data)).hide();
+	}
+
+	function prepareFileErrorBox(data) {
+		var fileID = "NaN";
+		var reason = "Unknown Error!";
+		if($("status", data).text() == "error") {
+			fileID = $("fileid", data).text();
+			reason = $("reason", data).text();
 		}
+
+		errorData.msg = reason;
+		displayFileErrorBox(errorData);
+		return fileID;
 	}
-	
-	function fileUploadError(data) {
-		var fileID=$("fileid", data).text();
-		var reason=$("reason", data).text();
-		$("#gif_"+fileID).hide();
-		$("#file_"+fileID).append(reason);
-	}
-	
+		
 	function fileUploaded(data) {
 		var fileID=$("fileid", data).text();
 		var fileHash=$("filehash", data).text();
@@ -109,15 +111,14 @@
 	function deleteFunction(){
 		var button = $(this);
 		$.get($(button).attr("href"), {}, function(data) {
-			var status=$("status", data).text();
+			if("ok"!=$("status", data).text())
+				return prepareFileErrorBox(data);
+				
 			var fileID=$("fileid", data).text();
-			if(status=="error"){
-				alert(("reason", data).text);
-			} else {
-				button.parent("div").remove();
-				$("#file_"+fileID).remove();
-				$("#uploadForm_"+fileID).remove();
-			}
+			button.parent("div").remove();
+			$("#file_"+fileID).remove();
+			$("#uploadForm_"+fileID).remove();
+			
 		}, "xml");
 		return false;
 	}
