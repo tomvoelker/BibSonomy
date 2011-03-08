@@ -26,10 +26,14 @@
 				
 			<link rel="stylesheet" type="text/css"
 				href="${resdir}/css/spammer.css" />
+			<link rel="stylesheet" href="${resdir}/css/jquery_ui/jquery-ui.css" type="text/css" media="all" />
+			<link rel="stylesheet" href="${resdir}/css/jquery_ui/ui.theme.css" type="text/css" media="all" />
 			
-			<!--  scripts for ajax autocompletion -->
-			<script type="text/javascript" src="${resdir}/javascript/jquery_autocomplete.js">&amp;nbsp;</script>
 	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script> 
+			<!--  scripts for ajax autocompletion -->
+			<script src="${resdir}/javascript/jquery_ui/jquery-ui.min.js" type="text/javascript"><!--  --></script>
+		  	<script src="${resdir}/javascript/jquery_ui/jquery.bgiframe-2.1.2.js" type="text/javascript"><!--  --></script>
+		  	<script src="${resdir}/javascript/jquery_ui/jquery-ui-i18n.min.js" type="text/javascript"><!--  --></script>
 			
 			<!--  scripts for ajax requests -->
 			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
@@ -79,11 +83,35 @@
 			<script type="text/javascript">
 			<![CDATA[
   				$(document).ready(function(){
-				$("#aclUserInfo").autocomplete("admin_suggest.jsp?type=2", {
-					width: 260,
-					selectFirst: true
-				});
+					addAutocomplete("#aclUserInfo", '2');
+					addAutocomplete("#requestedGroupName", '2');
   			});
+  				function addAutocomplete(id, type) {
+  					$(id).autocomplete({
+  						source: function ( request, response ) {
+  							
+  							return $.ajax({
+  								url: "admin_suggest.jsp",
+  								data: {q:request.term, type:type, limit:10},
+  								async: false,
+  								success: function (data) {
+									//remove unneeded leading and trailing new lines
+									// and split relevant data up
+									//alert(data.match(/[\r]/g));
+  									data = (data.replace(/((\r\n){3,}[^a-zA-z0-9]|(\r\n){1,}$)/g, '')).split('\r\n\r\n');
+  									response( $.map( data, function( item ) {
+  										return {
+  											label: item,
+  											value: item
+  										}
+  									}));
+  								}
+  								
+  							});
+  							
+  					}
+  					});  					
+  				}			
   			]]>
 			</script>
 		
@@ -126,19 +154,6 @@
 			</table>
 		</div>
 		<hr/>
-		
-		<!--  autocomplete group box -->
-		<script type="text/javascript">
-		<![CDATA[
-  			$(document).ready(function(){
-			$("#requestedGroupName").autocomplete("admin_suggest.jsp?type=2", {
-				width: 260,
-				selectFirst: true
-			});
-  		});
-  		]]>
-		</script>
-		
 
 		 <!-- add a group to the system-->
 		<div>
