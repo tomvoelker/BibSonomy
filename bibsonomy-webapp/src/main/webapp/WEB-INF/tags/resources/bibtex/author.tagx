@@ -24,7 +24,7 @@
 		
 			${mtl:cleanBibtex(person.firstName)}
 			<c:out value=" "/>
-			<c:url var="personUrl" value="${projectHome}author/${fn:escapeXml(person.lastName)}"/>
+			<c:url var="personUrl" value="${projectHome}author/${mtl:cleanBibtex(person.lastName)}"/>
 			<a href="${personUrl}">${mtl:cleanBibtex(person.lastName)}</a>
 			<!-- append separator "," -->
 			<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
