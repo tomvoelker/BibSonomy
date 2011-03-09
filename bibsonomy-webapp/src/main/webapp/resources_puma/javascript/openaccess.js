@@ -11,7 +11,7 @@ var publication_intrahash = ""; // will be set during initialisation
 
 
 function _generateId(s) {
-	s.replace(/[^azAZ09_]/g, "");
+	s.replace(/[^a-zA-Z0-9]/g, "");
    return s;
 }
 
