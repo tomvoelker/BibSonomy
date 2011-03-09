@@ -43,7 +43,7 @@
 		<jsp:body>
 			<head>
 				<!-- <c:set var="resdir" value="${pageContext.request.contextPath}/resources" /> TODO: if sessionid is appended this leads to problems -->
-				<c:set var="locale">
+				<c:set var="locale" scope="request"><!-- to have it on all pages we set the scope to "request" -->
 					<fmt:message key="meta.lang"/>
 				</c:set>
 				
