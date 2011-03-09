@@ -12,8 +12,8 @@
 <context-param>
 	<param-name>system.properties</param-name>
 	<param-value>
-		shindig.host=www.biblicious.org
-		<!-- shindig.port=8080  -->
+		shindig.host=localhost
+		shindig.port=8080
 
 		aKey=/shindig/gadgets/proxy?container=default&amp;url=
      </param-value>
@@ -34,7 +34,8 @@
       org.apache.shindig.common.PropertiesModule:
       org.bibsonomy.opensocial.config.GuiceModule:
       org.apache.shindig.gadgets.DefaultGuiceModule:
-      org.apache.shindig.social.core.config.SocialApiGuiceModule:
+      <!-- org.apache.shindig.social.core.config.SocialApiGuiceModule: -->
+      org.bibsonomy.opensocial.config.SocialApiGuiceModule:
       <!-- org.apache.shindig.social.sample.SampleModule: -->
       <!-- org.apache.shindig.gadgets.oauth.OAuthModule:  -->
       org.bibsonomy.opensocial.oauth.OAuthModule:

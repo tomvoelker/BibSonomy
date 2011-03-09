@@ -23,6 +23,7 @@
 			
 			<!--  autocomplete user info box -->
 			<script type="text/javascript">
+					var securityToken = "${command.securityToken}"; 
 			<![CDATA[
 			     	var my = {};
 
@@ -59,7 +60,7 @@
 			    		containerElement.appendChild(newContainer);
 			    		
 			    		// render gadget
-			    		var gadget = shindig.container.createGadget( {specUrl : specUrl} );
+			    		var gadget = shindig.container.createGadget( {specUrl : specUrl, secureToken: securityToken} );
 			    		shindig.container.addGadget(gadget);
 			    		shindig.container.renderGadget(gadget);
 
