@@ -303,10 +303,18 @@
       <artifactId>slf4j-jdk14</artifactId>
       <version>${slf.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>${json.version}</version>
+    </dependency>
+
   </dependencies>
 
   <!-- dependency versions -->
   <properties>
+    <json.version>20070829</json.version>
     <slf.version>1.6.0</slf.version>
     <shindig.version>2.0.0</shindig.version>
     <spring.version>3.0.4.RELEASE</spring.version>
