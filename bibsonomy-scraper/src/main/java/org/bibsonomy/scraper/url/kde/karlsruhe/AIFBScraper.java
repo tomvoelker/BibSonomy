@@ -23,10 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -56,11 +52,9 @@ public class AIFBScraper extends AbstractUrlScraper {
 												  "people-specific pages from the " +
 												  href("http://www.aifb.uni-karlsruhe.de/", SITE_NAME);
 	
-    private static final String DOWNLOAD_HREF_STRING	= "<a href=\"(.+?;format=bibtex)\"";
+    private static final String DOWNLOAD_HREF_STRING	= "<a href=\"(.+?format%3Dkiteva[^\"]+)\"";
     private static final Pattern DOWNLOAD_HREF_PATTERN	= Pattern.compile(DOWNLOAD_HREF_STRING);
     
-    private static final String AMP		 = "&amp;";
-    private static final String AMP_REPL = "&";
     private static final String URL		 = "url";
     
     private static final String WC				= ".*";
@@ -87,48 +81,34 @@ public class AIFBScraper extends AbstractUrlScraper {
     	patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + DELIVERABLE)));
     	patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + UNPUBLISHED)));
     }
-	
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 
-		String bibtex = null;
+	@Override
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
+		String bibtex = null;		
+		Matcher _m = DOWNLOAD_HREF_PATTERN.matcher(sc.getPageContent());
 		
-		if(!present(sc.getSelectedText())){
-			/*
-			 * returns itself to know, which scraper scraped this
-			 */
-			sc.setScraper(this);
-			Matcher _m = DOWNLOAD_HREF_PATTERN.matcher(sc.getPageContent());
-			
-			if (_m.find()) {
-				try {
-					URL url = getDownloadUrl(_m.group(1));
-					bibtex = WebUtils.getContentAsString(url);
-				} catch (Exception e) {
-					throw new InternalFailureException(e);
-				}
+		if (_m.find()) {
+			try {
+				bibtex = WebUtils.getContentAsString(AIFB_HOST_NAME + _m.group(1));
+			} catch (Exception e) {
+				throw new InternalFailureException(e);
 			}
 		}
-		
+				
 		if (bibtex != null) {
 			bibtex = BibTexUtils.addFieldIfNotContained(bibtex, URL, sc.getUrl().toString());
 			sc.setBibtexResult(bibtex.toString());
-		}
-		
+			return true;
+		}		
 		return false;
-	}
-	
-	private URL getDownloadUrl(final String url) throws InternalFailureException {
-		try {
-			return new URL(url.replaceAll(AMP, AMP_REPL));
-		} catch (Exception e) {
-			throw new InternalFailureException(e);
-		}
 	}
 	
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
@@ -140,5 +120,4 @@ public class AIFBScraper extends AbstractUrlScraper {
 	public String getSupportedSiteURL() {
 		return AIFB_HOST_NAME;
 	}
-
 }
