@@ -94,7 +94,7 @@
 		    </div>
 		    <div class="fsRow">
  		      <form:label cssClass="fsLabel" path="user.openURL">OpenURL</form:label>
-		      <buttons:help message="settings.openURLDescription" helpPath="/OpenURL"/>
+		      <buttons:help message="settings.openURLDescription" helpPage="/OpenURL"/>
 		      <form:input cssClass="fsInput" path="user.openURL"/>
 		      <div class="dissError"><form:errors path="user.openURL" /></div>
 		    </div>
