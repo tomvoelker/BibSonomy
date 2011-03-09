@@ -52,7 +52,7 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 				 * 
 				 * TODO: Remove this as soon as RSOC is fixed ;). 
 				 */
-				if(getSupportedSiteURL() == "http://royalsocietypublishing.org/") {
+				if(getSupportedSiteURL().equals("http://royalsocietypublishing.org/")) {
 					sc.setBibtexResult(key + rest + "}");
 				} else {
 					sc.setBibtexResult(key + rest);
