@@ -48,9 +48,15 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 				final String key = bibtex.substring(0, indexOfComma).replaceAll("\\s", "");
 				final String rest = bibtex.substring(indexOfComma);
 				/*
-				 * TODO: Remove this as soon as they fix their missing "}" ;). 
+				 * PNAS and ScienceMag fixed their "}" problem. Only RSOC is missing.
+				 * 
+				 * TODO: Remove this as soon as RSOC is fixed ;). 
 				 */
-				sc.setBibtexResult(key + rest + "}");
+				if(getSupportedSiteURL() == "http://royalsocietypublishing.org/") {
+					sc.setBibtexResult(key + rest + "}");
+				} else {
+					sc.setBibtexResult(key + rest);
+				}
 				return true;
 			}
 
