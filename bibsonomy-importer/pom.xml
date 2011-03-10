@@ -36,9 +36,11 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-		        <groupId>oauth.signpost</groupId>
-		        <artifactId>signpost-core</artifactId>
-		        <version>1.2</version>
+			<groupId>oauth.signpost</groupId>
+			<artifactId>signpost-core</artifactId>
+			<version>1.2.1.1</version>
+			<type>jar</type>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
