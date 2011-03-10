@@ -12,6 +12,9 @@ public class DeliciousSignPostManager {
     private String requestTokenEndpointUrl;
     private String accessTokenEndpointUrl;
     private String authorizationWebsiteUrl;
+    
+    private String bundlesUrl;
+    private String bookmarksUrl;
 
     public DeliciousSignPost createDeliciousSignPost() {
 	return new DeliciousSignPost(
@@ -76,5 +79,21 @@ public class DeliciousSignPostManager {
 
 	public String getAuthorizationWebsiteUrl() {
 	    return authorizationWebsiteUrl;
+	}
+
+	public void setBundlesUrl(String bundlesUrl) {
+	    this.bundlesUrl = bundlesUrl;
+	}
+
+	public String getBundlesUrl() {
+	    return bundlesUrl;
+	}
+
+	public void setBookmarksUrl(String postsUrl) {
+	    this.bookmarksUrl = postsUrl;
+	}
+
+	public String getBookmarksUrl() {
+	    return bookmarksUrl;
 	}
 }

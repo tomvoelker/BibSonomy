@@ -38,16 +38,8 @@ public class DeliciousSignPost implements Serializable {
 			authorizationWebsiteUrl);
 	}
 
-	public String getRequestToken(
-			String callbackBaseUrl,
-        		String importData,
-        		boolean overwrite,
-        		String ckey) {
+	public String getRequestToken(String callbackUrl) {
 		String authUrl;
-		String callbackUrl = callbackBaseUrl;
-		callbackUrl += "?" + "ckey=" + ckey;
-		callbackUrl += "&" + "overwrite=" + overwrite;
-		callbackUrl += "&" + "importData=" + importData;
 		try {
 			authUrl = provider.retrieveRequestToken(consumer, callbackUrl);
 		} catch (OAuthMessageSignerException e) {

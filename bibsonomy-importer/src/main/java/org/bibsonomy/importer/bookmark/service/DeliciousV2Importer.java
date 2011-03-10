@@ -2,7 +2,7 @@ package org.bibsonomy.importer.bookmark.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -21,8 +21,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.services.importer.RelationImporter;
-import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -30,37 +28,23 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class DeliciousV2Importer implements RemoteServiceBookmarkImporter, RelationImporter {
+public class DeliciousV2Importer {
 
     private static final Log log = LogFactory.getLog(DeliciousImporter.class);
 
     private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    
-    private static String BUNDLES_PATH = "http://api.del.icio.us/v2/tags/bundles/all";
-    private static String POST_PATH   = "http://api.del.icio.us/v2/posts/all";
-    
-    private DeliciousSignPost oAuth;
-
-    public DeliciousV2Importer(DeliciousSignPost oAuth) {
-	this.oAuth = oAuth;
-    }
-
-    @Override
-    public void setCredentials(String userName, String password) {
-	/* no use */
-    }
 
 
 	/**
 	 * This Method retrieves a list of Posts for a given user.
 	 */
-	@Override
-	public List<Post<Bookmark>> getPosts() throws IOException{
+	public static List<Post<Bookmark>> getPosts(HttpURLConnection connection) throws IOException{
 		
 		final List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
 				
 		//open a connection to delicious and retrieve a document
-		final Document document = getDocument(POST_PATH);
+		connection.connect();
+		final Document document = getDocument(connection.getInputStream());
 		
 		// traverse document and put everything into Post<Bookmark> Objects
 		final NodeList postList = document.getElementsByTagName("post");
@@ -109,11 +93,11 @@ public class DeliciousV2Importer implements RemoteServiceBookmarkImporter, Relat
 	/**
 	 * This method retrieves a list of tags with subTags from Delicious.
 	 */
-	@Override
-	public List<Tag> getRelations() throws IOException {
+	public static List<Tag> getRelations(HttpURLConnection connection) throws IOException {
 		final List<Tag> relations = new LinkedList<Tag>();
 		//open a connection to delicious and retrieve a document
-		final Document document = getDocument(BUNDLES_PATH);
+		connection.connect();
+		final Document document = getDocument(connection.getInputStream());
 		final NodeList bundles = document.getElementsByTagName("bundle");
 		for(int i = 0; i < bundles.getLength(); i++){
 			final Element resource = (Element)bundles.item(i);
@@ -133,9 +117,7 @@ public class DeliciousV2Importer implements RemoteServiceBookmarkImporter, Relat
 	 * @return The from the parse call returned Document Object
 	 * @throws IOException
 	 */
-	private Document getDocument(String url) throws IOException{
-				
-		final InputStream inputStream = oAuth.sign(new URL(url)).getInputStream();
+	private static Document getDocument(final InputStream inputStream) throws IOException{
 		
 		// Get a JAXP parser factory object
 		final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
