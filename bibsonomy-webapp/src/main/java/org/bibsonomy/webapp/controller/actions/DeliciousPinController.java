@@ -59,16 +59,20 @@ public class DeliciousPinController implements MinimalisticController<ImportComm
 			 */
 			return Views.IMPORT;
 		}
+
+		if (errors.hasErrors()) {
+			return Views.IMPORT;
+		}
 		
 		DeliciousSignPost oAuth = signPostManager.createDeliciousSignPost();
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		attr.setAttribute(signPostManager.getoAuthKey(), oAuth, ServletRequestAttributes.SCOPE_SESSION);
 	    return new ExtendedRedirectView(
 	    		oAuth.getRequestToken(
-	    				signPostManager.getCallbackBaseUrl(),
-	    				command.getImportData(),
-	    				command.isOverwrite(),
-	    				context.getCkey()));
+	    				signPostManager.getCallbackBaseUrl()
+	    				+ "?" + "ckey=" + context.getCkey()
+	    				+ "&" + "overwrite=" + command.isOverwrite()
+	    				+ "&" + "importData=" + command.getImportData()));
 	}
 
 	@Override

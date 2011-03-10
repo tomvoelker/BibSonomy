@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -145,12 +146,10 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 				 * import posts/bundles from Delicious
 				 */
 				if ("posts".equals(importData)) {
-					final RemoteServiceBookmarkImporter importer = new DeliciousV2Importer(oAuth);
-					posts = importer.getPosts();
+					posts = DeliciousV2Importer.getPosts(oAuth.sign(new URL(signPostManager.getBookmarksUrl())));
 				} 
 				if ("bundles".equals(importData)) {
-					final RelationImporter relationImporter = new DeliciousV2Importer(oAuth);
-					relations = relationImporter.getRelations();
+					relations = DeliciousV2Importer.getRelations(oAuth.sign(new URL(signPostManager.getBundlesUrl())));
 				} 
 			} else if ("firefox".equals(importType)) {
 				/*
@@ -362,7 +361,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	}
 
 	/**
-	 * @return
+	 * @return DeliciousSignPostManager
 	 */
 	public DeliciousSignPostManager getSignPostManager() {
 		return signPostManager;
