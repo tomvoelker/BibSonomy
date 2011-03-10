@@ -371,9 +371,9 @@
 
 	<select id="getBookmarkViewable" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.user_name,bb.book_url_hash AS intraHash, bb.book_url_hash AS interHash, title, description,
-		       bb.date, bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.group, #requestedGroupName# AS group_name
+		       bb.date, bb.change_date, bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.group, #requestedGroupName# AS group_name
 		FROM (SELECT b.content_id, b.user_name, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
-		             b.date, u.book_url, u.book_url_ctr, b.group
+		             b.date, b.change_date, u.book_url, u.book_url_ctr, b.group
 		      FROM bookmark b, urls u
 		      WHERE u.book_url_hash=b.book_url_hash
 		            AND b.group = #groupId#
