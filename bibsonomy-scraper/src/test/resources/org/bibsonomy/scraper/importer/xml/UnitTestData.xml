@@ -702,6 +702,8 @@
 		<URL>http://eric.exeter.ac.uk/exeter/handle/10036/18938</URL>
 		<BibFile>OpenrepositoryScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
+		<!-- getting 404 -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_121">
 		<TestDescription>Scraper test for citation page from ams.allenpress.com</TestDescription>
