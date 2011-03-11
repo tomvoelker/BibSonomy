@@ -11,7 +11,7 @@ var publication_intrahash = ""; // will be set during initialisation
 
 
 function _generateId(s) {
-	s.replace(/[^a-zA-Z0-9]/g, "");
+	s = s.replace(/[^a-zA-Z0-9]/g,'');
    return s;
 }
 
@@ -133,7 +133,7 @@ function checkOpenAccess () {
 	var container = $("#openAccessRomeoSherpa");	
 
 	// TODO: add progress animation
-	var url = "/ajax/checkOpenAccess"+$("#oaRequestPublisher").val();
+	var url = oaBaseUrl+$("#oaRequestPublisher").val();
 
 	$.ajax({
 		url: url,
@@ -302,21 +302,22 @@ function createNewClassField(container) {
 function _addClassificationItemToList(classificationName, ClassificationValue) {
 	var node = document.createElement('div');
 	var saveListItem = document.createElement('div');
-	saveListItem.setAttribute('id', "classificationListItemElement"+_generateId(classificationName+ClassificationValue));
+	var classificationId=_generateId(classificationName+ClassificationValue);
+	saveListItem.setAttribute('id', "classificationListItemElement"+classificationId);
 	saveListItem.setAttribute('class', 'classificationListItem');
 	
 	var remove = document.createElement('input');
 	remove.type = 'button';
 	remove.className = 'ajaxButton btnspace';
 	remove.value = getString("post.resource.openaccess.button.removeclassification");
-	remove.id	= "classificationListItemRemove"+_generateId(classificationName+ClassificationValue);
+	remove.id	= "classificationListItemRemove"+classificationId;
 
 	node.appendChild(saveListItem);
 	node.appendChild(remove);
 	
 	$('#'+classificationName +'saved').append(node);
 
-	$('#'+"classificationListItemElement"+_generateId(classificationName+ClassificationValue)).text(classificationName +' ' +ClassificationValue +' ');
+	$('#'+"classificationListItemElement"+classificationId).text(classificationName +' ' +ClassificationValue +' ');
 	
 	remove.onclick = function() {
 
@@ -329,7 +330,7 @@ function _addClassificationItemToList(classificationName, ClassificationValue) {
 			dataType: 'json',
 			url: removeurl,
 			beforeSend: function(XMLHttpRequest) {
-				$('#classificationListItemRemove'+_generateId(classificationName+ClassificationValue)).parent().append(loadingNode);
+				$('#classificationListItemRemove'+classificationId).parent().append(loadingNode);
 				
 			},
 			success: function(data) {
