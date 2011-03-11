@@ -56,6 +56,7 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 	sword.setAttribute('id','pumaSword');
 	
 	var saveSword = document.createElement('input');
+	saveSword.setAttribute ('id', "oasendtorepositorybutton");
 	saveSword.type = 'button';
 	saveSword.className = "ajaxButton",
 	saveSword.value =  getString("post.resource.openaccess.button.sendtorepository");
@@ -74,6 +75,8 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 				// remove node #swordresponse
 				$('#swordresponse').remove();
 				$('#pumaSword').append(loadingNode);
+				$('#oasendtorepositorybutton').addClass("oadisabledsend2repositorybutton");
+				document.getElementById('oasendtorepositorybutton').disabled = true; 
 				
 			},
 			success: function(data) {
@@ -103,8 +106,14 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 
 						s.appendChild(document.createTextNode(data.response.localizedMessage));
 						$('#pumaSword').append(s);						
+					
+						swordResponseStatusCode = data.response.statuscode;
 						
-						swordResponseStatusCode = data.response.statuscode; 
+						// on error enable button
+						if (data.response.statuscode == 0) {				
+							$('#oasendtorepositorybutton').removeClass("oadisabledsend2repositorybutton");
+							document.getElementById('oasendtorepositorybutton').disabled = false; 
+						}
 
 						// show response text
 						
