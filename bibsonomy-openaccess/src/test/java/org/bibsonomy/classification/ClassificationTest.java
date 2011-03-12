@@ -2,10 +2,12 @@ package org.bibsonomy.classification;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
 import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.unikassel.puma.openaccess.classification.PublicationClassification;
 import de.unikassel.puma.openaccess.classification.PublicationClassificator;
 import de.unikassel.puma.openaccess.classification.PublicationClassificatorSingleton;
 
@@ -39,5 +41,13 @@ public class ClassificationTest {
 		description  = pubClass.getDescription("acmccs98-1.2.3", "D.2.11");
 		
 		assertEquals("Software Architectures", description);
+	}
+	
+	@Test
+	public void getClassificationChildrenTest() {
+		
+		List<PublicationClassification> children = pubClass.getChildren("acmccs98-1.2.3", "D.2.");
+		
+		assertEquals(15, children.size());
 	}
 }
