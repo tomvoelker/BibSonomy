@@ -8,17 +8,6 @@
 		<result property="text" column="text" javaType="string" />
 		<result property="date" column="date" javaType="date" />
 	</resultMap>
-
-<!--	<resultMap id="extendedField" class="extendedBibtex">-->
-<!--		<result property="created"      column="date_of_create"   javaType="date" />-->
-<!--		<result property="lastModified" column="date_of_last_mod" javaType="date" />-->
-<!--		<result property="key"          column="key"              javaType="string" />-->
-<!--		<result property="value"        column="value"            javaType="string" />-->
-<!--	</resultMap>-->
-<!--	-->
-<!--	<resultMap id="exList" class="extendedBibtexList" groupBy="extendedFieldsList">-->
-<!--		<result property="extendedFieldsList" resultMap="BibTexExtraCommon.extendedField" javaType="java.util.Collection"/>-->
-<!--	</resultMap>-->
 	
 	<resultMap id="extendedField" class="extendedBibtex">
 		<result property="created"      column="date_of_create"   javaType="date" />
@@ -27,8 +16,13 @@
 		<result property="value"        column="value"            javaType="string" />
 	</resultMap>
 	
-	<resultMap id="extendedList" class="extendedBibtexList" groupBy="extendedFieldsList">
-		<result property="extendedFieldsList" resultMap="BibTexExtraCommon.extendedField"/>
+	<resultMap id="MyStringListMap" class="string">
+    	<result property="" column="value"   javaType="string"/>
+	</resultMap>	
+
+	<resultMap id="extendedList" class="extendedBibtexList" groupBy="key">
+	    <result property="key" column="key" javaType="string"/>
+	    <result property="valueList" resultMap="BibTexExtraCommon.MyStringListMap"/>
 	</resultMap>
 
 </sqlMap>
