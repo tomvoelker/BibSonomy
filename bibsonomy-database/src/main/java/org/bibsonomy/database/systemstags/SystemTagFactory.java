@@ -102,9 +102,9 @@ public class SystemTagFactory {
      * the tagName is not a proper systemTagDescription
      */
     public ExecutableSystemTag getExecutableSystemTag(final String tagName) {
-	final String tagType = SystemTagsUtil.extractName(tagName);
+	final String tagType = SystemTagsUtil.extractType(tagName);
 	if (present(tagType)) {
-	    final ExecutableSystemTag sysTag = this.executableSystemTagMap.get(tagType.toLowerCase());
+	    final ExecutableSystemTag sysTag = this.executableSystemTagMap.get(tagType);
 	    if (present(sysTag) && sysTag.isInstance(tagName)) {
 		// tagName was found and tagName has the correct structure
 		return sysTag.newInstance();
@@ -120,9 +120,9 @@ public class SystemTagFactory {
      * @return a search system tag
      */
     public SearchSystemTag getSearchSystemTag(final String tagName) {
-	final String tagType = SystemTagsUtil.extractName(tagName);
+	final String tagType = SystemTagsUtil.extractType(tagName);
 	if (present(tagType)) {
-	    final SearchSystemTag sysTag = this.searchSystemTagMap.get(tagType.toLowerCase());
+	    final SearchSystemTag sysTag = this.searchSystemTagMap.get(tagType);
 	    if (present(sysTag) && sysTag.isInstance(tagName)) {
 		// tagName was found and tagName has the correct structure
 		return sysTag.newInstance();
@@ -138,9 +138,9 @@ public class SystemTagFactory {
      * @return <code>true</code> iff it's an executable system tag
      */
     public boolean isExecutableSystemTag(final String tagName) {
-	final String tagType = SystemTagsUtil.extractName(tagName);
+	final String tagType = SystemTagsUtil.extractType(tagName);
 	if (present(tagType)) {
-	    final ExecutableSystemTag sysTag = this.executableSystemTagMap.get(tagType.toLowerCase());
+	    final ExecutableSystemTag sysTag = this.executableSystemTagMap.get(tagType);
 	    if (present(sysTag)) {
 		/*
 		 *  the tagName refers to a systemTag 
@@ -159,9 +159,9 @@ public class SystemTagFactory {
      * @return <code>true</code> iff it's a search system tag
      */
     public boolean isSearchSystemTag(final String tagName) {
-	final String tagType = SystemTagsUtil.extractName(tagName);
+	final String tagType = SystemTagsUtil.extractType(tagName);
 	if (present(tagType)) {
-	    final SearchSystemTag sysTag = this.searchSystemTagMap.get(tagType.toLowerCase());
+	    final SearchSystemTag sysTag = this.searchSystemTagMap.get(tagType);
 	    if (present(sysTag)) {
 		/*
 		 *  the tagName refers to a systemTag 
@@ -180,9 +180,9 @@ public class SystemTagFactory {
      * @return <code>true</code> iff it's a search system tag
      */
     public boolean isMarkUpSystemTag(final String tagName) {
-	final String tagType = SystemTagsUtil.extractName(tagName);
+	final String tagType = SystemTagsUtil.extractType(tagName);
 	if (present(tagType)) {
-	    final SystemTag sysTag = this.markUpSystemTagMap.get(tagType.toLowerCase());
+	    final SystemTag sysTag = this.markUpSystemTagMap.get(tagType);
 	    if (present(sysTag)) {
 		/*
 		 *  the tagName refers to a systemTag 

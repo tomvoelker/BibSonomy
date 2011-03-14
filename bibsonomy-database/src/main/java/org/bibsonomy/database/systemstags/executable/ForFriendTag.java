@@ -27,6 +27,7 @@ import org.bibsonomy.model.Tag;
 public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 
     private static final String NAME = "send";
+    private static boolean toHide = true;
 
     private Tag tag; // the original (regular) tag that this systemTag was created from
 
@@ -41,6 +42,10 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	return NAME;
     }
 
+    @Override
+    public boolean isToHide() {
+	return toHide;
+    }
     /**
      * @param tag the tag to set
      */

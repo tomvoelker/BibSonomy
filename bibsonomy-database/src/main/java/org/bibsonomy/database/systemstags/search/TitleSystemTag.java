@@ -4,14 +4,13 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.model.util.TagUtils;
 
 /**
  * @author sdo
  * @version $Id$
  */
-public class TitleSystemTag extends AbstractSystemTagImpl implements
+public class TitleSystemTag extends AbstractSearchSystemTagImpl implements
 		SearchSystemTag {
 
 	public static final String NAME = "title";

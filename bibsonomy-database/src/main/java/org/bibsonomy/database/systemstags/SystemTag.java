@@ -27,4 +27,10 @@ public interface SystemTag {
 	 * @return
 	 */
 	public boolean isInstance(String tagName);
+	
+	/**
+	 * Returns true if it should be hidden from tag clouds and posts
+	 * @return
+	 */
+	public boolean isToHide();
 }

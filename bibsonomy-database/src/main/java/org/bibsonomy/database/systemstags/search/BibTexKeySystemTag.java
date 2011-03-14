@@ -1,13 +1,12 @@
 package org.bibsonomy.database.systemstags.search;
 
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 
 /**
  * @author sdo
  * @version $Id$
  */
-public class BibTexKeySystemTag extends AbstractSystemTagImpl implements SearchSystemTag {
+public class BibTexKeySystemTag extends AbstractSearchSystemTagImpl implements SearchSystemTag {
 	
 	public static final String NAME = "bibtexkey";
 	

@@ -108,7 +108,7 @@ public class SystemTagsUtil {
      * @return <code>true</code> iff it is a systemtag of the given kind
      */
     public static boolean isSystemTag(final String tagName, final String tagType) {
-	final String extractedTagType = extractName(tagName);
+	final String extractedTagType = extractType(tagName);
 	return present(extractedTagType) && extractedTagType.equalsIgnoreCase(tagType) && isSystemTag(tagName);
     }
 
@@ -303,7 +303,7 @@ public class SystemTagsUtil {
 	    return sysTags;
 	}
 	for (String s : search.split(delim)) {
-	    s = s.trim().toLowerCase();
+	    s = s.trim();
 	    if (isSearchSystemTag(s)) {
 		sysTags.add(s);
 	    }
@@ -328,50 +328,50 @@ public class SystemTagsUtil {
 	    return null;
 	}
 	final Matcher sysTagMatcher = SYS_TAG_PATTERN.matcher(tagName);
-	if( sysTagMatcher.lookingAt() ) {
+	if (sysTagMatcher.lookingAt()) {
 	    return sysTagMatcher.group(3).trim();
 	}
 	return null;
     }
 
     /**
-     * Extract system tag's name i. e. it returns someStringWithoutColon for
+     * Extract system tag's name i. e. it returns someStringWithoutColon.toLowerCase() for
      * <ul>
      * <li> someStringWithoutColon:someString 
      * <li> sys:someStringWithoutColon:someString
      * <li> system:someStringWithoutColon:someString
      * <li> someStringWithoutColon
-     * <li> and null otherwise
+     * <li> and null if the param tagName is null
      * </ul>
      * @param tagName the system tag string
      * @return tag's name
      */
-    public static String extractName(final String tagName) {
+    public static String extractType(final String tagName) {
 	if (!present(tagName)) {
 	    return null;
 	}
 	final Matcher sysTagMatcher = SYS_TAG_PATTERN.matcher(tagName);
 	if (sysTagMatcher.lookingAt()) {
-	    return sysTagMatcher.group(2);
+	    return sysTagMatcher.group(2).toLowerCase();
 	}
 
-	return tagName;
+	return tagName.toLowerCase();
     }
     
     /**
      * Returns true if the given tagName looks like a systemTag with Prefix
-     * (i. e. is of the form prefix:name:argument and none of the three parts is empty)
+     * (i. e. is of the form prefix:type:argument and none of the three parts is empty)
      * @param tagName
      * @return
      */
-    public static boolean hasPrefixNameAndArgument(final String tagName) {
+    public static boolean hasPrefixTypeAndArgument(final String tagName) {
 	if (!present(tagName)) {
 	    return false;
 	}
 	final Matcher sysTagMatcher = SYS_TAG_PATTERN.matcher(tagName);
 	if (sysTagMatcher.lookingAt()) {
 	    return present(sysTagMatcher.group(1)) &&   // prefix
-	    	present(sysTagMatcher.group(2)) &&	// name
+	    	present(sysTagMatcher.group(2)) &&	// type
 	    	present(sysTagMatcher.group(3));	// argument
 	}
 	return false;

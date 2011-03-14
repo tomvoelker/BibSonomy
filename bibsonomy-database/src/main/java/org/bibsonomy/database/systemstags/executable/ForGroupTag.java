@@ -39,6 +39,7 @@ import org.bibsonomy.model.util.GroupUtils;
 public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 
     private static final String NAME = "for";
+    private static boolean toHide = true;
 
     private DBSessionFactory dbSessionFactory = null;
 
@@ -50,6 +51,11 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
     @Override
     public String getName() {
 	return NAME;
+    }
+ 
+    @Override
+    public boolean isToHide() {
+	return toHide;
     }
 
     /**

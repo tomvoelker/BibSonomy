@@ -1,13 +1,12 @@
 package org.bibsonomy.database.systemstags.search;
 
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 
 /**
  * @author dzo
  * @version $Id$
  */
-public class EntryTypeSystemTag extends AbstractSystemTagImpl implements SearchSystemTag {
+public class EntryTypeSystemTag extends AbstractSearchSystemTagImpl implements SearchSystemTag {
 
 	public static final String NAME = "entrytype";
 

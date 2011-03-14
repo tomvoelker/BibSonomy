@@ -28,6 +28,7 @@ public abstract class AbstractSystemTagImpl implements SystemTag {
 	@Override
 	public boolean isInstance(final String tagName) {
 	    // in general a systemTag must have a prefix and an argument
-	    return SystemTagsUtil.hasPrefixNameAndArgument(tagName);
+	    return SystemTagsUtil.hasPrefixTypeAndArgument(tagName);
 	}
+	
 }

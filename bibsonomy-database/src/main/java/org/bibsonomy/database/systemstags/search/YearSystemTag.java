@@ -2,13 +2,12 @@ package org.bibsonomy.database.systemstags.search;
 
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 
 /**
  * @author dzo
  * @version $Id$
  */
-public class YearSystemTag extends AbstractSystemTagImpl implements SearchSystemTag{
+public class YearSystemTag extends AbstractSearchSystemTagImpl implements SearchSystemTag{
 
 	public static final String NAME = "year";
 
