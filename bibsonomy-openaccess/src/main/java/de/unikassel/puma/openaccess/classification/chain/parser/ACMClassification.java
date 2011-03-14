@@ -1,6 +1,8 @@
 package de.unikassel.puma.openaccess.classification.chain.parser;
 
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.LinkedHashMap;
 import de.unikassel.puma.openaccess.classification.ClassificationObject;
 import de.unikassel.puma.openaccess.classification.ClassificationParser;
@@ -18,6 +20,9 @@ public class ACMClassification extends ClassificationParser {
 	
 	private boolean skip = false;
 	private String skipElement = "";
+
+	private String startNode = "";
+	private String startDescription = "";
 	
 	
 	@Override
@@ -46,10 +51,21 @@ public class ACMClassification extends ClassificationParser {
 					if(id.equals("acmccs98"))
 						return;
 					
-					if(id.length() < 4 && !id.endsWith("."))
-						id += ".";
-					
-					classificate(id, atts.getValue(1));
+					if(id.length() < 4 && !id.endsWith(".")) {
+						startNode = id;
+						startDescription = atts.getValue(1);
+					} else {
+//						 += ".";
+						
+						if(present(startNode)) {
+							startNode += ".";
+							classificate(startNode, startDescription);
+							
+							startDescription = startNode = "";
+						}
+						
+						classificate(id, atts.getValue(1));
+					}
 				}
 			}
 			
@@ -77,7 +93,7 @@ public class ACMClassification extends ClassificationParser {
 	public void characters (final char ch[], final int start, final int length) {
 		buf.append(ch, start, length);
 	}
-
+	
 	@Override
 	public void endElement (final String uri, final String name, final String qName) throws SAXException {
 		if(skip) {
@@ -87,9 +103,9 @@ public class ACMClassification extends ClassificationParser {
 				skipElement = "";
 			}
 			
-		} else {
-
-			
+		} else if(present(startNode)) {
+			classificate(startNode, startDescription);
+			startNode = startDescription = "";
 		}
 		
 	}

@@ -41,6 +41,8 @@ public class ClassificationTest {
 		description  = pubClass.getDescription("acmccs98-1.2.3", "D.2.11");
 		
 		assertEquals("Software Architectures", description);
+
+		description  = pubClass.getDescription("acmccs98-1.2.3", "D.0");
 	}
 	
 	@Test
