@@ -3,9 +3,9 @@ package org.bibsonomy.database.managers;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.model.extra.BibTexExtra;
-import org.bibsonomy.model.extra.ExtendedField;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -95,20 +95,27 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	
 	@Test 
 	public void insertExtendedField() {
-	    List<ExtendedField> extendedFieldList = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
-	    assertEquals(3, extendedFieldList.size());
+	    Map<String, List<String>> extendedFieldList = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
+	    assertEquals(1, extendedFieldList.size());
+	    
+	    List<String> keys = extendedFieldList.get(extendedFieldList.keySet().iterator().next());
+	    
+	    assertEquals(3, keys.size());
 	    
 	    bibTexExtraDb.createExtendedField("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", "ACM", "TEST", this.dbSession);
 	    
 	    extendedFieldList = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
-	    assertEquals(4, extendedFieldList.size());
+	    assertEquals(2, extendedFieldList.size());
 	    
 	}
 	
 	@Test
 	public void getExtendedFieldByKey() {
-	    List<ExtendedField> exFields = bibTexExtraDb.getExtendedFieldsByKey("testuser2", "1b298f199d487bc527a62326573892b8", "JEL", this.dbSession);
-	    assertEquals(3, exFields.size());
+	    Map<String, List<String>> exFields = bibTexExtraDb.getExtendedFieldsByKey("testuser2", "1b298f199d487bc527a62326573892b8", "JEL", this.dbSession);
+	    
+	    List<String> keys = exFields.get(exFields.keySet().iterator().next());
+	    
+	    assertEquals(3, keys.size());
 	
 	}
 
@@ -117,30 +124,21 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 */
 	@Ignore @Test
 	public void getExtendedFields() {
-		final List<ExtendedField> extendedField = bibTexExtraDb.getExtendedFields("d9eea4aa159d70ecfabafa0c91bbc9f0", "testuser1", this.dbSession);
-//		List<ExtendedField> extendedFields = extendedField.getExtendedFields();
-		assertEquals(2, extendedField.size());
-		for (final ExtendedField ex : extendedField) {
-			assertEquals("JEL", ex.getKey());
-			assertEquals("ACE",ex.getValue());
-		}
 	}
 
 	@Test
 	public void deleteExtendedFieldsData() {		
-	    	List<ExtendedField> extendedFields = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
+	    	Map<String, List<String>> extendedFields = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
 
-
-		assertEquals(4, extendedFields.size());
+		assertEquals(2, extendedFields.size());
 		extendedFields = bibTexExtraDb.getExtendedFieldsByKey("testuser1", "b77ddd8087ad8856d77c740c8dc2864a","ACM", this.dbSession);
 
 		assertEquals(1, extendedFields.size());
 		
-		
 		bibTexExtraDb.deleteExtendedFieldByKeyValue("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", "ACM", "TEST", this.dbSession);
 		extendedFields = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
 		
-		assertEquals(3, extendedFields.size());
+		assertEquals(1, extendedFields.size());
 		
 		extendedFields = bibTexExtraDb.getExtendedFieldsByKey("testuser1", "b77ddd8087ad8856d77c740c8dc2864a","ACM", this.dbSession);
 

@@ -1,9 +1,13 @@
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.AbstractDatabaseManager;
@@ -13,6 +17,7 @@ import org.bibsonomy.database.params.BibtexExtendedParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.extra.ExtendedField;
+import org.bibsonomy.model.extra.ExtendedFieldList;
 
 /**
  * @author Christian Schenk
@@ -196,13 +201,20 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of ExtendedFields objects
 	 */
-	public List<ExtendedField> getExtendedFields(final String username, final String hash, final DBSession session) {
+	public Map<String, List<String>> getExtendedFields(final String username, final String hash, final DBSession session) {
 		final BibtexExtendedParam param = new BibtexExtendedParam();
 		
 		param.setHash(hash);
 		param.setUserName(username);
 		param.setSimHash(HashID.INTRA_HASH);
-		return this.queryForList("getExtendedFields", param, ExtendedField.class, session);
+		
+		ExtendedFieldList exList = this.queryForObject("getExtendedFields", param, ExtendedFieldList.class, session);
+
+		if(present(exList)) {
+		    return exList.getMetaData();
+		} else {
+		    return new HashMap<String, List<String>>();
+		}
 	}
 	
 	/**
@@ -213,7 +225,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @return list of ExtendedFields objects
 	 */
-	public List<ExtendedField> getExtendedFieldsByKey(final String username, final String hash, String key, final DBSession session) {
+	public Map<String, List<String>> getExtendedFieldsByKey(final String username, final String hash, String key, final DBSession session) {
 		final BibtexExtendedParam param = new BibtexExtendedParam();
 		
 		ExtendedField exField = new ExtendedField();
@@ -223,7 +235,14 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		param.setHash(hash);
 		param.setUserName(username);
 		param.setSimHash(HashID.INTRA_HASH);
-		return this.queryForList("getExtendedFieldsByKey", param, ExtendedField.class, session);
+
+		ExtendedFieldList exList = this.queryForObject("getExtendedFieldsByKey", param, ExtendedFieldList.class, session);
+		
+		if(present(exList)) {
+		    return exList.getMetaData();
+		} else {
+		    return new HashMap<String, List<String>>();
+		}
 	}
 
 	/**

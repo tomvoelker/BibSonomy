@@ -64,7 +64,7 @@
 		VALUES (#extendedField.key#, #extendedField.value#, #requestedContentId#, #extendedField.created#)
 	</insert>
 
-	<select id="getExtendedFields" resultMap="BibTexExtraCommon.extendedField" parameterClass="bibtexExtendedParam">
+	<select id="getExtendedFields" resultMap="BibTexExtraCommon.extendedList" parameterClass="bibtexExtendedParam">
 		SELECT d.*
 		FROM extended_fields_data d
 		     JOIN bibtex b ON b.content_id = d.content_id
@@ -72,7 +72,7 @@
 		ORDER BY d.date_of_create
 	</select>
 	
-	<select id="getExtendedFieldsByKey" resultMap="BibTexExtraCommon.extendedField" parameterClass="bibtexExtendedParam">
+	<select id="getExtendedFieldsByKey" resultMap="BibTexExtraCommon.extendedList" parameterClass="bibtexExtendedParam">
 		SELECT d.*
 		FROM extended_fields_data d
 		     JOIN bibtex b ON b.content_id = d.content_id
@@ -101,6 +101,4 @@
 	<delete id="deleteAllExtendedFieldsData" parameterClass="int">
 		DELETE FROM extended_fields_data WHERE content_id = #requestedContentId#
 	</delete>
-
-
 </sqlMap>
