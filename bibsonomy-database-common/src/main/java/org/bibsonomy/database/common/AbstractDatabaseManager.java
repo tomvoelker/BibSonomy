@@ -31,7 +31,7 @@ public abstract class AbstractDatabaseManager {
 	/**
 	 * short form of queryForList without Type argument
 	 */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings("unchecked")
 	protected List queryForList(final String query, final Object param, final DBSession session) {
 		return queryForList(query, param, Object.class, session);
 	}
