@@ -85,6 +85,11 @@ public abstract class AbstractDatabaseManager {
 	    return (Map<K,V>) session.queryForMap(query, param, key, value);
 	}
 	
+	@SuppressWarnings("unchecked")
+	protected <K,V> Map<K,V> queryForMap(final String query, final Object param, final String key, final DBSession session) {
+	    return (Map<K,V>) session.queryForMap(query, param, key);
+	}
+	
 	/**
 	 * Inserts an object into the database.
 	 */
