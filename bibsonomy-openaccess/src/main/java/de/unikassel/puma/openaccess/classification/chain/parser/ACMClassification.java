@@ -39,8 +39,17 @@ public class ACMClassification extends ClassificationParser {
 		if ("node".equals(qName)) {
 
 			if(atts.getLength() == 2) {
+				
 				if(atts.getLocalName(0).equals("id") && atts.getLocalName(1).equals("label")) {
-					classificate(atts.getValue(0), atts.getValue(1));
+					String id = atts.getValue(0);
+					
+					if(id.equals("acmccs98"))
+						return;
+					
+					if(id.length() < 4 && !id.endsWith("."))
+						id += ".";
+					
+					classificate(id, atts.getValue(1));
 				}
 			}
 			
