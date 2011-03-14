@@ -80,9 +80,9 @@ public abstract class AbstractDatabaseManager {
 	}
 	
 	
-	protected Map queryForMap(final String query,final Object param, final String key, final String value ,final DBSession session) {
-	    
-	    return session.queryForMap(query, param, key, value);
+	@SuppressWarnings("unchecked")
+	protected <K,V> Map<K,V> queryForMap(final String query, final Object param, final String key, final String value ,final DBSession session) {
+	    return (Map<K,V>) session.queryForMap(query, param, key, value);
 	}
 	
 	/**
