@@ -2,6 +2,7 @@ package org.bibsonomy.database.common;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /** 
  * This is the superclass for all classes that are implementing methods to
@@ -76,6 +77,12 @@ public abstract class AbstractDatabaseManager {
 	@SuppressWarnings("unchecked")
 	protected <T> T queryForObject(final String query, final Object param, final T store, final DBSession session) {
 		return (T) session.queryForObject(query, param, store);
+	}
+	
+	
+	protected Map queryForMap(final String query,final Object param, final String key, final String value ,final DBSession session) {
+	    
+	    return session.queryForMap(query, param, key, value);
 	}
 	
 	/**

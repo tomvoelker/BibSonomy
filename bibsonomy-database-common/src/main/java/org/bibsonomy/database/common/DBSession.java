@@ -2,6 +2,7 @@ package org.bibsonomy.database.common;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.errors.ErrorMessage;
 
@@ -79,6 +80,25 @@ public interface DBSession {
 	 * @return the result list
 	 */
 	public List<?> queryForList(final String query, final Object param);
+	
+	/**
+	 * 
+	 * @param query Statement name
+	 * @param param Parameter object
+	 * @param key Key property name
+	 * @return the result map
+	 */
+	public Map<?,?> queryForMap(final String query, final Object param, String key );
+	
+	/**
+	 * 
+	 * @param query Statement name
+	 * @param param Parameter object
+	 * @param key Key property name
+	 * @param value Value property name
+	 * @return The result map
+	 */
+	public Map<?,?> queryForMap(final String query, final Object param, String key, String value );
 
 	/**
 	 * stores the param in the database

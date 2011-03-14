@@ -366,4 +366,34 @@ public class DBSessionImpl implements DBSession {
 	public SqlMapSession getSqlMapExecutor() {
 		return this.sqlMap;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.common.DBSession#queryForMap(java.lang.String, java.lang.Object, java.lang.String)
+	 */
+	@Override
+	public Map<?, ?> queryForMap(String query, Object param, String key) {
+	    try {
+		return this.sqlMap.queryForMap(query, param, key);
+	    } catch (SQLException e) {
+		handleException(e, query);
+	    }
+	    return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.common.DBSession#queryForMap(java.lang.String, java.lang.Object, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Map<?, ?> queryForMap(String query, Object param, String key,
+		String value) {
+	    try {
+		return this.sqlMap.queryForMap(query, param, key, value);
+	    } catch (SQLException e) {
+		handleException(e, query);
+	    }
+	    
+	    return null;
+	}
 }
