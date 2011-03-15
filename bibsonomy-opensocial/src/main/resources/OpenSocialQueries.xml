@@ -54,4 +54,13 @@
 		VALUES (#gadgetUri#, #serviceName#, #userId#, #accessToken#, #sessionHandle#, #tokenExpireMillis#)
 	</insert>
 	
+ 	<!-- +
+		 | query for removing a oauth security token
+		 + -->  
+	<delete id="removeToken" parameterClass="tokenIndex">
+    	DELETE FROM oauth_tokens
+    	WHERE gagdet_url = #gadgetUri#
+    	  AND server = #serviceName#
+    	  AND viewr = #userId#
+	</delete>
 </sqlMap>

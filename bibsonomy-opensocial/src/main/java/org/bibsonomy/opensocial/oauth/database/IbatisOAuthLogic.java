@@ -121,7 +121,13 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 	}
 
 	public void deleteToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName) {
-		throw new RuntimeException("METHOD NOT IMPLEMENTED");
+		OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
+		
+		try {
+			this.sqlMap.delete("removeToken", tokenIndex);
+		} catch (SQLException e) {
+			log.error("Error removing token for viewer '"+tokenIndex.getUserId()+"' on gadget '"+tokenIndex.getGadgetUri()+"'");
+		}
 	}
 
 	public TokenInfo readToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName) {
