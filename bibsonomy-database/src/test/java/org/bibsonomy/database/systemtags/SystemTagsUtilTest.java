@@ -37,11 +37,11 @@ public class SystemTagsUtilTest {
     @Test
     public void analyzeSystemTags() {
 	// identify tagType
-	assertEquals( "send", SystemTagsUtil.extractName("send") );
-	assertEquals( "send", SystemTagsUtil.extractName("send:sdo") );
-	assertEquals( "send", SystemTagsUtil.extractName("sys:send:sdo") );
-	assertEquals( "send", SystemTagsUtil.extractName("system:send:sdo") );
-	assertEquals( ":send:sdo", SystemTagsUtil.extractName(":send:sdo") );
+	assertEquals( "send", SystemTagsUtil.extractType("send") );
+	assertEquals( "send", SystemTagsUtil.extractType("send:sdo") );
+	assertEquals( "send", SystemTagsUtil.extractType("sys:send:sdo") );
+	assertEquals( "send", SystemTagsUtil.extractType("system:send:sdo") );
+	assertEquals( ":send:sdo", SystemTagsUtil.extractType(":send:sdo") );
 
 	// identify tagArgument
 	assertNull( SystemTagsUtil.extractArgument("send") );
@@ -51,12 +51,12 @@ public class SystemTagsUtilTest {
 	assertEquals( "bar", SystemTagsUtil.extractArgument("foo:bar") );
 
 	// hasPrefixNameAndArgument
-	assertTrue(SystemTagsUtil.hasPrefixNameAndArgument("sys:send:sdo"));
-	assertTrue(SystemTagsUtil.hasPrefixNameAndArgument("system:author:sdo"));
-	assertTrue(SystemTagsUtil.hasPrefixNameAndArgument("sys:foo:bar"));
-	assertFalse(SystemTagsUtil.hasPrefixNameAndArgument("send:sdo"));
-	assertFalse(SystemTagsUtil.hasPrefixNameAndArgument("sys:send"));
-	assertFalse(SystemTagsUtil.hasPrefixNameAndArgument("for"));
+	assertTrue(SystemTagsUtil.hasPrefixTypeAndArgument("sys:send:sdo"));
+	assertTrue(SystemTagsUtil.hasPrefixTypeAndArgument("system:author:sdo"));
+	assertTrue(SystemTagsUtil.hasPrefixTypeAndArgument("sys:foo:bar"));
+	assertFalse(SystemTagsUtil.hasPrefixTypeAndArgument("send:sdo"));
+	assertFalse(SystemTagsUtil.hasPrefixTypeAndArgument("sys:send"));
+	assertFalse(SystemTagsUtil.hasPrefixTypeAndArgument("for"));
     }
 
 
