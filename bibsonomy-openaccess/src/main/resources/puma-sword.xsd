@@ -15,12 +15,25 @@
 		<xsd:complexType>
 			<xsd:complexContent>
 				<xsd:extension base="PostType" >
+					<xsd:sequence>
+						<xsd:element name="examinstitution" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+						<xsd:element name="examreferee" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+						<xsd:element name="phdoralexam" type="xsd:date" minOccurs="0" maxOccurs="1"/>
+						<xsd:element name="sponsors" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+						<xsd:element name="additionaltitle" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+						<xsd:element name="classification" minOccurs="0" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+								<xsd:attribute name="value" type="xsd:string"></xsd:attribute>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
 					<xsd:attribute name="ISBN" type="xsd:string"></xsd:attribute>
 					<xsd:attribute name="ISSN" type="xsd:string"></xsd:attribute>
 					<xsd:attribute name="DOI" type="xsd:string"></xsd:attribute>
 					<xsd:attribute name="location" type="xsd:string"></xsd:attribute>
 					<xsd:attribute name="DCC" type="xsd:string"></xsd:attribute>
-				</xsd:extension>				
+				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>

@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -72,7 +73,7 @@ public class MetsBibTexMLGenerator {
 	 * object attributes to store data.
 	 * 
 	 */
-	private PumaPost<BibTex> _post;
+	private PumaData<BibTex> _post;
 	private ArrayList<String> _filenameList; 
 
 	// contains special characters, symbols, etc...
@@ -82,7 +83,7 @@ public class MetsBibTexMLGenerator {
     
 
 	public MetsBibTexMLGenerator() {
-		this._post = new PumaPost<BibTex>();
+		this._post = new PumaData<BibTex>();
 	}
 
 	public String getFilename(int elementnumber) {
@@ -106,47 +107,36 @@ public class MetsBibTexMLGenerator {
 	 * @return
 	 */
 
-	public void setMetadata(Post<BibTex> post) {
-		_post.setClassification(null);
-		_post.setDescription(post.getDescription());
-		_post.setContentId(post.getContentId());
-		_post.setDate(post.getDate());
-		_post.setGroups(post.getGroups());
-		_post.setRanking(post.getRanking());
-		_post.setResource(post.getResource());
-		_post.setTags(post.getTags());
-		_post.setUser(post.getUser());
-	}
-	
-	public void setMetadata(PumaPost<BibTex> post) {
-		_post = post;
-	}
+	public void setMetadata(PumaData<BibTex> pumaData) {
+		_post.getPost().setDescription(pumaData.getPost().getDescription());
+		_post.getPost().setContentId(pumaData.getPost().getContentId());
+		_post.getPost().setDate(pumaData.getPost().getDate());
+		_post.getPost().setGroups(pumaData.getPost().getGroups());
+		_post.getPost().setRanking(pumaData.getPost().getRanking());
+		_post.getPost().setResource(pumaData.getPost().getResource());
+		_post.getPost().setTags(pumaData.getPost().getTags());
+		_post.getPost().setUser(pumaData.getPost().getUser());
+		
+		_post.setClassification(pumaData.getClassification());
 
-	
-	private class PumaPost<T extends Resource> extends Post<T> {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -4560925709698323261L;
-		private String classification;
-
-		public String getClassification() {
-			return this.classification;
-		}
-
-		public void setClassification(String classification) {
-			this.classification = classification;
-		}
+		_post.setExaminstitution(pumaData.getExaminstitution());
+		_post.setAdditionaltitle(pumaData.getAdditionaltitle());
+		_post.setExamreferee(pumaData.getExamreferee());
+		_post.setPhdoralexam(pumaData.getPhdoralexam());
+		_post.setSponsors(pumaData.getSponsors());
+		_post.setAdditionaltitle(pumaData.getAdditionaltitle());	
 		
 	}
+
+
 	
 	private class PumaRenderer extends JAXBRenderer {
 		
-		protected PumaPostType createPumaPost(final Post<? extends Resource> post)	throws InternServerException {
+		protected PumaPostType createPumaPost(final PumaData<? extends Resource> pumaData)	throws InternServerException {
 
 			final PumaPostType myPost = new PumaPostType();
 			
-			fillXmlPost(myPost, post);
+			fillXmlPost(myPost, pumaData.getPost());
 
 			
 			/*
@@ -186,7 +176,7 @@ public class MetsBibTexMLGenerator {
 			/*
 			 * add additional metadata
 			 */
-			final Resource resource = post.getResource();
+			final Resource resource = pumaData.getPost().getResource();
 			if (resource instanceof BibTex) {
 				final BibTex bibtexResource = (BibTex) resource;
 				bibtexResource.parseMiscField();
@@ -197,9 +187,45 @@ public class MetsBibTexMLGenerator {
 					if (null != bibtexResource.getMiscField("location"))	myPost.setLocation(bibtexResource.getMiscField("location")); 
 					if (null != bibtexResource.getMiscField("dcc"))			myPost.setDCC(bibtexResource.getMiscField("dcc")); 
 				}
-				
-			}
 			
+				
+				if (null != pumaData.getExaminstitution()) {
+					myPost.setExaminstitution(pumaData.getExaminstitution());
+				}
+				
+				if (null != pumaData.getExamreferee()) {
+					for (String item : pumaData.getExamreferee()) {
+						myPost.getExamreferee().add(item);
+					}
+				}
+				
+				if (null != pumaData.getPhdoralexam()) {
+					myPost.setPhdoralexam(pumaData.getPhdoralexam());
+				}
+				
+				if (null != pumaData.getSponsors()) {
+					for (String item : pumaData.getSponsors()) {
+						myPost.getSponsors().add(item);
+					}
+				}
+				
+				if (null != pumaData.getAdditionaltitle()) {
+					for (String item : pumaData.getAdditionaltitle()) {
+					myPost.getAdditionaltitle().add(item);
+					}
+				}
+				
+				if (null != pumaData.getClassification()) {					
+					for (Entry<String, List<String>> entry : pumaData.getClassification().entrySet()) {
+						for (String listValue : entry.getValue() ) {
+							PumaPostType.Classification pptClassification = new PumaPostType.Classification();
+							pptClassification.setName(entry.getKey());
+							pptClassification.setValue(listValue);
+							myPost.getClassification().add(pptClassification);
+						}
+					}
+				}
+			}
 			return myPost;
 		}
 		
@@ -385,7 +411,7 @@ public class MetsBibTexMLGenerator {
 		fileItem.setMIMETYPE("application/pdf");
 		
 		
-		for(Document doc : _post.getResource().getDocuments()) {
+		for(Document doc : _post.getPost().getResource().getDocuments()) {
 			FLocat fileLocat = new FLocat();
 			fileLocat.setLOCTYPE("URL");
 			fileLocat.setHref(doc.getFileName());
@@ -443,6 +469,9 @@ public class MetsBibTexMLGenerator {
 		xmlData.getAny().add(pumaPost);
 		
 		xmlRenderer.serializeMets(sw, mets);
+		
+		// DEBUG
+		log.debug(sw.toString());
 		
 		return sw.toString();
 			

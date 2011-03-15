@@ -86,11 +86,13 @@ public class SwordService {
 	 * collects all informations to send Documents with metadata to repository 
 	 * @throws SwordException 
 	 */
-	public void submitDocument(Post<?> post, User user) throws SwordException {
+	public void submitDocument(PumaData<?> pumaData, User user) throws SwordException {
 		log.info("starting sword");
 		DepositResponse depositResponse = new DepositResponse(999); 
 		File swordZipFile = null;
 
+		Post<?> post = pumaData.getPost(); 
+		
 		// -------------------------------------------------------------------------------
 		/*
 		 * retrieve ZIP-FILE
@@ -201,7 +203,18 @@ public class SwordService {
 				MetsBibTexMLGenerator metsBibTexMLGenerator = new MetsBibTexMLGenerator();
 				metsBibTexMLGenerator.setFilenameList(fileList);
 				//metsGenerator.setMetadata(metadataMap);
-				metsBibTexMLGenerator.setMetadata((Post<BibTex>) post);
+				metsBibTexMLGenerator.setMetadata((PumaData<BibTex>) pumaData);
+
+//				PumaPost additionalMetadata = new PumaPost();
+//				additionalMetadata.setExaminstitution(null);
+//				additionalMetadata.setAdditionaltitle(null);
+//				additionalMetadata.setExamreferee(null);
+//				additionalMetadata.setPhdoralexam(null);
+//				additionalMetadata.setSponsors(null);
+//				additionalMetadata.setAdditionaltitle(null);	
+				
+//				metsBibTexMLGenerator.setMetadata((Post<BibTex>) post);
+
 				//StreamResult streamResult = new StreamResult(zipOutputStream);
 						
 				zipOutputStream.write(metsBibTexMLGenerator.generateMets().getBytes());
@@ -321,8 +334,10 @@ public class SwordService {
 
 			} catch (SWORDClientException e) {
 				log.warn("SWORDClientException: " + e.getMessage() + "\n" + e.getCause());
+				throw new SwordException("error.sword.urlnotaccessable");
 			} catch (SWORDException e) {
 				log.warn("SWORDException: " + e.getMessage() + "\n" + e.getCause());
+				throw new SwordException("error.sword.general");
 			}
 
 		}
