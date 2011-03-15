@@ -17,6 +17,13 @@
  */
 package org.bibsonomy.opensocial.oauth;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.crypto.BasicBlobCrypter;
 import org.apache.shindig.common.crypto.BlobCrypter;
 import org.apache.shindig.common.crypto.Crypto;
@@ -28,23 +35,14 @@ import org.apache.shindig.gadgets.oauth.OAuthFetcherConfig;
 import org.apache.shindig.gadgets.oauth.OAuthRequest;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
+import org.bibsonomy.opensocial.oauth.database.BibSonomyOAuthStore;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Loads pre-reqs for OAuth.
@@ -110,14 +108,16 @@ public class OAuthModule extends AbstractModule {
   @Singleton
   public static class OAuthStoreProvider implements Provider<OAuthStore> {
 
-    private final BasicOAuthStore store;
+    private final BibSonomyOAuthStore store;
+	//private final BasicOAuthStore store;
 
     @Inject
     public OAuthStoreProvider(
         @Named(OAUTH_SIGNING_KEY_FILE) String signingKeyFile,
         @Named(OAUTH_SIGNING_KEY_NAME) String signingKeyName,
         @Named(OAUTH_CALLBACK_URL) String defaultCallbackUrl) {
-      store = new BasicOAuthStore();
+      store = new BibSonomyOAuthStore();
+      //store = new BasicOAuthStore();
       loadDefaultKey(signingKeyFile, signingKeyName);
       store.setDefaultCallbackUrl(defaultCallbackUrl);
       loadConsumers();
@@ -153,7 +153,7 @@ public class OAuthModule extends AbstractModule {
     private void loadConsumers() {
       try {
         String oauthConfigString = ResourceLoader.getContent(OAUTH_CONFIG);
-        store.initFromConfigString(oauthConfigString);
+        // store.initFromConfigString(oauthConfigString);
       } catch (Throwable t) {
         LOG.log(Level.WARNING, "Failed to initialize OAuth consumers from " + OAUTH_CONFIG, t);
       }

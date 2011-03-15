@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+ "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="OpenSocial">
+ 	<!-- +
+		 | result maps
+		 + -->
+	<resultMap id="consumerKeyAndSecret" class="oAuthConsumer">
+		<result property="consumerKey"      column="consumer_key"      javaType="string" />
+		<result property="consumerSecret"   column="consumer_secret"   javaType="string" />
+		<result property="keyType"          column="key_type"          typeHandler="org.bibsonomy.opensocial.oauth.database.typehandler.KeyTypeHandler"/>
+	</resultMap>
+	
+	<resultMap id="consumer" class="oAuthConsumer" extends="consumerKeyAndSecret">
+		<result property="gadgetUrl"        column="gadget_url"        javaType="string" />
+		<result property="serviceName"      column="server"            javaType="string" />
+	</resultMap>
+	
+	<resultMap id="tokenInfo" class="tokenInfo">
+		<result property="accessToken"       column="access_token"     javaType="string" />
+		<result property="tokenSecret"       column="token_secret"      javaType="string" />
+		<result property="sessionHandle"     column="session_handle"    javaType="string" />
+		<result property="viewerId"          column="viewer"            javaType="string" />
+		<result property="tokenExpireMillis" column="expiration_date"  javaType="long"/>
+	</resultMap>
+	
+	
+ 	<!-- +
+		 | query for oauth consumer information
+		 + -->  
+	<select id="getAuthentication" parameterClass="oAuthConsumer" resultMap="consumerKeyAndSecret">
+		SELECT *
+		FROM oauth_store
+		WHERE gadget_url = #gadgetUrl# AND
+		      server     = #serviceName#
+	</select>
+
+ 	<!-- +
+		 | query for oauth security token
+		 + -->  
+	<select id="getToken" parameterClass="tokenIndex" resultMap="tokenInfo">
+		SELECT *
+		FROM oauth_tokens
+		WHERE gadget_url = #gadgetUri# AND
+		      server     = #serviceName# AND
+		      viewer     = #userId#
+	</select>
+	
+ 	<!-- +
+		 | query for oauth security token
+		 + -->  
+	<insert id="setToken" parameterClass="tokenIndex">
+		REPLACE INTO oauth_tokens (gadget_url, server, viewer, access_token, session_handle, expiration_date)
+		VALUES (#gadgetUri#, #serviceName#, #userId#, #accessToken#, #sessionHandle#, #tokenExpireMillis#)
+	</insert>
+	
+</sqlMap>
