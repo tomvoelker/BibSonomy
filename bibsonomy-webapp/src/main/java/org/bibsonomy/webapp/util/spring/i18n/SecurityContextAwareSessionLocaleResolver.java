@@ -19,7 +19,7 @@ public class SecurityContextAwareSessionLocaleResolver extends SessionLocaleReso
 	@Override
 	protected Locale determineDefaultLocale(final HttpServletRequest request) {
 		/*
-		 * check if a user is logged in
+		 * check if an user is logged in to use the user's default language
 		 */
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null) {
@@ -30,12 +30,17 @@ public class SecurityContextAwareSessionLocaleResolver extends SessionLocaleReso
 				final Locale locale = new Locale(lang);
 				/*
 				 * save it in the session
+				 * NOTE: it's ok to call set locale with response = null
+				 * setLocale doesn't use the response parameter
 				 */
 				this.setLocale(request, null, locale);
 				return locale;
 			}
 		}
-	
+		
+		/*
+		 * else use the default application locale
+		 */
 		return super.determineDefaultLocale(request);
 	}
 
