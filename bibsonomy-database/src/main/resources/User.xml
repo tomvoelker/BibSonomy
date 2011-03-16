@@ -82,7 +82,8 @@
 			user_password = #password#,
 			api_key = #apiKey#, 
 			ip_address= #IPAddress#,   
-			spammer = #spammer#, 
+			spammer = #spammer#,
+			role = #role#, 
 			updated_by = #updatedBy#, 
 			updated_at = #updatedAt#
 			<isNotNull property="reminderPassword">,tmp_password = #reminderPassword#, tmp_request_date = #reminderPasswordRequestDate#</isNotNull>		
