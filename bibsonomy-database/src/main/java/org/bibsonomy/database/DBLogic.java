@@ -1007,10 +1007,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 
 	    case UPDATE_CORE:
 		return this.userDBManager.updateUserProfile(user, session);
-
-	    case UPDATE_LDAP_TIMESTAMP:
-		return this.userDBManager.updateLastLdapRequest(user, session);
-
+		
 	    case ACTIVATE:
 		return this.userDBManager.activateUser(user, session);
 		
@@ -1747,24 +1744,6 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 	} finally {
 	    session.close();
 	}
-    }
-
-    /**
-     * FIXME: this method isn't declared in interface
-     * 
-     * updates date when ldap user was requested for authentication
-     * 
-     * @param user
-     */
-    public void updateLastLdapRequest(final User user) {
-	final DBSession session = openSession();
-	try {
-	    if (null != user.getName()) {
-		this.userDBManager.updateLastLdapRequest(user, session);
-	    }
-	} finally {
-	    session.close();
-	}		
     }
 
     /*

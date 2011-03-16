@@ -2,7 +2,6 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -244,7 +243,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		user.setApiKey(UserUtils.generateApiKey());
 		
 		// Generates the activationCode
-        user.setActivationCode(UserUtils.generateActivationCode(user));
+		user.setActivationCode(UserUtils.generateActivationCode(user));
 		
 		/*
 		 * The spammer column in MySQL is defined as
@@ -519,40 +518,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		// fallback: user is not logged in
 		return notLoggedInUser;
 	}
-
-	/**
-	 * check if user is in table ldapUser.
-	 * 
-	 * @param userName
-	 * @param session
-	 * @return true if user is in table LdapUser, otherwise false 
-	 */
-	public boolean isLdapUser(final String userName, final DBSession session) {
-		return present(this.queryForObject("getLdapUserIdByUsername", userName, String.class, session));
-	}
-	
-	/**
-	 * check if user is in table ldapUser.
-	 * 
-	 * @param userName
-	 * @param session
-	 * @return true if user is in table LdapUser, otherwise false 
-	 */
-	public Date userLastLdapRequest(final String userName, final DBSession session) {
-		return this.queryForObject("getLastLdapRequestByUsername", userName, Date.class, session);
-	}
-		
-	/**
-	 * TODO: improve documentation
-	 * 
-	 * @param user
-	 * @param session
-	 * @return TODO: documentation
-	 */
-	public String updateLastLdapRequest(final User user, final DBSession session) {
-		this.update("updateLastLdapRequestDateForLdapUserIdByUsername", user.getName(), session);
-		return user.getName();
-	}
 	
 	/**
 	 * Retrieve a list of related users by folkrank for a given list of tags
@@ -579,16 +544,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public String getOpenIDUser(final String openID, final DBSession session) {
 		return this.queryForObject("getOpenIDUser", openID, String.class, session);
-	}
-	
-	/**
-	 * Gets a ldapUserId by username 
-	 * @param username
-	 * @param session
-	 * @return ldapUserId
-	 */
-	public String getLdapUserByUsername(final String username, final DBSession session) {
-		return this.queryForObject("getLdapUserIdByUsername", username, String.class, session);
 	}
 	
 	/**

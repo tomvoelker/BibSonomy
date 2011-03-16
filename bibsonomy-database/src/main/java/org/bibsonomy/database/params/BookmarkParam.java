@@ -16,10 +16,8 @@ public class BookmarkParam extends ResourceParam<Bookmark> {
 		return ConstantID.BOOKMARK_CONTENT_TYPE.getId();
 	}
 	
-	/*
-	 * XXX: @see org.bibsonomy.database.params.BibTexParam
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.params.ResourceParam#getResource()
+	/**
+	 * XXX: @see {@link org.bibsonomy.database.params.BibTexParam#getResource()}
 	 */
 	@Override
 	public Bookmark getResource() {
