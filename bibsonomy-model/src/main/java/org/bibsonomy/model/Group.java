@@ -101,7 +101,6 @@ public class Group implements Serializable{
 	 * constructor
 	 */
 	public Group() {
-		//this(GroupID.PUBLIC);
 	}
 
 	/**
