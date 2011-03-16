@@ -132,10 +132,6 @@
 	<select id="getOpenIDUser" resultClass="string" parameterClass="string"> 
 		SELECT user_name FROM openIDUser WHERE openID = #openID#
 	</select>
-
-	<select id="getLdapUserIdByUsername" resultClass="string" parameterClass="string"> 
-		SELECT ldapUserId FROM ldapUser WHERE user_name = #userName#
-	</select>
 	
 	<select id="getUsernameByLdapUser" resultClass="string" parameterClass="string"> 
 		SELECT user_name FROM ldapUser WHERE ldapUserId = #ldapUser#
