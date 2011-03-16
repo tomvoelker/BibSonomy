@@ -304,15 +304,15 @@ public class StringUtils {
 	}
 	
 	/**
-	 * Implode a String array into a single string, delimited by a given delimiter
+	 * Implode an object array into a single string, delimited by a given delimiter
 	 * 
 	 * @param pieces -
-	 * 			an array of strings
+	 * 			an array of objects
 	 * @param delim -
 	 * 			a delimiter
 	 * @return concatenated representation of the string array
 	 */
-	public static String implodeStringArray(String[] pieces, String delim) {
+	public static String implodeStringArray(Object[] pieces, String delim) {
 		return implodeStringCollection(Arrays.asList(pieces), delim);
 	}
 	
