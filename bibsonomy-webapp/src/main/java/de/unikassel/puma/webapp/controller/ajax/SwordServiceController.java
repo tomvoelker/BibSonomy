@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.SwordException;
@@ -31,6 +33,7 @@ import de.unikassel.puma.webapp.command.SwordServiceCommand;
  * @version $Id$
  */
 public class SwordServiceController extends AjaxController implements MinimalisticController<SwordServiceCommand> {
+	private static final Log log = LogFactory.getLog(SwordServiceController.class);
 
 	private SwordService swordService;
 	private MessageSource messageSource;
@@ -93,9 +96,11 @@ public class SwordServiceController extends AjaxController implements Minimalist
 			// send message of exception to webpage via ajax to give feedback of submission result
 			message = ex.getMessage();
 			
-			if (message.equals("error.sword.errcode201")){
+			// errcode 2xx is ok / 200, 201, 202
+			if (message.substring(0, 20).equals("error.sword.errcode2")){
 				// transmission complete and successful
 				statuscode = 1;
+				message = "error.sword.sentsuccessful";
 			} else {
 				// Error
 				statuscode = 0;

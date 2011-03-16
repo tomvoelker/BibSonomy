@@ -149,8 +149,8 @@
 					</div>
 	
 					<div id="authorcontract">
-						<span id="authorcontractconfirmcontainer"><input type="checkbox" id="authorcontractconfirm"/></span>Ja, ich habe den <a href="https://kobra.bibliothek.uni-kassel.de/autorenvereinbarung.html">Autorenvertrag</a> ausgef&amp;uuml;llt und werde ihn per Fax oder Post an
-						die <a href="https://kobra.bibliothek.uni-kassel.de/kontakt.jsp">KOBRA-Autorenbetreung</a> &amp;uuml;bermitteln.
+						<span id="authorcontractconfirmcontainer"><input type="checkbox" id="authorcontractconfirm"/></span>
+						<fmt:message key="post.resource.openaccess.authorcontractconfirm"/>
 					</div>
 	
 	
