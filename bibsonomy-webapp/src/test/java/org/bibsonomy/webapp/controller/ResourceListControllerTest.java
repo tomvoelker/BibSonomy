@@ -25,7 +25,7 @@ import org.junit.Test;
  */
 public class ResourceListControllerTest {	
 	
-	private static class NewResourceListController extends ResourceListController {
+	private static class TestResourceListController extends ResourceListController {
 		@Override
 		protected void handleTagsOnly(ResourceViewCommand cmd, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, int max, String search) {
 			// no logic no web request
@@ -71,7 +71,7 @@ public class ResourceListControllerTest {
 	
 	@Test
 	public void handleTagsOnly() {
-		final NewResourceListController testController = new NewResourceListController();
+		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
 		testController.setUserSettings(DEFAULT_SETTINGS);
 		final ResourceViewCommand cmd = new ResourceViewCommand();
@@ -83,7 +83,7 @@ public class ResourceListControllerTest {
 	
 	@Test
 	public void test10() {
-	  final NewResourceListController testController = new NewResourceListController();
+		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(BOOKMARK_CLASS));
 		testController.setUserSettings(getSettings(true, false));
 		assertEquals(BOOKMARK_CLASS, testController.getListsToInitialize("html", null));
@@ -96,7 +96,7 @@ public class ResourceListControllerTest {
 	
 	@Test
 	public void JSONFormat() {
-		final NewResourceListController testController = new NewResourceListController();
+		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
 		testController.setUserSettings(DEFAULT_SETTINGS);
 		/*
@@ -110,7 +110,7 @@ public class ResourceListControllerTest {
 	
 	@Test
 	public void wrongUsage() {
-		final NewResourceListController testController = new NewResourceListController();
+		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
 		testController.setUserSettings(DEFAULT_SETTINGS);
 		
@@ -121,7 +121,7 @@ public class ResourceListControllerTest {
 	
 	@Test
 	public void wrongUsagePublication() {
-		final NewResourceListController testController = new NewResourceListController();
+		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
 		testController.setUserSettings(DEFAULT_SETTINGS);
 		
@@ -132,7 +132,7 @@ public class ResourceListControllerTest {
 	
 	@Test
 	public void respectUserSettings() {
-		final NewResourceListController testController = new NewResourceListController();
+		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
 		
 		/*
@@ -160,7 +160,7 @@ public class ResourceListControllerTest {
 	
 	@Test
 	public void complexOne() {
-		final NewResourceListController testController = new NewResourceListController();
+		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(PUBLICATION_CLASS));
 		testController.setUserSettings(DEFAULT_SETTINGS);
 		
@@ -169,7 +169,7 @@ public class ResourceListControllerTest {
 	
 	@Test
 	public void enforceTest() {
-		final NewResourceListController testController = new NewResourceListController();
+		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
 		testController.setUserSettings(DEFAULT_SETTINGS);
 		testController.setForcedResources(STANDARD_VIEW_CLASSES);
