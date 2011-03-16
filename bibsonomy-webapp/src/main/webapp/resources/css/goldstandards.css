@@ -43,7 +43,7 @@ div#gold_references ol, div#gold_referencedBy ol {
 	list-style: upper-roman;
 }
 
-#gold_authorsEditors {
+span.ref_authors_editors, #gold_authorsEditors {
 	font-size: 85%;
 	color: grey;
 }
@@ -89,39 +89,8 @@ ul#gold_menu li a:hover {
 	clear: both;
 }
 
-
 #gold_exports, #postUsers {
 	margin-top: 15px;
-}
-
-
-/*
- * TODO: merge tab styles (style.css)
- */
-
-#gold_exports div.ui-tabs-panel {
-	border: 1px solid rgb(233, 233, 233);
-	clear: both;
-}
-
-#gold_exports ul.ui-tabs-nav li, #gold_exports ul.ui-tabs-nav {
-	margin: 0;
-	padding: 0;
-}
-
-#gold_exports ul.ui-tabs-nav li a:hover, #gold_exports ul.ui-tabs-nav li.ui-tabs-selected a  {
-	background-color: rgb(255, 255, 255) !important;
-	color: rgb(0, 0, 0) !important;
-}
-
-#gold_exports ul.ui-tabs-nav li.ui-tabs-selected a {
-	border-bottom-color: rgb(255, 255, 255) !important;
-}
-
-#gold_exports ul.ui-tabs-nav li a {
-	border: 1px solid rgb(233, 233, 233);
-	background-color: rgb(233, 233, 233);
-	color: rgb(96, 96, 96);
 }
 
 #gold_resources #gold_resources_links {
