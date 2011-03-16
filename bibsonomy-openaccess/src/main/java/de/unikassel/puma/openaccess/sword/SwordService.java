@@ -287,8 +287,7 @@ public class SwordService {
 					swordMessage.setDestination(repositoryConfig.getHttpDepositUrl());
 	
 					depositResponse = swordClient.postFile(swordMessage);
-					log.info("depositResponse: "+ depositResponse.getErrorDocument().getErrorURI());
-
+					
 					/*
 					 * 200 OK Used in response to successful GET operations and
 					 * to Media Resource Creation operations where X-No-Op is
@@ -333,11 +332,8 @@ public class SwordService {
 				}
 
 			} catch (SWORDClientException e) {
-				log.warn("SWORDClientException: " + e.getMessage() + "\n" + e.getCause());
+				log.warn("SWORDClientException: " + e.getMessage() + "\n" + e.getCause() + " / " + swordMessage.getDestination());
 				throw new SwordException("error.sword.urlnotaccessable");
-			} catch (SWORDException e) {
-				log.warn("SWORDException: " + e.getMessage() + "\n" + e.getCause());
-				throw new SwordException("error.sword.general");
 			}
 
 		}

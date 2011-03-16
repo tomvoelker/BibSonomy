@@ -171,7 +171,101 @@
     	</dim:field>
     </xsl:template>
 
+    <!-- dc.contributor.corporatename -->
+    <xsl:template match="puma:examinstitution">
+    	<dim:field mdschema="dc" element="contributor" qualifier="corporatename">
+    		<xsl:value-of select="."/>
+    	</dim:field>
+    </xsl:template>
 
+    <!-- dc.contributor.referee -->
+    <xsl:template match="puma:examreferee">
+    	<dim:field mdschema="dc" element="contributor" qualifier="referee">
+    		<xsl:value-of select="."/>
+    	</dim:field>
+    </xsl:template>
 
+    <!-- dc.date.examination -->
+    <xsl:template match="puma:phdoralexam">
+    	<dim:field mdschema="dc" element="date" qualifier="examination">
+    		<xsl:value-of select="."/>
+    	</dim:field>
+    </xsl:template>
+
+    <!-- dc.description.sponsorship -->
+    <xsl:template match="puma:sponsors">
+    	<dim:field mdschema="dc" element="description" qualifier="sponsorship">
+    		<xsl:value-of select="."/>
+    	</dim:field>
+    </xsl:template>
+
+    <!-- dc.title.alternative -->
+    <xsl:template match="puma:additionaltitle">
+    	<dim:field mdschema="dc" element="title" qualifier="alternative">
+    		<xsl:value-of select="."/>
+    	</dim:field>
+    </xsl:template>
+
+    <!-- dc.classification -->
+<!--    <xsl:template match="puma:classification">-->
+<!--    	<dim:field mdschema="dc" element="subject" qualifier="{@name}">-->
+<!--    		<xsl:value-of select="@value"/>-->
+<!--    	</dim:field>-->
+<!--    </xsl:template>-->
+    
+<!--dc.subject.ccs-->
+<!--dc.subject.classification-->
+<!--dc.subject.ddb-->
+<!--dc.subject.ddc-->
+<!--dc.subject.jel-->
+<!--dc.subject.lcc-->
+<!--dc.subject.lcsh-->
+<!--dc.subject.mesh-->
+<!--dc.subject.msc-->
+<!--dc.subject.other-->
+<!--dc.subject.pacs-->
+<!--dc.subject.swd-->
+
+    <xsl:template match="puma:classification">
+    
+      <xsl:choose>
+  
+	    <!-- jel -->
+		<xsl:when test="./@name='acm'">
+	    	<dim:field mdschema="dc" element="subject" qualifier="{@name}">
+	    		<xsl:value-of select="@value"/>
+	    	</dim:field>
+		</xsl:when>
+
+	    <!-- jel -->
+		<xsl:when test="./@name='jel'">
+	    	<dim:field mdschema="dc" element="subject" qualifier="{@name}">
+	    		<xsl:value-of select="@value"/>
+	    	</dim:field>
+		</xsl:when>
+
+	    <!-- ddc -->
+		<xsl:when test="./@name='ddc'">
+	    	<dim:field mdschema="dc" element="subject" qualifier="{@name}">
+	    		<xsl:value-of select="@value"/>
+	    	</dim:field>
+		</xsl:when>
+
+	    <!-- other -->
+        <xsl:otherwise>
+          <xsl:if test="./@name">
+	    	<dim:field mdschema="dc" element="subject" qualifier="other">
+	    		<xsl:value-of select="@name"/>
+	    		<xsl:text> </xsl:text>
+	    		<xsl:value-of select="@value"/>
+	    	</dim:field>
+          </xsl:if>
+        </xsl:otherwise>
+      </xsl:choose>
+
+    </xsl:template>
+    
+    
+    
 
 </xsl:stylesheet>

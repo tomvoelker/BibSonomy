@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.Map.Entry;
 
@@ -219,7 +220,7 @@ public class MetsBibTexMLGenerator {
 					for (Entry<String, List<String>> entry : pumaData.getClassification().entrySet()) {
 						for (String listValue : entry.getValue() ) {
 							PumaPostType.Classification pptClassification = new PumaPostType.Classification();
-							pptClassification.setName(entry.getKey());
+							pptClassification.setName(entry.getKey().toLowerCase(Locale.getDefault()).replaceAll("/ /",""));
 							pptClassification.setValue(listValue);
 							myPost.getClassification().add(pptClassification);
 						}
