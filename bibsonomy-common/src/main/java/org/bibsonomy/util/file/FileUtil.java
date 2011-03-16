@@ -41,6 +41,8 @@ public class FileUtil {
 	 */
 	private static final Pattern fileExtensionPattern = Pattern.compile("(.+)\\.(.+)");
 	
+	private static final SimpleDateFormat RANDOM_FILE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
 	/**
 	 * Constructs the file path of a document
 	 * 
@@ -71,8 +73,7 @@ public class FileUtil {
 	 * @return The hash for the file
 	 */
 	public static String getRandomFileHash(String fileName) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return StringUtils.getMD5Hash(fileName + Math.random() + df.format(new Date()));
+		return StringUtils.getMD5Hash(fileName + Math.random() + RANDOM_FILE_DATE_FORMAT.format(new Date()));
 	}
 	
 	/**
