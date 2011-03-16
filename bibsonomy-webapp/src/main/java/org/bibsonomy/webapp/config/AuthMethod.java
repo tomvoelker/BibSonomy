@@ -2,6 +2,8 @@ package org.bibsonomy.webapp.config;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.util.StringUtils;
+
 /**
  * Identifier for all supported authentication methods.
  * 
@@ -45,7 +47,7 @@ public enum AuthMethod {
 		try {
 			return AuthMethod.valueOf(name.toUpperCase());
 		} catch (final IllegalArgumentException ia) {
-			throw new IllegalArgumentException("Requested order not supported. Possible values are 'INTERNAL', 'LDAP', 'OpenId'");
+			throw new IllegalArgumentException("Requested order not supported. Possible values are " + StringUtils.implodeStringArray(AuthMethod.values(), ", "));
 		}
 	}
 
