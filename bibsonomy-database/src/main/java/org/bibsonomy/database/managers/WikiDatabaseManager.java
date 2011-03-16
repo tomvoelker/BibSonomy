@@ -3,8 +3,6 @@ package org.bibsonomy.database.managers;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.WikiParam;
@@ -15,8 +13,6 @@ import org.bibsonomy.model.Wiki;
  * @version $Id$
  */
 public class WikiDatabaseManager extends AbstractDatabaseManager {
-    private static final Log log = LogFactory.getLog(WikiDatabaseManager.class);
-
     private static final WikiDatabaseManager singleton = new WikiDatabaseManager();
 
     /**
@@ -88,7 +84,7 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
 	param.setDate(new Date());
 	
 	try {
-	    this.insert("logWiki",param, session);
+	    this.insert("logWiki", param, session);
 	    session.commitTransaction();
 	} finally {
 	    session.endTransaction();
