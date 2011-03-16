@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.TeerGrube;
 import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
@@ -73,6 +74,7 @@ public class UsernamePasswordAuthenticationFilter extends org.springframework.se
 	/**
 	 * @param grube the grube to set
 	 */
+	@Required
 	public void setGrube(final TeerGrube grube) {
 		this.grube = grube;
 	}
