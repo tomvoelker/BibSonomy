@@ -425,7 +425,6 @@
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
-		<spring-security.version>3.0.5.RELEASE</spring-security.version>
 	</properties>
 	<distributionManagement>
 		<site>
