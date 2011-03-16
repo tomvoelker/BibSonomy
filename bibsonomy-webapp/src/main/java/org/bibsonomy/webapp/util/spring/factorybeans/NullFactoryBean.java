@@ -11,14 +11,17 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class NullFactoryBean implements FactoryBean<Void> {
 
+	@Override
     public Void getObject() throws Exception {
         return null;
     }
 
+	@Override
     public Class<? extends Void> getObjectType() {
         return null;
     }
 
+	@Override
     public boolean isSingleton() {
         return true;
     }
