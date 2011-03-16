@@ -30,7 +30,7 @@ public class AuthConfig implements InitializingBean {
 	
 	/**
 	 * check whether given authentication method is enabled
-	 * @param methodName the authentication method in question
+	 * @param method the authentication method in question
 	 * @return true if given authentication method is configured
 	 */
 	public boolean containsAuthMethod(AuthMethod method) {

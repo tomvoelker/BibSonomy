@@ -26,17 +26,40 @@ import org.springframework.web.filter.GenericFilterBean;
  */
 public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 	
+	private static final String FILTERCHAIN_BEAN_NAME = "org.springframework.security.filterChainProxy";
+	
 	/**
 	 * additional filters are added into the filter chain AFTER the {@link LogoutFilter}
 	 * TODO: configure via spring 
 	 */
-	private static final Class<LogoutFilter> ENTRYPOINTFILTER = LogoutFilter.class;
+	private static final Class<LogoutFilter> ENTRYPOINT_FILTER = LogoutFilter.class;
 
 	/**
 	 * RememberMe filters are added into the filter chain BEFORE the {@link AnonymousAuthenticationFilter} 
 	 * TODO: configure via spring 
 	 */
-	private static final Class<AnonymousAuthenticationFilter> REMEMBERME_ENTRYPOINTFILTER = AnonymousAuthenticationFilter.class;
+	private static final Class<AnonymousAuthenticationFilter> REMEMBERME_ENTRYPOINT_FILTER = AnonymousAuthenticationFilter.class;
+	
+	/**
+	 * look for given filter in given list of filters and return its position if found,
+	 * null otherwise
+	 * 
+	 * @param filterClass requested filter
+	 * @param filterList list of filters
+	 * @return filter's position in filter list if found, null otherwise
+	 */
+	private static int findFilter(final Class<? extends GenericFilterBean> filterClass, final List<Filter> filterList) {
+		for (int i = 0; i < filterList.size(); i++ ) {
+			final Filter filter = filterList.get(i);
+			if (filterClass.isAssignableFrom(filter.getClass())) {
+				return i;
+			}
+		}
+		
+		// not found
+		return -1;
+	}
+	
 
 	/** dertermines which authentication methods are used */
 	private AuthConfig config;
@@ -46,7 +69,6 @@ public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 	 */
 	private Map<AuthMethod, Filter> authFilterMap = new HashMap<AuthMethod, Filter>();
 	private Map<AuthMethod, Filter> authRememberMeFilterMap = new HashMap<AuthMethod, Filter>();
-	/** FIXME: what are the pre filters? */
 	private Map<AuthMethod, Filter> authPreFilterMap = new HashMap<AuthMethod, Filter>();
 
 	@Override
@@ -56,7 +78,7 @@ public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		if (bean instanceof FilterChainProxy) {
+		if (bean instanceof FilterChainProxy && FILTERCHAIN_BEAN_NAME.equals(beanName)) {
 			final FilterChainProxy proxy = (FilterChainProxy) bean;
 			final Map<String, List<Filter>> filterChainMap = proxy.getFilterChainMap();
 			
@@ -87,11 +109,11 @@ public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 					// TODO: preFilters
 
 					// additional filters are added into the filter chain AFTER the {@link LogoutFilter}
-					Integer filterEntryPoint = this.findFilter(ENTRYPOINTFILTER, filterList) + 1;
+					final int filterEntryPoint = findFilter(ENTRYPOINT_FILTER, filterList) + 1;
 					filterList.addAll(filterEntryPoint, filters);
 					
 					// RememberMe filters are added into the filter chain BEFORE the {@link AnonymousAuthenticationFilter}
-					int rememberMeEntryPoint = this.findFilter(REMEMBERME_ENTRYPOINTFILTER, filterList);
+					final int rememberMeEntryPoint = findFilter(REMEMBERME_ENTRYPOINT_FILTER, filterList);
 					filterList.addAll(rememberMeEntryPoint, rememberMeFilters);
 				}
 			}
@@ -99,27 +121,8 @@ public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 			// set the new filter chain map
 			proxy.setFilterChainMap(filterChainMap);
 		}
-		return bean;
-	}
-	
-	/**
-	 * look for given filter in given list of filters and return its position if found,
-	 * null otherwise
-	 * 
-	 * @param filterClass requested filter
-	 * @param filterList list of filters
-	 * @return filter's position in filter list if found, null otherwise
-	 */
-	private Integer findFilter(Class<? extends GenericFilterBean> filterClass, List<Filter> filterList) {
-		for( int i=0; i<filterList.size(); i++ ) {
-			Filter curFilter = filterList.get(i);
-			if( filterClass.isAssignableFrom(curFilter.getClass()) ) {
-				return i;
-			}
-		}
 		
-		// not found
-		return null;
+		return bean;
 	}
 	
 	/**
