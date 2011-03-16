@@ -176,7 +176,9 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>3.0.5.RELEASE</spring.version>
+		<spring-security.version>3.0.5.RELEASE</spring-security.version>
 	</properties>
 	<modules>
 		<module>bibsonomy-bibtex-parser</module>
@@ -291,6 +293,7 @@
 				<!-- generate a source jar during build pase and deploy it along with binary jar -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -490,8 +493,22 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-rest-common</artifactId>
+				<version>${project.version}</version>
+				<scope>test</scope>
+				<type>test-jar</type>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-rest-server</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-rest-server</artifactId>
+				<version>${project.version}</version>
+				<scope>test</scope>
+				<type>test-jar</type>
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
@@ -647,7 +664,7 @@
 			<dependency>
 		        <groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
-				<version>1.4</version>
+				<version>1.3</version>
 			</dependency>
 		</dependencies>
 
