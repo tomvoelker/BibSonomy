@@ -29,7 +29,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.Errors;
 
 import bibtex.parser.ParseException;
-import de.unikassel.puma.openaccess.sword.SwordService;
 
 /**
  * Posting/editing one (!) publication posts.
@@ -53,8 +52,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	private static final Log log = LogFactory.getLog(AbstractEditPublicationController.class);
 
 	private Scraper scraper;
-
-	private SwordService swordService;
 	
 	private String docPath;
 	private String tempPath;
@@ -240,7 +237,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			} catch (IOException ex) {
 				
 			}
-			Document document = new Document();
+			final Document document = new Document();
 			document.setFileName(fileName);
 			document.setFileHash(fileNameHash);
 			document.setMd5hash(md5Hash);
@@ -328,16 +325,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	public void setScraper(Scraper scraper) {
 		this.scraper = scraper;
 	}
-
-	/**
-	 * The service sends the publication to the institutional repository.
-	 * 
-	 * @param swordService
-	 */
-	public void setSwordService(SwordService swordService) {
-		this.swordService = swordService;
-	}
-
+	
 	/**
 	 * @return the docPath
 	 */
