@@ -201,6 +201,7 @@ public class UserUtils {
 		existingUser.setLdapId(		!present(updatedUser.getLdapId())       ? existingUser.getLdapId()      : updatedUser.getLdapId());
 		
 		existingUser.setSpammer(	!present(updatedUser.getSpammer()) 	? existingUser.getSpammer() 	: updatedUser.getSpammer());
+		existingUser.setRole(		!present(updatedUser.getRole()) 	? existingUser.getRole()		: updatedUser.getRole());
 
 		existingUser.setUpdatedBy(	!present(updatedUser.getUpdatedBy()) 	? existingUser.getUpdatedBy() 	: updatedUser.getUpdatedBy());
 		existingUser.setUpdatedAt(	!present(updatedUser.getUpdatedAt()) 	? existingUser.getUpdatedAt() 	: updatedUser.getUpdatedAt());
