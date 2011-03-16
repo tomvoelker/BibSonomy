@@ -93,6 +93,14 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		this.controllerBeanName = controllerBeanName;
 	}
 	
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	@Required
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean suppressValidation(final HttpServletRequest request, final Object command) {
@@ -241,13 +249,5 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 */
 		binder.setAllowedFields(allowedFields);
 		binder.setDisallowedFields(disallowedFields);
-	}
-
-	public URLGenerator getUrlGenerator() {
-		return this.urlGenerator;
-	}
-
-	public void setUrlGenerator(URLGenerator urlGenerator) {
-		this.urlGenerator = urlGenerator;
 	}	
 }
