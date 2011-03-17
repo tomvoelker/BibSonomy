@@ -90,6 +90,7 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		}		
 
 		try {
+			// TODO: do not throw an exception if transfer was ok
 			swordService.submitDocument(pumaData, user);
 		} catch (SwordException ex) {
 			

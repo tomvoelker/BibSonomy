@@ -425,13 +425,13 @@ div.classificationInput {
 }
 
 
-#openAccessRomeoSherpaContainer, openAccessClassificationContainer{
-	padding: 0.2em;
+#oasherparomeocontainer, openAccessClassificationContainer{
+	padding: 0.4ex 0.7em;
 	margin-top: 1ex; 
 	margin-bottom: 1ex; 
 }
 
-#openAccessRomeoSherpaContainer {
+#oasherparomeocontainer {
 	background-color: #EFDBCE; 
 }
 
@@ -459,23 +459,15 @@ input[type="button"].ajaxButton {
 	padding-bottom: 0px;
 	border: none;
 	font-size: 80%;
-	font-weight: bold;
 	cursor: pointer;
 }
 
 #pumaSword input[type="button"].ajaxButton {
-	background-color: #EFDBCE;
-	border-right: 1px solid #ddccbb;
-	border-top:   1px solid #ddccbb;
-	border-left:  1px solid #edaa93;
-	border-bottom:   1px solid #edaa93;
-	padding: 1px 3px;  
-	
-	font-size: 90%;
-	border: 2px solid red;
-	padding: 1ex 1em;
-	margin-top: 1ex;
-	margin-bottom: 2ex;  
+	color: #000000;
+	border: 2px solid #EFAC95;
+	margin-top: 2ex;
+	margin-bottom: 2ex;
+	font-size: 100%;
 }
 
 #openAccessClassificationSelect input[type="button"].ajaxButton:hover {
@@ -531,6 +523,10 @@ input[type="button"].ajaxButton {
 	color: red;
 }
 
+#saveMetadataButtonContainer {
+	clear: both;
+}
+
 input#authorcontractconfirm {
 	margin: 1px;
 	
@@ -543,4 +539,14 @@ input#authorcontractconfirm {
 
 #openAccessMetaDataContainer .fsInput {
 	width: 60%;
+}
+
+#oasherparomeopublisher {
+	font-weight: bold;
+	margin: 2ex 0;
+}
+
+
+#oasherparomeo {
+	margin: 2ex 0;
 }

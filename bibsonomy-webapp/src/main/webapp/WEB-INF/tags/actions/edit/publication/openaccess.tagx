@@ -105,9 +105,8 @@
 							<div class="dissError"><!-- do not remove this text --></div>
 						</div>
 						
-						<div style="text-align: right;">
-							<a id="saveMetadataButton" href="javascript:sendAdditionalMetadataFields()">save</a>
-						
+						<div id="saveMetadataButtonContainer">
+							<a id="saveMetadataButton" href="javascript:sendAdditionalMetadataFields()"><fmt:message key="post.resource.openaccess.additionalfields.save"/></a>
 						</div>
 
 						<input type="hidden" name="hash" id="openAccessCurrentPublicationHash" value="${fn:escapeXml(bibtex.intraHash)}"/>
@@ -127,8 +126,8 @@
 						$(document).ready(function() {
 							initialiseOpenAccessClassification("openAccessClassification", &quot;${bibtex.intraHash}&quot;);
 							initialiseOpenAccessSendToRepository("oaSubmitContainer", &quot;${bibtex.intraHash}&quot;);
-							loadStoredClassificationItems();
-							loadAdditionalMetadataFields();
+							setTimeout("loadStoredClassificationItems()", 1);
+							setTimeout("loadAdditionalMetadataFields()", 1);
 							setTimeout("checkOpenAccess()", 1);
 					    });
 					</script>
@@ -136,16 +135,35 @@
 	<!-- a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a> -->
 	
 	
-					<div id="openAccessRomeoSherpaContainer">
+					<div id="oasherparomeocontainer">
 						<h4><fmt:message key="post.resource.openaccess.headline.sherparomeo"/></h4>
-						
-						<c:set var="oaRequestPublisher" value="?publisher=${bibtex.publisher}"/>
+
+						<c:set var="oaRequestPublisherUrlParameter" value="?publisher=${bibtex.publisher}"/>
 						<c:if test="${bibtex.entrytype=='article'}">
 							<c:set var="oaRequestPublisherUrlParameter" value="?jTitle=${bibtex.journal}"/>
 						</c:if>
-						<input type="hidden" id="oaRequestPublisher" value="${oaRequestPublisher}"/>
+						<input type="hidden" id="oaRequestPublisherUrlParameter" value="${oaRequestPublisherUrlParameter}"/>
 						
-						<div id="openAccessRomeoSherpa"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
+						<div id="oasherparomeopredescription" class="oasherparomeodescription"><fmt:message key="post.resource.openaccess.sherparomeo.description"/></div>				
+						
+						<c:if test="${bibtex.entrytype=='article'}">
+						<div id="oasherparomeopublisher"><fmt:message key="post.resource.openaccess.sherparomeo.publisher.entrytype.article"><fmt:param value="${bibtex.journal}"/></fmt:message></div>
+						</c:if>
+						<c:if test="${bibtex.entrytype!='article'}">
+						<div id="oasherparomeopublisher"><fmt:message key="post.resource.openaccess.sherparomeo.publisher.entrytype.other"><fmt:param value="${bibtex.publisher}"/></fmt:message></div>
+						</c:if>
+						
+						<div id="oasherparomeo"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
+
+						<div id="oasherparomeocolordescription">
+						<fmt:message key="post.resource.openaccess.sherparomeo.color.description.intro"/>  
+						<ul>
+							<li class="oa-green"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.green"/></li>
+							<li class="oa-blue"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.blue"/></li>
+							<li class="oa-yellow"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.yellow"/></li>
+							<li class="oa-white"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.white"/></li>
+						</ul>
+						</div>
 					</div>
 	
 					<div id="authorcontract">

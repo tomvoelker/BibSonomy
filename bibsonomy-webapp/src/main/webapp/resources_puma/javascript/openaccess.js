@@ -139,10 +139,10 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 /* open access check */
 /* TODO: add error handling, check apicontrol and outcome in response. */
 function checkOpenAccess () {
-	var container = $("#openAccessRomeoSherpa");	
+	var container = $("#oasherparomeo");	
 
 	// TODO: add progress animation
-	var url = oaBaseUrl+$("#oaRequestPublisher").val();
+	var url = oaBaseUrl+$("#oaRequestPublisherUrlParameter").val();
 
 	$.ajax({
 		url: url,
