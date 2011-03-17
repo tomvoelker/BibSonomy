@@ -1,7 +1,7 @@
 <div style="margin-bottom:1em">
 \begin{title}<b>\format[Replace(\n,),HTMLChars,FormatPagesForHTML]{\title}</b>. \end{title}<br/>
 In: \begin{editor}\format[AuthorFirstAbbrLastCommas,Replace(" and , und "),HTMLChars]{\editor}
-(Herausgeber): \end{editor}\begin{booktitle}<i>\format[Replace(\n,),HTMLChars,FormatPagesForHTML]{\booktitle}</i>\end{booktitle}\begin{edition}, \format[Replace(\n,),HTMLChars]{\edition}. Auflage\end{edition}\begin{series}\begin{volume}, Band \format[Replace(\n,),HTMLChars]{\volume} der Reihe \format[Replace(\n,),HTMLChars]{\series}\end{series}\end{volume}\begin{pages}, Seiten \format[FormatPagesForHTML]{\pages}\end{pages}.
+(Herausgeber): \end{editor}\begin{booktitle}<i>\format[Replace(\n,),HTMLChars,FormatPagesForHTML]{\booktitle}</i>\end{booktitle}\begin{edition}, \format[Replace(\n,),HTMLChars]{\edition}. Auflage\end{edition}\begin{volume}, Band \format[Replace(\n,),HTMLChars]{\volume}\end{volume}\begin{series}, Reihe \format[Replace(\n,),HTMLChars]{\series}\end{series}\begin{pages}, Seiten \format[FormatPagesForHTML]{\pages}\end{pages}.
 \begin{publisher}\format[Replace(\n,),HTMLChars]{\publisher}, \end{publisher}\begin{address}\format[Replace(\n,),HTMLChars]{\address}, \end{address}\begin{year}\format[Replace(\n,),HTMLChars]{\year}\end{year}.
 \begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),Replace(\n,),HTMLChars]{\note}\end{note}
 <br/>
