@@ -9,14 +9,22 @@
 	<!-- factory beans -->
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory" />
 	
-	<bean id="noAuthLogicFactory" class="org.bibsonomy.database.DBLogicNoAuthInterfaceFactory"/>
+	<!-- factory bean for anonymous login -->
+	<bean id="noAuthLogicFactory" class="org.bibsonomy.database.DBLogicNoAuthInterfaceFactory">
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>
+
+	<!-- factory bean which takes the security token's viewer id as login user name -->
+	<bean id="shindigLogicFactory" class="org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory">
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+		<property name="noAuthLogicFactory" ref="noAuthLogicFactory"/>
+	</bean>
 
 	<!--+
 		| OpenSocial Data Provider
 		+-->
-	<bean id="personSpi" class="org.bibsonomy.opensocial.spi.BibSonomyPersonSpi" init-method="init">
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-		<property name="dbLogicFactory" ref="noAuthLogicFactory"/>
+	<bean id="personSpi" class="org.bibsonomy.opensocial.spi.BibSonomyPersonSpi">
+		<property name="dbLogicFactory" ref="shindigLogicFactory"/>
 	</bean>
 	
 	<bean id="mockupPersonSpi" class="org.bibsonomy.opensocial.spi.MockPersonSpi"/>
