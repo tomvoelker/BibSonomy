@@ -18,6 +18,14 @@
  */
 package org.bibsonomy.opensocial.spi;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Future;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
@@ -29,22 +37,9 @@ import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.database.DBLogic;
-import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
-import org.bibsonomy.database.common.DBSessionFactory;
+import org.bibsonomy.database.ShindigLogicInterfaceFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.database.util.IbatisDBSessionFactory;
-import org.w3c.dom.UserDataHandler;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Future;
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Mock implementation of {@link PersonService}.
@@ -52,53 +47,144 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class BibSonomyPersonSpi implements PersonService {
 
-	/** The Constant JOHN. */
-	private static final UserId JOHN = new UserId(UserId.Type.userId, "john.doe");
+	/** logic factory for accessing BibSonomy data */
+	private ShindigLogicInterfaceFactory dbLogicFactory;
 
-	/** The Constant JANE. */
-	private static final UserId JANE = new UserId(UserId.Type.userId, "jane.doe");
-
-	/** The Constant FRIENDS. */
-	private static final UserId[] FRIENDS = {JOHN, JANE};
-
-	/** mockup login user */
-	private static final String LOGIN_USER     = "folke";
-	private static final String LOGIN_PASSWORD = "passwd";
-
-	private User loginUser;
-
-	private DBSessionFactory dbSessionFactory;
-	private DBLogicNoAuthInterfaceFactory dbLogicFactory;
-
-	public BibSonomyPersonSpi() {
-		loginUser = new User(LOGIN_USER);
-	}
-	
-	public void init() {
-		this.dbLogicFactory.setDbSessionFactory(this.getDbSessionFactory());
-	}
-
-	/* (non-Javadoc)
-	 * @see org.apache.shindig.social.opensocial.spi.PersonService#getPerson(org.apache.shindig.social.opensocial.spi.UserId, java.util.Set, org.apache.shindig.auth.SecurityToken)
+	//------------------------------------------------------------------------
+	// PersonService interface
+	//------------------------------------------------------------------------
+	/**
+	 * Returns a person that corresponds to the passed in person id.
+	 * 
+	 * @see org.apache.shindig.social.opensocial.spi.PersonService#getPerson
+	 * 
+	 * @param id The id of the person to fetch.
+	 * @param fields The fields to fetch.
+	 * @param token The gadget token
+	 * @return a list of people.
 	 */
 	public Future<Person> getPerson(UserId userId, Set<String> fields, SecurityToken token) throws ProtocolException {
-		Person person = makePerson(getBibSonomyUser(userId));
+		LogicInterface dbLogic = this.dbLogicFactory.getLogicAccess(token);
+		Person person = makePerson(getBibSonomyUser(userId, dbLogic, token));
 		return ImmediateFuture.newInstance(person);
 	}
 
-	private User getBibSonomyUser(UserId userId) {
-		LogicInterface dbLogic = getDbLogic();
 
-		User dbUser;
-		if( UserId.Type.userId.equals(userId.getType()) ) {
-			dbUser = dbLogic.getUserDetails(userId.getUserId());
-		} else {
-			dbUser = dbLogic.getUserDetails(LOGIN_USER);
+	/**
+	 * Returns a list of people that correspond to the passed in person ids.
+	 *
+	 * @see org.apache.shindig.social.opensocial.spi.PersonService#getPeople
+	 *
+	 * @param userIds A set of users
+	 * @param groupId The group
+	 * @param collectionOptions How to filter, sort and paginate the collection being fetched
+	 * @param fields The profile details to fetch. Empty set implies all
+	 * @param token The gadget token @return a list of people.
+	 * @return Future that returns a RestfulCollection of Person
+	 */
+	public Future<RestfulCollection<Person>> getPeople(Set<UserId> userIds, GroupId groupId, CollectionOptions collectionOptions, Set<String> fields, SecurityToken token) throws ProtocolException {
+		LogicInterface dbLogic = this.dbLogicFactory.getLogicAccess(token);
+		try {
+			List<Person> people = new ArrayList<Person>();
+			switch (groupId.getType()) {
+			case self:
+				//
+				// get user profiles for given list of users
+				//
+				for (UserId userId: userIds) {
+					User dbUser = getBibSonomyUser(userId, dbLogic, token);
+					Person person = makePerson(dbUser);
+					people.add(person);
+				}
+				break;
+			case friends:
+				//
+				// get all friends for given list of users
+				//
+				List<User> friends = getBibSonomyFriends(userIds, groupId, dbLogic, token);
+				for (User user: friends) {
+					Person person = makePerson(user);
+					people.add(person);
+				}
+				break;
+			case all:
+				//
+				// get all users connected to given users
+				//
+				throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, "Not yet implemented");
+			case groupId:
+				//
+				// get all users belonging to a given group
+				//
+				throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, "Not yet implemented");
+			case deleted:
+				throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, "Not yet implemented");
+			default:
+				throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "Group ID not recognized");
+			}
+			return ImmediateFuture.newInstance(new RestfulCollection<Person>(people, 0, people.size()));
+		} catch (Exception e) {
+			throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Exception occurred", e);
 		}
+	}
+
+	//------------------------------------------------------------------------
+	// private helper
+	//------------------------------------------------------------------------
+	/**
+	 * get BibSonomy user object for given user id
+	 * 
+	 * @param userId
+	 * @param dbLogic
+	 * @param token
+	 * @return
+	 */
+	private User getBibSonomyUser(UserId userId, LogicInterface dbLogic, SecurityToken token) {
+		String userName = getUserName(userId, token);
+		
+		User dbUser = dbLogic.getUserDetails(userName);
 
 		return dbUser;
 	}
 
+	/**
+	 * get all BibSonomy friends for the requested users
+	 * 
+	 * @param userIds
+	 * @param groupId
+	 * @param dbLogic
+	 * @param token
+	 * @return
+	 */
+	private List<User> getBibSonomyFriends(Set<UserId> userIds, GroupId groupId, LogicInterface dbLogic, SecurityToken token) {
+		
+		List<User> friends = new LinkedList<User>(); 
+		for( UserId user : userIds ) {
+			String userName = getUserName(user, token);
+			List<User> dbFriends = dbLogic.getUserRelationship(userName, UserRelation.OF_FRIEND);
+			friends.addAll(dbFriends);
+		}
+
+		// finally get details for each friend
+		/*
+		List<User> retVal = new LinkedList<User>(); 
+		for( User user : friends ) {
+			User dbUser = dbLogic.getUserDetails(user.getName());
+			retVal.add(dbUser);
+		}
+		
+		return retVal;
+		*/
+		
+		return friends;
+	}
+	
+	/**
+	 * convert a BibSonomy user to an OpenSocial user object
+	 * 
+	 * @param dbUser
+	 * @return
+	 */
 	private Person makePerson(User dbUser) {
 		Person person = new PersonImpl();
 		person.setId(dbUser.getName());
@@ -110,93 +196,47 @@ public class BibSonomyPersonSpi implements PersonService {
 		}
 		return person;
 	}
-	
-	private List<User> getBibSonomyFriends(Set<UserId> userIds, GroupId groupId) {
-		LogicInterface dbLogic = getDbLogic();
 
-		List<User> friends = new LinkedList<User>(); 
-		for( UserId user : userIds ) {
-			User dbUser = getBibSonomyUser(user);
-			List<User> dbFriends = dbLogic.getUserRelationship(dbUser.getName(), UserRelation.OF_FRIEND);
-			friends.addAll(dbFriends);
-		}
-		
-		// finally get details for each friend
-		List<User> retVal = new LinkedList<User>(); 
-		for( User user : friends ) {
-			User dbUser = dbLogic.getUserDetails(user.getName());
-			retVal.add(dbUser);
-		}
-		
-		return retVal;
-	}
-
-	private LogicInterface getDbLogic() {
-		LogicInterface dbLogic = this.getDbLogicFactory().getLogicAccess(LOGIN_USER, LOGIN_PASSWORD);
-		return dbLogic;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.apache.shindig.social.opensocial.spi.PersonService#getPeople(java.util.Set, org.apache.shindig.social.opensocial.spi.GroupId, org.apache.shindig.social.opensocial.spi.CollectionOptions, java.util.Set, org.apache.shindig.auth.SecurityToken)
+	/**
+	 * returns user name to given request
+	 * 
+	 * @param user
+	 * @param token
+	 * @return
 	 */
-	public Future<RestfulCollection<Person>> getPeople(Set<UserId> userIds, GroupId groupId,
-			CollectionOptions collectionOptions, Set<String> fields, SecurityToken token)
-			throws ProtocolException {
-		try {
-			List<Person> people = new ArrayList<Person>();
-			switch (groupId.getType()) {
-			case self:
-				for (UserId userId: userIds) {
-					Person person = new PersonImpl();
-					person.setId(userId.getUserId());
-					person.setEthnicity("youDontKnow");
-					person.setAboutMe("Test");
-					people.add(person);
-				}
-				break;
-			case friends:
-				List<User> friends = getBibSonomyFriends(userIds, groupId);
-				for (User user: friends) {
-					Person person = makePerson(user);
-					people.add(person);
-				}
-				break;
-			case all:
-				//throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "Not yet implemented",null);
-				throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, "Not yet implemented");
-			case groupId:
-				//throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "Not yet implemented",null);
-				throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, "Not yet implemented");
-			case deleted:
-				//throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "Not yet implemented",null);
-				throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, "Not yet implemented");
-			default:
-				//throw new SocialSpiException(ResponseError.BAD_REQUEST, "Group ID not recognized",null);
-				throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "Group ID not recognized");
-			}
-			return ImmediateFuture.newInstance(new RestfulCollection<Person>(people, 0, people.size()));
-		} catch (Exception e) {
-			//throw new SocialSpiException(ResponseError.INTERNAL_ERROR, "Exception occurred", e);
-			throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Exception occurred", e);
+	private String getUserName(UserId userId, SecurityToken token) {
+		String userName;
+		
+		switch (userId.getType()) {
+		case viewer:
+			userName = token.getViewerId();
+			break;
+		case userId:
+			userName = userId.getUserId();
+			break;
+		case me:
+			userName = token.getViewerId();
+			break;
+		case owner:
+			// FIXME: how do we handle this?
+		default:
+			throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, "UserType '"+userId.getType().name()+"' not yet implemented");
 		}
+		
+		return userName;
 	}
 
 
-	public void setDbLogicFactory(DBLogicNoAuthInterfaceFactory dbLogicFactory) {
+
+	//------------------------------------------------------------------------
+	// getter/setter
+	//------------------------------------------------------------------------
+	public void setDbLogicFactory(ShindigLogicInterfaceFactory dbLogicFactory) {
 		this.dbLogicFactory = dbLogicFactory;
 	}
 
-	public DBLogicNoAuthInterfaceFactory getDbLogicFactory() {
+	public ShindigLogicInterfaceFactory getDbLogicFactory() {
 		return dbLogicFactory;
-	}
-
-	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
-		this.dbSessionFactory = dbSessionFactory;
-	}
-
-	public DBSessionFactory getDbSessionFactory() {
-		return dbSessionFactory;
 	}
 
 }
