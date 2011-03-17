@@ -11,7 +11,7 @@
 	></xsd:import>	
 <!--	<xsd:import namespace="http://www.loc.gov/METS/" schemaLocation="mets.xsd"></xsd:import>-->
 
-	<xsd:element name="PumaPostType" xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD">
+	<xsd:element name="PumaPost" xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD">
 		<xsd:complexType>
 			<xsd:complexContent>
 				<xsd:extension base="PostType" >
@@ -27,6 +27,8 @@
 								<xsd:attribute name="value" type="xsd:string"></xsd:attribute>
 							</xsd:complexType>
 						</xsd:element>
+						<xsd:element name="user" type="puma:PumaUserType"/>
+						<xsd:element name="publisherinfo" type="xsd:string" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 					<xsd:attribute name="ISBN" type="xsd:string"></xsd:attribute>
 					<xsd:attribute name="ISSN" type="xsd:string"></xsd:attribute>
@@ -36,6 +38,17 @@
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>
+
 	</xsd:element>
+
+
+	<xsd:complexType name="PumaUserType" >
+		<xsd:complexContent>
+			<xsd:extension base="UserType" >
+				<xsd:attribute name="id" type="xsd:string"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
 
 </xsd:schema>

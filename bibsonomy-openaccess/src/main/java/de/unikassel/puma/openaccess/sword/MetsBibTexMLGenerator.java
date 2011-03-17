@@ -29,6 +29,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
@@ -43,7 +44,8 @@ import de.unikassel.puma.openaccess.sword.renderer.xml.FileType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.Mets;
 import de.unikassel.puma.openaccess.sword.renderer.xml.ObjectFactory;
-import de.unikassel.puma.openaccess.sword.renderer.xml.PumaPostType;
+import de.unikassel.puma.openaccess.sword.renderer.xml.PumaPost;
+import de.unikassel.puma.openaccess.sword.renderer.xml.PumaUserType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.StructMapType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.DivType.Fptr;
 import de.unikassel.puma.openaccess.sword.renderer.xml.FileType.FLocat;
@@ -74,8 +76,23 @@ public class MetsBibTexMLGenerator {
 	 * object attributes to store data.
 	 * 
 	 */
-	private PumaData<BibTex> _post;
-	private ArrayList<String> _filenameList; 
+	private PumaData<BibTex> _post = null;
+	private ArrayList<String> _filenameList = null; 
+	private User _user = null; 
+
+	/**
+	 * @return the _user
+	 */
+	public User getUser() {
+		return _user;
+	}
+
+	/**
+	 * @param user the _user to set
+	 */
+	public void setUser(User user) {
+		_user = user;
+	}
 
 	// contains special characters, symbols, etc...
 	private static Properties chars = new Properties();
@@ -133,9 +150,9 @@ public class MetsBibTexMLGenerator {
 	
 	private class PumaRenderer extends JAXBRenderer {
 		
-		protected PumaPostType createPumaPost(final PumaData<? extends Resource> pumaData)	throws InternServerException {
+		protected PumaPost createPumaPost(final PumaData<? extends Resource> pumaData, User userData)	throws InternServerException {
 
-			final PumaPostType myPost = new PumaPostType();
+			final PumaPost myPost = new PumaPost();
 			
 			fillXmlPost(myPost, pumaData.getPost());
 
@@ -157,6 +174,9 @@ public class MetsBibTexMLGenerator {
 				if (tagIterator.next().getName().startsWith("sys:")) {
 					tagIterator.remove();
 				}
+				if (tagIterator.next().getName().equals("myown")) {
+					tagIterator.remove();
+				}
 			}
 			
 			
@@ -173,6 +193,17 @@ public class MetsBibTexMLGenerator {
 			myPost.setBibtex(bibtex);
 
 			
+			
+			/*
+			 * add more user informations
+			 */
+			if (null != userData) {
+				if (null == myPost.getUser()) myPost.setUser(new PumaUserType());
+				myPost.getUser().setName(userData.getName());
+				myPost.getUser().setRealname(userData.getRealname());
+				myPost.getUser().setEmail(userData.getEmail());
+				myPost.getUser().setId(userData.getLdapId());
+			}
 			
 			/*
 			 * add additional metadata
@@ -219,13 +250,23 @@ public class MetsBibTexMLGenerator {
 				if (null != pumaData.getClassification()) {					
 					for (Entry<String, List<String>> entry : pumaData.getClassification().entrySet()) {
 						for (String listValue : entry.getValue() ) {
-							PumaPostType.Classification pptClassification = new PumaPostType.Classification();
+							PumaPost.Classification pptClassification = new PumaPost.Classification();
 							pptClassification.setName(entry.getKey().toLowerCase(Locale.getDefault()).replaceAll("/ /",""));
 							pptClassification.setValue(listValue);
 							myPost.getClassification().add(pptClassification);
 						}
 					}
 				}
+				
+				/*
+				 * add publisher info / romeo sherpa 
+				 */
+				
+				// publisher oder journal
+				// get info from romeo/sherpa
+				//myPost.setPublisherinfo("");
+
+				
 			}
 			return myPost;
 		}
@@ -461,7 +502,7 @@ public class MetsBibTexMLGenerator {
 		/*
 		 * unser Post
 		 */
-		final PumaPostType pumaPost = xmlRenderer.createPumaPost(_post);
+		final PumaPost pumaPost = xmlRenderer.createPumaPost(_post, _user);
 		
 		
 		//derPost.set

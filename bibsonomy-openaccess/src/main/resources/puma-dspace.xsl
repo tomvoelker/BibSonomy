@@ -60,7 +60,7 @@
 
     <!-- match the top level bibtex-entry element and kick off the
          template matching process -->
-    <xsl:template match="puma:PumaPostType">
+    <xsl:template match="puma:PumaPost">
     	<dim:dim>
     		<xsl:apply-templates/>
 	    <!-- dc.identifier.isbn -->

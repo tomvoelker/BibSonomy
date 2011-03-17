@@ -201,6 +201,7 @@ public class SwordService {
 				// PrintWriter from a Servlet
 						
 				MetsBibTexMLGenerator metsBibTexMLGenerator = new MetsBibTexMLGenerator();
+				metsBibTexMLGenerator.setUser(user);
 				metsBibTexMLGenerator.setFilenameList(fileList);
 				//metsGenerator.setMetadata(metadataMap);
 				metsBibTexMLGenerator.setMetadata((PumaData<BibTex>) pumaData);
