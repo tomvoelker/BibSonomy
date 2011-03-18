@@ -12,13 +12,17 @@
 	<!--+
 		| url mapping for OpenSocial requests
 		+-->
-	<bean id="adminUrlMapping" parent="urlMapping"
-		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<bean id="opensocialUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
 				<entry key="/container">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="containerPageController" />
+						<property name="allowedFields">	
+							<list>
+								<value>gadgetUrl</value>
+							</list>
+						</property>					
 					</bean>
 				</entry>
 			</map>
