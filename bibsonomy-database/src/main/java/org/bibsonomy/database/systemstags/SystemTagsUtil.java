@@ -35,7 +35,7 @@ public class SystemTagsUtil {
      */
     private final static Pattern SYS_TAG_PATTERN = Pattern.compile("^(sys:|system:)?([^:]+):(.+)");
     private final static String PREFIX ="sys";
-    private final static String DELIM = ":";
+    public final static String DELIM = ":";
 
 
     /**

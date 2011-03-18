@@ -99,7 +99,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	    InboxDatabaseManager.getInstance().createInboxMessage(sender, receiver, post, session);
 	    log.debug("message was created");
 	    // 4. rename this tag for the sender (store receiverName)
-	    this.tag.setName(SentSystemTag.NAME + receiver);	
+	    this.tag.setName(SentSystemTag.NAME + SystemTagsUtil.DELIM + receiver);	
 	} catch (UnsupportedResourceTypeException urte) {
 	    session.addError(intraHash, new UnspecifiedErrorMessage(urte));
 	    log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);
