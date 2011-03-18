@@ -14,30 +14,31 @@
 	<fmt:bundle basename="messages"/>
 	
 	<!-- the tags of a resource -->
-	<fmt:message key="post.meta.taggedTo" />
-	<c:out value=" "/>
-	<span class="bmtags">
-		<c:forEach var="tag" items="${post.tags}">
-			<c:url var="tagUrl" value="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}" context="${projectContext}"/>
-			<a href="${tagUrl}"><c:out value="${tag.name}"/></a>
-			<c:out value=" "/>
-		</c:forEach>
+	<c:if test="${!empty post.tags}">
+		<fmt:message key="post.meta.taggedTo" />
+		<c:out value=" "/>
+		<span class="bmtags">
+			<c:forEach var="tag" items="${post.tags}">
+				<c:url var="tagUrl" value="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}" context="${projectContext}"/>
+				<a href="${tagUrl}"><c:out value="${tag.name}"/></a>
+				<c:out value=" "/>
+			</c:forEach>
 		<!-- TODO: add "for:" tags  -->
 		<!-- c:if test="${loginUserName eq post.user.name}">
 			<c:forEach var="foruser" items="${resource.usersToPost}">
 				<a href='${basePath}user/<mtl:encode value="${resource.user}" />/for:<mtl:encode value="${foruser}" />'>for:<c:out value='${foruser}' /></a>
 			</c:forEach>
 		</c:if -->
-		<c:if test="${!empty post.hiddenSystemTags}">
-			<c:set var="systagTitle" value=""/>
-			<c:forEach var="systag" items="${post.hiddenSystemTags}">
-				<c:url var="systagUrl" value="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(systag.name)}" context="${projectContext}"/>
-				<c:set var="systagTitle" value="${systagTitle} ${fn:escapeXml(systag.name)}" />
-			</c:forEach>		
-			<img alt="SystemTags" src="${resdir}/image/cog_wheel.png" title="${systagTitle}">
-			</img>	
-		</c:if>
-	</span>
+		</span>
+	</c:if>
+	<c:if test="${!empty post.hiddenSystemTags}">
+		<c:set var="systagTitle" value=""/>
+		<c:forEach var="systag" items="${post.hiddenSystemTags}">
+			<c:url var="systagUrl" value="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(systag.name)}" context="${projectContext}"/>
+			<c:set var="systagTitle" value="${systagTitle} ${fn:escapeXml(systag.name)}" />
+		</c:forEach>		
+		<img alt="SystemTags" src="${resdir}/image/cog_wheel.png" title="${systagTitle}"/>	
+	</c:if>
 	
 	<!-- group of a resource -->
 	<c:forEach var="group" items="${post.groups}">
