@@ -177,7 +177,7 @@ public class MetsBibTexMLGenerator {
 					tagIterator.remove();
 				}
 			
-				if (tag.getName().equals("myown")) {
+				if ("myown".equals(tag.getName())) {
 					tagIterator.remove();
 				}
 			}
