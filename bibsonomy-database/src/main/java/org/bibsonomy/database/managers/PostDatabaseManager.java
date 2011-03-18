@@ -31,7 +31,7 @@ import org.bibsonomy.database.managers.chain.FirstListChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTag;
-import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.validation.DatabaseModelValidator;
@@ -1069,7 +1069,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * systemtags perform before create
 			 */
-			final List<ExecutableSystemTag> systemTags = SystemTagsUtil.extractExecutableSystemTags(post.getTags(), new HashSet<Tag>());
+			final List<ExecutableSystemTag> systemTags = SystemTagsExtractor.extractExecutableSystemTags(post.getTags(), new HashSet<Tag>());
 			for (final ExecutableSystemTag systemTag: systemTags) {
 				systemTag.performBeforeCreate(post, session);
 			}
@@ -1182,7 +1182,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * perform system tags before update
 			 */
-			final List<ExecutableSystemTag> executableSystemTags = SystemTagsUtil.extractExecutableSystemTags(post.getTags(), oldPost.getTags());
+			final List<ExecutableSystemTag> executableSystemTags = SystemTagsExtractor.extractExecutableSystemTags(post.getTags(), oldPost.getTags());
 			for (final ExecutableSystemTag systemTag : executableSystemTags) {
 				systemTag.performBeforeUpdate(post, oldPost, operation, session);
 			}

@@ -63,6 +63,7 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
@@ -301,7 +302,9 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 
 		// this is save because of RTTI-check of resourceType argument
 		// which is of class T
-		return (List) this.publicationDBManager.getPosts(param, session);
+		List<Post<T>> publications = (List) this.publicationDBManager.getPosts(param, session);
+		SystemTagsExtractor.seperateHiddenSystemTags(publications, loginUser.getName());
+		return publications;
 	    } 
 	    
 	    if (resourceType == Bookmark.class) {
@@ -319,8 +322,9 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 		}
 
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
-		
-		return (List) this.bookmarkDBManager.getPosts(param, session);
+		List<Post<T>> bookmarks= (List) this.bookmarkDBManager.getPosts(param, session);
+		SystemTagsExtractor.seperateHiddenSystemTags(bookmarks, loginUser.getName());
+		return bookmarks;
 	    }
 	    
 	    if (resourceType == GoldStandardPublication.class) {

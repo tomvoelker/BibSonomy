@@ -12,6 +12,7 @@ import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.markup.SentSystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -98,7 +99,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	    InboxDatabaseManager.getInstance().createInboxMessage(sender, receiver, post, session);
 	    log.debug("message was created");
 	    // 4. rename this tag for the sender (store receiverName)
-	    this.tag.setName("sent:" + receiver);	
+	    this.tag.setName(SentSystemTag.NAME + receiver);	
 	} catch (UnsupportedResourceTypeException urte) {
 	    session.addError(intraHash, new UnspecifiedErrorMessage(urte));
 	    log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);

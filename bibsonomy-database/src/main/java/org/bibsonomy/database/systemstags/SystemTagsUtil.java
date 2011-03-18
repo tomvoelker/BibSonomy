@@ -2,18 +2,14 @@ package org.bibsonomy.database.systemstags;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.systemstags.executable.ForFriendTag;
 import org.bibsonomy.database.systemstags.executable.ForGroupTag;
+import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 import org.bibsonomy.model.Tag;
 
@@ -112,7 +108,6 @@ public class SystemTagsUtil {
 	return present(extractedTagType) && extractedTagType.equalsIgnoreCase(tagType) && isSystemTag(tagName);
     }
 
- 
 
     /**
      * Checks, if a list of tagNames contains a member, that starts with a given string, ignoring case
@@ -152,6 +147,25 @@ public class SystemTagsUtil {
      */
 
     /**
+     * Create a new instance of a markUp systemTag
+     * 
+     * @param tagName the original tag from that a systemTag is to be created
+     * @return a new instance of the matching systemTag 
+     * 		   or null, if the given tag does not describe a systemTag
+     */
+    public static SystemTag createSystemTag(final Tag tag) {
+	SystemTag sysTag = createExecutableTag(tag);
+	if (present(sysTag)) {
+	    return sysTag;
+	}
+	sysTag = createMarkUpSystemTag(tag.getName());
+	if (present(sysTag)) {
+	    return sysTag;
+	}
+	sysTag = createSearchSystemTag(tag.getName());
+	return sysTag;
+    }
+    /**
      * Create a new instance of an executable systemTag
      * 
      * @param tag = the original Tag from that a systemTag is to be created
@@ -182,7 +196,7 @@ public class SystemTagsUtil {
     }
 
     /**
-     * Create a new instance of an executable systemTag
+     * Create a new instance of a search systemTag
      * 
      * @param tagName the original tag from that a systemTag is to be created
      * @return a new instance of the matching systemTag 
@@ -196,6 +210,22 @@ public class SystemTagsUtil {
 	return sysTag;
     }
 
+    /**
+     * Create a new instance of a markUp systemTag
+     * 
+     * @param tagName the original tag from that a systemTag is to be created
+     * @return a new instance of the matching systemTag 
+     * 		   or null, if the given tag does not describe a systemTag
+     */
+    public static MarkUpSystemTag createMarkUpSystemTag(final String tagName) {
+	final MarkUpSystemTag sysTag = sysTagFactory.getMarkUpSystemTag(tagName);
+	if (present(sysTag)) {
+	    sysTag.setArgument(extractArgument(tagName));
+	}
+	return sysTag;
+    }
+
+    
     /**
      * Builds a system tag string for a given kind of system tag and an argument
      * @param sysTagName = which kind of system tag
@@ -219,97 +249,6 @@ public class SystemTagsUtil {
     /*
      * Methods to extract or remove systemTags
      */
-
-    /**
-     * Removes all systemTags from a given set of tags
-     * Warning: the given Collection must support iterator.remove()
-     * @param tags = the set of tags
-     * @return number of tags, that were removed
-     */
-    public static int removeAllSystemTags(final Collection<Tag> tags) {
-	int removeCounter = 0;
-	for (final Iterator<Tag> iter= tags.iterator(); iter.hasNext();) {
-	    final Tag tag = iter.next();
-	    if (isSystemTag(tag.getName())) {
-		iter.remove();
-		removeCounter++;
-	    }
-	}
-	return removeCounter;
-    }
-
-    /**
-     * Removes all non-systemTags from a given set of tagNames
-     * Warning: the given Collection must support iterator.remove()
-     * @param tagNames = the set of tagNames
-     * @return number of tags, that were removed
-     */
-    public static int removeAllNonSystemTags(final Collection<String> tagNames) {
-	int removeCounter = 0;
-	for  (final Iterator<String> iter = tagNames.iterator(); iter.hasNext();) {
-	    final String tagName = iter.next();
-	    if ( !isSystemTag( tagName ) ) {
-		iter.remove();
-		removeCounter++;
-	    }
-	}
-	return removeCounter;
-    }
-
-    /**
-     * Returns a new List containing the names of all systemTags of a given Collection of tagNames
-     * 
-     * @param tagNames collection of tags
-     * @return a new list with all system tags which are contained in input tags
-     */
-    public static List<String> extractSystemTags(final Collection<String> tagNames) {
-	final List<String> sysTags = new LinkedList<String>();
-	for( final String tagName : tagNames ) {
-	    if (isSystemTag(tagName)) {
-		sysTags.add(tagName);
-	    }
-	}
-	return sysTags;
-    }
-
-
-    /**
-     * Returns a list of all executable systemTags of a post that have not previously been executed
-     * @param alreadyExecutedTags - the list of all tags, that have been executed and therefore shall not be used again
-     * @param tags
-     * @return a list 
-     */
-    public static List<ExecutableSystemTag> extractExecutableSystemTags(final Set<Tag> tags, final Set<Tag> alreadyExecutedTags) {
-	final List<ExecutableSystemTag> sysTags = new ArrayList<ExecutableSystemTag>();
-	for (final Tag tag : tags) {
-	    final ExecutableSystemTag stt = createExecutableTag(tag);
-	    if (present(stt) && !alreadyExecutedTags.contains(stt)) {
-		sysTags.add(stt);
-	    }
-	}
-	return sysTags;
-    }
-
-
-    /**
-     * Parses a given string for system tags
-     * @param search = a string to be searched for system tags
-     * @param delim = the delimiter by which the string is to be tokenized
-     * @return a list of Strings that were recognized as SearchSystemTags
-     */
-    public static List<String> extractSearchSystemTagsFromString(final String search, final String delim) {
-	final List<String> sysTags = new ArrayList<String>();
-	if (search == null) {
-	    return sysTags;
-	}
-	for (String s : search.split(delim)) {
-	    s = s.trim();
-	    if (isSearchSystemTag(s)) {
-		sysTags.add(s);
-	    }
-	}
-	return sysTags;
-    }
 
     /**
      * Extract systemTag's argument i. e. it maps
@@ -376,5 +315,4 @@ public class SystemTagsUtil {
 	}
 	return false;
     }
-
 }

@@ -15,6 +15,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
+import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -157,7 +158,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	 * remove all systemTags to avoid any side effects and contradictions 
 	 */
 	final Set<Tag> groupTags = new HashSet<Tag>(userTags);
-	SystemTagsUtil.removeAllSystemTags(groupTags);
+	SystemTagsExtractor.removeAllSystemTags(groupTags);
 	groupTags.add(new Tag("from:"+userName));
 	groupPost.setTags(groupTags);
 	/*

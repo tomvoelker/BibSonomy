@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
+import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -37,7 +38,7 @@ public class SystemTagFactory {
     private final Map<String, SearchSystemTag> searchSystemTagMap;
 
     /** The set that contains all searchSystemTags */
-    private final Map<String, SystemTag> markUpSystemTagMap;
+    private final Map<String, MarkUpSystemTag> markUpSystemTagMap;
 
     /** The DBSessionFactory (we need it for the forGroup tag) */
     private DBSessionFactory dbSessionFactory;
@@ -55,8 +56,8 @@ public class SystemTagFactory {
 	this.fillExecutableSystemTagMap( (Set<ExecutableSystemTag>)springBeanFactory.getBean("executableSystemTagSet") );
 	this.searchSystemTagMap = new HashMap<String, SearchSystemTag>();
 	this.fillSearchSystemTagMap( (Set<SearchSystemTag>)springBeanFactory.getBean("searchSystemTagSet") );
-	this.markUpSystemTagMap = new HashMap<String, SystemTag>();
-	this.fillMarkUpSystemTagMap( (Set<SystemTag>)springBeanFactory.getBean("markUpSystemTagSet") );
+	this.markUpSystemTagMap = new HashMap<String, MarkUpSystemTag>();
+	this.fillMarkUpSystemTagMap( (Set<MarkUpSystemTag>)springBeanFactory.getBean("markUpSystemTagSet") );
     }
 
 
@@ -87,8 +88,8 @@ public class SystemTagFactory {
      * SystemTagName -> instance of the corresponding SystemTag
      * @param searchSystemTags
      */
-    private void fillMarkUpSystemTagMap (Set<SystemTag> markUpSystemTags) {
-	for (SystemTag sysTag: markUpSystemTags) {
+    private void fillMarkUpSystemTagMap (Set<MarkUpSystemTag> markUpSystemTags) {
+	for (MarkUpSystemTag sysTag: markUpSystemTags) {
 	    this.markUpSystemTagMap.put(sysTag.getName(), sysTag);
 	}
     }
@@ -131,7 +132,18 @@ public class SystemTagFactory {
 	return null;
     }
 
-    /**
+    public MarkUpSystemTag getMarkUpSystemTag(String tagName) {
+	final String tagType = SystemTagsUtil.extractType(tagName);
+	if (present(tagType)) {
+	    final MarkUpSystemTag sysTag = this.markUpSystemTagMap.get(tagType);
+	    if (present(sysTag) && sysTag.isInstance(tagName)) {
+		// tagName was found and tagName has the correct structure
+		return sysTag.newInstance();
+	    }
+	}
+	return null;
+    }
+   /**
      * Determines whether a tag (given by name) is an executable systemTag
      * 
      * @param tagName
@@ -207,4 +219,6 @@ public class SystemTagFactory {
     public void setDbSessionFactory(final DBSessionFactory sessionFactory) {
 	this.dbSessionFactory = sessionFactory;
     }
-}
+
+
+ }
