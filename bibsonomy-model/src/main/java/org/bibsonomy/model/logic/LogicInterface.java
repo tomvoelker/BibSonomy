@@ -116,7 +116,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 
 	/**
 	 * @param userName
-	 * @return
+	 * @return WikiVersions
 	 */
 	public List<Date> getWikiVersions(String userName);
 	        

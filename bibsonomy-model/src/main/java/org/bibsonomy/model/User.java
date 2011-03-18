@@ -811,14 +811,23 @@ public class User implements Serializable {
 		return super.hashCode();
 	}
 
+	/**
+	 * @return institution
+	 */
 	public String getInstitution() {
 		return this.institution;
 	}
 
+	/**
+	 * @param institution
+	 */
 	public void setInstitution(String institution) {
 		this.institution = institution;
 	}
 
+	/**
+	 * @return posts
+	 */
 	public List<Post<? extends Resource>> getPosts() {
 		if (this.posts == null) {
 			this.posts = new LinkedList<Post<? extends Resource>>();
@@ -826,6 +835,9 @@ public class User implements Serializable {
 		return this.posts;
 	}
 
+	/**
+	 * @param posts
+	 */
 	public void setPosts(List<Post<? extends Resource>> posts) {
 		this.posts = posts;
 	}
