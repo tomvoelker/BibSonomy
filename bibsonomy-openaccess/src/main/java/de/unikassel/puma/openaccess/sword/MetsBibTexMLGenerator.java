@@ -25,9 +25,9 @@ import javax.xml.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -168,13 +168,16 @@ public class MetsBibTexMLGenerator {
 			/*
 			 *  remove all system tags. they should not be sent to repository
 			 */
-			List<TagType> tags = myPost.getTag();
-			Iterator<TagType> tagIterator = tags.iterator();
+
+			Iterator<TagType> tagIterator = myPost.getTag().iterator();
 			while (tagIterator.hasNext()) {
-				if (tagIterator.next().getName().startsWith("sys:")) {
+				TagType tag = tagIterator.next();
+				
+				if (SystemTagsUtil.isSystemTag(tag.getName())) {
 					tagIterator.remove();
 				}
-				if (tagIterator.next().getName().equals("myown")) {
+			
+				if (tag.getName().equals("myown")) {
 					tagIterator.remove();
 				}
 			}
