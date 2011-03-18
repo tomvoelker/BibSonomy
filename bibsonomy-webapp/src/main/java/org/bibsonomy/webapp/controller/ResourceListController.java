@@ -17,7 +17,7 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.common.enums.TagsType;
-import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -174,7 +174,7 @@ public abstract class ResourceListController {
 
 			// if tags are requested (not related tags), remove non-systemtags from tags list
 			if (tagsType.equalsIgnoreCase(TagsType.DEFAULT.getName()) && tags != null ) {
-				SystemTagsUtil.removeAllNonSystemTags(tags);
+				SystemTagsExtractor.removeAllNonSystemTags(tags);
 			}
 
 			// check if limitation to a single resourcetype is requested			

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.AuthorSystemTag;
 import org.bibsonomy.model.BibTex;
@@ -56,14 +57,14 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		
 		// check for further system tags
 		// FIXME: how may this happen? http://www.bibsonomy.org/author<tag>/tag
-		final List<String> sysTags = SystemTagsUtil.extractSearchSystemTagsFromString(authorQuery, " ");
+		final List<String> sysTags = SystemTagsExtractor.extractSearchSystemTagsFromString(authorQuery, " ");
 		if (sysTags.size() > 0) {
 			// remove them from the query
 			authorQuery = removeSystemtagsFromQuery(authorQuery, sysTags);
 			// add them to the tags list
 			requTags.addAll(sysTags);
 		}
-		sysTags.addAll(SystemTagsUtil.extractSystemTags(requTags));
+		sysTags.addAll(SystemTagsExtractor.extractSystemTags(requTags));
 				
 		// add the requested author as a system tag
 		String sysAuthor = SystemTagsUtil.buildSystemTagString(AuthorSystemTag.NAME, authorQuery);
