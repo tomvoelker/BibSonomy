@@ -61,11 +61,13 @@
 	  +-->	  
 	<util:set id="markUpSystemTagSet" set-class="java.util.HashSet">
 		<ref bean="relevantForTag"/>
+		<ref bean="sentSystemTag"/>
 	</util:set>
 	
 	<!--+
 	    | beans for the markUp systemTags
 	    +-->
 	<bean id="relevantForTag" class="org.bibsonomy.database.systemstags.markup.RelevantForSystemTag"/>
+	<bean id="sentSystemTag" class="org.bibsonomy.database.systemstags.markup.SentSystemTag"/>
 
 </beans>

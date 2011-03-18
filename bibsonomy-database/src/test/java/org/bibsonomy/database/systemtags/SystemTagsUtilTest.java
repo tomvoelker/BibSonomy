@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.Tag;
@@ -103,10 +104,10 @@ public class SystemTagsUtilTest {
 	// test countNonSystemTags()
 	assertEquals(5, SystemTagsUtil.countNonSystemTags( Arrays.asList(tagNames) ));
 	// test extractSystemTags()
-	assertEquals(3, SystemTagsUtil.extractSystemTags(Arrays.asList(tagNames)).size());
+	assertEquals(3, SystemTagsExtractor.extractSystemTags(Arrays.asList(tagNames)).size());
 	// test removeAllSystemTags()
 	Set<Tag> tags = ModelUtils.getTagSet(tagNames);
-	SystemTagsUtil.removeAllSystemTags(tags);
+	SystemTagsExtractor.removeAllSystemTags(tags);
 	assertEquals(5, tags.size());
 	// test removeAllNonSystemTags()
 	tags = ModelUtils.getTagSet(tagNames);
@@ -114,7 +115,7 @@ public class SystemTagsUtilTest {
 	for (int i=0; i<tagNames.length; i++) {
 	    tagNameList.add(tagNames[i]);
 	}
-	assertEquals(5, SystemTagsUtil.removeAllNonSystemTags(tagNameList));
+	assertEquals(5, SystemTagsExtractor.removeAllNonSystemTags(tagNameList));
     }
 
 
@@ -125,7 +126,7 @@ public class SystemTagsUtilTest {
     public void extractSystemTagsFromString() {
 	// check for a given string
 	StringBuilder test = new StringBuilder("This is a test string conaining sys:user:dbenz some system tags sys:days:10 .");
-	List<String> sysTags = SystemTagsUtil.extractSearchSystemTagsFromString(test.toString(), " ");
+	List<String> sysTags = SystemTagsExtractor.extractSearchSystemTagsFromString(test.toString(), " ");
 	assertEquals(2, sysTags.size());
 	assertEquals("sys:user:dbenz", sysTags.get(0));
 	assertEquals("sys:days:10", sysTags.get(1));
