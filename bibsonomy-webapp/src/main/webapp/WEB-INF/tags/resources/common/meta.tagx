@@ -28,6 +28,15 @@
 				<a href='${basePath}user/<mtl:encode value="${resource.user}" />/for:<mtl:encode value="${foruser}" />'>for:<c:out value='${foruser}' /></a>
 			</c:forEach>
 		</c:if -->
+		<c:if test="${!empty post.hiddenSystemTags}">
+			<c:set var="systagTitle" value=""/>
+			<c:forEach var="systag" items="${post.hiddenSystemTags}">
+				<c:url var="systagUrl" value="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(systag.name)}" context="${projectContext}"/>
+				<c:set var="systagTitle" value="${systagTitle} ${fn:escapeXml(systag.name)}" />
+			</c:forEach>		
+			<img alt="SystemTags" src="${resdir}/image/cog_wheel.png" title="${systagTitle}">
+			</img>	
+		</c:if>
 	</span>
 	
 	<!-- group of a resource -->
