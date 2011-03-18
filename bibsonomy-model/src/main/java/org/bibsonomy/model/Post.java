@@ -23,12 +23,13 @@
 
 package org.bibsonomy.model;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 /**
  * A post connects a given resource with a user and a certain date.
  * 
@@ -69,6 +70,12 @@ public class Post<T extends Resource> implements Serializable {
 	 * This post is tagged with these {@link Tag}s.
 	 */
 	private Set<Tag> tags;
+	
+	/**
+	 * This post is tagged with these {@link SystemTag}s
+	 * they are hidden but can be called when needed
+	 */
+	private Set<Tag> hiddenSystemTags;
 
 	/**
 	 * This is the {@link Date} when this post was lastly modified.
@@ -310,5 +317,30 @@ public class Post<T extends Resource> implements Serializable {
 	@Override
 	public String toString() {
 		return "\n" + (user == null ? "" : user.getName()) + "\n\ttagged\n\t\t" + resource + "\n\twith\n" + tags;
+	}
+
+	/**
+	 * @param hiddenSystemTags
+	 */
+	public void setHiddenSystemTags(Set<Tag> hiddenSystemTags) {
+		this.hiddenSystemTags = hiddenSystemTags;
+	}
+
+	/**
+	 * @return the hidden system Tags of this post
+	 */
+	public Set<Tag> getHiddenSystemTags() {
+		return hiddenSystemTags;
+	}
+	
+	/**
+	 * Add a SystemTag (Tag) to the HiddenSystemTag list
+	 * @param tag
+	 */
+	public void addHiddenSystemTag(Tag tag) {
+		if (!present(this.hiddenSystemTags)) {
+			this.hiddenSystemTags = new HashSet<Tag>();
+		}
+		this.hiddenSystemTags.add(tag);
 	}
 }
