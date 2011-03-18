@@ -21,6 +21,7 @@ import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -729,6 +730,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getTags(final TagParam param, final DBSession session) {
 		final List<Tag> tags = chain.getFirstElement().perform(param, session);
+		SystemTagsExtractor.separateHiddenSystemTags(tags);
 		return this.setUsercountToGlobalCount(tags);
 	}
 

@@ -303,7 +303,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 		// this is save because of RTTI-check of resourceType argument
 		// which is of class T
 		List<Post<T>> publications = (List) this.publicationDBManager.getPosts(param, session);
-		SystemTagsExtractor.seperateHiddenSystemTags(publications, loginUser.getName());
+		SystemTagsExtractor.separateHiddenSystemTags(publications, loginUser.getName());
 		return publications;
 	    } 
 	    
@@ -323,7 +323,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 		List<Post<T>> bookmarks= (List) this.bookmarkDBManager.getPosts(param, session);
-		SystemTagsExtractor.seperateHiddenSystemTags(bookmarks, loginUser.getName());
+		SystemTagsExtractor.separateHiddenSystemTags(bookmarks, loginUser.getName());
 		return bookmarks;
 	    }
 	    

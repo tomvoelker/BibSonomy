@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -109,6 +110,31 @@ public class SystemTagsExtractor {
 	return sysTags;
     }
 
+
+    /**
+     * Go through a list of tags and remove all System Tags that hide
+     * @param <T>
+     * @param tags
+     */
+    @SuppressWarnings("null")
+    public static <T extends Resource> Set<Tag> separateHiddenSystemTags(Collection<Tag> tags) {
+	Set<Tag> sysTags=null;
+	for (final Iterator<Tag> iter = tags.iterator(); iter.hasNext();) {
+	    Tag tag = iter.next();
+	    SystemTag sysTag = SystemTagsUtil.createSystemTag(tag);
+	    if (present(sysTag) && sysTag.isToHide()) {
+		// We have found a system tag that should be hidden
+		if (!present(sysTags)) {
+		    sysTags = new HashSet<Tag>();
+		}
+		sysTags.add(tag);
+		iter.remove();
+	    }
+	}
+	return sysTags;
+    }
+
+
     /**
      * Go through a list of posts and remove all System Tags that hide
      * If the loginUser is the posts owner then add the system tags to the posts hidden SystemTag list
@@ -116,22 +142,11 @@ public class SystemTagsExtractor {
      * @param posts
      * @param loginUserName
      */
-    public static <T extends Resource> void seperateHiddenSystemTags(List<Post<T>> posts, String loginUserName) {
+    public static <T extends Resource> void separateHiddenSystemTags(List<Post<T>> posts, String loginUserName) {
 	for (Post<T> post: posts) {
-	    for (final Iterator<Tag> iter = post.getTags().iterator(); iter.hasNext();) {
-		Tag tag = iter.next();
-		SystemTag sysTag = SystemTagsUtil.createSystemTag(tag);
-		if (present(sysTag) && sysTag.isToHide()) {
-		    /*
-		     * We have found a system tag that should be hidden
-		     * 1. loginUser is the posts owner => add it to hidden SystemTags and remove
-		     * 2. someone else is the owner => remove
-		     */
-		    if (present(loginUserName) && loginUserName.equals(post.getUser().getName())) {
-			post.addHiddenSystemTag(tag);
-		    }
-		    iter.remove();
-		}
+	    Set<Tag> sysTags = separateHiddenSystemTags(post.getTags()); 
+	    if (present(loginUserName) && loginUserName.equals(post.getUser().getName())) {
+		post.setHiddenSystemTags(sysTags);
 	    }
 	}
     }
