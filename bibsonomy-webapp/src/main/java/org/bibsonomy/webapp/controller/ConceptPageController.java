@@ -19,6 +19,9 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * Controller for concept pages
+ *   - concept/tag/CONCEPT
+ *   - concept/user/USER/CONCEPT
+ *   - concept/group/GROUP/CONCEPT
  * 
  * @author Michael Wagner
  * @version $Id$
@@ -44,7 +47,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		final String loginUser = command.getContext().getLoginUser().getName();
 		
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
-		String groupingName = null;
+		String groupingName = null; // the name of the requested user or group
 		
 		// get the information on tags and concepts; needed for the sidebar
 		command.setPostCountForTagsForAll(this.getPostCountForSidebar(GroupingEntity.ALL, "", requTags));
@@ -63,24 +66,28 @@ public class ConceptPageController extends SingleResourceListController implemen
 			requTags.set(i, "->" + requTags.get(i));
 		}
 		
-		// title
+		/* 
+		 * build page title
+		 */
 		final StringBuilder pageTitle = new StringBuilder("concept :: "); // TODO: i18n
 		
-		//if URI looks like concept/USER/USERNAME/TAGNAME, change GroupingEntity to USER
+		// if URI looks like concept/USER/USERNAME/TAGNAME, change GroupingEntity to USER
 		if (present(requUser)) {
 			groupingEntity = GroupingEntity.USER;
 			groupingName = requUser;
 			pageTitle.append(" user :: "); // TODO: i18n
+			pageTitle.append(requUser).append(" :: ");
 		}
 		
-		//if URI looks like concept/GROUP/GROUPNAME/TAGNAME, change GroupingEntity to GROUP 
+		// if URI looks like concept/GROUP/GROUPNAME/TAGNAME, change GroupingEntity to GROUP 
 		if (present(requGroup)) {
 			groupingEntity = GroupingEntity.GROUP;
 			groupingName = requGroup;
 			pageTitle.append(" group :: "); // TODO: i18n
+			pageTitle.append(requGroup).append(" :: ");
 		}
 		
-		pageTitle.append(groupingName + " :: " + StringUtils.implodeStringCollection(requTags, " "));		
+		pageTitle.append(StringUtils.implodeStringCollection(requTags, " "));		
 		command.setPageTitle(pageTitle.toString());
 		
 		// retrieve and set the requested resource lists
