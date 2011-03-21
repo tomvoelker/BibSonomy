@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.controller;
 import java.util.Collections;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
@@ -46,7 +46,7 @@ public class GroupCvPageController extends ResourceListController implements Min
 		 *  retrieve and set the requested resource lists
 		 */
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
-			this.setList(command, resourceType, groupingEntity, requestedGroup, Collections.singletonList(SystemTagsUtil.CV_TAG), null, null, null, null, entries);
+			this.setList(command, resourceType, groupingEntity, requestedGroup, Collections.singletonList(MyOwnSystemTag.NAME), null, null, null, null, entries);
 		}
 		
 		/*

@@ -5,7 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collections;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
@@ -53,7 +53,7 @@ public class CvPageController extends ResourceListController implements Minimali
 		 */
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();		
-			this.setList(command, resourceType, groupingEntity, requUser, Collections.singletonList(SystemTagsUtil.CV_TAG), null, Order.ADDED, null, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, requUser, Collections.singletonList(MyOwnSystemTag.NAME), null, Order.ADDED, null, null, entriesPerPage);
 		}
 		
 		/* TODO: fix NPE (unknow user)
