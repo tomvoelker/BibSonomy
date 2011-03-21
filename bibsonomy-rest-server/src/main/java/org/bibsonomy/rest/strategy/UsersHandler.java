@@ -10,7 +10,7 @@ import org.bibsonomy.rest.strategy.users.DeleteDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserStrategy;
-import org.bibsonomy.rest.strategy.users.GetFriendsForUserStrategy;
+import org.bibsonomy.rest.strategy.users.GetRelatedusersForUserStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserConceptStrategy;
@@ -20,6 +20,7 @@ import org.bibsonomy.rest.strategy.users.GetUserPostsStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserStrategy;
 import org.bibsonomy.rest.strategy.users.PostPostDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.PostPostStrategy;
+import org.bibsonomy.rest.strategy.users.PostRelatedusersForUserStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserStrategy;
 import org.bibsonomy.rest.strategy.users.PutPostStrategy;
@@ -60,9 +61,10 @@ public class UsersHandler implements ContextHandler {
 				return createUserConceptsStrategy(context, httpMethod, userName);
 			}
 
-			// /users/[username]/friends
-			if (RestProperties.getInstance().getFriendsUrl().equalsIgnoreCase(req)) {
-				return createFriendsForUserStrategy(context, httpMethod, userName);
+			// /users/[username]/friends , /users/[username]/followers 
+			if (RestProperties.getInstance().getFriendsUrl().equalsIgnoreCase(req) ||
+				RestProperties.getInstance().getFollowersUrl().equalsIgnoreCase(req) ) {
+				return createRelatedusersForUserStrategy(context, httpMethod, userName, req, null);
 			}
 			break;
 		case 3:
@@ -79,6 +81,11 @@ public class UsersHandler implements ContextHandler {
 			if (RestProperties.getInstance().getConceptUrl().equalsIgnoreCase(req)) {
 				final String conceptName = urlTokens.nextToken();
 				return createUserConceptsStrategy(context, httpMethod, userName, conceptName);
+			}
+			// /users/[username]/friends/[tag]
+			if (RestProperties.getInstance().getFriendsUrl().equalsIgnoreCase(req)) {
+				final String tag = urlTokens.nextToken();
+				return createRelatedusersForUserStrategy(context, httpMethod, userName, req, tag);
 			}
 			break;
 		case 4:
@@ -105,7 +112,7 @@ public class UsersHandler implements ContextHandler {
 			}
 			break;
 		}
-
+		System.out.println("blubberbla");
 		throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
 	}
 
@@ -187,10 +194,12 @@ public class UsersHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createFriendsForUserStrategy(final Context context, final HttpMethod httpMethod, final String userName) {
+	private Strategy createRelatedusersForUserStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String relationship, String tag) {
 		switch (httpMethod) {
 		case GET:
-			return new GetFriendsForUserStrategy(context, userName);
+			return new GetRelatedusersForUserStrategy(context, userName, relationship, tag);
+		case POST:
+			return new PostRelatedusersForUserStrategy(context, userName, relationship, tag);
 		default:
 			throw new UnsupportedHttpMethodException(httpMethod, "Friends");
 
