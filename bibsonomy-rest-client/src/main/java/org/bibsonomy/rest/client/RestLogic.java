@@ -416,7 +416,7 @@ public class RestLogic implements LogicInterface {
 			relationType = "follower";
 		}
 		else {
-			throw new IllegalArgumentException("Only OF_FRIEND (for friend relations) and FOLLOWER_OF (for followers) are allowed valued for the relation param." );
+			throw new IllegalArgumentException("Only OF_FRIEND (for friend relations) and FOLLOWER_OF (for followers) are allowed values for the relation param." );
 		}
 		execute(new CreateUserRelationshipQuery(sourceUser, targetUser, relationType, tag));
 	}
