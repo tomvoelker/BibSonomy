@@ -130,6 +130,7 @@ public class RestProperties {
 		URL_USERS("users"),
 		URL_GROUPS("groups"),
 		URL_FRIENDS("friends"),
+		URL_FOLLOWERS("followers"),
 		URL_POSTS("posts"),
 		URL_ADDED_POSTS("added"),
 		URL_POPULAR_POSTS("popular"),
@@ -180,6 +181,10 @@ public class RestProperties {
 
 	public String getFriendsUrl() {
 		return this.get(Property.URL_FRIENDS);
+	}
+	
+	public String getFollowersUrl() {
+		return this.get(Property.URL_FOLLOWERS);
 	}
 
 	public String getGroupsUrl() {
