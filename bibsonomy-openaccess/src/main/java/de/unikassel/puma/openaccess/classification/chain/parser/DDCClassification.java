@@ -27,10 +27,14 @@ public class DDCClassification extends ClassificationTextParser {
 			
 			line = line.trim();
 			String [] lineArray = line.split(" ", 2);
-			System.out.println(lineArray[0] +" " +lineArray[1]);
-			classificate(lineArray[0], lineArray[1]);
+			try {
+				classificate(lineArray[0], lineArray[1]);
+			} catch (ArrayIndexOutOfBoundsException e) {
+				//unable to parse
+				classifications = null;
+				return;
+			}
 		}
-		System.out.println("end");
 	}
 	
 	private void requClassificate(String name, String description, ClassificationObject object, int current) {
