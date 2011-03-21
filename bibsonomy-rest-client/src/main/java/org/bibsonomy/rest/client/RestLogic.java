@@ -400,19 +400,19 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
+	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
+	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation) {
+	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, String tag) {
 		switch (relation) {
 		case FRIEND_OF:
 			return execute(new GetFriendsQuery(0, 100, sourceUser, GetFriendsQuery.INCOMING_ATTRIBUTE_VALUE_RELATION));
