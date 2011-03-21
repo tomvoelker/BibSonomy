@@ -49,7 +49,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.institution.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 		
@@ -59,7 +59,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 		
@@ -69,7 +69,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.referee2" id="post.resource.openaccess.additionalfields.phdreferee2"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.referee2" id="post.resource.openaccess.additionalfields.phdreferee2"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 
@@ -79,7 +79,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 						</c:if>
@@ -91,7 +91,7 @@
 								<b class="smalltext" style="">?</b>
 								<div><fmt:message key="post.resource.openaccess.additionalfields.sponsor.help"/></div>
 							</div>
-							<input type="text" value="" class="fsInput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
+							<input type="text" value="" class="fsInput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
 							<div class="dissError"><!-- do not remove this text --></div>
 						</div>
 	
@@ -101,7 +101,7 @@
 								<b class="smalltext" style="">?</b>
 								<div><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle.help"/></div>
 							</div>
-							<input type="text" value="" class="fsInput" onchange="metadataOnChange()" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
+							<input type="text" value="" class="fsInput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
 							<div class="dissError"><!-- do not remove this text --></div>
 						</div>
 						
@@ -134,40 +134,41 @@
 	
 	<!-- a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a> -->
 	
+					<c:if test="${(bibtex.entrytype=='article' and bibtex.journal) or (bibtex.entrytype!='article' and bibtex.publisher)}">
+						<div id="oasherparomeocontainer">
+							<h4><fmt:message key="post.resource.openaccess.headline.sherparomeo"/></h4>
 	
-					<div id="oasherparomeocontainer">
-						<h4><fmt:message key="post.resource.openaccess.headline.sherparomeo"/></h4>
-
-						<c:set var="oaRequestPublisherUrlParameter" value="?publisher=${bibtex.publisher}"/>
-						<c:if test="${bibtex.entrytype=='article'}">
-							<c:set var="oaRequestPublisherUrlParameter" value="?jTitle=${bibtex.journal}"/>
-						</c:if>
-						<input type="hidden" id="oaRequestPublisherUrlParameter" value="${oaRequestPublisherUrlParameter}"/>
-						
-						<div id="oasherparomeopredescription" class="oasherparomeodescription"><fmt:message key="post.resource.openaccess.sherparomeo.description"/></div>				
-						
-						<c:if test="${bibtex.entrytype=='article'}">
-						<div id="oasherparomeopublisher"><fmt:message key="post.resource.openaccess.sherparomeo.publisher.entrytype.article"><fmt:param value="${bibtex.journal}"/></fmt:message></div>
-						</c:if>
-						<c:if test="${bibtex.entrytype!='article'}">
-						<div id="oasherparomeopublisher"><fmt:message key="post.resource.openaccess.sherparomeo.publisher.entrytype.other"><fmt:param value="${bibtex.publisher}"/></fmt:message></div>
-						</c:if>
-						
-						<div id="oasherparomeo"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
-
-						<div id="oasherparomeocolordescription">
-						<fmt:message key="post.resource.openaccess.sherparomeo.color.description.intro"/>  
-						<ul>
-							<li class="oa-green"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.green"/></li>
-							<li class="oa-blue"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.blue"/></li>
-							<li class="oa-yellow"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.yellow"/></li>
-							<li class="oa-white"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.white"/></li>
-						</ul>
+							<c:set var="oaRequestPublisherUrlParameter" value="?publisher=${bibtex.publisher}"/>
+							<c:if test="${bibtex.entrytype=='article'}">
+								<c:set var="oaRequestPublisherUrlParameter" value="?jTitle=${bibtex.journal}"/>
+							</c:if>
+							<input type="hidden" id="oaRequestPublisherUrlParameter" value="${oaRequestPublisherUrlParameter}"/>
+							
+							<div id="oasherparomeopredescription" class="oasherparomeodescription"><fmt:message key="post.resource.openaccess.sherparomeo.description"/></div>				
+							
+							<c:if test="${bibtex.entrytype=='article'}">
+							<div id="oasherparomeopublisher"><fmt:message key="post.resource.openaccess.sherparomeo.publisher.entrytype.article"><fmt:param value="${bibtex.journal}"/></fmt:message></div>
+							</c:if>
+							<c:if test="${bibtex.entrytype!='article'}">
+							<div id="oasherparomeopublisher"><fmt:message key="post.resource.openaccess.sherparomeo.publisher.entrytype.other"><fmt:param value="${bibtex.publisher}"/></fmt:message></div>
+							</c:if>
+							
+							<div id="oasherparomeo"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
+	
+							<div id="oasherparomeocolordescription">
+							<fmt:message key="post.resource.openaccess.sherparomeo.color.description.intro"/>  
+							<ul>
+								<li class="oa-green"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.green"/></li>
+								<li class="oa-blue"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.blue"/></li>
+								<li class="oa-yellow"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.yellow"/></li>
+								<li class="oa-white"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.white"/></li>
+							</ul>
+							</div>
 						</div>
-					</div>
-	
+					</c:if>
+					
 					<div id="authorcontract">
-						<span id="authorcontractconfirmcontainer"><input type="checkbox" id="authorcontractconfirm"/></span>
+						<span id="authorcontractconfirmcontainer"><input onclick="checkauthorcontractconfirm();" onchange="checkauthorcontractconfirm();" type="checkbox" id="authorcontractconfirm"/></span>
 						<fmt:message key="post.resource.openaccess.authorcontractconfirm"/>
 					</div>
 	

@@ -39,6 +39,7 @@ public class PublicationClassificationController extends AjaxController implemen
 	private static final String SAVE_ADDITIONAL_METADATA = "SAVE_ADDITIONAL_METADATA";
 	private static final String REMOVE_CLASSIFICATION_ITEM = "REMOVE_CLASSIFICATION_ITEM";
 	private static final String GET_POST_CLASSIFICATION_LIST = "GET_POST_CLASSIFICATION_LIST"; 
+	private static final String GET_CLASSIFICATION_DESCRIPTION = "GET_CLASSIFICATION_DESCRIPTION"; 
 	
 	private PublicationClassificatorSingleton classificator;
 	
@@ -151,6 +152,18 @@ public class PublicationClassificationController extends AjaxController implemen
 					json.put(entry.getKey(), entry.getValue());
 				}
 			}
+			command.setResponseString(json.toString());
+			
+			return Views.AJAX_JSON;
+
+		} else if(present(command.getAction()) && command.getAction().equals(GET_CLASSIFICATION_DESCRIPTION)) {
+			
+			// build json output  
+			final JSONObject json = new JSONObject();
+			String description = classificator.getInstance().getDescription(command.getKey(), command.getValue());
+			json.put("name", command.getKey());
+			json.put("value", command.getValue());
+			json.put("description", description);
 			command.setResponseString(json.toString());
 			
 			return Views.AJAX_JSON;

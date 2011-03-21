@@ -469,6 +469,12 @@ input[type="button"].ajaxButton {
 	margin-bottom: 2ex;
 	font-size: 100%;
 }
+ 
+
+#pumaSword input[type="button"].ajaxButton.oadisabledsend2repositorybutton {
+	color: #ccc;
+	border: 1px dotted #ccc;
+}
 
 #openAccessClassificationSelect input[type="button"].ajaxButton:hover {
 	color: #438f38;
@@ -483,10 +489,36 @@ input[type="button"].ajaxButton {
 	color: black; 
 }
 
+#pumaSword input[type="button"].ajaxButton.oadisabledsend2repositorybutton:hover {
+	background-color: transparent;
+	color: #ccc; 
+	cursor: default;
+	
+}
+
+
+.classificationListItemContainer {
+	clear:left;
+}
+	
 .classificationListItem {
 	margin-top: 2px;
 	font-weight: normal;
-	display: inline-block;
+	display: inline;
+	float:left;
+ }
+
+.classificationListItemDescriptionContainer {
+  color: #444;
+  margin-left: 7em;
+}
+
+.classificationListItemDescription {
+  display: inline;
+}
+
+.classificationListItemRemove {
+	display: inline;
 }
 
 #openAccessClassificationList {
@@ -517,6 +549,8 @@ input[type="button"].ajaxButton {
 #saveMetadataButton {
 	color: green;
 	font-weight: bold;
+	border:1px solid #EFAC95;
+	padding: 1px 3px;
 }
 
 #saveMetadataButton.dataChanged {
@@ -550,3 +584,4 @@ input#authorcontractconfirm {
 #oasherparomeo {
 	margin: 2ex 0;
 }
+

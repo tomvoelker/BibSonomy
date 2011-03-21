@@ -7,10 +7,11 @@ var SAVE_ADDITIONAL_METADATA = "SAVE_ADDITIONAL_METADATA";
 var GET_ADDITIONAL_METADATA = "GET_ADDITIONAL_METADATA";
 var REMOVE_CLASSIFICATION_ITEM = "REMOVE_CLASSIFICATION_ITEM";
 var GET_POST_CLASSIFICATION_LIST = "GET_POST_CLASSIFICATION_LIST";
+var GET_CLASSIFICATION_DESCRIPTION = "GET_CLASSIFICATION_DESCRIPTION";
 var publication_intrahash = ""; // will be set during initialisation
 
 
-function _generateId(s) {
+function _removeSpecialChars(s) {
 	s = s.replace(/[^a-zA-Z0-9]/g,'');
    return s;
 }
@@ -58,75 +59,81 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 	var saveSword = document.createElement('input');
 	saveSword.setAttribute ('id', "oasendtorepositorybutton");
 	saveSword.type = 'button';
-	saveSword.className = "ajaxButton",
+	saveSword.className = "ajaxButton oadisabledsend2repositorybutton",
+	saveSword.disabled = 'true';
 	saveSword.value =  getString("post.resource.openaccess.button.sendtorepository");
 	sword.appendChild(saveSword);
 	
-
 	var loadingNode = document.createElement('img');
 	loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
 	
 	var url = swordURL +"?resourceHash=" + intraHash;
 	saveSword.onclick = function(data) {
-		$.ajax({
-			url: url,
-			dataType: 'json',
-			beforeSend: function(XMLHttpRequest) {
-				// remove node #swordresponse
-				$('#swordresponse').remove();
-				$('#pumaSword').append(loadingNode);
-				$('#oasendtorepositorybutton').addClass("oadisabledsend2repositorybutton");
-				document.getElementById('oasendtorepositorybutton').disabled = true; 
-				
-			},
-			success: function(data) {
-				// remove loading icon
-				$(loadingNode).remove();
+		if (document.getElementById('authorcontractconfirm').checked) {
 
-				// response has following format:
-				// {"response":{"message":"error.sword.noPDFattached","localizedMessage":"Keine PDF-Datei zum übermitteln gefunden","statuscode":0}}
-				// statuscode can be 0 (error/warning) or 1 (success)
-				
-				// check and show response to user
-				$.each(data, function(i, response) {
-					if (null == data || null == data.response) {
-						alert ("unknown response error");
-					} else {
-						// create text node behind transmit button, if not exists, to show response text in it
-						// confirmations and warnings get different css-classes  
-						var s = createNode({
-							tag: 'div',
-							parent: null,
-							child: null,
-							childNodes: null,
-							parentID : null,
-							id: 'swordresponse',
-							className: "ajaxresponse"+data.response.statuscode
-						});
+			if (checkMetadataChanged())	sendAdditionalMetadataFields(false);
 
-						s.appendChild(document.createTextNode(data.response.localizedMessage));
-						$('#pumaSword').append(s);						
+			$.ajax({
+				url: url,
+				dataType: 'json',
+				beforeSend: function(XMLHttpRequest) {
+				
+					// remove node #swordresponse
+					$('#swordresponse').remove();
+					$('#pumaSword').append(loadingNode);
+					$('#oasendtorepositorybutton').addClass("oadisabledsend2repositorybutton");
+					document.getElementById('oasendtorepositorybutton').disabled = true; 
 					
-						swordResponseStatusCode = data.response.statuscode;
+				},
+				success: function(data) {
+					// remove loading icon
+					$(loadingNode).remove();
+	
+					// response has following format:
+					// {"response":{"message":"error.sword.noPDFattached","localizedMessage":"Keine PDF-Datei zum übermitteln gefunden","statuscode":0}}
+					// statuscode can be 0 (error/warning) or 1 (success)
+					
+					// check and show response to user
+					$.each(data, function(i, response) {
+						if (null == data || null == data.response) {
+							alert ("unknown response error");
+						} else {
+							// create text node behind transmit button, if not exists, to show response text in it
+							// confirmations and warnings get different css-classes  
+							var s = createNode({
+								tag: 'div',
+								parent: null,
+								child: null,
+								childNodes: null,
+								parentID : null,
+								id: 'swordresponse',
+								className: "ajaxresponse"+data.response.statuscode
+							});
+	
+							s.appendChild(document.createTextNode(data.response.localizedMessage));
+							$('#pumaSword').append(s);						
 						
-						// on error enable button
-						if (data.response.statuscode == 0) {				
-							$('#oasendtorepositorybutton').removeClass("oadisabledsend2repositorybutton");
-							document.getElementById('oasendtorepositorybutton').disabled = false; 
+							swordResponseStatusCode = data.response.statuscode;
+							
+							// on error enable button
+							if (data.response.statuscode == 0) {				
+								$('#oasendtorepositorybutton').removeClass("oadisabledsend2repositorybutton");
+								document.getElementById('oasendtorepositorybutton').disabled = false; 
+							}
+	
+							// show response text
+							
 						}
-
-						// show response text
-						
-					}
-				});
-
-
-			},
-			error: function(req, status, e) {
-				$(loadingNode).remove();
-				alert("Unable to send data to reposity: " + status);
-			}
-		});
+					});
+	
+	
+				},
+				error: function(req, status, e) {
+					$(loadingNode).remove();
+					alert("Unable to send data to reposity: " + status);
+				}
+			});
+		} // end of if ($('#authorcontractconfirm').checked)
 	};	
 	
 
@@ -139,47 +146,50 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 /* open access check */
 /* TODO: add error handling, check apicontrol and outcome in response. */
 function checkOpenAccess () {
-	var container = $("#oasherparomeo");	
-
-	// TODO: add progress animation
-	var url = oaBaseUrl+$("#oaRequestPublisherUrlParameter").val();
-
-	$.ajax({
-		url: url,
-		dataType: 'json',
-		success: function(data) {
-			/*
-			 * build list with publishers
-			 */
-			if ((data.publishers.length>0) && (undefined != data.publishers) && (data.publishers!="")) {
-				container.empty();
-				var ul = document.createElement("ul");
-				ul.className = "oa-publishers";
-				$.each(data.publishers, function(index, publisher) {
-					var li = document.createElement("li");
-					li.className = "oa-" + publisher.colour;
-					var span = document.createElement("span");
-					span.appendChild(document.createTextNode(publisher.name));
-					span.className = "oa-publisher";
-					li.appendChild(span);
-					var ulCond = document.createElement("ul");
-					ulCond.className = "oa-conditions";
-					$.each(publisher.conditions, function(index, condition) {
-						var liCond = document.createElement("li");
-						liCond.appendChild(document.createTextNode(condition));
-						ulCond.appendChild(liCond);
+	
+	if ($("#oasherparomeo").length>0) {		
+		var container = $("#oasherparomeo");	
+		
+		// TODO: add progress animation
+		var url = oaBaseUrl+$("#oaRequestPublisherUrlParameter").val();
+	
+		$.ajax({
+			url: url,
+			dataType: 'json',
+			success: function(data) {
+				/*
+				 * build list with publishers
+				 */
+				if ((data.publishers.length>0) && (undefined != data.publishers) && (data.publishers!="")) {
+					container.empty();
+					var ul = document.createElement("ul");
+					ul.className = "oa-publishers";
+					$.each(data.publishers, function(index, publisher) {
+						var li = document.createElement("li");
+						li.className = "oa-" + publisher.colour;
+						var span = document.createElement("span");
+						span.appendChild(document.createTextNode(publisher.name));
+						span.className = "oa-publisher";
+						li.appendChild(span);
+						var ulCond = document.createElement("ul");
+						ulCond.className = "oa-conditions";
+						$.each(publisher.conditions, function(index, condition) {
+							var liCond = document.createElement("li");
+							liCond.appendChild(document.createTextNode(condition));
+							ulCond.appendChild(liCond);
+						});
+						li.appendChild(ulCond);
+						ul.appendChild(li);
 					});
-					li.appendChild(ulCond);
-					ul.appendChild(li);
-				});
-				container.append(ul);
-				container.fadeIn();
+					container.append(ul);
+					container.fadeIn();
+				}
+			},
+			error: function(req, status, e) {
+				alert("check open access: " + status);
 			}
-		},
-		error: function(req, status, e) {
-			alert("check open access: " + status);
-		}
-	});
+		});
+	}
 }
 
 function initClassifications(divClassificationSelectName, divClassificationListName) {
@@ -310,8 +320,9 @@ function createNewClassField(container) {
 
 function _addClassificationItemToList(classificationName, ClassificationValue) {
 	var node = document.createElement('div');
+	node.className = "classificationListItemContainer";
 	var saveListItem = document.createElement('div');
-	var classificationId=_generateId(classificationName+ClassificationValue);
+	var classificationId=_removeSpecialChars(classificationName+ClassificationValue);
 	saveListItem.setAttribute('id', "classificationListItemElement"+classificationId);
 	saveListItem.setAttribute('class', 'classificationListItem');
 	
@@ -321,19 +332,42 @@ function _addClassificationItemToList(classificationName, ClassificationValue) {
 	remove.value = getString("post.resource.openaccess.button.removeclassification");
 	remove.id	= "classificationListItemRemove"+classificationId;
 
+		
+	var dCnode = document.createElement('div');
+	dCnode.setAttribute("class", "classificationListItemDescriptionContainer");
+
+	var description = document.createElement('div');
+	description.setAttribute("id", "classificationListItemElementDescription"+classificationId);
+	description.setAttribute("class", "classificationListItemDescription");
+
 	node.appendChild(saveListItem);
-	node.appendChild(remove);
-	
+	dCnode.appendChild(description);
+	dCnode.appendChild(remove);
+	node.appendChild(dCnode);
+
 	$('#'+classificationName +'saved').append(node);
 
 	$('#'+"classificationListItemElement"+classificationId).text(classificationName +' ' +ClassificationValue +' ');
 	
-	remove.onclick = function() {
+	var descriptionurl = classificationURL + "?action=" +GET_CLASSIFICATION_DESCRIPTION+"&key="+classificationName+"&value="+ClassificationValue;
+	$.ajax({
+		dataType: 'json',
+		url: descriptionurl,
+		success: function(data) {
+			$('#classificationListItemElementDescription'+_removeSpecialChars(data.name+data.value)).text(data.description);
+		},
+		error: function(req, status, e) {
+			$('#classificationListItemElementDescription'+classificationId).text("-");
+		}
+	});					
 
-		var removeurl = classificationURL + "?action=" +REMOVE_CLASSIFICATION_ITEM+"&hash="+publication_intrahash+"&key="+classificationName+"&value="+ClassificationValue;
-		
+	
+	
+	remove.onclick = function() {
 		var loadingNode = document.createElement('img');
 		loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
+		
+		var removeurl = classificationURL + "?action=" +REMOVE_CLASSIFICATION_ITEM+"&hash="+publication_intrahash+"&key="+classificationName+"&value="+ClassificationValue;
 		
 		$.ajax({
 			dataType: 'json',
@@ -365,7 +399,7 @@ function addSaved(container, parentID, description) {
 	 * add only a new item, if it does not exist. 
 	 * $().length / if length is 0, element does not exist 
 	 */
-	if (!$("#classificationListItemElement"+_generateId(container+parentID)).length){
+	if (!$("#classificationListItemElement"+_removeSpecialChars(container+parentID)).length){
 
 		// send item via ajax to database
 		var saveurl = classificationURL + "?action=" +SAVE_CLASSIFICATION_ITEM+"&hash="+publication_intrahash+"&key="+container+"&value="+parentID;
@@ -516,8 +550,12 @@ function createSubSelect(parent, data, classification, parentID, container){
 	$('#' +container).append(s);
 }
 
-
 function sendAdditionalMetadataFields() {
+	sendAdditionalMetadataFields(true);
+}
+function sendAdditionalMetadataFields(async) {
+	if ( async != true ) async = false;
+	
 	var saveMetadataButtonId = "saveMetadataButton";
 	var metadatafields = Array();
 	var i=0;
@@ -544,6 +582,7 @@ function sendAdditionalMetadataFields() {
 		$.ajax({
 			dataType: 'json',
 			url: saveurl,
+			async: async,
 			data: { "value" : collectedMetadataJSONText },
 			type: 'POST',
 			
@@ -603,6 +642,13 @@ function metadataUnChanged() {
 	if ($("#"+saveMetadataButtonId).hasClass(dataChangedClass)) $("#"+saveMetadataButtonId).removeClass("dataChanged");
 }
 
+function checkMetadataChanged() {
+	saveMetadataButtonId = "saveMetadataButton";
+	dataChangedClass = "dataChanged";
+
+	return ($("#"+saveMetadataButtonId).hasClass(dataChangedClass));
+}
+
 function loadStoredClassificationItems()
 {
 	// clear list 
@@ -622,7 +668,7 @@ function loadStoredClassificationItems()
 					 * add only a new item, if it does not exist. 
 					 * $().length / if length is 0, element does not exist 
 					 */
-					if (!$("#classificationListItemElement"+_generateId(classification+item)).length){
+					if (!$("#classificationListItemElement"+_removeSpecialChars(classification+item)).length){
 						_addClassificationItemToList(classification, item);
 					}
 				});		
@@ -638,3 +684,21 @@ function loadStoredClassificationItems()
 }
 
 
+function checkauthorcontractconfirm() {
+
+	if (document.getElementById('authorcontractconfirm').checked) {
+		if ($('#oasendtorepositorybutton').hasClass("oadisabledsend2repositorybutton")) {
+			$('#oasendtorepositorybutton').removeClass("oadisabledsend2repositorybutton");
+			document.getElementById('oasendtorepositorybutton').disabled=false;
+		}
+	} 
+	else
+	{
+		if (!$('#oasendtorepositorybutton').hasClass("oadisabledsend2repositorybutton")) {
+			$('#oasendtorepositorybutton').addClass("oadisabledsend2repositorybutton");
+			document.getElementById('oasendtorepositorybutton').disabled=true;
+		}
+	}
+	
+	
+}
