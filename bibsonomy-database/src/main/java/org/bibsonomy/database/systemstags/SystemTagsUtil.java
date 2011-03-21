@@ -38,13 +38,6 @@ public class SystemTagsUtil {
     public final static String DELIM = ":";
 
 
-    /**
-     * This is the name of the CV_Tag, i.e. the tag that is uses to mark posts
-     * that shall appear on the cv page.
-     * FIXME: We want every user to choose his own cv-tag.
-     */
-    public final static String CV_TAG = "myown";
-
     /** The systemTagFactory that manages our registered systemTags */
     private static final SystemTagFactory sysTagFactory = SystemTagFactory.getInstance();
 
@@ -165,6 +158,7 @@ public class SystemTagsUtil {
 	sysTag = createSearchSystemTag(tag.getName());
 	return sysTag;
     }
+    
     /**
      * Create a new instance of an executable systemTag
      * 
@@ -247,7 +241,7 @@ public class SystemTagsUtil {
     }
 
     /*
-     * Methods to extract or remove systemTags
+     * Methods to extract or analyze tags for their systemTag properties
      */
 
     /**

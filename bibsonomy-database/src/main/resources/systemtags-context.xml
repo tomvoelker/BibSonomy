@@ -60,14 +60,16 @@
 	    |MARKUP SYSTEMTAGS
 	  +-->	  
 	<util:set id="markUpSystemTagSet" set-class="java.util.HashSet">
-		<ref bean="relevantForTag"/>
+		<ref bean="relevantForSystemTag"/>
 		<ref bean="sentSystemTag"/>
+		<ref bean="myOwnSystemTag"/>
 	</util:set>
 	
 	<!--+
 	    | beans for the markUp systemTags
 	    +-->
-	<bean id="relevantForTag" class="org.bibsonomy.database.systemstags.markup.RelevantForSystemTag"/>
+	<bean id="relevantForSystemTag" class="org.bibsonomy.database.systemstags.markup.RelevantForSystemTag"/>
 	<bean id="sentSystemTag" class="org.bibsonomy.database.systemstags.markup.SentSystemTag"/>
+	<bean id="myOwnSystemTag" class="org.bibsonomy.database.systemstags.markup.MyOwnSystemTag"/>
 
 </beans>
