@@ -75,6 +75,7 @@ import org.bibsonomy.rest.client.queries.post.AddUserToGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
+import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
@@ -407,8 +408,17 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
-		// TODO Auto-generated method stub
-
+		String relationType;
+		if (UserRelation.OF_FRIEND.equals(relation)) {
+			relationType = "friend";
+		}
+		else if (UserRelation.FOLLOWER_OF.equals(relation)) {
+			relationType = "follower";
+		}
+		else {
+			throw new IllegalArgumentException("Only OF_FRIEND (for friend relations) and FOLLOWER_OF (for followers) are allowed valued for the relation param." );
+		}
+		execute(new CreateUserRelationshipQuery(sourceUser, targetUser, relationType, tag));
 	}
 
 	@Override
