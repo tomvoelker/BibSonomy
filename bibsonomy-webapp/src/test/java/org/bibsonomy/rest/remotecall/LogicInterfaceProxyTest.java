@@ -843,20 +843,20 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 
 
 	@Override
-	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
+	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation) {
+	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, String tag) {
 		//TODO Auto-generated method stub
 		return new ArrayList<User>();
 	}
 
 	
 	@Override
-	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
+	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
 		// TODO Auto-generated method stub
 		
 	}

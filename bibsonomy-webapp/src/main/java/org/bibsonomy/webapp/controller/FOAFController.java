@@ -54,7 +54,7 @@ public class FOAFController implements MinimalisticController<FOAFCommand> {
 		 * add friends
 		 */
 		try {
-			user.addFriends(this.logic.getUserRelationship(requestedUser, UserRelation.OF_FRIEND));
+			user.addFriends(this.logic.getUserRelationship(requestedUser, UserRelation.OF_FRIEND, null));
 		} catch (final AccessDeniedException ex) {
 			// ignore it
 		}

@@ -179,8 +179,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				/*
 				 * Has loginUser this user set as friend?
 				 */
-				command.setOfFriendUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND).contains(requestedUser));
-				command.setFriendOfUser(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF).contains(requestedUser));
+				command.setOfFriendUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, null).contains(requestedUser));
+				command.setFriendOfUser(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, null).contains(requestedUser));
 				/*
 				 * TODO: we need an adminLogic to access the requested user's groups ...
 				 */

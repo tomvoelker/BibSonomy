@@ -71,13 +71,13 @@ public class FriendsPageController extends SingleResourceListController implemen
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		if ( (!present(userRelation)) && ("html".equals(command.getFormat())) ) {
 			// this is the default case for the FriendsPageController
-			command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF));
-			command.setFriendsOfUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND));
+			command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, null));
+			command.setFriendsOfUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, null));
 		} else if (present(userRelation)) {
 			if( UserRelation.OF_FRIEND.name().equalsIgnoreCase(userRelation) ) {
-				command.setFriendsOfUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND));
+				command.setFriendsOfUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, null));
 			} else if( UserRelation.FRIEND_OF.name().equalsIgnoreCase(userRelation) ) {
-				command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF));
+				command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, null));
 			}
 		
 			// when users only are requested, we don't need resources

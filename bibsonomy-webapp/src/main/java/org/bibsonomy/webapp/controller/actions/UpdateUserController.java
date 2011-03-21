@@ -67,8 +67,8 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 		// needed to display the user name on the profile tab of the settings site
 		command.getUser().setName(user.getName());
 
-		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF));
-		command.setFriendsOfUser(logic.getUserRelationship(user.getName(), UserRelation.OF_FRIEND));
+		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF, null));
+		command.setFriendsOfUser(logic.getUserRelationship(user.getName(), UserRelation.OF_FRIEND, null));
 
 		// check whether the user is a group		
 		if (UserUtils.userIsGroup(user)) {

@@ -148,7 +148,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 			return true;
 		case FRIENDS:
 			if (present(loginUserName)) {
-				final List<User> friends = adminLogic.getUserRelationship(requestedUserName, UserRelation.OF_FRIEND);
+				final List<User> friends = adminLogic.getUserRelationship(requestedUserName, UserRelation.OF_FRIEND, null);
 				for (final User friend : friends) {
 					if (loginUserName.equals(friend.getName())) {
 						return true;

@@ -125,8 +125,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		// retrieve friend list of the user
 		command.setUser(logic.getUserDetails(command.getUser().getName()));
 		
-		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF));
-		command.setFriendsOfUser(logic.getUserRelationship(user.getName(), UserRelation.OF_FRIEND));
+		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF, null));
+		command.setFriendsOfUser(logic.getUserRelationship(user.getName(), UserRelation.OF_FRIEND, null));
 		// retrieve profile privacy level setting
 		command.setProfilePrivlevel(user.getSettings().getProfilePrivlevel().name().toLowerCase());
 	}
