@@ -53,7 +53,9 @@ public enum UserRelation {
 	/** source user follows target user */
 	FOLLOWER_OF(7),
 	/** target user follows source user */
-	OF_FOLLOWER(8);
+	OF_FOLLOWER(8),
+	/** relationships can also be established by a custom tag */
+	TAGGED(9);
 	
 	/**
 	 * the relation ID. Mainly used in the table useruser_similarity.
@@ -98,5 +100,32 @@ public enum UserRelation {
 			default: return UserRelation.FOLKRANK; 
 		}		
 	}
+	
+	/**
+	 * check whether the user relation is internal, which means that
+	 * both "partners" in the relation must be valid bibsonomy users.
+	 * 
+	 * this is e.g. not the case when we add friends from other 
+	 * social networks, e.g. facebook friends.
+	 * 
+	 * FIXME: We have to talk about if "tagged" relationships are 
+	 * internal or not. This depends especially on how we model external
+	 * friends (e.g. from facebook), e.g. by an own UserRelation type
+	 * or solely via the tags.
+	 * 
+	 * @return true if the current user relation is an internal relation, false otherwise.
+	 */
+	public boolean isInternal() {
+		return UserRelation.FOLLOWER_OF.equals(this)   ||
+			   UserRelation.OF_FOLLOWER.equals(this)   ||
+			   UserRelation.FRIEND_OF.equals(this)	   ||
+			   UserRelation.OF_FRIEND.equals(this)     ||
+			   UserRelation.JACCARD.equals(this)       ||
+			   UserRelation.COSINE.equals(this)        ||
+			   UserRelation.TFIDF.equals(this)         ||
+			   UserRelation.FOLKRANK.equals(this)      ||
+			   UserRelation.CURIOUS_ABOUT.equals(this);
+	}
+	
 	
 }
