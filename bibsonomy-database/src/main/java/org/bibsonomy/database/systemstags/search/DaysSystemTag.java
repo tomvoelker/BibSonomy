@@ -1,6 +1,7 @@
 package org.bibsonomy.database.systemstags.search;
 
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.model.Resource;
 
 /**
  * @author sdo
@@ -8,29 +9,35 @@ import org.bibsonomy.database.params.GenericParam;
  */
 public class DaysSystemTag extends AbstractSearchSystemTagImpl implements SearchSystemTag {
 
-	public static final String NAME = "days";
+    public static final String NAME = "days";
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
+    @Override
+    public String getName() {
+	return NAME;
+    }
 
-	@Override
-	public DaysSystemTag newInstance() {
-		return new DaysSystemTag();
-	}
+    @Override
+    public DaysSystemTag newInstance() {
+	return new DaysSystemTag();
+    }
 
-	@Override
-	public void handleParam(GenericParam param) {
-		/*
-		 * FIXME: What do we clear the TagIndex for, What is the TagIndes
-		 */
-		param.getTagIndex().clear();
-		/*
-		 * FIXME: How do we handle NumberFormatExceptions from parseInt
-		 */
-		param.setDays(Integer.parseInt(this.getArgument()));
-		log.debug("set days to " + this.getArgument() + " after matching for days system tag");
-	}
+    @Override
+    public void handleParam(GenericParam param) {
+	/*
+	 * FIXME: What do we clear the TagIndex for, What is the TagIndes
+	 */
+	param.getTagIndex().clear();
+	/*
+	 * FIXME: How do we handle NumberFormatExceptions from parseInt
+	 */
+	param.setDays(Integer.parseInt(this.getArgument()));
+	log.debug("set days to " + this.getArgument() + " after matching for days system tag");
+    }
+
+    @Override
+    public <T extends Resource> boolean allowsResource(Class<T> resourceType) {
+	return true;
+    }
+
 
 }

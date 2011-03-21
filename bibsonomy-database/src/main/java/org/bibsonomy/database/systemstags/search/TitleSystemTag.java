@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.TagUtils;
 
 /**
@@ -11,31 +12,36 @@ import org.bibsonomy.model.util.TagUtils;
  * @version $Id$
  */
 public class TitleSystemTag extends AbstractSearchSystemTagImpl implements
-		SearchSystemTag {
+SearchSystemTag {
 
-	public static final String NAME = "title";
+    public static final String NAME = "title";
 
-	@Override
-	public String getName() {
-		return NAME;
+    @Override
+    public String getName() {
+	return NAME;
+    }
+
+    @Override
+    public TitleSystemTag newInstance() {
+	return new TitleSystemTag();
+    }
+
+    @Override
+    public void handleParam(GenericParam param) {
+	if(!present(param.getTitle()) ) {
+	    param.setTitle(this.getArgument());
+	} else {
+	    // we append the new title part
+	    param.setTitle( param.getTitle() + TagUtils.getDefaultListDelimiter() + this.getArgument() );
 	}
+	param.setGrouping(GroupingEntity.ALL);
+	log.debug("set title to " + param.getTitle() + " after matching for title system tag");
 
-	@Override
-	public TitleSystemTag newInstance() {
-		return new TitleSystemTag();
-	}
+    }
+    @Override
+    public <T extends Resource> boolean allowsResource(Class<T> resourceType) {
+	return true;
+    }
 
-	@Override
-	public void handleParam(GenericParam param) {
-		if(!present(param.getTitle()) ) {
-			param.setTitle(this.getArgument());
-		} else {
-			// we append the new title part
-			param.setTitle( param.getTitle() + TagUtils.getDefaultListDelimiter() + this.getArgument() );
-		}
-		param.setGrouping(GroupingEntity.ALL);
-		log.debug("set title to " + param.getTitle() + " after matching for title system tag");
-		
-	}
 
 }

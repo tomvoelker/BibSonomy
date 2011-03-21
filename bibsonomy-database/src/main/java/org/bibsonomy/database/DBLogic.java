@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +65,8 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
@@ -152,7 +155,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 
 	this.basketDBManager = BasketDatabaseManager.getInstance();
 	this.inboxDBManager = InboxDatabaseManager.getInstance();
-	
+
 	this.wikiDBManager = WikiDatabaseManager.getInstance();
 
 	this.dbSessionFactory = dbSessionFactory;
@@ -233,19 +236,19 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
      */
     @Override
     public <T extends SynchronizationResource> List<SynchronizationPost> getSynchPosts (Class<? extends Resource> resourceType, String userName) {
-        final DBSession session = this.openSession();
-        try {
-            
-    		if(resourceType == BibTex.class) {
-    		    this.publicationDBManager.getSynchPostsForUser(userName, session);
-    		} else if(resourceType == Bookmark.class) {
-    		    this.bookmarkDBManager.getSynchPostsForUser(userName, session);
-    		}
-    		
-        } finally {
-            session.close();
-        }
-        return null;
+	final DBSession session = this.openSession();
+	try {
+
+	    if(resourceType == BibTex.class) {
+		this.publicationDBManager.getSynchPostsForUser(userName, session);
+	    } else if(resourceType == Bookmark.class) {
+		this.bookmarkDBManager.getSynchPostsForUser(userName, session);
+	    }
+
+	} finally {
+	    session.close();
+	}
+	return null;
     }
 
     /*
@@ -264,12 +267,15 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 	if (grouping.equals(GroupingEntity.ALL) && !present(tags) && !present(search)) {
 	    this.permissionDBManager.checkStartEnd(loginUser, start, end, "post");
 	}
-	
+
 	// check maximum number of allowed tags
 	if (this.permissionDBManager.exceedsMaxmimumSize(tags)) {
 	    return new ArrayList<Post<T>>();
 	}
-	
+	// check for systemTags disabling this resourceType
+	if (!this.systemTagsAllowResourceType(tags, resourceType)) {
+	    return new ArrayList<Post<T>>();
+	}
 	final DBSession session = this.openSession();
 	try {
 	    /*
@@ -306,7 +312,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 		SystemTagsExtractor.separateHiddenSystemTags(publications, loginUser.getName());
 		return publications;
 	    } 
-	    
+
 	    if (resourceType == Bookmark.class) {
 		// check filters
 		// can not add filter to BookmarkParam yet, but need to add
@@ -326,12 +332,12 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 		SystemTagsExtractor.separateHiddenSystemTags(bookmarks, loginUser.getName());
 		return bookmarks;
 	    }
-	    
+
 	    if (resourceType == GoldStandardPublication.class) {
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 		return (List) this.goldStandardPublicationDBManager.getPosts(param, session);
 	    }
-	    
+
 	    throw new UnsupportedResourceTypeException();
 	} catch (final QueryTimeoutException ex) {
 	    // if a query times out, we return an empty list
@@ -339,6 +345,20 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 	} finally {
 	    session.close();
 	}
+    }
+
+    private <T extends Resource> boolean systemTagsAllowResourceType(Collection<String> tags, Class<T> resourceType) {
+	if (present(tags)) {
+	    for (String tagName: tags) {
+		SearchSystemTag sysTag = SystemTagsUtil.createSearchSystemTag(tagName);
+		if (present(sysTag)) {
+		    if (!sysTag.allowsResource(resourceType)) {
+			return false;
+		    }
+		}
+	    }
+	}
+	return true;
     }
 
     /*
@@ -573,7 +593,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 	    throw new IllegalStateException("The resource(s) with ID(s) " + missingResources + " do(es) not exist and could hence not be deleted.");
 	}
     }
-    
+
     /**
      * Check for each group of a post if the groups actually exist and if the
      * posting user is allowed to post. If yes, insert the correct group ID into
@@ -1011,10 +1031,10 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 
 	    case UPDATE_CORE:
 		return this.userDBManager.updateUserProfile(user, session);
-		
+
 	    case ACTIVATE:
 		return this.userDBManager.activateUser(user, session);
-		
+
 	    case UPDATE_ALL:
 		/*
 		 * update only (!) spammer settings
@@ -1611,12 +1631,12 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 	// assemble param object
 	final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, grouping, groupingName, tags, hash, order, start, end, search, null, loginUser);
 	param.setUserRelation(relation);
-	
+
 	// check start/end values
 	if (grouping.equals(GroupingEntity.ALL)) {
 	    this.permissionDBManager.checkStartEnd(loginUser, start, end, "User");
 	}
-	
+
 	final DBSession session = openSession();
 	try {
 	    // start chain
@@ -2043,31 +2063,31 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
      */
     @Override
     public void deleteReferences(final String postHash, final Set<String> references) {
-		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can delete references
-	
-		final DBSession session = this.openSession();
-		try {
-		    this.goldStandardPublicationDBManager.removeReferencesFromPost(this.loginUser.getName(), postHash, references, session);
-		} finally {
-		    session.close();
-		}	
+	this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can delete references
+
+	final DBSession session = this.openSession();
+	try {
+	    this.goldStandardPublicationDBManager.removeReferencesFromPost(this.loginUser.getName(), postHash, references, session);
+	} finally {
+	    session.close();
+	}	
     }
 
     @Override
     public void createWiki(final String userName, final Wiki wiki) {
-		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		
-		final DBSession session = openSession();
-		try {
-		    this.wikiDBManager.createWiki(userName, wiki, session);
-	    	} finally {
-		    session.close();
-		}
+	this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+
+	final DBSession session = openSession();
+	try {
+	    this.wikiDBManager.createWiki(userName, wiki, session);
+	} finally {
+	    session.close();
+	}
     }
 
     @Override
     public void deleteWiki(final String userName) {
-		throw new UnsupportedOperationException();
+	throw new UnsupportedOperationException();
     }
 
     /**
@@ -2078,99 +2098,99 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
      */
     @Override
     public Wiki getWiki(final String userName, final Date date) {
-		final DBSession session = openSession();
-		final User requUser = this.getUserDetails(userName); // FIXME: Nullpointer
-		/*
-		 * We return an empty wiki for users which are not allowed to access
-		 * this wiki.
-		 */
-		if (!this.permissionDBManager.isAllowedToAccessUsersProfile(requUser, this.loginUser, session)) {
-			return new Wiki();
-		}   
-	
-		try {
-		    if (date == null) {
-			return this.wikiDBManager.getActualWiki(userName, session);
-		    }
-		    
-		    return this.wikiDBManager.getPreviousWiki(userName, date, session);
-	    	} finally {
-		    session.close();
-		}
+	final DBSession session = openSession();
+	final User requUser = this.getUserDetails(userName); // FIXME: Nullpointer
+	/*
+	 * We return an empty wiki for users which are not allowed to access
+	 * this wiki.
+	 */
+	if (!this.permissionDBManager.isAllowedToAccessUsersProfile(requUser, this.loginUser, session)) {
+	    return new Wiki();
+	}   
+
+	try {
+	    if (date == null) {
+		return this.wikiDBManager.getActualWiki(userName, session);
+	    }
+
+	    return this.wikiDBManager.getPreviousWiki(userName, date, session);
+	} finally {
+	    session.close();
+	}
     }
 
     @Override
     public List<Date> getWikiVersions(final String userName) {
-		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		
-		final DBSession session = openSession();
-		try {
-		    return this.wikiDBManager.getWikiVersions(userName, session);
-	    	} finally {
-		    session.close();
-		}
+	this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+
+	final DBSession session = openSession();
+	try {
+	    return this.wikiDBManager.getWikiVersions(userName, session);
+	} finally {
+	    session.close();
+	}
     }
 
     @Override
     public void updateWiki(final String userName, final Wiki wiki) {
-		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		
-		final DBSession session = openSession();
-		
-		try {
-		    final Wiki actual = this.wikiDBManager.getActualWiki(userName, session);
-		    /*
-		     * Check, if the wiki has changed (otherwise we don't update it).
-		     */
-		    final String actualWikiText = actual.getWikiText();
-		    if (present(actualWikiText) && !actualWikiText.equals(wiki.getWikiText())) {
-			this.wikiDBManager.updateWiki(userName, wiki, session);
-			this.wikiDBManager.logWiki(userName, actual, session);
-		    }
-	    	} finally {
-		    session.close();
-		}
+	this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+
+	final DBSession session = openSession();
+
+	try {
+	    final Wiki actual = this.wikiDBManager.getActualWiki(userName, session);
+	    /*
+	     * Check, if the wiki has changed (otherwise we don't update it).
+	     */
+	    final String actualWikiText = actual.getWikiText();
+	    if (present(actualWikiText) && !actualWikiText.equals(wiki.getWikiText())) {
+		this.wikiDBManager.updateWiki(userName, wiki, session);
+		this.wikiDBManager.logWiki(userName, actual, session);
+	    }
+	} finally {
+	    session.close();
+	}
     }
 
     @Override
     public void createExtendedField(String userName, String intraHash, String key, String value) {
-		final DBSession session = openSession();
-		
-		try {
-		    this.publicationDBManager.createExtendedField(userName, intraHash, key, value, session);
-	    	} finally {
-		    session.close();
-		}
+	final DBSession session = openSession();
+
+	try {
+	    this.publicationDBManager.createExtendedField(userName, intraHash, key, value, session);
+	} finally {
+	    session.close();
+	}
     }
 
     @Override
     public void deleteExtendedField(String userName, String intraHash, String key, String value) {
-		final DBSession session = this.openSession();
-		
-		try {
-		    if(!present(key)) {
-				this.publicationDBManager.deleteAllExtendedFieldsData(userName, intraHash, session);
-		    } else {
-		    	if(!present(value)) {
-		    		this.publicationDBManager.deleteExtendedFieldsByKey(userName, intraHash, key, session);
-		    	} else { 
-					this.publicationDBManager.deleteExtendedFieldByKeyValue(userName, intraHash, key, value, session);
-		    	}
-		    }
-		} finally {
-		    session.close();
+	final DBSession session = this.openSession();
+
+	try {
+	    if(!present(key)) {
+		this.publicationDBManager.deleteAllExtendedFieldsData(userName, intraHash, session);
+	    } else {
+		if(!present(value)) {
+		    this.publicationDBManager.deleteExtendedFieldsByKey(userName, intraHash, key, session);
+		} else { 
+		    this.publicationDBManager.deleteExtendedFieldByKeyValue(userName, intraHash, key, value, session);
 		}
+	    }
+	} finally {
+	    session.close();
+	}
     }
 
     @Override
     public Map<String, List<String>> getExtendedFields(String userName, String intraHash, String key) {
-		final DBSession session = this.openSession();
-		
-	    	try {
-	    	    return this.publicationDBManager.getExtendedFields(userName, intraHash, key, session);
-		} finally {
-		    session.close();
-		}
+	final DBSession session = this.openSession();
+
+	try {
+	    return this.publicationDBManager.getExtendedFields(userName, intraHash, key, session);
+	} finally {
+	    session.close();
+	}
     }
 
 }
