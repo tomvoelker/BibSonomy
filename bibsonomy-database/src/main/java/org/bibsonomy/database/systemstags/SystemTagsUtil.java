@@ -2,6 +2,7 @@ package org.bibsonomy.database.systemstags;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -106,12 +107,26 @@ public class SystemTagsUtil {
      * Checks, if a list of tagNames contains a member, that starts with a given string, ignoring case
      * @param tagNames = a list of tagNames
      * @param tagType = the type we are looking for
-     * @param prefixRequired = set true if systemTag must occur with prefix or false if prefix is optional
      * @return true if tagNames contains a tagName that matches the given tagType as a systemTag
      */
     public static boolean containsSystemTag(final List<String> tagNames, final String tagType) {
 	for (final String tagName : tagNames) {
 	    if (isSystemTag(tagName, tagType)) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
+    /**
+     * Checks, if a list of tags contains a member, that starts with a given string, ignoring case
+     * @param tags = a collection of tags
+     * @param tagType = the type we are looking for
+     * @return true if tags contains a tag that matches the given tagType as a systemTag
+     */
+    public static boolean containsSystemTag(final Collection<Tag> tags, final String tagType) {
+	for (final Tag tag: tags) {
+	    if (present(tag) && isSystemTag(tag.getName(), tagType)) {
 		return true;
 	    }
 	}
