@@ -6,9 +6,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import de.unikassel.puma.openaccess.classification.ClassificationObject;
-import de.unikassel.puma.openaccess.classification.ClassificationParser;
+import de.unikassel.puma.openaccess.classification.ClassificationXMLParser;
 
-public class JELClassification extends ClassificationParser {
+public class JELClassification extends ClassificationXMLParser {
 
 	private static final String NAME = "JEL";
 	

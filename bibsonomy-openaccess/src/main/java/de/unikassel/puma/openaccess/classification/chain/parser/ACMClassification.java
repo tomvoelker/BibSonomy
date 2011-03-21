@@ -4,13 +4,15 @@ package de.unikassel.puma.openaccess.classification.chain.parser;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.LinkedHashMap;
-import de.unikassel.puma.openaccess.classification.ClassificationObject;
-import de.unikassel.puma.openaccess.classification.ClassificationParser;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import de.unikassel.puma.openaccess.classification.ClassificationObject;
+import de.unikassel.puma.openaccess.classification.ClassificationXMLParser;
 
-public class ACMClassification extends ClassificationParser {
+
+public class ACMClassification extends ClassificationXMLParser {
 
 	private static final String NAME = "ACM";
 

@@ -7,9 +7,9 @@ public class ClassificationObject {
 
 	private LinkedHashMap<String , ClassificationObject> children;
 	
-	private final String name;
-	
-	private final String description;
+	private String name;
+
+	private String description;
 	
 	public ClassificationObject(String name, String description) {
 		this.name = name;
@@ -34,7 +34,17 @@ public class ClassificationObject {
 		return description;
 	}
 	
-	
-	
-	
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }

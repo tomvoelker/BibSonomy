@@ -17,10 +17,11 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import de.unikassel.puma.openaccess.classification.chain.ClassificationChainElement;
+import de.unikassel.puma.openaccess.classification.chain.ClassificationTextChainElement;
+import de.unikassel.puma.openaccess.classification.chain.ClassificationXMLChainElement;
 import de.unikassel.puma.openaccess.classification.chain.parser.ACMClassification;
+import de.unikassel.puma.openaccess.classification.chain.parser.DDCClassification;
 import de.unikassel.puma.openaccess.classification.chain.parser.JELClassification;
-import de.unikassel.puma.openaccess.classification.PublicationClassification;
 
 public class PublicationClassificator {
 	
@@ -60,9 +61,10 @@ public class PublicationClassificator {
 	}
 	
 	private void initialise() {
-		ArrayList<ClassificationChainElement> cceList = new ArrayList<ClassificationChainElement>();
-		cceList.add(new ClassificationChainElement(new JELClassification()));
-		cceList.add(new ClassificationChainElement(new ACMClassification()));
+		ArrayList<ClassificationSource> cceList = new ArrayList<ClassificationSource>();
+		cceList.add(new ClassificationXMLChainElement(new JELClassification()));
+		cceList.add(new ClassificationXMLChainElement(new ACMClassification()));
+		cceList.add(new ClassificationTextChainElement(new DDCClassification()));
 		
 		
 		File path = new File(xmlPath);
@@ -72,10 +74,15 @@ public class PublicationClassificator {
 			File[] files = path.listFiles(new FileFilter() {
 				
 				@Override
-				public boolean accept(File pathname) {
-					if(pathname.toString().endsWith(".xml")) {
+				public boolean accept(File file) {
+					if(file.isDirectory()) {
+						return false;
+					}
+					
+					if(!file.toString().endsWith(".properties")) {
 						return true;
 					}
+					
 					return false;
 				}
 			});
