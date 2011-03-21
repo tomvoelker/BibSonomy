@@ -1780,16 +1780,28 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
      * This Method only works for the FOLLOWER_OF and the OF_FRIEND relation
      * Other relation will result in an UnsupportedRelationException
      * 
+     * TODO: the "tag" parameter is currently ignored by this function. As soon
+     * as tagged relationships are needed, please implement the handling of 
+     * the "tag" parameter from here on (mainly in the UserDBManager)
+     * 
      * @see org.bibsonomy.model.logic.LogicInterface#insertUserRelationship()
      */
     @Override
-    public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
+    public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
 	this.ensureLoggedIn();
-	// this.permissionDBManager.checkUserRelationship(sourceUser,
-	// targetUser, relation);
+	/*
+	 * relationships can only be created by the logged-in user or admins
+	 */
 	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, sourceUser);
-
+	/*
+	 * check if relationship may be created (e.g. some special users
+	 * like 'dblp' are disallowed)
+	 */
 	final DBSession session = openSession();
+	this.permissionDBManager.checkUserRelationship(loginUser, this.userDBManager.getUserDetails(targetUser, session), relation, tag);
+	/*
+	 * finally try to create relationship
+	 */
 	try {
 	    this.userDBManager.createUserRelation(sourceUser, targetUser, relation, session);
 	} finally {
@@ -1798,11 +1810,16 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
     }
 
     /*
+     * 
+     * TODO: the "tag" parameter is currently ignored by this function. As soon
+     * as tagged relationships are needed, please implement the handling of 
+     * the "tag" parameter from here on (mainly in the UserDBManager)
+     * 
      * (non-Javadoc)
      * @see org.bibsonomy.model.logic.LogicInterface#getUserRelationship(java.lang.String, org.bibsonomy.common.enums.UserRelation)
      */
     @Override
-    public List<User> getUserRelationship(final String sourceUser, final UserRelation relation) {
+    public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, String tag) {
 	this.ensureLoggedIn();
 	// ask Robert about this method
 	// this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);
@@ -1824,10 +1841,14 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
      * Other relation will result in an UnsupportedRelationException FIXME: use
      * Strings (usernames) instead of users
      * 
+     * TODO: the "tag" parameter is currently ignored by this function. As soon
+     * as tagged relationships are needed, please implement the handling of 
+     * the "tag" parameter from here on (mainly in the UserDBManager)
+     * 
      * @see org.bibsonomy.model.logic.LogicInterface#deleteUserRelationship()
      */
     @Override
-    public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
+    public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
 	this.ensureLoggedIn();
 	// ask Robert about this method
 	// this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);

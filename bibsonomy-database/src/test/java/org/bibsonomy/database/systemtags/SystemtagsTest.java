@@ -366,7 +366,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		// user 2 adds user 1 as a friend => user 1 can now send posts to user 2
 		// however user 2 can not send posts to user 1
 		testUser2.addFriend(testUser1);
-		user2Logic.createUserRelationship(testUser2.getName(), testUser1.getName(), UserRelation.OF_FRIEND);
+		user2Logic.createUserRelationship(testUser2.getName(), testUser1.getName(), UserRelation.OF_FRIEND, null);
 		
 		/*
 		 *  User 2 tries to send a post to user1: We assume failure

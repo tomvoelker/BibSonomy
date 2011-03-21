@@ -390,19 +390,27 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
      * and a requested user may be created.
      * 
      * @param loginUser - the logged-in user
-     * @param requestedUser - the requested user
      * @param relation - the relation to be created
+     * @param tag TODO
+     * @param requestedUser - the requested user
      * @return true if everyhing is OK and the relationship may be created
      * 
      * 
      */
-    public boolean checkUserRelationship(User loginUser, User requestedUser, UserRelation relation) {
-	if (!present(requestedUser)) {
-	    return false;
-	}
-	if ("dblp".equalsIgnoreCase(requestedUser.getName())) {
-	    throw new ValidationException("error.relationship_with_dblp");
+    public boolean checkUserRelationship(User loginUser, final User targetUser, UserRelation relation, String tag) {
+	/*
+	 * when we add an internal relation, the target user must exist
+	 * (and some special users like 'dblp' are not allowed)  
+	 */
+	if (relation.isInternal() ) {
+	    if (!present(targetUser.getName())) {
+		throw new ValidationException("Relationship with non-existing user cannot be established.");
+	    }
+	    if ("dblp".equalsIgnoreCase(targetUser.getName())) {
+		throw new ValidationException("error.relationship_with_dblp");
+	    }
 	}
 	return true;
-    }
+    }    
+    
 }
