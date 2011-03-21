@@ -442,7 +442,7 @@
 	
 	<!-- delete document -->
 	<!--<rule>
-		<name>/documents/FILEHASH/ÌNTRAHASH</name>
+		<name>/documents/FILEHASH/INTRAHASH</name>
 		<from>^/+documents/+([0-9a-fA-F]+)/+([0-9a-fA-F]+)</from>
 		<set type="parameter" name="fileHash">$1</set>
 		<set type="parameter" name="intraHash">$2</set>
