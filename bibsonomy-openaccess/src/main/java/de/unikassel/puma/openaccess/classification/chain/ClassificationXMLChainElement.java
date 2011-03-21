@@ -11,24 +11,24 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import de.unikassel.puma.openaccess.classification.Classification;
-import de.unikassel.puma.openaccess.classification.ClassificationParser;
 import de.unikassel.puma.openaccess.classification.ClassificationSource;
+import de.unikassel.puma.openaccess.classification.ClassificationXMLParser;
 
-public class ClassificationChainElement implements ClassificationSource {
+public class ClassificationXMLChainElement implements ClassificationSource {
 
-	private final ClassificationParser classificationParser;
+	private final ClassificationXMLParser classificationParser;
 	
-	private ClassificationChainElement next = null;
+	private ClassificationSource next = null;
 	
-	public ClassificationChainElement(ClassificationParser classParser) {
+	public ClassificationXMLChainElement(ClassificationXMLParser classParser) {
 		this.classificationParser = classParser;
 	}
 	
-	public void setNext(ClassificationChainElement next) {
+	public void setNext(ClassificationSource next) {
 		this.next = next;
 	}
 	
-	public ClassificationChainElement getNext() {
+	public ClassificationSource getNext() {
 		return this.next;
 	}
 
