@@ -567,33 +567,36 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	/** 
 	 * We return all Users that are in (the) relation with the sourceUser
 	 * as targets.
-	 * @param sourceUser = leftHandSide of the relation
-	 * @param relation = the User relation
+	 * @param sourceUser - leftHandSide of the relation
+	 * @param relation - the User relation
+	 * @param tag - relationships can also be tagged (e.g. for customized friendship lists or external friends from facebook etc)
 	 * @return all rightHandsides, that is all Users u with
 	 * (sourceUser, u)\in relation
 	 */
-	public List<User> getUserRelationship(String sourceUser, UserRelation relation);
+	public List<User> getUserRelationship(String sourceUser, UserRelation relation, String tag);
 	
 	/**
 	 * We delete a UserRelation of the form (sourceUser, targetUser)\in relation
 	 * sourceUser should be logged in to have access to this
 	 * 
-	 * @param sourceUser 
-	 * @param targetUser 
-	 * @param relation 
+	 * @param sourceUser - leftHandSide of the relation
+	 * @param targetUser - rightHandSie of the relation 
+	 * @param relation - the type of the relation
+	 * @param tag - relations can also be tagged
 	 * 
 	 */
-	public void deleteUserRelationship(String sourceUser, String targetUser, UserRelation relation);
+	public void deleteUserRelationship(String sourceUser, String targetUser, UserRelation relation, String tag);
 	
 	/**
 	 * We create a UserRelation of the form (sourceUser, targetUser)\in relation
 	 * sourceUser should be logged in for this
 	 * 
-	 * @param sourceUser
-	 * @param targetUser
-	 * @param relation
+	 * @param sourceUser - leftHandSide of the relation
+	 * @param targetUser - rightHandSie of the relation 
+	 * @param relation - the type of the relation
+	 * @param tag - relations can also be tagged
 	 */
-	public void createUserRelationship(String sourceUser, String targetUser, UserRelation relation);
+	public void createUserRelationship(String sourceUser, String targetUser, UserRelation relation, String tag);
 	
 	/**
 	 * Create basket items
