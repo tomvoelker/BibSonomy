@@ -49,6 +49,7 @@ public abstract class AbstractQuery<T> {
 	protected static final String URL_TAGS = RestProperties.getInstance().getTagsUrl();
 	protected static final String URL_USERS = RestProperties.getInstance().getUsersUrl();
 	protected static final String URL_FRIENDS = RestProperties.getInstance().getFriendsUrl();
+	protected static final String URL_FOLLOWERS = RestProperties.getInstance().getFollowersUrl();
 	protected static final String URL_GROUPS = RestProperties.getInstance().getGroupsUrl();
 	protected static final String URL_POSTS = RestProperties.getInstance().getPostsUrl();
 	protected static final String URL_POSTS_ADDED = RestProperties.getInstance().getAddedPostsUrl();
