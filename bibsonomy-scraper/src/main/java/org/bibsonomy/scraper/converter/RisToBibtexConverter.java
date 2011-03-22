@@ -44,7 +44,20 @@ public class RisToBibtexConverter {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+		String bsp2 = "Content-type: text/application/x-research-info-systems\n"+
+		"TY  - JOUR\n"+
+		"AU  - Gosse, Philippe\n"+
+		"TI  - Regression of Left Ventricular Hypertrophy: Should We Echo Echo[quest]\n"+
+		"JA  - Am J Hypertens\n"+
+		"PY  - 2008/03/18/print\n"+
+		"VL  - 21\n"+
+		"IS  - 4\n"+
+		"SP  - 373\n"+
+		"EP  - 373\n"+
+		"PB  - American Journal of Hypertension, Ltd.\n"+
+		"SN  - 0895-7061\n"+
+		"UR  - http://dx.doi.org/10.1038/ajh.2008.9\n"+
+		"ER  - \n";
 		String bsp = "TY  - BOOK\n"+
 		"JF  - Lecture Notes in Computer Science : Engineering Self-Organising Systems\n"+
 		"T1  - T-Man: Gossip-Based Overlay Topology Management\n"+
@@ -56,9 +69,23 @@ public class RisToBibtexConverter {
 		"AU  - M�rk Jelasity\n"+
 		"AU  - Ozalp Babaoglu\n"+
 		"ER  -\n";
+		String bsp3 = "TY  - BOOK\n" +
+		"DB  - /z-wcorg/\n" +
+		"DP  - http://worldcat.org\n" +
+		"ID  - 503308127\n" +
+		"LA  - English\n" +
+		"T1  - Gramsci, language, and translation\n" +
+		"A1  - Ives, Peter,\n" +
+		"A1  - Lacorte, Rocco,\n" +
+		"PB  - Lexington Books\n" +
+		"CY  - Lanham, Md.\n" +
+		"Y1  - 2010///\n" +
+		"SN  - 9780739118597  9780739118603  0739118595  0739118609  9780739147856  0739147854\n" +
+		"ER  - \n";
 
 		System.out.println(new RisToBibtexConverter().RisToBibtex(bsp));
-
+		System.out.println(new RisToBibtexConverter().RisToBibtex(bsp2));
+		System.out.println(new RisToBibtexConverter().RisToBibtex(bsp3));
 	}
 
 
@@ -119,7 +146,7 @@ public class RisToBibtexConverter {
 				continue;
 			else {
 				final String key = entry.substring(0, 2);
-				final String value = entry.substring(6).trim();
+				String value = entry.substring(6).trim();
 				if (key.equals("TY")) {
 					if (value.equals("BOOK"))
 						type = "book";
@@ -143,6 +170,10 @@ public class RisToBibtexConverter {
 				else if (key.equals("T2") || key.equals("T3") || key.equals("BT")) {
 					bibtexMap.put("booktitle", value);
 				} else if (key.equals("A1") || key.equals("AU")) {
+					// take care of trailing ","
+					if(value.endsWith(",")) {
+						value = value.substring(0, value.length() - 2);
+					}
 					if (author.equals("")) // don't add " and " for the first author
 						author = value;
 					else
