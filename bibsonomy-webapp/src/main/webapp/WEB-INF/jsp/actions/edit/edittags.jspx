@@ -9,6 +9,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:spring="http://www.springframework.org/tags"
   	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common">
 	
