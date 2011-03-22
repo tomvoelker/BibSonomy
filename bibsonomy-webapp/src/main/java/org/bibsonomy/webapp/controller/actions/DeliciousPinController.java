@@ -3,6 +3,8 @@
  */
 package org.bibsonomy.webapp.controller.actions;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.importer.bookmark.service.DeliciousSignPost;
 import org.bibsonomy.importer.bookmark.service.DeliciousSignPostManager;
 import org.bibsonomy.webapp.command.actions.ImportCommand;
@@ -22,6 +24,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @version $Id$
  */
 public class DeliciousPinController implements MinimalisticController<ImportCommand>, ErrorAware {
+	
+	private static final Log log = LogFactory.getLog(DeliciousPinController.class);
 
 	private Errors errors = null;
 	
@@ -67,12 +71,21 @@ public class DeliciousPinController implements MinimalisticController<ImportComm
 		DeliciousSignPost oAuth = signPostManager.createDeliciousSignPost();
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		attr.setAttribute(signPostManager.getoAuthKey(), oAuth, ServletRequestAttributes.SCOPE_SESSION);
-	    return new ExtendedRedirectView(
-	    		oAuth.getRequestToken(
-	    				signPostManager.getCallbackBaseUrl()
+		
+		String redirectURI = null;
+		
+	    try {
+	    	redirectURI = oAuth.getRequestToken(signPostManager.getCallbackBaseUrl())
 	    				+ "?" + "ckey=" + context.getCkey()
-	    				+ "&" + "overwrite=" + command.isOverwrite()
-	    				+ "&" + "importData=" + command.getImportData()));
+						+ "&" + "overwrite=" + command.isOverwrite()
+						+ "&" + "importData=" + command.getImportData();
+		} catch (Exception ex) {
+			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
+			log.warn("Delicious-Import failed: " + ex.getMessage());
+		}
+		
+		return new ExtendedRedirectView(redirectURI);
+		
 	}
 
 	@Override
