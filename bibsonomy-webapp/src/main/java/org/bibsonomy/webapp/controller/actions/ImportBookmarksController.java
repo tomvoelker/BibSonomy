@@ -133,7 +133,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 					relations = relationImporter.getRelations();
 				} 
 
-			} else if("deliciousV2".equals(importType)) {
+			} else if("delicious.yahoo".equals(importType)) {
 				/*
 				 * TODO: we want to have checkboxes, not radio buttons!
 				 */

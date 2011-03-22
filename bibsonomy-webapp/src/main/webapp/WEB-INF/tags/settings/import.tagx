@@ -116,7 +116,7 @@
 		
 		
 		<h2><fmt:message key="settings.delicious2.header" /></h2>
-		<form:form id="settingImportForm" action="/import/delicious/v2?ckey=${ckey}" method="post">
+		<form:form id="settingImportForm" action="/import/delicious/v2/post?ckey=${ckey}" method="post">
  
     		<div id="fsform">
 				<fieldset class="fsInner">

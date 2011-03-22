@@ -783,9 +783,9 @@
 		<to last="true">/import/bookmarks</to>
 	</rule>
 	<rule>
-		<name>/import/deliciousV2</name>
-		<from>^/import/deliciousV2$</from>
-		<set type="parameter" name="importType">deliciousV2</set>
+		<name>/import/delicious/v2</name>
+		<from>^/import/delicious/v2$</from>
+		<set type="parameter" name="importType">delicious.yahoo</set>
 		<to last="true">/import/bookmarks</to>
 	</rule>
 	<rule>

@@ -75,10 +75,10 @@ public class DeliciousPinController implements MinimalisticController<ImportComm
 		String redirectURI = null;
 		
 	    try {
-	    	redirectURI = oAuth.getRequestToken(signPostManager.getCallbackBaseUrl())
+	    	redirectURI = oAuth.getRequestToken(signPostManager.getCallbackBaseUrl()
 	    				+ "?" + "ckey=" + context.getCkey()
 						+ "&" + "overwrite=" + command.isOverwrite()
-						+ "&" + "importData=" + command.getImportData();
+						+ "&" + "importData=" + command.getImportData());
 		} catch (Exception ex) {
 			attr.removeAttribute(signPostManager.getoAuthKey(), ServletRequestAttributes.SCOPE_SESSION);
 			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
