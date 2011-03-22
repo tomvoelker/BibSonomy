@@ -80,6 +80,7 @@ public class DeliciousPinController implements MinimalisticController<ImportComm
 						+ "&" + "overwrite=" + command.isOverwrite()
 						+ "&" + "importData=" + command.getImportData();
 		} catch (Exception ex) {
+			attr.removeAttribute(signPostManager.getoAuthKey(), ServletRequestAttributes.SCOPE_SESSION);
 			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
 			log.warn("Delicious-Import failed: " + ex.getMessage());
 		}
