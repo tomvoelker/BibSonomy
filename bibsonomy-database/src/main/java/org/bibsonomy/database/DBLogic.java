@@ -1504,7 +1504,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
     public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 	if (GroupingEntity.USER.equals(grouping)) {
 	    this.permissionDBManager.ensureIsAdminOrSelf(loginUser, groupingName);
-	    return this.storeConcept(concept, grouping, groupingName, false);
+	    return this.storeConcept(concept, grouping, groupingName, true);
 	}
 	throw new UnsupportedOperationException("Currently, tag relations can only be created for users.");
     }
