@@ -37,7 +37,7 @@
 			<c:url var="systagUrl" value="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(systag.name)}" context="${projectContext}"/>
 			<c:set var="systagTitle" value="${systagTitle} ${fn:escapeXml(systag.name)}" />
 		</c:forEach>		
-		<img alt="SystemTags" src="${resdir}/image/cog_wheel.png" title="${systagTitle}"/>	
+		<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="${systagUrl}" tag="${systagTitle}"/>	
 	</c:if>
 	
 	<!-- group of a resource -->

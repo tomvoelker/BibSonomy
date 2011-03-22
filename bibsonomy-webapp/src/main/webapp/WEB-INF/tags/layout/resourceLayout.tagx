@@ -35,7 +35,6 @@
 	<c:if test="${empty disableListNavigation}">
 		<c:set var="disableListNavigation" value="${false}"/>
 	</c:if>	
-		
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">		
 		<jsp:attribute name="headerExt">
@@ -53,6 +52,40 @@
             	<c:if test="${command.context.loginUser.settings.showBookmark and command.context.loginUser.settings.showBibtex}">
             		<c:set var="optionShowBoth"><c:out value="hiddenElement"/></c:set>
             	</c:if>
+            	<script>
+					$(document).ready(
+						function() {
+							$(".hiddenSystemTag").each(
+								function () {
+									var hiddenInfoBox = $('<div style="position:absolute" class="initiallyHidden listhButtons"></div>');
+									var hideTimeout = 0;
+									var callback = function() {
+										hideTimeout = setTimeout (function(){hiddenInfoBox.fadeOut('slow');}, 1500 );
+									};
+									
+									$("body").append(hiddenInfoBox);
+									 
+									$(this).mouseover(
+											function() {
+												clearTimeout(hideTimeout);
+												hiddenInfoBox.html('<a href="'+$(this).attr('url')+'">'+$(this).attr('tag')+'</a>').css( { "left": ($(this).offset().left - (($(hiddenInfoBox).width()-$(this).width()))/2) + "px", "top":($(this).offset().top-25) + "px" } ).show().fadeIn("slow");
+											}
+									).mouseout(
+											callback
+									).css("cursor","pointer");
+									
+									hiddenInfoBox.mouseover(
+											function() {
+												clearTimeout(hideTimeout);
+											}
+									).mouseout(
+											callback
+									);
+								}		
+							);
+						}		
+					);
+				</script>
         <!-- set by url parameter -->
         <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
         <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
