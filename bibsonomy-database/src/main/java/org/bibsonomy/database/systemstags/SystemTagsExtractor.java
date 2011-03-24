@@ -111,42 +111,53 @@ public class SystemTagsExtractor {
     }
 
 
-    /**
-     * Go through a list of tags and remove all System Tags that hide
+     /**
+     * Go through a collection of tags and removes all hidden System Tags
      * @param <T>
-     * @param tags
+     * @param posts
+     * @param loginUserName
      */
-    @SuppressWarnings("null")
-    public static <T extends Resource> Set<Tag> separateHiddenSystemTags(Collection<Tag> tags) {
-	Set<Tag> sysTags=null;
+    public static <T extends Resource> void removeHiddenSystemTags(Collection<Tag> tags) {
 	for (final Iterator<Tag> iter = tags.iterator(); iter.hasNext();) {
 	    Tag tag = iter.next();
 	    SystemTag sysTag = SystemTagsUtil.createSystemTag(tag);
 	    if (present(sysTag) && sysTag.isToHide()) {
 		// We have found a system tag that should be hidden
-		if (!present(sysTags)) {
-		    sysTags = new HashSet<Tag>();
-		}
-		sysTags.add(tag);
 		iter.remove();
 	    }
 	}
-	return sysTags;
     }
-
-
+   
+    
+    private static <T extends Resource> void separateHiddenSystemTags(Post<T> post) {
+	for (final Iterator<Tag> iter = post.getTags().iterator(); iter.hasNext();) {
+	    Tag tag = iter.next();
+	    SystemTag sysTag = SystemTagsUtil.createSystemTag(tag);
+	    if (present(sysTag) && sysTag.isToHide()) {
+		// We have found a system tag that should be hidden
+		post.addHiddenSystemTag(tag);
+	    } else {
+		post.addVisibleTag(tag);
+	    }
+	}
+	
+    }
+    
     /**
-     * Go through a list of posts and remove all System Tags that hide
-     * If the loginUser is the posts owner then add the system tags to the posts hidden SystemTag list
+     * Go through a list of posts and removes all hidden System Tags
+     * if the loginUser is not the posts owner
      * @param <T>
      * @param posts
      * @param loginUserName
      */
-    public static <T extends Resource> void separateHiddenSystemTags(List<Post<T>> posts, String loginUserName) {
+    public static <T extends Resource> void handleHiddenSystemTags(Collection<Post<T>> posts, String loginUserName) {
 	for (Post<T> post: posts) {
-	    Set<Tag> sysTags = separateHiddenSystemTags(post.getTags()); 
-	    if (present(loginUserName) && loginUserName.equals(post.getUser().getName())) {
-		post.setHiddenSystemTags(sysTags);
+	    if (!present(loginUserName) || !loginUserName.equals(post.getUser().getName())) {
+		removeHiddenSystemTags(post.getTags());
+	    } else {
+		post.setHiddenSystemTags(new HashSet<Tag>());
+		post.setVisibleTags(new HashSet<Tag>());
+		separateHiddenSystemTags(post);
 	    }
 	}
     }

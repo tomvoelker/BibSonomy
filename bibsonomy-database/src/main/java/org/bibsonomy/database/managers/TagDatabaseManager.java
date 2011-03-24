@@ -730,7 +730,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getTags(final TagParam param, final DBSession session) {
 		final List<Tag> tags = chain.getFirstElement().perform(param, session);
-		SystemTagsExtractor.separateHiddenSystemTags(tags);
+		SystemTagsExtractor.removeHiddenSystemTags(tags);
 		return this.setUsercountToGlobalCount(tags);
 	}
 
