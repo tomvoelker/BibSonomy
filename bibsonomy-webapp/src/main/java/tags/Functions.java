@@ -34,9 +34,9 @@ import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.upload.FileUploadInterface;
-import org.bibsonomy.webapp.controller.UserPageController;
 
 
 /**
@@ -75,9 +75,16 @@ public class Functions  {
 	// load special characters
 	static {
 		try {
-			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
+			//chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
+			chars.put("nbsp", "&nbsp");
+			chars.put("path.delim", "::");
+			chars.put("menu.delim", "&middot");
+			chars.put("post.actions.delim", "|");
+			chars.put("list.pagenumber.delim", "|");
+			chars.put("tagrelations.superConceptOf", "&larr;");
+			
 			layoutRenderer = JabrefLayoutRenderer.getInstance();
-		} catch (final IOException e) {
+		} catch (final Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}	    	    		
 	}
@@ -721,6 +728,17 @@ public class Functions  {
 	 */
 	public static String extractDOI(final String doiString){
 		return DOIUtils.extractDOI(doiString);
+	}
+	
+	/**
+	 * Remove XML control characters from a given String.
+	 * 
+	 * @see XmlUtils
+	 * @param s - the string from which the control characters are to be removed
+	 * @return the string with control characters removed.
+	 */
+	public static String removeXmlControlChars(final String s) {
+		return XmlUtils.removeXmlControlCharacters(s);
 	}
 
 }
