@@ -71,7 +71,13 @@
 												clearTimeout(hideTimeout);
 												// insert the tag link and the title and position element
 												var left = $(this).offset().left + $(this).width()/2;
-												hiddenBox.html('<a href="'+$(this).attr('url')+'">'+$(this).attr('tag')+'</a>').
+												var tags = ($(this).attr('tags')).split(" ");
+												var url = $(this).attr('url');
+												var content = '<a href="'+url+tags[0] +'">' + tags[0] + '</a>';
+												for (var t=1; t< tags.length-1; t++) {
+													content = content + ' <a href="'+url+tags[t] +'">' + tags[t] + '</a>';
+												}
+												hiddenBox.html(content).
 												css( 
 														{ "left": ((left-$(hiddenBox).width()/2 > 0)?
 																	(($(document).width() > left-$(hiddenBox).width()/2)?

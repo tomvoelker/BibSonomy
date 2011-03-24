@@ -14,11 +14,11 @@
 	<fmt:bundle basename="messages"/>
 	
 	<!-- the tags of a resource -->
-	<c:if test="${!empty post.tags}">
+	<c:if test="${!empty post.visibleTags}">
 		<fmt:message key="post.meta.taggedTo" />
 		<c:out value=" "/>
 		<span class="bmtags">
-			<c:forEach var="tag" items="${post.tags}">
+			<c:forEach var="tag" items="${post.visibleTags}">
 				<c:url var="tagUrl" value="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}" context="${projectContext}"/>
 				<a href="${tagUrl}"><c:out value="${tag.name}"/></a>
 				<c:out value=" "/>
@@ -32,12 +32,12 @@
 		</span>
 	</c:if>
 	<c:if test="${!empty post.hiddenSystemTags}">
-		<c:set var="systagTitle" value=""/>
+		<c:url var="systagUrl" value="/user/${fn:escapeXml(post.user.name)}/" context="${projectContext}"/>
+		<c:set var="systagTitles" value=""/>
 		<c:forEach var="systag" items="${post.hiddenSystemTags}">
-			<c:url var="systagUrl" value="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(systag.name)}" context="${projectContext}"/>
-			<c:set var="systagTitle" value="${systagTitle} ${fn:escapeXml(systag.name)}" />
+			<c:set var="systagTitles" value="${systagTitles}${fn:escapeXml(systag.name)} " />
 		</c:forEach>		
-		<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="${systagUrl}" tag="${systagTitle}"/>	
+		<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="${systagUrl}" tags="${systagTitles}"/>	
 	</c:if>
 	
 	<!-- group of a resource -->
