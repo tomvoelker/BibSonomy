@@ -76,6 +76,11 @@ public class Post<T extends Resource> implements Serializable {
 	 * they are hidden but can be called when needed
 	 */
 	private Set<Tag> hiddenSystemTags;
+	/**
+	 * This post is tagged with these {@link Tag}s
+	 * they are not hidden
+	 */
+	private Set<Tag> visibleTags;
 
 	/**
 	 * This is the {@link Date} when this post was lastly modified.
@@ -342,5 +347,29 @@ public class Post<T extends Resource> implements Serializable {
 			this.hiddenSystemTags = new HashSet<Tag>();
 		}
 		this.hiddenSystemTags.add(tag);
+	}
+
+	/**
+	 * @param visibleTags
+	 */
+	public void setVisibleTags(Set<Tag> visibleTags) {
+		this.visibleTags = visibleTags;
+	}
+
+	/**
+	 * @return the visible tags
+	 */
+	public Set<Tag> getVisibleTags() {
+		return visibleTags;
+	}
+	
+	/**
+	 * @param tag
+	 */
+	public void addVisibleTag(Tag tag) {
+		if (!present(this.visibleTags)) {
+			this.visibleTags = new HashSet<Tag>();
+		}
+		this.visibleTags.add(tag);
 	}
 }
