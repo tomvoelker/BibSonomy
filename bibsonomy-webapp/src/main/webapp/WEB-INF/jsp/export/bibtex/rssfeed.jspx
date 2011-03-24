@@ -15,7 +15,7 @@
     <jsp:attribute name="additionalItemMetadata">
       <c:if test="${not empty post.description}">
         <description>
-          <c:out value="${post.description}"/>
+          <c:out value="${mtl:removeXmlControlChars(post.description)}"/>
         </description>
       </c:if>
     </jsp:attribute>
@@ -24,7 +24,7 @@
       <c:set var="description">
         <bib:desc post="${post}"/>
       </c:set>
-      <c:out value="${description}"/>
+      <c:out value="${mtl:removeXmlControlChars(description)}"/>
     </jsp:attribute>
   
   </export:rssSkeleton>
