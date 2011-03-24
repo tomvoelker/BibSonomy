@@ -75,14 +75,7 @@ public class Functions  {
 	// load special characters
 	static {
 		try {
-			//chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
-			chars.put("nbsp", "&nbsp");
-			chars.put("path.delim", "::");
-			chars.put("menu.delim", "&middot");
-			chars.put("post.actions.delim", "|");
-			chars.put("list.pagenumber.delim", "|");
-			chars.put("tagrelations.superConceptOf", "&larr;");
-			
+			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));			
 			layoutRenderer = JabrefLayoutRenderer.getInstance();
 		} catch (final Exception e) {
 			throw new RuntimeException(e.getMessage());
