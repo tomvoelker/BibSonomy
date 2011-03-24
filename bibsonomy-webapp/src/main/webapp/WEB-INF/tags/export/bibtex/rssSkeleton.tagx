@@ -78,11 +78,11 @@
 	    <item rdf:about="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
           
           <!-- title, description, link, creator, date, subject -->
-    	  <title>${mtl:cleanBibtex(post.resource.title)}</title>
+    	  <title>${mtl:cleanBibtex(mtl:removeXmlControlChars(post.resource.title))}</title>
   		  <link>${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></link>
   		  <dc:creator><c:out value="${post.user.name}"/></dc:creator>
   		  <dc:date><mtl:formatDate value="${post.date}"/></dc:date>
-  		  <dc:subject><c:forEach var="tag" items="${post.tags}"><c:out value="${tag.name}"/><c:out value=" "/></c:forEach></dc:subject>
+  		  <dc:subject><c:forEach var="tag" items="${post.tags}"><c:out value="${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/><c:out value=" "/></c:forEach></dc:subject>
 
           <!-- The HTML description of the item. -->
   		  <content:encoded><jsp:invoke fragment="content"/></content:encoded>
@@ -91,7 +91,7 @@
   		  <taxo:topics>
 	        <rdf:Bag>
 	          <c:forEach var="tag" items="${post.tags}">
-	            <rdf:li rdf:resource="${projectHome}tag/${fn:escapeXml(tag.name)}"/>
+	            <rdf:li rdf:resource="${projectHome}tag/${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/>
 	          </c:forEach>  
 	        </rdf:Bag>
 	      </taxo:topics>
