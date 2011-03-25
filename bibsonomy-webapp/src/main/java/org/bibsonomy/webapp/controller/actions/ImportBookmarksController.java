@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -192,7 +191,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 		if (present(relations)) {
 			this.storeRelations(relations, command);
 
-			/** how many posts were found? **/
+			/** how many bundles were found? **/
 			command.setTotalCount(relations != null ? relations.size() : 0);
 		}
 
@@ -228,7 +227,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 		final Map<String, String> updatedBookmarkEntries = new HashMap<String, String>();
 
 		// stores all the non imported bookmarks
-		final List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
+		final Map<String, String> nonCreatedBookmarkEntries = new HashMap<String, String>();
 		
 		// store the posts one by one
 		for (final Post<Bookmark> post : posts) {
@@ -255,7 +254,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 								final List<String> createdPostHash = logic.updatePosts(singletonList, PostUpdateOperation.UPDATE_ALL);
 								updatedBookmarkEntries.put(createdPostHash.get(0), title);
 							} else {
-								nonCreatedBookmarkEntries.add(title);
+								nonCreatedBookmarkEntries.put(hash, title);
 							}							
 						} else {
 							// something else went wrong => don't handle this

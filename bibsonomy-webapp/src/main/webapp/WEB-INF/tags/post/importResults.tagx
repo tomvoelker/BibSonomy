@@ -63,12 +63,18 @@
 			<!-- Show all resources which couldn't get updated -->
 			<c:if test="${not empty command.nonCreatedBookmarks}">
 				<fieldset class="fsOuter" style="padding: 1em; margin-bottom: 1em;">
-					<legend><fmt:message key="import.failed"/></legend>
-          
+					<legend>
 						<fmt:message key="import.nonImportedResources">
 							<fmt:param value="${fn:length(command.nonCreatedBookmarks)}"/>
 							<fmt:param value="${bookmarks}"/>
 						</fmt:message>
+					</legend>
+					
+					<ul>
+						<c:forEach items="${command.nonCreatedBookmarks}" var="mapEntry">
+		    				<li class="bm"><a href="/url/${mapEntry.key}"><c:out value="${mapEntry.value}"/></a></li>
+						</c:forEach>
+					</ul>
             
 				</fieldset>
 

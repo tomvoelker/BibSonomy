@@ -42,7 +42,7 @@ public class ImportCommand extends BaseCommand {
 
 	private Map<String, String> updatedBookmarks;
 
-	private List<String> nonCreatedBookmarks;
+	private Map<String, String> nonCreatedBookmarks;
 	
 	private List<String> storedConcepts;
 	
@@ -169,16 +169,16 @@ public class ImportCommand extends BaseCommand {
 	 * 
 	 * @return a Map containing the URLs of all non created bookmarks
 	 */
-	public List<String> getNonCreatedBookmarks() {
+	public Map<String, String> getNonCreatedBookmarks() {
 		return this.nonCreatedBookmarks;
 	}
 	
 	/**
 	 * 
-	 * @param nonCreatedBookmarks
+	 * @param nonCreatedBookmarkEntries
 	 */
-	public void setNonCreatedBookmarks(List<String> nonCreatedBookmarks) {
-		this.nonCreatedBookmarks = nonCreatedBookmarks;
+	public void setNonCreatedBookmarks(Map<String, String> nonCreatedBookmarkEntries) {
+		this.nonCreatedBookmarks = nonCreatedBookmarkEntries;
 	}
 	
 	/**
