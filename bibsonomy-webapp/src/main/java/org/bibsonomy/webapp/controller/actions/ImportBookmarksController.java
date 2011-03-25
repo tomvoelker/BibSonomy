@@ -180,17 +180,20 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 			log.warn("Delicious/Firefox-Import failed: " + ex.getMessage());
 		}
 
-		/** how many posts were found? **/
-		command.setTotalCount(posts != null ? posts.size() : 0);
-
 		/** store the posts **/
 		if (present(posts)) {
 			this.storePosts(command, posts);
+
+			/** how many posts were found? **/
+			command.setTotalCount(posts != null ? posts.size() : 0);
 		}
 
 		/** if available store relations **/
 		if (present(relations)) {
 			this.storeRelations(relations, command);
+
+			/** how many posts were found? **/
+			command.setTotalCount(relations != null ? relations.size() : 0);
 		}
 
 		return Views.IMPORT;
