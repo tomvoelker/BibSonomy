@@ -35,6 +35,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.TagType;
+import org.bibsonomy.util.XmlUtils;
 import org.xml.sax.SAXParseException;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
@@ -137,6 +138,7 @@ public class MetsBibTexMLGenerator {
 		
 		_post.setClassification(pumaData.getClassification());
 
+		_post.setAuthor(pumaData.getAuthor());
 		_post.setExaminstitution(pumaData.getExaminstitution());
 		_post.setAdditionaltitle(pumaData.getAdditionaltitle());
 		_post.setExamreferee(pumaData.getExamreferee());
@@ -174,10 +176,6 @@ public class MetsBibTexMLGenerator {
 				TagType tag = tagIterator.next();
 				
 				if (SystemTagsUtil.isSystemTag(tag.getName())) {
-					tagIterator.remove();
-				}
-			
-				if ("myown".equals(tag.getName())) {
 					tagIterator.remove();
 				}
 			}
@@ -224,6 +222,12 @@ public class MetsBibTexMLGenerator {
 				}
 			
 				
+				if (null != pumaData.getAuthor()) {
+					for (String item : pumaData.getAuthor()) {
+						myPost.getAuthor().add(item);
+					}
+				}
+
 				if (null != pumaData.getExaminstitution()) {
 					myPost.setExaminstitution(pumaData.getExaminstitution());
 				}
@@ -518,7 +522,7 @@ public class MetsBibTexMLGenerator {
 		// DEBUG
 		log.debug(sw.toString());
 		
-		return sw.toString();
+		return XmlUtils.removeXmlControlCharacters(sw.toString());
 			
 	}	
 	
