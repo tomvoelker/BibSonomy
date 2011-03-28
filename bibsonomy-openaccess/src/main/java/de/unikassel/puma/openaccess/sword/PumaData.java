@@ -15,8 +15,11 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.PersonNameUtils;
 
 
 public class PumaData<T extends Resource> extends PumaPost<T> {
@@ -39,8 +42,16 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 	 */
 	public void setPost(Post<T> post) {
 		this.post = post;
+		if (post.getResource() instanceof BibTex) {
+			BibTex resource = (BibTex) post.getResource(); 
+			this.addAuthorPN(PersonNameUtils.extractList(resource.getAuthor()));
+			
+		}
 	}
 	
+	protected List<String> author = new ArrayList<String>();
+
+
 	protected String examinstitution = null;
     protected List<String> examreferee = new ArrayList<String>();
     protected XMLGregorianCalendar phdoralexam = null;
@@ -48,8 +59,35 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
     protected List<String> additionaltitle = new ArrayList<String>();
 	private Map<String, List<String>> classification = new HashMap<String, List<String>>();
 	
-	
+	/**
+	 * @return the list of authors
+	 */
+	public List<String> getAuthor() {
+		return author;
+	}
 
+	/**
+	 * @param author list of authors to set
+	 */
+	public void setAuthor(List<String> authors) {
+		this.author = authors;
+	}	
+
+	public void addAuthor (String author) {
+		this.author.add(author);
+	}
+
+	public void addAuthor (List<String> authors) {
+		this.author.addAll(authors);
+	}
+
+	public void addAuthorPN (List<PersonName> authors) {
+		for ( PersonName authorname : authors ) {
+			this.author.add(authorname.getName());
+		}		
+	}
+
+	
 	public Map<String, List<String>> getClassification() {
 		return this.classification;
 	}
@@ -137,21 +175,22 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.mm.yyyy");
 		Date phdoralexamDate = null;
+		XMLGregorianCalendar phdoralexamXMLDate=null;
 		
 		try {
 			phdoralexamDate = sdf.parse(phdoralexamString);
+			GregorianCalendar c = new GregorianCalendar();
+			c.setTime(phdoralexamDate);
+			try {
+				phdoralexamXMLDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+			} catch (DatatypeConfigurationException e) {
+				log.warn("DatatypeConfigurationException");
+			}
 		} catch(ParseException e) {
 			// Quellzeit hat ein falsches Format
 		}
 		
-		GregorianCalendar c = new GregorianCalendar();
-		c.setTime(phdoralexamDate);
-		XMLGregorianCalendar phdoralexamXMLDate=null;
-		try {
-			phdoralexamXMLDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-		} catch (DatatypeConfigurationException e) {
-			log.warn("DatatypeConfigurationException");
-		}
+
 		
 		this.phdoralexam = phdoralexamXMLDate;
 	}

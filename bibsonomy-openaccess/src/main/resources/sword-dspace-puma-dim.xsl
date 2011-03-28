@@ -88,19 +88,15 @@
 	    	</dim:field>
 		</xsl:if>
 	
-		<xsl:if test="./@entrytype">
-	    	<dim:field mdschema="dc" element="type">
-	    		<xsl:value-of select="@entrytype"/>
-	    	</dim:field>
-		</xsl:if>
-	
-	    <!-- dc.contributor.author -->
-		<xsl:if test="./@author">
-	    	<dim:field mdschema="dc" element="contributor" qualifier="author">
-	    		<xsl:value-of select="@author"/>
-	    	</dim:field>
-		</xsl:if>
-	
+		<xsl:choose>
+			<xsl:when test="./@entrytype='article'"><dim:field mdschema="dc" element="type">Aufsatz</dim:field></xsl:when>
+			<xsl:when test="./@entrytype='book'"><dim:field mdschema="dc" element="type">Buch</dim:field></xsl:when>
+			<xsl:when test="./@entrytype='mastersthesis'"><dim:field mdschema="dc" element="type">Diplomarbeit</dim:field></xsl:when>
+			<xsl:when test="./@entrytype='misc'"><dim:field mdschema="dc" element="type">Sonstige</dim:field></xsl:when>
+			<xsl:when test="./@entrytype='phdthesis'"><dim:field mdschema="dc" element="type">Dissertation</dim:field></xsl:when>
+			<xsl:otherwise>misc</xsl:otherwise>
+		</xsl:choose>
+ 	
 	    <!-- dc.contributor.editor -->
 		<xsl:if test="./@editor">
 	    	<dim:field mdschema="dc" element="contributor" qualifier="editor">
@@ -202,6 +198,13 @@
     <!-- dc.title.alternative -->
     <xsl:template match="puma:additionaltitle">
     	<dim:field mdschema="dc" element="title" qualifier="alternative">
+    		<xsl:value-of select="."/>
+    	</dim:field>
+    </xsl:template>
+
+    <!-- dc.contributor.author -->
+    <xsl:template match="puma:author">
+    	<dim:field mdschema="dc" element="contributor" qualifier="author">
     		<xsl:value-of select="."/>
     	</dim:field>
     </xsl:template>
