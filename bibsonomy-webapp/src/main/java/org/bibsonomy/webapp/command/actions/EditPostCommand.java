@@ -75,6 +75,9 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	
 	
 	
+	/**
+	 * The file names of the documents uploaded during editing a post.
+	 */
 	private List<String> fileName;
 
 	/**
@@ -366,7 +369,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	}
 
 	/**
-	 * @param fileName the fileName to set
+	 * @param fileName The names of the documents uploaded during editing a post.
 	 */
 	public void setFileName(List<String> fileName) {
 		this.fileName = fileName;
