@@ -95,10 +95,9 @@
   								data: {q:request.term, type:type, limit:10},
   								async: false,
   								success: function (data) {
-									//remove unneeded leading and trailing new lines
-									// and split relevant data up
-									//alert(data.match(/[\r]/g));
-  									data = (data.replace(/((\r\n){3,}[^a-zA-z0-9]|(\r\n){1,}$)/g, '')).split('\r\n\r\n');
+									// remove unneeded trailing new line
+									// and split the entries up
+  									data = data.replace(/\n$/, '').split('\n');
   									response( $.map( data, function( item ) {
   										return {
   											label: item,
