@@ -8,7 +8,7 @@ import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
  */
 public class MyOwnSystemTag extends AbstractSystemTagImpl implements MarkUpSystemTag {
 
-    public static final String NAME = "myOwn";
+    public static final String NAME = "myown";
     private static boolean toHide = false;
    
     @Override
