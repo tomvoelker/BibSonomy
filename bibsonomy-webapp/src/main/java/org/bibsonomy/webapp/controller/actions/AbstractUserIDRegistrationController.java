@@ -43,7 +43,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
-	protected RequestLogic requestLogic;  // FIXME: PUMA/BadCredentialAtRegister (war vorher private statt protected)
+	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
 	private CookieBasedRememberMeServices rememberMeServices;
 	private AuthenticationManager authenticationManager;
@@ -75,7 +75,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		 * If the user is already logged in: show error message
 		 */
 		if (command.getContext().isUserLoggedIn()) {
-			throw new AccessDeniedException("error.logged.in.user.activate");
+			throw new AccessDeniedException("error.method_not_allowed");
 		}
 
 		/*
@@ -92,7 +92,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 					"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL()));
 		}
 		
-		
+
 		/*
 		 * user found in session - proceed with the registration 
 		 */
@@ -233,7 +233,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	 * @param user - the user for that we shall generate a new user name
 	 * @return A user name that does not exist, yet.
 	 */
-	private String generateUserName(final User user) {
+	protected String generateUserName(final User user) {
 		/*
 		 * Find user name which does not exist yet in the database.
 		 * 
