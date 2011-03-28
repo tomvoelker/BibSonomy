@@ -37,7 +37,7 @@
 		<c:forEach var="systag" items="${post.hiddenSystemTags}">
 			<c:set var="systagTitles" value="${systagTitles}${fn:escapeXml(systag.name)} " />
 		</c:forEach>		
-		<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="${systagUrl}" tags="${systagTitles}"/>	
+		<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="${systagUrl}" tags="${systagTitles}" title="System Tags"/>	
 	</c:if>
 	
 	<!-- group of a resource -->
