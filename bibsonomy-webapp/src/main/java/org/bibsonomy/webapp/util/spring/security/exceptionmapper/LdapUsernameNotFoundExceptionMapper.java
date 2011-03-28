@@ -6,7 +6,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.spring.security.exceptions.LdapUsernameNotFoundException;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.ldap.LdapUtils;
 
 /**
  * @author rja
@@ -35,14 +34,13 @@ public class LdapUsernameNotFoundExceptionMapper extends UsernameNotFoundExcepti
 			user.setLdapId(ctx.getStringAttribute("uid"));
 
 			/*
-			 * copy the password (code copied from spring)
+			 * After successful registration the user is logged in using the
+			 * plain text password. Thus, we store it here in the user. 
 			 */
-			final Object passo = ctx.getObjectAttribute("userPassword");
-			if (present(passo)) {
-				final String password = LdapUtils.convertPasswordToString(passo);
-				user.setPassword(password);
+			final Object credentials = e.getAuthentication().getCredentials();
+			if (credentials instanceof String) {
+				user.setPassword((String) credentials);
 			}
-
 		}
 
 		return user;
