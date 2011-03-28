@@ -33,6 +33,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	/**
 	 * max file size, currently 50mb
 	 */
+	private final String maxFileSizeString = "50 MB";
 	private final long maxFileSize = 52428800;
 	
 	ResourceBundle localizedStrings = ResourceBundle.getBundle("messages");
@@ -173,7 +174,8 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		 */
 		long size = command.getFile().getFileItem().getSize();
 		if (size >= maxFileSize) {
-			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.upload.failed.size"), command.getFileID(), command.getFile().getFileItem().getName()));
+			String errorMsg = localizedStrings.getString("error.upload.failed.size").replace("{0}", maxFileSizeString);
+			command.setResponseString(generateXmlErrorString(errorMsg, command.getFileID(), command.getFile().getFileItem().getName()));
 			return Views.AJAX_XML;
 		} else if (size == 0) {
 			command.setResponseString(generateXmlErrorString(localizedStrings.getString("error.upload.failed.size0"), command.getFileID(), command.getFile().getFileItem().getName()));
