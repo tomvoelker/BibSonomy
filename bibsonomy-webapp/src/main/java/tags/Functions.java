@@ -21,6 +21,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.layout.jabref.JabrefLayout;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.Author;
@@ -734,4 +736,15 @@ public class Functions  {
 		return XmlUtils.removeXmlControlCharacters(s);
 	}
 
+	
+	/**
+	 * Checks if post has system tag myown 
+	 * 
+	 * @param post
+	 * @return
+	 */
+	public static Boolean hasTagMyown(Post<?> post) {
+		return SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME);
+	}
+	
 }

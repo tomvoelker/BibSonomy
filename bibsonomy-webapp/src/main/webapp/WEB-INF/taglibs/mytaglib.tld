@@ -369,4 +369,11 @@
   	<function-class>tags.Functions</function-class>
   	<function-signature>String removeXmlControlChars(java.lang.String)</function-signature>
   </function>    
+  
+  <function>
+  	<name>hasTagMyown</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>Boolean hasTagMyown(org.bibsonomy.model.Post)</function-signature>
+  </function>    
+
 </taglib>
