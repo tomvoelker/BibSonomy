@@ -29,6 +29,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class DeliciousV2Importer {
+    /*
+     * TODO: We do not use the interfaces RelationImporter and RemoteServiceBookmarkImporter since the message signatures are different
+     * can we change that somehow?
+     */
 
     private static final Log log = LogFactory.getLog(DeliciousImporter.class);
 
@@ -45,7 +49,10 @@ public class DeliciousV2Importer {
 		//open a connection to delicious and retrieve a document
 		connection.connect();
 		final Document document = getDocument(connection.getInputStream());
-		
+		connection.disconnect();
+		/*
+		 * TODO: this is copied code from DeliciousImporter
+		 */
 		// traverse document and put everything into Post<Bookmark> Objects
 		final NodeList postList = document.getElementsByTagName("post");
 		for (int i = 0; i < postList.getLength(); i++) {
@@ -98,6 +105,10 @@ public class DeliciousV2Importer {
 		//open a connection to delicious and retrieve a document
 		connection.connect();
 		final Document document = getDocument(connection.getInputStream());
+		connection.disconnect();
+		/*
+		 * TODO: this is copied code
+		 */
 		final NodeList bundles = document.getElementsByTagName("bundle");
 		for(int i = 0; i < bundles.getLength(); i++){
 			final Element resource = (Element)bundles.item(i);
@@ -118,7 +129,9 @@ public class DeliciousV2Importer {
 	 * @throws IOException
 	 */
 	private static Document getDocument(final InputStream inputStream) throws IOException{
-		
+		/*
+		 * TODO: this is copied code
+		 */
 		// Get a JAXP parser factory object
 		final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		// Tell the factory what kind of parser we want 
