@@ -146,7 +146,8 @@
 		<!-- matches messages.properties, messages_de.properties, ... -->   
 		<property name="basenames">
 			<list>
-				<value>${project.name}_messages</value>
+				<value>projects/${project.name}_messages</value>
+				<value>themes/${project.theme}_messages</value>
 				<value>messages</value>
 			</list>
 		</property> 
