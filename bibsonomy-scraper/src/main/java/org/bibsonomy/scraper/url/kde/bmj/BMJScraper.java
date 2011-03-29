@@ -23,71 +23,28 @@
 
 package org.bibsonomy.scraper.url.kde.bmj;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author wbi
  * @version $Id$
  */
-public class BMJScraper extends AbstractUrlScraper {
+public class BMJScraper extends CitationManagerScraper {
 
 	private static final String SITE_NAME = "BMJ";
-	private static final String BMJ_HOST_NAME  = "http://www.bmj.com";
-	private static final String SITE_URL = BMJ_HOST_NAME+"/";
+	private static final String SITE_URL = "http://www.bmj.com/";
+	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
-
-	private static final String BMJ_HOST  = "bmj.com";
-	private static final String BMJ_ABSTRACT_PATH = "/cgi/content/full/";
-	private static final String BMJ_BIBTEX_PATH = "/cgi/citmgr?gca=";
-	private static final String BMJ_BIBTEX_DOWNLOAD_PATH = "/cgi/citmgr?type=bibtex&gca=";
-
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + BMJ_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">Download to citation manager</a>");
 	
-	public String getInfo() {
-		return info;
-	}
-
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-		String url = sc.getUrl().toString();
-		String id = null;
-
-		if(url.startsWith(BMJ_HOST_NAME + BMJ_ABSTRACT_PATH)) {
-			id = "bmj;" + url.substring(url.indexOf("/full/") + 6);
-		}
-
-		if(url.startsWith(BMJ_HOST_NAME + BMJ_BIBTEX_PATH)) {
-			id = url.substring(url.indexOf(BMJ_BIBTEX_PATH) + BMJ_BIBTEX_PATH.length());
-		}
-
-		try {
-			final String bibResult = WebUtils.getContentAsString(BMJ_HOST_NAME + BMJ_BIBTEX_DOWNLOAD_PATH + id).trim().replaceFirst(" ", "");
-			if (bibResult != null) {
-				sc.setBibtexResult(bibResult);
-				return true;
-			}
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		}
-
-		return false;
-	}
-
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
-	}
+	private static final List<Tuple<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "bmj.com"), AbstractUrlScraper.EMPTY_PATTERN));
+	
 
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -95,6 +52,20 @@ public class BMJScraper extends AbstractUrlScraper {
 
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	public String getInfo() {
+		return INFO;
+	}
+
+	@Override
+	public Pattern getDownloadLinkPattern() {
+		return DOWNLOAD_LINK_PATTERN;
+	}
+
+	@Override
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		return URL_PATTERNS;
 	}
 
 }

@@ -396,13 +396,13 @@
 	</URLTest>
 	<URLTest id="url_68">
 		<TestDescription>BMJ Journals Url 1</TestDescription>
-		<URL>http://www.bmj.com/cgi/content/full/bmj.39555.670718.BE</URL>
+		<URL>http://www.bmj.com/content/336/7655/1221.abstract</URL>
 		<BibFile>BMJScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.bmj.BMJScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_69">
 		<TestDescription>BMJ Journals Url 1</TestDescription>
-		<URL>http://www.bmj.com/cgi/citmgr?gca=bmj;bmj.39555.670718.BE</URL>
+		<URL>http://www.bmj.com/content/336/7655/1221.abstract</URL>
 		<BibFile>BMJScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.bmj.BMJScraper</Scraper>
 	</URLTest>
