@@ -450,25 +450,31 @@ public class MetsBibTexMLGenerator {
 		mets.setFileSec(metsFileSec);
 
 		final FileGrp metsFileSecFileGrp = objectFactory.createMetsTypeFileSecFileGrp();
+		List<FileType> fileItemList = new ArrayList<FileType>(); 
 		
 		metsFileSecFileGrp.setID("sword-mets-fgrp-1");
 		metsFileSecFileGrp.setUSE("CONTENT");
-		
-		FileType fileItem = new FileType();
-		fileItem.setGROUPID("sword-mets-fgid-0");
-		fileItem.setID("sword-mets-file-1");
-		fileItem.setMIMETYPE("application/pdf");
-		
-		
+		Integer filenumber = 0;
 		for(Document doc : _post.getPost().getResource().getDocuments()) {
+			FileType fileItem = new FileType();
+//			fileItem.setGROUPID("sword-mets-fgid-0");
+			fileItem.setID("sword-mets-file-".concat(filenumber.toString()));
+			// TODO: if file is not pdf, set MIMEtype to somthing like binary data
+			fileItem.setMIMETYPE("application/pdf");
+
 			FLocat fileLocat = new FLocat();
 			fileLocat.setLOCTYPE("URL");
 			fileLocat.setHref(doc.getFileName());
 			fileItem.getFLocat().add(fileLocat);
-		}		
+
+			// add fileitem to filepointerlist for struct section
+			fileItemList.add(fileItem);
+			
+			metsFileSecFileGrp.getFile().add(fileItem);
+			filenumber++;
+}		
 		
 		
-		metsFileSecFileGrp.getFile().add(fileItem);
 		metsFileSec.getFileGrp().add(metsFileSecFileGrp);
 		
 		/*
@@ -490,11 +496,12 @@ public class MetsBibTexMLGenerator {
 		div2.setID("sword-mets-div-2");
 		div2.setTYPE("File");
 		
-		Fptr fptr = new Fptr();
-		fptr.setFILEID(fileItem);
+		for(FileType fItem : fileItemList) {
+			Fptr fptr = new Fptr();
+			fptr.setFILEID(fItem);
 		
-		div2.getFptr().add(fptr);
-		
+			div2.getFptr().add(fptr);
+		}		
 		//xmlDocument += "<div ID=\"sword-mets-div-1\" DMDID=\"sword-mets-dmd-1\" TYPE=\"SWORD Object\">\n";
 		// fptr
 		//xmlDocument += "<fptr FILEID=\"sword-mets-file-1\"/>\n";

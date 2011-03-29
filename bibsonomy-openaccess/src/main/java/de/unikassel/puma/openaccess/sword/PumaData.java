@@ -44,8 +44,13 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 		this.post = post;
 		if (post.getResource() instanceof BibTex) {
 			BibTex resource = (BibTex) post.getResource(); 
-			this.addAuthorPN(PersonNameUtils.extractList(resource.getAuthor()));
-			
+			setAuthor(resource.getAuthor());		
+		}
+	}
+
+	private void setAuthor(final String author) {
+		for (final PersonName authorname : PersonNameUtils.extractList(author) ) {
+			this.author.add(authorname.getLastName().concat(", ").concat(authorname.getFirstName()));
 		}
 	}
 	
@@ -73,21 +78,7 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 		this.author = authors;
 	}	
 
-	public void addAuthor (String author) {
-		this.author.add(author);
-	}
 
-	public void addAuthor (List<String> authors) {
-		this.author.addAll(authors);
-	}
-
-	public void addAuthorPN (List<PersonName> authors) {
-		for ( PersonName authorname : authors ) {
-			this.author.add(authorname.getName());
-		}		
-	}
-
-	
 	public Map<String, List<String>> getClassification() {
 		return this.classification;
 	}
@@ -173,7 +164,7 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 	public void setPhdoralexam(String phdoralexamString) {
 		// convert string to date
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.mm.yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Date phdoralexamDate = null;
 		XMLGregorianCalendar phdoralexamXMLDate=null;
 		
