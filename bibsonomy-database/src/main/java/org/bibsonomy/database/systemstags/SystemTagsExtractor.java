@@ -154,6 +154,7 @@ public class SystemTagsExtractor {
 	for (Post<T> post: posts) {
 	    if (!present(loginUserName) || !loginUserName.equals(post.getUser().getName())) {
 		removeHiddenSystemTags(post.getTags());
+		post.setVisibleTags(post.getTags());
 	    } else {
 		post.setHiddenSystemTags(new HashSet<Tag>());
 		post.setVisibleTags(new HashSet<Tag>());
