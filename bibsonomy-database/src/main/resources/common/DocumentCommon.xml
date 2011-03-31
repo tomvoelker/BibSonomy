@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="DocumentCommon">
-	<resultMap id="document" class="document" groupBy="md5hash">
+	<resultMap id="document" class="document" groupBy="fileHash">
 		<result property="fileHash"      column="hash"      javaType="string" />
     	<result property="fileName"      column="name"      javaType="string" />
     	<result property="md5hash"		 column="md5hash"   javaType="string" />
