@@ -42,7 +42,7 @@
 	
 						<!-- if entrytype == phdthesis -->
 						<!-- TODO: correct if condition /// != to == -->
-						<c:if test="${bibtex.entrytype!='phdthesis'}">
+						<c:if test="${bibtex.entrytype=='phdthesis'}">
 							<div class="fsRow">
 								<label class="fsLabel" for="post.resource.openaccess.additionalfields.institution"><fmt:message key="post.resource.openaccess.additionalfields.institution"/>*</label>
 								<div class="help" style="">
