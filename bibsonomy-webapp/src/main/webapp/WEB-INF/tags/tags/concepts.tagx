@@ -87,14 +87,16 @@
      	  			<!-- display subtags -->
 					<c:forEach var="subtag" items="${concept.subTags}">
 						<li class="box_lowerconcept">
-							<c:set var="subtagTitle">
-								<fmt:message key="tagrelations.showPostsForConcept.title.subtag">
-									<fmt:param>${subtag.name}</fmt:param>
-								</fmt:message>
-							</c:set>
-	    	    			<a style="font-size:${mtl:computeTagFontsize(subtag.usercount, maxCount, 'home')}%" 
-	    	    			   href="/${tagPath}/${fn:escapeXml(subtag.name)}" 
-	    	    			   title="${subtagTitle}"><c:out value="${subtag.name}"/></a>
+							<!-- show style attribute for fontsize only when neccessary -->
+							<c:set var="fontsize" value="${mtl:computeTagFontsize(subtag.usercount, maxCount, 'home')}"/>
+							<c:choose>
+								<c:when test="${fontsize == 100}">
+									<a href="/${tagPath}/${fn:escapeXml(subtag.name)}"><c:out value="${subtag.name}"/></a>
+								</c:when>
+								<c:otherwise>
+									<a href="/${tagPath}/${fn:escapeXml(subtag.name)}" style="font-size:${fontsize}%"><c:out value="${subtag.name}"/></a>
+								</c:otherwise>
+							</c:choose>
 	          			</li>
 	          			<c:out value=" "/>
 					</c:forEach>
