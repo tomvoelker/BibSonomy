@@ -41,7 +41,6 @@
 						<h4><fmt:message key="post.resource.openaccess.headline.additionalfields"/></h4>
 	
 						<!-- if entrytype == phdthesis -->
-						<!-- TODO: correct if condition /// != to == -->
 						<c:if test="${bibtex.entrytype=='phdthesis'}">
 							<div class="fsRow">
 								<label class="fsLabel" for="post.resource.openaccess.additionalfields.institution"><fmt:message key="post.resource.openaccess.additionalfields.institution"/>*</label>
