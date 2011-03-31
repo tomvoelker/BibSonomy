@@ -112,7 +112,6 @@ public class UsersHandler implements ContextHandler {
 			}
 			break;
 		}
-		System.out.println("blubberbla");
 		throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
 	}
 
