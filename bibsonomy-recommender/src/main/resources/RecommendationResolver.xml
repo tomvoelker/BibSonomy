@@ -46,8 +46,7 @@
 	<select id="getMostPopularTagsForUser" parameterClass="postParam" resultMap="RecommendationLogCommon.tagFrequency">
 		SELECT t.tag_lower as first, COUNT(tag_lower) as second 
 		FROM tas t
-		JOIN user u using(user_name) 
-		WHERE u.id = #userName# 
+		WHERE t.user_name = #userName# 
 		GROUP BY tag_lower 
 		ORDER BY COUNT(tag_lower) DESC 
 		LIMIT #range#
