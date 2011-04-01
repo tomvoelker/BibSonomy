@@ -18,6 +18,9 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 /**
+ * Controller for editing references of a gold standard post
+ *    - ajax/goldstandards/references
+ * 
  * @author dzo
  * @version $Id$
  */
