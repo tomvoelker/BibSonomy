@@ -33,6 +33,7 @@
 00C2	\^A
 00C3	\~A
 00C4	\"A
+00C4	"A
 00C5	\r A
 00C6	\AE
 00C7	\c C
@@ -52,12 +53,14 @@
 00D4	\^O
 00D5	\~O
 00D6	\"O
+00D6	"O
 00D7	\texttimes
 00D8	\O
 00D9	\`U
 00DA	\'U
 00DB	\^U
 00DC	\"U
+00DC	"U
 00DD	\'Y
 00DE	\TH
 00DF	\ss
@@ -66,6 +69,7 @@
 00E2	\^a
 00E3	\~a
 00E4	\"a
+00E4	"a
 00E5	\r a
 00E6	\ae
 00E7	\c c
@@ -85,12 +89,14 @@
 00F4	\^o
 00F5	\~o
 00F6	\"o
+00F6	"o
 00F7	\textdiv
 00F8	\o
 00F9	\`u
 00FA	\'u
 00FB	\^u
 00FC	\"u
+00FC	"u
 00FD	\'y
 00FE	\th
 00FF	\"y
