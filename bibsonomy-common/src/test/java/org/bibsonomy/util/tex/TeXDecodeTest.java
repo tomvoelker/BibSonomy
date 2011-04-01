@@ -23,31 +23,29 @@
 
 package org.bibsonomy.util.tex;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
  * @author Christian Claus
  * @version $Id$
  */
-public class TeXEncodeTest extends TestCase {
+public class TeXDecodeTest {
 	
 	/**
 	 * tests the complete map
 	 * 
 	 */
-	public void testEncoding() {
+	@Test
+	public void testCompleteDecode() {
 		StringBuffer unclean = new StringBuffer();
-		StringBuffer clean = new StringBuffer();
-		//String clean = "ÇçïîìíåÅæÆßÄÖÜäöüÄÖÜäëüöàèòùêôâûáéóúÉñÄÖÜäüöÑÄÖÜäüöííèÇçÃãËëÄÖÜäüö";
-						
+		StringBuffer clean = new StringBuffer();						
 		
-		for(String s : TexDecode.getTEX()) {
+		for(String s : TexDecode.getTexMap().keySet()) {
 			unclean.append(s);
+			clean.append(TexDecode.getTexMap().get(s));
 		}
-		for (String s: TexDecode.getUNICODE()) {
-			clean.append(s);
-		}
-
 		assertEquals(clean.toString(), TexDecode.decode(unclean.toString()));
 	}
 	
@@ -55,6 +53,7 @@ public class TeXEncodeTest extends TestCase {
 	 * tests a string with leading TeX macro
 	 * 
 	 */
+	@Test
 	public void testEncodingWithLeadingMacro() {
 		String unclean = "{\\\"A}foo{{\\ss}}bar";
 		String clean = "Äfooßbar";
@@ -66,6 +65,7 @@ public class TeXEncodeTest extends TestCase {
 	 * tests a string with tailing TeX macro
 	 * 
 	 */
+	@Test
 	public void testEncodingWithTailingMacro() {
 		String unclean = "foo  {\\\"{U}}  bar{\\\"A}";
 		String clean = "foo  Ü  barÄ";
@@ -77,6 +77,7 @@ public class TeXEncodeTest extends TestCase {
 	 * tests a string which contains a TeX macro
 	 * 
 	 */
+	@Test
 	public void testEncodingWithMacro() {
 		String unclean = "foo{\\\"{U}}{\\\"A}bar";
 		String clean = "fooÜÄbar";
@@ -87,6 +88,7 @@ public class TeXEncodeTest extends TestCase {
 	/**
 	 * tests a few new replacements
 	 */
+	@Test
 	public void testEncodingWithSpecialUmlauts() {
 		String unclean = "foo\\\"{U}\\\"Abar";
 		String clean = "fooÜÄbar";
@@ -97,6 +99,7 @@ public class TeXEncodeTest extends TestCase {
 	/**
 	 * test for curl replacements
 	 */
+	@Test
 	public void testEncodingWithCurls() {
 		String unclean = "{){{}/()as)[[)]";
 		String clean = "/as";
