@@ -119,11 +119,11 @@
 				<img id='uploadGif' alt="uploading..." src="${resdir}/image/ajax_loader.gif" />
 			</div>
 			
-			<div id="upload" style="display:none;">
+			<div id="upload" style="margin-left:20px;display:none;">
 				<div class="dissError initiallyHidden">
 					<span></span>
 				</div>
-				<div class="fsRow">
+				<div class="fsRow fsLabel" style="text-align:left;float:none;padding-top:5px;">
 					<fmt:message key="post.bibtex.addedFiles"/>
 				</div>
 				<ul><!-- list of files !--></ul>

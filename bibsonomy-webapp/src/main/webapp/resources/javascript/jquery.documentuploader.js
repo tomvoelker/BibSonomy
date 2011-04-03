@@ -1,19 +1,20 @@
 (function($) {
 	var errorData = new errorBoxData("#upload");
+	var resdir;
+	var ckey;
 	$.fn.documentUploader = function () {
-		
+		ckey=$(".ck").val();
+		resdir = $(".resdir");
 		$(this).change(function(e){
 		var counterInput = $(".counter");	
 		var counter=counterInput.val();
-		counter++;
-		var ckey=$(".ck");
-		var resdir=$(".resdir");
 		var fileName=$(this).val();
+		var duplicate=false;
 		
+		counter++;
 		//for chrome, ie and opera
 		fileName = fileName.replace("C:\\fakepath\\", "");
 		
-		var duplicate=false;
 		
 		// check already added files for duplicates
 		$(".upform").each(function () {
@@ -39,7 +40,7 @@
 			$(".fu").documentUploader();
 			return;
 		}
-				
+
 		// create row with the added file
 		var fileDiv = $("<li id='file_"+counter+"'>\n\t<span class='documentFileName'>"+fileName+"</span>\n"+
 			"\n\t<img id='gif_"+counter+"' alt='uploading...' src='"+resdir.val()+"/image/ajax_loader.gif' />\n</li>");
@@ -47,7 +48,7 @@
 		
 		
 		// create new form to upload added file
-		form = ("<form class='upform' id='uploadForm_"+counter+"' action='/ajax/documents?ckey="+ckey.val()+"&amp;temp=true' method='POST' enctype='multipart/form-data'></form>");
+		form = ("<form class='upform' id='uploadForm_"+counter+"' action='/ajax/documents?ckey="+ckey+"&amp;temp=true' method='POST' enctype='multipart/form-data'></form>");
 		$("#hiddenUpload").append(form);
 		form="uploadForm_"+counter;
 		$(this).appendTo($("#"+form));
@@ -74,7 +75,9 @@
 			return fileUploaded(data);
 		// an error occured, 
 		// display it to the user and hide the animation
-		$("#gif_"+prepareFileErrorBox(data)).hide();
+		var file_id = prepareFileErrorBox(data);
+		$("#gif_"+file_id).remove();
+		$("#file_"+file_id).prepend($('<img src="'+resdir.val()+'/image/file_status_error.png"/>'));
 	}
 
 	function prepareFileErrorBox(data) {
@@ -100,11 +103,11 @@
 				"</div>";
 		$(".addedFiles").append($(hiddenFileInput));
 		$("#gif_"+fileID).hide();
-		var ckey=$(".ck");
-		$("#file_"+fileID).append(" (");
-		$("#file_"+fileID).append($("<a class='deleteTempDocument' href='/ajax/documents?fileHash="+fileHash+"&amp;ckey="+
-				ckey.val()+"&amp;temp=true&amp;fileID="+fileID+"&amp;action=delete'>"+LocalizedStrings["post.bibtex.delete"]+"</a>"));
-		$("#file_"+fileID).append(")");
+		$("#file_"+fileID).
+		append(" (").
+		append($("<a class='deleteTempDocument' href='/ajax/documents?fileHash="+fileHash+"&amp;ckey="+ckey+"&amp;temp=true&amp;fileID="+fileID+"&amp;action=delete'>"+LocalizedStrings["post.bibtex.delete"]+"</a>")).
+		append(")").
+		prepend($('<img src="'+resdir.val()+'/image/file_status_okay.png"/>'));
 		$(".deleteTempDocument").live("click", deleteFunction);
 	}
 	

@@ -38,7 +38,8 @@
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">		
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/resourceList.js">&amp;nbsp;</script> 
+			<script type="text/javascript" src="${resdir}/javascript/resourceList.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js">&amp;nbsp;</script> 
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
 			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
@@ -56,50 +57,25 @@
 					<![CDATA[
 					$(document).ready(
 						function() {
-							$(".hiddenSystemTag").each(
-								function () {
-									var hiddenBox = $('<div style="position:absolute" class="initiallyHidden listhButtons"></div>');
-									var hideTimeout = 0;
-									var callback = function() {
-										hideTimeout = setTimeout (function(){hiddenBox.fadeOut('slow');}, 1500 );
-									};
-									
-									$("body").append(hiddenBox);
-									 
-									$(this).mouseover(
-											function() {
-												clearTimeout(hideTimeout);
-												// insert the tag link and the title and position element
-												var left = $(this).offset().left + $(this).width()/2;
-												var tags = ($(this).attr('tags')).split(" ");
-												var url = $(this).attr('url');
-												var content = '<a href="'+url+tags[0] +'">' + tags[0] + '</a>';
-												for (var t=1; t< tags.length-1; t++) {
-													content = content + ' <a href="'+url+tags[t] +'">' + tags[t] + '</a>';
-												}
-												hiddenBox.html(content).
-												css( 
-														{ "left": ((left-$(hiddenBox).width()/2 > 0)?
-																	(($(document).width() > left-$(hiddenBox).width()/2)?
-																			left-$(hiddenBox).width()/2:$(document).width()-$(hiddenBox).width()):0) + "px", 
-														"top":($(this).offset().top-25) + "px" } 
-												).
-												show().fadeIn("slow");
-											}
-									).mouseout(
-											callback
-									).css("cursor","pointer");
-									
-									hiddenBox.mouseover(
-											function() {
-												clearTimeout(hideTimeout);
-											}
-									).mouseout(
-											callback
-									);
-								}		
+							$(".hiddenSystemTag").fadeBox(
+								{
+									className: 'initiallyHidden listhButtons',
+									contentCallback: function (self) {
+										var tags = ($(self).attr('tags')).replace(/^\s|\s$/g, '').split(" ");
+										var url = $(self).attr('url');
+										var t = 0;
+										var content = '<a href="'+url+tags[t]+'">' + tags[t] + '</a>';
+																				
+										while (++t < tags.length) {
+											content += ' <a href="'+url+tags[t] +'">' + tags[t] + '</a>';
+										}
+										return content;
+									},
+									timeout:1500,
+									topOffset: 25
+								}
 							);
-						}		
+						}
 					);
 					]]>
 				</script>
