@@ -264,7 +264,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
     @Override
     public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 	// check allowed start-/end-values
-	if (grouping.equals(GroupingEntity.ALL) && !present(tags) && !present(search)) {
+	if (GroupingEntity.ALL.equals(grouping) && !present(tags) && !present(search)) {
 	    this.permissionDBManager.checkStartEnd(loginUser, start, end, "post");
 	}
 
@@ -433,7 +433,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
      */
     @Override
     public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
-	if (grouping.equals(GroupingEntity.ALL)) {
+	if (GroupingEntity.ALL.equals(grouping)) {
 	    this.permissionDBManager.checkStartEnd(loginUser, start, end, "Tag");
 	}
 
@@ -1481,9 +1481,9 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
     public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
 	final DBSession session = openSession();
 	try {
-	    if (grouping.equals(GroupingEntity.USER) || grouping.equals(GroupingEntity.GROUP) && present(groupingName)) {
+	    if (GroupingEntity.USER.equals(grouping) || GroupingEntity.GROUP.equals(grouping) && present(groupingName)) {
 		return this.tagRelationsDBManager.getConceptForUser(conceptName, groupingName, session);
-	    } else if (grouping.equals(GroupingEntity.ALL)) {
+	    } else if (GroupingEntity.ALL.equals(grouping)) {
 		return this.tagRelationsDBManager.getGlobalConceptByName(conceptName, session);
 	    }
 
@@ -1634,7 +1634,7 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 	param.setUserRelation(relation);
 
 	// check start/end values
-	if (grouping.equals(GroupingEntity.ALL)) {
+	if (GroupingEntity.ALL.equals(grouping)) {
 	    this.permissionDBManager.checkStartEnd(loginUser, start, end, "User");
 	}
 
