@@ -23,7 +23,6 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.context.MessageSource;
 
-import de.unikassel.puma.openaccess.classification.PublicationClassificatorSingleton;
 import de.unikassel.puma.openaccess.sword.PumaData;
 import de.unikassel.puma.openaccess.sword.SwordService;
 import de.unikassel.puma.webapp.command.SwordServiceCommand;
@@ -37,7 +36,6 @@ public class SwordServiceController extends AjaxController implements Minimalist
 
 	private SwordService swordService;
 	private MessageSource messageSource;
-	private PublicationClassificatorSingleton classificator;
 
 	@Override
 	public SwordServiceCommand instantiateCommand() {
@@ -47,7 +45,7 @@ public class SwordServiceController extends AjaxController implements Minimalist
 	@Override
 	public View workOn(SwordServiceCommand command) {
 		if(!command.getContext().isUserLoggedIn()) {
-			//TODO access denied ex ?
+			// TODO access denied ex ?
 			return Views.AJAX_TEXT;
 		}
 		
@@ -56,14 +54,14 @@ public class SwordServiceController extends AjaxController implements Minimalist
 
 		final User user = command.getContext().getLoginUser();
 		
-		Post<?> post = getPostToHash(command.getResourceHash(), user.getName());
+		final Post<?> post = getPostToHash(command.getResourceHash(), user.getName());
 		
 		if(!present(post)) {
 			
 		}
 		
 		// add some metadata to post
-		PumaData<BibTex> pumaData = new PumaData<BibTex>();
+		final PumaData<BibTex> pumaData = new PumaData<BibTex>();
 
 		pumaData.setPost((Post<BibTex>) post);
 
@@ -71,18 +69,20 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		
 		
 		// get additional metadata
-		Map<String, List<String>> metadataMap = logic.getExtendedFields(command.getContext().getLoginUser().getName(), post.getResource().getIntraHash(), null);
+		Map<String, List<String>> metadataMap = logic.getExtendedFields(BibTex.class, command.getContext().getLoginUser().getName(), post.getResource().getIntraHash(), null);
 		// TODO is use of PublicationClassificatorSingleton classification here possible?
 //		Set<String> availableClassifications = classificator.getInstance().getAvailableClassifications(); 
 		
-		for (Entry<String, List<String>> item : metadataMap.entrySet()) {
-			if (item.getKey().equals("post.resource.openaccess.additionalfields.institution")) pumaData.setExaminstitution(item.getValue().get(0));
-			else if (item.getKey().equals("post.resource.openaccess.additionalfields.phdreferee")) pumaData.addExamreferee(item.getValue().get(0));
-			else if (item.getKey().equals("post.resource.openaccess.additionalfields.phdreferee2")) pumaData.addExamreferee(item.getValue().get(0));
-			else if (item.getKey().equals("post.resource.openaccess.additionalfields.phdoralexam")) pumaData.setPhdoralexam(item.getValue().get(0));
-			else if (item.getKey().equals("post.resource.openaccess.additionalfields.sponsor")) pumaData.addSponsor(item.getValue().get(0));
-			else if (item.getKey().equals("post.resource.openaccess.additionalfields.additionaltitle")) pumaData.addAdditionaltitle(item.getValue().get(0));
-			else pumaData.addClassification(item.getKey(), item.getValue());
+		for (final Entry<String, List<String>> item : metadataMap.entrySet()) {
+			final String firstValue = item.getValue().get(0);
+			final String key = item.getKey();
+			if (SwordService.AF_INSTITUTION.equals(key)) pumaData.setExaminstitution(firstValue);
+			else if (SwordService.AF_PHDREFEREE.equals(key)) pumaData.addExamreferee(firstValue);
+			else if (SwordService.AF_PHDREFEREE2.equals(key)) pumaData.addExamreferee(firstValue);
+			else if (SwordService.AF_PHDORALEXAM.equals(key)) pumaData.setPhdoralexam(firstValue);
+			else if (SwordService.AF_SPONSOR.equals(key)) pumaData.addSponsor(firstValue);
+			else if (SwordService.AF_ADDITIONALTITLE.equals(key)) pumaData.addAdditionaltitle(firstValue);
+			else pumaData.addClassification(key, item.getValue());
 
 //			if (availableClassifications.contains(item.getKey())) {
 //				pumaData.addClassification(item.getKey(), item.getValue());
@@ -92,7 +92,7 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		try {
 			// TODO: do not throw an exception if transfer was ok
 			swordService.submitDocument(pumaData, user);
-		} catch (SwordException ex) {
+		} catch (final SwordException ex) {
 			
 			// send message of exception to webpage via ajax to give feedback of submission result
 			message = ex.getMessage();

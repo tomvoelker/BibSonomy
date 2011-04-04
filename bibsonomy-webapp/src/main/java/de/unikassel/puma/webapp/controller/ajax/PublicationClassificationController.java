@@ -11,8 +11,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
@@ -21,6 +19,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 import de.unikassel.puma.openaccess.classification.PublicationClassificatorSingleton;
+import de.unikassel.puma.openaccess.sword.SwordService;
 import de.unikassel.puma.webapp.command.PublicationClassificationCommand;
 
 /**
@@ -28,19 +27,6 @@ import de.unikassel.puma.webapp.command.PublicationClassificationCommand;
  * @version $Id$
  */
 public class PublicationClassificationController extends AjaxController implements MinimalisticController<PublicationClassificationCommand> {
-
-	private static final Log log = LogFactory.getLog(PublicationClassificationController.class);
-
-	private static final String[] dataFields = new String[] {
-		"post.resource.openaccess.additionalfields.institution",
-		"post.resource.openaccess.additionalfields.phdreferee",
-		"post.resource.openaccess.additionalfields.phdreferee2",
-		"post.resource.openaccess.additionalfields.phdoralexam",
-		"post.resource.openaccess.additionalfields.sponsor",
-		"post.resource.openaccess.additionalfields.additionaltitle"
-	};
-
-
 
 	private static final String GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";
 	private static final String SAVE_CLASSIFICATION_ITEM = "SAVE_CLASSIFICATION_ITEM";
@@ -85,7 +71,7 @@ public class PublicationClassificationController extends AjaxController implemen
 				final JSONObject jsonData = (JSONObject) JSONSerializer.toJSON(command.getValue());
 
 				// save classification data to database
-				for (final String key : dataFields ) {
+				for (final String key : SwordService.AF_FIELD_NAMES) {
 					// implement return value to verify storing of classification 
 					logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), key, null);				
 					logic.createExtendedField(BibTex.class, loginUserName, command.getHash(), key, jsonData.getString(key));
