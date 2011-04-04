@@ -133,8 +133,8 @@
 	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="requestLogic" ref="requestLogic" />
-		<property name="docPath"><value>${project.document.path}</value></property>
-		<property name="tempPath"><value>${project.document.temp}</value></property>
+		<property name="docPath" value="${project.document.path}"/>
+		<property name="tempPath" value="${project.document.temp}"/>
 		<property name="messageSource" ref="messageSource"/>
 	</bean>	
 		
