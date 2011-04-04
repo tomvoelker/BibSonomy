@@ -18,50 +18,54 @@
 				
 	
 				<c:if test="${not empty command.post.resource.documents}">
-					<fmt:message key="post.bibtex.uploadedFiles"/>
-					<script type="text/javascript">
-						var errorData = new errorBoxData("#upload");
-						$(function(){
-							$(".deleteDocument").click(function(){
-								var button = $(this);
-								$.get($(button).attr("href"), {}, function(data) {
-									var status=$("status", data).text()
-									if(status=="error"){
-										errorData.msg = $("reason", data).text();
-										displayFileErrorBox(errorData);
-									} else {
-										errorData.msg = $("response", data).text();
-										displayFileErrorBox(errorData);
-										$(button).closest(".fsRow").remove();
-									}
-								}, "xml");
-								return false;
+					<div class="fsRow">
+						<span class="fsLabel"><fmt:message key="post.bibtex.uploadedFiles"/></span>
+						<script type="text/javascript">
+							var errorData = new errorBoxData("#upload");
+							$(function(){
+								$(".deleteDocument").click(function(){
+									var button = $(this);
+									$.get($(button).attr("href"), {}, function(data) {
+										var status=$("status", data).text()
+										if(status=="error"){
+											errorData.msg = $("reason", data).text();
+											displayFileErrorBox(errorData);
+										} else {
+											errorData.msg = $("response", data).text();
+											displayFileErrorBox(errorData);
+											$(button).closest(".fsRow").remove();
+										}
+									}, "xml");
+									return false;
+								});
 							});
-						});
-					</script>
-					<c:forEach var="document" items="${command.post.resource.documents}">
-						<div class="fsRow">
-							<a class="documentFileName" href="/documents/${command.post.resource.intraHash}/${mtl:encodeURI(command.post.user.name)}/${mtl:encodeURI(document.fileName)}">${fn:escapeXml(document.fileName)}
-								<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left;"/>
-							</a>
-							<c:out value=" ("/>
-							<a class="deleteDocument" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete">
-								${delete}
-							</a>
-							<c:out value=")"/>
-						</div>
-					</c:forEach>
+						</script>
+						<ul style="display:inline-block;"><c:forEach var="document" items="${command.post.resource.documents}">
+							<li>
+								<a class="documentFileName" href="/documents/${command.post.resource.intraHash}/${mtl:encodeURI(command.post.user.name)}/${mtl:encodeURI(document.fileName)}">
+									<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left;"/>
+									<c:out value="${document.fileName}"/>
+								</a>
+								<c:out value=" ("/>
+								<a class="deleteDocument" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete">
+									${delete}
+								</a>
+								<c:out value=")"/>
+							</li>
+						</c:forEach></ul>
+					</div>
 				</c:if>
 				
 
 			<div class="fsRow" id="inputDiv">
+				<label class="fsLabel" for="fu"><fmt:message key="bibtex.actions.private_document.upload"/></label>
+				<buttons:help message="post.bibtex.help"/>
+				<input id="fu" type="file" name="file"/>
 				<script type="text/javascript">
 						$(function(){
-							$(".fu").documentUploader();
+							$("#fu").documentUploader();
 						});
 				</script>
-				<input class="fu" type="file" name="file"/>
-				<buttons:help message="post.bibtex.help"/>
 			</div>
 			
 			<c:if test="${not empty command.fileName}">
