@@ -26,7 +26,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.HashUtils;
 import org.purl.sword.base.DepositResponse;
-import org.purl.sword.base.SWORDException;
 import org.purl.sword.base.ServiceDocument;
 import org.purl.sword.client.Client;
 import org.purl.sword.client.PostMessage;
@@ -44,6 +43,22 @@ public class SwordService {
 	
 	private static final String SWORDFILETYPE = "application/zip";
 	private static final String SWORDFORMAT = "http://purl.org/net/sword-types/METSDSpaceSIP"; 
+	
+	public static final String AF_ADDITIONALTITLE = "post.resource.openaccess.additionalfields.additionaltitle";
+	public static final String AF_SPONSOR = "post.resource.openaccess.additionalfields.sponsor";
+	public static final String AF_PHDORALEXAM = "post.resource.openaccess.additionalfields.phdoralexam";
+	public static final String AF_PHDREFEREE2 = "post.resource.openaccess.additionalfields.phdreferee2";
+	public static final String AF_PHDREFEREE = "post.resource.openaccess.additionalfields.phdreferee";
+	public static final String AF_INSTITUTION = "post.resource.openaccess.additionalfields.institution";
+
+	public static final String[] AF_FIELD_NAMES = new String[] {
+		AF_INSTITUTION,
+		AF_PHDREFEREE,
+		AF_PHDREFEREE2,
+		AF_PHDORALEXAM,
+		AF_SPONSOR,
+		AF_ADDITIONALTITLE
+	};
 	
 	private SwordConfig repositoryConfig;
 	
