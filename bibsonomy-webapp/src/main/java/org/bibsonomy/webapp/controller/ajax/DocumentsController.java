@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller.ajax;
 import java.io.File;
 import java.util.Locale;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Document;
@@ -28,10 +29,10 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	 */
 	private String docPath;
 	private String tempPath;
-	private String fileHash;
 	private static final Log log = LogFactory.getLog(DocumentsController.class);
 	private MessageSource messageSource;
 	
+	private static final String ALLOWED_EXTENSIONS = StringUtils.implodeStringArray(FileUploadInterface.fileUploadExt, ", ");
 	
 	/**
 	 * max file size, currently 50mb
@@ -53,7 +54,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		 * Check whether user is logged in 
 		 */
 		if (!context.isUserLoggedIn()) {
-			command.setResponseString(generateXmlErrorString(messageSource.getMessage("error.general.login", null, locale), command.getFileID(), null, locale));
+			command.setResponseString(getXmlError("error.general.login", null, command.getFileID(), null, locale));
 			return Views.AJAX_XML;
 		}
 		
@@ -61,7 +62,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		 * check ckey
 		 */
 		if (!command.getContext().isValidCkey()) {
-			command.setResponseString(generateXmlErrorString(messageSource.getMessage("error.field.valid.ckey", null, locale), command.getFileID(), null, locale));
+			command.setResponseString(getXmlError("error.field.valid.ckey", null, command.getFileID(), null, locale));
 			return Views.AJAX_XML;
 		}
 		
@@ -97,8 +98,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		/*
 		 * temporary saved file
 		 */
-		File tmpFile = new File(tempPath+command.getFileHash().substring(32));
-		tmpFile.delete();
+		new File(tempPath+command.getFileHash().substring(32)).delete();
 		command.setResponseString("<root><status>ok</status><fileid>" + command.getFileID() + "</fileid></root>");
 		return Views.AJAX_XML;
 	}
@@ -110,18 +110,17 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	 */
 	private View deleteDocument(AjaxDocumentCommand command, Locale locale) {
 		log.debug("start deleting file");
-		String userName = command.getContext().getLoginUser().getName();
-		String intraHash = command.getIntraHash();
-		String fileName = command.getFileName();
-		Document document = logic.getDocument(userName, intraHash, fileName);
+		final String userName = command.getContext().getLoginUser().getName();
+		final String intraHash = command.getIntraHash();
+		final String fileName = command.getFileName();
+		final Document document = logic.getDocument(userName, intraHash, fileName);
 		
 		/*
 		 * check whether logged-in user is the document owner
 		 */
-		String documentOwner = document.getUserName();
+		final String documentOwner = document.getUserName();
 		if (!documentOwner.equals(userName)) {
-			
-			command.setResponseString(generateXmlErrorString(messageSource.getMessage("post.bibtex.wrongUser", null, locale), command.getFileID(), null, locale)); 
+			command.setResponseString(getXmlError("post.bibtex.wrongUser", null, command.getFileID(), null, locale)); 
 			return Views.AJAX_XML;
 		}
 		
@@ -134,7 +133,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		 * delete file on disk
 		 */
 		new File(FileUtil.getFilePath(docPath, document.getFileHash())).delete();
-		String response = messageSource.getMessage("bibtex.actions.filedeleted", new Object[] {fileName}, locale); 
+		final String response = messageSource.getMessage("bibtex.actions.filedeleted", new Object[] {fileName}, locale); 
 		command.setResponseString("<root><status>deleted</status><response>" + response + "</response></root>");
 		return Views.AJAX_XML;
 	}
@@ -146,61 +145,51 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	 */
 	private View uploadFile(AjaxDocumentCommand command, Locale locale) {
 		log.debug("Start uploading file");
-		
+
+		/*
+		 * the uploaded file
+		 */
+		final FileItem fileItem = command.getFile().getFileItem();
+		final int fileID = command.getFileID();
 		/*
 		 * unsupported file extensions
 		 */
-		if (!StringUtils.matchExtension(command.getFile().getFileItem().getName(), FileUploadInterface.fileUploadExt)) {
-		
-			String[] allowedExt = FileUploadInterface.fileUploadExt;
-			
-			final StringBuilder buf = new StringBuilder();
-			for (int i = 0; i < allowedExt.length - 1; i++) {
-				buf.append(allowedExt[i].toUpperCase() + ", ");
-			}
-			
-			if (allowedExt.length > 1) {
-				buf.append(messageSource.getMessage("logic.or", null, locale)+" ");
-			}
-			buf.append(allowedExt[allowedExt.length - 1].toUpperCase());
-			
-			command.setResponseString(generateXmlErrorString(messageSource.getMessage("error.upload.failed.filetype", new Object[] {buf.toString()}, locale), command.getFileID(), command.getFile().getFileItem().getName(), locale));	
-			
+		if (!StringUtils.matchExtension(fileItem.getName(), FileUploadInterface.fileUploadExt)) {
+			command.setResponseString(getXmlError("error.upload.failed.filetype", new Object[] {ALLOWED_EXTENSIONS}, fileID, fileItem.getName(), locale));	
 			return Views.AJAX_XML;
 		}
 		
 		/*
 		 * wrong file size
 		 */
-		long size = command.getFile().getFileItem().getSize();
+		final long size = fileItem.getSize();
 		if (size >= maxFileSize) {
-			String errorMsg = messageSource.getMessage("error.upload.failed.size", new Object[] {maxFileSizeMB}, locale);
-			command.setResponseString(generateXmlErrorString(errorMsg, command.getFileID(), command.getFile().getFileItem().getName(), locale));
+			command.setResponseString(getXmlError("error.upload.failed.size", new Object[] {maxFileSizeMB}, fileID, fileItem.getName(), locale));
 			return Views.AJAX_XML;
 		} else if (size == 0) {
-			command.setResponseString(generateXmlErrorString(messageSource.getMessage("error.upload.failed.size0", null, locale), command.getFileID(), command.getFile().getFileItem().getName(), locale));
+			command.setResponseString(getXmlError("error.upload.failed.size0", null, fileID, fileItem.getName(), locale));
 			return Views.AJAX_XML;
 		}
 		
-		File uploadFile;
-		fileHash = FileUtil.getRandomFileHash(command.getFile().getFileItem().getName());
+		final File uploadFile;
+		String fileHash = FileUtil.getRandomFileHash(fileItem.getName());
 		if (command.isTemp()) { // /editPublication
 			uploadFile = new File(tempPath + fileHash);
 		} else { // /bibtex/....
 			uploadFile = new File(FileUtil.getFilePath(docPath, fileHash));
 		}
-		String md5Hash = HashUtils.getMD5Hash(command.getFile().getFileItem().get());
+		final String md5Hash = HashUtils.getMD5Hash(fileItem.get());
 		try {
-			command.getFile().getFileItem().write(uploadFile);
-		} catch (Exception ex) {
+			fileItem.write(uploadFile);
+		} catch (final Exception ex) {
 			log.error("Could not write uploaded file.", ex);
-			command.setResponseString(generateXmlErrorString(messageSource.getMessage("error.500", null, locale), command.getFileID(), null, locale));
+			command.setResponseString(getXmlError("error.500", null, fileID, fileItem.getName(), locale));
 			return Views.AJAX_XML;
 		}
 		
 		if (!command.isTemp()) {
-			Document document = new Document();
-			document.setFileName(command.getFile().getFileItem().getName());
+			final Document document = new Document();
+			document.setFileName(fileItem.getName());
 			document.setFileHash(fileHash);
 			document.setMd5hash(md5Hash);
 			document.setUserName(command.getContext().getLoginUser().getName());
@@ -216,7 +205,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 			fileHash ="";
 		}
 		
-		command.setResponseString("<root><status>ok</status><fileid>" + command.getFileID() + "</fileid><filehash>" + md5Hash + fileHash + "</filehash><filename>" + command.getFile().getFileItem().getName() + "</filename></root>");
+		command.setResponseString("<root><status>ok</status><fileid>" + fileID + "</fileid><filehash>" + md5Hash + fileHash + "</filehash><filename>" + fileItem.getName() + "</filename></root>");
 		return Views.AJAX_XML;
 	}
 
@@ -225,8 +214,9 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	 * @param reason error reason
 	 * @return
 	 */
-	private String generateXmlErrorString (String reason, int fileID, String fileName, Locale locale) {
-		String errorMsg = messageSource.getMessage("error.upload.failed", new Object[] {reason}, locale);
+	private String getXmlError (final String messageCode, final Object[] arguments, int fileID, final String fileName, Locale locale) {
+		final String reason = messageSource.getMessage(messageCode, arguments, locale);
+		final String errorMsg = messageSource.getMessage("error.upload.failed", new Object[] {reason}, locale);
 		return "<root><status>error</status><reason>"+errorMsg+"</reason><fileid>"+ fileID + "</fileid><filename>" + fileName + "</filename></root>";
 	}
 	
