@@ -27,9 +27,7 @@
 		</tr>
 	</table>
 	
-	<c:set var="loginRegister">
-		<fmt:message key="login.register"/>
-	</c:set>
+	<fmt:message key="login.register" var="loginRegister"/>
 	<c:if test="${not empty loginRegister}">
 		<h2><fmt:message key="login.register" /></h2>
 		<p>
@@ -38,6 +36,7 @@
 			<fmt:message key="login.notRegistered_3" />
 		</p>
 	</c:if>
+
 	<h2><fmt:message key="login.lostPassword" /></h2>
 	<p>
 		<fmt:message key="login.lostPassword_1" /> <c:out value=" " />
