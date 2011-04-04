@@ -25,8 +25,17 @@ Two of our existing macros were not present, namely \c{C} and \c{c};
 these were added as \cC and \cc in the list (because we remove all
 curly brackets before doing the regex matching.
 
+In addition, we also added shorthand versions of macros for German
+Umlauts (namely. "a, "u, "o, "O, "U, "A) - these are only available when
+loading 
+
+  \usepackage[ngerman]{babel}
+  
+(see also [3]). 
+
 Dominik, 2011-04-01
 
 
 [1]http://stackoverflow.com/questions/4578912/replace-all-accented-characters-by-their-latex-equivalent
 [2]http://ctan.binkerton.com/ctan.readme.php?filename=macros/latex/base/utf8ienc.dtx
+[3]http://en.wikibooks.org/wiki/LaTeX/Accents
