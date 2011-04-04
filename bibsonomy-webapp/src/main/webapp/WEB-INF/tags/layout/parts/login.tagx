@@ -97,6 +97,7 @@
 							<input type="text" size="15" name="username" id="un"  tabindex="1"/>&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
 							<input type="password" size="15" name="password" style="width:150px; position:absolute;" id="pw" autocomplete="off" tabindex="2"/>
 							<input type="text" id="pw_form_copy" name="" style="position:relative;" autocomplete="off"/>
+							<input type="hidden" name="rememberMe" value="true" />
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
 						</form:form>
 					</div>    			
@@ -110,6 +111,7 @@
 						<form:form method="POST" action="/login_${authMethodName}">
 							<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">:&amp;nbsp;</span>
 							<input type="password" size="15" name="password" id="pwldap" autocomplete="off"/>
+							<input type="hidden" name="rememberMe" value="true" />
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
 						</form:form>
 					</div>
@@ -122,6 +124,7 @@
       				<div class="headlogin ${visibility}" id="headLogin${status.count}">
 						<form:form action="/login_${authMethodName}" method="POST">
 							<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
+							<input type="hidden" name="rememberMe" value="true" />
 			            	<form:hidden id="headloginMethodopenid" path="loginMethod" />
 		            	</form:form>
 	            	</div>
