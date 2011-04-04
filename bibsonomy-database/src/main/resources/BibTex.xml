@@ -11,9 +11,9 @@
 		ORDER BY b.rank
 	</select> -->
 	<select id="getSynchBibTex" resultMap="SynchronizationCommon.synchPost" parameterClass="bibtexParam">
-		SELECT simhash2 AS intrahash, simhash1 AS interhash, date, change_date
-		FROM bibtex
-		WHERE user_name = #userName#
+		SELECT <include refid="bibtexSimHashes"/>, b.date, b.change_date
+		FROM bibtex b
+		WHERE b.user_name = #userName#
 	</select>
 
 	<select id="getBibTexPopular" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
