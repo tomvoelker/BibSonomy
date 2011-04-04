@@ -80,6 +80,8 @@ public class TestDBLogic implements LogicInterface {
 		}
 	};
 
+	private String userName;
+
 	/**
 	 * creates a new LogicInterface Implementation for tests
 	 * @param authUserName name of the user in whose name testoperations shall be performed 
@@ -965,21 +967,21 @@ public class TestDBLogic implements LogicInterface {
 
 
 	@Override
-	public void createExtendedField(String userName, String intraHash, String key, String value) {
+	public void createExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
 	@Override
-	public void deleteExtendedField(String userName, String intraHash, String key, String value) {
+	public void deleteExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
 	@Override
-	public Map<String, List<String>> getExtendedFields(String userName, String intraHash, String key) {
+	public Map<String, List<String>> getExtendedFields(Class<? extends Resource> resourceType, String userName, String intraHash, String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}

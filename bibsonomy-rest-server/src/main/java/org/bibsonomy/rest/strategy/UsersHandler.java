@@ -10,9 +10,9 @@ import org.bibsonomy.rest.strategy.users.DeleteDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserStrategy;
-import org.bibsonomy.rest.strategy.users.GetRelatedusersForUserStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDocumentStrategy;
+import org.bibsonomy.rest.strategy.users.GetRelatedusersForUserStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserConceptsStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserListStrategy;
@@ -39,7 +39,8 @@ public class UsersHandler implements ContextHandler {
 		final int numTokensLeft = urlTokens.countTokens();
 		final String userName;
 		final String req;
-
+		final RestProperties restProperties = RestProperties.getInstance();
+		
 		switch (numTokensLeft) {
 		case 0:
 			// /users
@@ -52,18 +53,18 @@ public class UsersHandler implements ContextHandler {
 			req = urlTokens.nextToken();
 
 			// /users/[username]/posts
-			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(req)) {
+			if (restProperties.getPostsUrl().equalsIgnoreCase(req)) {
 				return createUserPostsStrategy(context, httpMethod, userName);
 			}
 
 			// /users/[username]/concepts
-			if (RestProperties.getInstance().getConceptUrl().equalsIgnoreCase(req)) {
+			if (restProperties.getConceptUrl().equalsIgnoreCase(req)) {
 				return createUserConceptsStrategy(context, httpMethod, userName);
 			}
 
 			// /users/[username]/friends , /users/[username]/followers 
-			if (RestProperties.getInstance().getFriendsUrl().equalsIgnoreCase(req) ||
-				RestProperties.getInstance().getFollowersUrl().equalsIgnoreCase(req) ) {
+			if (restProperties.getFriendsUrl().equalsIgnoreCase(req) ||
+				restProperties.getFollowersUrl().equalsIgnoreCase(req) ) {
 				return createRelatedusersForUserStrategy(context, httpMethod, userName, req, null);
 			}
 			break;
@@ -72,18 +73,18 @@ public class UsersHandler implements ContextHandler {
 			req = urlTokens.nextToken();
 
 			// /users/[username]/posts/[resourceHash]
-			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(req)) {
+			if (restProperties.getPostsUrl().equalsIgnoreCase(req)) {
 				final String resourceHash = urlTokens.nextToken();
 				return createUserPostStrategy(context, httpMethod, userName, resourceHash);
 			}
 
 			// /users/[username]/concepts/[conceptName]
-			if (RestProperties.getInstance().getConceptUrl().equalsIgnoreCase(req)) {
+			if (restProperties.getConceptUrl().equalsIgnoreCase(req)) {
 				final String conceptName = urlTokens.nextToken();
 				return createUserConceptsStrategy(context, httpMethod, userName, conceptName);
 			}
 			// /users/[username]/friends/[tag]
-			if (RestProperties.getInstance().getFriendsUrl().equalsIgnoreCase(req)) {
+			if (restProperties.getFriendsUrl().equalsIgnoreCase(req)) {
 				final String tag = urlTokens.nextToken();
 				return createRelatedusersForUserStrategy(context, httpMethod, userName, req, tag);
 			}
@@ -91,10 +92,10 @@ public class UsersHandler implements ContextHandler {
 		case 4:
 			// /users/[username]/posts/[resourcehash]/documents
 			userName = urlTokens.nextToken();
-			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+			if (restProperties.getPostsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
 				final String resourceHash = urlTokens.nextToken();
 
-				if (RestProperties.getInstance().getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+				if (restProperties.getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
 					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash);
 				}
 			}
@@ -102,10 +103,10 @@ public class UsersHandler implements ContextHandler {
 		case 5:
 			// /users/[username]/posts/[resourcehash]/documents/[filename]
 			userName = urlTokens.nextToken();
-			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+			if (restProperties.getPostsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
 				final String resourceHash = urlTokens.nextToken();
 
-				if (RestProperties.getInstance().getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+				if (restProperties.getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
 					final String filename = urlTokens.nextToken();
 					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash, filename);
 				}
