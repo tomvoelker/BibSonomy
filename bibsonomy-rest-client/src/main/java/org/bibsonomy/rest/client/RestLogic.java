@@ -408,14 +408,19 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
-		String relationType;
-		if (UserRelation.OF_FRIEND.equals(relation)) {
-			relationType = "friend";
-		}
-		else if (UserRelation.FOLLOWER_OF.equals(relation)) {
-			relationType = "follower";
-		}
-		else {
+		/*
+		 * Transform UserRelation into String.
+		 * FIXME: shouldn't we do this in a nicer way?
+		 */
+		final String relationType;
+		switch (relation) {
+		case OF_FRIEND:
+			relationType = CreateUserRelationshipQuery.FRIEND_RELATIONSHIP;
+			break;
+		case FOLLOWER_OF:
+			relationType = CreateUserRelationshipQuery.FOLLOWER_RELATIONSHIP;
+			break;
+		default:
 			throw new IllegalArgumentException("Only OF_FRIEND (for friend relations) and FOLLOWER_OF (for followers) are allowed values for the relation param." );
 		}
 		execute(new CreateUserRelationshipQuery(sourceUser, targetUser, relationType, tag));
@@ -495,19 +500,19 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void createExtendedField(String userName, String intraHash, String key, String value) {
+	public void createExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void deleteExtendedField(String userName, String intraHash, String key, String value) {
+	public void deleteExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public Map<String, List<String>> getExtendedFields(String userName, String intraHash, String key) {
+	public Map<String, List<String>> getExtendedFields(Class<? extends Resource> resourceType, String userName, String intraHash, String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
