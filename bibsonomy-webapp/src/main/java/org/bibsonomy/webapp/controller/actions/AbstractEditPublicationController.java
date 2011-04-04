@@ -2,10 +2,10 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,12 +20,11 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.file.FileUtil;
+import org.bibsonomy.util.upload.DocumentUtils;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.Errors;
 
 import bibtex.parser.ParseException;
@@ -210,48 +209,21 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	/**
 	 * The temporary files will be stored on the file system and in the database 
 	 */
-	private void handleAddFiles(EditPublicationCommand command, String userName) {
+	private void handleAddFiles(final EditPublicationCommand command, final String userName) {
 		//TODO check length of fileHash list and fileName list
-		if (!present(command.getFileName())) {
+		final List<String> fileNames = command.getFileName();
+		if (!present(fileNames)) {
 			return;
 		}
-		for (int i = 0; i < command.getFileName().size(); i++) {
-			
-			String fileName = command.getFileName().get(i).substring(64);
-			String fileNameHash = FileUtil.getRandomFileHash(fileName);
-			String md5Hash = command.getFileName().get(i).substring(0, 31);
-			
+		for (final String compoundFileName: fileNames) {
 			/*
-			 * temporary saved file
+			 * copy temporary file to documents directory
 			 */
-			File tmpFile = new File(tempPath+command.getFileName().get(i).substring(32, 64));
+			final Document document = DocumentUtils.getPersistentDocument(tempPath, compoundFileName, userName, compoundFileName);
 			/*
-			 * new file
-			 */
-			File file = new File((FileUtil.getFileDir(docPath, fileNameHash))+fileNameHash);
-			/*
-			 * copy from temp directory to documents directory
-			 */
-			try {
-				FileCopyUtils.copy(tmpFile, file);
-			} catch (IOException ex) {
-				
-			}
-			final Document document = new Document();
-			document.setFileName(fileName);
-			document.setFileHash(fileNameHash);
-			document.setMd5hash(md5Hash);
-			document.setUserName(userName);
-			
-			/*
-			 * add document to the data base
+			 * add document to the database
 			 */
 			logic.createDocument(document, command.getIntraHashToUpdate());
-			
-			/*
-			 * delete temporary file
-			 */
-			tmpFile.delete();
 		}
 	}
 
