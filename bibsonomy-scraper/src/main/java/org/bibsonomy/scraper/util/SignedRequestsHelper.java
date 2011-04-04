@@ -290,10 +290,17 @@ public class SignedRequestsHelper {
     private String percentEncodeRfc3986(String s) {
         String out;
         try {
+        	/*
+        	 * Somehow the encode() Method appends a carriage return and new line char to the string.
+        	 * Therefore this signature does not match the Amazon signature.
+        	 * 
+			 * This is not the most elegant way to fix, but replacing the "chars" is working for now.
+        	 */
             out = URLEncoder.encode(s, UTF8_CHARSET)
                 .replace("+", "%20")
                 .replace("*", "%2A")
-                .replace("%7E", "~");
+                .replace("%7E", "~")
+           		.replace("%0D%0A", "");
         } catch (UnsupportedEncodingException e) {
             out = s;
         }
