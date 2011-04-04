@@ -2154,29 +2154,14 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
     }
 
     @Override
-    public void createExtendedField(String userName, String intraHash, String key, String value) {
+    public void createExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
 	final DBSession session = openSession();
 
 	try {
-	    this.publicationDBManager.createExtendedField(userName, intraHash, key, value, session);
-	} finally {
-	    session.close();
-	}
-    }
-
-    @Override
-    public void deleteExtendedField(String userName, String intraHash, String key, String value) {
-	final DBSession session = this.openSession();
-
-	try {
-	    if(!present(key)) {
-		this.publicationDBManager.deleteAllExtendedFieldsData(userName, intraHash, session);
+	    if (BibTex.class == resourceType) {
+		this.publicationDBManager.createExtendedField(userName, intraHash, key, value, session);
 	    } else {
-		if(!present(value)) {
-		    this.publicationDBManager.deleteExtendedFieldsByKey(userName, intraHash, key, session);
-		} else { 
-		    this.publicationDBManager.deleteExtendedFieldByKeyValue(userName, intraHash, key, value, session);
-		}
+		throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 	    }
 	} finally {
 	    session.close();
@@ -2184,11 +2169,38 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
     }
 
     @Override
-    public Map<String, List<String>> getExtendedFields(String userName, String intraHash, String key) {
+    public void deleteExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
 	final DBSession session = this.openSession();
 
 	try {
-	    return this.publicationDBManager.getExtendedFields(userName, intraHash, key, session);
+	    if (BibTex.class == resourceType) {
+		if(!present(key)) {
+		    this.publicationDBManager.deleteAllExtendedFieldsData(userName, intraHash, session);
+		} else {
+		    if(!present(value)) {
+			this.publicationDBManager.deleteExtendedFieldsByKey(userName, intraHash, key, session);
+		    } else { 
+			this.publicationDBManager.deleteExtendedFieldByKeyValue(userName, intraHash, key, value, session);
+		    }
+		}
+	    } else {
+		throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
+	    }
+	} finally {
+	    session.close();
+	}
+    }
+
+    @Override
+    public Map<String, List<String>> getExtendedFields(Class<? extends Resource> resourceType, String userName, String intraHash, String key) {
+	final DBSession session = this.openSession();
+
+	try {
+	    if (BibTex.class == resourceType) {
+		return this.publicationDBManager.getExtendedFields(userName, intraHash, key, session);
+	    } else {
+		throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
+	    }
 	} finally {
 	    session.close();
 	}
