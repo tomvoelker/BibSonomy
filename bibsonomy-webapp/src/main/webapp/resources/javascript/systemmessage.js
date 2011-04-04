@@ -1,4 +1,4 @@
-var message = "On Wednesday, January 19th, we will release a new version of BibSonomy. You will have to re-login. <a href='http://bibsonomy.blogspot.com/2010/12/what-happened-with-next-release.html/'>read more</a>."; 
+var message = "On Wednesday, January 19th, we will release a new version of BibSonomy. You will have to re-login. <a href='http://bibsonomy.blogspot.com/2010/12/what-happened-with-next-release.html'>read more</a>."; 
 var cookieName = "bibSystemMessage";
 var cookieDays = 3; // cookie expires in
 var width = 400; // px
@@ -15,7 +15,7 @@ function showMessage() {
 	var box = document.createElement("div");
 	box.style.position = "absolute";
 	box.style.width = width + "px";
-	box.style.left = Math.floor((window.innerWidth - width) / 2) + "px";
+	box.style.left = Math.floor((getWindowWidth() - width) / 2) + "px";
 	box.style.top  = "150px";
 	box.style.background = "#eee";
 	box.style.padding = "1em";
@@ -35,6 +35,11 @@ function showMessage() {
 	box.appendChild(close);
 
 	document.getElementsByTagName("body")[0].appendChild(box);
+}
+
+function getWindowWidth() {
+	if (window.innerWidth) return window.innerWidth;
+	if (document.body.clientWidth) return document.body.clientWidth;
 }
 
 function hideMessage() {
