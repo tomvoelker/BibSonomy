@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<artifactId>bibsonomy</artifactId>
@@ -14,80 +13,38 @@
 	<name>BibSonomy-Webapp</name>
 	<version>2.0.14-SNAPSHOT</version>
 	<description>The webapplication for Bibsonomy.</description>
-	<repositories>
-		<repository>
-			<id>public-repository.wurflpro.com</id>
-			<name>WURFL-Pro Public Repository</name>
-			<url>http://dev.wurflpro.com/nexus/content/repositories/public-releases/</url>
-		</repository>
-	</repositories>
 	<build>
 		<plugins>
-		<!--
-		<plugin>
-			<groupId>org.apache.myfaces.trinidadbuild</groupId>
-			<artifactId>maven-javascript-plugin</artifactId>
-			<configuration>
-				<sourcePath>./javascript</sourcePath>
-				<sourceDirectory>src/main/webapp/resources</sourceDirectory>
-				<targetPath>./debug/javascript</targetPath>
-				<targetDirectory>${project.build.directory}</targetDirectory>
-				<optimizeTargetPath>./${project.artifactId}-${project.parent.version}/resources/javascript</optimizeTargetPath>
-			</configuration>
-			<executions>
-				<execution>
-					<phase>process-resources</phase>
-						<goals>
-							<goal>reduce-javascript</goal>
-						</goals>
-				</execution>
-			</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
 				<configuration>
-					<warSourceExclude>*javascript/*.js</warSourceExclude>
+					<packagingExcludes>WEB-INF/classes</packagingExcludes>
 				</configuration>
 			</plugin>
-			 -->
-	 		<plugin>
-        		<artifactId>maven-antrun-plugin</artifactId>
-        		<version>1.4</version>
-        		<dependencies>
-
-	                <dependency>
-	                    <groupId>ant-contrib</groupId>
-                   		<artifactId>ant-contrib</artifactId>
-                   		<version>20020829</version>
-	                </dependency>
-	            </dependencies>
-        		<executions>
-          			<execution>
-						<!-- do some processing on your resources files -->
-            			<phase>process-resources</phase>
-           		 		<configuration>
-              				<tasks>
-              					<!-- include commands if, not, then -->
-              					<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-              					<available file="${project.build.directory}/classes/wurfl.zip" property="file.exists" value="true" />
-              					<if>
-              						<not>
-              							<isset property="file.exists" />
-              						</not>
-              						<then>
-              							<!-- download wurfl file -->
-              							<get src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/latest/wurfl-latest.zip" dest="${project.build.directory}/classes/wurfl.zip" />
-              						</then>
-              					</if>
-              				</tasks>
-            			</configuration>
-            			<goals>
-              				<goal>run</goal>
-            			</goals>
-          			</execution>
-        		</executions>
-     		</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<!-- download the latest WURLF specs each time a war file is created. 
+							if this is too frequent for any reason, check the version history of this 
+							file for rev. 1.86 which checks if the file already exists. -->
+						<phase>prepare-package</phase>
+						<configuration>
+							<tasks>
+								<get
+									src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/latest/wurfl-latest.zip"
+									dest="${project.build.directory}/classes/wurfl.zip" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<extensions>
 			<extension>
@@ -98,16 +55,17 @@
 		</extensions>
 	</build>
 	<profiles>
-	    <profile>
-	        <id>deploy-to-puma</id>
-	        <!-- Activated when -Ddeploy-to=puma is given as parameter. -->
-	    	<activation>
-	      		<property>
-	        		<name>deploy-to</name>
-	        		<value>puma</value>
-	      		</property>
-	    	</activation>        
-	        <build>
+		<profile>
+			<id>deploy-to-puma</id>
+			<!-- change tomcat deploy destination when -Ddeploy-to=puma is given as 
+				parameter. -->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>puma</value>
+				</property>
+			</activation>
+			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
@@ -116,20 +74,21 @@
 							<server>tomcat_puma</server>
 							<url>http://dev.puma.uni-kassel.de:8080/manager</url>
 						</configuration>
-					</plugin>				
+					</plugin>
 				</plugins>
 			</build>
-	    </profile>
-	    <profile>
-	        <id>deploy-to-wuerzburg</id>
-	        <!-- Activated when -Ddeploy-to=wuerzburg is given as parameter. -->
-	    	<activation>
-	      		<property>
-	        		<name>deploy-to</name>
-	        		<value>wuerzburg</value>
-	      		</property>
-	    	</activation>        
-	        <build>
+		</profile>
+		<profile>
+			<id>deploy-to-wuerzburg</id>
+			<!-- change tomcat deploy destination when -Ddeploy-to=wuerzburg is given 
+				as parameter. -->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>wuerzburg</value>
+				</property>
+			</activation>
+			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
@@ -138,16 +97,16 @@
 							<server>tomcat_wuerzburg</server>
 							<url>http://wue.biblicious.org:8080/manager</url>
 						</configuration>
-					</plugin>				
+					</plugin>
 				</plugins>
 			</build>
-	    </profile>	    
-	</profiles>	
+		</profile>
+	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>net.sourceforge.wurfl</groupId>
 			<artifactId>wurfl</artifactId>
-			<version>1.0.1</version>
+			<version>1.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -199,23 +158,23 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
-		</dependency>			
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
 			<scope>test</scope>
 			<type>test-jar</type>
-		</dependency>			
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-bibtex-parser</artifactId>
 		</dependency>
-<!--
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-opensocial</artifactId>
-		</dependency>
--->
+		<!-- 
+		<dependency> 
+			<groupId>org.bibsonomy</groupId> 
+			<artifactId>bibsonomy-opensocial</artifactId> 
+		</dependency> 
+		-->
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-web-common</artifactId>
@@ -323,7 +282,8 @@
 					<groupId>org.springframework</groupId>
 				</exclusion>
 				<exclusion>
-					<!-- the version required by openid4java is broken (kills Tomcat on some OpenIDs) -->
+					<!-- the version required by openid4java is broken (kills Tomcat on 
+						some OpenIDs) -->
 					<artifactId>nekohtml</artifactId>
 					<groupId>net.sourceforge.nekohtml</groupId>
 				</exclusion>
@@ -342,11 +302,9 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-lucene</artifactId>
 		</dependency>
-		<!--
-			*** beanutils 1.7.0 contain a memory leak *** we don't have a direct
-			dependency to beanutils, but some lib needs it so we override here to
-			the leak-free version 1.8.0
-		-->
+		<!-- *** beanutils 1.7.0 contain a memory leak *** we don't have a direct 
+			dependency to beanutils, but some lib needs it so we override here to the 
+			leak-free version 1.8.0 -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -362,16 +320,16 @@
 			<groupId>au.com.bytecode.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>1.8</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
 			<version>2.1.12</version>
-		</dependency>		
+		</dependency>
 		<dependency>
-    		<groupId>net.sf.json-lib</groupId>
-    		<artifactId>json-lib</artifactId>
-    		<version>0.9</version>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>0.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jasypt</groupId>
