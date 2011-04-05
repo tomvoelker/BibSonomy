@@ -44,9 +44,9 @@
 
 
           <div class="fsRow">
-		  <form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>* </form:label><buttons:help message="post.resource.title.help"/>
+		  	<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>* </form:label><buttons:help message="post.resource.title.help"/>
             <form:textarea cssClass="fsInput reqinput" path="post.resource.title" tabindex="2" rows="2"/>
-		  <div class="dissError"><form:errors path="post.resource.title" /></div>
+		  	<div class="dissError"><form:errors path="post.resource.title" /></div>
           </div>
 
           <div class="fsRow">
