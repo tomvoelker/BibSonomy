@@ -92,14 +92,9 @@
       <mtl:exists path="command.userFriends">
       	<!-- comma, if friends exist and (tags exist or resources are present) -->
       	<c:if test="${isCommaNecessary and not empty command.userFriends}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
-      	
+
       	<!-- friends -->
-	  	<c:forEach var="user" varStatus="status" items="${command.userFriends}" >
-      		<json:user user="${user}"/><c:if test="${not status.last}">,</c:if>
-      		<c:if test="${status.last}">
-      			<c:set var="isCommaNecessary" value="${true}"/>
-      		</c:if>
-      	</c:forEach>
+	    <json:users users="${command.userFriends}" />
       </mtl:exists>
 
 	  <mtl:exists path="command.friendsOfUser">
@@ -107,13 +102,15 @@
       	<c:if test="${isCommaNecessary and not empty command.friendsOfUser}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
 
 	    <!-- friends -->
-	  	<c:forEach var="user" varStatus="status" items="${command.friendsOfUser}" >
-      		<json:user user="${user}"/><c:if test="${not status.last}">,</c:if>
-      		<c:if test="${status.last}">
-      			<c:set var="isCommaNecessary" value="${true}"/>
-      		</c:if>
-      	</c:forEach>
+	    <json:users users="${command.friendsOfUser}" />
       </mtl:exists>
+      
+	  <mtl:exists path="command.searchedUsers">
+      	<c:if test="${isCommaNecessary and not empty command.searchedUsers}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+      	
+	    <!-- searched users -->
+	    <json:users users="${command.searchedUsers}" />
+	  </mtl:exists>
    ]
 }
 

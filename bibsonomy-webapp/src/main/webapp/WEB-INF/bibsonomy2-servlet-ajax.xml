@@ -110,6 +110,18 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/ajax/usersearch">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userSearchController"/>
+						<property name="allowedFields">
+							<list>
+								<value>search</value>
+								<value>limit</value>
+								<value>format</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -145,6 +157,10 @@
 		<property name="tagRecommender"	ref="multiplexingTagRecommender" />
 		<!-- tag recommender used for spammer -->
 		<property name="spamTagRecommender" ref="jensRecommender"/>
+	</bean>
+	
+	<bean id="userSearchController" class="org.bibsonomy.webapp.controller.ajax.UserSearchController" scope="request">
+		<property name="logic" ref="logic" />
 	</bean>
 	
 	<bean id="ajaxGetBookmarkRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetBookmarkRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
