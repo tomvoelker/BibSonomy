@@ -35,7 +35,7 @@ public class PostReferencesStrategy extends AbstractCreateStrategy {
 	}
 
 	@Override
-	protected void render (final Writer writer, final String resourceID) {
+	protected void render(final Writer writer, final String resourceID) {
 		this.getRenderer().serializeResourceHash(this.writer, resourceID);
 	}
 

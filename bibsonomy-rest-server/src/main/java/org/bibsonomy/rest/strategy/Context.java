@@ -139,6 +139,7 @@ public final class Context {
 	 * @throws NoSuchResourceException 
 	 */
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceNotFoundException, ResourceMovedException {
+		this.strategy.initWriter(outStream);
 		this.strategy.perform(outStream);
 	}
 

@@ -1,13 +1,16 @@
 package org.bibsonomy.rest.strategy;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Writer;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RenderingFormat;
@@ -20,6 +23,8 @@ public abstract class Strategy {
 	private final LogicInterface logic;
 	private final Context context;
 	private final Renderer renderer;
+	
+	protected Writer writer;
 
 	/**
 	 * @param context
@@ -36,9 +41,16 @@ public abstract class Strategy {
 	public void canAccess() {
 		// noop
 	}
+	
+	/**
+	 * @param outputStream the output stream
+	 */
+	public void initWriter(final ByteArrayOutputStream outputStream) {
+		this.writer = RESTUtils.getOutputWriterForStream(outputStream, RestServlet.RESPONSE_ENCODING);
+	}
 
 	/**
-	 * @param outStream
+	 * @param outStream 
 	 * @throws InternServerException
 	 * @throws NoSuchResourceException
 	 * @throws ResourceNotFoundException 
