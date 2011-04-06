@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.strategy.AbstractContextTest;
 import org.bibsonomy.rest.strategy.Context;
@@ -23,7 +24,7 @@ public class GetPostDetailsStrategyTest extends AbstractContextTest {
 	 */
 	@Test
 	public void testGetPostDetailsStrategy() throws Exception {
-		final Context ctx = new Context(HttpMethod.GET, "/users/mbork/posts/44444444444444444444444444444444", RenderingFormat.XML, this.is, null, this.db, new HashMap<String, String>(), null);
+		final Context ctx = new Context(HttpMethod.GET, "/users/mbork/posts/56c650d32e6f50d7f49f2613b4303ffc", RenderingFormat.XML, this.is, null, this.db, new HashMap<String, String>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ctx.perform(baos);
 
@@ -32,5 +33,15 @@ public class GetPostDetailsStrategyTest extends AbstractContextTest {
 		assertEquals(697, baos.toString().length());
 		assertEquals("text/xml", ctx.getContentType("firefox"));
 		assertEquals("bibsonomy/post+XML", ctx.getContentType(RestProperties.getInstance().getApiUserAgent()));
+	}
+	
+	/**
+	 * @throws Exception
+	 */
+	@Test(expected = NoSuchResourceException.class)
+	public void testNotExistingPost() throws Exception {
+		final Context ctx = new Context(HttpMethod.GET, "/users/mbork/posts/4444", RenderingFormat.XML, this.is, null, this.db, new HashMap<String, String>(), null);
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ctx.perform(baos);
 	}
 }
