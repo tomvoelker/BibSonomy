@@ -14,7 +14,7 @@
       <script type="text/os-template">
         <ul>
           <li repeat="${friends}">
-            <span id="id${Context.Index}">${Cur.name.givenName}</span>
+            <span id="id${Context.Index}">${Cur.displayName}</span>
           </li>
         </ul>
      </script>

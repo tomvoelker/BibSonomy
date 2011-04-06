@@ -19,7 +19,7 @@
 function fetchPeople() {
   var batch = osapi.newBatch().
       add('viewer', osapi.people.getViewer()).
-      add('friends', osapi.people.get({userId: '@viewer', groupId: '@friends'}));
+      add('friends', osapi.people.get({userId: '@viewer', groupId: 'follower'}));
   batch.execute(function(result) {
     document.getElementById('viewer').innerHTML = result.viewer.id;
     var friends = result.friends.list;
