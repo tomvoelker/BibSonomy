@@ -1,7 +1,6 @@
 package org.bibsonomy.rest.strategy.concepts;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Writer;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -10,7 +9,6 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
-import org.bibsonomy.rest.util.EscapingPrintWriter;
 
 /**
  * Handles a global concept details request
@@ -21,7 +19,6 @@ import org.bibsonomy.rest.util.EscapingPrintWriter;
 public class GetConceptDetailsStrategy extends Strategy {
 
 	private final String conceptName;
-	private Writer writer;
 	
 	/**
 	 * @param context
@@ -33,9 +30,8 @@ public class GetConceptDetailsStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
-		writer = new EscapingPrintWriter(outStream);
-		Tag concept = this.getLogic().getConceptDetails(conceptName, GroupingEntity.ALL, null);
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
+		final Tag concept = this.getLogic().getConceptDetails(conceptName, GroupingEntity.ALL, null);
 		if (concept == null) {
 			throw new NoSuchResourceException("The requested concept '" + conceptName + "' does not exist.");
 		}

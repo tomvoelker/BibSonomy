@@ -7,13 +7,12 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.util.XmlUtils;
 
 /**
  * PrintWriter which preprocesses all content to be printed/written 
  * by replacing control characters (e.g., in order to yield valid
- * XML). It uses hereby the method {@link XmlUtils#removeXmlControlCharacter(char[], boolean)}.
+ * XML). It uses hereby the method {@link XmlUtils#removeXmlControlCharacters(char[], boolean)}.
  * 
  * @see org.bibsonomy.util.XmlUtils
  * @see java.io.PrintWriter
@@ -29,15 +28,21 @@ public class EscapingPrintWriter extends Writer {
 	 * Create a new instance of an EscapingPrintWriter which is 
 	 * backed by a PrintWriter 
 	 * 
-	 * @param out an OutputStream
+	 * @param out an OutputStream 
 	 */
 	public EscapingPrintWriter(final OutputStream out) {
-		OutputStreamWriter outputStreamWriter;
-		try {
-			outputStreamWriter = new OutputStreamWriter(out, RestServlet.getResponseEncoding());
-		} catch (UnsupportedEncodingException ex) {
-			outputStreamWriter = new OutputStreamWriter(out);
-		}
+		this.pw = new PrintWriter(new OutputStreamWriter(out));
+	}
+	
+	/**
+	 * @see EscapingPrintWriter#EscapingPrintWriter(OutputStream)
+	 * 
+	 * @param out an OutputStream
+	 * @param encoding of the stream
+	 * @throws UnsupportedEncodingException 
+	 */
+	public EscapingPrintWriter(final OutputStream out, final String encoding) throws UnsupportedEncodingException {
+		final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, encoding);
 		this.pw = new PrintWriter(outputStreamWriter);
 	}
 	

@@ -5,7 +5,6 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.rest.util.EscapingPrintWriter;
 
 /**
  * @author Dominik Benz
@@ -14,7 +13,6 @@ import org.bibsonomy.rest.util.EscapingPrintWriter;
 public abstract class AbstractCreateStrategy extends Strategy {
 
 	protected final Reader doc;
-	protected Writer writer;
 	
 	/**
 	 * @param context
@@ -26,9 +24,8 @@ public abstract class AbstractCreateStrategy extends Strategy {
 
 	@Override
 	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		writer = new EscapingPrintWriter(outStream);
 		final String resourceID = this.create();	
-		render(writer, resourceID);
+		render(this.writer, resourceID);
 	}
 
 	protected abstract void render(Writer writer, String resourceID);
