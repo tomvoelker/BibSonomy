@@ -10,6 +10,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.oauth.OAuthMessage;
+import net.oauth.server.OAuthServlet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
@@ -289,6 +292,15 @@ public class RequestLogic {
 	 */
 	HttpServletRequest getRequest() {
 		return this.request;
+	}
+
+	/**
+	 *  Extract the parts of the given request that are relevant to OAuth.
+	 *  
+	 * @return
+	 */
+	public OAuthMessage getOAuthMessage(String URL) {
+		return OAuthServlet.getMessage(getRequest(), URL);
 	}
 
 }

@@ -412,6 +412,24 @@ public enum Views implements View {
 	EDIT_TAGS("actions/edit/edittags"),
 	
 	/* *****************************************************
+	 * OpenSocial views
+	 * *****************************************************/
+	/**
+	 * a plain text OAuth response message (e.g. "/oauth/requestToken")
+	 */
+	OAUTH_RESPONSE("opensocial/oauthResponse"),
+	
+	/**
+	 * display an OAuth authorization request 
+	 */
+	OAUTH_AUTHORIZE("opensocial/authorize"),
+
+	/**
+	 * display an OAuth authorization success message
+	 */
+	OAUTH_AUTHORIZATION_SUCCESS("opensocial/authorizationSuccess"),
+	
+	/* *****************************************************
 	 * views for events (e.g., conferences, workshops 
 	 * *****************************************************/
 	/**

@@ -23,6 +23,26 @@
 								<value>gadgetUrl</value>
 							</list>
 						</property>					
+					</bean> 
+				</entry>
+				<entry key="/oauth/requestToken">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="oAuthRequestTokenController" />
+					</bean>
+				</entry>
+				<entry key="/oauth/accessToken">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="oAuthAccessTokenController" />
+					</bean>
+				</entry>
+				<entry key="/oauth/authorize">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="oAuthAuthorizeController" />
+						<property name="allowedFields">	
+							<list>
+								<value>authorizeAction</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 			</map>
@@ -35,6 +55,21 @@
 	<bean id="containerPageController" class="org.bibsonomy.webapp.controller.opensocial.ContainerPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
+	</bean>
+	
+	<bean id="oAuthAccessTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthProtocolController" scope="request" init-method="init">
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="requestAction" value="accessToken"/>
+	</bean>
+	
+	<bean id="oAuthRequestTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthProtocolController" scope="request" init-method="init">
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="requestAction" value="requestToken"/>
+	</bean>
+	
+	<bean id="oAuthAuthorizeController" class="org.bibsonomy.webapp.controller.opensocial.OAuthProtocolController" scope="request" init-method="init">
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="requestAction" value="authorize"/>
 	</bean>
 	
 </beans>

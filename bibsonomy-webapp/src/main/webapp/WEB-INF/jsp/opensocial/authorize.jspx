@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.login" var="loginTitle" />
+	
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${loginTitle}" requPath="${requPath}">
+
+		<jsp:attribute name="headerExt">
+  		</jsp:attribute>
+
+		<jsp:attribute name="heading">
+       		<c:out value="${loginTitle}" />
+    	</jsp:attribute>
+		
+		
+		<jsp:attribute name="content">
+			<div id="general">
+				<h1>OAuth Authorization</h1>
+				<br/><br/>
+				
+				The following application wants to access your account information
+				<br/><br/>
+
+				<h3>
+					<c:if test="${command.appIcon != null}"><img src="${command.appIcon}"/></c:if> 
+					<b><c:out value="${command.appTitle}"/></b>(<c:out value="${command.appDescription}" default=""/>)
+					<c:if test="${command.appThumbnail != null}"><img src="${command.appThumbnail}" align="left" width="120" height="60"/></c:if>
+					
+				</h3>
+					
+				
+				<br/>
+
+				<form name="authZForm" action="authorize" method="POST">
+					<input type="hidden" name="oauth_callback" value="${command.callBackUrl}"/>
+					<input type="hidden" name="oauth_token" value="${command.entry.token}"/>
+					<input type="submit" name="authorizeAction" value="Deny"/>
+					<input type="submit" name="authorizeAction" value="Authorize"/>
+				</form>
+          	</div>    
+      	</jsp:attribute>
+      	
+      	
+	</layout:layout>
+</jsp:root>

@@ -12,8 +12,7 @@
 	<!--+
 		| url mapping for admin requests
 		+-->
-	<bean id="adminUrlMapping" parent="urlMapping"
-		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<bean id="adminUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
 				<entry key="/admin">
