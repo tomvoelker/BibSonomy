@@ -9,16 +9,17 @@
 	number of shindig.host server Make sure you escape all HTML values for
 	the web.xml to be parsed correctly.
 -->
+<!-- 
 <context-param>
 	<param-name>system.properties</param-name>
 	<param-value>
-		shindig.host=localhost
-		shindig.port=8080
+		shindig.host=folke.biblicious.org
+		shindig.port=80
 
 		aKey=/shindig/gadgets/proxy?container=default&amp;url=
      </param-value>
 </context-param>
-
+ -->
 <context-param>
 	<param-name>spring-application-context-name</param-name>
 	<param-value>
@@ -26,11 +27,20 @@
 </context-param>
 
 <!--+
+	| maps some of BibSonomy's configuration parameters to system.properties for
+	| configuring shindig  
+	+-->
+<listener>
+	<listener-class>org.bibsonomy.opensocial.config.SystemPropertiesContextListener</listener-class>
+</listener>  
+
+<!--+
 	| Configure custom Guice module(s) as a colon-separated list. 
 	+-->	
 <context-param>
 	<param-name>guice-modules</param-name>
 	<param-value>
+	  <!-- org.bibsonomy.opensocial.config.BibSonomyPropertiesModule: -->
       org.apache.shindig.common.PropertiesModule:
       org.bibsonomy.opensocial.config.GuiceModule:
       org.apache.shindig.gadgets.DefaultGuiceModule:
@@ -280,11 +290,13 @@
 	<url-pattern>/gadgets/metadata</url-pattern>
 </servlet-mapping>
 
+<!-- 
 <servlet-mapping>
 	<servlet-name>sampleOAuth</servlet-name>
 	<url-pattern>/oauth/*</url-pattern>
 </servlet-mapping>
-
+ -->
+ 
 <servlet-mapping>
 	<servlet-name>default</servlet-name>
 	<url-pattern>/resources</url-pattern>
