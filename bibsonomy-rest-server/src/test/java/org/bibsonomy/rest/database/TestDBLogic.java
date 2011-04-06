@@ -61,7 +61,10 @@ import org.junit.Ignore;
  * @version $Id$
  */
 @Ignore
-public class TestDBLogic implements LogicInterface {
+public class TestDBLogic implements LogicInterface {	
+	
+	public static final String SEMINAR_URL = "http://www.kde.cs.uni-kassel.de/lehre/ss2006/kdd";
+
 	private final User loginUser;
 
 	private final Map<String, Group> dbGroups;
@@ -73,14 +76,7 @@ public class TestDBLogic implements LogicInterface {
 	/**
 	 * a factory for this implementation
 	 */
-	public static final LogicInterfaceFactory factory = new LogicInterfaceFactory() {
-		@Override
-		public LogicInterface getLogicAccess(final String loginName, final String apiKey) {
-			return new TestDBLogic(loginName);
-		}
-	};
-
-	private String userName;
+	public static final LogicInterfaceFactory factory = new TestDBLogicInterfaceFactory();
 
 	/**
 	 * creates a new LogicInterface Implementation for tests
@@ -98,8 +94,12 @@ public class TestDBLogic implements LogicInterface {
 		final Calendar cal = Calendar.getInstance();
 		cal.clear();
 		this.date = cal.getTime();
-
-		fillDataBase();
+		
+		try {
+			fillDataBase();
+		} catch (MalformedURLException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 
@@ -240,7 +240,7 @@ public class TestDBLogic implements LogicInterface {
 	/**
 	 * Inserts some test data into the local maps
 	 */
-	private void fillDataBase() {
+	private void fillDataBase() throws MalformedURLException {
 		// a group
 		final Group publicGroup = new Group();
 		publicGroup.setName("public");
@@ -249,41 +249,29 @@ public class TestDBLogic implements LogicInterface {
 		// users
 		final User userManu = new User();
 		userManu.setEmail("manuel.bork@uni-kassel.de");
-		try {
-			userManu.setHomepage(new URL("http://www.manuelbork.de"));
-		} catch (final MalformedURLException e) {
-		}
+		userManu.setHomepage(new URL("http://www.manuelbork.de"));
 		userManu.setName("mbork");
 		userManu.setRealname("Manuel Bork");
 		userManu.setRegistrationDate(new Date(System.currentTimeMillis()));
 		this.dbUsers.put(userManu.getName(), userManu);
-		//publicGroup.getUsers().add(userManu);
 		userManu.getGroups().add(publicGroup);
 
 		final User userAndreas = new User();
 		userAndreas.setEmail("andreas.hotho@uni-kassel.de");
-		try {
-			userAndreas.setHomepage(new URL("http://www.bibsonomy.org"));
-		} catch (final MalformedURLException e) {
-		}
+		userAndreas.setHomepage(new URL("http://www.bibsonomy.org"));
 		userAndreas.setName("hotho");
 		userAndreas.setRealname("Andreas Hotho");
 		userAndreas.setRegistrationDate(new Date(System.currentTimeMillis()));
 		this.dbUsers.put(userAndreas.getName(), userAndreas);
-//		publicGroup.getUsers().add(userAndreas);
 		userAndreas.getGroups().add(publicGroup);
 
 		final User userButonic = new User();
 		userButonic.setEmail("joern.dreyer@uni-kassel.de");
-		try {
-			userButonic.setHomepage(new URL("http://www.butonic.org"));
-		} catch (final MalformedURLException e) {
-		}
+		userButonic.setHomepage(new URL("http://www.butonic.org"));		
 		userButonic.setName("butonic");
 		userButonic.setRealname("Joern Dreyer");
 		userButonic.setRegistrationDate(new Date(System.currentTimeMillis()));
 		this.dbUsers.put(userButonic.getName(), userButonic);
-//		publicGroup.getUsers().add(userButonic);
 		userButonic.getGroups().add(publicGroup);
 
 		// tags
@@ -367,69 +355,69 @@ public class TestDBLogic implements LogicInterface {
 
 		// this.dbResources
 		final Bookmark spiegelOnlineResource = new Bookmark();
-		spiegelOnlineResource.setIntraHash("111111111111111111111111111111111");
 		spiegelOnlineResource.setTitle("Spiegel");
 		spiegelOnlineResource.setUrl("http://www.spiegel.de");
+		spiegelOnlineResource.recalculateHashes();
 		this.dbResources.put(spiegelOnlineResource.getIntraHash(), spiegelOnlineResource);
 
 		final Bookmark hostingprojectResource = new Bookmark();
-		hostingprojectResource.setIntraHash("22222222222222222222222222222222");
 		hostingprojectResource.setTitle("Hostingproject");
 		hostingprojectResource.setUrl("http://www.hostingproject.de");
+		hostingprojectResource.recalculateHashes();
 		this.dbResources.put(hostingprojectResource.getIntraHash(), hostingprojectResource);
 
 		final Bookmark klabusterbeereResource = new Bookmark();
-		klabusterbeereResource.setIntraHash("33333333333333333333333333333333");
 		klabusterbeereResource.setTitle("Klabusterbeere");
 		klabusterbeereResource.setUrl("http://www.klabusterbeere.net");
+		klabusterbeereResource.recalculateHashes();
 		this.dbResources.put(klabusterbeereResource.getIntraHash(), klabusterbeereResource);
 
 		final Bookmark bildschirmarbeiterResource = new Bookmark();
-		bildschirmarbeiterResource.setIntraHash("44444444444444444444444444444444");
 		bildschirmarbeiterResource.setTitle("Bildschirmarbeiter");
 		bildschirmarbeiterResource.setUrl("http://www.bildschirmarbeiter.com");
+		bildschirmarbeiterResource.recalculateHashes();
 		this.dbResources.put(bildschirmarbeiterResource.getIntraHash(), bildschirmarbeiterResource);
 
 		final Bookmark semwebResource = new Bookmark();
-		semwebResource.setIntraHash("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 		semwebResource.setTitle("Semantic Web Seminar");
 		semwebResource.setUrl("http://www.kde.cs.uni-kassel.de/lehre/ws2005-06/Semantic_Web");
+		semwebResource.recalculateHashes();
 		this.dbResources.put(semwebResource.getIntraHash(), semwebResource);
 
 		final Bookmark butonicResource = new Bookmark();
-		butonicResource.setIntraHash("55555555555555555555555555555555");
 		butonicResource.setTitle("Butonic");
 		butonicResource.setUrl("http://www.butonic.de");
+		butonicResource.recalculateHashes();
 		this.dbResources.put(butonicResource.getIntraHash(), butonicResource);
 
 		final Bookmark wowResource = new Bookmark();
-		wowResource.setIntraHash("66666666666666666666666666666666");
 		wowResource.setTitle("Worldofwarcraft");
 		wowResource.setUrl("http://www.worldofwarcraft.com");
+		wowResource.recalculateHashes();
 		this.dbResources.put(wowResource.getIntraHash(), wowResource);
 
 		final Bookmark dunkleResource = new Bookmark();
-		dunkleResource.setIntraHash("77777777777777777777777777777777");
 		dunkleResource.setTitle("Dunkleherzen");
 		dunkleResource.setUrl("http://www.dunkleherzen.de");
+		dunkleResource.recalculateHashes();
 		this.dbResources.put(dunkleResource.getIntraHash(), dunkleResource);
 
 		final Bookmark w3cResource = new Bookmark();
-		w3cResource.setIntraHash("88888888888888888888888888888888");
 		w3cResource.setTitle("W3C");
 		w3cResource.setUrl("http://www.w3.org/2001/sw/");
+		w3cResource.recalculateHashes();
 		this.dbResources.put(w3cResource.getIntraHash(), w3cResource);
 
 		final Bookmark wikipediaResource = new Bookmark();
-		wikipediaResource.setIntraHash("99999999999999999999999999999999");
 		wikipediaResource.setTitle("Wikipedia");
 		wikipediaResource.setUrl("http://de.wikipedia.org/wiki/Semantic_Web");
+		wikipediaResource.recalculateHashes();
 		this.dbResources.put(wikipediaResource.getIntraHash(), wikipediaResource);
 
 		final Bookmark kddResource = new Bookmark();
-		kddResource.setIntraHash("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		kddResource.setTitle("KDD Seminar");
-		kddResource.setUrl("http://www.kde.cs.uni-kassel.de/lehre/ss2006/kdd");
+		kddResource.setUrl(SEMINAR_URL);
+		kddResource.recalculateHashes();
 		this.dbResources.put(kddResource.getIntraHash(), kddResource);
 
 		// posts
@@ -587,54 +575,49 @@ public class TestDBLogic implements LogicInterface {
 		post_12.getTags().add(semwebTag);
 		semwebTag.getPosts().add(post_12);
 
-		// bibtex resource & post
+		// publication resources & posts
+		final BibTex publicationDemo = new BibTex();
+		publicationDemo.setAuthor("Albert Einstein, Leonardo da Vinci");
+		publicationDemo.setEditor("Luke Skywalker, Yoda");
+		publicationDemo.setTitle("Die Weltformel");
+		publicationDemo.setType("Paper");
+		publicationDemo.setYear("2006");
+		publicationDemo.recalculateHashes();
+		this.dbResources.put(publicationDemo.getIntraHash(), publicationDemo);
 
-		final BibTex bibtexDemo = new BibTex();
-		bibtexDemo.setAuthor("Albert Einstein, Leonardo da Vinci");
-		bibtexDemo.setEditor("Luke Skywalker, Yoda");
-		bibtexDemo.setIntraHash("abcdef0123abcdef0123abcdef012345");
-		bibtexDemo.setInterHash("abcdef0123abcdef0123abcdef012345");
-		bibtexDemo.setTitle("Die Weltformel");
-		bibtexDemo.setType("Paper");
-		bibtexDemo.setYear("2006");
-		this.dbResources.put(bibtexDemo.getIntraHash(), bibtexDemo);
+		final BibTex publicationDemo1 = new BibTex();
+		publicationDemo1.setAuthor("R. Fielding and J. Gettys and J. Mogul and H. Frystyk and L. Masinter and P. Leach and T. Berners-Lee");
+		publicationDemo1.setEditor("");
+		publicationDemo1.setTitle("RFC 2616, Hypertext Transfer Protocol -- HTTP/1.1");
+		publicationDemo1.setType("Paper");
+		publicationDemo1.setYear("1999");
+		publicationDemo1.recalculateHashes();
+		this.dbResources.put(publicationDemo1.getIntraHash(), publicationDemo1);
 
-		final BibTex bibtexDemo1 = new BibTex();
-		bibtexDemo1.setAuthor("R. Fielding and J. Gettys and J. Mogul and H. Frystyk and L. Masinter and P. Leach and T. Berners-Lee");
-		bibtexDemo1.setEditor("");
-		bibtexDemo1.setIntraHash("aaaaaaaabbbbbbbbccccccccaaaaaaaa");
-		bibtexDemo1.setInterHash("aaaaaaaabbbbbbbbccccccccaaaaaaaa");
-		bibtexDemo1.setTitle("RFC 2616, Hypertext Transfer Protocol -- HTTP/1.1");
-		bibtexDemo1.setType("Paper");
-		bibtexDemo1.setYear("1999");
-		this.dbResources.put(bibtexDemo1.getIntraHash(), bibtexDemo1);
+		final BibTex publicationDemo2 = new BibTex();
+		publicationDemo2.setAuthor("Roy T. Fielding");
+		publicationDemo2.setEditor("");
+		publicationDemo2.setTitle("Architectural Styles and the Design of Network-based Software Architectures");
+		publicationDemo2.setType("Paper");
+		publicationDemo2.setYear("2000");
+		publicationDemo2.recalculateHashes();
+		this.dbResources.put(publicationDemo2.getIntraHash(), publicationDemo2);
 
-		final BibTex bibtexDemo2 = new BibTex();
-		bibtexDemo2.setAuthor("Roy T. Fielding");
-		bibtexDemo2.setEditor("");
-		bibtexDemo2.setIntraHash("abcdabcdabcdabcdaaaaaaaaaaaaaaaa");
-		bibtexDemo2.setInterHash("abcdabcdabcdabcdaaaaaaaaaaaaaaaa");
-		bibtexDemo2.setTitle("Architectural Styles and the Design of Network-based Software Architectures");
-		bibtexDemo2.setType("Paper");
-		bibtexDemo2.setYear("2000");
-		this.dbResources.put(bibtexDemo2.getIntraHash(), bibtexDemo2);
-
-		final BibTex bibtexDemo3 = new BibTex();
-		bibtexDemo3.setAuthor("Tim Berners-Lee and Mark Fischetti");
-		bibtexDemo3.setEditor("");
-		bibtexDemo3.setIntraHash("ddddddddccccccccbbbbbbbbaaaaaaaa");
-		bibtexDemo3.setInterHash("ddddddddccccccccbbbbbbbbaaaaaaaa");
-		bibtexDemo3.setTitle("Weaving the web");
-		bibtexDemo3.setType("Paper");
-		bibtexDemo3.setYear("1999");
-		this.dbResources.put(bibtexDemo3.getIntraHash(), bibtexDemo3);
+		final BibTex publicationDemo3 = new BibTex();
+		publicationDemo3.setAuthor("Tim Berners-Lee and Mark Fischetti");
+		publicationDemo3.setEditor("");
+		publicationDemo3.setTitle("Weaving the web");
+		publicationDemo3.setType("Paper");
+		publicationDemo3.setYear("1999");
+		publicationDemo3.recalculateHashes();
+		this.dbResources.put(publicationDemo3.getIntraHash(), publicationDemo3);
 
 		final Post<Resource> post_13 = new Post<Resource>();
 		post_13.setDescription("Beschreibung einer allumfassenden Weltformel. Taeglich lesen!");
 		post_13.setDate(this.date);
-		post_13.setResource(bibtexDemo);
-		bibtexDemo.getPosts().add(post_13);
-		post_13.setUser(userManu);
+		post_13.setResource(publicationDemo);
+		publicationDemo.getPosts().add(post_13);
+		post_13.setUser(userAndreas);
 		userManu.getPosts().add(post_13);
 		post_13.getGroups().add(publicGroup);
 		publicGroup.getPosts().add(post_13);
@@ -646,8 +629,8 @@ public class TestDBLogic implements LogicInterface {
 		final Post<Resource> post_14 = new Post<Resource>();
 		post_14.setDescription("Grundlagen des www");
 		post_14.setDate(this.date);
-		post_14.setResource(bibtexDemo1);
-		bibtexDemo1.getPosts().add(post_14);
+		post_14.setResource(publicationDemo1);
+		publicationDemo1.getPosts().add(post_14);
 		post_14.setUser(userManu);
 		userManu.getPosts().add(post_14);
 		post_14.getGroups().add(publicGroup);
@@ -658,8 +641,8 @@ public class TestDBLogic implements LogicInterface {
 		final Post<Resource> post_15 = new Post<Resource>();
 		post_15.setDescription("So ist unsers api konstruiert.");
 		post_15.setDate(this.date);
-		post_15.setResource(bibtexDemo2);
-		bibtexDemo2.getPosts().add(post_15);
+		post_15.setResource(publicationDemo2);
+		publicationDemo2.getPosts().add(post_15);
 		post_15.setUser(userManu);
 		userManu.getPosts().add(post_15);
 		post_15.getGroups().add(publicGroup);
@@ -670,8 +653,8 @@ public class TestDBLogic implements LogicInterface {
 		final Post<Resource> post_16 = new Post<Resource>();
 		post_16.setDescription("das ist nur ein beispiel.");
 		post_16.setDate(this.date);
-		post_16.setResource(bibtexDemo3);
-		bibtexDemo3.getPosts().add(post_16);
+		post_16.setResource(publicationDemo3);
+		publicationDemo3.getPosts().add(post_16);
 		post_16.setUser(userManu);
 		userManu.getPosts().add(post_16);
 		post_16.getGroups().add(publicGroup);
@@ -735,21 +718,25 @@ public class TestDBLogic implements LogicInterface {
 
 	@Override
 	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String createDocument(final Document doc, final String resourceHash) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Document getDocument(final String userName, final String fileHash) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -890,18 +877,18 @@ public class TestDBLogic implements LogicInterface {
 	}
 	
 	@Override
-	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, String tag) {
+	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, final String tag) {
 		// TODO Auto-generated method stub
 		return new ArrayList<User>();
 	}
 
 	@Override
-	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
+	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, final String tag) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
+	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, final String tag) {
 		// TODO Auto-generated method stub
 	}
 
@@ -965,13 +952,11 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 	}
 
-
 	@Override
 	public void createExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
 		// TODO Auto-generated method stub
 		
 	}
-
 
 	@Override
 	public void deleteExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
@@ -979,12 +964,10 @@ public class TestDBLogic implements LogicInterface {
 		
 	}
 
-
 	@Override
 	public Map<String, List<String>> getExtendedFields(Class<? extends Resource> resourceType, String userName, String intraHash, String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }
