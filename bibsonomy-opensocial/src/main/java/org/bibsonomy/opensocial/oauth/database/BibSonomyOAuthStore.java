@@ -9,6 +9,7 @@ import org.apache.shindig.gadgets.oauth.OAuthStore;
 
 public class BibSonomyOAuthStore implements OAuthStore {
 	
+	// FIXME: configure via spring
 	IOAuthLogic authLogic = IbatisOAuthLogic.getInstance();
 	
 	private String defaultCallbackUrl;

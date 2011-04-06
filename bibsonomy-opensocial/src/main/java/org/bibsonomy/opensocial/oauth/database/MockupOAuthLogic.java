@@ -11,7 +11,15 @@ import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
+import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 
+/**
+ * incomplete mockup implementation for the OAuth database logic interface
+ * 
+ * @author fei
+ *
+ */
 public class MockupOAuthLogic implements IOAuthLogic {
 	private static Log log = LogFactory.getLog(MockupOAuthLogic.class);
 	
@@ -45,6 +53,31 @@ public class MockupOAuthLogic implements IOAuthLogic {
 	public TokenInfo readToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName) {
 		log.info("Reading token for "+securityToken.getViewerId());
 		return this.lastToken;
+	}
+
+	public void createProviderToken(OAuthEntry entry) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void deleteProviderToken(String token) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public OAuthConsumerInfo readConsumer(String consumerKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public OAuthEntry readProviderToken(String oauthToken) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void updateProviderToken(OAuthEntry entry) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

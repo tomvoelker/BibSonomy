@@ -16,6 +16,7 @@ import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
+import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
@@ -107,6 +108,7 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 
 	public TokenInfo createToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName, TokenInfo tokenInfo) {
 		OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
+		tokenIndex.setTokenSecret(tokenInfo.getTokenSecret());
 		tokenIndex.setTokenExpireMillis(tokenInfo.getTokenExpireMillis());
 		tokenIndex.setAccessToken(tokenInfo.getAccessToken());
 		tokenIndex.setSessionHandle(tokenInfo.getSessionHandle());
@@ -158,6 +160,53 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 		tokenIndex.setUserId(securityToken.getViewerId());
 		return tokenIndex;
 	}
+	//------------------------------------------------------------------------
+	// OAuthDataStore interface
+	//------------------------------------------------------------------------
+	public void createProviderToken(OAuthEntry entry) {
+		try {
+			this.sqlMap.insert("setProviderToken", entry);
+		} catch (SQLException e) {
+			log.error("Error creating provider token for '"+entry.getAppId()+"'", e);
+		}
+	}
+	
+	public OAuthConsumerInfo readConsumer(String consumerKey) {
+		OAuthConsumerInfo consumerInfo = null;
+		try {
+			consumerInfo = (OAuthConsumerInfo )this.sqlMap.queryForObject("getConsumerInfo", consumerKey);
+		} catch (SQLException e) {
+			log.error("Error fetching consumer info for consumer key '"+consumerKey+"'", e);
+		}
+		
+		return consumerInfo;
+	}
+	
+	public OAuthEntry readProviderToken(String oauthToken) {
+		OAuthEntry entry = null;
+		try {
+			entry = (OAuthEntry)this.sqlMap.queryForObject("getProviderToken", oauthToken);
+		} catch (SQLException e) {
+			log.error("Error retrieving token details for token '"+oauthToken+"'", e);
+		}
+		return entry;
+	}
+
+	public void updateProviderToken(OAuthEntry entry) {
+		try {
+			this.sqlMap.insert("updateProviderToken", entry);
+		} catch (SQLException e) {
+			log.error("Error updating provider token for '"+entry.getAppId()+"'", e);
+		}
+	}
+	
+	public void deleteProviderToken(String token) {
+		try {
+			this.sqlMap.delete("removeProviderToken", token);
+		} catch (SQLException e) {
+			log.error("Error removing token '"+token+"'", e);
+		}
+	}
 
 	//------------------------------------------------------------------------
 	// private helper
@@ -179,4 +228,6 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 	public String getDefaultCallbackUrl() {
 		return defaultCallbackUrl;
 	}
+
+
 }

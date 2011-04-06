@@ -2,12 +2,15 @@ package org.bibsonomy.opensocial.oauth.database;
 
 import java.util.Date;
 
+import net.oauth.OAuthConsumer;
 import net.oauth.OAuthServiceProvider;
 
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
+import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 
 /**
  * Interface for accessing the OAuthDataStore
@@ -68,4 +71,43 @@ public interface IOAuthLogic {
 	 * @return
 	 */
 	public void deleteToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName);
+	
+	//------------------------------------------------------------------------
+	// OAuthDataStore interface
+	//------------------------------------------------------------------------
+	/**
+	 * read OAuth consumer information from database
+	 * 
+	 * @param consumerKey
+	 * @return
+	 */
+	public OAuthConsumerInfo readConsumer(String consumerKey);
+
+	/**
+	 * create an OAuth token 
+	 * 
+	 * @param entry
+	 */
+	public void createProviderToken(OAuthEntry entry);
+
+	/**
+	 * read an OAuth token 
+	 * 
+	 * @param oauthToken
+	 */
+	public OAuthEntry readProviderToken(String oauthToken);
+	
+	/**
+	 * update given OAuth token entry (e.g. authorize)
+	 * 
+	 * @param entry
+	 */
+	public void updateProviderToken(OAuthEntry entry);
+
+	/**
+	 * remove the given provider token from the database
+	 * @param token
+	 */
+	public void deleteProviderToken(String token);
+	
 }
