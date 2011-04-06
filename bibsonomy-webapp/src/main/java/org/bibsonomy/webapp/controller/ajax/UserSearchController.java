@@ -36,12 +36,8 @@ public class UserSearchController extends AjaxController implements Minimalistic
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
 		
-		log.info("Searching for " + command.getSearch() + " with limit " + command.getLimit());
-		
 		if (command.getSearch() != null && !command.getSearch().isEmpty()) {
 			users = logic.getUsers(null, GroupingEntity.USER, null, null, null, null, null, command.getSearch(), 0, command.getLimit());
-			for (User u: users)
-				log.info(u);
 			command.setSearchedUsers(users);
 		}
 		
