@@ -56,7 +56,10 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private static final String HTTP_AUTH_BASIC_IDENTIFIER = "Basic ";
 	
-	private static final String RESPONSE_ENCODING = "UTF-8";
+	/**
+	 * the response encoding used to encode HTTP responses.
+	 */
+	public static final String RESPONSE_ENCODING = "UTF-8";
 	
 	/**
 	 * the request default encoding
@@ -65,6 +68,11 @@ public final class RestServlet extends HttpServlet {
 
 	/** name of the servlet-parameter that configures the logicFactoryClass to use */
 	public static final String PARAM_LOGICFACTORY_CLASS = "logicFactoryClass";
+	
+	/**
+	 * the param key for the root doc path
+	 */
+	public static final String PARAM_ROOT_PATH = "rootPath";
 
 	private LogicInterfaceFactory logicFactory;
 	
@@ -77,13 +85,15 @@ public final class RestServlet extends HttpServlet {
 		// instantiate the bibsonomy database connection
 		final String logicFactoryClassName = this.getServletConfig().getInitParameter(PARAM_LOGICFACTORY_CLASS);
 		// get the roopath of bibsonomy out of the web.xml
-		final ServletContext servletContext = getServletContext();
-		additionalInfos.put("rootPath", servletContext.getInitParameter("rootPath"));
+		final ServletContext servletContext = this.getServletContext();
+		final String rootPath = servletContext.getInitParameter(PARAM_ROOT_PATH);
+		additionalInfos.put("rootPath", rootPath);
 		// declare the path where all documents will be stored
+		
 		/*
 		 * FIXME: make doc path configurable via web.xml (or another config file)
 		 */
-		additionalInfos.put("docPath", servletContext.getInitParameter("rootPath") + "bibsonomy_docs/"); 
+		additionalInfos.put("docPath", rootPath + "bibsonomy_docs/"); 
 		// get the projectHome out of the web.xml
 		additionalInfos.put("projectHome", servletContext.getInitParameter("projectHome"));
 		
@@ -205,8 +215,7 @@ public final class RestServlet extends HttpServlet {
 			if (method.equals(HttpMethod.POST)) {
 				// if a POST request completes successfully this means that a resource has been created
 				response.setStatus(HttpServletResponse.SC_CREATED);
-			}
-			else {
+			} else {
 				response.setStatus(HttpServletResponse.SC_OK);
 			}
 			
@@ -215,8 +224,8 @@ public final class RestServlet extends HttpServlet {
 			context.perform(cachingStream);
 			
 			/*
-			 *  XXX: note: cachingStream.size() != cachingStream.toString().length() !!
-			 *  the correct value is the first one!
+			 * XXX: note: cachingStream.size() != cachingStream.toString().length() !!
+			 * the correct value is the first one!
 			 */
 			response.setContentLength(cachingStream.size());
 			
@@ -327,14 +336,5 @@ public final class RestServlet extends HttpServlet {
 		} catch (final AccessDeniedException e) {
 			throw new AuthenticationException("Authentication failure: " + e.getMessage());
 		}
-	}
-	
-	/**
-	 * Returns the response encoding used to encode HTTP responses.
-	 * @return The response encoding currently used by the servlet to encode 
-	 * HTTP responses.
-	 */
-	public static String getResponseEncoding() {
-		return RESPONSE_ENCODING;
 	}
 }

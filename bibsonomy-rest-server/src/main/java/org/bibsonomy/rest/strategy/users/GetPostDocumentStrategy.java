@@ -22,7 +22,7 @@ import org.bibsonomy.util.upload.impl.HandleFileDownload;
  * @version $Id$
  * @author Christian Kramer
  */
-public class GetPostDocumentStrategy extends Strategy{
+public class GetPostDocumentStrategy extends Strategy {
 	private final String userName;
 	private final String resourceHash;
 	private final String fileName;
@@ -55,18 +55,16 @@ public class GetPostDocumentStrategy extends Strategy{
 	@Override
 	public void perform(final ByteArrayOutputStream outStream){
 		// request the document from the db
-		final Document doc =  this.getLogic().getDocument(userName, resourceHash, fileName);
+		final Document doc = this.getLogic().getDocument(userName, resourceHash, fileName);
 		
 		if (doc == null) {
 			throw new NoSuchResourceException("can't find document!");
 		}
 		
-		BufferedInputStream buf = null;
-		
 		try {
 			// get the bufferedstream of the file
 			final FileDownloadInterface download = new HandleFileDownload(additionalInfos.get("docPath"), doc.getFileHash());
-			buf = download.getBuf();
+			final BufferedInputStream buf = download.getBuf();
 			
 			// write the bytes of the file to the writer
 			int readBytes = 0;

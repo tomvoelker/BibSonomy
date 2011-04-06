@@ -55,7 +55,6 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 		final FileUploadInterface up = fileUploadFactory.getFileUploadHandler(this.items, FileUploadInterface.fileUploadExt);
 		
 		try {
-
 			final Document document = up.writeUploadedFile();
 			
 			/*

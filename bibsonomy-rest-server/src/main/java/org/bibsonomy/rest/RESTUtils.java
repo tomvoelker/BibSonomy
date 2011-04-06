@@ -4,8 +4,10 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -18,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
+import org.bibsonomy.rest.util.EscapingPrintWriter;
 import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
@@ -117,14 +120,14 @@ public class RESTUtils {
 	}
 
 	/**
-	 * an inputreader for the provided stream with the provided encoding. If the
+	 * a reader for the provided stream with the provided encoding. If the
 	 * encoding is not supported the default encoding is used
 	 * 
 	 * @param stream
 	 * @param encoding
-	 * @return the inputreader for the stream
+	 * @return the reader for the stream
 	 */
-	public static Reader getInputReaderForStream(InputStream stream, final String encoding) {
+	public static Reader getInputReaderForStream(final InputStream stream, final String encoding) {
 		if (!present(stream)) return null;
 		try {
 			// returns InputStream with correct encoding
@@ -137,4 +140,24 @@ public class RESTUtils {
 		}
 	}
 
+	/**
+	 * a writer for the provided stream with the provided encoding. If the
+	 * encoding is not supported the default encoding is used
+	 * 
+	 * @param stream
+	 * @param encoding
+	 * @return the writer for the stream
+	 */
+	public static Writer getOutputWriterForStream(final OutputStream stream, final String encoding) {
+    	if (!present(stream)) return null;
+  		try {
+  			// returns InputStream with correct encoding
+  			return new EscapingPrintWriter(stream, encoding);
+  		} catch (UnsupportedEncodingException ex) {
+  			// returns InputStream with default encoding if a exception
+  			// is thrown with utf-8 support
+  			log.fatal(ex.getStackTrace());
+  			return new EscapingPrintWriter(stream);
+  		}
+	}
 }

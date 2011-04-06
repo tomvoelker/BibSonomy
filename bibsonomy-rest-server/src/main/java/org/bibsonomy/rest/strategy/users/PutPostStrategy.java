@@ -109,7 +109,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 					}
 				}
 			}
-			// If none of the errors handled above occurred we throw the original Exception
+			// if none of the errors handled above occurred we throw the original exception
 			throw de;
 		}
 	}

@@ -37,7 +37,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 	}
 
 	@Override
-	protected void appendLinkPostFix(StringBuilder sb) {
+	protected void appendLinkPostFix(final StringBuilder sb) {
 		if (this.tagString != null) {
 			sb.append("&tags=").append(this.tagString);
 		}

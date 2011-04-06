@@ -1,7 +1,6 @@
 package org.bibsonomy.rest.strategy.users;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Writer;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -14,7 +13,6 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
-import org.bibsonomy.rest.util.EscapingPrintWriter;
 
 /**
  * Handle a user concepts request
@@ -27,9 +25,7 @@ public class GetUserConceptsStrategy extends Strategy {
 	private final String userName;
 	private final ConceptStatus status;
 	private final String regex;	
-	private final List<String> tags;	
-	
-	private Writer writer;
+	private final List<String> tags;
 	
 	/**
 	 * @param context
@@ -46,7 +42,6 @@ public class GetUserConceptsStrategy extends Strategy {
 
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
-		writer = new EscapingPrintWriter(outStream);
 		final List<Tag> concepts = this.getLogic().getConcepts(resourceType, GroupingEntity.USER, userName, regex, tags, status, 0, Integer.MAX_VALUE);
 		this.getRenderer().serializeTags(writer, concepts, new ViewModel());			
 	}
