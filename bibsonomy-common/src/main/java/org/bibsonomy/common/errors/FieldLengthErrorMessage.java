@@ -40,6 +40,7 @@ public class FieldLengthErrorMessage extends ErrorMessage {
 	 * inits the map
 	 */
 	public FieldLengthErrorMessage() {
+		super("At least one field exceeds text size limit", "database.exception.fieldlength");
 		this.fields = new HashMap<String, Integer>();
 	}
 
@@ -72,9 +73,9 @@ public class FieldLengthErrorMessage extends ErrorMessage {
 	 * @return <code>true</code> iff one or more field(s) is/are to long
 	 */
 	public boolean hasErrors() {
-		return !this.fields.keySet().isEmpty();
+		return !this.fields.isEmpty();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.common.errors.ErrorMessage#toString()
@@ -86,11 +87,12 @@ public class FieldLengthErrorMessage extends ErrorMessage {
 		/*
 		 * loop through all fields
 		 */
-		for (final String field : this.fields.keySet()) {
+		
+		for (final Map.Entry<String, Integer> entry : this.fields.entrySet()) {
 			builder.append("\n");
-			builder.append(field);
+			builder.append(entry.getKey());
 			builder.append(" (");
-			builder.append(this.fields.get(field));
+			builder.append(entry.getValue());
 			builder.append(")");
 		}
 		

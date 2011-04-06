@@ -30,6 +30,7 @@ package org.bibsonomy.common.errors;
  * @author sdo
  * @version $Id$
  */
+@Deprecated // TODO: unused remove
 public class SystemTagErrorMessage extends ErrorMessage{
 
 	/**
@@ -38,8 +39,6 @@ public class SystemTagErrorMessage extends ErrorMessage{
 	 * @param parameters
 	 */
 	public SystemTagErrorMessage(String errorMessage, String localizedMessageKey, String[] parameters) {
-		this.setDefaultMessage(errorMessage);
-		this.setErrorCode(localizedMessageKey);
-		this.setParameters(parameters);
+		super(errorMessage, localizedMessageKey, parameters);
 	}
 }

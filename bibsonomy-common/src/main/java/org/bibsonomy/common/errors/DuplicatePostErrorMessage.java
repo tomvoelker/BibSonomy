@@ -34,10 +34,9 @@ public class DuplicatePostErrorMessage extends ErrorMessage{
 	 * @param resourceClassName
 	 * @param intraHash
 	 */
-	public DuplicatePostErrorMessage(String resourceClassName, String intraHash) {
-		this.setDefaultMessage("Could not create new " + resourceClassName + ": This " + resourceClassName +
-		" already exists in your collection (intrahash: " + intraHash + ")");
-		this.setErrorCode("database.exception.duplicate");
+	public DuplicatePostErrorMessage(final String resourceClassName, final String intraHash) {
+		super("Could not create new " + resourceClassName + ": This " + resourceClassName +
+				" already exists in your collection (intrahash: " + intraHash + ")", "database.exception.duplicate");
 	}
 	
 }

@@ -35,12 +35,12 @@ public class ErrorMessage {
 	private String errorCode;
 	private String[] parameters;
 	
-
 	/**
-	 * 
+	 * @param defaultMessage is like the exception message
+	 * @param errorCode 	is a key to the corresponding localized String in the message_properties files
 	 */
-	public ErrorMessage() {
-		
+	public ErrorMessage(final String defaultMessage, final String errorCode) {
+		this(defaultMessage, errorCode, null);
 	}
 	
 	/**
@@ -48,7 +48,7 @@ public class ErrorMessage {
 	 * @param errorCode 	is a key to the corresponding localized String in the message_properties files
 	 * @param parameters are some Strings for the localized message
 	 */
-	public ErrorMessage(String defaultMessage, String errorCode, String[] parameters) {
+	public ErrorMessage(final String defaultMessage, final String errorCode, final String[] parameters) {
 		this.defaultMessage = defaultMessage;
 		this.errorCode = errorCode;
 		if (present(parameters)) {

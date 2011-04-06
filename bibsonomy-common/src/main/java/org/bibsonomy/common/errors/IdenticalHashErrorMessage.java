@@ -37,9 +37,8 @@ public class IdenticalHashErrorMessage extends ErrorMessage {
 	 * @param intraHash
 	 */
 	public IdenticalHashErrorMessage(String resourceClassName, String intraHash) {
-		this.setDefaultMessage("Could not uptdate " + resourceClassName + ": This " + resourceClassName +
-		" already exists in your collection (intrahash: " + intraHash + ")");
-		this.setErrorCode("database.exception.duplicate");
+		super("Could not uptdate " + resourceClassName + ": This " + resourceClassName +
+				" already exists in your collection (intrahash: " + intraHash + ")", "database.exception.duplicate");
 	}
 	
 }

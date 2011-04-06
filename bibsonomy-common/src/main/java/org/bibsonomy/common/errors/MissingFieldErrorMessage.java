@@ -35,8 +35,7 @@ public class MissingFieldErrorMessage extends ErrorMessage{
 	/**
 	 * @param missing 
 	 */
-	public MissingFieldErrorMessage(String missing) {
-		this.setDefaultMessage("Missing "+missing+ " for this post.");
-		this.setErrorCode("database.exception.missing."+missing.toLowerCase());
+	public MissingFieldErrorMessage(final String missing) {
+		super("Missing " + missing + " for this post.", "database.exception.missing." + missing.toLowerCase());
 	}
 }
