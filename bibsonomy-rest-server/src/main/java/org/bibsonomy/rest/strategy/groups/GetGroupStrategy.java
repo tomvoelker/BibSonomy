@@ -1,7 +1,7 @@
 package org.bibsonomy.rest.strategy.groups;
 
+
 import java.io.ByteArrayOutputStream;
-import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
@@ -9,7 +9,6 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
-import org.bibsonomy.rest.util.EscapingPrintWriter;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -18,7 +17,6 @@ import org.bibsonomy.rest.util.EscapingPrintWriter;
 public class GetGroupStrategy extends Strategy {
 
 	private final String groupName;
-	private Writer writer;
 
 	/**
 	 * @param context
@@ -31,7 +29,6 @@ public class GetGroupStrategy extends Strategy {
 
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
-		writer = new EscapingPrintWriter(outStream);
 		// delegate to the renderer
 		final Group group = this.getLogic().getGroupDetails(this.groupName);
 		if (group == null) {
