@@ -309,7 +309,8 @@
     <json.version>20070829</json.version>
     <slf.version>1.6.0</slf.version>
     <shindig.version>2.0.0</shindig.version>
-    <spring.version>3.0.4.RELEASE</spring.version>
+    <spring.version>3.0.5.RELEASE</spring.version>
+    <spring-security.version>3.0.5.RELEASE</spring-security.version>
     <logging.version>1.1</logging.version>
     <collections.version>3.2</collections.version>
     <junit.version>4.7</junit.version>
