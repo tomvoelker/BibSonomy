@@ -1,7 +1,7 @@
 package org.bibsonomy.rest.strategy.tags;
 
+
 import java.io.ByteArrayOutputStream;
-import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Tag;
@@ -9,7 +9,6 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
-import org.bibsonomy.rest.util.EscapingPrintWriter;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -18,7 +17,6 @@ import org.bibsonomy.rest.util.EscapingPrintWriter;
 public class GetTagDetailsStrategy extends Strategy {
 	private final Tag tag;
 	private final String tagName;
-	private Writer writer;
 
 	/**
 	 * @param context
@@ -32,7 +30,6 @@ public class GetTagDetailsStrategy extends Strategy {
 
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		writer = new EscapingPrintWriter(outStream);
 		if (this.tag == null) {
 			throw new NoSuchResourceException("The requested tag '" + this.tagName + "' does not exist.");
 		}		
