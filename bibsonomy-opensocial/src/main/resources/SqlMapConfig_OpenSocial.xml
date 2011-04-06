@@ -10,7 +10,7 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 	<typeAlias alias="oAuthConsumer"         type="org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo"/>
 	<typeAlias alias="tokenIndex"            type="org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex"/>
 	<typeAlias alias="tokenInfo"             type="org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo"/>
-	
+	<typeAlias alias="tokenEntry"            type="org.apache.shindig.social.opensocial.oauth.OAuthEntry"/>
 	<!--+
 		| data source configuration
 		+-->
