@@ -116,6 +116,7 @@ public class OAuthModule extends AbstractModule {
         @Named(OAUTH_SIGNING_KEY_FILE) String signingKeyFile,
         @Named(OAUTH_SIGNING_KEY_NAME) String signingKeyName,
         @Named(OAUTH_CALLBACK_URL) String defaultCallbackUrl) {
+    	// FIXME: configure via spring
       store = new BibSonomyOAuthStore();
       //store = new BasicOAuthStore();
       loadDefaultKey(signingKeyFile, signingKeyName);
