@@ -6,6 +6,7 @@ public class OAuthTokenIndex extends BasicOAuthStoreTokenIndex {
 	private String accessToken;
 	private String tokenSecret;
 	private String sessionHandle;
+
 	private long tokenExpireMillis;
 	
 	public void setAccessToken(String accessToken) {

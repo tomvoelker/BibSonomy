@@ -28,10 +28,20 @@ public class OAuthConsumerInfo {
 	
 	private long moduleId;
 	
+	/** consumer's title */
+	private String title;
+	/** consumer's summary */
+	private String summary;
+	/** consumer's description */
+	private String description;
+	/** consumer's thumbnail */
+	private String thumbnail;
+	/** consumer's icon */
+	private String icon;
+	
 	/** Name of the server */
 	private String serviceName;
-
-	public void setConsumerKey(String consumerKey) {
+		public void setConsumerKey(String consumerKey) {
 		this.consumerKey = consumerKey;
 	}
 
@@ -93,6 +103,46 @@ public class OAuthConsumerInfo {
 
 	public long getModuleId() {
 		return moduleId;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setThumbnail(String thumbnail) {
+		this.thumbnail = thumbnail;
+	}
+
+	public String getThumbnail() {
+		return thumbnail;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public String getIcon() {
+		return icon;
 	}
 
 

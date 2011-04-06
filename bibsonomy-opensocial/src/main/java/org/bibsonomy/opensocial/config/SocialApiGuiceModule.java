@@ -6,6 +6,8 @@ import java.util.Set;
 import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.common.servlet.ParameterFetcher;
+import org.apache.shindig.gadgets.http.BasicHttpFetcher;
+import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.protocol.DataServiceServletFetcher;
 import org.apache.shindig.protocol.conversion.BeanConverter;
 import org.apache.shindig.protocol.conversion.BeanJsonConverter;
@@ -36,7 +38,9 @@ import com.google.inject.name.Names;
  */
 public class SocialApiGuiceModule extends AbstractModule {
 
-  /** {@inheritDoc} */
+  private static final int CONNECTION_TIMEOUT = 60000;
+
+/** {@inheritDoc} */
   @Override
   protected void configure() {
     bind(ParameterFetcher.class).annotatedWith(Names.named("DataServiceServlet"))
@@ -53,13 +57,19 @@ public class SocialApiGuiceModule extends AbstractModule {
     bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
         BeanXStreamAtomConverter.class);
 
+    /*
     bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(
         BibSonomyAuthenticationHandlerProvider.class);
+    */
+    bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(AuthenticationHandlerProvider.class);
 
     Multibinder<Object> handlerBinder = Multibinder.newSetBinder(binder(), Object.class, Names.named("org.apache.shindig.handlers"));
     for (Class handler : getHandlers()) {
       handlerBinder.addBinding().toInstance(handler);
     }
+    
+    //Configure the basic http fetcher to have a longer request timeout than the default of 5 seconds.
+    bind(HttpFetcher.class).toInstance(new BasicHttpFetcher(0, CONNECTION_TIMEOUT, CONNECTION_TIMEOUT, null));
   }
 
   /**

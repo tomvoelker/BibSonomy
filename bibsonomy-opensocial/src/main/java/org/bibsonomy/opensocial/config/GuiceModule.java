@@ -33,6 +33,7 @@ import org.springframework.context.ApplicationContext;
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 import org.apache.shindig.auth.SecurityTokenCodec;
+import org.bibsonomy.opensocial.oauth.database.BibSonomyOAuthDataStore;
 
 /**
  * Guice configuration module that binds required shindig bindings
@@ -64,7 +65,8 @@ public class GuiceModule extends AbstractModule {
 		
 		bind(MessageService.class).to(JsonDbOpensocialService.class);
 		//bind(OAuthDataStore.class).toInstance((OAuthDataStore) applicationContext.getBean(OAUTH_DATA_STORE_BEAN_NAME));
-		bind(OAuthDataStore.class).to(SampleOAuthDataStore.class);
+		//bind(OAuthDataStore.class).to(SampleOAuthDataStore.class);
+		bind(OAuthDataStore.class).to(BibSonomyOAuthDataStore.class);
 		
 		bind(SecurityTokenCodec.class).to(org.bibsonomy.opensocial.security.BibSonomySecurityTokenCodec.class);
 		/*
