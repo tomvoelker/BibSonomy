@@ -161,7 +161,7 @@ public class BibSonomyPersonSpi implements PersonService {
 		List<User> friends = new LinkedList<User>(); 
 		for( UserId user : userIds ) {
 			String userName = getUserName(user, token);
-			List<User> dbFriends = dbLogic.getUserRelationship(userName, UserRelation.OF_FRIEND);
+			List<User> dbFriends = dbLogic.getUserRelationship(userName, UserRelation.OF_FRIEND, null);
 			friends.addAll(dbFriends);
 		}
 
