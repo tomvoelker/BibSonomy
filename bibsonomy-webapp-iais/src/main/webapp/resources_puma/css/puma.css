@@ -85,11 +85,11 @@ img#sidebarGrip{
 }
 
 a, a:link, a:visited {
-	color:#DF430D;
+	color:#009474;
 }
 
 h2 {
-	color:#DF430D;
+	color:#009474;
 }
 
 .listhButtons a:hover {
@@ -100,7 +100,7 @@ color:#FFFFFF;
 
 
 .sidebarroundcorner {
-background-color:#009474;
+background-color:#E9EDEB;
 float:right;
 padding:3px;
 width:23%;
@@ -121,7 +121,7 @@ margin-right:2ex;
 }
 
 .sidebarBoxInner {
-	background-color: #FBF7F4;
+	background-color: #E9EDEB;
 	background-color: #e0e0e0; 
 	background-color: #FFC170;
 	
@@ -178,7 +178,7 @@ ul#tagbox {
 	text-align: center;
 	/*font-size: 80%;*/
 	font-weight: normal;
-	color: #DF430D;
+	color: #009474;
 	height: 5ex;
 }
 
@@ -200,7 +200,7 @@ ul#tagbox {
 	float: right;
 	width: 23%;
 	padding: 0px;
-	background-color: #FBF7F4;
+	background-color: #E9EDEB;
 }
 
 .aboutMeIMG {
@@ -243,7 +243,7 @@ p {
 }
 
 .bmtitle a {
-	color: #DF430D;	
+	color: #009474;	
 }
 
 .bc-head {
@@ -267,7 +267,7 @@ table.report {
 }
 
 table.report td.header {
-	background-color: #DF430D;
+	background-color: #009474;
 	color: white;
 	padding: 0.5ex;
 	border: 1px solid #000000;
@@ -285,7 +285,7 @@ table.report td {
 }
 
 .groupsButtons a:hover {
-	background-color: #DF430D !important;
+	background-color: #009474 !important;
 }
 
 
@@ -294,21 +294,21 @@ a.reportingTableHeaderDescription {
 }
 
 #tab_content {
-	border: 1px solid #DF430D;
+	border: 1px solid #009474;
 }
 
 .fsOuter, .fsInner, .fsVisible {
-	border: 1px solid #EFAC95;
+	border: 1px solid #009474;
 }
 
 
 div.grippie {
-	border-color:#EFAC95;
+	border-color:#009474;
 	background-color:#FFE7DF;
 }
 
 input[type="text"], input[type="password"], input[type="file"], textarea, select {
-	border: 1px solid #EFAC95;
+	border: 1px solid #009474;
 }
 		 
 .reqinput {
@@ -316,20 +316,20 @@ input[type="text"], input[type="password"], input[type="file"], textarea, select
 }		 
 		 
 #tab #selected {
-	border-color:#DF430D;
+	border-color:#009474;
 }		 
 
 #tab #selected a{
-	color:#DF430D;
+	color:#009474;
 }	
 
 
 input[type="submit"], input[type="button"], input[type="reset"] {
-	border:1px solid #EFAC95;
+	border:1px solid #009474;
 }	 
 
 div.help > a, div.help > b {
-	color:#DF430D;
+	color:#009474;
 }
 
 
@@ -353,16 +353,16 @@ ul.news  {
 }
 
 div.ui-tabs div.ui-tabs-panel {
-	border: 1px solid #DF430D;
+	border: 1px solid #009474;
 }
 
 div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
 	background-color: #fff;
-	border: 1px solid #DF430D;
+	border: 1px solid #009474;
 }
 
 div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
-	color: #DF430D;
+	color: #009474;
 }
 
 
@@ -452,7 +452,7 @@ div.classificationInput {
 }
 
 input[type="button"].ajaxButton {
-	color: #DF430D;
+	color: #009474;
 	font-weight: normal;
 	margin: 0.2ex;
 	padding-top: 0px;
@@ -464,7 +464,7 @@ input[type="button"].ajaxButton {
 
 #pumaSword input[type="button"].ajaxButton {
 	color: #000000;
-	border: 2px solid #EFAC95;
+	border: 2px solid #009474;
 	margin-top: 2ex;
 	margin-bottom: 2ex;
 	font-size: 100%;
@@ -549,7 +549,7 @@ input[type="button"].ajaxButton {
 #saveMetadataButton {
 	color: green;
 	font-weight: bold;
-	border:1px solid #EFAC95;
+	border:1px solid #009474;
 	padding: 1px 3px;
 }
 
