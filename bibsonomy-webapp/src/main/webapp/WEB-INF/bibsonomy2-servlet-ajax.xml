@@ -142,9 +142,7 @@
 	
 	<bean id="editGoldstandardReferencesController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardReferencesController" scope="request" parent="ajaxController" />
 	
-	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request">
-		<property name="logic" ref="logic" />
-		<property name="requestLogic" ref="requestLogic" />
+	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
 		<property name="docPath" value="${project.document.path}"/>
 		<property name="tempPath" value="${project.document.temp}"/>
 		<property name="messageSource" ref="messageSource"/>
@@ -159,14 +157,10 @@
 		<property name="spamTagRecommender" ref="jensRecommender"/>
 	</bean>
 	
-	<bean id="userSearchController" class="org.bibsonomy.webapp.controller.ajax.UserSearchController" scope="request">
-		<property name="logic" ref="logic" />
-	</bean>
-	
+	<bean id="userSearchController" class="org.bibsonomy.webapp.controller.ajax.UserSearchController" scope="request" parent="ajaxController" />
 	<bean id="ajaxGetBookmarkRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetBookmarkRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
 	<bean id="ajaxGetPublicationRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetPublicationRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
 	<bean id="followerAjaxController" class="org.bibsonomy.webapp.controller.ajax.FollowerAjaxController" scope="request" parent="ajaxController" />
 	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request" parent="ajaxController" />
 	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
-	
 </beans>
