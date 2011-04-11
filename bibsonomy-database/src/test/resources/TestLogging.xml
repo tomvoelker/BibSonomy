@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TestLogging">
+	<select id="countRequestedContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
+		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.content_id=#requestedContentId#
+	</select>
+	
+	<select id="countNewContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
+		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.new_content_id=#newContentId#
+	</select>
+
+	<select id="countNewContentIdFromBookmark" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(*)	AS count FROM log_bookmark LB WHERE LB.new_content_id=#newContentId#
+	</select>
+
+	<select id="countRequestedContentIdFromBookmark" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(*)	AS count FROM log_bookmark LB WHERE LB.content_id=#requestedContentId#
+	</select>
+
+	<!-- TODO: move -->
+	<select id="countTasIds" resultClass="int" parameterClass="tagParam">
+		SELECT COUNT(*)	AS count FROM tas LB WHERE LB.content_id=#requestedContentId#
+	</select>
+
+	<select id="countLoggedTasIds" resultClass="int" parameterClass="tagParam">
+		SELECT COUNT(*)	AS count FROM log_tas LB WHERE LB.content_id=#requestedContentId#
+	</select>
+
+	<select id="countTagRelation" resultClass="int" parameterClass="tagRelationParam">
+		SELECT COUNT(*)	AS count FROM log_tagtagrelations
+		WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
+	</select>
+
+	<select id="countGroup" resultClass="int" parameterClass="groupParam">
+		SELECT COUNT(*)	AS count FROM log_groups
+		WHERE user_name = #userName# AND `group` = #groupId#
+	</select>
+	
+	<select id="countReviewLogs" resultClass="int">
+		SELECT COUNT(*) FROM log_reviews
+	</select>
+	
+	
+</sqlMap>

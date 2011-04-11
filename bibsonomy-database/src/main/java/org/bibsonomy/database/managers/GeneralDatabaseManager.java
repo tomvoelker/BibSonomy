@@ -5,11 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.params.GroupParam;
-import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.model.User;
 
 /**
@@ -31,7 +26,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	private GeneralDatabaseManager() {
-		
+		// noop
 	}
 
 	/**
@@ -110,86 +105,5 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 
 	protected void updateIds(final ConstantID idsType, final DBSession session) {
 		this.insert("updateIds", idsType.getId(), session);
-	}
-
-	/** 
-	 * @param idsType
-	 * @param session
-	 * @return current contentID
-	 */
-	public Integer getCurrentContentId(final ConstantID idsType, final DBSession session) {
-		return this.queryForObject("getCurrentContentId", idsType.getId(), Integer.class, session);
-	}
-
-	/**
-	 * @param param
-	 * @param session
-	 * @return count new contentID from BibTeX
-	 */
-	public Integer countNewContentIdFromBibTex(final BibTexParam param, final DBSession session) {
-		return this.queryForObject("countNewContentIdFromBibTex", param, Integer.class, session);
-	}
-
-	/** 
-	 * @param param
-	 * @param session
-	 * @return count requested contentID from BibTeX
-	 */
-	public Integer countRequestedContentIdFromBibTex(final BibTexParam param, final DBSession session) {
-		return this.queryForObject("countRequestedContentIdFromBibTex", param, Integer.class, session);
-	}
-
-	/**
-	 * @param param
-	 * @param session
-	 * @return count new contentID from Bookmark
-	 */
-	public Integer countNewContentIdFromBookmark(final BookmarkParam param, final DBSession session) {
-		return this.queryForObject("countNewContentIdFromBookmark", param, Integer.class, session);
-	}
-
-	/**
-	 * @param param
-	 * @param session
-	 * @return count requested contentID from Bookmark
-	 */
-	public Integer countRequestedContentIdFromBookmark(final BookmarkParam param, final DBSession session) {
-		return this.queryForObject("countRequestedContentIdFromBookmark", param, Integer.class, session);
-	}
-
-	/**
-	 * @param param
-	 * @param session
-	 * @return count tasIDs
-	 */
-	public Integer countTasIds(final TagParam param, final DBSession session) {
-		return this.queryForObject("countTasIds", param, Integer.class, session);
-	}
-
-	/**
-	 * @param param
-	 * @param session
-	 * @return count logged tasIDs
-	 */
-	public Integer countLoggedTasIds(final TagParam param, final DBSession session) {
-		return this.queryForObject("countLoggedTasIds", param, Integer.class, session);
-	}
-
-	/**
-	 * @param param
-	 * @param session
-	 * @return count tag relation
-	 */
-	public Integer countTagRelation(final TagRelationParam param, final DBSession session) {
-		return this.queryForObject("countTagRelation", param, Integer.class, session);
-	}
-
-	/**
-	 * @param param
-	 * @param session
-	 * @return count group
-	 */
-	public Integer countGroup(final GroupParam param, final DBSession session) {
-		return this.queryForObject("countGroup", param, Integer.class, session);
 	}
 }

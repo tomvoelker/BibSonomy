@@ -116,39 +116,4 @@
 		REPLACE INTO prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` , `mode`, `evaluator`, `confidence`)
 		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#, 0, #confidence#)
 	</insert>
-
-	<select id="countNewContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
-		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.new_content_id=#newContentId#
-	</select>
-
-	<select id="countRequestedContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
-		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.content_id=#requestedContentId#
-	</select>
-
-	<select id="countNewContentIdFromBookmark" resultClass="int" parameterClass="bookmarkParam">
-		SELECT COUNT(*)	AS count FROM log_bookmark LB WHERE LB.new_content_id=#newContentId#
-	</select>
-
-	<select id="countRequestedContentIdFromBookmark" resultClass="int" parameterClass="bookmarkParam">
-		SELECT COUNT(*)	AS count FROM log_bookmark LB WHERE LB.content_id=#requestedContentId#
-	</select>
-
-	<select id="countTasIds" resultClass="int" parameterClass="tagParam">
-		SELECT COUNT(*)	AS count FROM tas LB WHERE LB.content_id=#requestedContentId#
-	</select>
-
-	<select id="countLoggedTasIds" resultClass="int" parameterClass="tagParam">
-		SELECT COUNT(*)	AS count FROM log_tas LB WHERE LB.content_id=#requestedContentId#
-	</select>
-
-	<select id="countTagRelation" resultClass="int" parameterClass="tagRelationParam">
-		SELECT COUNT(*)	AS count FROM log_tagtagrelations
-		WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
-	</select>
-
-	<select id="countGroup" resultClass="int" parameterClass="groupParam">
-		SELECT COUNT(*)	AS count FROM log_groups
-		WHERE user_name = #userName# AND `group` = #groupId#
-	</select>
-
 </sqlMap>

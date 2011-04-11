@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	
+	<transactionManager type="JDBC">
+		<dataSource type="JNDI">
+			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy"/>
+		</dataSource>
+	</transactionManager>
+	
+	<sqlMap resource="common/TypeAliases.xml" />
+	
+	<sqlMap resource="TestLogging.xml" />
+	<sqlMap resource="TestReview.xml" />
+
+</sqlMapConfig>
