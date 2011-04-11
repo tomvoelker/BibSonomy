@@ -39,7 +39,6 @@ public enum Role {
 	/** Is allowed to modify/set the date of a post during synchronization. **/
 	SYNC(4);
 
-	private static final Role[] map = new Role[] {ADMIN, DEFAULT, NOBODY, DELETED, SYNC};
 	private final int role;
 
 	private Role(final int role) {
@@ -75,6 +74,19 @@ public enum Role {
 	 * @return The corresponding object.
 	 */
 	public static Role getRole(final int role) {
-		return map[role];
+		switch (role) {
+		case 0:
+			return ADMIN;
+		case 1:
+			return DEFAULT;
+		case 2:
+			return NOBODY;
+		case 3: 
+			return DELETED;
+		case 4:
+			return SYNC;
+		default:
+			throw new IllegalArgumentException("unknown role id " + role);
+		}
 	}
 }
