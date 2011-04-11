@@ -48,14 +48,9 @@ function changeTagBox(mode) {
 		style_list.replaceChild(getStyleItem(mode, style_show), style_list.childNodes[1]);
 	}else if(mode == "alph" || mode == "freq") {
 		style_list.replaceChild(getStyleItem(mode, style_sort), style_list.childNodes[0]);
-		if (mode == "alph") {
-			setTagBoxAlph();
-		}else{
-			setTagBoxFreq();
-		}
+		mode == "alph" ? setTagBoxAlph() : setTagBoxFreq();
 	}
 }
-
 
 
 function getStyleItem(style, style_arr) {
