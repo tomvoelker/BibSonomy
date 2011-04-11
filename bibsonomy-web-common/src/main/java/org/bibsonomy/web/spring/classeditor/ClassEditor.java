@@ -16,6 +16,7 @@ import org.bibsonomy.model.factories.ResourceFactory;
  * @author dzo
  * @version $Id$
  */
+@Deprecated // in favour of 
 public class ClassEditor extends org.springframework.beans.propertyeditors.ClassEditor {
 	
 	@Override
