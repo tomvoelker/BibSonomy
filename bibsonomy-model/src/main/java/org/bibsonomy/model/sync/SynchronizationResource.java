@@ -1,4 +1,4 @@
-package org.bibsonomy.model.synch;
+package org.bibsonomy.model.sync;
 
 import java.util.Date;
 
@@ -22,7 +22,7 @@ public abstract class SynchronizationResource {
      * @param resource
      * @return true if resources are same
      */
-    public abstract boolean same(SynchronizationResource resource);
+    public abstract boolean isSame(SynchronizationResource resource);
     
     /**
      * @param createDate the create date and time of this resource to set
@@ -55,7 +55,7 @@ public abstract class SynchronizationResource {
     /**
      * @param state the synchronization state to set
      */
-    public void setStatus(SynchronizationStates state) {
+    public void setState(SynchronizationStates state) {
 	this.state = state;
     }
 

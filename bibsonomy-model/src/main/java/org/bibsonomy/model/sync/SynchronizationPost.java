@@ -1,7 +1,5 @@
-package org.bibsonomy.model.synch;
+package org.bibsonomy.model.sync;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 
 /**
@@ -9,6 +7,12 @@ import org.bibsonomy.model.Resource;
  * @version $Id$
  */
 public class SynchronizationPost extends SynchronizationResource {
+	
+	/**
+	 * Expected memory usage for one Post: 2 * 32 byte (hasheS) + 2 * 24 byte (dates) + 4byte (state) +   = 112 byte
+	 * for 100k Posts: approximately 11 MB
+	 */
+	
 	
 	/**
 	 * interHash of this post
@@ -29,15 +33,9 @@ public class SynchronizationPost extends SynchronizationResource {
 	 * @see org.bibsonomy.model.synch.SynchronizationResource#same(org.bibsonomy.model.synch.SynchronizationResource)
 	 */
 	@Override
-	public boolean same(SynchronizationResource post) {
+	public boolean isSame(SynchronizationResource post) {
 		SynchronizationPost p = (SynchronizationPost)post;
-		if (resourceType == BibTex.class) {
-			//TODO maybe to much parameters
-			return (this.getIntraHash().equals(p.getIntraHash()) && this.getChangeDate().equals(p.getChangeDate()) && this.getCreateDate().equals(p.getCreateDate()));
-		} else if (resourceType == Bookmark.class) {
-			//TODO bookmarks ???
-			return false;
-		} else return false;
+		return (p.getChangeDate().equals(this.getChangeDate()) && p.getCreateDate().equals(this.getCreateDate()) && p.getIntraHash().equals(this.getIntraHash()));
 	}
 	
 	/**

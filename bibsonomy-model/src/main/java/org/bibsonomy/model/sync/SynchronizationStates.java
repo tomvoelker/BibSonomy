@@ -1,4 +1,4 @@
-package org.bibsonomy.model.synch;
+package org.bibsonomy.model.sync;
 
 /**
  * @author wla
