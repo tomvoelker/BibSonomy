@@ -92,9 +92,10 @@ public class CommonModelUtils {
 		if (String.class == type) {
 			return "test-" + name;
 		}
-		if ((int.class == type) || (Integer.class == type)) {
+		if ((int.class == type) || (Integer.class == type) || (double.class == type) || Double.class == type) {
 			return Math.abs(name.hashCode());
 		}
+		
 		if ((boolean.class == type) || (Boolean.class == type)) {
 			return (name.hashCode() % 2 == 0);
 		}
