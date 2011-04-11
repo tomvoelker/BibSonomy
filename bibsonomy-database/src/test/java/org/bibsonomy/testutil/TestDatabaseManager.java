@@ -10,6 +10,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
+import org.junit.Ignore;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapSession;
@@ -18,6 +19,7 @@ import com.ibatis.sqlmap.client.SqlMapSession;
  * @author dzo
  * @version $Id$
  */
+@Ignore
 public class TestDatabaseManager extends AbstractDatabaseManager {
 	private static final SqlMapClient SQL_MAP = IbatisUtils.loadSqlMap("TestSqlMapConfig.xml");
 	
@@ -32,7 +34,7 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 		
 	}
 	
-	public DBSession createDBSession() {
+	private DBSession createDBSession() {
 		return TESTSESSION_FACTORY.getDatabaseSession();
 	}
 	
