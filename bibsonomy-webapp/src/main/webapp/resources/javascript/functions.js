@@ -1628,7 +1628,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 		updateCollector(action);
 		
 		/*
-		 * devide which page will be processed
+		 * decide which page will be processed
 		 * -> on the /basket page we have to remove the listitems
 		 * -> on other we have to change the pick <-> unpick link (not yet implemented)
 		 */
@@ -1638,33 +1638,6 @@ function unicodeCollation(ersterWert, zweiterWert){
 			parent.removeChild(li);
 		
 			document.getElementById("ttlctr").childNodes[0].nodeValue = "(" + document.getElementById("pickctr").childNodes[0].nodeValue + ")";
-		} else {
-			/*
-			 * some pre consideration how to switch between pick and unpick
-			 * for all other pages than /basket 
-			 */
-//			for (var i = 0; i < evt.currentTarget.attributes.length; i++){
-//				if (evt.currentTarget.attributes[i].nodeName == "href"){
-//					var href = evt.currentTarget.attributes[i].nodeValue;
-//					var regex = /(\/ajax\/pickUnpickPost\?)(action=\w{4,6})(.*)/;
-//					regex.exec(href);
-//					var url = RegExp.$1;
-//					var action  = RegExp.$2;
-//					var restUrl = RegExp.$3;
-//					var newAction = "";
-//					
-//					if (action == "action=pick"){
-//						newAction = "action=unpick";
-//					} else if (action == "action=unpick"){
-//						newAction = "action=pick";
-//					}
-//					
-//					var newUrl = url + newAction + restUrl;
-//					
-//					evt.currentTarget.setAttribute("href", newUrl);
-//				}
-//			}
-			
 		}
 				   	            
    		breakEvent(evt);
