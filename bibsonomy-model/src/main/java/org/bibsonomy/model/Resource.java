@@ -37,7 +37,7 @@ import java.util.List;
  * 
  * @version $Id$
  */
-public abstract class Resource implements Serializable {
+public abstract class Resource implements Serializable, Rateable {
 	/**
 	 * For persistence (Serializable) 
 	 */
@@ -54,7 +54,7 @@ public abstract class Resource implements Serializable {
 	private String interHash;
 
 	/**
-	 * The intra user hash is relativily strict and takes many fiels of this
+	 * The intra user hash is relatively strict and takes many fields of this
 	 * resource into account.
 	 */
 	private String intraHash;
@@ -70,6 +70,21 @@ public abstract class Resource implements Serializable {
 	 * TODO: It is given by the user and thus might better fit into the post.
 	 */
 	private String title;
+	
+	/**
+	 * TODODZ: comment
+	 */
+	private List<Review> reviews;
+	
+	/**
+	 * TODODZ: comment
+	 */
+	private double rating;
+	
+	/**
+	 * TODODZ: comment
+	 */
+	private int numberOfRatings;
 	
 	/**
 	 * FIXME: This method does not belong to the model!!!! It would be fine to
@@ -151,6 +166,52 @@ public abstract class Resource implements Serializable {
 		this.title = title;
 	}
 	
+	/**
+	 * @return the rating
+	 */
+	@Override
+	public double getRating() {
+		return this.rating;
+	}
+
+	/**
+	 * @param rating the rating to set
+	 */
+	@Override
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+	
+	/**
+	 * @return the numberOfRatings
+	 */
+	@Override
+	public int getNumberOfRatings() {
+		return this.numberOfRatings;
+	}
+
+	/**
+	 * @param numberOfRatings the numberOfRatings to set
+	 */
+	@Override
+	public void setNumberOfRatings(int numberOfRatings) {
+		this.numberOfRatings = numberOfRatings;
+	}
+	
+	/**
+	 * @return the reviews
+	 */
+	public List<Review> getReviews() {
+		return this.reviews;
+	}
+
+	/**
+	 * @param reviews the reviews to set
+	 */
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
+	}
+
 	@Override
 	public String toString() {
 		return "<" + intraHash + "/" + interHash + ">";
