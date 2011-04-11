@@ -33,17 +33,16 @@
 			</c:choose>
 		
 			<!-- title -->
-			
+
 			<c:set var="userTitle">
 				<c:choose>
-				<c:when test="${not empty user.prediction}">
-					<fmt:message key="sort.folkrank.weight"/>:
-					${user.prediction} <!-- we misuse the prediction field here, which is normally user for spammer predictions -->
-				</c:when>
-				<c:otherwise>${user.name}</c:otherwise>
-				</c:choose>	
-			</c:set>	
-			
+					<c:when test="${not empty user.prediction}">
+						<fmt:message key="sort.folkrank.weight" />: ${user.prediction} <!-- we misuse the prediction field here, which is normally used for spam predictions -->
+					</c:when>
+					<c:otherwise>${user.name}</c:otherwise>
+				</c:choose>
+			</c:set>
+
 			<!-- reference for evaluatio purposes -->
 			<c:set var="userSimilarityRef" value="${userSimilarity}_${userRank}"/>
 			
@@ -56,7 +55,7 @@
 			</c:url>
 														
 			<li class="${userclass}">			  
-		      <a title="${userTitle}" rel="${userSimilarityRef}" href="${userUrl}">${fn:escapeXml(user.name)}</a>
+		      <a title="${fn:escapeXml(userTitle)}" rel="${userSimilarityRef}" href="${userUrl}"><c:out value="${user.name}"/></a>
 		      <c:out value=" "/>
 		      	<c:if test="${displayFollowLink}">	      
 				<a class="action"
