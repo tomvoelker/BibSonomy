@@ -35,7 +35,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
-import org.bibsonomy.model.synch.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.Assert;
 import org.bibsonomy.testutil.CommonModelUtils;
@@ -66,15 +65,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public static void setupDatabaseManager() {
 		bibTexExtraDb = BibTexExtraDatabaseManager.getInstance();
 		bibTexDb = BibTexDatabaseManager.getInstance();
-	}
-	
-	/**
-	 * tests getSynchPosts 
-	 */
-	@Test
-	public void getSynchPosts() {
-	    final List<SynchronizationPost> posts = bibTexDb.getSynchPostsForUser("testuser1", dbSession);
-	    assertEquals(2, posts.size());
 	}
 	
 	/**
