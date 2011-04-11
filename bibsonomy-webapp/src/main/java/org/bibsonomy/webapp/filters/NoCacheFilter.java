@@ -11,11 +11,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import filters.ActionValidationFilter;
+
 /**
  * Filter sets everything in the response what could make clients
  * not cache it.
  * 
  * @author Jens Illig
+ * @author rja
+ * @version $Id$
  */
 public class NoCacheFilter implements Filter {
 	
@@ -26,13 +30,21 @@ public class NoCacheFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 		
+		final HttpServletRequest httpRequest = (HttpServletRequest)request;
+		/*
+		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ... 
+		 */
+		if (httpRequest.getServletPath().startsWith(ActionValidationFilter.STATIC_RESOURCES)) {
+			filterChain.doFilter(request, response);
+			return;
+		} 
+		
 		/*
 		 * FIXME: workaround for IE6 bug 
 		 * http://www.somacon.com/p106.php
 		 * http://www.brookes.ac.uk/mediaworkshop/brookesvirtual/faqs.html#cache
 		 */
 		if (request.isSecure()) {
-			final HttpServletRequest httpRequest = (HttpServletRequest) request;
 			if (httpRequest.getRequestURI().startsWith("/documents/")) {
 				/*
 				 * don't modify cache header for PDF documents when SSL is enabled
