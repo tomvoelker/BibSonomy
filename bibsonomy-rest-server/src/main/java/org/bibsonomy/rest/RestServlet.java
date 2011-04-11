@@ -38,6 +38,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.util.MultiPartRequestParser;
+import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -190,7 +191,7 @@ public final class RestServlet extends HttpServlet {
 
 		try {
 			// validate the requesting user's authorization
-			final LogicInterface logic = validateAuthorization(request.getHeader("Authorization"));
+			final LogicInterface logic = validateAuthorization(request.getHeader(HeaderUtils.HEADER_AUTHORIZATION));
 			
 			// parse the request object to retrieve a list with all items of the http request
 			final MultiPartRequestParser parser = new MultiPartRequestParser(request);
@@ -206,7 +207,7 @@ public final class RestServlet extends HttpServlet {
 			context.canAccess();
 
 			// set some response headers
-			final String userAgent = request.getHeader("User-Agent");
+			final String userAgent = request.getHeader(HeaderUtils.HEADER_USER_AGENT);
 			log.debug("[USER-AGENT] " + userAgent);
 			response.setContentType(context.getContentType(userAgent));
 			response.setCharacterEncoding(RESPONSE_ENCODING);
