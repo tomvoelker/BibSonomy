@@ -66,6 +66,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected final DatabasePluginRegistry plugins;
 	protected final PermissionDatabaseManager permissionDb;
 	protected final GroupDatabaseManager groupDb;
+	protected final ReviewDatabaseManager reviewDb;
 
 
 	/** simple class name of the resource managed by the class */
@@ -87,6 +88,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.permissionDb = PermissionDatabaseManager.getInstance();
 		this.groupDb = GroupDatabaseManager.getInstance();
+		this.reviewDb = ReviewDatabaseManager.getInstance();
 
 		this.resourceClassName = this.getResourceClassName();
 
@@ -451,7 +453,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * @param param
 	 * @param session
-	 * @return
+	 * @return list of posts for the homepage
 	 */
 	protected List<Post<R>> getPostsForHomepage(final P param, final DBSession session) {
 		return this.postList("get" + this.resourceClassName + "ForHomepage", param, session);
@@ -515,7 +517,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * Prepares a query which retrieves the resources (which is represented by
 	 * the given hash) for a given user. Since user name is given, full group
-	 * checking is done, i.e. everbody who may see the resoucre will see it.
+	 * checking is done, i.e. everybody who may see the resource will see it.
 	 * 
 	 * @param loginUserName
 	 * @param requHash
@@ -1023,7 +1025,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPosts(final P param, final DBSession session) {
 		return this.getChain().getFirstElement().perform(param, session);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.CrudableContent#getPostsDetails(java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.database.util.DBSession)
@@ -1053,6 +1055,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			post.setGroups(new HashSet<Group>(this.groupDb.getGroupsForContentId(post.getContentId(), session)));
 		}
+		
+		/*
+		 * load reviews for the post
+		 */
+		final R resource = post.getResource();
+		resource.setReviews(this.reviewDb.getReviewsForResource(resource.getInterHash(), session));
+		
 		return post;
 	}
 
@@ -1125,7 +1134,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 		return true;
 	}
-
 
 	/*
 	 * FIXME: This method calls other methods of this class which 
@@ -1472,11 +1480,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * deletes a post from the database
 	 * 
-	 * @param userName
-	 * @param resourceHash	the hash of the resource of the post to delete
-	 * @param update		true if its called by {@link PostDatabaseManager#storePost(String, Post, String, boolean, DBSession)}
+	 * @param post			the post to delete
+	 * @param update		<code>true</code> if its called by {@link PostDatabaseManager#update(String, Object, DBSession)}
 	 * @param session
-	 * @return true iff the post was deleted successfully
+	 * @return <code>true</code> iff the post was deleted successfully
 	 */
 	protected boolean deletePost(final Post<? extends R> post, final boolean update, final DBSession session) {
 		session.beginTransaction();
@@ -1510,8 +1517,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		return true;
 	}
-
-
 
 	/**
 	 * called when a post was deleted successfully

@@ -41,6 +41,7 @@
 	<sqlMap resource="common/AuthorCommon.xml"/>
 	<sqlMap resource="common/WikiCommon.xml"/>
 	<sqlMap resource="common/SynchronizationCommon.xml" />
+	<sqlMap resource="common/ReviewCommon.xml" />
 
 	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />
@@ -58,9 +59,11 @@
 	<sqlMap resource="Author.xml"/>
 	<sqlMap resource="Inbox.xml"/>
 	<sqlMap resource="Permission.xml"/>
+	<sqlMap resource="Review.xml" />
 	<sqlMap resource="Wiki.xml"/>
 
 	<!-- Plugins -->
 	<sqlMap resource="plugins/Logging.xml"/>
 	<sqlMap resource="plugins/GoldStandardPublicationReference.xml"/>
+	<sqlMap resource="plugins/ReviewPlugin.xml"/>
 </sqlMapConfig>

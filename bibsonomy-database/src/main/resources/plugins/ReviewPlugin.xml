@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ReviewPlugin">
+	<insert id="updateReviewRatingsCacheInsert" parameterClass="reviewParam">
+		INSERT INTO review_ratings_cache (interHash, numberOfRatings, avg) VALUES (#interHash#, 1 , #review.rating#)
+  			ON DUPLICATE KEY UPDATE avg = (avg * numberOfRatings + #review.rating#)/(numberOfRatings + 1), numberOfRatings = numberOfRatings + 1;
+	</insert>
+	
+	<!-- COALASCE the result because devision by zero returns null -->
+	<update id="updateReviewRatingsCacheDelete" parameterClass="reviewParam">
+		UPDATE review_ratings_cache SET avg = COALESCE((avg * numberOfRatings - #review.rating#)/(numberOfRatings - 1), 0), numberOfRatings = numberOfRatings - 1 WHERE interHash = #interHash#
+	</update>
+</sqlMap>

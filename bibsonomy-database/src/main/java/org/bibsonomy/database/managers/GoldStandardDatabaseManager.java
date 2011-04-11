@@ -44,14 +44,18 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	protected final String resourceClassName;
 	
 	protected final DatabasePluginRegistry plugins;
+	
 	private final GeneralDatabaseManager generalManager;
+	private final ReviewDatabaseManager reviewDb;
 	
 	protected ResourceSearch<R> searcher;
 
 	protected GoldStandardDatabaseManager() {
 		this.resourceClassName = this.getResourceClassName();
 		this.plugins = DatabasePluginRegistry.getInstance();
+		
 		this.generalManager = GeneralDatabaseManager.getInstance();
+		this.reviewDb = ReviewDatabaseManager.getInstance();
 	}
 	
 	/**
@@ -84,17 +88,25 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 	
 	@Override
-	public Post<R> getPostDetails(String loginUserName, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session) {
+	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session) {
 		if (present(userName)) {
 			return null; // TODO: think about this return
 		}
 		
 		final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);
-		// get the references for this post
+		
 		if (present(post)) {
 			final R goldStandard = post.getResource();
+			/*
+			 * set citation graph
+			 */
 			goldStandard.addAllToReferences(this.getReferencesForPost(resourceHash, session));
 			goldStandard.addAllToReferencedBy(this.getRefencedByForPost(resourceHash, session));
+			
+			/*
+			 * set all reviews
+			 */
+			goldStandard.setReviews(this.reviewDb.getReviewsForResource(resourceHash, session));
 		} else {
 			log.debug("gold standard post with interhash '" + resourceHash + "' not found.");
 		}
@@ -103,7 +115,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected Set<RR> getRefencedByForPost(String resourceHash, DBSession session) {
+	protected Set<RR> getRefencedByForPost(final String resourceHash, final DBSession session) {
 		return new HashSet<RR>(this.queryForList("get" + this.resourceClassName + "RefercencedBy", resourceHash, session));
 	}
 
@@ -269,7 +281,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	/**
 	 * adds references to a standard post
 	 * 
-	 * @param userName
+	 * @param userName TODO: currently unused
 	 * @param interHash
 	 * @param references
 	 * @param session
@@ -285,6 +297,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			
 			final GoldStandardReferenceParam param = this.createParam(post);
 			if (present(references)) {
+				// TODO: A <-> A references and duplicate references
 				for (final String referenceHash : references) {
 					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
 					if (present(refPost)) {

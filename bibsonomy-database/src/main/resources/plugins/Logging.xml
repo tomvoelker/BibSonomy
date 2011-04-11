@@ -116,4 +116,8 @@
 		REPLACE INTO prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` , `mode`, `evaluator`, `confidence`)
 		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#, 0, #confidence#)
 	</insert>
+	
+	<insert id="logReview" parameterClass="reviewParam">
+		INSERT INTO log_reviews (interHash, user_name, text, rating, date, helpful_count, not_helpful_count) VALUES (#interHash#, #review.user.name#, #review.text#, #review.rating#, #review.date#, #review.helpful#, #review.notHelpful#)
+	</insert>
 </sqlMap>

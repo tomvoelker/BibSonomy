@@ -477,7 +477,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	@Override
 	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
-		this.plugins.onBibTexUpdate(oldContentId, newContentId, session);
+		this.plugins.onPublicationUpdate(oldContentId, newContentId, session);
 	}
 	
 	/*
@@ -486,7 +486,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	@Override
 	protected void onPostDelete(final Integer contentId, final DBSession session) {
-		this.plugins.onBibTexDelete(contentId, session);
+		this.plugins.onPublicationDelete(contentId, session);
 	}
 
 	/*
