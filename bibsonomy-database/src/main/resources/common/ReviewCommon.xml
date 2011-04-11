@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ReviewCommon">
+	<resultMap id="review" class="review">
+		<result property="date" 		column="date"				javaType="date" />
+		<result property="text"	    	column="text"				javaType="string" />
+		<result property="rating"		column="rating" 			javaType="int" />
+		<result property="user"			resultMap="Common.user" 	/>
+		<result property="helpful"  	column="helpful_count"		javaType="int" />
+		<result property="notHelpful" 	column="not_helpful_count"	javaType="int" />
+	</resultMap>
+	
+	<sql id="allReviewRows">
+		interHash, user_name, text, rating, date, helpful_count, not_helpful_count
+	</sql>
+</sqlMap>

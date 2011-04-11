@@ -4,6 +4,7 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.Review;
 
 /**
  * This class should be used by plugins. This way they don't have to implement
@@ -19,17 +20,17 @@ import org.bibsonomy.database.params.UserParam;
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
 	@Override
-	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
+	public Runnable onPublicationInsert(final int contentId, final DBSession session) {
 		return null;
 	}
 
 	@Override
-	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
+	public Runnable onPublicationDelete(final int contentId, final DBSession session) {
 		return null;
 	}
 
 	@Override
-	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
+	public Runnable onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return null;
 	}
 
@@ -127,4 +128,24 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session) {
 		return null;
 	}
+
+	@Override
+	public Runnable onReviewUpdated(String interHash, Review oldReview, Review review, DBSession session) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Runnable onReviewDeleted(String interHash, Review oldReview, DBSession session) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Runnable onReviewCreated(String interHash, Review review, DBSession session) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

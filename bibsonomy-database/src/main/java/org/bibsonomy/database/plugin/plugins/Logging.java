@@ -7,10 +7,12 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.LoggingParam;
+import org.bibsonomy.database.params.ReviewParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
+import org.bibsonomy.model.Review;
 
 /**
  * This plugin implements logging: on several occasions it'll save the old state
@@ -25,8 +27,44 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
  */
 public class Logging extends AbstractDatabasePlugin {
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onReviewUpdated(java.lang.String, org.bibsonomy.model.Review, org.bibsonomy.model.Review, org.bibsonomy.database.common.DBSession)
+	 */
 	@Override
-	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
+	public Runnable onReviewUpdated(final String interHash, final Review oldReview, final Review review, final DBSession session) {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				final ReviewParam param = new ReviewParam();
+				param.setReview(oldReview);
+				param.setInterHash(interHash);
+				insert("logReview", param, session);
+			}
+		};
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onReviewDeleted(java.lang.String, org.bibsonomy.model.Review, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public Runnable onReviewDeleted(final String interHash, final Review oldReview, final DBSession session) {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				final ReviewParam param = new ReviewParam();
+				param.setInterHash(interHash);
+				param.setReview(oldReview);
+				insert("logReview", param, session);
+			}
+		};
+	}
+
+	@Override
+	public Runnable onPublicationDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
 			
 			@Override
@@ -39,7 +77,7 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
+	public Runnable onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
 			
 			@Override

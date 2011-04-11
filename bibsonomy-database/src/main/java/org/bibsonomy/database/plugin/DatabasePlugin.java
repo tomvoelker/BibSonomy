@@ -3,6 +3,7 @@ package org.bibsonomy.database.plugin;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.Review;
 
 /**
  * This interface supplies hooks which can be implemented by plugins. This way
@@ -20,32 +21,32 @@ import org.bibsonomy.database.params.UserParam;
 public interface DatabasePlugin {
 
 	/**
-	 * Called when a BibTex is inserted.
+	 * Called when a publication is inserted.
 	 * 
 	 * @param contentId
 	 * @param session
 	 * @return runnable
 	 */
-	public Runnable onBibTexInsert(int contentId, DBSession session);
+	public Runnable onPublicationInsert(int contentId, DBSession session);
 
 	/**
-	 * Called when a BibTex is deleted.
+	 * Called when a publication is deleted.
 	 * 
 	 * @param contentId
 	 * @param session
 	 * @return runnable
 	 */
-	public Runnable onBibTexDelete(int contentId, DBSession session);
+	public Runnable onPublicationDelete(int contentId, DBSession session);
 
 	/**
-	 * Called when a BibTex is updated.
+	 * Called when a publication is updated.
 	 * 
 	 * @param newContentId
 	 * @param contentId
 	 * @param session
 	 * @return runnable
 	 */
-	public Runnable onBibTexUpdate(int newContentId, int contentId, DBSession session);
+	public Runnable onPublicationUpdate(int newContentId, int contentId, DBSession session);
 
 	/**
 	 * Called when a gold standard publication is created.
@@ -226,4 +227,32 @@ public interface DatabasePlugin {
 	 * 
 	 */
 	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session);
+
+	/**
+	 * TODODZ
+	 * @param interHash
+	 * @param oldReview
+	 * @param review
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onReviewUpdated(String interHash, Review oldReview, Review review, DBSession session);
+
+	/**
+	 * TODODZ
+	 * @param interHash
+	 * @param oldReview
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onReviewDeleted(String interHash, Review oldReview, DBSession session);
+	
+	/**
+	 * TODODZ
+	 * @param interHash
+	 * @param review
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onReviewCreated(String interHash, Review review, DBSession session);
 }

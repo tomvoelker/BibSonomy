@@ -13,6 +13,8 @@ import org.bibsonomy.database.plugin.plugins.BasketPlugin;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
 import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin;
 import org.bibsonomy.database.plugin.plugins.Logging;
+import org.bibsonomy.database.plugin.plugins.ReviewPlugin;
+import org.bibsonomy.model.Review;
 
 /**
  * All database plugins are registered here.
@@ -25,12 +27,14 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	private static final Set<DatabasePlugin> DEFAULT_PLUGINS;
 	
 	static {
+		// TODO: config via spring
 		DEFAULT_PLUGINS = new HashSet<DatabasePlugin>();
 		
 		DEFAULT_PLUGINS.add(new Logging());
 		DEFAULT_PLUGINS.add(new BibTexExtraPlugin());
 		DEFAULT_PLUGINS.add(new BasketPlugin());
 		DEFAULT_PLUGINS.add(new GoldStandardPublicationReferencePlugin());
+		DEFAULT_PLUGINS.add(new ReviewPlugin());
 	}
 	
 	/**
@@ -89,27 +93,27 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 	
 	@Override
-	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
+	public Runnable onPublicationInsert(final int contentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onBibTexInsert(contentId, session));
+			this.executeRunnable(plugin.onPublicationInsert(contentId, session));
 		}
 		
 		return null;
 	}
 
 	@Override
-	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
+	public Runnable onPublicationDelete(final int contentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onBibTexDelete(contentId, session));
+			this.executeRunnable(plugin.onPublicationDelete(contentId, session));
 		}
 		
 		return null;
 	}
 
 	@Override
-	public Runnable onBibTexUpdate(final int oldContentId, final int newContentId, final DBSession session) {
+	public Runnable onPublicationUpdate(final int oldContentId, final int newContentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onBibTexUpdate(newContentId, oldContentId, session)); // new and old contentId are not swapped!
+			this.executeRunnable(plugin.onPublicationUpdate(newContentId, oldContentId, session)); // new and old contentId are not swapped!
 		}
 		
 		return null;
@@ -283,6 +287,31 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 			this.executeRunnable(plugin.onDeleteAllBasketItems(userName, session));
 		}
 
+		return null;
+	}
+
+	@Override
+	public Runnable onReviewDeleted(String interHash, Review oldReview, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()){
+			this.executeRunnable(plugin.onReviewDeleted(interHash, oldReview, session));
+		}
+
+		return null;
+	}
+
+	@Override
+	public Runnable onReviewUpdated(String interHash, Review oldReview, Review review, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()){
+			this.executeRunnable(plugin.onReviewUpdated(interHash, oldReview, review, session));
+		}
+		return null;
+	}
+
+	@Override
+	public Runnable onReviewCreated(String interHash, Review review, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()){
+			this.executeRunnable(plugin.onReviewCreated(interHash, review, session));
+		}
 		return null;
 	}
 }

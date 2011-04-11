@@ -20,6 +20,7 @@
 	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
 	<typeAlias alias="author"			  type="org.bibsonomy.model.Author" />
 	<typeAlias alias="scraperMetadata"	  type="org.bibsonomy.model.ScraperMetadata" />
+	<typeAlias alias="review"			  type="org.bibsonomy.model.Review" />
 	
 	<!-- Synchronization -->
 	<typeAlias alias="synchResource"	  type="org.bibsonomy.model.synch.SynchronizationResource"/>
@@ -49,4 +50,5 @@
 	<typeAlias alias="inboxParam"		  type="org.bibsonomy.database.params.InboxParam" />
 	<typeAlias alias="loggingParam"		  type="org.bibsonomy.database.params.LoggingParam" />
 	<typeAlias alias="wikiParam"		  type="org.bibsonomy.database.params.WikiParam" />
+	<typeAlias alias="reviewParam"		  type="org.bibsonomy.database.params.ReviewParam" />
 </sqlMap>
