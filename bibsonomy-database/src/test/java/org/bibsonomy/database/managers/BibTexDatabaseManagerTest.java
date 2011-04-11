@@ -731,7 +731,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(1, posts.size());
 		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate"});
 		toInsert.getResource().setCount(1);
-		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL"});
+		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL", "numberOfRatings", "rating"}); // TODODZ
 
 		// post a duplicate and check whether plugins are called		
 		assertFalse(this.pluginMock.isOnBibTexUpdate());
@@ -948,7 +948,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * tests if {@link BibTexDatabaseManager#updatePost(Post, String, PostUpdateOperation, org.bibsonomy.database.util.DBSession)}
+	 * tests if {@link BibTexDatabaseManager#updatePost(Post, String, PostUpdateOperation, org.bibsonomy.database.common.DBSession)}
 	 * respects the max field length of table columns
 	 */
 	@Test

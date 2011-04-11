@@ -502,9 +502,10 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	
 	/**
 	 * tests {@link PostUpdateOperation#UPDATE_TAGS} for a publication
+	 * @throws Exception 
 	 */
 	@Test
-	public void testPostUpdateTagOnlyOperationPublication() {
+	public void testPostUpdateTagOnlyOperationPublication() throws Exception {
 		final LogicInterface dbl = this.getDbLogic(TEST_REQUEST_USER_NAME);
 		/*
 		 *  create a post (a publication)
@@ -521,12 +522,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final List<String> createPosts = dbl.createPosts(posts);
 		assertEquals(1, createPosts.size());
 		
-		Post<? extends Resource> savedPost = null;
-		try {
-			savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
-		} catch (Exception ex1) {
-			// ignore
-		}
+		final Post<? extends Resource> savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
 		assertNotNull(savedPost);
 		
 		// get the contentId if more than tags were updated the contentId changes
@@ -555,12 +551,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		/*
 		 * check if only tags were updated
 		 */
-		Post<? extends Resource> updatedResource = null;
-		try {
-			updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
-		} catch (Exception ex) {
-			// ignore
-		}
+		final Post<? extends Resource> updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
 		assertNotNull(updatedResource);
 		
 		// check content id
@@ -575,9 +566,10 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	
 	/**
 	 * tests {@link PostUpdateOperation#UPDATE_TAGS} for a bookmark
+	 * @throws Exception 
 	 */
 	@Test
-	public void testPostUpdateTagOnlyOperationBookmark() {
+	public void testPostUpdateTagOnlyOperationBookmark() throws Exception {
 		final LogicInterface dbl = this.getDbLogic(TEST_REQUEST_USER_NAME);
 		
 		/*
@@ -595,12 +587,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final List<String> createPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
 		assertEquals(1, createPosts.size());
 		
-		Post<? extends Resource> savedPost = null;
-		try {
-			savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
-		} catch (Exception ex) {
-			// ignore
-		}
+		final Post<? extends Resource> savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
 		
 		// get the contentId if more than tags were updated the contentId changes
 		final int contentId = savedPost.getContentId();
@@ -628,12 +615,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		/*
 		 * check if only tags were updated
 		 */
-		Post<? extends Resource> updatedResource = null;
-		try {
-			updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
-		} catch (Exception ex) {
-			// ignore
-		}
+		final Post<? extends Resource> updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
 		assertNotNull(updatedResource);
 		
 		// check content id
@@ -648,9 +630,10 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	
 	/**
 	 * tests the {@link PostUpdateOperation#UPDATE_ALL}	
+	 * @throws Exception 
 	 */
 	@Test
-	public void updateOperationAll() {
+	public void updateOperationAll() throws Exception {
 		final LogicInterface dbl = this.getDbLogic(TEST_REQUEST_USER_NAME);
 		
 		final Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class);
@@ -660,12 +643,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final List<String> createdPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
 		assertEquals(1, createdPosts.size());
 		
-		Post<?> createdPost = null;
-		try {
-			createdPost = dbl.getPostDetails(createdPosts.get(0), TEST_REQUEST_USER_NAME);
-		} catch (Exception ex) {
-			// ignore
-		}
+		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0), TEST_REQUEST_USER_NAME);
 		
 		final Bookmark createdBookmark = (Bookmark) createdPost.getResource();
 		
@@ -675,12 +653,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final List<String> updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_ALL);
 		assertEquals(1, updatedPosts.size());
 		
-		Post<?> updatedPost = null;
-		try {
-			updatedPost = dbl.getPostDetails(updatedPosts.get(0), TEST_REQUEST_USER_NAME);
-		} catch (Exception ex) {
-			// ignore
-		}
+		final Post<?> updatedPost  = dbl.getPostDetails(updatedPosts.get(0), TEST_REQUEST_USER_NAME); 
 		
 		final Bookmark updatedBookmark = (Bookmark) updatedPost.getResource();
 		assertEquals(newURL, updatedBookmark.getUrl());
