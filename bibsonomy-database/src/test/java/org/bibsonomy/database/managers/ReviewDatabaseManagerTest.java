@@ -11,7 +11,6 @@ import org.bibsonomy.model.Review;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.TestDatabaseManager;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -44,10 +43,10 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	@Test
 	public void insertReview() {
-		this.insertReview(USERNAME, HASH, 9, null);
+		this.insertReview(USERNAME, HASH, 5.0, null);
 		final Review review = reviewManager.getReviewForPostAndUser(HASH, USERNAME, this.dbSession);
 		assertNotNull(review);
-		assertEquals(9, review.getRating());
+		assertEquals(5.0, review.getRating());
 		assertEquals(null, review.getText());
 		
 		this.deleteReview(USERNAME, HASH);
@@ -55,7 +54,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	@Test
 	public void updateReview() {
-		this.insertReview(USERNAME, HASH, 9, "Great job!");
+		this.insertReview(USERNAME, HASH, 4.0, "Great job!");
 		final Review newReview = new Review();
 		newReview.setRating(1);
 		final String newText = "humbug!";
@@ -73,14 +72,14 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void testCache() {
 		final double average = testManager.getReviewRatingsAverage(HASH);
 		int numberOfReviews = testManager.getReviewCount(HASH);
-		this.insertReview(USERNAME, HASH, 9, "Great job!");
-		final double average2 = calcNewAvarage(average, 9, numberOfReviews);
+		this.insertReview(USERNAME, HASH, 4.5, "Great job!");
+		final double average2 = calcNewAvarage(average, 4.5, numberOfReviews);
 		numberOfReviews++;
 		assertEquals(average2, testManager.getReviewRatingsAverage(HASH), 0.000000001);
 		
-		this.insertReview(USERNAME_2, HASH, 8, "Great job! You're awesome!");
+		this.insertReview(USERNAME_2, HASH, 4, "Great job! You're awesome!");
 		
-		final double average3 = calcNewAvarage(average2, 8, numberOfReviews);
+		final double average3 = calcNewAvarage(average2, 4, numberOfReviews);
 		numberOfReviews++;
 		
 		assertEquals(average3, testManager.getReviewRatingsAverage(HASH), 0.000000001);
@@ -106,7 +105,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		reviewManager.markReview(USERNAME_2, HASH_WITH_RATING, RATING_USERNAME, true, this.dbSession);
 	}
 	
-	private double calcNewAvarage(double old, int newValue, int count) {
+	private double calcNewAvarage(double old, double newValue, int count) {
 		return (old * count + newValue) / (count + 1);
 	}
 	
@@ -119,7 +118,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(countReviewLog + 1, testManager.countReviewLogs());
 	}
 	
-	private void insertReview(final String username, final String interHash, final int rating, String text) {
+	private void insertReview(final String username, final String interHash, final double rating, String text) {
 		final Review review = new Review();
 		review.setRating(rating);
 		review.setText(text);
@@ -127,10 +126,18 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		reviewManager.createReviewForPost(interHash, review , this.dbSession);
 	}
 	
-	@Test
-	@Ignore
-	public void invalidReview() {
-		// TODODZ
+	@Test(expected = ValidationException.class)
+	public void invalidReviewMaxRating() {
+		this.insertReview(USERNAME, HASH, 5.0000000000001, "Great job!");
 	}
 	
+	@Test(expected = ValidationException.class)
+	public void invalidReviewMinRating() {
+		this.insertReview(USERNAME, HASH, -1.0, "Great job!");
+	}
+	
+	@Test(expected = ValidationException.class)
+	public void invalidReviewNotHalfRating() {
+		this.insertReview(USERNAME, HASH, 2.7, "Great job!");
+	}
 }

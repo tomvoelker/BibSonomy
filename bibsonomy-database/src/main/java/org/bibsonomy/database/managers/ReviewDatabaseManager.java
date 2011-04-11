@@ -42,7 +42,7 @@ public class ReviewDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * TODO
+	 * creates a new review 
 	 * @param interHash
 	 * @param review
 	 * @param session
@@ -126,8 +126,16 @@ public class ReviewDatabaseManager extends AbstractDatabaseManager {
 	
 	private void checkReview(final Review review) {
 		// TODO: max text length?
-		if (review.getRating() < Review.MIN_REVIEW_RATING || review.getRating() > Review.MAX_REVIEW_RATING) {
+		final double rating = review.getRating();
+		
+		if (Double.compare(rating, Review.MIN_REVIEW_RATING) < 0 || Double.compare(rating, Review.MAX_REVIEW_RATING) > 0) {
 			throw new ValidationException("Review rating not in range"); // TODO error message?!
+		}
+		
+		final double decimal = Math.abs(rating - Math.rint(rating));
+		
+		if (Double.compare(decimal, 0) != 0 && Double.compare(decimal - 0.5, 0) != 0) {
+			throw new ValidationException("Only x.0 and x.5 ratings are supported");
 		}
 	}
 	
