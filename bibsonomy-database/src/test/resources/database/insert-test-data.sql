@@ -561,6 +561,21 @@ INSERT INTO `useruser_similarity` (`u1`, `u2`, `sim`, `measure_id`) VALUES
 --
 
 
+--
+-- Data for table `reviews`
+-- 
+INSERT INTO `reviews` (`interHash`,`text`,`user_name`,`date`,`rating`,`helpful_count`,`not_helpful_count`) VALUES
+('d9eea4aa159d70ecfabafa0c91bbc9f0', 'crap!', 'testuser1', '2011-04-08 14:34:36', 0, 0, 2);
+
+
+--
+-- Data for table `reviews_helpful`
+-- 
+INSERT INTO `reviews_helpful` (`interHash`,`user_name`,`mark_user_name`,`helpful`) VALUES
+('d9eea4aa159d70ecfabafa0c91bbc9f0', 'testuser1', 'testuser1', 0),
+('d9eea4aa159d70ecfabafa0c91bbc9f0', 'testuser1', 'testuser3', 0);
+
+
 -- 
 -- Data for table `grouptas`
 -- FIXME: this data is broken! it contains posts which are in the tas table but there have 
