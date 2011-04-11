@@ -46,7 +46,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.insertReview(USERNAME, HASH, 5.0, null);
 		final Review review = reviewManager.getReviewForPostAndUser(HASH, USERNAME, this.dbSession);
 		assertNotNull(review);
-		assertEquals(5.0, review.getRating());
+		assertEquals(5.0, review.getRating(), 0);
 		assertEquals(null, review.getText());
 		
 		this.deleteReview(USERNAME, HASH);
@@ -63,7 +63,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		reviewManager.updateReview(HASH, newReview, this.dbSession);
 		final Review review = reviewManager.getReviewForPostAndUser(HASH, USERNAME, this.dbSession);
 		assertNotNull(review);
-		assertEquals(1, review.getRating());
+		assertEquals(1, review.getRating(), 0);
 		assertEquals(newText, review.getText());
 		this.deleteReview(USERNAME, HASH);
 	}
