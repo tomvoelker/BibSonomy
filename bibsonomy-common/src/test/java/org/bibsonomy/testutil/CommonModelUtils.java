@@ -96,8 +96,8 @@ public class CommonModelUtils {
 			return Math.abs(name.hashCode());
 		}
 		
-		if (double.class == type || Double.class == type) {
-			return (double) Math.abs((double)name.hashCode() / 2 * name.hashCode());
+		if ((double.class == type) || (Double.class == type)) {
+			return Math.abs((double) name.hashCode() / 2 * name.hashCode());
 		}
 		
 		if ((boolean.class == type) || (Boolean.class == type)) {
