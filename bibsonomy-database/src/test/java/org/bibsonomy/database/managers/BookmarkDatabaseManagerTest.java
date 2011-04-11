@@ -649,7 +649,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setIntraHash(intraHash);
 		post.setResource(bookmark);
-		final Set<Tag> tags = ModelUtils.getTagSet("google", "yahoo");
+		final Set<Tag> tags = ModelUtils.getTagSet("google_test", "yahoo_test");
 		post.setTags(tags);
 		bookmarkDb.updatePost(post, intraHash, PostUpdateOperation.UPDATE_TAGS, this.dbSession);
 		
@@ -706,7 +706,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		bookmark.recalculateHashes();
 		final String newIntraHash = bookmark.getIntraHash();
 		post.setResource(bookmark);
-		final Set<Tag> tags = ModelUtils.getTagSet("google", "yahoo");
+		// add some tags that do not interfere with other tests (especially with tags in tag-relations)
+		final Set<Tag> tags = ModelUtils.getTagSet("google_test", "yahoo_test");
 		post.setTags(tags);
 		bookmarkDb.updatePost(post, oldIntraHash, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 		
