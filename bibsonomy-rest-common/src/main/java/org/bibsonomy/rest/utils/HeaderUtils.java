@@ -25,17 +25,35 @@ package org.bibsonomy.rest.utils;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Comparator;
 import java.util.Scanner;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import org.apache.commons.codec.binary.Base64;
+
 /**
  * @author dzo
+ * @author rja
  * @version $Id$
  */
 public class HeaderUtils {
+	
+	/**
+	 * the header key for authorization
+	 */
+	public static final String HEADER_AUTHORIZATION = "Authorization";
+	
+	/**
+	 * the header key for user agent
+	 */
+	public static final String HEADER_USER_AGENT = "User-Agent";
+	
+	private static final String HEADER_AUTH_BASIC = "Basic ";
+	private static final String UTF8 = "UTF-8";
+
 	private HeaderUtils() {}
 
 	/**
@@ -90,6 +108,21 @@ public class HeaderUtils {
 			v.add(type);
 		}
 		return preferredTypes;
+	}
+
+	/**
+	 * Encode the username and password for BASIC authentication
+	 * @param username	the username
+	 * @param password 	the password
+	 * 
+	 * @return "Basic " + Base64 encoded(username + ':' + password)
+	 */
+	public static String encodeForAuthorization(final String username, final String password) {
+		try {
+			return HEADER_AUTH_BASIC + new String(Base64.encodeBase64((username + ":" + password).getBytes()), UTF8);
+		} catch (final UnsupportedEncodingException e) {
+		}
+		return HEADER_AUTH_BASIC + new String(Base64.encodeBase64((username + ":" + password).getBytes()));
 	}
 	
 	

@@ -115,7 +115,9 @@ public class UrlRenderer {
 		return this.userUrlPrefix + userName + this.postsUrlDelimiter + intraHash;
 	}
 	
-	/** Creates a URL which points to the given resource.
+	/**
+	 * TODO: remove?
+	 * Creates a URL which points to the given resource.
 	 * 
 	 * @param userName - the name of the user which owns the resource.
 	 * @param intraHash - the intra hash of the resource.

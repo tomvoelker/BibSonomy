@@ -168,8 +168,7 @@ public class RenderingFormat {
 	}
 	
 	@Override
-	//@Deprecated
-	//FIXME: Deprecated breaks the rest client. Correct the client or find some other method.
+	@Deprecated
 	public String toString() {
 		return this.subtype.toUpperCase();
 	}

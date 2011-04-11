@@ -37,7 +37,7 @@ import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 public class RendererFactory {
 	
 	/*
-	 * for each renderer a instance holder was created to lazy load the renderer
+	 * for each renderer an instance holder was created to lazy load the renderer
 	 * currently the json renderer isn't available in the rest client
 	 */
 	
