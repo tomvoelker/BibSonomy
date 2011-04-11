@@ -30,9 +30,9 @@ public class DatabasePluginRegistryTest extends AbstractDatabaseManagerTest {
 		
 		this.pluginMock.reset();
 
-		pluginRegistry.onBibTexDelete(1, null);
-		pluginRegistry.onBibTexInsert(1, null);
-		pluginRegistry.onBibTexUpdate(1, 2, null);
+		pluginRegistry.onPublicationDelete(1, null);
+		pluginRegistry.onPublicationInsert(1, null);
+		pluginRegistry.onPublicationUpdate(1, 2, null);
 		pluginRegistry.onBookmarkInsert(1, null);
 		pluginRegistry.onBookmarkUpdate(1, 2, null);
 		pluginRegistry.onTagRelationDelete(null, null, null, null);
