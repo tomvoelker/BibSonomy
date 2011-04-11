@@ -74,7 +74,7 @@ function add_filter() {
 function init_sidebar() {
   var childs = sidebar.childNodes;
   for (var i=0; i < childs.length; i++) {
-    var elem = childs[i]
+    var elem = childs[i];
     
     if (elem.nodeName.toUpperCase() == "LI") {
       for (var j=0; j < elem.childNodes.length; j++) {
@@ -126,7 +126,7 @@ function confirmDelete(e) {
   var li = getParent(event, "bm");
   li.style.background="#fdd";
   // get confirmation
-  var del = confirm(getString("post.meta.delete.confirm"))
+  var del = confirm(getString("post.meta.delete.confirm"));
   li.style.background="transparent";
   return del;
 }
@@ -490,7 +490,7 @@ function add_tags_toggle() {
           subtags.splice(0,1);
         }
 
-        var drin = 0
+        var drin = 0;
         var neuetags = new Array();
 
         for (var i = 0; i < subtags.length; i++) {
@@ -503,7 +503,7 @@ function add_tags_toggle() {
         } 
 
         if (!drin) {
-            neuetags.push(value)
+            neuetags.push(value);
         }
          
         var neueeingabe = neuetags.join(" ");
@@ -673,7 +673,7 @@ function xget_event (event) {
 				case 38:
 				case 40: {
 					if(e.preventDefault && e.originalTarget)
-						e.preventDefault()
+						e.preventDefault();
 					break;
 				}
 				default: {
@@ -1042,7 +1042,7 @@ function xget_event (event) {
 				if(!duplicate)
 					copyCollect.push(copyTag);
 			}
-			i++
+			i++;
 		}
 		
 		for(var i in copyCollect)
@@ -1097,7 +1097,7 @@ function xget_event (event) {
 			var newTag = document.createElement("a");
 			sg.appendChild(document.createTextNode(" "));
 			newTag.className = "tagone";
-			newTag.appendChild(document.createTextNode(sortedCollection[i]))
+			newTag.appendChild(document.createTextNode(sortedCollection[i]));
 			newTag.removeAttribute("href");
 			newTag.style.cursor = "pointer";
 			newTag.setAttribute('href','javascript:completeTag("'+sortedCollection[i].replace(/"/g,'\\"')+'")');
@@ -1110,7 +1110,7 @@ function xget_event (event) {
 			if(i == 3)
 				break;
 
-			sg.appendChild(newTag)
+			sg.appendChild(newTag);
 		}
 	}
 
@@ -1191,7 +1191,7 @@ function xget_event (event) {
 							simulateClick(target);
 					}
 					if(!sortedCollection[pos]) {
-						reset = false
+						reset = false;
 						break;
 					}
 				}
@@ -1394,7 +1394,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 	    updateRelations(evt, "hide", concept);
     } 
     
-    // updates the relations in AJAX style
+    // updates the relations in AJAX style TODO: simplify using jQuery
 	function updateRelations (evt, action, concept) {
 		// do AJAX stuff	    	
     	var request = ajaxInit();
@@ -1505,7 +1505,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 		         		    var lowers = rel.getElementsByTagName("lower");
 		         		    var lowerul = document.createElement("ul");
 		         		    lowerul.className = "box_lowerconcept_elements";
-		         		    var lowerulid = document.createAttribute("id")
+		         		    var lowerulid = document.createAttribute("id");
 		         		    lowerulid.nodeValue = upper;
 		         		    lowerul.setAttributeNode(lowerulid);
 		         		
@@ -1570,7 +1570,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 	         		delete conceptnames;
 	         	}
 	        }
-	    }
+	    };
     } 
     
     
@@ -1585,7 +1585,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 
     function pickUnpickAll(evt, pickUnpick) {
     	// get user names/hashes to pick
-    	var bibtex = document.getElementById("bibtex")
+    	var bibtex = document.getElementById("bibtex");
     	var lis    = bibtex.getElementsByTagName("li");
     	var param  = "";
     	   	
@@ -1688,32 +1688,20 @@ function unicodeCollation(ersterWert, zweiterWert){
 		}
     } 
     
-    // updates the shown number of documents for download 
+    // updates the number of basket items
     function ajax_updateCollector(request) {
     	return function(){
 	   	  	if( 4 == request.readyState ) {
 	          	if( 200 == request.status ) {
  	           		// special case for the /basket page
    	           		if (location.pathname.startsWith("/basket")){
-   	           			//document.getElementById("ttlctr").childNodes[0].nodeValue = "("+xml+")";
-   	           			window.location.reload()
+   	           			window.location.reload();
    	           		} else {
-   	           			// get counter
-   	           			var pickctr = document.getElementById("pickctr").childNodes[0];
-	           		
-   	           			// parse XML input
-   	           			var xml = request.responseText;
-	       		    
-   	           			// update counter   	           		
-   	           			pickctr.nodeValue = xml;
-   	           		
-   	           			// special case for the /basket page
-   	           			//if (location.pathname.startsWith("/basket")){
-   	           			//document.getElementById("ttlctr").childNodes[0].nodeValue = "("+xml+")";
+   	           			document.getElementById("pickctr").childNodes[0].nodeValue = request.responseText; 
    	           		}
 	         	}
 	        }
-	    }
+	    };
     }
     
 /*
@@ -1856,7 +1844,7 @@ function editTags(obj, ckey) {
 
 String.prototype.startsWith = function(s) { 
 	return this.indexOf(s) == 0; 
-}
+};
 
 function getString( key ) {
   if ( typeof LocalizedStrings == "undefined" ) return "???"+key+"???"; 
@@ -1881,7 +1869,7 @@ function toggleTag(target, tagname) {
 		tags.splice(0,1);
 	}
 
-	var drin = 0
+	var drin = 0;
 	var neuetags = new Array();
 
 	for (var i = 0; i < tags.length; i++) {
@@ -1891,10 +1879,10 @@ function toggleTag(target, tagname) {
 		} else {
 			neuetags.push(eintag);
 		}
-	} 1
+	}
 
 	if (!drin) {
-		neuetags.push(tag)
+		neuetags.push(tag);
 	}
 
 	var neueeingabe = neuetags.join(" ");
@@ -1911,7 +1899,7 @@ function toggleTag(target, tagname) {
 
 //add/remove tagname to/from target field 
 function copytag(target, tagname){
-	var targetNode = document.getElementById(target) 
+	var targetNode = document.getElementById(target);
 	if( targetNode ){
 		toggleTag(targetNode, tagname);
 	}
@@ -1977,7 +1965,7 @@ function copyOptionTags(target, event){
 //trim
 String.prototype.trim = function () {
     return this.replace(/^\s+/g, '').replace(/\s+$/g, '');
-}
+};
 
 /** switch between db, ldap, and openid login form */
 /* @param methodsList
