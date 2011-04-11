@@ -24,6 +24,9 @@ public class RestClientUtils {
 	
 	private static String REST_CLIENT_VERSION = "unknown";
 	
+	/**
+	 * @return the version of the client
+	 */
 	public static String getRestClientVersion() {
 		return REST_CLIENT_VERSION;
 	}
