@@ -11,7 +11,7 @@ public class Review {
 	/**
 	 * the max value of a review rating
 	 */
-	public static int MAX_REVIEW_RATING = 10;
+	public static int MAX_REVIEW_RATING = 5;
 	
 	/**
 	 * the min value of a review rating
