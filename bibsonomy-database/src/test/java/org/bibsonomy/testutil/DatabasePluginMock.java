@@ -62,7 +62,7 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	public void testReset() {
 		final DatabasePluginMock plugin = new DatabasePluginMock();
 		plugin.onBookmarkInsert(0, null);
-		plugin.onBibTexUpdate(0, 1, null);
+		plugin.onPublicationUpdate(0, 1, null);
 		
 		assertTrue(plugin.isOnBookmarkInsert());
 		assertTrue(plugin.isOnBibTexUpdate());
@@ -74,19 +74,19 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
+	public Runnable onPublicationInsert(final int contentId, final DBSession session) {
 		this.onBibTexInsert = true;
 		return null;
 	}
 
 	@Override
-	public Runnable onBibTexDelete(int contentId, DBSession session) {
+	public Runnable onPublicationDelete(int contentId, DBSession session) {
 		this.onBibTexDelete = true;
 		return null;
 	}
 
 	@Override
-	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
+	public Runnable onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
 		assertTrue(contentId != newContentId);
 		this.onBibTexUpdate = true;
 		return null;

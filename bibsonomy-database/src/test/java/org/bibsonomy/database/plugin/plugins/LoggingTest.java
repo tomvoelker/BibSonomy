@@ -73,7 +73,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void onBibTexDelete() {
 		final int anyContentId = testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
-		pluginRegistry.onBibTexDelete(anyContentId, dbSession);
+		pluginRegistry.onPublicationDelete(anyContentId, dbSession);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void onBibTexUpdate() {
 		final int anyContentId = testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
-		pluginRegistry.onBibTexUpdate(anyContentId, anyContentId - 1, dbSession);
+		pluginRegistry.onPublicationUpdate(anyContentId, anyContentId - 1, dbSession);
 	}
 
 	/**
