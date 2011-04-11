@@ -35,34 +35,26 @@ import org.bibsonomy.rest.client.worker.HttpWorker;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class HeadWorker extends HttpWorker {
+public class HeadWorker extends HttpWorker<HeadMethod> {
 
+	/**
+	 * 
+	 * @param username
+	 * @param apiKey
+	 */
 	public HeadWorker(final String username, final String apiKey) {
 		super(username, apiKey);
 	}
 
-	public Reader perform(final String url) throws ErrorPerformingRequestException {
-		LOGGER.debug("HEAD: URL: " + url);
-		
-		// dirty but working
-		if (this.proxyHost != null){
-			getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
-		}
-
+	@Override
+	protected HeadMethod getMethod(String url, String requestBody) {
 		final HeadMethod head = new HeadMethod(url);
-		head.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
-		head.setDoAuthentication(true);
 		head.setFollowRedirects(true);
+		return head;
+	}
 
-		try {
-			this.httpResult = getHttpClient().executeMethod(head);
-			LOGGER.debug("Result: " + this.httpResult);
-			return new StringReader( head.getStatusText() );
-		} catch (final IOException e) {
-			LOGGER.debug(e.getMessage(), e);
-			throw new ErrorPerformingRequestException(e);
-		} finally {
-			head.releaseConnection();
-		}
+	@Override
+	protected Reader readResponse(HeadMethod method) throws IOException, ErrorPerformingRequestException {
+		return new StringReader(method.getStatusText());
 	}
 }

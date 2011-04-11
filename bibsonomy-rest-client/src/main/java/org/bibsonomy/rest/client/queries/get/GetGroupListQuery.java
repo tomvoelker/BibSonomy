@@ -73,7 +73,7 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 
 	@Override
 	protected List<Group> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(URL_GROUPS + "?start=" + this.start + "&end=" + this.end + "&format=" + getRenderingFormat().toString().toLowerCase());
+		this.downloadedDocument = performGetRequest(URL_GROUPS + "?start=" + this.start + "&end=" + this.end);
 		return null;
 	}
 }

@@ -99,7 +99,7 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 			}
 		}			
 		
-		this.downloadedDocument = performGetRequest(url + "&format=" + getRenderingFormat().toString().toLowerCase());
+		this.downloadedDocument = performGetRequest(url);
 		return null;
 	}
 

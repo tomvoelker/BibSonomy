@@ -23,48 +23,27 @@
 
 package org.bibsonomy.rest.client.worker.impl;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-
 import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class DeleteWorker extends HttpWorker {
+public final class DeleteWorker extends HttpWorker<DeleteMethod> {
 
+	/**
+	 * @param username the user name
+	 * @param apiKey the api key of the user
+	 */
 	public DeleteWorker(final String username, final String apiKey) {
 		super(username, apiKey);
 	}
-
-	public Reader perform(final String url) throws ErrorPerformingRequestException {
-		LOGGER.debug("DELETE: URL: " + url);
-		
-		// dirty but working
-		if (this.proxyHost != null){
-			getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
-		}
-
+	
+	@Override
+	protected DeleteMethod getMethod(final String url, String requestBody) {
 		final DeleteMethod delete = new DeleteMethod(url);
-		delete.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
-		delete.setDoAuthentication(true);
 		delete.setFollowRedirects(true);
-
-		try {
-			this.httpResult = getHttpClient().executeMethod(delete);
-			LOGGER.debug("HTTP result: " + this.httpResult);
-			LOGGER.debug("XML response:\n" + delete.getResponseBodyAsString());
-			LOGGER.debug("===================================================");
-			return new StringReader(delete.getResponseBodyAsString());
-		} catch (final IOException e) {
-			LOGGER.error(e.getMessage(), e);
-			throw new ErrorPerformingRequestException(e);
-		} finally {
-			delete.releaseConnection();
-		}
+		return delete;
 	}
 }

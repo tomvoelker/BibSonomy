@@ -98,12 +98,18 @@ public abstract class AbstractQuery<T> {
 	public void setStatusCode(int statusCode) {
 		this.statusCode = statusCode;
 	}
+	
+	private void configHttpWorker(HttpWorker<?> worker) {
+		worker.setProxyHost(this.proxyHost);
+		worker.setRenderingFormat(this.renderingFormat);
+		worker.setProxyPort(this.proxyPort);
+	}
 
 	protected final Reader performGetRequest(final String url) throws ErrorPerformingRequestException {
 		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.callback);
-		worker.setProxyHost(this.proxyHost);
-		worker.setProxyPort(this.proxyPort);
-		final Reader downloadedDocument = worker.perform(this.apiURL + url);
+		this.configHttpWorker(worker);
+		
+		final Reader downloadedDocument = worker.perform(this.apiURL + url, null);
 		this.statusCode = worker.getHttpResult();
 		return downloadedDocument;
 	}
@@ -115,8 +121,7 @@ public abstract class AbstractQuery<T> {
 		absoluteUrl = this.apiURL + url;
 
 		worker = new PostWorker(this.username, this.apiKey);
-		worker.setProxyHost(this.proxyHost);
-		worker.setProxyPort(this.proxyPort);
+		this.configHttpWorker(worker);
 		result = worker.perform(absoluteUrl, file);
 		this.statusCode = worker.getHttpResult();
 
@@ -131,49 +136,39 @@ public abstract class AbstractQuery<T> {
 	 * @author Waldemar Biller
 	 */
 	protected final void performFileDownload(final String url, final File file) throws ErrorPerformingRequestException {
-		final GetWorker worker;
-		final String absoluteUrl;
-		absoluteUrl = this.apiURL + url;
-
-		worker = new GetWorker(this.username, this.apiKey, this.callback);
-
-		worker.setProxyHost(this.proxyHost);
-		worker.setProxyPort(this.proxyPort);
-
+		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.callback);
+		this.configHttpWorker(worker);
+		
+		final String absoluteUrl = this.apiURL + url;
 		worker.performFileDownload(absoluteUrl, file);
 		this.statusCode = worker.getHttpResult();
 	}
 
 	protected final Reader performRequest(final HttpMethod method, final String url, final String requestBody) throws ErrorPerformingRequestException {
-		final HttpWorker worker;
+		final HttpWorker<?> worker;
 		final Reader result;
-		final String absoluteUrl;
-		absoluteUrl = this.apiURL + url;
+		final String absoluteUrl = this.apiURL + url;
 
 		switch (method) {
 		case POST:
 			worker = new PostWorker(this.username, this.apiKey);
-			worker.setProxyHost(this.proxyHost);
-			worker.setProxyPort(this.proxyPort);
+			this.configHttpWorker(worker);
 			result = ((PostWorker) worker).perform(absoluteUrl, requestBody);
 			break;
 		case DELETE:
 			worker = new DeleteWorker(this.username, this.apiKey);
-			worker.setProxyHost(this.proxyHost);
-			worker.setProxyPort(this.proxyPort);
-			result = ((DeleteWorker) worker).perform(absoluteUrl);
+			this.configHttpWorker(worker);
+			result = ((DeleteWorker) worker).perform(absoluteUrl, null);
 			break;
 		case PUT:
 			worker = new PutWorker(this.username, this.apiKey);
-			worker.setProxyHost(this.proxyHost);
-			worker.setProxyPort(this.proxyPort);
+			this.configHttpWorker(worker);
 			result = ((PutWorker) worker).perform(absoluteUrl, requestBody);
 			break;
 		case HEAD:
 			worker = new HeadWorker(this.username, this.apiKey);
-			worker.setProxyHost(this.proxyHost);
-			worker.setProxyPort(this.proxyPort);
-			result = ((HeadWorker) worker).perform(absoluteUrl);
+			this.configHttpWorker(worker);
+			result = ((HeadWorker) worker).perform(absoluteUrl, null);
 			break;
 		case GET:
 			throw new UnsupportedOperationException("use AbstractQuery::performGetRequest( String url)");
@@ -263,12 +258,16 @@ public abstract class AbstractQuery<T> {
 		this.callback = callback;
 	}
 
+	/**
+	 * @return <code>true</code> iff the request was successful
+	 */
 	public boolean isSuccess() {
-		if ((this.getHttpStatusCode() == HttpStatus.SC_OK) || (this.getHttpStatusCode() == HttpStatus.SC_CREATED))
-			return true;
-		return false;
+		return this.getHttpStatusCode() == HttpStatus.SC_OK || this.getHttpStatusCode() == HttpStatus.SC_CREATED;
 	}
-
+	
+	/**
+	 * @return error code iff the request was not successful
+	 */
 	public String getError() {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
 		return RendererFactory.getRenderer(this.getRenderingFormat()).parseError(this.downloadedDocument);

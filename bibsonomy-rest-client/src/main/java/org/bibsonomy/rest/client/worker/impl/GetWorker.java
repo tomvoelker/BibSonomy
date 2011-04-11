@@ -38,48 +38,41 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.bibsonomy.rest.client.ProgressCallback;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
+import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class GetWorker extends HttpWorker {
+public final class GetWorker extends HttpWorker<GetMethod> {
 
 	private final ProgressCallback callback;
 
+	/**
+	 * 
+	 * @param username	the username
+	 * @param password	the password (apiKey)
+	 * @param callback	the callback
+	 */
 	public GetWorker(final String username, final String password, final ProgressCallback callback) {
 		super(username, password);
 		
 		this.callback = callback;
 	}
-
-	public Reader perform(final String url) throws ErrorPerformingRequestException {
-		LOGGER.debug("GET: URL: " + url);
-		
-		// dirty but working
-		if (this.proxyHost != null){
-			getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
-		}
-
+	
+	@Override
+	protected GetMethod getMethod(String url, String requestBody) {
 		final GetMethod get = new GetMethod(url);
-		get.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
-		get.setDoAuthentication(true);
 		get.setFollowRedirects(true);
-
-		try {
-			this.httpResult = getHttpClient().executeMethod(get);
-			LOGGER.debug("HTTP result: " + this.httpResult);
-			LOGGER.debug("XML response:\n" + get.getResponseBodyAsString());
-			LOGGER.debug("===================================================");			
-			if (get.getResponseBodyAsStream() != null) {
-				return performDownload(get.getResponseBodyAsStream(), get.getResponseContentLength());
-			}
-		} catch (final IOException e) {
-			LOGGER.debug(e.getMessage(), e);
-			throw new ErrorPerformingRequestException(e);
-		} finally {
-			get.releaseConnection();
+		return get;
+	}
+	
+	@Override
+	protected Reader readResponse(GetMethod method) throws IOException, ErrorPerformingRequestException {
+		if (method.getResponseBodyAsStream() != null) {
+			return performDownload(method.getResponseBodyAsStream(), method.getResponseContentLength());
 		}
+		
 		throw new ErrorPerformingRequestException("No Answer.");
 	}
 
@@ -116,7 +109,7 @@ public final class GetWorker extends HttpWorker {
 		}
 		
 		final GetMethod get = new GetMethod(url);
-		get.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
+		get.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
 		get.setDoAuthentication(true);
 		get.setFollowRedirects(true);
 		
@@ -125,12 +118,17 @@ public final class GetWorker extends HttpWorker {
 			LOGGER.debug("HTTP result: " + this.httpResult);
 			LOGGER.debug("Content-Type:" + get.getRequestHeaders("Content-Type"));
 			LOGGER.debug("===================================================");			
-			if (get.getResponseBodyAsStream() != null) {
+			final InputStream in = get.getResponseBodyAsStream();
+			
+			/*
+			 * FIXME: check for errors
+			 */
+			if (in != null) {
 				
 				// read the file from the source and write it to 
 				// the target given by the file parametetr
-				InputStream in = get.getResponseBodyAsStream();
-				DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+				
+				final DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
 				
 				int bytesRead = 0;
 				int b = 0;
@@ -138,7 +136,7 @@ public final class GetWorker extends HttpWorker {
 					b = in.read();
 					dos.write(b);
 					callCallback(bytesRead++, get.getResponseContentLength());
-				} while(b > -1);
+				} while (b > -1);
 				
 				in.close();
 				dos.close();

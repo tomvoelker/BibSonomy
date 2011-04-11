@@ -23,51 +23,32 @@
 
 package org.bibsonomy.rest.client.worker.impl;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class PutWorker extends HttpWorker {
+public final class PutWorker extends HttpWorker<PutMethod> {
 
+	/**
+	 * 
+	 * @param username
+	 * @param apiKey
+	 */
 	public PutWorker(final String username, final String apiKey) {
 		super(username, apiKey);
 	}
 
-	public Reader perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
-		LOGGER.debug("PUT: URL: " + url);
-		
-		// dirty but working
-		if (this.proxyHost != null){
-			getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
-		}
-
+	@Override
+	protected PutMethod getMethod(String url, String requestBody) {
 		final PutMethod put = new PutMethod(url);
-		put.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
-		put.setDoAuthentication(true);
 		put.setFollowRedirects(false);
 
+		// TODO: remove deprecated method
 		put.setRequestEntity(new StringRequestEntity(requestBody));
-
-		try {
-			this.httpResult = getHttpClient().executeMethod(put);
-			LOGGER.debug("Result: " + this.httpResult);
-			LOGGER.debug("XML response:\n" + put.getResponseBodyAsString());
-			LOGGER.debug("===================================================");			
-			return new StringReader(put.getResponseBodyAsString());
-		} catch (final IOException e) {
-			LOGGER.debug(e.getMessage(), e);
-			throw new ErrorPerformingRequestException(e);
-		} finally {
-			put.releaseConnection();
-		}
+		return put;
 	}
 }

@@ -53,7 +53,7 @@ public final class GetTagDetailsQuery extends AbstractQuery<Tag> {
 	@Override
 	protected Tag doExecute() throws ErrorPerformingRequestException {
 		String url = URL_TAGS + "/" + tagName;
-		this.downloadedDocument = performGetRequest(url + "?format=" + getRenderingFormat().toString().toLowerCase());
+		this.downloadedDocument = performGetRequest(url);
 		return null;
 	}
 }

@@ -72,7 +72,7 @@ public class ChangeConceptQuery extends AbstractQuery<String> {
 		
 		url += "/" + this.groupingName + "/" + URL_CONCEPTS + "/" + this.conceptName;
 		
-		this.downloadedDocument = performRequest(HttpMethod.PUT, url + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.PUT, url, sw.toString());
 		return null;
 	}
 

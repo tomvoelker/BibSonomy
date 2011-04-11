@@ -131,7 +131,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 			break;
 		}
 
-		this.downloadedDocument = performGetRequest(url + "&format=" + getRenderingFormat().toString().toLowerCase());
+		this.downloadedDocument = performGetRequest(url);
 		return null;
 	}
 }

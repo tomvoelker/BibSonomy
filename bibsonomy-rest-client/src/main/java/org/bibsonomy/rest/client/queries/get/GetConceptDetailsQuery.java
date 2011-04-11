@@ -66,7 +66,7 @@ public class GetConceptDetailsQuery extends AbstractQuery<Tag> {
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept details query");
 		}
 		
-		this.downloadedDocument = performGetRequest(url + "?format=" + getRenderingFormat().toString().toLowerCase());
+		this.downloadedDocument = performGetRequest(url);
 		return null;
 	}
 

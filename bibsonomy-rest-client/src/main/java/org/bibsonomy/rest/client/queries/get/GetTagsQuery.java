@@ -149,7 +149,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 		if (! (this.resourceType == null && this.resourceType.equals(ResourceType.ALL)) ) {
 			url += "&resourcetype=" + this.resourceType.getLabel();
 		}		
-		this.downloadedDocument = performGetRequest(url + "&format=" + getRenderingFormat().toString().toLowerCase());
+		this.downloadedDocument = performGetRequest(url);
 		return null;
 	}
 }

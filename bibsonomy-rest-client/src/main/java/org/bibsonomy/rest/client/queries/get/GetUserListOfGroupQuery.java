@@ -81,7 +81,7 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>> {
 
 	@Override
 	protected List<User> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(URL_GROUPS + "/" + this.groupname + "/" + URL_USERS + "?start=" + this.start + "&end=" + this.end + "&format=" + getRenderingFormat().toString().toLowerCase());
+		this.downloadedDocument = performGetRequest(URL_GROUPS + "/" + this.groupname + "/" + URL_USERS + "?start=" + this.start + "&end=" + this.end);
 		return null;
 	}
 }

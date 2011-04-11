@@ -130,7 +130,7 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 			break;
 		}
 
-		this.downloadedDocument = performGetRequest(url + "&format=" + getRenderingFormat().toString().toLowerCase());
+		this.downloadedDocument = performGetRequest(url);
 		return null;
 	}
 }

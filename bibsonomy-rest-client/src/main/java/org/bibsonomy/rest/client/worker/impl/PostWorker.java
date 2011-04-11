@@ -34,30 +34,30 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
+import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class PostWorker extends HttpWorker {
+public final class PostWorker extends HttpWorker<PostMethod> {
 
 	public PostWorker(final String username, final String apiKey) {
 		super(username, apiKey);
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	public Reader perform(final String url, final File file) throws ErrorPerformingRequestException {
-
 		LOGGER.debug("POST Multipart: URL: " + url);
 
 		if (this.proxyHost != null) {
 			this.getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
 		}
 
+		// TODO: remove deprecated method
 		final MultipartPostMethod post = new MultipartPostMethod(url);
 
 		post.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
-		post.addRequestHeader(HEADER_AUTHORIZATION, this.encodeForAuthorization());
+		post.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
 		post.addRequestHeader("Content-Type", "multipart/form-data");
 
 		try {
@@ -67,7 +67,7 @@ public final class PostWorker extends HttpWorker {
 
 			this.httpResult = this.getHttpClient().executeMethod(post);
 			LOGGER.debug("HTTP result: " + this.httpResult);
-			LOGGER.debug("XML response:\n" + post.getResponseBodyAsString());
+			LOGGER.debug("response:\n" + post.getResponseBodyAsString());
 			LOGGER.debug("===================================================");
 			return new StringReader(post.getResponseBodyAsString());
 		} catch (final IOException e) {
@@ -77,33 +77,18 @@ public final class PostWorker extends HttpWorker {
 			post.releaseConnection();
 		}
 	}
-
-	public Reader perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
-		LOGGER.debug("POST: URL: " + url);
-
-		// dirty but working
-		if (this.proxyHost != null) {
-			this.getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
-		}
-
+	
+	@Override
+	protected PostMethod getMethod(String url, String requestBody) {
 		final PostMethod post = new PostMethod(url);
-		post.addRequestHeader(HEADER_AUTHORIZATION, this.encodeForAuthorization());
-		post.setDoAuthentication(true);
 		post.setFollowRedirects(false);
 
 		post.setRequestEntity(new StringRequestEntity(requestBody));
+		return post;
+	}
 
-		try {
-			this.httpResult = this.getHttpClient().executeMethod(post);
-			LOGGER.debug("HTTP result: " + this.httpResult);
-			LOGGER.debug("XML response:\n" + post.getResponseBodyAsString());
-			LOGGER.debug("===================================================");
-			return new StringReader(post.getResponseBodyAsString());
-		} catch (final IOException e) {
-			LOGGER.debug(e.getMessage(), e);
-			throw new ErrorPerformingRequestException(e);
-		} finally {
-			post.releaseConnection();
-		}
+	@Override
+	protected Reader readResponse(PostMethod method) throws IOException, ErrorPerformingRequestException {
+		return new StringReader(method.getResponseBodyAsString());
 	}
 }

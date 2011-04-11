@@ -101,7 +101,7 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		RendererFactory.getRenderer(getRenderingFormat()).serializePost(sw, post, null);
-		this.downloadedDocument = performRequest(HttpMethod.PUT, URL_USERS + "/" + this.username + "/" + URL_POSTS + "/" + resourceHash + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.PUT, URL_USERS + "/" + this.username + "/" + URL_POSTS + "/" + resourceHash, sw.toString());
 		return null;
 	}
 	

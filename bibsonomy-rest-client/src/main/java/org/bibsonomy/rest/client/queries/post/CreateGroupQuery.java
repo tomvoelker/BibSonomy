@@ -62,7 +62,7 @@ public final class CreateGroupQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		RendererFactory.getRenderer(getRenderingFormat()).serializeGroup(sw, this.group, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_GROUPS + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.POST, URL_GROUPS, sw.toString());
 		return null;
 	}
 	

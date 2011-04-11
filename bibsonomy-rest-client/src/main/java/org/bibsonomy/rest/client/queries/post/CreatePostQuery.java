@@ -93,7 +93,7 @@ public final class CreatePostQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		RendererFactory.getRenderer(getRenderingFormat()).serializePost(sw, this.post, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + URL_POSTS + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + URL_POSTS, sw.toString());
 		return null;
 	}
 	
