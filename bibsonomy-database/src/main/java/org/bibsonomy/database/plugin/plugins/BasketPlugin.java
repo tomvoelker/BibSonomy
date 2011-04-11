@@ -16,7 +16,7 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 public class BasketPlugin extends AbstractDatabasePlugin {
 	
 	@Override
-	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
+	public Runnable onPublicationDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
 			
 			@Override
@@ -40,7 +40,7 @@ public class BasketPlugin extends AbstractDatabasePlugin {
 	}
 	
 	@Override
-	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
+	public Runnable onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
 			
 			@Override
