@@ -92,8 +92,12 @@ public class CommonModelUtils {
 		if (String.class == type) {
 			return "test-" + name;
 		}
-		if ((int.class == type) || (Integer.class == type) || (double.class == type) || Double.class == type) {
+		if ((int.class == type) || (Integer.class == type)) {
 			return Math.abs(name.hashCode());
+		}
+		
+		if (double.class == type || Double.class == type) {
+			return (double) Math.abs((double)name.hashCode() / 2 * name.hashCode());
 		}
 		
 		if ((boolean.class == type) || (Boolean.class == type)) {
@@ -125,11 +129,13 @@ public class CommonModelUtils {
 	public static void assertPropertyEquality(final Object should, final Object is, final int maxDepth, final Pattern excludePropertiesPattern, final String... excludeProperties) {
 		final EqualityChecker checker = new EqualityChecker() {
 
+			@Override
 			public boolean checkEquals(Object should, Object is, String path) {
 				assertEquals(path, should, is);
 				return true;
 			}
 
+			@Override
 			public boolean checkTrue(boolean value, String path, String checkName) {
 				assertTrue(path + " " + checkName, value);
 				return true;
