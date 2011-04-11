@@ -1,17 +1,27 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="SynchronizationCommon">
 	
-	<resultMap id="synchResource" class="synchResource">
+	<resultMap id="syncResource" class="syncResource">
 		<result property="createDate"	column="date"			javaType="date"		/>
 		<result property="changeDate"	column="change_date"	javaType="date"		/>
-		<!--  <result property="synchronizationDate" column=??	javaType="date"	/> TODO: this date is currently not saved in db-->
 	</resultMap>
 	
-	<resultMap id="synchPost" class="synchPost" extends="synchResource">
+	<resultMap id="syncPost" class="syncPost" extends="syncResource">
 		<result property="interHash"	column="interHash"		javaType="string"	/>
 		<result property="intraHash"	column="intraHash"		javaType="string"	/>
-
 	</resultMap>
+	
+	<resultMap id="syncData" class="syncData">
+		<result property="serviceId"	column="service_id"		javaType="int"		/>
+		<result property="userName"		column="user_name"		javaType="string"	/>
+		<result property="contentType"	column="content_type"	javaType="int"		/>
+		<result property="lastSyncDate"	column="last_sync_date"	javaType="date"		/>
+		<result property="status"		column="status"			javaType="string"	/>
+	</resultMap>
+	
+	<!--<resultMap id="syncData" class="syncData">
+		<result property="lastSyncDate" column="last_sync_date" javaType="date"/>
+	</resultMap>-->
 	
 	
 </sqlMap>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Synchronization">
+
+	<select id="getSyncBibTex" resultMap="SynchronizationCommon.syncPost" parameterClass="bibtexParam">
+		SELECT <include refid="bibtexSimHashes"/>, b.date, b.change_date
+		FROM bibtex b
+		WHERE b.user_name = #userName#
+	</select>
+
+	
+	<select id="getSyncBookmark" resultMap="SynchronizationCommon.syncPost" parameterClass="bookmarkParam">
+		SELECT b.book_url_hash AS intrahash, NULL AS interhash, b.date, b.change_date
+		FROM bookmark b
+		WHERE b.user_name = #userName#
+	</select>
+	
+	<select id="getLastSyncDate" resultClass="java.util.Date" parameterClass="syncParam">
+		SELECT last_sync_date
+		FROM sync_data
+		WHERE user_name = #userName#
+			AND content_type = #contentType#
+			AND service_id = #serviceId#
+		ORDER BY last_sync_date DESC
+		LIMIT 1 	 
+	</select>
+	
+	<select id="getCurrentSyncData" resultMap="SynchronizationCommon.syncData" parameterClass="syncParam">
+		SELECT *
+		FROM sync_data
+		WHERE user_name = #userName#
+			AND content_type = #contentType#
+			AND service_id = #serviceId#
+		ORDER BY last_sync_date DESC
+		LIMIT 1
+	</select> 
+	
+	<select id="getCurrentSyncDate" resultClass="java.util.Date" parameterClass="syncParam">
+		SELECT last_sync_date
+		FROM sync_data
+		WHERE user_name = #userName#
+			AND content_type = #contentType#
+			AND service_id = #serviceId#
+			AND status = 'undone' 
+		ORDER BY last_sync_date DESC
+		LIMIT 1
+	</select> 
+	
+	<insert id="insertSync" parameterClass="syncParam">
+		INSERT INTO sync_data (service_id, user_name, content_type, last_sync_date, status)
+		VALUES (#serviceId#, #userName#, #contentType#, #lastSyncDate#, #status#)
+	</insert> 
+	
+	<update id="updateSyncStatus" parameterClass="syncParam">
+		UPDATE sync_data 
+		SET status = #status#
+		WHERE user_name = #userName#
+			AND content_type = #contentType#
+			AND service_id = #serviceId#
+			AND last_sync_date = #lastSyncDate#
+	</update>
+	
+</sqlMap>

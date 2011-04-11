@@ -20,6 +20,7 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
@@ -81,12 +82,15 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.synch.SynchLogicInterface;
-import org.bibsonomy.model.synch.SynchronizationPost;
-import org.bibsonomy.model.synch.SynchronizationResource;
+import org.bibsonomy.model.sync.ConflictResolutionStrategy;
+import org.bibsonomy.model.sync.SyncLogicInterface;
+import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.sync.Synchronization;
+import org.bibsonomy.sync.SynchronizationDatabaseManager;
 
 /**
  * Database Implementation of the LogicInterface
@@ -99,7 +103,7 @@ import org.bibsonomy.model.util.UserUtils;
  * 
  * @version $Id$
  */
-public class DBLogic implements LogicInterface, SynchLogicInterface {
+public class DBLogic implements LogicInterface, SyncLogicInterface {
     private static final Log log = LogFactory.getLog(DBLogic.class);
 
     private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
@@ -119,6 +123,8 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
     private final BasketDatabaseManager basketDBManager;
     private final InboxDatabaseManager inboxDBManager;
     private final WikiDatabaseManager wikiDBManager;
+    
+    private final SynchronizationDatabaseManager syncDBManager;
 
     private final User loginUser;
 
@@ -157,7 +163,9 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 	this.inboxDBManager = InboxDatabaseManager.getInstance();
 
 	this.wikiDBManager = WikiDatabaseManager.getInstance();
-
+	
+	this.syncDBManager = SynchronizationDatabaseManager.getInstance();
+	
 	this.dbSessionFactory = dbSessionFactory;
     }
 
@@ -232,23 +240,138 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 
     /*
      * (non-Javadoc)
-     * @see org.bibsonomy.model.synch.SynchLogicInterface#getSynchPosts(java.lang.Class, java.lang.String)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#getSynchronization(java.lang.String, java.lang.Class, java.util.List, org.bibsonomy.model.sync.ConflictResolutionStrategy, java.lang.String)
      */
     @Override
-    public <T extends SynchronizationResource> List<SynchronizationPost> getSynchPosts (Class<? extends Resource> resourceType, String userName) {
+    public List<SynchronizationPost> getSynchronization(final String userName, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final String serviceIdentifier) {
+	
+	Date lastSyncDate;
+	int contentType;
+	int serviceId = Integer.parseInt(serviceIdentifier); //TODO replace this with right cast
+	
+	HashMap<String, SynchronizationPost> posts = null;
+	
+	if (resourceType == BibTex.class) {
+	    contentType = ConstantID.BIBTEX_CONTENT_TYPE.getId();
+	} else if (resourceType == Bookmark.class) {
+	    contentType = ConstantID.BOOKMARK_CONTENT_TYPE.getId();
+	} else {
+	    // unknown resource type
+	    //TODO exception here?
+	    return null;
+	}
+	
 	final DBSession session = this.openSession();
 	try {
-
-	    if(resourceType == BibTex.class) {
-		this.publicationDBManager.getSynchPostsForUser(userName, session);
-	    } else if(resourceType == Bookmark.class) {
-		this.bookmarkDBManager.getSynchPostsForUser(userName, session);
-	    }
+	    lastSyncDate = syncDBManager.getLastSynchronizationDate(userName, serviceId, contentType, session);
+	    syncDBManager.insertInitialSynchronization(userName, serviceId, contentType, session);
+	    posts = (HashMap<String, SynchronizationPost>) publicationDBManager.getSyncPostsMapForUser(userName, session);
 
 	} finally {
 	    session.close();
 	}
+	Synchronization sync = new Synchronization();
+	return sync.synchronize(posts, clientPosts, lastSyncDate, strategy);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncPostsMampForUser(java.lang.String)
+     */
+    @Override
+    public Map<String, SynchronizationPost> getSyncPostsMapForUser(String userName) {
+	final DBSession session = this.openSession();
+	HashMap<String, SynchronizationPost> posts = null;
+	try {
+	    posts = (HashMap<String, SynchronizationPost>)publicationDBManager.getSyncPostsMapForUser(userName, session);
+	} finally {
+	    session.close();
+	}
+	return posts;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#getCurrentSynchronizationData(java.lang.String, int, int)
+     */
+    @Override
+    public SynchronizationData getCurrentSynchronizationData (final String userName, final int serviceId, final int contentType) {
+	SynchronizationData syncData = null;
+	syncData = this.getLastSynchronizationData(userName, serviceId, contentType);
+	if(syncData != null && syncData.getStatus().equals("undone")) {
+	    return syncData;
+	}
 	return null;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#getLastSynchronizationData(java.lang.String, int, int)
+     */
+    public SynchronizationData getLastSynchronizationData (String userName, int serviceId, int contentType) {
+	final DBSession session = this.openSession();
+	SynchronizationData syncData = null;
+	try {
+	    syncData = syncDBManager.getCurrentSynchronization(userName, serviceId, contentType, session);
+	} finally {
+	    session.close();
+	}
+	return syncData;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#setCurrentSyncDone(org.bibsonomy.model.sync.SynchronizationData)
+     */
+    @Override
+    public void setCurrentSyncDone(final SynchronizationData data) {
+	final DBSession session = this.openSession();
+	try {
+	    syncDBManager.updateSyncData("updateSyncStatus", session, data);
+	} finally {
+	    session.close();
+	}
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#getLastSyncDate(java.lang.String, int, int)
+     */
+    @Override
+    public Date getCurrentSyncDate(String userName, int serviceId, int contentType) {
+	final DBSession session = this.openSession();
+	Date lastSyncDate = null;
+	try {
+	    lastSyncDate = syncDBManager.getLastSynchronizationDate(userName, serviceId, contentType, session);
+	    if (lastSyncDate == null) {
+	    	lastSyncDate = new Date(0);
+	    }
+	} finally {
+	    session.close();
+	}
+	return lastSyncDate;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#getPostsForSync(java.lang.Class, java.lang.String)
+     */
+    @Override
+    public List<SynchronizationPost> getPostsForSync (Class<? extends Resource> resourceType, String userName) {
+        final DBSession session = this.openSession();
+        List<SynchronizationPost> postList = null;
+        try {
+            
+    		if(resourceType == BibTex.class) {
+    		    postList = this.publicationDBManager.getSyncPostsListForUser(userName, session);
+    		} else if(resourceType == Bookmark.class) {
+    		    postList = this.bookmarkDBManager.getSyncPostsListForUser(userName, session);
+    		}
+    		
+        } finally {
+            session.close();
+        }
+        return postList;
     }
 
     /*

@@ -10,11 +10,6 @@
 		WHERE <include refid="bibtexSimHash"/>
 		ORDER BY b.rank
 	</select> -->
-	<select id="getSynchBibTex" resultMap="SynchronizationCommon.synchPost" parameterClass="bibtexParam">
-		SELECT <include refid="bibtexSimHashes"/>, b.date, b.change_date
-		FROM bibtex b
-		WHERE b.user_name = #userName#
-	</select>
 
 	<select id="getBibTexPopular" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, <include refid="bibtexSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
@@ -724,14 +719,14 @@
 	<insert id="insertBibTex" parameterClass="bibtexParam">
 		INSERT INTO bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
 		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
-		                    address, school, series, bibtexKey, `group`, date, user_name, url, description,
+		                    address, school, series, bibtexKey, `group`, date, change_date, user_name, url, description,
 		                    annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
 		                    privnote, scraperid, simhash0, simhash1, simhash2, simhash3)
 		VALUES (#resource.title#, #resource.entrytype#, #resource.author#, #resource.editor#, #resource.year#,
 		        #requestedContentId#, #resource.journal#, #resource.volume#, #resource.chapter#, #resource.edition#,
 		        #resource.month#, #resource.booktitle#, #resource.howpublished#, #resource.institution#,
 		        #resource.organization#, #resource.publisher#, #resource.address#, #resource.school#,
-		        #resource.series#, #resource.bibtexKey#, #groupId#, #date#, #userName#,
+		        #resource.series#, #resource.bibtexKey#, #groupId#, #date#, #changeDate#, #userName#,
 		        #resource.url#, #description#, #resource.annote#, #resource.note#, #resource.pages#,
 		        #resource.key#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
 		        #resource.type#, #resource.day#, #resource.privnote#, #resource.scraperId#, #resource.simHash0#, #resource.simHash1#,

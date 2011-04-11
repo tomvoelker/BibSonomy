@@ -4,163 +4,111 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bibsonomy.model.synch.SynchronizationPost;
-import org.bibsonomy.model.synch.SynchronizationStates;
+import org.bibsonomy.model.sync.ConflictResolutionStrategy;
+import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.sync.SynchronizationStates;
 
 /**
  * @author wla
  * @version $Id$
  */
-public abstract class Synchronization {
+public class Synchronization {
+    
+    /*private final HashMap<String, SynchronizationPost> serverPosts;
+    private final List<SynchronizationPost> clientPosts;
+    private final Date lastSyncDate;
+    boolean synchronizationSucsessful = false;
+    
+    ConflictResolutionStrategy conflicStrategy;*/
+    
+   /* public Synchronization(HashMap<String, SynchronizationPost> serverPosts, List<SynchronizationPost> clientPosts, Date lastSynchronizationDate, ConflictResolutionStrategy conflictStrategy) {
+	this.serverPosts =  serverPosts;
+	this.clientPosts = clientPosts;
+	this.lastSync = lastSynchronizationDate;
+	this.conflicStrategy = conflictStrategy;
+    }*/
+    
 
-    private ConflictResolutionStrategy conflictStrategy;
-
-    /**
-     * 
-     * @param clientList list of client SynchPosts
-     * @param serverList list of server SynchPosts 
-     * @param synchDate date of the last synchronization
-     * @return list of SynchPosts with set synchronization state.
-     */
-    public List<SynchronizationPost> synchronizePosts(List<SynchronizationPost> clientList,
-	    List<SynchronizationPost> serverList, Date synchDate) {
-	/*
-	 * create hashmap form server posts for efficient search
-	 */
-	HashMap<String, SynchronizationPost> serverPosts = new HashMap<String, SynchronizationPost>();
-	for (SynchronizationPost post : serverList) {
-	    serverPosts.put(post.getInterHash(), post);
-	}
-	
-	/*
-	 * TODO plan:
-	 *	try to find every client post on server. If found them -> synchronize and remove from server map.
-	 *	Else is this a new post in client or deleted from server. Handle this case.
-	 *	Every remaining post in server map is new or deleted from client. Handle this case and add 
-	 *	required posts to client list.
-	 */
-
-	/*
-	 * check all posts from client, remove founded posts from server map
-	 */
-	for (SynchronizationPost post : clientList) {
-	    if (serverPosts.containsKey(post.getInterHash())) {// possibly same post is found 
-
-		switch (synchronizeTwoPosts(post,
-			serverPosts.get(post.getInterHash()), synchDate)) {
-		//TODO finish this switch statement
-		case OK:
-		    serverPosts.remove(post.getInterHash());
+    public List<SynchronizationPost> synchronize(HashMap<String, SynchronizationPost> serverPosts, List<SynchronizationPost> clientPosts, Date lastSyncDate, ConflictResolutionStrategy conflictStrategy) {
+	for (SynchronizationPost clientPost : clientPosts) {
+	    SynchronizationPost serverPost = serverPosts.get(clientPost.getIntraHash());
+	    
+	    /*no such post on server*/
+	    if (serverPost == null) {
+		/*clientpost is older than last synchronization -> post was deleted on server*/
+		if (clientPost.getCreateDate().compareTo(lastSyncDate) < 0) {
+		    clientPost.setState(SynchronizationStates.DELETE_CLIENT);
+		    continue;
+		} else {
+		    clientPost.setState(SynchronizationStates.CREATE);
+		    continue;
+		}
+	    }
+	    
+	    /*changed on server since last sync */
+	   if (serverPost.getChangeDate().compareTo(lastSyncDate) > 0) {
+	       if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0) {
+		   switch (conflictStrategy) {
+		case CLIENT_WINS:
+		    clientPost.setState(SynchronizationStates.UPDATE);
 		    break;
-		case UPDATE:
+		case SERVER_WINS:
+		    clientPost.setState(SynchronizationStates.UPDATE_CLIENT);
 		    break;
-		case UPDATE_CLIENT:
+		case ASK_USER:
+		    clientPost.setState(SynchronizationStates.ASK);
 		    break;
-		case ASK:
+		case FIRST_WINS:
+		    if(clientPost.getChangeDate().compareTo(serverPost.getChangeDate()) < 0) {
+			clientPost.setState(SynchronizationStates.UPDATE);
+		    } else {
+			clientPost.setState(SynchronizationStates.UPDATE_CLIENT);
+		    }
+		    break;
+		case LAST_WINS:
+		    if(clientPost.getChangeDate().compareTo(serverPost.getChangeDate()) > 0) {
+			clientPost.setState(SynchronizationStates.UPDATE);
+		    } else {
+			clientPost.setState(SynchronizationStates.UPDATE_CLIENT);
+		    }
 		    break;
 		default:
+		    clientPost.setState(SynchronizationStates.UNDEFINED);
 		    break;
 		}
-
-	    } else { // no such post found
-		if (post.getCreateDate().getTime() < synchDate.getTime()) { // was deleted on server
-		    //TODO hier check for conflict
-		    post.setStatus(SynchronizationStates.DELETE_CLIENT);
-		} else { // is new post
-		    post.setStatus(SynchronizationStates.CREATE);
-		}
-	    }
+		   
+	       } else {
+		   clientPost.setState(SynchronizationStates.UPDATE_CLIENT);
+	       }
+	   } else {
+	       if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0) {
+		   clientPost.setState(SynchronizationStates.UPDATE);
+	       } else {
+		   clientPost.setState(SynchronizationStates.OK);
+	       }
+	       
+	   }
+	   serverPosts.remove(serverPost.getIntraHash());
+	    
 	}
-
-	return clientList;
-    }
-
-    private SynchronizationStates synchronizeTwoPosts(SynchronizationPost clientPost, SynchronizationPost serverPost, Date synchDate) {
 	
 	/*
-	 * if same posts, nothing to do
+	 * handle post, which do not exist on client
 	 */
-	if (clientPost.same(serverPost)) { // posts are same, nothing to do
-	    clientPost.setStatus(SynchronizationStates.OK);
-	    return SynchronizationStates.OK;
-	}
-
-	
-	if (clientPost.getIntraHash().equals(serverPost.getIntraHash())) { // same post but was changed
-	    int timeIndex = clientPost.getChangeDate().compareTo(
-		    serverPost.getChangeDate());
+	for (SynchronizationPost serverPost : serverPosts.values()) {
 	    
-	    if (timeIndex > 0) { // client has newer version	
-		/* check server has also changes since last synchronization */
-		timeIndex = serverPost.getChangeDate().compareTo(synchDate);
-		if (timeIndex > 0) { // server also changed, confilct situation
-		    
-		    switch (conflictStrategy) {
-		    case ASK_USER:
-			clientPost.setStatus(SynchronizationStates.ASK);
-			return SynchronizationStates.ASK;
-		    case FIRST_WINS:
-		    case SERVER_WINS:
-			clientPost.setStatus(SynchronizationStates.UPDATE_CLIENT);
-			return SynchronizationStates.UPDATE_CLIENT;
-		    case LAST_WINS:
-		    case CLIENT_WINS:
-			clientPost.setStatus(SynchronizationStates.UPDATE);
-			return SynchronizationStates.UPDATE;
-		    }
-		    
-		} else if (timeIndex <= 0) { // server was not changed -> update on server
-		    clientPost.setStatus(SynchronizationStates.UPDATE);
-		    return SynchronizationStates.UPDATE;
-		}
-
-	    } else if (timeIndex < 0) { // server has newer version
-		/* check client has also changes since last synchronization */
-		timeIndex = clientPost.getChangeDate().compareTo(synchDate);
-		if (timeIndex > 0 ) { //client also changed, conflict situation
-		    switch (conflictStrategy) {
-		    case ASK_USER:
-			clientPost.setStatus(SynchronizationStates.ASK);
-			return SynchronizationStates.ASK;
-		    case FIRST_WINS: 
-		    case CLIENT_WINS:
-			clientPost.setStatus(SynchronizationStates.UPDATE);
-			return SynchronizationStates.UPDATE;
-		    case LAST_WINS: 
-		    case SERVER_WINS:
-			clientPost.setStatus(SynchronizationStates.UPDATE_CLIENT);
-			return SynchronizationStates.UPDATE_CLIENT;
-		    } 
-		} else if (timeIndex <= 0) { // client was not changed -> update on client
-		    clientPost.setStatus(SynchronizationStates.UPDATE);
-		    return SynchronizationStates.UPDATE;
-		}
-
-	    } else { // same changeDate, same hashes, something is wrong
-		     // TODO what to do in this case?
-		return SynchronizationStates.UNDEFINED;
+	    /*
+	     * post is older than lastSyncDate
+	     */
+	    if (serverPost.getCreateDate().compareTo(lastSyncDate) < 0) {
+		serverPost.setState(SynchronizationStates.DELETE);
+	    } else {
+		serverPost.setState(SynchronizationStates.CREATE_CLIENT);
 	    }
-	} else { // TODO different posts? or more comparations possible? maybe
-		 // same create date?
-	    return SynchronizationStates.UNDEFINED;
+	    clientPosts.add(serverPost);
 	}
-	return SynchronizationStates.UNDEFINED;
-
-    }
-
-    /**
-     * @param conflictStrategy
-     *            the conflictStrategy to set
-     */
-    public void setConflictStrategy(ConflictResolutionStrategy conflictStrategy) {
-	this.conflictStrategy = conflictStrategy;
-    }
-
-    /**
-     * @return the conflictStrategy
-     */
-    public ConflictResolutionStrategy getConflictStrategy() {
-	return conflictStrategy;
+	
+	return clientPosts;
     }
 
 }

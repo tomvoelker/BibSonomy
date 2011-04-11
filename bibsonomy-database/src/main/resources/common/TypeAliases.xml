@@ -23,8 +23,10 @@
 	<typeAlias alias="review"			  type="org.bibsonomy.model.Review" />
 	
 	<!-- Synchronization -->
-	<typeAlias alias="synchResource"	  type="org.bibsonomy.model.synch.SynchronizationResource"/>
-	<typeAlias alias="synchPost"		  type="org.bibsonomy.model.synch.SynchronizationPost" />	
+	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />
+	<typeAlias alias="syncPost"			  type="org.bibsonomy.model.sync.SynchronizationPost" />	
+	<typeAlias alias="syncParam"		  type="org.bibsonomy.sync.SyncParam" />
+	<typeAlias alias="syncData"			  type="org.bibsonomy.model.sync.SynchronizationData" />	
 	
 	<!-- Extras -->
 	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />

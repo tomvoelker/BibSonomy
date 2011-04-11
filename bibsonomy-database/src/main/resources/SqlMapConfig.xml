@@ -43,6 +43,7 @@
 	<sqlMap resource="common/SynchronizationCommon.xml" />
 	<sqlMap resource="common/ReviewCommon.xml" />
 
+	<sqlMap resource="Synchronization.xml" />
 	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />
 	<sqlMap resource="TagRelation.xml" />

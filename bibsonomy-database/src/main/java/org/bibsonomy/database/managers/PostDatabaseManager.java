@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,7 +41,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.synch.SynchronizationPost;
+import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.services.searcher.ResourceSearch;
@@ -113,13 +114,24 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 
 	 * @param userName
 	 * @param session
-	 * @return list with all posts of type R
+	 * @return Map with all synchronization posts of type R
 	 */
-	public List<SynchronizationPost> getSynchPostsForUser (final String userName, final DBSession session) {
-	    //TODO make this method protected
-	   
-	    return this.queryForList("getSynch" +  this.resourceClassName,  this.createParam(userName, userName), session);
+	public Map<String, SynchronizationPost> getSyncPostsMapForUser (final String userName, final DBSession session) {
+	    String key = "intraHash";
+	    return queryForMap("getSync"+this.resourceClassName, this.createParam(userName, userName), key, session);
 	}
+	
+	/**
+	 * 
+	 * @param userName
+	 * @param session
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<SynchronizationPost> getSyncPostsListForUser (final String userName, final DBSession session) {
+	    return queryForList("getSync"+this.resourceClassName, this.createParam(userName, userName), session);
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	protected List<Post<R>> postList(final String query, final P param, final DBSession session) {
