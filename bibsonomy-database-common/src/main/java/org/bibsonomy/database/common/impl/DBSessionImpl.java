@@ -194,9 +194,8 @@ public class DBSessionImpl implements DBSession {
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.common.DBSession#queryForList(java.lang.String, java.lang.Object)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public List queryForList(final String query, final Object param) {
+	public List<?> queryForList(final String query, final Object param) {
 		try {
 			return this.sqlMap.queryForList(query, param);
 		} catch (final Exception e) {
@@ -375,7 +374,7 @@ public class DBSessionImpl implements DBSession {
 	public Map<?, ?> queryForMap(String query, Object param, String key) {
 	    try {
 		return this.sqlMap.queryForMap(query, param, key);
-	    } catch (SQLException e) {
+	    } catch (final Exception e) {
 		handleException(e, query);
 	    }
 	    return null;
@@ -389,7 +388,7 @@ public class DBSessionImpl implements DBSession {
 	public Map<?, ?> queryForMap(String query, Object param, String key, String value) {
 	    try {
 		return this.sqlMap.queryForMap(query, param, key, value);
-	    } catch (SQLException e) {
+	    } catch (final Exception e) {
 		handleException(e, query);
 	    }
 	    return null;
