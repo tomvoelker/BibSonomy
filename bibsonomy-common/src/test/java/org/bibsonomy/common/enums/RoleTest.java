@@ -52,6 +52,7 @@ public class RoleTest {
 
 		assertEquals(Role.ADMIN, Role.getRole(0));
 		assertEquals(Role.DEFAULT, Role.getRole(1));
+		assertEquals(Role.SYNC, Role.getRole("4"));
 		try {
 			Role.getRole(42);
 			fail("Should throw exception");

@@ -28,17 +28,18 @@ package org.bibsonomy.common.enums;
  * @version $Id$
  */
 public enum Role {
-
-	/** When a new user registers, he has this role. */
-	DEFAULT(1),
 	/** Is allowed to use admin pages. */
 	ADMIN(0),
+	/** When a new user registers, he has this role. */
+	DEFAULT(1),
 	/** Not logged in. */
 	NOBODY(2),
 	/** deleted account */
-	DELETED(3);
+	DELETED(3),
+	/** Is allowed to modify/set the date of a post during synchronization. **/
+	SYNC(4);
 
-	private static final Role[] map = new Role[] { ADMIN, DEFAULT, NOBODY, DELETED};
+	private static final Role[] map = new Role[] {ADMIN, DEFAULT, NOBODY, DELETED, SYNC};
 	private final int role;
 
 	private Role(final int role) {
