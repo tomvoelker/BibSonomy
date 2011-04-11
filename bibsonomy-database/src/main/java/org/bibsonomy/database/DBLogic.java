@@ -2198,9 +2198,9 @@ public class DBLogic implements LogicInterface, SynchLogicInterface {
 	try {
 	    if (BibTex.class == resourceType) {
 		return this.publicationDBManager.getExtendedFields(userName, intraHash, key, session);
-	    } else {
-		throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 	    }
+
+		throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 	} finally {
 	    session.close();
 	}
