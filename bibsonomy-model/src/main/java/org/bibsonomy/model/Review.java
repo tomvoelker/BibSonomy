@@ -11,14 +11,14 @@ public class Review {
 	/**
 	 * the max value of a review rating
 	 */
-	public static int MAX_REVIEW_RATING = 5;
+	public static double MAX_REVIEW_RATING = 5;
 	
 	/**
 	 * the min value of a review rating
 	 */
-	public static int MIN_REVIEW_RATING = 0;
+	public static double MIN_REVIEW_RATING = 0;
 	
-	private int rating;
+	private double rating;
 	
 	private int helpful;
 
@@ -33,14 +33,14 @@ public class Review {
 	/**
 	 * @return the rating
 	 */
-	public int getRating() {
+	public double getRating() {
 		return this.rating;
 	}
 
 	/**
 	 * @param rating the rating to set
 	 */
-	public void setRating(final int rating) {
+	public void setRating(final double rating) {
 		this.rating = rating;
 	}
 
