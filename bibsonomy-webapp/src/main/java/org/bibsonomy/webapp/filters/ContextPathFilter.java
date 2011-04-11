@@ -85,6 +85,12 @@ public class ContextPathFilter implements Filter {
 		}
     }
 	
+    /**
+     * Can be used to log calls to the response.
+     * 
+     * @author rja
+     *
+     */
     protected static final class LoggingResponse extends HttpServletResponseWrapper {
     	protected final Log log = LogFactory.getLog(LoggingResponse.class);
     	
@@ -106,11 +112,11 @@ public class ContextPathFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		/*
-		 * If we have HTTP servlet request we wrap it into our own class to 
-		 * modify certain calls which the context path.
+		 * If we have an HTTP servlet request we wrap it into our own class to 
+		 * modify certain calls whose results could contain the context path.
 		 */
-		if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
-			chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), new LoggingResponse((HttpServletResponse) response));	
+		if (request instanceof HttpServletRequest) {
+			chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), response);	
 		} else {
 			chain.doFilter(request, response);
 		}
