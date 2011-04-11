@@ -38,10 +38,9 @@ function init_tagbox(show, sort, minfreq, requUser) {
   tagbox.parentNode.insertBefore(span, tagbox);
 }
 
-function attachChangeTagBox(mode) { return(function() {	changeTagBox(mode);	})}
+function attachChangeTagBox(mode) { return(function() {	changeTagBox(mode);	});}
 function changeTagBox(mode) {
   var request = ajaxInit();
-  //alert("petetr : " + mode + " | "+ getStyleItem(mode, style_show));
 
 	if(mode == "list" || mode == "cloud"){
 		sendStyleRequ("style", mode);
@@ -90,7 +89,7 @@ function getStyleItem(style, style_arr) {
 	
 	return style_sort;
 }
-function attachMinUsertags(count) { return(function() { minUsertags(count);})}
+function attachMinUsertags(count) { return(function() { minUsertags(count);});}
 
 function getMinUsertagsLink (count) {
 	var node = document.createElement("a");
@@ -115,7 +114,7 @@ function getMinTagsLink (count) {
 // create minfreq links for users (which are loaded via AJAX)
 function showUserMinfreq(count, currUser) {
 	
-	var minfreqList = document.createElement("li")
+	var minfreqList = document.createElement("li");
 
 	minfreqList.appendChild(document.createTextNode(" (" + getString("tagbox.minfreq") + "  "));
 	
@@ -148,7 +147,7 @@ function showUserMinfreq(count, currUser) {
 
 // create default minfreq links
 function showMinfreq() {
-	var minfreqList = document.createElement("li")
+	var minfreqList = document.createElement("li");
 	
 	minfreqList.appendChild(document.createTextNode(" (" + getString("tagbox.minfreq") + "  "));
 
@@ -346,7 +345,7 @@ function handleMinfreqResponse(request) {
 				replaceTags(request);
 			}
 		}
-	}
+	};
 }
 
 function replaceTags (request) {
@@ -374,7 +373,7 @@ function replaceTags (request) {
 }
 
 function minUsertags(minfreq) {
-	sendMinfreqRequ(minfreq)
+	sendMinfreqRequ(minfreq);
 	showMinfreq(minfreq);
 }
 
@@ -404,24 +403,24 @@ function naviSwitchSpecial(target) {
 	headlineNode.setAttribute("id", "path");
     
 	// create a node with projectname default values
-	var projectNode = document.createElement("a");
-	projectNode.setAttribute("href", "/");
-	projectNode.setAttribute("rel", "Start_js");
-	projectNode.appendChild(document.createTextNode(projectName));
-	headlineNode.appendChild(projectNode);
+	var pN = document.createElement("a");
+	pN.setAttribute("href", "/");
+	pN.setAttribute("rel", "Start_js");
+	pN.appendChild(document.createTextNode(projectName));
+	headlineNode.appendChild(pN);
 	headlineNode.appendChild(document.createTextNode(" :: "));
 
 	// create form as container for dropdown- and textfields
-	var formNode = document.createElement("form");
-	formNode.setAttribute("id", "specialsearch");
-	formNode.setAttribute("method", "get");
-	formNode.setAttribute("action", "/redirect");
+	var fN = document.createElement("form");
+	fN.setAttribute("id", "specialsearch");
+	fN.setAttribute("method", "get");
+	fN.setAttribute("action", "/redirect");
 
 	// create dropdown box
-	var selectNode = document.createElement("select");
-	selectNode.setAttribute("name", "scope");
-	selectNode.setAttribute("size", "1");
-	selectNode.setAttribute("id", "scope");
+	var sN = document.createElement("select");
+	sN.setAttribute("name", "scope");
+	sN.setAttribute("size", "1");
+	sN.setAttribute("id", "scope");
 	
 	// select options
 	var options = new Array("tag", "user", "group", "author", "concept/tag", "bibtexkey", "search", "explicit_user", "explicit_group");
@@ -435,110 +434,108 @@ function naviSwitchSpecial(target) {
 		// exception for 'search' case
 		if(options[i] == "search") {
 			
-			var optionNode = document.createElement("option");
-			optionNode.setAttribute("value", options[i]);
-			optionNode.appendChild(document.createTextNode(getString("navi.search") + ":" + getString("navi.all")));
+			var oN = document.createElement("option");
+			oN.setAttribute("value", options[i]);
+			oN.appendChild(document.createTextNode(getString("navi.search") + ":" + getString("navi.all")));
 						
 			if(options[i] == target) {
-				optionNode.setAttribute("selected", "");
+				oN.setAttribute("selected", "");
 				hint = getString("navi.search.hint");
 			}
 		
-			selectNode.appendChild(optionNode);
+			sN.appendChild(oN);
 			
 		} else if(options[i] == "concept/tag") {
 			
-			var optionNode = document.createElement("option");
-			optionNode.setAttribute("value", options[i]);
-			optionNode.appendChild(document.createTextNode(getString("navi.concept")));			
+			var oN = document.createElement("option");
+			oN.setAttribute("value", options[i]);
+			oN.appendChild(document.createTextNode(getString("navi.concept")));			
 			
 			if(options[i] == target) {
-				optionNode.setAttribute("selected", "");
+				oN.setAttribute("selected", "");
 				hint = getString("navi.concept.hint");
 			}
 		
-			selectNode.appendChild(optionNode);
+			sN.appendChild(oN);
 			
 		} else if(options[i] == "explicit_user") {
 			
 			if(username != "" && username != null) {
-				var optionNode = document.createElement("option");
-				optionNode.setAttribute("value", "user:" + username);
-				optionNode.appendChild(document.createTextNode(getString("navi.search") + ":" + username));							
+				var oN = document.createElement("option");
+				oN.setAttribute("value", "user:" + username);
+				oN.appendChild(document.createTextNode(getString("navi.search") + ":" + username));							
 			
 				if(options[i] == target) {
-					optionNode.setAttribute("selected", "");
+					oN.setAttribute("selected", "");
 					hint = getString("navi.search.hint");	
 				}
 		
-				selectNode.appendChild(optionNode);
+				sN.appendChild(oN);
 			}
 			
 		} else if(options[i] == "explicit_group") {
 			for(var j = 0; j < gOptions.length; ++j) {
-				var optionNode = document.createElement("option");
-				optionNode.setAttribute("value", "group:" + gOptions[j]);
-				optionNode.appendChild(document.createTextNode(getString("navi.search") + ":" + gOptions[j]));		
+				var oN = document.createElement("option");
+				oN.setAttribute("value", "group:" + gOptions[j]);
+				oN.appendChild(document.createTextNode(getString("navi.search") + ":" + gOptions[j]));		
 				
 				if(gOptions[j] == target) {
-					optionNode.setAttribute("selected", "");
+					oN.setAttribute("selected", "");
 					hint = getString("navi.search.hint");	
 				}
 				
-				selectNode.appendChild(optionNode);
+				sN.appendChild(oN);
 			}
 		} else {
 			
-			var optionNode = document.createElement("option");
-			optionNode.setAttribute("value", options[i]);
-			optionNode.appendChild(document.createTextNode(getString("navi." + options[i])));			
+			var oN = document.createElement("option");
+			oN.setAttribute("value", options[i]);
+			oN.appendChild(document.createTextNode(getString("navi." + options[i])));			
 			
 			if(options[i] == target) {
-				optionNode.setAttribute("selected", "");
+				oN.setAttribute("selected", "");
 				hint = getString("navi." + options[i] + ".hint");
 			}
 		
-			selectNode.appendChild(optionNode);
+			sN.appendChild(oN);
 		}		
 	}
 	
 	// append dropdown box and spacer
-	formNode.appendChild(selectNode);
-	formNode.appendChild(document.createTextNode(" :: "));
+	fN.appendChild(sN);
+	fN.appendChild(document.createTextNode(" :: "));
 	
 	// create and append textfield and spacer
-	var inpfNode = document.createElement("input");
-	inpfNode.setAttribute("type", "text");
-	inpfNode.setAttribute("id", "inpf");
-	inpfNode.setAttribute("name", "search");
-	inpfNode.setAttribute("size", "30");
+	var iN = document.createElement("input");
+	iN.setAttribute("type", "text");
+	iN.setAttribute("id", "inpf");
+	iN.setAttribute("name", "search");
+	iN.setAttribute("size", "30");
 	
 	if(document.getElementById("inpf") != null) {
-		inpfValue = document.getElementById("inpf").value;
+		var iV = document.getElementById("inpf").value;
 
-		if(inpfValue == getString("navi.search.hint") || inpfValue == getString("navi.tag.hint")
-			|| inpfValue == getString("navi.user.hint") || inpfValue == getString("navi.group.hint")
-			|| inpfValue == getString("navi.author.hint") || inpfValue == getString("navi.concept.hint")
-			|| !inpfValue) {
+		if(iV == getString("navi.search.hint") 
+				|| iV == getString("navi.tag.hint")
+				|| iV == getString("navi.user.hint") 
+				|| iV == getString("navi.group.hint")
+				|| iV == getString("navi.author.hint") 
+				|| iV == getString("navi.concept.hint")
+				|| !iV) {
 			
-			inpfValue = hint;
-    		inpfNode.style.color = "#aaaaaa";
-    		inpfNode.onmousedown = clear_input;
-    		inpfNode.onkeypress  = clear_input;					
+			iV = hint;
+    		iN.style.color = "#aaaaaa";
+    		iN.onmousedown = clear_input;
+    		iN.onkeypress  = clear_input;					
 		}
 			
-		inpfNode.value = inpfValue;
-		inpfNode.value = inpfNode.value;
+		iN.value = iV;
 	}
 	
-   	formNode.appendChild(inpfNode);
-	headlineNode.appendChild(formNode);
+   	fN.appendChild(iN);
+	headlineNode.appendChild(fN);
 	headlineNode.appendChild(document.createTextNode(" "));
 
-	// insert new navi
-	// 2008/12/17, fei: this one is buggy!
-	// body.insertBefore(headlineNode, bar);
-    
 	// clone old navigation path and save it in a global variable for later restoring
 	curr_navi = bar.cloneNode(true);
 
@@ -546,19 +543,14 @@ function naviSwitchSpecial(target) {
 	bar.replaceChild(headlineNode, document.getElementById("heading"));
 	headlineNode.id="heading";
 
-	// remove old navigation path
-	// 2008/12/18, fei: commented out, as navigation path is still needed
-	// body.removeChild(bar);
-	
 	// set focus to the input field
-	inpfNode.focus();
+	iN.focus();
 	
 	// if the user uses opera, there is a workaround to set the cursor position
 	if(window.opera)
-		inpfNode.select();
+		iN.select();
 	
 	// unselect text
-	inpfNode.value = inpfNode.value;
+	iN.value = iN.value;
 	
 }
-
