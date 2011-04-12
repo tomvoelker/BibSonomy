@@ -14,8 +14,6 @@
 	 	|
 	 	+-->
 	<alias name="swordService_${project.theme}" alias="swordService"/>
-	
-	<alias name="${project.bean.captcha}" alias="captcha"/>	
 
 	<!--+ 
 		|
