@@ -287,7 +287,15 @@
 		<property name="password" value="${auth.cookie.cryptkey}" />
 	</bean>
 	
-	<bean id="ldapBindAuthenticator" class="org.springframework.security.ldap.authentication.BindAuthenticator">
+	<!--+ 
+	 	|
+	 	| Authenticator config for LDAP
+	 	| We have two options: directly create the DN pattern to find the user
+	 	| (simpleLdapBindAuthenticator) or first do a search using a filter
+	 	| (searchLdapBindAuthenticator).
+	 	|
+	 	+-->
+	<bean id="simpleLdapBindAuthenticator" class="org.springframework.security.ldap.authentication.BindAuthenticator">
 		<constructor-arg ref="contextSource" />
 		<property name="userDnPatterns">
 			<list>
@@ -295,9 +303,20 @@
 			</list>
 		</property>
 	</bean>
+	<bean id="ldapUserSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+		<constructor-arg value="${auth.ldap.userSearchBase}" />
+		<constructor-arg value="${auth.ldap.userSearchFilter}" />
+		<constructor-arg ref="contextSource" />
+	</bean>
+	<bean id="searchLdapBindAuthenticator" class="org.springframework.security.ldap.authentication.BindAuthenticator">
+		<constructor-arg ref="contextSource" />
+		<property name="userSearch" ref="ldapUserSearch" />
+	</bean>
+	<!-- configure the used authenticator using the property "auth.ldap.authenticator" -->
+	<alias name="${auth.ldap.authenticator}" alias="ldapAuthenticator"/>
 
 	<bean id="ldapAuthProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
-		<constructor-arg ref="ldapBindAuthenticator" />
+		<constructor-arg ref="ldapAuthenticator" />
 		<property name="userDetailsContextMapper" ref="ldapUserDetailsMapper" />
 		<property name="hideUserNotFoundExceptions" value="false" />
 	</bean>
