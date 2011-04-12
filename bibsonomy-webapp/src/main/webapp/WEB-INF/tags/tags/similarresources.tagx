@@ -12,7 +12,19 @@
 	
 	<jsp:directive.attribute name="url" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="method" type="java.lang.String" required="true"/>
-	<fmt:message key="resources.similar" var="resources_title"/> 
+	
+	<fmt:message key="resources.similar" var="resources_title"/>
+	
+	<!--+
+		|
+		| JavaScript to call PIA
+		| 
+	 	+-->
+	<script type="text/javascript" src="${resdir}/javascript/jqSOAPClient.js"><!--  --></script>
+  	<script type="text/javascript" src="${resdir}/javascript/x2j.js"><!--  --></script>
+  	<script type="text/javascript" src="${resdir}/javascript/callPia.js"><!--  --></script>	
+	
+	 
 	<script type="text/javascript">
     <![CDATA[
              $(document).ready(
