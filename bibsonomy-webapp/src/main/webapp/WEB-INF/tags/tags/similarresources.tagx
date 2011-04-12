@@ -10,6 +10,14 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
+	
+	<!-- 
+	
+		Shows similar resources in the sidebar. Currently disabled, since the 
+		PIA webservice does not work.
+	
+	 -->
+	
 	<jsp:directive.attribute name="url" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="method" type="java.lang.String" required="true"/>
 	
