@@ -70,6 +70,7 @@ foreach my $file (@files) {
     # open javascript localized strings file
     open(JS, "> ./localized_strings_$locale.js");
     print STDERR "writing localized_strings_$locale.js ... ";
+    print JS "// use the getString() method for localization!\n";
     print JS "var LocalizedStrings = {";
     
     open(M, "< $file");
