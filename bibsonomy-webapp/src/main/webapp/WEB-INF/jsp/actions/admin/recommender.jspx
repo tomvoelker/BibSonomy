@@ -29,7 +29,6 @@
 		
 			
 		<jsp:attribute name="content">
-			<script type="text/javascript" src="${resdir}/javascript/adminrecommender.js">&amp;nbsp;</script>
 
 
 <!-- Navi for tabselection -->

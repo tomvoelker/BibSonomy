@@ -1,12 +1,12 @@
 // general functions for all resource types
 
 
-/**
- * Ajax callback function for inserting recommended tags:
- *    1) insert tags to form's recommendations field
- *    2) append recommended tags to potential suggestions
- *    3) enable recommendation reload button
- */
+function clearTagField() {
+ 	var sg = document.getElementById("tagField");
+	while(sg.hasChildNodes()) 
+		sg.removeChild(sg.firstChild);
+}
+
 function handleRecommendedTags(msg) {
 	var tagSuggestions = [];
 	var target = 'tagField';
