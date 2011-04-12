@@ -62,7 +62,10 @@
 				<script type="text/javascript" src="${resdir}/javascript/jquery_corner.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale}.js">&amp;nbsp;</script>				
 				<script type="text/javascript" src="${resdir}/javascript/functions.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&amp;nbsp;</script>
+				<!-- include tooltip JavaScript only for users that have tooltips enabled -->
+				<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
+					<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&amp;nbsp;</script>
+				</c:if>
 				<script type="text/javascript" src="${resdir}/javascript/style.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/chrome.js">&amp;nbsp;</script>
 	            <script type="text/javascript" src="${resdir}/javascript/jquery.textarearesizer.js">&amp;nbsp;</script>
