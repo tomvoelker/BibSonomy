@@ -57,9 +57,9 @@
 				</c:if>
 							
 				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
-				<!-- localized javascript messages -->
 				<script type="text/javascript" src="${resdir}/javascript/jquery_142_min.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/jquery_corner.js">&amp;nbsp;</script>
+				<!-- localized JavaScript messages -->
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale}.js">&amp;nbsp;</script>				
 				<script type="text/javascript" src="${resdir}/javascript/functions.js">&amp;nbsp;</script>
 				<!-- include tooltip JavaScript only for users that have tooltips enabled -->
