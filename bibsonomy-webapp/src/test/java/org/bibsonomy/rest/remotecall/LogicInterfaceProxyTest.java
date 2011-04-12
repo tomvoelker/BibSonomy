@@ -79,9 +79,9 @@ import org.mortbay.resource.Resource;
  *  so that we don't have to modify several locations when a new property 
  *  is added that is to be excluded
  * 
+ * @version $Id$
  * @author Jens Illig
  * @author Christian Kramer
- *
  */
 public class LogicInterfaceProxyTest implements LogicInterface {
 	
@@ -89,9 +89,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 * FIXME: clean up this mess :-(
 	 */
 	private static final String COMMON_USER_PROPERTIES = "apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|inbox|profession|institution|place|spammer|settings|toClassify|updatedBy";
-	private static final String[] IGNORE1 = new String[] {"[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.realname", "[0].resource.scraperId", "[0].resource.openURL", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.institution", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId", "[0].user.activationCode"};
+	private static final String[] IGNORE1 = new String[] {"[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.realname", "[0].user.confidence", "[0].resource.scraperId", "[0].resource.openURL", "[0].resource.numberOfRatings", "[0].resource.rating", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.institution", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId", "[0].user.activationCode"};
 	private static final String[] IGNORE2 = new String[] {"activationCode", "apiKey", "email", "homepage", "password", "realname", "date", "openURL", "gender", "place", "IPAddress", "basket", "inbox", "profession", "spammer", "settings", "hobbies", "interests", "toClassify", "updatedBy", "reminderPassword", "openID", "ldapId", "institution"};
-	private static final String[] IGNORE3 = new String[] {"date", "user.activationCode", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.inbox", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.institution", "user.openURL", "user.place", "user.spammer", "user.settings", "user.algorithm", "user.prediction", "user.mode", "user.toClassify", "user.updatedBy", "user.reminderPassword", "user.openID", "user.ldapId"};
+	private static final String[] IGNORE3 = new String[] {"date", "user.activationCode", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "resource.numberOfRatings", "resource.rating", "user.IPAddress", "user.basket", "user.inbox", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.institution", "user.openURL", "user.place", "user.spammer", "user.confidence", "user.settings", "user.algorithm", "user.prediction", "user.mode", "user.toClassify", "user.updatedBy", "user.reminderPassword", "user.openID", "user.ldapId"};
 	
 	private static final int PORT = 41252;
 
@@ -99,7 +99,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	
 	private static final String LOGIN_USER_NAME = LogicInterfaceProxyTest.class.getSimpleName();
 	private static final String API_KEY = "A P I äöü K e y";
-	//private static final String API_KEY = "yetAnother Strange API KEY";
 	private static Server server;
 	private static String apiUrl;
 	private static LogicInterfaceFactory clientLogicFactory;
@@ -188,13 +187,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			this.excludeProperties = excludeProperties;
 		}
 		
+		@Override
 		public void appendTo(final StringBuffer arg0) {
 			arg0.append("hurz");
 		}
 
+		@Override
 		public boolean matches(final Object b) {
 			try {
-				ModelUtils.assertPropertyEquality(a, b, 5, null, excludeProperties);
+				ModelUtils.assertPropertyEquality(this.a, b, 5, null, excludeProperties);
 			} catch (final Throwable t) {
 				log.error(t,t);
 				return false;
@@ -223,6 +224,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		this.addUserToGroup("groupName", "userName");
 	}
 	
+	@Override
 	public void addUserToGroup(final String groupName, final String userName) {
 		// lowercasing the username is necessary here, as this is done
 		// by default when calling user.setName(userName)
@@ -241,6 +243,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createGroup(ModelUtils.getGroup());
 	}
 	
+	@Override
 	public String createGroup(final Group group) {
 
 		/*
@@ -267,15 +270,16 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createPosts(posts);
 	}
 	/**
-	 * runs the test defined by {@link #createPosts(List)} with a populated BibTex Post as the argument
+	 * runs the test defined by {@link #createPosts(List)} with a populated Publication Post as the argument
 	 */
 	@Test
-	public void createPostTestBibtex() {
+	public void createPostTestPublication() {
 		final List<Post<?>> posts = new LinkedList<Post<?>>();
 		posts.add(ModelUtils.generatePost(BibTex.class));
 		createPosts(posts);
 	}
 	
+	@Override
 	public List<String> createPosts(final List<Post<?>> posts) {
 		final Post<?> post = posts.get(0);
 		post.getUser().setName(LOGIN_USER_NAME);
@@ -297,6 +301,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void createUserTest() {
 		createUser(ModelUtils.getUser());
 	}
+	
+	@Override
 	public String createUser(final User user) {
 
 		final User eqUser = PropertyEqualityArgumentMatcher.eq(user, IGNORE2);
@@ -319,6 +325,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		deleteGroup("hurzelGroupName");
 	}
 	
+	@Override
 	public void deleteGroup(final String groupName) {
 		serverLogic.deleteGroup(groupName);
 		EasyMock.replay(serverLogic);
@@ -335,6 +342,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		deletePosts("hurzelUserName", Collections.singletonList(ModelUtils.getBookmark().getIntraHash()));
 	}
 	
+	@Override
 	public void deletePosts(final String userName, final List<String> resourceHashes) {
 		serverLogic.deletePosts(userName, resourceHashes);
 		EasyMock.replay(serverLogic);
@@ -351,6 +359,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		deleteUser("hurzelUserName");
 	}
 	
+	@Override
 	public void deleteUser(final String userName) {
 		serverLogic.deleteUser(userName);
 		EasyMock.replay(serverLogic);
@@ -359,6 +368,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		assertLogin();
 	}
 
+	@Override
 	public User getAuthenticatedUser() {
 		// no need to test this as it is part of the client
 		return null;
@@ -372,6 +382,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		getGroupDetails("hurzelGroupName");
 	}
 	
+	@Override
 	public Group getGroupDetails(final String groupName) {
 		final Group returnedGroupExpectation = ModelUtils.getGroup();
 		
@@ -407,6 +418,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		getGroups(64, 129);
 	}
 	
+	@Override
 	public List<Group> getGroups(final int start, final int end) {
 		final List<Group> expectedList = new ArrayList<Group>();
 		expectedList.add(ModelUtils.getGroup());
@@ -443,13 +455,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		getPostDetails(ModelUtils.getBibTex().getIntraHash(), "testUser");
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public Post<? extends org.bibsonomy.model.Resource> getPostDetails(final String resourceHash, final String userName) {
-		final Post<BibTex> expectedBibtexPost = ModelUtils.generatePost(BibTex.class);
+		final Post<BibTex> expectedPublicationPost = ModelUtils.generatePost(BibTex.class);
 		final Post<Bookmark> expectedBookmarkPost = ModelUtils.generatePost(Bookmark.class);
 		
 		try {
-			EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBibtexPost);
+			EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedPublicationPost);
 		} catch (ResourceNotFoundException ex) {
 			// ignore
 		} catch (ResourceMovedException ex) {
@@ -464,15 +477,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		}
 		EasyMock.replay(serverLogic);
 		
-		Post<? extends org.bibsonomy.model.Resource> returnedBibtexPost = null;
+		Post<? extends org.bibsonomy.model.Resource> returnedPublicationPost = null;
 		try {
-			returnedBibtexPost = clientLogic.getPostDetails(resourceHash,userName);
+			returnedPublicationPost = clientLogic.getPostDetails(resourceHash,userName);
 		} catch (ResourceNotFoundException ex) {
 			// ignore
 		} catch (ResourceMovedException ex) {
 			// ignore
 		}
-		ModelUtils.assertPropertyEquality(expectedBibtexPost, returnedBibtexPost, 5, null, IGNORE3);
+		ModelUtils.assertPropertyEquality(expectedPublicationPost, returnedPublicationPost, 5, null, IGNORE3);
 		Post<? extends org.bibsonomy.model.Resource> returnedBookmarkPost = null;
 		try {
 			returnedBookmarkPost = clientLogic.getPostDetails(resourceHash,userName);
@@ -484,7 +497,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		ModelUtils.assertPropertyEquality(expectedBookmarkPost, returnedBookmarkPost, 5, null, IGNORE3);
 		EasyMock.verify(serverLogic);
 		assertLogin();
-		return returnedBibtexPost;
+		return returnedPublicationPost;
 	}
 	
 	/**
@@ -496,22 +509,23 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, FilterEntity, int, int, String)} with arguments as used for the getBibtexForGroupAndTag query
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, FilterEntity, int, int, String)} with arguments as used for the getPublicationForGroupAndTag query
 	 */
 	@Test
-	public void getPostsTestBibtexByGroupAndTag() {
+	public void getPostsTestPublicationByGroupAndTag() {
 		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, null, 0, 1, null);
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, FilterEntity, int, int, String)} with arguments as used for the getBibtexByHashForUser query 
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, FilterEntity, int, int, String)} with arguments as used for the getPublicationByHashForUser query 
 	 */
 	@Test
-	public void getPostsTestBibtexByUserAndHash() {
+	public void getPostsTestPublicationByUserAndHash() {
 		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, null, 0, 5, null);
 	}
 	
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		final List<Post<T>> expectedPosts = new ArrayList<Post<T>>();
@@ -527,7 +541,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.replay(serverLogic);
 
 		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, filter, start, end, search);
-		ModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|activationCode|reminderPassword|openID|ldapId|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL"));
+		ModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedPosts;
@@ -542,6 +556,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		getTagDetails("testzeug");
 	}	
 	
+	@Override
 	public Tag getTagDetails(final String tagName) {
 		final Tag expected = ModelUtils.getTag();		
 		EasyMock.expect(serverLogic.getTagDetails(tagName)).andReturn(expected);
@@ -563,6 +578,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		getTags(org.bibsonomy.model.Resource.class, GroupingEntity.GROUP, "testGroup", "regex", null, null, null, 4, 22, null, null);
 	}
 	
+	@Override
 	public List<Tag> getTags(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
 		final List<Tag> expected = ModelUtils.buildTagList(3, "testPrefix", 1);		
 		EasyMock.expect(serverLogic.getTags(resourceType, grouping, groupingName, regex, tags, null, order, start, end, null, null)).andReturn(expected);
@@ -583,6 +599,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		getUserDetails("usrName");
 	}
 	
+	@Override
 	public User getUserDetails(final String userName) {
 		final User expected = ModelUtils.getUser();		
 		EasyMock.expect(serverLogic.getUserDetails(userName)).andReturn(expected);
@@ -602,6 +619,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void deleteUserFromGroupTest() {
 		deleteUserFromGroup("grooouuup!", "userTest");
 	}
+	
+	@Override
 	public void deleteUserFromGroup(final String groupName, final String userName) {
 		serverLogic.deleteUserFromGroup(groupName, userName);
 		EasyMock.replay(serverLogic);
@@ -618,6 +637,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		updateGroup(ModelUtils.getGroup(), GroupUpdateOperation.UPDATE_ALL);
 	}
 	
+	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		/*
 		 * FIXME: remove this line. It is here only, because privlevel is not included 
@@ -634,10 +654,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #updatePosts(List, PostUpdateOperation)} with a fully populated Bibtex Post as argument
+	 * runs the test defined by {@link #updatePosts(List, PostUpdateOperation)} with a fully populated Publication Post as argument
 	 */
 	@Test
-	public void updatePostTestBibtex() {
+	public void updatePostTestPublication() {
 		final List<Post<?>> posts = new LinkedList<Post<?>>();
 		posts.add(ModelUtils.generatePost(BibTex.class));
 
@@ -655,6 +675,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 	}
 	
+	@Override
 	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 		final Post<?> post = posts.get(0);
 		post.getUser().setName(LOGIN_USER_NAME);
@@ -677,6 +698,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void updateUserTest() {
 		updateUser(ModelUtils.getUser(), UserUpdateOperation.UPDATE_ALL);
 	}
+	
+	@Override
 	public String updateUser(final User user, final UserUpdateOperation operation) {
 		EasyMock.expect(serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, IGNORE2))).andReturn("rVal");
 		EasyMock.replay(serverLogic);
@@ -684,70 +707,77 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
-	}
-	
-	
+	}	
 
+	@Override
 	public String createDocument(final Document doc, final String resourceHash) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
+	@Override
 	public Document getDocument(final String userName, final String fileHash) {
-		
+		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public void deleteDocument(final Document document, final String fileName) {
 		// TODO Auto-generated method stub
-		
 	}
 
+	@Override
 	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
 		// TODO Auto-generated method stub
-		
 	}
 
+	@Override
 	public void deleteInetAdressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
-		
 	}
 
+	@Override
 	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
+	@Override
 	public List<Tag> getConcepts(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
 	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
 
+	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
@@ -772,6 +802,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		getUsers(null, GroupingEntity.GROUP, "grpX", null, null, null, null, null, 1, 56);				
 	}	
 	
+	@Override
 	public List<User> getUsers(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
 		final List<User> expected = new ArrayList<User>(2);
 		expected.add(ModelUtils.getUser());
@@ -787,65 +818,74 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return returned;
 	}
 
+	@Override
 	public String getClassifierSettings(final ClassifierSettings key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
 		// TODO Auto-generated method stub		
 	}
 
+	@Override
 	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int interval) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List<User> getClassifierHistory(final String userName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List<User> getClassifierComparison(final int interval) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public int getPostStatistics(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
 	public String getOpenIDUser(final String openID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
+	@Override
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 	
+	@Override
 	public int getTagStatistics(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
 	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-
 	@Override
 	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -858,7 +898,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	@Override
 	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -894,12 +933,11 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 	}
 
-
 	@Override
 	public void deleteWiki(String userName) {
 		// TODO Auto-generated method stub
-		
 	}
+	
 	@Override
 	public List<Date> getWikiVersions(String userName) {
 		// TODO Auto-generated method stub
@@ -909,7 +947,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	@Override
 	public void createWiki(String userName, Wiki wiki) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -921,19 +958,16 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	@Override
 	public void updateWiki(String userName, Wiki wiki) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void createExtendedField(Class<? extends org.bibsonomy.model.Resource> resourceType, String userName, String intraHash, String key, String value) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void deleteExtendedField(Class<? extends org.bibsonomy.model.Resource> resourceType, String userName, String intraHash, String key, String value) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
