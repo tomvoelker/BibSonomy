@@ -66,7 +66,7 @@
    			
    			<div class="fsInner" >
    			
-   				<div style="float:right; width:50%">
+   				<div class="fsRight">
    							
 					<form:form id="settingImportForm" action="/import/delicious/v2/post?ckey=${ckey}" method="post">
 			 
@@ -109,7 +109,7 @@
 			  			</fieldset>
 					</form:form>
 	   			</div>
-	   			<div style="width:50%; margin-right:50%">
+	   			<div class="fsLeft">
 					<form:form id="settingImportForm" action="/import/bookmarks?ckey=${ckey}" method="post">
 		 
 						<fieldset style="margin:10px;">

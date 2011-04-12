@@ -22,6 +22,17 @@
 .fsOuter {
     padding: 0 10px 10px 10px;
 }
+
+.fsRight {
+	float:right;
+	width:50%;
+}
+
+.fsLeft {
+	width:50%;
+	margin-right:50%;
+}
+
 .fsInner, .fsHidden, .fsVisible {
     margin: 8px 0 0 0;
 }
