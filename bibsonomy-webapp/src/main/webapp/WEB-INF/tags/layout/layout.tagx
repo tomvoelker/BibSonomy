@@ -52,7 +52,6 @@
 				<c:if test="${not empty personalized and personalized == true}">
 					<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
 				</c:if>
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/faq.css" />
 				<c:if test="${not empty additionalCSS}">
 					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
 				</c:if>

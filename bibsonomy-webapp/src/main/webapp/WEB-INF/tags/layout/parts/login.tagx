@@ -11,33 +11,15 @@
 
 
 	<script type="text/javascript">
-		// store number of different authentication methods for later use
 		var authMethodsCount = ${fn:length(authConfig.authOrder)};
-		
 		<![CDATA[
-			$(document).ready(function(e) {
-				//
-				// make iconized dropdown list
-				//
-				try {
-					$("#loginSelect").msDropDown();
-				} catch(e) {
-					alert(e.message);
-				}
-			});
-
-			/**
-			 * show selected login form and hide all others
-			 */
+			$(document).ready(function(e) {try {$("#loginSelect").msDropDown();} catch(e) {}});
 			function quickSelectAuthMethod(authIndex) {
-				// activate selected login form and hide all others
 				for (var i=1; i<=authMethodsCount; i++) {
 					if (authIndex==i) {
-						// selected login form
 						$('#headLogin'+i).addClass('loginVisible');
 						$('#headLogin'+i).removeClass('loginInvisible');
 					} else {
-						// non-selected login form
 						$('#headLogin'+i).addClass('loginInvisible');
 						$('#headLogin'+i).removeClass('loginVisible');
 					}
@@ -50,29 +32,6 @@
 		| includes for image drop down list
 		+-->
 	<script type="text/javascript" src="${resdir}/javascript/uncompressed.jquery.dd.js">&amp;nbsp;</script>
-	
-
-	<!--+
-	    | 2010/11/30, fei FIXME: integrate styling information
-	    +-->
-	<link rel="stylesheet" type="text/css" href="${resdir}/css/login_style.css" />
-	<link rel="stylesheet" type="text/css" href="${resdir}/css/dd.css" />
-	
-	<style type="text/css">
-		.dd .ddTitle span.arrow {
-			background:url(${resdir}/image/dd_arrow.png) no-repeat 0 0; float:right; display:inline-block;width:16px; height:16px; cursor:pointer; 
-		}
-		
-		/* show selected login form */
-		.loginVisible {
-			display: block;
-		}
-		
-		/* hide unselected login form */
-		.loginInvisible {
-			display: none;
-		}
-	</style>
 	
 	<!--+
 	    | set message strings
@@ -143,14 +102,5 @@
 			<option value="${status.count}" title="${image_login_base}${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
 		</c:forEach>
 	</select>
-
-	<!-- switch to default login method -->
-	<!-- 
-	<script type="text/javascript">
-      <![CDATA[
-	    switchLogin('${authOrder}','','headlogin')
-	  ]]>
-	</script>
-	 -->
 
 </jsp:root>
