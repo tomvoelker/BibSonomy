@@ -86,7 +86,7 @@
 						fileName = fileName.substring(64);
 						var fileDiv = "&lt;div class='fsRow' id='file_"+counter+"'&gt;&lt;span class='documentFileName'&gt;"+fileName+"&lt;/span&gt;"+
 						"&lt;span id='gif_"+counter+"'&gt; (&lt;a class='deleteTempDocument' href='/ajax/documents?fileHash="+fileHash+"&amp;ckey="+
-							ckey.val()+"&amp;temp=true&amp;fileID="+counter+"&amp;action=delete'&gt; "+LocalizedStrings["post.bibtex.delete"]+"&lt;/a&gt;)&lt;/span&gt;&lt;/div&gt;";
+							ckey.val()+"&amp;temp=true&amp;fileID="+counter+"&amp;action=delete'&gt; "+getString("post.bibtex.delete")+"&lt;/a&gt;)&lt;/span&gt;&lt;/div&gt;";
 						$("#upload").append(fileDiv);
 						$(".deleteTempDocument").live("click", deleteFunction);
 						$("#upload").show();
