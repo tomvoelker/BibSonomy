@@ -223,7 +223,7 @@
 			<map>
 				<entry key="/homepage">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"><value>${project.bean.homepageController}</value></property>
+						<property name="controllerBeanName" value="${project.bean.homepageController}"/>
 					</bean>
 				</entry>
 				<entry key="/settings">
