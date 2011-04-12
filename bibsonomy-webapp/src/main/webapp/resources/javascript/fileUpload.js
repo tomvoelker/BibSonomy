@@ -1,4 +1,4 @@
-// file upload on /bibtex/HASH/USER
+//file upload on /bibtex/HASH/USER
 $(function(){
 	$(".deleteDocument").click(deleteLinkClicked);
 });	
@@ -6,7 +6,7 @@ $(function(){
 function deleteLinkClicked () {
 	var button = $(this);
 	$.get($(button).attr("href"), {}, function(data) {
-		var status=$("status", data).text()
+		var status=$("status", data).text();
 		if(status=="error"){
 			alert($("reason", data).text());
 		} else {
@@ -30,7 +30,10 @@ $(function(){
 			return false;
 		}
 		var intraHash=$(".intraHash").val();
-		var input="&lt;form class='upform' action='/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=" + intraHash +"' method='POST' enctype='multipart/form-data'&gt;&lt;input class='fu' type='file' name='file'/&gt;&lt;/form&gt;";
+		var input="<form class='upform' action='/ajax/documents?ckey=" + fuCkey +
+		"&temp=false&intraHash=" + intraHash + 
+		"' method='POST' enctype='multipart/form-data'>" + 
+		"<input class='fu' type='file' name='file'/></form>";
 
 		$("#inputDiv").append($(input));
 		$(".fu").change(fileSelected);
@@ -52,27 +55,26 @@ function fileSelected(obj){
 	});
 
 	if(fileExist){
-
-		alert(LocalizedStrings["post.bibtex.fileExists"]);
+		alert(getString("post.bibtex.fileExists"));
 		$(form).remove();
 		return;
 	}
-	var options = {
-			dataType: "xml",
-			success: uploadRequestSuccessful		
-	}
-	$(form).ajaxSubmit(options);
+	$(form).ajaxSubmit({
+		dataType: "xml",
+		success: uploadRequestSuccessful		
+	});
 	$(form).hide();
 	var id = replaceInvalidChrs(fileName);
 	var resdir = $(".resdir");
-	var div = "&lt;div class='fsRow' id='" + id +"' &gt;" + fileName  + "&lt;img alt='uploading...' src='"+resdir.val()+"/image/ajax_loader.gif' /&gt; &lt;/div&gt;";
+	var div = "<div class='fsRow' id='" + id +"' >" + fileName  + 
+	"<img alt='uploading...' src='"+resdir.val()+"/image/ajax_loader.gif' /></div>";
 	$("#files").append($(div));
 } 
 
 function replaceInvalidChrs (input){
-	var iChars = "!@#$%^&amp;*()+=-[]\\\';,./{}|\":&gt;&lt;?~_"; 
+	var iChars = "!@#$%^&*()+=-[]\\\';,./{}|\":><?~_"; 
 	var output = "";
-	for (var i = 0; i &lt; input.length; i++) {
+	for (var i = 0; i < input.length; i++) {
 		if (iChars.indexOf(input.charAt(i)) != -1) {
 			output += input.charCodeAt(i);
 		} else {
@@ -99,11 +101,9 @@ function uploadRequestSuccessful(data) {
 		var fileName=$("filename", data).text();
 
 		var resdir = $(".resdir").val();
-		var deleteMsg=LocalizedStrings["bibtex.actions.private_document.delete"];
-		var div = "&lt;div class='fsRow'&gt;&lt;a class='documentFileName' href='/documents/${command.bibtex.list[0].resource.intraHash}/${mtl:encodeURI(command.bibtex.list[0].user.name)}/"+ 
-		fileName + "'&gt;&lt;img alt='" + LocalizedStrings["bibtex.actions.private_document.download"] + "' src='"+ resdir + "/image/document-txt-blue.png' style='float: left;'/&gt;" +
-		fileName + "&lt;/a&gt; (&lt;a class='deleteDocument' href='/ajax/documents?intraHash=${post.resource.intraHash}&amp;fileName="+ fileName + 
-		"&amp;ckey=${ckey}&amp;temp=false&amp;action=delete'&gt;" + deleteMsg + "&lt;/a&gt;)&lt;/div&gt;";
+		var deleteMsg=getString("bibtex.actions.private_document.delete");
+		var div = "<div class='fsRow'><a class='documentFileName' href='/documents/" + fuIntraHash + "/" + fuUserName + "/" + fileName + "'><img alt='" + getString("bibtex.actions.private_document.download") + "' src='"+ resdir + "/image/document-txt-blue.png' style='float: left;'/>" +
+		fileName + "</a> (<a class='deleteDocument' href='/ajax/documents?intraHash=" + fuIntraHash + "&fileName="+ fileName + 	"&ckey=" + ckey + "&temp=false&action=delete'>" + deleteMsg + "</a>)</div>";
 		$("#files").append(div);
 		$(".deleteDocument").click(deleteLinkClicked);
 		var id = replaceInvalidChrs(fileName);

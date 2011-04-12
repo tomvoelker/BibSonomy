@@ -32,7 +32,7 @@
 		
 		var input="<input class='fu' type='file' name='file'/>;";
 		if (duplicate) {
-			errorData.msg = LocalizedStrings["post.bibtex.fileExists"];
+			errorData.msg = getString("post.bibtex.fileExists");
 			displayFileErrorBox(errorData);
 			$(".fu").remove();
 			var input="<input class='fu' type='file' name='file'/>;";
@@ -105,7 +105,7 @@
 		$("#gif_"+fileID).hide();
 		$("#file_"+fileID).
 		append(" (").
-		append($("<a class='deleteTempDocument' href='/ajax/documents?fileHash="+fileHash+"&amp;ckey="+ckey+"&amp;temp=true&amp;fileID="+fileID+"&amp;action=delete'>"+LocalizedStrings["post.bibtex.delete"]+"</a>")).
+		append($("<a class='deleteTempDocument' href='/ajax/documents?fileHash="+fileHash+"&amp;ckey="+ckey+"&amp;temp=true&amp;fileID="+fileID+"&amp;action=delete'>"+getString("post.bibtex.delete")+"</a>")).
 		append(")").
 		prepend($('<img src="'+resdir.val()+'/image/file_status_okay.png"/>'));
 		$(".deleteTempDocument").live("click", deleteFunction);
