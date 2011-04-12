@@ -1,12 +1,3 @@
-/**
-*
-* This small js file should catch clicks on "follow this user" links
-* and send request per ajax to the controller.
-*
-* $author: Christian Kramer
-*
-*/
-
 function addFollower(name, ckey){
 	$.ajax({  
 		type: "POST",  
