@@ -488,35 +488,22 @@ function naviSwitchSpecial(target) {
 
 	if(document.getElementById("inpf") != null) {
 		var iV = document.getElementById("inpf").value;
-
-		if(iV == getString("navi.search.hint") 
-				|| iV == getString("navi.tag.hint")
-				|| iV == getString("navi.user.hint") 
-				|| iV == getString("navi.group.hint")
-				|| iV == getString("navi.author.hint") 
-				|| iV == getString("navi.concept.hint")
-				|| !iV) {
-
-			iV = hint;
-			iN.style.color = "#aaaaaa";
-			iN.onmousedown = clear_input;
-			iN.onkeypress  = clear_input;					
-		}
-
 		iN.value = iV;
 	}
-
+	
 	fN.appendChild(iN);
 	headlineNode.appendChild(fN);
 	headlineNode.appendChild(document.createTextNode(" "));
-
 	// clone old navigation path and save it in a global variable for later restoring
 	curr_navi = bar.cloneNode(true);
 
 	// display new path element
 	bar.replaceChild(headlineNode, document.getElementById("heading"));
 	headlineNode.id="heading";
-
+	 
+	$(iN).descrInputLabel({});
+	$(sN).bind('change', function(){setSearchInputLabel(this);}).trigger('change');
+	
 	// set focus to the input field
 	iN.focus();
 
@@ -526,5 +513,4 @@ function naviSwitchSpecial(target) {
 
 	// unselect text
 	iN.value = iN.value;
-
 }

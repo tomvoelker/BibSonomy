@@ -167,18 +167,18 @@
 					      <form:label cssClass="fsLabel" path="relationsEdit.upper">
 					      	<buttons:help message="edittags.help.enterSuperTag" />
 					      </form:label>
-					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.upper" id="insert_up" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" value="${supertag}"/>
+					      <form:input cssClass="fsInput fsSmall descriptiveLabel" path="relationsEdit.upper" id="insert_up" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id);" value="${supertag}"/>
 					      <span style="float:left;">&#8592;</span>
 					      		        
 					      <form:label cssClass="fsLabel" path="relationsEdit.lower">
 					      	<buttons:help message="edittags.help.enterSubTag" />
 					      </form:label>
-					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.lower" id="insert_lo" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" value="${subtag}"/>				    
+					      <form:input cssClass="fsInput fsSmall descriptiveLabel" path="relationsEdit.lower" id="insert_lo" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id);" value="${subtag}"/>				    
 					    </div>
 
 			    			<fmt:message var="insertRelation" key="edittags.button.insertRelations"/>
 							<input type="submit" value="${insertRelation}" /><c:out value=" "/>
-							<input type="reset" value="${reset}" />
+							<input type="reset"  onclick="var b='descriptiveLabel';$('#insert_up').addClass(b);$('#insert_lo').addClass(b);" value="${reset}" />
 							<input type="hidden" name="ckey" value="${ckey}"/>
 							<input type="hidden" name="forcedAction" value="2"/>
 							<input type="hidden" name="relationsEdit.forcedAction" value="0"/>
@@ -196,16 +196,16 @@
 					      <form:label cssClass="fsLabel" path="relationsEdit.upper">
 					      	<buttons:help message="edittags.help.enterSuperTag" />
 					      </form:label>
-					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.upper" id="delete_up" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" value="${supertag}"/>					      <span style="float:left;">&#8592;</span>
+					      <form:input cssClass="fsInput fsSmall descriptiveLabel" path="relationsEdit.upper" id="delete_up" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id);" value="${supertag}"/>					      <span style="float:left;">&#8592;</span>
 					      		        
 					      <form:label cssClass="fsLabel" path="relationsEdit.lower"><buttons:help message="edittags.help.enterSubTag" /></form:label>
-					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.lower" id="delete_lo" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" value="${subtag}"/>		        
+					      <form:input cssClass="fsInput fsSmall descriptiveLabel" path="relationsEdit.lower" id="delete_lo" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id);" value="${subtag}"/>		        
 					    
 					    </div>
 			    		
 							<fmt:message var="deleteRelation" key="edittags.button.deleteRelations"/>
 			    			<input type="submit" value="${deleteRelation}" /><c:out value=" "/>
-			    			<input type="reset" value="${reset}" />
+			    			<input type="reset" onclick="var b='descriptiveLabel';$('#delete_up').addClass(b);$('#delete_lo').addClass(b);" value="${reset}" />
 			    			<input type="hidden" name="ckey" value="${ckey}"/>
 							<input type="hidden" name="forcedAction" value="2"/>
 							<input type="hidden" name="relationsEdit.forcedAction" value="1"/>
@@ -236,7 +236,6 @@
 	 		</ul>
 
 			<script type="text/javascript">
-			
 				add_toggle();
 	  			disableHandler();
 	  			add_toggle_relations();

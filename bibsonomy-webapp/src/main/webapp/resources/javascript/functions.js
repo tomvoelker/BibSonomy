@@ -11,6 +11,11 @@ var pwd_id_postfix = "_form_copy";
 
 function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, lckey, lprojectName) {
   add_hints();
+  
+  // add a callback to every input that has the descriptiveLabel class 
+  // so that hints gets removed after focussing the input
+  $('.descriptiveLabel').each(function(){$(this).descrInputLabel({});});
+  
   sidebar = document.getElementById("sidebar");
   tagbox  = document.getElementById("tagbox");
   ckey = lckey;
@@ -33,7 +38,6 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	    init_sidebar();
 	  }
   }
-  
   add_tags_toggle();
 }
 
@@ -149,17 +153,18 @@ function maximizeById(id) {
  * 	by IE's security policy
  * 
  * @param el 
- * 		password/text form element we'd like to switched 
+ * 		password/text form element we'd like to switch 
  * @return 
  * 		password/text corresponding form element
 **/
 function getFormTextCopy(el) {
-	el_copy = document.getElementById(el.id+pwd_id_postfix);
-	if(el.style!=null)
-		el_copy.style.width = el.style.width;
-    el_copy.onmousedown = clear_input_password;
-    el_copy.onkeypress  = clear_input_password;
-	return el_copy;
+	return $('#'+el.id+pwd_id_postfix).
+	css('color','#aaa').
+	width( $(el).width() ).
+	click(function(){
+		$(this).hide();
+		$('#'+el.id).css('position','relative').focus();
+	})[0];
 }
 
 // adds hints to input fields
@@ -168,91 +173,53 @@ function add_hints() {
   var el = document.getElementById("se");
   if (validElement(el) && (el.value == "" || el.value == getString("navi.search.hint"))) {
     // add hint
-    el.value       = getString("navi.search.hint");
-    el.style.color = "#aaaaaa";
-    el.onmousedown = clear_input;
-    el.onkeypress  = clear_input;
+    el.value		= getString("navi.search.hint");
+    el.className 	= 'descriptiveLabel '+el.className;
   }
   // for username input field
   el = document.getElementById("un");
   if (validElement(el, 'input') && el.name == "username" && (el.value == "" || el.value == getString("navi.username"))) {
-    el.value = getString("navi.username");
-    el.style.color = "#aaaaaa";
-    el.onmousedown = clear_input;
-    el.onkeypress  = clear_input;
-    el.onblur = function() {
-    			document.getElementById("pw"+pwd_id_postfix).style.display = "none";
-    			var node_pwd_form = document.getElementById("pw");
-    			node_pwd_form.style.position = "relative";
-    			clear_node(node_pwd_form);
-    		};
+    el.value 		= getString("navi.username");
+    el.className 	= 'descriptiveLabel '+el.className;
+    // on blur of the user name input field set the password form in front of the fake password form
+    el.onblur 		= function() {$('#pw').css('position','relative');$('#pw'+pwd_id_postfix).hide();};
   }
   // for password input field
   el = document.getElementById("pw");
-  if (validElement(el, 'input') && el.name == "password" && (el.value == "" || el.value == getString("navi.password"))) {
+  if (validElement(el, 'input') && el.name == "password") {
 	el = getFormTextCopy(el);
     el.value = getString("navi.password");
-    el.style.color = "#aaaaaa";
   }
   // for username ldap input field
   el = document.getElementById("unldap");
   if (validElement(el, 'input') && el.name == "username" && (el.value == "" || el.value == getString("navi.username.ldap"))) {
     el.value = getString("navi.username.ldap");
-    el.style.color = "#aaaaaa";
-    el.onmousedown = clear_input;
-    el.onkeypress  = clear_input;
+    el.className = 'descriptiveLabel '+el.className;
   }
   // for password ldap input field
   el = document.getElementById("pwldap");
   if (validElement(el, 'input') && el.name == "password" && (el.value == "" || el.value == getString("navi.password.ldap"))) {
 	el = getFormTextCopy(el);
     el.value = getString("navi.password.ldap");
-    el.style.color = "#aaaaaa";
+    el.className = 'descriptiveLabel '+el.className;
   }
   // for openid input field
   el = document.getElementById("openID");
   if (validElement(el, 'input') && el.name == "openID" && (el.value == "" || el.value == getString("navi.openid"))) {
     el.value = getString("navi.openid");
-    el.style.color = "#aaaaaa";
-    el.onmousedown = clear_input;
-    el.onkeypress  = clear_input;
+    el.className = 'descriptiveLabel '+el.className;
   }
   // for tag input field
   el = document.getElementById("inpf");
   if (validElement(el, 'input') && (el.name == "tag" || el.name == "tags") && (el.value == "" || el.value == getString("navi.tag.hint"))) {
     el.value = getString("navi.tag.hint");
-    el.style.color = "#aaaaaa";
-    el.onmousedown = clear_input;
-    el.onkeypress  = clear_input;
+    el.className = 'descriptiveLabel '+el.className;
   }
   // specialsearch (tag, user, group, author, relation)
-  if (validElement(el, 'input') && el.name == "search" && (el.value == "" || el.value == getString("navi.author.hint") || el.value == getString("navi.tag.hint") 
-  		|| el.value == getString("navi.user.hint") || el.value == getString("navi.group.hint") || el.value == getString("navi.concept.hint") || getString("navi.bibtexkey.hint")) || (el != null && el.value == getString("navi.search.hint"))) {
-    var scope = document.getElementById("scope");
-    // add call to this method to dropdown box, so that hint changes, when box changes
-    if (scope) {
-	    scope.onmouseup = add_hints;
-	    scope.onkeyup   = add_hints;
-	    if (scope.value == "tag") {
-	      el.value = getString("navi.tag.hint");
-	    } else if (scope.value == "user") {
-	      el.value = getString("navi.user.hint");
-	    } else if (scope.value == "group") {
-	      el.value = getString("navi.group.hint");
-	    } else if (scope.value == "author") {
-	      el.value = getString("navi.author.hint");
-	    } else if (scope.value == "concept/tag") {
-	      el.value = getString("navi.concept.hint");
-	    } else if (scope.value == "bibtexkey") {
-	      el.value = getString("navi.bibtexkey.hint");
-	    } else if (scope.value.indexOf("user") != -1 || scope.value == "search") {
-	      el.value = getString("navi.search.hint");
-	    }    
-	    el.style.color = "#aaaaaa";
-	    el.onmousedown = clear_input;
-	    el.onkeypress  = clear_input;
-    }        
-  }  
+  var scope = null;
+  if (validElement(el, 'input') && el.name == 'search' && validElement((scope = document.getElementById("scope")), 'select')) {
+	  $(scope).bind("change", function(){setSearchInputLabel(this);}).trigger('change');
+  }
 }
 
 /**
@@ -270,37 +237,10 @@ function validElement(el, tagName) {
 			el.tagName.toUpperCase() == tagName.toUpperCase()));
 }
 
-/* removes hint and function from node */
-function clear_node(node) {
-  node.value       = "";
-  node.style.color = "#000000";
-  node.onmousedown = "";
-  node.onkeypress  = "";
-  node.focus();  
-}
-
-/* clear_node for events (if input field gets clicked) */
-function clear_input_password (event) {
-	  node_txt_form = xget_event(event);
-	  node_pwd_form = document.getElementById(
-			  node_txt_form.id.substr(0, node_txt_form.id.length-pwd_id_postfix.length)
-	  );
-	  node_txt_form.style.display = "none";
-	  node_pwd_form.style.position = "relative";
-	  clear_node(node_pwd_form);
-}
-
-/* clear_node for events (if input field gets clicked) */
-function clear_input (event) {
-  clear_node(xget_event(event));
-}
-
-/* clear_node for inpf (tags) - is toggled, when submit button gets pressed */
+/* if value equals hint clear value when submit button gets pressed */
 function clear_tags () {
   var tag = document.getElementById("inpf");
-  if (tag.value == getString("navi.tag.hint")) {
-    clear_node(tag);
-  }
+  if (tag.value == getString("navi.tag.hint")) {tag.value='';}
 }
 
 /* sets the focus to the element with the given id */
@@ -310,7 +250,6 @@ function focus(id) {
     el.focus();
   }
 }
-
 
 /*
  * functions to toggle background color for required bibtex fields
@@ -2019,7 +1958,7 @@ function prepareErrorBoxes(className) {
 				    	 $(this).fadeIn("slow");    
 	       	  }
 	);
-	// this is a workaround because the tags input element's id is not 'tags' but 'inpf'
+	// this is a workaround because the tags input element's id is not 'tags.so-and-so' but 'inpf'
 	$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});  
 }
 
@@ -2033,7 +1972,7 @@ function displayFileErrorBox(data) {
 }
 
 /**
- * look for a match with the elements classes and a given class name
+ * look for a match comparing the element's classes with the given class name
  * 
  * @param el
  *            the element to match the class with
@@ -2095,17 +2034,76 @@ function getNextByClass(match_el, className) {
 		match_el = match_el.nextSibling;
 	}
 	return null;
-}	
+}
 
-function getPreviousByClass(match_el, className) {
-	while(match_el != null) {
-		if(match_el.tagName == 'DIV'){
-			if(cmpClass(match_el, className)) {
-				return match_el;
-			}
+/**
+ * 	removes the light-grey label - if present - after focussing the input
+ * 	(before allowing a form to submit we also check if the value equals the hint
+ * 	or an empty string on every input field with a 'label') 
+**/
 
-		}
-		match_el = match_el.previousSibling;
-	}
-	return null;
+(function($) {
+	$.fn.descrInputLabel = function(options) {
+        $(this).each(
+				function () {
+					var self = this;
+					var parentForm = getParentForm(self);
+					var inputValue = ((typeof options.valueCallback == 'function')?options.valueCallback:self.value);
+
+       				$(self).bind("focus", function() {
+						if($(self).hasClass( 'descriptiveLabel' )){self.value='';$(self).removeClass( 'descriptiveLabel' );}
+					});
+       				$(parentForm).submit(function() {
+						if($(self).hasClass( 'descriptiveLabel' ) || self.value=='') {
+							$(self).val('').removeClass( 'descriptiveLabel' ).trigger('focus');
+							return false;
+						}
+					});
+				}		
+			);
+	};
+})(jQuery);
+
+function overwriteLabel(el) {
+	value = el.val();
+	if ((!value.length 
+			|| value == getString("navi.author.hint") 
+			|| value == getString("navi.tag.hint") 
+			|| value == getString("navi.user.hint") 
+			|| value == getString("navi.group.hint") 
+			|| value == getString("navi.concept.hint") 
+  			|| value == getString("navi.bibtexkey.hint")) 
+  			|| (el != null && value == getString("navi.search.hint")))
+	  	return true;
+  	return false;
+}
+
+function setSearchInputLabel(scope) {
+	var search = $('input[name=search]');
+	if(!overwriteLabel(search))return;
+  		
+    if (scope.value == "tag") {
+    	search.val(getString("navi.tag.hint"));
+    } else if (scope.value == "user") {
+    	search.val(getString("navi.user.hint"));
+    } else if (scope.value == "group") {
+    	search.val(getString("navi.group.hint"));
+    } else if (scope.value == "author") {
+    	search.val(getString("navi.author.hint"));
+    } else if (scope.value == "concept/tag") {
+    	search.val(getString("navi.concept.hint"));
+    } else if (scope.value == "bibtexkey") {
+    	search.val(getString("navi.bibtexkey.hint"));
+    } else if (scope.value.indexOf("user") != -1 || scope.value == "search") {
+    	search.val(getString("navi.search.hint"));
+    }
+    
+    if(!search.hasClass('descriptiveLabel'))
+    	search.addClass('descriptiveLabel');
+    return search;
+}
+
+function getParentForm(el) {
+	el = ($(el).parent())[0];
+	return ((validElement(el, 'form'))?el:getParentForm(el)); 
 }
