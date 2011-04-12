@@ -24,6 +24,7 @@ public class MockLogicFactory implements LogicInterfaceFactory {
 		logic = li;
 	}
 	
+	@Override
 	public LogicInterface getLogicAccess(String loginName, String apiKey) {
 		requestedLoginName = loginName;
 		requestedApiKey = apiKey;
