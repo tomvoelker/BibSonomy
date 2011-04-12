@@ -23,7 +23,10 @@
 		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>
 		<jsp:body>
 			<head>
-		 		<c:set var="locale"><fmt:message key="meta.lang"/></c:set>
+				<c:set var="locale" scope="request"><!-- to have it on all pages we set the scope to "request" -->
+					<fmt:message key="meta.lang"/>
+				</c:set>
+				
 				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
 				<!--  set the viewport of the mobile device. disabled scaling -->
 				<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
