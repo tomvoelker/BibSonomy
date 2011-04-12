@@ -16,7 +16,6 @@
 	<head>
 		<meta content="text/html; charset=UTF-8" http-equiv="content-Type"/>
 		<link href="/resources/css/style.css" type="text/css" rel="stylesheet"/>
-		<link href="/resources/css/faq.css" type="text/css" rel="stylesheet"/>
 		<title>BibSonomy :: scraping service</title>
 	</head>
 	<body>
