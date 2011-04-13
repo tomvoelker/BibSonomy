@@ -338,10 +338,8 @@ div.help > a, div.help > b {
 	margin-bottom: 0.5ex;
 }
 
-.news .bmdesc {
-	font-size: 90%;
-	color: #000000;
-	display: block;
+.bmdesc {
+	color: #555;
 }
 
 ul.news  {
