@@ -46,8 +46,7 @@
 									<c:out value="${document.fileName}"/>
 								</a>
 								<c:out value=" ("/>
-								<!-- FIXME: deleteDocument() does not work -->
-								<a class="deleteDocument()" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete">
+								<a class="deleteDocument" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete">
 									<c:out value="${delete}"/>
 								</a>
 								<c:out value=")"/>
@@ -83,7 +82,8 @@
 							<li id="file_${status.count}">
 								<span class="documentFileName"><c:out value="${fn:substring(fileN, 64, fn:length(fileN))}"/></span>
 								<c:out value=" ("/>
-								<a onclick="$().deleteFunction()" class="deleteDocument" href="/ajax/documents?fileHash=${fn:substring(fileN, 0, 63)}&amp;ckey=${ckey}&amp;temp=true&amp;action=delete">
+								<!-- FIXME: deleteDocument() does not work -->
+								<a onclick="deleteFunction()" class="deleteDocument" href="/ajax/documents?fileHash=${fn:substring(fileN, 0, 63)}&amp;ckey=${ckey}&amp;temp=true&amp;action=delete">
 									<c:out value="${delete}"/>
 								</a>
 								<c:out value=")"/>
