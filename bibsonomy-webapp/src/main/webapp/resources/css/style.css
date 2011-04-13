@@ -634,8 +634,8 @@ li.bm {
 	font-size: 70%;
 }
 
-.bmtags { /*  font-weight:bold; */
-	
+.bmauthor {
+	color: #555555;	
 }
 
 .bmfoot {
