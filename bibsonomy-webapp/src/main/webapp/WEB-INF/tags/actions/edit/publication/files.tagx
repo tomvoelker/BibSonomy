@@ -40,15 +40,15 @@
 								});
 							});
 						</script>
-						<ul style="display:inline-block;"><c:forEach var="document" items="${command.post.resource.documents}">
+						<ul class="documents"><c:forEach var="document" items="${command.post.resource.documents}">
 							<li>
 								<a class="documentFileName" href="/documents/${command.post.resource.intraHash}/${mtl:encodeURI(command.post.user.name)}/${mtl:encodeURI(document.fileName)}">
-									<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left;"/>
 									<c:out value="${document.fileName}"/>
 								</a>
 								<c:out value=" ("/>
-								<a class="deleteDocument" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete">
-									${delete}
+								<!-- FIXME: deleteDocument() does not work -->
+								<a class="deleteDocument()" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete">
+									<c:out value="${delete}"/>
 								</a>
 								<c:out value=")"/>
 							</li>
@@ -68,75 +68,34 @@
 				</script>
 			</div>
 			
-			<c:if test="${not empty command.fileName}">
-				<c:forEach var="fileN" items="${command.fileName}">
-				<script type="text/javascript">
-					$(function() {
-						var fileName = "${fileN}";
-						var counterInput = $(".counter");	
-						var counter=counterInput.val();
-						var ckey=$(".ck");
-						counter++;
-						counterInput.val(counter);
-						var hiddenFileInput = "&lt;div id='file_"+counter+"'&gt;" +
-						"&lt;input class='tempFileName' name='fileName' value='" + fileName+"'/&gt;"+
-						"&lt;/div&gt;";
-						$(".addedFiles").append($(hiddenFileInput));
-						var fileHash = fileName.substring(0, 63);
-						fileName = fileName.substring(64);
-						var fileDiv = "&lt;div class='fsRow' id='file_"+counter+"'&gt;&lt;span class='documentFileName'&gt;"+fileName+"&lt;/span&gt;"+
-						"&lt;span id='gif_"+counter+"'&gt; (&lt;a class='deleteTempDocument' href='/ajax/documents?fileHash="+fileHash+"&amp;ckey="+
-							ckey.val()+"&amp;temp=true&amp;fileID="+counter+"&amp;action=delete'&gt; "+getString("post.bibtex.delete")+"&lt;/a&gt;)&lt;/span&gt;&lt;/div&gt;";
-						$("#upload").append(fileDiv);
-						$(".deleteTempDocument").live("click", deleteFunction);
-						$("#upload").show();
-						
-					});
-					
-					$(document).ready(
-							function(){
-								$("#upload").children('div:first').fadeOut();
-							}
-					);				
-					
-					function deleteFunction(){
-						var button = $(this);
-						$.get($(button).attr("href"), {}, function(data) {
-							var status=$("status", data).text();
-							var fileID=$("fileid", data).text();
-							if(status=="error"){
-								errorData.msg = $("reason", data).text();
-								displayFileErrorBox(errorData);
-							} else {
-								button.parent("div").remove();
-								$("#file_"+fileID).remove();
-								$("#uploadForm_"+fileID).remove();
-							}
-						}, "xml");
-						return false;
-					}
-				</script>
-				</c:forEach>
-			</c:if>
-			
-			<div id="gif" style="display:none;">
-				<img id='uploadGif' alt="uploading..." src="${resdir}/image/ajax_loader.gif" />
-			</div>
-			
-			<div id="upload" style="margin-left:20px;display:none;">
+			<div id="upload" class="fsRow">
+				<!-- stores the number of temporary files for JavaScript -->
+				<input class="counter" type="hidden" name="counter" value="0"/>
+				<input class="ck" type="hidden" name="ckey" value="${ckey}"/>
+
 				<div class="dissError initiallyHidden">
 					<span></span>
 				</div>
-				<div class="fsRow fsLabel" style="text-align:left;float:none;padding-top:5px;">
-					<fmt:message key="post.bibtex.addedFiles"/>
-				</div>
-				<ul><!-- list of files !--></ul>
+				<span class="fsLabel"><fmt:message key="post.bibtex.addedFiles"/></span>
+				<ul class="documents"><!-- list of files !-->
+					<c:if test="${not empty command.fileName}">
+						<c:forEach var="fileN" items="${command.fileName}" varStatus="status">
+							<li id="file_${status.count}">
+								<span class="documentFileName"><c:out value="${fn:substring(fileN, 64, fn:length(fileN))}"/></span>
+								<c:out value=" ("/>
+								<a onclick="$().deleteFunction()" class="deleteDocument" href="/ajax/documents?fileHash=${fn:substring(fileN, 0, 63)}&amp;ckey=${ckey}&amp;temp=true&amp;action=delete">
+									<c:out value="${delete}"/>
+								</a>
+								<c:out value=")"/>
+								<input type="hidden" class="tempFileName" value="${fn:escapeXml(fileN)}" name="fileName"/>
+							</li>
+							<!-- increase temporary file counter -->
+							<script type="text/javascript">$(".counter").val(${status.count});</script>
+						</c:forEach>
+					</c:if>				
+				
+				</ul>
 			</div>
-
-			<input class="ck" type="hidden" name="ckey" value="${ckey}"/>
-			<input class="resdir" type="hidden" name="resdir" value="${resdir}"/>
-			<input class="counter" type="hidden" name="counter" value="0"/>
-			<span class="addedFiles" style="display:none;"><!-- something to fill this --></span>
 						
 		</jsp:attribute>
 	</parts:fieldset>

@@ -124,7 +124,15 @@
 .dissError{
 	display:none;
 }
-
-.documentFileName{
-	font-size:80%;
+ul.documents {
+	 display:inline-block;
+}
+ul.documents > li {
+  list-style: inside url("/resources/image/document-txt-blue.png");	
+}
+ul.documents > li.loading {
+  list-style-image: url("/resources/image/ajax_loader.gif");
+}
+ul.documents > li.fileError {
+  list-style-image: url("/resources/image/file_status_error.png");
 }
