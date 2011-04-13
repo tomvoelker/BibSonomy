@@ -11,7 +11,12 @@
 # You can select another server by just giving its name,
 # e.g., "make gromit" deploys to gromit.
 #
-# Changes: 
+# Changes:
+# 2011-04-08 (rja):
+# - deployments to joe are also send out via e-mail
+# 2010-05-27 (dbe):
+# - moved definition of tomcat server url to settings.xml
+#   (profiles activated by -Dtomcat-server=XY) 
 # 2010-02-09 (rja):
 # - moved cleanup of WEB-INF/{lib,classes} into "clean" goal
 # - added "document" goal
@@ -27,13 +32,13 @@
 # environment variables
 export MAVEN_OPTS=-Xmx1024m -Xms512m
 export JAVA_HOME=/usr/lib/jvm/java-6-sun/
-export DEPLOY_SERVER=${MAKECMDGOALS}
 
 # programs
 MAVEN=mvn
 TEE=tee
 MAIL=mail
 JAVA=${JAVA_HOME}/bin/java
+DEPLOY_SERVER=${MAKECMDGOALS}
 
 # files
 TMPLOG=/tmp/deploy.log
@@ -77,21 +82,44 @@ gandalf: document mvn_deploy mail archive
 
 gromit: mvn_deploy 
 
+
 # TODO: document/mail/archive, too?
 odie: mvn_deploy
-joe: mvn_deploy
+joe: document mvn_deploy mail
 
+# when deploying to puma, we first need to open an ssh connection 
+puma: ssh_puma document mvn_deploy mail
+
+
+################################
+# SUBGOALS
+###############################
+
+#
+# deploy to tomcat server
+#
 mvn_deploy: clean
-	${MAVEN} -Dmaven.test.skip war:inplace tomcat:undeploy tomcat:deploy | ${TEE} -a ${TMPLOG}
+	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip tomcat:undeploy tomcat:deploy | ${TEE} -a ${TMPLOG}
 
+#
+# send notification mail
+#
 mail:
 	${MAIL} -s "[BibSonomy-Deploy] make ${MAKECMDGOALS}" ${RECIPIENT} -c ${CCRECIPIENTS} < ${TMPLOG}
 
+#
+# archive the deployed war file
+#
 archive:
 	for i in $(wildcard ${WARPATTERN}); do \
 		j=`echo $$i | sed "s/.*\///"`; \
 		cp $$i ${ARCHIVE}/${TODAY}_$$j; \
 	done
+#
+# open SSH connection with tunnel to PUMA tomcat
+#
+ssh_puma:
+	ssh -L 8077:bib-ws24.bibliothek.uni-kassel.de:8080 pumadeploy@puma.uni-kassel.de -p 30 -qTnN &
 
 #
 # Ask the user who he is and why he's deploying.
