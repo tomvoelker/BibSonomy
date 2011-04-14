@@ -1,7 +1,8 @@
 (function($) {
 	var errorData = new errorBoxData("#upload");
-	var ckey = $(".ck").val();
+	var ckey;
 	$.fn.documentUploader = function () {
+		ckey=$(".ck").val();
 		$(this).change(function(e){
 			var counter=$(".counter").val();
 			var fileName=$(this).val();
