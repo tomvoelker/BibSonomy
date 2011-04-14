@@ -33,6 +33,7 @@ import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * Use this Class to create a new group in bibsonomy.
@@ -62,7 +63,7 @@ public final class CreateGroupQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		RendererFactory.getRenderer(getRenderingFormat()).serializeGroup(sw, this.group, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_GROUPS, sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.POST, URL_GROUPS, StringUtils.toDefaultCharset(sw.toString()));
 		return null;
 	}
 	

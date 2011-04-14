@@ -37,6 +37,7 @@ import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * Use this Class to post a post. ;)
@@ -93,7 +94,7 @@ public final class CreatePostQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		RendererFactory.getRenderer(getRenderingFormat()).serializePost(sw, this.post, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + URL_POSTS, sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + URL_POSTS, StringUtils.toDefaultCharset(sw.toString()));
 		return null;
 	}
 	

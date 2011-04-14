@@ -32,6 +32,7 @@ import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * Use this Class to create a new concept
@@ -71,7 +72,7 @@ public class CreateConceptQuery extends AbstractQuery<String> {
 		}		
 		
 		url += "/" + this.groupingName + "/" + URL_CONCEPTS + "/" + this.conceptName;
-		this.downloadedDocument = performRequest(HttpMethod.POST, url, sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.POST, url, StringUtils.toDefaultCharset(sw.toString()));
 		return null;
 	}
 

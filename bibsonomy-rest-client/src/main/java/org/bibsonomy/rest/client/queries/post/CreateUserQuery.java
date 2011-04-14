@@ -33,6 +33,7 @@ import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * Use this Class to create a new user account in bibsonomy.
@@ -64,7 +65,7 @@ public final class CreateUserQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		RendererFactory.getRenderer(getRenderingFormat()).serializeUser(sw, this.user, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS, sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS, StringUtils.toDefaultCharset(sw.toString()));
 		return null;
 	}
 	

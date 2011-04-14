@@ -7,6 +7,7 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.util.StringUtils;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -81,7 +82,7 @@ public class CreateUserRelationshipQuery extends AbstractQuery<String> {
 		/*
 		 * perform request
 		 */
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + friendOrFollower + queryTag + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + friendOrFollower + queryTag + "?format=" + getRenderingFormat().toString().toLowerCase(), StringUtils.toDefaultCharset(StringUtils.toDefaultCharset(sw.toString())));
 		return null;
 
 	}
