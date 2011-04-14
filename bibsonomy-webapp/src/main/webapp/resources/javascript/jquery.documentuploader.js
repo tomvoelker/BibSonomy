@@ -15,7 +15,7 @@
 
 			// check already added files for duplicates
 			$(".upform").each(function () {
-				var oldFileName = $(this).find(".fu").val();
+				var oldFileName = $(this).find("#fu").val();
 				if (fileName == oldFileName) {
 					duplicate=true;
 				}
@@ -30,9 +30,8 @@
 			if (duplicate) {
 				errorData.msg = getString("post.bibtex.fileExists");
 				displayFileErrorBox(errorData);
-				$(".fu").remove();
-				$("#inputDiv").append($("<input class='fu' type='file' name='file'/>;"));
-				$(".fu").documentUploader();
+				$("#fu").replaceWith($("<input id='fu' type='file' name='file'/>"));
+				$("#fu").documentUploader();
 				return;
 			}
 
@@ -52,9 +51,9 @@
 					success: onRequestComplete		
 			};
 			$("#"+form).ajaxSubmit(options);
-
-			$("#inputDiv").append($("<input class='fu' type='file' name='file'/>;"));
-			$(".fu").documentUploader();
+			// FIXME: why is a new input field appended? Can't we just replace #fu?
+			$("#inputDiv").append($("<input id='fu' type='file' name='file'/>"));
+			$("#fu").documentUploader();
 
 		}); 
 
