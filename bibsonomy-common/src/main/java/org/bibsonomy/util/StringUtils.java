@@ -29,6 +29,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,6 +50,20 @@ public class StringUtils {
 	private static final Log LOGGER = LogFactory.getLog(StringUtils.class);
 	
 	private static final String DEFAULT_CHARSET = "UTF-8";
+	
+	/**
+	 * Encodes a string to UTF8
+	 * @param s the string which should be encoded
+	 * @return the encoded string or null
+	 */
+	public static String toDefaultCharset(String s) {
+		if(s != null) {
+			try {
+				return new String(s.getBytes(DEFAULT_CHARSET), Charset.forName(DEFAULT_CHARSET));
+			} catch (UnsupportedEncodingException e) {}
+		}
+		return null;
+	}	
 	
 	/**
 	 * Calculates the MD5-Hash of a String s and returns it encoded as a hex

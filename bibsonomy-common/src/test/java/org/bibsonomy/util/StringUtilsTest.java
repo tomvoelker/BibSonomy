@@ -28,6 +28,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +46,11 @@ public class StringUtilsTest {
 	private static final String TEST_VALUE1 = "test";
 	private static final String TEST_VALUE2 = "hurz";
 	private static final String SPECIAL_CHARS = "üöä!\"§$%&/()=,.-+#'´`";
+	/**
+	 * java standard charsets; see 
+	 * http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html
+	 */	
+	private static final String [] JAVA_STANDARD_CHARSETS = {"ISO-8859-1", "UTF-16BE", "UTF-16LE", "UTF-16", "UTF-8"};
 
 	/**
 	 * tests getMD5Hash
@@ -232,6 +239,24 @@ public class StringUtilsTest {
 		assertEquals("Foo Bar ", StringUtils.removeSingleNumbers("Foo Bar 000"));
 		assertEquals(" Foo Bar", StringUtils.removeSingleNumbers("012 Foo Bar"));
 		assertEquals("Foo Bar000", StringUtils.removeSingleNumbers("Foo Bar000"));
+	}
+	
+	/**
+	 * test method toDefaultCharset by creating strings using differnt charsets
+	 * and converting them back to utf-8
+	 */
+	@Test
+	public void testToDefaultCharset() {
+		try {
+			String encoded;
+			for (String charsetName : JAVA_STANDARD_CHARSETS) {	    		
+				encoded = new String(SPECIAL_CHARS.getBytes(charsetName), Charset.forName(charsetName));
+				assertEquals(SPECIAL_CHARS, StringUtils.toDefaultCharset(encoded));
+			}
+		}
+		catch (UnsupportedEncodingException ex) {
+			fail("Unsupported encoding exception occured: " + ex.getMessage());
+		}
 	}
 	
 }
