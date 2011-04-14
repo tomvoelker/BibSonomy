@@ -31,7 +31,7 @@
 	<!--+
 		| includes for image drop down list
 		+-->
-	<script type="text/javascript" src="${resdir}/javascript/uncompressed.jquery.dd.js">&amp;nbsp;</script>
+	<script type="text/javascript" src="${resdir}/javascript/jquery.dd.js">&amp;nbsp;</script>
 	
 	<!--+
 	    | set message strings
