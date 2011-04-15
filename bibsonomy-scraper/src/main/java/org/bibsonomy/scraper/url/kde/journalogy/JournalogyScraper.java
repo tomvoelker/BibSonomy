@@ -1,18 +1,11 @@
 package org.bibsonomy.scraper.url.kde.journalogy;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.CompositeScraper;
-import org.bibsonomy.scraper.KDEScraperFactory;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
