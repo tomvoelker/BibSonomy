@@ -44,7 +44,7 @@ public class RisToBibtexConverter {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String bsp2 = "Content-type: text/application/x-research-info-systems\n"+
+		String bsp2 = "Content-type: text/application/x-research-info-systems\n\n"+
 		"TY  - JOUR\n"+
 		"AU  - Gosse, Philippe\n"+
 		"TI  - Regression of Left Ventricular Hypertrophy: Should We Echo Echo[quest]\n"+
@@ -133,6 +133,7 @@ public class RisToBibtexConverter {
 					 */
 					if ((current.length() > 0)
 							&& !Character.isWhitespace(current.charAt(current.length() - 1))
+							&& fields[j + 1].length() > 0
 							&& !Character.isWhitespace(fields[j + 1].charAt(0))) {
 							current.append(' ');
 					}
