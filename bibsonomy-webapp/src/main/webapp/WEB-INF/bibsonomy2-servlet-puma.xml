@@ -101,7 +101,7 @@
 		<property name="classificator" ref="classificator"/>
 	</bean>
 	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificatorSingleton" scope="singleton">
-		<property name="classificationFilePath" value="${classifications.path}"/>
+		<property name="classificationFilePath" value="${sword.classifications.path}"/>
 	</bean>
 
 	<!--+ 
