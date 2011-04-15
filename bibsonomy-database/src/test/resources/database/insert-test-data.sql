@@ -60,31 +60,31 @@ INSERT INTO `bibtex` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `
 (14, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 2, '1815-12-10 00:00:00', 'testuser2',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', 'b71d5283dc7f4f59f306810e73e9bc9a', '', 'test entrytype', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0),
 (20, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '2009-10-08 14:35:01', 'testuser3',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', '891518b4900cd1832d77a0c8ae20dd14', '', 'inproceedings1', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2009-10-08 14:35:01', 0);
 
----
---- Data for synchronization tests
----
+--
+-- Data for synchronization tests
+--
 
----bibtex posts
+-- bibtex posts
 INSERT INTO `bibtex` (`content_id`, `user_name`, `simhash1`, `simhash2`, `change_date`, `date`) VALUES
---- post 1 "no changes" created and modified before last synchronization
+-- post 1 "no changes" created and modified before last synchronization
 (101, 'Syncuser1', '69f46427bfed611701eef5aed85f3a28', '6a486c3b5cf17466f984f8090077274c', '2011-01-31 14:32:00', '2011-01-10 14:32:00'),
---- post 2 "deleted on server" is not in the server database
---- post 3 "deleted on client" created and modified before last synchronization
+-- post 2 "deleted on server" is not in the server database
+-- post 3 "deleted on client" created and modified before last synchronization
 (103, 'Syncuser1', 'c4bcb6611057cbee895fde8474e86a92', 'b1629524db9c09f8b75af7ba83249980', '2011-01-10 14:33:00', '2011-01-10 14:55:00'),
---- post 4 "changed on server" created before, changed after the last scnchronization
+-- post 4 "changed on server" created before, changed after the last scnchronization
 (104, 'Syncuser1', '319872adc49bfeae3f799d29a18b0634', '11db3d75b9e07960658984f9b012d6d7', '2011-03-16 17:30:00', '2010-09-16 14:35:00'),
---- post 5 "changed on client" created and modified before last synchronization
+-- post 5 "changed on client" created and modified before last synchronization
 (105, 'Syncuser1', '2f0fc12a47ba98a11a2746376b118e48', '133de67269c9bfa71bde2b7615f0c1b3', '2010-02-05 17:23:00', '2009-12-31 23:59:00'),
---- post 6 "created on server" created and modified after last synchronization
+-- post 6 "created on server" created and modified after last synchronization
 (106, 'Syncuser1', '564c7c31f6a34e5dc3a1b0c17fe68c13', '08cdf0d0dcce9d07fd8d41ac6267cadf', '2011-03-18 11:20:00', '2011-03-18 11:20:00');
---- post 7 "created on client" is not in the server database
+-- post 7 "created on client" is not in the server database
 
---- synchronization datat table
+-- synchronization datat table
 INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`) VALUES 
 ('1', 'Syncuser1', '1', '2011-02-02 23:00:00', 'test synchronization'),
 ('1', 'Syncuser1', '2', '2011-02-02 23:55:00', 'test synchronization'),
 ('1', 'sync1', '2', '2011-02-02 23:00:00', 'test synchronization');
---- bookmark table data
+-- bookmark table data
 INSERT INTO `bookmark` (`content_id`, `user_name`, `book_url_hash`, `book_description`, `change_date`, `date`) VALUES
 (111, 'Syncuser1', '6232752de0376fb6692917faf2e0a41e', 'no changes', '2010-12-23 17:42:00', '2010-11-01 12:55:00'),
 (113, 'Syncuser1', '35b3ed178e437da1e93e2cac75333c67', 'deleted on client', '2011-01-04 13:30:00', '2011-01-01 00:01:00'),
@@ -92,7 +92,7 @@ INSERT INTO `bookmark` (`content_id`, `user_name`, `book_url_hash`, `book_descri
 (115, 'Syncuser1', 'c4bb293ee64fecf340db99b39f401008', 'changed on client', '2010-11-01 18:44:00', '2010-01-12 15:28:00'),
 (116, 'Syncuser1', 'c7c8d5f682a6f32b7b3be9f3986a1cba', 'created on server', '2011-03-18 11:55:00', '2011-03-18 11:55:00');
 
---- end of synchronization data
+-- end of synchronization data
 
 -- 
 -- Data for table `bibtexurls`
