@@ -536,7 +536,7 @@ INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
 
 -- 
 -- Data for table `user` 
--- the encrypted password for the users is "test"
+-- the encrypted password for the users is "test123"
 -- 
 
 
