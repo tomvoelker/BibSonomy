@@ -91,7 +91,7 @@
 	</URLTest>
 	<URLTest id="url_15">
 		<TestDescription>Scraping test for publications from ingentaconnect.com</TestDescription>
-		<URL>http://www.ingentaconnect.com/search/article?title=pagerank&amp;title_type=tka&amp;year_from=1998&amp;year_to=2007&amp;database=1&amp;pageSize=20&amp;index=3</URL>
+		<URL>http://www.ingentaconnect.com/search/article?title=articlerank&amp;title_type=tka&amp;year_from=1998&amp;year_to=2009&amp;database=1&amp;pageSize=20&amp;index=1</URL>
 		<BibFile>IngentaconnectScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 	</URLTest>
@@ -563,6 +563,8 @@
 		<URL>http://psycontent.metapress.com/content/q8224w5531843g47/?p=f138d31a46fb4998ac311bbed983ee05&amp;pi=0</URL>
 		<BibFile>PsyContentScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper</Scraper>
+		<!-- 404 -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_96">
 		<TestDescription>RSOC Scraper url test</TestDescription>
@@ -804,7 +806,7 @@
 	</URLTest>
 	<URLTest id="url_138">
 		<TestDescription>Url test for GoogleScholarScraper (Firefox plugin support)</TestDescription>
-		<URL>http://scholar.google.de/scholar.bib?hl=de&amp;lr=&amp;output=search&amp;q=info:uIi8lf4TwdUJ:scholar.google.com/&amp;output=citation&amp;oe=ASCII&amp;oi=citation</URL>
+		<URL>http://scholar.google.de/scholar.bib?q=info:zN5aQ90hwhYJ:scholar.google.com/&amp;output=citation&amp;hl=de&amp;as_sdt=0&amp;ct=citation&amp;cd=0</URL>
 		<BibFile>GoogleScholarScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper</Scraper>
 	</URLTest>
@@ -1148,6 +1150,27 @@
 		<URL>http://www.sciencemag.org/content/326/5956/1057</URL>
 		<BibFile>ScienceMagScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.sciencemag.ScienceMagScraper</Scraper>
+		<Enabled>true</Enabled>
+	</URLTest>
+	<URLTest id="url_193">
+		<TestDescription>test for JournalogyScraper</TestDescription>
+		<URL>http://academic.research.microsoft.com/Paper/13850916</URL>
+		<BibFile>JournalogyScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper</Scraper>
+		<Enabled>true</Enabled>
+	</URLTest>
+	<URLTest id="url_194">
+		<TestDescription>test for JournalogyScraper</TestDescription>
+		<URL>http://www.journalogy.org/Paper/372540</URL>
+		<BibFile>JournalogyScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper</Scraper>
+		<Enabled>true</Enabled>
+	</URLTest>
+	<URLTest id="url_195">
+		<TestDescription>test for JournalogyScraper</TestDescription>
+		<URL>http://academic.research.microsoft.com/Publication/16088645/</URL>
+		<BibFile>JournalogyScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
 </test:Tests>

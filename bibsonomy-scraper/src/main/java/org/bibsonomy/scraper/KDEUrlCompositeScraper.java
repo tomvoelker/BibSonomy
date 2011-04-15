@@ -62,6 +62,7 @@ import org.bibsonomy.scraper.url.kde.isi.IsiScraper;
 import org.bibsonomy.scraper.url.kde.iucr.IucrScraper;
 import org.bibsonomy.scraper.url.kde.iwap.IWAPonlineScraper;
 import org.bibsonomy.scraper.url.kde.jmlr.JMLRScraper;
+import org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper;
 import org.bibsonomy.scraper.url.kde.jstor.JStorScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.BibliographyScraper;
@@ -187,6 +188,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new CasesJournalScraper());
 		addScraper(new ElsevierhealthScraper());
 		addScraper(new AandAScraper());
+		addScraper(new JournalogyScraper());
 	}
 
 }
