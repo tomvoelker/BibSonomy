@@ -82,10 +82,9 @@
 		</jsp:attribute>
 				
 		<jsp:attribute name="content">
-		
 		<!-- display content -->
 		<c:forEach var="post" items="${command.bibtex.list}">
-			<resource:bibtexdetails post="${post}"/>
+			<resource:bibtexdetails post="${post}" referer="${command.referer}"/>
 		</c:forEach>
 		
 		</jsp:attribute>

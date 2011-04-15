@@ -78,7 +78,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	private TagRecommender tagRecommender;
 	private Captcha captcha;
 	protected RequestLogic requestLogic;
-	private URLGenerator urlGenerator;
+	protected URLGenerator urlGenerator;
 
 	/**
 	 * Returns an instance of the command the controller handles.
@@ -458,7 +458,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * send final redirect
 		 */
-		return this.finalRedirect(loginUserName, command.getReferer());
+		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
 
 	/**
@@ -624,11 +624,12 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * that URL (for whatever reason), we redirect to the user's page.
 	 * 
 	 * @param userName - the name of the loginUser
+	 * @param intraHash - the intra hash of the created/updated post
 	 * @param referer - the URL of the page the user is initially coming from
 	 *        
 	 * @return
 	 */
-	protected View finalRedirect(final String userName, final String referer) {
+	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer) {
 		/*
 		 * If there is no referer URL given, or if we come from a postBookmark/postPublication page, 
 		 * redirect to the user's home page. 
@@ -719,7 +720,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 */
 		this.createOrUpdateSuccess(command, loginUser, post);
 
-		return finalRedirect(loginUserName, command.getReferer()); 
+		return finalRedirect(loginUserName, post, command.getReferer()); 
 	}
 
 	/**

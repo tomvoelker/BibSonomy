@@ -49,6 +49,7 @@
 				<value>callback</value><!-- JSON?! -->
 				<value>format</value><!-- html, bib, publ, etc. -->
 				<value>layout</value>
+				<value>referer</value>
 				<value>formatEmbedded</value><!-- boolean! -->
 				<value>order</value><!-- folkrank, date, etc. -->
 				<value>personalized</value>

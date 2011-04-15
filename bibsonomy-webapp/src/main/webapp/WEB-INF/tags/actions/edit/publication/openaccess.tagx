@@ -13,6 +13,7 @@
 
     <jsp:directive.attribute name="tags" type="java.lang.String" required="false"/>
     <jsp:directive.attribute name="bibtex" type="org.bibsonomy.model.BibTex" required="true"/>
+    <jsp:directive.attribute name="referer" type="java.lang.String" required="true"/>
 
 	<!--+
 		|
@@ -28,7 +29,10 @@
 	 	+-->
 	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
 	<c:if test="${not empty jsOpenAccess}">
-
+	
+	<c:if test="${not empty referer}">
+	<h1><p><a href="${referer}" > ZURUECK ZUR ALTEN HOMEPAGE</a></p></h1>
+	</c:if>
 <!-- 
 		<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.openaccess" >
 			<jsp:attribute name="content">
@@ -39,7 +43,7 @@
 
 					<div id="openAccessMetaDataContainer">
 						<h4><fmt:message key="post.resource.openaccess.headline.additionalfields"/></h4>
-	
+						
 						<!-- if entrytype == phdthesis -->
 						<c:if test="${bibtex.entrytype=='phdthesis'}">
 							<div class="fsRow">
