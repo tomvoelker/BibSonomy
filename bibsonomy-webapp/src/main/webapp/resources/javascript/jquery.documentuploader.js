@@ -1,5 +1,15 @@
+function errorBoxData(parentId) {
+	this.msg = null;
+	this.parentId = parentId;
+}
+
+function displayFileErrorBox(data) {
+	$(data.parentId).children('div:first').fadeOut('slow', function() {$(this).fadeIn('slow').children(':first').html(data.msg);});
+}
+
+var errorData = new errorBoxData("#upload");
+
 (function($) {
-	var errorData = new errorBoxData("#upload");
 	var ckey;
 	$.fn.documentUploader = function () {
 		ckey=$(".ck").val();
@@ -66,45 +76,54 @@
 		$("#file_"+file_id).removeClass("loading").addClass("fileError");
 	}
 
-	function prepareFileErrorBox(data) {
-		var fileID = "NaN";
-		var reason = "Unknown Error!";
-		if($("status", data).text() == "error") {
-			fileID = $("fileid", data).text();
-			reason = $("reason", data).text();
-		}
-
-		errorData.msg = reason;
-		displayFileErrorBox(errorData);
-		return fileID;
-	}
-
 	function fileUploaded(data) {
 		var fileID=$("fileid", data).text();
 		var fileHash=$("filehash", data).text();
 		var fileName=$("filename", data).text();
+		var deleteLink = $("<a class='deleteTempDocument' href='/ajax/documents?fileHash="
+				+fileHash
+				+"&amp;ckey="
+				+ckey
+				+"&amp;temp=true&amp;fileID="
+				+fileID+"&amp;action=delete'>"
+				+getString("post.bibtex.delete")
+				+"</a>")
+				.click(function(){
+					return deleteFunction(this);
+				});
 		$("#file_"+fileID).
 		append("<input type='hidden' class='tempFileName' name='fileName' value='" + fileHash + fileName+"'/>").
 		append(" (").
-		append($("<a class='deleteTempDocument' href='/ajax/documents?fileHash="+fileHash+"&amp;ckey="+ckey+"&amp;temp=true&amp;fileID="+fileID+"&amp;action=delete'>"+getString("post.bibtex.delete")+"</a>")).
+		append(deleteLink).
 		append(")").
 		removeClass("loading");
-		$(".deleteTempDocument").live("click", deleteFunction);
 	}
-
-	function deleteFunction(){
-		var button = $(this);
-		$.get($(button).attr("href"), {}, function(data) {
-			if("ok"!=$("status", data).text())
-				return prepareFileErrorBox(data);
-
-			var fileID=$("fileid", data).text();
-			button.parent("div").remove();
-			$("#file_"+fileID).remove();
-			$("#uploadForm_"+fileID).remove();
-
-		}, "xml");
-		return false;
-	}
-
 })(jQuery);
+
+function deleteFunction(button){
+	$.get($(button).attr("href"), {}, function(data) {
+		if("ok"!=$("status", data).text()) {
+			prepareFileErrorBox(data);
+			return false;
+		}
+		var fileID=$("fileid", data).text();
+		$(button).parent().remove();
+		$("#file_"+fileID).remove();
+		$("#uploadForm_"+fileID).remove();
+	}, "xml");
+	return false;
+}
+
+function prepareFileErrorBox(data) {
+	var fileID = "NaN";
+	var reason = "Unknown Error!";
+	
+	if($("status", data).text() == "error") {
+		fileID = $("fileid", data).text();
+		reason = $("reason", data).text();
+	}
+
+	errorData.msg = reason;
+	displayFileErrorBox(errorData);
+	return fileID;
+}

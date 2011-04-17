@@ -1962,15 +1962,6 @@ function prepareErrorBoxes(className) {
 	$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});  
 }
 
-function errorBoxData(parentId) {
-	this.msg = null;
-	this.parentId = parentId;
-}
-
-function displayFileErrorBox(data) {
-	$(data.parentId).children('div:first').fadeOut('slow', function() {$(this).fadeIn('slow').children(':first').html(data.msg);});
-}
-
 /**
  * look for a match comparing the element's classes with the given class name
  * 
