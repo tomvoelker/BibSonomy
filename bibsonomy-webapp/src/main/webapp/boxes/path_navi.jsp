@@ -44,7 +44,7 @@
 							<input type="password" size="10" name="password" id="pw" /> 
 							<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" /> 
 							<a href="javascript:switchLogin();">
-								<img style="width: 16px; height: 16px;" src="${resdir}/image/login_openid.png" />
+								<img style="width: 16px; height: 16px;" src="${resdir}/image/login_logo_OPENID.png" />
 							</a>
 						</form>
 					</div>
@@ -53,7 +53,7 @@
 						<form action="/login" method="POST">
 							<label path="openID">OpenID:</label>
 							<input type="text" id="openID" class="openid" size="30" value="" name="openID" /> <a href="javascript:switchLogin();">
-							<img style="width: 16px; height: 16px;" src="${resdir}/image/login_bib.png" /></a>
+							<img style="width: 16px; height: 16px;" src="${resdir}/image/login_logo_INTERNAL.png" /></a>
 						</form>
 					</div>
 				</span>
