@@ -1,0 +1,68 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:reviews="urn:jsptagdir:/WEB-INF/tags/resources/reviews">
+    
+    <jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="true" />
+    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+    <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+    
+    <c:set var="ownReview" value="${loginUser.name eq review.user.name }" />
+    
+	<div class="reviewinfo" data-username="${review.user.name}">
+		<div class="helpfulinfo">
+			<fmt:message key="post.resource.review.helpfulinfo">
+   				<fmt:param value="${review.helpful}" />
+   				<fmt:param value="${review.helpful + review.notHelpful}" />
+			</fmt:message>:
+		</div>
+		<div class="rating">
+			<reviews:stars rating="${review.rating}" />
+		</div>
+		<div class="reviewer">
+			<fmt:message key="review.by"/><c:out value=" "/><a href="/user/${fn:escapeXml(review.user.name)}"><c:out value="${review.user.name}" /></a><c:out value=", "/><fmt:message key="review.on"/><c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${review.date}"/>
+		</div>
+		<c:if test="${ownReview}">
+			<div class="reviewActions">(<a href="#editreview" id="reviewEdit"><fmt:message key="review.actions.edit" /></a><c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/> <a href="/ajax/review/" id="reviewDelete"><fmt:message key="review.actions.delete" /></a>)</div>
+		</c:if>
+	</div>
+	
+	
+	<div class="reviewText">
+		<c:out value="${review.text}" />
+	</div>
+	
+	
+	<c:if test="${ownReview}">
+		<div style="display:none" id="editReviewForm">
+			<reviews:reviewForm review="${review}" resource="${resource}" />
+		</div>
+	</c:if>
+	
+	<div class="helpfulContainer">
+		<fmt:message var="yes" key="post.resource.review.helpful.yes" />
+		<fmt:message var="no" key="post.resource.review.helpful.no" />
+		<fmt:message key="post.resource.review.helpful" />
+		<span>
+			<form class="helpful" action="/ajax/reviews/mark" method="post">
+				<input type="hidden" value="${resource.interHash}" name="hash" />
+				<input type="hidden" value="${review.user.name}" name="username" />
+				<input type="hidden" value="${ckey}" name="ckey" />
+				<input type="hidden" value="true" name="helpful" />
+				<input type="submit" value="${yes}" />
+			</form>
+		</span>
+    	<span>
+    		<form class="helpful" action="/ajax/reviews/mark" method="post">
+    			<input type="hidden" value="${resource.interHash}" name="hash" />
+    			<input type="hidden" value="${review.user.name}" name="username" />
+    			<input type="hidden" value="${ckey}" name="ckey" />
+    			<input type="hidden" value="false" name="helpful" />
+    			<input type="submit" value="${no}" />
+    		</form>
+    	</span>
+	</div>
+	
+</jsp:root>

@@ -51,7 +51,7 @@
 			<c:choose>
 				<!-- if a goldstandard is present show the goldstandard not the list of posts -->
 				<c:when test="${not empty command.goldStandardPublication}">
-					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublication}"></goldstandardpublication:details>
+					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublication}" loginUser="${command.context.loginUser}"/>
 				</c:when>
 				<c:otherwise>
 					<div id="general_100">

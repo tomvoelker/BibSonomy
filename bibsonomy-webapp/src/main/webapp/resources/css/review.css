@@ -1,0 +1,45 @@
+// TODO: move to other css
+
+#avg_rating {
+	margin: 1em 5em;
+	border: 1px solid black;
+	padding: 1em;
+	text-align: center;
+}
+
+#avg_rating .stars-off, #avg_rating .stars_on {
+	margin:auto;
+}
+
+.reviewer {
+	margin-bottom: 0.1em;
+}
+
+.reviewinfo {
+	margin-bottom: 0.3em;
+}
+
+.helpfulContainer {
+	margin-top: 0.2em;
+	padding-top: 0.1em;
+	border-top: solid 1px black;
+}
+
+#reviewlist li {
+	margin-bottom: 1.2em;	
+}
+
+.stars-off, .stars-on {
+    position: relative;
+    height: 16px;
+    background: url(../jquery_ui/plugins/jquery.ui.stars/jquery.ui.stars.gif) repeat-x 0 -32px;
+}
+ 
+.stars-on {
+    position: absolute;
+    background-position: 0 -48px;
+}
+
+form.helpful {
+	display: inline;
+}

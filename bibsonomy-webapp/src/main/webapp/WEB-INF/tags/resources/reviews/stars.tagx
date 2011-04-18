@@ -1,0 +1,9 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="rating" type="java.lang.Double" required="true" />
+	
+	<c:set var="allStarWidth" value="${rating * 16}" />
+	<!-- 80 = 5 stars (20px width per star) -->
+	<div class="stars-off" style="width:80px"><div class="stars-on" style="width:${allStarWidth}px"><!-- empty element--></div></div>
+</jsp:root>

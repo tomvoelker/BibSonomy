@@ -1,0 +1,67 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:reviews="urn:jsptagdir:/WEB-INF/tags/resources/reviews">
+    
+    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+    <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+   	<jsp:useBean id="newDate" class="java.util.Date" />
+    <jsp:useBean id="newReview" class="org.bibsonomy.model.Review">
+    	<jsp:setProperty name="newReview" property="date" value="${newDate}"/>
+    	<jsp:setProperty name="newReview" property="user" value="${loginUser}" />
+    </jsp:useBean>
+    
+    <div id="reviews" data-interHash="${resource.interHash}" data-ckey="${ckey}">
+	    <h3><fmt:message key="post.resource.reviews" /></h3>
+	    <div id="avg_rating">
+   			<div id="gold_rating_info">
+   				<reviews:stars rating="${resource.rating}" />
+   				<fmt:message var="ratingTitle" key="resource.reviews.ratings"><!-- plural -->	
+   					<fmt:param value="${resource.numberOfRatings}" />
+   				</fmt:message>
+				<c:if test="${resource.numberOfRatings == 1}">
+					<fmt:message var="ratingTitle" key="resource.reviews.rating" /> <!-- singular -->
+				</c:if>
+			
+				<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="2" minFractionDigits="2"/>
+			
+				<small>(∅ <c:out value="${roundedRating}" />, <c:out value="${ratingTitle}" />)</small>
+   			</div>
+    	</div>
+	    
+	    <c:set var="hasReview" value="false" />
+	    <ul id="reviewlist">
+	    <c:if test="${not empty resource.reviews}">
+	    	<c:forEach var="review" items="${resource.reviews}">
+	    		<!-- check if user has reviewed this resource -->
+	    		<c:choose>
+		    		<c:when test="${review.user.name eq command.context.loginUser.name}">
+		    			<c:set var="hasReview" value="true" />
+		    			<li id="ownReview">
+		    				<reviews:review review="${review}" resource="${resource}" loginUser="${loginUser}" />
+		    			</li>
+		    		</c:when>
+	    			<c:otherwise>
+	    				<li>
+	    					<reviews:review review="${review}" resource="${resource}" loginUser="${loginUser}" />
+	    				</li>
+	    			</c:otherwise>
+	    		</c:choose>	    		
+	    	</c:forEach>
+	    </c:if>
+	    <!-- create li, div structure for new review -->
+	    <c:if test="${!hasReview }">
+	    	<li id="newReview" style="display:none;"><reviews:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" /></li>
+	    </c:if>
+	    </ul>
+	    
+	    <!-- TODO: use spring security tags -->
+	    <c:if test="${command.context.userLoggedIn and not hasReview}">
+	    	<div id="postReview">
+		    	<h4><fmt:message key="review.post"/></h4>
+		    	<reviews:reviewForm resource="${resource}"/>
+	    	</div>
+	    </c:if>
+	</div>
+</jsp:root>

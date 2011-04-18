@@ -24,6 +24,12 @@
 				</a>
 			</li>
 			<li>
+				<fmt:message key="post.actions.edit.gold.references" var="editRefTitle" />
+				<a href="javascript:editReferences();" title="${editRefTitle}">
+					<fmt:message key="post.actions.edit.gold.references"></fmt:message>
+				</a>
+			</li>
+			<li>
 				<fmt:message key="post.actions.delete.gold.title" var="deleteTitle"/>
 				<c:url var="deleteUrl" value="/deletePost" context="${projectContext}">
 		           <c:param name="resourceHash" value="${goldstandard.interHash}" />

@@ -1,0 +1,54 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    
+    <jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="false" />
+    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	
+	<c:set var="id" value="create" />
+	
+	<c:if test="${not empty review}">
+		<c:set var="id" value="update" />
+	</c:if>
+	
+	<form action="/ajax/reviews" method="post" id="${id}ReviewForm">
+   		<input type="hidden" value="${ckey}" name="ckey"/>
+   		<input name="hash" type="hidden" value="${resource.interHash}" />
+   		<div id="fsform">
+   			
+			<fieldset class="fsOuter">
+				<div class="fsRow">
+					<div id="${id}Spinner" style="display:none;">
+						<img src="${resdir}/image/ajax_loader.gif" alt="loading" /><span id="${id}LoadingMessage"><fmt:message key="post.resource.review.action.${id}" /></span>
+					</div>
+				</div>
+				<div class="fsRow reviewrating" id="${id}ReviewRating">
+					
+   					<label class="fsLabel" for="review.rating" ><fmt:message key="post.resource.review.rating"/>* </label><buttons:help message="post.resource.review.rating.help"/>
+   					
+   					<!-- TODO: titles for rating steps? -->
+   					<c:forEach var="i" begin="1" end="10">
+   						<c:set var="ratingStep" value="${i / 2}" />
+   						<c:choose>
+   							<c:when test="${not empty review and review.rating eq ratingStep}">
+   								<input name="review.rating" type="radio" value="${ratingStep}" checked="checked"/>
+   							</c:when>
+   							<c:otherwise>
+   								<input name="review.rating" type="radio" value="${ratingStep}"/>
+   							</c:otherwise>
+   						</c:choose>
+   					</c:forEach>
+				</div>
+				<div class="fsRow">
+   					<label class="fsLabel" for="review.text" ><fmt:message key="post.resource.review.text"/></label><buttons:help message="post.resource.review.text.help"/>
+   					<textarea class="fsInput reqinput" rows="5" name="review.text" id="${id}ReviewText"><!-- text --><c:if test="${not empty review}"><c:out value="${review.text}" /></c:if></textarea>
+   				</div>
+   				<div class="fsRow">
+   					<fmt:message key="review.post.button" var="buttonText" />
+   					<input type="submit" value="${buttonText}" />
+   				</div>
+   			</fieldset>
+   		</div>
+	</form>
+</jsp:root>

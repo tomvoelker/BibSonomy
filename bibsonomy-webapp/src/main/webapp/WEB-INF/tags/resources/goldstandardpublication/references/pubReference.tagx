@@ -6,7 +6,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
-	
+	<span class="ref_authors_editors">
 	<c:choose>
 		<c:when test="${not empty publication.author}">
 			<c:forEach var="author" items="${publication.authorList}" varStatus="loopStatus">
@@ -25,5 +25,6 @@
 				(eds.).
 			</c:if>
 		</c:otherwise>
-	</c:choose>: <a href="/bibtex/${publication.interHash}">${mtl:cleanBibtex(publication.title)}</a>. <c:if test="${not empty publication.year}"> <c:out value="${publication.year}"/></c:if>
+	</c:choose>:</span> <br />
+	<a href="/bibtex/${publication.interHash}">${mtl:cleanBibtex(publication.title)}</a>. <c:if test="${not empty publication.year}"> <c:out value="${publication.year}"/></c:if>
 </jsp:root>

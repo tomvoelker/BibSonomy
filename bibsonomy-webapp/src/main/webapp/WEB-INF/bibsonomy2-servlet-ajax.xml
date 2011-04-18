@@ -122,6 +122,31 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/ajax/reviews">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="reviewController"/>
+						<property name="allowedFields">
+							<list>
+								<value>hash</value>
+								<value>review.rating</value>
+								<value>review.text</value>
+								<value>username</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="ajax/reviews/mark">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="reviewMarkController"/>
+						<property name="allowedFields">
+							<list>
+								<value>hash</value>
+								<value>helpful</value>
+								<value>username</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -141,6 +166,10 @@
 	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request" parent="ajaxController" />	
 	
 	<bean id="editGoldstandardReferencesController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardReferencesController" scope="request" parent="ajaxController" />
+	
+	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="ajaxController" scope="request" />
+	
+	<bean id="reviewMarkController" class="org.bibsonomy.webapp.controller.ajax.MarkReviewAjaxController" parent="ajaxController" scope="request" />
 	
 	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
 		<property name="docPath" value="${project.document.path}"/>

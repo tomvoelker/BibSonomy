@@ -2,12 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	                    http://www.springframework.org/schema/util 
-	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-	
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">	
 	<!-- TODO: extract general things like sessionFactory to a seperate file -->
 	<!-- 
 		extracts properties from the provided file and inserts them into bean 
@@ -24,6 +22,7 @@
 		<property name="allowedFields" ref="allowedFields"/>
 		<property name="disallowedFields" ref="disallowedFields"/>
 		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="supportedMethods" value="HEAD,GET,POST,DELETE,PUT" />
 	</bean>
 	
 	<!--  #################### factory beans #################### -->
@@ -103,12 +102,12 @@
 
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
-		<property name="projectHome"><value>${project.home}</value></property>
-		<property name="projectName"><value>${project.name}</value></property>
-		<property name="projectBlog"><value>${project.blog}</value></property>
-		<property name="projectEmail"><value>${project.email}</value></property>
-		<property name="projectRegistrationFromAddress"><value>${project.registrationFromAddress}</value></property>
-		<property name="mailHost"><value>${mail.smtp.host}</value></property>
+		<property name="projectHome" value="${project.home}" />
+		<property name="projectName" value="${project.name}" />
+		<property name="projectBlog" value="${project.blog}" />
+		<property name="projectEmail" value="${project.email}" />
+		<property name="projectRegistrationFromAddress" value="${project.registrationFromAddress}" />
+		<property name="mailHost" value="${mail.smtp.host}" />
 		<property name="messageSource" ref="messageSource"/>
 	</bean>
 
@@ -126,11 +125,11 @@
 	
 	<!--  #################### locale and theme resolver #################### -->
 	<bean id="localeResolver" class="org.bibsonomy.webapp.util.spring.i18n.SecurityContextAwareSessionLocaleResolver">
-		<property name="defaultLocale"><value>${project.defaultLocale}</value></property>
+		<property name="defaultLocale" value="${project.defaultLocale}" />
 	</bean>
 	
     <bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
-      <property name="defaultThemeName"><value>${project.theme}</value></property>
+      <property name="defaultThemeName" value="${project.theme}" />
     </bean>
     
 	<bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
@@ -138,7 +137,7 @@
 	</bean>
 	
 	<bean id="urlGenerator" class="org.bibsonomy.services.URLGenerator">
-		<property name="projectHome"><value>${project.home}</value></property>
+		<property name="projectHome" value="${project.home}" />
 	</bean>
 
 	<!-- to resolve messages -->  
@@ -204,7 +203,6 @@
 		<constructor-arg ref="wurfl.manager" />
 		<constructor-arg ref="wurfl.utils" />
 	</bean>
-	
 	
 	
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -395,7 +393,7 @@
 				</entry>			 
 				<entry key="/redirect">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="RedirectController"/>
+						<property name="controllerBeanName" value="redirectController"/>
 						<property name="allowedFields">
 							<list>
 								<value>myPage</value>
@@ -485,7 +483,8 @@
 			</map>
 		</property>
 	</bean>
-
+	
+	
   	<!--  #################### controller #################### -->
  	<bean id="resourceController" class="org.bibsonomy.webapp.controller.ResourceListController" abstract="true">
 		<property name="logic" ref="logic"/>
@@ -499,6 +498,7 @@
 	<util:set id="allResources" scope="request">
 		<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 		<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+		<value type="java.lang.Class">org.bibsonomy.model.GoldStandardPublication</value>
 	</util:set>
 	
 	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request" parent="multiResourceListController">
@@ -654,7 +654,7 @@
 	<!-- 
 	   Does various redirects, like /myRelations, /myBibSonomy, etc.
 	 -->
-	<bean id="RedirectController" class="org.bibsonomy.webapp.controller.special.RedirectController" scope="request">
+	<bean id="redirectController" class="org.bibsonomy.webapp.controller.special.RedirectController" scope="request">
 		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 

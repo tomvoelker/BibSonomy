@@ -9,21 +9,23 @@
     xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
     xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
     xmlns:ref="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication/references"
+    xmlns:reviews="urn:jsptagdir:/WEB-INF/tags/resources/reviews"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="otherPosts" type="java.util.List" required="true"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	
 	<c:set var="goldstandard" value="${post.resource}" />
 	<div id="goldstandard">
-		<ul id="gold_menu">
+		<ul id="gold_menu" data-ckey="${ckey}">
 			<gpub:actions post="${post}" />
 		</ul>
 		
 		<!-- title of the publication -->
-		<h2 id="gold_title">
-			<a href="/bibtex/${goldstandard.interHash}">${mtl:cleanBibtex(goldstandard.title)}</a><!-- TODO: TODODZ: link -->
+		<h2 id="gold_title" data-interhash="${goldstandard.interHash}">
+			<a href="/bibtex/${goldstandard.interHash}">${mtl:cleanBibtex(goldstandard.title)}</a>
 		</h2>
 		<div id="gold_authorsEditors"><fmt:message key="by"/><c:out value=": "/><c:out value=" "/><pub:author post="${post}"/></div>
 		
@@ -66,28 +68,28 @@
 			</c:if>
 		</div>
 		<c:if test="${((fn:length(goldstandard.references) != 0) or (fn:length(goldstandard.referencedBy) != 0))}">
-		<div id="gold_refs">
-			<c:if test="${fn:length(goldstandard.references) != 0}">
-				<div id="gold_references">
-				<h3><fmt:message key="goldStandard.resource.info.references" /></h3>
-				<ol>
-					<c:forEach var="reference" items="${goldstandard.references}">
-						<li><ref:pubReference publication="${reference}" /></li>
-					</c:forEach>
-				</ol>
-				</div>
-			</c:if>
-			<c:if test="${fn:length(goldstandard.referencedBy) != 0}">
-				<div id="gold_referencedBy">
-				<h3><fmt:message key="goldStandard.resource.info.referencedBy" /></h3>
-				<ol>
-					<c:forEach var="reference" items="${goldstandard.referencedBy}">
-						<li><ref:pubReference publication="${reference}" /></li>
-					</c:forEach>
-				</ol>
-				</div>
-			</c:if>
-		</div>
+			<div id="gold_refs">
+				<c:if test="${fn:length(goldstandard.references) != 0}">
+					<div id="gold_references">
+						<h3><fmt:message key="goldStandard.resource.info.references" /></h3>
+						<ol>
+							<c:forEach var="reference" items="${goldstandard.references}">
+								<li data-interHash="${reference.interHash}" class="reference"><ref:pubReference publication="${reference}" /></li>
+							</c:forEach>
+						</ol>
+					</div>
+				</c:if>
+				<c:if test="${fn:length(goldstandard.referencedBy) != 0}">
+					<div id="gold_referencedBy">
+						<h3><fmt:message key="goldStandard.resource.info.referencedBy" /></h3>
+						<ol>
+							<c:forEach var="reference" items="${goldstandard.referencedBy}">
+								<li data-interHash="${reference.interHash}" class="referencedBy"><ref:pubReference publication="${reference}" /></li>
+							</c:forEach>
+						</ol>
+					</div>
+				</c:if>
+			</div>
 		</c:if>
 		
 		<c:if test="${fn:length(otherPosts) != 0}">
@@ -113,6 +115,9 @@
 				</ul>
 			</div>
 		</c:if>
+		
+		<!-- Reviews -->
+		<reviews:reviews resource="${goldstandard}" loginUser="${loginUser}" />
 		
 		<div id="gold_exports">
 			<ul>
