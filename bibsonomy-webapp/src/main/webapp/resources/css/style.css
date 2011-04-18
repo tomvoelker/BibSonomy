@@ -342,18 +342,18 @@ div.bibentry {
 }
 
 
-#bookbox,#bibbox,.bookbox {
+#bookbox, #bibbox, .bookbox {
 	margin: 1%; 
 	width: 47%;
 	float: left;
 }
 
-#outer,#general {
+#outer, #general {
 	float: left;
 	width: 73%;
 }
 
-#general,#general_fixed, #general_100 {
+#general, #general_fixed, #general_100 {
 	margin: 1%;
 }
 
@@ -1304,7 +1304,7 @@ a button {
 
 div.ui-tabs div.ui-tabs-panel {
 	border: 1px solid #069;
-	margin-top: 1.8em;
+	margin-top: -0.05em;
 }
 
 div.ui-tabs ul.ui-tabs-nav {
@@ -1332,13 +1332,35 @@ div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
 	color: #069;
 }
 
+div.ui-widget, div.ui-widget textarea {
+	font-family: Arial, sans-serif;
+	font-size: 1.0em;
+}
+
+div.ui-widget-content {
+	border: none;
+}
+
+ul.ui-widget-header {
+	border: none;
+	background: none;	
+}
+
+li.ui-corner-top {
+	-moz-border-radius-topleft: 0px;
+	-webkit-border-top-left-radius: 0px;
+	border-top-left-radius: 0px;
+	-moz-border-radius-topright: 0px;
+	-webkit-border-top-right-radius: 0px;
+	border-top-right-radius: 0px;
+}
+
 /*
  * hack for webkit
  */
-
 @media screen and (-webkit-min-device-pixel-ratio:0) { 
 	div.ui-tabs div.ui-tabs-panel {
-		margin-top: 1.75em;
+		margin-top: -0.1em;
 	}
 }
 
