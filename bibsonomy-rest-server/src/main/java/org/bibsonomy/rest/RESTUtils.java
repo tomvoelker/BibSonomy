@@ -11,10 +11,10 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.Vector;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -108,7 +108,7 @@ public class RESTUtils {
 			// check if accept header was sent by the client
 			if (present(acceptHeader)) {
 				// only Chuck Norris can send data to the server in type A and accepts type B
-				if (!acceptMediaType.isCompatible(contentTypeMediaType)) {
+				if (acceptMediaType != null && !acceptMediaType.isCompatible(contentTypeMediaType)) {
 					throw new BadRequestOrResponseException("Only Chuck Norris can send content of another media type than he accepts.");
 				}
 			}
@@ -156,7 +156,7 @@ public class RESTUtils {
   		} catch (UnsupportedEncodingException ex) {
   			// returns InputStream with default encoding if a exception
   			// is thrown with utf-8 support
-  			log.fatal(ex.getStackTrace());
+  			log.fatal("Could not get output writer for stream with encoding " + encoding, ex);
   			return new EscapingPrintWriter(stream);
   		}
 	}
