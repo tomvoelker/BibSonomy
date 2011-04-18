@@ -10,20 +10,20 @@ public interface Rateable {
 	/**
 	 * @return the rating
 	 */
-	public double getRating();
+	public Double getRating();
 	
 	/**
 	 * @param rating the rating to set
 	 */
-	public void setRating(double rating);
+	public void setRating(Double rating);
 	
 	/**
 	 * @return the number of ratings
 	 */
-	public int getNumberOfRatings();
+	public Integer getNumberOfRatings();
 	
 	/**
 	 * @param numberOfRatings the number of ratings to set
 	 */
-	public void setNumberOfRatings(int numberOfRatings);
+	public void setNumberOfRatings(Integer numberOfRatings);
 }

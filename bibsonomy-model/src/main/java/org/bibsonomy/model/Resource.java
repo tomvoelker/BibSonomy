@@ -72,19 +72,19 @@ public abstract class Resource implements Serializable, Rateable {
 	private String title;
 	
 	/**
-	 * TODODZ: comment
+	 * all reviews for this resource
 	 */
 	private List<Review> reviews;
 	
 	/**
-	 * TODODZ: comment
+	 * the rating (avg, …) of the resource
 	 */
-	private double rating;
+	private Double rating;
 	
 	/**
-	 * TODODZ: comment
+	 * number of all ratings for the resource
 	 */
-	private int numberOfRatings;
+	private Integer numberOfRatings;
 	
 	/**
 	 * FIXME: This method does not belong to the model!!!! It would be fine to
@@ -170,7 +170,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @return the rating
 	 */
 	@Override
-	public double getRating() {
+	public Double getRating() {
 		return this.rating;
 	}
 
@@ -178,7 +178,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @param rating the rating to set
 	 */
 	@Override
-	public void setRating(double rating) {
+	public void setRating(Double rating) {
 		this.rating = rating;
 	}
 	
@@ -186,7 +186,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @return the numberOfRatings
 	 */
 	@Override
-	public int getNumberOfRatings() {
+	public Integer getNumberOfRatings() {
 		return this.numberOfRatings;
 	}
 
@@ -194,7 +194,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @param numberOfRatings the numberOfRatings to set
 	 */
 	@Override
-	public void setNumberOfRatings(int numberOfRatings) {
+	public void setNumberOfRatings(Integer numberOfRatings) {
 		this.numberOfRatings = numberOfRatings;
 	}
 	

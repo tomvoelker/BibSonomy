@@ -29,6 +29,8 @@ public class Review {
 	private User user;
 	
 	private Date date;
+	
+	private Date changeDate;
 
 	/**
 	 * @return the rating
@@ -86,6 +88,20 @@ public class Review {
 		this.date = date;
 	}
 	
+	/**
+	 * @return the changeDate
+	 */
+	public Date getChangeDate() {
+		return this.changeDate;
+	}
+
+	/**
+	 * @param changeDate the changeDate to set
+	 */
+	public void setChangeDate(Date changeDate) {
+		this.changeDate = changeDate;
+	}
+
 	/**
 	 * @return the helpful
 	 */
