@@ -95,8 +95,15 @@
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 		<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
 			<!-- GOLDSTANDARD -->
-	    	<a href="/editGoldStandardPublication?hash=${post.resource.intraHash}&amp;user=${mtl:encodeURI(post.user.name)}" name="${post.resource.intraHash}" title="${editTagsTitle}">
-				<fmt:message key="bibtex.actions.gold"/>
+			<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
+				<c:param name="hash" value="${post.resource.intraHash}" />
+				<c:param name="user" value="${mtl:encodeURI(post.user.name)}" />
+				<c:param name="editBeforeSaving" value="true" />
+			</c:url>
+			
+			<fmt:message key="bibtex.actions.gold" var="goldTitle" />
+	    	<a href="${editGoldStandardLink}" title="${goldTitle}">
+				<c:out value="${goldTitle}" />
 			</a>
 			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 		</c:if>
