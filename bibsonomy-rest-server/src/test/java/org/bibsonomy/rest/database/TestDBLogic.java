@@ -34,6 +34,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
@@ -955,19 +956,37 @@ public class TestDBLogic implements LogicInterface {
 	@Override
 	public void createExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void deleteExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public Map<String, List<String>> getExtendedFields(Class<? extends Resource> resourceType, String userName, String intraHash, String key) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void createReview(String username, String interHash, Review review) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void updateReview(String username, String interHash, Review review) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void deleteReview(String username, String interHash) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void markReview(String username, String reviewUsername, String interHash, boolean helpful) {
+		// TODO Auto-generated method stub
 	}
 
 }
