@@ -1,0 +1,33 @@
+Test data description
+---------------------
+
+Here you can find some information about the test data created by the
+script "tables-and-test-data.sql". It is meant as a quick reference
+for the SQL script.
+
+Users:
+- testuser1 (API key: yes, spammer: no)
+- testuser2 (API key: yes, spammer: no)
+- testuser3 (API key: yes, spammer: no)
+- testspammer  (API key: no, spammer: yes)
+- testgroup1
+- testgroup2
+- testgroup3
+
+the encrypted password for the users is "test123"
+
+Friends:
+- testuser1 has as friends testuser2 and testuser3
+- testuser2 has as friend testuser1
+- testuser3 and testspammer have no friends at all ;(
+
+Groups:
+- testgroup1 (id: 3, privlevel: 0 (public), sharedDocuments: 1)
+  - members: testuser1, testuser2
+- testgroup2 (id: 4, privlevel: 1 (hidden), sharedDocuments: 0)
+  - members: testuser1
+- testgroup3 (id: 5, privlevel: 2 (members), sharedDocuments: 0)
+  - members: testuser1
+
+Admin:
+- inetAddressStates: 192.168.0.1 - status: 0 (UNKNOWN)
