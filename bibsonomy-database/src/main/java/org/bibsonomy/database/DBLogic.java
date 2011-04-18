@@ -53,6 +53,7 @@ import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
+import org.bibsonomy.database.managers.ReviewDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.TagRelationDatabaseManager;
@@ -77,6 +78,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
@@ -110,9 +112,13 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     private final AuthorDatabaseManager authorDBManager;
     private final DocumentDatabaseManager docDBManager;
     private final PermissionDatabaseManager permissionDBManager;
+    
     private final BookmarkDatabaseManager bookmarkDBManager;
     private final BibTexDatabaseManager publicationDBManager;
     private final GoldStandardPublicationDatabaseManager goldStandardPublicationDBManager;
+    
+    private final ReviewDatabaseManager reviewDBManager;
+    
     private final UserDatabaseManager userDBManager;
     private final GroupDatabaseManager groupDBManager;
     private final TagDatabaseManager tagDBManager;
@@ -145,6 +151,9 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	// bookmark db manager
 	this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 	this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
+	
+	this.reviewDBManager = ReviewDatabaseManager.getInstance();
+	
 	// gold standard publication db manager
 	this.goldStandardPublicationDBManager = GoldStandardPublicationDatabaseManager.getInstance();
 	this.allDatabaseManagers.put(GoldStandardPublication.class, this.goldStandardPublicationDBManager);
@@ -165,6 +174,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	this.wikiDBManager = WikiDatabaseManager.getInstance();
 	
 	this.syncDBManager = SynchronizationDatabaseManager.getInstance();
+	
 	
 	this.dbSessionFactory = dbSessionFactory;
     }
@@ -2328,5 +2338,64 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	    session.close();
 	}
     }
+
+	@Override
+	public void createReview(final String username, final String interHash, final Review review) {
+		this.permissionDBManager.isAdminOrSelf(this.loginUser, username);
+		
+		// TODO: only non spammers
+		
+		final DBSession session = openSession();
+		try {
+			// TODO: check if user has resource in collection?	
+			review.setUser(new User(username));
+			this.reviewDBManager.createReviewForPost(interHash, review, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public void updateReview(final String username, final String interHash, final Review review) {
+		this.permissionDBManager.isAdminOrSelf(this.loginUser, username);
+		
+		// TODO: only non spammers
+		
+		final DBSession session = openSession();
+		try {
+			review.setUser(new User(username));
+			this.reviewDBManager.updateReview(interHash, review, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public void deleteReview(final String username, final String interHash) {
+		this.permissionDBManager.isAdminOrSelf(this.loginUser, username);
+		
+		// TODO: only non spammers
+		
+		final DBSession session = openSession();
+		try {
+			this.reviewDBManager.deleteReview(interHash, username, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public void markReview(final String username, final String reviewUsername, final String interHash, final boolean helpful) {
+		this.permissionDBManager.isAdminOrSelf(this.loginUser, username);
+
+		// TODO: only non spammers
+		
+		final DBSession session = openSession();
+		try {
+			this.reviewDBManager.markReview(username, interHash, reviewUsername, helpful, session);
+		} finally {
+			session.close();
+		}
+	}
 
 }
