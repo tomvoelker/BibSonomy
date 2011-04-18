@@ -171,8 +171,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	 * @param tags
 	 */
 	public void setCopytag(final String tags){
-		final String[] splittedTags = tags.split("\\s");
-		for (final String tagname: splittedTags){
+		for (final String tagname: tags.split("\\s")){
 			this.copytags.add(new Tag(tagname));
 		}
 	}
