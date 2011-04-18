@@ -368,6 +368,18 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	    throw new AccessDeniedException();
 	}
     }
+    
+	/**
+     * 
+     * @param loginUser
+     * @param userName
+     */
+    public void ensureIsSelfAndNotSpammerOrAdmin(final User loginUser, final String userName) {
+    	this.ensureIsAdminOrSelf(loginUser, userName);
+    	if (loginUser.isSpammer()) {
+    		throw new AccessDeniedException();
+    	}
+    }
 
     /**
      * @FIXME WENN DIE RICHTIGEN GRUPPENADMINS EXISTIEREN MUSS DIESE FUNKTION GEÄNDERT WERDEN 

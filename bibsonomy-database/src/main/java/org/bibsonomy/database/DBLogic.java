@@ -2341,9 +2341,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
 	@Override
 	public void createReview(final String username, final String interHash, final Review review) {
-		this.permissionDBManager.isAdminOrSelf(this.loginUser, username);
-		
-		// TODO: only non spammers
+		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
 		
 		final DBSession session = openSession();
 		try {
@@ -2357,9 +2355,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
 	@Override
 	public void updateReview(final String username, final String interHash, final Review review) {
-		this.permissionDBManager.isAdminOrSelf(this.loginUser, username);
-		
-		// TODO: only non spammers
+		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
 		
 		final DBSession session = openSession();
 		try {
@@ -2372,9 +2368,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
 	@Override
 	public void deleteReview(final String username, final String interHash) {
-		this.permissionDBManager.isAdminOrSelf(this.loginUser, username);
-		
-		// TODO: only non spammers
+		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
 		
 		final DBSession session = openSession();
 		try {
@@ -2386,9 +2380,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
 	@Override
 	public void markReview(final String username, final String reviewUsername, final String interHash, final boolean helpful) {
-		this.permissionDBManager.isAdminOrSelf(this.loginUser, username);
-
-		// TODO: only non spammers
+		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
 		
 		final DBSession session = openSession();
 		try {
