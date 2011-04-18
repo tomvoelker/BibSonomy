@@ -71,7 +71,7 @@ import org.bibsonomy.model.enums.Order;
  * @author Christian Kramer
  * @version $Id$
  */
-public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogicInterface {
+public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogicInterface, ReviewLogicInterface {
 
 	/**
 	 * @return the name of the authenticated user

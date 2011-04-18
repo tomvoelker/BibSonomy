@@ -6,7 +6,7 @@ import org.bibsonomy.model.Review;
  * @author dzo
  * @version $Id$
  */
-public interface ReviewLogic {
+public interface ReviewLogicInterface {
 	
 	/**
 	 * 
