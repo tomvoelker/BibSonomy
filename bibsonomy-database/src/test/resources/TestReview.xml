@@ -3,11 +3,11 @@
 
 <sqlMap namespace="TestReview">
 	<select id="getReviewRatingsAverage" resultClass="double" parameterClass="string">
-		SELECT avg FROM review_ratings_cache WHERE interHash = #interHash#
+		SELECT rating_avg FROM review_ratings_cache WHERE interHash = #interHash#
 	</select>
 	
 	<select id="getReviewCount" resultClass="int" parameterClass="string">
-		SELECT numberOfRatings FROM review_ratings_cache WHERE interHash = #interHash#
+		SELECT number_of_ratings FROM review_ratings_cache WHERE interHash = #interHash#
 	</select>
 	
 	<select id="getReviewHelpfulCount" resultClass="int" parameterClass="string">
