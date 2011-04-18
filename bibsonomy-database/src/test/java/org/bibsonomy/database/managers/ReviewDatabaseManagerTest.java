@@ -20,8 +20,9 @@ import org.junit.Test;
  */
 public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
-	private static final String USERNAME = "testuser2";
-	private static final String USERNAME_2 = "testuser3";
+	protected static final String USERNAME_1 = "testuser1";
+	protected static final String USERNAME_2 = "testuser2";
+	protected static final String USERNAME_3 = "testuser3";
 	private static final String HASH = "e2fb0763068b21639c3e36101f64aefe";
 	private static final String HASH_WITH_RATING = "d9eea4aa159d70ecfabafa0c91bbc9f0";
 	private static final String RATING_USERNAME = "testuser1";
@@ -36,73 +37,87 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	@Test
-	public void getReviewsForPost() {
-		final List<Review> reviews = reviewManager.getReviewsForResource(HASH_WITH_RATING, this.dbSession);
+	public void testGetReviewsForPost() {
+		List<Review> reviews = reviewManager.getReviewsForResource(HASH_WITH_RATING, this.dbSession);
 		assertEquals(1, reviews.size());
+		
+		reviews = reviewManager.getReviewsForResource(HASH, this.dbSession);
+		assertEquals(0, reviews.size());
 	}
 	
 	@Test
-	public void insertReview() {
-		this.insertReview(USERNAME, HASH, 5.0, null);
-		final Review review = reviewManager.getReviewForPostAndUser(HASH, USERNAME, this.dbSession);
+	public void testInsertReview() {
+		this.insertReview(USERNAME_2, HASH, 5.0, null);
+		final Review review = reviewManager.getReviewForPostAndUser(HASH, USERNAME_2, this.dbSession);
 		assertNotNull(review);
+		assertNotNull(review.getDate());
 		assertEquals(5.0, review.getRating(), 0);
 		assertEquals(null, review.getText());
 		
-		this.deleteReview(USERNAME, HASH);
+		this.deleteReview(USERNAME_2, HASH);
 	}
 	
 	@Test
-	public void updateReview() {
-		this.insertReview(USERNAME, HASH, 4.0, "Great job!");
+	public void testUpdateReview() {
+		this.insertReview(USERNAME_2, HASH, 4.0, "Great job!");
 		final Review newReview = new Review();
-		newReview.setRating(1);
+		newReview.setRating(1.5);
 		final String newText = "humbug!";
 		newReview.setText(newText);
-		newReview.setUser(new User(USERNAME));
+		newReview.setUser(new User(USERNAME_2));
 		reviewManager.updateReview(HASH, newReview, this.dbSession);
-		final Review review = reviewManager.getReviewForPostAndUser(HASH, USERNAME, this.dbSession);
+		final Review review = reviewManager.getReviewForPostAndUser(HASH, USERNAME_2, this.dbSession);
 		assertNotNull(review);
-		assertEquals(1, review.getRating(), 0);
+		assertNotNull(review.getDate());
+		assertNotNull(review.getChangeDate());
+		assertEquals(1.5, review.getRating(), 0);
 		assertEquals(newText, review.getText());
-		this.deleteReview(USERNAME, HASH);
+		this.deleteReview(USERNAME_2, HASH);
 	}
 	
 	@Test
 	public void testCache() {
 		final double average = testManager.getReviewRatingsAverage(HASH);
 		int numberOfReviews = testManager.getReviewCount(HASH);
-		this.insertReview(USERNAME, HASH, 4.5, "Great job!");
+		this.insertReview(USERNAME_2, HASH, 4.5, "Great job!");
 		final double average2 = calcNewAvarage(average, 4.5, numberOfReviews);
 		numberOfReviews++;
 		assertEquals(average2, testManager.getReviewRatingsAverage(HASH), 0.000000001);
 		
-		this.insertReview(USERNAME_2, HASH, 4, "Great job! You're awesome!");
+		this.insertReview(USERNAME_3, HASH, 4, "Great job! You're awesome!");
 		
 		final double average3 = calcNewAvarage(average2, 4, numberOfReviews);
 		numberOfReviews++;
 		
 		assertEquals(average3, testManager.getReviewRatingsAverage(HASH), 0.000000001);
 		
-		this.deleteReview(USERNAME_2, HASH);
+		this.deleteReview(USERNAME_3, HASH);
 		assertEquals(average2, testManager.getReviewRatingsAverage(HASH), 0.000000001);
 		
-		this.deleteReview(USERNAME, HASH);
+		this.deleteReview(USERNAME_2, HASH);
 	}
 	
 	@Test
 	public void testMarkAsHelpful() {
-		reviewManager.markReview(USERNAME, HASH_WITH_RATING, RATING_USERNAME, true, this.dbSession);
+		reviewManager.markReview(USERNAME_2, HASH_WITH_RATING, RATING_USERNAME, true, this.dbSession);
 		final Review review = reviewManager.getReviewForPostAndUser(HASH_WITH_RATING, RATING_USERNAME, this.dbSession);
 		
 		assertEquals(2, review.getNotHelpful());
 		assertEquals(1, review.getHelpful());
 	}
 	
+	@Test
+	public void testLogMarkAsHelpful() {
+		this.insertReview(USERNAME_2, HASH, 4.5, "Great job!");
+		reviewManager.markReview(USERNAME_2, HASH, USERNAME_2, true, this.dbSession);
+		reviewManager.markReview(USERNAME_3, HASH, USERNAME_2, true, this.dbSession);
+		this.deleteReview(USERNAME_2, HASH);
+	}
+	
 	@Test(expected = ValidationException.class)
 	public void testAlreadyMarkedReview() {
 		// testuser3 has already marked the review as not helpful
-		reviewManager.markReview(USERNAME_2, HASH_WITH_RATING, RATING_USERNAME, true, this.dbSession);
+		reviewManager.markReview(USERNAME_3, HASH_WITH_RATING, RATING_USERNAME, true, this.dbSession);
 	}
 	
 	private double calcNewAvarage(double old, double newValue, int count) {
@@ -111,11 +126,15 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	private void deleteReview(final String username, final String interHash) {
 		final int countReviewLog = testManager.countReviewLogs();
+		final int expectedCount = testManager.countReviewHelpfulLogs() + testManager.countReviewHelpful(interHash);
 		
 		reviewManager.deleteReview(interHash, username, this.dbSession);
 		final Review review = reviewManager.getReviewForPostAndUser(interHash, username, this.dbSession);
 		assertNull(review);
 		assertEquals(countReviewLog + 1, testManager.countReviewLogs());
+		
+		assertEquals(expectedCount, testManager.countReviewHelpfulLogs());
+		assertEquals(0, testManager.countReviewHelpful(interHash));
 	}
 	
 	private void insertReview(final String username, final String interHash, final double rating, String text) {
@@ -128,16 +147,16 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	@Test(expected = ValidationException.class)
 	public void invalidReviewMaxRating() {
-		this.insertReview(USERNAME, HASH, 5.0000000000001, "Great job!");
+		this.insertReview(USERNAME_2, HASH, 5.0000000000001, "Great job!");
 	}
 	
 	@Test(expected = ValidationException.class)
 	public void invalidReviewMinRating() {
-		this.insertReview(USERNAME, HASH, -1.0, "Great job!");
+		this.insertReview(USERNAME_2, HASH, -1.0, "Great job!");
 	}
 	
 	@Test(expected = ValidationException.class)
 	public void invalidReviewNotHalfRating() {
-		this.insertReview(USERNAME, HASH, 2.7, "Great job!");
+		this.insertReview(USERNAME_2, HASH, 2.7, "Great job!");
 	}
 }

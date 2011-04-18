@@ -4,14 +4,23 @@
 <sqlMap namespace="ReviewCommon">
 	<resultMap id="review" class="review">
 		<result property="date" 		column="date"				javaType="date" />
+		<result property="changeDate"	column="change_date"		javaType="date" />
 		<result property="text"	    	column="text"				javaType="string" />
-		<result property="rating"		column="rating" 			javaType="int" />
+		<result property="rating"		column="rating" 			javaType="double" />
 		<result property="user"			resultMap="Common.user" 	/>
 		<result property="helpful"  	column="helpful_count"		javaType="int" />
 		<result property="notHelpful" 	column="not_helpful_count"	javaType="int" />
 	</resultMap>
 	
 	<sql id="allReviewRows">
-		interHash, user_name, text, rating, date, helpful_count, not_helpful_count
+		interHash, user_name, text, rating, date, change_date, helpful_count, not_helpful_count
+	</sql>
+	
+	<sql id="allReviewHelpfulRows">
+		interHash, user_name, mark_user_name, helpful
+	</sql>
+	
+	<sql id="allRatingAttributes">
+		rating_avg, number_of_ratings
 	</sql>
 </sqlMap>

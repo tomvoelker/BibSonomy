@@ -8,7 +8,7 @@
 	</select>
 		
 	<insert id="insertReview" parameterClass="reviewParam">
-		INSERT INTO reviews (interHash, user_name, text, rating) VALUES (#interHash#, #username#, #review.text#, #review.rating#)
+		INSERT INTO reviews (interHash, user_name, text, rating, date) VALUES (#interHash#, #username#, #review.text#, #review.rating#, CURRENT_TIMESTAMP)
 	</insert>
 	
 	<select id="selectReviewForHashAndUser" parameterClass="reviewParam" resultMap="ReviewCommon.review">
@@ -31,7 +31,7 @@
 	</select>
 	
 	<insert id="insertMark" parameterClass="reviewParam">
-		INSERT INTO reviews_helpful (interHash, user_name, mark_user_name, helpful) VALUES
+		INSERT INTO reviews_helpful (<include refid ="allReviewHelpfulRows" />) VALUES
 	(#interHash#, #username#, #loggedinUsername#, #helpful#);
 			
 	</insert>

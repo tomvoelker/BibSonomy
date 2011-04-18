@@ -49,13 +49,17 @@ public class ReviewDatabaseManager extends AbstractDatabaseManager {
 	 * @return <code>true</code> iff the review was created successfully
 	 */
 	public boolean createReviewForPost(final String interHash, final Review review, final DBSession session) {
+		if (!present(interHash)) {
+			throw new ValidationException("please provide an interHash for the review");
+		}
+		
 		session.beginTransaction();
 		try {
 			final String username = review.getUser().getName();
 			this.checkReview(review);
 			
 			final Review oldReview = this.getReviewForPostAndUser(interHash, username, session);
-			if (oldReview != null) {
+			if (present(oldReview)) {
 				return false; // TODO error message;
 			}
 			

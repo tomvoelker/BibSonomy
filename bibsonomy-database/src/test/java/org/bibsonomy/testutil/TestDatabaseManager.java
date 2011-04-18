@@ -114,7 +114,8 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return number of all review log entries
 	 */
 	public int countReviewLogs() {
-		return this.queryForObject("countReviewLogs", Integer.class, this.createDBSession());
+		final Integer result = this.queryForObject("countReviewLogs", Integer.class, this.createDBSession());
+		return result == null ? 0 : result;
 	}
 	
 	/**
@@ -132,6 +133,23 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public int getReviewCount(final String interHash) {
 		final Integer result = this.queryForObject("getReviewCount", interHash, Integer.class, this.createDBSession());
+		return result == null ? 0 : result;
+	}
+	
+	/**
+	 * @return number of review helpful log entries
+	 */
+	public int countReviewHelpfulLogs() {
+		final Integer result = this.queryForObject("countReviewHelpfulLogs", Integer.class, this.createDBSession());
+		return result == null ? 0 : result;
+	}
+
+	/**
+	 * @param interHash
+	 * @return number of helpful marks for the specified interHash
+	 */
+	public int countReviewHelpful(String interHash) {
+		final Integer result = this.queryForObject("getReviewHelpfulCount", interHash, Integer.class, this.createDBSession());
 		return result == null ? 0 : result;
 	}
 }

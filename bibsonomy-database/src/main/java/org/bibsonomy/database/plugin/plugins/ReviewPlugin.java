@@ -43,8 +43,10 @@ public class ReviewPlugin extends AbstractDatabasePlugin {
 				param.setInterHash(interHash);
 				param.setReview(oldReview);
 				update("updateReviewRatingsCacheDelete", param, session);
-				
-				// TODO: log helpful markers
+				/*
+				 * delete all marked as helpful/not helpful
+				 */
+				delete("allHelpfulMarks", param, session);
 			}
 		};
 	}

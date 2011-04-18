@@ -30,10 +30,10 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	@BeforeClass
 	public static void setupDatabaseManager() {
 		bibTexExtraDb = BibTexExtraDatabaseManager.getInstance();
-		
 	}
 
-	@Ignore @Test
+	@Ignore
+	@Test
 	public void getURL() {
 		final List<BibTexExtra> extras = bibTexExtraDb.getURL(this.BIB_TEST_HASH, this.TEST_USER, this.dbSession);
 		assertEquals(2, extras.size());
@@ -45,7 +45,8 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		assertEquals("Online Version", extras.get(1).getText());
 	}
 
-	@Ignore @Test
+	@Ignore
+	@Test
 	public void createURL() {
 		bibTexExtraDb.createURL(this.BIB_TEST_HASH, this.TEST_USER, this.TEST_URL, TEST_TXT, this.dbSession);
 		final List<BibTexExtra> extras = bibTexExtraDb.getURL(this.BIB_TEST_HASH, this.TEST_USER, this.dbSession);
@@ -54,7 +55,8 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		assertEquals(TEST_TXT, extras.get(0).getText());
 	}
 
-	@Ignore @Test
+	@Ignore
+	@Test
 	public void deleteURL() {
 		bibTexExtraDb.deleteURL(this.BIB_TEST_HASH, this.TEST_USER, "http://localhost/mywiki/literature/BG98.pdf", this.dbSession);
 		final List<BibTexExtra> extras = bibTexExtraDb.getURL(this.BIB_TEST_HASH, this.TEST_USER, this.dbSession);
@@ -62,7 +64,8 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		assertEquals("http://members.pingnet.ch/gamma/junit.htm", extras.get(0).getUrl().toString());
 	}
 
-	@Ignore @Test
+	@Ignore
+	@Test
 	public void deleteAllURLs() {
 		// 925724 is the contentId for the hash b6c9a44d411bf8101abdf809d5df1431
 		bibTexExtraDb.deleteAllURLs(925724, this.dbSession);
@@ -70,25 +73,29 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		assertEquals(0, extras.size());
 	}
 
-	@Ignore @Test
+	@Ignore
+	@Test
 	public void updateURL() {
 		bibTexExtraDb.updateURL(925724, 12345678, this.dbSession);
 	}
 
-	@Ignore @Test
+	@Ignore
+	@Test
 	public void getBibTexPrivnoteForUser() {
 		final String note = bibTexExtraDb.getBibTexPrivnoteForUser("6e955a315951954a8030b79cece1e314", "siko", this.dbSession);
 		assertEquals("test", note);
 	}
 
-	@Ignore @Test
+	@Ignore
+	@Test
 	public void updateBibTexPrivnoteForUser() {
 		bibTexExtraDb.updateBibTexPrivnoteForUser(this.BIB_TEST_HASH, this.TEST_USER, this.TEST_TXT, this.dbSession);
 		final String note = bibTexExtraDb.getBibTexPrivnoteForUser(this.BIB_TEST_HASH, this.TEST_USER, this.dbSession);
 		assertEquals(this.TEST_TXT, note);
 	}
 
-	@Ignore @Test
+	@Ignore
+	@Test
 	public void updateDocument() {
 		bibTexExtraDb.updateDocument(813954, 12345678, this.dbSession);
 	}
@@ -106,7 +113,6 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	    
 	    extendedFieldList = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
 	    assertEquals(2, extendedFieldList.size());
-	    
 	}
 	
 	@Test
@@ -118,17 +124,10 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	    assertEquals(3, keys.size());
 	
 	}
-
-	/**
-	 * Tested in {@link #insertExtendedField()}
-	 */
-	@Ignore @Test
-	public void getExtendedFields() {
-	}
-
+	
 	@Test
 	public void deleteExtendedFieldsData() {		
-	    	Map<String, List<String>> extendedFields = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
+	    Map<String, List<String>> extendedFields = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
 
 		assertEquals(2, extendedFields.size());
 		extendedFields = bibTexExtraDb.getExtendedFieldsByKey("testuser1", "b77ddd8087ad8856d77c740c8dc2864a","ACM", this.dbSession);
@@ -146,7 +145,8 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		
 	}
 	
-	@Ignore @Test
+	@Ignore
+	@Test
 	public void updateExtendedFieldsData() {
 		bibTexExtraDb.updateExtendedFieldsData(783786, 12345678, this.dbSession);
 	}

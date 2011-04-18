@@ -82,6 +82,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			permissionDb.ensureWriteAccess(post, new User("testuser2"));
 			fail("expected exception");
 		} catch (AccessDeniedException ignore) {
+			// ignore
 		}
 
 		final Document document  = new Document();
@@ -91,6 +92,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			permissionDb.ensureWriteAccess(new User("testuser2"), document.getUserName());
 			fail("expected exception");
 		} catch (AccessDeniedException ignore) {
+			// ignore
 		}
 
 		permissionDb.ensureWriteAccess(new User("testuser1"), "testuser1");
@@ -98,6 +100,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			permissionDb.ensureWriteAccess(new User("testuser1"), "testuser2");
 			fail("expected exception");
 		} catch (AccessDeniedException ignore) {
+			// ignore
 		}
 	}
 
@@ -107,7 +110,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	@Test
 	public void isAllowedToAccessPostsDocuments() {
-		// TODO: implement me...
+		// TODO: implement test
 	}
 
 	/**
@@ -133,6 +136,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				permissionDb.ensureAdminAccess(user);
 				fail("should throw an exception");
 			} catch (AccessDeniedException ignore) {
+				// ignore
 			}
 
 			// This must throw an exception, because users without a name
@@ -142,6 +146,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				permissionDb.ensureAdminAccess(user);
 				fail("should throw an exception");
 			} catch (AccessDeniedException ignore) {
+				// ignore
 			}
 		}
 	}

@@ -1,10 +1,9 @@
 package org.bibsonomy.database.plugin;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
@@ -24,12 +23,13 @@ import org.bibsonomy.model.Review;
  */
 public class DatabasePluginRegistry implements DatabasePlugin {
 	
-	private static final Set<DatabasePlugin> DEFAULT_PLUGINS;
+	private static final List<DatabasePlugin> DEFAULT_PLUGINS;
 	
 	static {
 		// TODO: config via spring
-		DEFAULT_PLUGINS = new HashSet<DatabasePlugin>();
+		DEFAULT_PLUGINS = new LinkedList<DatabasePlugin>();
 		
+		// order matters!
 		DEFAULT_PLUGINS.add(new Logging());
 		DEFAULT_PLUGINS.add(new BibTexExtraPlugin());
 		DEFAULT_PLUGINS.add(new BasketPlugin());
@@ -40,16 +40,17 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	/**
 	 * @return the default plugins
 	 */
-	public static Set<DatabasePlugin> getDefaultPlugins() {
-		return Collections.unmodifiableSet(DEFAULT_PLUGINS);
+	public static List<DatabasePlugin> getDefaultPlugins() {
+		return Collections.unmodifiableList(DEFAULT_PLUGINS);
 	}
 
 	private static final DatabasePluginRegistry singleton = new DatabasePluginRegistry();
-	/** Holds all plugins */
-	private final Map<String, DatabasePlugin> plugins;
+	
+	/** Holds all plugins; order matters! */
+	private final LinkedHashMap<String, DatabasePlugin> plugins;
 	
 	private DatabasePluginRegistry() {
-		this.plugins = new HashMap<String, DatabasePlugin>();
+		this.plugins = new LinkedHashMap<String, DatabasePlugin>();
 		
 		for (final DatabasePlugin plugin : DatabasePluginRegistry.DEFAULT_PLUGINS) {
 			this.add(plugin);
@@ -88,7 +89,6 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		if (runnable == null) {
 			return;
 		}
-		// this.executor.execute(runnable);
 		runnable.run();
 	}
 	

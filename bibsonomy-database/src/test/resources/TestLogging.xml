@@ -41,5 +41,8 @@
 		SELECT COUNT(*) FROM log_reviews
 	</select>
 	
+	<select id="countReviewHelpfulLogs" resultClass="int">
+		SELECT COUNT(*) FROM log_reviews_helpful
+	</select>
 	
 </sqlMap>

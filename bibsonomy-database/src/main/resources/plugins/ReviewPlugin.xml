@@ -3,12 +3,16 @@
 
 <sqlMap namespace="ReviewPlugin">
 	<insert id="updateReviewRatingsCacheInsert" parameterClass="reviewParam">
-		INSERT INTO review_ratings_cache (interHash, numberOfRatings, avg) VALUES (#interHash#, 1 , #review.rating#)
-  			ON DUPLICATE KEY UPDATE avg = (avg * numberOfRatings + #review.rating#)/(numberOfRatings + 1), numberOfRatings = numberOfRatings + 1;
+		INSERT INTO review_ratings_cache (interHash, number_of_ratings, rating_avg) VALUES (#interHash#, 1 , #review.rating#)
+  			ON DUPLICATE KEY UPDATE rating_avg = (rating_avg * number_of_ratings + #review.rating#)/(number_of_ratings + 1), number_of_ratings = number_of_ratings + 1;
 	</insert>
 	
 	<!-- COALASCE the result because devision by zero returns null -->
 	<update id="updateReviewRatingsCacheDelete" parameterClass="reviewParam">
-		UPDATE review_ratings_cache SET avg = COALESCE((avg * numberOfRatings - #review.rating#)/(numberOfRatings - 1), 0), numberOfRatings = numberOfRatings - 1 WHERE interHash = #interHash#
+		UPDATE review_ratings_cache SET rating_avg = COALESCE((rating_avg * number_of_ratings - #review.rating#)/(number_of_ratings - 1), 0), number_of_ratings = number_of_ratings - 1 WHERE interHash = #interHash#
 	</update>
+	
+	<delete id="allHelpfulMarks" parameterClass="reviewParam">
+		DELETE FROM reviews_helpful WHERE user_name = #review.user.name# AND interHash = #interHash#
+	</delete>
 </sqlMap>

@@ -43,8 +43,6 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
-	
-	
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onReviewDeleted(java.lang.String, org.bibsonomy.model.Review, org.bibsonomy.database.common.DBSession)
@@ -59,6 +57,7 @@ public class Logging extends AbstractDatabasePlugin {
 				param.setInterHash(interHash);
 				param.setReview(oldReview);
 				insert("logReview", param, session);
+				insert("logReviewHelpfulMarks", param, session);
 			}
 		};
 	}

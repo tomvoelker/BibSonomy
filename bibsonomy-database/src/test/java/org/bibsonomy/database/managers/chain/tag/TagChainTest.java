@@ -25,6 +25,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -79,24 +80,27 @@ public class TagChainTest extends AbstractChainTest {
 	 * get related tags
 	 */
 	@Test
+	@Ignore
 	public void getRelatedTags() {
-		// TODO
+		// TODO: implement test
 	}
 
 	/**
 	 * get related tags for group
 	 */
 	@Test
+	@Ignore
 	public void getRelatedTagsForGroup() {
-		// TODO
+		// TODO: implement test
 	}
 
 	/**
 	 * get similar tags
 	 */
 	@Test
+	@Ignore
 	public void getSimilarTags() {
-		// TODO
+		// TODO: implement test
 	}
 
 	/**
@@ -209,16 +213,18 @@ public class TagChainTest extends AbstractChainTest {
 	 * get tags by hash
 	 */
 	@Test
+	@Ignore
 	public void GetTagsByHash() {
-		// TODO
+		// TODO: implement test
 	}
 
 	/**
 	 * get tags by hash for user
 	 */
 	@Test
+	@Ignore
 	public void GetTagsByHashForUser() {
-		// TODO
+		// TODO: implement test
 	}
 
 	/**

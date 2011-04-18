@@ -10,4 +10,8 @@
 		SELECT numberOfRatings FROM review_ratings_cache WHERE interHash = #interHash#
 	</select>
 	
+	<select id="getReviewHelpfulCount" resultClass="int" parameterClass="string">
+		SELECT COUNT(interHash) FROM reviews_helpful WHERE interHash = #interHash#
+	</select>
+	
 </sqlMap>

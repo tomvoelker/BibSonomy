@@ -41,7 +41,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	}
 	
 	/**
-	 * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, org.bibsonomy.database.util.DBSession)}
+	 * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
 	public void testCreatePost() {
@@ -69,7 +69,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	}
 	
 	/**
-	 * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, org.bibsonomy.database.util.DBSession)}
+	 * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
 	public void testUpdatePost() {
@@ -111,7 +111,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	}
 	
 	/**
-	 * tests {@link GoldStandardPublicationDatabaseManager#updatePost(Post, String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.util.DBSession)}
+	 * tests {@link GoldStandardPublicationDatabaseManager#updatePost(Post, String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.common.DBSession)}
 	 * without changing the inter-/intraHash
 	 */
 	@Test
@@ -194,8 +194,8 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	}	
 	
 	/**
-	 * tests {@link GoldStandardDatabaseManager#addReferencesToPost(String, String, Set, org.bibsonomy.database.util.DBSession)} and
-	 * {@link GoldStandardDatabaseManager#removeReferencesFromPost(String, String, Set, org.bibsonomy.database.util.DBSession)}
+	 * tests {@link GoldStandardDatabaseManager#addReferencesToPost(String, String, Set, org.bibsonomy.database.common.DBSession)} and
+	 * {@link GoldStandardDatabaseManager#removeReferencesFromPost(String, String, Set, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
 	public void testAddRemoveReferences() {
