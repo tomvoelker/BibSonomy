@@ -536,14 +536,7 @@ INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
 
 -- 
 -- Data for table `user` 
--- the encrypted password for the users is "test123"
--- 
-
-
--- `user_name`,`user_email`,`user_password`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`
--- `birthday`,`gender`,`profession`,`interests`,`hobbies`,`place`,`profilegroup`
--- `api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`
-
+--
  
 INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_max_count`,`is_max_count`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`,`birthday`,`gender`,`profession`,`institution`, `interests`,`hobbies`,`place`,`profilegroup`,`api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`) VALUES 
 -- user_name     user_email                   user_password   user_homepage                           user_realname   spammer   openurl                       reg_date               ip_address id    tmp_password tmp_request_date tagbox_style tagbox_sort tagbox_minfreq tagbox_max_count is_max_count tagbox_tooltip list_itemcount  spammer_suggest birthday gender profession institution interests hobbies place                               profilegroup api_key                             updated_by updated_at             role lang to_classify log_level
