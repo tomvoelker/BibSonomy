@@ -6,6 +6,7 @@ import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ResponseAware;
 import org.bibsonomy.webapp.util.ResponseLogic;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Controller for ajax requests
@@ -24,6 +25,7 @@ public abstract class AjaxController implements RequestAware, ResponseAware {
 	/**
 	 * @param logic the logic to set
 	 */
+	@Required
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
@@ -31,16 +33,19 @@ public abstract class AjaxController implements RequestAware, ResponseAware {
 	/**
 	 * @param userSettings the userSettings to set
 	 */
+	@Required
 	public void setUserSettings(final UserSettings userSettings) {
 		this.userSettings = userSettings;
 	}
 
 	@Override
+	@Required
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 	
 	@Override
+	@Required
 	public void setResponseLogic(ResponseLogic responseLogic) {
 		this.responseLogic = responseLogic;
 	}
