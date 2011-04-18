@@ -116,11 +116,11 @@ $(function() {
 			data:		helpfulData,
 			success:	function(msg) {
 							// TODO: update feedback counter
-							container.text(getString("post.resource.review.mark.thankyou"));
+							container.text(getString("post.resource.review.helpful.thankyou"));
 						},
 			statusCode: {
 		    400:  		function() {
-		    				container.text(getString("post.resource.review.mark.thankyou"));
+		    				container.text(getString("post.resource.review.helpful.thankyou"));
 		    			}
 		    },
 		});

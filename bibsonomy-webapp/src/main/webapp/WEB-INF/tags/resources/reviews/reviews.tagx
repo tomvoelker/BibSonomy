@@ -17,11 +17,11 @@
 	    <div id="avg_rating">
    			<div id="gold_rating_info">
    				<reviews:stars rating="${resource.rating}" />
-   				<fmt:message var="ratingTitle" key="resource.reviews.ratings"><!-- plural -->	
+   				<fmt:message var="ratingTitle" key="post.resource.review.ratings"><!-- plural -->	
    					<fmt:param value="${resource.numberOfRatings}" />
    				</fmt:message>
 				<c:if test="${resource.numberOfRatings == 1}">
-					<fmt:message var="ratingTitle" key="resource.reviews.rating" /> <!-- singular -->
+					<fmt:message var="ratingTitle" key="post.resource.review.rating" /> <!-- singular -->
 				</c:if>
 			
 				<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="2" minFractionDigits="2"/>
@@ -57,9 +57,9 @@
 	    </ul>
 	    
 	    <!-- TODO: use spring security tags -->
-	    <c:if test="${command.context.userLoggedIn and not hasReview}">
+	    <c:if test="${command.context.userLoggedIn and not loginUser.spammer and not hasReview}">
 	    	<div id="postReview">
-		    	<h4><fmt:message key="review.post"/></h4>
+		    	<h4><fmt:message key="post.resource.review.actions.post"/></h4>
 		    	<reviews:reviewForm resource="${resource}"/>
 	    	</div>
 	    </c:if>

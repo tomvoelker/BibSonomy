@@ -22,18 +22,16 @@
 			<reviews:stars rating="${review.rating}" />
 		</div>
 		<div class="reviewer">
-			<fmt:message key="review.by"/><c:out value=" "/><a href="/user/${fn:escapeXml(review.user.name)}"><c:out value="${review.user.name}" /></a><c:out value=", "/><fmt:message key="review.on"/><c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${review.date}"/>
+			<fmt:message key="post.resource.review.by"/><c:out value=" "/><a href="/user/${fn:escapeXml(review.user.name)}"><c:out value="${review.user.name}" /></a><c:out value=", "/><fmt:message key="post.resource.review.on"/><c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${review.date}"/>
 		</div>
 		<c:if test="${ownReview}">
-			<div class="reviewActions">(<a href="#editreview" id="reviewEdit"><fmt:message key="review.actions.edit" /></a><c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/> <a href="/ajax/review/" id="reviewDelete"><fmt:message key="review.actions.delete" /></a>)</div>
+			<div class="reviewActions">(<a href="#editreview" id="reviewEdit"><fmt:message key="post.resource.review.actions.edit" /></a><c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/> <a href="/ajax/review/" id="reviewDelete"><fmt:message key="post.resource.review.actions.delete" /></a>)</div>
 		</c:if>
 	</div>
-	
 	
 	<div class="reviewText">
 		<c:out value="${review.text}" />
 	</div>
-	
 	
 	<c:if test="${ownReview}">
 		<div style="display:none" id="editReviewForm">
@@ -41,28 +39,31 @@
 		</div>
 	</c:if>
 	
-	<div class="helpfulContainer">
-		<fmt:message var="yes" key="post.resource.review.helpful.yes" />
-		<fmt:message var="no" key="post.resource.review.helpful.no" />
-		<fmt:message key="post.resource.review.helpful" />
-		<span>
-			<form class="helpful" action="/ajax/reviews/mark" method="post">
-				<input type="hidden" value="${resource.interHash}" name="hash" />
-				<input type="hidden" value="${review.user.name}" name="username" />
-				<input type="hidden" value="${ckey}" name="ckey" />
-				<input type="hidden" value="true" name="helpful" />
-				<input type="submit" value="${yes}" />
-			</form>
-		</span>
-    	<span>
-    		<form class="helpful" action="/ajax/reviews/mark" method="post">
-    			<input type="hidden" value="${resource.interHash}" name="hash" />
-    			<input type="hidden" value="${review.user.name}" name="username" />
-    			<input type="hidden" value="${ckey}" name="ckey" />
-    			<input type="hidden" value="false" name="helpful" />
-    			<input type="submit" value="${no}" />
-    		</form>
-    	</span>
-	</div>
+	<!-- TODO: use spring security tags -->
+	<c:if test="${command.context.userLoggedIn and not loginUser.spammer}">
+		<div class="helpfulContainer">
+			<fmt:message var="yes" key="post.resource.review.helpful.yes" />
+			<fmt:message var="no" key="post.resource.review.helpful.no" />
+			<fmt:message key="post.resource.review.helpful" />
+			<span>
+				<form class="helpful" action="/ajax/reviews/mark" method="post">
+					<input type="hidden" value="${resource.interHash}" name="hash" />
+					<input type="hidden" value="${review.user.name}" name="username" />
+					<input type="hidden" value="${ckey}" name="ckey" />
+					<input type="hidden" value="true" name="helpful" />
+					<input type="submit" value="${yes}" />
+				</form>
+			</span>
+	    	<span>
+	    		<form class="helpful" action="/ajax/reviews/mark" method="post">
+	    			<input type="hidden" value="${resource.interHash}" name="hash" />
+	    			<input type="hidden" value="${review.user.name}" name="username" />
+	    			<input type="hidden" value="${ckey}" name="ckey" />
+	    			<input type="hidden" value="false" name="helpful" />
+	    			<input type="submit" value="${no}" />
+	    		</form>
+	    	</span>
+		</div>
+	</c:if>
 	
 </jsp:root>
