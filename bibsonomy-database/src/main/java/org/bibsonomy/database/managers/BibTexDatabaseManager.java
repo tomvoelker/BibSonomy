@@ -381,18 +381,18 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		final Post<BibTex> post = super.getPostDetails(authUser, resourceHash, userName, visibleGroupIDs, session);
 		
 		if (present(post)) {
-			final BibTex bibtex = post.getResource();
+			final BibTex publication = post.getResource();
 			if (this.permissionDb.isAllowedToAccessPostsDocuments(authUser, post, session)) {
-				bibtex.setDocuments(this.docDb.getDocumentsForPost(userName, resourceHash, session));
+				publication.setDocuments(this.docDb.getDocumentsForPost(userName, resourceHash, session));
 			}
 			
 			// add private notes
 			if (authUser != null && authUser.equalsIgnoreCase(userName)) {
-				bibtex.setPrivnote(extraDb.getBibTexPrivnoteForUser(resourceHash, userName, session));
+				publication.setPrivnote(extraDb.getBibTexPrivnoteForUser(resourceHash, userName, session));
 			}
 			
 			// add extra URLs
-			bibtex.setExtraUrls(extraDb.getURL(resourceHash, userName, session));
+			publication.setExtraUrls(extraDb.getURL(resourceHash, userName, session));
 			
 			return post;
 		}
@@ -547,8 +547,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
     }
 
     public Map<String, List<String>> getExtendedFields(final String userName, final String hash, final String key, final DBSession session) {
-
-		if(present(key)) {
+		if (present(key)) {
 		    return this.extraDb.getExtendedFieldsByKey(hash, userName, key, session);
 		} else {
 		    return this.extraDb.getExtendedFields(userName, hash, session);
