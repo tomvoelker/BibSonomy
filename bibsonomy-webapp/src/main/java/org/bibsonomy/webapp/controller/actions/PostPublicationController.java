@@ -29,6 +29,7 @@ import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
@@ -254,6 +255,11 @@ public class PostPublicationController extends AbstractEditPublicationController
 				 */
 				command.setSelection(null);
 				command.setPost(post);
+				/*
+				 * When exactly one post is imported, its tags are not put into 
+				 * the tag field. Instead, we show them here as "tags of copied post".
+				 */
+				command.setCopytags(new LinkedList<Tag>(post.getTags()));
 				return super.workOn(command);
 			}
 		}
