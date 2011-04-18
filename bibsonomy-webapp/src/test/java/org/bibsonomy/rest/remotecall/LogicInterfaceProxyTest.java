@@ -37,6 +37,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
@@ -974,6 +975,26 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public Map<String, List<String>> getExtendedFields(Class<? extends org.bibsonomy.model.Resource> resourceType, String userName, String intraHash, String key) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void createReview(String username, String interHash, Review review) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void updateReview(String username, String interHash, Review review) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void deleteReview(String username, String interHash) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void markReview(String username, String reviewUsername, String interHash, boolean helpful) {
+		// TODO Auto-generated method stub
 	}
 
 }
