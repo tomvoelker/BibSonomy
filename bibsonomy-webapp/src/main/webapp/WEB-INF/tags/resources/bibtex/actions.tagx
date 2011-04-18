@@ -97,7 +97,7 @@
 			<!-- GOLDSTANDARD -->
 			<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
 				<c:param name="hash" value="${post.resource.intraHash}" />
-				<c:param name="user" value="${mtl:encodeURI(post.user.name)}" />
+				<c:param name="user" value="${post.user.name}" />
 				<c:param name="editBeforeSaving" value="true" />
 			</c:url>
 			
