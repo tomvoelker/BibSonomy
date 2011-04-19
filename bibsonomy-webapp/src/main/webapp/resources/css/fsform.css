@@ -23,14 +23,18 @@
     padding: 0 10px 10px 10px;
 }
 
-.fsRight {
+.fsContainerRight {
 	float:right;
 	width:50%;
 }
 
-.fsLeft {
+.fsContainerLeft {
 	width:50%;
 	margin-right:50%;
+}
+
+.fsRight, .fsLeft {
+	margin:10px;
 }
 
 .fsInner, .fsHidden, .fsVisible {
