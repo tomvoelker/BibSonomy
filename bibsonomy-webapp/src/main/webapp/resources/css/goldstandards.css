@@ -1,3 +1,8 @@
+/* TODO: fsform.css overrides .ui-state-hover for all ui widgets */
+li.ui-state-hover {
+	font-weight: normal;
+}
+
 ul#sidebar .goldstandard {
 	padding-left: 20px;
 }
