@@ -522,7 +522,11 @@ public enum Views implements View {
 	/**
 	 * /layout/* pages which are rendered by JabRef 
 	 */
-	LAYOUT("layout"),
+	LAYOUT("layout"),	
+	/**
+	 * csl-compatible JSON output
+	 */
+	CSL("csl"),
 	/**
 	 * /csv/ pages rendered by the CSVView
 	 */
@@ -702,6 +706,8 @@ public enum Views implements View {
 			return AJAX_TAGCLOUD;
 		if ("csv".equals(format))
 			return CSV;
+		if ("csl".equals(format))
+			return CSL;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}

@@ -31,6 +31,9 @@
 	<!-- renders CSV for both bookmarks and publications -->
 	<bean id="csv" class="org.bibsonomy.webapp.view.CSVView"/>
 	
+	<!-- renderer for CSL-conform JSON output -->
+	<bean id="csl" class="org.bibsonomy.webapp.view.CSLView"/>
+	
 	<!-- renders documents of publications -->
 	<bean id="downloadFile" class="org.bibsonomy.webapp.view.DocumentDownloadView"/>
 
