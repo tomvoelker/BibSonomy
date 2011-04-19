@@ -51,7 +51,9 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.services.URLGenerator;
 
 /**
  * Converts between BibSonomy's and JabRef's BibTeX model.
@@ -95,12 +97,13 @@ public class JabRefModelConverter {
      * Converts a list of posts in BibSonomy's format into JabRef's format.
      * 
      * @param posts - a list of posts in BibSonomy's data model
+     * @param urlGen - the URL generator to create the biburl-field
      * @return A list of posts in JabRef's data model.
      */
-    public static List<BibtexEntry> convertPosts(final List<Post<? extends Resource>> posts) {
+    public static List<BibtexEntry> convertPosts(final List<Post<? extends Resource>> posts, URLGenerator urlGen) {
 	final List<BibtexEntry> entries = new ArrayList<BibtexEntry>();
 	for (final Post<? extends Resource> post : posts)
-	    entries.add(convertPost(post));
+	    entries.add(convertPost(post, urlGen));
 
 	return entries;
     }
@@ -109,9 +112,10 @@ public class JabRefModelConverter {
      * Converts a BibSonomy post into a JabRef BibtexEntry
      * 
      * @param post
+     * @param urlGen - the URLGenerator to create the biburl-field
      * @return
      */
-    public static BibtexEntry convertPost(final Post<? extends Resource> post) {
+    public static BibtexEntry convertPost(final Post<? extends Resource> post, URLGenerator urlGen) {
 
 	try {
 	    /*
@@ -219,7 +223,7 @@ public class JabRefModelConverter {
 	    }
 	    final String tagsBufferString = tagsBuffer.toString();
 	    if (present(tagsBufferString)) 
-		entry.setField("keywords", tagsBufferString);
+		entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS, tagsBufferString);
 
 
 	    // set groups - will be used in jabref when exporting to bibsonomy
@@ -237,7 +241,7 @@ public class JabRefModelConverter {
 	    // set comment + description
 	    final String description = post.getDescription();
 	    if (present(description)) {
-		entry.setField("description", post.getDescription());
+		entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
 		entry.setField("comment", post.getDescription());
 	    }
 
@@ -247,6 +251,9 @@ public class JabRefModelConverter {
 
 	    if (present(post.getUser()))
 		entry.setField("username", post.getUser().getName());
+	    
+	    // set URL to bibtex version of this entry (bibrecord = ...)
+	    entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, urlGen.getPublicationUrl(bibtex, post.getUser()).toString());
 
 	    return entry;
 

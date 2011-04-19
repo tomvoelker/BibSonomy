@@ -60,6 +60,7 @@ public class JabrefLayoutRendererTest {
 	try {
 
 	    final JabrefLayoutRenderer renderer = getRenderer();
+	    renderer.setProjectHome("http://www.bibsonomy.org");
 	    final JabrefLayout layout = renderer.getLayout("dblp", "foo");
 	    final StringBuffer renderedLayout = renderer.renderLayout(layout, getPosts(), false);
 	    final String cleanedLayout = renderedLayout.toString().replaceAll(" +", " ");//.replaceAll("\n", "\\\\n").replaceAll("\"", "\\\\\"");
