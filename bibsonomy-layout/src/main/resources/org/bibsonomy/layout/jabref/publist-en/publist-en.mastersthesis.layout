@@ -7,8 +7,8 @@ Master's thesis\begin{type} (\format[Replace(\n,),HTMLChars]{\type})\end{type}\b
 <br/>
 \begin{url}<a href="\format[Replace(\n,),HTMLChars]{\url}">[doi]</a>&nbsp;\end{url}\begin{pdf}<a
 href="\format[Replace(\n,),HTMLChars]{\pdf}">[PDF]</a>&nbsp;\end{pdf}
-\begin{abstract}<a onclick="toggleAbstract('\username', '\intrahash'); return false;" href="http://www.bibsonomy.org/bibtex/2\intrahash/\username">[abstract]</a>&nbsp;\end{abstract}
-<a onclick="toggleBibtex('\username', '\intrahash'); return false;" href="http://www.bibsonomy.org/bib/bibtex/2\intrahash/\username">[BibTeX]</a>&nbsp;
+\begin{abstract}<a onclick="toggleAbstract('\username', '\intrahash'); return false;" href="\biburl?format=bibtex">[abstract]</a>&nbsp;\end{abstract}
+<a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
 <div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
 \format[Replace("\n, "),HTMLChars]{\abstract}
 </div>
