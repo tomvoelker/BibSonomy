@@ -20,6 +20,7 @@
 	 -->
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance">
 		<property name="userLayoutFilePath" value="${project.document.path}"/>
+		<property name="projectHome" value="${project.home}"/>
 	</bean>
 
 	<!-- renders JabRef layouts -->
