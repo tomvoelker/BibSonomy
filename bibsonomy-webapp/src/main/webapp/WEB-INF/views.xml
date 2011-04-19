@@ -4,26 +4,25 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	                    http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-
-
 	<!-- extracts properties from the provided file and inserts them into this file -->
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
 			<value>/WEB-INF/project.properties</value>
 		</property>
 	</bean>
-
+	
 	<!-- Renders JabRef Layouts -->
 	<!-- 
-		Currently, it's a singleton, because we need the same instance also in the old code.
-		To get the singleton, we call the static getInstance() method
+		FIXME: Currently, it's a singleton, because we needed the same instance 
+		also in the old code. To get the singleton, we call the static 
+		getInstance() method.
+		We should put the bean into the application context and use it from there.
 	 -->
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance">
-		<property name="userLayoutFilePath">
-			<value>${project.document.path}</value>
-		</property>
+		<property name="userLayoutFilePath" value="${project.document.path}"/>
 	</bean>
-	
+
+	<!-- renders JabRef layouts -->
 	<bean id="layout" class="org.bibsonomy.webapp.view.LayoutView">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 	</bean>
@@ -31,16 +30,10 @@
 	<!-- renders CSV for both bookmarks and publications -->
 	<bean id="csv" class="org.bibsonomy.webapp.view.CSVView"/>
 	
+	<!-- renders documents of publications -->
 	<bean id="downloadFile" class="org.bibsonomy.webapp.view.DocumentDownloadView"/>
-	
+
+	<!-- renders the available export layouts as JSON -->	
 	<bean id="exportLayouts" class="org.bibsonomy.webapp.view.ExportLayoutView"/>
-
-<!-- 
-
-# view which renders layouts
-layout.class=org.bibsonomy.webapp.view.LayoutView
-#layout.stylesheetLocation=/WEB-INF/xsl/home.xslt
-#layout.root=words
- -->
 
 </beans>
