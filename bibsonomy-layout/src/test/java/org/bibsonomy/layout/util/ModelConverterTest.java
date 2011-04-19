@@ -46,6 +46,8 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.services.URLGenerator;
 //import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Test;
 import org.junit.Assert;
@@ -55,6 +57,8 @@ import bibtex.parser.ParseException;
 public class ModelConverterTest {
 
     private static final String COMMON_FIELDS = "abstract, address, author, bibtexkey, booktitle, comment, description, doi, editor, isbn, keywords, month, pages, publisher, title, url, year";
+    
+    private static final String PROJECT_HOME = "http://www.bibsonomy.org/";
 
     private static final String bibtexSource = "@book{Loudon2003,\r\n"
 	+ "  title = {C++. Kurz und gut.},\r\n"
@@ -63,7 +67,14 @@ public class ModelConverterTest {
 	+ "  booktitle = {C++. Kurz und gut.},\r\n"
 	+ "  isbn = {3897212625},\r\n" + "  keywords = {boost c++},\r\n"
 	+ "  owner = {dasboogie},\r\n"
-	+ "  timestamp = {2007-08-18 11:25:11}\r\n" + "}";
+	+ "  timestamp = {2007-08-18 11:25:11},\r\n" 
+	+ "  biburl = {http://www.bibsonomy.org/bibtex/27962215df254f7130ac8381f9b339969/johndoe},\r\n"
+	+ "  interhash = {3ec1fdaf9b94b3d4e0d0eb99e5e03420},\r\n"
+	+ "  intrahash = {7962215df254f7130ac8381f9b339969},\r\n"
+	+ "  username = {johndoe}\r\n"
+	+ "}";
+    
+
 
     public static final String EXAMPLE_BIBTEX = "@inproceedings{benz2009managing,\n" + 
     "address = {New York, NY, USA},\n" +
@@ -93,12 +104,17 @@ public class ModelConverterTest {
 	JabRefPreferences.getInstance().put("groupKeywordSeparator", " ");
 	final PostBibTeXParser pbp = new PostBibTeXParser();
 	final Post<BibTex> post = pbp.parseBibTeXPost(bibtexSource);
-
-	final BibtexEntry entry = JabRefModelConverter.convertPost(post);
+	post.setUser(new User("johndoe"));
+	post.getResource().recalculateHashes();
+	final URLGenerator urlGen = new URLGenerator(PROJECT_HOME);
+	post.getResource().addMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, urlGen.getPublicationUrl(post.getResource(), post.getUser()));
+	final BibtexEntry entry = JabRefModelConverter.convertPost(post, new URLGenerator(PROJECT_HOME));
 	final BibtexEntry expected = BibtexParser.singleFromString(bibtexSource);
 
-	for (final String field : entry.getAllFields())
+	for (final String field : entry.getAllFields()) {	    
 	    Assert.assertEquals(expected.getField(field), entry.getField(field));
+	}
+	
     }
 
     @SuppressWarnings("unchecked")
@@ -163,7 +179,7 @@ public class ModelConverterTest {
 	    list.add(post);
 	}
 
-	final List<BibtexEntry> bibtexNew = JabRefModelConverter.convertPosts(list);
+	final List<BibtexEntry> bibtexNew = JabRefModelConverter.convertPosts(list, new URLGenerator("http://www.bibsonomy.org"));
 
 	final BibtexEntry oldEntry = bibtexOld.getEntries().iterator().next();
 	final BibtexEntry newEntry = bibtexNew.get(0);
@@ -218,7 +234,7 @@ public class ModelConverterTest {
 	try {
 	    final Post<BibTex> post = pbp.parseBibTeXPost(bibtexSource);	
 	    post.setUser(new User("alder"));
-	    BibtexEntry jabrefEntry = JabRefModelConverter.convertPost(post);
+	    BibtexEntry jabrefEntry = JabRefModelConverter.convertPost(post, new URLGenerator(PROJECT_HOME));
 	    Assert.assertEquals("alder", jabrefEntry.getField("username"));	    
 	} catch (ParseException e) {
 	    Assert.fail(e.getMessage());

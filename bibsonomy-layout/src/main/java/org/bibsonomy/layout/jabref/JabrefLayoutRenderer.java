@@ -45,6 +45,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -58,6 +59,8 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
     private static final Log log = LogFactory.getLog(JabrefLayoutRenderer.class);
+    
+    URLGenerator urlGen;
     
     /**
      * This is a singleton! 
@@ -275,7 +278,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
     private <T extends Resource> BibtexDatabase bibtex2JabrefDB(final List<Post<T>> bibtexList) {
 	final BibtexDatabase db = new BibtexDatabase();
 	for (final Post<T> post : bibtexList) {
-	    db.insertEntry(JabRefModelConverter.convertPost(post));
+	    db.insertEntry(JabRefModelConverter.convertPost(post, urlGen));
 	}
 	return db;
     }
@@ -298,6 +301,18 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
     @Required
     public void setUserLayoutFilePath(String userLayoutFilePath) {
         layouts.setUserLayoutFilePath(userLayoutFilePath);
+    }
+    
+    /**
+     * The base URL of the running project. Needed to create 
+     * a suitable URLGenerator in order to create the biburl-links
+     * within the JabrefModelConverter
+     *  
+     * @param projectHome
+     */
+    @Required
+    public void setProjectHome(String projectHome) {
+	this.urlGen = new URLGenerator(projectHome);
     }
 
     /**
