@@ -1,22 +1,25 @@
 var REVIEWS_URL = "/ajax/reviews";
 var MARK_REVIEWS_URL = REVIEWS_URL + "/mark";
+var STAR_WIDTH = 32;
 
-$(function() {
+$(function() {	
 	// init all selectable stars
 	$('.reviewrating').stars({
 		split: 2
 	});
 	
+	$('#updateReviewForm').hide();
+	
 	// create review form
 	$('#createReviewForm').submit(function() {
-		var reviewRating = getRating("#createReviewRating");
-		if (reviewRating === false) {
+		if (!validateRating('#createReviewRating')) {
 			return false;
 		}
 		
-		$('#createSpinner').toggle();
+		$('#createSpinner').show('slow');
 		
 		var reviewText = $('#createReviewText').val();
+		var reviewRating = getRating('#createReviewRating');
 		var starWidth = getStarsWidth(reviewRating);
 		
 		// call service
@@ -33,45 +36,55 @@ $(function() {
 			     			
 			     			// update update form
 			     			$('#updateReviewText').text(reviewText);
-			     			$('#updateReviewRating').stars("select", reviewRating);
+			     			$('#updateReviewRating').stars("select", reviewRating + "");
 			     			
 			     			// display values
 			     			$('#newReview .reviewText').text(reviewText);
 			     			$('#newReview .reviewinfo .stars-on').css('width', starWidth);
 			     			$('#newReview').fadeIn(1000);
 			     			
-			     			// TODO: update overall counter and rating
+			     			var oldCount = getReviewCount();
+			     			var oldAvg = getAvg();
+			     			var newCount = oldCount + 1;
+			     			var newAvg = (oldAvg * oldCount + reviewRating) / newCount;	     			
+			     			setReviewCount(newCount);
+			     			setAvg(newAvg);
 						}
 		});
 		return false;
 	});
 	
 	$('#updateReviewForm').submit(function() {
-		var reviewRating = getRating("#updateReviewRating");
-		if (reviewRating === false) {
+		if (!validateRating('#updateReviewRating')) {
 			return false;
 		}
 		
-		$('#updateSpinner').toggle();
+		$('#updateSpinner').show('slow');
 		
 		var reviewText = $('#updateReviewText').val();
+		var reviewRating = getRating('#updateReviewRating');
 		var starWidth = getStarsWidth(reviewRating);
 		
+		var oldReviewRating = getOwnReviewRating();
 		// call service
-		var updRevUrl = REVIEWS_URL + "?" + $(this).serialize();
-		alert(updRevUrl);
+		var reviewData = $(this).serialize();
 		$.ajax({
-			url:		updRevUrl,
-			type:		"PUT",
+			url:		REVIEWS_URL,
+			type:		"POST",
+			data: 		reviewData,
 			success:	function(msg) {
-							$('#editReviewForm').toggle('slow');
-							$('#updateSpinner').toggle();
+							$('#updateReviewForm').hide('slow');
+							$('#updateSpinner').hide();
 			     			
 							// update values
 			     			$('#ownReview .reviewText').text(reviewText);
 			     			$('#ownReview .reviewinfo .stars-on').css('width', starWidth);
 			     			
-			     			// TODO: update overall counter and rating
+			     			// update over all values
+			     			var count = getReviewCount();
+			     			var oldAvg = getAvg();
+			     			var newAvg = (oldAvg * count - oldReviewRating + reviewRating) / count;
+			     			setAvg(newAvg);
 						}
 		});
 		return false;
@@ -79,13 +92,17 @@ $(function() {
 	
 	// delete link for own review
 	$('a#reviewDelete').click(function() {
-		// TODO: show spinner
 		// TODO: confirm?
+		$('#deleteSpinner').show('slow');
+		
 		var hash = $('#reviews').data('interHash');
 		var username = $(this).parents('.reviewinfo:last').data('username');
 		var cKey = $('#reviews').data('ckey');
-		var review = $(this).parents('li:last');
+		var review = $('li#ownReview');
+		
+		var oldReviewRating = getOwnReviewRating();
 		// TODO: encode user name?
+		// TODO: handle error?
 		var revDelUrl = REVIEWS_URL + "?hash=" + hash + "&username=" + username + "&ckey=" + ckey;
 		$.ajax({
 			url:		revDelUrl,
@@ -94,6 +111,19 @@ $(function() {
 							review.fadeOut(1000, function() {
 			     				$(this).remove();
 							});
+							
+							// update overall count
+							var oldCount = getReviewCount();
+			     			var oldAvg = getAvg();
+			     			var newAvg = 0;
+			     			var newCount = oldCount - 1;
+			     			
+			     			if (newCount > 0) {
+			     				newAvg = (oldAvg * oldCount - oldReviewRating) / newCount;	 
+			     			}
+			     			    			
+			     			setReviewCount(oldCount - 1);
+			     			setAvg(newAvg);
 						}
 		});
 		return false;
@@ -101,21 +131,20 @@ $(function() {
 	
 	// show edit form for own review
 	$('a#reviewEdit').click(function() {
-		$('#editReviewForm').toggle('slow');
+		$('#updateReviewForm').toggle('slow');
 	});
 	
 	$('.helpful').submit(function() {
 		var helpfulData = $(this).serialize();
 		var container = $(this).parents('.helpfulContainer');
 		var helpful = $(this).children("input[name=helpful]").val() === "true";
-		alert(helpful);
 		// call services
 		$.ajax({
 			url:		MARK_REVIEWS_URL,
 			type:		"POST",
 			data:		helpfulData,
 			success:	function(msg) {
-							// TODO: update feedback counter
+							// TODO: update feedback counter?
 							container.text(getString("post.resource.review.helpful.thankyou"));
 						},
 			statusCode: {
@@ -129,19 +158,51 @@ $(function() {
 	
 });
 
+function getReviewCount() {
+	return parseInt($('#review_info_rating span[property=v\\:count]').text());
+}
 
-function getRating(starsWrapperId) {
-	var stars = $(starsWrapperId).data("stars");
-	var reviewRating = stars.options.value;
+function getAvg() {
+	return Number($('#review_info_rating span[property=v\\:average]').text());
+}
+
+function setAvg(value) {
+	value = value.toFixed(2);
+	$('#review_info_rating span[property=v\\:average]').text(value);
+	var starWidth = getStarsWidth(value);
+	$('#review_info_rating .stars-on').css('width', starWidth);
+}
+
+function setReviewCount(value) {
+	var title = getString("post.resource.review.review");
+	if (value > 1) {
+		title = getString("post.resource.review.reviews");
+	}
+	
+	$('#review_info_rating span[property=v\\:count]').text(value);
+	$('#review_info_rating span[property=v\\:count]').next('span').text(title);
+}
+
+function getOwnReviewRating() {
+	return Number($('#ownReview .rating').data('rating'));
+}
+
+function validateRating(starsWrapperId) {
+	var reviewRating = getRating(starsWrapperId);
 	if (reviewRating == 0) {
 		if (!confirm(getString("post.resource.review.rating0"))) {
 			return false;
 		}
 	}
 	
-	return reviewRating;
+	return true;
+}
+
+function getRating(starsWrapperId) {
+	var stars = $(starsWrapperId).data("stars");
+	return Number(stars.options.value);
 }
 
 function getStarsWidth(rating) {
-	return 16 * rating;
+	return STAR_WIDTH * rating;
 }

@@ -1,45 +1,80 @@
-/* TODO: move to other css */
+/* TODO: move to other css file? */
 
-#avg_rating {
+#review_info_rating {
 	margin: 1em 5em;
 	border: 1px solid black;
 	padding: 1em;
 	text-align: center;
 }
 
-#avg_rating .stars-off, #avg_rating .stars_on {
+#review_info_rating div {
 	margin:auto;
-}
-
-.reviewer {
-	margin-bottom: 0.1em;
 }
 
 .reviewinfo {
 	margin-bottom: 0.3em;
 }
 
-.helpfulContainer {
+#reviewlist li div.helpfulContainer {
 	margin-top: 0.2em;
 	padding-top: 0.1em;
-	border-top: solid 1px black;
+}
+
+#reviewlist li div.helpfulContainer form {
+	margin-left: 0.2em;
+	margin-right: 0.2em;
 }
 
 #reviewlist li {
 	margin-bottom: 1.2em;	
 }
 
-.stars-off, .stars-on {
+#reviewlist li div.reviewer {
+	font-size: 0.8em;
+	margin-top: 0.5em;
+}
+
+#reviewlist li div.helpfulinfo, #reviewlist li div.helpfulContainer {
+	margin-bottom: 0.3em;
+	font-size: 0.9em;
+}
+
+#reviewlist li div.reviewText {
+	clear: both;
+	margin-top: 0.5em;
+}
+
+.stars-off-1, .stars-on-1 {
     position: relative;
     height: 16px;
     background: url(../jquery_ui/plugins/jquery.ui.stars/jquery.ui.stars.gif) repeat-x 0 -32px;
 }
+
+.stars-off-1 {
+	width: 80px;
+}
  
-.stars-on {
+.stars-on-1 {
     position: absolute;
     background-position: 0 -48px;
 }
 
-form.helpful {
+/*
+.stars-off-2, .stars-on-2 {
+    position: relative;
+    height: 32px;
+    background: url(../image/stars-big.png) repeat-x 0 0px;
+}
+
+.stars-off-2 {
+	width: 160px;
+}
+
+.stars-on-2 {
+    position: absolute;
+    background-position: 0 -32px;
+}*/
+
+#reviewlist form.helpful {
 	display: inline;
 }

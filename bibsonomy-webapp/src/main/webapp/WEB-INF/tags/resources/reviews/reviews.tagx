@@ -13,29 +13,28 @@
     </jsp:useBean>
     
     <div id="reviews" data-interHash="${resource.interHash}" data-ckey="${ckey}">
-	    <h3><fmt:message key="post.resource.reviews" /></h3>
-	    <div id="avg_rating">
-   			<div id="gold_rating_info">
-   				<reviews:stars rating="${resource.rating}" />
-   				<fmt:message var="ratingTitle" key="post.resource.review.ratings"><!-- plural -->	
-   					<fmt:param value="${resource.numberOfRatings}" />
-   				</fmt:message>
-				<c:if test="${resource.numberOfRatings == 1}">
-					<fmt:message var="ratingTitle" key="post.resource.review.rating" /> <!-- singular -->
-				</c:if>
+	    <h3><fmt:message key="post.resource.review.reviews" /></h3>
+	    <!-- contains RDFa infos -->
+	 	<div id="review_info_rating" xmlns:v="http://rdf.data-vocabulary.org/#" typeof="v:Review-aggregate">
+	 		<!-- TODO: add bigger star images and change dimension to 2 -->
+	 		<reviews:stars rating="${resource.rating}" dimension="1" />
+	 				
+	 		<fmt:message var="ratingTitle" key="post.resource.review.reviews" /><!-- plural -->
+			<c:if test="${resource.numberOfRatings == 1}">
+				<fmt:message var="ratingTitle" key="post.resource.review.review" /> <!-- singular -->
+			</c:if>
 			
-				<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="2" minFractionDigits="2"/>
-			
-				<small>(∅ <c:out value="${roundedRating}" />, <c:out value="${ratingTitle}" />)</small>
-   			</div>
-    	</div>
+			<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="2" minFractionDigits="2"/>
+			<small>(∅ <span property="v:average"><c:out value="${roundedRating}" /></span><c:out value=" " /><fmt:message key="post.resource.review.ratings.of" /><c:out value=" " /><span property="v:best">5</span>, <fmt:message key="post.resource.review.ratings.basedOn" /><c:out value=" " /><span property="v:count"><c:out value="${resource.numberOfRatings}"/></span><c:out value=" " /><span><c:out value="${ratingTitle}" /></span>)</small>
+			<span class="initiallyHidden" property="v:worst">0</span>
+	 	</div>
 	    
 	    <c:set var="hasReview" value="false" />
 	    <ul id="reviewlist">
 	    <c:if test="${not empty resource.reviews}">
 	    	<c:forEach var="review" items="${resource.reviews}">
-	    		<!-- check if user has reviewed this resource -->
 	    		<c:choose>
+	    			<!-- check if user has reviewed this resource -->
 		    		<c:when test="${review.user.name eq command.context.loginUser.name}">
 		    			<c:set var="hasReview" value="true" />
 		    			<li id="ownReview">
@@ -61,7 +60,10 @@
 	    	<div id="postReview">
 		    	<h4><fmt:message key="post.resource.review.actions.post"/></h4>
 		    	<reviews:reviewForm resource="${resource}"/>
+		    	<!-- TODO: add tips for reviewing a resource? -->
 	    	</div>
+	    	
+	    	<!-- TODO: display info to spammers that they are spammers? -->
 	    </c:if>
 	</div>
 </jsp:root>

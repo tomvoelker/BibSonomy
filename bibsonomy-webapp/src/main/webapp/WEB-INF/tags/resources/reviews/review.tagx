@@ -18,15 +18,19 @@
    				<fmt:param value="${review.helpful + review.notHelpful}" />
 			</fmt:message>:
 		</div>
-		<div class="rating">
+		
+		<!-- TODO: admin actions for delete and edit review! -->
+		<c:if test="${ownReview}">
+			<div id="deleteSpinner" class="initiallyHidden"><img src="${resdir}/image/ajax_loader.gif" alt="loading" /><span id="deleteLoadingMessage"><fmt:message key="post.resource.review.action.delete" /></span></div>
+			<div class="reviewActions">(<a href="#editreview" id="reviewEdit"><fmt:message key="post.resource.review.actions.edit" /></a><c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/> <a href="/ajax/review" id="reviewDelete"><fmt:message key="post.resource.review.actions.delete" /></a>)</div>
+		</c:if>
+		
+		<div class="rating" data-rating="${review.rating}">
 			<reviews:stars rating="${review.rating}" />
 		</div>
 		<div class="reviewer">
 			<fmt:message key="post.resource.review.by"/><c:out value=" "/><a href="/user/${fn:escapeXml(review.user.name)}"><c:out value="${review.user.name}" /></a><c:out value=", "/><fmt:message key="post.resource.review.on"/><c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${review.date}"/>
 		</div>
-		<c:if test="${ownReview}">
-			<div class="reviewActions">(<a href="#editreview" id="reviewEdit"><fmt:message key="post.resource.review.actions.edit" /></a><c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/> <a href="/ajax/review/" id="reviewDelete"><fmt:message key="post.resource.review.actions.delete" /></a>)</div>
-		</c:if>
 	</div>
 	
 	<div class="reviewText">
@@ -34,14 +38,13 @@
 	</div>
 	
 	<c:if test="${ownReview}">
-		<div style="display:none" id="editReviewForm">
-			<reviews:reviewForm review="${review}" resource="${resource}" />
-		</div>
+		<reviews:reviewForm review="${review}" resource="${resource}" />
 	</c:if>
 	
 	<!-- TODO: use spring security tags -->
 	<c:if test="${command.context.userLoggedIn and not loginUser.spammer}">
 		<div class="helpfulContainer">
+			<!-- TODO: display info text like "help other users to find helpful reviews"? -->
 			<fmt:message var="yes" key="post.resource.review.helpful.yes" />
 			<fmt:message var="no" key="post.resource.review.helpful.no" />
 			<fmt:message key="post.resource.review.helpful" />

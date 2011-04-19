@@ -2,8 +2,12 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="rating" type="java.lang.Double" required="true" />
+	<jsp:directive.attribute name="dimension" type="java.lang.Integer" required="false" />
 	
-	<c:set var="allStarWidth" value="${rating * 16}" />
-	<!-- 80 = 5 stars (20px width per star) -->
-	<div class="stars-off" style="width:80px"><div class="stars-on" style="width:${allStarWidth}px"><!-- empty element--></div></div>
+	<c:if test="${empty dimension}">
+		<c:set var="dimension" value="1" />
+	</c:if>
+	
+	<c:set var="allStarWidth" value="${rating * 16 * dimension}" />
+	<div class="stars-off-${dimension}"><div class="stars-on-${dimension}" style="width:${allStarWidth}px"><!-- empty element--></div></div>
 </jsp:root>

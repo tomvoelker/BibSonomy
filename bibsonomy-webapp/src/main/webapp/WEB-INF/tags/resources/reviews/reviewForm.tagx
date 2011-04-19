@@ -13,6 +13,9 @@
 	</c:if>
 	
 	<form action="/ajax/reviews" method="post" id="${id}ReviewForm">
+		<c:if test="${not empty review }">
+			<input type="hidden" value="PUT" name="_method"/>
+		</c:if>
    		<input type="hidden" value="${ckey}" name="ckey"/>
    		<input name="hash" type="hidden" value="${resource.interHash}" />
    		<div id="fsform">
@@ -45,7 +48,7 @@
    					<textarea class="fsInput reqinput" rows="5" name="review.text" id="${id}ReviewText"><!-- text --><c:if test="${not empty review}"><c:out value="${review.text}" /></c:if></textarea>
    				</div>
    				<div class="fsRow">
-   					<fmt:message key="review.post.button" var="buttonText" />
+   					<fmt:message key="post.resource.review.action.${id}.button" var="buttonText" />
    					<input type="submit" value="${buttonText}" />
    				</div>
    			</fieldset>
