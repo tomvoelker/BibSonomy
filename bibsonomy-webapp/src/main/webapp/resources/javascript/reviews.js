@@ -1,6 +1,6 @@
 var REVIEWS_URL = "/ajax/reviews";
 var MARK_REVIEWS_URL = REVIEWS_URL + "/mark";
-var STAR_WIDTH = 32;
+var STAR_WIDTH = 16;
 
 $(function() {	
 	// init all selectable stars
