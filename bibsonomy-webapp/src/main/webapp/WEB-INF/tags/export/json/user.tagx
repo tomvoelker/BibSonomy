@@ -16,7 +16,7 @@
       {  
          "type" : "User",
          "name" : "${mtl:quoteJSON(user.name)}"<c:if test="${command.context.loginUser.role == 'ADMIN'}">,
-         "spammer" : "${user.spammer}"
+         "spammer" : ${user.spammer}
          </c:if>
       }
 </jsp:root>
