@@ -644,6 +644,7 @@ public enum Views implements View {
 			"aparss".equals(format) ||
 			"burst".equals(format) ||
 			"layout".equals(format) ||
+			"csl".equals(format) ||
 			"batcheditbib".equals(format) ||
 			"swrc".equals(format);
 	}
@@ -658,6 +659,7 @@ public enum Views implements View {
 	public static boolean isBookmarkOnlyFormat(final String format) {
 		return "xml".equals(format) || 
 			"rss".equals(format) ||
+			"bookbib".equals(format) ||
 			"batchediturl".equals(format) ||
 			"bookpubl".equals(format);
 	}
