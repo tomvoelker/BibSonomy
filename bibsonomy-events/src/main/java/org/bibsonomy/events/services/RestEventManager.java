@@ -1,7 +1,6 @@
 package org.bibsonomy.events.services;
 
-import java.io.IOException;
-import java.io.StringWriter;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -11,7 +10,6 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.events.model.Event;
 import org.bibsonomy.events.model.ParticipantDetails;
 import org.bibsonomy.model.User;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -61,14 +59,7 @@ public class RestEventManager implements EventManager {
 		json.put("socialEvent", participantDetails.getSocialEvent());
 		json.put("email", participantDetails.getEmail());
 
-		StringWriter out = new StringWriter();
-		try {
-			json.writeJSONString(out);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String jsonText = out.toString();
-		doRequest("create", jsonText);
+		doRequest("create", json.toString());
 
 	}
 
