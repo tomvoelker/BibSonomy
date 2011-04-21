@@ -58,7 +58,9 @@ public class PublicationClassificationController extends AjaxController implemen
 		if (present(action)) {
 
 			if (GET_AVAILABLE_CLASSIFICATIONS.equals(action)) {
-				json.put("available", new JSONArray(classificator.getInstance().getAvailableClassifications()));
+				final JSONArray jsonArray = new JSONArray();
+				jsonArray.addAll(classificator.getInstance().getAvailableClassifications());
+				json.put("available", jsonArray);
 			} else if(SAVE_CLASSIFICATION_ITEM.equals(action)) {
 
 				// save classification data to database
@@ -112,7 +114,9 @@ public class PublicationClassificationController extends AjaxController implemen
 				json.put("description", classificator.getInstance().getDescription(command.getKey(), command.getValue()));
 			}
 		} else {
-			json.put("children", new JSONArray(classificator.getInstance().getChildren(command.getClassificationName(), command.getId())));
+			final JSONArray jsonArray = new JSONArray();
+			jsonArray.addAll(classificator.getInstance().getChildren(command.getClassificationName(), command.getId()));
+			json.put("children", jsonArray);
 		}
 		command.setResponseString(json.toString());
 		return Views.AJAX_JSON;

@@ -114,11 +114,11 @@ public class SwordServiceController extends AjaxController implements Minimalist
 
 		final Locale locale = requestLogic.getLocale();
 		
-		jsonResponse.set("statuscode", statuscode);
-		jsonResponse.set("message", message);
+		jsonResponse.put("statuscode", statuscode);
+		jsonResponse.put("message", message);
 		// TODO: get from somewhere localized messages to transmit via ajax
 		// localizedMessage = puma.repository.response.$message
-		jsonResponse.set("localizedMessage", messageSource.getMessage(message, null, locale));
+		jsonResponse.put("localizedMessage", messageSource.getMessage(message, null, locale));
 		json.put("response", jsonResponse);
 		
 		/*

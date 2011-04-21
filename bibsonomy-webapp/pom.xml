@@ -333,7 +333,8 @@
 		<dependency>
 			<groupId>net.sf.json-lib</groupId>
 			<artifactId>json-lib</artifactId>
-			<version>0.9</version>
+			<classifier>jdk15</classifier>
+			<version>2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jasypt</groupId>
