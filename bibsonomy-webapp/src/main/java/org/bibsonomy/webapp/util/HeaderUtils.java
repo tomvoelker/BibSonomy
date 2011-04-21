@@ -4,9 +4,13 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.Vector;
+import java.util.Map.Entry;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author rja
@@ -15,24 +19,28 @@ import java.util.Vector;
 public class HeaderUtils {
 
 	/**
-	 * Mapping of mime types to the supported export formats.
+	 * Mapping of MIME types to the supported export formats.
 	 * Used for content negotiation using /uri/ 
 	 * 
-	 * Note: order is important: more specific mime-types must come before less specific.
+	 * Note: order is important: more specific MIME-types must come before less specific.
 	 * I.e., "text/plain" before "plain" and "rdf+xml" before "xml".
 	 *  
 	 */
 	private static final String[][] FORMAT_URLS = new String[][] {
-		/* mime-type,   	bookmark, 	publication  */
-		{"html", 			"", 		""			},
-		{"rss", 			"rss", 		"publrss"	},
-		{"rdf+xml",			null,		"swrc"		},
-		{"text/plain",  	null, 		"bib"		},
-		{"plain", 			null, 		"bib"		},
-		{"xml", 			"xml",		"layout/dblp"},
-		{"rdf",				null,		"burst"		},
-		{"bibtex",			"bookbib",	"bib"		}
+		/* mime-type,   	bookmark, 						publication  */
+		{"html", 			"", 		""},
+		{"rdf+xml",			null,							Views.FORMAT_STRING_SWRC},
+		{"text/plain",  	null, 							Views.FORMAT_STRING_BIB},
+		{"plain", 			null, 							Views.FORMAT_STRING_BIB},
+		{"rdf",				null,							Views.FORMAT_STRING_BURST},
+		{"xml", 			Views.FORMAT_STRING_XML,		Views.FORMAT_STRING_LAYOUT + "/dblp"},
+		{"csv", 			Views.FORMAT_STRING_CSV, 		Views.FORMAT_STRING_CSV	},
+		{"json", 			Views.FORMAT_STRING_JSON, 		Views.FORMAT_STRING_JSON},
+		{"rss", 			Views.FORMAT_STRING_RSS, 		Views.FORMAT_STRING_PUBLRSS},
+		{"bibtex",			Views.FORMAT_STRING_BOOKBIB,	Views.FORMAT_STRING_BIB}
 	};
+
+
 	
 	/**
 	 * Gets the preferred response format which is supported in 
@@ -89,6 +97,38 @@ public class HeaderUtils {
 		 * TODO: throw exception
 		 */
 //		throw new NotAcceptableException("", );
+	}
+	
+	/**
+	 * 
+	 * http://hostname.com/mywebapp/servlet/MyServlet/a/b;c=123?d=789
+	 * 
+	 * @param req
+	 * @return The URL that was used to produce the request
+	 */
+	public static String getUrl(final HttpServletRequest req) {
+	    final StringBuffer reqUrl = req.getRequestURL();
+	    final String queryString = req.getQueryString();   // d=789
+	    if (present(queryString)) {
+	        reqUrl.append("?").append(queryString);
+	    }
+	    return reqUrl.toString();
+	}
+	
+	/**
+	 * 
+	 * /mywebapp/servlet/MyServlet/a/b;c=123?d=789
+	 * 
+	 * @param req
+	 * @return The path and Query part of the URL that was used to produce the request
+	 */
+	public static String getPathAndQuery(final HttpServletRequest req) {
+	    final StringBuffer reqUrl = new StringBuffer(req.getRequestURI());
+	    final String queryString = req.getQueryString();   // d=789
+	    if (present(queryString)) {
+	        reqUrl.append("?").append(queryString);
+	    }
+	    return reqUrl.toString();
 	}
 
 }
