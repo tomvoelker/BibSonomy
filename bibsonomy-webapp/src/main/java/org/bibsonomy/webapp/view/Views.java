@@ -549,16 +549,6 @@ public enum Views implements View {
 	 *  
 	 * *************************************************************************/
 	/**
-	 * Show the page for the purpose tags
-	 */
-	PURPOSE_TAGS("purpose"),
-		
-	/**
-	 * Show the page with the purpose tags and the urls
-	 */
-	PURPOSES("purposes"),
-	
-	/**
 	 * show the advanced_search page
 	 */
 	MYSEARCH("mySearch"),
@@ -615,6 +605,43 @@ public enum Views implements View {
 	 * PUMA the first page you see when entering the application
 	 */
 	PUMAHOMEPAGE("pumahome");
+
+	/*
+	 * both bookmarks and publications
+	 */
+	public static final String FORMAT_STRING_CSV = "csv";
+	public static final String FORMAT_STRING_JSON = "json";
+	/*
+	 * publications
+	 */
+	/**
+	 * BibTeX can be requested by using the URL path "/bib/" or by using the
+	 * query parameter "format=bibtex". Hence, we have two versions here:
+	 * "bibtex" is matched against the query parameter ...  
+	 */
+	public static final String FORMAT_STRING_BIBTEX = "bibtex";
+	/**
+	 * and "bib" against the URL path. Decide carefully, which one you use!
+	 * (I would call this a FIXME, but we can neither change the path nor the
+	 * parameter, since they are well-known.)
+	 */
+	public static final String FORMAT_STRING_BIB = "bib";
+	public static final String FORMAT_STRING_CSL = "csl";
+	public static final String FORMAT_STRING_LAYOUT = "layout";
+	public static final String FORMAT_STRING_BURST = "burst";
+	public static final String FORMAT_STRING_APARSS = "aparss";
+	public static final String FORMAT_STRING_ENDNOTE = "endnote";
+	public static final String FORMAT_STRING_PUBL = "publ";
+	public static final String FORMAT_STRING_SWRC = "swrc";
+	public static final String FORMAT_STRING_PUBLRSS = "publrss";
+	public static final String FORMAT_STRING_PUBLRSSN = "publrssN";
+	/*
+	 * bookmarks
+	 */
+	public static final String FORMAT_STRING_XML = "xml";
+	public static final String FORMAT_STRING_RSS = "rss";
+	public static final String FORMAT_STRING_BOOKPUBL = "bookpubl";
+	public static final String FORMAT_STRING_BOOKBIB = "bookbib";
 	
 	private final String name;
 	
@@ -637,16 +664,17 @@ public enum Views implements View {
 	 * @param format the name of the format
 	 * @return true if the corresponding view displays only bibtex posts, false otherwise
 	 */
-	public static boolean isBibtexOnlyFormat(final String format) {
-		return "bibtex".equals(format) || 
-			"publrss".equals(format) ||
-			"publ".equals(format) ||			
-			"aparss".equals(format) ||
-			"burst".equals(format) ||
-			"layout".equals(format) ||
-			"csl".equals(format) ||
+	public static boolean isPublicationOnlyFormat(final String format) {
+		return 
+			FORMAT_STRING_BIBTEX.equals(format) || 
+			FORMAT_STRING_PUBLRSS.equals(format) ||
+			FORMAT_STRING_PUBL.equals(format) ||			
+			FORMAT_STRING_APARSS.equals(format) ||
+			FORMAT_STRING_BURST.equals(format) ||
+			FORMAT_STRING_LAYOUT.equals(format) ||
+			FORMAT_STRING_CSL.equals(format) ||
 			"batcheditbib".equals(format) ||
-			"swrc".equals(format);
+			FORMAT_STRING_SWRC.equals(format);
 	}
 	
 	/**
@@ -657,11 +685,11 @@ public enum Views implements View {
 	 * @return true if the corresponding view displays only bookmark posts, false otherwise
 	 */
 	public static boolean isBookmarkOnlyFormat(final String format) {
-		return "xml".equals(format) || 
-			"rss".equals(format) ||
-			"bookbib".equals(format) ||
+		return FORMAT_STRING_XML.equals(format) || 
+			FORMAT_STRING_RSS.equals(format) ||
+			FORMAT_STRING_BOOKBIB.equals(format) ||
 			"batchediturl".equals(format) ||
-			"bookpubl".equals(format);
+			FORMAT_STRING_BOOKPUBL.equals(format);
 	}
 	
 	/**
@@ -672,33 +700,33 @@ public enum Views implements View {
 	 * @return the corresponding view for a given format
 	 */
 	public static Views getViewByFormat(final String format) {
-		if ("bibtex".equals(format))
+		if (FORMAT_STRING_BIB.equals(format) || FORMAT_STRING_BIBTEX.equals(format))
 			return BIBTEX;
-		if ("json".equals(format)) 
+		if (FORMAT_STRING_JSON.equals(format)) 
 			return JSON;
-		if ("burst".equals(format))
+		if (FORMAT_STRING_BURST.equals(format))
 			return BURST;
-		if ("rss".equals(format))
+		if (FORMAT_STRING_RSS.equals(format))
 			return RSS;
-		if ("publrss".equals(format))
+		if (FORMAT_STRING_PUBLRSS.equals(format))
 			return PUBLRSS;
-		if ("swrc".equals(format))
+		if (FORMAT_STRING_SWRC.equals(format))
 			return SWRC;
-		if ("publ".equals(format))
+		if (FORMAT_STRING_PUBL.equals(format))
 			return PUBL;
-		if ("endnote".equals(format))
+		if (FORMAT_STRING_ENDNOTE.equals(format))
 			return ENDNOTE;
-		if ("aparss".equals(format))
+		if (FORMAT_STRING_APARSS.equals(format))
 			return APARSS;
-		if ("xml".equals(format))
+		if (FORMAT_STRING_XML.equals(format))
 			return XML;
-		if ("bookpubl".equals(format))
+		if (FORMAT_STRING_BOOKPUBL.equals(format))
 			return BOOKPUBL;
-		if ("bookbib".equals(format))
+		if (FORMAT_STRING_BOOKBIB.equals(format))
 			return BOOKBIB;
-		if ("publrssN".equals(format))
+		if (FORMAT_STRING_PUBLRSSN.equals(format))
 			return PUBLRSSNEPOMUK;
-		if ("layout".equals(format))
+		if (FORMAT_STRING_LAYOUT.equals(format))
 			return LAYOUT;
 		if ("batcheditbib".equals(format)) 
 			return BATCHEDITBIB;
@@ -706,9 +734,9 @@ public enum Views implements View {
 			return BATCHEDITURL;
 		if ("tagcloud".equals(format))
 			return AJAX_TAGCLOUD;
-		if ("csv".equals(format))
+		if (FORMAT_STRING_CSV.equals(format))
 			return CSV;
-		if ("csl".equals(format))
+		if (FORMAT_STRING_CSL.equals(format))
 			return CSL;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");

@@ -334,7 +334,7 @@ public abstract class ResourceListController {
 	}
 
 	private Set<? extends Class<? extends Resource>> getResourcesForFormat(final String format) {
-		if (Views.isBibtexOnlyFormat(format)) {
+		if (Views.isPublicationOnlyFormat(format)) {
 			return Collections.singleton(BibTex.class);
 		}
 		
