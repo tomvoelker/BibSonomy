@@ -8,10 +8,10 @@
 					var hideTimeout = 0;
 					var content = ((typeof options.contentCallback === "string")?options.contentCallback:options.contentCallback(this));
 					var self = this;
+					var timeout = options.timeout;
+					
 					var callback = function() 
-						{
-							hideTimeout = setTimeout (function(){hiddenBox.fadeOut('slow');}, options.timeout );
-						};
+						{hideTimeout = setTimeout (function(){hiddenBox.fadeOut('slow');}, timeout );};
 					var drawCallback = function() {
 						var left = ((options.leftOffset && options.leftOffset != 'undefined')?options.leftOffset($(self)):
 							(($(self).offset().left + $(self).width()/2-hiddenBox.width()/2 > 0)?
@@ -19,7 +19,7 @@
 									$(self).offset().left + $(self).width()/2-hiddenBox.width()/2:$(document).width()-hiddenBox.width()):0));
 						var top = ((options.topOffset && typeof options.topOffset != 'number')?options.topOffset($(self)):$(self).offset().top-options.topOffset);
 						hiddenBox.
-						css( 
+						css(
 								{ "left": left + "px", 
 								"top": top + "px" } 
 						);
@@ -28,24 +28,13 @@
 					};
 					$("body").append(hiddenBox);
 					hiddenBox.html(content);
-					$(self).mouseover(drawCallback)
+					$(self).mouseover(function(){timeout = options.timeout;drawCallback();})
 					.mouseout(callback)
 					.css("cursor","pointer")
-					.click(
-							function(){
-								options.timeout*=3;
-								drawCallback();
-								callback();
-							}
-					);
+					.click(function(){timeout = 3*options.timeout;drawCallback();callback();});
 					
-					hiddenBox.mouseover(
-							function() {
-								clearTimeout(hideTimeout);
-							}
-					).mouseout(
-							callback
-					);
+					hiddenBox.mouseover(function() {clearTimeout(hideTimeout);})
+					.mouseout(callback);
 				}		
 			);
 	};
