@@ -12,8 +12,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.junit.Test;
 
 public class SherpaRomeoTest {
@@ -45,7 +46,7 @@ public class SherpaRomeoTest {
                     output.put("publisher", publisher.getName());
                     output.put("colour", publisher.romeocolour);
                 }
-                System.out.println(output.toJSONString());
+                System.out.println(output.toString());
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

@@ -10,9 +10,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import de.unikassel.puma.openaccess.sherparomeo.model.Condition;
 import de.unikassel.puma.openaccess.sherparomeo.model.Publisher;
 import de.unikassel.puma.openaccess.sherparomeo.model.Romeoapi;
@@ -97,7 +96,7 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
             }
             result.put("publishers", publishersJson);
 
-            return result.toJSONString();
+            return result.toString();
 
         } catch (JAXBException e) {
             // TODO Auto-generated catch block
