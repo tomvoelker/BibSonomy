@@ -103,6 +103,25 @@ public class UrlUtils {
 	}
 	
 	/**
+	 * Extracts the first element of a "/" delimited-path. E.g., "a" for "/a/b/c".
+	 * 
+	 * @param path
+	 * @return The first element of the path.
+	 */
+	public static String getFirstPathElement(final String path) {
+		int start = 0;
+		int end = path.length();
+		if (path.startsWith("/")) {
+			start = 1;
+		}
+		final int indexOf = path.indexOf("/", start);
+		if (indexOf > 0) {
+			end = indexOf;
+		}
+		return path.substring(start, end);
+	}
+	
+	/**
 	 * Set a parameter in a given URL-String
 	 * 
 	 * ATTENTION: to ease parsing, fragment identifiers are not supported

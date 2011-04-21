@@ -123,5 +123,23 @@ public class UrlUtilsTest {
 
 		assertEquals("http://www.bibsonomy.org/user/%7Cthe_man%7C/?bookmark.start=10&bibtex.start=0", UrlUtils.encodeURLExceptReservedChars("http://www.bibsonomy.org/user/|the_man|/?bookmark.start=10&bibtex.start=0"));
 	}
+	
+	@Test
+	public void testGetFirstPathElement(){
+		assertEquals("a", UrlUtils.getFirstPathElement("a"));
+		assertEquals("a", UrlUtils.getFirstPathElement("/a"));
+		assertEquals("a", UrlUtils.getFirstPathElement("/a/"));
+		assertEquals("a", UrlUtils.getFirstPathElement("/a/b"));
+		assertEquals("a", UrlUtils.getFirstPathElement("/a/b/"));
+		assertEquals("a", UrlUtils.getFirstPathElement("/a/b/c"));
+		assertEquals("aa", UrlUtils.getFirstPathElement("aa"));
+		assertEquals("aa", UrlUtils.getFirstPathElement("/aa"));
+		assertEquals("aa", UrlUtils.getFirstPathElement("/aa/"));
+		assertEquals("aa", UrlUtils.getFirstPathElement("/aa/b"));
+		assertEquals("aa", UrlUtils.getFirstPathElement("/aa/b/"));
+		assertEquals("aa", UrlUtils.getFirstPathElement("/aa/b/c"));
+		assertEquals("aaaaaa", UrlUtils.getFirstPathElement("/aaaaaa/b/c"));
+
+	}
 
 }
