@@ -89,9 +89,9 @@ public class UnAPIController implements MinimalisticController<UnAPICommand>, Re
 	private String getFormat(final String format) {
 		/*
 		 * since we currently support just one format, we do this with a simple "if".
-		 * -> later implemenations should do this in a more general way.
+		 * -> later implementations should do this in a more general way.
 		 */
-		if ("bibtex".equals(format)) return "bib";
+		if ("bibtex".equals(format)) return Views.FORMAT_STRING_BIB;
 		/*
 		 * format not known: return NULL.
 		 */
