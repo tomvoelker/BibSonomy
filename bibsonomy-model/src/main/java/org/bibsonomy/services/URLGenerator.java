@@ -317,4 +317,17 @@ public class URLGenerator {
 		final String absoluteUrl = getAbsoluteUrl(pageName);
 		return url != null && url.contains(absoluteUrl);
 	}
+	
+	/**
+	 * Checks if the given URL points to the given resource.
+	 * 
+	 * @param url - the URL that should be checked.
+	 * @param userName - the owner of the resource
+	 * @param intraHash - the intra hash of the resource
+	 * @return <code>true</code> if the url points to the resource.
+	 */
+	public boolean matchesResourcePage(final String url, final String userName, final String intraHash) {
+		return url.matches(".*/(" + PUBLICATION_PREFIX + "|" + BOOKMARK_PREFIX + ")/[0-3]?" + intraHash + "/" + userName + ".*");
+	}
+	
 }

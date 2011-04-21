@@ -73,5 +73,15 @@ public class URLGeneratorTest {
 		assertFalse(ug.matchesPage("http://www.bibsonomy.org/foo/basket", URLGenerator.Page.BASKET));
 		assertFalse(ug.matchesPage("/basket", URLGenerator.Page.BASKET));
 	}
+	
+	@Test
+	public void testMatchesResourcePage() throws Exception {
+		assertTrue(ug.matchesResourcePage("http://my.biblicious.org/bibtex/24778fe29bb578a70f0536f2351bbee13/jaeschke", "jaeschke", "4778fe29bb578a70f0536f2351bbee13"));
+		assertTrue(ug.matchesResourcePage("http://my.biblicious.org/bibtex/4778fe29bb578a70f0536f2351bbee13/jaeschke", "jaeschke", "4778fe29bb578a70f0536f2351bbee13"));
+		assertFalse(ug.matchesResourcePage("http://my.biblicious.org/bibtex/4778fe29bb578a70f0536f2351bbee13", "jaeschke", "4778fe29bb578a70f0536f2351bbee13"));
+		assertFalse(ug.matchesResourcePage("http://my.biblicious.org/url/a68693ed0faaaff909bb1f73a2dcc784", "jaeschke", "a68693ed0faaaff909bb1f73a2dcc784"));
+
+		
+	}
 
 }
