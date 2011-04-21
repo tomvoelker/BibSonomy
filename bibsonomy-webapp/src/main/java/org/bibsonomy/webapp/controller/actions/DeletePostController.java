@@ -5,6 +5,7 @@ import java.util.Collections;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.actions.DeletePostCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -13,6 +14,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 
 /**
@@ -25,6 +27,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
 	private Errors errors;
+	private URLGenerator urlGenerator;
 
 	@Override
 	public DeletePostCommand instantiateCommand() {
@@ -45,13 +48,14 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 		/*
 		 * check the ckey
 		 */
+		final String resourceHash = command.getResourceHash();
+		final String loginUserName = context.getLoginUser().getName();
 		if (context.isValidCkey() && !errors.hasErrors()){
 			log.debug("User is logged in, ckey is valid");
 			
-			// delete the post
-			final String resourceHash = command.getResourceHash();
 			try {
-				logic.deletePosts(context.getLoginUser().getName(), Collections.singletonList(resourceHash));
+				// delete the post
+				logic.deletePosts(loginUserName, Collections.singletonList(resourceHash));
 			} catch (IllegalStateException e) {
 				errors.reject("error.post.notfound", new Object[]{resourceHash}, " The resource with ID [" + resourceHash + "] does not exist and could hence not be deleted.");
 			}
@@ -67,8 +71,19 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 			return Views.ERROR;
 		}
 		
-		// go back where you've come from
-		return new ExtendedRedirectView(requestLogic.getReferer());
+		/*
+		 * Redirect to the user page when the user is coming from the page of 
+		 * the resource.
+		 */
+		final String referer = requestLogic.getReferer();
+		if (urlGenerator.matchesResourcePage(referer, loginUserName, resourceHash)) {
+			return new ExtendedRedirectView(urlGenerator.getUserUrl(loginUserName));
+		}
+		
+		/*
+		 * go back where we've come from
+		 */
+		return new ExtendedRedirectView(referer);
 	}
 
 	/**
@@ -100,6 +115,14 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	 */
 	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
+	}
+
+	/**
+	 * @param urlGenerator
+	 */
+	@Required
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}	
 
 }
