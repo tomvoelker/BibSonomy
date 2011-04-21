@@ -58,7 +58,7 @@ public class ExportLayoutView extends AbstractView {
 				 * we return only public layouts
 				 */
 				if (layout.isPublicLayout()) {
-					jsonLayouts.put(JSONObject.fromObject(layout));
+					jsonLayouts.add(JSONObject.fromObject(layout));
 				}
 			}
 			
