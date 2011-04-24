@@ -102,14 +102,18 @@ var errorData = new errorBoxData("#upload");
 
 function deleteFunction(button){
 	$.get($(button).attr("href"), {}, function(data) {
-		if("ok"!=$("status", data).text()) {
-			prepareFileErrorBox(data);
-			return false;
-		}
 		var fileID=$("fileid", data).text();
-		$(button).parent().remove();
-		$("#file_"+fileID).remove();
-		$("#uploadForm_"+fileID).remove();
+		if("ok"==$("status", data).text()) {
+			errorData.msg = $("response", data).text();
+			$(button).parent().remove();
+			if(fileID != '') {
+				$("#file_"+fileID).remove();
+				$("#uploadForm_"+fileID).remove();			
+			}
+		}else {
+			errorData.msg = $("reason", data).text();	
+		}	
+		displayFileErrorBox(data);
 	}, "xml");
 	return false;
 }
