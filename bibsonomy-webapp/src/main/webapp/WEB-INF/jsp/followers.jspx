@@ -165,6 +165,7 @@
 				</c:choose>
 				<c:out value=" "/>
 				<fmt:message key="Show"/>
+				<c:out value=" "/>
 				<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
 				<c:if test="${not empty command.ranking.period and command.ranking.period > 0}">
 					<a href="${mtl:setParam(requPathAndQuery, 'ranking.period', command.ranking.prevPeriod)}" ><fmt:message key="younger"/></a>
