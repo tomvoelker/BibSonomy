@@ -14,7 +14,9 @@
 	
 	<mobile:layout loginUser="${command.context.loginUser}" resources="true" selected="${selected}" requestedUser="${command.requestedUser}">
 		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js">&amp;nbsp;</script> 
 			<script type="text/javascript">
+			<![CDATA[
 				$(document).ready(function() {
 					
 					/* get the selected resourceType from sessionStorage */
@@ -26,8 +28,28 @@
 						$("#bookmarkList").show();
 						$("#bibtexList").hide();
 					}
+					$(".hiddenSystemTag").fadeBox(
+							{
+								className: 'initiallyHidden listhButtons',
+								contentCallback: function (self) {
+									var tags = ($(self).attr('tags')).replace(/^\s|\s$/g, '').split(" ");
+									var url = $(self).attr('url');
+									var t = 0;
+									var content = '<a href="'+url+tags[t]+'">' + tags[t] + '</a>';
+																			
+									while (++t < tags.length) {
+										content += ' <a href="'+url+tags[t] +'">' + tags[t] + '</a>';
+									}
+									return content;
+								},
+								timeout:1500,
+								topOffset: 25
+							}
+						);
 				});
+				]]>
 			</script>
+			
 		</jsp:attribute>
 		<jsp:attribute name="content">
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="true" disableListNavigation="true" requPath="${requPath}"/>
