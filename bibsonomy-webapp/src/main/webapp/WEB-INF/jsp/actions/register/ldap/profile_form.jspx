@@ -29,11 +29,11 @@
 
 				<errors:global errors="${errors}"/>      
               
-              	<h3><fmt:message key="register.openid.step2"/></h3>       
+              	<h3><fmt:message key="register.ldap.step2"/></h3>       
 
-				<br/>
+				<fmt:message key="register.ldap.step2.description"/>
 
-				<h3><fmt:message key="register.openid.required"/></h3>  
+				<h3><fmt:message key="register.ldap.required"/></h3>  
 
               	<table>
                 	<tr>
