@@ -117,7 +117,7 @@
 		</c:if>
 		
 		<!-- Reviews -->
-		<reviews:reviews resource="${goldstandard}" loginUser="${loginUser}" />
+		<!-- <reviews:reviews resource="${goldstandard}" loginUser="${loginUser}" /> -->
 		
 		<div id="gold_exports">
 			<ul>
