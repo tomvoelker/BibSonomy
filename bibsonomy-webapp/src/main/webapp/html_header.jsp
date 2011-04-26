@@ -38,7 +38,7 @@
     <script type="text/javascript" src="/resources/javascript/style.js"></script>
     <script type="text/javascript" src="/resources/javascript/chrome.js"></script>
 	<script type="text/javascript" src="/resources/javascript/jquery_152_min.js"></script>
-    <script type="text/javascript" src="/resources/javascript/jquery_form_224.js">&amp;nbsp;</script> 
+    <script type="text/javascript" src="/resources/jquery/plugins/form/jquery.form.min.js">&amp;nbsp;</script> 
 	<script type="text/javascript" src="/resources/javascript/jquery_corner.js"></script>
 	<script type="text/javascript" src="/resources/javascript/jquery_autocomplete.js"></script>    
 	<script type="text/javascript" src="/resources/javascript/jquery.textarearesizer.js"></script>  

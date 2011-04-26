@@ -29,7 +29,7 @@
 			<link rel="stylesheet" href="${resdir}/css/jquery_ui/jquery-ui.css" type="text/css" media="all" />
 			<link rel="stylesheet" href="${resdir}/css/jquery_ui/ui.theme.css" type="text/css" media="all" />
 			
-	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script> 
+	    	<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.min.js">&amp;nbsp;</script> 
 			<!--  scripts for ajax autocompletion -->
 			<script src="${resdir}/javascript/jquery_ui/jquery-ui.min.js" type="text/javascript"><!--  --></script>
 		  	<script src="${resdir}/javascript/jquery_ui/jquery.bgiframe-2.1.2.js" type="text/javascript"><!--  --></script>

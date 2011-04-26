@@ -38,7 +38,7 @@
 			<c:if test="${not empty additionalFsformCSS}">
 				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
 			</c:if>
-	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script>
+	    	<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.min.js">&amp;nbsp;</script>
             <!--
                | one script just for the post page
                -->
