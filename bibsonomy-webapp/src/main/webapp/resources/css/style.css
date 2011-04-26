@@ -947,6 +947,13 @@ li.faq dd {
 	overflow: scroll;
 }
 
+.errorcontainer {
+	border: 1px solid rgb(0, 102, 153); 
+	padding: 1em; 
+	margin-bottom: 1em;
+}
+
+
 /* full screen (without tagclouds) */
 #fullscreen {
 	margin: 5px 10px 2% 10px;

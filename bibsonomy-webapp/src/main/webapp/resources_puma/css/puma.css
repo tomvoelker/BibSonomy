@@ -284,6 +284,21 @@ table.report td {
 	border: none;
 }
 
+.error {
+	max-width: none;
+	overflow: auto;
+}
+
+.errorcontainer {
+	border: 1px solid #DF430D; 
+	padding: 1em; 
+	margin-bottom: 1em;
+}
+
+.errorcontainer > h3 {
+	color: #DF430D; 
+}
+
 .groupsButtons a:hover {
 	background-color: #DF430D !important;
 }
