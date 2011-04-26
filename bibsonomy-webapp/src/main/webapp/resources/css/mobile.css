@@ -344,3 +344,12 @@ a img {
 	
 	font-style: italic;
 }
+
+.listhButtons a {
+	border: 1px solid #6F6F6F;
+	background-color: #EEEEEE;
+	color: #5F5F5F;
+	padding-left: 2px;
+	padding-right: 2px;
+	margin: 0;
+}
