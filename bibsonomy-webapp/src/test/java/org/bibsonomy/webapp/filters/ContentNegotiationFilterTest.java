@@ -62,10 +62,17 @@ public class ContentNegotiationFilterTest {
 	 */
 	@Test
 	public void testDoFilter () throws Exception {
+		/*
+		 * simple cases: here we want redirects
+		 */
 		assertArrayEquals(new String[]{"302", "/burst/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "application/rdf+xml"));
 		assertArrayEquals(new String[]{"302", "/json/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "application/json"));
 		assertArrayEquals(new String[]{"302", "/csv/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "text/csv"));
 		assertArrayEquals(new String[]{"302", "/bib/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "text/x-bibtex"));
+		/*
+		 * more complicated: priorities
+		 */
+		assertArrayEquals(new String[]{"302", "/burst/user/jaeschke"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "application/rdf+xml,application/xhtml+xml,text/html;q=0.9,*/*;q=0.8;"));
 
 		/*
 		 * per default, API calls and static resources are ignored 
@@ -88,6 +95,11 @@ public class ContentNegotiationFilterTest {
 		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "text/css,*/*;q=0.1"));
 		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "*/*"));
 		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
+
+		/*
+		 * specific format requested but not with highest priority
+		 */
+		assertArrayEquals(new String[]{"200"}, sendHttpGet(baseUrl + "/user/jaeschke", "", "text/html,application/xhtml+xml,application/rdf+xml;q=0.9,*/*;q=0.8;"));
 
 
 	}
