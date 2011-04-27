@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.util.UrlUtils;
@@ -44,7 +45,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 		 * publication.
 		 */
 		
-		if (present(swordService) || SystemTagsUtil.containsSystemTag(post.getTags(), "myown")) {
+		if (present(swordService) && SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME)) {
 			String ref = UrlUtils.safeURIEncode(referer);
 			String publicationUrl = urlGenerator.getPublicationUrl(post.getResource().getIntraHash(), userName);
 			return new ExtendedRedirectView(publicationUrl + "?referer=" + ref);
