@@ -90,13 +90,19 @@ public class BibTexUtils {
 	
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
-	 * all fields from the resource) 
+	 * all fields from the resource). It represents the "date" field of the post.
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_ADDED_AT = "added-at";
 	/**
-	 * ISO date + time for "added-at" field  
+	 * This field from the post is added to the BibTeX string (in addition to 
+	 * all fields from the resource). It represents the "changeDate" of the post. 
 	 */
-	private static final DateFormat ADDED_AT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	public static final String ADDITIONAL_MISC_FIELD_TIMESTAMP = "timestamp";
+	
+	/**
+	 * ISO date + time for "added-at" and "timestamp" field  
+	 */
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
@@ -119,7 +125,8 @@ public class BibTexUtils {
 		ADDITIONAL_MISC_FIELD_KEYWORDS,
 		ADDITIONAL_MISC_FIELD_BIBURL,
 		ADDITIONAL_MISC_FIELD_PRIVNOTE,
-		ADDITIONAL_MISC_FIELD_ADDED_AT 
+		ADDITIONAL_MISC_FIELD_ADDED_AT,
+		ADDITIONAL_MISC_FIELD_TIMESTAMP
 	};
 	
 	/**
@@ -466,7 +473,10 @@ public class BibTexUtils {
 			bib.addMiscField(ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
 		}
 		if (present(post.getDate())) {
-			bib.addMiscField(ADDITIONAL_MISC_FIELD_ADDED_AT, ADDED_AT_DATE_FORMAT.format(post.getDate()));
+			bib.addMiscField(ADDITIONAL_MISC_FIELD_ADDED_AT, DATE_FORMAT.format(post.getDate()));
+		}
+		if (present(post.getChangeDate())) {
+			bib.addMiscField(ADDITIONAL_MISC_FIELD_TIMESTAMP, DATE_FORMAT.format(post.getDate()));
 		}
 		return toBibtexString(bib, mode);
 	}
