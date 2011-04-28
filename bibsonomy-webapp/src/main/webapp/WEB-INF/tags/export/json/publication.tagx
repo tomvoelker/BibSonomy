@@ -25,6 +25,7 @@
          "user" : "${mtl:quoteJSON(post.user.name)}",
          "description" : "${mtl:quoteJSON(post.description)}",
          "date" : "<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd hh:mm:ss"/>",
+         "changeDate" : "<fmt:formatDate value='${post.changeDate}' pattern="yyyy-MM-dd HH:mm:ss"/>",
          "count" : ${post.resource.count},
          "pub-type": "${post.resource.entrytype}",
          <c:if test="${!empty post.resource.journal}">"journal": "${mtl:quoteJSONcleanBibTeX(post.resource.journal)}",</c:if>
