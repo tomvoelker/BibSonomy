@@ -246,7 +246,11 @@ public class JabRefModelConverter {
 	    }
 
 	    if (present(post.getDate())) {
-		entry.setField("timestamp", sdf.format(post.getDate()));
+		entry.setField("added-at", sdf.format(post.getDate()));
+	    }
+	    
+	    if (present(post.getChangeDate())) {
+		entry.setField("timestamp", sdf.format(post.getChangeDate()));
 	    }
 
 	    if (present(post.getUser()))
