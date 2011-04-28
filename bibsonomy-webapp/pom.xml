@@ -20,7 +20,11 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
-					<warSourceExclude>*javascript/*.js</warSourceExclude>
+					<!-- 
+						otherwise the javascript files compressed by
+						yuicompressor-maven-plugin are overwritten by this plugin 
+					-->
+					<warSourceExcludes>**/javascript/*.js</warSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -28,9 +32,12 @@
 				<version>1.4</version>
 				<executions>
 					<execution>
-						<!-- download the latest WURLF specs each time a war file is created. 
-							if this is too frequent for any reason, check the version history of this 
-							file for rev. 1.86 which checks if the file already exists. -->
+						<!--
+							download the latest WURLF specs each time a war file is created.
+							if this is too frequent for any reason, check the version history
+							of this file for rev. 1.86 which checks if the file already
+							exists.
+						-->
 						<phase>prepare-package</phase>
 						<configuration>
 							<tasks>
@@ -45,6 +52,30 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>yuicompressor-maven-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<id>check_and_compress</id>
+						<goals>
+							<goal>compress</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<nomunge>true</nomunge>
+					<jswarn>false</jswarn>
+					<nosuffix>true</nosuffix>
+					<suffix></suffix>
+					<disableOptimizations>true</disableOptimizations>
+					<excludes>
+						<exclude>**/jquery.*.min.js</exclude>
+						<exclude>**/*.css</exclude><!--	disabled because plugin stops with exception -->
+					</excludes>
+				</configuration>
+			</plugin>
 		</plugins>
 		<extensions>
 			<extension>
@@ -57,8 +88,10 @@
 	<profiles>
 		<profile>
 			<id>deploy-to-puma</id>
-			<!-- change tomcat deploy destination when -Ddeploy-to=puma is given as 
-				parameter. -->
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=puma is given as
+				parameter.
+			-->
 			<activation>
 				<property>
 					<name>deploy-to</name>
@@ -80,8 +113,10 @@
 		</profile>
 		<profile>
 			<id>deploy-to-wuerzburg</id>
-			<!-- change tomcat deploy destination when -Ddeploy-to=wuerzburg is given 
-				as parameter. -->
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=wuerzburg is given
+				as parameter.
+			-->
 			<activation>
 				<property>
 					<name>deploy-to</name>
@@ -169,10 +204,10 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-bibtex-parser</artifactId>
 		</dependency>
-		<dependency> 
-			<groupId>org.bibsonomy</groupId> 
-			<artifactId>bibsonomy-opensocial</artifactId> 
-		</dependency> 
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-opensocial</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-web-common</artifactId>
@@ -206,9 +241,9 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
-  			<artifactId>el-api</artifactId>
-  			<version>6.0.29</version>
-  			<scope>provided</scope>
+			<artifactId>el-api</artifactId>
+			<version>6.0.29</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -286,8 +321,10 @@
 					<groupId>org.springframework</groupId>
 				</exclusion>
 				<exclusion>
-					<!-- the version required by openid4java is broken (kills Tomcat on 
-						some OpenIDs) -->
+					<!--
+						the version required by openid4java is broken (kills Tomcat on
+						some OpenIDs)
+					-->
 					<artifactId>nekohtml</artifactId>
 					<groupId>net.sourceforge.nekohtml</groupId>
 				</exclusion>
@@ -306,9 +343,11 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-lucene</artifactId>
 		</dependency>
-		<!-- *** beanutils 1.7.0 contain a memory leak *** we don't have a direct 
-			dependency to beanutils, but some lib needs it so we override here to the 
-			leak-free version 1.8.0 -->
+		<!--
+			*** beanutils 1.7.0 contain a memory leak *** we don't have a direct
+			dependency to beanutils, but some lib needs it so we override here to
+			the leak-free version 1.8.0
+		-->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
