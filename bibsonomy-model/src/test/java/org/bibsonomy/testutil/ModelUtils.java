@@ -246,7 +246,8 @@ public final class ModelUtils extends CommonModelUtils {
 
 		post.setContentId(null);
 		post.setDescription("trallalla");
-		post.setDate(new Date());
+		post.setDate(new Date(1303798514000l));
+		post.setChangeDate(new Date(1303998514000l));
 		post.setUser(ModelUtils.getUser());
 		final T resource;
 		if (resourceType == BibTex.class) {
