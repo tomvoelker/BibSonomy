@@ -7,12 +7,8 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
-	
 
-	<fmt:bundle basename="messages"/>
-	
 	<!-- the tags of a resource -->
 	<c:if test="${!empty post.visibleTags}">
 		<fmt:message key="post.meta.taggedTo" />
@@ -24,7 +20,7 @@
 				<c:out value=" "/>
 			</c:forEach>
 		<!-- TODO: add "for:" tags  -->
-		<!-- c:if test="${loginUserName eq post.user.name}">
+		<!-- c:if test="${command.context.loginUser.name eq post.user.name}">
 			<c:forEach var="foruser" items="${resource.usersToPost}">
 				<a href='${basePath}user/<mtl:encode value="${resource.user}" />/for:<mtl:encode value="${foruser}" />'>for:<c:out value='${foruser}' /></a>
 			</c:forEach>
@@ -73,9 +69,18 @@
 	<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 	
 	<!-- tagging date -->
-	<c:out value=" "/>
-	<fmt:message key="post.meta.taggedOn"/> 
-	<c:out value=" "/>
-	<fmt:formatDate type="date" dateStyle="medium" value="${post.date}"/>, <fmt:formatDate type="time" timeStyle="short" value="${post.date}"/>
+	<c:out value=" "/><fmt:message key="post.meta.taggedOn"/><c:out value=" "/>
+	<!-- for mouseover -->
+	<fmt:timeZone value="${command.context.loginUser.userSettings.timeZone}">
+		<fmt:formatDate type="date" dateStyle="medium" value="${post.changeDate}" var="changeDate" />
+		<fmt:formatDate type="time" timeStyle="short" value="${post.changeDate}" var="changeTime" />
+		<fmt:message key="post.meta.changedOn" var="changedOn"/>
+		<span title="${changedOn} ${changeDate}, ${changeTime}">
+			<!-- date -->
+			<fmt:formatDate type="date" dateStyle="medium" value="${post.date}" />,
+			<!-- time -->
+			<fmt:formatDate type="time" timeStyle="short" value="${post.date}" />
+		</span>
+	</fmt:timeZone>
 
 </jsp:root>

@@ -24,7 +24,7 @@
         <bib:desc post="${post}"/>
         <div class="abstract"><c:out value="${post.resource.abstract}"/></div>
         <span class="bmmeta">
-          <rc:meta post="${post}" loginUserName="" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
+          <rc:meta post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
         </span>
       </c:set>
       <c:out value="${description}"/>

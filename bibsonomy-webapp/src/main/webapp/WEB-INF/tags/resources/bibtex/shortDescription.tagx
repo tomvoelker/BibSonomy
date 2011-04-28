@@ -17,7 +17,7 @@
         <div class="bmtitle"><bib:title post="${post}"/></div>
         <div class="bmdesc"> <bib:desc post="${post}"/></div>
         <span class="bmmeta">
-          <rc:meta post="${post}" loginUserName="${loginUserName}" otherPostsUrlPrefix="/bib/"/>
+          <rc:meta post="${post}" otherPostsUrlPrefix="/bib/"/>
         </span>
       </div>
     </span>

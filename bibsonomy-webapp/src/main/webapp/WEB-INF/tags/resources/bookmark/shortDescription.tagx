@@ -21,7 +21,7 @@
         <div class="bmtitle"><bm:title post="${post}"/></div>
         <div class="bmdesc"> <bm:desc post="${post}"/></div>
         <span class="bmmeta">
-          <rc:meta post="${post}" loginUserName="${loginUserName}" otherPostsUrlPrefix="/url/"/>
+          <rc:meta post="${post}" otherPostsUrlPrefix="/url/"/>
         </span>
       </div>
     </span>
