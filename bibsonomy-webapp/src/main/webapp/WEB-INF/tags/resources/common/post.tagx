@@ -38,7 +38,7 @@
 		<div class="bmtitle"><jsp:invoke fragment="title"/></div>
 		<div class="bmdesc"> <jsp:invoke fragment="desc"/> </div>
 		<span class="bmmeta">
-			<rc:meta post="${post}" loginUserName="${loginUserName}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+			<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 		</span>
 		<div class="bmfoot">
 			<span class="bmaction">

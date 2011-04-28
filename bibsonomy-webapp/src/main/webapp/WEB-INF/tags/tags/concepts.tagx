@@ -9,8 +9,6 @@
 	<jsp:directive.attribute name="requestedUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="requestedConcepts" type="java.util.List" required="false" />	
 	
-	<fmt:bundle basename="messages"/>
-
 	<!-- show buttons to hide/show all of the users (own!) relations -->		
 	<c:if test="${usersOwnRelations}">
 		<div>
