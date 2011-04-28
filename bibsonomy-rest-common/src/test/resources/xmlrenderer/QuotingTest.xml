@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
     <posts next="http://foo.bar/posts?start=1&amp;end=2&amp;resourcetype=bookmark&amp;tags=a+-&gt;b+&lt;-c+&lt;-&gt;d&amp;hash=asd&amp;&amp;&amp;kjalsjdf" end="1" start="0">
-        <post>
+        <post postingdate="2011-04-28T10:15:14.000+02:00">
             <user href="http://www.bibsonomy.org/api/users/foo" name="foo"/>
             <tag href="http://www.bibsonomy.org/api/tags/bar" name="bar"/>
             <bookmark href="http://www.bibsonomy.org/api/users/foo/posts/aabbcc" intrahash="aabbcc" interhash="aabbcc" url="www.foobar.org" title="bookmarktitle"/>
