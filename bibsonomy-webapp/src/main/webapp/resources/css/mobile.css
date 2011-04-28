@@ -323,6 +323,10 @@ a img {
 	font-size: 0.8em;
 }
 
+.bmdesc .info {
+	display: none;	
+}
+
 #footer {
 	
 	background: #336699;
