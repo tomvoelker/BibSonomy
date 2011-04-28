@@ -453,7 +453,7 @@
 
 	<select id="getBookmarkForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
-		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, NULL AS change_date
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, change_date
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
 		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
 		      FROM bookmark t1, urls u
