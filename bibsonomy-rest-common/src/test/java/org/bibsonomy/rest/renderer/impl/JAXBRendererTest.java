@@ -103,9 +103,7 @@ public abstract class JAXBRendererTest {
 			}
 			
 			br.close();
-			// cut out postingdate as it changes each time
-			final String swWithoutPostingdate = sw.toString().replaceAll(" postingdate=\"[^\"]*\"", "");
-			assertEquals("output not as expected", sb.toString().trim(), swWithoutPostingdate.toString().trim());
+			assertEquals("output not as expected", sb.toString().trim(), sw.toString().trim());
 		} catch (final IOException ex) {
 			fail(ex.getMessage());
 		}
@@ -218,6 +216,7 @@ public abstract class JAXBRendererTest {
 		xmlPost.setBookmark(xmlBookmark);
 		final DatatypeFactory dataFact = DatatypeFactory.newInstance();		
 		xmlPost.setPostingdate(dataFact.newXMLGregorianCalendar("2008-12-04T10:42:06.000+01:00"));
+		xmlPost.setChangedate(dataFact.newXMLGregorianCalendar("2009-02-04T10:42:06.000+01:00"));
 		xmlTag.setName("testtag");
 		xmlBookmark.setUrl("http://www.google.de");
 		xmlBookmark.setTitle("Google Search engine");
@@ -507,7 +506,7 @@ public abstract class JAXBRendererTest {
 		post.setUser(user);
 		post.getGroups().add(group);
 		post.getTags().add(tag);
-		post.setDate(new Date(System.currentTimeMillis()));
+		post.setDate(new Date(1303978514000l));
 		final BibTex publication = this.createPublication();
 		post.setResource(publication);
 		posts.add(post);
@@ -520,7 +519,7 @@ public abstract class JAXBRendererTest {
 		post2.setResource(bookmark);
 		post2.setUser(user);
 		post2.getTags().add(tag);
-		post2.setDate(new Date(System.currentTimeMillis()));
+		post2.setDate(new Date(1303978514000l));
 		posts.add(post2);
 		renderer.serializePosts(sw, posts, vm);
 		assertWithFile(sw, pathToTestFiles + "ExampleResultPosts" + fileExt);
@@ -553,7 +552,6 @@ public abstract class JAXBRendererTest {
 		}
 		final Bookmark bookmark = new Bookmark();
 		post.setResource(bookmark);
-		post.setDate(new Date(System.currentTimeMillis()));
 		try {
 			renderer.serializePost(sw, post, null);
 			fail("exception should have been thrown: bookmark has no url assigned");
@@ -563,6 +561,8 @@ public abstract class JAXBRendererTest {
 		bookmark.setTitle("bookmarktitle");
 		bookmark.setIntraHash("aabbcc");
 		bookmark.setInterHash("1324356789");
+		post.setDate(new Date(1303978514000l));
+		post.setChangeDate(new Date(1303998514000l));
 		renderer.serializePost(sw, post, null);
 		assertWithFile(sw, pathToTestFiles + "ExampleResultPost" + fileExt);
 	}
@@ -600,7 +600,7 @@ public abstract class JAXBRendererTest {
 		final Tag tag = new Tag();
 		tag.setName("bar");
 		post.getTags().add(tag);
-		post.setDate(new Date(System.currentTimeMillis()));
+		post.setDate(new Date(1303978514000l));
 		
 		final Bookmark bookmark = this.createBookmark();
 		post.setResource(bookmark);

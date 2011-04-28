@@ -39,6 +39,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -330,7 +332,8 @@ public class ModelFactory {
 		// user
 		final User user = this.createUser(xmlPost);
 		post.setUser(user);
-		post.setDate(createDate(xmlPost));
+		post.setDate(createDate(xmlPost.getPostingdate()));
+		post.setChangeDate(createDate(xmlPost.getChangedate()));
 		return post;
 	}
 
@@ -410,21 +413,21 @@ public class ModelFactory {
 	 *    In both strategies, the date is overwritten in order to prevent malicious users
 	 *    from posting posts with faked dates (e.g. from the future)
 	 *    
-	 * @param post - an XML post
+	 * @param date - the date of the XML post
 	 * @return a date for this post
 	 */
-	private Date createDate(final PostType post) {
+	private Date createDate(final XMLGregorianCalendar date) {
 		/*
 		 * If there is no date, use the current date. 
 		 */
-		if (post.getPostingdate() == null) {
+		if (date == null) {
 			return new Date();
 		}
 		/*
 		 * this is save because the postingdate is overwritten in the corresponding
 		 * strategies when creating or updating a post (see above) 
 		 */
-		return post.getPostingdate().toGregorianCalendar().getTime();
+		return date.toGregorianCalendar().getTime();
 	}
 
 	/**

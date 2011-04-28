@@ -303,7 +303,9 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlPost.setUser(xmlUser);
 		if (post.getDate() != null)
 			xmlPost.setPostingdate(createXmlCalendar(post.getDate()));
-
+		if (post.getChangeDate() != null)
+			xmlPost.setChangedate(createXmlCalendar(post.getChangeDate()));
+		
 		// add tags
 		if (post.getTags() != null) {
 			for (final Tag t : post.getTags()) {
