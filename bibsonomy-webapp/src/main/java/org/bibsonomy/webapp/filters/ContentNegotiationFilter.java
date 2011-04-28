@@ -87,14 +87,20 @@ public class ContentNegotiationFilter implements Filter {
 		 * selected using the URL path or the URL's "format" parameter.
 		 *
 		 * This is also crucial to avoid redirect loops!
+		 * 
+		 * Note: we must ignore "bibtex" here (which is accepted by 
+		 * Views.getViewByFormat), since as path part it is not a format.
+		 * 
 		 */
-		try {
-			Views.getViewByFormat(firstPathElement);
-			chain.doFilter(request, response);
-			log.debug("skipping " + ContentNegotiationFilter.class.getName() + " for " + requestURI  + " (cause: format selected by URL path)");
-			return;
-		} catch (final BadRequestOrResponseException e) {
-			// no known format selected - continue
+		if (!Views.FORMAT_STRING_BIBTEX.equals(firstPathElement)) {
+			try {
+				Views.getViewByFormat(firstPathElement);
+				chain.doFilter(request, response);
+				log.debug("skipping " + ContentNegotiationFilter.class.getName() + " for " + requestURI  + " (cause: format selected by URL path)");
+				return;
+			} catch (final BadRequestOrResponseException e) {
+				// no known format selected - continue
+			}
 		}
 		try {
 			Views.getViewByFormat(httpRequest.getParameter("format"));
