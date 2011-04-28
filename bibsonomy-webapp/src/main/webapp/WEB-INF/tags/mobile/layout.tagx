@@ -53,7 +53,10 @@
 			<body>
 				<!-- site header -->
 				<div id="head">
-					<h1>${projectName}</h1>
+					<h1>
+						<c:url var="root" value="/" context="${projectContext}"/>
+						<a href="${root}">${projectName}</a>
+					</h1>
 					<!-- menu including toolbar -->
 					<mobile:menu selected="${selected}" loginUser="${loginUser}" resources="${resources}" />
 				</div>
