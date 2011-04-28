@@ -183,20 +183,27 @@
 	<xsd:complexType name="PostType">
 		<xsd:sequence>
 			<xsd:element name="user" type="UserType" />
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="GroupType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0"
+				name="group" type="GroupType" />
 			<!-- Note: a post must have at least one tag -->
-			<xsd:element maxOccurs="unbounded" name="tag" type="TagType" />
-			<xsd:element minOccurs="0" maxOccurs="1" name="documents" type="DocumentsType" />
+			<xsd:element maxOccurs="unbounded" name="tag"
+				type="TagType" />
+			<xsd:element minOccurs="0" maxOccurs="1" name="documents"
+				type="DocumentsType" />
 			<xsd:choice>
-				<xsd:element name="bookmark" maxOccurs="1" type="BookmarkType" />
-				<xsd:element name="bibtex" maxOccurs="1" type="BibtexType" />
-				<xsd:element name="goldStandardPublication" maxOccurs="1" type="GoldStandardPublicationType" />
+				<xsd:element name="bookmark" maxOccurs="1"
+					type="BookmarkType" />
+				<xsd:element name="bibtex" maxOccurs="1"
+					type="BibtexType" />
+				<xsd:element name="goldStandardPublication"
+					maxOccurs="1" type="GoldStandardPublicationType" />
 			</xsd:choice>
 		</xsd:sequence>
 		<xsd:attribute name="description" type="xsd:string" />
 		<xsd:attribute name="postingdate" type="xsd:dateTime" />
+		<xsd:attribute name="changedate" type="xsd:dateTime"></xsd:attribute>
 	</xsd:complexType>
-	
+
 	<!--
 		the final Document entry 
 	 -->
