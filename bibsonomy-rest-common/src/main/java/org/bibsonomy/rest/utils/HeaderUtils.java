@@ -60,13 +60,15 @@ public class HeaderUtils {
 	 * 
 	 * @param acceptHeader 
 	 * 			the HTML ACCEPT Header
-	 * 			(example: 
+	 * 			<br/>example: 
 	 * 				<code>ACCEPT: text/xml,text/html;q=0.9,text/plain;q=0.8,image/png</code>
 	 * 				would be interpreted in the following precedence:
-	 * 				1) text/xml
-	 * 				2) image/png
-	 * 				3) text/html
-	 * 				4) text/plain)
+	 *              <ol>
+	 * 				<li>text/xml</li>
+	 * 				<li>image/png</li>
+	 * 				<li>text/html</li>
+	 * 				<li>text/plain</li>
+	 *              </ol>
 	 * 			) 	
 	 * @return a sorted map with the precedences
 	 */
