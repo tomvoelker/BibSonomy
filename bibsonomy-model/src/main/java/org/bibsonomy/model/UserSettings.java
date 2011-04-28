@@ -24,6 +24,7 @@
 package org.bibsonomy.model;
 
 import java.io.Serializable;
+import java.util.TimeZone;
 
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 
@@ -80,6 +81,14 @@ public class UserSettings implements Serializable {
 	 * the default language for i18n
 	 */
 	private String defaultLanguage;
+	
+	/**
+	 * The timeZone the user lives in. Used for rendering posts in the HTML 
+	 * output. 
+	 * FIXME: let user choose on the /settings page. FIXME: then we must store
+	 * UTC times in the database!
+	 */
+	private final TimeZone timeZone = TimeZone.getDefault();
 	
 	/**
 	 * How much data about the user behavior (clicking, etc.) is logged.
@@ -302,5 +311,9 @@ public class UserSettings implements Serializable {
 	 */
 	public void setSimpleInterface(boolean simpleInterface) {
 		this.simpleInterface = simpleInterface;
+	}
+
+	public TimeZone getTimeZone() {
+		return this.timeZone;
 	}
 }
