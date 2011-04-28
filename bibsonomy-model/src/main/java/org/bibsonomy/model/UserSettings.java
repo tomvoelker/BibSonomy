@@ -87,6 +87,9 @@ public class UserSettings implements Serializable {
 	 * output. 
 	 * FIXME: let user choose on the /settings page. FIXME: then we must store
 	 * UTC times in the database!
+	 * 
+	 * FIXME: what to do with non-logged in users? They must have a valid
+	 * time zone, too! Otherwise, we will get NPEs
 	 */
 	private final TimeZone timeZone = TimeZone.getDefault();
 	
