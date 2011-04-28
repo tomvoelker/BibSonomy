@@ -103,7 +103,7 @@ var errorData = new errorBoxData("#upload");
 function deleteFunction(button){
 	$.get($(button).attr("href"), {}, function(data) {
 		var fileID=$("fileid", data).text();
-		if("ok"==$("status", data).text()) {
+		if( "ok"==$("status", data).text() || "deleted"==$("status", data).text() ) {
 			errorData.msg = $("response", data).text();
 			$(button).parent().remove();
 			if(fileID != '') {
