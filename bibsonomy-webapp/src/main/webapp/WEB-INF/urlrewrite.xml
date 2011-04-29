@@ -424,12 +424,6 @@
 		<to last="true">/bibtexkey</to>
 	</rule>
 	
-	<rule>
-		<name>/uploadFile</name>
-		<from>^/+uploadFile/+([0-9a-fA-F]+)$</from>
-		<set type="parameter" name="resourceHash">$1</set>
-		<to last="true">/uploadFile</to>
-	</rule>
 	<!-- download a document -->
 	<rule>
 		<name>/documents/INTRAHASH/USERNAME/FILENAME</name>
