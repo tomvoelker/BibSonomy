@@ -11,6 +11,8 @@ import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.resource.Resource;
 
 /**
+ * TODO: config of docs path, …
+ * 
  * @author dzo
  * @version $Id$
  */
@@ -18,9 +20,22 @@ import org.mortbay.resource.Resource;
 public class TestServerBuilder {
 	
 	private static final int DEFAULT_PORT = 8090;
+	private static final Class<?> DEFAULT_INTERFACE_FACTORY_CLASS = TestDBLogicInterfaceFactory.class;
+	
+	/**
+	 * starts the rest servlet with default values
+	 * @param args
+	 * @throws Exception
+	 */
+	public static void main(String[] args) throws Exception {
+		final TestServerBuilder builder = new TestServerBuilder();
+		
+		final Server server = builder.buildServer();
+		server.start();
+	}
 	
 	private int port = DEFAULT_PORT;
-	private Class<?> logicInterfaceFactoryClass = TestDBLogicInterfaceFactory.class;
+	private Class<?> logicInterfaceFactoryClass = DEFAULT_INTERFACE_FACTORY_CLASS;
 
 	/**
 	 * @return builds a server
@@ -39,7 +54,6 @@ public class TestServerBuilder {
 		restServlet.setInitParameter(RestServlet.PARAM_LOGICFACTORY_CLASS, this.logicInterfaceFactoryClass.getName());			
 		
 		server.addHandler(servletContext);
-		
 		return server;
 	}
 
@@ -55,17 +69,5 @@ public class TestServerBuilder {
 	 */
 	public void setLogicInterfaceFactoryClass(Class<?> logicInterfaceFactoryClass) {
 		this.logicInterfaceFactoryClass = logicInterfaceFactoryClass;
-	}
-	
-	/**
-	 * starts the rest servlet with default values
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void main(String[] args) throws Exception {
-		final TestServerBuilder builder = new TestServerBuilder();
-		
-		final Server server = builder.buildServer();
-		server.start();
 	}
 }

@@ -8,13 +8,13 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.Vector;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,7 +32,20 @@ public class RESTUtils {
 	
 	private static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
 	
-	private static final Set<RenderingFormat> SUPPORTED_RENDERING_FORMAT = new HashSet<RenderingFormat>(Arrays.asList(RenderingFormat.XML, RenderingFormat.JSON));
+	/**
+	 * all supported rendering formats by the rest server
+	 * ordered by preference
+	 */
+	private static List<RenderingFormat> SUPPORTED_RENDERING_FORMAT;
+	
+	static {
+		final List<RenderingFormat> formats = new LinkedList<RenderingFormat>();
+		formats.add(RenderingFormat.XML);
+		formats.add(RenderingFormat.APP_XML);
+		formats.add(RenderingFormat.JSON);
+		
+		SUPPORTED_RENDERING_FORMAT = Collections.unmodifiableList(formats);
+	}
 	
 	/**
 	 * param name for the format of the request and response
@@ -58,16 +71,20 @@ public class RESTUtils {
 		return defaultValue;
 	}
 	
-	private static RenderingFormat getAcceptHeaderMediaType(final String acceptHeader) {
+	private static List<RenderingFormat> getSupportedAcceptHeaderMediaTypes(final String acceptHeader) {
+		final List<RenderingFormat> formats = new LinkedList<RenderingFormat>();
 		// parse the accept header
 		final SortedMap<Double, Vector<String>> preferredTypes = HeaderUtils.getPreferredTypes(acceptHeader);
 		for (final Entry<Double, Vector<String>> preferredType : preferredTypes.entrySet()) {
+			/*
+			 * which media type do we accept?
+			 */
 			for (final String mediaTypeString : preferredType.getValue()) {
 				try {
 					final RenderingFormat renderingFormat = RenderingFormat.getMediaType(mediaTypeString);
 					for (final RenderingFormat supportedMediaType : SUPPORTED_RENDERING_FORMAT) {
 						if (supportedMediaType.isCompatible(renderingFormat)) {
-							return renderingFormat;
+							formats.add(supportedMediaType);
 						}
 					}
 				} catch (final IllegalArgumentException e) {
@@ -76,7 +93,7 @@ public class RESTUtils {
 			}
 		}
 		
-		return null;
+		return formats;
 	}
 
 	/** 
@@ -96,19 +113,19 @@ public class RESTUtils {
 		final String urlParam = getStringAttribute(parameterMap, FORMAT_PARAM, null);
 		if (present(urlParam)) {
 			final RenderingFormat urlRenderingFormat = RenderingFormat.getMediaTypeByFormat(urlParam);
-			return urlRenderingFormat != null ? urlRenderingFormat : DEFAULT_RENDERING_FORMAT;
+			return urlRenderingFormat != null && !urlRenderingFormat.isWildcardSubtype() ? urlRenderingFormat : DEFAULT_RENDERING_FORMAT;
 		}
 		
 		// 2. check the accept header of the request
-		final RenderingFormat acceptMediaType = getAcceptHeaderMediaType(acceptHeader);
+		final List<RenderingFormat> acceptMediaTypes = getSupportedAcceptHeaderMediaTypes(acceptHeader);
 		
 		// 3. check the content type of the request 
 		if (present(contentType)) {
 			final RenderingFormat contentTypeMediaType = RenderingFormat.getMediaType(contentType);
+			
 			// check if accept header was sent by the client
-			if (present(acceptHeader)) {
-				// only Chuck Norris can send data to the server in type A and accepts type B
-				if (acceptMediaType != null && !acceptMediaType.isCompatible(contentTypeMediaType)) {
+			if (present(acceptMediaTypes)) {
+				if (!acceptMediaTypes.contains(contentTypeMediaType)) {
 					throw new BadRequestOrResponseException("Only Chuck Norris can send content of another media type than he accepts.");
 				}
 			}
@@ -116,7 +133,11 @@ public class RESTUtils {
 			return contentTypeMediaType != null ? contentTypeMediaType : DEFAULT_RENDERING_FORMAT;
 		}
 		
-		return acceptMediaType != null ? acceptMediaType : DEFAULT_RENDERING_FORMAT;
+		if (present(acceptMediaTypes)) {
+			return acceptMediaTypes.get(0);
+		}
+		
+		return DEFAULT_RENDERING_FORMAT;
 	}
 
 	/**

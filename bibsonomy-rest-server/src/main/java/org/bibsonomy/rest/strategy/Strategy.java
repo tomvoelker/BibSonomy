@@ -13,6 +13,7 @@ import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.Renderer;
+import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 
 /**
@@ -20,9 +21,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
  * @version $Id$
  */
 public abstract class Strategy {
-	private final LogicInterface logic;
 	private final Context context;
-	private final Renderer renderer;
 	
 	protected Writer writer;
 
@@ -31,8 +30,6 @@ public abstract class Strategy {
 	 */
 	public Strategy(final Context context) {
 		this.context = context;
-		this.logic = context.getLogic();
-		this.renderer = context.getRenderer();
 	}
 
 	/**
@@ -77,7 +74,7 @@ public abstract class Strategy {
 	}
 
 	protected RenderingFormat getRenderingFormat() {
-		return this.renderer.getRenderingFormat();
+		return this.context.getRenderingFormat();
 	}
 
 	@Deprecated
@@ -107,10 +104,10 @@ public abstract class Strategy {
 	}
 
 	protected LogicInterface getLogic() {
-		return this.logic;
+		return this.context.getLogic();
 	}
 
 	protected Renderer getRenderer() {
-		return this.renderer;
+		return RendererFactory.getRenderer(this.context.getRenderingFormat());
 	}
 }

@@ -19,8 +19,6 @@ import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
-import org.bibsonomy.rest.renderer.Renderer;
-import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.validation.ServersideModelValidator;
 
@@ -52,9 +50,9 @@ public final class Context {
 	private final LogicInterface logic;
 
 	/**
-	 * the renderer by which the output gets rendered
+	 * the rendering format for the request
 	 */
-	private final Renderer renderer;
+	private final RenderingFormat renderingFormat;
 
 	/**
 	 * the currently set strategy
@@ -104,7 +102,7 @@ public final class Context {
 		if (url == null || "/".equals(url)) throw new AccessDeniedException("It is forbidden to access '/'.");
 		
 		// choose rendering format (defaults to xml)
-		this.renderer = RendererFactory.getRenderer(renderingFormat);
+		this.renderingFormat = renderingFormat;
 
 		// choose the strategy
 		this.strategy = this.chooseStrategy(httpMethod, url);
@@ -213,13 +211,6 @@ public final class Context {
 	}
 
 	/**
-	 * @return Returns the renderer.
-	 */
-	public Renderer getRenderer() {
-		return this.renderer;
-	}
-
-	/**
 	 * @return Returns the logic.
 	 */
 	public LogicInterface getLogic() {
@@ -240,6 +231,13 @@ public final class Context {
 	 */
 	public Reader getDocument()  {
 		return this.doc;
+	}
+	
+	/**
+	 * @return the renderingFormat
+	 */
+	public RenderingFormat getRenderingFormat() {
+		return this.renderingFormat;
 	}
 	
 	/**

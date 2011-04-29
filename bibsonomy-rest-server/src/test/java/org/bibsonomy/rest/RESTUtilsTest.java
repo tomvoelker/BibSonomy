@@ -14,6 +14,9 @@ import org.junit.Test;
  */
 public class RESTUtilsTest {
 	
+	/**
+	 * tests {@link RESTUtils#getRenderingFormatForRequest(java.util.Map, String, String)}
+	 */
 	@Test
 	public void mediaType() {		
 		RenderingFormat format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/json", null);
@@ -34,8 +37,24 @@ public class RESTUtilsTest {
 		
 		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "text/html", "");
 		assertEquals(RenderingFormat.XML, format);
+		
+		// standard firefox, chromium header
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "");
+		assertEquals(RenderingFormat.APP_XML, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/*", "");
+		assertEquals(RenderingFormat.APP_XML, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/json", "application/json");
+		assertEquals(RenderingFormat.JSON, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/json;q=0.9,application/xml;q=0.91,text/xml;q=0.4,*/*;q=0.1", "");
+		assertEquals(RenderingFormat.APP_XML, format);
 	}
 	
+	/**
+	 * tests different accept and content type headers
+	 */
 	@Test(expected = BadRequestOrResponseException.class)
 	public void chuckNorris() {
 		RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/json", "application/xml; charset=UTF-8");

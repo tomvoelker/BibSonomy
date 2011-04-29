@@ -46,11 +46,9 @@ import org.bibsonomy.rest.utils.HeaderUtils;
  * @version $Id$
  */
 public final class RestServlet extends HttpServlet {
+	private static final long serialVersionUID = -1737804091652029470L;
+
 	private static final Log log = LogFactory.getLog(RestServlet.class);
-	
-	private static final long serialVersionUID = 1L;
-	
-	private static final String HEADER_ACCEPT = "Accept";
 
 	/**
 	 * Used in {@link #validateAuthorization(String)} to identify HTTP basic authentication.
@@ -65,7 +63,7 @@ public final class RestServlet extends HttpServlet {
 	/**
 	 * the request default encoding
 	 */
-	private static final String REQUEST_ENCODING = "UTF-8";	
+	public static final String REQUEST_ENCODING = "UTF-8";	
 
 	/** name of the servlet-parameter that configures the logicFactoryClass to use */
 	public static final String PARAM_LOGICFACTORY_CLASS = "logicFactoryClass";
@@ -197,7 +195,7 @@ public final class RestServlet extends HttpServlet {
 			final MultiPartRequestParser parser = new MultiPartRequestParser(request);
 			
 			// choose rendering format (defaults to xml)
-			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HEADER_ACCEPT), request.getContentType());
+			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), request.getContentType());
 			
 			// create Context
 			final Reader reader = RESTUtils.getInputReaderForStream(request.getInputStream(), REQUEST_ENCODING);
@@ -293,12 +291,12 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
 		// get renderer
-		final RenderingFormat mediaType = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HEADER_ACCEPT), request.getContentType());
+		final RenderingFormat mediaType = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), request.getContentType());
 		final Renderer renderer = RendererFactory.getRenderer(mediaType);
 
 		// send error
 		response.setStatus(code);
-		response.setContentType(renderer.getRenderingFormat().getMimeType());
+		response.setContentType(mediaType.getMimeType());
 		final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
 		final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName(RESPONSE_ENCODING));
 		renderer.serializeError(writer, message);
