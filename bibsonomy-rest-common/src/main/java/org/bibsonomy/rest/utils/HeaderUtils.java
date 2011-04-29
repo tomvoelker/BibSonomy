@@ -104,8 +104,21 @@ public class HeaderUtils {
 			final String type = types[0];
 			double qValue = 1;
 	
-			if (types.length != 1) 
-				qValue = Double.parseDouble(types[1].split("=")[1]);
+			if (types.length != 1) {
+				/*
+				 * FIXME: we get 
+				 *   java.lang.NumberFormatException: For input string: "screen"
+				 * in the error log because the format we assume seems to be 
+				 * different by some clients. Until we find out, what is really 
+				 * wrong (our parsing or the client), we are more careful with
+				 * parsing external data.
+				 */
+				try {
+					qValue = Double.parseDouble(types[1].split("=")[1]);
+				} catch (NumberFormatException e) {
+					qValue = 0;
+				}
+			}
 			
 			Vector<String> v = preferredTypes.get(qValue);
 			if (!preferredTypes.containsKey(qValue)) {
