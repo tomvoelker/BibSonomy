@@ -17,7 +17,7 @@
 		</property>
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_CONTEXTPARAM"/>
 	</bean>
-
+	
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 		<property name="allowedFields" ref="allowedFields"/>
 		<property name="disallowedFields" ref="disallowedFields"/>
@@ -62,8 +62,6 @@
 	
 	<!-- provides access to the wikiRenderer -->
 	<bean id="wikiRenderer" class="org.bibsonomy.wiki.WikiUtil" scope="request">
-		<!-- FIXME: shouldn't it be the requested user -->
-<!--		<property name="user" ref="loginUser"/>-->
 		<property name="logic" ref="logic"/>
 	</bean>
 	
@@ -174,14 +172,23 @@
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 	
 	<!-- WURFL -->
-	<bean id="wurfl.resource" class="org.springframework.core.io.ClassPathResource">
-		<constructor-arg value="wurfl.zip" />
-	</bean>
-	<bean id="wurfl.springResource" class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
-		<constructor-arg index="0" ref="wurfl.resource" />
-	</bean>
 	<bean id="wurfl.model" class="net.sourceforge.wurfl.core.resource.DefaultWURFLModel">
-		<constructor-arg index="0" ref="wurfl.springResource" />
+		<constructor-arg index="0">
+    		<bean class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
+      			<constructor-arg value="classpath:wurfl.zip" />
+   			</bean>
+  		</constructor-arg>
+  		<constructor-arg index="1">
+   			<bean class="net.sourceforge.wurfl.core.resource.WURFLResources">
+      			<constructor-arg>
+        			<list>
+          				<bean class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
+            				<constructor-arg value="classpath:web_browsers_patch.xml" />
+          				</bean>
+        			</list>
+      			</constructor-arg>
+    		</bean>
+  		</constructor-arg>
 	</bean>
 	<bean id="wurfl.matcherManager" class="net.sourceforge.wurfl.core.handlers.matchers.MatcherManager">
 		<constructor-arg ref="wurfl.model" />
@@ -196,14 +203,6 @@
 	<bean id="wurfl.manager" class="net.sourceforge.wurfl.core.DefaultWURFLManager">
 		<constructor-arg ref="wurfl.service" />
 	</bean>
-	<bean id="wurfl.utils" class="net.sourceforge.wurfl.core.WURFLUtils">
-		<constructor-arg ref="wurfl.model" />
-	</bean>
-	<bean id="wurfl.holder" class="net.sourceforge.wurfl.core.DefaultWURFLHolder">
-		<constructor-arg ref="wurfl.manager" />
-		<constructor-arg ref="wurfl.utils" />
-	</bean>
-	
 	
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">

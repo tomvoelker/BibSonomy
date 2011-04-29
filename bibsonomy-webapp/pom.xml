@@ -41,9 +41,10 @@
 						<phase>prepare-package</phase>
 						<configuration>
 							<tasks>
-								<get
-									src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/latest/wurfl-latest.zip"
+								<get src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/latest/wurfl-latest.zip"
 									dest="${project.build.directory}/classes/wurfl.zip" />
+								<get src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/latest/web_browsers_patch.xml"
+									dest="${project.build.directory}/classes/web_browsers_patch.xml" />
 							</tasks>
 						</configuration>
 						<goals>
