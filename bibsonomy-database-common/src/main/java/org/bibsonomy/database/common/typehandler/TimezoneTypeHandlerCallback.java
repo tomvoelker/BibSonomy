@@ -1,6 +1,5 @@
 package org.bibsonomy.database.common.typehandler;
 
-import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.TimeZone;
@@ -8,16 +7,20 @@ import java.util.TimeZone;
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
 /**
- * An iBATIS type handler callback for {@link URL}s that are mapped to Strings
- * in the database. If a URL cannot be constructed based on the String, then the
- * URL will be set to <code>null</code>.<br/>
+ * Converts Java TimeZone objects to some suitable SQL datatype.
+ *
+ * FIXME: which SQL datatype should we use?
+ *
  * 
- * Almost copied from <a
- * href="http://opensource.atlassian.com/confluence/oss/display/IBATIS/Type+Handler+Callbacks">Atlassian -
- * Type Handler Callbacks</a>
+ * FIXME: it would be nice to store a rather short string in the database (e.g.,
+ * GMT+08:00) - how to normalize a timezone given by the user that has "Europe/Berlin"
+ * or "PST" as ID?
  * 
- * @author Ken Weiner
- * @author Christian Schenk
+ * See also: http://stackoverflow.com/questions/240510/convert-a-string-to-gregoriancalendar
+ *  
+ *  
+ * 
+ * @author rja
  * @version $Id$
  */
 public class TimezoneTypeHandlerCallback extends AbstractTypeHandlerCallback {
