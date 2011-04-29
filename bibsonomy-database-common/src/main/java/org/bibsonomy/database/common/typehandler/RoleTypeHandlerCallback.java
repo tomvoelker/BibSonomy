@@ -22,22 +22,22 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  */
 public class RoleTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
-	@Override
-	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
-		if (parameter == null) {
-			setter.setInt(Role.DEFAULT.getRole());
-		} else {
-			final Role role = (Role) parameter;
-			setter.setInt(role.getRole());
-		}
+    @Override
+    public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
+	if (parameter == null) {
+	    setter.setInt(Role.DEFAULT.getRole());
+	} else {
+	    final Role role = (Role) parameter;
+	    setter.setInt(role.getRole());
 	}
+    }
 
-	@Override
-	public Object valueOf(final String str) {
-		try {
-			return Role.getRole(str);
-		} catch (NumberFormatException ex) {
-			return Role.DEFAULT;
-		}
+    @Override
+    public Object valueOf(final String str) {
+	try {
+	    return Role.getRole(str);
+	} catch (NumberFormatException ex) {
+	    return Role.DEFAULT;
 	}
+    }
 }
