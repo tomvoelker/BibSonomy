@@ -37,11 +37,11 @@
     <script type="text/javascript" src="/resources/javascript/tooltip.js"></script>
     <script type="text/javascript" src="/resources/javascript/style.js"></script>
     <script type="text/javascript" src="/resources/javascript/chrome.js"></script>
-	<script type="text/javascript" src="/resources/javascript/jquery_152_min.js"></script>
+	<script type="text/javascript" src="/resources/jquery/jquery.js"></script>
     <script type="text/javascript" src="/resources/jquery/plugins/form/jquery.form.min.js">&amp;nbsp;</script> 
 	<script type="text/javascript" src="/resources/javascript/jquery_corner.js"></script>
 	<script type="text/javascript" src="/resources/javascript/jquery_autocomplete.js"></script>    
-	<script type="text/javascript" src="/resources/javascript/jquery.textarearesizer.js"></script>  
+	<script type="text/javascript" src="/resources/jquery/plugins/textarearesizer/jquery.textarearesizer.js"></script>  
     <c:if test="${projectName == 'PUMA'}">
 		<link rel="stylesheet" type="text/css" href="/resources_puma/css/puma.css">
     </c:if> 
