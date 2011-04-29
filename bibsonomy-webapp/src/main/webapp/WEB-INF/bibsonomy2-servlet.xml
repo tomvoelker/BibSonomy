@@ -18,11 +18,26 @@
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_CONTEXTPARAM"/>
 	</bean>
 	
+	<!--
+		conversion service to convert:
+		- strings to enums (a generic converter)
+		- strings to class (and "bookmark", "publication" to resource classes)
+	-->
+	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<property name="converters">
+	        <list>
+	            <bean class="org.bibsonomy.web.spring.converter.factories.StringToEnumConverterFactory"/>
+	            <bean class="org.bibsonomy.web.spring.converter.StringToClassConverter" />
+	        </list>
+	    </property>
+	</bean>
+	
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 		<property name="allowedFields" ref="allowedFields"/>
 		<property name="disallowedFields" ref="disallowedFields"/>
 		<property name="urlGenerator" ref="urlGenerator"/>
 		<property name="supportedMethods" value="HEAD,GET,POST,DELETE,PUT" />
+		<property name="conversionService" ref="conversionService" />
 	</bean>
 	
 	<!--  #################### factory beans #################### -->

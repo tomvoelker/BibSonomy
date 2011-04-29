@@ -15,7 +15,6 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.web.spring.classeditor.ClassEditor;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -29,6 +28,7 @@ import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableEx
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
@@ -58,6 +58,16 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	private String[] disallowedFields;
 	
 	private URLGenerator urlGenerator;
+	
+	private ConversionService conversionService;
+
+	/**
+	 * @param conversionService the conversionService to set
+	 */
+	@Required
+	public void setConversionService(ConversionService conversionService) {
+		this.conversionService = conversionService;
+	}
 
 	/** 
 	 * Sets the fields which Spring is allowed to bind to command objects.
@@ -231,6 +241,11 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		super.initBinder(request, binder);
 
 		/*
+		 * set convertion service (string => enum, string => class)
+		 */
+		binder.setConversionService(this.conversionService);
+		
+		/*
 		 * Register a custom date editor to support binding of date fields.
 		 * 
 		 * FIXME: This is a HACK to allow the DBLP update to set the date of 
@@ -240,9 +255,6 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 *  
 		 */
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(DATE_FORMAT, true));
-		
-		binder.registerCustomEditor(Class.class, new ClassEditor());
-		
 		
 		/*
 		 * setting the dis/allowed fields for the binder
