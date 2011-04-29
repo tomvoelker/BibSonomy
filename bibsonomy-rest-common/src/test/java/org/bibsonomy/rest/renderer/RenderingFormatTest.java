@@ -27,7 +27,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.junit.Test;
 
 /**
@@ -35,11 +34,16 @@ import org.junit.Test;
  * @version $Id$
  */
 public class RenderingFormatTest {
-
+	
+	/**
+	 * tests {@link RenderingFormat#getMediaTypeByFormat(String)}
+	 */
 	@Test
 	public void testGetRenderingFormat() {
 		assertEquals(RenderingFormat.XML, RenderingFormat.getMediaTypeByFormat("xml"));
 		assertEquals(RenderingFormat.XML, RenderingFormat.getMediaTypeByFormat("xMl"));
+		assertEquals(RenderingFormat.PDF, RenderingFormat.getMediaTypeByFormat("PDF"));
+		assertEquals(RenderingFormat.JSON, RenderingFormat.getMediaTypeByFormat("json"));
 
 		assertNull(RenderingFormat.getMediaTypeByFormat("someUnsupportedRenderingFormat"));
 	}
@@ -48,18 +52,21 @@ public class RenderingFormatTest {
 	public void testGetMediaType() {
 		assertEquals(RenderingFormat.XML, RenderingFormat.getMediaType("text/xml"));
 		assertEquals(RenderingFormat.JSON, RenderingFormat.getMediaType("application/json"));
+		assertEquals(RenderingFormat.APP_XML, RenderingFormat.getMediaType("application/xml; charset=UTF-8"));
 		try {
 			RenderingFormat.getMediaType("someUnsupportedRenderingFormat");
 			fail();
 		} catch (final IllegalArgumentException e) {
 			// ok
 		}
-		
 	}
 
+	/**
+	 * 
+	 */
 	@Test
 	public void testToString() {
-		// this test is an important one for the client!!!
+		// only for backward compatibility (rest server)
 		assertEquals(RenderingFormat.XML.toString(), "XML");
 	}
 }
