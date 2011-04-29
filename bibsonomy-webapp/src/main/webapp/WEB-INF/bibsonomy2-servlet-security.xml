@@ -109,7 +109,7 @@
   		<property name="key" ref="cookieKey"/>
   		<property name="parameter" value="rememberMe"/>
   		<property name="cookieName" value="db_user" />
-  		<property name="tokenValiditySeconds" value="31536000" /> <!-- 3600 * 24 * 365 -->
+  		<property name="tokenValiditySeconds" ref="cookieAge" /> <!-- found in main servlet xml -->
 	</bean>
 	
 	<!-- filter for the db remember me cookie -->
