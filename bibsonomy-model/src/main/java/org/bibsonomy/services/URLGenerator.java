@@ -327,6 +327,7 @@ public class URLGenerator {
 	 * @return <code>true</code> if the url points to the resource.
 	 */
 	public boolean matchesResourcePage(final String url, final String userName, final String intraHash) {
+		if (!present(url)) return false;
 		return url.matches(".*/(" + PUBLICATION_PREFIX + "|" + BOOKMARK_PREFIX + ")/[0-3]?" + intraHash + "/" + userName + ".*");
 	}
 	
