@@ -46,9 +46,14 @@ public class RenderingFormat {
 	public static final RenderingFormat WILDCARD = new RenderingFormat(TYPE_WILDCARD, TYPE_WILDCARD);
 	
 	/**
-	 * xml format
+	 * text xml format
 	 */
-	public static final RenderingFormat XML  = new RenderingFormat("text", "xml"); // TODO: why not "application/xml"
+	public static final RenderingFormat XML = new RenderingFormat("text", "xml");	
+	
+	/**
+	 * application xml format
+	 */
+	public static final RenderingFormat APP_XML = new RenderingFormat("application", "xml");
 	
 	/**
 	 * json format
@@ -56,9 +61,59 @@ public class RenderingFormat {
 	public static final RenderingFormat JSON = new RenderingFormat("application", "json");
 	
 	/**
-	 * TODO: improve documentation
+	 * pdf format for documents
 	 */
 	public static final RenderingFormat PDF = new RenderingFormat("application", "pdf");
+	
+
+	/**
+	 * @param string like <CODE>application/json</CODE> or
+	 * <CODE>application/xml; charset=UTF8</CODE>
+	 * 			
+	 * @return the mediaType for the string
+	 */
+	public static RenderingFormat getMediaType(final String string) {
+		if (!present(string)) return null;
+		
+		// check if there is a charset given
+		final String[] mediaTypeEncoding = string.split(";");
+		
+		String mediaType = string;
+		if (mediaTypeEncoding.length > 1) {
+			mediaType = mediaTypeEncoding[0];
+		}
+		
+		final String[] typeSubType = mediaType.split("/");
+		
+		if (typeSubType.length != 2) {
+			throw new IllegalArgumentException(string + " is not a mediaType string representation");
+		}
+		
+		return new RenderingFormat(typeSubType[0], typeSubType[1]);
+	}
+
+	/**
+	 * @param renderingFormat 
+	 * @return the rendering format to the given string.
+	 */
+	public static RenderingFormat getMediaTypeByFormat(final String renderingFormat) {
+		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
+
+		final String format = renderingFormat.toLowerCase().trim();
+		if ("xml".equals(format)) {
+			return XML;
+		}
+		
+		if ("json".equals(format)) {
+			return JSON;
+		}
+		
+		if ("pdf".equals(format)){
+			return PDF;
+		}
+		
+		return null;
+	}
 	
 	private final String type;
 	private final String subtype;
@@ -96,8 +151,8 @@ public class RenderingFormat {
 	
 	/**
 	 * checks if both renderingformats are compatible
-	 * @param other
-	 * @return <true> if renderingformat is compatible
+	 * @param other the other renderer
+	 * @return <true> iff renderingformat is compatible
 	 */
 	public boolean isCompatible(final RenderingFormat other) {
         if (other == null)
@@ -111,8 +166,7 @@ public class RenderingFormat {
             return true;
         
         // type and subtype?
-        return this.type.equalsIgnoreCase(other.type)
-                && this.subtype.equalsIgnoreCase(other.subtype);
+        return this.type.equalsIgnoreCase(other.type) && this.subtype.equalsIgnoreCase(other.subtype);
     }
 	
 	/**
@@ -171,54 +225,5 @@ public class RenderingFormat {
 	@Deprecated
 	public String toString() {
 		return this.subtype.toUpperCase();
-	}
-	
-	/**
-	 * @param string like <CODE>application/json</CODE> or
-	 * <CODE>application/xml; charset=UTF8</CODE>
-	 * 			
-	 * @return the mediaType for the string
-	 */
-	public static RenderingFormat getMediaType(final String string) {
-		if (!present(string)) return null;
-		
-		// check if there is a charset given
-		final String[] mediaTypeEncoding = string.split(";");
-		
-		String mediaType = string;
-		if (mediaTypeEncoding.length > 1) {
-			mediaType = mediaTypeEncoding[0];
-		}
-		
-		final String[] typeSubType = mediaType.split("/");
-		
-		if (typeSubType.length != 2) {
-			throw new IllegalArgumentException(string + " is not a mediaType string representation");
-		}
-		
-		return new RenderingFormat(typeSubType[0], typeSubType[1]);
-	}
-
-	/**
-	 * @param renderingFormat 
-	 * @return the rendering format to the given string.
-	 */
-	public static RenderingFormat getMediaTypeByFormat(final String renderingFormat) {
-		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
-
-		final String format = renderingFormat.toLowerCase().trim();
-		if ("xml".equals(format)) {
-			return XML;
-		}
-		
-		if ("json".equals(format)) {
-			return JSON;
-		}
-		
-		if ("pdf".equals(format)){
-			return PDF;
-		}
-		
-		return null;
 	}
 }

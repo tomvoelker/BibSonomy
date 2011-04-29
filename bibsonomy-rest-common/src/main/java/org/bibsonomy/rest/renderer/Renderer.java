@@ -415,9 +415,4 @@ public interface Renderer {
 	 * @return  a list of references (their interhashes) from the reader
 	 */
 	public Set<String> parseReferences(Reader reader);
-
-	/**
-	 * @return the rendering format produced by this renderer
-	 */
-	public RenderingFormat getRenderingFormat();
 }

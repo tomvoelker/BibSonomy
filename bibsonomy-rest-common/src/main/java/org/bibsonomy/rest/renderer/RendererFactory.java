@@ -57,7 +57,7 @@ public class RendererFactory {
 	public static Renderer getRenderer(final RenderingFormat renderingFormat) {
 		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
 		
-		if (RenderingFormat.JSON.isCompatible(renderingFormat)) {
+		if (RenderingFormat.JSON.equals(renderingFormat)) {
 			return JSONRendererInstanceHolder.JSON_RENDERER;
 		}
 		

@@ -51,8 +51,13 @@ public class HeaderUtils {
 	 */
 	public static final String HEADER_USER_AGENT = "User-Agent";
 	
+	/**
+	 * the header key for accept
+	 */
+	public static final String HEADER_ACCEPT = "Accept";
+	
 	private static final String HEADER_AUTH_BASIC = "Basic ";
-	private static final String UTF8 = "UTF-8";
+	private static final String UTF8 = "UTF-8";	
 
 	private HeaderUtils() {}
 

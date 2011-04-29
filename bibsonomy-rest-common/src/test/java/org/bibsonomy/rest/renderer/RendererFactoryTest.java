@@ -40,10 +40,9 @@ public class RendererFactoryTest {
 	public void testGetRenderer() {
 		assertTrue(RendererFactory.getRenderer(RenderingFormat.XML) instanceof XMLRenderer);
 		assertTrue(RendererFactory.getRenderer(RenderingFormat.PDF) instanceof XMLRenderer);
+		assertTrue(RendererFactory.getRenderer(RenderingFormat.APP_XML) instanceof XMLRenderer);
 		
 		assertTrue(RendererFactory.getRenderer(RenderingFormat.JSON) instanceof JSONRenderer);
-		assertTrue(RendererFactory.getRenderer(new RenderingFormat("application", RenderingFormat.TYPE_WILDCARD)) instanceof JSONRenderer);
-		
 	}
 	
 	@Test(expected = InternServerException.class)
