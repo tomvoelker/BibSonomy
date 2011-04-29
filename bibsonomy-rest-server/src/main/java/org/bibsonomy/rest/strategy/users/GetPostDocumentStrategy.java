@@ -44,6 +44,7 @@ public class GetPostDocumentStrategy extends Strategy {
 	
 	@Override
 	protected RenderingFormat getRenderingFormat() {
+		// FIXME: we support more than pdfs!
 		return RenderingFormat.PDF;
 	}
 	
