@@ -10,8 +10,8 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -31,7 +31,6 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.TagType;
@@ -41,21 +40,21 @@ import org.xml.sax.SAXParseException;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 import de.unikassel.puma.openaccess.sword.renderer.xml.DivType;
+import de.unikassel.puma.openaccess.sword.renderer.xml.DivType.Fptr;
 import de.unikassel.puma.openaccess.sword.renderer.xml.FileType;
+import de.unikassel.puma.openaccess.sword.renderer.xml.FileType.FLocat;
 import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType.MdWrap;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType.MdWrap.XmlData;
 import de.unikassel.puma.openaccess.sword.renderer.xml.Mets;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.FileSec;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.FileSec.FileGrp;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr.Agent;
 import de.unikassel.puma.openaccess.sword.renderer.xml.ObjectFactory;
 import de.unikassel.puma.openaccess.sword.renderer.xml.PumaPost;
 import de.unikassel.puma.openaccess.sword.renderer.xml.PumaUserType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.StructMapType;
-import de.unikassel.puma.openaccess.sword.renderer.xml.DivType.Fptr;
-import de.unikassel.puma.openaccess.sword.renderer.xml.FileType.FLocat;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType.MdWrap;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType.MdWrap.XmlData;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.FileSec;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.FileSec.FileGrp;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr.Agent;
 
 
 /**
@@ -281,11 +280,6 @@ public class MetsBibTexMLGenerator {
 		@Override
 		protected JAXBContext getJAXBContext() throws JAXBException {
 			return JAXBContext.newInstance("org.bibsonomy.rest.renderer.xml:de.unikassel.puma.openaccess.sword.renderer.xml", this.getClass().getClassLoader());
-		}
-
-		@Override
-		public RenderingFormat getRenderingFormat() {
-			return RenderingFormat.XML;
 		}
 		
 		/**
