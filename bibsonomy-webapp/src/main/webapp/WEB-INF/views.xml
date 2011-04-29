@@ -35,7 +35,7 @@
 	<bean id="csl" class="org.bibsonomy.webapp.view.CSLView"/>
 	
 	<!-- renders documents of publications -->
-	<bean id="downloadFile" class="org.bibsonomy.webapp.view.DocumentDownloadView"/>
+	<bean id="downloadFile" class="org.bibsonomy.webapp.view.DownloadView"/>
 
 	<!-- renders the available export layouts as JSON -->	
 	<bean id="exportLayouts" class="org.bibsonomy.webapp.view.ExportLayoutView"/>
