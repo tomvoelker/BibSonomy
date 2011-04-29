@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>BibSonomy</name>
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0.14-SNAPSHOT</version>
+	<version>2.0.15-SNAPSHOT</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
@@ -138,22 +139,22 @@
 			</roles>
 		</developer>
 	</developers>
-  	<mailingLists>
-    		<mailingList>
-      			<name>BibSononomy-Discuss: For BibSonomy users</name>
-	      		<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss</subscribe>
-      			<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss</unsubscribe>
-      			<post>bibsonomy-discuss@cs.uni-kassel.de</post>
-	      		<archive>https://mail.cs.uni-kassel.de/pipermail/bibsonomy-discuss</archive>
-    		</mailingList>
-	    	<mailingList>
-      			<name>Api-Discuss: for users and developers of the BibSonomy-API.</name>
-      			<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</subscribe>
-	      		<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</unsubscribe>
-      			<post>api-discuss@cs.uni-kassel.de</post>
-      			<archive>https://mail.cs.uni-kassel.de/pipermail/api-discuss</archive>
-	    	</mailingList>
-  	</mailingLists>	  	
+	<mailingLists>
+		<mailingList>
+			<name>BibSononomy-Discuss: For BibSonomy users</name>
+			<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss</subscribe>
+			<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss</unsubscribe>
+			<post>bibsonomy-discuss@cs.uni-kassel.de</post>
+			<archive>https://mail.cs.uni-kassel.de/pipermail/bibsonomy-discuss</archive>
+		</mailingList>
+		<mailingList>
+			<name>Api-Discuss: for users and developers of the BibSonomy-API.</name>
+			<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</subscribe>
+			<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</unsubscribe>
+			<post>api-discuss@cs.uni-kassel.de</post>
+			<archive>https://mail.cs.uni-kassel.de/pipermail/api-discuss</archive>
+		</mailingList>
+	</mailingLists>
 	<repositories>
 		<repository>
 			<id>biblicious</id>
@@ -208,8 +209,8 @@
 		<module>bibsonomy-opensocial</module>
 		<module>bibsonomy-rest-server</module>
 		<module>bibsonomy-webapp</module>
-    	<module>bibsonomy-wiki</module>
-  </modules>
+		<module>bibsonomy-wiki</module>
+	</modules>
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -250,7 +251,7 @@
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<version>1.0-beta-1</version>
 				<configuration>
-				<server>tomcat_gromit</server>
+					<server>tomcat_gromit</server>
 					<url>
 						http://gromit.cs.uni-kassel.de:8080/manager
 					</url>
@@ -295,7 +296,8 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- generate a source jar during build pase and deploy it along with binary jar -->
+				<!-- generate a source jar during build pase and deploy it along with 
+					binary jar -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.1.2</version>
@@ -313,56 +315,101 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.0</version>
 				<configuration>
-					<!-- 
-						<goals>deploy assembly:assembly site-deploy tomcat:undeploy tomcat:deploy</goals>
-					-->
+					<!-- <goals>deploy assembly:assembly site-deploy tomcat:undeploy tomcat:deploy</goals> -->
 				</configuration>
 			</plugin>
 			<plugin>
-        		<groupId>org.apache.maven.plugins</groupId>
-        		<artifactId>maven-war-plugin</artifactId>
-        		<version>2.0</version>
-        	</plugin>
-      		<plugin>
-      			<groupId>org.apache.maven.plugins</groupId>
-    			<artifactId>maven-clean-plugin</artifactId>
-    			<version>2.4.1</version>
-    		  	<configuration>
-      				<filesets>
-        				<fileset>
-       						<directory>src/main/webapp/WEB-INF/lib</directory>
-       						<includes>
-            					<include>**/*.jar</include>
-          					</includes>
-          					<followSymlinks>false</followSymlinks>
-        				</fileset>
-        				<fileset>
-       						<directory>src/main/webapp/WEB-INF/classes</directory>
-       						<includes>
-            					<include>**/*</include>
-          					</includes>
-          					<followSymlinks>false</followSymlinks>
-        				</fileset>
-      				</filesets>
-    			</configuration>
-  			</plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.0</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>src/main/webapp/WEB-INF/lib</directory>
+							<includes>
+								<include>**/*.jar</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+						<fileset>
+							<directory>src/main/webapp/WEB-INF/classes</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
 		</plugins>
 		<extensions>
-		 	<extension>
-		 		<!-- 
-		 			 wagon provider to enable deployment of artifacts via webdav (to artifatory,
-		 			 in our case. According to http://docs.codehaus.org/display/MAVENUSER/Deploying+3rd+Party+Jars+With+WebDAV
-		 			 this should not be necessary from Maven 2.0.9, as the wagon-webdav lib should
-		 			 be included in the later maven distributions - but at least for hudson's setup,
-		 			 it only works this way. Maybe when the maven version of hudson (currently 2.2.1)
-		 			 gets updated, we can remove this build extension. (dbe, 20100811)  
-		 		-->
+			<extension>
+				<!-- wagon provider to enable deployment of artifacts via webdav (to 
+					artifatory, in our case. According to http://docs.codehaus.org/display/MAVENUSER/Deploying+3rd+Party+Jars+With+WebDAV 
+					this should not be necessary from Maven 2.0.9, as the wagon-webdav lib should 
+					be included in the later maven distributions - but at least for hudson's 
+					setup, it only works this way. Maybe when the maven version of hudson (currently 
+					2.2.1) gets updated, we can remove this build extension. (dbe, 20100811) -->
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-webdav</artifactId>
 				<version>1.0-beta-2</version>
 			</extension>
-		</extensions>		
+		</extensions>
 	</build>
+	<profiles>
+		<profile>
+		<id>copy-classes-to-webapp-profile</id>
+				<!-- 
+				    When in development mode, we use the resources plugin to copy all compiled classes (e.g. 
+					the content of /target/classes for each module) into the webapp-directory 
+					of bibsonomy-webapp. This is mainy intended to ease the development process 
+					using the Sysdeo Eclipse plugin - when a module class is modified, it is 
+					(after mvn compile) directly available in the running webapp via hot code 
+					replacement (assuming the webapp root is set to /src/main/webapp in the 
+					bibsononomy-webapp project). -->					
+		<activation>
+			<property>
+				<name>mode</name>
+				<value>development</value>
+			</property>
+		</activation>
+		<build>
+			<plugins>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<id>copy-classes-to-webapp</id>
+						<!-- execute copy after compilation -->
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								<!-- the root directory of the running webapp -->
+								${basedir}/../bibsonomy-webapp/src/main/webapp/WEB-INF/classes
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}/target/classes</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		</build>			
+			
+		</profile>
+	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -394,7 +441,8 @@
 		</plugins>
 	</reporting>
 	<distributionManagement>
-		<!--  deploy releases via webdav to zope - username + password is defined in settings.xml -->
+		<!-- deploy releases via webdav to zope - username + password is defined 
+			in settings.xml -->
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
 			<id>bibsonomyReleases</id>
@@ -402,7 +450,8 @@
 			<url>scp://bugs:/home/bibsonomyupload/www/maven2</url>
 			<layout>default</layout>
 		</repository>
-		<!--  use internal maven artifactory proxy for snapshot releases; username + password is defined in settings.xml -->
+		<!-- use internal maven artifactory proxy for snapshot releases; username 
+			+ password is defined in settings.xml -->
 		<snapshotRepository>
 			<uniqueVersion>true</uniqueVersion>
 			<id>bibsonomySnapshots</id>
@@ -412,7 +461,7 @@
 			</url>
 			<layout>default</layout>
 		</snapshotRepository>
-		<!--  deploy web site documentation via webdav to zope -->
+		<!-- deploy web site documentation via webdav to zope -->
 		<site>
 			<id>website-bibsonomy-documentation</id>
 			<name>Website documentation for BibSonomy</name>
@@ -619,9 +668,7 @@
 				<version>5.0.8</version>
 				<scope>provided</scope>
 			</dependency>
-			<!-- 
-				the xml apis and xerces are included in Java 1.5
-			-->
+			<!-- the xml apis and xerces are included in Java 1.5 -->
 			<dependency>
 				<groupId>xerces</groupId>
 				<artifactId>xercesImpl</artifactId>
@@ -672,7 +719,7 @@
 				<version>1.2.1</version>
 			</dependency>
 			<dependency>
-		        <groupId>commons-codec</groupId>
+				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>1.4</version>
 			</dependency>
