@@ -3,7 +3,7 @@
  *  BibSonomy-Scrapingservice - Web application to test the BibSonomy web page scrapers (see
  * 		bibsonomy-scraper)
  *
- *  Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group,
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *
