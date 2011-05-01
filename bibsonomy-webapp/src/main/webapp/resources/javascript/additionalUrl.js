@@ -1,0 +1,86 @@
+/**
+ * @author bte
+ */
+/**
+ * Function to delete the given url
+ *
+ * @param {Object} url
+ * @param {Object} hash
+ * @param {Object} ckey
+ */
+function deleteUrl(self, url, hash, ckey){
+    $.ajax({
+        type: "POST",
+        url: "/ajax/additionalURLs",
+        data: {
+            action: 'deleteUrl',
+            url: url,
+            hash: hash,
+            ckey: ckey
+        },
+        success: function(data){
+			var status = $("status", data).text();
+			var url = $("url", data).text();
+            if (status == "error") {
+				 handleErrorStatus(data);
+            }
+            else {
+				 $(self).parent().remove();
+            }
+        }
+        
+    });
+}
+
+/**
+ * Function to post the given url which is defined in
+ * form: f_addURL (bibtexdetails.tagx)
+ */
+$(function(){
+    $(".postUrl").click(function(){
+        var options = {
+            dataType: "xml",
+            success: function(data){
+                var object = $(this);
+                var url = $("url", data).text();
+                var urlText = $("text", data).text();
+                var status = $("status", data).text();
+                var ckey = $("ckey", data).text();
+                var hash = $("hash", data).text();
+                
+                if (status == "error") {
+                    handleErrorStatus(data);
+                }
+                else {
+                        $('#urlList').prepend(function(){
+                            var urlLnk = $('<a href="' + url + '">' + urlText + '</a>');
+                            var element = $("<div></div>").append(urlLnk).append(' (').append(
+							$('<a href="">' + getString("post.bibtex.delete") + '</a>').click(function(){
+								deleteUrl(this,url,hash,ckey);
+								return false;
+							})
+							).append(')');
+                            
+                            return element;
+                        })
+                    }
+            }
+        };
+        
+        $("#f_addURL").ajaxSubmit(options);
+    });
+});
+
+/**
+ * Function which handles a <status>error</status>
+ */
+function handleErrorStatus(data) {
+	alert($("reason", data).text());
+}
+
+/**
+ * Function which sets the "f_addURL" - form to display = 'block'
+ */
+function addUrlForm() {
+	document.getElementById('f_addURL').style.display = 'block';
+}

@@ -28,6 +28,21 @@
 					</bean>
 				</entry>
 				
+        				<entry key="/ajax/additionalURLs">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="additionalURLController" />
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>url</value>
+								<value>text</value>
+								<value>hash</value>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
 				<entry key="/ajax/documents">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="documentsController" />
@@ -171,6 +186,10 @@
 	
 	<bean id="reviewMarkController" class="org.bibsonomy.webapp.controller.ajax.MarkReviewAjaxController" parent="ajaxController" scope="request" />
 	
+	<bean id="additionalURLController"
+		class="org.bibsonomy.webapp.controller.ajax.AdditionalURLController"
+		scope="request" parent="ajaxController" />
+
 	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
 		<property name="docPath" value="${project.document.path}"/>
 		<property name="tempPath" value="${project.document.temp}"/>
