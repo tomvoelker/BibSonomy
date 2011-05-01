@@ -42,7 +42,11 @@ public enum PostUpdateOperation {
 	/**
 	 * Update only the documents attached to the post.
 	 */
-	UPDATE_DOCUMENTS(2);
+	UPDATE_DOCUMENTS(2),
+	/**
+	 * Update only the url of the post.
+	 */
+	UPDATE_URLS(3);
 	
 	private int id;
 	
