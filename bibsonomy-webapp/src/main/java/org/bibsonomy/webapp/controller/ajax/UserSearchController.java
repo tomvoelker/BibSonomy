@@ -35,10 +35,13 @@ public class UserSearchController extends AjaxController implements Minimalistic
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
+		log.debug("Searching for " + command.getSearch() + " with limit " + command.getLimit());
 		
 		if (command.getSearch() != null && !command.getSearch().isEmpty()) {
 			users = logic.getUsers(null, GroupingEntity.USER, null, null, null, null, null, command.getSearch(), 0, command.getLimit());
 			command.setSearchedUsers(users);
+			
+			log.debug(users.size() + " matches found.");
 		}
 		
 		// TODO: Currently only json-format is supported
