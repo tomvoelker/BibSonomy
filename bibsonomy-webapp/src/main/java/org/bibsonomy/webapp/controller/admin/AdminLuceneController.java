@@ -46,12 +46,9 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		 * If user is not logged in or not an admin: show error message */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new AccessDeniedException("error.method_not_allowed");
-		}
+		}		
 		
-		command.setPageTitle("admin lucene");
-		
-		
-		if(command.getAction() == null) {
+		if (command.getAction() == null) {
 	        // Do nothing.
 		} else if(command.getAction().equals(GENERATE_INDEX)) {
 				LuceneResourceManager<? extends Resource> mng = getManagerByResourceName(command.getResource());

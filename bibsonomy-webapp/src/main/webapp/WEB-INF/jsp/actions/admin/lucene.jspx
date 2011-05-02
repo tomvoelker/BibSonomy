@@ -17,7 +17,7 @@
 	
 	<fmt:message key="navi.admin" var="pageTitle" />
 	
-	<layout:layout pageTitle="${command.pageTitle} :: Lucene" loginUser="${command.context.loginUser}" requPath="${requPath}">
+	<layout:layout pageTitle="${pageTitle} :: Lucene" loginUser="${command.context.loginUser}" requPath="${requPath}">
 		<jsp:attribute name="heading">
 		    <a href="/admin"><c:out value="${pageTitle}" /></a> ::
 			<a rel="path_menu" href="/admin/lucene">Lucene</a>
