@@ -18,8 +18,8 @@
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${loginTitle}" requPath="${requPath}">
 
 		<jsp:attribute name="headerExt">
-  			<link rel="stylesheet" type="text/css" href="${resdir}/css/jquery_ui/jquery.ui.tabs.css" />
-			<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery-ui.min.js">&amp;nbsp;</script>
+  			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
+			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js">&amp;nbsp;</script>
   			<script type="text/javascript">
 				<![CDATA[
 						$(function() {
