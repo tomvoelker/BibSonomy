@@ -31,17 +31,16 @@
   <head>
     <meta http-equiv="content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" type="text/css" href="/resources/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/resources/css/faq.css">
     <link rel="icon" href="/resources/image/favicon.png" type="image/png">
     <script type="text/javascript" src="/resources/javascript/functions.js"></script>
     <script type="text/javascript" src="/resources/javascript/tooltip.js"></script>
     <script type="text/javascript" src="/resources/javascript/style.js"></script>
     <script type="text/javascript" src="/resources/javascript/chrome.js"></script>
 	<script type="text/javascript" src="/resources/jquery/jquery.js"></script>
-    <script type="text/javascript" src="/resources/jquery/plugins/form/jquery.form.min.js">&amp;nbsp;</script> 
-	<script type="text/javascript" src="/resources/javascript/jquery_corner.js"></script>
-	<script type="text/javascript" src="/resources/javascript/jquery_autocomplete.js"></script>    
-	<script type="text/javascript" src="/resources/jquery/plugins/textarearesizer/jquery.textarearesizer.js"></script>  
+    <script type="text/javascript" src="/resources/jquery/plugins/form/jquery.form.js"></script>
+    <script type="text/javascript" src="/resources/jquery/plugins/corner/jquery.corner.js"></script>
+	<script type="text/javascript" src="/resources/jquery/plugins/autocomplete/jquery.autocomplete.js"></script>    
+	<script type="text/javascript" src="/resources/jquery/plugins/textarearesizer/jquery.textarearesizer.js"></script>
     <c:if test="${projectName == 'PUMA'}">
 		<link rel="stylesheet" type="text/css" href="/resources_puma/css/puma.css">
     </c:if> 
