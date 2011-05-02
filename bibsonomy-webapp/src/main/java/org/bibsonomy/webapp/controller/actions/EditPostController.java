@@ -132,7 +132,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	@Override
 	public View workOn(final COMMAND command) {
 		final RequestWrapperContext context = command.getContext();
-		command.setPageTitle("edit a post"); // TODO: i18n
 		/*
 		 * We store the referer in the command, to send the user back to the 
 		 * page he's coming from at the end of the posting process. 
