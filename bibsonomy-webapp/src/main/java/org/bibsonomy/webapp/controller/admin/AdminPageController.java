@@ -41,8 +41,6 @@ public class AdminPageController implements	MinimalisticController<AdminCommand>
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
-		
-		command.setPageTitle("admin");
 
 		/*
 		 * get information about a specific user
