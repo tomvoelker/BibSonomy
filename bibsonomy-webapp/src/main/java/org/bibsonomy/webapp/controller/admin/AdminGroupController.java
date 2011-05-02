@@ -57,7 +57,6 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			createGroup(command);
 		}
 		
-		command.setPageTitle("admin group");
 		return Views.ADMIN_GROUP;
 	}
 
