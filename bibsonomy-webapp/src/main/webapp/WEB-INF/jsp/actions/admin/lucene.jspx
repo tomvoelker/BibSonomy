@@ -15,15 +15,18 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:layout pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requPath="">
+	<fmt:message key="navi.admin" var="pageTitle" />
+	
+	<layout:layout pageTitle="${command.pageTitle} :: Lucene" loginUser="${command.context.loginUser}" requPath="${requPath}">
 		<jsp:attribute name="heading">
-		    <a href="/admin"><fmt:message key="navi.admin"/></a> ::
+		    <a href="/admin"><c:out value="${pageTitle}" /></a> ::
 			<a rel="path_menu" href="/admin/lucene">Lucene</a>
 		</jsp:attribute>
+		
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css"
-				href="${resdir}/css/adminlucene.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/adminlucene.css" />
 		</jsp:attribute>
+		
 		<jsp:attribute name="content">
 		<script language="javascript">
 		function generateIndex(resource) { 
@@ -33,7 +36,6 @@
 			}
 		} 
 		</script>
-			<!--   <script type="text/javascript" src="${resdir}/javascript/adminlucene.js">&amp;nbsp;</script> -->
 
 <div id="outerBox">
 	<h2>
