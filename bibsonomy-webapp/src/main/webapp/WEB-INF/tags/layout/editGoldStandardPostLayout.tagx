@@ -27,8 +27,10 @@
     <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
     <jsp:directive.attribute name="tagsAndGroups" fragment="true" required="false" />
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
-
-	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
+	
+	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
+	
+	<layout:paneLayout pageTitle="${editPageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
 	    <!--+
     	 	| html header extension: page specific javascript
     	 	+-->
@@ -38,7 +40,7 @@
 			<c:if test="${not empty additionalFsformCSS}">
 				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
 			</c:if>
-	    	<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.min.js">&amp;nbsp;</script>
+	    	<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script>
             <!--
                | one script just for the post page
                -->
@@ -48,7 +50,7 @@
 	    
             
         <jsp:attribute name="heading">
-          <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.edit${resourceType}" /></a> 
+          <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${editPageTitle}" /></a> 
         </jsp:attribute>
       
 		<jsp:attribute name="content">

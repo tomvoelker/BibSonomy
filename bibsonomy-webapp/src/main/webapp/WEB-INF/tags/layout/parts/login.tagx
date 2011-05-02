@@ -15,13 +15,13 @@
 		<![CDATA[
 			$(document).ready(function(e) {try {$("#loginSelect").msDropDown();} catch(e) {}});
 			function quickSelectAuthMethod(authIndex) {
-				for (var i=1; i<=authMethodsCount; i++) {
-					if (authIndex==i) {
-						$('#headLogin'+i).addClass('loginVisible');
-						$('#headLogin'+i).removeClass('loginInvisible');
+				for (var i = 1; i <= authMethodsCount; i++) {
+					if (authIndex == i) {
+						$('#headLogin' + i).addClass('loginVisible');
+						$('#headLogin' + i).removeClass('loginInvisible');
 					} else {
-						$('#headLogin'+i).addClass('loginInvisible');
-						$('#headLogin'+i).removeClass('loginVisible');
+						$('#headLogin' + i).addClass('loginInvisible');
+						$('#headLogin' + i).removeClass('loginVisible');
 					}
 				}
 			}
@@ -31,7 +31,7 @@
 	<!--+
 		| includes for image drop down list
 		+-->
-	<script type="text/javascript" src="${resdir}/javascript/jquery.dd.js">&amp;nbsp;</script>
+	<script type="text/javascript" src="${resdir}/jquery/plugins/msDropDown/jquery.dd.js">&amp;nbsp;</script>
 	
 	<!--+
 	    | set message strings

@@ -29,7 +29,7 @@
 					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="home"/>
 				</li>
 				
-				<!-- enablle autocompletion for bibtexkeys -->
+				<!-- enable autocompletion for bibtexkeys -->
 				<c:if test="${not empty command.requestedUser}"> 
 					<script type="text/javascript">
 					<![CDATA[
@@ -49,8 +49,8 @@
 		<!-- add jquery javascript resources to enable autocompletion --> 
 		<jsp:attribute name="headerExt">
 			<c:if test="${not empty command.requestedUser}">
-				<script type="text/javascript" src="${resdir}/javascript/jquery_autocomplete.js">&amp;nbsp;</script>
-	    		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.min.js">&amp;nbsp;</script> 
+				<script type="text/javascript" src="${resdir}/jquery/plugins/autocomplete/jquery.autocomplete.js">&amp;nbsp;</script>
+	    		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script> 
 			</c:if>
 		</jsp:attribute>
 	</layout:bibtexLayout>

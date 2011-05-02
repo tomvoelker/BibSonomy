@@ -22,7 +22,7 @@
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/editPost.js">&amp;nbsp;</script>
 			<script type="text/javascript" src="${resdir}/javascript/edit${resourceType}.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/jquery/plugins/jquery.form.min.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/jquery/plugins/jquery.form.js">&amp;nbsp;</script>
 			<jsp:invoke fragment="headerExt" />
 		</jsp:attribute>
 		
@@ -105,8 +105,8 @@
 			        	<input type="hidden" name="postID" value="${command.postID}"/>
 			        	<input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
 			        	 <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-			        	 <c:set var="save"><fmt:message key="save"/></c:set>
-			        	 <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
+			        	 <fmt:message key="save" var="save" />
+			        	 <fmt:message key="resetbutton" var="reset" />
 			        	 <form:hidden path="intraHashToUpdate"/>
 			        	 <input type="reset" value="${reset}" tabindex="2"/>
 			        	 <input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
