@@ -15,8 +15,8 @@
 			<ul class="floatul">
 				<li>
 					<!-- load localized strings -->
-					<c:set var="showAllRelationsTitle"><fmt:message key="tagrelations.showAll.title" /></c:set>
-					<c:set var="hideAllRelationsTitle"><fmt:message key="tagrelations.hideAll.title" /></c:set>
+					<fmt:message key="tagrelations.showAll.title" var="showAllRelationsTitle" />
+					<fmt:message key="tagrelations.hideAll.title" var="hideAllRelationsTitle" />
 				    
 				    (<a onclick="updateRelations(event,'all', 'show');"
 							href="/ajax/pickUnpickConcept?action=all&amp;tag=show&amp;ckey=${ckey}&amp;forward=true"
@@ -36,7 +36,7 @@
 
 	<ul id="relations">
 		<!-- load localized strings -->
-		<c:set var="hideRelationTitle"><fmt:message key="tagrelations.hide.title" /></c:set>	
+		<fmt:message key="tagrelations.hide.title" var="hideRelationTitle" />
 
 		<!-- set path part - either tag or user/USER -->
 		<c:set var="tagPath" value="tag"/>
