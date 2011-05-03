@@ -3,7 +3,6 @@
  */
 package org.bibsonomy.webapp.view;
 
-import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.webapp.util.View;
 
 /**
@@ -370,6 +369,11 @@ public enum Views implements View {
 	 * The dialog to post one or more publications (tabbed view)
 	 */
 	POST_PUBLICATION("actions/post/postPublication"),
+	
+	/**
+	 * join group view
+	 */
+	GROUP_JOIN_USER("actions/group_join_user"),
 	
 	/** 
 	 * import view 
