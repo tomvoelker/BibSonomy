@@ -138,7 +138,7 @@
 	<!-- a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a> -->
 
 						
- 					<c:if test="${((bibtex.entrytype=='article') and (!empty(bibtex.journal))) or ((bibtex.entrytype!='article') and (!empty(bibtex.publisher)))}"> 
+ 					<c:if test="${((bibtex.entrytype=='article') and (!empty bibtex.journal)) or ((bibtex.entrytype!='article') and (!empty bibtex.publisher))}"> 
 						<div id="oasherparomeocontainer">
 							<h4><fmt:message key="post.resource.openaccess.headline.sherparomeo"/></h4>
 	
