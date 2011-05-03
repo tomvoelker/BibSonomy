@@ -100,10 +100,9 @@
 					//<mtl:cdata>
     				<![CDATA[
 						$(function() {
-						
-							$("#toolbar").append("<div id=\"post-toggle\"><a href=\"#\" id=\"post-method-isbn\" class=\"active\">" + getString("post_bibtex.doi_isbn.isbn") + "</a><a href=\"#\" id=\"post-method-manual\">" + getString("post_bibtex.manual.title") + "</a><div style=\"clear: both; height: 0\">&nbsp;</div></div>");
-							$("#nav_more").unbind("click");
+							appendToToolbar();
 							
+							$("#nav_more").unbind("click");
 							$("#post-manually").hide();
 							
 							$("#post-toggle a").live("click", function() {
