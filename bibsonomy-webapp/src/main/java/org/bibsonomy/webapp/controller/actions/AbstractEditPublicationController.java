@@ -219,7 +219,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			/*
 			 * copy temporary file to documents directory
 			 */
-			final Document document = DocumentUtils.getPersistentDocument(tempPath, compoundFileName, userName, compoundFileName);
+			final Document document = DocumentUtils.getPersistentDocument(this.tempPath, this.docPath, userName, compoundFileName);
 			/*
 			 * add document to the database
 			 */
@@ -285,38 +285,16 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	}
 
 	/**
-	 * @return the scraper
-	 */
-	public Scraper getScraper() {
-		return this.scraper;
-	}
-
-	/**
 	 * @param scraper the scraper to set
 	 */
 	public void setScraper(Scraper scraper) {
 		this.scraper = scraper;
 	}
-	
-	/**
-	 * @return the docPath
-	 */
-	public String getDocPath() {
-		return this.docPath;
-	}
-
 	/**
 	 * @param docPath the docPath to set
 	 */
 	public void setDocPath(String docPath) {
 		this.docPath = docPath;
-	}
-
-	/**
-	 * @return the tempPath
-	 */
-	public String getTempPath() {
-		return this.tempPath;
 	}
 
 	/**
