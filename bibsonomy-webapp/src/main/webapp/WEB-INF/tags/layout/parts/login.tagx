@@ -70,7 +70,6 @@
 						<form:form method="POST" action="/login_${authMethodName}">
 							<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">:&amp;nbsp;</span>
 							<input type="password" size="15" name="password" id="pwldap" autocomplete="off"/>
-							<input type="text" id="pwldap_form_copy" name="" style="position:relative;" autocomplete="off"/>
 							<input type="hidden" name="rememberMe" value="true" />
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
 						</form:form>
