@@ -104,8 +104,6 @@
 			</head>
 			<body>
 			
-			asdfasfdsadfa sdfasdfasdfasdf
-						
 			<div id="topNavBar">
 				<c:choose>
 					<c:when test="${not empty loginUser.name}">
