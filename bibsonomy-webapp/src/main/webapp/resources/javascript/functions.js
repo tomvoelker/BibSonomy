@@ -2100,13 +2100,13 @@ function getParentForm(el) {
 }
 
 function appendToToolbar() {
-	var appendA = function(id, title) {return $('<a></a>').attr('id',id).html(getString(title));};
+	var appendA = function(id, title) {return $('<a></a>').attr('id',id).html(title);};
 	$("#toolbar")
 	.append(
 		$('<div></div>')
 		.attr('id', 'post-toggle')
-		.append((appendA("post-method-isbn", "post_bibtex.doi_isbn.isbn")).addClass('active'))
-		.append(appendA("post-method-manual", "post_bibtex.manual.title"))
+		.append((appendA("post-method-isbn", getString("post_bibtex.doi_isbn.isbn"))).addClass('active'))
+		.append(appendA("post-method-manual", getString("post_bibtex.manual.title")))
 		.append($("<div></div>").css({'clear':'both','height':'0'}).html('&nbsp;'))
 	);
 }
