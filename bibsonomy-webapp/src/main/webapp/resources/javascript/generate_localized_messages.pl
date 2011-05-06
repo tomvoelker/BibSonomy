@@ -7,6 +7,8 @@ use strict;
 # same key > string association.
 #
 # Changes:
+# 2011-05-06, dbe
+# - included puma javascript files
 # 2011-04-11, rja
 # - script runs now over all JavaScript files and extracts the 
 #   message key patterns that are actually used 
@@ -19,8 +21,10 @@ use Encode;
 
 
 # Collect all occurrences of calls to the "getString()" method that we
-# use for localization in JavaScript files.
-my @jsFiles = <*.js>;
+# use for localization in JavaScript files - from BibSonomy and Puma
+my @bibsonomyJsFiles = <*.js>;
+my @pumaJsFiles = <../../resources_puma/javascript/*.js>;
+my @jsFiles = (@bibsonomyJsFiles,@pumaJsFiles);
 # patterns of the message keys found in JavaScript files
 my %keyPatterns = ();
 
