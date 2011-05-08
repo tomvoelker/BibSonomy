@@ -13,7 +13,7 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
   add_hints();
   
   // add a callback to every input that has the descriptiveLabel class 
-  // so that hints gets removed after focussing the input
+  // so that hints get removed after focussing the input form
   $('.descriptiveLabel').each(function(){$(this).descrInputLabel({});});
   
   sidebar = document.getElementById("sidebar");
@@ -148,7 +148,7 @@ function maximizeById(id) {
 }
 
 /** 
- * 	create a text form which we will use to switch between
+ * 	prepare a text form which we'll use to switch between
  * 	password and text form to circumvent an issue caused
  * 	by IE's security policy
  * 
@@ -161,10 +161,13 @@ function getFormTextCopy(el) {
 	return $('#'+el.id+pwd_id_postfix).
 	css('color','#aaa').
 	width( $(el).width() ).
-	click(function(){
-		$(this).hide();
-		$('#'+el.id).css('position','relative').focus();
-	})[0];
+	click(function(){hideFormTextCopy({elementCopy:'#'+el.id+pwd_id_postfix, element:el});})[0];
+}
+
+// on blur of the user name input field set the password form in front of the fake password form
+function hideFormTextCopy(map) {
+	$(map.elementCopy).hide();
+	$(map.element).removeClass('hiddenElement').focus();
 }
 
 // adds hints to input fields
@@ -178,11 +181,12 @@ function add_hints() {
   }
   // for username input field
   el = document.getElementById("un");
-  if (validElement(el, 'input') && el.name == "username" && (el.value == "" || el.value == getString("navi.username"))) {
-    el.value 		= getString("navi.username");
-    el.className 	= 'descriptiveLabel '+el.className;
-    // on blur of the user name input field set the password form in front of the fake password form
-    el.onblur 		= function() {$('#pw').css('position','relative');$('#pw'+pwd_id_postfix).hide();};
+  if (validElement(el, 'input') && el.name == "username") {
+	if(el.value == "" || el.value == getString("navi.username")) {
+	    el.value 		= getString("navi.username");
+	    el.className 	= 'descriptiveLabel '+el.className;
+	}
+    el.onblur = function(){hideFormTextCopy({elementCopy:'#pw'+pwd_id_postfix, element:'#pw'})};
   }
   // for password input field
   el = document.getElementById("pw");
@@ -192,16 +196,18 @@ function add_hints() {
   }
   // for username ldap input field
   el = document.getElementById("unldap");
-  if (validElement(el, 'input') && el.name == "username" && (el.value == "" || el.value == getString("navi.username.ldap"))) {
-    el.value = getString("navi.username.ldap");
-    el.className = 'descriptiveLabel '+el.className;
+  if (validElement(el, 'input') && el.name == "username") {
+	if(el.value == "" || el.value == getString("navi.username.ldap")) {
+	    el.value = getString("navi.username.ldap");
+	    el.className = 'descriptiveLabel '+el.className;
+	}
+    el.onblur = function(){hideFormTextCopy({elementCopy:'#pwldap'+pwd_id_postfix, element:'#pwldap'})};
   }
   // for password ldap input field
   el = document.getElementById("pwldap");
   if (validElement(el, 'input') && el.name == "password" && (el.value == "" || el.value == getString("navi.password.ldap"))) {
 	el = getFormTextCopy(el);
     el.value = getString("navi.password.ldap");
-    el.className = 'descriptiveLabel '+el.className;
   }
   // for openid input field
   el = document.getElementById("openID");
