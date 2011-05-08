@@ -13,7 +13,6 @@
 		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as openID
 		  FROM user
 		  WHERE user_name LIKE CONCAT(#rawSearch#, '%')
-		  AND spammer = 0
 		  LIMIT #limit#
 	</select>
 	
