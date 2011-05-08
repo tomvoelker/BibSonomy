@@ -63,6 +63,13 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	
 	/** Create a new group. */
 	private void createGroup(AdminGroupViewCommand command) {
+		// Check if groupname is empty
+		String groupname = command.getSelectedGroupName();
+		groupname = groupname.replaceAll(" ", "");
+		if (groupname.equals("")) {
+			command.setAdminResponse("Group-creation failed: Group-name is empty!");
+		}
+		
 		// Check if group already exists
 		Group fetchedGroup = logic.getGroupDetails(command.getSelectedGroupName());
 		if (fetchedGroup != null) {
@@ -70,9 +77,22 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			
 		// Create group
 		} else {
-			Group newGroup = applyGroupSettings(new Group(), command);
-			logic.createGroup(newGroup);
-			command.setAdminResponse("Successfully created new group!");
+			User u = logic.getUserDetails(command.getSelectedGroupName());
+			
+			// Check if user exists
+			if (u == null || u.getName() == null) {
+				command.setAdminResponse("Group-creation failed: Cannot create a group for nonexistent username \"" + command.getSelectedGroupName() + "\"." );
+			}
+			// Check if the user is a spammer
+			else if (u.isSpammer()) {
+				command.setAdminResponse("Group-creation failed: No groups allowed for users tagged as \"spammer\".");
+			} 
+			// Create the group, otherwise.
+			else {
+				Group newGroup = applyGroupSettings(new Group(), command);
+				logic.createGroup(newGroup);
+				command.setAdminResponse("Successfully created new group!");
+			}
 		}
 	}
 

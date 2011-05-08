@@ -34,6 +34,15 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
+			<style type="text/css">
+			    select, input {
+			        position: absolute;
+			        left: 225px;
+			    }
+			    body {
+			        min-height: 50%;
+			    }
+			</style>
 
 <div id="outerBox">
 	<!--  <h2>Manage Groups</h2> -->
@@ -49,7 +58,7 @@
   							
   							return $.ajax({
   								url: "../ajax/usersearch",
-  								data: {search:request.term, limit:10, format:"json"},
+  								data: {search:request.term, limit:10, format:"json", showSpammers: false },
   								async: false,
   								success: function (data) {
   									var names = new Array();
@@ -66,19 +75,11 @@
   							
   					}
   					});  					
-  				}			
+  				}
   			]]>
 			</script>
-			<style type="text/css">
-			    form label {
-			    }
-			    .formElement,  {
-			        position: absolute;
-			        left: 200px;
-			    }
-			</style>
 		
-		<div>
+		<div class="bluebox">
 			<h2><fmt:message key="admin.actions.group"/></h2>
     
       <!-- Box for adminmessages -->
@@ -88,11 +89,11 @@
 	        <br />
 			<form:form name="addgroup" action="/admin/group?action=createGroup">
 			  <form:label path="selectedGroupName">Group name</form:label>
-  			  <form:input path="selectedGroupName"  class="formElement" /> <br /> <br />
+  			  <form:input path="selectedGroupName"/> <br /> <br />
   			  
 		 	  <!-- The privacylevel -->
       		  <form:label path="selectedPrivacyLevel">Privacy</form:label>
-      		  <form:select path="selectedPrivacyLevel" id="privlevel" size="1" multiple="false" class="formElement">
+      		  <form:select path="selectedPrivacyLevel" id="privlevel" size="1" multiple="false">
 				<c:forEach var="entry" items="${command.privlevel}">
 				<form:option value="${entry.value}" label="${entry.key}" />
 				</c:forEach>  
@@ -100,9 +101,9 @@
 			  
 		 	  <!-- SharedDocuments -->
       		  <form:label path="selectedSharedDocuments">Shared Documents</form:label>
-			      <form:checkbox path="selectedSharedDocuments" id="sharedDocuments" checked="checked" class="formElement" /> <br /> <br />
+			      <form:checkbox path="selectedSharedDocuments" id="sharedDocuments" checked="checked" /> <br /> <br />
 			  
-  			  <input class="formElement" type="submit" />
+  			  <input type="submit" /> <br /> <br />
 			    
 			</form:form>
 		</div>

@@ -14,6 +14,7 @@ public class UserSearchCommand extends TagResourceViewCommand {
 	private String search;
 	private int limit;
 	private List<User> searchedUsers;
+	private boolean showSpammers;
 	
 	/**
 	 * @return the users
@@ -50,5 +51,17 @@ public class UserSearchCommand extends TagResourceViewCommand {
 	 */
 	public void setLimit(int limit) {
 		this.limit = (limit > 0 ? limit : 10);
+	}
+	/**
+	 * @param showSpammers the showSpammers to set
+	 */
+	public void setShowSpammers(boolean showSpammers) {
+		this.showSpammers = showSpammers;
+	}
+	/**
+	 * @return the showSpammers
+	 */
+	public boolean showSpammers() {
+		return showSpammers;
 	}
 }

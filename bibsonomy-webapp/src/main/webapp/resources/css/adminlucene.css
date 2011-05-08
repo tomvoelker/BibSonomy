@@ -45,3 +45,10 @@ fieldset {
 #publicationIndexProperties {
 
 }
+.bluebox{
+	border: 1px solid #006699;
+	padding: 15px;
+	margin-top: 15px;
+	margin-bottom: 20px;
+	width: 804px;
+}

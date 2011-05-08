@@ -38,9 +38,30 @@ public class UserSearchController extends AjaxController implements Minimalistic
 		log.debug("Searching for " + command.getSearch() + " with limit " + command.getLimit());
 		
 		if (command.getSearch() != null && !command.getSearch().isEmpty()) {
-			users = logic.getUsers(null, GroupingEntity.USER, null, null, null, null, null, command.getSearch(), 0, command.getLimit());
-			command.setSearchedUsers(users);
+			int limit = command.getLimit();
 			
+			// TODO: ugly workaround to deal with showSpammers set to false, which
+			// may result in a too small list of users after the filtering.
+			if (!command.showSpammers()) {
+				limit *= 3;
+			}
+			users = logic.getUsers(null, GroupingEntity.USER, null, null, null, null, null, command.getSearch(), 0, limit);
+			
+			
+			if (!command.showSpammers()) {
+				// Remove all spammers
+				for (User u: users) {
+					if (u.isSpammer()) {
+						users.remove(u);
+					}
+				}
+				// Part 2 of the ugly workaround
+				while (users.size() > command.getLimit()) {
+					users.remove(users.get(users.size()-1));
+				}
+			}
+			
+			command.setSearchedUsers(users);
 			log.debug(users.size() + " matches found.");
 		}
 		
