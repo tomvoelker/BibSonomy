@@ -329,7 +329,7 @@
 		<dependency>
 			<groupId>org.openid4java</groupId>
 			<artifactId>openid4java</artifactId>
-			<version>0.9.5</version>
+			<version>0.9.6</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>spring-dao</artifactId>
