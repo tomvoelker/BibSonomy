@@ -52,7 +52,7 @@ public class ParamTest {
 	 * tests bibtex
 	 */
 	@Test
-	public void testBibtex() {
+	public void testPublication() {
 		final BibTexParam param = new BibTexParam();
 		this.genericTest(param);
 		// special tests

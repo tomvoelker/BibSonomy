@@ -25,7 +25,7 @@ import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.FirstListChainElement;
@@ -49,9 +49,44 @@ import org.bibsonomy.services.searcher.ResourceSearch;
 /**
  * Used to create, read, update and delete posts from the database.
  * 
- * TODO: document the conventions
- * - sql ids
- * 
+ * the following statements should exist for the resource:
+ * 	- getSync<RESOURCE>
+ *	- get<RESOURCE>FromInbox
+ *  - get<RESOURCE>FromInboxByHash
+ *  - get<RESOURCE>ByConceptByTag
+ *  - get<RESOURCE>ByConceptForGroup
+ *  - get<RESOURCE>ByConceptForUser
+ *  - get<RESOURCE>ByTagNames
+ *  - get<RESOURCE>ByTagNamesAndFolkrank
+ *  - get<RESOURCE>ByTagNamesCount
+ *  - get<RESOURCE>ByUserFriends
+ *  - get<RESOURCE>ByTagNamesForUserCount
+ *  - get<RESOURCE>Popular
+ *  - get<RESOURCE>PopularDays
+ *  - get<RESOURCE>ForHomepage
+ *  - get<RESOURCE>ByHash
+ *  - get<RESOURCE>ByHashCount
+ *  - get<RESOURCE>ByHashAndUserCount
+ *  - get<RESOURCE>ByHashForUser
+ *  - get<RESOURCE>Viewable
+ *  - get<RESOURCE>ViewableByTag
+ *  - get<RESOURCE>ForGroup
+ *  - get<RESOURCE>ForGroupCount
+ *  - get<RESOURCE>ForMyGroupPosts
+ *  - get<RESOURCE>ForMyGroupPostsByTag
+ *  - get<RESOURCE>ForGroupByTag
+ *  - get<RESOURCE>ForUser
+ *  - get<RESOURCE>ForUserCount
+ *  - get<RESOURCE>ByFollowedUsers
+ *  - getContentIdFor<RESOURCE>
+ *  - getGroup<RESOURCE>CountByTag
+ *  - getGroup<RESOURCE>Count
+ *  - get<RESOURCE>FromBasketForUser
+ *  - insert<RESOURCE>
+ *  - insert<RESOURCE>update
+ *  - update<RESOURCE>Hash
+ *  - delete<RESOURCE>
+ *  
  * @author dzo
  * 
  * @version $Id$
@@ -116,9 +151,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return Map with all synchronization posts of type R
 	 */
-	public Map<String, SynchronizationPost> getSyncPostsMapForUser (final String userName, final DBSession session) {
-	    String key = "intraHash";
-	    return queryForMap("getSync"+this.resourceClassName, this.createParam(userName, userName), key, session);
+	public Map<String, SynchronizationPost> getSyncPostsMapForUser(final String userName, final DBSession session) {
+	    return this.queryForMap("getSync" + this.resourceClassName, this.createParam(userName, userName), "intraHash", session);
 	}
 	
 	/**
@@ -128,10 +162,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<SynchronizationPost> getSyncPostsListForUser (final String userName, final DBSession session) {
-	    return queryForList("getSync"+this.resourceClassName, this.createParam(userName, userName), session);
+	public List<SynchronizationPost> getSyncPostsListForUser(final String userName, final DBSession session) {
+	    return this.queryForList("getSync" + this.resourceClassName, this.createParam(userName, userName), session);
 	}
-	
 	
 	@SuppressWarnings("unchecked")
 	protected List<Post<R>> postList(final String query, final P param, final DBSession session) {
@@ -270,10 +303,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(limit, offset);
 		param.setGroupId(groupId);
 		param.setTagIndex(tagIndex);
+		param.setOrder(order);
 
 		if (present(order)) {
-			param.setOrder(order);
-
 			if (Order.FOLKRANK.equals(param.getOrder())){
 				param.setGroupId(GroupID.PUBLIC);
 				return this.postList("get" + this.resourceClassName + "ByTagNamesAndFolkrank", param, session);
@@ -355,7 +387,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 			DB session
 	 * @return the corresponding number of visible resource items
 	 */
-	public Integer getPostsByTagNamesForUserCount(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public int getPostsByTagNamesForUserCount(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session) {
 		final P param = this.getNewParam();
 		param.addGroups(visibleGroupIDs);
 		param.setRequestedUserName(requestedUserName);
@@ -550,85 +582,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
-	 * <em>/search/ein+lustiger+satz</em><br/><br/>
-	 * 
-	 * Prepares queries to retrieve posts which match a fulltext search in the
-	 * fulltext search table.<br/>
-	 * The search string, as given by the user will be mangled up in the method
-	 * to do what the user expects (AND searching). Unfortunately this also
-	 * destroys some other features (e.g. <em>phrase searching</em>).<br/>
-	 * 
-	 * If requestedUser is given, only (public) posts from the given user are
-	 * searched. Otherwise all (public) posts are searched.
-	 * 
-	 * @param groupId
-	 * @param search
-	 * @param requestedUserName
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of posts
-	 */
-	@Deprecated // TODO: remove me; search is done by lucene
-	public List<Post<R>> getPostsSearch(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
-		final P param = this.createParam(null, requestedUserName, limit, offset);
-		param.setGroupId(groupId);
-		param.setSearch(search);
-
-		return this.postList("get" + this.resourceClassName + "Search", param, session);
-	}
-
-	/**
-	 * <em>/search/ein+lustiger+satz+group%3AmyGroup</em><br/><br/>
-	 * 
-	 * Prepares queries to retrieve posts which match a fulltext search in the
-	 * fulltext search table with the requested group<br/>
-	 * 
-	 * @param groupName 
-	 * @param visibleGroups 
-	 * @param search
-	 * @param loginUserName
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @param session
-	 * @return list of posts
-	 */
-	@Deprecated // TODO: remove me; search is done by lucene (code for lucene also obsolete)
-	public List<Post<R>> getPostsSearchForGroup(final String groupName, final Collection<String> visibleGroups, final String search, final String loginUserName, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		if (this.isDoLuceneSearch()) {
-			final ResourceSearch<R> lucene = this.getResourceSearch();
-			if (!present(lucene)) {
-				log.error("No resource searcher available.");
-				return new LinkedList<Post<R>>();
-			}
-
-			// get search results from lucene
-			final long starttimeQuery = System.currentTimeMillis();
-			final List<Post<R>> postList = 
-				lucene.getPosts(loginUserName, null, groupName, visibleGroups, search, null, null, null, null, null, null, limit, offset);
-			//searchGroup(groupId, visibleGroupIDs, search, loginUserName, limit, offset, null);
-			log.debug("Lucene" + this.resourceClassName + " complete group search query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
-			return postList;
-		}
-
-		final P param = this.createParam(loginUserName, null, limit, offset);
-		Integer groupId = this.groupDb.getGroupIdByGroupName(groupName, session);
-		param.setGroupId(groupId);
-		param.setSearch(search);
-		final Collection<Integer> visibleGroupIDs = new LinkedList<Integer>();
-		for( final String group : visibleGroups ) {
-			groupId = this.groupDb.getGroupIdByGroupName(group, session);
-			visibleGroupIDs.add(groupId);
-		}
-		param.setGroups(visibleGroupIDs);
-		param.addAllToSystemTags(systemTags);
-
-		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
-		return this.postList("get" + this.resourceClassName + "SearchForGroup", param, session);
-	}
-
-	/**
 	 * get list of posts from resource searcher
 	 * 
 	 * @param userName
@@ -647,33 +600,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return a list of posts
 	 */
 	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups,final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final int limit, final int offset) {
-		if (this.isDoLuceneSearch() && present(this.resourceSearch)) {
+		if (present(this.resourceSearch)) {
 			return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
 		}
 
-		log.error("lucene search is maybe disabled (" + this.isDoLuceneSearch() + ") or no resource searcher is set");	
+		log.error("no resource searcher is set");	
 		return new LinkedList<Post<R>>();
 	}
-
-	/**
-	 * Returns the number of posts for a given search.
-	 * 
-	 * @param groupId
-	 * @param search
-	 * @param requestedUserName
-	 * @param session
-	 * @return number of posts for a given search
-	 */
-	@Deprecated // TODO: remove method
-	public Integer getPostsSearchCount(final int groupId, final String search, final String requestedUserName, final DBSession session) {
-		final P param = this.getNewParam();
-		param.setRequestedUserName(requestedUserName);
-		param.setGroupId(groupId);
-		param.setSearch(search);
-
-		return this.queryForObject("get" + this.resourceClassName + "SearchCount", param, Integer.class, session);
-	}
-
+	
 	/**  
 	 * <em>/viewable/EineGruppe</em><br/><br/>
 	 * 

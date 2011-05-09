@@ -2,7 +2,7 @@ package org.bibsonomy.sync;
 
 import java.util.Date;
 
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.sync.SynchronizationData;
 
@@ -36,18 +36,15 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     }
 
     
-    public Date getLastSynchronizationDate(final String userName,
-	    final int serviceId, final int contentType, final DBSession session) {
-
-	return (Date) queryForObject("getLastSyncDate", new SyncParam(userName,
-		serviceId, contentType, null, null), session);
+    public Date getLastSynchronizationDate(final String userName, final int serviceId, final int contentType, final DBSession session) {
+	return this.queryForObject("getLastSyncDate", new SyncParam(userName, serviceId, contentType, null, null), Date.class, session);
     }
     
     public Date getCurrentSyncDate(final String userName,
 	    final int serviceId, final int contentType, final DBSession session) {
 
-	return (Date) queryForObject("getCurrentSyncDate", new SyncParam(userName,
-		serviceId, contentType, null, "undone"), session);
+	return this.queryForObject("getCurrentSyncDate", new SyncParam(userName,
+		serviceId, contentType, null, "undone"), Date.class, session);
     }
     
     public void insertInitialSynchronization (String userName, int serviceId, int contentType, final DBSession session) {
@@ -57,6 +54,6 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     
     public SynchronizationData getCurrentSynchronization (final String userName, final int serviceId, final int contentType, final DBSession session) {
 	SyncParam param = new SyncParam(userName, serviceId, contentType, null, null);
-	return (SynchronizationData) queryForObject("getCurrentSyncData", param, session);
+	return queryForObject("getCurrentSyncData", param, SynchronizationData.class, session);
     }
 }

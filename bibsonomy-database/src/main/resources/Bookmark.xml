@@ -238,26 +238,6 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
-	<select id="getBookmarkSearch" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT bb.content_id, bb.book_url_hash AS interhash, bb.book_url_hash AS intrahash, title, description, bb.date, bb.change_date,
-		       bb.user_name, bb.book_url, bb.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name   
-		FROM (SELECT b.content_id, b.book_url_hash, b.book_description AS title, b.book_extended AS description, b.date, b.change_date,
-		             b.user_name, u.book_url, u.book_url_ctr
-		      FROM bookmark b, urls u, search_bookmark s
-		      WHERE s.group = #groupId#
-		            AND MATCH (s.content) AGAINST (#search# IN BOOLEAN MODE)
-		            AND u.book_url_hash = b.book_url_hash
-		            AND s.content_id = b.content_id
-		            <isNotNull property="requestedUserName" prepend="AND">
-		              s.user_name = #requestedUserName#
-		            </isNotNull>
-		      ORDER BY s.date DESC
-		      LIMIT #limit# OFFSET #offset#) AS bb
-		LEFT OUTER JOIN tas AS t ON t.content_id = bb.content_id
-		ORDER BY bb.date DESC, bb.content_id
-	</select>
-
-
 	<select id="getBookmarkFromInbox" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.interhash, bb.intrahash, bb.description, bb.date, bb.user_name, t.tag_name,
 				bb.inbox_date, u.book_url, bb.title, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, bb.change_date
@@ -321,54 +301,7 @@
 		LEFT OUTER JOIN inbox_tas t USING(message_id)
 		ORDER BY bb.inbox_date DESC, bb.content_id
 	</select>
-
-	<select id="getBookmarkSearchCount" resultClass="int" parameterClass="bookmarkParam" timeout="1">
-		SELECT count(*)
-		FROM search_bookmark s
-		WHERE s.group = #groupTypePublic#
-		      AND MATCH (s.content) AGAINST (#search# IN BOOLEAN MODE)
-		      <isNotNull property="requestedUserName" prepend="AND">
-		        s.user_name = #requestedUserName#
-		      </isNotNull>
-	</select>
 	
-	<!-- 
-		get the bookmarks in case of a fulltext search
-	 -->
-	<select id="getBookmarkSearchForGroup" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam" >
-		SELECT bb.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, 
-	    	b.book_description AS title, b.book_extended AS description, t.user_name, bb.date, u.book_url,          
-	    	u.book_url_ctr AS count, t.tag_name, g.group_name, g.group   
-		FROM urls u, bookmark b, ((
-	    	SELECT t1.content_id, t1.date                        					<!-- currUser's own items + items from users of group which currUser may see -->
-		    FROM groups g, search_bookmark t1                 
-		    WHERE g.group = #groupId#
-		    	AND g.user_name = t1.user_name										<!-- all items of all group members (including currUser) -->
-		    	AND (
-		        	t1.user_name = #userName#										<!-- currUser's own items -->
-		        	OR
-		        	<include refid="inGroupsUnchecked"/> )							<!-- items of other users wich currUser may see -->
-		        AND MATCH (t1.content) AGAINST (#search# IN BOOLEAN MODE)			<!-- fulltext search over search item in search table -->
-	    	) UNION (
-		    	SELECT t1.content_id, t1.date										<!-- items from users of group which have currUser as friend -->
-		        FROM groups g, friends f, search_bookmark t1
-		        WHERE g.group = #groupId#											
-					AND f.f_user_name = #userName#									<!-- currUser is friend of user -->
-					AND g.user_name = f.user_name									<!-- user is in group -->
-					AND t1.user_name = f.user_name									<!-- user owns this item -->
-					AND t1.group = #groupTypeFriends#	    						<!-- item is only for friends -->
-					AND MATCH (t1.content) AGAINST (#search# IN BOOLEAN MODE)		<!-- fulltext search over search item in search table -->
-	    	) ORDER BY date DESC 
-	    	LIMIT #limit# OFFSET #offset#
-	    ) AS bb     
-	    LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g		<!-- join with tas -->
-	    WHERE t.group = g.group														<!-- join groupname -->
-	        AND u.book_url_hash = b.book_url_hash									<!-- join url -->
-	        AND b.content_id = bb.content_id										<!-- join title, description, ... -->
-	    ORDER BY bb.date DESC, bb.content_id DESC  									<!-- order for output -->
-	</select>
-
-
 	<select id="getBookmarkViewable" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.user_name,bb.book_url_hash AS intraHash, bb.book_url_hash AS interHash, title, description,
 		       bb.date, bb.change_date, bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.group, #requestedGroupName# AS group_name

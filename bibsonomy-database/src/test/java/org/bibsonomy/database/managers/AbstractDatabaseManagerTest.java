@@ -34,7 +34,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected static final int TESTGROUP1_ID = 3;
 	protected static final int TESTGROUP2_ID = 4;
 
-	private static DBSessionFactory dbSessionFactory;
+	protected static DBSessionFactory dbSessionFactory;
 	protected static DatabasePluginRegistry pluginRegistry;
 	protected static DatabaseManagerInitializer dbManagerInitializer;
 
@@ -50,9 +50,6 @@ public abstract class AbstractDatabaseManagerTest {
 		JNDIBinder.bind();
 
 		TestDatabaseLoader.getInstance().load();
-
-		// set searchmode to lucene
-		System.setProperty("searchMode", "lucene");
 
 		dbSessionFactory = new IbatisDBSessionFactory();
 

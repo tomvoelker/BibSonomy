@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -157,39 +156,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		posts = bibTexDb.getPostsByHashForUser("testuser1", intraHash, "testspammer", visibleGroupIDs, HashID.INTRA_HASH, this.dbSession);
 		assertEquals(0, posts.size());
 	}
-	
-	/**
-	 * tests getPostsByAuthor
-	 */
-	@Test
-	@Ignore // FIXME: Test läuft nur einzeln erfolgreich
-	public void getBibTexByAuthor() {
-		final String search = "author";
-		final List<Post<BibTex>> post = bibTexDb.getPostsByAuthor(search, PUBLIC_GROUP_ID, "testuser1", "testgroup1", 10, 0, null, this.dbSession);
-		assertEquals(1, post.size());
-		
-		// TODO: extend test with year, firstYear, lastYear
-	}
-	
-	/**
-	 * tests getPostsByAuthorAndTag
-	 */
-	@Ignore
-	@Test
-	public void getBibTexByAuthorAndTag() {
-		final String search = "author";
-		final String requestedGroupName = "testgroup1";
-		final String requestedUserName = "testuser1";
-		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("testtag");
-		List<Post<BibTex>> post = bibTexDb.getPostsByAuthorAndTag(search, PUBLIC_GROUP_ID, requestedUserName, requestedGroupName, tagIndex, 10, 0, null, this.dbSession);
-		assertEquals(1, post.size());
-		
-		DBTestUtils.addToTagIndex(tagIndex, "testtag");
-		post = bibTexDb.getPostsByAuthorAndTag(search, PUBLIC_GROUP_ID, requestedUserName, requestedGroupName, tagIndex, 10, 0, null, this.dbSession);
-		assertEquals(1, post.size());
-		
-		// TODO: extend test with year, firstYear, lastYear
-	}
 
 	/**
 	 * tests getPostsByTagNames
@@ -325,70 +291,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(1, l.size());
 	}
 
-	/**
-	 * tests getBibTexSearch
-	 * 
-	 * TODO: adapt to lucene search engine
-	 */
-	@Test
-	@Ignore   // set to ignore because search is done now via lucene
-	public void getBibTexSearch() {
-		String search = "search string";
-		String requestedUserName = "testuser1";
-		List<Post<BibTex>> post = bibTexDb.getPostsSearch(PUBLIC_GROUP_ID, search, requestedUserName, 10, 0, this.dbSession);
-		assertEquals(1, post.size());
-		
-		post = bibTexDb.getPostsSearch(PUBLIC_GROUP_ID, search, null, 10, 0, this.dbSession);
-		assertEquals(1, post.size());
-		
-		// change words order -> no effect
-		search = "test search bibtext string";
-		post = bibTexDb.getPostsSearch(PUBLIC_GROUP_ID, search, requestedUserName, 10, 0, this.dbSession);
-		assertEquals(1, post.size());
-	}
-
-	/**
-	 * tests getBibTexSearchCount
-	 * 
-	 * TODO: adapt to lucene search engine
-	 */
-	@Test
-	@Ignore   // set to ignore because search is done now via lucene
-	public void getBibTexSearchCount() {
-		final String search = "search string";
-		
-		final int count1 = bibTexDb.getPostsSearchCount(PUBLIC_GROUP_ID, search, "testuser1", this.dbSession);
-		assertEquals(1, count1);
-
-		final int count2 = bibTexDb.getPostsSearchCount(PUBLIC_GROUP_ID, search, null, this.dbSession);
-		assertEquals(1, count2);
-	}
-	
-	
-	/**
-	 * tests getBibtexSearchForGroup
-	 * 
-	 * groupId must be set
-	 * userName must be set
-	 * search must be set
-	 * 
-	 * TODO: adapt to lucene search engine
-	 */
-	@Test
-	@Ignore   // set to ignore because search is done now via lucene
-	public void getBibTexSearchForGroup() {
-		String userName = "testuser1";
-		String search = "search";
-
-		List<Post<BibTex>> posts = bibTexDb.getPostsSearchForGroup(GroupID.PUBLIC.name(), new LinkedList<String>(), search, userName, 5, 0, null, this.dbSession);
-		assertEquals(1, posts.size());
-
-		search = "search test string bibtext";
-		posts = bibTexDb.getPostsSearchForGroup(GroupID.PUBLIC.name(), new LinkedList<String>(), search, userName, 5, 0, null, this.dbSession);
-		assertEquals(1, posts.size());
-	}
-
-	
 	/**
 	 * tests getBibTexViewable
 	 * 
@@ -721,7 +623,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(1, posts.size());
 		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate"});
 		toInsert.getResource().setCount(1);
-		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL", "numberOfRatings", "rating"}); // TODODZ
+		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL", "numberOfRatings", "rating"});
 
 		// post a duplicate and check whether plugins are called		
 		assertFalse(this.pluginMock.isOnBibTexUpdate());
@@ -886,7 +788,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String bibtexKey = "test %";
 		final String requestedUserName = "testuser1";
 		
-		final List<Post<BibTex>> posts = bibTexDb.getPostsByKey(bibtexKey, requestedUserName, PUBLIC_GROUP_ID, 20, 0, null, this.dbSession);
+		final List<Post<BibTex>> posts = bibTexDb.getPostsByBibTeXKey(bibtexKey, requestedUserName, PUBLIC_GROUP_ID, 20, 0, null, this.dbSession);
 		assertEquals(1,posts.size());
 		assertEquals(posts.get(0).getResource().getBibtexKey(), "test bibtexKey");
 	}

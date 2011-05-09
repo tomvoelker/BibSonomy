@@ -15,7 +15,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
 import org.bibsonomy.common.exceptions.ValidationException;
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
@@ -609,8 +609,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
 			final String year, final String firstYear, final String lastYear, int limit, int offset) {
 		
-		if( isDoLuceneSearch() && present(this.publicationSearch) && present(this.bookmarkSearch) ) {
-			final List<Tag> bookmarkTags    = 
+		if (present(this.publicationSearch) && present(this.bookmarkSearch) ) {
+			final List<Tag> bookmarkTags = 
 				bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
 			final List<Tag> publicationTags =
 				publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
@@ -618,6 +618,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			return retVal;
 		}
 		
+		log.error("no resource searcher is set");		
 		return new LinkedList<Tag>();
 	}
 

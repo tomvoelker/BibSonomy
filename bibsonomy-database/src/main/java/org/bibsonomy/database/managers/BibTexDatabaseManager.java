@@ -10,12 +10,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.FirstListChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
@@ -61,48 +59,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	private BibTexDatabaseManager() {
 		this.docDb = DocumentDatabaseManager.getInstance();
 		this.extraDb = BibTexExtraDatabaseManager.getInstance();
-	}
-	
-	/*
-	 * FIXME: fix sql statment in BibTex.xml for getBibTexSearchForGroup
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getPostsSearchForGroup(int, java.util.List, java.lang.String, java.lang.String, int, int, org.bibsonomy.database.util.DBSession)
-	 */
-	@Override
-	@Deprecated // TODO: remove search is done by lucene 
-	public List<Post<BibTex>> getPostsSearchForGroup(final String groupName, final Collection<String> visibleGroups, final String search, final String requestedUserName, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		/*
-		 * do lucene search
-		 */
-		if (this.isDoLuceneSearch()) {
-			return super.getPostsSearchForGroup(groupName, visibleGroups, search, requestedUserName, limit, offset, systemTags, session);
-		}
-		/*
-		 * do database search
-		 */
-		final BibTexParam param = this.createParam(null, requestedUserName, limit, offset);
-		final Integer groupId = this.groupDb.getGroupIdByGroupName(groupName, session);
-		param.setGroupId(groupId);
-		param.setSearch(search);
-
-		return this.postList("getBibTexSearch", param, session);
-	}
-	
-	/**
-	 * Prepares a query which returns all BibTex posts with the provided title.
-	 * 
-	 * @param title
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	@Deprecated // TODO: remove; search is done by lucene
-	public List<Post<BibTex>> getPostsByTitle(final String title, final int limit, final int offset, final DBSession session) {
-		final BibTexParam param = this.createParam(limit, offset);
-		param.setTitle(title);
-		param.setGrouping(GroupingEntity.ALL);
-		return this.postList("getBibTexByTitle", param, session);
 	}
 
 	/**
@@ -269,61 +225,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/** 
-	 * <em>/author/MaxMustermann</em><br/><br/>
-	 * This method prepares queries which retrieve all publications for a given
-	 * author name (restricted by group public).
-	 * 
-	 * @param search
-	 * @param groupId
-	 * @param requestedUserName
-	 * @param requestedGroupName 
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @param session
-	 * @return list of bibtex entries
-	 */
-	public List<Post<BibTex>> getPostsByAuthor(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session){
-		final BibTexParam param = this.createParam(null, requestedUserName, limit, offset);
-		param.setSearch(search);
-		param.setGroupId(groupId);
-		param.setRequestedGroupName(requestedGroupName);
-		param.addAllToSystemTags(systemTags);
-		param.setSimHash(HashID.INTER_HASH);
-		
-		return this.postList("getBibTexByAuthor", param, session);
-	}
-    
-    /** 
-     * <em>/author/MaxMustermann</em><br/><br/>
-	 * This method prepares queries which retrieve all publications for a given
-	 * author name and TagName(restricted by group public).
-	 * 
-     * @param search
-     * @param groupId
-     * @param requestedUserName 
-     * @param requestedGroupName 
-     * @param tagIndex
-     * @param limit
-     * @param offset
-     * @param systemTags
-     * @param session
-     * @return list of bibtex entries
-     */
-	@Deprecated // TODO: remove old code
-    public List<Post<BibTex>> getPostsByAuthorAndTag(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final List<TagIndex> tagIndex, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session){
-		final BibTexParam param = this.createParam(null, requestedUserName, limit, offset);
-		param.setSearch(search);
-		param.setGroupId(groupId);
-		param.setRequestedGroupName(requestedGroupName);
-		param.setTagIndex(tagIndex);
-		param.setSimHash(HashID.INTER_HASH);
-		param.addAllToSystemTags(systemTags);
-		
-		return this.postList("getBibTexByAuthorAndTag", param, session);
-	}
-	
-	/** 
 	 * <em>/bibtexkey/KEY</em> Returns a list of bibtex posts for a given
 	 * bibtexKey
 	 * 
@@ -334,9 +235,9 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param offset 
 	 * @param systemTags
 	 * @param session	a database session
-	 * @return list of bibtex posts
+	 * @return list of publication posts
 	 */
-	public List<Post<BibTex>> getPostsByKey(final String bibtexKey, final String requestedUserName, final int groupId, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<BibTex>> getPostsByBibTeXKey(final String bibtexKey, final String requestedUserName, final int groupId, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final BibTexParam param = this.createParam(requestedUserName, requestedUserName, limit, offset);
 		param.setBibtexKey(bibtexKey);
 		param.setGroupId(groupId);
@@ -528,30 +429,71 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		return insert;
 	}
 	
+	/**
+	 * TODO: improve documentation
+	 * 
+	 * @param userName
+	 * @param intraHash
+	 * @param key
+	 * @param value
+	 * @param session
+	 */
     public void createExtendedField(final String userName, final String intraHash, final String key, final String value, final DBSession session) {
 		this.extraDb.createExtendedField(userName, intraHash, key, value, session);
 	
     }
     
+    /**
+     * TODO: improve documentation
+     * 
+     * @param userName
+     * @param hash
+     * @param session
+     */
     public void deleteAllExtendedFieldsData(final String userName, final String hash, final DBSession session) {
     	final int contentId = BibTexDatabaseManager.getInstance().getContentIdForPost(hash, userName, session);
     	this.extraDb.deleteAllExtendedFieldsData(contentId, session);
     }
 
+    /**
+     * TODO: improve documentation
+     * 
+     * @param userName
+     * @param hash
+     * @param key
+     * @param value
+     * @param session
+     */
     public void deleteExtendedFieldByKeyValue(final String userName,final String hash, final String key, final String value, final DBSession session) {
 		this.extraDb.deleteExtendedFieldByKeyValue(userName, hash, key, value, session);
     }
     
+    /**
+     * TODO: improve documentation
+     * 
+     * @param userName
+     * @param hash
+     * @param key
+     * @param session
+     */
     public void deleteExtendedFieldsByKey(final String userName,final String hash, final String key, final DBSession session) {
 		this.extraDb.deleteExtendedFieldsByKey(userName, hash, key, session);
     }
 
+    /**
+     * TODO: improve documentation
+     * 
+     * @param userName
+     * @param hash
+     * @param key
+     * @param session
+     * @return the extended fields
+     */
     public Map<String, List<String>> getExtendedFields(final String userName, final String hash, final String key, final DBSession session) {
 		if (present(key)) {
 		    return this.extraDb.getExtendedFieldsByKey(hash, userName, key, session);
-		} else {
-		    return this.extraDb.getExtendedFields(userName, hash, session);
 		}
+		return this.extraDb.getExtendedFields(userName, hash, session);
     }
 	
 
