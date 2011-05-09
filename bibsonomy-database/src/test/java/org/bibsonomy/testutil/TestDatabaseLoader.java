@@ -132,6 +132,12 @@ public class TestDatabaseLoader {
 		try {
 			log.debug("Starting to load test database.");
 			final SimpleJDBCHelper jdbc = new SimpleJDBCHelper();
+			
+			/*
+			 * mysql >= 5.5 doesn't truncate tables with foreigen keys
+			 */
+			jdbc.execute("SET FOREIGN_KEY_CHECKS = 0;");
+			
 			/*
 			 * do initialization: drop database, create it, use it
 			 */
@@ -192,6 +198,11 @@ public class TestDatabaseLoader {
 			}
 			elapsed = (System.currentTimeMillis() - start );
 			log.debug(">>> Done; took " + elapsed + " mseconds.");
+			
+			/*
+			 * reset to normal
+			 */
+			jdbc.execute("SET FOREIGN_KEY_CHECKS = 1;");
 			
 			jdbc.close();
 			firstRun = false;
