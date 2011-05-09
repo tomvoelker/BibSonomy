@@ -33,6 +33,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import org.apache.commons.codec.binary.Base64;
+import org.bibsonomy.rest.exceptions.AuthenticationException;
 
 /**
  * @author dzo
@@ -45,6 +46,11 @@ public class HeaderUtils {
 	 * the header key for authorization
 	 */
 	public static final String HEADER_AUTHORIZATION = "Authorization";
+	
+	/**
+	 * Used in {@link #isHttpBasicAuthorization(String)} to identify HTTP basic authentication.
+	 */
+	private static final String HTTP_AUTH_BASIC_IDENTIFIER = "Basic ";
 	
 	/**
 	 * the header key for user agent
@@ -145,5 +151,16 @@ public class HeaderUtils {
 		return HEADER_AUTH_BASIC + new String(Base64.encodeBase64((username + ":" + password).getBytes()));
 	}
 	
+	/**
+	 * Check whether a request contains HTTP-Basic credentials by looking at 
+	 * the request's authorization string
+	 * 
+	 * @param authentication a request's authorization header
+	 * 
+	 * @return true, if the given authorization header is a Http Basic authorization header
+	 */
+	public static boolean isHttpBasicAuthorization(final String authentication) {
+		return (authentication!=null && authentication.startsWith(HTTP_AUTH_BASIC_IDENTIFIER));
+	}
 	
 }
