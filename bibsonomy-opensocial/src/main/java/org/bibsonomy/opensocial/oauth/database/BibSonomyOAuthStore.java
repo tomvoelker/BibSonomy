@@ -12,6 +12,17 @@ public class BibSonomyOAuthStore implements OAuthStore {
 	// FIXME: configure via spring
 	IOAuthLogic authLogic = IbatisOAuthLogic.getInstance();
 	
+	/** singleton pattern */
+	private static BibSonomyOAuthStore instance;
+	
+	public static BibSonomyOAuthStore getInstance() {
+		if (instance==null) {
+			instance = new BibSonomyOAuthStore();
+		};
+		
+		return instance;
+	}
+	
 	private String defaultCallbackUrl;
 	private BasicOAuthStoreConsumerKeyAndSecret defaultKey;
 	

@@ -1,12 +1,13 @@
 package org.bibsonomy.opensocial.oauth.database;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Date;
 import java.util.UUID;
 
 import net.oauth.OAuthConsumer;
 import net.oauth.OAuthProblemException;
 import net.oauth.OAuthServiceProvider;
-import net.oauth.signature.RSA_SHA1;
 
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.crypto.Crypto;
@@ -14,7 +15,6 @@ import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry.Type;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
-import static org.bibsonomy.util.ValidationUtils.present;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -36,6 +36,8 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 
 	private static final String OAUTH_DOMAIN_NAME = "samplecontainer.com";
 
+	private static final String OAUTH_BASEURL = "/oauth/";
+
 	/**
 	 * database logic for accessing OAuth tokens
 	 * FIXME: configure via spring
@@ -47,10 +49,25 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	 * FIXME: configure via spring 
 	 */
 	private OAuthServiceProvider serviceProvider;
-
+	
+	/** singleton pattern */
+	private static BibSonomyOAuthDataStore instance;
+	
 	@Inject
 	public BibSonomyOAuthDataStore(@Named("shindig.oauth.base-url") String baseUrl) {
 		this.serviceProvider = new OAuthServiceProvider(baseUrl + "requestToken", baseUrl + "authorize", baseUrl + "accessToken");
+	}
+	
+	public BibSonomyOAuthDataStore() {
+		this.serviceProvider = new OAuthServiceProvider(OAUTH_BASEURL+ "requestToken", OAUTH_BASEURL + "authorize", OAUTH_BASEURL + "accessToken");
+	}
+
+	public static BibSonomyOAuthDataStore getInstance() {
+		if (instance==null) {
+			instance = new BibSonomyOAuthDataStore();
+		};
+		
+		return instance;
 	}
 
 	//------------------------------------------------------------------------
