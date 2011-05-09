@@ -76,6 +76,7 @@ CREATE TABLE `oauth_store` (
   `consumer_key` varchar(255) DEFAULT NULL,
   `consumer_secret` text,
   `key_type` tinyint(2) DEFAULT NULL,
+  `key_name` varchar(255) DEFAULT NULL,
   `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -109,4 +110,4 @@ CREATE TABLE `oauth_tokens` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-04-06 11:27:18
+-- Dump completed on 2011-05-10  0:10:00
