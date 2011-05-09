@@ -150,6 +150,8 @@ public class BibSonomyPersonSpi implements PersonService {
 	/**
 	 * get all BibSonomy friends for the requested users
 	 * 
+	 * FIXME: this is a temporary inefficient way of querying users
+	 * 
 	 * @param userIds
 	 * @param groupId
 	 * @param dbLogic
@@ -166,7 +168,7 @@ public class BibSonomyPersonSpi implements PersonService {
 		}
 
 		// finally get details for each friend
-		/*
+		
 		List<User> retVal = new LinkedList<User>(); 
 		for( User user : friends ) {
 			User dbUser = dbLogic.getUserDetails(user.getName());
@@ -174,9 +176,6 @@ public class BibSonomyPersonSpi implements PersonService {
 		}
 		
 		return retVal;
-		*/
-		
-		return friends;
 	}
 	
 	/**
