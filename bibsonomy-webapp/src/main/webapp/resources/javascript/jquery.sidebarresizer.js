@@ -6,11 +6,12 @@
 	var cursor = (navigator.appVersion.indexOf("X11")!=-1)?'ew-resize':'e-resize';
 
 	$.fn.SideBarResizer = function(sidebarGrip) {
-		if(sidebarGrip == null)
-			return;
-		sidebar = $(this);
-		$(sidebar).parent().css('overflow','hidden');
-		$(sidebarGrip).bind("mousedown", startDrag);
+		if(sidebarGrip != null) {
+			sidebar = $(this);
+			$(sidebar).parent().css('overflow','hidden');
+			$(sidebarGrip).bind("mousedown", startDrag);
+		}
+		return this;
 	};
 	
 	function startDrag(e) {
