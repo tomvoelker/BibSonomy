@@ -430,6 +430,11 @@ public enum Views implements View {
 	OAUTH_AUTHORIZE("opensocial/authorize"),
 
 	/**
+	 * display an OAuth authorization denial
+	 */
+	OAUTH_DENY("opensocial/deny"),
+	
+	/**
 	 * display an OAuth authorization success message
 	 */
 	OAUTH_AUTHORIZATION_SUCCESS("opensocial/authorizationSuccess"),

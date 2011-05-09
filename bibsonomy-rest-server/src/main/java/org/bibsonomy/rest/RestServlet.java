@@ -19,15 +19,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shindig.auth.SecurityToken;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
+import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
+import org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.opensocial.oauth.OAuthRequestValidator;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -39,6 +44,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.util.MultiPartRequestParser;
 import org.bibsonomy.rest.utils.HeaderUtils;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -46,6 +52,8 @@ import org.bibsonomy.rest.utils.HeaderUtils;
  * @version $Id$
  */
 public final class RestServlet extends HttpServlet {
+	private static final String NO_AUTH_ERROR = "Please authenticate yourself.";
+
 	private static final long serialVersionUID = -1737804091652029470L;
 
 	private static final Log log = LogFactory.getLog(RestServlet.class);
@@ -76,7 +84,13 @@ public final class RestServlet extends HttpServlet {
 	private LogicInterfaceFactory logicFactory;
 	
 	// store some infos about the specific request or the webservice (i.e. rootPath)
-	private final Map<String, String> additionalInfos = new HashMap<String, String>();	
+	private final Map<String, String> additionalInfos = new HashMap<String, String>();
+	
+	/** handles OAuth requests */
+	OAuthRequestValidator oauthValidator;
+	
+	/** logic interface factory for handling oauth requests */
+	ShindigDBLogicUserInterfaceFactory oauthLogicFactory;
 
 	@Override
 	public void init() throws ServletException {
@@ -115,6 +129,23 @@ public final class RestServlet extends HttpServlet {
 			final DBLogicApiInterfaceFactory logicFactory = new DBLogicApiInterfaceFactory();
 			logicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
 			this.logicFactory = logicFactory;
+		}
+		
+		// initialize oauth database layer
+		try {
+			// TODO: configure via spring
+			DBSessionFactory dbSessionFactory = new IbatisDBSessionFactory();
+			this.oauthValidator = OAuthRequestValidator.getInstance();
+			this.oauthLogicFactory = new ShindigDBLogicUserInterfaceFactory();
+			this.oauthLogicFactory.setDbSessionFactory(dbSessionFactory);
+			
+			DBLogicNoAuthInterfaceFactory noAuthFactory = new DBLogicNoAuthInterfaceFactory();
+			noAuthFactory.setDbSessionFactory(dbSessionFactory);
+			this.oauthLogicFactory.setNoAuthLogicFactory(noAuthFactory);
+			
+			log.debug("Sucessfully enabled oauth database layer");
+		} catch (Exception e) {
+			log.error("Error initializing the oauth database layer (disabling oauth for the rest api)", e);
 		}
 	}
 
@@ -171,7 +202,7 @@ public final class RestServlet extends HttpServlet {
 
 	@Override
 	public void doHead(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		validateAuthorization(request.getHeader("Authorization"));
+		validateAuthorization(request);
 	}
 
 	/**
@@ -189,7 +220,7 @@ public final class RestServlet extends HttpServlet {
 
 		try {
 			// validate the requesting user's authorization
-			final LogicInterface logic = validateAuthorization(request.getHeader(HeaderUtils.HEADER_AUTHORIZATION));
+			final LogicInterface logic = validateAuthorization(request);
 			
 			// parse the request object to retrieve a list with all items of the http request
 			final MultiPartRequestParser parser = new MultiPartRequestParser(request);
@@ -309,9 +340,42 @@ public final class RestServlet extends HttpServlet {
 	 *            Authentication-value of the header's request
 	 * @throws IOException
 	 */
-	protected LogicInterface validateAuthorization(final String authentication) throws AuthenticationException {
-		if (authentication == null || !authentication.startsWith(HTTP_AUTH_BASIC_IDENTIFIER)) {
-			throw new AuthenticationException("Please authenticate yourself.");
+	protected LogicInterface validateAuthorization(final HttpServletRequest request) throws AuthenticationException {
+		final String authenticationHeader = request.getHeader(HeaderUtils.HEADER_AUTHORIZATION);
+		if (HeaderUtils.isHttpBasicAuthorization(authenticationHeader)) {
+			// try http basic authorization
+			return validateHttpBasicAuthorization(authenticationHeader);
+		} else if (present(this.oauthValidator)&&present(this.oauthLogicFactory)) {
+			// try oauth authorization
+			return validateOAuthAuthorization(request);
+		}
+		throw new AuthenticationException(NO_AUTH_ERROR);
+	}
+
+	/**
+	 * Authorize OAuth requests
+	 * 
+	 * @param request
+	 * @return
+	 */
+	private LogicInterface validateOAuthAuthorization(final HttpServletRequest request) {
+		// try oauth authorization - if configured
+		SecurityToken st = this.oauthValidator.getSecurityTokenFromRequest(request);
+		if (!present(st)||st.isAnonymous()) {
+			throw new AuthenticationException(NO_AUTH_ERROR);
+		}
+		return this.oauthLogicFactory.getLogicAccess(st);
+	}
+
+	/**
+	 * Authorize Http basic requests
+	 * 
+	 * @param authentication
+	 * @return logic interface for the requesting user on success
+	 */
+	protected LogicInterface validateHttpBasicAuthorization(final String authentication) {
+		if (!HeaderUtils.isHttpBasicAuthorization(authentication)) {
+			throw new AuthenticationException(NO_AUTH_ERROR);
 		}
 
 		final String basicCookie;

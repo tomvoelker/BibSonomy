@@ -24,6 +24,7 @@ import org.apache.shindig.common.servlet.GuiceServletContextListener;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.opensocial.OAuthCommand;
 import org.bibsonomy.webapp.command.opensocial.OAuthCommand.AuthorizeAction;
@@ -252,6 +253,13 @@ public class OAuthProtocolController implements ValidationAwareController<OAuthC
 	 * @throws IOException
 	 */
 	private View authorizeRequestToken(OAuthCommand command, User loginUser) throws OAuthException, IOException {
+		// only logged in user may authorize tokens
+		if (!command.getContext().isUserLoggedIn()) {
+			return new ExtendedRedirectView("/login" 
+					+ "&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL() )
+				);
+		}
+		
 		// extract the OAuth parameters from the request
 		OAuthMessage requestMessage = this.requestLogic.getOAuthMessage(null);
 
@@ -290,12 +298,12 @@ public class OAuthProtocolController implements ValidationAwareController<OAuthC
 		command.setCallBackUrl(callback);
 
 		// Redirect to a UI flow if the token is not authorized
-		if (!entry.isAuthorized() && !AuthorizeAction.Authorize.equals(command.getAuthorizeAction())) {
+		if (!entry.isAuthorized() && !AuthorizeAction.Authorize.toString().equals(command.getAuthorizeAction()) && !AuthorizeAction.Deny.toString().equals(command.getAuthorizeAction())) {
 			return Views.OAUTH_AUTHORIZE;
 		}
 
 		// If user clicked on the Authorize button then we're good.
-		if ( AuthorizeAction.Authorize.equals(command.getAuthorizeAction()) ) {
+		if ( AuthorizeAction.Authorize.toString().equals(command.getAuthorizeAction()) ) {
 			// If the user clicked the Authorize button we authorize the token and redirect back.
 			dataStore.authorizeToken(entry, loginUser.getName());
 
@@ -314,8 +322,9 @@ public class OAuthProtocolController implements ValidationAwareController<OAuthC
 
 				return new ExtendedRedirectView(callback);
 			}
-		} else if (AuthorizeAction.Deny.equals(command.getAuthorizeAction())) {
+		} else if (AuthorizeAction.Deny.toString().equals(command.getAuthorizeAction())) {
 			dataStore.removeToken(entry);
+			return Views.OAUTH_DENY;
 		}
 
 		return Views.OAUTH_AUTHORIZE;

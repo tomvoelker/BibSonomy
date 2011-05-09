@@ -41,6 +41,7 @@
 						<property name="allowedFields">	
 							<list>
 								<value>authorizeAction</value>
+								<value>responseString</value>
 							</list>
 						</property>
 					</bean>

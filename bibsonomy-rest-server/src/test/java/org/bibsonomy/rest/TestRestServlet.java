@@ -43,17 +43,17 @@ public class TestRestServlet {
 	@Test
 	public void testValidateAuthorization() throws Exception {
 		try {
-			this.servlet.validateAuthorization("YXNkZjphc2Rm");
+			this.servlet.validateHttpBasicAuthorization("YXNkZjphc2Rm");
 			fail("exception should have been thrown");
 		} catch (final AuthenticationException e) {
 		}
 
 		try {
-			this.servlet.validateAuthorization("Basic ASDFASDF");
+			this.servlet.validateHttpBasicAuthorization("Basic ASDFASDF");
 		} catch (final BadRequestOrResponseException e) {
 		}
 
-		assertEquals("error decoding string", "asdf", this.servlet.validateAuthorization("Basic YXNkZjphc2Rm").getAuthenticatedUser().getName());
+		assertEquals("error decoding string", "asdf", this.servlet.validateHttpBasicAuthorization("Basic YXNkZjphc2Rm").getAuthenticatedUser().getName());
 	}
 	
 	@Test

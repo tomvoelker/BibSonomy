@@ -14,7 +14,7 @@ public class OAuthCommand extends BaseCommand {
 
 	private String responseString;
 	
-	private AuthorizeAction authorizeAction;
+	private String authorizeAction;
 	
 	private OAuthConsumer consumer;
 	
@@ -40,11 +40,11 @@ public class OAuthCommand extends BaseCommand {
 		return responseString;
 	}
 
-	public void setAuthorizeAction(AuthorizeAction authorizeAction) {
+	public void setAuthorizeAction(String authorizeAction) {
 		this.authorizeAction = authorizeAction;
 	}
 
-	public AuthorizeAction getAuthorizeAction() {
+	public String getAuthorizeAction() {
 		return authorizeAction;
 	}
 
