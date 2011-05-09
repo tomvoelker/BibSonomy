@@ -38,6 +38,14 @@
 		<result property="name" column="tag_name" javaType="string" />
 	</resultMap>
 
+	<!-- spam prediction parameter -->	
+	<resultMap id="spamPrediction" class="user">
+		<result property="name" column="user_name" javaType="string" />
+		<result property="prediction" column="prediction" javaType="integer" />
+		<result property="updatedAt" column="updated_at" javaType="date" />
+	</resultMap>
+	
+
 	<!-- Should be used in conjunction with tagWhereQuery. -->
 	<sql id="tagFromQuery">
 	    tas t1

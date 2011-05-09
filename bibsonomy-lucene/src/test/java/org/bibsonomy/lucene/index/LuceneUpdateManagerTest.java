@@ -177,7 +177,6 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException 
 	 */
 	@Test
-	@Ignore
 	public void updateIndices() throws IOException, ClassNotFoundException, SQLException {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
@@ -320,7 +319,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		
 		user.setPrediction(0);
 		user.setSpammer(false);
-		user.setAlgorithm("luceneTest");
+		user.setAlgorithm("admin");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
 		for( int i=0; i<LuceneBase.getRedundantCnt(); i++ ) {
 			this.luceneBibTexUpdater.updateAndReloadIndex();

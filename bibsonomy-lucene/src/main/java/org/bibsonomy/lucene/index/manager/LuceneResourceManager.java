@@ -1,8 +1,10 @@
 package org.bibsonomy.lucene.index.manager;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -397,34 +399,24 @@ public class LuceneResourceManager<R extends Resource> {
 	 *        a join with the user table
 	 */
 	private void updatePredictions() {
-		// keeps track of the newest log_date during last index update
-		final Long lastLogDate  = this.resourceIndex.getLastLogDate()-QUERY_TIME_OFFSET_MS;
-		
-		// get date of last index update
-		final Date fromDate = new Date(lastLogDate);
-		
-		// get users which where flagged as spammers since then 
-		final List<String> lostSpammer    = this.dbLogic.getSpamPredictionForTimeRange(fromDate);
-		
-		// get users which where unflagged since then 
-		final List<String> lostNonSpammer = this.dbLogic.getNonSpamPredictionForTimeRange(fromDate);
-		
-		// flag lost spammers in index
-		final User transientUser = new User();
-		for (final String spammer : lostSpammer) {
-			transientUser.setName(spammer);
-			transientUser.setPrediction(1);
-			transientUser.setSpammer(true);
-			flagSpammer(transientUser);
-		}
+	    // keeps track of the newest log_date during last index update
+	    final Long lastLogDate  = this.resourceIndex.getLastLogDate()-QUERY_TIME_OFFSET_MS;
 
-		// unflag lost nonspammers in index
-		for (final String spammer : lostNonSpammer) {
-			transientUser.setName(spammer);
-			transientUser.setPrediction(0);
-			transientUser.setSpammer(false);
-			flagSpammer(transientUser);
+	    // get date of last index update
+	    final Date fromDate = new Date(lastLogDate);
+
+	    final List<User> predictedUsers = this.dbLogic.getPredictionForTimeRange(fromDate);
+
+	    // the prediction table holds up to two entries per user 
+	    // - the first entry is the one to consider (ordered descending by date) 
+	    // we keep track of users which appear twice via this set
+	    Set<String> alreadyUpdated = new HashSet<String>();
+	    for (User user : predictedUsers) {
+		if (!alreadyUpdated.contains(user.getName())) {
+		    alreadyUpdated.add(user.getName());
+		    flagSpammer(user);
 		}
+	    }
 	}
 	
 	/**

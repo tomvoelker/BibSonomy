@@ -7,6 +7,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 
 /**
  * interface encapsulating database access for lucene
@@ -51,18 +52,10 @@ public interface LuceneDBInterface<R extends Resource> {
 	
 	/**
 	 * @param fromDate
-	 * @return get list of all users which where flagged as spammer since last 
-	 * index update
+	 * @return get list of all user spam flags since last index update  
 	 */
-	public List<String> getSpamPredictionForTimeRange(Date fromDate);
-
-	/** 
-	 * @param fromDate
-	 * @return get list of all users which where flagged as spammer since last 
-	 * index update
-	 */
-	public List<String> getNonSpamPredictionForTimeRange(Date fromDate);
-
+	public List<User> getPredictionForTimeRange(Date fromDate);
+	
 	/**
 	 * get list of all friends for a given user
 	 * 

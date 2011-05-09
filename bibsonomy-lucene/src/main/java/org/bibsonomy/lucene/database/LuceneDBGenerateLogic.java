@@ -13,6 +13,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.lucene.database.util.LuceneDatabaseSessionFactory;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
@@ -71,25 +72,14 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends Abstract
 
 	@SuppressWarnings("unchecked")
 	@Override 
-	public List<String> getSpamPredictionForTimeRange(Date fromDate) {	
+	public List<User> getPredictionForTimeRange(Date fromDate) {	
 		try {
-			return sqlMap.queryForList("getSpamPredictionForTimeRange", fromDate);
+			return sqlMap.queryForList("getPredictionForTimeRange", fromDate);
 		} catch (SQLException e) {
 			log.error("Error getting flagged users", e);
 		}
 		
-		return new LinkedList<String>();
+		return new LinkedList<User>();
 	}
-	
-	@SuppressWarnings("unchecked")
-	@Override 
-	public List<String> getNonSpamPredictionForTimeRange(Date fromDate) {		
-		try {
-			return sqlMap.queryForList("getNonSpamPredictionForTimeRange", fromDate);
-		} catch (SQLException e) {
-			log.error("Error getting unflagged users", e);
-		}
-		
-		return new LinkedList<String>();
-	}
+
 }
