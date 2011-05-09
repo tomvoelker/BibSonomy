@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.UnsupportedRelationException;
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.user.UserChain;
@@ -84,6 +84,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return user object
 	 */
 	public User getUserDetails(final String username, final DBSession session) {
+		if (!present(username)) {
+			return new User();
+		}
 		final String lowerCaseUsername = username.toLowerCase();
 		final User user = this.queryForObject("getUserDetails", lowerCaseUsername, User.class, session);
 		if (user == null) {
@@ -278,7 +281,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		
 		this.checkUser(user, session);
 		
-		if( present(user.getOpenID()) || present(user.getLdapId())) {
+		if (present(user.getOpenID()) || present(user.getLdapId())) {
 		    this.insert("insertUser", user, session);
 		} else {
 		    this.insert("insertPendingUser", user, session);
@@ -400,58 +403,66 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * 			- when this user is a group, he cannot be deleted
 	 */
 	public void deleteUser(final String userName, final DBSession session) {
-		if (!present(userName)) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "user name not set");
+		session.beginTransaction();
+		try {
+			if (!present(userName)) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "user name not set");
+			}
+			/*
+			 * We can't use a global (i.e., class attribute) manager, since the 
+			 * GroupDatabaseManager contains a UserDatabaseManager and thus we 
+			 * have a circular dependency in the constructors.
+			 */
+			final GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
+			
+			/*
+			 * if user is a group stop deleting and throw exception
+			 */
+			if (present(groupDBManager.getGroupByName(userName, session))){
+				throw new UnsupportedOperationException("User " + userName +  " is a group and thus can't be deleted. Please contact the webmaster.");
+			}
+			
+			/*
+			 * a deleted user the folllowing properties:
+			 * - his password "hash" is "inactive" (literally!)
+			 * - his role is "DELETED"
+			 * - his spam status is "true"
+			 * - his algorithm is "self_deleted"
+			 * - the groups of all his posts are set to spam groups
+			 */
+			final User user = this.getUserDetails(userName, session);
+			user.setPassword("inactive"); // FIXME: this must be documented and refactored into a constant!
+			user.setRole(Role.DELETED);   // this is new - use it to check if a user has been deleted!
+			user.setSpammer(true);        // FIXME: Why is this necessary here, and is not performed by the flagSpammer method below?
+			
+			this.plugins.onUserDelete(userName, session);
+			
+			this.updateUser(user, session);
+			
+			/*
+			 * before deleting user remove it from all non-special groups
+			 */
+			final List<Group> groups = groupDBManager.getGroupsForUser(userName, true, session);
+			for (final Group group: groups){
+				groupDBManager.removeUserFromGroup(group.getName(), userName, session);
+			}
+			
+			/*
+			 * We remove the user's open ID and LDAP entry from the corresponding table. 
+			 * Otherwise, a new registration with that ID is not possible.
+			 */
+			this.deleteLdapUserId(user.getName(), session);
+			this.deleteOpenIDUser(user.getName(), session);
+			
+			/*
+			 * flag user as spammer & all his posts as spam
+			 */
+			user.setAlgorithm("self_deleted");
+			adminDBManager.flagSpammer(user, "on_delete", session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
 		}
-		/*
-		 * We can't use a global (i.e., class attribute) manager, since the 
-		 * GroupDatabaseManager contains a UserDatabaseManager and thus we 
-		 * have a circular dependency in the constructors.
-		 */
-		final GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
-		
-		/*
-		 * if user is a group stop deleting and throw exception
-		 */
-		if (present(groupDBManager.getGroupByName(userName, session))){
-			throw new UnsupportedOperationException("User " + userName +  " is a group and thus can't be deleted. Please contact the webmaster.");
-		}
-		
-		/*
-		 * a deleted user the folllowing properties:
-		 * - his password "hash" is "inactive" (literally!)
-		 * - his role is "DELETED"
-		 * - his spam status is "true"
-		 * - his algorithm is "self_deleted"
-		 * - the groups of all his posts are set to spam groups
-		 */
-		final User user = this.getUserDetails(userName, session);
-		user.setPassword("inactive"); // FIXME: this must be documented and refactored into a constant!
-		user.setRole(Role.DELETED);   // this is new - use it to check if a user has been deleted!
-		user.setSpammer(true);        // FIXME: Why is this necessary here, and is not performed by the flagSpammer method below?
-		this.updateUser(user, session);
-
-		
-		/*
-		 * before deleting user remove it from all non-special groups
-		 */
-		final List<Group> groups = groupDBManager.getGroupsForUser(userName, true, session);
-		for (final Group group: groups){
-			groupDBManager.removeUserFromGroup(group.getName(), userName, session);
-		}
-		
-		/*
-		 * We remove the user's open ID and LDAP entry from the corresponding table. 
-		 * Otherwise, a new registration with that ID is not possible.
-		 */
-		this.deleteLdapUserId(user.getName(), session);
-		this.deleteOpenIDUser(user.getName(), session);
-		
-		/*
-		 * flag user as spammer & all his posts as spam
-		 */
-		user.setAlgorithm("self_deleted");
-		adminDBManager.flagSpammer(user, "on_delete", session);				
 	}
 
 	/**
@@ -831,7 +842,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return list of users
      */
     public List<User> getUsersBySearch(final String searchString, final int limit, final DBSession session) {
-    	UserParam param = new UserParam();
+    	final UserParam param = new UserParam();
     	param.setSearch(searchString);
     	param.setLimit(limit);
     	return this.queryForList("getUsersBySearch", param, User.class, session);
