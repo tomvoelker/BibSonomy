@@ -5,7 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.exceptions.ValidationException;
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.ReviewParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -39,6 +39,16 @@ public class ReviewDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Review> getReviewsForResource(final String interHash, final DBSession session) {
 		return this.queryForList("getReviews", interHash, Review.class, session);
+	}
+	
+	/**
+	 * 
+	 * @param userName
+	 * @param session
+	 * @return all reviews of an user
+	 */
+	public List<Review> getReviewsForUser(final String userName, final DBSession session) {
+		return this.queryForList("getReviewsForUser", userName, Review.class, session);
 	}
 	
 	/**

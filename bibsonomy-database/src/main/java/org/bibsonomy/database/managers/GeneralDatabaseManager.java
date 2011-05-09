@@ -3,7 +3,7 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.User;
 

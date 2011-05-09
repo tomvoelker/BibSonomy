@@ -11,7 +11,7 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.AdminParam;
 import org.bibsonomy.model.User;
@@ -151,10 +151,9 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		 * When method deleteUser() calls flag spammer, the deleted user is treated as a spammer. 
 		 * Consequence: It is flagged as a spammer in the user table, and the groups are set to spammer groups.
 		 */
-		boolean predictionChange = checkPredictionChange(param, session);
+		final boolean predictionChange = checkPredictionChange(param, session);
 
 		try {
-
 			/*
 			 * on_delete (calling method deleteUser()) 
 			 * admins (from BibSonomy Admin Interface) 
@@ -198,11 +197,8 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			// set session counter to 0, so that transaction will be commited in 
 			// session wrapper
 			session.commitTransaction();
-		}
-
-		catch (final Exception ex) {
+		} catch (final Exception ex) {
 			log.error(ex.getMessage(), ex);
-
 		} finally {
 			// in case of failure, session should be locked in DbSessionImpl
 			session.endTransaction();

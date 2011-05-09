@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibtexExtendedParam;

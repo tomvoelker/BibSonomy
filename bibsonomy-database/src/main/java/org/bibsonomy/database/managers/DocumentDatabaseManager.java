@@ -4,7 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.model.Document;

@@ -2,7 +2,7 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.Author;
 
@@ -21,6 +21,7 @@ public class AuthorDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	private AuthorDatabaseManager() {
+		// noop
 	}
 	
 	/**

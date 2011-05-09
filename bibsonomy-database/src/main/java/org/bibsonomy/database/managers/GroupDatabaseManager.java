@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
