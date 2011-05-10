@@ -23,18 +23,15 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.CharsetUtil;
-import org.apache.shindig.gadgets.oauth.OAuthStore;
 import org.apache.shindig.social.core.oauth.OAuthSecurityToken;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.opensocial.oauth.database.BibSonomyOAuthDataStore;
-import org.bibsonomy.opensocial.oauth.database.BibSonomyOAuthStore;
 
 /**
  * Utility class for verifying OAuth signed requests
@@ -194,9 +191,12 @@ public class OAuthRequestValidator {
 	 */
 	protected SecurityToken getTokenFromVerifiedRequest(OAuthMessage message, OAuthEntry entry, OAuthConsumer authConsumer) throws OAuthProblemException {
 		if (entry != null) {
+			// sucessfully authenticated 3-legged request   
 			return new OAuthSecurityToken(entry.getUserId(), entry.getCallbackUrl(), entry.getAppId(),
 					entry.getDomain(), entry.getContainer(), entry.expiresAt().getTime());
 		} else {
+			// 2-legged request
+			// TODO: not implemented
 			String userId = getParameter(message, REQUESTOR_ID_PARAM);
 			return store.getSecurityTokenForConsumerRequest(authConsumer.consumerKey, userId);
 		}
