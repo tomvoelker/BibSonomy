@@ -1,7 +1,12 @@
 package org.bibsonomy.webapp.util;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+
+import net.oauth.server.OAuthServlet;
 
 /**
  * Logic to access the Response.
@@ -50,6 +55,18 @@ public class ResponseLogic {
 	public void setHttpStatus(final int status) {
 		this.response.setStatus(status);
 	}
+	
+	/** Handles OAuth exceptions
+	 * 
+	 * @param e the exception to handle
+	 * @param realm OAuth realm
+	 * @param sendBody determine whether to send the exception's message text
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+    public void handleOAuthException(final Exception e, final String realm, boolean sendBody) throws IOException, ServletException {
+        OAuthServlet.handleException(this.response, e, realm, sendBody); 
+    }
 
 	/**
 	 * XXX: don't change the visibility of this method
