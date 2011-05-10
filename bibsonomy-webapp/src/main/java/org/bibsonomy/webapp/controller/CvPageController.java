@@ -16,6 +16,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.WikiUtil;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Controller for the cv page:
@@ -42,7 +43,8 @@ public class CvPageController extends ResourceListController implements Minimali
 			throw new MalformedURLSchemeException("error.cvpage_without_username");
 		}
 
-		command.setUser(this.logic.getUserDetails(requUser));
+		final User requestedUser = this.logic.getUserDetails(requUser);
+		command.setUser(requestedUser);
 
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 
@@ -56,16 +58,20 @@ public class CvPageController extends ResourceListController implements Minimali
 			this.setList(command, resourceType, groupingEntity, requUser, Collections.singletonList(MyOwnSystemTag.NAME), null, Order.ADDED, null, null, entriesPerPage);
 		}
 		
-		/* TODO: fix NPE (unknow user)
+		/* 
 		 * convert the wiki syntax
 		 */
-		final User user = command.getUser();
-		Wiki wiki = this.logic.getWiki(user.getName(), null);
+		Wiki wiki = this.logic.getWiki(requestedUser.getName(), null);
 		
-		if(!present(wiki))
+		if (!present(wiki)) {
 			wiki = new Wiki();
+		}
 		
-		command.setWikiText(wikiRenderer.render(wiki.getWikiText()));
+		/*
+		 * set the user to render
+		 */
+		this.wikiRenderer.setUser(requestedUser);
+		command.setWikiText(this.wikiRenderer.render(wiki.getWikiText()));
 		
 		return Views.CVPAGE;
 	}
@@ -81,14 +87,8 @@ public class CvPageController extends ResourceListController implements Minimali
 	/**
 	 * @param wikiRenderer the wikiRenderer to set
 	 */
+	@Required
 	public void setWikiRenderer(WikiUtil wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
-	}
-
-	/**
-	 * @return the wikiRenderer
-	 */
-	public WikiUtil getWikiRenderer() {
-		return wikiRenderer;
 	}	
 }
