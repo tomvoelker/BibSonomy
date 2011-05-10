@@ -53,20 +53,12 @@
 		SELECT MAX(log_date) FROM log_gold_standard_publications
 	</select>
 	
-	<!-- get users which where flagged as spammers since last index update --> 
-	<select id="getSpamPredictionForTimeRange" parameterClass="date" resultClass="string">
-		SELECT user_name
-		FROM prediction
-		WHERE prediction = 1
-		  AND updated_at &gt;= #date#
-	</select>
-
-	<!-- get users which where flagged as non-spammers since last index update --> 
-	<select id="getNonSpamPredictionForTimeRange" parameterClass="date" resultClass="string">
-		SELECT user_name
-		FROM prediction
-		WHERE prediction = 0
-		  AND updated_at &gt;= #date#
+	<!-- get users which where flagged as spammers/non-spammers since last index update --> 
+	<select id="getPredictionForTimeRange" parameterClass="date" resultMap="Common.spamPrediction">
+		SELECT user_name,prediction,updated_at 
+		FROM prediction 
+		WHERE updated_at &gt;= #date# 
+		ORDER BY updated_at DESC
 	</select>
 	
 	<!-- get list of all non-spam bookmarks -->
