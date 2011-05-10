@@ -236,9 +236,9 @@ INSERT INTO `ids` VALUES
 --
 
 INSERT INTO `inboxMail` VALUES
-(1, 1, 'hash1', 'testuser1', 'testuser2', '2009-10-08 14:23:00', 1),
-(2, 5, 'hash2', 'testuser3', 'testuser2', '2009-10-08 14:23:32', 1),
-(3, 10, 'hash3', 'testuser3', 'testuser2', '2009-10-08 14:23:32', 1);
+(1, 1, '6f372faea7ff92eedf52f597090a6291', 'testuser1', 'testuser2', '2009-10-08 14:23:00', 1),
+(2, 5, '965a65fdc161e354f3828050390e2b06', 'testuser3', 'testuser2', '2009-10-08 14:23:32', 1),
+(3, 10, '85ab919107e4cc79b345e996b3c0b097', 'testuser3', 'testuser2', '2009-10-08 14:23:32', 1);
 
 --
 -- Data for table `inboxMail`
