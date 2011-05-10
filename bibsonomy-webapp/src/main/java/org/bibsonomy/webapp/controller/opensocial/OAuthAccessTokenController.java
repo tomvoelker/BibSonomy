@@ -17,7 +17,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.opensocial.OAuthCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.security.access.AccessDeniedException;
 
 /**
  * This controller implements the OAuth endpoints described in RFC 5849, section 2:
@@ -62,6 +61,8 @@ public class OAuthAccessTokenController extends OAuthProtocolController {
 		// obtain the corresponding token credential
 		OAuthEntry entry = getValidatedEntry(requestMessage);
 		if (!present(entry.getUserId())) {
+			OAuthProblemException e = new OAuthProblemException(OAuth.Problems.OAUTH_PARAMETERS_ABSENT);
+			e.setParameter(OAuth.Problems.OAUTH_PARAMETERS_ABSENT, OAUTH_HEADER_USER_ID);
 			log.error("No username given for accessing the OAuth token.");
 		}
 		
@@ -74,12 +75,12 @@ public class OAuthAccessTokenController extends OAuthProtocolController {
 			String clientCallbackToken = requestMessage.getParameter(OAuth.OAUTH_VERIFIER);
 			if (!entry.getCallbackToken().equals(clientCallbackToken)) {
 				dataStore.disableToken(entry);
-				throw new AccessDeniedException("This token is not authorized");
+				throw new OAuthProblemException(OAuth.Problems.PARAMETER_REJECTED);
 			}
 		} else if (!entry.isAuthorized()) {
 			// Old protocol.  Catch consumers trying to convert a token to one that's not authorized
 			dataStore.disableToken(entry); 
-			throw new AccessDeniedException("This token is not authorized");
+			throw new OAuthProblemException(OAuth.Problems.TOKEN_REJECTED);
 		}
 		
 	    // turn request token into access token
