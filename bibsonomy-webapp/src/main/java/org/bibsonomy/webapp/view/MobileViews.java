@@ -21,7 +21,7 @@ public enum MobileViews implements View {
 	/**
 	 * tag page show all resources with a given tag or a list of tags
 	 */
-	TAGPAGE("mobile/tags"),
+	TAGPAGE("mobile/tag"),
 	
 	/**
 	 * search page
