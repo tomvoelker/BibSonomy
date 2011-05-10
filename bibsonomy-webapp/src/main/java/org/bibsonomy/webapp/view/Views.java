@@ -390,11 +390,6 @@ public enum Views implements View {
 	 * Show the form after reminding a password to change it
 	 */
 	PASSWORD_CHANGE_ON_REMIND("actions/user/passwordChangeOnRemind"),
-
-	/**
-	 * Upload page to upload document to an existing bibtex entry
-	 */
-	UPLOAD_FILE("actions/uploadFile"), 
 	
 	/**
 	 * view for streaming the desired document to the outputResponse
