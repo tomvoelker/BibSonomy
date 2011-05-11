@@ -16,6 +16,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="otherPosts" type="java.util.List" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:useBean id="mockReference" class="org.bibsonomy.model.BibTex" />
 	
 	<c:set var="goldstandard" value="${post.resource}" />
 	<div id="goldstandard">
@@ -27,7 +28,7 @@
 		<h2 id="gold_title" data-interhash="${goldstandard.interHash}">
 			<a href="/bibtex/${goldstandard.interHash}">${mtl:cleanBibtex(goldstandard.title)}</a>
 		</h2>
-		<div id="gold_authorsEditors"><fmt:message key="by"/><c:out value=": "/><c:out value=" "/><pub:author post="${post}"/></div>
+		<div id="gold_authorsEditors"><fmt:message key="by"/><c:out value=": "/><c:out value=" "/><pub:author publication="${goldstandard}"/></div>
 		
 		<c:if test="${not empty goldstandard.abstract}">
 			<div id="gold_abstract">${mtl:cleanBibtex(goldstandard.abstract)}</div>
@@ -52,11 +53,7 @@
 			<div id="gold_resources_pdf">
 				<h3><fmt:message key="goldStandard.resource.info.pdfps" /></h3>
 				<ul>
-					<c:if test="${not empty goldstandard.documents}" >
-					<li><pub:documents post="${post}" includeFilename="${true}"/></li>
-					</c:if>
 					<c:if test="${mtl:isLinkToDocument(goldstandard.url)}">
-					<!-- TODO: document(url) tagx -->
 					<li><fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
 		<a href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
 		  <img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
@@ -67,31 +64,30 @@
 			</div>
 			</c:if>
 		</div>
-		<c:if test="${((fn:length(goldstandard.references) != 0) or (fn:length(goldstandard.referencedBy) != 0))}">
-			<div id="gold_refs">
-				<c:if test="${fn:length(goldstandard.references) != 0}">
-					<div id="gold_references">
-						<h3><fmt:message key="goldStandard.resource.info.references" /></h3>
-						<ol>
-							<c:forEach var="reference" items="${goldstandard.references}">
-								<li data-interHash="${reference.interHash}" class="reference"><ref:pubReference publication="${reference}" /></li>
-							</c:forEach>
-						</ol>
-					</div>
-				</c:if>
-				<c:if test="${fn:length(goldstandard.referencedBy) != 0}">
-					<div id="gold_referencedBy">
-						<h3><fmt:message key="goldStandard.resource.info.referencedBy" /></h3>
-						<ol>
-							<c:forEach var="reference" items="${goldstandard.referencedBy}">
-								<li data-interHash="${reference.interHash}" class="referencedBy"><ref:pubReference publication="${reference}" /></li>
-							</c:forEach>
-						</ol>
-					</div>
-				</c:if>
+		<div id="gold_refs">
+			<div id="gold_references">
+				<h3><fmt:message key="goldStandard.resource.info.references" /></h3>
+				<ol>
+					<c:forEach var="reference" items="${goldstandard.references}">
+						<li data-interhash="${reference.interHash}" class="reference"><ref:pubReference publication="${reference}" /></li>
+					</c:forEach>
+					
+					<!-- for javascript rending -->
+					<li class="reference initiallyHidden" id="referenceTemplate"><ref:pubReference publication="${mockReference}" /></li>
+				</ol>
 			</div>
-		</c:if>
-		
+			<c:if test="${fn:length(goldstandard.referencedBy) != 0}">
+				<div id="gold_referencedBy">
+					<h3><fmt:message key="goldStandard.resource.info.referencedBy" /></h3>
+					<ol>
+						<c:forEach var="reference" items="${goldstandard.referencedBy}">
+							<li data-interhash="${reference.interHash}" class="referencedBy"><ref:pubReference publication="${reference}" /></li>
+						</c:forEach>
+					</ol>
+				</div>
+			</c:if>
+		</div>
+				
 		<c:if test="${fn:length(otherPosts) != 0}">
 			<div id="postUsers">
 				<h3><fmt:message key="goldStandard.users"/></h3>
@@ -116,9 +112,14 @@
 			</div>
 		</c:if>
 		
-		<!-- Reviews -->
-		<!-- <reviews:reviews resource="${goldstandard}" loginUser="${loginUser}" /> -->
+		<!-- reviews -->
+		<div id="reviews">
+	    	<h3><fmt:message key="post.resource.review.reviews" /></h3>
+	    	<reviews:reviewsRatingInfo resource="${goldstandard}" />
+			<reviews:reviews resource="${goldstandard}" loginUser="${loginUser}" />
+		</div>
 		
+		<!-- exports -->
 		<div id="gold_exports">
 			<ul>
 				<li><a href="#gold_exports_1"><fmt:message key="export.layout"/></a></li>
@@ -136,17 +137,19 @@
 				 	</c:otherwise>		  
 				</c:choose>
 				
+				<!-- TODO: extract (bibtexdetails) -->
 				<form name="citation_format_form" action="" style="font-size:80%;">
-					<c:set var="allExportsTitle"><fmt:message key="bibtex.all_exports.title"/></c:set>
+					
 					<fmt:message key="bibtex.citation_format"/><c:out value=" ("/>
 					<!-- TODO: add support for this site -->
+					<!-- <fmt:message key="bibtex.all_exports.title" var="allExportsTitle" /> -->
 					<!-- <a href="/export/bibtex/1${goldstandard.interHash}/" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports"/></a><c:out value="): "/> -->
 					
 					<form:select path="command.layout" onchange="citation_format_form.submit()" size="1">
 						<form:option value="plain"><fmt:message key="plain"/></form:option>
 						<form:option value="harvardhtml">Harvard</form:option>
 						<form:option value="din1505">DIN1505</form:option>
-						<form:option value="simplehtml"><fmt:message key="simpleHTML"/></form:option>
+						<form:option value="simplehtml">simple HTML</form:option>
 					</form:select>
 				    <c:out value=" "/>
 				    <input type="image"  src="/resources/image/nice_box_arrow_right.png"/>		    
