@@ -1,5 +1,6 @@
 package org.bibsonomy.database.params;
 
+import org.bibsonomy.common.enums.RatingAverage;
 import org.bibsonomy.model.Resource;
 
 /** 
@@ -11,6 +12,8 @@ import org.bibsonomy.model.Resource;
  * @version $Id$
  */
 public class ResourceParam<T extends Resource> extends GenericParam {
+	
+	private RatingAverage ratingAverage = RatingAverage.ARITHMETIC_MEAN;
 
 	protected T resource;
 
@@ -26,6 +29,20 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	 */
 	public T getResource() {
 		return resource;
+	}
+	
+	/**
+	 * @return the ratingAverage
+	 */
+	public RatingAverage getRatingAverage() {
+		return this.ratingAverage;
+	}
+
+	/**
+	 * @param ratingAverage the ratingAverage to set
+	 */
+	public void setRatingAverage(RatingAverage ratingAverage) {
+		this.ratingAverage = ratingAverage;
 	}
 
 }

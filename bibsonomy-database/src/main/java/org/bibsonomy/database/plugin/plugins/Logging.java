@@ -28,6 +28,22 @@ import org.bibsonomy.model.Review;
 public class Logging extends AbstractDatabasePlugin {
 
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onUserDelete(java.lang.String, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public Runnable onUserDelete(final String userName, final DBSession session) {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				insert("logAllUserReviews", userName, session);
+				insert("logAllUserMarks", userName, session);
+				insert("logAllMarksOfUser", userName, session);
+			}
+		};
+	}
+
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onReviewUpdated(java.lang.String, org.bibsonomy.model.Review, org.bibsonomy.model.Review, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override

@@ -38,6 +38,16 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 		return TESTSESSION_FACTORY.getDatabaseSession();
 	}
 	
+	// TODO: move to AbstractDBManager?
+	private int checkResult(final Integer value) {
+		return value == null ? 0 : value;
+	}
+	
+	private double checkResult(final Double value) {
+		return value == null ? 0 : value;
+	}
+
+	
 	/** 
 	 * @param param
 	 * @return count requested contentID from BibTeX
@@ -115,16 +125,16 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public int countReviewLogs() {
 		final Integer result = this.queryForObject("countReviewLogs", Integer.class, this.createDBSession());
-		return result == null ? 0 : result;
+		return this.checkResult(result);
 	}
 	
 	/**
 	 * @param interHash
 	 * @return the average ratings (of reviews)
 	 */
-	public double getReviewRatingsAverage(final String interHash) {
-		final Double result = this.queryForObject("getReviewRatingsAverage", interHash, Double.class, this.createDBSession());
-		return result == null ? 0 : result;
+	public double getReviewRatingsArithmeticMean(final String interHash) {
+		final Double result = this.queryForObject("getReviewRatingsArithmeticMean", interHash, Double.class, this.createDBSession());
+		return this.checkResult(result);
 	}
 	
 	/**
@@ -133,7 +143,7 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public int getReviewCount(final String interHash) {
 		final Integer result = this.queryForObject("getReviewCount", interHash, Integer.class, this.createDBSession());
-		return result == null ? 0 : result;
+		return this.checkResult(result);
 	}
 	
 	/**
@@ -141,7 +151,7 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public int countReviewHelpfulLogs() {
 		final Integer result = this.queryForObject("countReviewHelpfulLogs", Integer.class, this.createDBSession());
-		return result == null ? 0 : result;
+		return this.checkResult(result);
 	}
 
 	/**
@@ -150,6 +160,36 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public int countReviewHelpful(String interHash) {
 		final Integer result = this.queryForObject("getReviewHelpfulCount", interHash, Integer.class, this.createDBSession());
-		return result == null ? 0 : result;
+		return this.checkResult(result);
 	}
+
+	/**
+	 * 
+	 * @param name
+	 * @return the number of marks of the user
+	 */
+	public int getMarkReviewCountForUser(String name) {
+		final Integer result = this.queryForObject("getMarkReviewCountForUser", name, Integer.class, this.createDBSession());
+		return this.checkResult(result);
+	}
+	
+	/**
+	 * 
+	 * @param name
+	 * @return the number of marks for reviews of the user
+	 */
+	public int getMarkOfUserReviewCount(String name) {
+		final Integer result = this.queryForObject("getMarkOfUserReviewCount", name, Integer.class, this.createDBSession());
+		return this.checkResult(result);
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @return the number of reviews of the user
+	 */
+	public int getReviewCountForUser(String name) {
+		final Integer result = this.queryForObject("getReviewCountForUser", name, Integer.class, this.createDBSession());
+		return this.checkResult(result);
+	}	
 }

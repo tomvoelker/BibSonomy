@@ -46,7 +46,7 @@ public class ReviewPlugin extends AbstractDatabasePlugin {
 				/*
 				 * delete all marked as helpful/not helpful
 				 */
-				delete("allHelpfulMarks", param, session);
+				delete("deleteAllHelpfulMarks", param, session);
 			}
 		};
 	}
@@ -95,5 +95,20 @@ public class ReviewPlugin extends AbstractDatabasePlugin {
 			}
 		};
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onUserDelete(java.lang.String, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public Runnable onUserDelete(final String userName, final DBSession session) {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				delete("deleteAllUserReviews", userName, session);
+				delete("deleteAllUserMarks", userName, session);
+				delete("deleteAllMarksOfUser", userName, session);
+			}
+		};
+	}		
 }

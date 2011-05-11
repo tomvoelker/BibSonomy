@@ -42,16 +42,6 @@ public class ReviewDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * 
-	 * @param userName
-	 * @param session
-	 * @return all reviews of an user
-	 */
-	public List<Review> getReviewsForUser(final String userName, final DBSession session) {
-		return this.queryForList("getReviewsForUser", userName, Review.class, session);
-	}
-	
-	/**
 	 * creates a new review 
 	 * @param interHash
 	 * @param review

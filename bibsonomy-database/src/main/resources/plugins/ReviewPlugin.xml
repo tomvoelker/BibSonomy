@@ -3,16 +3,28 @@
 
 <sqlMap namespace="ReviewPlugin">
 	<insert id="updateReviewRatingsCacheInsert" parameterClass="reviewParam">
-		INSERT INTO review_ratings_cache (interHash, number_of_ratings, rating_avg) VALUES (#interHash#, 1 , #review.rating#)
-  			ON DUPLICATE KEY UPDATE rating_avg = (rating_avg * number_of_ratings + #review.rating#)/(number_of_ratings + 1), number_of_ratings = number_of_ratings + 1;
+		INSERT INTO review_ratings_cache (interHash, number_of_ratings, rating_arithmetic_mean) VALUES (#interHash#, 1 , #review.rating#)
+  			ON DUPLICATE KEY UPDATE rating_arithmetic_mean = (rating_arithmetic_mean * number_of_ratings + #review.rating#)/(number_of_ratings + 1), number_of_ratings = number_of_ratings + 1;
 	</insert>
 	
 	<!-- COALASCE the result because devision by zero returns null -->
 	<update id="updateReviewRatingsCacheDelete" parameterClass="reviewParam">
-		UPDATE review_ratings_cache SET rating_avg = COALESCE((rating_avg * number_of_ratings - #review.rating#)/(number_of_ratings - 1), 0), number_of_ratings = number_of_ratings - 1 WHERE interHash = #interHash#
+		UPDATE review_ratings_cache SET rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings - #review.rating#)/(number_of_ratings - 1), 0), number_of_ratings = number_of_ratings - 1 WHERE interHash = #interHash#
 	</update>
 	
-	<delete id="allHelpfulMarks" parameterClass="reviewParam">
+	<delete id="deleteAllHelpfulMarks" parameterClass="reviewParam">
 		DELETE FROM reviews_helpful WHERE user_name = #review.user.name# AND interHash = #interHash#
+	</delete>
+	
+	<delete id="deleteAllUserReviews" parameterClass="string">
+		DELETE FROM reviews WHERE user_name = #username#
+	</delete>
+	
+	<delete id="deleteAllUserMarks" parameterClass="string">
+		DELETE FROM reviews_helpful WHERE user_name = #userName#
+	</delete>
+	
+	<delete id="deleteAllMarksOfUser" parameterClass="string">
+		DELETE FROM reviews_helpful WHERE mark_user_name = #userName#
 	</delete>
 </sqlMap>

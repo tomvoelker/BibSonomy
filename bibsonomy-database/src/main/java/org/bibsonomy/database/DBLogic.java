@@ -178,6 +178,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	
 	this.syncDBManager = SynchronizationDatabaseManager.getInstance();
 	
+	
 	this.bibTexExtraDBManager = BibTexExtraDatabaseManager.getInstance();
 	
 	
@@ -1061,8 +1062,9 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	 * change group IDs to spam group IDs
 	 */
 	PostUtils.setGroupIds(post, this.loginUser);
-
+	
 	/*
+	 * XXX: this is a "hack" and will be replaced soon
 	 * If the operation is UPDATE_URLS then create/delete the url right here and
 	 * return the intra hash.
 	 */
@@ -1088,7 +1090,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	    
 	    return post.getResource().getIntraHash();
 	}
-	
+
 	/*
 	 * update post
 	 */
@@ -1597,7 +1599,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
 	    final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 
-	    if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
+	    if (resourceType == GoldStandardPublication.class || resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 		param.setContentTypeByClass(resourceType);
 		return this.statisticsDBManager.getPostStatistics(param, session);
 	    }
@@ -1740,8 +1742,8 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	final DBSession session = openSession();
 	// now switch the operation and call the right method in the taglRelationsDBManager or DBLogic
 	try {
-	    switch(operation){
-	    case UPDATE:		
+	    switch (operation) {
+	    case UPDATE:
 		return this.storeConcept(concept, grouping, groupingName, true);
 	    case PICK:
 		this.tagRelationsDBManager.pickConcept(concept, groupingName, session);
@@ -2265,16 +2267,17 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     @Override
     public Wiki getWiki(final String userName, final Date date) {
 	final DBSession session = openSession();
-	final User requUser = this.getUserDetails(userName); // FIXME: Nullpointer
-	/*
-	 * We return an empty wiki for users which are not allowed to access
-	 * this wiki.
-	 */
-	if (!this.permissionDBManager.isAllowedToAccessUsersProfile(requUser, this.loginUser, session)) {
-	    return new Wiki();
-	}   
-
+	
 	try {
+		final User requUser = this.getUserDetails(userName);
+		/*
+		 * We return an empty wiki for users which are not allowed to access
+		 * this wiki.
+		 */
+		if (!this.permissionDBManager.isAllowedToAccessUsersProfile(requUser, this.loginUser, session)) {
+		    return new Wiki();
+		}
+		
 	    if (date == null) {
 		return this.wikiDBManager.getActualWiki(userName, session);
 	    }
@@ -2371,11 +2374,29 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	}
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.logic.ReviewLogicInterface#getReviews(java.lang.String)
+     */
+	@Override
+	public List<Review> getReviews(String interHash) {
+		final DBSession session = this.openSession();
+		try {
+			return this.reviewDBManager.getReviewsForResource(interHash, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.ReviewLogicInterface#createReview(java.lang.String, java.lang.String, org.bibsonomy.model.Review)
+	 */
 	@Override
 	public void createReview(final String username, final String interHash, final Review review) {
 		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
 		
-		final DBSession session = openSession();
+		final DBSession session = this.openSession();
 		try {
 			// TODO: check if user has resource in collection?	
 			review.setUser(new User(username));
@@ -2389,7 +2410,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	public void updateReview(final String username, final String interHash, final Review review) {
 		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
 		
-		final DBSession session = openSession();
+		final DBSession session = this.openSession();
 		try {
 			review.setUser(new User(username));
 			this.reviewDBManager.updateReview(interHash, review, session);
@@ -2398,11 +2419,15 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.ReviewLogicInterface#deleteReview(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void deleteReview(final String username, final String interHash) {
 		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
 		
-		final DBSession session = openSession();
+		final DBSession session = this.openSession();
 		try {
 			this.reviewDBManager.deleteReview(interHash, username, session);
 		} finally {
@@ -2410,6 +2435,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.ReviewLogicInterface#markReview(java.lang.String, java.lang.String, java.lang.String, boolean)
+	 */
 	@Override
 	public void markReview(final String username, final String reviewUsername, final String interHash, final boolean helpful) {
 		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
@@ -2421,5 +2450,4 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 			session.close();
 		}
 	}
-
 }

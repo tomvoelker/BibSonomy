@@ -2,11 +2,13 @@
 
 <sqlMap namespace="Common">
 	<resultMap id="resource" class="resource" groupBy="intraHash">
-		<result property="interHash"   column="interHash"       javaType="string" />
-		<result property="intraHash"   column="intraHash"       javaType="string" />     	
-		<result property="count"       column="count"           javaType="int" />
-        <result property="title"       column="title"           javaType="string" />
-	</resultMap>
+		<result property="interHash"   		column="interHash"       	javaType="string" />
+		<result property="intraHash"   		column="intraHash"       	javaType="string" />     	
+		<result property="count"       		column="count"           	javaType="int" />
+        <result property="title"       		column="title"           	javaType="string" />
+      	<result property="rating"	   		column="rating"		   		javaType="double" />
+ 		<result property="numberOfRatings"  column="number_of_ratings" 	javaType="int" />
+ 	</resultMap>
 
 	<resultMap id="posts" class="post" groupBy="contentId">
 		<result property="contentId"    column="content_id"     javaType="int" />
@@ -38,10 +40,7 @@
 	<resultMap id="tag" class="tag" groupBy="name">
 		<result property="name" column="tag_name" javaType="string" />
 	</resultMap>
-
-
-
-
+	
 
 	<!-- Should be used in conjunction with tagWhereQuery. -->
 	<sql id="tagFromQuery">
@@ -52,6 +51,7 @@
 			</isGreaterThan>
 		</iterate>
 	</sql>
+	
     <!-- unfortunately, I had to copy this for the group tas table :-( -->
 	<sql id="grouptasTagFromQuery">
 	    grouptas t1
@@ -61,6 +61,7 @@
 			</isGreaterThan>
 		</iterate>
 	</sql>
+	
 	<!--
 	   Should be used in conjunction with tagFromQuery.
 

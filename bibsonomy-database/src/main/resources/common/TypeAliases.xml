@@ -35,6 +35,7 @@
 
 	<!-- Parameters -->
 	<typeAlias alias="genericParam"       type="org.bibsonomy.database.params.GenericParam" />
+	<typeAlias alias="resourceParam"      type="org.bibsonomy.database.params.ResourceParam" />
 	<typeAlias alias="bookmarkParam"      type="org.bibsonomy.database.params.BookmarkParam" />
 	<typeAlias alias="bibtexParam"        type="org.bibsonomy.database.params.BibTexParam" />
 	<typeAlias alias="bibtexExtraParam"   type="org.bibsonomy.database.params.BibTexExtraParam" />

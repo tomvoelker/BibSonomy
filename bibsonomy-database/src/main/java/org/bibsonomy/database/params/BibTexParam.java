@@ -20,7 +20,7 @@ public class BibTexParam extends ResourceParam<BibTex> {
 	 * XXX: iBatis can't get generic informations; thinks that the class of
 	 * the resource field is org.bibsonomy.model.Resource so we override it
 	 * here
-	 * @see org.bibsonomy.database.params.SingleResourceParam#getResource()
+	 * @see org.bibsonomy.database.params.ResourceParam#getResource()
 	 */
 	@Override
 	public BibTex getResource() {

@@ -2,8 +2,8 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="TestReview">
-	<select id="getReviewRatingsAverage" resultClass="double" parameterClass="string">
-		SELECT rating_avg FROM review_ratings_cache WHERE interHash = #interHash#
+	<select id="getReviewRatingsArithmeticMean" resultClass="double" parameterClass="string">
+		SELECT rating_arithmetic_mean FROM review_ratings_cache WHERE interHash = #interHash#
 	</select>
 	
 	<select id="getReviewCount" resultClass="int" parameterClass="string">
@@ -14,4 +14,15 @@
 		SELECT COUNT(interHash) FROM reviews_helpful WHERE interHash = #interHash#
 	</select>
 	
+	<select id="getReviewCountForUser" resultClass="int" parameterClass="string">
+		SELECT COUNT(interHash) FROM reviews WHERE user_name = #userName#
+	</select>
+	
+	<select id="getMarkReviewCountForUser" resultClass="int" parameterClass="string">
+		SELECT COUNT(interHash) FROM reviews_helpful WHERE mark_user_name = #userName#
+	</select>
+	
+	<select id="getMarkOfUserReviewCount" resultClass="int" parameterClass="string">
+		SELECT COUNT(interHash) FROM reviews_helpful WHERE user_name = #userName#
+	</select>
 </sqlMap>

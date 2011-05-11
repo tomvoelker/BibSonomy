@@ -4,7 +4,7 @@
 <sqlMap namespace="Review">
 
 	<select id="getReviews" parameterClass="string" resultMap="ReviewCommon.review">
-		SELECT <include refid ="allReviewRows"/> FROM reviews WHERE interHash = #interHash#
+		SELECT <include refid ="allReviewRows"/> FROM reviews WHERE interHash = #interHash# ORDER BY date ASC
 	</select>
 		
 	<insert id="insertReview" parameterClass="reviewParam">

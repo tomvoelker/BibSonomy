@@ -360,17 +360,6 @@
 	</select>
 	
 	<select id="getTagsPopular" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		<!-- SELECT t.tag_name, count(t.tag_name) AS tag_ctr 
-		FROM (
-			SELECT t1.tag_name FROM temp_bibtex b1
-		 	LEFT JOIN tas t1 ON (b1.content_id = t1.content_id)
-		 	
-		 	UNION
-		 	
-		 	SELECT t2.tag_name FROM temp_bookmark b2
-		 	LEFT JOIN tas t2 ON (b2.content_id = t2.content_id)
-		 	) t
-		GROUP BY t.tag_name ORDER BY t.tag_name-->
 		SELECT tag_lower AS tag_name, tag_ctr 
 		FROM popular_tags
 		WHERE content_type=#contentType#

@@ -3,21 +3,12 @@
 
 <sqlMap namespace="BibTex">
 	<select id="getBibTexPopular" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, <include refid="bibtexSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
+		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, <include refid="bibtexSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT *, date AS change_date FROM temp_bibtex b2 WHERE b2.popular_days = (SELECT popular_days FROM temp_bibtex GROUP BY popular_days ORDER by popular_days LIMIT 1 OFFSET #days#)
 		ORDER BY b2.rank LIMIT #limit# OFFSET #offset#) b
-		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, bibhash h
+		LEFT OUTER JOIN tas t ON b.content_id = t.content_id <include refid="reviewRatingsJoinPublication" />, bibhash h
 		WHERE <include refid="bibtexSimHash"/>
 		ORDER BY b.rank
-	</select>
-	
-	<select id="getBibTexByTitle" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="commonBibtexAttributes"/>, <include refid="bibtexSimHashes"/>, h.ctr AS count, -1 AS scraperId, t.tag_name, b.`group`, NULL AS group_name
-		FROM (SELECT b2.*
-		      FROM bibtex b2
-		      WHERE title LIKE #title#) AS b
-		INNER JOIN tas t ON b.content_id = t.content_id, bibhash h 
-		LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<select id="getBibTexPopularDays" resultClass="int" parameterClass="bibtexParam">
@@ -25,12 +16,13 @@
 	</select>
 
 	<select id="getBibTexByKey" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM tas t1, bibhash h, 
 			(SELECT * FROM bibtex
 			 WHERE bibtexKey LIKE #bibtexKey#  
 			 <isNotEmpty property="requestedUserName" prepend="AND"> user_name = #requestedUserName# </isNotEmpty>
 			 LIMIT #limit# OFFSET #offset#) b 
+			 <include refid="reviewRatingsJoinPublication" />
 		WHERE b.content_id = t1.content_id
 		AND b.simhash$simHash$ = h.hash
 		AND h.type= #simHash#		
@@ -40,8 +32,8 @@
 	</select>	
 
 	<select id="getBibTexByTagNames" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
-		FROM bibtex b, tas t, bibhash h,
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, tas t, bibhash h,
 		     (SELECT t1.content_id
 		      FROM <include refid="tagFromQuery"/>
 		      WHERE <include refid="tagWhereQuery"/>
@@ -64,8 +56,8 @@
 	</select>
 
 	<select id="getBibTexByTagNamesAndFolkrank" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
-		FROM bibtex b, tas t, bibhash h,
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, tas t, bibhash h,
 				(SELECT b.simhash$simHash$ , MIN(b.content_id) AS content_id, xy.weight
 				FROM bibtex b,
 					(SELECT w.item, SUM(weight) AS weight 
@@ -86,9 +78,8 @@
 	</select>
 
 	<select id="getBibTexByTagNamesForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name
-		FROM 
-			(	<!-- select all publication posts from the user with the given tags -->
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name, <include refid="reviewRatingsRows" />
+		FROM  (	<!-- select all publication posts from the user with the given tags -->
 				SELECT t1.content_id
 				FROM <include refid="tagFromQuery"/>
 					WHERE <include refid="tagWhereQuery"/>
@@ -97,43 +88,43 @@
 						AND t1.user_name = #requestedUserName#
 					ORDER BY t1.date DESC
 					LIMIT #limit# OFFSET #offset#
-			) AS tt
-			JOIN bibtex b USING (content_id) 
-			JOIN tas t USING (content_id)
-			JOIN groupids g  ON (b.group = g.group), 
-			bibhash h
-			WHERE <include refid="bibtexSimHash"/>
+			   ) AS tt
+		JOIN bibtex b USING (content_id)
+		JOIN tas t USING (content_id)
+		JOIN groupids g ON (b.group = g.group)
+		<include refid="reviewRatingsJoinPublication" />,
+		bibhash h
+		WHERE <include refid="bibtexSimHash"/>
 			  <include refid="sysTagsEntryType"/>
 			  <include refid="sysTagsYear"/> 
 		ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 	
 	<select id="getBibTexByTagNamesForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, 
-		g.group_name,<include refid="allDocumentAttributes"/>
-		FROM bibtex b, tas t, groupids g, bibhash h,
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name, <include refid="allDocumentAttributes"/>, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, tas t, groupids g, bibhash h,
 			(SELECT t1.content_id
-			FROM <include refid="tagFromQuery"/>			
+				FROM <include refid="tagFromQuery"/>			
 				WHERE <include refid="tagWhereQuery"/>
 					<include refid="restrictToGroups"/>
 					AND t1.content_type = #contentType#
 					AND t1.user_name = #requestedUserName#
 				ORDER BY t1.date DESC
-				LIMIT #limit# OFFSET #offset#) AS tt
-				LEFT JOIN document d USING(content_id) 
-				WHERE tt.content_id=b.content_id
-				AND tt.content_id=t.content_id
-				AND <include refid="bibtexSimHash"/>
-				AND g.group = b.group
-				<include refid="sysTagsEntryType"/>
-				<include refid="sysTagsYear"/>
-				ORDER BY b.date DESC, b.content_id DESC;
+				LIMIT #limit# OFFSET #offset#
+			) AS tt
+			LEFT JOIN document d USING(content_id) 
+		WHERE tt.content_id = b.content_id
+			AND tt.content_id = t.content_id
+			AND <include refid = "bibtexSimHash"/>
+			AND g.group = b.group
+			<include refid="sysTagsEntryType"/>
+			<include refid="sysTagsYear"/>
+		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
 	<select id="getJustBibTexByTagNamesForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, 
-		g.group_name, tt.*
-		FROM bibtex b, tas t, groupids g, bibhash h,
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name, tt.*, <include refid="reviewRatingsRows" />
+		FROM bibtex b  <include refid="reviewRatingsJoinPublication" />, tas t, groupids g, bibhash h,
 			(SELECT t1.content_id, <include refid="allDocumentAttributes"/>
 			FROM document d, <include refid="tagFromQuery"/>			
 				WHERE <include refid="tagWhereQuery"/>
@@ -143,13 +134,13 @@
 					AND d.content_id = t1.content_id
 				ORDER BY t1.date DESC
 				LIMIT #limit# OFFSET #offset#) AS tt
-				WHERE tt.content_id=b.content_id
-				AND tt.content_id=t.content_id
-				AND <include refid="bibtexSimHash"/>
-				AND g.group = b.group
-				<include refid="sysTagsEntryType"/>
-				<include refid="sysTagsYear"/>
-				ORDER BY b.date DESC, b.content_id DESC;
+		WHERE tt.content_id=b.content_id
+			AND tt.content_id=t.content_id
+			AND <include refid="bibtexSimHash"/>
+			AND g.group = b.group
+			<include refid="sysTagsEntryType"/>
+			<include refid="sysTagsYear"/>
+		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 
 	<select id="getBibTexByTagNamesForUserCount" resultClass="int" parameterClass="bibtexParam">
@@ -162,8 +153,8 @@
 	</select>
 
 	<select id="getBibTexByConceptForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name
-		FROM bibtex b, tas t, groupids g, bibhash h,
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, tas t, groupids g, bibhash h,
 		     (SELECT DISTINCT b.content_id
 		      FROM bibtex b, <include refid="conceptFromQuery"/>
 		      WHERE <include refid="conceptWhereQuery"/>
@@ -183,8 +174,8 @@
 	</select>
 
 	<select id="getBibTexByUserFriends" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, g.group, h.ctr AS count
-		FROM bibtex b, bibhash h,
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, g.group, h.ctr AS count, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
 			(SELECT content_id, date                <!-- publications from users of group which currUser may see -->
 			 FROM bibtex b, friends f
 			 WHERE f.f_user_name = #userName#       <!-- to see, which users have currUser as friend -->
@@ -201,7 +192,7 @@
 	</select>
 	
 	<select id="getBibTexByFollowedUsers" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, g.group, h.ctr AS count
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, g.group, h.ctr AS count,  <include refid="reviewRatingsRows" />
 		FROM (SELECT b.*                             <!-- publications from users currUser is following which currUser may see -->
 			  FROM bibtex b, followers f
 			  WHERE f.user_name = #userName#         <!-- retrieve all people wich currUser is following -->
@@ -211,27 +202,27 @@
 			  ORDER BY date DESC
 			  LIMIT #limit# OFFSET #offset# ) AS b
 		JOIN bibhash h ON <include refid="bibtexSimHash"/>                         <!-- join counts -->
-		LEFT JOIN bibtex my ON b.simHash1=my.simHash1 AND my.user_name=#userName#  <!--  exclude posts of logged-in user (1) -->
-		LEFT OUTER JOIN tas AS t ON b.content_id = t.content_id, groupids AS g     <!-- join with tas (get tags) -->
+		LEFT JOIN bibtex my ON b.simHash1 = my.simHash1 AND my.user_name = #userName#  <!--  exclude posts of logged-in user (1) -->
+		LEFT OUTER JOIN tas AS t ON b.content_id = t.content_id <include refid="reviewRatingsJoinPublication" />, groupids AS g     <!-- join with tas (get tags) -->
 		WHERE t.group = g.group                                                    <!-- join groupname -->
 		      AND my.user_name IS NULL											   <!--  exclude posts of logged-in user (2) -->
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>	
 
 	<select id="getBibTexFromBasketForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT content_id, date
 		      FROM collector
 		      WHERE user_name = #userName#
-		      LIMIT #limit# OFFSET #offset#) AS c
-		LEFT OUTER JOIN tas AS t ON c.content_id = t.content_id, bibtex b, bibhash h
-		WHERE b.content_id = c.content_id
+		      LIMIT #limit# OFFSET #offset#) AS ba
+		LEFT OUTER JOIN tas AS t ON ba.content_id = t.content_id, bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h
+		WHERE b.content_id = ba.content_id
 		      AND <include refid="bibtexSimHash"/>
-		ORDER BY c.date DESC, content_id DESC		
+		ORDER BY ba.date DESC, content_id DESC		
 	</select>
 	
 	<select id="getBibTexForHomepage" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, b.ctr as count, NULL AS `group`, NULL AS group_name
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, b.ctr as count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT b.*, h.ctr
 		      FROM bibtex b FORCE INDEX (group_date_content_id_idx), bibhash h
 		      WHERE `group` = #groupId#
@@ -239,19 +230,19 @@
 		            <include refid="sysTagsEntryType"/>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
-		LEFT OUTER JOIN tas t ON b.content_id=t.content_id
+		LEFT OUTER JOIN tas t ON b.content_id = t.content_id
+		<include refid="reviewRatingsJoinPublication" />
 		ORDER BY b.date DESC, b.content_id DESC 
 	</select>
 
 	<select id="getBibTexByHash" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, b.`group`, g.group_name
-		FROM (SELECT b2.*
-		      FROM bibtex b2
-		      WHERE simhash$simHash$ = #hash#
-		            AND `group` = #groupId#
-		      ORDER BY date DESC
-		      LIMIT #limit# OFFSET #offset#) AS b
-		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, bibhash h, groupids g
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, b.`group`, g.group_name, <include refid="reviewRatingsRows" />
+		FROM (
+			SELECT b2.*  FROM bibtex b2 WHERE simhash$simHash$ = #hash# AND `group` = #groupId# ORDER BY date DESC LIMIT #limit# OFFSET #offset#) AS b
+				LEFT OUTER JOIN tas t ON b.content_id = t.content_id
+				<include refid="reviewRatingsJoinPublication" />,
+			bibhash h,
+		    groupids g
 		WHERE <include refid="bibtexSimHash"/>
 			AND b.group = g.group
 		ORDER BY b.date DESC, b.content_id DESC
@@ -261,20 +252,20 @@
 		SELECT ctr FROM bibhash WHERE hash = #hash# AND type = #simHash#
 	</select>
 
+	<!-- TODO: there is no table bibtx and no simHash property (unused statement?)-->
 	<select id="getBibTexByHashAndUserCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT ctr FROM bibhash h LEFT JOIN bibtx b ON (h.hash = b.simhash$simhash$)
 		WHERE h.hash = #hash# AND h.type = #simHash# AND b.user_name = #userName#
 	</select>
 
 	<select id="getBibTexByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>
-		FROM (SELECT * 
-		      FROM bibtex t1
+		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>, <include refid="reviewRatingsRows" />
+		FROM (SELECT * FROM bibtex t1
 		      WHERE simhash$simHash$ = #hash#
 		            <include refid="inGroups"/>
 		            AND user_name = #requestedUserName#
 		      ORDER BY date DESC) AS b2
-		LEFT OUTER JOIN tas t ON b2.content_id = t.content_id, bibhash h, groupids g
+		LEFT OUTER JOIN tas t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, bibhash h, groupids g
 		WHERE <include refid="bibtexSimHash2"/>
 		      AND b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
@@ -285,7 +276,7 @@
 		The next post is either in the bibtex table or already in the log_bibtex table (or deleted).
 	 -->	
 	<select id="getLoggedHashesByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-	  SELECT 0 AS count, '' AS tag_name, b.*, g.* FROM 
+	  SELECT 0 AS count, '' AS tag_name, b.*, g.*, <include refid="reviewRatingsRows" /> FROM 
 	    (
 	    	SELECT * FROM (
 				SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, b.group
@@ -306,13 +297,13 @@
 				) AS bb
 		) AS b
 		LEFT OUTER JOIN groupids g ON (b.group = g.group)
+		LEFT JOIN review_ratings_cache c ON (c.interHash = b.interHash) 
 		ORDER BY b.date DESC LIMIT 1
 	</select>
 
 
 	<select id="getBibTexFromInbox" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam" >
-		SELECT <include refid ="allBibtexAttributes"/>, t.tag_name, b.interHash, b.intraHash,
-				b.inbox_date, h.ctr AS count, NULL AS `group`, NULL AS group_name
+		SELECT <include refid ="allBibtexAttributes"/>, t.tag_name, b.interHash, b.intraHash, b.inbox_date, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (
 			SELECT *
 				FROM (
@@ -333,13 +324,13 @@
 			) AS b		
 		LEFT OUTER JOIN bibhash h ON <include refid="bibtexSimHash"/>
 		LEFT OUTER JOIN inbox_tas t USING(message_id)
+		<include refid="reviewRatingsJoinPublication" />
 		ORDER BY b.inbox_date DESC, b.content_id
 	</select>
 	
 	
 	<select id="getBibTexFromInboxByHash" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam" >
-		SELECT <include refid ="allBibtexAttributes"/>, t.tag_name, b.interHash, b.intraHash,
-				b.inbox_date, h.ctr AS count, NULL AS `group`, NULL AS group_name
+		SELECT <include refid ="allBibtexAttributes"/>, t.tag_name, b.interHash, b.intraHash, b.inbox_date, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (
 			SELECT *
 				FROM (
@@ -361,11 +352,12 @@
 			) AS b		
 		LEFT OUTER JOIN bibhash h ON <include refid="bibtexSimHash"/>
 		LEFT OUTER JOIN inbox_tas t USING(message_id)
+		<include refid="reviewRatingsJoinPublication" />
 		ORDER BY b.inbox_date DESC, b.content_id
 	</select>
 
 	<select id="getBibTexViewable" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, b.ctr as count, b.group, #requestedGroupName# AS group_name
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, b.ctr as count, b.group, #requestedGroupName# AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT <include refid ="bibtexAttributes2"/>, b2.simhash1, b2.simhash2, b2.group, h.ctr
 		      FROM bibtex b2, bibhash h
 		      WHERE b2.group = #groupId#
@@ -380,12 +372,13 @@
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
 		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id
+		<include refid="reviewRatingsJoinPublication" />
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 
 	<select id="getBibTexViewableByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
-		FROM bibtex b, tas t, bibhash h,
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
+		FROM bibtex b  <include refid="reviewRatingsJoinPublication" />, tas t, bibhash h,
 		     (SELECT t1.content_id
 		      FROM <include refid="tagFromQuery"/>
 		      WHERE <include refid="tagWhereQuery"/>
@@ -401,8 +394,8 @@
 	</select>
 
 	<select id="getBibTexDuplicate" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, g.group, h.ctr AS count
-		FROM bibtex b, bibhash h,
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, g.group, h.ctr AS count, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
 		     (SELECT b2.content_id, b2.date
 		      FROM (<include refid ="duplicatesCount"/>) AS b1
 		      JOIN bibtex b2 ON b1.simhash1 = b2.simhash1 AND b2.user_name = #requestedUserName#) AS bb
@@ -420,8 +413,8 @@
 	</select>
 
 	<select id="getBibTexForGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group
-		FROM bibtex b, bibhash h,
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
 		     ((SELECT content_id, date                <!-- publications from users of group which currUser may see -->
 		       FROM bibtex t1, groups g
 		       WHERE g.group = #groupId#
@@ -454,9 +447,8 @@
 	</select>
 
 	<select id="getBibTexForGroupWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group,
-		<include refid="allDocumentAttributes"/>
-		FROM bibtex b, bibhash h,
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="allDocumentAttributes"/>, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
 		     (
 		     SELECT ids.content_id, ids.date FROM  
 		     ((SELECT content_id, date                <!-- publications from users of group which currUser may see -->
@@ -492,9 +484,8 @@
 	</select>
 	
 	<select id="getJustBibTexForGroupWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group,
-		bb.*
-		FROM bibtex b, bibhash h,
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, bb.*, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
 		     (
 		     SELECT ids.content_id, ids.date, <include refid="allDocumentAttributes"/> FROM  
 		     ((SELECT content_id, date                <!-- publications from users of group which currUser may see -->
@@ -538,8 +529,8 @@
 	</select>
 
 	<select id="getBibTexForGroupByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group
-		FROM bibtex b, bibhash h, <include refid="selectContentIDs"/>
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h, <include refid="selectContentIDs"/>
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
@@ -550,8 +541,8 @@
 	</select> 
 	
 	<select id="getBibTexForGroupByTagWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="allDocumentAttributes"/>
-		FROM bibtex b, bibhash h, <include refid="selectContentIDs"/>
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="allDocumentAttributes"/>, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h, <include refid="selectContentIDs"/>
 		LEFT JOIN document d USING(content_id) 	
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
@@ -563,8 +554,8 @@
 	</select> 
 	
 	<select id="getJustBibTexForGroupByTagWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, bb.*
-		FROM bibtex b, bibhash h, <include refid="selectContentIDsWithDocuments"/>
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, bb.*, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h, <include refid="selectContentIDsWithDocuments"/>
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
@@ -581,7 +572,7 @@
 		otherwise used. 
 	 -->
 	<select id="getBibTexForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.*, h.ctr AS count
 		      FROM bibtex t1 FORCE INDEX(user_name_date_content_id_idx), bibhash h
 		      WHERE <include refid="bibtexSimHash3"/>
@@ -591,13 +582,13 @@
 			  		<include refid="sysTagsYear"/>		            
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
-		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
 	<select id="getBibTexForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, <include refid="allDocumentAttributes"/> 
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, <include refid="allDocumentAttributes"/>, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.*, h.ctr AS count
 		      FROM bibtex t1, bibhash h
 		      WHERE <include refid="bibtexSimHash3"/>
@@ -608,13 +599,13 @@
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT JOIN document d USING(content_id) 
-		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
 	<select id="getJustBibTexForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, b2.*
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, b2.*, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.*, h.ctr AS count, <include refid="allDocumentAttributes"/>
 		      FROM bibtex t1, bibhash h, document d
 		      WHERE <include refid="bibtexSimHash3"/>
@@ -625,7 +616,7 @@
 			  		<include refid="sysTagsYear"/>	
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
-		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
@@ -673,7 +664,7 @@
 	</delete>
 
 	<select id="getBibTexByConceptByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributes"/>, b.interHash, b.intraHash, t.tag_name, b.ctr AS count, NULL AS `group`, NULL AS group_name
+		SELECT <include refid ="allBibtexAttributes"/>, b.interHash, b.intraHash, t.tag_name, b.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 			   FROM (SELECT <include refid="bibtexAttributes2"/>, h.ctr,
 							<iterate property="tagIndex" conjunction=",">
 								MAX(IF (LCASE(upper) = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
@@ -695,6 +686,7 @@
 			   		 ORDER BY t.date DESC
 			   		 LIMIT #limit# OFFSET #offset# ) AS b 
 			   JOIN tas t ON b.content_id = t.content_id
+			   LEFT JOIN review_ratings_cache c ON (c.interHash = b.interHash)
 			   <isNotNull property="systemTags.EntryType">
 					<isNotNull property="systemTags.EntryType.entryType">		
 						WHERE b.entrytype = #systemTags.EntryType.entryType#
@@ -705,7 +697,7 @@
 	</select>
 
 	<select id="getBibTexByConceptForGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributes"/>, b.interHash, b.intraHash, t.tag_name, b.ctr AS count, NULL AS `group`, NULL AS group_name
+		SELECT <include refid ="allBibtexAttributes"/>, b.interHash, b.intraHash, t.tag_name, b.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (
 				SELECT <include refid="bibtexAttributes2"/>, h.ctr,
 				<iterate property="tagIndex" conjunction=",">
@@ -738,6 +730,7 @@
 			   	LIMIT #limit# OFFSET #offset# 
 		) AS b 
 		JOIN tas t ON b.content_id = t.content_id
+		LEFT JOIN review_ratings_cache c ON c.interHash = b.interHash
 		<isNotNull property="systemTags.EntryType">
 			<isNotNull property="systemTags.EntryType.entryType">		
 				WHERE b.entrytype = #systemTags.EntryType.entryType#
@@ -771,8 +764,8 @@
 	</select>
 	
 	<select id="getBibTexForMyGroupPosts" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
-		FROM (SELECT <include refid ="allBibtexAttributes"/>,b.simhash1,b.simhash2, 
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
+		FROM (SELECT <include refid ="allBibtexAttributes"/>, b.simhash1, b.simhash2, 
 			  h.ctr AS count,gts.group
 		      FROM (SELECT * FROM grouptas t 
 		      			WHERE t.user_name = #requestedUserName# 
@@ -785,14 +778,14 @@
 			  <include refid="sysTagsEntryType"/>
 			  ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
-		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
 	<select id="getBibTexForMyGroupPostsByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
-		FROM (SELECT <include refid ="allBibtexAttributes"/>,b.simhash1,b.simhash2, 
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
+		FROM (SELECT <include refid ="allBibtexAttributes"/>, b.simhash1, b.simhash2, 
 			  h.ctr AS count,gt1.group
 		      FROM (SELECT * FROM grouptas t 
 		      			WHERE t.user_name = #requestedUserName# 
@@ -820,7 +813,7 @@
 			  </iterate>
 			  ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
-		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>

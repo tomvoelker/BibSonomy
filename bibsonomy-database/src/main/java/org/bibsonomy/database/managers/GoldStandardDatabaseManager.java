@@ -20,6 +20,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.FirstListChainElement;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
+import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
@@ -114,19 +115,30 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		return post;
 	}
 	
-	@SuppressWarnings("unchecked")
-	protected Set<RR> getRefencedByForPost(final String resourceHash, final DBSession session) {
-		return new HashSet<RR>(this.queryForList("get" + this.resourceClassName + "RefercencedBy", resourceHash, session));
-	}
+	
 
 	@SuppressWarnings("unchecked")
 	protected Post<R> getGoldStandardPostByHash(final String resourceHash, final DBSession session) {
-		return (Post<R>) this.queryForObject("get" + this.resourceClassName + "ByHash", resourceHash, session);
+		final ResourceParam<Resource> param = createResourceParam(resourceHash);
+		return (Post<R>) this.queryForObject("get" + this.resourceClassName + "ByHash", param, session);
+	}
+
+	private ResourceParam<Resource> createResourceParam(final String resourceHash) {
+		final ResourceParam<Resource> param = new ResourceParam<Resource>();
+		param.setHash(resourceHash);
+		return param;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected Set<RR> getRefencedByForPost(final String resourceHash, final DBSession session) {
+		final ResourceParam<Resource> param = createResourceParam(resourceHash);
+		return new HashSet<RR>(this.queryForList("get" + this.resourceClassName + "RefercencedBy", param, session));
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencesForPost(final String interHash, final DBSession session) {
-		return new HashSet<RR>(this.queryForList("get" + this.resourceClassName + "Refercences", interHash, session));
+		final ResourceParam<Resource> param = createResourceParam(interHash);
+		return new HashSet<RR>(this.queryForList("get" + this.resourceClassName + "Refercences", param, session));
 	}
 	
 	@Override

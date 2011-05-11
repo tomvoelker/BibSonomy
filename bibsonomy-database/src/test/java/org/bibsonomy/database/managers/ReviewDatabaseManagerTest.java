@@ -77,22 +77,22 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	@Test
 	public void testCache() {
-		final double average = testManager.getReviewRatingsAverage(HASH);
+		final double average = testManager.getReviewRatingsArithmeticMean(HASH);
 		int numberOfReviews = testManager.getReviewCount(HASH);
 		this.insertReview(USERNAME_2, HASH, 4.5, "Great job!");
 		final double average2 = calcNewAvarage(average, 4.5, numberOfReviews);
 		numberOfReviews++;
-		assertEquals(average2, testManager.getReviewRatingsAverage(HASH), 0.000000001);
+		assertEquals(average2, testManager.getReviewRatingsArithmeticMean(HASH), 0.000000001);
 		
 		this.insertReview(USERNAME_3, HASH, 4, "Great job! You're awesome!");
 		
 		final double average3 = calcNewAvarage(average2, 4, numberOfReviews);
 		numberOfReviews++;
 		
-		assertEquals(average3, testManager.getReviewRatingsAverage(HASH), 0.000000001);
+		assertEquals(average3, testManager.getReviewRatingsArithmeticMean(HASH), 0.000000001);
 		
 		this.deleteReview(USERNAME_3, HASH);
-		assertEquals(average2, testManager.getReviewRatingsAverage(HASH), 0.000000001);
+		assertEquals(average2, testManager.getReviewRatingsArithmeticMean(HASH), 0.000000001);
 		
 		this.deleteReview(USERNAME_2, HASH);
 	}
@@ -102,8 +102,8 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		reviewManager.markReview(USERNAME_2, HASH_WITH_RATING, RATING_USERNAME, true, this.dbSession);
 		final Review review = reviewManager.getReviewForPostAndUser(HASH_WITH_RATING, RATING_USERNAME, this.dbSession);
 		
-		assertEquals(2, review.getNotHelpful());
-		assertEquals(1, review.getHelpful());
+		assertEquals(2, review.getNotHelpfulCount());
+		assertEquals(1, review.getHelpfulCount());
 	}
 	
 	@Test

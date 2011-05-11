@@ -26,6 +26,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
+import org.bibsonomy.testutil.TestDatabaseManager;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,6 +46,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static UserDatabaseManager userDb;
 	private static GroupDatabaseManager groupDb;
 	private static BibTexDatabaseManager bibTexDb;
+	private static TestDatabaseManager testDb;
 	
 
 	/**
@@ -56,6 +58,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		userDb = UserDatabaseManager.getInstance();
 		bibTexDb = BibTexDatabaseManager.getInstance();
 		groupDb = GroupDatabaseManager.getInstance();
+		testDb = new TestDatabaseManager();
 	}
 
 	
@@ -284,7 +287,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void deleteUser() {
 		// create a new user object, use a name of the test databases, in this case "testuser2"
-		User user = new User("testuser2");
+		final User user = new User("testuser2");
 		
 		// get groups for this user. testuser should be member of testgroup1
 		List<Group> groups = groupDb.getGroupsForUser(user.getName(), true, this.dbSession);
@@ -308,6 +311,18 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		groups = groupDb.getGroupsForUser(user.getName(), true, this.dbSession);
 		assertEquals(0, groups.size());
 		
+		/*
+		 * check if all reviews and marks by the user are deleted
+		 */
+		final int reviewCount = testDb.getReviewCountForUser(user.getName());
+		assertEquals(0, reviewCount);
+		
+		final int markedReviewsCount = testDb.getMarkReviewCountForUser(user.getName());
+		assertEquals(0, markedReviewsCount);
+		
+		final int marksOfUserCount = testDb.getMarkOfUserReviewCount(user.getName());
+		assertEquals(0, marksOfUserCount);
+		
 		// but it should be flagged as spammer
 		assertEquals(true, newTestuser.getSpammer());
 				
@@ -319,24 +334,20 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// there should be at least more then one post with that negative group id
 		assertNotNull(posts);
-				
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void deleteGroup() {
 		// create a new user object which has a groupname
-		User testUserIsGroup = new User();
-		testUserIsGroup.setName("testgroup1");
-		
+		final User testUserIsGroup = new User("testgroup1");
 		// if anybody tries to delete a user which is a group should get an exception
-		try {
-			userDb.deleteUser(testUserIsGroup.getName(), this.dbSession);
-			fail("expected exception");
-		} catch (RuntimeException ignore) {
-		}
-		
+		userDb.deleteUser(testUserIsGroup.getName(), this.dbSession);
 	}
 
 	/**
     	 * Test the user authentication via API key
     	 */
-    	@Test
+    @Test
 	public void validateUserAccessByAPIKey() {
     	    // not logged in (wrong apikey) = unknown user
     	    assertNull(userDb.validateUserAccessByAPIKey("testuser1", "ThisIsJustAFakeAPIKey", this.dbSession).getName());

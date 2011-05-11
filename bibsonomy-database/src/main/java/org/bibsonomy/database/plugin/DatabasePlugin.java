@@ -229,7 +229,8 @@ public interface DatabasePlugin {
 	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session);
 
 	/**
-	 * TODODZ
+	 * called when a review was updated
+	 * 
 	 * @param interHash
 	 * @param oldReview
 	 * @param review
@@ -239,7 +240,8 @@ public interface DatabasePlugin {
 	public Runnable onReviewUpdated(String interHash, Review oldReview, Review review, DBSession session);
 
 	/**
-	 * TODODZ
+	 * called when a review was deleted
+	 * 
 	 * @param interHash
 	 * @param oldReview
 	 * @param session
@@ -248,7 +250,8 @@ public interface DatabasePlugin {
 	public Runnable onReviewDeleted(String interHash, Review oldReview, DBSession session);
 	
 	/**
-	 * TODODZ
+	 * called when a review was created
+	 * 
 	 * @param interHash
 	 * @param review
 	 * @param session

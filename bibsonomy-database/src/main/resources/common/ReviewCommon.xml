@@ -3,13 +3,13 @@
 
 <sqlMap namespace="ReviewCommon">
 	<resultMap id="review" class="review">
-		<result property="date" 		column="date"				javaType="date" />
-		<result property="changeDate"	column="change_date"		javaType="date" />
-		<result property="text"	    	column="text"				javaType="string" />
-		<result property="rating"		column="rating" 			javaType="double" />
-		<result property="user"			resultMap="Common.user" 	/>
-		<result property="helpful"  	column="helpful_count"		javaType="int" />
-		<result property="notHelpful" 	column="not_helpful_count"	javaType="int" />
+		<result property="date" 			column="date"				javaType="date" />
+		<result property="changeDate"		column="change_date"		javaType="date" />
+		<result property="text"	    		column="text"				javaType="string" />
+		<result property="rating"			column="rating" 			javaType="double" />
+		<result property="helpfulCount" 	column="helpful_count"		javaType="int" />
+		<result property="notHelpfulCount" 	column="not_helpful_count"	javaType="int" />
+		<result property="user"				resultMap="Common.user" 	/>
 	</resultMap>
 	
 	<sql id="allReviewRows">
@@ -20,7 +20,23 @@
 		interHash, user_name, mark_user_name, helpful
 	</sql>
 	
-	<sql id="allRatingAttributes">
-		rating_avg, number_of_ratings
+	<sql id="reviewRatingsRows">
+		c.rating_$ratingAverage$ AS rating, c.number_of_ratings
+	</sql>
+	
+	<sql id="reviewRatingsJoinBookmark">
+		LEFT JOIN review_ratings_cache c ON (c.interHash = b.book_url_hash)
+	</sql>
+	
+	<sql id="reviewRatingsJoinBookmark2">
+		LEFT JOIN review_ratings_cache c ON (c.interHash = bb.book_url_hash)
+	</sql>
+	
+	<sql id="reviewRatingsJoinPublication">
+		LEFT JOIN review_ratings_cache c ON (c.interHash = b.simhash1)
+	</sql>
+	
+	<sql id="reviewRatingsJoinPublication2">
+		LEFT JOIN review_ratings_cache c ON (c.interHash = b2.simhash1)
 	</sql>
 </sqlMap>

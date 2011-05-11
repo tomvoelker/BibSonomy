@@ -3,8 +3,8 @@
 
 <sqlMap namespace="Bookmark">
 	<select id="getBookmarkByTagNames" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
-		FROM bookmark b, urls u, tas t,
+		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
+		FROM bookmark b <include refid="reviewRatingsJoinBookmark" />, urls u, tas t,
 		     (SELECT t1.content_id 
 		      FROM <include refid="tagFromQuery"/>
 		      WHERE <include refid="tagWhereQuery"/>
@@ -27,8 +27,8 @@
 	</select>
 	
 	<select id="getBookmarkByTagNamesAndFolkrank" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
-		FROM bookmark b, urls u, tas t,
+		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
+		FROM bookmark b <include refid="reviewRatingsJoinBookmark" />, urls u, tas t,
 		     (SELECT b.book_url_hash, MIN(b.content_id) AS content_id, xy.weight
 		     FROM  bookmark b,
 			     (SELECT w.item, SUM(weight) AS weight
@@ -50,7 +50,7 @@
 
 	<select id="getBookmarkByTagNamesForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>,
-		       u.book_url, u.book_url_ctr AS count, t.tag_name, g.group, g.group_name
+		       u.book_url, u.book_url_ctr AS count, t.tag_name, g.group, g.group_name, <include refid="reviewRatingsRows" />
 		FROM 
 			(   <!-- select all bookmark posts from the user with the given tags -->
 				SELECT t1.content_id
@@ -66,6 +66,7 @@
 		  	JOIN tas t USING (content_id)
 		  	JOIN groupids g ON (b.group = g.group)
 		  	JOIN urls u ON (b.book_url_hash = u.book_url_hash)
+		  	<include refid="reviewRatingsJoinBookmark" />
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
@@ -79,8 +80,8 @@
 	</select>
 
 	<select id="getBookmarkByConceptForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
-		       a.date, a.change_date, a.book_url_ctr AS count, gi.group_name, t.user_name, gi.group
+		SELECT bb.content_id, t.tag_name, bb.book_url, bb.book_url_hash AS interhash, bb.book_url_hash AS intrahash, title, description,
+		       bb.date, bb.change_date, bb.book_url_ctr AS count, gi.group_name, t.user_name, gi.group, <include refid="reviewRatingsRows" />
 		FROM (SELECT DISTINCT b.content_id, u.book_url, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
 		                      b.date, b.change_date, u.book_url_ctr, b.group
 		      FROM bookmark b, urls u, <include refid="conceptFromQuery"/>
@@ -92,17 +93,17 @@
 		            AND t1.content_id = b.content_id
 		      GROUP BY b.content_id
 		      ORDER BY t1.date DESC
-		      LIMIT #limit# OFFSET #offset#) AS a
-		LEFT OUTER JOIN tas AS t ON a.content_id = t.content_id, groupids gi
-		WHERE a.group = gi.group
-		ORDER BY a.date DESC, a.content_id DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids gi
+		WHERE bb.group = gi.group
+		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
     <!-- This query has to respect spammer tags, i.e. it does not show posts, which contain
          a tag from the spammer_tags table	 -->
 	<select id="getBookmarkForHomepage" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>,
-		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name
+		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.change_date, b.book_url_hash
 		      FROM (SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.change_date, b.book_url_hash
 		      		FROM bookmark b
@@ -118,13 +119,14 @@
 		     LIMIT #limit# OFFSET #offset#) as b
 		LEFT JOIN tas AS t USING (content_id)
 		JOIN urls u USING (book_url_hash)
+		<include refid="reviewRatingsJoinBookmark" />
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
 	<!-- This is the query for the unfiltered home page, i.e., posts which contain blacklisted tags are NOT filtered -->
 	<select id="getBookmarkForHomepageUnfiltered" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>,
-		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name
+		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		  FROM (
 		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash, b.change_date
 	      	  FROM bookmark b
@@ -133,23 +135,16 @@
 		      LIMIT #limit# OFFSET #offset#) as b
 		    LEFT JOIN tas AS t USING (content_id)
 		    JOIN urls u USING (book_url_hash)
+		    <include refid="reviewRatingsJoinBookmark" />
 		  ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
-	<!-- <select id="getBookmarkPopular" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
-		FROM temp_bookmark b
-		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id, urls u
-		WHERE u.book_url_hash = b.book_url_hash
-		ORDER BY b.rank
-	</select>-->
-	
 	<select id="getBookmarkPopular" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
+		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT *, date AS change_date FROM temp_bookmark b2 
 			  WHERE b2.popular_days = (SELECT popular_days FROM temp_bookmark GROUP BY popular_days ORDER by popular_days LIMIT 1 OFFSET #days#)
 			  ORDER BY b2.rank LIMIT #limit# OFFSET #offset#) b
-		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id, urls u
+		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id <include refid="reviewRatingsJoinBookmark" />, urls u
 		WHERE u.book_url_hash = b.book_url_hash
 		ORDER BY b.rank 
 	</select>
@@ -161,8 +156,8 @@
 	<select id="getBookmarkByUserFriends" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, b.book_description AS title,
 		       b.book_extended AS description, bb.date, u.book_url, u.book_url_ctr AS count, t.tag_name, g.group_name,
-		       t.user_name, b.`group`, b.change_date
-	    FROM urls u, bookmark b,
+		       t.user_name, b.`group`, b.change_date, <include refid="reviewRatingsRows" />
+	    FROM urls u, bookmark b <include refid="reviewRatingsJoinBookmark" />,
 	         (SELECT content_id, date                 <!-- bookmarks from users of group which currUser may see -->
 	          FROM bookmark b, friends f
 	          WHERE f.f_user_name = #userName#        <!-- to see, which users have currUser as friend -->
@@ -180,7 +175,7 @@
 	<select id="getBookmarkByFollowedUsers" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, b.book_description AS title,
 		       b.book_extended AS description, b.date, u.book_url, u.book_url_ctr AS count, t.tag_name, g.group_name,
-		       t.user_name, b.`group`, b.change_date
+		       t.user_name, b.`group`, b.change_date, <include refid="reviewRatingsRows" />
 	    FROM (SELECT b.*                               <!-- bookmarks from users of group which currUser may see -->
 	          FROM bookmark b, followers f
 	          WHERE f.user_name = #userName#           <!-- to see, which users are followed by currUser -->
@@ -191,7 +186,7 @@
        	      LIMIT #limit# OFFSET #offset#) AS b
        	JOIN urls u USING (book_url_hash)                                           <!-- join url -->
        	LEFT JOIN bookmark my ON b.book_url_hash=my.book_url_hash AND my.user_name='userName' <!--  exclude own posts (1) -->
-	   	LEFT OUTER JOIN tas AS t ON b.content_id = t.content_id, groupids AS g  <!-- join with tas -->
+	   	LEFT OUTER JOIN tas AS t ON b.content_id = t.content_id <include refid="reviewRatingsJoinBookmark" />, groupids AS g  <!-- join with tas -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		    AND my.user_name IS NULL											<!--  exclude own posts (2) -->
 		ORDER BY b.date DESC, b.content_id DESC
@@ -200,14 +195,14 @@
 
 	<select id="getBookmarkByHash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, b.content_id, t.tag_name, title, description, b.user_name, b.date, 
-		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, b.change_date
+		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, b.change_date, <include refid="reviewRatingsRows" />
 		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, content_id, t1.group, t1.change_date
 		      FROM bookmark t1
 		      WHERE book_url_hash = #hash#
 		            <include refid="restrictToGroups"/>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
-		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, urls u, groupids g
+		LEFT OUTER JOIN tas t ON b.content_id = t.content_id <include refid="reviewRatingsJoinBookmark" />, urls u, groupids g
 		WHERE b.book_url_hash = u.book_url_hash
 			AND b.group = g.group
 		ORDER BY b.date DESC,b.content_id DESC
@@ -225,14 +220,14 @@
 
 	<select id="getBookmarkByHashForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*,bb.content_id, t.tag_name, title, description, bb.user_name, bb.date, bb.change_date,
-		       bb.book_url_hash AS interhash, bb.book_url_hash AS intrahash, u.book_url, u.book_url_ctr AS count, g.group_name
+		       bb.book_url_hash AS interhash, bb.book_url_hash AS intrahash, u.book_url, u.book_url_ctr AS count, g.group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, change_date, content_id, t1.group
 		      FROM bookmark t1
 		      WHERE book_url_hash = #hash#
 		            <include refid="inGroups"/>
 		            AND user_name = #requestedUserName#
 		      ORDER BY date DESC) AS bb
-		LEFT OUTER JOIN tas t ON bb.content_id = t.content_id, urls u, groupids g
+		LEFT OUTER JOIN tas t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, urls u, groupids g
 		WHERE bb.book_url_hash = u.book_url_hash
 		      AND bb.group = g.group
 		ORDER BY bb.date DESC, bb.content_id DESC
@@ -240,7 +235,7 @@
 
 	<select id="getBookmarkFromInbox" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.interhash, bb.intrahash, bb.description, bb.date, bb.user_name, t.tag_name,
-				bb.inbox_date, u.book_url, bb.title, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, bb.change_date
+				bb.inbox_date, u.book_url, bb.title, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, bb.change_date, <include refid="reviewRatingsRows" />
 		FROM (
 			SELECT *
 				FROM
@@ -266,13 +261,14 @@
 			) AS bb
 		LEFT OUTER JOIN urls u USING(book_url_hash)
 		LEFT OUTER JOIN inbox_tas t USING(message_id)
+		<include refid="reviewRatingsJoinBookmark2" />
 		ORDER BY bb.inbox_date DESC, bb.content_id
 	</select>
 
 
 	<select id="getBookmarkFromInboxByHash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.interhash, bb.intrahash, bb.description, bb.date, bb.user_name, t.tag_name,
-				bb.inbox_date, u.book_url, bb.title, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, bb.change_date
+				bb.inbox_date, u.book_url, bb.title, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, bb.change_date, <include refid="reviewRatingsRows" />
 		FROM (
 			SELECT *
 				FROM
@@ -299,12 +295,13 @@
 			) AS bb
 		LEFT OUTER JOIN urls u USING(book_url_hash)
 		LEFT OUTER JOIN inbox_tas t USING(message_id)
+		<include refid="reviewRatingsJoinBookmark2" />
 		ORDER BY bb.inbox_date DESC, bb.content_id
 	</select>
 	
 	<select id="getBookmarkViewable" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.user_name,bb.book_url_hash AS intraHash, bb.book_url_hash AS interHash, title, description,
-		       bb.date, bb.change_date, bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.group, #requestedGroupName# AS group_name
+		       bb.date, bb.change_date, bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.group, #requestedGroupName# AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT b.content_id, b.user_name, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
 		             b.date, b.change_date, u.book_url, u.book_url_ctr, b.group
 		      FROM bookmark b, urls u
@@ -313,12 +310,13 @@
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb
 		LEFT OUTER JOIN tas AS t ON t.content_id = bb.content_id
+		<include refid="reviewRatingsJoinBookmark2" />
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
 	<select id="getBookmarkViewableByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
-		FROM bookmark b, urls u, tas t,
+		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
+		FROM bookmark b <include refid="reviewRatingsJoinBookmark" />, urls u, tas t,
 		     (SELECT t1.content_id 
 		      FROM <include refid="tagFromQuery"/>
 		      WHERE <include refid="tagWhereQuery"/>
@@ -334,8 +332,8 @@
 
 	<select id="getBookmarkForGroup" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, b.book_url_hash AS interHash,b.book_url_hash AS intraHash, b.book_description AS title, b.book_extended AS description, bb.date, b.change_date, u.book_url,
-		       u.book_url_ctr AS count, t.tag_name, g.group_name, t.user_name, g.group
-		FROM urls u, bookmark b,
+		       u.book_url_ctr AS count, t.tag_name, g.group_name, t.user_name, g.group, <include refid="reviewRatingsRows" />
+		FROM urls u, bookmark b <include refid="reviewRatingsJoinBookmark" />,
 		     ((SELECT content_id, date                <!-- bookmarks from users of group which currUser may see -->
 		       FROM bookmark t1, groups g
 		       WHERE g.group = #groupId#
@@ -375,18 +373,18 @@
 
 	<select id="getBookmarkForGroupByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, b.book_description AS title, b.book_extended AS description, bb.date, b.change_date, u.book_url,
-		       u.book_url_ctr AS count, t.tag_name, g.group_name, t.user_name, g.group
-		FROM urls u, bookmark b, <include refid="selectContentIDs"/>
+		       u.book_url_ctr AS count, t.tag_name, g.group_name, t.user_name, g.group, <include refid="reviewRatingsRows" />
+		FROM urls u, bookmark b <include refid="reviewRatingsJoinBookmark" />, <include refid="selectContentIDs"/>
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
-		      AND u.book_url_hash=b.book_url_hash                                <!-- join url -->
-		      AND b.content_id=bb.content_id                                     <!-- join title, description, ... -->
+		      AND u.book_url_hash = b.book_url_hash                                <!-- join url -->
+		      AND b.content_id = bb.content_id                                     <!-- join title, description, ... -->
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
 	<select id="getBookmarkForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
-		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, bb.change_date
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, bb.change_date, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
 		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
 		      FROM bookmark t1, urls u
@@ -395,7 +393,7 @@
 		            <include refid="restrictToGroups"/>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb
-		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g
 		WHERE bb.group = g.group
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
@@ -429,8 +427,8 @@
 	</select>
 	
 	<select id="getBookmarkByConceptByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
-		       a.date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name, a.change_date
+			SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
+		       a.date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name, a.change_date, <include refid="reviewRatingsRows" />
 			   FROM (SELECT b.content_id, u.book_url, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
 		                      b.date, u.book_url_ctr, b.change_date,
 							<iterate property="tagIndex" conjunction=",">
@@ -453,12 +451,14 @@
 			   		 ORDER BY t.date DESC
 			   		 LIMIT #limit# OFFSET #offset# ) AS a 
 			   JOIN tas t ON a.content_id = t.content_id
-			   ORDER BY a.date DESC;	
+			   <!--  TODO: rename unify a use bb or b2 -->
+			   LEFT JOIN review_ratings_cache c ON c.interHash = a.book_url_hash
+			   ORDER BY a.date DESC;
 	</select>
 	
 	<select id="getBookmarkByConceptForGroup" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
-		       a.date, a.change_date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name
+		       a.date, a.change_date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT b.content_id, u.book_url, b.book_url_hash, 
 					 b.book_description AS title, b.book_extended AS description,
 		       		 b.date, b.change_date, u.book_url_ctr,
@@ -491,7 +491,9 @@
 			LIMIT #limit# OFFSET #offset# 
 		) AS a 
 		JOIN tas t ON a.content_id = t.content_id
-		ORDER BY a.date DESC;	
+		<!--  TODO: rename unify a use bb or b2 -->
+		LEFT JOIN review_ratings_cache c ON c.interHash = a.book_url_hash
+		ORDER BY a.date DESC
 	</select>
 
 	<select id="getGroupBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
@@ -520,7 +522,7 @@
 	
 	<select id="getBookmarkForMyGroupPosts" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
-			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name, bb.change_date 
+			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name, bb.change_date, <include refid="reviewRatingsRows" /> 
 		
 		FROM (SELECT gts.content_id, gts.date, gts.group, b.book_url_hash, b.change_date, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
 		      		 FROM (SELECT * FROM grouptas t 
@@ -533,14 +535,14 @@
 			  WHERE u.book_url_hash = b.book_url_hash
 			  ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb
-		LEFT JOIN tas t ON t.content_id = bb.content_id, groupids AS g 
+		LEFT JOIN tas t ON t.content_id = bb.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g 
 		WHERE bb.group = g.group 
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
 	<select id="getBookmarkForMyGroupPostsByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date, bb.change_date,
-			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name 
+			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name, <include refid="reviewRatingsRows" />
 		
 		FROM (SELECT t1.content_id, t1.date, t1.group, b.book_url_hash, b.change_date, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
 		      		 FROM (SELECT * FROM grouptas t 
@@ -559,7 +561,7 @@
 			  AND <include refid="tagWhereQuery"/> 
 			  ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb
-		LEFT JOIN tas t ON t.content_id = bb.content_id, groupids AS g 
+		LEFT JOIN tas t ON t.content_id = bb.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g 
 		WHERE bb.group = g.group 
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
