@@ -12,24 +12,37 @@
     <c:set var="ownReview" value="${loginUser.name eq review.user.name }" />
     
 	<div class="reviewinfo" data-username="${review.user.name}">
-		<div class="helpfulinfo">
-			<fmt:message key="post.resource.review.helpfulinfo">
-   				<fmt:param value="${review.helpful}" />
-   				<fmt:param value="${review.helpful + review.notHelpful}" />
-			</fmt:message>:
-		</div>
+		<c:set var="totalCount" value="${(review.helpfulCount + review.notHelpfulCount)}" />
+		<c:if test="${totalCount > 0}">
+			
+			<div class="helpfulinfo">
+				<c:choose>
+					<c:when test="${totalCount == 1}">
+						<fmt:message key="post.resource.review.helpfulinfo" />
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="post.resource.review.helpfulinfos">
+	   						<fmt:param value="${review.helpfulCount}" />
+	   						<fmt:param value="${totalCount}" />
+						</fmt:message>
+					</c:otherwise>
+				</c:choose>:
+			</div>
+		</c:if>
 		
 		<!-- TODO: admin actions for delete and edit review! -->
-		<c:if test="${ownReview}">
-			<div id="deleteSpinner" class="initiallyHidden"><img src="${resdir}/image/ajax_loader.gif" alt="loading" /><span id="deleteLoadingMessage"><fmt:message key="post.resource.review.action.delete" /></span></div>
-			<div class="reviewActions">(<a href="#editreview" id="reviewEdit"><fmt:message key="post.resource.review.actions.edit" /></a><c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/> <a href="/ajax/review" id="reviewDelete"><fmt:message key="post.resource.review.actions.delete" /></a>)</div>
-		</c:if>
 		
 		<div class="rating" data-rating="${review.rating}">
 			<reviews:stars rating="${review.rating}" />
 		</div>
-		<div class="reviewer">
-			<fmt:message key="post.resource.review.by"/><c:out value=" "/><a href="/user/${fn:escapeXml(review.user.name)}"><c:out value="${review.user.name}" /></a><c:out value=", "/><fmt:message key="post.resource.review.on"/><c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${review.date}"/>
+		<div class="reviewMeta">
+			<span class="reviewer">
+				<fmt:message key="post.resource.review.by"/><c:out value=" "/><a href="/user/${fn:escapeXml(review.user.name)}"><c:out value="${review.user.name}" /></a><c:out value=", "/><fmt:message key="post.resource.review.on"/><c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${review.date}"/>
+			</span>
+			<c:if test="${ownReview}">
+				<span id="deleteSpinner" class="initiallyHidden"><img src="${resdir}/image/ajax_loader.gif" alt="loading" /><span id="deleteLoadingMessage"><fmt:message key="post.resource.review.action.delete" /></span></span>
+				<span class="reviewActions">(<a href="#editreview" id="reviewEdit"><fmt:message key="post.resource.review.actions.edit" /></a><c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/> <a href="/ajax/review" id="reviewDelete"><fmt:message key="post.resource.review.actions.delete" /></a>)</span>
+			</c:if>
 		</div>
 	</div>
 	

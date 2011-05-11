@@ -16,8 +16,8 @@
 		<c:if test="${not empty review }">
 			<input type="hidden" value="PUT" name="_method"/>
 		</c:if>
-   		<input type="hidden" value="${ckey}" name="ckey"/>
-   		<input name="hash" type="hidden" value="${resource.interHash}" />
+   		<input name="ckey" value="${ckey}" type="hidden" />
+   		<input name="hash" value="${resource.interHash}" type="hidden" />
    		<div id="fsform">
    			
 			<fieldset class="fsOuter">
@@ -48,7 +48,7 @@
    					<textarea class="fsInput reqinput" rows="5" name="review.text" id="${id}ReviewText"><!-- text --><c:if test="${not empty review}"><c:out value="${review.text}" /></c:if></textarea>
    				</div>
    				<div class="fsRow">
-   					<fmt:message key="post.resource.review.action.${id}.button" var="buttonText" />
+   					<fmt:message key="post.resource.review.action.${id}" var="buttonText" />
    					<input type="submit" value="${buttonText}" />
    				</div>
    			</fieldset>
