@@ -1,3 +1,4 @@
+<!-- FIXME: general layout for a single resource page -->
 <jsp:root version="2.0"
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -13,14 +14,16 @@
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
-	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
-	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
+	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>
+	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" required="false" />
 	
 	<!-- 
 		store some locale messages in variables to be
 	    able to access them inside element attributes
 	-->
-	<c:set var="bookmarkRssFeed"><fmt:message key="feeds.bookmark"/></c:set>
+	<fmt:message key="feeds.bookmark" var="bookmarkRssFeed"/>
 	
 	<!--  actions (list navigation, editing entries, ...) are enabled by default -->
 	<c:if test="${empty disableActions}">
@@ -35,8 +38,17 @@
 		<jsp:attribute name="headerExt">
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
+			<c:if test="${not empty headerExt}">
+				<jsp:invoke fragment="headerExt"/>
+			</c:if>
 		</jsp:attribute>
+		
 		<jsp:attribute name="content">
+			<div id="general_100">
+			<c:if test="${not empty contentHeading}">
+				<jsp:invoke fragment="contentHeading" />
+			</c:if>
+			</div>
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 		</jsp:attribute>
 	</layout:layout>
