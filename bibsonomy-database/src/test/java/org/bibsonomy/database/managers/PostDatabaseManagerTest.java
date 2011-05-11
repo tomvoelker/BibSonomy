@@ -153,7 +153,7 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	@Test
 	public void testGetPostsViewableByTag() {
 		// TODO: placeholder to execute the sql statement please add a test to all post resource dm's
-		resourceDB.getPostsViewableByTag("", "", Collections.singletonList(new TagIndex("google", 1)), 0, null, 10, 0, Collections.<SystemTag>emptyList(), this.dbSession);
+		resourceDB.getPostsViewableByTag("", "", Collections.singletonList(new TagIndex("google", 1)), TESTGROUP1_ID, null, 10, 0, Collections.<SystemTag>emptyList(), this.dbSession);
 	}
 
 	/**
