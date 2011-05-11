@@ -83,6 +83,14 @@ public class AdditionalURLController extends AjaxController implements
 		}
 		
 		/*
+		 * Check if the given url is not empty
+		 */
+		if("".equals(command.getUrl())){
+			command.setResponseString(getXmlError("error.url.emptyUrl"));
+			return Views.AJAX_XML;
+		}
+		
+		/*
 		 * Check if the url is valid
 		 */
 		try {
