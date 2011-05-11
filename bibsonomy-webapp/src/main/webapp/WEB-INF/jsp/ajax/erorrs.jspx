@@ -16,13 +16,20 @@
 	<spring:hasBindErrors name="command">
 
 		<c:if test="${not empty errors.globalErrors}">
-			{ "errors" : [
-			<c:forEach var="error" items="${errors.globalErrors}">
-				{
-					"message" : "<spring:message javaScriptEscape="true" code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>"
-				},
-			<!-- FIXME: remove trailing comma, probably using varStatus="status" -->
-			</c:forEach>
+			{ 
+				"globalErrors" : 
+					[<c:forEach var="error" items="${errors.globalErrors}">
+						{
+							"message" : "<spring:message javaScriptEscape="true" code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>"
+						},
+						<!-- FIXME: remove trailing comma, probably using varStatus="status" -->
+					</c:forEach>],
+				"fieldErrors" : 
+					[<c:forEach var="error" items="${errors.fieldErrors}">
+						{
+							"field" : "${quoteJSON(error.field)}",
+							"message" : "<spring:message javaScriptEscape="true" code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>"						},
+					</c:forEach>]
 			}
 		</c:if>
 	</spring:hasBindErrors>
