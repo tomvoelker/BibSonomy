@@ -15,17 +15,16 @@ public class KeyTypeHandler implements TypeHandlerCallback{
 	}
 
 	public void setParameter(ParameterSetter param, Object value) throws SQLException {
-		KeyType keyType = (KeyType) value;
-		if( value!=null ) {
-			param.setString(keyType.name());
+		if( value!=null && value instanceof KeyType) {
+			param.setInt(((KeyType)value).ordinal());
 		}
 	}
 
 	public Object valueOf(String arg) {
 		if ("0".equals(arg)) {
-			return KeyType.RSA_PRIVATE;
+			return KeyType.values()[0];
 		} else if ("1".equals(arg)) {
-			return KeyType.HMAC_SYMMETRIC;
+			return KeyType.values()[1];
 		} else {
 			throw new RuntimeException("Given key type ('"+arg+"') not supported.");
 		}
