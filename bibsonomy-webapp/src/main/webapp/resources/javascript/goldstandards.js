@@ -166,7 +166,7 @@ function getPersonList(persons) {
 			result.push(' ');
 		}
 		
-		var author = authors[i];
+		var author = persons[i];
 		
 		// FIXME: last name is last string
 		var authorNameSplit = author.split(' ');
