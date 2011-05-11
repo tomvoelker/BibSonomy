@@ -20,9 +20,9 @@ public class Review {
 	
 	private double rating;
 	
-	private int helpful;
+	private int helpfulCount;
 
-	private int notHelpful;
+	private int notHelpfulCount;
 	
 	private String text;
 	
@@ -103,30 +103,30 @@ public class Review {
 	}
 
 	/**
-	 * @return the helpful
+	 * @return the helpfulCount
 	 */
-	public int getHelpful() {
-		return this.helpful;
+	public int getHelpfulCount() {
+		return this.helpfulCount;
 	}
 
 	/**
-	 * @param helpful the helpful to set
+	 * @param helpfulCount the helpfulCount to set
 	 */
-	public void setHelpful(int helpful) {
-		this.helpful = helpful;
+	public void setHelpfulCount(int helpfulCount) {
+		this.helpfulCount = helpfulCount;
 	}
 
 	/**
-	 * @return the notHelpful
+	 * @return the notHelpfulCount
 	 */
-	public int getNotHelpful() {
-		return this.notHelpful;
+	public int getNotHelpfulCount() {
+		return this.notHelpfulCount;
 	}
 
 	/**
-	 * @param notHelpful the notHelpful to set
+	 * @param notHelpfulCount the notHelpfulCount to set
 	 */
-	public void setNotHelpful(int notHelpful) {
-		this.notHelpful = notHelpful;
+	public void setNotHelpfulCount(int notHelpfulCount) {
+		this.notHelpfulCount = notHelpfulCount;
 	}
 }

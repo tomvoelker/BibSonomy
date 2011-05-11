@@ -1,5 +1,7 @@
 package org.bibsonomy.model.logic;
 
+import java.util.List;
+
 import org.bibsonomy.model.Review;
 
 /**
@@ -40,5 +42,10 @@ public interface ReviewLogicInterface {
 	 */
 	public void markReview(String username, String reviewUsername, String interHash, boolean helpful);
 	
-	
+	/**
+	 * 
+	 * @param interHash
+	 * @return a list of reviews
+	 */
+	public List<Review> getReviews(String interHash);	
 }
