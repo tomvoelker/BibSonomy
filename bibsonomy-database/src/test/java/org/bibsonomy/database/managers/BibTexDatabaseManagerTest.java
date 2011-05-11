@@ -218,6 +218,10 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		tagIndex4.add(new TagIndex("bibtexgroup", 1));
 		posts = publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertEquals(1, posts.size());
+		
+		// just call the sql statements
+		publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, FilterEntity.POSTS_WITH_DOCUMENTS, null, this.dbSession);
+		publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, FilterEntity.JUST_PDF, null, this.dbSession);
 	}
 
 	/**
@@ -405,7 +409,6 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 * set userName or visibleGroups
 	 */
 	@Override
-	// TODO: group id 0 und 2 ?
 	public void testGetPostsForGroupByTag() {
 		final List<Integer> visibleGroupIDs = Collections.singletonList(PUBLIC_GROUP_ID);
 		List<TagIndex> tagIndex = DBTestUtils.getTagIndex("testbibtex");
@@ -431,6 +434,10 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		post = publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
+		
+		// just call the sql statements
+		publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, FilterEntity.POSTS_WITH_DOCUMENTS, 10, 0, null, this.dbSession);
+		publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, FilterEntity.JUST_PDF, 10, 0, null, this.dbSession);
 	}
 
 	/**
