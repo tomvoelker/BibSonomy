@@ -40,9 +40,9 @@ public class ReviewAjaxController extends AjaxController implements Minimalistic
 		}
 		
 		if (!context.isValidCkey()) {
-			// TODO: only set http status??
 			errors.reject("error.field.valid.ckey");
-			return Views.ERROR;
+			this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return Views.AJAX_XML;
 		}
 		
 		final String hash = command.getHash();

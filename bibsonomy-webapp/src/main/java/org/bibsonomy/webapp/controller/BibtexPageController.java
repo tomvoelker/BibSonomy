@@ -198,6 +198,10 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
 				}
 			}
+			
+			if (!present(goldStandard)) {
+				command.setReviews(this.logic.getReviews(goldHash));
+			}
 
 			if (GroupingEntity.USER.equals(groupingEntity)) {
 				// bibtex/HASH/USER

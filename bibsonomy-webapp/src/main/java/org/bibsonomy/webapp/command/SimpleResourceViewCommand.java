@@ -1,11 +1,14 @@
 package org.bibsonomy.webapp.command;
 
+import java.util.List;
+
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Review;
 
 /**
  * command with fields for the resource lists (one list for each resource).
@@ -23,6 +26,8 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	private ListCommand<Post<GoldStandardPublication>> goldStandardPublications = new ListCommand<Post<GoldStandardPublication>>(this);
 	// TODO: move to listcommand or use the listCommand
 	private Post<GoldStandardPublication> goldStandardPublication;
+	
+	private List<Review> reviews;
 	
 	/**
 	 * @param <T> type of the entities in the list
@@ -100,6 +105,20 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	 */
 	public ListCommand<Post<GoldStandardPublication>> getGoldStandardPublications() {
 		return goldStandardPublications;
+	}
+
+	/**
+	 * @param reviews the reviews to set
+	 */
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
+	}
+
+	/**
+	 * @return the reviews
+	 */
+	public List<Review> getReviews() {
+		return reviews;
 	}
 	
 }
