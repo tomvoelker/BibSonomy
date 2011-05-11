@@ -1,3 +1,4 @@
+<!-- FIXME: general layout for a single resource page -->
 <jsp:root version="2.0"
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -25,8 +26,8 @@
 		store some locale messages in variables to be
 	    able to access them inside element attributes
 	-->
-	<c:set var="publicationRssFeed"><fmt:message key="feeds.publication"/></c:set>
-	<c:set var="burstRssFeed"><fmt:message key="feeds.burst"/></c:set>
+	<fmt:message key="feeds.publication" var="publicationRssFeed" />
+	<fmt:message key="feeds.burst" var="burstRssFeed" />
 	
 	<!--  actions (list navigation, editing entries, ...) are enabled by default -->
 	<c:if test="${empty disableActions}">
