@@ -2116,3 +2116,41 @@ function appendToToolbar() {
 		.append($("<div></div>").css({'clear':'both','height':'0'}).html('&nbsp;'))
 	);
 }
+
+/**
+ * create one-string representation of a list of strings
+ * 
+ * @param data
+ *            array of strings
+ * @param max_len
+ *            return the representing string cut down to the size of
+ *            max_len
+ * @param delim
+ * @return one string, containing concatenation of all strings,
+ *         separated by either '\n' or the supplied delimeter
+ */
+function concatArray(data, max_len, delim) {
+	var retVal = "";
+	var entry;
+	if(delim == null) {
+		delim = "\n";
+	}
+	for(entry in data) {
+		retVal += data[entry] + ((entry < data.length-1)?delim:"");
+	}
+	return ((max_len != null) && (retVal.length > max_len))?retVal.substr(0, max_len)+"...":retVal;
+}
+
+function createParameters(title) {
+	if(title[title.length-1] == " ") {
+		title = title.substr(0, title.length-1);
+	}
+	var partials = title.split(" ");
+	title = "";
+
+	for(i = 0; i < parseInt(partials.length); i++) {
+		title += "sys:title:"+encodeURIComponent(partials[i])+((i+1 < parseInt(partials.length))?"+":"*"); 
+	}
+
+	return title;
+}
