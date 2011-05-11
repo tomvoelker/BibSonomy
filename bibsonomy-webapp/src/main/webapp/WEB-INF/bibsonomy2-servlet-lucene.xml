@@ -20,6 +20,15 @@
 	<bean id="luceneGenerateBibTexIndex" class="org.bibsonomy.lucene.util.generator.LuceneGenerateBibTexIndex" factory-method="getInstance"/>
 	<bean id="luceneGenerateBookmarkIndex" class="org.bibsonomy.lucene.util.generator.LuceneGenerateBookmarkIndex" factory-method="getInstance"/>
 	<bean id="luceneGenerateGoldStandardPublicationIndex" class="org.bibsonomy.lucene.util.generator.LuceneGenerateGoldStandardPublicationIndex" factory-method="getInstance"/>
+	
+	<!-- lucene publication searcher -->
+	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.search.LuceneSearchBibTex" factory-method="getInstance"/>
+	
+	<!-- lucene bookmark searcher -->
+	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneSearchBookmarks" factory-method="getInstance"/>
+	
+	<!-- lucene gold standard publication searcher -->
+	<bean id="luceneGoldStandardPublicationSearch" class="org.bibsonomy.lucene.search.LuceneSearchGoldStandardPublications" factory-method="getInstance"/>	
 
 	<!-- update jobs without index optimization -->
 	<bean id="luceneUpdateBibTexJobWithoutIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
