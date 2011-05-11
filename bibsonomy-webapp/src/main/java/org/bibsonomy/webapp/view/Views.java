@@ -283,6 +283,10 @@ public enum Views implements View {
 	 */
 	ADMIN_GROUP("actions/admin/group"),
 	/**
+	 * manage OAuth consumer keys
+	 */
+	ADMIN_OAUTH("actions/admin/oauth"),
+	/**
 	 * general admin page
 	 */
 	ADMIN("actions/admin/index"),

@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.command.opensocial;
 import net.oauth.OAuthConsumer;
 
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
@@ -31,6 +32,8 @@ public class OAuthCommand extends BaseCommand {
 	private String appThumbnail;
 	/** call back URL */
 	private String callBackUrl;
+	
+	private OAuthConsumerInfo consumerInfo;
 
 	public void setResponseString(String responseString) {
 		this.responseString = responseString;
@@ -102,6 +105,14 @@ public class OAuthCommand extends BaseCommand {
 
 	public String getCallBackUrl() {
 		return callBackUrl;
+	}
+
+	public void setConsumerInfo(OAuthConsumerInfo consumerInfo) {
+		this.consumerInfo = consumerInfo;
+	}
+
+	public OAuthConsumerInfo getConsumerInfo() {
+		return consumerInfo;
 	}
 
 }

@@ -50,6 +50,7 @@ public class AdminCommand extends BaseCommand{
 		actionTitles.put("group", "Manage groups");
 		actionTitles.put("lucene", "Manage lucene");
 		actionTitles.put("recommender", "Manage recommenders");
+		actionTitles.put("oauth", "Manage OAuth Consumers");
 		
 		// set privacy options
 		privlevel = new HashMap<String, Privlevel>();
