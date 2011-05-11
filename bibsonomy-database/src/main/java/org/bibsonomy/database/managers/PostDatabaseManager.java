@@ -159,7 +159,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 
 	 * @param userName
 	 * @param session
-	 * @return
+	 * @return a list of posts to synchronize
 	 */
 	@SuppressWarnings("unchecked")
 	public List<SynchronizationPost> getSyncPostsListForUser(final String userName, final DBSession session) {
@@ -419,24 +419,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		param.setGroupId(GroupID.FRIENDS);
 		return this.postList("get" + this.resourceClassName + "ByUserFriends", param, session);
-	}
-
-	/**
-	 * This method prepares queries which retrieve all resources for the
-	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
-	 * separate temporary tables which are filled by an external script.
-	 * 
-	 * @param limit 
-	 * @param offset 
-	 * @param hashId 
-	 * @param session
-	 * @return list of posts
-	 */
-	public List<Post<R>> getPostsPopular(final int limit, final int offset, final HashID hashId, final DBSession session) {
-		final P param = this.createParam(limit, offset);
-		param.setSimHash(hashId);
-
-		return this.postList("get" + this.resourceClassName + "Popular", param, session);
 	}
 
 	/**
