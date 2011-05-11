@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.ajax;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -27,32 +29,32 @@ public class UserSearchController extends AjaxController implements Minimalistic
 		log.debug(this.getClass().getSimpleName());
 
 		final RequestWrapperContext context = command.getContext();
-		final User loginUser = context.getLoginUser();
-		final List<User> users;
-
-		/* Check user role
-		 * If user is not logged in or not an admin: show error message */
-		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
+		
+		/* 
+		 * Check user role
+		 * If user is not logged in or not an admin: show error message 
+		 */
+		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(context.getLoginUser().getRole())) {
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
-		log.debug("Searching for " + command.getSearch() + " with limit " + command.getLimit());
 		
-		if (command.getSearch() != null && !command.getSearch().isEmpty()) {
+		if (present(command.getSearch())) {
 			int limit = command.getLimit();
 			
-			// TODO: ugly workaround to deal with showSpammers set to false, which
-			// may result in a too small list of users after the filtering.
+			/*
+			 * TODO: ugly workaround to deal with showSpammers set to false, which
+			 * may result in a too small list of users after the filtering.
+			 */
 			if (!command.showSpammers()) {
 				limit *= 3;
 			}
-			users = logic.getUsers(null, GroupingEntity.USER, null, null, null, null, null, command.getSearch(), 0, limit);
-			
+			final List<User> users = logic.getUsers(null, GroupingEntity.USER, null, null, null, null, null, command.getSearch(), 0, limit);
 			
 			if (!command.showSpammers()) {
 				// Remove all spammers
-				for (User u: users) {
-					if (u.isSpammer()) {
-						users.remove(u);
+				for (final User user: users) {
+					if (user.isSpammer()) {
+						users.remove(user);
 					}
 				}
 				// Part 2 of the ugly workaround
@@ -64,9 +66,7 @@ public class UserSearchController extends AjaxController implements Minimalistic
 			command.setSearchedUsers(users);
 			log.debug(users.size() + " matches found.");
 		}
-		
-		// TODO: Currently only json-format is supported
-		return Views.getViewByFormat(command.getFormat());
+		return Views.JSON;
 	}
 
 	@Override
