@@ -76,7 +76,7 @@ public class OAuthRequestTokenController extends OAuthProtocolController {
 		}
 		
 		// check and retrieve the shared secret for the requesting client
-		OAuthConsumer consumer = this.dataStore.getConsumer(consumerKey);
+		OAuthConsumer consumer = this.getDataStore().getConsumer(consumerKey);
 
 		if (!present(consumer)) {
 			throw new OAuthProblemException(OAuth.Problems.CONSUMER_KEY_UNKNOWN);
@@ -100,7 +100,7 @@ public class OAuthRequestTokenController extends OAuthProtocolController {
 		}
 
 		// generate request_token and secret
-		OAuthEntry entry = dataStore.generateRequestToken(consumerKey, requestMessage.getParameter(OAuth.OAUTH_VERSION), callback);
+		OAuthEntry entry = getDataStore().generateRequestToken(consumerKey, requestMessage.getParameter(OAuth.OAUTH_VERSION), callback);
 		
 		List<Parameter> responseParams = OAuth.newList(OAuth.OAUTH_TOKEN, entry.getToken(), OAuth.OAUTH_TOKEN_SECRET, entry.getTokenSecret());
 		if (present(callback)) {

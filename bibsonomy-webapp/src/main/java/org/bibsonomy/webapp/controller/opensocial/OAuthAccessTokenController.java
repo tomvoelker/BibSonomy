@@ -74,17 +74,17 @@ public class OAuthAccessTokenController extends OAuthProtocolController {
 			// We're using the fixed protocol
 			String clientCallbackToken = requestMessage.getParameter(OAuth.OAUTH_VERIFIER);
 			if (!entry.getCallbackToken().equals(clientCallbackToken)) {
-				dataStore.disableToken(entry);
+				getDataStore().disableToken(entry);
 				throw new OAuthProblemException(OAuth.Problems.PARAMETER_REJECTED);
 			}
 		} else if (!entry.isAuthorized()) {
 			// Old protocol.  Catch consumers trying to convert a token to one that's not authorized
-			dataStore.disableToken(entry); 
+			getDataStore().disableToken(entry); 
 			throw new OAuthProblemException(OAuth.Problems.TOKEN_REJECTED);
 		}
 		
 	    // turn request token into access token
-	    OAuthEntry accessEntry = dataStore.convertToAccessToken(entry);
+	    OAuthEntry accessEntry = getDataStore().convertToAccessToken(entry);
 
 		command.setResponseString(OAuth.formEncode(OAuth.newList(
                 OAuth.OAUTH_TOKEN, accessEntry.getToken(),
