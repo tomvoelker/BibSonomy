@@ -150,7 +150,7 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="ajax/reviews/mark">
+				<entry key="/ajax/reviews/mark">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="reviewMarkController"/>
 						<property name="allowedFields">
