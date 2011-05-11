@@ -262,6 +262,11 @@ public enum Views implements View {
 	 * response for quick AJAX tag editing
 	 */
 	AJAX_EDITTAGS("ajax/edittags"),	
+	
+	/**
+	 * errors in JSON
+	 */
+	AJAX_ERRORS("ajax/errors"),
 
 	/* *****************************************************
 	 * ADMIN views
