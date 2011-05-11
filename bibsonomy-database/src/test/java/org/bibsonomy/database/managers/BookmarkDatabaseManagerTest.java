@@ -44,7 +44,7 @@ import org.junit.Test;
  * 
  * @version $Id$
  */
-public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
+public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmark> {
 	private static final String TESTUSER1_NAME = "testuser1";
 	private static final String TESTUSER2_NAME = "testuser2";
 	
@@ -58,12 +58,20 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		bookmarkDb = BookmarkDatabaseManager.getInstance();
 	}
 	
+	/**
+	 * sets up the resource db manager to use for the tests in {@link PostDatabaseManagerTest}
+	 */
+	@Override
+	public void setMananger() {
+		resourceDB = BookmarkDatabaseManager.getInstance();
+	}
+	
 
 	/**
-	 * tests getBookmarkByTagNames
+	 * tests testGetPostsByTagNames
 	 */
-	@Test
-	public void getBookmarkByTagNames() {
+	@Override
+	public void testGetPostsByTagNames() {
 		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("suchmaschine");
 		List<Post<Bookmark>> posts = bookmarkDb.getPostsByTagNames(PUBLIC_GROUP_ID, tagIndex, null, 10, 0, this.dbSession);
 		assertEquals(3, posts.size());
@@ -75,10 +83,10 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getBookmarkByTagNamesCount
+	 * tests testGetPostsByTagNamesCount
 	 */
-	@Test
-	public void getBookmarkByTagNamesCount() {
+	@Override
+	public void testGetPostsByTagNamesCount() {
 		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("suchmaschine");							
 		assertEquals(6, bookmarkDb.getPostsByTagNamesCount(tagIndex, PUBLIC_GROUP_ID, this.dbSession));
 		
@@ -90,14 +98,14 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getBookmarkByTagNamesForUser
+	 * tests testGetPostsByTagNamesForUser
 	 * 
 	 * visibleGroupIDs must only be set, if ( groupId == -1 && userName != null ) && userName != requestedUserName
 	 * tagIndex must be set
 	 * requestedUserName must be set
 	 */
-	@Test
-	public void getBookmarkByTagNamesForUser() {
+	@Override
+	public void testGetPostsByTagNamesForUser() {
 		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("suchmaschine");
 		List<Post<Bookmark>> posts;
@@ -118,15 +126,15 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getBookmarkByConceptForUser
+	 * tests testGetPostsByConceptForUser
 	 * 
 	 * if userName == null || userName == requestedUserName, you don't need to add a group to visibleGroupIDs
 	 * otherwise you have to set visibleGroupIDs
 	 * requestedUserName must be set
 	 * tagIndex must be set
 	 */
-	@Test
-	public void getBookmarkByConceptForUser() {
+	@Override
+	public void testGetPostsByConceptForUser() {
 		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("suchmaschine");
 		
 		final List<Integer> visibleGroupIDs = Collections.singletonList(PUBLIC_GROUP_ID);
@@ -140,8 +148,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getPostsFromInbox
 	 */
-	@Test
-	public void getBookmarkFromInbox() {
+	@Override
+	public void testGetPostsFromInbox() {
 		List<Post<Bookmark>> postsFromInbox = bookmarkDb.getPostsFromInbox("testuser2", 10, 0, this.dbSession);
 		assertEquals(3, postsFromInbox.size());
 		
@@ -152,8 +160,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getPostsFromInboxByHash
 	 */
-	@Test
-	public void getBookmarkFromInboxByHash() {
+	@Override
+	public void testGetPostsFromInboxByHash() {
 		List<Post<Bookmark>> postsFromInboxByHash = bookmarkDb.getPostsFromInboxByHash("testuser2", "6f372faea7ff92eedf52f597090a6291", this.dbSession);
 		assertEquals(1, postsFromInboxByHash.size());
 		
@@ -162,44 +170,44 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * tests getBookmarkByUserFriends
+	 * tests testGetPostsByUserFriends
 	 * 
 	 * userName must be set
 	 */
-	@Test
-	public void getBookmarkByUserFriends() {
+	@Override
+	public void testGetPostsByUserFriends() {
 		final List<Post<Bookmark>>  posts1 = bookmarkDb.getPostsByUserFriends(TESTUSER2_NAME, HashID.INTRA_HASH, 10, 0, null, this.dbSession);
 		assertEquals(1, posts1.size());
 	}
 
 	/**
-	 * tests getBookmarkForHomepage
+	 * tests testGetPostsForHomepage
 	 * 
 	 * groupType must be set
 	 */
-	@Test
-	public void getBookmarkForHomepage() {
+	@Override
+	public void testGetPostsForHomepage() {
 		final List<Post<Bookmark>> posts = bookmarkDb.getPostsForHomepage(null, 10, 0, null, this.dbSession);
 		assertEquals(5, posts.size());
 	}
 
 	/**
-	 * tests getBookmarkPopular
+	 * tests testGetPostsPopular
 	 */
-	@Test
-	public void getBookmarkPopular() {
+	@Override
+	public void testGetPostsPopular() {
 		final List<Post<Bookmark>> posts = bookmarkDb.getPostsPopular(0, 30, 0, HashID.INTER_HASH, this.dbSession);
 		assertEquals(1, posts.size());
 	}
 
 	/**
-	 * tests getBookmarkByHash
+	 * tests testGetPostsByHash
 	 * 
 	 * hash (requBibtex) must be set
 	 * groupType must be set
 	 */
-	@Test
-	public void getBookmarkByHash() {
+	@Override
+	public void testGetPostsByHash() {
 		String requBookmark = "b7aa3a91885e432c6c95bec0145c3968";
 		List<Post<Bookmark>> post = bookmarkDb.getPostsByHash(requBookmark, HashID.INTRA_HASH, FRIENDS_GROUP_ID, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
@@ -215,28 +223,29 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getBookmarkByHashCount
+	 * tests testGetPostsByHashCount
 	 * 
 	 * hash (requBibtex) must be set
 	 * groupType must be set
 	 */
-	@Test
-	public void getBookmarkByHashCount() {
+	@Override
+	public void testGetPostsByHashCount() {
 		final String requHash = "b7aa3a91885e432c6c95bec0145c3968";
 		int count = bookmarkDb.getPostsByHashCount(requHash, HashID.INTRA_HASH, this.dbSession);
 		assertTrue(count >= 0);
 	}
 
 	/**
-	 * tests getBookmarkByHashForUser
+	 * tests testGetPostsByHashForUser
 	 * 
 	 * hash (requBibtex) must be set
 	 * requestedUserName must be set
 	 * if userName == null || userName == requestedUserName, you don't need to add a group to visibleGroupIDs 
 	 * 
 	 */
+	@Override
 	@Test
-	public void getBookmarkByHashForUser() {
+	public void testGetPostsByHashForUser() {
 		// This bookmark is a private bookmark of testuser1
 		final String requBibtex = "294a9e1d594297e7bb9da9e11229c5d7";
 		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
@@ -248,13 +257,13 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getBookmarkViewable
+	 * tests testGetPostsViewable
 	 * 
 	 * groupId must be set 
 	 * userName must only be set, when groupId > 3
 	 */
-	@Test
-	public void getBookmarkViewable() {
+	@Override
+	public void testGetPostsViewable() {
 		List<Post<Bookmark>> posts = bookmarkDb.getPostsViewable(null, TESTUSER1_NAME, PUBLIC_GROUP_ID, HashID.INTRA_HASH, 10, 0, null, this.dbSession);
 		assertEquals(1, posts.size());
 		posts = bookmarkDb.getPostsViewable(null, TESTUSER1_NAME, PRIVATE_GROUP_ID, HashID.INTRA_HASH, 10, 0, null, this.dbSession);
@@ -267,7 +276,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getBookmarkForGroup
+	 * tests testGetPostsForGroup
 	 * 
 	 * if userName == null, you don't need visibleGroupIDs
 	 * otherwise:
@@ -275,8 +284,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * visibleGroupIDs must be set
 	 * userName must be set
 	 */
-	@Test
-	public void getBookmarkForGroup() {
+	@Override
+	public void testGetPostsForGroup() {
 		/*
 		 * testuser1 & testuser2 are members of group 3 
 		 * testuser1 is also member of group 4
@@ -306,15 +315,15 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getBookmarkForGroupCount
+	 * tests testGetPostsForGroupCount
 	 * 
 	 * groupId must be set
 	 * you don't need to add a group to visibleGroupIDs, because you have no userName
 	 * 
 	 * visibleGroupIDs && userName && (userName != requestedUserName) optional
 	 */
-	@Test
-	public void getBookmarkForGroupCount() {
+	@Override
+	public void testGetPostsForGroupCount() {
 		//approximated number of bookmarks, users own private/friends bookmarks are not included
 		final String requestedUserName = "";
 		final String loginUserName = "";
@@ -327,15 +336,15 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getBookmarkForGroupByTag
+	 * tests testGetPostsForGroupByTag
 	 * 
 	 * userName can be set
 	 * groupId must be set
 	 * visibleGroupIDs must be set
 	 * tagIndex must be set
 	 */
-	@Test
-	public void getBookmarkForGroupByTag() {
+	@Override
+	public void testGetPostsForGroupByTag() {
 		String userName = TESTUSER1_NAME;
 		final List<Integer> visibleGroupIDs = Collections.singletonList(PUBLIC_GROUP_ID);
 		List<TagIndex> tagIndex = DBTestUtils.getTagIndex("suchmaschine");
@@ -351,14 +360,14 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * tests getBookmarkForUser
+	 * tests testGetPostsForUser
 	 *
 	 * visibleGroupIDs must only be set, if ( groupId == -1 && userName != null ) && userName != requestedUserName
 	 * groupId must be set
 	 * userName must be set
 	 */
-	@Test
-	public void getBookmarkForUser() {
+	@Override
+	public void testGetPostsForUser() {
 		final String requestedUserName = TESTUSER1_NAME;
 		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		
@@ -394,14 +403,14 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getBookmarkForUserCount
+	 * tests testGetPostsForUserCount
 	 * 
 	 * visibleGroupIDs must only be set, if ( groupId == -1 && userName != null ) && userName != requestedUserName
 	 * groupId must be set
 	 * userName must be set
 	 */
-	@Test
-	public void getBookmarkForUserCount() {
+	@Override
+	public void testGetPostsForUserCount() {
 		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		
 		final int count1 =  bookmarkDb.getPostsForUserCount(TESTUSER1_NAME, "", PUBLIC_GROUP_ID, visibleGroupIDs, this.dbSession);	
@@ -458,8 +467,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests storePost
 	 */
-	@Test
-	public void createPost() {
+	@Override
+	public void testCreatePost() {
 		final Post<Bookmark> toInsert = this.generateBookmarkDatabaseManagerTestPost();
 		toInsert.getResource().recalculateHashes();
 
@@ -479,8 +488,12 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(bookmarkDb.deletePost(userName, toInsert.getResource().getIntraHash(), this.dbSession));
 	}
 	
+	/**
+	 * udpate a bookmark check if plugin is on bookmarkupdate
+	 */
+	// TODO: merge with other testUpdatePost test
 	@Test
-	public void updateBookmark() {
+	public void testUpdatePostMockTest() {
 		final String hash = "7eda282d1d604c702597600a06f8a6b0";
 		final Post<Bookmark> someBookmarkPost = bookmarkDb.getPostsByHash(hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession).get(0);
 		bookmarkDb.updatePost(someBookmarkPost, hash, null, this.dbSession);
@@ -501,8 +514,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests deleteBookmark
 	 */
-	@Test
-	public void deleteBookmark() {
+	@Override
+	public void testDeletePost() {
 		final String intraHash = "108eca7b644e2c5e09853619bc416ed0";
 		final List<Post<Bookmark>> post = bookmarkDb.getPostsByHash(intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
@@ -522,14 +535,14 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getBookmarksByConceptForGroup
+	 * tests testGetPostssByConceptForGroup
 	 * 
 	 * visibleGroupIDs must only be set, if ( groupId == -1 && userName != null ) && userName != requestedUserName
 	 * requestedUserName must be set
 	 * tagIndex must be set
 	 */
-	@Test
-	public void getBookmarksByConceptForGroup() {
+	@Override
+	public void testGetPostsByConceptForGroup() {
 		final BookmarkParam param = new BookmarkParam();
 		param.setUserName("testuser1");
 		//param.setRequestedUserName("testuser1");
@@ -548,9 +561,10 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests {@link PostDatabaseManager#getPostsByFollowedUsers(String, List, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
+	@Override
 	@Test
 	@Ignore
-	public void getBookmarkByFollowedUsers() {
+	public void testGetPostsByFollowedUsers() {
 		/*
 		 * testuser 1 follows testuser 2 and 3, who have 3 bookmark posts
 		 */
@@ -638,10 +652,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * We want to completely update a post
 	 * 
 	 * We use the bookmark post from testuser1 with content_id 1.
-	 * 
-	 * 
 	 */
-	@Test
+	@Override
 	public void testUpdatePost() {
 		/*
 		 * the id of the post we're testing
@@ -699,6 +711,11 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		 */
 		assertEquals("New Title", newBookmark.getTitle());
 		assertEquals("http://www.example.com/", newBookmark.getUrl());
+	}
+
+	@Override
+	public void testGetPostsFromBasketForUser() {
+		// not supported by bookmark manager
 	}
 	
 }
