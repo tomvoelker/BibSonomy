@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.ajax;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -77,7 +79,7 @@ public class AdditionalURLController extends AjaxController implements
 		/*
 		 * Check if the given url-text is not empty
 		 */
-		if("".equals(urlName)){
+		if (!present(urlName)) {
 			command.setResponseString(getXmlError("error.url.emptyName"));
 			return Views.AJAX_XML;
 		}
@@ -85,7 +87,7 @@ public class AdditionalURLController extends AjaxController implements
 		/*
 		 * Check if the given url is not empty
 		 */
-		if("".equals(command.getUrl())){
+		if (!present(command.getUrl())) {
 			command.setResponseString(getXmlError("error.url.emptyUrl"));
 			return Views.AJAX_XML;
 		}
@@ -97,7 +99,7 @@ public class AdditionalURLController extends AjaxController implements
 			url = new URL(command.getUrl());
 		} catch (MalformedURLException e) {
 			try {
-				url = new URL("http://"+command.getUrl());
+				url = new URL("http://" + command.getUrl()); // TODO: use URLUtils#normalizeURL ?
 			} catch (MalformedURLException ex) {
 				command.setResponseString(getXmlError("error.url.format"));
 				return Views.AJAX_XML;
