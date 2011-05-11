@@ -16,6 +16,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.ContextCommand;
+import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -178,7 +179,13 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			((ErrorAware)controller).setErrors(errors);
 		}
 		
+		/*
+		 * define error view
+		 */
 		View view = Views.ERROR;
+		if (AjaxController.class.isAssignableFrom(controller.getClass())) {
+			view = Views.AJAX_ERRORS;
+		}
 		
 		try {
 			view = controller.workOn(command);
