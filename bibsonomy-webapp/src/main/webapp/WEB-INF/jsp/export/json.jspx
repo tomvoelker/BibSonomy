@@ -13,11 +13,7 @@
 	
 <jsp:directive.page contentType="application/json; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-<c:if test="${not empty command.callback}">
-   <c:out value="${command.callback}"/> (
-</c:if>
-
-
+<c:if test="${not empty command.callback}"><c:out value="${command.callback}"/> (</c:if>
 {  
    "types" : {
       "Bookmark" : {
@@ -25,6 +21,9 @@
       },
       "Publication" : {
          "pluralLabel" : "Publications"
+      },
+      "GoldStandardPublication" : {
+      	 "pluralLabel" : "GoldStandardPublications"
       },
       "Tag" : {
          "pluralLabel" : "Tags"
@@ -81,7 +80,18 @@
       	</c:if>
       </c:forEach>
       
-      <!-- comma if tags are present, preceded by either bookmarks or bibtexs -->
+      <!-- comma between publications & gold standard publications resources, if both present -->
+      <c:if test="${isCommaNecessary and not empty command.goldStandardPublications.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+      
+      <!-- gold standard publications -->
+      <c:forEach var="post" varStatus="status" items="${command.goldStandardPublications.list}">
+      	<json:goldStandardPublication post="${post}"/><c:if test="${not status.last}">,</c:if>      
+      	<c:if test="${status.last}">
+      		<c:set var="isCommaNecessary" value="${true}"/>
+      	</c:if>
+      </c:forEach>
+      
+      <!-- comma if tags are present, preceded by either bookmarks or publications or gold standard publications -->
       <c:if test="${isCommaNecessary and not empty command.tagcloud.tags}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
 
       <!-- tags -->
@@ -116,9 +126,5 @@
 	  </mtl:exists>
    ]
 }
-
-<c:if test="${not empty command.callback}">
-   )
-</c:if> 
-
+<c:if test="${not empty command.callback}">)</c:if>
  </jsp:root>

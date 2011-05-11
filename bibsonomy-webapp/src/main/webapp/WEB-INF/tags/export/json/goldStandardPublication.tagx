@@ -9,11 +9,8 @@
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
       {
-         "type" : "Publication",
-         "id"   : "${projectHome}bibtex/2${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",         
-         "tags" : [
-            <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
-         ],
+         "type" : "GoldStandardPublication",
+         "id"   : "${projectHome}bibtex/1${post.resource.intraHash}",
          <json:abstractPublication post="${post}" />
       }
 </jsp:root>
