@@ -72,7 +72,7 @@
 .stars-off-1, .stars-on-1 {
     position: relative;
     height: 16px;
-    background: url(../jquery_ui/plugins/jquery.ui.stars/jquery.ui.stars.gif) repeat-x 0 -32px;
+    background: url(../jquery/plugins/ui/plugins/stars/jquery.ui.stars.gif) repeat-x 0 -32px;
 }
 
 .stars-off-1 {
