@@ -72,7 +72,6 @@
 					<suffix></suffix>
 					<disableOptimizations>true</disableOptimizations>
 					<excludes>
-						<exclude>**/jquery.*.min.js</exclude>
 						<exclude>**/*.css</exclude><!--	disabled because plugin stops with exception -->
 					</excludes>
 				</configuration>
