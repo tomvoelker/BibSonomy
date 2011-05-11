@@ -44,9 +44,13 @@ public enum PostUpdateOperation {
 	 */
 	UPDATE_DOCUMENTS(2),
 	/**
-	 * Update only the url of the post.
+	 * Add a url to the post.
 	 */
-	UPDATE_URLS(3);
+	UPDATE_URLS_ADD(3),
+	/**
+	 * Delete a url of the post.
+	 */
+	UPDATE_URLS_DELETE(4);
 	
 	private int id;
 	
