@@ -113,7 +113,9 @@
 									
 											<c:if test="${resourceType eq 'Publication'}">
 												<p>
-													<fmt:message key="post.edit.spam_note"/>
+													<fmt:message key="post.edit.spam_note">
+														<fmt:param value="user ${command.context.loginUser.name} was flagged as spammer"/>
+													</fmt:message>
 													<parts:email address="${projectNoSpamEmail}"/>
 												</p>
 											</c:if>
