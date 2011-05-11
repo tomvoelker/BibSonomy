@@ -2,6 +2,7 @@ package org.bibsonomy.opensocial.oauth.database;
 
 import java.io.Reader;
 import java.sql.SQLException;
+import java.util.List;
 
 import net.oauth.OAuth;
 import net.oauth.OAuthConsumer;
@@ -170,6 +171,14 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 			log.error("Error creating provider token for '"+entry.getAppId()+"'", e);
 		}
 	}
+
+	public void createConsumer(OAuthConsumerInfo consumerInfo) {
+		try {
+			this.sqlMap.insert("setConsumerInfo", consumerInfo);
+		} catch (SQLException e) {
+			throw new RuntimeException("Error creating consumer info", e);
+		}
+	}
 	
 	public OAuthConsumerInfo readConsumer(String consumerKey) {
 		OAuthConsumerInfo consumerInfo = null;
@@ -182,6 +191,19 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 		return consumerInfo;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<OAuthConsumerInfo> listConsumers() {
+		List<OAuthConsumerInfo> consumerInfo = null;
+		try {
+			consumerInfo = (List<OAuthConsumerInfo>)this.sqlMap.queryForList("listConsumerInfo");
+		} catch (SQLException e) {
+			log.error("Error listing consumer info", e);
+		}
+		
+		return consumerInfo;
+	}
+
+
 	public OAuthEntry readProviderToken(String oauthToken) {
 		OAuthEntry entry = null;
 		try {
@@ -228,6 +250,7 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 	public String getDefaultCallbackUrl() {
 		return defaultCallbackUrl;
 	}
+
 
 
 }

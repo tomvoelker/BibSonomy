@@ -1,5 +1,7 @@
 package org.bibsonomy.opensocial.oauth.database;
 
+import java.util.List;
+
 import net.oauth.OAuth;
 import net.oauth.OAuthConsumer;
 import net.oauth.OAuthServiceProvider;
@@ -76,6 +78,16 @@ public class MockupOAuthLogic implements IOAuthLogic {
 	}
 
 	public void updateProviderToken(OAuthEntry entry) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public List<OAuthConsumerInfo> listConsumers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void createConsumer(OAuthConsumerInfo consumerInfo) {
 		// TODO Auto-generated method stub
 		
 	}

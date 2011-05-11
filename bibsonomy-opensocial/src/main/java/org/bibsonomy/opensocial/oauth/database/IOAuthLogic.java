@@ -1,8 +1,7 @@
 package org.bibsonomy.opensocial.oauth.database;
 
-import java.util.Date;
+import java.util.List;
 
-import net.oauth.OAuthConsumer;
 import net.oauth.OAuthServiceProvider;
 
 import org.apache.shindig.auth.SecurityToken;
@@ -81,7 +80,22 @@ public interface IOAuthLogic {
 	 * @param consumerKey
 	 * @return
 	 */
+	public void createConsumer(OAuthConsumerInfo consumerInfo);
+	
+	/**
+	 * read OAuth consumer information from database
+	 * 
+	 * @param consumerKey
+	 * @return
+	 */
 	public OAuthConsumerInfo readConsumer(String consumerKey);
+	
+	/**
+	 * list all registered consumers
+	 * 
+	 * @return list of all registered consumers
+	 */
+	public List<OAuthConsumerInfo> listConsumers();
 
 	/**
 	 * create an OAuth token 
