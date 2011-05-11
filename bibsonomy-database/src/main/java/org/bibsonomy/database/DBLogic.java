@@ -46,6 +46,7 @@ import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.AuthorDatabaseManager;
 import org.bibsonomy.database.managers.BasketDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
+import org.bibsonomy.database.managers.BibTexExtraDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
 import org.bibsonomy.database.managers.DocumentDatabaseManager;
@@ -83,6 +84,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
@@ -116,6 +118,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     private final BookmarkDatabaseManager bookmarkDBManager;
     private final BibTexDatabaseManager publicationDBManager;
     private final GoldStandardPublicationDatabaseManager goldStandardPublicationDBManager;
+    private final BibTexExtraDatabaseManager bibTexExtraDBManager;
     
     private final ReviewDatabaseManager reviewDBManager;
     
@@ -174,6 +177,8 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	this.wikiDBManager = WikiDatabaseManager.getInstance();
 	
 	this.syncDBManager = SynchronizationDatabaseManager.getInstance();
+	
+	this.bibTexExtraDBManager = BibTexExtraDatabaseManager.getInstance();
 	
 	
 	this.dbSessionFactory = dbSessionFactory;
@@ -1057,6 +1062,33 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	 */
 	PostUtils.setGroupIds(post, this.loginUser);
 
+	/*
+	 * If the operation is UPDATE_URLS then create/delete the url right here and
+	 * return the intra hash.
+	 */
+	
+	if (PostUpdateOperation.UPDATE_URLS_ADD.equals(operation)) {  
+	    log.debug("Adding URL in updatePost()/DBLogic.java");
+	    final BibTex resource = (BibTex) post.getResource();
+	    final BibTexExtra resourceExtra = resource.getExtraUrls().get(0);
+	    resourceExtra.setDate(new Date());
+	    bibTexExtraDBManager.createURL(post.getResource()
+		.getIntraHash(), this.loginUser.getName(),
+		resourceExtra.getUrl().toExternalForm(),
+		resourceExtra.getText(), session);
+
+	    return post.getResource().getIntraHash();
+	} else if (PostUpdateOperation.UPDATE_URLS_DELETE.equals(operation)) {
+	    log.debug("Deleting URL in updatePost()/DBLogic.java");
+	    final BibTex resource = (BibTex) post.getResource();
+	    final BibTexExtra resourceExtra = resource.getExtraUrls().get(0);
+	    bibTexExtraDBManager.deleteURL(post.getResource()
+		    .getIntraHash(), this.loginUser.getName(),
+		    resourceExtra.getUrl().toExternalForm(), session);
+	    
+	    return post.getResource().getIntraHash();
+	}
+	
 	/*
 	 * update post
 	 */
