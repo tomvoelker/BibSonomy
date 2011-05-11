@@ -7,6 +7,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:reviews="urn:jsptagdir:/WEB-INF/tags/resources/reviews"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -22,30 +23,40 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/jquery/plugins/flot/jquery.flot.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/jquery/plugins/flot/jquery.flot.stack.js">&amp;nbsp;</script>
+			<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../excanvas.js"></script><![endif]-->
+			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/reviews.js">&amp;nbsp;</script>
+			
 			<c:if test="${not empty command.goldStandardPublication}">
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/jquery_ui/jquery.ui.tabs.css" />
-				<link rel="stylesheet" type="text/css" href="${resdir}/jquery_ui/plugins/jquery.ui.stars/jquery.ui.stars.min.css" />
-				<!-- TODO: PUMA? -->
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/review.css" />
-				
-				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery-ui.min.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/reviews.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/jquery_ui/plugins/jquery.ui.stars/jquery.ui.stars.min.js">&amp;nbsp;</script>
+			
+				<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
+				<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
 			</c:if>
+			
+			<!-- TODO: PUMA? -->
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/review.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
+			
 	    </jsp:attribute>
 	    
-		
 		<jsp:attribute name="sidebar">
 			<ul id="sidebar">			
 				<!-- display tags -->
 				<li>
 					<span class="sidebar_h"><fmt:message key="tags"/></span>
 					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none"/>
+					
 				</li>
 			</ul>
+		</jsp:attribute>
+		
+		<jsp:attribute name="contentHeading">
+			<reviews:singleResourceReviewLayout resource="${command.bibtex.list[0].resource}" reviews="${command.reviews}" />
 		</jsp:attribute>
 	</layout:bibtexLayout>
 
