@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import net.oauth.OAuth;
@@ -19,7 +18,6 @@ import net.oauth.SimpleOAuthValidator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.shindig.common.servlet.GuiceServletContextListener;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.model.User;
@@ -32,9 +30,6 @@ import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.opensocial.BibSonomyOAuthValidator;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.web.context.ServletContextAware;
-
-import com.google.inject.Injector;
 
 /**
  * This controller implements the OAuth endpoints described in RFC 5849, section 2:
@@ -74,7 +69,7 @@ import com.google.inject.Injector;
  * @author fei
  * @version $Id$
  */
-public abstract class OAuthProtocolController implements ValidationAwareController<OAuthCommand>, ServletContextAware {
+public abstract class OAuthProtocolController implements ValidationAwareController<OAuthCommand> {
 	private static final Log log = LogFactory.getLog(OAuthProtocolController.class);
 	
 	/**
@@ -100,32 +95,11 @@ public abstract class OAuthProtocolController implements ValidationAwareControll
 	/** project home for setting the correct realm in error responses */
 	private String projectHome;
 
-	/** the servlet context */
-	private ServletContext servletContext;
-
-	/** shindig's Guice injector */
-	private Injector injector;
-
 	/** data store for managing OAuth tokens */
 	protected OAuthDataStore dataStore;
 
 	/** validates incoming OAuth requests mainly by verifying the request's signature */
 	public static final OAuthValidator VALIDATOR = new SimpleOAuthValidator();
-
-
-	/** 
-	 * controller initiallization after all properties were set via spring
-	 */
-	public void init() {
-		this.injector  = (Injector) this.servletContext.getAttribute(GuiceServletContextListener.INJECTOR_ATTRIBUTE);
-		if (present(injector)) {
-			this.dataStore = injector.getInstance(OAuthDataStore.class);
-		}
-		
-		if (!present(this.dataStore)) {
-			log.error("Guice property injector or OAuth datastore not found. Disabling OAuth.");
-		}
-	}
 
 	//------------------------------------------------------------------------
 	// ValidationAwareController interface
@@ -147,7 +121,7 @@ public abstract class OAuthProtocolController implements ValidationAwareControll
 
 	@Override
 	public View workOn(OAuthCommand command) {
-		if (!present(this.dataStore)) {
+		if (!present(this.getDataStore())) {
 			throw new RuntimeException("OAuth not enables.");
 		}
 
@@ -211,7 +185,7 @@ public abstract class OAuthProtocolController implements ValidationAwareControll
 	 */
 	protected OAuthEntry getValidatedEntry(OAuthMessage requestMessage) throws IOException, OAuthException, URISyntaxException {
 
-		OAuthEntry entry = dataStore.getEntry(requestMessage.getToken());
+		OAuthEntry entry = getDataStore().getEntry(requestMessage.getToken());
 		if (!present(entry)) {
 			throw new OAuthProblemException(OAuth.Problems.TOKEN_REJECTED);
 		}
@@ -239,7 +213,7 @@ public abstract class OAuthProtocolController implements ValidationAwareControll
 			throw new OAuthProblemException(OAuth.Problems.CONSUMER_KEY_REFUSED);
 		}
 
-		OAuthConsumer consumer = dataStore.getConsumer(consumerKey);
+		OAuthConsumer consumer = getDataStore().getConsumer(consumerKey);
 
 		if (!present(consumer)) {
 			throw new OAuthProblemException(OAuth.Problems.CONSUMER_KEY_UNKNOWN);
@@ -286,11 +260,6 @@ public abstract class OAuthProtocolController implements ValidationAwareControll
 		return requestLogic;
 	}
 
-	@Override
-	public void setServletContext(ServletContext servletContext) {
-		this.servletContext = servletContext;
-	}
-
 	public void setResponseLogic(ResponseLogic responseLogic) {
 		this.responseLogic = responseLogic;
 	}
@@ -305,6 +274,14 @@ public abstract class OAuthProtocolController implements ValidationAwareControll
 
 	public String getProjectHome() {
 		return projectHome;
+	}
+
+	public void setDataStore(OAuthDataStore dataStore) {
+		this.dataStore = dataStore;
+	}
+
+	public OAuthDataStore getDataStore() {
+		return dataStore;
 	}
 
 }

@@ -74,7 +74,7 @@ public class OAuthAuthorizeTokenController extends OAuthProtocolController {
 			e.setParameter(OAuth.Problems.OAUTH_PARAMETERS_ABSENT, OAuth.OAUTH_TOKEN);
 			throw e;
 		}
-		OAuthEntry entry = dataStore.getEntry(requestMessage.getToken());
+		OAuthEntry entry = getDataStore().getEntry(requestMessage.getToken());
 
 		if (!present(entry)) {
 			OAuthProblemException e = new OAuthProblemException(OAuth.Problems.PARAMETER_REJECTED);
@@ -82,7 +82,7 @@ public class OAuthAuthorizeTokenController extends OAuthProtocolController {
 			throw e;
 		}
 
-		OAuthConsumer consumer = dataStore.getConsumer(entry.getConsumerKey());
+		OAuthConsumer consumer = getDataStore().getConsumer(entry.getConsumerKey());
 
 		// Extremely rare case where consumer dissappears
 		if (!present(consumer)) {
@@ -116,7 +116,7 @@ public class OAuthAuthorizeTokenController extends OAuthProtocolController {
 			log.debug("Authorizing token '"+entry.getToken()+"' for user '"+loginUser.getName()+"'");
 			
 			// If the user clicked the Authorize button we authorize the token and redirect back.
-			dataStore.authorizeToken(entry, loginUser.getName());
+			getDataStore().authorizeToken(entry, loginUser.getName());
 
 			// If we're here then the entry has been authorized
 
@@ -134,7 +134,7 @@ public class OAuthAuthorizeTokenController extends OAuthProtocolController {
 				return new ExtendedRedirectView(callback);
 			}
 		} else if (AuthorizeAction.Deny.toString().equals(command.getAuthorizeAction())) {
-			dataStore.removeToken(entry);
+			getDataStore().removeToken(entry);
 			return Views.OAUTH_DENY;
 		}
 

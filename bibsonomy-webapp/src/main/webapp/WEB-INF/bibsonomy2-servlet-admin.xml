@@ -118,6 +118,27 @@
 						</property>
 					</bean>
 				</entry>		
+				<entry key="/admin/oauth">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminOAuthController" />
+					 	<property name="allowedFields">
+							<list>
+								<value>adminAction</value>
+								<value>consumerInfo.consumerKey</value>
+								<value>consumerInfo.consumerSecret</value>
+								<value>consumerInfo.serviceName</value>
+								<value>consumerInfo.gadgetUrl</value>
+								<value>consumerInfo.keyType</value>
+								<value>consumerInfo.callbackUrl</value>
+								<value>consumerInfo.title</value>
+								<value>consumerInfo.summary</value>
+								<value>consumerInfo.description</value>
+								<value>consumerInfo.thumbnail</value>
+								<value>consumerInfo.icon</value>
+							</list>
+						</property>
+					</bean>
+				</entry>		
 			</map>
 		</property>
 	</bean>
@@ -159,5 +180,11 @@
 	<bean id="adminGroupController" class="org.bibsonomy.webapp.controller.admin.AdminGroupController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
+	
+	<bean id="adminOAuthController" class="org.bibsonomy.webapp.controller.admin.AdminOAuthController" scope="request">
+		<property name="oauthLogic" ref="oauthLogic"/>
+	</bean>
+	
+	<bean id="oauthLogic" class="org.bibsonomy.opensocial.oauth.database.IbatisOAuthLogic" scope="singleton" factory-method="getInstance"/>
 		
 </beans>
