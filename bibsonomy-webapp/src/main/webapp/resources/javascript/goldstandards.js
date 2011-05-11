@@ -1,5 +1,5 @@
 /**
- * TODO
+ * for deleting and adding references
  */
 
 var FADE_DURATION = 1000;
@@ -27,7 +27,7 @@ function editReferences() {
 
 function addReferenceMenu() {
 	$("li.reference").each(function() {
-		var deleteLink = $('<span class="reference_menu"><a href="#">' + getString('post.actions.edit.gold.references.delete') + '</a></span>'); // TODO: i18n
+		var deleteLink = $('<span class="reference_menu"><a href="#">' + getString('post.actions.edit.gold.references.delete') + '</a></span>');
 		deleteLink.hide();
 		$(this).append(deleteLink);
 		deleteLink.fadeIn(FADE_DURATION);
@@ -193,6 +193,9 @@ function getCKey() {
 	return $('#gold_menu').data('ckey');
 }
 
+/** 
+ * @returns the hash of the publication
+ */
 function getHash() {
 	return $('#gold_title').data('interhash');
 }
