@@ -34,7 +34,7 @@ public class AdditionalURLController extends AjaxController implements
 	private URL url;
 	private String urlName;
 	private String cKey;
-	private String iHash;
+	private String intraHash;
 	private final ResourceBundle localizedStrings = ResourceBundle.getBundle("messages");
 	private final static String ADD_URL = "addUrl";
 	private final static String DEL_URL = "deleteUrl";
@@ -53,7 +53,7 @@ public class AdditionalURLController extends AjaxController implements
 		log.debug("workOn AdditionalURLController");
 		urlName = command.getText();
 		cKey = command.getCkey();
-		iHash = command.getHash();
+		intraHash = command.getHash();
 		
 		//TODO: Probably create a validateRequest method which returns true/false
 		
@@ -75,13 +75,25 @@ public class AdditionalURLController extends AjaxController implements
 		}
 
 		/*
+		 * Check if the given url-text is not empty
+		 */
+		if("".equals(urlName)){
+			command.setResponseString(getXmlError("error.url.emptyName"));
+			return Views.AJAX_XML;
+		}
+		
+		/*
 		 * Check if the url is valid
 		 */
 		try {
 			url = new URL(command.getUrl());
 		} catch (MalformedURLException e) {
-			command.setResponseString(getXmlError("error.url.format"));
-			return Views.AJAX_XML;
+			try {
+				url = new URL("http://"+command.getUrl());
+			} catch (MalformedURLException ex) {
+				command.setResponseString(getXmlError("error.url.format"));
+				return Views.AJAX_XML;
+			}
 		} catch (Exception e) {
 			command.setResponseString(getXmlError("error.url.general"));
 			return Views.AJAX_XML;
@@ -92,9 +104,9 @@ public class AdditionalURLController extends AjaxController implements
 		 * If the user wants to add/delete the url, do so, else generate an XML
 		 * error string.
 		 */
-		if (AdditionalURLController.ADD_URL.equals(command.getAction())) {
+		if (ADD_URL.equals(command.getAction())) {
 			command.setResponseString(addURL(command));
-		} else if (AdditionalURLController.DEL_URL.equals(command.getAction())) {
+		} else if (DEL_URL.equals(command.getAction())) {
 			command.setResponseString(deleteURL(command));
 		} else {
 			command.setResponseString(getXmlError("error.action.valid"));
@@ -116,30 +128,30 @@ public class AdditionalURLController extends AjaxController implements
 				+ command.getContext().getLoginUser().getName());
 
 		final Post<? extends Resource> post = logic.getPostDetails(
-				command.getHash(), logic.getAuthenticatedUser().getName());
+				intraHash, logic.getAuthenticatedUser().getName());
 		BibTex resource = ((BibTex) post.getResource());
-		BibTexExtra tempBibtEx = new BibTexExtra();
-		tempBibtEx.setUrl(url);
-		tempBibtEx.setText(urlName);
+		BibTexExtra bibTexExtra = new BibTexExtra();
+		bibTexExtra.setUrl(url);
+		bibTexExtra.setText(urlName);
 
 		/*
 		 * Check if the given URL already exists within the given post.
 		 * If so -> generate XML error string
 		 */
 		for (BibTexExtra bibTE : resource.getExtraUrls()) {
-			if (tempBibtEx.getUrl().toExternalForm()
+			if (bibTexExtra.getUrl().toExternalForm()
 					.equals(bibTE.getUrl().toExternalForm())) {
 				return getXmlError("error.url.exists");
 			}
 		}
 
 		resource.getExtraUrls().clear();
-		resource.getExtraUrls().add(tempBibtEx);
+		resource.getExtraUrls().add(bibTexExtra);
 
 		final List<Post<? extends Resource>> postList = Collections
 				.<Post<? extends Resource>> singletonList(post);
 		try{
-			logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS);
+			logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_ADD);
 		}catch (Exception e){
 			log.debug("Error while updatePosts from URLController.");
 			return getXmlError("database.exception.unspecified");
@@ -160,20 +172,20 @@ public class AdditionalURLController extends AjaxController implements
 				+ " from database. User: "
 				+ command.getContext().getLoginUser().getName());
 		final Post<? extends Resource> post = logic.getPostDetails(
-				command.getHash(), logic.getAuthenticatedUser().getName());
+				intraHash, logic.getAuthenticatedUser().getName());
 		BibTex resource = (BibTex) post.getResource();
 
 		/*
 		 * If the url exists in the db, delete it. Else return an error
 		 */
-		for (BibTexExtra bibTE : resource.getExtraUrls()) {
-			if (url.equals(bibTE.getUrl())) {
+		for (BibTexExtra bibTexExtra : resource.getExtraUrls()) {
+			if (url.equals(bibTexExtra.getUrl())) {
 				resource.getExtraUrls().clear();
-				resource.getExtraUrls().add(bibTE);
+				resource.getExtraUrls().add(bibTexExtra);
 				final List<Post<? extends Resource>> postList = Collections
 						.<Post<? extends Resource>> singletonList(post);
 				try{
-					logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS);
+					logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_DELETE);
 				} catch (Exception e) {
 					log.debug("Error while updatePosts from URLController.");
 					return getXmlError("database.exception.unspecified");
@@ -205,7 +217,7 @@ public class AdditionalURLController extends AjaxController implements
 	 * @return XML success string.
 	 */
 	private String getXmlSucceeded() {
-		return "<root><status>ok</status><ckey>"+cKey+"</ckey><hash>"+iHash+"</hash><url>"+ url + "</url><text>" + urlName + "</text></root>";
+		return "<root><status>ok</status><ckey>" + cKey + "</ckey><hash>" + intraHash + "</hash><url>" + url + "</url><text>" + urlName + "</text></root>";
 	}
 
 	/**
