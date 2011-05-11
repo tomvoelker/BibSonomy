@@ -20,10 +20,6 @@ public class GroupJoinUserCommand extends GroupActionsCommand {
 	 * The response to the captcha, the user entered.
 	 */
 	private String recaptcha_response_field;
-	/**
-	 * User accepts our privacy statement and AGB.
-	 */
-	private boolean acceptPrivacy;
 
 	/**
 	 * @return the recaptcha_challenge_field
@@ -53,27 +49,6 @@ public class GroupJoinUserCommand extends GroupActionsCommand {
 		this.recaptcha_response_field = recaptchaResponseField;
 	}
 	
-	/**
-	 * @return the acceptPrivacy
-	 */
-	public boolean isAcceptPrivacy() {
-		return this.acceptPrivacy;
-	}
-	
-	/**
-	 * @return @see {@link #isAcceptPrivacy()}
-	 */
-	public boolean getAcceptPrivacy() {
-		return this.acceptPrivacy;
-	}
-
-	/**
-	 * @param acceptPrivacy the acceptPrivacy to set
-	 */
-	public void setAcceptPrivacy(boolean acceptPrivacy) {
-		this.acceptPrivacy = acceptPrivacy;
-	}
-
 	public void setCaptchaHTML(String captchaHTML) {
 		this.captchaHTML = captchaHTML;
 	}
