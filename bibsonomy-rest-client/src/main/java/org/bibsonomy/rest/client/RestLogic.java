@@ -536,4 +536,10 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public List<Review> getReviews(String interHash) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
