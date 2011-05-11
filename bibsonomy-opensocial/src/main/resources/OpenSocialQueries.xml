@@ -60,10 +60,20 @@
  	<!-- +
 		 | query for oauth consumer information
 		 + -->  
+	<insert id="setConsumerInfo" parameterClass="oAuthConsumer">
+		INSERT INTO oauth_provider_store (gadget_url, server, consumer_key, consumer_secret, key_type, key_name, title, summary, description, thumbnail, icon)
+		VALUES (#gadgetUrl#, #serviceName#, #consumerKey#, #consumerSecret#, #keyType,handler=org.bibsonomy.opensocial.oauth.database.typehandler.KeyTypeHandler#, #keyName#, #title#, #summary#, #description#, #thumbnail#, #icon#);
+	</insert>
+	
 	<select id="getConsumerInfo" parameterClass="string" resultMap="consumerInfo">
 		SELECT *
 		FROM oauth_provider_store
 		WHERE consumer_key = #consumerKey# 
+	</select>
+	
+	<select id="listConsumerInfo" resultMap="consumerInfo">
+		SELECT *
+		FROM oauth_provider_store
 	</select>
 
 	<insert id="setProviderToken" parameterClass="tokenEntry">
