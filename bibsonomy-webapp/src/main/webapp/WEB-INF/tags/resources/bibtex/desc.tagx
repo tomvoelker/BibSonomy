@@ -9,7 +9,7 @@
 	
 	<c:choose>
 		<c:when test="${post.resource.entrytype eq 'article'}">
-			<bib:author post="${post}"/>
+			<bib:author publication="${post.resource}"/>
 			<bib:journal post="${post}"/>
 			<bib:volumeNumberPages post="${post}"/>
 			<bib:year post="${post}" braces="true" month="true"/>
@@ -17,7 +17,7 @@
 		</c:when>
 		
 		<c:when test="${post.resource.entrytype eq 'book'}">
-			<bib:author post="${post}"/>
+			<bib:author publication="${post.resource}"/>
 			<bib:series post="${post}"/>
 			<bib:publisher post="${post}"/>
 			<bib:address post="${post}"/>
@@ -27,7 +27,7 @@
 		</c:when>
 		
 		<c:when test="${post.resource.entrytype eq 'inbook'}">
-			<bib:author post="${post}"/>
+			<bib:author publication="${post.resource}"/>
 			<bib:volumeOfSeries post="${post}"/>
 			<bib:chapter post="${post}"/>
 			<bib:page post="${post}"/>
@@ -39,7 +39,7 @@
 		</c:when>
 		
 		<c:when test="${post.resource.entrytype eq 'booklet'}">
-			<bib:author post="${post}"/>
+			<bib:author publication="${post.resource}"/>
 			<bib:howpublished post="${post}"/>
 			<bib:address post="${post}"/>			
 			<bib:year post="${post}" braces="true" month="true"/>
@@ -47,7 +47,7 @@
 		</c:when>
 		
 		<c:when test="${post.resource.entrytype eq 'incollection'}">
-			<bib:author post="${post}"/>
+			<bib:author publication="${post.resource}"/>
 			<bib:booktitle post="${post}"/>
 			<bib:volumeOfSeries post="${post}"/>
 			<bib:chapter post="${post}"/>
@@ -59,7 +59,7 @@
 		</c:when>
 		
 		<c:when test="${post.resource.entrytype eq 'inproceedings'}">
-			<bib:author post="${post}"/>
+			<bib:author publication="${post.resource}"/>
 			<bib:booktitle post="${post}"/>
 			<bib:volumeOfSeries post="${post}"/>
 			<bib:page post="${post}"/>			
@@ -71,7 +71,7 @@
 		</c:when>
 		
 		<c:when test="${post.resource.entrytype eq 'manual'}">
-			<bib:author post="${post}"/>
+			<bib:author publication="${post.resource}"/>
 			<bib:organization post="${post}"/>
 			<bib:address post="${post}"/>
 			<bib:edition post="${post}"/>
@@ -80,7 +80,7 @@
 		</c:when>
 	
 		<c:when test="${post.resource.entrytype eq 'mastersthesis' or post.resource.entrytype eq 'phdthesis'}">
-			<bib:author post="${post}"/>
+			<bib:author publication="${post.resource}"/>
 			<bib:school post="${post}"/>
 			<bib:address post="${post}"/>
 			<bib:type post="${post}"/>			
@@ -89,7 +89,7 @@
 		</c:when>
 		
 		<c:when test="${post.resource.entrytype eq 'proceedings'}">				
-			<bib:author post="${post}"/>
+			<bib:author publication="${post.resource}"/>
 			<bib:volumeOfSeries post="${post}"/>
 			<bib:address post="${post}"/>
 			<bib:organization post="${post}"/>
@@ -99,7 +99,7 @@
 		</c:when>
 		
 		<c:when test="${post.resource.entrytype eq 'techreport'}">			
-			<bib:author post="${post}"/>			
+			<bib:author publication="${post.resource}"/>			
 			<bib:type post="${post}"/>	
 			<bib:volume post="${post}"/>		
 			<bib:institution post="${post}"/>
@@ -108,14 +108,14 @@
 		</c:when>
 		
 		<c:when test="${post.resource.entrytype eq 'unpublished'}">			
-			<bib:author post="${post}"/>			
+			<bib:author publication="${post.resource}"/>
 			<bib:year post="${post}" braces="true" month="true"/>
 			<bib:note post="${post}"/>
 		</c:when>	
 		
 		<!-- Misc and others -->
 		<c:otherwise>
-			<bib:author post="${post}"/>			
+			<bib:author publication="${post.resource}"/>	
 			<bib:howpublished post="${post}"/>
 			<bib:year post="${post}" braces="true" month="true"/>
 			<bib:note post="${post}"/>
