@@ -3,34 +3,33 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="application/json; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<!-- this tag is neccessary, otherwise errors is empty! -->
-	<spring:hasBindErrors name="command">
-
-		<c:if test="${not empty errors.globalErrors}">
-			{ 
-				"globalErrors" : 
-					[<c:forEach var="error" items="${errors.globalErrors}">
-						{
-							"message" : "<spring:message javaScriptEscape="true" code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>"
-						},
-						<!-- FIXME: remove trailing comma, probably using varStatus="status" -->
-					</c:forEach>],
-				"fieldErrors" : 
-					[<c:forEach var="error" items="${errors.fieldErrors}">
-						{
-							"field" : "${quoteJSON(error.field)}",
-							"message" : "<spring:message javaScriptEscape="true" code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>"						},
-					</c:forEach>]
-			}
-		</c:if>
+	<!-- track, whether a comma has to be placed between list elements of different types -->
+	<c:set var="isCommaNecessary" value="${false}"/>
+	
+	<spring:hasBindErrors name="command"> <!-- this tag is neccessary, otherwise errors is empty! -->
+	{<c:if test="${not empty errors.globalErrors}">
+		"globalErrors" : 
+			[<c:forEach var="error" items="${errors.globalErrors}" varStatus="status">
+				{
+					"message" : "<spring:message javaScriptEscape="true" code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>"
+				}<c:if test="${not status.last}">,</c:if>
+			</c:forEach>]
+		<c:set var="isCommaNecessary" value="${true}" />
+	</c:if>
+	<c:if test="${not empty errors.fieldErrors}">
+		<c:if test="${isCommaNecessary }">,</c:if>
+		"fieldErrors" : 
+			[<c:forEach var="error" items="${errors.fieldErrors}" varStatus="status">
+				{
+					"field" : "${mtl:quoteJSON(error.field)}",
+					"message" : "<spring:message javaScriptEscape="true" code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>"
+				}<c:if test="${not status.last}">,</c:if>
+			</c:forEach>]
+	</c:if>}
 	</spring:hasBindErrors>
 </jsp:root>
