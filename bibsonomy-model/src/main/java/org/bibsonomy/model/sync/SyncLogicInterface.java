@@ -20,7 +20,7 @@ public interface SyncLogicInterface {
 	 * @param serviceId
 	 * @param userCredentials
 	 */
-	public void storeNewClientForUser(final String userName, final int serviceId, final Properties userCredentials);
+	public void createSyncServer(final String userName, final int serviceId, final Properties userCredentials);
 	
 	/**
 	 * 
