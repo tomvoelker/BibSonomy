@@ -144,8 +144,10 @@ public final class RestServlet extends HttpServlet {
 			this.oauthLogicFactory.setNoAuthLogicFactory(noAuthFactory);
 			
 			log.debug("Sucessfully enabled oauth database layer");
-		} catch (Exception e) {
-			log.error("Error initializing the oauth database layer (disabling oauth for the rest api)", e);
+		} catch (Error e) {
+			// FIXME: IbatisDBSessionFactory doesn't have a JNDI datasource during tests
+			//        we have to springify the rest server to cleanly handle this case
+			log.error("Error initializing the oauth database layer (disabling oauth for the rest api)");
 		}
 	}
 
