@@ -264,7 +264,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	 */
 	@Override
 	@Test
-	@Ignore
+	@Ignore // TODO: test order
 	public void testGetPostsViewable() {
 		List<Post<Bookmark>> posts = bookmarkDb.getPostsViewable(null, TESTUSER1_NAME, PUBLIC_GROUP_ID, HashID.INTRA_HASH, 10, 0, null, this.dbSession);
 		assertEquals(1, posts.size());
