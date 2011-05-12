@@ -12,7 +12,7 @@
 			<bib:author publication="${post.resource}"/>
 			<bib:journal post="${post}"/>
 			<bib:volumeNumberPages post="${post}"/>
-			<bib:year post="${post}" braces="true" month="true"/>
+			<bib:year publication="${post.resource}" braces="true"/>
 			<bib:note post="${post}"/>			
 		</c:when>
 		
@@ -22,7 +22,7 @@
 			<bib:publisher post="${post}"/>
 			<bib:address post="${post}"/>
 			<bib:edition post="${post}"/>
-			<bib:year post="${post}" braces="true" month="true"/>
+			<bib:year publication="${post.resource}" braces="true"/>
 			<bib:note post="${post}"/>	
 		</c:when>
 		
@@ -34,7 +34,7 @@
 			<bib:publisher post="${post}"/>
 			<bib:address post="${post}"/>
 			<bib:edition post="${post}"/>
-			<bib:year post="${post}" braces="true" month="true"/>
+			<bib:year publication="${post.resource}" braces="true"/>
 			<bib:note post="${post}"/>	
 		</c:when>
 		
@@ -42,7 +42,7 @@
 			<bib:author publication="${post.resource}"/>
 			<bib:howpublished post="${post}"/>
 			<bib:address post="${post}"/>			
-			<bib:year post="${post}" braces="true" month="true"/>
+			<bib:year publication="${post.resource}" braces="true"/>
 			<bib:note post="${post}"/>	
 		</c:when>
 		
@@ -55,7 +55,7 @@
 			<bib:address post="${post}"/>
 			<bib:edition post="${post}"/>
 			<bib:note post="${post}"/>	
-			<bib:year post="${post}" braces="true" month="true"/>
+			<bib:year publication="${post.resource}" braces="true"/>
 		</c:when>
 		
 		<c:when test="${post.resource.entrytype eq 'inproceedings'}">
@@ -66,7 +66,7 @@
 			<bib:address post="${post}"/>
 			<bib:organization post="${post}"/>
 			<bib:publisher post="${post}"/>
-			<bib:year post="${post}" braces="true" month="true"/>
+			<bib:year publication="${post.resource}" braces="true"/>
 			<bib:note post="${post}"/>
 		</c:when>
 		
@@ -75,7 +75,7 @@
 			<bib:organization post="${post}"/>
 			<bib:address post="${post}"/>
 			<bib:edition post="${post}"/>
-			<bib:year post="${post}" braces="true" month="true"/>
+			<bib:year publication="${post.resource}" braces="true"/>
 			<bib:note post="${post}"/>
 		</c:when>
 	
@@ -84,7 +84,7 @@
 			<bib:school post="${post}"/>
 			<bib:address post="${post}"/>
 			<bib:type post="${post}"/>			
-			<bib:year post="${post}" braces="true" month="true"/>
+			<bib:year publication="${post.resource}" braces="true"/>
 			<bib:note post="${post}"/>
 		</c:when>
 		
@@ -94,7 +94,7 @@
 			<bib:address post="${post}"/>
 			<bib:organization post="${post}"/>
 			<bib:publisher post="${post}"/>
-			<bib:year post="${post}" braces="true" month="true"/>
+			<bib:year publication="${post.resource}" braces="true"/>
 			<bib:note post="${post}"/>
 		</c:when>
 		
@@ -104,12 +104,12 @@
 			<bib:volume post="${post}"/>		
 			<bib:institution post="${post}"/>
 			<bib:address post="${post}"/>
-			<bib:year post="${post}" braces="true" month="true"/>						
+			<bib:year publication="${post.resource}" braces="true"/>					
 		</c:when>
 		
 		<c:when test="${post.resource.entrytype eq 'unpublished'}">			
 			<bib:author publication="${post.resource}"/>
-			<bib:year post="${post}" braces="true" month="true"/>
+			<bib:year publication="${post.resource}" braces="true"/>
 			<bib:note post="${post}"/>
 		</c:when>	
 		
@@ -117,7 +117,7 @@
 		<c:otherwise>
 			<bib:author publication="${post.resource}"/>	
 			<bib:howpublished post="${post}"/>
-			<bib:year post="${post}" braces="true" month="true"/>
+			<bib:year publication="${post.resource}" braces="true"/>
 			<bib:note post="${post}"/>
 		</c:otherwise>	
 	
