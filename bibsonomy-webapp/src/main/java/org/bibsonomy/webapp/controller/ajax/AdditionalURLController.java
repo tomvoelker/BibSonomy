@@ -77,9 +77,9 @@ public class AdditionalURLController extends AjaxController implements
 		}
 
 		/*
-		 * Check if the given url-text is not empty
+		 * Check if the given url-text is not empty while ADDING a URL
 		 */
-		if (!present(urlName)) {
+		if (!present(urlName) && ADD_URL.equals(command.getAction())) {
 			command.setResponseString(getXmlError("error.url.emptyName"));
 			return Views.AJAX_XML;
 		}
