@@ -10,10 +10,14 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.text.Normalizer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -39,6 +43,7 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.upload.FileUploadInterface;
+import org.springframework.format.datetime.DateFormatter;
 
 
 /**
@@ -67,6 +72,15 @@ public class Functions  {
 	// used to generate URLs
 	private static URLGenerator urlGenerator;
 
+	private static DateFormatter myDateFormatter = new DateFormatter("MMMM yyyy");
+	private static DateFormatter dmyDateFormatter = new DateFormatter();
+	static {
+		dmyDateFormatter.setStyle(DateFormat.MEDIUM);
+	}
+	private static DateFormat yDateFormat = new SimpleDateFormat("yyyy");
+	private static DateFormat myDateFormat = new SimpleDateFormat("yyyy-MM");
+	private static DateFormat dmyDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	
 	// load special characters
 	static {
 		try {
@@ -602,6 +616,49 @@ public class Functions  {
 			urlGenerator = new URLGenerator(projectHome);
 		}
 		return BibTexUtils.toBibtexString(post, urlGenerator) + "\n\n";
+	}
+	
+	/**
+	 * Formats the date with the given locale.
+	 * 
+	 * @param day
+	 * @param month
+	 * @param year
+	 * @param locale
+	 * @return The formatted date. Depending on how detailed the date is (year 
+	 * only, month+year, day+month+year) the date is formatted in different ways.
+	 */
+	public static String getDate(final String day, final String month, final String year, final Locale locale) {
+		if (present(year)) {
+			final String trimmedYear = year.trim();
+			if (present(month)) {
+				final String monthAsNumber = BibTexUtils.getMonthAsNumber(month);
+				final String trimmedMonth = month.trim();
+				if (present(day)) {
+					final String trimmedDay = day.trim();
+					try {
+						return dmyDateFormatter.print(dmyDateFormat.parse(trimmedYear + "-" + monthAsNumber + "-" + trimmedDay), locale);
+					} catch (ParseException ex) {
+						// return default date
+						return trimmedDay + " " + trimmedMonth + " " + trimmedYear;
+					}
+				}
+				/*
+				 * no day given
+				 */
+				try {
+					return myDateFormatter.print(myDateFormat.parse(trimmedYear + "-" + monthAsNumber), locale);
+				} catch (ParseException ex) {
+					// return default date
+					return trimmedMonth + " " + trimmedYear;
+				}
+			}
+			/*
+			 * no month given
+			 */
+			return trimmedYear;
+		}
+		return "";
 	}
 
 	/**

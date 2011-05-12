@@ -364,4 +364,11 @@
   	<function-signature>Boolean hasTagMyown(org.bibsonomy.model.Post)</function-signature>
   </function>    
 
+  <function>
+  	<name>getDate</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>Boolean hasTagMyown(org.bibsonomy.model.Post)</function-signature>
+  	<function-signature>String getDate(java.lang.String, java.lang.String, java.lang.String, java.util.Locale)</function-signature>
+  </function>    
+
 </taglib>

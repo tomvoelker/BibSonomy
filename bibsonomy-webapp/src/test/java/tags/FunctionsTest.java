@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Tag;
@@ -64,4 +65,30 @@ public class FunctionsTest {
 		assertEquals("", Functions.getLowerPath("/groups"));
 	}
 	
+	@Test
+	public void testGetDate() throws Exception {
+		final Locale locale = new Locale("de");
+		assertEquals("15.02.2010", Functions.getDate(" 15 ", "february", "2010", locale));
+		assertEquals("15.02.2010", Functions.getDate("15", "feb", "2010", locale));
+		assertEquals("15.02.2010", Functions.getDate("15", "FEB", "2010", locale));
+		assertEquals("Februar 2010", Functions.getDate("", "feb", "2010", locale));
+		assertEquals("März 2010", Functions.getDate("", "march", "2010", locale));
+		assertEquals("2010", Functions.getDate("", "", "2010", locale));
+		/*
+		 * fallback: return plain strings if parsing fails
+		 */
+		assertEquals("22 März 2010", Functions.getDate(" 22 ", " März", "2010", locale)); 
+		assertEquals("Oktober 2010", Functions.getDate("", "Oktober", "2010", locale));
+		/*
+		 * the same with another locale
+		 */
+		final Locale gbLocale = new Locale("gb");
+		assertEquals("Feb 15, 2010", Functions.getDate(" 15 ", "february", "2010", gbLocale));
+		assertEquals("Feb 15, 2010", Functions.getDate("15", "feb", "2010", gbLocale));
+		assertEquals("Feb 15, 2010", Functions.getDate("15", "FEB", "2010", gbLocale));
+		assertEquals("February 2010", Functions.getDate("", "feb", "2010", gbLocale));
+		assertEquals("March 2010", Functions.getDate("", "march", "2010", gbLocale));
+		assertEquals("2010", Functions.getDate("", "", "2010", gbLocale));
+		
+	}
 }
