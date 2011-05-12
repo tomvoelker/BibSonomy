@@ -3,6 +3,7 @@ package org.bibsonomy.model.sync;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.bibsonomy.model.Resource;
 
@@ -12,13 +13,21 @@ import org.bibsonomy.model.Resource;
  * @version $Id$
  */
 public interface SyncLogicInterface {
-
+	
 	/**
 	 * 
 	 * @param userName
-	 * @return
+	 * @param serviceId
+	 * @param userCredentials
 	 */
-	public Map<String, SynchronizationPost> getSyncPostsMapForUser(String userName);
+	public void storeNewClientForUser(final String userName, final int serviceId, final Properties userCredentials);
+	
+	/**
+	 * 
+	 * @param user
+	 * @return 
+	 */
+	public List<SyncService> getSyncServicesForUser(String user);
 	
 	/**
 	 * 
@@ -40,18 +49,18 @@ public interface SyncLogicInterface {
 	 * @param userName
 	 * @param serviceId
 	 * @param contentType
-	 * @return
+	 * @return Synchronization data of currently running synchronization: status is "undone"
 	 */
-	public SynchronizationData getCurrentSynchronizationData (String userName, int serviceId, int contentType);
+	public SynchronizationData getCurrentSynchronizationDataForUserForServiceForContent (String userName, int serviceId, int contentType);
 	
 	/**
 	 * 
 	 * @param userName
 	 * @param serviceId
 	 * @param contentType
-	 * @return
+	 * @return Synchronization data of last successful synchronization: date and status
 	 */
-	public SynchronizationData getLastSynchronizationData (String userName, int serviceId, int contentType);
+	public SynchronizationData getLastSynchronizationDataForUserForContentType (String userName, int serviceId, int contentType);
 	
 	/**
 	 * 
@@ -59,7 +68,14 @@ public interface SyncLogicInterface {
 	 * @param userName
 	 * @return List of SnchronizationPosts for given user 
 	 */
-	public List<SynchronizationPost> getPostsForSync (Class<? extends Resource> resourceType, String userName);
+	public List<SynchronizationPost> getSyncPostsListForUser (Class<? extends Resource> resourceType, String userName);
+	
+	/**
+	 * 
+	 * @param userName
+	 * @return map with user posts used from server!
+	 */
+	public Map<String, SynchronizationPost> getSyncPostsMapForUser(String userName);
 	
 	/**
 	 * 

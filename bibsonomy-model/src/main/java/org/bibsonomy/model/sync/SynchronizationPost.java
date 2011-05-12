@@ -9,12 +9,6 @@ import org.bibsonomy.model.Resource;
 public class SynchronizationPost extends SynchronizationResource {
 	
 	/**
-	 * Expected memory usage for one Post: 2 * 32 byte (hasheS) + 2 * 24 byte (dates) + 4byte (state) +   = 112 byte
-	 * for 100k Posts: approximately 11 MB
-	 */
-	
-	
-	/**
 	 * interHash of this post
 	 */
 	private String intraHash;
@@ -27,6 +21,11 @@ public class SynchronizationPost extends SynchronizationResource {
 	 * class of this post, e. g. Bibtex or Bookmark
 	 */
 	private Class<? extends Resource> resourceType;
+	
+	/**
+	 * resource attached from server
+	 */
+	private Resource post;
 	
 	/*
 	 * (non-Javadoc)
@@ -76,6 +75,20 @@ public class SynchronizationPost extends SynchronizationResource {
 	 */
 	public Class<? extends Resource> getResourceType() {
 		return resourceType;
+	}
+
+	/**
+	 * @param post the post to set
+	 */
+	public void setPost(Resource post) {
+		this.post = post;
+	}
+
+	/**
+	 * @return the post
+	 */
+	public Resource getPost() {
+		return post;
 	}
 
 }
