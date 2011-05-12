@@ -297,10 +297,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     
     /*
      * (non-Javadoc)
-     * @see org.bibsonomy.model.sync.SyncLogicInterface#storeNewClientForUser(java.util.Properties)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncServer(java.lang.String, int, java.util.Properties)
      */
     @Override
-    public void storeNewClientForUser(final String userName, final int serviceId, final Properties userCredentials) {
+    public void createSyncServer(final String userName, final int serviceId, final Properties userCredentials) {
 	
 	final DBSession session = this.openSession();
 	try {

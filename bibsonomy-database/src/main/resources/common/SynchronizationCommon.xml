@@ -21,7 +21,7 @@
 	
 	<resultMap id="syncService" class="syncService">
 		<result property="serviceId" column="service_id"	javaType="int"/>
-		<result property="clientUser" column="credentials"	javaType="properties"/>
+		<result property="serverUser" column="credentials"	javaType="properties"/>
 	</resultMap>
 	
 </sqlMap>
