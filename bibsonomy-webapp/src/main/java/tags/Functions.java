@@ -630,33 +630,33 @@ public class Functions  {
 	 */
 	public static String getDate(final String day, final String month, final String year, final Locale locale) {
 		if (present(year)) {
-			final String trimmedYear = year.trim();
+			final String cleanYear = BibTexUtils.cleanBibTex(year);
 			if (present(month)) {
-				final String monthAsNumber = BibTexUtils.getMonthAsNumber(month);
-				final String trimmedMonth = month.trim();
+				final String cleanMonth = BibTexUtils.cleanBibTex(month);
+				final String monthAsNumber = BibTexUtils.getMonthAsNumber(cleanMonth);
 				if (present(day)) {
-					final String trimmedDay = day.trim();
+					final String cleanDay = BibTexUtils.cleanBibTex(day.trim());
 					try {
-						return dmyDateFormatter.print(dmyDateFormat.parse(trimmedYear + "-" + monthAsNumber + "-" + trimmedDay), locale);
+						return dmyDateFormatter.print(dmyDateFormat.parse(cleanYear + "-" + monthAsNumber + "-" + cleanDay), locale);
 					} catch (ParseException ex) {
 						// return default date
-						return trimmedDay + " " + trimmedMonth + " " + trimmedYear;
+						return cleanDay + " " + cleanMonth + " " + cleanYear;
 					}
 				}
 				/*
 				 * no day given
 				 */
 				try {
-					return myDateFormatter.print(myDateFormat.parse(trimmedYear + "-" + monthAsNumber), locale);
+					return myDateFormatter.print(myDateFormat.parse(cleanYear + "-" + monthAsNumber), locale);
 				} catch (ParseException ex) {
 					// return default date
-					return trimmedMonth + " " + trimmedYear;
+					return cleanMonth + " " + cleanYear;
 				}
 			}
 			/*
 			 * no month given
 			 */
-			return trimmedYear;
+			return cleanYear;
 		}
 		return "";
 	}
