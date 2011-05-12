@@ -59,13 +59,6 @@ public class Functions  {
 	public static final String[] swrcEntryTypes   = {"Article",        "Book", "Booklet", "Misc",       "Misc",       "InBook",       "InCollection", "InProceedings",    "Manual",  "MasterThesis",  "Misc",    "Misc",    "Misc",       "PhDThesis", "Misc",     "Misc",         "Proceedings",            "Misc",     "TechnicalReport", "Unpublished"};
 	private static final String[] risEntryTypes    = {"Journal Article","Book", "Book",    "Generic",    "Generic",    "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis",        "Generic", "Generic", "Generic",    "Thesis",    "Generic",  "Generic",      "Conference Proceedings", "Generic",  "Report",          "Unpublished Work"};
 
-	/**
-	 * Fields over which are iterated in the JSP to output BibTeX.
-	 * 'month' is missing, since it is handled separately. 
-	 * TODO: re-use {@link BibTexUtils#toBibtexString(Post, String)} instead. 
-	 */
-	private static String[] bibtexFields     = {"title","address","annote","author","booktitle","chapter","crossref","edition","editor","howpublished","institution","journal","note","number","organization","pages","publisher","school","series","type","volume","year","day","url"};
-
 	private static JabrefLayoutRenderer layoutRenderer;
 
 	// contains special characters, symbols, etc...
@@ -609,26 +602,6 @@ public class Functions  {
 			urlGenerator = new URLGenerator(projectHome);
 		}
 		return BibTexUtils.toBibtexString(post, urlGenerator) + "\n\n";
-	}
-
-	/**
-	 * Access the built-in utility function for bibtex export
-	 * 
-	 * @param month
-	 * 		- the month from the bibtex  
-	 * @return
-	 * 		- the correctly quoted month
-	 */
-	public static String getBibtexMonth(final String month) {
-		return BibTexUtils.getMonth(month);
-	}
-
-	/** 
-	 * @return The BibTeX fields which should be printed, excludign 'month' - it
-	 * should be printed using {@link #getBibtexMonth(String)}.
-	 */
-	public static String[] getBibtexFields() {
-		return bibtexFields;
 	}
 
 	/**

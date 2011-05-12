@@ -315,18 +315,6 @@
   	<function-class>tags.Functions</function-class>
   	<function-signature>String toBibtexString(org.bibsonomy.model.Post, java.lang.String)</function-signature>
   </function>  
-  
-  <function>
-  	<name>getBibtexMonth</name>
-  	<function-class>tags.Functions</function-class>
-  	<function-signature>String getBibtexMonth(java.lang.String)</function-signature>
-  </function>
-  
-  <function>
-  	<name>getBibtexFields</name>
-  	<function-class>tags.Functions</function-class>
-  	<function-signature>String[] getBibtexFields()</function-signature>
-  </function>  
 
   <function>
   	<name>renderLayout</name>
