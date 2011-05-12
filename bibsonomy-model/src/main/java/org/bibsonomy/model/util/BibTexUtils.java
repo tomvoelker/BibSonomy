@@ -37,6 +37,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -171,9 +172,15 @@ public class BibTexUtils {
 	 * month names. If we find such a month abbreviation, we should not put 
 	 * braces around the string.
 	 */
-	private static final Set<String> BIBTEX_MONTHS = new HashSet<String>(Arrays.asList(new String[] {
-			"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"
-	}));
+	private static final Map<String, Integer> BIBTEX_MONTHS = new HashMap<String, Integer>();
+	static {
+		final String[] months = new String[] {
+				"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"
+		};
+		for (int i = 0; i < months.length; i++) {
+			BIBTEX_MONTHS.put(months[i], i + 1);
+		}
+	}
 
 
 	/** default opening bracket */
@@ -404,10 +411,39 @@ public class BibTexUtils {
 	 * @return The correctly 'quoted' month.
 	 */
 	public static String getMonth(final String month) {
-		if (month != null && BIBTEX_MONTHS.contains(month.toLowerCase().trim())) return month;
+		if (month != null && BIBTEX_MONTHS.containsKey(month.toLowerCase().trim())) return month;
 		return "{" + month + "}";
 	}
 
+	
+	/**
+	 * Tries to extract the month number from the given string. The following 
+	 * input formats are supported:
+	 * <ul>
+	 * <li>long English month name: January, february, MARCH, ...</li>
+	 * <li>abbreviated English month name: Jan, feb, MAR, ...</li>
+	 * <li>month as number: 01, 2, 3, ...</li>
+	 * </ul> 
+	 * <strong>Note:</strong> if an unreadable month is given, the untouched
+	 * string is returned. 
+	 * 
+	 * 
+	 * @param month
+	 * @return The month represented as number in the range 1, ..., 12
+	 */
+	public static String getMonthAsNumber(final String month) {
+		if (present(month)) {
+			final String trimmed = month.trim();
+			if (trimmed.length() >= 3) {
+				final String abbrev = trimmed.toLowerCase().substring(0, 3);
+				if (BIBTEX_MONTHS.containsKey(abbrev)) {
+					return BIBTEX_MONTHS.get(abbrev).toString();
+				}
+			}
+			return trimmed;
+		}
+		return month;
+	}
 
 	/**
 	 * Creates a bibtex string with some bibsonomy-specific information using 

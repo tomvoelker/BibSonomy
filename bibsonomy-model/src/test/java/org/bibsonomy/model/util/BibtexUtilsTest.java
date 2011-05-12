@@ -349,4 +349,29 @@ public class BibtexUtilsTest {
 		 */		
 		assertEquals(cleanedMisc, bib.getMisc());
 	}
+	
+	@Test
+	public void testGetMonthAsNumber() throws Exception {
+		assertEquals("1", BibTexUtils.getMonthAsNumber("1"));
+		assertEquals("1", BibTexUtils.getMonthAsNumber(" 1 "));
+		assertEquals("01", BibTexUtils.getMonthAsNumber("01"));
+		assertEquals("01", BibTexUtils.getMonthAsNumber(" 01 "));
+		assertEquals("1", BibTexUtils.getMonthAsNumber("jan"));
+		assertEquals("1", BibTexUtils.getMonthAsNumber("Jan"));
+		assertEquals("1", BibTexUtils.getMonthAsNumber("JaN"));
+		assertEquals("1", BibTexUtils.getMonthAsNumber(" Jan   "));
+		assertEquals("1", BibTexUtils.getMonthAsNumber("January"));
+		assertEquals("2", BibTexUtils.getMonthAsNumber("february"));
+		assertEquals("3", BibTexUtils.getMonthAsNumber("MARCH"));
+		assertEquals("4", BibTexUtils.getMonthAsNumber("april"));
+		assertEquals("5", BibTexUtils.getMonthAsNumber("  mAy  "));
+		assertEquals("6", BibTexUtils.getMonthAsNumber("June     "));
+		assertEquals("7", BibTexUtils.getMonthAsNumber("july"));
+		assertEquals("8", BibTexUtils.getMonthAsNumber("AugUsT  "));
+		assertEquals("9", BibTexUtils.getMonthAsNumber("September"));
+		assertEquals("10", BibTexUtils.getMonthAsNumber("october"));
+		assertEquals("11", BibTexUtils.getMonthAsNumber("november"));
+		assertEquals("12", BibTexUtils.getMonthAsNumber("DeCeMbeR"));
+		
+	}
 }
