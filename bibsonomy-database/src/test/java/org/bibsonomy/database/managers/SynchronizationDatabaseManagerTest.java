@@ -37,17 +37,17 @@ public class SynchronizationDatabaseManagerTest extends
      */
     @Test
     public void testSyncService() {
-	SyncService service = new SyncService();
+	final SyncService service = new SyncService();
 	service.setServiceId(0);
 	service.setServiceName(SynchronizationClients.LOCAL.toString());
-	Properties serverUser = new Properties();
+	final Properties serverUser = new Properties();
 	serverUser.setProperty("name", syncUser1);
 	serverUser.setProperty("apiKey", "1546545646565");
 	service.setServerUser(serverUser);
 	
 	syncDBManager.insertSyncServiceForUser(dbSession, syncUser1, 0, serverUser);
 	
-	List<SyncService> services = syncDBManager.getSyncServicesForUser(syncUser1, dbSession);
+	final List<SyncService> services = syncDBManager.getSyncServicesForUser(syncUser1, dbSession);
 	assertTrue(services.contains(service));
 	assertEquals(2, services.size());
     }
