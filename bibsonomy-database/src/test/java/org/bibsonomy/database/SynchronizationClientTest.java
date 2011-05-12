@@ -8,7 +8,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -154,7 +153,6 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest{
     @Test
     public void testSynchronization() {
 	SynchronizationClient synchronizer = new SynchronizationClient();
-	Date date = new Date((new Date().getTime()/1000)*1000);
 	
 	assertTrue("synchronization wasn't successful", synchronizer.synchronize(serverUser, clientUser, serverLogic, clientLogic, serviceIdentifier, serverServiceIdentifier));
 	
@@ -177,13 +175,11 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest{
 	    assertTrue(key + " is not same", clientPosts.get(key).isSame(serverPosts.get(key)));
 	}
 	
-	SynchronizationData syncData = serverLogic.getCurrentSynchronizationData(serverUser.getName(), Integer.parseInt(serviceIdentifier), ConstantID.BIBTEX_CONTENT_TYPE.getId());
+	SynchronizationData syncData = serverLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUser.getName(), Integer.parseInt(serviceIdentifier), ConstantID.BIBTEX_CONTENT_TYPE.getId());
 	assertTrue(syncData == null);
 	
-	syncData = serverLogic.getLastSynchronizationData(serverUser.getName(), Integer.parseInt(serviceIdentifier), ConstantID.BIBTEX_CONTENT_TYPE.getId());
+	syncData = serverLogic.getLastSynchronizationDataForUserForContentType(serverUser.getName(), Integer.parseInt(serviceIdentifier), ConstantID.BIBTEX_CONTENT_TYPE.getId());
 	assertNotNull(syncData);
-	
-	//assertEquals(date, syncData.getLastSyncDate());
-	//TODO check sync_data
+
     }
 }

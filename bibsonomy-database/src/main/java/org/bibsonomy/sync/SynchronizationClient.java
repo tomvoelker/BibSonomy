@@ -42,10 +42,10 @@ public class SynchronizationClient {
 	this.strategy = ConflictResolutionStrategy.LAST_WINS;
 	
 	//TODO correct cast form serviceIdentifier
-	SynchronizationClients client = SynchronizationClients.BIBSONOMY;
+	SynchronizationClients client = SynchronizationClients.getById(Integer.parseInt(serviceIdentifier));
 	
 	switch (client) {
-	case BIBSONOMY: case PUMA:
+	case BIBSONOMY: case PUMA: case LOCAL:
 	    String result = synchronizeResource(BibTex.class);
 	    storeSyncResult(result, client.getId(), ConstantID.BIBTEX_CONTENT_TYPE.getId());
 	    
@@ -62,7 +62,7 @@ public class SynchronizationClient {
     
     private void storeSyncResult(String result, int serviceId, int contentType) {
 	SyncLogicInterface syncServerLogic = (SyncLogicInterface) serverLogic;
-	SynchronizationData data = syncServerLogic.getCurrentSynchronizationData(serverUser.getName(), serviceId, contentType);
+	SynchronizationData data = syncServerLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUser.getName(), serviceId, contentType);
 	if (data.getStatus().equals("undone")) {
 	    data.setStatus(result);
 	    syncServerLogic.setCurrentSyncDone(data);
@@ -80,8 +80,9 @@ public class SynchronizationClient {
 	
 	
 	//TODO replace this with correct cast
-	int serverServiceId = Integer.parseInt(serviceIdentifier);
+	//int serverServiceId = Integer.parseInt(serviceIdentifier);
 	
+	@SuppressWarnings("unused")
 	int contentType = 0;
 	if(BibTex.class.equals(resourceType)) {
 	    contentType = ConstantID.BIBTEX_CONTENT_TYPE.getId();
@@ -91,7 +92,7 @@ public class SynchronizationClient {
 	    //TODO unknown resource Type
 	}
 	
-	List<SynchronizationPost> clientPosts = syncClientLogic.getPostsForSync(resourceType, clientUser.getName());
+	List<SynchronizationPost> clientPosts = syncClientLogic.getSyncPostsListForUser(resourceType, clientUser.getName());
 	
 	syncServerLogic.getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, serviceIdentifier);
 	
@@ -176,8 +177,7 @@ public class SynchronizationClient {
 	answer.insert(0, "done, ");
 	int length = answer.length();
 	if(length == 6) {
-	    //TODO test this case
-	    answer.append("done, no changes");
+	    answer.append("no changes");
 	} else if (answer.lastIndexOf(", ") == length-2) {
 	    answer.delete(length -2 , length);
 	}

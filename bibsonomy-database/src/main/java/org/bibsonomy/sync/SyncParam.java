@@ -1,6 +1,7 @@
 package org.bibsonomy.sync;
 
 import java.util.Date;
+import java.util.Properties;
 
 /**
  * @author wla
@@ -13,13 +14,15 @@ public class SyncParam {
     private final int contentType;
     private final Date lastSyncDate;
     private final String status;
+    private final Properties credentials;
 
-    public SyncParam(String userName, int serviceId, int contentType, Date lastSyncDate, String status) {
+    public SyncParam(String userName, int serviceId, int contentType, Date lastSyncDate, String status, Properties credentials) {
 	this.userName = userName;
 	this.serviceId = serviceId;
 	this.contentType = contentType;
 	this.lastSyncDate = lastSyncDate;
 	this.status = status;
+	this.credentials = credentials;
     }
 
     /**
@@ -55,5 +58,12 @@ public class SyncParam {
      */
     public String getStatus() {
 	return status;
+    }
+
+    /**
+     * @return the credentials
+     */
+    public Properties getCredentials() {
+	return credentials;
     }
 }

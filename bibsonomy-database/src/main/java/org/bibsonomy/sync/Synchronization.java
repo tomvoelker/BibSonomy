@@ -32,6 +32,9 @@ public class Synchronization {
     public List<SynchronizationPost> synchronize(HashMap<String, SynchronizationPost> serverPosts, List<SynchronizationPost> clientPosts, Date lastSyncDate, ConflictResolutionStrategy conflictStrategy) {
 	for (SynchronizationPost clientPost : clientPosts) {
 	    SynchronizationPost serverPost = serverPosts.get(clientPost.getIntraHash());
+	    if(lastSyncDate == null) {
+		System.err.println("last sync date not present");
+	    }
 	    
 	    /*no such post on server*/
 	    if (serverPost == null) {

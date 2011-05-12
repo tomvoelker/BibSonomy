@@ -19,9 +19,9 @@
 		<result property="status"		column="status"			javaType="string"	/>
 	</resultMap>
 	
-	<!--<resultMap id="syncData" class="syncData">
-		<result property="lastSyncDate" column="last_sync_date" javaType="date"/>
-	</resultMap>-->
-	
+	<resultMap id="syncService" class="syncService">
+		<result property="serviceId" column="service_id"	javaType="int"/>
+		<result property="clientUser" column="credentials"	javaType="properties"/>
+	</resultMap>
 	
 </sqlMap>

@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -88,6 +89,7 @@ import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
@@ -280,7 +282,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	final DBSession session = this.openSession();
 	try {
 	    lastSyncDate = syncDBManager.getLastSynchronizationDate(userName, serviceId, contentType, session);
-	    syncDBManager.insertInitialSynchronization(userName, serviceId, contentType, session);
+	    if(!present(lastSyncDate)) {
+		lastSyncDate = new Date(0);
+	    }
+	    syncDBManager.insertSyncronizationData(userName, serviceId, contentType, new Date(), "undone", session);
 	    posts = (HashMap<String, SynchronizationPost>) publicationDBManager.getSyncPostsMapForUser(userName, session);
 
 	} finally {
@@ -288,6 +293,39 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	}
 	Synchronization sync = new Synchronization();
 	return sync.synchronize(posts, clientPosts, lastSyncDate, strategy);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#storeNewClientForUser(java.util.Properties)
+     */
+    @Override
+    public void storeNewClientForUser(final String userName, final int serviceId, final Properties userCredentials) {
+	
+	final DBSession session = this.openSession();
+	try {
+	    syncDBManager.insertSyncServiceForUser(session, userName, serviceId, userCredentials);
+	} finally {
+	    session.close();
+	}
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServicesForUser(org.bibsonomy.model.User)
+     */
+    @Override
+    public List<SyncService> getSyncServicesForUser(String userName) {
+	final DBSession session = this.openSession();
+	List<SyncService> services;
+	
+	try {
+	    services = syncDBManager.getSyncServicesForUser(userName, session);
+	} finally {
+	   session.close();
+	}
+	
+	return services;
     }
     
     /*
@@ -311,9 +349,14 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getCurrentSynchronizationData(java.lang.String, int, int)
      */
     @Override
-    public SynchronizationData getCurrentSynchronizationData (final String userName, final int serviceId, final int contentType) {
+    public SynchronizationData getCurrentSynchronizationDataForUserForServiceForContent (final String userName, final int serviceId, final int contentType) {
 	SynchronizationData syncData = null;
-	syncData = this.getLastSynchronizationData(userName, serviceId, contentType);
+	final DBSession session = this.openSession();
+	try {
+	    syncData=syncDBManager.getCurrentSynchronizationData(userName, serviceId, contentType, session);
+	} finally {
+	    session.close();
+	}
 	if(syncData != null && syncData.getStatus().equals("undone")) {
 	    return syncData;
 	}
@@ -324,11 +367,12 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * (non-Javadoc)
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getLastSynchronizationData(java.lang.String, int, int)
      */
-    public SynchronizationData getLastSynchronizationData (String userName, int serviceId, int contentType) {
+     @Override
+    public SynchronizationData getLastSynchronizationDataForUserForContentType (String userName, int serviceId, int contentType) {
 	final DBSession session = this.openSession();
 	SynchronizationData syncData = null;
 	try {
-	    syncData = syncDBManager.getCurrentSynchronization(userName, serviceId, contentType, session);
+	    syncData = syncDBManager.getSynchronizationData(userName, serviceId, contentType, session).get(0);
 	} finally {
 	    session.close();
 	}
@@ -343,7 +387,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     public void setCurrentSyncDone(final SynchronizationData data) {
 	final DBSession session = this.openSession();
 	try {
-	    syncDBManager.updateSyncData("updateSyncStatus", session, data);
+	    syncDBManager.updateSyncData(session, data);
 	} finally {
 	    session.close();
 	}
@@ -373,7 +417,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getPostsForSync(java.lang.Class, java.lang.String)
      */
     @Override
-    public List<SynchronizationPost> getPostsForSync (Class<? extends Resource> resourceType, String userName) {
+    public List<SynchronizationPost> getSyncPostsListForUser (Class<? extends Resource> resourceType, String userName) {
         final DBSession session = this.openSession();
         List<SynchronizationPost> postList = null;
         try {

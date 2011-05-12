@@ -91,7 +91,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 	assertTrue(posts.containsKey("c7c8d5f682a6f32b7b3be9f3986a1cba"));
 	
 	int serviceID = 1;
-	int contentType = 1;
+	int contentType = 2;
 	Date date = null;
 	try {
 	    date = format.parse("2011-02-02 23:00:00");

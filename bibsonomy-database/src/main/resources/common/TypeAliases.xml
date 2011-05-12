@@ -26,7 +26,8 @@
 	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />
 	<typeAlias alias="syncPost"			  type="org.bibsonomy.model.sync.SynchronizationPost" />	
 	<typeAlias alias="syncParam"		  type="org.bibsonomy.sync.SyncParam" />
-	<typeAlias alias="syncData"			  type="org.bibsonomy.model.sync.SynchronizationData" />	
+	<typeAlias alias="syncData"			  type="org.bibsonomy.model.sync.SynchronizationData" />
+	<typeAlias alias="syncService"		  type="org.bibsonomy.model.sync.SyncService" />
 	
 	<!-- Extras -->
 	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />

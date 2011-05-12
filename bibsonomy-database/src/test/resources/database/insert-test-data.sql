@@ -79,11 +79,15 @@ INSERT INTO `bibtex` (`content_id`, `user_name`, `simhash1`, `simhash2`, `change
 (106, 'Syncuser1', '564c7c31f6a34e5dc3a1b0c17fe68c13', '08cdf0d0dcce9d07fd8d41ac6267cadf', '2011-03-18 11:20:00', '2011-03-18 11:20:00');
 -- post 7 "created on client" is not in the server database
 
--- synchronization datat table
+-- synchronization data table
 INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`) VALUES 
-('1', 'Syncuser1', '1', '2011-02-02 23:00:00', 'test synchronization'),
-('1', 'Syncuser1', '2', '2011-02-02 23:55:00', 'test synchronization'),
+('1', 'syncuser1', '2', '2011-02-02 23:00:00', 'done'),
 ('1', 'sync1', '2', '2011-02-02 23:00:00', 'test synchronization');
+
+INSERT INTO `sync` (`user_name`, `service_id`, `credentials`) VALUES
+('syncuser1', '1', '#Tue May 10 13:27:07 CEST 2011\nuserName=sync2\napiKey=15cb586b630cc343cd60684807bf4785');
+
+
 -- bookmark table data
 INSERT INTO `bookmark` (`content_id`, `user_name`, `book_url_hash`, `book_description`, `change_date`, `date`) VALUES
 (111, 'Syncuser1', '6232752de0376fb6692917faf2e0a41e', 'no changes', '2010-12-23 17:42:00', '2010-11-01 12:55:00'),
