@@ -45,8 +45,11 @@
 				<!-- <c:set var="resdir" value="${pageContext.request.contextPath}/resources" /> TODO: if sessionid is appended this leads to problems -->
 				<!-- to have it on all pages we set the scope to "request" -->
 				<c:set var="locale" scope="request">
-					<fmt:message key="meta.lang"/>
+					<fmt:message key="meta.lang" />
 				</c:set>
+				
+				<!-- TODO: check if you can use localeObject instead of locale -->
+				<c:set var="localeObject" value="${mtl:getLocale(locale)}" scope="request" />
 				
 				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
 				<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
