@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.services.database.DatabaseSchemaInformation;
 
 import com.ibatis.sqlmap.client.SqlMapSession;
 import com.ibatis.sqlmap.engine.impl.SqlMapExecutorDelegate;
@@ -20,32 +21,43 @@ import com.ibatis.sqlmap.engine.impl.SqlMapSessionImpl;
 import com.ibatis.sqlmap.engine.mapping.result.ResultMap;
 import com.ibatis.sqlmap.engine.mapping.result.ResultMapping;
 
-
 /**
  * @author dzo
  * @version $Id$
  */
-public class DatabaseSchemaInformation {
-	private static final Log log = LogFactory.getLog(DatabaseSchemaInformation.class);
+public class DatabaseSchemaInformationImpl implements DatabaseSchemaInformation {
+	private static final Log log = LogFactory.getLog(DatabaseSchemaInformationImpl.class);
 	
-	private static final String BIBTEX_COMMON_ID = "BibTexCommon.bibtex_common";
-	private static final String USER_COMMON_ID = "UserCommon.user";
-	private static final String BIBTEX_DATABASE_NAME = "bibtex";
-	private static final String USER_DATABASE_NAME = "user";
 	private static final String COLUMN_SIZE = "COLUMN_SIZE";
 	
+	private static final String BIBTEX_COMMON_ID = "BibTexCommon.bibtex_common";
+	private static final String BIBTEX_DATABASE_NAME = "bibtex";
+	private static final String USER_COMMON_ID = "UserCommon.user";
+	private static final String USER_DATABASE_NAME = "user";
+	private static final String REVIEW_COMMON_ID = "ReviewCommon.review";
+	private static final String REVIEW_DATABASE_NAME = "reviews";
 	
-	private static final Map<Class<?>, Map<String, Integer>> fieldLength = new HashMap<Class<?>, Map<String,Integer>>();
-	
-	static {
-		/*
-		 * get the max field lengths
-		 */
-		getMaxFieldLengths(BIBTEX_COMMON_ID, BIBTEX_DATABASE_NAME);
-		getMaxFieldLengths(USER_COMMON_ID, USER_DATABASE_NAME);
-	}
+	private static final DatabaseSchemaInformation INSTANCE = new DatabaseSchemaInformationImpl();
 
-	private static void getMaxFieldLengths(final String mappingId, final String tableName) {
+	/**
+	 * @return the @{link:DatabaseSchemaInformationImpl} instance
+	 */
+	public static DatabaseSchemaInformation getInstance() {
+		return INSTANCE;
+	}
+	
+	private final Map<Class<?>, Map<String, Integer>> fieldLength = new HashMap<Class<?>, Map<String,Integer>>();
+	
+	private DatabaseSchemaInformationImpl() {
+		/*
+		 * we provide the database name to make the getMaxFieldLengths call faster!
+		 */
+		this.getMaxFieldLengths(BIBTEX_COMMON_ID, BIBTEX_DATABASE_NAME);
+		this.getMaxFieldLengths(USER_COMMON_ID, USER_DATABASE_NAME);
+		this.getMaxFieldLengths(REVIEW_COMMON_ID, REVIEW_DATABASE_NAME);
+	}
+	
+	private void getMaxFieldLengths(final String mappingId, final String tableName) {
 		final Map<String, Integer> maxLength = new HashMap<String, Integer>();
 		final SqlMapSession sqlMap = IbatisDBSessionFactory.getSqlMapClient().openSession();
 		
@@ -61,7 +73,7 @@ public class DatabaseSchemaInformation {
 				final String propertyName = mapping.getPropertyName();
 				final String columnName = mapping.getColumnName();
 				
-				final Integer columnMax = DatabaseSchemaInformation.getSchemaInformation(Integer.class, tableName, columnName, COLUMN_SIZE);
+				final Integer columnMax = this.getSchemaInformation(Integer.class, tableName, columnName, COLUMN_SIZE);
 				maxLength.put(propertyName, columnMax);
 			}
 			
@@ -85,7 +97,7 @@ public class DatabaseSchemaInformation {
 	 * @return the schema information of the column of the table
 	 */
 	@SuppressWarnings("unchecked")
-	private static <R> R getSchemaInformation(@SuppressWarnings("unused") /* only used for the cast*/ final Class<R> resultClass, final String tableNamePattern, final String columnNamePattern, final String columnLabel) {
+	private <R> R getSchemaInformation(@SuppressWarnings("unused") /* only used for the cast*/ final Class<R> resultClass, final String tableNamePattern, final String columnNamePattern, final String columnLabel) {
 		final SqlMapSession sqlMap = IbatisDBSessionFactory.getSqlMapClient().openSession();
 		final DataSource dataSource = sqlMap.getDataSource();
 		
@@ -113,12 +125,11 @@ public class DatabaseSchemaInformation {
 	    return null;
 	}
 
-	/**
-	 * @param resourceClass
-	 * @param property
-	 * @return the max length of the property of the resource class
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.util.DatabaseSchemaInformation#getMaxColumnLengthForProperty(java.lang.Class, java.lang.String)
 	 */
-	public static int getMaxColumnLengthForProperty(final Class<?> resourceClass, final String property) {
+	@Override
+	public int getMaxColumnLengthForProperty(final Class<?> resourceClass, final String property) {
 		final Map<String, Integer> properties = fieldLength.get(resourceClass);
 		
 		if (present(properties)) {
