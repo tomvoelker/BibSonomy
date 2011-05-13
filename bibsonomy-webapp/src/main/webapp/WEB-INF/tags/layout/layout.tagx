@@ -42,14 +42,11 @@
 		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>
 		<jsp:body>
 			<head>
-				<!-- <c:set var="resdir" value="${pageContext.request.contextPath}/resources" /> TODO: if sessionid is appended this leads to problems -->
-				<!-- to have it on all pages we set the scope to "request" -->
-				<c:set var="locale" scope="request">
-					<fmt:message key="meta.lang" />
-				</c:set>
-				
-				<!-- TODO: check if you can use localeObject instead of locale -->
-				<c:set var="localeObject" value="${mtl:getLocale(locale)}" scope="request" />
+				<!--+ 
+					| To have the locale available on all pages we set the scope to "request".
+					| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
+					|-->
+				<c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
 				
 				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
 				<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
@@ -64,7 +61,7 @@
 				<script type="text/javascript" src="${resdir}/jquery/jquery.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/jquery/plugins/corner/jquery.corner.js">&amp;nbsp;</script>
 				<!-- localized JavaScript messages -->
-				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale}.js">&amp;nbsp;</script>				
+				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js">&amp;nbsp;</script>				
 				<script type="text/javascript" src="${resdir}/javascript/functions.js">&amp;nbsp;</script>
 				<!-- include tooltip JavaScript only for users that have tooltips enabled -->
 				<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
