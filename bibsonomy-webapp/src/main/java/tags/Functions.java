@@ -765,17 +765,7 @@ public class Functions  {
 	public static String removeXmlControlChars(final String s) {
 		return XmlUtils.removeXmlControlCharacters(s);
 	}
-	
-	/**
-	 * XXX: jsp:useBean requires a default constructor but
-	 * {@link Locale} has only parameterized constructors :(
-	 * 
-	 * @param locale 
-	 * @return the locale to the provided string
-	 */
-	public static Locale getLocale(final String locale) {
-		return new Locale(locale);
-	}
+
 	
 	/**
 	 * Checks if post has system tag myown 

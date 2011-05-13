@@ -48,7 +48,7 @@
         </span>
         <!-- publisher --><c:if test="${not empty bib.publisher}"><span class="entry_publisher">${mtl:cleanBibtex(bib.publisher)}, </span></c:if>
         <!-- address   --><c:if test="${not empty bib.address}"><span class="entry_address">${mtl:cleanBibtex(bib.address)}, </span></c:if>
-        <!-- year      --><c:if test="${not empty bib.year}"><span class="entry_year">${mtl:cleanBibtex(bib.year)}. </span></c:if>
+        <!-- year      --><c:if test="${not empty bib.year}"><span class="entry_year"><c:out value="${mtl:getDate(bib.day, bib.month, bib.year, locale)}"/>. </span></c:if>
 
         <!-- tags & url -->
         <output:tagsUrl post="${post}"/>      

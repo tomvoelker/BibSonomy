@@ -27,8 +27,8 @@
 </c:if>
 <c:if test="${not empty bib.publisher}">${mtl:cleanBibtex(bib.publisher)}</c:if>
 <c:if test="${not empty bib.year}">
-<c:if test="${not empty bib.month}">, ${mtl:cleanBibtex(bib.month)}</c:if> 
-(${mtl:cleanBibtex(bib.year)})</c:if> 
+(<c:out value="${mtl:getDate(bib.day, bib.month, bib.year, locale)}"/>) 
+</c:if> 
 <c:if test="${not empty bib.pages}">, p. ${mtl:cleanBibtex(bib.pages)}</c:if>.
 	  
 </jsp:root>
