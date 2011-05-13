@@ -58,20 +58,27 @@
 				</c:if>
 							
 				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
+				<!--+
+					|
+					| JavaScript files 
+					| 
+				 	+-->
 				<script type="text/javascript" src="${resdir}/jquery/jquery.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/jquery/plugins/corner/jquery.corner.js">&amp;nbsp;</script>
 				<!-- localized JavaScript messages -->
-				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js">&amp;nbsp;</script>				
-				<script type="text/javascript" src="${resdir}/javascript/functions.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js">&amp;nbsp;</script>
+				<!--+ 
+				 	| merged functions.js, style.js, chrome.js
+				 	| and jQuery plugins jquery.textarearesizer.js, jquery.corner.js, jquery.sidebarresizer.js
+					| 
+					| To add other files, add a line to ${resdir}/javascript/merged_global.js and 
+				 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
+				 	+-->
+				<script type="text/javascript" src="${resdir}/javascript/merged_global.js">&amp;nbsp;</script>
+
 				<!-- include tooltip JavaScript only for users that have tooltips enabled -->
 				<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
 					<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&amp;nbsp;</script>
 				</c:if>
-				<script type="text/javascript" src="${resdir}/javascript/style.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/chrome.js">&amp;nbsp;</script>
-	            <script type="text/javascript" src="${resdir}/jquery/plugins/textarearesizer/jquery.textarearesizer.js">&amp;nbsp;</script>
-	            <script type="text/javascript" src="${resdir}/javascript/jquery.sidebarresizer.js">&amp;nbsp;</script>
-			
 				<!-- enable logging with user permission -->
 				<c:if test="${loginUser.settings.logLevel != 1}">
 				  <script type="text/javascript" src="${resdir}/javascript/logging.js">&amp;nbsp;</script>
@@ -81,7 +88,6 @@
 				  ]]>
 				  </script>				  
 				</c:if>
-				
 				<!-- enable on-site spammer killing when user is admin -->
 				<c:if test="${loginUser.role eq 'ADMIN'}">
 				  <script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>

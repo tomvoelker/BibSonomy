@@ -24,7 +24,7 @@
 						otherwise the javascript files compressed by
 						yuicompressor-maven-plugin are overwritten by this plugin 
 					-->
-					<warSourceExcludes>**/javascript/*.js</warSourceExcludes>
+					<warSourceExcludes>**/*.js</warSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -66,7 +66,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<nomunge>true</nomunge>
 					<jswarn>false</jswarn>
 					<nosuffix>true</nosuffix>
 					<suffix></suffix>
@@ -74,6 +73,22 @@
 					<excludes>
 						<exclude>**/*.css</exclude><!--	disabled because plugin stops with exception -->
 					</excludes>
+					<aggregations>
+		            	<aggregation>
+              				<!-- insert new line after each concatenation (default: false) -->
+              				<insertNewLine>true</insertNewLine>
+              				<output>${project.build.directory}/${project.build.finalName}/resources/javascript/merged_global.js</output>
+              				<!-- files to include, path relative to output's directory or absolute path-->
+              				<includes>
+                				<include>functions.js</include>
+                				<include>style.js</include>
+                				<include>chrome.js</include>
+                				<include>../jquery/plugins/textarearesizer/jquery.textarearesizer.js</include>
+                				<include>../jquery/plugins/corner/jquery.corner.js</include>
+                				<include>jquery.sidebarresizer.js</include>
+              				</includes>
+            			</aggregation>
+          			</aggregations>
 				</configuration>
 			</plugin>
 			<plugin>
