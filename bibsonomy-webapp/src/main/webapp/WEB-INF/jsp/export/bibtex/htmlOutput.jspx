@@ -33,9 +33,25 @@
     <c:forEach var="post" items="${command.bibtex.list}">
       <c:set var="bib" value="${post.resource}"/>
       <p class="entry">
-        <!-- author --><c:if test="${not empty bib.author}"><span class="entry_author">${mtl:cleanBibtex(bib.author)}. </span></c:if>
+        <!-- author -->
+        <c:if test="${not empty bib.author}"><span class="entry_author">
+			<c:forEach var="person" items="${bib.authorList}" varStatus="loopStatus">
+				<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
+				${mtl:cleanBibtex(person.firstName)}<c:out value=" "/>${mtl:cleanBibtex(person.lastName)}
+				<!-- append separator "," -->
+				<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
+			</c:forEach>. 
+        </span></c:if>
         <!-- title  --><span class="entry_title"><a href="${projectHome}bibtex/${hash.intra.id}${bib.intraHash}/${fn:escapeXml(post.user.name)}">${mtl:cleanBibtex(bib.title)}</a>. </span>
-        <!-- editor --><c:if test="${not empty bib.editor}"><span class="entry_editor">In ${mtl:cleanBibtex(bib.editor)}, editor(s), </span></c:if>
+        <!-- editor -->
+        <c:if test="${not empty bib.editor}"><span class="entry_editor">In 
+        	<c:forEach var="person" items="${bib.editorList}" varStatus="loopStatus">
+				<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
+				${mtl:cleanBibtex(person.firstName)}<c:out value=" "/>${mtl:cleanBibtex(person.lastName)}
+				<!-- append separator "," -->
+				<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
+			</c:forEach> (<fmt:message key="bibtex.editors.abbr"/>), 
+		</span></c:if>
         <!-- journal, booktitle, series  -->
         <c:choose>
           <c:when test="${!empty bib.journal}">
