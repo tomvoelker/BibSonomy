@@ -10,8 +10,8 @@
 	<c:choose>
 		<c:when test="${post.resource.entrytype eq 'article'}">
 			<bib:author publication="${post.resource}"/>
-			<bib:journal post="${post}"/>
-			<bib:volumeNumberPages post="${post}"/>
+			<bib:journal post="${post}"/><c:out value=" "/>
+			<bib:volumeNumberPages post="${post}"/><c:out value=" "/>
 			<bib:year publication="${post.resource}" braces="true"/>
 			<bib:note post="${post}"/>			
 		</c:when>
