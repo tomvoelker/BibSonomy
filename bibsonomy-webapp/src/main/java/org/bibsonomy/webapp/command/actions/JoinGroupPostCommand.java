@@ -5,7 +5,7 @@ package org.bibsonomy.webapp.command.actions;
  * @author schwass
  * @version $Id$
  */
-public class GroupJoinUserCommand extends GroupActionsCommand {
+public class JoinGroupPostCommand extends GroupActionsCommand {
 	/**
 	 * Contains the HTML-Code to view the reCaptcha. Is filled ONLY by the controller!
 	 * Any validator must check, that the user did not fill this field.
