@@ -632,6 +632,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * If there is no referer URL given, or if we come from a postBookmark/postPublication page, 
 		 * redirect to the user's home page. 
+		 * FIXME: if we are coming from /bibtex/HASH* or /url/HASH* and the hash has
+		 * changed, we should redirect to the corresponding new page
 		 */
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$")) {
 			return new ExtendedRedirectView(urlGenerator.getUserUrl(userName));
