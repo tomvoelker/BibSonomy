@@ -37,7 +37,7 @@ function myownTagInit(chkbox, tagbox) {
 				clear_tags ();
 				if(this.checked 
 						&& tagbox.val().search(/myown[ ]?/gi) == -1){
-					tagbox.val('myown '+tagbox.val());
+					tagbox.removeClass('descriptiveLabel').val('myown '+tagbox.val());
 				} else if(!this.checked) {
 					tagbox.val(tagbox.val().replace(/myown[ ]?/gi, ''));
 				}
