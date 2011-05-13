@@ -23,9 +23,8 @@
 		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>
 		<jsp:body>
 			<head>
-				<c:set var="locale" scope="request"><!-- to have it on all pages we set the scope to "request" -->
-					<fmt:message key="meta.lang"/>
-				</c:set>
+				<!-- to have it on all pages we set the scope to "request" -->
+				<c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
 				
 				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
 				<!--  set the viewport of the mobile device. disabled scaling -->
@@ -37,7 +36,7 @@
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/mobile.css" />
 				<!-- The only JavaScript framework used on the mobile site is jQuery -->
 				<script type="text/javascript" src="${resdir}/jquery/jquery.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale}.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/functions.js">&amp;nbsp;</script>
 				<c:if test="${not empty additionalJS}">
 					<script type="text/javascript" src="${additionalJS}">&amp;nbsp;</script>
