@@ -17,7 +17,13 @@
   
 <html>
   <head>
-    <title>${projectName}</title>
+	<!--+ 
+		| To have the locale available on all pages we set the scope to "request".
+		| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
+		|-->
+	<c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
+	  
+    <title><c:out value="${projectName}"/></title>
     <link rel="stylesheet" type="text/css" href="/resources/css/prolearn.css" />
   </head>
   <body>
