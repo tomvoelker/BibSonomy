@@ -10,8 +10,6 @@
 
 <a href="/admin_spammertags.jsp">spammertags</a> &middot;
 
-<!-- <a href="/admin_dblp.jsp">DBLP</a> &middot; -->
-
-<a href="/admin.jsp">admin</a> &middot;
+<a href="/admin">admin</a> &middot;
 
 </p>
