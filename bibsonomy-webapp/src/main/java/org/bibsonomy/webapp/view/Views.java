@@ -3,7 +3,6 @@
  */
 package org.bibsonomy.webapp.view;
 
-import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.webapp.util.View;
 
 /**
@@ -383,7 +382,7 @@ public enum Views implements View {
 	/**
 	 * join group view
 	 */
-	GROUP_JOIN_USER("actions/group_join_user"),
+	JOIN_GROUP("join_group"),
 	
 	/** 
 	 * import view 
