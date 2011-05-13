@@ -261,7 +261,7 @@ public class RisToBibtexConverter {
 							int month = Integer.parseInt(parts[1]);
 							if ((month > 0) && (month <= 12)) {
 								// System.out.println(Globals.MONTHS[month-1]);
-								bibtexMap.put("month", "#" + MONTHS[month - 1] + "#");
+								bibtexMap.put("month", MONTHS[month - 1]);
 							}
 						} catch (NumberFormatException ex) {
 							// The month part is unparseable, so we ignore it.
