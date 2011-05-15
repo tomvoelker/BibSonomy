@@ -66,6 +66,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<encoding>UTF-8</encoding>
 					<jswarn>false</jswarn>
 					<nosuffix>true</nosuffix>
 					<suffix></suffix>
