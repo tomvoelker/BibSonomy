@@ -3,6 +3,7 @@
  */
 package org.bibsonomy.webapp.view;
 
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.webapp.util.View;
 
 /**
