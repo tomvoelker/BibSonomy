@@ -6,5 +6,5 @@ https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:Hauptseite
 Ask a senior developer for an account.
 
 
-Note: BibWiki.zexp contains the exported OLD wiki from Zope for
-archiving purposes.
+Note: BibWiki.* contains the exported OLD wiki from Zope for archiving
+purposes.
