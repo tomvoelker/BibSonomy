@@ -45,6 +45,10 @@ public enum SortKey {
 	NONE,
 	/** sort by year */
 	YEAR,
+	/** sort by month */
+	MONTH,
+	/** sort by day */
+	DAY,	
 	/** sort by author */
 	AUTHOR,
 	/** sort by editor */
@@ -59,6 +63,8 @@ public enum SortKey {
 	JOURNAL,
 	/** by school */
 	SCHOOL,
+	/** by note */
+	NOTE,	
 	/** by posting date*/
 	DATE,
 	/** by a (somehow computed) ranking */
