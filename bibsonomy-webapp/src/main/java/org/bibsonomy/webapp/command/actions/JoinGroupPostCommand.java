@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command.actions;
 
+import org.bibsonomy.webapp.command.BaseCommand;
 import org.bibsonomy.webapp.command.CaptchaResponseCommand;
 
 
@@ -7,7 +8,7 @@ import org.bibsonomy.webapp.command.CaptchaResponseCommand;
  * @author schwass
  * @version $Id$
  */
-public class JoinGroupPostCommand implements CaptchaResponseCommand {
+public class JoinGroupPostCommand extends BaseCommand implements CaptchaResponseCommand {
 	/**
 	 * Contains the HTML-Code to view the reCaptcha. Is filled ONLY by the controller!
 	 * Any validator must check, that the user did not fill this field.
