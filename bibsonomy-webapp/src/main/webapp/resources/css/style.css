@@ -1188,6 +1188,23 @@ div.help {
 	display: inline;
 	cursor: help;
 }
+div.help * dl {
+	font-size: 90%;
+}
+div.help * dt {
+	float: left;
+	clear: left;
+	width: 100px;
+	text-align: right;
+	margin-right: 1em;
+}
+div.help * dt:after { content: ":"; } 
+div.help * dd {
+	margin: 0;
+	padding: 0 0 .5em 0; 
+}
+
+
 span.info:hover, div.help:hover {
 	z-index: 25;
 }
