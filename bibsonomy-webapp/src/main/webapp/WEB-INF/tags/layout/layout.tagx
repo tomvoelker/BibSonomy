@@ -265,13 +265,13 @@
 				<!-- page footer -->
 				<div id="footer">
 					<fmt:message key="system.offeredBy">
-						<fmt:param value="${projectName}"/>
-						<fmt:param value="${kdeHome}"/>
+						<fmt:param value="${projectName}"/><!-- FIXME: How to use project.name? -->
+						<fmt:param value="${kdeHome}"/><!-- FIXME: How to use project.kdeHome? -->
 					</fmt:message>
 					<c:out value=" "/>
 					<fmt:message key="system.contact"/>
 					<c:out value=" "/>
-					<parts:email address="${projectEmail}"/> - 
+					<parts:email address="${projectEmail}"/> - <!-- FIXME: How to use project.email? --> 
 					<fmt:message key="system.termsOfUse"/>
 					<script type="text/javascript">
 		              <![CDATA[
