@@ -148,7 +148,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
         /*
          * render the database
          */
-        return renderDatabase(database, layout, embeddedLayout);
+        return renderDatabase(database, JabRefModelConverter.convertPosts(posts, urlGen), layout, embeddedLayout);
     }
 
     /**
@@ -161,7 +161,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
      * @return output The formatted BibTeX entries as a string.
      * @throws LayoutRenderingException - if a layout could not be found
      */
-    private StringBuffer renderDatabase(final BibtexDatabase database, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
+    private StringBuffer renderDatabase(final BibtexDatabase database, List<BibtexEntry> sorted, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
         final StringBuffer output = new StringBuffer();  
 
         /* 
@@ -186,16 +186,6 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
         if (beginLayout != null) {
             output.append(beginLayout.doLayout(database, "UTF-8"));
         }
-
-        /*
-         * sorting database entries
-         * 
-         * Write database entries; entries will be sorted as they
-         * appear on the screen, or sorted by author, depending on
-         * Preferences.
-         */
-        final List<BibtexEntry> sorted = FileActions.getSortedEntries(database, null, false);
-        
 
 
         /* 
@@ -277,7 +267,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
      */
     private <T extends Resource> BibtexDatabase bibtex2JabrefDB(final List<Post<T>> bibtexList) {
 	final BibtexDatabase db = new BibtexDatabase();
-	for (final Post<T> post : bibtexList) {
+	for (final Post<? extends Resource> post : bibtexList) {
 	    db.insertEntry(JabRefModelConverter.convertPost(post, urlGen));
 	}
 	return db;
