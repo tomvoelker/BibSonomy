@@ -702,6 +702,6 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertTrue(posts.size() == 1);
 		
 		Post<BibTex> b = posts.get(0);
-		assertTrue(b.getRepositorys().size() == 1);
+		assertTrue(b.getRepositorys().size() == 2);
 	}
 }
