@@ -13,6 +13,7 @@ import net.sf.json.JSONSerializer;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Classification;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -85,11 +86,14 @@ public class PublicationClassificationController extends AjaxController implemen
 				final Map<String, List<String>> classificationMap = logic.getExtendedFields(BibTex.class, loginUserName, command.getHash(), null);
 
 				// build json output  
-				final Set<String> availableClassifications = classificator.getInstance().getAvailableClassifications();
-				for (final Entry<String, List<String>> entry : classificationMap.entrySet()) {
-					if ( !availableClassifications.contains(entry.getKey())) {
-						json.put(entry.getKey(), entry.getValue());
+				final Set<Classification> availableClassifications = classificator.getInstance().getAvailableClassifications();
+				L: for (final Entry<String, List<String>> entry : classificationMap.entrySet()) {
+					for(Classification c : availableClassifications) {
+						if(c.getName().equals(entry.getKey()))
+							continue L;
 					}
+					json.put(entry.getKey(), entry.getValue());
+					
 				}
 			} else if(REMOVE_CLASSIFICATION_ITEM.equals(action)) {
 
@@ -102,7 +106,7 @@ public class PublicationClassificationController extends AjaxController implemen
 				final Map<String, List<String>> classificationMap = logic.getExtendedFields(BibTex.class, loginUserName, command.getHash(), null);
 
 				// build json output  
-				final Set<String> availableClassifications = classificator.getInstance().getAvailableClassifications();
+				final Set<Classification> availableClassifications = classificator.getInstance().getAvailableClassifications();
 				for (final Entry<String, List<String>> entry : classificationMap.entrySet()) {
 					if ( availableClassifications.contains(entry.getKey())) {
 						json.put(entry.getKey(), entry.getValue());
