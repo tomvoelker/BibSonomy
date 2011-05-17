@@ -25,9 +25,11 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Date;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -53,6 +55,19 @@ public class PostUtils {
 			post.setUser(user);
 		}
  	}
+	
+	/**
+	 * Overwrites the date of the post if the user is not allowed to set it.
+	 * If the post does not contain a date, the current date is set.  
+	 * 
+	 * @param post
+	 * @param loginUser
+	 */
+	public static void populatePostWithDate(final Post<? extends Resource> post, final User loginUser) {
+		if (!Role.SYNC.equals(loginUser.getRole()) || !present(post.getDate())) {
+	    	post.setDate(new Date());
+	    }
+	}
 	
 	/**
 	 * Modifies the group IDs in the post to be spam group IDs or non-spam group IDs,
