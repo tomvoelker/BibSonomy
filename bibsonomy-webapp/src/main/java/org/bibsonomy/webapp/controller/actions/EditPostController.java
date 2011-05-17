@@ -4,7 +4,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +36,6 @@ import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.recommender.TagRecommender;
@@ -557,22 +555,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		this.cleanPost(post);
 	}
 
-	protected void setDate(final Post<RESOURCE> post, final String loginUserName) {
-		/*
-		 * Overwrite the date with the current date, if not posted by the DBLP user.
-		 * If DBLP does not provide a date, we have to set the date, too.
-		 */
-		if (!UserUtils.isDBLPUser(loginUserName) || !present(post.getDate())) {
-			/*
-			 * update date TODO: don't we want to keep the posting date unchanged
-			 * and only update the date? --> actually, this does currently not work,
-			 * since the DBLogic doesn't set the date and thus we get a NPE from the
-			 * database
-			 */
-			post.setDate(new Date());	
-		}
-	}
-
 	/**
 	 * Validates the post using the validator returned by {@link #getValidator()}.
 	 * 
@@ -699,8 +681,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			return this.getEditPostView(command, loginUser);
 		}
 
-		this.setDate(post, loginUserName);
-		
 		/*
 		 * new post -> create
 		 */
