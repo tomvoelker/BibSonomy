@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 /**
  * A post connects a given resource with a user and a certain date.
@@ -117,6 +118,26 @@ public class Post<T extends Resource> implements Serializable {
 	 * use only to create the inbox page of a user
 	 */
 	private boolean isInboxPost = false;
+	
+	
+	/**
+	 * List of repositories where this post has been send to (PUMA specific)
+	 */
+	private List<Repository> repositorys;
+
+	/**
+	 * @return the repositorys
+	 */
+	public List<Repository> getRepositorys() {
+		return this.repositorys;
+	}
+
+	/**
+	 * @param repositorys the repositorys to set
+	 */
+	public void setRepositorys(List<Repository> repositorys) {
+		this.repositorys = repositorys;
+	}
 
 	/**
 	 * @return contentId
