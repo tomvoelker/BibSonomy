@@ -1190,6 +1190,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					//				case UPDATE_DOCUMENTS: // TODO: implement update documents operation
 					//					this.performUpdateOnlyDocuments(post, oldPost, session);
 					//					break;
+				case UPDATE_REPOSITORY:
+				    this.performUpdateRepositorys(post, oldPost, session);
+				    break;
 				default:
 					/*
 					 * as default update all parts of a post
@@ -1253,6 +1256,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			session.endTransaction();
 		}
 	}
+	
+	protected abstract void performUpdateRepositorys(final Post<R> post, final Post<R> oldPost, final DBSession session);
 
 	/**
 	 * updates only the tags of the given post

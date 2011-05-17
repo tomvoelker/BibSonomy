@@ -2,6 +2,8 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
@@ -23,6 +25,7 @@ import org.bibsonomy.model.Post;
  */
 public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, BookmarkParam> {
 	private static final BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
+	private static final Log log = LogFactory.getLog(BookmarkDatabaseManager.class);
 	
 	private static final BookmarkChain chain = new BookmarkChain();
 	private static final HashID[] hashRange = { HashID.SIM_HASH0 };
@@ -126,5 +129,12 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	@Override
 	protected BookmarkParam getNewParam() {
 		return new BookmarkParam();
+	}
+
+	@Override
+	protected void performUpdateRepositorys(Post<Bookmark> post,
+		Post<Bookmark> oldPost, DBSession session) {
+	    log.error("Try to send a bookmark to repository!");
+	    
 	}
 }

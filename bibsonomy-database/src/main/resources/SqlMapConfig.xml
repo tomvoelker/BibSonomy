@@ -40,6 +40,7 @@
 	<sqlMap resource="common/GroupCommon.xml" />
 	<sqlMap resource="common/TagCommon.xml" />
 	<sqlMap resource="common/DocumentCommon.xml" />
+	<sqlMap resource="common/RepositoryCommon.xml" />
 	<sqlMap resource="common/AdminCommon.xml" />
 	<sqlMap resource="common/AuthorCommon.xml"/>
 	<sqlMap resource="common/WikiCommon.xml"/>

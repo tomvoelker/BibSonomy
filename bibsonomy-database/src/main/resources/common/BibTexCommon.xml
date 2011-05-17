@@ -49,6 +49,10 @@
 	<resultMap id="bibtexPostWithDocuments" class="post" extends="Common.posts">
 		<result property="resource"   resultMap="BibTexCommon.bibtexWithDocuments" />
 	</resultMap>	
+	
+	<resultMap id="bibtexPostWithRepositorys" class="post" extends="bibtexPost" >
+		<result property="repositorys"	resultMap="RepositoryCommon.repository"/>
+	</resultMap>
 
 	<sql id="commonBibtexAttributes">
 		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,

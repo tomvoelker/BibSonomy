@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -25,6 +26,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Repository;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -657,5 +659,49 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		
 		final Bookmark updatedBookmark = (Bookmark) updatedPost.getResource();
 		assertEquals(newURL, updatedBookmark.getUrl());
+	}
+	
+	/**
+	 * tests the {@link PostUpdateOperation#UPDATE_REPOSITORY}	
+	 * @throws Exception 
+	 */
+	@Test
+	public void updateOperationRepository() throws Exception {
+		final LogicInterface dbl = this.getDbLogic(TEST_REQUEST_USER_NAME);
+		
+		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
+		post.getResource().setUrl("http://www.PostUpdateOperation#UPDATE_REPOSITORY.org");
+		post.getResource().setTitle("PostUpdateOperation#UPDATE_REPOSITORY");
+		post.getResource().recalculateHashes();
+		
+		final List<String> createdPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
+		assertEquals(1, createdPosts.size());
+		
+		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0), TEST_REQUEST_USER_NAME);
+		List<Repository> repositorys = new ArrayList<Repository>();
+		
+		Repository repo = new Repository();
+		repo.setId("TEST_REPOSITORY_1");
+		repositorys.add(repo );
+		createdPost.setRepositorys(repositorys );
+
+		List<String> updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
+		assertEquals(1, updatedPosts.size());
+
+		repositorys.clear();
+		
+		repo = new Repository();
+		repo.setId("TEST_REPOSITORY_2");
+		repositorys.add(repo );
+		createdPost.setRepositorys(repositorys );
+		
+		updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
+		assertEquals(1, updatedPosts.size());
+		
+		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, '1' +createdPost.getResource().getInterHash(), null, FilterEntity.POSTS_WITH_REPOSITORY, 0, Integer.MAX_VALUE, null);
+		assertTrue(posts.size() == 1);
+		
+		Post<BibTex> b = posts.get(0);
+		assertTrue(b.getRepositorys().size() == 1);
 	}
 }

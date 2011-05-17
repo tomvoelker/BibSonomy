@@ -5,6 +5,7 @@ import org.bibsonomy.database.managers.chain.ListChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByKey;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByResourceSearch;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexWithRepository;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptByTag;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForUser;
@@ -54,6 +55,7 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsFromBasketForUser;
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByFollowedUsers;
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsFromInbox;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsWithRepository;
 
 	/**
 	 * Constructs the chain
@@ -80,7 +82,9 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 		this.getPublicationsFromBasketForUser = new GetBibtexFromBasketForUser();
 		this.getPublicationsByFollowedUsers = new GetResourcesByFollowedUsers<BibTex, BibTexParam>();
 		this.getPublicationsFromInbox = new GetResourcesFromInbox<BibTex, BibTexParam>();
+		this.getPublicationsWithRepository = new GetBibtexWithRepository();
 
+		this.getPublicationsWithRepository.setNext(this.getPublicationsByKey);
 		this.getPublicationsByKey.setNext(this.getPublicationsForHomepage);
 		this.getPublicationsForHomepage.setNext(this.getPublicationsForPopular);
 		this.getPublicationsForPopular.setNext(this.getPublicationsForUser);
@@ -105,6 +109,6 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 
 	@Override
 	public ListChainElement<Post<BibTex>, BibTexParam> getFirstElement() {
-		return this.getPublicationsByKey;
+		return this.getPublicationsWithRepository;
 	}
 }

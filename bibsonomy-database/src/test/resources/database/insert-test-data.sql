@@ -60,6 +60,16 @@ INSERT INTO `bibtex` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `
 (14, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 2, '1815-12-10 00:00:00', 'testuser2',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', 'b71d5283dc7f4f59f306810e73e9bc9a', '', 'test entrytype', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0),
 (20, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '2009-10-08 14:35:01', 'testuser3',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', '891518b4900cd1832d77a0c8ae20dd14', '', 'inproceedings1', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2009-10-08 14:35:01', 0);
 
+-- 
+-- Data for repository tests
+--
+
+INSERT INTO `repository` (`inter_hash`, `intra_hash`, `user_name`, `repository_name`) VALUES
+('9abf98937435f05aec3d58b214a2ac58', 'b77ddd8087ad8856d77c740c8dc2864a', 'testuser1', 'test repo1'),
+('9abf98937435f05aec3d58b214a2ac58', 'b77ddd8087ad8856d77c740c8dc2864a', 'testuser1', 'test repo2'),
+('36a19ee7b7923b062a99a6065fe07792', '891518b4900cd1832d77a0c8ae20dd14', 'testuser3', 'test repo1');
+
+
 --
 -- Data for synchronization tests
 --

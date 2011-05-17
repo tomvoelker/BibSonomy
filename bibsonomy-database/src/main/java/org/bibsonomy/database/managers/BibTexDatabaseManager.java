@@ -17,6 +17,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.FirstListChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.RepositoryParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
@@ -245,6 +246,24 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		
 		return this.postList("getBibTexByKey",param,session);
 	}
+	
+	/** 
+	 * Returns a list of Posts which where send to an repository and match the given interhash
+	 * 
+	 * @param bibtexKey 
+	 * @param requestedUserName 
+	 * @param groupId 
+	 * @param limit 
+	 * @param offset 
+	 * @param systemTags
+	 * @param session	a database session
+	 * @return list of bibtex posts
+	 */
+	public List<Post<BibTex>> getPostsWithRepository(final BibTexParam param, final DBSession session) {
+		return this.postList("selectBibtexWithRepositorys",param,session);
+	}
+	
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -504,5 +523,22 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	@Override
 	protected BibTexParam getNewParam() {
 		return new BibTexParam();
+	}
+
+	@Override
+	protected void performUpdateRepositorys(Post<BibTex> post, Post<BibTex> oldPost, DBSession session) {
+	    RepositoryParam param = new RepositoryParam();
+	    
+	    param.setUserName(post.getUser().getName());
+	    param.setInterHash(post.getResource().getInterHash());
+	    param.setIntraHash(post.getResource().getIntraHash());
+	    
+	    //TODO can we be sure that here are only one repository ?
+//	    if(!present(post.getRepositorys()))
+//	    	return;
+	    
+	    param.setRepositoryName(post.getRepositorys().get(0).getId());
+	    
+	    this.insert("insertRepository", param, session);
 	}
 }
