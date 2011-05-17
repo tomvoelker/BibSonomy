@@ -9,14 +9,8 @@ public abstract class ClassificationXMLParser extends DefaultHandler implements 
 	protected LinkedHashMap<String , ClassificationObject> classifications = null;
 
 	@Override
-	public abstract String getDelimiter();
-
-	@Override
 	public LinkedHashMap<String, ClassificationObject> getList() {
 		return classifications;
 	}
-
-	@Override
-	public abstract String getName();
 
 }

@@ -11,6 +11,8 @@ import de.unikassel.puma.openaccess.classification.ClassificationTextParser;
 
 public class DDCClassification extends ClassificationTextParser {
 
+	private static final String NAME = "DDC";
+	
 	private int currentDepth = 0;
 	
 	public void parse(BufferedReader bf) throws IOException {
@@ -102,8 +104,7 @@ public class DDCClassification extends ClassificationTextParser {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return NAME;
 	}
 
 	@Override
