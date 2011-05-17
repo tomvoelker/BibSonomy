@@ -183,7 +183,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 * define error view
 		 */
 		View view = Views.ERROR;
-		if (AjaxController.class.isAssignableFrom(controller.getClass())) {
+		if (controller instanceof AjaxController) {
 			view = Views.AJAX_ERRORS;
 		}
 		
