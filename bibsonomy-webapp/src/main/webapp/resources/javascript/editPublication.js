@@ -121,7 +121,11 @@ function generateBibTexKey(obj) {
 		buffer += getFirstRelevantWord(title).toLowerCase();
 	}
     
-    document.getElementById("post.resource.bibtexKey").value = buffer.toLowerCase();
+	if (buffer.length == 0) {
+		window.alert(getString("error.field.valid.bibtexKey.generation"));
+	} else {
+		document.getElementById("post.resource.bibtexKey").value = buffer.toLowerCase();
+	}
 }
 
 function getFirstPersonsLastName(person) {
