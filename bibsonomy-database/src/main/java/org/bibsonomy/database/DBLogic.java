@@ -981,7 +981,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	 */
 	for (final Post<?> post : posts) {
 	    PostUtils.populatePostWithUser(post, this.loginUser);
-
+	    PostUtils.populatePostWithDate(post, this.loginUser);
 	    this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 	}
 
@@ -1061,7 +1061,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	 */
 	for (final Post<?> post : posts) {
 	    PostUtils.populatePostWithUser(post, this.loginUser);
-
+	    PostUtils.populatePostWithDate(post, this.loginUser);
 	    this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 	}
 	final List<String> hashes = new LinkedList<String>();
