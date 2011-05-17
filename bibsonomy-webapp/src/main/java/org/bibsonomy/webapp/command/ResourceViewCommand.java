@@ -14,7 +14,12 @@ import org.bibsonomy.model.Resource;
  * @author Jens Illig
  * @author Dominik Benz
  */
-public class ResourceViewCommand extends BaseCommand {
+public class ResourceViewCommand extends BaseCommand {	
+	/** default value for sortPage */
+	public static final String DEFAULT_SORTPAGE = "none";
+	/** default value for sortPageOrder */
+	public static final String DEFAULT_SORTPAGEORDER = "asc";
+	
 	private TagCloudCommand tagcloud = new TagCloudCommand();
 	private String requestedUser;
 	private Set<Class<? extends Resource>> resourcetype;
@@ -22,8 +27,8 @@ public class ResourceViewCommand extends BaseCommand {
 	private String format = "html"; 
 	private String layout; // if format="layout", here the requested layout is stored
 	private boolean formatEmbedded; // 
-	private String sortPage = "none";
-	private String sortPageOrder = "asc";
+	private String sortPage = DEFAULT_SORTPAGE;
+	private String sortPageOrder = DEFAULT_SORTPAGEORDER;
 	private String duplicates = "yes";
 	private boolean notags = false;
 

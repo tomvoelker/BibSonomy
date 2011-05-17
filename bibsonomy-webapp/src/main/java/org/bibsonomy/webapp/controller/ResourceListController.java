@@ -44,6 +44,10 @@ import org.springframework.beans.factory.annotation.Required;
  * @version $Id$
  */
 public abstract class ResourceListController {
+	/** default values for sorting when jabref layouts are to be rendered */
+	private static final String DEFAULT_SORTPAGE_JABREF_LAYOUTS = "year|author|title";
+	private static final String DEFAULT_SORTPAGEORDER_JABREF_LAYOUTS = "desc|asc|asc";
+	
 	private static final Log log = LogFactory.getLog(ResourceListController.class);
 
 	protected static <T> Set<T> intersection(final Collection<? extends T> col1, final Collection<? extends T> col2) {
@@ -204,15 +208,22 @@ public abstract class ResourceListController {
 			// insert openURL into bibtex objects
 			post.getResource().setOpenURL(BibTexUtils.getOpenurl(post.getResource()));
 		}
+		// if a jabref layout is to be rendered and no special order is given, set to default order 
+		if (Views.LAYOUT.getName().equalsIgnoreCase(cmd.getFormat()) && ResourceViewCommand.DEFAULT_SORTPAGE.equalsIgnoreCase(cmd.getSortPage())) {
+			cmd.setSortPage(DEFAULT_SORTPAGE_JABREF_LAYOUTS);
+			cmd.setSortPageOrder(DEFAULT_SORTPAGEORDER_JABREF_LAYOUTS);
+		}
+		
 		if ("no".equals(cmd.getDuplicates())) {
 			BibTexUtils.removeDuplicates(posts);
 			// re-sort list by date in descending order, if nothing else requested
-			if ("none".equals(cmd.getSortPage())) {
+			if (ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage())) {
 				cmd.setSortPage("date");
 				cmd.setSortPageOrder("desc");
 			}
 		}
-		if (!"none".equals(cmd.getSortPage())) {
+		
+		if (!ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage())) {
 			BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
 		}
 	}
