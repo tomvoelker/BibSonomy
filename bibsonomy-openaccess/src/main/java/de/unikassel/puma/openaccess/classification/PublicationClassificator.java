@@ -29,7 +29,16 @@ public class PublicationClassificator {
 	
 	private final String xmlPath;
 	
-	private HashMap<String, Classification> classifications = new HashMap<String, Classification>();
+	private HashMap<org.bibsonomy.model.Classification, Classification> classifications = new HashMap<org.bibsonomy.model.Classification, Classification>();
+	
+	private Classification getClassificationByName(String name) {
+		for(org.bibsonomy.model.Classification c : classifications.keySet()) {
+			if(c.getName().equals(name))
+				return classifications.get(c);
+		}
+		
+		return null;
+	}
 	
 	public PublicationClassificator(String xmlPath) {
 		this.xmlPath = xmlPath;
@@ -37,7 +46,7 @@ public class PublicationClassificator {
 	}
 	
 	public final List<PublicationClassification> getChildren(String classification, String name) {
-		Classification c = classifications.get(classification);
+		Classification c = getClassificationByName(classification);
 		
 		if(present(c)) {
 			return c.getChildren(name);
@@ -46,12 +55,12 @@ public class PublicationClassificator {
 		}
 	}
 	
-	public Set<String> getAvailableClassifications() {
+	public Set<org.bibsonomy.model.Classification> getAvailableClassifications() {
 		return classifications.keySet();
 	}
 	
 	public String getDescription(String classification, String name) {
-		Classification c = classifications.get(classification);
+		Classification c = getClassificationByName(classification);
 		
 		if(present(c)) {
 			return c.getDescription(name);
@@ -100,30 +109,42 @@ public class PublicationClassificator {
 						continue;
 					}
 					
-					
 					log.info("Found Classification " +c.getClassName());
 					
 					//try to read values from .properties file
 					try {
-						BufferedReader propertiesReader = new BufferedReader(new FileReader(f.getAbsolutePath().substring(0,f.getAbsolutePath().length()-4) +".properties"));
-						String firstLine = propertiesReader.readLine();
+						BufferedReader propReader = new BufferedReader(new FileReader(f.getAbsolutePath().substring(0,f.getAbsolutePath().length()-4) +".properties"));
+						org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
 						
-						String[] name = firstLine.split(" ");
-						
-						if(name.length >= 2) {
-							String n = name[1];
-							for(int i = 2; i < name.length; ++i) {
-								n += " " + name[i];
+						while(propReader.ready()) {
+							String line = propReader.readLine();
+							String[] temp = line.split(" ");
+							
+							if(temp.length < 2)
+								continue;
+							
+							if(temp[0].equals("name")) {
+								String name = temp[1];
+								for(int i = 2; i < temp.length; ++i) {
+									name += " " + temp[i];
+								}
+								classification.setName(name);
+								
+							} else if(temp[0].equals("url")) {
+								classification.setUrl(temp[1]);
 							}
 							
-							classifications.put(n, c);
 						}
+						
+						classifications.put(classification, c);
 						
 					} catch (FileNotFoundException e) {
 						
-						//no .properties file found, use the file name
-						String fileName = f.getName().substring(0,f.getName().length()-4);
-						classifications.put(fileName, c);
+						//no .properties file found, use the file name						
+						org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
+
+						classification.setName(f.getName().substring(0,f.getName().length()-4));
+						classifications.put(classification, c);
 					}
 				} catch (MalformedURLException e) {
 					
