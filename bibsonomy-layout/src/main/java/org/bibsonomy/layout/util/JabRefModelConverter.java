@@ -103,7 +103,6 @@ public class JabRefModelConverter {
     public static <T extends Resource> List<BibtexEntry> convertPosts(final List<Post<T>> posts, URLGenerator urlGen) {
 	final List<BibtexEntry> entries = new ArrayList<BibtexEntry>();
 	for (final Post<? extends Resource> post : posts) {
-		System.out.println("************ added post: " + post.getResource().getTitle());
 	    entries.add(convertPost(post, urlGen));		
 	}
 	return entries;
