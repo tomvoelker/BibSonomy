@@ -185,7 +185,7 @@
 
             <div class="fsRow">
               <form:label cssClass="fsLabel" path="post.resource.note" ><fmt:message key="post.resource.note"/></form:label><buttons:help message="post.resource.note.help"/>
-              <form:textarea cssClass="fsInput" path="post.resource.note" tabindex="2" rows="3"/>
+              <form:input cssClass="fsInput" path="post.resource.note" tabindex="2"/>
               <div class="dissError"><form:errors path="post.resource.note" /></div>
             </div>
     	</jsp:attribute>
