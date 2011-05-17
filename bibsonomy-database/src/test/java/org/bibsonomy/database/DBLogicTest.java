@@ -698,10 +698,13 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
 		assertEquals(1, updatedPosts.size());
 		
-		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, '1' +createdPost.getResource().getInterHash(), null, FilterEntity.POSTS_WITH_REPOSITORY, 0, Integer.MAX_VALUE, null);
-		assertTrue(posts.size() == 1);
+		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "36a19ee7b7923b062a99a6065fe07792", null, FilterEntity.POSTS_WITH_REPOSITORY, 0, Integer.MAX_VALUE, null);
+		assertEquals(2, posts.size());
 		
 		Post<BibTex> b = posts.get(0);
-		assertTrue(b.getRepositorys().size() == 2);
+		assertEquals(b.getRepositorys().size() , 2);
+		
+		b = posts.get(1);
+		assertEquals(b.getRepositorys().size() , 1);
 	}
 }

@@ -67,8 +67,9 @@ INSERT INTO `bibtex` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `
 INSERT INTO `repository` (`inter_hash`, `intra_hash`, `user_name`, `repository_name`) VALUES
 ('9abf98937435f05aec3d58b214a2ac58', 'b77ddd8087ad8856d77c740c8dc2864a', 'testuser1', 'test repo1'),
 ('9abf98937435f05aec3d58b214a2ac58', 'b77ddd8087ad8856d77c740c8dc2864a', 'testuser1', 'test repo2'),
-('36a19ee7b7923b062a99a6065fe07792', '891518b4900cd1832d77a0c8ae20dd14', 'testuser3', 'test repo1');
-
+('36a19ee7b7923b062a99a6065fe07792', '891518b4900cd1832d77a0c8ae20dd14', 'testuser3', 'test repo1'),
+('36a19ee7b7923b062a99a6065fe07792', 'b71d5283dc7f4f59f306810e73e9bc9a', 'testuser2', 'test_repo1'),
+('36a19ee7b7923b062a99a6065fe07792', '891518b4900cd1832d77a0c8ae20dd14', 'testuser3', 'test_repo4');
 
 --
 -- Data for synchronization tests

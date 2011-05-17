@@ -656,8 +656,10 @@
 	</insert>
 	
 	<select id="selectBibtexWithRepositorys" parameterClass="bibtexParam" resultMap="BibTexCommon.bibtexPostWithRepositorys">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, r.repository_name, r.date, t.tag_name, h.ctr AS count, b.`group`, g.group_name, <include refid="reviewRatingsRows" />
-		FROM bibtex b <include refid="reviewRatingsJoinPublication" /> LEFT JOIN repository r ON (r.intra_hash = b.simhash2 AND r.user_name = b.user_name) 
+		SELECT <include refid="allBibtexAttributesWithSimHashes" />, <include refid="allRepositoryAttributes" />, 
+			t.tag_name, h.ctr AS count, b.`group`, g.group_name, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />
+		LEFT JOIN repository r ON (r.intra_hash = b.simhash2 AND r.user_name = b.user_name) 
 		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, bibhash h, groupids g
 		WHERE r.inter_hash = #hash#
 	</select>
