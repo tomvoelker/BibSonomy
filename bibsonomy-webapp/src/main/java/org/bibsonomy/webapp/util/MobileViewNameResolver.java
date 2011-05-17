@@ -17,6 +17,7 @@ public abstract class MobileViewNameResolver {
 	 */
 	private static View[][] viewsArray = new View[][] {
 		{Views.HOMEPAGE, MobileViews.HOMEPAGE},
+		{Views.PUMAHOMEPAGE, MobileViews.PUMAHOMEPAGE},
 		{Views.USERPAGE, MobileViews.USERPAGE},
 		{Views.TAGPAGE, MobileViews.TAGPAGE},
 		{Views.SEARCHPAGE, MobileViews.SEARCHPAGE},

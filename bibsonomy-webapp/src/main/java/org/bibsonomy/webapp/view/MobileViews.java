@@ -14,6 +14,11 @@ public enum MobileViews implements View {
 	HOMEPAGE("mobile/home"),
 	
 	/**
+	 * the first page you see when entering the application
+	 */
+	PUMAHOMEPAGE("mobile/home"),
+
+	/**
 	 * user page displaying the resources of a single user
 	 */
 	USERPAGE("mobile/user"),
