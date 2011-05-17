@@ -699,12 +699,15 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals(1, updatedPosts.size());
 		
 		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "36a19ee7b7923b062a99a6065fe07792", null, FilterEntity.POSTS_WITH_REPOSITORY, 0, Integer.MAX_VALUE, null);
-		assertEquals(2, posts.size());
+		assertEquals(3, posts.size());
 		
 		Post<BibTex> b = posts.get(0);
 		assertEquals(b.getRepositorys().size() , 2);
 		
 		b = posts.get(1);
+		assertEquals(b.getRepositorys().size() , 1);
+
+		b = posts.get(2);
 		assertEquals(b.getRepositorys().size() , 1);
 	}
 }
