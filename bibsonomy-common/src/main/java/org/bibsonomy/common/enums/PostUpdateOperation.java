@@ -50,7 +50,11 @@ public enum PostUpdateOperation {
 	/**
 	 * Delete a url of the post.
 	 */
-	UPDATE_URLS_DELETE(4);
+	UPDATE_URLS_DELETE(4),
+	/**
+	 * Update only the repositories attached to the post(PUMA specific)
+	 */
+	UPDATE_REPOSITORY(3);
 	
 	private int id;
 	

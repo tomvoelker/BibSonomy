@@ -35,7 +35,6 @@ public enum FilterEntity {
 	 * Use this when you ONLY want to retrieve resources with a PDF
 	 * file attached
 	 */
-	 
 	JUST_PDF,
 	
 	/**
@@ -55,7 +54,6 @@ public enum FilterEntity {
 	 */
 	MY_GROUP_POSTS,
 	
-	
 	/**
 	 * Some pages apply filtering, e.g., the homepage does not show posts
 	 * which contain a blacklisted tag. Setting the filter to this entity
@@ -71,6 +69,11 @@ public enum FilterEntity {
 	/**
 	 * use this if user isn't allowed to access documents
 	 */
-	JUST_POSTS;
+	JUST_POSTS,
+	
+	/**
+	 * Return only posts which have been send to a repository (PUMA specific)
+	 */
+	POSTS_WITH_REPOSITORY;
 	
 }
