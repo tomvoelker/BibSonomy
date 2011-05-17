@@ -55,7 +55,7 @@ function initSuggestionForPartTitles(el) {
 		source: function( request, response ) {
 
 			$.ajax({
-				url: "http://www.bibsonomy.org/json/tag/" + createParameters(request.term),
+				url: "/json/tag/" + createParameters(request.term),
 				data: {items: 10,resourcetype: 'publication', duplicates: 'no'},
 				dataType: "jsonp",
 				success: function( data ) {
@@ -63,14 +63,11 @@ function initSuggestionForPartTitles(el) {
 						return {
 							label: (highlightMatches(item.label, request.term)+' ('+item.year+')'),
 							value: item.interHash,
-							url: 
-								'hash='+item.intraHash
-								+'&user='+item.user+'&copytag='
-								+item.tags,
-								author: (concatArray(item.author, 40, ' '+getString('and')+' ')),
-								user: item.user,
-								tags: item.tags,
-						}
+							url: 'hash='+item.intraHash+'&user='+item.user+'&copytag='+item.tags,
+							author: (concatArray(item.author, 40, ' '+getString('and')+' ')),
+							user: item.user,
+							tags: item.tags
+						};
 					}));
 				}
 			});
