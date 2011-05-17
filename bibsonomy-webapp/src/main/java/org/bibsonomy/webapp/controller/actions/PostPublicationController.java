@@ -280,7 +280,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * set visibility of this post for the groups, the user specified 
 			 */
 			initPostGroups(command, post);
-			setDate(post, context.getLoginUser().getName());
 			/*
 			 * hashes have to be set, in order to call the validator
 			 */
