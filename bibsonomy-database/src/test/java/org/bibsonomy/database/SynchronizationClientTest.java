@@ -167,11 +167,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest{
 		assertEquals(5, serverPosts.size());
 		assertEquals(serverPosts.size(), clientPosts.size());
 
-		System.out.println(serverPosts);
-		System.out.println(clientPosts);
-
 		for (final String key : keys) {
-			System.out.println(key);
 			assertTrue(serverPosts.containsKey(key));
 			assertTrue(clientPosts.containsKey(key));
 			assertTrue(key + " is not same", clientPosts.get(key).isSame(serverPosts.get(key)));
