@@ -2,6 +2,8 @@ package de.unikassel.puma.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -11,11 +13,14 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.SwordException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Repository;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -45,8 +50,7 @@ public class SwordServiceController extends AjaxController implements Minimalist
 	@Override
 	public View workOn(SwordServiceCommand command) {
 		if(!command.getContext().isUserLoggedIn()) {
-			// TODO access denied ex ?
-			return Views.AJAX_TEXT;
+			throw new AccessDeniedException("error.method_not_allowed");
 		}
 		
 		String message = "error.sword.sentsuccessful";
@@ -108,7 +112,18 @@ public class SwordServiceController extends AjaxController implements Minimalist
 			}
 		}
 
-		
+		// log successful store to repository 
+		if (statuscode == 1) {
+			//final Post<?> createdPost = logic.getPostDetails(command.getResourceHash(), user.getName());
+			List<Repository> repositorys = new ArrayList<Repository>();
+			Repository repo = new Repository();
+			repo.setId("REPOSITORY");  // TODO: set ID to current repository - it should be possible in fututre to send a post to multiple/different repositories 
+			repositorys.add(repo);
+			post.setRepositorys(repositorys);
+	
+			List<String> updatedPosts = logic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_REPOSITORY);
+		}
+	
 		final JSONObject json = new JSONObject();
 		final JSONObject jsonResponse = new JSONObject();
 

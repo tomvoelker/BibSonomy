@@ -208,10 +208,9 @@ function initClassifications(divClassificationSelectName, divClassificationListN
 
 function doInitialise(divClassificationSelectName, divClassificationListName, data) {
 	$.each(data.available, function(i,it){
-		var item = it.name;
 
 		var saveNode = document.createElement('div');
-		saveNode.setAttribute('id', item +'saved');
+		saveNode.setAttribute('id', it.name +'saved');
 		
 		var helpNode = document.createElement('div');
 		helpNode.setAttribute('class', 'help');
@@ -226,16 +225,16 @@ function doInitialise(divClassificationSelectName, divClassificationListName, da
 		questionMark.appendChild(link);
 		
 		var helpNode1 = document.createElement('div');
-		helpNode1.appendChild(document.createTextNode(it.url));
+		helpNode1.appendChild(document.createTextNode(it.desc));
 
 		helpNode.appendChild(questionMark);
 		helpNode.appendChild(helpNode1);
 		
 		var mainNode = document.createElement('div');
-		mainNode.setAttribute('id', item);
+		mainNode.setAttribute('id', it.name);
 		
 		var input = document.createElement('div');
-		input.setAttribute('id',item +'_input');
+		input.setAttribute('id',it.name +'_input');
 		input.setAttribute("class", "classificationInput");
 
 		mainNode.appendChild(input);
@@ -244,7 +243,7 @@ function doInitialise(divClassificationSelectName, divClassificationListName, da
 		$('#' +divClassificationListName).append(saveNode);
 		$('#' +divClassificationSelectName).append(mainNode);
 		
-		populate(item,item);
+		populate(it.name,it.name);
 	});
 }
 

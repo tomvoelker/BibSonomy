@@ -12,10 +12,9 @@ public class OpenAccessCommand extends AjaxCommand {
 	 * publisher to check
 	 */
 	private String publisher;
-
 	private String jTitle;
-
 	private String qType;
+	private String interhash = "";	
 
 	/**
 	 * @return publisher
@@ -58,5 +57,22 @@ public class OpenAccessCommand extends AjaxCommand {
 	public void setqType(String qType) {
 		this.qType = qType;
 	} 	
+	
+	
+	/**
+	 * @param interhash 
+	 */
+	public void setInterhash(String interhash) {
+		this.interhash = interhash;
+	}
+
+	/**
+	 * @return the interhash
+	 */
+	public String getInterhash() {
+		return interhash;
+	}
+
+	
 	
 }

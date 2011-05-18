@@ -347,6 +347,9 @@ div.help > a, div.help > b {
 	color:#DF430D;
 }
 
+#openAccessClassificationSelect div.help {
+	float:none;
+}
 
 .news .bmtitle {
 	font-size: 90%;
@@ -577,13 +580,12 @@ input[type="button"].ajaxButton {
 }
 
 input#authorcontractconfirm {
-	margin: 1px;
+	margin: 2px;
 	
 }
 
 #authorcontractconfirmcontainer {
-	background-color: red;
-	padding: 3px;
+
 }
 
 #openAccessMetaDataContainer .fsInput {

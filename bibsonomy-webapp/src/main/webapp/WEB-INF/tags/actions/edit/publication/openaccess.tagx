@@ -42,6 +42,7 @@
 				<div id="openAccessContainer">
 
 					<div id="openAccessMetaDataContainer">
+						<div class=""><fmt:message key="post.resource.openaccess.maindescription"/></div>
 						<h4><fmt:message key="post.resource.openaccess.headline.additionalfields"/></h4>
 						
 						<!-- if entrytype == phdthesis -->
