@@ -174,7 +174,7 @@ public class ModelConverterTest {
 	/*
 	 * copy posts (I hate Java Generics)
 	 */
-	final List<Post<? extends Resource>> list = new LinkedList<Post<? extends Resource>>();
+	final List<Post<BibTex>> list = new LinkedList<Post<BibTex>>();
 	for (final Post<BibTex> post : postsNew) {
 	    list.add(post);
 	}
