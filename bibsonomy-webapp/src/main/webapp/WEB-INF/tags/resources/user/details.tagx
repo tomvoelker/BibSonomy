@@ -33,6 +33,7 @@
       <tr><th>IPAddress</th><td><c:out value="${user.IPAddress}"/></td></tr>
       <tr><th>registrationDate</th><td><c:out value="${user.registrationDate}"/></td></tr>
       <tr><th>OpenID</th><td><c:out value="${user.openID}"/></td></tr>
+      <tr><th>LDAP ID</th><td><c:out value="${user.ldapId}"/></td></tr>
       
       <tr><th colspan="2">spam data</th></tr>
       <tr><th>spammer</th><td><c:out value="${user.spammer}"/></td></tr>
