@@ -25,7 +25,7 @@ public class SynchronizationPost extends SynchronizationResource {
 	/**
 	 * resource attached from server
 	 */
-	private Resource post;
+	private Resource resource;
 	
 	/*
 	 * (non-Javadoc)
@@ -78,17 +78,22 @@ public class SynchronizationPost extends SynchronizationResource {
 	}
 
 	/**
-	 * @param post the post to set
+	 * @param resource the post to set
 	 */
-	public void setPost(Resource post) {
-		this.post = post;
+	public void setResource(Resource resource) {
+		this.resource = resource;
 	}
 
 	/**
 	 * @return the post
 	 */
-	public Resource getPost() {
-		return post;
+	public Resource getResource() {
+		return resource;
+	}
+	
+	@Override
+	public String toString() {
+		return intraHash;
 	}
 
 }
