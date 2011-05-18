@@ -12,9 +12,7 @@
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	
-	<c:set var="swrc">
-    	http://swrc.ontoware.org/ontology#
-    </c:set>
+	<c:set var="swrc" value="http://swrc.ontoware.org/ontology#"/>
 
     <rdf:Description rdf:about="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
       <owl:sameAs rdf:resource="${projectHome}uri/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
