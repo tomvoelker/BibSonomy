@@ -121,9 +121,7 @@ margin-right:2ex;
 }
 
 .sidebarBoxInner {
-	background-color: white;
-	background-color: #e0e0e0; 
-	background-color: #FFC170;
+	background-color: #eee;
 	
 	width: 100%;
 	padding: 0px;
@@ -131,9 +129,7 @@ margin-right:2ex;
 }
 
 .sidebarBoxOuter {
-	background-color: #009474; 
-	background-color: #e0e0e0; 
-	background-color: #FFC170;
+	background-color: #eee;
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
@@ -147,9 +143,7 @@ ul#tagbox {
 	margin:0;	
 }
 #helpbox {
-	background-color: #009474; 
-	background-color: #e0e0e0;
-	background-color: #FFC170;
+	background-color: #eee;
 	display: none;
 	overflow:hidden;
 }
@@ -282,6 +276,10 @@ table.report td {
 
 #error {
 	border: none;
+}
+.dissError {
+	border: 2px solid #f00;
+	padding: 4px;
 }
 
 .groupsButtons a:hover {
