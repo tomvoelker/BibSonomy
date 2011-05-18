@@ -19,6 +19,12 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 
+	private static final String PARAM_IS_MOBILE = "isMobile";
+	private static final String MANUAL = "manual";
+	private static final String FALSE = "false";
+	private static final String TRUE = "true";
+	private static final String PARAM_MOBILE = "mobile";
+	
 	private WURFLManager wurflManager;
 
 	@Override
@@ -34,12 +40,12 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 				isMobileDevice(request)
 		) {
 
-			if(request.getParameterMap().containsKey("manual")) {
-				modelAndView.getModel().put("manual", true);
+			if(request.getParameterMap().containsKey(MANUAL)) {
+				modelAndView.getModel().put(MANUAL, true);
 			}
 
-			response.addCookie(new Cookie("mobile", "true"));
-			modelAndView.getModel().put("isMobile", true);
+			response.addCookie(new Cookie(PARAM_MOBILE, TRUE));
+			modelAndView.getModel().put(PARAM_IS_MOBILE, true);
 			modelAndView.setViewName(MobileViewNameResolver.resolveView(modelAndView.getViewName()));
 		}
 	}
@@ -62,12 +68,16 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 	 */
 	private boolean disabledMobile(HttpServletRequest request, HttpServletResponse response) {
 
-		if (request.getParameterMap().containsKey("mobile") && "false".equals(request.getParameter("mobile"))) {
-			/*
-			 * disable mobile site for the session
-			 */
-			response.addCookie(new Cookie("mobile", "false"));
-			return true;
+		if (request.getParameterMap().containsKey(PARAM_MOBILE) ) { 
+			if (FALSE.equals(request.getParameter(PARAM_MOBILE))) {
+				//disable mobile site for the session
+				response.addCookie(new Cookie(PARAM_MOBILE, FALSE));
+				return true;				
+			}
+			if (TRUE.equals(request.getParameter(PARAM_MOBILE))) {
+				response.addCookie(new Cookie(PARAM_MOBILE, TRUE));
+				return false;
+			}
 		}
 		return false;
 	}
@@ -84,7 +94,7 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 				/*
 				 * check if mobile device has been deactivated
 				 */
-				if ("mobile".equals(cookie.getName()) && "false".equals(cookie.getValue()))
+				if (PARAM_MOBILE.equals(cookie.getName()) && FALSE.equals(cookie.getValue()))
 					return false;
 			}
 		}
