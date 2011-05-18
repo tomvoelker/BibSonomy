@@ -42,8 +42,7 @@ import org.bibsonomy.model.util.PersonNameUtils;
  * Comparator used to sort bibtex posts
  * 
  * @author Dominik Benz
- * @version $Id: BibTexPostComparator.java,v 1.17 2011-04-29 06:45:03 bibsonomy
- *          Exp $
+ * @version $Id$
  */
 public class BibTexPostComparator extends PostComparator implements Comparator<Post<BibTex>>, Serializable {
 	private static final long serialVersionUID = 8550700973763853912L;
