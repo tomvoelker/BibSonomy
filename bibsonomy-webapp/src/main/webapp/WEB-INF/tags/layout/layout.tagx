@@ -273,6 +273,11 @@
 					<c:out value=" "/>
 					<parts:email address="${projectEmail}"/> - <!-- FIXME: How to use project.email? --> 
 					<fmt:message key="system.termsOfUse"/>
+					
+					<c:if test="${cookie.mobile.value == 'false'}">
+						<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
+					</c:if>
+					
 					<script type="text/javascript">
 		              <![CDATA[
 					    $(document).ready(

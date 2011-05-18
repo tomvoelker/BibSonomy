@@ -67,7 +67,7 @@
 				<div id="footer">
 					<!-- site version switch -->
 					<div id="switch" style="margin-bottom: 10px;">
-						<a href="/?mobile=false"><fmt:message key="mobile.switch" /></a>
+						<a href="?mobile=false"><fmt:message key="mobile.switch" /></a>
 					</div>
 					<!-- legal notes -->
 					<div style="width: 70%;">
