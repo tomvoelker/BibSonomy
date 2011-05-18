@@ -89,11 +89,12 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest{
 
 		// post 6 "created on server" created and modified after last synchronization
 		post = createPost("created on server", "2011-03-18 11:20:00", "2011-03-18 11:20:00", serverUser);
-		System.out.println(post);
 		postList.add(post);
 
 		// post 7 "created on client" is not in the server database*
 
+		serverLogic.createPosts(postList);
+		
 		postList = new ArrayList<Post<?>>();
 		/*
 		 * create client posts
