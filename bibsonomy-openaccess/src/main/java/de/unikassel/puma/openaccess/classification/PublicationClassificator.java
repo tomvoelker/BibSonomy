@@ -130,6 +130,8 @@ public class PublicationClassificator {
 								}
 								classification.setName(name);
 								
+							} else if(temp[0].equals("desc")) {
+								classification.setDesc(temp[1]);
 							} else if(temp[0].equals("url")) {
 								classification.setUrl(temp[1]);
 							}
