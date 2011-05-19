@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -113,38 +114,20 @@ public class PublicationClassificator {
 					
 					//try to read values from .properties file
 					try {
-						BufferedReader propReader = new BufferedReader(new FileReader(f.getAbsolutePath().substring(0,f.getAbsolutePath().length()-4) +".properties"));
+						Properties properties = new Properties();
 						org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
 						
-						while(propReader.ready()) {
-							String line = propReader.readLine();
-							String[] temp = line.split(" ");
-							
-							if(temp.length < 2)
-								continue;
-							
-							if(temp[0].equals("name")) {
-								String name = temp[1];
-								for(int i = 2; i < temp.length; ++i) {
-									name += " " + temp[i];
-								}
-								classification.setName(name);
-								
-							} else if(temp[0].equals("desc")) {
-								classification.setDesc(temp[1]);
-							} else if(temp[0].equals("url")) {
-								classification.setUrl(temp[1]);
-							}
-							
-						}
+						properties.load(new FileReader(f.getAbsolutePath().substring(0,f.getAbsolutePath().length()-4) +".properties"));
+
+						classification.setName(properties.getProperty("name"));
+						classification.setDesc(properties.getProperty("desc"));
+						classification.setUrl(properties.getProperty("url"));
 						
 						classifications.put(classification, c);
 						
-					} catch (FileNotFoundException e) {
-						
+					} catch (IOException e) {
 						//no .properties file found, use the file name						
 						org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
-
 						classification.setName(f.getName().substring(0,f.getName().length()-4));
 						classifications.put(classification, c);
 					}
