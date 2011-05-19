@@ -453,7 +453,7 @@ public class MetsBibTexMLGenerator {
 			FileType fileItem = new FileType();
 //			fileItem.setGROUPID("sword-mets-fgid-0");
 			fileItem.setID("sword-mets-file-".concat(filenumber.toString()));
-			// TODO: if file is not pdf, set MIMEtype to somthing like binary data
+			// TODO: if file is not pdf, set MIMEtype to something like binary data
 			fileItem.setMIMETYPE("application/pdf");
 
 			FLocat fileLocat = new FLocat();
