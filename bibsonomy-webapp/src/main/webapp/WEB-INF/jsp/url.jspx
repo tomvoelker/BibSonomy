@@ -24,17 +24,17 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js">&amp;nbsp;</script>
+			<!-- <script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js">&amp;nbsp;</script>
 			<script type="text/javascript" src="${resdir}/jquery/plugins/flot/jquery.flot.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/jquery/plugins/flot/jquery.flot.stack.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/jquery/plugins/flot/jquery.flot.stack.js">&amp;nbsp;</script> -->
 			<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../excanvas.js"></script><![endif]-->
-			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js">&amp;nbsp;</script>
+			<!-- <script type="text/javascript" src="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js">&amp;nbsp;</script>
 			<script type="text/javascript" src="${resdir}/javascript/reviews.js">&amp;nbsp;</script>
-			
+			 -->
 			<!-- TODO: PUMA? -->
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<!-- <link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/review.css" />
-			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />-->
 	    </jsp:attribute>
 
 		<jsp:attribute name="sidebar">
@@ -47,9 +47,11 @@
 		</ul>
 		</jsp:attribute>
 		
+		<!--
 		<jsp:attribute name="contentHeading">
 			<reviews:singleResourceReviewLayout resource="${command.bookmark.list[0].resource}" reviews="${command.reviews}" />
 		</jsp:attribute>
+		 -->
 	</layout:bookmarkLayout>
 
 </jsp:root>

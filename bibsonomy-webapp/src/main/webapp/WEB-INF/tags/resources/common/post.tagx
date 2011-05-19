@@ -37,14 +37,14 @@
         </c:if>
 		
 		<!-- ratings -->
-		<div class="rating">
+		<!-- <div class="rating">
 			<reviews:stars rating="${post.resource.rating}" dimension="0.75" />
 			<c:set var="numOfRatings" value="${post.resource.numberOfRatings}" />
 			<c:if test="${empty numOfRatings}">
 				<c:set var="numOfRatings" value="0" />
 			</c:if>
 			<span class="reviewInfo">(<c:out value="${numOfRatings}"/>)</span>
-		</div>
+		</div>-->
 		
 		<div class="bmtitle"><jsp:invoke fragment="title"/></div>
 		<div class="bmdesc"> <jsp:invoke fragment="desc"/> </div>

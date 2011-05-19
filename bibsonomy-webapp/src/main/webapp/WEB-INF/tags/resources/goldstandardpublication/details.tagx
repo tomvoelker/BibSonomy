@@ -113,11 +113,11 @@
 		</c:if>
 		
 		<!-- reviews -->
-		<div id="reviews">
+		<!-- <div id="reviews">
 	    	<h3><fmt:message key="post.resource.review.reviews" /></h3>
 	    	<reviews:reviewsRatingInfo resource="${goldstandard}" />
 			<reviews:reviews resource="${goldstandard}" loginUser="${loginUser}" />
-		</div>
+		</div> -->
 		
 		<!-- exports -->
 		<div id="gold_exports">
