@@ -12,6 +12,12 @@
 	</bannerRight>
 	<publishDate format="yyyy-MM-dd" />
 
+  	<skin>
+	    <groupId>org.bibsonomy.maven.skins</groupId>
+    	<artifactId>bibsonomy-skin</artifactId>
+    	<version>1.0.2</version>
+  	</skin>
+
 	<body>
 		<links>
 			<item name="BibSonomy" href="http://www.bibsonomy.org/" />
@@ -25,17 +31,23 @@
 
 		<menu name="BibSonomy">
 			<item name="Home" href="/index.html" />
-			<item name="Download" href="/download.html" />
+			<item name="Downloads" href="/download.html" />
+			<item name="Support" href="./support.html"/>
+			<item name="Contribute" href="./contribute.html"/>
+			<item name="Inside BibSonomy" href="/inside.html"/>
 		</menu>
 
-		<menu name="Documentation">
-			<item name="API" href="/api.html" />
+		<menu name="REST API">
+			<item name="URL Schema" href="/api.html" />
 			<item name="Getting access" href="/gettingaccess.html" />
 			<item name="Java client library" href="/javaclient.html" />
-			<item name="Generic client" href="/genericclient.html" />
-			<item name="JabRef client" href="/jabrefclient.html" />
-			<item name="XML Schema" href="/xmlschema.html" />
-			<item name="Inside BibSonomy" href="/inside.html"/>
+			<item name="Client JavaDoc" href="./rest-client-javadoc/index.html" />			
+			<item name="Generic client" href="/genericclient.html" />			
+			<item name="XML Schema" href="/xmlschema.html" />			
+		</menu>
+				
+		<menu name="Integration">
+			<item name="JabRef Plugin" href="/jabref-plugin/index.html" />
 		</menu>
 	</body>
 </project>
