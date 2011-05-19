@@ -602,3 +602,8 @@ input#authorcontractconfirm {
 	margin: 2ex 0;
 }
 
+.oadescription {
+	font-size: 90%;
+	color: #444444;
+	margin-bottom: 1.5ex;
+}
