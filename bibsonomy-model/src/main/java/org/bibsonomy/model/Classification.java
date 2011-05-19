@@ -6,8 +6,19 @@ package org.bibsonomy.model;
  */
 public class Classification {
 
+	/*
+	 * name of classification (e.g. "ACM")
+	 */
 	private String name;
-	
+
+	/*
+	 * long name or description of classification (e.g. "Association for Computing Machinery")
+	 */
+	private String desc;
+
+	/*
+	 * url for more informations
+	 */
 	private String url = "";
 	
 	/**
@@ -36,5 +47,19 @@ public class Classification {
 	 */
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	/**
+	 * @param desc the desc to set
+	 */
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+	/**
+	 * @return the desc
+	 */
+	public String getDesc() {
+		return desc;
 	}
 }
