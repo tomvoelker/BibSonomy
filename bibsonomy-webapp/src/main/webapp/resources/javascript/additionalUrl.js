@@ -22,17 +22,13 @@ function deleteUrl(self, url, hash, ckey){
             ckey: ckey
         },
 		 success: function(data){
-            var status = $("status", data).text();
-                if("ok" == status) {
+			var status = $("status", data).text();
+            if("ok" == status) {
 					$(self).parent().remove();
-           } else {
-                					var errorString = "";
-					for each(var error in data.globalErrors) {
-						errorString = errorString + error.message +"\n";
-					}
-					alert(errorString);
+            } else {
+        	   alert(data.globalErrors[0].message);
             }
-			}
+		}
         
     });
 }
@@ -63,11 +59,7 @@ $(function(){
                     return element;
                 })
 				}else{
-					var errorString = "";
-					for each(var error in data.globalErrors) {
-						errorString = errorString + error.message +"\n";
-					}
-					alert(errorString);
+					alert(data.globalErrors[0].message);
                 }
             },
 		
