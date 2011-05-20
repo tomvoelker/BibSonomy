@@ -27,7 +27,7 @@
         <h2><fmt:message key="mysearch.header"><fmt:param value="${projectName}"></fmt:param></fmt:message></h2>
 	
 	    <form name="searchform" onsubmit="checkInput()">
-	      <fieldset style="border: 1px ridge #069;background-color: #eee;">
+	      <fieldset class="fsVisible">
 	        <legend><fmt:message key="mysearch.option.header"/></legend>		
 		<table border="0">
 			<tr>
@@ -57,7 +57,7 @@
 	<br/>
 	
 	<c:set var="listboxtitle"><fmt:message key="mysearch.option.filter.text"/></c:set>
-	<fieldset style="border: 1px solid #069;background-color: #eee;">
+	<fieldset class="fsVisible">
 	<legend><fmt:message key="mysearch.option.result.header"/></legend>			
 		<fmt:message key="mysearch.option.filter"/>&#160;
 		<input value='${listboxtitle}' name="filter" type="text" size="40" onKeyUp="showTitleList();"
