@@ -702,6 +702,10 @@ function loadStoredClassificationItems()
 	
 }
 
+function setBackgroundColor( container, color ) {
+	$("#" +container).css("background-color", color);
+}
+
 
 function checkauthorcontractconfirm() {
 

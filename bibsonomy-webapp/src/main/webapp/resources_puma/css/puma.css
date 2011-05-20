@@ -507,13 +507,25 @@ input[type="button"].ajaxButton {
 	color: black; 
 }
 
+.refererButton {
+   float: right;
+   font-size:20px;
+   width:350px;
+   height:35px;
+   background-color:#DDDDDD;
+   border-color:#EEEEDD;
+   border-style: dashed;
+   border-width:3px;
+   text-align: center;
+   padding-top: 8px;
+}
+
 #pumaSword input[type="button"].ajaxButton.oadisabledsend2repositorybutton:hover {
 	background-color: transparent;
 	color: #ccc; 
 	cursor: default;
 	
 }
-
 
 .classificationListItemContainer {
 	clear:left;

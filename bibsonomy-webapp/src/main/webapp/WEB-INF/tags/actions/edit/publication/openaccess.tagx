@@ -30,14 +30,15 @@
 	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
 	<c:if test="${not empty jsOpenAccess}">
 	
-	<c:if test="${not empty referer}">
-	<h1><p><a href="${referer}" > ZURUECK ZUR ALTEN HOMEPAGE</a></p></h1>
-	</c:if>
 <!-- 
 		<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.openaccess" >
 			<jsp:attribute name="content">
  -->
- 				<div id="oaRepositorySentInfo"><!-- used for puma--> </div>
+				<c:if test="${not empty referer}">
+					<a id="referer" class="refererButton" href="${referer}" > <fmt:message key="post.resource.openaccess.button.referer"/></a>
+				</c:if>
+				
+				<div id="oaRepositorySentInfo"><!-- used for puma--> </div>	
 				<h3><a href="javascript:foldUnfold('openAccessContainer');"><img id="resourcesImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="post.resource.openaccess.headline"/></a></h3>
 
 				<div id="openAccessContainer">
@@ -138,6 +139,13 @@
 							setTimeout("loadAdditionalMetadataFields()", 1);
 							setTimeout("checkOpenAccess()", 1);
 							setTimeout("loadSentRepositories()", 1);
+							
+							setTimeout("setBackgroundColor(\"referer\", \"#EEEEEE\")", 1000);
+							setTimeout("setBackgroundColor(\"referer\", \"#DDDDDD\")", 2000);
+							setTimeout("setBackgroundColor(\"referer\", \"#EEEEEE\")", 3000);
+							setTimeout("setBackgroundColor(\"referer\", \"#DDDDDD\")", 4000);
+							setTimeout("setBackgroundColor(\"referer\", \"#EEEEEE\")", 5000);
+							setTimeout("setBackgroundColor(\"referer\", \"#DDDDDD\")", 6000);
 					    });
 					</script>
 	
@@ -202,7 +210,5 @@
 			</jsp:attribute>
 		</parts:fieldset>
  -->
-	</c:if>    			
-
-
+	</c:if>
 </jsp:root>
