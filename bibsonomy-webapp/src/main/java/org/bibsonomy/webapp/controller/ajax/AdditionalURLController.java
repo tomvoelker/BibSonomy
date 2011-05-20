@@ -6,228 +6,203 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.extra.BibTexExtra;
+import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ajax.AjaxURLCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 /**
- * AdditionalURLController which extends AjaxController and implements MinimalisticController
+ * AdditionalURLController which extends AjaxController and implements
+ * MinimalisticController
  * 
- * This controller handles the additinal URL requests for a given Post
+ * This controller handles the additional URL requests for a given Post
  * 
  * @author Bernd Terbrack
- * @version $Id$
+ * @version $Id: AdditionalURLController.java,v 1.5 2011-05-12 20:48:59 berndt
+ *          Exp $
  */
-public class AdditionalURLController extends AjaxController implements
-		MinimalisticController<AjaxURLCommand> {
+public class AdditionalURLController extends AjaxController implements MinimalisticController<AjaxURLCommand>, ErrorAware {
 
-	private static final Log log = LogFactory
-			.getLog(AdditionalURLController.class);
-	private URL url;
-	private String urlName;
-	private String cKey;
-	private String intraHash;
-	private final ResourceBundle localizedStrings = ResourceBundle.getBundle("messages");
-	private final static String ADD_URL = "addUrl";
-	private final static String DEL_URL = "deleteUrl";
+	private static final Log log = LogFactory.getLog(AdditionalURLController.class);
+	private Errors errors;
 
 	@Override
 	public AjaxURLCommand instantiateCommand() {
 		return new AjaxURLCommand();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.ContextCommand)
+	 * 
+	 * @see
+	 * org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy
+	 * .webapp.command.ContextCommand)
 	 */
 	@Override
 	public View workOn(AjaxURLCommand command) {
 		log.debug("workOn AdditionalURLController");
-		urlName = command.getText();
-		cKey = command.getCkey();
-		intraHash = command.getHash();
-		
-		//TODO: Probably create a validateRequest method which returns true/false
-		
-		//-- Validating the request --
+
+		// TODO: Probably create a validateRequest method which returns
+		// true/false
+
+		// -- Validating the request --
 		/*
 		 * Check whether user is logged in
 		 */
 		if (!command.getContext().isUserLoggedIn()) {
-			command.setResponseString(getXmlError("error.general.login"));
-			return Views.AJAX_XML;
+			errors.reject("error.general.login");
+			return Views.AJAX_ERRORS;
 		}
 
 		/*
 		 * check if the ckey is valid
 		 */
 		if (!command.getContext().isValidCkey()) {
-			command.setResponseString(getXmlError("error.field.valid.ckey"));
-			return Views.AJAX_XML;
+			errors.reject("error.field.valid.ckey");
+			return Views.AJAX_ERRORS;
 		}
 
 		/*
 		 * Check if the given url-text is not empty while ADDING a URL
 		 */
-		if (!present(urlName) && ADD_URL.equals(command.getAction())) {
-			command.setResponseString(getXmlError("error.url.emptyName"));
-			return Views.AJAX_XML;
+		if (!present(command.getText()) && HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
+			errors.reject("error.url.emptyName");
+			return Views.AJAX_ERRORS;
 		}
-		
+
 		/*
 		 * Check if the given url is not empty
 		 */
 		if (!present(command.getUrl())) {
-			command.setResponseString(getXmlError("error.url.emptyUrl"));
-			return Views.AJAX_XML;
+			errors.reject("error.url.emptyUrl");
+			return Views.AJAX_ERRORS;
 		}
-		
+
 		/*
 		 * Check if the url is valid
 		 */
+		URL url;
+		String cleanedUrl = UrlUtils.cleanUrl(command.getUrl());
 		try {
-			url = new URL(command.getUrl());
+			url = new URL(cleanedUrl);
 		} catch (MalformedURLException e) {
-			try {
-				url = new URL("http://" + command.getUrl()); // TODO: use URLUtils#normalizeURL ?
-			} catch (MalformedURLException ex) {
-				command.setResponseString(getXmlError("error.url.format"));
-				return Views.AJAX_XML;
-			}
+			errors.reject("error.field.valid.url");
+			return Views.AJAX_ERRORS;
 		} catch (Exception e) {
-			command.setResponseString(getXmlError("error.url.general"));
-			return Views.AJAX_XML;
+			errors.reject("error.url.general");
+			return Views.AJAX_ERRORS;
 		}
-		//-- End Validating the request --
+		// -- End Validating the request --
 
 		/*
-		 * If the user wants to add/delete the url, do so, else generate an XML
-		 * error string.
+		 * If the user wants to add/delete the url, do so, add error to errors
+		 * and return error view.
 		 */
-		if (ADD_URL.equals(command.getAction())) {
-			command.setResponseString(addURL(command));
-		} else if (DEL_URL.equals(command.getAction())) {
-			command.setResponseString(deleteURL(command));
-		} else {
-			command.setResponseString(getXmlError("error.action.valid"));
+		try {
+			switch (this.requestLogic.getHttpMethod()) {
+			case POST:
+				return addURL(command, url);
+			case GET:
+				return deleteURL(command, url);
+			default:
+				errors.reject("error.action.valid");
+				return Views.AJAX_ERRORS;
+			}
+		} catch (final ValidationException ex) {
+			errors.reject("error.action.valid");
+			return Views.AJAX_ERRORS;
 		}
-
-		return Views.AJAX_XML;
 	}
 
 	/**
 	 * Method which adds the url to the given post.
 	 * 
 	 * @param command
-	 * @return if succeeded -> XML string containing status, url, text
-	 * if not succeeded -> generated XML error string
+	 * @return if succeeded -> XML string containing status, url, text if not
+	 *         succeeded -> add error to errors and return error view.
 	 */
-	private String addURL(AjaxURLCommand command) {
+	private View addURL(AjaxURLCommand command, URL url) {
 
-		log.debug("Adding URL: " + command.getUrl() + " to database. User: "
-				+ command.getContext().getLoginUser().getName());
+		log.debug("Adding URL: " + command.getUrl() + " to database. User: " + command.getContext().getLoginUser().getName());
 
-		final Post<? extends Resource> post = logic.getPostDetails(
-				intraHash, logic.getAuthenticatedUser().getName());
+		final Post<? extends Resource> post = logic.getPostDetails(command.getHash(), logic.getAuthenticatedUser().getName());
 		BibTex resource = ((BibTex) post.getResource());
 		BibTexExtra bibTexExtra = new BibTexExtra();
 		bibTexExtra.setUrl(url);
-		bibTexExtra.setText(urlName);
-
-		/*
-		 * Check if the given URL already exists within the given post.
-		 * If so -> generate XML error string
-		 */
-		for (BibTexExtra bibTE : resource.getExtraUrls()) {
-			if (bibTexExtra.getUrl().toExternalForm()
-					.equals(bibTE.getUrl().toExternalForm())) {
-				return getXmlError("error.url.exists");
-			}
-		}
-
+		bibTexExtra.setText(command.getText());
 		resource.getExtraUrls().clear();
 		resource.getExtraUrls().add(bibTexExtra);
 
-		final List<Post<? extends Resource>> postList = Collections
-				.<Post<? extends Resource>> singletonList(post);
-		try{
+		final List<Post<? extends Resource>> postList = Collections.<Post<? extends Resource>> singletonList(post);
+
+		try {
 			logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_ADD);
-		}catch (Exception e){
+		} catch (DatabaseException e) {
 			log.debug("Error while updatePosts from URLController.");
-			return getXmlError("database.exception.unspecified");
+			errors.reject("error.url.exists");
+			return Views.AJAX_ERRORS;
+		} catch (Exception e) {
+			log.debug("Error while updatePosts from URLController.");
+			errors.reject("database.exception.unspecified");
+			return Views.AJAX_ERRORS;
 		}
-		return getXmlSucceeded();
+		command.setResponseString(getXmlSucceeded(command, url));
+		return Views.AJAX_XML;
 	}
 
 	/**
 	 * Method which deletes the url from the given post.
 	 * 
 	 * @param command
-	 * @return if succeeded -> XML string containing status, url, text
-	 * if not succeeded -> generated XML error string
+	 * @return if succeeded -> XML string containing status, url, text if not
+	 *         succeeded -> add error to errors and return error view.
 	 */
-	private String deleteURL(AjaxURLCommand command) {
-		
-		log.debug("Deleting URL: " + command.getUrl()
-				+ " from database. User: "
-				+ command.getContext().getLoginUser().getName());
-		final Post<? extends Resource> post = logic.getPostDetails(
-				intraHash, logic.getAuthenticatedUser().getName());
-		BibTex resource = (BibTex) post.getResource();
+	private View deleteURL(AjaxURLCommand command, URL url) {
 
-		/*
-		 * If the url exists in the db, delete it. Else return an error
-		 */
-		for (BibTexExtra bibTexExtra : resource.getExtraUrls()) {
-			if (url.equals(bibTexExtra.getUrl())) {
-				resource.getExtraUrls().clear();
-				resource.getExtraUrls().add(bibTexExtra);
-				final List<Post<? extends Resource>> postList = Collections
-						.<Post<? extends Resource>> singletonList(post);
-				try{
-					logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_DELETE);
-				} catch (Exception e) {
-					log.debug("Error while updatePosts from URLController.");
-					return getXmlError("database.exception.unspecified");
-				}
-				return getXmlSucceeded();
-			}
+		log.debug("Deleting URL: " + command.getUrl() + " from database. User: " + command.getContext().getLoginUser().getName());
+
+		final Post<? extends Resource> post = logic.getPostDetails(command.getHash(), logic.getAuthenticatedUser().getName());
+
+		BibTex resource = ((BibTex) post.getResource());
+		BibTexExtra bibTexExtra = new BibTexExtra();
+		bibTexExtra.setUrl(url);
+		resource.getExtraUrls().clear();
+		resource.getExtraUrls().add(bibTexExtra);
+
+		final List<Post<? extends Resource>> postList = Collections.<Post<? extends Resource>> singletonList(post);
+
+		try {
+			logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_DELETE);
+		} catch (Exception e) {
+			log.debug("Error while updatePosts from URLController.");
+			errors.reject("database.exception.unspecified");
+			return Views.AJAX_ERRORS;
 		}
-
-		return getXmlError("error.url.exists_not");
+		command.setResponseString(getXmlSucceeded(command, url));
+		return Views.AJAX_XML;
 	}
 
-	/**
-	 * generates AJAX_XML response string with status = error and given reason
-	 * 
-	 * @param reason
-	 *        error reason
-	 * @return XML error string.
-	 */
-	// TODO: Java Utils impl?
-	private String getXmlError(String reason) {
-		String errorMsg = localizedStrings.getString("error.addUrl").replace(
-				"{0}", localizedStrings.getString(reason));
-		return "<root><status>error</status><reason>" + errorMsg
-				+ "</reason><url>" + url + "</url><text>" + urlName
-				+ "</text></root>";
-	}
 	/**
 	 * Method which generates a XML response string [success]
+	 * 
 	 * @return XML success string.
 	 */
-	private String getXmlSucceeded() {
-		return "<root><status>ok</status><ckey>" + cKey + "</ckey><hash>" + intraHash + "</hash><url>" + url + "</url><text>" + urlName + "</text></root>";
+	private String getXmlSucceeded(AjaxURLCommand command, URL url) {
+		return "<root><status>ok</status><ckey>" + command.getCkey() + "</ckey><hash>" + command.getHash() + "</hash><url>" + url.toExternalForm() + "</url><text>" + command.getText() + "</text></root>";
 	}
 
 	/**
@@ -237,32 +212,14 @@ public class AdditionalURLController extends AjaxController implements
 		return log;
 	}
 
-	/**
-	 * @return the url
-	 */
-	public URL getUrl() {
-		return this.url;
+	@Override
+	public Errors getErrors() {
+		return errors;
 	}
 
-	/**
-	 * @param url the url to set
-	 */
-	public void setUrl(URL url) {
-		this.url = url;
-	}
-
-	/**
-	 * @return the urlName
-	 */
-	public String getUrlName() {
-		return this.urlName;
-	}
-
-	/**
-	 * @param urlName the urlName to set
-	 */
-	public void setUrlName(String urlName) {
-		this.urlName = urlName;
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
 	}
 
 }
