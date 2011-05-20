@@ -533,10 +533,12 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	    param.setInterHash(post.getResource().getInterHash());
 	    param.setIntraHash(post.getResource().getIntraHash());
 	    
-	    //TODO can we be sure that here are only one repository ?
+	    // TODO: can we be sure that here is _at least_ or exactly one repository ?
+	    //       what is the expected behavior if no repository is given?
 //	    if(!present(post.getRepositorys()))
 //	    	return;
 	    
+	    // TODO: NPE?
 	    param.setRepositoryName(post.getRepositorys().get(0).getId());
 	    
 	    this.insert("insertRepository", param, session);
