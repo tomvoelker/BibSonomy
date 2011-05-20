@@ -607,3 +607,7 @@ input#authorcontractconfirm {
 	color: #444444;
 	margin-bottom: 1.5ex;
 }
+
+.scroller {
+	border: 1px solid #EFAC95;
+}
