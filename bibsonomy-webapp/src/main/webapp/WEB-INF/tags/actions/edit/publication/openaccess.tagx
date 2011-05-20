@@ -37,6 +37,7 @@
 		<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.openaccess" >
 			<jsp:attribute name="content">
  -->
+ 				<div id="oaRepositorySentInfo"><!-- used for puma--> </div>
 				<h3><a href="javascript:foldUnfold('openAccessContainer');"><img id="resourcesImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="post.resource.openaccess.headline"/></a></h3>
 
 				<div id="openAccessContainer">
@@ -115,6 +116,7 @@
 						</div>
 
 						<input type="hidden" name="hash" id="openAccessCurrentPublicationHash" value="${fn:escapeXml(bibtex.intraHash)}"/>
+						<input type="hidden" name="hash" id="openAccessCurrentPublicationInterHash" value="${fn:escapeXml(bibtex.interHash)}"/>
 						
 					</div>
 	
@@ -135,6 +137,7 @@
 							setTimeout("loadStoredClassificationItems()", 1);
 							setTimeout("loadAdditionalMetadataFields()", 1);
 							setTimeout("checkOpenAccess()", 1);
+							setTimeout("loadSentRepositories()", 1);
 					    });
 					</script>
 	
@@ -179,6 +182,7 @@
 						<fmt:message key="post.resource.openaccess.authorcontractconfirm"/>
 					</div>
 	
+					<div id="oaRepositorySent"><!-- used for puma--> </div>
 	
 					<div id="oaSubmitContainer" ><!-- used for puma--> </div>
 				</div>
