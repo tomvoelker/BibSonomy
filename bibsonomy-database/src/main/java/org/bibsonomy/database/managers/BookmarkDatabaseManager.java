@@ -135,6 +135,6 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	protected void performUpdateRepositorys(Post<Bookmark> post,
 		Post<Bookmark> oldPost, DBSession session) {
 	    log.error("Try to send a bookmark to repository!");
-	    
+	    // TODO: throw exception
 	}
 }
