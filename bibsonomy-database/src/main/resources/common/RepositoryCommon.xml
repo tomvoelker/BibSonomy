@@ -5,12 +5,12 @@
 	
 	<resultMap id="repository" class="repository" groupBy="id" >
 		<result property="id" 		column="repository_name" 	javaType="string" />
-		<result property="date"  	column="date"				javaType="date" />
+		<result property="date"  	column="repository_date"	javaType="date" />
 	</resultMap>
 	
 
 	<sql id="allRepositoryAttributes">
-		r.repository_name, r.date 
+		r.repository_name, r.repository_date
 	</sql>
 	
 </sqlMap>
