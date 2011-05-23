@@ -625,7 +625,12 @@ input#authorcontractconfirm {
 }
 
 #oaRepositorySentInfo {
-
+	float: right;
+	font-weight: bold;
+	font-size: 90%;
+	margin-top: 0.6ex;
+	padding: 5px;
+	
 }
 
 #oaRepositorySent {

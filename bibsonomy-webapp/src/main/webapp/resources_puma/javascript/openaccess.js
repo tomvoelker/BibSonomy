@@ -694,7 +694,7 @@ function loadSentRepositories() {
 		url: url,
 		success: function(data) {
 			// iterate over data
-		    $("#oaRepositorySent").append('<div id="oaRepositorySentHeader">Die Publikation wurde bereits übermittelt:</div>');
+		    $("#oaRepositorySent").append('<div id="oaRepositorySentHeader">Diese Publikation wurde bereits übermittelt:</div>');
 			$.each(data.posts, function(intrahash,post){
 				$.each(post.repositories, function(key,item){
 					var sentDate = new Date(item.date.time);
@@ -702,6 +702,10 @@ function loadSentRepositories() {
 					$("#oaRepositorySent").append('<div>Übermittlungsdatum: '+sentDateFormatted+'. <a href="/bibtex/2'+intrahash+'">Alle Versionen dieser Publikation anzeigen</a>'+(post.selfsent==1?"":", Übermittlung durch anderen Autor")+'</div');
 				});		
 			});
+
+			// set message in headline of open access box and close box
+			$("#oaRepositorySentInfo").append('<div>Diese Publikation wurde bereits übermittelt.</div>');
+			foldUnfold('openAccessContainer');
 		},
 		error: function(req, status, e) {
 			// FIXME: Show error without alert box
