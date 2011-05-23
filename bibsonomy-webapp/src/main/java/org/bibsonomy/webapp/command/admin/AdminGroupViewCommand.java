@@ -22,13 +22,7 @@ public class AdminGroupViewCommand extends BaseCommand {
 	private final Map<String, Privlevel> privlevel;
 	
 	private String adminResponse = "";
-	private String requestedGroupName;
-
-	private long selectedGroupID;
-	private String selectedGroupName;
-	private int selectedPrivacyLevel;
-	private boolean selectedSharedDocuments;
-	private Group group;
+	private Group group = new Group();
 	
 	
 	public AdminGroupViewCommand() {
@@ -46,84 +40,6 @@ public class AdminGroupViewCommand extends BaseCommand {
 	public Map<String, Privlevel> getPrivlevel() {
 		return this.privlevel;
 	}
-	
-	/**
-	 * @return the requestedGroupname
-	 */
-	public String getRequestedGroupName() {
-		return this.requestedGroupName;
-	}
-	
-	/**
-	 * @param requestedGroupname the requestedGroupname to set
-	 */
-	public void setRequestedGroupName(String requestedGroupName) {
-		this.requestedGroupName = requestedGroupName;
-	}
-	
-	/**
-	 * @return the selectedGroupID
-	 */
-	public long getSelectedGroupID() {
-		return this.selectedGroupID;
-	}
-
-	/**
-	 * @param selectedGroupID the selectedGroupID to set
-	 */
-	public void setSelectedGroupID(long selectedGroupID) {
-		this.selectedGroupID = selectedGroupID;
-	}
-
-	/**
-	 * @return the selectedGroupName
-	 */
-	public String getSelectedGroupName() {
-		return this.selectedGroupName;
-	}
-
-	/**
-	 * @param selectedGroupName the selectedGroupName to set
-	 */
-	public void setSelectedGroupName(String selectedGroupName) {
-		this.selectedGroupName = selectedGroupName;
-	}
-
-	/**
-	 * @return the selectedPrivacyLevel as an enum-type
-	 */
-	public Privlevel getSelectedPrivlevel() {
-		return Privlevel.getPrivlevel(this.selectedPrivacyLevel);
-	}
-	
-	/**
-	 * @return the selectedPrivacyLevel as an integer
-	 */
-	public int getSelectedPrivacyLevel() {
-		return this.selectedPrivacyLevel;
-	}
-
-	/**
-	 * @param selectedPrivacyLevel the selectedPrivacyLevel to set
-	 */
-	public void setSelectedPrivacyLevel(int selectedPrivacyLevel) {
-		this.selectedPrivacyLevel = selectedPrivacyLevel;
-	}
-
-	/**
-	 * @return the selectedSharedDocuments
-	 */
-	public boolean getSelectedSharedDocuments() {
-		return this.selectedSharedDocuments;
-	}
-
-	/**
-	 * @param selectedSharedDocuments the selectedSharedDocuments to set
-	 */
-	public void setSelectedSharedDocuments(boolean selectedSharedDocuments) {
-		this.selectedSharedDocuments = selectedSharedDocuments;
-	}
-
 	/**
 	 * @return the group
 	 */

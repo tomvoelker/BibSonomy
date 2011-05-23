@@ -118,11 +118,11 @@
 	    <json:users users="${command.friendsOfUser}" />
       </mtl:exists>
       
-	  <mtl:exists path="command.searchedUsers">
-      	<c:if test="${isCommaNecessary and not empty command.searchedUsers}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+	  <mtl:exists path="command.users">
+      	<c:if test="${isCommaNecessary and not empty command.users}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
       	
 	    <!-- searched users -->
-	    <json:users users="${command.searchedUsers}" />
+	    <json:users users="${command.users}" />
 	  </mtl:exists>
    ]
 }

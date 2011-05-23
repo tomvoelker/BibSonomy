@@ -45,6 +45,14 @@ fieldset {
 #publicationIndexProperties {
 
 }
+.adminNavi {
+	font-weight: bold; 
+	background: #eee; 
+	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	margin: 10px 10px 10px 10px;
+	padding: 0px 10px 0px 10px;
+}
 .bluebox{
 	border: 1px solid #006699;
 	padding: 15px;
