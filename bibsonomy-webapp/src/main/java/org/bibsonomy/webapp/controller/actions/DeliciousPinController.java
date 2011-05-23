@@ -7,11 +7,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.importer.bookmark.service.DeliciousSignPost;
 import org.bibsonomy.importer.bookmark.service.DeliciousSignPostManager;
-import org.bibsonomy.webapp.command.actions.ImportCommand;
+import org.bibsonomy.webapp.command.SettingsViewCommand;
+import org.bibsonomy.webapp.command.actions.DeliciousPinCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
+import org.bibsonomy.webapp.util.ValidationAwareController;
+import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.validation.DeliciousPinValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
@@ -23,7 +27,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author schwass
  * @version $Id$
  */
-public class DeliciousPinController implements MinimalisticController<ImportCommand>, ErrorAware {
+public class DeliciousPinController implements MinimalisticController<DeliciousPinCommand>, ErrorAware, ValidationAwareController<DeliciousPinCommand> {
 	
 	private static final Log log = LogFactory.getLog(DeliciousPinController.class);
 
@@ -32,12 +36,13 @@ public class DeliciousPinController implements MinimalisticController<ImportComm
 	private DeliciousSignPostManager signPostManager;
 
 	@Override
-	public ImportCommand instantiateCommand() {
-		return new ImportCommand();
+	public DeliciousPinCommand instantiateCommand() {
+		return new DeliciousPinCommand();
 	}
 
 	@Override
-	public View workOn(ImportCommand command) {
+	public View workOn(DeliciousPinCommand command) {
+		command.setSelTab(SettingsViewCommand.IMPORTS_IDX);
 		final RequestWrapperContext context = command.getContext();
 
 		/*
@@ -61,11 +66,11 @@ public class DeliciousPinController implements MinimalisticController<ImportComm
 			 * FIXME: correct URL?
 			 * FIXME: don't do this on first call of form!
 			 */
-			return Views.IMPORT;
+			return Views.SETTINGSPAGE;
 		}
 
 		if (errors.hasErrors()) {
-			return Views.IMPORT;
+			return Views.SETTINGSPAGE;
 		}
 		
 		DeliciousSignPost oAuth = signPostManager.createDeliciousSignPost();
@@ -111,6 +116,16 @@ public class DeliciousPinController implements MinimalisticController<ImportComm
 	 */
 	public DeliciousSignPostManager getSignPostManager() {
 		return signPostManager;
+	}
+
+	@Override
+	public boolean isValidationRequired(DeliciousPinCommand command) {
+		return true;
+	}
+
+	@Override
+	public Validator<DeliciousPinCommand> getValidator() {
+		return new DeliciousPinValidator();
 	}
 
 }

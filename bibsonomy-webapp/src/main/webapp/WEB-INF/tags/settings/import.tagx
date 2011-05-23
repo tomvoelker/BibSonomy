@@ -100,6 +100,7 @@
 			                        <form:radiobutton path="importData" value="bundles"/>
 			                        <fmt:message key="import.bundles"/>
 			                       </div>
+			                       <div class="dissError"><form:errors path="importData" /></div>
 			    	    	</div>
 			    	    	
 				  			<div class="fsRow">
