@@ -12,6 +12,37 @@ var GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";
 var publication_intrahash = ""; // will be set during initialisation
 var publication_interhash = ""; // will be set during initialisation
 
+function empty (mixed_var) {
+    // !No description available for empty. @php.js developers: Please update the function summary text file.
+    // 
+    // version: 1103.1210
+    // discuss at: http://phpjs.org/functions/empty    // +   original by: Philippe Baumann
+    // +      input by: Onno Marsman
+    // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +      input by: LH
+    // +   improved by: Onno Marsman    // +   improved by: Francesco
+    // +   improved by: Marc Jansen
+    // +   input by: Stoyan Kyosev (http://www.svest.org/)
+    // *     example 1: empty(null);
+    // *     returns 1: true    // *     example 2: empty(undefined);
+    // *     returns 2: true
+    // *     example 3: empty([]);
+    // *     returns 3: true
+    // *     example 4: empty({});    // *     returns 4: true
+    // *     example 5: empty({'aFunc' : function () { alert('humpty'); } });
+    // *     returns 5: false
+    var key;
+     if (mixed_var === "" || mixed_var === 0 || mixed_var === "0" || mixed_var === null || mixed_var === false || typeof mixed_var === 'undefined') {
+        return true;
+    }
+ 
+    if (typeof mixed_var == 'object') {        for (key in mixed_var) {
+            return false;
+        }
+        return true;
+    } 
+    return false;
+}
 
 function _removeSpecialChars(s) {
 	s = s.replace(/[^a-zA-Z0-9]/g,'');
@@ -694,19 +725,20 @@ function loadSentRepositories() {
 		url: url,
 		success: function(data) {
 			// iterate over data
-		    $("#oaRepositorySent").append('<div id="oaRepositorySentHeader">'+getString("post.resource.openaccess.repository.sent.info")+':</div>');
-			$.each(data.posts, function(intrahash,post){
-				$.each(post.repositories, function(key,item){
-					var sentDate = new Date(item.date.time);
-					var sentDateFormatted = sentDate.getDate() + "." + (sentDate.getMonth()+1) + "." +  sentDate.getFullYear();
-					var publicationsVersions =  getString("post.resource.openaccess.repository.sent.versions");
-					$("#oaRepositorySent").append('<div>'+getString("post.resource.openaccess.repository.sent.date")+': '+sentDateFormatted+'. <a href="/bibtex/2'+intrahash+'">'+ publicationsVersions +'</a>'+(post.selfsent==1?"":+getString("post.resource.openaccess.repository.sent.other"))+'</div');
-				});		
-			});
-
-			// set message in headline of open access box and close box
-			$("#oaRepositorySentInfo").append('<div>'+getString("post.resource.openaccess.repository.sent.info")+'.</div>');
-			foldUnfold('openAccessContainer');
+			if (!empty(data.posts)) { 
+				$("#oaRepositorySent").append('<div id="oaRepositorySentHeader">'+getString("post.resource.openaccess.repository.sent.info")+':</div>');
+				$.each(data.posts, function(intrahash,post){
+					$.each(post.repositories, function(key,item){
+						var sentDate = new Date(item.date.time);
+						var sentDateFormatted = sentDate.getDate() + "." + (sentDate.getMonth()+1) + "." +  sentDate.getFullYear();
+						var publicationsVersions =  getString("post.resource.openaccess.repository.sent.versions");
+						$("#oaRepositorySent").append('<div>'+getString("post.resource.openaccess.repository.sent.date")+': '+sentDateFormatted+'. <a href="/bibtex/2'+intrahash+'">'+ publicationsVersions +'</a>'+(post.selfsent==1?"":+getString("post.resource.openaccess.repository.sent.other"))+'</div');
+					});		
+				});
+				// set message in headline of open access box and close box
+				$("#oaRepositorySentInfo").append('<div>'+getString("post.resource.openaccess.repository.sent.info")+'.</div>');
+				foldUnfold('openAccessContainer');
+			}			
 		},
 		error: function(req, status, e) {
 			// FIXME: Show error without alert box
