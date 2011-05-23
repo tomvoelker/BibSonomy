@@ -33,6 +33,8 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author dzo
@@ -40,6 +42,7 @@ import org.apache.commons.codec.binary.Base64;
  * @version $Id$
  */
 public class HeaderUtils {
+	private final static Log log = LogFactory.getLog(HeaderUtils.class);
 	
 	/**
 	 * the header key for authorization
@@ -118,6 +121,7 @@ public class HeaderUtils {
 					qValue = Double.parseDouble(types[1].split("=")[1]);
 				} catch (NumberFormatException e) {
 					qValue = 0;
+					log.error("Couldn't parse accept header '"+acceptHeader+"'");
 				}
 			}
 			
