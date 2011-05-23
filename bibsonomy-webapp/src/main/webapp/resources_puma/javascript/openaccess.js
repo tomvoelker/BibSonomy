@@ -694,17 +694,17 @@ function loadSentRepositories() {
 		url: url,
 		success: function(data) {
 			// iterate over data
-		    $("#oaRepositorySent").append('<div id="oaRepositorySentHeader">Diese Publikation wurde bereits übermittelt:</div>');
+		    $("#oaRepositorySent").append('<div id="oaRepositorySentHeader">'+getString("post.resource.openaccess.repository.sent.info")+':</div>');
 			$.each(data.posts, function(intrahash,post){
 				$.each(post.repositories, function(key,item){
 					var sentDate = new Date(item.date.time);
 					var sentDateFormatted = sentDate.getDate() + "." + (sentDate.getMonth()+1) + "." +  sentDate.getFullYear();
-					$("#oaRepositorySent").append('<div>Übermittlungsdatum: '+sentDateFormatted+'. <a href="/bibtex/2'+intrahash+'">Alle Versionen dieser Publikation anzeigen</a>'+(post.selfsent==1?"":", Übermittlung durch anderen Autor")+'</div');
+					$("#oaRepositorySent").append('<div>'+getString("post.resource.openaccess.repository.sent.date")+': '+sentDateFormatted+'. <a href="/bibtex/2'+intrahash+'">'+getString("post.resource.openaccess.repository.sent.versions")+'</a>'+(post.selfsent==1?"":+getString("post.resource.openaccess.repository.sent.other"))+'</div');
 				});		
 			});
 
 			// set message in headline of open access box and close box
-			$("#oaRepositorySentInfo").append('<div>Diese Publikation wurde bereits übermittelt.</div>');
+			$("#oaRepositorySentInfo").append('<div>'+getString("post.resource.openaccess.repository.sent.info")+'.</div>');
 			foldUnfold('openAccessContainer');
 		},
 		error: function(req, status, e) {
