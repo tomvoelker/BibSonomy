@@ -274,6 +274,7 @@
 	<!-- 
 		Get the "next" post of a deleted post.
 		The next post is either in the bibtex table or already in the log_bibtex table (or deleted).
+		TODO: we don't need the ratings here (they are discarded)
 	 -->	
 	<select id="getLoggedHashesByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 	  SELECT 0 AS count, '' AS tag_name, b.*, g.*, <include refid="reviewRatingsRows" /> FROM 
