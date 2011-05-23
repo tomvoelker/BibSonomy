@@ -34,9 +34,9 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object object, ModelAndView modelAndView) throws Exception {
 
 		if (
-				present(modelAndView.getViewName()) && 
-				isMobileCookieSet(request) && 
+				present(modelAndView.getViewName()) &&
 				!disabledMobile(request, response) && 
+				isMobileCookieSet(request) && 
 				isMobileDevice(request)
 		) {
 
