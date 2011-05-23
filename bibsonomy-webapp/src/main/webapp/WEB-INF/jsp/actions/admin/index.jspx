@@ -88,14 +88,13 @@
   						source: function ( request, response ) {
   							
   							return $.ajax({
-  								url: "admin_suggest.jsp",
-  								data: {q:request.term, type:type, limit:10},
+  								url: "ajax/usersearch",
+  								data: {search:request.term, limit:10},
   								async: false,
   								success: function (data) {
-									// remove unneeded trailing new line
-									// and split the entries up
-  									data = data.replace(/\n$/, '').split('\n');
-  									response( $.map( data, function( item ) {
+  									var names = new Array();
+  									$.each(data.items, function(index, item) {names.push(item.name);});
+  									response( $.map( names, function( item ) {
   										return {
   											label: item,
   											value: item

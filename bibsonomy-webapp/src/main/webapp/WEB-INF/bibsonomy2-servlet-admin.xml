@@ -109,11 +109,30 @@
 					 	<property name="allowedFields">
 							<list>
 								<value>action</value>
-								<value>requestedGroupName</value>
-								<value>selectedGroupID</value>
-								<value>selectedGroupName</value>
-								<value>selectedPrivacyLevel</value>
-								<value>selectedSharedDocuments</value>
+								<value>group.name</value>
+								<value>group.privlevel</value>
+								<value>group.sharedDocuments</value>
+							</list>
+						</property>
+					</bean>
+				</entry>		
+				<entry key="/admin/oauth">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminOAuthController" />
+					 	<property name="allowedFields">
+							<list>
+								<value>adminAction</value>
+								<value>consumerInfo.consumerKey</value>
+								<value>consumerInfo.consumerSecret</value>
+								<value>consumerInfo.serviceName</value>
+								<value>consumerInfo.gadgetUrl</value>
+								<value>consumerInfo.keyType</value>
+								<value>consumerInfo.callbackUrl</value>
+								<value>consumerInfo.title</value>
+								<value>consumerInfo.summary</value>
+								<value>consumerInfo.description</value>
+								<value>consumerInfo.thumbnail</value>
+								<value>consumerInfo.icon</value>
 							</list>
 						</property>
 					</bean>

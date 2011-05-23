@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller.admin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
-import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Group;
@@ -36,7 +35,6 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
 
-		
 		/* Check user role
 		 * If user is not logged in or not an admin: show error message */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
@@ -63,25 +61,29 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	
 	/** Create a new group. */
 	private void createGroup(AdminGroupViewCommand command) {
-		// Check if groupname is empty
-		String groupname = command.getSelectedGroupName();
+		// Check if group or group-name is empty
+		if(command.getGroup() == null) {
+			command.setAdminResponse("No group specified.");
+			return;
+		}
+		String groupname = command.getGroup().getName();
 		groupname = groupname.replaceAll(" ", "");
 		if (groupname.equals("")) {
 			command.setAdminResponse("Group-creation failed: Group-name is empty!");
 		}
 		
 		// Check if group already exists
-		Group fetchedGroup = logic.getGroupDetails(command.getSelectedGroupName());
+		Group fetchedGroup = logic.getGroupDetails(command.getGroup().getName());
 		if (fetchedGroup != null) {
 			command.setAdminResponse("Group already exists!");
 			
 		// Create group
 		} else {
-			User u = logic.getUserDetails(command.getSelectedGroupName());
+			User u = logic.getUserDetails(command.getGroup().getName());
 			
 			// Check if user exists
 			if (u == null || u.getName() == null) {
-				command.setAdminResponse("Group-creation failed: Cannot create a group for nonexistent username \"" + command.getSelectedGroupName() + "\"." );
+				command.setAdminResponse("Group-creation failed: Cannot create a group for nonexistent username \"" + command.getGroup().getName() + "\"." );
 			}
 			// Check if the user is a spammer
 			else if (u.isSpammer()) {
@@ -89,8 +91,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			} 
 			// Create the group, otherwise.
 			else {
-				Group newGroup = applyGroupSettings(new Group(), command);
-				logic.createGroup(newGroup);
+				logic.createGroup(command.getGroup());
 				command.setAdminResponse("Successfully created new group!");
 			}
 		}
@@ -111,13 +112,13 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	/** Fetch and show the current settings of a group. */
 	private void fetchGroupSettings(AdminGroupViewCommand command) {
 		// TODO: remove logmessage or change loglevel 
-		log.info("Fetching details for group \"" + command.getSelectedGroupName() + "\"");
-		Group fetchedGroup = logic.getGroupDetails(command.getSelectedGroupName());
+		log.info("Fetching details for group \"" + command.getGroup().getName() + "\"");
+		Group fetchedGroup = logic.getGroupDetails(command.getGroup().getName());
 		
 		if (fetchedGroup != null) {
 		    command.setGroup(fetchedGroup);
 		} else {
-			command.setAdminResponse("The group \"" + command.getRequestedGroupName() + "\" does not exist.");
+			command.setAdminResponse("The group \"" + command.getGroup().getName() + "\" does not exist.");
 		}
 	}
 
@@ -127,9 +128,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	 * @param command the command which contains the new settings
 	 */
 	private Group applyGroupSettings(Group group, AdminGroupViewCommand command) {
-		group.setName(command.getSelectedGroupName());
-		group.setPrivlevel(Privlevel.getPrivlevel(command.getSelectedPrivacyLevel()));
-		group.setSharedDocuments(command.getSelectedSharedDocuments());
+		group.setName(command.getGroup().getName());
+		group.setPrivlevel(command.getGroup().getPrivlevel());
+		group.setSharedDocuments(command.getGroup().isSharedDocuments());
 		
 		return group;
 	}

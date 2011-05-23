@@ -22,6 +22,7 @@
 			<a rel="path_menu" href="/admin/group">Group</a>
 		</jsp:attribute>
 		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/adminlucene.css" />
 			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
 			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />
@@ -35,80 +36,81 @@
 		
 		<jsp:attribute name="content">
 			<style type="text/css">
-			    select, input {
-			        position: absolute;
-			        left: 225px;
-			    }
 			    body {
-			        min-height: 50%;
+			        min-height: 80%;
 			    }
 			</style>
 
-<div id="outerBox">
-	<!--  <h2>Manage Groups</h2> -->
-			<!--  autocomplete user info box -->
-			<script type="text/javascript">
-			<![CDATA[
-  				$(document).ready(function(){
-					addAutocomplete("#selectedGroupName", '2');
-  			});
-  				function addAutocomplete(id, type) {
-  					$(id).autocomplete({
-  						source: function ( request, response ) {
-  							
-  							return $.ajax({
-  								url: "../ajax/usersearch",
-  								data: {search:request.term, limit:10, format:"json", showSpammers: false },
-  								async: false,
-  								success: function (data) {
-  									var names = new Array();
-  									$.each(data.items, function(index, item) {names.push(item.name);});
-  									response( $.map( names, function( item ) {
-  										return {
-  											label: item,
-  											value: item
-  										}
-  									}));
-  								}
-  								
-  							});
-  							
-  					}
-  					});  					
-  				}
-  			]]>
-			</script>
-		
-		<div class="bluebox">
-			<h2><fmt:message key="admin.actions.group"/></h2>
-    
-      <!-- Box for adminmessages -->
-	  <c:if test="${not empty command.adminResponse}">
-		<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
-	  </c:if>
-	        <br />
-			<form:form name="addgroup" action="/admin/group?action=createGroup">
-			  <form:label path="selectedGroupName">Group name</form:label>
-  			  <form:input path="selectedGroupName"/> <br /> <br />
-  			  
-		 	  <!-- The privacylevel -->
-      		  <form:label path="selectedPrivacyLevel">Privacy</form:label>
-      		  <form:select path="selectedPrivacyLevel" id="privlevel" size="1" multiple="false">
-				<c:forEach var="entry" items="${command.privlevel}">
-				<form:option value="${entry.value}" label="${entry.key}" />
-				</c:forEach>  
-			  </form:select> <br /> <br />
-			  
-		 	  <!-- SharedDocuments -->
-      		  <form:label path="selectedSharedDocuments">Shared Documents</form:label>
-			      <form:checkbox path="selectedSharedDocuments" id="sharedDocuments" checked="checked" /> <br /> <br />
-			  
-  			  <input type="submit" /> <br /> <br />
-			    
-			</form:form>
-		</div>
-</div>
-            
+			<div id="outerBox">
+				<!--  <h2>Manage Groups</h2> -->
+				<!--  autocomplete user info box -->
+				<script type="text/javascript">
+				<![CDATA[
+	  				$(document).ready(function(){
+						addAutocomplete("#selectedGroupName", '2');
+	  			});
+	  				function addAutocomplete(id, type) {
+	  					$(id).autocomplete({
+	  						source: function ( request, response ) {
+	  							
+	  							return $.ajax({
+	  								url: "../ajax/usersearch",
+	  								data: {search:request.term, limit:10, showSpammers: false },
+	  								async: false,
+	  								success: function (data) {
+	  									var names = new Array();
+	  									$.each(data.items, function(index, item) {names.push(item.name);});
+	  									response( $.map( names, function( item ) {
+	  										return {
+	  											label: item,
+	  											value: item
+	  										}
+	  									}));
+	  								}
+	  								
+	  							});
+	  							
+	  					}
+	  					});  					
+	  				}
+	  			]]>
+				</script>
+			
+				<h2><fmt:message key="admin.actions.group"/></h2>
+	    		<!-- Box for adminmessages -->
+		      	<c:if test="${not empty command.adminResponse}">
+					<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
+			  	</c:if>
+				<form:form name="addgroup" action="/admin/group?action=createGroup">
+					<fieldset class="fsInner" style="margin-bottom: 8px;">
+						<div class="fsRow">
+							<form:label cssClass="fsLabel" path="group.name">Group name</form:label>
+				  			<form:input id="selectedGroupName" cssClass="fsInput" tabindex="1" path="group.name"/>
+				  			<div class="dissError"><form:errors path="group.name" /></div>
+			  			</div>
+			  			  
+						<!-- The privacylevel -->
+						<div class="fsRow">
+				      		<form:label cssClass="fsLabel" path="group.privlevel">Privacy</form:label>
+				      		<form:select cssClass="fsInput" tabindex="2" path="group.privlevel" size="1" multiple="false">
+								<c:forEach var="entry" items="${command.privlevel}">
+									<form:option value="${entry.value}" label="${entry.key}" />
+								</c:forEach>
+							</form:select>
+						</div>
+						  
+					 	  <!-- SharedDocuments -->
+						<div class="fsRow">
+							<form:label cssClass="fsLabel" path="group.sharedDocuments">Shared Documents</form:label>
+						    <form:checkbox tabindex="3" path="group.sharedDocuments" checked="checked" />
+						</div>
+						  
+			            <div class="clearfloat p">
+			  				<input type="submit" />
+			  			</div>
+					</fieldset>
+				</form:form>
+			</div>
 		</jsp:attribute>				
 	</layout:layout>
 </jsp:root>
