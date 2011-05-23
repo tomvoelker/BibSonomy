@@ -3,30 +3,30 @@ package org.bibsonomy.webapp.command.ajax;
 import java.util.List;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.command.TagResourceViewCommand;
+import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 
 
 /**
  * @author bsc
  * @version $Id$
  */
-public class UserSearchCommand extends TagResourceViewCommand {
+public class UserSearchCommand extends SimpleResourceViewCommand {
 	private String search;
 	private int limit;
-	private List<User> searchedUsers;
+	private List<User> users;
 	private boolean showSpammers;
 	
 	/**
 	 * @return the users
 	 */
-	public List<User> getSearchedUsers() {
-		return this.searchedUsers;
+	public List<User> getUsers() {
+		return this.users;
 	}
 	/**
 	 * @param users the users to set
 	 */
-	public void setSearchedUsers(List<User> users) {
-		this.searchedUsers = users;
+	public void setUsers(List<User> users) {
+		this.users = users;
 	}
 	/**
 	 * @return the search
