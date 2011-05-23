@@ -8,7 +8,9 @@ var GET_ADDITIONAL_METADATA = "GET_ADDITIONAL_METADATA";
 var REMOVE_CLASSIFICATION_ITEM = "REMOVE_CLASSIFICATION_ITEM";
 var GET_POST_CLASSIFICATION_LIST = "GET_POST_CLASSIFICATION_LIST";
 var GET_CLASSIFICATION_DESCRIPTION = "GET_CLASSIFICATION_DESCRIPTION";
+var GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";
 var publication_intrahash = ""; // will be set during initialisation
+var publication_interhash = ""; // will be set during initialisation
 
 
 function _removeSpecialChars(s) {
@@ -43,6 +45,7 @@ function initialiseOpenAccessClassification(divBaseName, intraHash) {
 	}
 	
 	publication_intrahash = $("#openAccessCurrentPublicationHash").val();
+	publication_interhash = $("#openAccessCurrentPublicationInterHash").val();
 	
 	// init Classification 
 	initClassifications(divClassificationSelectName, divClassificationListName);
@@ -96,7 +99,8 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 					// check and show response to user
 					$.each(data, function(i, response) {
 						if (null == data || null == data.response) {
-							alert ("unknown response error");
+							// FIXME: Show error without alert box
+							//alert ("unknown response error");
 						} else {
 							// create text node behind transmit button, if not exists, to show response text in it
 							// confirmations and warnings get different css-classes  
@@ -130,7 +134,8 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 				},
 				error: function(req, status, e) {
 					$(loadingNode).remove();
-					alert("Unable to send data to reposity: " + status);
+					// FIXME: Show error without alert box
+					//alert("Unable to send data to reposity: " + status);
 				}
 			});
 		} // end of if ($('#authorcontractconfirm').checked)
@@ -186,7 +191,8 @@ function checkOpenAccess () {
 				}
 			},
 			error: function(req, status, e) {
-				alert("check open access: " + status);
+				// FIXME: Show error without alert box
+				//alert("check open access: " + status);
 			}
 		});
 	}
@@ -201,7 +207,8 @@ function initClassifications(divClassificationSelectName, divClassificationListN
 			doInitialise(divClassificationSelectName, divClassificationListName, data);
 		},
 		error: function(req, status, e) {
-			alert("There seems to be an error in the ajax request, classifications.js::init");
+			// FIXME: Show error without alert box
+			//alert("There seems to be an error in the ajax request, classifications.js::init");
 		}
 	});
 }
@@ -258,7 +265,8 @@ function populate(classification, container) {
 			createSubSelect(null,data,classification,"",container);
 		},
 		error: function(req, status, e) {
-			alert("There seems to be an error in the ajax request, classifications.js::populate");
+			// FIXME: Show error without alert box
+			//alert("There seems to be an error in the ajax request, classifications.js::populate");
 		}
 	});
 }
@@ -304,6 +312,7 @@ function createNode(atts) {
 		try{
 			node[i] = atts[i];
 		}catch(e){
+			// FIXME: Show error without alert box
 			alert(e);
 		}
 	}
@@ -401,7 +410,8 @@ function _addClassificationItemToList(classificationName, ClassificationValue) {
 			},
 			error: function(req, status, e) {
 				$(loadingNode).remove();
-				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+				// FIXME: Show error without alert box
+				//alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
 			}
 		});					
 		
@@ -441,8 +451,8 @@ function addSaved(container, parentID, description) {
 			},
 			error: function(req, status, e) {
 				$(loadingNode).remove();
-
-				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+				// FIXME: Show error without alert box
+				//alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
 			}
 		});
 		
@@ -545,7 +555,8 @@ function createSubSelect(parent, data, classification, parentID, container){
 			},
 			error: function(req, status, e) {
 				$(loadingNode).remove();
-				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+				// FIXME: Show error without alert box
+				//alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
 			}
 		});
 	},
@@ -617,7 +628,8 @@ function sendAdditionalMetadataFields(async) {
 			},
 			error: function(req, status, e) {
 				$(loadingNode).remove();
-				alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+				// FIXME: Show error without alert box
+				//alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
 			}
 		});
 
@@ -641,7 +653,59 @@ function loadAdditionalMetadataFields() {
 			});
 		},
 		error: function(req, status, e) {
-			alert("There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
+			// FIXME: Show error without alert box
+			//alert("There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
+		}
+	});		
+	
+}
+
+/* Load send to repository dates of publication 
+ * Result may be from another similar publication (interhash), if another user has sent this publication alreadey to. 
+ * */
+function loadSentRepositories() {
+	// get data
+	/* {"posts":
+			{"5098b2741b211a04f2d3de9b48d8ff37":
+				{
+					"repositories":[
+						{
+						"date":{"date":1,"day":2,"hours":18,"minutes":25,"month":1,"seconds":39,"time":1296581139000,"timezoneOffset":-60,"year":111},
+						"id":"REPOSITORY_1"
+						},
+						{
+						"date":{"date":1,"day":2,"hours":18,"minutes":25,"month":1,"seconds":39,"time":1296581139000,"timezoneOffset":-60,"year":111},
+						"id":"REPOSITORY_1"
+						}
+
+					],
+					"selfsent": 1,
+					"intrahash":"5098b2741b211a04f2d3de9b48d8ff37"
+				}
+			},
+			...
+		}
+			
+		*/
+	var url = oaBaseUrl + "?action="+GET_SENT_REPOSITORIES+"&interhash="+publication_interhash;
+	// perform ajax request
+	$.ajax({
+		dataType: 'json',
+		url: url,
+		success: function(data) {
+			// iterate over data
+		    $("#oaRepositorySent").append('<div id="oaRepositorySentHeader">Die Publikation wurde bereits übermittelt:</div>');
+			$.each(data.posts, function(intrahash,post){
+				$.each(post.repositories, function(key,item){
+					var sentDate = new Date(item.date.time);
+					var sentDateFormatted = sentDate.getDate() + "." + (sentDate.getMonth()+1) + "." +  sentDate.getFullYear();
+					$("#oaRepositorySent").append('<div>Übermittlungsdatum: '+sentDateFormatted+'. <a href="/bibtex/2'+intrahash+'">Alle Versionen dieser Publikation anzeigen</a>'+(post.selfsent==1?"":", Übermittlung durch anderen Autor")+'</div');
+				});		
+			});
+		},
+		error: function(req, status, e) {
+			// FIXME: Show error without alert box
+			//alert("There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
 		}
 	});		
 	

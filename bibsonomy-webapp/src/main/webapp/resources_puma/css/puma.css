@@ -623,3 +623,15 @@ input#authorcontractconfirm {
 .scroller {
 	border: 1px solid #EFAC95;
 }
+
+#oaRepositorySentInfo {
+
+}
+
+#oaRepositorySent {
+	margin-top: 1.5ex;
+}
+
+#oaRepositorySentHeader {
+	font-weight: bold;
+}
