@@ -119,11 +119,11 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 			case GET:
 				return deleteURL(command, url);
 			default:
-				errors.reject("error.action.valid");
+				errors.reject("error.405");
 				return Views.AJAX_ERRORS;
 			}
 		} catch (final ValidationException ex) {
-			errors.reject("error.action.valid");
+			errors.reject("error.405");
 			return Views.AJAX_ERRORS;
 		}
 	}
