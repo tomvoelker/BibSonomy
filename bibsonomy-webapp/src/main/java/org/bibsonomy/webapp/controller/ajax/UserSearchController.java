@@ -63,8 +63,7 @@ public class UserSearchController extends AjaxController implements Minimalistic
 				}
 			}
 			
-			command.setSearchedUsers(users);
-			log.debug(users.size() + " matches found.");
+			command.setUsers(users);
 		}
 		return Views.JSON;
 	}
