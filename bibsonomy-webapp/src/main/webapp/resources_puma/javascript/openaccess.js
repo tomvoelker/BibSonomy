@@ -699,7 +699,8 @@ function loadSentRepositories() {
 				$.each(post.repositories, function(key,item){
 					var sentDate = new Date(item.date.time);
 					var sentDateFormatted = sentDate.getDate() + "." + (sentDate.getMonth()+1) + "." +  sentDate.getFullYear();
-					$("#oaRepositorySent").append('<div>'+getString("post.resource.openaccess.repository.sent.date")+': '+sentDateFormatted+'. <a href="/bibtex/2'+intrahash+'">'+getString("post.resource.openaccess.repository.sent.versions")+'</a>'+(post.selfsent==1?"":+getString("post.resource.openaccess.repository.sent.other"))+'</div');
+					var publicationsVersions =  getString("post.resource.openaccess.repository.sent.versions");
+					$("#oaRepositorySent").append('<div>'+getString("post.resource.openaccess.repository.sent.date")+': '+sentDateFormatted+'. <a href="/bibtex/2'+intrahash+'">'+ publicationsVersions +'</a>'+(post.selfsent==1?"":+getString("post.resource.openaccess.repository.sent.other"))+'</div');
 				});		
 			});
 
