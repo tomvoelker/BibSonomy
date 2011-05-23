@@ -51,6 +51,8 @@
 								<value>publisher</value>
 								<value>jTitle</value>
 								<value>qType</value>
+								<value>action</value>
+								<value>interhash</value>
 							</list>
 						</property>
 					</bean>
