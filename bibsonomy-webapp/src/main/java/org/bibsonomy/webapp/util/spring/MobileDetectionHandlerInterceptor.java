@@ -35,8 +35,7 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 
 		if (
 				present(modelAndView.getViewName()) &&
-				!disabledMobile(request, response) && 
-				isMobileCookieSet(request) && 
+				!isMobileDisabled(request, response) && 
 				isMobileDevice(request)
 		) {
 
@@ -66,7 +65,7 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 	 * @param response
 	 * @return
 	 */
-	private boolean disabledMobile(HttpServletRequest request, HttpServletResponse response) {
+	private boolean isMobileDisabled(HttpServletRequest request, HttpServletResponse response) {
 
 		if (request.getParameterMap().containsKey(PARAM_MOBILE) ) { 
 			if (FALSE.equals(request.getParameter(PARAM_MOBILE))) {
@@ -79,7 +78,9 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 				return false;
 			}
 		}
-		return false;
+		// if no request param is given, we check whether the mobile view
+		// is disabled via cookie
+		return this.isMobileDisabledByCookie(request);
 	}
 
 	/**
@@ -87,18 +88,14 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 	 * @param request
 	 * @return
 	 */
-	private boolean isMobileCookieSet(HttpServletRequest request) {
+	private boolean isMobileDisabledByCookie(HttpServletRequest request) {
 		if (present(request.getCookies())) {
 			for (final Cookie cookie : request.getCookies()) {
-
-				/*
-				 * check if mobile device has been deactivated
-				 */
 				if (PARAM_MOBILE.equals(cookie.getName()) && FALSE.equals(cookie.getValue()))
-					return false;
+					return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**
