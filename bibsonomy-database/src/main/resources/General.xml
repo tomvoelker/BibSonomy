@@ -28,8 +28,8 @@
 	</update>
 
 	<insert id="insertTas" parameterClass="tagParam">
-		INSERT INTO tas (tas_id, tag_name, content_id, content_type, user_name, date, `group`, tag_lower)
-		VALUES (#tasId#, #tagName#, #newContentId#, #contentType#, #userName#, #date#, #groupId#, #tagNameLower#)
+		INSERT INTO tas (tas_id, tag_name, content_id, content_type, user_name, date, change_date, `group`, tag_lower)
+		VALUES (#tasId#, #tagName#, #newContentId#, #contentType#, #userName#, #date#, #changeDate#, #groupId#, #tagNameLower#)
 		<!-- VALUES
 			<iterate conjunction="," property="tags">
 				<iterate conjunction="," property="groups">

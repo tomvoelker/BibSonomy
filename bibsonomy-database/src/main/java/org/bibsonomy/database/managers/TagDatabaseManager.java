@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -242,6 +243,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		tagParam.setContentTypeByClass(post.getResource().getClass());
 		tagParam.setUserName(post.getUser().getName());
 		tagParam.setDate(post.getDate());
+		tagParam.setChangeDate(new Date());
 		final List<Integer> groups = new ArrayList<Integer>();
 		/*
 		 * copy the groups' ids into the param
@@ -294,6 +296,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		try {
 
 			/*
+			 * all changed posts should get the same change date
+			 */
+			final Date changeDate = new Date();
+
+			/*
 			 * iterate over all posts and exchange their tags
 			 */
 			for (final Post<? extends Resource> post: posts) {
@@ -336,6 +343,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				tagParam.setContentTypeByClass(class1);
 				tagParam.setUserName(post.getUser().getName());
 				tagParam.setDate(post.getDate());
+				tagParam.setChangeDate(changeDate);
 				/*
 				 * FIXME: we don't have the groups from the grouptas available ... :-(
 				 * How can we get them to insert the new grouptas? Probably we need
