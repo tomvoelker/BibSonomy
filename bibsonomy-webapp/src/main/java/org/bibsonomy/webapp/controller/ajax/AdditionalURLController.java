@@ -39,6 +39,21 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 
 	private static final Log log = LogFactory.getLog(AdditionalURLController.class);
 	private Errors errors;
+	
+	/*
+	 * Error ENUMs 
+	 */
+	private static enum urlError {
+		LOGIN,
+		CKEY,
+		URL_EMPTY_NAME,
+		URL_EXISTS_DB,
+		URL_EMPTY,
+		URL_INVALID,
+		URL_GENERAL,
+		HTTP_METHOD_ERROR,
+		DB_UNSPECIFIED,
+	}
 
 	@Override
 	public AjaxURLCommand instantiateCommand() {
@@ -64,47 +79,45 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 		 * Check whether user is logged in
 		 */
 		if (!command.getContext().isUserLoggedIn()) {
-			errors.reject("error.general.login");
-			return Views.AJAX_ERRORS;
+			return handleError(urlError.LOGIN);
 		}
 
 		/*
 		 * check if the ckey is valid
 		 */
 		if (!command.getContext().isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-			return Views.AJAX_ERRORS;
+			return handleError(urlError.CKEY);
 		}
 
 		/*
 		 * Check if the given url-text is not empty while ADDING a URL
 		 */
 		if (!present(command.getText()) && HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
-			errors.reject("error.url.emptyName");
-			return Views.AJAX_ERRORS;
+			return handleError(urlError.URL_EMPTY_NAME);
 		}
 
 		/*
 		 * Check if the given url is not empty
 		 */
 		if (!present(command.getUrl())) {
-			errors.reject("error.url.emptyUrl");
-			return Views.AJAX_ERRORS;
+			return handleError(urlError.URL_EMPTY);
 		}
 
 		/*
 		 * Check if the url is valid
 		 */
+		if(!UrlUtils.isValid(command.getUrl())) {
+			return handleError(urlError.URL_INVALID);
+		}
+		
 		URL url;
 		String cleanedUrl = UrlUtils.cleanUrl(command.getUrl());
 		try {
 			url = new URL(cleanedUrl);
 		} catch (MalformedURLException e) {
-			errors.reject("error.field.valid.url");
-			return Views.AJAX_ERRORS;
+			return handleError(urlError.URL_INVALID);
 		} catch (Exception e) {
-			errors.reject("error.url.general");
-			return Views.AJAX_ERRORS;
+			return handleError(urlError.URL_GENERAL);
 		}
 		// -- End Validating the request --
 
@@ -119,12 +132,10 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 			case GET:
 				return deleteURL(command, url);
 			default:
-				errors.reject("error.405");
-				return Views.AJAX_ERRORS;
+				return handleError(urlError.HTTP_METHOD_ERROR);
 			}
 		} catch (final ValidationException ex) {
-			errors.reject("error.405");
-			return Views.AJAX_ERRORS;
+			return handleError(urlError.HTTP_METHOD_ERROR);
 		}
 	}
 
@@ -152,13 +163,9 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 		try {
 			logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_ADD);
 		} catch (DatabaseException e) {
-			log.debug("Error while updatePosts from URLController.");
-			errors.reject("error.url.exists");
-			return Views.AJAX_ERRORS;
+			return handleError(urlError.URL_EXISTS_DB);
 		} catch (Exception e) {
-			log.debug("Error while updatePosts from URLController.");
-			errors.reject("database.exception.unspecified");
-			return Views.AJAX_ERRORS;
+			return handleError(urlError.DB_UNSPECIFIED);
 		}
 		command.setResponseString(getXmlSucceeded(command, url));
 		return Views.AJAX_XML;
@@ -188,9 +195,7 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 		try {
 			logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_DELETE);
 		} catch (Exception e) {
-			log.debug("Error while updatePosts from URLController.");
-			errors.reject("database.exception.unspecified");
-			return Views.AJAX_ERRORS;
+			return handleError(urlError.DB_UNSPECIFIED);
 		}
 		command.setResponseString(getXmlSucceeded(command, url));
 		return Views.AJAX_XML;
@@ -203,6 +208,46 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 	 */
 	private String getXmlSucceeded(AjaxURLCommand command, URL url) {
 		return "<root><status>ok</status><ckey>" + command.getCkey() + "</ckey><hash>" + command.getHash() + "</hash><url>" + url.toExternalForm() + "</url><text>" + command.getText() + "</text></root>";
+	}
+	
+	/*
+	 * Method to handle Errors based on urlError enum.
+	 */
+	private View handleError(urlError error) {
+		log.debug("An error appeared: " +error.toString());
+		switch (error) {
+		case LOGIN:
+			errors.reject("error.general.login");
+			break;
+		case CKEY:
+			errors.reject("error.field.valid.ckey");
+			break;
+		case URL_EMPTY:
+			errors.reject("error.url.emptyUrl");
+			break;
+		case URL_EMPTY_NAME:
+			errors.reject("error.url.emptyName");
+			break;
+		case URL_EXISTS_DB:
+			errors.reject("error.url.exists");
+			break;
+		case DB_UNSPECIFIED:
+			errors.reject("database.exception.unspecified");
+			break;
+		case HTTP_METHOD_ERROR:
+			errors.reject("error.405");
+			break;
+		case URL_GENERAL:
+			errors.reject("error.url.general");
+			break;
+		case URL_INVALID:
+			errors.reject("error.field.valid.url");
+			break;
+		default:
+			errors.reject("error.general");
+			break;
+		}
+		return Views.AJAX_ERRORS;
 	}
 
 	/**
