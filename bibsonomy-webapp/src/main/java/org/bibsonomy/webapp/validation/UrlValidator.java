@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.validation;
 
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ajax.AjaxURLCommand;
 import org.bibsonomy.webapp.util.Validator;
@@ -16,10 +15,9 @@ import org.springframework.validation.ValidationUtils;
  */
 public class UrlValidator implements Validator<AjaxURLCommand> {
 	
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(final Class clazz) {
-		return Bookmark.class.equals(clazz);
+	public boolean supports(final Class<?> clazz) {
+		return AjaxURLCommand.class.equals(clazz);
 	}
 	
 	@Override
