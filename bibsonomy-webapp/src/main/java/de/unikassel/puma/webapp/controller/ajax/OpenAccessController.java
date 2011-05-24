@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.bibsonomy.common.enums.FilterEntity;
@@ -11,7 +12,6 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Repository;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -37,7 +37,9 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 
 	@Override
 	public View workOn(OpenAccessCommand command) {
-		
+
+		final JSONObject json = new JSONObject();
+
 		// check if user is logged in
 		if(!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedException("error.method_not_allowed");
@@ -63,14 +65,19 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 				 * 
 				 * Titel, Link mit intrahash, Datum
 				 */
+				final JSONObject jsonpost = new JSONObject();
 				for (final Post<BibTex> p : posts) {
-					List<Repository> repositories = p.getRepositorys();
 					final JSONObject jsonObject = new JSONObject();
-					for (final Repository r : repositories) {
-//						jsonObject.;
-					}
-//					json.put("available", jsonArray);
+					final JSONArray jsonArray = new JSONArray();
+					jsonArray.addAll(p.getRepositorys());
+					jsonObject.put("repositories", jsonArray);
+					jsonObject.put("selfsent", (command.getContext().getLoginUser().getName().equals(p.getUser().getName())?1:0) );
+					jsonObject.put("intrahash", p.getResource().getIntraHash());
+					jsonpost.put(p.getResource().getIntraHash(), jsonObject);
 				}
+				json.put("posts", jsonpost);
+				command.setResponseString(json.toString());
+				return Views.AJAX_JSON;
 				
 			} else {
 				this.sherpaLogic = new SherpaRomeoImpl();
