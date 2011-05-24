@@ -21,7 +21,10 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ajax.AjaxURLCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.ValidationAwareController;
+import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.validation.UrlValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
@@ -37,7 +40,7 @@ import org.springframework.validation.Errors;
  * @version $Id: AdditionalURLController.java,v 1.5 2011-05-12 20:48:59 berndt
  *          Exp $
  */
-public class AdditionalURLController extends AjaxController implements MinimalisticController<AjaxURLCommand>, ErrorAware {
+public class AdditionalURLController extends AjaxController implements MinimalisticController<AjaxURLCommand>, ErrorAware, ValidationAwareController<AjaxURLCommand> {
 
 	private static final Log log = LogFactory.getLog(AdditionalURLController.class);
 	private Errors errors;
@@ -84,6 +87,11 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 
 		/*
 		 * Check if the given url is not empty
+		 * FIXME: not necessary, already done in validator.
+		 * Put all validation into validator and check with
+		 * if (errors.hasErrors()) {
+		 *   return Views.AJAX_ERRORS;
+		 * }
 		 */
 		if (!present(command.getUrl())) {
 			return handleError("error.url.emptyUrl");
@@ -137,8 +145,8 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 		log.debug("Adding URL: " + command.getUrl() + " to database. User: " + command.getContext().getLoginUser().getName());
 
 		final Post<? extends Resource> post = logic.getPostDetails(command.getHash(), logic.getAuthenticatedUser().getName());
-		BibTex resource = ((BibTex) post.getResource());
-		BibTexExtra bibTexExtra = new BibTexExtra();
+		final BibTex resource = ((BibTex) post.getResource());
+		final BibTexExtra bibTexExtra = new BibTexExtra();
 		bibTexExtra.setUrl(url);
 		bibTexExtra.setText(command.getText());
 		resource.getExtraUrls().clear();
@@ -220,6 +228,16 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
+	}
+
+	@Override
+	public Validator<AjaxURLCommand> getValidator() {
+		return new UrlValidator();
+	}
+
+	@Override
+	public boolean isValidationRequired(AjaxURLCommand command) {
+		return true;
 	}
 
 }
