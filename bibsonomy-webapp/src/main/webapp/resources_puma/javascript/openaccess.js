@@ -635,7 +635,7 @@ function sendAdditionalMetadataFields(async) {
 	collectedMetadataJSONText += " } ";
 	
 	// send item via ajax to database
-	var saveurl = classificationURL + "?action=" +SAVE_ADDITIONAL_METADATA+"&hash="+publication_intrahash;
+	var saveurl = classificationURL + "?action=" + SAVE_ADDITIONAL_METADATA;
 	var loadingNode = document.createElement('img');
 	loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
 	
@@ -644,8 +644,11 @@ function sendAdditionalMetadataFields(async) {
 			dataType: 'json',
 			url: saveurl,
 			async: async,
-			data: { "value" : collectedMetadataJSONText },
-			type: 'POST',
+			data: { "value"  : collectedMetadataJSONText, 
+			        "hash"   : publication_intrahash,
+			        "format" : "json"
+			},
+			type: 'post',
 			
 			beforeSend: function(XMLHttpRequest) {
 				$('#' +saveMetadataButtonId).append(loadingNode);
