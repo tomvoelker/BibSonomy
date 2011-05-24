@@ -23,12 +23,10 @@ import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.opensocial.OAuthCommand;
+import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ResponseLogic;
-import org.bibsonomy.webapp.util.ValidationAwareController;
-import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.validation.opensocial.BibSonomyOAuthValidator;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -69,7 +67,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author fei
  * @version $Id$
  */
-public abstract class OAuthProtocolController implements ValidationAwareController<OAuthCommand> {
+public abstract class OAuthProtocolController implements MinimalisticController<OAuthCommand> {
 	private static final Log log = LogFactory.getLog(OAuthProtocolController.class);
 	
 	/**
@@ -102,18 +100,8 @@ public abstract class OAuthProtocolController implements ValidationAwareControll
 	public static final OAuthValidator VALIDATOR = new SimpleOAuthValidator();
 
 	//------------------------------------------------------------------------
-	// ValidationAwareController interface
+	// MinimalisticController interface
 	//------------------------------------------------------------------------
-	@Override
-	public Validator<OAuthCommand> getValidator() {
-		return new BibSonomyOAuthValidator();
-	}
-
-	@Override
-	public boolean isValidationRequired(OAuthCommand command) {
-		return false;
-	}
-
 	@Override
 	public OAuthCommand instantiateCommand() {
 		return new OAuthCommand();

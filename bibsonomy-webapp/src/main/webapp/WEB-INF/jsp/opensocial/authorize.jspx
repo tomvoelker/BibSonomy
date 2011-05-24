@@ -18,6 +18,22 @@
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${loginTitle}" requPath="${requPath}">
 
 		<jsp:attribute name="headerExt">
+			<style type="text/css">
+				.oauthIcon {
+					float: left;
+					width: 20%;
+				}
+				.oauthMeta {
+					float: right;
+					width: 80%;
+				}
+				.oauthTitle {
+					font-weight: bold;
+				}
+				.oauthDescription {
+					font-style: italic;
+				}
+			</style>			
   		</jsp:attribute>
 
 		<jsp:attribute name="heading">
@@ -33,22 +49,24 @@
 				The following application wants to access your account information
 				<br/><br/>
 
-				<h3>
-					<c:if test="${command.appIcon != null}"><img src="${command.appIcon}"/></c:if> 
-					<b><c:out value="${command.appTitle}"/></b>(<c:out value="${command.appDescription}" default=""/>)
-					<c:if test="${command.appThumbnail != null}"><img src="${command.appThumbnail}" align="left" width="120" height="60"/></c:if>
-					
-				</h3>
-					
-				
+				<div class="oauthIcon">
+					<c:if test="${command.appIcon != null}"><img src="${command.appIcon}"/></c:if>
+				</div>
+				<span class="oauthMeta">
+					<span class="oauthTitle"><c:out value="${command.appTitle}"/></span>
+					<br/><br/>
+					<span class="oauthDescription"><c:out value="${command.appDescription}" default=""/></span>
+					<br/><br/>
+					<form class="oauthActions" name="authZForm" action="authorize" method="POST">
+						<input type="hidden" name="oauth_callback" value="${command.callBackUrl}"/>
+						<input type="hidden" name="oauth_token" value="${command.entry.token}"/>
+						<input type="submit" name="authorizeAction" value="Deny"/>
+						<input type="submit" name="authorizeAction" value="Authorize"/>
+					</form>
+				</span>
+				<div style="clear: both;"/>
 				<br/>
 
-				<form name="authZForm" action="authorize" method="POST">
-					<input type="hidden" name="oauth_callback" value="${command.callBackUrl}"/>
-					<input type="hidden" name="oauth_token" value="${command.entry.token}"/>
-					<input type="submit" name="authorizeAction" value="Deny"/>
-					<input type="submit" name="authorizeAction" value="Authorize"/>
-				</form>
           	</div>    
       	</jsp:attribute>
       	

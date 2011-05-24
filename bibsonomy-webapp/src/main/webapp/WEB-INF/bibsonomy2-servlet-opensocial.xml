@@ -63,7 +63,6 @@
 	<bean id="containerPageController" class="org.bibsonomy.webapp.controller.opensocial.ContainerPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
-		<property name="projectHome"><value>${project.home}</value></property>
 	</bean>
 	
 	<bean id="oAuthAccessTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthAccessTokenController" scope="request">

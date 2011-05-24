@@ -36,6 +36,19 @@
 			</style>
 		</jsp:attribute>
 		
+		<jsp:attribute name="beforeBodyClose">
+          <script type="text/javascript">
+             //<mtl:cdata>
+             <![CDATA[
+                // vanishing error boxes
+                $(document).ready(function() {
+                	prepareErrorBoxes('dissError');
+                });
+             ]]> 
+             //</mtl:cdata>
+          </script>
+      </jsp:attribute> 
+		
 		<jsp:attribute name="content">
 			<div id="outerBox">
 				<h2><fmt:message key="admin.actions.oauth"/></h2>
@@ -50,6 +63,7 @@
 						<tr>
 							<th><fmt:message key="admin.oauth.consumer.key"/></th>
 							<th><fmt:message key="admin.oauth.consumer.keyType"/></th>
+							<th><fmt:message key="admin.oauth.consumer.keyName"/></th>
 							<th><fmt:message key="admin.oauth.consumer.serviceName"/></th>
 							<th><fmt:message key="admin.oauth.consumer.callbackUrl"/></th>
 							<th><fmt:message key="admin.oauth.consumer.gadgetUrl"/></th>
@@ -65,6 +79,7 @@
 		    			<tr class="consumerEntry">
 		    				<td><c:out value="${entry.consumerKey}"/></td>
 		    				<td><c:out value="${entry.keyType}"/></td>
+		    				<td><c:out value="${entry.keyName}"/></td>
 		    				<td><c:out value="${entry.serviceName}"/></td>
 		    				<td><c:out value="${entry.callbackUrl}"/></td>
 		    				<td><c:out value="${entry.gadgetUrl}"/></td>
@@ -92,15 +107,16 @@
 							<!-- consumer key -->
 							<div class="fsRow">
 			  					<form:label cssClass="fsLabel" path="consumerInfo.consumerKey" ><fmt:message key="admin.oauth.consumer.key"/>*</form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.consumerKey" tabindex="1"/>
+			  					<form:input maxlength="255" cssClass="fsInput reqinput" path="consumerInfo.consumerKey" tabindex="1"/>
 			  					<div class="dissError"><form:errors path="consumerInfo.consumerKey" /></div>
             				</div>
             				
 							<!-- consumer secret -->
 							<div class="fsRow">
 			  					<form:label cssClass="fsLabel" path="consumerInfo.consumerSecret" ><fmt:message key="admin.oauth.consumer.secret"/>*</form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.consumerSecret" tabindex="2"/>
+			  					<form:textarea cssClass="fsInput reqinput" path="consumerInfo.consumerSecret" tabindex="2" rows="8"/>
 			  					<div class="dissError"><form:errors path="consumerInfo.consumerSecret" /></div>
+			  					<div class="fsSuggestion" id="suggestion.consumerInfo.consumerSecret"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
             				</div>
 							
 							<!-- service name -->
@@ -115,6 +131,13 @@
 			  					<form:label cssClass="fsLabel" path="consumerInfo.keyType" ><fmt:message key="admin.oauth.consumer.keyType"/>*</form:label>
 			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.keyType" tabindex="4"/>
 			  					<div class="dissError"><form:errors path="consumerInfo.keyType" /></div>
+            				</div>
+            				
+							<!-- key name -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.keyName" ><fmt:message key="admin.oauth.consumer.keyName"/>*</form:label>
+			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.keyName" tabindex="4"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.keyName" /></div>
             				</div>
             				
 							<!-- callback url -->

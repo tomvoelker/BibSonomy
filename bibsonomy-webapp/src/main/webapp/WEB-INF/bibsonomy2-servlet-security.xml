@@ -22,6 +22,8 @@
 		<security:intercept-url pattern="/logging**" filters="none" />
 		<!-- api uses own authentication handling -->
 		<security:intercept-url pattern="/api/**" filters="none" />
+		<!-- OAuth temporary tokens may be requested without authentication -->
+		<security:intercept-url pattern="/oauth/requestToken" filters="none" />
 		<!-- login -->
 		<security:intercept-url pattern="/login" access="isAnonymous()" />
 		<!-- restrict admin pages to admins -->
