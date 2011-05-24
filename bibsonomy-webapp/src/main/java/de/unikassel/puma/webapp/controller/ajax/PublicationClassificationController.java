@@ -2,6 +2,7 @@ package de.unikassel.puma.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -107,9 +108,13 @@ public class PublicationClassificationController extends AjaxController implemen
 
 				// build json output  
 				final Set<Classification> availableClassifications = classificator.getInstance().getAvailableClassifications();
-				for (final Entry<String, List<String>> entry : classificationMap.entrySet()) {
-					if ( availableClassifications.contains(entry.getKey())) {
-						json.put(entry.getKey(), entry.getValue());
+				final Set<String> availableClassificationsNames = new HashSet<String>();
+				for (final Classification cfn : availableClassifications) {
+					availableClassificationsNames.add(cfn.getName());
+				} 
+				for (final Entry<String, List<String>> classificationEntry : classificationMap.entrySet()) {
+					if ( availableClassificationsNames.contains(classificationEntry.getKey())) {
+						json.put(classificationEntry.getKey(), classificationEntry.getValue());
 					}
 				}
 			} else if(GET_CLASSIFICATION_DESCRIPTION.equals(action)) {
