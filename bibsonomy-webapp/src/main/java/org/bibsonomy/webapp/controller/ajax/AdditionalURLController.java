@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.taglibs.standard.functions.Functions;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -201,7 +202,7 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 	 * @return XML success string.
 	 */
 	private String getXmlSucceeded(AjaxURLCommand command, URL url) {
-		return "<root><status>ok</status><ckey>" + command.getCkey() + "</ckey><hash>" + command.getHash() + "</hash><url>" + url.toExternalForm() + "</url><text>" + command.getText() + "</text></root>";
+		return "<root><status>ok</status><ckey>" + command.getCkey() + "</ckey><hash>" + command.getHash() + "</hash><url>" + url.toExternalForm() + "</url><text>" + Functions.escapeXml(command.getText()) + "</text></root>";
 	}
 	
 	/*
