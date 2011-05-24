@@ -174,6 +174,14 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 
 	public void createConsumer(OAuthConsumerInfo consumerInfo) {
 		try {
+			// if the key name is given, RSA is used for request signing
+			if (present(consumerInfo.getKeyName())) {
+				consumerInfo.setKeyType(KeyType.RSA_PRIVATE);
+			}
+			// if RSA is used for request signing, the consumer's public key is stored
+			if (!present(consumerInfo.getKeyName()) && KeyType.RSA_PRIVATE.equals(consumerInfo.getKeyType())) {
+				consumerInfo.setKeyName(RSA_SHA1.PUBLIC_KEY);
+			}
 			this.sqlMap.insert("setConsumerInfo", consumerInfo);
 		} catch (SQLException e) {
 			throw new RuntimeException("Error creating consumer info", e);
