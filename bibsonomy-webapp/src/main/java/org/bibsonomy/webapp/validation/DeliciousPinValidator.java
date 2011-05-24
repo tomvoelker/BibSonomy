@@ -1,9 +1,11 @@
 package org.bibsonomy.webapp.validation;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import org.bibsonomy.webapp.command.actions.DeliciousPinCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
-
 /**
  * @author mwa
  * @version $Id$
