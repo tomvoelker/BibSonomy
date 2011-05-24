@@ -26,6 +26,8 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 /**
+ * FIXME: URLs having a protocol with >2 slashes may result into errors. (e.g. "file:///c|/")
+ * FIXME: URLs having spaces may result into errors. (e.g. "http://a a")
  * AdditionalURLController which extends AjaxController and implements
  * MinimalisticController
  * 
