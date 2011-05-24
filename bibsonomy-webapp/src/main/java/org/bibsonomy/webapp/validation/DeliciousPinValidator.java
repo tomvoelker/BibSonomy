@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.validation;
 
-import org.bibsonomy.webapp.command.actions.DeliciousPinCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -23,9 +22,7 @@ public class DeliciousPinValidator implements Validator<DeliciousPinCommand>{
 		
 		Assert.notNull(command);
 		
-		if(
-				command.getImportData() == null ||
-				("posts".equals(command.getImportData()) == false && "bundles".equals(command.getImportData()) == false)) {
+		if (!present(command.getImportData()) || ( !"posts".equals(command.getImportData()) && !"bundles".equals(command.getImportData()) )) {
 			errors.rejectValue("importData", "error.field.required");
 		}
 	}
