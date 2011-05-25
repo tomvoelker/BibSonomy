@@ -38,6 +38,10 @@ import org.bibsonomy.webapp.view.Views;
  * corresponding format. Only the format with highest priority is used. If the 
  * first part of the path is one of our export formats, no action is done.   
  *
+ * The filter works only on the HTTP methods GET and HEAD.
+ * 
+ * The filter excluded some URLs based on the {@link #excludePattern}.
+ *
  * TODO: should we add /uri/ to the excludePatterns list?
  * 
  * @author rja
@@ -72,10 +76,24 @@ public class ContentNegotiationFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		final HttpServletRequest httpRequest = (HttpServletRequest)request;
+		final String requestURI = httpRequest.getRequestURI();
+		/*
+		 * proceed to next filter, if method is not GET or HEAD
+		 * 
+		 * Note: we use strings since the filter is called often and we don't 
+		 * want the overhead of org.bibsonomy.rest.enums.HttpMethod. Furthermore,
+		 * we would need to catch the UnsupportedHttpMethodException.
+		 * 
+		 */
+		final String httpMethod = httpRequest.getMethod().toUpperCase();
+		if (!("GET".equals(httpMethod) || "HEAD".equals(httpMethod))) {
+			log.debug("skipping " + ContentNegotiationFilter.class.getName() + " for " + requestURI + " (cause: unsupported HTTP method " + httpMethod + ")");
+			chain.doFilter(request, response);
+			return;
+		}
 		/*
 		 * proceed to next filter in chain for certain patterns
 		 */
-		final String requestURI = httpRequest.getRequestURI();
 		if (excludePattern.matcher(requestURI).matches()) {
 			log.debug("skipping " + ContentNegotiationFilter.class.getName() + " for " + requestURI + " (cause: match in exclude pattern)");
 			chain.doFilter(request, response);
