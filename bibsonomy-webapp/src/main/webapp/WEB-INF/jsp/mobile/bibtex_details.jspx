@@ -23,7 +23,7 @@
 					</h2>
 					<p>
 						<!-- authors / editors -->
-						<fmt:message key="by"/><c:out value=": "/><bib:author post="${post}"/>
+						<fmt:message key="by"/><c:out value=": "/><bib:author publication="${post.resource}"/>
 					</p>
 					<!-- ###############  ABSTRACT ################# -->
 					<c:if test="${not empty bibtex.abstract}">
