@@ -13,10 +13,10 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	
 	<!-- autors -->
-    <bib:author post="${post}"/>
+    <bib:author publication="${post}"/>
 
 	<!-- year -->
-	<bib:year post="${post}" braces="true"/>
+	<bib:year publication="${post}" braces="true"/>
 	
 	<!-- title -->    
    	<a href="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><i>${mtl:cleanBibtex(post.resource.title)}.</i></a>
