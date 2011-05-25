@@ -112,9 +112,9 @@
 							<div class="dissError"><!-- do not remove this text --></div>
 						</div>
 						
-						<div id="saveMetadataButtonContainer">
-							<a id="saveMetadataButton" href="javascript:sendAdditionalMetadataFields()"><fmt:message key="post.resource.openaccess.additionalfields.save"/></a>
-						</div>
+<!--						<div id="saveMetadataButtonContainer">-->
+<!--							<a id="saveMetadataButton" href="javascript:sendAdditionalMetadataFields()"><fmt:message key="post.resource.openaccess.additionalfields.save"/></a>-->
+<!--						</div>-->
 
 						<input type="hidden" name="hash" id="openAccessCurrentPublicationHash" value="${fn:escapeXml(bibtex.intraHash)}"/>
 						<input type="hidden" name="hash" id="openAccessCurrentPublicationInterHash" value="${fn:escapeXml(bibtex.interHash)}"/>
