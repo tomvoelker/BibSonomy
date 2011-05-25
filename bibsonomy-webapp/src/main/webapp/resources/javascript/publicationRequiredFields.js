@@ -15,16 +15,17 @@ function highlightMatch(text, term) {
 }
 
 function myownTagInit(chkbox, tagbox) {
+	var expr = /((^|[ ])myown($|[ ]))/gi;
 	if(!(chkbox.length > 0 
 			&& tagbox.length > 0)) 
 		return;
 
-	if(tagbox.val().search(/myown[ ]?/gi) != -1) {
+	if(tagbox.val().search(expr) != -1) {
 		chkbox[0].checked = true;
 	} 
 
 	tagbox.keyup(function(){
-		if(tagbox.val().search(/myown[ ]?/gi) != -1){
+		if(tagbox.val().search(expr) != -1){
 			chkbox[0].checked = true;
 			return;
 		}
@@ -36,10 +37,10 @@ function myownTagInit(chkbox, tagbox) {
 			function() {
 				clear_tags ();
 				if(this.checked 
-						&& tagbox.val().search(/myown[ ]?/gi) == -1){
+						&& tagbox.val().search(expr) == -1){
 					tagbox.removeClass('descriptiveLabel').val('myown '+tagbox.val());
 				} else if(!this.checked) {
-					tagbox.val(tagbox.val().replace(/myown[ ]?/gi, ''));
+					tagbox.val(tagbox.val().replace(expr, ' ').replace(/^[ ]?/, ''));
 				}
 			}).parent().removeClass('hiddenElement');
 }
