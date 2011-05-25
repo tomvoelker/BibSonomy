@@ -50,7 +50,7 @@ public class ContentNegotiationFilter implements Filter {
 	/**
 	 * overwritten by init parameter "excludePatterns"
 	 */
-	private Pattern excludePattern = Pattern.compile("^/(api|resources)/.*");
+	private Pattern excludePattern = Pattern.compile("^/(api|resources|ajax)/.*");
 	
 	/**
 	 * Mapping of MIME types to the supported export formats. 
