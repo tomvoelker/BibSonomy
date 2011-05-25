@@ -105,7 +105,7 @@
 				<parts:meta fieldName="description"/>
 				<link rel="alternate" type="application/atom+xml" title="${systemName} Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default" />
 				<link rel="alternate" type="application/rss+xml"  title="${systemName} Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss" />
-				<title>${projectName} <c:if test="${not empty pageTitle}"> :: </c:if><c:out value="${mtl:cleanBibtex(pageTitle)}"/></title><!-- TODO: localize page titles! -->
+				<title>${projectName} <c:if test="${not empty pageTitle}"> :: </c:if>${mtl:cleanBibtex(pageTitle)}</title><!-- TODO: localize page titles! -->
 				<jsp:invoke fragment="headerExt"/>
 			</head>
 			<body>
