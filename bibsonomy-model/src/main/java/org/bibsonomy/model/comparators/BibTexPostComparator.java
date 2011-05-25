@@ -159,19 +159,19 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 		 * second try: exctract day part from arguments (e.g. "1st" and "2nd")
 		 */
 		catch (NumberFormatException nfe1) {
-			Matcher m1 = dayPattern.matcher(day1);
-			Matcher m2 = dayPattern.matcher(day2);
-			if (m1.matches() && m2.matches()) {
-				try {
+			try {
+				Matcher m1 = dayPattern.matcher(day1);
+				Matcher m2 = dayPattern.matcher(day2);
+				if (m1.matches() && m2.matches()) {
 					return this.compare(Integer.valueOf(m1.group(1)), Integer.valueOf(m2.group(1)), order);
 				}
-				/*
-				 * fallback: perform string comparison
-				 */
-				catch (NumberFormatException nfe2) {
-					return this.nomalizeAndCompare(day1, day2, order);
-				}
 			}
+			catch (Exception e) {
+				// nop
+			}
+			/*
+			 * fallback: perform string comparison
+			 */
 			return this.nomalizeAndCompare(day1, day2, order);
 		}
 	}
