@@ -28,7 +28,11 @@
   <!-- the current date -->
   <jsp:useBean id="now" class="java.util.Date"/>
 
-
+  <!--+ 
+	  | To have the locale available on all pages we set the scope to "request".
+	  | see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
+	  |-->
+  <c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
 
   <jsp:directive.attribute name="format" type="java.lang.String" required="true" description="The format identifier of the RSS feed (e.g., 'aparss')."/>
   <jsp:directive.attribute name="content" fragment="true" required="true" description="The fragment which creates the content for 'content:encoded'."/>
