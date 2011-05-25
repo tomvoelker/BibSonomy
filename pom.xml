@@ -209,7 +209,6 @@
 		<module>bibsonomy-rest-server</module>
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>
-    <module>client-test</module>
   </modules>
 	<build>
 		<pluginManagement>
