@@ -18,6 +18,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<script type="text/javascript" src="${resdir}/javascript/cvpage.js">&amp;nbsp;</script> 
 	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}">
 			
 		<!--+
@@ -179,14 +180,7 @@
 		$(document).ready( function() {
 			$("a.hand").each(function(index, link) {
 				$(link).click(function() {
-					
-					var result = $(this).next(".details").toggle();
-					if ($(result).is(":visible")) {
-						$(this).html(" " + getString("cv.options.hide_details"));
-							
-					} else {
-						$(this).html(" " + getString("cv.options.show_details"));
-					}
+					switchOption(this);
 				});
 			});
 		});
