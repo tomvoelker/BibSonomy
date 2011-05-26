@@ -73,7 +73,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
     @Test
     public void testDatabase() {
 	Map<String, SynchronizationPost> posts = bibTexDb
-		.getSyncPostsMapForUser("Syncuser1", dbSession);
+		.getSyncPostsMapForUser("syncuser1", dbSession);
 
 	assertEquals("wrong amount of bibtex in map", 5, posts.size());
 	assertTrue(posts.containsKey("6a486c3b5cf17466f984f8090077274c"));
