@@ -15,8 +15,10 @@ import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.user.UserChain;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.systemstags.search.NetworkUserSystemTag;
 import org.bibsonomy.database.validation.DatabaseModelValidator;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.util.UserUtils;
@@ -575,11 +577,19 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param targetUser (right side of the relation)
 	 * @param relation currently available: FOLLOWER_OF, OF_FRIEND 
 	 * (their duals not included intentionally, since these relations 
-	 * should only be modified by the targetUser (right hand side of the relation) 
+	 * should only be modified by the targetUser (right hand side of the relation)
+	 * @param tag this parameter allows users to label others, e.g., for
+	 * annotating interests groups - but using system tags this attribute
+	 * is also used to label users which were imported from other sites 
+	 * (e.g. 'sys:network:facebook')
 	 * @param session 
 	 * result: (sourceUser, targetUser) \in relation
 	 */
-	public void createUserRelation(final String sourceUser, final String targetUser, final UserRelation relation, final DBSession session) {
+	public void createUserRelation(final String sourceUser, final String targetUser, final UserRelation relation, final String tag, final DBSession session) {
+		final UserParam param = new UserParam();
+		param.setUserName(sourceUser);
+		param.setRequestedUserName(targetUser);
+		
 		switch (relation) {
 			case FOLLOWER_OF:
 				/*
@@ -587,13 +597,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				 *  (sourceUser, targetUser)\in FOLLOWER_OF
 				 *  
 				 */
+			    if (present(tag)) {
+			        // labeling of user relations is only allowed for
+			        // friendship relations
+			        throw new UnsupportedRelationException();
+			    }
 				break;
 			case OF_FRIEND:
-				/* 
-				 * this means: sourceUser adds a new friend (targetUser) and therefore 
-				 * (sourceUser, targetUser)\in OF_FRIEND
-				 * = targetUser is a friend of sourceUser = targetUser is in sourceUser's friendsList
-				 */
+				handleTaggedRelationship(tag, param);
+		    	// TODO: should we introduce network_user_ids???
 				break;
 			default:
 				/* 
@@ -605,9 +617,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				throw new UnsupportedRelationException();
 		}
 		
-		final UserParam param = new UserParam();
-		param.setUserName(sourceUser);
-		param.setRequestedUserName(targetUser);
 		this.insert("insertRelation_" + relation.toString(), param, session);
 	}
 	
@@ -616,30 +625,43 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param sourceUser - user on the left side of the relation
 	 * @param relation - currently available: FOLLOWER_OF, OF_FOLLOWER, OF_FRIEND, FRIEND_OF
+	 * @param tag this parameter allows users to label others, e.g., for
+	 * annotating interests groups - but using system tags this attribute
+	 * is also used to label users which were imported from other sites 
+	 * (e.g. 'sys:network:facebook')
 	 * @param session 
 	 * @return as List all users, that are in relation with the sourceUser i.e. All users u such that (sourceUser, u)\in relation
 	 */
-	public List<User> getUserRelation(final String sourceUser, final UserRelation relation, final DBSession session) {
+	public List<User> getUserRelation(final String sourceUser, final UserRelation relation, final String tag, final DBSession session) {
+		final UserParam param = new UserParam();
+		param.setUserName(sourceUser);
+		
 		switch (relation) {
 		case FOLLOWER_OF:
 			/*
 			 * get all Users, that the sourceUser follows
 			 */
-			break;
+	    	// handled with the following 'OF_FOLLOWER' case
 		case OF_FOLLOWER:
 			/*
 			 * get all users, that follow the sourceUser
 			 */
+		    if (present(tag)) {
+		        // labeling of user relations is only allowed for
+		        // friendship relations
+		        throw new UnsupportedRelationException();
+		    }
 			break;
 		case OF_FRIEND:
 			/*
 			 *  get all users, that sourceUser has in his friends list			 
 			 */
-			break;
+		    // handled with the following 'FRIEND_OF' case
 		case FRIEND_OF:
 			/*
 			 * get all users, that have sourceUser in their friends list
 			 */
+	    	handleTaggedRelationship(tag, param);
 			break;
 		default:
 			/*
@@ -649,7 +671,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		//list of all targetUsers for sourceUser in (the) relation
-		return this.queryForList("getRelation_" + relation.toString(), sourceUser, User.class, session);
+		return this.queryForList("getRelation_" + relation.toString(), param, User.class, session);
 	}
 	
 	/**
@@ -660,10 +682,14 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param relation currently available: FOLLOWER_OF, OF_FRIEND 
 	 * (their duals not included intentionally, since these relations 
 	 * should only be modified by the targetUser (right hand side of the relation) 
+	 * @param tag this parameter allows users to label others, e.g., for
+	 * annotating interests groups - but using system tags this attribute
+	 * is also used to label users which were imported from other sites 
+	 * (e.g. 'sys:network:facebook')
 	 * @param session 
 	 * result: (sourceUser, targetUser) \notin relation
 	 */
-	public void deleteUserRelation(final String sourceUser, final String targetUser, final UserRelation relation, final DBSession session) {
+	public void deleteUserRelation(final String sourceUser, final String targetUser, final UserRelation relation, final String tag, final DBSession session) {
 		final UserParam param = new UserParam();
 		param.setUserName(sourceUser);
 		param.setRequestedUserName(targetUser);
@@ -674,6 +700,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				 *	delete (sourceUser, targetUser) from FOLLOWER_OF
 			 	 *  
 			 	 */
+			    if (present(tag)) {
+			        // labeling of user relations is only allowed for
+			        // friendship relations
+			        throw new UnsupportedRelationException();
+			    }
 				this.plugins.onDeleteFellowship(param, session);
 				break;
 			case OF_FRIEND:
@@ -682,6 +713,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				 * delete (sourceUser, targetUser) from  OF_FRIEND
 				 * = targetUser is no longer a friend of sourceUser = targetUser is no longer in sourceUser's friendsList
 				 */
+				handleTaggedRelationship(tag, param);
 				this.plugins.onDeleteFriendship(param, session);
 				break;
 			default:
@@ -695,6 +727,16 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		this.delete("deleteRelation_"+relation.toString(), param, session);
+	}
+
+	private void handleTaggedRelationship(final String tag, final UserParam param) {
+		if (present(tag)) {
+		    // restrict to users labeled with the given tag, if present
+		    param.setTag(new Tag(tag));
+		} else {
+			String bibSonomyUserTag = NetworkUserSystemTag.BibSonomyNetworkUser;
+			param.setTag(new Tag(bibSonomyUserTag));
+		}
 	}
 
 	/**
@@ -759,7 +801,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (!present(possibleFollower) || !present(targetUser)) {
 			return false;
 		}
-		final List<User> followingUsers = this.getUserRelation(possibleFollower.getName(), UserRelation.FOLLOWER_OF, session);		
+		final List<User> followingUsers = this.getUserRelation(possibleFollower.getName(), UserRelation.FOLLOWER_OF, null, session);		
 		for (final User u : followingUsers) {
 			if ( u.getName().equalsIgnoreCase(targetUser.getName()) ) {
 				return true;

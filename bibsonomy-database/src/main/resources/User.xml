@@ -201,33 +201,33 @@
 	
 
 	<!-- get all users u, which have user in their friend list (user, u)\in FRIEND_OF-->
-	<select id="getRelation_FRIEND_OF" resultMap="Common.user"	parameterClass="string">
-		SELECT user_name FROM friends WHERE f_user_name = #username#
+	<select id="getRelation_FRIEND_OF" resultMap="Common.user"	parameterClass="userParam">
+		SELECT user_name FROM friends WHERE f_user_name = #userName# <include refid="matchTaggedRelation"/>
 	</select>
 	
 	<!-- get all users, which user has in his friend list (user, u)\in OF_FRIEND-->
-	<select id="getRelation_OF_FRIEND" resultMap="Common.user" parameterClass="string">
-		SELECT f_user_name AS user_name FROM friends WHERE user_name = #username#
+	<select id="getRelation_OF_FRIEND" resultMap="Common.user" parameterClass="userParam">
+		SELECT f_user_name AS user_name FROM friends WHERE user_name = #userName# <include refid="matchTaggedRelation"/>
 	</select>
 	
 	<!-- get all users, that follow the user (user, u)\in OF_FOLLOWER-->
-	<select id="getRelation_OF_FOLLOWER" resultMap="Common.user"	parameterClass="string">
-		SELECT user_name FROM followers WHERE f_user_name = #username#
+	<select id="getRelation_OF_FOLLOWER" resultMap="Common.user"	parameterClass="userParam">
+		SELECT user_name FROM followers WHERE f_user_name = #userName#
 	</select>
 	
 	<!-- get all users u, which user follows (user, u)\in FOLLOWER_OF-->
-	<select id="getRelation_FOLLOWER_OF" resultMap="Common.user" parameterClass="string">
-		SELECT f_user_name AS user_name FROM followers WHERE user_name = #username#
+	<select id="getRelation_FOLLOWER_OF" resultMap="Common.user" parameterClass="userParam">
+		SELECT f_user_name AS user_name FROM followers WHERE user_name = #userName#
 	</select>
 
 	<!-- delete (userName, requestedUserName) from OF_FRIEND-->
 	<delete id="deleteRelation_OF_FRIEND" parameterClass="userParam">
-		DELETE FROM friends WHERE f_user_name = #requestedUserName# and user_name = #userName#
+		DELETE FROM friends WHERE f_user_name = #requestedUserName# and user_name = #userName# <include refid="matchTaggedRelation"/>
 	</delete>
 
 	<!-- insert (userName, requestedUserName) into OF_FRIEND-->
 	<insert id="insertRelation_OF_FRIEND" parameterClass="userParam">
-		INSERT IGNORE INTO friends (user_name, f_user_name, friendship_date) VALUES (#userName#,#requestedUserName#,NOW())
+		INSERT IGNORE INTO friends (user_name, f_user_name, tag, friendship_date) VALUES (#userName#,#requestedUserName#,#tag.name#, NOW())
 	</insert>
 	
 	<!-- delete (userName, requestedUserName) from FOLLOWER_OF-->

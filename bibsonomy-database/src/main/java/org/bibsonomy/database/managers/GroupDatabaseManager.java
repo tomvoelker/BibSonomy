@@ -147,7 +147,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	Group group;
 	if ("friends".equals(groupname)) {
 	    group = GroupUtils.getFriendsGroup();
-	    group.setUsers(this.getUserDb().getUserRelation(authUser, UserRelation.OF_FRIEND, session));
+	    group.setUsers(this.getUserDb().getUserRelation(authUser, UserRelation.OF_FRIEND, null, session));
 	    return group;
 	}
 	if ("public".equals(groupname)) {
