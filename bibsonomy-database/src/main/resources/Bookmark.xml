@@ -128,7 +128,7 @@
 		SELECT <include refid="bookmarkAttributes"/>,
 		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		  FROM (
-		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash, b.change_date
+		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash, t.change_date
 	      	  FROM bookmark b
 	      	  WHERE b.group = #groupId#
   		      ORDER BY date DESC
@@ -156,7 +156,7 @@
 	<select id="getBookmarkByUserFriends" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, b.book_description AS title,
 		       b.book_extended AS description, bb.date, u.book_url, u.book_url_ctr AS count, t.tag_name, g.group_name,
-		       t.user_name, b.`group`, b.change_date, <include refid="reviewRatingsRows" />
+		       t.user_name, b.`group`, t.change_date, <include refid="reviewRatingsRows" />
 	    FROM urls u, bookmark b <include refid="reviewRatingsJoinBookmark" />,
 	         (SELECT content_id, date                 <!-- bookmarks from users of group which currUser may see -->
 	          FROM bookmark b, friends f
@@ -175,7 +175,7 @@
 	<select id="getBookmarkByFollowedUsers" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, b.book_description AS title,
 		       b.book_extended AS description, b.date, u.book_url, u.book_url_ctr AS count, t.tag_name, g.group_name,
-		       t.user_name, b.`group`, b.change_date, <include refid="reviewRatingsRows" />
+		       t.user_name, b.`group`, t.change_date, <include refid="reviewRatingsRows" />
 	    FROM (SELECT b.*                               <!-- bookmarks from users of group which currUser may see -->
 	          FROM bookmark b, followers f
 	          WHERE f.user_name = #userName#           <!-- to see, which users are followed by currUser -->
@@ -195,7 +195,7 @@
 
 	<select id="getBookmarkByHash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, b.content_id, t.tag_name, title, description, b.user_name, b.date, 
-		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, b.change_date, <include refid="reviewRatingsRows" />
+		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, t.change_date, <include refid="reviewRatingsRows" />
 		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, content_id, t1.group, t1.change_date
 		      FROM bookmark t1
 		      WHERE book_url_hash = #hash#
@@ -219,7 +219,7 @@
 	</select>
 
 	<select id="getBookmarkByHashForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT g.*,bb.content_id, t.tag_name, title, description, bb.user_name, bb.date, bb.change_date,
+		SELECT g.*,bb.content_id, t.tag_name, title, description, bb.user_name, bb.date, t.change_date,
 		       bb.book_url_hash AS interhash, bb.book_url_hash AS intrahash, u.book_url, u.book_url_ctr AS count, g.group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, change_date, content_id, t1.group
 		      FROM bookmark t1
@@ -301,7 +301,7 @@
 	
 	<select id="getBookmarkViewable" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.user_name,bb.book_url_hash AS intraHash, bb.book_url_hash AS interHash, title, description,
-		       bb.date, bb.change_date, bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.group, #requestedGroupName# AS group_name, <include refid="reviewRatingsRows" />
+		       bb.date, t.change_date, bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.group, #requestedGroupName# AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT b.content_id, b.user_name, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
 		             b.date, b.change_date, u.book_url, u.book_url_ctr, b.group
 		      FROM bookmark b, urls u
@@ -331,7 +331,7 @@
 	</select>
 
 	<select id="getBookmarkForGroup" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT bb.content_id, b.book_url_hash AS interHash,b.book_url_hash AS intraHash, b.book_description AS title, b.book_extended AS description, bb.date, b.change_date, u.book_url,
+		SELECT bb.content_id, b.book_url_hash AS interHash,b.book_url_hash AS intraHash, b.book_description AS title, b.book_extended AS description, bb.date, t.change_date, u.book_url,
 		       u.book_url_ctr AS count, t.tag_name, g.group_name, t.user_name, g.group, <include refid="reviewRatingsRows" />
 		FROM urls u, bookmark b <include refid="reviewRatingsJoinBookmark" />,
 		     ((SELECT content_id, date                <!-- bookmarks from users of group which currUser may see -->
@@ -372,7 +372,7 @@
 	</select>
 
 	<select id="getBookmarkForGroupByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT bb.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, b.book_description AS title, b.book_extended AS description, bb.date, b.change_date, u.book_url,
+		SELECT bb.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, b.book_description AS title, b.book_extended AS description, bb.date, t.change_date, u.book_url,
 		       u.book_url_ctr AS count, t.tag_name, g.group_name, t.user_name, g.group, <include refid="reviewRatingsRows" />
 		FROM urls u, bookmark b <include refid="reviewRatingsJoinBookmark" />, <include refid="selectContentIDs"/>
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas -->
@@ -384,7 +384,7 @@
 
 	<select id="getBookmarkForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
-		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, bb.change_date, <include refid="reviewRatingsRows" />
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.change_date, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
 		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
 		      FROM bookmark t1, urls u
@@ -406,8 +406,8 @@
 	</select>
 	
     <insert id="insertBookmark" parameterClass="bookmarkParam">
-		INSERT INTO bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, user_name)
-		VALUES (#requestedContentId#,#hash#,#resource.title#,#description#,#groupId#,#date#,#userName#)
+		INSERT INTO bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name)
+		VALUES (#requestedContentId#,#hash#,#resource.title#,#description#,#groupId#,#date#, #changeDate#,#userName#)
 	</insert> 
 
     <insert id="insertBookmarkHash" parameterClass="bookmarkParam">
@@ -430,7 +430,7 @@
 			SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
 		       a.date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name, a.change_date, <include refid="reviewRatingsRows" />
 			   FROM (SELECT b.content_id, u.book_url, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
-		                      b.date, u.book_url_ctr, b.change_date,
+		                      b.date, u.book_url_ctr, t.change_date,
 							<iterate property="tagIndex" conjunction=",">
 								MAX(IF (LCASE(upper) = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
 							</iterate>
@@ -461,7 +461,7 @@
 		       a.date, a.change_date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT b.content_id, u.book_url, b.book_url_hash, 
 					 b.book_description AS title, b.book_extended AS description,
-		       		 b.date, b.change_date, u.book_url_ctr,
+		       		 b.date, t1.change_date, u.book_url_ctr,
 					<iterate property="tagIndex" conjunction=",">
 						MAX(IF (LCASE(upper) = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
 					</iterate>
@@ -522,7 +522,7 @@
 	
 	<select id="getBookmarkForMyGroupPosts" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
-			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name, bb.change_date, <include refid="reviewRatingsRows" /> 
+			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name, t.change_date, <include refid="reviewRatingsRows" /> 
 		
 		FROM (SELECT gts.content_id, gts.date, gts.group, b.book_url_hash, b.change_date, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
 		      		 FROM (SELECT * FROM grouptas t 
@@ -541,7 +541,7 @@
 	</select>
 	
 	<select id="getBookmarkForMyGroupPostsByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date, bb.change_date,
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date, t.change_date,
 			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name, <include refid="reviewRatingsRows" />
 		
 		FROM (SELECT t1.content_id, t1.date, t1.group, b.book_url_hash, b.change_date, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr

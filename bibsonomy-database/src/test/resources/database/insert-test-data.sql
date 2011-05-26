@@ -82,7 +82,7 @@ INSERT INTO `bibtex` (`content_id`, `user_name`, `simhash1`, `simhash2`, `change
 (101, 'Syncuser1', '69f46427bfed611701eef5aed85f3a28', '6a486c3b5cf17466f984f8090077274c', '2011-01-31 14:32:00', '2011-01-10 14:32:00'),
 -- post 2 "deleted on server" is not in the server database
 -- post 3 "deleted on client" created and modified before last synchronization
-(103, 'Syncuser1', 'c4bcb6611057cbee895fde8474e86a92', 'b1629524db9c09f8b75af7ba83249980', '2011-01-10 14:33:00', '2011-01-10 14:55:00'),
+(103, 'Syncuser1', 'c4bcb6611057cbee895fde8474e86a92', 'b1629524db9c09f8b75af7ba83249980', '2011-01-10 14:55:00', '2011-01-10 14:33:00'),
 -- post 4 "changed on server" created before, changed after the last scnchronization
 (104, 'Syncuser1', '319872adc49bfeae3f799d29a18b0634', '11db3d75b9e07960658984f9b012d6d7', '2011-03-16 17:30:00', '2010-09-16 14:35:00'),
 -- post 5 "changed on client" created and modified before last synchronization
@@ -94,7 +94,8 @@ INSERT INTO `bibtex` (`content_id`, `user_name`, `simhash1`, `simhash2`, `change
 -- synchronization data table
 INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`) VALUES 
 ('1', 'syncuser1', '2', '2011-02-02 23:00:00', 'done'),
-('1', 'sync1', '2', '2011-02-02 23:00:00', 'test synchronization');
+('1', 'sync1', '2', '2011-02-02 23:00:00', 'test synchronization'),
+('1', 'sync1', '1', '2011-02-02 23:10:00', 'test synchronization');
 
 INSERT INTO `sync` (`user_name`, `service_id`, `credentials`) VALUES
 ('syncuser1', '1', '#Tue May 10 13:27:07 CEST 2011\nuserName=sync2\napiKey=15cb586b630cc343cd60684807bf4785');
@@ -507,7 +508,17 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (28, 'google',         'google',        2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
 (29, 'tomcat',         'tomcat',        15, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
 (30, 'amazon',         'amazon',        15, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
-(31, 'weltmeisterschaft', 'weltmeisterschaft', 16, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:17');
+(31, 'weltmeisterschaft', 'weltmeisterschaft', 16, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:17'),
+(32, 'synchronization', 'synchronization', 101, 2, 'syncuser1', '2011-01-10 14:32:00', 0, '2011-01-31 14:32:00'),
+(33, 'synchronization', 'synchronization', 103, 2, 'syncuser1', '2011-01-10 14:33:00', 0, '2011-01-10 14:55:00'),
+(34, 'synchronization', 'synchronization', 104, 2, 'syncuser1', '2010-09-16 14:35:00', 0, '2011-03-16 17:30:00'),
+(35, 'synchronization', 'synchronization', 105, 2, 'syncuser1', '2009-12-31 23:59:00', 0, '2010-02-05 17:23:00'),
+(36, 'synchronization', 'synchronization', 106, 2, 'syncuser1', '2011-03-18 11:20:00', 0, '2011-03-18 11:20:00'),
+(37, 'synchronization', 'synchronization', 111, 1, 'syncuser1', '2010-11-01 12:55:00', 0, '2010-12-23 17:42:00' ),
+(38, 'synchronization', 'synchronization', 113, 1, 'syncuser1', '2011-01-01 00:01:00', 0, '2011-01-04 13:30:00' ),
+(39, 'synchronization', 'synchronization', 114, 1, 'syncuser1', '2009-01-01 05:54:00', 0, '2011-03-18 11:54:00' ),
+(40, 'synchronization', 'synchronization', 115, 1, 'syncuser1', '2010-01-12 15:28:00', 0, '2010-11-01 18:44:00' ),
+(41, 'synchronization', 'synchronization', 116, 1, 'syncuser1', '2011-03-18 11:55:00', 0, '2011-03-18 11:55:00' );
 
 
 

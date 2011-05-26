@@ -14,17 +14,34 @@
 		VALUES (#userName#, #serviceId#, #credentials#)
 	</insert> 
 
+<!--	<select id="getSyncBibTex" resultMap="SynchronizationCommon.syncPost" parameterClass="bibtexParam">-->
+<!--		SELECT <include refid="bibtexSimHashes"/>, b.date, b.change_date-->
+<!--		FROM bibtex b-->
+<!--		WHERE b.user_name = #userName#-->
+<!--	</select>-->
+
+<!--	<select id="getSyncBookmark" resultMap="SynchronizationCommon.syncPost" parameterClass="bookmarkParam">-->
+<!--		SELECT b.book_url_hash AS intrahash, NULL AS interhash, b.date, b.change_date-->
+<!--		FROM bookmark b-->
+<!--		WHERE b.user_name = #userName#-->
+<!--	</select>-->
+
 	<select id="getSyncBibTex" resultMap="SynchronizationCommon.syncPost" parameterClass="bibtexParam">
-		SELECT <include refid="bibtexSimHashes"/>, b.date, b.change_date
+		SELECT <include refid="bibtexSimHashes"/>, b.date, t.change_date
 		FROM bibtex b
+		JOIN tas t USING (content_id)
 		WHERE b.user_name = #userName#
+		GROUP BY content_id
 	</select>
 
 	<select id="getSyncBookmark" resultMap="SynchronizationCommon.syncPost" parameterClass="bookmarkParam">
 		SELECT b.book_url_hash AS intrahash, NULL AS interhash, b.date, b.change_date
 		FROM bookmark b
+		JOIN tas t USING (content_id)
 		WHERE b.user_name = #userName#
+		GROUP BY content_id
 	</select>
+	
 	
 	<select id="getLastSyncDateForUserForServiceForContent" resultClass="java.util.Date" parameterClass="syncParam">
 		SELECT last_sync_date
