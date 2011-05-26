@@ -243,7 +243,16 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		tagParam.setContentTypeByClass(post.getResource().getClass());
 		tagParam.setUserName(post.getUser().getName());
 		tagParam.setDate(post.getDate());
-		tagParam.setChangeDate(new Date());
+		
+		/*
+		 * get changeDate from Post
+		 */
+		Date changeDate = post.getChangeDate();
+		if(!present(changeDate)) {
+			changeDate = new Date();
+		}
+		tagParam.setChangeDate(changeDate);
+		
 		final List<Integer> groups = new ArrayList<Integer>();
 		/*
 		 * copy the groups' ids into the param

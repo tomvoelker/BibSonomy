@@ -262,12 +262,11 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      */
     @Override
     public List<SynchronizationPost> getSynchronization(final String userName, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final String serviceIdentifier) {
-	
 	Date lastSyncDate;
 	int contentType;
 	int serviceId = Integer.parseInt(serviceIdentifier); //TODO replace this with right cast
 	
-	HashMap<String, SynchronizationPost> posts = null;
+	Map<String, SynchronizationPost> posts = null;
 	
 	if (resourceType == BibTex.class) {
 	    contentType = ConstantID.BIBTEX_CONTENT_TYPE.getId();
@@ -283,10 +282,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	try {
 	    lastSyncDate = syncDBManager.getLastSynchronizationDate(userName, serviceId, contentType, session);
 	    if(!present(lastSyncDate)) {
-		lastSyncDate = new Date(0);
+	    	lastSyncDate = new Date(0);
 	    }
 	    syncDBManager.insertSyncronizationData(userName, serviceId, contentType, new Date(), "undone", session);
-	    posts = (HashMap<String, SynchronizationPost>) publicationDBManager.getSyncPostsMapForUser(userName, session);
+	    posts = this.getSyncPostsMapForUser(userName, resourceType);
 
 	} finally {
 	    session.close();
@@ -333,11 +332,15 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncPostsMampForUser(java.lang.String)
      */
     @Override
-    public Map<String, SynchronizationPost> getSyncPostsMapForUser(String userName) {
+    public Map<String, SynchronizationPost> getSyncPostsMapForUser(String userName, Class<? extends Resource> resourceType) {
 	final DBSession session = this.openSession();
-	HashMap<String, SynchronizationPost> posts = null;
+	Map<String, SynchronizationPost> posts = null;
 	try {
-	    posts = (HashMap<String, SynchronizationPost>)publicationDBManager.getSyncPostsMapForUser(userName, session);
+		if (BibTex.class.equals(resourceType)) {
+			posts = publicationDBManager.getSyncPostsMapForUser(userName, session);
+		} else if(Bookmark.class.equals(resourceType)){
+			posts = bookmarkDBManager.getSyncPostsMapForUser(userName, session);
+		}
 	} finally {
 	    session.close();
 	}
@@ -372,7 +375,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	final DBSession session = this.openSession();
 	SynchronizationData syncData = null;
 	try {
-	    syncData = syncDBManager.getSynchronizationData(userName, serviceId, contentType, session).get(0);
+	    List<SynchronizationData> sync = syncDBManager.getSynchronizationData(userName, serviceId, contentType, session);
+	    if (present(sync) && sync.size() > 0) {
+		syncData = sync.get(0);
+	    }
 	} finally {
 	    session.close();
 	}
@@ -384,7 +390,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#setCurrentSyncDone(org.bibsonomy.model.sync.SynchronizationData)
      */
     @Override
-    public void setCurrentSyncDone(final SynchronizationData data) {
+    public void updateSyncData(final SynchronizationData data) {
 	final DBSession session = this.openSession();
 	try {
 	    syncDBManager.updateSyncData(session, data);
