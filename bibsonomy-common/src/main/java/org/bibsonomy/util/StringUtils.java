@@ -350,7 +350,7 @@ public class StringUtils {
 	public static Map<String, String> parseBracketedKeyValuePairs(String input, char assignmentOperator, char pairDelimiter, char bracketOpen, char bracketClose) 
 	throws InvalidModelException {
 		// check input, init hashmap
-		Map<String, String> keyValPairs = new HashMap<String, String>();
+		final Map<String, String> keyValPairs = new HashMap<String, String>();
 		if (input == null   || input.isEmpty()) {
 			return keyValPairs;			
 		} 
@@ -382,7 +382,7 @@ public class StringUtils {
 			// done with a key-value pair; write values, reset string buffers 
 			// and reset parsing mode to KEY
 			if ( (c == pairDelimiter) && (bracketDiff == 0) ) {
-				keyValPairs.put(currentKey.toString().trim(), currentVal.toString().trim());
+				addKeyValue(keyValPairs, currentKey, currentVal);
 				LOGGER.debug("done with " + currentKey.toString() + " -> " + currentVal.toString());
 				currentKey.delete(0, currentKey.length());
 				currentVal.delete(0, currentVal.length());				
@@ -397,13 +397,28 @@ public class StringUtils {
 			if (mode.equals(ParseMode.VALUE) && bracketDiff > 0) { currentVal.append(c); }						
 		}
 		// add last key-value pair
-		keyValPairs.put(currentKey.toString().trim(), currentVal.toString().trim());
+		addKeyValue(keyValPairs, currentKey, currentVal);
 		
 		if (bracketDiff != 0) {
 			throw new InvalidModelException("Error: Unmatched brackets while parsing key/value pairs from string " + input);
 		}
 			
 		return keyValPairs;
+	}
+
+	/**
+	 * Only adds the pair, if both are not empty.
+	 * 
+	 * @param keyValPairs
+	 * @param currentKey
+	 * @param currentVal
+	 */
+	private static void addKeyValue(final Map<String, String> keyValPairs, StringBuilder currentKey, StringBuilder currentVal) {
+		final String trimmedKey = currentKey.toString().trim();
+		final String trimmedValue = currentVal.toString().trim();
+		if (present(trimmedKey) && present(trimmedValue)) {
+			keyValPairs.put(trimmedKey, trimmedValue);
+		}
 	}
 	
 	private enum ParseMode {KEY,VALUE}

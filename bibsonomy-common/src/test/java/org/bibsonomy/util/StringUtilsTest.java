@@ -178,7 +178,7 @@ public class StringUtilsTest {
 		assertEquals(0,result.keySet().size());
 		assertEquals(0,result.values().size());
 		// normal mode
-		input = "key1 = {value1}, key2 = {value2}, key3 = {value3}";
+		input = "key1 = {value1}, key2 = {value2}, key3 = {value3}, key4 = {  }, \r = {foo}";
 		result = StringUtils.parseBracketedKeyValuePairs(input, '=', ',', '{', '}');
 		assertEquals(3,result.keySet().size());
 		assertEquals(3,result.values().size());
