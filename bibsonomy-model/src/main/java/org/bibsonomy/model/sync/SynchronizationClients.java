@@ -19,7 +19,12 @@ public enum SynchronizationClients {
 	/**
 	 * puma as client TODO is bibsonomy and puma different? 
 	 */
-	PUMA(2);
+	PUMA(2),
+	
+	/**
+	 * biblicious as client
+	 */
+	BIBLICIOUS(3);
 	
 	private final int id;
 
@@ -34,6 +39,10 @@ public enum SynchronizationClients {
 		return this.id;
 	}
 	
+	/**
+	 * @param id
+	 * @return
+	 */
 	public static SynchronizationClients getById(int id) {
 		switch (id) {
 		case 0:
@@ -42,6 +51,8 @@ public enum SynchronizationClients {
 			return BIBSONOMY;
 		case 2:
 			return PUMA;
+		case 3:
+			return BIBLICIOUS;
 		default:
 			return null;
 		}

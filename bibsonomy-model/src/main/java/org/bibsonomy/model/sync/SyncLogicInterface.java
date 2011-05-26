@@ -42,7 +42,7 @@ public interface SyncLogicInterface {
 	 * 
 	 * @param data
 	 */
-	public void setCurrentSyncDone(SynchronizationData data);
+	public void updateSyncData(SynchronizationData data);
 	
 	/**
 	 * 
@@ -75,7 +75,7 @@ public interface SyncLogicInterface {
 	 * @param userName
 	 * @return map with user posts used from server!
 	 */
-	public Map<String, SynchronizationPost> getSyncPostsMapForUser(String userName);
+	public Map<String, SynchronizationPost> getSyncPostsMapForUser(String userName, Class<? extends Resource> resourceType);
 	
 	/**
 	 * 
