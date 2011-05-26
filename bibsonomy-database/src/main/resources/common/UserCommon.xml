@@ -130,4 +130,12 @@
 		show_bibtex = #settings.showBibtex#, 
 		simple_interface = #settings.simpleInterface#
 	</sql>
+	
+	<!-- match friendship relations according to given tag -->
+	<sql id="matchTaggedRelation">
+		<isNotEqual prepend="AND" property="tag.name" compareValue="sys:all">
+			tag = #tag.name#
+		</isNotEqual>  
+	</sql>
+	
 </sqlMap>

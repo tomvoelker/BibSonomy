@@ -2019,7 +2019,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.logic.LogicInterface#insertUserRelationship()
      */
     @Override
-    public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
+    public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, final String tag) {
 	this.ensureLoggedIn();
 	/*
 	 * relationships can only be created by the logged-in user or admins
@@ -2035,7 +2035,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	 * finally try to create relationship
 	 */
 	try {
-	    this.userDBManager.createUserRelation(sourceUser, targetUser, relation, session);
+	    this.userDBManager.createUserRelation(sourceUser, targetUser, relation, tag, session);
 	} finally {
 	    session.close();
 	}
@@ -2060,7 +2060,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	final DBSession session = openSession();
 	try {
 	    // get all users that are in relation with sourceUser
-	    return this.userDBManager.getUserRelation(sourceUser, relation, session);
+	    return this.userDBManager.getUserRelation(sourceUser, relation, tag, session);
 	} finally {
 	    // unsupported Relations will cause an UnsupportedRelationException
 	    session.close();
@@ -2080,7 +2080,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.logic.LogicInterface#deleteUserRelationship()
      */
     @Override
-    public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, String tag) {
+    public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, final String tag) {
 	this.ensureLoggedIn();
 	// ask Robert about this method
 	// this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);
@@ -2088,7 +2088,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
 	final DBSession session = openSession();
 	try {
-	    this.userDBManager.deleteUserRelation(sourceUser, targetUser, relation, session);
+	    this.userDBManager.deleteUserRelation(sourceUser, targetUser, relation, tag, session);
 	} finally {
 	    // unsupported Relations will cause an UnsupportedRelationException
 	    session.close();
