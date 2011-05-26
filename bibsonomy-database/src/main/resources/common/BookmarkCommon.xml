@@ -11,6 +11,6 @@
 	</resultMap>
 
 	<sql id="bookmarkAttributes">
-		b.content_id, b.book_description as title, b.book_extended as description, b.user_name, b.date, b.change_date, b.book_url_hash AS intraHash, b.book_url_hash AS interHash
+		b.content_id, b.book_description as title, b.book_extended as description, b.user_name, b.date, b.book_url_hash AS intraHash, b.book_url_hash AS interHash, t.change_date
 	</sql>	
 </sqlMap>
