@@ -818,10 +818,9 @@ public class BibTexUtils {
 		final StringBuilder miscFieldsSerialized = new StringBuilder();
 		// loop over misc fields, if any
 		if (present(miscFields)) {
-			String currKey;
-			Iterator<String> it = miscFields.keySet().iterator();
+			final Iterator<String> it = miscFields.keySet().iterator();
 			while (it.hasNext()) {				
-				currKey = it.next();
+				final String currKey = it.next();
 				miscFieldsSerialized.append(KEYVALUE_INDENT + currKey.toLowerCase() + " " + ASSIGNMENT_OPERATOR + " " + DEFAULT_OPENING_BRACKET + miscFields.get(currKey) + DEFAULT_CLOSING_BRACKET);
 				if (it.hasNext() || appendTrailingSeparator) {	miscFieldsSerialized.append(KEYVALUE_SEPARATOR + "\n");	}
 			}
