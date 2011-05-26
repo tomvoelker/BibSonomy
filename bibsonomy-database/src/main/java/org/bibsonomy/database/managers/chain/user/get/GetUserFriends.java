@@ -21,7 +21,7 @@ public class GetUserFriends extends UserChainElement {
 
 	@Override
 	protected List<User> handle(final UserParam param, final DBSession session) {
-		return this.userDB.getUserRelation(param.getUserName(), UserRelation.FRIEND_OF, session);
+		return this.userDB.getUserRelation(param.getUserName(), UserRelation.FRIEND_OF, null, session);
 	}
 
 	@Override
