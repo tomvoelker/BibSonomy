@@ -629,6 +629,7 @@ public class Functions  {
 	 * only, month+year, day+month+year) the date is formatted in different ways.
 	 */
 	public static String getDate(final String day, final String month, final String year, final Locale locale) {
+		try { // DEBUG
 		if (present(year)) {
 			final String cleanYear = BibTexUtils.cleanBibTex(year);
 			if (present(month)) {
@@ -658,6 +659,9 @@ public class Functions  {
 			 */
 			return cleanYear;
 		}
+		} catch (final Exception e) { // DEBUG
+			LOGGER.error("error formatting date (day=" + day + ",month=" + month + ",year=" + year + ",locale=" + locale + ")", e);
+		} // DEBUG
 		return "";
 	}
 
