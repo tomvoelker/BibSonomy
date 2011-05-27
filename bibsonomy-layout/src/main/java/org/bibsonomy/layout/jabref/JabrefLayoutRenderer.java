@@ -24,7 +24,6 @@
 package org.bibsonomy.layout.jabref;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
@@ -33,9 +32,7 @@ import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.GlobalsSuper;
 import net.sf.jabref.JabRefPreferences;
 import net.sf.jabref.KeyCollisionException;
-import net.sf.jabref.export.FileActions;
 import net.sf.jabref.export.layout.Layout;
-import net.sf.jabref.imports.BibtexParser;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,7 +41,6 @@ import org.bibsonomy.layout.util.JabRefModelConverter;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.springframework.beans.factory.annotation.Required;
@@ -58,290 +54,291 @@ import org.springframework.beans.factory.annotation.Required;
  * 
  */
 public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
-    private static final Log log = LogFactory.getLog(JabrefLayoutRenderer.class);
-    
-    URLGenerator urlGen;
-    
-    /**
-     * This is a singleton! 
-     * FIXME: is this really neccessary? At least until the old code from LayoutHandler
-     * is moved we need an instance if the JabrefLayoutRenderer there to unload custom
-     * user layouts. The easiest way to do this is via a singleton.
-     * 
-     */
-    private static JabrefLayoutRenderer instance = new JabrefLayoutRenderer();
+	private static final Log log = LogFactory.getLog(JabrefLayoutRenderer.class);
 
-    public static JabrefLayoutRenderer getInstance() {
-        return instance;
-    }
+	private URLGenerator urlGen;
 
-    /**
-     * saves all loaded layouts (html, bibtexml, tablerefs, hash(user.username), ...)
-     */
-    private final JabrefLayouts layouts = new JabrefLayouts();
+	/**
+	 * This is a singleton! 
+	 * FIXME: is this really neccessary? At least until the old code from LayoutHandler
+	 * is moved we need an instance if the JabrefLayoutRenderer there to unload custom
+	 * user layouts. The easiest way to do this is via a singleton.
+	 * 
+	 */
+	private static JabrefLayoutRenderer instance = new JabrefLayoutRenderer();
 
-    private JabrefLayoutRenderer() {
-        this.init();
-    }
-
-    /**
-     * Initializes the bean by loading default layouts.
-     */
-    private void init() {
-        /* 
-         * initialize JabRef preferences. This is neccessary ... because they use global 
-         * preferences and if we don't initialize them, we get NullPointerExceptions later 
-         */
-        GlobalsSuper.prefs = JabRefPreferences.getInstance();
-
-        // load default filters 
-        try {
-            layouts.init();
-        } catch (IOException e) {
-            log.fatal("Could not load default layout filters.", e);
-        }
-    }
-    
-    /** Returns the requested layout.
-     *  
-     * @see org.bibsonomy.services.renderer.LayoutRenderer#getLayout(java.lang.String, java.lang.String)
-     */
-    @Override
-    public JabrefLayout getLayout(final String layout, final String loginUserName) throws LayoutRenderingException, IOException {
-        final JabrefLayout jabrefLayout;
-        if ("custom".equals(layout)) {
-            /*
-             * get custom user layout from map
-             */
-            jabrefLayout = layouts.getUserLayout(loginUserName);
-        } else {
-            /*
-             * get standard layout
-             */
-            jabrefLayout = layouts.getLayout(layout);
-        }
-        /*
-         * no layout found -> LayoutRenderingException
-         */
-        if (jabrefLayout == null) {
-            throw new LayoutRenderingException("Could not find layout '" + layout + "' for user '" + loginUserName + "'");
-        }
-        return jabrefLayout;
-
-    }
-
-    /** Renders the posts with the given layout.
-     * 
-     * @see org.bibsonomy.services.renderer.LayoutRenderer#renderLayout(org.bibsonomy.model.Layout, java.util.List, java.io.OutputStream)
-     */
-    @Override
-    public <T extends Resource> StringBuffer renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException {
-        log.debug("rendering " + posts.size() + " posts with " + layout.getName() + " layout");
-        /*
-         * XXX: different handling of "duplicates = no" in new code:
-         * old code: duplicate removal and sorting by year, only for layouts, done in layout 
-         * renderer 
-         * new code: duplicate removal in controller, no sorting by year - must be enforced 
-         * by another parameter
-         */
-        final BibtexDatabase database = bibtex2JabrefDB(posts);
-        /*
-         * render the database
-         */
-        return renderDatabase(database, JabRefModelConverter.convertPosts(posts, urlGen), layout, embeddedLayout);
-    }
-
-    /**
-     * This is the export method for BibTeX entries to any available format. 
-     * @param postList Entries to export.
-     * @param userName User to whom the passed entries belong 
-     * @param layout - the layout to be rendered. If "custom", export with user specific layout filter
-     * @param embeddedLayout - if <code>true</code> the corresponding embedded begin/end parts 
-     * (see {@link LayoutPart}) are used (only if available).
-     * @return output The formatted BibTeX entries as a string.
-     * @throws LayoutRenderingException - if a layout could not be found
-     */
-    private StringBuffer renderDatabase(final BibtexDatabase database, List<BibtexEntry> sorted, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
-        final StringBuffer output = new StringBuffer();  
-
-        /* 
-         * *************** rendering the header ***************** 
-         */
-        Layout beginLayout = null;
-        /*
-         * first: try embedded begin layout, if requested.
-         */
-        if (embeddedLayout) {
-            beginLayout = layout.getSubLayout(LayoutPart.EMBEDDEDBEGIN);
-        } 
-        /*
-         * second: if not available, take normal begin layout
-         */
-        if (beginLayout == null) {
-            beginLayout = layout.getSubLayout(LayoutPart.BEGIN);
-        }
-        /*
-         * third: render, if layout found
-         */
-        if (beginLayout != null) {
-            output.append(beginLayout.doLayout(database, "UTF-8"));
-        }
-
-
-        /* 
-         * *************** rendering the entries *****************
-         */ 
-        if (layout.isUserLayout()) {
-            /*
-             * render custom user layout
-             */
-            final Layout itemLayout = layout.getSubLayout(LayoutPart.ITEM);
-            if (itemLayout == null) {
-                /*
-                 * no layout for user found -> throw an exception
-                 */
-                throw new LayoutRenderingException("no custom layout found");
-            } 
-            for (final BibtexEntry entry: sorted) {               
-                output.append(itemLayout.doLayout(entry, database));
-            }           
-
-        } else {
-            // try to retrieve type-specific layouts and process output
-            for (final BibtexEntry entry: sorted) {
-
-                // We try to get a type-specific layout for this entry
-                // FIXME: adding the dot "." here isn't so nice ...
-                Layout itemLayout = layout.getSubLayout("." + entry.getType().getName().toLowerCase());
-                if (itemLayout == null) {
-                    /*
-                     * try to get a generic layout
-                     */
-                    itemLayout = layout.getSubLayout("");
-                    if (itemLayout == null) {
-                        /*
-                         * no layout found -> throw an exception
-                         */
-                        throw new LayoutRenderingException("layout file(s) for '" + layout.getName() + "' could not be found");
-                    }
-                } 
-                output.append(itemLayout.doLayout(entry, database));
-            }
-
-
-        }
-        
-        /* 
-         * *************** rendering the footer ***************** 
-         */
-        Layout endLayout = null;
-        /*
-         * first: try embedded end layout, if requested.
-         */
-        if (embeddedLayout) {
-            endLayout = layout.getSubLayout(LayoutPart.EMBEDDEDEND);
-        } 
-        /*
-         * second: if not available, take normal begin layout
-         */
-        if (endLayout == null) {
-            endLayout = layout.getSubLayout(LayoutPart.END);
-        }
-        /*
-         * third: render, if layout found
-         */
-        if (endLayout != null) {
-            output.append(endLayout.doLayout(database, "UTF-8"));
-        }
-
-        return output;
-    }
-
-    /**
-     * This method converts BibSonomy BibTeX entries to JabRef entries and stores
-     * them into a JabRef specific BibtexDatabase! 
-     * @param bibtexList List of BibSonomy BibTeX objects
-     * @return BibtexDatabase
-     * @throws IOException
-     * @throws KeyCollisionException If two entries have exactly the same BibTeX key
-     */
-    private <T extends Resource> BibtexDatabase bibtex2JabrefDB(final List<Post<T>> bibtexList) {
-	final BibtexDatabase db = new BibtexDatabase();
-	for (final Post<? extends Resource> post : bibtexList) {
-	    db.insertEntry(JabRefModelConverter.convertPost(post, urlGen));
+	public static JabrefLayoutRenderer getInstance() {
+		return instance;
 	}
-	return db;
-    }
 
-    /**
-     * Prints the loaded layouts.
-     * 
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return layouts.toString();
-    }
+	/**
+	 * saves all loaded layouts (html, bibtexml, tablerefs, hash(user.username), ...)
+	 */
+	private final JabrefLayouts layouts = new JabrefLayouts();
+
+	private JabrefLayoutRenderer() {
+		this.init();
+	}
+
+	/**
+	 * Initializes the bean by loading default layouts.
+	 */
+	private void init() {
+		/* 
+		 * initialize JabRef preferences. This is neccessary ... because they use global 
+		 * preferences and if we don't initialize them, we get NullPointerExceptions later 
+		 */
+		GlobalsSuper.prefs = JabRefPreferences.getInstance();
+
+		// load default filters 
+		try {
+			layouts.init();
+		} catch (IOException e) {
+			log.fatal("Could not load default layout filters.", e);
+		}
+	}
+
+	/** Returns the requested layout.
+	 *  
+	 * @see org.bibsonomy.services.renderer.LayoutRenderer#getLayout(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public JabrefLayout getLayout(final String layout, final String loginUserName) throws LayoutRenderingException, IOException {
+		final JabrefLayout jabrefLayout;
+		if ("custom".equals(layout)) {
+			/*
+			 * get custom user layout from map
+			 */
+			jabrefLayout = layouts.getUserLayout(loginUserName);
+		} else {
+			/*
+			 * get standard layout
+			 */
+			jabrefLayout = layouts.getLayout(layout);
+		}
+		/*
+		 * no layout found -> LayoutRenderingException
+		 */
+		if (jabrefLayout == null) {
+			throw new LayoutRenderingException("Could not find layout '" + layout + "' for user '" + loginUserName + "'");
+		}
+		return jabrefLayout;
+
+	}
+
+	/** Renders the posts with the given layout.
+	 * 
+	 * @see org.bibsonomy.services.renderer.LayoutRenderer#renderLayout(org.bibsonomy.model.Layout, java.util.List, java.io.OutputStream)
+	 */
+	@Override
+	public <T extends Resource> StringBuffer renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException {
+		log.debug("rendering " + posts.size() + " posts with " + layout.getName() + " layout");
+		/*
+		 * XXX: different handling of "duplicates = no" in new code:
+		 * old code: duplicate removal and sorting by year, only for layouts, done in layout 
+		 * renderer 
+		 * new code: duplicate removal in controller, no sorting by year - must be enforced 
+		 * by another parameter
+		 */
+		final BibtexDatabase database = bibtex2JabrefDB(posts);
+		/*
+		 * render the database
+		 */
+		return renderDatabase(database, JabRefModelConverter.convertPosts(posts, urlGen), layout, embeddedLayout);
+	}
+
+	/**
+	 * This is the export method for BibTeX entries to any available format. 
+	 * @param postList Entries to export.
+	 * @param userName User to whom the passed entries belong 
+	 * @param layout - the layout to be rendered. If "custom", export with user specific layout filter
+	 * @param embeddedLayout - if <code>true</code> the corresponding embedded begin/end parts 
+	 * (see {@link LayoutPart}) are used (only if available).
+	 * @return output The formatted BibTeX entries as a string.
+	 * @throws LayoutRenderingException - if a layout could not be found
+	 */
+	private StringBuffer renderDatabase(final BibtexDatabase database, List<BibtexEntry> sorted, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
+		final StringBuffer output = new StringBuffer();  
+
+		/* 
+		 * *************** rendering the header ***************** 
+		 */
+		Layout beginLayout = null;
+		/*
+		 * first: try embedded begin layout, if requested.
+		 */
+		if (embeddedLayout) {
+			beginLayout = layout.getSubLayout(LayoutPart.EMBEDDEDBEGIN);
+		} 
+		/*
+		 * second: if not available, take normal begin layout
+		 */
+		if (beginLayout == null) {
+			beginLayout = layout.getSubLayout(LayoutPart.BEGIN);
+		}
+		/*
+		 * third: render, if layout found
+		 */
+		if (beginLayout != null) {
+			output.append(beginLayout.doLayout(database, "UTF-8"));
+		}
 
 
-    /** The path where the user layout files are.
-     * 
-     * @param userLayoutFilePath
-     */
-    @Required
-    public void setUserLayoutFilePath(String userLayoutFilePath) {
-        layouts.setUserLayoutFilePath(userLayoutFilePath);
-    }
-    
-    /**
-     * The base URL of the running project. Needed to create 
-     * a suitable URLGenerator in order to create the biburl-links
-     * within the JabrefModelConverter
-     *  
-     * @param projectHome
-     */
-    @Required
-    public void setProjectHome(String projectHome) {
-	this.urlGen = new URLGenerator(projectHome);
-    }
+		/* 
+		 * *************** rendering the entries *****************
+		 */ 
+		if (layout.isUserLayout()) {
+			/*
+			 * render custom user layout
+			 */
+			final Layout itemLayout = layout.getSubLayout(LayoutPart.ITEM);
+			if (itemLayout == null) {
+				/*
+				 * no layout for user found -> throw an exception
+				 */
+				throw new LayoutRenderingException("no custom layout found");
+			} 
+			for (final BibtexEntry entry: sorted) {               
+				output.append(itemLayout.doLayout(entry, database));
+			}           
 
-    /**
-     * The path where the default layout files are. Defaults to <code>layouts</code>.
-     * Must be accessible by the classloader.
-     * 
-     * @param defaultLayoutFilePath
-     */
-    public void setDefaultLayoutFilePath(String defaultLayoutFilePath) {
-        layouts.setDefaultLayoutFilePath(defaultLayoutFilePath);
-    }
+		} else {
+			// try to retrieve type-specific layouts and process output
+			for (final BibtexEntry entry: sorted) {
 
-    /**
-     * This renderer only supports {@link BibTex}.
-     * 
-     * @see org.bibsonomy.services.renderer.LayoutRenderer#supportsResourceType(java.lang.Class)
-     */
-    @Override
-    public boolean supportsResourceType(final Class<? extends Resource> clazz) {
-        return BibTex.class.equals(clazz);
-    }
+				// We try to get a type-specific layout for this entry
+				// FIXME: adding the dot "." here isn't so nice ...
+				Layout itemLayout = layout.getSubLayout("." + entry.getType().getName().toLowerCase());
+				if (itemLayout == null) {
+					/*
+					 * try to get a generic layout
+					 */
+					itemLayout = layout.getSubLayout("");
+					if (itemLayout == null) {
+						/*
+						 * no layout found -> throw an exception
+						 */
+						throw new LayoutRenderingException("layout file(s) for '" + layout.getName() + "' could not be found");
+					}
+				} 
+				output.append(itemLayout.doLayout(entry, database));
+			}
 
 
-    /** Unloads the custom layout of the user. Note that all parts of the 
-     * layout are unloaded!
-     * 
-     * @param userName
-     */
-    public void unloadUserLayout(final String userName) {
-        layouts.unloadCustomFilter(userName);
-    }
-    
-    /**
-     * Use this method to get all layouts
-     * 
-     * @return all layouts
-     */
-    public Map<String, JabrefLayout> getJabrefLayouts(){
-        return this.layouts.getLayoutMap();
-    }
+		}
+
+		/* 
+		 * *************** rendering the footer ***************** 
+		 */
+		Layout endLayout = null;
+		/*
+		 * first: try embedded end layout, if requested.
+		 */
+		if (embeddedLayout) {
+			endLayout = layout.getSubLayout(LayoutPart.EMBEDDEDEND);
+		} 
+		/*
+		 * second: if not available, take normal begin layout
+		 */
+		if (endLayout == null) {
+			endLayout = layout.getSubLayout(LayoutPart.END);
+		}
+		/*
+		 * third: render, if layout found
+		 */
+		if (endLayout != null) {
+			output.append(endLayout.doLayout(database, "UTF-8"));
+		}
+
+		return output;
+	}
+
+	/**
+	 * This method converts BibSonomy BibTeX entries to JabRef entries and stores
+	 * them into a JabRef specific BibtexDatabase! 
+	 * @param bibtexList List of BibSonomy BibTeX objects
+	 * @return BibtexDatabase
+	 * @throws IOException
+	 * @throws KeyCollisionException If two entries have exactly the same BibTeX key
+	 */
+	private <T extends Resource> BibtexDatabase bibtex2JabrefDB(final List<Post<T>> bibtexList) {
+		final BibtexDatabase db = new BibtexDatabase();
+		for (final Post<? extends Resource> post : bibtexList) {
+			db.insertEntry(JabRefModelConverter.convertPost(post, urlGen));
+		}
+		return db;
+	}
+
+	/**
+	 * Prints the loaded layouts.
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return layouts.toString();
+	}
+
+
+	/** The path where the user layout files are.
+	 * 
+	 * @param userLayoutFilePath
+	 */
+	@Required
+	public void setUserLayoutFilePath(String userLayoutFilePath) {
+		layouts.setUserLayoutFilePath(userLayoutFilePath);
+	}
+
+	/**
+	 * The base URL of the running project. Needed to create 
+	 * a suitable URLGenerator in order to create the biburl-links
+	 * within the JabrefModelConverter
+	 * 
+	 * FIXME: instead of giving projectHome, directly inject UrlGenerator
+	 * @param projectHome
+	 */
+	@Required
+	public void setProjectHome(String projectHome) {
+		this.urlGen = new URLGenerator(projectHome);
+	}
+
+	/**
+	 * The path where the default layout files are. Defaults to <code>layouts</code>.
+	 * Must be accessible by the classloader.
+	 * 
+	 * @param defaultLayoutFilePath
+	 */
+	public void setDefaultLayoutFilePath(String defaultLayoutFilePath) {
+		layouts.setDefaultLayoutFilePath(defaultLayoutFilePath);
+	}
+
+	/**
+	 * This renderer only supports {@link BibTex}.
+	 * 
+	 * @see org.bibsonomy.services.renderer.LayoutRenderer#supportsResourceType(java.lang.Class)
+	 */
+	@Override
+	public boolean supportsResourceType(final Class<? extends Resource> clazz) {
+		return BibTex.class.equals(clazz);
+	}
+
+
+	/** Unloads the custom layout of the user. Note that all parts of the 
+	 * layout are unloaded!
+	 * 
+	 * @param userName
+	 */
+	public void unloadUserLayout(final String userName) {
+		layouts.unloadCustomFilter(userName);
+	}
+
+	/**
+	 * Use this method to get all layouts
+	 * 
+	 * @return all layouts
+	 */
+	public Map<String, JabrefLayout> getJabrefLayouts(){
+		return this.layouts.getLayoutMap();
+	}
 
 }
