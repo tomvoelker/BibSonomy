@@ -30,201 +30,185 @@
 	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
 	<c:if test="${not empty jsOpenAccess}">
 	
-<!-- 
-		<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.openaccess" >
-			<jsp:attribute name="content">
- -->
-				<c:if test="${not empty referer}">
-					<a id="referer" class="refererButton" href="${referer}" > <fmt:message key="post.resource.openaccess.button.referer"/></a>
-				</c:if>
+		<c:if test="${not empty referer}">
+			<a id="referer" class="refererButton" href="${referer}" > <fmt:message key="post.resource.openaccess.button.referer"/></a>
+		</c:if>
+		
+		<div id="oaRepositorySentInfo"><!-- used for puma--> </div>	
+		<h3><a href="javascript:foldUnfold('openAccessContainer');"><img id="openAccessContainerImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="post.resource.openaccess.headline"/></a></h3>
+
+		<div id="openAccessContainer">
+
+			<div id="openAccessMetaDataContainer">
+				<div class="oadescription"><fmt:message key="post.resource.openaccess.description"/></div>
+				<h4><fmt:message key="post.resource.openaccess.additionalfields.headline"/></h4>
+				<div class="oadescription"><fmt:message key="post.resource.openaccess.additionalfields.description"/></div>
 				
-				<div id="oaRepositorySentInfo"><!-- used for puma--> </div>	
-				<h3><a href="javascript:foldUnfold('openAccessContainer');"><img id="openAccessContainerImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="post.resource.openaccess.headline"/></a></h3>
-
-				<div id="openAccessContainer">
-
-					<div id="openAccessMetaDataContainer">
-						<div class="oadescription"><fmt:message key="post.resource.openaccess.description"/></div>
-						<h4><fmt:message key="post.resource.openaccess.additionalfields.headline"/></h4>
-						<div class="oadescription"><fmt:message key="post.resource.openaccess.additionalfields.description"/></div>
-						
-						<!-- if entrytype == phdthesis -->
-						<c:if test="${bibtex.entrytype=='phdthesis'}">
-							<div class="fsRow">
-								<label class="fsLabel" for="post.resource.openaccess.additionalfields.institution"><fmt:message key="post.resource.openaccess.additionalfields.institution"/>*</label>
-								<div class="help" style="">
-									<b class="smalltext" style="">?</b>
-									<div><fmt:message key="post.resource.openaccess.additionalfields.institution.help"/></div>
-								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
-								<div class="dissError"><!-- do not remove this text --></div>
-							</div>
-		
-							<div class="fsRow">
-								<label class="fsLabel" for="post.resource.openaccess.additionalfields.referee">1. <fmt:message key="post.resource.openaccess.additionalfields.referee"/>* </label>
-								<div class="help" style="">
-									<b class="smalltext" style="">?</b>
-									<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
-								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
-								<div class="dissError"><!-- do not remove this text --></div>
-							</div>
-		
-							<div class="fsRow">
-								<label class="fsLabel" for="post.resource.openaccess.additionalfields.referee2">2. <fmt:message key="post.resource.openaccess.additionalfields.referee"/>* </label>
-								<div class="help" style="">
-									<b class="smalltext" style="">?</b>
-									<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
-								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.referee2" id="post.resource.openaccess.additionalfields.phdreferee2"/>
-								<div class="dissError"><!-- do not remove this text --></div>
-							</div>
-
-							<div class="fsRow">
-								<label class="fsLabel" for="post.resource.openaccess.additionalfields.phdoralexam"><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam"/>* </label>
-								<div class="help" style="">
-									<b class="smalltext" style="">?</b>
-									<div><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam.help"/></div>
-								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
-								<div class="dissError"><!-- do not remove this text --></div>
-							</div>
-						</c:if>
-						<!-- /if entrytype == phdthesis -->
-	
-						<div class="fsRow">
-							<label class="fsLabel" for="post.resource.openaccess.additionalfields.sponsor"><fmt:message key="post.resource.openaccess.additionalfields.sponsor"/></label>
-							<div class="help" style="">
-								<b class="smalltext" style="">?</b>
-								<div><fmt:message key="post.resource.openaccess.additionalfields.sponsor.help"/></div>
-							</div>
-							<input type="text" value="" class="fsInput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
-							<div class="dissError"><!-- do not remove this text --></div>
+				<!-- if entrytype == phdthesis -->
+				<c:if test="${bibtex.entrytype=='phdthesis'}">
+					<div class="fsRow">
+						<label class="fsLabel" for="post.resource.openaccess.additionalfields.institution"><fmt:message key="post.resource.openaccess.additionalfields.institution"/>*</label>
+						<div class="help" style="">
+							<b class="smalltext" style="">?</b>
+							<div><fmt:message key="post.resource.openaccess.additionalfields.institution.help"/></div>
 						</div>
-	
-						<div class="fsRow">
-							<label class="fsLabel" for="post.resource.openaccess.additionalfields.additionaltitle"><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle"/></label>
-							<div class="help" style="">
-								<b class="smalltext" style="">?</b>
-								<div><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle.help"/></div>
-							</div>
-							<input type="text" value="" class="fsInput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
-							<div class="dissError"><!-- do not remove this text --></div>
+						<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
+						<div class="dissError"><!-- do not remove this text --></div>
+					</div>
+
+					<div class="fsRow">
+						<label class="fsLabel" for="post.resource.openaccess.additionalfields.referee">1. <fmt:message key="post.resource.openaccess.additionalfields.referee"/>* </label>
+						<div class="help" style="">
+							<b class="smalltext" style="">?</b>
+							<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
 						</div>
-						
-						<div id="sendMetadataMarker">&amp;deg;</div>
-						
+						<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
+						<div class="dissError"><!-- do not remove this text --></div>
+					</div>
+
+					<div class="fsRow">
+						<label class="fsLabel" for="post.resource.openaccess.additionalfields.referee2">2. <fmt:message key="post.resource.openaccess.additionalfields.referee"/>* </label>
+						<div class="help" style="">
+							<b class="smalltext" style="">?</b>
+							<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
+						</div>
+						<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.referee2" id="post.resource.openaccess.additionalfields.phdreferee2"/>
+						<div class="dissError"><!-- do not remove this text --></div>
+					</div>
+
+					<div class="fsRow">
+						<label class="fsLabel" for="post.resource.openaccess.additionalfields.phdoralexam"><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam"/>* </label>
+						<div class="help" style="">
+							<b class="smalltext" style="">?</b>
+							<div><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam.help"/></div>
+						</div>
+						<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
+						<div class="dissError"><!-- do not remove this text --></div>
+					</div>
+				</c:if>
+				<!-- /if entrytype == phdthesis -->
+
+				<div class="fsRow">
+					<label class="fsLabel" for="post.resource.openaccess.additionalfields.sponsor"><fmt:message key="post.resource.openaccess.additionalfields.sponsor"/></label>
+					<div class="help" style="">
+						<b class="smalltext" style="">?</b>
+						<div><fmt:message key="post.resource.openaccess.additionalfields.sponsor.help"/></div>
+					</div>
+					<input type="text" value="" class="fsInput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
+					<div class="dissError"><!-- do not remove this text --></div>
+				</div>
+
+				<div class="fsRow">
+					<label class="fsLabel" for="post.resource.openaccess.additionalfields.additionaltitle"><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle"/></label>
+					<div class="help" style="">
+						<b class="smalltext" style="">?</b>
+						<div><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle.help"/></div>
+					</div>
+					<input type="text" value="" class="fsInput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
+					<div class="dissError"><!-- do not remove this text --></div>
+				</div>
+				
+				<div id="sendMetadataMarker">&amp;deg;</div>
+				
 <!--						<div id="saveMetadataButtonContainer">-->
 <!--							<a id="saveMetadataButton" href="javascript:sendAdditionalMetadataFields()"><fmt:message key="post.resource.openaccess.additionalfields.save"/></a>-->
 <!--						</div>-->
 
-						<input type="hidden" name="hash" id="openAccessCurrentPublicationHash" value="${fn:escapeXml(bibtex.intraHash)}"/>
-						<input type="hidden" name="hash" id="openAccessCurrentPublicationInterHash" value="${fn:escapeXml(bibtex.interHash)}"/>
-						
-					</div>
-	
-	
-					<div id="pumaAddon" class="clearboth" ><!-- used for puma--> </div>
-			
-					<div id="openAccessClassificationContainer">
-						<h4><fmt:message key="post.resource.openaccess.classification.headline"/></h4>
-						<div class="oadescription"><fmt:message key="post.resource.openaccess.classification.description"/></div>
-						<div id="openAccessClassificationList"><!-- openAccessClassificationListContainer --></div>
-						<div id="openAccessClassificationSelect"><!-- openAccessClassificationSelectContainer --></div>
-					</div>
-	
-					<script type="text/javascript">
-						$(document).ready(function() {
+				<input type="hidden" name="hash" id="openAccessCurrentPublicationHash" value="${fn:escapeXml(bibtex.intraHash)}"/>
+				<input type="hidden" name="hash" id="openAccessCurrentPublicationInterHash" value="${fn:escapeXml(bibtex.interHash)}"/>
+				
+			</div>
 
-							// set metadatafields
-							mdf = Array(); 
-							i=0;
-							mdf[i++] = "post.resource.openaccess.additionalfields.institution";
-							mdf[i++] = "post.resource.openaccess.additionalfields.phdreferee";
-							mdf[i++] = "post.resource.openaccess.additionalfields.phdreferee2";
-							mdf[i++] = "post.resource.openaccess.additionalfields.phdoralexam";
-							mdf[i++] = "post.resource.openaccess.additionalfields.sponsor";
-							mdf[i++] = "post.resource.openaccess.additionalfields.additionaltitle";
-							setMetadatafields(mdf);
-							
-									
-							
-							initialiseOpenAccessClassification("openAccessClassification", &quot;${bibtex.intraHash}&quot;);
-							initialiseOpenAccessSendToRepository("oaSubmitContainer", &quot;${bibtex.intraHash}&quot;);
-							setTimeout("loadStoredClassificationItems()", 1);
-							setTimeout("loadAdditionalMetadataFields()", 1);
-							setTimeout("checkOpenAccess()", 1);
-							setTimeout("loadSentRepositories()", 1);
-							
-							setTimeout("setBackgroundColor(\"referer\", \"#EEEEEE\")", 1000);
-							setTimeout("setBackgroundColor(\"referer\", \"#DDDDDD\")", 2000);
-							setTimeout("setBackgroundColor(\"referer\", \"#EEEEEE\")", 3000);
-							setTimeout("setBackgroundColor(\"referer\", \"#DDDDDD\")", 4000);
-							setTimeout("setBackgroundColor(\"referer\", \"#EEEEEE\")", 5000);
-							setTimeout("setBackgroundColor(\"referer\", \"#DDDDDD\")", 6000);
-					    });
-					</script>
-	
-	<!-- a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a> -->
 
-						
- 					<c:if test="${((bibtex.entrytype=='article') and (!empty bibtex.journal)) or ((bibtex.entrytype!='article') and (!empty bibtex.publisher))}"> 
-						<div id="oasherparomeocontainer">
-							<h4><fmt:message key="post.resource.openaccess.sherparomeo.headline"/></h4>
+			<div id="pumaAddon" class="clearboth" ><!-- used for puma--> </div>
 	
-							<c:set var="oaRequestPublisherUrlParameter" value="?publisher=${bibtex.publisher}"/>
-							<c:if test="${bibtex.entrytype=='article'}">
-								<c:set var="oaRequestPublisherUrlParameter" value="?jTitle=${bibtex.journal}"/>
-							</c:if>
-							<input type="hidden" id="oaRequestPublisherUrlParameter" value="${oaRequestPublisherUrlParameter}"/>
-							
-							<div id="oasherparomeopredescription" class="oasherparomeodescription"><fmt:message key="post.resource.openaccess.sherparomeo.description"/></div>				
-							
-							<c:if test="${bibtex.entrytype=='article'}">
-							<div id="oasherparomeopublisher"><fmt:message key="post.resource.openaccess.sherparomeo.publisher.entrytype.article"><fmt:param value="${bibtex.journal}"/></fmt:message></div>
-							</c:if>
-							<c:if test="${bibtex.entrytype!='article'}">
-							<div id="oasherparomeopublisher"><fmt:message key="post.resource.openaccess.sherparomeo.publisher.entrytype.other"><fmt:param value="${bibtex.publisher}"/></fmt:message></div>
-							</c:if>
-							
-							<div id="oasherparomeo"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
-	
-							<div id="oasherparomeocolordescription">
-							<fmt:message key="post.resource.openaccess.sherparomeo.color.description.intro"/>  
-							<ul>
-								<li class="oa-green"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.green"/></li>
-								<li class="oa-blue"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.blue"/></li>
-								<li class="oa-yellow"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.yellow"/></li>
-								<li class="oa-white"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.white"/></li>
-							</ul>
-							</div>
-						</div>
- 					</c:if>
+			<div id="openAccessClassificationContainer">
+				<h4><fmt:message key="post.resource.openaccess.classification.headline"/></h4>
+				<div class="oadescription"><fmt:message key="post.resource.openaccess.classification.description"/></div>
+				<div id="openAccessClassificationList"><!-- openAccessClassificationListContainer --></div>
+				<div id="openAccessClassificationSelect"><!-- openAccessClassificationSelectContainer --></div>
+			</div>
+
+			<script type="text/javascript">
+				$(document).ready(function() {
+
+					// set metadatafields
+					var mdf = Array(); 
+					var i=0;
+					mdf[i++] = "post.resource.openaccess.additionalfields.institution";
+					mdf[i++] = "post.resource.openaccess.additionalfields.phdreferee";
+					mdf[i++] = "post.resource.openaccess.additionalfields.phdreferee2";
+					mdf[i++] = "post.resource.openaccess.additionalfields.phdoralexam";
+					mdf[i++] = "post.resource.openaccess.additionalfields.sponsor";
+					mdf[i++] = "post.resource.openaccess.additionalfields.additionaltitle";
+					setMetadatafields(mdf);
+
+					setTimeout('initialiseOpenAccessClassification(&quot;openAccessClassification&quot;, &quot;${bibtex.intraHash}&quot;)', 1);
+					//setTimeout('initialiseOpenAccessSendToRepository(&quot;oasendtorepositorybutton&quot;, &quot;${bibtex.intraHash}&quot;)', 1);
+					setTimeout("loadStoredClassificationItems()", 1);
+					setTimeout("loadAdditionalMetadataFields()", 1);
+					setTimeout("checkOpenAccess()", 1);
+					setTimeout("loadSentRepositories()", 1);
 					
-					<div id="authorcontract">
-						<span id="authorcontractconfirmcontainer"><input onclick="checkauthorcontractconfirm();" onchange="checkauthorcontractconfirm();" type="checkbox" id="authorcontractconfirm"/></span>
-						<fmt:message key="post.resource.openaccess.authorcontractconfirm"/>
+					setTimeout("setBackgroundColor(\"referer\", \"#EEEEEE\")", 1000);
+					setTimeout("setBackgroundColor(\"referer\", \"#DDDDDD\")", 2000);
+					setTimeout("setBackgroundColor(\"referer\", \"#EEEEEE\")", 3000);
+					setTimeout("setBackgroundColor(\"referer\", \"#DDDDDD\")", 4000);
+					setTimeout("setBackgroundColor(\"referer\", \"#EEEEEE\")", 5000);
+					setTimeout("setBackgroundColor(\"referer\", \"#DDDDDD\")", 6000);
+			    });
+			</script>
+
+<!-- a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a> -->
+
+				
+				<c:if test="${((bibtex.entrytype=='article') and (!empty bibtex.journal)) or ((bibtex.entrytype!='article') and (!empty bibtex.publisher))}"> 
+				<div id="oasherparomeocontainer">
+					<h4><fmt:message key="post.resource.openaccess.sherparomeo.headline"/></h4>
+
+					<c:set var="oaRequestPublisherUrlParameter" value="?publisher=${bibtex.publisher}"/>
+					<c:if test="${bibtex.entrytype=='article'}">
+						<c:set var="oaRequestPublisherUrlParameter" value="?jTitle=${bibtex.journal}"/>
+					</c:if>
+					<input type="hidden" id="oaRequestPublisherUrlParameter" value="${oaRequestPublisherUrlParameter}"/>
+					
+					<div id="oasherparomeopredescription" class="oasherparomeodescription"><fmt:message key="post.resource.openaccess.sherparomeo.description"/></div>				
+					
+					<c:if test="${bibtex.entrytype=='article'}">
+					<div id="oasherparomeopublisher"><fmt:message key="post.resource.openaccess.sherparomeo.publisher.entrytype.article"><fmt:param value="${bibtex.journal}"/></fmt:message></div>
+					</c:if>
+					<c:if test="${bibtex.entrytype!='article'}">
+					<div id="oasherparomeopublisher"><fmt:message key="post.resource.openaccess.sherparomeo.publisher.entrytype.other"><fmt:param value="${bibtex.publisher}"/></fmt:message></div>
+					</c:if>
+					
+					<div id="oasherparomeo"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
+
+					<div id="oasherparomeocolordescription">
+					<fmt:message key="post.resource.openaccess.sherparomeo.color.description.intro"/>  
+					<ul>
+						<li class="oa-green"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.green"/></li>
+						<li class="oa-blue"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.blue"/></li>
+						<li class="oa-yellow"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.yellow"/></li>
+						<li class="oa-white"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.white"/></li>
+					</ul>
 					</div>
-	
-					<div id="oaRepositorySent"><!-- used for puma--> </div>
-	
-					<div id="oaSubmitContainer" ><!-- used for puma--> </div>
 				</div>
-<!-- 
-				<spring:theme code="javascript.t1" var="t1" text=""/>
-				<c:if test="${not empty t1}">
-					<script type="text/javascript" src="${t1}">&amp;nbsp;</script>
 				</c:if>
+			
+			<div id="authorcontract">
+				<span id="authorcontractconfirmcontainer"><input onclick="checkauthorcontractconfirm();" onchange="checkauthorcontractconfirm();" type="checkbox" id="authorcontractconfirm"/></span>
+				<fmt:message key="post.resource.openaccess.authorcontractconfirm"/>
+			</div>
 
+			<div id="oaRepositorySent"><!-- used for puma--> </div>
 
-				<spring:theme code="javascript.t2" var="t2" text=""/>
-				<c:if test="${not empty t2}">
-					<script type="text/javascript" src="${t2}">&amp;nbsp;</script>
-				</c:if>
- -->
-<!-- 
-			</jsp:attribute>
-		</parts:fieldset>
- -->
+			<div id="oaSubmitContainer" >
+				<div id="pumaSword">
+					<fmt:message key="post.resource.openaccess.button.sendtorepository" var="oaButtonSendtorepository"/>
+					<input id="oasendtorepositorybutton" type="button" class="ajaxButton oadisabledsend2repositorybutton" onclick="sentPublicationToRepository('oasendtorepositorybutton','${bibtex.intraHash}')" value="${oaButtonSendtorepository}"/>
+				</div>
+			</div>
+		</div>
+
 	</c:if>
 </jsp:root>
