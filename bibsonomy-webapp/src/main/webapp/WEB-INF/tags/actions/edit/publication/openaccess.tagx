@@ -56,7 +56,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.institution.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 		
@@ -66,7 +66,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 		
@@ -76,7 +76,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.referee2" id="post.resource.openaccess.additionalfields.phdreferee2"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.referee2" id="post.resource.openaccess.additionalfields.phdreferee2"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 
@@ -86,7 +86,7 @@
 									<b class="smalltext" style="">?</b>
 									<div><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam.help"/></div>
 								</div>
-								<input type="text" value="" class="fsInput reqinput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
+								<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
 								<div class="dissError"><!-- do not remove this text --></div>
 							</div>
 						</c:if>
@@ -98,7 +98,7 @@
 								<b class="smalltext" style="">?</b>
 								<div><fmt:message key="post.resource.openaccess.additionalfields.sponsor.help"/></div>
 							</div>
-							<input type="text" value="" class="fsInput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
+							<input type="text" value="" class="fsInput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
 							<div class="dissError"><!-- do not remove this text --></div>
 						</div>
 	
@@ -108,9 +108,11 @@
 								<b class="smalltext" style="">?</b>
 								<div><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle.help"/></div>
 							</div>
-							<input type="text" value="" class="fsInput" onchange="metadataOnChange()" onkeyup="metadataOnChange()" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
+							<input type="text" value="" class="fsInput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
 							<div class="dissError"><!-- do not remove this text --></div>
 						</div>
+						
+						<div id="sendMetadataMarker">&amp;deg;</div>
 						
 <!--						<div id="saveMetadataButtonContainer">-->
 <!--							<a id="saveMetadataButton" href="javascript:sendAdditionalMetadataFields()"><fmt:message key="post.resource.openaccess.additionalfields.save"/></a>-->
@@ -133,6 +135,20 @@
 	
 					<script type="text/javascript">
 						$(document).ready(function() {
+
+							// set metadatafields
+							mdf = Array(); 
+							i=0;
+							mdf[i++] = "post.resource.openaccess.additionalfields.institution";
+							mdf[i++] = "post.resource.openaccess.additionalfields.phdreferee";
+							mdf[i++] = "post.resource.openaccess.additionalfields.phdreferee2";
+							mdf[i++] = "post.resource.openaccess.additionalfields.phdoralexam";
+							mdf[i++] = "post.resource.openaccess.additionalfields.sponsor";
+							mdf[i++] = "post.resource.openaccess.additionalfields.additionaltitle";
+							setMetadatafields(mdf);
+							
+									
+							
 							initialiseOpenAccessClassification("openAccessClassification", &quot;${bibtex.intraHash}&quot;);
 							initialiseOpenAccessSendToRepository("oaSubmitContainer", &quot;${bibtex.intraHash}&quot;);
 							setTimeout("loadStoredClassificationItems()", 1);

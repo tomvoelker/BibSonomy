@@ -640,3 +640,14 @@ input#authorcontractconfirm {
 #oaRepositorySentHeader {
 	font-weight: bold;
 }
+
+#sendMetadataMarker {
+	padding-left:0.5em;
+	display: inline;
+	color: green;
+}
+
+#sendMetadataMarker.highlight {
+	color: red;
+}
+
