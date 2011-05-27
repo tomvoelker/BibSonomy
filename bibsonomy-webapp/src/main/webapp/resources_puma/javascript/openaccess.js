@@ -1,3 +1,190 @@
+/**
+ * jquery.dump.js
+ * @author Torkild Dyvik Olsen
+ * @version 1.0
+ * 
+ * A simple debug function to gather information about an object.
+ * Returns a nested tree with information.
+ * 
+ */
+(function($) {
+
+$.fn.dump = function() {
+   return $.dump(this);
+}
+
+$.dump = function(object) {
+   var recursion = function(obj, level) {
+      if(!level) level = 0;
+      var dump = '', p = '';
+      for(i = 0; i < level; i++) p += "\t";
+      
+      t = type(obj);
+      switch(t) {
+         case "string":
+            return '"' + obj + '"';
+            break;
+         case "number":
+            return obj.toString();
+            break;
+         case "boolean":
+            return obj ? 'true' : 'false';
+         case "date":
+            return "Date: " + obj.toLocaleString();
+         case "array":
+            dump += 'Array ( \n';
+            $.each(obj, function(k,v) {
+               dump += p +'\t' + k + ' => ' + recursion(v, level + 1) + '\n';
+            });
+            dump += p + ')';
+            break;
+         case "object":
+            dump += 'Object { \n';
+            $.each(obj, function(k,v) {
+               dump += p + '\t' + k + ': ' + recursion(v, level + 1) + '\n';
+            });
+            dump += p + '}';
+            break;
+         case "jquery":
+            dump += 'jQuery Object { \n';
+            $.each(obj, function(k,v) {
+               dump += p + '\t' + k + ' = ' + recursion(v, level + 1) + '\n';
+            });
+            dump += p + '}';
+            break;
+         case "regexp":
+            return "RegExp: " + obj.toString();
+         case "error":
+            return obj.toString();
+         case "document":
+         case "domelement":
+            dump += 'DOMElement [ \n'
+                  + p + '\tnodeName: ' + obj.nodeName + '\n'
+                  + p + '\tnodeValue: ' + obj.nodeValue + '\n'
+                  + p + '\tinnerHTML: [ \n';
+            $.each(obj.childNodes, function(k,v) {
+               if(k < 1) var r = 0;
+               if(type(v) == "string") {
+                  if(v.textContent.match(/[^\s]/)) {
+                     dump += p + '\t\t' + (k - (r||0)) + ' = String: ' + trim(v.textContent) + '\n';
+                  } else {
+                     r--;
+                  }
+               } else {
+                  dump += p + '\t\t' + (k - (r||0)) + ' = ' + recursion(v, level + 2) + '\n';
+               }
+            });
+            dump += p + '\t]\n'
+                  + p + ']';
+            break;
+         case "function":
+            var match = obj.toString().match(/^(.*)\(([^\)]*)\)/im);
+            match[1] = trim(match[1].replace(new RegExp("[\\s]+", "g"), " "));
+            match[2] = trim(match[2].replace(new RegExp("[\\s]+", "g"), " "));
+            return match[1] + "(" + match[2] + ")";
+         case "window":
+         default:
+            dump += 'N/A: ' + t;
+            break;
+      }
+      
+      return dump;
+   }
+   
+   var type = function(obj) {
+      var type = typeof(obj);
+      
+      if(type != "object") {
+         return type;
+      }
+      
+      switch(obj) {
+         case null:
+            return 'null';
+         case window:
+            return 'window';
+         case document:
+            return 'document';
+         case window.event:
+            return 'event';
+         default:
+            break;
+      }
+      
+      if(obj.jquery) {
+         return 'jquery';
+      }
+      
+      switch(obj.constructor) {
+         case Array:
+            return 'array';
+         case Boolean:
+            return 'boolean';
+         case Date:
+            return 'date';
+         case Object:
+            return 'object';
+         case RegExp:
+            return 'regexp';
+         case ReferenceError:
+         case Error:
+            return 'error';
+         case null:
+         default:
+            break;
+      }
+      
+      switch(obj.nodeType) {
+         case 1:
+            return 'domelement';
+         case 3:
+            return 'string';
+         case null:
+         default:
+            break;
+      }
+      
+      return 'Unknown';
+   }
+   
+   return recursion(object);
+}
+
+function trim(str) {
+   return ltrim(rtrim(str));
+}
+
+function ltrim(str) {
+   return str.replace(new RegExp("^[\\s]+", "g"), "");
+}
+
+function rtrim(str) {
+   return str.replace(new RegExp("[\\s]+$", "g"), "");
+}
+
+})(jQuery);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var oaBaseUrl = "/ajax/checkOpenAccess";
 var classificationURL = "/ajax/classificatePublication";
 var swordURL = "/ajax/swordService";
@@ -95,98 +282,81 @@ function initialiseOpenAccessClassification(divBaseName, intraHash) {
 	
 }
 
-function initialiseOpenAccessSendToRepository(divName, intraHash) {
-	
-	// create Send to repository button 
-	
-	var sword = document.createElement('div');
-	sword.setAttribute('id','pumaSword');
-	
-	var saveSword = document.createElement('input');
-	saveSword.setAttribute ('id', "oasendtorepositorybutton");
-	saveSword.type = 'button';
-	saveSword.className = "ajaxButton oadisabledsend2repositorybutton",
-	saveSword.disabled = 'true';
-	saveSword.value =  getString("post.resource.openaccess.button.sendtorepository");
-	sword.appendChild(saveSword);
-	
-	var loadingNode = document.createElement('img');
-	loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
-	
-	var url = swordURL +"?resourceHash=" + intraHash;
-	saveSword.onclick = function(data) {
-		if (document.getElementById('authorcontractconfirm').checked) {
+function sentPublicationToRepository (elementId, intraHash){
+	if (document.getElementById('authorcontractconfirm').checked) {
+		var loadingNode = document.createElement('img');
+		loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
+		
+		var url = swordURL +"?resourceHash=" + intraHash;
 
-			if (isMetadataChanged()) sendAdditionalMetadataFields(false);
+		if (isMetadataChanged()) sendAdditionalMetadataFields(false);
 
-			$.ajax({
-				url: url,
-				dataType: 'json',
-				beforeSend: function(XMLHttpRequest) {
+		$.ajax({
+			url: url,
+			dataType: 'json',
+			beforeSend: function(XMLHttpRequest) {
+			
+				// remove node #swordresponse
+				$('#swordresponse').remove();
+				$('#pumaSword').append(loadingNode);
+				$('#oasendtorepositorybutton').addClass("oadisabledsend2repositorybutton");
+				document.getElementById(elementId).disabled = true; 
 				
-					// remove node #swordresponse
-					$('#swordresponse').remove();
-					$('#pumaSword').append(loadingNode);
-					$('#oasendtorepositorybutton').addClass("oadisabledsend2repositorybutton");
-					document.getElementById('oasendtorepositorybutton').disabled = true; 
+			},
+			success: function(data) {
+				// remove loading icon
+				$(loadingNode).remove();
+
+				// response has following format:
+				// {"response":{"message":"error.sword.noPDFattached","localizedMessage":"Keine PDF-Datei zum übermitteln gefunden","statuscode":0}}
+				// statuscode can be 0 (error/warning) or 1 (success)
+				
+				// check and show response to user
+				$.each(data, function(i, response) {
+					if (null == data || null == data.response) {
+						// FIXME: Show error without alert box
+						//alert ("unknown response error");
+					} else {
+						// create text node behind transmit button, if not exists, to show response text in it
+						// confirmations and warnings get different css-classes  
+						var s = createNode({
+							tag: 'div',
+							parent: null,
+							child: null,
+							childNodes: null,
+							parentID : null,
+							id: 'swordresponse',
+							className: "ajaxresponse"+data.response.statuscode
+						});
+
+						s.appendChild(document.createTextNode(data.response.localizedMessage));
+						$('#pumaSword').append(s);						
 					
-				},
-				success: function(data) {
-					// remove loading icon
-					$(loadingNode).remove();
-	
-					// response has following format:
-					// {"response":{"message":"error.sword.noPDFattached","localizedMessage":"Keine PDF-Datei zum übermitteln gefunden","statuscode":0}}
-					// statuscode can be 0 (error/warning) or 1 (success)
-					
-					// check and show response to user
-					$.each(data, function(i, response) {
-						if (null == data || null == data.response) {
-							// FIXME: Show error without alert box
-							//alert ("unknown response error");
-						} else {
-							// create text node behind transmit button, if not exists, to show response text in it
-							// confirmations and warnings get different css-classes  
-							var s = createNode({
-								tag: 'div',
-								parent: null,
-								child: null,
-								childNodes: null,
-								parentID : null,
-								id: 'swordresponse',
-								className: "ajaxresponse"+data.response.statuscode
-							});
-	
-							s.appendChild(document.createTextNode(data.response.localizedMessage));
-							$('#pumaSword').append(s);						
+						swordResponseStatusCode = data.response.statuscode;
 						
-							swordResponseStatusCode = data.response.statuscode;
-							
-							// on error enable button
-							if (data.response.statuscode == 0) {				
-								$('#oasendtorepositorybutton').removeClass("oadisabledsend2repositorybutton");
-								document.getElementById('oasendtorepositorybutton').disabled = false; 
-							}
-	
-							// show response text
-							
+						// on error enable button
+						if (data.response.statuscode == 0) {				
+							$(elementId).removeClass("oadisabledsend2repositorybutton");
+							document.getElementById(elementId).disabled = false; 
 						}
-					});
-	
-	
-				},
-				error: function(req, status, e) {
-					$(loadingNode).remove();
-					// FIXME: Show error without alert box
-					//alert("Unable to send data to reposity: " + status);
-				}
-			});
-		} // end of if ($('#authorcontractconfirm').checked)
-	};	
+
+						// show response text
+						
+					}
+				});
+
+
+			},
+			error: function(req, status, e) {
+				$(loadingNode).remove();
+				// FIXME: Show error without alert box
+				//alert("Unable to send data to reposity: " + status);
+			}
+		});
+	} // end of if ($('#authorcontractconfirm').checked)
+
 	
 
-	// add elements to dom
-	$('#' +divName).append(sword);
 
 }
 
