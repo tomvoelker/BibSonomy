@@ -11,6 +11,18 @@ var GET_CLASSIFICATION_DESCRIPTION = "GET_CLASSIFICATION_DESCRIPTION";
 var GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";
 var publication_intrahash = ""; // will be set during initialisation
 var publication_interhash = ""; // will be set during initialisation
+var metadataChanged = false; // flag to remember if metadata has changend
+var metadatafields = Array();
+var autoSaveMetadataCounter = 0;
+
+function setMetadatafields(mdf) {
+	metadatafields = mdf;
+}
+
+function getMetadatafields(){
+	return metadatafields;
+}
+
 
 function empty (mixed_var) {
     // !No description available for empty. @php.js developers: Please update the function summary text file.
@@ -105,7 +117,7 @@ function initialiseOpenAccessSendToRepository(divName, intraHash) {
 	saveSword.onclick = function(data) {
 		if (document.getElementById('authorcontractconfirm').checked) {
 
-			if (checkMetadataChanged())	sendAdditionalMetadataFields(false);
+			if (isMetadataChanged()) sendAdditionalMetadataFields(false);
 
 			$.ajax({
 				url: url,
@@ -617,20 +629,16 @@ function sendAdditionalMetadataFields() {
 function sendAdditionalMetadataFields(async) {
 	if ( async != true ) async = false;
 	
-	var saveMetadataButtonId = "saveMetadataButton";
-	var metadatafields = Array();
+	var ElementId = "sendMetadataMarker";
+	var mdf = Array();
 	var i=0;
-	metadatafields[i++] = "post.resource.openaccess.additionalfields.institution";
-	metadatafields[i++] = "post.resource.openaccess.additionalfields.phdreferee";
-	metadatafields[i++] = "post.resource.openaccess.additionalfields.phdreferee2";
-	metadatafields[i++] = "post.resource.openaccess.additionalfields.phdoralexam";
-	metadatafields[i++] = "post.resource.openaccess.additionalfields.sponsor";
-	metadatafields[i++] = "post.resource.openaccess.additionalfields.additionaltitle";
+	
+	mdf = getMetadatafields();
 	
 	var collectedMetadataJSONText = '{ ';
 	var collectedMetadataJSON = {};
-	for(var i = 0; i < metadatafields.length; i++) {
-		collectedMetadataJSONText += '"' + metadatafields[i] + '":"' + $("#"+(metadatafields[i].replace(/\./g,'\\.'))).val() +'", '; 
+	for(var i = 0; i < mdf.length; i++) {
+		collectedMetadataJSONText += '"' + mdf[i] + '":"' + $("#"+(mdf[i].replace(/\./g,'\\.'))).val() +'", '; 
 	}
 	collectedMetadataJSONText += " } ";
 	
@@ -651,12 +659,12 @@ function sendAdditionalMetadataFields(async) {
 			type: 'post',
 			
 			beforeSend: function(XMLHttpRequest) {
-				$('#' +saveMetadataButtonId).append(loadingNode);
+				$('#' +elementId).append(loadingNode);
 				
 			},
 			success: function(data) {
 				$(loadingNode).remove();
-				metadataUnChanged();
+				setMetadataChanged(false);
 
 			
 			},
@@ -751,25 +759,51 @@ function loadSentRepositories() {
 	
 }
 
-function metadataOnChange() {
-	saveMetadataButtonId = "saveMetadataButton";
-	dataChangedClass = "dataChanged";
-
-	if (!$("#"+saveMetadataButtonId).hasClass(dataChangedClass)) $("#"+saveMetadataButtonId).addClass("dataChanged");
+function autoSaveMetadata(value) {
+	booleanValue = value?true:false;
+	//console.log("autoSaveMetadata:"+autoSaveMetadataCounter);
+	if (booleanValue) {
+		// is counter already runnning?
+		if (autoSaveMetadataCounter > 0 ) {
+			// reset counter, but do not start another one
+			autoSaveMetadataCounter = 4;
+			return;
+		}
+		
+		// init
+		autoSaveMetadataCounter = 4;
+	} else {
+		autoSaveMetadataCounter--;
+	}
+	
+	if (autoSaveMetadataCounter < 1) {
+		sendAdditionalMetadataFields(false);
+		autoSaveMetadataCounter=0;
+	} else {
+		setTimeout("autoSaveMetadata()",700);
+	}
+	
 }
 
-function metadataUnChanged() {
-	saveMetadataButtonId = "saveMetadataButton";
-	dataChangedClass = "dataChanged";
 
-	if ($("#"+saveMetadataButtonId).hasClass(dataChangedClass)) $("#"+saveMetadataButtonId).removeClass("dataChanged");
+function setMetadataChanged(value) {
+	booleanValue = value?true:false;
+	elementId = "sendMetadataMarker";
+	elementClass = "highlight";
+	if (booleanValue==true) {
+		// add class to tag
+		if (!$("#"+elementId).hasClass(elementClass)) $("#"+elementId).addClass(elementClass);
+		// start autosave counter
+		setTimeout("autoSaveMetadata(true)", 100);
+	} else {
+		// remove class from tag
+		if ($("#"+elementId).hasClass(elementClass)) $("#"+elementId).removeClass(elementClass);
+	}
+
+	metadataChanged = booleanValue;
 }
-
-function checkMetadataChanged() {
-	saveMetadataButtonId = "saveMetadataButton";
-	dataChangedClass = "dataChanged";
-
-	return ($("#"+saveMetadataButtonId).hasClass(dataChangedClass));
+function isMetadataChanged() {
+	return metadataChanged;
 }
 
 function loadStoredClassificationItems()
