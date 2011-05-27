@@ -359,6 +359,8 @@ public class BibtexUtilsTest {
 		assertEquals("1", BibTexUtils.getMonthAsNumber("jan"));
 		assertEquals("1", BibTexUtils.getMonthAsNumber("Jan"));
 		assertEquals("1", BibTexUtils.getMonthAsNumber("JaN"));
+		assertEquals("1", BibTexUtils.getMonthAsNumber("#JaN#"));
+		assertEquals("1", BibTexUtils.getMonthAsNumber(" #Jan#"));
 		assertEquals("1", BibTexUtils.getMonthAsNumber(" Jan   "));
 		assertEquals("1", BibTexUtils.getMonthAsNumber("January"));
 		assertEquals("2", BibTexUtils.getMonthAsNumber("february"));

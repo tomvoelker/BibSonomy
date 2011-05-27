@@ -433,7 +433,7 @@ public class BibTexUtils {
 	 */
 	public static String getMonthAsNumber(final String month) {
 		if (present(month)) {
-			final String trimmed = month.trim();
+			final String trimmed = month.replace('#', ' ').trim();
 			if (trimmed.length() >= 3) {
 				final String abbrev = trimmed.toLowerCase().substring(0, 3);
 				if (BIBTEX_MONTHS.containsKey(abbrev)) {
