@@ -1,14 +1,13 @@
 package org.bibsonomy.webapp.command.actions;
 
 import org.bibsonomy.webapp.command.BaseCommand;
-import org.bibsonomy.webapp.command.CaptchaResponseCommand;
 
 
 /**
  * @author schwass
  * @version $Id$
  */
-public class JoinGroupPostCommand extends BaseCommand implements CaptchaResponseCommand {
+public class JoinGroupCommand extends BaseCommand {
 	/**
 	 * Contains the HTML-Code to view the reCaptcha. Is filled ONLY by the controller!
 	 * Any validator must check, that the user did not fill this field.
@@ -23,6 +22,14 @@ public class JoinGroupPostCommand extends BaseCommand implements CaptchaResponse
 	 * The response to the captcha, the user entered.
 	 */
 	private String recaptcha_response_field;
+	/**
+	 * reason for user to join group
+	 */
+	private String reason;
+	/**
+	 * group user want join
+	 */
+	private String group;
 
 	/**
 	 * @return the recaptcha_challenge_field
@@ -52,22 +59,46 @@ public class JoinGroupPostCommand extends BaseCommand implements CaptchaResponse
 		this.recaptcha_response_field = recaptchaResponseField;
 	}
 	
+	/**
+	 * @param captchaHTML
+	 */
 	public void setCaptchaHTML(String captchaHTML) {
 		this.captchaHTML = captchaHTML;
 	}
 
+	/**
+	 * @return captcha html
+	 */
 	public String getCaptchaHTML() {
 		return captchaHTML;
 	}
 
-	@Override
-	public String getChallenge() {
-		return recaptcha_challenge_field;
+	/**
+	 * @param reason
+	 */
+	public void setReason(String reason) {
+		this.reason = reason;
 	}
 
-	@Override
-	public String getResponse() {
-		return recaptcha_response_field;
+	/**
+	 * @return reason
+	 */
+	public String getReason() {
+		return reason;
+	}
+
+	/**
+	 * @param group
+	 */
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	/**
+	 * @return group
+	 */
+	public String getGroup() {
+		return group;
 	}
 
 

@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+    <layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" requPath="${requPath}">
+    	<!--+
+    	 	| heading
+    	 	-->
+    	<jsp:attribute name="heading">
+			<a rel="path_menu" href="">
+				<img src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="joinGroup"/>
+			</a> :: 
+			<a href="/group/${fn:escapeXml(command.group)}"><c:out value='${command.group}'/></a>
+    	</jsp:attribute>
+      
+      	<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
+			<c:if test="${not empty additionalFsformCSS}">
+				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
+			</c:if>
+		</jsp:attribute>
+    	<!--+
+    	 	| content
+    	 	-->
+		<jsp:attribute name="content">
+
+          <div id="general">
+
+
+            <form:form action="/join_group" method="POST">
+		        <errors:global errors="${errors}"/>             
+
+				<div class="fsOuter">
+				
+					<h2><fmt:message key="navi.join"><fmt:param>${command.group}</fmt:param></fmt:message></h2>
+				
+					<fieldset class="fsInner">
+						
+            			<div class="fsRow">
+		        			<form:label cssClass="fsLabel" path="reason"><fmt:message key="joinGroup.reason"/>*</form:label>
+		    			    <buttons:help message="joinGroup.reason.hint"/>
+			  				<form:textarea rows="4" cols="50" cssClass="fsInput reqinput" path="reason" />
+			  				<div class="dissError"></div>
+            			</div>
+            		</fieldset>
+            		
+            		<fieldset class="fsInner">
+              
+						<div class="fsRow">
+			  				<form:label cssClass="fsLabel" path="recaptcha_response_field" ><fmt:message key="captcha"/>*</form:label>
+			  				<div class="help"><b style="" class="smalltext">${mtl:ch('nbsp')}</b></div>
+			  				<div class="fsInput">${command.captchaHTML}</div> 
+			  				<div class="dissError"><form:errors path="recaptcha_response_field" /></div>
+            			</div>
+	             	</fieldset>
+            		
+            		<fieldset class="fsInner">
+             
+	           			<div class="fsRow">
+	           				<div class="fsLabel">${mtl:ch('nbsp')}</div>
+	           				<div class="help"><b style="" class="smalltext">${mtl:ch('nbsp')}</b></div>
+	      		            <input type="submit"/>
+	            		</div>
+	             	</fieldset>
+	             </div>	
+            </form:form>
+
+          </div>
+		</jsp:attribute>
+    </layout:layout>
+</jsp:root>
