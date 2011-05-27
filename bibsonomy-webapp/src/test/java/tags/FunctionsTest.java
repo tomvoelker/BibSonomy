@@ -94,6 +94,8 @@ public class FunctionsTest {
 		assertEquals("February 2010", Functions.getDate("", "feb", "2010", gbLocale));
 		assertEquals("March 2010", Functions.getDate("", "march", "2010", gbLocale));
 		assertEquals("2010", Functions.getDate("", "", "2010", gbLocale));
+
+		assertEquals("January 2011", Functions.getDate("", "#jan#", "2011", gbLocale));
 		
 	}
 }

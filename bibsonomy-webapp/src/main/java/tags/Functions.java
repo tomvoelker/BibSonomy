@@ -12,7 +12,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.Normalizer;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,7 +76,6 @@ public class Functions  {
 	static {
 		dmyDateFormatter.setStyle(DateFormat.MEDIUM);
 	}
-	private static DateFormat yDateFormat = new SimpleDateFormat("yyyy");
 	private static DateFormat myDateFormat = new SimpleDateFormat("yyyy-MM");
 	private static DateFormat dmyDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -629,7 +627,6 @@ public class Functions  {
 	 * only, month+year, day+month+year) the date is formatted in different ways.
 	 */
 	public static String getDate(final String day, final String month, final String year, final Locale locale) {
-		try { // DEBUG
 		if (present(year)) {
 			final String cleanYear = BibTexUtils.cleanBibTex(year);
 			if (present(month)) {
@@ -639,7 +636,7 @@ public class Functions  {
 					final String cleanDay = BibTexUtils.cleanBibTex(day.trim());
 					try {
 						return dmyDateFormatter.print(dmyDateFormat.parse(cleanYear + "-" + monthAsNumber + "-" + cleanDay), locale);
-					} catch (ParseException ex) {
+					} catch (final Exception ex) {
 						// return default date
 						return cleanDay + " " + cleanMonth + " " + cleanYear;
 					}
@@ -649,7 +646,7 @@ public class Functions  {
 				 */
 				try {
 					return myDateFormatter.print(myDateFormat.parse(cleanYear + "-" + monthAsNumber), locale);
-				} catch (ParseException ex) {
+				} catch (final Exception ex) {
 					// return default date
 					return cleanMonth + " " + cleanYear;
 				}
@@ -659,9 +656,6 @@ public class Functions  {
 			 */
 			return cleanYear;
 		}
-		} catch (final Exception e) { // DEBUG
-			LOGGER.error("error formatting date (day=" + day + ",month=" + month + ",year=" + year + ",locale=" + locale + ")", e);
-		} // DEBUG
 		return "";
 	}
 
