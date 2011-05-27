@@ -130,7 +130,7 @@ public class JoinGroupHandler extends HttpServlet {
 						"\n" + projectHome + "help" +
 						"\n" + projectHome + "faq" + "\n" +
 						"\nNews regarding " + projectName + " can be found in our blog:" +
-						"\nhttp://" + projectName.toLowerCase() + ".blogspot.com" +
+						"\nhttp://blog.bibsonomy.org" +
 						"\n" +
 						"\nReplies to this e-mail address are deleted, please send questions to webmaster@" + projectName.toLowerCase() + ".org.\n"; 
 
@@ -220,7 +220,7 @@ public class JoinGroupHandler extends HttpServlet {
 							"\n" + projectHome + "help" +
 							"\n" + projectHome + "faq" + "\n" +
 							"\nNews regarding " + projectName + " can be found in our blog:" +
-							"\nhttp://" + projectName.toLowerCase() + ".blogspot.com" +
+							"\nhttp://blog.bibsonomy.org" +
 							"\n" +
 							"\nReplies to this e-mail address are deleted, please send questions to webmaster@" + projectName.toLowerCase() + ".org." + "\n";
 
