@@ -674,7 +674,9 @@ public class BibTexUtils {
 	 * @param sortOrders
 	 */
 	public static void sortBibTexList(final List<Post<BibTex>> bibtexList, final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
-		Collections.sort(bibtexList, new BibTexPostComparator(sortKeys, sortOrders));
+		if (present(bibtexList) && bibtexList.size() > 1) {
+			Collections.sort(bibtexList, new BibTexPostComparator(sortKeys, sortOrders));
+		}
 	}
 
 	/**
