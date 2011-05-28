@@ -6,10 +6,10 @@ import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.webapp.command.GroupingCommand;
+import org.bibsonomy.webapp.command.mock.MockGroupingCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.junit.Test;
 import org.springframework.validation.Errors;
@@ -88,42 +88,5 @@ public class GroupingValidatorTest {
 		final Errors errors = new MapBindingResult(new HashMap(), "command");
 		GROUPING_VALIDATOR.validate(command, errors);
 		return errors;
-	}
-	
-	private static final class MockGroupingCommand implements GroupingCommand {
-		private String abstractGrouping;
-		private List<String> groups;
-		
-		/**
-		 * @return the abstractGrouping
-		 */
-		@Override
-		public String getAbstractGrouping() {
-			return this.abstractGrouping;
-		}
-		
-		/**
-		 * @param abstractGrouping the abstractGrouping to set
-		 */
-		@Override
-		public void setAbstractGrouping(String abstractGrouping) {
-			this.abstractGrouping = abstractGrouping;
-		}
-		
-		/**
-		 * @return the groups
-		 */
-		@Override
-		public List<String> getGroups() {
-			return this.groups;
-		}
-		
-		/**
-		 * @param groups the groups to set
-		 */
-		@Override
-		public void setGroups(List<String> groups) {
-			this.groups = groups;
-		}
 	}
 }
