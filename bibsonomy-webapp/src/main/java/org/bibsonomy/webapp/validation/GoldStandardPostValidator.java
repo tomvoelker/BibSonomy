@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.validation;
 
-import java.util.List;
-
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.springframework.validation.Errors;
@@ -21,7 +19,7 @@ public class GoldStandardPostValidator<R extends Resource> extends PostValidator
 	}
 	
 	@Override
-	public void validateGroups(Errors errors, String abstractGrouping, List<String> groups) {
+	public void validateGroups(Errors errors, EditPostCommand<R> commmand) {
 		// golstandards have no groups
 	}
 }

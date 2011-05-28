@@ -21,14 +21,13 @@ public class PostPublicationCommandValidator implements Validator<PostPublicatio
 		return PostPublicationCommand.class.equals(clazz);
 	}
 
-	/** This method names the errors of its target items "<resource.getInterHash()>".resource.<XYZ>
-	 * 
+	/**
+	 * this method names the errors of its target items "<resource.getInterHash()>".resource.<XYZ>
 	 */
 	@Override
 	public void validate(final Object target, final Errors errors) {
 		final PostPublicationCommand command = (PostPublicationCommand) target;
 		errors.pushNestedPath("bibtex");
-		
 		
 		final ListCommand<Post<BibTex>> listCommand = command.getBibtex();
 		
@@ -38,9 +37,10 @@ public class PostPublicationCommandValidator implements Validator<PostPublicatio
 
 		for (int i = 0; i < list.size(); i++) {
 			errors.pushNestedPath("list[" + i + "]");
-			//validator.validatePost(errors, list.get(i), command.getAbstractGrouping(), command.getGroups());
+			
 			validator.validateResource(errors, list.get(i).getResource());
-			validator.validateGroups(errors, command.getAbstractGrouping(), command.getGroups());
+			validator.validateGroups(errors, command);
+			
 			errors.popNestedPath();
 		}
 
