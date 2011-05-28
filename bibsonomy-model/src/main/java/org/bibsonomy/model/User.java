@@ -128,6 +128,10 @@ public class User implements Serializable {
 	 */
 	private List<Post<? extends Resource>> posts;
 	/**
+	 * List of tags which were assigned to this user via a tagged relationship
+	 */
+	private List<Tag> tags;
+	/**
 	 * the settings of this user
 	 */
 	private UserSettings settings;
@@ -840,6 +844,20 @@ public class User implements Serializable {
 	 */
 	public void setPosts(List<Post<? extends Resource>> posts) {
 		this.posts = posts;
+	}
+
+	/**
+	 * @param tags List of tags which were assigned to this user via a tagged relationship
+	 */
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
+	}
+
+	/**
+	 * @return List of tags which were assigned to this user via a tagged relationship 
+	 */
+	public List<Tag> getTags() {
+		return tags;
 	}
 
 	@Override
