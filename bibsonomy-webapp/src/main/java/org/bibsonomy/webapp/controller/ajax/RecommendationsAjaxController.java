@@ -35,6 +35,8 @@ import org.bibsonomy.webapp.view.Views;
  *       As in the post*controller, the post-command has to be filled -
  *       at least with grouping information, as private posts shouldn't
  *       be sent to remotely installed recommender
+ * TODO: controller could use the JSONRenderer to return recommandations as
+ * 		JSON and not XML
  *       
  * @param <R>
  *  
