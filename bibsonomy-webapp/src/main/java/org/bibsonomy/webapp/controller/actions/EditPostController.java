@@ -33,7 +33,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
-import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
@@ -67,7 +66,6 @@ import org.springframework.validation.ValidationUtils;
 public abstract class EditPostController<RESOURCE extends Resource,COMMAND extends EditPostCommand<RESOURCE>> extends SingleResourceListController implements MinimalisticController<COMMAND>, ErrorAware {
 	private static final Log log = LogFactory.getLog(EditPostController.class);
 	
-	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
 	
 	private TagRecommender tagRecommender;
@@ -88,7 +86,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * initialize lists
 		 */
-		command.setGroups(new ArrayList<String>());
+		GroupingCommandUtils.initGroupingCommand(command);
 		command.setRelevantGroups(new ArrayList<String>());
 		command.setRelevantTagSets(new HashMap<String, Map<String, List<String>>>());
 		command.setRecommendedTags(new TreeSet<RecommendedTag>());
@@ -98,7 +96,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * initialize post & resource
 		 */
 		command.setPost(new Post<RESOURCE>());
-		command.setAbstractGrouping(PUBLIC_GROUP.getName());
 		command.getPost().setResource(this.instantiateResource());
 
 		/*

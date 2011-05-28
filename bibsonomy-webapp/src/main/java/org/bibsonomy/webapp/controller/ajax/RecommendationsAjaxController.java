@@ -134,7 +134,6 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		 * initialize lists
 		 * FIXME: is it really neccessary to initialize ALL those lists? Which are really needed?
 		 */
-		command.setGroups(new ArrayList<String>());
 		command.setRelevantGroups(new ArrayList<String>());
 		command.setRelevantTagSets(new HashMap<String, Map<String, List<String>>>());
 		command.setRecommendedTags(new TreeSet<RecommendedTag>());
@@ -144,7 +143,8 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		 */
 		command.setPost(new Post<R>());
 		command.getPost().setResource(this.initResource());
-		command.setAbstractGrouping("public");
+		
+		GroupingCommandUtils.initGroupingCommand(command);
 		
 		return command;
 	}

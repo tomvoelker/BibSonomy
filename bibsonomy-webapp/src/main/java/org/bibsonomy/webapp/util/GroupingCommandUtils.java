@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +26,15 @@ public abstract class GroupingCommandUtils {
 	 * TODO
 	 */
 	public static final String OTHER_ABSTRACT_GROUPING = "other";
+	
+	/**
+	 * inits the command
+	 * @param command the command to init
+	 */
+	public static void initGroupingCommand(final GroupingCommand command) {
+		command.setAbstractGrouping(PUBLIC_GROUP.getName());
+		command.setGroups(new ArrayList<String>());
+	}
 	
 	/**
 	 * Copy the groups from the command into provided groups set (make proper groups from
