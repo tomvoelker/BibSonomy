@@ -43,8 +43,8 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
-import org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -68,13 +68,12 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	private static final Log log = LogFactory.getLog(EditPostController.class);
 	
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
-	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
-	
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
-
-	protected Errors errors;
+	
 	private TagRecommender tagRecommender;
 	private Captcha captcha;
+	
+	protected Errors errors;
 	protected RequestLogic requestLogic;
 	protected URLGenerator urlGenerator;
 
@@ -742,7 +741,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * populate groups in command
 		 */
-		initCommandGroups(command, post.getGroups());
+		GroupingCommandUtils.initCommandGroups(command, post.getGroups());
 		/*
 		 * create tag string for view input field (NOTE: this needs to be done
 		 * after initializing the relevantFor groups, because there the
@@ -870,7 +869,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * initialize groups
 		 */
-		this.initPostGroups(command, post);
+		GroupingCommandUtils.initGroups(command, post.getGroups());
 		/*
 		 * initialize relevantFor-tags FIXME: candidate for system tags
 		 */
@@ -931,89 +930,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			resource.setIntraHash(SimHash.getSimHash(resource, HashID.INTRA_HASH));
 		}
 	}
-
-	/**
-	 * Copy the groups from the command into the post (make proper groups from
-	 * them)
-	 * 
-	 * FIXME: copied from {@link RecommendationsAjaxController}
-	 * 
-	 * @param command -
-	 *            contains the groups as represented by the form fields.
-	 * @param post -
-	 *            the post whose groups should be populated from the command.
-	 * @see #initCommandGroups(EditPostCommand, Post)
-	 */
-	protected void initPostGroups(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
-		log.debug("initializing post's groups from command");
-		/*
-		 * we can avoid some checks here, because they're done in the validator
-		 * ...
-		 */
-		final Set<Group> postGroups = post.getGroups();
-		final String abstractGrouping = command.getAbstractGrouping();
-		if ("other".equals(abstractGrouping)) {
-			log.debug("found 'other' grouping");
-			/*
-			 * copy groups into post
-			 */
-			final List<String> groups = command.getGroups();
-			log.debug("groups in command: " + groups);
-			for (final String groupname : groups) {
-				postGroups.add(new Group(groupname));
-			}
-			log.debug("groups in post: " + postGroups);
-		} else {
-			log.debug("public or private post");
-			/*
-			 * if the post is private or public --> remove all groups and add
-			 * one (private or public)
-			 */
-			postGroups.clear();
-			postGroups.add(new Group(abstractGrouping));
-		}
-	}
-
-	/**
-	 * Populates the helper attributes of the command with the groups from the
-	 * post.
-	 * 
-	 * @param command -
-	 *            the command whose groups should be populated from the post.
-	 * @param post -
-	 *            the post which contains the groups.
-	 * @see #initPostGroups(EditPostCommand, Post)
-	 */
-	private void initCommandGroups(final EditPostCommand<RESOURCE> command, Set<Group> groups) {
-		log.debug("groups from post: " + groups);
-		final List<String> commandGroups = command.getGroups();
-		commandGroups.clear();
-		if (groups.contains(PRIVATE_GROUP)) {
-			/*
-			 * only private
-			 */
-			command.setAbstractGrouping(PRIVATE_GROUP.getName());
-		} else if (groups.contains(PUBLIC_GROUP)) {
-			/*
-			 * only public
-			 */
-			command.setAbstractGrouping(PUBLIC_GROUP.getName());
-		} else {
-			/*
-			 * other
-			 */
-			command.setAbstractGrouping("other");
-			/*
-			 * copy groups into command
-			 */
-			for (final Group group : groups) {
-				commandGroups.add(group.getName());
-			}
-		}
-		log.debug("abstractGrouping: " + command.getAbstractGrouping());
-		log.debug("commandGroups: " + command.getGroups());
-	}
-
+	
 	/**
 	 * Gets the tagsets for each group from the DB and stores them in the users
 	 * group list.

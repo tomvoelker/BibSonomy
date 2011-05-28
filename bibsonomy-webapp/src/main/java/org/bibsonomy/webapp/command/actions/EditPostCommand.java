@@ -8,6 +8,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.webapp.command.GroupingCommand;
 import org.bibsonomy.webapp.command.PostCommand;
 
 /**
@@ -15,7 +16,7 @@ import org.bibsonomy.webapp.command.PostCommand;
  * @version $Id$
  * @param <RESOURCE> The type of resource this command handles.
  */
-public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
+public class EditPostCommand<RESOURCE extends Resource> extends PostCommand implements GroupingCommand {
 	/**
 	 * The tags of the copied post.
 	 */
@@ -111,6 +112,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	/**
 	 * @return the groups
 	 */
+	@Override
 	public List<String> getGroups() {
 		return this.groups;
 	}
@@ -118,6 +120,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	/**
 	 * @param groups the groups to set
 	 */
+	@Override
 	public void setGroups(List<String> groups) {
 		this.groups = groups;
 	}
@@ -193,6 +196,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	/**
 	 * @return the abstractGrouping
 	 */
+	@Override
 	public String getAbstractGrouping() {
 		return this.abstractGrouping;
 	}
@@ -200,6 +204,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	/**
 	 * @param abstractGrouping the abstractGrouping to set
 	 */
+	@Override
 	public void setAbstractGrouping(String abstractGrouping) {
 		this.abstractGrouping = abstractGrouping;
 	}
