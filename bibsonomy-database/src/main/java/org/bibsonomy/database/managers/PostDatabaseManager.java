@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,7 +34,9 @@ import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.validation.DatabaseModelValidator;
 import org.bibsonomy.model.Group;
@@ -419,6 +422,35 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		param.setGroupId(GroupID.FRIENDS);
 		return this.postList("get" + this.resourceClassName + "ByUserFriends", param, session);
+	}
+	
+	/**
+	 * Get list of all (public) posts from users for which the requesting user
+	 * has added an accordingly tagged user relationship. BibSonomy's 
+	 * friendship relation (=trust network) corresponds to the system tag 'sys:network:bibsonomy-friends' 
+	 * 
+	 * @param user
+	 * @param tags
+	 * @param limit
+	 * @param offset
+	 * @param systemTags
+	 * @param session
+	 * @return
+	 */
+	public List<Post<R>> getPostsByTaggedUserRelation(final String user, final Set<Tag> tags, final List<String> userRelationTags, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		final P param = this.createParam(user, null, limit, offset);
+		param.addAllToSystemTags(systemTags);
+		param.setTags(tags);
+		param.addRelationTags(userRelationTags);
+		
+		if (SystemTagsUtil.containsSystemTag(userRelationTags, NetworkRelationSystemTag.BibSonomyFriendSystemTag)) {
+			// the BibSonomy-Friend-Graph is the trust network
+			param.setGroupId(GroupID.FRIENDS);
+		} else {
+			param.setGroupId(GroupID.PUBLIC);
+		}
+		
+		return this.postList("get" + this.resourceClassName + "ByTaggedUserRelation", param, session);
 	}
 
 	/**

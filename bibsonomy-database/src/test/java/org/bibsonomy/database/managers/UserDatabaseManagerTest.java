@@ -20,8 +20,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.UnsupportedRelationException;
-import org.bibsonomy.database.systemstags.search.MatchAllSystemTag;
-import org.bibsonomy.database.systemstags.search.NetworkUserSystemTag;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -428,7 +427,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// FIXME: not FOLLOWERS but followees!
 		List<User> followedByUser = userDb.getUserRelation(sourceUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
-		List<User> friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, NetworkUserSystemTag.BibSonomyNetworkUser, this.dbSession);
+		List<User> friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag, this.dbSession);
 		
 		assertEquals(1, followedByUser.size());
 		assertEquals("testuser1", followedByUser.get(0).getName());
@@ -437,7 +436,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals("testuser1", friendsOfUser.get(0).getName());
 		
 		userDb.deleteUserRelation(sourceUser, targetUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
-		userDb.deleteUserRelation(sourceUser, targetUser, UserRelation.OF_FRIEND, NetworkUserSystemTag.BibSonomyNetworkUser, this.dbSession);
+		userDb.deleteUserRelation(sourceUser, targetUser, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag, this.dbSession);
 		
 		followedByUser = userDb.getUserRelation(sourceUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
 		assertEquals(0, followedByUser.size());	
@@ -459,6 +458,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		String tag0 = "football";
 		String tag1 = "sys:network:facebook";
 		String tag2 = "this_tag_should_not_occur";
+		String tag3 = "abc";
 		
 		//--------------------------------------------------------------------
 		// followers: tagged follower relations are not allowed
@@ -476,17 +476,19 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// friends: allow tagged friendship relations as well as BibSonomy-Friendship relations (default)
 		//--------------------------------------------------------------------
-		// tag target user with tag1
+		// tag target user with tag0
 		userDb.createUserRelation(sourceUser, targetUser0, UserRelation.OF_FRIEND, tag0, this.dbSession);
 		List<User> friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, tag0, this.dbSession);
 		assertEquals(1, friendsOfUser.size());
 		assertEquals(targetUser0, friendsOfUser.get(0).getName());
+		assertEquals(1, friendsOfUser.get(0).getTags().size());
+		assertEquals(tag0, friendsOfUser.get(0).getTags().get(0).getName());
 		
-		// look for users tagged with tag3 (no one)
+		// look for users tagged with tag2 (no one)
 		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, tag2, this.dbSession);
 		assertEquals(0, friendsOfUser.size());
 		
-		// additionally tag target user with tag2
+		// additionally tag target user with tag1
 		userDb.createUserRelation(sourceUser, targetUser1, UserRelation.OF_FRIEND, tag1, this.dbSession);
 		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, tag0, this.dbSession);
 		assertEquals(1, friendsOfUser.size());
@@ -496,17 +498,17 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(targetUser1, friendsOfUser.get(0).getName());
 		
 		// there should be no BibSonomy friendship relation among source and target user
-		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, null, this.dbSession);
+		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag, this.dbSession);
 		assertEquals(0, friendsOfUser.size());
 
 		// add a bibsonomy friendship link
-		userDb.createUserRelation(sourceUser, targetUser2, UserRelation.OF_FRIEND, null, this.dbSession);
-		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, null, this.dbSession);
+		userDb.createUserRelation(sourceUser, targetUser2, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag, this.dbSession);
+		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag, this.dbSession);
 		assertEquals(1, friendsOfUser.size());
 		assertEquals(targetUser2, friendsOfUser.get(0).getName());
 		
 		// all together there should be three relations from source to target user
-		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, MatchAllSystemTag.VALUE, this.dbSession);
+		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, null, this.dbSession);
 		assertEquals(3, friendsOfUser.size());
 
 		// remove tag 1 from target user
@@ -520,6 +522,17 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, tag1, this.dbSession);
 		assertEquals(1, friendsOfUser.size());
 		assertEquals(targetUser1, friendsOfUser.get(0).getName());
+
+		userDb.createUserRelation(sourceUser, targetUser2, UserRelation.OF_FRIEND, tag3, this.dbSession);
+		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, null, this.dbSession);
+		assertEquals(2, friendsOfUser.size());
+		userDb.deleteUserRelation(sourceUser, targetUser2, UserRelation.OF_FRIEND, tag1, this.dbSession);
+		userDb.deleteUserRelation(sourceUser, targetUser2, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag, this.dbSession);
+		userDb.deleteUserRelation(sourceUser, targetUser2, UserRelation.OF_FRIEND, tag3, this.dbSession);
+		userDb.createUserRelation(sourceUser, targetUser1, UserRelation.OF_FRIEND, tag3, this.dbSession);
+		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, null, this.dbSession);
+		assertEquals(1, friendsOfUser.size());
+		assertEquals(2, friendsOfUser.get(0).getTags().size());
 	}
 	
 	

@@ -120,6 +120,16 @@ public abstract class GenericParam {
 	private Set<String> groupNames;
 	
 	/**
+	 * List of tags (with index) which are assigned to relations 
+	 */
+	private final List<TagIndex> relationTagIndex;
+
+	/**
+	 * List of tags which are assigned to relations 
+	 */
+	private final List<String> relationTags;
+	
+	/**
 	 * Should tagnames (names of tags and concepts) be case sensitive; by
 	 * default this is false, i.e. tagnames aren't case sensitive.
 	 */
@@ -223,6 +233,9 @@ public abstract class GenericParam {
 		this.days = -1;
 		
 		this.systemTags = new HashMap<String, SystemTag>();
+		
+		this.relationTags = new ArrayList<String>();
+		this.relationTagIndex = new ArrayList<TagIndex>();
 	}
 	
 	/**
@@ -326,6 +339,41 @@ public abstract class GenericParam {
 		// TODO: if this methods name was intuitive, size-1 should be returned
 		// because tagIndex[size] is out of bounds
 		return this.tagIndex.size();
+	}
+
+	/**
+	 * TODO comment
+	 * @return
+	 */
+	public void addRelationTag(final String tagName) {
+		this.relationTags.add(tagName);
+		this.relationTagIndex.add(new TagIndex(tagName, this.relationTagIndex.size() + 1));
+	}
+
+	/**
+	 * TODO comment
+	 * @return
+	 */
+	public void addRelationTags(List<String> relationTags) {
+		for (final String tagName : relationTags) {
+			this.addRelationTag(tagName);
+		}
+	}
+	
+	/**
+	 * TODO comment
+	 * @return
+	 */
+	public List<String> getRelationTags() {
+		return relationTags;
+	}
+
+	/**
+	 * TODO comment
+	 * @return
+	 */
+	public List<TagIndex> getRelationTagIndex() {
+		return relationTagIndex;
 	}
 	
 	/**
@@ -996,4 +1044,5 @@ public abstract class GenericParam {
 	public String toStringByReflection() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
+
 }

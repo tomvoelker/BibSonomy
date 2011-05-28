@@ -12,6 +12,7 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -32,6 +33,10 @@ public class GetResourcesOfFriendsByUser<R extends Resource, P extends ResourceP
 	protected boolean canHandle(final P param) {
 		return (present(param.getUserName()) &&
 				param.getGrouping() == GroupingEntity.FRIEND &&
+				// discriminate from the tagged user relation queries
+				( !present(param.getRelationTags()) || 
+					param.getRelationTags().size()==1 && (NetworkRelationSystemTag.BibSonomyFriendSystemTag.equals(param.getRelationTags().get(0)))
+				) &&
 				present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&

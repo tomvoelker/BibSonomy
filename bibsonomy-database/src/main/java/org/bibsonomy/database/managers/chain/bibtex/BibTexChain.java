@@ -15,6 +15,7 @@ import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHash;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNames;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNamesAndUser;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroup;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroupAndTag;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage;
@@ -56,6 +57,7 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByFollowedUsers;
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsFromInbox;
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsWithRepository;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByTaggedUserRelation;
 
 	/**
 	 * Constructs the chain
@@ -83,6 +85,7 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 		this.getPublicationsByFollowedUsers = new GetResourcesByFollowedUsers<BibTex, BibTexParam>();
 		this.getPublicationsFromInbox = new GetResourcesFromInbox<BibTex, BibTexParam>();
 		this.getPublicationsWithRepository = new GetBibtexWithRepository();
+		this.getPublicationsByTaggedUserRelation = new GetResourcesByTaggedUserRelation();
 
 		this.getPublicationsWithRepository.setNext(this.getPublicationsByKey);
 		this.getPublicationsByKey.setNext(this.getPublicationsForHomepage);
@@ -105,6 +108,7 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 		this.getPublicationsByConceptByTag.setNext(this.getPublicationsByConceptForGroup);
 		this.getPublicationsByConceptForGroup.setNext(this.getPublicationsFromBasketForUser);
 		this.getPublicationsFromBasketForUser.setNext(this.getPublicationsFromInbox);
+		this.getPublicationsFromInbox.setNext(this.getPublicationsByTaggedUserRelation);
 	}
 
 	@Override

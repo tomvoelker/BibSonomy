@@ -62,6 +62,9 @@
 		<result property="simpleInterface"  column="simple_interface"  	javaType="boolean" />	
 	</resultMap>	
 
+	<resultMap id="userWithTags" extends="Common.user" class="user">
+		<result property="tags" column="tag" resultMap="Common.tag"/>
+	</resultMap>
 
 	<!-- IMPORTANT: changing this requires you to change "insertUserAttributes", too! -->
 	<sql id="allUserAttributes">
@@ -133,9 +136,46 @@
 	
 	<!-- match friendship relations according to given tag -->
 	<sql id="matchTaggedRelation">
-		<isNotEqual prepend="AND" property="tag.name" compareValue="sys:all">
-			tag = #tag.name#
-		</isNotEqual>  
+		<isNotNull prepend="AND" property="tag.name">
+			tag_name = #tag.name#
+		</isNotNull>  
 	</sql>
+	
+	<!-- Should be used in conjunction with tagWhereQuery. -->
+	<sql id="relationTagFromQuery">
+	    friends rt1
+		<iterate property="relationTagIndex">
+			<isGreaterThan property="relationTagIndex[].index" compareValue="1">
+				JOIN friends rt$relationTagIndex[].index$ USING (user_name,f_user_name)
+			</isGreaterThan>
+		</iterate>
+	</sql>
+	
+	<!--
+	   Should be used in conjunction with tagFromQuery.
+
+	   Depending on the number of tags it creates a query like:
+	        t1.tag_name = 'some-tag'
+	    AND t2.tag_name = 'a-tag'
+	    AND t3.tag_name = 'another-tag'
+	    AND t1.content_id = t2.content_id
+	    AND t2.content_id = t3.content_id
+	-->
+	<sql id="relationTagTagWhereQuery">
+		<iterate property="relationTagIndex" conjunction="AND">
+		    rt$relationTagIndex[].index$.tag_name = lower(#relationTagIndex[].tagName#) 
+		</iterate>
+	</sql>
+	<sql id="relationTagUsernameWhereQuery">
+		<iterate property="relationTagIndex" conjunction="AND">
+		    rt$relationTagIndex[].index$.user_name = #userName# 
+		</iterate>
+	</sql>
+	<sql id="relationTagResourceWhereQuery">
+		<iterate property="relationTagIndex" conjunction="AND">
+			b.user_name = rt$relationTagIndex[].index$.f_user_name 
+		</iterate>
+	</sql>
+	
 	
 </sqlMap>

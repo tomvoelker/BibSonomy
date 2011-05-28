@@ -15,7 +15,7 @@ import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.user.UserChain;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.systemstags.search.NetworkUserSystemTag;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.database.validation.DatabaseModelValidator;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
@@ -604,7 +604,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			    }
 				break;
 			case OF_FRIEND:
-				handleTaggedRelationship(tag, param);
+				if (present(tag)) {
+				    // restrict to users labeled with the given tag, if present
+				    param.setTag(new Tag(tag));
+				} else {
+					String bibSonomyUserTag = NetworkRelationSystemTag.BibSonomyFriendSystemTag;
+					param.setTag(new Tag(bibSonomyUserTag));
+				}
 		    	// TODO: should we introduce network_user_ids???
 				break;
 			default:
@@ -661,7 +667,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * get all users, that have sourceUser in their friends list
 			 */
-	    	handleTaggedRelationship(tag, param);
+			handleTaggedRelationship(tag, param);
 			break;
 		default:
 			/*
@@ -733,9 +739,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (present(tag)) {
 		    // restrict to users labeled with the given tag, if present
 		    param.setTag(new Tag(tag));
-		} else {
-			String bibSonomyUserTag = NetworkUserSystemTag.BibSonomyNetworkUser;
-			param.setTag(new Tag(bibSonomyUserTag));
 		}
 	}
 

@@ -103,9 +103,9 @@
 	</insert>
 	
 	<insert id="logFriendDelete" parameterClass="userParam">
-		INSERT INTO log_friends (friends_id, user_name, f_user_name, tag, friendship_date) 
-			SELECT friends_id, user_name, f_user_name, tag, friendship_date FROM friends 
-			WHERE user_name = #userName# AND f_user_name = #requestedUserName# AND tag = #tag.name#
+		INSERT INTO log_friends (friends_id, user_name, f_user_name, tag_name, friendship_date) 
+			SELECT friends_id, user_name, f_user_name, tag_name, friendship_date FROM friends 
+			WHERE user_name = #userName# AND f_user_name = #requestedUserName# AND tag_name = #tag.name#
 	</insert>
 	
 	<!-- spam framework logs -->

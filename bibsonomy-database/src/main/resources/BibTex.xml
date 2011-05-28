@@ -191,6 +191,26 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
+	
+	<select id="getBibTexByTaggedUserRelation" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, g.group, h.ctr AS count, <include refid="reviewRatingsRows" />
+		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
+			(SELECT content_id, date              <!-- publications from users which are tagged accordingly -->
+			 FROM bibtex b, <include refid="relationTagFromQuery"/>
+			 WHERE <include refid="relationTagTagWhereQuery"/>         <!-- to see users which are tagged accordingly by the currUser -->
+			   AND <include refid="relationTagUsernameWhereQuery"/>    <!--                            ++++                           -->
+			   AND <include refid="relationTagResourceWhereQuery"/>    <!-- take all rows, which are owned by a related user -->
+			   AND b.group = #groupId#
+			 ORDER BY date DESC
+			 LIMIT #limit# OFFSET #offset# ) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
+		WHERE t.group = g.group                                                  <!-- join groupname -->
+		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
+		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		      <include refid="sysTagsEntryType"/>
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select>	
+	
 	<select id="getBibTexByFollowedUsers" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, g.group_name, g.group, h.ctr AS count,  <include refid="reviewRatingsRows" />
 		FROM (SELECT b.*                             <!-- publications from users currUser is following which currUser may see -->

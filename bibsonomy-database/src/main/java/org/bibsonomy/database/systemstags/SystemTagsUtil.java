@@ -39,9 +39,7 @@ public class SystemTagsUtil {
 	public final static String DELIM = ":";
 
 
-	/** The systemTagFactory that manages our registered systemTags */
-	private static final SystemTagFactory sysTagFactory = SystemTagFactory.getInstance();
-
+	
 	/*
 	 * Methods to tell systemTags from "regular" tags 
 	 */
@@ -53,7 +51,7 @@ public class SystemTagsUtil {
 	 * @return true if the tag is an executable systemTag, false otherwise
 	 */
 	public static boolean isExecutableSystemTag(final String tagName) {
-		return sysTagFactory.isExecutableSystemTag(tagName);
+		return getSystagfactory().isExecutableSystemTag(tagName);
 	}
 
 	/**
@@ -63,7 +61,7 @@ public class SystemTagsUtil {
 	 * @return true if the tag is a searchSystemTag, false otherwise
 	 */
 	public static boolean isSearchSystemTag(final String tagName) {
-		return sysTagFactory.isSearchSystemTag(tagName);
+		return getSystagfactory().isSearchSystemTag(tagName);
 	}
 
 	/**
@@ -73,7 +71,7 @@ public class SystemTagsUtil {
 	 * @return true if the tag is a searchSystemTag, false otherwise
 	 */
 	public static boolean isMarkUpSystemTag(final String tagName) {
-		return sysTagFactory.isMarkUpSystemTag(tagName);
+		return getSystagfactory().isMarkUpSystemTag(tagName);
 	}
 
 	/**
@@ -85,9 +83,9 @@ public class SystemTagsUtil {
 	 * @return true if the tag is a systemTag, false otherwise
 	 */
 	public static boolean isSystemTag(final String tagName) {
-		return sysTagFactory.isExecutableSystemTag(tagName) || 
-		sysTagFactory.isSearchSystemTag(tagName) ||
-		sysTagFactory.isMarkUpSystemTag(tagName);
+		return getSystagfactory().isExecutableSystemTag(tagName) || 
+		getSystagfactory().isSearchSystemTag(tagName) ||
+		getSystagfactory().isMarkUpSystemTag(tagName);
 	}
 
 	/**
@@ -182,7 +180,7 @@ public class SystemTagsUtil {
 	 * 		   or null, if the given tag does not describe a systemTag
 	 */
 	public static ExecutableSystemTag createExecutableTag(final Tag tag) {
-		final ExecutableSystemTag sysTag = sysTagFactory.getExecutableSystemTag(tag.getName());
+		final ExecutableSystemTag sysTag = getSystagfactory().getExecutableSystemTag(tag.getName());
 		if (present(sysTag)) {
 			sysTag.setArgument(extractArgument(tag.getName()));
 			setIndividualFields(sysTag, tag);
@@ -197,7 +195,7 @@ public class SystemTagsUtil {
 	private static void setIndividualFields(final ExecutableSystemTag sysTag, final Tag tag) {
 		if (ForGroupTag.class.isAssignableFrom(sysTag.getClass())) {
 			// The forGroupTag needs a DBSessionFactory to create a post for the group
-			((ForGroupTag)sysTag).setDBSessionFactory(sysTagFactory.getDbSessionFactory());
+			((ForGroupTag)sysTag).setDBSessionFactory(getSystagfactory().getDbSessionFactory());
 		} else if (ForFriendTag.class.isAssignableFrom(sysTag.getClass())) {
 			// The forFriendTag needs access to the regular Tag of its post
 			((ForFriendTag)sysTag).setTag(tag);
@@ -212,7 +210,7 @@ public class SystemTagsUtil {
 	 * 		   or null, if the given tag does not describe a systemTag
 	 */
 	public static SearchSystemTag createSearchSystemTag(final String tagName) {
-		final SearchSystemTag sysTag = sysTagFactory.getSearchSystemTag(tagName);
+		final SearchSystemTag sysTag = getSystagfactory().getSearchSystemTag(tagName);
 		if (present(sysTag)) {
 			sysTag.setArgument(extractArgument(tagName));
 		}
@@ -227,7 +225,7 @@ public class SystemTagsUtil {
 	 * 		   or null, if the given tag does not describe a systemTag
 	 */
 	public static MarkUpSystemTag createMarkUpSystemTag(final String tagName) {
-		final MarkUpSystemTag sysTag = sysTagFactory.getMarkUpSystemTag(tagName);
+		final MarkUpSystemTag sysTag = getSystagfactory().getMarkUpSystemTag(tagName);
 		if (present(sysTag)) {
 			sysTag.setArgument(extractArgument(tagName));
 		}
@@ -323,5 +321,12 @@ public class SystemTagsUtil {
 			present(sysTagMatcher.group(3));	// argument
 		}
 		return false;
+	}
+
+	/** 
+	 * The systemTagFactory that manages our registered systemTags
+	 */
+	public static SystemTagFactory getSystagfactory() {
+		return SystemTagFactory.getInstance();
 	}
 }
