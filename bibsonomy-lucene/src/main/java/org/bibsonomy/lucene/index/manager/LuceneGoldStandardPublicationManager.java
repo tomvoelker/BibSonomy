@@ -44,7 +44,7 @@ public class LuceneGoldStandardPublicationManager extends LuceneResourceManager<
 	}
 	
 	@Override
-	protected int updateIndex(long currentLogDate, int lastId, long lastLogDate) {
+	protected int updateIndex(final long currentLogDate, int lastId, final long lastLogDate) {
 	    /*
 	     * get new posts 
 	     */
@@ -61,18 +61,20 @@ public class LuceneGoldStandardPublicationManager extends LuceneResourceManager<
 	     */
 	    for (final LucenePost<GoldStandardPublication> post : newPosts) {
 	    	final Integer contentId = post.getContentId();
-		contentIdsToDelete.add(contentId);
+	    	contentIdsToDelete.add(contentId);
 	    	lastId = Math.max(contentId, lastId);
 	    }
 	    
 	    this.resourceIndex.deleteDocumentsInIndex(contentIdsToDelete);
 
 	    final Date currentDate = new Date(currentLogDate);
+	    
 	    /*
 	     * add all new posts to the index 
 	     */
 	    for (final LucenePost<GoldStandardPublication> post : newPosts) {
-		post.setLastLogDate(currentDate);
+	    	post.setLastLogDate(currentDate);
+	    	post.setLastTasId(lastId);
 	    	final Document postDoc = this.resourceConverter.readPost(post);
 	    	this.resourceIndex.insertDocument(postDoc);
 	    }

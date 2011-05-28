@@ -1,9 +1,5 @@
 package org.bibsonomy.lucene.util.generator;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
@@ -35,12 +31,12 @@ public class LuceneGenerateBibTexIndex extends LuceneGenerateResourceIndex<BibTe
 	 * @param args 
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {
 		// configure jndi context
 		JNDITestDatabaseBinder.bind();
 
 		// create index
-	    LuceneGenerateResourceIndex<BibTex> indexer = LuceneGenerateBibTexIndex.getInstance();
+	    final LuceneGenerateResourceIndex<BibTex> indexer = LuceneGenerateBibTexIndex.getInstance();
 	    indexer.generateIndex();
 	    indexer.shutdown();
 	}

@@ -134,8 +134,6 @@ public class LuceneResourceManager<R extends Resource> {
 	 * To keep track of deleted posts, we further hold the last log_date t and query for
 	 * all content_ids from the log_table with a change_date >= t-epsilon. These posts are 
 	 * removed from the index together with the updated posts. 
-	 * 
-	 * @param optimizeindex indicate whether the index should be optimized
 	 */
 	protected void updateIndexes()  {
 		synchronized(this) {
@@ -252,8 +250,6 @@ public class LuceneResourceManager<R extends Resource> {
 
 	/**
 	 * update each registered index
-	 * 
-	 * @param optimizeIndex flag indicating whether the indices should be optimized after commiting changes
 	 */
 	protected void updateIndex() {
 		// if lucene updater is disabled, return without doing something
@@ -293,16 +289,18 @@ public class LuceneResourceManager<R extends Resource> {
 	 */
 	public void updateAndReloadIndex() {
 	    // Do not update indexes during index-generation
-	    if(generatingIndex) return;
+	    if (this.generatingIndex) {
+	    	return;
+	    }
 	    
-		    // switch active index
-		    this.idxSelect = (idxSelect + 1) % this.resourceIndices.size();
-		    
-		    // update passive index
-		    updateIndex();
-		    
-		    // make tell searcher to use the updated index
-		    reloadIndex();
+	    // switch active index
+	    this.idxSelect = (idxSelect + 1) % this.resourceIndices.size();
+	    
+	    // update passive index
+	    updateIndex();
+	    
+	    // make tell searcher to use the updated index
+	    reloadIndex();
 	}
 	
 	
@@ -312,11 +310,13 @@ public class LuceneResourceManager<R extends Resource> {
 	 **/
 	public void generateIndex() {
 		// Allow only one index-generation at a time
-		if(generatingIndex) return;
+		if (this.generatingIndex) {
+			return;
+		}
 		
 		// Prepare index generation
 		synchronized(this) {
-			generatingIndex = true;
+			this.generatingIndex = true;
 		    selectActiveIndex(1);
 		}
 		
@@ -332,7 +332,7 @@ public class LuceneResourceManager<R extends Resource> {
 			}
 		});
 
-		// Run
+		// run in another thread (non blocking)
 		new Thread(generator).start();
 	}
 	
@@ -342,7 +342,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 * so they can be overwritten during index-generation.
 	 * @param id the index-id
 	 * */
-	protected void selectActiveIndex(int id) {
+	protected void selectActiveIndex(final int id) {
 		if(id >= 0  &&  id < resourceIndices.size() && generatingIndex) {
 			log.info("Switching active lucene-index for resource " + getResourceName() + " to id " + id +".");
 			
@@ -352,12 +352,12 @@ public class LuceneResourceManager<R extends Resource> {
 			this.resourceIndex = this.resourceIndices.get(idxSelect);
 
 		    // Close the other indices
-		    for(LuceneResourceIndex<? extends Resource> index: this.resourceIndices) {
+		    for(final LuceneResourceIndex<? extends Resource> index: this.resourceIndices) {
 		    	if(index.getIndexId() != id) {
 		    		try {
 		    			index.close();
 			    		log.info("Successfully closed redundant index.");
-		    		} catch (Throwable e) {
+		    		} catch (final Throwable e) {
 		    	    	log.warn("Failed to close index.", e);
 		    	    }
 		    	}
@@ -365,7 +365,10 @@ public class LuceneResourceManager<R extends Resource> {
 		}
 	}
 	
-	/** Boolean indicating whether an index-generation is currently running. */
+	/**
+	 * @return	<code>true</code> iff the index manager currently generating
+	 * 			the index
+	 */
 	public boolean isGeneratingIndex() {
 	    return generatingIndex;
 	}
@@ -400,7 +403,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 */
 	private void updatePredictions() {
 	    // keeps track of the newest log_date during last index update
-	    final Long lastLogDate  = this.resourceIndex.getLastLogDate()-QUERY_TIME_OFFSET_MS;
+	    final Long lastLogDate = this.resourceIndex.getLastLogDate() - QUERY_TIME_OFFSET_MS;
 
 	    // get date of last index update
 	    final Date fromDate = new Date(lastLogDate);
@@ -410,12 +413,12 @@ public class LuceneResourceManager<R extends Resource> {
 	    // the prediction table holds up to two entries per user 
 	    // - the first entry is the one to consider (ordered descending by date) 
 	    // we keep track of users which appear twice via this set
-	    Set<String> alreadyUpdated = new HashSet<String>();
-	    for (User user : predictedUsers) {
-		if (!alreadyUpdated.contains(user.getName())) {
-		    alreadyUpdated.add(user.getName());
-		    flagSpammer(user);
-		}
+	    final Set<String> alreadyUpdated = new HashSet<String>();
+	    for (final User user : predictedUsers) {
+			if (!alreadyUpdated.contains(user.getName())) {
+			    alreadyUpdated.add(user.getName());
+			    flagSpammer(user);
+			}
 	    }
 	}
 	
@@ -503,7 +506,7 @@ public class LuceneResourceManager<R extends Resource> {
 	/** 
 	 * @param generator the generator to set 
 	 */
-	public void setGenerator(LuceneGenerateResourceIndex<R> generator) {
+	public void setGenerator(final LuceneGenerateResourceIndex<R> generator) {
 		this.generator = generator;
 	}
 	

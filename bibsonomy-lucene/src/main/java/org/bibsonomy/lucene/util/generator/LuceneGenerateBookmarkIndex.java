@@ -1,9 +1,5 @@
 package org.bibsonomy.lucene.util.generator;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.Bookmark;
@@ -34,12 +30,12 @@ public class LuceneGenerateBookmarkIndex extends LuceneGenerateResourceIndex<Boo
 	 * @param args 
 	 * @throws Exception  
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {
 		// configure jndi context
 		JNDITestDatabaseBinder.bind();
 		
 		// create index
-	    LuceneGenerateResourceIndex<Bookmark> indexer = LuceneGenerateBookmarkIndex.getInstance();
+	    final LuceneGenerateResourceIndex<Bookmark> indexer = LuceneGenerateBookmarkIndex.getInstance();
 	    indexer.generateIndex();
 	    indexer.shutdown();
 	}

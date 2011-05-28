@@ -149,7 +149,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
                 try {
     		    statistics.setCurrent(indexReader.isCurrent());
                     statistics.setLastModified(IndexReader.lastModified(indexReader.directory()));
-		} catch (IOException e1) {
+		} catch (final IOException e1) {
 		    log.error(e1);
 		}
 	    }
@@ -161,12 +161,14 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 
 	/** 
 	 * Close index-writer and index-reader and disable this index.
-	 * */
+	 * @throws CorruptIndexException 
+	 * @throws IOException 
+	 */
 	public void close() throws CorruptIndexException, IOException{
-	    if(indexWriter != null) {
+	    if (indexWriter != null) {
 	    	this.indexWriter.close();
 	    }
-	    if(indexReader != null) {
+	    if (indexReader != null) {
 	    	this.indexReader.close();
 	    }
 	    
@@ -244,7 +246,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * set newest log_date[ms] 
 	 * @param lastLogDate the lastLogDate to set
 	 */
-	public void setLastLogDate(final long lastLogDate) {
+	public void setLastLogDate(final Long lastLogDate) {
 		this.lastLogDate = lastLogDate;
 	}
 	
@@ -712,8 +714,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	protected abstract Class<? extends Resource> getResourceType();
 	
 	/**
-	 * get managed resource name
-	 * @return
+	 * @return the managed resource name
 	 */
 	public String getResourceName() {
 		String name = getResourceType().getCanonicalName();
