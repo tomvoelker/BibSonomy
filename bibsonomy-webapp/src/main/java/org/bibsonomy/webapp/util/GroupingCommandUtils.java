@@ -6,14 +6,20 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.webapp.command.GroupingCommand;
 
 /**
+ * utils class for grouping command
+ * 
  * @author dzo
  * @version $Id$
  */
 public abstract class GroupingCommandUtils {
 	private static final Log log = LogFactory.getLog(GroupingCommandUtils.class);
+	
+	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
+	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 	
 	/**
 	 * TODO
@@ -56,5 +62,45 @@ public abstract class GroupingCommandUtils {
 			groupsToInit.clear();
 			groupsToInit.add(new Group(abstractGrouping));
 		}
+	}
+
+	/**
+	 * Populates the helper attributes of the command with the groups from the
+	 * post.
+	 * 
+	 * @param command -
+	 *            the command whose groups should be populated 
+	 * @param groups -
+	 *            the groups.
+	 * @see #initGroups(GroupingCommand, Set)
+	 */
+	public static void initCommandGroups(final GroupingCommand command, final Set<Group> groups) {
+		log.debug("given groups: " + groups);
+		final List<String> commandGroups = command.getGroups();
+		commandGroups.clear();
+		if (groups.contains(PRIVATE_GROUP)) {
+			/*
+			 * only private
+			 */
+			command.setAbstractGrouping(PRIVATE_GROUP.getName());
+		} else if (groups.contains(PUBLIC_GROUP)) {
+			/*
+			 * only public
+			 */
+			command.setAbstractGrouping(PUBLIC_GROUP.getName());
+		} else {
+			/*
+			 * other
+			 */
+			command.setAbstractGrouping(OTHER_ABSTRACT_GROUPING);
+			/*
+			 * copy groups into command
+			 */
+			for (final Group group : groups) {
+				commandGroups.add(group.getName());
+			}
+		}
+		log.debug("abstractGrouping: " + command.getAbstractGrouping());
+		log.debug("commandGroups: " + command.getGroups());
 	}
 }
