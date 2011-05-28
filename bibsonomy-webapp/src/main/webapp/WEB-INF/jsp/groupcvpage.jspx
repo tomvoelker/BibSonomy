@@ -17,11 +17,13 @@
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
+	<fmt:message key="navi.cv" var="cvPageTitle" />
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}">
+	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${cvPageTitle}">
 		
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/groupcvpage.css" />
+			<script type="text/javascript" src="${resdir}/javascript/cvpage.js">&amp;nbsp;</script> 
 	    </jsp:attribute>	
 		
 		<jsp:attribute name="sidebar">
@@ -39,7 +41,7 @@
 		
 		<!-- heading -->
 		<jsp:attribute name="heading">
-		    <fmt:message key="navi.cv"/> ::
+		    <c:out value="${cvPageTitle}" /> ::
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.group"/></a> :: 
 			<a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a> ::
 			<form action="/group/${fn:escapeXml(command.requestedGroup)}" method="get" class="smallform">
@@ -109,23 +111,6 @@
  	  					</c:forEach>
  	  				</ul>
 				</div>
-				<script>
-					$(document).ready( function() {
-						$("a.hand").each(function(index, link) {
-							$(link).click(function() {
-								
-								var result = $(this).next(".details").toggle();
-								if ($(result).is(":visible")) {
-									$(this).html(" " + getString("cv.options.hide_details"));
-										
-								} else {
-									$(this).html(" " + getString("cv.options.show_details"));
-								}
-							});
-						});
-					});
-				</script>					
-				
 			</c:if>
 						
 			

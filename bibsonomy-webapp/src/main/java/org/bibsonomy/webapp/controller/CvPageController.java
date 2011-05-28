@@ -20,8 +20,7 @@ import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Controller for the cv page:
- * - /cv/user/USERNAME
- * 
+ * 	- /cv/user/USERNAME
  * 
  * @author Philipp Beau
  * @version $Id$
@@ -29,14 +28,12 @@ import org.springframework.beans.factory.annotation.Required;
 public class CvPageController extends ResourceListController implements MinimalisticController<CvPageViewCommand> {
 
 	private WikiUtil wikiRenderer;
-	
+
 	/**
 	 * implementation of {@link MinimalisticController} interface
 	 */
 	@Override
 	public View workOn(final CvPageViewCommand command) {
-		command.setPageTitle("Curriculum vitae");
-		
 		final String requUser = command.getRequestedUser();
 
 		if (!present(requUser)) {
@@ -50,29 +47,30 @@ public class CvPageController extends ResourceListController implements Minimali
 
 		this.setTags(command, Resource.class, groupingEntity, requUser, null, command.getRequestedTagsList(), null, 1000, null);
 
-		/* TODO: remove (lists are loaded by wiki tags)
-		 * retrieve and set the requested publication(s) / bookmark(s) with the "myown" tag
+		/*
+		 * TODO: remove (lists are loaded by wiki tags) retrieve and set the
+		 * requested publication(s) / bookmark(s) with the "myown" tag
 		 */
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
-			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();		
+			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
 			this.setList(command, resourceType, groupingEntity, requUser, Collections.singletonList(MyOwnSystemTag.NAME), null, Order.ADDED, null, null, entriesPerPage);
 		}
-		
-		/* 
+
+		/*
 		 * convert the wiki syntax
 		 */
 		Wiki wiki = this.logic.getWiki(requestedUser.getName(), null);
-		
+
 		if (!present(wiki)) {
 			wiki = new Wiki();
 		}
-		
+
 		/*
 		 * set the user to render
 		 */
 		this.wikiRenderer.setUser(requestedUser);
 		command.setWikiText(this.wikiRenderer.render(wiki.getWikiText()));
-		
+
 		return Views.CVPAGE;
 	}
 
@@ -85,10 +83,11 @@ public class CvPageController extends ResourceListController implements Minimali
 	}
 
 	/**
-	 * @param wikiRenderer the wikiRenderer to set
+	 * @param wikiRenderer
+	 *            the wikiRenderer to set
 	 */
 	@Required
 	public void setWikiRenderer(WikiUtil wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
-	}	
+	}
 }

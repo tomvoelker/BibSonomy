@@ -17,9 +17,9 @@
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
+	<fmt:message key="navi.cv" var="cvPageTitle" />
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<script type="text/javascript" src="${resdir}/javascript/cvpage.js">&amp;nbsp;</script> 
-	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}">
+	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${cvPageTitle}">
 			
 		<!--+
     	 	| html header extension: page specific stylesheet
@@ -55,13 +55,14 @@
 
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
+	    	<script type="text/javascript" src="${resdir}/javascript/cvpage.js">&amp;nbsp;</script> 
 	    </jsp:attribute>
 
 		<!--+
     	 	| heading
     	 	-->
 		<jsp:attribute name="heading">
-			<fmt:message key="navi.cv"/> ::
+			<c:out value="${cvPageTitle}" /> ::
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
 			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
 			<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
@@ -175,16 +176,6 @@
  	  				</ul>
 				</div>
 			</c:if>
-
-	<script>
-		$(document).ready( function() {
-			$("a.hand").each(function(index, link) {
-				$(link).click(function() {
-					switchOption(this);
-				});
-			});
-		});
-	</script>
 
 	<c:if test="${not empty command.bibtex.list}">
 		<h2><fmt:message key="cv.publications"/></h2>
