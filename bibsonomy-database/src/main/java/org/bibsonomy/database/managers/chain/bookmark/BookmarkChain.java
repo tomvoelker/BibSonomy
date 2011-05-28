@@ -12,6 +12,7 @@ import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHash;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNames;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNamesAndUser;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroup;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroupAndTag;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage;
@@ -50,6 +51,7 @@ public class BookmarkChain implements FirstListChainElement<Post<Bookmark>, Book
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConceptForGroup;	
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByFollowedUsers;
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksFromInbox;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByTaggedUserRelation;
 	
 	/**
 	 * Constructs the chain
@@ -74,6 +76,7 @@ public class BookmarkChain implements FirstListChainElement<Post<Bookmark>, Book
 		this.getBookmarksByConceptByTag = new GetResourcesByConceptByTag<Bookmark, BookmarkParam>();
 		this.getBookmarksByConceptForGroup = new GetResourcesByConceptForGroup<Bookmark, BookmarkParam>();
 		this.getBookmarksFromInbox = new GetResourcesFromInbox<Bookmark, BookmarkParam>();
+		this.getBookmarksByTaggedUserRelation = new GetResourcesByTaggedUserRelation<Bookmark, BookmarkParam>();
 		
 		this.getBookmarksForHomePage.setNext(this.getBookmarksForPopular);
 		this.getBookmarksForPopular.setNext(this.getBookmarksForUser);
@@ -93,6 +96,7 @@ public class BookmarkChain implements FirstListChainElement<Post<Bookmark>, Book
 		this.getBookmarksByResourceSearch.setNext(this.getBookmarksByConceptByTag);
 		this.getBookmarksByConceptByTag.setNext(this.getBookmarksByConceptForGroup);
 		this.getBookmarksByConceptForGroup.setNext(this.getBookmarksFromInbox);
+		this.getBookmarksFromInbox.setNext(this.getBookmarksByTaggedUserRelation);
 	}
 
 	@Override

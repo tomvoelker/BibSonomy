@@ -307,17 +307,12 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	public void getBibtexOfTaggedByUser() {
 		User admUser = ModelUtils.getUser();
 		admUser.setName("testuser1");
-		
-		// src user
+		//--------------------------------------------------------------------
+		// create some test users and create some test relations among them
+		//--------------------------------------------------------------------
 		User srcUser = createUser("buzz");
-		
-		// dst user
 		User dstUser1 = createUser("duzz");
-		
-		// another dst user
 		User dstUser2 = createUser("fuzz");
-
-		// another dst user
 		User dstUser3 = createUser("suzz");
 
 		String relationName1 = "football";
@@ -332,7 +327,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final LogicInterface dstLogic  = this.getDbLogic(dstUser1.getName());
 		final LogicInterface dst2Logic = this.getDbLogic(dstUser2.getName());
 		
-		 // create src and dst user
+		 // create users
 		admLogic.createUser(srcUser);
 		admLogic.createUser(dstUser1);
 		admLogic.createUser(dstUser2);
@@ -356,13 +351,13 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final List<Post<?>> btPosts = new LinkedList<Post<?>>();
 		final Post<BibTex> btPost1 = ModelUtils.generatePost(BibTex.class);
 		// add tags
-		ModelUtils.addToTagSet(btPost1.getTags(), "testCenterTag", "secondTag");
+		ModelUtils.addToTagSet(btPost1.getTags(), "btPostTag1", "sharedTag1");
 		btPost1.getUser().setName(dstUser1.getName());
 		btPosts.add(btPost1);
 
 		// add tags
 		final Post<BibTex> btPost2 = ModelUtils.generatePost(BibTex.class);
-		ModelUtils.addToTagSet(btPost2.getTags(), "alotof", "buzz");
+		ModelUtils.addToTagSet(btPost2.getTags(), "btPostTag2", "sharedTag1", "sharedTag2");
 		btPost2.getUser().setName(dstUser1.getName());
 		btPost2.getResource().setTitle("Just another title");
 		btPost2.getResource().setAuthor("Just another author");
@@ -378,14 +373,14 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final List<Post<?>> bmPosts = new LinkedList<Post<?>>();
 		final Post<Bookmark> bmPost1 = ModelUtils.generatePost(Bookmark.class);
 		// add tags
-		ModelUtils.addToTagSet(bmPost1.getTags(), "testCenterTag", "secondTag");
+		ModelUtils.addToTagSet(bmPost1.getTags(), "bmPost1Tag", "sharedTag1");
 		bmPost1.getUser().setName(dstUser2.getName());
 		bmPost1.getResource().setUrl("http://fuzzduzz");
 		bmPosts.add(bmPost1);
 
 		// add tags
 		final Post<Bookmark> bmPost2 = ModelUtils.generatePost(Bookmark.class);
-		ModelUtils.addToTagSet(bmPost2.getTags(), "alotof", "buzz");
+		ModelUtils.addToTagSet(bmPost2.getTags(), "bmPost2Tag", "sharedTag1", "sharedTag2");
 		bmPost2.getUser().setName(dstUser2.getName());
 		bmPost2.getResource().setTitle("Just another title");
 		bmPost2.getResource().setUrl("http://duzzfuzz");
@@ -398,6 +393,18 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		//--------------------------------------------------------------------
 		// srcUser queries for posts from his friends
 		//--------------------------------------------------------------------
+		//                                             sharedTag1 
+		//                                           +--------------> btPost1
+		//            relTag1, relTag2               | sharedTag1/2
+		//          +-----------------> dstUser1 ----+--------------> btPost2
+		//          | reltag2                          sharedTag1
+		//  srcUser-+-----------------> dstUser2 ----+--------------> bmPost1
+		//          | reltag3                        | sharedTag1/2
+		//          +-----------------> dstUser3     +--------------> bmPost2
+		//
+		//
+		//
+		//
 		
 		List<String> tags1 = new ArrayList<String>();
 		tags1.add(relationTag1);
@@ -408,12 +415,12 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		List<String> tags2 = new ArrayList<String>();
 		tags2.add(relationTag2);
 		
-		//List<Post<Bookmark>> bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
-		//assertEquals(2, bookmarkPostsList.size());
+		List<Post<Bookmark>> bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
+		assertEquals(2, bookmarkPostsList.size());
 		
 		tags2.add(relationTag1);
-		//bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
-		//assertEquals(0, bookmarkPostsList.size());
+		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
+		assertEquals(0, bookmarkPostsList.size());
 		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
 		assertEquals(2, bibTexPostsList.size());
 		

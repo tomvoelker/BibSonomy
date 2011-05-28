@@ -171,7 +171,28 @@
 		      AND b.content_id = bb.content_id                                   <!-- join title, description, ... -->
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
-	
+
+	<!--+
+		| get all publi bookmark posts from all related users according to the given relation tag
+		+-->
+	<select id="getBookmarkByTaggedUserRelation" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, b.`group`, g.group_name AS group_name, <include refid="reviewRatingsRows" /> 
+	    FROM urls u, bookmark b <include refid="reviewRatingsJoinBookmark" />,
+			(SELECT content_id, date                                  <!-- bookmarks from users which are tagged accordingly -->
+			 FROM bookmark b, <include refid="relationTagFromQuery"/>
+			 WHERE <include refid="relationTagTagWhereQuery"/>         <!-- to see users which are tagged accordingly by the currUser -->
+			   AND <include refid="relationTagUsernameWhereQuery"/>    <!--                            ++++                           -->
+			   AND <include refid="relationTagResourceWhereQuery"/>    <!-- take all rows, which are owned by a related user -->
+			   AND b.group = #groupId#
+			 ORDER BY date DESC
+			 LIMIT #limit# OFFSET #offset#) AS bb
+	   	LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas -->
+		WHERE t.group = g.group                                                  <!-- join groupname -->
+		      AND u.book_url_hash = b.book_url_hash                              <!-- join url -->
+		      AND b.content_id = bb.content_id                                   <!-- join title, description, ... -->
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select>
+
 	<select id="getBookmarkByFollowedUsers" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, b.book_description AS title,
 		       b.book_extended AS description, b.date, u.book_url, u.book_url_ctr AS count, t.tag_name, g.group_name,

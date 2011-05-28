@@ -191,7 +191,9 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
-	
+	<!--+
+		| get all public bibtex posts from all related users according to the given relation tag
+		+-->
 	<select id="getBibTexByTaggedUserRelation" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, t.change_date, g.group_name, g.group, h.ctr AS count, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,

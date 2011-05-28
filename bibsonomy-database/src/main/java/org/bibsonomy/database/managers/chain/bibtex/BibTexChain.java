@@ -85,7 +85,7 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 		this.getPublicationsByFollowedUsers = new GetResourcesByFollowedUsers<BibTex, BibTexParam>();
 		this.getPublicationsFromInbox = new GetResourcesFromInbox<BibTex, BibTexParam>();
 		this.getPublicationsWithRepository = new GetBibtexWithRepository();
-		this.getPublicationsByTaggedUserRelation = new GetResourcesByTaggedUserRelation();
+		this.getPublicationsByTaggedUserRelation = new GetResourcesByTaggedUserRelation<BibTex, BibTexParam>();
 
 		this.getPublicationsWithRepository.setNext(this.getPublicationsByKey);
 		this.getPublicationsByKey.setNext(this.getPublicationsForHomepage);
