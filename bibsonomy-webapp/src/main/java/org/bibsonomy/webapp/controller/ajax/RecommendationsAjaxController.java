@@ -5,13 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -23,8 +21,8 @@ import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.services.recommender.TagRecommender;
-import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.ajax.AjaxRecommenderCommand;
+import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -64,46 +62,6 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	 */
 	private MultiplexingTagRecommender tagRecommender;
 	
-	/**
-	 * Copy the groups from the command into the post (make proper groups from
-	 * them)
-	 * 
-	 * @param command -
-	 *            contains the groups as represented by the form fields.
-	 * @param post -
-	 *            the post whose groups should be populated from the command.
-	 * @see #initCommandGroups(EditPostCommand, Post)
-	 */
-	protected void initPostGroups(final EditPostCommand<R> command, final Post<R> post) {
-		log.debug("initializing post's groups from command");
-		/*
-		 * we can avoid some checks here, because they're done in the validator
-		 * ...
-		 */
-		final Set<Group> postGroups = post.getGroups();
-		final String abstractGrouping = command.getAbstractGrouping();
-		if ("other".equals(abstractGrouping)) {
-			log.debug("found 'other' grouping");
-			/*
-			 * copy groups into post
-			 */
-			final List<String> groups = command.getGroups();
-			log.debug("groups in command: " + groups);
-			for (final String groupname : groups) {
-				postGroups.add(new Group(groupname));
-			}
-			log.debug("groups in post: " + postGroups);
-		} else {
-			log.debug("public or private post");
-			/*
-			 * if the post is private or public --> remove all groups and add
-			 * one (private or public)
-			 */
-			postGroups.clear();
-			postGroups.add(new Group(abstractGrouping));
-		}
-	}
-	
 	@Override
 	public View workOn(AjaxRecommenderCommand<R> command) {
 		final RequestWrapperContext context = command.getContext();
@@ -138,7 +96,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		/*
 		 * initialize groups
 		 */
-		this.initPostGroups(command, command.getPost());
+		GroupingCommandUtils.initGroups(command, command.getPost().getGroups());
 
 		// set postID for recommender
 		command.getPost().setContentId(command.getPostID());
