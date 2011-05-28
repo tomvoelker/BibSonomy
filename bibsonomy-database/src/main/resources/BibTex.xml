@@ -193,7 +193,7 @@
 	
 	
 	<select id="getBibTexByTaggedUserRelation" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, g.group, h.ctr AS count, <include refid="reviewRatingsRows" />
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, t.change_date, g.group_name, g.group, h.ctr AS count, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
 			(SELECT content_id, date              <!-- publications from users which are tagged accordingly -->
 			 FROM bibtex b, <include refid="relationTagFromQuery"/>
