@@ -26,29 +26,4 @@
 	<update id="updateIds" parameterClass="int">
 		UPDATE ids SET value = value + 1 WHERE name = #idsType#
 	</update>
-
-	<insert id="insertTas" parameterClass="tagParam">
-		INSERT INTO tas (tas_id, tag_name, content_id, content_type, user_name, date, change_date, `group`, tag_lower)
-		VALUES (#tasId#, #tagName#, #newContentId#, #contentType#, #userName#, #date#, #changeDate#, #groupId#, #tagNameLower#)
-		<!-- VALUES
-			<iterate conjunction="," property="tags">
-				<iterate conjunction="," property="groups">
-					((select max(tas_id)+1 FROM tas), #post.tags[].name#, #contentId#, #contentType#, #post.user.name#, #post.date#, #post.groups[].groupId#, lower(#post.tags[].name#))
-				</iterate>
-			</iterate -->
-	</insert>
-	
-	<insert id="insertGroupTas" parameterClass="tagParam">
-		INSERT INTO grouptas (tas_id, tag_name, content_id, content_type, user_name, date, `group`, tag_lower)
-		VALUES (#tasId#, #tagName#, #newContentId#, #contentType#, #userName#, #date#, #groupId#, #tagNameLower#)
-	</insert>
-
-	<delete id="deleteTas" parameterClass="int">
-		DELETE FROM tas WHERE content_id = #requestedContentId#
-	</delete>
-	
-	<delete id="deleteGroupTas" parameterClass="int">
-		DELETE FROM grouptas WHERE content_id = #requestedContentId#
-	</delete>
-
 </sqlMap>
