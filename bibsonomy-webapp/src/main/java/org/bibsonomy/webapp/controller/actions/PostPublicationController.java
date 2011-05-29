@@ -41,6 +41,7 @@ import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.FileUploadFactory;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
+import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostPublicationCommandValidator;
@@ -279,7 +280,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * set visibility of this post for the groups, the user specified 
 			 */
-			initPostGroups(command, post);
+			GroupingCommandUtils.initGroups(command, post.getGroups());
 			/*
 			 * hashes have to be set, in order to call the validator
 			 */
