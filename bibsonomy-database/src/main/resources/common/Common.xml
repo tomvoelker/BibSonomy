@@ -151,10 +151,9 @@
 		  FROM groups g, friends f, <include refid="tagFromQuery"/>
 		  WHERE <include refid="tagWhereQuery"/>
 		        AND g.group = #groupId#
-		        AND f.f_user_name = #userName#      <!-- currUser is friend of user -->
-		        AND g.user_name = f.user_name       <!-- user is in group -->
-		        AND t1.user_name = f.user_name      <!-- user owns this item -->              
-		        AND t1.group = #groupTypeFriends#   <!-- item is only for friends -->
+		        AND <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
+		        AND t1.user_name = f.user_name              <!-- user owns this item -->              
+		        AND t1.group = #groupTypeFriends#           <!-- item is only for friends -->
 		        AND t1.content_type = #contentType#
 		 )
 		ORDER BY date DESC
@@ -185,8 +184,7 @@
 		  FROM groups g, friends f, document d, <include refid="tagFromQuery"/>
 		  WHERE <include refid="tagWhereQuery"/>
 		        AND g.group = #groupId#
-		        AND f.f_user_name = #userName#      <!-- currUser is friend of user -->
-		        AND g.user_name = f.user_name       <!-- user is in group -->
+		        AND <include refid="matchGroupMemberTrust"/>      <!-- currUser is friend of a group member (user) -->
 		        AND t1.user_name = f.user_name      <!-- user owns this item -->              
 		        AND t1.group = #groupTypeFriends#   <!-- item is only for friends -->
 		        AND d.content_id = t1.content_id	<!-- join documents -->

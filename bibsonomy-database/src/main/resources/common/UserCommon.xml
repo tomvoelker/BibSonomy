@@ -134,6 +134,21 @@
 		simple_interface = #settings.simpleInterface#
 	</sql>
 	
+	<!-- matches resources owned by group members which trust the currUser -->
+	<sql id="matchGroupMemberTrust">
+		f.f_user_name = #userName#       
+			AND f.tag_name = #bibSonomyFriendsTag#
+			AND g.user_name = f.user_name
+	</sql>
+	
+	
+	<!-- matches resources owned by group members which trust the currUser -->
+	<sql id="matchTrustersResource">
+		f.f_user_name = #userName#       <!-- to see, which users have currUser as friend -->
+			AND f.tag_name = #bibSonomyFriendsTag#
+			AND b.user_name = f.user_name
+	</sql>
+		
 	<!-- match friendship relations according to given tag -->
 	<sql id="matchTaggedRelation">
 		<isNotNull prepend="AND" property="tag.name">
