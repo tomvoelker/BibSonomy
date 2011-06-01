@@ -178,8 +178,7 @@
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
 			(SELECT content_id, date                <!-- publications from users of group which currUser may see -->
 			 FROM bibtex b, friends f
-			 WHERE f.f_user_name = #userName#       <!-- to see, which users have currUser as friend -->
-			       AND b.user_name = f.user_name    <!-- take alle rows, which are owned by friend -->
+			 WHERE <include refid="matchTrustersResource"/>  <!-- take alle rows, which are owned by friend --> 
 			       AND b.group = #groupId#
 			 ORDER BY date DESC
 			 LIMIT #limit# OFFSET #offset# ) AS bb
@@ -446,8 +445,7 @@
 		      )UNION(
 		       SELECT content_id, date                <!-- publications from users of group which have currUser as friend -->
 		       FROM bibtex b, groups g, friends f
-		       WHERE f.f_user_name = #userName#       <!-- currUser is friend -->
-		             AND g.user_name = f.user_name    <!-- user is in group -->
+		       WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
@@ -482,8 +480,7 @@
 		      )UNION(
 		       SELECT content_id, date                <!-- publications from users of group which have currUser as friend -->
 		       FROM bibtex b, groups g, friends f
-		       WHERE f.f_user_name = #userName#       <!-- currUser is friend -->
-		             AND g.user_name = f.user_name    <!-- user is in group -->
+		       WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
@@ -519,8 +516,7 @@
 		      )UNION(
 		       SELECT content_id, date                <!-- publications from users of group which have currUser as friend -->
 		       FROM bibtex b, groups g, friends f
-		       WHERE f.f_user_name = #userName#       <!-- currUser is friend -->
-		             AND g.user_name = f.user_name    <!-- user is in group -->
+		       WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
@@ -554,14 +550,14 @@
 	<select id="getBibTexForGroupByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h, <include refid="selectContentIDs"/>
-		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
-		WHERE t.group = g.group                                                  <!-- join groupname -->
-		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
-		      <include refid="sysTagsYear"/>									 <!-- sys:year: systemtag -->
-		      <include refid="sysTagsEntryType"/>								 <!-- sys:entrytype: systemtag -->
-		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g   <!-- join with tas (get tags)  --> 
+		WHERE t.group = g.group                                                   <!-- join groupname            -->
+		      AND <include refid="bibtexSimHash"/>                                <!-- join counts, ...          -->
+		      <include refid="sysTagsYear"/>									  <!-- sys:year: systemtag       -->
+		      <include refid="sysTagsEntryType"/>								  <!-- sys:entrytype: systemtag  -->
+		      AND b.content_id = bb.content_id                                    <!-- join rest of entry        -->
 		ORDER BY bb.date DESC, bb.content_id DESC
-	</select> 
+	</select>
 	
 	<select id="getBibTexForGroupByTagWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="allDocumentAttributes"/>, <include refid="reviewRatingsRows" />

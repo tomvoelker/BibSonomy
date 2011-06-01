@@ -190,9 +190,9 @@ INSERT INTO `extended_fields_data` VALUES
 -- 
 
 INSERT INTO `friends` VALUES 
-(1, 'testuser1', 'testuser2', 'sys:network:bibsonomy', NULL, '1815-12-10 00:00:00'),
-(3, 'testuser1', 'testuser3', 'sys:network:bibsonomy', NULL, '1815-12-10 00:00:00'),
-(2, 'testuser2', 'testuser1', 'sys:network:bibsonomy', NULL, '1815-12-10 00:00:00');
+(1, 'testuser1', 'testuser2', 'sys:network:bibsonomy-friend', NULL, '1815-12-10 00:00:00'),
+(3, 'testuser1', 'testuser3', 'sys:network:bibsonomy-friend', NULL, '1815-12-10 00:00:00'),
+(2, 'testuser2', 'testuser1', 'sys:network:bibsonomy-friend', NULL, '1815-12-10 00:00:00');
 
 -- 
 -- Data for table `followers`

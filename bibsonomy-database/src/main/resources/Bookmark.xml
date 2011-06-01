@@ -160,8 +160,7 @@
 	    FROM urls u, bookmark b <include refid="reviewRatingsJoinBookmark" />,
 	         (SELECT content_id, date                 <!-- bookmarks from users of group which currUser may see -->
 	          FROM bookmark b, friends f
-	          WHERE f.f_user_name = #userName#        <!-- to see, which users have currUser as friend -->
-	                AND b.user_name = f.user_name     <!-- take alle rows, which are owned by friend -->
+	          WHERE  <include refid="matchTrustersResource"/>  <!-- take alle rows, which are owned by friend --> 
 	                AND b.group = #groupId#
 	   	      ORDER BY date DESC
        	      LIMIT #limit# OFFSET #offset#) AS bb
@@ -363,8 +362,7 @@
 		      )UNION(
 		       SELECT content_id, date                <!-- bookmarks from users of group which have currUser as friend -->
 		       FROM bookmark b, groups g, friends f
-		       WHERE f.f_user_name = #userName#       <!-- currUser is friend -->
-		             AND g.user_name = f.user_name    <!-- user is in group -->
+		       WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
 		             AND b.user_name = f.user_name    <!-- user owns this bookmark -->
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- bookmark is only for friends -->

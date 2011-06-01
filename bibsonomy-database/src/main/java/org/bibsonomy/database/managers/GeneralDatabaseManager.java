@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.User;
 
 /**
@@ -67,13 +68,15 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		 */
 		final User user = new User(userB);
 		/*
-		 * ... and then add userB to the list of his friends.
+		 * ... and then add userA to the list of his friends.
 		 */
 		user.addFriend(new User(userA));
 		/*
 		 * now we can query the DB, if userA is really userB's friend
 		 */
-		return this.queryForObject("isFriendOf", user, Boolean.class, session);
+		UserParam param = new UserParam();
+		param.setUser(user);
+		return this.queryForObject("isFriendOf", param, Boolean.class, session);
 	}
 
 	/**

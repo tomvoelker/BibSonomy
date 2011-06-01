@@ -21,6 +21,7 @@ import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -536,7 +537,27 @@ public abstract class GenericParam {
 	 */
 	public int getGroupTypePublic() {
 		return GroupID.PUBLIC.getId();
-	}	
+	}
+	
+	/**
+	 * If you need the system tag which identifies BibSonomy's trust
+	 * relation
+	 * 
+	 * @return BibSonomy's trust network system tag
+	 */
+	public String getBibSonomyFriendsTag() {
+		return NetworkRelationSystemTag.BibSonomyFriendSystemTag;
+	}
+	
+	/**
+	 * If you need the system tag which identifies BibSonomy's follower
+	 * relation
+	 * 
+	 * @return BibSonomy's follower network system tag
+	 */
+	public String getBibSonomyFollowerTag() {
+		return NetworkRelationSystemTag.BibSonomyFollowerSystemTag;
+	}
 	
 	// TODO: what hash?, what for?, why in genericparam and not in
 	// resource-field?

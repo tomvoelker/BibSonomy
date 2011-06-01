@@ -4,11 +4,12 @@
 <sqlMap namespace="General">
 
 	<!-- TODO: isn't it a bit tricky, to convert a COUNT result to boolean? -->
-	<!-- BTW: user has a LIST of friends, how come that #friend.name# works? -->
-	<select id="isFriendOf" resultClass="boolean" parameterClass="user">
+	<select id="isFriendOf" resultClass="boolean" parameterClass="userParam">
 		SELECT count(user_name)
 		FROM friends
-		WHERE user_name = #name# AND f_user_name = #friend.name#
+		WHERE user_name = #user.name# 
+		  AND f_user_name = #user.friend.name#
+		  AND tag_name = #bibSonomyFriendsTag#
 	</select>
 
 	<select id="isSpammer" resultClass="boolean" parameterClass="string">
