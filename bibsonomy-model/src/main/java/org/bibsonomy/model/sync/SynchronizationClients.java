@@ -17,7 +17,7 @@ public enum SynchronizationClients {
 	BIBSONOMY(1),
 	
 	/**
-	 * puma as client TODO is bibsonomy and puma different? 
+	 * puma as client  
 	 */
 	PUMA(2),
 	
@@ -41,7 +41,7 @@ public enum SynchronizationClients {
 	
 	/**
 	 * @param id
-	 * @return
+	 * @return SynchronizationClient
 	 */
 	public static SynchronizationClients getById(int id) {
 		switch (id) {

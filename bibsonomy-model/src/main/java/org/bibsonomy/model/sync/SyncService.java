@@ -15,12 +15,18 @@ public class SyncService {
 	private int serviceId;
 	private String serviceName;
 	private final Map<Integer, Date> lastSyncDates;
+	private String userName;
+	private String apiKey;
+	
+	//TODO remove this after implementation of syncpage
+	private final Map<Integer, String> lastResults;
 	
 	/**
 	 * Constructor
 	 */
 	public SyncService() {
 		lastSyncDates = new HashMap<Integer, Date>();
+		lastResults = new HashMap<Integer, String>();
 		//this.serviceId = serviceId;
 	}
 	
@@ -78,6 +84,41 @@ public class SyncService {
 			return this.getServiceId() == test.getServiceId();
 		} 
 		return super.equals(obj);
+	}
+
+	/**
+	 * @return the lastResults
+	 */
+	public Map<Integer, String> getLastResults() {
+		return lastResults;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param apiKey the apiKey to set
+	 */
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+
+	/**
+	 * @return the apiKey
+	 */
+	public String getApiKey() {
+		return apiKey;
 	}
 
 	

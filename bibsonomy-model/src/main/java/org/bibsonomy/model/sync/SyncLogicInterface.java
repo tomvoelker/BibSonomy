@@ -24,8 +24,23 @@ public interface SyncLogicInterface {
 	
 	/**
 	 * 
+	 * @param userName
+	 * @param serviceId
+	 */
+	public void deleteSyncServer(final String userName, final int serviceId);
+	
+	/**
+	 * 
+	 * @param userName
+	 * @param serviceId
+	 * @param userCredentials 
+	 */
+	public void updateSyncServer(final String userName, final int serviceId, final Properties userCredentials);
+	
+	/**
+	 * 
 	 * @param user
-	 * @return 
+	 * @return List of synchronization services for given user 
 	 */
 	public List<SyncService> getSyncServicesForUser(String user);
 	
@@ -34,7 +49,7 @@ public interface SyncLogicInterface {
 	 * @param userName
 	 * @param serviceId
 	 * @param contentType
-	 * @return
+	 * @return returns date of current running Synchronization
 	 */
 	public Date getCurrentSyncDate(String userName, int serviceId, int contentType);
 	
@@ -73,6 +88,7 @@ public interface SyncLogicInterface {
 	/**
 	 * 
 	 * @param userName
+	 * @param resourceType 
 	 * @return map with user posts used from server!
 	 */
 	public Map<String, SynchronizationPost> getSyncPostsMapForUser(String userName, Class<? extends Resource> resourceType);
