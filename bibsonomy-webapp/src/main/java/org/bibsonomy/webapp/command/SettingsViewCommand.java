@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.SyncService;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -23,6 +24,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int SETTINGS_IDX = 1;
 	public final static int IMPORTS_IDX = 2;
 	public final static int GROUP_IDX = 3;
+	public final static int SYNC_IDX = 4;
 	
 	private static final String TAB_URL = "/settings";
 	
@@ -128,13 +130,16 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	private String importData;
 	
+	private List<SyncService> syncServices;
+	
+	private List<SyncService> avlSyncServices;	
 	/**
 	 * Constructor.
 	 */
 	public SettingsViewCommand() {
 		this.addTab(MY_PROFILE_IDX, "navi.myprofile");
 		this.addTab(SETTINGS_IDX, "navi.settings");
-		this.addTab(IMPORTS_IDX, "navi.imports");
+		this.addTab(IMPORTS_IDX, "navi.imports");	
 		this.setSelTab(MY_PROFILE_IDX);
 		this.setTabURL(TAB_URL);
 	}
@@ -146,6 +151,16 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public void showGroupTab(boolean show) {
 		if (show) {
 			this.addTab(GROUP_IDX, "navi.groups");
+		}
+	}
+	
+	/**
+	 * shows the sync tab for admins
+	 * @param show
+	 */
+	public void showSyncTab(boolean show) {
+		if(show) {
+			this.addTab(SYNC_IDX, "navi.sync");
 		}
 	}
 	
@@ -512,5 +527,33 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public String getWikiText() {
 		return wikiText;
+	}
+
+	/**
+	 * @param syncServices the syncServices to set
+	 */
+	public void setSyncServices(List<SyncService> syncServices) {
+		this.syncServices = syncServices;
+	}
+
+	/**
+	 * @return the syncServices
+	 */
+	public List<SyncService> getSyncServices() {
+		return syncServices;
+	}
+
+	/**
+	 * @param avlSyncServices the avlSyncServices to set
+	 */
+	public void setAvlSyncServices(List<SyncService> avlSyncServices) {
+		this.avlSyncServices = avlSyncServices;
+	}
+
+	/**
+	 * @return the avlSyncServices
+	 */
+	public List<SyncService> getAvlSyncServices() {
+		return avlSyncServices;
 	}
 }

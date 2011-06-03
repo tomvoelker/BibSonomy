@@ -61,6 +61,22 @@
 					</bean>
 				</entry>
 				
+				<entry key="/syncpage">
+					<bean parent="controllerBase">
+					<property name="controllerBeanName" value ="syncController"/>
+					<property name="allowedFields">
+						<list>
+							<value>serviceId</value>
+							<value>syncUserName</value>
+							<value>userName</value>
+							<value>apiKey</value>
+							<value>settings</value>
+							<value>syncAction</value>
+						</list>
+					</property> 
+					</bean>
+				</entry>
+				
 				<!-- get recommendations for user -->
 				<entry key="/ajax/getBookmarkRecommendedTags">
 					<bean parent="controllerBase">
@@ -194,6 +210,9 @@
 		<property name="tempPath" value="${project.document.temp}"/>
 		<property name="messageSource" ref="messageSource"/>
 	</bean>	
+	
+	<bean id="syncController" class="org.bibsonomy.webapp.controller.ajax.SynchronizationController" scope="request" parent="ajaxController">
+	</bean>
 		
 	<!-- controller for handling recommendation requests -->
 	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">

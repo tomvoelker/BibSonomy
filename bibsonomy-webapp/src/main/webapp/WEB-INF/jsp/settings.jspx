@@ -34,6 +34,9 @@
 				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
 					<settings:group command="${command}"/>
 				</c:when>
+				<c:when test="${command.selTab == 4 and command.user.role == 'ADMIN'}">
+					<settings:sync command="${command}"/>
+				</c:when>
 			</c:choose>
 		</jsp:attribute>
 

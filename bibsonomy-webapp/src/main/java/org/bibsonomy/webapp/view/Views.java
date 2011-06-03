@@ -31,6 +31,11 @@ public enum Views implements View {
 	SETTINGSPAGE("settings"),
 	
 	/**
+	 * synchronization page
+	 */
+	SYNCPAGE("syncpage"),
+	
+	/**
 	 * user page displaying the resources of a single user
 	 */
 	USERPAGE("user"),
