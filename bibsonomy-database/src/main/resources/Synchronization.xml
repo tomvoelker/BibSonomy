@@ -14,18 +14,6 @@
 		VALUES (#userName#, #serviceId#, #credentials#)
 	</insert> 
 
-<!--	<select id="getSyncBibTex" resultMap="SynchronizationCommon.syncPost" parameterClass="bibtexParam">-->
-<!--		SELECT <include refid="bibtexSimHashes"/>, b.date, b.change_date-->
-<!--		FROM bibtex b-->
-<!--		WHERE b.user_name = #userName#-->
-<!--	</select>-->
-
-<!--	<select id="getSyncBookmark" resultMap="SynchronizationCommon.syncPost" parameterClass="bookmarkParam">-->
-<!--		SELECT b.book_url_hash AS intrahash, NULL AS interhash, b.date, b.change_date-->
-<!--		FROM bookmark b-->
-<!--		WHERE b.user_name = #userName#-->
-<!--	</select>-->
-
 	<select id="getSyncBibTex" resultMap="SynchronizationCommon.syncPost" parameterClass="bibtexParam">
 		SELECT <include refid="bibtexSimHashes"/>, b.date, t.change_date
 		FROM bibtex b
@@ -74,7 +62,6 @@
 		LIMIT 1
 	</select> 
 	
-	
 	<insert id="insertSync" parameterClass="syncParam">
 		INSERT INTO sync_data (service_id, user_name, content_type, last_sync_date, status)
 		VALUES (#serviceId#, #userName#, #contentType#, #lastSyncDate#, #status#)
@@ -88,5 +75,18 @@
 			AND service_id = #serviceId#
 			AND last_sync_date = #lastSyncDate#
 	</update>
+	
+	<update id="updateSyncServer" parameterClass="syncParam">
+		UPDATE sync
+		SET credentials = #credentials#
+		WHERE user_name = #userName#
+			AND service_id=#serviceId#
+ 	</update>
+	
+	<delete id="deleteSyncServer" parameterClass="syncParam">
+		DELETE FROM sync
+		WHERE user_name = #userName#
+			AND service_id = #serviceId#
+	</delete>
 	
 </sqlMap>

@@ -301,12 +301,34 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     @Override
     public void createSyncServer(final String userName, final int serviceId, final Properties userCredentials) {
 	
-	final DBSession session = this.openSession();
-	try {
-	    syncDBManager.insertSyncServiceForUser(session, userName, serviceId, userCredentials);
-	} finally {
-	    session.close();
-	}
+		final DBSession session = this.openSession();
+		try {
+		    syncDBManager.createSyncServerForUser(session, userName, serviceId, userCredentials);
+		} finally {
+		    session.close();
+		}
+    }
+    
+    
+    @Override
+    public void updateSyncServer(final String userName, final int serviceId, final Properties userCredentials) {
+    	final DBSession session = this.openSession();
+    	try {
+    		syncDBManager.updateSyncServerForUser(session, userName, serviceId, userCredentials);
+    	} finally {
+    		session.close();
+    	}
+    }
+    
+
+    @Override
+    public void deleteSyncServer(final String userName, final int serviceId) {
+    	final DBSession session = this.openSession();
+    	try {
+    		syncDBManager.deleteSyncServerForUser(session, userName, serviceId);
+    	} finally {
+    		session.close();
+    	}
     }
     
     /*
@@ -319,7 +341,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	List<SyncService> services;
 	
 	try {
-	    services = syncDBManager.getSyncServicesForUser(userName, session);
+	    services = syncDBManager.getSyncServerForUser(userName, session);
 	} finally {
 	   session.close();
 	}
