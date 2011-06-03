@@ -42,7 +42,7 @@
           <div id="general">
 
 
-            <form:form action="/join_group" method="POST">
+            <form:form action="/join_group?group=${command.group }" method="POST">
 		        <errors:global errors="${errors}"/>             
 
 				<div class="fsOuter">
@@ -52,17 +52,16 @@
 					<fieldset class="fsInner">
 						
             			<div class="fsRow">
-		        			<form:label cssClass="fsLabel" path="reason"><fmt:message key="joinGroup.reason"/>*</form:label>
+		        			<form:label cssClass="fsLabel" path="reason"><fmt:message key="joinGroup.reason"/></form:label>
 		    			    <buttons:help message="joinGroup.reason.hint"/>
-			  				<form:textarea rows="4" cols="50" cssClass="fsInput reqinput" path="reason" />
-			  				<div class="dissError"></div>
+			  				<form:textarea rows="4" cols="50" cssClass="fsInput" path="reason" />
             			</div>
             		</fieldset>
             		
             		<fieldset class="fsInner">
               
 						<div class="fsRow">
-			  				<form:label cssClass="fsLabel" path="recaptcha_response_field" ><fmt:message key="captcha"/>*</form:label>
+			  				<form:label cssClass="fsLabel" path="recaptcha_response_field" ><fmt:message key="joinGroup.captcha"/>*</form:label>
 			  				<div class="help"><b style="" class="smalltext">${mtl:ch('nbsp')}</b></div>
 			  				<div class="fsInput">${command.captchaHTML}</div> 
 			  				<div class="dissError"><form:errors path="recaptcha_response_field" /></div>
@@ -82,5 +81,19 @@
 
           </div>
 		</jsp:attribute>
+      
+      <jsp:attribute name="beforeBodyClose">
+          <script type="text/javascript">
+             //<mtl:cdata>
+             <![CDATA[
+                // vanishing error boxes
+                $(document).ready( function(){
+					prepareErrorBoxes('dissError');
+            	});
+             ]]> 
+             //</mtl:cdata>
+          </script>
+       
+       </jsp:attribute>
     </layout:layout>
 </jsp:root>
