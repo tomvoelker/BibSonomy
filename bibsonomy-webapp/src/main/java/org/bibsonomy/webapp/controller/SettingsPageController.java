@@ -230,6 +230,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		
 		for (SyncService service : userServices) {
 			Properties user = service.getServerUser();
+			service.setServiceName(SynchronizationClients.getById(service.getServiceId()).toString());
 			service.setUserName(user.getProperty("userName"));
 			service.setApiKey(user.getProperty("apiKey"));
 		}

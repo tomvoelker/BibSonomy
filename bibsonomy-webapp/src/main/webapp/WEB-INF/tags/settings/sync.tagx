@@ -21,7 +21,7 @@
 	<fmt:message var="syncronize" key="synchronization.synchronize" />
 	<fmt:message var="serviceName" key="synchronization.serviceName" />
 	<fmt:message var="syncTimes" key="settings.synchronization.syncTimes" />
-	<fmt:message var="removeService" key="setttings.synchronization.removeService" />
+	<fmt:message var="removeService" key="settings.synchronization.removeService" />
 	
 	<h2><fmt:message key="settings.synchronization.header"/></h2>
 	
@@ -29,7 +29,7 @@
 		<fieldset class="fsInner" id="service${service.serviceId}">
 			<input class="serviceId" type="hidden" value="${service.serviceId}"/>
 			<div cssClass="fsRow">
-				<c:out value="${serviceName}"/> <span class="serviceName"> <c:out value="${service.serviceName}" /> </span>
+				<c:out value="${serviceName}"/> <span class="serviceName"> <c:out value=": ${service.serviceName}" /> </span>
 			</div>
 			<div>
 				<table>
