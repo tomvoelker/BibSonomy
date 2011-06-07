@@ -56,7 +56,6 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 
 	/** Renders the given layout to the outputStream.
 	 * 
-	 * @param <T>
 	 * @param layout
 	 * @param posts
 	 * @param embeddedLayout - if possible, the rendering result should be embeddable into
@@ -66,7 +65,7 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 * @throws IOException - if there was an internal problem rendering the layout
 	 * @throws LayoutRenderingException - if the layout contains errors
 	 */
-	public <T extends Resource> StringBuffer renderLayout(final LAYOUT layout, final List<Post<T>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException;
+	public StringBuffer renderLayout(final LAYOUT layout, final  List<? extends Post<? extends Resource>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException;
 
 	/** Checks, if the renderer supports the given resource type.
 	 * 
