@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.BibTex;
