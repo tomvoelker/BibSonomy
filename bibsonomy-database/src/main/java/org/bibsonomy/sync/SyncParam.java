@@ -1,11 +1,14 @@
 package org.bibsonomy.sync;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URI;
 import java.util.Date;
 import java.util.Properties;
 
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.sync.SynchronizationClients;
 
 /**
  * @author wla
@@ -15,6 +18,7 @@ public class SyncParam {
 
 	private final String userName;
 	private final URI service;
+	private final int serviceId;
 	private final int contentType;
 	private final Date lastSyncDate;
 	private final String status;
@@ -23,10 +27,15 @@ public class SyncParam {
 	public SyncParam(String userName, final URI service, Class<? extends Resource> resourceType, Date lastSyncDate, String status, Properties credentials) {
 		this.userName = userName;
 		this.service = service;
-		this.contentType = ConstantID.getContentTypeByClass(resourceType).getId();
+		if(present(resourceType)) {
+			this.contentType = ConstantID.getContentTypeByClass(resourceType).getId();
+		} else {
+			contentType = 0;
+		}
 		this.lastSyncDate = lastSyncDate;
 		this.status = status;
 		this.credentials = credentials;
+		this.serviceId = SynchronizationClients.getByUri(service).getId();
 	}
 
 	/**
@@ -41,6 +50,13 @@ public class SyncParam {
 	 */
 	public URI getService() {
 		return service;
+	}
+
+	/**
+	 * @return the serviceId
+	 */
+	public int getServiceId() {
+		return serviceId;
 	}
 
 	/**
