@@ -23,6 +23,9 @@
 
 package org.bibsonomy.rest.renderer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.renderer.impl.JSONRenderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
@@ -36,17 +39,23 @@ import org.bibsonomy.rest.renderer.impl.XMLRenderer;
  */
 public class RendererFactory {
 	
-	/*
-	 * for each renderer an instance holder was created to lazy load the renderer
-	 * currently the json renderer isn't available in the rest client
+	/**
+	 * Holds the available renderers. New renderers can be added using 
 	 */
-	
-	private static final class JSONRendererInstanceHolder {
-		private static final Renderer JSON_RENDERER = new JSONRenderer();
+	private static Map<RenderingFormat,Renderer> renderers = new HashMap<RenderingFormat, Renderer>();
+	static {
+		renderers.put(RenderingFormat.JSON, new JSONRenderer());
+		renderers.put(RenderingFormat.XML, new XMLRenderer());
 	}
-	
-	private static final class XMLRendererInstanceHolder {
-		private static final XMLRenderer XML_RENDERER = new XMLRenderer();
+
+	/**
+	 * Registers the provided renderer with the given renderingFormat. 
+	 * 
+	 * @param renderingFormat
+	 * @param renderer
+	 */
+	public static void addRenderer(final RenderingFormat renderingFormat, final Renderer renderer) {
+		renderers.put(renderingFormat, renderer);
 	}
 
 	/**
@@ -57,11 +66,11 @@ public class RendererFactory {
 	public static Renderer getRenderer(final RenderingFormat renderingFormat) {
 		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
 		
-		if (RenderingFormat.JSON.equals(renderingFormat)) {
-			return JSONRendererInstanceHolder.JSON_RENDERER;
+		if (renderers.containsKey(renderingFormat)) {
+			return renderers.get(renderingFormat);
 		}
 		
-		// default is xml renderer
-		return XMLRendererInstanceHolder.XML_RENDERER;
+		// the default is the XML renderer
+		return renderers.get(RenderingFormat.XML);
 	}
 }
