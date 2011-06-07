@@ -1,10 +1,11 @@
 package org.bibsonomy.sync;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -28,9 +29,9 @@ public class SynchronizationClient {
 	private LogicInterface serverLogic;
 	private LogicInterface clientLogic;
 	private ConflictResolutionStrategy strategy;
-	private String serviceIdentifier;
+	private URI serviceIdentifier;
 
-	public synchronized boolean synchronize(User serverUser, User clientUser, LogicInterface serverLogic, LogicInterface clientLogic, String serviceIdentifier, String ServerServiceIdentifier) {
+	public synchronized boolean synchronize(User serverUser, User clientUser, LogicInterface serverLogic, LogicInterface clientLogic, URI serviceIdentifier, String ServerServiceIdentifier) {
 
 		this.serverUser = serverUser;
 		this.clientUser = clientUser;
@@ -51,10 +52,10 @@ public class SynchronizationClient {
 		case BIBLICIOUS:
 			
 			String result = synchronizeResource(BibTex.class);
-			storeSyncResult(result, client.getId(), ConstantID.BIBTEX_CONTENT_TYPE.getId());
+			storeSyncResult(result, client.getId(), BibTex.class);
 
 			result = synchronizeResource(Bookmark.class);
-			storeSyncResult(result, client.getId(), ConstantID.BOOKMARK_CONTENT_TYPE.getId());
+			storeSyncResult(result, client.getId(), Bookmark.class);
 			break;
 
 		default:
@@ -64,9 +65,9 @@ public class SynchronizationClient {
 		return true;
 	}
 
-	private void storeSyncResult(String result, int serviceId, int contentType) {
-		SyncLogicInterface syncServerLogic = (SyncLogicInterface) serverLogic;
-		SynchronizationData data = syncServerLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUser.getName(), serviceId, contentType);
+	private void storeSyncResult(final String result, final URI service, final Class<? extends Resource> resourceType) {
+		final SyncLogicInterface syncServerLogic = (SyncLogicInterface) serverLogic;
+		final SynchronizationData data = syncServerLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUser.getName(), service, resourceType);
 		if (data.getStatus().equals("undone")) {
 			data.setStatus(result);
 			syncServerLogic.updateSyncData(data);
@@ -80,8 +81,8 @@ public class SynchronizationClient {
 		 * TODO remove syncServerLogic and syncClientLogic after integration of
 		 * SyncLogicInterface into LogicInterface
 		 */
-		SyncLogicInterface syncServerLogic = (SyncLogicInterface) serverLogic;
-		SyncLogicInterface syncClientLogic = (SyncLogicInterface) clientLogic;
+		final SyncLogicInterface syncServerLogic = (SyncLogicInterface) serverLogic;
+		final SyncLogicInterface syncClientLogic = (SyncLogicInterface) clientLogic;
 
 		// TODO replace this with correct cast
 		// int serverServiceId = Integer.parseInt(serviceIdentifier);
