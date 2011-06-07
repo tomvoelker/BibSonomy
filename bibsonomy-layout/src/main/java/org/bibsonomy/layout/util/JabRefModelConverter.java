@@ -64,310 +64,310 @@ import org.bibsonomy.services.URLGenerator;
  */
 public class JabRefModelConverter {
 
-    private static final Log log = LogFactory.getLog(JabRefModelConverter.class);
+	private static final Log log = LogFactory.getLog(JabRefModelConverter.class);
 
-    private static final Set<String> EXCLUDE_FIELDS = new HashSet<String>(
-	    Arrays.asList(new String[] { 
-		    "abstract", 				// added separately
-		    "bibtexAbstract", 			// added separately
-		    "bibtexkey", "entrytype", 	// added at beginning of entry
-		    "misc", 					// contains several fields; handled separately
-		    "month", 					// handled separately
-		    "openURL", 					// not added
-		    "simHash0", 				// not added
-		    "simHash1", 				// not added
-		    "simHash2", 				// not added
-		    "simHash3", 				// not added
-		    "description", "keywords", "comment", "id" 
-	    }));
+	private static final Set<String> EXCLUDE_FIELDS = new HashSet<String>(
+			Arrays.asList(new String[] { 
+					"abstract", 				// added separately
+					"bibtexAbstract", 			// added separately
+					"bibtexkey", "entrytype", 	// added at beginning of entry
+					"misc", 					// contains several fields; handled separately
+					"month", 					// handled separately
+					"openURL", 					// not added
+					"simHash0", 				// not added
+					"simHash1", 				// not added
+					"simHash2", 				// not added
+					"simHash3", 				// not added
+					"description", "keywords", "comment", "id" 
+			}));
 
-    /**
-     * date's in JabRef are stored as strings, in BibSonomy as Date objects
-     */
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	/**
+	 * date's in JabRef are stored as strings, in BibSonomy as Date objects
+	 */
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-    /**
-     * separates tags 
-     */
-    private static final String jabRefKeywordSeparator = JabRefPreferences.getInstance().get("groupKeywordSeparator", ", ");
+	/**
+	 * separates tags 
+	 */
+	private static final String jabRefKeywordSeparator = JabRefPreferences.getInstance().get("groupKeywordSeparator", ", ");
 
 
 
-    /**
-     * Converts a list of posts in BibSonomy's format into JabRef's format.
-     * 
-     * @param posts - a list of posts in BibSonomy's data model
-     * @param urlGen - the URL generator to create the biburl-field
-     * @return A list of posts in JabRef's data model.
-     */
-    public static List<BibtexEntry> convertPosts(final List<? extends Post<? extends Resource>> posts, URLGenerator urlGen) {
-	final List<BibtexEntry> entries = new ArrayList<BibtexEntry>();
-	for (final Post<? extends Resource> post : posts) {
-	    entries.add(convertPost(post, urlGen));		
-	}
-	return entries;
-    }
-
-    /**
-     * Converts a BibSonomy post into a JabRef BibtexEntry
-     * 
-     * @param post
-     * @param urlGen - the URLGenerator to create the biburl-field
-     * @return
-     */
-    public static BibtexEntry convertPost(final Post<? extends Resource> post, URLGenerator urlGen) {
-
-	try {
-	    /*
-	     * what we have
-	     */
-	    final BibTex bibtex = (BibTex) post.getResource();
-	    /*
-	     * what we want
-	     */
-	    final BibtexEntry entry = new BibtexEntry();
-	    /*
-	     * each entry needs an ID (otherwise we get a NPE) ...
-	     * let JabRef generate it
-	     */
-	    /*
-	     * we use introspection to get all fields ...
-	     */
-	    final BeanInfo info = Introspector.getBeanInfo(bibtex.getClass());
-	    final PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
-
-	    /*
-	     * iterate over all properties
-	     */
-	    for (final PropertyDescriptor pd : descriptors) {
-
-		final Method getter = pd.getReadMethod();
-
-		// loop over all String attributes
-		final Object o = getter.invoke(bibtex, (Object[]) null);
-
-		if (String.class.equals(pd.getPropertyType())
-			&& (o != null)
-			&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName())) {
-		    final String value = ((String) o);
-		    if (present(value))
-			entry.setField(pd.getName().toLowerCase(), value);
+	/**
+	 * Converts a list of posts in BibSonomy's format into JabRef's format.
+	 * 
+	 * @param posts - a list of posts in BibSonomy's data model
+	 * @param urlGen - the URL generator to create the biburl-field
+	 * @return A list of posts in JabRef's data model.
+	 */
+	public static List<BibtexEntry> convertPosts(final List<? extends Post<? extends Resource>> posts, URLGenerator urlGen) {
+		final List<BibtexEntry> entries = new ArrayList<BibtexEntry>();
+		for (final Post<? extends Resource> post : posts) {
+			entries.add(convertPost(post, urlGen));		
 		}
-	    }
+		return entries;
+	}
 
-	    /*
-	     * convert entry type
-	     * (Is never null but getType() returns null for unknown types and 
-	     *  JabRef knows less types than we.)
-	     *  
-	     * FIXME: a nicer solution would be to implement the corresponding
-	     * classes for the missing entrytypes.
-	     */
-	    final BibtexEntryType entryType = BibtexEntryType.getType(bibtex.getEntrytype());
-	    entry.setType(entryType == null ? BibtexEntryType.OTHER : entryType);
+	/**
+	 * Converts a BibSonomy post into a JabRef BibtexEntry
+	 * 
+	 * @param post
+	 * @param urlGen - the URLGenerator to create the biburl-field
+	 * @return
+	 */
+	public static BibtexEntry convertPost(final Post<? extends Resource> post, URLGenerator urlGen) {
 
-	    if (present(bibtex.getMisc())
-		    || present(bibtex.getMiscFields())) {
+		try {
+			/*
+			 * what we have
+			 */
+			final BibTex bibtex = (BibTex) post.getResource();
+			/*
+			 * what we want
+			 */
+			final BibtexEntry entry = new BibtexEntry();
+			/*
+			 * each entry needs an ID (otherwise we get a NPE) ...
+			 * let JabRef generate it
+			 */
+			/*
+			 * we use introspection to get all fields ...
+			 */
+			final BeanInfo info = Introspector.getBeanInfo(bibtex.getClass());
+			final PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
 
-		// parse the misc fields and loop over them
-		bibtex.parseMiscField();
+			/*
+			 * iterate over all properties
+			 */
+			for (final PropertyDescriptor pd : descriptors) {
 
-		if (bibtex.getMiscFields() != null)
-		    for (final String key : bibtex.getMiscFields().keySet()) {
-			if ("id".equals(key)) {
-			    // id is used by jabref
-			    entry.setField("misc_id", bibtex.getMiscField(key));
-			    continue;
+				final Method getter = pd.getReadMethod();
+
+				// loop over all String attributes
+				final Object o = getter.invoke(bibtex, (Object[]) null);
+
+				if (String.class.equals(pd.getPropertyType())
+						&& (o != null)
+						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName())) {
+					final String value = ((String) o);
+					if (present(value))
+						entry.setField(pd.getName().toLowerCase(), value);
+				}
 			}
 
-			if (key.startsWith("__")) // ignore fields starting with
-			    // __ - jabref uses them for
-			    // control
-			    continue;
+			/*
+			 * convert entry type
+			 * (Is never null but getType() returns null for unknown types and 
+			 *  JabRef knows less types than we.)
+			 *  
+			 * FIXME: a nicer solution would be to implement the corresponding
+			 * classes for the missing entrytypes.
+			 */
+			final BibtexEntryType entryType = BibtexEntryType.getType(bibtex.getEntrytype());
+			entry.setType(entryType == null ? BibtexEntryType.OTHER : entryType);
 
-			entry.setField(key, bibtex.getMiscField(key));
-		    }
+			if (present(bibtex.getMisc())
+					|| present(bibtex.getMiscFields())) {
 
-	    }
+				// parse the misc fields and loop over them
+				bibtex.parseMiscField();
 
-	    final String month = bibtex.getMonth();
-	    if (present(month)) {
-		/*
-		 * try to convert the month abbrev like JabRef does it
-		 */
-		final String longMonth = GlobalsSuper.MONTH_STRINGS.get(month);
-		if (present(longMonth)) {
-		    entry.setField("month", longMonth);
-		} else {
-		    entry.setField("month", month);
-		}
-	    }
+				if (bibtex.getMiscFields() != null)
+					for (final String key : bibtex.getMiscFields().keySet()) {
+						if ("id".equals(key)) {
+							// id is used by jabref
+							entry.setField("misc_id", bibtex.getMiscField(key));
+							continue;
+						}
 
-	    final String bibAbstract = bibtex.getAbstract();
-	    if (present(bibAbstract))
-		entry.setField("abstract", bibAbstract);
+						if (key.startsWith("__")) // ignore fields starting with
+							// __ - jabref uses them for
+							// control
+							continue;
 
-	    /*
-	     * concatenate tags using the JabRef keyword separator
-	     */
-	    final Set<Tag> tags = post.getTags();
-	    final StringBuffer tagsBuffer = new StringBuffer();
-	    for (final Tag tag : tags) {
-		tagsBuffer.append(tag.getName()	+ jabRefKeywordSeparator);
-	    }
-	    /*
-	     * remove last separator
-	     */
-	    if (!tags.isEmpty()) {
-		tagsBuffer.delete(tagsBuffer.lastIndexOf(jabRefKeywordSeparator), tagsBuffer.length());
-	    }
-	    final String tagsBufferString = tagsBuffer.toString();
-	    if (present(tagsBufferString)) 
-		entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS, tagsBufferString);
+						entry.setField(key, bibtex.getMiscField(key));
+					}
+
+			}
+
+			final String month = bibtex.getMonth();
+			if (present(month)) {
+				/*
+				 * try to convert the month abbrev like JabRef does it
+				 */
+				final String longMonth = GlobalsSuper.MONTH_STRINGS.get(month);
+				if (present(longMonth)) {
+					entry.setField("month", longMonth);
+				} else {
+					entry.setField("month", month);
+				}
+			}
+
+			final String bibAbstract = bibtex.getAbstract();
+			if (present(bibAbstract))
+				entry.setField("abstract", bibAbstract);
+
+			/*
+			 * concatenate tags using the JabRef keyword separator
+			 */
+			final Set<Tag> tags = post.getTags();
+			final StringBuffer tagsBuffer = new StringBuffer();
+			for (final Tag tag : tags) {
+				tagsBuffer.append(tag.getName()	+ jabRefKeywordSeparator);
+			}
+			/*
+			 * remove last separator
+			 */
+			if (!tags.isEmpty()) {
+				tagsBuffer.delete(tagsBuffer.lastIndexOf(jabRefKeywordSeparator), tagsBuffer.length());
+			}
+			final String tagsBufferString = tagsBuffer.toString();
+			if (present(tagsBufferString)) 
+				entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS, tagsBufferString);
 
 
-	    // set groups - will be used in jabref when exporting to bibsonomy
-	    if (present(post.getGroups())) {
-		final Set<Group> groups = post.getGroups();
-		final StringBuffer groupsBuffer = new StringBuffer();
-		for (final Group group : groups)
-		    groupsBuffer.append(group.getName() + " ");
+			// set groups - will be used in jabref when exporting to bibsonomy
+			if (present(post.getGroups())) {
+				final Set<Group> groups = post.getGroups();
+				final StringBuffer groupsBuffer = new StringBuffer();
+				for (final Group group : groups)
+					groupsBuffer.append(group.getName() + " ");
 
-		final String groupsBufferString = groupsBuffer.toString().trim();
-		if (present(groupsBufferString))
-		    entry.setField("groups", groupsBufferString);
-	    }
+				final String groupsBufferString = groupsBuffer.toString().trim();
+				if (present(groupsBufferString))
+					entry.setField("groups", groupsBufferString);
+			}
 
-	    // set comment + description
-	    final String description = post.getDescription();
-	    if (present(description)) {
-		entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
-		entry.setField("comment", post.getDescription());
-	    }
+			// set comment + description
+			final String description = post.getDescription();
+			if (present(description)) {
+				entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
+				entry.setField("comment", post.getDescription());
+			}
 
-	    if (present(post.getDate())) {
-		entry.setField("added-at", sdf.format(post.getDate()));
-	    }
-	    
-	    if (present(post.getChangeDate())) {
-		entry.setField("timestamp", sdf.format(post.getChangeDate()));
-	    }
+			if (present(post.getDate())) {
+				entry.setField("added-at", sdf.format(post.getDate()));
+			}
 
-	    if (present(post.getUser()))
-		entry.setField("username", post.getUser().getName());
-	    
-	    // set URL to bibtex version of this entry (bibrecord = ...)
-	    entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, urlGen.getPublicationUrl(bibtex, post.getUser()).toString());
+			if (present(post.getChangeDate())) {
+				entry.setField("timestamp", sdf.format(post.getChangeDate()));
+			}
 
-	    return entry;
+			if (present(post.getUser()))
+				entry.setField("username", post.getUser().getName());
 
-	} catch (final Exception e) {
-	    log.error("Could not convert BibSonomy post into a JabRef BibTeX entry.", e);
-	}
+			// set URL to bibtex version of this entry (bibrecord = ...)
+			entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, urlGen.getPublicationUrl(bibtex, post.getUser()).toString());
 
-	return null;
-    }
+			return entry;
 
-    /**
-     * Convert a JabRef BibtexEntry into a BibSonomy post
-     * 
-     * @param entry
-     * @return
-     */
-    public static Post<? extends Resource> convertEntry(final BibtexEntry entry) {
-
-	try {
-	    final Post<BibTex> post = new Post<BibTex>();
-	    final BibTex bibtex = new BibTex();
-	    post.setResource(bibtex);
-
-	    final List<String> knownFields = new ArrayList<String>();
-
-	    final BeanInfo info = Introspector.getBeanInfo(bibtex.getClass());
-	    final PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
-
-	    bibtex.setMisc("");
-
-	    // set all known properties of the BibTex
-	    for (final PropertyDescriptor pd : descriptors)
-		if (present(entry.getField((pd.getName().toLowerCase())))
-			&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName().toLowerCase())) {
-		    pd.getWriteMethod().invoke(bibtex, entry.getField(pd.getName().toLowerCase()));
-		    knownFields.add(pd.getName());
+		} catch (final Exception e) {
+			log.error("Could not convert BibSonomy post into a JabRef BibTeX entry.", e);
 		}
 
-	    // Add not known Properties to misc
-	    for (final String field : entry.getAllFields())
-		if (!knownFields.contains(field)
-			&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(field))
-		    bibtex.addMiscField(field, entry.getField(field));
-
-	    bibtex.serializeMiscFields();
-
-	    // set the key
-	    bibtex.setBibtexKey(entry.getCiteKey());
-	    bibtex.setEntrytype(entry.getType().getName().toLowerCase());
-
-	    // set the date of the post
-	    final String timestamp = entry.getField("timestamp");
-	    if (present(timestamp))
-		post.setDate(sdf.parse(timestamp));
-
-	    final String abstractt = entry.getField("abstract");
-	    if (present(abstractt))
-		bibtex.setAbstract(abstractt);
-
-	    final String keywords = entry.getField("keywords");
-	    if (present(keywords))
-		post.setTags(TagUtils.parse(keywords.replaceAll(jabRefKeywordSeparator, " ")));
-
-	    // Set the groups
-	    if (present(entry.getField("groups"))) {
-
-		final String[] groupsArray = entry.getField("groups").split(" ");
-		final Set<Group> groups = new HashSet<Group>();
-
-		for (final String group : groupsArray)
-		    groups.add(new Group(group));
-
-		post.setGroups(groups);
-	    }
-
-	    final String description = entry.getField("description");
-	    if (present(description))
-		post.setDescription(description);
-
-	    final String comment = entry.getField("comment");
-	    if (present(comment))
-		post.setDescription(comment);
-
-	    final String month = entry.getField("month");
-	    if (present(month))
-		bibtex.setMonth(month);
-
-
-	    return post;
-
-	} catch (final Exception e) {
-	    System.out.println(e.getStackTrace());
-	    log.debug("Could not convert JabRef entry into BibSonomy post.", e);
+		return null;
 	}
 
-	return null;
-    }
+	/**
+	 * Convert a JabRef BibtexEntry into a BibSonomy post
+	 * 
+	 * @param entry
+	 * @return
+	 */
+	public static Post<? extends Resource> convertEntry(final BibtexEntry entry) {
 
-    /**
-     * Convert a list of JabRef's BibtexEntries into a list of BibSonomy's posts
-     * 
-     * @param entries
-     * @return
-     */
-    public static List<Post<? extends Resource>> convertEntries(final List<BibtexEntry> entries) {
+		try {
+			final Post<BibTex> post = new Post<BibTex>();
+			final BibTex bibtex = new BibTex();
+			post.setResource(bibtex);
 
-	final List<Post<? extends Resource>> posts = new ArrayList<Post<? extends Resource>>();
-	for (final BibtexEntry entry : entries)
-	    posts.add(JabRefModelConverter.convertEntry(entry));
+			final List<String> knownFields = new ArrayList<String>();
 
-	return posts;
-    }
+			final BeanInfo info = Introspector.getBeanInfo(bibtex.getClass());
+			final PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+
+			bibtex.setMisc("");
+
+			// set all known properties of the BibTex
+			for (final PropertyDescriptor pd : descriptors)
+				if (present(entry.getField((pd.getName().toLowerCase())))
+						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName().toLowerCase())) {
+					pd.getWriteMethod().invoke(bibtex, entry.getField(pd.getName().toLowerCase()));
+					knownFields.add(pd.getName());
+				}
+
+			// Add not known Properties to misc
+			for (final String field : entry.getAllFields())
+				if (!knownFields.contains(field)
+						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(field))
+					bibtex.addMiscField(field, entry.getField(field));
+
+			bibtex.serializeMiscFields();
+
+			// set the key
+			bibtex.setBibtexKey(entry.getCiteKey());
+			bibtex.setEntrytype(entry.getType().getName().toLowerCase());
+
+			// set the date of the post
+			final String timestamp = entry.getField("timestamp");
+			if (present(timestamp))
+				post.setDate(sdf.parse(timestamp));
+
+			final String abstractt = entry.getField("abstract");
+			if (present(abstractt))
+				bibtex.setAbstract(abstractt);
+
+			final String keywords = entry.getField("keywords");
+			if (present(keywords))
+				post.setTags(TagUtils.parse(keywords.replaceAll(jabRefKeywordSeparator, " ")));
+
+			// Set the groups
+			if (present(entry.getField("groups"))) {
+
+				final String[] groupsArray = entry.getField("groups").split(" ");
+				final Set<Group> groups = new HashSet<Group>();
+
+				for (final String group : groupsArray)
+					groups.add(new Group(group));
+
+				post.setGroups(groups);
+			}
+
+			final String description = entry.getField("description");
+			if (present(description))
+				post.setDescription(description);
+
+			final String comment = entry.getField("comment");
+			if (present(comment))
+				post.setDescription(comment);
+
+			final String month = entry.getField("month");
+			if (present(month))
+				bibtex.setMonth(month);
+
+
+			return post;
+
+		} catch (final Exception e) {
+			System.out.println(e.getStackTrace());
+			log.debug("Could not convert JabRef entry into BibSonomy post.", e);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Convert a list of JabRef's BibtexEntries into a list of BibSonomy's posts
+	 * 
+	 * @param entries
+	 * @return
+	 */
+	public static List<Post<? extends Resource>> convertEntries(final List<BibtexEntry> entries) {
+
+		final List<Post<? extends Resource>> posts = new ArrayList<Post<? extends Resource>>();
+		for (final BibtexEntry entry : entries)
+			posts.add(JabRefModelConverter.convertEntry(entry));
+
+		return posts;
+	}
 }
