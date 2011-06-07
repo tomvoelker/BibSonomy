@@ -2,10 +2,10 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
