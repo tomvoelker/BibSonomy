@@ -43,7 +43,6 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
-import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.AuthorDatabaseManager;
 import org.bibsonomy.database.managers.BasketDatabaseManager;
