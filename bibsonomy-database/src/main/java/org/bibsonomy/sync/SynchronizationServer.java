@@ -1,9 +1,13 @@
 package org.bibsonomy.sync;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStates;
@@ -12,25 +16,15 @@ import org.bibsonomy.model.sync.SynchronizationStates;
  * @author wla
  * @version $Id$
  */
-public class Synchronization {
-
-	/*
-	 * private final HashMap<String, SynchronizationPost> serverPosts; private
-	 * final List<SynchronizationPost> clientPosts; private final Date
-	 * lastSyncDate; boolean synchronizationSucsessful = false;
-	 * 
-	 * ConflictResolutionStrategy conflicStrategy;
-	 */
-
-	/*
-	 * public Synchronization(HashMap<String, SynchronizationPost> serverPosts,
-	 * List<SynchronizationPost> clientPosts, Date lastSynchronizationDate,
-	 * ConflictResolutionStrategy conflictStrategy) { this.serverPosts =
-	 * serverPosts; this.clientPosts = clientPosts; this.lastSync =
-	 * lastSynchronizationDate; this.conflicStrategy = conflictStrategy; }
-	 */
+public class SynchronizationServer {
 
 	public List<SynchronizationPost> synchronize(Map<String, SynchronizationPost> serverPosts, List<SynchronizationPost> clientPosts, Date lastSyncDate, ConflictResolutionStrategy conflictStrategy) {
+
+		// is something to synchronize?
+		if (!present(serverPosts) && !present(clientPosts)) {
+			return clientPosts;
+		}
+
 		for (SynchronizationPost clientPost : clientPosts) {
 			SynchronizationPost serverPost = serverPosts.get(clientPost.getIntraHash());
 			if (lastSyncDate == null) {
@@ -115,7 +109,7 @@ public class Synchronization {
 			clientPosts.add(serverPost);
 		}
 
+
 		return clientPosts;
 	}
-
 }
