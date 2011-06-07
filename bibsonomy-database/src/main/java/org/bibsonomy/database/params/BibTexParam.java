@@ -1,6 +1,6 @@
 package org.bibsonomy.database.params;
 
-import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.BibTex;
 
 /**
