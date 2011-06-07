@@ -1,7 +1,13 @@
 package org.bibsonomy.sync;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.net.URI;
 import java.util.Date;
 import java.util.Properties;
+
+import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.model.Resource;
 
 /**
  * @author wla
@@ -10,19 +16,23 @@ import java.util.Properties;
 public class SyncParam {
 
     private final String userName;
-    private final int serviceId;
+    private final URI service;
     private final int contentType;
     private final Date lastSyncDate;
     private final String status;
     private final Properties credentials;
 
-    public SyncParam(String userName, int serviceId, int contentType, Date lastSyncDate, String status, Properties credentials) {
-	this.userName = userName;
-	this.serviceId = serviceId;
-	this.contentType = contentType;
-	this.lastSyncDate = lastSyncDate;
-	this.status = status;
-	this.credentials = credentials;
+    public SyncParam(String userName, URI service, Class<? extends Resource> resourceType, Date lastSyncDate, String status, Properties credentials) {
+		this.userName = userName;
+		this.service = service;
+		this.lastSyncDate = lastSyncDate;
+		this.status = status;
+		this.credentials = credentials;
+		
+		if (present(resourceType)) {
+			this.contentType = ConstantID.getContentTypeByClass(resourceType).getId();
+		} else 
+			this.contentType = 0;
     }
 
     /**
@@ -33,13 +43,13 @@ public class SyncParam {
     }
 
     /**
-     * @return the serviceId
-     */
-    public int getServiceId() {
-	return serviceId;
-    }
+	 * @return the service
+	 */
+	public URI getService() {
+		return service;
+	}
 
-    /**
+	/**
      * @return the contentType
      */
     public int getContentType() {
