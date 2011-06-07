@@ -7,8 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
