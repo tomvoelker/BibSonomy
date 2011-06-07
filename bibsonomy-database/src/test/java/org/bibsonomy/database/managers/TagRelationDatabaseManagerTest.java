@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.util.LogicInterfaceHelper;

@@ -2,8 +2,8 @@ package org.bibsonomy.database.managers.chain.statistic.post;
 
 import static org.junit.Assert.assertEquals;
 
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount;
 import org.bibsonomy.database.params.StatisticsParam;

@@ -7,7 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
