@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.concept.ConceptChain;
 import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.params.TagRelationParam;
