@@ -91,7 +91,8 @@ public enum ConstantID {
 	}
 	
 	/**
-	 * Returns the corresponding ID for the given resource type.
+	 * Returns the content type ID for the given resource type. This ID is used 
+	 * inside the database only!
 	 * 
 	 * @param resourceType
 	 * @return
