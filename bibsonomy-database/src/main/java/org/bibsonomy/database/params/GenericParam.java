@@ -12,18 +12,15 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchEntity;
-import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -763,16 +760,8 @@ public abstract class GenericParam {
 	 * 
 	 * @param nativeContentType
 	 */
-	public void setContentTypeByClass(Class<? extends Resource> nativeContentType) {
-		if (BibTex.class.isAssignableFrom(nativeContentType)) {
-			setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
-		} else if (Bookmark.class.isAssignableFrom(nativeContentType)) {
-			setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
-		} else if (Resource.class.isAssignableFrom(nativeContentType)) {
-			setContentType(ConstantID.ALL_CONTENT_TYPE);
-		} else {
-			throw new UnsupportedResourceTypeException();
-		}
+	public void setContentTypeByClass(Class<? extends Resource> resourceType) {
+		setContentType(ConstantID.getContentTypeByClass(resourceType));
 	}
 
 	/**
