@@ -1,5 +1,9 @@
 package org.bibsonomy.model.sync;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.net.URI;
+
 /**
  * @author wla
  * @version $Id$
@@ -10,22 +14,22 @@ public enum SynchronizationClients {
 	 * TODO remove after tests 
 	 */
 	LOCAL(0),
-	
+
 	/**
 	 * bibsonomy as client
 	 */
 	BIBSONOMY(1),
-	
+
 	/**
 	 * puma as client  
 	 */
 	PUMA(2),
-	
+
 	/**
 	 * biblicious as client
 	 */
 	BIBLICIOUS(3);
-	
+
 	private final int id;
 
 	private SynchronizationClients (final int id) {
@@ -38,24 +42,26 @@ public enum SynchronizationClients {
 	public int getId() {
 		return this.id;
 	}
-	
+
 	/**
-	 * @param id
+	 * FIXME: this data should be stored in the database!
+	 * 
+	 * @param uri
 	 * @return SynchronizationClient
 	 */
-	public static SynchronizationClients getById(int id) {
-		switch (id) {
-		case 0:
-			return LOCAL;
-		case 1:
-			return BIBSONOMY;
-		case 2:
-			return PUMA;
-		case 3:
-			return BIBLICIOUS;
-		default:
-			return null;
+	public static SynchronizationClients getByUri(final URI uri) {
+		if (present(uri)) {
+			final String uriString = uri.toString();
+			if ("http://puma.uni-kassel.de/".equals(uriString)) {
+				return PUMA;
+			} 
+			if ("http://www.biblicious.org/".equals(uriString)) {
+				return BIBLICIOUS;
+			} 
+			if ("http://www.bibsonomy.org/".equals(uriString)) {
+				return BIBSONOMY;
+			}
 		}
-		
+		throw new IllegalArgumentException("Unknown service " + uri);
 	}
 }
