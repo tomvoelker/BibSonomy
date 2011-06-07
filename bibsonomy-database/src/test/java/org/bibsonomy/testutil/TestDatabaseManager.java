@@ -1,8 +1,8 @@
 package org.bibsonomy.testutil;
 
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.impl.AbstractDBSessionFactory;
 import org.bibsonomy.database.common.util.IbatisUtils;
 import org.bibsonomy.database.params.BibTexParam;
