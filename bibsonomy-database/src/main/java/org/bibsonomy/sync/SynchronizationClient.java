@@ -1,11 +1,12 @@
 package org.bibsonomy.sync;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -14,60 +15,40 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
-import org.bibsonomy.model.sync.SynchronizationClients;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 
 /**
+ * This client is only for BibSonomy
  * @author wla
  * @version $Id$
  */
 public class SynchronizationClient {
 
-	private User serverUser;
-	private User clientUser;
-	private LogicInterface serverLogic;
-	private LogicInterface clientLogic;
-	private ConflictResolutionStrategy strategy;
-	private URI serviceIdentifier;
-
-	public synchronized boolean synchronize(User serverUser, User clientUser, LogicInterface serverLogic, LogicInterface clientLogic, URI serviceIdentifier, String ServerServiceIdentifier) {
-
-		this.serverUser = serverUser;
-		this.clientUser = clientUser;
-		this.serverLogic = serverLogic;
-		this.clientLogic = clientLogic;
-		this.serviceIdentifier = serviceIdentifier;
-
-		// TODO get strategy form db
-		this.strategy = ConflictResolutionStrategy.LAST_WINS;
-
-		// TODO correct cast form serviceIdentifier
-		SynchronizationClients client = SynchronizationClients.getById(Integer.parseInt(serviceIdentifier));
-
-		switch (client) {
-		case BIBSONOMY:
-		case PUMA:
-		case LOCAL:
-		case BIBLICIOUS:
-			
-			String result = synchronizeResource(BibTex.class);
-			storeSyncResult(result, client.getId(), BibTex.class);
-
-			result = synchronizeResource(Bookmark.class);
-			storeSyncResult(result, client.getId(), Bookmark.class);
-			break;
-
-		default:
-			break;
+	private final ConflictResolutionStrategy strategy;
+	private URI client;
+	
+	public SynchronizationClient() {
+		try {
+			this.client = new URI("http://www.bibsonomy.org/");
+		} catch (URISyntaxException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
 		}
-
+		//FIXME get strategy form DB or elsewhere
+		this.strategy = ConflictResolutionStrategy.LAST_WINS;
+	}
+	
+	public synchronized boolean synchronize(User serverUser, User clientUser, LogicInterface serverLogic, LogicInterface clientLogic, Class<? extends Resource> resourceType) {
+		String result = synchronizeResource(resourceType, serverUser, clientUser, serverLogic, clientLogic);
+		//FIXME remove cast
+		storeSyncResult(result, resourceType, (SyncLogicInterface)serverLogic, serverUser.getName());
 		return true;
 	}
 
-	private void storeSyncResult(final String result, final URI service, final Class<? extends Resource> resourceType) {
-		final SyncLogicInterface syncServerLogic = (SyncLogicInterface) serverLogic;
-		final SynchronizationData data = syncServerLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUser.getName(), service, resourceType);
+	private void storeSyncResult(String result, Class<? extends Resource> resourceType, SyncLogicInterface serverLogic, String serverUserName) {
+		SyncLogicInterface syncServerLogic = serverLogic;
+		SynchronizationData data = syncServerLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUserName, client, resourceType);
 		if (data.getStatus().equals("undone")) {
 			data.setStatus(result);
 			syncServerLogic.updateSyncData(data);
@@ -76,13 +57,13 @@ public class SynchronizationClient {
 		}
 	}
 
-	public String synchronizeResource(final Class<? extends Resource> resourceType) {
+	public String synchronizeResource(final Class<? extends Resource> resourceType, User serverUser, User clientUser, LogicInterface serverLogic, LogicInterface clientLogic) {
 		/*
 		 * TODO remove syncServerLogic and syncClientLogic after integration of
 		 * SyncLogicInterface into LogicInterface
 		 */
-		final SyncLogicInterface syncServerLogic = (SyncLogicInterface) serverLogic;
-		final SyncLogicInterface syncClientLogic = (SyncLogicInterface) clientLogic;
+		SyncLogicInterface syncServerLogic = (SyncLogicInterface)serverLogic;
+		SyncLogicInterface syncClientLogic = (SyncLogicInterface)clientLogic;
 
 		// TODO replace this with correct cast
 		// int serverServiceId = Integer.parseInt(serviceIdentifier);
@@ -99,7 +80,7 @@ public class SynchronizationClient {
 
 		List<SynchronizationPost> clientPosts = syncClientLogic.getSyncPostsListForUser(resourceType, clientUser.getName());
 
-		syncServerLogic.getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, serviceIdentifier);
+		syncServerLogic.getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, client);
 
 		/*
 		 * target lists
