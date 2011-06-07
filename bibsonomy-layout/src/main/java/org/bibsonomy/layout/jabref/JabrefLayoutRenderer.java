@@ -128,10 +128,10 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 
 	/** Renders the posts with the given layout.
 	 * 
-	 * @see org.bibsonomy.services.renderer.LayoutRenderer#renderLayout(org.bibsonomy.model.Layout, java.util.List, java.io.OutputStream)
+	 * @see org.bibsonomy.services.renderer.LayoutRenderer#renderLayout(org.bibsonomy.model.Layout, java.util.List, boolean)
 	 */
 	@Override
-	public <T extends Resource> StringBuffer renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException {
+	public StringBuffer renderLayout(final JabrefLayout layout, final  List<? extends Post<? extends Resource>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException {
 		log.debug("rendering " + posts.size() + " posts with " + layout.getName() + " layout");
 		/*
 		 * XXX: different handling of "duplicates = no" in new code:
@@ -261,7 +261,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * @throws IOException
 	 * @throws KeyCollisionException If two entries have exactly the same BibTeX key
 	 */
-	private <T extends Resource> BibtexDatabase bibtex2JabrefDB(final List<Post<T>> bibtexList) {
+	private BibtexDatabase bibtex2JabrefDB(final List<? extends Post<? extends Resource>> bibtexList) {
 		final BibtexDatabase db = new BibtexDatabase();
 		for (final Post<? extends Resource> post : bibtexList) {
 			db.insertEntry(JabRefModelConverter.convertPost(post, urlGen));

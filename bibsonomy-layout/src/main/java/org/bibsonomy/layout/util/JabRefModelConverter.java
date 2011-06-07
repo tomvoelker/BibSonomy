@@ -100,7 +100,7 @@ public class JabRefModelConverter {
      * @param urlGen - the URL generator to create the biburl-field
      * @return A list of posts in JabRef's data model.
      */
-    public static <T extends Resource> List<BibtexEntry> convertPosts(final List<Post<T>> posts, URLGenerator urlGen) {
+    public static List<BibtexEntry> convertPosts(final List<? extends Post<? extends Resource>> posts, URLGenerator urlGen) {
 	final List<BibtexEntry> entries = new ArrayList<BibtexEntry>();
 	for (final Post<? extends Resource> post : posts) {
 	    entries.add(convertPost(post, urlGen));		
