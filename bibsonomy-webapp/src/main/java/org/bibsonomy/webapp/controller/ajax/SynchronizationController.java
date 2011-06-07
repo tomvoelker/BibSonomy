@@ -3,6 +3,8 @@ package org.bibsonomy.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -11,15 +13,17 @@ import net.sf.json.JSONObject;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
-import org.bibsonomy.database.util.IbatisDBSessionFactory;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.util.IbatisSyncDBSessionFactory;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationClients;
 import org.bibsonomy.model.sync.SynchronizationData;
-import org.bibsonomy.sync.SynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -82,7 +86,16 @@ public class SynchronizationController extends AjaxController implements Minimal
 		}
 		
 		SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
-		syncLogic.createSyncServer(command.getUserName(), command.getServiceId(), userCredentials);
+		
+		//FIXME 
+		URI uri;
+		try {
+			uri = new URI("www.puma.de");
+		} catch (URISyntaxException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+		syncLogic.createSyncServer(command.getUserName(), command.getService(), userCredentials);
 		
 		
 		json.put("status", "OK");
@@ -94,7 +107,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 		final JSONObject json = new JSONObject();
 		
 		SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
-		syncLogic.deleteSyncServer(command.getUserName(), command.getServiceId());
+		syncLogic.deleteSyncServer(command.getUserName(), command.getService());
 		
 		//TODO what is to do with server sync_data entries?
 		
@@ -116,7 +129,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 		
 		SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
 		
-		syncLogic.updateSyncServer(command.getUserName(), command.getServiceId(), userCredentials);
+		syncLogic.updateSyncServer(command.getUserName(), command.getService(), userCredentials);
 		
 		final JSONObject json = new JSONObject();
 		
@@ -140,23 +153,14 @@ public class SynchronizationController extends AjaxController implements Minimal
 		DBLogicApiInterfaceFactory factory = new DBLogicApiInterfaceFactory();
 		
 		for (SyncService service : userServices) {
-			switch (service.getServiceId()) {
-			case 0:
-				service.setServiceName(SynchronizationClients.LOCAL.toString());
-				factory.setDbSessionFactory(new IbatisDBSessionFactory());
+			switch (SynchronizationClients.getByUri(service.getService())) {
+			case BIBSONOMY:
 				break;
-			case 1:
-				service.setServiceName(SynchronizationClients.BIBSONOMY.toString());
-				break;
-			case 2:
-				service.setServiceName(SynchronizationClients.PUMA.toString());
-				break;
-			case 3:
-				service.setServiceName(SynchronizationClients.BIBLICIOUS.toString());
+			case PUMA:
 				factory.setDbSessionFactory(new IbatisSyncDBSessionFactory());
 				break;
 			default:
-				service.setServiceName("UNKNOWN");
+				//TODO error handling
 				break;
 			}
 			
@@ -170,7 +174,15 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 */
 			SyncLogicInterface syncServerLogic = (SyncLogicInterface)serverLogic;
 			for (int i = 1; i<=2; i++) {
-				SynchronizationData data = syncServerLogic.getLastSynchronizationDataForUserForContentType(userName, service.getServiceId(), i);
+				Class<? extends Resource> resourceType = null;
+				if (i == 1) {
+					resourceType = Bookmark.class;
+				} else if(i == 2) {
+					resourceType = BibTex.class;
+				} else {
+					//TODO error handling
+				}
+				SynchronizationData data = syncServerLogic.getLastSynchronizationDataForUserForContentType(userName, service.getService(), resourceType);
 				if(present(data) && present(data.getLastSyncDate())) {
 					service.getLastSyncDates().put(i, data.getLastSyncDate());
 					service.getLastResults().put(i, data.getStatus());
@@ -183,74 +195,72 @@ public class SynchronizationController extends AjaxController implements Minimal
 	}
 	
 	private View synchronize(AjaxSynchronizationCommand command) {
-		SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
-		
-		DBLogicApiInterfaceFactory factory = new DBLogicApiInterfaceFactory();
-		
-		switch (command.getServiceId()) {
-			case 0:
-				factory.setDbSessionFactory(new IbatisDBSessionFactory());
-				break;
-			case 1:
-				break;
-			case 2:
-				break;
-			case 3:
-				factory.setDbSessionFactory(new IbatisSyncDBSessionFactory());
-				break;
-			default:
-				break;
-		}
-		
-		
-		List<SyncService> services = syncLogic.getSyncServicesForUser(command.getUserName());
-		
-		String serviceName = SynchronizationClients.getById(command.getServiceId()).toString();
-		SyncService reqService = null;
-		for (SyncService service : services) {
-			service.setServiceName(SynchronizationClients.getById(service.getServiceId()).toString());
-			if(service.getServiceName().equals(serviceName)) {
-				reqService = service;
-			}
-		}
-		Properties user = null;
-		if (reqService != null) {
-			user = reqService.getServerUser();
-		}
-		if(!present(user)) {
-			
-			return Views.AJAX_ERRORS;
-		}
-		@SuppressWarnings("null")
-		String serverUserName = user.getProperty("userName");
-		LogicInterface serverLogic = factory.getLogicAccess(serverUserName, user.getProperty("apiKey"));
-		
-		
-		SynchronizationClient syncClient = new SynchronizationClient();
-		User serverUser = new User();
-		serverUser.setName(command.getSyncUserName());
-		syncClient.synchronize(serverLogic.getAuthenticatedUser(), logic.getAuthenticatedUser(), serverLogic, logic, String.valueOf(command.getServiceId()), "0");
-		
-		final JSONObject json = new JSONObject();
-		//TODO replace this with switch statement
-		if (command.getServiceId() == 3 || command.getServiceId() == 0){
-			json.put("service", command.getServiceId());
-			addData(json, 1, (SyncLogicInterface)serverLogic, serverUserName, command.getServiceId());
-			addData(json, 2, (SyncLogicInterface)serverLogic, serverUserName, command.getServiceId());
-		}
-		
-		command.setResponseString(json.toString());		
-		return Views.AJAX_JSON;
+		return Views.ERROR;
+//		SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
+//		
+//		DBLogicApiInterfaceFactory factory = new DBLogicApiInterfaceFactory();
+//		
+//		switch (SynchronizationClients.getByUri(command.getService())) {
+//			case BIBSONOMY:
+//				factory.setDbSessionFactory(new IbatisDBSessionFactory());
+//				break;
+//			case PUMA:
+//				factory.setDbSessionFactory(new IbatisSyncDBSessionFactory());
+//				break;
+//			default:
+//				break;
+//		}
+//		
+//		
+//		List<SyncService> services = syncLogic.getSyncServicesForUser(command.getUserName());
+//		
+//		String serviceName = SynchronizationClients.getById(command.getServiceId()).toString();
+//		SyncService reqService = null;
+//		for (SyncService service : services) {
+//			service.setServiceName(SynchronizationClients.getById(service.getServiceId()).toString());
+//			if(service.getServiceName().equals(serviceName)) {
+//				reqService = service;
+//			}
+//		}
+//		Properties user = null;
+//		if (reqService != null) {
+//			user = reqService.getServerUser();
+//		}
+//		if(!present(user)) {
+//			
+//			return Views.AJAX_ERRORS;
+//		}
+//		@SuppressWarnings("null")
+//		String serverUserName = user.getProperty("userName");
+//		LogicInterface serverLogic = factory.getLogicAccess(serverUserName, user.getProperty("apiKey"));
+//		
+//		
+//		SynchronizationClient syncClient = new SynchronizationClient();
+//		User serverUser = new User();
+//		serverUser.setName(command.getSyncUserName());
+//		syncClient.synchronize(serverLogic.getAuthenticatedUser(), logic.getAuthenticatedUser(), serverLogic, logic, String.valueOf(command.getServiceId()), "0");
+//		syncClient.synchronize(serverUser, logic.getAuthenticatedUser(), serverLogic, logic, Bookmark.class);
+//		
+//		
+//		final JSONObject json = new JSONObject();
+//			json.put("service", command.getServiceId());
+//			//FIXME service id must be id of the client service on server!
+//			addData(json, Bookmark.class, (SyncLogicInterface)serverLogic, serverUserName, command.getService());
+//			addData(json, BibTex.class, (SyncLogicInterface)serverLogic, serverUserName, command.getService());
+//
+//		
+//		command.setResponseString(json.toString());		
+//		return Views.AJAX_JSON;
 	}
 	
-	private void addData (JSONObject json, int contentType, SyncLogicInterface syncLogic, String userName, int serviceId) {
-		SynchronizationData data = syncLogic.getLastSynchronizationDataForUserForContentType(userName, serviceId, contentType);
+	private void addData (JSONObject json, Class<? extends Resource> resourceType, SyncLogicInterface syncLogic, String userName, URI service) {
+		SynchronizationData data = syncLogic.getLastSynchronizationDataForUserForContentType(userName, service, resourceType);
 		if (present(data)) {
 			HashMap<String, Object> values = new HashMap<String, Object>();
 			values.put("date", data.getLastSyncDate().getTime());
 			values.put("result", data.getStatus());
-			values.put("contentType", contentType);
-			json.put(contentType, values);
+			values.put("contentType", resourceType.getClass());
+			json.put(ConstantID.getContentTypeByClass(resourceType), values);
 		}
 	}
 	

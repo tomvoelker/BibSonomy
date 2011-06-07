@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
@@ -20,7 +19,6 @@ import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
-import org.bibsonomy.model.sync.SynchronizationClients;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
@@ -219,21 +217,21 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * TODO receive service names from db, not form enum
 		 */
-		for (SynchronizationClients client : SynchronizationClients.values()) {
-			SyncService service = new SyncService();
-			service.setServiceId(client.getId());
-			service.setServiceName(client.toString());
-			if(!userServices.contains(service))
-				avlServices.add(service);
-		}
-		
-		
-		for (SyncService service : userServices) {
-			Properties user = service.getServerUser();
-			service.setServiceName(SynchronizationClients.getById(service.getServiceId()).toString());
-			service.setUserName(user.getProperty("userName"));
-			service.setApiKey(user.getProperty("apiKey"));
-		}
+//		for (SynchronizationClients client : SynchronizationClients.values()) {
+//			SyncService service = new SyncService();
+//			service.setServiceId(client.getId());
+//			service.setServiceName(client.toString());
+//			if(!userServices.contains(service))
+//				avlServices.add(service);
+//		}
+//		
+//		
+//		for (SyncService service : userServices) {
+//			Properties user = service.getServerUser();
+//			service.setServiceName(SynchronizationClients.getById(service.getServiceId()).toString());
+//			service.setUserName(user.getProperty("userName"));
+//			service.setApiKey(user.getProperty("apiKey"));
+//		}
 		
 		command.setAvlSyncServices(avlServices);
 		command.setSyncServices(userServices);

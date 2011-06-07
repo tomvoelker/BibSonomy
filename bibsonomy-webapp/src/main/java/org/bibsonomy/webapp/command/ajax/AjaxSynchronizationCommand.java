@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command.ajax;
 
+import java.net.URI;
 import java.util.List;
 
 import org.bibsonomy.model.sync.SyncService;
@@ -17,6 +18,7 @@ public class AjaxSynchronizationCommand extends AjaxCommand{
 	private String apiKey;
 	private List<SyncService> syncServices;
 	private int syncAction;
+	private URI service;
 	
 
 	/**
@@ -102,6 +104,18 @@ public class AjaxSynchronizationCommand extends AjaxCommand{
 	 */
 	public int getSyncAction() {
 		return syncAction;
+	}
+	/**
+	 * @param service the service to set
+	 */
+	public void setService(URI service) {
+		this.service = service;
+	}
+	/**
+	 * @return the service
+	 */
+	public URI getService() {
+		return service;
 	}
 	
 }
