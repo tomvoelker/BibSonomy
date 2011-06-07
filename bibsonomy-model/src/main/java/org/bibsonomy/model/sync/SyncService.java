@@ -1,5 +1,6 @@
 package org.bibsonomy.model.sync;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +13,7 @@ import java.util.Properties;
 public class SyncService {
 	
 	private Properties serverUser;
-	private int serviceId;
-	private String serviceName;
+	private URI service;
 	private final Map<Integer, Date> lastSyncDates;
 	private String userName;
 	private String apiKey;
@@ -42,31 +42,7 @@ public class SyncService {
 	public void setServerUser(Properties serverUser) {
 		this.serverUser = serverUser;
 	}
-	/**
-	 * @return the serviceId
-	 */
-	public int getServiceId() {
-		return this.serviceId;
-	}
-	/**
-	 * @param serviceId the serviceId to set
-	 */
-	public void setServiceId(int serviceId) {
-		this.serviceId = serviceId;
-	}
 
-	/**
-	 * @param serviceName the serviceName to set
-	 */
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
-	/**
-	 * @return the serviceName
-	 */
-	public String getServiceName() {
-		return serviceName;
-	}
 	/**
 	 * @return the lastSyncDates
 	 */
@@ -80,8 +56,8 @@ public class SyncService {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof SyncService) {
-			SyncService test = (SyncService) obj;
-			return this.getServiceId() == test.getServiceId();
+			final SyncService test = (SyncService) obj;
+			return this.getService().equals(test.getService());
 		} 
 		return super.equals(obj);
 	}
@@ -119,6 +95,14 @@ public class SyncService {
 	 */
 	public String getApiKey() {
 		return apiKey;
+	}
+
+	public URI getService() {
+		return this.service;
+	}
+
+	public void setService(URI service) {
+		this.service = service;
 	}
 
 	

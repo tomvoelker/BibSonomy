@@ -1,6 +1,9 @@
 package org.bibsonomy.model.sync;
 
+import java.net.URI;
 import java.util.Date;
+
+import org.bibsonomy.model.Resource;
 
 /**
  * @author wla
@@ -8,23 +11,11 @@ import java.util.Date;
  */
 public class SynchronizationData {
 
-	private int serviceId;
+	private URI service;
 	private String userName;
-	private int contentType;
+	private Class<? extends Resource> resourceType;
 	private Date lastSyncDate;
 	private String status;
-	/**
-	 * @return the serviceId
-	 */
-	public int getServiceId() {
-		return this.serviceId;
-	}
-	/**
-	 * @param serviceId the serviceId to set
-	 */
-	public void setServiceId(int serviceId) {
-		this.serviceId = serviceId;
-	}
 	/**
 	 * @return the userName
 	 */
@@ -36,18 +27,6 @@ public class SynchronizationData {
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-	/**
-	 * @return the contentType
-	 */
-	public int getContentType() {
-		return this.contentType;
-	}
-	/**
-	 * @param contentType the contentType to set
-	 */
-	public void setContentType(int contentType) {
-		this.contentType = contentType;
 	}
 	/**
 	 * @return the lastSyncDate
@@ -72,6 +51,18 @@ public class SynchronizationData {
 	 */
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public URI getService() {
+		return this.service;
+	}
+	public void setService(URI service) {
+		this.service = service;
+	}
+	public Class<? extends Resource> getResourceType() {
+		return this.resourceType;
+	}
+	public void setResourceType(Class<? extends Resource> resourceType) {
+		this.resourceType = resourceType;
 	}
 	
 }

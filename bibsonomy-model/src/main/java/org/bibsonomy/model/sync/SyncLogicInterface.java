@@ -1,5 +1,6 @@
 package org.bibsonomy.model.sync;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -17,65 +18,65 @@ public interface SyncLogicInterface {
 	/**
 	 * 
 	 * @param userName
-	 * @param serviceId
+	 * @param service
 	 * @param userCredentials
 	 */
-	public void createSyncServer(final String userName, final int serviceId, final Properties userCredentials);
+	public void createSyncServer(final String userName, final URI service, final Properties userCredentials);
 	
 	/**
 	 * 
 	 * @param userName
-	 * @param serviceId
+	 * @param service
 	 */
-	public void deleteSyncServer(final String userName, final int serviceId);
+	public void deleteSyncServer(final String userName, final URI service);
 	
 	/**
 	 * 
 	 * @param userName
-	 * @param serviceId
+	 * @param service
 	 * @param userCredentials 
 	 */
-	public void updateSyncServer(final String userName, final int serviceId, final Properties userCredentials);
-	
-	/**
-	 * 
-	 * @param user
-	 * @return List of synchronization services for given user 
-	 */
-	public List<SyncService> getSyncServicesForUser(String user);
+	public void updateSyncServer(final String userName, final URI service, final Properties userCredentials);
 	
 	/**
 	 * 
 	 * @param userName
-	 * @param serviceId
-	 * @param contentType
+	 * @return List of synchronization services for given user 
+	 */
+	public List<SyncService> getSyncServicesForUser(final String userName);
+	
+	/**
+	 * 
+	 * @param userName
+	 * @param service
+	 * @param resourceType
 	 * @return returns date of current running Synchronization
 	 */
-	public Date getCurrentSyncDate(String userName, int serviceId, int contentType);
+	public Date getCurrentSyncDate(final String userName, final URI service, final Class<? extends Resource> resourceType);
 	
 	/**
 	 * 
 	 * @param data
 	 */
-	public void updateSyncData(SynchronizationData data);
+	public void updateSyncData(final SynchronizationData data);
 	
 	/**
 	 * 
 	 * @param userName
-	 * @param serviceId
-	 * @param contentType
+	 * @param service
+	 * @param resourceType
 	 * @return Synchronization data of currently running synchronization: status is "undone"
 	 */
-	public SynchronizationData getCurrentSynchronizationDataForUserForServiceForContent (String userName, int serviceId, int contentType);
+	public SynchronizationData getCurrentSynchronizationDataForUserForServiceForContent(final String userName, final URI service, final Class<? extends Resource> resourceType);
 	
 	/**
 	 * 
 	 * @param userName
-	 * @param serviceId
-	 * @param contentType
+	 * @param service
+	 * @param resourceType
 	 * @return Synchronization data of last successful synchronization: date and status
 	 */
-	public SynchronizationData getLastSynchronizationDataForUserForContentType (String userName, int serviceId, int contentType);
+	public SynchronizationData getLastSynchronizationDataForUserForContentType (final String userName, final URI service, final Class<? extends Resource> resourceType);
 	
 	/**
 	 * 
@@ -83,7 +84,7 @@ public interface SyncLogicInterface {
 	 * @param userName
 	 * @return List of SnchronizationPosts for given user 
 	 */
-	public List<SynchronizationPost> getSyncPostsListForUser (Class<? extends Resource> resourceType, String userName);
+	public List<SynchronizationPost> getSyncPostsListForUser (final Class<? extends Resource> resourceType, final String userName);
 	
 	/**
 	 * 
@@ -91,7 +92,7 @@ public interface SyncLogicInterface {
 	 * @param resourceType 
 	 * @return map with user posts used from server!
 	 */
-	public Map<String, SynchronizationPost> getSyncPostsMapForUser(String userName, Class<? extends Resource> resourceType);
+	public Map<String, SynchronizationPost> getSyncPostsMapForUser(final String userName, Class<? extends Resource> resourceType);
 	
 	/**
 	 * 
@@ -99,8 +100,8 @@ public interface SyncLogicInterface {
 	 * @param resourceType 
 	 * @param clientPosts
 	 * @param strategy 
-	 * @param serviceIdentifier 
+	 * @param service 
 	 * @return list of posts with set synchronization state
 	 */
-	public List<SynchronizationPost> getSynchronization(final String userName, Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final String serviceIdentifier);
+	public List<SynchronizationPost> getSynchronization(final String userName, Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service);
 }
