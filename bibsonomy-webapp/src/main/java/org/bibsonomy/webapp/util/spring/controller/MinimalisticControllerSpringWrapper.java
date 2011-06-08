@@ -179,12 +179,15 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			((ErrorAware)controller).setErrors(errors);
 		}
 		
+		View view;
+		
 		/*
 		 * define error view
 		 */
-		View view = Views.ERROR;
 		if (controller instanceof AjaxController) {
 			view = Views.AJAX_ERRORS;
+		} else {
+			view = Views.ERROR;
 		}
 		
 		try {
@@ -201,8 +204,11 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			response.setHeader("Retry-After", Long.toString(e.getRetryAfter()));
 			errors.reject(e.getMessage(), new Object[]{e.getRetryAfter()}, "Service unavailable");
-			// TODO: this exception is only thrown in org.bibsonomy.webapp.controller.actions.UserLoginController;
-			// if desired, add some logging there. Otherwise, our error logs get cluttered.(dbe)
+			/*
+			 *  this exception is only thrown in UserLoginController
+			 *  if desired, add some logging there. Otherwise, our error logs get
+			 *  cluttered.(dbe)
+			 */
 			// log.warn("Could not complete controller (Service unavailable): " + e.getMessage());
 		} catch (final ResourceMovedException e) {
 			response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
@@ -210,6 +216,13 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		} catch (final ResourceNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			errors.reject("error.post.notfound", e.getMessage()); // FIXME: it would be better, to show the specific 404 view
+		} catch (final org.springframework.security.access.AccessDeniedException ex) {
+			/*
+			 * we rethrow the exception here in order that Spring Security can
+			 * handle the exception (saving request and redirecting to the login
+			 * page (if user is not logged in) or to the access denied page)
+			 */
+			throw ex;
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
