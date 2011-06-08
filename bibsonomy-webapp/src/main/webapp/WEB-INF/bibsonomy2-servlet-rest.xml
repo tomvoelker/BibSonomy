@@ -25,7 +25,6 @@
 	</bean>
 	
 	<bean id="apiServletInstance" class="org.bibsonomy.rest.RestServlet">
-		<property name=""></property>
 	</bean>
 	
 </beans>
