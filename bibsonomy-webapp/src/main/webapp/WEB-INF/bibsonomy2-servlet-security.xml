@@ -36,6 +36,10 @@
 		<security:access-denied-handler error-page="/errors/403" />
 	</security:http>
 	
+	<!-- enable when using spring security tag libs
+	<bean id="expressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
+	 -->
+	 
 	<!-- Teergrube for login handler  -->
 	<bean id="teergrube" class="org.bibsonomy.webapp.util.TeerGrube" scope="singleton">
 		<property name="maxQueueAgeSeconds" value="1800"/>
