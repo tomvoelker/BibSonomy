@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -53,6 +54,10 @@ public class ServletWrappingController extends AbstractController implements Bea
 		this.initParameters = initParameters;
 	}
 
+	/**
+	 * @see org.springframework.beans.factory.BeanNameAware#setBeanName(java.lang.String)
+	 */
+	@Override
 	public void setBeanName(String name) {
 		this.beanName = name;
 	}
@@ -119,7 +124,11 @@ public class ServletWrappingController extends AbstractController implements Bea
 		}
 	}
 
-
+	/**
+	 * Provides an instance of the servlet this class should dispatch to.
+	 * @param servletInstance
+	 */
+	@Required
 	public void setServletInstance(Servlet servletInstance) {
 		this.servletInstance = servletInstance;
 	}
