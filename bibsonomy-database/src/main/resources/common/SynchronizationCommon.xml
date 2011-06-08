@@ -14,7 +14,7 @@
 	<resultMap id="syncData" class="syncData">
 		<result property="service"		column="uri"			javaType="uri"		/>
 		<result property="userName"		column="user_name"		javaType="string"	/>
-		<result property="contentType"	column="content_type"	javaType="int"		/>
+		<result property="resourceType"	column="content_type"	javaType="resourceTypeClass"		/>
 		<result property="lastSyncDate"	column="last_sync_date"	javaType="date"		/>
 		<result property="status"		column="status"			javaType="string"	/>
 	</resultMap>

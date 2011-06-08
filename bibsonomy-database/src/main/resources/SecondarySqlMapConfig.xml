@@ -16,6 +16,7 @@
 	
 	<typeAlias alias="properties" type="java.util.Properties" />
 	<typeAlias alias="uri" type="java.net.URI" />
+	<typeAlias alias="resourceTypeClass" type="java.lang.Class" />
 
 	<typeHandler javaType="url" callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />
 	<typeHandler javaType="InetAddress" callback="org.bibsonomy.database.common.typehandler.InetAddressTypeHandlerCallback" />
@@ -25,6 +26,7 @@
 	<typeHandler javaType="ProfilePrivlevel" callback="org.bibsonomy.database.common.typehandler.ProfilePrivlevelTypeHandlerCallback" />
 	<typeHandler javaType="properties" callback="org.bibsonomy.database.common.typehandler.PropertiesTypeHandlerCallback" />
 	<typeHandler javaType="uri" callback="org.bibsonomy.database.common.typehandler.UriTypeHandlerCallback" />
+	<typeHandler javaType="resourceTypeClass" callback="org.bibsonomy.database.common.typehandler.ContentTypeTypeHandlerCallback" />
 	
 	<transactionManager type="JDBC">
 		<dataSource type="JNDI">
