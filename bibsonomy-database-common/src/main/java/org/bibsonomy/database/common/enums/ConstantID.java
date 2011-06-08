@@ -109,4 +109,21 @@ public enum ConstantID {
 		}
 	}
 	
+	/**
+	 * The opposite of {@link #getContentTypeByClass(Class)}
+	 * 
+	 * @param contentType
+	 * @return
+	 */
+	public static Class<? extends Resource> getClassByContentType(final ConstantID contentType) {
+		switch (contentType) {
+		case BIBTEX_CONTENT_TYPE:
+			return BibTex.class;
+		case BOOKMARK_CONTENT_TYPE:
+			return Bookmark.class;
+		default:
+			throw new UnsupportedResourceTypeException();
+		}
+	}
+	
 }
