@@ -42,7 +42,17 @@
 	
 	<!--  #################### factory beans #################### -->
 	
-	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance"/>
+	<!-- Renders JabRef Layouts -->
+	<!-- 
+		FIXME: Currently, it's a singleton, because we needed the same instance 
+		in Functions.java
+		We should put the bean into the application context and use it from there.
+	 -->
+	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance">
+		<property name="userLayoutFilePath" value="${project.document.path}"/>
+		<!-- TODO: use url generator -->
+		<property name="projectHome" value="${project.home}"/>
+	</bean>
 
 	<!-- provides access to the request for all controllers, which need it -->
 	<bean id="requestLogic" class="org.bibsonomy.webapp.util.RequestLogic" scope="request"/>
