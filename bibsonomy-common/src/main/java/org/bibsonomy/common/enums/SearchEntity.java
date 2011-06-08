@@ -36,16 +36,14 @@ public enum SearchEntity {
 	 * search over all available fields 
 	 */	 
 	ALL,	
+	
 	/**
 	 * search only in author field
 	 */
 	AUTHOR,
+	
 	/**
 	 * search by bibtexkey
 	 */
-	BIBTEXKEY,
-	/**
-	 * fulltext search via lucene
-	 */
-	LUCENE;
+	BIBTEXKEY;
 }
