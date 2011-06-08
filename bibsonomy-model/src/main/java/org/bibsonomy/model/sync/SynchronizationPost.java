@@ -1,5 +1,6 @@
 package org.bibsonomy.model.sync;
 
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
@@ -25,7 +26,7 @@ public class SynchronizationPost extends SynchronizationResource {
 	/**
 	 * resource attached from server
 	 */
-	private Resource resource;
+	private Post<? extends Resource> post;
 	
 	/*
 	 * (non-Javadoc)
@@ -78,19 +79,19 @@ public class SynchronizationPost extends SynchronizationResource {
 	}
 
 	/**
-	 * @param resource the post to set
+	 * @param post the post to set
 	 */
-	public void setResource(Resource resource) {
-		this.resource = resource;
+	public void setPost(Post<? extends Resource> post) {
+		this.post = post;
 	}
 
 	/**
 	 * @return the post
 	 */
-	public Resource getResource() {
-		return resource;
+	public Post<? extends Resource> getPost() {
+		return post;
 	}
-	
+
 	@Override
 	public String toString() {
 		return intraHash;

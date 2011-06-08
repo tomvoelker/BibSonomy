@@ -9,26 +9,17 @@ import java.net.URI;
  * @version $Id$
  */
 public enum SynchronizationClients {
+	
+	TESTCLIENT(0),
 	/**
-	 * used for test synchronization of 2 accounts on the same system
-	 * TODO remove after tests 
-	 */
-	LOCAL(0),
-
-	/**
-	 * bibsonomy as client
+	 * bibsonomy
 	 */
 	BIBSONOMY(1),
 
 	/**
 	 * puma as client  
 	 */
-	PUMA(2),
-
-	/**
-	 * biblicious as client
-	 */
-	BIBLICIOUS(3);
+	PUMA(2);
 
 	private final int id;
 
@@ -54,12 +45,12 @@ public enum SynchronizationClients {
 			final String uriString = uri.toString();
 			if ("http://puma.uni-kassel.de/".equals(uriString)) {
 				return PUMA;
-			} 
-			if ("http://www.biblicious.org/".equals(uriString)) {
-				return BIBLICIOUS;
-			} 
+			}
 			if ("http://www.bibsonomy.org/".equals(uriString)) {
 				return BIBSONOMY;
+			}
+			if ("http://www.test.de/".equals(uriString)) {
+				return TESTCLIENT;
 			}
 		}
 		throw new IllegalArgumentException("Unknown service " + uri);
