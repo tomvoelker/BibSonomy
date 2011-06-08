@@ -21,10 +21,14 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
+ * TODO: add a validator for the command (should check file extension, …)
+ * 
  * @author cvo
  * @version $Id$
  */
@@ -38,12 +42,12 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 	/**
 	 * hold current errors
 	 */
-	private Errors errors = null;
+	private Errors errors;
 
 	/**
 	 * logic database interface
 	 */
-	private LogicInterface logic = null;
+	private LogicInterface logic;
 
 
 	/**
@@ -55,11 +59,10 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 	 * An instance of the (new!) layout renderer. We need it here to unload
 	 * custom user layouts.
 	 */
-	private final JabrefLayoutRenderer jabrefLayoutRenderer = JabrefLayoutRenderer.getInstance();
+	private JabrefLayoutRenderer jabrefLayoutRenderer;
 
 	@Override
-	public View workOn(JabRefImportCommand command) {
-
+	public View workOn(final JabRefImportCommand command) {
 		final RequestWrapperContext context = command.getContext();
 
 		/*
@@ -67,10 +70,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 		 * login page
 		 */
 		if (!context.isUserLoggedIn()) {
-			/*
-			 * FIXME: send user back to this controller
-			 */
-			return new ExtendedRedirectView("/login");
+			throw new AccessDeniedException("please log in");
 		}
 
 		final User loginUser = context.getLoginUser();
@@ -85,7 +85,6 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 			 */
 			return Views.ERROR;
 		}
-
 
 		/*
 		 * delete a layout
@@ -184,36 +183,31 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 
 	@Override
 	public void setErrors(Errors errors) {
-
 		this.errors = errors;
-	}
-
-	/**
-	 * @return the logic object for the database connectivity
-	 */
-	public LogicInterface getLogic() {
-		return this.logic;
 	}
 
 	/**
 	 * 
 	 * @param logic
 	 */
+	@Required
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
 
 	/**
-	 * @return FileUploadFactory
-	 */
-	public FileUploadFactory getUploadFactory() {
-		return this.uploadFactory;
-	}
-
-	/**
 	 * @param uploadFactory
 	 */
+	@Required
 	public void setUploadFactory(FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
+	}
+	
+	/**
+	 * @param jabrefLayoutRenderer the jabrefLayoutRenderer to set
+	 */
+	@Required
+	public void setJabrefLayoutRenderer(JabrefLayoutRenderer jabrefLayoutRenderer) {
+		this.jabrefLayoutRenderer = jabrefLayoutRenderer;
 	}
 }
