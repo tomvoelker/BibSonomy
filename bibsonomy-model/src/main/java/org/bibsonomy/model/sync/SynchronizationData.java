@@ -3,8 +3,6 @@ package org.bibsonomy.model.sync;
 import java.net.URI;
 import java.util.Date;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 
 /**
@@ -18,24 +16,7 @@ public class SynchronizationData {
 	private Class<? extends Resource> resourceType;
 	private Date lastSyncDate;
 	private String status;
-	
-	/**
-	 * Setter for iBatis
-	 * TODO is this the best way to handle this?
-	 * @param contentType
-	 */
-	public void setContentType (int contentType) {
-		switch (contentType) {
-		case 1:
-			resourceType = Bookmark.class;
-			break;
-		case 2:
-			resourceType = BibTex.class;
-		default:
-			break;
-		}
-	}
-	
+		
 	/**
 	 * @return the userName
 	 */
