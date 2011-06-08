@@ -119,4 +119,9 @@ public class ServletWrappingController extends AbstractController implements Bea
 		}
 	}
 
+
+	public void setServletInstance(Servlet servletInstance) {
+		this.servletInstance = servletInstance;
+	}
+
 }
