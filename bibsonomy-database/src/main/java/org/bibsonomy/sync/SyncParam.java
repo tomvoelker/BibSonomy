@@ -35,7 +35,11 @@ public class SyncParam {
 		this.lastSyncDate = lastSyncDate;
 		this.status = status;
 		this.credentials = credentials;
-		this.serviceId = SynchronizationClients.getByUri(service).getId();
+		if (present(service)) {
+			this.serviceId = SynchronizationClients.getByUri(service).getId();
+		} else {
+			this.serviceId = 0; 
+		}
 	}
 
 	/**

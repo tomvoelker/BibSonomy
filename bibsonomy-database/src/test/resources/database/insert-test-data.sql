@@ -76,6 +76,10 @@ INSERT INTO `repository` (`inter_hash`, `intra_hash`, `user_name`, `repository_n
 -- Data for synchronization tests
 --
 
+insert into `sync_services` (`uri`, `service_id`) VALUES
+('http://error.err/', 0),
+('http://www.bibsonomy.org/', 1);
+
 -- bibtex posts
 INSERT INTO `bibtex` (`content_id`, `user_name`, `simhash1`, `simhash2`, `change_date`, `date`) VALUES
 -- post 1 "no changes" created and modified before last synchronization

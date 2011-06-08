@@ -18,7 +18,6 @@ import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -29,7 +28,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 
 	private static SynchronizationDatabaseManager syncDBManager;
 
-	private final String syncUser1 = "Syncuser1";
+	private final String syncUser1 = "syncuser1";
 	private URI testURI;
 	private URI bibsonomyURI;
 	
@@ -43,20 +42,17 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 			this.testURI = new URI("http://www.test.de/");
 			this.bibsonomyURI = new URI("http://www.bibsonomy.org/");
 		} catch (URISyntaxException ex) {
-			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
 	}
 
 	/**
-	 * FIXME fix this test
 	 * test for all access to the table `sync`
 	 */
-	@Ignore
 	@Test
 	public void testSyncService() {
 		SyncService service = new SyncService();
-		service.setService(testURI);
+		service.setService(bibsonomyURI);
 		Properties serverUser = new Properties();
 		serverUser.setProperty("name", syncUser1);
 		serverUser.setProperty("apiKey", "1546545646565");
@@ -78,26 +74,20 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		assertTrue(services.contains(service));
 		assertEquals(2, services.size());
 		
-		syncDBManager.deleteSyncServerForUser(dbSession, syncUser1, testURI);
+		syncDBManager.deleteSyncServerForUser(dbSession, syncUser1, bibsonomyURI);
 		services = syncDBManager.getSyncServerForUser(syncUser1, dbSession);
 		assertFalse(services.contains(service));
 		assertEquals(1, services.size());
 	}
 
 	/**
-	 *TODO fix this test
 	 * Test for all "sync_data" queries
 	 */
-	@Ignore
 	@Test
 	public void testGetLastSyncData() {
 		/*
 		 * test getLastSynchronizationDate
 		 */
-		
-		//TODO remove this
-		int serviceId = 1;
-		int contentType = 2;
 		
 		Class<? extends Resource> resourceType = BibTex.class;
 		

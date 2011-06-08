@@ -26,7 +26,6 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.SynchronizationClient;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -144,13 +143,10 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 
 			clientLogic.createPosts(postList);
 		}
-		/*
-		 * TODO replace serviceIdentifier with correct identifier
-		 */
+
 		try {
 			clientService = new URI("http://www.bibsonomy.org/");
 		} catch (URISyntaxException ex) {
-			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
 
@@ -175,10 +171,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		return post;
 	}
 	
-	/**
-	 * FIXME fix this test
-	 */
-	@Ignore
+
 	@Test
 	public void testSynchronization() {
 		final SynchronizationClient synchronizer = new SynchronizationClient();

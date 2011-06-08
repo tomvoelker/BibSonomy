@@ -4,8 +4,9 @@
 <sqlMap namespace="Synchronization">
 
 	<select id="getSyncServicesForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT *
-		FROM sync
+		SELECT s.user_name, s.credentials, ss.uri
+		FROM sync s
+		JOIN sync_services ss USING (service_id)
 		WHERE user_name = #userName#
 	</select>
 	
@@ -42,23 +43,25 @@
 	</select>
 	
 	<select id="getSyncData" resultMap="SynchronizationCommon.syncData" parameterClass="syncParam">
-		SELECT *
-		FROM sync_data
-		WHERE user_name = #userName#
-			AND content_type = #contentType#
-			AND service_id = #serviceId#
-			AND status != 'undone'
-		ORDER BY last_sync_date DESC
+		SELECT <include refid="syncDataColumns"/>
+		FROM sync_data sd
+		LEFT JOIN sync_services ss USING (service_id)
+		WHERE sd.user_name = #userName#
+			AND sd.content_type = #contentType#
+			AND sd.service_id = #serviceId#
+			AND sd.status != 'undone'
+		ORDER BY sd.last_sync_date DESC
 	</select> 
 	
 	<select id="getCurrentSyncData" resultMap="SynchronizationCommon.syncData" parameterClass="syncParam">
-		SELECT *
-		FROM sync_data
-		WHERE user_name = #userName#
-			AND content_type = #contentType#
-			AND service_id = #serviceId#
-			AND status = 'undone'
-		ORDER BY last_sync_date DESC
+		SELECT <include refid="syncDataColumns"/>
+		FROM sync_data sd
+		LEFT JOIN sync_services ss USING (service_id)
+		WHERE sd.user_name = #userName#
+			AND sd.content_type = #contentType#
+			AND sd.service_id = #serviceId#
+			AND sd.status = 'undone'
+		ORDER BY sd.last_sync_date DESC
 		LIMIT 1
 	</select> 
 	

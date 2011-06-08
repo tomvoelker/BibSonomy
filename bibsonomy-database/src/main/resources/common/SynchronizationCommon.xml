@@ -12,7 +12,7 @@
 	</resultMap>
 	
 	<resultMap id="syncData" class="syncData">
-		<result property="serviceId"	column="service_id"		javaType="int"		/>
+		<result property="service"		column="uri"			javaType="uri"		/>
 		<result property="userName"		column="user_name"		javaType="string"	/>
 		<result property="contentType"	column="content_type"	javaType="int"		/>
 		<result property="lastSyncDate"	column="last_sync_date"	javaType="date"		/>
@@ -20,8 +20,11 @@
 	</resultMap>
 	
 	<resultMap id="syncService" class="syncService">
-		<result property="serviceId" column="service_id"	javaType="int"/>
-		<result property="serverUser" column="credentials"	javaType="properties"/>
+		<result property="service"		column="uri"			javaType="uri" />
+		<result property="serverUser"	column="credentials"	javaType="properties"/>
 	</resultMap>
 	
+	<sql id="syncDataColumns">
+		ss.uri, sd.user_name, sd.content_type, sd.last_sync_date, sd.status
+	</sql>
 </sqlMap>

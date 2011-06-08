@@ -19,7 +19,7 @@ public class IbatisSyncDBSessionFactory extends AbstractDBSessionFactory {
     	private final static Properties props = new Properties();
     	
     	static {
-    		// TODO replace biblicious with other service in, specified in context.xml 
+    		// TODO replace biblicious with other service with PUMA, specified in context.xml 
     	   props.setProperty("JNDIDataSource", "java:comp/env/jdbc/biblicious");
     	}
     	
