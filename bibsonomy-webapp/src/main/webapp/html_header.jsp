@@ -59,8 +59,8 @@
       <link rel="alternate" type="application/rss+xml" title="BuRST RSS feed for <c:out value='/${requPath}' />" href="${projectHome}burst/<c:out value='${requPath}'/>">
       <link rel="unapi-server" type="application/xml" title="unAPI" href="${projectHome}unapi"/>
     </c:if>
-    <link rel="alternate" type="application/atom+xml" title="BibSonomy Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default">
-    <link rel="alternate" type="application/rss+xml"  title="BibSonomy Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss">
+    <link rel="alternate" type="application/atom+xml" title="BibSonomy Blog - Atom" href="http://blog.bibsonomy.org/feeds/posts/default">
+    <link rel="alternate" type="application/rss+xml"  title="BibSonomy Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss">
     <title><c:out value="${projectName}" />::<c:out value="${param.title}"/></title>
   </head>
   
@@ -80,7 +80,7 @@
 	</c:choose>
 	
 	<a href="/help" rel="Help">help</a> &middot;
-	<a href="http://bibsonomy.blogspot.com/">blog</a> &middot;
+	<a href="http://blog.bibsonomy.org/">blog</a> &middot;
 	<a href="/help/contact">about</a> &middot;
 	<a href="?lang=en"><img alt="en" src="/resources/image/lang_en.png"/></a>
   </div>
