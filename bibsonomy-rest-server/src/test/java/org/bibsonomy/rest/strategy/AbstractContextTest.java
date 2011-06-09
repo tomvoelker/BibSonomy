@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.database.TestDBLogic;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.junit.Before;
 
 /**
@@ -16,6 +17,7 @@ import org.junit.Before;
 public abstract class AbstractContextTest {
 
 	protected LogicInterface db;
+	protected UrlRenderer urlRenderer;
 	protected Reader is;
 
 	/**
@@ -25,6 +27,7 @@ public abstract class AbstractContextTest {
 	@Before
 	public final void setUp() throws UnsupportedEncodingException {
 		this.db = TestDBLogic.factory.getLogicAccess(this.getClass().getSimpleName(), "apiKey");
+		this.urlRenderer = new UrlRenderer("http://www.bibsonomy.org/api/");
 		this.is = new InputStreamReader(new ByteArrayInputStream("".getBytes()), "UTF-8");
 	}
 }
