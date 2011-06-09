@@ -23,7 +23,7 @@ public class GetNewPostsStrategyTest extends AbstractContextTest {
 	 */
 	@Test
 	public void testGetNewPostsStrategy() throws Exception {
-		final Context c = new Context(HttpMethod.GET, "/posts/added", RenderingFormat.XML, this.is, null, this.db, new HashMap<String, String>(), null);
+		final Context c = new Context(HttpMethod.GET, "/posts/added", RenderingFormat.XML, this.urlRenderer, this.is, null, this.db, new HashMap<String, String>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		c.perform(baos);
 

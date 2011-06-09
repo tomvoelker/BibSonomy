@@ -24,7 +24,7 @@ public class GetPostDetailsStrategyTest extends AbstractContextTest {
 	 */
 	@Test
 	public void testGetPostDetailsStrategy() throws Exception {
-		final Context ctx = new Context(HttpMethod.GET, "/users/mbork/posts/56c650d32e6f50d7f49f2613b4303ffc", RenderingFormat.XML, this.is, null, this.db, new HashMap<String, String>(), null);
+		final Context ctx = new Context(HttpMethod.GET, "/users/mbork/posts/56c650d32e6f50d7f49f2613b4303ffc", RenderingFormat.XML, this.urlRenderer, this.is, null, this.db, new HashMap<String, String>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ctx.perform(baos);
 
@@ -40,7 +40,7 @@ public class GetPostDetailsStrategyTest extends AbstractContextTest {
 	 */
 	@Test(expected = NoSuchResourceException.class)
 	public void testNotExistingPost() throws Exception {
-		final Context ctx = new Context(HttpMethod.GET, "/users/mbork/posts/4444", RenderingFormat.XML, this.is, null, this.db, new HashMap<String, String>(), null);
+		final Context ctx = new Context(HttpMethod.GET, "/users/mbork/posts/4444", RenderingFormat.XML, this.urlRenderer, this.is, null, this.db, new HashMap<String, String>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ctx.perform(baos);
 	}

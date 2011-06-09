@@ -11,6 +11,7 @@ import java.io.IOException;
 import org.bibsonomy.rest.database.TestDBLogic;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.testutil.TestRequest;
 import org.bibsonomy.rest.testutil.TestResponse;
 import org.junit.Before;
@@ -30,7 +31,8 @@ public class TestRestServlet {
 	@Before
 	public void setUp() {
 		this.servlet = new RestServlet();
-		this.servlet.setLogicInterface(TestDBLogic.factory);
+		this.servlet.setLogicInterfaceFactory(TestDBLogic.factory);
+		this.servlet.setUrlRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
 		
 		this.request = new TestRequest();
 		this.response = new TestResponse();

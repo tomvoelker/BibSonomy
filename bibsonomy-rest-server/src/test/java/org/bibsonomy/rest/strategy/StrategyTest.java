@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.RenderingFormat;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.junit.Test;
 
 /**
@@ -18,7 +19,7 @@ public class StrategyTest {
 	@Test
 	public void testChooseGroupingEntity() {
 		final Map<String, String[]> parameterMap = new HashMap<String, String[]>();
-		final Context ctx = new Context(HttpMethod.GET, "/users/egal/posts", RenderingFormat.XML, null, null, null, parameterMap, null);
+		final Context ctx = new Context(HttpMethod.GET, "/users/egal/posts", RenderingFormat.XML, new UrlRenderer("/"), null, null, null, parameterMap, null);
 
 		parameterMap.put("user", new String[] { "" });
 		assertEquals(GroupingEntity.USER, ctx.getStrategy().chooseGroupingEntity());

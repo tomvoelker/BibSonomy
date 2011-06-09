@@ -2,6 +2,7 @@ package org.bibsonomy.rest.testutil;
 
 import java.io.IOException;
 
+import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.database.TestDBLogicInterfaceFactory;
 import org.junit.Ignore;
@@ -20,7 +21,7 @@ import org.mortbay.resource.Resource;
 public class TestServerBuilder {
 	
 	private static final int DEFAULT_PORT = 8090;
-	private static final Class<?> DEFAULT_INTERFACE_FACTORY_CLASS = TestDBLogicInterfaceFactory.class;
+	private static final Class<? extends LogicInterfaceFactory> DEFAULT_INTERFACE_FACTORY_CLASS = TestDBLogicInterfaceFactory.class;
 	
 	/**
 	 * starts the rest servlet with default values
@@ -35,7 +36,7 @@ public class TestServerBuilder {
 	}
 	
 	private int port = DEFAULT_PORT;
-	private Class<?> logicInterfaceFactoryClass = DEFAULT_INTERFACE_FACTORY_CLASS;
+	private Class<? extends LogicInterfaceFactory> logicInterfaceFactoryClass = DEFAULT_INTERFACE_FACTORY_CLASS;
 
 	/**
 	 * @return builds a server
@@ -50,8 +51,16 @@ public class TestServerBuilder {
 		final Resource resource = Resource.newResource("API_URL");
 		resource.setAssociate(apiUrl);
 		servletContext.setBaseResource(resource);
-		final ServletHolder restServlet = servletContext.addServlet(RestServlet.class, "/*");
-		restServlet.setInitParameter(RestServlet.PARAM_LOGICFACTORY_CLASS, this.logicInterfaceFactoryClass.getName());			
+		
+		final RestServlet restServlet = new RestServlet();
+		
+		try {
+			restServlet.setLogicInterfaceFactory(logicInterfaceFactoryClass.newInstance());
+		} catch (final Exception e) {
+			throw new RuntimeException("problem while instantiating " + logicInterfaceFactoryClass, e);
+		}			
+		
+		servletContext.addServlet(RestServlet.class, "/*").setServlet(restServlet);
 		
 		server.addHandler(servletContext);
 		return server;
@@ -67,7 +76,7 @@ public class TestServerBuilder {
 	/**
 	 * @param logicInterfaceFactoryClass the logicInterfaceFactoryClass to set
 	 */
-	public void setLogicInterfaceFactoryClass(Class<?> logicInterfaceFactoryClass) {
+	public void setLogicInterfaceFactoryClass(Class<? extends LogicInterfaceFactory> logicInterfaceFactoryClass) {
 		this.logicInterfaceFactoryClass = logicInterfaceFactoryClass;
 	}
 }
