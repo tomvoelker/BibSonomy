@@ -36,17 +36,19 @@ import org.junit.Test;
  */
 public class RendererFactoryTest {
 
+	private final RendererFactory rendererFactory = new RendererFactory(new UrlRenderer("/"));
+	
 	@Test
 	public void testGetRenderer() {
-		assertTrue(RendererFactory.getRenderer(RenderingFormat.XML) instanceof XMLRenderer);
-		assertTrue(RendererFactory.getRenderer(RenderingFormat.PDF) instanceof XMLRenderer);
-		assertTrue(RendererFactory.getRenderer(RenderingFormat.APP_XML) instanceof XMLRenderer);
+		assertTrue(rendererFactory.getRenderer(RenderingFormat.XML) instanceof XMLRenderer);
+		assertTrue(rendererFactory.getRenderer(RenderingFormat.PDF) instanceof XMLRenderer);
+		assertTrue(rendererFactory.getRenderer(RenderingFormat.APP_XML) instanceof XMLRenderer);
 		
-		assertTrue(RendererFactory.getRenderer(RenderingFormat.JSON) instanceof JSONRenderer);
+		assertTrue(rendererFactory.getRenderer(RenderingFormat.JSON) instanceof JSONRenderer);
 	}
 	
 	@Test(expected = InternServerException.class)
 	public void wrongUsageGetRenderer() {
-		RendererFactory.getRenderer(null);
+		rendererFactory.getRenderer(null);
 	}
 }
