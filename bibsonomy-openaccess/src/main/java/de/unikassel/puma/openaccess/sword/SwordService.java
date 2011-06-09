@@ -24,12 +24,14 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.HashUtils;
 import org.purl.sword.base.DepositResponse;
 import org.purl.sword.base.ServiceDocument;
 import org.purl.sword.client.Client;
 import org.purl.sword.client.PostMessage;
 import org.purl.sword.client.SWORDClientException;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Sword main
@@ -63,6 +65,7 @@ public class SwordService {
 	private SwordConfig repositoryConfig;
 	
 	private String projectDocumentPath;
+	private UrlRenderer urlRenderer;
 
 	/**
 	 * retrieve service document from sword server
@@ -215,7 +218,7 @@ public class SwordService {
 				// create XML-Document
 				// PrintWriter from a Servlet
 						
-				MetsBibTexMLGenerator metsBibTexMLGenerator = new MetsBibTexMLGenerator();
+				MetsBibTexMLGenerator metsBibTexMLGenerator = new MetsBibTexMLGenerator(urlRenderer);
 				metsBibTexMLGenerator.setUser(user);
 				metsBibTexMLGenerator.setFilenameList(fileList);
 				//metsGenerator.setMetadata(metadataMap);
@@ -409,9 +412,20 @@ public class SwordService {
 	 * 
 	 * @param projectDocumentPath
 	 */
+	@Required
 	public void setProjectDocumentPath(String projectDocumentPath) {
 		this.projectDocumentPath = projectDocumentPath;
 	}
+
+	/**
+	 * The URL renderer to create the proper API XML.
+	 * @param urlRenderer
+	 */
+	@Required
+	public void setUrlRenderer(UrlRenderer urlRenderer) {
+		this.urlRenderer = urlRenderer;
+	}
+
 	
 }
 
