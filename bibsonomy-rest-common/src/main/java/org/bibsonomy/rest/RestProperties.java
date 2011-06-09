@@ -121,7 +121,7 @@ public class RestProperties {
 
 	public static enum Property {
 		CONFIGFILE("RestConfig.cfg"),
-		API_URL("http://www.bibsonomy.org/api/"),
+		DEFAULT_API_URL("http://www.bibsonomy.org/api/"),
 		SYSTEM_NAME("BibSonomy"),
 		API_USER_AGENT("BibSonomyWebServiceClient"),
 		BASIC_REALM("BibSonomyWebService"),
@@ -159,8 +159,8 @@ public class RestProperties {
 	/**
 	 * @return the api url
 	 */
-	public String getApiUrl() {
-		return this.get(Property.API_URL);
+	public String getDefaultApiUrl() {
+		return this.get(Property.DEFAULT_API_URL);
 	}
 
 	public String getApiUserAgent() {
