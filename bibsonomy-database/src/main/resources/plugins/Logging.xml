@@ -6,12 +6,12 @@
 	<insert id="logBibTex" parameterClass="bibtexParam">
 		INSERT INTO log_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
 		                        edition, month, bookTitle, howpublished, institution, organization, publisher,
-		                        address, school, series, bibtexKey, `group`, date, user_name, url, description,
+		                        address, school, series, bibtexKey, `group`, date, change_date, user_name, url, description,
 		                        annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
 		                        scraperid, privnote, simhash0, simhash1, simhash2, simhash3)
 		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition, month,
 		       bookTitle, howpublished, institution, organization, publisher, address, school, series, bibtexKey,
-		       `group`, date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
+		       `group`, date, change_date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
 		       bibtexAbstract, type, day, scraperid, privnote, simhash0, simhash1, simhash2, simhash3
 		FROM bibtex WHERE content_id = #requestedContentId#
 	</insert>
