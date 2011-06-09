@@ -43,15 +43,9 @@
 	<!--  #################### factory beans #################### -->
 	
 	<!-- Renders JabRef Layouts -->
-	<!-- 
-		FIXME: Currently, it's a singleton, because we needed the same instance 
-		in Functions.java
-		We should put the bean into the application context and use it from there.
-	 -->
-	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance">
+	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer">
 		<property name="userLayoutFilePath" value="${project.document.path}"/>
-		<!-- TODO: use url generator -->
-		<property name="projectHome" value="${project.home}"/>
+		<property name="urlGenerator" ref="urlGenerator"/>
 	</bean>
 
 	<!-- provides access to the request for all controllers, which need it -->
@@ -732,6 +726,7 @@
 	<import resource="bibsonomy2-servlet-lucene.xml"/>
 	<import resource="bibsonomy2-servlet-events.xml"/>
 	<import resource="bibsonomy2-servlet-security.xml"/>
+	<import resource="bibsonomy2-servlet-rest.xml" />
     <import resource="bibsonomy2-servlet-opensocial.xml"/>
     
     <import resource="bibsonomy2-servlet-bibsonomy.xml"/>
