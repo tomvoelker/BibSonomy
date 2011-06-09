@@ -32,6 +32,7 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 
 /**
  * Class for encapsulating webservice queries to recommenders
@@ -54,7 +55,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	// service's address
 	private URI address;
 	// serializes post
-	private Renderer renderer;
+	private final Renderer renderer;
 	
 	// FIXME: These values are also used in TagRecommenderServlet and should
 	//        be defined in a class commonly accessible
@@ -68,8 +69,8 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	
 
 	// MultiThreadedHttpConnectionManager 
-	private IdleClosingConnectionManager connectionManager;
-	private IdleConnectionTimeoutThread idleConnectionHandler;
+	private final IdleClosingConnectionManager connectionManager;
+	private final IdleConnectionTimeoutThread idleConnectionHandler;
 	
 	/**
 	 * inits the recommender
@@ -93,7 +94,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
       	idleConnectionHandler.addConnectionManager(connectionManager);
       	idleConnectionHandler.start();
       	
-		this.renderer = RendererFactory.getRenderer(RenderingFormat.XML);
+		this.renderer = new RendererFactory(new UrlRenderer("/api/")).getRenderer(RenderingFormat.XML);
 	}
 	
 	/**
