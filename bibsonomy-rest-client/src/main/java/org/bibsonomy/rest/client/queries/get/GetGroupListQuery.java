@@ -29,7 +29,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to receive an ordered list of all groups bibsonomy has.
@@ -68,7 +67,7 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 	@Override
 	public List<Group> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return RendererFactory.getRenderer(getRenderingFormat()).parseGroupList(this.downloadedDocument);
+		return getRendererFactory().getRenderer(getRenderingFormat()).parseGroupList(this.downloadedDocument);
 	}
 
 	@Override

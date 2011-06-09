@@ -29,7 +29,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to receive details about an user of bibsonomy.
@@ -58,7 +57,7 @@ public final class GetUserDetailsQuery extends AbstractQuery<User> {
 	@Override
 	public User getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return RendererFactory.getRenderer(getRenderingFormat()).parseUser(this.downloadedDocument);
+		return getRendererFactory().getRenderer(getRenderingFormat()).parseUser(this.downloadedDocument);
 	}
 
 	@Override

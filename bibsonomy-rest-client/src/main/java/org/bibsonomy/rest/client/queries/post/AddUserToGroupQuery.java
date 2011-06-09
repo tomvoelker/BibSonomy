@@ -33,7 +33,6 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to add an user to an already existing group.
@@ -70,7 +69,7 @@ public final class AddUserToGroupQuery extends AbstractQuery<String> {
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		RendererFactory.getRenderer(getRenderingFormat()).serializeUser(sw, user, null);
+		getRendererFactory().getRenderer(getRenderingFormat()).serializeUser(sw, user, null);
 		this.downloadedDocument = performRequest(HttpMethod.POST, URL_GROUPS + "/" + this.groupName + "/" + URL_USERS, sw.toString());
 		return null;
 	}

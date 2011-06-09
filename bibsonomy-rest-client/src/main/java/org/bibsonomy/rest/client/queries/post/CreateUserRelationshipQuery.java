@@ -23,16 +23,15 @@
 
 package org.bibsonomy.rest.client.queries.post;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.StringWriter;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.util.StringUtils;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Creatte a relationship among users.
@@ -96,7 +95,7 @@ public class CreateUserRelationshipQuery extends AbstractQuery<String> {
 		 * create body of request
 		 */
 		final StringWriter sw = new StringWriter(100);
-		RendererFactory.getRenderer(getRenderingFormat()).serializeUser(sw, new User(this.targetUserName), null);
+		getRendererFactory().getRenderer(getRenderingFormat()).serializeUser(sw, new User(this.targetUserName), null);
 		/*
 		 * friend/follower, tag
 		 */

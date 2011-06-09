@@ -30,7 +30,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to receive details about a post of an user.
@@ -64,7 +63,7 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 	@Override
 	public Post<? extends Resource> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return RendererFactory.getRenderer(getRenderingFormat()).parsePost(this.downloadedDocument);
+		return getRendererFactory().getRenderer(getRenderingFormat()).parsePost(this.downloadedDocument);
 	}
 
 	@Override

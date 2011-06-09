@@ -36,7 +36,6 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to change details of an existing post - change tags, for
@@ -100,7 +99,7 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		RendererFactory.getRenderer(getRenderingFormat()).serializePost(sw, post, null);
+		getRendererFactory().getRenderer(getRenderingFormat()).serializePost(sw, post, null);
 		this.downloadedDocument = performRequest(HttpMethod.PUT, URL_USERS + "/" + this.username + "/" + URL_POSTS + "/" + resourceHash, sw.toString());
 		return null;
 	}
@@ -108,7 +107,7 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 	@Override
 	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess())
-			return RendererFactory.getRenderer(getRenderingFormat()).parseResourceHash(this.downloadedDocument); 
+			return getRendererFactory().getRenderer(getRenderingFormat()).parseResourceHash(this.downloadedDocument); 
 		return this.getError();
 	}
 }

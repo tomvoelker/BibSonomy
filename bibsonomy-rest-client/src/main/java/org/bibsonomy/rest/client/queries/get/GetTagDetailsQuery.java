@@ -27,7 +27,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to receive information about a specific tag
@@ -47,7 +46,7 @@ public final class GetTagDetailsQuery extends AbstractQuery<Tag> {
 	@Override
 	public Tag getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return RendererFactory.getRenderer(getRenderingFormat()).parseTag(this.downloadedDocument);
+		return getRendererFactory().getRenderer(getRenderingFormat()).parseTag(this.downloadedDocument);
 	}
 
 	@Override

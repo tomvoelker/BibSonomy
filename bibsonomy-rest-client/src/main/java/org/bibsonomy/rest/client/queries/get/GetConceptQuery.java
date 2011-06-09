@@ -33,7 +33,6 @@ import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to get concepts 
@@ -106,7 +105,7 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 	@Override
 	public List<Tag> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return RendererFactory.getRenderer(getRenderingFormat()).parseTagList(this.downloadedDocument);
+		return getRendererFactory().getRenderer(getRenderingFormat()).parseTagList(this.downloadedDocument);
 	}
 
 	public void setResourceType(Class<? extends Resource> resourceType) {

@@ -31,7 +31,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to receive an ordered list of all users belonging to a given
@@ -76,7 +75,7 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>> {
 	@Override
 	public List<User> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return RendererFactory.getRenderer(getRenderingFormat()).parseUserList(this.downloadedDocument);
+		return getRendererFactory().getRenderer(getRenderingFormat()).parseUserList(this.downloadedDocument);
 	}
 
 	@Override

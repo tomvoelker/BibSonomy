@@ -28,7 +28,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
+import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 
 /*
  * FIXME: naming this class "Bibsonomy" is bad (large "S" is missing anyway ;-) - 
@@ -45,11 +47,14 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
  */
 public final class Bibsonomy {
 
-	private String apiURL = RestProperties.getInstance().getApiUrl();
 	private String username;
 	private String apiKey;
 	private String proxyHost;
 	private int proxyPort = 80;
+	// FIXME: the apiURL is here twice: also in the rendererFactory.urlRenderer
+	private String apiURL = RestProperties.getInstance().getDefaultApiUrl();
+	private final UrlRenderer urlRenderer = new UrlRenderer(RestProperties.getInstance().getDefaultApiUrl());
+	private RendererFactory rendererFactory = new RendererFactory(urlRenderer);
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
 
 	/**
@@ -97,6 +102,7 @@ public final class Bibsonomy {
 		if (!present(this.apiKey)) throw new IllegalStateException("The password has not yet been set.");
 		query.setRenderingFormat(this.renderingFormat);
 		query.setApiURL(this.apiURL);
+		query.setRendererFactory(this.rendererFactory);
 		query.setProxyHost(this.proxyHost);
 		query.setProxyPort(this.proxyPort);
 		query.execute(this.username, this.apiKey);
@@ -158,6 +164,7 @@ public final class Bibsonomy {
 		if (apiURL.equals("/")) throw new IllegalArgumentException("The given apiURL is not valid.");
 		if (!apiURL.endsWith("/")) apiURL += "/";
 		this.apiURL = apiURL;
+		this.rendererFactory = new RendererFactory(new UrlRenderer(apiURL));
 	}
 
 	/**

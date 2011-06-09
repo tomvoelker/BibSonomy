@@ -64,6 +64,7 @@ public abstract class AbstractQuery<T> {
 	private int statusCode = -1;
 
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
+	private RendererFactory rendererFactory;
 	private ProgressCallback callback;
 
 	protected Reader downloadedDocument;
@@ -242,7 +243,8 @@ public abstract class AbstractQuery<T> {
 	protected RenderingFormat getRenderingFormat() {
 		return this.renderingFormat;
 	}
-    /*
+	
+    /**
 	 * @param renderingFormat
 	 *            the {@link RenderingFormat} to use.
 	 */
@@ -270,7 +272,7 @@ public abstract class AbstractQuery<T> {
 	 */
 	public String getError() {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return RendererFactory.getRenderer(this.getRenderingFormat()).parseError(this.downloadedDocument);
+		return rendererFactory.getRenderer(this.getRenderingFormat()).parseError(this.downloadedDocument);
 	}
 
 	/**
@@ -285,5 +287,13 @@ public abstract class AbstractQuery<T> {
 	 */
 	public void setProxyPort(int proxyPort) {
 		this.proxyPort = proxyPort;
+	}
+
+	public RendererFactory getRendererFactory() {
+		return this.rendererFactory;
+	}
+
+	public void setRendererFactory(RendererFactory rendererFactory) {
+		this.rendererFactory = rendererFactory;
 	}
 }
