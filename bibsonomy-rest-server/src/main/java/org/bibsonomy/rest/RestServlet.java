@@ -217,7 +217,7 @@ public final class RestServlet extends HttpServlet {
 			
 			// create Context
 			final Reader reader = RESTUtils.getInputReaderForStream(request.getInputStream(), REQUEST_ENCODING);
-			final Context context = new Context(method, request.getPathInfo(), renderingFormat, this.urlRenderer, reader, parser.getList(), logic, request.getParameterMap(), additionalInfos);
+			final Context context = new Context(method, getPathInfo(request), renderingFormat, this.urlRenderer, reader, parser.getList(), logic, request.getParameterMap(), additionalInfos);
 
 			// validate request
 			context.canAccess();
@@ -294,6 +294,19 @@ public final class RestServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Strips the API URL part from the beginning of the complete URL.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	private String getPathInfo(final HttpServletRequest request) {
+		final String pathInfo = request.getPathInfo();
+		if (present(pathInfo)) return pathInfo;
+		final StringBuffer url = request.getRequestURL();
+		return url.substring(urlRenderer.getApiUrl().length()).toString();
+	}
+	
 	/**
 	 * Sends an error to the client.
 	 * 

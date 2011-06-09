@@ -68,6 +68,7 @@ public class TestRestServlet {
 	@Test
 	public void testSimpleStuff() throws Exception {
 		this.request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
+		this.request.setPathInfo("/");
 		// try to get '/'
 		this.servlet.doGet(this.request, this.response);
 		compareWithFile(this.response.getContent(), "failAccess.txt");
