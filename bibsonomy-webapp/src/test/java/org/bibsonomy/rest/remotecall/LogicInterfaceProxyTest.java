@@ -46,6 +46,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.client.RestLogicFactory;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.testutil.ModelUtils;
 import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
@@ -58,8 +59,6 @@ import org.mortbay.jetty.AbstractConnector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHolder;
-import org.mortbay.resource.Resource;
 
 /**
  * Tests remote calls via an LogicInterface remote proxy.
@@ -123,11 +122,18 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			server.addConnector(connector);
 			final Context servletContext = new Context();
 			servletContext.setContextPath("/api");
-			final Resource resource = Resource.newResource("API_URL");
-			resource.setAssociate(apiUrl);
-			servletContext.setBaseResource(resource);
-			final ServletHolder restServlet = servletContext.addServlet(RestServlet.class, "/*");
-			restServlet.setInitParameter(RestServlet.PARAM_LOGICFACTORY_CLASS, MockLogicFactory.class.getName() );			
+			
+			final RestServlet restServlet = new RestServlet();
+			restServlet.setUrlRenderer(new UrlRenderer(apiUrl));
+			
+			try {
+				restServlet.setLogicInterfaceFactory(new MockLogicFactory());
+			} catch (final Exception e) {
+				throw new RuntimeException("problem while instantiating " + MockLogicFactory.class.getName(), e);
+			}			
+			
+			servletContext.addServlet(RestServlet.class, "/*").setServlet(restServlet);
+			
 			server.addHandler(servletContext);
 			server.start();
 			connector.start();
