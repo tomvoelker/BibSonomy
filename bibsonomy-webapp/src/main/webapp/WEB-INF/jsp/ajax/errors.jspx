@@ -16,7 +16,8 @@
 		"globalErrors" : 
 			[<c:forEach var="error" items="${errors.globalErrors}" varStatus="status">
 				{
-					"message" : "<spring:message javaScriptEscape="true" code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>"
+					<spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}" var="globalErrorMessage"/>
+					"message" : "${mtl:quoteJSON(globalErrorMessage)}"
 				}<c:if test="${not status.last}">,</c:if>
 			</c:forEach>]
 		<c:set var="isCommaNecessary" value="${true}" />
@@ -26,8 +27,9 @@
 		"fieldErrors" : 
 			[<c:forEach var="error" items="${errors.fieldErrors}" varStatus="status">
 				{
+					<spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}" var="fieldErrorMessage" />
 					"field" : "${mtl:quoteJSON(error.field)}",
-					"message" : "<spring:message javaScriptEscape="true" code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>"
+					"message" : "${mtl:quoteJSON(fieldErrorMessage)}"
 				}<c:if test="${not status.last}">,</c:if>
 			</c:forEach>]
 	</c:if>}
