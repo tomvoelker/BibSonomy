@@ -126,6 +126,7 @@
 	<bean id="swordService_puma" class="de.unikassel.puma.openaccess.sword.SwordService">
 		<property name="repositoryConfig" ref="swordConfig_puma"/>
 		<property name="projectDocumentPath" value="${project.document.path}"/>
+		<property name="urlRenderer" ref="restUrlRenderer"/>
 	</bean>
 
 
