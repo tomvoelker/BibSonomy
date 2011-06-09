@@ -312,9 +312,9 @@
 	    	SELECT * FROM (
 				SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, b.group, b.change_date
 		  			FROM 
-		  				(SELECT <include refid ="allBibtexAttributesWithSimHashes"/> FROM log_bibtex t1
-		  					WHERE t1.simhash$simHash$ = #hash#	AND t1.user_name = #requestedUserName#
-		  					ORDER BY t1.log_date DESC LIMIT 1
+		  				(SELECT new_content_id, user_name FROM log_bibtex
+		  					WHERE simhash$simHash$ = #hash#	AND user_name = #requestedUserName#
+		  					ORDER BY log_date DESC LIMIT 1
 		  				) AS t1 
 		    		  JOIN log_bibtex b ON (t1.new_content_id = b.content_id AND t1.user_name = b.user_name) 
 		  		) AS aa
