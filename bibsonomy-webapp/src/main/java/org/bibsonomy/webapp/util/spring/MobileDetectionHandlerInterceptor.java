@@ -25,8 +25,10 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 	private static final String TRUE = "true";
 	private static final String PARAM_MOBILE = "mobile";
 	
+	private int cookieAge = 3600 * 24 * 365;
+	
 	private WURFLManager wurflManager;
-
+	
 	@Override
 	public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3) throws Exception {}
 
@@ -43,7 +45,7 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 				modelAndView.getModel().put(MANUAL, true);
 			}
 
-			response.addCookie(new Cookie(PARAM_MOBILE, TRUE));
+			this.addMobileCookie(response, TRUE);
 			modelAndView.getModel().put(PARAM_IS_MOBILE, true);
 			modelAndView.setViewName(MobileViewNameResolver.resolveView(modelAndView.getViewName()));
 		}
@@ -70,11 +72,11 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 		if (request.getParameterMap().containsKey(PARAM_MOBILE) ) { 
 			if (FALSE.equals(request.getParameter(PARAM_MOBILE))) {
 				//disable mobile site for the session
-				response.addCookie(new Cookie(PARAM_MOBILE, FALSE));
+				this.addMobileCookie(response, FALSE);
 				return true;				
 			}
 			if (TRUE.equals(request.getParameter(PARAM_MOBILE))) {
-				response.addCookie(new Cookie(PARAM_MOBILE, TRUE));
+				this.addMobileCookie(response, TRUE);
 				return false;
 			}
 		}
@@ -98,6 +100,12 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 		return false;
 	}
 
+	private void addMobileCookie(HttpServletResponse response, String mobile) {
+		Cookie cookie = new Cookie(PARAM_MOBILE, mobile);
+		cookie.setMaxAge(cookieAge);
+		response.addCookie(cookie);
+	}
+	
 	/**
 	 * @see org.springframework.web.servlet.HandlerInterceptor#preHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
 	 */
@@ -120,6 +128,13 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 	 */
 	public WURFLManager getWurflManager() {
 		return wurflManager;
+	}
+
+	/** The age (in seconds) a cookie will stay at most in the browser. Default: One year.
+	 * @param cookieAge
+	 */
+	public void setCookieAge(int cookieAge) {
+		this.cookieAge = cookieAge;
 	}
 
 }
