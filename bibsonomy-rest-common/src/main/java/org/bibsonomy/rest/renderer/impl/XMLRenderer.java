@@ -26,6 +26,8 @@ package org.bibsonomy.rest.renderer.impl;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import org.bibsonomy.rest.renderer.UrlRenderer;
+
 /**
  * This class creates xml documents valid to the xsd schema and vice-versa.
  * 
@@ -34,6 +36,11 @@ import javax.xml.bind.JAXBException;
  */
 public class XMLRenderer extends JAXBRenderer {
 
+	public XMLRenderer(final UrlRenderer urlRenderer) {
+		super(urlRenderer);
+	}
+
+	
 	@Override
 	protected JAXBContext getJAXBContext() throws JAXBException {
 		/*

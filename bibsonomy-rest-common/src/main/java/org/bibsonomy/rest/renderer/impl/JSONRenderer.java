@@ -33,6 +33,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 
 import com.sun.jersey.api.json.JSONConfiguration;
@@ -45,6 +46,10 @@ import com.sun.jersey.api.json.JSONUnmarshaller;
  * @version $Id$
  */
 public class JSONRenderer extends JAXBRenderer {
+	
+	public JSONRenderer(final UrlRenderer urlRenderer) {
+		super(urlRenderer);
+	}
 	
 	@Override
 	protected JAXBContext getJAXBContext() throws JAXBException {

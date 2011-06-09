@@ -116,9 +116,9 @@ public abstract class JAXBRenderer implements Renderer {
 	protected final boolean validateXMLInput;
 	protected final boolean validateXMLOutput;
 	
-	protected JAXBRenderer() {
+	protected JAXBRenderer(final UrlRenderer urlRenderer) {
 		final RestProperties properties = RestProperties.getInstance();
-		this.urlRenderer = UrlRenderer.getInstance();
+		this.urlRenderer = urlRenderer;
 
 		try {
 			this.datatypeFactory = DatatypeFactory.newInstance();
