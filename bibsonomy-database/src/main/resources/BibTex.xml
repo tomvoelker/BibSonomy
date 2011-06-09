@@ -295,6 +295,15 @@
 	<!-- 
 		Get the "next" post of a deleted post.
 		The next post is either in the bibtex table or already in the log_bibtex table (or deleted).
+		
+		The first part gets the last (by log_date) row in the log_bibtex table 
+		and tries to JOIN that with log_bibtex using the new_content_id. If the 
+		entry has been deleted, that JOIN fails and we get an empty result. 
+		Otherwise, the next entry (with another hash!) is returned.
+		
+		The second part tries to JOIN log_bibtex with the bibtex table, in case
+		the entry is still existent. 
+		
 		TODO: we don't need the ratings here (they are discarded)
 	 -->	
 	<select id="getLoggedHashesByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
@@ -302,11 +311,12 @@
 	    (
 	    	SELECT * FROM (
 				SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, b.group, b.change_date
-		  			FROM log_bibtex t1 
+		  			FROM 
+		  				(SELECT <include refid ="allBibtexAttributesWithSimHashes"/> FROM log_bibtex t1
+		  					WHERE t1.simhash$simHash$ = #hash#	AND t1.user_name = #requestedUserName#
+		  					ORDER BY t1.log_date DESC LIMIT 1
+		  				) AS t1 
 		    		  JOIN log_bibtex b ON (t1.new_content_id = b.content_id AND t1.user_name = b.user_name) 
-		  			WHERE t1.simhash$simHash$ = #hash#
-		    		  AND t1.user_name = #requestedUserName#
-		  			ORDER BY t1.log_date DESC LIMIT 1
 		  		) AS aa
 	    	UNION 
 	    	SELECT * FROM ( 
