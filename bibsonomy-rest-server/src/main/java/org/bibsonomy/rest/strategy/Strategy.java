@@ -13,8 +13,8 @@ import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.Renderer;
-import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -88,26 +88,22 @@ public abstract class Strategy {
 	 * @return The GroupingEntity; it defaults to ALL.
 	 */
 	protected GroupingEntity chooseGroupingEntity() {
-		String value = this.context.getStringAttribute("user", null);
-		if (value != null) return GroupingEntity.USER;
-
-		value = this.context.getStringAttribute("group", null);
-		if (value != null) return GroupingEntity.GROUP;
-
-		value = this.context.getStringAttribute("viewable", null);
-		if (value != null) return GroupingEntity.VIEWABLE;
-
-		value = this.context.getStringAttribute("friend", null);
-		if (value != null) return GroupingEntity.FRIEND;
-
+		if (this.context.getStringAttribute("user", null) != null) return GroupingEntity.USER;
+		if (this.context.getStringAttribute("group", null) != null) return GroupingEntity.GROUP;
+		if (this.context.getStringAttribute("viewable", null) != null) return GroupingEntity.VIEWABLE;
+		if (this.context.getStringAttribute("friend", null) != null) return GroupingEntity.FRIEND;
 		return GroupingEntity.ALL;
 	}
 
 	protected LogicInterface getLogic() {
 		return this.context.getLogic();
 	}
+	
+	protected UrlRenderer getUrlRenderer() {
+		return this.context.getUrlRenderer();
+	}
 
 	protected Renderer getRenderer() {
-		return RendererFactory.getRenderer(this.context.getRenderingFormat());
+		return this.context.getRenderer();
 	}
 }

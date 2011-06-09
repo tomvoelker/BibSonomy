@@ -19,7 +19,10 @@ import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.renderer.Renderer;
+import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.validation.ServersideModelValidator;
 
 /**
@@ -48,6 +51,16 @@ public final class Context {
 	 * the logic
 	 */
 	private final LogicInterface logic;
+	
+	/**
+	 * the renderer to build URLs
+	 */
+	private final UrlRenderer urlRenderer;
+	
+	/**
+	 * the factory that provides instances of the renderer
+	 */
+	private final RendererFactory rendererFactory;
 
 	/**
 	 * the rendering format for the request
@@ -89,9 +102,11 @@ public final class Context {
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final Reader doc, final List<FileItem> items, final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
+	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final UrlRenderer urlRenderer, final Reader doc, final List<FileItem> items, final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
+		this.urlRenderer = urlRenderer;
+		this.rendererFactory = new RendererFactory(urlRenderer);
 		
 		if (parameterMap == null) throw new RuntimeException("Parameter map is null");
 		this.parameterMap = parameterMap;
@@ -254,5 +269,19 @@ public final class Context {
 	 */
 	public List<FileItem> getItemList(){
 		return this.items;
+	}
+
+	/**
+	 * @return The renderer for URLs
+	 */
+	public UrlRenderer getUrlRenderer() {
+		return this.urlRenderer;
+	}
+
+	/**
+	 * @return The factory to access renderers
+	 */
+	public Renderer getRenderer() {
+		return this.rendererFactory.getRenderer(this.getRenderingFormat());
 	}
 }
