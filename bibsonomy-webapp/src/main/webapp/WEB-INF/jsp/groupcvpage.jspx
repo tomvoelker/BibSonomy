@@ -140,10 +140,10 @@
 					<div class="entry">
 						<c:choose>
          					<c:when test="${empty command.layout}">
-								${mtl:renderLayouts(command.bibtex.list, "plain")}
+         						<mtl:renderJabRefLayout layout="plain" posts="${command.bibtex.list}" />
  					        </c:when>
 							<c:otherwise>
-					           ${mtl:renderLayouts(command.bibtex.list, command.layout)}
+								<mtl:renderJabRefLayout layout="${command.layout}" posts="${command.bibtex.list}" />
          					</c:otherwise>
     					</c:choose>
     				</div>

@@ -3,7 +3,6 @@ package tags;
 import static org.bibsonomy.model.util.BibTexUtils.ENTRYTYPES;
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -13,24 +12,18 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
-import org.bibsonomy.layout.jabref.JabrefLayout;
-import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -53,8 +46,6 @@ import org.springframework.format.datetime.DateFormatter;
  */
 public class Functions  {
 	
-	private static final Log LOGGER = LogFactory.getLog(Functions.class);
-	
 	/**
 	 * Mapping of BibTeX entry types to SWRC entry types
 	 * FIXME: this duplicates the ones from EntryType.java!
@@ -62,8 +53,6 @@ public class Functions  {
 	 */
 	public static final String[] swrcEntryTypes   = {"Article",        "Book", "Booklet", "Misc",       "Misc",       "InBook",       "InCollection", "InProceedings",    "Manual",  "MasterThesis",  "Misc",    "Misc",    "Misc",       "PhDThesis", "Misc",     "Misc",         "Proceedings",            "Misc",     "TechnicalReport", "Unpublished"};
 	private static final String[] risEntryTypes    = {"Journal Article","Book", "Book",    "Generic",    "Generic",    "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis",        "Generic", "Generic", "Generic",    "Thesis",    "Generic",  "Generic",      "Conference Proceedings", "Generic",  "Report",          "Unpublished Work"};
-
-	private static JabrefLayoutRenderer layoutRenderer;
 
 	// contains special characters, symbols, etc...
 	private static Properties chars = new Properties();
@@ -83,7 +72,6 @@ public class Functions  {
 	static {
 		try {
 			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));			
-			layoutRenderer = JabrefLayoutRenderer.getInstance();
 		} catch (final Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}	    	    		
@@ -178,20 +166,6 @@ public class Functions  {
 			}
 		}
 		return null;
-	}	
-
-	/**
-	 * @param input
-	 * @return credential
-	 */
-	public static String makeCredential (final String input) {
-		if (input != null) {
-			/*
-			 * TODO: in the future this must be dynamic!
-			 */
-			return StringUtils.getMD5Hash(input + "security_by_obscurity");
-		}
-		return null;
 	}
 
 	/**
@@ -257,21 +231,6 @@ public class Functions  {
 		} catch (final Exception ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
-	}	
-
-	/**
-	 * checks if a given String is numeric
-	 * 
-	 * @param input - string that will be tested of numbers
-	 * @return true in case of parameter input is a number otherwise return false
-	 */
-	public static Boolean isNumeric(final String input){	
-		try{
-			Integer.parseInt(input);
-		}catch(final NumberFormatException nfe){
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -592,7 +551,7 @@ public class Functions  {
 	 * If the string is longer than <code>length</code>: shortens the given string to 
 	 * <code>length - 3</code> and appends <code>...</code>. Else: returns the string.
 	 * @param s - the string
-	 * @param length - maximal length of teh string
+	 * @param length - maximal length of the string
 	 * @return The shortened string
 	 */
 	public static String shorten(final String s, final Integer length) {
@@ -601,13 +560,13 @@ public class Functions  {
 	}
 
 	/**
-	 * Access the built-in utility function for bibtex export
+	 * Access the built-in utility function for BibTeX export
 	 * 
 	 * @param post
-	 * 		- a bibtex post
+	 * 		- a publication post
 	 * @param projectHome 
 	 * @return
-	 * 		- a bibtex string of this post
+	 * 		- a BibTeX string of this post
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final String projectHome) {
 		if (urlGenerator == null) {
@@ -660,49 +619,6 @@ public class Functions  {
 	}
 
 	/**
-	 * Helper method to access JabRef layouts via taglib function
-	 * 
-	 * @param post
-	 * @param layoutName
-	 * @return The rendered output as string.
-	 */
-	public static String renderLayout(final Post<BibTex> post, final String layoutName) {
-		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
-		posts.add(post);
-
-		return renderLayouts(posts, layoutName);
-	}
-
-	/**
-	 * Helper method to access JabRef layouts via taglib function
-	 * 
-	 * @param posts
-	 * @param layoutName
-	 * @return The rendered output as string.
-	 */
-	public static String renderLayouts(final List<Post<BibTex>> posts, final String layoutName) {
-		try {
-			final JabrefLayout layout = layoutRenderer.getLayout(layoutName, "");
-			if (! ".html".equals(layout.getExtension())) {
-				return "The requested layout is not valid; only HTML layouts are allowed. Requested extension is: " + layout.getExtension();
-			}
-			return layoutRenderer.renderLayout(layout, posts, true).toString();
-		} catch (final LayoutRenderingException ex) {
-			LOGGER.error(ex.getMessage());
-			return ex.getMessage();			
-		} catch (final UnsupportedEncodingException ex) {
-			LOGGER.error(ex.getMessage());
-			return "An Encoding error occured while trying to convert to layout '" + layoutName  + "'.";
-		} catch (final IOException ex) {
-			LOGGER.error(ex.getMessage());
-			return "An I/O error occured while trying to convert to layout '" + layoutName  + "'."; 
-		} catch (final Exception ex) {
-			LOGGER.error(ex.getMessage());
-			return "A unknown error occured while processing the layout " + layoutName + ".";
-		}
-	}
-
-	/**
 	 * @param collection
 	 * @param resourceName
 	 * @return <code>true</code> iff the resourceClass is in the collection
@@ -715,9 +631,9 @@ public class Functions  {
 	 * 
 	 * @param collection
 	 * @param object
-	 * @return <code>true</code>, if object is contained in set.
+	 * @return <code>true</code>, iff object is contained in set.
 	 */
-	public static Boolean contains(final Collection<?> collection, Object object) {
+	public static boolean contains(final Collection<?> collection, Object object) {
 		return collection != null && collection.contains(object);
 	}
 
@@ -768,10 +684,11 @@ public class Functions  {
 	/**
 	 * Checks if post has system tag myown 
 	 * 
-	 * @param post
-	 * @return
+	 * @param	post
+	 * @return	<code>true</code> iff post contains {@link MyOwnSystemTag}
+	 * 			system tag
 	 */
-	public static Boolean hasTagMyown(Post<?> post) {
+	public static boolean hasTagMyown(final Post<? extends Resource> post) {
 		return SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME);
 	}
 	

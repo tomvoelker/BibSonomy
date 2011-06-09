@@ -120,6 +120,28 @@
   		<rtexprvalue>true</rtexprvalue>
   	</attribute>
   </tag>
+  
+  <tag>
+  	<name>renderJabRefLayout</name>
+  	<info>renders the JabRef layout</info>
+  	<tagclass>org.bibsonomy.webapp.util.tags.JabrefLayoutRendererTag</tagclass>
+  	<bodycontent>JSP</bodycontent>
+  	<attribute>
+  		<name>layout</name>
+  		<required>true</required>
+  		<rtexprvalue>true</rtexprvalue>
+  	</attribute>
+  	<attribute>
+  		<name>post</name>
+  		<required>false</required>
+  		<rtexprvalue>true</rtexprvalue>
+  	</attribute>
+  	<attribute>
+  		<name>posts</name>
+  		<required>false</required>
+  		<rtexprvalue>true</rtexprvalue>
+  	</attribute>
+  </tag>
     
   <function>
     <name>normalize</name>
@@ -143,12 +165,6 @@
     <name>encodeURI</name>
     <function-class>tags.Functions</function-class>
     <function-signature>String encodeURI (java.lang.String)</function-signature>
-  </function> 
- 
-  <function>
-    <name>makeCredential</name>
-    <function-class>tags.Functions</function-class>
-    <function-signature>String makeCredential (java.lang.String)</function-signature>
   </function>
   
   <function>
@@ -179,18 +195,12 @@
     <name>ch</name>
     <function-class>tags.Functions</function-class>
     <function-signature>String ch (java.lang.String)</function-signature>
-  </function>  
-
-  <function>
-    <name>isNumeric</name>
-    <function-class>tags.Functions</function-class>
-    <function-signature>Boolean isNumeric (java.lang.String)</function-signature>
-  </function> 
+  </function>
   
   <function>
     <name>containsResourceClass</name>
     <function-class>tags.Functions</function-class>
-    <function-signature>Boolean containsResourceClass (java.util.Collection, java.lang.String)</function-signature>
+    <function-signature>boolean containsResourceClass (java.util.Collection, java.lang.String)</function-signature>
   </function>    
   
   <function>
@@ -314,24 +324,12 @@
   	<name>toBibtexString</name>
   	<function-class>tags.Functions</function-class>
   	<function-signature>String toBibtexString(org.bibsonomy.model.Post, java.lang.String)</function-signature>
-  </function>  
-
-  <function>
-  	<name>renderLayout</name>
-  	<function-class>tags.Functions</function-class>
-  	<function-signature>String renderLayout(org.bibsonomy.model.Post, java.lang.String)</function-signature>
   </function>
-  
-  <function>
-    <name>renderLayouts</name>
-    <function-class>tags.Functions</function-class>
-    <function-signature>String renderLayouts(java.util.List, java.lang.String)</function-signature>
-  </function> 
   
   <function>
   	<name>contains</name>
   	<function-class>tags.Functions</function-class>
-  	<function-signature>Boolean contains(java.util.Collection, java.lang.Object)</function-signature>
+  	<function-signature>boolean contains(java.util.Collection, java.lang.Object)</function-signature>
   </function>
   
   <function>
@@ -361,7 +359,7 @@
   <function>
   	<name>hasTagMyown</name>
   	<function-class>tags.Functions</function-class>
-  	<function-signature>Boolean hasTagMyown(org.bibsonomy.model.Post)</function-signature>
+  	<function-signature>boolean hasTagMyown(org.bibsonomy.model.Post)</function-signature>
   </function>    
 
   <function>
