@@ -26,7 +26,9 @@ public class AdminGroupViewCommand extends BaseCommand {
 	
 	
 	public AdminGroupViewCommand() {
-		// set privacy options
+		/*
+		 * FIXME: use proper localized messages
+		 */
 		privlevel = new HashMap<String, Privlevel>();
 		privlevel.put("Member list hidden", Privlevel.HIDDEN);
 		privlevel.put("Member list public", Privlevel.PUBLIC);

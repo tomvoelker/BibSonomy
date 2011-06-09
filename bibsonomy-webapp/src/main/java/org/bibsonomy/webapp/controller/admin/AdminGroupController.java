@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.admin;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
@@ -23,13 +25,13 @@ import org.bibsonomy.webapp.view.Views;
 public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminGroupController.class);
 	private LogicInterface logic;
-	
+
 	/* Possible actions */
 	private static final String FETCH_GROUP_SETTINGS  = "fetchGroupSettings"; 
 	private static final String UPDATE_GROUP 		  = "updateGroup";  
 	private static final String CREATE_GROUP          = "createGroup";
 
-	
+
 	@Override
 	public View workOn(AdminGroupViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
@@ -40,99 +42,83 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
-		
+
 		/* Check for and perform the specified action */
-		if(command.getAction() == null || command.getAction().isEmpty()) {
+		final String action = command.getAction();
+		if(!present(action)) {
 			log.debug("No action specified.");
+		} else if (FETCH_GROUP_SETTINGS.equals(action)) {
+			final String groupName = command.getGroup().getName();
+			Group fetchedGroup = logic.getGroupDetails(groupName);
+
+			if (present(fetchedGroup)) {
+				command.setGroup(fetchedGroup);
+			} else {
+				command.setAdminResponse("The group \"" + groupName + "\" does not exist.");
+			}
+		} else if (UPDATE_GROUP.equals(action)) {
+			command.setAdminResponse(updateGroup(command.getGroup()));
+		} else if (CREATE_GROUP.equals(action)) {
+			command.setAdminResponse(createGroup(command.getGroup()));
 		}
-		else if (command.getAction().equals(FETCH_GROUP_SETTINGS)) {
-			fetchGroupSettings(command);
-		}
-		else if (command.getAction().equals(UPDATE_GROUP)) {
-			updateGroup(command);
-		}
-		else if (command.getAction().equals(CREATE_GROUP)) {
-			createGroup(command);
-		}
-		
+
 		return Views.ADMIN_GROUP;
 	}
 
-	
-	/** Create a new group. */
-	private void createGroup(AdminGroupViewCommand command) {
-		// Check if group or group-name is empty
-		if(command.getGroup() == null) {
-			command.setAdminResponse("No group specified.");
-			return;
+
+
+	/**
+	 * Create a new group
+	 * 
+	 * @param command
+	 */
+	private String createGroup(final Group group) {
+		/*
+		 * Check if group-name is empty
+		 */
+		final String groupName = group.getName();
+		if (!present(groupName)) {
+			return "Group-creation failed: Group-name is empty!";
 		}
-		String groupname = command.getGroup().getName();
-		groupname = groupname.replaceAll(" ", "");
-		if (groupname.equals("")) {
-			command.setAdminResponse("Group-creation failed: Group-name is empty!");
-		}
+		/*
+		 * check database for existing group
+		 */
+		if (present(logic.getGroupDetails(groupName))) {
+			return "Group already exists!";
+		} 
 		
-		// Check if group already exists
-		Group fetchedGroup = logic.getGroupDetails(command.getGroup().getName());
-		if (fetchedGroup != null) {
-			command.setAdminResponse("Group already exists!");
-			
-		// Create group
-		} else {
-			User u = logic.getUserDetails(command.getGroup().getName());
-			
-			// Check if user exists
-			if (u == null || u.getName() == null) {
-				command.setAdminResponse("Group-creation failed: Cannot create a group for nonexistent username \"" + command.getGroup().getName() + "\"." );
-			}
-			// Check if the user is a spammer
-			else if (u.isSpammer()) {
-				command.setAdminResponse("Group-creation failed: No groups allowed for users tagged as \"spammer\".");
-			} 
-			// Create the group, otherwise.
-			else {
-				logic.createGroup(command.getGroup());
-				command.setAdminResponse("Successfully created new group!");
-			}
+		/*
+		 * check corresponding group user
+		 */
+		final User user = logic.getUserDetails(groupName);
+
+		// Check if user exists
+		if (!present(user) || !present(user.getName())) {
+			return "Group-creation failed: Cannot create a group for nonexistent username \"" + groupName + "\"." ;
+		}
+		// Check if the user is a spammer
+		else if (user.isSpammer()) {
+			return "Group-creation failed: No groups allowed for users tagged as \"spammer\".";
+		} 
+		// Create the group, otherwise.
+		else {
+			logic.createGroup(group);
+			return "Successfully created new group!";
 		}
 	}
 
 	/** Update the settings of a group. */
-	private void updateGroup(AdminGroupViewCommand command) {
-		fetchGroupSettings(command);
-		if (command.getGroup() != null) {
-			Group updatedGroup = applyGroupSettings(command.getGroup(), command);
-			logic.updateGroup(updatedGroup, GroupUpdateOperation.UPDATE_SETTINGS);
-			command.setAdminResponse("Group updated successfully!");
-		} else {
-			command.setAdminResponse("Update group failed: a group with that name does not exist!");
-		}
-	}
+	private String updateGroup(final Group commandGroup) {
+		final Group dbGroup = logic.getGroupDetails(commandGroup.getName());
 
-	/** Fetch and show the current settings of a group. */
-	private void fetchGroupSettings(AdminGroupViewCommand command) {
-		// TODO: remove logmessage or change loglevel 
-		log.info("Fetching details for group \"" + command.getGroup().getName() + "\"");
-		Group fetchedGroup = logic.getGroupDetails(command.getGroup().getName());
-		
-		if (fetchedGroup != null) {
-		    command.setGroup(fetchedGroup);
-		} else {
-			command.setAdminResponse("The group \"" + command.getGroup().getName() + "\" does not exist.");
+		if (!present(dbGroup)) {
+			return "The group \"" + commandGroup + "\" does not exist.";
 		}
-	}
+		dbGroup.setPrivlevel(commandGroup.getPrivlevel());
+		dbGroup.setSharedDocuments(commandGroup.isSharedDocuments());
 
-	/**
-	 * Change the settings of a group to those specified in the command.
-	 * @param group the group which is going to be updated
-	 * @param command the command which contains the new settings
-	 */
-	private Group applyGroupSettings(Group group, AdminGroupViewCommand command) {
-		group.setName(command.getGroup().getName());
-		group.setPrivlevel(command.getGroup().getPrivlevel());
-		group.setSharedDocuments(command.getGroup().isSharedDocuments());
-		
-		return group;
+		logic.updateGroup(dbGroup, GroupUpdateOperation.UPDATE_SETTINGS);
+		return "Group updated successfully!";
 	}
 
 	@Override
