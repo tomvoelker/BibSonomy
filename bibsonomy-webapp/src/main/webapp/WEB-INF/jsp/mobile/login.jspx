@@ -48,6 +48,8 @@
 										<form:label path="password"><fmt:message key="navi.password" /></form:label>
 										<form:password path="password" /><form:errors cssClass="errmsg" path="password" />
 									</p>
+										<td><form:label path="rememberMe"><fmt:message key="login.rememberMe" />:</form:label></td>
+										<td><form:checkbox path="rememberMe" /><form:errors	cssClass="errmsg" path="rememberMe" /></td>
 			                  		<p>
 			                    		<form:hidden path="referer" />
 			                    		<fmt:message key="navi.login" var="submit" />
