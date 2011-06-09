@@ -23,7 +23,8 @@
 
 package org.bibsonomy.rest.renderer;
 
-import static org.bibsonomy.rest.RestProperties.Property.API_URL;
+import static org.bibsonomy.rest.RestProperties.Property.URL_DATE_FORMAT;
+import static org.bibsonomy.rest.RestProperties.Property.URL_DOCUMENTS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_GROUPS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_TAGS;
@@ -34,7 +35,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.bibsonomy.rest.RestProperties;
-import org.bibsonomy.rest.RestProperties.Property;
 
 /** 
  * This renderer creates URLs according to BibSonomys REST URL scheme.
@@ -45,19 +45,6 @@ import org.bibsonomy.rest.RestProperties.Property;
 public class UrlRenderer {
 	private static final String PARTS_DELIMITER = "/";
 	
-	private static UrlRenderer urlRenderer;
-
-	/**
-	 * @return An instance of {@link UrlRenderer}.
-	 */
-	public static UrlRenderer getInstance() {
-		if (urlRenderer == null) {
-			urlRenderer = new UrlRenderer();
-		}
-		return urlRenderer;
-	}
-	
-	
 	private final String userUrlPrefix;
 	private final String groupUrlPrefix;
 	private final String tagUrlPrefix;
@@ -67,15 +54,17 @@ public class UrlRenderer {
 	
 	private final DateFormat dateFormat;
 	
-	private UrlRenderer() {
+	private final String apiUrl;
+	
+	public UrlRenderer(final String apiUrl) {
+		this.apiUrl = apiUrl;
 		final RestProperties properties = RestProperties.getInstance();
-		final String apiUrl = properties.get(API_URL);
 		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + PARTS_DELIMITER;
 		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + PARTS_DELIMITER;
 		this.tagUrlPrefix = apiUrl + properties.get(URL_TAGS) + PARTS_DELIMITER;
 		this.postsUrlDelimiter = PARTS_DELIMITER + properties.get(URL_POSTS) + PARTS_DELIMITER;
-		this.documentsUrlDelimiter = PARTS_DELIMITER + properties.get(Property.URL_DOCUMENTS) + PARTS_DELIMITER;
-		this.dateFormat = new SimpleDateFormat(properties.get(Property.URL_DATE_FORMAT));
+		this.documentsUrlDelimiter = PARTS_DELIMITER + properties.get(URL_DOCUMENTS) + PARTS_DELIMITER;
+		this.dateFormat = new SimpleDateFormat(properties.get(URL_DATE_FORMAT));
 	}	
 
 	/** Creates a URL which points to the given user. 
@@ -137,5 +126,13 @@ public class UrlRenderer {
 	 */
 	public String createHrefForResourceDocument(final String userName, final String intraHash, final String documentFileName) {
 		return this.createHrefForResource(userName, intraHash) + this.documentsUrlDelimiter + documentFileName;
+	}
+
+	/**
+	 * 
+	 * @return The API URL currently used to render URLs.
+	 */
+	public String getApiUrl() {
+		return this.apiUrl;
 	}
 }

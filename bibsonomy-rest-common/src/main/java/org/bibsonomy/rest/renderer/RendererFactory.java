@@ -42,19 +42,20 @@ public class RendererFactory {
 	/**
 	 * Holds the available renderers. New renderers can be added using 
 	 */
-	private static Map<RenderingFormat,Renderer> renderers = new HashMap<RenderingFormat, Renderer>();
-	static {
-		renderers.put(RenderingFormat.JSON, new JSONRenderer());
-		renderers.put(RenderingFormat.XML, new XMLRenderer());
+	private final Map<RenderingFormat,Renderer> renderers = new HashMap<RenderingFormat, Renderer>();
+	
+	public RendererFactory(final UrlRenderer urlRenderer) {
+		renderers.put(RenderingFormat.JSON, new JSONRenderer(urlRenderer));
+		renderers.put(RenderingFormat.XML, new XMLRenderer(urlRenderer));
 	}
-
+	
 	/**
 	 * Registers the provided renderer with the given renderingFormat. 
 	 * 
 	 * @param renderingFormat
 	 * @param renderer
 	 */
-	public static void addRenderer(final RenderingFormat renderingFormat, final Renderer renderer) {
+	public void addRenderer(final RenderingFormat renderingFormat, final Renderer renderer) {
 		renderers.put(renderingFormat, renderer);
 	}
 
@@ -63,7 +64,7 @@ public class RendererFactory {
 	 * @param renderingFormat 
 	 * @return the renderer
 	 */
-	public static Renderer getRenderer(final RenderingFormat renderingFormat) {
+	public Renderer getRenderer(final RenderingFormat renderingFormat) {
 		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
 		
 		if (renderers.containsKey(renderingFormat)) {
