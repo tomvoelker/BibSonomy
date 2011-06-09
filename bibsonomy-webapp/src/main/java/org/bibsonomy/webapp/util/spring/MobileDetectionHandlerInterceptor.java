@@ -35,7 +35,7 @@ public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object object, ModelAndView modelAndView) throws Exception {
 
-		if (
+		if (	present(modelAndView) &&
 				present(modelAndView.getViewName()) &&
 				!isMobileDisabled(request, response) && 
 				isMobileDevice(request)
