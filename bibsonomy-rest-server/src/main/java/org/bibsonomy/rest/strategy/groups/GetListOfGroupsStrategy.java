@@ -32,7 +32,7 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getGroupsUrl());
+		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getGroupsUrl());
 	}
 
 	@Override

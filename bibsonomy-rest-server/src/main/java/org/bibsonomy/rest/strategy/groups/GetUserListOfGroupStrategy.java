@@ -39,7 +39,7 @@ public class GetUserListOfGroupStrategy extends AbstractGetListStrategy<List<Use
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder( RestProperties.getInstance().getApiUrl() ).append( RestProperties.getInstance().getGroupsUrl() ).append("/").append(groupName).append("/").append( RestProperties.getInstance().getUsersUrl() );
+		return new StringBuilder(this.getUrlRenderer().getApiUrl() ).append( RestProperties.getInstance().getGroupsUrl() ).append("/").append(groupName).append("/").append( RestProperties.getInstance().getUsersUrl() );
 	}
 
 	@Override

@@ -48,7 +48,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		final StringBuilder sb = new StringBuilder( RestProperties.getInstance().getApiUrl() );
+		final StringBuilder sb = new StringBuilder(this.getUrlRenderer().getApiUrl() );
 		sb.append( RestProperties.getInstance().getUsersUrl() ).append("/").append(this.userName).append("/").append(RestProperties.getInstance().getPostsUrl()); 
 		return sb;
 	}

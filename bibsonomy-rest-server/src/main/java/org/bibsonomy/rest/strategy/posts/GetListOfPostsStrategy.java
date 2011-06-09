@@ -19,7 +19,7 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 	 */
 	public GetListOfPostsStrategy(final Context context) {
 		super(context);
-		this.nextLinkPrefix = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getPostsUrl();
+		this.nextLinkPrefix = this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getPostsUrl();
 	}
 
 	@Override

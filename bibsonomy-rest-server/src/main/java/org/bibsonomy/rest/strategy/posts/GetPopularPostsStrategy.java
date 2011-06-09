@@ -20,7 +20,7 @@ public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 	 */
 	public GetPopularPostsStrategy(final Context context) {
 		super(context);
-		this.nextLinkPrefix = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getPostsUrl() + "/" + RestProperties.getInstance().getPopularPostsUrl();
+		this.nextLinkPrefix = this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getPostsUrl() + "/" + RestProperties.getInstance().getPopularPostsUrl();
 	}
 
 	@Override

@@ -63,7 +63,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder( RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getTagsUrl() );
+		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getTagsUrl() );
 	}
 
 	@Override

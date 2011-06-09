@@ -30,7 +30,7 @@ public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder( RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getUsersUrl() );
+		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getUsersUrl() );
 	}
 
 	@Override

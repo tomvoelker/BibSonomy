@@ -68,7 +68,7 @@ public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getFriendsUrl());
+		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getFriendsUrl());
 	}
 
 	@Override
