@@ -47,11 +47,7 @@
 			
 			<!-- display user's tag relations -->			
 			<li>
-				<c:set var="tagRelationsTitle">
-					<fmt:message key="tagrelations.title">
-						<fmt:param><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations.cap"/></fmt:param>
-					</fmt:message>
-				</c:set>
+				<fmt:message key="tagrelations.title" var="tagRelationsTitle" />
 				<span class="sidebar_h">
 					<a href="/relations/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}">
 						<fmt:message key="tagrelations"/>

@@ -42,9 +42,7 @@
 
 		<jsp:attribute name="content">				
 			 <div id="general">
-				 <c:set var="tagRelationsTitle">
-					<fmt:message key="tagrelations.title" />
-				 </c:set>
+				<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
 				<span class="content_h">
 					<h2 class="listh"><fmt:message key="tagrelations" /></h2>
 					<div class="listh">
