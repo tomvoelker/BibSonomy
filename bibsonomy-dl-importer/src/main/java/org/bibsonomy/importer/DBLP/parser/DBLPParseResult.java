@@ -179,8 +179,7 @@ public class DBLPParseResult {
 		return proceedingslist;
 	}
 
-	public void setProceedingslist(
-			LinkedList<DBLPEntry> proceedingslist) {
+	public void setProceedingslist(LinkedList<DBLPEntry> proceedingslist) {
 		this.proceedingslist = proceedingslist;
 	}
 
