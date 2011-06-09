@@ -24,10 +24,8 @@
 package org.bibsonomy.layout.jabref;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,10 +33,10 @@ import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.BibtexEntryType;
 import net.sf.jabref.bst.VM;
 
-import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.services.URLGenerator;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -47,7 +45,6 @@ import org.junit.Test;
  * @author:  rja
  * @version: $Id$
  * $Author$
- * 
  */
 public class JabrefLayoutRendererTest {
 
@@ -55,27 +52,21 @@ public class JabrefLayoutRendererTest {
     public void testInit() {
 	getRenderer();
     }
-
-    @Ignore // FIXME!!
-    public void testRenderInternal() {
-	try {
-
+    
+    @Test
+    @Ignore
+    public void testRenderInternal() throws Exception {
 	    final JabrefLayoutRenderer renderer = getRenderer();
-	    renderer.setProjectHome("http://www.bibsonomy.org");
+	    renderer.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
 	    final JabrefLayout layout = renderer.getLayout("dblp", "foo");
 	    final StringBuffer renderedLayout = renderer.renderLayout(layout, getPosts(), false);
 	    final String cleanedLayout = renderedLayout.toString().replaceAll(" +", " ");//.replaceAll("\n", "\\\\n").replaceAll("\"", "\\\\\"");
 	    assertEquals("<?xml version=\"1.0\"?>\n<!DOCTYPE dblp SYSTEM \"http://www.informatik.uni-trier.de/~ley/db/about/dblp.dtd\">\n<!-- This file was exported from BibSonomy, http://www.bibsonomy.org -->\n\n<dblp><inproceedings mdate=\"2009\" key=\"benz2009managing\">\n <author>Dominik Benz</author>\n<author>Folke Eisterlehner</author>\n<author>Andreas Hotho</author>\n<author>Robert J&#228;schke</author>\n<author>Beate Krause</author>\n<author>Gerd Stumme</author> \n <editor>Ciro Cattuto and Giancarlo Ruffo and Filippo Menczer</editor>\n <address>New York&#44; NY&#44; USA</address>\n\n <title>Managing publications and bookmarks with BibSonomy</title>\n <booktitle>HT &#39;09: Proceedings of the 20th ACM Conference on Hypertext and Hypermedia</booktitle>\n <pages>323&#x2013;324</pages>\n <year>2009</year>\n\n\n\n <month>June</month>\n <url>http://portal.acm.org/citation.cfm&#63;doid=1557914.1557969&#35;</url>\n\n <publisher>ACM</publisher>\n\n\n\n\n <isbn>978&#45;1&#45;60558&#45;486&#45;7</isbn>\n\n\n</inproceedings>\n \n\n\n\n<book mdate=\"\" key=\"knuth\">\n <author>Donald E. Knuth</author> \n\n\n\n <title>The Art of Computer Programming</title>\n\n\n\n\n\n\n\n\n\n <publisher>Addison Wesley</publisher>\n\n\n\n\n\n\n\n</book>\n \n\n\n\n</dblp>\n", cleanedLayout);
-	} catch (LayoutRenderingException e) {
-	    fail(e.getMessage());
-	} catch (IOException e) {
-	    fail(e.getMessage());
-	}
     }
 
 
     private JabrefLayoutRenderer getRenderer() {
-	final JabrefLayoutRenderer renderer = JabrefLayoutRenderer.getInstance();
+	final JabrefLayoutRenderer renderer = new JabrefLayoutRenderer();
 	renderer.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
 	return renderer;
     }
@@ -130,25 +121,12 @@ public class JabrefLayoutRendererTest {
 	return posts;
     }
 
-    public static void main(String[] args) {
-	//final JabrefLayoutRenderer renderer = JabrefLayoutRenderer.getInstance();
-	//renderer.setDefaultLayoutFilePath(args[0]);
-
-	final JabrefLayoutRendererTest t = new JabrefLayoutRendererTest();
-	t.testRenderInternal();
-	System.out.println("finished");
-
-
-
-
-	System.exit(0);	
-    }
-
-    @SuppressWarnings("unused")
-    private void testBstVM() {
+    @Test
+    @Ignore
+    public void testBstVM() {
 	try {
 	    final File bst = new File("/home/rja/paper/papers/2007/issi/lni.bst");
-	    VM vm = new VM(bst);
+	    final VM vm = new VM(bst);
 
 	    final List<BibtexEntry> bibtexs = new LinkedList<BibtexEntry>();
 	    final BibtexEntry entry = new BibtexEntry();
@@ -166,7 +144,7 @@ public class JabrefLayoutRendererTest {
 	    System.out.println(result);
 	    System.out.println("-------------------------------------------------------------------");
 
-	} catch (Exception ex) {
+	} catch (final Exception ex) {
 	    System.out.println(ex);
 	}
     }

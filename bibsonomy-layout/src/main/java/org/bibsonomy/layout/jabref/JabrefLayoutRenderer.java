@@ -56,27 +56,17 @@ import org.springframework.beans.factory.annotation.Required;
 public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	private static final Log log = LogFactory.getLog(JabrefLayoutRenderer.class);
 
-	private URLGenerator urlGen;
-
-	/**
-	 * This is a singleton! 
-	 * FIXME: is this really neccessary? At least until the old code from LayoutHandler
-	 * is moved we need an instance if the JabrefLayoutRenderer there to unload custom
-	 * user layouts. The easiest way to do this is via a singleton.
-	 * 
-	 */
-	private static JabrefLayoutRenderer instance = new JabrefLayoutRenderer();
-
-	public static JabrefLayoutRenderer getInstance() {
-		return instance;
-	}
+	private URLGenerator urlGenerator;
 
 	/**
 	 * saves all loaded layouts (html, bibtexml, tablerefs, hash(user.username), ...)
 	 */
 	private final JabrefLayouts layouts = new JabrefLayouts();
 
-	private JabrefLayoutRenderer() {
+	/**
+	 * constructs a new jabref layout renderer
+	 */
+	public JabrefLayoutRenderer() {
 		this.init();
 	}
 
@@ -93,7 +83,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		// load default filters 
 		try {
 			layouts.init();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			log.fatal("Could not load default layout filters.", e);
 		}
 	}
@@ -144,7 +134,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		/*
 		 * render the database
 		 */
-		return renderDatabase(database, JabRefModelConverter.convertPosts(posts, urlGen), layout, embeddedLayout);
+		return renderDatabase(database, JabRefModelConverter.convertPosts(posts, urlGenerator), layout, embeddedLayout);
 	}
 
 	/**
@@ -157,7 +147,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * @return output The formatted BibTeX entries as a string.
 	 * @throws LayoutRenderingException - if a layout could not be found
 	 */
-	private StringBuffer renderDatabase(final BibtexDatabase database, List<BibtexEntry> sorted, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
+	private StringBuffer renderDatabase(final BibtexDatabase database, final List<BibtexEntry> sorted, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
 		final StringBuffer output = new StringBuffer();  
 
 		/* 
@@ -264,7 +254,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	private BibtexDatabase bibtex2JabrefDB(final List<? extends Post<? extends Resource>> bibtexList) {
 		final BibtexDatabase db = new BibtexDatabase();
 		for (final Post<? extends Resource> post : bibtexList) {
-			db.insertEntry(JabRefModelConverter.convertPost(post, urlGen));
+			db.insertEntry(JabRefModelConverter.convertPost(post, urlGenerator));
 		}
 		return db;
 	}
@@ -279,27 +269,20 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		return layouts.toString();
 	}
 
+	/**
+	 * @param urlGen the urlGen to set
+	 */
+	public void setUrlGenerator(final URLGenerator urlGen) {
+		this.urlGenerator = urlGen;
+	}
 
 	/** The path where the user layout files are.
 	 * 
 	 * @param userLayoutFilePath
 	 */
 	@Required
-	public void setUserLayoutFilePath(String userLayoutFilePath) {
+	public void setUserLayoutFilePath(final String userLayoutFilePath) {
 		layouts.setUserLayoutFilePath(userLayoutFilePath);
-	}
-
-	/**
-	 * The base URL of the running project. Needed to create 
-	 * a suitable URLGenerator in order to create the biburl-links
-	 * within the JabrefModelConverter
-	 * 
-	 * FIXME: instead of giving projectHome, directly inject UrlGenerator
-	 * @param projectHome
-	 */
-	@Required
-	public void setProjectHome(String projectHome) {
-		this.urlGen = new URLGenerator(projectHome);
 	}
 
 	/**
@@ -308,7 +291,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * 
 	 * @param defaultLayoutFilePath
 	 */
-	public void setDefaultLayoutFilePath(String defaultLayoutFilePath) {
+	public void setDefaultLayoutFilePath(final String defaultLayoutFilePath) {
 		layouts.setDefaultLayoutFilePath(defaultLayoutFilePath);
 	}
 
