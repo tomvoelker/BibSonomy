@@ -29,6 +29,7 @@ import java.io.FileNotFoundException;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
 
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.junit.BeforeClass;
 
@@ -40,7 +41,7 @@ public class JSONRendererTest extends JAXBRendererTest {
 	
 	@BeforeClass
 	public static void setRenderer() {
-		renderer = new JSONRenderer();
+		renderer = new JSONRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
 		pathToTestFiles = "src/test/resources/jsonrenderer/";
 		fileExt = ".json";
 	}

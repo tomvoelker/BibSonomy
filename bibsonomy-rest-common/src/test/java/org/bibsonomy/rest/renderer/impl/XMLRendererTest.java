@@ -23,6 +23,7 @@
 
 package org.bibsonomy.rest.renderer.impl;
 
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.junit.BeforeClass;
 
 /**
@@ -33,7 +34,7 @@ public class XMLRendererTest extends JAXBRendererTest {
 	
 	@BeforeClass
 	public static void setRenderer() {
-		renderer = new XMLRenderer();
+		renderer = new XMLRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
 		pathToTestFiles = "src/test/resources/xmlrenderer/";
 		fileExt = ".xml";
 	}
