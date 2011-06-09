@@ -320,7 +320,7 @@
 		) AS b
 		LEFT OUTER JOIN groupids g ON (b.group = g.group)
 		LEFT JOIN review_ratings_cache c ON (c.interHash = b.interHash) 
-		ORDER BY b.date DESC LIMIT 1
+		ORDER BY b.change_date DESC LIMIT 1
 	</select>
 
 
