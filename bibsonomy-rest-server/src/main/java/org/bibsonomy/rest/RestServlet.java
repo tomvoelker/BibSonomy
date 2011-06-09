@@ -1,5 +1,7 @@
 package org.bibsonomy.rest;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -10,7 +12,6 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +26,6 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
@@ -44,7 +44,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.util.MultiPartRequestParser;
 import org.bibsonomy.rest.utils.HeaderUtils;
-import static org.bibsonomy.util.ValidationUtils.present;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -73,15 +73,15 @@ public final class RestServlet extends HttpServlet {
 	 */
 	public static final String REQUEST_ENCODING = "UTF-8";	
 
-	/** name of the servlet-parameter that configures the logicFactoryClass to use */
-	public static final String PARAM_LOGICFACTORY_CLASS = "logicFactoryClass";
-	
 	/**
 	 * the param key for the root doc path
 	 */
 	public static final String PARAM_ROOT_PATH = "rootPath";
 
 	private LogicInterfaceFactory logicFactory;
+	
+	private UrlRenderer urlRenderer;
+	private RendererFactory rendererFactory;
 	
 	// store some infos about the specific request or the webservice (i.e. rootPath)
 	private final Map<String, String> additionalInfos = new HashMap<String, String>();
@@ -92,45 +92,38 @@ public final class RestServlet extends HttpServlet {
 	/** logic interface factory for handling oauth requests */
 	ShindigDBLogicUserInterfaceFactory oauthLogicFactory;
 
+	/**
+	 * Sets the base URL of the project. Typically "project.home" in the 
+	 * file <tt>project.properties</tt>. 
+	 * @param projectHome
+	 */
+	@Required
+	public void setProjectHome(final String projectHome) {
+		additionalInfos.put("projectHome", projectHome);
+	}
+	
+	/**
+	 * Renders the URLs returned by the servlet, e.g., in the XML.
+	 * @param urlRenderer
+	 */
+	@Required
+	public void setUrlRenderer(final UrlRenderer urlRenderer) {
+		this.urlRenderer = urlRenderer;
+		this.rendererFactory = new RendererFactory(urlRenderer);
+	}
+	
+	/**
+	 * Sets the base path to the documents. 
+	 * @param documentPath
+	 */
+	@Required
+	public void setDocumentPath(final String documentPath) {
+		additionalInfos.put("docPath", documentPath); 
+	}
+	
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		// instantiate the bibsonomy database connection
-		final String logicFactoryClassName = this.getServletConfig().getInitParameter(PARAM_LOGICFACTORY_CLASS);
-		// get the roopath of bibsonomy out of the web.xml
-		final ServletContext servletContext = this.getServletContext();
-		final String rootPath = servletContext.getInitParameter(PARAM_ROOT_PATH);
-		additionalInfos.put("rootPath", rootPath);
-		// declare the path where all documents will be stored
-		
-		/*
-		 * FIXME: make doc path configurable via web.xml (or another config file)
-		 */
-		additionalInfos.put("docPath", rootPath + "bibsonomy_docs/"); 
-		// get the projectHome out of the web.xml
-		additionalInfos.put("projectHome", servletContext.getInitParameter("projectHome"));
-		
-		if (logicFactoryClassName != null) {
-			Object logicFactoryObj;
-			try {
-				final Class<?> logicFactoryClass = this.getClass().getClassLoader().loadClass(logicFactoryClassName);
-				logicFactoryObj = logicFactoryClass.newInstance();
-			} catch (final Exception e) {
-				throw new ServletException("problem while instantiating " + logicFactoryClassName, e);
-			}			
-			if (logicFactoryObj instanceof LogicInterfaceFactory) {
-				this.logicFactory = (LogicInterfaceFactory) logicFactoryObj;
-			} else {
-				throw new ServletException(logicFactoryClassName + " does not implement " + LogicInterfaceFactory.class.getName());
-			}
-			log.info("using logicFactoryClass '" + logicFactoryClassName + "'");
-		} else {
-			log.info("no 'logicFactoryClass' initParameter -> using default");
-			final DBLogicApiInterfaceFactory logicFactory = new DBLogicApiInterfaceFactory();
-			logicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
-			this.logicFactory = logicFactory;
-		}
-		
 		// initialize oauth database layer
 		try {
 			// TODO: configure via spring
@@ -152,21 +145,13 @@ public final class RestServlet extends HttpServlet {
 	}
 
 	/**
-	 * Use this setter in junit tests to initialize the test database.
-	 * 
-	 * FIXME: could be removed if we would use a DI-Framework
+	 * Configure the logic interface factory to be used to aquire instances of 
+	 * the logic interface.
+	 * @param logicInterfaceFactory 
 	 */
-	void setLogicInterface(final LogicInterfaceFactory logicInterfaceFactory) {
+	@Required
+	public void setLogicInterfaceFactory(final LogicInterfaceFactory logicInterfaceFactory) {
 		this.logicFactory = logicInterfaceFactory;
-	}
-
-	/**
-	 * Use this class in junit tests to access the test-database
-	 * 
-	 * @return the {@link LogicInterface}
-	 */
-	LogicInterfaceFactory getLogic() {
-		return this.logicFactory;
 	}
 
 	/**
@@ -232,7 +217,7 @@ public final class RestServlet extends HttpServlet {
 			
 			// create Context
 			final Reader reader = RESTUtils.getInputReaderForStream(request.getInputStream(), REQUEST_ENCODING);
-			final Context context = new Context(method, request.getPathInfo(), renderingFormat, reader, parser.getList(), logic, request.getParameterMap(), additionalInfos);
+			final Context context = new Context(method, request.getPathInfo(), renderingFormat, this.urlRenderer, reader, parser.getList(), logic, request.getParameterMap(), additionalInfos);
 
 			// validate request
 			context.canAccess();
@@ -290,7 +275,7 @@ public final class RestServlet extends HttpServlet {
 			 * TODO: add date using  
 			 * 
 			 */
-			response.setHeader("Location", UrlRenderer.getInstance().createHrefForResource(e.getUserName(), e.getNewIntraHash()));
+			response.setHeader("Location", urlRenderer.createHrefForResource(e.getUserName(), e.getNewIntraHash()));
 			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
 		} catch (final DatabaseException e) {
 			final StringBuilder returnMessage = new StringBuilder("");
@@ -325,7 +310,7 @@ public final class RestServlet extends HttpServlet {
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
 		// get renderer
 		final RenderingFormat mediaType = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), request.getContentType());
-		final Renderer renderer = RendererFactory.getRenderer(mediaType);
+		final Renderer renderer = rendererFactory.getRenderer(mediaType);
 
 		// send error
 		response.setStatus(code);
