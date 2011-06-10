@@ -27,12 +27,29 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 		
 			<style type="text/css">
-			    .consumerEntry td {
-					border-width:1px;
-					border-style:solid;
-					border-color:black;
-					text-align:justify;
-			    }
+				#oauthConsumerList {
+				    border-collapse: collapse;
+				    empty-cells: show;
+				    font-size: 60%;
+				    margin-top: 15px;
+				    width: 100%;
+				} 
+				#oauthConsumerList th {
+				    background-color: #EEEEEE;
+				    border: 1px solid #CCCCCC;
+				    font-size: 100%;
+				    font-weight: bold;
+				    padding: 2px;
+				    text-align: center;
+				}
+				.consumerEntry td {
+				    border: 1px solid #CCCCCC;
+				    padding: 2px;
+				    text-align: justify;
+				}
+				#outerBox {
+					margin: 8px;
+				}
 			</style>
 		</jsp:attribute>
 		
@@ -86,8 +103,12 @@
 		    				<td><c:out value="${entry.title}"/></td>
 		    				<td><c:out value="${entry.summary}"/></td>
 		    				<td><c:out value="${entry.description}"/></td>
-		    				<td><c:out value="${entry.thumbnail}"/></td>
-		    				<td><c:out value="${entry.icon}"/></td>
+		    				<td><c:if test="${not empty entry.thumbnail}">
+		    				<a href="${entry.thumbnail}"><img src ="${entry.thumbnail}" /></a>
+		    				</c:if></td>
+		    				<td><c:if test="${not empty entry.icon}">
+		    				<a href="${entry.icon}"><img src ="${entry.icon}" /></a>
+		    				</c:if></td>
 		    			</tr>
 					</c:forEach>
         	    </table>
@@ -129,7 +150,11 @@
 							<!-- key type -->
 							<div class="fsRow">
 			  					<form:label cssClass="fsLabel" path="consumerInfo.keyType" ><fmt:message key="admin.oauth.consumer.keyType"/>*</form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.keyType" tabindex="4"/>
+					      		<form:select cssClass="fsInput reqinput" tabindex="4" path="consumerInfo.keyType" size="1" multiple="false">
+									<c:forEach var="entry" items="${command.keyTypes}">
+										<form:option value="${entry}" label="${entry}" />
+									</c:forEach>
+								</form:select>
 			  					<div class="dissError"><form:errors path="consumerInfo.keyType" /></div>
             				</div>
             				
