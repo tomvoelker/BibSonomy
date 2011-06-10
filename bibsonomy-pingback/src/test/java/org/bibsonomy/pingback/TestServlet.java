@@ -12,10 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Ignore;
+
 /**
  * @author rja
  * @version $Id$
  */
+@Ignore
 public class TestServlet extends HttpServlet {
 	private static final String CONTENT_TYPE_HTML = "text/html";
 	private static final String CHAR_ENCODING = "UTF-8";
