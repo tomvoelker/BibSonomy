@@ -23,6 +23,8 @@
 
 package org.bibsonomy.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -35,6 +37,8 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.model.User;
 import org.springframework.context.MessageSource;
 
 
@@ -53,6 +57,7 @@ public class MailUtils {
 	private String projectBlog;
 	private String projectEmail;
 	private String projectRegistrationFromAddress;
+	private String projectJoinGroupRequestFromAddress;
 	
 	private MessageSource messageSource;
 
@@ -115,6 +120,45 @@ public class MailUtils {
 		final String[] recipient = {userEmail};
 		try {
 			sendMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send registration mail: " + e.getMessage());
+		}
+		return false;
+	}
+	
+	/** 
+	 * Sends the registration mail to the user and to the group admins.
+	 */
+	public boolean sendJoinGroupRequest(final User group, final User loginUser, final String reason, final Locale locale) {
+		Object[] messagesParameters;
+		try {
+			messagesParameters = new Object[]{
+					group.getName(),
+					loginUser.getName(),
+					reason,
+					projectHome,
+					URLEncoder.encode(group.getName(), "UTF-8").toLowerCase(),
+					URLEncoder.encode(loginUser.getName(), "UTF-8").toLowerCase(),
+					projectName.toLowerCase(),
+					projectEmail
+			};
+		} catch (UnsupportedEncodingException e1) {
+			throw new InternServerException(e1.getMessage());
+		}
+		/*
+		 * Format the message "mail.registration.body" with the given parameters.
+		 */
+		final String messageBody    = messageSource.getMessage("mail.joinGroupRequest.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.subject", messagesParameters, locale);
+
+		/*
+		 * set the recipients
+		 */
+		final String[] recipient = {group.getEmail()};
+		try {
+			sendMail(recipient,  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
+			sendMail(new String[] {projectRegistrationFromAddress},  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send registration mail: " + e.getMessage());
@@ -235,6 +279,15 @@ public class MailUtils {
 	 */
 	public void setProjectRegistrationFromAddress(String projectRegistrationFromAddress) {
 		this.projectRegistrationFromAddress = projectRegistrationFromAddress;
+	}
+
+	/**
+	 * The From: address of join group request mails. 
+	 * 
+	 * @param projectJoinGroupRequestFromAddress
+	 */
+	public void setProjectJoinGroupRequestFromAddress(String projectJoinGroupRequestFromAddress) {
+		this.projectJoinGroupRequestFromAddress = projectJoinGroupRequestFromAddress;
 	}
 
 	/**
