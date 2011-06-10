@@ -37,6 +37,8 @@ import java.net.URLEncoder;
  */
 public class UrlUtils {
 
+	private static final String BIBTEX_URL_COMMAND = "\\url{";
+
 	private static final int MAX_LEN_URL   = 6000;
 	
 	/**
@@ -71,9 +73,8 @@ public class UrlUtils {
 			url.startsWith("gopher://") ||
 			url.startsWith("https://")) {
 			return StringUtils.cropToLength(url, MAX_LEN_URL);
-		} else if (url.startsWith("\\url{") && url.endsWith("}")) {
-			// remove \\url{...}
-			return StringUtils.cropToLength(url.substring(5, url.length() - 1), MAX_LEN_URL);
+		} else if (url.contains(BIBTEX_URL_COMMAND)) {
+			return StringUtils.cropToLength(cleanBibTeXUrl(url), MAX_LEN_URL);
 		} else if (url.trim().equals("")){
 			// handle an empty URL
 			return "";
@@ -81,6 +82,25 @@ public class UrlUtils {
 		
 		// URL is neither empty nor valid: mark it as broken
 		return StringUtils.cropToLength(BROKEN_URL + url, MAX_LEN_URL);
+	}
+	
+	/**
+	 * Removes \\url{} from the URL. If the URL does not contain this command,
+	 * the trimmed URL is returned. 
+	 * 
+	 * @param url
+	 * @return The cleaned URL
+	 */
+	public static String cleanBibTeXUrl(final String url) {
+		if (present(url)) {
+			final String trimmedUrl = url.trim();
+			if (trimmedUrl.startsWith(BIBTEX_URL_COMMAND) && trimmedUrl.endsWith("}")) {
+				// remove \\url{...}
+				return trimmedUrl.substring(5, trimmedUrl.length() - 1);
+			}
+			return trimmedUrl;
+		}
+		return url;
 	}
 	
 	/**
