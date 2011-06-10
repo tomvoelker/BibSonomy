@@ -6,12 +6,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.JoinGroupCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
@@ -33,6 +36,7 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 	private RequestLogic requestLogic;
 	private Errors errors = null;
 	private LogicInterface logic;
+	private MailUtils mailUtils;
 	/**
 	 * Path to login page for redirect if user not logged in
 	 */
@@ -77,6 +81,14 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 	@Required
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
+	}
+
+	/** Injects an instance of the MailUtils to send registration success mails.
+	 * @param mailUtils
+	 */
+	@Required
+	public void setMailUtils(MailUtils mailUtils) {
+		this.mailUtils = mailUtils;
 	}
 
 	/**
@@ -124,6 +136,7 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 
 	@Override
 	public View workOn(JoinGroupCommand command) {
+		//check user logged in
 		if(command.getContext().isUserLoggedIn() == false) {
 			String redirectURI;
 			try {
@@ -133,19 +146,25 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 				throw new InternServerException(ex.getMessage());
 			}
 		}
+		//check user is spammer
+		if(command.getContext().getLoginUser().isSpammer()) {
+			errors.reject("joinGroup.spammerError");
+		}
+		//on errors return to form
 		if(errors.hasErrors()) {
 			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
 			return Views.JOIN_GROUP;
 		}
-//		Group group = logic.getGroupDetails(command.getGroup());
-//		User user = logic.getUserDetails(command.getGroup());
-//		System.out.println(user.getEmail());
+		//success now
+		User group = logic.getUserDetails(command.getGroup());
+		mailUtils.sendJoinGroupRequest(group, command.getContext().getLoginUser(), command.getReason(), requestLogic.getLocale());
 		return null;
 	}
 
 	@Override
 	public boolean isValidationRequired(JoinGroupCommand command) {
-		return command.getContext().isUserLoggedIn();
+		RequestWrapperContext context = command.getContext();
+		return context.isUserLoggedIn() && context.getLoginUser().isSpammer() == false;
 	}
 
 	@Override
@@ -168,9 +187,9 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 			CaptchaResponse resp = captcha.checkAnswer(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), requestLogic.getHostInetAddress());
 			if(resp == null) throw new InternServerException("error.captcha");
 			if(resp.isValid() == false) errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
-			String errorMessage = resp.getErrorMessage();
-			if(errorMessage != null) {
-				errors.reject(errorMessage);
+			else {
+				String errorMessage = resp.getErrorMessage();
+				if(errorMessage != null) errors.reject(errorMessage);
 			}
 		}
 	}
