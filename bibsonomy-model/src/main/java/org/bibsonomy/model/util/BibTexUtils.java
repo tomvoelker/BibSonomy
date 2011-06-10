@@ -75,7 +75,7 @@ public class BibTexUtils {
 	 * all fields from the resource) 
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_BIBURL = "biburl";
-	
+
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource) 
@@ -88,7 +88,7 @@ public class BibTexUtils {
 	 * setting of the post date.
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_DATE = "date";
-	
+
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource). It represents the "date" field of the post.
@@ -99,24 +99,24 @@ public class BibTexUtils {
 	 * all fields from the resource). It represents the "changeDate" of the post. 
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_TIMESTAMP = "timestamp";
-	
+
 	/**
 	 * ISO date + time for "added-at" and "timestamp" field  
 	 */
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-	
+
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource)
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_KEYWORDS = "keywords";
-	
+
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource)
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_PRIVNOTE = "privnote";
-	
+
 	/**
 	 * This fields from the post are added to the BibTeX string (in addition to 
 	 * all fields from the resource)
@@ -129,7 +129,7 @@ public class BibTexUtils {
 		ADDITIONAL_MISC_FIELD_ADDED_AT,
 		ADDITIONAL_MISC_FIELD_TIMESTAMP
 	};
-	
+
 	/**
 	 * the supported entrytypes of a bibtex
 	 * be careful when changing order some code uses the order to map entrytypes to (swrc|ris) entrytypes
@@ -141,7 +141,7 @@ public class BibTexUtils {
 	public static final String[] ENTRYTYPES = {"article", "book", "booklet", "conference", "electronic", "inbook", "incollection", "inproceedings",
 		"manual", "mastersthesis", "misc", "patent", "periodical", "phdthesis", "preamble", "presentation", "proceedings", "standard", "techreport", "unpublished"
 	};
-	
+
 	/*
 	 * patterns used for matching
 	 */
@@ -305,8 +305,8 @@ public class BibTexUtils {
 	public static String toBibtexString(final BibTex bib) {
 		return toBibtexString(bib, SerializeBibtexMode.PARSED_MISCFIELDS);
 	}
-	
-	
+
+
 	/**
 	 * return a bibtex string representation of the given bibtex object
 	 * 
@@ -320,7 +320,7 @@ public class BibTexUtils {
 	public static String toBibtexString(final BibTex bib, SerializeBibtexMode mode) {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
-			
+
 			/*
 			 * start with entrytype and key
 			 */
@@ -359,7 +359,7 @@ public class BibTexUtils {
 				}
 				buffer.append(serializeMiscFields(bib.getMiscFields(), true));
 			}
-			
+
 			/*
 			 * include plain misc fields if desired
 			 */
@@ -386,7 +386,7 @@ public class BibTexUtils {
 			 */
 			buffer.delete(buffer.lastIndexOf(","), buffer.length());
 			buffer.append("\n}");	
-			
+
 			return buffer.toString();
 
 		} catch (IntrospectionException ex) {
@@ -415,7 +415,7 @@ public class BibTexUtils {
 		return "{" + month + "}";
 	}
 
-	
+
 	/**
 	 * Tries to extract the month number from the given string. The following 
 	 * input formats are supported:
@@ -467,8 +467,8 @@ public class BibTexUtils {
 		post.getResource().addMiscField(ADDITIONAL_MISC_FIELD_BIBURL, urlGenerator.getPublicationUrl(post.getResource(), post.getUser()).toString());
 		return toBibtexString(post);
 	}
-	
-	
+
+
 	/**
 	 * Return a bibtex representation of the given post. Defaults to 
 	 * serialize mode PARSED_MISCFIELDS.
@@ -479,7 +479,7 @@ public class BibTexUtils {
 	public static String toBibtexString(final Post<BibTex> post) {
 		return toBibtexString(post, SerializeBibtexMode.PARSED_MISCFIELDS);
 	}
-	
+
 	/**
 	 * Creates a BibTeX string containing more than only the fields in the 
 	 * BibTeX object:
@@ -603,10 +603,10 @@ public class BibTexUtils {
 	 * @return the cleaned bibtex string
 	 */
 	public static String cleanBibTex(String bibtex) {
-		
+
 		if (!present(bibtex)) return "";			
-		
-		
+
+
 		// replace markup
 		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}		
 
@@ -642,7 +642,26 @@ public class BibTexUtils {
 			}
 		}
 		return buffer.toString();
-	} 
+	}
+
+	/**
+	 * Removes \\url{} from the URL. If the URL does not contain this command,
+	 * the trimmed URL is returned. 
+	 * 
+	 * @param url
+	 * @return The cleaned URL
+	 */
+	public static String cleanBibTeXUrl(final String url) {
+		if (present(url)) {
+			final String trimmedUrl = url.trim();
+			if (trimmedUrl.startsWith("\\url{") && trimmedUrl.endsWith("}")) {
+				// remove \\url{...}
+				return trimmedUrl.substring(5, trimmedUrl.length() - 1);
+			}
+			return trimmedUrl;
+		}
+		return url;
+	}
 
 	/**
 	 * Tries to find a year (four connected digits) in a string and returns them as int.
@@ -750,7 +769,7 @@ public class BibTexUtils {
 		 * ignore empty bibtex and empty field values
 		 */
 		if (bibtex == null || fieldValue == null || fieldValue.trim().equals("")) return;
-		
+
 		/*
 		 * remove last comma if there is one (before closing last curly bracket)
 		 */
@@ -761,7 +780,7 @@ public class BibTexUtils {
 			final int _lastIndex = bib.lastIndexOf(",");
 			bibtex.replace(_lastIndex, _lastIndex + 1, "");
 		}
-			
+
 		final int lastIndexOf = bibtex.lastIndexOf("}");
 		if (lastIndexOf > 0) {
 			bibtex.replace(lastIndexOf, bibtex.length(), "," + fieldName + " = {" + fieldValue + "}\n}");
@@ -775,15 +794,15 @@ public class BibTexUtils {
 	public static void prepareEditorAndAuthorFieldForView(final BibTex bibtex) {
 		final String author = prepareNameRepresentationForView(bibtex.getAuthor());
 		final String editor = prepareNameRepresentationForView(bibtex.getEditor());
-		
+
 		bibtex.setAuthor(author);
 		bibtex.setEditor(editor);
 	}
-	
+
 	private static String prepareNameRepresentationForView(final String string) {
 		return present(string) ? string.replaceAll(PersonNameUtils.PERSON_NAME_DELIMITER, "\n") : "";
 	}
-	
+
 	/**
 	 * reverses {@link #prepareEditorAndAuthorFieldForView(BibTex)}
 	 * (replaces new line with an " and ")
@@ -793,16 +812,16 @@ public class BibTexUtils {
 	public static void prepareEditorAndAuthorFieldForDatabase(final BibTex bibtex) {
 		final String author = prepareNameRepresentationForDatabase(bibtex.getAuthor());
 		final String editor = prepareNameRepresentationForDatabase(bibtex.getEditor());
-		
+
 		bibtex.setAuthor(author);
 		bibtex.setEditor(editor);
 	}
-	
+
 	private static String prepareNameRepresentationForDatabase(final String string) {
 		return present(string) ? string.replaceAll("\n", PersonNameUtils.PERSON_NAME_DELIMITER) : "";
 	}
-	
-	
+
+
 	/**
 	 * Converts the key = value pairs contained in the 
 	 * miscFields map of a bibtex object into a serialized representation in the 
@@ -826,13 +845,13 @@ public class BibTexUtils {
 				miscFieldsSerialized.append(KEYVALUE_INDENT + currKey.toLowerCase() + " " + ASSIGNMENT_OPERATOR + " " + DEFAULT_OPENING_BRACKET + miscFields.get(currKey) + DEFAULT_CLOSING_BRACKET);
 				if (it.hasNext() || appendTrailingSeparator) {	miscFieldsSerialized.append(KEYVALUE_SEPARATOR + "\n");	}
 			}
-			
+
 		}
 		// write serialized misc fields into misc field
 		return miscFieldsSerialized.toString();				
 	}
-	
-	
+
+
 	/**
 	 * Parse a given misc field string into a hashmap containing key/value pairs.
 	 * 
@@ -842,5 +861,5 @@ public class BibTexUtils {
 	public static Map<String,String> parseMiscFieldString(String miscFieldString) {
 		return StringUtils.parseBracketedKeyValuePairs(miscFieldString, ASSIGNMENT_OPERATOR, KEYVALUE_SEPARATOR, DEFAULT_OPENING_BRACKET, DEFAULT_CLOSING_BRACKET);		
 	}
-	
+
 }
