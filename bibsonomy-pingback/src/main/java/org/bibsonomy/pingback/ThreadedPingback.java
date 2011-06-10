@@ -13,8 +13,8 @@ import org.bibsonomy.model.Resource;
 public class ThreadedPingback extends SimplePingback implements Runnable {
 
 	private final Queue<Post<? extends Resource>> queue = new ConcurrentLinkedQueue<Post<? extends Resource>>();
-	private final boolean run = true;
 	private final long waitTime = 1000;
+	private boolean run = true;
 	
 	
 	@Override
@@ -22,19 +22,22 @@ public class ThreadedPingback extends SimplePingback implements Runnable {
 		queue.add(post);
 	}
 
+	public void stop() {
+		this.run = false;
+	}
+	
 	@Override
 	public void run() {
-		while (run) {
-			if (queue.isEmpty()) {
+		while (this.run) {
+			if (this.queue.isEmpty()) {
 				try {
-					wait(waitTime);
+					wait(this.waitTime);
 				} catch (InterruptedException ex) {
 					// noop
 				}
 			}
-			super.sendPingback(queue.poll());
+			super.sendPingback(this.queue.poll());
 		}
-		
 	}
 
 }
