@@ -77,6 +77,9 @@ public class HttpClientLinkLoader implements LinkLoader {
 					 */
 			    } finally {
 			        reader.close();
+			        /*
+			         * FIXME: check, if we should use abort(), see http://hc.apache.org/httpcomponents-client-ga/tutorial/html/fundamentals.html#d4e143
+			         */
 			    }
 			}
 		} catch (final Exception e) {
