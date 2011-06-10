@@ -645,25 +645,6 @@ public class BibTexUtils {
 	}
 
 	/**
-	 * Removes \\url{} from the URL. If the URL does not contain this command,
-	 * the trimmed URL is returned. 
-	 * 
-	 * @param url
-	 * @return The cleaned URL
-	 */
-	public static String cleanBibTeXUrl(final String url) {
-		if (present(url)) {
-			final String trimmedUrl = url.trim();
-			if (trimmedUrl.startsWith("\\url{") && trimmedUrl.endsWith("}")) {
-				// remove \\url{...}
-				return trimmedUrl.substring(5, trimmedUrl.length() - 1);
-			}
-			return trimmedUrl;
-		}
-		return url;
-	}
-
-	/**
 	 * Tries to find a year (four connected digits) in a string and returns them as int.
 	 * If it fails, returns Integer.MAX_VALUE.
 	 * 
