@@ -63,7 +63,6 @@ public class AdminOAuthController implements ValidationAwareController<OAuthAdmi
 		
 		switch (command.getAdminAction_()) {
 		case Register:
-			// TODO: validate entry
 			this.oauthLogic.createConsumer(command.getConsumerInfo());
 		case List:
 			List<OAuthConsumerInfo> consumerInfo = this.oauthLogic.listConsumers();

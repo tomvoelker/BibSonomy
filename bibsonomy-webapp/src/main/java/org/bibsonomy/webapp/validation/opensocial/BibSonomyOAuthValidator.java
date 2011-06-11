@@ -17,8 +17,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.bibsonomy.webapp.command.opensocial.OAuthAdminCommand;
+import org.bibsonomy.webapp.command.opensocial.OAuthAdminCommand.AdminAction;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 
 /**
  * @author fei
@@ -44,6 +46,18 @@ public class BibSonomyOAuthValidator implements  Validator<OAuthAdminCommand>{
 			} catch (Exception e) {
 				errors.rejectValue("consumerInfo.consumerSecret", "error.oauth.rsa.pubKey");
 			}
+		}
+		
+		// Check whether required fields are empty
+		if (AdminAction.Register.equals(command.getAdminAction_())) {
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.consumerKey", "error.field.required");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.consumerSecret", "error.field.required");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.serviceName", "error.field.required");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.keyType", "error.field.required");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.keyName", "error.field.required");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.title", "error.field.required");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.summary", "error.field.required");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.description", "error.field.required");
 		}
 	}
 

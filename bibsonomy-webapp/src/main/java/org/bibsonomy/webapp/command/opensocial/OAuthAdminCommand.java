@@ -33,7 +33,7 @@ public class OAuthAdminCommand extends OAuthCommand {
 	 * @return
 	 */
 	public AdminAction getAdminAction_() {
-		return AdminAction.valueOf(this.adminAction);
+		return this.adminAction == null ? null : AdminAction.valueOf(this.adminAction);
 	}
 
 	public void setConsumers(List<OAuthConsumerInfo> consumers) {
