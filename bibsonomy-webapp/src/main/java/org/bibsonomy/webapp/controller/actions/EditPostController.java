@@ -36,6 +36,7 @@ import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
+import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.util.UrlUtils;
@@ -69,11 +70,13 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
 	
 	private TagRecommender tagRecommender;
+	private Pingback pingback;
 	private Captcha captcha;
 	
 	protected Errors errors;
 	protected RequestLogic requestLogic;
 	protected URLGenerator urlGenerator;
+	
 
 	/**
 	 * Returns an instance of the command the controller handles.
@@ -705,7 +708,9 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * database, this method is called. Subclasses can use it to add additional
 	 * functionality. 
 	 * Per default, this method updates the recommender by giving it feedback 
-	 * about the assigned tags.
+	 * about the assigned tags and sends the post to the pingback service 
+	 * (if one is provided).
+	 * 
 	 * 
 	 * @param command
 	 * @param loginUser
@@ -716,6 +721,12 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * update recommender table such that recommendations are linked to the final post
 		 */
 		setRecommendationFeedback(post, command.getPostID());
+		/*
+		 * Send a pingback/trackback for the posted resource.
+		 */
+		if (present(pingback)) {
+			pingback.sendPingback(post);
+		}
 	}
 	
 	/**
@@ -1032,6 +1043,15 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	@Required
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
+	}
+
+	/**
+	 * A service that sends pingbacks / trackbacks to posted URLs. 
+	 * 
+	 * @param pingback
+	 */
+	public void setPingback(Pingback pingback) {
+		this.pingback = pingback;
 	}
 
 }
