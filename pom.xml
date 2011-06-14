@@ -186,27 +186,28 @@
 		<spring-security.version>3.0.5.RELEASE</spring-security.version>
 	</properties>
 	<modules>
+		<module>bibsonomy-batch</module>
 		<module>bibsonomy-bibtex-parser</module>
 		<module>bibsonomy-common</module>
-		<module>bibsonomy-database-common</module>
-		<module>bibsonomy-events</module>
-		<module>bibsonomy-batch</module>
-		<module>bibsonomy-model</module>
-		<module>bibsonomy-dl-importer</module>
-		<module>bibsonomy-scraper</module>
-		<module>bibsonomy-scrapingservice</module>
-		<module>bibsonomy-layout</module>
-		<module>bibsonomy-importer</module>
 		<module>bibsonomy-database</module>
+		<module>bibsonomy-database-common</module>
+		<module>bibsonomy-dl-importer</module>
+		<module>bibsonomy-events</module>
+		<module>bibsonomy-importer</module>
+		<module>bibsonomy-layout</module>
 		<module>bibsonomy-logging</module>
 		<module>bibsonomy-lucene</module>
+		<module>bibsonomy-model</module>
 		<module>bibsonomy-openaccess</module>
+		<module>bibsonomy-opensocial</module>
+		<module>bibsonomy-pingback</module>
 		<module>bibsonomy-recommender</module>
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-common</module>
-		<module>bibsonomy-web-common</module>
-		<module>bibsonomy-opensocial</module>
 		<module>bibsonomy-rest-server</module>
+		<module>bibsonomy-scraper</module>
+		<module>bibsonomy-scrapingservice</module>
+		<module>bibsonomy-web-common</module>
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>
   </modules>
@@ -571,6 +572,11 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-wiki</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-pingback</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
