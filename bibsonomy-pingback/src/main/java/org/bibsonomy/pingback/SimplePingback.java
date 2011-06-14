@@ -22,8 +22,6 @@ import com.malethan.pingback.PingbackException;
 /**
  * Sends Pingbacks or Trackbacks to external web pages that got bookmarked.
  * 
- * FIXME: use HttpClient (multi-threading!)
- * FIXME: use multithreading
  * TODO: implement Trackback
  * 
  * @author rja
@@ -57,6 +55,7 @@ public class SimplePingback implements Pingback {
 			if (present(linkAddress)) {
 				final Link link = linkLoader.loadLink(linkAddress);
 				if (link.isSuccess()) {
+					log.debug("found link");
 					if (link.isPingbackEnabled()) {
 						sendPingback(post, link);
 					}
@@ -91,6 +90,9 @@ public class SimplePingback implements Pingback {
 
 	private void sendPingback(final Post<? extends Resource> post, final Link link) {
 		try {
+			if (log.isDebugEnabled()) {
+				log.debug("sending pingback for " + link.getUrl() + " to " + link.getPingbackUrl());
+			}
 			post.getResource().recalculateHashes(); // FIXME: shouldn't the UrlGenerator take care of this?
 			final String permaLink = urlGenerator.getPostUrl(post);
 			pingbackClient.sendPingback(permaLink, link);
