@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -29,62 +31,74 @@ import com.malethan.pingback.LinkLoader;
  */
 public class HttpClientLinkLoader implements LinkLoader {
 
+	private static final Log log = LogFactory.getLog(HttpClientLinkLoader.class);
+	
 	private static final String HTTP_HEADER_XPINGBACK = "X-Pingback";
 	private static final Pattern pingbackUrlPattern = Pattern.compile("<link rel=\"pingback\" href=\"([^\"]+)\" ?/?>", Pattern.CASE_INSENSITIVE);
+	private static final Pattern endOfHeadSectionPattern = Pattern.compile("<body[^>]+>|</head>", Pattern.CASE_INSENSITIVE);
 
 	final HttpClient httpClient;
 
 	public HttpClientLinkLoader() {
 		final SchemeRegistry schemeRegistry = new SchemeRegistry();
 		schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
-		this.httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(schemeRegistry));
+		final ThreadSafeClientConnManager conman = new ThreadSafeClientConnManager(schemeRegistry);
+		//		conman.setDefaultMaxPerRoute(10); // allow more than 10 connections to the same host
+		this.httpClient = new DefaultHttpClient(conman);
+
 	}
 
 
 
 	@Override
 	public Link loadLink(final String linkUrl) {
+		log.debug("loading link " + linkUrl);
 		try {
 			final HttpGet httpGet = new HttpGet(linkUrl);
-			final HttpResponse response = this.httpClient.execute(httpGet);
-			/*
-			 * probe for pingback header
-			 */
-			final Header header = response.getFirstHeader(HTTP_HEADER_XPINGBACK);
-			if (present(header)) {
-				return new Link(null, linkUrl, header.getValue(), true);
-			}
-			/*
-			 * TODO: probe for trackback header
-			 */
-			/*
-			 * probe content
-			 */
-			final HttpEntity entity = response.getEntity();
-			if (present(entity)) {
-			    final BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
-			    try {
-					final String headContent = readHeadSectionOfPage(reader);
-			    	/*
-			    	 * probe pingback content
-			    	 */
-					final String pingbackUrl = getPingbackUrlFromHtml(headContent);
-					if (present(pingbackUrl)) {
-						return new Link(null, linkUrl, pingbackUrl, true);
+			try  {
+				final HttpResponse response = this.httpClient.execute(httpGet);
+				/*
+				 * probe for pingback header
+				 */
+				final Header header = response.getFirstHeader(HTTP_HEADER_XPINGBACK);
+				if (present(header)) {
+					log.debug("found pingback header");
+					return new Link(null, linkUrl, header.getValue(), true);
+				}
+				/*
+				 * TODO: probe for trackback header
+				 */
+				/*
+				 * probe content
+				 */
+				final HttpEntity entity = response.getEntity();
+				if (present(entity)) {
+					final BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+					try {
+						final String headContent = readHeadSectionOfPage(reader);
+						/*
+						 * probe pingback content
+						 */
+						final String pingbackUrl = getPingbackUrlFromHtml(headContent);
+						if (present(pingbackUrl)) {
+							log.debug("found pingback meta tag");
+							return new Link(null, linkUrl, pingbackUrl, true);
+						}
+						/*
+						 * TODO: probe trackback content
+						 */
+					} finally {
+						reader.close();
 					}
-					/*
-					 * TODO: probe trackback content
-					 */
-			    } finally {
-			        reader.close();
-			        /*
-			         * FIXME: check, if we should use abort(), see http://hc.apache.org/httpcomponents-client-ga/tutorial/html/fundamentals.html#d4e143
-			         */
-			    }
+				}
+			} finally {
+				// ensure that the connection is released to the pool
+				httpGet.abort();
 			}
 		} catch (final Exception e) {
 			// ignore
 		}
+		log.debug("no link found");
 		return new Link(null, linkUrl, null, false);
 	}
 
@@ -112,7 +126,7 @@ public class HttpClientLinkLoader implements LinkLoader {
 	}
 
 	protected boolean reachedEndOfHeadSection(final String line) {
-		return line.matches("<body[^>]+>|</head>");
+		return endOfHeadSectionPattern.matcher(line).find();
 	}
 
 	protected String getPingbackUrlFromHtml(String html) {
