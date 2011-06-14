@@ -67,6 +67,10 @@ public class BookmarkPostComparator extends PostComparator implements Comparator
 				if (SortKey.DATE.equals(crit.sortKey)) {
 					return this.compare(post1.getDate(), post2.getDate(), crit.sortOrder);
 				}
+				// title 
+				else if (SortKey.TITLE.equals(crit.sortKey)) {
+					return this.nomalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.sortOrder);
+				}				
 				// ranking
 				else if (SortKey.RANKING.equals(crit.sortKey)) {
 					return this.compare(post1.getRanking(), post2.getRanking(), crit.sortOrder);
