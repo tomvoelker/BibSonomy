@@ -227,6 +227,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-pingback</artifactId>
+			<scope>runtime</scope>
+		</dependency>		
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 		<dependency>
