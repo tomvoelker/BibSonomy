@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+	<bean id="urlGenerator" class="org.bibsonomy.services.URLGenerator">
+		<property name="projectHome" value="http://localhost:8090/" />
+	</bean>
+
+	<bean id="pingbackClient" class="com.malethan.pingback.impl.ApachePingbackClient" />
+
+	<bean id="linkLoader" class="org.bibsonomy.pingback.HttpClientLinkLoader" />
+
+	<bean id="pingback" class="org.bibsonomy.pingback.ThreadedPingback">
+		<property name="urlGenerator" ref="urlGenerator" />
+		<property name="pingbackClient" ref="pingbackClient" />
+		<property name="linkLoader" ref="linkLoader" />
+	</bean>
+
+	<bean id="jobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="pingback" />
+		<property name="targetMethod" value="clearQueue" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="jobDetail" />
+		<property name="startDelay" value="0" />
+		<property name="repeatInterval" value="100" />
+	</bean>
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="simpleTrigger" />
+			</list>
+		</property>
+	</bean>
+
+
+</beans>
