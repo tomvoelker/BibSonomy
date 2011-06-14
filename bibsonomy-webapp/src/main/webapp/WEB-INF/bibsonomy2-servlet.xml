@@ -729,6 +729,7 @@
 	<import resource="bibsonomy2-servlet-security.xml"/>
     <import resource="bibsonomy2-servlet-opensocial.xml"/>
     <import resource="bibsonomy2-servlet-rest.xml"/>
+    <import resource="bibsonomy2-servlet-cronjobs.xml"/>
 
     <import resource="bibsonomy2-servlet-bibsonomy.xml"/>
 	<import resource="bibsonomy2-servlet-puma.xml"/>
