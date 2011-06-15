@@ -122,7 +122,7 @@
 		<property name="concurrent" value="false" />
 	</bean>
 	<bean id="pingbackTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-		<property name="pingbackJobDetail" ref="jobDetail" />
+		<property name="pingbackJobDetail" ref="pingbackJobDetail" />
 		<property name="startDelay" value="300000" /><!-- start running 5 minutes after system start  -->
 		<property name="repeatInterval" value="300000" /><!-- clean queue every 5 minutes -->
 	</bean>
