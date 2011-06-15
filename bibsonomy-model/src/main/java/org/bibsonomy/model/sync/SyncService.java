@@ -17,6 +17,7 @@ public class SyncService {
 	private final Map<Integer, Date> lastSyncDates;
 	private String userName;
 	private String apiKey;
+	private final Map <Long, SynchronizationData> lastSyncData;
 	
 	//TODO remove this after implementation of syncpage
 	private final Map<Integer, String> lastResults;
@@ -27,6 +28,7 @@ public class SyncService {
 	public SyncService() {
 		lastSyncDates = new HashMap<Integer, Date>();
 		lastResults = new HashMap<Integer, String>();
+		lastSyncData = new HashMap<Long, SynchronizationData>(3);
 		//this.serviceId = serviceId;
 	}
 	
@@ -57,7 +59,7 @@ public class SyncService {
 	public boolean equals(Object obj) {
 		if (obj instanceof SyncService) {
 			final SyncService test = (SyncService) obj;
-			return this.getService().equals(test.getService());
+			return this.getService().equals(test.getService()) && this.serverUser.equals(test.getServerUser());
 		} 
 		return super.equals(obj);
 	}
@@ -104,6 +106,11 @@ public class SyncService {
 	public void setService(URI service) {
 		this.service = service;
 	}
-
 	
+	/**
+	 * @return the lastSyncData
+	 */
+	public Map <Long, SynchronizationData> getLastSyncData() {
+		return lastSyncData;
+	}
 }

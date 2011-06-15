@@ -19,8 +19,10 @@ public enum SynchronizationClients {
 	/**
 	 * puma as client  
 	 */
-	PUMA(2);
+	PUMA(2),
 
+	BIBLICIOUS(3);
+	
 	private final int id;
 
 	private SynchronizationClients (final int id) {
@@ -51,6 +53,8 @@ public enum SynchronizationClients {
 			}
 			if ("http://www.test.de/".equals(uriString)) {
 				return TESTCLIENT;
+			} if ("http://www.biblicious.org/".equals(uriString)){
+				return BIBLICIOUS;
 			}
 		}
 		throw new IllegalArgumentException("Unknown service " + uri);

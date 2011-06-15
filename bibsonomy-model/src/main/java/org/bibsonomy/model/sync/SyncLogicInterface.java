@@ -41,9 +41,16 @@ public interface SyncLogicInterface {
 	/**
 	 * 
 	 * @param userName
-	 * @return List of synchronization services for given user 
+	 * @return List of synchronization server for given user 
 	 */
-	public List<SyncService> getSyncServicesForUser(final String userName);
+	public List<SyncService> getSyncServerForUser(final String userName);
+	
+	public SyncService getSyncServer(final String userName, final URI uri);
+	
+	/**
+	 * @return List of for this System allowed synchronization server
+	 */
+	public List<SyncService> getAvlSyncServer();
 	
 	/**
 	 * 
