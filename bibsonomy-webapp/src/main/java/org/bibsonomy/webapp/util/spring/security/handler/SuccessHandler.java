@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.util.spring.security.handler;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -24,8 +26,10 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
  */
 public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 	
+	private String loginFormUrl = "";
+	
 	@Override
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+	public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException, ServletException {
 		final Object principal = authentication.getPrincipal();
 		if (principal instanceof UserAdapter) {
 			final UserAdapter adapter = (UserAdapter) principal;
@@ -40,5 +44,30 @@ public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandle
 		}
 		
 		super.onAuthenticationSuccess(request, response, authentication);
+	}
+	
+	/**
+	 * returns an empty string if targeturl is the login page otherwise
+	 * the user will be redirected to the login site and gets an access denied
+	 * view
+	 * @see org.springframework.security.web.authentication.AbstractAuthenticationTargetUrlRequestHandler#determineTargetUrl(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+	protected String determineTargetUrl(final HttpServletRequest request, final HttpServletResponse response) {
+		final String targetUrl = super.determineTargetUrl(request, response);
+		
+		// == 1 because loginUrl contains leading /
+		if (present(this.loginFormUrl) && targetUrl.indexOf(this.loginFormUrl) == 1) {
+			return "";
+		}
+		
+		return targetUrl;
+	}
+
+	/**
+	 * @param loginFormUrl the loginFormUrl to set
+	 */
+	public void setLoginFormUrl(final String loginFormUrl) {
+		this.loginFormUrl = loginFormUrl;
 	}
 }

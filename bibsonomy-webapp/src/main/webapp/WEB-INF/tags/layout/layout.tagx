@@ -181,7 +181,7 @@
 								<a href="/edit_tags"><fmt:message key="navi.editTags"/></a>
 							</c:when>
 						<c:otherwise>
-							<parts:login/>
+							<parts:login requPath="${requPath}"/>
 						</c:otherwise>
 						</c:choose>
 					</div>

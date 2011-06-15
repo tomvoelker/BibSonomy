@@ -33,7 +33,16 @@
 		
 		<security:custom-filter position="LOGOUT_FILTER" ref="logoutFilter" />
 		
-		<security:access-denied-handler error-page="/errors/403" />
+		<!-- XXX: it is a little bit tricky to add another exeption translation filter after the other one
+			 but if we replace the configurated one we could not use the namespace config (http, intercept-url) and had to add
+			 all spring security filters to this config file by bean definitions :(
+		 -->
+		<security:custom-filter after="EXCEPTION_TRANSLATION_FILTER" ref="exceptionTranslationFilter" />
+		
+		<!-- 
+			login filters are configurated by
+			org.bibsonomy.webapp.config.AuthenticationFilterConfigurator
+		 -->
 	</security:http>
 	
 	<!-- enable when using spring security tag libs
@@ -65,9 +74,22 @@
 	<bean id="contextRepository" class="org.bibsonomy.webapp.util.spring.security.UsernameSecurityContextRepository">
 		<property name="service" ref="databaseUserService" />
 	</bean>
+	
+	<bean id="exceptionTranslationFilter" class="org.bibsonomy.webapp.util.spring.security.filter.ExceptionTranslationFilter">
+		<property name="authenticationEntryPoint" ref="entryPoint" />
+		<property name="accessDeniedHandler" ref="accessDeniedHandler" />
+	</bean>
+	
+	<bean id="accessDeniedHandler" class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+		<property name="errorPage" value="/errors/403" />
+	</bean>
 
-	<bean id="entryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+	<bean id="entryPoint" class="org.bibsonomy.webapp.util.spring.security.authentication.LoginUrlAuthenticationEntryPoint">
 		<property name="loginFormUrl" ref="loginUrl" />
+	</bean>
+	
+	<bean id="targetUrlParameter" class="java.lang.String">
+		<constructor-arg value="referer" />
 	</bean>
 	
 	<bean id="cookieKey" class="java.lang.String">
@@ -81,9 +103,10 @@
 		<property name="usernameParameter" value="username" />
 		<property name="passwordParameter" value="password" />
 	</bean>
-
+	
 	<bean id="successHandler" class="org.bibsonomy.webapp.util.spring.security.handler.SuccessHandler">
-		<property name="targetUrlParameter" value="referer" />
+		<property name="targetUrlParameter" ref="targetUrlParameter" />
+		<property name="loginFormUrl" ref="loginUrl" />
 	</bean>
 	
 	<bean id="failureHandler" class="org.bibsonomy.webapp.util.spring.security.handler.FailureHandler" scope="singleton">
@@ -224,6 +247,11 @@
 		<property name="rememberMeServices" ref="openidRememberMeServices" />
 		<property name="consumer" ref="openidConsumer" />
 		<property name="claimedIdentityFieldName" value="openID" />
+		<property name="returnToUrlParameters">
+			<set>
+				<ref bean="targetUrlParameter" />
+			</set>
+		</property>
 	</bean>
 	
 	<!-- open id remember me filter -->
@@ -327,10 +355,11 @@
 		<property name="hideUserNotFoundExceptions" value="false" />
 	</bean>
 	
-<!--	<security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />-->
+	<!-- for testing @see dev wiki
+	<security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />-->
+	
 	<security:ldap-server id="contextSource" url="${auth.ldap.server}" />
-
-
+	
 	<bean id="ldapUserDetailsMapper" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.LDAPUserDetailsServiceMapper">
 		<property name="userDetailsService" ref="databaseUserService" />
 		<property name="adminLogic" ref="adminLogic" />

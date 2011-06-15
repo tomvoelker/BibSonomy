@@ -34,12 +34,12 @@ public class LDAPUserDetailsServiceMapper implements UserDetailsContextMapper {
 			throw new LdapUsernameNotFoundException("LDAP id not found in database", ctx);
 		}
 		
-		final UserDetails loadUserByUsername = this.userDetailsService.loadUserByUsername(systemName);
-		if (!loadUserByUsername.isEnabled()) {
+		final UserDetails loadedUser = this.userDetailsService.loadUserByUsername(systemName);
+		if (!loadedUser.isEnabled()) {
 			throw new DisabledException("user was deleted");
 		}
 		
-		return loadUserByUsername;
+		return loadedUser;
 	}
 
 	/*
@@ -49,14 +49,6 @@ public class LDAPUserDetailsServiceMapper implements UserDetailsContextMapper {
 	@Override
 	public void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
 		throw new UnsupportedOperationException();
-	}
-	
-	
-	/**
-	 * @return the adminLogic
-	 */
-	public LogicInterface getAdminLogic() {
-		return this.adminLogic;
 	}
 
 	/**
@@ -71,13 +63,6 @@ public class LDAPUserDetailsServiceMapper implements UserDetailsContextMapper {
 	 */
 	public void setUserDetailsService(UserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
-	}
-
-	/**
-	 * @return the userDetailsService
-	 */
-	public UserDetailsService getUserDetailsService() {
-		return userDetailsService;
 	}
 
 }

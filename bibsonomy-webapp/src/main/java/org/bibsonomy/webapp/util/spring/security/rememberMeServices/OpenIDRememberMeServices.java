@@ -42,12 +42,16 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
 	private static final Log log = LogFactory.getLog(OpenIDRememberMeServices.class);
 	
 	/**
-	 * must be the same that is used by the filter
+	 * must be the same that is used by the login filter
 	 */
 	private OpenIDConsumer consumer;
 	private Map<String,String> realmMapping = Collections.emptyMap();
     private Set<String> returnToUrlParameters = Collections.emptySet();
 	private String projectRoot;
+	
+	/**
+	 * the url of the open id login filter
+	 */
 	private String filterUrl;
 	
 	private RequestCache requestCache = new HttpSessionRequestCache();
@@ -65,7 +69,7 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
 				final String openID = token.getIdentityUrl();
 				
 				final int tokenLifetime = this.getTokenValiditySeconds();
-				long expiryTime = this.calculateExpiryTime(tokenLifetime);
+				final long expiryTime = this.calculateExpiryTime(tokenLifetime);
 				
 				final String signatureValue = this.makeTokenSignature(new String[] { Long.toString(expiryTime), username, openID});
 				
@@ -130,7 +134,7 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
         	}
         	
         	/*
-        	 * save request
+        	 * save request in cache
         	 */
         	this.requestCache.saveRequest(request, response);
         	
@@ -146,16 +150,16 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
         throw new RememberMeAuthenticationException("redirect was sent");
 	}
 	
-	protected String buildReturnToUrl(HttpServletRequest request) {
+	protected String buildReturnToUrl(final HttpServletRequest request) {
 		final StringBuilder sb = new StringBuilder(this.projectRoot);
 		sb.append(this.filterUrl.replaceFirst("\\/", "")); // TODO: document or remove?!
-		Iterator<String> iterator = returnToUrlParameters.iterator();
+		final Iterator<String> iterator = returnToUrlParameters.iterator();
         boolean isFirst = true;
 
         while (iterator.hasNext()) {
-            String name = iterator.next();
+            final String name = iterator.next();
             // Assume for simplicity that there is only one value
-            String value = request.getParameter(name);
+            final String value = request.getParameter(name);
 
             if (value == null) {
                 continue;
@@ -175,15 +179,15 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
         return sb.toString();
 	}
 
-	protected String lookupRealm(String returnToUrl) {
+	protected String lookupRealm(final String returnToUrl) {
         String mapping = realmMapping.get(returnToUrl);
 
         if (mapping == null) {
             try {
-                URL url = new URL(returnToUrl);
-                int port = url.getPort();
+                final URL url = new URL(returnToUrl);
+                final int port = url.getPort();
 
-                StringBuilder realmBuffer = new StringBuilder(returnToUrl.length())
+                final StringBuilder realmBuffer = new StringBuilder(returnToUrl.length())
                         .append(url.getProtocol())
                         .append("://")
                         .append(url.getHost());
@@ -192,7 +196,7 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
                 }
                 realmBuffer.append("/");
                 mapping = realmBuffer.toString();
-            } catch (MalformedURLException e) {
+            } catch (final MalformedURLException e) {
                 log.warn("returnToUrl was not a valid URL: [" + returnToUrl + "]", e);
             }
         }
@@ -210,35 +214,35 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
 	/**
 	 * @param realmMapping the realmMapping to set
 	 */
-	public void setRealmMapping(Map<String, String> realmMapping) {
+	public void setRealmMapping(final Map<String, String> realmMapping) {
 		this.realmMapping = realmMapping;
 	}
 
 	/**
 	 * @param returnToUrlParameters the returnToUrlParameters to set
 	 */
-	public void setReturnToUrlParameters(Set<String> returnToUrlParameters) {
+	public void setReturnToUrlParameters(final Set<String> returnToUrlParameters) {
 		this.returnToUrlParameters = returnToUrlParameters;
 	}
 
 	/**
 	 * @param projectRoot the projectRoot to set
 	 */
-	public void setProjectRoot(String projectRoot) {
+	public void setProjectRoot(final String projectRoot) {
 		this.projectRoot = projectRoot;
 	}
 
 	/**
 	 * @param filterUrl the filterUrl to set
 	 */
-	public void setFilterUrl(String filterUrl) {
+	public void setFilterUrl(final String filterUrl) {
 		this.filterUrl = filterUrl;
 	}
 
 	/**
 	 * @param requestCache the requestCache to set
 	 */
-	public void setRequestCache(RequestCache requestCache) {
+	public void setRequestCache(final RequestCache requestCache) {
 		this.requestCache = requestCache;
 	}
 	
