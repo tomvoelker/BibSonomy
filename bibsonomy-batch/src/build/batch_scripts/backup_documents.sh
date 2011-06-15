@@ -3,12 +3,12 @@
 BASE_DIR=/home/bibsonomy
 # these directories will be backuped
 DIRS="bibsonomy_docs bibsonomy_pics"
+ROPTIONS="--archive --quiet --rsh=ssh"
 
 #### daffy
 RHOST=daffy.cs.uni-kassel.de
 RUSER=bibbackup
 RDIR=backup
-ROPTIONS="-av --rsh=ssh"
 
 # backup directories
 for DIR in $DIRS; do
@@ -20,7 +20,6 @@ done
 RHOST=joe.cs.uni-kassel.de
 RUSER=bibsonomy
 RDIR=/home/bibsonomy
-ROPTIONS="--archive --quiet --rsh=ssh"
 
 # backup directories
 for DIR in $DIRS; do
@@ -34,7 +33,6 @@ done
 RHOST=melkor.informatik.uni-wuerzburg.de
 RUSER=bibbackup
 RDIR=backup
-ROPTIONS="-av --rsh=ssh"
 
 # backup directories
 for DIR in $DIRS; do
