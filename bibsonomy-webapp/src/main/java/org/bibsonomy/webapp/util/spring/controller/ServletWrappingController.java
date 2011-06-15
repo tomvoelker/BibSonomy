@@ -23,7 +23,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * but allows to directly provide an instance of the servlet. 
  * 
  * @author rja
- *
+ * @version $Id$
  */
 public class ServletWrappingController extends AbstractController implements BeanNameAware, InitializingBean, DisposableBean {
 
@@ -41,7 +41,7 @@ public class ServletWrappingController extends AbstractController implements Bea
 	 * Default is the bean name of this controller.
 	 * @param servletName 
 	 */
-	public void setServletName(String servletName) {
+	public void setServletName(final String servletName) {
 		this.servletName = servletName;
 	}
 
@@ -50,7 +50,7 @@ public class ServletWrappingController extends AbstractController implements Bea
 	 * as name-value pairs.
 	 * @param initParameters 
 	 */
-	public void setInitParameters(Properties initParameters) {
+	public void setInitParameters(final Properties initParameters) {
 		this.initParameters = initParameters;
 	}
 
@@ -58,7 +58,7 @@ public class ServletWrappingController extends AbstractController implements Bea
 	 * @see org.springframework.beans.factory.BeanNameAware#setBeanName(java.lang.String)
 	 */
 	@Override
-	public void setBeanName(String name) {
+	public void setBeanName(final String name) {
 		this.beanName = name;
 	}
 
@@ -67,6 +67,7 @@ public class ServletWrappingController extends AbstractController implements Bea
 	 * Initialize the wrapped Servlet instance.
 	 * @see javax.servlet.Servlet#init(javax.servlet.ServletConfig)
 	 */
+	@Override
 	public void afterPropertiesSet() throws Exception {
 		if (this.servletName == null) {
 			this.servletName = this.beanName;
@@ -83,7 +84,7 @@ public class ServletWrappingController extends AbstractController implements Bea
 	 * @see javax.servlet.Servlet#service(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
 	 */
 	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response)
+	protected ModelAndView handleRequestInternal(final HttpServletRequest request, final HttpServletResponse response)
 		throws Exception {
 
 		this.servletInstance.service(request, response);
@@ -95,6 +96,7 @@ public class ServletWrappingController extends AbstractController implements Bea
 	 * Destroy the wrapped Servlet instance.
 	 * @see javax.servlet.Servlet#destroy()
 	 */
+	@Override
 	public void destroy() {
 		this.servletInstance.destroy();
 	}
@@ -107,18 +109,22 @@ public class ServletWrappingController extends AbstractController implements Bea
 	 */
 	private class DelegatingServletConfig implements ServletConfig {
 
+		@Override
 		public String getServletName() {
 			return servletName;
 		}
 
+		@Override
 		public ServletContext getServletContext() {
 			return ServletWrappingController.this.getServletContext();
 		}
 
-		public String getInitParameter(String paramName) {
+		@Override
+		public String getInitParameter(final String paramName) {
 			return initParameters.getProperty(paramName);
 		}
 
+		@Override
 		public Enumeration<?> getInitParameterNames() {
 			return initParameters.keys();
 		}
@@ -129,7 +135,7 @@ public class ServletWrappingController extends AbstractController implements Bea
 	 * @param servletInstance
 	 */
 	@Required
-	public void setServletInstance(Servlet servletInstance) {
+	public void setServletInstance(final Servlet servletInstance) {
 		this.servletInstance = servletInstance;
 	}
 
