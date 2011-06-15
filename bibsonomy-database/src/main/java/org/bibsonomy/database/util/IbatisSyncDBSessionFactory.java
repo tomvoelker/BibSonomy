@@ -33,4 +33,13 @@ public class IbatisSyncDBSessionFactory extends AbstractDBSessionFactory {
 	protected SqlMapSession getSqlMap() {
 		return client.openSession();
 	}
+	
+	/**
+	 * Set JNDIDataSource like  props.setProperty("JNDIDataSource", "java:comp/env/jdbc/[serviceName]");
+	 * service name must be specified in context.xml
+	 * @return properties to set JNDIDataSource
+	 */
+	public Properties getProps(){
+		return props;
+	}
 }

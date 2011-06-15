@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
@@ -21,6 +22,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.SynchronizationClient;
@@ -40,6 +42,8 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 	private DBLogic clientLogic;
 	private DBLogic serverLogic;
 	private URI clientService;
+	
+	private final String RESULT_STRING = "done, created on client: 1, created on server: 1, updated on client: 1, updated on server: 1, deleted on client: 1, deleted on server: 1";
 
 	@Before
 	public void initialize() {
@@ -48,7 +52,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		 * create server user
 		 */
 		serverUser = new User();
-		serverUser.setName("sync1");
+		serverUser.setName("syncServer");
 		serverUser.setRole(Role.SYNC);
 
 		/*
@@ -145,7 +149,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		}
 
 		try {
-			clientService = new URI("http://www.bibsonomy.org/");
+			clientService = new URI("http://www.test.de/");
 		} catch (URISyntaxException ex) {
 			ex.printStackTrace();
 		}
@@ -173,13 +177,25 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 	
 
 	@Test
-	public void testSynchronization() {
+	public void testSynchronization() throws URISyntaxException {
 		final SynchronizationClient synchronizer = new SynchronizationClient();
 	
 		/*
 		 * test publications
 		 */
-		assertTrue("synchronization wasn't successful", synchronizer.synchronize(serverUser, clientUser, serverLogic, clientLogic, BibTex.class));
+		SyncService server = new SyncService();
+		server.setService(new URI("http://www.test.de/"));
+		Properties su = new Properties();
+		su.put("userName", "syncServer");
+		su.put("apiKey", "15cb586b630cc343cd60684807bf4785");
+		server.setServerUser(su);
+		
+		synchronizer.setServerLogicFactory(new DBLogicApiInterfaceFactory());
+		synchronizer.setOwnUri("http://www.test.de/");
+		
+		SynchronizationData data = synchronizer.synchronize(clientLogic, BibTex.class, clientUser, server);
+		assertNotNull("synchronization wasn't successful", data);
+		assertEquals(RESULT_STRING, data.getStatus());
 		
 		Map<String, SynchronizationPost> serverPosts = serverLogic.getSyncPostsMapForUser(serverUser.getName(), BibTex.class);
 		Map<String, SynchronizationPost> clientPosts = clientLogic.getSyncPostsMapForUser(clientUser.getName(), BibTex.class);
@@ -209,7 +225,10 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * test bookmarks
 		 */
-		assertTrue("synchronization wasn't successful", synchronizer.synchronize(serverUser, clientUser, serverLogic, clientLogic, Bookmark.class));
+		data = synchronizer.synchronize(clientLogic, Bookmark.class, clientUser, server);
+		assertNotNull("synchronization wasn't successful", data);
+		assertEquals(RESULT_STRING, data.getStatus());
+		
 		
 		serverPosts = serverLogic.getSyncPostsMapForUser(serverUser.getName(), Bookmark.class);
 		clientPosts = clientLogic.getSyncPostsMapForUser(clientUser.getName(), Bookmark.class);

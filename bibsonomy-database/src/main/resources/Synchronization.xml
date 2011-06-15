@@ -3,11 +3,28 @@
 
 <sqlMap namespace="Synchronization">
 
-	<select id="getSyncServicesForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
+	<select id="getAvlSyncServer" resultMap="SynchronizationCommon.syncService">
+		SELECT ss.uri, NULL as user_name, NULL as credentials
+		FROM sync_services ss
+		WHERE service_id > 0
+			AND ss.server = 1
+	</select>
+
+	<select id="getSyncServerForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
 		SELECT s.user_name, s.credentials, ss.uri
 		FROM sync s
 		JOIN sync_services ss USING (service_id)
-		WHERE user_name = #userName#
+		WHERE s.user_name = #userName#
+			AND ss.server = 1
+	</select>
+	
+	<select id="getSyncServerForUserByUri" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
+		SELECT s.user_name, s.credentials, ss.uri
+		FROM sync s
+		JOIN sync_services ss USING (service_id)
+		WHERE s.user_name = #userName#
+			AND ss.uri = #service#
+			AND ss.server = 1
 	</select>
 	
 	<insert id="insertSyncServiceForUser" parameterClass="syncParam">
@@ -48,7 +65,7 @@
 		LEFT JOIN sync_services ss USING (service_id)
 		WHERE sd.user_name = #userName#
 			AND sd.content_type = #contentType#
-			AND sd.service_id = #serviceId#
+			AND ss.uri = #service#
 			AND sd.status != 'undone'
 		ORDER BY sd.last_sync_date DESC
 	</select> 

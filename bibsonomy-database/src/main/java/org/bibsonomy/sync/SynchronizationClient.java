@@ -1,12 +1,19 @@
 package org.bibsonomy.sync;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -15,6 +22,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 
@@ -25,30 +33,88 @@ import org.bibsonomy.model.sync.SynchronizationPost;
  */
 public class SynchronizationClient {
 
+	
+	private String ownUri;
+	private URI uri;
+	
 	private final ConflictResolutionStrategy strategy;
-	private URI client;
+	private DBLogicApiInterfaceFactory serverLogicFactory;
 	
 	public SynchronizationClient() {
-		try {
-			this.client = new URI("http://www.bibsonomy.org/");
-		} catch (URISyntaxException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
 		//FIXME get strategy form DB or elsewhere
 		this.strategy = ConflictResolutionStrategy.LAST_WINS;
 	}
 	
-	public synchronized boolean synchronize(User serverUser, User clientUser, LogicInterface serverLogic, LogicInterface clientLogic, Class<? extends Resource> resourceType) {
-		String result = synchronizeResource(resourceType, serverUser, clientUser, serverLogic, clientLogic);
-		//FIXME remove cast
-		storeSyncResult(result, resourceType, (SyncLogicInterface)serverLogic, serverUser.getName());
-		return true;
+	private SyncLogicInterface createServerLogic(String userName, String apiKey) {
+	
+		//FIXME get correct DBSessionFactory for each service
+		serverLogicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
+		
+		SyncLogicInterface serverLogic = (SyncLogicInterface) serverLogicFactory.getLogicAccess(userName, apiKey);
+		
+		return serverLogic;
+	}
+	
+	private void createClientLogic() {
+		
+	}
+	
+	/**
+	 * 
+	 * @param userProperties
+	 * @return user from userProperties
+	 */
+	private User getUserFromProperties(Properties userProperties) {
+		String userName = userProperties.getProperty("userName");
+		String apiKey = userProperties.getProperty("apiKey");
+		
+		if(!present(userName) || !present(apiKey)){
+			throw new IllegalStateException();
+		}
+		
+		User user = new User();
+		user.setName(userName);
+		user.setApiKey(apiKey);
+		return user;
+	}
+	
+	public Map<Integer, SynchronizationData> getLastSyncData(SyncService syncService, ConstantID contentType) {
+		//FIXME errorhandling
+		User serverUser = getUserFromProperties(syncService.getServerUser());
+		String userName = serverUser.getName();
+		SyncLogicInterface serverLogic = createServerLogic(userName, serverUser.getApiKey());
+		
+		Map<Integer, SynchronizationData> result = new HashMap<Integer, SynchronizationData>();
+		
+		if(contentType.equals(ConstantID.BOOKMARK_CONTENT_TYPE) || contentType.equals(ConstantID.ALL_CONTENT_TYPE)) {
+			result.put(ConstantID.BOOKMARK_CONTENT_TYPE.getId(), serverLogic.getLastSynchronizationDataForUserForContentType(userName, uri, Bookmark.class));
+		}
+		if(contentType.equals(ConstantID.BIBTEX_CONTENT_TYPE) || contentType.equals(ConstantID.ALL_CONTENT_TYPE)) {
+			result.put(ConstantID.BIBTEX_CONTENT_TYPE.getId(), serverLogic.getLastSynchronizationDataForUserForContentType(userName, uri, BibTex.class));
+		}
+		return result;
+	}
+	
+
+	
+	public SynchronizationData synchronize(LogicInterface clientLogic, Class<? extends Resource> resourceType, User clientUser, SyncService server) {
+		User serverUser = getUserFromProperties(server.getServerUser());
+		
+		SyncLogicInterface serverSyncLogic = createServerLogic(serverUser.getName(), serverUser.getApiKey());
+		
+		String result = synchronizeResource(resourceType, serverUser, clientUser, serverSyncLogic, clientLogic);
+		
+		storeSyncResult(result, resourceType, serverSyncLogic, serverUser.getName());
+		
+		int contentType = ConstantID.getContentTypeByClass(resourceType).getId();
+		SynchronizationData data = getLastSyncData(server, ConstantID.getContentTypeByClass(resourceType)).get(contentType);
+		
+		return data;
 	}
 
 	private void storeSyncResult(String result, Class<? extends Resource> resourceType, SyncLogicInterface serverLogic, String serverUserName) {
 		SyncLogicInterface syncServerLogic = serverLogic;
-		SynchronizationData data = syncServerLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUserName, client, resourceType);
+		SynchronizationData data = syncServerLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUserName, uri, resourceType);
 		if (data.getStatus().equals("undone")) {
 			data.setStatus(result);
 			syncServerLogic.updateSyncData(data);
@@ -57,13 +123,13 @@ public class SynchronizationClient {
 		}
 	}
 
-	public String synchronizeResource(final Class<? extends Resource> resourceType, User serverUser, User clientUser, LogicInterface serverLogic, LogicInterface clientLogic) {
+	private String synchronizeResource(final Class<? extends Resource> resourceType, User serverUser, User clientUser, SyncLogicInterface syncServerLogic, LogicInterface clientLogic) {
 		/*
 		 * TODO remove syncServerLogic and syncClientLogic after integration of
 		 * SyncLogicInterface into LogicInterface
 		 */
-		SyncLogicInterface syncServerLogic = (SyncLogicInterface)serverLogic;
 		SyncLogicInterface syncClientLogic = (SyncLogicInterface)clientLogic;
+		LogicInterface serverLogic = (LogicInterface)syncServerLogic;
 
 		// TODO replace this with correct cast
 		// int serverServiceId = Integer.parseInt(serviceIdentifier);
@@ -80,7 +146,7 @@ public class SynchronizationClient {
 
 		List<SynchronizationPost> clientPosts = syncClientLogic.getSyncPostsListForUser(resourceType, clientUser.getName());
 
-		syncServerLogic.getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, client);
+		syncServerLogic.getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, uri);
 
 		/*
 		 * target lists
@@ -169,5 +235,40 @@ public class SynchronizationClient {
 
 		return answer.toString();
 	}
+
+	/**
+	 * @param ownUri the ownUri to set
+	 */
+	public void setOwnUri(String ownUri) {
+		this.ownUri = ownUri;
+		try {
+			uri = new URI(ownUri);
+		} catch (URISyntaxException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+	}
+
+	/**
+	 * @return the ownUri
+	 */
+	public String getOwnUri() {
+		return ownUri;
+	}
+
+	/**
+	 * @param serverLogicFactory the serverLogicFactory to set
+	 */
+	public void setServerLogicFactory(DBLogicApiInterfaceFactory serverLogicFactory) {
+		this.serverLogicFactory = serverLogicFactory;
+	}
+
+	/**
+	 * @return the serverLogicFactory
+	 */
+	public DBLogicApiInterfaceFactory getServerLogicFactory() {
+		return serverLogicFactory;
+	}
+
 
 }

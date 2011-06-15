@@ -74,6 +74,15 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     }
     
     /**
+     * 
+     * @param session
+     * @return
+     */
+    public List<SyncService> getAvlSyncServer(final DBSession session) {
+    	return this.queryForList("getAvlSyncServer", null, SyncService.class, session);
+    }
+    
+    /**
      * @param userName
      * @param service
      * @param contentType
@@ -130,9 +139,20 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param session
      * @return all synchronization server for user
      */
-    @SuppressWarnings("unchecked")
     public List<SyncService> getSyncServerForUser(final String userName, final DBSession session) {
 		SyncParam param = new SyncParam(userName, null, null, null, null, null);
-		return queryForList("getSyncServicesForUser", param, session);
+		return queryForList("getSyncServerForUser", param, SyncService.class, session);
+    }
+    
+    /**
+     * 
+     * @param userName
+     * @param uri
+     * @param session
+     * @return sync service for user for given URI
+     */
+    public SyncService getSyncServer(final String userName, final URI uri, final DBSession session) {
+    	SyncParam param = new SyncParam(userName, uri, null, null, null, null);
+    	return queryForObject("getSyncServerForUserByUri", param, SyncService.class, session);
     }
 }

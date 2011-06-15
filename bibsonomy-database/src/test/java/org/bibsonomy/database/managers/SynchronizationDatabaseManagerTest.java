@@ -52,7 +52,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 	@Test
 	public void testSyncService() {
 		SyncService service = new SyncService();
-		service.setService(bibsonomyURI);
+		service.setService(testURI);
 		Properties serverUser = new Properties();
 		serverUser.setProperty("name", syncUser1);
 		serverUser.setProperty("apiKey", "1546545646565");
@@ -62,7 +62,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 
 		List<SyncService> services = syncDBManager.getSyncServerForUser(syncUser1, dbSession);
 		assertTrue(services.contains(service));
-		assertEquals(2, services.size());
+		assertEquals(1, services.size());
 		
 		serverUser = new Properties();
 		serverUser.setProperty("name", "syncUser2");
@@ -72,12 +72,12 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		
 		services = syncDBManager.getSyncServerForUser(syncUser1, dbSession);
 		assertTrue(services.contains(service));
-		assertEquals(2, services.size());
+		assertEquals(1, services.size());
 		
-		syncDBManager.deleteSyncServerForUser(dbSession, syncUser1, bibsonomyURI);
+		syncDBManager.deleteSyncServerForUser(dbSession, syncUser1, testURI);
 		services = syncDBManager.getSyncServerForUser(syncUser1, dbSession);
 		assertFalse(services.contains(service));
-		assertEquals(1, services.size());
+		assertEquals(0, services.size());
 	}
 
 	/**

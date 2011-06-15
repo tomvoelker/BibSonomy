@@ -334,12 +334,12 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     	}
     }
     
-    /*
-     * (non-Javadoc)
-     * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServicesForUser(org.bibsonomy.model.User)
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServerForUser(java.lang.String)
+	 */
     @Override
-    public List<SyncService> getSyncServicesForUser(String userName) {
+    public List<SyncService> getSyncServerForUser(String userName) {
 	final DBSession session = this.openSession();
 	List<SyncService> services;
 	
@@ -352,6 +352,39 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	return services;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#getAvlSyncServer()
+     */
+    @Override
+    public List<SyncService> getAvlSyncServer() {
+    	final DBSession session = this.openSession();
+    	List<SyncService> server;
+    	try {
+    		server = syncDBManager.getAvlSyncServer(session);
+    	} finally {
+    		session.close();
+    	}
+    	
+    	return server;
+    }
+    
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServer(java.lang.String, java.net.URI)
+	 */
+	@Override
+	public SyncService getSyncServer(String userName, URI uri) {
+		final DBSession session = this.openSession();
+		SyncService result = null;
+		try {
+			result = syncDBManager.getSyncServer(userName, uri, session);
+		} finally {
+			session.close();
+		}
+		return result;
+	}
+     
     /*
      * (non-Javadoc)
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncPostsMampForUser(java.lang.String)
