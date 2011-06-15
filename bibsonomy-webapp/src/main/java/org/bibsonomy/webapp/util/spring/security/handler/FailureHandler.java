@@ -51,9 +51,6 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 				this.grube.add(username);
 				this.grube.add(requestLogic.getInetAddress());
 			}
-			/*
-			 * 
-			 */
 		}
 		/*
 		 * redirect to registration (LDAP and OpenID)
