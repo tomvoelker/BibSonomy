@@ -130,9 +130,9 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	private String importData;
 	
-	private List<SyncService> syncServices;
+	private List<SyncService> syncServer;
 	
-	private List<SyncService> avlSyncServices;	
+	private List<SyncService> avlSyncServer;	
 	/**
 	 * Constructor.
 	 */
@@ -530,30 +530,31 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 
 	/**
-	 * @param syncServices the syncServices to set
+	 * @param syncServer the syncServer to set
 	 */
-	public void setSyncServices(List<SyncService> syncServices) {
-		this.syncServices = syncServices;
+	public void setSyncServer(List<SyncService> syncServer) {
+		this.syncServer = syncServer;
 	}
 
 	/**
-	 * @return the syncServices
+	 * @return the syncServer
 	 */
-	public List<SyncService> getSyncServices() {
-		return syncServices;
+	public List<SyncService> getSyncServer() {
+		return syncServer;
 	}
 
 	/**
-	 * @param avlSyncServices the avlSyncServices to set
+	 * @param avlSyncServer the avlSyncServer to set
 	 */
-	public void setAvlSyncServices(List<SyncService> avlSyncServices) {
-		this.avlSyncServices = avlSyncServices;
+	public void setAvlSyncServer(List<SyncService> avlSyncServer) {
+		this.avlSyncServer = avlSyncServer;
 	}
 
 	/**
-	 * @return the avlSyncServices
+	 * @return the avlSyncServer
 	 */
-	public List<SyncService> getAvlSyncServices() {
-		return avlSyncServices;
+	public List<SyncService> getAvlSyncServer() {
+		return avlSyncServer;
 	}
+
 }

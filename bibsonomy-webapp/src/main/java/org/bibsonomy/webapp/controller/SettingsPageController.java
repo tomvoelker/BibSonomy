@@ -2,10 +2,10 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
@@ -72,7 +72,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			command.showGroupTab(true);
 		}
 		
-		//show sync tab for admins TODO remove after tests
+		//show sync tab for admins TODO change to "not visible for spammer" after tests
 		if(command.getUser().getRole().equals(Role.ADMIN)) {
 			command.showSyncTab(true);
 		}
@@ -206,35 +206,26 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	private void workOnSyncSettingsTab(final SettingsViewCommand command) {
 		
-		List<SyncService> userServices;
-		List<SyncService> avlServices = new ArrayList<SyncService>();
+		List<SyncService> userServer;
+		List<SyncService> avlServer;
 		
 		//TODO remove cast and use logic after adding from SyncLogicInterface to LogicInterface
 		SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
 		
-		userServices = syncLogic.getSyncServicesForUser(command.getUser().getName());
+		userServer = syncLogic.getSyncServerForUser(command.getUser().getName());
+		avlServer = syncLogic.getAvlSyncServer();
+
 		
-		/*
-		 * TODO receive service names from db, not form enum
-		 */
-//		for (SynchronizationClients client : SynchronizationClients.values()) {
-//			SyncService service = new SyncService();
-//			service.setServiceId(client.getId());
-//			service.setServiceName(client.toString());
-//			if(!userServices.contains(service))
-//				avlServices.add(service);
-//		}
-//		
-//		
-//		for (SyncService service : userServices) {
-//			Properties user = service.getServerUser();
-//			service.setServiceName(SynchronizationClients.getById(service.getServiceId()).toString());
-//			service.setUserName(user.getProperty("userName"));
-//			service.setApiKey(user.getProperty("apiKey"));
-//		}
-		
-		command.setAvlSyncServices(avlServices);
-		command.setSyncServices(userServices);
+		for (SyncService service : userServer) {
+			Properties user = service.getServerUser();
+			service.setUserName(user.getProperty("userName"));
+			service.setApiKey(user.getProperty("apiKey"));
+			if (avlServer.contains(service)) {
+				avlServer.remove(service);
+			}
+		}
+		command.setAvlSyncServer(avlServer);
+		command.setSyncServer(userServer);
 	}
 	
 	/**
