@@ -6,7 +6,9 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:spring="http://www.springframework.org/tags">
-
+	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	
 	<spring:theme code="image.login.base" var="image_login_base" text="${resdir}/image/login_logo_"/>
 
 
@@ -55,6 +57,7 @@
 							<input type="password" size="15" class="hiddenElement" name="password" style="width:150px;" id="pw" autocomplete="off" tabindex="2"/>
 							<input type="text" id="pw_form_copy" name="" autocomplete="off"/>
 							<input type="hidden" name="rememberMe" value="true" />
+							<input type="hidden" name="referer" value="${requPath}" />
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
 						</form:form>
 					</div>    			
@@ -70,6 +73,7 @@
 							<input type="password" size="15" class="hiddenElement" name="password" style="width:100px;" id="pwldap" autocomplete="off"/>
 							<input type="text" id="pwldap_form_copy" name="" autocomplete="off"/>
 							<input type="hidden" name="rememberMe" value="true" />
+							<input type="hidden" name="referer" value="${requPath}" />
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
 						</form:form>
 					</div>
@@ -83,6 +87,7 @@
 						<form:form action="/login_${authMethodName}" method="POST">
 							<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
 							<input type="hidden" name="rememberMe" value="true" />
+							<input type="hidden" name="referer" value="${requPath}" />
 			            	<form:hidden id="headloginMethodopenid" path="loginMethod" />
 		            	</form:form>
 	            	</div>
