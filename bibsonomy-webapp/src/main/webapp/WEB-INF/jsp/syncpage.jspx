@@ -39,16 +39,14 @@
 			<fmt:message var="syncThisContent" key="synchronization.syncThis"/>
 			<fmt:message var="bookmarks" key="bookmarks" />
 			<fmt:message var="publications" key="publications" />
-			
+			<div id="general_100">
 			<h2><fmt:message key="synchronization.header" /></h2>
 			<c:forEach var="service" items="${command.syncServices}">
 				<fieldset class="fsInner">
 				
-				
 				<div cssClass="fsRow">
 					<c:out value="${serviceName}: "/> <span class="serviceName"> <c:out value="${service.service}" /></span>
 				</div>	
-		
 						<div class="contentContainer" >
 							<div cssClass="fsRow">
 								<c:out value="${syncTimes}"/>
@@ -61,22 +59,44 @@
 										<fmt:formatDate value="${service.lastSyncData[1].lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
 									</span>
 								</td>
-								<td><fmt:message key="synchronization.result"/></td>
+								<td><span class="resultMessage">
+									<c:choose>
+										<c:when test="${service.lastSyncData[1].lastSyncDate != null}">
+											<fmt:message key="synchronization.result"/>
+										</c:when>
+										<c:otherwise>
+											<fmt:message key="synchronization.noresult"/>
+										</c:otherwise>
+									</c:choose>
+								</span></td>
 								<td>
 									<span class="lastSyncResult">
 										<c:out value="${service.lastSyncData[1].status}"/>
 									</span>
 								</td>
-								<td><input type="checkbox" class="bookmarksBox" checked="checked"><c:out value="${syncThisContent}: "/></input></td>
+								<td><input type="checkbox" class="bookmarksBox" checked="checked"><c:out value="${syncThisContent}"/></input></td>
+								
 							</tr>
 							<tr class="content2">
 								<td><c:out value="${publications}: " /></td>
 								<td><span class="lastSyncDate"><fmt:formatDate value="${service.lastSyncData[2].lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" /></span></td>
-								<td><fmt:message key="synchronization.result"/></td>
+								<td>
+									<span class="resultMessage">
+										<c:choose>
+											<c:when test="${service.lastSyncData[2].lastSyncDate != null}">
+												<fmt:message key="synchronization.result"/>
+											</c:when>
+											<c:otherwise>
+												<fmt:message key="synchronization.noresult"/>
+											</c:otherwise>
+										</c:choose>
+									</span>								
+								</td>
 								<td><span class="lastSyncResult"><c:out value="${service.lastSyncData[2].status}"/></span></td>
-								<td><input type="checkbox" class="publicationsBox" checked="checked"><c:out value="${syncThisContent}: "/></input></td>
+								<td><input type="checkbox" class="publicationsBox" checked="checked"><c:out value="${syncThisContent}"/></input></td>
 							</tr>
 							</table>
+							<span id="resultMsg" style="display:none"><fmt:message key="synchronization.result"/></span>
 						</div>
 					
 				<input class="synchronizeBtn" type="submit" value="${syncronize}"/>
@@ -99,11 +119,11 @@
 							content = content + 2;
 						}
 						if(content == 0) {
+							//TODO get message form localizedMessages
 							alert("nothing to synchronize");
 							return false;
 						}
-						
-						
+							
 						$.ajax({
 							type: "POST",
 							url: "/ajax/synchronize",
@@ -118,7 +138,8 @@
 									var date = new Date(data[key].date);
 									var result = data[key].result;
 									var formatedDate = formatDate(date, "MMM dd, yyyy hh:mm a");
-									
+									var resultMsg = $("#resultMsg").html();
+									row.find(".resultMessage").html(resultMsg);
 									row.find(".lastSyncDate").html(formatedDate);
 									row.find(".lastSyncResult").html(result);
 
@@ -132,6 +153,7 @@
 					});
 				});
 			</script>
+			</div>
 		</jsp:attribute>
 		
 	</layout:layout>
