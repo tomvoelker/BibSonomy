@@ -24,6 +24,8 @@
 package org.bibsonomy.common.exceptions;
 
 /**
+ * NOTE: if you want to redirect the user to the login page (webapp module)
+ * you must use the AccessDeniedException from the Spring Security package
  * 
  * @author dzo
  * @version $Id$
