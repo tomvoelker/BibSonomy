@@ -61,17 +61,13 @@
 					</bean>
 				</entry>
 				
-				<entry key="/syncpage">
+				<entry key="/ajax/synchronize">
 					<bean parent="controllerBase">
 					<property name="controllerBeanName" value ="syncController"/>
 					<property name="allowedFields">
 						<list>
-							<value>serviceId</value>
-							<value>syncUserName</value>
-							<value>userName</value>
-							<value>apiKey</value>
-							<value>settings</value>
-							<value>syncAction</value>
+							<value>serviceName</value>
+							<value>contentType</value>
 						</list>
 					</property> 
 					</bean>
@@ -212,6 +208,7 @@
 	</bean>	
 	
 	<bean id="syncController" class="org.bibsonomy.webapp.controller.ajax.SynchronizationController" scope="request" parent="ajaxController">
+		<property name="client" ref="synchronizationClient"/>
 	</bean>
 		
 	<!-- controller for handling recommendation requests -->

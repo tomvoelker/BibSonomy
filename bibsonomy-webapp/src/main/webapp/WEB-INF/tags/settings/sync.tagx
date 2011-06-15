@@ -25,99 +25,82 @@
 	
 	<h2><fmt:message key="settings.synchronization.header"/></h2>
 	
-	<c:forEach var="service" items="${command.syncServices}">
-		<fieldset class="fsInner" id="service${service.serviceId}">
-			<input class="serviceId" type="hidden" value="${service.serviceId}"/>
-			<div cssClass="fsRow">
-				<c:out value="${serviceName}"/> <span class="serviceName"> <c:out value=": ${service.serviceName}" /> </span>
-			</div>
-			<div>
-				<table>
-					<tr>
-						<td><fmt:message key="navi.username" />:</td>
-						<td><input type="text" class="uname" id="${service.userName}" value="${service.userName}"/></td>
-					</tr>
-					<tr>
-						<td><fmt:message key="navi.apikey" />:</td>
-						<td><input type="text" class="apiK" id="${service.apiKey}" value="${service.apiKey}"/></td>
-					</tr>
-					<tr>
-						<td><input type="submit" class="saveChanges" value="${save}" /></td>
-						<td><input type="submit" class="deleteService" value="${removeService}"/></td>
-					</tr>
-				</table>
-			</div>
+	<c:forEach var="service" items="${command.syncServer}">
+		<fieldset class="fsInner" id="service${service.service}">
+			<form:form class="serviceForm" method="post" action="/updateSyncSettings?action=update">
+				<div cssClass="fsRow">
+					<c:out value="${serviceName}"/> <span class="serviceName"> <c:out value=": ${service.service}" /> </span>
+				</div>
+				<div>
+					<table>
+						<tr>
+							<td><fmt:message key="navi.username" />:</td>
+							<td><form:input name="serverUserName" class="uname" id="${service.userName}" path="" value="${service.userName}"/></td>
+						</tr>
+						<tr>
+							<td><fmt:message key="navi.apikey" />:</td>
+							<td><form:input  name="apiKey" class="apiK" id="${service.apiKey}" path ="" value="${service.apiKey}"/></td>
+						</tr>
+						<tr>
+							<td><input type="submit" class="saveChanges" value="${save}" /></td>
+							<td><input type="submit" class="deleteService" value="${removeService}"/></td>
+							<input type="hidden" name="ckey" value="${ckey}" />
+							<input type="hidden" name="serviceName" value="${service.service}" />
+						</tr>
+					</table>
+				</div>
+			</form:form>
 		</fieldset>
 	</c:forEach>
 	
-	<div id="newService" style="display:none">
-		<fieldset class="fsInner">
-				<form:form id="addServiceForm"> 
-					<div>
-						<table>
-							<tr>
-								<td><fmt:message key="navi.syncservice" />:</td>
-								<td>
-									<form:select cssClass="fsInput fsSmall" path="" id="serviceIdSelector">
-										<c:forEach var="service" items="${command.avlSyncServices}">
-				    						<form:option label="${service.serviceName}" value="${service.serviceId}"/>
-				      					</c:forEach>
-				      				</form:select>
-			      				</td>
-			      			</tr>
-							<tr>
-								<td><fmt:message key="navi.username" />:</td>
-								<td><form:input path="" id="userName"/><form:errors cssClass="errmsg" path="" /></td>
-							</tr>
-							<tr>
-								<td><fmt:message key="navi.apikey" />:</td>
-								<td><form:input id="apiKey" path="" /><form:errors cssClass="errmsg" path="" /></td>
-							</tr>
-							<tr>
-								<td><input id="saveBtn" type="submit" value="${save}" /></td>
-								<td><input id="cancelBtn" type="submit" value="${cancel}" /></td>
-							</tr>
-						</table>			
-					</div>
-				</form:form>
-		</fieldset>
-	</div>
+	<c:if test="${fn:length(command.avlSyncServer) != 0}">
+		<div id="newService" style="display:none">
+			<fieldset class="fsInner">
+					<form:form id="addServiceForm" method="post" action="/updateSyncSettings?action=create"> 
+						<div>
+							<table>
+								<tr>
+									<td><fmt:message key="navi.syncservice" />:</td>
+									<td>
+										<form:select cssClass="fsInput fsSmall" path="" id="serviceName" name="serviceName">
+											<c:forEach var="service" items="${command.avlSyncServer}">
+					    						<form:option label="${service.service}" value="${service.service}"/>
+					      					</c:forEach>
+					      				</form:select>
+				      				</td>
+				      			</tr>
+								<tr>
+									<td><fmt:message key="navi.username" />:</td>
+									<td><form:input path="" id="userName" name="serverUserName"/><form:errors cssClass="errmsg" path="" /></td>
+								</tr>
+								<tr>
+									<td><fmt:message key="navi.apikey" />:</td>
+									<td><form:input id="apiKey" path="" name="apiKey"/><form:errors cssClass="errmsg" path="" /></td>
+								</tr>
+								<tr>
+									<td><input id="saveBtn" type="submit" value="${save}" /></td>
+									<td><input id="cancelBtn" type="submit" value="${cancel}" /></td>
+								</tr>
+							</table>			
+						</div>
+						 <input type="hidden" name="ckey" value="${ckey}"/>
+					</form:form>
+			</fieldset>
+		</div>
 	
-	<p>
+		<p>
+
 		<input id="addBtn" type="submit" value="${addService}"/>
-	</p>
+		
+		</p>
+	</c:if>
 	<script type="text/javascript">
 		$(function(){
 			$("#addBtn").click(function(){
 				$("#newService").show();
 				$(this).hide();
 			});
-		});
-		
-		$(function(){
-			$("#saveBtn").click(function(){
-				$.ajax({
-					type: "POST",
-					url: "/syncpage",
-					data: {
-						syncUserName:$("#userName").val(),
-						apiKey:$("#apiKey").val(),
-						syncAction:1,
-						serviceId:$("#serviceIdSelector option:selected").val()
-					},
-					success: function(data) {
-						window.location.reload();
-					},
-					error: function(data) {
-						alert("error: " + data.status);
-					}
-						
-				});
-				return false;
-			});
-		});
-		
-		$(function(){
+
 			$("#cancelBtn").click(function(){
 				$("#userName").val("");
 				$("#apiKey").val("");
@@ -125,9 +108,16 @@
 				$("#addBtn").show();
 				return false;
 			});
-		});
-		
-		$(function(){
+
+			$(".deleteService").click(function(){
+				if (confirm("please confirm this action")){
+					var form = $(this).parents("form");
+					form.attr("action", "/updateSyncSettings?action=delete");
+			} else {
+				return false;	
+			}
+			});
+			
 			$(".saveChanges").click(function(){
 				var par = $(this).parents("fieldset");
 				var userName = par.find(".uname").val();
@@ -139,47 +129,6 @@
 					alert("nothing changed");
 					return false;
 				}
-				var serviceId = par.find(".serviceId").val();
-				$.ajax({
-					type	: "POST",
-					url		: "/syncpage",
-					data	: {
-								syncUserName	: userName,
-								apiKey			: apiKey,
-								serviceId		: serviceId,
-								syncAction		: 3
-							},
-					success : function(data) {
-								alert(data.status);
-							},
-					error	: function(data) {
-									alert("error");
-								}
-				});
-				return false;
-			});
-		});
-		
-		$(function(){
-			$(".deleteService").click(function(){
-				if (confirm("please confirm this action")){
-					var serviceId = $(this).parents("fieldset").find(".serviceId").val();
-					$.ajax({
-						type	: "POST",
-						url		: "/syncpage",
-						data	: {
-									serviceId		: serviceId,
-									syncAction		: 2
-								},
-						success : function(data) {
-									$("#service" + data.serviceId).remove();
-								},
-						error	: function(data) {
-										alert("error");
-									}
-					});
-				}
-				return false;
 			});
 		});
 		

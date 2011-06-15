@@ -456,6 +456,11 @@
 						<property name="controllerBeanName" value="exportLayoutController"/>
 					</bean>
 				</entry>
+				<entry key="/syncpage">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="syncPageController"/>						
+					</bean>
+				</entry>
 				<entry key="/errors/403">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="error403PageController"/>
@@ -691,6 +696,11 @@
 	</bean>
 	
 	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request" />
+	
+	<bean id="syncPageController" class="org.bibsonomy.webapp.controller.SyncPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="syncClient" ref="synchronizationClient" />
+	</bean>
 	
     <!--  #################### PUMA Controller #################### -->
 	<bean id="pumaHomepageController" class="de.unikassel.puma.webapp.controller.HomepageController" scope="request" parent="multiResourceListControllerWithTags">

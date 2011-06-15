@@ -31,78 +31,54 @@
 		   <!-- something to fill -->
     	</jsp:attribute>
 		
-		
-		
 		<jsp:attribute name="content">
 			
 			<fmt:message var="syncronize" key="synchronization.synchronize" />
 			<fmt:message var="serviceName" key="synchronization.serviceName" />
 			<fmt:message var="syncTimes" key="synchronization.lastSyncTimes" />
+			<fmt:message var="syncThisContent" key="synchronization.syncThis"/>
 			<fmt:message var="bookmarks" key="bookmarks" />
 			<fmt:message var="publications" key="publications" />
 			
 			<h2><fmt:message key="synchronization.header" /></h2>
 			<c:forEach var="service" items="${command.syncServices}">
-				<fieldset class="fsInner" id="service${service.serviceId}">
-					<input class="serviceId" type="hidden" value="${service.serviceId}"/>
+				<fieldset class="fsInner">
+				
 				
 				<div cssClass="fsRow">
-					<c:out value="${serviceName}: "/> <span class="serviceName"> <c:out value="${service.serviceName}" /></span>
+					<c:out value="${serviceName}: "/> <span class="serviceName"> <c:out value="${service.service}" /></span>
 				</div>	
-				
-				<c:choose>
-					<c:when test="${fn:length(service.lastSyncDates) == 0}">
-						<div class="contentContainer" style="display:none">
-							<div cssClass="fsRow" class="syncTimesString">
+		
+						<div class="contentContainer" >
+							<div cssClass="fsRow">
 								<c:out value="${syncTimes}"/>
 							</div>
-							<div cssClass="fsRow" class="content1">
-								<c:out value="${bookmarks}: "/>
-								<span class="lastSyncDate"><!-- something to fill --></span>
-								<fmt:message key="synchronization.result"/>
-								<span class="lastSyncResult"><!-- something to fill --></span>
-							</div>
-							<div cssClass="fsRow" class="content2">
-								<c:out value="${publications}: " />
-								<span class="lastSyncDate"><!-- something to fill --></span>
-								<fmt:message key="synchronization.result"/>
-								<span class="lastSyncResult"><!-- something to fill --></span>
-							</div>
-						</div>
-					</c:when>
-					<c:otherwise>
-						<div class="contentContainer">
-							<div cssClass="fsRow" class="syncTimesString">
-								<c:out value="${syncTimes}"/>
-							</div>
-							<c:forEach var="date" items="${service.lastSyncDates}">
-								<div cssClass="fsRow" class="content${date.key}">
-									<c:choose>
-										<c:when test="${date.key == 1}" >
-											<c:out value="${bookmarks}: "/>		
-										</c:when>
-										<c:when test="${date.key == 2}" >
-											<c:out value="${publications}: " />
-										</c:when>
-										<c:otherwise>
-											Unknown Resource
-										</c:otherwise>
-									</c:choose>
+							<table>
+							<tr class="content1">
+								<td><c:out value="${bookmarks}: "/></td>
+								<td>
 									<span class="lastSyncDate">
-										<fmt:formatDate value="${date.value}" type="both" timeStyle="short" dateStyle="medium" />
+										<fmt:formatDate value="${service.lastSyncData[1].lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
 									</span>
-									<fmt:message key="synchronization.result"/>
+								</td>
+								<td><fmt:message key="synchronization.result"/></td>
+								<td>
 									<span class="lastSyncResult">
-										<c:out value="${service.lastResults[date.key]}"/>
+										<c:out value="${service.lastSyncData[1].status}"/>
 									</span>
-								</div>
-							</c:forEach>
+								</td>
+								<td><input type="checkbox" class="bookmarksBox" checked="checked"><c:out value="${syncThisContent}: "/></input></td>
+							</tr>
+							<tr class="content2">
+								<td><c:out value="${publications}: " /></td>
+								<td><span class="lastSyncDate"><fmt:formatDate value="${service.lastSyncData[2].lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" /></span></td>
+								<td><fmt:message key="synchronization.result"/></td>
+								<td><span class="lastSyncResult"><c:out value="${service.lastSyncData[2].status}"/></span></td>
+								<td><input type="checkbox" class="publicationsBox" checked="checked"><c:out value="${syncThisContent}: "/></input></td>
+							</tr>
+							</table>
 						</div>
-					</c:otherwise>
-				</c:choose>
-				
-				
-				
+					
 				<input class="synchronizeBtn" type="submit" value="${syncronize}"/>
 				
 				</fieldset>
@@ -111,29 +87,41 @@
 			<script type="text/javascript">
 				$(function(){
 					$(".synchronizeBtn").click(function(){
-						var serviceId = $(this).parent().children(".serviceId").val();
+						var fieldset = $(this).parents("fieldset");
+						var serviceName = fieldset.find(".serviceName").text();
+						var bookmarks = fieldset.find(".bookmarksBox").attr("checked");
+						var publ = fieldset.find(".publicationsBox").attr("checked");
+						var content = 0;
+						if(bookmarks) {
+							content = content + 1;
+						}
+						if(publ){
+							content = content + 2;
+						}
+						if(content == 0) {
+							alert("nothing to synchronize");
+							return false;
+						}
+						
+						
 						$.ajax({
 							type: "POST",
-							url: "/syncpage",
+							url: "/ajax/synchronize",
 							data: {
-								serviceId : serviceId,
-								syncAction: 4
+								serviceName : serviceName,
+								contentType : content
 							},
 							success: function(data) {
-								alert("sync ok");
-								var service = data.service;
+
 								for (key in data) {
-									if(key == "service") {
-										continue;
-									}
-									
-									var content = data[key];
-									var contentId = ".content" + key;
-									var date = new Date(content.date);
+									var row = fieldset.find(".content" + key);
+									var date = new Date(data[key].date);
+									var result = data[key].result;
 									var formatedDate = formatDate(date, "MMM dd, yyyy hh:mm a");
-									$("#service" + service).children(".contentContainer").show();
-									$("#service" + service).children(".contentContainer").children(contentId).children(".lastSyncDate").html(formatedDate);
-									$("#service" + service).children(".contentContainer").children(contentId).children(".lastSyncResult").html(content.result);
+									
+									row.find(".lastSyncDate").html(formatedDate);
+									row.find(".lastSyncResult").html(result);
+
 								}
 							},
 							error: function(data) {
