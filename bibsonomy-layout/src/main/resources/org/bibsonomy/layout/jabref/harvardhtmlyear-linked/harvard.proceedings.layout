@@ -1,0 +1,30 @@
+\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
+<p>
+\begin{author}
+\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
+\end{author}
+\begin{editor}
+\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\editor}, ed.
+\end{editor}
+ (\year), 
+ <i>\format[HTMLChars]{\title}</i>
+\begin{volume}
+, Vol. \volume
+\end{volume}
+\begin{publisher}
+, \format[HTMLChars]{\publisher}
+\end{publisher}
+\begin{address}
+, \format[HTMLChars]{\address}
+\end{address}.
+<br/>
+\begin{url}<a href="\format[Replace(\n,),HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}
+\begin{abstract}<a onclick="toggleAbstract('\username', '\intrahash'); return false;" href="\biburl?format=bibtex">[Kurzfassung]</a>&nbsp;\end{abstract}
+<a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
+<div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
+\format[Replace("\n, "),HTMLChars]{\abstract}
+</div>
+<div style="position:relative">						
+	<div id="bib_\intrahash\username" style="display:inline;position:absolute;"></div>
+</div>
+</p>
