@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.BibTex;
@@ -71,14 +70,9 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	}
 
 	@Override
-	protected View getAccessDeniedView(final PostPublicationCommand command) {
-		throw new AccessDeniedException("You are not allowed to edit Goldstandards!");
-	}
-
-	@Override
 	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer) {
 		if (referer == null || referer.matches(".*/editGoldStandardPublication.*")) {
-			return new ExtendedRedirectView("/"); // TODO
+			return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(post.getResource(), null));
 		}
 
 		return super.finalRedirect(userName, post, referer);

@@ -39,7 +39,6 @@ import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.recommender.TagRecommender;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -51,6 +50,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.captcha.Captcha;
 import org.bibsonomy.webapp.util.captcha.CaptchaResponse;
+import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -76,7 +76,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	protected Errors errors;
 	protected RequestLogic requestLogic;
 	protected URLGenerator urlGenerator;
-	
 
 	/**
 	 * Returns an instance of the command the controller handles.
@@ -142,7 +141,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * login page
 		 */
 		if (!this.canEditPost(context)) {
-			return this.getAccessDeniedView(command); 
+			throw new AccessDeniedNoticeException("please log in", LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase());
 		}
 
 		final User loginUser = context.getLoginUser();
@@ -212,18 +211,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 
 	protected boolean canEditPost(final RequestWrapperContext context) {
 		return context.isUserLoggedIn();
-	}
-
-	protected View getAccessDeniedView(final COMMAND command) {
-		/*
-		 * We add two referer headers: the inner for this controller to 
-		 * send the user back to the page he was initially coming from,
-		 * the outer for the login page to send the user back to this 
-		 * controller.
-		 */
-		return new ExtendedRedirectView("/login" + 
-				"?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + 
-				"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + UrlUtils.safeURIEncode(requestLogic.getReferer())));
 	}
 	
 	protected Post<RESOURCE> getCopyPost(final User loginUser, final String hash, final String user) {
@@ -464,7 +451,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * @param ex
 	 * @return
 	 */
-	private View handleDatabaseException(final EditPostCommand<RESOURCE> command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex, String process) {
+	private View handleDatabaseException(final EditPostCommand<RESOURCE> command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex, final String process) {
 		final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
 		for (final ErrorMessage em: errorMessages) {
 			if (em instanceof SystemTagErrorMessage) {
@@ -692,7 +679,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			 */
 			command.setIntraHashToUpdate(createPosts);
 			log.debug("created post: " + createPosts);
-		} catch (DatabaseException de) {
+		} catch (final DatabaseException de) {
 			return handleDatabaseException(command, loginUser, post, de, "create");
 		}
 		/*
@@ -987,7 +974,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * 
 	 * @param tagRecommender
 	 */
-	public void setTagRecommender(TagRecommender tagRecommender) {
+	public void setTagRecommender(final TagRecommender tagRecommender) {
 		this.tagRecommender = tagRecommender;
 	}
 
@@ -996,7 +983,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * @param captcha
 	 */
 	@Required
-	public void setCaptcha(Captcha captcha) {
+	public void setCaptcha(final Captcha captcha) {
 		this.captcha = captcha;
 	}
 
@@ -1005,7 +992,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * @param requestLogic
 	 */
 	@Required
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
@@ -1041,7 +1028,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * @param urlGenerator
 	 */
 	@Required
-	public void setUrlGenerator(URLGenerator urlGenerator) {
+	public void setUrlGenerator(final URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
 	}
 
@@ -1050,7 +1037,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * 
 	 * @param pingback
 	 */
-	public void setPingback(Pingback pingback) {
+	public void setPingback(final Pingback pingback) {
 		this.pingback = pingback;
 	}
 
