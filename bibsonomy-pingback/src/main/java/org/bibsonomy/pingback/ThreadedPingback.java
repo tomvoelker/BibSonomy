@@ -35,6 +35,7 @@ public class ThreadedPingback extends SimplePingback implements Runnable {
 				clearQueue();
 				Thread.sleep(this.waitTime);
 			} catch (InterruptedException ex) {
+				log.warn("pingback interupted, still " + queue.size() + " URLs in queue");
 				return; // stop execution
 			}
 		}
