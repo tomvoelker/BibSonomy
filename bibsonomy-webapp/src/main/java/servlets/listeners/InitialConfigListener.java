@@ -18,9 +18,6 @@ import javax.servlet.ServletContextListener;
  * 
  */
 public class InitialConfigListener implements ServletContextListener {
-  
-	private static final String DEFAULT_PROJECT_NAME = "BibSonomy";
-
 	private static ServletContext servletContext = null;
 	
 	/** This method is called first! 
@@ -28,47 +25,21 @@ public class InitialConfigListener implements ServletContextListener {
 	 * 
 	 *	init parameters and puts them into the servlet context.
 	 */
-	public void contextInitialized(ServletContextEvent event) {
+	@Override
+	public void contextInitialized(final ServletContextEvent event) {
 		servletContext = event.getServletContext();
-		Enumeration<String> e = servletContext.getInitParameterNames();
+		@SuppressWarnings("unchecked")
+		final Enumeration<String> e = servletContext.getInitParameterNames();
 		while (e.hasMoreElements()) {
-			String initParamName = e.nextElement();
+			final String initParamName = e.nextElement();
 			servletContext.setAttribute(initParamName, servletContext.getInitParameter(initParamName));
 		}
 	}
 	
-	public void contextDestroyed(ServletContextEvent event) {}
+	@Override
+	public void contextDestroyed(final ServletContextEvent event) {}
 
-	public static String getInitParam(String name) {
-		return (String)servletContext.getAttribute(name);
+	public static String getInitParam(final String name) {
+		return (String) servletContext.getAttribute(name);
 	}
-
-	
-	/** Static method that returns the servlet context
-	 * attribute named "projectName" if it is available.
-	 * Returns a default value if the attribute is unavailable.
-	 */
-	public static String getProjectName () {
-		String name = getInitParam("projectName");
-		if (name == null) {
-			name = DEFAULT_PROJECT_NAME;
-		}
-		return(name);
-	}
-
-	
-	/** Static method that returns the servlet context
-	 * attribute named "projectHome" if it is available.
-	 * Returns an empty string if the attribute is
-	 * unavailable.
-	 */
-
-	public static String getProjectHome () {
-		String name = getInitParam("projectHome");
-		if (name == null) {
-			name = "";
-		}
-		return(name);
-	}
-	
 }
