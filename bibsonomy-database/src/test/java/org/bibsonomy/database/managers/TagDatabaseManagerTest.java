@@ -34,6 +34,7 @@ import org.junit.Test;
  * @author Christian Kramer
  * @author Christian Schenk
  * @author Clemens Baier
+ * 
  * @version $Id$
  */
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
@@ -137,7 +138,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		tagParam.setLimit(1000);
 		tagParam.setRegex("web");
 		tagParam.setRequestedUserName("hotho");
-		List<Tag> tags = tagDb.getTagsByExpression(tagParam, this.dbSession);
+		final List<Tag> tags = tagDb.getTagsByExpression(tagParam, this.dbSession);
 		assertEquals(12, tags.size());
 	}
 
@@ -151,7 +152,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void getTagDetails() {
 		final TagParam tagParam = ParamUtils.getDefaultTagParam();
-		Tag tag = tagDb.getTagDetails(tagParam, this.dbSession);
+		final Tag tag = tagDb.getTagDetails(tagParam, this.dbSession);
 		assertNotNull(tag);
 		assertEquals(tagParam.getTagIndex().get(0).getTagName(), tag.getName());
 		assertNotNull(tag.getGlobalcount());
@@ -189,7 +190,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		 * we have only a single entry in the bibtex search table (authored by
 		 * "author", points to entry with content id 10; has 2 tags assigned
 		 */
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setSearch("author");
 		param.setSearchEntity(SearchEntity.AUTHOR);
 		param.setBibtexKey(null);
@@ -219,10 +220,10 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getTagsByBibtexHash() {
-		String loginUserName = "hotho";
-		String hash = "palim palim";
-		List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
-		List<Tag> tags = tagDb.getTagsByBibtexHash(loginUserName, hash, HashID.INTER_HASH, visibleGroups, 0, 20, this.dbSession);
+		final String loginUserName = "hotho";
+		final String hash = "palim palim";
+		final List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
+		final List<Tag> tags = tagDb.getTagsByBibtexHash(loginUserName, hash, HashID.INTER_HASH, visibleGroups, 0, 20, this.dbSession);
 	}
 
 	/**
@@ -236,8 +237,8 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String loginUserName = "hotho";
 		final String requestedUserName = "hotho";
 		final String hash = "palim palim";
-		List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
-		List<Tag> tags = tagDb.getTagsByBibtexHashForUser(loginUserName, requestedUserName, hash, HashID.INTER_HASH, visibleGroups, 0, 20, this.dbSession);
+		final List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
+		final List<Tag> tags = tagDb.getTagsByBibtexHashForUser(loginUserName, requestedUserName, hash, HashID.INTER_HASH, visibleGroups, 0, 20, this.dbSession);
 	}
 
 	/**
@@ -248,10 +249,10 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getTagsByBookmarkHash() {
-		String loginUserName = "hotho";
-		String hash = "palim palim";
+		final String loginUserName = "hotho";
+		final String hash = "palim palim";
 		final List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
-		List<Tag> tags = tagDb.getTagsByBookmarkHash(loginUserName, hash, visibleGroups, 0, 20, this.dbSession);
+		final List<Tag> tags = tagDb.getTagsByBookmarkHash(loginUserName, hash, visibleGroups, 0, 20, this.dbSession);
 	}
 
 	/**
@@ -266,7 +267,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String requestedUserName = "hotho";
 		final String hash = "palim palim";
 		final List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
-		List<Tag> tags = tagDb.getTagsByBookmarkHashForUser(loginUserName, requestedUserName, hash, visibleGroups, 0, 20, this.dbSession);
+		final List<Tag> tags = tagDb.getTagsByBookmarkHashForUser(loginUserName, requestedUserName, hash, visibleGroups, 0, 20, this.dbSession);
 	}
 
 	@Test
@@ -276,7 +277,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		param.addTagName("web");
 		param.addTagName("semantic");
 		param.addGroup(PUBLIC_GROUP_ID);
-		List<Tag> tags = tagDb.getRelatedTags(param, this.dbSession);
+		final List<Tag> tags = tagDb.getRelatedTags(param, this.dbSession);
 	}
 
 	@Test
@@ -286,7 +287,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		param.addTagName("clustering");
 		param.addTagName("text");
 		final List<Integer> visibleGroupIDs = Collections.singletonList(PUBLIC_GROUP_ID);
-		List<Tag> tags = tagDb.getRelatedTagsForUser(null, "hotho", param.getTagIndex(), visibleGroupIDs, 0, 10, this.dbSession);
+		final List<Tag> tags = tagDb.getRelatedTagsForUser(null, "hotho", param.getTagIndex(), visibleGroupIDs, 0, 10, this.dbSession);
 	}
 
 	@Test
@@ -309,7 +310,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getTagsByBibtexkey() {
 		/*
-		 * fetch tags from public bibtex entries with the key "test bibtexkey"
+		 * fetch tags from public publication entries with the key "test bibtexkey"
 		 * (should be 3)
 		 */
 		List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
@@ -320,7 +321,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTagsByName(ModelUtils.getTagSet("spam", "testbibtex", "testtag"), tags);
 
 		/*
-		 * fetch tags from public bibtex entries of testuser1 with the key
+		 * fetch tags from public publication entries of testuser1 with the key
 		 * "test bibtexkey" (should be 2)
 		 */
 		requestedUserName = "testuser1";
@@ -328,7 +329,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTagsByName(ModelUtils.getTagSet("testbibtex", "testtag"), tags);
 
 		/*
-		 * fetch tags from private bibtexs of testuser1 with the key
+		 * fetch tags from private publication of testuser1 with the key
 		 * "test bibtexkey" (should be 1)
 		 */
 		requestedUserName = null;

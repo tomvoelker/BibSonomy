@@ -62,9 +62,9 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 */
 	@Test
 	public void testInsertNewRelations() {
-		final Integer newId1 = generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		final Integer newId1 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		tagRelDb.insertRelations(tag, "test-user", this.dbSession);
-		final Integer newId2 = generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		final Integer newId2 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		assertEquals(newId1 + 3, newId2);
 	}
 
@@ -74,10 +74,10 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	@Ignore
 	@Test
 	public void testInsertExistingRelations() {
-		final Integer newId1 = generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		final Integer newId1 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		tagRelDb.insertRelations(tag, "test-user", this.dbSession);
 		tagRelDb.insertRelations(tag, "test-user", this.dbSession);
-		final Integer newId2 = generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		final Integer newId2 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		assertEquals(newId1 + 3, newId2);
 	}
 
@@ -105,7 +105,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 */
 	@Test
 	public void getConceptForUser() {
-		Tag concept = tagRelDb.getConceptForUser("Programming", "testuser3", this.dbSession);
+		final Tag concept = tagRelDb.getConceptForUser("Programming", "testuser3", this.dbSession);
 		// testuser3 has both "programming" and "Programming" as concepts, and as the tag's case is ignored, 
 		//we retrieve all subtags (again, case-ignored) of either of them (i.e. "c++" and "java")
 		assertEquals(2, concept.getSubTags().size());
@@ -196,7 +196,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		before.setOwnerUserName("testuser1");
 		
 
-		TagRelationParam otherUser = new TagRelationParam();
+		final TagRelationParam otherUser = new TagRelationParam();
 		otherUser.setLowerTagName("java");
 		otherUser.setUpperTagName("programming");
 		otherUser.setOwnerUserName("testuser2");

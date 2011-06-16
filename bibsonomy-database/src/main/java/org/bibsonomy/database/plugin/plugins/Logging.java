@@ -7,12 +7,11 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.LoggingParam;
-import org.bibsonomy.database.params.ReviewParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
-import org.bibsonomy.model.Review;
+import org.bibsonomy.model.DiscussionItem;
 
 /**
  * This plugin implements logging: on several occasions it'll save the old state
@@ -23,57 +22,40 @@ import org.bibsonomy.model.Review;
  * @author Christian Schenk
  * @author Stefan Stützer
  * @author Anton Wilhelm
+ * @author Daniel Zoller
+ * 
  * @version $Id$
  */
 public class Logging extends AbstractDatabasePlugin {
-
+	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onUserDelete(java.lang.String, org.bibsonomy.database.common.DBSession)
+	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onCommentUpdate(java.lang.String, org.bibsonomy.model.Comment, org.bibsonomy.model.Comment, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public Runnable onUserDelete(final String userName, final DBSession session) {
+	public Runnable onDiscussionUpdate(final String interHash, final DiscussionItem comment, final DiscussionItem oldComment, final DBSession session) {
 		return new Runnable() {
 			
 			@Override
 			public void run() {
-				insert("logAllUserReviews", userName, session);
-				insert("logAllUserMarks", userName, session);
-				insert("logAllMarksOfUser", userName, session);
+				// TODO: use the same log date?!
+				insert("logDiscussionItemGroups", oldComment.getId(), session);
+				insert("logDiscussionItem", oldComment.getId(), session);
 			}
 		};
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onReviewUpdated(java.lang.String, org.bibsonomy.model.Review, org.bibsonomy.model.Review, org.bibsonomy.database.common.DBSession)
+	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onCommentDelete(java.lang.String, org.bibsonomy.model.Comment, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public Runnable onReviewUpdated(final String interHash, final Review oldReview, final Review review, final DBSession session) {
+	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedComment, final DBSession session) {
 		return new Runnable() {
 			
 			@Override
 			public void run() {
-				final ReviewParam param = new ReviewParam();
-				param.setReview(oldReview);
-				param.setInterHash(interHash);
-				insert("logReview", param, session);
-			}
-		};
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onReviewDeleted(java.lang.String, org.bibsonomy.model.Review, org.bibsonomy.database.common.DBSession)
-	 */
-	@Override
-	public Runnable onReviewDeleted(final String interHash, final Review oldReview, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				final ReviewParam param = new ReviewParam();
-				param.setInterHash(interHash);
-				param.setReview(oldReview);
-				insert("logReview", param, session);
-				insert("logReviewHelpfulMarks", param, session);
+				// TODO: log groups (they aren't deleted) values?!
+				insert("logDiscussionItemGroups", deletedComment.getId(), session);
+				insert("logDiscussionItem", deletedComment.getId(), session);
 			}
 		};
 	}

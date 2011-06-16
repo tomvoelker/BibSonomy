@@ -89,7 +89,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Ignore
     @Test
     public void getPendingUsers() {
-        List<User> users = userDb.getPendingUsers(0, Integer.MAX_VALUE, this.dbSession);
+        final List<User> users = userDb.getPendingUsers(0, Integer.MAX_VALUE, this.dbSession);
         assertEquals(2,users.size());
     }
     
@@ -98,7 +98,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
      */
     @Test
     public void getPendingUserByActivationCode() {
-        List<User> users = userDb.getPendingUserByActivationCode("ac47d3f92b90c89e46170f7049beda37", 0, Integer.MAX_VALUE, this.dbSession);
+        final List<User> users = userDb.getPendingUserByActivationCode("ac47d3f92b90c89e46170f7049beda37", 0, Integer.MAX_VALUE, this.dbSession);
         assertEquals("ac47d3f92b90c89e46170f7049beda37",users.get(0).getActivationCode());
     }
     
@@ -108,7 +108,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
     @Ignore
     @Test
     public void getPendingUserByUsername() {
-        List<User> users = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession);
+        final List<User> users = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession);
         assertEquals("activationtestuser1",users.get(0).getName());
     }
 	
@@ -188,9 +188,9 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
      */
 	@Test
     public void activateUser() {
-	    User user = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession).get(0);
+	    final User user = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession).get(0);
 	    userDb.activateUser(user, this.dbSession);
-        User testuser = userDb.getUserDetails("activationtestuser1", this.dbSession);
+        final User testuser = userDb.getUserDetails("activationtestuser1", this.dbSession);
         assertEquals("Test Activation User 1", testuser.getRealname());
     }
 
@@ -215,7 +215,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			newTestuser.setName(newTestuser.getName() + "-changed");
 			userDb.updateUser(newTestuser, this.dbSession);
 			fail("expected exception");
-		} catch (RuntimeException ignore) {
+		} catch (final RuntimeException ignore) {
 		}
 	}
 
@@ -231,7 +231,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		/*
 		 * get user details
 		 */
-		User testUser = userDb.getUserDetails(username, this.dbSession);
+		final User testUser = userDb.getUserDetails(username, this.dbSession);
 		assertEquals("Test User 1", testUser.getRealname());
 		
 		/*
@@ -251,7 +251,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		/*
 		 * save user
 		 */
-		User savedTestuser = userDb.getUserDetails(username, this.dbSession);
+		final User savedTestuser = userDb.getUserDetails(username, this.dbSession);
 		final UserSettings savedSettings = savedTestuser.getSettings();
 		assertEquals(level, savedSettings.getProfilePrivlevel());
 		assertEquals(newRealname, savedTestuser.getRealname());
@@ -276,7 +276,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			userDb.updateApiKeyForUser(ParamUtils.NOUSER_NAME, this.dbSession);
 			fail("expected exception");
-		} catch (Exception ignore) {
+		} catch (final Exception ignore) {
 		}
 	}
 		
@@ -314,25 +314,17 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(0, groups.size());
 		
 		/*
-		 * check if all reviews and marks by the user are deleted
+		 * TODO: reviews / comments
 		 */
-		final int reviewCount = testDb.getReviewCountForUser(user.getName());
-		assertEquals(0, reviewCount);
-		
-		final int markedReviewsCount = testDb.getMarkReviewCountForUser(user.getName());
-		assertEquals(0, markedReviewsCount);
-		
-		final int marksOfUserCount = testDb.getMarkOfUserReviewCount(user.getName());
-		assertEquals(0, marksOfUserCount);
 		
 		// but it should be flagged as spammer
 		assertEquals(true, newTestuser.getSpammer());
 				
 		// create a spammer group id by adding an old group id to the interger min value
-		int groupid = Integer.MAX_VALUE + 1;
+		final int groupid = Integer.MAX_VALUE + 1;
 		
 		// get posts for this user
-		List<Post<BibTex>> posts = bibTexDb.getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, groupid, new ArrayList<Integer>(), null, 10, 0, null, this.dbSession);
+		final List<Post<BibTex>> posts = bibTexDb.getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, groupid, new ArrayList<Integer>(), null, 10, 0, null, this.dbSession);
 		
 		// there should be at least more then one post with that negative group id
 		assertNotNull(posts);
@@ -394,7 +386,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getUserFollowers(){
 		final String authUser = "testuser2";
 		
-		List<User> userFollowers = userDb.getUserRelation(authUser, UserRelation.OF_FOLLOWER, null, this.dbSession);
+		final List<User> userFollowers = userDb.getUserRelation(authUser, UserRelation.OF_FOLLOWER, null, this.dbSession);
 		assertNotNull(userFollowers);
 		assertEquals(1, userFollowers.size());
 		assertEquals("testuser1", userFollowers.get(0).getName());
@@ -407,7 +399,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getFollowersOfUser(){
 		final String authUser = "testuser1";
 		
-		List<User> userFollowers = userDb.getUserRelation(authUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
+		final List<User> userFollowers = userDb.getUserRelation(authUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
 		assertNotNull(userFollowers);
 		assertEquals(2, userFollowers.size());
 		assertEquals("testuser2", userFollowers.get(0).getName());
@@ -419,8 +411,8 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void insertAndDeleteUserRelations(){
-		String sourceUser="testuser3";
-		String targetUser="testuser1";
+		final String sourceUser="testuser3";
+		final String targetUser="testuser1";
 		
 		userDb.createUserRelation(sourceUser, targetUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
 		userDb.createUserRelation(sourceUser, targetUser, UserRelation.OF_FRIEND, null, this.dbSession);
@@ -450,15 +442,15 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void insertAndDeleteTaggedUserRelations(){
-		String sourceUser  ="testuser_taggedrelations";
-		String targetUser0 ="testuser_taggedrelations0";
-		String targetUser1 ="testuser_taggedrelations1";
-		String targetUser2 ="testuser_taggedrelations2";
+		final String sourceUser  ="testuser_taggedrelations";
+		final String targetUser0 ="testuser_taggedrelations0";
+		final String targetUser1 ="testuser_taggedrelations1";
+		final String targetUser2 ="testuser_taggedrelations2";
 		
-		String tag0 = "football";
-		String tag1 = "sys:network:facebook";
-		String tag2 = "this_tag_should_not_occur";
-		String tag3 = "abc";
+		final String tag0 = "football";
+		final String tag1 = "sys:network:facebook";
+		final String tag2 = "this_tag_should_not_occur";
+		final String tag3 = "abc";
 		
 		//--------------------------------------------------------------------
 		// followers: tagged follower relations are not allowed
@@ -466,11 +458,11 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			userDb.createUserRelation(sourceUser, targetUser0, UserRelation.FOLLOWER_OF, tag1, this.dbSession);
 			fail("Tagged follower relations are not supported!");
-		} catch (UnsupportedRelationException e) {
+		} catch (final UnsupportedRelationException e) {
 			// nop
 		}
 		
-		List<User> followedByUser = userDb.getUserRelation(sourceUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
+		final List<User> followedByUser = userDb.getUserRelation(sourceUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
 		assertEquals(0, followedByUser.size());
 		
 		//--------------------------------------------------------------------
@@ -538,12 +530,12 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	@Test
 	public void testMaxFieldLength() {
-		User user = userDb.getUserDetails("testuser1", this.dbSession);
+		final User user = userDb.getUserDetails("testuser1", this.dbSession);
 		user.setHobbies("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
 		try {
 			userDb.updateUser(user , this.dbSession);
 			fail("missing DatabaseException");
-		} catch (DatabaseException e) {
+		} catch (final DatabaseException e) {
 			final List<ErrorMessage> errorMessages = e.getErrorMessages("testuser1");
 			assertEquals(1, errorMessages.size());
 			final FieldLengthErrorMessage errorMessage = (FieldLengthErrorMessage) errorMessages.get(0);

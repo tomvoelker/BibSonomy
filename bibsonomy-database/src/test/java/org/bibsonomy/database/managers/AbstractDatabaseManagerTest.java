@@ -33,6 +33,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected static final int INVALID_GROUP_ID = GroupID.INVALID.getId();
 	protected static final int TESTGROUP1_ID = 3;
 	protected static final int TESTGROUP2_ID = 4;
+	protected static final int TESTGROUP3_ID = 5;
 
 	protected static DBSessionFactory dbSessionFactory;
 	protected static DatabasePluginRegistry pluginRegistry;

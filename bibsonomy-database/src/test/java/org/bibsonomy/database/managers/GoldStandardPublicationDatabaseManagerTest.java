@@ -6,10 +6,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -26,6 +29,7 @@ import org.junit.Test;
  */
 public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
+	private static final List<Integer> VISIBLE_GROUPS = Arrays.asList(GroupID.PUBLIC.getId());
 	private static final String WRONG_INTERHASH = "interhashorintrahashorhashor";
 	private static final String INTERHASH_GOLD_1 = "d9eea4aa159d70ecfabafa0c91bbc9f0";
 	private static final String INTERHASH_GOLD_2 = "ac6aa3ccb181e61801cefbc1401d409a";
@@ -62,7 +66,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		assertTrue(goldPubManager.createPost(post, this.dbSession));
 		
 		final String interhash = post.getResource().getInterHash();
-		assertNotNull(goldPubManager.getPostDetails("", interhash, "", null, this.dbSession).getResource());
+		assertNotNull(goldPubManager.getPostDetails("", interhash, "", VISIBLE_GROUPS, this.dbSession).getResource());
 		
 		assertTrue(this.pluginMock.isOnGoldStandardPublicationCreate());
 		return interhash;
@@ -88,7 +92,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		// fetch post
 		final GoldStandardPublication goldStandard = post.getResource();
 		String interhash = goldStandard.getInterHash();
-		assertNotNull(goldPubManager.getPostDetails("", interhash, "", null, this.dbSession).getResource());
+		assertNotNull(goldPubManager.getPostDetails("", interhash, "", VISIBLE_GROUPS, this.dbSession).getResource());
 		
 		// change a value and update the gold standard
 		final String newYear = "2010";
@@ -158,7 +162,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	 */
 	@Test
 	public void testReferences() {
-		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
+		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
 		final Set<BibTex> references = post.getResource().getReferences();
 		assertEquals(1, references.size());
 		assertEquals(1, post.getResource().getReferencedBy().size());
@@ -171,7 +175,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	 */
 	@Test(expected = DatabaseException.class)
 	public void testCreateDuplicate() {
-		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
+		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
 		goldPubManager.createPost(post, this.dbSession);
 	}
 	
@@ -189,7 +193,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	 */
 	@Test(expected = DatabaseException.class)
 	public void testUpdatePostToPostInDB() {
-		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
+		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
 		goldPubManager.updatePost(post, INTERHASH_GOLD_2, null, this.dbSession);
 	}	
 	
@@ -218,7 +222,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	 */
 	@Test
 	public void testUpdateReferencePlugin() {
-		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
+		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
 		
 		final GoldStandardPublication standard = post.getResource();
 		assertEquals(1, standard.getReferences().size());
@@ -230,7 +234,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		assertTrue(this.pluginMock.isOnGoldStandardPublicationUpdate());
 		
 		final String newInterHash = standard.getInterHash();
-		final Post<GoldStandardPublication> afterUpdate = goldPubManager.getPostDetails("", newInterHash, "", null, this.dbSession);
+		final Post<GoldStandardPublication> afterUpdate = goldPubManager.getPostDetails("", newInterHash, "", VISIBLE_GROUPS, this.dbSession);
 		assertEquals(1, afterUpdate.getResource().getReferences().size());
 	}
 	
