@@ -12,6 +12,6 @@
 	<sqlMap resource="common/TypeAliases.xml" />
 	
 	<sqlMap resource="TestLogging.xml" />
-	<sqlMap resource="TestReview.xml" />
+	<sqlMap resource="TestDiscussion.xml" />
 
 </sqlMapConfig>

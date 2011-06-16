@@ -38,11 +38,7 @@
 	</select>
 	
 	<select id="countReviewLogs" resultClass="int">
-		SELECT COUNT(*) FROM log_reviews
-	</select>
-	
-	<select id="countReviewHelpfulLogs" resultClass="int">
-		SELECT COUNT(*) FROM log_reviews_helpful
+		SELECT COUNT(*) FROM log_discussion
 	</select>
 	
 </sqlMap>
