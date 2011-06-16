@@ -52,16 +52,24 @@ import org.springframework.beans.factory.annotation.Required;
  * @version $Id$
  */
 public final class RestServlet extends HttpServlet {
-	private static final String NO_AUTH_ERROR = "Please authenticate yourself.";
-
 	private static final long serialVersionUID = -1737804091652029470L;
-
 	private static final Log log = LogFactory.getLog(RestServlet.class);
 
+	private static final String NO_AUTH_ERROR = "Please authenticate yourself.";
 	/**
 	 * Used in {@link #validateAuthorization(String)} to identify HTTP basic authentication.
 	 */
 	private static final String HTTP_AUTH_BASIC_IDENTIFIER = "Basic ";
+	
+	/**
+	 * the key for the documents path
+	 */
+	public static final String DOCUMENTS_PATH_KEY = "docPath";
+	
+	/**
+	 * the key for the project home
+	 */
+	public static final String PROJECT_HOME_KEY = "projectHome";
 	
 	/**
 	 * the response encoding used to encode HTTP responses.
@@ -71,26 +79,21 @@ public final class RestServlet extends HttpServlet {
 	/**
 	 * the request default encoding
 	 */
-	public static final String REQUEST_ENCODING = "UTF-8";	
-
-	/**
-	 * the param key for the root doc path
-	 */
-	public static final String PARAM_ROOT_PATH = "rootPath";
+	public static final String REQUEST_ENCODING = "UTF-8";
 
 	private LogicInterfaceFactory logicFactory;
 	
 	private UrlRenderer urlRenderer;
 	private RendererFactory rendererFactory;
 	
-	// store some infos about the specific request or the webservice (i.e. rootPath)
+	// store some infos about the specific request or the webservice (i.e. document path)
 	private final Map<String, String> additionalInfos = new HashMap<String, String>();
 	
 	/** handles OAuth requests */
-	OAuthRequestValidator oauthValidator;
+	private OAuthRequestValidator oauthValidator;
 	
 	/** logic interface factory for handling oauth requests */
-	ShindigDBLogicUserInterfaceFactory oauthLogicFactory;
+	private ShindigDBLogicUserInterfaceFactory oauthLogicFactory;
 
 	/**
 	 * Sets the base URL of the project. Typically "project.home" in the 
@@ -99,7 +102,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	@Required
 	public void setProjectHome(final String projectHome) {
-		additionalInfos.put("projectHome", projectHome);
+		additionalInfos.put(PROJECT_HOME_KEY, projectHome);
 	}
 	
 	/**
@@ -118,7 +121,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	@Required
 	public void setDocumentPath(final String documentPath) {
-		additionalInfos.put("docPath", documentPath); 
+		additionalInfos.put(DOCUMENTS_PATH_KEY, documentPath); 
 	}
 	
 	@Override
@@ -127,17 +130,17 @@ public final class RestServlet extends HttpServlet {
 		// initialize oauth database layer
 		try {
 			// TODO: configure via spring
-			DBSessionFactory dbSessionFactory = new IbatisDBSessionFactory();
+			final DBSessionFactory dbSessionFactory = new IbatisDBSessionFactory();
 			this.oauthValidator = OAuthRequestValidator.getInstance();
 			this.oauthLogicFactory = new ShindigDBLogicUserInterfaceFactory();
 			this.oauthLogicFactory.setDbSessionFactory(dbSessionFactory);
 			
-			DBLogicNoAuthInterfaceFactory noAuthFactory = new DBLogicNoAuthInterfaceFactory();
+			final DBLogicNoAuthInterfaceFactory noAuthFactory = new DBLogicNoAuthInterfaceFactory();
 			noAuthFactory.setDbSessionFactory(dbSessionFactory);
 			this.oauthLogicFactory.setNoAuthLogicFactory(noAuthFactory);
 			
 			log.debug("Sucessfully enabled oauth database layer");
-		} catch (Error e) {
+		} catch (final Error e) {
 			// FIXME: IbatisDBSessionFactory doesn't have a JNDI datasource during tests
 			//        we have to springify the rest server to cleanly handle this case
 			log.error("Error initializing the oauth database layer (disabling oauth for the rest api)");
@@ -345,7 +348,7 @@ public final class RestServlet extends HttpServlet {
 		if (HeaderUtils.isHttpBasicAuthorization(authenticationHeader)) {
 			// try http basic authorization
 			return validateHttpBasicAuthorization(authenticationHeader);
-		} else if (present(this.oauthValidator)&&present(this.oauthLogicFactory)) {
+		} else if (present(this.oauthValidator) && present(this.oauthLogicFactory)) {
 			// try oauth authorization
 			return validateOAuthAuthorization(request);
 		}
@@ -360,11 +363,11 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private LogicInterface validateOAuthAuthorization(final HttpServletRequest request) {
 		// try oauth authorization - if configured
-		SecurityToken st = this.oauthValidator.getSecurityTokenFromRequest(request);
-		if (!present(st)||st.isAnonymous()) {
+		final SecurityToken securityToken = this.oauthValidator.getSecurityTokenFromRequest(request);
+		if (!present(securityToken) || securityToken.isAnonymous()) {
 			throw new AuthenticationException(NO_AUTH_ERROR);
 		}
-		return this.oauthLogicFactory.getLogicAccess(st);
+		return this.oauthLogicFactory.getLogicAccess(securityToken);
 	}
 
 	/**

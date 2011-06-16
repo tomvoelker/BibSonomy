@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
@@ -64,7 +65,7 @@ public class GetPostDocumentStrategy extends Strategy {
 		
 		try {
 			// get the bufferedstream of the file
-			final FileDownloadInterface download = new HandleFileDownload(additionalInfos.get("docPath"), doc.getFileHash());
+			final FileDownloadInterface download = new HandleFileDownload(additionalInfos.get(RestServlet.DOCUMENTS_PATH_KEY), doc.getFileHash());
 			final BufferedInputStream buf = download.getBuf();
 			
 			// write the bytes of the file to the writer

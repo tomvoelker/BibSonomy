@@ -82,7 +82,7 @@ public final class Context {
 	
 	/**
 	 * this should hold all additional infos of the webservice or request
-	 * i.e. the rootpath which have been declared in the web.xml
+	 * i.e. the documents path
 	 */
 	private final Map<String, String> additionalInfos;
 
@@ -91,6 +91,7 @@ public final class Context {
 	 *            httpMethod used in the request: GET, POST, PUT or DELETE
 	 * @param url
 	 * @param renderingFormat the mediatype of the request and response
+	 * @param urlRenderer the url renderer
 	 * @param doc 
 	 * @param items 
 	 * @param logic 

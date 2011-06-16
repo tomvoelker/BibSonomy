@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.fileupload.FileItem;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -38,10 +39,10 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 		this.userName = userName;
 		this.resourceHash = resourceHash;
 		this.items = context.getItemList();
-		this.projectHome = context.getAdditionalInfos().get("projectHome");
+		this.projectHome = context.getAdditionalInfos().get(RestServlet.PROJECT_HOME_KEY);
 		
 		this.fileUploadFactory = new FileUploadFactory();
-		this.fileUploadFactory.setDocpath(context.getAdditionalInfos().get("docPath"));
+		this.fileUploadFactory.setDocpath(context.getAdditionalInfos().get(RestServlet.DOCUMENTS_PATH_KEY));
 		this.fileUploadFactory.setTempPath(false);
 	}
 	
