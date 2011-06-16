@@ -3,9 +3,7 @@ package org.bibsonomy.webapp.util;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.spring.security.UserAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.bibsonomy.util.spring.security.AuthenticationUtils;
 
 import filters.ActionValidationFilter;
 
@@ -32,7 +30,7 @@ public class RequestWrapperContext {
 	 * 
 	 * @param request
 	 */
-	public void setRequest(HttpServletRequest request) {
+	public void setRequest(final HttpServletRequest request) {
 		this.request = request;
 	}
 	
@@ -41,22 +39,12 @@ public class RequestWrapperContext {
 	 * @return An instance of the logged in user.
 	 */
 	public User getLoginUser() {
-		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null) {
-			final Object principal = authentication.getPrincipal();
-			
-			if (principal != null && principal instanceof UserAdapter) {
-				final UserAdapter adapter = (UserAdapter) principal;
-				return adapter.getUser();
-			}
-		}
-		
-		return new User();
+		return AuthenticationUtils.getUser();
 	}
 	
 	/**
 	 * helper function to ease checking if a logged in user exists
-	 * @return true if a user is logged in, false otherwise
+	 * @return <code>true</code> iff a user is logged in, false otherwise
 	 */
 	public boolean isUserLoggedIn() {
 		return this.getLoginUser().getName() != null;
@@ -71,9 +59,10 @@ public class RequestWrapperContext {
 		return this.isUserLoggedIn();
 	}
 	
-	/** Delivers a new ckey to be used in forms.
+	/**
+	 * Delivers a new ckey to be used in forms.
 	 * 
-	 * @return A ckey. 
+	 * @return the ckey. 
 	 */
 	public String getCkey() {
 		return getRequestAttribute(ActionValidationFilter.REQUEST_ATTRIB_CREDENTIAL, String.class);
@@ -84,7 +73,7 @@ public class RequestWrapperContext {
 	 * @return <code>true</code>, when the request contained a valid ckey.
 	 */
 	public boolean isValidCkey() {
-		Boolean isValidCkey = getRequestAttribute(ActionValidationFilter.REQUEST_ATTRIB_VALID_CREDENTIAL, Boolean.class);
+		final Boolean isValidCkey = getRequestAttribute(ActionValidationFilter.REQUEST_ATTRIB_VALID_CREDENTIAL, Boolean.class);
 		return isValidCkey != null && isValidCkey;
 	}
 	
