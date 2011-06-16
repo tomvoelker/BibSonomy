@@ -15,8 +15,6 @@ function includeJavaScript(jsFile) {
 
 includeJavaScript("/resources/jquery/jquery.js");
 includeJavaScript("/resources/javascript/functions.js");
-
-// TODO: add to pom
 includeJavaScript("/resources/javascript/ajaxUtils.js");
 includeJavaScript("/resources/javascript/style.js");
 includeJavaScript("/resources/javascript/chrome.js");
