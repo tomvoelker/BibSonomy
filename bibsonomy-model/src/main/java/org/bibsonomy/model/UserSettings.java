@@ -316,6 +316,9 @@ public class UserSettings implements Serializable {
 		this.simpleInterface = simpleInterface;
 	}
 
+	/**
+	 * @return the timeZone
+	 */
 	public TimeZone getTimeZone() {
 		return this.timeZone;
 	}
