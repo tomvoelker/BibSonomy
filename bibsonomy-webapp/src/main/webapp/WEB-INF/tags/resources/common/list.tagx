@@ -20,10 +20,18 @@
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
 	<jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
+	
+	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>
 
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
 	
-	<div class="bookbox" id="${listID}">
+	<c:set var="className" value="bookbox" />
+	
+	<c:if test="${fullscreen}">
+		<c:set var="className" value="full_${className}" />
+	</c:if>
+	
+	<div class="${className}" id="${listID}">
 	
 		<div class="bboxheader">
 			<!-- Buttons -->
@@ -55,8 +63,8 @@
 					${mtl:ch('nbsp')}
 				</div>
 	   
-                <c:set var="alreadyOwn"><fmt:message key="post.meta.own_post"/></c:set>
-                <c:set var="copyThisPost"><fmt:message key="post.meta.copy_this_post"/></c:set>
+                <fmt:message key="post.meta.own_post" var="alreadyOwn" />
+                <fmt:message key="post.meta.copy_this_post" var="copyThisPost" />
     
                 <!-- iterate over a list of resources and create the list -->
                 <ul id="${listView.resourcetype}">

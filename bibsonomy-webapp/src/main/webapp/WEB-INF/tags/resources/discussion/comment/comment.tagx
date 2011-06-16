@@ -1,0 +1,37 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
+	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment">
+    
+   	<jsp:directive.attribute name="comment" type="org.bibsonomy.model.Comment" required="true" />
+   	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
+   	
+   	<c:set var="commentUserName" value="${comment.user.name}" />
+   	
+	<img src="/picture/user/${fn:escapeXml(commentUserName)}" alt="pic" class="commentPicture"/>
+	
+    <div class="comment details">
+		<div class="comment info" data-username="${commentUserName}" data-discussionItemHash="${comment.hash}">		
+			<!-- TODO: admin actions for mark as spammer? -->
+			<div class="comment meta">
+				<span class="commenter">				
+					<a href="/user/${fn:escapeXml(commentUserName)}"><c:out value="${comment.user.name}" /></a>
+				</span>
+				<discussion:discussionMeta discussionItem="${comment }" />
+			</div>
+		</div>
+		
+		<div class="comment text">
+			<c:out value="${comment.text}" />
+		</div>
+	</div>
+   	<!-- comment action menu -->
+   	<discussion:discussionActions discussionItem="${comment}" discussionItemClass="comment"/>
+   	
+   	<!-- render subdiscussion items of the comment -->
+   	<discussionItem:subDiscussionItems discussionItems="${comment.subDiscussionItems}" loginUser="${loginUser}" />
+    
+</jsp:root>

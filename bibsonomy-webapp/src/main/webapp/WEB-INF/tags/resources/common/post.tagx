@@ -4,7 +4,7 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:reviews="urn:jsptagdir:/WEB-INF/tags/resources/reviews"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
@@ -37,14 +37,14 @@
         </c:if>
 		
 		<!-- ratings -->
-		<!-- <div class="rating">
-			<reviews:stars rating="${post.resource.rating}" dimension="0.75" />
+		<div class="rating">
+			<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
 			<c:set var="numOfRatings" value="${post.resource.numberOfRatings}" />
 			<c:if test="${empty numOfRatings}">
 				<c:set var="numOfRatings" value="0" />
 			</c:if>
 			<span class="reviewInfo">(<c:out value="${numOfRatings}"/>)</span>
-		</div>-->
+		</div>
 		
 		<div class="bmtitle"><jsp:invoke fragment="title"/></div>
 		<div class="bmdesc"> <jsp:invoke fragment="desc"/> </div>

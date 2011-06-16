@@ -9,7 +9,8 @@
     xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
     xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
     xmlns:ref="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication/references"
-    xmlns:reviews="urn:jsptagdir:/WEB-INF/tags/resources/reviews"
+    xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+    xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -28,20 +29,22 @@
 		<h2 id="gold_title" data-interhash="${goldstandard.interHash}">
 			<a href="/bibtex/${goldstandard.interHash}">${mtl:cleanBibtex(goldstandard.title)}</a>
 		</h2>
-		<div id="gold_authorsEditors"><fmt:message key="by"/><c:out value=": "/><c:out value=" "/><pub:author publication="${goldstandard}"/></div>
+		<div id="gold_authorsEditors"><fmt:message key="by"/><c:out value=": "/><pub:author publication="${goldstandard}"/></div>
 		
 		<c:if test="${not empty goldstandard.abstract}">
 			<div id="gold_abstract">${mtl:cleanBibtex(goldstandard.abstract)}</div>
 		</c:if>	
 		
-		<div id="gold_resources">
-		
-			<!-- TODO: add link to DOI -->
-		
-			<c:if test="${not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)}">
+		<div id="gold_resources">		
+			<c:if test="${(not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)) or (not empty goldstandard.miscFields['doi'])}">
 			<div id="gold_resources_links">
 				<h3><fmt:message key="goldStandard.resource.info.links" /></h3>
 				<ul>
+					<c:if test="${not empty goldstandard.miscFields['doi']}">
+						<fmt:message key="post_bibtex.doi_isbn.doi" var="urlTitle"/>
+						<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}"/>
+						<li><c:out value="${urlTitle}: " /><a href="http://dx.doi.org/${mtl:encodeURI(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a></li>
+					</c:if>
 					<c:if test="${not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)}">
 						<li><span class="gold_info"><a href="${fn:escapeXml(goldstandard.url)}">${fn:escapeXml(goldstandard.url)}</a></span></li>
 					</c:if>
@@ -54,11 +57,13 @@
 				<h3><fmt:message key="goldStandard.resource.info.pdfps" /></h3>
 				<ul>
 					<c:if test="${mtl:isLinkToDocument(goldstandard.url)}">
-					<li><fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
-		<a href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
-		  <img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
-		  ${ goldstandard.url }											
-		</a></li>
+					<li>
+						<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
+						<a href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
+						  <img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
+						  ${ goldstandard.url }											
+						</a>
+					</li>
 					</c:if>
 				</ul>
 			</div>
@@ -112,12 +117,13 @@
 			</div>
 		</c:if>
 		
-		<!-- reviews -->
-		<!-- <div id="reviews">
-	    	<h3><fmt:message key="post.resource.review.reviews" /></h3>
-	    	<reviews:reviewsRatingInfo resource="${goldstandard}" />
-			<reviews:reviews resource="${goldstandard}" loginUser="${loginUser}" />
-		</div> -->
+		<!-- discussion -->
+		<div id="gold_discussion">
+	    	<h3><fmt:message key="post.resource.discussion" /></h3>
+	    	
+	    	<review:reviewRatingsInfo resource="${goldstandard}" />
+			<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}" />
+		</div>
 		
 		<!-- exports -->
 		<div id="gold_exports">
@@ -130,7 +136,7 @@
 				<h3><fmt:message key="export.layout"/></h3>
 				<c:choose>
 					<c:when test="${not empty command.layout and not (command.layout eq '') and not (command.layout eq 'plain')}">
-						${mtl:renderLayout(post, command.layout)}
+						<mtl:renderJabRefLayout layout="${command.layout}" post="${post}" />
 					</c:when>
 					<c:otherwise>
 						<export:plain bib="${goldstandard}"/>

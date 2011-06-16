@@ -1,5 +1,9 @@
-/* TODO: move to other css file? */
-#reviewsbox {
+/* TODO: fsform.css overrides .ui-state-hover for all ui widgets */
+li.ui-state-hover {
+	font-weight: normal;
+}
+
+#discussionbox {
 	margin-left: 1em;
 	margin-top: 2em;
 	margin-bottom: 2em;
@@ -36,37 +40,10 @@
 	max-width: 315px;
 }
 
-#reviewlist li div.reviewinfo {
-	margin-bottom: 0.3em;
-}
 
-#reviewlist li div.helpfulContainer {
-	margin-top: 0.2em;
-	padding-top: 0.1em;
-}
 
-#reviewlist li div.helpfulContainer form {
-	margin-left: 0.2em;
-	margin-right: 0.2em;
-}
-
-#reviewlist li {
-	margin-bottom: 1.2em;	
-}
-
-#reviewlist li div.reviewer {
-	font-size: 0.8em;
-	margin-top: 0.5em;
-}
-
-#reviewlist li div.helpfulinfo, #reviewlist li div.helpfulContainer {
-	margin-bottom: 0.3em;
-	font-size: 0.9em;
-}
-
-#reviewlist li div.reviewText {
-	clear: both;
-	margin-top: 0.5em;
+.meta span {
+	 margin-right: 0.3em;
 }
 
 .stars-off-1, .stars-on-1 {
@@ -101,21 +78,13 @@
     background-position: 0 -32px;
 }*/
 
-#reviewlist li form.helpful {
-	display: inline;
-}
-
-#reviewlist li form.helpful input:hover {
-	cursor: pointer;
-}
-
-#toggleReviews {
+#toggleDiscussion {
 	clear:both;
 	width: 100%;
 	text-align: center;
 }
 
-#toggleReviews a {
+#toggleDiscussion a {
 	background-color: rgb(0, 104, 170);
 	color: white !important;
 	width: 100%;
@@ -124,7 +93,7 @@
 	border: 1px solid black;
 }
 
-#toggleReviews a:hover {
+#toggleDiscussion a:hover {
 	background-color: rgb(233, 233, 233);
 	color: rgb(96, 96, 96) !important;
 }
@@ -134,12 +103,49 @@
 	clear:left;
 }
 
-.reviewMeta {
-	color: #555;
-	font-size: 80%;
-	margin-top: 6px;
+.commentPicture {
+	width: 30px;
+	padding-right: 5px;
+	float:left;
 }
 
-.reviewMeta > span {
-	margin-left: 3px;	
+.review.meta, .comment.meta {
+	color: #555;
+	font-size: 80%;
+}
+
+.review.details, .comment.details {
+	display: table-cell;
+}
+
+.review.meta a, .comment.meta a {
+	font-weight: bold;
+}
+
+ul.commentMenu, ul.reviewMenu {
+	padding-bottom: 0.5em;
+	padding-top: 0.5em;
+	border-bottom: 1px solid #ccc;
+	font-size: 80%;
+	display: block;
+}
+
+ul.commentMenu li, ul.reviewMenu li {
+	display: inline;
+	padding-left: 0.25em;
+	padding-right: 0.25em;
+}
+
+ul.subdiscussionItems ul.subdiscussionItems {
+	margin-top: 0.75em;
+	margin-left: 35px;
+}
+
+.review.text, .comment.text {
+	font-size: 90%;
+	margin-top: 0.25em;
+}
+
+.fsform {
+	margin-top: 0.5em;
 }

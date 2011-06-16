@@ -1,0 +1,21 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
+	
+   	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="true" />
+   	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
+   	
+   	<ul class="subdiscussionItems">
+    	<c:if test="${not empty discussionItems}">
+    		<c:forEach var="discussionItem" items="${discussionItems}">
+    			<li>
+    				<discussionItem:discussionItem discussionItem="${discussionItem}" loginUser="${loginUser}"/>
+    			</li>
+    		</c:forEach>
+    	</c:if>
+		<!-- placeholder -->
+    </ul>
+</jsp:root>

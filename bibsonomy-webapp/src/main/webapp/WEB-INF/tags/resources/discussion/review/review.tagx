@@ -1,0 +1,60 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment">
+    
+    <jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="true" />
+    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+    <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+    
+    <c:set var="ownReview" value="${loginUser.name eq review.user.name }" />
+    <c:set var="anonym" value="${review.anonym and not ownReview}" />
+    
+	<c:choose>
+		<c:when test="${anonym}">
+			<img src="${resdir}/image/no_picture.png" alt="anonym" class="commentPicture" />
+		</c:when>
+		<c:otherwise>
+			<img src="/picture/user/${fn:escapeXml(review.user.name)}" alt="userPicture" class="commentPicture"/>
+		</c:otherwise>
+	</c:choose>
+    <div class="review details">
+		<div class="review info" data-username="${review.user.name}" data-discussionItemHash="${review.hash}">		
+			<!-- TODO: admin actions for mark as spammer -->
+			<div class="review meta">
+				<span class="reviewer">				
+					<c:choose>
+						<c:when test="${anonym}">
+							<fmt:message key="post.resource.review.anonymus" />
+						</c:when>
+						<c:otherwise>
+							<a href="/user/${fn:escapeXml(review.user.name)}"><c:out value="${review.user.name}" /></a>
+						</c:otherwise>
+					</c:choose>
+				</span>
+				<discussion:discussionMeta discussionItem="${review}" />
+			</div>
+		</div>
+		
+		<div class="rating" data-rating="${review.rating}">
+			<review:reviewStars rating="${review.rating}" />
+		</div>
+		
+		<div class="review text">
+			<c:out value="${review.text}" />
+		</div>
+		
+		<c:if test="${ownReview}">
+			<review:reviewForm review="${review}" resource="${resource}" />
+		</c:if>
+	</div>
+	
+	<discussion:discussionActions discussionItemClass="review" discussionItem="${review}" />
+	
+	<discussionItem:subDiscussionItems discussionItems="${review.subDiscussionItems}" loginUser="${loginUser}" />
+</jsp:root>

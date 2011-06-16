@@ -1,0 +1,77 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    
+    <jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="false" />
+    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	
+	<c:set var="id" value="create" />
+	
+	<c:if test="${not empty review}">
+		<c:set var="id" value="update" />
+	</c:if>
+	
+	<form action="/ajax/reviews" method="post" id="${id}ReviewForm">
+		<c:if test="${not empty review}">
+			<input type="hidden" value="PUT" name="_method"/>
+		</c:if>
+   		<input name="ckey" value="${command.context.ckey}" type="hidden" />
+   		<input name="hash" value="${resource.interHash}" type="hidden" />
+   		<input name="discussionItem.hash" value="${review.hash}" type="hidden" />
+   		<div class="fsform">
+			<fieldset class="fsOuter">
+				<div class="fsRow">
+					<div class="spinner initiallyHidden">
+						<img src="${resdir}/image/ajax_loader.gif" alt="loading" /><span id="${id}LoadingMessage"><fmt:message key="post.resource.review.action.${id}" /></span>
+					</div>
+				</div>
+				<div class="fsRow reviewrating" id="${id}ReviewRating">
+					
+   					<label class="fsLabel" for="discussionItem.rating" ><fmt:message key="post.resource.review.rating"/>* </label><buttons:help message="post.resource.review.rating.help"/>
+   					
+   					<!-- TODO: titles for rating steps? -->
+   					<c:forEach var="i" begin="1" end="10">
+   						<c:set var="ratingStep" value="${i / 2}" />
+   						<c:choose>
+   							<c:when test="${not empty review and review.rating eq ratingStep}">
+   								<input name="discussionItem.rating" type="radio" value="${ratingStep}" checked="checked"/>
+   							</c:when>
+   							<c:otherwise>
+   								<input name="discussionItem.rating" type="radio" value="${ratingStep}"/>
+   							</c:otherwise>
+   						</c:choose>
+   					</c:forEach>	
+				</div>
+				
+				<div class="fsRow">
+					<label class="fsLabel" for="review.anonym" ><fmt:message key="post.resource.review.anonym"/></label><buttons:help message="post.resource.review.anonym.help"/>
+					<c:choose>
+						<c:when test="${not empty review and review.anonym}">
+							<input type="checkbox" name="discussionItem.anonym" value="true" checked="checked" />
+						</c:when>
+						<c:otherwise>
+							<input type="checkbox" name="discussionItem.anonym" value="true" />
+						</c:otherwise>
+					</c:choose>
+				</div>
+				
+				<div class="fsRow">
+   					<label class="fsLabel" for="discussionItem.text" ><fmt:message key="post.resource.review.text"/></label><buttons:help message="post.resource.review.text.help"/>
+   					<textarea class="fsInput reqinput" rows="5" name="discussionItem.text" id="${id}ReviewText"><!-- text --><c:if test="${not empty review}"><c:out value="${review.text}" /></c:if></textarea>
+   				</div>
+   				<div class="fsRow">
+					<!--
+       					| groups 
+      			       -->
+	       	 		<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${review.groups}"/>
+				</div>
+   				<div class="fsRow">
+   					<fmt:message key="post.resource.review.action.${id}" var="buttonText" />
+   					<input type="submit" value="${buttonText}" />
+   				</div>
+   			</fieldset>
+   		</div>
+	</form>
+</jsp:root>

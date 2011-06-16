@@ -36,7 +36,7 @@
 		<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="${systagUrl}" tags="${systagTitles}" title="System Tags"/>	
 	</c:if>
 	
-	<!-- group of a resource -->
+	<!-- group of a post -->
 	<c:forEach var="group" items="${post.groups}">
 		<c:if test="${!empty group.name and group.name ne 'public'}">
 		<c:out value=" "/>

@@ -1,0 +1,43 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
+	
+	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="true" />
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
+	
+	<c:choose>
+		<c:when test="${discussionItem.class.simpleName eq 'Review'}">
+			<c:choose>
+    			<!--  TODO: adapt on comment and reviews -->
+    			<!-- check if user has reviewed this resource -->
+	    		<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
+	    			<li id="ownReview">
+	    				<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
+	    			</li>
+	    		</c:when>
+    			<c:otherwise>
+    				<li>
+    					<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
+    				</li>
+    			</c:otherwise>
+    		</c:choose>	   
+		</c:when>
+		<c:when test="${discussionItem.class.simpleName eq 'Comment'}">
+			<li><comment:comment comment="${discussionItem}" loginUser="${loginUser}"/></li>
+		</c:when>
+		<c:when test="${discussionItem.class.simpleName eq 'DiscussionItem'}">
+			<!-- TODO: message deleted not visible -->
+			<li><fmt:message key="post.resource.dicussion.info" /></li>
+		</c:when>
+		<c:otherwise>
+			no view for ${discussionItem.class.simpleName}
+		</c:otherwise>
+	</c:choose>	
+	
+	<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" />
+		
+</jsp:root>

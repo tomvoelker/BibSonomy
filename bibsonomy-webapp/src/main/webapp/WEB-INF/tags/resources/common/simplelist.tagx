@@ -26,8 +26,8 @@
 		
 		<div class="kiste">${mtl:ch('nbsp')}</div>
 		
-        <c:set var="alreadyOwn"><fmt:message key="post.meta.own_post"/></c:set>
-        <c:set var="copyThisPost"><fmt:message key="post.meta.copy_this_post"/></c:set>
+        <fmt:message key="post.meta.own_post" var="alreadyOwn" />
+        <fmt:message key="post.meta.copy_this_post" var="copyThisPost" />
 
         <!-- iterate over a list of resources and create the list -->
         <ul id="${listView.resourcetype}">
