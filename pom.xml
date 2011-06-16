@@ -192,7 +192,6 @@
 		<module>bibsonomy-database</module>
 		<module>bibsonomy-database-common</module>
 		<module>bibsonomy-dl-importer</module>
-		<module>bibsonomy-events</module>
 		<module>bibsonomy-importer</module>
 		<module>bibsonomy-layout</module>
 		<module>bibsonomy-logging</module>
@@ -528,11 +527,6 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-recommender</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-events</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
