@@ -74,7 +74,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * now we can query the DB, if userA is really userB's friend
 		 */
-		UserParam param = new UserParam();
+		final UserParam param = new UserParam();
 		param.setUser(user);
 		return this.queryForObject("isFriendOf", param, Boolean.class, session);
 	}
@@ -99,11 +99,10 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @param idsType type of the id to be created
 	 * @param session a db session
 	 * @return the next database-ID
-	 * TODO: rename this method (e.g. getNewId) and the corresponding queries since it handles any ConstantID 
 	 */
-	public Integer getNewContentId(final ConstantID idsType, final DBSession session) {
+	public Integer getNewId(final ConstantID idsType, final DBSession session) {
 		this.updateIds(idsType, session);
-		return this.queryForObject("getNewContentId", idsType.getId(), Integer.class, session);
+		return this.queryForObject("getNewId", idsType.getId(), Integer.class, session);
 	}
 
 	protected void updateIds(final ConstantID idsType, final DBSession session) {
