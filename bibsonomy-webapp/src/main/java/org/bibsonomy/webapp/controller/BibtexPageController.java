@@ -163,7 +163,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		/*
 		 * If list is empty, send a 404 error.
 		 */
-		if (!present(command.getBibtex().getList())){
+		if (!present(command.getBibtex().getList())) {
 			/*
 			 * We throw a ResourceNotFoundException such that we don't get empty
 			 * resource pages.
@@ -200,7 +200,10 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			}
 			
 			if (!present(goldStandard)) {
-				command.setReviews(this.logic.getReviews(goldHash));
+				command.setDiscussionItems(this.logic.getDiscussionSpace(goldHash));
+			} else {
+				// TODO: call in logic?!
+				goldStandard.getResource().parseMiscField();
 			}
 
 			if (GroupingEntity.USER.equals(groupingEntity)) {

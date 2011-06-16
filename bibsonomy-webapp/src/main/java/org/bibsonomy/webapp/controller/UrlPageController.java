@@ -9,8 +9,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Review;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UrlCommand;
@@ -101,8 +101,8 @@ public class UrlPageController extends SingleResourceListController implements M
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			final List<Review> reviews = this.logic.getReviews(requHash);
-			command.setReviews(reviews);
+			final List<DiscussionItem> discussionItems = this.logic.getDiscussionSpace(requHash);
+			command.setDiscussionItems(discussionItems);
 			
 			// FIXME: here we assume, bookmarks are handled, further above we use listsToInitialize ...
 			setTags(command, Bookmark.class, groupingEntity, groupingName, null, null, requHash, 1000, null);

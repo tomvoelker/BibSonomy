@@ -5,10 +5,10 @@ import java.util.List;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Review;
 
 /**
  * command with fields for the resource lists (one list for each resource).
@@ -27,7 +27,7 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	// TODO: move to listcommand or use the listCommand
 	private Post<GoldStandardPublication> goldStandardPublication;
 	
-	private List<Review> reviews;
+	private List<DiscussionItem> discussionItems;
 	
 	/**
 	 * @param <T> type of the entities in the list
@@ -108,17 +108,17 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	}
 
 	/**
-	 * @param reviews the reviews to set
+	 * @return the discussionItems
 	 */
-	public void setReviews(List<Review> reviews) {
-		this.reviews = reviews;
+	public List<DiscussionItem> getDiscussionItems() {
+		return this.discussionItems;
 	}
 
 	/**
-	 * @return the reviews
+	 * @param discussionItems the discussionItems to set
 	 */
-	public List<Review> getReviews() {
-		return reviews;
+	public void setDiscussionItems(List<DiscussionItem> discussionItems) {
+		this.discussionItems = discussionItems;
 	}
 	
 }
