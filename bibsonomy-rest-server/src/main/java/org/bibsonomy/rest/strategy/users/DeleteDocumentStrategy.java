@@ -6,8 +6,6 @@ import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
 /**
- *
- * 
  * @author  Christian Kramer
  * $Author$
  * @version $Id$
@@ -35,6 +33,9 @@ public class DeleteDocumentStrategy extends AbstractDeleteStrategy {
 	protected boolean delete() throws InternServerException {
 		this.getLogic().deleteDocument(this.document, this.resourceHash);
 		// no exception -> assume success
+		
+		// FIXME: delete document from the disk!?
+		
 		return true;
 	}
 }
