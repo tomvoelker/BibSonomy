@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -55,12 +57,15 @@ import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
-import org.bibsonomy.database.managers.ReviewDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.TagRelationDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.managers.WikiDatabaseManager;
+import org.bibsonomy.database.managers.discussion.CommentDatabaseManager;
+import org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager;
+import org.bibsonomy.database.managers.discussion.DiscussionItemDatabaseManager;
+import org.bibsonomy.database.managers.discussion.ReviewDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -75,6 +80,8 @@ import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Comment;
+import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
@@ -112,7 +119,12 @@ import org.bibsonomy.sync.SynchronizationServer;
 public class DBLogic implements LogicInterface, SyncLogicInterface {
     private static final Log log = LogFactory.getLog(DBLogic.class);
 
+    /*
+     * help maps for post managers and discussion managers
+     */
     private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
+    private final Map<Class<? extends DiscussionItem>, DiscussionItemDatabaseManager<? extends DiscussionItem>> allDiscussionManagers;
+    
     private final AuthorDatabaseManager authorDBManager;
     private final DocumentDatabaseManager docDBManager;
     private final PermissionDatabaseManager permissionDBManager;
@@ -122,7 +134,9 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     private final GoldStandardPublicationDatabaseManager goldStandardPublicationDBManager;
     private final BibTexExtraDatabaseManager bibTexExtraDBManager;
     
+    private final DiscussionDatabaseManager discussionDatabaseManager;
     private final ReviewDatabaseManager reviewDBManager;
+    private final CommentDatabaseManager commentDBManager;
     
     private final UserDatabaseManager userDBManager;
     private final GroupDatabaseManager groupDBManager;
@@ -157,12 +171,19 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 	this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
 	
-	this.reviewDBManager = ReviewDatabaseManager.getInstance();
-	
 	// gold standard publication db manager
 	this.goldStandardPublicationDBManager = GoldStandardPublicationDatabaseManager.getInstance();
 	this.allDatabaseManagers.put(GoldStandardPublication.class, this.goldStandardPublicationDBManager);
 
+	// discussion and discussion item db manager
+	this.commentDBManager = CommentDatabaseManager.getInstance();
+	this.reviewDBManager = ReviewDatabaseManager.getInstance();	
+	this.discussionDatabaseManager = DiscussionDatabaseManager.getInstance();
+	
+	this.allDiscussionManagers = new HashMap<Class<? extends DiscussionItem>, DiscussionItemDatabaseManager<? extends DiscussionItem>>();
+	this.allDiscussionManagers.put(Comment.class, this.commentDBManager);
+	this.allDiscussionManagers.put(Review.class, this.reviewDBManager);
+	
 	this.authorDBManager = AuthorDatabaseManager.getInstance();
 	this.docDBManager = DocumentDatabaseManager.getInstance();
 	this.userDBManager = UserDatabaseManager.getInstance();
@@ -225,17 +246,16 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		this.adminDBManager.getClassifierUserDetails(user, session);
 		return user;
 	    }
-	    
 
 	    /*
 	     * respect user privacy settings
 	     * clear all profile attributes if current login user isn't allowed to see the profile
 	     */
 	    if (!this.permissionDBManager.isAllowedToAccessUsersProfile(user, this.loginUser, session)) {
-			/*
-			 * TODO: this practically clears /all/ user information
-			 */
-			User user2 = new User(user.getName());
+		/*
+		 * TODO: this practically clears /all/ user information
+		 */
+			final User user2 = new User(user.getName());
 		    /*
 		     * If the specified user is a group, everyone may request his email address in order to
 		     * send a join request.
@@ -555,7 +575,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
 		// this is save because of RTTI-check of resourceType argument
 		// which is of class T
-		List<Post<T>> publications = (List) this.publicationDBManager.getPosts(param, session);
+		final List<Post<T>> publications = (List) this.publicationDBManager.getPosts(param, session);
 		SystemTagsExtractor.handleHiddenSystemTags(publications, loginUser.getName());
 		return publications;
 	    } 
@@ -575,7 +595,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		}
 
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
-		List<Post<T>> bookmarks= (List) this.bookmarkDBManager.getPosts(param, session);
+		final List<Post<T>> bookmarks= (List) this.bookmarkDBManager.getPosts(param, session);
 		SystemTagsExtractor.handleHiddenSystemTags(bookmarks, loginUser.getName());
 		return bookmarks;
 	    }
@@ -594,10 +614,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	}
     }
 
-    private <T extends Resource> boolean systemTagsAllowResourceType(Collection<String> tags, Class<T> resourceType) {
+    private <T extends Resource> boolean systemTagsAllowResourceType(final Collection<String> tags, final Class<T> resourceType) {
 	if (present(tags)) {
-	    for (String tagName: tags) {
-		SearchSystemTag sysTag = SystemTagsUtil.createSearchSystemTag(tagName);
+	    for (final String tagName: tags) {
+		final SearchSystemTag sysTag = SystemTagsUtil.createSearchSystemTag(tagName);
 		if (present(sysTag)) {
 		    if (!sysTag.allowsResource(resourceType)) {
 			return false;
@@ -622,7 +642,16 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		/*
 		 * if a manager found a post, return it
 		 */
-		if (present(post)) return post;
+		if (present(post)) {
+			/*
+			 * XXX: can't be added to the postDatabaseManager; calls
+			 * getPostDetails with an emtpy list of visible groups
+			 */
+			final Resource resource = post.getResource();
+			final List<DiscussionItem> discussionSpace = this.discussionDatabaseManager.getDiscussionSpace(this.loginUser, resource.getInterHash(), session);
+			resource.setDiscussionItems(discussionSpace);
+			return post;
+		}
 		/*
 		 * check next manager
 		 */
@@ -841,20 +870,18 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	}
     }
 
-    /**
-     * Check for each group of a post if the groups actually exist and if the
+    /** 
+     * Check for each group actually exist and if the
      * posting user is allowed to post. If yes, insert the correct group ID into
      * the given post's groups.
      * 
-     * @param post
-     *            the post whose groups will be modified.
+     * @param groups the groups to validate
      */
-    private void validateGroups(final Post<? extends Resource> post, final DBSession session) {
+    protected void validateGroups(final User user, final Set<Group> groups, final DBSession session) {
 	/*
 	 * First check for "public" and "private". Those two groups are special,
 	 * they can't be assigned with another group.
 	 */
-	final Set<Group> groups = post.getGroups();
 	if (GroupUtils.containsExclusiveGroup(groups)) {
 	    if (groups.size() > 1) {
 		/*
@@ -881,7 +908,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	    /*
 	     * retrieve the user's groups
 	     */
-	    final Set<Integer> groupIds = new HashSet<Integer>(this.groupDBManager.getGroupIdsForUser(post.getUser().getName(), session));
+	    final Set<Integer> groupIds = new HashSet<Integer>(this.groupDBManager.getGroupIdsForUser(user.getName(), session));
 	    /*
 	     * add "friends" group
 	     */
@@ -897,7 +924,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		}
 		if (!groupIds.contains(testGroup.getGroupId())) {
 		    // the posting user is not a member of this group
-		    throw new ValidationException("User " + post.getUser().getName() + " is not a member of group " + group.getName());
+		    throw new ValidationException("User " + user.getName() + " is not a member of group " + group.getName());
 		}
 		group.setGroupId(testGroup.getGroupId());
 	    }
@@ -1089,7 +1116,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 	post.getResource().recalculateHashes();
 
-	this.validateGroups(post, session);
+	this.validateGroups(post.getUser(), post.getGroups(), session);
 	/*
 	 * change group IDs to spam group IDs
 	 */
@@ -1164,7 +1191,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	final CrudableContent<T, GenericParam> manager = getFittingDatabaseManager(post);
 	final String oldIntraHash = post.getResource().getIntraHash();
 
-	this.validateGroups(post, session);
+	this.validateGroups(post.getUser(), post.getGroups(), session);
 
 	/*
 	 * change group IDs to spam group IDs
@@ -1714,7 +1741,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
 	    throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 	} catch (final QueryTimeoutException ex) {
-	    // if a query times out, we return an empty list
+	    // if a query times out, we return 0 (cause we also retun empty list when a query timeout exception is thrown)
 	    return 0;
 	} finally {
 	    session.close();
@@ -2115,7 +2142,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.logic.LogicInterface#getUserRelationship(java.lang.String, org.bibsonomy.common.enums.UserRelation)
      */
     @Override
-    public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, String tag) {
+    public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, final String tag) {
 	this.ensureLoggedIn();
 	// ask Robert about this method
 	// this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);
@@ -2379,7 +2406,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	try {
 		final User requUser = this.getUserDetails(userName);
 		/*
-		 * We return an empty wiki for users which are not allowed to access
+		 * We return an empty wiki for users who are not allowed to access
 		 * this wiki.
 		 */
 		if (!this.permissionDBManager.isAllowedToAccessUsersProfile(requUser, this.loginUser, session)) {
@@ -2430,7 +2457,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     }
 
     @Override
-    public void createExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
+    public void createExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
 	final DBSession session = openSession();
 
 	try {
@@ -2445,7 +2472,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     }
 
     @Override
-    public void deleteExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
+    public void deleteExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
 	final DBSession session = this.openSession();
 
 	try {
@@ -2468,7 +2495,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     }
 
     @Override
-    public Map<String, List<String>> getExtendedFields(Class<? extends Resource> resourceType, String userName, String intraHash, String key) {
+    public Map<String, List<String>> getExtendedFields(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key) {
 	final DBSession session = this.openSession();
 
 	try {
@@ -2487,10 +2514,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.logic.ReviewLogicInterface#getReviews(java.lang.String)
      */
 	@Override
-	public List<Review> getReviews(String interHash) {
+	public List<DiscussionItem> getDiscussionSpace(final String interHash) {
 		final DBSession session = this.openSession();
 		try {
-			return this.reviewDBManager.getReviewsForResource(interHash, session);
+			return this.discussionDatabaseManager.getDiscussionSpace(this.loginUser, interHash, session);
 		} finally {
 			session.close();
 		}
@@ -2498,62 +2525,94 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.ReviewLogicInterface#createReview(java.lang.String, java.lang.String, org.bibsonomy.model.Review)
+	 * @see org.bibsonomy.model.logic.DiscussionLogicInterface#createDiscussionItem(java.lang.String, java.lang.String, org.bibsonomy.model.DiscussionItem)
 	 */
 	@Override
-	public void createReview(final String username, final String interHash, final Review review) {
-		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
+	public void createDiscussionItem(final String interHash, final String username, final DiscussionItem discussionItem) {
+		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, username);
 		
 		final DBSession session = this.openSession();
 		try {
-			// TODO: check if user has resource in collection?	
-			review.setUser(new User(username));
-			this.reviewDBManager.createReviewForPost(interHash, review, session);
+			
+			/*
+			 * first create TODO: gold standard posts
+			 */
+			// TODO: add a test
+			final String hash = HashID.INTER_HASH.getId() + interHash;
+			final List<Post<Bookmark>> bookmarkPost = this.getPosts(Bookmark.class, GroupingEntity.USER, username, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
+			final List<Post<BibTex>> publicationPost = this.getPosts(BibTex.class, GroupingEntity.USER, username, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
+			
+			
+			/*
+			 * create the discussionItem
+			 */
+			final User commentUser = this.userDBManager.getUserDetails(username, session);
+			discussionItem.setUser(commentUser);
+			
+			this.createDiscussionItem(interHash, discussionItem, session);
 		} finally {
 			session.close();
 		}
 	}
-
-	@Override
-	public void updateReview(final String username, final String interHash, final Review review) {
-		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
+	
+	private void prepareComment(final User commentUser, final Set<Group> groups, final DBSession session) {
+		this.validateGroups(commentUser, groups, session);
 		
-		final DBSession session = this.openSession();
-		try {
-			review.setUser(new User(username));
-			this.reviewDBManager.updateReview(interHash, review, session);
-		} finally {
-			session.close();
-		}
+		// transfer to spammer group id's if neccessary
+		GroupUtils.prepareGroups(groups, commentUser.isSpammer());
+	}
+	
+	private <D extends DiscussionItem> void createDiscussionItem(final String interHash, final D discussionItem, final DBSession session) {
+		this.prepareComment(discussionItem.getUser(), discussionItem.getGroups(), session);
+		this.getCommentDatabaseManager(discussionItem).createDiscussionItemForResource(interHash, discussionItem, session);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <D extends DiscussionItem> DiscussionItemDatabaseManager<D> getCommentDatabaseManager(final DiscussionItem discussionItem) {
+		return (DiscussionItemDatabaseManager<D>) this.allDiscussionManagers.get(discussionItem.getClass());
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.ReviewLogicInterface#deleteReview(java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.model.logic.DiscussionLogicInterface#updateDiscussionItem(java.lang.String, java.lang.String, org.bibsonomy.model.DiscussionItem)
 	 */
 	@Override
-	public void deleteReview(final String username, final String interHash) {
-		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
+	public void updateDiscussionItem(final String username, final String interHash, final DiscussionItem discussionItem) {
+		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, username);
 		
 		final DBSession session = this.openSession();
 		try {
-			this.reviewDBManager.deleteReview(interHash, username, session);
+			final User commentUser = this.userDBManager.getUserDetails(username, session);
+			discussionItem.setUser(commentUser);
+			
+			this.updateCommentForUser(interHash, discussionItem, session);
 		} finally {
 			session.close();
 		}
 	}
 
+	private <D extends DiscussionItem> void updateCommentForUser(final String interHash, final D discussionItem, final DBSession session) {
+		this.prepareComment(discussionItem.getUser(), discussionItem.getGroups(), session);
+		this.getCommentDatabaseManager(discussionItem).updateDiscussionItemForResource(interHash, discussionItem.getHash(), discussionItem, session);
+	}
+	
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.ReviewLogicInterface#markReview(java.lang.String, java.lang.String, java.lang.String, boolean)
+	 * @see org.bibsonomy.model.logic.DiscussionLogicInterface#deleteDiscussionItem(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void markReview(final String username, final String reviewUsername, final String interHash, final boolean helpful) {
-		this.permissionDBManager.ensureIsSelfAndNotSpammerOrAdmin(this.loginUser, username);
+	public void deleteDiscussionItem(final String username, final String interHash, final String commentHash) {
+		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, username);
 		
-		final DBSession session = openSession();
+		final DBSession session = this.openSession();
 		try {
-			this.reviewDBManager.markReview(username, interHash, reviewUsername, helpful, session);
+			final User user = this.userDBManager.getUserDetails(username, session);
+			
+			for (final DiscussionItemDatabaseManager<? extends DiscussionItem> discussionItemManager : this.allDiscussionManagers.values()) {
+				if (discussionItemManager.deleteDiscussionItemForResource(interHash, user, commentHash, session)) {
+					return;
+				}
+			}
 		} finally {
 			session.close();
 		}
