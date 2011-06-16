@@ -71,7 +71,7 @@ import org.bibsonomy.model.enums.Order;
  * @author Christian Kramer
  * @version $Id$
  */
-public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogicInterface, ReviewLogicInterface {
+public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface {
 
 	/**
 	 * @return the name of the authenticated user
@@ -93,7 +93,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * 			- a resourcehash 
 	 * @param order
 	 * 			- the order by which to retrieve the users
-	 * @param relation TODO
+	 * @param relation
 	 * 			- the relation between the users
 	 * @param search
 	 * 			- a search string

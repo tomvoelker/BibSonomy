@@ -142,6 +142,20 @@ public class GroupUtils {
 				GroupID.equalsIgnoreSpam(getPublicGroup().getGroupId(), groupId)
 		);
 	}
+	
+	/**
+	 * 
+	 * @param groups
+	 * @param isSpammer
+	 */
+	public static void prepareGroups(final Set<Group> groups, final boolean isSpammer) {
+		for (final Group group : groups) {
+			/*
+			 * update the group id of the post
+			 */
+			group.setGroupId(GroupID.getGroupId(group.getGroupId(), isSpammer));
+		}
+	}
 
 	/**
 	 * Checks if the given groups contain an "exclusive" group, i.e., a group which 

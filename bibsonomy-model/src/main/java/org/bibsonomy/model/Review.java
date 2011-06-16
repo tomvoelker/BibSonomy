@@ -1,12 +1,10 @@
 package org.bibsonomy.model;
 
-import java.util.Date;
-
 /**
  * @author dzo
  * @version $Id$
  */
-public class Review {
+public class Review extends DiscussionItem {
 	
 	/**
 	 * the max value of a review rating
@@ -18,19 +16,17 @@ public class Review {
 	 */
 	public static double MIN_REVIEW_RATING = 0;
 	
+	/**
+	 * rating from MIN to MAX_REVIEW_RATING (x.0 and x.5)
+	 */
 	private double rating;
-	
-	private int helpfulCount;
-
-	private int notHelpfulCount;
 	
 	private String text;
 	
-	private User user;
-	
-	private Date date;
-	
-	private Date changeDate;
+	/**
+	 * the user can decide if this username is published with the review
+	 */
+	private boolean anonym;
 
 	/**
 	 * @return the rating
@@ -45,12 +41,19 @@ public class Review {
 	public void setRating(final double rating) {
 		this.rating = rating;
 	}
+	
+	/**
+	 * @return the anonym
+	 */
+	public boolean isAnonym() {
+		return this.anonym;
+	}
 
 	/**
-	 * @return the text
+	 * @param anonym the anonym to set
 	 */
-	public String getText() {
-		return this.text;
+	public void setAnonym(final boolean anonym) {
+		this.anonym = anonym;
 	}
 
 	/**
@@ -61,72 +64,9 @@ public class Review {
 	}
 
 	/**
-	 * @return the user
+	 * @return the text
 	 */
-	public User getUser() {
-		return this.user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(final User user) {
-		this.user = user;
-	}
-
-	/**
-	 * @return the date
-	 */
-	public Date getDate() {
-		return this.date;
-	}
-
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(final Date date) {
-		this.date = date;
-	}
-	
-	/**
-	 * @return the changeDate
-	 */
-	public Date getChangeDate() {
-		return this.changeDate;
-	}
-
-	/**
-	 * @param changeDate the changeDate to set
-	 */
-	public void setChangeDate(Date changeDate) {
-		this.changeDate = changeDate;
-	}
-
-	/**
-	 * @return the helpfulCount
-	 */
-	public int getHelpfulCount() {
-		return this.helpfulCount;
-	}
-
-	/**
-	 * @param helpfulCount the helpfulCount to set
-	 */
-	public void setHelpfulCount(int helpfulCount) {
-		this.helpfulCount = helpfulCount;
-	}
-
-	/**
-	 * @return the notHelpfulCount
-	 */
-	public int getNotHelpfulCount() {
-		return this.notHelpfulCount;
-	}
-
-	/**
-	 * @param notHelpfulCount the notHelpfulCount to set
-	 */
-	public void setNotHelpfulCount(int notHelpfulCount) {
-		this.notHelpfulCount = notHelpfulCount;
+	public String getText() {
+		return text;
 	}
 }

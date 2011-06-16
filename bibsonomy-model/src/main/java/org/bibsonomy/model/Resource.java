@@ -72,19 +72,19 @@ public abstract class Resource implements Serializable, Rateable {
 	private String title;
 	
 	/**
-	 * all reviews for this resource
+	 * all comments for this resource
 	 */
-	private List<Review> reviews;
+	private List<DiscussionItem> discussionItems;
 	
 	/**
 	 * the rating (avg, …) of the resource
 	 */
-	private Double rating;
+	private double rating;
 	
 	/**
 	 * number of all ratings for the resource
 	 */
-	private Integer numberOfRatings;
+	private int numberOfRatings;
 	
 	/**
 	 * FIXME: This method does not belong to the model!!!! It would be fine to
@@ -103,7 +103,7 @@ public abstract class Resource implements Serializable, Rateable {
 	/**
 	 * @param interHash
 	 */
-	public void setInterHash(String interHash) {
+	public void setInterHash(final String interHash) {
 		this.interHash = interHash;
 	}
 
@@ -117,7 +117,7 @@ public abstract class Resource implements Serializable, Rateable {
 	/**
 	 * @param intraHash
 	 */
-	public void setIntraHash(String intraHash) {
+	public void setIntraHash(final String intraHash) {
 		this.intraHash = intraHash;
 	}
 
@@ -134,7 +134,7 @@ public abstract class Resource implements Serializable, Rateable {
 	/**
 	 * @param posts
 	 */
-	public void setPosts(List<Post<? extends Resource>> posts) {
+	public void setPosts(final List<Post<? extends Resource>> posts) {
 		this.posts = posts;
 	}
 
@@ -148,7 +148,7 @@ public abstract class Resource implements Serializable, Rateable {
 	/**
 	 * @param count
 	 */
-	public void setCount(int count) {
+	public void setCount(final int count) {
 		this.count = count;
 	}
 
@@ -162,7 +162,7 @@ public abstract class Resource implements Serializable, Rateable {
 	/**
 	 * @param title the title to set
 	 */
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 	
@@ -170,7 +170,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @return the rating
 	 */
 	@Override
-	public Double getRating() {
+	public double getRating() {
 		return this.rating;
 	}
 
@@ -178,7 +178,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @param rating the rating to set
 	 */
 	@Override
-	public void setRating(Double rating) {
+	public void setRating(final double rating) {
 		this.rating = rating;
 	}
 	
@@ -186,7 +186,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @return the numberOfRatings
 	 */
 	@Override
-	public Integer getNumberOfRatings() {
+	public int getNumberOfRatings() {
 		return this.numberOfRatings;
 	}
 
@@ -194,22 +194,22 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @param numberOfRatings the numberOfRatings to set
 	 */
 	@Override
-	public void setNumberOfRatings(Integer numberOfRatings) {
+	public void setNumberOfRatings(final int numberOfRatings) {
 		this.numberOfRatings = numberOfRatings;
-	}
-	
-	/**
-	 * @return the reviews
-	 */
-	public List<Review> getReviews() {
-		return this.reviews;
 	}
 
 	/**
-	 * @param reviews the reviews to set
+	 * @return the discussionItems
 	 */
-	public void setReviews(List<Review> reviews) {
-		this.reviews = reviews;
+	public List<DiscussionItem> getDiscussionItems() {
+		return this.discussionItems;
+	}
+
+	/**
+	 * @param discussionItems the discussionItems to set
+	 */
+	public void setDiscussionItems(final List<DiscussionItem> discussionItems) {
+		this.discussionItems = discussionItems;
 	}
 
 	@Override
