@@ -354,12 +354,7 @@ public enum Views implements View {
 	 * Log into the system. 
 	 */
 	LOGIN("actions/login"),
-	
-	/**
-	 * remote authentication
-	 */
-	REMOTE_AUTH("actions/remoteAuth"),
-	
+		
 	/**
 	 * The dialog to EDIT a bookmark (big dialog).
 	 */
@@ -447,20 +442,6 @@ public enum Views implements View {
 	 * display an OAuth authorization success message
 	 */
 	OAUTH_AUTHORIZATION_SUCCESS("opensocial/authorizationSuccess"),
-	
-	/* *****************************************************
-	 * views for events (e.g., conferences, workshops 
-	 * *****************************************************/
-	/**
-	 * register a user for an event 
-	 */
-	EVENT_REGISTRATION("events/registration"),
-	
-	
-	/**
-	 * shown after a user has registered successfully for an event
-	 */
-	EVENT_REGISTRATION_SUCCESS("events/registration_success"),
 	
 	/* *****************************************************
 	 * query independent views to show bookmark or 
