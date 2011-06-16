@@ -5,6 +5,7 @@ package org.bibsonomy.database.params;
  * @version $Id$
  */
 public class InboxParam extends GenericParam {
+	
 	private int messageId;
 	private int contentId;
 	private String intraHash;

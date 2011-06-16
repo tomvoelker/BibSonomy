@@ -7,4 +7,5 @@ package org.bibsonomy.database.params;
  * @version $Id$
  */
 public class GroupParam extends GenericParam {
+	
 }

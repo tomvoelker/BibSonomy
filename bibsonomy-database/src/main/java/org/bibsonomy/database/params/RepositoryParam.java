@@ -7,13 +7,13 @@ package org.bibsonomy.database.params;
  */
 public class RepositoryParam {    
     
-    String intraHash;
+    private String intraHash;
     
-    String interHash;
+    private String interHash;
     
-    String userName;
+    private String userName;
     
-    String repositoryName;
+    private String repositoryName;
         
     /**
      * @return the repositoryName

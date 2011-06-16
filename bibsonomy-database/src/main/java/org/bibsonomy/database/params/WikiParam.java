@@ -29,7 +29,7 @@ public class WikiParam {
     }
 
     /**
-     * @param wiki the wiki to set
+     * @param wikiText the wiki to set
      */
     public void setWikiText(String wikiText) {
 	this.wikiText = wikiText;
