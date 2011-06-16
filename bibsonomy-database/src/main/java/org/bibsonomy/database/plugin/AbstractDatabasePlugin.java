@@ -4,7 +4,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.model.Review;
+import org.bibsonomy.model.DiscussionItem;
 
 /**
  * This class should be used by plugins. This way they don't have to implement
@@ -130,22 +130,12 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public Runnable onReviewUpdated(String interHash, Review oldReview, Review review, DBSession session) {
-		// TODO Auto-generated method stub
+	public Runnable onDiscussionUpdate(final String interHash, final DiscussionItem comment, final DiscussionItem oldComment, final DBSession session) {
 		return null;
 	}
 
 	@Override
-	public Runnable onReviewDeleted(String interHash, Review oldReview, DBSession session) {
-		// TODO Auto-generated method stub
+	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedComment, final DBSession session) {
 		return null;
 	}
-
-	@Override
-	public Runnable onReviewCreated(String interHash, Review review, DBSession session) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
 }

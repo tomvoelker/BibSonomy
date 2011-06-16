@@ -87,13 +87,7 @@ public class LogicInterfaceHelper {
 		if (hash != null && hash.length() == 33) {
 			HashID id = HashID.SIM_HASH1;
 			try {
-				// FIXME: this logic already exists in HashID.getSimHash()
-				switch (Integer.valueOf(hash.substring(0, 1))) {
-					case 0: id = HashID.SIM_HASH0; break;
-					case 2: id = HashID.SIM_HASH2; break;
-					case 3: id = HashID.SIM_HASH3; break;
-					default: break;
-				}
+				id = HashID.getSimHash(Integer.valueOf(hash.substring(0, 1)));
 			} catch (final NumberFormatException ex) {
 				throw new RuntimeException(ex);
 			}

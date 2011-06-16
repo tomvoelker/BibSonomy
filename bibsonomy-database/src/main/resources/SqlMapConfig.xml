@@ -6,27 +6,29 @@
 	<!-- define query timeout (works only with mysql-connector-java 5.0.5+) -->	
 	<settings defaultStatementTimeout="30" />
 
-	<typeAlias alias="date" type="java.util.Date" />
-	<typeAlias alias="url" type="java.net.URL" />
-	<typeAlias alias="InetAddress" type="java.net.InetAddress" />
-	<typeAlias alias="InetAddressStatus" type="org.bibsonomy.common.enums.InetAddressStatus" />
-	<typeAlias alias="Role" type="org.bibsonomy.common.enums.Role" />
-	<typeAlias alias="Privlevel" type="org.bibsonomy.common.enums.Privlevel" />
-	<typeAlias alias="ProfilePrivlevel" type="org.bibsonomy.common.enums.ProfilePrivlevel" />
+	<typeAlias alias="resourceTypeClass"	type="java.lang.Class" />
+	<typeAlias alias="url"					type="java.net.URL" />
+	<typeAlias alias="uri"					type="java.net.URI" />
+	<typeAlias alias="InetAddress"			type="java.net.InetAddress" />
+	<typeAlias alias="date"					type="java.util.Date" />
+	<typeAlias alias="properties"			type="java.util.Properties" />
 	
-	<typeAlias alias="properties" type="java.util.Properties" />
-	<typeAlias alias="uri" type="java.net.URI" />
-	<typeAlias alias="resourceTypeClass" type="java.lang.Class" />
 	
-	<typeHandler javaType="url" callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />
-	<typeHandler javaType="InetAddress" callback="org.bibsonomy.database.common.typehandler.InetAddressTypeHandlerCallback" />
-  	<typeHandler javaType="InetAddressStatus" callback="org.bibsonomy.database.common.typehandler.InetAddressStatusTypeHandlerCallback" />
-  	<typeHandler javaType="Role" callback="org.bibsonomy.database.common.typehandler.RoleTypeHandlerCallback" />
-  	<typeHandler javaType="Privlevel" callback="org.bibsonomy.database.common.typehandler.PrivlevelTypeHandlerCallback" />
-  	<typeHandler javaType="ProfilePrivlevel" callback="org.bibsonomy.database.common.typehandler.ProfilePrivlevelTypeHandlerCallback" />
-	<typeHandler javaType="properties" callback="org.bibsonomy.database.common.typehandler.PropertiesTypeHandlerCallback" />  
-	<typeHandler javaType="uri" callback="org.bibsonomy.database.common.typehandler.UriTypeHandlerCallback" />
-	<typeHandler javaType="resourceTypeClass" callback="org.bibsonomy.database.common.typehandler.ContentTypeTypeHandlerCallback" />
+	<typeAlias alias="InetAddressStatus"	type="org.bibsonomy.common.enums.InetAddressStatus" />
+	<typeAlias alias="Privlevel"			type="org.bibsonomy.common.enums.Privlevel" />
+	<typeAlias alias="ProfilePrivlevel"		type="org.bibsonomy.common.enums.ProfilePrivlevel" />
+	<typeAlias alias="Role"					type="org.bibsonomy.common.enums.Role" />
+	
+	<typeHandler	javaType="url"					callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />
+	<typeHandler	javaType="InetAddress"		 	callback="org.bibsonomy.database.common.typehandler.InetAddressTypeHandlerCallback" />
+  	<typeHandler 	javaType="InetAddressStatus"	callback="org.bibsonomy.database.common.typehandler.InetAddressStatusTypeHandlerCallback" />
+  	<typeHandler	javaType="Role"					callback="org.bibsonomy.database.common.typehandler.RoleTypeHandlerCallback" />
+  	<typeHandler	javaType="Privlevel"			callback="org.bibsonomy.database.common.typehandler.PrivlevelTypeHandlerCallback" />
+  	<typeHandler	javaType="ProfilePrivlevel"		callback="org.bibsonomy.database.common.typehandler.ProfilePrivlevelTypeHandlerCallback" />
+  	<typeHandler	javaType="properties"			callback="org.bibsonomy.database.common.typehandler.PropertiesTypeHandlerCallback" />  
+	<typeHandler	javaType="properties"			callback="org.bibsonomy.database.common.typehandler.PropertiesTypeHandlerCallback" />  
+	<typeHandler	javaType="uri"					callback="org.bibsonomy.database.common.typehandler.UriTypeHandlerCallback" />
+	<typeHandler	javaType="resourceTypeClass"	callback="org.bibsonomy.database.common.typehandler.ContentTypeTypeHandlerCallback" />
     
 	<transactionManager type="JDBC">
 		<dataSource type="JNDI">
@@ -47,8 +49,10 @@
 	<sqlMap resource="common/RepositoryCommon.xml" />
 	<sqlMap resource="common/AdminCommon.xml" />
 	<sqlMap resource="common/AuthorCommon.xml"/>
-	<sqlMap resource="common/WikiCommon.xml"/>
+	<sqlMap resource="common/WikiCommon.xml" />
 	<sqlMap resource="common/SynchronizationCommon.xml" />
+	<sqlMap resource="common/DiscussionCommon.xml" />
+	<sqlMap resource="common/CommentCommon.xml" />
 	<sqlMap resource="common/ReviewCommon.xml" />
 
 	<sqlMap resource="Synchronization.xml" />
@@ -56,23 +60,25 @@
 	<sqlMap resource="Tag.xml" />
 	<sqlMap resource="TagRelation.xml" />
 	<sqlMap resource="Bookmark.xml" />
-	<sqlMap resource="BibTex.xml"/>
-	<sqlMap resource="BibTexExtra.xml"/>
+	<sqlMap resource="BibTex.xml" />
+	<sqlMap resource="BibTexExtra.xml" />
 	<sqlMap resource="GoldStandardPublication.xml" />
-	<sqlMap resource="User.xml"/>
-	<sqlMap resource="Group.xml"/>
-	<sqlMap resource="Document.xml"/>
-	<sqlMap resource="Basket.xml"/>
-	<sqlMap resource="Admin.xml"/>
-	<sqlMap resource="Statistics.xml"/>
-	<sqlMap resource="Author.xml"/>
-	<sqlMap resource="Inbox.xml"/>
-	<sqlMap resource="Permission.xml"/>
+	<sqlMap resource="User.xml" />
+	<sqlMap resource="Group.xml" />
+	<sqlMap resource="Document.xml" />
+	<sqlMap resource="Basket.xml" />
+	<sqlMap resource="Admin.xml" />
+	<sqlMap resource="Statistics.xml" />
+	<sqlMap resource="Author.xml" />
+	<sqlMap resource="Inbox.xml" />
+	<sqlMap resource="Permission.xml" />
+	<sqlMap resource="Discussion.xml" />
 	<sqlMap resource="Review.xml" />
-	<sqlMap resource="Wiki.xml"/>
+	<sqlMap resource="Comment.xml" />
+	<sqlMap resource="Wiki.xml" />
 
-	<!-- Plugins -->
-	<sqlMap resource="plugins/Logging.xml"/>
-	<sqlMap resource="plugins/GoldStandardPublicationReference.xml"/>
-	<sqlMap resource="plugins/ReviewPlugin.xml"/>
+	<!-- plugins -->
+	<sqlMap resource="plugins/Logging.xml" />
+	<sqlMap resource="plugins/GoldStandardPublicationReference.xml" />
+	<sqlMap resource="plugins/DiscussionPlugin.xml" />
 </sqlMapConfig>

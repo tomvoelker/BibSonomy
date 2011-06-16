@@ -3,7 +3,7 @@ package org.bibsonomy.database.plugin;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.model.Review;
+import org.bibsonomy.model.DiscussionItem;
 
 /**
  * This interface supplies hooks which can be implemented by plugins. This way
@@ -227,35 +227,25 @@ public interface DatabasePlugin {
 	 * 
 	 */
 	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session);
-
-	/**
-	 * called when a review was updated
-	 * 
-	 * @param interHash
-	 * @param oldReview
-	 * @param review
-	 * @param session
-	 * @return runnable
-	 */
-	public Runnable onReviewUpdated(String interHash, Review oldReview, Review review, DBSession session);
-
-	/**
-	 * called when a review was deleted
-	 * 
-	 * @param interHash
-	 * @param oldReview
-	 * @param session
-	 * @return runnable
-	 */
-	public Runnable onReviewDeleted(String interHash, Review oldReview, DBSession session);
 	
 	/**
-	 * called when a review was created
+	 * called when a comment was updated
 	 * 
 	 * @param interHash
-	 * @param review
+	 * @param comment
+	 * @param oldComment
 	 * @param session
 	 * @return runnable
 	 */
-	public Runnable onReviewCreated(String interHash, Review review, DBSession session);
+	public Runnable onDiscussionUpdate(final String interHash, DiscussionItem comment, DiscussionItem oldComment, DBSession session);	
+	
+	/**
+	 * called when a comment will be deleted
+	 * 
+	 * @param interHash
+	 * @param deletedComment
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedComment, final DBSession session);
 }

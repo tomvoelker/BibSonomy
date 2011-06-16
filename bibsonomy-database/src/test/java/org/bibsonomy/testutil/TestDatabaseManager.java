@@ -46,7 +46,6 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	private double checkResult(final Double value) {
 		return value == null ? 0 : value;
 	}
-
 	
 	/** 
 	 * @param param
@@ -143,53 +142,6 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public int getReviewCount(final String interHash) {
 		final Integer result = this.queryForObject("getReviewCount", interHash, Integer.class, this.createDBSession());
-		return this.checkResult(result);
-	}
-	
-	/**
-	 * @return number of review helpful log entries
-	 */
-	public int countReviewHelpfulLogs() {
-		final Integer result = this.queryForObject("countReviewHelpfulLogs", Integer.class, this.createDBSession());
-		return this.checkResult(result);
-	}
-
-	/**
-	 * @param interHash
-	 * @return number of helpful marks for the specified interHash
-	 */
-	public int countReviewHelpful(String interHash) {
-		final Integer result = this.queryForObject("getReviewHelpfulCount", interHash, Integer.class, this.createDBSession());
-		return this.checkResult(result);
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @return the number of marks of the user
-	 */
-	public int getMarkReviewCountForUser(String name) {
-		final Integer result = this.queryForObject("getMarkReviewCountForUser", name, Integer.class, this.createDBSession());
-		return this.checkResult(result);
-	}
-	
-	/**
-	 * 
-	 * @param name
-	 * @return the number of marks for reviews of the user
-	 */
-	public int getMarkOfUserReviewCount(String name) {
-		final Integer result = this.queryForObject("getMarkOfUserReviewCount", name, Integer.class, this.createDBSession());
-		return this.checkResult(result);
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @return the number of reviews of the user
-	 */
-	public int getReviewCountForUser(String name) {
-		final Integer result = this.queryForObject("getReviewCountForUser", name, Integer.class, this.createDBSession());
 		return this.checkResult(result);
 	}	
 }

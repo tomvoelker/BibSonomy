@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Comment">
+	
+	<select id="getCommentsByHashForResource" parameterClass="discussionItemParam" resultMap="CommentCommon.comment">
+		SELECT <include refid ="commonDiscussionAttributes"/>, NULL AS `group`, NULL AS group_name FROM
+			discussion d
+		WHERE d.hash = #hash#
+			AND d.interHash = #interHash#
+			AND d.user_name = #userName#
+			AND d.rating IS NULL
+	</select>
+	
+	<insert id="insertComment" parameterClass="commentParam">
+		INSERT INTO discussion (discussion_id, interHash, hash, type, user_name, text, date, parent_hash) VALUES (#comment.id#, #interHash#, #comment.hash#, #discussionItemType.id#, #userName#, #comment.text#, #comment.date#, #comment.parentHash#)
+	</insert>
+	
+	<update id="updateComment" parameterClass="commentParam">
+		UPDATE discussion SET text = #comment.text#, hash = #comment.hash#, change_date = #comment.changeDate# WHERE user_name = #userName# AND interHash = #interHash# AND hash = #hash#
+	</update>
+</sqlMap>

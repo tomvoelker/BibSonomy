@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +23,10 @@ import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.database.managers.AbstractDBLogicBase;
+import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.UserRelationSystemTag;
 import org.bibsonomy.model.BibTex;
@@ -37,7 +41,9 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ModelUtils;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -45,7 +51,7 @@ import org.junit.Test;
  * @author Jens Illig
  * @version $Id$
  */
-public class DBLogicTest extends AbstractDBLogicBase {
+public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String TEST_USER_NAME = "jaeschke";
 	private static final String TEST_SPAMMER_NAME = "testspammer2";
 	private static final String TEST_SPAMMER_EMAIL = "testspammer@bibsonomy.org";
@@ -60,6 +66,21 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	private static final Set<String> DEFAULT_TAG_SET = new HashSet<String>(DEFAULT_TAG_LIST);
 	
 	private static final Set<String> DEFAULT_USERNAME_SET = new HashSet<String>(Arrays.asList(TEST_USER_NAME));
+	
+	private static UserDatabaseManager userDb;
+	
+	/**
+	 * sets up required managers
+	 */
+	@BeforeClass
+	public static void setupManagers() {
+		userDb = UserDatabaseManager.getInstance();
+	}
+	
+	protected static List<String> getUserNamesByGroupId(final GroupID groupId, final DBSession dbSession) {
+		return userDb.getUserNamesByGroupId(groupId.getId(), dbSession);
+	}
+	
 	
 	protected LogicInterface getDbLogic() {		
 		return this.getDbLogic(TEST_USER_NAME);
@@ -167,17 +188,17 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	@Test
 	@Ignore
 	public void getPostsByHashBibtex() {
-		List<Post<BibTex>> listBibtex = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), "d9eea4aa159d70ecfabafa0c91bbc9f0", null, null, 0, 5, null);
+		final List<Post<BibTex>> listBibtex = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), "d9eea4aa159d70ecfabafa0c91bbc9f0", null, null, 0, 5, null);
 		assertEquals(1, listBibtex.size());
 		assertEquals(1, listBibtex.get(0).getGroups().size());
-		for (Group g : listBibtex.get(0).getGroups()){
+		for (final Group g : listBibtex.get(0).getGroups()){
 			assertEquals("public", g.getName());
 		}
 		
-		List<Post<Bookmark>> listBookmark = this.getDbLogic().getPosts(Bookmark.class, GroupingEntity.ALL, "", new ArrayList<String>(), "85ab919107e4cc79b345e996b3c0b097", null, null, 0, 5, null);
+		final List<Post<Bookmark>> listBookmark = this.getDbLogic().getPosts(Bookmark.class, GroupingEntity.ALL, "", new ArrayList<String>(), "85ab919107e4cc79b345e996b3c0b097", null, null, 0, 5, null);
 		assertEquals(1, listBookmark.size());
 		assertEquals(1, listBookmark.get(0).getGroups().size());
-		for (Group g : listBookmark.get(0).getGroups()){
+		for (final Group g : listBookmark.get(0).getGroups()){
 			assertEquals("public", g.getName());
 		}
 	}
@@ -188,7 +209,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	@Test
 	@Ignore
 	public void getPostsByHashForUser() {
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), TEST_REQUEST_HASH, null, null, 0, 19, null);
+		final List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), TEST_REQUEST_HASH, null, null, 0, 19, null);
 		assertEquals(1, bibTexPostsList.size());
 		assertEquals(1, bibTexPostsList.get(0).getGroups().size());
 		assertNull(bibTexPostsList.get(0).getResource().getDocuments());
@@ -305,22 +326,22 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 */
 	@Test
 	public void getBibtexOfTaggedByUser() {
-		User admUser = ModelUtils.getUser();
+		final User admUser = ModelUtils.getUser();
 		admUser.setName("testuser1");
 		//--------------------------------------------------------------------
 		// create some test users and create some test relations among them
 		//--------------------------------------------------------------------
-		User srcUser = createUser("buzz");
-		User dstUser1 = createUser("duzz");
-		User dstUser2 = createUser("fuzz");
-		User dstUser3 = createUser("suzz");
+		final User srcUser = createUser("buzz");
+		final User dstUser1 = createUser("duzz");
+		final User dstUser2 = createUser("fuzz");
+		final User dstUser3 = createUser("suzz");
 
-		String relationName1 = "football";
-		String relationTag1 = SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, relationName1);
-		String relationName2 = "music";
-		String relationTag2 = SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, relationName2);
-		String relationName3 = "tv";
-		String relationTag3 = SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, relationName3);
+		final String relationName1 = "football";
+		final String relationTag1 = SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, relationName1);
+		final String relationName2 = "music";
+		final String relationTag2 = SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, relationName2);
+		final String relationName3 = "tv";
+		final String relationTag3 = SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, relationName3);
 		
 		final LogicInterface admLogic  = this.getAdminDbLogic(admUser.getName());
 		final LogicInterface srcLogic  = this.getDbLogic(srcUser.getName());
@@ -406,13 +427,13 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		//
 		//
 		
-		List<String> tags1 = new ArrayList<String>();
+		final List<String> tags1 = new ArrayList<String>();
 		tags1.add(relationTag1);
 		
 		List<Post<BibTex>> bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags1, null, Order.ADDED, null, 0, 19, null);
 		assertEquals(2, bibTexPostsList.size());
 		
-		List<String> tags2 = new ArrayList<String>();
+		final List<String> tags2 = new ArrayList<String>();
 		tags2.add(relationTag2);
 		
 		List<Post<Bookmark>> bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
@@ -430,8 +451,8 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	}
 
 	/** helper function */
-	private User createUser(String userName) {
-		User srcUser = ModelUtils.getUser();
+	private User createUser(final String userName) {
+		final User srcUser = ModelUtils.getUser();
 		srcUser.setName(userName);
 		srcUser.setReminderPassword(null);
 		srcUser.setGender("m");
@@ -487,7 +508,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	@Test
 	@Ignore
 	public void getPostsHome() {
-		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, TEST_REQUEST_USER_NAME, DEFAULT_TAG_LIST, null, null, null, 0, 15, null);
+		final List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, TEST_REQUEST_USER_NAME, DEFAULT_TAG_LIST, null, null, null, 0, 15, null);
 		assertEquals(15, bibTexPostsList.size());
 	}
 
@@ -582,9 +603,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	@Ignore
 	@Test
 	public void testGetUsersByFolkrank(){
-		List<String> tags = new ArrayList<String>();
+		final List<String> tags = new ArrayList<String>();
 		tags.add("web");
-		List<User> user = this.getDbLogic().getUsers(null, null, null, tags, null, Order.FOLKRANK, null, null, 0, 20);
+		final List<User> user = this.getDbLogic().getUsers(null, null, null, tags, null, Order.FOLKRANK, null, null, 0, 20);
 		assertEquals(20, user.size());
 	}
 	
@@ -835,7 +856,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals(1, createdPosts.size());
 		
 		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0), TEST_REQUEST_USER_NAME);
-		List<Repository> repositorys = new ArrayList<Repository>();
+		final List<Repository> repositorys = new ArrayList<Repository>();
 		
 		Repository repo = new Repository();
 		repo.setId("TEST_REPOSITORY_1");
@@ -866,5 +887,80 @@ public class DBLogicTest extends AbstractDBLogicBase {
 
 		b = posts.get(2);
 		assertEquals(b.getRepositorys().size() , 1);
+	}
+
+	/**
+	 * tests {@link DBLogic#validateGroups(User, Set, org.bibsonomy.database.common.DBSession)}
+	 */
+	@Test
+	public void testValidateGroups() {
+		final User user = new User("testuser2");
+		final DBLogic logic = new DBLogic(user, dbSessionFactory);
+		
+		/*
+		 * test empty group, public group must be added
+		 */
+		final Set<Group> groups = new HashSet<Group>();
+		logic.validateGroups(user, groups, this.dbSession);
+		
+		assertEquals(1, groups.size());
+		final Group group = groups.iterator().next();
+		assertEquals(GroupUtils.getPublicGroup(), group);
+		assertEquals(GroupID.PUBLIC.getId(), group.getGroupId());
+		
+		/*
+		 * test if validateGroup inserts correct id for special group
+		 */
+		groups.clear();
+		final Group publicGroup = new Group("public");
+		groups.add(publicGroup);
+		
+		logic.validateGroups(user, groups, this.dbSession);
+		assertEquals(GroupID.PUBLIC.getId(), publicGroup.getGroupId());
+		
+		/*
+		 * two special groups are prohibited
+		 */
+		try {
+			groups.add(GroupUtils.getPrivateGroup());
+			logic.validateGroups(user, groups, this.dbSession);
+			fail("invalid groups not found");
+		} catch (final ValidationException ex) {
+			// ok
+		}
+		
+		/*
+		 * only testgroup1 should validate and set the correct group id
+		 */
+		groups.clear();
+		final Group testGroup1 = new Group("testgroup1");
+		groups.add(testGroup1);
+		logic.validateGroups(user, groups, this.dbSession);
+		assertEquals(TESTGROUP1_ID, testGroup1.getGroupId());
+		
+		/*
+		 * testuser2 is not member of testgroup2
+		 */
+		final Group testGroup2 = new Group("testgroup2");
+		groups.add(testGroup2);
+		
+		try {
+			logic.validateGroups(user, groups, this.dbSession);
+			fail("user is not member of group but validation was successful");
+		} catch (final ValidationException ex) {
+			// ok
+		}
+		
+		/*
+		 * test if validation finds inexistent group
+		 */
+		groups.remove(testGroup2);
+		groups.add(new Group("thisisaspecialgroup"));
+		try {
+			logic.validateGroups(user, groups, this.dbSession);
+			fail("inexistent group not found");
+		} catch (final ValidationException ex) {
+			// ok
+		}		
 	}
 }

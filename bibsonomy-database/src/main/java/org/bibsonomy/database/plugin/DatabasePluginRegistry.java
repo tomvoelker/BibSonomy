@@ -12,8 +12,8 @@ import org.bibsonomy.database.plugin.plugins.BasketPlugin;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
 import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin;
 import org.bibsonomy.database.plugin.plugins.Logging;
-import org.bibsonomy.database.plugin.plugins.ReviewPlugin;
-import org.bibsonomy.model.Review;
+import org.bibsonomy.database.plugin.plugins.DiscussionPlugin;
+import org.bibsonomy.model.DiscussionItem;
 
 /**
  * All database plugins are registered here.
@@ -34,7 +34,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		DEFAULT_PLUGINS.add(new BibTexExtraPlugin());
 		DEFAULT_PLUGINS.add(new BasketPlugin());
 		DEFAULT_PLUGINS.add(new GoldStandardPublicationReferencePlugin());
-		DEFAULT_PLUGINS.add(new ReviewPlugin());
+		DEFAULT_PLUGINS.add(new DiscussionPlugin());
 	}
 	
 	/**
@@ -291,27 +291,20 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public Runnable onReviewDeleted(String interHash, Review oldReview, DBSession session) {
+	public Runnable onDiscussionUpdate(final String interHash, final DiscussionItem discussionItem, final DiscussionItem oldDiscussionItem, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()){
-			this.executeRunnable(plugin.onReviewDeleted(interHash, oldReview, session));
+			this.executeRunnable(plugin.onDiscussionUpdate(interHash, discussionItem, oldDiscussionItem, session));
 		}
 
 		return null;
 	}
-
+	
 	@Override
-	public Runnable onReviewUpdated(String interHash, Review oldReview, Review review, DBSession session) {
+	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedDiscussionItem, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()){
-			this.executeRunnable(plugin.onReviewUpdated(interHash, oldReview, review, session));
+			this.executeRunnable(plugin.onDiscussionItemDelete(interHash, deletedDiscussionItem, session));
 		}
-		return null;
-	}
 
-	@Override
-	public Runnable onReviewCreated(String interHash, Review review, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()){
-			this.executeRunnable(plugin.onReviewCreated(interHash, review, session));
-		}
 		return null;
 	}
 }

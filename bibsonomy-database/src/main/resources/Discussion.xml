@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Discussion">
+	
+	<select id="getDiscussionSpaceForResource" parameterClass="discussionItemParam" resultMap="DiscussionCommon.discussionItem">
+		SELECT <include refid ="allDiscussionColumns"/> FROM ((
+			<!-- own, viewable for public and groups -->
+			SELECT <include refid ="allDiscussionAttributesGroupExtra"/> FROM
+				discussion d
+				LEFT JOIN discussion_groups t1 ON d.discussion_id = t1.discussion_id <!-- get group "assignments" -->
+				LEFT JOIN groupids g ON t1.group = g.group <!-- get group name -->
+			WHERE d.interHash = #interHash#
+				AND (d.user_name = #userName# OR <include refid="inGroupsUnchecked"/>) <!-- own or for one group the user is member of -->
+			) UNION (
+			<!-- viewable for friends -->
+			<!-- TODO: adapt on new tagged based friendship -->
+			SELECT <include refid ="allDiscussionAttributesGroupExtra"/> FROM
+				discussion d
+				LEFT JOIN discussion_groups t1 ON d.discussion_id = t1.discussion_id <!-- get group "assignments" -->
+				LEFT JOIN groupids g ON t1.group = g.group <!-- get group name -->,
+				friends f
+		    WHERE f.f_user_name = #userName#  
+		    	AND d.user_name = f.user_name	  <!-- friend of the user -->
+				AND d.interHash = #interHash#
+				AND t1.group = #groupTypeFriends# <!-- only group friends reviews -->
+			)) AS d
+		ORDER BY d.date ASC
+	</select>
+	
+	<select id="getDiscussionItemForResourceByHash" parameterClass="discussionItemParam" resultMap="DiscussionCommon.discussionItem">
+		SELECT <include refid ="commonDiscussionAttributes"/>, NULL AS `group`, NULL AS group_name FROM
+			discussion d
+		WHERE d.hash = #hash#
+			AND d.interHash = #interHash#
+	</select>
+	
+	<select id="hasSubDiscussionItems" parameterClass="discussionItemParam" resultClass="boolean">
+		SELECT count(*) FROM discussion d WHERE d.parent_hash = #hash# AND d.interHash = #interHash#
+	</select>
+	
+	<update id="cleanDiscussionItem" parameterClass="discussionItemParam">
+		UPDATE discussion
+			SET user_name = '', text = NULL, rating = NULL, anonym = 0, type = 0
+		WHERE user_name = #userName#
+			AND interHash = #interHash#
+			AND hash = #hash#
+	</update>
+	
+	<delete id="deleteDiscussionItem" parameterClass="discussionItemParam">
+		DELETE FROM
+			discussion
+		WHERE hash = #hash#
+			AND interHash = #interHash#
+			AND user_name = #userName#
+	</delete>
+	
+	<!-- 
+		group queries
+		 -->
+	<insert id="insertDiscussionGroup" parameterClass="discussionItemParam">
+		INSERT INTO
+			discussion_groups
+			(<include refid="commonDiscussionGroupColumns" />)
+		VALUES (#discussionId#, #groupId#, #userName#, #date#, #changeDate#)
+	</insert>	 
+	
+	<delete id="deleteAllGroupsForDiscussionItemById" parameterClass="discussionItemParam">
+		DELETE FROM
+			discussion_groups
+		WHERE discussion_id = #discussionId#
+	</delete>
+</sqlMap>

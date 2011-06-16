@@ -11,7 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.util.DatabaseSchemaInformationImpl;
+import org.bibsonomy.database.util.DatabaseSchemaInformation;
 
 /**
  * @author dzo
@@ -53,7 +53,7 @@ public class DatabaseModelValidator<T> {
 
 						final int length = stringValue.length();
 						final String propertyName = d.getName();
-						final int maxLength = DatabaseSchemaInformationImpl.getInstance().getMaxColumnLengthForProperty(clazz, propertyName);
+						final int maxLength = DatabaseSchemaInformation.getInstance().getMaxColumnLengthForProperty(clazz, propertyName);
 
 						if ((maxLength > 0) && (length > maxLength)) {
 							fieldLengthError.addToFields(propertyName, maxLength);

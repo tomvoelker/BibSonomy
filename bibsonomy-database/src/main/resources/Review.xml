@@ -1,47 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-<sqlMap namespace="Review">
-
-	<select id="getReviews" parameterClass="string" resultMap="ReviewCommon.review">
-		SELECT <include refid ="allReviewRows"/> FROM reviews WHERE interHash = #interHash# ORDER BY date ASC
+<sqlMap namespace="Review">	
+	
+	<select id="getReviewsByHashForResource" parameterClass="discussionItemParam" resultMap="ReviewCommon.review">
+		SELECT <include refid ="commonDiscussionAttributes"/>, NULL AS `group`, NULL AS group_name FROM
+			discussion d
+		WHERE d.hash = #hash#
+			AND d.interHash = #interHash#
+			AND d.user_name = #userName#
+			AND d.rating IS NOT NULL
+	</select>
+	
+	<select id="getReviewForHashAndUser" parameterClass="reviewParam" resultMap="ReviewCommon.review">
+		SELECT <include refid ="commonDiscussionAttributes"/>, NULL AS `group`, NULL AS group_name FROM
+			discussion d
+		WHERE d.user_name = #userName#
+			AND d.interHash = #interHash#
+			AND d.rating IS NOT NULL
 	</select>
 		
 	<insert id="insertReview" parameterClass="reviewParam">
-		INSERT INTO reviews (interHash, user_name, text, rating, date) VALUES (#interHash#, #username#, #review.text#, #review.rating#, CURRENT_TIMESTAMP)
+		INSERT INTO discussion (discussion_id, interHash, hash, parent_hash, type, user_name, text, rating, anonym, date) VALUES (#review.id#, #interHash#, #review.hash#, #review.parentHash#, #discussionItemType.id#, #userName#, #review.text#, #review.rating#, #review.anonym#, #review.date#)
 	</insert>
-	
-	<select id="selectReviewForHashAndUser" parameterClass="reviewParam" resultMap="ReviewCommon.review">
-		SELECT <include refid ="allReviewRows"/> FROM reviews WHERE user_name = #username# AND interHash = #interHash#
-	</select>
 	
 	<update id="updateReview" parameterClass="reviewParam">
-		UPDATE reviews SET text = #review.text#, rating = #review.rating# WHERE user_name = #username# AND interHash = #interHash#
+		UPDATE discussion SET text = #review.text#, rating = #review.rating#, anonym = #review.anonym#, hash = #review.hash#, change_date = #review.changeDate# WHERE user_name = #userName# AND interHash = #interHash# AND rating IS NOT NULL
 	</update>
 	
-	<delete id="deleteReview" parameterClass="reviewParam">
-		DELETE FROM reviews WHERE user_name = #username# AND interHash = #interHash#
-	</delete>
-	
-	
-	<!-- review mark as helpful/not helpful -->
-	
-	<select id="getReviewMark" parameterClass="reviewParam" resultClass="boolean">
-		SELECT COUNT(interHash) FROM reviews_helpful WHERE user_name = #username# AND interHash = #interHash# AND mark_user_name = #loggedinUsername#
-	</select>
-	
-	<insert id="insertMark" parameterClass="reviewParam">
-		INSERT INTO reviews_helpful (<include refid ="allReviewHelpfulRows" />) VALUES
-	(#interHash#, #username#, #loggedinUsername#, #helpful#);
-			
+	<!--
+		ratings cache update queries
+		-->
+	<insert id="updateReviewRatingsCacheInsert" parameterClass="reviewParam">
+		INSERT INTO review_ratings_cache (interHash, number_of_ratings, rating_arithmetic_mean) VALUES (#interHash#, 1 , #review.rating#)
+  			ON DUPLICATE KEY UPDATE rating_arithmetic_mean = (rating_arithmetic_mean * number_of_ratings + #review.rating#)/(number_of_ratings + 1), number_of_ratings = number_of_ratings + 1;
 	</insert>
 	
-	<update id="updateHelpful" parameterClass="reviewParam">
-		UPDATE reviews SET helpful_count = helpful_count + 1 WHERE user_name = #username# AND interHash = #interHash#
+	<!-- COALASCE the result because devision by zero returns null -->
+	<update id="updateReviewRatingsCacheDelete" parameterClass="reviewParam">
+		UPDATE review_ratings_cache SET rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings - #review.rating#)/(number_of_ratings - 1), 0), number_of_ratings = number_of_ratings - 1 WHERE interHash = #interHash#
 	</update>
-	
-	<update id="updateNotHelpful" parameterClass="reviewParam">
-		UPDATE reviews SET not_helpful_count = not_helpful_count + 1 WHERE user_name = #username# AND interHash = #interHash#
-	</update>
-	
 </sqlMap>

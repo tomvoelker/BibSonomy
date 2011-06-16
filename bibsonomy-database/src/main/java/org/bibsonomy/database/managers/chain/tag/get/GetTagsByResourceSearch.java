@@ -20,11 +20,10 @@ import org.bibsonomy.model.Tag;
  */
 public class GetTagsByResourceSearch extends TagChainElement {
 	
-	
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		Collection<String> tags = null;
-		if( present(param.getTagIndex()) )  {
+		if (present(param.getTagIndex())) {
 			tags = DatabaseUtils.extractTagNames(param.getTagIndex());
 		}
 		return this.db.getTagsByResourceSearch(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getGroupNames(), param.getSearch(), param.getTitle(), param.getAuthor(), tags, null, null, null, param.getLimit(), param.getOffset());

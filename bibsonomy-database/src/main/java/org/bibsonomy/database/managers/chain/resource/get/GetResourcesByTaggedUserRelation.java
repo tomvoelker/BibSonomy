@@ -21,11 +21,14 @@ import org.bibsonomy.model.enums.Order;
  * friendship (=trust) relation.
  * 
  * @author fmi
+ * @version $Id$
+ * @param <R> the resource
+ * @param <P> the param
  */
 public class GetResourcesByTaggedUserRelation<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 	
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		return this.getDatabaseManagerForType(param.getClass()).getPostsByTaggedUserRelation(param.getRequestedUserName(), param.getTags(), param.getRelationTags(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 

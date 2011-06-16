@@ -252,7 +252,8 @@ INSERT INTO `ids` VALUES
 (5,  0,  'extended_fields_id'),
 (7,  0,  'scraper_metadata_id'),
 (12, 28, 'grouptas id'),
-(14, 3,  'message_id');
+(14, 3,  'message_id'),
+(15, 4, 'comment_id');
 
 
 
@@ -623,19 +624,30 @@ INSERT INTO `useruser_similarity` (`u1`, `u2`, `sim`, `measure_id`) VALUES
 
 
 --
--- Data for table `reviews`
+-- Data for table `discussion`
 -- 
-INSERT INTO `reviews` (`interHash`,`text`,`user_name`,`date`,`rating`,`helpful_count`,`not_helpful_count`) VALUES
-('d9eea4aa159d70ecfabafa0c91bbc9f0', 'crap!', 'testuser1', '2011-04-08 14:34:36', 0, 0, 2);
-
+INSERT INTO `discussion` (`discussion_id`, `type`, `interHash`,`text`,`user_name`,`date`,`rating`,`anonym`) VALUES
+(1, 1, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'crap!', 'testuser1', '2011-04-08 14:34:36', 4.0, 1),
+(2, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0),
+(3, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'SPAM', 'testuser1', '2011-04-18 14:34:36', NULL, 0),
+(4, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:36', NULL, 0);
 
 --
--- Data for table `reviews_helpful`
+-- Data for table `discussion_groups`
 -- 
-INSERT INTO `reviews_helpful` (`interHash`,`user_name`,`mark_user_name`,`helpful`) VALUES
-('d9eea4aa159d70ecfabafa0c91bbc9f0', 'testuser1', 'testuser1', 0),
-('d9eea4aa159d70ecfabafa0c91bbc9f0', 'testuser1', 'testuser3', 0);
+INSERT INTO `discussion_groups` (`discussion_id`,`group`,`user_name`) VALUES
+(1, 0, 'testuser1'),
+(2, 1, 'testuser1'),
+(3, 2, 'testuser1'),
+(4, 3, 'testuser1'),
+(4, 4, 'testuser1'),
+(4, 5, 'testuser1');
 
+--
+-- Data for table `review_ratings_cache`
+-- 
+INSERT INTO `review_ratings_cache` (`interHash`,`number_of_ratings`,`rating_arithmetic_mean`) VALUES
+('d9eea4aa159d70ecfabafa0c91bbc9f0', 1, 4);
 
 -- 
 -- Data for table `grouptas`

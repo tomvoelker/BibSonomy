@@ -16,7 +16,7 @@
 		SELECT spammer FROM user WHERE user_name = #userName#
 	</select>
 
-	<select id="getNewContentId" resultClass="int" parameterClass="int">
+	<select id="getNewId" resultClass="int" parameterClass="int">
 		SELECT value FROM ids WHERE name = #idsType# FOR UPDATE
 	</select>
 
