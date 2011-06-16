@@ -12,7 +12,7 @@ RDIR=backup
 
 # backup directories
 for DIR in $DIRS; do
-  echo "rsync $ROPTIONS $BASE_DIR/$DIR $RUSER@$RHOST:$RDIR"
+#  echo "rsync $ROPTIONS $BASE_DIR/$DIR $RUSER@$RHOST:$RDIR"
         rsync $ROPTIONS $BASE_DIR/$DIR $RUSER@$RHOST:$RDIR
 done
 
