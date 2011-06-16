@@ -8,18 +8,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * class for accessing credentials as provided by spring security
  * 
  * @author fei, dzo
+ * @version $Id$
  */
 public class AuthenticationUtils {
 
 	/**
-	 * Small helper method for Servlets to easily retrieve User.
+	 * Small helper method to easily retrieve the logged in user.
 	 * 
-	 * FIXME: How does this work? Using a static method to retrieve thread-specific
-	 * information? Looks like some Java magic. :-O - yes it is. the context is saved in a ThreadLocal
+	 * How does this work? Using a static method to retrieve thread-specific
+	 * information? Looks like some Java magic. :-O - yes it is. the context is
+	 * saved in a ThreadLocal
 	 * 
 	 * @return the user
 	 */
-	@Deprecated
 	public static User getUser() {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null) {
