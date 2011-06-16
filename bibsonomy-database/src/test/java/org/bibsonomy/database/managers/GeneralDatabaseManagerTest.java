@@ -90,15 +90,15 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getNewContentId() {
-		final int id = generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		assertTrue(id < generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession));
+		final int id = generalDb.getNewId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		assertTrue(id < generalDb.getNewId(ConstantID.IDS_CONTENT_ID, this.dbSession));
 
-		assertNull(generalDb.getNewContentId(ConstantID.IDS_UNDEFINED_CONTENT_ID, this.dbSession));
+		assertNull(generalDb.getNewId(ConstantID.IDS_UNDEFINED_CONTENT_ID, this.dbSession));
 
 		try {
-			generalDb.getNewContentId(null, this.dbSession);
+			generalDb.getNewId(null, this.dbSession);
 			fail("Exception should be thrown");
-		} catch (Exception ignore) {
+		} catch (final Exception ignore) {
 		}
 	}
 
@@ -107,9 +107,9 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void updateIds() {
-		final int curId = generalDb.getNewContentId(ConstantID.IDS_TAS_ID, this.dbSession);
+		final int curId = generalDb.getNewId(ConstantID.IDS_TAS_ID, this.dbSession);
 		generalDb.updateIds(ConstantID.IDS_TAS_ID, this.dbSession);
-		final int newId = generalDb.getNewContentId(ConstantID.IDS_TAS_ID, this.dbSession);
+		final int newId = generalDb.getNewId(ConstantID.IDS_TAS_ID, this.dbSession);
 		assertEquals(curId + 2, newId);
 	}
 }
