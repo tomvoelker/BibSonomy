@@ -121,6 +121,7 @@
 	
 	<bean id="mobileDetectionHandlerInterceptor" class="org.bibsonomy.webapp.util.spring.MobileDetectionHandlerInterceptor">
 		<property name="wurflManager" ref="wurfl.manager" />
+		<property name="cookieAge" ref="cookieAge" />
 	</bean>
 	
 	<!--  #################### locale and theme resolver #################### -->
