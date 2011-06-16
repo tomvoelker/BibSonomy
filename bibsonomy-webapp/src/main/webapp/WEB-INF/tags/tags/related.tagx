@@ -43,11 +43,9 @@
 			
 		
 			<!-- localized messages -->
-			<c:set var="posts">
-				<fmt:message key="posts" /> <!-- plural -->
-			</c:set>		
+			<fmt:message key="posts" var="posts" /> <!-- plural -->		
 			<c:if test="${tag.usercount == 1}">
-				<c:set var="posts"><fmt:message key="post" /></c:set><!-- singular -->
+				<fmt:message key="post" var="posts" /><!-- singular -->
 			</c:if>
 			
 			<!-- construct url to single tag -->
