@@ -1,7 +1,5 @@
 package org.bibsonomy.database.systemstags.executable;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -139,13 +137,13 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 
     /*
      * We overwrite this method because we want to interpret also the send tag 
-     * without prefix (sys/system) as systemTag
+     * without prefix (sys/system) as systemTag and we need an argument
      * @see org.bibsonomy.database.systemstags.AbstractSystemTagImpl#isInstance(java.lang.String)
      */
     @Override
     public boolean isInstance(String tagName) {
-	// the send tag must have an argument, the prefix is not required
-	return present(SystemTagsUtil.extractArgument(tagName));
+    	// the send tag must have an argument, the prefix is not required
+    	return SystemTagsUtil.hasTypeAndArgument(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
     }
 
 }

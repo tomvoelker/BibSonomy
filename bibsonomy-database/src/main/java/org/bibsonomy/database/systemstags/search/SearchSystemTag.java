@@ -22,7 +22,7 @@ public interface SearchSystemTag extends SystemTag {
 	 * @param param 
 	 */
 	public void handleParam(GenericParam param);
-	
+
 	/**
 	 * Indicates whether resources of type resourceType can be fetched using this Systemtag
 	 * @param <T>

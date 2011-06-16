@@ -67,6 +67,9 @@
 		<ref bean="relevantForSystemTag"/>
 		<ref bean="sentSystemTag"/>
 		<ref bean="myOwnSystemTag"/>
+		<ref bean="unfiledSystemTag"/>
+		<ref bean="jabrefSystemTag"/>
+		
 	</util:set>
 	
 	<!--+
@@ -75,5 +78,7 @@
 	<bean id="relevantForSystemTag" class="org.bibsonomy.database.systemstags.markup.RelevantForSystemTag"/>
 	<bean id="sentSystemTag" class="org.bibsonomy.database.systemstags.markup.SentSystemTag"/>
 	<bean id="myOwnSystemTag" class="org.bibsonomy.database.systemstags.markup.MyOwnSystemTag"/>
+	<bean id="unfiledSystemTag" class="org.bibsonomy.database.systemstags.markup.UnfiledSystemTag"/>
+	<bean id="jabrefSystemTag" class="org.bibsonomy.database.systemstags.markup.JabrefSystemTag"/>
 
 </beans>

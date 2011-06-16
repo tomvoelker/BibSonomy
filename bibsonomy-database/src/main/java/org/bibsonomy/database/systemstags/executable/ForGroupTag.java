@@ -222,15 +222,15 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	return true;
     }
 
-    /*
-     * We overwrite this method because we want to interpret also the for tag 
-     * without prefix (sys/system) as systemTag
+     /*
+     * We overwrite this method because we want to interpret also the send tag 
+     * without prefix (sys/system) as systemTag and we need an argument
      * @see org.bibsonomy.database.systemstags.AbstractSystemTagImpl#isInstance(java.lang.String)
      */
     @Override
     public boolean isInstance(String tagName) {
-	// the for tag must have an argument, the prefix is not required
-	return present(SystemTagsUtil.extractArgument(tagName));
+    	// the send tag must have an argument, the prefix is not required
+    	return SystemTagsUtil.hasTypeAndArgument(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
     }
 }
 

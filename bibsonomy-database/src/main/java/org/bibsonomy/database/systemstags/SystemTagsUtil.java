@@ -34,12 +34,11 @@ public class SystemTagsUtil {
 	 *  WARNING: this pattern identifies any String of the above form
 	 *  Thus a string that matches the pattern is not neccessarily a systemTag - it just looks like one
 	 */
-	private final static Pattern SYS_TAG_PATTERN = Pattern.compile("^(sys:|system:)?([^:]+):(.+)");
+	private final static Pattern SYS_TAG_PATTERN = Pattern.compile("^(sys:|system:)?([^:]+)(:(.+))?");
 	private final static String PREFIX ="sys";
 	public final static String DELIM = ":";
 
 
-	
 	/*
 	 * Methods to tell systemTags from "regular" tags 
 	 */
@@ -77,8 +76,6 @@ public class SystemTagsUtil {
 	/**
 	 * Determines whether a tag (given by name) is a systemTag
 	 * (i. e. if it is registered as a systemTag in BibSonomy)
-	 * Warning: This checks only if the tag is a SearchSystemTag or an ExecutableSystemTags
-	 * Other SystemTags (e. g. relevantFor or myOwn) are not identified!
 	 * @param tagName = the tags name
 	 * @return true if the tag is a systemTag, false otherwise
 	 */
@@ -181,6 +178,9 @@ public class SystemTagsUtil {
 	 */
 	public static ExecutableSystemTag createExecutableTag(final Tag tag) {
 		final ExecutableSystemTag sysTag = getSystagfactory().getExecutableSystemTag(tag.getName());
+		/*
+		 *  FIXME: this should be done inside the systemtagFactory!
+		 */
 		if (present(sysTag)) {
 			sysTag.setArgument(extractArgument(tag.getName()));
 			setIndividualFields(sysTag, tag);
@@ -274,8 +274,8 @@ public class SystemTagsUtil {
 			return null;
 		}
 		final Matcher sysTagMatcher = SYS_TAG_PATTERN.matcher(tagName);
-		if (sysTagMatcher.lookingAt()) {
-			return sysTagMatcher.group(3).trim();
+		if (sysTagMatcher.lookingAt() && present(sysTagMatcher.group(4))) {
+			return sysTagMatcher.group(4).trim();
 		}
 		return null;
 	}
@@ -318,7 +318,36 @@ public class SystemTagsUtil {
 		if (sysTagMatcher.lookingAt()) {
 			return present(sysTagMatcher.group(1)) &&   // prefix
 			present(sysTagMatcher.group(2)) &&	// type
-			present(sysTagMatcher.group(3));	// argument
+			present(sysTagMatcher.group(4));	// argument
+		}
+		return false;
+	}
+	/**
+	 * Returns true if the given tagName looks like a systemTag with Prefix
+	 * (i. e. is of the form prefix:type(:argument) where (:argument) ist optional
+	 * @param tagName
+	 * @return
+	 */
+	public static boolean hasPrefixAndType(final String tagName) {
+		if (!present(tagName)) {
+			return false;
+		}
+		final Matcher sysTagMatcher = SYS_TAG_PATTERN.matcher(tagName);
+		if (sysTagMatcher.lookingAt()) {
+			return present(sysTagMatcher.group(1)) &&   // prefix
+			present(sysTagMatcher.group(2));	// type
+		}
+		return false;
+	}
+
+	public static boolean hasTypeAndArgument(final String tagName) {
+		if (!present(tagName)) {
+			return false;
+		}
+		final Matcher sysTagMatcher = SYS_TAG_PATTERN.matcher(tagName);
+		if (sysTagMatcher.lookingAt()) {
+			return present(sysTagMatcher.group(2)) &&   // type
+			present(sysTagMatcher.group(4));	// argument
 		}
 		return false;
 	}
