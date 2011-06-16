@@ -11,6 +11,8 @@
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	
+	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>
 
 	<rc:list
 		titleKey="publications" 
@@ -20,7 +22,8 @@
 		disableActions="${disableActions}"
 		disableListNavigation="${disableListNavigation}"
 		listID="bibtexList"
-		listView="${listView}">
+		listView="${listView}"
+		fullscreen="${fullscreen}">
 		<jsp:attribute name="formatButtons">
 			<!-- Buttons to show content of page in different formats -->
 			<c:url var="rssPath"    value="/publrss/${requPath}${requQueryString}" context="${projectContext}"/><a href="${rssPath}">RSS</a>${mtl:ch('nbsp')}

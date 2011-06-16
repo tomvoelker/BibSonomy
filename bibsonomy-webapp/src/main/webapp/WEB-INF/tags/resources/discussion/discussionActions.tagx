@@ -1,0 +1,58 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
+	<jsp:directive.attribute name="discussionItemClass" type="java.lang.String" required="true" />
+	
+	<ul class="${discussionItemClass}Menu">
+	
+	<!-- reply link  -->
+	<c:if test="${command.context.userLoggedIn}">
+		<li>
+			<a href="#reply" class="reply">
+				<fmt:message key="post.resource.comment.actions.reply" />
+			</a>
+		</li>
+		<li>
+			<a href="#createReview" class="createReview">
+				<fmt:message key="post.resource.review.actions.create" />
+			</a>
+		</li>
+	</c:if>
+	<c:set var="subDiscussionItemsSize" value="${fn:length(discussionItem.subDiscussionItems)}" />
+	
+	<!-- number of replies and toggle link -->
+	<c:if test="${subDiscussionItemsSize > 0}">
+		<li>
+			<fmt:message var="replies" key="post.resource.comment.reply" />
+			<c:if test="${subDiscussionItemsSize > 1}">
+				<fmt:message var="replies" key="post.resource.comment.replies">
+					<fmt:param value="${subDiscussionItemsSize}" />
+				</fmt:message>
+			</c:if>
+			<a href="#toggleReplies" class="toggleReplies">
+				<c:out value="${replies}" />
+			</a>
+		</li>
+	</c:if>
+	
+	<!-- edit and delete link -->
+	<!-- TODO: use spring security tag lib -->
+	<c:set var="own" value="${command.context.loginUser.name eq discussionItem.user.name}" />
+	<c:if test="${command.context.userLoggedIn and own}">
+		<li><a href="#edit${discussionItemClass}" class="${discussionItemClass}EditLink editLink"><fmt:message key="post.resource.${discussionItemClass}.actions.edit" /></a></li>
+		<li>
+			<span class="deleteInfo initiallyHidden">
+			<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
+			<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
+		</span>
+			<a href="#delete${discussionItemClass}" class="${discussionItemClass}DeleteLink deleteLink">
+				<fmt:message key="post.resource.${discussionItemClass}.actions.delete" />
+			</a>
+		</li>
+	</c:if>
+	</ul>
+</jsp:root>

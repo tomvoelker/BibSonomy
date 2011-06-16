@@ -1,0 +1,81 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
+    
+    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+    <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+    
+    <jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
+    
+    
+   	<!-- create new review / comment for create review / comment form -->
+   	<jsp:useBean id="newDate" class="java.util.Date" />
+    <jsp:useBean id="newReview" class="org.bibsonomy.model.Review">
+    	<jsp:setProperty name="newReview" property="date" value="${newDate}"/>
+    	<jsp:setProperty name="newReview" property="user" value="${loginUser}" />
+    </jsp:useBean>
+    
+    <jsp:useBean id="newComment" class="org.bibsonomy.model.Comment">
+    	<jsp:setProperty name="newComment" property="date" value="${newDate}" />
+    	<jsp:setProperty name="newComment" property="user" value="${loginUser}" />
+    </jsp:useBean>
+    
+    <c:if test="${empty discussionItems}">
+   		<c:set var="discussionItems" value="${resource.discussionItems}" />
+   	</c:if>
+   	
+   	<c:if test="${not empty discussionItems}">
+   		<ul id="discussionMainMenu" class="newMenu">
+   			<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.comment.actions.showReviews" /></a></li>
+   			<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.comment.actions.collapseAllThreads" /></a></li>
+   		</ul>
+   	</c:if>
+   	
+    <c:if test="${not empty discussionItems}">
+    	<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" />
+    </c:if>
+    <ul class="initiallyHidden">
+		<!-- create li, div structure for new review -->
+		<li id="newReview" class="initiallyHidden">
+			<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
+		</li>
+    </ul>
+    <!-- review and comment forms -->
+    <!-- TODO: use spring security tags -->
+    <c:if test="${command.context.userLoggedIn}">
+		<div id="discussionForms" data-interHash="${resource.interHash}">
+			
+			<ul>
+	   	 		<li class="createReview">
+	   	 			<a href="#createReview">
+	   	 				<fmt:message key="post.resource.review.actions.post" />
+	   	 			</a>
+	   	 		</li>
+				<li class="createComment">
+					<a href="#createComment">
+						<fmt:message key="post.resource.comment.actions.post" />
+					</a>
+				</li>
+			</ul>
+			
+	    	<div id="createReview" class="createReview">
+		    	<h4><fmt:message key="post.resource.review.actions.post"/></h4>
+		    	<!-- TODO: add tips for reviewing a resource -->
+		    	<review:reviewForm resource="${resource}" />
+	    	</div>
+	    
+		    <div id="createComment">
+		    	<h4><fmt:message key="post.resource.comment.actions.post" /></h4>
+		    	<comment:commentForm resource="${resource}" />
+		    </div>
+		</div>
+		
+		<div id="commentTemplate" class="initiallyHidden">
+	    	<comment:comment comment="${newComment}" loginUser="${loginUser}" />
+	    </div>
+	</c:if>
+</jsp:root>

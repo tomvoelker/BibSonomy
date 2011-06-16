@@ -27,6 +27,7 @@ function editReferences() {
 
 function addReferenceMenu() {
 	$("li.reference").each(function() {
+		// display delete link
 		var deleteLink = $('<span class="reference_menu"><a href="#">' + getString('post.actions.edit.gold.references.delete') + '</a></span>');
 		deleteLink.hide();
 		$(this).append(deleteLink);
@@ -35,6 +36,7 @@ function addReferenceMenu() {
 		deleteLink.click(deleteReference);
 	});
 	
+	// display function for searching gold standards
 	var addForm = $('<form class="reference_menu"></form>');
 	var input = $('<input type="text" />');
 	addForm.append($('<label>' + getString('post.actions.edit.gold.references.add') + ': </label>'));
@@ -71,7 +73,7 @@ function addReferenceMenu() {
 	})
 	.data('autocomplete')._renderItem = function(ul, item) {
 		// no A <-> A reference
-		if (item.value == getHash()) {
+		if (item.value == getGoldInterHash()) {
 			return ul;
 		}
 		
@@ -99,7 +101,7 @@ function deleteReference() {
 	
 	if (confirm(getString('post.actions.edit.gold.references.delete.confirm'))) {
 		$.ajax({
-			url: GOLD_REFERENCE_URL + '?ckey=' + getCKey() + '&hash=' + getHash() + '&references=' + referenceHash,
+			url: GOLD_REFERENCE_URL + '?ckey=' + getCKey() + '&hash=' + getGoldInterHash() + '&references=' + referenceHash,
 			type: 'DELETE',
 			success: function(response) {
 						referenceView.fadeOut(FADE_DURATION, function() {
@@ -116,7 +118,7 @@ function addReference(reference) {
 	var referenceHash = reference.value;
 	$.ajax({
 		url: GOLD_REFERENCE_URL,
-		data: {ckey: getCKey(), hash: getHash(), references: referenceHash},
+		data: {ckey: getCKey(), hash: getGoldInterHash(), references: referenceHash},
 		type: 'POST',
 		success: function(data) {
 			// clone the template
@@ -196,6 +198,6 @@ function getCKey() {
 /** 
  * @returns the hash of the publication
  */
-function getHash() {
+function getGoldInterHash() {
 	return $('#gold_title').data('interhash');
 }
