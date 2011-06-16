@@ -711,7 +711,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * Send a pingback/trackback for the posted resource.
 		 */
-		if (present(pingback)) {
+		if (present(pingback) && !loginUser.isSpammer()) {
 			pingback.sendPingback(post);
 		}
 	}
