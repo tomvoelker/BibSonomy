@@ -27,16 +27,16 @@ import org.springframework.context.MessageSource;
  * @version $Id$
  */
 public class DocumentsController extends AjaxController implements MinimalisticController<AjaxDocumentCommand> {
+	private static final Log log = LogFactory.getLog(DocumentsController.class);
+	
+	private static final String ALLOWED_EXTENSIONS = StringUtils.implodeStringArray(FileUploadInterface.fileUploadExt, ", ");
 	
 	/**
 	 * Path to the documents folder
 	 */
 	private String docPath;
 	private String tempPath;
-	private static final Log log = LogFactory.getLog(DocumentsController.class);
 	private MessageSource messageSource;
-	
-	private static final String ALLOWED_EXTENSIONS = StringUtils.implodeStringArray(FileUploadInterface.fileUploadExt, ", ");
 	
 	/**
 	 * max file size, currently 50mb
@@ -228,25 +228,11 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	}
 
 	/**
-	 * @return the docPath
-	 */
-	public String getDocPath() {
-		return docPath;
-	}
-
-	/**
 	 * @param tempPath
 	 *            the tempPath to set
 	 */
 	public void setTempPath(String tempPath) {
 		this.tempPath = tempPath;
-	}
-
-	/**
-	 * @return the tempPath
-	 */
-	public String getTempPath() {
-		return tempPath;
 	}
 
 	/**

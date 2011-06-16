@@ -40,7 +40,7 @@
 	 -->
 	
 	<!-- holdes schema informations from the database -->
-	<bean id="dbSchemaInformation" class="org.bibsonomy.database.util.DatabaseSchemaInformationImpl" factory-method="getInstance" />
+	<bean id="dbSchemaInformation" class="org.bibsonomy.database.util.DatabaseSchemaInformation" factory-method="getInstance" />
 	
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
 </beans>
