@@ -38,7 +38,7 @@ public class SwordException extends Exception {
 	/**
 	 * Constructs a new sword exception with a specified message
 	 * 
-	 * @param message
+	 * @param messageId
 	 *            the message to be shown in gui
 	 */
 	public SwordException(final String messageId) {
