@@ -1,7 +1,5 @@
 package org.bibsonomy.database.systemstags.markup;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 /**
@@ -10,27 +8,26 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
  */
 public class SentSystemTag extends AbstractSystemTagImpl implements MarkUpSystemTag{
 
-    public static final String NAME = "sent";
-    private static boolean toHide = true;
+	public static final String NAME = "sent";
+	private static boolean toHide = true;
 
-    @Override
-    public String getName() {
-	return NAME;
-    }
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
-    @Override
-    public boolean isToHide() {
-	return toHide;
-    }
+	@Override
+	public boolean isToHide() {
+		return toHide;
+	}
 
-    @Override
-    public MarkUpSystemTag newInstance() {
-	return new SentSystemTag();
-    }
+	@Override
+	public MarkUpSystemTag newInstance() {
+		return new SentSystemTag();
+	}
 
-    @Override
-    public boolean isInstance(final String tagName) {
-	// in general a systemTag must have a prefix and an argument
-	return present(SystemTagsUtil.extractArgument(tagName));
-    }
+	@Override
+	public boolean isInstance(final String tagName) {
+		return SystemTagsUtil.hasTypeAndArgument(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
+	}
 }

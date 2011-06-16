@@ -1,15 +1,16 @@
 package org.bibsonomy.database.systemstags.markup;
 
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 
 /**
  * @author sdo
  * @version $Id$
  */
-public class MyOwnSystemTag extends AbstractSystemTagImpl implements MarkUpSystemTag {
+public class UnfiledSystemTag  extends AbstractSystemTagImpl implements MarkUpSystemTag {
 
-	public static final String NAME = "myown";
-	private static boolean toHide = false;
+	public static final String NAME = "unfiled";
+	private static boolean toHide = true;
 
 	@Override
 	public String getName() {
@@ -23,12 +24,12 @@ public class MyOwnSystemTag extends AbstractSystemTagImpl implements MarkUpSyste
 
 	@Override
 	public MarkUpSystemTag newInstance() {
-		return new MyOwnSystemTag();
+		return new UnfiledSystemTag();
 	}
 
 	@Override
 	public boolean isInstance(final String tagName) {
-		return NAME.equals(tagName.toLowerCase());
+		return SystemTagsUtil.hasPrefixAndType(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
 	}
 
 }
