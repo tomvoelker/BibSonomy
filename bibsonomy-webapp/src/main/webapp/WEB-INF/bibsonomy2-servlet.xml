@@ -735,7 +735,6 @@
     <import resource="bibsonomy2-servlet-admin.xml"/>
     <import resource="bibsonomy2-servlet-database.xml" />
 	<import resource="bibsonomy2-servlet-lucene.xml"/>
-	<import resource="bibsonomy2-servlet-events.xml"/>
 	<import resource="bibsonomy2-servlet-security.xml"/>
     <import resource="bibsonomy2-servlet-opensocial.xml"/>
     <import resource="bibsonomy2-servlet-rest.xml"/>
