@@ -30,11 +30,11 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
@@ -98,7 +98,7 @@ public class TestDBLogic implements LogicInterface {
 		
 		try {
 			fillDataBase();
-		} catch (MalformedURLException ex) {
+		} catch (final MalformedURLException ex) {
 			throw new RuntimeException(ex);
 		}
 	}
@@ -927,71 +927,66 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Date> getWikiVersions(String userName) {
+	public List<Date> getWikiVersions(final String userName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Wiki getWiki(String userName, Date date) {
+	public Wiki getWiki(final String userName, final Date date) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void createWiki(String userName, Wiki wiki) {
+	public void createWiki(final String userName, final Wiki wiki) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void updateWiki(String userName, Wiki wiki) {
+	public void updateWiki(final String userName, final Wiki wiki) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void deleteWiki(String userName) {
+	public void deleteWiki(final String userName) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void createExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
+	public void createExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void deleteExtendedField(Class<? extends Resource> resourceType, String userName, String intraHash, String key, String value) {
+	public void deleteExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public Map<String, List<String>> getExtendedFields(Class<? extends Resource> resourceType, String userName, String intraHash, String key) {
+	public Map<String, List<String>> getExtendedFields(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void createReview(String username, String interHash, Review review) {
+	public void createDiscussionItem(final String interHash, final String username, final DiscussionItem comment) {
 		// TODO Auto-generated method stub
 	}
-
+	
 	@Override
-	public void updateReview(String username, String interHash, Review review) {
+	public void deleteDiscussionItem(final String username, final String interHash, final String commentHash) {
 		// TODO Auto-generated method stub
 	}
-
+	
 	@Override
-	public void deleteReview(String username, String interHash) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void markReview(String username, String reviewUsername, String interHash, boolean helpful) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<Review> getReviews(String interHash) {
+	public List<DiscussionItem> getDiscussionSpace(final String interHash) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public void updateDiscussionItem(final String username, final String interHash, final DiscussionItem discussionItem) {
+		// TODO Auto-generated method stub		
 	}
 }
