@@ -21,7 +21,9 @@
 	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
 	<typeAlias alias="author"			  type="org.bibsonomy.model.Author" />
 	<typeAlias alias="scraperMetadata"	  type="org.bibsonomy.model.ScraperMetadata" />
-	<typeAlias alias="review"			  type="org.bibsonomy.model.Review" />
+	<typeAlias alias="discussionItem"		type="org.bibsonomy.model.DiscussionItem" />
+	<typeAlias alias="comment"				type="org.bibsonomy.model.Comment" />
+	<typeAlias alias="review"				type="org.bibsonomy.model.Review" />
 	
 	<!-- Synchronization -->
 	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />
@@ -53,8 +55,11 @@
 	<typeAlias alias="statisticsParam"    type="org.bibsonomy.database.params.StatisticsParam" />	
 	<typeAlias alias="tagSetParam"    	  type="org.bibsonomy.database.params.TagSetParam" />
 	<typeAlias alias="basketParam"    	  type="org.bibsonomy.database.params.BasketParam" />	
-	<typeAlias alias="inboxParam"		  type="org.bibsonomy.database.params.InboxParam" />
-	<typeAlias alias="loggingParam"		  type="org.bibsonomy.database.params.LoggingParam" />
-	<typeAlias alias="wikiParam"		  type="org.bibsonomy.database.params.WikiParam" />
-	<typeAlias alias="reviewParam"		  type="org.bibsonomy.database.params.ReviewParam" />
+	<typeAlias alias="inboxParam"			type="org.bibsonomy.database.params.InboxParam" />
+	<typeAlias alias="loggingParam"			type="org.bibsonomy.database.params.LoggingParam" />
+	<typeAlias alias="wikiParam"			type="org.bibsonomy.database.params.WikiParam" />
+	
+	<typeAlias alias="discussionItemParam"	type="org.bibsonomy.database.params.discussion.DiscussionItemParam" />
+	<typeAlias alias="commentParam"		  	type="org.bibsonomy.database.params.discussion.CommentParam" />
+	<typeAlias alias="reviewParam"			type="org.bibsonomy.database.params.discussion.ReviewParam" />
 </sqlMap>

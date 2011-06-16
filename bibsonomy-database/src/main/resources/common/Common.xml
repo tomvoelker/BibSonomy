@@ -5,9 +5,9 @@
 		<result property="interHash"   		column="interHash"       	javaType="string" />
 		<result property="intraHash"   		column="intraHash"       	javaType="string" />     	
 		<result property="count"       		column="count"           	javaType="int" />
-        <result property="title"       		column="title"           	javaType="string" />
-      	<result property="rating"	   		column="rating"		   		javaType="double" />
- 		<result property="numberOfRatings"  column="number_of_ratings" 	javaType="int" />
+		<result property="title"       		column="title"           	javaType="string" />
+		<result property="rating"	   		column="rating"		   		javaType="double" nullValue="0.0"/>
+ 		<result property="numberOfRatings"  column="number_of_ratings" 	javaType="int" nullValue="0" />
  	</resultMap>
 
 	<resultMap id="posts" class="post" groupBy="contentId">
@@ -24,8 +24,7 @@
 	<resultMap id="mockPost" class="post" extends="posts">
 	    <!-- the custom type handler maps the content_type to an appropriate
 	         resource class -->
-		<result property="resource" column="content_type" javaType="Resource" 
-		typeHandler="org.bibsonomy.database.common.typehandler.ResourceTypeHandlerCallback" />
+		<result property="resource" column="content_type" javaType="Resource" typeHandler="org.bibsonomy.database.common.typehandler.ResourceTypeHandlerCallback" />
 	</resultMap>
 
 	<resultMap id="group" class="group" groupBy="groupId">
@@ -264,7 +263,7 @@
 	
 	<!-- restrict visibility directly, i.e. without checking for user's own items -->
 	<sql id="inGroupsUnchecked">
-		t1.group in (
+		t1.group IN (
 		<iterate property="groups" conjunction=",">
 		    $groups[]$
 		</iterate>)	

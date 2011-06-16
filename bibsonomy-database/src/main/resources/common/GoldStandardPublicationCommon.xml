@@ -21,7 +21,7 @@
 		<include refid="bibtexSimHashes"/>
 	</sql>
 	
-	<sql id="allGoldStandardPublicationRows">title, entrytype, author, editor, year, journal, volume, chapter,
+	<sql id="allGoldStandardPublicationColumns">title, entrytype, author, editor, year, journal, volume, chapter,
 		edition, month, bookTitle, howpublished, institution, organization, publisher, address, school, series,
 		bibtexKey, `group`, date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
 		bibtexAbstract, type, day, privnote, simhash0, simhash1, simhash2, simhash3</sql>

@@ -21,8 +21,8 @@
 	</update>
 	
 	<insert id="logGoldStandardPublication">
-		INSERT INTO log_gold_standard_publications (content_id, <include refid ="allGoldStandardPublicationRows"/>)
-		SELECT content_id, <include refid ="allGoldStandardPublicationRows"/>
+		INSERT INTO log_gold_standard_publications (content_id, <include refid ="allGoldStandardPublicationColumns"/>)
+		SELECT content_id, <include refid ="allGoldStandardPublicationColumns"/>
 		FROM gold_standard_publications WHERE simhash1 = #oldId#
 	</insert>
 
@@ -120,31 +120,19 @@
 		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#, 0, #confidence#)
 	</insert>
 	
-	<!-- review logs -->
+	<!-- discussion logs -->
 	
-	<insert id="logReview" parameterClass="reviewParam">
-		INSERT INTO log_reviews (<include refid ="allReviewRows"/>) VALUES (#interHash#, #review.user.name#, #review.text#, #review.rating#, #review.date#, #review.changeDate#, #review.helpfulCount#, #review.notHelpfulCount#)
+	<insert id="logDiscussionItem" parameterClass="int">
+		INSERT INTO log_discussion (<include refid ="discussionColumns"/>)
+			SELECT <include refid ="commonDiscussionLogsAttributes"/>
+				FROM discussion d
+			WHERE d.discussion_id = #id#
 	</insert>
 	
-	<insert id="logReviewHelpfulMarks" parameterClass="reviewParam">
-		INSERT INTO log_reviews_helpful (<include refid="allReviewHelpfulRows" />, date)
-		(SELECT * FROM reviews_helpful WHERE user_name = #review.user.name# AND interHash = #interHash#)
+	<insert id="logDiscussionItemGroups" parameterClass="int">
+		INSERT INTO log_discussion_groups (<include refid ="commonDiscussionGroupColumns"/>)
+			SELECT <include refid ="commonDiscussionGroupInsertColumns" />
+				FROM discussion_groups dg
+			WHERE dg.discussion_id = #id#
 	</insert>
-	
-	<insert id="logAllUserReviews" parameterClass="string">
-		INSERT INTO log_reviews_helpful (<include refid="allReviewHelpfulRows" />, date)
-		(SELECT * FROM reviews_helpful WHERE user_name = #username#)
-	</insert>
-	
-	<insert id="logAllUserMarks" parameterClass="string">
-		INSERT INTO log_reviews_helpful (<include refid="allReviewHelpfulRows" />, date)
-		(SELECT * FROM reviews_helpful WHERE user_name = #userName#)
-	</insert>
-	
-	<insert id="logAllMarksOfUser" parameterClass="string">
-		INSERT INTO log_reviews_helpful (<include refid="allReviewHelpfulRows" />, date)
-		(SELECT * FROM reviews_helpful WHERE mark_user_name = #userName#)
-	</insert>
-	
-	
 </sqlMap>
