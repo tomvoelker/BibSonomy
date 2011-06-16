@@ -47,7 +47,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	protected final DatabasePluginRegistry plugins;
 	
 	private final GeneralDatabaseManager generalManager;
-	private final ReviewDatabaseManager reviewDb;
 	
 	protected ResourceSearch<R> searcher;
 
@@ -56,7 +55,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		this.plugins = DatabasePluginRegistry.getInstance();
 		
 		this.generalManager = GeneralDatabaseManager.getInstance();
-		this.reviewDb = ReviewDatabaseManager.getInstance();
 	}
 	
 	/**
@@ -69,7 +67,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	/**
 	 * @param searcher the searcher to set
 	 */
-	public void setSearcher(ResourceSearch<R> searcher) {
+	public void setSearcher(final ResourceSearch<R> searcher) {
 	    this.searcher = searcher;
 	}
 	
@@ -89,7 +87,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 	
 	@Override
-	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session) {
+	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		if (present(userName)) {
 			return null; // TODO: think about this return
 		}
@@ -103,11 +101,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			 */
 			goldStandard.addAllToReferences(this.getReferencesForPost(resourceHash, session));
 			goldStandard.addAllToReferencedBy(this.getRefencedByForPost(resourceHash, session));
-			
-			/*
-			 * set all reviews
-			 */
-			goldStandard.setReviews(this.reviewDb.getReviewsForResource(resourceHash, session));
 		} else {
 			log.debug("gold standard post with interhash '" + resourceHash + "' not found.");
 		}
@@ -167,7 +160,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				return false;
 			}
 			
-			post.setContentId(this.generalManager.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
+			post.setContentId(this.generalManager.getNewId(ConstantID.IDS_CONTENT_ID, session));
 			
 			this.onGoldStandardCreate(resourceHash, session);
 			this.insertPost(post, session);
@@ -241,7 +234,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				return false;
 			}
 			
-			post.setContentId(this.generalManager.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
+			post.setContentId(this.generalManager.getNewId(ConstantID.IDS_CONTENT_ID, session));
 			
 			this.onGoldStandardUpdate(oldHash, resourceHash, session); // logs old post and updates reference table
 			this.deletePost(oldHash, true, session);
@@ -255,11 +248,11 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 	
 	@Override
-	public boolean deletePost(String userName, String resourceHash, DBSession session) {
+	public boolean deletePost(final String userName, final String resourceHash, final DBSession session) {
 		return this.deletePost(resourceHash, false, session);
 	}
 	
-	protected boolean deletePost(final String resourceHash, final boolean update, DBSession session) {		
+	protected boolean deletePost(final String resourceHash, final boolean update, final DBSession session) {		
 		session.beginTransaction();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);

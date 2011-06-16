@@ -105,7 +105,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected final DatabasePluginRegistry plugins;
 	protected final PermissionDatabaseManager permissionDb;
 	protected final GroupDatabaseManager groupDb;
-	protected final ReviewDatabaseManager reviewDb;
 
 
 	/** simple class name of the resource managed by the class */
@@ -127,7 +126,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.permissionDb = PermissionDatabaseManager.getInstance();
 		this.groupDb = GroupDatabaseManager.getInstance();
-		this.reviewDb = ReviewDatabaseManager.getInstance();
 
 		this.resourceClassName = this.getResourceClassName();
 
@@ -431,11 +429,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 
 	 * @param user
 	 * @param tags
+	 * @param userRelationTags 
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
-	 * @return
+	 * @return a list of posts
 	 */
 	public List<Post<R>> getPostsByTaggedUserRelation(final String user, final Set<Tag> tags, final List<String> userRelationTags, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(user, null, limit, offset);
@@ -967,7 +966,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return list of bibtex posts
+	 * @return list of posts
 	 */
 	public List<Post<R>> getPostsFromBasketForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(loginUser, null, limit, offset);
@@ -975,7 +974,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		return this.postList("get" + this.resourceClassName + "FromBasketForUser", param, session);
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -1015,12 +1013,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			post.setGroups(new HashSet<Group>(this.groupDb.getGroupsForContentId(post.getContentId(), session)));
 		}
-		
-		/*
-		 * load reviews for the post
-		 */
-		final R resource = post.getResource();
-		resource.setReviews(this.reviewDb.getReviewsForResource(resource.getInterHash(), session));
 		
 		return post;
 	}
@@ -1075,7 +1067,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * ALWAYS get a new contentId
 			 */
-			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
+			post.setContentId(this.generalDb.getNewId(ConstantID.IDS_CONTENT_ID, session));
 			/*
 			 * on update, do a delete first ...
 			 */
@@ -1199,8 +1191,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					 * way we would delete the post with the old hash and post the new one - resulting
 					 * in two posts with the same (new hash)
 					 */
-					//FIXME:remove this comment
-					//throw new IllegalArgumentException("Could not update " + this.resourceClassName + ": This " + this.resourceClassName + " already exists in your collection (intrahash: " + intraHash + ")");
 					final ErrorMessage errorMessage = new IdenticalHashErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
 					session.addError(post.getResource().getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
@@ -1211,17 +1201,18 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			}
 
 			/*
-			 * now execute the postupdate operation
+			 * set the old creation date
 			 */
 			post.setDate(oldPost.getDate());
+			
+			/*
+			 * now execute the postupdate operation
+			 */
 			if (present(operation)) {
 				switch (operation) {
 				case UPDATE_TAGS:
 					this.performUpdateOnlyTags(post, oldPost, session);
 					break;
-					//				case UPDATE_DOCUMENTS: // TODO: implement update documents operation
-					//					this.performUpdateOnlyDocuments(post, oldPost, session);
-					//					break;
 				case UPDATE_REPOSITORY:
 				    this.performUpdateRepositorys(post, oldPost, session);
 				    break;
@@ -1255,13 +1246,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	private void performUpdateAll(final Post<R> post, final Post<R> oldPost, final DBSession session) {
 		session.beginTransaction();
 		try {
-
+			/*
+			 * first check the post
+			 */
 			this.checkPost(post, session);
 
 			/*
 			 * ALWAYS get a new contentId
 			 */
-			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
+			post.setContentId(this.generalDb.getNewId(ConstantID.IDS_CONTENT_ID, session));
 
 			/*
 			 * inform the listeners

@@ -31,7 +31,7 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	
-	private final  GeneralDatabaseManager generalDb;
+	private final GeneralDatabaseManager generalDb;
 	
 	private InboxDatabaseManager(){
 		this.generalDb = GeneralDatabaseManager.getInstance();
@@ -47,7 +47,7 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	 *            the database session
 	 * @return the number of messages currently stored in the inbox
 	 */
-	public int getNumInboxMessages(String receiver, final DBSession session) {
+	public int getNumInboxMessages(final String receiver, final DBSession session) {
 		return queryForObject("getNumInboxMessages", receiver, Integer.class, session);
 	}
 
@@ -83,7 +83,7 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 		final String intraHash = post.getResource().getIntraHash();
 		// get a new Message Id
 		this.getNumberOfInboxMessages(param, session);
-		param.setMessageId(this.generalDb.getNewContentId(ConstantID.IDS_INBOX_MESSAGE_ID, session));
+		param.setMessageId(this.generalDb.getNewId(ConstantID.IDS_INBOX_MESSAGE_ID, session));
 		/*
 		 * store the Message (without tags)
 		 */
@@ -105,7 +105,7 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * store the Tags (as Strings)
 		 */
-		for (Tag tag: post.getTags()) {
+		for (final Tag tag: post.getTags()) {
 			param.setTagName(tag.getName());
 			this.insert("createInboxMessageTag", param, session);
 		}
@@ -126,7 +126,7 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 		param.setSender(sender);
 		param.setReceiver(receiver);
 		param.setIntraHash(intraHash);
-		int messageId = this.getMessageId(param, session);
+		final int messageId = this.getMessageId(param, session);
 		//TODO: What happens if no MessageId can be found?
 		/*
 		 * delete all entries (message and tags) with the now known message_id
@@ -135,7 +135,7 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 		this.delete("deleteInboxMessageTags", messageId, session);
 	}
 	
-	private int getMessageId(InboxParam param, DBSession session) {
+	private int getMessageId(final InboxParam param, final DBSession session) {
 		return this.queryForObject("getInboxMessageId", param, Integer.class, session);
 	}
 	
@@ -149,8 +149,8 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void deleteAllInboxMessages(final String receiver, final DBSession session){
 		// get all messageIds, that are to be deleted and erase their tags first
-		List<Integer> messageIds = getInboxMessageIds(receiver, session);
-		for (Integer messageId : messageIds) {
+		final List<Integer> messageIds = getInboxMessageIds(receiver, session);
+		for (final Integer messageId : messageIds) {
 			this.delete("deleteInboxMessageTags", messageId, session);
 		}
 		this.delete("deleteAllInboxMessages", receiver, session);

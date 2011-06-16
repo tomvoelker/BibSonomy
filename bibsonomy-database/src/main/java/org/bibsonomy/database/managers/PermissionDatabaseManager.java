@@ -172,7 +172,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
      * @return <code>true</code> if the logged-in user is allowed to access the
      *         documents of the requested user / group.
      */
-    public boolean isAllowedToAccessUsersOrGroupDocuments(final User loginUser, final GroupingEntity grouping, final String groupingName, FilterEntity filter, final DBSession session) {
+    public boolean isAllowedToAccessUsersOrGroupDocuments(final User loginUser, final GroupingEntity grouping, final String groupingName, final FilterEntity filter, final DBSession session) {
 	boolean isAllowed = false;
 	if (grouping != null) {
 	    // user
@@ -205,7 +205,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
      * @param user
      * @param loginUser
      * @param session
-     * @return true iff loginUser is allowed to access users profiles
+     * @return <code>true</code> iff loginUser is allowed to access users profiles
      */
     public boolean isAllowedToAccessUsersProfile(final User user, final User loginUser, final DBSession session) {
 	if (!present(user)) {
@@ -256,7 +256,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
      * @param groupName 
      * @param session 
      */
-    public void ensureMemberOfNonSpecialGroup(final String userName, final String groupName, DBSession session) {
+    public void ensureMemberOfNonSpecialGroup(final String userName, final String groupName, final DBSession session) {
 	if( GroupID.isSpecialGroup(groupName))
 	    throw new ValidationException("Special groups not allowed for this system tag.");
 	final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session);
@@ -280,7 +280,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
      * @param session
      * @return if the given user is a member of the specified group
      */
-    public boolean isMemberOfGroup(final String userName, final String groupName, DBSession session) {
+    public boolean isMemberOfGroup(final String userName, final String groupName, final DBSession session) {
 	final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session);
 	if( groupID==GroupID.INVALID.getId() ) {
 	    return false;
@@ -319,15 +319,12 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
      * @return <code>true</code> if the logged-in user is allowed to set the specific 
      * filter
      */
-    public boolean checkFilterPermissions(FilterEntity filter, User loginUser){
+    public boolean checkFilterPermissions(final FilterEntity filter, final User loginUser){
 	if (filter == null) return false;
 
-	switch (filter){
-	case ADMIN_SPAM_POSTS:
-	    // Admin_SPAM_POSTS
-	    if (isAdmin(loginUser)){
+	
+	if (FilterEntity.ADMIN_SPAM_POSTS.equals(filter) && isAdmin(loginUser)) {
 		return true;
-	    } 
 	}
 	return false; 
     }
@@ -368,26 +365,15 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	    throw new AccessDeniedException();
 	}
     }
-    
-	/**
-     * 
-     * @param loginUser
-     * @param userName
-     */
-    public void ensureIsSelfAndNotSpammerOrAdmin(final User loginUser, final String userName) {
-    	this.ensureIsAdminOrSelf(loginUser, userName);
-    	if (loginUser.isSpammer()) {
-    		throw new AccessDeniedException();
-    	}
-    }
 
     /**
-     * @FIXME WENN DIE RICHTIGEN GRUPPENADMINS EXISTIEREN MUSS DIESE FUNKTION GEÄNDERT WERDEN 
+     * FIXME: WENN DIE RICHTIGEN GRUPPENADMINS EXISTIEREN MUSS DIESE FUNKTION GEÄNDERT WERDEN 
+     * 
      * @param loginUser
      * @param group
      * @return loginUser equals group.getName
      */
-    public boolean userIsGroupAdmin(User loginUser, Group group){
+    public boolean userIsGroupAdmin(final User loginUser, final Group group){
 	/*
 	 * user name == group name
 	 */
@@ -414,12 +400,12 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
      * @param loginUser - the logged-in user
      * @param relation - the relation to be created
      * @param tag TODO
-     * @param requestedUser - the requested user
+     * @param targetUser - the target user
      * @return true if everyhing is OK and the relationship may be created
      * 
      * 
      */
-    public boolean checkUserRelationship(User loginUser, final User targetUser, UserRelation relation, String tag) {
+    public boolean checkUserRelationship(final User loginUser, final User targetUser, final UserRelation relation, final String tag) {
 	/*
 	 * when we add an internal relation, the target user must exist
 	 * (and some special users like 'dblp' are not allowed)  

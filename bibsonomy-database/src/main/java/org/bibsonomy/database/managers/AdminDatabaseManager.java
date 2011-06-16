@@ -14,6 +14,7 @@ import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.AdminParam;
+import org.bibsonomy.database.util.DatabaseSchemaInformation;
 import org.bibsonomy.model.User;
 
 /**
@@ -24,6 +25,7 @@ import org.bibsonomy.model.User;
  * @author Robert Jäschke
  * @author Stefan Stützer
  * @author Beate Krause
+ * 
  * @version $Id$
  */
 public class AdminDatabaseManager extends AbstractDatabaseManager {
@@ -31,13 +33,16 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
 	
+	
 	/**
 	 * Holds the names of the tables where group ids must be updated, when a
 	 * user is flagged as spammer or deleted.
-	 * 
-	 * TODO: Make database names constants.
 	 */
-	private static final List<String> tableNames = Arrays.asList("tas", "grouptas", "bibtex", "bookmark");
+	private static final List<String> TABLE_NAMES = Arrays.asList(DatabaseSchemaInformation.PUBLICATION_TABLE,
+																	DatabaseSchemaInformation.BOOKMARK_TABLE,
+																	DatabaseSchemaInformation.TAG_TABLE,
+																	DatabaseSchemaInformation.GROUP_TAG_TABLE,
+																	DatabaseSchemaInformation.DISCUSSION_GROUP_TABLE);
 
 	/**
 	 * @return a singleton instance of this AdminDatabaseManager
@@ -57,7 +62,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * @return InetAddressStatus
 	 */
 	public InetAddressStatus getInetAddressStatus(final InetAddress address, final DBSession session) {
-		InetAddressStatus status = (InetAddressStatus) this.queryForObject("getInetAddressStatus", address, session);
+		final InetAddressStatus status = (InetAddressStatus) this.queryForObject("getInetAddressStatus", address, session);
 		return status == null ? InetAddressStatus.UNKNOWN : status;
 	}
 
@@ -160,25 +165,21 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			 * consequence: users are flagged as spammers, groups updated
 			 */
 			if (!"classifier".equals(updatedBy)) {
-				// flag spammer
-				this.update("flagSpammer", param, session);
-				// update the groups
-				this.updateGroupIds(param, session);
+				this.flagSpammer(session, param);
 			/*
 			 * spam framework (classifier) flags user as spammer
-			 * an update only takes place when the user has not been updated before 
-			 * by the classifier with the same prediction and confidence
+			 * an update only takes place when the user has not been updated
+			 * before by the classifier with the same prediction and confidence
 			 */
 			} else if ("off".equals(testMode)) {
 				// gets user data to check if to_classify is still set to 1
-				List<User> userData = this.queryForList("getClassifierUserBeforeUpdate", param, User.class, session);
+				final List<User> userData = this.queryForList("getClassifierUserBeforeUpdate", param, User.class, session);
 				// only update if to_classify is set to 1, else admin has
 				// already classified the specific user
 				if (userData.get(0).getToClassify() == 1) {
 					// only change user settings when prediction changes
 					if (predictionChange) {
-						this.update("flagSpammer", param, session);
-						this.updateGroupIds(param, session);
+						this.flagSpammer(session, param);
 					}
 				}
 			}
@@ -194,8 +195,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 			}
 			
-			// set session counter to 0, so that transaction will be commited in 
-			// session wrapper
+			/*
+			 * set session counter to 0, so that transaction will be
+			 * commited in session wrapper
+			 */ 
 			session.commitTransaction();
 		} catch (final Exception ex) {
 			log.error(ex.getMessage(), ex);
@@ -207,6 +210,18 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		return user.getName();
 	}
 
+	private void flagSpammer(final DBSession session, final AdminParam param) {
+		// flag spammer
+		this.update("flagSpammer", param, session);
+		// update the group ids in all essential tables
+		for (final String table : TABLE_NAMES) {
+			param.setGroupIdTable(table);
+			this.update("updateGroupIds", param, session);
+		}
+		// update cache
+		this.update("updateReviewRatingsCache", param, session);
+	}
+
 	/**
 	 * checks if the last prediction of the classifier or admin is the same as
 	 * the current one
@@ -214,10 +229,9 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * @param param
 	 * @param session
 	 * 
-	 * @return true, if prediction and confidence change, false if values are
-	 *         the same
+	 * @return <code>true</code>, if prediction and confidence change
+	 * 		   <code>false</code> if values are the same
 	 */
-
 	public boolean checkPredictionChange(final AdminParam param, final DBSession session) {
 		if (param.getConfidence() != null && param.getPrediction() != null) {
 			// check if prediction and confidence values changed, only update if
@@ -246,21 +260,6 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		return true;
-	}
-
-	/**
-	 * Updates group ids in different tables
-	 * 
-	 * @param param
-	 *            the admin's parameters
-	 * @param session
-	 *            the current db session
-	 */
-	private void updateGroupIds(final AdminParam param, final DBSession session) {
-		for (final String table : tableNames) {
-			param.setGroupIdTable(table);
-			this.update("updateGroupIds", param, session);
-		}
 	}
 
 	/**

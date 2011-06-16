@@ -86,7 +86,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @param publicationSearch the publicationSearch to set
 	 */
-	public void setPublicationSearch(ResourceSearch<BibTex> publicationSearch) {
+	public void setPublicationSearch(final ResourceSearch<BibTex> publicationSearch) {
 		this.publicationSearch = publicationSearch;
 	}
 
@@ -100,7 +100,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @param bookmarkSearch the bookmarkSearch to set
 	 */
-	public void setBookmarkSearch(ResourceSearch<Bookmark> bookmarkSearch) {
+	public void setBookmarkSearch(final ResourceSearch<Bookmark> bookmarkSearch) {
 		this.bookmarkSearch = bookmarkSearch;
 	}
 
@@ -159,7 +159,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		 */
 		for (final Tag tag : param.getTags()) {
 			param.setTag(tag);
-			param.setTasId(generalDb.getNewContentId(ConstantID.IDS_TAS_ID, session));
+			param.setTasId(generalDb.getNewId(ConstantID.IDS_TAS_ID, session));
 			this.insert("insertTas", param, session);
 		}
 	}
@@ -177,7 +177,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			 */
 			for (final Integer groupId : param.getGroups()) {
 				param.setGroupId(groupId);
-				param.setTasId(generalDb.getNewContentId(ConstantID.IDS_GROUPTAS_ID, session));
+				param.setTasId(generalDb.getNewId(ConstantID.IDS_GROUPTAS_ID, session));
 				this.insert("insertGroupTas", param, session);
 			}
 		}
@@ -243,6 +243,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		tagParam.setContentTypeByClass(post.getResource().getClass());
 		tagParam.setUserName(post.getUser().getName());
 		tagParam.setDate(post.getDate());
+	
 		
 		/*
 		 * get changeDate from Post
@@ -419,7 +420,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			final int firstGroup = param.getGroups().iterator().next();
 			if (!GroupUtils.isExclusiveGroup(firstGroup)) {
 				/*
-				 * first group found is neither public nor private ... so we have to fill the group tas table!
+				 * first group found is neither public nor private ... so we
+				 * have to fill the group tas table!
 				 */
 				this.insertGroupTas(param, session);
 			}
@@ -596,7 +598,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 
 		final long starttimeQuery = System.currentTimeMillis();
-		List<Tag> retVal = this.queryForList("getTagsByAuthor", param, Tag.class, session);
+		final List<Tag> retVal = this.queryForList("getTagsByAuthor", param, Tag.class, session);
 		log.debug("DB author tag cloud query time: " + (System.currentTimeMillis() - starttimeQuery) + " ms");
 
 		return retVal;
@@ -621,10 +623,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of tags
 	 */
 	public List<Tag> getTagsByResourceSearch(
-			final String userName, final String requestedUserName, String requestedGroupName, 
+			final String userName, final String requestedUserName, final String requestedGroupName, 
 			final Collection<String> allowedGroups,
 			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
-			final String year, final String firstYear, final String lastYear, int limit, int offset) {
+			final String year, final String firstYear, final String lastYear, final int limit, final int offset) {
 		
 		if (present(this.publicationSearch) && present(this.bookmarkSearch) ) {
 			final List<Tag> bookmarkTags = 
@@ -683,7 +685,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTagsForGroup(TagParam param, DBSession session) {
+	public List<Tag> getRelatedTagsForGroup(final TagParam param, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(param.getTagIndex())) {
 			return new ArrayList<Tag>();
@@ -703,7 +705,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTagsForUser(final String userName, final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
+	public List<Tag> getRelatedTagsForUser(final String userName, final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(tagIndex)) {
 			return new ArrayList<Tag>();
@@ -725,7 +727,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTagsViewable(TagParam param, DBSession session) {
+	public List<Tag> getRelatedTagsViewable(final TagParam param, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(param.getTagIndex())) {
 			return new ArrayList<Tag>();
@@ -776,7 +778,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTags(TagParam param, DBSession session) {
+	public List<Tag> getRelatedTags(final TagParam param, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(param.getTagIndex())) {
 			return new ArrayList<Tag>();
@@ -792,7 +794,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTagsOrderedByFolkrank(TagParam param, DBSession session) {
+	public List<Tag> getRelatedTagsOrderedByFolkrank(final TagParam param, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(param.getTagIndex())) {
 			return new ArrayList<Tag>();
@@ -811,7 +813,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a list of tags attached to the bookmark with the given hash
 	 */
-	public List<Tag> getTagsByBookmarkHash(final String loginUserName, final String hash, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
+	public List<Tag> getTagsByBookmarkHash(final String loginUserName, final String hash, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setUserName(loginUserName);
@@ -834,7 +836,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a list of tags attached to the given user's bookmark with the given hash
 	 */
-	public List<Tag> getTagsByBookmarkHashForUser(final String loginUserName, final String requestedUserName, final String hash, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
+	public List<Tag> getTagsByBookmarkHashForUser(final String loginUserName, final String requestedUserName, final String hash, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setUserName(loginUserName);
@@ -858,7 +860,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a list of tags attached to a bibtex with the given hash
 	 */
-	public List<Tag> getTagsByBibtexHash(final String loginUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
+	public List<Tag> getTagsByBibtexHash(final String loginUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setSimHash(hashId);
@@ -883,7 +885,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a list of tags attached to a given user's bibtex with the given hash
 	 */
-	public List<Tag> getTagsByBibtexHashForUser(final String loginUserName, final String requestedUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
+	public List<Tag> getTagsByBibtexHashForUser(final String loginUserName, final String requestedUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setSimHash(hashId);
@@ -917,7 +919,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getSimilarTags(final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
+	public List<Tag> getSimilarTags(final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setTagName(tagIndex.get(0).getTagName()); // index 0 is always present, because otherwise the calling chain element won't answer
 		param.setGroups(visibleGroupIDs);
@@ -953,7 +955,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags from a given friend of a given user
 	 */
-	public List<Tag> getTagsByFriendOfUser(TagParam param, DBSession session) {
+	public List<Tag> getTagsByFriendOfUser(final TagParam param, final DBSession session) {
 		return this.queryForList("getTagsByFriendOfUser", param, Tag.class, session);
 	}
 
@@ -973,7 +975,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param offset
 	 * @return a list of tags, used to annotate the bibtex(s) with the given bibtex key (eventually by the requested user)
 	 */
-	public List<Tag> getTagsByBibtexkey(final String bibtexKey, final List<Integer> visibleGroupIDs, final String requestedUserName, final String loginUserName, final int limit, final int offset, DBSession session) {
+	public List<Tag> getTagsByBibtexkey(final String bibtexKey, final List<Integer> visibleGroupIDs, final String requestedUserName, final String loginUserName, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setBibtexKey(bibtexKey);
 		param.setGroups(visibleGroupIDs);
@@ -983,18 +985,4 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setOffset(offset);
 		return this.queryForList("getTagsByBibtexkey", param, Tag.class, session);
 	}
-
-	/**
-	 * Retrieve tags from a resource of a specific author tagged with a tag
-	 * @param param
-	 * @param session
-	 * @return a list of tags
-	 */
-	public List<Tag> getRelatedTagsByAuthorAndTag(final TagParam param, final DBSession session){
-		if (this.exceedsMaxSize(param.getTagIndex())) {
-			return new ArrayList<Tag>();
-		}		
-		return this.queryForList("getRelatedTagsByAuthorAndTag", param, Tag.class, session);
-	}
-
 }

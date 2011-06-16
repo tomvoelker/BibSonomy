@@ -248,22 +248,16 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/** 
+	 * FIXME: don't use param as parameter (we want to see which attributes are used by the query)
 	 * Returns a list of Posts which where send to an repository and match the given interhash
 	 * 
-	 * @param bibtexKey 
-	 * @param requestedUserName 
-	 * @param groupId 
-	 * @param limit 
-	 * @param offset 
-	 * @param systemTags
+	 * @param param
 	 * @param session	a database session
 	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getPostsWithRepository(final BibTexParam param, final DBSession session) {
-		return this.postList("selectBibtexWithRepositorys",param,session);
+		return this.postList("selectBibtexWithRepositorys", param, session);
 	}
-	
-	
 	
 	/*
 	 * (non-Javadoc)
@@ -362,7 +356,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				/*
 				 * get a scraper id
 				 */
-				final int id = this.generalDb.getNewContentId(ConstantID.IDS_SCRAPER_METADATA, session);
+				final int id = this.generalDb.getNewId(ConstantID.IDS_SCRAPER_METADATA, session);
 				/*
 				 * store id in metadata
 				 */
@@ -526,8 +520,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	@Override
-	protected void performUpdateRepositorys(Post<BibTex> post, Post<BibTex> oldPost, DBSession session) {
-	    RepositoryParam param = new RepositoryParam();
+	protected void performUpdateRepositorys(final Post<BibTex> post, final Post<BibTex> oldPost, final DBSession session) {
+	    final RepositoryParam param = new RepositoryParam();
 	    
 	    param.setUserName(post.getUser().getName());
 	    param.setInterHash(post.getResource().getInterHash());
