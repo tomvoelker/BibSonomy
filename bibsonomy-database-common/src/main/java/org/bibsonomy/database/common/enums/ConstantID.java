@@ -73,6 +73,8 @@ public enum ConstantID {
 	IDS_GROUPTAS_ID(12),
 	/** id of messageId in the ids table*/
 	IDS_INBOX_MESSAGE_ID(14),
+	/** id of discussion item */
+	IDS_DISCUSSION_ITEM_ID(15),
 	/* other ids (not related to SQL tables! */
 	/** marks that no special content type has yet been assigned */
 	IDS_UNDEFINED_CONTENT_ID(-1);
@@ -91,13 +93,11 @@ public enum ConstantID {
 	}
 	
 	/**
-	 * Returns the content type ID for the given resource type. This ID is used 
-	 * inside the database only!
-	 * 
 	 * @param resourceType
-	 * @return
+	 * @return the content type ID for the given resource type. This ID is used 
+	 * inside the database only!
 	 */
-	public static ConstantID getContentTypeByClass(Class<? extends Resource> resourceType) {
+	public static ConstantID getContentTypeByClass(final Class<? extends Resource> resourceType) {
 		if (BibTex.class.isAssignableFrom(resourceType)) {
 			return ConstantID.BIBTEX_CONTENT_TYPE;
 		} else if (Bookmark.class.isAssignableFrom(resourceType)) {
