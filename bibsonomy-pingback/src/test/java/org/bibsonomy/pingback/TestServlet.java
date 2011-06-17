@@ -164,10 +164,6 @@ public class TestServlet extends HttpServlet {
 			);
 			out.flush();
 		} else if(requestUrl.endsWith("/trackback")) {
-			/*
-			 * IN
-			 */
-			final String url = request.getParameter("url");
 
 			/*
 			 * out
