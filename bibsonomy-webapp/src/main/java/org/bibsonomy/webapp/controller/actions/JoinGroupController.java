@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
@@ -45,7 +46,10 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 	 * Path to this controller for referrer to login page
 	 */
 	private String controllerPath;
-	
+	/**
+	 * After successful registration, the user is redirected to this page. 
+	 */
+	private String successRedirect = "/register_success";
 	/**
 	 * Constructor.
 	 */
@@ -129,6 +133,13 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 		return controllerPath;
 	}
 
+	/** After successful registration, the user is redirected to this page.
+	 * @param successRedirect
+	 */
+	public void setSuccessRedirect(String successRedirect) {
+		this.successRedirect = successRedirect;
+	}
+
 	@Override
 	public JoinGroupCommand instantiateCommand() {
 		return new JoinGroupCommand();
@@ -136,6 +147,7 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 
 	@Override
 	public View workOn(JoinGroupCommand command) {
+		User loginUser = command.getContext().getLoginUser();
 		//check user logged in
 		if(command.getContext().isUserLoggedIn() == false) {
 			String redirectURI;
@@ -146,8 +158,14 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 				throw new InternServerException(ex.getMessage());
 			}
 		}
+		//check if user is already in this group
+		{
+			if(loginUser.getGroups().contains(new Group(command.getGroup()))) {
+				errors.reject("joinGroup.already.member.error");
+			}
+		}
 		//check user is spammer
-		if(command.getContext().getLoginUser().isSpammer()) {
+		if(loginUser.isSpammer()) {
 			errors.reject("joinGroup.spammerError");
 		}
 		//on errors return to form
@@ -157,8 +175,8 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 		}
 		//success now
 		User group = logic.getUserDetails(command.getGroup());
-		mailUtils.sendJoinGroupRequest(group, command.getContext().getLoginUser(), command.getReason(), requestLogic.getLocale());
-		return null;
+		mailUtils.sendJoinGroupRequest(group, loginUser, command.getReason(), requestLogic.getLocale());
+		return new ExtendedRedirectView(successRedirect);
 	}
 
 	@Override
