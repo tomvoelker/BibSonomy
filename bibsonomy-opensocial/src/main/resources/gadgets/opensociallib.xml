@@ -1,5 +1,19 @@
 <Templates xmlns:os="http://www.opensocial.org">
   <Namespace prefix="os" url="http://opensocial.com/#template"/>
+
+  <TemplateDef tag="os:TestMe">
+    <Template>
+      <span class="test">
+	ABCDEFG
+      </span>
+    </Template>
+    <Style>
+      .personimg {
+        padding-right: 6px;
+      }
+    </Style>
+  </TemplateDef>
+
   <Template tag="os:Button">
     <button onclick="${$my.action};return false;" style="-moz-border-radius: 4px; border: 1px solid #888;         background-color: #fff">
         <os:renderAll/>
