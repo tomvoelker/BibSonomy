@@ -10,11 +10,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mortbay.jetty.testing.ServletTester;
 
 import com.malethan.pingback.Link;
 
@@ -22,57 +20,15 @@ import com.malethan.pingback.Link;
  * @author rja
  * @version $Id$
  */
-public class HttpClientLinkLoaderTest {
-	private static final String TOP_OF_HTML_PAGE = "" +
-	"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
-	"<html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"en-US\">\n" +
-	"\n" +
-	"    <head profile=\"http://gmpg.org/xfn/11\">\n" +
-	"    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n" +
-	"\n" +
-	"    <title>Something blah blah &laquo;  Ping tester</title>\n" +
-	"\n" +
-	"    <link rel=\"pingback\" href=\"http://localhost/~emalethan/wordpress/xmlrpc.php\" />\n" +
-	"\n";
+public class HttpClientLinkLoaderTest extends AbstractClientTest {
 
-	private static final String TRACKBACK_RDF1 = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n" +
-	"xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n" +
-	"xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\">\n" + 
-	"<rdf:Description\n" +
-	"rdf:about=\"http://www.foo.com/archive.html#foo\"\n" +
-	"dc:identifier=\"http://www.foo.com/archive.html#foo\"\n" +
-	"dc:title=\"Foo Bar\"\n" +
-	"trackback:ping=\"http://www.foo.com/tb.cgi/5\" />\n" +
-	"</rdf:RDF>\n";
-	private static final String TRACKBACK_RDF2 = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n" +
-	"xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n" +
-	"xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\">\n" + 
-	"<rdf:Description\n" +
-	"rdf:about=\"http://www.foo.com/book.html\"\n" +
-	"dc:identifier=\"http://www.foo.com/book.html\"\n" +
-	"dc:title=\"Foo Bar\"\n" +
-	"trackback:ping=\"http://www.foo.com/tb.cgi/5\" />\n" +
-	"</rdf:RDF>\n";
-
-	private ServletTester tester;
-	private String baseUrl;
 	private HttpClientLinkLoader linkLoader;
 
+	@Override
 	@Before
 	public void setUp() throws Exception {
-		this.tester = new ServletTester();
-		this.tester.setContextPath("/");
-		this.tester.addServlet(TestServlet.class, "/*");
-		this.baseUrl = tester.createSocketConnector(true);
-		this.tester.start();
-
+		super.setUp();
 		this.linkLoader = new HttpClientLinkLoader();
-
-	}
-
-	@After
-	public void shutDown() throws Exception {
-		this.tester.stop();
 	}
 
 	@Test
@@ -103,7 +59,7 @@ public class HttpClientLinkLoaderTest {
 	@Test
 	public void testStopsReadingAPageAtTheEndOfHead() throws IOException {
 		String htmlPage = "" +
-		TOP_OF_HTML_PAGE +
+		TestServlet.TOP_OF_HTML_PAGE +
 		"   <!-- hello -->\n" +
 		"</head>\n" +
 		"<body>\n" +
@@ -122,7 +78,7 @@ public class HttpClientLinkLoaderTest {
 	@Test
 	@Ignore
 	public void testStopsReadingAPageAtTheStartOfBody() throws IOException {
-		final String htmlPage = TOP_OF_HTML_PAGE +
+		final String htmlPage = TestServlet.TOP_OF_HTML_PAGE +
 		"   <!-- hello -->\n" +
 		"<body>\n" +
 		"    <div id=\"page\">\n" +
@@ -138,7 +94,7 @@ public class HttpClientLinkLoaderTest {
 
 	@Test
 	public void testStopsReadingAPageAtTheStartOfBodyWithAttributes() throws IOException {
-		final String htmlPage = TOP_OF_HTML_PAGE +
+		final String htmlPage = TestServlet.TOP_OF_HTML_PAGE +
 		"   <!-- hello -->\n" +
 		"<body class=\"wide\">\n" +
 		"    <div id=\"page\">\n" +
@@ -161,7 +117,7 @@ public class HttpClientLinkLoaderTest {
 		for (int i=0; i < 60000; i++) {
 			buf.append("0123456789\n");
 		}
-		final String result = linkLoader.readRemainingPage(getReaderForString(buf.toString()));
+		final String result = linkLoader.readPortionOfPage(getReaderForString(buf.toString()));
 		/*
 		 * ensure that not much more than 500kb are read
 		 */
@@ -173,16 +129,16 @@ public class HttpClientLinkLoaderTest {
 	public void testGetTrackbackUrlFromHtml() {
 		System.out.println("weg = "  + "http://www.foo.com/archive.html".replaceAll("\\#.*$", ""));
 		
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/archive.html#foo", TRACKBACK_RDF1));
-		assertNull(linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/archive.html", TRACKBACK_RDF1));
+		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/archive.html#foo", TestServlet.TRACKBACK_RDF1));
+		assertNull(linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/archive.html", TestServlet.TRACKBACK_RDF1));
 		
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html#foo", TRACKBACK_RDF2));
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html", TRACKBACK_RDF2));
+		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html#foo", TestServlet.TRACKBACK_RDF2));
+		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html", TestServlet.TRACKBACK_RDF2));
 
 		/*
 		 * trackback URL in HTML head section
 		 */
-		final String html = TOP_OF_HTML_PAGE + "<body>" + TRACKBACK_RDF1 + "\n\n<b>Cool!</b>\n" + TRACKBACK_RDF2;
+		final String html = TestServlet.TOP_OF_HTML_PAGE + "<body>" + TestServlet.TRACKBACK_RDF1 + "\n\n<b>Cool!</b>\n" + TestServlet.TRACKBACK_RDF2;
 		
 		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html#foo", html));
 		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html", html));
@@ -198,7 +154,7 @@ public class HttpClientLinkLoaderTest {
 		/*
 		 * trackback URL in HTML head section
 		 */
-		final String html = TOP_OF_HTML_PAGE + TRACKBACK_RDF1 + TRACKBACK_RDF2 + "<body>" + "\n\n<b>Cool!</b>\n";
+		final String html = TestServlet.TOP_OF_HTML_PAGE + TestServlet.TRACKBACK_RDF1 + TestServlet.TRACKBACK_RDF2 + "<body>" + "\n\n<b>Cool!</b>\n";
 		final BufferedReader reader = getReaderForString(html);
 		final String headSection = linkLoader.readHeadSectionOfPage(reader);
 		
@@ -210,7 +166,7 @@ public class HttpClientLinkLoaderTest {
 		/*
 		 * trackback URL in HTML body section
 		 */
-		final String html2 = TOP_OF_HTML_PAGE + "<body>" + TRACKBACK_RDF1 + "\n\n<b>Cool!</b>\n" + TRACKBACK_RDF2;
+		final String html2 = TestServlet.TOP_OF_HTML_PAGE + "<body>" + TestServlet.TRACKBACK_RDF1 + "\n\n<b>Cool!</b>\n" + TestServlet.TRACKBACK_RDF2;
 		
 		final BufferedReader reader2 = getReaderForString(html2);
 		final String headSection2 = linkLoader.readHeadSectionOfPage(reader2);

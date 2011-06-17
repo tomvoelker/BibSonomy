@@ -9,10 +9,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.services.URLGenerator;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mortbay.jetty.testing.ServletTester;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -22,22 +20,14 @@ import com.malethan.pingback.impl.ApachePingbackClient;
  * @author rja
  * @version $Id$
  */
-public class ThreadedPingbackTest {
+public class ThreadedPingbackTest extends AbstractClientTest {
 
-	private ServletTester tester;
-	private String baseUrl;
 	private ThreadedPingback pingback;
 
+	@Override
 	@Before
 	public void setUp() throws Exception {
-		/*
-		 * set up server
-		 */
-		tester = new ServletTester();
-		tester.setContextPath("/");
-		tester.addServlet(TestServlet.class, "/*");
-		baseUrl = tester.createSocketConnector(true);
-		tester.start();
+		super.setUp();
 		/*
 		 * set up pingback
 		 */
@@ -45,11 +35,6 @@ public class ThreadedPingbackTest {
 		this.pingback.setLinkLoader(new HttpClientLinkLoader());
 		this.pingback.setPingbackClient(new ApachePingbackClient());
 		this.pingback.setUrlGenerator(new URLGenerator(baseUrl + "/"));
-	}
-
-	@After
-	public void shutDown() throws Exception {
-		tester.stop();
 	}
 
 	@Test

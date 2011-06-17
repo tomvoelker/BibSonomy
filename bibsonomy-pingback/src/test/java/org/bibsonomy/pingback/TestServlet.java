@@ -20,13 +20,18 @@ import org.junit.Ignore;
  */
 @Ignore
 public class TestServlet extends HttpServlet {
+	private static final String TRACKBACK_ARTICLE_PATH = "/article";
 	private static final String CONTENT_TYPE_HTML = "text/html";
 	private static final String CHAR_ENCODING = "UTF-8";
 	private static final String URLHERE = "URLHERE";
+
 	private static final String PINGBACK_HEADER = "X-Pingback";
 	private static final String PINGBACK_PATH = "/pingback";
 	private static final String PINGBACK_XMLRPC = "/xmlrpc";
 	private static final String PINGBACK_HTML = "<link rel=\"pingback\" href=\"" + URLHERE + "\" />\n";
+
+	private static final String TRACKBACK_PATH = "/trackback";
+
 
 	private static final int[] ERRORS = new int[]{
 		HttpServletResponse.SC_FORBIDDEN,
@@ -36,9 +41,9 @@ public class TestServlet extends HttpServlet {
 		HttpServletResponse.SC_METHOD_NOT_ALLOWED,
 		HttpServletResponse.SC_MOVED_PERMANENTLY,
 		HttpServletResponse.SC_NO_CONTENT
-		};
-	
-	private static final String TOP_OF_HTML_PAGE = "" +
+	};
+
+	public static final String TOP_OF_HTML_PAGE = "" +
 	"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
 	"<html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"en-US\">\n" +
 	"\n" +
@@ -48,12 +53,32 @@ public class TestServlet extends HttpServlet {
 	"    <title>Something blah blah &laquo;  Ping tester</title>\n" +
 	"\n";
 
+	public static final String TRACKBACK_RDF1 = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n" +
+	"xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n" +
+	"xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\">\n" + 
+	"<rdf:Description\n" +
+	"rdf:about=\"http://www.foo.com/archive.html#foo\"\n" +
+	"dc:identifier=\"http://www.foo.com/archive.html#foo\"\n" +
+	"dc:title=\"Foo Bar\"\n" +
+	"trackback:ping=\"" + URLHERE + "\" />\n" +
+	"</rdf:RDF>\n";
+	public static final String TRACKBACK_RDF2 = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n" +
+	"xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n" +
+	"xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\">\n" + 
+	"<rdf:Description\n" +
+	"rdf:about=\"http://www.foo.com/book.html\"\n" +
+	"dc:identifier=\"http://www.foo.com/book.html\"\n" +
+	"dc:title=\"Foo Bar\"\n" +
+	"trackback:ping=\"" + URLHERE + "\" />\n" +
+	"</rdf:RDF>\n";
+
+
 	private static final long serialVersionUID = 8692283813700271210L;
 
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		final String pathInfo = request.getPathInfo();
-		
+
 		if (pathInfo.startsWith(PINGBACK_PATH)) {
 			final StringBuffer requestURL = request.getRequestURL();
 
@@ -69,11 +94,31 @@ public class TestServlet extends HttpServlet {
 			out.write(TOP_OF_HTML_PAGE);
 
 			if (header) {
-				response.setHeader(PINGBACK_HEADER, requestURL.toString() + PINGBACK_XMLRPC);
+				response.setHeader(PINGBACK_HEADER, requestURL + PINGBACK_XMLRPC);
 			}
 			if (body) {
 				out.write(PINGBACK_HTML.replace(URLHERE, requestURL + PINGBACK_XMLRPC));
 			}
+			out.write("\n");
+			out.flush();
+		} else if (pathInfo.startsWith(TRACKBACK_ARTICLE_PATH)) {
+			final StringBuffer requestURL = request.getRequestURL();
+
+			System.out.println("GET " + requestURL);
+
+			response.setCharacterEncoding(CHAR_ENCODING);
+			response.setContentType(CONTENT_TYPE_HTML);
+
+			final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), CHAR_ENCODING));
+			out.write(TOP_OF_HTML_PAGE);
+
+			final String rdf = TRACKBACK_RDF1
+			.replaceAll("http://www.foo.com/archive.html#foo", requestURL.toString())
+			.replaceAll(URLHERE, requestURL + TRACKBACK_PATH);
+
+			out.write(rdf);
+			out.write(TRACKBACK_RDF2.replaceAll(URLHERE, requestURL + TRACKBACK_PATH));
+
 			out.write("\n");
 			out.flush();
 		} else if (pathInfo.startsWith("/stream")) {
@@ -86,9 +131,9 @@ public class TestServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException ,IOException {
-		final StringBuffer requestURL = request.getRequestURL();
-		System.out.println("POST " + requestURL);
-		if (requestURL.toString().endsWith("/xmlrpc")) {
+		final String requestUrl = request.getRequestURL().toString();
+		System.out.println("POST " + requestUrl);
+		if (requestUrl.endsWith("/xmlrpc")) {
 			/*
 			 * IN
 			 */
@@ -107,14 +152,46 @@ public class TestServlet extends HttpServlet {
 			response.setCharacterEncoding(CHAR_ENCODING);
 			response.setContentType("application/xml");
 			final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), CHAR_ENCODING));
-			out.write("<?xml version=\"1.0\"?>\n" + 
+			out.write(
+					"<?xml version=\"1.0\"?>\n" + 
 					"<methodResponse>\n" +
 					"<params>\n" +
 					"<param>\n" +
 					"<value><string>success</string></value>\n" +
 					"</param>\n" +
 					"</params>\n" +
-			"</methodResponse>\n");
+					"</methodResponse>\n"
+			);
+			out.flush();
+		} else if(requestUrl.endsWith("/trackback")) {
+			/*
+			 * IN
+			 */
+			final String url = request.getParameter("url");
+
+			/*
+			 * out
+			 */
+			response.setCharacterEncoding(CHAR_ENCODING);
+			response.setContentType("application/x-www-form-urlencoded");
+			final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), CHAR_ENCODING));
+
+			if (requestUrl.contains(TRACKBACK_ARTICLE_PATH)) {
+				out.write(
+						"<?xml version=\"1.0\"?>\n" + 
+						"<response>\n" +
+						"<error>0</error>\n" +
+						"</response>\n"
+				);
+			} else {
+				out.write(
+						"<?xml version=\"1.0\"?>\n" + 
+						"<response>\n" +
+						"<error>1</error>\n" +
+						"<message>unknown URL</message>\n" +
+						"</response>\n"
+				);
+			}
 			out.flush();
 		}
 	};
