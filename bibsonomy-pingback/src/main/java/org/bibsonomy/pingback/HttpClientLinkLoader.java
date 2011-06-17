@@ -67,29 +67,31 @@ public class HttpClientLinkLoader implements LinkLoader {
 				 * probe content
 				 */
 				final HttpEntity entity = response.getEntity();
-				final Header contentType = entity.getContentType();
-				if (present(entity) && present(contentType) && contentType.getValue().contains("html")) {
-					final BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
-					try {
-						final String headContent = readHeadSectionOfPage(reader);
-						/*
-						 * probe pingback content
-						 */
-						final String pingbackUrl = getPingbackUrlFromHtml(headContent);
-						if (present(pingbackUrl)) {
-							log.debug("found pingback meta tag");
-							return new Link(null, linkUrl, pingbackUrl, true);
+				if (present(entity)) { 
+					final Header contentType = entity.getContentType();
+					if (present(contentType) && contentType.getValue().contains("html")) {
+						final BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+						try {
+							final String headContent = readHeadSectionOfPage(reader);
+							/*
+							 * probe pingback content
+							 */
+							final String pingbackUrl = getPingbackUrlFromHtml(headContent);
+							if (present(pingbackUrl)) {
+								log.debug("found pingback meta tag");
+								return new Link(null, linkUrl, pingbackUrl, true);
+							}
+							/*
+							 * probe trackback content
+							 */
+							final String trackbackUrl = getTrackbackUrl(linkUrl, headContent, reader);
+							if (present(trackbackUrl)) {
+								log.debug("found trackback URL");
+								return new TrackbackLink(null, linkUrl, trackbackUrl, true);
+							}
+						} finally {
+							reader.close();
 						}
-						/*
-						 * probe trackback content
-						 */
-						final String trackbackUrl = getTrackbackUrl(linkUrl, headContent, reader);
-						if (present(trackbackUrl)) {
-							log.debug("found trackback URL");
-							return new TrackbackLink(null, linkUrl, trackbackUrl, true);
-						}
-					} finally {
-						reader.close();
 					}
 				}
 			} finally {
@@ -126,7 +128,7 @@ public class HttpClientLinkLoader implements LinkLoader {
 		/*
 		 * check HTML body
 		 */
-		return getTrackbackUrlFromHtml(linkUrl, readRemainingPage(reader));
+		return getTrackbackUrlFromHtml(linkUrl, readPortionOfPage(reader));
 	}
 
 	@Override
@@ -142,7 +144,7 @@ public class HttpClientLinkLoader implements LinkLoader {
 		throw new UnsupportedOperationException();
 	}
 
-	protected String readRemainingPage(final BufferedReader reader) throws IOException {
+	protected String readPortionOfPage(final BufferedReader reader) throws IOException {
 		final StringBuilder content = new StringBuilder();
 		String line;
 		while ((line = reader.readLine()) != null && content.length() < MAX_HTML_BODY_CHARS) {

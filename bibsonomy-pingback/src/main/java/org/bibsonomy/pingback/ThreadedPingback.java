@@ -23,8 +23,9 @@ public class ThreadedPingback extends SimplePingback implements Runnable {
 	private final long waitTime = 1000;
 
 	@Override
-	public void sendPingback(Post<? extends Resource> post) {
+	public String sendPingback(Post<? extends Resource> post) {
 		queue.add(post);
+		return null;
 	}
 
 

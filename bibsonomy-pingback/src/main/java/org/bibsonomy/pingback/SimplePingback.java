@@ -33,6 +33,7 @@ public class SimplePingback implements Pingback {
 
 	private URLGenerator urlGenerator;
 	private PingbackClient pingbackClient;
+	private PingbackClient trackbackClient;
 	private LinkLoader linkLoader;
 
 
@@ -42,8 +43,10 @@ public class SimplePingback implements Pingback {
 	 *  
 	 * @param post
 	 * @param linkAddress
+	 * @return The return status from the corresponding pingback/trackback clients 
+	 * or <code>null</code> if no pingback/trackback link was discovered.
 	 */
-	public void sendPingback(final Post<? extends Resource> post) {
+	public String sendPingback(final Post<? extends Resource> post) {
 		/*
 		 * send only pings for public posts
 		 */
@@ -55,23 +58,23 @@ public class SimplePingback implements Pingback {
 			if (present(linkAddress)) {
 				final Link link = linkLoader.loadLink(linkAddress);
 				if (link.isSuccess()) {
-					log.debug("found link");
+					log.debug("found pingback link");
 					if (link.isPingbackEnabled()) {
-						sendPingback(post, link);
-					} else {
+						return "pingback: " + sendPingback(post, link);
+					} else if (link instanceof TrackbackLink) {
 						/*
 						 * check for trackback
 						 */
-						if (link instanceof TrackbackLink) {
-							final TrackbackLink trackbackLink = (TrackbackLink) link;
-							if (trackbackLink.isTrackbackEnabled()) {
-								sendTrackback(post, trackbackLink);
-							}
+						log.debug("found trackback link");
+						final TrackbackLink trackbackLink = (TrackbackLink) link;
+						if (trackbackLink.isTrackbackEnabled()) {
+							return "trackback: " + sendTrackback(post, trackbackLink);
 						}
 					}
 				}
 			}
 		}
+		return null; 
 	}
 
 	/**
@@ -91,31 +94,42 @@ public class SimplePingback implements Pingback {
 			final String url = bibtex.getUrl();
 			if (present(url)) return UrlUtils.cleanBibTeXUrl(url);
 			bibtex.serializeMiscFields();
-			
+
 			final String ee = bibtex.getMiscField("ee");
 			if (present(ee)) return UrlUtils.cleanBibTeXUrl(ee);
 		}
 		return null;
 	}
 
-	private void sendPingback(final Post<? extends Resource> post, final Link link) {
+	private String sendPingback(final Post<? extends Resource> post, final Link link) {
 		try {
 			if (log.isDebugEnabled()) {
 				log.debug("sending pingback for " + link.getUrl() + " to " + link.getPingbackUrl());
 			}
 			post.getResource().recalculateHashes(); // FIXME: shouldn't the UrlGenerator take care of this?
 			final String permaLink = urlGenerator.getPostUrl(post);
-			pingbackClient.sendPingback(permaLink, link);
+			return pingbackClient.sendPingback(permaLink, link);
 		} catch (final PingbackException e) {
 			log.debug("Pingback to '" + link.getUrl() + "' failed", e);
 			if (PingbackClient.PINGBACK_ALREADY_REGISTERED == e.getFaultCode()) {
 				log.debug("Pingback to '" + link.getUrl() + "' already registered");
 			}
+			return "error (" + e.getMessage() + ")";
 		}
 	}
-	
-	private void sendTrackback(final Post<? extends Resource> post, final TrackbackLink link) {
-		// TODO: implementation :)
+
+	private String sendTrackback(final Post<? extends Resource> post, final TrackbackLink link) {
+		try {
+			if (log.isDebugEnabled()) {
+				log.debug("sending trackback for " + link.getUrl() + " to " + link.getPingbackUrl());
+			}
+			post.getResource().recalculateHashes(); // FIXME: shouldn't the UrlGenerator take care of this?
+			final String permaLink = urlGenerator.getPostUrl(post);
+			return trackbackClient.sendPingback(permaLink, link);
+		} catch (final PingbackException e) {
+			log.debug("Trackback to '" + link.getUrl() + "' failed", e);
+			return "error (" + e.getMessage() + ")";
+		}
 	}
 
 	@Required
@@ -131,6 +145,11 @@ public class SimplePingback implements Pingback {
 	@Required
 	public void setLinkLoader(LinkLoader linkLoader) {
 		this.linkLoader = linkLoader;
+	}
+
+	@Required
+	public void setTrackbackClient(PingbackClient trackbackClient) {
+		this.trackbackClient = trackbackClient;
 	}
 
 }
