@@ -383,7 +383,7 @@ public enum Views implements View {
 	/**
 	 * join group view
 	 */
-	JOIN_GROUP("join_group"),
+	JOIN_GROUP("actions/join_group"),
 	
 	/** 
 	 * import view 
