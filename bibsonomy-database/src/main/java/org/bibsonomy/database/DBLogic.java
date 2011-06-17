@@ -103,7 +103,6 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
-import org.bibsonomy.sync.SynchronizationServer;
 
 /**
  * Database Implementation of the LogicInterface
@@ -314,8 +313,8 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	} finally {
 	    session.close();
 	}
-	SynchronizationServer sync = new SynchronizationServer();
-	return sync.synchronize(posts, clientPosts, lastSyncDate, strategy);
+	
+	return syncDBManager.synchronize(posts, clientPosts, lastSyncDate, strategy);
     }
     
     /*
