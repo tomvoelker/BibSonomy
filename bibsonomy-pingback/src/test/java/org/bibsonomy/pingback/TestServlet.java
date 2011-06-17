@@ -28,6 +28,16 @@ public class TestServlet extends HttpServlet {
 	private static final String PINGBACK_XMLRPC = "/xmlrpc";
 	private static final String PINGBACK_HTML = "<link rel=\"pingback\" href=\"" + URLHERE + "\" />\n";
 
+	private static final int[] ERRORS = new int[]{
+		HttpServletResponse.SC_FORBIDDEN,
+		HttpServletResponse.SC_BAD_GATEWAY,
+		HttpServletResponse.SC_BAD_REQUEST,
+		HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+		HttpServletResponse.SC_MOVED_PERMANENTLY,
+		HttpServletResponse.SC_NO_CONTENT
+		};
+	
 	private static final String TOP_OF_HTML_PAGE = "" +
 	"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
 	"<html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"en-US\">\n" +
@@ -43,29 +53,35 @@ public class TestServlet extends HttpServlet {
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		final String pathInfo = request.getPathInfo();
-		final StringBuffer requestURL = request.getRequestURL();
-
-		System.out.println("GET " + requestURL);
-
-		final boolean body   = present(request.getParameter("body"));
-		final boolean header = present(request.getParameter("header"));		
-
-		response.setCharacterEncoding(CHAR_ENCODING);
-		response.setContentType(CONTENT_TYPE_HTML);
-
-		final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), CHAR_ENCODING));
-		out.write(TOP_OF_HTML_PAGE);
-
+		
 		if (pathInfo.startsWith(PINGBACK_PATH)) {
+			final StringBuffer requestURL = request.getRequestURL();
+
+			System.out.println("GET " + requestURL);
+
+			final boolean body   = present(request.getParameter("body"));
+			final boolean header = present(request.getParameter("header"));		
+
+			response.setCharacterEncoding(CHAR_ENCODING);
+			response.setContentType(CONTENT_TYPE_HTML);
+
+			final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), CHAR_ENCODING));
+			out.write(TOP_OF_HTML_PAGE);
+
 			if (header) {
 				response.setHeader(PINGBACK_HEADER, requestURL.toString() + PINGBACK_XMLRPC);
 			}
 			if (body) {
 				out.write(PINGBACK_HTML.replace(URLHERE, requestURL + PINGBACK_XMLRPC));
 			}
+			out.write("\n");
+			out.flush();
+		} else if (pathInfo.startsWith("/stream")) {
+			response.setContentType("application/stream");
+		} else {
+			response.sendError(ERRORS[(int) Math.round(Math.random() * ERRORS.length) - 1]);
 		}
-		out.write("\n");
-		out.flush();
+
 	}
 
 	@Override
