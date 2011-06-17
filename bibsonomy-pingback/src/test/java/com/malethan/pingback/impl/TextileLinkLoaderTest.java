@@ -18,16 +18,18 @@
 package com.malethan.pingback.impl;
 
 import static junit.framework.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * <p>Copyright &copy; 2009 Elwyn Malethan</p>
@@ -160,6 +162,8 @@ public class TextileLinkLoaderTest {
         assertFalse("should not have got as far as the body tag", captured.indexOf("<body>") > -1);
     }
 
+    @Test
+    @Ignore
     public void testStopsReadingAPageAtTheStartOfBody() throws IOException {
         String htmlPage = "" +
                 TOP_OF_HTML_PAGE +
