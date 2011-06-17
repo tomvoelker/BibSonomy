@@ -3,6 +3,8 @@ package org.bibsonomy.pingback;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.net.UnknownHostException;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,11 +29,12 @@ public class TrackbackClientTest extends AbstractClientTest {
 	
 	@Test
 	public void testSendPingback() {
-		final Link link = new TrackbackLink("Title", "http://www.example.com/", baseUrl + "/trackback", true);
-		assertEquals("success", trackbackClient.sendPingback(baseUrl + "/article", link));
+		final Link link = new TrackbackLink("Title", baseUrl + "/article", baseUrl + "/article/trackback", true);
+		assertEquals("success", trackbackClient.sendPingback("http://www.bibsonomy.org/article", link));
 		
 		try {
-			trackbackClient.sendPingback(baseUrl + "/error", link);
+			final Link link2 = new TrackbackLink("Title", baseUrl + "/article", baseUrl + "/trackback", true);
+			trackbackClient.sendPingback("http://www.bibsonomy.org/article", link2);
 			fail("expected " + PingbackException.class.getSimpleName());
 		} catch (final PingbackException e) {
 			assertEquals("unknown URL", e.getMessage());
@@ -42,10 +45,10 @@ public class TrackbackClientTest extends AbstractClientTest {
 
 	@Test
 	public void testSendPingbackFailOnWrongUrl1() {
-		final Link link = new TrackbackLink("Title", "http://www.example.com/", baseUrl + "/noTrackback", true);
+		final Link link = new TrackbackLink("Title", baseUrl + "/article", baseUrl + "/article/noTrackback", true);
 		
 		try {
-			trackbackClient.sendPingback(baseUrl + "/article", link);
+			trackbackClient.sendPingback("http://www.bibsonomy.org/article", link);
 			fail("expected " + PingbackException.class.getSimpleName());
 		} catch (final PingbackException e) {
 			assertEquals("unknown error", e.getMessage());
@@ -58,10 +61,10 @@ public class TrackbackClientTest extends AbstractClientTest {
 	 */
 	@Test
 	public void testSendPingbackFailOnWrongUrl2() {
-		final Link link = new TrackbackLink("Title", "http://www.kde.cs.uni-kassel.de//", "http://www.example.com/noTrackback", true);
+		final Link link = new TrackbackLink("Title", "http://www.kde.cs.uni-kassel.de/article", "http://www.kde.cs.uni-kassel.de/", true);
 		
 		try {
-			trackbackClient.sendPingback(baseUrl + "/article", link);
+			trackbackClient.sendPingback("http://www.bibsonomy.org/article", link);
 			fail("expected " + PingbackException.class.getSimpleName());
 		} catch (final PingbackException e) {
 			assertEquals("unknown error", e.getMessage());
@@ -74,14 +77,14 @@ public class TrackbackClientTest extends AbstractClientTest {
 	 */
 	@Test
 	public void testSendPingbackFailOnWrongUrl3() {
-		final Link link = new TrackbackLink("Title", "http://www.kde.kde.cs.uni-kassel.de/", "http://www.example.com/noTrackback", true);
+		final Link link = new TrackbackLink("Title", "http://www.kde.kde.cs.uni-kassel.de/article", "http://www.kde.kde.cs.uni-kassel.de/trackback", true);
 		
 		try {
-			trackbackClient.sendPingback(baseUrl + "/article", link);
+			trackbackClient.sendPingback("http://www.bibsonomy.org/article", link);
 			fail("expected " + PingbackException.class.getSimpleName());
 		} catch (final PingbackException e) {
-			assertEquals("unknown error", e.getMessage());
-			assertEquals(PingbackClient.UNKOWN_ERROR, e.getFaultCode());
+			assertEquals("request error: " + UnknownHostException.class.getName() + ": www.kde.kde.cs.uni-kassel.de", e.getMessage());
+			assertEquals(PingbackClient.UPSTREAM_PROBLEM, e.getFaultCode());
 		}
 	}
 

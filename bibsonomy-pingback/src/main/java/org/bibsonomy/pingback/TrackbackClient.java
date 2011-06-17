@@ -135,7 +135,7 @@ public class TrackbackClient implements PingbackClient {
 				}
 			} catch (final IOException e) {
 				log.debug("got exception: ", e);
-				throw new PingbackException("request error: " + e.getMessage(), PingbackClient.UPSTREAM_PROBLEM, trackbackUrl, trackbackLink.getUrl());
+				throw new PingbackException("request error: " + e, PingbackClient.UPSTREAM_PROBLEM, trackbackUrl, trackbackLink.getUrl());
 			}
 			throw new PingbackException("unknown error", PingbackClient.UNKOWN_ERROR, trackbackUrl, trackbackLink.getUrl());
 		} else {
