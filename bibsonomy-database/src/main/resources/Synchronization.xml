@@ -82,6 +82,12 @@
 		LIMIT 1
 	</select> 
 	
+	<select id="getSyncServiceByURI" resultClass="java.lang.Integer" parameterClass="syncParam">
+		SELECT service_id
+		FROM sync_services
+		WHERE uri = #service# 
+	</select>
+	
 	<insert id="insertSync" parameterClass="syncParam">
 		INSERT INTO sync_data (service_id, user_name, content_type, last_sync_date, status)
 		VALUES (#serviceId#, #userName#, #contentType#, #lastSyncDate#, #status#)
@@ -108,5 +114,6 @@
 		WHERE user_name = #userName#
 			AND service_id = #serviceId#
 	</delete>
+	
 	
 </sqlMap>

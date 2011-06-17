@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.sync.SynchronizationClients;
 
 /**
  * @author wla
@@ -24,7 +23,7 @@ public class SyncParam {
 	private final String status;
 	private final Properties credentials;
 
-	public SyncParam(String userName, final URI service, Class<? extends Resource> resourceType, Date lastSyncDate, String status, Properties credentials) {
+	public SyncParam(String userName, final URI service, final int serviceId, Class<? extends Resource> resourceType, Date lastSyncDate, String status, Properties credentials) {
 		this.userName = userName;
 		this.service = service;
 		if(present(resourceType)) {
@@ -35,11 +34,7 @@ public class SyncParam {
 		this.lastSyncDate = lastSyncDate;
 		this.status = status;
 		this.credentials = credentials;
-		if (present(service)) {
-			this.serviceId = SynchronizationClients.getByUri(service).getId();
-		} else {
-			this.serviceId = 0; 
-		}
+		this.serviceId = serviceId;
 	}
 
 	/**
