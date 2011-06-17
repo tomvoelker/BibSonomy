@@ -59,7 +59,7 @@ public class SyncService {
 	public boolean equals(Object obj) {
 		if (obj instanceof SyncService) {
 			final SyncService test = (SyncService) obj;
-			return this.getService().equals(test.getService()) && this.serverUser.equals(test.getServerUser());
+			return this.getService().equals(test.getService());
 		} 
 		return super.equals(obj);
 	}
