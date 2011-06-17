@@ -58,6 +58,16 @@ public class SimplePingback implements Pingback {
 					log.debug("found link");
 					if (link.isPingbackEnabled()) {
 						sendPingback(post, link);
+					} else {
+						/*
+						 * check for trackback
+						 */
+						if (link instanceof TrackbackLink) {
+							final TrackbackLink trackbackLink = (TrackbackLink) link;
+							if (trackbackLink.isTrackbackEnabled()) {
+								sendTrackback(post, trackbackLink);
+							}
+						}
 					}
 				}
 			}
@@ -102,6 +112,10 @@ public class SimplePingback implements Pingback {
 				log.debug("Pingback to '" + link.getUrl() + "' already registered");
 			}
 		}
+	}
+	
+	private void sendTrackback(final Post<? extends Resource> post, final TrackbackLink link) {
+		// TODO: implementation :)
 	}
 
 	@Required
