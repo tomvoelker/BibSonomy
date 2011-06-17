@@ -195,7 +195,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @return overwrite
 	 */
-	public boolean getOverwrite() {
+	public boolean isOverwrite() {
 		return this.overwrite;
 	}
 
