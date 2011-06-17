@@ -8,7 +8,7 @@ import org.mortbay.jetty.testing.ServletTester;
  * @author rja
  * @version $Id$
  */
-public class AbstractClientTest {
+public abstract class AbstractClientTest {
 
 	private ServletTester tester;
 	protected String baseUrl;
