@@ -1,5 +1,8 @@
 package org.bibsonomy.pingback;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.Collections;
 
 import org.bibsonomy.model.Bookmark;
@@ -7,10 +10,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.services.URLGenerator;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mortbay.jetty.testing.ServletTester;
 
 import com.malethan.pingback.impl.ApachePingbackClient;
 
@@ -18,34 +19,22 @@ import com.malethan.pingback.impl.ApachePingbackClient;
  * @author rja
  * @version $Id$
  */
-public class SimplePingbackTest {
+public class SimplePingbackTest extends AbstractClientTest {
 	
-	private ServletTester tester;
-	private String baseUrl;
 	private SimplePingback pingback;
 	
+	@Override
 	@Before
 	public void setUp() throws Exception {
-		/*
-		 * set up server
-		 */
-		tester = new ServletTester();
-		tester.setContextPath("/");
-		tester.addServlet(TestServlet.class, "/*");
-		baseUrl = tester.createSocketConnector(true);
-		tester.start();
+		super.setUp();
 		/*
 		 * set up pingback
 		 */
 		this.pingback = new SimplePingback();
 		this.pingback.setLinkLoader(new HttpClientLinkLoader());
 		this.pingback.setPingbackClient(new ApachePingbackClient());
-		this.pingback.setUrlGenerator(new URLGenerator(baseUrl + "/"));
-	}
-	
-	@After
-	public void shutDown() throws Exception {
-		tester.stop();
+		this.pingback.setTrackbackClient(new TrackbackClient());
+		this.pingback.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org/"));
 	}
 	
 	
@@ -58,11 +47,35 @@ public class SimplePingbackTest {
 		post.setUser(new User("jaeschke"));
 	
 		bookmark.setUrl(baseUrl + "/pingback?body=true");
-		this.pingback.sendPingback(post);
+		assertEquals("pingback: success", this.pingback.sendPingback(post));
 		
 		
 		bookmark.setUrl(baseUrl + "/pingback?body=true&header=true");
-		this.pingback.sendPingback(post);
+		assertEquals("pingback: success", this.pingback.sendPingback(post));
+		
+		/*
+		 * no pingback registered for this URL
+		 */
+		bookmark.setUrl(baseUrl + "/foo");
+		assertNull(this.pingback.sendPingback(post));
+	}
+	
+	@Test
+	public void testTrackPingback() {
+		final Bookmark bookmark = new Bookmark();
+		final Post<Bookmark> post = new Post<Bookmark>();
+		post.setGroups(Collections.singleton(GroupUtils.getPublicGroup()));
+		post.setResource(bookmark);
+		post.setUser(new User("jaeschke"));
+	
+		bookmark.setUrl(baseUrl + "/article");
+		assertEquals("trackback: success", this.pingback.sendPingback(post));
+
+		/*
+		 * no trackback registered for this URL
+		 */
+		bookmark.setUrl(baseUrl + "/foo");
+		assertNull(this.pingback.sendPingback(post));
 	}
 
 }
