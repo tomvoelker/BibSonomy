@@ -129,20 +129,20 @@ public class HttpClientLinkLoaderTest extends AbstractClientTest {
 	public void testGetTrackbackUrlFromHtml() {
 		System.out.println("weg = "  + "http://www.foo.com/archive.html".replaceAll("\\#.*$", ""));
 		
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/archive.html#foo", TestServlet.TRACKBACK_RDF1));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/archive.html#foo", TestServlet.TRACKBACK_RDF1));
 		assertNull(linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/archive.html", TestServlet.TRACKBACK_RDF1));
 		
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html#foo", TestServlet.TRACKBACK_RDF2));
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html", TestServlet.TRACKBACK_RDF2));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html#foo", TestServlet.TRACKBACK_RDF2));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html", TestServlet.TRACKBACK_RDF2));
 
 		/*
 		 * trackback URL in HTML head section
 		 */
 		final String html = TestServlet.TOP_OF_HTML_PAGE + "<body>" + TestServlet.TRACKBACK_RDF1 + "\n\n<b>Cool!</b>\n" + TestServlet.TRACKBACK_RDF2;
 		
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html#foo", html));
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html", html));
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/archive.html#foo", html));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html#foo", html));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/book.html", html));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/archive.html#foo", html));
 		assertNull(linkLoader.getTrackbackUrlFromHtml("http://www.foo.com/archive.html", html));
 		
 		
@@ -158,9 +158,9 @@ public class HttpClientLinkLoaderTest extends AbstractClientTest {
 		final BufferedReader reader = getReaderForString(html);
 		final String headSection = linkLoader.readHeadSectionOfPage(reader);
 		
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrl("http://www.foo.com/book.html#foo", headSection, reader));
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrl("http://www.foo.com/book.html", headSection, reader));
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrl("http://www.foo.com/archive.html#foo", headSection, reader));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrl("http://www.foo.com/book.html#foo", headSection, reader));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrl("http://www.foo.com/book.html", headSection, reader));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrl("http://www.foo.com/archive.html#foo", headSection, reader));
 		assertNull(linkLoader.getTrackbackUrl("http://www.foo.com/archive.html", headSection, reader));
 		
 		/*
@@ -171,9 +171,9 @@ public class HttpClientLinkLoaderTest extends AbstractClientTest {
 		final BufferedReader reader2 = getReaderForString(html2);
 		final String headSection2 = linkLoader.readHeadSectionOfPage(reader2);
 		
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrl("http://www.foo.com/book.html#foo", headSection2, reader2));
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrl("http://www.foo.com/book.html", headSection2, reader2));
-		assertEquals("http://www.foo.com/tb.cgi/5", linkLoader.getTrackbackUrl("http://www.foo.com/archive.html#foo", headSection2, reader2));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrl("http://www.foo.com/book.html#foo", headSection2, reader2));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrl("http://www.foo.com/book.html", headSection2, reader2));
+		assertEquals(TestServlet.URLHERE, linkLoader.getTrackbackUrl("http://www.foo.com/archive.html#foo", headSection2, reader2));
 		assertNull(linkLoader.getTrackbackUrl("http://www.foo.com/archive.html", headSection2, reader2));
 		
 		
