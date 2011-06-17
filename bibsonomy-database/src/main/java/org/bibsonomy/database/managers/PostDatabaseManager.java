@@ -2,7 +2,6 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,6 +47,7 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.util.ReflectionUtils;
 
 /**
  * Used to create, read, update and delete posts from the database.
@@ -1490,18 +1490,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected abstract FirstListChainElement<Post<R>, P> getChain();
 
 	/**
-	 * @return the class of the first generic param (<R>, Resource)
-	 */
-	private Class<?> getResourceClass() {
-		final ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
-		return (Class<?>) parameterizedType.getActualTypeArguments()[0];
-	}
-
-	/**
 	 * @return the simple class name of the first generic param (<R>, Resource)
 	 */
 	protected String getResourceClassName() {
-		return this.getResourceClass().getSimpleName();
+		return ReflectionUtils.getActualClassArguments(this.getClass()).get(0).getSimpleName();
 	}
 
 	/** 
