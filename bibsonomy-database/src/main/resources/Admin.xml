@@ -61,13 +61,14 @@
 	</select>
 	
 	<select id="getBibtexUsers" resultMap="AdminCommon.userPredictionWithUserProperties" parameterClass="adminParam" timeout="300">
-		SELECT * FROM user u 
-		JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
-		JOIN bibtex b ON (u.user_name = b.user_name)
-		WHERE algorithm != "self_deleted"
-		GROUP BY u.user_name
-		ORDER BY u.updated_at DESC
-		LIMIT #limit#
+		SELECT * 
+			FROM user u 
+				JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
+				JOIN bibtex b ON (u.user_name = b.user_name)
+			WHERE algorithm != "self_deleted"
+			GROUP BY u.user_name
+			ORDER BY u.updated_at DESC
+			LIMIT #limit#
 	</select>
 	
 	<select id="getAllUsersWithSpam" resultMap="AdminCommon.userProperties" parameterClass="adminParam">

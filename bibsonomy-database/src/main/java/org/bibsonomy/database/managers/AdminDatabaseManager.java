@@ -389,17 +389,16 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * Retrieves a comparison of classification results of admins and the
 	 * automatic classifier
 	 * 
-	 * @param interval
-	 *            the time period of classifications
-	 * @param session
-	 *            db session
+	 * @param interval - the time period of classifications
+	 * @param limit - the number of users to return 
+	 * @param session - the database session
 	 * @return Userlist with spammer flag of admin and prediction of classifier
 	 */
-	public List<User> getClassifierComparison(final int interval, final DBSession session) {
+	public List<User> getClassifierComparison(final int interval, final int limit, final DBSession session) {
 		final AdminParam param = new AdminParam();
 		param.setInterval(interval);
-		param.setLimit(100);
-		log.debug("Get BibTex for users: " + param.getInterval() + " " + param.getLimit());
+		param.setLimit(limit);
+		log.debug("Get BibTeX for users: " + param.getInterval() + " " + param.getLimit());
 		return this.queryForList("getBibtexUsers", param, User.class, session);
 	}
 
