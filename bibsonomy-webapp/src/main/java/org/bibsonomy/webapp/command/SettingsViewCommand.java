@@ -133,6 +133,17 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<SyncService> syncServer;
 	
 	private List<SyncService> avlSyncServer;	
+	
+	/** for delicious v2 import only, import bookmarks or bundles? **/
+	private String importDataV2;
+	
+	/** for delicious v1 import only, import bookmarks or bundles? **/
+	private String importDataV1;
+	
+	/** in case of an import from a remote service 
+	 *  userName and passWord are required **/
+	private String userName;
+	private String passWord;
 	/**
 	 * Constructor.
 	 */
@@ -555,6 +566,62 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public List<SyncService> getAvlSyncServer() {
 		return avlSyncServer;
+	}
+	
+	/**
+	 * @return the importData
+	 */
+	public String getImportDataV2() {
+		return this.importDataV2;
+	}
+
+	/**
+	 * @param importData the importData to set
+	 */
+	public void setImportDataV2(String importData) {
+		this.importDataV2 = importData;
+	}
+
+	/**
+	 * @return the userName, required for importing resources form a remote service
+	 */
+	public String getUserName() {
+		return this.userName;
+	}
+	
+	/**
+	 * @param userName
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	
+	/**
+	 * @return the user's password
+	 */
+	public String getPassWord() {
+		return this.passWord;
+	}
+	
+	/**
+	 * @param passWord
+	 */
+	public void setPassWord(String passWord) {
+		this.passWord = passWord;
+	}
+
+	/**
+	 * @param importDataV1
+	 */
+	public void setImportDataV1(String importDataV1) {
+		this.importDataV1 = importDataV1;
+	}
+
+	/**
+	 * @return importData for v1 form
+	 */
+	public String getImportDataV1() {
+		return importDataV1;
 	}
 
 }
