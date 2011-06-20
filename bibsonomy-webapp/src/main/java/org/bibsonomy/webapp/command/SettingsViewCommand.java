@@ -135,10 +135,10 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<SyncService> avlSyncServer;	
 	
 	/** for delicious v2 import only, import bookmarks or bundles? **/
-	private String importDataV2;
+	private String importDataV2 = "posts";
 	
 	/** for delicious v1 import only, import bookmarks or bundles? **/
-	private String importDataV1;
+	private String importDataV1 = "posts";
 	
 	/** in case of an import from a remote service 
 	 *  userName and passWord are required **/
