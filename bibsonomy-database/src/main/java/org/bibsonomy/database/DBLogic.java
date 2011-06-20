@@ -2045,14 +2045,14 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * org.bibsonomy.model.logic.LogicInterface#getClassifierComparison(int)
      */
     @Override
-    public List<User> getClassifierComparison(final int interval) {
-	this.permissionDBManager.ensureAdminAccess(this.loginUser);
-	final DBSession session = openSession();
-	try {
-	    return this.adminDBManager.getClassifierComparison(interval, session);
-	} finally {
-	    session.close();
-	}
+    public List<User> getClassifierComparison(final int interval, final int limit) {
+    	this.permissionDBManager.ensureAdminAccess(this.loginUser);
+    	final DBSession session = openSession();
+    	try {
+    		return this.adminDBManager.getClassifierComparison(interval, limit, session);
+    	} finally {
+    		session.close();
+    	}
     }
 
     /*
