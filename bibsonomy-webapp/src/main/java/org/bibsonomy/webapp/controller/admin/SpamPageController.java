@@ -109,7 +109,7 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 	private void setUsers(AdminViewCommand cmd) {
 		if (cmd.getSelTab() == AdminViewCommand.CLASSIFIER_EVALUATE) {
 			// TODO: Interval checken
-			final List<User> users = this.logic.getClassifierComparison(cmd.getInterval()[0]);
+			final List<User> users = this.logic.getClassifierComparison(cmd.getInterval()[0], cmd.getLimit());
 			cmd.setContent(users);
 			return;
 		}
