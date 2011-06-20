@@ -15,14 +15,9 @@
 		<c:when test="${empty importType}">
 
 			<post:firefoxImport/>
-      
-			<post:deliciousImport/>
 
 		</c:when>
 		<c:otherwise>
-			<c:if test="${importType eq 'delicious'}">
-				<post:deliciousImport/>	
-			</c:if>
 			<c:if test="${importType eq 'firefox'}">
 				<post:firefoxImport/>
 			</c:if>
