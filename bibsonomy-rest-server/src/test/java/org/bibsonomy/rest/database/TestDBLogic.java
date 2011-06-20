@@ -843,7 +843,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<User> getClassifierComparison(final int interval) {
+	public List<User> getClassifierComparison(final int interval, final int limit) {
 		// TODO Auto-generated method stub
 		return null;
 	}
