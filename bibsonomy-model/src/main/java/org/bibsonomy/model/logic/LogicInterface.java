@@ -490,9 +490,10 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * of admins and the automatic classifier
 	 * 
 	 * @param interval 
+	 * @param limit - the number of users to return
 	 * @return Userlist with spammer flag of admin and prediction of classifier 
 	 */
-	public List<User> getClassifierComparison(int interval);	
+	public List<User> getClassifierComparison(int interval, int limit);
 	
 	/**
 	 * Returns a username corresponding to a given openid
