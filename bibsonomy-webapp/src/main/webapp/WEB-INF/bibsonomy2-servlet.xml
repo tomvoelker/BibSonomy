@@ -236,7 +236,10 @@
 								<value>ckey</value>
 								<value>requestedUser</value>
 								<value>importType</value>
+								<value>importDataV1</value>
+								<value>importDataV2</value>
 								<value>overwrite</value>
+								<value>userName</value>
 								<value>file</value> 
 								<value>group</value>
 								<value>delete</value>

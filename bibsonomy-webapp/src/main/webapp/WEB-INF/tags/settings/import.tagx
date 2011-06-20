@@ -94,13 +94,13 @@
 					    	    	</jsp:attribute>
 								</buttons:help>
 								<div style="font-size:80%">
-			                        <form:radiobutton path="importData" value="posts"/>
+			                        <form:radiobutton path="importDataV2" value="posts"/>
 			                        <fmt:message key="bookmarks"/>
 			  
-			                        <form:radiobutton path="importData" value="bundles"/>
+			                        <form:radiobutton path="importDataV2" value="bundles"/>
 			                        <fmt:message key="import.bundles"/>
 			                       </div>
-			                       <div class="dissError"><form:errors path="importData" /></div>
+			                       <div class="dissError"><form:errors path="importDataV2" /></div>
 			    	    	</div>
 			    	    	
 				  			<div class="fsRow">
@@ -111,7 +111,7 @@
 					</form:form>
 	   			</div>
 	   			<div class="fsContainerLeft">
-					<form:form id="settingImportForm" action="/import/bookmarks?ckey=${ckey}" method="post">
+					<form:form id="settingImportForm" action="/import/delicious/v1/post?ckey=${ckey}" method="post">
 		 
 						<fieldset class="fsLeft">
 						<legend><fmt:message key="import.delicious.original"/></legend>
@@ -124,12 +124,14 @@
 		 						<label for="userName" class="fsLabel"><fmt:message key="navi.username"/></label>
 		 	    			    <buttons:help message="settings.username.help.delicious"/>
 		 						<input id="userName" name="userName" class="fsInput fsSmall" type="text"/>
+			                       <div class="dissError"><form:errors path="userName" /></div>
 							</div>  		
 		
 			  				<div class="fsRow">
 								<label for="passWord" class="fsLabel"><fmt:message key="navi.password"/></label>
 			    			    <buttons:help message="settings.password.help.delicious"/>
 			    				<input id="passWord" type="password" name="passWord" class="fsInput fsSmall"/>
+			                    <div class="dissError"><form:errors path="passWord" /></div>
 							</div>
 				
 			  				<div class="fsRow">
@@ -149,11 +151,12 @@
 					    	    	</jsp:attribute>
 								</buttons:help>
 								<div style="font-size:80%">
-			                        <form:radiobutton path="importData" value="posts"/>
+			                        <form:radiobutton path="importDataV1" value="posts"/>
 			                        <fmt:message key="bookmarks"/>
 			  
-			                        <form:radiobutton path="importData" value="bundles"/>
+			                        <form:radiobutton path="importDataV1" value="bundles"/>
 			                        <fmt:message key="import.bundles"/>
+			                       <div class="dissError"><form:errors path="importDataV1" /></div>
 		                        </div>
 			    	    	</div>
 			    	    	
