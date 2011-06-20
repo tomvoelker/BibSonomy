@@ -1,6 +1,6 @@
 package org.bibsonomy.webapp.controller.admin;
 
-import java.util.List;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +30,7 @@ import org.bibsonomy.webapp.view.Views;
 public class SpamPageController implements MinimalisticController<AdminViewCommand> {
 	private static final Log log = LogFactory.getLog(SpamPageController.class);
 
-	
+
 	private LogicInterface logic;
 	private UserSettings userSettings;
 
@@ -68,10 +68,10 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 		/*
 		 * handle specific user
 		 */
-		if (command.getAclUserInfo() != null) {
+		if (present(command.getAclUserInfo())) {
 			if ("flag_spammer".equals(command.getAction())) {
 				if (!logic.getUserDetails(command.getAclUserInfo()).getSpammer()) {
-					User user = new User(command.getAclUserInfo());
+					final User user = new User(command.getAclUserInfo());
 					user.setToClassify(0);
 					user.setAlgorithm("admin");
 					user.setSpammer(true);
@@ -80,7 +80,6 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 					command.addInfo("The user was already flagged as a spammer.");
 				}
 			}
-
 			command.setUser(logic.getUserDetails(command.getAclUserInfo()));
 		}
 
@@ -92,11 +91,11 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 	public AdminViewCommand instantiateCommand() {
 		return new AdminViewCommand();
 	}
-	
-	private void setStatistics(AdminViewCommand cmd) {
-		AdminStatisticsCommand command = cmd.getStatisticsCommand();
 
-		for (int interval : cmd.getInterval()) {
+	private void setStatistics(final AdminViewCommand cmd) {
+		final AdminStatisticsCommand command = cmd.getStatisticsCommand();
+
+		for (final int interval : cmd.getInterval()) {
 			command.setNumAdminSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.SPAMMER, interval));
 			command.setNumAdminNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.NO_SPAMMER, interval));
 			command.setNumClassifierSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER, interval));
@@ -106,21 +105,21 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 		}
 	}
 
-	private void setUsers(AdminViewCommand cmd) {
-		if (cmd.getSelTab() == AdminViewCommand.CLASSIFIER_EVALUATE) {
-			// TODO: Interval checken
-			final List<User> users = this.logic.getClassifierComparison(cmd.getInterval()[0], cmd.getLimit());
-			cmd.setContent(users);
+	private void setUsers(final AdminViewCommand command) {
+		if (command.getSelTab() == AdminViewCommand.CLASSIFIER_EVALUATE) {
+			// TODO: check interval 
+			command.setContent(this.logic.getClassifierComparison(command.getInterval()[0], command.getLimit()));
 			return;
 		}
-		
-		Classifier classifier = null;
-		SpamStatus status = null;
+
+		final Classifier classifier;
+		final SpamStatus status;
 
 		/* set content in dependence of the selected tab */
-		switch (cmd.getSelTab()) {
+		switch (command.getSelTab()) {
 		case AdminViewCommand.MOST_RECENT:
 			classifier = Classifier.BOTH;
+			status = null;
 			break;
 		case AdminViewCommand.ADMIN_SPAMMER_INDEX:
 			classifier = Classifier.ADMIN;
@@ -150,8 +149,11 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 			classifier = Classifier.CLASSIFIER;
 			status = SpamStatus.NO_SPAMMER_NOT_SURE;
 			break;
+		default:
+			classifier = null;
+			status = null;
 		}
-		cmd.setContent(this.logic.getClassifiedUsers(classifier, status, cmd.getLimit()));
+		command.setContent(this.logic.getClassifiedUsers(classifier, status, command.getLimit()));
 	}
 
 	/**
