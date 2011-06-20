@@ -6,6 +6,7 @@ import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
+
 /**
  * 
  * FIXME: duplicate of {@link BookmarkValidator}.
@@ -22,10 +23,9 @@ public class UrlValidator implements Validator<AjaxURLCommand> {
 	
 	@Override
 	public void validate(final Object obj, final Errors errors) {
-		
 		Assert.notNull(obj);
 		
-		if (obj instanceof String) {
+		if (obj instanceof AjaxURLCommand) {
 			final AjaxURLCommand command = (AjaxURLCommand) obj;
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "url", "error.field.required");
 
@@ -44,7 +44,6 @@ public class UrlValidator implements Validator<AjaxURLCommand> {
 			if (url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL)) {
 				errors.rejectValue("url", "error.field.valid.url");
 			}
-			
 		}
 	}
 
