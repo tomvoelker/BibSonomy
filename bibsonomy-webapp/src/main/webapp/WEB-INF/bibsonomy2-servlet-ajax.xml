@@ -198,19 +198,9 @@
 	
 	<bean id="editGoldstandardReferencesController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardReferencesController" scope="request" parent="ajaxController" />
 	
-	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="ajaxController" scope="request">
-		<property name="validator" ref="commentValidator" />
-	</bean>
+	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="ajaxController" scope="request" />
 	
-	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="commentController" scope="request">
-		<property name="validator" ref="reviewValidator" />
-	</bean>
-	
-	<bean id="commentValidator" class="org.bibsonomy.webapp.validation.CommentValidator">
-		<property name="schemaInformation" ref="dbSchemaInformation" />
-	</bean>
-	
-	<bean id="reviewValidator" class="org.bibsonomy.webapp.validation.ReviewValidator" parent="commentValidator" />
+	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="ajaxController" scope="request" />
 	
 	<bean id="additionalURLController" class="org.bibsonomy.webapp.controller.ajax.AdditionalURLController" scope="request" parent="ajaxController" />
 
