@@ -13,7 +13,7 @@ import java.util.Properties;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.common.enums.ConstantID;
-import org.bibsonomy.database.util.IbatisDBSessionFactory;
+import org.bibsonomy.database.util.IbatisSyncDBSessionFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -48,7 +48,7 @@ public class SynchronizationClient {
 	private SyncLogicInterface createServerLogic(String userName, String apiKey) {
 	
 		//FIXME get correct DBSessionFactory for each service
-		serverLogicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
+		serverLogicFactory.setDbSessionFactory(new IbatisSyncDBSessionFactory());
 		
 		SyncLogicInterface serverLogic = (SyncLogicInterface) serverLogicFactory.getLogicAccess(userName, apiKey);
 		
