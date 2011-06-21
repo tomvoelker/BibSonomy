@@ -19,8 +19,7 @@ public class IbatisSyncDBSessionFactory extends AbstractDBSessionFactory {
     	private final static Properties props = new Properties();
     	
     	static {
-    		// TODO replace biblicious with other service with PUMA, specified in context.xml 
-    	   props.setProperty("JNDIDataSource", "java:comp/env/jdbc/biblicious");
+    	   props.setProperty("JNDIDataSource", "java:comp/env/jdbc/sync_puma");
     	}
     	
 	private static final SqlMapClient client = IbatisUtils.loadSqlMap("SqlMapConfig.xml", props);
