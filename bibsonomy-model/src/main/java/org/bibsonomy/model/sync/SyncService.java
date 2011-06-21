@@ -1,8 +1,6 @@
 package org.bibsonomy.model.sync;
 
 import java.net.URI;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -14,22 +12,15 @@ public class SyncService {
 	
 	private Properties serverUser;
 	private URI service;
-	private final Map<Integer, Date> lastSyncDates;
 	private String userName;
 	private String apiKey;
-	private final Map <Long, SynchronizationData> lastSyncData;
-	
-	//TODO remove this after implementation of syncpage
-	private final Map<Integer, String> lastResults;
+	private Map <String, SynchronizationData> lastSyncData;
+
 	
 	/**
 	 * Constructor
 	 */
 	public SyncService() {
-		lastSyncDates = new HashMap<Integer, Date>();
-		lastResults = new HashMap<Integer, String>();
-		lastSyncData = new HashMap<Long, SynchronizationData>(3);
-		//this.serviceId = serviceId;
 	}
 	
 	/**
@@ -45,13 +36,6 @@ public class SyncService {
 		this.serverUser = serverUser;
 	}
 
-	/**
-	 * @return the lastSyncDates
-	 */
-	public Map<Integer, Date> getLastSyncDates() {
-		return lastSyncDates;
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -62,13 +46,6 @@ public class SyncService {
 			return this.getService().equals(test.getService());
 		} 
 		return super.equals(obj);
-	}
-
-	/**
-	 * @return the lastResults
-	 */
-	public Map<Integer, String> getLastResults() {
-		return lastResults;
 	}
 
 	/**
@@ -98,11 +75,17 @@ public class SyncService {
 	public String getApiKey() {
 		return apiKey;
 	}
-
+	
+	/**
+	 * @return the service
+	 */
 	public URI getService() {
 		return this.service;
 	}
-
+	
+	/**
+	 * @param service the service to set
+	 */
 	public void setService(URI service) {
 		this.service = service;
 	}
@@ -110,7 +93,15 @@ public class SyncService {
 	/**
 	 * @return the lastSyncData
 	 */
-	public Map <Long, SynchronizationData> getLastSyncData() {
+	public Map <String, SynchronizationData> getLastSyncData() {
 		return lastSyncData;
+	}
+	
+	/**
+	 * 
+	 * @param lastSyncData the lastSyncData to set
+	 */
+	public void setLastSyncData(Map<String, SynchronizationData> lastSyncData) {
+		this.lastSyncData = lastSyncData;
 	}
 }
