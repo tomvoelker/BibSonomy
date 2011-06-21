@@ -30,8 +30,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.spring.security.AuthenticationUtils;
 
 import filters.ActionValidationFilter;
 
@@ -110,7 +110,7 @@ public class SettingsHandler extends HttpServlet{
 				friend = request.getParameter("del_friend");
 				if (friend != null) {
 					// logging
-					stmtP = conn.prepareStatement("INSERT INTO log_friends (friends_id, user_name, f_user_name, friendship_date) SELECT * FROM friends WHERE user_name = ? AND f_user_name = ?");
+					stmtP = conn.prepareStatement("INSERT INTO log_friends (friends_id, user_name, f_user_name, tag_name, f_network_user_id, friendship_date) SELECT * FROM friends WHERE user_name = ? AND f_user_name = ?");
 					stmtP.setString(1, currUser);
 					stmtP.setString(2, friend);
 					stmtP.executeUpdate();
@@ -132,16 +132,18 @@ public class SettingsHandler extends HttpServlet{
 					rst = stmtP.executeQuery();
 					if (rst.next()) {
 						// user exists --> check if they're already friends
-						stmtP = conn.prepareStatement ("SELECT f_user_name FROM friends WHERE user_name = ? AND f_user_name = ?");
+						stmtP = conn.prepareStatement ("SELECT f_user_name FROM friends WHERE user_name = ? AND f_user_name = ? AND tag_name = ?");
 						stmtP.setString(1, currUser);
 						stmtP.setString(2, friend);
+						stmtP.setString(3, NetworkRelationSystemTag.BibSonomyFriendSystemTag);
 						rst = stmtP.executeQuery();
 						if (!rst.next()) {
 							// they're not friends: add the friend
-							stmtP = conn.prepareStatement("INSERT INTO friends (user_name, f_user_name, friendship_date) VALUES (?,?,?)");
+							stmtP = conn.prepareStatement("INSERT INTO friends (user_name, f_user_name, tag_name, friendship_date) VALUES (?,?,?,?)");
 							stmtP.setString(1, currUser);
 							stmtP.setString(2, friend);
-							stmtP.setTimestamp(3, new Timestamp(new Date().getTime()));
+							stmtP.setString(3, NetworkRelationSystemTag.BibSonomyFriendSystemTag);
+							stmtP.setTimestamp(4, new Timestamp(new Date().getTime()));
 							stmtP.executeUpdate();
 						}
 					}
