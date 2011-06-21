@@ -27,7 +27,9 @@ function reply() {
 	$(REPLY_FORM_SELECTOR).remove();
 	
 	// find parent hash
-	var parentHash = parent.find('div.info').data('hash');
+	var parentHash = getHash($(this));
+	
+	console.debug(parentHash);
 	
 	var clone = $('#createComment').clone();
 	clone.attr('id', REPLY_FORM_ID);
@@ -38,8 +40,7 @@ function reply() {
 	
 	// bind group select
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES).click(onAbstractGroupingClick);
-	form.find('textarea').focus(); // TODO: not working
-	
+	form.find('textarea').focus(); // FIXME: not working
 	parent.append(clone);
 	clone.show();
 	
@@ -94,6 +95,8 @@ function showEditCommentForm() {
 
 function createComment() {
 	var commentForm = $(this);
+	commentForm.unbind('submit');
+	
 	var parentDiv = commentForm.parent('#' + REPLY_FORM_ID);
 	var spinner = commentForm.find('.spinner');
 	// show spinner
@@ -197,9 +200,8 @@ function deleteComment() {
 	var hash = getHash($(this));
 	var interHash = getInterHash();
 	var deleteUrl = COMMENTS_URL + "?ckey=" + ckey + "&hash=" + interHash + "&discussionItem.hash=" + hash;
-	
-	console.debug(deleteUrl);
 	var comment = deleteLink.parent().parent().parent();
+	
 	deleteLink.remove();
 	
 	$.ajax({

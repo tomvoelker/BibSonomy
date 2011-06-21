@@ -2,7 +2,9 @@ var ABSTRACT_GROUPING_RADIO_BOXES = 'input[name="abstractGrouping"]';
 var OTHER_GROUPING_CLASS = '.otherGroupsBox';
 var DISCUSSION_TABS_SELECTOR = '#discussionForms';
 var DISCUSSION_MENU_SELECTOR = '#discussionMainMenu';
+var DISCUSSION_NORMAL_SELECTOR = '#';
 
+// TODO: move constants
 var GROUPS_CLASS = 'groups';
 var PUBLIC_GROUPING = 'public';
 var PRIVATE_GROUPING = 'private';
@@ -175,7 +177,6 @@ function buildGroupView(abstractGrouping, groups) {
 					container.append(getString('post.groups.friends'));
 					return;
 				}
-				console.debug(group);
 				var groupUrl = $('<a></a>').attr('href', '/group/' + group);
 				groupUrl.html(group);
 				container.append(groupUrl);
@@ -203,7 +204,6 @@ function getInterHash() {
 
 // TODO: rename function
 function getHash(menuElement) {
-	console.debug($(menuElement).parent().length);
 	return $(menuElement).parent().parent().siblings('.details').find('.info').data('discussionItemHash');
 }
 
