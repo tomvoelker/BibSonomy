@@ -3,10 +3,8 @@ package org.bibsonomy.webapp.validation;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.model.DiscussionItem;
-import org.bibsonomy.services.database.DatabaseSchemaInformation;
 import org.bibsonomy.webapp.command.ajax.DiscussionItemAjaxCommand;
 import org.bibsonomy.webapp.util.Validator;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
@@ -18,11 +16,6 @@ import org.springframework.validation.ValidationUtils;
 public abstract class DiscussionItemValidator<D extends DiscussionItem> implements Validator<DiscussionItemAjaxCommand<D>> {
 
 	protected static final String DISCUSSION_ITEM_PATH = "discussionItem.";
-	
-	/**
-	 * the database scheme informations (column length, …)
-	 */
-	protected DatabaseSchemaInformation schemaInformation;
 	
 	@Override
 	public boolean supports(final Class<?> clazz) {
@@ -53,13 +46,5 @@ public abstract class DiscussionItemValidator<D extends DiscussionItem> implemen
 	}
 
 	protected abstract void validateDiscussionItem(D discussionItem, Errors errors);
-	
-	/**
-	 * @param schemaInformation the schemaInformation to set
-	 */
-	@Required
-	public void setSchemaInformation(DatabaseSchemaInformation schemaInformation) {
-		this.schemaInformation = schemaInformation;
-	}
 
 }
