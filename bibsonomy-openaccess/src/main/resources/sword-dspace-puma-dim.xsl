@@ -77,6 +77,14 @@
 	    	</dim:field>
 		</xsl:if>
     	</dim:dim>
+
+	    <!-- dc.description.everything -->
+		<xsl:if test="./@description">
+	    	<dim:field mdschema="dc" element="description" qualifier="everything">
+	    		<xsl:value-of select="@description"/>
+	    	</dim:field>
+		</xsl:if>
+
     </xsl:template>
     
     <xsl:template match="bibtex">
@@ -151,13 +159,6 @@
 	    	</dim:field>
 		</xsl:if>
 	
-	    <!-- dc.description.everything -->
-		<xsl:if test="./@description">
-	    	<dim:field mdschema="dc" element="description" qualifier="everything">
-	    		<xsl:value-of select="@description"/>
-	    	</dim:field>
-		</xsl:if>
-
 	</xsl:template>
 
     <!-- dc.subject -->
@@ -209,30 +210,8 @@
     	</dim:field>
     </xsl:template>
 
-    <!-- dc.classification -->
-<!--    <xsl:template match="puma:classification">-->
-<!--    	<dim:field mdschema="dc" element="subject" qualifier="{@name}">-->
-<!--    		<xsl:value-of select="@value"/>-->
-<!--    	</dim:field>-->
-<!--    </xsl:template>-->
-    
-<!--dc.subject.ccs-->
-<!--dc.subject.classification-->
-<!--dc.subject.ddb-->
-<!--dc.subject.ddc-->
-<!--dc.subject.jel-->
-<!--dc.subject.lcc-->
-<!--dc.subject.lcsh-->
-<!--dc.subject.mesh-->
-<!--dc.subject.msc-->
-<!--dc.subject.other-->
-<!--dc.subject.pacs-->
-<!--dc.subject.swd-->
-
     <xsl:template match="puma:classification">
-    
       <xsl:choose>
-  
 	    <!-- jel -->
 		<xsl:when test="./@name='acm'">
 	    	<dim:field mdschema="dc" element="subject" qualifier="{@name}">
@@ -265,10 +244,50 @@
           </xsl:if>
         </xsl:otherwise>
       </xsl:choose>
-
     </xsl:template>
-    
-    
-    
+
+	<!-- puma user who submits publication -->
+    <xsl:template match="puma:user">
+		<xsl:if test="./@id">
+	    	<dim:field mdschema="dc" element="submitter" qualifier="id">
+	    		<xsl:value-of select="@id"/>
+	    	</dim:field>
+		</xsl:if>
+		
+		<xsl:if test="./@email">
+	    	<dim:field mdschema="dc" element="submitter" qualifier="email">
+	    		<xsl:value-of select="@email"/>
+	    	</dim:field>
+		</xsl:if>
+		
+		<xsl:if test="./@realname">
+	    	<dim:field mdschema="dc" element="submitter" qualifier="realname">
+	    		<xsl:value-of select="@realname"/>
+	    	</dim:field>
+		</xsl:if>
+		
+		<xsl:if test="./@name">
+	    	<dim:field mdschema="dc" element="submitter" qualifier="name">
+	    		<xsl:value-of select="@name"/>
+	    	</dim:field>
+		</xsl:if>
+		
+    	<dim:field mdschema="dc" element="description" qualifier="everything">
+    		<xsl:text>Puma-Nutzer: </xsl:text>
+			<xsl:if test="./@realname">
+		    		<xsl:value-of select="@realname"/>
+			</xsl:if>
+			
+			<xsl:if test="./@email">
+		    		<xsl:text> </xsl:text><xsl:value-of select="@email"/>
+			</xsl:if>
+			
+			<xsl:if test="./@id">
+		    		<xsl:text> (</xsl:text><xsl:value-of select="@id"/><xsl:text>)</xsl:text>
+			</xsl:if>
+    	</dim:field>
+		
+    </xsl:template>
+
 
 </xsl:stylesheet>
