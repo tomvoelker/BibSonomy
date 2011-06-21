@@ -30,8 +30,4 @@
 	</div>
    	<!-- comment action menu -->
    	<discussion:discussionActions discussionItem="${comment}" discussionItemClass="comment"/>
-   	
-   	<!-- render subdiscussion items of the comment -->
-   	<discussionItem:subDiscussionItems discussionItems="${comment.subDiscussionItems}" loginUser="${loginUser}"  resource="${resource}" />
-    
 </jsp:root>
