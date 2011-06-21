@@ -6,13 +6,14 @@
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
 	
    	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="true" />
+  	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
    	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
    	
    	<ul class="subdiscussionItems">
     	<c:if test="${not empty discussionItems}">
     		<c:forEach var="discussionItem" items="${discussionItems}">
     			<li>
-    				<discussionItem:discussionItem discussionItem="${discussionItem}" loginUser="${loginUser}"/>
+    				<discussionItem:discussionItem discussionItem="${discussionItem}" loginUser="${loginUser}" resource="${resource}"/>
     			</li>
     		</c:forEach>
     	</c:if>

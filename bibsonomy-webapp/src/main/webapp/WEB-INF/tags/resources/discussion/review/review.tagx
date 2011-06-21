@@ -56,5 +56,5 @@
 	
 	<discussion:discussionActions discussionItemClass="review" discussionItem="${review}" />
 	
-	<discussionItem:subDiscussionItems discussionItems="${review.subDiscussionItems}" loginUser="${loginUser}" />
+	<discussionItem:subDiscussionItems discussionItems="${review.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" />
 </jsp:root>

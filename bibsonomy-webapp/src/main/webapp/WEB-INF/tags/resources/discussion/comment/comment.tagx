@@ -32,6 +32,6 @@
    	<discussion:discussionActions discussionItem="${comment}" discussionItemClass="comment"/>
    	
    	<!-- render subdiscussion items of the comment -->
-   	<discussionItem:subDiscussionItems discussionItems="${comment.subDiscussionItems}" loginUser="${loginUser}" />
+   	<discussionItem:subDiscussionItems discussionItems="${comment.subDiscussionItems}" loginUser="${loginUser}"  resource="${resource}" />
     
 </jsp:root>

@@ -68,7 +68,7 @@
       		<c:out value=" " /><span class="expl"><fmt:message key="post.resource.other"/></span>
 		</div>	
 	    <!-- select box for "other" groups -->
-	    <!-- TODO: allow multiple groups ( multiple="true") -->
+	    <!-- TODO: allow multiple groups ( multiple="multiples") -->
 		<select name="groups" size="5" class="otherGroupsBox" tabindex="2">
 			<c:choose>
 				<c:when test="${isFriend}">

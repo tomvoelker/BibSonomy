@@ -27,7 +27,7 @@
     <c:if test="${empty discussionItems}">
    		<c:set var="discussionItems" value="${resource.discussionItems}" />
    	</c:if>
-   	
+   	<div id="discussion">
    	<c:if test="${not empty discussionItems}">
    		<ul id="discussionMainMenu" class="newMenu">
    			<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.comment.actions.showReviews" /></a></li>
@@ -36,8 +36,9 @@
    	</c:if>
    	
     <c:if test="${not empty discussionItems}">
-    	<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" />
+    	<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
     </c:if>
+    
     <ul class="initiallyHidden">
 		<!-- create li, div structure for new review -->
 		<li id="newReview" class="initiallyHidden">
@@ -78,4 +79,5 @@
 	    	<comment:comment comment="${newComment}" loginUser="${loginUser}" />
 	    </div>
 	</c:if>
+	</div>
 </jsp:root>
