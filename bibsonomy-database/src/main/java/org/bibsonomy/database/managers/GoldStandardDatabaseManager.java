@@ -2,7 +2,6 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +25,7 @@ import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.util.ReflectionUtils;
 
 /**
  * Used to create, read, update and delete gold standard posts from the database
@@ -70,20 +70,12 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	public void setSearcher(final ResourceSearch<R> searcher) {
 	    this.searcher = searcher;
 	}
-	
-	/**
-	 * @return the class of the second generic param (the Resource <R>)
-	 */
-	private Class<?> getResourceClass() {
-		final ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
-		return (Class<?>) parameterizedType.getActualTypeArguments()[1];
-	}
 
 	/**
-	 * @return the simple class name of the first generic param (<R>, Resource)
+	 * @return the simple class name of the second generic param (<R>, Resource)
 	 */
 	protected String getResourceClassName() {
-		return this.getResourceClass().getSimpleName();
+		return ReflectionUtils.getActualClassArguments(this.getClass()).get(1).getSimpleName();
 	}
 	
 	@Override

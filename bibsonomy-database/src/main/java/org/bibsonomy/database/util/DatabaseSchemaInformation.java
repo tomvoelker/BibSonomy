@@ -13,8 +13,6 @@ public class DatabaseSchemaInformation extends AbstractDatabaseSchemaInformation
 	
 	private static final String PUBLICATION_COMMON_ID = "BibTexCommon.bibtex_common";
 	private static final String USER_COMMON_ID = "UserCommon.user";
-	private static final String COMMENT_COMMON_ID = "CommentCommon.comment";
-	private static final String REVIEW_COMMON_ID = "ReviewCommon.review";
 	
 	/**
 	 * the name of the publication database table
@@ -39,10 +37,9 @@ public class DatabaseSchemaInformation extends AbstractDatabaseSchemaInformation
 	private static final String USER_TABLE = "user";
 	
 	/**
-	 * the name of the discussion groups database table
+	 * the name of the discussion database table
 	 */
-	public static final String DISCUSSION_GROUP_TABLE = "discussion_groups";
-	private static final String DISCUSSION_TABLE = "discussion";
+	public static final String DISCUSSION_TABLE = "discussion";
 	
 	
 	private static final DatabaseSchemaInformation INSTANCE = new DatabaseSchemaInformation();
@@ -63,8 +60,6 @@ public class DatabaseSchemaInformation extends AbstractDatabaseSchemaInformation
 		try {
 			this.insertMaxFieldLengths(PUBLICATION_COMMON_ID, PUBLICATION_TABLE, sqlMap);
 			this.insertMaxFieldLengths(USER_COMMON_ID, USER_TABLE, sqlMap);
-			this.insertMaxFieldLengths(COMMENT_COMMON_ID, DISCUSSION_TABLE, sqlMap);
-			this.insertMaxFieldLengths(REVIEW_COMMON_ID, DISCUSSION_TABLE, sqlMap);
 		} finally {
 			sqlMap.close();
 		}

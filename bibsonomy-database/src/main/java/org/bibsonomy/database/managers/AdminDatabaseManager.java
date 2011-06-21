@@ -42,7 +42,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 																	DatabaseSchemaInformation.BOOKMARK_TABLE,
 																	DatabaseSchemaInformation.TAG_TABLE,
 																	DatabaseSchemaInformation.GROUP_TAG_TABLE,
-																	DatabaseSchemaInformation.DISCUSSION_GROUP_TABLE);
+																	DatabaseSchemaInformation.DISCUSSION_TABLE);
 
 	/**
 	 * @return a singleton instance of this AdminDatabaseManager

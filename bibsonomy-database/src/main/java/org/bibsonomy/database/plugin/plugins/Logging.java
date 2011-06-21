@@ -37,8 +37,6 @@ public class Logging extends AbstractDatabasePlugin {
 			
 			@Override
 			public void run() {
-				// TODO: use the same log date?!
-				insert("logDiscussionItemGroups", oldComment.getId(), session);
 				insert("logDiscussionItem", oldComment.getId(), session);
 			}
 		};
@@ -53,8 +51,6 @@ public class Logging extends AbstractDatabasePlugin {
 			
 			@Override
 			public void run() {
-				// TODO: log groups (they aren't deleted) values?!
-				insert("logDiscussionItemGroups", deletedComment.getId(), session);
 				insert("logDiscussionItem", deletedComment.getId(), session);
 			}
 		};

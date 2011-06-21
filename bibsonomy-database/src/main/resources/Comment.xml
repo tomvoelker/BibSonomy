@@ -13,10 +13,6 @@
 	</select>
 	
 	<insert id="insertComment" parameterClass="commentParam">
-		INSERT INTO discussion (discussion_id, interHash, hash, type, user_name, text, date, parent_hash) VALUES (#comment.id#, #interHash#, #comment.hash#, #discussionItemType.id#, #userName#, #comment.text#, #comment.date#, #comment.parentHash#)
+		INSERT INTO discussion (discussion_id, interHash, hash, type, user_name, text, parent_hash, `group`, date, change_date) VALUES (#comment.id#, #interHash#, #comment.hash#, #discussionItemType.id#, #userName#, #comment.text#, #comment.parentHash#, #groupId#, #comment.date#, #comment.changeDate#)
 	</insert>
-	
-	<update id="updateComment" parameterClass="commentParam">
-		UPDATE discussion SET text = #comment.text#, hash = #comment.hash#, change_date = #comment.changeDate# WHERE user_name = #userName# AND interHash = #interHash# AND hash = #hash#
-	</update>
 </sqlMap>
