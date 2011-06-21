@@ -33,7 +33,7 @@ public class ReviewValidator extends DiscussionItemValidator<Review> {
 			}
 		}
 		final String text = review.getText();
-		if (present(text) && text.length() > this.schemaInformation.getMaxColumnLengthForProperty(Review.class, "text")) {
+		if (present(text) && text.length() > Review.MAX_TEXT_LENGTH) {
 			errors.rejectValue(DISCUSSION_ITEM_PATH + "text", "error.field.valid.comment.text.length");
 		}
 	}

@@ -17,7 +17,7 @@ public class CommentValidator extends DiscussionItemValidator<Comment> {
 		if (!present(text)) {
 			errors.rejectValue(DISCUSSION_ITEM_PATH + "text", "error.field.valid.comment.text");
 		} else {
-			if (text.length() > this.schemaInformation.getMaxColumnLengthForProperty(Comment.class, "text")) {
+			if (text.length() > Comment.MAX_TEXT_LENGTH) {
 				errors.rejectValue(DISCUSSION_ITEM_PATH + "text", "error.field.valid.comment.text.length");
 			}
 		}
