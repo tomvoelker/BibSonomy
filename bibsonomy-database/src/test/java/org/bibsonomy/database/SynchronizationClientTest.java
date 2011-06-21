@@ -28,6 +28,7 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.SynchronizationClient;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -175,7 +176,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		return post;
 	}
 	
-
+	@Ignore
 	@Test
 	public void testSynchronization() throws URISyntaxException {
 		final SynchronizationClient synchronizer = new SynchronizationClient();
