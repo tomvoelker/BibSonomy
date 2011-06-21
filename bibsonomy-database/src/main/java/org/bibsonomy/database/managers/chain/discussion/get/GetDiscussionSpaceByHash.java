@@ -20,7 +20,7 @@ public class GetDiscussionSpaceByHash extends DiscussionChainElement {
 
 	@Override
 	protected boolean canHandle(final DiscussionItemParam<?> param) {
-		return true; // currently only one param
+		return true; // currently only one chain element
 	}
 
 }
