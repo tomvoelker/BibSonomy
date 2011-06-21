@@ -11,7 +11,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.shiro.authz.UnauthorizedException;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
@@ -92,8 +91,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 //			throw new UnsupportedContentTypeException();
 			break;
 		}
-		
-		String tets = json.toString();
+
 		command.setResponseString(json.toString());
 		return Views.AJAX_JSON;
 
@@ -103,7 +101,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 		HashMap<String, Object> values = new HashMap<String, Object>();
 		values.put("date", data.getLastSyncDate().getTime());
 		values.put("result", data.getStatus());
-		json.put(ConstantID.getContentTypeByClass(resourceType).getId(), values);
+		json.put(resourceType.getSimpleName(), values);
 	}
 
 	@Override
