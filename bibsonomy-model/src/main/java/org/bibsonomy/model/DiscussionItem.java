@@ -47,6 +47,9 @@ public class DiscussionItem {
 	 */
 	private List<DiscussionItem> subDiscussionItems;
 
+	/**
+	 * the hash of the parent discussion item
+	 */
 	private String parentHash;
 
 	/**
