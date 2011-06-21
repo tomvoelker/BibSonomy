@@ -19,17 +19,20 @@ import org.bibsonomy.layout.jabref.JabrefLayout;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
- * a jsp tag that prints the rendered layout of the configurated
- * JabRefLayoutRenderer in bibsonomy2-servlet
+ * a jsp tag that prints the rendered layout of the configured
+ * JabRefLayoutRenderer in bibsonomy2-servlet.xml
  * 
  * @author dzo
  * @version $Id$
  */
 public class JabrefLayoutRendererTag extends TagSupport {
+	private static final String SUPPORTED_EXTENSION = ".html";
+
 	private static final long serialVersionUID = 8006189027834637063L;
 	
 	private static final Log log = LogFactory.getLog(JabrefLayoutRendererTag.class);
@@ -60,7 +63,7 @@ public class JabrefLayoutRendererTag extends TagSupport {
 			final JabrefLayoutRenderer renderer = this.getJabRefLayoutRenderer();
 			try {
 				final JabrefLayout layout = renderer.getLayout(this.layout, "");
-				if (! ".html".equals(layout.getExtension())) {
+				if (!SUPPORTED_EXTENSION.equals(layout.getExtension())) {
 					return "The requested layout is not valid; only HTML layouts are allowed. Requested extension is: " + layout.getExtension();
 				}
 				return renderer.renderLayout(layout, posts, true).toString();
@@ -83,9 +86,10 @@ public class JabrefLayoutRendererTag extends TagSupport {
 	
 	/**
 	 * @return the configured jabref layout renderer in bibsonomy2-servlet.xml
+	 * this requires the {@link ContextLoader} configured in web.xml
 	 */
 	private JabrefLayoutRenderer getJabRefLayoutRenderer() {
-		final ServletContext servletContext = pageContext.getServletContext();
+		final ServletContext servletContext = this.pageContext.getServletContext();
         final WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(servletContext, SERVLET_CONTEXT_PATH);
         final Map<String, JabrefLayoutRenderer> renderer = ctx.getBeansOfType(JabrefLayoutRenderer.class);
         
