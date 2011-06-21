@@ -91,7 +91,7 @@ function plotRatingDistribution() {
 	var d1 = [];
 	
 	// get all ratings
-	$('.subDiscussionItems li').not('#newReview').find('.rating').each(function() {
+	$('.subdiscussionItems li').not('#newReview').find('.rating').each(function() {
 		var key = $(this).data("rating");
 		if (ratings[key]) {
 			ratings[key] += 1;
