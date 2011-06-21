@@ -97,19 +97,19 @@
 
 	<select id="getTagsByGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_ctr FROM 
-		((SELECT tag_name 
+		((SELECT t1.tag_name 
 		  FROM tas t1, groups g
 		  WHERE g.group = #groupId# AND g.user_name=t1.user_name
 		  <include refid="getTagsByResourceType"/>
 		  <include refid="inGroups"/>) 
 		 UNION ALL
-		 (SELECT tag_name 
+		 (SELECT t1.tag_name 
 		  FROM tas t1, groups g, friends f
 		  WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member -->
 		        AND t1.user_name = f.user_name AND g.group = #groupId# AND t1.group = #groupTypeFriends#
 		        <include refid="getTagsByResourceType"/>)     
 		 UNION ALL
-		 (SELECT tag_name
+		 (SELECT t1.tag_name
 		  FROM tas t1, groups g
 		  WHERE t1.user_name = #userName# AND g.user_name = t1.user_name
 		        AND g.group = #groupId#
