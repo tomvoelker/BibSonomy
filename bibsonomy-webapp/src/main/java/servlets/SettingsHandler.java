@@ -30,8 +30,11 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.util.spring.security.AuthenticationUtils;
 
 import filters.ActionValidationFilter;
 
@@ -103,27 +106,37 @@ public class SettingsHandler extends HttpServlet{
 			try{
 				conn.setAutoCommit(false);    // deactivate auto-commit to enable transaction
 				String friend = null;
+				String relationTag = null;
 
 				/*
 				 * remove a friend
 				 */
 				friend = request.getParameter("del_friend");
+				relationTag = request.getParameter("del_relationTag");
+				if (!ValidationUtils.present(relationTag)) {
+					relationTag = NetworkRelationSystemTag.BibSonomyFriendSystemTag;
+				} else {
+					relationTag = SystemTagsUtil.buildSystemTagString(NetworkRelationSystemTag.NAME, relationTag);
+				}
 				if (friend != null) {
 					// logging
-					stmtP = conn.prepareStatement("INSERT INTO log_friends (friends_id, user_name, f_user_name, tag_name, f_network_user_id, friendship_date) SELECT * FROM friends WHERE user_name = ? AND f_user_name = ?");
+					stmtP = conn.prepareStatement("INSERT INTO log_friends (friends_id, user_name, f_user_name, tag_name, f_network_user_id, friendship_date) SELECT * FROM friends WHERE user_name = ? AND f_user_name = ? AND tag_name = ?");
 					stmtP.setString(1, currUser);
 					stmtP.setString(2, friend);
+					stmtP.setString(3, relationTag);
 					stmtP.executeUpdate();
 					// end friendship
-					stmtP = conn.prepareStatement("DELETE FROM friends WHERE user_name = ? AND f_user_name = ?");
+					stmtP = conn.prepareStatement("DELETE FROM friends WHERE user_name = ? AND f_user_name = ? AND tag_name = ?");
 					stmtP.setString(1, currUser);
 					stmtP.setString(2, friend);
+					stmtP.setString(3, relationTag);
 					stmtP.executeUpdate();
 				}
 				/*
 				 * add a friend
 				 */
 				friend = request.getParameter("add_friend");
+				relationTag = request.getParameter("add_relationTag");
 				// don't be friend with yourself!
 				if (friend != null && !friend.equalsIgnoreCase(currUser)) {
 					// check, if username exists
@@ -135,14 +148,14 @@ public class SettingsHandler extends HttpServlet{
 						stmtP = conn.prepareStatement ("SELECT f_user_name FROM friends WHERE user_name = ? AND f_user_name = ? AND tag_name = ?");
 						stmtP.setString(1, currUser);
 						stmtP.setString(2, friend);
-						stmtP.setString(3, NetworkRelationSystemTag.BibSonomyFriendSystemTag);
+						stmtP.setString(3, relationTag);
 						rst = stmtP.executeQuery();
 						if (!rst.next()) {
 							// they're not friends: add the friend
 							stmtP = conn.prepareStatement("INSERT INTO friends (user_name, f_user_name, tag_name, friendship_date) VALUES (?,?,?,?)");
 							stmtP.setString(1, currUser);
 							stmtP.setString(2, friend);
-							stmtP.setString(3, NetworkRelationSystemTag.BibSonomyFriendSystemTag);
+							stmtP.setString(3, relationTag);
 							stmtP.setTimestamp(4, new Timestamp(new Date().getTime()));
 							stmtP.executeUpdate();
 						}
