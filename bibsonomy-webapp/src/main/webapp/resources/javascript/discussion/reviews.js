@@ -226,8 +226,9 @@ function updateReview() {
 	spinner.show('slow');
 	
 	// save all values for success action
-	var reviewText = reviewForm.find('textarea[name="comment\\.text"]').val();
-	var anonym = reviewForm.find('input[name="comment\\.anonym"]:checked').length > 0;
+	var reviewText = reviewForm.find('textarea[name="discussionItem\\.text"]').val();
+	console.debug(reviewText);
+	var anonym = reviewForm.find('input[name="discussionItem\\.anonym"]:checked').length > 0;
 	var reviewRating = getRating(reviewForm.find('.reviewrating'));
 	var oldReviewRating = getOwnReviewRating();
 	
