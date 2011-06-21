@@ -2,7 +2,7 @@ var ABSTRACT_GROUPING_RADIO_BOXES = 'input[name="abstractGrouping"]';
 var OTHER_GROUPING_CLASS = '.otherGroupsBox';
 var DISCUSSION_TABS_SELECTOR = '#discussionForms';
 var DISCUSSION_MENU_SELECTOR = '#discussionMainMenu';
-var DISCUSSION_NORMAL_SELECTOR = '#';
+var DISCUSSION_SELECTOR = '#discussion';
 
 // TODO: move constants
 var GROUPS_CLASS = 'groups';
@@ -20,14 +20,14 @@ $(function() {
 	
 	// hide discussion on list pages
 	if ($('#bibtexList').length > 0 || $('#bookmarkList').length > 0) {
-		$('#discussion').hide();
+		$(DISCUSSION_SELECTOR).hide();
 		$(DISCUSSION_MENU_SELECTOR).hide();
 		$(DISCUSSION_TABS_SELECTOR).hide();
 	}
 	
 	$('#toggleDiscussion a').click(function() {
-		var visible = $('#discussion').is(":visible");
-		$('#discussion').toggle('slow');
+		var visible = $(DISCUSSION_SELECTOR).is(":visible");
+		$(DISCUSSION_SELECTOR).toggle('slow');
 		$(DISCUSSION_TABS_SELECTOR).toggle('slow');
 		$(DISCUSSION_MENU_SELECTOR).toggle('slow');
 		
