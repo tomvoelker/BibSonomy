@@ -78,19 +78,19 @@ public class SynchronizationClient {
 		return user;
 	}
 	
-	public Map<Integer, SynchronizationData> getLastSyncData(SyncService syncService, ConstantID contentType) {
+	public Map<String, SynchronizationData> getLastSyncData(SyncService syncService, ConstantID contentType) {
 		//FIXME errorhandling
 		User serverUser = getUserFromProperties(syncService.getServerUser());
 		String userName = serverUser.getName();
 		SyncLogicInterface serverLogic = createServerLogic(userName, serverUser.getApiKey());
 		
-		Map<Integer, SynchronizationData> result = new HashMap<Integer, SynchronizationData>();
+		Map<String, SynchronizationData> result = new HashMap<String, SynchronizationData>();
 		
 		if(contentType.equals(ConstantID.BOOKMARK_CONTENT_TYPE) || contentType.equals(ConstantID.ALL_CONTENT_TYPE)) {
-			result.put(ConstantID.BOOKMARK_CONTENT_TYPE.getId(), serverLogic.getLastSynchronizationDataForUserForContentType(userName, uri, Bookmark.class));
+			result.put(Bookmark.class.getSimpleName(), serverLogic.getLastSynchronizationDataForUserForContentType(userName, uri, Bookmark.class));
 		}
 		if(contentType.equals(ConstantID.BIBTEX_CONTENT_TYPE) || contentType.equals(ConstantID.ALL_CONTENT_TYPE)) {
-			result.put(ConstantID.BIBTEX_CONTENT_TYPE.getId(), serverLogic.getLastSynchronizationDataForUserForContentType(userName, uri, BibTex.class));
+			result.put(BibTex.class.getSimpleName(), serverLogic.getLastSynchronizationDataForUserForContentType(userName, uri, BibTex.class));
 		}
 		return result;
 	}
@@ -106,9 +106,8 @@ public class SynchronizationClient {
 		
 		storeSyncResult(result, resourceType, serverSyncLogic, serverUser.getName());
 		
-		int contentType = ConstantID.getContentTypeByClass(resourceType).getId();
-		SynchronizationData data = getLastSyncData(server, ConstantID.getContentTypeByClass(resourceType)).get(contentType);
-		
+		SynchronizationData data = getLastSyncData(server, ConstantID.getContentTypeByClass(resourceType)).get(resourceType.getSimpleName());
+
 		return data;
 	}
 

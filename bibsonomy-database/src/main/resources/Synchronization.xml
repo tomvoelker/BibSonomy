@@ -85,7 +85,8 @@
 	<select id="getSyncServiceByURI" resultClass="java.lang.Integer" parameterClass="syncParam">
 		SELECT service_id
 		FROM sync_services
-		WHERE uri = #service# 
+		WHERE uri = #service#
+		GROUP BY service_id
 	</select>
 	
 	<insert id="insertSync" parameterClass="syncParam">
