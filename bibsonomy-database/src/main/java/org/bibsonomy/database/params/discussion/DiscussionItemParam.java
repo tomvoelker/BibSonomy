@@ -10,15 +10,9 @@ import org.bibsonomy.model.DiscussionItem;
  * @version $Id$
  */
 public class DiscussionItemParam<D extends DiscussionItem> extends GenericParam {
-
-	private String loggedinUsername;
-
+	
 	private String interHash;
-	
 	private D discussionItem;
-	
-	private int discussionId;
-
 
 	/**
 	 * @return the interHash
@@ -42,42 +36,14 @@ public class DiscussionItemParam<D extends DiscussionItem> extends GenericParam 
 	}
 
 	/**
-	 * @param comment the discussion item to set
+	 * @param discussionItem the discussion item to set
 	 */
-	public void setDiscussionItem(final D comment) {
-		this.discussionItem = comment;
-	}
-
-	/**
-	 * @return the loggedinUsername
-	 */
-	public String getLoggedinUsername() {
-		return this.loggedinUsername;
-	}
-
-	/**
-	 * @param loggedinUsername the loggedinUsername to set
-	 */
-	public void setLoggedinUsername(final String loggedinUsername) {
-		this.loggedinUsername = loggedinUsername;
-	}
-
-	/**
-	 * @param discussionId the commentId to set
-	 */
-	public void setDiscussionId(final int discussionId) {
-		this.discussionId = discussionId;
-	}
-
-	/**
-	 * @return the commentId
-	 */
-	public int getDiscusssionId() {
-		return discussionId;
+	public void setDiscussionItem(final D discussionItem) {
+		this.discussionItem = discussionItem;
 	}
 	
 	/**
-	 * @return the type of the dicussion item
+	 * @return the type of the discussion item
 	 */
 	public DiscussionItemType getDiscussionItemType() {
 		return DiscussionItemType.DISCUSSION_ITEM;
