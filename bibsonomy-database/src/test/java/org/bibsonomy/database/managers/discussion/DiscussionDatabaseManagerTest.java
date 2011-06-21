@@ -49,5 +49,7 @@ public class DiscussionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		items = discusssionDb.getDiscussionSpaceForResource(ReviewDatabaseManagerTest.HASH, ReviewDatabaseManagerTest.USERNAME_1, USERNAME_1_VISIBLE_GROUPS, this.dbSession);
 		assertEquals(0, items.size());
+		
+		items = discusssionDb.getDiscussionSpaceForResource(HASH_WITH_RATING, null, USER_NOT_LOGGED_IN_VISIBLE_GROUPS, this.dbSession);
 	}
 }

@@ -128,11 +128,4 @@
 				FROM discussion d
 			WHERE d.discussion_id = #id#
 	</insert>
-	
-	<insert id="logDiscussionItemGroups" parameterClass="int">
-		INSERT INTO log_discussion_groups (<include refid ="commonDiscussionGroupColumns"/>)
-			SELECT <include refid ="commonDiscussionGroupInsertColumns" />
-				FROM discussion_groups dg
-			WHERE dg.discussion_id = #id#
-	</insert>
 </sqlMap>

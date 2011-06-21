@@ -14,8 +14,6 @@ import java.util.Set;
 
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
-import org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager;
-import org.bibsonomy.database.managers.discussion.ReviewDatabaseManager;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Review;
@@ -70,7 +68,11 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(null, review.getText());
 		
 		// try to insert a new review for the same resource
-		assertNull(this.insertReview(USERNAME_2, HASH, rating, null, null));
+		try {
+			this.insertReview(USERNAME_2, HASH, rating, null, null);
+		} catch (final ValidationException ex) {
+			// ok
+		}
 
 		this.deleteReview(USERNAME_2, HASH, review.getHash());
 		
@@ -113,9 +115,10 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final double rating = 3.5;
 		final String userName = USERNAME_1;
 		final String interHash = HASH;
-		assertNotNull(this.insertReview(userName, interHash, rating, null, new HashSet<Group>(Arrays.<Group>asList(TESTGROUP_1, TESTGROUP_2)))); // successful?
 		
 		final int discussionItemsSize = discussionDatabaseManager.getDiscussionSpaceForResource(HASH, null, DiscussionDatabaseManagerTest.USER_NOT_LOGGED_IN_VISIBLE_GROUPS, this.dbSession).size();
+		
+		assertNotNull(this.insertReview(userName, interHash, rating, null, new HashSet<Group>(Arrays.<Group>asList(TESTGROUP_1, TESTGROUP_2)))); // successful?
 		
 		final Review review = reviewManager.getReviewForPostAndUser(interHash, userName, this.dbSession);
 
@@ -128,6 +131,8 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(discussionItemsSize, notLoggedInSize);
 		assertEquals(discussionItemsSize + 1, ownSize);
 		assertEquals(discussionItemsSize + 1, groupMemeberSize);
+		
+		this.deleteReview(userName, interHash, review.getHash());
 	}
 
 	@Test
@@ -217,10 +222,10 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Review review = reviewManager.getReviewForPostAndUser(interHash, username, this.dbSession);
 		assertNull(review);
 
-		/*
+		/* multi groups => more than one log entry
 		 * check log table
 		 */
-		assertEquals(countReviewLog + 1, testManager.countReviewLogs());
+		assertTrue(countReviewLog < testManager.countReviewLogs());
 	}
 	
 	private String insertReview(final String username, final String interHash, final double rating, final String text, final Set<Group> groups) {

@@ -626,22 +626,13 @@ INSERT INTO `useruser_similarity` (`u1`, `u2`, `sim`, `measure_id`) VALUES
 --
 -- Data for table `discussion`
 -- 
-INSERT INTO `discussion` (`discussion_id`, `type`, `interHash`,`text`,`user_name`,`date`,`rating`,`anonym`) VALUES
-(1, 1, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'crap!', 'testuser1', '2011-04-08 14:34:36', 4.0, 1),
-(2, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0),
-(3, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'SPAM', 'testuser1', '2011-04-18 14:34:36', NULL, 0),
-(4, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:36', NULL, 0);
-
---
--- Data for table `discussion_groups`
--- 
-INSERT INTO `discussion_groups` (`discussion_id`,`group`,`user_name`) VALUES
-(1, 0, 'testuser1'),
-(2, 1, 'testuser1'),
-(3, 2, 'testuser1'),
-(4, 3, 'testuser1'),
-(4, 4, 'testuser1'),
-(4, 5, 'testuser1');
+INSERT INTO `discussion` (`discussion_id`, `type`, `interHash`,`text`,`user_name`,`date`,`rating`,`anonym`,`group`) VALUES
+(1, 1, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'crap!', 'testuser1', '2011-04-08 14:34:36', 4.0, 1, 0),
+(2, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0, 1),
+(3, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'SPAM', 'testuser1', '2011-04-18 14:34:36', NULL, 0, 2),
+(4, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:36', NULL, 0, 3),
+(4, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:36', NULL, 0, 4),
+(4, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:36', NULL, 0, 5);
 
 --
 -- Data for table `review_ratings_cache`
