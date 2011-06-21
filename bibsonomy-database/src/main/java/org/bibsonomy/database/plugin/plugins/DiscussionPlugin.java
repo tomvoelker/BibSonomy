@@ -27,33 +27,4 @@ public class DiscussionPlugin extends AbstractDatabasePlugin {
 			}
 		};
 	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onBibTexDelete(int, org.bibsonomy.database.common.DBSession)
-	 */
-	@Override
-	public Runnable onPublicationDelete(final int contentId, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Delete discussion item if publication was deleted by the user
-				// TODO: interhash
-			}
-		};
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onBookmarkDelete(int, org.bibsonomy.database.common.DBSession)
-	 */
-	@Override
-	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Delete discussion item if bookmark was deleted by the user
-			}
-		};
-	}		
 }
