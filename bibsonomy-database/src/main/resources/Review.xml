@@ -21,12 +21,8 @@
 	</select>
 		
 	<insert id="insertReview" parameterClass="reviewParam">
-		INSERT INTO discussion (discussion_id, interHash, hash, parent_hash, type, user_name, text, rating, anonym, date) VALUES (#review.id#, #interHash#, #review.hash#, #review.parentHash#, #discussionItemType.id#, #userName#, #review.text#, #review.rating#, #review.anonym#, #review.date#)
+		INSERT INTO discussion (discussion_id, interHash, hash, parent_hash, type, user_name, text, rating, anonym, `group`, date, change_date) VALUES (#review.id#, #interHash#, #review.hash#, #review.parentHash#, #discussionItemType.id#, #userName#, #review.text#, #review.rating#, #review.anonym#, #groupId#, #review.date#, #review.changeDate#)
 	</insert>
-	
-	<update id="updateReview" parameterClass="reviewParam">
-		UPDATE discussion SET text = #review.text#, rating = #review.rating#, anonym = #review.anonym#, hash = #review.hash#, change_date = #review.changeDate# WHERE user_name = #userName# AND interHash = #interHash# AND rating IS NOT NULL
-	</update>
 	
 	<!--
 		ratings cache update queries

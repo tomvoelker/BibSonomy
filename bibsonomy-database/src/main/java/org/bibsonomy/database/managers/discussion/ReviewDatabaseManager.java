@@ -2,8 +2,6 @@ package org.bibsonomy.database.managers.discussion;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.List;
-
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.discussion.DiscussionItemParam;
@@ -53,7 +51,9 @@ public class ReviewDatabaseManager extends DiscussionItemDatabaseManager<Review>
 			throw new ValidationException("Only ?.0 and ?.5 ratings are supported"); // TODO: error message?
 		}
 		
-		this.checkLength(review, session);
+		if (present(review.getText()) && review.getText().length() > Review.MAX_TEXT_LENGTH) {
+			throw new ValidationException("review text too long");
+		}
 	}
 	
 	@Override
@@ -67,64 +67,54 @@ public class ReviewDatabaseManager extends DiscussionItemDatabaseManager<Review>
 		if (!user.isSpammer()) {
 			this.update("updateReviewRatingsCacheDelete", reviewParam, session);
 		}
-	}
+	}	
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.discussion.DiscussionItemDatabaseManager#preCheckDiscussionItem(java.lang.String, org.bibsonomy.model.DiscussionItem, org.bibsonomy.database.common.DBSession)
+	 */
 	@Override
-	protected boolean createDiscussionItem(final String interHash, final Review review, final DBSession session, int discussionId) {
-		final String userName = review.getUser().getName();
+	protected void checkDiscussionItemOnCreate(final String interHash, final Review review, final DBSession session) {
+		/*
+		 * do all pre-checks of a normal discussion item
+		 */
+		super.checkDiscussionItemOnCreate(interHash, review, session);
 		
 		/*
 		 * check if the user already reviewed the resource
 		 */
+		final String userName = review.getUser().getName();
 		final Review oldReview = this.getReviewForPostAndUser(interHash, userName, session);
 		if (present(oldReview)) {
-			return false; // TODO error message;
+			throw new ValidationException("user already reviewed resource '" + interHash + "'");
 		}
+	}
 
-		/*
-		 * check the review
-		 */
-		this.checkDiscussionItem(review, session);
-		
-		/*
-		 * create the review
-		 */
-		final ReviewParam param = this.createReviewParam(interHash, userName);
-		param.setDiscussionItem(review);
-		this.insert("insertReview", param, session);
-
-		/*
+	@Override
+	protected void discussionItemCreated(final String interHash, final Review review, final DBSession session) {
+		/* 
 		 * update ratings cache only if the user isn't a spammer
 		 */
+		final ReviewParam param = this.createReviewParam(interHash, review.getUser().getName());
+		param.setDiscussionItem(review);
 		if (!review.getUser().isSpammer()) {
 			insert("updateReviewRatingsCacheInsert", param, session);
 		}
-		
-		return true;
 	}
 	
 	@Override
-	protected boolean updateDiscussionItem(final String interHash, final Review review, final Review oldComment, final DBSession session) {
+	protected void discussionItemUpdated(final String interHash, final Review review, final Review oldReview, final DBSession session) {
 		final String username = review.getUser().getName();		
 		final ReviewParam param = this.createReviewParam(interHash, username);
 		param.setDiscussionItem(review);
-		
-		/*
-		 * update review
-		 */
-		this.update("updateReview", param, session);
-		
 		/*
 		 * only update cache if user wasn't a spammer
 		 */
 		if (!review.getUser().isSpammer()) {
 			this.insert("updateReviewRatingsCacheInsert", param, session);
 			
-			param.setDiscussionItem(oldComment);
+			param.setDiscussionItem(oldReview);
 			this.update("updateReviewRatingsCacheDelete", param, session);
 		}
-		
-		return true;
 	}
 	
 	protected Review getReviewForPostAndUser(final String interHash, final String username, final DBSession session) {
@@ -140,7 +130,7 @@ public class ReviewDatabaseManager extends DiscussionItemDatabaseManager<Review>
 	}
 
 	@Override
-	protected List<Review> getDiscussionItemsByHashForResource(final DiscussionItemParam<Review> param, final DBSession session) {
-		return this.queryForList("getReviewsByHashForResource", param, Review.class, session);
+	protected DiscussionItemParam<Review> createDiscussionItemParam() {
+		return new ReviewParam();
 	}
 }

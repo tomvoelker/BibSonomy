@@ -8,22 +8,20 @@
 			<!-- own, viewable for public and groups -->
 			SELECT <include refid ="allDiscussionAttributesGroupExtra"/> FROM
 				discussion d
-				LEFT JOIN discussion_groups t1 ON d.discussion_id = t1.discussion_id <!-- get group "assignments" -->
-				LEFT JOIN groupids g ON t1.group = g.group <!-- get group name -->
+				LEFT JOIN groupids g ON d.group = g.group <!-- get group name -->
 			WHERE d.interHash = #interHash#
-				AND (d.user_name = #userName# OR <include refid="inGroupsUnchecked"/>) <!-- own or for one group the user is member of -->
+				AND (d.user_name = #userName# OR <include refid="inGroupsUncheckedDiscussion"/>) <!-- own or for one group the user is member of -->
 			) UNION (
 			<!-- viewable for friends -->
-			<!-- TODO: adapt on new tagged based friendship -->
 			SELECT <include refid ="allDiscussionAttributesGroupExtra"/> FROM
 				discussion d
-				LEFT JOIN discussion_groups t1 ON d.discussion_id = t1.discussion_id <!-- get group "assignments" -->
-				LEFT JOIN groupids g ON t1.group = g.group <!-- get group name -->,
+				LEFT JOIN groupids g ON d.group = g.group <!-- get group name -->,
 				friends f
+			<!-- TODO: adapt on new tagged based friendship -->
 		    WHERE f.f_user_name = #userName#  
 		    	AND d.user_name = f.user_name	  <!-- friend of the user -->
 				AND d.interHash = #interHash#
-				AND t1.group = #groupTypeFriends# <!-- only group friends reviews -->
+				AND d.group = #groupTypeFriends# <!-- only group friends discussion items -->
 			)) AS d
 		ORDER BY d.date ASC
 	</select>
@@ -53,21 +51,5 @@
 		WHERE hash = #hash#
 			AND interHash = #interHash#
 			AND user_name = #userName#
-	</delete>
-	
-	<!-- 
-		group queries
-		 -->
-	<insert id="insertDiscussionGroup" parameterClass="discussionItemParam">
-		INSERT INTO
-			discussion_groups
-			(<include refid="commonDiscussionGroupColumns" />)
-		VALUES (#discussionId#, #groupId#, #userName#, #date#, #changeDate#)
-	</insert>	 
-	
-	<delete id="deleteAllGroupsForDiscussionItemById" parameterClass="discussionItemParam">
-		DELETE FROM
-			discussion_groups
-		WHERE discussion_id = #discussionId#
 	</delete>
 </sqlMap>

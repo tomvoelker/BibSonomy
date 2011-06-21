@@ -147,6 +147,7 @@
 		WHERE user_name = #userName#
 	</update>
 	
+	<!-- FIXME: double check this statement!!! -->
 	<update id="updateReviewRatingsCache" parameterClass="adminParam" timeout="0">
 		UPDATE review_ratings_cache c JOIN discussion d USING (interHash) SET 
 		<isEqual property="spammer" compareValue="true">
@@ -156,9 +157,9 @@
 		<isEqual property="spammer" compareValue="false">
 			c.rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings + d.rating)/(number_of_ratings + 1), 0),
 			c.number_of_ratings = c.number_of_ratings + 1
-		</isEqual>	
-		WHERE d.user_name = #userName#
-			AND d.rating IS NOT NULL
+		</isEqual>
+		WHERE d.interHash IN (SELECT di.interHash FROM discussion di WHERE di.user_name = #userName#
+			AND di.rating IS NOT NULL) AND d.user_name = #userName#
 	</update>
 	
 </sqlMap>

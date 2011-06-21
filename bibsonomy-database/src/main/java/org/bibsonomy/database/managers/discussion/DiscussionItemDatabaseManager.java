@@ -4,7 +4,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,11 +14,11 @@ import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.discussion.DiscussionItemParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.validation.DatabaseModelValidator;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.DiscussionItemUtils;
+import org.bibsonomy.util.ReflectionUtils;
 
 /**
  * @author dzo
@@ -29,16 +28,16 @@ import org.bibsonomy.model.util.DiscussionItemUtils;
 public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(DiscussionItemDatabaseManager.class);	
 	
-	protected final DatabasePluginRegistry plugins;
-	protected final GeneralDatabaseManager generalDb;
+	private final DatabasePluginRegistry plugins;
+	private final GeneralDatabaseManager generalDb;
 	
-	private final DatabaseModelValidator<D> validator;
+	private final String discussionItemName;
 
 	protected DiscussionItemDatabaseManager() {
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		
-		this.validator = new DatabaseModelValidator<D>();
+		this.discussionItemName = ReflectionUtils.getActualClassArguments(this.getClass()).get(0).getSimpleName();
 	}
 	
 	protected D getDiscussionItemByHashForResource(final String interHash, final String username, final String hash, final DBSession session) {
@@ -49,7 +48,7 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 		
 		if (present(discussionItems)) {
 			if (discussionItems.size() > 1) {
-				log.fatal("found multiple discussion items for resource '" + interHash + "' with same hash '" + hash + "'");
+				log.warn("found multiple discussion items for resource '" + interHash + "' with same hash '" + hash + "'");
 			}
 			
 			return discussionItems.get(0);
@@ -58,8 +57,10 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 		return null;
 	}
 	
-	// TODO: remove
-	protected abstract List<D> getDiscussionItemsByHashForResource(final DiscussionItemParam<D> param, final DBSession session);
+	@SuppressWarnings("unchecked")
+	protected List<D> getDiscussionItemsByHashForResource(final DiscussionItemParam<D> param, final DBSession session) {
+		return this.queryForList("get" + this.discussionItemName + "sByHashForResource", param, session);
+	}
 	
 	/**
 	 * creates a new discussion item 
@@ -70,7 +71,7 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 	 */
 	public boolean createDiscussionItemForResource(final String interHash, final D discussionItem, final DBSession session) {
 		/*
-		 * check if no interHash is present
+		 * check if interHash is present
 		 */
 		if (!present(interHash)) {
 			throw new ValidationException("please provide an interHash for the discussion item");
@@ -78,78 +79,69 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 		
 		session.beginTransaction();
 		try {
-			final String username = discussionItem.getUser().getName();
-			final String parentHash = discussionItem.getParentHash();
-			/*
-			 * check if parent is in database
-			 */
-			if (present(parentHash)) {
-				final DiscussionItem parentComment = this.getDiscussionItemForHash(interHash, parentHash, session);
-				if (!present(parentComment)) {
-					throw new ValidationException("parent discussion item not found"); // TODO: error message?!
-				}
-			}
-			
+			this.checkDiscussionItemOnCreate(interHash, discussionItem, session);
 			
 			/*
 			 * get a new discussion id from db (used for group visibility)
 			 */
 			final int discussionId = this.generalDb.getNewId(ConstantID.IDS_DISCUSSION_ITEM_ID, session);
 			discussionItem.setId(discussionId);
-						
+			
 			/*
 			 * populate with date and recalculate hash
 			 */
-			final Date creationDate = new Date();
-			discussionItem.setDate(creationDate);
+			discussionItem.setDate(new Date());
 			discussionItem.setHash(DiscussionItemUtils.recalculateHash(discussionItem));
 			
 			/*
 			 * create the discussion item
+			 * for each group an own entry! for performance!
 			 */
-			final boolean created = this.createDiscussionItem(interHash, discussionItem, session, discussionId);
-			
-			/*
-			 * if creation was successful insert the group ids
-			 */
-			if (created) {
-				/*
-				 * insert groups
-				 */
-				final DiscussionItemParam<D> param = new DiscussionItemParam<D>();
-				param.setUserName(username);
-				param.setDiscussionId(discussionId);
-				param.setDate(creationDate);
-				
-				this.insertGroups(param, discussionItem.getGroups(), session);
+			for (final Group group : discussionItem.getGroups()) {
+				final DiscussionItemParam<D> param = this.createDiscussionItemParam(interHash, discussionItem.getUser().getName());
+				param.setDiscussionItem(discussionItem);
+				param.setGroupId(group.getGroupId());
+				this.insert("insert" + this.discussionItemName, param, session);
 			}
 			
+			this.discussionItemCreated(interHash, discussionItem, session);
+			
 			session.commitTransaction();
-			return created;
+			return true;
 		} finally {
 			session.endTransaction();
 		}
 	}
 
-	private void insertGroups(final DiscussionItemParam<D> param, final Set<Group> groups, final DBSession session) {
-		for (final Group group : groups) {
-			param.setGroupId(group.getGroupId());
-			this.insert("insertDiscussionGroup", param, session);
+	protected void checkDiscussionItemOnCreate(final String interHash, final D discussionItem, final DBSession session) {
+		final String parentHash = discussionItem.getParentHash();
+		/*
+		 * check if parent is in database
+		 */
+		if (present(parentHash)) {
+			final DiscussionItem parentComment = this.getDiscussionItemForHash(interHash, parentHash, session);
+			if (!present(parentComment)) {
+				throw new ValidationException("parent discussion item not found"); // TODO: error message?!
+			}
 		}
-	}
-	
-	private void deleteGroups(final DiscussionItemParam<?> param, final DBSession session) {
-		this.delete("deleteAllGroupsForDiscussionItemById", param, session);
+		
+		this.checkDiscussionItem(discussionItem, session);
 	}
 
-	protected abstract boolean createDiscussionItem(final String interHash, final D discussionItem, final DBSession session, int discussionId);
+	protected void discussionItemCreated(final String interHash, final D discussionItem, final DBSession session) {
+		// noop
+	}
 
 	protected DiscussionItemParam<D> createDiscussionItemParam(final String interHash, final String username) {
-		final DiscussionItemParam<D> param = new DiscussionItemParam<D>();
+		final DiscussionItemParam<D> param = this.createDiscussionItemParam();
 		this.fillDiscussionItemParam(param, interHash, username);
 		return param;
 	}
 	
+	protected abstract DiscussionItemParam<D> createDiscussionItemParam();
+	
+	protected abstract void checkDiscussionItem(final D discussionItem, final DBSession session);
+
 	protected void fillDiscussionItemParam(final DiscussionItemParam<?> param, final String interHash, final String username) {
 		param.setInterHash(interHash);
 		param.setUserName(username);
@@ -189,6 +181,7 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 			discussionItem.setDate(oldDiscussionItem.getDate()); // be sure
 			discussionItem.setChangeDate(changeDate);
 			discussionItem.setHash(DiscussionItemUtils.recalculateHash(discussionItem));
+			discussionItem.setId(oldDiscussionItem.getId());
 			
 			/*
 			 * first check discussion item to update
@@ -200,43 +193,46 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 			 */
 			this.plugins.onDiscussionUpdate(interHash, discussionItem, oldDiscussionItem, session);
 			
-			final boolean updated = this.updateDiscussionItem(interHash, discussionItem, oldDiscussionItem, session);
 			
-			if (updated) {
-				/*
-				 * update groups
-				 */
-				final DiscussionItemParam<D> param = new DiscussionItemParam<D>();
-				param.setUserName(username);
-				param.setDiscussionId(oldDiscussionItem.getId());
-				param.setDate(discussionItem.getDate());
-				param.setChangeDate(changeDate);
-				
-				this.deleteGroups(param, session);
-				this.insertGroups(param, discussionItem.getGroups(), session);
+			/*
+			 * delete all old entries
+			 */
+			final DiscussionItemParam<D> param = this.createDiscussionItemParam(interHash, username);
+			param.setHash(oldHash);
+			this.delete("deleteDiscussionItem", param, session);
+			
+			/*
+			 * create new entries
+			 */
+			param.setDiscussionItem(discussionItem);
+			
+			/*
+			 * insert the item again for each group
+			 */
+			for (final Group group : discussionItem.getGroups()) {
+				param.setGroupId(group.getGroupId());
+				this.insert("insert" + this.discussionItemName, param, session);
 			}
 			
+			this.discussionItemUpdated(interHash, discussionItem, oldDiscussionItem, session);
+			
 			session.commitTransaction();
-			return updated;
+			return true;
 		} finally {
 			session.endTransaction();
 		}
 	}
 	
+	protected void discussionItemUpdated(final String interHash, final D discussionItem, final D oldDiscussionItem, final DBSession session) {
+		// noop
+	}
+
 	protected DiscussionItem getDiscussionItemForHash(final String interHash, final String hash, final DBSession session) {
 		final DiscussionItemParam<DiscussionItem> param = new DiscussionItemParam<DiscussionItem>();
 		param.setHash(hash);
 		param.setInterHash(interHash);
 		
 		return this.queryForObject("getDiscussionItemForResourceByHash", param, DiscussionItem.class, session);
-	}
-	
-	protected abstract boolean updateDiscussionItem(final String interHash, final D discussionItem, final D oldDiscussionItem, final DBSession session);
-	
-	protected abstract void checkDiscussionItem(final D discussionItem, final DBSession session);
-	
-	protected void checkLength(final D discussionItem, final DBSession session) {
-		this.validator.validateFieldLength(discussionItem, discussionItem.getHash(), session);
 	}
 
 	/**
@@ -260,7 +256,6 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 			
 			final DiscussionItemParam<D> param = this.createDiscussionItemParam(interHash, username);
 			param.setHash(hash);
-			param.setDiscussionId(oldItem.getId());
 			
 			/*
 			 * inform the plugins (logging, …)
@@ -281,9 +276,6 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 			} else {
 				// delete discussion item
 				this.delete("deleteDiscussionItem", param, session);
-				
-				// delete groups
-				this.deleteGroups(param, session);
 			}		
 			
 			session.commitTransaction();
