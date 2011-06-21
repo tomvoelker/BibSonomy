@@ -8,6 +8,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -16,11 +17,8 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
-import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
@@ -32,8 +30,6 @@ import org.springframework.validation.ValidationUtils;
 public abstract class DiscussionItemAjaxController<D extends DiscussionItem> extends AjaxController implements ValidationAwareController<DiscussionItemAjaxCommand<D>>, ErrorAware {
 	private static final Log log = LogFactory.getLog(DiscussionItemAjaxController.class);
 	
-	
-	private Validator<DiscussionItemAjaxCommand<D>> validator;
 	private Errors errors;
 
 	@Override
@@ -49,8 +45,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 	public View workOn(final DiscussionItemAjaxCommand<D> command) {
 		final RequestWrapperContext context = command.getContext();
 		if (!context.isUserLoggedIn()) {
-			// TODO: maybe we won't redirect the user in ajax views
-			throw new AccessDeniedException("please log in");
+			throw new AccessDeniedException();
 		}
 		
 		if (!context.isValidCkey()) {
@@ -120,13 +115,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		command.setResponseString(result.toString());		
 		return Views.AJAX_JSON;
 	}
-
-	// TODO: move to AjaxController
-	protected View returnErrorView() {
-		this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
-		return Views.AJAX_ERRORS;
-	}
-
+	
 	@Override
 	public Errors getErrors() {
 		return this.errors;
@@ -140,18 +129,5 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 	@Override
 	public boolean isValidationRequired(final DiscussionItemAjaxCommand<D> command) {
 		return false;
-	}
-
-	@Override
-	public Validator<DiscussionItemAjaxCommand<D>> getValidator() {
-		return this.validator;
-	}
-	
-	/**
-	 * @param validator the validator to set
-	 */
-	@Required
-	public void setValidator(final Validator<DiscussionItemAjaxCommand<D>> validator) {
-		this.validator = validator;
 	}
 }

@@ -1,11 +1,15 @@
 package org.bibsonomy.webapp.controller.ajax;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ResponseAware;
 import org.bibsonomy.webapp.util.ResponseLogic;
+import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -48,5 +52,10 @@ public abstract class AjaxController implements RequestAware, ResponseAware {
 	@Required
 	public void setResponseLogic(ResponseLogic responseLogic) {
 		this.responseLogic = responseLogic;
+	}
+
+	protected View returnErrorView() {
+		this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
+		return Views.AJAX_ERRORS;
 	}
 }
