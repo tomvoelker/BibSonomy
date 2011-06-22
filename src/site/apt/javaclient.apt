@@ -1,9 +1,15 @@
+                                    ------
+                                    Java Client Library
+                                    ------
+                                    ------
+                                    ------  
+
 Java client library
 
   The Java library encapsulates each accessing method provided by the webservice
   (see {{{api.html}methods}}) with a corresponding class. The client library
   can be downloaded from {{{download.html}here}}. We also provide its 
-  {{{rest-client-javadoc/index.html}JavaDoc}}.
+  {{{rest-client-javadoc/index.html}JavaDoc}}, or a {{{http://dev.bibsonomy.org/}Maven repository}}.
 
   The client library consists of multiple jars which must be added to your
   Java project's classpath. Those jars are: 
@@ -44,6 +50,30 @@ Java client library
 
 
 * Using the client library
+
+
+  When you want to use the client libary, you can download all required jars in our
+  {{{download.html}download section}}, or you can use our Maven repository; just add the 
+  following to your <<<pom.xml>>>:
+  
++--------------------------------------+
+<project>
+  <repositories>
+    <repository>
+      <id>bibsonomy-repo</id>
+      <name>Releases von BibSonomy-Modulen</name>
+      <url>http://dev.bibsonomy.org/maven2/</url>
+    </repository>
+  [...]
+  <dependencies>
+    <dependency>
+	  <groupId>org.bibsonomy</groupId>
+        <artifactId>bibsonomy-rest-client</artifactId>
+        <version>2.0.1</version>
+    </dependency>
+    [...]
++--------------------------------------+  
+  
 
   Using the client library is rather simple. At first one has to instantiate an object of
   type <<<Bibsonomy>>> and set the user's credentials on it. This object can be reused during

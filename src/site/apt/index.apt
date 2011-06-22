@@ -1,3 +1,10 @@
+                                    ------
+                                    Introduction
+                                    ------
+                                    ------
+                                    ------  
+
+
 BibSonomy
 
   BibSonomy is a system for sharing bookmarks and lists of literature. When
@@ -7,6 +14,3 @@ BibSonomy
   The advantage of BibSonomy is that you can access your data from whereever
   you are. Furthermore, you can discover more bookmarks and publications from
   your friends and other people.
-  
-  We have just released our brand new {{{./api.html}API}}, along with a customized
-  {{{./jabrefclient.html}JabRef client}}. Get {{{./gettingaccess.html}access}} now!

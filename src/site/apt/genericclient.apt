@@ -1,4 +1,10 @@
-Direct access
+                                    ------
+                                    Direct API Access
+                                    ------
+                                    ------
+                                    ------  
+
+Direct API access
 
   If you intend to use the BibSonomy webservice with another programming language
   than Java, you are welcome to develop your own client library communicating

@@ -1,4 +1,14 @@
+                                    ------
+                                    XML Schema
+                                    ------
+                                    ------
+                                    ------  
+
+
 XML Schema
+
+  This page documents the XML schema which defines our data exchange
+  format.
 
 +--------------------+
 <?xml version="1.0" encoding="UTF-8"?>

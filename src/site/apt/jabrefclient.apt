@@ -1,76 +1,13 @@
+                                    ------
+                                    JabRef-Client
+                                    ------
+                                    ------
+                                    ------  
+
+
 JabRef-Client
   
-  JabRef is an open source bibliography reference manager (see {{http://jabref.sourceforge.net/}}), 
-  which uses BibTeX as its native storage format. We have developed a customized version of JabRef
-  which makes it a comfortable client application to access BibSonomy. The main features of this 
-  integration are so far:
-  
-   * search publications in Bibsonomy from within JabRef
-   
-   * import your own or other users' BibTeX records from BibSonomy into JabRef
-   
-   * upload your local BibTeX records from within JabRef into BibSonomy
-   
-   * delete one or more of your own BibTeX records from BibSonomy
-  
-  The only prerequisite for these features is that you have {{{./gettingaccess.html}access}} to the 
-  BibSonomy API.
-  
-* System Requirements
-    
-    Please refer to {{http://jabref.sourceforge.net/documentation.php}} for a detailed description
-    of system requirements to run JabRef on your computer. With most standard Java installations,
-    things should be OK.
-    
-* Download
-  
-    Go to our {{{./download.html}downloads}} section to obtain our customized JabRef client.
-        
-* Getting started
-
-    After having {{{./download.html}downloaded JabRef}}, follow these steps:
-    
-    * Start JabRef:
-    
-     * double-click on the jar-file, or
-     
-     * type the following command in your command line:
-     
-+----------------------------------------------------------------------------
-java -jar JabRef2.3b-BibsonomyEdition.jar     
-+----------------------------------------------------------------------------
-  
-    * Create a new bibliography (via <File\> New database>)or open an existing BibTeX-file 
-      (via <File \> Open database>)
-      
-    * Enter the Bibsonomy Settings Menu (via <Bibsonomy \> Settings>)
-    
-    * Fill out the following fields:
-    
-      * <<username>>: your Bibsonomy username
-      
-      * <<API key>>: your API key (See {{{./gettingaccess.html}here}} how to obtain one).
-      
-      * <<API URL>>: enter <http://www.bibsonomy.org/api/>
-      
-    And save your settings by clicking on <OK>.
-      
-    * Now you can e.g. search and fetch entries from BibSonomy via <Bibsonomy \> Search / fetch entries>.
-      This will open a new side panel, where you can
-       
-      * see your own or the global BibSonomy tag cloud (<update tag cloud> in the <user> or <world> mode)
-      
-      * search and fetch BibTeX entries by tag (via <Fetch by tag>) from your own (<user> mode) or 
-        all public (<world> mode) BibSonomy records  
-        
-* Bugs
-
-    We are currently in the Beta testing phase for both the new API and the JabRef-Client. So we 
-    would highly appreciate feedback via email (<api-support (AT) bibsonomy (DOT) org>). If you encounter 
-    a bug in our JabRef client, please post a bug report to our 
-    {{{https://gforge.cs.uni-kassel.de/tracker/?atid=485&group_id=98}bugtracker}}.
-    
-* Advanced Settings
-
-    Here you will find very soon a more detailed description on the advanced features
-    of our customized JabRef-Client. Until then - feel free to play around and have fun:)
+  ATTENTION: We have stopped the development of our customized JabRef-client 
+  for BibSonomy. Instead, we have developed a {{{./jabref-plugin/index.html}JabRef-Plugin}} 
+  which offers the same functionality; we highly recommend to update to a current
+  version of JabRef and to use this plugin!

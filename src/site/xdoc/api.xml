@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
 	<properties>
-		<title>API</title>
+		<title>API URL Schema</title>
 	</properties>
 	<body>
 		<section name="API">
@@ -15,7 +15,7 @@
 			<p>
 				You can use the provided client library, written in Java, to access the API or you
 				can directly interact with the webservice if you would like to write a client in a
-				language other than Java. Furthermore, there is a customized JabRef-Client available:
+				language other than Java. Furthermore, we have developed a JabRef Plugin:
 				<ul>
 					<li>
 						<a href="javaclient.html">Java client library</a>
@@ -24,7 +24,7 @@
 						<a href="genericclient.html">direct access</a>
 					</li>
 					<li>
-						<a href="jabrefclient.html">JabRef client</a>
+						<a href="./jabref-plugin/index.html">JabRef Plugin</a>
 					</li>					
 				</ul>
 			</p>
@@ -203,6 +203,32 @@
 								<img src="images/icon_success_sml.gif" />
 							</td>
 						</tr>
+						<tr>
+							<th>Friends</th>
+							<th></th>
+							<th></th>
+							<th></th>
+						</tr>			
+						<tr>
+							<td>
+								<a href="methods/ListOfFriends.html">List of friends for a user</a>
+							</td>
+							<td>GET</td>
+							<td>/users/[username]/friends ?relation=(incoming|outgoing)</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="methods/CreateFriends.html">Add users as friends</a>
+							</td>
+							<td>POST</td>
+							<td>/users/[username]/friends</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>															
 						<tr>
 							<th>Groups</th>
 							<th></th>

@@ -1,0 +1,72 @@
+List of all users
+
+*--+--+
+| <<Method:>> | GET |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/users[username]/friends |
+*--+--+
+
+* Query string
+
+---
+?format=(xml|rdf|html)
+?start=[int], starting with 0, default 0
+?end=[int], starting with 0, default 20
+?relation=(incoming|outgoing), default 'incoming'
+---
+
+* Status codes
+
+---
+200 ok + bibsonomy/users+xml
+
+400 bad request
+401 Unauthorized
+403 Forbidden
+
+500 Internal Server Error
+---
+
+* Example
+
+---
+GET www.bibsonomy.org/api/users/dbenz/friends
+
+<?xml version="1.0"?>
+<bibsonomy>
+  <users start="0" end="1">
+    <user name="mbork" realname="Manuel Bork" 
+          href="http://www.bibsonomy.org/users/mbork"/>
+    <user name="hotho" realname="Andreas Hotho" 
+          href="http://www.bibsonomy.org/users/hotho"/> 
+  </users>
+</bibsonomy>
+---
+
+* XML Schema
+
+---
+<!--
+  this type encapsulates a list of users
+-->
+<xsd:complexType name="UsersType">
+  <xsd:sequence>
+    <xsd:element name="user" type="UserType" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:sequence>
+  <xsd:attribute name="start" type="xsd:positiveInteger" use="required"/>
+  <xsd:attribute name="end" type="xsd:positiveInteger" use="required"/>
+  <xsd:attribute name="next" type="xsd:anyURI"/>
+</xsd:complexType>
+
+<!--
+  a user
+-->
+<xsd:complexType name="UserType">
+  <xsd:attribute name="name" type="xsd:string" use="required"/>
+  <xsd:attribute name="realname" type="xsd:string"/>
+  <xsd:attribute name="email" type="xsd:string"/>
+  <xsd:attribute name="homepage" type="xsd:string"/>
+  <!-- link to details page -->
+  <xsd:attribute name="href" type="xsd:anyURI"/>
+</xsd:complexType>
+---
