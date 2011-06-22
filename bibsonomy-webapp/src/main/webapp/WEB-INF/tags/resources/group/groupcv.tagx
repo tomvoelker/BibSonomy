@@ -3,6 +3,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 
     <!--+
@@ -18,7 +19,12 @@
     	<fmt:message key="group.cv.title" var="cvtitle">
     		<fmt:param value="${group.name}"/>
     	</fmt:message>
-    	<a title="${cvtitle}" href="/cv/group/${fn:escapeXml(group.name)}"><button type="button"><img src="${resdir}/image/cv.png"/><fmt:message key="navi.cv.abbrev"/></button></a>
+    	<button:linkButton title="${cvtitle}" href="/cv/group/${fn:escapeXml(group.name)}" image="${resdir}/image/cv.png">
+			<jsp:attribute name="text">
+				<fmt:message key="navi.cv.abbrev"/>
+			</jsp:attribute>
+		</button:linkButton>	
+    	
     </c:if>
       
 	

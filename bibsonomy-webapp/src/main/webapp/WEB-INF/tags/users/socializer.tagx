@@ -3,6 +3,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<!--+ 
@@ -42,14 +43,23 @@
 				<fmt:message key="friends.actions.delete.title" var="delFriend">
 					<fmt:param value="${command.user.name}"/>
 				</fmt:message>
-				<a href="/SettingsHandler?ckey=${ckey}&amp;del_friend=${mtl:encodeURI(requestedUser)}" title="${delFriend}"><button type="button"><img src="${resdir}/image/starblue_selected.png"/><fmt:message key="navi.friend"/></button></a>
+				<button:linkButton href="/SettingsHandler?ckey=${ckey}&amp;del_friend=${mtl:encodeURI(requestedUser)}" title="${delFriend}" image="${resdir}/image/starblue_selected.png">
+					<jsp:attribute name="text">
+						<fmt:message key="navi.friend"/>
+					</jsp:attribute>
+				</button:linkButton>
 			</c:when>
 			<c:otherwise>
 				<!-- add user from login user's friend list -->
 				<fmt:message key="friends.actions.add.title" var="addFriend">
 					<fmt:param value="${command.user.name}"/>
 				</fmt:message>
-				<a href="/SettingsHandler?ckey=${ckey}&amp;add_friend=${mtl:encodeURI(requestedUser)}" title="${addFriend}"><button type="button"><img src="${resdir}/image/starblue_unselected.png"/><fmt:message key="navi.friend"/></button></a>
+				<button:linkButton href="/SettingsHandler?ckey=${ckey}&amp;add_friend=${mtl:encodeURI(requestedUser)}" image="${resdir}/image/starblue_unselected.png" title="${addFriend}">
+					<jsp:attribute name="text">
+						<fmt:message key="navi.friend"/>
+					</jsp:attribute>
+				</button:linkButton>
+				
 			</c:otherwise>
 		</c:choose>
 		
@@ -62,19 +72,27 @@
 		<!-- we need to switch between the add/remove link if the user already follows this user or not -->
 		<span id="removeLink" style="${isFollowerOfUser ? '' : 'display:none'}">
 			<fmt:message key="follow.link.text.removeLong" var="removeFollower"/>
-			<a onclick="javascript:removeFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
+			<button:linkButton onclick="javascript:removeFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
 			   title="${removeFollower}"
-			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}">
-			   <button type="button"><img src="${resdir}/image/starblue_selected.png"/> <fmt:message key="follow"/></button>
-			</a>
+			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
+			   image="${resdir}/image/starblue_selected.png"
+			   >
+				<jsp:attribute name="text">
+					<fmt:message key="follow"/>
+				</jsp:attribute>
+			</button:linkButton>
 		</span>
 		<span id="followLink" style="${isFollowerOfUser ? 'display:none' : ''}">
 			<fmt:message key="follow.link.text.followLong" var="addFollower"/>
-			<a onclick="javascript:addFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
+			<button:linkButton onclick="javascript:addFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
 			   title="${addFollower}"
-			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}">
-			   <button type="button"><img src="${resdir}/image/starblue_unselected.png"/> <fmt:message key="follow"/></button>
-			</a>
+			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
+			   image="${resdir}/image/starblue_unselected.png"
+			   >
+				<jsp:attribute name="text">
+					<fmt:message key="follow"/>
+				</jsp:attribute>
+			</button:linkButton>
 		</span>
 		
 		
@@ -84,7 +102,10 @@
 			|
 			+-->
 			<fmt:message key="personalized.info" var="personalized"/>
-			<a title="${personalized }" href="/personalized/user/${fn:escapeXml(command.requestedUser)}"><button type="button"><fmt:message key="personalize"/></button></a>
-		
+			<button:linkButton href="/personalized/user/${fn:escapeXml(command.requestedUser)}" title="${personalized}">
+				<jsp:attribute name="text">
+					<fmt:message key="personalize"/>
+				</jsp:attribute>
+			</button:linkButton>	
 	</div>
 </jsp:root>
