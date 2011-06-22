@@ -70,22 +70,23 @@
 	    <!-- select box for "other" groups -->
 	    <!-- TODO: allow multiple groups ( multiple="multiples") -->
 		<select name="groups" size="5" class="otherGroupsBox" tabindex="2">
+		<c:set var="friendsLabel" value="friends" /> <!-- TODO: i18n? -->
 			<c:choose>
 				<c:when test="${isFriend}">
-					<option label="friends" value="friends" selected="selected" />
+					<option label="friends" value="friends" selected="selected"><c:out value="${friendsLabel}" /></option>
 				</c:when>
 				<c:otherwise>
-					<option label="friends" value="friends" />
+					<option label="friends" value="friends"><c:out value="${friendsLabel}" /></option>
 				</c:otherwise>
 			</c:choose>
 			
 			<c:forEach var="group" items="${groups}">
 				<c:choose>
 					<c:when test="${mtl:contains(selectedGroups, group)}">
-						<option label="${group.name}" value="${group.name}" selected="selected" />
+						<option label="${group.name}" value="${group.name}" selected="selected"><c:out value="${group.name}" /></option>
 					</c:when>
 					<c:otherwise>
-						<option label="${group.name}" value="${group.name}" />
+						<option label="${group.name}" value="${group.name}"><c:out value="${group.name}" /></option>
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>
