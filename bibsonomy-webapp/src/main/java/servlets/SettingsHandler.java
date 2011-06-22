@@ -32,6 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
+import org.bibsonomy.database.systemstags.search.UserRelationSystemTag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
@@ -116,7 +117,7 @@ public class SettingsHandler extends HttpServlet{
 				if (!ValidationUtils.present(relationTag)) {
 					relationTag = NetworkRelationSystemTag.BibSonomyFriendSystemTag;
 				} else {
-					relationTag = SystemTagsUtil.buildSystemTagString(NetworkRelationSystemTag.NAME, relationTag);
+					relationTag = SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, relationTag);
 				}
 				if (friend != null) {
 					// logging
@@ -137,6 +138,11 @@ public class SettingsHandler extends HttpServlet{
 				 */
 				friend = request.getParameter("add_friend");
 				relationTag = request.getParameter("add_relationTag");
+				if (!ValidationUtils.present(relationTag)) {
+					relationTag = NetworkRelationSystemTag.BibSonomyFriendSystemTag;
+				} else {
+					relationTag = SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, relationTag);
+				}
 				// don't be friend with yourself!
 				if (friend != null && !friend.equalsIgnoreCase(currUser)) {
 					// check, if username exists
