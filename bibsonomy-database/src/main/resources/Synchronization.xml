@@ -55,6 +55,7 @@
 		WHERE user_name = #userName#
 			AND content_type = #contentType#
 			AND service_id = #serviceId#
+			AND status != "undone"
 		ORDER BY last_sync_date DESC
 		LIMIT 1
 	</select>
