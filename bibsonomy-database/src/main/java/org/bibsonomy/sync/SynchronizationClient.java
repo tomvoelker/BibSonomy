@@ -11,7 +11,9 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.util.IbatisSyncDBSessionFactory;
 import org.bibsonomy.model.BibTex;
@@ -39,6 +41,7 @@ public class SynchronizationClient {
 	
 	private final ConflictResolutionStrategy strategy;
 	private DBLogicApiInterfaceFactory serverLogicFactory;
+	private DBSessionFactory dbSessionFactory = new IbatisSyncDBSessionFactory();
 	
 	public SynchronizationClient() {
 		//FIXME get strategy form DB or elsewhere
@@ -48,15 +51,13 @@ public class SynchronizationClient {
 	private SyncLogicInterface createServerLogic(String userName, String apiKey) {
 	
 		//FIXME get correct DBSessionFactory for each service
-		serverLogicFactory.setDbSessionFactory(new IbatisSyncDBSessionFactory());
-		
+
+		serverLogicFactory.setDbSessionFactory(this.dbSessionFactory);
+
+
 		SyncLogicInterface serverLogic = (SyncLogicInterface) serverLogicFactory.getLogicAccess(userName, apiKey);
 		
 		return serverLogic;
-	}
-	
-	private void createClientLogic() {
-		
 	}
 	
 	/**
@@ -78,11 +79,15 @@ public class SynchronizationClient {
 		return user;
 	}
 	
-	public Map<String, SynchronizationData> getLastSyncData(SyncService syncService, ConstantID contentType) {
+	/**
+	 * Used in a synchronization process, if server logic already created 
+	 * @param userName
+	 * @param contentType
+	 * @param serverLogic
+	 * @return
+	 */
+	public Map<String, SynchronizationData> getLastSyncData(String userName, ConstantID contentType, SyncLogicInterface serverLogic) {
 		//FIXME errorhandling
-		User serverUser = getUserFromProperties(syncService.getServerUser());
-		String userName = serverUser.getName();
-		SyncLogicInterface serverLogic = createServerLogic(userName, serverUser.getApiKey());
 		
 		Map<String, SynchronizationData> result = new HashMap<String, SynchronizationData>();
 		
@@ -95,21 +100,38 @@ public class SynchronizationClient {
 		return result;
 	}
 	
+	/**
+	 * Used in SettingsPageController, to show syncData
+	 * @param syncService
+	 * @param contentType
+	 * @return
+	 */
+	public Map<String, SynchronizationData> getLastSyncData(SyncService syncService, ConstantID contentType) {
+		//FIXME errorhandling
+		User serverUser = getUserFromProperties(syncService.getServerUser());
+		String userName = serverUser.getName();
+		
+		SyncLogicInterface serverLogic = createServerLogic(userName, serverUser.getApiKey());
+		
+		return getLastSyncData(userName, contentType, serverLogic);
+	}
+	
 
 	
 	public SynchronizationData synchronize(LogicInterface clientLogic, Class<? extends Resource> resourceType, User clientUser, SyncService server) {
 		User serverUser = getUserFromProperties(server.getServerUser());
-		
+
 		SyncLogicInterface serverSyncLogic = createServerLogic(serverUser.getName(), serverUser.getApiKey());
-		
+
 		String result = synchronizeResource(resourceType, serverUser, clientUser, serverSyncLogic, clientLogic);
 		
 		storeSyncResult(result, resourceType, serverSyncLogic, serverUser.getName());
 		
-		SynchronizationData data = getLastSyncData(server, ConstantID.getContentTypeByClass(resourceType)).get(resourceType.getSimpleName());
+		SynchronizationData data = getLastSyncData(serverUser.getName(), ConstantID.getContentTypeByClass(resourceType), serverSyncLogic).get(resourceType.getSimpleName());
 
 		return data;
 	}
+	
 
 	private void storeSyncResult(String result, Class<? extends Resource> resourceType, SyncLogicInterface serverLogic, String serverUserName) {
 		SyncLogicInterface syncServerLogic = serverLogic;
@@ -129,20 +151,10 @@ public class SynchronizationClient {
 		 */
 		SyncLogicInterface syncClientLogic = (SyncLogicInterface)clientLogic;
 		LogicInterface serverLogic = (LogicInterface)syncServerLogic;
-
-		// TODO replace this with correct cast
-		// int serverServiceId = Integer.parseInt(serviceIdentifier);
-
-		@SuppressWarnings("unused")
-		int contentType = 0;
-		if (BibTex.class.equals(resourceType)) {
-			contentType = ConstantID.BIBTEX_CONTENT_TYPE.getId();
-		} else if (Bookmark.class.equals(resourceType)) {
-			contentType = ConstantID.BOOKMARK_CONTENT_TYPE.getId();
-		} else {
-			// TODO unknown resource Type
-		}
-
+		
+		serverLogic.getAuthenticatedUser().setRole(Role.SYNC);
+		clientLogic.getAuthenticatedUser().setRole(Role.SYNC);
+		
 		List<SynchronizationPost> clientPosts = syncClientLogic.getSyncPostsListForUser(resourceType, clientUser.getName());
 
 		syncServerLogic.getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, uri);
@@ -269,5 +281,11 @@ public class SynchronizationClient {
 		return serverLogicFactory;
 	}
 
+	/**
+	 * @param factory the factory to set
+	 */
+	public void setDBSessionFactory(DBSessionFactory factory) {
+		this.dbSessionFactory = factory;
+	}
 
 }
