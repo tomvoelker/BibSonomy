@@ -10,6 +10,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -179,8 +180,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				/*
 				 * Has loginUser this user set as friend?
 				 */
-				command.setOfFriendUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, null).contains(requestedUser));
-				command.setFriendOfUser(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, null).contains(requestedUser));
+				command.setOfFriendUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
+				command.setFriendOfUser(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
 				/*
 				 * TODO: we need an adminLogic to access the requested user's groups ...
 				 */
