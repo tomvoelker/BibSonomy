@@ -651,3 +651,92 @@ input#authorcontractconfirm {
 	color: red;
 }
 
+
+
+.license_headline {
+	font-weight: bold;
+    color: #DF430D;
+    font-size: 114%;
+    margin: 2ex 10px 10px 0;
+    padding: 0;
+}
+
+#license {
+	float:left;
+	width:97%; 
+	margin-left:10px; 
+	margin-top:10px; 
+	margin-bottom: 2ex; 
+	padding: 3ex;
+	padding-bottom:13px;
+	background-color: white;
+	border: 1px solid #333;
+}
+
+#license_header {
+	padding-bottom: 2ex;
+}
+
+#license_logo {
+	float: left;
+}
+
+#license_headline0 {
+	float:none; 
+	font-size: 150%; 
+	text-align: center; 
+	padding-top: 1ex;
+}
+
+#license hr {
+	clear: left; 
+	margin-bottom: 2ex;
+}
+
+#license_data {
+}
+
+#license_data .license_headline {
+	margin-bottom: 3ex;
+}
+
+#license_data input {
+	font-size: 140%;
+	width: 97%;
+}
+
+
+#license_data .lfdesc {
+	clear: left;
+    display: inline;
+    float: left;
+	vertical-align: text-bottom;
+	height: 4ex;
+	padding-left: 2ex;
+}
+
+#license_data .lfval {
+	margin-left: 16em;
+	vertical-align: text-bottom;
+	height: 4ex;
+}
+
+#license_signature {
+	width: 80%;
+	margin-left: 10%;
+	margin-top: 14ex; 
+	margin-bottom: 21ex; 
+}
+
+.signatureline {
+	float: left;
+	border-top: 1px solid black;
+	padding-top: 2px;
+	margin-left: 7%; 
+	margin-right: 7%;
+	width: 36%; 
+}
+
+#license_sendinfo {
+	margin-top: 3ex;
+}

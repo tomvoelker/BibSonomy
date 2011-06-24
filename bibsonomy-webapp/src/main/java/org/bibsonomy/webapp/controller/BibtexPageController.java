@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
@@ -185,6 +186,31 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		 * Add additional data for HTML view, e.g., tags, other user's posts, ...
 		 */
 		this.endTiming();
+		
+		if ("authoragreement".equals(format)) {
+
+			// get additional metadata fields
+			final Map<String, List<String>> additionalMetadataMap = logic.getExtendedFields(BibTex.class, command.getContext().getLoginUser().getName() , shortHash, null);
+			/* additionalMetadataMap
+			 *  {
+			 *  	DDC=[010, 050, 420, 422, 334, 233], 
+			 *  	post.resource.openaccess.additionalfields.additionaltitle=[FoB], 
+			 *  	post.resource.openaccess.additionalfields.phdreferee2=[Petra Musterfrau], 
+			 *  	post.resource.openaccess.additionalfields.phdreferee=[Peter Mustermann], 
+			 *  	ACM=[C.2.2], 
+			 *  	JEL=[K12], 
+			 *  	post.resource.openaccess.additionalfields.sponsor=[DFG, etc..], 
+			 *  	post.resource.openaccess.additionalfields.phdoralexam=[17.08.2020], 
+			 *  	post.resource.openaccess.additionalfields.institution=[Uni KS tEST ]
+			 *  }
+			*/
+
+			command.setAdditonalMetadata(additionalMetadataMap);
+			
+			return Views.AUTHORAGREEMENTPAGE;
+		}
+		
+		
 		if ("html".equals(format)) {
 			command.setPageTitle("publication :: " + command.getTitle()); // TODO: i18n
 			

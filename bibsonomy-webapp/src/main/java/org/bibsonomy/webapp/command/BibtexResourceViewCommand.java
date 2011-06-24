@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.model.Document;
 
@@ -21,6 +22,25 @@ public class BibtexResourceViewCommand extends TagResourceViewCommand {
 	private ConceptsCommand concepts = new ConceptsCommand();
 	
 	private List<Document> documents;
+
+	/**
+	 * additional metadata for bibtex resource
+	 * 
+	 * additionalMetadataMap
+	 *  {
+	 *  	DDC=[010, 050, 420, 422, 334, 233], 
+	 *  	post.resource.openaccess.additionalfields.additionaltitle=[FoB], 
+	 *  	post.resource.openaccess.additionalfields.phdreferee2=[Petra Musterfrau], 
+	 *  	post.resource.openaccess.additionalfields.phdreferee=[Peter Mustermann], 
+	 *  	ACM=[C.2.2], 
+	 *  	JEL=[K12], 
+	 *  	post.resource.openaccess.additionalfields.sponsor=[DFG, etc..], 
+	 *  	post.resource.openaccess.additionalfields.phdoralexam=[17.08.2020], 
+	 *  	post.resource.openaccess.additionalfields.institution=[Uni KS tEST ]
+	 *  }
+	 */
+	private Map<String, List<String>> additonalMetadata;
+
 	/**
 	 * @return the hash of a bibtex
 	 */
@@ -75,5 +95,19 @@ public class BibtexResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public List<Document> getDocuments() {
 		return documents;
+	}
+
+	/**
+	 * @return the map of additonalMetadata
+	 */
+	public Map<String, List<String>> getAdditonalMetadata() {
+		return this.additonalMetadata;
+	}
+
+	/**
+	 * @param additonalMetadata the map of additonalMetadata to set
+	 */
+	public void setAdditonalMetadata(Map<String, List<String>> additonalMetadata) {
+		this.additonalMetadata = additonalMetadata;
 	}
 }

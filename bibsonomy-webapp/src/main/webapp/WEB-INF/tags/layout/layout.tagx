@@ -30,6 +30,7 @@
      -->
     <spring:theme code="stylesheet.main" var="stylesheet_main" text="${resdir}/css/style.css"/>
 	<spring:theme code="stylesheet.additional" var="additionalCSS" text=""/> 
+	<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text=""/> 
 	<spring:theme code="image.head.logo" var="headerLogo" text=""/>
 	<spring:theme code="javascript.additional" var="additionalJS" text=""/>
 
@@ -55,6 +56,9 @@
 				</c:if>
 				<c:if test="${not empty additionalCSS}">
 					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
+				</c:if>
+				<c:if test="${not empty additionalCSS}">
+					<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" />
 				</c:if>
 							
 				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />

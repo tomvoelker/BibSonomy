@@ -604,7 +604,13 @@ public enum Views implements View {
 	/**
 	 * PUMA the first page you see when entering the application
 	 */
-	PUMAHOMEPAGE("pumahome");
+	PUMAHOMEPAGE("pumahome"),
+	
+	/**
+	 * PUMA, author agreement page, form filled in with publication data for printing 
+	 */
+	AUTHORAGREEMENTPAGE("authoragreement");
+	
 
 	/*
 	 * both bookmarks and publications

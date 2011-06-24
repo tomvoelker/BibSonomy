@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
+			<c:if test="${not empty additionalFsformCSS}">
+				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
+			</c:if>
+	    </jsp:attribute>
+	
+		<jsp:attribute name="heading">
+		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.publication"/></a> :: 
+		<form action="/search" method="get" class="smallform">
+		  <input type="text" size="20" name="search" value="${mtl:cleanBibtex(command.title)}"/>
+		</form>
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+			<ul id="sidebar">
+
+			</ul>
+		</jsp:attribute>
+				
+		<jsp:attribute name="content">
+		<!-- display content -->
+		<c:forEach var="post" items="${command.bibtex.list}">
+			<resource:authoragreement post="${post}" referer="${command.referer}"/>
+		</c:forEach>
+		
+		</jsp:attribute>
+		
+	</layout:paneLayout>
+
+</jsp:root>
