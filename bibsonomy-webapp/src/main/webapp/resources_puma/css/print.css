@@ -1,0 +1,33 @@
+#headerlogoimage, #main_header, #nice_tnav, #topNavBar, #sidebarroundcorner, #footer, #license_print {
+	display: none;
+}
+
+body {
+	background-color: #ffffff;
+}
+
+#outer {
+	width: 100%
+}
+
+#license {
+	border: none;
+}
+
+#license_data input {
+	border: none;
+	font-size: 100%;
+	font-family: Arial,sans-serif;
+	padding: 0;
+}
+
+#license .license_headline {
+	color: #000000;
+}
+
+#license .license_headline {
+	color: #000000;
+}
+
+#license_data .lfdesc, #license_data .lfval {
+}
