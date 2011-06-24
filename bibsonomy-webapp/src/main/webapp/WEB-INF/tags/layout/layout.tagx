@@ -57,7 +57,7 @@
 				<c:if test="${not empty additionalCSS}">
 					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
 				</c:if>
-				<c:if test="${not empty additionalCSS}">
+				<c:if test="${not empty additionalPrintCSS}">
 					<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" />
 				</c:if>
 							
