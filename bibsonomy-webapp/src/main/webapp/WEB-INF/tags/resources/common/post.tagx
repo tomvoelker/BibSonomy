@@ -36,15 +36,16 @@
 		  </c:choose>
         </c:if>
 		
-		<!-- ratings -->
-		<div class="rating">
-			<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
-			<c:set var="numOfRatings" value="${post.resource.numberOfRatings}" />
-			<c:if test="${empty numOfRatings}">
-				<c:set var="numOfRatings" value="0" />
-			</c:if>
-			<span class="reviewInfo">(<c:out value="${numOfRatings}"/>)</span>
-		</div>
+		<!-- TODO: remove as soon lucene supports rating -->
+		<c:if test="${not empty post.resource.rating}">
+			<!-- ratings -->
+			<div class="rating">
+				<a href="${otherPostsUrlPrefix}${post.resource.interHash}#discussion">
+					<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
+				</a>
+				<span class="reviewInfo">(<c:out value="${post.resource.numberOfRatings}"/>)</span>
+			</div>
+		</c:if>
 		
 		<div class="bmtitle"><jsp:invoke fragment="title"/></div>
 		<div class="bmdesc"> <jsp:invoke fragment="desc"/> </div>
