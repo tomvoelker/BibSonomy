@@ -79,12 +79,12 @@ public abstract class Resource implements Serializable, Rateable {
 	/**
 	 * the rating (avg, …) of the resource
 	 */
-	private double rating;
+	private Double rating;
 	
 	/**
 	 * number of all ratings for the resource
 	 */
-	private int numberOfRatings;
+	private Integer numberOfRatings;
 	
 	/**
 	 * FIXME: This method does not belong to the model!!!! It would be fine to
@@ -170,7 +170,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @return the rating
 	 */
 	@Override
-	public double getRating() {
+	public Double getRating() {
 		return this.rating;
 	}
 
@@ -186,7 +186,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @return the numberOfRatings
 	 */
 	@Override
-	public int getNumberOfRatings() {
+	public Integer getNumberOfRatings() {
 		return this.numberOfRatings;
 	}
 
