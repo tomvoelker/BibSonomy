@@ -10,7 +10,7 @@
 	<c:set var="id" value="create" />
 	
 	<c:if test="${not empty review}">
-		<c:set var="id" value="update" />
+		<c:set var="id" value="edit" />
 	</c:if>
 	
 	<form action="/ajax/reviews" method="post" id="${id}ReviewForm">
@@ -24,14 +24,14 @@
 			<fieldset class="fsOuter">
 				<div class="fsRow">
 					<div class="spinner initiallyHidden">
-						<img src="${resdir}/image/ajax_loader.gif" alt="loading" /><span id="${id}LoadingMessage"><fmt:message key="post.resource.review.action.${id}" /></span>
+						<img src="${resdir}/image/ajax_loader.gif" alt="loading" /><fmt:message key="post.resource.review.action.${id}" />
 					</div>
 				</div>
-				<div class="fsRow reviewrating" id="${id}ReviewRating">
+				<div class="fsRow reviewrating">
 					
-   					<label class="fsLabel" for="discussionItem.rating" ><fmt:message key="post.resource.review.rating"/>* </label><buttons:help message="post.resource.review.rating.help"/>
+   					<label class="fsLabel" for="discussionItem.rating" ><fmt:message key="post.resource.review.rating"/>*</label><buttons:help message="post.resource.review.rating.help"/>
    					
-   					<!-- TODO: titles for rating steps? -->
+   					<!-- TODO: REVIEW: titles for rating steps? -->
    					<c:forEach var="i" begin="1" end="10">
    						<c:set var="ratingStep" value="${i / 2}" />
    						<c:choose>
@@ -46,20 +46,20 @@
 				</div>
 				
 				<div class="fsRow">
-					<label class="fsLabel" for="review.anonym" ><fmt:message key="post.resource.review.anonym"/></label><buttons:help message="post.resource.review.anonym.help"/>
+					<label class="fsLabel" for="discussionItem.anonymous" ><fmt:message key="post.resource.review.anonymous"/></label><buttons:help message="post.resource.review.anonymous.help"/>
 					<c:choose>
-						<c:when test="${not empty review and review.anonym}">
-							<input type="checkbox" name="discussionItem.anonym" value="true" checked="checked" />
+						<c:when test="${not empty review and review.anonymous}">
+							<input type="checkbox" name="discussionItem.anonymous" value="true" checked="checked" />
 						</c:when>
 						<c:otherwise>
-							<input type="checkbox" name="discussionItem.anonym" value="true" />
+							<input type="checkbox" name="discussionItem.anonymous" value="true" />
 						</c:otherwise>
 					</c:choose>
 				</div>
 				
 				<div class="fsRow">
    					<label class="fsLabel" for="discussionItem.text" ><fmt:message key="post.resource.review.text"/></label><buttons:help message="post.resource.review.text.help"/>
-   					<textarea class="fsInput reqinput" rows="5" name="discussionItem.text" id="${id}ReviewText"><!-- text --><c:if test="${not empty review}"><c:out value="${review.text}" /></c:if></textarea>
+   					<textarea class="fsInput reqinput" rows="5" name="discussionItem.text"><!-- text --><c:if test="${not empty review}"><c:out value="${review.text}" /></c:if></textarea>
    				</div>
    				<div class="fsRow">
 					<!--
@@ -68,7 +68,7 @@
 	       	 		<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${review.groups}"/>
 				</div>
    				<div class="fsRow">
-   					<fmt:message key="post.resource.review.action.${id}" var="buttonText" />
+   					<fmt:message key="post.resource.review.actions.${id}" var="buttonText" />
    					<input type="submit" value="${buttonText}" />
    				</div>
    			</fieldset>

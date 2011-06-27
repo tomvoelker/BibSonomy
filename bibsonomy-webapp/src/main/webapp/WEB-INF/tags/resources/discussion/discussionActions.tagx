@@ -5,12 +5,14 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
-	<jsp:directive.attribute name="discussionItemClass" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="disableReply" type="java.lang.Boolean" required="false" />
 	
-	<ul class="${discussionItemClass}Menu">
+	<c:set var="discussionItemClass" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
+	
+	<ul class="discussionitemMenu">
 	
 	<!-- reply link  -->
-	<c:if test="${command.context.userLoggedIn}">
+	<c:if test="${command.context.userLoggedIn and !disableReply}">
 		<li>
 			<a href="#reply" class="reply">
 				<fmt:message key="post.resource.comment.actions.reply" />
@@ -54,5 +56,7 @@
 			</a>
 		</li>
 	</c:if>
+	
+	<!-- TODO: admin actions for mark as spammer -->
 	</ul>
 </jsp:root>

@@ -4,41 +4,45 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
 	
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="true" />
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
 	
+	<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
 	<c:choose>
 		<c:when test="${discussionItem.class.simpleName eq 'Review'}">
 			<c:choose>
-    			<!--  TODO: adapt on comment and reviews -->
+				<!-- TODO: add style info for anonymous review -->
     			<!-- check if user has reviewed this resource -->
 	    		<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
-	    			<li id="ownReview">
+	    			<li id="ownReview" class="${class}">
 	    				<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
 	    			</li>
 	    		</c:when>
     			<c:otherwise>
-    				<li>
+    				<li class="${class}">
     					<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
     				</li>
     			</c:otherwise>
     		</c:choose>	   
 		</c:when>
 		<c:when test="${discussionItem.class.simpleName eq 'Comment'}">
-			<li><comment:comment comment="${discussionItem}" loginUser="${loginUser}"/></li>
+			<li class="${class}"><comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}"/></li>
 		</c:when>
 		<c:when test="${discussionItem.class.simpleName eq 'DiscussionItem'}">
-			<!-- TODO: message deleted not visible -->
-			<li><fmt:message key="post.resource.dicussion.info" /></li>
+			<li class="${class}">
+				<div class="deletedInfo">
+					<fmt:message key="post.resource.dicussion.info" />
+				</div>
+				<discussion:discussionActions discussionItem="${discussionItem}" disableReply="true" />
+				<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" />
+			</li>
 		</c:when>
 		<c:otherwise>
-			no view for ${discussionItem.class.simpleName}
+			WARN: no view for ${discussionItem.class.simpleName}
 		</c:otherwise>
-	</c:choose>	
-	
-	<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" />
-		
+	</c:choose>
 </jsp:root>

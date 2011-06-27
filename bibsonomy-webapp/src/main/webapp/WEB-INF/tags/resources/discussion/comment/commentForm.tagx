@@ -20,7 +20,7 @@
 				</div>
 				
 				<div class="fsRow">
-   					<label class="fsLabel" for="discussionItem.text" ><fmt:message key="post.resource.comment.text"/></label><buttons:help message="post.resource.comment.text.help"/>
+   					<label class="fsLabel" for="discussionItem.text" ><fmt:message key="post.resource.comment.text"/>*</label><buttons:help message="post.resource.comment.text.help"/>
    					<textarea class="fsInput reqinput" rows="5" name="discussionItem.text"><!-- text --></textarea>
    				</div>
    				<div class="fsRow">

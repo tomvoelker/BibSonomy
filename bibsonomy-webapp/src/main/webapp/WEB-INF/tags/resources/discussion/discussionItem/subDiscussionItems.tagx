@@ -12,9 +12,7 @@
    	<ul class="subdiscussionItems">
     	<c:if test="${not empty discussionItems}">
     		<c:forEach var="discussionItem" items="${discussionItems}">
-    			<li>
-    				<discussionItem:discussionItem discussionItem="${discussionItem}" loginUser="${loginUser}" resource="${resource}"/>
-    			</li>
+    			<discussionItem:discussionItem discussionItem="${discussionItem}" loginUser="${loginUser}" resource="${resource}"/>
     		</c:forEach>
     	</c:if>
 		<!-- placeholder -->

@@ -28,20 +28,18 @@
    		<c:set var="discussionItems" value="${resource.discussionItems}" />
    	</c:if>
    	<div id="discussion">
-   	<c:if test="${not empty discussionItems}">
-   		<ul id="discussionMainMenu" class="newMenu">
-   			<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.comment.actions.showReviews" /></a></li>
-   			<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.comment.actions.collapseAllThreads" /></a></li>
-   		</ul>
-   	</c:if>
+ 	<!--
+	<ul id="discussionMainMenu" class="newMenu">
+		<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
+		<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
+	</ul>
+   	-->
    	
-    <c:if test="${not empty discussionItems}">
-    	<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
-    </c:if>
+    <discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
     
     <ul class="initiallyHidden">
 		<!-- create li, div structure for new review -->
-		<li id="newReview" class="initiallyHidden">
+		<li id="newReview">
 			<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
 		</li>
     </ul>
@@ -76,7 +74,7 @@
 		</div>
 		
 		<div id="commentTemplate" class="initiallyHidden">
-	    	<comment:comment comment="${newComment}" loginUser="${loginUser}" />
+	    	<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" />
 	    </div>
 	</c:if>
 	</div>

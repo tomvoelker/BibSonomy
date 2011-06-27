@@ -13,24 +13,23 @@
     <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
     
     <c:set var="ownReview" value="${loginUser.name eq review.user.name }" />
-    <c:set var="anonym" value="${review.anonym and not ownReview}" />
+    <c:set var="anonymous" value="${review.anonymous and not ownReview}" />
     
 	<c:choose>
-		<c:when test="${anonym}">
-			<img src="${resdir}/image/no_picture.png" alt="anonym" class="commentPicture" />
+		<c:when test="${anonymous}">
+			<img src="${resdir}/image/no_picture.png" alt="anonymous" class="commentPicture" />
 		</c:when>
 		<c:otherwise>
 			<img src="/picture/user/${fn:escapeXml(review.user.name)}" alt="userPicture" class="commentPicture"/>
 		</c:otherwise>
 	</c:choose>
     <div class="review details">
-		<div class="review info" data-username="${review.user.name}" data-discussionItemHash="${review.hash}">		
-			<!-- TODO: admin actions for mark as spammer -->
+		<div class="review info" data-username="${review.user.name}" data-discussionItemHash="${review.hash}">
 			<div class="review meta">
 				<span class="reviewer">				
 					<c:choose>
-						<c:when test="${anonym}">
-							<fmt:message key="post.resource.review.anonymus" />
+						<c:when test="${anonymous}">
+							<fmt:message key="post.resource.review.anonymous" />
 						</c:when>
 						<c:otherwise>
 							<a href="/user/${fn:escapeXml(review.user.name)}"><c:out value="${review.user.name}" /></a>
@@ -54,7 +53,8 @@
 		</c:if>
 	</div>
 	
-	<discussion:discussionActions discussionItemClass="review" discussionItem="${review}" />
+	<discussion:discussionActions discussionItem="${review}" />
 	
+	<!-- subitems -->
 	<discussionItem:subDiscussionItems discussionItems="${review.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" />
 </jsp:root>

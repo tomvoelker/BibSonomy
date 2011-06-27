@@ -8,6 +8,7 @@
     
    	<jsp:directive.attribute name="comment" type="org.bibsonomy.model.Comment" required="true" />
    	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
+   	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
    	
    	<c:set var="commentUserName" value="${comment.user.name}" />
    	
@@ -20,7 +21,7 @@
 				<span class="commenter">				
 					<a href="/user/${fn:escapeXml(commentUserName)}"><c:out value="${comment.user.name}" /></a>
 				</span>
-				<discussion:discussionMeta discussionItem="${comment }" />
+				<discussion:discussionMeta discussionItem="${comment}" />
 			</div>
 		</div>
 		
@@ -29,5 +30,7 @@
 		</div>
 	</div>
    	<!-- comment action menu -->
-   	<discussion:discussionActions discussionItem="${comment}" discussionItemClass="comment"/>
+   	<discussion:discussionActions discussionItem="${comment}" />
+   	
+   	<discussionItem:subDiscussionItems discussionItems="${comment.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" />
 </jsp:root>
