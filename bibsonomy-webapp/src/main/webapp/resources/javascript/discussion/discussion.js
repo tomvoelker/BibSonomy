@@ -1,47 +1,71 @@
-var ABSTRACT_GROUPING_RADIO_BOXES = 'input[name="abstractGrouping"]';
-var OTHER_GROUPING_CLASS = '.otherGroupsBox';
+var ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR = 'input[name="abstractGrouping"]';
+var OTHER_GROUPING_CLASS_SELECTOR = '.otherGroupsBox';
 var DISCUSSION_TABS_SELECTOR = '#discussionForms';
 var DISCUSSION_MENU_SELECTOR = '#discussionMainMenu';
 var DISCUSSION_SELECTOR = '#discussion';
+var REVIEW_REPLY_FORM_ID = 'replyReview';
+var REVIEW_REPLY_FORM_SELECTOR = '#' + REVIEW_REPLY_FORM_ID;
 
 // TODO: move constants
+var BOOKMARK_LIST_SELECTOR = '#bookmarkList';
+var PUBLICATION_LIST_SELECTOR = '#bibtexList';
 var GROUPS_CLASS = 'groups';
 var PUBLIC_GROUPING = 'public';
 var PRIVATE_GROUPING = 'private';
 var OTHER_GROUPING = 'other';
 var FRIENDS_GROUP_NAME = 'friends';
 
+var DISCUSSIONITEM_DATA_KEY = 'discussionItemHash';
+
 $(function() {	
 	// tabs for forms
 	$(DISCUSSION_TABS_SELECTOR).tabs();
 	if ($('#ownReview').length > 0) {
+		// user has reviewed this resource hide all create review forms
 		removeReviewActions();
 	}
 	
+	var location = document.location.toString();
+	var anchor = "#";
+	if (location.match('#')) { // the URL contains an anchor
+	  // click the navigation item corresponding to the anchor
+	  anchor += location.split('#')[1];
+	}
+	
 	// hide discussion on list pages
-	if ($('#bibtexList').length > 0 || $('#bookmarkList').length > 0) {
+	if (anchor != DISCUSSION_SELECTOR && ($(PUBLICATION_LIST_SELECTOR).length > 0 || $(BOOKMARK_LIST_SELECTOR).length > 0)) {
 		$(DISCUSSION_SELECTOR).hide();
 		$(DISCUSSION_MENU_SELECTOR).hide();
 		$(DISCUSSION_TABS_SELECTOR).hide();
+	} else {
+		$('#toggleDiscussion a').text(getString('post.resource.discussion.actions.hide'));
 	}
 	
 	$('#toggleDiscussion a').click(function() {
-		var visible = $(DISCUSSION_SELECTOR).is(":visible");
+		var visible = $(DISCUSSION_SELECTOR).is(':visible');
 		$(DISCUSSION_SELECTOR).toggle('slow');
 		$(DISCUSSION_TABS_SELECTOR).toggle('slow');
 		$(DISCUSSION_MENU_SELECTOR).toggle('slow');
 		
-		var text = getString('post.resource.discussion.action.show');
+		var text = getString('post.resource.discussion.actions.show');
 		if (!visible) {
-			text = getString('post.resource.discussion.action.hide');
+			text = getString('post.resource.discussion.actions.hide');
 		}
 		
 		$(this).text(text);
 	});
 	
+	/*
+	 * TODO: implement me
 	$('#toggleReviews').click(function() {
-		// TODO: change label
-		$('.subdiscussionItems .comment.details').parent().toggle('slow');
+		var nonReviews = $('.subdiscussionItems li').not('.review');
+		var onlyReviews = nonReviews.is(':visible');
+		if (onlyReviews) {
+			$(this).html("show all");
+		} else {
+			$(this).html("show only reviews");
+		}
+		nonReviews.toggle('slow');
 	});
 	
 	$('#collapseAllThreads').click(function() {
@@ -49,11 +73,10 @@ $(function() {
 		// TODO: implement me
 		return false;
 	});
+	*/
 	
-	/*
-	 * TODO: move and use in post edit views
-	 */
-	$(ABSTRACT_GROUPING_RADIO_BOXES).click(onAbstractGroupingClick);
+	// TODO: move and use in post edit views
+	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	 
 	$.each($('.abstractGroupingGroup'), function(index, box) {
 		toggleGroupBox(box);
@@ -66,6 +89,9 @@ function removeReviewActions() {
 	$('li.createReview').addClass('ui-tabs-hide');
 	// select comment tab
 	forms.tabs('select', 1);
+	
+	// reply review form
+	$(REVIEW_REPLY_FORM_SELECTOR).remove();
 }
 
 // TODO: move and use in post edit views
@@ -79,7 +105,7 @@ function toggleGroupBox(radioButtonGroup) {
 	var selectedAbstractGrouping = $(radioButtonGroup).children('input:checked');
 	
 	// find otherGroupsBox of the abstract grouping
-	var otherBox = $(radioButtonGroup).siblings(OTHER_GROUPING_CLASS);
+	var otherBox = $(radioButtonGroup).siblings(OTHER_GROUPING_CLASS_SELECTOR);
 	
 	// disable groups select if private or public is checked or enable
 	// if other is checked
@@ -92,18 +118,20 @@ function toggleGroupBox(radioButtonGroup) {
 
 function populateFormWithGroups(form, abstractGrouping, groups) {
 	// populate form with found values
-	form.find(ABSTRACT_GROUPING_RADIO_BOXES).removeAttr('checked');
-	form.find(ABSTRACT_GROUPING_RADIO_BOXES + '[value="' + abstractGrouping + '"]').attr('checked', 'checked');
+	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).removeAttr('checked');
+	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + '[value="' + abstractGrouping + '"]').attr('checked', 'checked');
 	
+	var otherBox = form.find(OTHER_GROUPING_CLASS_SELECTOR);
 	// and other groups if present
 	if (groups.length > 0) {
-		var otherBox = form.find(OTHER_GROUPING_CLASS);
 		otherBox.removeAttr('disabled');
 		// clear
 		otherBox.find('input').removeAttr('selected');
 		$.each(groups, function(index, group) {
 			otherBox.find('[value="' + group + '"]').attr('selected', 'selected');
 		});
+	} else {
+		otherBox.attr('disabled', 'disabled');
 	}
 }
 
@@ -193,8 +221,8 @@ function buildGroupView(abstractGrouping, groups) {
 }
 
 function updateHash(element, newHash) {
-	$(element).find('div.info:first').data('hash', newHash);
-	$(element).find('input[name="commment\\.hash"]:first').attr('value', newHash);
+	$(element).find('div.info:first').data(DISCUSSIONITEM_DATA_KEY, newHash);
+	$(element).find('input[name="discussionItem\\.hash"]:first').attr('value', newHash);
 }
 
 // TODO: rename function
@@ -204,7 +232,11 @@ function getInterHash() {
 
 // TODO: rename function
 function getHash(menuElement) {
-	return $(menuElement).parent().parent().siblings('.details').find('.info').data('discussionItemHash');
+	return $(menuElement).parent().parent().siblings('.details').find('.info').data(DISCUSSIONITEM_DATA_KEY);
+}
+
+function highlight(element) {
+	$(element).css('background-color', '#fff735').animate({ backgroundColor: '#ffffff' }, 1000);
 }
 
 /*

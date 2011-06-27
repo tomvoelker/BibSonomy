@@ -3,15 +3,29 @@ var STAR_WIDTH = 16;
 var RATING_STEPS = 11;
 var STEP_RATING = 2;
 
+var RATING_AVG_SELECTOR = '#ratingAvg span[property=v\\:average]';
+
+var REVIEW_OWN_SELECTOR = '#ownReview';
+
+var REVIEW_EDIT_LINK_SELECTOR = 'a.reviewEditLink';
+var REVIEW_DELETE_LINK_SELECTOR = 'a.reviewDeleteLink';
+
+var REVIEW_UPDATE_FORM_SELECTOR = '#editReviewForm';
+var REVIEW_CREATE_FORM_SELECTOR = '#createReviewForm';
+
+var REVIEW_TEXTAREA_SELECTOR = 'textarea[name="discussionItem\\.text"]';
+var REVIEW_ANONYMOUS_SELECTOR = 'input[name="discussionItem\\.anonymous"]';
+var REVIEW_RATING_SELECTOR = '.reviewrating';
+
+var REVIEW_ANONYMOUS_CSS_CLASS = 'anonymous';
+
 $(function() {
 	plotRatingDistribution();
 	
 	// init all selectable stars
-	$('.reviewrating').stars({
-		split: 2
-	});
+	initStars();
 	
-	$('#updateReviewForm').hide();
+	$(REVIEW_UPDATE_FORM_SELECTOR).hide();
 	
 	// hide graph and info
 	if ($('#noReviewInfo').length > 0) {
@@ -22,38 +36,75 @@ $(function() {
 	$('a.createReview').click(createReviewForm);
 	
 	// create review form
-	$('#createReviewForm').submit(createReview);
+	$(REVIEW_CREATE_FORM_SELECTOR).submit(createReview);
 	
-	$('#updateReviewForm').submit(updateReview);
+	$(REVIEW_UPDATE_FORM_SELECTOR).submit(updateReview);
 	
 	// delete link for own review
-	$('#ownReview').children('.reviewMenu').find('.deleteLink').click(deleteReview);
+	$(REVIEW_OWN_SELECTOR).find(REVIEW_DELETE_LINK_SELECTOR).click(deleteReview);
 	
 	// show edit form for own review
-	$('#ownReview').children('.reviewMenu').find('.editLink').click(function() {
-		$('#updateReviewForm').toggle('slow');
-	});
+	$(REVIEW_OWN_SELECTOR).find(REVIEW_EDIT_LINK_SELECTOR).click(showUpdateReviewForm);
 });
+
+function showUpdateReviewForm() {
+	$(REVIEW_UPDATE_FORM_SELECTOR).toggle('slow');
+}
+
+function initStars() {
+	$('.reviewrating').stars({
+		split: STEP_RATING
+	});
+}
 
 function getReviewCount() {
 	return parseInt($('#review_info_rating span[property=v\\:count]').text());
 }
 
 function getAvg() {
-	return Number($('#ratingAvg span[property=v\\:average]').text().replace(',', '.'));
+	return Number($(RATING_AVG_SELECTOR).text().replace(',', '.'));
 }
 
 function setAvg(value) {
 	value = value.toFixed(2);
-	$('#review_info_rating span[property=v\\:average]').text(value);
+	$(RATING_AVG_SELECTOR).text(value);
 	var starWidth = getStarsWidth(value);
 	$('#review_info_rating .stars-on-1').css('width', starWidth); // TODO
-	$('#bibtexList .stars-on-1').css('width', starWidth);
-	$('#bookmarkList .stars-on-1').css('width', starWidth);
+	$(PUBLICATION_LIST_SELECTOR + ' .stars-on-0\.75').css('width', starWidth);
+	$(BOOKMARK_LIST_SELECTOR + ' .stars-on-0\.75').css('width', starWidth);
 }
 
 function createReviewForm() {
-	alert("create review");
+	var parentHash = getHash($(this));
+	var divForm = $('#createReview').clone();
+	divForm.attr('id', REVIEW_REPLY_FORM_ID);
+	divForm.addClass('createReview');
+	
+	var form = divForm.find('form');
+	
+	/*
+	 * init review rating (ui plugin stars)
+	 * FIXME: find a better solution
+	 */
+	form.find('div.ui-stars-star').remove();
+	form.find('div.ui-stars-cancel').remove();
+	form.find('[name=discussionItem\\.rating]').remove();
+	form.append($('<input></input>').attr('name', 'discussionItem.parentHash').attr('value', parentHash).attr('type', 'hidden'));
+	
+	for (var i = 1; i < RATING_STEPS; i++) {
+		form.find('.reviewrating').append('<input name="discussionItem.rating" type="radio" value="' + (i / 2) + '"/>');
+	}	
+	
+	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
+	form.submit(createReview);
+	
+	var parent = $(this).parent().parent().parent();
+	parent.append(divForm);
+	
+	initStars();
+	scrollTo(REVIEW_REPLY_FORM_ID);
+	
+	return false;
 }
 
 function setReviewCount(value) {
@@ -101,7 +152,7 @@ function plotRatingDistribution() {
 	});
 	
 	for (var i = 0; i < RATING_STEPS; i++) {
-		var key = i/STEP_RATING;
+		var key = i / STEP_RATING;
 		var value = 0;
 		if (ratings[key]) {
 			value = ratings[key];
@@ -143,21 +194,32 @@ function plotRatingDistribution() {
 }
 
 function createReview() {
-	if (!validateRating('#createReviewRating')) {
+	// first unbind the form (no double submit while calling server)
+	var reviewForm = $(this);
+	reviewForm.unbind('submit');
+	
+	var reviewRatingInput = reviewForm.find(REVIEW_RATING_SELECTOR);
+	if (!validateRating(reviewRatingInput)) {
+		reviewForm.submit(createReview);
 		return false;
 	}
 	
-	var reviewForm = $(this);
 	var spinner = reviewForm.find('.spinner');
 	spinner.show('slow');
 	
-	var reviewText = $('#createReviewText').val();
-	var reviewRating = getRating('#createReviewRating');
+	var reviewText = reviewForm.find(REVIEW_TEXTAREA_SELECTOR).val();
+	var anonymous = reviewForm.find(REVIEW_ANONYMOUS_SELECTOR + ':checked').length > 0;
+	var reviewRating = getRating(reviewRatingInput);
 	
-	var abstractGrouping = reviewForm.find(ABSTRACT_GROUPING_RADIO_BOXES + ':checked').val();
-	var groups = reviewForm.find(OTHER_GROUPING_CLASS).val();
-	// TODO: allow multiple groups; remove line after this comment
-	groups = new Array(groups);
+	var abstractGrouping = reviewForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
+	var groups = reviewForm.find(OTHER_GROUPING_CLASS_SELECTOR).val();
+	
+	// TODO: allow multiple groups; remove the next five lines after this comment
+	if (groups == null) {
+		groups = new Array();
+	} else {
+		groups = new Array(groups);
+	}
 	
 	// call service
 	var reviewData = reviewForm.serialize();
@@ -167,24 +229,53 @@ function createReview() {
 		dataType:   "json",
 		data:		reviewData,
 		success:	function(response) {
-						// remove review create form
-		     			$('.createReview').fadeOut(1000, function() {
-		     				$(this).remove();
+						// display review
+			 			var reviewView = $('#newReview').remove();
+			 			reviewView.attr("id", "ownReview");
+			 			updateReviewView(reviewView, reviewText, reviewRating, abstractGrouping, groups);
+			 			
+			 			// get parent view
+			 			var subItems = reviewForm.parent().parent().children('ul.subdiscussionItems');
+			 			var parentView;
+			 			if (subItems.length != 0) {
+			 				parentView = subItems;
+			 			} else {
+			 				parentView = $('ul.subdiscussionItems:first');
+			 			}
+			 			
+			 			updateHash(reviewView, response.hash);
+			 			parentView.append(reviewView);
+			 			highlight(reviewView);
+						
+						/*
+						 * update update form
+						 */
+			 			var updateForm = $(REVIEW_UPDATE_FORM_SELECTOR);
+						updateForm.find(REVIEW_TEXTAREA_SELECTOR).text(reviewText);
+		     			updateForm.find(REVIEW_RATING_SELECTOR).stars({
+		     				split: STEP_RATING,
 		     			});
+		     			console.debug(reviewRating + ' ' + updateForm.find(REVIEW_RATING_SELECTOR).length);
+		     			updateForm.find(REVIEW_RATING_SELECTOR).stars("select", parseFloat(reviewRating));
+						if (anonymous) {
+							updateForm.find(REVIEW_ANONYMOUS_SELECTOR).attr("checked", "checked");
+						}
+						
+						updateForm.submit(updateReview);
+						
+						// groups
+						populateFormWithGroups(updateForm, abstractGrouping, groups);
+						updateForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
+		     			/*
+		     			 * update and bind links
+		     			 */
+		     			removeReviewActions();
+		     			reviewView.find(REVIEW_EDIT_LINK_SELECTOR).click(showUpdateReviewForm);
+		     			reviewView.find(REVIEW_DELETE_LINK_SELECTOR).click(deleteReview);
 		     			
-		     			// update update form
-		     			$('#updateReviewText').text(reviewText);
-		     			$('#updateReviewRating').stars("select", reviewRating);
-		     			
-		     			// TODO: update group input boxes
-		     			
-		     			// display review
-		     			var reviewView = $('#newReview');
-		     			reviewView.attr("id", "ownReview");
-		     			updateReviewView(reviewView, reviewText, reviewRating, abstractGrouping, groups);
-		     			reviewView.fadeIn(1000);
-		     			
-		     			// rating view update
+		     			/*
+		     			 * update rating view 
+		     			 */
 		     			var oldCount = getReviewCount();
 		     			var oldAvg = getAvg();
 		     			var newCount = oldCount + 1;
@@ -195,40 +286,43 @@ function createReview() {
 		     			
 		     			$('#noReviewInfo').hide();
 		     			$('#ratingAvg').show('slow');
-		     			$('#ratingDistribution').show('slow');
-		     			
-		     			removeReviewActions();
-		     			updateHash(reviewTemplate, response.hash);
+		     			$('#ratingDistribution').show('slow');		     			
 					},
-		statusCode: {
-			400:	function(jqXHR, data, errorThrown) {
+		error:		function(jqXHR, data, errorThrown) {
 						handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
-					}
-	    }
+						reviewForm.submit(updateReview);
+					},
 	});
+	
 	return false;
 }
 
 function updateReview() {
-	// TODO: disable submit button
-	if (!validateRating('#updateReviewRating')) {
+	var reviewForm = $(this);
+	reviewForm.unbind('submit');
+	var reviewRatingInput = reviewForm.find(REVIEW_RATING_SELECTOR);
+	if (!validateRating(reviewRatingInput)) {
+		reviewForm.submit(updateReview);
 		return false;
 	}
-	var reviewForm = $(this);
 	
-	var abstractGrouping = reviewForm.find(ABSTRACT_GROUPING_RADIO_BOXES + ':checked').val();
-	var groups = reviewForm.find(OTHER_GROUPING_CLASS).val();
-	// TODO: allow multiple groups; remove line after this comment
-	groups = new Array(groups);
+	var abstractGrouping = reviewForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
+	var groups = reviewForm.find(OTHER_GROUPING_CLASS_SELECTOR).val();
+	// TODO: allow multiple groups; remove the next five lines after this comment
+	if (groups == null) {
+		groups = new Array();
+	} else {
+		groups = new Array(groups);
+	}
 	
 	// show spinner "updating review"s
 	var spinner = reviewForm.find('.spinner');
 	spinner.show('slow');
 	
 	// save all values for success action
-	var reviewText = reviewForm.find('textarea[name="discussionItem\\.text"]').val();
-	var anonym = reviewForm.find('input[name="discussionItem\\.anonym"]:checked').length > 0;
-	var reviewRating = getRating(reviewForm.find('.reviewrating'));
+	var reviewText = reviewForm.find(REVIEW_TEXTAREA_SELECTOR).val();
+	var anonymous = reviewForm.find(REVIEW_ANONYMOUS_SELECTOR + ':checked').length > 0;
+	var reviewRating = getRating(reviewRatingInput);
 	var oldReviewRating = getOwnReviewRating();
 	
 	// call service
@@ -243,18 +337,19 @@ function updateReview() {
 						reviewForm.hide('slow');
 						spinner.hide('slow');
 						
-						var reviewView = $('#ownReview');
+						var reviewView = $(REVIEW_OWN_SELECTOR);
 		     			
 						updateHash(reviewView, response.hash);
 						
-						if (anonym) {
-							reviewView.addClass('anonym');
+						if (anonymous) {
+							reviewView.addClass(REVIEW_ANONYMOUS_CSS_CLASS);
 						} else {
-							reviewView.removeClass('anonym');
+							reviewView.removeClass('anonymous');
 						}
 						
 						// update values
 						updateReviewView(reviewView, reviewText, reviewRating, abstractGrouping, groups);
+						highlight(reviewView);
 						
 		     			// update over all values
 		     			var count = getReviewCount();
@@ -262,12 +357,12 @@ function updateReview() {
 		     			var newAvg = (oldAvg * count - oldReviewRating + reviewRating) / count;
 		     			setAvg(newAvg);
 		     			plotRatingDistribution();
+		     			reviewForm.submit(updateReview);
 					},
-		statusCode: {
-			400:	function(jqXHR, data, errorThrown) {
+		error:		function(jqXHR, data, errorThrown) {
 						handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
-					}
-	    }
+						reviewForm.submit(updateReview);
+					},
 	});
 	return false;
 }
@@ -278,13 +373,12 @@ function deleteReview() {
 	$(this).siblings('.deleteInfo').show();
 	
 	var hash = getInterHash();
-	var review = $('li#ownReview');
-	var reviewHash = review.find('.info').data('discussionitemhash');
+	var review = $(REVIEW_OWN_SELECTOR);
+	var reviewHash = review.find('.info').data(DISCUSSIONITEM_DATA_KEY);
 	
 	var oldReviewRating = getOwnReviewRating();
 	deleteLink.remove();
 	var revDelUrl = REVIEWS_URL + "?hash=" + hash + "&ckey=" + ckey + "&discussionItem.hash=" + reviewHash;
-	// TODO: handle error
 	$.ajax({
 		url:		revDelUrl,
 		type:		"DELETE",
@@ -306,7 +400,8 @@ function deleteReview() {
 			     			setAvg(newAvg);
 			     			plotRatingDistribution();
 						});
-					}
+					},
+		// TODO: handle error
 	});
 	return false;
 }
@@ -324,8 +419,8 @@ function updateReviewView(reviewView, text, rating, abstractGrouping, groups) {
 	reviewView.find('.meta').append(groupsView);
 }
 
-function getRating(starsWrapperId) {
-	var stars = $(starsWrapperId).data("stars");
+function getRating(element) {
+	var stars = $(element).data("stars");
 	return Number(stars.options.value);
 }
 

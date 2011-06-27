@@ -16,20 +16,18 @@ $(function() {
 		return false;
 	});
 	
-	$('.commentMenu a.editLink').click(showEditCommentForm);
+	$('a.commentEditLink').click(showEditCommentForm);
 	
-	$('.commentMenu a.deleteLink').click(deleteComment);
+	$('a.commentDeleteLink').click(deleteComment);
 });
 
 function reply() {
 	var parent = $(this).parent().parent().parent();
-	
+	// remove old reply form
 	$(REPLY_FORM_SELECTOR).remove();
 	
 	// find parent hash
 	var parentHash = getHash($(this));
-	
-	console.debug(parentHash);
 	
 	var clone = $('#createComment').clone();
 	clone.attr('id', REPLY_FORM_ID);
@@ -39,7 +37,7 @@ function reply() {
 	form.append($('<input />').attr('name', 'discussionItem.parentHash').attr('type', 'hidden').attr('value', parentHash));
 	
 	// bind group select
-	form.find(ABSTRACT_GROUPING_RADIO_BOXES).click(onAbstractGroupingClick);
+	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	form.find('textarea').focus(); // FIXME: not working
 	parent.append(clone);
 	clone.show();
@@ -75,7 +73,7 @@ function showEditCommentForm() {
 	form.append($('<input />').attr('name', '_method').attr('type', 'hidden').attr('value', 'PUT'));
 	
 	// update action text
-	var updateText = getString('post.resource.comment.actions.update');
+	var updateText = getString('post.resource.comment.actions.edit');
 	clone.find('h4').text(updateText);
 	form.find('input[type="submit"]').attr('value', updateText);
 	var spinner = form.find('.spinner');
@@ -84,7 +82,7 @@ function showEditCommentForm() {
 	
 	// binding
 	// … group
-	form.find(ABSTRACT_GROUPING_RADIO_BOXES).click(onAbstractGroupingClick);
+	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	// … submit
 	form.submit(updateComment);
 	
@@ -107,31 +105,30 @@ function createComment() {
 	var commentTextArea = commentForm.find('textarea');
 	var commentText = commentTextArea.val();
 	
-	var commentAbstractGrouping = commentForm.find(ABSTRACT_GROUPING_RADIO_BOXES + ':checked').val();
-	var commentGroups = commentForm.find(OTHER_GROUPING_CLASS).val();
-	// TODO: allow multiple groups; remove line after this comment
-	commentGroups = new Array(commentGroups);
+	var commentAbstractGrouping = commentForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
+	var commentGroups = commentForm.find(OTHER_GROUPING_CLASS_SELECTOR).val();
+	// TODO: allow multiple groups; remove the next five lines after this comment
+	if (commentGroups == null) {
+		commentGroups = new Array();
+	} else {
+		commentGroups = new Array(commentGroups);
+	}
 	
 	$.ajax({
 		url:		COMMENTS_URL,
 		type:		"POST",
 		data:		commentData,
+		dataType:   "json",
 		success:	function(response) {			
 						// clone template set text
 						var commentTemplate = $('#commentTemplate').clone();
 						commentTemplate.removeAttr('id');
-			
-						commentTemplate.find('.text').html(commentText);
-						updateHash(commentTemplate, response.hash);
-			
-						var groupView = buildGroupView(commentAbstractGrouping, commentGroups);
+						updateCommentView(commentTemplate, response.hash, commentText, commentAbstractGrouping, commentGroups);
 						
-						commentTemplate.find('.meta').append(groupView);
-			
-						var commentList = parentDiv.parent().children('.comments');
+						var commentList = parentDiv.parent().children('.subdiscussionItems');
 						
 						if (commentList.length == 0) {
-							commentList = $('#discussion');
+							commentList = $('.subdiscussionItems:first');
 							commentTextArea.val('');
 							// TODO: reset groups and abstract grouping?
 						}
@@ -140,10 +137,12 @@ function createComment() {
 						li.append(commentTemplate);
 			
 						commentList.append(li);
+						highlight(li);
 						
 						// bind click listener
 						commentTemplate.find('a.reply').click(reply);
-						// TODO: edit link
+						commentTemplate.find('a.editLink').click(showEditCommentForm);
+						commentTemplate.find('a.createReview').click(createReviewForm);
 						
 						// TODO: update reply counter
 						
@@ -152,16 +151,31 @@ function createComment() {
 						// remove reply form if present
 						parentDiv.remove();
 						spinner.hide();
+						commentForm.submit(createComment);
 					},
 		error: 		function(jqXHR, data, errorThrown) {
 						handleAjaxErrors(commentForm, jQuery.parseJSON(jqXHR.responseText));
+						commentForm.submit(createComment);
 				    }
 	});
+	
 	return false;
+}
+
+function updateCommentView(commentView, commentHash, commentText, commentAbstractGrouping, commentGroups) {
+	commentView.find('.text:first').html(commentText);
+	updateHash(commentView, commentHash);
+
+	commentView.find('.' + GROUPS_CLASS).remove();
+	
+	var groupView = buildGroupView(commentAbstractGrouping, commentGroups);
+	commentView.find('.meta:first').append(groupView);
 }
 
 function updateComment() {
 	var commentForm = $(this);
+	var commentView = commentForm.parent().parent();
+	commentForm.unbind('submit');
 	
 	var spinner = commentForm.find('.spinner')
 	spinner.show();
@@ -171,23 +185,33 @@ function updateComment() {
 	var commentTextArea = commentForm.find('textarea');
 	var commentText = commentTextArea.val();
 	
-	var commentAbstractGrouping = commentForm.find(ABSTRACT_GROUPING_RADIO_BOXES + ':checked').val();
-	var commentGroups = commentForm.find(OTHER_GROUPING_CLASS).val();
-	// TODO: allow multiple groups; remove line after this comment
-	commentGroups = new Array(commentGroups);
+	var commentAbstractGrouping = commentForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
+	var commentGroups = commentForm.find(OTHER_GROUPING_CLASS_SELECTOR).val();
+	// TODO: allow multiple groups; remove the next five lines after this comment
+	if (commentGroups == null) {
+		commentGroups = new Array();
+	} else {
+		commentGroups = new Array(commentGroups);
+	}
+	// end
 	
 	$.ajax({
 		url:		COMMENTS_URL,
 		type:		"POST",
+		dataType:   "json",
 		data:		commentData,
 		success:	function(response) {
-						alert("updated");
-						commentForm.remove();
+						updateCommentView(commentView, response.hash, commentText, commentAbstractGrouping, commentGroups);
+						commentForm.parent().remove();
+						highlight(commentView);
 					},
 		error:		function(jqXHR, data, errorThrown) {
 						handleAjaxErrors(commentForm, jQuery.parseJSON(jqXHR.responseText));
+						commentForm.submit(updateComment);
 					},
 	});
+	
+	return false;
 }
 
 function deleteComment() {
