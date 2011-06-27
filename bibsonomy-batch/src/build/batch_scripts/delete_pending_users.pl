@@ -7,6 +7,8 @@
 #   DB_PASS
 #
 # Changes:
+#   2011-06-27: (rja)
+#   - adopted for joe->gandalf switch (socket, port, etc.)
 #   2010-07-26: (rja)
 #   - initial version
 #
@@ -23,7 +25,7 @@ if (am_i_running($ENV{'TMP'}."/$PROGRAM_NAME.pid")) {
 my $user     = "bibsonomy";   
 my $password = $ENV{'DB_PASS'};
 my $database = "bibsonomy";     
-my $host     = "DBI:mysql:database=$database;host=localhost:6033;mysql_socket=/home/bibsonomy/mysql-var/run/mysql.sock";
+my $host     = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/run/mysqld/mysqld.sock";
 
 # connect to database
 my $dbh = DBI->connect($host, $user, $password, {RaiseError => 1, "mysql_auto_reconnect" => 1, "mysql_enable_utf8" => 1});
