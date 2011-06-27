@@ -3,10 +3,13 @@
 use strict;
 use DBI();
 
-# Checks if already classified spammers have posted  bibtex entries after their classification
-# A E-Mail is sent with the users, which need to be manually checked again
-# - initial version
+# Checks if already classified spammers have posted BibTeX entries 
+# after their classification. An E-Mail is sent with the users, which 
+# need to be manually checked again.
+#
+# Changes:
 # 2010-05-21 (bkr)
+# - initial version
 
 ########################################################
 ## configuration
@@ -15,7 +18,7 @@ my $user     = "batch";         # same user name on all databases
 my $password = $ENV{'DB_PASS'}; # same password on all databases
 
 # establish connection to bibsonomy database
-my $dbh = DBI->connect("DBI:mysql:database=bibsonomy;host=localhost:6033;mysql_socket=/var/run/mysqld/mysqld.sock", $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+my $dbh = DBI->connect("DBI:mysql:database=bibsonomy;host=localhost:3306;mysql_socket=/var/run/mysqld/mysqld.sock", $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
 
 ########################################################
 ## spammer check
