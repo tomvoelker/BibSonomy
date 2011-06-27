@@ -4,8 +4,11 @@
 # Makes full and incremental backups of a bibsonomy database.
 #
 # Changes:
+#   2011-04-07 (rja)
+#   - removed options for search tables
 #   2010-05-18 (rja)
 #   - renamed search tables to search_old_*
+#   - adopted options for joe ($DB_DIR, $DB_SOCKET)
 #   2009-11-30
 #   - added ignore-table options to mysqldump to ignore search tables
 #   2007-11-29
@@ -14,17 +17,35 @@
 #   - cleaned paths and file names
 #
 #
+# Requirements:
+# 
+# database must write proper relay logs and bin logs; changes in /etc/my.cnf:
+#   log-slave-updates   = 1
+#   log-bin             = mysql-bin
+#   relay-log-purge     = 1  # purge, we don't need it for backup!
+#   relay-log           = mysqld-relay-bin
+#   relay-log-index     = mysqld-relay-bin.index
+#   relay-log-info-file = relay-log.info
+# 
+# database needs user accounts for backup':
+#   GRANT RELOAD, SUPER, REPLICATION CLIENT ON *.* TO 'bibdump'@'localhost' IDENTIFIED BY '';
+#   GRANT SELECT ON `bibsonomy`.* TO 'bibdump'@'localhost';
+# 
+# ~/.my.cnf:
+#   [client]
+#   socket   = /var/run/mysqld/mysqld.sock        # joe
+#   user     = bibdump
+#   password = ***
 
 
 # get current day of year (to name SQL dump)
 CURRENT_DAY=`date +%j`
 
 # location of backup directory
-BACKUP_DIR=$HOME/backup/database_backup
+BACKUP_DIR=/home/kde/bibbackup/backup/database_backup
 
 # database specific paths
-DB_DIR=/var/mysql
-DB_DATA_DIR=$DB_DIR/data                               # bin-/relay-log directory
+DB_DATA_DIR=/home/mysql/data                           # bin-/relay-log directory
 DB_RELAY_LOG=$DB_DATA_DIR/mysqld-relay-bin             # prefix of relay log files
 DB_RELAY_LOG_INDEX=$DB_DATA_DIR/mysqld-relay-bin.index # NOTE: configure those variables
 DB_RELAY_LOG_INFO=$DB_DATA_DIR/relay-log.info          # in my.cnf accordingly!
@@ -33,7 +54,7 @@ DB_BIN_LOG=$DB_DATA_DIR/mysql-bin                      # here the crucial data i
 DB_BIN_LOG_INDEX=$DB_DATA_DIR/mysql-bin.index          #
 
 
-DB_SOCKET=$DB_DIR/run/mysqld.sock     # MySQL socket file
+DB_SOCKET=/var/run/mysqld/mysqld.sock # MySQL socket file
 DB_MYSQLDUMP=/usr/bin/mysqldump       # location of mysqldump
 DB_MYSQLADMIN=/usr/bin/mysqladmin     # location of mysqladim
 
@@ -59,8 +80,6 @@ DB_MYSQLDUMP_OPTIONS="--add-drop-table \
          --master-data=1 \
          --delete-master-logs \
          --single-transaction \
-         --ignore-table=${DB}.search_old_bibtex \
-         --ignore-table=${DB}.search_old_bookmark \
          --result-file=$BACKUP_DIR/dump_$CURRENT_DAY.sql"
 
 #########################################################################
@@ -117,3 +136,4 @@ if [ $ACTION = "incr" ]; then
   cp $DB_BIN_LOG_INDEX    $BACKUP_DIR
 
 fi
+
