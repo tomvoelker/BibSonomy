@@ -1,12 +1,11 @@
-#!/usr/bin/perl
-use strict;
-
 #
 # This script parses messages*.properties files and generates
 # corresponding javascript files with an array containing the 
 # same key > string association.
 #
 # Changes:
+# 2011-06-27, dzo
+# - included javascript files in subdirectories
 # 2011-05-06, dbe
 # - included puma javascript files
 # 2011-04-11, rja
@@ -16,15 +15,18 @@ use strict;
 # - initial version
 #
 
+#!/usr/bin/perl
+use strict;
 use Encode;
-
-
+use File::Find;
 
 # Collect all occurrences of calls to the "getString()" method that we
 # use for localization in JavaScript files - from BibSonomy and Puma
-my @bibsonomyJsFiles = <*.js>;
-my @pumaJsFiles = <../../resources_puma/javascript/*.js>;
-my @jsFiles = (@bibsonomyJsFiles,@pumaJsFiles);
+
+my @directories_to_search = ('.', '../../resources_puma/javascript');
+my @jsFiles = ();
+find(sub { push(@jsFiles, $File::Find::name) if /\.js$/ }, @directories_to_search);
+
 # patterns of the message keys found in JavaScript files
 my %keyPatterns = ();
 
