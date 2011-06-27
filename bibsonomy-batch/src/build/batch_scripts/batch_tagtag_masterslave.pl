@@ -12,9 +12,12 @@
 # Command line arguments:
 #   database - name of the database (same for SLAVE and MASTER)
 # Environment variables:
-#   DB_PASS_BATCH
+#   MASTER_PASS, MASTER_HOST, etc.
 #
 # Changes:
+#   2011-06-11 (rja)
+#   - all database configuration variables are now read via 
+#     environment variables (e.g., MASTER_HOST, MASTER_USER, ...)
 #   2008-01-23: (rja)
 #   - initial version
 #
@@ -22,30 +25,34 @@ use DBI();
 use strict;
 use Data::Dumper;
 use English;
-
 use DBI qw(:utils);
- 
-if ($#ARGV != 0) {
-  print "please enter database name as first argument\n";
-  exit;
-} 
 
-# don't run twice
-if (am_i_running($ENV{'TMP'}."/batch_tagtag.pid")) {
-  print "another instance of " . $PROGRAM_NAME . " is running on $ENV{'hostname'}. Aborting this job.\n";
-  exit;
-}
+# don't run twice ...
+check_running();
 
 #######################################################
 # configuration
 #######################################################
-my $database = shift @ARGV;     # same db name on all hosts
-my $user     = "batch";         # same user name on all databases
-my $password = $ENV{'DB_PASS'}; # same password on all databases
+# master
+my $db_master      = $ENV{'MASTER_DB'};
+my $db_master_host = $ENV{'MASTER_HOST'};
+my $db_master_port = $ENV{'MASTER_PORT'};
+my $db_master_sock = $ENV{'MASTER_SOCK'};;
+my $db_master_user = $ENV{'MASTER_USER'};
+my $db_master_pass = $ENV{'MASTER_PASS'};
+# slave
+my $db_slave      = $ENV{'SLAVE_DB'};
+my $db_slave_host = $ENV{'SLAVE_HOST'};
+my $db_slave_port = $ENV{'SLAVE_PORT'};
+my $db_slave_sock = $ENV{'SLAVE_SOCK'};
+my $db_slave_user = $ENV{'SLAVE_USER'};
+my $db_slave_pass = $ENV{'SLAVE_PASS'};
+
 # fit to slave
-my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/run/mysqld/mysqld.sock";
+my $slave    = "DBI:mysql:database=$db_slave;host=$db_slave_host:$db_slave_port;mysql_socket=$db_slave_sock";
 # fit to master
-my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
+my $master   = "DBI:mysql:database=$db_master;host=$db_master_host:$db_master_port;mysql_socket=$db_master_sock";
+
 
 my %tagtag_ctr_hash=();
 
@@ -53,7 +60,7 @@ my %tagtag_ctr_hash=();
 # SLAVE
 #######################################################
 # connect
-my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});#, "transaction-isolation" => "READ-UNCOMMITTED"});
+my $dbh = DBI->connect($slave, $db_slave_user, $db_slave_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});#, "transaction-isolation" => "READ-UNCOMMITTED"});
 # prepare statements
 # get get all public tag_names ordered by post
 my $stm_select_tag_names = $dbh->prepare("SELECT tag_name,content_id,`group` FROM tas order by content_id ");
@@ -128,7 +135,11 @@ $dbh->disconnect;
 # MASTER
 ######################################################
 # connect
-$dbh = DBI->connect($master, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+$dbh = DBI->connect($master, $db_master_user, $db_master_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+# set character set to utf8
+my $stm_set_char = $dbh->prepare("SET character_set_connection='utf8'");
+$stm_set_char->execute();
+
 # prepare
 my $stm_update_tag = $dbh->prepare("UPDATE tagtag SET ctr_public = ? where t1 = ? collate utf8_bin and t2 = ? collate utf8_bin");
 my $stm_instert_tagtag = $dbh->prepare("INSERT INTO tagtag (t1,t2,ctr_public) values (?, ?, ?) ");
@@ -136,8 +147,10 @@ my $stm_instert_tagtag = $dbh->prepare("INSERT INTO tagtag (t1,t2,ctr_public) va
 
 while (my ($key, $value) = each(%tagtag_ctr_hash)) {
 my @line = split(/\|#\|/,$key);
+#print "Update tagatg:".$key." ".$value."\n";
    my $number = $stm_update_tag->execute($value,$line[0],$line[1]);
    if ($number eq "0E0") {
+#print "    and now an insert for the last line\n";
       $stm_instert_tagtag->execute($line[0],$line[1],$value);
    }  
 }
@@ -171,6 +184,16 @@ sub update_hash() {
 #################################
 # subroutines
 #################################
+
+
+
+sub check_running {
+    if (am_i_running($ENV{'TMP'}."/${PROGRAM_NAME}.pid")) {
+	print STDERR "another instance of $PROGRAM_NAME is running on $ENV{'hostname'}. Aborting this job.\n";
+	exit;
+    }
+}
+
 # INPUT: location of lockfile
 # OUTPUT: 1, if a lockfile exists and a program with the pid inside 
 #            the lockfile is running

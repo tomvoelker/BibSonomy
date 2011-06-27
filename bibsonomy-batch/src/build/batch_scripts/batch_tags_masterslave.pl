@@ -18,7 +18,6 @@
 #   2011-06-11 (rja)
 #   - all database configuration variables are now read via 
 #     environment variables (e.g., MASTER_HOST, MASTER_USER, ...)
-
 #   2008-01-23: (rja)
 #   - initial version
 #
