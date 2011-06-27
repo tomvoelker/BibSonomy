@@ -15,7 +15,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.common.enums.ConstantID;
-import org.bibsonomy.database.util.IbatisSyncDBSessionFactory;
+import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -41,7 +41,7 @@ public class SynchronizationClient {
 	
 	private final ConflictResolutionStrategy strategy;
 	private DBLogicApiInterfaceFactory serverLogicFactory;
-	private DBSessionFactory dbSessionFactory = new IbatisSyncDBSessionFactory();
+	private DBSessionFactory dbSessionFactory = new IbatisDBSessionFactory();
 	
 	public SynchronizationClient() {
 		//FIXME get strategy form DB or elsewhere
