@@ -18,7 +18,7 @@ public class CommentValidator extends DiscussionItemValidator<Comment> {
 			errors.rejectValue(DISCUSSION_ITEM_PATH + "text", "error.field.valid.comment.text");
 		} else {
 			if (text.length() > Comment.MAX_TEXT_LENGTH) {
-				errors.rejectValue(DISCUSSION_ITEM_PATH + "text", "error.field.valid.comment.text.length");
+				errors.rejectValue(DISCUSSION_ITEM_PATH + "text", "error.field.valid.comment.text.length", new Object[] { Comment.MAX_TEXT_LENGTH }, "The text is too long. Only " + Comment.MAX_TEXT_LENGTH + " characters allowed.");
 			}
 		}
 	}

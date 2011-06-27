@@ -21,7 +21,7 @@ public class ReviewValidator extends DiscussionItemValidator<Review> {
 	protected void validateDiscussionItem(final Review review, final Errors errors) {
 		final double rating = review.getRating();
 		if (Double.compare(rating, Review.MIN_REVIEW_RATING) < 0 || Double.compare(rating, Review.MAX_REVIEW_RATING) > 0) {
-			errors.rejectValue(DISCUSSION_ITEM_PATH + "rating", "error.field.valid.review.rating.range");
+			errors.rejectValue(DISCUSSION_ITEM_PATH + "rating", "error.field.valid.review.rating.range", new Object[] { Review.MIN_REVIEW_RATING, Review.MAX_REVIEW_RATING }, "Only ratings between " + Review.MIN_REVIEW_RATING  + " and " + Review.MAX_REVIEW_RATING + " are allowed.");
 		} else {
 			final double decimal = Math.abs(rating - Math.rint(rating));
 		
@@ -34,7 +34,7 @@ public class ReviewValidator extends DiscussionItemValidator<Review> {
 		}
 		final String text = review.getText();
 		if (present(text) && text.length() > Review.MAX_TEXT_LENGTH) {
-			errors.rejectValue(DISCUSSION_ITEM_PATH + "text", "error.field.valid.comment.text.length");
+			errors.rejectValue(DISCUSSION_ITEM_PATH + "text", "error.field.valid.comment.text.length", new Object[] { Review.MAX_TEXT_LENGTH }, "The text is too long. Only " + Review.MAX_TEXT_LENGTH + " characters allowed.");
 		}
 	}
 }
