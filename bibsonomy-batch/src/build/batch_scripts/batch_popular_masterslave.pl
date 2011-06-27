@@ -10,6 +10,9 @@ use English;
 # extracted.
 #
 # Changes:
+#   2011-06-11 (rja)
+#   - all database configuration variables are now read via 
+#     environment variables (e.g., MASTER_HOST, MASTER_USER, ...)
 #   2008-04-22 (rja)
 #   - created master/slave version
 #   - changed from "last N rows" to "last N days"
@@ -20,17 +23,10 @@ use English;
 #
 ##################################################################
 
-if ($#ARGV != 1) {
-    print STDERR "usage: MASTER_DB SLAVE_DB\n";
-    print STDERR "please enter database names as arguments\n";
-    exit;
-} 
+# don't run twice ...
+check_running();
 
-
-if (am_i_running($ENV{'TMP'}."/batch_popular_masterslave.pid")) {
-  print STDERR "another instance of $PROGRAM_NAME is running on $ENV{'hostname'}. Aborting this job.\n";
-  exit;
-}
+my $DEBUG = 0; # 1 = on, 0 = off
 
 ##################################################################
 # configuration
@@ -46,48 +42,29 @@ my $max_tags           = 100;
 # tags to be excluded from popular tags (lower case)
 my @tags_to_exclude=('imported', 'jabref:nokeywordassigned');
 
-my $DEBUG = 0; # 1 = on, 0 = off
-
 # run configuration
 # master
-my $db_master      = shift @ARGV;
-my $db_master_pass = $ENV{'DB_PASS'};
-my $db_master_host = "gandalf";
-my $db_master_port = 6033;
-my $db_master_user = "batch";
-my $db_master_sock = "";
+my $db_master      = $ENV{'MASTER_DB'};
+my $db_master_host = $ENV{'MASTER_HOST'};
+my $db_master_port = $ENV{'MASTER_PORT'};
+my $db_master_sock = $ENV{'MASTER_SOCK'};;
+my $db_master_user = $ENV{'MASTER_USER'};
+my $db_master_pass = $ENV{'MASTER_PASS'};
 # slave
-my $db_slave      = shift @ARGV;
-my $db_slave_pass = $ENV{'DB_PASS'};
-my $db_slave_host = "localhost";
-my $db_slave_port = 3306;
-my $db_slave_user = "batch";
-my $db_slave_sock = "mysql_socket=/var/run/mysqld/mysqld.sock";
+my $db_slave      = $ENV{'SLAVE_DB'};
+my $db_slave_host = $ENV{'SLAVE_HOST'};
+my $db_slave_port = $ENV{'SLAVE_PORT'};
+my $db_slave_sock = $ENV{'SLAVE_SOCK'};
+my $db_slave_user = $ENV{'SLAVE_USER'};
+my $db_slave_pass = $ENV{'SLAVE_PASS'};
 
-# test configuration
-# # master
-# my $db_master      = shift @ARGV;
-# my $db_master_pass = $ENV{'DB_PASS'};
-# my $db_master_host = "gromit";
-# my $db_master_port = 3306;
-# my $db_master_user = "bibsonomy";
-# my $db_master_sock = "";
-# # slave
-# my $db_slave      = shift @ARGV;
-# my $db_slave_pass = $ENV{'DB_PASS'};
-# my $db_slave_host = "gromit";
-# my $db_slave_port = 3306;
-# my $db_slave_user = "bibsonomy";
-# my $db_slave_sock = "";
 
 ##################################################################
 # connect to slave
-my $slave  = DBI->connect("DBI:mysql:database=$db_slave;host=$db_slave_host:$db_slave_port;$db_slave_sock", 
-			  $db_slave_user, $db_slave_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1, "mysql_auto_reconnect" => 1});
+my $slave  = DBI->connect("DBI:mysql:database=$db_slave;host=$db_slave_host:$db_slave_port;mysql_socket=$db_slave_sock", $db_slave_user, $db_slave_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1, "mysql_auto_reconnect" => 1});
 
 # connect to master
-my $master = DBI->connect("DBI:mysql:database=$db_master;host=$db_master_host:$db_master_port;$db_master_sock", 
-			  $db_master_user, $db_master_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1, "mysql_auto_reconnect" => 1});
+my $master = DBI->connect("DBI:mysql:database=$db_master;host=$db_master_host:$db_master_port;mysql_socket=$db_master_sock", $db_master_user, $db_master_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1, "mysql_auto_reconnect" => 1});
 
 
 ##################################################################
@@ -316,9 +293,21 @@ $master->disconnect();
 
 
 
+
+
+
 ##################################################################
 # subroutines
 ##################################################################
+
+sub check_running {
+    if (am_i_running($ENV{'TMP'}."/${PROGRAM_NAME}.pid")) {
+	print STDERR "another instance of $PROGRAM_NAME is running on $ENV{'hostname'}. Aborting this job.\n";
+	exit;
+    }
+}
+
+
 # INPUT: location of lockfile
 # OUTPUT: 1, if a lockfile exists and a program with the pid inside 
 #            the lockfile is running
@@ -346,10 +335,17 @@ sub am_i_running {
   return 0;
 }
 
+# 1 = on, 0 = off
+sub set_debug {
+    $DEBUG = shift;
+}
+
 # logs statements if debugging is enabled
 sub debug {
     my $msg = shift;
     if ($DEBUG) {
-	print STDERR $msg;
+	print STDERR $msg . "\n";
     }
 }
+
+1;

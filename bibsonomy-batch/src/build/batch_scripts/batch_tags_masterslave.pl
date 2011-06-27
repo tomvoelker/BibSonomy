@@ -15,6 +15,10 @@
 #   DB_PASS_BATCH
 #
 # Changes:
+#   2011-06-11 (rja)
+#   - all database configuration variables are now read via 
+#     environment variables (e.g., MASTER_HOST, MASTER_USER, ...)
+
 #   2008-01-23: (rja)
 #   - initial version
 #
@@ -22,27 +26,31 @@ use DBI();
 use strict;
 use English;
 
-if ($#ARGV != 0) {
-  print "please enter database name as first argument\n";
-  exit;
-} 
-
 # don't run twice ...
-if (am_i_running($ENV{'TMP'}."/batch_tags.pid")) {
-  print "another instance of " . $PROGRAM_NAME . " is running on $ENV{'hostname'}. Aborting this job.\n";
-  exit;
-}
+check_running();
 
 ########################################################
 # configuration
 ########################################################
-my $database = shift @ARGV;     # same db name on all hosts
-my $user     = "batch";         # same user name on all databases
-my $password = $ENV{'DB_PASS'}; # same password on all databases
+# master
+my $db_master      = $ENV{'MASTER_DB'};
+my $db_master_host = $ENV{'MASTER_HOST'};
+my $db_master_port = $ENV{'MASTER_PORT'};
+my $db_master_sock = $ENV{'MASTER_SOCK'};;
+my $db_master_user = $ENV{'MASTER_USER'};
+my $db_master_pass = $ENV{'MASTER_PASS'};
+# slave
+my $db_slave      = $ENV{'SLAVE_DB'};
+my $db_slave_host = $ENV{'SLAVE_HOST'};
+my $db_slave_port = $ENV{'SLAVE_PORT'};
+my $db_slave_sock = $ENV{'SLAVE_SOCK'};
+my $db_slave_user = $ENV{'SLAVE_USER'};
+my $db_slave_pass = $ENV{'SLAVE_PASS'};
+
 # fit to slave
-my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/run/mysqld/mysqld.sock";
+my $slave    = "DBI:mysql:database=$db_slave;host=$db_slave_host:$db_slave_port;mysql_socket=$db_slave_sock";
 # fit to master
-my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
+my $master   = "DBI:mysql:database=$db_master;host=$db_master_host:$db_master_port;mysql_socket=$db_master_sock";
 
 # temp variables
 my %tag_hash =();
@@ -56,7 +64,7 @@ my $min_user_count=10;
 # SLAVE 
 ########################################################
 # connect to SLAVE
-my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+my $dbh = DBI->connect($slave, $db_slave_user, $db_slave_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
 # prepare statements
 # get all public tag_names from the tas list
 my $stm_select_tag_names = $dbh->prepare("SELECT tag_name,user_name FROM tas t WHERE t.group = 0");
@@ -99,7 +107,7 @@ $dbh->disconnect;
 # MASTER
 ########################################################
 # connect to master
-$dbh = DBI->connect($master, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+$dbh = DBI->connect($master, $db_master_user, $db_master_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
 # update tag table with the new counts
 my $stm_update_tag = $dbh->prepare("UPDATE tags SET tag_ctr_public = ?, show_tag =? WHERE tag_name= ?");
 
@@ -137,6 +145,16 @@ $dbh->disconnect();
 #################################
 # subroutines
 #################################
+
+
+
+sub check_running {
+    if (am_i_running($ENV{'TMP'}."/${PROGRAM_NAME}.pid")) {
+	print STDERR "another instance of $PROGRAM_NAME is running on $ENV{'hostname'}. Aborting this job.\n";
+	exit;
+    }
+}
+
 # INPUT: location of lockfile
 # OUTPUT: 1, if a lockfile exists and a program with the pid inside 
 #            the lockfile is running
