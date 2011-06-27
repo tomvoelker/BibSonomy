@@ -22,15 +22,15 @@
 	</resultMap>
 	
 	<sql id="discussionColumns">
-		discussion_id, interHash, user_name, text, rating, date, change_date, anonym, parent_hash, hash, type, `group`
+		discussion_id, interHash, user_name, text, rating, date, change_date, anonymous, parent_hash, hash, type, `group`
 	</sql>
 	
 	<sql id="commonDiscussionLogsAttributes">
-		d.discussion_id, d.interHash, d.user_name, d.text, d.rating, d.date, d.change_date, d.anonym, d.parent_hash, d.hash, d.type, d.group
+		d.discussion_id, d.interHash, d.user_name, d.text, d.rating, d.date, d.change_date, d.anonymous, d.parent_hash, d.hash, d.type, d.group
 	</sql>
 	
 	<sql id="commonDiscussionAttributes">
-		d.discussion_id, d.interHash, CASE WHEN d.anonym = 1 AND d.user_name != #userName# THEN "" ELSE d.user_name END AS user_name, d.text, d.rating, d.date, d.change_date, d.anonym, d.type, d.parent_hash, d.hash
+		d.discussion_id, d.interHash, CASE WHEN d.anonymous = 1 AND d.user_name != #userName# THEN "" ELSE d.user_name END AS user_name, d.text, d.rating, d.date, d.change_date, d.anonymous, d.type, d.parent_hash, d.hash
 	</sql>
 	
 	<sql id="allDiscussionColumns">

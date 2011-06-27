@@ -40,6 +40,7 @@ public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlug
 				
 				update("updateGoldStandardPublicationReference", param, session);
 				update("updateReferenceGoldStandardPublication", param, session);
+				update("updateDiscussion", param, session);
 			}
 		};
 	}

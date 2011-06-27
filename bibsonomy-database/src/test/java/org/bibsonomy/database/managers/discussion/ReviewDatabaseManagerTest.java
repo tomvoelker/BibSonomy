@@ -145,7 +145,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String newText = "humbug!";
 		newReview.setText(newText);
 		newReview.setUser(new User(USERNAME_2));
-		newReview.setAnonym(true);
+		newReview.setAnonymous(true);
 		/*
 		 * change visibility
 		 */
@@ -159,7 +159,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		 * check change date
 		 */
 		assertNotNull(review.getChangeDate());
-		assertTrue(review.isAnonym());
+		assertTrue(review.isAnonymous());
 		assertEquals(1.5, review.getRating(), 0);
 		assertEquals(newText, review.getText());
 		

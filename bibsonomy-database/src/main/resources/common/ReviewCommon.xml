@@ -4,7 +4,7 @@
 <sqlMap namespace="ReviewCommon">
 	
 	<resultMap id="review" class="review" extends="DiscussionCommon.abstractDiscussionItem">
-		<result property="anonym"		column="anonym"			javaType="boolean" />
+		<result property="anonymous"	column="anonymous"		javaType="boolean" />
 		<result property="rating"		column="rating" 		javaType="double" />
 		<result property="text"	    	column="text"			javaType="string" />
 	</resultMap>

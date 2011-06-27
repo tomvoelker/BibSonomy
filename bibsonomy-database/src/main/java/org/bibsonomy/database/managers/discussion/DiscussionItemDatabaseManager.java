@@ -21,6 +21,10 @@ import org.bibsonomy.model.util.DiscussionItemUtils;
 import org.bibsonomy.util.ReflectionUtils;
 
 /**
+ * the following statements should exist for the discussion item:
+ *  - get<DISCUSSIONITEM>sByHashForResource
+ *  - insert<DISCUSSIONITEM>
+ * 
  * @author dzo
  * @version $Id$
  * @param <D> 
@@ -182,6 +186,8 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 			discussionItem.setChangeDate(changeDate);
 			discussionItem.setHash(DiscussionItemUtils.recalculateHash(discussionItem));
 			discussionItem.setId(oldDiscussionItem.getId());
+			// parent hash shouldn't change (don't update thread structure)
+			discussionItem.setParentHash(oldDiscussionItem.getParentHash());
 			
 			/*
 			 * first check discussion item to update

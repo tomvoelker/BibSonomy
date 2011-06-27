@@ -103,6 +103,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
+import org.bibsonomy.util.ObjectUtils;
 
 /**
  * Database Implementation of the LogicInterface
@@ -358,7 +359,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServerForUser(java.lang.String)
 	 */
     @Override
-    public List<SyncService> getSyncServerForUser(String userName) {
+    public List<SyncService> getSyncServerForUser(final String userName) {
 	final DBSession session = this.openSession();
 	List<SyncService> services;
 	
@@ -393,7 +394,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServer(java.lang.String, java.net.URI)
 	 */
 	@Override
-	public SyncService getSyncServer(String userName, URI uri) {
+	public SyncService getSyncServer(final String userName, final URI uri) {
 		final DBSession session = this.openSession();
 		SyncService result = null;
 		try {
@@ -409,7 +410,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncPostsMampForUser(java.lang.String)
      */
     @Override
-    public Map<String, SynchronizationPost> getSyncPostsMapForUser(String userName, Class<? extends Resource> resourceType) {
+    public Map<String, SynchronizationPost> getSyncPostsMapForUser(final String userName, final Class<? extends Resource> resourceType) {
 	final DBSession session = this.openSession();
 	Map<String, SynchronizationPost> posts = null;
 	try {
@@ -448,11 +449,11 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getLastSynchronizationData(java.lang.String, int, int)
      */
      @Override
-    public SynchronizationData getLastSynchronizationDataForUserForContentType (String userName, URI service, final Class<? extends Resource> resourceType) {
+    public SynchronizationData getLastSynchronizationDataForUserForContentType (final String userName, final URI service, final Class<? extends Resource> resourceType) {
 	final DBSession session = this.openSession();
 	SynchronizationData syncData = null;
 	try {
-	    List<SynchronizationData> sync = syncDBManager.getSynchronizationData(userName, service, resourceType, session);
+	    final List<SynchronizationData> sync = syncDBManager.getSynchronizationData(userName, service, resourceType, session);
 	    if (present(sync) && sync.size() > 0) {
 		syncData = sync.get(0);
 	    }
@@ -481,7 +482,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getLastSyncDate(java.lang.String, int, int)
      */
     @Override
-    public Date getCurrentSyncDate(String userName, URI service, final Class<? extends Resource> resourceType) {
+    public Date getCurrentSyncDate(final String userName, final URI service, final Class<? extends Resource> resourceType) {
 	final DBSession session = this.openSession();
 	Date lastSyncDate = null;
 	try {
@@ -500,7 +501,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getPostsForSync(java.lang.Class, java.lang.String)
      */
     @Override
-    public List<SynchronizationPost> getSyncPostsListForUser (Class<? extends Resource> resourceType, String userName) {
+    public List<SynchronizationPost> getSyncPostsListForUser (final Class<? extends Resource> resourceType, final String userName) {
         final DBSession session = this.openSession();
         List<SynchronizationPost> postList = null;
         try {
@@ -613,9 +614,9 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	}
     }
 
-    private <T extends Resource> boolean systemTagsAllowResourceType(final Collection<String> tags, final Class<T> resourceType) {
+    private boolean systemTagsAllowResourceType(final Collection<String> tags, final Class<? extends Resource> resourceType) {
 	if (present(tags)) {
-	    for (final String tagName: tags) {
+	    for (final String tagName : tags) {
 		final SearchSystemTag sysTag = SystemTagsUtil.createSearchSystemTag(tagName);
 		if (present(sysTag)) {
 		    if (!sysTag.allowsResource(resourceType)) {
@@ -1145,6 +1146,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 	// TODO: Which of these checks should result in a DatabaseException,
 	// which do we want to handle otherwise (=status quo)
+    // TODO: not everybody can update gold standard publication posts
 	this.ensureLoggedIn();
 	/*
 	 * check permissions
@@ -1225,7 +1227,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	    return post.getResource().getIntraHash();
 	}
 
-	/*
+	/* 
 	 * update post
 	 */
 	manager.updatePost(post, oldIntraHash, operation, session);
@@ -1264,7 +1266,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	    }
 
 	    /*
-	     * finaly delegate to tagDBManager
+	     * finally delegate to tagDBManager
 	     */
 	    return this.tagDBManager.updateTags(user, tagsToReplace, replacementTags, session);
 
@@ -2532,18 +2534,42 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		
 		final DBSession session = this.openSession();
 		try {
-			
 			/*
-			 * first create TODO: gold standard posts
+			 * first check if gold standard post exists
 			 */
-			// TODO: add a test
-			final String hash = HashID.INTER_HASH.getId() + interHash;
-			final List<Post<Bookmark>> bookmarkPost = this.getPosts(Bookmark.class, GroupingEntity.USER, username, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
-			final List<Post<BibTex>> publicationPost = this.getPosts(BibTex.class, GroupingEntity.USER, username, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
-			
+			@SuppressWarnings("unchecked") // should be a gold standard publication
+			final Post<GoldStandardPublication> goldStandardPostinDB = (Post<GoldStandardPublication>) this.getPostDetails(interHash, "");
+			/*
+			 * if not create one
+			 * TODO: add a test
+			 */
+			if (!present(goldStandardPostinDB)) {
+				log.debug("no gold standard publication found for interHash " + interHash + ". Creating new gold standard publication");
+				final String hash = HashID.INTER_HASH.getId() + interHash;
+				// TODO: bookmarks are missing
+				// final List<Post<Bookmark>> bookmarkPost = this.getPosts(Bookmark.class, GroupingEntity.USER, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
+				// FIXME: this list maybe also contains private posts of the logged in user!
+				final List<Post<BibTex>> publicationPosts = this.getPosts(BibTex.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
+				if (present(publicationPosts)) {
+					final Post<GoldStandardPublication> goldStandardPost = new Post<GoldStandardPublication>();
+					final GoldStandardPublication goldStandardPublication = new GoldStandardPublication();
+					ObjectUtils.copyPropertyValues(publicationPosts.get(0).getResource(), goldStandardPublication);
+					
+					/*
+					 * clear some private stuff
+					 */
+					goldStandardPublication.setPrivnote("");
+					
+					goldStandardPost.setResource(goldStandardPublication);
+					
+					this.createPosts(Collections.<Post<?>>singletonList(goldStandardPost));
+				} else {
+					// TODO: log?
+				}
+			}
 			
 			/*
-			 * create the discussionItem
+			 * create the discussion item
 			 */
 			final User commentUser = this.userDBManager.getUserDetails(username, session);
 			discussionItem.setUser(commentUser);

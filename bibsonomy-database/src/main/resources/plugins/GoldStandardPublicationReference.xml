@@ -17,4 +17,8 @@
 	<delete id="deleteReferencesGoldStandardPublication">
 		DELETE FROM gold_standard_publication_references WHERE reference = #refHash#
 	</delete>
+	
+	<update id="updateDiscussion">
+		UPDATE discussion SET interHash = #newId# WHERE interHash = #oldId#
+	</update>
 </sqlMap>
