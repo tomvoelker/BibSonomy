@@ -172,7 +172,8 @@
 								<value>discussionItem.rating</value>
 								<value>discussionItem.text</value>
 								<value>discussionItem.hash</value>
-								<value>discussionItem.anonym</value>
+								<value>discussionItem.anonymous</value>
+								<value>discussionItem.parentHash</value>
 								<value>abstractGrouping</value>
 	  							<value>groups</value>
 							</list>
