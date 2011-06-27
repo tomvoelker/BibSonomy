@@ -91,6 +91,18 @@
               					<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
               				</includes>
             			</aggregation>
+            			<aggregation>
+            				<insertNewLine>true</insertNewLine>
+            				<output>${project.build.webapp.resourcedir}/javascript/merged/discussion.js</output>
+            				<includes>
+            					<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
+            					<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
+            					<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
+            					<include>${project.build.webapp.resourcedir}/javascript/discussion/discussion.js</include>
+            					<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
+            					<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
+            				</includes>
+            			</aggregation>
           			</aggregations>
 				</configuration>
 			</plugin>

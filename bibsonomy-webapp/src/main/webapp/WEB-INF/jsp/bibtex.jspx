@@ -24,13 +24,8 @@
 		
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/jquery/plugins/flot/jquery.flot.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/jquery/plugins/flot/jquery.flot.stack.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js">&amp;nbsp;</script>
 			<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../excanvas.js"></script><![endif]-->
-			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/javascript/discussion/discussion.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/javascript/discussion/reviews.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/javascript/discussion/comments.js">&amp;nbsp;</script>
 			
 			<c:if test="${not empty command.goldStandardPublication}">
 				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js">&amp;nbsp;</script>
@@ -40,7 +35,7 @@
 			
 			<!-- TODO: PUMA? -->
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/review.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/discussion.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
 			
