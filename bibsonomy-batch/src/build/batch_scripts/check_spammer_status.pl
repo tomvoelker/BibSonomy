@@ -47,20 +47,19 @@ while(my $row=$stm1->fetchrow_hashref) {
 $dbh->disconnect();
 
 # evaluate result 
-my $incompleteUsers = "";
+my @incompleteUsers = ();
 foreach my $user (keys %users){
 	if ($tas_users{$user}){
-		$incompleteUsers = $incompleteUsers.", ".$user;
+		push(@incompleteUsers, .$user);
 	}
 }
 
-if ($incompleteUsers){
-	$incompleteUsers =~ s/, $//;
-	$incompleteUsers =~ s/^, //;
-	print "Please check the spam status of the following users:\n$incompleteUsers\n"; 
-}else{
-	#keine mail mehr senden
-	#print "User spam status in database OK\n"; 
+if ($incompleteUsers) {
+    print "I have found some users that are flagged as spammer but have unflagged posts.\n";
+    print "Please check the spam status of the following users:\n";
+    foreach my $user (@incompleteUsers) {
+	print "http://www.bibsonomy.org/admin/spam?aclUserInfo=" . $user . "\n";
+    }
 }
 
 
