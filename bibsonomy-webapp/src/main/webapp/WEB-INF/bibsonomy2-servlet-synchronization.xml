@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<!--  #################### url mapping #################### -->
+    <bean id="synchronizationUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+			    
+			    <!-- update synchronization settings -->
+			    <entry key="/updateSyncSettings">
+			    	<bean parent="controllerBase">
+			    		<property name="controllerBeanName" value="updateSyncSettingsController"/>
+			    		<property name="allowedFields">
+			    			<list>
+			    				<value>ckey</value>
+			    				<value>serviceName</value>
+			    				<value>serverUserName</value>
+			    				<value>apiKey</value>
+			    				<value>action</value>
+			    			</list>
+			    		</property>
+			    	</bean>
+			    </entry>
+			    <entry key="/syncpage">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="syncPageController"/>						
+					</bean>
+				</entry>
+				
+				<entry key="/ajax/synchronize">
+					<bean parent="controllerBase">
+					<property name="controllerBeanName" value ="syncController"/>
+					<property name="allowedFields">
+						<list>
+							<value>serviceName</value>
+							<value>contentType</value>
+						</list>
+					</property> 
+					</bean>
+				</entry>
+            </map>
+        </property>
+    </bean>
+	
+	<!--  #################### controller #################### -->
+	<!-- Handles the update of synchronitzation settings -->
+	<bean id="updateSyncSettingsController" class="org.bibsonomy.webapp.controller.actions.SyncSettingsController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+		
+	<bean id="syncPageController" class="org.bibsonomy.webapp.controller.SyncPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="syncClient" ref="synchronizationClient" />
+	</bean>
+		
+	<bean id="syncController" class="org.bibsonomy.webapp.controller.ajax.SynchronizationController" scope="request" parent="ajaxController">
+		<property name="client" ref="synchronizationClient"/>
+	</bean>
+
+	<bean id="realSynchronizationClient" class="org.bibsonomy.sync.SynchronizationClient">
+		<property name="ownUri" value="${project.home}"/>
+		<property name="serverLogicFactory" ref="restLogicFactory" />
+	</bean>
+	<bean id="mockSynchronizationClient" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>
+	<alias name="${project.bean.syncclient}" alias="synchronizationClient"/>
+	
+</beans>
