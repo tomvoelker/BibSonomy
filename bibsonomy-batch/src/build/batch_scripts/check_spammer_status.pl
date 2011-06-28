@@ -50,11 +50,11 @@ $dbh->disconnect();
 my @incompleteUsers = ();
 foreach my $user (keys %users){
 	if ($tas_users{$user}){
-		push(@incompleteUsers, .$user);
+		push(@incompleteUsers, $user);
 	}
 }
 
-if ($incompleteUsers) {
+if ($#incompleteUsers > 0) {
     print "I have found some users that are flagged as spammer but have unflagged posts.\n";
     print "Please check the spam status of the following users:\n";
     foreach my $user (@incompleteUsers) {
