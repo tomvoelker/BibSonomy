@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +41,11 @@ public class SyncPageController implements MinimalisticController<SyncPageComman
 
 	@Override
 	public View workOn(SyncPageCommand command) {
+		
+		if(!present(syncClient)) {
+			errors.reject("error.synchronization.noclient");
+			return Views.ERROR;
+		}
 		
 		List<SyncService> userServices;
 		if(!command.getContext().getUserLoggedIn()) {
