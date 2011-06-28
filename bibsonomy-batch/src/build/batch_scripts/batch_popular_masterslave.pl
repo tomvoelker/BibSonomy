@@ -3,6 +3,7 @@
 use DBI();
 use strict;
 use English;
+use Common qw(debug get_slave get_master check_running);
 
 ##################################################################
 # This script fills the popular tables for bibtexs, bookmarks, and
@@ -10,7 +11,11 @@ use English;
 # extracted.
 #
 # Changes:
-#   2011-06-11 (rja)
+#   2011-06-28 (rja)
+#   - module Common.pm contains helper functions; include it using
+#     export PERL5LIB=/home/bibsonomy/batch_scripts/
+#   - database configuration now done using Common.pm
+#   2011-06-27 (rja)
 #   - all database configuration variables are now read via 
 #     environment variables (e.g., MASTER_HOST, MASTER_USER, ...)
 #   2008-04-22 (rja)
@@ -26,8 +31,6 @@ use English;
 # don't run twice ...
 check_running();
 
-my $DEBUG = 0; # 1 = on, 0 = off
-
 ##################################################################
 # configuration
 ##################################################################
@@ -42,29 +45,11 @@ my $max_tags           = 100;
 # tags to be excluded from popular tags (lower case)
 my @tags_to_exclude=('imported', 'jabref:nokeywordassigned');
 
-# run configuration
-# master
-my $db_master      = $ENV{'MASTER_DB'};
-my $db_master_host = $ENV{'MASTER_HOST'};
-my $db_master_port = $ENV{'MASTER_PORT'};
-my $db_master_sock = $ENV{'MASTER_SOCK'};;
-my $db_master_user = $ENV{'MASTER_USER'};
-my $db_master_pass = $ENV{'MASTER_PASS'};
-# slave
-my $db_slave      = $ENV{'SLAVE_DB'};
-my $db_slave_host = $ENV{'SLAVE_HOST'};
-my $db_slave_port = $ENV{'SLAVE_PORT'};
-my $db_slave_sock = $ENV{'SLAVE_SOCK'};
-my $db_slave_user = $ENV{'SLAVE_USER'};
-my $db_slave_pass = $ENV{'SLAVE_PASS'};
-
 
 ##################################################################
-# connect to slave
-my $slave  = DBI->connect("DBI:mysql:database=$db_slave;host=$db_slave_host:$db_slave_port;mysql_socket=$db_slave_sock", $db_slave_user, $db_slave_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1, "mysql_auto_reconnect" => 1});
-
-# connect to master
-my $master = DBI->connect("DBI:mysql:database=$db_master;host=$db_master_host:$db_master_port;mysql_socket=$db_master_sock", $db_master_user, $db_master_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1, "mysql_auto_reconnect" => 1});
+# get connections
+my $slave = get_slave();
+my $master = get_master();
 
 
 ##################################################################
@@ -291,61 +276,3 @@ foreach my $content_type (@content_types) {
 $slave->disconnect();
 $master->disconnect();
 
-
-
-
-
-
-##################################################################
-# subroutines
-##################################################################
-
-sub check_running {
-    if (am_i_running($ENV{'TMP'}."/${PROGRAM_NAME}.pid")) {
-	print STDERR "another instance of $PROGRAM_NAME is running on $ENV{'hostname'}. Aborting this job.\n";
-	exit;
-    }
-}
-
-
-# INPUT: location of lockfile
-# OUTPUT: 1, if a lockfile exists and a program with the pid inside 
-#            the lockfile is running
-#         0, if no lockfile exists or the program with the pid inside 
-#            the lockfile is NOT running; resets the pid in the pid 
-#            to the current pid
-sub am_i_running {
-  my $LOCKFILE = shift;
-  my $PIDD;
-
-  if (open (FILE, "<$LOCKFILE")) {
-    while (<FILE>) {
-      $PIDD = $_;
-    }
-    close (FILE);
-    chomp($PIDD);
-
-    if (kill(0,$PIDD)) {
-      return 1;
-    }
-  }
-  open (FILE, ">$LOCKFILE") or die "Could not open lockfile $LOCKFILE: $!\n";
-  print FILE $$;
-  close (FILE);
-  return 0;
-}
-
-# 1 = on, 0 = off
-sub set_debug {
-    $DEBUG = shift;
-}
-
-# logs statements if debugging is enabled
-sub debug {
-    my $msg = shift;
-    if ($DEBUG) {
-	print STDERR $msg . "\n";
-    }
-}
-
-1;
