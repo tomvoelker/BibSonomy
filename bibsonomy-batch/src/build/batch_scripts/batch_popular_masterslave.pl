@@ -329,7 +329,7 @@ sub am_i_running {
       return 1;
     }
   }
-  open (FILE, ">$LOCKFILE");
+  open (FILE, ">$LOCKFILE") or die "Could not open lockfile $LOCKFILE: $!\n";
   print FILE $$;
   close (FILE);
   return 0;
