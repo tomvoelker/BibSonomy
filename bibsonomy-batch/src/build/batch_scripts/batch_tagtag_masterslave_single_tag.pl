@@ -27,6 +27,8 @@
 #   DB_PASS_BATCH
 #
 # Changes:
+#   2011-06-28 (rja):
+#   - using Common.pm now
 #   2009-06-29 (rja):
 #   - copied from batch_tagtag_masterslave.pl 
 #   - changed to update only the related tags of a single tag
@@ -37,44 +39,30 @@ use DBI();
 use strict;
 use Data::Dumper;
 use English;
-
+use Common qw(debug get_slave get_master check_running);
 use DBI qw(:utils);
  
-if ($#ARGV != 1) {
-  print STDERR "please enter database name as first, and tag name as second argument\n";
+if ($#ARGV != 0) {
+  print STDERR "please enter the tag name as second argument\n";
   exit;
 } 
 
 # don't run twice
-if (am_i_running($ENV{'TMP'}."/batch_tagtag.pid")) {
-  print STDERR "another instance of " . $PROGRAM_NAME . " is running on $ENV{'hostname'}. Aborting this job.\n";
-  exit;
-}
+check_running();
 
-#######################################################
-# configuration
-#######################################################
-my $database = shift @ARGV;     # same db name on all hosts
-my $tag      = shift @ARGV; 
-my $user     = "batch";         # same user name on all databases
-my $password = $ENV{'DB_PASS'}; # same password on all databases
-# fit to slave
-my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/mysql/run/mysqld.sock";
-# fit to master
-my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
-
-my %tagtag_ctr_hash=();
+my $tag = shift @ARGV; 
+my %tagtag_ctr_hash = ();
 
 #######################################################
 # SLAVE
 #######################################################
 # connect
-my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});#, "transaction-isolation" => "READ-UNCOMMITTED"});
+my $slave = get_slave(); #, "transaction-isolation" => "READ-UNCOMMITTED"});
 # prepare statements
 # get get all public tag_names related to $tag ordered by post
-my $stm_select_tag_names = $dbh->prepare("SELECT t1.tag_name,t1.content_id,t1.group FROM tas t1 JOIN tas t2 USING (content_id) WHERE t2.tag_name = ? ORDER BY t1.content_id ");
+my $stm_select_tag_names = $slave->prepare("SELECT t1.tag_name,t1.content_id,t1.group FROM tas t1 JOIN tas t2 USING (content_id) WHERE t2.tag_name = ? ORDER BY t1.content_id ");
 $stm_select_tag_names->{"mysql_use_result"} = 1;
-my $stm_select_tagtag =$dbh->prepare("SELECT t1 collate utf8_bin , t2 collate utf8_bin , ctr_public  FROM tagtag WHERE t1 = ?");
+my $stm_select_tagtag =$slave->prepare("SELECT t1 collate utf8_bin , t2 collate utf8_bin , ctr_public  FROM tagtag WHERE t1 = ?");
 $stm_select_tagtag->{"mysql_use_result"} = 1;
 
 
@@ -110,7 +98,7 @@ update_hash();
 
 ########################################
 #Now we have a new tagtag counter hash table which we have to compare with the old one
-$dbh->commit;
+$slave->commit;
 
 $stm_select_tagtag->execute($tag);
 
@@ -133,20 +121,20 @@ while (my @tt = $stm_select_tagtag->fetchrow_array ) {
     }
 }
 
-$dbh->commit;
+$slave->commit;
 
 
-$dbh->disconnect;
+$slave->disconnect;
 
 
 ######################################################
 # MASTER
 ######################################################
 # connect
-$dbh = DBI->connect($master, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+my $master = get_master();
 # prepare
-my $stm_update_tag = $dbh->prepare("UPDATE tagtag SET ctr_public = ? WHERE t1 = ? COLLATE utf8_bin AND t2 = ? COLLATE utf8_bin");
-my $stm_instert_tagtag = $dbh->prepare("INSERT INTO tagtag (t1,t2,ctr_public) VALUES (?, ?, ?) ");
+my $stm_update_tag = $master->prepare("UPDATE tagtag SET ctr_public = ? WHERE t1 = ? COLLATE utf8_bin AND t2 = ? COLLATE utf8_bin");
+my $stm_instert_tagtag = $master->prepare("INSERT INTO tagtag (t1,t2,ctr_public) VALUES (?, ?, ?) ");
 
 
 while (my ($key, $value) = each(%tagtag_ctr_hash)) {
@@ -161,10 +149,10 @@ while (my ($key, $value) = each(%tagtag_ctr_hash)) {
     }  
 }
 
-$dbh->commit;
+$master->commit;
 
 # disconnect database
-$dbh->disconnect();
+$master->disconnect();
 
 
 
@@ -172,7 +160,6 @@ $dbh->disconnect();
 # subroutines
 #########################################################
 sub update_hash() {
-
     foreach my $tag1 (@tags_of_a_post) {
 	foreach my $tag2 (@tags_of_a_post) {
 	    # only count co-occurrences with given $tag
@@ -181,36 +168,4 @@ sub update_hash() {
 	    }
 	} 
     }
-}
-
-
-
-
-#################################
-# subroutines
-#################################
-# INPUT: location of lockfile
-# OUTPUT: 1, if a lockfile exists and a program with the pid inside 
-#            the lockfile is running
-#         0, if no lockfile exists or the program with the pid inside 
-#            the lockfile is NOT running; resets the pid in the pid 
-#            to the current pid
-sub am_i_running {
-  my $LOCKFILE = shift;
-  my $PID ="";
-  if (open (FILE, "<$LOCKFILE")) {
-    while (<FILE>) {
-      $PID = $_;
-    }
-    close (FILE);
-    chomp($PID);
-
-    if (kill(0,$PID)) {
-      return 1;
-    }
-  }
-  open (FILE, ">$LOCKFILE");
-  print FILE $$;
-  close (FILE);
-  return 0;
 }
