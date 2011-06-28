@@ -15,7 +15,9 @@
 #   DB_PASS_BATCH
 #
 # Changes:
-#   2011-06-11 (rja)
+#   2011-06-28 (rja)
+#   - using Common.pm now
+#   2011-06-27 (rja)
 #   - all database configuration variables are now read via 
 #     environment variables (e.g., MASTER_HOST, MASTER_USER, ...)
 #   2008-01-23: (rja)
@@ -24,32 +26,13 @@
 use DBI();
 use strict;
 use English;
+use Common qw(debug get_slave get_master check_running);
 
 # don't run twice ...
 check_running();
 
-########################################################
-# configuration
-########################################################
-# master
-my $db_master      = $ENV{'MASTER_DB'};
-my $db_master_host = $ENV{'MASTER_HOST'};
-my $db_master_port = $ENV{'MASTER_PORT'};
-my $db_master_sock = $ENV{'MASTER_SOCK'};;
-my $db_master_user = $ENV{'MASTER_USER'};
-my $db_master_pass = $ENV{'MASTER_PASS'};
-# slave
-my $db_slave      = $ENV{'SLAVE_DB'};
-my $db_slave_host = $ENV{'SLAVE_HOST'};
-my $db_slave_port = $ENV{'SLAVE_PORT'};
-my $db_slave_sock = $ENV{'SLAVE_SOCK'};
-my $db_slave_user = $ENV{'SLAVE_USER'};
-my $db_slave_pass = $ENV{'SLAVE_PASS'};
-
-# fit to slave
-my $slave    = "DBI:mysql:database=$db_slave;host=$db_slave_host:$db_slave_port;mysql_socket=$db_slave_sock";
-# fit to master
-my $master   = "DBI:mysql:database=$db_master;host=$db_master_host:$db_master_port;mysql_socket=$db_master_sock";
+# config param
+my $min_user_count=10;
 
 # temp variables
 my %tag_hash =();
@@ -57,23 +40,22 @@ my %tag_count_hash =();
 my %tag_user_hash =();
 my %tag_user_count_hash = ();
 
-my $min_user_count=10;
 
 ########################################################
 # SLAVE 
 ########################################################
-# connect to SLAVE
-my $dbh = DBI->connect($slave, $db_slave_user, $db_slave_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+# connect to database
+my $slave = get_slave();
 # prepare statements
 # get all public tag_names from the tas list
-my $stm_select_tag_names = $dbh->prepare("SELECT tag_name,user_name FROM tas t WHERE t.group = 0");
+my $stm_select_tag_names = $slave->prepare("SELECT tag_name,user_name FROM tas t WHERE t.group = 0");
 # get old tag counts
-my $stm_select_tagcounts_names = $dbh->prepare("SELECT tag_name, tag_ctr_public, show_tag FROM tags t WHERE tag_ctr_public > 0");
+my $stm_select_tagcounts_names = $slave->prepare("SELECT tag_name, tag_ctr_public, show_tag FROM tags t WHERE tag_ctr_public > 0");
 
 # execute statements (Tag Names)
 # get TOP bookmarks
 $stm_select_tag_names->execute();
-$dbh->commit;
+$slave->commit;
 
 # get first occurence of every bookmark
 while (my @tag = $stm_select_tag_names->fetchrow_array ) {
@@ -89,26 +71,26 @@ while (my @tag = $stm_select_tag_names->fetchrow_array ) {
 
 
 }
-$dbh->commit;
+$slave->commit;
 
 # get old tag counts to be able to compare it with the new ones
 $stm_select_tagcounts_names->execute();
-$dbh->commit;
+$slave->commit;
 while (my @tagcount = $stm_select_tagcounts_names->fetchrow_array ) {
     	$tag_count_hash{$tagcount[0]}=$tagcount[1];
     	$tag_user_count_hash{$tagcount[0]}=$tagcount[2];
 }
-$dbh->commit;
+$slave->commit;
 
-$dbh->disconnect;
+$slave->disconnect;
 
 ########################################################
 # MASTER
 ########################################################
 # connect to master
-$dbh = DBI->connect($master, $db_master_user, $db_master_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+my $master = get_master();
 # update tag table with the new counts
-my $stm_update_tag = $dbh->prepare("UPDATE tags SET tag_ctr_public = ?, show_tag =? WHERE tag_name= ?");
+my $stm_update_tag = $master->prepare("UPDATE tags SET tag_ctr_public = ?, show_tag =? WHERE tag_name= ?");
 
 # update tag table
 for my $key (sort {$a cmp $b} keys %tag_hash) {
@@ -134,48 +116,9 @@ for my $key (sort {$a cmp $b} keys %tag_count_hash) {
 }
 
 
-$dbh->commit;
+$master->commit;
 
 # disconnect database
-$dbh->disconnect();
+$master->disconnect();
 
 
-
-#################################
-# subroutines
-#################################
-
-
-
-sub check_running {
-    if (am_i_running($ENV{'TMP'}."/${PROGRAM_NAME}.pid")) {
-	print STDERR "another instance of $PROGRAM_NAME is running on $ENV{'hostname'}. Aborting this job.\n";
-	exit;
-    }
-}
-
-# INPUT: location of lockfile
-# OUTPUT: 1, if a lockfile exists and a program with the pid inside 
-#            the lockfile is running
-#         0, if no lockfile exists or the program with the pid inside 
-#            the lockfile is NOT running; resets the pid in the pid 
-#            to the current pid
-sub am_i_running {
-  my $LOCKFILE = shift;
-  my $PID ="";
-  if (open (FILE, "<$LOCKFILE")) {
-    while (<FILE>) {
-      $PID = $_;
-    }
-    close (FILE);
-    chomp($PID);
-
-    if (kill(0,$PID)) {
-      return 1;
-    }
-  }
-  open (FILE, ">$LOCKFILE");
-  print FILE $$;
-  close (FILE);
-  return 0;
-}
