@@ -7,6 +7,8 @@
 #   DB_PASS
 #
 # Changes:
+#   2011-06-28: (rja)
+#   - using Common.pm now
 #   2011-06-27: (rja)
 #   - adopted for joe->gandalf switch (socket, port, etc.)
 #   2010-07-26: (rja)
@@ -15,47 +17,14 @@
 use DBI();
 use English;
 use strict;
+use Common qw(debug get_slave get_master check_running);
 
 # don't run twice
-if (am_i_running($ENV{'TMP'}."/$PROGRAM_NAME.pid")) {
-  print "another instance of " . $PROGRAM_NAME . " is running on $ENV{'hostname'}. Aborting this job.\n";
-  exit;
-}
-# configuration
-my $user     = "bibsonomy";   
-my $password = $ENV{'DB_PASS'};
-my $database = "bibsonomy";     
-my $host     = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/run/mysqld/mysqld.sock";
+check_running();
 
 # connect to database
-my $dbh = DBI->connect($host, $user, $password, {RaiseError => 1, "mysql_auto_reconnect" => 1, "mysql_enable_utf8" => 1});
-my $stm_delete_pending_users = $dbh->prepare ("DELETE FROM `pendingUser` WHERE (NOW() > DATE_ADD(reg_date, INTERVAL 24 HOUR))");
+my $master = get_master();
+my $stm_delete_pending_users = $master->prepare("DELETE FROM `pendingUser` WHERE (NOW() > DATE_ADD(reg_date, INTERVAL 24 HOUR))");
 $stm_delete_pending_users->execute();
-$dbh->disconnect();
-
-# INPUT: location of lockfile
-# OUTPUT: 1, if a lockfile exists and a program with the pid inside 
-#            the lockfile is running
-#         0, if no lockfile exists or the program with the pid inside 
-#            the lockfile is NOT running; resets the pid in the pid 
-#            to the current pid
-sub am_i_running {
-    my $LOCKFILE = shift;
-    my $PID;
-
-    if (open (FILE, "<$LOCKFILE")) {
-	while (<FILE>) {
-	    $PID = $_;
-	}
-	close (FILE);
-	chomp($PID);
-
-	if (kill(0,$PID)) {
-	    return 1;
-	}
-    }
-    open (FILE, ">$LOCKFILE");
-    print FILE $$;
-    close (FILE);
-    return 0;
-}
+$master->commit();
+$master->disconnect();
