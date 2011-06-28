@@ -39,7 +39,7 @@
 	
 	<update id="cleanDiscussionItem" parameterClass="discussionItemParam">
 		UPDATE discussion
-			SET user_name = '', text = NULL, rating = NULL, anonym = 0, type = 0
+			SET user_name = '', text = NULL, rating = NULL, anonymous = 0, type = 0
 		WHERE user_name = #userName#
 			AND interHash = #interHash#
 			AND hash = #hash#
