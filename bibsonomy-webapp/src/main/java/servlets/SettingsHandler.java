@@ -25,7 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
@@ -50,34 +49,30 @@ public class SettingsHandler extends HttpServlet{
 	private static final Log log = LogFactory.getLog(SettingsHandler.class);
 
 	@Override
-	public void init(ServletConfig config) throws ServletException{	
+	public void init(final ServletConfig config) throws ServletException{	
 		super.init(config); 
 		try{
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup("java:/comp/env");
+			final Context initContext = new InitialContext();
+			final Context envContext = (Context) initContext.lookup("java:/comp/env");
 			dataSource = (DataSource) envContext.lookup("jdbc/bibsonomy");
-		} catch (NamingException ex) {
+		} catch (final NamingException ex) {
 			throw new ServletException("Cannot retrieve java:/comp/env/bibsonomy",ex);
 		}
 	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) 
-	throws ServletException, IOException 
-	{
-		doPost(request,response);
+	public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response);
 	}
 
-
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		Connection conn         = null;
 		ResultSet rst           = null;
 		PreparedStatement stmtP = null;
-
-		HttpSession session = request.getSession(true);
+		
 		final User user = AuthenticationUtils.getUser();
-		String currUser = user.getName(); 
+		final String currUser = user.getName(); 
 
 		/*
 		 * TODO: Fehlerbehandlung fehlt total (User existiert nicht, is schon in Gruppe/Freund, etc.
@@ -187,7 +182,7 @@ public class SettingsHandler extends HttpServlet{
 					rst = stmtP.executeQuery();
 					if (rst.next()) {
 						// user is admin of this group
-						int groupid = rst.getInt(1);
+						final int groupid = rst.getInt(1);
 						// logging
 						stmtP = conn.prepareStatement("INSERT INTO log_groups (`user_name`, `group`, `defaultgroup`, `start_date`, `user_status`) SELECT g.user_name, g.group, g.defaultgroup, g.start_date, g.user_status FROM groups g WHERE g.user_name = ? AND g.group = ?");
 						stmtP.setString(1, friend);
@@ -199,7 +194,7 @@ public class SettingsHandler extends HttpServlet{
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();
 						// update tas table
-						stmtP = conn.prepareStatement("UPDATE tas b      SET b.group = " + constants.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
+						stmtP = conn.prepareStatement("UPDATE tas b SET b.group = " + constants.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
 						stmtP.setString(1, friend);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();
@@ -209,7 +204,7 @@ public class SettingsHandler extends HttpServlet{
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();												
 						// update bibtex table
-						stmtP = conn.prepareStatement("UPDATE bibtex b   SET b.group = " + constants.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
+						stmtP = conn.prepareStatement("UPDATE bibtex b SET b.group = " + constants.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
 						stmtP.setString(1, friend);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();						
@@ -225,36 +220,51 @@ public class SettingsHandler extends HttpServlet{
 						stmtP = conn.prepareStatement("UPDATE bookmark b SET b.group = " + constants.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
 						stmtP.setString(1, friend);
 						stmtP.setInt(2, groupid);
-						stmtP.executeUpdate();						
+						stmtP.executeUpdate();
+						
+						/*
+						 * discussion for the group
+						 */	
+						// log discussion
+						stmtP = conn.prepareStatement("INSERT INTO log_discussion (discussion_id, interHash, user_name, text, rating, date, change_date, anonymous, parent_hash, hash, type, `group`) SELECT discussion_id, interHash, user_name, text, rating, date, change_date, anonymous, parent_hash, hash, type, `group` FROM discussion WHERE user_name = ? AND `group` = ?");
+						stmtP.setString(1, friend);
+						stmtP.setInt(2, groupid);
+						stmtP.executeUpdate();
+						/*
+						 * FIXME: here we assume that a discussion item has only
+						 * one group this is currently ok because we currently
+						 * don't support more than one group
+						 */
+						// update discussion table
+						stmtP = conn.prepareStatement("UPDATE discussion d SET d.group = " + constants.SQL_CONST_GROUP_PRIVATE + " WHERE d.user_name = ? AND d.group = ?");
+						stmtP.setString(1, friend);
+						stmtP.setInt(2, groupid);
+						stmtP.executeUpdate();
 					}
 				}
-
-
-			
-
+				
 				conn.commit();
 				final String referer = request.getHeader("Referer");
 				response.sendRedirect(referer != null ? referer : "/settings");
 
-			} catch(SQLException e) {
+			} catch(final SQLException e) {
 				conn.rollback();     // rollback all queries
 				log.fatal("Could not change settings for user " + currUser + ".", e);
 				getServletConfig().getServletContext().getRequestDispatcher("/errors/databaseError.jsp").forward(request, response);
 			}       
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.fatal(e);
 			response.sendRedirect("/errors/databaseError.jsp");
-		} 
-		finally {
+		} finally {
 			// Always make sure result sets and statements are closed,
 			// and the connection is returned to the pool
-			if (rst   != null) { try {	rst.close();	} catch (SQLException e) {}	rst   = null;}
-			if (stmtP != null) { try {	stmtP.close();	} catch (SQLException e) {}	stmtP = null;}
-			if (conn  != null) { try {	conn.close();	} catch (SQLException e) {}	conn  = null;}
+			if (rst   != null) { try {	rst.close();	} catch (final SQLException e) {}	rst   = null;}
+			if (stmtP != null) { try {	stmtP.close();	} catch (final SQLException e) {}	stmtP = null;}
+			if (conn  != null) { try {	conn.close();	} catch (final SQLException e) {}	conn  = null;}
 		}
 	}
 	
-	private static boolean addUserToGroup (String user, String group, PreparedStatement stm, ResultSet rst, Connection conn) throws SQLException {
+	private static boolean addUserToGroup (String user, final String group, PreparedStatement stm, ResultSet rst, final Connection conn) throws SQLException {
 		// friend: user to be added
 		if (user != null) {
 			user = user.toLowerCase();
@@ -269,8 +279,8 @@ public class SettingsHandler extends HttpServlet{
 				stm.setString(2, group);
 				rst = stm.executeQuery();
 				if (rst.next()) {
-					int groupid = rst.getInt(1);
-					int defaultgroup = rst.getInt(2);
+					final int groupid = rst.getInt(1);
+					final int defaultgroup = rst.getInt(2);
 					// user is admin of this group --> check, if group_user is already in group
 					stm = conn.prepareStatement ("SELECT g.user_name FROM groups g WHERE g.user_name = ? AND g.group = ?");
 					stm.setString(1, user);
