@@ -15,6 +15,8 @@
 #   DB_PASS_BATCH
 #
 # Changes:
+#   2011-07-28: (rja)
+#   - using Common.pm
 #   2008-04-30: (aho)
 #   - initial version
 #
@@ -22,33 +24,14 @@ use DBI();
 use strict;
 use Data::Dumper;
 use English;
-
+use Common qw(debug get_slave get_master check_running);
 use DBI qw(:utils);
- 
-if ($#ARGV != 0) {
-  print "please enter database name as first argument\n";
-  exit;
-} 
 
-# don't run twice
-if (am_i_running($ENV{'TMP'}."/batch_contexttag.pid")) {
-  print "another instance of " . $PROGRAM_NAME . " is running on $ENV{'hostname'}. Aborting this job.\n";
-  exit;
-}
+check_running();
 
 #######################################################
 # configuration
 #######################################################
-my $database = shift @ARGV;     # same db name on all hosts
-my $user     = "batch";         # same user name on all databases
-my $password = $ENV{'DB_PASS'}; # same password on all databases
-# fit to slave
-my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/run/mysqld/mysqld.sock";
-#my $slave    = "DBI:mysql:database=$database;host=127.0.0.1:3306";
-# fit to master
-my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
-#my $master   = "DBI:mysql:database=$database;host=127.0.0.1:3306";
-
 my $toptags_count=10;
 
 my %tagtag_ctr_hash=();
@@ -60,13 +43,13 @@ my @rel_tags_of_t1=();
 # SLAVE
 #######################################################
 # connect
-my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});#, "transaction-isolation" => "READ-UNCOMMITTED"});
+my $slave = get_slave();#, "transaction-isolation" => "READ-UNCOMMITTED"});
 # prepare statements
 # get all public tag_names ordered by post
-my $stm_select_tagtag =$dbh->prepare("SELECT t1 collate utf8_bin , t2 collate utf8_bin , ctr_public  FROM tagtag force index (t1_ctr_public_idx) where ctr_public>0 order by t1 ");
+my $stm_select_tagtag = $slave->prepare("SELECT t1 collate utf8_bin , t2 collate utf8_bin , ctr_public  FROM tagtag force index (t1_ctr_public_idx) where ctr_public>0 order by t1 ");
 $stm_select_tagtag->{"mysql_use_result"} = 1;
 # get top 10000 tags of the system
-my $stm_select_toptag =$dbh->prepare("select lower(tag_name),sum(tag_ctr_public) as ctr from tags group by lower(tag_name) having ctr > ?");
+my $stm_select_toptag = $slave->prepare("select lower(tag_name),sum(tag_ctr_public) as ctr from tags group by lower(tag_name) having ctr > ?");
 $stm_select_toptag->{"mysql_use_result"} = 1;
 
 #######################################
@@ -166,7 +149,7 @@ while (my @tt = $stm_select_tagtag->fetchrow_array ) {
 	}
 }
 
-$dbh->commit;
+$slave->commit;
 
 # compute norm
 
@@ -178,7 +161,7 @@ for (@norm) {$_=sqrt($_);}
 ################ read all tags from the current tagtag_similarity table and drop all which are not longer in the tagtag table
 
 
-$dbh->disconnect;
+$slave->disconnect;
 
 
 ################# compute tagtag sim  values ###############
@@ -187,21 +170,19 @@ $dbh->disconnect;
 # MASTER
 ######################################################
 # connect
-$dbh = DBI->connect($master, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+my $master = get_master();
 # prepare
 #
 
-my $stm_delete_old_entries =  $dbh->prepare("delete from tagtag_similarity2");
-
-my $stm_instert_contexttag = $dbh->prepare("INSERT INTO tagtag_similarity2 (t1,t2,sim) values (?, ?, ?)"); # ON DUPLICATE KEY UPDATE sim=?");
-
-my $stm_rename_tabs = $dbh->prepare("rename table tagtag_similarity to tagtag_similarity_old,  tagtag_similarity2 to tagtag_similarity,  tagtag_similarity_old to tagtag_similarity2");
+my $stm_delete_old_entries = $master->prepare("DELETE FROM tagtag_similarity2");
+my $stm_instert_contexttag = $master->prepare("INSERT INTO tagtag_similarity2 (t1,t2,sim) values (?, ?, ?)"); # ON DUPLICATE KEY UPDATE sim=?");
+my $stm_rename_tabs        = $master->prepare("RENAME TABLE tagtag_similarity to tagtag_similarity_old,  tagtag_similarity2 to tagtag_similarity,  tagtag_similarity_old to tagtag_similarity2");
 
 # delete all entries of the current table
 
 $stm_delete_old_entries->execute();
 
-$dbh->commit;
+$master->commit;
 
 
 my $tid1;
@@ -233,22 +214,22 @@ for ($tid1 = 0; $tid1 <= $tagCount; $tid1++) {
 #		print $tags_reverse{$tid1}."|#|".$tags_reverse{$_}."|#|".$sim."\n";
 		$stm_instert_contexttag->execute($tags_reverse{$tid1},$tags_reverse{$_},$sim); #,$sim);
 		$commit_count++;
-		if ($commit_count % 1000 == 0) {$dbh->commit;}
+		if ($commit_count % 1000 == 0) {$master->commit;}
 		$count_curr_sim++;
 		if ($count_curr_sim == $sim_count_tags) {last;}
 	}
 }
 
-$dbh->commit;
+$master->commit;
 
 # rename old and new
 
 $stm_rename_tabs->execute();
 
-$dbh->commit;
+$master->commit;
 
 # disconnect database
-$dbh->disconnect();
+$master->disconnect();
 
 #################################
 # subroutines
@@ -272,33 +253,3 @@ sub dot {
 #	print STDERR "\n";
 	return $sum;
 }	
-
-
-#################################
-# subroutines
-#################################
-# INPUT: location of lockfile
-# OUTPUT: 1, if a lockfile exists and a program with the pid inside 
-#            the lockfile is running
-#         0, if no lockfile exists or the program with the pid inside 
-#            the lockfile is NOT running; resets the pid in the pid 
-#            to the current pid
-sub am_i_running {
-  my $LOCKFILE = shift;
-  my $PID ="";
-  if (open (FILE, "<$LOCKFILE")) {
-    while (<FILE>) {
-      $PID = $_;
-    }
-    close (FILE);
-    chomp($PID);
-
-    if (kill(0,$PID)) {
-      return 1;
-    }
-  }
-  open (FILE, ">$LOCKFILE");
-  print FILE $$;
-  close (FILE);
-  return 0;
-}
