@@ -231,7 +231,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	@Override
 	public void testGetPostsByHashCount() {
 		final String requHash = "b7aa3a91885e432c6c95bec0145c3968";
-		int count = bookmarkDb.getPostsByHashCount(requHash, HashID.INTRA_HASH, this.dbSession);
+		final int count = bookmarkDb.getPostsByHashCount(requHash, HashID.INTRA_HASH, this.dbSession);
 		assertTrue(count >= 0);
 	}
 
@@ -351,7 +351,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	public void testGetPostsForGroupByTag() {
 		String userName = TESTUSER1_NAME;
 		final List<Integer> visibleGroupIDs = Collections.singletonList(PUBLIC_GROUP_ID);
-		List<TagIndex> tagIndex = DBTestUtils.getTagIndex("suchmaschine");
+		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("suchmaschine");
 		List<Post<Bookmark>> posts = bookmarkDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, userName, tagIndex, null, 10, 0, null, this.dbSession);
 		assertEquals(3, posts.size());
 		
@@ -488,7 +488,8 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		assertEquals(1, posts.size());
 		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate" });
 		toInsert.getResource().setCount(1);
-		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null);
+		
+		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "numberOfRatings", "rating" });
 
 		// Duplicate post and check whether plugins are called
 		assertFalse(this.pluginMock.isOnBibTexUpdate());
