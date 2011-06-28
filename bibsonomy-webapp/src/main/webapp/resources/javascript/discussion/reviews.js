@@ -255,8 +255,8 @@ function createReview() {
 		     			updateForm.find(REVIEW_RATING_SELECTOR).stars({
 		     				split: STEP_RATING,
 		     			});
-		     			console.debug(reviewRating + ' ' + updateForm.find(REVIEW_RATING_SELECTOR).length);
-		     			updateForm.find(REVIEW_RATING_SELECTOR).stars("select", parseFloat(reviewRating));
+		     			
+		     			updateForm.find(REVIEW_RATING_SELECTOR).stars("select", reviewRating.toFixed(1));
 						if (anonymous) {
 							updateForm.find(REVIEW_ANONYMOUS_SELECTOR).attr("checked", "checked");
 						}
@@ -421,7 +421,7 @@ function updateReviewView(reviewView, text, rating, abstractGrouping, groups) {
 
 function getRating(element) {
 	var stars = $(element).data("stars");
-	return Number(stars.options.value);
+	return parseFloat(stars.options.value);
 }
 
 function getStarsWidth(rating) {
