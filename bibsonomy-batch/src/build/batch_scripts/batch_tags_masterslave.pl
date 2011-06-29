@@ -32,12 +32,12 @@ use Common qw(debug get_slave get_master check_running);
 check_running();
 
 # config param
-my $min_user_count=10;
+my $min_user_count = 10;
 
 # temp variables
-my %tag_hash =();
-my %tag_count_hash =();
-my %tag_user_hash =();
+my %tag_hash = ();
+my %tag_count_hash = ();
+my %tag_user_hash = ();
 my %tag_user_count_hash = ();
 
 
@@ -57,19 +57,18 @@ my $stm_select_tagcounts_names = $slave->prepare("SELECT tag_name, tag_ctr_publi
 $stm_select_tag_names->execute();
 $slave->commit;
 
-# get first occurence of every bookmark
+# go over all public tags
 while (my @tag = $stm_select_tag_names->fetchrow_array ) {
 
+    # count for each tag in how many posts it occurs
     if (exists $tag_hash{$tag[0]}) {
     	$tag_hash{$tag[0]}++;
     } else {
     	$tag_hash{$tag[0]}=1;
     }
 
-    $tag_user_hash{$tag[0]}{$tag[1]}=1;
-
-
-
+    # count for each tag, how many different users used it
+    $tag_user_hash{$tag[0]}{$tag[1]} = 1;
 }
 $slave->commit;
 
@@ -77,8 +76,8 @@ $slave->commit;
 $stm_select_tagcounts_names->execute();
 $slave->commit;
 while (my @tagcount = $stm_select_tagcounts_names->fetchrow_array ) {
-    	$tag_count_hash{$tagcount[0]}=$tagcount[1];
-    	$tag_user_count_hash{$tagcount[0]}=$tagcount[2];
+    	$tag_count_hash{$tagcount[0]} = $tagcount[1];
+    	$tag_user_count_hash{$tagcount[0]} = $tagcount[2];
 }
 $slave->commit;
 
@@ -90,7 +89,7 @@ $slave->disconnect;
 # connect to master
 my $master = get_master();
 # update tag table with the new counts
-my $stm_update_tag = $master->prepare("UPDATE tags SET tag_ctr_public = ?, show_tag =? WHERE tag_name= ?");
+my $stm_update_tag = $master->prepare("UPDATE tags SET tag_ctr_public = ?, show_tag = ? WHERE tag_name = ?");
 
 # update tag table
 for my $key (sort {$a cmp $b} keys %tag_hash) {
