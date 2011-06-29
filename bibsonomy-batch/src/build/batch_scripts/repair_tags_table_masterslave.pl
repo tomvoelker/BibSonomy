@@ -42,7 +42,7 @@ debug("updating of tag counters started");
 
 ########################################################
 # SLAVE 
-my $slave = slave();
+my $slave = get_slave();
 # query tas table to get the current counts
 my $stm_select_tags      = $slave->prepare("SELECT tag_name FROM tas");
 # query the tags table to get the possibly outdated counts
