@@ -63,7 +63,7 @@
 		<property name="client" ref="synchronizationClient"/>
 	</bean>
 
-	<bean id="realSynchronizationClient" class="org.bibsonomy.sync.SynchronizationClient">
+	<bean id="realSynchronizationClient" class="org.bibsonomy.sync.SynchronizationClient" lazy-init="true">
 		<property name="ownUri" value="${project.home}"/>
 		<property name="serverLogicFactory" ref="restLogicFactory" />
 	</bean>
