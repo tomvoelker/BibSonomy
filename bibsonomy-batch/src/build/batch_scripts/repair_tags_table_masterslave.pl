@@ -1,10 +1,10 @@
 #!/usr/bin/perl
-##############
+###############
 #
-# Reads the tas table and updates the tag_ctr in the tags table, if
-# necessary.
+# Reads the tas table and updates the tag_ctr in the tags table.
 # 
-# Environment variables: see Common.pm
+# Environment variables: 
+#   see Common.pm
 #
 # Changes:
 #   2011-06-29 (rja)
@@ -27,16 +27,14 @@ my %old_tagcounts = ();
 ########################################################
 # SLAVE 
 my $slave = get_slave();
-# prepare statements
-my $stm_select_tags = $slave->prepare("SELECT tag_name FROM tas t");
-# get old tag counts
-my $stm_select_tagcounts = $slave->prepare("SELECT tag_name, tag_ctr FROM tags t");
+# query tas table to get the current counts
+my $stm_select_tags      = $slave->prepare("SELECT tag_name FROM tas");
+# query the tags table to get the possibly outdated counts
+my $stm_select_tagcounts = $slave->prepare("SELECT tag_name, tag_ctr FROM tags");
 
-# execute statements
+# go over all tas
 $stm_select_tags->execute();
 $slave->commit;
-
-# go over all tags
 my $rowCtr = 0;
 while (my @row = $stm_select_tags->fetchrow_array ) {
     my $tag = $row[0];
@@ -49,50 +47,36 @@ while (my @row = $stm_select_tags->fetchrow_array ) {
     $rowCtr++;
 }
 $slave->commit;
+debug("read $rowCtr rows from the 'tas' table");
 
-debug("read $rowCtr rows from 'tas' table");
-
-# get old tag counts
+# get old tag counts from tags table
 $stm_select_tagcounts->execute();
 $slave->commit;
 $rowCtr = 0;
 while (my @row = $stm_select_tagcounts->fetchrow_array ) {
-    my $tag = $row[0];
-    my $ctr = $row[1];
-    $old_tagcounts{$tag} = $ctr;
+    $old_tagcounts{$row[0]} = $row[1];
     $rowCtr++;
 }
 $slave->commit;
-
-debug("read $rowCtr rows from 'tags' table");
+debug("read $rowCtr rows from the 'tags' table");
 
 $slave->disconnect;
 
-#exit 1;
-
 ########################################################
 # MASTER
-########################################################
-# connect to master
 my $master = get_master();
-# update tag table with the new counts
+# update the tag table with the new counts
 my $stm_update_tag = $master->prepare("UPDATE tags SET tag_ctr = ? WHERE tag_name = ?");
 
-# update tag table
+# update the tag table
 my $updateCtr = 0;
 while (my ($tag, $count) = each %tagcounts) {
     if (!exists $old_tagcounts{$tag} || $count != $old_tagcounts{$tag}) {
-#	debug("tag '$tag' must be updated (old = $old_tagcounts{$tag} != $count = new)");
-	$stm_update_tag->execute($count,$tag);
+	$stm_update_tag->execute($count, $tag);
 	$updateCtr++;
     }
 }
-
-debug("updated $updateCtr tags");
-
 $master->commit;
+debug("updated $updateCtr tags in 'tags' table");
 
-# disconnect database
 $master->disconnect();
-
-

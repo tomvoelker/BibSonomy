@@ -115,6 +115,7 @@ sub debug {
     my $msg = shift;
     if ($DEBUG) {
 	my $date = `date +"%Y-%m-%d %H:%M:%S"`;
+	chomp($date);
 	print STDERR "$date: $msg\n";
     }
 }
