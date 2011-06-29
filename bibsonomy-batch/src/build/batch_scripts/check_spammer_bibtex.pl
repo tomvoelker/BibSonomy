@@ -1,11 +1,5 @@
 #!/usr/bin/perl -w 
 
-use strict;
-use warnings;
-use English;
-use DBI();
-use Common qw(debug get_slave get_master check_running);
-
 # Checks if already classified spammers have posted BibTeX entries 
 # after their classification. An E-Mail is sent with the users, which 
 # need to be manually checked again.
@@ -16,8 +10,16 @@ use Common qw(debug get_slave get_master check_running);
 # 2010-05-21 (bkr)
 # - initial version
 
-# establish connection to bibsonomy database
-my $dbh = get_slave();
+use strict;
+use warnings;
+use English;
+use DBI();
+use Common qw(debug check_running get_connection);
+
+check_running();
+
+my $dbh = get_connection(shift @ARGV);
+
 
 #print STDERR "Selecting spammers\n"; 
 # select spammers
@@ -34,11 +36,11 @@ $stm1->execute();
 
 my %users = ();
 while(my $row=$stm1->fetchrow_hashref) {
-	#print STDERR "$row->{'user_name'}\n";
+	debug("$row->{'user_name'}");
 	if (defined $row->{"user_name"}) {
 		# only interested in the classifier decisions
 		if ($row->{"algorithm"} ne "admin"){
-				#print STDERR "$row->{'algorithm'}\n";
+				debug("$row->{'algorithm'}");
 				my $pred = "";
 				if ($row->{"prediction"} == 1){
 					$pred = "spammer";	

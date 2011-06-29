@@ -1,11 +1,5 @@
 #!/usr/bin/perl -w 
 
-use strict;
-use warnings;
-use English;
-use DBI();
-use Common qw(debug get_slave get_master check_running);
-
 # Checks if transaction of updating user groups failed, so that inconsistencies 
 # considering flagged users can be found
 #
@@ -17,7 +11,15 @@ use Common qw(debug get_slave get_master check_running);
 # 2009-11-25 (bkr)
 # - split queries
 
-my $dbh = get_slave();
+use strict;
+use warnings;
+use English;
+use DBI();
+use Common qw(debug check_running get_connection);
+
+check_running();
+
+my $dbh = get_connection(shift @ARGV);
 
 # select all users from tas which have public posts
 my $stm = $dbh->prepare("SELECT user_name FROM tas WHERE `group`=0 GROUP BY user_name");
@@ -29,7 +31,7 @@ while(my $row=$stm->fetchrow_hashref) {
   }
 }
 
-#print STDERR "Selecting spammers\n"; 
+debug("Selecting spammers"); 
 # select spammers
 my $stm1 = $dbh->prepare("SELECT user_name FROM user WHERE spammer=1;");
 $stm1->execute();
