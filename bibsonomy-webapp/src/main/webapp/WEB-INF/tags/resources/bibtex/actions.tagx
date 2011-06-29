@@ -30,9 +30,6 @@
 		<a onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
 			<c:out value="${message}"></c:out>
 		</a>
-
-
-
 		
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 
@@ -92,6 +89,7 @@
                 </c:choose>                
 			</c:otherwise>
 		</c:choose>
+		
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 		<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
 			<!-- GOLDSTANDARD -->
@@ -119,7 +117,7 @@
 			<c:param name="ckey" value="${ckey}" />
 			<c:param name="clear" value="false" />
 		</c:url>
-		<c:set var="removeTitle"><fmt:message key="bibtex.actions.removeMessage.title"/></c:set>
+		<fmt:message key="bibtex.actions.removeMessage.title" var="removeTitle" />
 		
 		<c:choose>
 		   	<!-- SHOW A CONFIRM WINDOW -->
@@ -138,13 +136,15 @@
 		</c:choose>
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 	</c:if>					
-
+		
+	<a href="/bibtex/${post.resource.interHash}#discussion"><fmt:message key="post.resource.discussion" /></a>		
+	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 	
 	<c:if test="${not disableResourceLinks}">
 
 		<!-- URL -->
 		<c:if test="${not empty post.resource.url}">
-			<c:set var="urlTitle"><fmt:message key="bibtex.actions.url.title"/></c:set>
+			<fmt:message key="bibtex.actions.url.title" var="urlTitle" />
 	    	<a href="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" title="${urlTitle}">
 				<fmt:message key="bibtex.actions.url"/>
 			</a>
@@ -161,7 +161,7 @@
 		</c:if>
 		
 		<!-- BIBTEX -->
-	    <c:set var="bibtexTitle"><fmt:message key="bibtex.actions.bibtex.title"/></c:set>
+	    <fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
 	    <a href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}">
 			<fmt:message key="bibtex.actions.bibtex"/>
 		</a>
@@ -169,29 +169,23 @@
 		<!-- OPENURL -->
 		<c:if test="${not empty command.context.loginUser.openURL}">
 	    	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-	    	<c:set var="openurlTitle"><fmt:message key="bibtex.actions.openurl.title"/></c:set>
+	    	<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
 	    	<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}">
 	    		<fmt:message key="bibtex.actions.openurl"/>
 	    	</a>
-		</c:if>
-	
-		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-			
+		</c:if>			
 	</c:if>
 	
 	<!-- UnAPI -->
     <abbr class="unapi-id" title="${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><c:out value=" "/></abbr>
-  
-	
-	
-	<!-- flas as spam  -->		
+    
+	<!-- flas as spam  -->
+	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>	
     <fmt:message var="flagAsSpam" key="post.meta.flag_as_spam.title"/>
     <a id="spam_bib_${fn:escapeXml(post.user.name)}_${post.resource.intraHash}" href="javascript:;" title="${flagAsSpam}"><fmt:message key="post.meta.flag_as_spam"/></a>
     
-    
-    
-    
     <!-- display spammerKiller-Link for Admins 
+    TODO: remove?!
     <c:if test="${command.context.loginUser.role eq 'ADMIN'}">
     	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
     	<a href="javascript:addSpammerInline('${post.user.name}')"><fmt:message key="post.meta.kill_spammer"/></a>	
