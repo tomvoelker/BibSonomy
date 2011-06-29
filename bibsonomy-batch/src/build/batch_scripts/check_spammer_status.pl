@@ -1,27 +1,23 @@
 #!/usr/bin/perl -w 
 
 use strict;
+use warnings;
+use English;
 use DBI();
+use Common qw(debug get_slave get_master check_running);
 
 # Checks if transaction of updating user groups failed, so that inconsistencies 
 # considering flagged users can be found
 #
 # Changes:
+# 2011-06-29 (rja)
+# - using Common.pm now
 # 2009-11-02 (bkr)
 # - initial version
 # 2009-11-25 (bkr)
 # - split queries
 
-########################################################
-## configuration
-#########################################################
-my $user     = "batch";         # same user name on all databases
-my $password = $ENV{'DB_PASS'}; # same password on all databases
-
-# query database to get inconsistent spammers
-
-#print STDERR "Selecting tas users\n"; 
-my $dbh = DBI->connect("DBI:mysql:database=bibsonomy;host=localhost:3306;mysql_socket=/var/run/mysqld/mysqld.sock", $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+my $dbh = get_slave();
 
 # select all users from tas which have public posts
 my $stm = $dbh->prepare("SELECT user_name FROM tas WHERE `group`=0 GROUP BY user_name");

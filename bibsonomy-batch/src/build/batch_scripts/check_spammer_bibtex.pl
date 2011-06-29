@@ -1,29 +1,23 @@
 #!/usr/bin/perl -w 
 
 use strict;
+use warnings;
+use English;
 use DBI();
+use Common qw(debug get_slave get_master check_running);
 
 # Checks if already classified spammers have posted BibTeX entries 
 # after their classification. An E-Mail is sent with the users, which 
 # need to be manually checked again.
 #
 # Changes:
+# 2011-06-29 (rja)
+# - using Common.pm now
 # 2010-05-21 (bkr)
 # - initial version
 
-########################################################
-## configuration
-#########################################################
-my $user     = "batch";         # same user name on all databases
-my $password = $ENV{'DB_PASS'}; # same password on all databases
-
 # establish connection to bibsonomy database
-my $dbh = DBI->connect("DBI:mysql:database=bibsonomy;host=localhost:3306;mysql_socket=/var/run/mysqld/mysqld.sock", $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
-
-########################################################
-## spammer check
-#########################################################
-
+my $dbh = get_slave();
 
 #print STDERR "Selecting spammers\n"; 
 # select spammers
