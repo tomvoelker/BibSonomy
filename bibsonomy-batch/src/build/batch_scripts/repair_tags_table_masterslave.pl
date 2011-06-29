@@ -2,6 +2,20 @@
 ###############
 #
 # Reads the tas table and updates the tag_ctr in the tags table.
+# Since we do not do this in a transaction, users can add or 
+# delete tags after we have counted the tags.
+# 
+# This has some consequences:
+# 1.) If users add posts, the counts we set in the tags table 
+#     would be too low. Low counts are bad, since they might 
+#     block deletion of posts (negative count values are not 
+#     allowed).
+# 2.) If users delete posts, the counts we set would be too 
+#     high. 
+# 
+# Additionally, the script does not
+# - delete (or set to zero) counters of tags that don't occur in 
+#   the tas table
 # 
 # Environment variables: 
 #   see Common.pm
@@ -20,9 +34,10 @@ check_running();
 
 set_debug(1);
 
-# temp variables
+# the tag -> count mapping from the tas table
 my %tagcounts = ();
-my %old_tagcounts = ();
+
+debug("updating of tag counters started");
 
 ########################################################
 # SLAVE 
@@ -54,7 +69,16 @@ $stm_select_tagcounts->execute();
 $slave->commit;
 $rowCtr = 0;
 while (my @row = $stm_select_tagcounts->fetchrow_array ) {
-    $old_tagcounts{$row[0]} = $row[1];
+    my $tag = $row[0];
+    my $count = $row[1];
+    # check, if the tag exists in the tas table
+    if (exists $tagcounts{$tag}) {
+	# no update necessary if the count is correct
+	delete $tagcounts{$tag} if ($tagcounts{$tag} == $count);
+    } else {
+	# tag does not occur in tas table -> set count to 0
+	$tagcounts{$tag} = 0 if ($count > 0);
+    }
     $rowCtr++;
 }
 $slave->commit;
@@ -71,10 +95,8 @@ my $stm_update_tag = $master->prepare("UPDATE tags SET tag_ctr = ? WHERE tag_nam
 # update the tag table
 my $updateCtr = 0;
 while (my ($tag, $count) = each %tagcounts) {
-    if (!exists $old_tagcounts{$tag} || $count != $old_tagcounts{$tag}) {
-	$stm_update_tag->execute($count, $tag);
-	$updateCtr++;
-    }
+    $stm_update_tag->execute($count, $tag);
+    $updateCtr++;
 }
 $master->commit;
 debug("updated $updateCtr tags in 'tags' table");
