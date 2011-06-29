@@ -1726,7 +1726,7 @@ li.bm div.rating {
 	margin-bottom: 0.1em;
 }
 
-li.bm span.reviewInfo,.bmmeta,.bmdesc {
+span.reviewInfo,.bmmeta,.bmdesc {
 	font-size: 70%;
 }
 

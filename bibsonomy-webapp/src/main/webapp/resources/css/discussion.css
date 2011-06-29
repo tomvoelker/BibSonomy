@@ -44,7 +44,7 @@ li.ui-state-hover {
 	max-width: 315px;
 }
 
-.meta span {
+.info span {
 	 margin-right: 0.3em;
 }
 
@@ -117,7 +117,7 @@ li.ui-state-hover {
 	float:left;
 }
 
-.review.meta, .comment.meta {
+.review.info, .comment.info {
 	color: #555;
 	font-size: 80%;
 }
@@ -126,7 +126,7 @@ li.ui-state-hover {
 	display: table-cell;
 }
 
-.review.meta a, .comment.meta a {
+.review.info a, .comment.info a {
 	font-weight: bold;
 }
 
