@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Resource;
@@ -89,14 +90,18 @@ public class UrlPageController extends SingleResourceListController implements M
 			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, requHash, null, null, null, entriesPerPage, null);
 		}
 		
+		if (!present(command.getBookmark().getList())) {	
+			/*
+			 * We throw a ResourceNotFoundException such that we don't get empty
+			 * resource pages.
+			 */
+			throw new ResourceNotFoundException(requHash);
+		}
+
 		/*
 		 * build page title
 		 */
-		command.setPageTitle("url ::");
-		if (present(command.getBookmark().getList())) {	
-			command.setPageTitle(command.getPageTitle() + command.getBookmark().getList().get(0).getResource().getUrl());
-		}
-
+		command.setPageTitle("url :: " + command.getBookmark().getList().get(0).getResource().getUrl());
 		this.endTiming();
 
 		// html format - retrieve tags and return HTML view
