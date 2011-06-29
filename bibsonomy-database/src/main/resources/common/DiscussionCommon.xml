@@ -15,6 +15,7 @@
 		<result property="id"			column="discussion_id"	javaType="int" />
 		<result property="hash"			column="hash"			javaType="string" />
 		<result property="parentHash"	column="parent_hash"	javaType="string" />
+		<result property="anonymous"	column="anonymous"		javaType="boolean" />
 		<result property="date" 		column="date"			javaType="date" />
 		<result property="changeDate"	column="change_date"	javaType="date" />
 		<result property="user"			resultMap="Common.user"  />
@@ -30,7 +31,7 @@
 	</sql>
 	
 	<sql id="commonDiscussionAttributes">
-		d.discussion_id, d.interHash, CASE WHEN d.anonymous = 1 AND d.user_name != #userName# THEN "" ELSE d.user_name END AS user_name, d.text, d.rating, d.date, d.change_date, d.anonymous, d.type, d.parent_hash, d.hash
+		d.discussion_id, d.interHash, CASE WHEN d.anonymous = 1 AND (#userName# IS NULL OR d.user_name != #userName#) THEN "" ELSE d.user_name END AS user_name, d.text, d.rating, d.date, d.change_date, d.anonymous, d.type, d.parent_hash, d.hash
 	</sql>
 	
 	<sql id="allDiscussionColumns">
