@@ -42,7 +42,7 @@ debug("updating of tag counters started");
 
 ########################################################
 # SLAVE 
-my $slave = get_slave();
+my $slave = slave();
 # query tas table to get the current counts
 my $stm_select_tags      = $slave->prepare("SELECT tag_name FROM tas");
 # query the tags table to get the possibly outdated counts
@@ -79,7 +79,9 @@ while (my @row = $stm_select_tagcounts->fetchrow_array ) {
     }
     $rowCtr++;
 }
-# we commit here such that we get both tables in one transaction!
+# We commit here such that we get both tables in one transaction.
+# Note that this does still not ensure that what we write later
+# is correct, since counts might change between reading and writing.
 $slave->commit;
 debug("read $rowCtr rows from the 'tags' table");
 
