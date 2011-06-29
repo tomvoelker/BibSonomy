@@ -29,11 +29,6 @@ public class Review extends DiscussionItem {
 	private String text;
 	
 	/**
-	 * the user can decide if his username is published with the review
-	 */
-	private boolean anonymous;
-
-	/**
 	 * @return the rating
 	 */
 	public double getRating() {
@@ -47,20 +42,6 @@ public class Review extends DiscussionItem {
 		this.rating = rating;
 	}
 	
-	/**
-	 * @return the anonymous
-	 */
-	public boolean isAnonymous() {
-		return this.anonymous;
-	}
-
-	/**
-	 * @param anonymous the anonymous to set
-	 */
-	public void setAnonymous(final boolean anonymous) {
-		this.anonymous = anonymous;
-	}
-
 	/**
 	 * @param text the text to set
 	 */

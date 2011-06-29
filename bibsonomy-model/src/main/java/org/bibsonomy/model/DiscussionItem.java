@@ -53,6 +53,11 @@ public class DiscussionItem {
 	private String parentHash;
 
 	/**
+	 * the user can decide if his username is published with the review
+	 */
+	private boolean anonymous;
+
+	/**
 	 * @return the comments
 	 */
 	public List<DiscussionItem> getSubDiscussionItems() {
@@ -171,5 +176,19 @@ public class DiscussionItem {
 	 */
 	public void setParentHash(final String parentHash) {
 		this.parentHash = parentHash;
+	}
+
+	/**
+	 * @return the anonymous
+	 */
+	public boolean isAnonymous() {
+		return this.anonymous;
+	}
+
+	/**
+	 * @param anonymous the anonymous to set
+	 */
+	public void setAnonymous(final boolean anonymous) {
+		this.anonymous = anonymous;
 	}
 }
