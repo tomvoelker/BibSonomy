@@ -1,11 +1,15 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collections;
+import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -34,7 +38,12 @@ public class GroupCvPageController extends ResourceListController implements Min
 		command.setDuplicates("no");
 		command.setPageTitle("Curriculum vitae"); // TODO: i18n
 		
-		group.setUsers(this.logic.getUsers(null, groupingEntity, requestedGroup, null, null, null, null, null, 0, 1000));
+		List<User> groupUsers = this.logic.getUsers(null, groupingEntity, requestedGroup, null, null, null, null, null, 0, 1000);
+		if (!present(groupUsers)) {
+			throw new IllegalArgumentException("The requested group '"+requestedGroup+"' does not exist.");
+		}
+		
+		group.setUsers(groupUsers);
 		command.setGroup(group);
 		
 		/*
