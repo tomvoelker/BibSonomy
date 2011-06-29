@@ -3,7 +3,8 @@
 #
 # Reads the tas table and updates the tag_ctr in the tags table.
 # Since we do not do this in a transaction, users can add or 
-# delete tags after we have counted the tags.
+# delete tags after we have counted and before we update the 
+# tags.
 # 
 # This has some consequences:
 # 1.) If users add posts, the counts we set in the tags table 
@@ -49,7 +50,6 @@ my $stm_select_tagcounts = $slave->prepare("SELECT tag_name, tag_ctr FROM tags")
 
 # go over all tas
 $stm_select_tags->execute();
-$slave->commit;
 my $rowCtr = 0;
 while (my @row = $stm_select_tags->fetchrow_array ) {
     my $tag = $row[0];
@@ -61,12 +61,10 @@ while (my @row = $stm_select_tags->fetchrow_array ) {
     }
     $rowCtr++;
 }
-$slave->commit;
 debug("read $rowCtr rows from the 'tas' table");
 
 # get old tag counts from tags table
 $stm_select_tagcounts->execute();
-$slave->commit;
 $rowCtr = 0;
 while (my @row = $stm_select_tagcounts->fetchrow_array ) {
     my $tag = $row[0];
@@ -81,6 +79,7 @@ while (my @row = $stm_select_tagcounts->fetchrow_array ) {
     }
     $rowCtr++;
 }
+# we commit here such that we get both tables in one transaction!
 $slave->commit;
 debug("read $rowCtr rows from the 'tags' table");
 
