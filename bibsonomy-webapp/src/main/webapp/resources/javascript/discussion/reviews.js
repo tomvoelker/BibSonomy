@@ -3,21 +3,17 @@ var STAR_WIDTH = 16;
 var RATING_STEPS = 11;
 var STEP_RATING = 2;
 
-var RATING_AVG_SELECTOR = '#ratingAvg span[property=v\\:average]';
-
-var REVIEW_OWN_SELECTOR = '#ownReview';
+var RATING_AVG_DIV_SELECTOR = '#ratingAvg';
+var RATING_AVG_SELECTOR = RATING_AVG_DIV_SELECTOR + ' span[property=v\\:average]';
 
 var REVIEW_EDIT_LINK_SELECTOR = 'a.reviewEditLink';
 var REVIEW_DELETE_LINK_SELECTOR = 'a.reviewDeleteLink';
 
-var REVIEW_UPDATE_FORM_SELECTOR = '#editReviewForm';
 var REVIEW_CREATE_FORM_SELECTOR = '#createReviewForm';
 
 var REVIEW_TEXTAREA_SELECTOR = 'textarea[name="discussionItem\\.text"]';
 var REVIEW_ANONYMOUS_SELECTOR = 'input[name="discussionItem\\.anonymous"]';
 var REVIEW_RATING_SELECTOR = '.reviewrating';
-
-var REVIEW_ANONYMOUS_CSS_CLASS = 'anonymous';
 
 $(function() {
 	plotRatingDistribution();
@@ -29,7 +25,7 @@ $(function() {
 	
 	// hide graph and info
 	if ($('#noReviewInfo').length > 0) {
-		$('#ratingAvg').hide();
+		$(RATING_AVG_DIV_SELECTOR).hide();
 		$('#ratingDistribution').hide();
 	}
 	
@@ -48,6 +44,7 @@ $(function() {
 });
 
 function showUpdateReviewForm() {
+	removeAllOtherDiscussionForms();
 	$(REVIEW_UPDATE_FORM_SELECTOR).toggle('slow');
 }
 
@@ -75,6 +72,8 @@ function setAvg(value) {
 }
 
 function createReviewForm() {
+	removeAllOtherDiscussionForms();	
+	
 	var parentHash = getHash($(this));
 	var divForm = $('#createReview').clone();
 	divForm.attr('id', REVIEW_REPLY_FORM_ID);
@@ -89,17 +88,21 @@ function createReviewForm() {
 	form.find('div.ui-stars-star').remove();
 	form.find('div.ui-stars-cancel').remove();
 	form.find('[name=discussionItem\\.rating]').remove();
-	form.append($('<input></input>').attr('name', 'discussionItem.parentHash').attr('value', parentHash).attr('type', 'hidden'));
 	
 	for (var i = 1; i < RATING_STEPS; i++) {
 		form.find('.reviewrating').append('<input name="discussionItem.rating" type="radio" value="' + (i / 2) + '"/>');
-	}	
+	}
+	
+	if (parentHash != undefined) {
+		form.append($('<input></input>').attr('name', 'discussionItem.parentHash').attr('value', parentHash).attr('type', 'hidden'));
+	}
 	
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	form.submit(createReview);
 	
 	var parent = $(this).parent().parent().parent();
 	parent.append(divForm);
+	divForm.show();
 	
 	initStars();
 	scrollTo(REVIEW_REPLY_FORM_ID);
@@ -258,6 +261,7 @@ function createReview() {
 		     			
 		     			updateForm.find(REVIEW_RATING_SELECTOR).stars("select", reviewRating.toFixed(1));
 						if (anonymous) {
+							reviewView.addClass(ANONYMOUS_CLASS);
 							updateForm.find(REVIEW_ANONYMOUS_SELECTOR).attr("checked", "checked");
 						}
 						
@@ -272,6 +276,7 @@ function createReview() {
 		     			removeReviewActions();
 		     			reviewView.find(REVIEW_EDIT_LINK_SELECTOR).click(showUpdateReviewForm);
 		     			reviewView.find(REVIEW_DELETE_LINK_SELECTOR).click(deleteReview);
+		     			reviewView.find(REPLY_SELECTOR).click(reply);
 		     			
 		     			/*
 		     			 * update rating view 
@@ -342,9 +347,9 @@ function updateReview() {
 						updateHash(reviewView, response.hash);
 						
 						if (anonymous) {
-							reviewView.addClass(REVIEW_ANONYMOUS_CSS_CLASS);
+							reviewView.addClass(ANONYMOUS_CLASS);
 						} else {
-							reviewView.removeClass('anonymous');
+							reviewView.removeClass(ANONYMOUS_CLASS);
 						}
 						
 						// update values
@@ -383,10 +388,8 @@ function deleteReview() {
 		url:		revDelUrl,
 		type:		"DELETE",
 		success:	function(msg) {
-						review.fadeOut(1000, function() {
-		     				$(this).remove();
-		     				
-		     				// update overall count
+						deleteDiscussionItemView(review, function() {
+							// update overall count
 							var oldCount = getReviewCount();
 			     			var oldAvg = getAvg();
 			     			var newAvg = 0;
@@ -399,7 +402,8 @@ function deleteReview() {
 			     			setReviewCount(oldCount - 1);
 			     			setAvg(newAvg);
 			     			plotRatingDistribution();
-						});
+			     			addReviewActions();
+						});						
 					},
 		// TODO: handle error
 	});
@@ -416,7 +420,7 @@ function updateReviewView(reviewView, text, rating, abstractGrouping, groups) {
 	// groups
 	reviewView.find('.' + GROUPS_CLASS).remove();
 	var groupsView = buildGroupView(abstractGrouping, groups);
-	reviewView.find('.meta').append(groupsView);
+	reviewView.find('.info').append(groupsView);
 }
 
 function getRating(element) {

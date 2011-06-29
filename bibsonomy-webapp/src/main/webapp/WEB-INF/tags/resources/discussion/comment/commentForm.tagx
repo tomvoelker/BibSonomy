@@ -4,6 +4,8 @@
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
     
+    <!-- TODO: abstract form for discussion item (@see reviewForm.tagx) -->
+    
     <jsp:directive.attribute name="comment" type="org.bibsonomy.model.Comment" required="false" />
     <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />    
 	
@@ -23,6 +25,18 @@
    					<label class="fsLabel" for="discussionItem.text" ><fmt:message key="post.resource.comment.text"/>*</label><buttons:help message="post.resource.comment.text.help"/>
    					<textarea class="fsInput reqinput" rows="5" name="discussionItem.text"><!-- text --></textarea>
    				</div>
+   				
+   				<div class="fsRow">
+					<label class="fsLabel" for="discussionItem.anonymous" ><fmt:message key="post.resource.discussionItem.anonymous"/></label><buttons:help message="post.resource.discussionItem.anonymous.help"/>
+					<c:choose>
+						<c:when test="${not empty comment and comment.anonymous}">
+							<input type="checkbox" name="discussionItem.anonymous" value="true" checked="checked" />
+						</c:when>
+						<c:otherwise>
+							<input type="checkbox" name="discussionItem.anonymous" value="true" />
+						</c:otherwise>
+					</c:choose>
+				</div>
    				<div class="fsRow">
 					<!--
        					| groups 

@@ -1,10 +1,26 @@
 var ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR = 'input[name="abstractGrouping"]';
 var OTHER_GROUPING_CLASS_SELECTOR = '.otherGroupsBox';
-var DISCUSSION_TABS_SELECTOR = '#discussionForms';
+
 var DISCUSSION_MENU_SELECTOR = '#discussionMainMenu';
 var DISCUSSION_SELECTOR = '#discussion';
+var DISCUSSION_TOGGLE_LINK_SELECTOR = '#toggleDiscussion a';
+
+var REVIEW_OWN_SELECTOR = '#ownReview';
+
+var REVIEW_UPDATE_FORM_SELECTOR = '#editReviewForm';
 var REVIEW_REPLY_FORM_ID = 'replyReview';
+var REPLY_FORM_ID = 'replyForm';
+var REPLY_FORM_SELECTOR = '#' + REPLY_FORM_ID;
+var EDIT_COMMENT_FORM_ID = 'editComment';
+var EDIT_FORM_SELECTOR = '#' + EDIT_COMMENT_FORM_ID;
+
 var REVIEW_REPLY_FORM_SELECTOR = '#' + REVIEW_REPLY_FORM_ID;
+
+var CREATE_REVIEW_LINKS_SELECTOR = 'a.createReview';
+
+var ANONYMOUS_CLASS = 'anonymous';
+
+var ANONYMOUS_SELECTOR = 'input[name=discussionItem\\.anonymous]';
 
 // TODO: move constants
 var BOOKMARK_LIST_SELECTOR = '#bookmarkList';
@@ -18,9 +34,8 @@ var FRIENDS_GROUP_NAME = 'friends';
 var DISCUSSIONITEM_DATA_KEY = 'discussionItemHash';
 
 $(function() {	
-	// tabs for forms
-	$(DISCUSSION_TABS_SELECTOR).tabs();
-	if ($('#ownReview').length > 0) {
+	// remove all create review links if user already reviewed resource
+	if ($(REVIEW_OWN_SELECTOR).length > 0) {
 		// user has reviewed this resource hide all create review forms
 		removeReviewActions();
 	}
@@ -36,15 +51,13 @@ $(function() {
 	if (anchor != DISCUSSION_SELECTOR && ($(PUBLICATION_LIST_SELECTOR).length > 0 || $(BOOKMARK_LIST_SELECTOR).length > 0)) {
 		$(DISCUSSION_SELECTOR).hide();
 		$(DISCUSSION_MENU_SELECTOR).hide();
-		$(DISCUSSION_TABS_SELECTOR).hide();
 	} else {
-		$('#toggleDiscussion a').text(getString('post.resource.discussion.actions.hide'));
+		$(DISCUSSION_TOGGLE_LINK_SELECTOR).text(getString('post.resource.discussion.actions.hide'));
 	}
 	
-	$('#toggleDiscussion a').click(function() {
+	$(DISCUSSION_TOGGLE_LINK_SELECTOR).click(function() {
 		var visible = $(DISCUSSION_SELECTOR).is(':visible');
 		$(DISCUSSION_SELECTOR).toggle('slow');
-		$(DISCUSSION_TABS_SELECTOR).toggle('slow');
 		$(DISCUSSION_MENU_SELECTOR).toggle('slow');
 		
 		var text = getString('post.resource.discussion.actions.show');
@@ -55,26 +68,6 @@ $(function() {
 		$(this).text(text);
 	});
 	
-	/*
-	 * TODO: implement me
-	$('#toggleReviews').click(function() {
-		var nonReviews = $('.subdiscussionItems li').not('.review');
-		var onlyReviews = nonReviews.is(':visible');
-		if (onlyReviews) {
-			$(this).html("show all");
-		} else {
-			$(this).html("show only reviews");
-		}
-		nonReviews.toggle('slow');
-	});
-	
-	$('#collapseAllThreads').click(function() {
-		// TODO: change label
-		// TODO: implement me
-		return false;
-	});
-	*/
-	
 	// TODO: move and use in post edit views
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	 
@@ -83,15 +76,21 @@ $(function() {
 	});
 });
 
+function removeAllOtherDiscussionForms() {
+	$(EDIT_FORM_SELECTOR).remove();
+	$(REPLY_FORM_SELECTOR).remove();
+	$(REVIEW_REPLY_FORM_SELECTOR).remove();
+	$(REVIEW_UPDATE_FORM_SELECTOR).hide();
+}
+
 function removeReviewActions() {
-	var forms = $(DISCUSSION_TABS_SELECTOR).tabs();
-	$('a.createReview').parent().hide();
-	$('li.createReview').addClass('ui-tabs-hide');
-	// select comment tab
-	forms.tabs('select', 1);
-	
+	$(CREATE_REVIEW_LINKS_SELECTOR).parent().hide();
 	// reply review form
 	$(REVIEW_REPLY_FORM_SELECTOR).remove();
+}
+
+function addReviewActions() {
+	$(CREATE_REVIEW_LINKS_SELECTOR).parent().show();
 }
 
 // TODO: move and use in post edit views
@@ -201,7 +200,7 @@ function buildGroupView(abstractGrouping, groups) {
 			var groupLength = groups.length;
 			$.each(groups, function(index, group) {		
 				// special handling for friends
-				if (group == 'friends') {
+				if (group == FRIENDS_GROUP_NAME) {
 					container.append(getString('post.groups.friends'));
 					return;
 				}
@@ -220,6 +219,36 @@ function buildGroupView(abstractGrouping, groups) {
 	return '';
 }
 
+function deleteDiscussionItemView(discussionItemView, success) {
+	if (discussionItemView.find('ul.subdiscussionItems:first li').length > 0) {
+		discussionItemView.removeAttr('id');
+		discussionItemView.removeClass();
+		discussionItemView.addClass('discussionitem');
+		
+		discussionItemView.find('img:first').remove();
+		discussionItemView.find('.details:first').remove();
+		discussionItemView.find('.deleteInfo:first').remove();
+		discussionItemView.find('a.editLink:first').parent().remove();
+		discussionItemView.find('a.reply:first').parent().remove();
+		
+		var info = $('<div class="deletedInfo"></div').text(getString('post.resource.discussion.info'));
+		discussionItemView.prepend(info);
+		
+		highlight(info);
+		
+		if (success != undefined) {
+			success();
+		}
+	} else {
+		discussionItemView.fadeOut(1000, function() {
+				$(this).remove();
+				if (success != undefined) {
+					success();
+				}
+		});
+	}
+}
+
 function updateHash(element, newHash) {
 	$(element).find('div.info:first').data(DISCUSSIONITEM_DATA_KEY, newHash);
 	$(element).find('input[name="discussionItem\\.hash"]:first').attr('value', newHash);
@@ -227,7 +256,7 @@ function updateHash(element, newHash) {
 
 // TODO: rename function
 function getInterHash() {
-	return $('#discussionForms').data("interHash");
+	return $(DISCUSSION_SELECTOR).data("interHash");
 }
 
 // TODO: rename function
@@ -244,5 +273,5 @@ function highlight(element) {
  * TODO: move function for reuse
  */
 function scrollTo(id){
-	$('html,body').animate({scrollTop: $("#"+id).offset().top},'slow');
+	$('html,body').animate({scrollTop: $("#" + id).offset().top - 100 },'slow');
 }

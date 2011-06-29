@@ -8,9 +8,7 @@
     
     <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
     <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-    
     <jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
-    
     
    	<!-- create new review / comment for create review / comment form -->
    	<jsp:useBean id="newDate" class="java.util.Date" />
@@ -27,55 +25,42 @@
     <c:if test="${empty discussionItems}">
    		<c:set var="discussionItems" value="${resource.discussionItems}" />
    	</c:if>
-   	<div id="discussion">
- 	<!--
-	<ul id="discussionMainMenu" class="newMenu">
-		<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
-		<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
-	</ul>
-   	-->
-   	
-    <discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
-    
-    <ul class="initiallyHidden">
-		<!-- create li, div structure for new review -->
-		<li id="newReview">
-			<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
-		</li>
-    </ul>
-    <!-- review and comment forms -->
-    <!-- TODO: use spring security tags -->
-    <c:if test="${command.context.userLoggedIn}">
-		<div id="discussionForms" data-interHash="${resource.interHash}">
-			
-			<ul>
-	   	 		<li class="createReview">
-	   	 			<a href="#createReview">
-	   	 				<fmt:message key="post.resource.review.actions.post" />
-	   	 			</a>
-	   	 		</li>
-				<li class="createComment">
-					<a href="#createComment">
-						<fmt:message key="post.resource.comment.actions.post" />
-					</a>
-				</li>
-			</ul>
-			
-	    	<div id="createReview" class="createReview">
-		    	<h4><fmt:message key="post.resource.review.actions.post"/></h4>
-		    	<!-- TODO: add tips for reviewing a resource -->
-		    	<review:reviewForm resource="${resource}" />
-	    	</div>
+   	<div id="discussion" data-interHash="${resource.interHash}">
+		<ul id="discussionMainMenu" class="newMenu">
+			<li><a href="#createReview" class="createReview"><fmt:message key="post.resource.review.actions.create" /></a></li>
+			<li><a href="#createComment" class="reply"><fmt:message key="post.resource.comment.actions.create" /></a></li>
+			<!--<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
+			<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
+			-->
+		</ul>
+	   	
+	    <discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
 	    
-		    <div id="createComment">
+	    <!-- TODO: use spring security tags -->
+	    <c:if test="${command.context.userLoggedIn}">
+	    	<!-- review and comment forms -->		
+	    	<div id="createReview" class="createReview initiallyHidden">
+		    	<h4><fmt:message key="post.resource.review.actions.post"/></h4>
+		    	<review:reviewForm resource="${resource}" />
+		    	<!-- TODO: add tips for reviewing a resource -->
+	    	</div>
+		    
+		    <div id="createComment" class="initiallyHidden">
 		    	<h4><fmt:message key="post.resource.comment.actions.post" /></h4>
 		    	<comment:commentForm resource="${resource}" />
 		    </div>
-		</div>
-		
-		<div id="commentTemplate" class="initiallyHidden">
-	    	<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" />
-	    </div>
-	</c:if>
+			
+			<!-- create comment div structure -->
+			<div id="commentTemplate" class="initiallyHidden">
+		    	<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" />
+		    </div>
+		    
+		    <ul class="initiallyHidden">
+				<!-- create li, div structure for new review -->
+				<li id="newReview">
+					<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
+				</li>
+	    	</ul>
+		</c:if>
 	</div>
 </jsp:root>

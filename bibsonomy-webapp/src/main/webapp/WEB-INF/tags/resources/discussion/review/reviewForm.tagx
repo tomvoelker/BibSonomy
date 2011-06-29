@@ -46,7 +46,7 @@
 				</div>
 				
 				<div class="fsRow">
-					<label class="fsLabel" for="discussionItem.anonymous" ><fmt:message key="post.resource.review.anonymous"/></label><buttons:help message="post.resource.review.anonymous.help"/>
+					<label class="fsLabel" for="discussionItem.anonymous" ><fmt:message key="post.resource.discussionItem.anonymous"/></label><buttons:help message="post.resource.discussionItem.anonymous.help"/>
 					<c:choose>
 						<c:when test="${not empty review and review.anonymous}">
 							<input type="checkbox" name="discussionItem.anonymous" value="true" checked="checked" />

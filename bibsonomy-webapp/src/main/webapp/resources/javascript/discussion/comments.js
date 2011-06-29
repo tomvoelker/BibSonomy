@@ -1,30 +1,27 @@
 var COMMENTS_URL = "/ajax/comments";
-var REPLY_FORM_ID = 'replyForm';
-var REPLY_FORM_SELECTOR = '#' + REPLY_FORM_ID;
-var EDIT_FORM_ID = 'editComment';
-var EDIT_FORM_SELECTOR = '#' + EDIT_FORM_ID;
+
+var REPLY_SELECTOR = 'a.reply';
+var EDIT_COMMENT_LINKS_SELECTOR = 'a.commentEditLink';
+var DELETE_COMMENT_LINKS_SELECTOR = 'a.commentDeleteLink';
 
 $(function() {
 	// reply links
-	$('a.reply').click(reply);
-	
-	// create comment form on bottom
-	$('#createComment form').submit(createComment);
+	$(REPLY_SELECTOR).click(reply);
 	
 	$('a.toggleReplies').click(function() {
 		$(this).parent().parent().siblings('ul.subdiscussionItems').toggle('slow');
 		return false;
 	});
 	
-	$('a.commentEditLink').click(showEditCommentForm);
+	$(EDIT_COMMENT_LINKS_SELECTOR).click(showEditCommentForm);
 	
-	$('a.commentDeleteLink').click(deleteComment);
+	$(DELETE_COMMENT_LINKS_SELECTOR).click(deleteComment);
 });
 
 function reply() {
 	var parent = $(this).parent().parent().parent();
-	// remove old reply form
-	$(REPLY_FORM_SELECTOR).remove();
+	// remove all other forms
+	removeAllOtherDiscussionForms();
 	
 	// find parent hash
 	var parentHash = getHash($(this));
@@ -39,6 +36,7 @@ function reply() {
 	// bind group select
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	form.find('textarea').focus(); // FIXME: not working
+	
 	parent.append(clone);
 	clone.show();
 	
@@ -48,12 +46,11 @@ function reply() {
 
 function showEditCommentForm() {
 	var comment = $(this).parent().parent().parent();
-	
-	$(EDIT_FORM_SELECTOR).remove();
+	removeAllOtherDiscussionForms();
 	
 	// create edit form
 	var clone = $('#createComment').clone();
-	clone.attr('id', EDIT_FORM_ID);
+	clone.attr('id', EDIT_COMMENT_FORM_ID);
 	var form = clone.find('form');
 	
 	// find values and set it in form		
@@ -64,6 +61,9 @@ function showEditCommentForm() {
 	// … text
 	var commentText = comment.find('.text:first').text();
 	form.find('textarea').attr('value', commentText);
+	if (comment.hasClass(ANONYMOUS_CLASS)) {
+		form.find(ANONYMOUS_SELECTOR).attr('checked', 'checked');
+	}
 	
 	// … hash of comment
 	var commentHash = getHash($(this));
@@ -104,6 +104,7 @@ function createComment() {
 	var commentData = commentForm.serialize();
 	var commentTextArea = commentForm.find('textarea');
 	var commentText = commentTextArea.val();
+	var anonymous = commentForm.find(ANONYMOUS_SELECTOR);
 	
 	var commentAbstractGrouping = commentForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
 	var commentGroups = commentForm.find(OTHER_GROUPING_CLASS_SELECTOR).val();
@@ -123,7 +124,7 @@ function createComment() {
 						// clone template set text
 						var commentTemplate = $('#commentTemplate').clone();
 						commentTemplate.removeAttr('id');
-						updateCommentView(commentTemplate, response.hash, commentText, commentAbstractGrouping, commentGroups);
+						updateCommentView(commentTemplate, response.hash, commentText, anonymous, commentAbstractGrouping, commentGroups);
 						
 						var commentList = parentDiv.parent().children('.subdiscussionItems');
 						
@@ -133,7 +134,7 @@ function createComment() {
 							// TODO: reset groups and abstract grouping?
 						}
 			
-						var li = $('<li></li>');
+						var li = $('<li class="comment"></li>');
 						li.append(commentTemplate);
 			
 						commentList.append(li);
@@ -162,14 +163,20 @@ function createComment() {
 	return false;
 }
 
-function updateCommentView(commentView, commentHash, commentText, commentAbstractGrouping, commentGroups) {
+function updateCommentView(commentView, commentHash, commentText, anonymous, commentAbstractGrouping, commentGroups) {
 	commentView.find('.text:first').html(commentText);
 	updateHash(commentView, commentHash);
 
 	commentView.find('.' + GROUPS_CLASS).remove();
 	
 	var groupView = buildGroupView(commentAbstractGrouping, commentGroups);
-	commentView.find('.meta:first').append(groupView);
+	commentView.find('.info:first').append(groupView);
+	
+	if (anonymous) {
+		commentView.addClass(ANONYMOUS_CLASS);
+	} else {
+		commentView.removeClass(ANONYMOUS_CLASS);
+	}
 }
 
 function updateComment() {
@@ -184,6 +191,7 @@ function updateComment() {
 	var commentData = commentForm.serialize();
 	var commentTextArea = commentForm.find('textarea');
 	var commentText = commentTextArea.val();
+	var anonymous = commentForm.find(ANONYMOUS_SELECTOR);
 	
 	var commentAbstractGrouping = commentForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
 	var commentGroups = commentForm.find(OTHER_GROUPING_CLASS_SELECTOR).val();
@@ -201,7 +209,7 @@ function updateComment() {
 		dataType:   "json",
 		data:		commentData,
 		success:	function(response) {
-						updateCommentView(commentView, response.hash, commentText, commentAbstractGrouping, commentGroups);
+						updateCommentView(commentView, response.hash, commentText, anonymous, commentAbstractGrouping, commentGroups);
 						commentForm.parent().remove();
 						highlight(commentView);
 					},
@@ -232,9 +240,7 @@ function deleteComment() {
 		url: deleteUrl,
 		type: "DELETE",
 		success: function() {
-			comment.fadeOut(FADE_DURATION, function() {
-				$(this).remove();
-			});
+			deleteDiscussionItemView(comment);
 		},
 		// TODO: handle error
 	});

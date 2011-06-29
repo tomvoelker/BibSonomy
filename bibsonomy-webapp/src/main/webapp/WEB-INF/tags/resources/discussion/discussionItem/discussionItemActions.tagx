@@ -11,7 +11,7 @@
 	
 	<ul class="discussionitemMenu">
 	
-	<!-- reply link  -->
+	<!-- reply links  -->
 	<c:if test="${command.context.userLoggedIn and !disableReply}">
 		<li>
 			<a href="#reply" class="reply">
@@ -27,19 +27,28 @@
 	<c:set var="subDiscussionItemsSize" value="${fn:length(discussionItem.subDiscussionItems)}" />
 	
 	<!-- number of replies and toggle link -->
-	<c:if test="${subDiscussionItemsSize > 0}">
-		<li>
-			<fmt:message var="replies" key="post.resource.comment.reply" />
-			<c:if test="${subDiscussionItemsSize > 1}">
-				<fmt:message var="replies" key="post.resource.comment.replies">
-					<fmt:param value="${subDiscussionItemsSize}" />
-				</fmt:message>
-			</c:if>
-			<a href="#toggleReplies" class="toggleReplies">
-				<c:out value="${replies}" />
-			</a>
-		</li>
-	</c:if>
+	<c:choose>
+		<c:when test="${subDiscussionItemsSize > 0}">
+			<li class="replies">
+				<fmt:message var="replies" key="post.resource.discussion.reply" />
+				<c:if test="${subDiscussionItemsSize > 1}">
+					<fmt:message var="replies" key="post.resource.discussion.replies">
+						<fmt:param value="${subDiscussionItemsSize}" />
+					</fmt:message>
+				</c:if>
+				<a href="#toggleReplies" class="toggleReplies">
+					<c:out value="${replies}" />
+				</a>
+			</li>
+		</c:when>
+		<c:otherwise>
+			<li style="display:none;">
+				<a href="#toggleReplies" class="toggleReplies">
+					<fmt:message key="post.resource.comment.reply" />
+				</a>
+			</li>
+		</c:otherwise>
+	</c:choose>
 	
 	<!-- edit and delete link -->
 	<!-- TODO: use spring security tag lib -->
@@ -48,9 +57,9 @@
 		<li><a href="#edit${discussionItemClass}" class="${discussionItemClass}EditLink editLink"><fmt:message key="post.resource.${discussionItemClass}.actions.edit" /></a></li>
 		<li>
 			<span class="deleteInfo initiallyHidden">
-			<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
-			<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
-		</span>
+				<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
+				<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
+			</span>
 			<a href="#delete${discussionItemClass}" class="${discussionItemClass}DeleteLink deleteLink">
 				<fmt:message key="post.resource.${discussionItemClass}.actions.delete" />
 			</a>
