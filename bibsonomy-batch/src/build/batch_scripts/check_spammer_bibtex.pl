@@ -14,11 +14,11 @@ use strict;
 use warnings;
 use English;
 use DBI();
-use Common qw(debug check_running get_connection);
+use Common qw(debug check_running);
 
 check_running();
 
-my $dbh = get_connection(shift @ARGV);
+my $dbh = Common::get_connection(shift @ARGV);
 
 
 #print STDERR "Selecting spammers\n"; 

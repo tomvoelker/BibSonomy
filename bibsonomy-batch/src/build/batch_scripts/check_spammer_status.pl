@@ -15,11 +15,11 @@ use strict;
 use warnings;
 use English;
 use DBI();
-use Common qw(debug check_running get_connection);
+use Common qw(debug check_running);
 
 check_running();
 
-my $dbh = get_connection(shift @ARGV);
+my $dbh = Common::get_connection(shift @ARGV);
 
 # select all users from tas which have public posts
 my $stm = $dbh->prepare("SELECT user_name FROM tas WHERE `group`=0 GROUP BY user_name");
