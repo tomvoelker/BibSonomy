@@ -108,6 +108,7 @@
 			<script type="text/javascript">
 				$(function(){
 					$(".synchronizeBtn").click(function(){
+						$(this).hide();
 						var fieldset = $(this).parents("fieldset");
 						var serviceName = fieldset.find(".serviceName").text();
 						var bookmarks = fieldset.find(".bookmarksBox").attr("checked");
@@ -133,7 +134,7 @@
 								contentType : content
 							},
 							success: function(data) {
-
+								$(".synchronizeBtn").show();
 								for (key in data) {
 									var row = fieldset.find(".content" + key);
 									var date = new Date(data[key].date);
@@ -148,6 +149,7 @@
 							},
 							error: function(data) {
 								alert("sync err");
+								$(".synchronizeBtn").show();
 							}
 						});
 						return false;
