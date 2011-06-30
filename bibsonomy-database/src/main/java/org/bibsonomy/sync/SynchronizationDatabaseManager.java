@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.Resource;
@@ -23,6 +25,8 @@ import org.bibsonomy.model.sync.SynchronizationStates;
  */
 public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     private static final SynchronizationDatabaseManager singelton = new SynchronizationDatabaseManager();
+    
+    private static final Log log = LogFactory.getLog(SynchronizationDatabaseManager.class);
     
     /**
      * Singleton 
@@ -192,12 +196,13 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 
 		for (SynchronizationPost clientPost : clientPosts) {
 			SynchronizationPost serverPost = serverPosts.get(clientPost.getIntraHash());
-			if (lastSyncDate == null) {
-				System.err.println("last sync date not present");
+			if (!present(lastSyncDate)) {
+				log.error("lastSyncDate not present");
+				return null;
 			}
 
 			/* no such post on server */
-			if (serverPost == null) {
+			if (!present(serverPost)) {
 				/*
 				 * clientpost is older than last synchronization -> post was
 				 * deleted on server
@@ -210,7 +215,11 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 					continue;
 				}
 			}
-
+			
+			if (!present(serverPost.getChangeDate())) {
+				log.error("post on server has no changedate");
+				//FIXME what is to do in this case?
+			}
 			/* changed on server since last sync */
 			if (serverPost.getChangeDate().compareTo(lastSyncDate) > 0) {
 				if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0) {
