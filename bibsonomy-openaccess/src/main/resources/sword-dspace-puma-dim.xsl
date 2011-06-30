@@ -123,12 +123,19 @@
 		<xsl:if test="./@year">
 	    	<dim:field mdschema="dc" element="date">
 	    		<xsl:value-of select="@year"/>
-			
-				<xsl:if test="./@month">-<xsl:value-of select="@month"/></xsl:if>
-			
-				<xsl:if test="./@day">-<xsl:value-of select="@day"/></xsl:if>
-
+			<xsl:if test="./@month">-<xsl:value-of select="@month"/></xsl:if>
+			<xsl:if test="./@day">-<xsl:value-of select="@day"/></xsl:if>
 	    	</dim:field>
+
+	
+		<!-- WORKAROUND -->
+    		<dim:field mdschema="dc" element="description" qualifier="everything">
+    			<xsl:text>Datum der Veröffentlichung: </xsl:text>
+	    		<xsl:value-of select="@year"/>
+			<xsl:if test="./@month">-<xsl:value-of select="@month"/></xsl:if>
+			<xsl:if test="./@day">-<xsl:value-of select="@day"/></xsl:if>
+		</dim:field>
+
 		</xsl:if>
 	
 	    <!-- dc.identifier.uri -->
@@ -187,6 +194,12 @@
     	<dim:field mdschema="dc" element="date" qualifier="examination">
     		<xsl:value-of select="."/>
     	</dim:field>
+	
+	<!-- WORKAROUND -->
+    	<dim:field mdschema="dc" element="description" qualifier="everything">
+    		<xsl:text>Tag der mundlichen Prüfung: </xsl:text>
+    		<xsl:value-of select="."/>
+	</dim:field>
     </xsl:template>
 
     <!-- dc.description.sponsorship -->
@@ -231,6 +244,12 @@
 	    	<dim:field mdschema="dc" element="subject" qualifier="{@name}">
 	    		<xsl:value-of select="@value"/>
 	    	</dim:field>
+
+		<!-- WORKAROUND -->
+    		<dim:field mdschema="dc" element="description" qualifier="everything">
+    			<xsl:text>DDC: </xsl:text>
+	    		<xsl:value-of select="@value"/>
+		</dim:field>
 		</xsl:when>
 
 	    <!-- other -->
@@ -274,7 +293,7 @@
 		
     	<dim:field mdschema="dc" element="description" qualifier="everything">
     		<xsl:text>Puma-Nutzer: </xsl:text>
-			<xsl:if test="./@realname">
+		<xsl:if test="./@realname">
 		    		<xsl:value-of select="@realname"/>
 			</xsl:if>
 			
@@ -286,6 +305,8 @@
 		    		<xsl:text> (</xsl:text><xsl:value-of select="@id"/><xsl:text>)</xsl:text>
 			</xsl:if>
     	</dim:field>
+
+
 		
     </xsl:template>
 
