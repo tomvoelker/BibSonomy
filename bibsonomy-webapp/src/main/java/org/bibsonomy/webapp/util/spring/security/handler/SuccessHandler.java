@@ -57,7 +57,7 @@ public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandle
 		final String targetUrl = super.determineTargetUrl(request, response);
 		
 		// == 1 because loginUrl contains leading /
-		if (present(this.loginFormUrl) && targetUrl.indexOf(this.loginFormUrl) == 1) {
+		if (present(this.loginFormUrl) && this.loginFormUrl.indexOf(targetUrl) == 1) {
 			return "";
 		}
 		
