@@ -21,4 +21,8 @@
 	<update id="updateDiscussion">
 		UPDATE discussion SET interHash = #newId# WHERE interHash = #oldId#
 	</update>
+	
+	<update id="updateReviewRatingCache">
+		UPDATE review_ratings_cache SET interHash = #newId# WHERE interHash = #oldId#
+	</update>
 </sqlMap>
