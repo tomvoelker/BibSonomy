@@ -72,10 +72,14 @@ public class ReviewValidatorTest {
 		errors = ValidationTestUtils.validate(VALIDATOR, command);
 		assertFalse(errors.hasErrors());
 		
-		review.setText("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore" +
-				" magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. " +
-				"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat" +
-				"cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+		final StringBuilder reviewText = new StringBuilder();
+		for (int i = 0; i < 1000; i++) {
+			reviewText.append("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore" +
+					" magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. " +
+					"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat" +
+					"cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+		}
+		review.setText(reviewText.toString());
 		errors = ValidationTestUtils.validate(VALIDATOR, command);
 		assertTrue(errors.hasFieldErrors(DiscussionItemValidator.DISCUSSION_ITEM_PATH + "text"));
 	}
