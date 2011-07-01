@@ -16,15 +16,13 @@
 			</a>
 		</li>
 		
-		<c:if test="${not command.context.loginUser.spammer}">
+		<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
 			<li>
 				<fmt:message key="post.actions.edit.gold.title" var="editTitle"/>
 				<a href="/editGoldStandardPublication?intraHashToUpdate=${goldstandard.interHash}" title="${fn:escapeXml(editTitle)}">
 					<fmt:message key="post.actions.edit"/>
 				</a>
 			</li>
-		</c:if>
-		<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
 			<li>
 				<fmt:message key="post.actions.edit.gold.references" var="editRefTitle" />
 				<a href="javascript:editReferences();" title="${editRefTitle}">
