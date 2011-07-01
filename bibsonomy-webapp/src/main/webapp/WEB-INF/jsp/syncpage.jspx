@@ -136,6 +136,11 @@
 							success: function(data) {
 								$(".synchronizeBtn").show();
 								for (key in data) {
+									var error = data[key].error;
+									if (error != "no") {
+										alert(key + ": " + error);
+										continue;
+									}
 									var row = fieldset.find(".content" + key);
 									var date = new Date(data[key].date);
 									var result = data[key].result;

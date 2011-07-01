@@ -99,8 +99,14 @@ public class SynchronizationController extends AjaxController implements Minimal
 	
 	private void addData (JSONObject json, Class<? extends Resource> resourceType, SynchronizationData data) {
 		HashMap<String, Object> values = new HashMap<String, Object>();
-		values.put("date", data.getLastSyncDate().getTime());
-		values.put("result", data.getStatus());
+		if("running".equals(data.getStatus())) {
+			//TODO i18N
+			values.put("error", "old synchronization still running, please try later");
+		} else {
+			values.put("error", "no");
+			values.put("date", data.getLastSyncDate().getTime());
+			values.put("result", data.getStatus());
+		}
 		json.put(resourceType.getSimpleName(), values);
 	}
 
