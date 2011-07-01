@@ -9,12 +9,20 @@ $(function() {
 	$(REPLY_SELECTOR).click(reply);
 	
 	$('a.toggleReplies').click(function() {
-		$(this).parent().parent().siblings('ul.subdiscussionItems').toggle('slow');
+		var view = $(this).parent().parent().siblings('ul.subdiscussionItems');
+		var visible = view.is(':visible');
+		view.toggle('slow');
+		
+		var text = getString('post.resource.discussion.replies.show');
+		if (visible) {
+			text = getString('post.resource.discussion.replies.hide');
+		}
+		
+		$(this).text(text);
 		return false;
 	});
 	
 	$(EDIT_COMMENT_LINKS_SELECTOR).click(showEditCommentForm);
-	
 	$(DELETE_COMMENT_LINKS_SELECTOR).click(deleteComment);
 });
 
