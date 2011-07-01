@@ -10,8 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -34,7 +37,7 @@ import org.bibsonomy.model.sync.SynchronizationPost;
  * @version $Id$
  */
 public class SynchronizationClient {
-
+	private static final Log log = LogFactory.getLog(SynchronizationClient.class);
 	
 	private String ownUri;
 	private URI uri;
@@ -120,22 +123,35 @@ public class SynchronizationClient {
 	
 	public SynchronizationData synchronize(LogicInterface clientLogic, Class<? extends Resource> resourceType, User clientUser, SyncService server) {
 		User serverUser = getUserFromProperties(server.getServerUser());
-
-		SyncLogicInterface serverSyncLogic = createServerLogic(serverUser.getName(), serverUser.getApiKey());
-
-		String result = synchronizeResource(resourceType, serverUser, clientUser, serverSyncLogic, clientLogic);
 		
+		SyncLogicInterface serverSyncLogic = createServerLogic(serverUser.getName(), serverUser.getApiKey());
+		String result = "error";
+		try {
+			result = synchronizeResource(resourceType, serverUser, clientUser, serverSyncLogic, clientLogic);
+		} catch (SynchronizationRunningException e) {
+			//TODO handling of this exception type
+			SynchronizationData data = new SynchronizationData();
+			data.setStatus("running");
+			return data;
+		} catch (Exception e) {
+			//in case of an error, store syncdate as not successful, result stay "error"
+			result = "error";
+			log.error("ERROR OCCURRED");
+		}
 		storeSyncResult(result, resourceType, serverSyncLogic, serverUser.getName());
 		
 		SynchronizationData data = getLastSyncData(serverUser.getName(), ConstantID.getContentTypeByClass(resourceType), serverSyncLogic).get(resourceType.getSimpleName());
 
 		return data;
-	}
+	}	
 	
-
 	private void storeSyncResult(String result, Class<? extends Resource> resourceType, SyncLogicInterface serverLogic, String serverUserName) {
 		SyncLogicInterface syncServerLogic = serverLogic;
 		SynchronizationData data = syncServerLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUserName, uri, resourceType);
+		if(!present(data)) {
+			//started more than one sync process per second -> do nothing
+			return;
+		}
 		if (data.getStatus().equals("undone")) {
 			data.setStatus(result);
 			syncServerLogic.updateSyncData(data);
@@ -152,11 +168,15 @@ public class SynchronizationClient {
 		SyncLogicInterface syncClientLogic = (SyncLogicInterface)clientLogic;
 		LogicInterface serverLogic = (LogicInterface)syncServerLogic;
 		
-		serverLogic.getAuthenticatedUser().setRole(Role.SYNC);
-		clientLogic.getAuthenticatedUser().setRole(Role.SYNC);
-		
-		List<SynchronizationPost> clientPosts = syncClientLogic.getSyncPostsListForUser(resourceType, clientUser.getName());
+		User serverAuthenticatedUser = serverLogic.getAuthenticatedUser();
+		serverAuthenticatedUser.setRole(Role.SYNC);
 
+		
+		User clientAuthenticatedUser = clientLogic.getAuthenticatedUser();
+		clientAuthenticatedUser.setRole(Role.SYNC);
+	
+		List<SynchronizationPost> clientPosts = syncClientLogic.getSyncPostsListForUser(resourceType, clientUser.getName());
+		
 		syncServerLogic.getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, uri);
 
 		/*

@@ -103,10 +103,23 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param session
      * @return last synchronization date for given user, content type and service 
      */
+    public Date getLastDoneSynchronizationDate(final String userName, final URI service, Class<? extends Resource> resourceType, final DBSession session) {
+    	int serviceId = this.getServiceId(session, service);
+    	SyncParam param =  new SyncParam(userName, service, serviceId, resourceType, null, null, null);
+    	return this.queryForObject("getLastDoneSyncDateForUserForServiceForContent", param , Date.class, session);
+    }
+    
+    /**
+     * @param userName
+     * @param service
+     * @param contentType
+     * @param session
+     * @return last synchronization date for given user, content type and service 
+     */
     public Date getLastSynchronizationDate(final String userName, final URI service, Class<? extends Resource> resourceType, final DBSession session) {
     	int serviceId = this.getServiceId(session, service);
     	SyncParam param =  new SyncParam(userName, service, serviceId, resourceType, null, null, null);
-    	return this.queryForObject("getLastSyncDateForUserForServiceForContent", param , Date.class, session);
+    	return this.queryForObject("getLastSyncDate", param , Date.class, session);
     }
     
     /**

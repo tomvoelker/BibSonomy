@@ -41,6 +41,7 @@ import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.DBSession;
@@ -298,16 +299,23 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      */
     @Override
     public List<SynchronizationPost> getSynchronization(final String userName, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service) {
-	Date lastSyncDate;
+	Date lastDoneSyncDate;
 	
 	Map<String, SynchronizationPost> posts = null;
 	
 	final DBSession session = this.openSession();
 	try {
-	    lastSyncDate = syncDBManager.getLastSynchronizationDate(userName, service, resourceType, session);
-	    if(!present(lastSyncDate)) {
-	    	lastSyncDate = new Date(0);
+		SynchronizationData data = syncDBManager.getCurrentSynchronizationData(userName, service, resourceType, session);
+		if (present(data)) {
+			//running synchronization
+			throw new SynchronizationRunningException();
+		}
+	    lastDoneSyncDate = syncDBManager.getLastDoneSynchronizationDate(userName, service, resourceType, session);
+	    
+	    if(!present(lastDoneSyncDate)) {
+	    	lastDoneSyncDate = new Date(0);
 	    }
+	    
 	    syncDBManager.insertSyncronizationData(userName, service, resourceType, new Date(), "undone", session);
 	    posts = this.getSyncPostsMapForUser(userName, resourceType);
 
@@ -315,7 +323,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	    session.close();
 	}
 	
-	return syncDBManager.synchronize(posts, clientPosts, lastSyncDate, strategy);
+	return syncDBManager.synchronize(posts, clientPosts, lastDoneSyncDate, strategy);
     }
     
     /*
