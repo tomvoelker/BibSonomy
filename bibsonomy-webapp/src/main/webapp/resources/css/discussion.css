@@ -182,3 +182,13 @@ ul.newMenu li a:hover {
 	background-color: rgb(233, 233, 233); /* TODO: puma */
 	color: rgb(96, 96, 96) !important;
 }
+
+ul.discussionitemMenu li {
+	border-right: 1px solid grey;
+	padding-right: 0.4em;
+	padding-left: 0.4em;
+}
+
+ul.discussionitemMenu li:last-child {
+	border-right: none;
+}
