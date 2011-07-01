@@ -9,8 +9,6 @@ var RATING_AVG_SELECTOR = RATING_AVG_DIV_SELECTOR + ' span[property=v\\:average]
 var REVIEW_EDIT_LINK_SELECTOR = 'a.reviewEditLink';
 var REVIEW_DELETE_LINK_SELECTOR = 'a.reviewDeleteLink';
 
-var REVIEW_CREATE_FORM_SELECTOR = '#createReviewForm';
-
 var REVIEW_TEXTAREA_SELECTOR = 'textarea[name="discussionItem\\.text"]';
 var REVIEW_ANONYMOUS_SELECTOR = 'input[name="discussionItem\\.anonymous"]';
 var REVIEW_RATING_SELECTOR = '.reviewrating';
@@ -211,7 +209,7 @@ function createReview() {
 	spinner.show('slow');
 	
 	var reviewText = reviewForm.find(REVIEW_TEXTAREA_SELECTOR).val();
-	var anonymous = reviewForm.find(REVIEW_ANONYMOUS_SELECTOR + ':checked').length > 0;
+	var anonymous = reviewForm.find(REVIEW_ANONYMOUS_SELECTOR).is(':checked');
 	var reviewRating = getRating(reviewRatingInput);
 	
 	var abstractGrouping = reviewForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
@@ -326,7 +324,7 @@ function updateReview() {
 	
 	// save all values for success action
 	var reviewText = reviewForm.find(REVIEW_TEXTAREA_SELECTOR).val();
-	var anonymous = reviewForm.find(REVIEW_ANONYMOUS_SELECTOR + ':checked').length > 0;
+	var anonymous = reviewForm.find(REVIEW_ANONYMOUS_SELECTOR).is(':checked');
 	var reviewRating = getRating(reviewRatingInput);
 	var oldReviewRating = getOwnReviewRating();
 	

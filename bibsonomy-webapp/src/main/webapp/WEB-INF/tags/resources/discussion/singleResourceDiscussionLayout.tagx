@@ -13,10 +13,5 @@
 		
 		<!-- TODO: display comment count -->
 		<discussion:discussion loginUser="${command.context.loginUser}" resource="${resource}" discussionItems="${discussionItems}" />
-		<ul id="toggleDiscussion">
-			<li>
-				<a href="#discussion"><fmt:message key="post.resource.discussion.actions.show" /></a>	
-			</li>
-		</ul>
 	</div>	
 </jsp:root>

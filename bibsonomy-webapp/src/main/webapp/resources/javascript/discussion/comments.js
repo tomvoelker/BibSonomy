@@ -104,7 +104,7 @@ function createComment() {
 	var commentData = commentForm.serialize();
 	var commentTextArea = commentForm.find('textarea');
 	var commentText = commentTextArea.val();
-	var anonymous = commentForm.find(ANONYMOUS_SELECTOR);
+	var anonymous = commentForm.find(ANONYMOUS_SELECTOR).is(':checked');
 	
 	var commentAbstractGrouping = commentForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
 	var commentGroups = commentForm.find(OTHER_GROUPING_CLASS_SELECTOR).val();
@@ -153,6 +153,7 @@ function createComment() {
 						parentDiv.remove();
 						spinner.hide();
 						commentForm.submit(createComment);
+						showReviewForm();
 					},
 		error: 		function(jqXHR, data, errorThrown) {
 						handleAjaxErrors(commentForm, jQuery.parseJSON(jqXHR.responseText));
@@ -164,7 +165,7 @@ function createComment() {
 }
 
 function updateCommentView(commentView, commentHash, commentText, anonymous, commentAbstractGrouping, commentGroups) {
-	commentView.find('.text:first').html(commentText);
+	commentView.find('.text:first').text(commentText);
 	updateHash(commentView, commentHash);
 
 	commentView.find('.' + GROUPS_CLASS).remove();
@@ -191,7 +192,7 @@ function updateComment() {
 	var commentData = commentForm.serialize();
 	var commentTextArea = commentForm.find('textarea');
 	var commentText = commentTextArea.val();
-	var anonymous = commentForm.find(ANONYMOUS_SELECTOR);
+	var anonymous = commentForm.find(ANONYMOUS_SELECTOR).is(':checked');
 	
 	var commentAbstractGrouping = commentForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
 	var commentGroups = commentForm.find(OTHER_GROUPING_CLASS_SELECTOR).val();
@@ -212,6 +213,7 @@ function updateComment() {
 						updateCommentView(commentView, response.hash, commentText, anonymous, commentAbstractGrouping, commentGroups);
 						commentForm.parent().remove();
 						highlight(commentView);
+						showReviewForm();
 					},
 		error:		function(jqXHR, data, errorThrown) {
 						handleAjaxErrors(commentForm, jQuery.parseJSON(jqXHR.responseText));

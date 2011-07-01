@@ -30,21 +30,15 @@
 	<c:choose>
 		<c:when test="${subDiscussionItemsSize > 0}">
 			<li class="replies">
-				<fmt:message var="replies" key="post.resource.discussion.reply" />
-				<c:if test="${subDiscussionItemsSize > 1}">
-					<fmt:message var="replies" key="post.resource.discussion.replies">
-						<fmt:param value="${subDiscussionItemsSize}" />
-					</fmt:message>
-				</c:if>
 				<a href="#toggleReplies" class="toggleReplies">
-					<c:out value="${replies}" />
+					<fmt:message key="post.resource.discussion.replies.show" />
 				</a>
 			</li>
 		</c:when>
 		<c:otherwise>
 			<li style="display:none;">
 				<a href="#toggleReplies" class="toggleReplies">
-					<fmt:message key="post.resource.comment.reply" />
+					<fmt:message key="post.resource.discussion.replies.show" />
 				</a>
 			</li>
 		</c:otherwise>

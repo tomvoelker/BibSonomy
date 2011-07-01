@@ -3,7 +3,7 @@ var OTHER_GROUPING_CLASS_SELECTOR = '.otherGroupsBox';
 
 var DISCUSSION_MENU_SELECTOR = '#discussionMainMenu';
 var DISCUSSION_SELECTOR = '#discussion';
-var DISCUSSION_TOGGLE_LINK_SELECTOR = '#toggleDiscussion a';
+var DISCUSSION_TOGGLE_LINK_SELECTOR = '#toggleDiscussion';
 
 var REVIEW_OWN_SELECTOR = '#ownReview';
 
@@ -11,12 +11,13 @@ var REVIEW_UPDATE_FORM_SELECTOR = '#editReviewForm';
 var REVIEW_REPLY_FORM_ID = 'replyReview';
 var REPLY_FORM_ID = 'replyForm';
 var REPLY_FORM_SELECTOR = '#' + REPLY_FORM_ID;
-var EDIT_COMMENT_FORM_ID = 'editComment';
+var EDIT_COMMENT_FORM_ID = 'editcomment';
 var EDIT_FORM_SELECTOR = '#' + EDIT_COMMENT_FORM_ID;
 
 var REVIEW_REPLY_FORM_SELECTOR = '#' + REVIEW_REPLY_FORM_ID;
 
 var CREATE_REVIEW_LINKS_SELECTOR = 'a.createReview';
+var REVIEW_CREATE_FORM_SELECTOR = '#createReviewForm';
 
 var ANONYMOUS_CLASS = 'anonymous';
 
@@ -40,25 +41,9 @@ $(function() {
 		removeReviewActions();
 	}
 	
-	var location = document.location.toString();
-	var anchor = "#";
-	if (location.match('#')) { // the URL contains an anchor
-	  // click the navigation item corresponding to the anchor
-	  anchor += location.split('#')[1];
-	}
-	
-	// hide discussion on list pages
-	if (anchor != DISCUSSION_SELECTOR && ($(PUBLICATION_LIST_SELECTOR).length > 0 || $(BOOKMARK_LIST_SELECTOR).length > 0)) {
-		$(DISCUSSION_SELECTOR).hide();
-		$(DISCUSSION_MENU_SELECTOR).hide();
-	} else {
-		$(DISCUSSION_TOGGLE_LINK_SELECTOR).text(getString('post.resource.discussion.actions.hide'));
-	}
-	
 	$(DISCUSSION_TOGGLE_LINK_SELECTOR).click(function() {
 		var visible = $(DISCUSSION_SELECTOR).is(':visible');
 		$(DISCUSSION_SELECTOR).toggle('slow');
-		$(DISCUSSION_MENU_SELECTOR).toggle('slow');
 		
 		var text = getString('post.resource.discussion.actions.show');
 		if (!visible) {
@@ -76,17 +61,25 @@ $(function() {
 	});
 });
 
+// TODO: rename
 function removeAllOtherDiscussionForms() {
 	$(EDIT_FORM_SELECTOR).remove();
 	$(REPLY_FORM_SELECTOR).remove();
 	$(REVIEW_REPLY_FORM_SELECTOR).remove();
 	$(REVIEW_UPDATE_FORM_SELECTOR).hide();
+	$(REVIEW_CREATE_FORM_SELECTOR).parent().hide();
+}
+
+function showReviewForm() {
+	$(REVIEW_CREATE_FORM_SELECTOR).parent().show();
 }
 
 function removeReviewActions() {
 	$(CREATE_REVIEW_LINKS_SELECTOR).parent().hide();
 	// reply review form
 	$(REVIEW_REPLY_FORM_SELECTOR).remove();
+	// create review form
+	$(REVIEW_CREATE_FORM_SELECTOR).parent().remove();
 }
 
 function addReviewActions() {

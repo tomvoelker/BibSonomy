@@ -25,21 +25,28 @@
     <c:if test="${empty discussionItems}">
    		<c:set var="discussionItems" value="${resource.discussionItems}" />
    	</c:if>
-   	<div id="discussion" data-interHash="${resource.interHash}">
-		<ul id="discussionMainMenu" class="newMenu">
+   	
+   	<ul id="discussionMainMenu" class="newMenu">
+		<li>
+			<a href="#discussion" id="toggleDiscussion"><fmt:message key="post.resource.discussion.actions.hide" /></a>
+		</li>
+		<!-- TODO: use spring security tags -->
+		<c:if test="${command.context.userLoggedIn}">
 			<li><a href="#createReview" class="createReview"><fmt:message key="post.resource.review.actions.create" /></a></li>
 			<li><a href="#createComment" class="reply"><fmt:message key="post.resource.comment.actions.create" /></a></li>
-			<!--<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
-			<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
-			-->
-		</ul>
-	   	
+		</c:if>
+		
+		<!--<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
+		<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
+		-->
+	</ul>
+   	<div id="discussion" data-interHash="${resource.interHash}">	   	
 	    <discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
 	    
 	    <!-- TODO: use spring security tags -->
 	    <c:if test="${command.context.userLoggedIn}">
-	    	<!-- review and comment forms -->		
-	    	<div id="createReview" class="createReview initiallyHidden">
+	    	<!-- review and comment forms -->
+	    	<div id="createReview" class="createReview">
 		    	<h4><fmt:message key="post.resource.review.actions.post"/></h4>
 		    	<review:reviewForm resource="${resource}" />
 		    	<!-- TODO: add tips for reviewing a resource -->
