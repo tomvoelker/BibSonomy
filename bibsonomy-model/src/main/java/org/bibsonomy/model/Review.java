@@ -19,7 +19,7 @@ public class Review extends DiscussionItem {
 	/**
 	 * the max text length of a review
 	 */
-	public static int MAX_TEXT_LENGTH = 140;
+	public static int MAX_TEXT_LENGTH = 15000;
 	
 	/**
 	 * rating from MIN to MAX_REVIEW_RATING (x.0 and x.5)
