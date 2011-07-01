@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.BibTex;
@@ -65,7 +66,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 
 	@Override
 	protected boolean canEditPost(final RequestWrapperContext context) {
-		return super.canEditPost(context) && !context.getLoginUser().isSpammer();
+		return super.canEditPost(context) && Role.ADMIN.equals(context.getLoginUser().getRole());
 	}
 
 	@Override
