@@ -48,7 +48,6 @@
 			<span class="bmaction">
 				<jsp:invoke fragment="actions"/>
 			</span>
-			
 			<!-- ugly hack to circumvent IEs clearfix bug -->
 			<c:set var="act">
 				<jsp:invoke fragment="actions"/>
@@ -61,12 +60,12 @@
 			<!-- TODO: remove as soon lucene supports rating -->
 			<!-- ratings -->
 			<c:if test="${not empty post.resource.rating}">
-			<div class="rating">
+			<span class="bmrating">
 				<a href="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox">
 					<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
 				</a>
 				<span class="reviewInfo">(<c:out value="${post.resource.numberOfRatings}"/>)</span>
-			</div>
+			</span>
 			</c:if>
 		</div>   
 	</li>
