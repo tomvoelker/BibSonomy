@@ -116,16 +116,16 @@
 	<!--+
 		| CRON job to send pings to bookmarked web pages
 		+-->
-	<bean id="pingbackJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="pingback" />
-		<property name="targetMethod" value="clearQueue" />
-		<property name="concurrent" value="false" />
-	</bean>
-	<bean id="pingbackTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-		<property name="jobDetail" ref="pingbackJobDetail" />
-		<property name="startDelay" value="300000" /><!-- start running 5 minutes after system start  -->
-		<property name="repeatInterval" value="300000" /><!-- clean queue every 5 minutes -->
-	</bean>
+<!--	<bean id="pingbackJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+<!--		<property name="targetObject" ref="pingback" />-->
+<!--		<property name="targetMethod" value="clearQueue" />-->
+<!--		<property name="concurrent" value="false" />-->
+<!--	</bean>-->
+<!--	<bean id="pingbackTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">-->
+<!--		<property name="jobDetail" ref="pingbackJobDetail" />-->
+<!--		<property name="startDelay" value="300000" /> start running 5 minutes after system start  -->
+<!--		<property name="repeatInterval" value="300000" /> clean queue every 5 minutes -->
+<!--	</bean>-->
 	
 	
 	<!--+ 
@@ -149,7 +149,7 @@
 	            <ref bean="luceneGenerateBibTexCronTrigger" />
 	            <ref bean="luceneGenerateBookmarkCronTrigger" />
 	             -->
-	             <ref bean="pingbackTrigger" />
+<!--	             <ref bean="pingbackTrigger" />-->
 	        </list>
 	    </property>
 	</bean>                
