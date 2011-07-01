@@ -19,8 +19,7 @@
 	<jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
    
 	<li class="bm">
-
-        <!-- only display icon when user is logged in and does NOT visit his own userpage  -->
+		<!-- only display icon when user is logged in and does NOT visit his own userpage  -->
         <c:if test="${command.context.userLoggedIn and command.requestedUser ne loginUserName}">
   		  <c:choose>
 			<c:when test="${loginUserName eq post.user.name}">
@@ -36,19 +35,12 @@
 		  </c:choose>
         </c:if>
 		
-		<!-- TODO: remove as soon lucene supports rating -->
-		<c:if test="${not empty post.resource.rating}">
-			<!-- ratings -->
-			<div class="rating">
-				<a href="${otherPostsUrlPrefix}${post.resource.interHash}#discussion">
-					<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
-				</a>
-				<span class="reviewInfo">(<c:out value="${post.resource.numberOfRatings}"/>)</span>
-			</div>
-		</c:if>
-		
-		<div class="bmtitle"><jsp:invoke fragment="title"/></div>
-		<div class="bmdesc"> <jsp:invoke fragment="desc"/> </div>
+		<div class="bmtitle">
+			<jsp:invoke fragment="title"/>
+		</div>
+		<div class="bmdesc">
+			<jsp:invoke fragment="desc"/>
+		</div>
 		<span class="bmmeta">
 			<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 		</span>
@@ -65,6 +57,17 @@
 				<jsp:text>${mtl:ch('nbsp')}</jsp:text>
 			</c:if>
 			<!-- end ugly hack (dbe) -->
+			
+			<!-- TODO: remove as soon lucene supports rating -->
+			<!-- ratings -->
+			<c:if test="${not empty post.resource.rating}">
+			<div class="rating">
+				<a href="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox">
+					<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
+				</a>
+				<span class="reviewInfo">(<c:out value="${post.resource.numberOfRatings}"/>)</span>
+			</div>
+			</c:if>
 		</div>   
 	</li>
 
