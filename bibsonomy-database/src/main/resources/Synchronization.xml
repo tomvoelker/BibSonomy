@@ -49,16 +49,28 @@
 	</select>
 	
 	
-	<select id="getLastSyncDateForUserForServiceForContent" resultClass="java.util.Date" parameterClass="syncParam">
+	<select id="getLastDoneSyncDateForUserForServiceForContent" resultClass="java.util.Date" parameterClass="syncParam">
 		SELECT last_sync_date
 		FROM sync_data
 		WHERE user_name = #userName#
 			AND content_type = #contentType#
 			AND service_id = #serviceId#
 			AND status != "undone"
+			AND status != "error"  
 		ORDER BY last_sync_date DESC
 		LIMIT 1
 	</select>
+	
+	<select id="getLastSyncDate" resultClass="java.util.Date" parameterClass="syncParam">
+		SELECT last_sync_date
+		FROM sync_data
+		WHERE user_name = #userName#
+			AND content_type = #contentType#
+			AND service_id = #serviceId#
+		ORDER BY last_sync_date DESC
+		LIMIT 1
+	</select>
+	
 	
 	<select id="getSyncData" resultMap="SynchronizationCommon.syncData" parameterClass="syncParam">
 		SELECT <include refid="syncDataColumns"/>
