@@ -1804,7 +1804,6 @@ function toggleTag(target, tagname) {
 	}
 
 	var neueeingabe = neuetags.join(" ");
-	eingabe.value = neueeingabe;
 
 	activeTag = "";
 	if(sortedCollection) {
@@ -1813,6 +1812,7 @@ function toggleTag(target, tagname) {
 	}
 
 	eingabe.focus();
+	eingabe.value = neueeingabe;
 }
 
 //add/remove tagname to/from target field 
