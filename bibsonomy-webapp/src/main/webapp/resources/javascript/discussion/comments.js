@@ -15,7 +15,7 @@ $(function() {
 		view.toggle('slow');
 		
 		var text = getString('post.resource.discussion.replies.show');
-		if (visible) {
+		if (!visible) {
 			text = getString('post.resource.discussion.replies.hide');
 		}
 		
