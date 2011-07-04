@@ -594,5 +594,24 @@
 		<baseFileName>publist-year-en</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
-	</layout>				
+	</layout>	
+	<layout name="chicago" >
+		<displayName>Publication List in HTML Format according the Chicago Manual of Style</displayName>
+		<description xml:lang="en">
+			The Chicago Manual considers three distinct formats – those appropriate for bibliographies,
+			notes, and shortened notes. This filter creates an HTML output of the bibliographies version.	
+			For further details, see http://jabref.sourceforge.net/plugins/Chicago_export_filters.pdf.	
+			This filter was originally created by Juan Jose Baldrich.	
+		</description>
+		<description xml:lang="de">
+			Das Chicago Manual kennt drei Formate - eines für Bibliographien, eines für Notizen und eines
+			für gekürzte Notizen. Dieser Export-filter erzeugt eine HTML-Ausgabe der Bibliographien-Version.
+			Für weitere Details siehe http://jabref.sourceforge.net/plugins/Chicago_export_filters.pdf.
+			Dieser Filter wurde ursprünglich von Juan Jose Baldrich erstellt. 					
+		</description>
+		<directory>chicago</directory>
+		<baseFileName>Chicago.biblio</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>					
 </layouts>
