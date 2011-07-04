@@ -26,7 +26,7 @@ li.ui-state-hover {
 	font-size: 85%;
 }
 
-#replyReview, #replyForm, #editComment {
+#replyReview, #replyForm, #editcomment, #createReview {
 	margin-bottom: 1em;
 }
 
@@ -152,6 +152,7 @@ ul.subdiscussionItems ul.subdiscussionItems {
 .review.text, .comment.text {
 	font-size: 90%;
 	margin-top: 0.25em;
+	white-space: pre;
 }
 
 .fsform {
@@ -184,11 +185,11 @@ ul.newMenu li a:hover {
 }
 
 ul.discussionitemMenu li {
-	border-right: 1px solid grey;
+	border-left: 1px solid grey;
 	padding-right: 0.4em;
 	padding-left: 0.4em;
 }
 
-ul.discussionitemMenu li:last-child {
-	border-right: none;
+ul.discussionitemMenu li:first-child {
+	border-left: none;
 }

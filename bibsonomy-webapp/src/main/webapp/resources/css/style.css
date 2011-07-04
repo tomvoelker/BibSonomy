@@ -643,9 +643,6 @@ li.bm {
 	visibility: hidden;
 }
 
-.bmaction {
-}
-
 .bmrating {
 	float: right;
 }
@@ -1715,14 +1712,6 @@ code {
 
 .descriptiveLabel {
 	color: #aaa;
-}
-
-.authorEditorList {
-	
-}
-
-li.bm div.rating {
-	margin-bottom: 0.1em;
 }
 
 span.reviewInfo,.bmmeta,.bmdesc {

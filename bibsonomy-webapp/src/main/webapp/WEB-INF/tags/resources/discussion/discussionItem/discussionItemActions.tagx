@@ -31,14 +31,14 @@
 		<c:when test="${subDiscussionItemsSize > 0}">
 			<li class="replies">
 				<a href="#toggleReplies" class="toggleReplies">
-					<fmt:message key="post.resource.discussion.replies.show" />
+					<fmt:message key="post.resource.discussion.replies.hide" />
 				</a>
 			</li>
 		</c:when>
 		<c:otherwise>
 			<li style="display:none;">
 				<a href="#toggleReplies" class="toggleReplies">
-					<fmt:message key="post.resource.discussion.replies.show" />
+					<fmt:message key="post.resource.discussion.replies.hide" />
 				</a>
 			</li>
 		</c:otherwise>

@@ -5,7 +5,8 @@ var DISCUSSION_MENU_SELECTOR = '#discussionMainMenu';
 var DISCUSSION_SELECTOR = '#discussion';
 var DISCUSSION_TOGGLE_LINK_SELECTOR = '#toggleDiscussion';
 
-var REVIEW_OWN_SELECTOR = '#ownReview';
+var REVIEW_OWN_ID = 'ownReview';
+var REVIEW_OWN_SELECTOR = '#' + REVIEW_OWN_ID;
 
 var REVIEW_UPDATE_FORM_SELECTOR = '#editReviewForm';
 var REVIEW_REPLY_FORM_ID = 'replyReview';
@@ -41,16 +42,9 @@ $(function() {
 		removeReviewActions();
 	}
 	
-	$(DISCUSSION_TOGGLE_LINK_SELECTOR).click(function() {
-		var visible = $(DISCUSSION_SELECTOR).is(':visible');
-		$(DISCUSSION_SELECTOR).toggle('slow');
-		
-		var text = getString('post.resource.discussion.actions.show');
-		if (!visible) {
-			text = getString('post.resource.discussion.actions.hide');
-		}
-		
-		$(this).text(text);
+	$(DISCUSSION_TOGGLE_LINK_SELECTOR).click(function() {		
+		$(DISCUSSION_SELECTOR).toggle('slow', updateDiscussionToggleLink);
+		return false;
 	});
 	
 	// TODO: move and use in post edit views
@@ -60,6 +54,16 @@ $(function() {
 		toggleGroupBox(box);
 	});
 });
+
+function updateDiscussionToggleLink() {
+	var visible = $(DISCUSSION_SELECTOR).is(':visible');
+	var text = getString('post.resource.discussion.actions.show');
+	if (visible) {
+		text = getString('post.resource.discussion.actions.hide');
+	}
+	
+	$(DISCUSSION_TOGGLE_LINK_SELECTOR).text(text);
+}
 
 // TODO: rename
 function removeAllOtherDiscussionForms() {
@@ -220,7 +224,8 @@ function deleteDiscussionItemView(discussionItemView, success) {
 		
 		discussionItemView.find('img:first').remove();
 		discussionItemView.find('.details:first').remove();
-		discussionItemView.find('.deleteInfo:first').remove();
+		discussionItemView.find('.createReview:first').parent().remove();
+		discussionItemView.find('.deleteInfo:first').parent().remove();
 		discussionItemView.find('a.editLink:first').parent().remove();
 		discussionItemView.find('a.reply:first').parent().remove();
 		
@@ -266,5 +271,8 @@ function highlight(element) {
  * TODO: move function for reuse
  */
 function scrollTo(id){
-	$('html,body').animate({scrollTop: $("#" + id).offset().top - 100 },'slow');
+	var element = $("#" + id);
+	if (element.length) {
+		$('html,body').animate({scrollTop: element.offset().top - 100 },'slow');
+	}
 }

@@ -3,12 +3,13 @@ var COMMENTS_URL = "/ajax/comments";
 var REPLY_SELECTOR = 'a.reply';
 var EDIT_COMMENT_LINKS_SELECTOR = 'a.commentEditLink';
 var DELETE_COMMENT_LINKS_SELECTOR = 'a.commentDeleteLink';
+var TOGGLE_REPLY_SELECTOR = 'a.toggleReplies';
 
 $(function() {
 	// reply links
 	$(REPLY_SELECTOR).click(reply);
 	
-	$('a.toggleReplies').click(function() {
+	$(TOGGLE_REPLY_SELECTOR).click(function() {
 		var view = $(this).parent().parent().siblings('ul.subdiscussionItems');
 		var visible = view.is(':visible');
 		view.toggle('slow');
@@ -27,6 +28,8 @@ $(function() {
 });
 
 function reply() {
+	$(DISCUSSION_SELECTOR).show();
+	updateDiscussionToggleLink();
 	var parent = $(this).parent().parent().parent();
 	// remove all other forms
 	removeAllOtherDiscussionForms();
@@ -37,13 +40,13 @@ function reply() {
 	var clone = $('#createComment').clone();
 	clone.attr('id', REPLY_FORM_ID);
 	var form = clone.find('form');
-	form.submit(createComment);
 	
 	form.append($('<input />').attr('name', 'discussionItem.parentHash').attr('type', 'hidden').attr('value', parentHash));
 	
-	// bind group select
+	// bind some actions (submit, group switch, textarea)
+	form.submit(createComment);
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
-	form.find('textarea').focus(); // FIXME: not working
+	form.find('textarea').TextAreaResizer(); // FIXME: not working
 	
 	parent.append(clone);
 	clone.show();
@@ -137,7 +140,7 @@ function createComment() {
 						var commentList = parentDiv.parent().children('.subdiscussionItems');
 						
 						if (commentList.length == 0) {
-							commentList = $('.subdiscussionItems:first');
+							commentList = $(DISCUSSION_SELECTOR + ' ul.subdiscussionItems:first');
 							commentTextArea.val('');
 							// TODO: reset groups and abstract grouping?
 						}
@@ -173,14 +176,27 @@ function createComment() {
 }
 
 function updateCommentView(commentView, commentHash, commentText, anonymous, commentAbstractGrouping, commentGroups) {
+	/*
+	 * update comment text
+	 */
 	commentView.find('.text:first').text(commentText);
+	
+	/*
+	 * update the hash of the discussion item
+	 */
 	updateHash(commentView, commentHash);
 
+	/*
+	 * update group info
+	 */
 	commentView.find('.' + GROUPS_CLASS).remove();
 	
 	var groupView = buildGroupView(commentAbstractGrouping, commentGroups);
 	commentView.find('.info:first').append(groupView);
 	
+	/*
+	 * update anonymous info
+	 */
 	if (anonymous) {
 		commentView.addClass(ANONYMOUS_CLASS);
 	} else {

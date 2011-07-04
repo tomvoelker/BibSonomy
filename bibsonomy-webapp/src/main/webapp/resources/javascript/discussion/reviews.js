@@ -72,13 +72,15 @@ function setAvg(value) {
 function createReviewForm() {
 	removeAllOtherDiscussionForms();	
 	
+	/*
+	 * get parent hash
+	 */
 	var parentHash = getHash($(this));
 	var divForm = $('#createReview').clone();
 	divForm.attr('id', REVIEW_REPLY_FORM_ID);
 	divForm.addClass('createReview');
 	
 	var form = divForm.find('form');
-	
 	/*
 	 * init review rating (ui plugin stars)
 	 * FIXME: find a better solution
@@ -86,25 +88,29 @@ function createReviewForm() {
 	form.find('div.ui-stars-star').remove();
 	form.find('div.ui-stars-cancel').remove();
 	form.find('[name=discussionItem\\.rating]').remove();
-	
 	for (var i = 1; i < RATING_STEPS; i++) {
 		form.find('.reviewrating').append('<input name="discussionItem.rating" type="radio" value="' + (i / 2) + '"/>');
 	}
 	
+	
+	var parent = $(DISCUSSION_SELECTOR);
 	if (parentHash != undefined) {
+		$(this).parent().parent().parent().append(divForm);
 		form.append($('<input></input>').attr('name', 'discussionItem.parentHash').attr('value', parentHash).attr('type', 'hidden'));
+	} else {
+		$(DISCUSSION_SELECTOR + ' ul.subdiscussionItems:first').before(divForm);
 	}
 	
+	// bind some actions
+	form.find('textarea').TextAreaResizer();
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	form.submit(createReview);
 	
-	var parent = $(this).parent().parent().parent();
-	parent.append(divForm);
+	
 	divForm.show();
 	
 	initStars();
 	scrollTo(REVIEW_REPLY_FORM_ID);
-	
 	return false;
 }
 
@@ -241,7 +247,7 @@ function createReview() {
 			 			if (subItems.length != 0) {
 			 				parentView = subItems;
 			 			} else {
-			 				parentView = $('ul.subdiscussionItems:first');
+			 				parentView = $(DISCUSSION_SELECTOR + ' .subdiscussionItems:first');
 			 			}
 			 			
 			 			updateHash(reviewView, response.hash);
@@ -289,7 +295,8 @@ function createReview() {
 		     			
 		     			$('#noReviewInfo').hide();
 		     			$('#ratingAvg').show('slow');
-		     			$('#ratingDistribution').show('slow');		     			
+		     			$('#ratingDistribution').show('slow');
+		     			scrollTo(REVIEW_OWN_ID);
 					},
 		error:		function(jqXHR, data, errorThrown) {
 						handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
