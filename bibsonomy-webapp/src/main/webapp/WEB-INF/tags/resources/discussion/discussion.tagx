@@ -58,17 +58,20 @@
 		
 		<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
 	</div>
-	<div id="discussionTemplates" class="initiallyHidden">
-		<!-- create comment div structure -->
-		<div id="commentTemplate">
-		   	<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" />
+	<!-- TODO: use spring security tags -->
+	<c:if test="${command.context.userLoggedIn}">
+		<div id="discussionTemplates" class="initiallyHidden">
+			<!-- create comment div structure -->
+			<div id="commentTemplate">
+			   	<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" />
+			</div>
+			    
+			<ul>
+				<!-- create li, div structure for new review -->
+				<li id="newReview">
+					<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
+				</li>
+		    </ul>
 		</div>
-		    
-		<ul>
-			<!-- create li, div structure for new review -->
-			<li id="newReview">
-				<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
-			</li>
-	    </ul>
-	</div>
+	</c:if>
 </jsp:root>
