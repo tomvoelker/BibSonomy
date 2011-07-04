@@ -8,7 +8,8 @@ INSERT INTO `ids` VALUES
 	(5,0,'extended_fields_id'),
 	(7,0,'scraper_metadata_id'),
 	(12,0,'grouptas id'),
-	(14,0,'message_id');
+	(14,0,'message_id'),
+	(15,0,'discussion_id');
 
 INSERT INTO `groupids` VALUES 
 	('public', -2147483648,1,0),
