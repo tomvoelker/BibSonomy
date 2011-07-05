@@ -17,11 +17,12 @@
 			</div>
 		</div>
 		<div id="ratingAvg">
-			<fmt:message key="post.resource.review.info.ratingAvg" />
+			<span><fmt:message key="post.resource.review.info.ratingAvg" /> <buttons:help cssStyle="float:none" iconTextStyle="float:none" message="post.resource.review.ratings.basedOn.help"/></span>
 			<!-- TODO: add bigger star images and change dimension to 2 -->
 			<div><review:reviewStars rating="${resource.rating}" /></div>
 
 			<fmt:message var="ratingTitle" key="post.resource.review.reviews" />
+			
 			<!-- plural -->
 			<c:if test="${resource.numberOfRatings == 1}">
 				<fmt:message var="ratingTitle" key="post.resource.review.review" />
@@ -31,17 +32,17 @@
 			<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="2" minFractionDigits="2" />
 
 			<div class="ratingAvgInfo">
-			(∅ <span property="v:average"><c:out value="${roundedRating}" /></span>
-			<c:out value=" " />
+				(∅ <span property="v:average"><c:out value="${roundedRating}" /></span>
+				<c:out value=" " />
 				<fmt:message key="post.resource.review.ratings.of" />
-				<c:out value=" " /><span property="v:best">5</span>, <fmt:message
-					key="post.resource.review.ratings.basedOn" />
-				<c:out value=" " /><span property="v:count"><c:out
-						value="${resource.numberOfRatings}" />
-			</span>
-			<c:out value=" " /><span><c:out value="${ratingTitle}" />
-			</span>)
-			<span class="initiallyHidden" property="v:worst">0</span>
+				<c:out value=" " />
+				<span property="v:best">5</span>, <fmt:message key="post.resource.review.ratings.basedOn" />
+				<c:out value=" " /><span property="v:count"><c:out value="${resource.numberOfRatings}" /></span>
+				<c:out value=" " />
+				<span>
+					<c:out value="${ratingTitle}" />
+				</span>)
+				<span class="initiallyHidden" property="v:worst">0</span>
 			</div>
 		</div>
 	</div>
