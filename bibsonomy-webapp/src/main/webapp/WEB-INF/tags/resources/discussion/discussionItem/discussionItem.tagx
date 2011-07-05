@@ -19,7 +19,7 @@
 	<c:choose>
 		<c:when test="${anonymous}">
 			<!-- TODO: anonymous picture -->
-			<img src="${resdir}/image/no_picture.png" alt="anonymous" class="commentPicture" />
+			<img src="${resdir}/image/anonymous.png" alt="anonymous" class="commentPicture" />
 		</c:when>
 		<c:otherwise>
 			<img src="/picture/user/${fn:escapeXml(discussionItemUserName)}" alt="userPicture" class="commentPicture"/>
