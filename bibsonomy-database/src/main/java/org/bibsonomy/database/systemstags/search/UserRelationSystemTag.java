@@ -26,7 +26,7 @@ public class UserRelationSystemTag extends AbstractSystemTagImpl implements Sear
 
 	@Override
 	public boolean isInstance(final String tagName) {
-		return getName().equals(SystemTagsUtil.extractType(tagName));
+		return SystemTagsUtil.hasPrefixTypeAndArgument(tagName) && SystemTagsUtil.extractType(tagName).equals(this.getName());
 	}
 
 	//------------------------------------------------------------------------
