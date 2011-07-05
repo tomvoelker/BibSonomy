@@ -3,12 +3,6 @@ li.ui-state-hover {
 	font-weight: normal;
 }
 
-#discussionbox {
-	margin-left: 1em;
-	margin-top: 2em;
-	margin-bottom: 2em;
-}
-
 #review_info_rating {
 	margin-left: 0.5em;
 	text-align: center;
@@ -160,7 +154,7 @@ ul.subdiscussionItems ul.subdiscussionItems {
 }
 
 #discussionMainMenu {
-	margin-bottom: 1em;
+	margin-bottom: 0.5em;
 	text-align: right;
 }
 
