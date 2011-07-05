@@ -11,8 +11,7 @@
 	1.0.2 Updates according to textarea.focus
 	1.0.3 Further updates including removing the textarea.focus and moving private variables to top
 	1.0.4 Re-instated the blur/focus events, according to information supplied by dec
-
-	
+	1.0.5 dzo: work around for already prepared textareas TODO: think about a better solution or inform the author about the changes we made
 */
 (function($) {
 	/* private variable "oHover" used to determine if you're still hovering over the same element */
@@ -23,17 +22,21 @@
 	/* TextAreaResizer plugin */
 	$.fn.TextAreaResizer = function() {
 		return this.each(function() {
-		    textarea = $(this).addClass('processed'), staticOffset = null;
-
-			// 18-01-08 jQuery bind to pass data element rather than direct mousedown - Ryan O'Dell
-		    // When wrapping the text area, work around an IE margin bug.  See:
-		    // http://jaspan.com/ie-inherited-margin-bug-form-elements-and-haslayout
-		    $(this).wrap('<div class="resizable-textarea"><span></span></div>')
-		      .parent().append($('<div class="grippie"></div>').bind("mousedown",{el: this} , startDrag));
+			if (!$(this).hasClass('textarea-resizer-processed')) {
+				// 18-01-08 jQuery bind to pass data element rather than direct mousedown - Ryan O'Dell
+			    // When wrapping the text area, work around an IE margin bug.  See:
+			    // http://jaspan.com/ie-inherited-margin-bug-form-elements-and-haslayout
+			    
+				$(this).addClass('textarea-resizer-processed');
+				$(this).wrap('<div class="resizable-textarea"><span></span></div>').parent().append($('<div class="grippie"></div>'));
+			}
+			
+			textarea = $(this);
+			staticOffset = null
 
 		    var grippie = $('div.grippie', $(this).parent())[0];
 		    grippie.style.marginRight = (grippie.offsetWidth - $(this)[0].offsetWidth) +'px';
-
+		    $(grippie).bind("mousedown",{el: this} , startDrag);
 		});
 	};
 	/* private functions */
