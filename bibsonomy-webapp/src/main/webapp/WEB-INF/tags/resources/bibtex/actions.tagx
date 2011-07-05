@@ -137,7 +137,8 @@
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 	</c:if>					
 		
-	<a href="/bibtex/${post.resource.interHash}#discussion"><fmt:message key="post.resource.discussion" /></a>		
+	<fmt:message key="post.resource.discussion.title.publication" var="title"/>
+	<a href="/bibtex/${post.resource.interHash}#discussion" title="${title}"><fmt:message key="post.resource.discussion" /></a>		
 	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 	
 	<c:if test="${not disableResourceLinks}">
