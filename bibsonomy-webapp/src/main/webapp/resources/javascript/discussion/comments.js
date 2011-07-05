@@ -15,11 +15,14 @@ $(function() {
 		view.toggle('slow');
 		
 		var text = getString('post.resource.discussion.replies.show');
+		var title = getString('post.resource.discussion.replies.show.title')
 		if (!visible) {
 			text = getString('post.resource.discussion.replies.hide');
+			title = getString('post.resource.discussion.replies.hide.title')
 		}
 		
 		$(this).text(text);
+		$(this).attr("title",title);
 		return false;
 	});
 	
