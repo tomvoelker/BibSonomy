@@ -378,9 +378,9 @@
       	) AS a 
       	ORDER BY LOWER(tag_name)
 	</select>
-	
+
 	<select id="getTagsByFriendOfUser" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT tag_name, count(tag_name) AS tag_ctr
+		SELECT t1.tag_name, count(t1.tag_name) AS tag_ctr
             FROM tas t1, friends f 
             WHERE f.f_user_name = #userName#
               AND f.tag_name = #bibSonomyFriendsTag#
@@ -391,6 +391,25 @@
             GROUP BY t1.tag_name 
             ORDER BY tag_ctr DESC, t1.tag_name COLLATE utf8_unicode_ci
             LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<!--+
+		| get tags from all related users according to the given relation tag
+		+-->
+	<select id="getTagsByTaggedUserRelation" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t1.tag_name, count(t1.tag_name) AS tag_ctr, t.tag_ctr_public AS tag_ctr_global   
+		FROM tas t1, tags t, <include refid="relationTagFromQuery"/>     <!-- bookmarks from users which are tagged accordingly --> 
+        WHERE <include refid="relationTagTagWhereQuery"/>         <!-- to see users which are tagged accordingly by the currUser -->
+		  AND <include refid="relationTagUsernameWhereQuery"/>    <!--                            ++++                           -->
+		  AND <include refid="relationTagTasWhereQuery"/>         <!-- take all rows, which are owned by a related user -->
+		  AND t1.tag_name = t.tag_name
+              <include refid="getTagsByResourceType"/>
+		  <include refid="restrictToGroups"/>
+		GROUP BY t1.tag_name 
+		<isEqual property="order" compareValue="FREQUENCY">
+			ORDER BY tag_ctr DESC
+		</isEqual>
+		LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<select id="getTagsByBibtexkey" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
