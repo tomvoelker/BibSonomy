@@ -14,12 +14,14 @@
 	<!-- reply links  -->
 	<c:if test="${command.context.userLoggedIn and !disableReply}">
 		<li>
-			<a href="#reply" class="reply">
+			<fmt:message key="post.resource.comment.actions.reply.title" var="title"/>
+			<a href="#reply" class="reply" title="${title}">
 				<fmt:message key="post.resource.comment.actions.reply" />
 			</a>
 		</li>
 		<li>
-			<a href="#createReview" class="createReview">
+			<fmt:message key="post.resource.comment.actions.create.title" var="title"/>
+			<a href="#createReview" class="createReview" title="${title}">
 				<fmt:message key="post.resource.review.actions.create" />
 			</a>
 		</li>
@@ -27,10 +29,11 @@
 	<c:set var="subDiscussionItemsSize" value="${fn:length(discussionItem.subDiscussionItems)}" />
 	
 	<!-- number of replies and toggle link -->
+	<fmt:message key="post.resource.discussion.replies.hide.title" var="title"/>
 	<c:choose>
 		<c:when test="${subDiscussionItemsSize > 0}">
 			<li class="replies">
-				<a href="#toggleReplies" class="toggleReplies">
+				<a href="#toggleReplies" class="toggleReplies" title="${title}">
 					<fmt:message key="post.resource.discussion.replies.hide" />
 				</a>
 			</li>
@@ -48,13 +51,15 @@
 	<!-- TODO: use spring security tag lib -->
 	<c:set var="own" value="${command.context.loginUser.name eq discussionItem.user.name}" />
 	<c:if test="${command.context.userLoggedIn and own}">
-		<li><a href="#edit${discussionItemClass}" class="${discussionItemClass}EditLink editLink"><fmt:message key="post.resource.${discussionItemClass}.actions.edit" /></a></li>
+		<fmt:message key="post.resource.${discussionItemClass}.actions.edit.title" var="title"/>
+		<li><a href="#edit${discussionItemClass}" class="${discussionItemClass}EditLink editLink" title="${title}"><fmt:message key="post.resource.${discussionItemClass}.actions.edit" /></a></li>
 		<li>
 			<span class="deleteInfo initiallyHidden">
 				<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
 				<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
 			</span>
-			<a href="#delete${discussionItemClass}" class="${discussionItemClass}DeleteLink deleteLink">
+			<fmt:message key="post.resource.${discussionItemClass}.actions.delete.title" var="title"/>
+			<a href="#delete${discussionItemClass}" class="${discussionItemClass}DeleteLink deleteLink" title="${title}">
 				<fmt:message key="post.resource.${discussionItemClass}.actions.delete" />
 			</a>
 		</li>
