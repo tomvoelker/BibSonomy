@@ -191,6 +191,11 @@
 			b.user_name = rt$relationTagIndex[].index$.f_user_name 
 		</iterate>
 	</sql>
+	<sql id="relationTagTasWhereQuery">
+		<iterate property="relationTagIndex" conjunction="AND">
+			t1.user_name = rt$relationTagIndex[].index$.f_user_name 
+		</iterate>
+	</sql>
 	
 	
 </sqlMap>
