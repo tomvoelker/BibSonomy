@@ -92,20 +92,17 @@ function createReviewForm() {
 		form.find('.reviewrating').append('<input name="discussionItem.rating" type="radio" value="' + (i / 2) + '"/>');
 	}
 	
-	
-	var parent = $(DISCUSSION_SELECTOR);
 	if (parentHash != undefined) {
 		$(this).parent().parent().parent().append(divForm);
 		form.append($('<input></input>').attr('name', 'discussionItem.parentHash').attr('value', parentHash).attr('type', 'hidden'));
 	} else {
-		$(DISCUSSION_SELECTOR + ' ul.subdiscussionItems:first').before(divForm);
+		$(DISCUSSION_SELECTOR).prepend(divForm);
 	}
 	
 	// bind some actions
 	form.find('textarea').TextAreaResizer();
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	form.submit(createReview);
-	
 	
 	divForm.show();
 	

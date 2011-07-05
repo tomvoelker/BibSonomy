@@ -46,7 +46,7 @@ function reply() {
 	// bind some actions (submit, group switch, textarea)
 	form.submit(createComment);
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
-	form.find('textarea').TextAreaResizer(); // FIXME: not working
+	form.find('textarea').TextAreaResizer();
 	
 	parent.append(clone);
 	clone.show();
@@ -91,10 +91,9 @@ function showEditCommentForm() {
 	var spinnImage = spinner.find('img');
 	spinner.empty().append(spinnImage).append(getString('post.resource.comment.action.update'))
 	
-	// binding
-	// … group
+	// binding textarea resizer, group, and submit
+	form.find('textarea').TextAreaResizer();
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
-	// … submit
 	form.submit(updateComment);
 	
 	// append and show
