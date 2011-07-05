@@ -155,7 +155,7 @@
  			<ul id="sidebar">
             	<li>
              		<!-- display user's tag relations -->     
-              		<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
+              		<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
               		<span class="sidebar_h">
                 		<a href="/relations/${fn:escapeXml(command.context.loginUser.name)}" title="${tagRelationsTitle}">
                   			<fmt:message key="tagrelations"/>

@@ -36,11 +36,20 @@
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
 		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js">&amp;nbsp;</script> 
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
 			<c:if test="${not empty headerExt}">
 				<jsp:invoke fragment="headerExt"/>
 			</c:if>
+			<script type="Text/JavaScript">
+				<![CDATA[
+					$(document).ready(function() {
+						sysTagFadeBox(self);
+					});
+				]]>
+			</script>
+			
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
