@@ -18,7 +18,6 @@
     
 	<c:choose>
 		<c:when test="${anonymous}">
-			<!-- TODO: anonymous picture -->
 			<img src="${resdir}/image/anonymous.png" alt="anonymous" class="commentPicture" />
 		</c:when>
 		<c:otherwise>
