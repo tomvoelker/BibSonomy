@@ -100,14 +100,14 @@ function createReviewForm() {
 	}
 	
 	// bind some actions
-	form.find('textarea').TextAreaResizer();
+	
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	form.submit(createReview);
 	
 	divForm.show();
-	
 	initStars();
 	scrollTo(REVIEW_REPLY_FORM_ID);
+	form.find('textarea').TextAreaResizer();
 	return false;
 }
 
@@ -238,17 +238,10 @@ function createReview() {
 			 			reviewView.attr("id", "ownReview");
 			 			updateReviewView(reviewView, reviewText, reviewRating, abstractGrouping, groups);
 			 			
-			 			// get parent view
-			 			var subItems = reviewForm.parent().parent().children('ul.subdiscussionItems');
-			 			var parentView;
-			 			if (subItems.length != 0) {
-			 				parentView = subItems;
-			 			} else {
-			 				parentView = $(DISCUSSION_SELECTOR + ' .subdiscussionItems:first');
-			 			}
+			 			// get root discussion item list
+			 			$(DISCUSSION_SELECTOR + ' .subdiscussionItems:first').prepend(reviewView);
 			 			
 			 			updateHash(reviewView, response.hash);
-			 			parentView.append(reviewView);
 			 			highlight(reviewView);
 						
 						/*

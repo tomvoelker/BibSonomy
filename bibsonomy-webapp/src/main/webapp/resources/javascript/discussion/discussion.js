@@ -8,7 +8,7 @@ var DISCUSSION_TOGGLE_LINK_SELECTOR = '#toggleDiscussion';
 var REVIEW_OWN_ID = 'ownReview';
 var REVIEW_OWN_SELECTOR = '#' + REVIEW_OWN_ID;
 
-var REVIEW_UPDATE_FORM_SELECTOR = '#editReviewForm';
+var REVIEW_UPDATE_FORM_SELECTOR = 'form.editreview';
 var REVIEW_REPLY_FORM_ID = 'replyReview';
 var REPLY_FORM_ID = 'replyForm';
 var REPLY_FORM_SELECTOR = '#' + REPLY_FORM_ID;
@@ -18,7 +18,7 @@ var EDIT_FORM_SELECTOR = '#' + EDIT_COMMENT_FORM_ID;
 var REVIEW_REPLY_FORM_SELECTOR = '#' + REVIEW_REPLY_FORM_ID;
 
 var CREATE_REVIEW_LINKS_SELECTOR = 'a.createReview';
-var REVIEW_CREATE_FORM_SELECTOR = '#createReviewForm';
+var REVIEW_CREATE_FORM_SELECTOR = 'form.createreview';
 
 var ANONYMOUS_CLASS = 'anonymous';
 

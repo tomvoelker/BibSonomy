@@ -21,8 +21,7 @@ $(function() {
 			title = getString('post.resource.discussion.replies.hide.title')
 		}
 		
-		$(this).text(text);
-		$(this).attr("title",title);
+		$(this).text(text).attr('title', title);
 		return false;
 	});
 	
@@ -33,6 +32,7 @@ $(function() {
 function reply() {
 	$(DISCUSSION_SELECTOR).show();
 	updateDiscussionToggleLink();
+	
 	var parent = $(this).parent().parent().parent();
 	// remove all other forms
 	removeAllOtherDiscussionForms();
@@ -46,13 +46,18 @@ function reply() {
 	
 	form.append($('<input />').attr('name', 'discussionItem.parentHash').attr('type', 'hidden').attr('value', parentHash));
 	
-	// bind some actions (submit, group switch, textarea)
+	// bind some actions (submit, group switch)
 	form.submit(createComment);
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
-	form.find('textarea').TextAreaResizer();
 	
-	parent.append(clone);
+	if (parentHash != undefined) {
+		parent.append(clone);
+	} else {
+		$(DISCUSSION_SELECTOR).before(clone);
+	}
+	
 	clone.show();
+	form.find('textarea').TextAreaResizer();
 	
 	scrollTo(REPLY_FORM_ID);
 	return false;
@@ -139,27 +144,25 @@ function createComment() {
 						commentTemplate.removeAttr('id');
 						updateCommentView(commentTemplate, response.hash, commentText, anonymous, commentAbstractGrouping, commentGroups);
 						
-						var commentList = parentDiv.parent().children('.subdiscussionItems');
-						
-						if (commentList.length == 0) {
-							commentList = $(DISCUSSION_SELECTOR + ' ul.subdiscussionItems:first');
-							commentTextArea.val('');
-							// TODO: reset groups and abstract grouping?
-						}
-			
 						var li = $('<li class="comment"></li>');
 						li.append(commentTemplate);
-			
-						commentList.append(li);
-						highlight(li);
 						
 						// bind click listener
 						commentTemplate.find('a.reply').click(reply);
 						commentTemplate.find('a.editLink').click(showEditCommentForm);
 						commentTemplate.find('a.createReview').click(createReviewForm);
 						
-						// TODO: update reply counter
+						// TODO: show reply counter
+						var commentList = parentDiv.parent().children('.subdiscussionItems');
 						
+						if (commentList.length == 0) {
+							commentList = $(DISCUSSION_SELECTOR + ' ul.subdiscussionItems:first');
+							commentTextArea.val('');
+							commentList.prepend(li);
+							// TODO: reset groups and abstract grouping?
+						} else {
+							commentList.append(li);	
+						}
 						commentTemplate.show();
 						
 						// remove reply form if present
@@ -167,6 +170,7 @@ function createComment() {
 						spinner.hide();
 						commentForm.submit(createComment);
 						showReviewForm();
+						highlight(li);
 					},
 		error: 		function(jqXHR, data, errorThrown) {
 						handleAjaxErrors(commentForm, jQuery.parseJSON(jqXHR.responseText));
