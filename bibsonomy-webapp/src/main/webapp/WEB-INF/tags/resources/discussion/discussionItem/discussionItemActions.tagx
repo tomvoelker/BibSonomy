@@ -19,12 +19,12 @@
 				<fmt:message key="post.resource.comment.actions.reply" />
 			</a>
 		</li>
-		<li>
-			<fmt:message key="post.resource.comment.actions.create.title" var="title"/>
-			<a href="#createReview" class="createReview" title="${title}">
-				<fmt:message key="post.resource.review.actions.create" />
-			</a>
-		</li>
+<!--		<li>-->
+<!--			<fmt:message key="post.resource.comment.actions.create.title" var="title"/>-->
+<!--			<a href="#createReview" class="createReview" title="${title}">-->
+<!--				<fmt:message key="post.resource.review.actions.create" />-->
+<!--			</a>-->
+<!--		</li>-->
 	</c:if>
 	<c:set var="subDiscussionItemsSize" value="${fn:length(discussionItem.subDiscussionItems)}" />
 	
