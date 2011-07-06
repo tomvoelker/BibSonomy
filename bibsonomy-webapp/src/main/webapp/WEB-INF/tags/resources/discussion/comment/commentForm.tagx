@@ -1,60 +1,22 @@
 <jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
     
-    <!-- TODO: abstract form for discussion item (@see reviewForm.tagx) -->
-    
     <jsp:directive.attribute name="comment" type="org.bibsonomy.model.Comment" required="false" />
-    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />    
+    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	
-	<form action="/ajax/comments" method="POST">
-   		<input name="ckey" value="${command.context.ckey}" type="hidden" />
-   		<input name="hash" value="${resource.interHash}" type="hidden" />
-   		<div class="fsform">
-			<fieldset class="fsOuter">
-				
-				<div style="float:left; width:60%"> 
-					<span style="float:left">
-						<fmt:message key="post.resource.comment.actions.post" />
-					</span>
-	 				<buttons:help message="post.resource.review.comment.help"/>
+	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${comment}" action="create" discussionItemClass="comment">
+		<jsp:attribute name="additionalInputs">
+			<span style="float:left">
+				<fmt:message key="post.resource.comment.actions.post" />
+			</span>
+	 		<buttons:help message="post.resource.review.comment.help"/>
  
-					<div class="fsRow reviewTextBox">
-   						<textarea class="fsInput reqinput" rows="5" name="discussionItem.text"><!-- text --></textarea>
-   					</div>
- 				</div>
- 
-   				<div style="float:right">
-   				
- 	  				<div class="fsRow">
-						<label class="fsLabel" for="discussionItem.anonymous" ><fmt:message key="post.resource.discussionItem.anonymous"/></label><buttons:help message="post.resource.discussionItem.anonymous.help"/>
-						<c:choose>
-							<c:when test="${not empty comment and comment.anonymous}">
-								<input type="checkbox" name="discussionItem.anonymous" value="true" checked="checked" />
-							</c:when>
-							<c:otherwise>
-								<input type="checkbox" name="discussionItem.anonymous" value="true" />
-							</c:otherwise>
-						</c:choose>
-					</div>
-					<!--
-       					| groups 
-      			       -->
-	       	 		<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}"/>
-				</div>
-   
-  
-   				<div class="fsRow">
-   					<fmt:message key="post.resource.comment.actions.create" var="buttonText" />
-   					<input type="submit" value="${buttonText}" />
-   					<div class="spinner initiallyHidden" style="float:right">
-						<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
-						<fmt:message key="post.resource.comment.action.create"/>
-					</div>
-   				</div>
-   			</fieldset>
-   		</div>
-	</form>
+			<div class="fsRow reviewTextBox">
+   				<textarea class="fsInput reqinput" rows="3" name="discussionItem.text"><!-- text --></textarea>
+   			</div>
+		</jsp:attribute>
+	</discussionItem:discussionItemForm>
 </jsp:root>
