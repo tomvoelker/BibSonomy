@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.discussion;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private DiscussionDatabaseManager() {
-
+		// noop
 	}
 	
 	/**
@@ -103,7 +104,7 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 				rootItems.add(discussionItem);
 			} else {
 				final DiscussionItem parentItem;
-					
+				
 				/*
 				 * no parent => maybe deleted or invisible for the user
 				 */
@@ -117,8 +118,16 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 				}
 				
 				parentItem.addToDiscussionItems(discussionItem);
-			}			
+			}
 		}
+		
+		/*
+		 * we want that root items are sorted by date descending but sub items
+		 * sorted ascending
+		 * root items are currently sorted ascending (by sql query) so we only
+		 * need to reverse them
+		 */
+		Collections.reverse(rootItems);
 		return rootItems;
 	}
 }
