@@ -126,6 +126,10 @@ a {
 	margin: 0 auto;
 }
 
+.reviewInfo {
+	display:none;	
+}
+
 #login label {
 	display: block;
 }
