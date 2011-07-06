@@ -177,6 +177,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException 
 	 */
 	@Test
+	@Ignore
 	public void updateIndices() throws IOException, ClassNotFoundException, SQLException {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
