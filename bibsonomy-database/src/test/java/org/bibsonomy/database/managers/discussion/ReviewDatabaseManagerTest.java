@@ -86,13 +86,17 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(3, items.size());
 
 		// test anonym
-		Review review = (Review) items.get(0);
+		Review review = (Review) items.get(items.size() - 1);
+		assertEquals("", review.getUser().getName());
+		
+		items = discussionDatabaseManager.getDiscussionSpaceForResource(DiscussionDatabaseManagerTest.HASH_WITH_RATING, null, Collections.<Integer>singletonList(PUBLIC_GROUP_ID), this.dbSession);
+		review = (Review) items.get(items.size() - 1);
 		assertEquals("", review.getUser().getName());
 		
 		items = discussionDatabaseManager.getDiscussionSpaceForResource(DiscussionDatabaseManagerTest.HASH_WITH_RATING, USERNAME_1, DiscussionDatabaseManagerTest.USERNAME_2_VISIBLE_GROUPS, this.dbSession);
 		assertEquals(4, items.size());
 		
-		review = (Review) items.get(0);
+		review = (Review) items.get(items.size() - 1);
 		assertEquals(USERNAME_1, review.getUser().getName());
 	}
 	

@@ -39,10 +39,10 @@ public class DiscussionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		List<DiscussionItem> items = discusssionDb.getDiscussionSpaceForResource(HASH_WITH_RATING, ReviewDatabaseManagerTest.USERNAME_1, USERNAME_1_VISIBLE_GROUPS, this.dbSession);
 		assertEquals(4, items.size());
 		
-		assertTrue(items.get(0) instanceof Review);
+		assertTrue(items.get(0) instanceof Comment);
 		assertTrue(items.get(1) instanceof Comment);
 		assertTrue(items.get(2) instanceof Comment);
-		assertTrue(items.get(3) instanceof Comment);
+		assertTrue(items.get(3) instanceof Review);
 
 		items = discusssionDb.getDiscussionSpaceForResource(HASH_WITH_RATING, ReviewDatabaseManagerTest.USERNAME_2, USERNAME_2_VISIBLE_GROUPS, this.dbSession);
 		assertEquals(3, items.size());
