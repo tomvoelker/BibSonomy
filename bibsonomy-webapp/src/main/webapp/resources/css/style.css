@@ -1272,6 +1272,10 @@ div.fsRow div.resizable-textarea {
 	float: left;
 }
 
+div.reviewTextBox div.resizable-textarea {
+	width: 100%;
+		
+}
 div.fsRow div.resizable-textarea textarea {
 	float: none;
 	width: 100%;
