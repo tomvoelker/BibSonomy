@@ -4,6 +4,8 @@
 # Makes full and incremental backups of a bibsonomy database.
 #
 # Changes:
+#   2011-07-07 (rja)
+#   - changed paths (DB_DATA_DIR, DB_SOCKET, DB_MYSQLDUMP, DB_MYSQLADMIN) for backup on new slave (former gandalf)
 #   2011-04-07 (rja)
 #   - removed options for search tables
 #   2010-05-18 (rja)
@@ -45,18 +47,18 @@ CURRENT_DAY=`date +%j`
 BACKUP_DIR=/home/kde/bibbackup/backup/database_backup
 
 # database specific paths
-DB_DATA_DIR=/home/mysql/data                           # bin-/relay-log directory
+DB_DATA_DIR=/home/bibsonomy/mysql-var/data             # bin-/relay-log directory
 DB_RELAY_LOG=$DB_DATA_DIR/mysqld-relay-bin             # prefix of relay log files
 DB_RELAY_LOG_INDEX=$DB_DATA_DIR/mysqld-relay-bin.index # NOTE: configure those variables
 DB_RELAY_LOG_INFO=$DB_DATA_DIR/relay-log.info          # in my.cnf accordingly!
 DB_MASTER_INFO_FILE=$DB_DATA_DIR/master.info           #
-DB_BIN_LOG=$DB_DATA_DIR/mysql-bin                      # here the crucial data is!
+DB_BIN_LOG=$DB_DATA_DIR/mysql-bin                      # here is the crucial data!
 DB_BIN_LOG_INDEX=$DB_DATA_DIR/mysql-bin.index          #
 
 
-DB_SOCKET=/var/run/mysqld/mysqld.sock # MySQL socket file
-DB_MYSQLDUMP=/usr/bin/mysqldump       # location of mysqldump
-DB_MYSQLADMIN=/usr/bin/mysqladmin     # location of mysqladim
+DB_SOCKET=/home/bibsonomy/mysql-var/run/mysql.sock     # MySQL socket file
+DB_MYSQLDUMP=/home/bibsonomy/mysql/bin/mysqldump       # location of mysqldump
+DB_MYSQLADMIN=/home/bibsonomy/mysql/bin/mysqladmin     # location of mysqladim
 
 # check number of arguments
 if [ $# -ne 2 ]; then
