@@ -16,6 +16,21 @@ import org.bibsonomy.model.Resource;
 public interface SyncLogicInterface {
 	
 	/**
+	 * Add service to the database
+	 * @param service service to add 
+	 * @param server server/client switch
+	 */
+	public void createSyncService(final URI service, final boolean server);
+	
+	
+	/**
+	 * Removes service from database
+	 * @param service
+	 * @param server
+	 */
+	public void deleteSyncService(final URI service, final boolean server);
+	
+	/**
 	 * 
 	 * @param userName
 	 * @param service
@@ -45,12 +60,20 @@ public interface SyncLogicInterface {
 	 */
 	public List<SyncService> getSyncServerForUser(final String userName);
 	
+	/**
+	 * 
+	 * @param userName
+	 * @param uri
+	 * @return
+	 */
 	public SyncService getSyncServer(final String userName, final URI uri);
 	
 	/**
-	 * @return List of for this System allowed synchronization server
+	 * 
+	 * @param server switch between server and clients
+	 * @return List of for this System allowed synchronization services
 	 */
-	public List<SyncService> getAvlSyncServer();
+	public List<SyncService> getAvlSyncServices(boolean server);
 	
 	/**
 	 * 
