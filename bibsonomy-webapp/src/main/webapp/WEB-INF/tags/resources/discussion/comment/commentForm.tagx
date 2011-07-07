@@ -12,7 +12,14 @@
 	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${comment}" action="create" discussionItemClass="comment" userName="${userName}">
 		<jsp:attribute name="additionalInputs">
 			<span style="float:left"><fmt:message key="post.resource.comment.actions.post" /></span>
-	 		<buttons:help message="post.resource.review.comment.help"/>
+	 		<buttons:help message="post.resource.comment.help">
+				<jsp:attribute name="helpText">
+			        <ol>
+			        	<li> <fmt:message key="post.resource.discussion.anonymous.help"/></li>
+			        	<li> <fmt:message key="post.resource.discussion.visibility.help"/></li>
+			       	</ol>
+	        	</jsp:attribute>
+	        </buttons:help>
  
 			<div class="fsRow reviewTextBox" style="margin-right:6px">
    				<textarea class="fsInput reqinput" rows="3" name="discussionItem.text"><!-- text --></textarea>

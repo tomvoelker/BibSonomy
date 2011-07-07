@@ -34,7 +34,16 @@
 					</c:choose>
 				</c:forEach>	
 			</span>
-			<buttons:help message="post.resource.review.rating.help"/>
+			<buttons:help message="post.resource.review.help">
+				<jsp:attribute name="helpText">
+			        <ol>
+			        	<li> <fmt:message key="post.resource.rating.help"/></li>
+			        	<li> <fmt:message key="post.resource.discussion.anonymous.help"/></li>
+			        	<li> <fmt:message key="post.resource.discussion.visibility.help"/></li>
+			       	</ol>
+	        	</jsp:attribute>
+	        </buttons:help>
+			
 			<div class="fsRow reviewTextBox" style="margin-right:6px">
 				<textarea class="reqinput" rows="3" name="discussionItem.text"><!-- text --> <c:if test="${not empty review}"><c:out value="${review.text}" /></c:if></textarea>
 			</div>
