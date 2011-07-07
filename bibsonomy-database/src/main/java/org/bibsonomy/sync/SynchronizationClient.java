@@ -136,7 +136,7 @@ public class SynchronizationClient {
 		} catch (Exception e) {
 			//in case of an error, store syncdate as not successful, result stay "error"
 			result = "error";
-			log.error("ERROR OCCURRED");
+			log.error("ERROR OCCURRED", e);
 		}
 		storeSyncResult(result, resourceType, serverSyncLogic, serverUser.getName());
 		

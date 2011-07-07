@@ -17,6 +17,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
@@ -42,6 +43,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
@@ -1086,18 +1088,25 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 		return true;
 	}
-
+	
 	/*
-	 * FIXME: This method calls other methods of this class which 
-	 * need a loginUserName - since this method does not have the
-	 * loginUserName, it uses the name from the post! This is 
-	 * probably insecure.
-	 *  
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.CrudableContent#updatePost(org.bibsonomy.model.Post, java.lang.String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
+		User user = new User();
+		user.setName(post.getUser().getName());
+		user.setRole(Role.NOBODY);
+		return this.updatePost(post, oldHash, operation, session, user);
+	}
+	
+	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.CrudableContent#updatePost(org.bibsonomy.model.Post, java.lang.String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
+	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session, final User loginUser) {
 		final String userName = post.getUser().getName();
 		session.beginTransaction();
 		try {
@@ -1109,7 +1118,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			if (present(oldHash)) {
 				// if yes, check if a post exists with the old intrahash
 				try {
-					oldPost = this.getPostDetails(userName, oldHash, userName, new ArrayList<Integer>(), session);
+					oldPost = this.getPostDetails(loginUser.getName(), oldHash, userName, new ArrayList<Integer>(), session);
 				} catch(final ResourceMovedException ex) {
 					/*
 					 * getPostDetails() throws a ResourceMovedException for hashes for which
@@ -1138,7 +1147,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				// we do not add this to the databaseException since this an error not caused by a user
 				throw new IllegalArgumentException("Could not update post: no intrahash specified.");
 			}
-
+			
+			/*
+			 * don't change groups in case of synchronization 
+			 */
+			if(Role.SYNC.equals(loginUser.getRole())) {
+				post.setGroups(oldPost.getGroups());
+			}
+			
 			/*
 			 * perform system tags before update
 			 */
@@ -1167,7 +1183,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			Post<R> newPostInDB = null; 
 			try {
-				newPostInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
+				newPostInDB = this.getPostDetails(loginUser.getName(), intraHash, userName, new ArrayList<Integer>(), session);
 			} catch (final ResourceMovedException ex) {
 				/*
 				 * getPostDetails() throws a ResourceMovedException for hashes for which

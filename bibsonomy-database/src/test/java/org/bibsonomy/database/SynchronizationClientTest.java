@@ -19,6 +19,7 @@ import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -54,6 +55,8 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		serverUser = new User();
 		serverUser.setName("syncServer");
 		serverUser.setRole(Role.SYNC);
+		serverUser.setGroups(new ArrayList<Group>());
+		serverUser.getGroups().add(new Group("jbhj"));
 
 		/*
 		 * create client user

@@ -3,12 +3,24 @@
 
 <sqlMap namespace="Synchronization">
 
-	<select id="getAvlSyncServer" resultMap="SynchronizationCommon.syncService">
+	<select id="getAvlSyncServices" resultMap="SynchronizationCommon.syncService" parameterClass="boolean">
 		SELECT ss.uri, NULL as user_name, NULL as credentials
 		FROM sync_services ss
-		WHERE service_id > 0
-			AND ss.server = 1
+		WHERE ss.service_id > 0
+			AND ss.server = #server#
 	</select>
+	
+	<select id="getLastId" resultClass="int">
+		SELECT service_id
+		FROM sync_services
+		ORDER BY service_id DESC
+		LIMIT 1
+	</select>
+	
+	<insert id="insertSyncService" parameterClass="syncServiceParam">
+		INSERT INTO sync_services (uri, service_id, server)
+		VALUES (#uri#, #id#, #server#)
+	</insert>
 
 	<select id="getSyncServerForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
 		SELECT s.user_name, s.credentials, ss.uri
@@ -95,11 +107,11 @@
 		LIMIT 1
 	</select> 
 	
-	<select id="getSyncServiceByURI" resultClass="java.lang.Integer" parameterClass="syncParam">
+	<select id="getSyncServiceByURI" resultClass="java.lang.Integer" parameterClass="syncServiceParam">
 		SELECT service_id
 		FROM sync_services
-		WHERE uri = #service#
-		GROUP BY service_id
+		WHERE uri = #uri#
+			AND server=#server#
 	</select>
 	
 	<insert id="insertSync" parameterClass="syncParam">
@@ -127,6 +139,12 @@
 		DELETE FROM sync
 		WHERE user_name = #userName#
 			AND service_id = #serviceId#
+	</delete>
+	
+	<delete id="deleteSyncService" parameterClass="syncServiceParam">
+		DELETE FROM sync_services
+		WHERE server = #server#
+			AND uri = #uri#
 	</delete>
 	
 	

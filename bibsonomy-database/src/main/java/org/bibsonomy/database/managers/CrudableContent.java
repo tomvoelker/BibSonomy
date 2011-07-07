@@ -9,6 +9,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 
 /**
  * For every content type there should exist a separate class which implements
@@ -70,7 +71,7 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 
 	/**
 	 * update
-	 * 
+	 * old version
 	 * @param post
 	 * @param oldHash
 	 * @param operation
@@ -78,4 +79,16 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @return true, if entry existed and was updated
 	 */
 	public boolean updatePost(Post<T> post, String oldHash, PostUpdateOperation operation, DBSession session);
+	
+	/**
+	 * update
+	 * new version contains synchronization handling 
+	 * @param post
+	 * @param oldHash
+	 * @param operation
+	 * @param session
+	 * @param loginUser
+	 * @return
+	 */
+	public boolean updatePost(Post<T> post, String oldHash, PostUpdateOperation operation, DBSession session, User loginUser);
 }

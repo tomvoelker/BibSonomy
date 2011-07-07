@@ -30,6 +30,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -328,6 +329,34 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     
     /*
      * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncService()
+     */
+    @Override
+	public void createSyncService(final URI service, final boolean server) {
+    	final DBSession session = this.openSession();
+    	try {
+    		syncDBManager.createSyncService(session, service, server);
+    	} finally {
+    		session.close();
+    	}
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#deleteSyncService(java.net.URI, boolean)
+     */
+    @Override
+	public void deleteSyncService(final URI service, final boolean server) {
+    	final DBSession session = this.openSession();
+    	try {
+    		syncDBManager.deleteSyncService(session, service, server);
+    	} finally {
+    		session.close();
+    	}
+    }
+    
+    /*
+     * (non-Javadoc)
      * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncServer(java.lang.String, int, java.util.Properties)
      */
     @Override
@@ -340,7 +369,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		}
     }
     
-    
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#updateSyncServer(java.lang.String, java.net.URI, java.util.Properties)
+     */
     @Override
     public void updateSyncServer(final String userName, final URI service, final Properties userCredentials) {
     	final DBSession session = this.openSession();
@@ -351,7 +383,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     	}
     }
     
-
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#deleteSyncServer(java.lang.String, java.net.URI)
+     */
     @Override
     public void deleteSyncServer(final String userName, final URI service) {
     	final DBSession session = this.openSession();
@@ -385,16 +420,15 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getAvlSyncServer()
      */
     @Override
-    public List<SyncService> getAvlSyncServer() {
+    public List<SyncService> getAvlSyncServices(boolean server) {
     	final DBSession session = this.openSession();
-    	List<SyncService> server;
+    	List<SyncService> services;
     	try {
-    		server = syncDBManager.getAvlSyncServer(session);
+    		services = syncDBManager.getAvlSyncServices(session, server);
     	} finally {
     		session.close();
     	}
-    	
-    	return server;
+    	return services;
     }
     
 	/*
@@ -524,6 +558,27 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
             session.close();
         }
         return postList;
+    }
+    
+    /**
+     * Method to handle privacy settings of posts for synchronization
+     * @param post
+     */
+    private void validateGroupsForSynchronization(Post<? extends Resource> post) {
+    	/*
+    	 * check if not public or private group 
+    	 */
+    	if (!GroupUtils.containsExclusiveGroup(post.getGroups())) {
+    		/*
+    		 * post has group -> change to private
+    		 */
+    		Set<Group> groups = new HashSet<Group>();
+    		groups.add(new Group(GroupID.PRIVATE));
+    		post.setGroups(groups);
+    	}
+    	/*
+    	 * if public or private is nothing to do
+    	 */
     }
 
     /*
@@ -1120,11 +1175,18 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     /**
      * Adds a post in the database.
      */
-    private <T extends Resource> String createPost(final Post<T> post, final DBSession session) {
+private <T extends Resource> String createPost(final Post<T> post, final DBSession session) {
 	final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 	post.getResource().recalculateHashes();
-
+	
+	/*
+	 *check and set post visibility for synchronization 
+	 */
+	if (Role.SYNC.equals(loginUser.getRole())) {
+		validateGroupsForSynchronization(post);
+	}
 	this.validateGroups(post.getUser(), post.getGroups(), session);
+	
 	/*
 	 * change group IDs to spam group IDs
 	 */
@@ -1199,7 +1261,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
 	final CrudableContent<T, GenericParam> manager = getFittingDatabaseManager(post);
 	final String oldIntraHash = post.getResource().getIntraHash();
-
+	
+	if(Role.SYNC.equals(loginUser.getRole())){
+		validateGroupsForSynchronization(post);
+	}
 	this.validateGroups(post.getUser(), post.getGroups(), session);
 
 	/*
@@ -1238,7 +1303,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	/* 
 	 * update post
 	 */
-	manager.updatePost(post, oldIntraHash, operation, session);
+	manager.updatePost(post, oldIntraHash, operation, session, loginUser);
 
 	// if we don't get an exception here, we assume the resource has
 	// been successfully updated

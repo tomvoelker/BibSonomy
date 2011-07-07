@@ -78,7 +78,8 @@ INSERT INTO `repository` (`inter_hash`, `intra_hash`, `user_name`, `repository_n
 
 INSERT INTO `sync_services` (`uri`, `service_id`, server) VALUES
 ('http://www.bibsonomy.org/', 1, false),
-('http://www.test.de/', 0, true);
+('http://www.test.de/', 0, true),
+('http://www.test.de/', 0, false);
 
 
 INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_max_count`,`is_max_count`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`,`birthday`,`gender`,`profession`,`institution`, `interests`,`hobbies`,`place`,`profilegroup`,`api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`) VALUES 

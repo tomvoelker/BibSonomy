@@ -24,6 +24,7 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
 
@@ -171,6 +172,11 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 
 	protected abstract P getInsertParam(Post<R> post);
+	
+	@Override
+	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session, final User loginUser) {
+		return updatePost(post, oldHash, operation, session);
+	}
 	
 	@Override
 	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
