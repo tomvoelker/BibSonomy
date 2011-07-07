@@ -180,17 +180,4 @@
 	<!-- UnAPI -->
     <abbr class="unapi-id" title="${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><c:out value=" "/></abbr>
     
-	<!-- flas as spam  -->
-	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>	
-    <fmt:message var="flagAsSpam" key="post.meta.flag_as_spam.title"/>
-    <a id="spam_bib_${fn:escapeXml(post.user.name)}_${post.resource.intraHash}" href="javascript:;" title="${flagAsSpam}"><fmt:message key="post.meta.flag_as_spam"/></a>
-    
-    <!-- display spammerKiller-Link for Admins 
-    TODO: remove?!
-    <c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-    	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-    	<a href="javascript:addSpammerInline('${post.user.name}')"><fmt:message key="post.meta.kill_spammer"/></a>	
-    </c:if>	
-    -->
-	
 </jsp:root>
