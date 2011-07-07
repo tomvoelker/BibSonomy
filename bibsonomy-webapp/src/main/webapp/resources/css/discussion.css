@@ -3,6 +3,13 @@ li.ui-state-hover {
 	font-weight: normal;
 }
 
+.discussion_headline {
+	float:left;
+}
+
+.discussion_all {
+	padding-top:30px;	
+}
 #review_info_rating {
 	margin-left: 0.5em;
 	text-align: center;

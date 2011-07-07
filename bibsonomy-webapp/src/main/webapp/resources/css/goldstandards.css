@@ -21,6 +21,10 @@ div#goldstandard textarea {
 	padding: 5px;
 }
 
+.gold_headline {
+	padding-top:30px;
+}
+
 h2#gold_title {
 	margin-bottom: 0px;
 	font-size: 135%;
@@ -85,6 +89,7 @@ ul#gold_menu li a:hover {
 
 #goldstandard h3 {
 	padding-left: 0;
+	float:left;
 }
 
 #gold_resources_pdf {

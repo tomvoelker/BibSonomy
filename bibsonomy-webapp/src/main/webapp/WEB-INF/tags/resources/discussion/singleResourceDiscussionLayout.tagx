@@ -9,7 +9,6 @@
 	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="true" />
 
 	<div id="discussionbox">
-		<review:reviewRatingsInfo resource="${resource}" />
 		
 		<!-- TODO: display comment count -->
 		<discussion:discussion loginUser="${command.context.loginUser}" resource="${resource}" discussionItems="${discussionItems}" />

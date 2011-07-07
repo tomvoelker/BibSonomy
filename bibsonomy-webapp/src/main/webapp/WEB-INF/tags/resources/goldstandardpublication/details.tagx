@@ -85,9 +85,14 @@
 			</div>
 			<div id="gold_exports_1">
 <!--				<h3><fmt:message key="bibtex.abstract"/></h3>-->
-				<c:if test="${not empty goldstandard.abstract}">
-					<div id="gold_abstract">${mtl:cleanBibtex(goldstandard.abstract)}</div>
-				</c:if>	
+				<c:choose>
+					<c:when test="${not empty goldstandard.abstract}">
+						<div id="gold_abstract">${mtl:cleanBibtex(goldstandard.abstract)}</div>
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="goldstandard.resource.info.noAbstract"/>
+					</c:otherwise>
+				</c:choose>
 			</div>
 			<div id="gold_exports_2">
 <!--				<h3><fmt:message key="export.layout"/></h3>-->
@@ -181,12 +186,7 @@
 <!--		</c:if>-->
 		
 		<!-- discussion -->
-		<div id="gold_discussion">
-	    	<h3><fmt:message key="post.resource.discussion" /></h3>
-	    	
-	    	<review:reviewRatingsInfo resource="${goldstandard}" />
-			<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}" />
-		</div>
+		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}" />
 		
 		
 	</div>

@@ -26,50 +26,64 @@
    		<c:set var="discussionItems" value="${resource.discussionItems}" />
    	</c:if>
    	
-   	<ul id="discussionMainMenu" class="newMenu">
-		<li>
-			<a href="#discussion" id="toggleDiscussion"><fmt:message key="post.resource.discussion.actions.hide" /></a>
-		</li>
+ 	<div class="discussion_all">  	
+   		
+   		<!-- Headline -->
+   		<div class="discussion_headline">
+	   		<h3><fmt:message key="post.resource.discussion" /></h3>
+		</div>
+   	
+   		<!-- The three Buttons -->
+   		<ul id="discussionMainMenu" class="newMenu">
+			<li>
+				<a href="#discussion" id="toggleDiscussion"><fmt:message key="post.resource.discussion.actions.hide" /></a>
+			</li>
+			<!-- TODO: use spring security tags -->
+			<c:if test="${command.context.userLoggedIn}">
+				<li><a href="#createReview" class="createReview"><fmt:message key="post.resource.review.actions.create" /></a></li>
+				<li><a href="#createComment" class="reply"><fmt:message key="post.resource.comment.actions.create" /></a></li>
+			</c:if>
+		
+			<!--<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
+			<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
+			-->
+		</ul>
+		
+		<!-- Aggregated RatingInfo -->
+    	<review:reviewRatingsInfo resource="${resource}" />
+	
+ 	  	<!-- The input forms -->
+ 	  	<div id="discussion" data-interHash="${resource.interHash}">
+	    	<!-- TODO: use spring security tags -->
+		    <c:if test="${command.context.userLoggedIn}">
+		    	<!-- review and comment forms -->
+	    		<div id="createReview" class="createReview">
+		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}"/>
+		    		<!-- TODO: add tips for reviewing a resource -->
+	    		</div>
+		    
+			    <div id="createComment" class="initiallyHidden">
+			    	<comment:commentForm resource="${resource}" userName="${loginUser.name}"/>
+			    </div>
+			</c:if>
+			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
+		</div>
+
 		<!-- TODO: use spring security tags -->
 		<c:if test="${command.context.userLoggedIn}">
-			<li><a href="#createReview" class="createReview"><fmt:message key="post.resource.review.actions.create" /></a></li>
-			<li><a href="#createComment" class="reply"><fmt:message key="post.resource.comment.actions.create" /></a></li>
-		</c:if>
-		
-		<!--<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
-		<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
-		-->
-	</ul>
-   	<div id="discussion" data-interHash="${resource.interHash}">
-	    <!-- TODO: use spring security tags -->
-	    <c:if test="${command.context.userLoggedIn}">
-	    	<!-- review and comment forms -->
-	    	<div id="createReview" class="createReview">
-		    	<review:reviewForm resource="${resource}" userName="${loginUser.name}"/>
-		    	<!-- TODO: add tips for reviewing a resource -->
-	    	</div>
-		    
-		    <div id="createComment" class="initiallyHidden">
-		    	<comment:commentForm resource="${resource}" userName="${loginUser.name}"/>
-		    </div>
-		</c:if>
-		
-		<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
-	</div>
-	<!-- TODO: use spring security tags -->
-	<c:if test="${command.context.userLoggedIn}">
-		<div id="discussionTemplates" class="initiallyHidden">
-			<!-- create comment div structure -->
-			<div id="commentTemplate">
-			   	<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" />
-			</div>
+			<div id="discussionTemplates" class="initiallyHidden">
+				<!-- create comment div structure -->
+				<div id="commentTemplate">
+				   	<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" />
+				</div>
 			    
-			<ul>
-				<!-- create li, div structure for new review -->
-				<li id="newReview">
-					<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
-				</li>
-		    </ul>
-		</div>
-	</c:if>
+				<ul>
+					<!-- create li, div structure for new review -->
+					<li id="newReview">
+						<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
+					</li>
+		    	</ul>
+			</div>
+		</c:if>
+	</div>
 </jsp:root>
