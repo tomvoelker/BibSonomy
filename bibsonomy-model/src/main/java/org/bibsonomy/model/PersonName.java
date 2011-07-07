@@ -33,6 +33,11 @@ import org.bibsonomy.model.util.PersonNameUtils;
  * @version $Id$
  */
 public class PersonName {
+	/**
+	 * delimiter between the parts of a person's name in the "Last, First" format.
+	 * 
+	 */
+	public static final String LAST_FIRST_DELIMITER = ",";
 
 	private String name;
 	private String firstName;
@@ -96,6 +101,11 @@ public class PersonName {
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+	
+	@Override
+	public String toString() {
+		return this.lastName + LAST_FIRST_DELIMITER + " " + this.firstName;
 	}
 
 
