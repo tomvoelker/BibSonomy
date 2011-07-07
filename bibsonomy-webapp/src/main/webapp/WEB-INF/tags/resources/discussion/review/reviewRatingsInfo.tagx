@@ -14,7 +14,7 @@
 		</c:if>
 		<div id="ratingDistribution">
 			<fmt:message key="post.resource.review.info.ratingDistribution" />
-			<div id="ratingDistributionGraph" style="width: 315px; height: 120px;">
+			<div id="ratingDistributionGraph" style="width: 315px; height: 60px;">
 				<!-- ploted by javascript -->
 			</div>
 		</div>

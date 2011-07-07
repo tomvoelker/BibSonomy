@@ -45,12 +45,12 @@
 	    <c:if test="${command.context.userLoggedIn}">
 	    	<!-- review and comment forms -->
 	    	<div id="createReview" class="createReview">
-		    	<review:reviewForm resource="${resource}" />
+		    	<review:reviewForm resource="${resource}" userName="${loginUser.name}"/>
 		    	<!-- TODO: add tips for reviewing a resource -->
 	    	</div>
 		    
 		    <div id="createComment" class="initiallyHidden">
-		    	<comment:commentForm resource="${resource}" />
+		    	<comment:commentForm resource="${resource}" userName="${loginUser.name}"/>
 		    </div>
 		</c:if>
 		

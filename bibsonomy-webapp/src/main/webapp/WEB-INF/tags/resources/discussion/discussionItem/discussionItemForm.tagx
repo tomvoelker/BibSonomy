@@ -11,6 +11,7 @@
     <jsp:directive.attribute name="action" type="java.lang.String" required="true" />
     <jsp:directive.attribute name="discussionItemClass" type="java.lang.String" required="true" />
     <jsp:directive.attribute name="additionalInputs" fragment="true" required="false"/>
+    <jsp:directive.attribute name="userName" type="java.lang.String" required="true"/>
     
     <form action="/ajax/${discussionItemClass}s" method="post" class="${action}${discussionItemClass}">
 		<c:if test="${not empty discussionItem}">
@@ -20,42 +21,50 @@
    		<input name="hash" value="${resource.interHash}" type="hidden" />
    		<input name="discussionItem.hash" value="${discussionItem.hash}" type="hidden" />
    		<div class="fsform">
-			<fieldset class="fsOuter">
+			<fieldset class="fsOuter" style="padding-top:5px">
 			
-				<c:if test="${not empty additionalInputs}">
-					<jsp:invoke fragment="additionalInputs" />
-				</c:if>
+       			<span style="float:left; width:5%; padding-right:1%;padding-top:30px">
+       				<img src="/picture/user/${fn:escapeXml(userName)}" alt="userPicture" class="commentPicture" />
+       			</span>
+       			<span style="float:left; width:94%; margin-top:10px">
+					<c:if test="${not empty additionalInputs}">
+						<jsp:invoke fragment="additionalInputs" />
+					</c:if>
        				
-				<div class="fsRow" style="float:left;width: 50%">
-					<label class="fsLabel" for="discussionItem.anonymous"><fmt:message key="post.resource.discussionItem.anonymous"/>	</label>
-					<buttons:help message="post.resource.discussionItem.anonymous.help"/>
-					<c:choose>
-						<c:when test="${not empty discussionItem and discussionItem.anonymous}">
-							<input type="checkbox" name="discussionItem.anonymous" value="true" checked="checked" />
-						</c:when>
-						<c:otherwise>
-							<input type="checkbox" name="discussionItem.anonymous" value="true" />
-						</c:otherwise>
-					</c:choose>
-				</div>
-		
- 				<div style="float:left;margin:0px">
-					<!--
-     					| groups 
-    			       -->
-     	 			<parts:fieldset maximized="false" legendKey="post.resource.viewablefor">
-						<jsp:attribute name="content">
-							<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${discussionItem.groups}"/>
-  						</jsp:attribute>
-					</parts:fieldset>
-				</div>
- 				<div style="float:right;">
- 					<fmt:message key="post.resource.${discussionItemClass}.actions.${action}" var="buttonText" />
- 					<input type="submit" value="${buttonText}" />
-					<div class="spinner initiallyHidden" style="float:right">
-					<img src="${resdir}/image/ajax_loader.gif" alt="loading" /><fmt:message key="post.resource.${discussionItemClass}.action.${action}" />
+					<div style="float:left;margin-right:10px">
+						<c:choose>
+							<c:when test="${not empty discussionItem and discussionItem.anonymous}">
+								<input type="checkbox" name="discussionItem.anonymous" value="true" checked="checked" style="float:left"/>
+							</c:when>
+							<c:otherwise>
+								<input type="checkbox" name="discussionItem.anonymous" value="true" style="float:left"/>
+							</c:otherwise>
+						</c:choose>
+						<label style="float:left" for="discussionItem.anonymous">
+							<fmt:message key="post.resource.discussionItem.anonymous"/>	
+						</label>
+						<buttons:help message="post.resource.discussionItem.anonymous.help"/>
 					</div>
- 				</div>	
+		
+ 					<div style="float:left;margin-top:-8px;margin-right:10px">
+						<!--
+     						| groups 
+    			    	   -->
+	     	 			<parts:fieldset maximized="false" legendKey="post.resource.viewablefor">
+							<jsp:attribute name="content">
+								<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${discussionItem.groups}"/>
+  							</jsp:attribute>
+						</parts:fieldset>
+					</div>
+ 					<div style="float:right">
+ 						<fmt:message key="post.resource.${discussionItemClass}.actions.${action}" var="buttonText" />
+ 						<input type="submit" value="${buttonText}" />
+						<div class="spinner initiallyHidden" style="float:left; margin-right:10px">
+							<img src="${resdir}/image/ajax_loader.gif" alt="loading"/><fmt:message key="post.resource.${discussionItemClass}.action.${action}" />
+						</div>
+ 					</div>	
+ 				</span>	
+
    			</fieldset>
    		</div>
 	</form>

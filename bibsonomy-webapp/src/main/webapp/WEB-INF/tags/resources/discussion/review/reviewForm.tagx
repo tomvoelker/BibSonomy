@@ -2,11 +2,13 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
     
     <jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="false" />
     <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+   	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
 	
 	<c:set var="action" value="create" />
 	
@@ -14,29 +16,28 @@
 		<c:set var="action" value="edit" />
 	</c:if>
 	
-	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${review}" action="${action}" discussionItemClass="review">
+	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${review}" action="${action}" discussionItemClass="review" userName="${userName}">
 		<jsp:attribute name="additionalInputs">
 			<span style="float:left"><fmt:message key="post.resource.review.actions.post"/></span>
-				<span class="reviewrating" style="float:right">
+			<span class="reviewrating" style="float:right">
 
-  						<!-- TODO: REVIEW: titles for rating steps? -->
-  						<c:forEach var="i" begin="1" end="10">
-  							<c:set var="ratingStep" value="${i / 2}" />
-  							<c:choose>
-   							<c:when test="${not empty review and review.rating eq ratingStep}">
-  									<input name="discussionItem.rating" type="radio" value="${ratingStep}" checked="checked"/>
-  								</c:when>
-  								<c:otherwise>
-  									<input name="discussionItem.rating" type="radio" value="${ratingStep}"/>
-  								</c:otherwise>
-  							</c:choose>
-  						</c:forEach>	
-					</span>
- 					<buttons:help message="post.resource.review.rating.help"/>
-				
-				<div class="fsRow reviewTextBox">
-					<textarea class="reqinput" rows="3" name="discussionItem.text"><!-- text --> <c:if test="${not empty review}"><c:out value="${review.text}" /></c:if></textarea>
-				</div>
+				<!-- TODO: REVIEW: titles for rating steps? -->
+				<c:forEach var="i" begin="1" end="10">
+					<c:set var="ratingStep" value="${i / 2}" />
+					<c:choose>
+						<c:when test="${not empty review and review.rating eq ratingStep}">
+							<input name="discussionItem.rating" type="radio" value="${ratingStep}" checked="checked"/>
+						</c:when>
+						<c:otherwise>
+							<input name="discussionItem.rating" type="radio" value="${ratingStep}"/>
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>	
+			</span>
+			<buttons:help message="post.resource.review.rating.help"/>
+			<div class="fsRow reviewTextBox" style="margin-right:6px">
+				<textarea class="reqinput" rows="3" name="discussionItem.text"><!-- text --> <c:if test="${not empty review}"><c:out value="${review.text}" /></c:if></textarea>
+			</div>
 		</jsp:attribute>
 	</discussionItem:discussionItemForm>
 </jsp:root>
