@@ -41,11 +41,6 @@ import org.bibsonomy.util.StringUtils;
 public class PersonNameUtils {
 
 	/**
-	 * delimiter between the parts of a person's name in the "Last, First" format.
-	 * 
-	 */
-	public static final String LAST_FIRST_DELIMITER = ",";
-	/**
 	 * the delimiter used for separating person names
 	 */
 	public static final String PERSON_NAME_DELIMITER = " and ";
@@ -81,7 +76,7 @@ public class PersonNameUtils {
 	 */
 	public static String lastFirstToFirstLast(final String name) {
 		if (present(name)) {
-			final int indexOf = name.indexOf(LAST_FIRST_DELIMITER);
+			final int indexOf = name.indexOf(PersonName.LAST_FIRST_DELIMITER);
 			if (indexOf >= 0) {
 				return name.substring(indexOf + 1).trim() + " " + name.substring(0, indexOf).trim();
 			}
@@ -101,7 +96,7 @@ public class PersonNameUtils {
 	 */
 	public static String lastFirstToFirstLastMany(final String names) {
 		if (present(names)) {
-			if (names.contains(LAST_FIRST_DELIMITER)) {
+			if (names.contains(PersonName.LAST_FIRST_DELIMITER)) {
 				final StringBuilder namesNew = new StringBuilder();
 				
 				final String[] split = names.split(PERSON_NAME_DELIMITER);
@@ -127,35 +122,51 @@ public class PersonNameUtils {
 			 * DBLP author names sometimes contain numbers (when there are
 			 * several authors with the same name. Here we remove those numbers
 			 */
-			final String cleanedName = StringUtils.removeSingleNumbers(name);
+			final String cleanedName = StringUtils.removeSingleNumbers(name).trim();
 			/*
-			 * Names can be in to formats:
+			 * Names can be in several formats:
 			 * 
-			 * First Last
+			 * 1) First (preLast) Last
+			 * 2) (preLast) Last, First
+			 * 3) {Long name of a Company}
 			 * 
-			 * or 
-			 * 
-			 * Last, First
-			 * 
-			 * If the name contains a comma ",", we assume the latter
+			 * If the name starts with a brace and ends with a brace, we assume case 3).
 			 */
-			final int indexOfComma = cleanedName.indexOf(LAST_FIRST_DELIMITER);
+			final int indexOfLbr = cleanedName.indexOf("{");
+			final int indexOfRbr = cleanedName.lastIndexOf("}");
+			if (indexOfLbr == 0 && indexOfRbr == cleanedName.length() - 1) {
+				/*
+				 * 3) {Long name of Company}
+				 * 
+				 * We do not remove the braces and use the complete "name" as last name. 
+				 */
+				personName.setLastName(cleanedName);
+				return;
+			}
+			/*
+			 * If the name contains a comma, we assume case 2).
+			 */
+			final int indexOfComma = cleanedName.indexOf(PersonName.LAST_FIRST_DELIMITER);
 			if (indexOfComma >= 0) {
 				/*
-				 * We assume Last, First - it's clear, which part is what
+				 * 2) We assume (preLast) Last, First.
+				 * Since our PersonName does not have an extra "preLast" attribute,
+				 * we store it together with "Last".
 				 */
 				personName.setFirstName(cleanedName.substring(indexOfComma + 1).trim());
 				personName.setLastName(cleanedName.substring(0, indexOfComma).trim());
 				return;
 			}
 			/*
-			 * First Last ... its not so obvious, which part is what. 
+			 * 1) First Last ... its not so obvious, which part is what. 
 			 * 
-			 * We assume that a name has either only one (abbreviated or not) Firstname,
-			 * or several - while all except the first must be abbreviated. The last
-			 * name then begins at the first word that does not contain a ".".  
+			 * We assume that a name has either only one (abbreviated or not) 
+			 * first name, or several - while all except the first must be 
+			 * abbreviated. The last name then begins at the first word that 
+			 * does not contain a ".".
+			 * Or, the last name begins at the first word with a lower case 
+			 * letter.
 			 * 
-			 * Firstnames can be abbreviated with a '.' to be identified as firstnames.
 			 */
 
 			/*
@@ -163,7 +174,7 @@ public class PersonNameUtils {
 			 */
 			final String[] nameList = cleanedName.split("\\s+");
 			/*
-			 * detect firstname and lastname
+			 * detect first name and last name
 			 */
 			final StringBuilder firstNameBuilder = new StringBuilder();
 			int i = 0;
@@ -171,9 +182,12 @@ public class PersonNameUtils {
 				final String part = nameList[i++];
 				firstNameBuilder.append(part + " ");
 				/*
-				 * stop, if this is the last abbreviated forename 
+				 * stop, if this is the last abbreviated first name
+				 * or 
+				 * the next part begins with a lowercase letter
 				 */
-				if (part.contains(".") && !nameList[i].contains(".")) {
+				final String nextPart = nameList[i];
+				if ((part.contains(".") && !nextPart.endsWith(".")) || nextPart.matches("^[a-z].*")) {
 					break;
 				}
 			}
@@ -195,7 +209,7 @@ public class PersonNameUtils {
 	 * @return the last name of the first person
 	 */
 	public static String getFirstPersonsLastName(final String person) {
-		if (person != null) {
+		if (present(person)) {
 			final String firstauthor;
 			/*
 			 * check, if there is more than one author
@@ -209,14 +223,9 @@ public class PersonNameUtils {
 			/*
 			 * first author extracted, get its last name
 			 */
-			final int lastspace = firstauthor.lastIndexOf(' ');
-			final String lastname;
-			if (lastspace < 0) {
-				lastname = firstauthor;
-			} else {
-				lastname = firstauthor.substring(lastspace + 1, firstauthor.length());
-			}
-			return lastname;
+			final PersonName personName = new PersonName();
+			discoverFirstAndLastName(firstauthor, personName);
+			return personName.getLastName();
 		}
 		return null;
 	}	

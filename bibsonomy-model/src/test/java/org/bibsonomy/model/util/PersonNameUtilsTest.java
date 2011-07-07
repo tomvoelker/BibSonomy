@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.model.PersonName;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -39,6 +40,9 @@ import org.junit.Test;
  */
 public class PersonNameUtilsTest {
 
+	/**
+	 * 
+	 */
 	@Test
 	public void testExtractList() {
 		final List<PersonName> should = Arrays.asList(new PersonName("D.E. Knuth"));
@@ -46,6 +50,9 @@ public class PersonNameUtilsTest {
 		assertEqualPersonNames(should.get(0), is.get(0));
 	}
 	
+	/**
+	 * 
+	 */
 	@Test
 	public void testExtractList2() {
 		final List<PersonName> should = Arrays.asList(
@@ -54,9 +61,17 @@ public class PersonNameUtilsTest {
 				new PersonName("Donald E. Knuth"),
 				new PersonName("Foo van Bar"),
 				new PersonName("R. Jäschke"),
-				new PersonName("L. Balby Marinho")
+				new PersonName("John Chris Smith"),
+				new PersonName("John von Neumann"),
+				new PersonName("von der Schmidt, Alex"),
+				new PersonName("{Long Company Name}"),
+				new PersonName("L. Balby Marinho"),
+				new PersonName("Balby Marinho, Leandro"),
+				new PersonName("Leandro Balby Marinho")
 		);
-		final List<PersonName> is = PersonNameUtils.extractList("D.E. Knuth and Hans Dampf and Donald E. Knuth and Foo van Bar and Jäschke, R. and L. Balby Marinho");
+		System.out.println("sh = " + should);
+		final List<PersonName> is = PersonNameUtils.extractList("D.E. Knuth and Hans Dampf and Donald E. Knuth and Foo van Bar and Jäschke, R. and John Chris Smith and John von Neumann and von der Schmidt, Alex and {Long Company Name} and L. Balby Marinho and Balby Marinho, Leandro and Leandro Balby Marinho");
+		System.out.println("is = " + is);
 		for (int i = 0; i < should.size(); i++) {
 			assertEqualPersonNames(should.get(i), is.get(i));			
 		}
@@ -80,6 +95,9 @@ public class PersonNameUtilsTest {
 		assertEquals(a.getLastName(), b.getLastName());
 	}
 
+	/**
+	 * 
+	 */
 	@Test
 	public void testLastFirstToFirstLast() {
 		
@@ -88,13 +106,65 @@ public class PersonNameUtilsTest {
 
 	}
 	
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testDiscover() throws Exception {
-		final PersonName personName = new PersonName("de la Vall{'e}e Poussin, Charles Louis Xavier Joseph");
-		assertEquals("Charles Louis Xavier Joseph", personName.getFirstName());
-		assertEquals("de la Vall{'e}e Poussin", personName.getLastName());
+		final PersonName pn1 = new PersonName("de la Vall{'e}e Poussin, Charles Louis Xavier Joseph");
+		assertEquals("Charles Louis Xavier Joseph", pn1.getFirstName());
+		assertEquals("de la Vall{'e}e Poussin", pn1.getLastName());
+		
+		final PersonName pn2 = new PersonName("{Long Company Name}");
+		assertEquals("{Long Company Name}", pn2.getLastName());
+		
+		final PersonName pn3 = new PersonName("Donald E. Knuth");
+		assertEquals("Donald E.", pn3.getFirstName());
+		assertEquals("Knuth", pn3.getLastName());
+
+		final PersonName pn4 = new PersonName("Foo van Bar");
+		assertEquals("Foo", pn4.getFirstName());
+		assertEquals("van Bar", pn4.getLastName());
+		
+		final PersonName pn5 = new PersonName("von der Schmidt, Alex");
+		assertEquals("Alex", pn5.getFirstName());
+		assertEquals("von der Schmidt", pn5.getLastName());
+		
+		final PersonName pn6 = new PersonName("L. Bar Mar");
+		assertEquals("L.", pn6.getFirstName());
+		assertEquals("Bar Mar", pn6.getLastName());
+		
+		final PersonName pn7 = new PersonName("Bar Mar, Leo");
+		assertEquals("Leo", pn7.getFirstName());
+		assertEquals("Bar Mar", pn7.getLastName());
+		
+		final PersonName pn9 = new PersonName("Bar Mar, L.");
+		assertEquals("L.", pn9.getFirstName());
+		assertEquals("Bar Mar", pn9.getLastName());
+
+		final PersonName pn10 = new PersonName("John Chris Smith");
+		assertEquals("John Chris", pn10.getFirstName());
+		assertEquals("Smith", pn10.getLastName());	
+	}
+	
+	/**
+	 * Not working name
+	 * @throws Exception
+	 */
+	@Test
+	@Ignore
+	public void testDiscoverNotWorking() throws Exception {
+		/*
+		 * this "First Last" name form is ambigue - we can't discover the correct name 
+		 */
+		final PersonName pn8 = new PersonName("Leo Bar Mar");
+		assertEquals("Leo", pn8.getFirstName());
+		assertEquals("Bar Mar", pn8.getLastName());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testLastFirstToFirstLastMany() throws Exception {
 		assertEquals("D.E. Knuth", PersonNameUtils.lastFirstToFirstLastMany("Knuth, D.E."));
@@ -109,8 +179,11 @@ public class PersonNameUtilsTest {
 	public void getFirstPersonsLastName() {
 		assertNull(PersonNameUtils.getFirstPersonsLastName(null));
 		assertEquals("Dampf", PersonNameUtils.getFirstPersonsLastName("Hans Dampf"));
+		assertEquals("Dampf", PersonNameUtils.getFirstPersonsLastName("Dampf, Hans"));
 		assertEquals("Dampf", PersonNameUtils.getFirstPersonsLastName("Hans Dampf and Reiner Zufall"));
-		// XXX: this should be "Dampf" instead of "Zufall"
-		assertEquals("Zufall", PersonNameUtils.getFirstPersonsLastName("Hans Dampf, Reiner Zufall"));
+		assertEquals("von Neumann", PersonNameUtils.getFirstPersonsLastName("von Neumann, John"));
+		assertEquals("von Neumann", PersonNameUtils.getFirstPersonsLastName("John von Neumann"));
+		assertEquals("{Long Company Name}", PersonNameUtils.getFirstPersonsLastName("{Long Company Name}"));
 	}
 }
+
