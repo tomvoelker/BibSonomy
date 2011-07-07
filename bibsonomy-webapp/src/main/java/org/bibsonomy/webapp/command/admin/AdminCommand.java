@@ -51,6 +51,7 @@ public class AdminCommand extends BaseCommand{
 		actionTitles.put("lucene", "Manage lucene");
 		actionTitles.put("recommender", "Manage recommenders");
 		actionTitles.put("oauth", "Manage OAuth Consumers");
+		actionTitles.put("sync", "Manage synchronization settings");
 		
 		// set privacy options
 		privlevel = new HashMap<String, Privlevel>();

@@ -39,6 +39,7 @@
 			<fmt:message var="syncThisContent" key="synchronization.syncThis"/>
 			<fmt:message var="bookmarks" key="bookmarks" />
 			<fmt:message var="publications" key="publications" />
+			<fmt:message var="synchronizationRunning" key="synchronization.synchronizationRunning"/>
 			<div id="general_100">
 			<h2><fmt:message key="synchronization.header" /></h2>
 			<c:forEach var="service" items="${command.syncServices}">
@@ -101,6 +102,7 @@
 							<span id="resultMsg" style="display:none"><fmt:message key="synchronization.result"/></span>
 						</div>					
 					<input class="synchronizeBtn" type="submit" value="${syncronize}"/>
+					<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
 				</fieldset>
 
 			</c:forEach>
@@ -110,6 +112,7 @@
 					$(".synchronizeBtn").click(function(){
 						$(this).hide();
 						var fieldset = $(this).parents("fieldset");
+						fieldset.find(".progressGif").show();
 						var serviceName = fieldset.find(".serviceName").text();
 						var bookmarks = fieldset.find(".bookmarksBox").attr("checked");
 						var publ = fieldset.find(".publicationsBox").attr("checked");
@@ -134,7 +137,8 @@
 								contentType : content
 							},
 							success: function(data) {
-								$(".synchronizeBtn").show();
+								fieldset.find(".synchronizeBtn").show();
+								fieldset.find(".progressGif").hide();
 								for (key in data) {
 									var error = data[key].error;
 									if (error != "no") {
@@ -154,7 +158,8 @@
 							},
 							error: function(data) {
 								alert("sync err");
-								$(".synchronizeBtn").show();
+								fieldset.find(".synchronizeBtn").show();
+								fieldset.find(".progressGif").hide();
 							}
 						});
 						return false;

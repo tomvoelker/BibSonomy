@@ -44,25 +44,47 @@
 					</property> 
 					</bean>
 				</entry>
+				
+				<entry key="/admin/sync">
+					<bean parent ="controllerBase">
+						<property name="controllerBeanName" value = "adminSyncController"/>
+						<property name="allowedFields">
+						<list>
+							<value>action</value>
+							<value>service</value>
+							<value>server</value>
+						</list>
+						</property>
+					</bean>
+				</entry>
             </map>
         </property>
     </bean>
 	
 	<!--  #################### controller #################### -->
+	
+	<!-- handles sync admin page -->
+	<bean id="adminSyncController" class="org.bibsonomy.webapp.controller.admin.AdminSyncViewController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+	
 	<!-- Handles the update of synchronitzation settings -->
 	<bean id="updateSyncSettingsController" class="org.bibsonomy.webapp.controller.actions.SyncSettingsController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
-		
+	
+	<!-- Handles sync page -->	
 	<bean id="syncPageController" class="org.bibsonomy.webapp.controller.SyncPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="syncClient" ref="synchronizationClient" />
 	</bean>
 		
+	<!-- handles synchronization request -->
 	<bean id="syncController" class="org.bibsonomy.webapp.controller.ajax.SynchronizationController" scope="request" parent="ajaxController">
 		<property name="client" ref="synchronizationClient"/>
 	</bean>
 
+	<!-- client bean, handles synchronization -->
 	<bean id="realSynchronizationClient" class="org.bibsonomy.sync.SynchronizationClient" lazy-init="true">
 		<property name="ownUri" value="${project.home}"/>
 		<property name="serverLogicFactory" ref="restLogicFactory" />
