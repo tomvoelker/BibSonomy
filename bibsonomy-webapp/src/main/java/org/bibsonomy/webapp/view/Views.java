@@ -297,6 +297,10 @@ public enum Views implements View {
 	 */
 	ADMIN_OAUTH("actions/admin/oauth"),
 	/**
+	 * manage synchronization settings
+	 */
+	ADMIN_SYNC("actions/admin/sync"),
+	/**
 	 * general admin page
 	 */
 	ADMIN("actions/admin/index"),

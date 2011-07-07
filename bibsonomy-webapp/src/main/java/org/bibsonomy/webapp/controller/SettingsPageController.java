@@ -213,7 +213,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
 		
 		userServer = syncLogic.getSyncServerForUser(command.getUser().getName());
-		avlServer = syncLogic.getAvlSyncServer();
+		avlServer = syncLogic.getAvlSyncServices(true);
 
 		
 		for (SyncService service : userServer) {
