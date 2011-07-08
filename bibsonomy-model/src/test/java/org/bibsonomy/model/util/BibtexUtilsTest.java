@@ -198,6 +198,10 @@ public class BibtexUtilsTest {
 		assertEquals("silie", BibTexUtils.generateBibtexKey(null, "Peter Silie", null, null));
 		assertEquals("silie", BibTexUtils.generateBibtexKey(null, "Peter Silie and Hans Dampf", null, null));
 		assertEquals("silie2005", BibTexUtils.generateBibtexKey(null, "Peter Silie and Hans Dampf", "2005", null));
+		assertEquals("knuth2005", BibTexUtils.generateBibtexKey(null, "Knuth, Donald E.", "2005", null));
+		assertEquals("navarrobullock2005", BibTexUtils.generateBibtexKey(null, "Navarro Bullock, Beate", "2005", null));
+		assertEquals("longcompanyname2005", BibTexUtils.generateBibtexKey(null, "{Long Company Name} and Hans Dampf", "2005", null));
+		assertEquals("knuth1998computer", BibTexUtils.generateBibtexKey(null, "Knuth, Donald E.", "1998", "The Art of Computer Programming"));
 	}
 
 
