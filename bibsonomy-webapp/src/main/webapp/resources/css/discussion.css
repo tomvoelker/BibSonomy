@@ -3,18 +3,16 @@ li.ui-state-hover {
 	font-weight: normal;
 }
 
-.discussion_headline {
-	float:left;
+#goldstandard .discussion_all {
+	margin-top: 1em;
 }
 
-.discussion_all {
-	padding-top:30px;	
-}
 #review_info_rating {
 	margin-left: 0.5em;
 	text-align: center;
 	display: table;
 	border-collapse: collapse;
+	width: 100%;
 }
 
 #postReview, #review_info_rating {
@@ -37,12 +35,6 @@ li.ui-state-hover {
 
 #ratingAvg div {
 	margin: auto;
-}
-
-#ratingDistribution {
-	margin-left: 0.1em;
-	margin-right: 1em;
-	max-width: 315px;
 }
 
 .info span {
@@ -85,27 +77,6 @@ li.ui-state-hover {
     position: absolute;
     background-position: 0 -32px;
 }*/
-
-#toggleDiscussion {
-	margin-top: 1em;
-	clear:both;
-	width: 100%;
-	text-align: center;
-}
-
-#toggleDiscussion a {
-	background-color: rgb(0, 104, 170); /** TODO: PUMA **/
-	color: white !important;
-	width: 100%;
-	font-size: 80%;
-	padding: 2px 20px 2px 20px;
-	border: 1px solid black;
-}
-
-#toggleDiscussion a:hover {
-	background-color: rgb(233, 233, 233); /** TODO: PUMA **/
-	color: rgb(96, 96, 96) !important; /** TODO: PUMA **/
-}
 
 .ratingAvgInfo {
 	color: #555;
@@ -150,6 +121,16 @@ ul.subdiscussionItems ul.subdiscussionItems {
 	margin-left: 35px;
 }
 
+ul.discussionitemMenu li {
+	border-left: 1px solid grey;
+	padding-right: 0.4em;
+	padding-left: 0.4em;
+}
+
+ul.discussionitemMenu li:first-child {
+	border-left: none;
+}
+
 .review.text, .comment.text {
 	font-size: 90%;
 	margin-top: 0.25em;
@@ -160,12 +141,11 @@ ul.subdiscussionItems ul.subdiscussionItems {
 	margin-top: 0.5em;
 }
 
-#discussionMainMenu {
-	margin-bottom: 0.5em;
-	text-align: right;
+/** TODO: merge and move to style.css */
+ul.newMenu {
+	float: right;
 }
 
-/** TODO: merge and move to style.css */
 ul.newMenu li {
 	display: inline;
 	padding: 3px;
@@ -183,14 +163,4 @@ ul.newMenu li a {
 ul.newMenu li a:hover {
 	background-color: rgb(233, 233, 233); /* TODO: puma */
 	color: rgb(96, 96, 96) !important;
-}
-
-ul.discussionitemMenu li {
-	border-left: 1px solid grey;
-	padding-right: 0.4em;
-	padding-left: 0.4em;
-}
-
-ul.discussionitemMenu li:first-child {
-	border-left: none;
 }

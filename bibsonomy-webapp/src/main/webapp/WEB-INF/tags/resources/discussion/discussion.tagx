@@ -28,11 +28,6 @@
    	
  	<div class="discussion_all">  	
    		
-   		<!-- Headline -->
-   		<div class="discussion_headline">
-	   		<h3><fmt:message key="post.resource.discussion" /></h3>
-		</div>
-   	
    		<!-- The three Buttons -->
    		<ul id="discussionMainMenu" class="newMenu">
 			<li>
@@ -40,14 +35,18 @@
 			</li>
 			<!-- TODO: use spring security tags -->
 			<c:if test="${command.context.userLoggedIn}">
-				<li><a href="#createReview" class="createReview"><fmt:message key="post.resource.review.actions.create" /></a></li>
-				<li><a href="#createComment" class="reply"><fmt:message key="post.resource.comment.actions.create" /></a></li>
+				<li><a href="#createreview" class="createReview"><fmt:message key="post.resource.review.actions.create" /></a></li>
+				<li><a href="#createcomment" class="reply"><fmt:message key="post.resource.comment.actions.create" /></a></li>
 			</c:if>
 		
-			<!--<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
-			<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
+			<!--
+				<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
+				<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
 			-->
 		</ul>
+   		
+   		<!-- Headline -->
+	   	<h3><fmt:message key="post.resource.discussion" /></h3>
 		
 		<!-- Aggregated RatingInfo -->
     	<review:reviewRatingsInfo resource="${resource}" />

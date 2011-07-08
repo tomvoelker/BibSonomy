@@ -3,19 +3,18 @@ var OTHER_GROUPING_CLASS_SELECTOR = '.otherGroupsBox';
 
 var DISCUSSION_MENU_SELECTOR = '#discussionMainMenu';
 var DISCUSSION_SELECTOR = '#discussion';
+var REVIEW_INFO_SELECTOR = '#review_info_rating';
 var DISCUSSION_TOGGLE_LINK_SELECTOR = '#toggleDiscussion';
 
 var REVIEW_OWN_ID = 'ownReview';
 var REVIEW_OWN_SELECTOR = '#' + REVIEW_OWN_ID;
 
 var REVIEW_UPDATE_FORM_SELECTOR = 'form.editreview';
-var REVIEW_REPLY_FORM_ID = 'replyReview';
 var REPLY_FORM_ID = 'replyForm';
 var REPLY_FORM_SELECTOR = '#' + REPLY_FORM_ID;
+
 var EDIT_COMMENT_FORM_ID = 'editcomment';
 var EDIT_FORM_SELECTOR = '#' + EDIT_COMMENT_FORM_ID;
-
-var REVIEW_REPLY_FORM_SELECTOR = '#' + REVIEW_REPLY_FORM_ID;
 
 var CREATE_REVIEW_LINKS_SELECTOR = 'a.createReview';
 var REVIEW_CREATE_FORM_SELECTOR = 'form.createreview';
@@ -42,7 +41,8 @@ $(function() {
 		removeReviewActions();
 	}
 	
-	$(DISCUSSION_TOGGLE_LINK_SELECTOR).click(function() {		
+	$(DISCUSSION_TOGGLE_LINK_SELECTOR).click(function() {
+		$(REVIEW_INFO_SELECTOR).toggle('slow');
 		$(DISCUSSION_SELECTOR).toggle('slow', updateDiscussionToggleLink);
 		return false;
 	});
@@ -65,13 +65,18 @@ function updateDiscussionToggleLink() {
 	$(DISCUSSION_TOGGLE_LINK_SELECTOR).text(text);
 }
 
+function showDiscussion() {
+	$(DISCUSSION_SELECTOR).show();
+	$(REVIEW_INFO_SELECTOR).show();
+	updateDiscussionToggleLink();
+}
+
 // TODO: rename
 function removeAllOtherDiscussionForms() {
 	$(EDIT_FORM_SELECTOR).remove();
-	$(REPLY_FORM_SELECTOR).remove();
-	$(REVIEW_REPLY_FORM_SELECTOR).remove();
 	$(REVIEW_UPDATE_FORM_SELECTOR).hide();
 	$(REVIEW_CREATE_FORM_SELECTOR).parent().hide();
+	$(REPLY_FORM_SELECTOR).remove();
 }
 
 function showReviewForm() {
@@ -80,8 +85,6 @@ function showReviewForm() {
 
 function removeReviewActions() {
 	$(CREATE_REVIEW_LINKS_SELECTOR).parent().hide();
-	// reply review form
-	$(REVIEW_REPLY_FORM_SELECTOR).remove();
 	// create review form
 	$(REVIEW_CREATE_FORM_SELECTOR).parent().remove();
 }

@@ -30,8 +30,7 @@ $(function() {
 });
 
 function reply() {
-	$(DISCUSSION_SELECTOR).show();
-	updateDiscussionToggleLink();
+	showDiscussion();
 	
 	var parent = $(this).parent().parent().parent();
 	// remove all other forms
@@ -53,7 +52,7 @@ function reply() {
 	if (parentHash != undefined) {
 		parent.append(clone);
 	} else {
-		$(DISCUSSION_SELECTOR).before(clone);
+		$(DISCUSSION_SELECTOR).prepend(clone);
 	}
 	
 	clone.show();
@@ -107,6 +106,9 @@ function showEditCommentForm() {
 	// append and show
 	comment.append(clone);
 	clone.show('slow');
+	scrollTo(EDIT_COMMENT_FORM_ID);
+	
+	return false;
 }
 
 function createComment() {
@@ -150,18 +152,14 @@ function createComment() {
 						// bind click listener
 						commentTemplate.find('a.reply').click(reply);
 						commentTemplate.find('a.editLink').click(showEditCommentForm);
-						commentTemplate.find('a.createReview').click(createReviewForm);
 						
 						// TODO: show reply counter
-						var commentList = parentDiv.parent().children('.subdiscussionItems');
 						
-						if (commentList.length == 0) {
-							commentList = $(DISCUSSION_SELECTOR + ' ul.subdiscussionItems:first');
-							commentTextArea.val('');
-							commentList.prepend(li);
-							// TODO: reset groups and abstract grouping?
+						if ($(DISCUSSION_SELECTOR).children(REPLY_FORM_SELECTOR).length > 0) {
+							$(DISCUSSION_SELECTOR + ' ul.subdiscussionItems:first').prepend(li);
 						} else {
-							commentList.append(li);	
+							// comment append to list
+							parentDiv.parent().children('.subdiscussionItems').append(li);	
 						}
 						commentTemplate.show();
 						
