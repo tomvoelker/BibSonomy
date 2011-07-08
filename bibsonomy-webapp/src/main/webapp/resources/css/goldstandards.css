@@ -87,11 +87,6 @@ ul#gold_menu li a:hover {
 	padding-left: 1em;	
 }
 
-#goldstandard h3 {
-	padding-left: 0;
-	float:left;
-}
-
 #gold_resources_pdf {
 	display: table-cell;
 	width: 50%;	
