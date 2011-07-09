@@ -9,7 +9,19 @@ var requUser	= null;
 var projectName = null;
 var pwd_id_postfix = "_form_copy";
 
+var getPos = null;
+var setPos = null;
+
 function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, lckey, lprojectName) {
+  var t = 0;
+  setPos = function(p) {
+	  if(p == null)
+		  return t;
+	  return (t = p);
+  };
+  getPos = function() {
+	  return setPos(null);
+  };
   add_hints();
   
   // add a callback to every input that has the descriptiveLabel class 
@@ -508,7 +520,6 @@ function xget_event (event) {
 	var sortedCollection;
 	var collect;
 	var copyCollect;
-	var pos = 0;
 
 	//38,39,40 von 86
 	
@@ -636,10 +647,10 @@ function xget_event (event) {
 				}
 				case 38: { // oben
 					if(inputValue != "") {
-						if(pos < sortedCollection.length - 1 && pos < 2)	
-							pos++;
+						if(getPos() < sortedCollection.length - 1 && getPos() < 2)	
+							setPos(getPos()+1);
 						else
-							pos = 0;
+							setPos(0);
 
 						clearSuggestion();
 						addToggleChild(sortedCollection);
@@ -648,13 +659,13 @@ function xget_event (event) {
 				}
 				case 40: { // unten
 					if(inputValue != "") {
-						if(pos > 0)
-							pos--;
+						if(getPos() > 0)
+							setPos(getPos()-1);
 						else {
 							if(sortedCollection.length < 3)
-								pos = sortedCollection.length - 1;
+								setPos(sortedCollection.length - 1);
 							else
-								pos = 2;
+								setPos(2);
 						}
 						
 						clearSuggestion();
@@ -926,7 +937,7 @@ function xget_event (event) {
 		 * var tags = getTags(tagString);
 		 */
 		
-		pos = 0;
+		setPos(0);
 		
 		/*
 		 * Bin?re Suche ?ber die Listenelemente, in denen die Tags stehen
@@ -947,8 +958,7 @@ function xget_event (event) {
 				collect.push(new Suggestion(list[midElement], nodeList[list[midElement]].title.split(" ")[0]));
 				success == true;
 				break;
-				//alert(collect);
-			}
+			} 
 			else if(list[midElement].substring(0,searchLength).toLowerCase() > searchString)
 				lastElement = midElement - 1;
 			else
@@ -1047,7 +1057,7 @@ function xget_event (event) {
 			newTag.style.cursor = "pointer";
 			newTag.setAttribute('href','javascript:completeTag("'+sortedCollection[i].replace(/"/g,'\\"')+'")');
 
-			if(i == pos) {
+			if(i == getPos()) {
 				newTag.style.color = "white";
 				newTag.style.backgroundColor = "#006699";
 			}
@@ -1120,10 +1130,10 @@ function xget_event (event) {
 					break;
 				}
 				else if(sortedCollection) {
-					if(sortedCollection[pos] != "") {
+					if(sortedCollection[getPos()] != "") {
 						// tag found in collection
 						reset = true;
-						var tag = sortedCollection[pos];
+						var tag = sortedCollection[getPos()];
 						tags[i] =  tag + " ";
 						//
 						// 2009/03/30, fei: treat tag completion as mouseclick
@@ -1135,14 +1145,13 @@ function xget_event (event) {
 						if( target!=null )
 							simulateClick(target);
 					}
-					if(!sortedCollection[pos]) {
+					if(!sortedCollection[getPos()]) {
 						reset = false;
 						break;
 					}
 				}
 			}
 		}
-		
 		if(reset) {
 			for(var i = 0; i < tags.length; i++) {
 				relation = false;

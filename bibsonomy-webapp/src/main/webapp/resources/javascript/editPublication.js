@@ -1,5 +1,4 @@
 // methods for editPublication page
-
 // setup jQuery to update recommender with form data
 var tagRecoOptions = { 
    dataType: "xml",
@@ -9,10 +8,8 @@ var tagRecoOptions = {
    } 
 }; 
 
-
-
 var hide = true;
-
+var getFriends = null;
 var fields = new Array(	"booktitle","journal","volume","number","pages",
 						"publisher","address","month","day","edition",
 						"chapter","key","type","annote","note",
@@ -92,7 +89,6 @@ function showHideElement(id, display) {
 		$(field).closest(".fsRow").css('display', display);
 	}
 }
-	
 
 /* checks if element is member of given array */
 function in_array(array, element) {    	
@@ -168,7 +164,99 @@ function getFirstRelevantWord(title) {
 	return "";
 }
 
+function addAutoCompleteSendTag(tagbox) {
+	var friends = null;
+	getFriends = function () {return friends;};
+	$.ajax({
+		url: '/json/friends?userRelation=FRIEND_OF',
+		async: false,
+		dataType: "jsonp",
+		success: function (data) {
+			friends = $.map( data.items, function( item ) {
+				return item.name;
+			});
+		}
+	});
+	
+	if(tagbox[0] == null)
+		return;
+	tagbox[0].onclick = tagbox[0].onblur = tagbox[0].onfocus = null;
+
+	var c = null;	
+	var inpfValue = function(t) {
+		if(t == null)
+			return c;
+		return (c = t);
+	};
+	var suggestSendTo = function (partialName) {
+		var x = 0;
+		var regexp = new RegExp("^"+partialName);
+		var friends = getFriends();
+		delete sortedCollection;
+		sortedCollection = new Array();
+		clearSuggestion();
+		while(x < friends.length) {
+			if(("send:"+friends[x]).match(regexp) 
+				&& tagbox.val().match(new RegExp("([ ]|^)send:"+friends[x]+"([ ]|$)")) == null)  
+					sortedCollection.push("send:"+friends[x]);
+			x++;
+		}
+		addToggleChild(sortedCollection);
+		activeTag = partialName;
+	};
+	
+	
+	var evalKeyInput = function (e) {
+		var keyCode = e.keyCode;
+		switch( keyCode ) {
+        case keyCode.ENTER:
+        case keyCode.NUMPAD_ENTER:
+        case keyCode.TAB:{
+        	e.preventDefault();
+        	break;
+        }	
+        default: {
+        		if(e.type == 'keydown')
+        			inpfValue(tagbox.val().split(" "));
+        	}
+        }
+		return handler(e);
+	};
+	
+	tagbox.keydown(function (e) {
+		evalKeyInput(e);
+	}).keypress(function (e) {
+		return handler(e);
+	}).keyup(function (e) {
+		evalKeyInput(e);
+		var t = inpfValue();
+		var reverse = false;
+		if(getFriends() != null) {
+			var tagsNew = tagbox.val().split(" ");
+			var x = 0;
+			if(tagsNew.length < t.length) {
+				tagsNew = tagsNew.reverse();t = t.reverse();reverse = true;
+			}
+			
+			while( t.length > x ) {
+				if(tagsNew[x] != undefined 
+						&& tagsNew[x] != t[x]) {
+					if(tagsNew[x].match(/^send:/) == null
+							|| t[x].length == 0)
+						break;
+					return suggestSendTo(tagsNew[x]);
+				}
+				x++;
+			}
+		}
+	});
+}
+
 $(window).load(function() {
 	// load only, when extended fields are available                                                                                              
     if (document.getElementById("post.resource.publisher")) changeView();
+});
+
+$(document).ready(function() {
+	addAutoCompleteSendTag($('#inpf'));
 });
