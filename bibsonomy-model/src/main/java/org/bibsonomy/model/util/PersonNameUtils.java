@@ -45,9 +45,10 @@ public class PersonNameUtils {
 	 */
 	public static final String PERSON_NAME_DELIMITER = " and ";
 	/**
-	 * By default, all author and editor names are in "Last, First" order 
+	 * By default, all author and editor names are in "Last, First" order
+	 * FIXME: change to "true" in September 2011! 
 	 */
-	public static final boolean DEFAULT_LAST_FIRST_NAMES = true;
+	public static final boolean DEFAULT_LAST_FIRST_NAMES = false;
 
 
 	/**
