@@ -14,9 +14,9 @@
 			<span style="float:left"><fmt:message key="post.resource.comment.actions.post" /></span>
 	 		<buttons:help message="post.resource.comment.help">
 				<jsp:attribute name="helpText">
-			        <ul>
-			        	<li> <fmt:message key="post.resource.discussion.anonymous.help"/></li>
-			        	<li> <fmt:message key="post.resource.discussion.visibility.help"/></li>
+			        <ul style="list-style:circle inside none">
+			        	<li><fmt:message key="post.resource.discussion.anonymous.help"/></li>
+			        	<li><fmt:message key="post.resource.discussion.visibility.help"/></li>
 			       	</ul>
 			       	<fmt:message key="post.resource.comment.${fn:toLowerCase(resource.class.simpleName)}.several"/>
 	        	</jsp:attribute>

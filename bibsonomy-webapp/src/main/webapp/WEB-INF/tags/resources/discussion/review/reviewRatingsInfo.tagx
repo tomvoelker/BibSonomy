@@ -31,14 +31,14 @@
 				<!-- singular -->
 			</c:if>
 
-			<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="2" minFractionDigits="2" />
+			<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="1" minFractionDigits="1" />
 
 			<div class="ratingAvgInfo">
-				(∅ <span property="v:average"><c:out value="${roundedRating}" /></span>
+				(<span property="v:average"><c:out value="${roundedRating}" /></span>
 				<c:out value=" " />
 				<fmt:message key="post.resource.review.ratings.of" />
 				<c:out value=" " />
-				<span property="v:best">5</span>, <fmt:message key="post.resource.review.ratings.basedOn" />
+				<span property="v:best">5.0</span><c:out value=" " /> <fmt:message key="post.resource.review.ratings.basedOn" />
 				<c:out value=" " /><span property="v:count"><c:out value="${resource.numberOfRatings}" /></span>
 				<c:out value=" " />
 				<span>
