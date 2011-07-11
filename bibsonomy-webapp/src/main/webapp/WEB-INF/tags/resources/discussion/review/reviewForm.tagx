@@ -36,7 +36,7 @@
 			</span>
 			<buttons:help message="post.resource.review.help">
 				<jsp:attribute name="helpText">
-			        <ul style="list-style-type:circle">
+			        <ul style="list-style:circle inside none">
 			        	<li> <fmt:message key="post.resource.rating.help"/></li>
 			        	<li> <fmt:message key="post.resource.discussion.anonymous.help"/></li>
 			        	<li> <fmt:message key="post.resource.discussion.visibility.help"/></li>
