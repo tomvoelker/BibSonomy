@@ -615,7 +615,11 @@ public abstract class JAXBRendererTest {
 	
 	private BibTex createPublication() {
 		final BibTex publication = new BibTex();
-		publication.setTitle("foo and bar");
+		publication.setYear("1998");
+		publication.setBibtexKey("knuth1998computer");
+		publication.setEntrytype("book");
+		publication.setTitle("The Art of Computer Programming");
+		publication.setAuthor("Donald E. Knuth");
 		publication.setIntraHash("abc");
 		publication.setInterHash("abc");
 		return publication;
