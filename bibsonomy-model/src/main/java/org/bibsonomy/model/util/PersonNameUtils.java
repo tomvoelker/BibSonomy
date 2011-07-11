@@ -44,6 +44,10 @@ public class PersonNameUtils {
 	 * the delimiter used for separating person names
 	 */
 	public static final String PERSON_NAME_DELIMITER = " and ";
+	/**
+	 * By default, all author and editor names are in "Last, First" order 
+	 */
+	public static final boolean DEFAULT_LAST_FIRST_NAMES = true;
 
 
 	/**
@@ -89,7 +93,7 @@ public class PersonNameUtils {
 	 * if one of them is in "Last, First" format and use {@link #lastFirstToFirstLast(String)}
 	 * to transform them to "First Last.
 	 * 
-	 * The string is only changed, if it contains at least one comma.
+	 * The string is only changed if it contains at least one comma.
 	 * 
 	 * @param names
 	 * @return a list of person names, where each name is in the "First Last" format. 
@@ -228,6 +232,35 @@ public class PersonNameUtils {
 			return personName.getLastName();
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns a normalized representation of the given personNames using the 
+	 * default value of {@link #DEFAULT_LAST_FIRST_NAMES}.
+	 * 
+	 * @param names
+	 * @return The normalized person names.
+	 */
+	public static String normalizePersonNames(final String names) {
+		return normalizePersonNames(names, DEFAULT_LAST_FIRST_NAMES);
+	}
+	
+	/**
+	 * Returns a normalized representation of the given personNames - either 
+	 * in "Last, First" order (of lastFirstNames is <code>true</code>) or in
+	 * "First Last" order.
+	 * 
+	 * @param names
+	 * @param lastFirstNames
+	 * @return The normalized person names.
+	 */
+	public static String normalizePersonNames(final String names, final boolean lastFirstNames) {
+		if (!present(names)) return names;
+		final List<PersonName> personNames = new LinkedList<PersonName>();
+		for (final String name : names.split(PERSON_NAME_DELIMITER)) {
+			personNames.add(new PersonName(name));
+		}
+		return serializePersonNames(personNames, lastFirstNames);
 	}
 	
 	/**

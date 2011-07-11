@@ -208,6 +208,12 @@ public class PersonNameUtilsTest {
 		assertEquals("von und zu Kottenbröder, Hans and Nachname, Vorname", PersonNameUtils.serializePersonNames(Arrays.asList(personNames), true));
 	}
 	
+	@Test
+	public void testNormalizePersonNames() {
+		assertEquals("Hans von und zu Kottenbröder and Vorname Nachname", PersonNameUtils.normalizePersonNames("Hans von und zu Kottenbröder and Vorname Nachname", false));
+		assertEquals("von und zu Kottenbröder, Hans and Nachname, Vorname", PersonNameUtils.normalizePersonNames("Hans von und zu Kottenbröder and Vorname Nachname", true));
+	}
+	
 	/**
 	 * Not working name
 	 * @throws Exception
