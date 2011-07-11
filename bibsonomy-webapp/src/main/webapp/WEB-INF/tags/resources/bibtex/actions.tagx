@@ -133,7 +133,7 @@
 		</c:if>					
 		
 		<!-- DISCUSS link -->
-		<fmt:message key="post.resource.discussion.title.publication" var="title"/>
+		<fmt:message key="post.resource.discussion.title.bibtex" var="title"/>
 		<a href="/bibtex/${post.resource.interHash}#discussion" title="${title}"><fmt:message key="post.resource.discussion" /></a>		
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 		
