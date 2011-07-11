@@ -42,7 +42,7 @@ import org.junit.Test;
  */
 public class ModelValidationUtilsTest {
 	
-	private static final String BOOKMARK_INVALID_URL_MESSAGE = "found a bookmark without url assigned.";
+	private static final String BOOKMARK_INVALID_URL_MESSAGE = "found a bookmark without URL assigned.";
 	private static final String BOOKMARK_INVALID_HASH_MESSAGE = "found a bookmark without hash assigned.";
 
 	/**
@@ -181,16 +181,34 @@ public class ModelValidationUtilsTest {
 		final BibTex publication = new BibTex();
 		try {
 			ModelValidationUtils.checkPublication(publication);
+			fail("expected " + InvalidModelException.class.getName());
 		} catch (InvalidModelException ex) {
 		}
 		
 		publication.setTitle("");
 		try {
 			ModelValidationUtils.checkPublication(publication);
+			fail("expected " + InvalidModelException.class.getName());
 		} catch (InvalidModelException ex) {
 		}
 		
-		publication.setTitle("title");		
+		publication.setTitle("title");
+		publication.setYear("year");
+		publication.setEntrytype("entrytype");
+		publication.setBibtexKey("bibtexkey");
+		try {
+			ModelValidationUtils.checkPublication(publication);
+			fail("expected " + InvalidModelException.class.getName());
+		} catch (InvalidModelException ex) {
+		}
+		
+		publication.setAuthor("author");
 		ModelValidationUtils.checkPublication(publication);
+	
+		publication.setAuthor("");
+		publication.setEditor("editor");
+		ModelValidationUtils.checkPublication(publication);
+	
 	}
+	
 }

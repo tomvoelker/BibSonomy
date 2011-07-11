@@ -96,7 +96,7 @@ public class ModelValidationUtils {
 	 */
 	public static void checkBookmark(final Bookmark bookmark) throws InvalidModelException {
 		if (!present(bookmark.getUrl())) {
-			throw new InvalidModelException("found a bookmark without url assigned.");
+			throw new InvalidModelException("found a bookmark without URL assigned.");
 		}
 		if (!present(bookmark.getInterHash()) || !present(bookmark.getIntraHash())) {
 			throw new InvalidModelException("found a bookmark without hash assigned.");
@@ -109,7 +109,19 @@ public class ModelValidationUtils {
 	 */
 	public static void checkPublication(final BibTex publication) {
 		if (!present(publication.getTitle())) {
-			throw new InvalidModelException("found a bibtex without title assigned.");
+			throw new InvalidModelException("found a publication without title assigned.");
+		}
+		if (!present(publication.getYear())) {
+			throw new InvalidModelException("found a publication without year assigned.");
+		}
+		if (!present(publication.getEntrytype())) {
+			throw new InvalidModelException("found a publication without entrytype assigned.");
+		}
+		if (!present(publication.getBibtexKey())) {
+			throw new InvalidModelException("found a publication without BibTeX key assigned.");
+		}
+		if (!present(publication.getAuthor()) && !present(publication.getEditor())) {
+			throw new InvalidModelException("found a publication without author or editor assigned.");
 		}
 	}
 	
