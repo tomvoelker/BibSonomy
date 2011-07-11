@@ -69,9 +69,7 @@ public class PersonNameUtilsTest {
 				new PersonName("Balby Marinho, Leandro"),
 				new PersonName("Leandro Balby Marinho")
 		);
-		System.out.println("sh = " + should);
 		final List<PersonName> is = PersonNameUtils.extractList("D.E. Knuth and Hans Dampf and Donald E. Knuth and Foo van Bar and Jäschke, R. and John Chris Smith and John von Neumann and von der Schmidt, Alex and {Long Company Name} and L. Balby Marinho and Balby Marinho, Leandro and Leandro Balby Marinho");
-		System.out.println("is = " + is);
 		for (int i = 0; i < should.size(); i++) {
 			assertEqualPersonNames(should.get(i), is.get(i));			
 		}
@@ -129,7 +127,8 @@ public class PersonNameUtilsTest {
 		final PersonName pn5 = new PersonName("von der Schmidt, Alex");
 		assertEquals("Alex", pn5.getFirstName());
 		assertEquals("von der Schmidt", pn5.getLastName());
-		
+
+		// this works, since we split after the last "."
 		final PersonName pn6 = new PersonName("L. Bar Mar");
 		assertEquals("L.", pn6.getFirstName());
 		assertEquals("Bar Mar", pn6.getLastName());
@@ -147,6 +146,68 @@ public class PersonNameUtilsTest {
 		assertEquals("Smith", pn10.getLastName());	
 	}
 	
+	@Test
+	public void testSerializePersonName() {
+		/*
+		 * lastFirstName = true
+		 */
+		assertEquals("Knuth, D.E.", PersonNameUtils.serializePersonName(new PersonName("D.E. Knuth"), true));
+		assertEquals("Dampf, Hans", PersonNameUtils.serializePersonName(new PersonName("Hans Dampf"), true));
+		assertEquals("Knuth, Donald E.", PersonNameUtils.serializePersonName(new PersonName("Donald E. Knuth"), true));
+		assertEquals("van Bar, Foo", PersonNameUtils.serializePersonName(new PersonName("Foo van Bar"), true));
+		assertEquals("Jäschke, R.", PersonNameUtils.serializePersonName(new PersonName("R. Jäschke"), true));
+		assertEquals("Smith, John Chris", PersonNameUtils.serializePersonName(new PersonName("John Chris Smith"), true));
+		assertEquals("von Neumann, John", PersonNameUtils.serializePersonName(new PersonName("John von Neumann"), true));
+		assertEquals("von der Schmidt, Alex", PersonNameUtils.serializePersonName(new PersonName("von der Schmidt, Alex"), true));
+		assertEquals("{Long Company Name}", PersonNameUtils.serializePersonName(new PersonName("{Long Company Name}"), true));
+		assertEquals("Balby Marinho, L.", PersonNameUtils.serializePersonName(new PersonName("L. Balby Marinho"), true));
+		assertEquals("Balby Marinho, Leandro", PersonNameUtils.serializePersonName(new PersonName("Balby Marinho, Leandro"), true));
+
+		/*
+		 * lastFirstName = false
+		 */
+		assertEquals("D.E. Knuth", PersonNameUtils.serializePersonName(new PersonName("D.E. Knuth"), false));
+		assertEquals("Hans Dampf", PersonNameUtils.serializePersonName(new PersonName("Hans Dampf"), false));
+		assertEquals("Donald E. Knuth", PersonNameUtils.serializePersonName(new PersonName("Donald E. Knuth"), false));
+		assertEquals("Foo van Bar", PersonNameUtils.serializePersonName(new PersonName("Foo van Bar"), false));
+		assertEquals("R. Jäschke", PersonNameUtils.serializePersonName(new PersonName("R. Jäschke"), false));
+		assertEquals("John Chris Smith", PersonNameUtils.serializePersonName(new PersonName("John Chris Smith"), false));
+		assertEquals("John von Neumann", PersonNameUtils.serializePersonName(new PersonName("John von Neumann"), false));
+		assertEquals("Alex von der Schmidt", PersonNameUtils.serializePersonName(new PersonName("von der Schmidt, Alex"), false));
+		assertEquals("{Long Company Name}", PersonNameUtils.serializePersonName(new PersonName("{Long Company Name}"), false));
+		assertEquals("L. Balby Marinho", PersonNameUtils.serializePersonName(new PersonName("L. Balby Marinho"), false));
+		assertEquals("Leandro Balby Marinho", PersonNameUtils.serializePersonName(new PersonName("Balby Marinho, Leandro"), false));
+		assertEquals("Leandro Balby Marinho", PersonNameUtils.serializePersonName(new PersonName("Leandro Balby Marinho"), false));
+
+		/*
+		 * special case: "others"
+		 */
+		assertEquals("others", PersonNameUtils.serializePersonName(new PersonName("others"), true));
+		assertEquals("others", PersonNameUtils.serializePersonName(new PersonName("others"), false));
+	}
+	
+	@Test
+	public void serializePersonNames1() {
+		final PersonName[] personNames = new PersonName[]{
+				new PersonName("Balby Marinho, Leandro"),
+				new PersonName("Donald E. Knuth")
+		};
+		
+		assertEquals("Leandro Balby Marinho and Donald E. Knuth", PersonNameUtils.serializePersonNames(Arrays.asList(personNames), false));
+		assertEquals("Balby Marinho, Leandro and Knuth, Donald E.", PersonNameUtils.serializePersonNames(Arrays.asList(personNames), true));
+	}
+	
+	@Test
+	public void serializePersonNames2() {
+		final PersonName[] personNames = new PersonName[]{
+				new PersonName("Hans von und zu Kottenbröder"),
+				new PersonName("Nachname, Vorname")
+		};
+		
+		assertEquals("Hans von und zu Kottenbröder and Vorname Nachname", PersonNameUtils.serializePersonNames(Arrays.asList(personNames), false));
+		assertEquals("von und zu Kottenbröder, Hans and Nachname, Vorname", PersonNameUtils.serializePersonNames(Arrays.asList(personNames), true));
+	}
+	
 	/**
 	 * Not working name
 	 * @throws Exception
@@ -160,6 +221,12 @@ public class PersonNameUtilsTest {
 		final PersonName pn8 = new PersonName("Leo Bar Mar");
 		assertEquals("Leo", pn8.getFirstName());
 		assertEquals("Bar Mar", pn8.getLastName());
+		/*
+		 * does not work, since we split at the last "."
+		 */
+		final PersonName pn9 = new PersonName("M. Joe Fox");
+		assertEquals("M. Joe", pn9.getFirstName());
+		assertEquals("Fox", pn9.getLastName());
 	}
 
 	/**

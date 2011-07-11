@@ -228,6 +228,64 @@ public class PersonNameUtils {
 			return personName.getLastName();
 		}
 		return null;
-	}	
+	}
+	
+	/**
+	 * Joins the names of the persons in "Last, First" form (if lastFirstNames is
+	 * <code>true</code>) or "First Last" form (if lastFirstNames is
+	 * <code>false</code>) using the {@link #PERSON_NAME_DELIMITER}.
+	 * 
+	 * @param personNames
+	 * @param lastFirstNames
+	 * @return The joined names or <code>null</code> if the list is empty.
+	 */
+	public static String serializePersonNames(final List<PersonName> personNames, final boolean lastFirstNames) {
+		if (!present(personNames)) return null;
+		final StringBuilder sb = new StringBuilder();
+		int i = personNames.size();
+		for (final PersonName personName : personNames) {
+			i--;
+			sb.append(serializePersonName(personName, lastFirstNames));
+			if (i > 0) {
+				sb.append(PERSON_NAME_DELIMITER);
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Returns the name of the person in "Last, First" form (if lastFirstNames is
+	 * <code>true</code>) or "First Last" form (if lastFirstNames is
+	 * <code>false</code>)
+	 * 
+	 * @param personName
+	 * @param lastFirstName
+	 * @return The name or <code>null</code> if the name is empty.
+	 */
+	public static String serializePersonName(final PersonName personName, final boolean lastFirstName) {
+		if (!present(personName)) return null;
+		final String first;
+		final String last;
+		final String delim;
+		if (lastFirstName) {
+			 first = personName.getLastName();
+			 last = personName.getFirstName();
+			 delim = PersonName.LAST_FIRST_DELIMITER + " ";
+		} else {
+			 first = personName.getFirstName();
+			 last = personName.getLastName();
+			 delim = " ";
+		}
+		if (present(first)) {
+			if (present(last)) {
+				return first + delim + last;
+			}
+			return first;
+		} 
+		if (present(last)) {
+			return last;
+		}
+		return null;
+	}
 
 }
