@@ -68,6 +68,15 @@ public class SimHashTest {
 		assertEquals("23b58def11b45727d3351702515f86af", SimHash.getSimHash(bibTex, HashID.getSimHash(1)));
 		assertEquals("7bb0edd98f22430a03b67f853e83c2ca", SimHash.getSimHash(bibTex, HashID.getSimHash(2)));
 		assertEquals("", SimHash.getSimHash(bibTex, HashID.getSimHash(3)));
+		/*
+		 * A hypen "-" should also not change the year.  
+		 */
+		bibTex.setYear("-");
+		assertEquals("a127fd1f86e4ab650f2216f09992afa4", SimHash.getSimHash(bibTex, HashID.getSimHash(0)));
+		assertEquals("23b58def11b45727d3351702515f86af", SimHash.getSimHash(bibTex, HashID.getSimHash(1)));
+		assertEquals("7bb0edd98f22430a03b67f853e83c2ca", SimHash.getSimHash(bibTex, HashID.getSimHash(2)));
+		assertEquals("", SimHash.getSimHash(bibTex, HashID.getSimHash(3)));
+		
 	}
 	
 	
@@ -94,6 +103,10 @@ public class SimHashTest {
 		bib.setAuthor("JoHN pAUl and brIDgeT JOneS");
 		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
 		bib.setAuthor("J PAUL and b jones");
+		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
+		bib.setAuthor("PAUL, J and jones, B");
+		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
+		bib.setAuthor("JoHN pAUl and JOneS, brIDgeT");
 		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
 		
 		bib.setAuthor("John and Paul John");
