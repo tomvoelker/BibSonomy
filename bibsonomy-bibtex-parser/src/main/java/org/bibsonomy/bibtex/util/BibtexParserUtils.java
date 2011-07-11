@@ -50,6 +50,7 @@ import bibtex.parser.ParseException;
  * @author dbenz
  * @version $Id$
  */
+@Deprecated
 public class BibtexParserUtils {
 	private static final Log log = LogFactory.getLog(BibtexParserUtils.class);
 
