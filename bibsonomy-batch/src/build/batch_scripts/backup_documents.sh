@@ -30,7 +30,8 @@ done
 #### joe (Slave)
 
 #### melkor (Würzburg)
-RHOST=melkor.informatik.uni-wuerzburg.de
+#melkor.informatik.uni-wuerzburg.de
+RHOST=132.187.15.90
 RUSER=bibbackup
 RDIR=backup
 
