@@ -64,8 +64,6 @@ import org.junit.Ignore;
 @Ignore
 public class TestDBLogic implements LogicInterface {	
 	
-	public static final String SEMINAR_URL = "http://www.kde.cs.uni-kassel.de/lehre/ss2006/kdd";
-
 	private final User loginUser;
 
 	private final Map<String, Group> dbGroups;
@@ -417,7 +415,7 @@ public class TestDBLogic implements LogicInterface {
 
 		final Bookmark kddResource = new Bookmark();
 		kddResource.setTitle("KDD Seminar");
-		kddResource.setUrl(SEMINAR_URL);
+		kddResource.setUrl("http://www.kde.cs.uni-kassel.de/lehre/ss2006/kdd");
 		kddResource.recalculateHashes();
 		this.dbResources.put(kddResource.getIntraHash(), kddResource);
 
@@ -583,6 +581,8 @@ public class TestDBLogic implements LogicInterface {
 		publicationDemo.setTitle("Die Weltformel");
 		publicationDemo.setType("Paper");
 		publicationDemo.setYear("2006");
+		publicationDemo.setEntrytype("article");
+		publicationDemo.setBibtexKey("einstein2006weltformel");
 		publicationDemo.recalculateHashes();
 		this.dbResources.put(publicationDemo.getIntraHash(), publicationDemo);
 
@@ -592,6 +592,8 @@ public class TestDBLogic implements LogicInterface {
 		publicationDemo1.setTitle("RFC 2616, Hypertext Transfer Protocol -- HTTP/1.1");
 		publicationDemo1.setType("Paper");
 		publicationDemo1.setYear("1999");
+		publicationDemo1.setEntrytype("article");
+		publicationDemo1.setBibtexKey("fielding1999hypertext");
 		publicationDemo1.recalculateHashes();
 		this.dbResources.put(publicationDemo1.getIntraHash(), publicationDemo1);
 
@@ -601,6 +603,8 @@ public class TestDBLogic implements LogicInterface {
 		publicationDemo2.setTitle("Architectural Styles and the Design of Network-based Software Architectures");
 		publicationDemo2.setType("Paper");
 		publicationDemo2.setYear("2000");
+		publicationDemo2.setEntrytype("article");
+		publicationDemo2.setBibtexKey("fielding2000architectural");		
 		publicationDemo2.recalculateHashes();
 		this.dbResources.put(publicationDemo2.getIntraHash(), publicationDemo2);
 
@@ -610,6 +614,8 @@ public class TestDBLogic implements LogicInterface {
 		publicationDemo3.setTitle("Weaving the web");
 		publicationDemo3.setType("Paper");
 		publicationDemo3.setYear("1999");
+		publicationDemo3.setEntrytype("article");
+		publicationDemo3.setBibtexKey("berners-lee1999weaving");
 		publicationDemo3.recalculateHashes();
 		this.dbResources.put(publicationDemo3.getIntraHash(), publicationDemo3);
 
