@@ -239,6 +239,8 @@
 								<value>importDataV1</value>
 								<value>importDataV2</value>
 								<value>overwrite</value>
+								<value>overwriteV1</value>
+								<value>overwriteV2</value>
 								<value>userName</value>
 								<value>file</value> 
 								<value>group</value>
