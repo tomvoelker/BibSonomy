@@ -46,7 +46,7 @@
 		</ul>
    		
    		<!-- Headline -->
-	   	<h3><fmt:message key="post.resource.discussion" /></h3>
+	   	<h3><fmt:message key="post.resource.discussion.headline" /></h3>
 		
 		<!-- Aggregated RatingInfo -->
     	<review:reviewRatingsInfo resource="${resource}" />
