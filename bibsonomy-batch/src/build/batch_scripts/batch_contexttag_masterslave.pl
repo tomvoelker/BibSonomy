@@ -46,26 +46,23 @@ my @rel_tags_of_t1=();
 my $slave = get_slave();#, "transaction-isolation" => "READ-UNCOMMITTED"});
 # prepare statements
 # get all public tag_names ordered by post
-my $stm_select_tagtag = $slave->prepare("SELECT t1 collate utf8_bin , t2 collate utf8_bin , ctr_public  FROM tagtag force index (t1_ctr_public_idx) where ctr_public>0 order by t1 ");
+my $stm_select_tagtag = $slave->prepare("SELECT t1 collate utf8_bin , t2 collate utf8_bin , ctr_public  FROM tagtag FORCE INDEX (t1_ctr_public_idx) WHERE ctr_public>0 ORDER BY t1 ");
 $stm_select_tagtag->{"mysql_use_result"} = 1;
 # get top 10000 tags of the system
-my $stm_select_toptag = $slave->prepare("select lower(tag_name),sum(tag_ctr_public) as ctr from tags group by lower(tag_name) having ctr > ?");
+my $stm_select_toptag = $slave->prepare("SELECT lower(tag_name), SUM(tag_ctr_public) AS ctr FROM tags GROUP BY lower(tag_name) HAVING ctr > ?");
 $stm_select_toptag->{"mysql_use_result"} = 1;
 
 #######################################
 # get the top tags
-
-$stm_select_toptag->execute($toptags_count);
-
 my %toptag = ();
-
+$stm_select_toptag->execute($toptags_count);
 while (my @row = $stm_select_toptag->fetchrow_array ) {
-       
-        if (exists $toptag{lc($row[0])}) {
-  		$toptag{lc($row[0])} += $row[1];
-	} else {
-		$toptag{lc($row[0])} = $row[1];
-	}
+    my $tag = lc($row[0]);
+    if (exists $toptag{$tag}) {
+	$toptag{$tag} += $row[1];
+    } else {
+	$toptag{$tag} = $row[1];
+    }
 }
 
 ########################################
@@ -98,11 +95,11 @@ my $count;
 
 while (my @tt = $stm_select_tagtag->fetchrow_array ) {
 
-	$tag  = lc($tt[0]);
+	$tag   = lc($tt[0]);
 	$res   = lc($tt[1]);
 	$count = $tt[2];
 
-#print STDERR "$tt[0] $tt[1] $tt[2]\n";
+	debug("$tt[0] $tt[1] $tt[2]");
 
         if ($count<=0) {next; }
 
@@ -141,7 +138,7 @@ while (my @tt = $stm_select_tagtag->fetchrow_array ) {
 		$values{$tid}{$resourceId} = $count ;
 		$norm[$tid] += $count * $count;
 				
-#		print STDERR "Value $tags_reverse{$tid} $res_reverse{$resourceId} count: $count exists!\n";
+		debug("Value $tags_reverse{$tid} $res_reverse{$resourceId} count: $count exists!");
 	} else {
 		push (@{$keys[$tid]}, $resourceId);
 		$values{$tid}{$resourceId} = $count ;
@@ -195,13 +192,13 @@ for ($tid1 = 0; $tid1 <= $tagCount; $tid1++) {
 	my %sim_to_tid1 = ();
 	my $count_curr_sim = 0;
 	for ($tid2 = 0; $tid2 <= $tagCount; $tid2++) {
-#		print STDERR "work on: ".$tags_reverse{$tid1}."|#|".$tags_reverse{$tid2}."\n";
+	    debug("work on: ".$tags_reverse{$tid1}."|#|".$tags_reverse{$tid2});
 		if ($tid1 != $tid2) {
 			$sim = dot($tid1, $tid2) ;
 			if ($sim > 0) {
 				$sim /= ( $norm[$tid1] * $norm[$tid2] );
-#				print STDERR $tags_reverse{$tid1}."|#|".$tags_reverse{$tid2}."|#| ".$sim." normtid1: $norm[$tid1], normtid2: $norm[$tid2]\n";
-#				print $tid1 . "|#|" . $sim . "|#|" . $tid2 . "\n";
+				debug($tags_reverse{$tid1}."|#|".$tags_reverse{$tid2}."|#| ".$sim." normtid1: $norm[$tid1], normtid2: $norm[$tid2]");
+				debug($tid1 . "|#|" . $sim . "|#|" . $tid2);
 				$sim_to_tid1{$tid2}=$sim;
 			}
 		}
@@ -211,7 +208,7 @@ for ($tid1 = 0; $tid1 <= $tagCount; $tid1++) {
 	
 	for ((sort {$sim_to_tid1{$b} <=> $sim_to_tid1{$a}} keys %sim_to_tid1)) {
 		$sim = $sim_to_tid1{$_};
-#		print $tags_reverse{$tid1}."|#|".$tags_reverse{$_}."|#|".$sim."\n";
+		print($tags_reverse{$tid1}."|#|".$tags_reverse{$_}."|#|".$sim);
 		$stm_instert_contexttag->execute($tags_reverse{$tid1},$tags_reverse{$_},$sim); #,$sim);
 		$commit_count++;
 		if ($commit_count % 1000 == 0) {$master->commit;}
@@ -242,14 +239,13 @@ sub dot {
 	my $t1 = shift;
 	my $t2 = shift;
 	my $sum = 0;
-	# print "t1 $t1 t2 $t2\n";
-#	print STDERR "Res: ";
+	debug("t1 $t1 t2 $t2");
+	debug("Res: ");
 	foreach (@{$keys[$t1]}) {
 		if (exists $values{$t2}{$_}) {
-#		print STDERR $res_reverse{$_}.", ";
+		    debug($res_reverse{$_}.", ");
 			$sum += $values{$t1}{$_} * $values{$t2}{$_};
 		}
 	}
-#	print STDERR "\n";
 	return $sum;
 }	
