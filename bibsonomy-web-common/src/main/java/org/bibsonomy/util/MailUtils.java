@@ -166,6 +166,41 @@ public class MailUtils {
 		return false;
 	}
 	
+	/** 
+	 * Sends the registration mail to the user and to the group admins.
+	 */
+	public boolean sendJoinGroupDenied(final User group, final User deniedUser, final String reason, final Locale locale) {
+		Object[] messagesParameters;
+		messagesParameters = new Object[]{
+					group.getName(),
+					deniedUser.getName(),
+					reason,
+					projectHome,
+					null,
+					null,
+					projectName.toLowerCase(),
+					projectEmail
+			};
+		/*
+		 * Format the message "mail.registration.body" with the given parameters.
+		 */
+		final String messageBody    = messageSource.getMessage("mail.joinGroupRequest.denied.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.denied.subject", messagesParameters, locale);
+
+		/*
+		 * set the recipients
+		 */
+		final String[] recipient = {deniedUser.getEmail()};
+		try {
+			sendMail(recipient,  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
+			sendMail(new String[] {projectRegistrationFromAddress},  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send registration mail: " + e.getMessage());
+		}
+		return false;
+	}
+	
 	
 	/**
 	 * Method to send the password reminder mail
