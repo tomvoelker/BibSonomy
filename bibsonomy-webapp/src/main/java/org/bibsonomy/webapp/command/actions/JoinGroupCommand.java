@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command.actions;
 
+import org.bibsonomy.model.Group;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 
@@ -30,7 +31,20 @@ public class JoinGroupCommand extends BaseCommand {
 	 * group user want join
 	 */
 	private String group;
-
+	private Group groupObj;
+	
+	private final String reasonMaxLen;
+	
+	/**
+	 * @param reasonMaxLen
+	 */
+	public JoinGroupCommand(String reasonMaxLen) {
+		this.reasonMaxLen = reasonMaxLen;
+	}
+	/**
+	 * user to be denied for joining group
+	 */
+	private String deniedUser;
 	/**
 	 * @return the recaptcha_challenge_field
 	 */
@@ -99,6 +113,41 @@ public class JoinGroupCommand extends BaseCommand {
 	 */
 	public String getGroup() {
 		return group;
+	}
+
+	/**
+	 * @param groupObj
+	 */
+	public void setGroupObj(Group groupObj) {
+		this.groupObj = groupObj;
+	}
+
+	/**
+	 * @return group object
+	 */
+	public Group getGroupObj() {
+		return groupObj;
+	}
+
+	/**
+	 * @param deniedUser
+	 */
+	public void setDeniedUser(String deniedUser) {
+		this.deniedUser = deniedUser;
+	}
+
+	/**
+	 * @return denied user
+	 */
+	public String getDeniedUser() {
+		return deniedUser;
+	}
+
+	/**
+	 * @return the reasonMaxLen
+	 */
+	public String getReasonMaxLen() {
+		return reasonMaxLen;
 	}
 
 

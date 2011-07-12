@@ -269,6 +269,10 @@ function focus(id) {
   }
 }
 
+function assertInputLength(Object, MaxLen) {
+  if (Object.value.length <= MaxLen) return;
+  Object.value = Object.value.substring(0, MaxLen);
+}
 /*
  * functions to toggle background color for required bibtex fields
  */ 

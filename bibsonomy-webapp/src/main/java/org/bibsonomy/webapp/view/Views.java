@@ -389,6 +389,11 @@ public enum Views implements View {
 	 */
 	JOIN_GROUP("actions/join_group"),
 	
+	/**
+	 * join group view
+	 */
+	JOINGROUPREQUEST_SUCCESS("actions/joingrouprequest_success"),
+	
 	/** 
 	 * import view 
 	 */

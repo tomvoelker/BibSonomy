@@ -72,13 +72,14 @@
 		  					<fmt:param><a href="/user/${mtl:encodeURI(param.user)}"><c:out value="${param.user}"/></a></fmt:param>
 		  				</fmt:message>
 		  			</h2>
-		  			<form:form id="groupAddDenyUser" method="post" action="/JoinGroupHandler">
+		  			<form:form id="groupAddDenyUser" method="post" action="/join_group">
 						<div id="fsform">
 							<fieldset class="fsInner">
 
 								<div class="fsRow">
-		    						<input type="hidden" name="user" value="${fn:escapeXml(param.user)}" />
-		    						<input type="hidden" name="cancel" value="true" />
+									<input type="hidden" neme="ckey" value="${command.context.ckey }"/>
+		    						<input type="hidden" name="deniedUser" value="${fn:escapeXml(param.user)}" />
+		    						<input type="hidden" name="group" value="${command.context.loginUser.name}" />
 		    						<label for="inputreason" class="fsLabel"><fmt:message key="settings.group.denyReason"/></label>
 		    						<buttons:help message="settings.group.denyReason.help"/>
 		    						<input type="text" class="fsInput fsSmall" name="reason" id="inputreason"/>

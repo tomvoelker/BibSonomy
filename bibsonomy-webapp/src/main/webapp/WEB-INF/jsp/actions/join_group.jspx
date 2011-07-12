@@ -52,9 +52,14 @@
 					<fieldset class="fsInner">
 						
             			<div class="fsRow">
-		        			<form:label cssClass="fsLabel" path="reason"><fmt:message key="joinGroup.reason"/></form:label>
-		    			    <buttons:help message="joinGroup.reason.hint"/>
-			  				<form:textarea rows="4" cols="50" cssClass="fsInput" path="reason" />
+							<form:label cssClass="fsLabel" path="reason"><fmt:message key="joinGroup.reason"/></form:label>
+		    			    <buttons:help message="joinGroup.reason.hint">
+		    			    	<jsp:attribute name="helpText">
+		    			    		<fmt:message key="joinGroup.reason.hint.appendix"><fmt:param>${command.reasonMaxLen}</fmt:param></fmt:message>
+		    			    	</jsp:attribute>
+		    			    </buttons:help>
+			  				<form:textarea rows="4" cols="50" cssClass="fsInput" path="reason" htmlEscape="true" onkeyup="assertInputLength(this, ${command.reasonMaxLen });"/>
+			  				<div class="dissError"><form:errors path="reason" /></div>
             			</div>
             		</fieldset>
             		
@@ -81,6 +86,19 @@
 
           </div>
 		</jsp:attribute>
+		
+        <jsp:attribute name="sidebar">
+	        <ul id="sidebar">
+				<!-- loginUser.groups -->
+				<li>    
+					<span class="sidebar_h"><a href="/groups"><fmt:message key="groups"/></a></span>
+					<ul><c:forEach var="group" items="${command.context.loginUser.groups}">
+			  			<li><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/></a></li>
+					</c:forEach></ul>
+				</li>
+
+        	</ul>
+        </jsp:attribute>
       
       <jsp:attribute name="beforeBodyClose">
           <script type="text/javascript">
