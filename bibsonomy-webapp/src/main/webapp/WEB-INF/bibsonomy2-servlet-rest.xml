@@ -18,6 +18,14 @@
 					<bean id="ApiServlet" class="org.bibsonomy.webapp.util.spring.controller.ServletWrappingController">
 						<property name="servletInstance" ref="restServletInstance"/>
 						<property name="requireSession" value="false"/>
+						<property name="supportedMethods">
+							<array>
+								<value>GET</value>
+								<value>PUT</value>
+								<value>POST</value>
+								<value>DELETE</value>
+							</array>
+						</property>
 					</bean>
 				</entry>
 			</map>
