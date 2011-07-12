@@ -20,10 +20,14 @@ public class DeliciousImportControllerV1 extends DeliciousImportController {
 	
 	@Override
 	String createRefererQuery(SettingsViewCommand command, RequestWrapperContext context, Errors errors) {
-		return 
-		"&" + "overwrite=" + command.isOverwrite()
-		+ "&" + "importDataV1=" + command.getImportDataV1()
-		+ "&" + "userName=" + command.getUserName();
+		try {
+			return 
+			"&" + "overwriteV1=" + command.isOverwriteV1()
+			+ "&" + "importDataV1=" + command.getImportDataV1()
+			+ "&" + "userName=" + URLEncoder.encode(command.getUserName(), "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			throw new InternServerException(ex);
+		}
 	}
 	
 	@Override
@@ -33,7 +37,7 @@ public class DeliciousImportControllerV1 extends DeliciousImportController {
 		try {
 			redirectURI = importBookmarksPath
 			+ "?" + "ckey=" + context.getCkey()
-			+ "&" + "overwrite=" + command.isOverwrite()
+			+ "&" + "overwrite=" + command.isOverwriteV1()
 			+ "&" + "importData=" + command.getImportDataV1()
 			+ "&" + "passWord=" + URLEncoder.encode(command.getPassWord(), "UTF-8")
 			+ "&" + "userName=" + URLEncoder.encode(command.getUserName(), "UTF-8");

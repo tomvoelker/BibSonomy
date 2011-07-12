@@ -67,6 +67,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private String importType;
 	
 	private boolean overwrite;
+	private boolean overwriteV1;
+	private boolean overwriteV2;
 	
 	private CommonsMultipartFile file;
 	
@@ -215,6 +217,34 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
+	}
+	
+	/**
+	 * @return overwrite
+	 */
+	public boolean isOverwriteV1() {
+		return this.overwriteV1;
+	}
+
+	/**
+	 * @param overwrite the overwrite to set
+	 */
+	public void setOverwriteV1(boolean overwrite) {
+		this.overwriteV1 = overwrite;
+	}
+	
+	/**
+	 * @return overwrite
+	 */
+	public boolean isOverwriteV2() {
+		return this.overwriteV2;
+	}
+
+	/**
+	 * @param overwrite the overwrite to set
+	 */
+	public void setOverwriteV2(boolean overwrite) {
+		this.overwriteV2 = overwrite;
 	}
 
 	/**

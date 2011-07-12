@@ -98,7 +98,7 @@ public class DeliciousImportController implements MinimalisticController<Setting
 	@SuppressWarnings("unused")
 	String createRefererQuery(SettingsViewCommand command, RequestWrapperContext context, Errors errors) {
 		return 
-		"&" + "overwrite=" + command.isOverwrite()
+		"&" + "overwriteV2=" + command.isOverwriteV2()
 		+ "&" + "importDataV2=" + command.getImportDataV2();
 	}
 	
@@ -112,9 +112,8 @@ public class DeliciousImportController implements MinimalisticController<Setting
 		
 	    try {
 	    	redirectURI = oAuth.getRequestToken(signPostManager.getCallbackBaseUrl()
-	    				+ "?" + context.getQueryString()
-//	    				+ "?" + "ckey=" + context.getCkey()
-						+ "&" + "overwrite=" + command.isOverwrite()
+	    				+ "?" + "ckey=" + context.getCkey()
+						+ "&" + "overwrite=" + command.isOverwriteV2()
 						+ "&" + "importData=" + command.getImportDataV2());
 		} catch (Exception ex) {
 			attr.removeAttribute(signPostManager.getoAuthKey(), ServletRequestAttributes.SCOPE_SESSION);
