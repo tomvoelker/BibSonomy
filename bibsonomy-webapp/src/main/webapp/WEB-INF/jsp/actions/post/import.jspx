@@ -30,7 +30,7 @@
 				<!-- in case of existing errors, look into the importType and redraw the 
 					 respective form -->
 				<c:choose>
-					<c:when test="${empty command.importType}">		
+					<c:when test="${empty command.importType or (command.importType eq 'firefox' and command.totalCount == 0)}">		
 						<post:import importType="${command.importType}"/>
 					</c:when>
 					<c:otherwise>
