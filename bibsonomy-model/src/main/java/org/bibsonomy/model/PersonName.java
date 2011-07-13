@@ -23,6 +23,8 @@
 
 package org.bibsonomy.model;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.model.util.PersonNameUtils;
 
 
@@ -105,7 +107,7 @@ public class PersonName {
 	
 	@Override
 	public String toString() {
-		return this.lastName + LAST_FIRST_DELIMITER + " " + this.firstName;
+		return this.lastName + LAST_FIRST_DELIMITER + (present(this.firstName)? " " + this.firstName : "");
 	}
 
 
