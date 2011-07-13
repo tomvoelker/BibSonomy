@@ -740,3 +740,8 @@ input#authorcontractconfirm {
 #license_sendinfo {
 	margin-top: 3ex;
 }
+
+
+ul.newMenu li a {
+	background-color: #DF430D;
+}
