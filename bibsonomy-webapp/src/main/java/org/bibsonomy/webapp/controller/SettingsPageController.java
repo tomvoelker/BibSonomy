@@ -215,8 +215,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		
 		for (final SyncService service : userServer) {
 			final Properties user = service.getServerUser();
-			service.setUserName(user.getProperty("userName"));
-			service.setApiKey(user.getProperty("apiKey"));
+			service.setServerUser(user);
 			if (avlServer.contains(service)) {
 				avlServer.remove(service);
 			}
