@@ -11,7 +11,6 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.strategy.AbstractContextTest;
 import org.bibsonomy.rest.strategy.Context;
 import org.junit.Test;
-import org.junit.Ignore;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -23,7 +22,6 @@ public class GetNewPostsStrategyTest extends AbstractContextTest {
 	 * @throws Exception 
 	 */
 	@Test
-	@Ignore
 	public void testGetNewPostsStrategy() throws Exception {
 		final Context c = new Context(HttpMethod.GET, "/posts/added", RenderingFormat.XML, this.urlRenderer, this.is, null, this.db, new HashMap<String, String>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
