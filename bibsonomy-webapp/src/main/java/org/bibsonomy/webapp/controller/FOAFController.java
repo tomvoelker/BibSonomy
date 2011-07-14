@@ -11,7 +11,6 @@ import org.bibsonomy.webapp.command.FOAFCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -36,7 +35,7 @@ public class FOAFController implements MinimalisticController<FOAFCommand> {
 	@Override
 	public View workOn(final FOAFCommand command) {		
 		if (!command.getContext().isUserLoggedIn()) {
-			return new ExtendedRedirectView("/login");
+			throw new org.springframework.security.access.AccessDeniedException("please log in");
 		}
 		
 		final String requestedUser = command.getRequestedUser();
@@ -69,7 +68,6 @@ public class FOAFController implements MinimalisticController<FOAFCommand> {
 		}		
 		
 		command.setUser(user);
-		
 		return Views.FOAF;
 	}
 
