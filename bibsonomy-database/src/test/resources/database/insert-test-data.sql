@@ -76,11 +76,6 @@ INSERT INTO `repository` (`inter_hash`, `intra_hash`, `user_name`, `repository_n
 -- Data for synchronization tests
 --
 
-INSERT INTO `sync_services` (`uri`, `service_id`, server) VALUES
-('http://www.bibsonomy.org/', 1, false),
-('http://www.test.de/', 0, true),
-('http://www.test.de/', 0, false);
-
 
 INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_max_count`,`is_max_count`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`,`birthday`,`gender`,`profession`,`institution`, `interests`,`hobbies`,`place`,`profilegroup`,`api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`) VALUES 
 ('syncServer',   'testuser1@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1, NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1, '15cb586b630cc343cd60684807bf4785', 'wla','1815-12-10 00:00:00', 4,  'en', 0, 1);
@@ -99,6 +94,12 @@ INSERT INTO `bibtex` (`content_id`, `user_name`, `simhash1`, `simhash2`, `change
 -- post 6 "created on server" created and modified after last synchronization
 (106, 'Syncuser1', '564c7c31f6a34e5dc3a1b0c17fe68c13', '08cdf0d0dcce9d07fd8d41ac6267cadf', '2011-03-18 11:20:00', '2011-03-18 11:20:00');
 -- post 7 "created on client" is not in the server database
+
+
+INSERT INTO `sync_services` (`uri`, `service_id`, server) VALUES
+('http://www.bibsonomy.org/', 1, false),
+('http://www.test.de/', 2, true),
+('http://www.test.de/', 0, false);
 
 -- synchronization data table
 INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`) VALUES 
