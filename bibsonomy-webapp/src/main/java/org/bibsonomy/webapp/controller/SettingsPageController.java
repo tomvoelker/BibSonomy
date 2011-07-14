@@ -20,14 +20,13 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
@@ -54,10 +53,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	@Override
 	public View workOn(final SettingsViewCommand command) {
 		if (!command.getContext().isUserLoggedIn()) {
-			return new ExtendedRedirectView("/login");
+			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
-
-		command.setPageTitle("settings"); // TODO: i18n
 		
 		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
@@ -73,7 +70,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 		
 		//show sync tab for admins TODO change to "not visible for spammer" after tests
-		if(command.getUser().getRole().equals(Role.ADMIN)) {
+		if (command.getUser().getRole().equals(Role.ADMIN)) {
 			command.showSyncTab(true);
 		}
 
@@ -125,7 +122,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		
 		// if no cvwiki available create default cvwiki
 		if (!present(wiki)) {
-
+			
 			final Locale locale = requestLogic.getLocale();
 			final String wikiText = messageSource.getMessage("cv.default_wiki", null, locale);
 			
@@ -181,7 +178,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final String groupName = command.getContext().getLoginUser().getName();
 		//the group to update
 		final Group group = logic.getGroupDetails(groupName);
-		if (ValidationUtils.present(group)) {
+		if (present(group)) {
 			command.setGroup(group);
 			/*
 			 * get group users
@@ -209,15 +206,15 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		List<SyncService> userServer;
 		List<SyncService> avlServer;
 		
-		//TODO remove cast and use logic after adding from SyncLogicInterface to LogicInterface
-		SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
+		// TODO remove cast and use logic after adding SyncLogicInterface to LogicInterface
+		final SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
 		
 		userServer = syncLogic.getSyncServerForUser(command.getUser().getName());
 		avlServer = syncLogic.getAvlSyncServices(true);
 
 		
-		for (SyncService service : userServer) {
-			Properties user = service.getServerUser();
+		for (final SyncService service : userServer) {
+			final Properties user = service.getServerUser();
 			service.setUserName(user.getProperty("userName"));
 			service.setApiKey(user.getProperty("apiKey"));
 			if (avlServer.contains(service)) {
@@ -257,14 +254,14 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @param requestLogic the requestLogic to set
 	 */
 	@Override
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
 	/**
 	 * @param messageSource the messageSource to set
 	 */
-	public void setMessageSource(MessageSource messageSource) {
+	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 }
