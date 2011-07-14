@@ -77,8 +77,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		userDb = UserDatabaseManager.getInstance();
 	}
 	
-	protected static List<String> getUserNamesByGroupId(final GroupID groupId, final DBSession dbSession) {
-		return userDb.getUserNamesByGroupId(groupId.getId(), dbSession);
+	protected static List<String> getUserNamesByGroupId(final int groupId, final DBSession dbSession) {
+		return userDb.getUserNamesByGroupId(groupId, dbSession);
 	}
 	
 	
@@ -223,8 +223,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void getPostsByViewable() {
 		final Set<Integer> mustGroupIds = new HashSet<Integer>();
 		final Set<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll(getUserNamesByGroupId(GroupID.KDE, this.dbSession));
-		mustGroupIds.add(GroupID.KDE.getId());
+		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession));
+		mustGroupIds.add(TESTGROUP1_ID);
 		
 		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.VIEWABLE, "kde", new ArrayList<String>(), "", Order.ADDED, null, 0, 3, null);
 		assertEquals(0, bibTexPostsList.size());
@@ -242,7 +242,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void getPostsForUsersInGroup() {
 		final Set<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll(getUserNamesByGroupId(GroupID.KDE, this.dbSession) );
+		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession) );
 		List<Post<BibTex>> bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.GROUP, "kde", null, "", null, null, 0, 10, null);
 		assertEquals(10, bibTexPostsList.size());
 		assertList(bibTexPostsList, usersInGroup, null, null, null, null, null);
@@ -260,7 +260,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void getPostsForGroupByTag() {
 		final LogicInterface anonymousAccess = getDbLogic("");
 		final Set<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll(getUserNamesByGroupId(GroupID.KDE, this.dbSession) );
+		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession) );
 		
 		List<Post<BibTex>> bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.GROUP, "kde", DEFAULT_TAG_LIST, "", null, null, 0, 9, null);
 		assertEquals(9, bibTexPostsList.size());
