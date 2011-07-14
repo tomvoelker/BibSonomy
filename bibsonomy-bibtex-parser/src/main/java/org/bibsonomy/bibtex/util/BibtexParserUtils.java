@@ -223,6 +223,10 @@ public class BibtexParserUtils {
 					if (present(last)) {
 						personString.append(" ").append(last);
 					}
+					
+					if (person.isOthers()) {
+						personString.append("others");
+					}
 
 					personBuffer.append(personString).append(PersonNameUtils.PERSON_NAME_DELIMITER);
 					log.debug("personString: " + personString);
