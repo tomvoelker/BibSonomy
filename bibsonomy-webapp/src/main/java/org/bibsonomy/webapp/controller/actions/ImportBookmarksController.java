@@ -40,9 +40,9 @@ import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.ImportValidator;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -83,10 +83,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 		 * login page
 		 */
 		if (!context.isUserLoggedIn()) {
-			/*
-			 * FIXME: send user back to this controller
-			 */
-			return new ExtendedRedirectView("/login");
+			throw new AccessDeniedException("please log in");
 		}
 
 		final User loginUser = context.getLoginUser();
@@ -137,8 +134,8 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 				 * TODO: we want to have checkboxes, not radio buttons!
 				 */
 				final String importData = command.getImportData();
-				ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-				DeliciousSignPost oAuth = (DeliciousSignPost) attr.getAttribute(signPostManager.getoAuthKey(), ServletRequestAttributes.SCOPE_SESSION);
+				final ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+				final DeliciousSignPost oAuth = (DeliciousSignPost) attr.getAttribute(signPostManager.getoAuthKey(), ServletRequestAttributes.SCOPE_SESSION);
 				attr.removeAttribute(signPostManager.getoAuthKey(), ServletRequestAttributes.SCOPE_SESSION);
 				oAuth.getAccessToken(command.getOauth_verifier());
 				/*
@@ -184,7 +181,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 			this.storePosts(command, posts);
 
 			/** how many posts were found? **/
-			command.setTotalCount(posts != null ? posts.size() : 0);
+			command.setTotalCount(posts.size());
 		}
 
 		/** if available store relations **/
@@ -192,7 +189,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 			this.storeRelations(relations, command);
 
 			/** how many bundles were found? **/
-			command.setTotalCount(relations != null ? relations.size() : 0);
+			command.setTotalCount(relations.size());
 		}
 
 		return Views.IMPORT;
@@ -342,13 +339,6 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	}
 
 	/**
-	 * @return FileUploadFactory
-	 */
-	public FileUploadFactory getUploadFactory() {
-		return this.uploadFactory;
-	}
-
-	/**
 	 * @param uploadFactory
 	 */
 	public void setUploadFactory(final FileUploadFactory uploadFactory) {
@@ -358,15 +348,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	/**
 	 * @param signPostManager
 	 */
-	public void setSignPostManager(DeliciousSignPostManager signPostManager) {
+	public void setSignPostManager(final DeliciousSignPostManager signPostManager) {
 		this.signPostManager = signPostManager;
 	}
-
-	/**
-	 * @return DeliciousSignPostManager
-	 */
-	public DeliciousSignPostManager getSignPostManager() {
-		return signPostManager;
-	}
-
 }
