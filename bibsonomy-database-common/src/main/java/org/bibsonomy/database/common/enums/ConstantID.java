@@ -75,6 +75,9 @@ public enum ConstantID {
 	IDS_INBOX_MESSAGE_ID(14),
 	/** id of discussion item */
 	IDS_DISCUSSION_ITEM_ID(15),
+	/** id of a syncronization service */
+	IDS_SYNC_SERVICE(16),
+	
 	/* other ids (not related to SQL tables! */
 	/** marks that no special content type has yet been assigned */
 	IDS_UNDEFINED_CONTENT_ID(-1);
