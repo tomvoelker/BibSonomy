@@ -52,7 +52,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		/* Check user role
 		 * If user is not logged in or not an admin: show error message */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(context.getLoginUser().getRole())) {
-			throw new AccessDeniedException("error.method_not_allowed");
+			throw new AccessDeniedException("please log in as admin");
 		}
 		
 		final String action = command.getAction();

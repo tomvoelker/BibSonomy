@@ -6,7 +6,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -15,6 +14,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * Controller for group admin page
@@ -33,14 +33,14 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 
 
 	@Override
-	public View workOn(AdminGroupViewCommand command) {
+	public View workOn(final AdminGroupViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
 
 		/* Check user role
 		 * If user is not logged in or not an admin: show error message */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
-			throw new AccessDeniedException("error.method_not_allowed");
+			throw new AccessDeniedException("please log in as admin");
 		}
 
 		/* Check for and perform the specified action */
@@ -49,7 +49,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			log.debug("No action specified.");
 		} else if (FETCH_GROUP_SETTINGS.equals(action)) {
 			final String groupName = command.getGroup().getName();
-			Group fetchedGroup = logic.getGroupDetails(groupName);
+			final Group fetchedGroup = logic.getGroupDetails(groupName);
 
 			if (present(fetchedGroup)) {
 				command.setGroup(fetchedGroup);
@@ -129,7 +129,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	/**
 	 * @param logic the logic to set
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 }

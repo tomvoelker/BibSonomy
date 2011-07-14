@@ -8,7 +8,6 @@ import java.net.URISyntaxException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncLogicInterface;
@@ -18,6 +17,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * @author wla
@@ -37,7 +37,7 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 	}
 
 	@Override
-	public View workOn(AdminSyncCommand command) {
+	public View workOn(final AdminSyncCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
 
@@ -46,16 +46,16 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 		 * If user is not logged in or not an admin: show error message 
 		 */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
-			throw new AccessDeniedException("error.method_not_allowed");
+			throw new AccessDeniedException("please log in as admin");
 		}
 		
 		/*
 		 * FIXME: remove after integration
 		 */
-		SyncLogicInterface syncLogic = (SyncLogicInterface)logic;
+		final SyncLogicInterface syncLogic = (SyncLogicInterface)logic;
 		
 		
-		String action = command.getAction();
+		final String action = command.getAction();
 		if (present(action)) {
 			return performAction(command);
 		}
@@ -69,15 +69,15 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 		return Views.ADMIN_SYNC;
 	}
 	
-	private View performAction (AdminSyncCommand command) {
-		URI service = uriFromString(command.getService());
+	private View performAction (final AdminSyncCommand command) {
+		final URI service = uriFromString(command.getService());
 		
 		/*
 		 * TODO remove after integration
 		 */
-		SyncLogicInterface syncLogic = (SyncLogicInterface)logic;
+		final SyncLogicInterface syncLogic = (SyncLogicInterface)logic;
 		
-		String action = command.getAction();
+		final String action = command.getAction();
 		if(!present(service)){
 			//something wrong with uri
 			return new ExtendedRedirectView("/admin/sync");
@@ -85,7 +85,7 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 		if(action.equals(CREATE_SERVICE)) {
 			try {
 				syncLogic.createSyncService(service, command.isServer());
-			} catch (RuntimeException ex) {
+			} catch (final RuntimeException ex) {
 				/*
 				 * catch duplicates
 				 */
@@ -101,11 +101,11 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 		return new ExtendedRedirectView("/admin/sync");
 	}
 	
-	private URI uriFromString(String uriString) {
+	private URI uriFromString(final String uriString) {
 		if(present(uriString) && uriString.length() > 0) {
 			try {
 				return new URI(uriString);
-			} catch (URISyntaxException ex) {
+			} catch (final URISyntaxException ex) {
 				log.error("URI is malformed");
 				ex.printStackTrace();
 			}
@@ -117,7 +117,7 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 	/**
 	 * @param logic the logic to set
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 

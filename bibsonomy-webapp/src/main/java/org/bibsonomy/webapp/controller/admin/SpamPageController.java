@@ -9,9 +9,7 @@ import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.admin.AdminStatisticsCommand;
 import org.bibsonomy.webapp.command.admin.AdminViewCommand;
@@ -19,6 +17,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * Controller for admin page
@@ -32,10 +31,9 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 
 
 	private LogicInterface logic;
-	private UserSettings userSettings;
 
 	@Override
-	public View workOn(AdminViewCommand command) {
+	public View workOn(final AdminViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 
 		final RequestWrapperContext context = command.getContext();
@@ -46,10 +44,9 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 		 * message
 		 */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
-			throw new AccessDeniedException("error.method_not_allowed");
+			throw new AccessDeniedException("please log in as admin");
 		}
-
-		command.setPageTitle("admin");
+		
 		this.setUsers(command);
 
 		/*
@@ -61,7 +58,7 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 			this.setStatistics(command);
 		}
 
-		for (ClassifierSettings s : ClassifierSettings.values()) {
+		for (final ClassifierSettings s : ClassifierSettings.values()) {
 			command.setClassifierSetting(s, this.logic.getClassifierSettings(s));
 		}
 
@@ -157,23 +154,9 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 	}
 
 	/**
-	 * @return the userSettings
-	 */
-	public UserSettings getUserSettings() {
-		return this.userSettings;
-	}
-
-	/**
-	 * @param userSettings the userSettings to set
-	 */
-	public void setUserSettings(UserSettings userSettings) {
-		this.userSettings = userSettings;
-	}
-
-	/**
 	 * @param logic the logic to set
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 

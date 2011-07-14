@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.opensocial.oauth.database.IOAuthLogic;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
@@ -20,12 +19,14 @@ import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.opensocial.BibSonomyOAuthValidator;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
  * Controller for managing OAuth consumer keys
  * 
  * @author Folke Mitzlaff
+ * @version $Id$
  **/
 public class AdminOAuthController implements ValidationAwareController<OAuthAdminCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(AdminOAuthController.class);
@@ -49,7 +50,7 @@ public class AdminOAuthController implements ValidationAwareController<OAuthAdmi
 	}
 	
 	@Override
-	public View workOn(OAuthAdminCommand command) {
+	public View workOn(final OAuthAdminCommand command) {
 		ensureAdminAcess(command);
 
 		// show errors if command validation failed
@@ -64,8 +65,9 @@ public class AdminOAuthController implements ValidationAwareController<OAuthAdmi
 		switch (command.getAdminAction_()) {
 		case Register:
 			this.oauthLogic.createConsumer(command.getConsumerInfo());
+			//$FALL-THROUGH$ to get the list of consumerInfos
 		case List:
-			List<OAuthConsumerInfo> consumerInfo = this.oauthLogic.listConsumers();
+			final List<OAuthConsumerInfo> consumerInfo = this.oauthLogic.listConsumers();
 			command.setConsumers(consumerInfo);
 			break;
 		default:
@@ -84,7 +86,7 @@ public class AdminOAuthController implements ValidationAwareController<OAuthAdmi
 	}
 
 	@Override
-	public boolean isValidationRequired(OAuthAdminCommand command) {
+	public boolean isValidationRequired(final OAuthAdminCommand command) {
 		return true;
 	}
 
@@ -95,21 +97,20 @@ public class AdminOAuthController implements ValidationAwareController<OAuthAdmi
 	 * ensure that the requesting user is logged in and an administrator
 	 * @param command
 	 */
-	private void ensureAdminAcess(BaseCommand command) {
+	private void ensureAdminAcess(final BaseCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
 
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
-			throw new AccessDeniedException("error.method_not_allowed");
+			throw new AccessDeniedException("please log in as admin");
 		}
 	}
 
-	public void setOauthLogic(IOAuthLogic oauthLogic) {
+	/**
+	 * @param oauthLogic the oauth logic to set
+	 */
+	public void setOauthLogic(final IOAuthLogic oauthLogic) {
 		this.oauthLogic = oauthLogic;
-	}
-
-	public IOAuthLogic getOauthLogic() {
-		return oauthLogic;
 	}
 
 	@Override
@@ -118,7 +119,7 @@ public class AdminOAuthController implements ValidationAwareController<OAuthAdmi
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
