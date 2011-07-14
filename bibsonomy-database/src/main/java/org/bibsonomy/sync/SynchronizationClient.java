@@ -5,9 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -17,10 +15,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
-import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.util.IbatisSyncDBSessionFactory;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -89,18 +84,9 @@ public class SynchronizationClient {
 	 * @param serverLogic
 	 * @return
 	 */
-	public Map<String, SynchronizationData> getLastSyncData(String userName, ConstantID contentType, SyncLogicInterface serverLogic) {
+	public SynchronizationData getLastSyncData(final String userName, Class<? extends Resource> resourceType, final SyncLogicInterface serverLogic) {
 		//FIXME errorhandling
-		
-		Map<String, SynchronizationData> result = new HashMap<String, SynchronizationData>();
-		
-		if(contentType.equals(ConstantID.BOOKMARK_CONTENT_TYPE) || contentType.equals(ConstantID.ALL_CONTENT_TYPE)) {
-			result.put(Bookmark.class.getSimpleName(), serverLogic.getLastSynchronizationDataForUserForContentType(userName, uri, Bookmark.class));
-		}
-		if(contentType.equals(ConstantID.BIBTEX_CONTENT_TYPE) || contentType.equals(ConstantID.ALL_CONTENT_TYPE)) {
-			result.put(BibTex.class.getSimpleName(), serverLogic.getLastSynchronizationDataForUserForContentType(userName, uri, BibTex.class));
-		}
-		return result;
+		return serverLogic.getLastSynchronizationDataForUserForContentType(userName, uri, resourceType);
 	}
 	
 	/**
@@ -109,14 +95,14 @@ public class SynchronizationClient {
 	 * @param contentType
 	 * @return
 	 */
-	public Map<String, SynchronizationData> getLastSyncData(SyncService syncService, ConstantID contentType) {
-		//FIXME errorhandling
-		User serverUser = getUserFromProperties(syncService.getServerUser());
-		String userName = serverUser.getName();
+	public SynchronizationData getLastSyncData(final SyncService syncService, final Class<? extends Resource> resourceType) {
+		// FIXME errorhandling
+		final User serverUser = getUserFromProperties(syncService.getServerUser());
+		final String userName = serverUser.getName();
 		
-		SyncLogicInterface serverLogic = createServerLogic(userName, serverUser.getApiKey());
+		final SyncLogicInterface serverLogic = createServerLogic(userName, serverUser.getApiKey());
 		
-		return getLastSyncData(userName, contentType, serverLogic);
+		return getLastSyncData(userName, resourceType, serverLogic);
 	}
 	
 
@@ -140,9 +126,7 @@ public class SynchronizationClient {
 		}
 		storeSyncResult(result, resourceType, serverSyncLogic, serverUser.getName());
 		
-		SynchronizationData data = getLastSyncData(serverUser.getName(), ConstantID.getContentTypeByClass(resourceType), serverSyncLogic).get(resourceType.getSimpleName());
-
-		return data;
+		return getLastSyncData(serverUser.getName(), resourceType, serverSyncLogic);
 	}	
 	
 	private void storeSyncResult(String result, Class<? extends Resource> resourceType, SyncLogicInterface serverLogic, String serverUserName) {

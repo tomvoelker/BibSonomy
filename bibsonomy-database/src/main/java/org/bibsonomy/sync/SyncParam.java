@@ -1,7 +1,5 @@
 package org.bibsonomy.sync;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.net.URI;
 import java.util.Date;
 import java.util.Properties;
@@ -15,26 +13,17 @@ import org.bibsonomy.model.Resource;
  */
 public class SyncParam {
 
-	private final String userName;
-	private final URI service;
-	private final int serviceId;
-	private final int contentType;
-	private final Date lastSyncDate;
-	private final String status;
-	private final Properties credentials;
-
-	public SyncParam(String userName, final URI service, final int serviceId, Class<? extends Resource> resourceType, Date lastSyncDate, String status, Properties credentials) {
-		this.userName = userName;
-		this.service = service;
-		if(present(resourceType)) {
-			this.contentType = ConstantID.getContentTypeByClass(resourceType).getId();
-		} else {
-			contentType = 0;
-		}
-		this.lastSyncDate = lastSyncDate;
-		this.status = status;
-		this.credentials = credentials;
-		this.serviceId = serviceId;
+	private String userName;
+	private URI service;
+	private int serviceId;
+	private int contentType;
+	private Date lastSyncDate;
+	private String status;
+	private boolean server;
+	private Properties credentials;
+	
+	public SyncParam() {
+		
 	}
 
 	/**
@@ -84,5 +73,45 @@ public class SyncParam {
 	 */
 	public Properties getCredentials() {
 		return credentials;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public void setService(URI service) {
+		this.service = service;
+	}
+
+	public void setServiceId(int serviceId) {
+		this.serviceId = serviceId;
+	}
+
+	public void setResourceType(final Class<? extends Resource> resourceType) {
+		this.contentType = ConstantID.getContentTypeByClass(resourceType).getId();
+	}
+	
+	public void setContentType(int contentType) {
+		this.contentType = contentType;
+	}
+
+	public void setLastSyncDate(Date lastSyncDate) {
+		this.lastSyncDate = lastSyncDate;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setCredentials(Properties credentials) {
+		this.credentials = credentials;
+	}
+
+	public boolean getServer() {
+		return this.server;
+	}
+
+	public void setServer(boolean server) {
+		this.server = server;
 	}
 }

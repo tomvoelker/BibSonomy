@@ -12,6 +12,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
@@ -28,6 +30,8 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     
     private static final Log log = LogFactory.getLog(SynchronizationDatabaseManager.class);
     
+    private final GeneralDatabaseManager generalDb;
+    
     /**
      * Singleton 
      * @return SynchronizationDatabaseManager
@@ -37,6 +41,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     }
     
     private SynchronizationDatabaseManager() {
+    	this.generalDb = GeneralDatabaseManager.getInstance();
     }
     
     /**
@@ -46,19 +51,13 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param server
      */
     public void createSyncService (final DBSession session, final URI service, final boolean server) {
-    	//get id
-    	//check if uri alrerady present 
+    	// TODO: check if URI already present 
     	session.beginTransaction();
     	try {
-	    	Integer id;
-	    	id = this.getServiceId(session, service, !server);
-	    	if(!present(id)) {
-	    		id = this.queryForObject("getLastId", null, Integer.class, session);
-	    		if(!present(id)) 
-	    			id=0;
-	    		id++;
-	    	}
-	    	SyncServiceParam param = new SyncServiceParam(service, id, server);
+    		final SyncParam param = new SyncParam();
+    		param.setService(service);
+    		param.setServiceId(generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session));
+    		param.setServer(server);
 	    	session.insert("insertSyncService", param);
 	    	session.commitTransaction();
     	} finally {
@@ -68,7 +67,9 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     
 
     public void deleteSyncService(final DBSession session, final URI uri, final boolean server) {
-    	SyncServiceParam param =  new SyncServiceParam(uri, null, server);
+    	final SyncParam param =  new SyncParam();
+    	param.setService(uri);
+    	param.setServer(server);
     	session.delete("deleteSyncService", param);
     }
     
@@ -78,8 +79,13 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param data SynchronizationData
      */
     public void updateSyncData(final DBSession session, final SynchronizationData data) {
-    	int serviceId = this.getServiceId(session, data.getService(), false);
-		SyncParam param = new SyncParam(data.getUserName(), data.getService(),serviceId, data.getResourceType(), data.getLastSyncDate(), data.getStatus(), null);
+		final SyncParam param = new SyncParam();
+		param.setUserName(data.getUserName());
+		param.setService(data.getService());
+		param.setResourceType(data.getResourceType());
+		param.setLastSyncDate(data.getLastSyncDate());
+		param.setStatus(data.getStatus());
+		param.setServer(false);
 		session.update("updateSyncStatus", param);
     }
 
@@ -87,12 +93,16 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * Insert new synchronization SERVER into db.
      * @param session
      * @param userName
-     * @param serviceId
      * @param credentials
+     * @param serviceId
      */
-    public void createSyncServerForUser(final DBSession session, final String userName, final URI service, final Properties credentials) {
-    	int serviceId = this.getServiceId(session, service, true);
-    	session.insert("insertSyncServiceForUser", new SyncParam(userName, service, serviceId, null, null, null, credentials));
+    public void createSyncServerForUser(final DBSession session, final URI service, final String userName, final Properties credentials) {
+    	final SyncParam param = new SyncParam();
+    	param.setUserName(userName);
+    	param.setCredentials(credentials);
+    	param.setService(service);
+    	param.setServer(true);
+		session.insert("insertSyncServiceForUser", param);
     }
     
     /**
@@ -102,8 +112,10 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param service
      */
     public void deleteSyncServerForUser(final DBSession session, final String userName, final URI service) {
-    	int serviceId = this.getServiceId(session, service, true);
-    	SyncParam param = new SyncParam(userName, service, serviceId, null, null, null, null);
+    	final SyncParam param = new SyncParam();
+    	param.setUserName(userName);
+    	param.setService(service);
+    	param.setServer(true);
     	session.delete("deleteSyncServer", param);
     }
     
@@ -113,20 +125,25 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param userName
      * @param service
      * @param credentials
+     * FIXME: rename
      */
     public void updateSyncServerForUser(final DBSession session, final String userName, final URI service, final Properties credentials) {
-    	int serviceId = this.getServiceId(session, service, true);
-    	SyncParam param = new SyncParam(userName, service, serviceId, null, null, null, credentials);
-    	session.update("updateSyncServer", param);
+    	final SyncParam param = new SyncParam();
+    	param.setUserName(userName);
+    	param.setService(service);
+    	param.setServer(true);
+    	param.setCredentials(credentials);
+    	session.update("updateSyncServerCredentials", param);
     }
     
     /**
      * 
      * @param session
      * @return
+     * FIXME: rename
      */
     public List<SyncService> getAvlSyncServices(final DBSession session, boolean server) {
-    	return this.queryForList("getAvlSyncServices",server , SyncService.class, session);
+    	return this.queryForList("getSyncServices", server, SyncService.class, session);
     }
     
     /**
@@ -137,8 +154,11 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @return last synchronization date for given user, content type and service 
      */
     public Date getLastDoneSynchronizationDate(final String userName, final URI service, Class<? extends Resource> resourceType, final DBSession session) {
-    	int serviceId = this.getServiceId(session, service, false);
-    	SyncParam param =  new SyncParam(userName, service, serviceId, resourceType, null, null, null);
+    	final SyncParam param = new SyncParam();
+    	param.setUserName(userName);
+    	param.setService(service);
+    	param.setResourceType(resourceType);
+    	param.setServer(false);
     	return this.queryForObject("getLastDoneSyncDateForUserForServiceForContent", param , Date.class, session);
     }
     
@@ -150,8 +170,13 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @return last synchronization date for given user, content type and service 
      */
     public Date getLastSynchronizationDate(final String userName, final URI service, Class<? extends Resource> resourceType, final DBSession session) {
-    	int serviceId = this.getServiceId(session, service, false);
-    	SyncParam param =  new SyncParam(userName, service, serviceId, resourceType, null, null, null);
+    	final SyncParam param = new SyncParam();
+    	param.setUserName(userName);
+    	param.setService(service);
+    	param.setResourceType(resourceType);
+    	param.setServer(false);
+    	// FIXME: why don't we set the status?
+    	// FIXME: couldn't we just use 'getCurrentSyncData' instead?
     	return this.queryForObject("getLastSyncDate", param , Date.class, session);
     }
     
@@ -165,8 +190,13 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param session
      */
     public void insertSyncronizationData (final String userName, final URI service, Class<? extends Resource> resourceType, final Date lastSyncDate, final String status, final DBSession session) {
-    	int serviceId = this.getServiceId(session, service, false);
-    	SyncParam param = new SyncParam(userName, service, serviceId, resourceType, lastSyncDate, status, null);
+    	final SyncParam param = new SyncParam();
+    	param.setUserName(userName);
+    	param.setService(service);
+    	param.setResourceType(resourceType);
+    	param.setLastSyncDate(lastSyncDate);
+    	param.setStatus(status);
+    	param.setServer(false);
 		session.insert("insertSync", param);
     }
     
@@ -178,9 +208,13 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param session
      * @return returns last synchronization data for given user, service and content with status="undone"
      */
-    public SynchronizationData getCurrentSynchronizationData (final String userName, final URI service, final Class<? extends Resource> resourceType, final DBSession session) {
-    	int serviceId = this.getServiceId(session, service, false);
-    	SyncParam param = new SyncParam(userName, service, serviceId, resourceType, null, null, null);
+    public SynchronizationData getCurrentSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final DBSession session) {
+    	final SyncParam param = new SyncParam();
+    	param.setUserName(userName);
+    	param.setResourceType(resourceType);
+    	param.setService(service);
+    	param.setStatus("undone"); // FIXME: refactor
+    	param.setServer(false);
 		return queryForObject("getCurrentSyncData", param, SynchronizationData.class, session);
     }
     
@@ -193,8 +227,12 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @return list of synchronizationData for given user, service and contentType
      */
     public List<SynchronizationData> getSynchronizationData (final String userName, final URI service, Class<? extends Resource> resourceType, final DBSession session) {
-    	int serviceId = this.getServiceId(session, service, false);
-    	SyncParam param = new SyncParam(userName, service, serviceId, resourceType, null, null, null);
+    	final SyncParam param = new SyncParam();
+    	param.setUserName(userName);
+    	param.setResourceType(resourceType);
+    	param.setService(service);
+    	param.setStatus("undone"); // FIXME: refactor
+    	param.setServer(false);
 		return this.queryForList("getSyncData", param, SynchronizationData.class, session);
     }
     
@@ -204,9 +242,10 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param session
      * @return all synchronization server for user
      */
-    public List<SyncService> getSyncServerForUser(final String userName, final DBSession session) {
-		SyncParam param = new SyncParam(userName, null, 0, null, null, null, null);
-		return queryForList("getSyncServerForUser", param, SyncService.class, session);
+    public List<SyncService> getSyncServersForUser(final String userName, final DBSession session) {
+		final SyncParam param = new SyncParam();
+		param.setUserName(userName);
+		return queryForList("getSyncServersForUser", param, SyncService.class, session);
     }
     
     /**
@@ -217,20 +256,11 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @return sync service for user for given URI
      */
     public SyncService getSyncServer(final String userName, final URI service, final DBSession session) {
-    	int serviceId = this.getServiceId(session, service, true);
-    	SyncParam param = new SyncParam(userName, service, serviceId, null, null, null, null);
+    	final SyncParam param = new SyncParam();
+    	param.setUserName(userName);
+    	param.setService(service);
+ 	    param.setServer(true);
     	return queryForObject("getSyncServerForUserByUri", param, SyncService.class, session);
-    }
-    
-    /**
-     * 
-     * @param session
-     * @param service
-     * @return intern id of service
-     */
-    private Integer getServiceId(final DBSession session, final URI service, final boolean server) {
-    	Integer response = queryForObject("getSyncServiceByURI", new SyncServiceParam(service, null, server), Integer.class, session);
-    	return response;
     }
     
     public List<SynchronizationPost> synchronize(Map<String, SynchronizationPost> serverPosts, List<SynchronizationPost> clientPosts, Date lastSyncDate, ConflictResolutionStrategy conflictStrategy) {

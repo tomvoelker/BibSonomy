@@ -3,53 +3,49 @@
 
 <sqlMap namespace="Synchronization">
 
-	<select id="getAvlSyncServices" resultMap="SynchronizationCommon.syncService" parameterClass="boolean">
+	<select id="getSyncServices" resultMap="SynchronizationCommon.syncService" parameterClass="boolean">
 		SELECT ss.uri, NULL as user_name, NULL as credentials
-		FROM sync_services ss
-		WHERE ss.service_id > 0
-			AND ss.server = #server#
+		  FROM sync_services ss
+		  WHERE ss.server = #server#
 	</select>
 	
-	<select id="getLastId" resultClass="int">
-		SELECT service_id
-		FROM sync_services
-		ORDER BY service_id DESC
-		LIMIT 1
-	</select>
 	
-	<insert id="insertSyncService" parameterClass="syncServiceParam">
+	<insert id="insertSyncService" parameterClass="syncParam">
 		INSERT INTO sync_services (uri, service_id, server)
-		VALUES (#uri#, #id#, #server#)
+		  VALUES (#service#, #serviceId#, #server#)
 	</insert>
 
-	<select id="getSyncServerForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
+	<select id="getSyncServersForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
 		SELECT s.user_name, s.credentials, ss.uri
-		FROM sync s
-		JOIN sync_services ss USING (service_id)
-		WHERE s.user_name = #userName#
-			AND ss.server = 1
+		  FROM sync s
+		    JOIN sync_services ss USING (service_id)
+		  WHERE s.user_name = #userName#
+		    AND ss.server = 1
 	</select>
 	
 	<select id="getSyncServerForUserByUri" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
 		SELECT s.user_name, s.credentials, ss.uri
-		FROM sync s
-		JOIN sync_services ss USING (service_id)
-		WHERE s.user_name = #userName#
-			AND ss.uri = #service#
-			AND ss.server = 1
+		  FROM sync s
+		    JOIN sync_services ss USING (service_id)
+		  WHERE s.user_name = #userName#
+		    AND ss.uri = #service#
+		    AND ss.server = #server#
 	</select>
 	
 	<insert id="insertSyncServiceForUser" parameterClass="syncParam">
 		INSERT INTO sync (user_name, service_id, credentials)
-		VALUES (#userName#, #serviceId#, #credentials#)
+		  SELECT #userName#, service_id, #credentials# 
+		    FROM sync_services 
+		    WHERE uri = #service# 
+		      AND server = #server#
 	</insert> 
 
 	<select id="getSyncBibTex" resultMap="SynchronizationCommon.syncPost" parameterClass="bibtexParam">
 		SELECT <include refid="bibtexSimHashes"/>, b.date, t.change_date
-		FROM bibtex b
-		JOIN tas t USING (content_id)
-		WHERE b.user_name = #userName#
-		GROUP BY content_id
+		  FROM bibtex b
+		    JOIN tas t USING (content_id)
+		  WHERE b.user_name = #userName#
+		  GROUP BY content_id
 	</select>
 
 	<select id="getSyncBookmark" resultMap="SynchronizationCommon.syncPost" parameterClass="bookmarkParam">
@@ -63,88 +59,95 @@
 	
 	<select id="getLastDoneSyncDateForUserForServiceForContent" resultClass="java.util.Date" parameterClass="syncParam">
 		SELECT last_sync_date
-		FROM sync_data
-		WHERE user_name = #userName#
-			AND content_type = #contentType#
-			AND service_id = #serviceId#
-			AND status != "undone"
-			AND status != "error"  
-		ORDER BY last_sync_date DESC
-		LIMIT 1
+		  FROM sync_data sd 
+		    JOIN sync_services ss USING (service_id)
+		  WHERE sd.user_name = #userName#
+			AND sd.content_type = #contentType#
+			AND ss.uri = #service#
+			AND ss.server = #server#
+			AND sd.status != "undone"
+			AND sd.status != "error"  
+		  ORDER BY last_sync_date DESC
+		  LIMIT 1
 	</select>
 	
 	<select id="getLastSyncDate" resultClass="java.util.Date" parameterClass="syncParam">
 		SELECT last_sync_date
-		FROM sync_data
-		WHERE user_name = #userName#
-			AND content_type = #contentType#
-			AND service_id = #serviceId#
-		ORDER BY last_sync_date DESC
-		LIMIT 1
+		  FROM sync_data sd
+		    JOIN sync_services ss USING (service_id)
+		  WHERE sd.user_name = #userName#
+			AND sd.content_type = #contentType#
+			AND ss.uri = #service#
+			AND ss.server = #server#
+		  ORDER BY last_sync_date DESC
+		  LIMIT 1
 	</select>
-	
 	
 	<select id="getSyncData" resultMap="SynchronizationCommon.syncData" parameterClass="syncParam">
 		SELECT <include refid="syncDataColumns"/>
-		FROM sync_data sd
-		LEFT JOIN sync_services ss USING (service_id)
-		WHERE sd.user_name = #userName#
+		  FROM sync_data sd
+		    JOIN sync_services ss USING (service_id)
+		  WHERE sd.user_name = #userName#
 			AND sd.content_type = #contentType#
+			AND sd.status != #status#
 			AND ss.uri = #service#
-			AND sd.status != 'undone'
-		ORDER BY sd.last_sync_date DESC
+			AND ss.server = #server#
+		  ORDER BY sd.last_sync_date DESC
 	</select> 
 	
 	<select id="getCurrentSyncData" resultMap="SynchronizationCommon.syncData" parameterClass="syncParam">
 		SELECT <include refid="syncDataColumns"/>
-		FROM sync_data sd
-		LEFT JOIN sync_services ss USING (service_id)
-		WHERE sd.user_name = #userName#
+		  FROM sync_data sd
+		    JOIN sync_services ss USING (service_id)
+		  WHERE sd.user_name = #userName#
 			AND sd.content_type = #contentType#
-			AND sd.service_id = #serviceId#
-			AND sd.status = 'undone'
-		ORDER BY sd.last_sync_date DESC
-		LIMIT 1
+			AND sd.status = #status#
+			AND ss.uri = #service#
+			AND ss.server = #server#
+		  ORDER BY sd.last_sync_date DESC
+		  LIMIT 1
 	</select> 
-	
-	<select id="getSyncServiceByURI" resultClass="java.lang.Integer" parameterClass="syncServiceParam">
-		SELECT service_id
-		FROM sync_services
-		WHERE uri = #uri#
-			AND server=#server#
-	</select>
 	
 	<insert id="insertSync" parameterClass="syncParam">
 		INSERT INTO sync_data (service_id, user_name, content_type, last_sync_date, status)
-		VALUES (#serviceId#, #userName#, #contentType#, #lastSyncDate#, #status#)
-	</insert> 
+		  SELECT service_id, #userName#, #contentType#, #lastSyncDate#, #status# 
+		    FROM sync_services 
+		    WHERE uri = #service#
+		      AND server = #server#
+	</insert>
 	
 	<update id="updateSyncStatus" parameterClass="syncParam">
-		UPDATE sync_data 
-		SET status = #status#
-		WHERE user_name = #userName#
-			AND content_type = #contentType#
-			AND service_id = #serviceId#
-			AND last_sync_date = #lastSyncDate#
+		UPDATE sync_data sd JOIN sync_services ss USING (service_id)
+			SET sd.status = #status#
+			WHERE sd.user_name = #userName#
+			  AND sd.content_type = #contentType#
+			  AND sd.last_sync_date = #lastSyncDate#
+			  AND ss.uri = #service#
+			  AND ss.server = #server#
 	</update>
 	
-	<update id="updateSyncServer" parameterClass="syncParam">
-		UPDATE sync
-		SET credentials = #credentials#
-		WHERE user_name = #userName#
-			AND service_id=#serviceId#
+	<update id="updateSyncServerCredentials" parameterClass="syncParam">
+		UPDATE sync s
+		  JOIN sync_services ss USING (service_id)
+		  SET s.credentials = #credentials#
+		  WHERE s.user_name = #userName#
+			AND ss.uri = #service#
+			AND ss.server = #server#
  	</update>
 	
 	<delete id="deleteSyncServer" parameterClass="syncParam">
-		DELETE FROM sync
-		WHERE user_name = #userName#
-			AND service_id = #serviceId#
+		DELETE FROM s
+		  USING sync s
+		    JOIN sync_services ss USING (service_id) 
+		  WHERE s.user_name = #userName#
+			AND ss.uri = #service#
+			AND ss.server = #server#
 	</delete>
 	
-	<delete id="deleteSyncService" parameterClass="syncServiceParam">
+	<delete id="deleteSyncService" parameterClass="SyncParam">
 		DELETE FROM sync_services
-		WHERE server = #server#
-			AND uri = #uri#
+		  WHERE server = #server#
+			AND uri = #service#
 	</delete>
 	
 	
