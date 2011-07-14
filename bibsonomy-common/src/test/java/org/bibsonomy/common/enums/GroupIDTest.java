@@ -44,8 +44,7 @@ public class GroupIDTest {
 		assertEquals(GroupID.PUBLIC, GroupID.getSpecialGroup("PUBLIC"));
 		assertEquals(GroupID.PRIVATE, GroupID.getSpecialGroup("PRIVATE"));
 		assertEquals(GroupID.FRIENDS, GroupID.getSpecialGroup("FRIENDS"));
-
-		assertEquals(null, GroupID.getSpecialGroup("KDE"));
+		
 		assertEquals(null, GroupID.getSpecialGroup("INVALID"));
 
 		for (final String groupname : new String[] { "public", "PuBlIc" }) {

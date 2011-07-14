@@ -27,20 +27,19 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Constant group ids.
+ * @version $Id$
  */
 public enum GroupID {
+	
 	/** the public group */
 	PUBLIC(0),
+	
 	/** the owning user's private group */
 	PRIVATE(1),
+	
 	/** the owning user's friends group */
 	FRIENDS(2),
-
-	/**
-	 * the kde group (normally groups are not hardoded as this, but this is an
-	 * example used in some tescases)
-	 */
-	KDE(3),
+	
 	/** an invalid value */
 	INVALID(-1),
 	
@@ -48,10 +47,12 @@ public enum GroupID {
 	 * public group for spam posts
 	 */
 	PUBLIC_SPAM(-2147483648),
+	
 	/**
 	 * private group for spam posts
 	 */
 	PRIVATE_SPAM(-2147483647),
+	
 	/**
 	 * public group for spam posts 
 	 */
@@ -61,6 +62,7 @@ public enum GroupID {
 	 * use logical OR (|) to set first bit
 	 */ 
 	private static final int CONST_SET_1ST_BIT = 0x80000000;
+	
 	/*
 	 * use logical AND (&) to clear first bit
 	 */
@@ -86,7 +88,7 @@ public enum GroupID {
 	 *         to the argument
 	 */
 	public static GroupID getSpecialGroup(final String groupName) {
-		if (present(groupName) == false) return null;
+		if (!present(groupName)) return null;
 		final GroupID group = valueOf(groupName.toUpperCase());
 		if (isSpecialGroupId(group.getId())) return group;
 		return null;
@@ -131,7 +133,7 @@ public enum GroupID {
 	}
 
 	/**
-	 * Merges spaminformation into the groupId (MSB set iff isSpammer == true).
+	 * Merges spaminformation into the groupId (MSB set iff isSpammer is <code>true</code>).
 	 * 
 	 * FIXME: can't handle {@link GroupID#INVALID}.
 	 * 
