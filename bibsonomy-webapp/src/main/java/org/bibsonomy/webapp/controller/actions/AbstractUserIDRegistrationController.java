@@ -8,7 +8,6 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.UserIDRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
@@ -17,6 +16,7 @@ import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.util.spring.security.handler.FailureHandler;
 import org.bibsonomy.webapp.util.spring.security.rememberMeServices.CookieBasedRememberMeServices;
 import org.bibsonomy.webapp.validation.UserValidator;
@@ -66,10 +66,8 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.ContextCommand)
 	 */
 	@Override
-	public View workOn(UserIDRegistrationCommand command) {
+	public View workOn(final UserIDRegistrationCommand command) {
 		log.debug("workOn() called");
-
-		command.setPageTitle("registration");
 
 		/*
 		 * If the user is already logged in: show error message
@@ -82,16 +80,13 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		 * If the user has been successfully authenticated by the ID provider 
 		 * and he is not yet registered, his data is contained in the session.  
 		 */
-		final Object o = requestLogic.getSessionAttribute(FailureHandler.USER_TO_BE_REGISTERED);
-		if (!present(o) || ! (o instanceof User)) {
+		final Object o = this.requestLogic.getSessionAttribute(FailureHandler.USER_TO_BE_REGISTERED);
+		if (!present(o) || !(o instanceof User)) {
 			/*
 			 * user must first login.
 			 */
-			return new ExtendedRedirectView("/login"+ 
-					"?notice=" + getLoginNotice() + 
-					"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL()));
+			throw new AccessDeniedNoticeException("please log in", this.getLoginNotice());
 		}
-		
 
 		/*
 		 * user found in session - proceed with the registration 
@@ -122,8 +117,6 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 			 */
 			return registrationFormView;
 		}
-		
-		
 		
 		log.debug("step 3: complete registration");
 		/* 
@@ -265,7 +258,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 				}
 				log.debug("try existence of username: " + newName + " (" + tryCount + ")");
 				tryCount++;
-			} catch (IndexOutOfBoundsException ex) {
+			} catch (final IndexOutOfBoundsException ex) {
 				/*
 				 * if some substring values are out of range, catch exception and use surename
 				 */
@@ -297,22 +290,22 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
 	@Override
-	public boolean isValidationRequired(UserIDRegistrationCommand command) {
+	public boolean isValidationRequired(final UserIDRegistrationCommand command) {
 		return true;
 	}
 
 	@Override
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
 	@Override
-	public void setCookieLogic(CookieLogic cookieLogic) {
+	public void setCookieLogic(final CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
 	}
 
@@ -321,7 +314,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	 *            - an instance of the logic interface with admin access.
 	 */
 	@Required
-	public void setAdminLogic(LogicInterface adminLogic) {
+	public void setAdminLogic(final LogicInterface adminLogic) {
 		Assert.notNull(adminLogic, "The provided logic interface must not be null.");
 		this.adminLogic = adminLogic;
 		/*
@@ -336,7 +329,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	 * 
 	 * @param successRedirect
 	 */
-	public void setSuccessRedirect(String successRedirect) {
+	public void setSuccessRedirect(final String successRedirect) {
 		this.successRedirect = successRedirect;
 	}
 
@@ -350,7 +343,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	/**
 	 * @param rememberMeServices
 	 */
-	public void setRememberMeServices(CookieBasedRememberMeServices rememberMeServices) {
+	public void setRememberMeServices(final CookieBasedRememberMeServices rememberMeServices) {
 		this.rememberMeServices = rememberMeServices;
 	}
 	
@@ -360,7 +353,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	 * 
 	 * @param authenticationManager
 	 */
-	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+	public void setAuthenticationManager(final AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
 	}
 
@@ -369,7 +362,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	 * 
 	 * @param registrationFormView
 	 */
-	public void setRegistrationFormView(Views registrationFormView) {
+	public void setRegistrationFormView(final Views registrationFormView) {
 		this.registrationFormView = registrationFormView;
 	}
 }
