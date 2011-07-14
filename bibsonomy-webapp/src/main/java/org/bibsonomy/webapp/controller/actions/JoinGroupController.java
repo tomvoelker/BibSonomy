@@ -2,9 +2,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
@@ -13,7 +10,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.JoinGroupCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -32,7 +28,7 @@ import org.springframework.validation.Errors;
  * @author schwass
  * @version $Id$
  */
-public class JoinGroupController implements ErrorAware, MinimalisticController<JoinGroupCommand>, ValidationAwareController<JoinGroupCommand>, RequestAware, Validator<JoinGroupCommand> {
+public class JoinGroupController implements ErrorAware, ValidationAwareController<JoinGroupCommand>, RequestAware, Validator<JoinGroupCommand> {
 	
 	private Captcha captcha;
 	private RequestLogic requestLogic;
@@ -40,25 +36,13 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 	private LogicInterface logic;
 	private LogicInterface adminLogic;
 	private MailUtils mailUtils;
-	/**
-	 * Path to login page for redirect if user not logged in
-	 */
-	private String loginPath;
-	/**
-	 * Path to this controller for referrer to login page
-	 */
-	private String controllerPath;
+	
 	private String denieUserRedirectURI;
+	
 	/**
 	 * maximum length for reason input.
 	 */
-	private String reasonMaxLen;
-	private int reasonMaxLenInt;
-	/**
-	 * Constructor.
-	 */
-	public JoinGroupController() {
-	}
+	private int reasonMaxLen;
 
 	@Override
 	public Errors getErrors() {
@@ -67,18 +51,15 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 
 	@Override
 	public void setErrors(final Errors errors) {
-		/*
-		 * here: check for binding errors
-		 */
 		this.errors = errors;
 	}
 
-	/** Give this controller an instance of {@link Captcha}.
-	 * 
+	/**
+	 * Give this controller an instance of {@link Captcha}.
 	 * @param captcha
 	 */
 	@Required
-	public void setCaptcha(Captcha captcha) {
+	public void setCaptcha(final Captcha captcha) {
 		this.captcha = captcha;
 	}
 
@@ -87,7 +68,7 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 	 */
 	@Override
 	@Required
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
@@ -95,142 +76,94 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 	 * @param mailUtils
 	 */
 	@Required
-	public void setMailUtils(MailUtils mailUtils) {
+	public void setMailUtils(final MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
 	}
 
 	/**
 	 * @param logic
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
-
-	/**
-	 * @param loginPath
-	 */
-	public void setLoginPath(String loginPath) {
-		this.loginPath = loginPath;
-	}
-
-	/**
-	 * @return String that represents the path to the login page including the referrers request
-	 * parameter and '='.
-	 * 
-	 * '/login?referer='
-	 */
-	public String getLoginPath() {
-		return loginPath;
-	}
-
-	/**
-	 * @param controllerPath
-	 */
-	public void setControllerPath(String controllerPath) {
-		this.controllerPath = controllerPath;
-	}
-
-	/**
-	 * @return Path to this controller
-	 */
-	public String getControllerPath() {
-		return controllerPath;
-	}
-
+	
 	/**
 	 * @param adminLogic the adminLogic to set
 	 */
-	public void setAdminLogic(LogicInterface adminLogic) {
+	public void setAdminLogic(final LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
 	}
 
 	/**
 	 * @param denieUserRedirectURI the denieUserRedirectURI to set
 	 */
-	public void setDenieUserRedirectURI(String denieUserRedirectURI) {
+	public void setDenieUserRedirectURI(final String denieUserRedirectURI) {
 		this.denieUserRedirectURI = denieUserRedirectURI;
 	}
 
 	/**
 	 * @param reasonMaxLen the reasonMaxLen to set
 	 */
-	public void setReasonMaxLen(String reasonMaxLen) {
+	public void setReasonMaxLen(final int reasonMaxLen) {
 		this.reasonMaxLen = reasonMaxLen;
-		reasonMaxLenInt = Integer.parseInt(reasonMaxLen);
-	}
-
-	/**
-	 * @return the reasonMaxLen
-	 */
-	public String getReasonMaxLen() {
-		return reasonMaxLen;
 	}
 
 	@Override
 	public JoinGroupCommand instantiateCommand() {
-		return new JoinGroupCommand(reasonMaxLen);
+		return new JoinGroupCommand(this.reasonMaxLen);
 	}
 
 	@Override
-	public View workOn(JoinGroupCommand command) {
-		User loginUser = command.getContext().getLoginUser();
-		//check user logged in
-		if(command.getContext().isUserLoggedIn() == false) {
-			String redirectURI;
-			try {
-				redirectURI = loginPath + URLEncoder.encode(referer(command), "UTF-8");
-				return new ExtendedRedirectView(redirectURI );
-			} catch (UnsupportedEncodingException ex) {
-				throw new InternServerException(ex.getMessage());
-			}
+	public View workOn(final JoinGroupCommand command) {
+		final User loginUser = command.getContext().getLoginUser();
+		// check user logged in
+		if (!command.getContext().isUserLoggedIn()) {
+			throw new org.springframework.security.access.AccessDeniedException("please log in");
 		}
-		//deny join request action
+		
+		/* 
+		 * deny join request action
+		 */
 		if (present(command.getDeniedUser())) {
-			//if ckey is not valid, don't annoy denied user with emails
-			if (command.getContext().isValidCkey()) {
-				mailUtils.sendJoinGroupDenied(loginUser, adminLogic.getUserDetails(command.getDeniedUser()), command.getReason(), requestLogic.getLocale());
-			}
-			return new ExtendedRedirectView(denieUserRedirectURI);
+			return this.workOnDeny(command, loginUser);
 		}
-		//check if user is already in this group
-		{
-			if(loginUser.getGroups().contains(new Group(command.getGroup()))) {
-				errors.reject("joinGroup.already.member.error");
-			}
+		
+		// check if user is already in this group
+		if (loginUser.getGroups().contains(new Group(command.getGroup()))) {
+			errors.reject("joinGroup.already.member.error");
 		}
-		//check user is spammer
-		if(loginUser.isSpammer()) {
+		
+		// check user is spammer
+		if (loginUser.isSpammer()) {
 			errors.reject("joinGroup.spammerError");
 		}
-		//on errors return to form
-		if(errors.hasErrors()) {
+		
+		// on errors return to form
+		if (errors.hasErrors()) {
 			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
 			return Views.JOIN_GROUP;
 		}
-		//success now
-		User group = logic.getUserDetails(command.getGroup());
+		
+		// success now
+		final User group = logic.getUserDetails(command.getGroup());
 		mailUtils.sendJoinGroupRequest(group, loginUser, command.getReason(), requestLogic.getLocale());
 		command.setGroupObj(logic.getGroupDetails(command.getGroup()));
+		
 		return Views.JOINGROUPREQUEST_SUCCESS;
 	}
-	
-	private String referer(JoinGroupCommand command) {
-		if (present(command.getDeniedUser())) {
-			return denieUserRedirectURI;
+
+	private View workOnDeny(final JoinGroupCommand command, final User loginUser) {
+		// if ckey is not valid, don't annoy denied user with emails
+		if (command.getContext().isValidCkey()) {
+			mailUtils.sendJoinGroupDenied(loginUser, adminLogic.getUserDetails(command.getDeniedUser()), command.getReason(), requestLogic.getLocale());
 		}
-		return
-		controllerPath + "?" + command.getContext().getQueryString()
-		+ "&recaptcha_challenge_field=" + command.getRecaptcha_challenge_field()
-		+ "&recaptcha_response_field=" + command.getRecaptcha_response_field()
-		+ "&reason=" + command.getReason();
+		return new ExtendedRedirectView(denieUserRedirectURI);
 	}
 
 	@Override
-	public boolean isValidationRequired(JoinGroupCommand command) {
-		RequestWrapperContext context = command.getContext();
-		return
-		context.isUserLoggedIn()
-		&& context.getLoginUser().isSpammer() == false;
+	public boolean isValidationRequired(final JoinGroupCommand command) {
+		final RequestWrapperContext context = command.getContext();
+		return context.isUserLoggedIn() && !context.getLoginUser().isSpammer();
 	}
 
 	@Override
@@ -239,30 +172,34 @@ public class JoinGroupController implements ErrorAware, MinimalisticController<J
 	}
 
 	@Override
-	public boolean supports(Class<?> clazz) {
+	public boolean supports(final Class<?> clazz) {
 		return JoinGroupCommand.class.equals(clazz);
 	}
 
 	@Override
-	public void validate(Object target, Errors errors) {
-		JoinGroupCommand command = (JoinGroupCommand) target;
-		Assert.notNull(command.getGroup());
+	public void validate(final Object target, final Errors errors) {
+		final JoinGroupCommand command = (JoinGroupCommand) target;
+		Assert.notNull(command.getGroup()); // TODO: should add an error to errors
 		if (present(command.getDeniedUser())) {
 			if (!command.getContext().getLoginUser().getName().equals(command.getGroup())) throw new AccessDeniedException();
+			// no further validation
 			return;
 		}
-		if (command.getReason() != null && command.getReason().length() > reasonMaxLenInt) {
-			errors.rejectValue("reason", "error.field.valid.limit_exceeded", new String[] {reasonMaxLen}, "Message is too long");
-			command.setReason(command.getReason().substring(0, reasonMaxLenInt));
+		
+		if (present(command.getReason()) && command.getReason().length() > reasonMaxLen) {
+			errors.rejectValue("reason", "error.field.valid.limit_exceeded", new Object[] {reasonMaxLen}, "Message is too long");
+			command.setReason(command.getReason().substring(0, reasonMaxLen));
 		}
-		if (present(command.getRecaptcha_response_field()) == false) {
+		
+		// FIXME: captcha checking; duplicate code EditPostController, PasswordReminderController, …
+		if (!present(command.getRecaptcha_response_field())) {
 			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
 		} else {
-			CaptchaResponse resp = captcha.checkAnswer(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), requestLogic.getHostInetAddress());
+			final CaptchaResponse resp = captcha.checkAnswer(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), requestLogic.getHostInetAddress());
 			if(resp == null) throw new InternServerException("error.captcha");
 			if(resp.isValid() == false) errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
 			else {
-				String errorMessage = resp.getErrorMessage();
+				final String errorMessage = resp.getErrorMessage();
 				if(errorMessage != null) errors.reject(errorMessage);
 			}
 		}

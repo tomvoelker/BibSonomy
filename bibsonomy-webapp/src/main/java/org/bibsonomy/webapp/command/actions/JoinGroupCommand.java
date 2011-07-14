@@ -8,7 +8,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @author schwass
  * @version $Id$
  */
-public class JoinGroupCommand extends BaseCommand {
+public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	/**
 	 * Contains the HTML-Code to view the reCaptcha. Is filled ONLY by the controller!
 	 * Any validator must check, that the user did not fill this field.
@@ -33,56 +33,64 @@ public class JoinGroupCommand extends BaseCommand {
 	private String group;
 	private Group groupObj;
 	
-	private final String reasonMaxLen;
+	private final int reasonMaxLen;
 	
 	/**
 	 * @param reasonMaxLen
 	 */
-	public JoinGroupCommand(String reasonMaxLen) {
+	public JoinGroupCommand(final int reasonMaxLen) {
 		this.reasonMaxLen = reasonMaxLen;
 	}
+	
 	/**
 	 * user to be denied for joining group
 	 */
 	private String deniedUser;
-	/**
-	 * @return the recaptcha_challenge_field
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.actions.RecaptchaCommand#getRecaptcha_challenge_field()
 	 */
+	@Override
 	public String getRecaptcha_challenge_field() {
 		return this.recaptcha_challenge_field;
 	}
 
-	/**
-	 * @param recaptchaChallengeField the recaptcha_challenge_field to set
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.actions.RecaptchaCommand#setRecaptcha_challenge_field(java.lang.String)
 	 */
-	public void setRecaptcha_challenge_field(String recaptchaChallengeField) {
+	@Override
+	public void setRecaptcha_challenge_field(final String recaptchaChallengeField) {
 		this.recaptcha_challenge_field = recaptchaChallengeField;
 	}
 
-	/**
-	 * @return the recaptcha_response_field
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.actions.RecaptchaCommand#getRecaptcha_response_field()
 	 */
+	@Override
 	public String getRecaptcha_response_field() {
 		return this.recaptcha_response_field;
 	}
 
-	/**
-	 * @param recaptchaResponseField the recaptcha_response_field to set
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.actions.RecaptchaCommand#setRecaptcha_response_field(java.lang.String)
 	 */
-	public void setRecaptcha_response_field(String recaptchaResponseField) {
+	@Override
+	public void setRecaptcha_response_field(final String recaptchaResponseField) {
 		this.recaptcha_response_field = recaptchaResponseField;
 	}
 	
-	/**
-	 * @param captchaHTML
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.actions.RecaptchaCommand#setCaptchaHTML(java.lang.String)
 	 */
-	public void setCaptchaHTML(String captchaHTML) {
+	@Override
+	public void setCaptchaHTML(final String captchaHTML) {
 		this.captchaHTML = captchaHTML;
 	}
 
-	/**
-	 * @return captcha html
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.actions.RecaptchaCommand#getCaptchaHTML()
 	 */
+	@Override
 	public String getCaptchaHTML() {
 		return captchaHTML;
 	}
@@ -90,7 +98,7 @@ public class JoinGroupCommand extends BaseCommand {
 	/**
 	 * @param reason
 	 */
-	public void setReason(String reason) {
+	public void setReason(final String reason) {
 		this.reason = reason;
 	}
 
@@ -104,7 +112,7 @@ public class JoinGroupCommand extends BaseCommand {
 	/**
 	 * @param group
 	 */
-	public void setGroup(String group) {
+	public void setGroup(final String group) {
 		this.group = group;
 	}
 
@@ -118,7 +126,7 @@ public class JoinGroupCommand extends BaseCommand {
 	/**
 	 * @param groupObj
 	 */
-	public void setGroupObj(Group groupObj) {
+	public void setGroupObj(final Group groupObj) {
 		this.groupObj = groupObj;
 	}
 
@@ -132,7 +140,7 @@ public class JoinGroupCommand extends BaseCommand {
 	/**
 	 * @param deniedUser
 	 */
-	public void setDeniedUser(String deniedUser) {
+	public void setDeniedUser(final String deniedUser) {
 		this.deniedUser = deniedUser;
 	}
 
@@ -146,7 +154,7 @@ public class JoinGroupCommand extends BaseCommand {
 	/**
 	 * @return the reasonMaxLen
 	 */
-	public String getReasonMaxLen() {
+	public int getReasonMaxLen() {
 		return reasonMaxLen;
 	}
 
