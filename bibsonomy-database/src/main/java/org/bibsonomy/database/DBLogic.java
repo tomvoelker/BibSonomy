@@ -306,7 +306,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	
 	final DBSession session = this.openSession();
 	try {
-		SynchronizationData data = syncDBManager.getCurrentSynchronizationData(userName, service, resourceType, session);
+		final SynchronizationData data = syncDBManager.getCurrentSynchronizationData(userName, service, resourceType, session);
 		if (present(data)) {
 			//running synchronization
 			throw new SynchronizationRunningException();
@@ -363,7 +363,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     public void createSyncServer(final String userName, final URI service, final Properties userCredentials) {
 		final DBSession session = this.openSession();
 		try {
-		    syncDBManager.createSyncServerForUser(session, userName, service, userCredentials);
+		    syncDBManager.createSyncServerForUser(session, service, userName, userCredentials);
 		} finally {
 		    session.close();
 		}
@@ -407,7 +407,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	List<SyncService> services;
 	
 	try {
-	    services = syncDBManager.getSyncServerForUser(userName, session);
+	    services = syncDBManager.getSyncServersForUser(userName, session);
 	} finally {
 	   session.close();
 	}
@@ -493,16 +493,15 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      @Override
     public SynchronizationData getLastSynchronizationDataForUserForContentType (final String userName, final URI service, final Class<? extends Resource> resourceType) {
 	final DBSession session = this.openSession();
-	SynchronizationData syncData = null;
 	try {
 	    final List<SynchronizationData> sync = syncDBManager.getSynchronizationData(userName, service, resourceType, session);
-	    if (present(sync) && sync.size() > 0) {
-		syncData = sync.get(0);
+	    if (present(sync)) {
+		return sync.get(0);
 	    }
 	} finally {
 	    session.close();
 	}
-	return syncData;
+	return null;
     }
     
     /*
