@@ -1091,18 +1091,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.CrudableContent#updatePost(org.bibsonomy.model.Post, java.lang.String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.common.DBSession)
-	 */
-	@Override
-	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
-		final User user = new User();
-		user.setName(post.getUser().getName());
-		user.setRole(Role.NOBODY);
-		return this.updatePost(post, oldHash, operation, session, user);
-	}
-	
-	/*
-	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.CrudableContent#updatePost(org.bibsonomy.model.Post, java.lang.String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
