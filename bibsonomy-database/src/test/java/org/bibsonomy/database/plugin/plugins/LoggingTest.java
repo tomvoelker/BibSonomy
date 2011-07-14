@@ -23,6 +23,7 @@ import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.testutil.TestDatabaseManager;
 import org.junit.BeforeClass;
@@ -45,6 +46,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	private static GroupDatabaseManager groupDb;
 	private static TagRelationDatabaseManager tagRelDb;
 	private static TestDatabaseManager testDb;
+	private static final User loginUser = new User("testuser");
 	
 	/**
 	 * sets up the used managers
@@ -172,7 +174,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		param.setNewContentId(currentContentId + 1);
 		Integer result = testDb.countNewContentIdFromBibTex(param);
 		assertEquals(0, result);
-		publicationDb.updatePost(someBibTexPost, someBibTexPost.getResource().getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession);
+		publicationDb.updatePost(someBibTexPost, someBibTexPost.getResource().getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
 
 		currentContentId = testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
 		param.setNewContentId(currentContentId);
@@ -218,7 +220,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		Integer result = testDb.countNewContentIdFromBookmark(param);
 		assertEquals(0, result);
 
-		bookmarkDb.updatePost(someBookmarkPost, HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession);
+		bookmarkDb.updatePost(someBookmarkPost, HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
 
 		currentContentId = testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
 		param.setNewContentId(currentContentId);
