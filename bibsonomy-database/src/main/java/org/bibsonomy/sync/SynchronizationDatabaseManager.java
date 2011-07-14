@@ -26,9 +26,9 @@ import org.bibsonomy.model.sync.SynchronizationStates;
  * @version $Id$
  */
 public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
-    private static final SynchronizationDatabaseManager singelton = new SynchronizationDatabaseManager();
-    
     private static final Log log = LogFactory.getLog(SynchronizationDatabaseManager.class);
+
+	private static final SynchronizationDatabaseManager singleton = new SynchronizationDatabaseManager();
     
     private final GeneralDatabaseManager generalDb;
     
@@ -37,7 +37,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @return SynchronizationDatabaseManager
      */
     public static SynchronizationDatabaseManager getInstance() {
-    	return singelton;
+    	return singleton;
     }
     
     private SynchronizationDatabaseManager() {
@@ -45,36 +45,44 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     }
     
     /**
-     * adds service to the sync_services table
+     * Add a sync service. Callers should check, if a client/server with that
+     * URI already exists. Otherwise, a DUPLICATE KEY exception will be thrown.
+     * 
      * @param session
-     * @param service
-     * @param server
+     * @param service - the URI of the service to be added
+     * @param server - <code>true</code> if the service may act as a server, <code>false</code> if it may act as a client
      */
-    public void createSyncService (final DBSession session, final URI service, final boolean server) {
-    	// TODO: check if URI already present 
+    public void createSyncService(final DBSession session, final URI service, final boolean server) {
     	session.beginTransaction();
     	try {
     		final SyncParam param = new SyncParam();
     		param.setService(service);
-    		param.setServiceId(generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session));
     		param.setServer(server);
+    		param.setServiceId(generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session));
 	    	session.insert("insertSyncService", param);
 	    	session.commitTransaction();
     	} finally {
     		session.endTransaction();
     	}
     }
-    
 
-    public void deleteSyncService(final DBSession session, final URI uri, final boolean server) {
+    /**
+     * Remove a sync service.
+     * 
+     * @param session
+     * @param service - the URI of the service to be removed
+     * @param server - <code>true</code> if the server part should be deleted, <code>false</code> if the client client part should be deleted
+     */
+    public void deleteSyncService(final DBSession session, final URI service, final boolean server) {
     	final SyncParam param =  new SyncParam();
-    	param.setService(uri);
+    	param.setService(service);
     	param.setServer(server);
     	session.delete("deleteSyncService", param);
     }
     
     /**
-     * Updates given synchronization data in db. This method will be used from SynchronizationServer!
+     * Updates given synchronization data in db.
+     * 
      * @param session database session
      * @param data SynchronizationData
      */
@@ -90,7 +98,8 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     }
 
     /**
-     * Insert new synchronization SERVER into db.
+     * Insert new synchronization data for user.
+     * 
      * @param session
      * @param userName
      * @param credentials
@@ -106,7 +115,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     }
     
     /**
-     * Removes a synchronization Server from db
+     * Removes synchronization data for user.
      * @param session
      * @param userName
      * @param service
@@ -116,16 +125,17 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     	param.setUserName(userName);
     	param.setService(service);
     	param.setServer(true);
-    	session.delete("deleteSyncServer", param);
+    	session.delete("deleteSyncServerForUser", param);
     }
     
     /**
-     * Updates a synchronization Server
+     * Updates the synchronization data for a user
+     * 
      * @param session
      * @param userName
      * @param service
      * @param credentials
-     * FIXME: rename
+     * 
      */
     public void updateSyncServerForUser(final DBSession session, final String userName, final URI service, final Properties credentials) {
     	final SyncParam param = new SyncParam();
@@ -133,16 +143,16 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     	param.setService(service);
     	param.setServer(true);
     	param.setCredentials(credentials);
-    	session.update("updateSyncServerCredentials", param);
+    	session.update("updateSyncServerForUser", param);
     }
     
     /**
+     * Returns all available synchronization services. 
      * 
      * @param session
      * @return
-     * FIXME: rename
      */
-    public List<SyncService> getAvlSyncServices(final DBSession session, boolean server) {
+    public List<SyncService> getSyncServices(final DBSession session, final boolean server) {
     	return this.queryForList("getSyncServices", server, SyncService.class, session);
     }
     

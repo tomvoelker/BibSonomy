@@ -126,7 +126,7 @@
 			  AND ss.server = #server#
 	</update>
 	
-	<update id="updateSyncServerCredentials" parameterClass="syncParam">
+	<update id="updateSyncServerForUser" parameterClass="syncParam">
 		UPDATE sync s
 		  JOIN sync_services ss USING (service_id)
 		  SET s.credentials = #credentials#
@@ -135,7 +135,7 @@
 			AND ss.server = #server#
  	</update>
 	
-	<delete id="deleteSyncServer" parameterClass="syncParam">
+	<delete id="deleteSyncServerForUser" parameterClass="syncParam">
 		DELETE FROM s
 		  USING sync s
 		    JOIN sync_services ss USING (service_id) 

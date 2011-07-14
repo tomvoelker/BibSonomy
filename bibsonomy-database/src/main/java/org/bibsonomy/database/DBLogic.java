@@ -424,7 +424,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     	final DBSession session = this.openSession();
     	List<SyncService> services;
     	try {
-    		services = syncDBManager.getAvlSyncServices(session, server);
+    		services = syncDBManager.getSyncServices(session, server);
     	} finally {
     		session.close();
     	}
