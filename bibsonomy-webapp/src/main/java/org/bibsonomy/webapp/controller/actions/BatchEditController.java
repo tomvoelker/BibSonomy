@@ -39,6 +39,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
@@ -80,7 +81,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return the old resource name
 	 */
 	@Deprecated // TODO: remove as soon as bibtex is renamed to puplications in SimpleResourceViewCommand
-	public static String getOldResourceName(Class<? extends Resource> resourceClass) {
+	public static String getOldResourceName(final Class<? extends Resource> resourceClass) {
 		if (BibTex.class.equals(resourceClass)) {
 			return "bibtex";
 		}
@@ -121,9 +122,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * check if user is logged in
 		 */
 		if (!context.isUserLoggedIn()) {
-			return new ExtendedRedirectView("/login" + 
-					"?notice=" + "error.general.login" + 
-					"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + UrlUtils.safeURIEncode(requestLogic.getReferer()))); 
+			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
 
 		/*
@@ -279,7 +278,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					 * and the tags, since only the post's tags are updated 
 					 */
 					final Post<Resource> postR = new Post<Resource>();
-					postR.setResource(RESOURCE_FACTORY.createResource(resourceTypes.iterator().next()));
+					postR.setResource(RESOURCE_FACTORY.createResource(resourceClass));
 					postR.getResource().setIntraHash(intraHash);
 					post = postR;
 				} else {
@@ -371,7 +370,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * return to the page the user was initially coming from
 		 */
-		return getFinalRedirect(command.getReferer(), loginUserName);
+		return this.getFinalRedirect(command.getReferer(), loginUserName);
 	}
 
 	/**
@@ -493,7 +492,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				/*
 				 * try to update the posts 
 				 */
-				updatePosts(postsForUpdate, resourceType, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL, loginUserName);
+				this.updatePosts(postsForUpdate, resourceType, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL, loginUserName);
 			}
 		}
 	}
@@ -568,7 +567,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							 * the page and must get the post from the database
 							 */
 							try {
-								post = logic.getPostDetails(postHash, loginUserName);
+								post = this.logic.getPostDetails(postHash, loginUserName);
 								/*
 								 * we must add the tags from the post we tried to update - 
 								 * since those tags probably caused the error 
@@ -586,7 +585,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 						postsWithErrors.add(post);
 					}
 					hasErrors = true;
-					errors.rejectValue(ResourceFactory.getResourceName(resourceType) + ".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+					errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 				}
 			}
 		}
@@ -603,11 +602,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Post<? extends Resource>> getPostMap(final boolean updatePosts) {
-		final HashMap<String, Post<? extends Resource>> postMap = new HashMap<String, Post<? extends Resource>>();
+		final Map<String, Post<? extends Resource>> postMap = new HashMap<String, Post<? extends Resource>>();
 		final List<Post<? extends Resource>> postsFromSession = (List<Post<? extends Resource>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
 		if (!updatePosts && present(postsFromSession)) {
 			/*
-			 * Put the posts into a hashmap, so we don't have to loop 
+			 * Put the posts into a map, so we don't have to loop 
 			 * through the list for every stored post.
 			 */
 			for (final Post<? extends Resource> post : postsFromSession) {
@@ -682,13 +681,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
-	}
-
-	/**
-	 * @return the request logic
-	 */
-	public RequestLogic getRequestLogic() {
-		return this.requestLogic;
 	}
 
 	/**
