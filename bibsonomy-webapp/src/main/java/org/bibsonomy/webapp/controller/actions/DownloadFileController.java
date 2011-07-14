@@ -12,13 +12,16 @@ import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
+ * controller for viewing uploaded documents
+ *   - /documents/INTRAHASH/USERNAME/FILENAME
+ * 
  * @author cvo
  * @version $Id$
  */
@@ -47,46 +50,41 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 	}
 
 	@Override
-	public View workOn(DownloadFileCommand command) {
-
-		final RequestWrapperContext context = command.getContext();
-
-		if (!context.isUserLoggedIn()) {
-			errors.reject("error.general.login");
+	public View workOn(final DownloadFileCommand command) {
+		if (!command.getContext().isUserLoggedIn()) {
+			throw new AccessDeniedException("please log in");
 		}
 
-		if (errors.hasErrors()) {
-			return Views.ERROR;
-		}
-
-		final String intrahash     = command.getIntrahash();
+		final String intrahash = command.getIntrahash();
 		final String requestedUser = command.getRequestedUser();
 
 		final Document document = logic.getDocument(requestedUser, intrahash, command.getFilename());
 
 		if (!present(document)) {
-			errors.reject("error.document_not_found");
+			this.errors.reject("error.document_not_found");
 			return Views.ERROR;
 		}
 
+		// TODO: is this controller responsible for this action anymore?
 		if (ACTION_DELETE.equals(command.getAction())) {
 			/*
 			 * handle document deletion
 			 */
 			if (!command.getContext().isValidCkey()) {
-				errors.reject("error.field.valid.ckey");
+				this.errors.reject("error.field.valid.ckey");
 				return Views.ERROR;
 			}
 			/*
 			 * delete entry in database
 			 */
-			logic.deleteDocument(document, intrahash);
+			this.logic.deleteDocument(document, intrahash);
 			/*
 			 * delete file on disk
 			 */
-			new File(FileUtil.getFilePath(docpath, document.getFileHash())).delete();
+			new File(FileUtil.getFilePath(this.docpath, document.getFileHash())).delete();
 			/*
 			 * return to bibtex details page
+			 * TODO: use url generator!
 			 */
 			return new ExtendedRedirectView(("/bibtex/" + HashID.INTRA_HASH.getId() + intrahash + "/" + UrlUtils.safeURIEncode(requestedUser)));
 		} 
@@ -94,36 +92,34 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 		/*
 		 * default: handle document download
 		 */
-		command.setPathToFile(FileUtil.getFilePath(docpath, document.getFileHash()));
+		command.setPathToFile(FileUtil.getFilePath(this.docpath, document.getFileHash()));
 		command.setContentType(FileUtil.getContentType(document.getFileName()));
 		/*
 		 * stream document to user
 		 */
 		return Views.DOWNLOAD_FILE;
-
 	}
-
 
 	/**
 	 * 
 	 * @param errors
 	 */
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
 	/**
 	 * @param logic
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 
 	/**
 	 * @param docpath
 	 */
-	public void setDocpath(String docpath) {
+	public void setDocpath(final String docpath) {
 		this.docpath = docpath;
 	}
 
