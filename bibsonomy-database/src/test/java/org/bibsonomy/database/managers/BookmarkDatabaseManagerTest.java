@@ -48,6 +48,8 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	private static final String TESTUSER1_NAME = "testuser1";
 	private static final String TESTUSER2_NAME = "testuser2";
 	
+	private static final User loginUser = new User("testuser1");
+	
 	private static BookmarkDatabaseManager bookmarkDb;
 	
 	/**
@@ -469,7 +471,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	@Test(expected = IllegalArgumentException.class)
 	public void updatePostWrongUsage() {
 		final Post<Bookmark> toInsert = this.generateBookmarkDatabaseManagerTestPost();
-		bookmarkDb.updatePost(toInsert, null, null, this.dbSession);
+		bookmarkDb.updatePost(toInsert, null, null, this.dbSession, null);
 	}
 	
 	/**
@@ -505,7 +507,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	public void testUpdatePostMockTest() {
 		final String hash = "7eda282d1d604c702597600a06f8a6b0";
 		final Post<Bookmark> someBookmarkPost = bookmarkDb.getPostsByHash(hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession).get(0);
-		bookmarkDb.updatePost(someBookmarkPost, hash, null, this.dbSession);
+		bookmarkDb.updatePost(someBookmarkPost, hash, null, this.dbSession, new User("testuser2"));
 		assertTrue(this.pluginMock.isOnBookmarkUpdate());
 	}
 
@@ -636,7 +638,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		post.setResource(bookmark);
 		final Set<Tag> tags = ModelUtils.getTagSet("google_test", "yahoo_test");
 		post.setTags(tags);
-		bookmarkDb.updatePost(post, intraHash, PostUpdateOperation.UPDATE_TAGS, this.dbSession);
+		bookmarkDb.updatePost(post, intraHash, PostUpdateOperation.UPDATE_TAGS, this.dbSession, loginUser);
 		
 		final Post<Bookmark> newPost = bookmarkDb.getPostDetails(userName, intraHash, userName, Collections.singletonList(0), this.dbSession);
 		final Set<Tag> dbTags = newPost.getTags();
@@ -692,7 +694,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		// add some tags that do not interfere with other tests (especially with tags in tag-relations)
 		final Set<Tag> tags = ModelUtils.getTagSet("google_test", "yahoo_test");
 		post.setTags(tags);
-		bookmarkDb.updatePost(post, oldIntraHash, PostUpdateOperation.UPDATE_ALL, this.dbSession);
+		bookmarkDb.updatePost(post, oldIntraHash, PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
 		
 		final Post<Bookmark> newPost = bookmarkDb.getPostDetails(userName, newIntraHash, userName, Collections.singletonList(0), this.dbSession);
 		final Set<Tag> dbTags = newPost.getTags();

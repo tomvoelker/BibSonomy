@@ -55,6 +55,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	
 	private static BibTexDatabaseManager publicationDb;
 	private static BibTexExtraDatabaseManager bibTexExtraDb;
+	private static final User loginUser = new User("testuser1");
 	
 	/**
 	 * sets up the used managers
@@ -709,7 +710,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	public void storePostWrongUsage() {
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
 
-		publicationDb.updatePost(toInsert, null, null, this.dbSession);
+		publicationDb.updatePost(toInsert, null, null, this.dbSession, loginUser);
 	}
 
 	/**
@@ -746,7 +747,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		// someBibTexPost.getGroups().clear();
 		final Post<BibTex> publication = someBibTexPost.get(0);
 		final int count = publication.getResource().getCount();
-		publicationDb.updatePost(publication, hash, PostUpdateOperation.UPDATE_ALL, this.dbSession);
+		publicationDb.updatePost(publication, hash, PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
 		
 		// check if resource counter is updated correctly
 		List<Post<BibTex>> afterUpdate = publicationDb.getPostsByHash(hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
@@ -879,7 +880,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		updateResource.setMonth(longField);
 		
 		try {
-			publicationDb.updatePost(updatePost, updateResource.getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession);
+			publicationDb.updatePost(updatePost, updateResource.getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
 			fail("expected a DatabaseException");
 		} catch (final DatabaseException ex) {
 			final List<ErrorMessage> messages = ex.getErrorMessages(updateResource.getIntraHash());

@@ -18,6 +18,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;
@@ -35,6 +36,8 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	private static final String INTERHASH_GOLD_2 = "ac6aa3ccb181e61801cefbc1401d409a";
 	
 	private static GoldStandardPublicationDatabaseManager goldPubManager;
+	
+	private static final User loginUser = new User("testuser1");
 	
 	/**
 	 * sets the gold standard publication database manager
@@ -99,7 +102,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		goldStandard.setYear(newYear);
 		goldStandard.recalculateHashes();
 		
-		goldPubManager.updatePost(post, interhash, null, this.dbSession);
+		goldPubManager.updatePost(post, interhash, null, this.dbSession, loginUser);
 		
 		// test listeners
 		assertFalse(this.pluginMock.isOnGoldStandardPublicationCreate());
@@ -142,7 +145,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		goldStandard.setSchool(newSchool);
 		goldStandard.recalculateHashes();
 		
-		goldPubManager.updatePost(post, interhash, null, this.dbSession);
+		goldPubManager.updatePost(post, interhash, null, this.dbSession, loginUser);
 		
 		// test listeners
 		assertFalse(this.pluginMock.isOnGoldStandardPublicationCreate());
@@ -185,7 +188,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	@Test(expected = DatabaseException.class)
 	public void testUpdateUnkownPost() {
 		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
-		goldPubManager.updatePost(post, WRONG_INTERHASH, null, this.dbSession);
+		goldPubManager.updatePost(post, WRONG_INTERHASH, null, this.dbSession, loginUser);
 	}
 	
 	/**
@@ -194,7 +197,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	@Test(expected = DatabaseException.class)
 	public void testUpdatePostToPostInDB() {
 		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
-		goldPubManager.updatePost(post, INTERHASH_GOLD_2, null, this.dbSession);
+		goldPubManager.updatePost(post, INTERHASH_GOLD_2, null, this.dbSession, loginUser);
 	}	
 	
 	/**
@@ -229,7 +232,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		
 		standard.setYear("2010");
 		standard.recalculateHashes();
-		goldPubManager.updatePost(post, INTERHASH_GOLD_1, null, this.dbSession);
+		goldPubManager.updatePost(post, INTERHASH_GOLD_1, null, this.dbSession, loginUser);
 		
 		assertTrue(this.pluginMock.isOnGoldStandardPublicationUpdate());
 		

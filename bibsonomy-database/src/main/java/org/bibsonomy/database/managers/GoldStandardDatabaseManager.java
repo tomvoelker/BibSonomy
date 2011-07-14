@@ -175,11 +175,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	
 	@Override
 	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session, final User loginUser) {
-		return updatePost(post, oldHash, operation, session);
-	}
-	
-	@Override
-	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
 		session.beginTransaction();
 		try {
 			

@@ -71,17 +71,6 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 
 	/**
 	 * update
-	 * old version
-	 * @param post
-	 * @param oldHash
-	 * @param operation
-	 * @param session
-	 * @return true, if entry existed and was updated
-	 */
-	public boolean updatePost(Post<T> post, String oldHash, PostUpdateOperation operation, DBSession session);
-	
-	/**
-	 * update
 	 * new version contains synchronization handling 
 	 * @param post
 	 * @param oldHash
