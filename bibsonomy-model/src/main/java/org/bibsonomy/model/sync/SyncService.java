@@ -12,8 +12,6 @@ public class SyncService {
 	
 	private Properties serverUser;
 	private URI service;
-	private String userName;
-	private String apiKey;
 	private Map <String, SynchronizationData> lastSyncData;
 
 	
@@ -48,34 +46,6 @@ public class SyncService {
 		return super.equals(obj);
 	}
 
-	/**
-	 * @param userName the userName to set
-	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	/**
-	 * @return the userName
-	 */
-	public String getUserName() {
-		return userName;
-	}
-
-	/**
-	 * @param apiKey the apiKey to set
-	 */
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
-	}
-
-	/**
-	 * @return the apiKey
-	 */
-	public String getApiKey() {
-		return apiKey;
-	}
-	
 	/**
 	 * @return the service
 	 */
