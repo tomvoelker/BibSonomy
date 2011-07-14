@@ -49,14 +49,13 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 	private int maxMinutesPasswordReminderValid = 60;
 
 	@Override
-	public View workOn(PasswordChangeOnRemindCommand command) {
+	public View workOn(final PasswordChangeOnRemindCommand command) {
 		log.debug("starting work");
-		command.setPageTitle("password change");
 		
 		/*
 		 * check if internal authentication is supported
 		 */
-		if (! authConfig.containsAuthMethod(AuthMethod.INTERNAL) )  {
+		if (!authConfig.containsAuthMethod(AuthMethod.INTERNAL) )  {
 			errors.reject("error.method_not_allowed");
 			log.warn("authmethod " + AuthMethod.INTERNAL + " missing in config");
 			return Views.ERROR;			
@@ -77,23 +76,24 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		final ReminderCredentials cred;
 		try {
 			cred = this.decryptReminderHash(reminderHash);
-		} catch (InvalidPasswordReminderException ex) {
+		} catch (final InvalidPasswordReminderException ex) {
 			errors.reject("error.method_not_allowed");
 			log.warn("could not decrypt reminder hash " + reminderHash);
 			return Views.ERROR;
 		}
 		
-		if (! present(cred.username) || ! present(cred.reminderPassword)) {
+		if (!present(cred.username) || !present(cred.reminderPassword)) {
 			errors.reject("error.method_not_allowed");
 			log.warn("either username " + cred.username + ") or reminderPassword (" + cred.reminderPassword + ") not present");
 			return Views.ERROR;
 		}
+		
 		final User user = adminLogic.getUserDetails(cred.username);
 				
 		/*
 		 * check if the reminderPassword is correct
 		 */		
-		if (! present(user.getReminderPassword()) || ! user.getReminderPassword().equals(cred.reminderPassword) ) {
+		if (!present(user.getReminderPassword()) || !user.getReminderPassword().equals(cred.reminderPassword) ) {
 			errors.reject("error.reminder_password_not_correct");
 			return Views.ERROR;
 		}
@@ -146,12 +146,12 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
 	@Override
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
@@ -166,14 +166,14 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 	}
 
 	@Override
-	public boolean isValidationRequired(PasswordChangeOnRemindCommand command) {
+	public boolean isValidationRequired(final PasswordChangeOnRemindCommand command) {
 		return true;
 	}
 
 	/**
 	 * @param adminLogic
 	 */
-	public void setAdminLogic(LogicInterface adminLogic){
+	public void setAdminLogic(final LogicInterface adminLogic){
 		this.adminLogic = adminLogic;
 	}
 		
@@ -194,10 +194,10 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 			final String[] parts = reminderHashDecrypted.split(":");
 			return new ReminderCredentials(parts[0], parts[1]);
 		}
-		catch (IndexOutOfBoundsException ex) {
+		catch (final IndexOutOfBoundsException ex) {
 			throw new InvalidPasswordReminderException();
 		}
-		catch (EncryptionOperationNotPossibleException ex) {
+		catch (final EncryptionOperationNotPossibleException ex) {
 			throw new InvalidPasswordReminderException();
 		}
 	}
@@ -216,7 +216,7 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 	 * 
 	 * @param cryptKey - the crypt key
 	 */
-	public void setCryptKey(String cryptKey) {
+	public void setCryptKey(final String cryptKey) {
 		this.cryptKey = cryptKey;
 	}
 	
@@ -237,27 +237,26 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		this.maxMinutesPasswordReminderValid = maxMinutesPasswordReminderValid;
 	}
 
-
 	/**
 	 * small helper class to hold username and temp-password
 	 */
 	private class ReminderCredentials {
-		public ReminderCredentials(final String username, final String reminderPassword) {
-			this.username=username;
-			this.reminderPassword=reminderPassword;
-		}
 		public String username;
 		public String reminderPassword;
+		
+		public ReminderCredentials(final String username, final String reminderPassword) {
+			this.username = username;
+			this.reminderPassword = reminderPassword;
+		}
 	}
 
 
-	public AuthConfig getAuthConfig() {
-		return this.authConfig;
-	}
-
-	public void setAuthConfig(AuthConfig authConfig) {
+	/**
+	 * @param authConfig the authConfig to set
+	 */
+	public void setAuthConfig(final AuthConfig authConfig) {
 		this.authConfig = authConfig;
-	}	
+	}
 	
 }
 

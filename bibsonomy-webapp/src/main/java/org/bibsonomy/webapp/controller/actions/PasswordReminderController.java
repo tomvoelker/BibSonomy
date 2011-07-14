@@ -34,7 +34,6 @@ import org.bibsonomy.webapp.validation.PasswordReminderValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.context.MessageSource;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
@@ -51,7 +50,6 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	private RequestLogic requestLogic;
 	private Captcha captcha;
 	private MailUtils mailUtils;
-	private MessageSource messageSource;
 	private String cryptKey;
 	private AuthConfig authConfig;
 	
@@ -73,10 +71,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		
 		// get locale
 		final Locale locale = requestLogic.getLocale();
-
-		// set page title
-		command.setPageTitle(messageSource.getMessage("navi.passReminder", null, locale));
-
+		
 		final User user = new User();
 		user.setName(command.getUserName());
 		user.setEmail(command.getUserEmail());
@@ -91,7 +86,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		/*
 		 * check captcha
 		 */
-		checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
+		this.checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
 
 		/*
 		 * If the user name is null, we get an exception on getUserDetails.
@@ -238,8 +233,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	public void setCaptcha(final Captcha captcha) {
 		this.captcha = captcha;
 	}
-
-
+	
 	/**
 	 * @param adminLogic - an instance of the logic interface with admin access.
 	 */
@@ -302,13 +296,6 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		return HashUtils.toHexString(bytes);
 	}
 
-	/** A message source to format mail messages.
-	 * @param messageSource
-	 */
-	public void setMessageSource(final MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-
 	/**
 	 * @param mailUtils
 	 */
@@ -323,7 +310,6 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	public void setMaxMinutesPasswordReminderValid(final int maxMinutesPasswordReminderValid) {
 		this.maxMinutesPasswordReminderValid = maxMinutesPasswordReminderValid;
 	}
-	
 
 	/**
 	 * encode the reminder hash
@@ -333,7 +319,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	 */
 	private String encryptReminderHash(final String username, final String tempPassword) {
 		final BasicTextEncryptor crypt = new BasicTextEncryptor();
-		crypt.setPassword(this.getCryptKey());
+		crypt.setPassword(this.cryptKey);
 		final String reminderCred = username + ":" + tempPassword; 		
 		return crypt.encrypt(reminderCred);
 	}
@@ -343,22 +329,14 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	 * 
 	 * @param cryptKey
 	 */
-	public void setCryptKey(String cryptKey) {
+	public void setCryptKey(final String cryptKey) {
 		this.cryptKey = cryptKey;
 	}
 
 	/**
-	 * @return The key used to encrypt the password reminder.
+	 * @param authConfig the authConfig to set
 	 */
-	public String getCryptKey() {
-		return cryptKey;
-	}
-
-	public AuthConfig getAuthConfig() {
-		return this.authConfig;
-	}
-
-	public void setAuthConfig(AuthConfig authConfig) {
+	public void setAuthConfig(final AuthConfig authConfig) {
 		this.authConfig = authConfig;
 	}
 	
