@@ -16,7 +16,7 @@ import org.bibsonomy.webapp.command.PostCommand;
  * @version $Id$
  * @param <RESOURCE> The type of resource this command handles.
  */
-public class EditPostCommand<RESOURCE extends Resource> extends PostCommand implements GroupingCommand {
+public class EditPostCommand<RESOURCE extends Resource> extends PostCommand implements GroupingCommand, CaptchaCommand {
 	/**
 	 * The tags of the copied post.
 	 */
@@ -67,14 +67,15 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	private int postID;
 	
+	/**
+	 * captcha fields for spammers
+	 */
 	private String recaptcha_challenge_field;
 	private String recaptcha_response_field;
 	private String captchaHTML;
 	
 	/** should the edit view be shown before the post is stored into the db? */
-	private boolean editBeforeSaving;
-	
-	
+	private boolean editBeforeSaving;	
 	
 	/**
 	 * The file names of the documents uploaded during editing a post.
@@ -91,7 +92,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param post the post to set
 	 */
-	public void setPost(Post<RESOURCE> post) {
+	public void setPost(final Post<RESOURCE> post) {
 		this.post = post;
 	}
 
@@ -105,7 +106,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param tags the tags to set
 	 */
-	public void setTags(String tags) {
+	public void setTags(final String tags) {
 		this.tags = tags;
 	}
 
@@ -121,7 +122,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * @param groups the groups to set
 	 */
 	@Override
-	public void setGroups(List<String> groups) {
+	public void setGroups(final List<String> groups) {
 		this.groups = groups;
 	}
 
@@ -135,7 +136,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param relevantGroups the relevantGroups to set
 	 */
-	public void setRelevantGroups(List<String> relevantGroups) {
+	public void setRelevantGroups(final List<String> relevantGroups) {
 		this.relevantGroups = relevantGroups;
 	}
 
@@ -149,7 +150,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param recommendedTags the recommendedTags to set
 	 */
-	public void setRecommendedTags(SortedSet<RecommendedTag> recommendedTags) {
+	public void setRecommendedTags(final SortedSet<RecommendedTag> recommendedTags) {
 		this.recommendedTags = recommendedTags;
 	}
 		
@@ -163,7 +164,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param relevantTagSets the relevantTagSets to set
 	 */
-	public void setRelevantTagSets(Map<String, Map<String, List<String>>> relevantTagSets) {
+	public void setRelevantTagSets(final Map<String, Map<String, List<String>>> relevantTagSets) {
 		this.relevantTagSets = relevantTagSets;
 	}
 
@@ -189,7 +190,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param copytags the copytags to set
 	 */
-	public void setCopytags(List<Tag> copytags) {
+	public void setCopytags(final List<Tag> copytags) {
 		this.copytags = copytags;
 	}
 
@@ -205,7 +206,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * @param abstractGrouping the abstractGrouping to set
 	 */
 	@Override
-	public void setAbstractGrouping(String abstractGrouping) {
+	public void setAbstractGrouping(final String abstractGrouping) {
 		this.abstractGrouping = abstractGrouping;
 	}
 
@@ -219,7 +220,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param diffPost the diffPost to set
 	 */
-	public void setDiffPost(Post<RESOURCE> diffPost) {
+	public void setDiffPost(final Post<RESOURCE> diffPost) {
 		this.diffPost = diffPost;
 	}
 
@@ -233,7 +234,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param intraHashToUpdate the intraHashToUpdate to set
 	 */
-	public void setIntraHashToUpdate(String intraHashToUpdate) {
+	public void setIntraHashToUpdate(final String intraHashToUpdate) {
 		this.intraHashToUpdate = intraHashToUpdate;
 	}
 
@@ -247,7 +248,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param acceptComma the acceptComma to set
 	 */
-	public void setAcceptComma(boolean acceptComma) {
+	public void setAcceptComma(final boolean acceptComma) {
 		this.acceptComma = acceptComma;
 	}
 	
@@ -261,7 +262,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param containsComma the containsComma to set
 	 */
-	public void setContainsComma(boolean containsComma) {
+	public void setContainsComma(final boolean containsComma) {
 		this.containsComma = containsComma;
 	}
 
@@ -272,7 +273,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 *  
 	 * @param postID
 	 */
-	public void setPostID(int postID) {
+	public void setPostID(final int postID) {
 		this.postID = postID;
 	}
 
@@ -298,7 +299,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * 
 	 * @param hash
 	 */
-	public void setHash(String hash) {
+	public void setHash(final String hash) {
 		this.hash = hash;
 	}
 
@@ -312,13 +313,14 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/** 
 	 * @param user The name of the user whose post should be copied.
 	 */
-	public void setUser(String user) {
+	public void setUser(final String user) {
 		this.user = user;
 	}
 
 	/**
 	 * @return the recaptcha_challenge_field
 	 */
+	@Override
 	public String getRecaptcha_challenge_field() {
 		return this.recaptcha_challenge_field;
 	}
@@ -326,13 +328,15 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param recaptchaChallengeField the recaptcha_challenge_field to set
 	 */
-	public void setRecaptcha_challenge_field(String recaptchaChallengeField) {
+	@Override
+	public void setRecaptcha_challenge_field(final String recaptchaChallengeField) {
 		this.recaptcha_challenge_field = recaptchaChallengeField;
 	}
 
 	/**
 	 * @return the recaptcha_response_field
 	 */
+	@Override
 	public String getRecaptcha_response_field() {
 		return this.recaptcha_response_field;
 	}
@@ -340,13 +344,15 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param recaptchaResponseField the recaptcha_response_field to set
 	 */
-	public void setRecaptcha_response_field(String recaptchaResponseField) {
+	@Override
+	public void setRecaptcha_response_field(final String recaptchaResponseField) {
 		this.recaptcha_response_field = recaptchaResponseField;
 	}
 
 	/**
 	 * @return the captchaHTML
 	 */
+	@Override
 	public String getCaptchaHTML() {
 		return this.captchaHTML;
 	}
@@ -354,7 +360,8 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param captchaHTML the captchaHTML to set
 	 */
-	public void setCaptchaHTML(String captchaHTML) {
+	@Override
+	public void setCaptchaHTML(final String captchaHTML) {
 		this.captchaHTML = captchaHTML;
 	}
 
@@ -368,14 +375,14 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @param editBeforeSaving the editBeforeSaving to set
 	 */
-	public void setEditBeforeSaving(boolean editBeforeSaving) {
+	public void setEditBeforeSaving(final boolean editBeforeSaving) {
 		this.editBeforeSaving = editBeforeSaving;
 	}
 
 	/**
 	 * @param fileName The names of the documents uploaded during editing a post.
 	 */
-	public void setFileName(List<String> fileName) {
+	public void setFileName(final List<String> fileName) {
 		this.fileName = fileName;
 	}
 

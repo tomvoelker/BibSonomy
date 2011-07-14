@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.command.actions;
 
-
-
 import java.io.Serializable;
 
 import org.bibsonomy.webapp.command.BaseCommand;
@@ -12,7 +10,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @author daill
  * @version $Id$
  */
-public class PasswordReminderCommand extends BaseCommand implements Serializable{
+public class PasswordReminderCommand extends BaseCommand implements Serializable, CaptchaCommand {
 
 	private static final long serialVersionUID = 6971611795826344738L;
 
@@ -25,6 +23,7 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	 * The user's email address.
 	 */
 	private String userEmail;
+	
 	/**
 	 * Contains the HTML-Code to view the reCaptcha. Is filled ONLY by the controller!
 	 * Any validator must check, that the user did not fill this field.
@@ -44,28 +43,31 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	 * true when password reminder has been sent successfully
 	 */
 	private boolean success = false;
-
-	/**
-	 * @return returns a captcha
-	 */
-	public String getCaptchaHTML() {
-		return this.captchaHTML;
-	}
 	
 	//**********************************************************************
 	// getter / setter
 	//**********************************************************************	
 	
 	/**
+	 * @return returns a captcha
+	 */
+	@Override
+	public String getCaptchaHTML() {
+		return this.captchaHTML;
+	}
+	
+	/**
 	 * @param captchaHTML
 	 */
-	public void setCaptchaHTML(String captchaHTML) {
+	@Override
+	public void setCaptchaHTML(final String captchaHTML) {
 		this.captchaHTML = captchaHTML;
 	}
 	
 	/**
 	 * @return captcha
 	 */
+	@Override
 	public String getRecaptcha_challenge_field() {
 		return this.recaptcha_challenge_field;
 	}
@@ -73,13 +75,15 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	/**
 	 * @param recaptcha_challenge_field
 	 */
-	public void setRecaptcha_challenge_field(String recaptcha_challenge_field) {
+	@Override
+	public void setRecaptcha_challenge_field(final String recaptcha_challenge_field) {
 		this.recaptcha_challenge_field = recaptcha_challenge_field;
 	}
 	
 	/**
 	 * @return captcha entry
 	 */
+	@Override
 	public String getRecaptcha_response_field() {
 		return this.recaptcha_response_field;
 	}
@@ -87,7 +91,8 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	/**
 	 * @param recaptcha_response_field
 	 */
-	public void setRecaptcha_response_field(String recaptcha_response_field) {
+	@Override
+	public void setRecaptcha_response_field(final String recaptcha_response_field) {
 		this.recaptcha_response_field = recaptcha_response_field;
 	}
 
@@ -101,7 +106,7 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	/**
 	 * @param userName the userName to set
 	 */
-	public void setUserName(String userName) {
+	public void setUserName(final String userName) {
 		this.userName = userName;
 	}
 
@@ -115,15 +120,22 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	/**
 	 * @param userEmail the userEmail to set
 	 */
-	public void setUserEmail(String userEmail) {
+	public void setUserEmail(final String userEmail) {
 		this.userEmail = userEmail;
 	}
 
-	public void setSuccess(boolean success) {
+	/**
+	 * @param success the success to set
+	 */
+	public void setSuccess(final boolean success) {
 		this.success = success;
 	}
 
-	public boolean getSuccess() {
+	/**
+	 * @return the success
+	 */
+	public boolean isSuccess() {
 		return success;
 	}
+	
 }

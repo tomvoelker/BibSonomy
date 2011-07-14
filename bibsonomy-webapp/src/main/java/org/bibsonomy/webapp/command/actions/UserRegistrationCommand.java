@@ -11,7 +11,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @author rja
  * @version $Id$
  */
-public class UserRegistrationCommand extends BaseCommand implements Serializable {
+public class UserRegistrationCommand extends BaseCommand implements Serializable, CaptchaCommand {
 	private static final long serialVersionUID = 1371638749968299277L;
 	
 	
@@ -52,13 +52,14 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	/**
 	 * @param registerUser - the user which tries to register.
 	 */
-	public void setRegisterUser(User registerUser) {
+	public void setRegisterUser(final User registerUser) {
 		this.registerUser = registerUser;
 	}
 	
 	/**
 	 * @return the captchaHTML
 	 */
+	@Override
 	public String getCaptchaHTML() {
 		return this.captchaHTML;
 	}
@@ -66,13 +67,15 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	/**
 	 * @param captchaHTML the captchaHTML to set
 	 */
-	public void setCaptchaHTML(String captchaHTML) {
+	@Override
+	public void setCaptchaHTML(final String captchaHTML) {
 		this.captchaHTML = captchaHTML;
 	}
 
 	/**
 	 * @return the recaptcha_challenge_field
 	 */
+	@Override
 	public String getRecaptcha_challenge_field() {
 		return this.recaptcha_challenge_field;
 	}
@@ -80,13 +83,15 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	/**
 	 * @param recaptchaChallengeField the recaptcha_challenge_field to set
 	 */
-	public void setRecaptcha_challenge_field(String recaptchaChallengeField) {
+	@Override
+	public void setRecaptcha_challenge_field(final String recaptchaChallengeField) {
 		this.recaptcha_challenge_field = recaptchaChallengeField;
 	}
 
 	/**
 	 * @return the recaptcha_response_field
 	 */
+	@Override
 	public String getRecaptcha_response_field() {
 		return this.recaptcha_response_field;
 	}
@@ -94,7 +99,8 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	/**
 	 * @param recaptchaResponseField the recaptcha_response_field to set
 	 */
-	public void setRecaptcha_response_field(String recaptchaResponseField) {
+	@Override
+	public void setRecaptcha_response_field(final String recaptchaResponseField) {
 		this.recaptcha_response_field = recaptchaResponseField;
 	}
 
@@ -108,7 +114,7 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	/**
 	 * @param passwordCheck the passwordCheck to set
 	 */
-	public void setPasswordCheck(String passwordCheck) {
+	public void setPasswordCheck(final String passwordCheck) {
 		this.passwordCheck = passwordCheck;
 	}
 	
@@ -118,18 +124,11 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	public boolean isAcceptPrivacy() {
 		return this.acceptPrivacy;
 	}
-	
-	/**
-	 * @return @see {@link #isAcceptPrivacy()}
-	 */
-	public boolean getAcceptPrivacy() {
-		return this.acceptPrivacy;
-	}
 
 	/**
 	 * @param acceptPrivacy the acceptPrivacy to set
 	 */
-	public void setAcceptPrivacy(boolean acceptPrivacy) {
+	public void setAcceptPrivacy(final boolean acceptPrivacy) {
 		this.acceptPrivacy = acceptPrivacy;
 	}
 
