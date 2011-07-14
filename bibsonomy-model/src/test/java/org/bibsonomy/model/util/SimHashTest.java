@@ -104,6 +104,7 @@ public class SimHashTest {
 		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
 		bib.setAuthor("J PAUL and b jones");
 		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
+		// FIXME: change and augment in Sept.
 //		bib.setAuthor("PAUL, J and jones, B");
 //		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
 		bib.setAuthor("JoHN pAUl and JOneS, brIDgeT");
