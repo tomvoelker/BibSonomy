@@ -36,7 +36,6 @@ import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ConversionException;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.FileUploadFactory;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -44,8 +43,8 @@ import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.PostPublicationCommandValidator;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -116,17 +115,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 */
 		final BibTex publication = command.getPost().getResource();
 		if (!context.isUserLoggedIn()) {
-			/*
-			 * We add two referer headers: the inner for this controller to 
-			 * send the user back to the page he was initially coming from,
-			 * the outer for the login page to send the user back to this 
-			 * controller.
-			 * 
-			 * FIXME: does this work?
-			 */
-			return new ExtendedRedirectView("/login" + 
-					"?notice=" + LOGIN_NOTICE + publication.getClass().getSimpleName().toLowerCase() + 
-					"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + UrlUtils.safeURIEncode(requestLogic.getReferer()))); 
+			throw new AccessDeniedNoticeException("please log in", LOGIN_NOTICE + publication.getClass().getSimpleName().toLowerCase());
 		}
 
 		/* 
