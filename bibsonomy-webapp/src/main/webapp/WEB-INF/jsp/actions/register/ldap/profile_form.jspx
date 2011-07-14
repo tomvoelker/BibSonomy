@@ -13,10 +13,11 @@
   
   <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-  <layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" requPath="${requPath}">
+  <fmt:message key="navi.register" var="pageTitle" />
+  <layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}">
   
         <jsp:attribute name="heading">
-          <fmt:message key="navi.register"/>
+          <c:out value="${pageTitle}" />
         </jsp:attribute>
       
         
