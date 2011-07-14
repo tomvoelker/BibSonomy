@@ -12,6 +12,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.DeleteUserValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
@@ -30,20 +31,19 @@ public class DeleteUserController implements ValidationAwareController<SettingsV
 	}
 	
 	@Override
-	public View workOn(SettingsViewCommand command) {
+	public View workOn(final SettingsViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		
 		/*
 		 * user has to be logged in to delete himself
 		 */
 		if (!context.isUserLoggedIn()) {
-			errors.reject("error.general.login");
-			return Views.SETTINGSPAGE;
+			throw new AccessDeniedException("please log in");
 		} 
 		
 		command.setUser(context.getLoginUser());
 		
-		/**
+		/*
 		 * go back to the settings page and display errors from command field
 		 * validation
 		 */
@@ -58,23 +58,23 @@ public class DeleteUserController implements ValidationAwareController<SettingsV
 			log.debug("User is logged in, ckey is valid ... check the security answer");
 			
 			/*
-			 * check the security input
+			 * check the security input …
 			 */
 			if ("yes".equalsIgnoreCase(command.getDelete())) {
 				/*
-				 * all fine  ->  delete the user
+				 * all fine -> delete the user
 				 */
 				final String loginUserName = context.getLoginUser().getName();
 				log.debug("answer is correct - deleting user: " + loginUserName);
 				try {
 					logic.deleteUser(loginUserName);
-				} catch (UnsupportedOperationException ex) {
+				} catch (final UnsupportedOperationException ex) {
 					// this happens when a user is a group
 					errors.reject("error.user_is_group_cannot_be_deleted");
 				}
 			} else {
 				/*
-				 * ... else throw an error
+				 * … else add an error
 				 */
 				errors.reject("error.secure.answer");
 			}
@@ -113,7 +113,7 @@ public class DeleteUserController implements ValidationAwareController<SettingsV
 	}
 
 	@Override
-	public boolean isValidationRequired(SettingsViewCommand command) {
+	public boolean isValidationRequired(final SettingsViewCommand command) {
 		return true;
 	}	
 
