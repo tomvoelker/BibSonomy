@@ -32,19 +32,17 @@ public enum GroupUpdateOperation {
 	/**
 	 * Update the settings of a group.
 	 */
-	UPDATE_SETTINGS(0),
+	UPDATE_SETTINGS,
+	
 	/**
 	 * Adds new user to a group.
+	 * TODO: why do we need this operation? LogicInterface defines an
+	 * addUserToGroup method!
 	 */
-	ADD_NEW_USER(1),
+	ADD_NEW_USER,
+	
 	/**
 	 * Update the whole group
 	 */
-	UPDATE_ALL(2);
-	
-	private int id;
-	
-	private GroupUpdateOperation(final int groupUpdateOperation) {
-		this.id = groupUpdateOperation;
-	}
+	UPDATE_ALL;
 }
