@@ -34,7 +34,7 @@ public class UserLoginController implements ValidationAwareController<UserLoginC
 	}
 
 	@Override
-	public View workOn(UserLoginCommand command) {
+	public View workOn(final UserLoginCommand command) {
 		/*
 		 * get last exception from spring security and clean the attribute
 		 */
@@ -55,7 +55,7 @@ public class UserLoginController implements ValidationAwareController<UserLoginC
 			 * We want to log all remaining exceptions, except the trivial ones.
 			 */
 			if (!(lastException instanceof BadCredentialsException)) {
-				log.warn("User " + command.getUsername() + " tried to login with " + command.getLoginMethod() + " and raised exception ", lastException);
+				log.warn("User " + command.getUsername() + " tried to login and raised exception ", lastException);
 			}
 			final String messageKey = lastException.getClass().getSimpleName().toLowerCase();
 			command.setMessage(messageKey);
@@ -67,12 +67,12 @@ public class UserLoginController implements ValidationAwareController<UserLoginC
 	/**
 	 * @param requestLogic the requestLogic to set
 	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
 	@Override
-	public boolean isValidationRequired(UserLoginCommand command) {
+	public boolean isValidationRequired(final UserLoginCommand command) {
 		return true;
 	}
 
