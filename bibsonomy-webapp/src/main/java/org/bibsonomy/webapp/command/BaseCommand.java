@@ -15,56 +15,26 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
  */
 public class BaseCommand implements ContextCommand {
 	
-	/*
-	 * needed for reading value for use in login switch
-	 * TODO: SEC: remove
-	 */
-	private String loginMethod = "";
-
 	private RequestWrapperContext context;
 
+	@Deprecated
 	private String pageTitle;
-	private String requPath;
-
-
-	/**
-	 * @return the requested path
-	 */
-	public String getRequPath() {
-		return this.requPath;
-	}
-
-	/**
-	 * @param requPath the requested path
-	 */
-	public void setRequPath(String requPath) {
-		this.requPath = requPath;
-	}
 
 	/**
 	 * @return the page title
 	 */
+	@Deprecated // i18n in jspx!
 	public String getPageTitle() {
 		return this.pageTitle;
 	}
 
 	/**
-	 * TODO: use localization to resolve page titles
 	 * 
 	 * @param pageTitle the page title
 	 */
-	public void setPageTitle(String pageTitle) {
+	@Deprecated
+	public void setPageTitle(final String pageTitle) {
 		this.pageTitle = pageTitle;
-	}
-	
-	/**
-	 * Helper function to expose the name of the current command
-	 * to the JSPs
-	 * 
-	 * @return the class name of the current command
-	 */
-	public String getCommandName() {
-		return this.getClass().getSimpleName();
 	}
 
 	/** The context contains the loginUser, the ckey, and other things
@@ -81,21 +51,7 @@ public class BaseCommand implements ContextCommand {
 	 * @param context
 	 */
 	@Override
-	public void setContext(RequestWrapperContext context) {
+	public void setContext(final RequestWrapperContext context) {
 		this.context = context;
-	}
-
-	/**
-	 * @param loginMethod
-	 */
-	public void setLoginMethod(String loginMethod) {
-		this.loginMethod = loginMethod;
-	}
-
-	/**
-	 * @return loginMethod
-	 */
-	public String getLoginMethod() {
-		return loginMethod;
 	}
 }
