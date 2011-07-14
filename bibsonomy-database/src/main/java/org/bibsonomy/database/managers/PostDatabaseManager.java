@@ -1095,7 +1095,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	@Override
 	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
-		User user = new User();
+		final User user = new User();
 		user.setName(post.getUser().getName());
 		user.setRole(Role.NOBODY);
 		return this.updatePost(post, oldHash, operation, session, user);
@@ -1151,7 +1151,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * don't change groups in case of synchronization 
 			 */
-			if(Role.SYNC.equals(loginUser.getRole())) {
+			if (Role.SYNC.equals(loginUser.getRole())) {
 				post.setGroups(oldPost.getGroups());
 			}
 			
@@ -1225,19 +1225,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * now execute the postupdate operation
 			 */
 			if (present(operation)) {
-				switch (operation) {
-				case UPDATE_TAGS:
-					this.performUpdateOnlyTags(post, oldPost, session);
-					break;
-				case UPDATE_REPOSITORY:
-				    this.performUpdateRepositorys(post, oldPost, session);
-				    break;
-				default:
-					/*
-					 * as default update all parts of a post
-					 */
-					this.performUpdateAll(post, oldPost, session);
-				}
+				this.workOnOperation(post, oldPost, operation, session);
 			} else {
 				this.performUpdateAll(post, oldPost, session);
 			}		
@@ -1252,6 +1240,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			session.endTransaction();
 		}
 		return true;
+	}
+
+	protected void workOnOperation(final Post<R> post, final Post<R> oldPost, final PostUpdateOperation operation, final DBSession session) {
+		switch (operation) {
+		case UPDATE_TAGS:
+			this.performUpdateOnlyTags(post, oldPost, session);
+			break;
+		default:
+			/*
+			 * as default update all parts of a post
+			 */
+			this.performUpdateAll(post, oldPost, session);
+		}
 	}
 
 	protected void checkPost(final Post<R> post, final DBSession session) {
@@ -1297,8 +1298,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			session.endTransaction();
 		}
 	}
-	
-	protected abstract void performUpdateRepositorys(final Post<R> post, final Post<R> oldPost, final DBSession session);
 
 	/**
 	 * updates only the tags of the given post
@@ -1361,9 +1360,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			session.addError(post.getResource().getIntraHash(), errorMessage);
 			errors = true;
 		}
-		// FIXME: remove comment ?!?
-		/*if (post.getGroups().contains(GroupID.PUBLIC) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");
-		if (post.getGroups().contains(GroupID.PRIVATE) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");*/
 		if (errors) {
 			// one or more errors occurred in this method 
 			// => we don't want to go deeper into the process with these kinds of errors

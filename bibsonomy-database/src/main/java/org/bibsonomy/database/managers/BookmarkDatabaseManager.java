@@ -2,8 +2,6 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
@@ -25,7 +23,6 @@ import org.bibsonomy.model.Post;
  */
 public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, BookmarkParam> {
 	private static final BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
-	private static final Log log = LogFactory.getLog(BookmarkDatabaseManager.class);
 	
 	private static final BookmarkChain chain = new BookmarkChain();
 	private static final HashID[] hashRange = { HashID.SIM_HASH0 };
@@ -42,7 +39,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 
 
 	@Override
-	protected List<Post<Bookmark>> getPostsForHomepage(BookmarkParam param, DBSession session) {
+	protected List<Post<Bookmark>> getPostsForHomepage(final BookmarkParam param, final DBSession session) {
 		final FilterEntity filter = param.getFilter();
 		
 		if (FilterEntity.UNFILTERED.equals(filter)) {
@@ -53,12 +50,12 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	}
 	
 	@Override
-	public List<Post<Bookmark>> getPostsFromBasketForUser(String loginUser, int limit, int offset, DBSession session) {
+	public List<Post<Bookmark>> getPostsFromBasketForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
 		throw new UnsupportedOperationException("not available for bookmarks");
 	}
 	
 	@Override
-	protected void checkPost(Post<Bookmark> post, DBSession session) {
+	protected void checkPost(final Post<Bookmark> post, final DBSession session) {
 		// nop
 	}
 
@@ -76,7 +73,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#onPostUpdate(java.lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void onPostUpdate(Integer oldContentId, Integer newContentId, DBSession session) {
+	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
 		this.plugins.onBookmarkUpdate(oldContentId, newContentId, session);
 	}
 
@@ -129,12 +126,5 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	@Override
 	protected BookmarkParam getNewParam() {
 		return new BookmarkParam();
-	}
-
-	@Override
-	protected void performUpdateRepositorys(Post<Bookmark> post,
-		Post<Bookmark> oldPost, DBSession session) {
-	    log.error("Try to send a bookmark to repository!");
-	    // TODO: throw exception
 	}
 }

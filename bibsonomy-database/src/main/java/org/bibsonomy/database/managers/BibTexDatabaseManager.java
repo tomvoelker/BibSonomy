@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.common.DBSession;
@@ -518,8 +519,16 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	protected BibTexParam getNewParam() {
 		return new BibTexParam();
 	}
-
+	
 	@Override
+	protected void workOnOperation(final Post<BibTex> post, final Post<BibTex> oldPost, final PostUpdateOperation operation, final DBSession session) {
+		if (PostUpdateOperation.UPDATE_REPOSITORY.equals(operation)) {
+		    this.performUpdateRepositorys(post, oldPost, session);
+		} else {
+			super.workOnOperation(post, oldPost, operation, session);
+		}
+	}
+	
 	protected void performUpdateRepositorys(final Post<BibTex> post, final Post<BibTex> oldPost, final DBSession session) {
 	    final RepositoryParam param = new RepositoryParam();
 	    
