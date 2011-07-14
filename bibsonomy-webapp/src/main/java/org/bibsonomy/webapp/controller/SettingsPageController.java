@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
@@ -214,8 +213,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 		
 		for (final SyncService service : userServer) {
-			final Properties user = service.getServerUser();
-			service.setServerUser(user);
 			if (avlServer.contains(service)) {
 				avlServer.remove(service);
 			}
