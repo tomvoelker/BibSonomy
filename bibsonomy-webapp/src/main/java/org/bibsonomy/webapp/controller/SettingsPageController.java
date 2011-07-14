@@ -202,15 +202,11 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	private void workOnSyncSettingsTab(final SettingsViewCommand command) {
 		
-		List<SyncService> userServer;
-		List<SyncService> avlServer;
-		
 		// TODO remove cast and use logic after adding SyncLogicInterface to LogicInterface
 		final SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
 		
-		userServer = syncLogic.getSyncServerForUser(command.getUser().getName());
-		avlServer = syncLogic.getAvlSyncServices(true);
-
+		final List<SyncService> userServer = syncLogic.getSyncServerForUser(command.getUser().getName());
+		final List<SyncService> avlServer = syncLogic.getAvlSyncServices(true);
 		
 		for (final SyncService service : userServer) {
 			if (avlServer.contains(service)) {
