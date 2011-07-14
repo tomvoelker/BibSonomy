@@ -576,8 +576,11 @@ public class TestDBLogic implements LogicInterface {
 
 		// publication resources & posts
 		final BibTex publicationDemo = new BibTex();
-		publicationDemo.setAuthor("Einstein, Albert and da Vinci, Leonardo");
-		publicationDemo.setEditor("Skywalker, Luke and Yoda");
+		publicationDemo.setAuthor("Albert Einstein and Leonardo da Vinci");
+		publicationDemo.setEditor("Luke Skywalker and Yoda");
+//		FIXME: change in Sept.
+//		publicationDemo.setAuthor("Einstein, Albert and da Vinci, Leonardo");
+//		publicationDemo.setEditor("Skywalker, Luke and Yoda");
 		publicationDemo.setTitle("Die Weltformel");
 		publicationDemo.setType("Paper");
 		publicationDemo.setYear("2006");
