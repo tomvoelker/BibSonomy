@@ -26,112 +26,72 @@
 	<h2><fmt:message key="settings.synchronization.header"/></h2>
 	
 	<c:forEach var="service" items="${command.syncServer}">
-		<fieldset class="fsInner" id="service${service.service}">
+		<fieldset class="fsInner">
 			<form:form class="serviceForm" method="post" action="/updateSyncSettings?action=update">
 				<div cssClass="fsRow">
-					<c:out value="${serviceName}"/> <span class="serviceName"> <c:out value=": ${service.service}" /> </span>
+					<span class="fsLabel"><c:out value="${serviceName}: "/></span> <span class="fsInput serviceName"><c:out value="${service.service}" /></span>
 				</div>
-				<div>
-					<table>
-						<tr>
-							<td><fmt:message key="navi.username" />:</td>
-							<td><form:input name="serverUserName" class="uname" id="${service.userName}" path="" value="${service.userName}"/></td>
-						</tr>
-						<tr>
-							<td><fmt:message key="navi.apikey" />:</td>
-							<td><form:input  name="apiKey" class="apiK" id="${service.apiKey}" path ="" value="${service.apiKey}"/></td>
-						</tr>
-						<tr>
-							<td><input type="submit" class="saveChanges" value="${save}" /></td>
-							<td><input type="submit" class="deleteService" value="${removeService}"/></td>
-							<input type="hidden" name="ckey" value="${ckey}" />
-							<input type="hidden" name="serviceName" value="${service.service}" />
-						</tr>
-					</table>
+   				<div class="fsRow">
+	          		<form:label cssClass="fsLabel" path="service.userName" ><fmt:message key="navi.username"/></form:label>
+	          		<form:input cssClass="fsInput" path="service.userName"/>
+    	      		<div class="dissError"><form:errors path="service.userName" /></div>
+        		</div>
+   				<div class="fsRow">
+	          		<form:label cssClass="fsLabel" path="service.apiKey" ><fmt:message key="navi.apikey"/></form:label>
+	          		<form:input cssClass="fsInput" path="service.apiKey"/>
+    	      		<div class="dissError"><form:errors path="service.apiKey" /></div>
+        		</div>
+        		<div>
+					<input type="submit" value="${save}" />
+					<input type="submit" class="deleteService" value="${removeService}"/>
+					<input type="hidden" name="ckey" value="${ckey}"/>
+					<input type="hidden" name="serviceName" value="${fn:escapeXml(service.service)}" />
 				</div>
 			</form:form>
 		</fieldset>
 	</c:forEach>
 	
-	<c:if test="${fn:length(command.avlSyncServer) != 0}">
-		<div id="newService" style="display:none">
-			<fieldset class="fsInner">
-					<form:form id="addServiceForm" method="post" action="/updateSyncSettings?action=create"> 
-						<div>
-							<table>
-								<tr>
-									<td><fmt:message key="navi.syncservice" />:</td>
-									<td>
-										<form:select cssClass="fsInput fsSmall" path="" id="serviceName" name="serviceName">
-											<c:forEach var="service" items="${command.avlSyncServer}">
-					    						<form:option label="${service.service}" value="${service.service}"/>
-					      					</c:forEach>
-					      				</form:select>
-				      				</td>
-				      			</tr>
-								<tr>
-									<td><fmt:message key="navi.username" />:</td>
-									<td><form:input path="" id="userName" name="serverUserName"/><form:errors cssClass="errmsg" path="" /></td>
-								</tr>
-								<tr>
-									<td><fmt:message key="navi.apikey" />:</td>
-									<td><form:input id="apiKey" path="" name="apiKey"/><form:errors cssClass="errmsg" path="" /></td>
-								</tr>
-								<tr>
-									<td><input id="saveBtn" type="submit" value="${save}" /></td>
-									<td><input id="cancelBtn" type="submit" value="${cancel}" /></td>
-								</tr>
-							</table>			
-						</div>
-						 <input type="hidden" name="ckey" value="${ckey}"/>
-					</form:form>
-			</fieldset>
-		</div>
+	<c:if test="${fn:length(command.availableSyncServers) != 0}">
+		<fieldset class="fsInner">
+			<form:form id="addServiceForm" method="post" action="/updateSyncSettings?action=create"> 
+	        
+	        	<div class="fsRow">
+					<form:label cssClass="fsLabel" path="serviceName"><fmt:message key="navi.syncservice" /></form:label>
+					<form:select cssClass="fsInput fsSmall" path="serviceName">
+						<c:forEach var="service" items="${command.availableSyncServers}">
+    						<form:option value="${service.service}"/>
+      					</c:forEach>
+      				</form:select>
+      				<div class="dissError"><form:errors path="serviceName" /></div>
+      			</div>
+      			<div class="fsRow">
+	          		<form:label cssClass="fsLabel" path="serverUserName" ><fmt:message key="navi.username"/></form:label>
+	          		<form:input cssClass="fsInput" path="serverUserName"/>
+	          		<div class="dissError"><form:errors path="serverUserName" /></div>
+	        	</div>
+      			<div class="fsRow">
+	          		<form:label cssClass="fsLabel" path="apiKey" ><fmt:message key="navi.apikey"/></form:label>
+	          		<form:input cssClass="fsInput" path="apiKey"/>
+	          		<div class="dissError"><form:errors path="apiKey" /></div>
+	        	</div>
+	        	<div>
+					<input type="hidden" name="ckey" value="${ckey}"/>
+					<input type="submit" value="${save}" />
+				</div>
+			</form:form>
+		</fieldset>
 	
-		<p>
-
-		<input id="addBtn" type="submit" value="${addService}"/>
-		
-		</p>
 	</c:if>
 	<script type="text/javascript">
 		$(function(){
-			$("#addBtn").click(function(){
-				$("#newService").show();
-				$(this).hide();
-			});
-
-			$("#cancelBtn").click(function(){
-				$("#userName").val("");
-				$("#apiKey").val("");
-				$("#newService").hide();
-				$("#addBtn").show();
-				return false;
-			});
-
 			$(".deleteService").click(function(){
-				if (confirm("please confirm this action")){
-					var form = $(this).parents("form");
-					form.attr("action", "/updateSyncSettings?action=delete");
-			} else {
-				return false;	
-			}
-			});
-			
-			$(".saveChanges").click(function(){
-				var par = $(this).parents("fieldset");
-				var userName = par.find(".uname").val();
-				var oldName = par.find(".uname").attr("id");
-				var apiKey = par.find(".apiK").val();
-				var oldApiKey = par.find(".apiK").attr("id");
-				
-				if(userName == oldName &amp;&amp; apiKey == oldApiKey) {
-					alert("nothing changed");
-					return false;
+				if (confirm("please confirm this action")) {
+					$(this).parents("form").attr("action", "/updateSyncSettings?action=delete");
+				} else {
+					return false;	
 				}
 			});
 		});
-		
 	</script>
 	
  

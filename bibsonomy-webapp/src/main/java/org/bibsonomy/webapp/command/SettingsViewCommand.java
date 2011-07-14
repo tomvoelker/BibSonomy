@@ -573,7 +573,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @param syncServer the syncServer to set
 	 */
-	public void setSyncServer(List<SyncService> syncServer) {
+	public void setUserSyncServers(List<SyncService> syncServer) {
 		this.syncServer = syncServer;
 	}
 
@@ -587,7 +587,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @param avlSyncServer the avlSyncServer to set
 	 */
-	public void setAvlSyncServer(List<SyncService> avlSyncServer) {
+	public void setAvailableSyncServers(List<SyncService> avlSyncServer) {
 		this.avlSyncServer = avlSyncServer;
 	}
 
