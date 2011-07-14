@@ -24,6 +24,8 @@
 
 package org.bibsonomy.bibtex.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
@@ -208,17 +210,17 @@ public class BibtexParserUtils {
 					// build one person					
 					final StringBuilder personString = new StringBuilder();
 					final String first = person.getFirst();
-					if (first != null) {
+					if (present(first)) {
 						personString.append(first);
 					}
 
 					final String preLast = person.getPreLast();
-					if (preLast != null) {
+					if (present(preLast)) {
 						personString.append(" ").append(preLast);
 					}
 
 					final String last = person.getLast();
-					if (last != null) {
+					if (present(last)) {
 						personString.append(" ").append(last);
 					}
 
