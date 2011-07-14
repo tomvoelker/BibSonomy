@@ -74,10 +74,11 @@ public class ReviewDatabaseManager extends DiscussionItemDatabaseManager<Review>
 	 */
 	@Override
 	protected void checkDiscussionItemOnCreate(final String interHash, final Review review, final DBSession session) {
-		/*
-		 * do all pre-checks of a normal discussion item
-		 */
-		super.checkDiscussionItemOnCreate(interHash, review, session);
+		this.checkDiscussionItem(review, session);
+		
+		if (present(review.getParentHash())) {
+			throw new ValidationException("you can't reply to a discussion item with a review");
+		}
 		
 		/*
 		 * check if the user already reviewed the resource
