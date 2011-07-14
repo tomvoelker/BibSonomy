@@ -16,8 +16,8 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
@@ -41,12 +41,9 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 	@Override
 	public View workOn(final SettingsViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
-		
 		if (!context.isUserLoggedIn()) {
-			return new ExtendedRedirectView("/login");
+			throw new AccessDeniedException("please log in");
 		}
-
-		command.setPageTitle("settings"); // TODO: i18n
 		
 		final User loginUser = context.getLoginUser();
 		command.setUser(loginUser);
@@ -115,7 +112,7 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 	/**
 	 * @param logic the logic to set
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 
