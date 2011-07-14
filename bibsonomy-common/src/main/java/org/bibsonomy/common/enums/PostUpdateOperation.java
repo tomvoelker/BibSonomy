@@ -34,32 +34,32 @@ public enum PostUpdateOperation {
 	/**
 	 * Update all parts of the entity.
 	 */
-	UPDATE_ALL(0),
+	UPDATE_ALL,
+	
 	/**
 	 * Update only the tags of the post.
 	 */
-	UPDATE_TAGS(1),
+	UPDATE_TAGS,
+	
 	/**
 	 * Update only the documents attached to the post.
 	 */
-	UPDATE_DOCUMENTS(2),
+	UPDATE_DOCUMENTS,
+	
 	/**
 	 * Add a url to the post.
 	 */
-	UPDATE_URLS_ADD(3),
+	UPDATE_URLS_ADD,
+	
 	/**
 	 * Delete a url of the post.
 	 */
-	UPDATE_URLS_DELETE(4),
+	UPDATE_URLS_DELETE,
+	
 	/**
-	 * Update only the repositories attached to the post(PUMA specific)
+	 * Update only the repositories attached to the post
+	 * (PUMA specific)
 	 */
-	UPDATE_REPOSITORY(3);
-	
-	private int id;
-	
-	private PostUpdateOperation(final int postUpdateOperation) {
-		this.id = postUpdateOperation;
-	}
+	UPDATE_REPOSITORY;
 	
 }
