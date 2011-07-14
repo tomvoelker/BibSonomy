@@ -40,7 +40,7 @@
 			<!-- search fields -->
 			<div id="search-bar">
 				<form id="specialsearch" method="get" action="/redirect">
-					<c:set var="searchlbl"><fmt:message key="navi.search" /></c:set>
+					<fmt:message key="navi.search" var="searchlbl" />
  					<input type="hidden" name="scope" value="search" />&amp;nbsp;<input type="text" id="inpf-search" name="search" size="25" style="float: left;" />&amp;nbsp;<input type="submit" value="${searchlbl}" style="float: right;" />
  					<div style="clear:both; height: 0;">&amp;nbsp;</div>
 				</form>
@@ -57,10 +57,12 @@
 			<!-- toggle between authentication modes.  -->
 			<c:if test="${selected == 'nav_login'}">
 				<div id="login-bar">
-					<a style="font-size: 0.8em;" href="javascript:switchLogin('${authOrder}','db');" id="login-method-db"><fmt:message key="login.method.internal" /></a>
-					<a style="font-size: 0.8em;" href="javascript:switchLogin('${authOrder}','openid');" id="login-method-openid"><fmt:message key="login.method.openid" /></a>
-					<div style="clear: both; height: 0;">&amp;nbsp;</div>
+					<c:forEach var="authMethod" items="${authConfig.authOrder}">
+						<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+						<a style="font-size: 0.8em;" data-authMethod="${authMethodName}"><fmt:message key="login.method.${authMethodName}" /></a>
+					</c:forEach>
 				</div>
+				<div style="clear: both; height: 0;">&amp;nbsp;</div>
 			</c:if>
 			
 			<c:if test="${not empty username}">
@@ -200,18 +202,19 @@
 				});
 		    	
 		    	/* activate login method */
-		    	$("#login-method-db").addClass("active");
+		    	$("#login-bar a:first").addClass("active");
+		    	$('.loginForm:first').show();
 		    	
-		    	$("#login-method-db").click(function() {
+		    	$("#login-bar a").click(function() {
+		    		$('#login-bar a').not($(this)).removeClass('active');
+		    		$(this).addClass('active');
 		    		
-		    		switchLogin('${authOrder}','db');
-		    		$("#login-bar a").toggleClass("active");
-		    	});
-		    	
-				$("#login-method-openid").click(function() {
+		    		// hide all forms
+		    		$('.loginForm').hide();
+		    		// show the one form with the provided data
+		    		$('#login_' + $(this).data('authMethod')).show();
 		    		
-		    		switchLogin('${authOrder}','openid');
-		    		$("#login-bar a").toggleClass("active");
+		    		return false;
 		    	});
 		    });
 		]]>

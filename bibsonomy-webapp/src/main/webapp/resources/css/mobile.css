@@ -107,14 +107,14 @@ a {
 	font-size: 1.5em;
 }
 
-#resources-toggle #toggle-bookmarks, #login-bar #login-method-db, #post-toggle #post-method-isbn {
+#resources-toggle #toggle-bookmarks, #login-bar a:first-child, #post-toggle #post-method-isbn {
 	border-radius: 5px 0 0 5px;
 	-moz-border-radius: 5px 0 0 5px;
 	-webkit-border-top-left-radius: 5px;
 	-webkit-border-bottom-left-radius: 5px;
 }
 
-#resources-toggle #toggle-publications, #login-bar #login-method-openid,  #post-toggle #post-method-manual {
+#resources-toggle #toggle-publications, #login-bar a:last-child, #post-toggle #post-method-manual {
 	border-radius: 0 5px 5px 0;
 	-moz-border-radius: 0 5px 5px 0;
 	-webkit-border-top-right-radius: 5px;
