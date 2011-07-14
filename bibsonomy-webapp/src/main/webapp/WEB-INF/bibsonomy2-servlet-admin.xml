@@ -148,16 +148,13 @@
 	
 	<bean id="adminPageController" class="org.bibsonomy.webapp.controller.admin.AdminPageController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
 	<bean id="spamPageController" class="org.bibsonomy.webapp.controller.admin.SpamPageController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
 	</bean>
 
 	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
-		<property name="userSettings" ref="userSettings"/>
 		<property name="luceneResourceManagers">
 		    <list>
 				<ref bean="luceneBibTexManager" />
@@ -169,7 +166,6 @@
 
 	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.admin.AdminAjaxController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
 	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" init-method="init" scope="singleton">
