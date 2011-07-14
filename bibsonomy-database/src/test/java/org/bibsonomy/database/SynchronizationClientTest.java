@@ -29,7 +29,6 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.SynchronizationClient;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -181,7 +180,6 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 	
 	
 	@Test
-	@Ignore 
 	public void testSynchronization() throws URISyntaxException {
 		final SynchronizationClient synchronizer = new SynchronizationClient();
 	
@@ -199,7 +197,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		synchronizer.setOwnUri("http://www.test.de/");
 		synchronizer.setDBSessionFactory(new IbatisDBSessionFactory());
 		SynchronizationData data = synchronizer.synchronize(clientLogic, BibTex.class, clientUser, server);
-		assertNotNull("synchronization wasn't successful", data); // FIXME: here sync breaks
+		assertNotNull("synchronization wasn't successful", data);
 		assertEquals(RESULT_STRING, data.getStatus());
 		
 		Map<String, SynchronizationPost> serverPosts = serverLogic.getSyncPostsMapForUser(serverUser.getName(), BibTex.class);
