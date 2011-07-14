@@ -57,7 +57,7 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 	 * org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.ContextCommand)
 	 */
 	@Override
-	public View workOn(AjaxURLCommand command) {
+	public View workOn(final AjaxURLCommand command) {
 		log.debug("workOn AdditionalURLController");
 
 		// TODO: Probably create a validateRequest method which returns
@@ -105,12 +105,12 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 		}
 		
 		URL url;
-		String cleanedUrl = UrlUtils.cleanUrl(command.getUrl());
+		final String cleanedUrl = UrlUtils.cleanUrl(command.getUrl());
 		try {
 			url = new URL(cleanedUrl);
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 			return handleError("error.field.valid.url");
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return handleError("error.url.general");
 		}
 		// -- End Validating the request --
@@ -140,7 +140,7 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 	 * @return if succeeded -> XML string containing status, url, text if not
 	 *         succeeded -> add error to errors and return error view.
 	 */
-	private View addURL(AjaxURLCommand command, URL url) {
+	private View addURL(final AjaxURLCommand command, final URL url) {
 
 		log.debug("Adding URL: " + command.getUrl() + " to database. User: " + command.getContext().getLoginUser().getName());
 
@@ -156,9 +156,9 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 
 		try {
 			logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_ADD);
-		} catch (DatabaseException e) {
+		} catch (final DatabaseException e) {
 			return handleError("error.url.exists");
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return handleError("database.exception.unspecified");
 		}
 		command.setResponseString(getXmlSucceeded(command, url));
@@ -172,14 +172,14 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 	 * @return if succeeded -> XML string containing status, url, text if not
 	 *         succeeded -> add error to errors and return error view.
 	 */
-	private View deleteURL(AjaxURLCommand command, URL url) {
+	private View deleteURL(final AjaxURLCommand command, final URL url) {
 
 		log.debug("Deleting URL: " + command.getUrl() + " from database. User: " + command.getContext().getLoginUser().getName());
 
 		final Post<? extends Resource> post = logic.getPostDetails(command.getHash(), logic.getAuthenticatedUser().getName());
 
-		BibTex resource = ((BibTex) post.getResource());
-		BibTexExtra bibTexExtra = new BibTexExtra();
+		final BibTex resource = ((BibTex) post.getResource());
+		final BibTexExtra bibTexExtra = new BibTexExtra();
 		bibTexExtra.setUrl(url);
 		resource.getExtraUrls().clear();
 		resource.getExtraUrls().add(bibTexExtra);
@@ -188,7 +188,7 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 
 		try {
 			logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_DELETE);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return handleError("database.exception.unspecified");
 		}
 		command.setResponseString(getXmlSucceeded(command, url));
@@ -200,8 +200,8 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 	 * 
 	 * @return XML success string.
 	 */
-	private String getXmlSucceeded(AjaxURLCommand command, URL url) {
-		return "<root><status>ok</status><ckey>" + command.getCkey() + "</ckey><hash>" + command.getHash() + "</hash><url>" + url.toExternalForm() + "</url><text>" + Functions.escapeXml(command.getText()) + "</text></root>";
+	private String getXmlSucceeded(final AjaxURLCommand command, final URL url) {
+		return "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey><hash>" + command.getHash() + "</hash><url>" + url.toExternalForm() + "</url><text>" + Functions.escapeXml(command.getText()) + "</text></root>";
 	}
 	
 	/*
@@ -226,7 +226,7 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
@@ -236,7 +236,7 @@ public class AdditionalURLController extends AjaxController implements Minimalis
 	}
 
 	@Override
-	public boolean isValidationRequired(AjaxURLCommand command) {
+	public boolean isValidationRequired(final AjaxURLCommand command) {
 		return true;
 	}
 

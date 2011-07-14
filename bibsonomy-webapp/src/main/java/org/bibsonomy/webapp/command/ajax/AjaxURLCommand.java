@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.bibsonomy.webapp.command.ajax;
 
 /**
@@ -8,11 +5,21 @@ package org.bibsonomy.webapp.command.ajax;
  * @version $Id$
  */
 public class AjaxURLCommand extends AjaxCommand {
-	
-	private String url;
-	private String text;
-	private String ckey;
+	/**
+	 * the hash of the resource
+	 */
 	private String hash;
+	
+	/**
+	 * the text of the url
+	 */
+	private String text;
+	
+	/**
+	 * TODO: could this be of type URL?!
+	 * the url
+	 */
+	private String url;
 	
 	/**
 	 * @return the url
@@ -24,7 +31,7 @@ public class AjaxURLCommand extends AjaxCommand {
 	/**
 	 * @param url the url to set
 	 */
-	public void setUrl(String url) {
+	public void setUrl(final String url) {
 		this.url = url;
 	}
 	
@@ -38,22 +45,8 @@ public class AjaxURLCommand extends AjaxCommand {
 	/**
 	 * @param text the text to set
 	 */
-	public void setText(String text) {
+	public void setText(final String text) {
 		this.text = text;
-	}
-	
-	/**
-	 * @return the ckey
-	 */
-	public String getCkey() {
-		return this.ckey;
-	}
-	
-	/**
-	 * @param ckey the ckey to set
-	 */
-	public void setCkey(String ckey) {
-		this.ckey = ckey;
 	}
 	
 	/**
@@ -66,7 +59,7 @@ public class AjaxURLCommand extends AjaxCommand {
 	/**
 	 * @param hash the hash to set
 	 */
-	public void setHash(String hash) {
+	public void setHash(final String hash) {
 		this.hash = hash;
 	}
 }
