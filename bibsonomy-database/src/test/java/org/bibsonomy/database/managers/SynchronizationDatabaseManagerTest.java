@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -29,21 +31,17 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 	private static SynchronizationDatabaseManager syncDBManager;
 
 	private final String syncUser1 = "syncuser1";
-	private URI testURI;
-	private URI bibsonomyURI;
+	private final URI testURI;
+	private final URI bibsonomyURI;
 	
 	@BeforeClass
 	public static void setupManager() {
 		syncDBManager = SynchronizationDatabaseManager.getInstance();
 	}
 	
-	public SynchronizationDatabaseManagerTest() {
-		try {
-			this.testURI = new URI("http://www.test.de/");
-			this.bibsonomyURI = new URI("http://www.bibsonomy.org/");
-		} catch (URISyntaxException ex) {
-			ex.printStackTrace();
-		}
+	public SynchronizationDatabaseManagerTest() throws URISyntaxException {
+		this.testURI = new URI("http://www.test.de/");
+		this.bibsonomyURI = new URI("http://www.bibsonomy.org/");
 	}
 
 	/**
@@ -51,66 +49,66 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 	 */
 	@Test
 	public void testSyncService() {
-		SyncService service = new SyncService();
+		final SyncService service = new SyncService();
 		service.setService(testURI);
-		Properties serverUser = new Properties();
-		serverUser.setProperty("name", syncUser1);
-		serverUser.setProperty("apiKey", "1546545646565");
-		service.setServerUser(serverUser);
+		
+		final Properties credentialsSyncUser1 = new Properties();
+		credentialsSyncUser1.setProperty("name", syncUser1);
+		credentialsSyncUser1.setProperty("apiKey", "1546545646565");
+		service.setServerUser(credentialsSyncUser1);
 
-		syncDBManager.createSyncServerForUser(dbSession, syncUser1, testURI, serverUser);
+		syncDBManager.createSyncServerForUser(dbSession, testURI, syncUser1, credentialsSyncUser1);
 
-		List<SyncService> services = syncDBManager.getSyncServerForUser(syncUser1, dbSession);
+		List<SyncService> services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
 		assertTrue(services.contains(service));
 		assertEquals(1, services.size());
 		
-		serverUser = new Properties();
-		serverUser.setProperty("name", "syncUser2");
-		serverUser.setProperty("apiKey", "jjkhjhjkhk");
-		service.setServerUser(serverUser);
-		syncDBManager.updateSyncServerForUser(dbSession, syncUser1, testURI, serverUser);
+		final Properties credentialsSyncUser2 = new Properties();
+		credentialsSyncUser2.setProperty("name", "syncUser2");
+		credentialsSyncUser2.setProperty("apiKey", "jjkhjhjkhk");
+		service.setServerUser(credentialsSyncUser2);
+		syncDBManager.updateSyncServerForUser(dbSession, syncUser1, testURI, credentialsSyncUser2);
 		
-		services = syncDBManager.getSyncServerForUser(syncUser1, dbSession);
+		services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
 		assertTrue(services.contains(service));
 		assertEquals(1, services.size());
 		
 		syncDBManager.deleteSyncServerForUser(dbSession, syncUser1, testURI);
-		services = syncDBManager.getSyncServerForUser(syncUser1, dbSession);
+		services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
 		assertFalse(services.contains(service));
 		assertEquals(0, services.size());
 	}
 
 	/**
 	 * Test for all "sync_data" queries
+	 * @throws ParseException 
 	 */
 	@Test
-	public void testGetLastSyncData() {
+	public void testGetLastSyncData() throws ParseException {
 		/*
-		 * test getLastSynchronizationDate
+		 * get last successful sync date
 		 */
-		
-		Class<? extends Resource> resourceType = BibTex.class;
-		
-		Date expectedDate = new Date(1296684000000L);
-		Date date = syncDBManager.getLastSynchronizationDate(syncUser1, bibsonomyURI, resourceType, dbSession);
-		assertEquals(expectedDate, date);
+		final Class<? extends Resource> resourceType = BibTex.class;
+		final Date expected = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS").parse("2011-02-02 23:00:00");
+		assertEquals(expected, syncDBManager.getLastSynchronizationDate(syncUser1, bibsonomyURI, resourceType, dbSession));
 
 		/*
-		 * check that no data in db
+		 * check that unsuccessful data in db
 		 */
-		SynchronizationData data = syncDBManager.getCurrentSynchronizationData(syncUser1, bibsonomyURI, resourceType, dbSession);
-		assertNull(data);
+		assertNull(syncDBManager.getCurrentSynchronizationData(syncUser1, bibsonomyURI, resourceType, dbSession));
 
 		/*
 		 * insert new data in db
+		 * We round the date to seconds, because the used MySQL column has such
+		 * a low resolution.
 		 */
-		date = new Date((new Date().getTime() % 1000) * 1000);
+		final Date date = new Date((new Date().getTime() / 1000) * 1000);
 		syncDBManager.insertSyncronizationData(syncUser1, bibsonomyURI, resourceType, date, "undone", dbSession);
 
 		/*
-		 * check aded data
+		 * check added data
 		 */
-		data = syncDBManager.getCurrentSynchronizationData(syncUser1, bibsonomyURI, resourceType, dbSession);
+		final SynchronizationData data = syncDBManager.getCurrentSynchronizationData(syncUser1, bibsonomyURI, resourceType, dbSession);
 		assertNotNull(data);
 		assertEquals(syncUser1, data.getUserName());
 		assertEquals(date, data.getLastSyncDate());
@@ -119,15 +117,14 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		assertEquals(bibsonomyURI, data.getService());
 
 		/*
-		 * set status of added data to done (simulate done synchronization)
+		 * set status of added data to done (simulate successful synchronization)
 		 */
 		data.setStatus("done");
 		syncDBManager.updateSyncData(dbSession, data);
 
-		data = syncDBManager.getCurrentSynchronizationData(syncUser1, bibsonomyURI, resourceType, dbSession);
-		assertNull(data);
+		assertNull(syncDBManager.getCurrentSynchronizationData(syncUser1, bibsonomyURI, resourceType, dbSession));
 
-		List<SynchronizationData> dataList = syncDBManager.getSynchronizationData(syncUser1, bibsonomyURI, resourceType, dbSession);
+		final List<SynchronizationData> dataList = syncDBManager.getSynchronizationData(syncUser1, bibsonomyURI, resourceType, dbSession);
 		assertEquals(2, dataList.size());
 
 	}
