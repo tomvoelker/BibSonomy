@@ -15,75 +15,68 @@
 			<div class="container">
 	            <errors:global errors="${errors}" /> 
 	            
-	            <c:if test="${authOrder == '' or empty authOrder}">
-	 		    	<c:set var="authOrder" value="db,openid" />
-	 		    </c:if>
-	 		    
-	 		    <c:set var="authOrderArray" value="${fn:split(authOrder,',')}" />
-	 		    
-	 		    <c:if test="${authOrder != 'db,openid'}">
-					<form:form action="#" method="POST" id="loginMethod">
-		            	<form:label path="loginMethod">
-							<fmt:message key="login.method" />
-						</form:label>
-		            	<form:select id="loginMethodSelect" size="${fn:length(authOrderArray)}" onchange="switchLogin('${authOrder}', this.options[this.selectedIndex].value)" path="loginMethod">
-			            	<c:forEach items="${authOrderArray}" varStatus="loop">
-			            		<fmt:message var="label" key="login.method.${authOrderArray[loop.index]}" />
-			            		<form:option value="${authOrderArray[loop.index]}" label="${label}" />
-							</c:forEach>
-						</form:select>
-					</form:form>
-				</c:if>
-				
-				<c:forEach items="${authOrderArray}" varStatus="loop">
-					<c:if test="${authOrderArray[loop.index]=='db' }">
-						<div id="logindb" style="display: none">
-							<form:form action="/login_internal" method="POST">
-								<form:hidden id="loginMethoddb" path="loginMethod" />
-									<p>
-										<form:label path="username"><fmt:message key="navi.username" /></form:label>
-										<form:input path="username" /><form:errors cssClass="errmsg" path="username" />
-									</p>
-									<p>
-										<form:label path="password"><fmt:message key="navi.password" /></form:label>
-										<form:password path="password" /><form:errors cssClass="errmsg" path="password" />
-									</p>
-										<td><form:label path="rememberMe"><fmt:message key="login.rememberMe" />:</form:label></td>
-										<td><form:checkbox path="rememberMe" /><form:errors	cssClass="errmsg" path="rememberMe" /></td>
-			                  		<p>
-			                    		<form:hidden path="referer" />
-			                    		<fmt:message key="navi.login" var="submit" />
-			                    		<input type="submit" value="${submit}" />
-			                  		</p>
-			            	</form:form>		
-			     	    </div>
-					</c:if>
-					
-					<c:if test="${authOrderArray[loop.index]=='openid' }">
-						<div id="loginopenid" style="display:none">
-							<div style="text-align: center;"><img src="${resdir}/image/openid-logo-small.png"/></div>
-			            	<form:form action="/login_openid" method="POST">
-			            		<form:hidden id="loginMethodopenid" path="loginMethod" />
-		            			<p>
-		            				<form:label path="openID" >OpenID </form:label>
-		            				<form:input path="openID" cssClass="openid" size="30"/>
-		            				<form:errors cssClass="errmsg" path="openID" />
-		            			</p>
-		            			<p>
-				                    <form:hidden path="referer"/>
-				                    <fmt:message key="navi.login" var="submit"/>
-				                    <input type="submit" value="${submit}" />
-				                </p>
-			            	</form:form>
-			            </div>
-					</c:if>
-				</c:forEach>
-				<!-- little script to switch between default login and OpenID login forms -->
-	          	<script type="text/javascript">
-	          	<![CDATA[
-					switchLogin('${authOrder}');
-			  	]]>
-			  	</script>
+	            <c:forEach var="authMethod" items="${authConfig.authOrder}">
+           			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+           			<div id="login_${authMethodName}" class="loginForm" style="display:none;">           
+          				<form:form action="/login_${authMethodName}" method="POST">
+           					<c:if test="${authMethod == 'INTERNAL'}">
+           						<p>
+									<form:label path="username"><fmt:message key="navi.username" /></form:label>
+									<form:input path="username" /><form:errors cssClass="errmsg" path="username" />
+								</p>
+								<p>
+									<form:label path="password"><fmt:message key="navi.password" /></form:label>
+									<form:password path="password" /><form:errors cssClass="errmsg" path="password" />
+								</p>
+								<p>
+									<form:label path="rememberMe"><fmt:message key="login.rememberMe" />:</form:label>
+									<form:checkbox path="rememberMe" /><form:errors	cssClass="errmsg" path="rememberMe" />
+		                  		</p>
+		                  		<p>
+		                    		<form:hidden path="referer" />
+		                    		<fmt:message key="navi.login" var="submit" />
+		                    		<input type="submit" value="${submit}" />
+		                  		</p>
+           					</c:if>
+  							<c:if test="${authMethod == 'LDAP'}">
+  								<p>
+									<form:label path="username"><fmt:message key="navi.username" /></form:label>
+									<form:input path="username" /><form:errors cssClass="errmsg" path="username" />
+								</p>
+								<p>
+									<form:label path="password"><fmt:message key="navi.password" /></form:label>
+									<form:password path="password" /><form:errors cssClass="errmsg" path="password" />
+								</p>
+								<p>
+									<form:label path="rememberMe"><fmt:message key="login.rememberMe" />:</form:label>
+									<form:checkbox path="rememberMe" /><form:errors	cssClass="errmsg" path="rememberMe" />
+		                  		</p>
+		                  		<p>
+		                    		<form:hidden path="referer" />
+		                    		<fmt:message key="navi.login" var="submit" />
+		                    		<input type="submit" value="${submit}" />
+		                  		</p>
+  							</c:if>
+   							<c:if test="${authMethod == 'OPENID'}">
+   								<div style="text-align: center;"><img src="${resdir}/image/openid-logo-small.png"/></div>
+	            				<p>
+	            					<form:label path="openID">OpenID</form:label>
+	            					<form:input path="openID" cssClass="openid" size="30"/>
+	            					<form:errors cssClass="errmsg" path="openID" />
+	            				</p>
+	            				<p>
+									<form:label path="rememberMe"><fmt:message key="login.rememberMe" />:</form:label>
+									<form:checkbox path="rememberMe" /><form:errors	cssClass="errmsg" path="rememberMe" />
+		                  		</p>
+	            				<p>
+			                    	<form:hidden path="referer"/>
+			                   		<fmt:message key="navi.login" var="submit"/>
+			                    	<input type="submit" value="${submit}" />
+			                	</p>
+   							</c:if>
+     					</form:form>
+					</div>
+       			</c:forEach>
 		  	</div>	
 		</jsp:attribute>
 	</mobile:simple>
