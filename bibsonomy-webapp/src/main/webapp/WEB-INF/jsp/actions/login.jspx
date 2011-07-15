@@ -35,7 +35,7 @@
     	</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<div id="general">
+			<div id="general_fixed">
           		<mtl:exists path="command.notice">
             		<c:if test="${not empty command.notice}">
               			<div style="border: 1px solid #006699; padding: 1em; margin-bottom: 1em;">
