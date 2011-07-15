@@ -502,6 +502,18 @@ public class BibTexUtils {
 		post.getResource().addMiscField(ADDITIONAL_MISC_FIELD_BIBURL, urlGenerator.getPublicationUrl(post.getResource(), post.getUser()).toString());
 		return toBibtexString(post, lastFirstNames);
 	}
+	
+	/**
+	 * Same as {@link #toBibtexString(Post, boolean, URLGenerator)} but with 
+	 * default {@link PersonNameUtils#DEFAULT_LAST_FIRST_NAMES}
+	 * 
+	 * @param post
+	 * @param urlGenerator
+	 * @return A string representation of the posts in BibTeX format.
+	 */
+	public static String toBibtexString(final Post<BibTex> post, final URLGenerator urlGenerator) {
+		return toBibtexString(post, PersonNameUtils.DEFAULT_LAST_FIRST_NAMES, urlGenerator);
+	}
 
 
 	/**
