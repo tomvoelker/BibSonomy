@@ -70,6 +70,7 @@
 				 	+-->
 				<!-- localized JavaScript messages -->
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/systemmessage.js">&amp;nbsp;</script>
 				<!--+ 
 				 	| merged jquery.js, functions.js, style.js, chrome.js
 				 	| and jQuery plugins jquery.textarearesizer.js, jquery.corner.js, jquery.sidebarresizer.js
@@ -311,7 +312,7 @@
 					<c:out escapeXml="false" value="${piwikJS}" />
 				</c:if>
 				<!-- End Piwik Tracking Code --> 
-
+				
 			</body>
 		</jsp:body>
 	</jsp:element>
