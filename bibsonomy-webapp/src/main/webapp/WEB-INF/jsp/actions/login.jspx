@@ -15,9 +15,10 @@
 	
 	<fmt:message key="navi.login" var="loginTitle" />
 	
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${loginTitle}" requPath="${requPath}">
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${loginTitle}" requPath="${requPath}" noLoginBox="true">
 
 		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
   			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
 			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js">&amp;nbsp;</script>
   			<script type="text/javascript">
@@ -83,6 +84,13 @@
       						</form:form>
 						</div>
           			</c:forEach>
+          			<script type="text/javascript">
+		             	//<mtl:cdata>
+        		     	<![CDATA[
+		                $(document).ready( function(){prepareErrorBoxes('dissError');});
+		             	]]>
+                    	//</mtl:cdata>
+                  	</script>
           		</div>
           	</div>    
       	</jsp:attribute>

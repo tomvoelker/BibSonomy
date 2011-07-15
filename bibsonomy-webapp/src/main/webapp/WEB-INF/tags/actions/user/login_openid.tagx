@@ -4,24 +4,55 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 >
 
 	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="LDAP Login Form" description="Renders the login form for OpenID login." />
 
 	<img src="${resdir}/image/openid-logo-small.png" />
-	<table>
-		<tr>
-			<td><form:label path="openID">OpenID:</form:label></td>
-			<td><form:input path="openID" /><form:errors cssClass="errmsg" path="openID" /></td>
-		</tr>
-		<tr>
-			<td><form:label path="rememberMe"><fmt:message key="login.rememberMe" />:</form:label></td>
-			<td><form:checkbox path="rememberMe" /><form:errors	cssClass="errmsg" path="rememberMe" /></td>
-		</tr>
-		<tr>
-			<fmt:message key="navi.login" var="submit" />
-			<td colspan="3"><form:hidden path="referer" /> <input type="submit" value="${submit}" /></td>
-		</tr>
-	</table>
+	
+	<fieldset class="fsInner">
+		<div class="fsRow">
+			<span class="fsLabel"><fmt:message key="login.openid.provider"/></span>
+			<a class="provider" href="https://www.google.com/accounts/o8/id">Google</a> &amp;middot; 
+			<a class="provider" href="http://yahoo.com/">Yahoo!</a> &amp;middot;
+			<a class="provider" href="http://myopenid.com/">myOpenID</a> 
+		</div>
+		<div class="fsRow">
+       		<form:label cssClass="fsLabel" path="openID" ><fmt:message key="login.method.openid"/></form:label>
+       		<form:input cssClass="fsInput" path="openID"/>
+      		<div class="dissError"><form:errors path="openID" /></div>
+   		</div>
+   		<div class="fsRow">
+       		<form:label cssClass="fsLabel" path="rememberMe" ><fmt:message key="login.rememberMe"/></form:label>
+       		<form:checkbox path="rememberMe"/>
+      		<div class="dissError"><form:errors path="rememberMe" /></div>
+   		</div>
+   		<div>
+   			<fmt:message key="navi.login" var="submit" />
+   			<form:hidden path="referer" /> 
+   			<input type="submit" value="${submit}" />
+   		</div>
+
+		<!--+ 
+			| We had to fix two things: 
+			| 1) Don't show the small header login form, otherwise we have two
+			|    form input elements with id "opendID"
+			| 2) functions.js init() method attaches help texts to all forms -
+			|    also this form - they can only be removed using focus(). 
+			|    (at least this was the simplest way for now) 
+			| 
+		 	+-->
+  		<script type="text/javascript">
+			<![CDATA[
+					$(".provider").each(function() {
+						$(this).bind('click', function() {
+							$("#openID").focus().val($(this).attr('href'));
+							return false;
+						});
+					});
+		 		]]>
+		</script>	
+   	</fieldset>
 
 </jsp:root>
