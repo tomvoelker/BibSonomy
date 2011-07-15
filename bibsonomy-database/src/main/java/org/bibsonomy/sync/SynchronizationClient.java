@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
@@ -34,9 +35,15 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 public class SynchronizationClient {
 	private static final Log log = LogFactory.getLog(SynchronizationClient.class);
 	
+	/*
+	 * own URI as String and as java.net.URI
+	 */
 	private String ownUri;
 	private URI uri;
 	
+	/*
+	 *	FIXME make ConficResolutionStrategy configurable by user 
+	 */
 	private final ConflictResolutionStrategy strategy;
 	private DBLogicApiInterfaceFactory serverLogicFactory;
 	private DBSessionFactory dbSessionFactory = new IbatisSyncDBSessionFactory();
@@ -46,20 +53,25 @@ public class SynchronizationClient {
 		this.strategy = ConflictResolutionStrategy.LAST_WINS;
 	}
 	
+	/**
+	 * 
+	 * @param userName
+	 * @param apiKey
+	 * @return Logic with access to database on server-service   
+	 */
 	private SyncLogicInterface createServerLogic(String userName, String apiKey) {
 	
 		//FIXME get correct DBSessionFactory for each service
-
 		serverLogicFactory.setDbSessionFactory(this.dbSessionFactory);
-
-
+		
+		//FIXME remove cast after integration
 		SyncLogicInterface serverLogic = (SyncLogicInterface) serverLogicFactory.getLogicAccess(userName, apiKey);
 		
 		return serverLogic;
 	}
 	
 	/**
-	 * 
+	 * Creates User-object from java.util.Properties stroed in database
 	 * @param userProperties
 	 * @return user from userProperties
 	 */
@@ -78,7 +90,7 @@ public class SynchronizationClient {
 	}
 	
 	/**
-	 * Used in a synchronization process, if server logic already created 
+	 * Used in a synchronization process, in case that server logic already created 
 	 * @param userName
 	 * @param contentType
 	 * @param serverLogic
@@ -90,7 +102,7 @@ public class SynchronizationClient {
 	}
 	
 	/**
-	 * Used in SettingsPageController, to show syncData
+	 * Used in SettingsPageController, to show syncData, gets own logic
 	 * @param syncService
 	 * @param contentType
 	 * @return
@@ -106,16 +118,32 @@ public class SynchronizationClient {
 	}
 	
 
-	
+	/**
+	 * handles synchronization of a resourceType 
+	 * @param clientLogic
+	 * @param resourceType
+	 * @param clientUser
+	 * @param server
+	 * @return
+	 */
 	public SynchronizationData synchronize(LogicInterface clientLogic, Class<? extends Resource> resourceType, User clientUser, SyncService server) {
+		//get server user
 		User serverUser = getUserFromProperties(server.getServerUser());
 		
+		//get server logic
 		SyncLogicInterface serverSyncLogic = createServerLogic(serverUser.getName(), serverUser.getApiKey());
+		
+		//set default result to "error"
 		String result = "error";
+		
 		try {
+			//try to synchronize resource
 			result = synchronizeResource(resourceType, serverUser, clientUser, serverSyncLogic, clientLogic);
 		} catch (SynchronizationRunningException e) {
-			//TODO handling of this exception type
+			/*
+			 * FIXME handling of this exception type. I think we can break "running" synchronization after timeout.
+			 * Currently return only "running" status.
+			 */
 			SynchronizationData data = new SynchronizationData();
 			data.setStatus("running");
 			return data;
@@ -124,26 +152,43 @@ public class SynchronizationClient {
 			result = "error";
 			log.error("ERROR OCCURRED", e);
 		}
+		//after successful synchronization, store sync result.
 		storeSyncResult(result, resourceType, serverSyncLogic, serverUser.getName());
 		
+		//Get synchronization data from server. Can't construct here, because last_sync_date only known by server
 		return getLastSyncData(serverUser.getName(), resourceType, serverSyncLogic);
 	}	
 	
+	/**
+	 * Stores result of synchronization on server
+	 * @param result
+	 * @param resourceType
+	 * @param serverLogic
+	 * @param serverUserName
+	 */
 	private void storeSyncResult(String result, Class<? extends Resource> resourceType, SyncLogicInterface serverLogic, String serverUserName) {
-		SyncLogicInterface syncServerLogic = serverLogic;
-		SynchronizationData data = syncServerLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUserName, uri, resourceType);
+		SynchronizationData data = serverLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUserName, uri, resourceType);
 		if(!present(data)) {
 			//started more than one sync process per second -> do nothing
 			return;
 		}
 		if (data.getStatus().equals("undone")) {
 			data.setStatus(result);
-			syncServerLogic.updateSyncData(data);
+			serverLogic.updateSyncData(data);
 		} else {
-			// ERROR
+			log.error("Error no running synchronization dound, to store result");
 		}
 	}
 
+	/**
+	 * main synchronization method
+	 * @param resourceType
+	 * @param serverUser
+	 * @param clientUser
+	 * @param syncServerLogic
+	 * @param clientLogic
+	 * @return synchronization result
+	 */
 	private String synchronizeResource(final Class<? extends Resource> resourceType, User serverUser, User clientUser, SyncLogicInterface syncServerLogic, LogicInterface clientLogic) {
 		/*
 		 * TODO remove syncServerLogic and syncClientLogic after integration of
@@ -152,19 +197,21 @@ public class SynchronizationClient {
 		SyncLogicInterface syncClientLogic = (SyncLogicInterface)clientLogic;
 		LogicInterface serverLogic = (LogicInterface)syncServerLogic;
 		
+		//Add sync acces to both users
 		User serverAuthenticatedUser = serverLogic.getAuthenticatedUser();
 		serverAuthenticatedUser.setRole(Role.SYNC);
-
 		
 		User clientAuthenticatedUser = clientLogic.getAuthenticatedUser();
 		clientAuthenticatedUser.setRole(Role.SYNC);
 	
+		//get posts from client system
 		List<SynchronizationPost> clientPosts = syncClientLogic.getSyncPostsListForUser(resourceType, clientUser.getName());
 		
-		syncServerLogic.getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, uri);
+		//get synchronization states and posts from server
+		clientPosts = syncServerLogic.getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, uri);
 
 		/*
-		 * target lists
+		 * create target lists
 		 */
 		List<Post<?>> createOnClientList = new ArrayList<Post<?>>();
 		List<Post<?>> createOnServerList = new ArrayList<Post<?>>();
@@ -173,6 +220,9 @@ public class SynchronizationClient {
 		List<Post<?>> updateOnClientList = new ArrayList<Post<?>>();
 		List<Post<?>> updateOnServerList = new ArrayList<Post<?>>();
 
+		/*
+		 * iterate over all posts and put each post to the target list
+		 */
 		for (SynchronizationPost post : clientPosts) {
 			Post<? extends Resource> postToHandle;
 			switch (post.getState()) {
@@ -207,48 +257,98 @@ public class SynchronizationClient {
 			}
 		}
 
-		// Apply changes
-		StringBuilder answer = new StringBuilder();
+		boolean duplicates = false;
+		
+		/*
+		 *  Apply changes to both systems.
+		 */
+		StringBuilder result = new StringBuilder();
+		
+		/*
+		 * create posts on client 
+		 */
 		if (!createOnClientList.isEmpty()) {
-			clientLogic.createPosts(createOnClientList);
-			answer.append("created on client: " + createOnClientList.size() + ", ");
+			try {
+				clientLogic.createPosts(createOnClientList);
+				result.append("created on client: " + createOnClientList.size() + ", ");
+			} catch (DatabaseException e) {
+				/*
+				 *  this can happen if some duplicate posts exists
+				 *  FIXME: check oder possibilities to throw Database Exception
+				 */
+				log.error("database exception catched during creation on client", e);
+				duplicates = true;
+			}
+			
 		}
 
+		/*
+		 * create posts on server
+		 */
 		if (!createOnServerList.isEmpty()) {
-			serverLogic.createPosts(createOnServerList);
-			answer.append("created on server: " + createOnServerList.size() + ", ");
+			try {
+				serverLogic.createPosts(createOnServerList);
+				result.append("created on server: " + createOnServerList.size() + ", ");
+			} catch (DatabaseException e) {
+				/*
+				 *  this can happen if some duplicate posts exists
+				 *  FIXME: check oder possibilities to throw Database Exception
+				 */
+				log.error("database exception catched during creation on server", e);
+				duplicates = true;
+			}
 		}
 
+		/*
+		 * update posts on client 
+		 */
 		if (!updateOnClientList.isEmpty()) {
-			// TODO other operation?
 			clientLogic.updatePosts(updateOnClientList, PostUpdateOperation.UPDATE_ALL);
-			answer.append("updated on client: " + updateOnClientList.size() + ", ");
+			result.append("updated on client: " + updateOnClientList.size() + ", ");
 		}
 
+		/*
+		 * update posts on server
+		 */
 		if (!updateOnServerList.isEmpty()) {
 			serverLogic.updatePosts(updateOnServerList, PostUpdateOperation.UPDATE_ALL);
-			answer.append("updated on server: " + updateOnServerList.size() + ", ");
+			result.append("updated on server: " + updateOnServerList.size() + ", ");
 		}
 
+		/*
+		 * delete posts on client
+		 */
 		if (!deleteOnClientList.isEmpty()) {
 			clientLogic.deletePosts(clientUser.getName(), deleteOnClientList);
-			answer.append("deleted on client: " + deleteOnClientList.size() + ", ");
+			result.append("deleted on client: " + deleteOnClientList.size() + ", ");
 		}
 
+		/*
+		 * delete posts no server
+		 */
 		if (!deleteOnServerList.isEmpty()) {
 			serverLogic.deletePosts(serverUser.getName(), deleteOnServerList);
-			answer.append("deleted on server: " + deleteOnServerList.size());
+			result.append("deleted on server: " + deleteOnServerList.size());
 		}
 
-		answer.insert(0, "done, ");
-		int length = answer.length();
+		/*
+		 * generate result string
+		 */
+		if (duplicates) {
+			result.insert(0, "duplicates detected, ");
+		} else {
+			result.insert(0, "done, ");
+		}
+		
+	
+		int length = result.length();
 		if (length == 6) {
-			answer.append("no changes");
-		} else if (answer.lastIndexOf(", ") == length - 2) {
-			answer.delete(length - 2, length);
+			result.append("no changes");
+		} else if (result.lastIndexOf(", ") == length - 2) {
+			result.delete(length - 2, length);
 		}
 
-		return answer.toString();
+		return result.toString();
 	}
 
 	/**
