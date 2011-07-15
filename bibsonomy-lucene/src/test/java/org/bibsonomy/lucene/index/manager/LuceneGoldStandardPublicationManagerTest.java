@@ -22,10 +22,10 @@ import org.bibsonomy.lucene.util.generator.LuceneGenerateGoldStandardPublication
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -120,14 +120,13 @@ public class LuceneGoldStandardPublicationManagerTest extends AbstractDatabaseMa
     }
 
     @Test
-    @Ignore
     public void testUpdate() {
 		final int docCountBefore = manager.getResourceIndeces().get(0).getStatistics().getNumDocs();
 	
 		final Post<GoldStandardPublication> post = goldStandardManager.getPostDetails("", INTER_HASH, "", allowedGroupIds, this.dbSession);
 		post.getResource().setAuthor("luceneTest"); // changes the interhash!!
 	
-		goldStandardManager.updatePost(post, INTER_HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession);
+		goldStandardManager.updatePost(post, INTER_HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession, new User("testUser"));
 	
 		post.getResource().recalculateHashes();
 		final String newInterHash = post.getResource().getInterHash();
@@ -138,7 +137,7 @@ public class LuceneGoldStandardPublicationManagerTest extends AbstractDatabaseMa
 		assertEquals(1, posts.size());
 	
 		post.getResource().setAbstract("Lorem ipsum dolor logos mundus novus");
-		goldStandardManager.updatePost(post, newInterHash, PostUpdateOperation.UPDATE_ALL, this.dbSession);
+		goldStandardManager.updatePost(post, newInterHash, PostUpdateOperation.UPDATE_ALL, this.dbSession, new User("testUser"));
 	
 		// update index
 		updateIndex();
