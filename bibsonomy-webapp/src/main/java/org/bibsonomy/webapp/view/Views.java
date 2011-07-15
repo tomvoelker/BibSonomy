@@ -121,6 +121,11 @@ public enum Views implements View {
 	FRIENDPAGE("friend"),
 	
 	/**
+	 * tagged friend page shows all users of the requested group and their posts
+	 */
+	TAGGEDFRIENDPAGE("taggedfriend"),
+	
+	/**
 	 * bibtex page shows all publications with the given inter-/intrahash
 	 */
 	BIBTEXPAGE("bibtex"),

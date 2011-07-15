@@ -588,6 +588,56 @@
 		<to type="redirect" last="true">/friend/${escape:$1}</to>
 	</rule>
 
+	 
+	<!-- ############## taggedfriend pages ############### -->
+	
+	<!-- /taggedfriend/RELATION/TAG -->
+	<rule>
+		<name>/taggedfriend/RELATION/TAG</name>
+		<from>^/taggedfriend/+([^/]+?)/(.+)$</from>
+		<set type="parameter" name="requestedUserRelation">$1</set>
+		<set type="parameter" name="requestedTags">$2</set>
+		<to last="true">/taggedfriend</to>
+	</rule>
+	
+	<!-- redirect for tag formular on /friend/USER/TAG page -->
+	<rule>
+		<name>redirect /taggedfriend/RELATION/TAG</name>
+		<condition type="parameter" name="tag">(.+)</condition>
+		<from>^/+taggedfriend/+([^/]+)$</from>
+		<to type="redirect" last="true">/taggedfriend/${escape:$1}/${escape:%1}</to>
+	</rule>
+	
+	<!-- /taggedfriend/RELATION -->
+	<rule>
+		<name>/taggedfriend/RELATION</name>
+		<from>^/taggedfriend/+([^/]+?)$</from>
+		<set type="parameter" name="requestedUserRelation">$1</set>
+		<to last="true">/taggedfriend</to>
+	</rule>
+	
+	<!-- redirect /taggedfriend/RELATION/ -->
+	<rule>
+		<name>redirect /taggedfriend/RELATION</name>
+		<from>^/+taggedfriend/+([^/]+)/$</from>
+		<to type="redirect" last="true">/taggedfriend/${escape:$1}</to>
+	</rule>
+	
+	<!-- redirect /taggedfriend/ -->
+	<rule>
+		<name>redirect /taggedfriend/</name>
+		<from>^/+taggedfriend*$</from>
+		<to type="redirect" last="true">/friends</to>
+	</rule>
+	
+	<!-- redirect /taggedfriend/ -->
+	<rule>
+		<name>redirect /taggedfriend/</name>
+		<from>^/+taggedfriend/*$</from>
+		<to type="redirect" last="true">/friends</to>
+	</rule>
+	
+	
 	<!-- ############## tag pages ############### -->
 	<!-- redirect for tag formular on /tag page -->
 	<rule>

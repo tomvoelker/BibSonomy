@@ -363,6 +363,12 @@
 						<property name="controllerBeanName" value="friendPageController"/>
 					</bean>
 				</entry>
+				<entry key="/taggedfriend">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="taggedFriendPageController"/>
+					</bean>
+				</entry>
+				
 				<entry key="/bibtexkey">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bibtexkeyPageController"/>
@@ -569,6 +575,11 @@
 	
 	<bean id="friendPageController" class="org.bibsonomy.webapp.controller.FriendPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="taggedFriendPageController" class="org.bibsonomy.webapp.controller.TaggedFriendPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+		<property name="logic" ref="logic"/>		
 	</bean>
 	
 	<bean id="groupPageController" class="org.bibsonomy.webapp.controller.GroupPageController" scope="request" parent="multiResourceListControllerWithTags">

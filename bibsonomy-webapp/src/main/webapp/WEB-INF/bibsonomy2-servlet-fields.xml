@@ -19,6 +19,7 @@
 				<value>requestedTags</value>
 				<value>requestedAuthor</value>
 				<value>requestedUser</value>
+				<value>requestedUserRelation</value>
 				<value>requestedGroup</value>
 				<value>requestedSearch</value>
 				<value>requestedKey</value>
