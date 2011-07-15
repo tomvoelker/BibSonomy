@@ -18,13 +18,16 @@
 , \format[HTMLChars]{\address}
 \end{address}.
 <br/>
-\begin{url}<a href="\format[Replace(\n,),HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}
-\begin{abstract}<a onclick="toggleAbstract('\username', '\intrahash'); return false;" href="\biburl?format=bibtex">[Kurzfassung]</a>&nbsp;\end{abstract}
+
+<a href="\pubmedurl" target="_blank"> [Kurzfassung] </a>&nbsp;
 <a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
+<a onclick="toggleBibtex2('\username', '\intrahash', '\biburl?format=endnote'); return false;" href="\biburl?format=endnote">[Endnote]</a>&nbsp;
 <div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
 \format[Replace("\n, "),HTMLChars]{\abstract}
 </div>
 <div style="position:relative">						
-	<div id="bib_\intrahash\username" style="display:inline;position:absolute;"></div>
+	<div id="bib_\intrahash\username" style="display:inline;position:relativ;"></div>
+	<div id="bib_\intrahash\username_2" style="display:inline;position:relativ;"></div>
+
 </div>
 </p>
