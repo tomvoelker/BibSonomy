@@ -23,6 +23,7 @@
 	<jsp:directive.attribute name="sidebar" fragment="true" />
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
 	
 
     <!-- 
@@ -184,9 +185,11 @@
 								<br/>
 								<a href="/edit_tags"><fmt:message key="navi.editTags"/></a>
 							</c:when>
-						<c:otherwise>
-							<parts:login requPath="${requPath}"/>
-						</c:otherwise>
+							<c:otherwise>
+								<c:if test="${empty noLoginBox}">
+									<parts:login requPath="${requPath}"/>
+								</c:if>
+							</c:otherwise>
 						</c:choose>
 					</div>
 				
