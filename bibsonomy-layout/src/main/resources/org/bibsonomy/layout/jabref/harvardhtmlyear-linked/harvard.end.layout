@@ -37,5 +37,21 @@ function toggleBibtex(user,hash,biburl) {
     el.appendChild(iframe);
 	return;
 }
+function toggleBibtex2(user,hash,biburl) {	
+	var f = document.getElementById('bib_' + hash + user + '_src2');
+	if (undefined != f) {
+		f.parentNode.removeChild(f);
+		return;
+	}
+	var el = document.getElementById('bib_' + hash + user + '_2');
+    iframe = document.createElement("iframe");
+    iframe.setAttribute("src", biburl);
+	iframe.setAttribute("id", 'bib_' + hash + user + '_src2');
+    iframe.style.width = 500+"px";
+    iframe.style.height = 200+"px";
+	iframe.style.background = "#eee";
+    el.appendChild(iframe);
+	return;
+}
 -->
 </script>
