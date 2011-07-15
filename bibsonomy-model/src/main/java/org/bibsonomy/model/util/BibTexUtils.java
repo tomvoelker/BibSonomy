@@ -68,12 +68,6 @@ import org.bibsonomy.util.tex.TexDecode;
  * @version $Id$
  */
 public class BibTexUtils {
-	/**
-	 * By default, all misc fields are parsed. 
-	 */
-	private static final SerializeBibtexMode DEFAULT_SERIALIZE_BIBTEX_MODE = SerializeBibtexMode.PARSED_MISCFIELDS;
-
-
 	private static final Log log = LogFactory.getLog(BibTexUtils.class);
 
 	/**
@@ -164,9 +158,7 @@ public class BibTexUtils {
 			"bibtexAbstract",  // added separately
 			"bibtexKey",       // added at beginning of entry
 			"entrytype",       // added at beginning of entry
-			"misc",            // contains several fields; handled separately
-			"author",          // handled separately
-			"editor",          // handled separately
+			"misc",            // contains several fields; handled separately 
 			"month",           // handled separately
 			"openURL", 
 			"simHash0", // not added
@@ -199,11 +191,9 @@ public class BibTexUtils {
 	public static final char KEYVALUE_SEPARATOR = ',';
 	/** assignment operator to assign keys to values; i.e. key OP val, ...*/
 	public static final char ASSIGNMENT_OPERATOR = '=';
-	/**
-	 * Indentation used for key/value pairs when converted to a BibTeX string. 
-	 */
-	private static final String DEFAULT_INTENDATION = "  ";
-	
+	/** indentation used for key/value pairs when converted to a bibtex string */
+	public static final String KEYVALUE_INDENT = "  ";
+
 	/**
 	 * Builds a string from a given bibtex object which can be used to build an OpenURL
 	 * see http://www.exlibrisgroup.com/sfx_openurl.htm
@@ -306,27 +296,14 @@ public class BibTexUtils {
 
 
 	/**
- 	 * Returns a BibTeX string representation of the given publication. By default, 
-	 * the contained misc fields are parsed before the BibTeX string is generated
-	 * and the authors and editors are in "Last, First" form.
-	 * @param bib
-	 * @return The BibTeX-serialized publication with the default person name 
-	 * order ({@link PersonNameUtils#DEFAULT_LAST_FIRST_NAMES}.
-	 */
-	public static String toBibtexString(final BibTex bib) {
-		return toBibtexString(bib, PersonNameUtils.DEFAULT_LAST_FIRST_NAMES);
-	}
-	
-	/**
-	 * Returns a BibTeX string representation of the given publication. By default, 
-	 * the contained misc fields are parsed before the BibTeX string is generated.
+	 * return a bibtex string representation of the given bibtex object. by default, 
+	 * the contained misc fields are parsed before the bibtex string is generated.
 	 * 
 	 * @param bib - the bibtex object
-	 * @param lastFirstNames - Use "Last, First" form for author/editor names or "First Last".
 	 * @return - a string representation of the given bibtex object
 	 */
-	public static String toBibtexString(final BibTex bib, final boolean lastFirstNames) {
-		return toBibtexString(bib, DEFAULT_SERIALIZE_BIBTEX_MODE, lastFirstNames);
+	public static String toBibtexString(final BibTex bib) {
+		return toBibtexString(bib, SerializeBibtexMode.PARSED_MISCFIELDS);
 	}
 
 
@@ -335,15 +312,12 @@ public class BibTexUtils {
 	 * 
 	 * @param bib - a bibtex object
 	 * @param mode - the serializing mode (parse misc fields or include misc fields as they are)
-	 * @param lastFirstNames - if <code>true</code>, author and editor names
-	 * are serializes in the form "Last, First"; else "First Last". Please note
-	 * that the latter format is ambiguous.
 	 * @return String bibtexString
 	 * 
 	 * TODO use BibTex.DEFAULT_OPENBRACKET etc.
 	 * 
 	 */
-	public static String toBibtexString(final BibTex bib, final SerializeBibtexMode mode, final boolean lastFirstNames) {
+	public static String toBibtexString(final BibTex bib, SerializeBibtexMode mode) {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
 
@@ -352,16 +326,6 @@ public class BibTexUtils {
 			 */
 			final StringBuilder buffer = new StringBuilder("@" + bib.getEntrytype() + "{" + bib.getBibtexKey() + ",\n");
 
-			/*
-			 * append author and editor
-			 */
-			if (present(bib.getAuthor())) {
-				buffer.append(DEFAULT_INTENDATION + "author = " + DEFAULT_OPENING_BRACKET + PersonNameUtils.serializePersonNames(bib.getAuthorList(), lastFirstNames) + DEFAULT_CLOSING_BRACKET + ",\n");
-			}
-			if (present(bib.getEditor())) {
-				buffer.append(DEFAULT_INTENDATION + "editor = " + DEFAULT_OPENING_BRACKET + PersonNameUtils.serializePersonNames(bib.getEditorList(), lastFirstNames) + DEFAULT_CLOSING_BRACKET + ",\n");
-			}
-			
 			/*
 			 * append all other fields
 			 */
@@ -381,7 +345,7 @@ public class BibTexUtils {
 						if (! NUMERIC_PATTERN.matcher(value).matches()) {
 							value = DEFAULT_OPENING_BRACKET + value + DEFAULT_CLOSING_BRACKET;
 						}
-						buffer.append(DEFAULT_INTENDATION + d.getName().toLowerCase() + " = " + value + ",\n");
+						buffer.append("  " + d.getName().toLowerCase() + " = " + value + ",\n");
 					}
 				}
 			}
@@ -389,7 +353,7 @@ public class BibTexUtils {
 			 * process miscFields map, if present
 			 */
 			if (present(bib.getMiscFields())) {
-				if ( mode.equals(DEFAULT_SERIALIZE_BIBTEX_MODE) && !bib.isMiscFieldParsed()) {
+				if ( mode.equals(SerializeBibtexMode.PARSED_MISCFIELDS) && !bib.isMiscFieldParsed()) {
 					// parse misc field, if not yet done
 					bib.parseMiscField();
 				}
@@ -400,7 +364,7 @@ public class BibTexUtils {
 			 * include plain misc fields if desired
 			 */
 			if (mode.equals(SerializeBibtexMode.PLAIN_MISCFIELDS) && present(bib.getMisc())) {
-				buffer.append(DEFAULT_INTENDATION + bib.getMisc() + ",\n");
+				buffer.append("  " + bib.getMisc() + ",\n");
 			}
 			/*
 			 * add month
@@ -408,14 +372,14 @@ public class BibTexUtils {
 			final String month = bib.getMonth();
 			if (present(month)) {
 				// we don't add {}, this is done by getMonth(), if necessary
-				buffer.append(DEFAULT_INTENDATION + "month = " + getMonth(month) + ",\n");
+				buffer.append("  month = " + getMonth(month) + ",\n");
 			}
 			/*
 			 * add abstract
 			 */
 			final String bibAbstract = bib.getAbstract();
 			if (present(bibAbstract)) {
-				buffer.append(DEFAULT_INTENDATION + "abstract = {" + bibAbstract + "},\n");
+				buffer.append("  abstract = {" + bibAbstract + "},\n");
 			}
 			/*
 			 * remove last comma
@@ -434,6 +398,7 @@ public class BibTexUtils {
 		}		
 		return null;
 	}
+
 
 
 	/**
@@ -482,7 +447,7 @@ public class BibTexUtils {
 
 	/**
 	 * Creates a bibtex string with some bibsonomy-specific information using 
-	 * {@link #toBibtexString(Post, boolean)}.
+	 * {@link #toBibtexString(Post)}.
 	 * 
 	 * <ul>
 	 * 		<li>tags in <code>keywords</code> field</li>
@@ -490,53 +455,29 @@ public class BibTexUtils {
 	 * 		<li>description in the <code>description</code> field</li>
 	 * </ul>
 	 * 
-	 * @see #toBibtexString(BibTex, boolean)
+	 * @see #toBibtexString(Post)
 	 * 
-	 * @param post - a publication post
-	 * @param lastFirstNames - Use "Last, First" form for author/editor names or "First Last".
+	 * @param post 
+	 * 			- a bibtex post
 	 * @param urlGenerator - to generate a proper URL pointing to the post. 
 	 * 
 	 * @return A string representation of the posts in BibTeX format.
 	 */
-	public static String toBibtexString(final Post<BibTex> post, final boolean lastFirstNames, final URLGenerator urlGenerator) {
-		post.getResource().addMiscField(ADDITIONAL_MISC_FIELD_BIBURL, urlGenerator.getPublicationUrl(post.getResource(), post.getUser()).toString());
-		return toBibtexString(post, lastFirstNames);
-	}
-	
-	/**
-	 * Same as {@link #toBibtexString(Post, boolean, URLGenerator)} but with 
-	 * default {@link PersonNameUtils#DEFAULT_LAST_FIRST_NAMES}
-	 * 
-	 * @param post
-	 * @param urlGenerator
-	 * @return A string representation of the posts in BibTeX format.
-	 */
 	public static String toBibtexString(final Post<BibTex> post, final URLGenerator urlGenerator) {
-		return toBibtexString(post, PersonNameUtils.DEFAULT_LAST_FIRST_NAMES, urlGenerator);
+		post.getResource().addMiscField(ADDITIONAL_MISC_FIELD_BIBURL, urlGenerator.getPublicationUrl(post.getResource(), post.getUser()).toString());
+		return toBibtexString(post);
 	}
 
 
 	/**
-	 * Return a BibTeX representation of the given post. Defaults to 
+	 * Return a bibtex representation of the given post. Defaults to 
 	 * serialize mode PARSED_MISCFIELDS.
-	 * 
-	 * @param post - a post
-	 * @param lastFirstNames - Use "Last, First" form for author/editor names or "First Last".
-	 * @return - a bibtex string representation of this post.
-	 */
-	public static String toBibtexString(final Post<BibTex> post, final boolean lastFirstNames) {
-		return toBibtexString(post, DEFAULT_SERIALIZE_BIBTEX_MODE, lastFirstNames);
-	}
-	
-	/**
-	 * Return a BibTeX representation of the given post. Defaults to 
-	 * serialize mode PARSED_MISCFIELDS and {@link PersonNameUtils#DEFAULT_LAST_FIRST_NAMES};
 	 * 
 	 * @param post - a post
 	 * @return - a bibtex string representation of this post.
 	 */
 	public static String toBibtexString(final Post<BibTex> post) {
-		return toBibtexString(post, DEFAULT_SERIALIZE_BIBTEX_MODE, PersonNameUtils.DEFAULT_LAST_FIRST_NAMES);
+		return toBibtexString(post, SerializeBibtexMode.PARSED_MISCFIELDS);
 	}
 
 	/**
@@ -550,11 +491,10 @@ public class BibTexUtils {
 	 * 
 	 * @param post - a BibTeX post.
 	 * @param mode - the serialize mode
-	 * @param lastFirstNames - Use "Last, First" form for author/editor names or "First Last".
 	 * 
 	 * @return A string representation of the post in BibTeX format.
 	 */
-	public static String toBibtexString(final Post<BibTex> post, final SerializeBibtexMode mode, final boolean lastFirstNames) {
+	public static String toBibtexString(final Post<BibTex> post, SerializeBibtexMode mode) {
 		final BibTex bib = post.getResource();	
 		/*
 		 * add additional fields.
@@ -574,7 +514,7 @@ public class BibTexUtils {
 		if (present(post.getChangeDate())) {
 			bib.addMiscField(ADDITIONAL_MISC_FIELD_TIMESTAMP, DATE_FORMAT.format(post.getDate()));
 		}
-		return toBibtexString(bib, mode, lastFirstNames);
+		return toBibtexString(bib, mode);
 	}
 
 	/**
@@ -883,7 +823,7 @@ public class BibTexUtils {
 			final Iterator<String> it = miscFields.keySet().iterator();
 			while (it.hasNext()) {				
 				final String currKey = it.next();
-				miscFieldsSerialized.append(DEFAULT_INTENDATION + currKey.toLowerCase() + " " + ASSIGNMENT_OPERATOR + " " + DEFAULT_OPENING_BRACKET + miscFields.get(currKey) + DEFAULT_CLOSING_BRACKET);
+				miscFieldsSerialized.append(KEYVALUE_INDENT + currKey.toLowerCase() + " " + ASSIGNMENT_OPERATOR + " " + DEFAULT_OPENING_BRACKET + miscFields.get(currKey) + DEFAULT_CLOSING_BRACKET);
 				if (it.hasNext() || appendTrailingSeparator) {	miscFieldsSerialized.append(KEYVALUE_SEPARATOR + "\n");	}
 			}
 
