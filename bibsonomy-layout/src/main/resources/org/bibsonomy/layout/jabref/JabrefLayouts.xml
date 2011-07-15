@@ -431,6 +431,44 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="harvardhtmlyear-linked">
+		<displayName>Harvard (HTML version), grouped by year</displayName>
+		<description xml:lang="en">
+			HTML output format formatted according to the Harvard bibliography
+			style guidelines and grouped by year. Includes Links to Abstract and
+			Export Formats. Special version created in cooperation with 
+			Clayhouse.de.
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe Format gemäß den "Harvard bibliography
+			style" Richtlinien, gruppiert nach Jahren. Enthält auch Links zur
+			Zusammenfassung und Exportformaten. Angepasste Version in Zusammenarbeit
+			mit Clayhouse.de.
+		</description>
+		<directory>harvardhtmlyear-linked</directory>
+		<baseFileName>harvard</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="harvardhtmlyear-linked-full">
+		<displayName>Harvard (HTML version), grouped by year</displayName>
+		<description xml:lang="en">
+			HTML output format formatted according to the Harvard bibliography
+			style guidelines and grouped by year. Includes Links to Abstract, 
+			Export Formats and Full Text. Special version created in cooperation with 
+			Clayhouse.de.
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe Format gemäß den "Harvard bibliography
+			style" Richtlinien, gruppiert nach Jahren. Enthält auch Links zu
+			Zusammenfassung, Exportformaten sowie Volltext. Angepasste Version in Zusammenarbeit
+			mit Clayhouse.de.
+		</description>
+		<directory>harvardhtmlyear-linked-full</directory>
+		<baseFileName>harvard</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>		
 	<layout name="winfoyear">
 		<displayName>DIN 1505 MMS, with endnote entry, grouped by year</displayName>
 		<description xml:lang="en">
