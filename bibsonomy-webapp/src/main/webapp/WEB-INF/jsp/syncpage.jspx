@@ -40,6 +40,7 @@
 			<fmt:message var="bookmarks" key="bookmarks" />
 			<fmt:message var="publications" key="publications" />
 			<fmt:message var="synchronizationRunning" key="synchronization.synchronizationRunning"/>
+			<fmt:message var="authFailed" key="synchronization.authFailed"/>
 			<div id="general_100">
 			<h2><fmt:message key="synchronization.header" /></h2>
 			<c:forEach var="service" items="${command.syncServices}">
@@ -48,61 +49,68 @@
 				<div cssClass="fsRow">
 					<c:out value="${serviceName}: "/> <span class="serviceName"> <c:out value="${service.service}" /></span>
 				</div>	
-						<div class="contentContainer" >
-							<div cssClass="fsRow">
-								<c:out value="${syncTimes}"/>
-							</div>
-							<table>
-							<tr class="contentBookmark">
-								<c:set var="LSDbook" value="${service.lastSyncData['Bookmark']}" />
-								<td><c:out value="${bookmarks}: "/></td>
-								<td>
-									<span class="lastSyncDate">
-										<fmt:formatDate value="${LSDbook.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-									</span>
-								</td>
-								<td><span class="resultMessage">
-									<c:choose>
-										<c:when test="${LSDbook != null}">
-											<fmt:message key="synchronization.result"/>
-										</c:when>
-										<c:otherwise>
-											<fmt:message key="synchronization.noresult"/>
-										</c:otherwise>
-									</c:choose>
-								</span></td>
-								<td>
-									<span class="lastSyncResult">
-										<c:out value="${LSDbook.status}"/>
-									</span>
-								</td>
-								<td><input type="checkbox" class="bookmarksBox" checked="checked"><c:out value="${syncThisContent}"/></input></td>
-								
-							</tr>
-							<tr class="contentBibTex">
-								<c:set var="LSDpub" value="${service.lastSyncData['BibTex']}"/>
-								<td><c:out value="${publications}: " /></td>
-								<td><span class="lastSyncDate"><fmt:formatDate value="${LSDpub.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" /></span></td>
-								<td>
-									<span class="resultMessage">
+					<c:choose>
+						<c:when test="${service.lastSyncData == null}">
+							<c:out value="${authFailed}"/>
+						</c:when>
+						<c:otherwise>
+							<div class="contentContainer" >
+								<div cssClass="fsRow">
+									<c:out value="${syncTimes}"/>
+								</div>
+								<table>
+								<tr class="contentBookmark">
+									<c:set var="LSDbook" value="${service.lastSyncData['Bookmark']}" />
+									<td><c:out value="${bookmarks}: "/></td>
+									<td>
+										<span class="lastSyncDate">
+											<fmt:formatDate value="${LSDbook.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
+										</span>
+									</td>
+									<td><span class="resultMessage">
 										<c:choose>
-											<c:when test="${LSDpub != null}">
+											<c:when test="${LSDbook != null}">
 												<fmt:message key="synchronization.result"/>
 											</c:when>
 											<c:otherwise>
 												<fmt:message key="synchronization.noresult"/>
 											</c:otherwise>
 										</c:choose>
-									</span>								
-								</td>
-								<td><span class="lastSyncResult"><c:out value="${LSDpub.status}"/></span></td>
-								<td><input type="checkbox" class="publicationsBox" checked="checked"><c:out value="${syncThisContent}"/></input></td>
-							</tr>
-							</table>
-							<span id="resultMsg" style="display:none"><fmt:message key="synchronization.result"/></span>
-						</div>					
-					<input class="synchronizeBtn" type="submit" value="${syncronize}"/>
-					<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
+									</span></td>
+									<td>
+										<span class="lastSyncResult">
+											<c:out value="${LSDbook.status}"/>
+										</span>
+									</td>
+									<td><input type="checkbox" class="bookmarksBox" checked="checked"><c:out value="${syncThisContent}"/></input></td>
+									
+								</tr>
+								<tr class="contentBibTex">
+									<c:set var="LSDpub" value="${service.lastSyncData['BibTex']}"/>
+									<td><c:out value="${publications}: " /></td>
+									<td><span class="lastSyncDate"><fmt:formatDate value="${LSDpub.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" /></span></td>
+									<td>
+										<span class="resultMessage">
+											<c:choose>
+												<c:when test="${LSDpub != null}">
+													<fmt:message key="synchronization.result"/>
+												</c:when>
+												<c:otherwise>
+													<fmt:message key="synchronization.noresult"/>
+												</c:otherwise>
+											</c:choose>
+										</span>								
+									</td>
+									<td><span class="lastSyncResult"><c:out value="${LSDpub.status}"/></span></td>
+									<td><input type="checkbox" class="publicationsBox" checked="checked"><c:out value="${syncThisContent}"/></input></td>
+								</tr>
+								</table>
+								<span id="resultMsg" style="display:none"><fmt:message key="synchronization.result"/></span>
+							</div>					
+							<input class="synchronizeBtn" type="submit" value="${syncronize}"/>
+							<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
+						</c:otherwise>
+					</c:choose>
 				</fieldset>
 
 			</c:forEach>

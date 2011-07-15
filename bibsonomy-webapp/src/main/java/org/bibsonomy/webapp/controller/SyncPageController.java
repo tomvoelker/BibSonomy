@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -20,7 +21,6 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
@@ -51,18 +51,22 @@ public class SyncPageController implements MinimalisticController<SyncPageComman
 		
 		List<SyncService> userServices;
 		if(!command.getContext().getUserLoggedIn()) {
-			throw new AccessDeniedException("user isn't logged in");
+			throw new AccessDeniedException();
 		}
 		
 		log.debug("try to get sync services for user");
 		userServices = syncLogic.getSyncServerForUser(command.getContext().getLoginUser().getName());
 		
 		log.debug("try to get synchronization data from remote service");
-		for (final SyncService syncService : userServices) {
-			final Map<String, SynchronizationData> syncData = new HashMap<String, SynchronizationData>();
-			// FIXME: iterate over (to be created array) in ResourceUtils
-			syncData.put(Bookmark.class.getSimpleName(), syncClient.getLastSyncData(syncService, Bookmark.class));
-			syncData.put(BibTex.class.getSimpleName(), syncClient.getLastSyncData(syncService, BibTex.class));
+		for (SyncService syncService : userServices) {
+			Map<String, SynchronizationData> syncData = new HashMap<String, SynchronizationData>();
+			try {
+				// FIXME: iterate over (to be created array) in ResourceUtils
+				syncData.put(Bookmark.class.getSimpleName(), syncClient.getLastSyncData(syncService, Bookmark.class));
+				syncData.put(BibTex.class.getSimpleName(), syncClient.getLastSyncData(syncService, BibTex.class));
+			} catch (AccessDeniedException e) {
+				log.debug("access denied to remote service " + syncService.getService().toString());
+			}
 			syncService.setLastSyncData(syncData);
 		}
 		
