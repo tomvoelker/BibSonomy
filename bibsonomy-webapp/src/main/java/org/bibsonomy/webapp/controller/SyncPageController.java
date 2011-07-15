@@ -60,6 +60,7 @@ public class SyncPageController implements MinimalisticController<SyncPageComman
 		log.debug("try to get synchronization data from remote service");
 		for (final SyncService syncService : userServices) {
 			final Map<String, SynchronizationData> syncData = new HashMap<String, SynchronizationData>();
+			// FIXME: iterate over (to be created array) in ResourceUtils
 			syncData.put(Bookmark.class.getSimpleName(), syncClient.getLastSyncData(syncService, Bookmark.class));
 			syncData.put(BibTex.class.getSimpleName(), syncClient.getLastSyncData(syncService, BibTex.class));
 			syncService.setLastSyncData(syncData);
