@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.opensocial.oauth.database.IOAuthLogic;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
@@ -19,7 +21,6 @@ import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.opensocial.BibSonomyOAuthValidator;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
@@ -62,17 +63,28 @@ public class AdminOAuthController implements ValidationAwareController<OAuthAdmi
 			command.setAdminAction(OAuthAdminCommand.AdminAction.List.name());
 		}
 		
+		/*
+		 * Register or remove consumers.
+		 * */
 		switch (command.getAdminAction_()) {
-		case Register:
+		case Register: {
+			if (KeyType.RSA_PRIVATE.equals(command.getConsumerInfo().getConsumerKey())) {
+				command.getConsumerInfo().setKeyName("RSA-SHA1.PublicKey");
+			}
 			this.oauthLogic.createConsumer(command.getConsumerInfo());
-			//$FALL-THROUGH$ to get the list of consumerInfos
-		case List:
-			final List<OAuthConsumerInfo> consumerInfo = this.oauthLogic.listConsumers();
-			command.setConsumers(consumerInfo);
 			break;
-		default:
-			log.error("Invalid action given for administrating OAuth.");
 		}
+		case Remove: {
+			log.info("Deleting consumerInfo " + command.getConsumerInfo().getConsumerKey() + ".");
+			this.oauthLogic.deleteConsumer(command.getConsumerInfo().getConsumerKey());
+			break;
+		}}
+		
+		/*
+		 * List consumers.
+		 * */
+		List<OAuthConsumerInfo> consumerInfo = this.oauthLogic.listConsumers();
+		command.setConsumers(consumerInfo);
 		
 		return Views.ADMIN_OAUTH;
 	}
@@ -82,7 +94,7 @@ public class AdminOAuthController implements ValidationAwareController<OAuthAdmi
 	//------------------------------------------------------------------------
 	@Override
 	public Validator<OAuthAdminCommand> getValidator() {
-		return new BibSonomyOAuthValidator();
+		return new BibSonomyOAuthValidator(this.oauthLogic);
 	}
 
 	@Override

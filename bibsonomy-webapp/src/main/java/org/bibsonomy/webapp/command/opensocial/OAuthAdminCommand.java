@@ -10,7 +10,7 @@ import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
  * @version $Id$
  */
 public class OAuthAdminCommand extends OAuthCommand {
-	public enum AdminAction { List, Register };
+	public enum AdminAction { List, Register, Remove };
 	
 	private String adminAction;
 	

@@ -16,6 +16,8 @@ import net.oauth.signature.pem.PEMReader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
+import org.bibsonomy.opensocial.oauth.database.IOAuthLogic;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.webapp.command.opensocial.OAuthAdminCommand;
 import org.bibsonomy.webapp.command.opensocial.OAuthAdminCommand.AdminAction;
 import org.bibsonomy.webapp.util.Validator;
@@ -28,6 +30,14 @@ import org.springframework.validation.ValidationUtils;
  */
 public class BibSonomyOAuthValidator implements  Validator<OAuthAdminCommand>{
 	private static final Log log = LogFactory.getLog(BibSonomyOAuthValidator.class);
+	private final IOAuthLogic logic;
+	
+	/**
+	 * @param logic
+	 */
+	public BibSonomyOAuthValidator (IOAuthLogic logic) {
+		this.logic = logic;
+	}
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -48,16 +58,25 @@ public class BibSonomyOAuthValidator implements  Validator<OAuthAdminCommand>{
 			}
 		}
 		
-		// Check whether required fields are empty
 		if (AdminAction.Register.equals(command.getAdminAction_())) {
+			// Check whether required fields are empty
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.consumerKey", "error.field.required");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.consumerSecret", "error.field.required");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.serviceName", "error.field.required");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.keyType", "error.field.required");
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.keyName", "error.field.required");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.title", "error.field.required");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.summary", "error.field.required");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "consumerInfo.description", "error.field.required");
+			
+			// Check whether consumer-key already exists
+			OAuthConsumerInfo consumer = this.logic.readConsumer(command.getConsumerInfo().getConsumerKey());
+			if (consumer != null) {
+				errors.reject("consumerInfo.consumerKey", "error.field.duplicate.oauth.consumerKey");
+			}
+		}
+		else if (AdminAction.Remove.equals(command.getAdminAction_()) &&
+				!org.bibsonomy.util.ValidationUtils.present(command.getConsumerInfo().getConsumerKey())) {
+			errors.reject("error.field.required");
 		}
 	}
 
