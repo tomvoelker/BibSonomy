@@ -89,6 +89,13 @@ public interface IOAuthLogic {
 	 * @return
 	 */
 	public OAuthConsumerInfo readConsumer(String consumerKey);
+
+	/**
+	 * delete OAuth consumer information from database
+	 * 
+	 * @param consumerKey
+	 */
+	public void deleteConsumer(String consumerKey);
 	
 	/**
 	 * list all registered consumers

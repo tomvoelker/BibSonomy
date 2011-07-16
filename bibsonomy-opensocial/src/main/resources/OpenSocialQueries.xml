@@ -71,6 +71,11 @@
 		WHERE consumer_key = #consumerKey# 
 	</select>
 	
+	<delete id="removeConsumerInfo" parameterClass="string">
+		DELETE FROM oauth_provider_store
+		WHERE consumer_key = #consumerKey#
+	</delete>
+	
 	<select id="listConsumerInfo" resultMap="consumerInfo">
 		SELECT *
 		FROM oauth_provider_store

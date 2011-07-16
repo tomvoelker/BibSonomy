@@ -199,6 +199,14 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 		return consumerInfo;
 	}
 	
+	public void deleteConsumer(String consumerKey) {
+		try {
+			this.sqlMap.delete("removeConsumerInfo", consumerKey);
+		} catch (SQLException e) {
+			log.error("Error removing consumerInfo for consumerKey '"+ consumerKey +"'", e);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<OAuthConsumerInfo> listConsumers() {
 		List<OAuthConsumerInfo> consumerInfo = null;
