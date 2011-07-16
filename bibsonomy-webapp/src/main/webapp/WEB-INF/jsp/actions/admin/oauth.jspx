@@ -61,6 +61,14 @@
                 $(document).ready(function() {
                 	prepareErrorBoxes('dissError');
                 });
+                // Ensure consumer is to be removed and delete it.
+        		function deleteConsumer(consumerKey) {
+        			var box = window.confirm(getString('admin.oauth.consumer.ensureDelete'));
+        			if (box == true) { 
+        				document.getElementById("consumerKey").value = consumerKey;
+        				document.getElementById("deleteConsumerForm").submit();
+        			}
+        		} 
              ]]> 
              //</mtl:cdata>
           </script>
@@ -80,7 +88,6 @@
 						<tr>
 							<th><fmt:message key="admin.oauth.consumer.key"/></th>
 							<th><fmt:message key="admin.oauth.consumer.keyType"/></th>
-							<th><fmt:message key="admin.oauth.consumer.keyName"/></th>
 							<th><fmt:message key="admin.oauth.consumer.serviceName"/></th>
 							<th><fmt:message key="admin.oauth.consumer.callbackUrl"/></th>
 							<th><fmt:message key="admin.oauth.consumer.gadgetUrl"/></th>
@@ -89,6 +96,7 @@
 							<th><fmt:message key="admin.oauth.consumer.description"/></th>
 							<th><fmt:message key="admin.oauth.consumer.thumbnail"/></th>
 							<th><fmt:message key="admin.oauth.consumer.icon"/></th>
+							<th><fmt:message key="admin.oauth.consumer.delete"/></th>
 						</tr>
 					</thead>
 					
@@ -96,22 +104,35 @@
 		    			<tr class="consumerEntry">
 		    				<td><c:out value="${entry.consumerKey}"/></td>
 		    				<td><c:out value="${entry.keyType}"/></td>
-		    				<td><c:out value="${entry.keyName}"/></td>
 		    				<td><c:out value="${entry.serviceName}"/></td>
 		    				<td><c:out value="${entry.callbackUrl}"/></td>
 		    				<td><c:out value="${entry.gadgetUrl}"/></td>
 		    				<td><c:out value="${entry.title}"/></td>
 		    				<td><c:out value="${entry.summary}"/></td>
 		    				<td><c:out value="${entry.description}"/></td>
-		    				<td><c:if test="${not empty entry.thumbnail}">
-		    				<a href="${entry.thumbnail}"><img src ="${entry.thumbnail}" /></a>
-		    				</c:if></td>
-		    				<td><c:if test="${not empty entry.icon}">
-		    				<a href="${entry.icon}"><img src ="${entry.icon}" /></a>
-		    				</c:if></td>
+		    				<td>
+		    				    <c:if test="${not empty entry.thumbnail}">
+		    				    <a href="${entry.thumbnail}"><img src ="${entry.thumbnail}" /></a>
+		    				    </c:if>
+		    				</td>
+		    				<td>
+		    				    <c:if test="${not empty entry.icon}">
+		    				    <a href="${entry.icon}"><img src ="${entry.icon}" /></a>
+		    				    </c:if>
+		    				</td>
+		    				<td><a onclick="deleteConsumer('${entry.consumerKey}')"><fmt:message key="admin.oauth.consumer.delete"/></a></td>
 		    			</tr>
 					</c:forEach>
         	    </table>
+        	    
+        	    
+        	    <!--+
+        	    	| Delete Consumer (invisible)
+        	    	+--> 
+		    	<form action="/admin/oauth" id="deleteConsumerForm" method="POST">
+             		<input type="hidden" name="adminAction" value="Remove" />
+		    		<input type="hidden" name="consumerInfo.consumerKey" id="consumerKey" />
+		    	</form>
         	    
         	    
 				<!--+
@@ -156,13 +177,6 @@
 									</c:forEach>
 								</form:select>
 			  					<div class="dissError"><form:errors path="consumerInfo.keyType" /></div>
-            				</div>
-            				
-							<!-- key name -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.keyName" ><fmt:message key="admin.oauth.consumer.keyName"/>*</form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.keyName" tabindex="4"/>
-			  					<div class="dissError"><form:errors path="consumerInfo.keyName" /></div>
             				</div>
             				
 							<!-- callback url -->
