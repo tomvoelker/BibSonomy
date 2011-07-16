@@ -91,5 +91,10 @@ public class MockupOAuthLogic implements IOAuthLogic {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void deleteConsumer(String consumerKey) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
