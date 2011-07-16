@@ -63,7 +63,7 @@
                 });
                 // Ensure consumer is to be removed and delete it.
         		function deleteConsumer(consumerKey) {
-        			var box = window.confirm(getString('admin.oauth.consumer.ensureDelete'));
+        			var box = window.confirm(getString('admin.oauth.consumer.ensure_delete'));
         			if (box == true) { 
         				document.getElementById("consumerKey").value = consumerKey;
         				document.getElementById("deleteConsumerForm").submit();
