@@ -192,7 +192,7 @@ public class SynchronizationClient {
 		if (SynchronizationStatus.RUNNING.equals(data.getStatus())) {
 			syncLogicInterface.updateSyncStatus(data, status, info);
 		} else {
-			log.error("Error no running synchronization dound, to store result");
+			throw new RuntimeException("no running synchronization found for " + serverUserName + " on " + uri + " to store result");
 		}
 	}
 

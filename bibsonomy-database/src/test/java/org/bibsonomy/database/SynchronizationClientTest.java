@@ -200,32 +200,58 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * change some posts on server
 		 */
+		changeLeftSyncAndCheck(sync, syncServer, "server", serverUser, serverLogic, "client", clientUser, clientLogic, "b89c5230f929a2c9af0c808b17fae120");
+		/*
+		 * since we have only a resolution of 1 second in MySQL, we must wait
+		 * at least one second - otherwise we get a duplicate key exception when 
+		 * inserting the sync data. 
+		 */
+		wait(2);
+		/*
+		 * change some posts on client
+		 */
+		changeLeftSyncAndCheck(sync, syncServer, "client", clientUser, clientLogic, "server", serverUser, serverLogic, "9814aac6058e6db6c35ffe151f4c4c53");
+	}
+	
+
+
+	private void changeLeftSyncAndCheck(final SynchronizationClient sync, final URI syncServer, final String leftHost, final User leftUser, final DBLogic leftLogic, final String rightHost, final User rightUser, final DBLogic rightLogic, final String deleteHash) {
 		final Date now = new Date();
-		final List<Post<?>> serverPosts = new ArrayList<Post<?>>();
+		final List<Post<?>> posts = new ArrayList<Post<?>>();
 		/*
 		 * add a post
 		 */
-		serverPosts.add(createPost("added after sync on server", DATE_FORMAT.format(now), DATE_FORMAT.format(now), serverUser, Bookmark.class));
-		serverLogic.createPosts(serverPosts);
+		posts.add(createPost("added after sync on " + leftHost, DATE_FORMAT.format(now), DATE_FORMAT.format(now), leftUser, Bookmark.class));
+		leftLogic.createPosts(posts);
 		/*
 		 * delete a post
 		 */
-		serverLogic.deletePosts(serverUser.getName(), Collections.singletonList("b89c5230f929a2c9af0c808b17fae120"));
+		leftLogic.deletePosts(leftUser.getName(), Collections.singletonList(deleteHash));
 		/*
 		 * sync
 		 */
 		final SynchronizationData syncData = sync.synchronize(clientLogic, syncServer, Bookmark.class);
 		assertNotNull(syncData);
 		assertEquals(SynchronizationStatus.DONE, syncData.getStatus());
-		assertEquals("created on client: 1, deleted on client: 1", syncData.getInfo());
+		System.out.println(syncData.getInfo());
+		assertEquals("created on " + rightHost + ": 1, deleted on " + rightHost + ": 1", syncData.getInfo());
 		/*
-		 * check for posts on client
+		 * check for posts on server
 		 */
-		final Map<String, SynchronizationPost> map = clientLogic.getSyncPostsMapForUser(clientUser.getName(), Bookmark.class);
-		assertTrue(map.containsKey(serverPosts.get(0).getResource().getIntraHash()));
-		assertFalse(map.containsKey("b89c5230f929a2c9af0c808b17fae120"));
+		final Map<String, SynchronizationPost> map = rightLogic.getSyncPostsMapForUser(rightUser.getName(), Bookmark.class);
+		assertTrue(map.containsKey(posts.get(0).getResource().getIntraHash()));
+		assertFalse(map.containsKey(deleteHash));
 	}
 
+
+	/**
+	 * Helper method to check synchronicity of client and server.
+	 * 
+	 * @param sync
+	 * @param syncServer
+	 * @param resourceType
+	 * @param keys
+	 */
 	private void syncResources(final SynchronizationClient sync, final URI syncServer, final Class<? extends Resource> resourceType, final String[] keys) {
 		final SynchronizationData data = sync.synchronize(clientLogic, syncServer, resourceType);
 		assertNotNull("synchronization was not successful", data);
@@ -248,6 +274,17 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		}
 	}
 
+	/**
+	 * helper method to create posts of the given type
+	 * 
+	 * @param <T>
+	 * @param title
+	 * @param createDate
+	 * @param changeDate
+	 * @param user
+	 * @param resourceType
+	 * @return
+	 */
 	private <T extends Resource> Post<T> createPost(String title, String createDate, String changeDate, User user, Class<T> resourceType) {
 		final Post<T> post = ModelUtils.generatePost(resourceType);
 		post.setUser(user);
@@ -264,5 +301,14 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		}
 		post.getResource().setTitle(title);
 		return post;
+	}
+	
+	private static void wait(final int seconds) {
+		try {
+			Thread.sleep(1000 * seconds);
+		} catch (InterruptedException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
 	}
 }
