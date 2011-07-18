@@ -54,11 +54,6 @@
 			<version>1.2.1</version>
 		</dependency>
 		<dependency>
-		        <groupId>net.oauth.core</groupId>
-			<artifactId>oauth</artifactId>
-			<version>20100527</version>
-		</dependency>
-		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.4</version>
@@ -73,8 +68,4 @@
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
   </dependencies>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring-security.version>3.0.5.RELEASE</spring-security.version>
-  </properties>
 </project>
