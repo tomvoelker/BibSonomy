@@ -1,7 +1,6 @@
 package org.bibsonomy.database.managers.chain;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.GenericParam;
 
 /**
  * This interface encapsulates the getter for a L object
@@ -12,7 +11,7 @@ import org.bibsonomy.database.params.GenericParam;
  * @author Christian Schenk
  * @version $Id$
  */
-public interface ChainPerform<P extends GenericParam, L> {
+public interface ChainPerform<P, L> {
 
 	/**
 	 * Walks through the chain until a ChainElement is found that can handle the
