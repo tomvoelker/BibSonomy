@@ -13,15 +13,13 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.EditTagsPageViewCommand;
 import org.bibsonomy.webapp.command.actions.EditTagsCommand;
 import org.bibsonomy.webapp.command.actions.RelationsEditCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.Views;
 
 
@@ -30,20 +28,16 @@ import org.bibsonomy.webapp.view.Views;
  * 
  * @author Henrik Bartholmai
  * @version $Id$
- * 
  */
 public class EditTagsPageViewController extends SingleResourceListControllerWithTags implements MinimalisticController<EditTagsPageViewCommand> {
-
-
-	private RequestLogic requestLogic;
-
+	
 	@Override
-	public View workOn(EditTagsPageViewCommand command) {
+	public View workOn(final EditTagsPageViewCommand command) {
 		/*
 		 * no user given -> error
 		 */
 		if (!command.getContext().isUserLoggedIn()) {
-			return getAccessDeniedView(command, "error.general.login");
+			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
 		
 		int changedResources = 0;
@@ -75,8 +69,6 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		final User user = command.getContext().getLoginUser();
 		final String groupingName = user.getName();
 
-		command.setPageTitle("edit tags :: " + groupingName);
-
 		/*
 		 * set the tags of the user to get his tag cloud
 		 */
@@ -90,19 +82,17 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		command.getConcepts().setNumConcepts(concepts.size());
 		
 		return Views.EDIT_TAGS;
-		
-		
 	}
 	
-	private int workOnEditTagsHandler(EditTagsPageViewCommand cmd) {
-		User user = cmd.getContext().getLoginUser();
-		EditTagsCommand command = cmd.getEditTags();
+	private int workOnEditTagsHandler(final EditTagsPageViewCommand cmd) {
+		final User user = cmd.getContext().getLoginUser();
+		final EditTagsCommand command = cmd.getEditTags();
 		int updatedTags = 0;
 		
 		try {
 			final Set<Tag> tagsToReplace = TagUtils.parse(command.getDelTags());
 
-			if(tagsToReplace.size() <= 0) {
+			if (tagsToReplace.size() <= 0) {
 				return 0;
 			}
 			
@@ -145,31 +135,31 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 				updatedTags = logic.updateTags(user, new LinkedList<Tag>(tagsToReplace), new LinkedList<Tag>(replacementTags), true);
 			}
 			
-		} catch (RecognitionException ex) {
+		} catch (final RecognitionException ex) {
 			// TODO How can i handle this
 		}
 
 		return updatedTags;
 	}
 	
-	private void workOnRelationsHandler(EditTagsPageViewCommand cmd) {
-		User user = cmd.getContext().getLoginUser();
-		RelationsEditCommand command = cmd.getRelationsEdit();
+	private void workOnRelationsHandler(final EditTagsPageViewCommand cmd) {
+		final User user = cmd.getContext().getLoginUser();
+		final RelationsEditCommand command = cmd.getRelationsEdit();
 		
 		switch (command.getForcedAction()) {
 		case 0:
 			try {
 	
-			Set<Tag> upperList = TagUtils.parse(command.getUpper());
+			final Set<Tag> upperList = TagUtils.parse(command.getUpper());
 			final Set<Tag> lowerList = TagUtils.parse(command.getLower());
 			
 			if(upperList.size() != 1 || lowerList.size() != 1)
 				break;
 			
-			Tag upper = upperList.iterator().next();
-			Tag lower = lowerList.iterator().next();
+			final Tag upper = upperList.iterator().next();
+			final Tag lower = lowerList.iterator().next();
 			
-			if(upper.getSubTags().size() != 0 || upper.getSuperTags().size() != 0 ||
+			if (upper.getSubTags().size() != 0 || upper.getSuperTags().size() != 0 ||
 					lower.getSubTags().size() != 0 || lower.getSuperTags().size() != 0)
 				break;
 			
@@ -179,7 +169,7 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 			break;
 			
 
-			} catch (RecognitionException ex) {
+			} catch (final RecognitionException ex) {
 				// TODO how should i handle this
 				break;
 			}
@@ -194,32 +184,5 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 	@Override
 	public EditTagsPageViewCommand instantiateCommand() {
 		return new EditTagsPageViewCommand();
-	}
-	
-	/**
-	 * redirect to the login page - and back
-	 * 
-	 * @param command the command
-	 * @param notice a notice to display at the login page
-	 * @return
-	 */
-	protected View getAccessDeniedView(final EditTagsPageViewCommand command, String notice) {
-		return new ExtendedRedirectView("/login" + 
-				"?notice=" + notice + 
-				"&referer=" + UrlUtils.safeURIEncode(getRequestLogic().getCompleteRequestURL()));
-	}
-
-	/**
-	 * @param requestLogic the request logic
-	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-
-	/**
-	 * @return the request logic
-	 */
-	public RequestLogic getRequestLogic() {
-		return requestLogic;
 	}
 }
