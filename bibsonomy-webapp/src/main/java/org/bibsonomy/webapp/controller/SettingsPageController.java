@@ -205,7 +205,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		// TODO remove cast and use logic after adding SyncLogicInterface to LogicInterface
 		final SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
 		
-		final List<SyncService> userServers = syncLogic.getSyncServerForUser(command.getUser().getName());
+		final List<SyncService> userServers = syncLogic.getSyncServer(command.getUser().getName());
 		final List<SyncService> allServers = syncLogic.getSyncServices(true);
 		
 		/*
