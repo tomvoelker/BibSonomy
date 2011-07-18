@@ -108,7 +108,7 @@
 	
 	<update id="updateSyncStatus" parameterClass="syncParam">
 		UPDATE sync_data sd JOIN sync_services ss USING (service_id)
-			SET sd.status = #status#
+			SET sd.status = #status#, sd.info = #info#
 			WHERE sd.user_name = #userName#
 			  AND sd.content_type = #contentType#
 			  AND sd.last_sync_date = #lastSyncDate#

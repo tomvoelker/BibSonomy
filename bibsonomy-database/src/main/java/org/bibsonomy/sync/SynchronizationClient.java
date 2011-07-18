@@ -146,7 +146,9 @@ public class SynchronizationClient {
 		SynchronizationStatus result;
 		String info;
 		try {
-			// try to synchronize resource
+			/*
+			 * try to synchronize
+			 */
 			info = synchronize(clientLogic, serverLogic, resourceType);
 			result = SynchronizationStatus.DONE;
 		} catch (final SynchronizationRunningException e) {
@@ -162,7 +164,9 @@ public class SynchronizationClient {
 			result = SynchronizationStatus.ERROR;
 			log.error("Error in synchronization", e);
 		}
-		// after successful synchronization, store sync result.
+		/*
+		 * store sync result
+		 */
 		storeSyncResult(result, info, resourceType, serverLogic, serverUserName);
 		
 		//Get synchronization data from server. Can't construct here, because last_sync_date only known by server
@@ -177,13 +181,16 @@ public class SynchronizationClient {
 	 * @param serverUserName
 	 */
 	private void storeSyncResult(final SynchronizationStatus status, final String info, final Class<? extends Resource> resourceType, final LogicInterface serverLogic, final String serverUserName) {
-		final SynchronizationData data = ((SyncLogicInterface) serverLogic).getLastSyncData(serverUserName, uri, resourceType);
+		final SyncLogicInterface syncLogicInterface = (SyncLogicInterface) serverLogic;
+		final SynchronizationData data = syncLogicInterface.getLastSyncData(serverUserName, uri, resourceType);
 		if (!present(data)) {
-			// started more than one sync process per second -> do nothing
-			return;
+			/*
+			 * sync data seems not to have been stored --> error!
+			 */
+			throw new RuntimeException("No sync data found for " + serverUserName + " on " + uri);
 		}
 		if (SynchronizationStatus.RUNNING.equals(data.getStatus())) {
-			((SyncLogicInterface) serverLogic).updateSyncStatus(data, status, info);
+			syncLogicInterface.updateSyncStatus(data, status, info);
 		} else {
 			log.error("Error no running synchronization dound, to store result");
 		}
@@ -345,13 +352,11 @@ public class SynchronizationClient {
 		 */
 		if (duplicates) {
 			result.insert(0, "duplicates detected, ");
-		} else {
-			result.insert(0, "done, ");
 		}
 		
 	
 		int length = result.length();
-		if (length == 6) {
+		if (length == 0) {
 			result.append("no changes");
 		} else if (result.lastIndexOf(", ") == length - 2) {
 			result.delete(length - 2, length);

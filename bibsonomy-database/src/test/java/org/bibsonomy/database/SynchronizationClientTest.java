@@ -27,6 +27,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.sync.SynchronizationClient;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Before;
@@ -37,8 +38,8 @@ import org.junit.Test;
  * @version $Id$
  */
 public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
+	private static final String SYNC_SERVER_URI = "http://www.test.de/";
 	private static final String SERVER_USER_NAME = "syncServer";
-	private static final String SERVER_USER_APIKEY = "15cb586b630cc343cd60684807bf4785";
 	private static final String CLIENT_USER_NAME = "sync2";
 
 	private User serverUser;
@@ -46,11 +47,26 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 
 	private DBLogic clientLogic;
 	private DBLogic serverLogic;
-	
-	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	
-	private final String RESULT_STRING = "done, created on client: 1, created on server: 1, updated on client: 1, updated on server: 1, deleted on client: 1, deleted on server: 1";
+	private static final String[] BOOKMARK_KEYS = new String[]{
+		"9814aac6058e6db6c35ffe151f4c4c53", // changed on client
+		"d9f4bd052fe19c2da43a8602de15896d", // changed on server
+		"60f6867a5c81143fc66cf6fe7a919d1d", // created on client
+		"b89c5230f929a2c9af0c808b17fae120", // created on server
+		"28d637eca8ef360612a238ac56900d54"  // no changes
+	};
+
+	final String[] PUBLICATION_KEYS = new String[]{
+			"4841e7b5c7c23c613590fa4b79725498", // changed on client
+			"4549ac62ae226657cd17d93dabfd6075", // changed on server
+			"4533fe874079584ea4700da84b4d13ae", // created on client
+			"2ad021608b51b6f9e4a45933ca63ed9e", // created on server
+			"3d6ec7b6695976eeec379dcc55ae9cb1"  // no changes
+	};
+
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+	private final String RESULT_STRING = "created on client: 1, created on server: 1, updated on client: 1, updated on server: 1, deleted on client: 1, deleted on server: 1";
 
 	@SuppressWarnings("unchecked")
 	@Before
@@ -81,7 +97,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		 * iterate over all resource types
 		 */
 		final Class<? extends Resource> resourceTypes[] = new Class[]{BibTex.class, Bookmark.class};
-		
+
 		for (final Class<? extends Resource> clazz : resourceTypes) {
 			/*
 			 * create server posts
@@ -147,47 +163,40 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		}
 	}
 
-	
+
 	@Test
 	public void testSynchronization() throws URISyntaxException {
 		final SynchronizationClient sync = new SynchronizationClient();
-	
+
 		/*
 		 * setup server
 		 */
-		final URI syncServer = new URI("http://www.test.de/");
-		
+		final URI syncServer = new URI(SYNC_SERVER_URI);
+
 		/*
 		 * setup synchronization client
 		 */
 		sync.setServerLogicFactory(new DBLogicApiInterfaceFactory());
-		sync.setOwnUri(new URI("http://www.test.de/"));
+		sync.setOwnUri(new URI(SYNC_SERVER_URI));
 		sync.setDBSessionFactory(new IbatisDBSessionFactory());
-		
+
 		/*
 		 * check that synchronization is enabled
 		 */
-		System.out.println(clientLogic.getSyncServer(clientUser.getName()));
-		System.out.println(clientLogic.getSyncServer(serverUser.getName()));
-		System.out.println(serverLogic.getSyncServer(clientUser.getName()));
-		System.out.println(serverLogic.getSyncServer(serverUser.getName()));
-		
+		assertEquals(SYNC_SERVER_URI, clientLogic.getSyncServer(clientUser.getName()).get(0).getService().toString());
+
 		/*
-		 * sync + check publications
+		 * sync + check publications and bookmarks
 		 */
-		syncPublications(sync, syncServer);
-		
-		/*
-		 * sync + check bookmarks
-		 */
-		syncBookmarks(sync, syncServer);
-		
+		syncResources(sync, syncServer, BibTex.class, PUBLICATION_KEYS);
+		syncResources(sync, syncServer, Bookmark.class, BOOKMARK_KEYS);
+
 		/* *********************************************************************
 		 * 
 		 * next steps: add/delete/modify posts on client and server and then sync
 		 * 
 		 */
-		
+
 		/*
 		 * change some posts on server
 		 */
@@ -196,7 +205,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * add a post
 		 */
-		serverPosts.add(createPost("added after sync on server", dateFormat.format(now), dateFormat.format(now), serverUser, Bookmark.class));
+		serverPosts.add(createPost("added after sync on server", DATE_FORMAT.format(now), DATE_FORMAT.format(now), serverUser, Bookmark.class));
 		serverLogic.createPosts(serverPosts);
 		/*
 		 * delete a post
@@ -207,7 +216,8 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		 */
 		final SynchronizationData syncData = sync.synchronize(clientLogic, syncServer, Bookmark.class);
 		assertNotNull(syncData);
-		assertEquals("done, created on client: 1, deleted on client: 1", syncData.getStatus());
+		assertEquals(SynchronizationStatus.DONE, syncData.getStatus());
+		assertEquals("created on client: 1, deleted on client: 1", syncData.getInfo());
 		/*
 		 * check for posts on client
 		 */
@@ -216,52 +226,17 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		assertFalse(map.containsKey("b89c5230f929a2c9af0c808b17fae120"));
 	}
 
-	private void syncBookmarks(final SynchronizationClient sync, final URI syncServer) {
-		final SynchronizationData data = sync.synchronize(clientLogic, syncServer, Bookmark.class);
-		assertNotNull("synchronization wasn't successful", data);
-		assertEquals(RESULT_STRING, data.getStatus());
-		
-		
-		final Map<String, SynchronizationPost> serverPosts = serverLogic.getSyncPostsMapForUser(serverUser.getName(), Bookmark.class);
-		final Map<String, SynchronizationPost> clientPosts = clientLogic.getSyncPostsMapForUser(clientUser.getName(), Bookmark.class);
-		final ArrayList<String> keys = new ArrayList<String>();
-		keys.add("9814aac6058e6db6c35ffe151f4c4c53"); // changed on client
-		keys.add("d9f4bd052fe19c2da43a8602de15896d"); // changed on server
-		keys.add("60f6867a5c81143fc66cf6fe7a919d1d"); // created on client
-		keys.add("b89c5230f929a2c9af0c808b17fae120"); // created on server
-		keys.add("28d637eca8ef360612a238ac56900d54"); // no changes
-		
-		assertEquals(5, serverPosts.size());
-		assertEquals(serverPosts.size(), clientPosts.size());
-
-		for (final String key : keys) {
-			assertTrue(serverPosts.containsKey(key));
-			assertTrue(clientPosts.containsKey(key));
-			assertTrue(key + " is not same", clientPosts.get(key).isSame(serverPosts.get(key)));
-		}
-
-	}
-
-	private void syncPublications(final SynchronizationClient sync, final URI syncServer) {
-		/*
-		 * synchronize
-		 */
-		final SynchronizationData data = sync.synchronize(clientLogic, syncServer, BibTex.class);
+	private void syncResources(final SynchronizationClient sync, final URI syncServer, final Class<? extends Resource> resourceType, final String[] keys) {
+		final SynchronizationData data = sync.synchronize(clientLogic, syncServer, resourceType);
 		assertNotNull("synchronization was not successful", data);
-		assertEquals(RESULT_STRING, data.getStatus());
-		
+		assertEquals(SynchronizationStatus.DONE, data.getStatus());
+		assertEquals(RESULT_STRING, data.getInfo());
+
 		/*
 		 * compare posts on client and server
 		 */
-		final Map<String, SynchronizationPost> serverPosts = serverLogic.getSyncPostsMapForUser(serverUser.getName(), BibTex.class);
-		final Map<String, SynchronizationPost> clientPosts = clientLogic.getSyncPostsMapForUser(clientUser.getName(), BibTex.class);
-
-		final ArrayList<String> keys = new ArrayList<String>();
-		keys.add("4841e7b5c7c23c613590fa4b79725498"); // changed on client
-		keys.add("4549ac62ae226657cd17d93dabfd6075"); // changed on server
-		keys.add("4533fe874079584ea4700da84b4d13ae"); // created on client
-		keys.add("2ad021608b51b6f9e4a45933ca63ed9e"); // created on server
-		keys.add("3d6ec7b6695976eeec379dcc55ae9cb1"); // no changes
+		final Map<String, SynchronizationPost> serverPosts = serverLogic.getSyncPostsMapForUser(serverUser.getName(), resourceType);
+		final Map<String, SynchronizationPost> clientPosts = clientLogic.getSyncPostsMapForUser(clientUser.getName(), resourceType);
 
 		assertEquals(5, serverPosts.size());
 		assertEquals(serverPosts.size(), clientPosts.size());
@@ -272,13 +247,13 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 			assertTrue(key + " is not same", clientPosts.get(key).isSame(serverPosts.get(key)));
 		}
 	}
-	
+
 	private <T extends Resource> Post<T> createPost(String title, String createDate, String changeDate, User user, Class<T> resourceType) {
 		final Post<T> post = ModelUtils.generatePost(resourceType);
 		post.setUser(user);
 		try {
-			post.setChangeDate(dateFormat.parse(changeDate));
-			post.setDate(dateFormat.parse(createDate));
+			post.setChangeDate(DATE_FORMAT.parse(changeDate));
+			post.setDate(DATE_FORMAT.parse(createDate));
 			if (resourceType == Bookmark.class) {
 				final Bookmark bookmark = (Bookmark)post.getResource();
 				title = title.replace(" ", "-");
