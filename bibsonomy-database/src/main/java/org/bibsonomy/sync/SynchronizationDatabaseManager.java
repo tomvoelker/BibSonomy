@@ -217,14 +217,14 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param service
      * @param contentType
      * @param session
-     * @return returns last synchronization data for given user, service and content with status="undone"
+     * @return returns last synchronization data for given user, service and content with {@link SynchronizationStatus#RUNNING}.
      */
     public SynchronizationData getCurrentSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final DBSession session) {
     	final SyncParam param = new SyncParam();
     	param.setUserName(userName);
     	param.setResourceType(resourceType);
     	param.setService(service);
-    	param.setStatus("undone"); // FIXME: refactor
+    	param.setStatus(SynchronizationStatus.RUNNING);
     	param.setServer(false);
 		return queryForObject("getCurrentSyncData", param, SynchronizationData.class, session);
     }
@@ -242,7 +242,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     	param.setUserName(userName);
     	param.setResourceType(resourceType);
     	param.setService(service);
-    	param.setStatus("undone"); // FIXME: refactor
+    	param.setStatus(SynchronizationStatus.RUNNING);
     	param.setServer(false);
 		return this.queryForList("getSyncData", param, SynchronizationData.class, session);
     }
@@ -274,7 +274,16 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     	return queryForObject("getSyncServerForUserByUri", param, SyncService.class, session);
     }
     
-    public List<SynchronizationPost> synchronize(Map<String, SynchronizationPost> serverPosts, List<SynchronizationPost> clientPosts, Date lastSyncDate, ConflictResolutionStrategy conflictStrategy) {
+    /**
+     * Computes the synchronization plan.
+     * 
+     * @param serverPosts
+     * @param clientPosts
+     * @param lastSyncDate
+     * @param conflictResolutionStrategy
+     * @return
+     */
+    public List<SynchronizationPost> synchronize(final Map<String, SynchronizationPost> serverPosts, final List<SynchronizationPost> clientPosts, final Date lastSyncDate, final ConflictResolutionStrategy conflictResolutionStrategy) {
 
 		// is something to synchronize?
 		if (!present(serverPosts) && !present(clientPosts)) {
@@ -310,7 +319,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			/* changed on server since last sync */
 			if (serverPost.getChangeDate().compareTo(lastSyncDate) > 0) {
 				if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0) {
-					switch (conflictStrategy) {
+					switch (conflictResolutionStrategy) {
 					case CLIENT_WINS:
 						clientPost.setState(SynchronizationStates.UPDATE);
 						break;

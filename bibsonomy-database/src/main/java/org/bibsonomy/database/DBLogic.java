@@ -105,6 +105,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
+import org.bibsonomy.sync.SynchronizationStatus;
 import org.bibsonomy.util.ObjectUtils;
 
 /**
@@ -307,17 +308,23 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	final DBSession session = this.openSession();
 	try {
 		final SynchronizationData data = syncDBManager.getCurrentSynchronizationData(userName, service, resourceType, session);
-		if (present(data)) {
-			//running synchronization
+		if (present(data)) { // FIXME: shouldn't we check the status instead?
+			// running synchronization
+			// FIXME: if synchronization fails, we can't recover 
 			throw new SynchronizationRunningException();
 		}
 	    lastDoneSyncDate = syncDBManager.getLastDoneSynchronizationDate(userName, service, resourceType, session);
 	    
-	    if(!present(lastDoneSyncDate)) {
+	    if (!present(lastDoneSyncDate)) {
+	    	/*
+	    	 * set the synchronization date to some distant old value  
+	    	 */
 	    	lastDoneSyncDate = new Date(0);
 	    }
-	    
-	    syncDBManager.insertSyncronizationData(userName, service, resourceType, new Date(), "undone", session);
+	    /*
+	     * flag synchronization as running
+	     */
+	    syncDBManager.insertSyncronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.RUNNING, session);
 	    posts = this.getSyncPostsMapForUser(userName, resourceType);
 
 	} finally {

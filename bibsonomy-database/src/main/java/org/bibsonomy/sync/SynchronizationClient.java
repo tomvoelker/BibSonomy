@@ -134,7 +134,7 @@ public class SynchronizationClient {
 		SyncLogicInterface serverSyncLogic = createServerLogic(serverUser.getName(), serverUser.getApiKey());
 		
 		//set default result to "error"
-		String result = "error";
+		String result = SynchronizationStatus.ERROR;
 		
 		try {
 			//try to synchronize resource
@@ -145,7 +145,7 @@ public class SynchronizationClient {
 			 * Currently return only "running" status.
 			 */
 			SynchronizationData data = new SynchronizationData();
-			data.setStatus("running");
+			data.setStatus(SynchronizationStatus.RUNNING); // FIXME: we had "running" here, in contrast to "done" elsewhere
 			return data;
 		} catch (Exception e) {
 			//in case of an error, store syncdate as not successful, result stay "error"
@@ -168,11 +168,11 @@ public class SynchronizationClient {
 	 */
 	private void storeSyncResult(String result, Class<? extends Resource> resourceType, SyncLogicInterface serverLogic, String serverUserName) {
 		SynchronizationData data = serverLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUserName, uri, resourceType);
-		if(!present(data)) {
-			//started more than one sync process per second -> do nothing
+		if (!present(data)) {
+			// started more than one sync process per second -> do nothing
 			return;
 		}
-		if (data.getStatus().equals("undone")) {
+		if (SynchronizationStatus.RUNNING.equals(data.getStatus())) {
 			serverLogic.updateSyncStatus(data, result);
 		} else {
 			log.error("Error no running synchronization dound, to store result");

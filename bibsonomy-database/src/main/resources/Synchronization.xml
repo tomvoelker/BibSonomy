@@ -56,7 +56,7 @@
 		GROUP BY content_id
 	</select>
 	
-	
+	<!-- FIXME: refactor sd.status! -->
 	<select id="getLastDoneSyncDateForUserForServiceForContent" resultClass="java.util.Date" parameterClass="syncParam">
 		SELECT last_sync_date
 		  FROM sync_data sd 

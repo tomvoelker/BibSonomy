@@ -19,6 +19,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
+import org.bibsonomy.sync.SynchronizationStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -103,7 +104,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		 * a low resolution.
 		 */
 		final Date date = new Date((new Date().getTime() / 1000) * 1000);
-		syncDBManager.insertSyncronizationData(syncUser1, bibsonomyURI, resourceType, date, "undone", dbSession);
+		syncDBManager.insertSyncronizationData(syncUser1, bibsonomyURI, resourceType, date, SynchronizationStatus.RUNNING, dbSession);
 
 		/*
 		 * check added data
@@ -119,7 +120,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		/*
 		 * set status of added data to done (simulate successful synchronization)
 		 */
-		syncDBManager.updateSyncStatus(dbSession, data, "done");
+		syncDBManager.updateSyncStatus(dbSession, data, SynchronizationStatus.DONE);
 
 		assertNull(syncDBManager.getCurrentSynchronizationData(syncUser1, bibsonomyURI, resourceType, dbSession));
 
