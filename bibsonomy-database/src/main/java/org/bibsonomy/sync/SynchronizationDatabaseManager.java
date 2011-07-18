@@ -81,18 +81,19 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     }
     
     /**
-     * Updates given synchronization data in db.
+     * Update the given synchronization data's status in the database.
      * 
-     * @param session database session
+     * @param session - the database session
+     * @param status - the status to set
      * @param data SynchronizationData
      */
-    public void updateSyncData(final DBSession session, final SynchronizationData data) {
+    public void updateSyncStatus(final DBSession session, final SynchronizationData data, final String status) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(data.getUserName());
 		param.setService(data.getService());
 		param.setResourceType(data.getResourceType());
 		param.setLastSyncDate(data.getLastSyncDate());
-		param.setStatus(data.getStatus());
+		param.setStatus(status);
 		param.setServer(false);
 		session.update("updateSyncStatus", param);
     }

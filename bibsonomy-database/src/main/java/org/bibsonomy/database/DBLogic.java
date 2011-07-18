@@ -509,10 +509,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#setCurrentSyncDone(org.bibsonomy.model.sync.SynchronizationData)
      */
     @Override
-    public void updateSyncData(final SynchronizationData data) {
+    public void updateSyncStatus(final SynchronizationData data, final String status) {
 	final DBSession session = this.openSession();
 	try {
-	    syncDBManager.updateSyncData(session, data);
+	    syncDBManager.updateSyncStatus(session, data, status);
 	} finally {
 	    session.close();
 	}

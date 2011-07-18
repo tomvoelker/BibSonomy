@@ -173,8 +173,7 @@ public class SynchronizationClient {
 			return;
 		}
 		if (data.getStatus().equals("undone")) {
-			data.setStatus(result);
-			serverLogic.updateSyncData(data);
+			serverLogic.updateSyncStatus(data, result);
 		} else {
 			log.error("Error no running synchronization dound, to store result");
 		}
