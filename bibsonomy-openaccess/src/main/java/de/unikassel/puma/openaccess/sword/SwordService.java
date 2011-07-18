@@ -236,8 +236,8 @@ public class SwordService {
 
 				//StreamResult streamResult = new StreamResult(zipOutputStream);
 						
-				zipOutputStream.write(metsBibTexMLGenerator.generateMets().getBytes());
-
+				zipOutputStream.write(metsBibTexMLGenerator.generateMets().getBytes("UTF-8"));
+				
 				zipOutputStream.closeEntry();
 							
 				// close zip archive  
