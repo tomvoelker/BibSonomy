@@ -88,7 +88,7 @@ public interface SyncLogicInterface {
 	 * 
 	 * @param data
 	 */
-	public void updateSyncData(final SynchronizationData data);
+	public void updateSyncStatus(final SynchronizationData data, final String status);
 	
 	/**
 	 * 
