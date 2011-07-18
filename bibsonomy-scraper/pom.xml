@@ -77,6 +77,24 @@
 					</compilerArguments>
 				</configuration>
 			</plugin>
+			<plugin>
+				<!-- Keep only last version of generated jar file in local .m2 repository 
+					to save disk space -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>remove-old-jarfiles</id>
+						<goals>
+							<goal>remove-project-artifact</goal>
+						</goals>
+						<configuration>
+							<removeAll>true</removeAll>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>			
 		</plugins>
 	</build>
 	<distributionManagement>
