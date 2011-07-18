@@ -2,8 +2,6 @@ package org.bibsonomy.database.managers.chain;
 
 import java.util.List;
 
-import org.bibsonomy.database.params.GenericParam;
-
 /**
  * Represents one element in the chain of responsibility.
  * 
@@ -15,6 +13,5 @@ import org.bibsonomy.database.params.GenericParam;
  * @author Christian Schenk
  * @version $Id$
  */
-public abstract class ListChainElement<L, P extends GenericParam> extends ChainElement<List<L>, P> {
-	
+public abstract class ListChainElement<L, P> extends ChainElement<List<L>, P> {
 }

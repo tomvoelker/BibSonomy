@@ -1,5 +1,7 @@
 package org.bibsonomy.database.params;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,7 +27,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * This is the most generic param. All fields which are not specific to
@@ -246,7 +247,7 @@ public abstract class GenericParam {
 	/**
 	 * @param caseSensitiveTagNames the caseSensitiveTagNames to set
 	 */
-	public void setCaseSensitiveTagNames(boolean caseSensitiveTagNames) {
+	public void setCaseSensitiveTagNames(final boolean caseSensitiveTagNames) {
 		this.caseSensitiveTagNames = caseSensitiveTagNames;
 	}
 
@@ -318,7 +319,7 @@ public abstract class GenericParam {
 	/**
 	 * @param tagIndex the tagIndex to set
 	 */
-	public void setTagIndex(List<TagIndex> tagIndex) {
+	public void setTagIndex(final List<TagIndex> tagIndex) {
 		this.tagIndex = tagIndex;
 	}
 
@@ -341,7 +342,7 @@ public abstract class GenericParam {
 
 	/**
 	 * TODO comment
-	 * @return
+	 * @param tagName 
 	 */
 	public void addRelationTag(final String tagName) {
 		this.relationTags.add(tagName);
@@ -350,9 +351,9 @@ public abstract class GenericParam {
 
 	/**
 	 * TODO comment
-	 * @return
+	 * @param relationTags the relation tags to add
 	 */
-	public void addRelationTags(List<String> relationTags) {
+	public void addRelationTags(final List<String> relationTags) {
 		for (final String tagName : relationTags) {
 			this.addRelationTag(tagName);
 		}
@@ -360,7 +361,7 @@ public abstract class GenericParam {
 	
 	/**
 	 * TODO comment
-	 * @return
+	 * @return the relation tags
 	 */
 	public List<String> getRelationTags() {
 		return relationTags;
@@ -368,7 +369,7 @@ public abstract class GenericParam {
 
 	/**
 	 * TODO comment
-	 * @return
+	 * @return the relation tag index
 	 */
 	public List<TagIndex> getRelationTagIndex() {
 		return relationTagIndex;
@@ -393,7 +394,7 @@ public abstract class GenericParam {
 	 * 
 	 * @param search the search to set
 	 */
-	public void setSearch(String search) {
+	public void setSearch(final String search) {
 		if (search != null) {
 			this.rawSearch = search;
 			this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
@@ -410,14 +411,14 @@ public abstract class GenericParam {
 	/**
 	 * @param date the date to set
 	 */
-	public void setDate(Date date) {
+	public void setDate(final Date date) {
 		this.date = date;
 	}
 
 	/**
 	 * @param changeDate the changeDate to set
 	 */
-	public void setChangeDate(Date changeDate) {
+	public void setChangeDate(final Date changeDate) {
 	    this.changeDate = changeDate;
 	}
 
@@ -438,7 +439,7 @@ public abstract class GenericParam {
 	/**
 	 * @param userName the userName to set
 	 */
-	public void setUserName(String userName) {
+	public void setUserName(final String userName) {
 		this.userName = userName;
 	}
 
@@ -452,7 +453,7 @@ public abstract class GenericParam {
 	/**
 	 * @param limit the limit to set
 	 */
-	public void setLimit(int limit) {
+	public void setLimit(final int limit) {
 		this.limit = limit;
 	}
 
@@ -466,7 +467,7 @@ public abstract class GenericParam {
 	/**
 	 * @param offset the offset to set
 	 */
-	public void setOffset(int offset) {
+	public void setOffset(final int offset) {
 		this.offset = offset;
 	}
 
@@ -489,7 +490,7 @@ public abstract class GenericParam {
 	 * 
 	 * @param groups a LIST of group ids
 	 */
-	public void setGroups(Collection<Integer> groups) {
+	public void setGroups(final Collection<Integer> groups) {
 		this.groups = new HashSet<Integer>(groups);
 	}
 	
@@ -503,7 +504,7 @@ public abstract class GenericParam {
 	/**
 	 * @param groupId the groupId to set
 	 */
-	public void setGroupId(int groupId) {
+	public void setGroupId(final int groupId) {
 		this.groupId = groupId;
 	}
 
@@ -568,7 +569,7 @@ public abstract class GenericParam {
 	/**
 	 * @param hash the hash to set
 	 */
-	public void setHash(String hash) {
+	public void setHash(final String hash) {
 		this.hash = hash;
 	}
 
@@ -582,7 +583,7 @@ public abstract class GenericParam {
 	/**
 	 * @param simHash the simHash to set
 	 */
-	public void setSimHash(HashID simHash) {
+	public void setSimHash(final HashID simHash) {
 		this.simHash = simHash;
 	}
 	
@@ -596,7 +597,7 @@ public abstract class GenericParam {
 	/**
 	 * @param requestedContentId the requestedContentId to set
 	 */
-	public void setRequestedContentId(int requestedContentId) {
+	public void setRequestedContentId(final int requestedContentId) {
 		this.requestedContentId = requestedContentId;
 	}
 
@@ -611,7 +612,7 @@ public abstract class GenericParam {
 	/**
 	 * @param requestedUserName the requestedUserName to set
 	 */
-	public void setRequestedUserName(String requestedUserName) {
+	public void setRequestedUserName(final String requestedUserName) {
 		this.requestedUserName = requestedUserName;
 	}
 
@@ -625,7 +626,7 @@ public abstract class GenericParam {
 	/**
 	 * @param requestedGroupName the requestedGroupName to set
 	 */
-	public void setRequestedGroupName(String requestedGroupName) {
+	public void setRequestedGroupName(final String requestedGroupName) {
 		this.requestedGroupName = requestedGroupName;
 	}
 
@@ -639,7 +640,7 @@ public abstract class GenericParam {
 	/**
 	 * @param idsType the idsType to set
 	 */
-	public void setIdsType(ConstantID idsType) {
+	public void setIdsType(final ConstantID idsType) {
 		this.idsType = idsType;
 	}
 
@@ -653,7 +654,7 @@ public abstract class GenericParam {
 	/**
 	 * @param tags the tags to set
 	 */
-	public void setTags(Set<Tag> tags) {
+	public void setTags(final Set<Tag> tags) {
 		this.tags = tags;
 	}
 
@@ -667,7 +668,7 @@ public abstract class GenericParam {
 	/**
 	 * @param newContentId the newContentId to set
 	 */
-	public void setNewContentId(int newContentId) {
+	public void setNewContentId(final int newContentId) {
 		this.newContentId = newContentId;
 	}
 
@@ -683,7 +684,7 @@ public abstract class GenericParam {
 	 * 
 	 * @param tag the tag to set
 	 */
-	public void setTag(Tag tag) {
+	public void setTag(final Tag tag) {
 		this.tag = tag;
 		this.tagName = tag.getName();
 	}
@@ -698,7 +699,7 @@ public abstract class GenericParam {
 	/**
 	 * @param description the description to set
 	 */
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -712,7 +713,7 @@ public abstract class GenericParam {
 	/**
 	 * @param extension the extension to set
 	 */
-	public void setExtension(String extension) {
+	public void setExtension(final String extension) {
 		this.extension = extension;
 	}
 
@@ -726,7 +727,7 @@ public abstract class GenericParam {
 	/**
 	 * @param url the url to set
 	 */
-	public void setUrl(String url) {
+	public void setUrl(final String url) {
 		this.url = url;
 	}
 
@@ -751,16 +752,16 @@ public abstract class GenericParam {
 	/**
 	 * @param contentType the contentType to set
 	 */
-	public void setContentType(ConstantID contentType) {
+	public void setContentType(final ConstantID contentType) {
 		this.contentType = contentType;
 	}
 
 	/**
 	 * sets the content type by the nativeContentType param
 	 * 
-	 * @param nativeContentType
+	 * @param resourceType
 	 */
-	public void setContentTypeByClass(Class<? extends Resource> resourceType) {
+	public void setContentTypeByClass(final Class<? extends Resource> resourceType) {
 		setContentType(ConstantID.getContentTypeByClass(resourceType));
 	}
 
@@ -779,7 +780,7 @@ public abstract class GenericParam {
 	 * 
 	 * @param tagName the tagName to set
 	 */
-	public void setTagName(String tagName) {
+	public void setTagName(final String tagName) {
 		this.tag = null;
 		this.tagName = tagName;
 	}
@@ -802,7 +803,7 @@ public abstract class GenericParam {
 	/**
 	 * @param title the title to set
 	 */
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -816,7 +817,7 @@ public abstract class GenericParam {
 	/**
 	 * @param author the author to set
 	 */
-	public void setAuthor(String author) {
+	public void setAuthor(final String author) {
 		this.author = author;
 	}
 
@@ -830,7 +831,7 @@ public abstract class GenericParam {
 	/**
 	 * @param order the order to set
 	 */
-	public void setOrder(Order order) {
+	public void setOrder(final Order order) {
 		this.order = order;
 	}
 
@@ -844,7 +845,7 @@ public abstract class GenericParam {
 	/**
 	 * @param grouping the grouping to set
 	 */
-	public void setGrouping(GroupingEntity grouping) {
+	public void setGrouping(final GroupingEntity grouping) {
 		this.grouping = grouping;
 	}
 
@@ -858,7 +859,7 @@ public abstract class GenericParam {
 	/**
 	 * @param filter the filter to set
 	 */
-	public void setFilter(FilterEntity filter) {
+	public void setFilter(final FilterEntity filter) {
 		this.filter = filter;
 	}
 
@@ -879,7 +880,7 @@ public abstract class GenericParam {
 	/**
 	 * @param numSimpleTags the numSimpleTags to set
 	 */
-	public void setNumSimpleTags(int numSimpleTags) {
+	public void setNumSimpleTags(final int numSimpleTags) {
 		this.numSimpleTags = numSimpleTags;
 	}
 
@@ -914,14 +915,14 @@ public abstract class GenericParam {
 	/**
 	 * @param numTransitiveConcepts the numTransitiveConcepts to set
 	 */
-	public void setNumTransitiveConcepts(int numTransitiveConcepts) {
+	public void setNumTransitiveConcepts(final int numTransitiveConcepts) {
 		this.numTransitiveConcepts = numTransitiveConcepts;
 	}
 
 	/**
 	 * @param numSimpleConcepts the numSimpleConcepts to set
 	 */
-	public void setNumSimpleConcepts(int numSimpleConcepts) {
+	public void setNumSimpleConcepts(final int numSimpleConcepts) {
 		this.numSimpleConcepts = numSimpleConcepts;
 	}
 	
@@ -929,7 +930,7 @@ public abstract class GenericParam {
 	 * adds a group to the group list
 	 * @param groupId the id of the group to add
 	 */
-	public void addGroup(Integer groupId) {
+	public void addGroup(final Integer groupId) {
 		this.groups.add(groupId);
 	}
 	
@@ -937,7 +938,7 @@ public abstract class GenericParam {
 	 * adds all groups to the group list 
 	 * @param groups the id's of the groups to add
 	 */
-	public void addGroups(Collection<Integer> groups) {
+	public void addGroups(final Collection<Integer> groups) {
 		this.groups.addAll(groups);
 	}
 	
@@ -951,7 +952,7 @@ public abstract class GenericParam {
 	/**
 	 * @param searchEntity the searchEntity to set
 	 */
-	public void setSearchEntity(SearchEntity searchEntity) {
+	public void setSearchEntity(final SearchEntity searchEntity) {
 		this.searchEntity = searchEntity;
 	}
 
@@ -965,7 +966,7 @@ public abstract class GenericParam {
 	/**
 	 * @param days the days to set
 	 */
-	public void setDays(int days) {
+	public void setDays(final int days) {
 		this.days = days;
 	}
 
@@ -979,7 +980,7 @@ public abstract class GenericParam {
 	/**
 	 * @param bibtexKey the bibtexKey to set
 	 */
-	public void setBibtexKey(String bibtexKey) {
+	public void setBibtexKey(final String bibtexKey) {
 		this.bibtexKey = bibtexKey;
 	}
 
@@ -988,12 +989,12 @@ public abstract class GenericParam {
 	 * 
 	 * @param groups - a list of groups
 	 */
-	public void addGroupsAndGroupnames(Collection<? extends Group> groups) {
+	public void addGroupsAndGroupnames(final Collection<? extends Group> groups) {
 		// add groupids + groupnames
 		String groupName = "";
 		for (final Group g : groups) {
 			this.groups.add(g.getGroupId());
-			groupName = g.getName()==null ? "group_" + g.getGroupId() : g.getName().toLowerCase();
+			groupName = g.getName() == null ? "group_" + g.getGroupId() : g.getName().toLowerCase();
 			// TODO warum kann der Gruppenname (im Test) null sein? 
 			this.groupNames.add(groupName);
 			// this.groupNames.add(g.getName().toLowerCase());
@@ -1010,7 +1011,7 @@ public abstract class GenericParam {
 	/**
 	 * @param groupNames the groupNames to set
 	 */
-	public void setGroupNames(Set<String> groupNames) {
+	public void setGroupNames(final Set<String> groupNames) {
 		this.groupNames = groupNames;
 	}
 
@@ -1031,7 +1032,7 @@ public abstract class GenericParam {
 	 * @param systemTags	the collection to add to system tags
 	 */
 	public void addAllToSystemTags(final Collection<SystemTag> systemTags) {
-		if (ValidationUtils.present(systemTags)) {
+		if (present(systemTags)) {
 			for (final SystemTag tag : systemTags) {
 				this.addToSystemTags(tag);
 			}
@@ -1051,8 +1052,8 @@ public abstract class GenericParam {
 	 * 
 	 * @return - a string representation of the given object by introspection.
 	 */
-	public String toStringByReflection() {
+	@Override
+	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
-
 }

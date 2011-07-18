@@ -1,6 +1,5 @@
 package org.bibsonomy.database.managers.chain;
 
-import org.bibsonomy.database.params.GenericParam;
 
 /**
  * Only interesting for testcases. Usage pattern:
@@ -17,14 +16,14 @@ import org.bibsonomy.database.params.GenericParam;
  * {@link ChainElement}. This way the caller would know the callee (by checking
  * it's instance) and could call the handle method himself. The latter wouldn't
  * be too bad either and this class and the extra method
- * {@link ChainElement#perform(GenericParam, org.bibsonomy.database.common.DBSession, ChainStatus)}
+ * {@link ChainElement#perform(Object, org.bibsonomy.database.common.DBSession, ChainStatus)}
  * would be obsolete.<br/>
  * 
  * Another way would be an aspect (e.g. with AspectJ) with a pointcut for every
  * call to
- * {@link ChainElement#perform(GenericParam, org.bibsonomy.database.common.DBSession)}
+ * {@link ChainElement#perform(Object, org.bibsonomy.database.common.DBSession)}
  * that memorizes the class which executes its
- * {@link ChainElement#handle(GenericParam, org.bibsonomy.database.common.DBSession)}
+ * {@link ChainElement#handle(Object, org.bibsonomy.database.common.DBSession)}
  * method. After that one could <em>ask</em> the aspect for the result. This
  * would be very clean because we wouldn't have to change the <em>real</em>
  * code: the aspect for the tests would do it.
@@ -34,7 +33,7 @@ import org.bibsonomy.database.params.GenericParam;
  */
 public class ChainStatus {
 
-	private ChainElement<?, ? extends GenericParam> chainElement;
+	private ChainElement<?, ?> chainElement;
 
 	/**
 	 * Constructor
@@ -48,14 +47,14 @@ public class ChainStatus {
 	 * 
 	 * @return chain element
 	 */
-	public ChainElement<?, ? extends GenericParam> getChainElement() {
+	public ChainElement<?, ?> getChainElement() {
 		return this.chainElement;
 	}
 
 	/**
 	 * @param chainElement
 	 */
-	public void setChainElement(ChainElement<?, ? extends GenericParam> chainElement) {
+	public void setChainElement(ChainElement<?, ?> chainElement) {
 		this.chainElement = chainElement;
 	}
 }

@@ -1,6 +1,5 @@
 package org.bibsonomy.database.managers.chain;
 
-import org.bibsonomy.database.params.GenericParam;
 
 /**
  * This represents one element for the chain of responsibility. Classes that
@@ -13,7 +12,7 @@ import org.bibsonomy.database.params.GenericParam;
  * @author Christian Schenk
  * @version $Id$
  */
-public interface FirstChainElement<L, P extends GenericParam> {
+public interface FirstChainElement<L, P> {
 
 	/**
 	 * @return the first element from the chain.
