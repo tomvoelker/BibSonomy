@@ -15,8 +15,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.sync.SyncLogicInterface;
-import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.sync.SynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
@@ -70,22 +68,18 @@ public class SynchronizationController extends AjaxController implements Minimal
 			return Views.AJAX_ERRORS;
 		}
 		
-		SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
-
-		SyncService server = syncLogic.getSyncServer(currentUser.getName(), uri);
-		
 		JSONObject json = new JSONObject();
 		
 		switch(command.getContentType()) {
 		case 1:
-			addData(json, Bookmark.class, client.synchronize(logic, Bookmark.class, currentUser, server));
+			addData(json, Bookmark.class, client.synchronize(logic, Bookmark.class, currentUser, uri));
 			break;
 		case 2:
-			addData(json, BibTex.class, client.synchronize(logic, BibTex.class, currentUser, server));
+			addData(json, BibTex.class, client.synchronize(logic, BibTex.class, currentUser, uri));
 			break;
 		case 3:
-			addData(json, Bookmark.class, client.synchronize(logic, Bookmark.class, currentUser, server));
-			addData(json, BibTex.class, client.synchronize(logic, BibTex.class, currentUser, server));
+			addData(json, Bookmark.class, client.synchronize(logic, Bookmark.class, currentUser, uri));
+			addData(json, BibTex.class, client.synchronize(logic, BibTex.class, currentUser, uri));
 			break;
 		default:
 //			throw new UnsupportedContentTypeException();
