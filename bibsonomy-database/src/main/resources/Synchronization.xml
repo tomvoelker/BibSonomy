@@ -20,7 +20,7 @@
 		  FROM sync s
 		    JOIN sync_services ss USING (service_id)
 		  WHERE s.user_name = #userName#
-		    AND ss.server = 1
+		    AND ss.server = TRUE
 	</select>
 	
 	<select id="getSyncServerForUserByUri" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">

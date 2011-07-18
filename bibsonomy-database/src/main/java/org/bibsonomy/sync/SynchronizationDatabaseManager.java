@@ -200,7 +200,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param status
      * @param session
      */
-    public void insertSyncronizationData (final String userName, final URI service, Class<? extends Resource> resourceType, final Date lastSyncDate, final String status, final DBSession session) {
+    public void insertSynchronizationData (final String userName, final URI service, Class<? extends Resource> resourceType, final Date lastSyncDate, final String status, final DBSession session) {
     	final SyncParam param = new SyncParam();
     	param.setUserName(userName);
     	param.setService(service);

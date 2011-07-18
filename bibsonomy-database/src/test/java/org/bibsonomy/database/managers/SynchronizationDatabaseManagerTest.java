@@ -104,7 +104,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		 * a low resolution.
 		 */
 		final Date date = new Date((new Date().getTime() / 1000) * 1000);
-		syncDBManager.insertSyncronizationData(syncUser1, bibsonomyURI, resourceType, date, SynchronizationStatus.RUNNING, dbSession);
+		syncDBManager.insertSynchronizationData(syncUser1, bibsonomyURI, resourceType, date, SynchronizationStatus.RUNNING, dbSession);
 
 		/*
 		 * check added data

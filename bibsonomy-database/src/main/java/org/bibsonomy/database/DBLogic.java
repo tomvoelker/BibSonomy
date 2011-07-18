@@ -324,7 +324,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	    /*
 	     * flag synchronization as running
 	     */
-	    syncDBManager.insertSyncronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.RUNNING, session);
+	    syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.RUNNING, session);
 	    posts = this.getSyncPostsMapForUser(userName, resourceType);
 
 	} finally {

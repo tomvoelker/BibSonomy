@@ -28,6 +28,7 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 
 /**
  * This client is only for BibSonomy
+ * 
  * @author wla
  * @version $Id$
  */
@@ -52,38 +53,43 @@ public class SynchronizationClient {
 	}
 	
 	/**
+	 * Looks up the credentials for the given syncServer and creates an 
+	 * instance of the a LogicInterface on the syncServer. If no credentials
+	 * could be found, <code>null</code> is returned.
+	 *  
 	 * 
 	 * @param userName
 	 * @param apiKey
 	 * @return Logic with access to database on server-service   
 	 */
-	private LogicInterface getServerLogic(String userName, String apiKey) {
-	
-		// FIXME: get correct DBSessionFactory for each service
+	private LogicInterface getServerLogic(final LogicInterface clientLogic, final URI syncServer) {
+		final List<SyncService> syncServers = ((SyncLogicInterface)clientLogic).getSyncServer(clientLogic.getAuthenticatedUser().getName());
+		
+		for (final SyncService syncService : syncServers) {
+			if (syncServer.equals(syncService.getService())) {
+				return getServerLogic(syncService);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Creates an instance of the LogicInterface for the given syncService
+	 * 
+	 * @param syncService
+	 * @return
+	 */
+	private LogicInterface getServerLogic(final SyncService syncService) {
+		final Properties serverUser = syncService.getServerUser();
+		/*
+		 * FIXME: get correct DBSessionFactory for each service
+		 */
 		serverLogicFactory.setDbSessionFactory(this.dbSessionFactory);
 		
-		return serverLogicFactory.getLogicAccess(userName, apiKey);
+		return serverLogicFactory.getLogicAccess(serverUser.getProperty("userName"), serverUser.getProperty("apiKey"));
 	}
 	
-	/**
-	 * Creates User-object from java.util.Properties stroed in database
-	 * @param userProperties
-	 * @return user from userProperties
-	 */
-	private User getUserFromProperties(final Properties userProperties) {
-		final String userName = userProperties.getProperty("userName");
-		final String apiKey = userProperties.getProperty("apiKey");
-		
-		if (!present(userName) || !present(apiKey)) {
-			throw new IllegalStateException();
-		}
-		
-		final User user = new User();
-		user.setName(userName);
-		user.setApiKey(apiKey);
-		return user;
-	}
-	
+
 	/**
 	 * Used in a synchronization process, in case that server logic already created 
 	 * @param userName
@@ -105,13 +111,13 @@ public class SynchronizationClient {
 	 * @return
 	 */
 	public SynchronizationData getLastSyncData(final SyncService syncService, final Class<? extends Resource> resourceType) {
-		// FIXME errorhandling
-		final User serverUser = getUserFromProperties(syncService.getServerUser());
-		final String userName = serverUser.getName();
+		/*
+		 * FIXME errorhandling
+		 */
 		
-		final LogicInterface serverLogic = getServerLogic(userName, serverUser.getApiKey());
+		final LogicInterface serverLogic = getServerLogic(syncService);
 		
-		return getLastSyncData(userName, resourceType, serverLogic);
+		return getLastSyncData(serverLogic.getAuthenticatedUser().getName(), resourceType, serverLogic);
 	}
 	
 
@@ -124,10 +130,14 @@ public class SynchronizationClient {
 	 * @param server
 	 * @return
 	 */
-	public SynchronizationData synchronize(final LogicInterface clientLogic, final Class<? extends Resource> resourceType, final User clientUser, final SyncService server) {
-		final User serverUser = getUserFromProperties(server.getServerUser());
+	public SynchronizationData synchronize(final LogicInterface clientLogic, final Class<? extends Resource> resourceType, final User clientUser, final URI syncServer) {
+
 		
-		final LogicInterface serverLogic = getServerLogic(serverUser.getName(), serverUser.getApiKey());
+		final LogicInterface serverLogic = getServerLogic(clientLogic, syncServer);
+		if (!present(serverLogic)) {
+			throw new IllegalArgumentException("Synchronization for " + syncServer + " not configured for user " + clientLogic.getAuthenticatedUser());
+		}
+		final User serverUser = serverLogic.getAuthenticatedUser();
 		
 		// set default result to "error"
 		String result = SynchronizationStatus.ERROR;

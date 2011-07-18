@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
@@ -26,7 +25,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.SynchronizationClient;
@@ -157,12 +155,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * setup server
 		 */
-		final SyncService syncServer = new SyncService();
-		syncServer.setService(new URI("http://www.test.de/"));
-		final Properties serverUserCredentials = new Properties();
-		serverUserCredentials.put("userName", SERVER_USER_NAME);
-		serverUserCredentials.put("apiKey", SERVER_USER_APIKEY);
-		syncServer.setServerUser(serverUserCredentials);
+		final URI syncServer = new URI("http://www.test.de/");
 		
 		/*
 		 * setup synchronization client
@@ -223,8 +216,8 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		assertFalse(map.containsKey("b89c5230f929a2c9af0c808b17fae120"));
 	}
 
-	private void syncBookmarks(final SynchronizationClient sync, final SyncService server) {
-		final SynchronizationData data = sync.synchronize(clientLogic, Bookmark.class, clientUser, server);
+	private void syncBookmarks(final SynchronizationClient sync, final URI syncServer) {
+		final SynchronizationData data = sync.synchronize(clientLogic, Bookmark.class, clientUser, syncServer);
 		assertNotNull("synchronization wasn't successful", data);
 		assertEquals(RESULT_STRING, data.getStatus());
 		
@@ -249,11 +242,11 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 
 	}
 
-	private void syncPublications(final SynchronizationClient sync, final SyncService server) {
+	private void syncPublications(final SynchronizationClient sync, final URI syncServer) {
 		/*
 		 * synchronize
 		 */
-		final SynchronizationData data = sync.synchronize(clientLogic, BibTex.class, clientUser, server);
+		final SynchronizationData data = sync.synchronize(clientLogic, BibTex.class, clientUser, syncServer);
 		assertNotNull("synchronization was not successful", data);
 		assertEquals(RESULT_STRING, data.getStatus());
 		

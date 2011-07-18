@@ -97,9 +97,9 @@ INSERT INTO `bibtex` (`content_id`, `user_name`, `simhash1`, `simhash2`, `change
 
 
 INSERT INTO `sync_services` (`uri`, `service_id`, server) VALUES
-('http://www.bibsonomy.org/', 1, false),
-('http://www.test.de/', 2, true),
-('http://www.test.de/', 0, false);
+('http://www.bibsonomy.org/', 1, FALSE),
+('http://www.test.de/', 2, TRUE),
+('http://www.test.de/', 0, FALSE);
 
 -- synchronization data table
 INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`) VALUES 
@@ -108,7 +108,9 @@ INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_d
 ('0', 'syncserver', '1', '2011-02-02 23:10:00', 'test synchronization');
 
 INSERT INTO `sync` (`user_name`, `service_id`, `credentials`) VALUES
-('syncuser1', '1', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785');
+('syncuser1', '1', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785'),
+('sync2', '2', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785')
+;
 
 
 -- bookmark table data
