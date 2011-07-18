@@ -1,6 +1,12 @@
 package org.bibsonomy.sync;
 
 /**
+ * The different states a synchronization can be in. 
+ * 
+ * FIXME: use enum instead?
+ * 
+ * FIXME: move to -model?
+ * 
  * @author rja
  * @version $Id$
  */

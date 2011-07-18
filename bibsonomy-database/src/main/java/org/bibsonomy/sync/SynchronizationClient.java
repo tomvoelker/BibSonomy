@@ -42,7 +42,7 @@ public class SynchronizationClient {
 	private URI uri;
 	
 	/*
-	 *	FIXME make ConficResolutionStrategy configurable by user 
+	 *	FIXME make ConflictResolutionStrategy configurable by user 
 	 */
 	private final ConflictResolutionStrategy strategy;
 	private DBLogicApiInterfaceFactory serverLogicFactory;
@@ -75,15 +75,15 @@ public class SynchronizationClient {
 	 * @param userProperties
 	 * @return user from userProperties
 	 */
-	private User getUserFromProperties(Properties userProperties) {
-		String userName = userProperties.getProperty("userName");
-		String apiKey = userProperties.getProperty("apiKey");
+	private User getUserFromProperties(final Properties userProperties) {
+		final String userName = userProperties.getProperty("userName");
+		final String apiKey = userProperties.getProperty("apiKey");
 		
-		if(!present(userName) || !present(apiKey)){
+		if (!present(userName) || !present(apiKey)) {
 			throw new IllegalStateException();
 		}
 		
-		User user = new User();
+		final User user = new User();
 		user.setName(userName);
 		user.setApiKey(apiKey);
 		return user;
@@ -98,7 +98,7 @@ public class SynchronizationClient {
 	 */
 	public SynchronizationData getLastSyncData(final String userName, Class<? extends Resource> resourceType, final SyncLogicInterface serverLogic) {
 		//FIXME errorhandling
-		return serverLogic.getLastSynchronizationDataForUserForContentType(userName, uri, resourceType);
+		return serverLogic.getLastSyncData(userName, uri, resourceType);
 	}
 	
 	/**
@@ -127,11 +127,9 @@ public class SynchronizationClient {
 	 * @return
 	 */
 	public SynchronizationData synchronize(LogicInterface clientLogic, Class<? extends Resource> resourceType, User clientUser, SyncService server) {
-		//get server user
-		User serverUser = getUserFromProperties(server.getServerUser());
+		final User serverUser = getUserFromProperties(server.getServerUser());
 		
-		//get server logic
-		SyncLogicInterface serverSyncLogic = createServerLogic(serverUser.getName(), serverUser.getApiKey());
+		final SyncLogicInterface serverSyncLogic = createServerLogic(serverUser.getName(), serverUser.getApiKey());
 		
 		//set default result to "error"
 		String result = SynchronizationStatus.ERROR;
@@ -139,20 +137,18 @@ public class SynchronizationClient {
 		try {
 			//try to synchronize resource
 			result = synchronizeResource(resourceType, serverUser, clientUser, serverSyncLogic, clientLogic);
-		} catch (SynchronizationRunningException e) {
+		} catch (final SynchronizationRunningException e) {
 			/*
 			 * FIXME handling of this exception type. I think we can break "running" synchronization after timeout.
 			 * Currently return only "running" status.
 			 */
-			SynchronizationData data = new SynchronizationData();
+			final SynchronizationData data = new SynchronizationData();
 			data.setStatus(SynchronizationStatus.RUNNING); // FIXME: we had "running" here, in contrast to "done" elsewhere
 			return data;
-		} catch (Exception e) {
-			//in case of an error, store syncdate as not successful, result stay "error"
-			result = "error";
-			log.error("ERROR OCCURRED", e);
+		} catch (final Exception e) {
+			log.error("Error in synchronization", e);
 		}
-		//after successful synchronization, store sync result.
+		// after successful synchronization, store sync result.
 		storeSyncResult(result, resourceType, serverSyncLogic, serverUser.getName());
 		
 		//Get synchronization data from server. Can't construct here, because last_sync_date only known by server
@@ -167,7 +163,7 @@ public class SynchronizationClient {
 	 * @param serverUserName
 	 */
 	private void storeSyncResult(String result, Class<? extends Resource> resourceType, SyncLogicInterface serverLogic, String serverUserName) {
-		SynchronizationData data = serverLogic.getCurrentSynchronizationDataForUserForServiceForContent(serverUserName, uri, resourceType);
+		final SynchronizationData data = serverLogic.getLastSyncData(serverUserName, uri, resourceType);
 		if (!present(data)) {
 			// started more than one sync process per second -> do nothing
 			return;

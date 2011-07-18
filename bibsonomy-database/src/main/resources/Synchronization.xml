@@ -65,7 +65,7 @@
 			AND sd.content_type = #contentType#
 			AND ss.uri = #service#
 			AND ss.server = #server#
-			AND sd.status != "undone"
+			AND sd.status != "running"
 			AND sd.status != "error"  
 		  ORDER BY last_sync_date DESC
 		  LIMIT 1
@@ -83,26 +83,16 @@
 		  LIMIT 1
 	</select>
 	
-	<select id="getSyncData" resultMap="SynchronizationCommon.syncData" parameterClass="syncParam">
+	<select id="getLastSyncData" resultMap="SynchronizationCommon.syncData" parameterClass="syncParam">
 		SELECT <include refid="syncDataColumns"/>
 		  FROM sync_data sd
 		    JOIN sync_services ss USING (service_id)
 		  WHERE sd.user_name = #userName#
 			AND sd.content_type = #contentType#
-			AND sd.status != #status#
 			AND ss.uri = #service#
-			AND ss.server = #server#
-		  ORDER BY sd.last_sync_date DESC
-	</select> 
-	
-	<select id="getCurrentSyncData" resultMap="SynchronizationCommon.syncData" parameterClass="syncParam">
-		SELECT <include refid="syncDataColumns"/>
-		  FROM sync_data sd
-		    JOIN sync_services ss USING (service_id)
-		  WHERE sd.user_name = #userName#
-			AND sd.content_type = #contentType#
-			AND sd.status = #status#
-			AND ss.uri = #service#
+			<isNotEmpty property="status" prepend="AND">
+		  		sd.status = #status# 
+		  	</isNotEmpty>
 			AND ss.server = #server#
 		  ORDER BY sd.last_sync_date DESC
 		  LIMIT 1

@@ -217,34 +217,17 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param service
      * @param contentType
      * @param session
+     * @param status - optional. If provided, only data with that state is returned.
      * @return returns last synchronization data for given user, service and content with {@link SynchronizationStatus#RUNNING}.
      */
-    public SynchronizationData getCurrentSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final DBSession session) {
+    public SynchronizationData getLastSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final String status, final DBSession session) {
     	final SyncParam param = new SyncParam();
     	param.setUserName(userName);
     	param.setResourceType(resourceType);
     	param.setService(service);
-    	param.setStatus(SynchronizationStatus.RUNNING);
+    	param.setStatus(status);
     	param.setServer(false);
-		return queryForObject("getCurrentSyncData", param, SynchronizationData.class, session);
-    }
-    
-    /**
-     * 
-     * @param userName
-     * @param service
-     * @param contentType
-     * @param session
-     * @return list of synchronizationData for given user, service and contentType
-     */
-    public List<SynchronizationData> getSynchronizationData (final String userName, final URI service, Class<? extends Resource> resourceType, final DBSession session) {
-    	final SyncParam param = new SyncParam();
-    	param.setUserName(userName);
-    	param.setResourceType(resourceType);
-    	param.setService(service);
-    	param.setStatus(SynchronizationStatus.RUNNING);
-    	param.setServer(false);
-		return this.queryForList("getSyncData", param, SynchronizationData.class, session);
+		return queryForObject("getLastSyncData", param, SynchronizationData.class, session);
     }
     
     /**
@@ -257,21 +240,6 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		return queryForList("getSyncServersForUser", param, SyncService.class, session);
-    }
-    
-    /**
-     * 
-     * @param userName
-     * @param service
-     * @param session
-     * @return sync service for user for given URI
-     */
-    public SyncService getSyncServer(final String userName, final URI service, final DBSession session) {
-    	final SyncParam param = new SyncParam();
-    	param.setUserName(userName);
-    	param.setService(service);
- 	    param.setServer(true);
-    	return queryForObject("getSyncServerForUserByUri", param, SyncService.class, session);
     }
     
     /**
