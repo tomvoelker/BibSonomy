@@ -72,14 +72,14 @@ public class SynchronizationController extends AjaxController implements Minimal
 		
 		switch(command.getContentType()) {
 		case 1:
-			addData(json, Bookmark.class, client.synchronize(logic, Bookmark.class, currentUser, uri));
+			addData(json, Bookmark.class, client.synchronize(logic, uri, Bookmark.class));
 			break;
 		case 2:
-			addData(json, BibTex.class, client.synchronize(logic, BibTex.class, currentUser, uri));
+			addData(json, BibTex.class, client.synchronize(logic, uri, BibTex.class));
 			break;
 		case 3:
-			addData(json, Bookmark.class, client.synchronize(logic, Bookmark.class, currentUser, uri));
-			addData(json, BibTex.class, client.synchronize(logic, BibTex.class, currentUser, uri));
+			addData(json, Bookmark.class, client.synchronize(logic, uri, Bookmark.class));
+			addData(json, BibTex.class, client.synchronize(logic, uri, BibTex.class));
 			break;
 		default:
 //			throw new UnsupportedContentTypeException();
