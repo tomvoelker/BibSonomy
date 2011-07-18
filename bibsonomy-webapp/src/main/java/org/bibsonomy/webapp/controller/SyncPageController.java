@@ -55,7 +55,7 @@ public class SyncPageController implements MinimalisticController<SyncPageComman
 		}
 		
 		log.debug("try to get sync services for user");
-		userServices = syncLogic.getSyncServerForUser(command.getContext().getLoginUser().getName());
+		userServices = syncLogic.getSyncServer(command.getContext().getLoginUser().getName());
 		
 		log.debug("try to get synchronization data from remote service");
 		for (SyncService syncService : userServices) {
