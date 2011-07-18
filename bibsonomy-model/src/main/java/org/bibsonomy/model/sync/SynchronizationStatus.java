@@ -7,6 +7,9 @@ package org.bibsonomy.model.sync;
  * @version $Id$
  */
 public enum SynchronizationStatus {
+	/*
+	 * NOTE: column is a varchar(8), so please use short names
+	 */
 	UNKNOWN("unknown"),
 	RUNNING("running"),
 	DONE("done"),
