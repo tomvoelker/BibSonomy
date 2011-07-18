@@ -530,7 +530,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getLastSyncDate(java.lang.String, int, int)
      */
     @Override
-    public Date getCurrentSyncDate(final String userName, final URI service, final Class<? extends Resource> resourceType) {
+    public Date getLastSyncDate(final String userName, final URI service, final Class<? extends Resource> resourceType) {
 	final DBSession session = this.openSession();
 	Date lastSyncDate = null;
 	try {
