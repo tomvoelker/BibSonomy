@@ -119,10 +119,20 @@ public enum ConstantID {
 	 * @return
 	 */
 	public static Class<? extends Resource> getClassByContentType(final ConstantID contentType) {
+		return getClassByContentType(contentType.id);
+	}
+
+	/**
+	 * The opposite of {@link #getContentTypeByClass(Class)}
+	 * 
+	 * @param contentType
+	 * @return
+	 */
+	public static Class<? extends Resource> getClassByContentType(final int contentType) {
 		switch (contentType) {
-		case BIBTEX_CONTENT_TYPE:
+		case 2:
 			return BibTex.class;
-		case BOOKMARK_CONTENT_TYPE:
+		case 1:
 			return Bookmark.class;
 		default:
 			throw new UnsupportedResourceTypeException();
