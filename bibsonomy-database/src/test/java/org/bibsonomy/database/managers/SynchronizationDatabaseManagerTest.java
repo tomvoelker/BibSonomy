@@ -119,8 +119,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		/*
 		 * set status of added data to done (simulate successful synchronization)
 		 */
-		data.setStatus("done");
-		syncDBManager.updateSyncData(dbSession, data);
+		syncDBManager.updateSyncStatus(dbSession, data, "done");
 
 		assertNull(syncDBManager.getCurrentSynchronizationData(syncUser1, bibsonomyURI, resourceType, dbSession));
 
