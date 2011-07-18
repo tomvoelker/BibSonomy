@@ -82,7 +82,7 @@ public interface SyncLogicInterface {
 	 * @param resourceType
 	 * @return returns date of current running Synchronization
 	 */
-	public Date getCurrentSyncDate(final String userName, final URI service, final Class<? extends Resource> resourceType);
+	public Date getLastSyncDate(final String userName, final URI service, final Class<? extends Resource> resourceType);
 	
 	/**
 	 * 
