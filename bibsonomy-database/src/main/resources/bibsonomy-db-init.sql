@@ -9,7 +9,8 @@ INSERT INTO `ids` VALUES
 	(7,0,'scraper_metadata_id'),
 	(12,0,'grouptas id'),
 	(14,0,'message_id'),
-	(15,0,'discussion_id');
+	(15,0,'discussion_id'),
+	(16,0,'synchronization_id');
 
 INSERT INTO `groupids` VALUES 
 	('public', -2147483648,1,0),
