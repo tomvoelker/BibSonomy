@@ -1,8 +1,5 @@
 package org.bibsonomy.webapp.command;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.bibsonomy.webapp.command.actions.EditTagsCommand;
 import org.bibsonomy.webapp.command.actions.RelationsEditCommand;
 
@@ -12,13 +9,15 @@ import org.bibsonomy.webapp.command.actions.RelationsEditCommand;
  * @version $Id$
  */
 public class EditTagsPageViewCommand extends ResourceViewCommand {
-
-	private final Date date = new Date();
-	private static final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+	
 	private final EditTagsCommand editTags;
 	
 	private final RelationsEditCommand relationsEdit;
+	
+	/**
+	 * the concepts of the user
+	 */
+	private ConceptsCommand concepts;
 
 	private int updatedRelationsCount = 0;
 	
@@ -32,12 +31,6 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	 * FIXME: use an enum
 	 */
 	private int forcedAction = 0;
-	
-	/**
-	 * the group whose resources are requested 
-	 * FIXME: a group? This is a ConceptsCommand!
-	 */
-	private ConceptsCommand concepts;
 	
 	/**
 	 * 
@@ -61,14 +54,6 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	public void setConcepts(final ConceptsCommand concepts) {
 		this.concepts = concepts;
 	}
-	
-	/**
-	 * called by the view
-	 * @return date as string (formated by the dateformator)
-	 */
-	public String getDate(){
-		return dateformat.format(date);
-	}
 
 	/**
 	 * @return the editTags
@@ -87,7 +72,7 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	/**
 	 * @param forcedAction the forcedAction to set
 	 */
-	public void setForcedAction(int forcedAction) {
+	public void setForcedAction(final int forcedAction) {
 		this.forcedAction = forcedAction;
 	}
 
@@ -101,7 +86,7 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	/**
 	 * @param updatedRelationsCount the updatedRelationsCount to set
 	 */
-	public void setUpdatedRelationsCount(int updatedRelationsCount) {
+	public void setUpdatedRelationsCount(final int updatedRelationsCount) {
 		this.updatedRelationsCount = updatedRelationsCount;
 	}
 
@@ -115,7 +100,7 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	/**
 	 * @param updatedTagsCount the updatedTagsCount to set
 	 */
-	public void setUpdatedTagsCount(int updatedTagsCount) {
+	public void setUpdatedTagsCount(final int updatedTagsCount) {
 		this.updatedTagsCount = updatedTagsCount;
 	}
 

@@ -1,4 +1,3 @@
-<?xml version="1.0" ?>
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
@@ -13,20 +12,18 @@
   	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common">
 	
-	<jsp:directive.page contentType="text/html; charset=UTF-8"
-		language="java" pageEncoding="UTF-8" session="true" />
-
-	<layout:paneLayout pageTitle="${command.pageTitle}"
-		command="${command}" requestedUser="" selectedNaviTab=""
-		requPath="${requPath}">
-
-		
-
-		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.editTags"/></a> 
-		</jsp:attribute>
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
+	<!-- used for the sample -->
+	<jsp:useBean id="newDate" class="java.util.Date" />
+	
+	<fmt:message key="navi.editTags" var="pageTitle" />
 
+	<layout:paneLayout pageTitle="${pageTitle} :: ${command.context.loginUser.name}" command="${command}" requPath="${requPath}">
+		<jsp:attribute name="heading">
+			<a rel="path_menu" href="#"><img src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${pageTitle}" /></a> 
+		</jsp:attribute>
+		
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
@@ -37,15 +34,11 @@
 
 		<jsp:attribute name="content">
 			<div id="general_100">
-		
-			
 				<!-- 
 					message for "reset" buttons
 			 	-->
 				<fmt:message var="reset" key="edittags.button.reset"/>
 				<fmt:message var="example" key="edittags.example"/>
-			
-			
 				
 				<!-- 
 					some resources/relations have been updated
@@ -94,11 +87,11 @@
 									</div>
 				     				<span class="bmmeta">
 				        				<fmt:message key="edittags.example.partTwo">
-											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex"> bibtex </a></fmt:param>
-											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/folksonomy"> folksonomy </a></fmt:param>
-											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/project"> project </a></fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a></fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/folksonomy">folksonomy</a></fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/project">project</a></fmt:param>
 											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a></fmt:param>
-				       						<fmt:param><c:out value='${command.date}' /></fmt:param>
+				       						<fmt:param><fmt:formatDate value="${newDate}" pattern="yyyy-MM-dd HH:mm:ss" /></fmt:param>
 				       					</fmt:message>
 									</span>
 							
@@ -116,26 +109,24 @@
 											</fmt:param>
 											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/system">system</a></fmt:param>
 											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a></fmt:param>
-				       						<fmt:param><c:out value='${command.date}' /></fmt:param>
+				       						<fmt:param><fmt:formatDate value="${newDate}" pattern="yyyy-MM-dd HH:mm:ss" /></fmt:param>
 				       					</fmt:message>
 									</span>
 									
 								</jsp:attribute>
 							</buttons:help>			
 						<div class="fsRow">
-					      <form:label cssClass="fsLabel" path="editTags.delTags"><fmt:message key="edittags.main.replace" />:<buttons:help message="edittags.help.delTags" /></form:label>
+					      <form:label cssClass="fsLabel" path="editTags.delTags"><fmt:message key="edittags.main.replace" />:</form:label><buttons:help message="edittags.help.delTags" />
 					      <form:input cssClass="fsInput" path="editTags.delTags" id="inpf" onclick="setActiveInputField(this.id)" />		        
 					    </div>
 						<div class="fsRow">
-					      <form:label cssClass="fsLabel" path="editTags.addTags"><fmt:message key="edittags.main.newtags" />:<buttons:help message="edittags.help.addTags" /></form:label>
+					      <form:label cssClass="fsLabel" path="editTags.addTags"><fmt:message key="edittags.main.newtags" />:</form:label><buttons:help message="edittags.help.addTags" />
 					      <form:input cssClass="fsInput" path="editTags.addTags" id="inpfNew" onclick="setActiveInputField(this.id)" />		        
 					    </div>
 						<div class="fsRow">
-							<!-- 
-								TODO: help message missing
-							 -->
-		        			<form:label cssClass="fsLabel" path="editTags.updateRelations"><fmt:message key="edittags.main.updaterelations" />: <buttons:help message="edittags.help.updateRelations" /></form:label>
-							<form:checkbox cssClass="fsInput" path="editTags.updateRelations"/><fmt:message key="edittags.main.note" />
+		        			<form:label cssClass="fsLabel" path="editTags.updateRelations"><fmt:message key="edittags.main.updaterelations" />:</form:label><buttons:help message="edittags.help.updateRelations" />
+							<form:checkbox cssClass="fsInput" path="editTags.updateRelations"/>
+							<fmt:message key="edittags.main.note" />
 		        		</div>
 
 						<div class="fsRow">
@@ -147,11 +138,6 @@
 			    		</div>
 		        	</fieldset>
 				</form:form>
-
-
-
-
-
 
 				<!-- 
 					edit tag relations 
