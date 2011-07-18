@@ -115,7 +115,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 			serverPosts.add(createPost("deleted on client", "2011-01-10 14:55:00", "2011-01-15 14:33:00", serverUser, clazz));
 
 			// post 4 "changed on server" created before, changed after the last
-			// scnchronization
+			// synchronization
 			serverPosts.add(createPost("changed on server", "2010-09-16 14:35:00", "2011-03-16 17:30:00", serverUser, clazz));
 
 			// post 5 "changed on client" created and modified before last
@@ -307,7 +307,6 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		try {
 			Thread.sleep(1000 * seconds);
 		} catch (InterruptedException ex) {
-			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
 	}
