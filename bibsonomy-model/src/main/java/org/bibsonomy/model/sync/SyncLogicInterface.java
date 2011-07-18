@@ -73,7 +73,7 @@ public interface SyncLogicInterface {
 	 * @param server switch between server and clients
 	 * @return List of for this System allowed synchronization services
 	 */
-	public List<SyncService> getAvlSyncServices(boolean server);
+	public List<SyncService> getSyncServices(boolean server);
 	
 	/**
 	 * 
