@@ -6,8 +6,6 @@ import java.sql.SQLException;
 
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.enums.ConstantID;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
@@ -29,15 +27,9 @@ public class ContentTypeTypeHandlerCallback extends AbstractTypeHandlerCallback 
 
 	@Override
 	public Object valueOf(final String str) {
-		/*
-		 * FIXME: duplicate of ConstantID.getClassByContentType()
-		 */
-		final int i = Integer.parseInt(str);
-		if (i == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			return BibTex.class;
-		} else if (i == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			return Bookmark.class;
-		} else {
+		try {
+			return ConstantID.getClassByContentType(Integer.parseInt(str));
+		} catch (final Exception e) {
 			throw new UnsupportedResourceTypeException();
 		}
 	}
