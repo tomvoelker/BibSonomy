@@ -15,6 +15,10 @@ import org.bibsonomy.model.Resource;
  */
 public interface SyncLogicInterface {
 	
+	/* ********************************************************************
+	 * create, read, update sync services - user independent
+	 */
+	
 	/**
 	 * Add service to the database
 	 * @param service service to add 
@@ -29,6 +33,19 @@ public interface SyncLogicInterface {
 	 * @param server
 	 */
 	public void deleteSyncService(final URI service, final boolean server);
+	
+	/**
+	 * 
+	 * @param userName
+	 * @return List of synchronization servers for given user 
+	 */
+	public List<SyncService> getSyncServer(final String userName);
+	
+	
+	
+	/* ********************************************************************
+	 * create, read, update, delete sync services - user dependent
+	 */
 	
 	/**
 	 * 
@@ -55,25 +72,16 @@ public interface SyncLogicInterface {
 	
 	/**
 	 * 
-	 * @param userName
-	 * @return List of synchronization server for given user 
-	 */
-	public List<SyncService> getSyncServerForUser(final String userName);
-	
-	/**
-	 * 
-	 * @param userName
-	 * @param uri
-	 * @return
-	 */
-	public SyncService getSyncServer(final String userName, final URI uri);
-	
-	/**
-	 * 
 	 * @param server switch between server and clients
 	 * @return List of for this System allowed synchronization services
 	 */
-	public List<SyncService> getSyncServices(boolean server);
+	public List<SyncService> getSyncServices(final boolean server);
+
+	
+	
+	/* ********************************************************************
+	 * create, read, update, delete sync services - user dependent
+	 */
 	
 	/**
 	 * 
@@ -87,6 +95,7 @@ public interface SyncLogicInterface {
 	/**
 	 * 
 	 * @param data
+	 * @param status 
 	 */
 	public void updateSyncStatus(final SynchronizationData data, final String status);
 	
@@ -95,18 +104,9 @@ public interface SyncLogicInterface {
 	 * @param userName
 	 * @param service
 	 * @param resourceType
-	 * @return Synchronization data of currently running synchronization: status is "undone"
-	 */
-	public SynchronizationData getCurrentSynchronizationDataForUserForServiceForContent(final String userName, final URI service, final Class<? extends Resource> resourceType);
-	
-	/**
-	 * 
-	 * @param userName
-	 * @param service
-	 * @param resourceType
 	 * @return Synchronization data of last successful synchronization: date and status
 	 */
-	public SynchronizationData getLastSynchronizationDataForUserForContentType (final String userName, final URI service, final Class<? extends Resource> resourceType);
+	public SynchronizationData getLastSyncData (final String userName, final URI service, final Class<? extends Resource> resourceType);
 	
 	/**
 	 * 

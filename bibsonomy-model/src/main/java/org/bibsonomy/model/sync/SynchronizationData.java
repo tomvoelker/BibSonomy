@@ -82,4 +82,8 @@ public class SynchronizationData {
 		this.resourceType = resourceType;
 	}
 	
+	@Override
+	public String toString() {
+		return userName + "@" + service + " for " + resourceType.getSimpleName() + " in status '" + status + "' (lastSyncDate=" + lastSyncDate + ")"; 
+	}
 }
