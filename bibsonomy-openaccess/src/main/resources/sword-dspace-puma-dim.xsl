@@ -76,7 +76,6 @@
 	    		<xsl:value-of select="@ISSN"/>
 	    	</dim:field>
 		</xsl:if>
-    	</dim:dim>
 
 	    <!-- dc.description.everything -->
 		<xsl:if test="./@description">
@@ -84,6 +83,7 @@
 	    		<xsl:value-of select="@description"/>
 	    	</dim:field>
 		</xsl:if>
+    	</dim:dim>
 
     </xsl:template>
     
@@ -199,7 +199,7 @@
     	<dim:field mdschema="dc" element="description" qualifier="everything">
     		<xsl:text>Tag der mundlichen Prüfung: </xsl:text>
     		<xsl:value-of select="."/>
-	</dim:field>
+		</dim:field>
     </xsl:template>
 
     <!-- dc.description.sponsorship -->
@@ -249,7 +249,7 @@
     		<dim:field mdschema="dc" element="description" qualifier="everything">
     			<xsl:text>DDC: </xsl:text>
 	    		<xsl:value-of select="@value"/>
-		</dim:field>
+			</dim:field>
 		</xsl:when>
 
 	    <!-- other -->
