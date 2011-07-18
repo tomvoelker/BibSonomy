@@ -206,7 +206,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
 		
 		final List<SyncService> userServers = syncLogic.getSyncServerForUser(command.getUser().getName());
-		final List<SyncService> allServers = syncLogic.getAvlSyncServices(true);
+		final List<SyncService> allServers = syncLogic.getSyncServices(true);
 		
 		/*
 		 * Remove all servers the user already has.
