@@ -22,6 +22,6 @@ public class SyncStatusTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
 	@Override
 	public Object valueOf(final String str) {
-		return SynchronizationStatus.valueOf(str);
+		return SynchronizationStatus.valueOf(str.toUpperCase());
 	}
 }
