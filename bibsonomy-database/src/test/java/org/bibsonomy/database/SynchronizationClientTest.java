@@ -1,6 +1,7 @@
 package org.bibsonomy.database;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -10,6 +11,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -36,13 +39,18 @@ import org.junit.Test;
  * @version $Id$
  */
 public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
+	private static final String SERVER_USER_NAME = "syncServer";
+	private static final String SERVER_USER_APIKEY = "15cb586b630cc343cd60684807bf4785";
+	private static final String CLIENT_USER_NAME = "sync2";
 
 	private User serverUser;
 	private User clientUser;
 
 	private DBLogic clientLogic;
 	private DBLogic serverLogic;
-	private URI clientService;
+	
+	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	
 	private final String RESULT_STRING = "done, created on client: 1, created on server: 1, updated on client: 1, updated on server: 1, deleted on client: 1, deleted on server: 1";
 
@@ -53,7 +61,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		 * create server user
 		 */
 		serverUser = new User();
-		serverUser.setName("syncServer");
+		serverUser.setName(SERVER_USER_NAME);
 		serverUser.setRole(Role.SYNC);
 		serverUser.setGroups(new ArrayList<Group>());
 		serverUser.getGroups().add(new Group("jbhj"));
@@ -62,7 +70,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		 * create client user
 		 */
 		clientUser = new User();
-		clientUser.setName("sync2");
+		clientUser.setName(CLIENT_USER_NAME);
 		clientUser.setRole(Role.SYNC);
 
 		/*
@@ -84,21 +92,21 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 
 			// post 1 "no changes" created and modified before last
 			// synchronization
-			serverPosts.add(createPost("no changes", "2011-01-31 14:32:00", "2011-01-10 14:32:00", serverUser, clazz));
+			serverPosts.add(createPost("no changes", "2011-01-10 14:32:00", "2011-01-31 14:32:00", serverUser, clazz));
 
 			// post 2 "deleted on server" is not in the server database
 
 			// post 3 "deleted on client" created and modified before last
 			// synchronization
-			serverPosts.add(createPost("deleted on client", "2011-01-15 14:33:00", "2011-01-10 14:55:00", serverUser, clazz));
+			serverPosts.add(createPost("deleted on client", "2011-01-10 14:55:00", "2011-01-15 14:33:00", serverUser, clazz));
 
 			// post 4 "changed on server" created before, changed after the last
 			// scnchronization
-			serverPosts.add(createPost("changed on server", "2011-03-16 17:30:00", "2010-09-16 14:35:00", serverUser, clazz));
+			serverPosts.add(createPost("changed on server", "2010-09-16 14:35:00", "2011-03-16 17:30:00", serverUser, clazz));
 
 			// post 5 "changed on client" created and modified before last
 			// synchronization
-			serverPosts.add(createPost("changed on client", "2010-02-01 17:23:00", "2009-12-31 23:59:00", serverUser, clazz));
+			serverPosts.add(createPost("changed on client", "2009-12-31 23:59:00", "2010-02-01 17:23:00", serverUser, clazz));
 
 			// post 6 "created on server" created and modified after last
 			// synchronization
@@ -114,22 +122,22 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 			final List<Post<?>> clientPosts = new ArrayList<Post<?>>();
 
 			// post 1: "post without changes" is the same post as in database
-			clientPosts.add(createPost("no changes", "2011-01-31 14:32:00", "2011-01-10 14:32:00", clientUser, clazz));
+			clientPosts.add(createPost("no changes", "2011-01-10 14:32:00", "2011-01-31 14:32:00", clientUser, clazz));
 
 			// post 2: "post deleted on server" here created and modified before
 			// last synchronization
-			clientPosts.add(createPost("post deleted on server", "2009-11-02 12:23:00", "2009-11-02 12:20:00", clientUser, clazz));
+			clientPosts.add(createPost("post deleted on server", "2009-11-02 12:20:00", "2009-11-02 12:23:00", clientUser, clazz));
 
 			// post 3: "post deleted on client" is not in the client list
 
 			// post 4: "post changed on server" same hashes and create date as
 			// in database, but change date is before last synchronization
-			clientPosts.add(createPost("changed on server", "2011-01-16 17:58:00", "2010-09-16 14:35:00", clientUser, clazz));
+			clientPosts.add(createPost("changed on server", "2010-09-16 14:35:00", "2011-01-16 17:58:00", clientUser, clazz));
 
 			// post 5: "post changed on client" same hashes and create date as
 			// in database, but change date is after the last synchronization
 			// date
-			clientPosts.add(createPost("changed on client", "2011-03-25 10:59:00", "2009-12-31 23:59:00", clientUser, clazz));
+			clientPosts.add(createPost("changed on client", "2009-12-31 23:59:00", "2011-03-25 10:59:00", clientUser, clazz));
 
 			// post 6: "post created on server" is not in the client list
 
@@ -139,34 +147,8 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 
 			clientLogic.createPosts(clientPosts);
 		}
-
-		try {
-			clientService = new URI("http://www.test.de/");
-		} catch (final URISyntaxException ex) {
-			ex.printStackTrace();
-		}
-
 	}
 
-	private <T extends Resource> Post<T> createPost(String title, String changeDate, String postingDate, User user, Class<T> resourceType) {
-		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-		final Post<T> post = ModelUtils.generatePost(resourceType);
-		post.setUser(user);
-		try {
-			post.setChangeDate(format.parse(changeDate));
-			post.setDate(format.parse(postingDate));
-			if (resourceType == Bookmark.class) {
-				Bookmark book = (Bookmark)post.getResource();
-				title = title.replace(" ", "-");
-				book.setUrl("http://www." + title + ".com");
-			}
-		} catch (ParseException ex) {
-			// ignore
-		}
-		post.getResource().setTitle(title);
-		return post;
-	}
-	
 	
 	@Test
 	public void testSynchronization() throws URISyntaxException {
@@ -175,29 +157,70 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * setup server
 		 */
-		final SyncService server = new SyncService();
-		server.setService(new URI("http://www.test.de/"));
-		final Properties su = new Properties();
-		su.put("userName", "syncServer");
-		su.put("apiKey", "15cb586b630cc343cd60684807bf4785");
-		server.setServerUser(su);
+		final SyncService syncServer = new SyncService();
+		syncServer.setService(new URI("http://www.test.de/"));
+		final Properties serverUserCredentials = new Properties();
+		serverUserCredentials.put("userName", SERVER_USER_NAME);
+		serverUserCredentials.put("apiKey", SERVER_USER_APIKEY);
+		syncServer.setServerUser(serverUserCredentials);
 		
 		/*
 		 * setup synchronization client
 		 */
 		sync.setServerLogicFactory(new DBLogicApiInterfaceFactory());
-		sync.setOwnUri("http://www.test.de/");
+		sync.setOwnUri(new URI("http://www.test.de/"));
 		sync.setDBSessionFactory(new IbatisDBSessionFactory());
+		
+		/*
+		 * check that synchronization is enabled
+		 */
+		System.out.println(clientLogic.getSyncServer(clientUser.getName()));
+		System.out.println(clientLogic.getSyncServer(serverUser.getName()));
+		System.out.println(serverLogic.getSyncServer(clientUser.getName()));
+		System.out.println(serverLogic.getSyncServer(serverUser.getName()));
 		
 		/*
 		 * sync + check publications
 		 */
-		syncPublications(sync, server);
+		syncPublications(sync, syncServer);
 		
 		/*
 		 * sync + check bookmarks
 		 */
-		syncBookmarks(sync, server);
+		syncBookmarks(sync, syncServer);
+		
+		/* *********************************************************************
+		 * 
+		 * next steps: add/delete/modify posts on client and server and then sync
+		 * 
+		 */
+		
+		/*
+		 * change some posts on server
+		 */
+		final Date now = new Date();
+		final List<Post<?>> serverPosts = new ArrayList<Post<?>>();
+		/*
+		 * add a post
+		 */
+		serverPosts.add(createPost("added after sync on server", dateFormat.format(now), dateFormat.format(now), serverUser, Bookmark.class));
+		serverLogic.createPosts(serverPosts);
+		/*
+		 * delete a post
+		 */
+		serverLogic.deletePosts(serverUser.getName(), Collections.singletonList("b89c5230f929a2c9af0c808b17fae120"));
+		/*
+		 * sync
+		 */
+		final SynchronizationData syncData = sync.synchronize(clientLogic, Bookmark.class, clientUser, syncServer);
+		assertNotNull(syncData);
+		assertEquals("done, created on client: 1, deleted on client: 1", syncData.getStatus());
+		/*
+		 * check for posts on client
+		 */
+		final Map<String, SynchronizationPost> map = clientLogic.getSyncPostsMapForUser(clientUser.getName(), Bookmark.class);
+		assertTrue(map.containsKey(serverPosts.get(0).getResource().getIntraHash()));
+		assertFalse(map.containsKey("b89c5230f929a2c9af0c808b17fae120"));
 	}
 
 	private void syncBookmarks(final SynchronizationClient sync, final SyncService server) {
@@ -255,5 +278,23 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 			assertTrue(clientPosts.containsKey(key));
 			assertTrue(key + " is not same", clientPosts.get(key).isSame(serverPosts.get(key)));
 		}
+	}
+	
+	private <T extends Resource> Post<T> createPost(String title, String createDate, String changeDate, User user, Class<T> resourceType) {
+		final Post<T> post = ModelUtils.generatePost(resourceType);
+		post.setUser(user);
+		try {
+			post.setChangeDate(dateFormat.parse(changeDate));
+			post.setDate(dateFormat.parse(createDate));
+			if (resourceType == Bookmark.class) {
+				final Bookmark bookmark = (Bookmark)post.getResource();
+				title = title.replace(" ", "-");
+				bookmark.setUrl("http://www." + title + ".com");
+			}
+		} catch (ParseException ex) {
+			// ignore
+		}
+		post.getResource().setTitle(title);
+		return post;
 	}
 }

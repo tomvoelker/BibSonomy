@@ -3,7 +3,6 @@ package org.bibsonomy.sync;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -38,7 +37,6 @@ public class SynchronizationClient {
 	/*
 	 * own URI as String and as java.net.URI
 	 */
-	private String ownUri;
 	private URI uri;
 	
 	/*
@@ -59,15 +57,12 @@ public class SynchronizationClient {
 	 * @param apiKey
 	 * @return Logic with access to database on server-service   
 	 */
-	private SyncLogicInterface createServerLogic(String userName, String apiKey) {
+	private LogicInterface getServerLogic(String userName, String apiKey) {
 	
-		//FIXME get correct DBSessionFactory for each service
+		// FIXME: get correct DBSessionFactory for each service
 		serverLogicFactory.setDbSessionFactory(this.dbSessionFactory);
 		
-		//FIXME remove cast after integration
-		SyncLogicInterface serverLogic = (SyncLogicInterface) serverLogicFactory.getLogicAccess(userName, apiKey);
-		
-		return serverLogic;
+		return serverLogicFactory.getLogicAccess(userName, apiKey);
 	}
 	
 	/**
@@ -96,9 +91,11 @@ public class SynchronizationClient {
 	 * @param serverLogic
 	 * @return
 	 */
-	public SynchronizationData getLastSyncData(final String userName, Class<? extends Resource> resourceType, final SyncLogicInterface serverLogic) {
-		//FIXME errorhandling
-		return serverLogic.getLastSyncData(userName, uri, resourceType);
+	public SynchronizationData getLastSyncData(final String userName, Class<? extends Resource> resourceType, final LogicInterface serverLogic) {
+		/*
+		 * FIXME: errorhandling
+		 */
+		return ((SyncLogicInterface) serverLogic).getLastSyncData(userName, uri, resourceType);
 	}
 	
 	/**
@@ -112,31 +109,32 @@ public class SynchronizationClient {
 		final User serverUser = getUserFromProperties(syncService.getServerUser());
 		final String userName = serverUser.getName();
 		
-		final SyncLogicInterface serverLogic = createServerLogic(userName, serverUser.getApiKey());
+		final LogicInterface serverLogic = getServerLogic(userName, serverUser.getApiKey());
 		
 		return getLastSyncData(userName, resourceType, serverLogic);
 	}
 	
 
 	/**
-	 * handles synchronization of a resourceType 
+	 * Synchronized the user's posts between the clientLogic and the syncServer.  
+	 * 
 	 * @param clientLogic
 	 * @param resourceType
 	 * @param clientUser
 	 * @param server
 	 * @return
 	 */
-	public SynchronizationData synchronize(LogicInterface clientLogic, Class<? extends Resource> resourceType, User clientUser, SyncService server) {
+	public SynchronizationData synchronize(final LogicInterface clientLogic, final Class<? extends Resource> resourceType, final User clientUser, final SyncService server) {
 		final User serverUser = getUserFromProperties(server.getServerUser());
 		
-		final SyncLogicInterface serverSyncLogic = createServerLogic(serverUser.getName(), serverUser.getApiKey());
+		final LogicInterface serverLogic = getServerLogic(serverUser.getName(), serverUser.getApiKey());
 		
-		//set default result to "error"
+		// set default result to "error"
 		String result = SynchronizationStatus.ERROR;
 		
 		try {
-			//try to synchronize resource
-			result = synchronizeResource(resourceType, serverUser, clientUser, serverSyncLogic, clientLogic);
+			// try to synchronize resource
+			result = synchronizeResource(resourceType, serverLogic, clientLogic);
 		} catch (final SynchronizationRunningException e) {
 			/*
 			 * FIXME handling of this exception type. I think we can break "running" synchronization after timeout.
@@ -149,10 +147,10 @@ public class SynchronizationClient {
 			log.error("Error in synchronization", e);
 		}
 		// after successful synchronization, store sync result.
-		storeSyncResult(result, resourceType, serverSyncLogic, serverUser.getName());
+		storeSyncResult(result, resourceType, serverLogic, serverUser.getName());
 		
 		//Get synchronization data from server. Can't construct here, because last_sync_date only known by server
-		return getLastSyncData(serverUser.getName(), resourceType, serverSyncLogic);
+		return getLastSyncData(serverUser.getName(), resourceType, serverLogic);
 	}	
 	
 	/**
@@ -162,14 +160,14 @@ public class SynchronizationClient {
 	 * @param serverLogic
 	 * @param serverUserName
 	 */
-	private void storeSyncResult(String result, Class<? extends Resource> resourceType, SyncLogicInterface serverLogic, String serverUserName) {
-		final SynchronizationData data = serverLogic.getLastSyncData(serverUserName, uri, resourceType);
+	private void storeSyncResult(final String result, final Class<? extends Resource> resourceType, final LogicInterface serverLogic, final String serverUserName) {
+		final SynchronizationData data = ((SyncLogicInterface) serverLogic).getLastSyncData(serverUserName, uri, resourceType);
 		if (!present(data)) {
 			// started more than one sync process per second -> do nothing
 			return;
 		}
 		if (SynchronizationStatus.RUNNING.equals(data.getStatus())) {
-			serverLogic.updateSyncStatus(data, result);
+			((SyncLogicInterface) serverLogic).updateSyncStatus(data, result);
 		} else {
 			log.error("Error no running synchronization dound, to store result");
 		}
@@ -184,26 +182,25 @@ public class SynchronizationClient {
 	 * @param clientLogic
 	 * @return synchronization result
 	 */
-	private String synchronizeResource(final Class<? extends Resource> resourceType, User serverUser, User clientUser, SyncLogicInterface syncServerLogic, LogicInterface clientLogic) {
+	private String synchronizeResource(final Class<? extends Resource> resourceType, final LogicInterface serverLogic, final LogicInterface clientLogic) {
 		/*
-		 * TODO remove syncServerLogic and syncClientLogic after integration of
-		 * SyncLogicInterface into LogicInterface
+		 * add sync access to both users
 		 */
-		SyncLogicInterface syncClientLogic = (SyncLogicInterface)clientLogic;
-		LogicInterface serverLogic = (LogicInterface)syncServerLogic;
+		final User serverUser = serverLogic.getAuthenticatedUser();
+		serverUser.setRole(Role.SYNC);
 		
-		//Add sync acces to both users
-		User serverAuthenticatedUser = serverLogic.getAuthenticatedUser();
-		serverAuthenticatedUser.setRole(Role.SYNC);
-		
-		User clientAuthenticatedUser = clientLogic.getAuthenticatedUser();
-		clientAuthenticatedUser.setRole(Role.SYNC);
+		final User clientUser = clientLogic.getAuthenticatedUser();
+		clientUser.setRole(Role.SYNC);
 	
-		//get posts from client system
-		List<SynchronizationPost> clientPosts = syncClientLogic.getSyncPostsListForUser(resourceType, clientUser.getName());
+		/*
+		 * get posts from client system
+		 */
+		List<SynchronizationPost> clientPosts = ((SyncLogicInterface)clientLogic).getSyncPostsListForUser(resourceType, clientUser.getName());
 		
-		//get synchronization states and posts from server
-		clientPosts = syncServerLogic.getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, uri);
+		/*
+		 * get synchronization states and posts from server
+		 */
+		clientPosts = ((SyncLogicInterface)serverLogic).getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, uri);
 
 		/*
 		 * create target lists
@@ -349,21 +346,15 @@ public class SynchronizationClient {
 	/**
 	 * @param ownUri the ownUri to set
 	 */
-	public void setOwnUri(String ownUri) {
-		this.ownUri = ownUri;
-		try {
-			uri = new URI(ownUri);
-		} catch (URISyntaxException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
+	public void setOwnUri(final URI ownUri) {
+		this.uri = ownUri;
 	}
 
 	/**
 	 * @return the ownUri
 	 */
-	public String getOwnUri() {
-		return ownUri;
+	public URI getOwnUri() {
+		return uri;
 	}
 
 	/**
