@@ -8,7 +8,7 @@ import org.bibsonomy.model.Resource;
  * @version $Id$
  */
 public class SynchronizationPost extends SynchronizationResource {
-	
+
 	/**
 	 * interHash of this post
 	 */
@@ -17,27 +17,38 @@ public class SynchronizationPost extends SynchronizationResource {
 	 * intraHash of this post
 	 */
 	private String interHash;
-	
+
 	/**
 	 * class of this post, e. g. Bibtex or Bookmark
 	 */
 	private Class<? extends Resource> resourceType;
-	
+
 	/**
 	 * resource attached from server
 	 */
 	private Post<? extends Resource> post;
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.model.synch.SynchronizationResource#same(org.bibsonomy.model.synch.SynchronizationResource)
+
+	/**
+	 * Checks if two posts are the same
+	 * 
+	 * FIXME: should we overwrite equals() instead?
+	 * 
+	 * @see org.bibsonomy.model.sync.SynchronizationResource#isSame(org.bibsonomy.model.sync.SynchronizationResource)
+	 * 
 	 */
 	@Override
-	public boolean isSame(SynchronizationResource post) {
-		SynchronizationPost p = (SynchronizationPost)post;
-		return (p.getChangeDate().equals(this.getChangeDate()) && p.getCreateDate().equals(this.getCreateDate()) && p.getIntraHash().equals(this.getIntraHash()));
+	public boolean isSame(final SynchronizationResource post) {
+		if (post instanceof SynchronizationPost) {
+			final SynchronizationPost p = (SynchronizationPost)post;
+			return (
+					p.getChangeDate().equals(this.getChangeDate()) && 
+					p.getCreateDate().equals(this.getCreateDate()) && 
+					p.getIntraHash().equals(this.getIntraHash())
+			);
+		}
+		return false;
 	}
-	
+
 	/**
 	 * @param intraHash the intraHash to set
 	 */
@@ -62,14 +73,14 @@ public class SynchronizationPost extends SynchronizationResource {
 	public String getInterHash() {
 		return interHash;
 	}
-	
+
 	/**
 	 * @param resourceType to set
 	 */
 	public void setResourceType(Class<? extends Resource> resourceType) {
 		this.resourceType = resourceType;
 	}
-	
+
 	/**
 	 * 
 	 * @return the resourceType
