@@ -25,6 +25,7 @@ import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.sync.SynchronizationStatus;
 
 /**
  * This client is only for BibSonomy
@@ -125,26 +126,29 @@ public class SynchronizationClient {
 	 * Synchronized the user's posts between the clientLogic and the syncServer.  
 	 * 
 	 * @param clientLogic
+	 * @param syncServer
 	 * @param resourceType
-	 * @param clientUser
-	 * @param server
 	 * @return
 	 */
-	public SynchronizationData synchronize(final LogicInterface clientLogic, final Class<? extends Resource> resourceType, final User clientUser, final URI syncServer) {
-
-		
+	public SynchronizationData synchronize(final LogicInterface clientLogic, final URI syncServer, final Class<? extends Resource> resourceType) {
+		/*
+		 * retrieve instance of server logic
+		 */
 		final LogicInterface serverLogic = getServerLogic(clientLogic, syncServer);
 		if (!present(serverLogic)) {
 			throw new IllegalArgumentException("Synchronization for " + syncServer + " not configured for user " + clientLogic.getAuthenticatedUser());
 		}
-		final User serverUser = serverLogic.getAuthenticatedUser();
+		final String serverUserName = serverLogic.getAuthenticatedUser().getName();
 		
-		// set default result to "error"
-		String result = SynchronizationStatus.ERROR;
-		
+		/*
+		 * set default result to "error"
+		 */
+		SynchronizationStatus result;
+		String info;
 		try {
 			// try to synchronize resource
-			result = synchronizeResource(resourceType, serverLogic, clientLogic);
+			info = synchronize(clientLogic, serverLogic, resourceType);
+			result = SynchronizationStatus.DONE;
 		} catch (final SynchronizationRunningException e) {
 			/*
 			 * FIXME handling of this exception type. I think we can break "running" synchronization after timeout.
@@ -154,13 +158,15 @@ public class SynchronizationClient {
 			data.setStatus(SynchronizationStatus.RUNNING); // FIXME: we had "running" here, in contrast to "done" elsewhere
 			return data;
 		} catch (final Exception e) {
+			info = "";
+			result = SynchronizationStatus.ERROR;
 			log.error("Error in synchronization", e);
 		}
 		// after successful synchronization, store sync result.
-		storeSyncResult(result, resourceType, serverLogic, serverUser.getName());
+		storeSyncResult(result, info, resourceType, serverLogic, serverUserName);
 		
 		//Get synchronization data from server. Can't construct here, because last_sync_date only known by server
-		return getLastSyncData(serverUser.getName(), resourceType, serverLogic);
+		return getLastSyncData(serverUserName, resourceType, serverLogic);
 	}	
 	
 	/**
@@ -170,31 +176,32 @@ public class SynchronizationClient {
 	 * @param serverLogic
 	 * @param serverUserName
 	 */
-	private void storeSyncResult(final String result, final Class<? extends Resource> resourceType, final LogicInterface serverLogic, final String serverUserName) {
+	private void storeSyncResult(final SynchronizationStatus status, final String info, final Class<? extends Resource> resourceType, final LogicInterface serverLogic, final String serverUserName) {
 		final SynchronizationData data = ((SyncLogicInterface) serverLogic).getLastSyncData(serverUserName, uri, resourceType);
 		if (!present(data)) {
 			// started more than one sync process per second -> do nothing
 			return;
 		}
 		if (SynchronizationStatus.RUNNING.equals(data.getStatus())) {
-			((SyncLogicInterface) serverLogic).updateSyncStatus(data, result);
+			((SyncLogicInterface) serverLogic).updateSyncStatus(data, status, info);
 		} else {
 			log.error("Error no running synchronization dound, to store result");
 		}
 	}
 
 	/**
-	 * main synchronization method
-	 * @param resourceType
-	 * @param serverUser
-	 * @param clientUser
-	 * @param syncServerLogic
+	 * Synchronizes clientLogic with serverLogic.
+	 * 
 	 * @param clientLogic
+	 * @param serverLogic
+	 * @param resourceType
 	 * @return synchronization result
 	 */
-	private String synchronizeResource(final Class<? extends Resource> resourceType, final LogicInterface serverLogic, final LogicInterface clientLogic) {
+	private String synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final Class<? extends Resource> resourceType) {
 		/*
-		 * add sync access to both users
+		 * add sync access to both users = allow users to modify the dates of
+		 * posts
+		 * FIXME: must be secured using crypto
 		 */
 		final User serverUser = serverLogic.getAuthenticatedUser();
 		serverUser.setRole(Role.SYNC);
@@ -205,12 +212,12 @@ public class SynchronizationClient {
 		/*
 		 * get posts from client system
 		 */
-		List<SynchronizationPost> clientPosts = ((SyncLogicInterface)clientLogic).getSyncPostsListForUser(resourceType, clientUser.getName());
+		List<SynchronizationPost> clientPosts = ((SyncLogicInterface)clientLogic).getSyncPosts(clientUser.getName(), resourceType);
 		
 		/*
 		 * get synchronization states and posts from server
 		 */
-		clientPosts = ((SyncLogicInterface)serverLogic).getSynchronization(serverUser.getName(), resourceType, clientPosts, strategy, uri);
+		clientPosts = ((SyncLogicInterface)serverLogic).getSyncPlan(serverUser.getName(), resourceType, clientPosts, strategy, uri);
 
 		/*
 		 * create target lists

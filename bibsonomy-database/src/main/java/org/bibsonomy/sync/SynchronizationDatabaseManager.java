@@ -19,7 +19,8 @@ import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
-import org.bibsonomy.model.sync.SynchronizationStates;
+import org.bibsonomy.model.sync.SynchronizationActions;
+import org.bibsonomy.model.sync.SynchronizationStatus;
 
 /**
  * @author wla
@@ -87,13 +88,14 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param status - the status to set
      * @param data SynchronizationData
      */
-    public void updateSyncStatus(final DBSession session, final SynchronizationData data, final String status) {
+    public void updateSyncStatus(final DBSession session, final SynchronizationData data, final SynchronizationStatus status, final String info) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(data.getUserName());
 		param.setService(data.getService());
 		param.setResourceType(data.getResourceType());
 		param.setLastSyncDate(data.getLastSyncDate());
 		param.setStatus(status);
+		param.setInfo(info);
 		param.setServer(false);
 		session.update("updateSyncStatus", param);
     }
@@ -200,7 +202,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param status
      * @param session
      */
-    public void insertSynchronizationData (final String userName, final URI service, Class<? extends Resource> resourceType, final Date lastSyncDate, final String status, final DBSession session) {
+    public void insertSynchronizationData (final String userName, final URI service, Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final DBSession session) {
     	final SyncParam param = new SyncParam();
     	param.setUserName(userName);
     	param.setService(service);
@@ -220,7 +222,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param status - optional. If provided, only data with that state is returned.
      * @return returns last synchronization data for given user, service and content with {@link SynchronizationStatus#RUNNING}.
      */
-    public SynchronizationData getLastSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final String status, final DBSession session) {
+    public SynchronizationData getLastSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final SynchronizationStatus status, final DBSession session) {
     	final SyncParam param = new SyncParam();
     	param.setUserName(userName);
     	param.setResourceType(resourceType);
@@ -251,7 +253,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param conflictResolutionStrategy
      * @return
      */
-    public List<SynchronizationPost> synchronize(final Map<String, SynchronizationPost> serverPosts, final List<SynchronizationPost> clientPosts, final Date lastSyncDate, final ConflictResolutionStrategy conflictResolutionStrategy) {
+    public List<SynchronizationPost> getSyncPlan(final Map<String, SynchronizationPost> serverPosts, final List<SynchronizationPost> clientPosts, final Date lastSyncDate, final ConflictResolutionStrategy conflictResolutionStrategy) {
 
 		// is something to synchronize?
 		if (!present(serverPosts) && !present(clientPosts)) {
@@ -272,10 +274,10 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 				 * deleted on server
 				 */
 				if (clientPost.getCreateDate().compareTo(lastSyncDate) < 0) {
-					clientPost.setState(SynchronizationStates.DELETE_CLIENT);
+					clientPost.setState(SynchronizationActions.DELETE_CLIENT);
 					continue;
 				} else {
-					clientPost.setState(SynchronizationStates.CREATE);
+					clientPost.setState(SynchronizationActions.CREATE);
 					continue;
 				}
 			}
@@ -289,41 +291,41 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 				if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0) {
 					switch (conflictResolutionStrategy) {
 					case CLIENT_WINS:
-						clientPost.setState(SynchronizationStates.UPDATE);
+						clientPost.setState(SynchronizationActions.UPDATE);
 						break;
 					case SERVER_WINS:
-						clientPost.setState(SynchronizationStates.UPDATE_CLIENT);
+						clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
 						break;
 					case ASK_USER:
-						clientPost.setState(SynchronizationStates.ASK);
+						clientPost.setState(SynchronizationActions.ASK);
 						break;
 					case FIRST_WINS:
 						if (clientPost.getChangeDate().compareTo(serverPost.getChangeDate()) < 0) {
-							clientPost.setState(SynchronizationStates.UPDATE);
+							clientPost.setState(SynchronizationActions.UPDATE);
 						} else {
-							clientPost.setState(SynchronizationStates.UPDATE_CLIENT);
+							clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
 						}
 						break;
 					case LAST_WINS:
 						if (clientPost.getChangeDate().compareTo(serverPost.getChangeDate()) > 0) {
-							clientPost.setState(SynchronizationStates.UPDATE);
+							clientPost.setState(SynchronizationActions.UPDATE);
 						} else {
-							clientPost.setState(SynchronizationStates.UPDATE_CLIENT);
+							clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
 						}
 						break;
 					default:
-						clientPost.setState(SynchronizationStates.UNDEFINED);
+						clientPost.setState(SynchronizationActions.UNDEFINED);
 						break;
 					}
 
 				} else {
-					clientPost.setState(SynchronizationStates.UPDATE_CLIENT);
+					clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
 				}
 			} else {
 				if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0) {
-					clientPost.setState(SynchronizationStates.UPDATE);
+					clientPost.setState(SynchronizationActions.UPDATE);
 				} else {
-					clientPost.setState(SynchronizationStates.OK);
+					clientPost.setState(SynchronizationActions.OK);
 				}
 
 			}
@@ -340,9 +342,9 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			 * post is older than lastSyncDate
 			 */
 			if (serverPost.getCreateDate().compareTo(lastSyncDate) < 0) {
-				serverPost.setState(SynchronizationStates.DELETE);
+				serverPost.setState(SynchronizationActions.DELETE);
 			} else {
-				serverPost.setState(SynchronizationStates.CREATE_CLIENT);
+				serverPost.setState(SynchronizationActions.CREATE_CLIENT);
 			}
 			clientPosts.add(serverPost);
 		}

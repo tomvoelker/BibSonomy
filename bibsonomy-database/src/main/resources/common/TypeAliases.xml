@@ -31,6 +31,7 @@
 	<typeAlias alias="syncParam"		  type="org.bibsonomy.sync.SyncParam" />
 	<typeAlias alias="syncData"			  type="org.bibsonomy.model.sync.SynchronizationData" />
 	<typeAlias alias="syncService"		  type="org.bibsonomy.model.sync.SyncService" />
+	<typeAlias alias="syncStatus"		  type="org.bibsonomy.model.sync.SynchronizationStatus" />
 	
 	<!-- Extras -->
 	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />
@@ -62,4 +63,19 @@
 	<typeAlias alias="discussionItemParam"	type="org.bibsonomy.database.params.discussion.DiscussionItemParam" />
 	<typeAlias alias="commentParam"		  	type="org.bibsonomy.database.params.discussion.CommentParam" />
 	<typeAlias alias="reviewParam"			type="org.bibsonomy.database.params.discussion.ReviewParam" />
+	
+	<!-- Java types  -->
+	<typeAlias alias="resourceTypeClass"	type="java.lang.Class" />
+	<typeAlias alias="url"					type="java.net.URL" />
+	<typeAlias alias="uri"					type="java.net.URI" />
+	<typeAlias alias="InetAddress"			type="java.net.InetAddress" />
+	<typeAlias alias="date"					type="java.util.Date" />
+	<typeAlias alias="properties"			type="java.util.Properties" />
+
+	<!-- Enums -->
+	<typeAlias alias="InetAddressStatus"	type="org.bibsonomy.common.enums.InetAddressStatus" />
+	<typeAlias alias="ProfilePrivLevel"		type="org.bibsonomy.common.enums.ProfilePrivlevel" />
+	<typeAlias alias="PrivLevel"			type="org.bibsonomy.common.enums.Privlevel" />
+	<typeAlias alias="Role"					type="org.bibsonomy.common.enums.Role" />
+	
 </sqlMap>

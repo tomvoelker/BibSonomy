@@ -102,10 +102,10 @@ INSERT INTO `sync_services` (`uri`, `service_id`, server) VALUES
 ('http://www.test.de/', 0, FALSE);
 
 -- synchronization data table
-INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`) VALUES 
-('1', 'syncuser1', '2', '2011-02-02 23:00:00', 'done'),
-('0', 'syncserver', '2', '2011-02-02 23:00:00', 'test synchronization'),
-('0', 'syncserver', '1', '2011-02-02 23:10:00', 'test synchronization');
+INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`, `info`) VALUES 
+('1', 'syncuser1', '2', '2011-02-02 23:00:00', 'done', ''),
+('0', 'syncserver', '2', '2011-02-02 23:00:00', 'unknown', ''),
+('0', 'syncserver', '1', '2011-02-02 23:10:00', 'unknown', '');
 
 INSERT INTO `sync` (`user_name`, `service_id`, `credentials`) VALUES
 ('syncuser1', '1', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785'),

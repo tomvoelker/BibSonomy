@@ -205,7 +205,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * sync
 		 */
-		final SynchronizationData syncData = sync.synchronize(clientLogic, Bookmark.class, clientUser, syncServer);
+		final SynchronizationData syncData = sync.synchronize(clientLogic, syncServer, Bookmark.class);
 		assertNotNull(syncData);
 		assertEquals("done, created on client: 1, deleted on client: 1", syncData.getStatus());
 		/*
@@ -217,7 +217,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 	}
 
 	private void syncBookmarks(final SynchronizationClient sync, final URI syncServer) {
-		final SynchronizationData data = sync.synchronize(clientLogic, Bookmark.class, clientUser, syncServer);
+		final SynchronizationData data = sync.synchronize(clientLogic, syncServer, Bookmark.class);
 		assertNotNull("synchronization wasn't successful", data);
 		assertEquals(RESULT_STRING, data.getStatus());
 		
@@ -246,7 +246,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * synchronize
 		 */
-		final SynchronizationData data = sync.synchronize(clientLogic, BibTex.class, clientUser, syncServer);
+		final SynchronizationData data = sync.synchronize(clientLogic, syncServer, BibTex.class);
 		assertNotNull("synchronization was not successful", data);
 		assertEquals(RESULT_STRING, data.getStatus());
 		

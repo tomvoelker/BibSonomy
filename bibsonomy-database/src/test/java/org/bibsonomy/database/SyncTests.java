@@ -24,7 +24,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SynchronizationPost;
-import org.bibsonomy.model.sync.SynchronizationStates;
+import org.bibsonomy.model.sync.SynchronizationActions;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -200,7 +200,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		}
 		assertEquals(5, clientPosts.size());
 
-		List<SynchronizationPost> synchronizedPosts = dbLogic.getSynchronization(userName, resourceType, clientPosts, strategy, testURI);
+		List<SynchronizationPost> synchronizedPosts = dbLogic.getSyncPlan(userName, resourceType, clientPosts, strategy, testURI);
 		assertNotNull("no synchronized posts returned", synchronizedPosts);
 
 		HashMap<String, SynchronizationPost> map = listToMap(synchronizedPosts);
@@ -210,49 +210,49 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		 */
 		hash = "6a486c3b5cf17466f984f8090077274c";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationStates.OK, map.get(hash).getState());
+		assertEquals(SynchronizationActions.OK, map.get(hash).getState());
 
 		/*
 		 * test post 2 "post deleted on server"
 		 */
 		hash = "167b670252215232dc59829364e361a2";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationStates.DELETE_CLIENT, map.get(hash).getState());
+		assertEquals(SynchronizationActions.DELETE_CLIENT, map.get(hash).getState());
 
 		/*
 		 * test post 3 "post deleted on client"
 		 */
 		hash = "b1629524db9c09f8b75af7ba83249980";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationStates.DELETE, map.get(hash).getState());
+		assertEquals(SynchronizationActions.DELETE, map.get(hash).getState());
 
 		/*
 		 * test post 4 "post changed on server"
 		 */
 		hash = "11db3d75b9e07960658984f9b012d6d7";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationStates.UPDATE_CLIENT, map.get(hash).getState());
+		assertEquals(SynchronizationActions.UPDATE_CLIENT, map.get(hash).getState());
 
 		/*
 		 * test post 5 "post changed on client"
 		 */
 		hash = "133de67269c9bfa71bde2b7615f0c1b3";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationStates.UPDATE, map.get(hash).getState());
+		assertEquals(SynchronizationActions.UPDATE, map.get(hash).getState());
 
 		/*
 		 * test post 6 "post created on server"
 		 */
 		hash = "08cdf0d0dcce9d07fd8d41ac6267cadf";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationStates.CREATE_CLIENT, map.get(hash).getState());
+		assertEquals(SynchronizationActions.CREATE_CLIENT, map.get(hash).getState());
 
 		/*
 		 * test post 7 "post created on client"
 		 */
 		hash = "418397b6f507faffe6f9b02569ffbc9e";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationStates.CREATE, map.get(hash).getState());
+		assertEquals(SynchronizationActions.CREATE, map.get(hash).getState());
 	}
 
 }

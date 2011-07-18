@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.sync.SynchronizationStatus;
 
 /**
  * @author wla
@@ -13,12 +14,17 @@ import org.bibsonomy.model.Resource;
  */
 public class SyncParam {
 
+	/*
+	 * FIXME: use SyncData as attribute
+	 */
+	
 	private String userName;
 	private URI service;
 	private int serviceId;
 	private int contentType;
 	private Date lastSyncDate;
-	private String status;
+	private SynchronizationStatus status;
+	private String info;
 	private boolean server;
 	private Properties credentials;
 	
@@ -64,7 +70,7 @@ public class SyncParam {
 	/**
 	 * @return the status
 	 */
-	public String getStatus() {
+	public SynchronizationStatus getStatus() {
 		return status;
 	}
 
@@ -99,7 +105,7 @@ public class SyncParam {
 		this.lastSyncDate = lastSyncDate;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(SynchronizationStatus status) {
 		this.status = status;
 	}
 
@@ -113,5 +119,13 @@ public class SyncParam {
 
 	public void setServer(boolean server) {
 		this.server = server;
+	}
+
+	public String getInfo() {
+		return this.info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
 	}
 }

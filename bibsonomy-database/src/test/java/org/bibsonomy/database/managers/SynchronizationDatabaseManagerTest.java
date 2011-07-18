@@ -18,8 +18,8 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
-import org.bibsonomy.sync.SynchronizationStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -120,7 +120,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		/*
 		 * set status of added data to done (simulate successful synchronization)
 		 */
-		syncDBManager.updateSyncStatus(dbSession, data, SynchronizationStatus.DONE);
+		syncDBManager.updateSyncStatus(dbSession, data, SynchronizationStatus.DONE, "");
 
 		/*
 		 * check that no synchronization is running 

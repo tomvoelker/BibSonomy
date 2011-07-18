@@ -101,11 +101,11 @@ import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
-import org.bibsonomy.sync.SynchronizationStatus;
 import org.bibsonomy.util.ObjectUtils;
 
 /**
@@ -300,38 +300,47 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getSynchronization(java.lang.String, java.lang.Class, java.util.List, org.bibsonomy.model.sync.ConflictResolutionStrategy, java.lang.String)
      */
     @Override
-    public List<SynchronizationPost> getSynchronization(final String userName, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service) {
-	Date lastDoneSyncDate;
-	
-	Map<String, SynchronizationPost> posts = null;
-	
-	final DBSession session = this.openSession();
-	try {
-		final SynchronizationData data = syncDBManager.getLastSynchronizationData(userName, service, resourceType, SynchronizationStatus.RUNNING, session);
-		if (present(data)) {
-			// running synchronization
-			// FIXME: if synchronization fails, we can't recover 
-			throw new SynchronizationRunningException();
-		}
-	    lastDoneSyncDate = syncDBManager.getLastDoneSynchronizationDate(userName, service, resourceType, session);
-	    
-	    if (!present(lastDoneSyncDate)) {
-	    	/*
-	    	 * set the synchronization date to some distant old value  
-	    	 */
-	    	lastDoneSyncDate = new Date(0);
-	    }
-	    /*
-	     * flag synchronization as running
-	     */
-	    syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.RUNNING, session);
-	    posts = this.getSyncPostsMapForUser(userName, resourceType);
+    public List<SynchronizationPost> getSyncPlan(final String userName, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service) {
+    	Date lastSuccessfulSyncDate;
 
-	} finally {
-	    session.close();
-	}
-	
-	return syncDBManager.synchronize(posts, clientPosts, lastDoneSyncDate, strategy);
+    	final Map<String, SynchronizationPost> posts;
+
+    	final DBSession session = this.openSession();
+    	try {
+    		final SynchronizationData data = syncDBManager.getLastSynchronizationData(userName, service, resourceType, null, session);
+    		/*
+    		 * check for a running synchronization
+    		 */
+    		if (present(data) && SynchronizationStatus.RUNNING.equals(data.getStatus())) {
+    			// running synchronization
+    			// FIXME: if synchronization fails, we can't recover 
+    			throw new SynchronizationRunningException();
+    		}
+    		/*
+    		 * 
+    		 */
+    		lastSuccessfulSyncDate = syncDBManager.getLastDoneSynchronizationDate(userName, service, resourceType, session);
+
+    		/*
+    		 * flag synchronization as running
+    		 */
+    		syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.RUNNING, session);
+    		posts = this.getSyncPostsMapForUser(userName, resourceType);
+
+    	} finally {
+    		session.close();
+    	}
+
+		/*
+		 * if necessary, set the synchronization date to some distant old value  
+		 */
+		if (!present(lastSuccessfulSyncDate)) {
+			lastSuccessfulSyncDate = new Date(0);
+		}
+		/*
+		 * calculate synchronization plan
+		 */
+    	return syncDBManager.getSyncPlan(posts, clientPosts, lastSuccessfulSyncDate, strategy);
     }
     
     /*
@@ -476,10 +485,10 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#setCurrentSyncDone(org.bibsonomy.model.sync.SynchronizationData)
      */
     @Override
-    public void updateSyncStatus(final SynchronizationData data, final String status) {
+    public void updateSyncStatus(final SynchronizationData data, final SynchronizationStatus status, final String info) {
 	final DBSession session = this.openSession();
 	try {
-	    syncDBManager.updateSyncStatus(session, data, status);
+	    syncDBManager.updateSyncStatus(session, data, status, info);
 	} finally {
 	    session.close();
 	}
@@ -508,7 +517,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getPostsForSync(java.lang.Class, java.lang.String)
      */
     @Override
-    public List<SynchronizationPost> getSyncPostsListForUser (final Class<? extends Resource> resourceType, final String userName) {
+    public List<SynchronizationPost> getSyncPosts (final String userName, final Class<? extends Resource> resourceType) {
         final DBSession session = this.openSession();
         List<SynchronizationPost> postList = null;
         try {
