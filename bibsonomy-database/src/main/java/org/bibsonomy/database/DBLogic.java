@@ -427,15 +427,13 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getAvlSyncServer()
      */
     @Override
-    public List<SyncService> getAvlSyncServices(boolean server) {
+    public List<SyncService> getSyncServices(final boolean server) {
     	final DBSession session = this.openSession();
-    	List<SyncService> services;
     	try {
-    		services = syncDBManager.getSyncServices(session, server);
+    		return syncDBManager.getSyncServices(session, server);
     	} finally {
     		session.close();
     	}
-    	return services;
     }
     
 	/*
@@ -498,12 +496,12 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getLastSynchronizationData(java.lang.String, int, int)
      */
      @Override
-    public SynchronizationData getLastSynchronizationDataForUserForContentType (final String userName, final URI service, final Class<? extends Resource> resourceType) {
+    public SynchronizationData getLastSynchronizationDataForUserForContentType(final String userName, final URI service, final Class<? extends Resource> resourceType) {
 	final DBSession session = this.openSession();
 	try {
 	    final List<SynchronizationData> sync = syncDBManager.getSynchronizationData(userName, service, resourceType, session);
 	    if (present(sync)) {
-		return sync.get(0);
+	    	return sync.get(0);
 	    }
 	} finally {
 	    session.close();
@@ -532,16 +530,15 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     @Override
     public Date getLastSyncDate(final String userName, final URI service, final Class<? extends Resource> resourceType) {
 	final DBSession session = this.openSession();
-	Date lastSyncDate = null;
 	try {
-	    lastSyncDate = syncDBManager.getLastSynchronizationDate(userName, service, resourceType, session);
-	    if (lastSyncDate == null) {
-	    	lastSyncDate = new Date(0);
+	    final Date lastSyncDate = syncDBManager.getLastSynchronizationDate(userName, service, resourceType, session);
+	    if (present(lastSyncDate)) {
+	    	return lastSyncDate;
 	    }
 	} finally {
 	    session.close();
 	}
-	return lastSyncDate;
+	return new Date(0);
     }
     
     /*
