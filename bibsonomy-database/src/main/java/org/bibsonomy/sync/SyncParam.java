@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Date;
 import java.util.Properties;
 
-import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 
@@ -14,16 +13,12 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
  */
 public class SyncParam {
 
-	/*
-	 * FIXME: use SyncData as attribute
-	 */
-	
 	private String userName;
 	private URI service;
 	private int serviceId;
-	private int contentType;
 	private Date lastSyncDate;
 	private SynchronizationStatus status;
+	private Class<? extends Resource> resourceType;
 	private String info;
 	private boolean server;
 	private Properties credentials;
@@ -51,13 +46,6 @@ public class SyncParam {
 	 */
 	public int getServiceId() {
 		return serviceId;
-	}
-
-	/**
-	 * @return the contentType
-	 */
-	public int getContentType() {
-		return contentType;
 	}
 
 	/**
@@ -93,14 +81,6 @@ public class SyncParam {
 		this.serviceId = serviceId;
 	}
 
-	public void setResourceType(final Class<? extends Resource> resourceType) {
-		this.contentType = ConstantID.getContentTypeByClass(resourceType).getId();
-	}
-	
-	public void setContentType(int contentType) {
-		this.contentType = contentType;
-	}
-
 	public void setLastSyncDate(Date lastSyncDate) {
 		this.lastSyncDate = lastSyncDate;
 	}
@@ -127,5 +107,13 @@ public class SyncParam {
 
 	public void setInfo(String info) {
 		this.info = info;
+	}
+
+	public Class<? extends Resource> getResourceType() {
+		return this.resourceType;
+	}
+
+	public void setResourceType(Class<? extends Resource> resourceType) {
+		this.resourceType = resourceType;
 	}
 }

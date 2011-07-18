@@ -62,7 +62,7 @@
 		  FROM sync_data sd 
 		    JOIN sync_services ss USING (service_id)
 		  WHERE sd.user_name = #userName#
-			AND sd.content_type = #contentType#
+			AND sd.content_type = #resourceType#
 			AND ss.uri = #service#
 			AND ss.server = #server#
 			AND sd.status != "running"
@@ -76,7 +76,7 @@
 		  FROM sync_data sd
 		    JOIN sync_services ss USING (service_id)
 		  WHERE sd.user_name = #userName#
-			AND sd.content_type = #contentType#
+			AND sd.content_type = #resourceType#
 			AND ss.uri = #service#
 			AND ss.server = #server#
 		  ORDER BY last_sync_date DESC
@@ -88,7 +88,7 @@
 		  FROM sync_data sd
 		    JOIN sync_services ss USING (service_id)
 		  WHERE sd.user_name = #userName#
-			AND sd.content_type = #contentType#
+			AND sd.content_type = #resourceType#
 			AND ss.uri = #service#
 			<isNotEmpty property="status" prepend="AND">
 		  		sd.status = #status# 
@@ -100,7 +100,7 @@
 	
 	<insert id="insertSync" parameterClass="syncParam">
 		INSERT INTO sync_data (service_id, user_name, content_type, last_sync_date, status)
-		  SELECT service_id, #userName#, #contentType#, #lastSyncDate#, #status# 
+		  SELECT service_id, #userName#, #resourceType#, #lastSyncDate#, #status# 
 		    FROM sync_services 
 		    WHERE uri = #service#
 		      AND server = #server#
@@ -110,7 +110,7 @@
 		UPDATE sync_data sd JOIN sync_services ss USING (service_id)
 			SET sd.status = #status#, sd.info = #info#
 			WHERE sd.user_name = #userName#
-			  AND sd.content_type = #contentType#
+			  AND sd.content_type = #resourceType#
 			  AND sd.last_sync_date = #lastSyncDate#
 			  AND ss.uri = #service#
 			  AND ss.server = #server#
