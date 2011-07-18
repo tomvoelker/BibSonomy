@@ -96,8 +96,9 @@ public interface SyncLogicInterface {
 	 * 
 	 * @param data
 	 * @param status 
+	 * @param info
 	 */
-	public void updateSyncStatus(final SynchronizationData data, final String status);
+	public void updateSyncStatus(final SynchronizationData data, final SynchronizationStatus status, final String info);
 	
 	/**
 	 * 
@@ -110,11 +111,11 @@ public interface SyncLogicInterface {
 	
 	/**
 	 * 
-	 * @param resourceType (e. g. Bibtex, Bookmark....) 
 	 * @param userName
+	 * @param resourceType (e. g. Bibtex, Bookmark....) 
 	 * @return List of SnchronizationPosts for given user 
 	 */
-	public List<SynchronizationPost> getSyncPostsListForUser (final Class<? extends Resource> resourceType, final String userName);
+	public List<SynchronizationPost> getSyncPosts (final String userName, final Class<? extends Resource> resourceType);
 	
 	/**
 	 * 
@@ -133,5 +134,5 @@ public interface SyncLogicInterface {
 	 * @param service 
 	 * @return list of posts with set synchronization state
 	 */
-	public List<SynchronizationPost> getSynchronization(final String userName, Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service);
+	public List<SynchronizationPost> getSyncPlan(final String userName, Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service);
 }

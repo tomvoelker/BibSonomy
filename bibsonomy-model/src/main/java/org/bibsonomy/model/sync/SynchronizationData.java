@@ -15,7 +15,9 @@ public class SynchronizationData {
 	private String userName;
 	private Class<? extends Resource> resourceType;
 	private Date lastSyncDate;
-	private String status;
+	private SynchronizationStatus status;
+	private String info;
+	
 		
 	/**
 	 * @return the userName
@@ -44,13 +46,13 @@ public class SynchronizationData {
 	/**
 	 * @return the status
 	 */
-	public String getStatus() {
+	public SynchronizationStatus getStatus() {
 		return this.status;
 	}
 	/**
 	 * @param status the status to set
 	 */
-	public void setStatus(String status) {
+	public void setStatus(SynchronizationStatus status) {
 		this.status = status;
 	}
 	/**
@@ -85,5 +87,11 @@ public class SynchronizationData {
 	@Override
 	public String toString() {
 		return userName + "@" + service + " for " + resourceType.getSimpleName() + " in status '" + status + "' (lastSyncDate=" + lastSyncDate + ")"; 
+	}
+	public String getInfo() {
+		return this.info;
+	}
+	public void setInfo(String info) {
+		this.info = info;
 	}
 }

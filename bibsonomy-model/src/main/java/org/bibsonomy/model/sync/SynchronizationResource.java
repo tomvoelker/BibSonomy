@@ -16,7 +16,7 @@ public abstract class SynchronizationResource {
 	private Date changeDate;
 
 
-	private SynchronizationStates state;
+	private SynchronizationActions state;
 
 	/**
 	 * @param resource
@@ -55,14 +55,14 @@ public abstract class SynchronizationResource {
 	/**
 	 * @param state the synchronization state to set
 	 */
-	public void setState(SynchronizationStates state) {
+	public void setState(SynchronizationActions state) {
 		this.state = state;
 	}
 
 	/**
 	 * @return the state 
 	 */
-	public SynchronizationStates getState() {
+	public SynchronizationActions getState() {
 		return state;
 	}
 
