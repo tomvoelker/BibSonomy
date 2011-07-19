@@ -88,7 +88,6 @@
 							<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
 							<input type="hidden" name="rememberMe" value="true" />
 							<input type="hidden" name="referer" value="${requPath}" />
-			            	<form:hidden id="headloginMethodopenid" path="loginMethod" />
 		            	</form:form>
 	            	</div>
       			</c:if>
