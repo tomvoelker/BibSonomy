@@ -55,12 +55,6 @@
 				<c:if test="${not empty personalized and personalized == true}">
 					<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
 				</c:if>
-				<c:if test="${not empty additionalCSS}">
-					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
-				</c:if>
-				<c:if test="${not empty additionalPrintCSS}">
-					<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" />
-				</c:if>
 							
 				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
 				<!--+
@@ -112,6 +106,14 @@
 				<link rel="alternate" type="application/rss+xml"  title="${systemName} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
 				<title>${projectName} <c:if test="${not empty pageTitle}"> :: </c:if><c:out value="${mtl:cleanBibtex(pageTitle)}"/></title><!-- TODO: localize page titles! -->
 				<jsp:invoke fragment="headerExt"/>
+
+				<c:if test="${not empty additionalCSS}">
+					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
+				</c:if>
+				<c:if test="${not empty additionalPrintCSS}">
+					<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" />
+				</c:if>
+
 			</head>
 			<body>
 			
