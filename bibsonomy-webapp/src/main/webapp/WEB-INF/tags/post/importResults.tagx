@@ -77,7 +77,7 @@
 					</ul>
             
 				</fieldset>
-
+				<!-- TODO: at present this is only used for firefox. Should we not remove it completely?-->
 				<post:import importType="${command.importType}"/>
         
 			</c:if>

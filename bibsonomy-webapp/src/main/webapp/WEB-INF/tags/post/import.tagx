@@ -8,6 +8,7 @@
 	xmlns:form="http://www.springframework.org/tags/form">
 	
 	<!-- This tag can be used to support the bookmark import from delicious or firefox -->
+	<!--  TODO: remove this tagx It was meant to show errors and then allow to import again. errors should only be displayed on the import page directly -->
 	
 	<jsp:directive.attribute name="importType"  type="java.lang.String" required="false"/>
 	
