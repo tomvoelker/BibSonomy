@@ -28,10 +28,11 @@
 				<errors:global errors="${errors}"/>
              	
 				<!-- in case of existing errors, look into the importType and redraw the 
-					 respective form -->
+					 respective form 
+					 TODO: Handle firefoxImport simply by error-Messages on the main page -->
 				<c:choose>
 					<c:when test="${empty command.importType or (command.importType eq 'firefox' and command.totalCount == 0)}">		
-						<post:import importType="${command.importType}"/>
+						<post:firefoxImport/>
 					</c:when>
 					<c:otherwise>
 						<!-- make some output about the import results -->	
