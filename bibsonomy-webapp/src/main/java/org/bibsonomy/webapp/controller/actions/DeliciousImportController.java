@@ -59,7 +59,7 @@ public class DeliciousImportController implements MinimalisticController<Setting
 		if(command.getContext().isUserLoggedIn() == false) {
 			String redirectURI;
 			try {
-				redirectURI = loginPath + URLEncoder.encode(controllerPath + createRefererQuery(command, context, errors), "UTF-8");
+				redirectURI = loginPath + URLEncoder.encode(controllerPath + createRefererQuery(command), "UTF-8");
 				return new ExtendedRedirectView(redirectURI );
 			} catch (UnsupportedEncodingException ex) {
 				throw new InternServerException(ex.getMessage());
@@ -95,14 +95,13 @@ public class DeliciousImportController implements MinimalisticController<Setting
 		
 	}
 	
-	@SuppressWarnings("unused")
-	String createRefererQuery(SettingsViewCommand command, RequestWrapperContext context, Errors errors) {
+	protected String createRefererQuery(SettingsViewCommand command) {
 		return 
 		"&" + "overwriteV2=" + command.isOverwriteV2()
 		+ "&" + "importDataV2=" + command.getImportDataV2();
 	}
 	
-	String createRedirect(SettingsViewCommand command, RequestWrapperContext context, Errors errors) {
+	protected String createRedirect(SettingsViewCommand command, RequestWrapperContext context, Errors errors) {
 		
 		DeliciousSignPost oAuth = signPostManager.createDeliciousSignPost();
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();

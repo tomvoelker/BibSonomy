@@ -19,7 +19,7 @@ public class DeliciousImportControllerV1 extends DeliciousImportController {
 	private String importBookmarksPath;
 	
 	@Override
-	String createRefererQuery(SettingsViewCommand command, RequestWrapperContext context, Errors errors) {
+	protected String createRefererQuery(SettingsViewCommand command) {
 		try {
 			return 
 			"&" + "overwriteV1=" + command.isOverwriteV1()
@@ -31,7 +31,7 @@ public class DeliciousImportControllerV1 extends DeliciousImportController {
 	}
 	
 	@Override
-	String createRedirect(SettingsViewCommand command, RequestWrapperContext context, Errors errors) {
+	protected String createRedirect(SettingsViewCommand command, RequestWrapperContext context, Errors errors) {
 		
 		String redirectURI;
 		try {
