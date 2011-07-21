@@ -23,7 +23,7 @@ public class UnfiledSystemTag  extends AbstractSystemTagImpl implements MarkUpSy
 	}
 
 	@Override
-	public MarkUpSystemTag newInstance() {
+	public UnfiledSystemTag newInstance() {
 		return new UnfiledSystemTag();
 	}
 

@@ -27,7 +27,7 @@ public class RelevantForSystemTag extends AbstractSystemTagImpl implements MarkU
 	}
 
 	@Override
-	public MarkUpSystemTag newInstance() {
+	public RelevantForSystemTag newInstance() {
 		return new RelevantForSystemTag();
 	}
 	

@@ -22,7 +22,7 @@ public class SentSystemTag extends AbstractSystemTagImpl implements MarkUpSystem
 	}
 
 	@Override
-	public MarkUpSystemTag newInstance() {
+	public SentSystemTag newInstance() {
 		return new SentSystemTag();
 	}
 

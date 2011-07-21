@@ -22,7 +22,7 @@ public class MyOwnSystemTag extends AbstractSystemTagImpl implements MarkUpSyste
 	}
 
 	@Override
-	public MarkUpSystemTag newInstance() {
+	public MyOwnSystemTag newInstance() {
 		return new MyOwnSystemTag();
 	}
 
