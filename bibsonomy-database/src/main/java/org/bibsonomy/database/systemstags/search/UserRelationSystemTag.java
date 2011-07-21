@@ -33,7 +33,7 @@ public class UserRelationSystemTag extends AbstractSystemTagImpl implements Sear
 	// SearchSystemTag interface
 	//------------------------------------------------------------------------
 	@Override
-	public SearchSystemTag newInstance() {
+	public UserRelationSystemTag newInstance() {
 		return new UserRelationSystemTag();
 	}
 	

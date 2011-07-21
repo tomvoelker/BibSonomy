@@ -28,7 +28,7 @@ public class NetworkRelationSystemTag extends UserRelationSystemTag {
 	}
 
 	@Override
-	public SearchSystemTag newInstance() {
+	public NetworkRelationSystemTag newInstance() {
 		return new NetworkRelationSystemTag();
 	}
 }

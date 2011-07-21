@@ -3,7 +3,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
-
 /**
  * @author sdo
  * @version $Id$
@@ -30,8 +29,8 @@ public class JabrefSystemTag extends AbstractSystemTagImpl implements MarkUpSyst
 
 
 	@Override
-	public MarkUpSystemTag newInstance() {
-		return new UnfiledSystemTag();
+	public JabrefSystemTag newInstance() {
+		return new JabrefSystemTag();
 	}
 
 	@Override
