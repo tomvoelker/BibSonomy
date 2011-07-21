@@ -17,6 +17,11 @@ public class BaseCommand implements ContextCommand {
 	
 	private RequestWrapperContext context;
 
+	private String messageKey;
+	
+	private String[] messageParams;
+	
+
 	@Deprecated
 	private String pageTitle;
 
@@ -37,6 +42,9 @@ public class BaseCommand implements ContextCommand {
 		this.pageTitle = pageTitle;
 	}
 
+	
+	
+	
 	/** The context contains the loginUser, the ckey, and other things
 	 * which can not be changed by the user.
 	 * 
@@ -54,4 +62,40 @@ public class BaseCommand implements ContextCommand {
 	public void setContext(final RequestWrapperContext context) {
 		this.context = context;
 	}
+
+	/**
+	 * @param messageKey
+	 */
+	public void setMessageKey(String messageKey) {
+		this.messageKey = messageKey;
+	}
+
+	/**
+	 * @return a message-key to display a message on any jspx
+	 */
+	public String getMessageKey() {
+		return messageKey;
+	}
+	
+	
+	
+	/**
+	 * @return Message Params
+	 */
+	public String[] getMessageParams() {
+		return this.messageParams;
+	}
+
+	/**
+	 * @param messageParams
+	 */
+	public void setMessageParams(String[] messageParams) {
+		this.messageParams = messageParams;
+	}
+
+	public void setMessage(String key, String[] params) {
+		this.setMessageKey(key);
+		this.setMessageParams(params);
+	}
+	
 }

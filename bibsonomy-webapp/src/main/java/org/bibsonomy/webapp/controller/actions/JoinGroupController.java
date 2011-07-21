@@ -21,12 +21,17 @@ import org.bibsonomy.webapp.util.captcha.CaptchaResponse;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
 /**
  * @author schwass
  * @version $Id$
+ */
+/**
+ * Handles 
+ * * a user's request to join a group
+ * * a group's response to deny the user membership
+ * TODO: should also handle accept user and probably delete user too 
  */
 public class JoinGroupController implements ErrorAware, ValidationAwareController<JoinGroupCommand>, RequestAware, Validator<JoinGroupCommand> {
 	
@@ -37,12 +42,155 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 	private LogicInterface adminLogic;
 	private MailUtils mailUtils;
 	
-	private String denieUserRedirectURI;
+	private String denyUserRedirectURI;
 	
 	/**
 	 * maximum length for reason input.
 	 */
 	private int reasonMaxLen;
+
+	@Override
+	public JoinGroupCommand instantiateCommand() {
+		return new JoinGroupCommand(this.reasonMaxLen);
+	}
+
+	
+	@Override
+	public View workOn(final JoinGroupCommand command) {
+		/*
+		 * The user has three options and needs:
+		 * * see join site: loginUser, group
+		 * * join Group: loginUser, group, reason, ckey, captcha
+		 * * denyUser: loginUser = group, reason, denyUser
+		 */
+		final User loginUser = command.getContext().getLoginUser();
+
+		// user logged in? 
+		if (!command.getContext().isUserLoggedIn()) {
+			throw new org.springframework.security.access.AccessDeniedException("please log in");
+		}
+		
+		// get Group-Details and check if present
+		String groupName = command.getGroup();
+		Group group = logic.getGroupDetails(command.getGroup());
+		if (!present(group)) {
+			// no group given => user did not click join on the group page
+			errors.reject("error.field.valid.groupName");
+			return Views.ERROR;
+		}
+
+		String reason = command.getReason();
+		String deniedUserName = command.getDeniedUser();
+		
+		// We can not check the ckey if "deny request" was chosen, since the deny
+		// handle deny join request action
+		if (present(deniedUserName)) {
+			/*
+			 * We have a deny Request
+			 */
+			// check if loginUser is the group
+			if (!groupName.equals( command.getContext().getLoginUser().getName() )) {
+				throw new AccessDeniedException("This action is only possible for a group. Please log in as a group!");
+			}
+			User deniedUser = adminLogic.getUserDetails(deniedUserName);
+			if (!present(deniedUser)) {
+				errors.reject("joinGroup.deny.noUser");
+				return Views.ERROR;
+			}
+			mailUtils.sendJoinGroupDenied(loginUser.getName(), deniedUserName, deniedUser.getEmail(), reason, requestLogic.getLocale());
+			return new ExtendedRedirectView(denyUserRedirectURI);
+		}
+		
+		if (!present(reason)) {
+			// no deniedUser, no reason => probably wants to see the join_group page
+			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
+			return Views.JOIN_GROUP;
+		}
+
+		/*
+		 * From here we assume, that the user has sent a join group request from the join group form
+		 */
+		
+		// check if user is already in this group
+		if (loginUser.getGroups().contains(group)) {
+			// user wants to join a group that he's already a member of => error since he cannot use the join_group page
+			errors.reject("joinGroup.already.member.error");
+			return Views.ERROR;
+		}
+		
+		// check user is spammer
+		if (loginUser.isSpammer()) {
+			// user is a spammer => cannot use this page
+			errors.reject("joinGroup.spammerError");
+			return Views.ERROR;
+		}
+		
+		/*
+		 * check if ckey is valid
+		 */
+		if (!command.getContext().isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
+
+		// FIXME: captcha checking; duplicate code EditPostController, PasswordReminderController, …
+		if (!present(command.getRecaptcha_response_field())) {
+			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
+		} else {
+			final CaptchaResponse resp = captcha.checkAnswer(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), requestLogic.getHostInetAddress());
+			if (!present(resp)) {
+				throw new InternServerException("error.captcha");
+			}
+			if (!resp.isValid()) {
+				errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
+			} else {
+				if (present(resp.getErrorMessage())) {
+					errors.reject(resp.getErrorMessage());
+				}
+			}
+		}
+		
+		if (errors.hasErrors()) {
+			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
+			return Views.JOIN_GROUP;
+		}
+		
+		// user is allowed to state join request and group exists => execute request
+		
+		// we need the user details (eMail) of the user that is the group
+		final User groupUser = adminLogic.getUserDetails(groupName);
+		mailUtils.sendJoinGroupRequest(group.getName(), groupUser.getEmail(), loginUser, command.getReason(), requestLogic.getLocale());
+		command.setMessage("success.joinGroupRequest.sent", new String[] {group.getName()});
+		return Views.JOIN_GROUP_REQUEST_SUCCESS;
+	}
+
+	@Override
+	public boolean isValidationRequired(final JoinGroupCommand command) {
+		final RequestWrapperContext context = command.getContext();
+		return context.isUserLoggedIn() && !context.getLoginUser().isSpammer();
+	}
+
+	@Override
+	public Validator<JoinGroupCommand> getValidator() {
+		return this;
+	}
+
+	@Override
+	public boolean supports(final Class<?> clazz) {
+		return JoinGroupCommand.class.equals(clazz);
+	}
+
+	@Override
+	public void validate(final Object target, final Errors errors) {
+		final JoinGroupCommand command = (JoinGroupCommand) target;
+
+		// check length
+		if (present(command.getReason()) && command.getReason().length() > reasonMaxLen) {
+			errors.rejectValue("reason", "error.field.valid.limit_exceeded", new Object[] {reasonMaxLen}, "Message is too long");
+			command.setReason(command.getReason().substring(0, reasonMaxLen));
+		}
+		
+	}
+
 
 	@Override
 	public Errors getErrors() {
@@ -98,7 +246,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 	 * @param denieUserRedirectURI the denieUserRedirectURI to set
 	 */
 	public void setDenieUserRedirectURI(final String denieUserRedirectURI) {
-		this.denieUserRedirectURI = denieUserRedirectURI;
+		this.denyUserRedirectURI = denieUserRedirectURI;
 	}
 
 	/**
@@ -107,102 +255,6 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 	public void setReasonMaxLen(final int reasonMaxLen) {
 		this.reasonMaxLen = reasonMaxLen;
 	}
-
-	@Override
-	public JoinGroupCommand instantiateCommand() {
-		return new JoinGroupCommand(this.reasonMaxLen);
-	}
-
-	@Override
-	public View workOn(final JoinGroupCommand command) {
-		final User loginUser = command.getContext().getLoginUser();
-		// check user logged in
-		if (!command.getContext().isUserLoggedIn()) {
-			throw new org.springframework.security.access.AccessDeniedException("please log in");
-		}
-		
-		/* 
-		 * deny join request action
-		 */
-		if (present(command.getDeniedUser())) {
-			return this.workOnDeny(command, loginUser);
-		}
-		
-		// check if user is already in this group
-		if (loginUser.getGroups().contains(new Group(command.getGroup()))) {
-			errors.reject("joinGroup.already.member.error");
-		}
-		
-		// check user is spammer
-		if (loginUser.isSpammer()) {
-			errors.reject("joinGroup.spammerError");
-		}
-		
-		// on errors return to form
-		if (errors.hasErrors()) {
-			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
-			return Views.JOIN_GROUP;
-		}
-		
-		// success now
-		final User group = logic.getUserDetails(command.getGroup());
-		mailUtils.sendJoinGroupRequest(group, loginUser, command.getReason(), requestLogic.getLocale());
-		command.setGroupObj(logic.getGroupDetails(command.getGroup()));
-		
-		return Views.JOINGROUPREQUEST_SUCCESS;
-	}
-
-	private View workOnDeny(final JoinGroupCommand command, final User loginUser) {
-		// if ckey is not valid, don't annoy denied user with emails
-		if (command.getContext().isValidCkey()) {
-			mailUtils.sendJoinGroupDenied(loginUser, adminLogic.getUserDetails(command.getDeniedUser()), command.getReason(), requestLogic.getLocale());
-		}
-		return new ExtendedRedirectView(denieUserRedirectURI);
-	}
-
-	@Override
-	public boolean isValidationRequired(final JoinGroupCommand command) {
-		final RequestWrapperContext context = command.getContext();
-		return context.isUserLoggedIn() && !context.getLoginUser().isSpammer();
-	}
-
-	@Override
-	public Validator<JoinGroupCommand> getValidator() {
-		return this;
-	}
-
-	@Override
-	public boolean supports(final Class<?> clazz) {
-		return JoinGroupCommand.class.equals(clazz);
-	}
-
-	@Override
-	public void validate(final Object target, final Errors errors) {
-		final JoinGroupCommand command = (JoinGroupCommand) target;
-		Assert.notNull(command.getGroup()); // TODO: should add an error to errors
-		if (present(command.getDeniedUser())) {
-			if (!command.getContext().getLoginUser().getName().equals(command.getGroup())) throw new AccessDeniedException();
-			// no further validation
-			return;
-		}
-		
-		if (present(command.getReason()) && command.getReason().length() > reasonMaxLen) {
-			errors.rejectValue("reason", "error.field.valid.limit_exceeded", new Object[] {reasonMaxLen}, "Message is too long");
-			command.setReason(command.getReason().substring(0, reasonMaxLen));
-		}
-		
-		// FIXME: captcha checking; duplicate code EditPostController, PasswordReminderController, …
-		if (!present(command.getRecaptcha_response_field())) {
-			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
-		} else {
-			final CaptchaResponse resp = captcha.checkAnswer(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), requestLogic.getHostInetAddress());
-			if(resp == null) throw new InternServerException("error.captcha");
-			if(resp.isValid() == false) errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
-			else {
-				final String errorMessage = resp.getErrorMessage();
-				if(errorMessage != null) errors.reject(errorMessage);
-			}
-		}
-	}
-
+	
+	
 }
