@@ -237,16 +237,12 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	    final User user = this.userDBManager.getUserDetails(userName, session);
 
 	    /*
-	     * groups must be set in order to determine whether user is a group
-	     */
-	    user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
-
-	    /*
 	     * only admin and myself may see which group I'm a member of
 	     */
 	    if (this.permissionDBManager.isAdminOrSelf(this.loginUser, user.getName())) {
-		// fill user's spam informations
-		this.adminDBManager.getClassifierUserDetails(user, session);
+		    user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
+		    // fill user's spam informations
+		    this.adminDBManager.getClassifierUserDetails(user, session);
 		return user;
 	    }
 
@@ -258,24 +254,13 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		/*
 		 * TODO: this practically clears /all/ user information
 		 */
-			final User user2 = new User(user.getName());
-		    /*
-		     * If the specified user is a group, everyone may request his email address in order to
-		     * send a join request.
-		     */
-		    if(permissionDBManager.userIsGroup(user)) {
-		    	user2.setEmail(user.getEmail());
-		    }
-		    return user2;
+	    return new User(user.getName());
 	    }
 
 	    /*
 	     * clear the private stuff
 	     */
-	    /*
-	     * clear email only if user is no group
-	     */
-	    if(permissionDBManager.userIsGroup(user) == false) user.setEmail(null);
+	    user.setEmail(null);
 
 	    user.setApiKey(null);
 	    user.setPassword(null);

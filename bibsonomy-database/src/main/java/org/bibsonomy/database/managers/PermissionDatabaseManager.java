@@ -381,17 +381,6 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
     }
 
     /**
-     * If the specified user is a group, everyone may request his email address in order
-     * to send a join request.
-     * 
-     * @param user the user to test.
-     * @return true, is the user is a group, false otherwise.
-     */
-    public boolean userIsGroup(User user) {
-    	return UserUtils.userIsGroup(user);
-    }
-
-    /**
      * FIXME: Why do we need loginUser and relation?
      * 
      * Checks if a user relationship between the logged-in user 
