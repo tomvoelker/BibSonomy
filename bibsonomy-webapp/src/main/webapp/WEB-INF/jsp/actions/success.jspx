@@ -14,19 +14,22 @@
 
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}"  requPath="${requPath}">
   
-        <jsp:attribute name="heading">
-				<img src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="joinGroup"/>
-			:: 
-			<a href="/group/${fn:escapeXml(command.group)}"><c:out value='${command.group}'/></a>
-        </jsp:attribute>
-        
+  		<jsp:attribute name="headerExt"/>
+  
+		<jsp:attribute name="heading">
+       		<fmt:message key="success"/>
+    	</jsp:attribute>
+   
+       
         <jsp:attribute name="content">
 
-		  <div id="general">
-            <h2><fmt:message key="joinGroup.request.sent.message"><fmt:param>${fn:escapeXml(command.group)}</fmt:param><fmt:param>${command.group}</fmt:param></fmt:message></h2>
-          
-            <group:name group="${command.groupObj}"/>
-          </div>
+            <h1>
+            	<fmt:message key="success.joinGroupRequest.sent">
+ 	    		<c:forEach var="param" items="${command.messageParams}">
+            		<fmt:param>${fn:escapeXml(param)}</fmt:param>
+            	</c:forEach>
+            	</fmt:message>
+            </h1>
       
 	    </jsp:attribute>
       
