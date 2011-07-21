@@ -77,7 +77,7 @@
 							<fieldset class="fsInner">
 
 								<div class="fsRow">
-									<input type="hidden" neme="ckey" value="${command.context.ckey }"/>
+									<input type="hidden" name="ckey" value="${command.context.ckey }"/>
 		    						<input type="hidden" name="deniedUser" value="${fn:escapeXml(param.user)}" />
 		    						<input type="hidden" name="group" value="${command.context.loginUser.name}" />
 		    						<label for="inputreason" class="fsLabel"><fmt:message key="settings.group.denyReason"/></label>
