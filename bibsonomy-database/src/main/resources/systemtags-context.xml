@@ -69,6 +69,7 @@
 		<ref bean="myOwnSystemTag"/>
 		<ref bean="unfiledSystemTag"/>
 		<ref bean="jabrefSystemTag"/>
+		<ref bean="hiddenSystemTag"/>
 		
 	</util:set>
 	
@@ -80,5 +81,6 @@
 	<bean id="myOwnSystemTag" class="org.bibsonomy.database.systemstags.markup.MyOwnSystemTag"/>
 	<bean id="unfiledSystemTag" class="org.bibsonomy.database.systemstags.markup.UnfiledSystemTag"/>
 	<bean id="jabrefSystemTag" class="org.bibsonomy.database.systemstags.markup.JabrefSystemTag"/>
+	<bean id="hiddenSystemTag" class="org.bibsonomy.database.systemstags.markup.HiddenTagSystemTag"/>
 
 </beans>
