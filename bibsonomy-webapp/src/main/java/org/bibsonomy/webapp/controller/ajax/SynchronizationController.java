@@ -20,6 +20,7 @@ import org.bibsonomy.sync.SynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
@@ -28,7 +29,7 @@ import org.springframework.validation.Errors;
  * @author wla
  * @version $Id$
  */
-public class SynchronizationController extends AjaxController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware{
+public class SynchronizationController extends AjaxController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware {
 	
 	private Errors errors;
 	private SynchronizationClient client;
@@ -44,33 +45,41 @@ public class SynchronizationController extends AjaxController implements Minimal
 		/*
 		 * only admins can synchronize!
 		 */
-		User currentUser = requestLogic.getLoginUser();
-		if (!present(currentUser) || !currentUser.getRole().equals(Role.ADMIN)) {
+		final RequestWrapperContext context = command.getContext();
+		final User loginUser = context.getLoginUser();
+		if (!present(loginUser) || !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new UnauthorizedException();
 		}
-		
-		//FIXME ckey check?
+
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
 		
 		
 		/*
 		 * create server URI from service name
 		 */
-		String serviceName = command.getServiceName();
+		final String serviceName = command.getServiceName();
 		URI uri = null;
-		if(present(serviceName)) {
+		if (present(serviceName)) {
 			try {
 				uri = new URI(serviceName);
 			} catch (URISyntaxException ex) {
-				// TODO Auto-generated catch block
+				// FIXME: add error
 				throw new IllegalStateException();
 			}
 		} else {
+			errors.rejectValue("serviceName", "error.field.required");
+		}
+		
+		if (errors.hasErrors()) {
 			return Views.AJAX_ERRORS;
 		}
 		
-		JSONObject json = new JSONObject();
+		final JSONObject json = new JSONObject();
 		
-		switch(command.getContentType()) {
+		
+		switch(command.getContentType()) { // FIXME: use strings "bookmark" and "publication", not numbers
 		case 1:
 			addData(json, Bookmark.class, client.synchronize(logic, uri, Bookmark.class));
 			break;
@@ -88,11 +97,10 @@ public class SynchronizationController extends AjaxController implements Minimal
 
 		command.setResponseString(json.toString());
 		return Views.AJAX_JSON;
-
 	}
 	
-	private void addData (JSONObject json, Class<? extends Resource> resourceType, SynchronizationData data) {
-		HashMap<String, Object> values = new HashMap<String, Object>();
+	private void addData (final JSONObject json, Class<? extends Resource> resourceType, final SynchronizationData data) {
+		final HashMap<String, Object> values = new HashMap<String, Object>();
 		if("running".equals(data.getStatus())) {
 			//TODO i18N
 			values.put("error", "old synchronization still running, please try later");
