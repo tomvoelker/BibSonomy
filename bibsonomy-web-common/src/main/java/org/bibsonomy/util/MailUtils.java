@@ -130,15 +130,15 @@ public class MailUtils {
 	/** 
 	 * Sends the registration mail to the user and to the group admins.
 	 */
-	public boolean sendJoinGroupRequest(final User group, final User loginUser, final String reason, final Locale locale) {
+	public boolean sendJoinGroupRequest(final String groupName, final String groupMail, final User loginUser, final String reason, final Locale locale) {
 		Object[] messagesParameters;
 		try {
 			messagesParameters = new Object[]{
-					group.getName(),
+					groupName,
 					loginUser.getName(),
 					reason,
 					projectHome,
-					URLEncoder.encode(group.getName(), "UTF-8").toLowerCase(),
+					URLEncoder.encode(groupName, "UTF-8").toLowerCase(),
 					URLEncoder.encode(loginUser.getName(), "UTF-8").toLowerCase(),
 					projectName.toLowerCase(),
 					projectEmail
@@ -153,15 +153,13 @@ public class MailUtils {
 		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.subject", messagesParameters, locale);
 
 		/*
-		 * set the recipients
+		 * send an e-Mail to the group (from our registration Adress)
 		 */
-		final String[] recipient = {group.getEmail()};
 		try {
-			sendMail(recipient,  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
-			sendMail(new String[] {projectRegistrationFromAddress},  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
+			sendMail(new String[] {groupMail},  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
 			return true;
 		} catch (final MessagingException e) {
-			log.fatal("Could not send registration mail: " + e.getMessage());
+			log.fatal("Could not send join group request mail: " + e.getMessage());
 		}
 		return false;
 	}
@@ -169,11 +167,11 @@ public class MailUtils {
 	/** 
 	 * Sends the registration mail to the user and to the group admins.
 	 */
-	public boolean sendJoinGroupDenied(final User group, final User deniedUser, final String reason, final Locale locale) {
+	public boolean sendJoinGroupDenied(final String groupName, final String deniedUserName, final String deniedUserEMail, final String reason, final Locale locale) {
 		Object[] messagesParameters;
 		messagesParameters = new Object[]{
-					group.getName(),
-					deniedUser.getName(),
+					groupName,
+					deniedUserName,
 					reason,
 					projectHome,
 					null,
@@ -190,13 +188,12 @@ public class MailUtils {
 		/*
 		 * set the recipients
 		 */
-		final String[] recipient = {deniedUser.getEmail()};
+		final String[] recipient = {deniedUserEMail};
 		try {
 			sendMail(recipient,  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
-			sendMail(new String[] {projectRegistrationFromAddress},  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
 			return true;
 		} catch (final MessagingException e) {
-			log.fatal("Could not send registration mail: " + e.getMessage());
+			log.fatal("Could not send Deny JoinGrouprequest mail: " + e.getMessage());
 		}
 		return false;
 	}
