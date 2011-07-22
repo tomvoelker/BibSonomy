@@ -11,15 +11,8 @@ import java.util.Properties;
 public class SyncService {
 	
 	private Properties serverUser;
-	private URI service;
+	private URI service; 
 	private Map <String, SynchronizationData> lastSyncData;
-
-	
-	/**
-	 * Constructor
-	 */
-	public SyncService() {
-	}
 	
 	/**
 	 * @return the clientUser
