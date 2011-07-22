@@ -10,8 +10,8 @@ import java.util.Properties;
  */
 public class SyncService {
 	
-	private Properties serverUser;
-	private URI service; 
+	private Properties serverUser; // FIXME: rename to "userCredentials" or "user" or "credententials"
+	private URI service; // FIXME: rename to "uri" or "serviceUri"
 	private Map <String, SynchronizationData> lastSyncData;
 	
 	/**
