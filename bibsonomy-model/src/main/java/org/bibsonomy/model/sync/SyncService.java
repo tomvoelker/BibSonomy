@@ -74,4 +74,9 @@ public class SyncService {
 	public void setLastSyncData(Map<String, SynchronizationData> lastSyncData) {
 		this.lastSyncData = lastSyncData;
 	}
+	
+	@Override
+	public String toString() {
+		return service.toString();
+	}
 }
