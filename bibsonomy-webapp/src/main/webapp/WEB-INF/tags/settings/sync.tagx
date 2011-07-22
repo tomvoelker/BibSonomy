@@ -25,60 +25,60 @@
 	
 	<h2><fmt:message key="settings.synchronization.header"/></h2>
 	
-	<c:forEach var="service" items="${command.syncServer}">
+	<c:forEach var="syncService" items="${command.syncServer}">
 		<fieldset class="fsInner">
-			<form:form cssClass="serviceForm" method="post" action="/updateSyncSettings?action=update">
+			<form method="post" action="/updateSyncSettings?action=update">
 				<div cssClass="fsRow">
-					<span class="fsLabel"><c:out value="${serviceName}: "/></span> <span class="fsInput serviceName"><c:out value="${service.service}" /></span>
+					<span class="fsLabel"><c:out value="${serviceName}: "/></span> <span class="fsInput serviceName"><c:out value="${syncService.service}" /></span>
 				</div>
    				<div class="fsRow">
-	          		<form:label cssClass="fsLabel" path="service.userName" ><fmt:message key="navi.username"/></form:label>
-	          		<form:input cssClass="fsInput" path="service.userName"/>
-    	      		<div class="dissError"><form:errors path="service.userName" /></div>
+	          		<label class="fsLabel" for="syncService.serverUser['userName']" ><fmt:message key="navi.username"/></label>
+	          		<input class="fsInput" name="syncService.serverUser['userName']" value="${fn:escapeXml(syncService.serverUser.userName)}"/>
+<!--    	      		<div class="dissError"><form:errors path="service.userName" /></div>-->
         		</div>
    				<div class="fsRow">
-	          		<form:label cssClass="fsLabel" path="service.apiKey" ><fmt:message key="navi.apikey"/></form:label>
-	          		<form:input cssClass="fsInput" path="service.apiKey"/>
-    	      		<div class="dissError"><form:errors path="service.apiKey" /></div>
+	          		<label class="fsLabel" for="syncService.serverUser['apiKey']" ><fmt:message key="navi.apikey"/></label>
+	          		<input class="fsInput" name="syncService.serverUser['apiKey']" value="${fn:escapeXml(syncService.serverUser.apiKey)}"/>
+<!--    	      		<div class="dissError"><form:errors path="service.apiKey" /></div>-->
         		</div>
         		<div>
 					<input type="submit" value="${save}" />
 					<input type="submit" class="deleteService" value="${removeService}"/>
 					<input type="hidden" name="ckey" value="${ckey}"/>
-					<input type="hidden" name="serviceName" value="${fn:escapeXml(service.service)}" />
+					<input type="hidden" name="syncService.service" value="${fn:escapeXml(syncService.service)}" />
 				</div>
-			</form:form>
+			</form>
 		</fieldset>
 	</c:forEach>
 	
 	<c:if test="${fn:length(command.availableSyncServers) != 0}">
 		<fieldset class="fsInner">
-			<form:form id="addServiceForm" method="post" action="/updateSyncSettings?action=create"> 
+			<form method="post" action="/updateSyncSettings?action=create"> 
 	        
 	        	<div class="fsRow">
-					<form:label cssClass="fsLabel" path="serviceName"><fmt:message key="navi.syncservice" /></form:label>
-					<form:select cssClass="fsInput fsSmall" path="serviceName">
-						<c:forEach var="service" items="${command.availableSyncServers}">
-    						<form:option value="${service.service}"/>
+					<label class="fsLabel" for="syncService.service"><fmt:message key="navi.syncservice" /></label>
+					<select class="fsInput fsSmall" name="syncService.service">
+						<c:forEach var="syncService" items="${command.availableSyncServers}">
+    						<option value="${syncService.service}"/>
       					</c:forEach>
-      				</form:select>
-      				<div class="dissError"><form:errors path="serviceName" /></div>
+      				</select>
+<!--      				<div class="dissError"><form:errors path="serviceName" /></div>-->
       			</div>
       			<div class="fsRow">
-	          		<form:label cssClass="fsLabel" path="serverUserName" ><fmt:message key="navi.username"/></form:label>
-	          		<form:input cssClass="fsInput" path="serverUserName"/>
-	          		<div class="dissError"><form:errors path="serverUserName" /></div>
+	          		<label class="fsLabel" for="syncService.serverUser['userName']" ><fmt:message key="navi.username"/></label>
+	          		<input class="fsInput" name="syncService.serverUser['userName']"/>
+<!--	          		<div class="dissError"><form:errors path="serverUserName" /></div>-->
 	        	</div>
       			<div class="fsRow">
-	          		<form:label cssClass="fsLabel" path="apiKey" ><fmt:message key="navi.apikey"/></form:label>
-	          		<form:input cssClass="fsInput" path="apiKey"/>
-	          		<div class="dissError"><form:errors path="apiKey" /></div>
+	          		<label class="fsLabel" for="syncService.serverUser['apiKey']" ><fmt:message key="navi.apikey"/></label>
+	          		<input class="fsInput" name="syncService.serverUser['apiKey']"/>
+<!--	          		<div class="dissError"><form:errors path="apiKey" /></div>-->
 	        	</div>
 	        	<div>
 					<input type="hidden" name="ckey" value="${ckey}"/>
 					<input type="submit" value="${save}" />
 				</div>
-			</form:form>
+			</form>
 		</fieldset>
 	
 	</c:if>

@@ -19,9 +19,7 @@
 			    		<property name="allowedFields">
 			    			<list>
 			    				<value>ckey</value>
-			    				<value>serviceName</value>
-			    				<value>serverUserName</value>
-			    				<value>apiKey</value>
+			    				<value>syncService.*</value>
 			    				<value>action</value>
 			    			</list>
 			    		</property>

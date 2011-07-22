@@ -18,162 +18,153 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<fmt:message key="navi.sync" var="syncPageTitle"/>	
+
 	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}">
 	
-		
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/groupcvpage.css" />
-	    </jsp:attribute>	
-		
-		
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<script type="text/javascript" src="${resdir}/javascript/date.js">&amp;nbsp;</script>
+    		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script> 
+			
+			<script type="text/javascript">
+				function validateSyncForm(formData, form, options) {
+					if ($(form).find(":checked").length == 0) {
+						// FIXME: get localized message
+						alert("nothing to synchronize");
+						return false;
+					}
+					$(form).find(":submit").hide(); // FIXME: doesn't work
+					$(form).find(".progressGif").show();
+	 			}
+				function successSyncForm(data, statusText, xhr, form) {
+					$(form).find(":submit").show();
+					$(form).find(".progressGif").hide();
+					for (key in data) {
+						var error = data[key].error;
+						if (error != "no") {
+							alert(key + ": " + error);
+							continue;
+						}
+						var date = new Date(data[key].date);
+						var result = data[key].result;
+						var formattedDate = formatDate(date, "MMM dd, yyyy hh:mm a");
+
+						alert("[" + key + "] lastSyncDate = " + formattedDate + ", result = " + result);
+						
+						//var row = fieldset.find(".content" + key);
+
+						//var resultMsg = $("#resultMsg").html();
+						//row.find(".resultMessage").html(resultMsg);
+						//row.find(".lastSyncDate").html(formattedDate);
+						//row.find(".lastSyncResult").html(result);
+					}
+					// submit the form
+												 	     
+			 	    // return false to prevent normal browser submit and page navigation 
+			 	    return false; 
+	 			}
+				function errorSyncForm(jqXHR, textStatus, errorThrown, form) {
+					alert("error: " + errorThrown);
+					$(form).find(":submit").show();
+					$(form).find(".progressGif").hide();
+	 			}
+	 			
+			    $(document).ready(function() {
+					$("form").each(function(index, elem) {
+					 	$(this).ajaxForm({
+					 		dataType : "json",
+					 		beforeSubmit : validateSyncForm,
+					 		success : successSyncForm,
+					 		error : errorSyncForm
+						 });
+			    	});
+			    });
+			</script>
+	
+		</jsp:attribute>
+	
 		<!-- heading -->
 		<jsp:attribute name="heading">
-		   <!-- something to fill -->
+		   <a rel="path_menu" href="/syncpage"><img src="/resources/image/box_arrow.png"/>&amp;nbsp;<c:out value="${syncPageTitle}" /></a>
     	</jsp:attribute>
 		
 		<jsp:attribute name="content">
 			
-			<fmt:message var="syncronize" key="synchronization.synchronize" />
+			<fmt:message var="synchronize" key="synchronization.synchronize" />
 			<fmt:message var="serviceName" key="synchronization.serviceName" />
 			<fmt:message var="syncTimes" key="synchronization.lastSyncTimes" />
 			<fmt:message var="syncThisContent" key="synchronization.syncThis"/>
 			<fmt:message var="bookmarks" key="bookmarks" />
 			<fmt:message var="publications" key="publications" />
 			<fmt:message var="synchronizationRunning" key="synchronization.synchronizationRunning"/>
-			<fmt:message var="authFailed" key="synchronization.authFailed"/>
+			
 			<div id="general_100">
-			<h2><fmt:message key="synchronization.header" /></h2>
-			<c:forEach var="service" items="${command.syncServices}">
-				<fieldset class="fsInner">
-				
-				<div cssClass="fsRow">
-					<c:out value="${serviceName}: "/> <span class="serviceName"> <c:out value="${service.service}" /></span>
-				</div>	
-					<c:choose>
-						<c:when test="${service.lastSyncData == null}">
-							<c:out value="${authFailed}"/>
-						</c:when>
-						<c:otherwise>
-							<div class="contentContainer" >
-								<div cssClass="fsRow">
-									<c:out value="${syncTimes}"/>
-								</div>
-								<table>
-								<tr class="contentBookmark">
-									<c:set var="LSDbook" value="${service.lastSyncData['Bookmark']}" />
-									<td><c:out value="${bookmarks}: "/></td>
-									<td>
-										<span class="lastSyncDate">
-											<fmt:formatDate value="${LSDbook.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-										</span>
-									</td>
-									<td><span class="resultMessage">
-										<c:choose>
-											<c:when test="${LSDbook != null}">
-												<fmt:message key="synchronization.result"/>
-											</c:when>
-											<c:otherwise>
-												<fmt:message key="synchronization.noresult"/>
-											</c:otherwise>
-										</c:choose>
-									</span></td>
-									<td>
-										<span class="lastSyncResult">
-											<c:out value="${LSDbook.status}"/>
-										</span>
-									</td>
-									<td><input type="checkbox" class="bookmarksBox" checked="checked"><c:out value="${syncThisContent}"/></input></td>
+			
+				<c:forEach var="service" items="${command.syncServices}" varStatus="status">
+					<form:form action="/ajax/synchronize" method="post" id="sync_${status.index}">
+						<fieldset class="fsInner">
+					
+							<h2><c:out value="${serviceName}: "/> <c:out value="${service.service}" /></h2>	
 									
-								</tr>
-								<tr class="contentBibTex">
-									<c:set var="LSDpub" value="${service.lastSyncData['BibTex']}"/>
-									<td><c:out value="${publications}: " /></td>
-									<td><span class="lastSyncDate"><fmt:formatDate value="${LSDpub.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" /></span></td>
-									<td>
-										<span class="resultMessage">
-											<c:choose>
-												<c:when test="${LSDpub != null}">
-													<fmt:message key="synchronization.result"/>
-												</c:when>
-												<c:otherwise>
-													<fmt:message key="synchronization.noresult"/>
-												</c:otherwise>
-											</c:choose>
-										</span>								
-									</td>
-									<td><span class="lastSyncResult"><c:out value="${LSDpub.status}"/></span></td>
-									<td><input type="checkbox" class="publicationsBox" checked="checked"><c:out value="${syncThisContent}"/></input></td>
-								</tr>
-								</table>
-								<span id="resultMsg" style="display:none"><fmt:message key="synchronization.result"/></span>
-							</div>					
-							<input class="synchronizeBtn" type="submit" value="${syncronize}"/>
-							<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
-						</c:otherwise>
-					</c:choose>
-				</fieldset>
-
-			</c:forEach>
-			<script type="text/javascript" src="${resdir}/javascript/date.js">&amp;nbsp;</script>
-			<script type="text/javascript">
-				$(function(){
-					$(".synchronizeBtn").click(function(){
-						$(this).hide();
-						var fieldset = $(this).parents("fieldset");
-						fieldset.find(".progressGif").show();
-						var serviceName = fieldset.find(".serviceName").text();
-						var bookmarks = fieldset.find(".bookmarksBox").attr("checked");
-						var publ = fieldset.find(".publicationsBox").attr("checked");
-						var content = 0;
-						if(bookmarks) {
-							content = content + 1;
-						}
-						if(publ){
-							content = content + 2;
-						}
-						if(content == 0) {
-							//TODO get message form localizedMessages
-							alert("nothing to synchronize");
-							return false;
-						}
+							<div class="fsRow">
+								<c:out value="${syncTimes}"/>
+							</div>
+			
+							<!-- bookmarks -->
+							<div class="fsRow">
+								<c:set var="LSDbook" value="${service.lastSyncData['Bookmark']}" />
+								<span class="fsLabel"><c:out value="${bookmarks}"/>: </span>
+								<span class="fsInput">
+									<c:choose>
+										<c:when test="${not empty LSDbook}">
+											<fmt:formatDate value="${LSDbook.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
+											<fmt:message key="synchronization.result"/>
+											<c:out value="${LSDbook.status}"/> <c:out value="${LSDbook.info}"/>
+										</c:when>
+										<c:otherwise>
+											<fmt:message key="synchronization.noresult"/>
+										</c:otherwise>
+									</c:choose>
+									<form:checkbox path="syncBookmarks" />
+									<c:out value="${syncThisContent}"/>
+								</span>
+							</div>
 							
-						$.ajax({
-							type: "POST",
-							url: "/ajax/synchronize",
-							data: {
-								serviceName : serviceName,
-								contentType : content
-							},
-							success: function(data) {
-								fieldset.find(".synchronizeBtn").show();
-								fieldset.find(".progressGif").hide();
-								for (key in data) {
-									var error = data[key].error;
-									if (error != "no") {
-										alert(key + ": " + error);
-										continue;
-									}
-									var row = fieldset.find(".content" + key);
-									var date = new Date(data[key].date);
-									var result = data[key].result;
-									var formatedDate = formatDate(date, "MMM dd, yyyy hh:mm a");
-									var resultMsg = $("#resultMsg").html();
-									row.find(".resultMessage").html(resultMsg);
-									row.find(".lastSyncDate").html(formatedDate);
-									row.find(".lastSyncResult").html(result);
+							<!-- publications -->
+							<div class="fsRow">
+								<c:set var="LSDpub" value="${service.lastSyncData['BibTex']}"/>
+								<span class="fsLabel"><c:out value="${publications}"/>: </span>
+								<span class="fsInput">
+									<c:choose>
+										<c:when test="${not empty LSDpub}">
+											<fmt:formatDate value="${LSDpub.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
+											<fmt:message key="synchronization.result"/>
+											<c:out value="${LSDpub.status}"/> <c:out value="${LSDpub.info}"/>
+										</c:when>
+										<c:otherwise>
+											<fmt:message key="synchronization.noresult"/>
+										</c:otherwise>
+									</c:choose>
+									<form:checkbox path="syncPublications"/>
+									<c:out value="${syncThisContent}"/>
+								</span>
+							</div>
+							
+							<div class="fsRow">
+								<span id="resultMsg" style="display:none"><fmt:message key="synchronization.result"/></span>
+							</div>
 
-								}
-							},
-							error: function(data) {
-								alert("sync err");
-								fieldset.find(".synchronizeBtn").show();
-								fieldset.find(".progressGif").hide();
-							}
-						});
-						return false;
-					});
-				});
-			</script>
+						<input type="submit" value="${synchronize}"/>
+						<input type="hidden" name="serviceName" value="${service.service}" />
+						<input type="hidden" name="ckey" value="${ckey}" />
+						<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
+					</fieldset>
+				</form:form>
+			</c:forEach>
+			
+
 			</div>
 		</jsp:attribute>
 		
