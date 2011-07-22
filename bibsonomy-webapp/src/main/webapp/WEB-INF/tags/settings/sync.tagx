@@ -27,7 +27,7 @@
 	
 	<c:forEach var="service" items="${command.syncServer}">
 		<fieldset class="fsInner">
-			<form:form class="serviceForm" method="post" action="/updateSyncSettings?action=update">
+			<form:form cssClass="serviceForm" method="post" action="/updateSyncSettings?action=update">
 				<div cssClass="fsRow">
 					<span class="fsLabel"><c:out value="${serviceName}: "/></span> <span class="fsInput serviceName"><c:out value="${service.service}" /></span>
 				</div>
