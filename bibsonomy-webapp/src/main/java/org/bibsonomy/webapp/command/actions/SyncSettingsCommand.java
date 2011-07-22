@@ -21,7 +21,7 @@ public class SyncSettingsCommand extends BaseCommand {
 	/**
 	 * @param syncService the service to set
 	 */
-	public void setSyncService(SyncService syncService) {
+	public void setSyncService(final SyncService syncService) {
 		this.syncService = syncService;
 	}
 

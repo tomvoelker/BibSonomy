@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
+import java.util.Properties;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
@@ -30,16 +31,19 @@ public class SyncSettingsController implements MinimalisticController<SyncSettin
 	
 	private Errors errors;
 	
-	private LogicInterface logic;
 	private SyncLogicInterface syncLogic;
 	
 	@Override
 	public SyncSettingsCommand instantiateCommand() {
-		return new SyncSettingsCommand();
+		final SyncSettingsCommand syncSettingsCommand = new SyncSettingsCommand();
+		final SyncService syncService = new SyncService();
+		syncService.setServerUser(new Properties());
+		syncSettingsCommand.setSyncService(syncService);
+		return syncSettingsCommand;
 	}
 
 	@Override
-	public View workOn(SyncSettingsCommand command) {
+	public View workOn(final SyncSettingsCommand command) {
 		
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
@@ -106,20 +110,13 @@ public class SyncSettingsController implements MinimalisticController<SyncSettin
 	 * @param logic the logic to set
 	 */
 	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-		//FIXME remove after integration
-		if(logic instanceof SyncLogicInterface) {
+		// FIXME remove after integration
+		if (logic instanceof SyncLogicInterface) {
 			syncLogic = (SyncLogicInterface) logic;
 		}
 		
 	}
 
-	/**
-	 * @return the logic
-	 */
-	public LogicInterface getLogic() {
-		return logic;
-	}
 
 	@Override
 	public Validator<SyncSettingsCommand> getValidator() {

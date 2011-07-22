@@ -19,7 +19,8 @@
 			    		<property name="allowedFields">
 			    			<list>
 			    				<value>ckey</value>
-			    				<value>syncService.*</value>
+			    				<value>syncService.service</value>
+			    				<value>syncService.serverUser[*]</value>
 			    				<value>action</value>
 			    			</list>
 			    		</property>

@@ -32,7 +32,6 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	private static final Log log = LogFactory.getLog(SyncPageController.class);
 	
 	private Errors errors;
-	private LogicInterface logic;
 	private SyncLogicInterface syncLogic;
 	private SynchronizationClient syncClient;
 	
@@ -89,18 +88,10 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	 * @param logic the logic to set
 	 */
 	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
 		//FIXME remove after integration
 		if(logic instanceof SyncLogicInterface) {
 			syncLogic = (SyncLogicInterface) logic;
 		}
-	}
-
-	/**
-	 * @return the logic
-	 */
-	public LogicInterface getLogic() {
-		return logic;
 	}
 
 	/**
