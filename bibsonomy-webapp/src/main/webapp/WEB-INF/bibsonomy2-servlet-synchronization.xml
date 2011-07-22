@@ -39,7 +39,8 @@
 					<property name="allowedFields">
 						<list>
 							<value>serviceName</value>
-							<value>contentType</value>
+							<value>syncBookmarks</value>
+							<value>syncPublications</value>
 						</list>
 					</property> 
 					</bean>
@@ -87,7 +88,6 @@
 	<!-- client bean, handles synchronization -->
 	<bean id="realSynchronizationClient" class="org.bibsonomy.sync.SynchronizationClient" lazy-init="true">
 		<property name="ownUri" value="${project.home}"/>
-		<property name="serverLogicFactory" ref="restLogicFactory" />
 	</bean>
 	<bean id="mockSynchronizationClient" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>
 	<alias name="${project.bean.syncclient}" alias="synchronizationClient"/>
