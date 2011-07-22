@@ -14,6 +14,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
+import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.util.IbatisSyncDBSessionFactory;
 import org.bibsonomy.model.Post;
@@ -48,7 +49,7 @@ public class SynchronizationClient {
 	/*
 	 * FIXME: must be a different one for different servers 
 	 */
-	private final DBLogicApiInterfaceFactory serverLogicFactory;
+	private final DBLogicUserInterfaceFactory serverLogicFactory;
 
 	
 	public SynchronizationClient() {

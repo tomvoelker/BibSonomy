@@ -15,24 +15,25 @@ import com.ibatis.sqlmap.client.SqlMapSession;
  * @version $Id$
  */
 public class IbatisSyncDBSessionFactory extends AbstractDBSessionFactory {
-    	
-    	private final static Properties props = new Properties();
-    	
-    	static {
-    	   props.setProperty("JNDIDataSource", "java:comp/env/jdbc/sync_puma");
-    	}
-    	
+
+	private static final String JNDI_DATASOURCE = "java:comp/env/jdbc/sync_puma";
+	private final static Properties props = new Properties();
+
+	static {
+		props.setProperty("JNDIDataSource", JNDI_DATASOURCE);
+	}
+
 	private static final SqlMapClient client = IbatisUtils.loadSqlMap("SqlMapConfig.xml", props);
-	
+
 	protected static final SqlMapClient getSqlMapClient() {
 		return client;
 	}
-	
+
 	@Override
 	protected SqlMapSession getSqlMap() {
 		return client.openSession();
 	}
-	
+
 	/**
 	 * Set JNDIDataSource like  props.setProperty("JNDIDataSource", "java:comp/env/jdbc/[serviceName]");
 	 * service name must be specified in context.xml
@@ -40,5 +41,10 @@ public class IbatisSyncDBSessionFactory extends AbstractDBSessionFactory {
 	 */
 	public Properties getProps(){
 		return props;
+	}
+	
+	@Override
+	public String toString() {
+		return JNDI_DATASOURCE;
 	}
 }
