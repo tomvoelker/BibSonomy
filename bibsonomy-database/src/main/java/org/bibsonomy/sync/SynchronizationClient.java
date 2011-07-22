@@ -37,21 +37,29 @@ public class SynchronizationClient {
 	private static final Log log = LogFactory.getLog(SynchronizationClient.class);
 	
 	/*
-	 * own URI as String and as java.net.URI
+	 * own URI
 	 */
-	private URI uri;
+	private URI ownUri;
 	
 	/*
-	 *	FIXME make ConflictResolutionStrategy configurable by user 
+	 * FIXME make ConflictResolutionStrategy configurable by user 
 	 */
-	private final ConflictResolutionStrategy strategy;
-	private DBLogicApiInterfaceFactory serverLogicFactory;
-	private DBSessionFactory dbSessionFactory = new IbatisSyncDBSessionFactory();
+	private final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;
+	/*
+	 * FIXME: must be a different one for different servers 
+	 */
+	private final DBLogicApiInterfaceFactory serverLogicFactory;
+
 	
 	public SynchronizationClient() {
-		//FIXME get strategy form DB or elsewhere
-		this.strategy = ConflictResolutionStrategy.LAST_WINS;
+		this(new IbatisSyncDBSessionFactory());
 	}
+	
+	public SynchronizationClient(final DBSessionFactory dbSessionFactory) {
+		this.serverLogicFactory = new DBLogicApiInterfaceFactory();
+		this.serverLogicFactory.setDbSessionFactory(dbSessionFactory);	
+	}
+	
 	
 	/**
 	 * Looks up the credentials for the given syncServer and creates an 
@@ -82,11 +90,6 @@ public class SynchronizationClient {
 	 */
 	private LogicInterface getServerLogic(final SyncService syncService) {
 		final Properties serverUser = syncService.getServerUser();
-		/*
-		 * FIXME: get correct DBSessionFactory for each service
-		 */
-		serverLogicFactory.setDbSessionFactory(this.dbSessionFactory);
-		
 		return serverLogicFactory.getLogicAccess(serverUser.getProperty("userName"), serverUser.getProperty("apiKey"));
 	}
 	
@@ -102,7 +105,7 @@ public class SynchronizationClient {
 		/*
 		 * FIXME: errorhandling
 		 */
-		return ((SyncLogicInterface) serverLogic).getLastSyncData(userName, uri, resourceType);
+		return ((SyncLogicInterface) serverLogic).getLastSyncData(userName, ownUri, resourceType);
 	}
 	
 	/**
@@ -182,17 +185,17 @@ public class SynchronizationClient {
 	 */
 	private void storeSyncResult(final SynchronizationStatus status, final String info, final Class<? extends Resource> resourceType, final LogicInterface serverLogic, final String serverUserName) {
 		final SyncLogicInterface syncLogicInterface = (SyncLogicInterface) serverLogic;
-		final SynchronizationData data = syncLogicInterface.getLastSyncData(serverUserName, uri, resourceType);
+		final SynchronizationData data = syncLogicInterface.getLastSyncData(serverUserName, ownUri, resourceType);
 		if (!present(data)) {
 			/*
 			 * sync data seems not to have been stored --> error!
 			 */
-			throw new RuntimeException("No sync data found for " + serverUserName + " on " + uri);
+			throw new RuntimeException("No sync data found for " + serverUserName + " on " + ownUri);
 		}
 		if (SynchronizationStatus.RUNNING.equals(data.getStatus())) {
 			syncLogicInterface.updateSyncStatus(data, status, info);
 		} else {
-			throw new RuntimeException("no running synchronization found for " + serverUserName + " on " + uri + " to store result");
+			throw new RuntimeException("no running synchronization found for " + serverUserName + " on " + ownUri + " to store result");
 		}
 	}
 
@@ -217,56 +220,58 @@ public class SynchronizationClient {
 		clientUser.setRole(Role.SYNC);
 	
 		/*
-		 * get posts from client system
+		 * get posts from client
 		 */
-		List<SynchronizationPost> clientPosts = ((SyncLogicInterface)clientLogic).getSyncPosts(clientUser.getName(), resourceType);
+		final List<SynchronizationPost> clientPosts = ((SyncLogicInterface)clientLogic).getSyncPosts(clientUser.getName(), resourceType);
 		
 		/*
-		 * get synchronization states and posts from server
+		 * get synchronization actions and posts from server
 		 */
-		clientPosts = ((SyncLogicInterface)serverLogic).getSyncPlan(serverUser.getName(), resourceType, clientPosts, strategy, uri);
+		final List<SynchronizationPost> syncPlan = ((SyncLogicInterface)serverLogic).getSyncPlan(serverUser.getName(), resourceType, clientPosts, strategy, ownUri);
 
 		/*
 		 * create target lists
 		 */
-		List<Post<?>> createOnClientList = new ArrayList<Post<?>>();
-		List<Post<?>> createOnServerList = new ArrayList<Post<?>>();
-		List<String> deleteOnServerList = new ArrayList<String>();
-		List<String> deleteOnClientList = new ArrayList<String>();
-		List<Post<?>> updateOnClientList = new ArrayList<Post<?>>();
-		List<Post<?>> updateOnServerList = new ArrayList<Post<?>>();
+		final List<Post<? extends Resource>> createOnClient = new ArrayList<Post<?>>();
+		final List<Post<? extends Resource>> createOnServer = new ArrayList<Post<?>>();
+		final List<Post<? extends Resource>> updateOnClient = new ArrayList<Post<?>>();
+		final List<Post<? extends Resource>> updateOnServer = new ArrayList<Post<?>>();
+		final List<String> deleteOnServer = new ArrayList<String>();
+		final List<String> deleteOnClient = new ArrayList<String>();
 
 		/*
-		 * iterate over all posts and put each post to the target list
+		 * iterate over all posts and put each post into the target list
 		 */
-		for (SynchronizationPost post : clientPosts) {
-			Post<? extends Resource> postToHandle;
+		for (final SynchronizationPost post: syncPlan) {
+			final String postIntraHash = post.getIntraHash();
+			
+			final Post<? extends Resource> postToHandle;
 			switch (post.getState()) {
 			case CREATE:
-				postToHandle = clientLogic.getPostDetails(post.getIntraHash(), clientUser.getName());
+				postToHandle = clientLogic.getPostDetails(postIntraHash, clientUser.getName());
 				postToHandle.setUser(serverUser);
-				createOnServerList.add(postToHandle);
+				createOnServer.add(postToHandle);
 				break;
 			case CREATE_CLIENT:
-				postToHandle = serverLogic.getPostDetails(post.getIntraHash(), serverUser.getName());
+				postToHandle = serverLogic.getPostDetails(postIntraHash, serverUser.getName());
 				postToHandle.setUser(clientUser);
-				createOnClientList.add(postToHandle);
+				createOnClient.add(postToHandle);
 				break;
 			case DELETE:
-				deleteOnServerList.add(post.getIntraHash());
+				deleteOnServer.add(postIntraHash);
 				break;
 			case DELETE_CLIENT:
-				deleteOnClientList.add(post.getIntraHash());
+				deleteOnClient.add(postIntraHash);
 				break;
 			case UPDATE:
-				postToHandle = clientLogic.getPostDetails(post.getIntraHash(), clientUser.getName());
+				postToHandle = clientLogic.getPostDetails(postIntraHash, clientUser.getName());
 				postToHandle.setUser(serverUser);
-				updateOnServerList.add(postToHandle);
+				updateOnServer.add(postToHandle);
 				break;
 			case UPDATE_CLIENT:
-				postToHandle = serverLogic.getPostDetails(post.getIntraHash(), serverUser.getName());
+				postToHandle = serverLogic.getPostDetails(postIntraHash, serverUser.getName());
 				postToHandle.setUser(clientUser);
-				updateOnClientList.add(postToHandle);
+				updateOnClient.add(postToHandle);
 				break;
 			default:
 				break;
@@ -278,21 +283,24 @@ public class SynchronizationClient {
 		/*
 		 *  Apply changes to both systems.
 		 */
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		
 		/*
 		 * create posts on client 
 		 */
-		if (!createOnClientList.isEmpty()) {
+		if (!createOnClient.isEmpty()) {
 			try {
-				clientLogic.createPosts(createOnClientList);
-				result.append("created on client: " + createOnClientList.size() + ", ");
-			} catch (DatabaseException e) {
+				clientLogic.createPosts(createOnClient);
+				result.append("created on client: " + createOnClient.size() + ", ");
+			} catch (final DatabaseException e) {
 				/*
 				 *  this can happen if some duplicate posts exists
-				 *  FIXME: check oder possibilities to throw Database Exception
+				 *  FIXME: check other possibilities to throw Database Exception
+				 *  
+				 *  
+				 *  FIXME: check for duplicate error messages
+				 *  
 				 */
-				log.error("database exception catched during creation on client", e);
 				duplicates = true;
 			}
 			
@@ -301,10 +309,10 @@ public class SynchronizationClient {
 		/*
 		 * create posts on server
 		 */
-		if (!createOnServerList.isEmpty()) {
+		if (!createOnServer.isEmpty()) {
 			try {
-				serverLogic.createPosts(createOnServerList);
-				result.append("created on server: " + createOnServerList.size() + ", ");
+				serverLogic.createPosts(createOnServer);
+				result.append("created on server: " + createOnServer.size() + ", ");
 			} catch (DatabaseException e) {
 				/*
 				 *  this can happen if some duplicate posts exists
@@ -318,33 +326,33 @@ public class SynchronizationClient {
 		/*
 		 * update posts on client 
 		 */
-		if (!updateOnClientList.isEmpty()) {
-			clientLogic.updatePosts(updateOnClientList, PostUpdateOperation.UPDATE_ALL);
-			result.append("updated on client: " + updateOnClientList.size() + ", ");
+		if (!updateOnClient.isEmpty()) {
+			clientLogic.updatePosts(updateOnClient, PostUpdateOperation.UPDATE_ALL);
+			result.append("updated on client: " + updateOnClient.size() + ", ");
 		}
 
 		/*
 		 * update posts on server
 		 */
-		if (!updateOnServerList.isEmpty()) {
-			serverLogic.updatePosts(updateOnServerList, PostUpdateOperation.UPDATE_ALL);
-			result.append("updated on server: " + updateOnServerList.size() + ", ");
+		if (!updateOnServer.isEmpty()) {
+			serverLogic.updatePosts(updateOnServer, PostUpdateOperation.UPDATE_ALL);
+			result.append("updated on server: " + updateOnServer.size() + ", ");
 		}
 
 		/*
 		 * delete posts on client
 		 */
-		if (!deleteOnClientList.isEmpty()) {
-			clientLogic.deletePosts(clientUser.getName(), deleteOnClientList);
-			result.append("deleted on client: " + deleteOnClientList.size() + ", ");
+		if (!deleteOnClient.isEmpty()) {
+			clientLogic.deletePosts(clientUser.getName(), deleteOnClient);
+			result.append("deleted on client: " + deleteOnClient.size() + ", ");
 		}
 
 		/*
 		 * delete posts no server
 		 */
-		if (!deleteOnServerList.isEmpty()) {
-			serverLogic.deletePosts(serverUser.getName(), deleteOnServerList);
-			result.append("deleted on server: " + deleteOnServerList.size());
+		if (!deleteOnServer.isEmpty()) {
+			serverLogic.deletePosts(serverUser.getName(), deleteOnServer);
+			result.append("deleted on server: " + deleteOnServer.size());
 		}
 
 		/*
@@ -369,35 +377,13 @@ public class SynchronizationClient {
 	 * @param ownUri the ownUri to set
 	 */
 	public void setOwnUri(final URI ownUri) {
-		this.uri = ownUri;
+		this.ownUri = ownUri;
 	}
 
 	/**
 	 * @return the ownUri
 	 */
 	public URI getOwnUri() {
-		return uri;
+		return ownUri;
 	}
-
-	/**
-	 * @param serverLogicFactory the serverLogicFactory to set
-	 */
-	public void setServerLogicFactory(DBLogicApiInterfaceFactory serverLogicFactory) {
-		this.serverLogicFactory = serverLogicFactory;
-	}
-
-	/**
-	 * @return the serverLogicFactory
-	 */
-	public DBLogicApiInterfaceFactory getServerLogicFactory() {
-		return serverLogicFactory;
-	}
-
-	/**
-	 * @param factory the factory to set
-	 */
-	public void setDBSessionFactory(DBSessionFactory factory) {
-		this.dbSessionFactory = factory;
-	}
-
 }

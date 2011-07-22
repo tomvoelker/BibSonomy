@@ -166,7 +166,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void testSynchronization() throws URISyntaxException {
-		final SynchronizationClient sync = new SynchronizationClient();
+		final SynchronizationClient sync = new SynchronizationClient(new IbatisDBSessionFactory());
 
 		/*
 		 * setup server
@@ -176,9 +176,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * setup synchronization client
 		 */
-		sync.setServerLogicFactory(new DBLogicApiInterfaceFactory());
 		sync.setOwnUri(new URI(SYNC_SERVER_URI));
-		sync.setDBSessionFactory(new IbatisDBSessionFactory());
 
 		/*
 		 * check that synchronization is enabled
