@@ -78,21 +78,12 @@ public class SynchronizationController extends AjaxController implements Minimal
 		
 		final JSONObject json = new JSONObject();
 		
-		
-		switch(command.getContentType()) { // FIXME: use strings "bookmark" and "publication", not numbers
-		case 1:
+
+		if (command.getSyncBookmarks()) {
 			addData(json, Bookmark.class, client.synchronize(logic, uri, Bookmark.class));
-			break;
-		case 2:
+		}
+		if (command.getSyncPublications()) {
 			addData(json, BibTex.class, client.synchronize(logic, uri, BibTex.class));
-			break;
-		case 3:
-			addData(json, Bookmark.class, client.synchronize(logic, uri, Bookmark.class));
-			addData(json, BibTex.class, client.synchronize(logic, uri, BibTex.class));
-			break;
-		default:
-//			throw new UnsupportedContentTypeException();
-			break;
 		}
 
 		command.setResponseString(json.toString());
@@ -101,7 +92,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 	
 	private void addData (final JSONObject json, Class<? extends Resource> resourceType, final SynchronizationData data) {
 		final HashMap<String, Object> values = new HashMap<String, Object>();
-		if("running".equals(data.getStatus())) {
+		if ("running".equals(data.getStatus())) {
 			//TODO i18N
 			values.put("error", "old synchronization still running, please try later");
 		} else {

@@ -16,7 +16,7 @@ import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.sync.SynchronizationClient;
-import org.bibsonomy.webapp.command.SyncPageCommand;
+import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -27,7 +27,7 @@ import org.springframework.validation.Errors;
  * @author wla
  * @version $Id$
  */
-public class SyncPageController implements MinimalisticController<SyncPageCommand>, ErrorAware{
+public class SyncPageController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware{
 	
 	private static final Log log = LogFactory.getLog(SyncPageController.class);
 	
@@ -37,12 +37,12 @@ public class SyncPageController implements MinimalisticController<SyncPageComman
 	private SynchronizationClient syncClient;
 	
 	@Override
-	public SyncPageCommand instantiateCommand() {
-		return new SyncPageCommand();
+	public AjaxSynchronizationCommand instantiateCommand() {
+		return new AjaxSynchronizationCommand();
 	}
 
 	@Override
-	public View workOn(SyncPageCommand command) {
+	public View workOn(AjaxSynchronizationCommand command) {
 		
 		if(!present(syncClient)) {
 			errors.reject("error.synchronization.noclient");
@@ -58,8 +58,8 @@ public class SyncPageController implements MinimalisticController<SyncPageComman
 		userServices = syncLogic.getSyncServer(command.getContext().getLoginUser().getName());
 		
 		log.debug("try to get synchronization data from remote service");
-		for (SyncService syncService : userServices) {
-			Map<String, SynchronizationData> syncData = new HashMap<String, SynchronizationData>();
+		for (final SyncService syncService : userServices) {
+			final Map<String, SynchronizationData> syncData = new HashMap<String, SynchronizationData>();
 			try {
 				// FIXME: iterate over (to be created array) in ResourceUtils
 				syncData.put(Bookmark.class.getSimpleName(), syncClient.getLastSyncData(syncService, Bookmark.class));

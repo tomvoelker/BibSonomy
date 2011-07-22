@@ -1,7 +1,6 @@
 package org.bibsonomy.webapp.command.actions;
 
-import java.net.URI;
-
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
@@ -9,59 +8,23 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @version $Id$
  */
 public class SyncSettingsCommand extends BaseCommand {
-	private URI service;
-	private String serviceName;
-	private String serverUserName;
-	private String apiKey;
+	
+	private SyncService syncService = new SyncService();
 	private String action;
+
 	/**
 	 * @return the service
 	 */
-	public URI getService() {
-		return this.service;
+	public SyncService getSyncService() {
+		return this.syncService;
 	}
 	/**
-	 * @param service the service to set
+	 * @param syncService the service to set
 	 */
-	public void setService(URI service) {
-		this.service = service;
+	public void setSyncService(SyncService syncService) {
+		this.syncService = syncService;
 	}
-	/**
-	 * @return the serviceName
-	 */
-	public String getServiceName() {
-		return this.serviceName;
-	}
-	/**
-	 * @param serviceName the serviceName to set
-	 */
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
-	/**
-	 * @return the serverUsername
-	 */
-	public String getServerUserName() {
-		return this.serverUserName;
-	}
-	/**
-	 * @param serverUsername the serverUsername to set
-	 */
-	public void setServerUserName(String serverUsername) {
-		this.serverUserName = serverUsername;
-	}
-	/**
-	 * @return the apiKey
-	 */
-	public String getApiKey() {
-		return this.apiKey;
-	}
-	/**
-	 * @param apiKey the apiKey to set
-	 */
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
-	}
+
 	/**
 	 * @param action the action to set
 	 */
