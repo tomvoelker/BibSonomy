@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,44 +10,126 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 
 /**
- * Command class for encapsulating aspect related models
+ * Command class for encapsulating sphere related models
+ * 
+ * TODO: this is a merge of two parameter classes and thus needs some cleanup 
  */
 public class SphereResourceViewCommand extends FriendsResourceViewCommand {
-	private Map<String, Set<User>> aspects;
-	private Map<String, ListCommand<Post<Bookmark>>> aspectsBMPosts;
-	private Map<String, ListCommand<Post<BibTex>>> aspectsPBPosts;
-	private Map<String, TagCloudCommand> aspectsTagClouds;
 	
-	public void setAspects(Map<String, Set<User>> aspects) {
-		this.aspects = aspects;
+	private String 			requestedUserRelation 	= "";
+	private List<User> 		relatedUsers;
+	List<Post<Bookmark>> 	bmPosts;
+	List<Post<BibTex>> 		bibPosts;
+	
+	private Map<String, Set<User>> spheres;
+	private Map<String, ListCommand<Post<Bookmark>>> spheresBMPosts;
+	private Map<String, ListCommand<Post<BibTex>>> spheresPBPosts;
+	private Map<String, TagCloudCommand> spheresTagClouds;
+
+	/**
+	 * @return the requestedUserRelation
+	 */
+	public String getRequestedUserRelation() {
+		return this.requestedUserRelation;
+	}
+	/**
+	 * @param requestedUserRelation the requestedUserRelation to set
+	 */
+	public void setRequestedUserRelation(String requestedUserRelation) {
+		this.requestedUserRelation = requestedUserRelation;
+	}
+	
+	/**
+	 * @return the relatedUsers
+	 */
+	public List<User> getRelatedUsers() {
+		return this.relatedUsers;
+	}
+	/**
+	 * @param relatedUsers the relatedUsers to set
+	 */
+	public void setRelatedUsers(List<User> relatedUsers) {
+		this.relatedUsers = relatedUsers;
+	}
+	/**
+	 * @return the bmPosts
+	 */
+	public List<Post<Bookmark>> getBmPosts() {
+		return this.bmPosts;
+	}
+	/**
+	 * @param bmPosts the bmPosts to set
+	 */
+	public void setBmPosts(List<Post<Bookmark>> bmPosts) {
+		this.bmPosts = bmPosts;
+	}
+	/**
+	 * @return the bibPosts
+	 */
+	public List<Post<BibTex>> getBibPosts() {
+		return this.bibPosts;
+	}
+	/**
+	 * @param bibPosts the bibPosts to set
+	 */
+	public void setBibPosts(List<Post<BibTex>> bibPosts) {
+		this.bibPosts = bibPosts;
+	}	
+	
+	/**
+	 * @param spheres
+	 */
+	public void setSpheres(Map<String, Set<User>> spheres) {
+		this.spheres = spheres;
 	}
 
-	public Map<String, Set<User>> getAspects() {
-		return aspects;
+	/**
+	 * @return spheres
+	 */
+	public Map<String, Set<User>> getSpheres() {
+		return spheres;
 	}
 
-	public void setAspectsBMPosts(Map<String, ListCommand<Post<Bookmark>>> aspectsBMPosts) {
-		this.aspectsBMPosts = aspectsBMPosts;
+	/**
+	 * @param spheresBMPosts
+	 */
+	public void setSpheresBMPosts(Map<String, ListCommand<Post<Bookmark>>> spheresBMPosts) {
+		this.spheresBMPosts = spheresBMPosts;
 	}
 
-	public Map<String, ListCommand<Post<Bookmark>>> getAspectsBMPosts() {
-		return aspectsBMPosts;
+	/**
+	 * @return spheresBMPosts
+	 */
+	public Map<String, ListCommand<Post<Bookmark>>> getSpheresBMPosts() {
+		return spheresBMPosts;
 	}
 
-	public void setAspectsPBPosts(Map<String, ListCommand<Post<BibTex>>> aspectsPBPosts) {
-		this.aspectsPBPosts = aspectsPBPosts;
+	/**
+	 * @param spheresPBPosts
+	 */
+	public void setSpheresPBPosts(Map<String, ListCommand<Post<BibTex>>> spheresPBPosts) {
+		this.spheresPBPosts = spheresPBPosts;
 	}
 
-	public Map<String, ListCommand<Post<BibTex>>> getAspectsPBPosts() {
-		return aspectsPBPosts;
+	/**
+	 * @return spheresPBPosts
+	 */
+	public Map<String, ListCommand<Post<BibTex>>> getSpheresPBPosts() {
+		return spheresPBPosts;
 	}
 
-	public void setAspectsTagClouds(Map<String, TagCloudCommand> aspectsTagClouds) {
-		this.aspectsTagClouds = aspectsTagClouds;
+	/**
+	 * @param spheresTagClouds
+	 */
+	public void setSpheresTagClouds(Map<String, TagCloudCommand> spheresTagClouds) {
+		this.spheresTagClouds = spheresTagClouds;
 	}
 
-	public Map<String, TagCloudCommand> getAspectsTagClouds() {
-		return aspectsTagClouds;
+	/**
+	 * @return spheresTagClouds
+	 */
+	public Map<String, TagCloudCommand> getSpheresTagClouds() {
+		return spheresTagClouds;
 	}
 
 }

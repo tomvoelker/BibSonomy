@@ -96,6 +96,11 @@ public enum Views implements View {
 	SPHERELIST("spheres/sphereList"),
 	
 	/**
+	 * tagged friend page shows all users of the requested group and their posts
+	 */
+	SPHEREDETAILS("spheres/sphere"),
+	
+	/**
 	 * topics page for browsing resources based on topics
 	 */
 	TOPICSPAGE("browsing/topics"),
@@ -124,11 +129,6 @@ public enum Views implements View {
 	 * friend page shows all posts which are set viewable for friends of the requested user
 	 */
 	FRIENDPAGE("friend"),
-	
-	/**
-	 * tagged friend page shows all users of the requested group and their posts
-	 */
-	TAGGEDFRIENDPAGE("taggedfriend"),
 	
 	/**
 	 * bibtex page shows all publications with the given inter-/intrahash

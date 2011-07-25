@@ -338,11 +338,6 @@
 						<property name="controllerBeanName" value="topicsPageController"/>
 					</bean>
 				</entry>
-				<entry key="/spheres">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="sphereListController"/>
-					</bean>
-				</entry>
 				<entry key="/author">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="authorPageController"/>
@@ -368,12 +363,11 @@
 						<property name="controllerBeanName" value="friendPageController"/>
 					</bean>
 				</entry>
-				<entry key="/taggedfriend">
+				<entry key="/spheres">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="taggedFriendPageController"/>
+						<property name="controllerBeanName" value="spheresPageController"/>
 					</bean>
 				</entry>
-				
 				<entry key="/bibtexkey">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bibtexkeyPageController"/>
@@ -582,7 +576,7 @@
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
-	<bean id="taggedFriendPageController" class="org.bibsonomy.webapp.controller.TaggedFriendPageController" scope="request" parent="multiResourceListControllerWithTags">
+	<bean id="spheresPageController" class="org.bibsonomy.webapp.controller.SpheresPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
 		<property name="logic" ref="logic"/>		
 	</bean>
@@ -611,11 +605,7 @@
 	<bean id="clusterPageController" class="org.bibsonomy.webapp.controller.browsing.ClusterPageController" scope="request" />
 	
 	<bean id="topicsPageController" class="org.bibsonomy.webapp.controller.browsing.TopicsPageController" scope="request" />
-	
-	<bean id="sphereListController" class="org.bibsonomy.webapp.controller.browsing.SphereListController" scope="request">
-		<property name="logic" ref="logic"/>
-	</bean>
-	
+
 	<bean id="authorPageController" class="org.bibsonomy.webapp.controller.AuthorPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources">
 			<set>
