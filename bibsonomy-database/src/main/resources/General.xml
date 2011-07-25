@@ -8,7 +8,7 @@
 		SELECT count(user_name)
 		FROM friends
 		WHERE user_name = #user.name# 
-		  AND f_user_name = #user.friend.name#
+		  AND f_user_name = #friend.name#
 		  AND tag_name = #bibSonomyFriendsTag#
 	</select>
 
