@@ -2,6 +2,9 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
@@ -22,6 +25,7 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
+
 
 /**
  * @author schwass
@@ -82,6 +86,19 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		String reason = command.getReason();
 		String deniedUserName = command.getDeniedUser();
 		
+		if (!present(reason) && ! present(deniedUserName)) {
+			// no deniedUser, no reason => probably wants to see the join_group page
+			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
+			return Views.JOIN_GROUP;
+		}
+
+		/*
+		 * check if ckey is valid
+		 */
+		if (!command.getContext().isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
+		
 		// We can not check the ckey if "deny request" was chosen, since the deny
 		// handle deny join request action
 		if (present(deniedUserName)) {
@@ -101,12 +118,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			return new ExtendedRedirectView(denyUserRedirectURI);
 		}
 		
-		if (!present(reason)) {
-			// no deniedUser, no reason => probably wants to see the join_group page
-			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
-			return Views.JOIN_GROUP;
-		}
-
+		
 		/*
 		 * From here we assume, that the user has sent a join group request from the join group form
 		 */
@@ -125,13 +137,6 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			return Views.ERROR;
 		}
 		
-		/*
-		 * check if ckey is valid
-		 */
-		if (!command.getContext().isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-		}
-
 		// FIXME: captcha checking; duplicate code EditPostController, PasswordReminderController, …
 		if (!present(command.getRecaptcha_response_field())) {
 			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
@@ -159,7 +164,9 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		// we need the user details (eMail) of the user that is the group
 		final User groupUser = adminLogic.getUserDetails(groupName);
 		mailUtils.sendJoinGroupRequest(group.getName(), groupUser.getEmail(), loginUser, command.getReason(), requestLogic.getLocale());
-		command.setMessage("success.joinGroupRequest.sent", new String[] {group.getName()});
+		List<String> params = new LinkedList<String>();
+		params.add(groupName);
+		command.setMessage("success.joinGroupRequest.sent", params);
 		return Views.JOIN_GROUP_REQUEST_SUCCESS;
 	}
 

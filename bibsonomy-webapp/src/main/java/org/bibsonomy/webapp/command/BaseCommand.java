@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.command;
 
+import java.util.List;
+
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 
 /**
@@ -19,7 +21,7 @@ public class BaseCommand implements ContextCommand {
 
 	private String messageKey;
 	
-	private String[] messageParams;
+	private List<String> messageParams;
 	
 
 	@Deprecated
@@ -82,18 +84,18 @@ public class BaseCommand implements ContextCommand {
 	/**
 	 * @return Message Params
 	 */
-	public String[] getMessageParams() {
+	public List<String> getMessageParams() {
 		return this.messageParams;
 	}
 
 	/**
 	 * @param messageParams
 	 */
-	public void setMessageParams(String[] messageParams) {
+	public void setMessageParams(List<String> messageParams) {
 		this.messageParams = messageParams;
 	}
 
-	public void setMessage(String key, String[] params) {
+	public void setMessage(String key, List<String> params) {
 		this.setMessageKey(key);
 		this.setMessageParams(params);
 	}
