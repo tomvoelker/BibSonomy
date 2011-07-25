@@ -31,7 +31,7 @@ public enum SynchronizationDirection {
 	}
 	
 	/**
-	 * @return The string representation for the synchronization status.
+	 * @return The string representation for the synchronization direction.
 	 */
 	public String getSynchronizationDirection() {
 		return direction;
