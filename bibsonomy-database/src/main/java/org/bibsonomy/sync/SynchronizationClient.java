@@ -146,9 +146,6 @@ public class SynchronizationClient {
 		}
 		final String serverUserName = serverLogic.getAuthenticatedUser().getName();
 		
-		/*
-		 * set default result to "error"
-		 */
 		SynchronizationStatus result;
 		String info;
 		try {
