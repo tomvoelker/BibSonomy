@@ -22,16 +22,16 @@
    
        
         <jsp:attribute name="content">
-
-            <h1>
-            	<fmt:message key="success.joinGroupRequest.sent">
- 	    		<c:forEach var="param" items="${command.messageParams}">
-            		<fmt:param>${fn:escapeXml(param)}</fmt:param>
-            	</c:forEach>
+        	<div id="general_100">
+	           	<fmt:message key="success.joinGroupRequest.sent">
+ 				  	<c:if test="${not empty command.messageParams}">
+		    			<c:forEach var="p" items="${command.messageParams}">
+    		       			<fmt:param value="${fn:escapeXml(p)}"/>
+        		   		</c:forEach>
+	  				</c:if>  	
             	</fmt:message>
-            </h1>
-      
-	    </jsp:attribute>
+            </div>
+      </jsp:attribute>
       
 	</layout:layout>
 

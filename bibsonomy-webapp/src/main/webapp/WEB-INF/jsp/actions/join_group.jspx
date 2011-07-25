@@ -55,7 +55,7 @@
 		    				    		<fmt:message key="joinGroup.reason.hint.appendix"><fmt:param>${command.reasonMaxLen}</fmt:param></fmt:message>
 		    			    		</jsp:attribute>
 		    				    </buttons:help>
-			  					<form:textarea rows="4" cols="50" cssClass="fsInput" path="reason" htmlEscape="true" onkeyup="assertInputLength(this, ${command.reasonMaxLen });"/>
+			  					<form:textarea rows="4" cols="50" cssClass="fsInput" path="reason" htmlEscape="true"/>
 			  					<div class="dissError"><form:errors path="reason" /></div>
             				</div>
                				<div class="fsRow">
