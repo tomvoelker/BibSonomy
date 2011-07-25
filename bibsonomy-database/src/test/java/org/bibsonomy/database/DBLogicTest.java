@@ -448,6 +448,16 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		tags2.add(relationTag3);
 		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
 		assertEquals(0, bibTexPostsList.size());
+		
+		// retrieve tag cloud
+		tags2.clear();
+		tags2.add(relationTag2);
+		List<Tag> aspectTagCloud= srcLogic.getTags(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), null, tags1, null, Order.FREQUENCY, 0, 25, null, null);
+		assertEquals(6, aspectTagCloud.size());
+		assertTrue(aspectTagCloud.contains(new Tag("sharedTag1")));
+		assertTrue(aspectTagCloud.contains(new Tag("sharedTag2")));
+		assertTrue(aspectTagCloud.contains(new Tag("btPostTag1")));
+		assertTrue(aspectTagCloud.contains(new Tag("btPostTag2")));
 	}
 
 	/** helper function */
