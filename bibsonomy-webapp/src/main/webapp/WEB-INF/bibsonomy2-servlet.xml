@@ -338,6 +338,11 @@
 						<property name="controllerBeanName" value="topicsPageController"/>
 					</bean>
 				</entry>
+				<entry key="/spheres">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="sphereListController"/>
+					</bean>
+				</entry>
 				<entry key="/author">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="authorPageController"/>
@@ -606,6 +611,10 @@
 	<bean id="clusterPageController" class="org.bibsonomy.webapp.controller.browsing.ClusterPageController" scope="request" />
 	
 	<bean id="topicsPageController" class="org.bibsonomy.webapp.controller.browsing.TopicsPageController" scope="request" />
+	
+	<bean id="sphereListController" class="org.bibsonomy.webapp.controller.browsing.SphereListController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
 	
 	<bean id="authorPageController" class="org.bibsonomy.webapp.controller.AuthorPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources">

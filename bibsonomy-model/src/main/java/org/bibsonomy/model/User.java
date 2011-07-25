@@ -617,22 +617,6 @@ public class User implements Serializable {
 		}
 		return friendsAsString;
 	}
-	
-	/**
-	 * Returns the first friend of this user.<br/>
-	 * 
-	 * XXX: iBatis should support this: "friends[0].name", which should return
-	 * the name of the first friend - but this doesn't seem to work so we need
-	 * this extra method.
-	 * 
-	 * FIXME: maybe we should put this inside a param object
-	 * 
-	 * @return friend
-	 */
-	public User getFriend() {
-		if (this.getFriends().size() < 1) return null;
-		return this.friends.get(0);
-	}
 
 	/**
 	 * @param friend

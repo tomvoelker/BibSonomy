@@ -89,6 +89,11 @@ public enum Views implements View {
 	 * cluster page for browsing resources based on clusterings
 	 */
 	CLUSTERPAGE("browsing/cluster"),
+
+	/**
+	 * page for listing all relation tagged users 
+	 */
+	SPHERELIST("spheres/sphereList"),
 	
 	/**
 	 * topics page for browsing resources based on topics
