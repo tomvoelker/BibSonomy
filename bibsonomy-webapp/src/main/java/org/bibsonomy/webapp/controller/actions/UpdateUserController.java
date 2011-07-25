@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.controller.actions;
+	package org.bibsonomy.webapp.controller.actions;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -7,81 +7,45 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
-import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
-import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.UserUpdateProfileValidator;
-import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 /**
  * @author cvo
  * @version $Id$
  */
-public class UpdateUserController implements ErrorAware, ValidationAwareController<SettingsViewCommand> {
+public class UpdateUserController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand> {
 	private static final Log log = LogFactory.getLog(UpdateUserController.class);
-
-	/**
-	 * hold current errors
-	 */
-	private Errors errors = null;
-
-	/**
-	 * logic interface
-	 */
-	private LogicInterface logic = null;
-
-	@Override
-	public SettingsViewCommand instantiateCommand() {
-		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setUser(new User());
-		return command;
-	}
 
 	@Override
 	public View workOn(SettingsViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 
-		/*
-		 * user has to be logged in to delete himself
-		 */
 		if (!context.isUserLoggedIn()) {
-			errors.reject("error.general.login");
-			return Views.SETTINGSPAGE;
+			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
 
-		final User user = context.getLoginUser(); 
-
-		// needed to display the user name on the profile tab of the settings site
-		command.getUser().setName(user.getName());
-
-		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF, null));
-		command.setFriendsOfUser(logic.getUserRelationship(user.getName(), UserRelation.OF_FRIEND, null));
-
-		// check whether the user is a group		
-		if (UserUtils.userIsGroup(user)) {
-			command.setHasOwnGroup(true);
-			command.showGroupTab(true);
-		}
+		final User loginUser = context.getLoginUser(); 
 
 		/**
 		 * go back to the settings page and display errors from command field
 		 * validation
 		 */
 		if (errors.hasErrors()) {
-			return Views.SETTINGSPAGE;
+			return super.workOn(command);
 		}
 
 		/*
@@ -90,17 +54,17 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 		if (context.isValidCkey()) {
 			log.debug("User is logged in, ckey is valid");
 			// update user informations here
-			updateUserProfile(user, command.getUser(), command.getProfilePrivlevel());
-			updateCvWiki(command.getUser(), command.getWikiText());
+			updateUserProfile(loginUser, command.getUser(), command.getProfilePrivlevel());
+			updateCvWiki(loginUser, command.getWikiText());
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}
 
-		return Views.SETTINGSPAGE;
+		return super.workOn(command);
 	}
 
-	private void updateCvWiki(User user, String wikiText) {
-		Wiki wiki = new Wiki();
+	private void updateCvWiki(final User user, final String wikiText) {
+		final Wiki wiki = new Wiki();
 		wiki.setWikiText(wikiText);
 		wiki.setDate(new Date());
 		
@@ -109,29 +73,29 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 
 	/**
 	 * updates the the profile settings of a user
-	 * @param user
+	 * @param loginUser
 	 * @param command
 	 */
-	private void updateUserProfile(final User user, final User commandUser, final String profilePrivlevel) {
-		user.setRealname(commandUser.getRealname());
-		user.setGender(commandUser.getGender());
-		user.setBirthday(commandUser.getBirthday());
+	private void updateUserProfile(final User loginUser, final User commandUser, final String profilePrivlevel) {
+		loginUser.setRealname(commandUser.getRealname());
+		loginUser.setGender(commandUser.getGender());
+		loginUser.setBirthday(commandUser.getBirthday());
 
-		user.setEmail(commandUser.getEmail());
-		user.setHomepage(commandUser.getHomepage());
-		user.setOpenURL(commandUser.getOpenURL());
-		user.setProfession(commandUser.getProfession());
-		user.setInstitution(commandUser.getInstitution());
-		user.setInterests(commandUser.getInterests());
-		user.setHobbies(commandUser.getHobbies());
-		user.setPlace(commandUser.getPlace());
+		loginUser.setEmail(commandUser.getEmail());
+		loginUser.setHomepage(commandUser.getHomepage());
+		loginUser.setOpenURL(commandUser.getOpenURL());
+		loginUser.setProfession(commandUser.getProfession());
+		loginUser.setInstitution(commandUser.getInstitution());
+		loginUser.setInterests(commandUser.getInterests());
+		loginUser.setHobbies(commandUser.getHobbies());
+		loginUser.setPlace(commandUser.getPlace());
 
 		/*
 		 * FIXME: use command.user.privlevel instead of string "group"!
 		 */
-		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.getProfilePrivlevel(profilePrivlevel));
+		loginUser.getSettings().setProfilePrivlevel(ProfilePrivlevel.getProfilePrivlevel(profilePrivlevel));
 
-		updateUser(user, errors);
+		updateUser(loginUser, errors);
 	}
 
 	/**
@@ -160,16 +124,6 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 	}
 
 	@Override
-	public Errors getErrors() {
-		return this.errors;
-	}
-
-	@Override
-	public void setErrors(Errors errors) {
-		this.errors = errors;		
-	}
-
-	@Override
 	public Validator<SettingsViewCommand> getValidator() {
 		return new UserUpdateProfileValidator();
 	}
@@ -179,17 +133,4 @@ public class UpdateUserController implements ErrorAware, ValidationAwareControll
 		return true;
 	}
 
-	/**
-	 * @return the adminLogic
-	 */
-	public LogicInterface getLogic() {
-		return this.logic;
-	}
-
-	/**
-	 * @param logic the adminLogic to set
-	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-	}
 }
