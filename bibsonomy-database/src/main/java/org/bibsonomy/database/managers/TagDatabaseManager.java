@@ -958,6 +958,15 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsByFriendOfUser(final TagParam param, final DBSession session) {
 		return this.queryForList("getTagsByFriendOfUser", param, Tag.class, session);
 	}
+	
+	/**
+	 * @param param
+	 * @param session
+	 * @return list of tags from a given friend of a given user
+	 */
+	public List<Tag> getTagsByTaggedUserRelation(final TagParam param, final DBSession session) {
+		return this.queryForList("getTagsByTaggedUserRelation", param, Tag.class, session);
+	}
 
 	/**
 	 * Retrieve tags for a given bibtexkey

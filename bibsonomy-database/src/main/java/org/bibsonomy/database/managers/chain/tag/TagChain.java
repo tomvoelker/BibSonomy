@@ -14,6 +14,7 @@ import org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByHash;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByHashForUser;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByResourceSearch;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByTaggedUserRelation;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable;
 import org.bibsonomy.database.params.TagParam;
@@ -39,6 +40,7 @@ public class TagChain implements FirstListChainElement<Tag, TagParam> {
 	private final ListChainElement<Tag, TagParam> getTagsByHashForUser;
 	private final ListChainElement<Tag, TagParam> getPopularTags;
 	private final ListChainElement<Tag, TagParam> getTagsByFriendOfUser;
+	private final ListChainElement<Tag, TagParam> getTagsByTaggedUserRelation;
 	private final ListChainElement<Tag, TagParam> getTagsByBibtexkey;
 	
 	/**
@@ -58,6 +60,7 @@ public class TagChain implements FirstListChainElement<Tag, TagParam> {
 		this.getSimilarTags = new GetSimilarTags();
 		this.getPopularTags = new GetPopularTags();
 		this.getTagsByFriendOfUser = new GetTagsByFriendOfUser();
+		this.getTagsByTaggedUserRelation = new GetTagsByTaggedUserRelation();
 		this.getTagsByBibtexkey = new GetTagsByBibtexkey();
 		
 		this.getTagsByUser.setNext(this.getTagsByGroup);
@@ -73,6 +76,7 @@ public class TagChain implements FirstListChainElement<Tag, TagParam> {
 		this.getTagsByHash.setNext(this.getTagsByHashForUser);
 		this.getTagsByHashForUser.setNext(this.getPopularTags);
 		this.getPopularTags.setNext(this.getTagsByBibtexkey);
+		this.getTagsByBibtexkey.setNext(this.getTagsByTaggedUserRelation);
 		
 	}
 	
