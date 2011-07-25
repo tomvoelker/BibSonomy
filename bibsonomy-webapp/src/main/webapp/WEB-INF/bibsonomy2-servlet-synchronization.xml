@@ -19,8 +19,8 @@
 			    		<property name="allowedFields">
 			    			<list>
 			    				<value>ckey</value>
-			    				<value>syncService.service</value>
-			    				<value>syncService.serverUser[*]</value>
+			    				<value>selTab</value>
+			    				<value>syncService.*</value>
 			    			</list>
 			    		</property>
 			    	</bean>

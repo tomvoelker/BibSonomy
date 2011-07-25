@@ -12,32 +12,26 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.webapp.command.actions.SyncSettingsCommand;
-import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.command.SettingsViewCommand;
+import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.SyncSettingsValidator;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
-import org.bibsonomy.webapp.view.Views;
-import org.springframework.validation.Errors;
 
 /**
  * @author wla
  * @version $Id$
  */
-public class SyncSettingsController implements MinimalisticController<SyncSettingsCommand>, ErrorAware, ValidationAwareController<SyncSettingsCommand>{
+public class SyncSettingsController extends SettingsPageController implements MinimalisticController<SettingsViewCommand>, ValidationAwareController<SettingsViewCommand> {
 	
-	private Errors errors;
 	private SyncLogicInterface syncLogic;
-	private RequestLogic requestLogic; // to access HTTP method 
 	
 	@Override
-	public SyncSettingsCommand instantiateCommand() {
-		final SyncSettingsCommand syncSettingsCommand = new SyncSettingsCommand();
+	public SettingsViewCommand instantiateCommand() {
+		final SettingsViewCommand syncSettingsCommand = new SettingsViewCommand();
 		final SyncService syncService = new SyncService();
 		syncService.setServerUser(new Properties());
 		syncSettingsCommand.setSyncService(syncService);
@@ -45,7 +39,7 @@ public class SyncSettingsController implements MinimalisticController<SyncSettin
 	}
 
 	@Override
-	public View workOn(final SyncSettingsCommand command) {
+	public View workOn(final SettingsViewCommand command) {
 		
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
@@ -64,7 +58,7 @@ public class SyncSettingsController implements MinimalisticController<SyncSettin
 		}
 
 		if (errors.hasErrors()) {
-			return Views.ERROR;
+			return super.workOn(command);
 		}
 
 		
@@ -72,7 +66,7 @@ public class SyncSettingsController implements MinimalisticController<SyncSettin
 		final SyncService syncService = command.getSyncService();
 		final URI serviceUrl = syncService.getService();
 
-		final HttpMethod httpMethod = requestLogic.getHttpMethod();
+		final HttpMethod httpMethod = this.requestLogic.getHttpMethod();
 		
 		
 		switch (httpMethod) {
@@ -89,60 +83,33 @@ public class SyncSettingsController implements MinimalisticController<SyncSettin
 			errors.reject("error.general");
 			break;
 		}
-		
-		if (errors.hasErrors()) {
-			return Views.ERROR;
-		}
-		
-		return new ExtendedRedirectView("/settings?selTab=4");
+
+		return super.workOn(command);
 	}
 
-	/**
-	 * @param errors the error to set
-	 */
-	@Override
-	public void setErrors(Errors errors) {
-		this.errors = errors;
-	}
 
 	/**
-	 * @return the error
-	 */
-	@Override
-	public Errors getErrors() {
-		return errors;
-	}
-
-	/**
+	 * FIXME remove method after integration of {@link SyncLogicInterface} into {@link LogicInterface}
+	 * 
 	 * @param logic the logic to set
 	 */
+	@Override
 	public void setLogic(LogicInterface logic) {
-		// FIXME remove after integration
+		this.logic = logic;
 		if (logic instanceof SyncLogicInterface) {
 			syncLogic = (SyncLogicInterface) logic;
 		}
-		
 	}
 
 
 	@Override
-	public Validator<SyncSettingsCommand> getValidator() {
+	public Validator<SettingsViewCommand> getValidator() {
 		return new SyncSettingsValidator();
 	}
 
 	@Override
-	public boolean isValidationRequired(SyncSettingsCommand command) {
+	public boolean isValidationRequired(SettingsViewCommand command) {
 		return true;
 	}
-
-	/**
-	 * Sets the request logic which is used to identify the used HTTP method.
-	 * 
-	 * @param requestLogic
-	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-	
 	
 }

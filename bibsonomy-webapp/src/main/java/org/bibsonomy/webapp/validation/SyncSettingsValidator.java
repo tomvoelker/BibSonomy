@@ -1,6 +1,6 @@
 package org.bibsonomy.webapp.validation;
 
-import org.bibsonomy.webapp.command.actions.SyncSettingsCommand;
+import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -9,12 +9,12 @@ import org.springframework.validation.ValidationUtils;
  * @author rja
  * @version $Id$
  */
-public class SyncSettingsValidator implements Validator<SyncSettingsCommand> {
+public class SyncSettingsValidator implements Validator<SettingsViewCommand> {
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean supports(final Class clazz) {
-		return SyncSettingsCommand.class.equals(clazz);
+		return SettingsViewCommand.class.equals(clazz);
 	}
 
 	/**
@@ -30,6 +30,8 @@ public class SyncSettingsValidator implements Validator<SyncSettingsCommand> {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.service", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.serverUser['userName']", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.serverUser['apiKey']", "error.field.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.direction", "error.field.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.resourceType", "error.field.required");
 	}
 
 }
