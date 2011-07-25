@@ -39,10 +39,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	/**
 	 * hold current errors
 	 */
-	private Errors errors = null;
+	protected Errors errors = null;
 
-	private LogicInterface logic;
-	private RequestLogic requestLogic;
+	protected LogicInterface logic;
+	protected RequestLogic requestLogic;
 	private MessageSource messageSource;
 
 	/**
@@ -54,61 +54,44 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
-		
+
 		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
-		
+
 		//used to set the user specific value of maxCount/minFreq 
-		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? 
-				loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
-		
+		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
+
 		//check whether the user is a group		
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
 		}
-		
+
 		//show sync tab for admins TODO change to "not visible for spammer" after tests
-		if (command.getUser().getRole().equals(Role.ADMIN)) {
+		if (loginUser.getRole().equals(Role.ADMIN)) {
 			command.showSyncTab(true);
 		}
 
 		switch (command.getSelTab()) {
-		case 0: {
+		case 0:
 			// called by the my profile tab
 			workOnMyProfileTab(command);
 			break;
-		}
-		case 1: {
+		case 1:
 			// called by the setting tab
 			break;
-		}
-		case 2: {
-
+		case 2:
 			checkInstalledJabrefLayout(command);
 			break;
-		}
-		case 3: {
+		case 3:
 			workOnGroupTab(command);
 			break;
-		}
-		case 4: {
+		case 4:
 			workOnSyncSettingsTab(command);
 			break;
-		}
-		default: {
+		default:
 			errors.reject("error.settings.tab");
 			break;
-		}
-		}
-
-		if (errors.hasErrors()) {
-
-			if (errors.hasFieldErrors("error.general.login")) {
-				return Views.SETTINGSPAGE;
-			}
-
-			return Views.ERROR;
 		}
 
 		return Views.SETTINGSPAGE;
@@ -116,25 +99,25 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 	private void workOnMyProfileTab(final SettingsViewCommand command) {
 		final User user = command.getUser();
-		
+
 		Wiki wiki = logic.getWiki(user.getName(), null);
-		
+
 		// if no cvwiki available create default cvwiki
 		if (!present(wiki)) {
-			
+
 			final Locale locale = requestLogic.getLocale();
 			final String wikiText = messageSource.getMessage("cv.default_wiki", null, locale);
-			
+
 			wiki = new Wiki();
 			wiki.setWikiText(wikiText);
 			wiki.setDate(new Date());
 			logic.createWiki(user.getName(), wiki);
 		}
-		
+
 		command.setWikiText(wiki.getWikiText());
 		// retrieve friend list of the user
 		command.setUser(logic.getUserDetails(command.getUser().getName()));
-		
+
 		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF, null));
 		command.setFriendsOfUser(logic.getUserRelationship(user.getName(), UserRelation.OF_FRIEND, null));
 		// retrieve profile privacy level setting
@@ -172,7 +155,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			}
 		}
 	}
-	
+
 	private void workOnGroupTab(final SettingsViewCommand command) {
 		final String groupName = command.getContext().getLoginUser().getName();
 		//the group to update
@@ -195,19 +178,19 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			command.setSharedDocuments(sharedDocsAsInt);
 		}
 	}
-	
+
 	/**
 	 * handles synchronization tab
 	 * @param command
 	 */
 	private void workOnSyncSettingsTab(final SettingsViewCommand command) {
-		
+
 		// TODO remove cast and use logic after adding SyncLogicInterface to LogicInterface
 		final SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
-		
+
 		final List<SyncService> userServers = syncLogic.getSyncServer(command.getUser().getName());
 		final List<SyncService> allServers = syncLogic.getSyncServices(true);
-		
+
 		/*
 		 * Remove all servers the user already has.
 		 */
@@ -219,13 +202,15 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		command.setAvailableSyncServers(allServers);
 		command.setUserSyncServers(userServers);
 	}
-	
+
 	/**
 	 * @return the current command
 	 */
 	@Override
 	public SettingsViewCommand instantiateCommand() {
-		return new SettingsViewCommand();
+		final SettingsViewCommand command = new SettingsViewCommand();
+		command.setUser(new User());
+		return command;
 	}
 
 	@Override
@@ -244,7 +229,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
-	
+
 	/**
 	 * @param requestLogic the requestLogic to set
 	 */

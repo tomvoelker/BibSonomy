@@ -134,7 +134,9 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private List<SyncService> syncServer;
 	
-	private List<SyncService> availableSyncServers;	
+	private List<SyncService> availableSyncServers;
+	private SyncService syncService = new SyncService();
+
 	
 	/** for delicious v2 import only, import bookmarks or bundles? **/
 	private String importDataV2 = "posts";
@@ -653,5 +655,19 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public String getImportDataV1() {
 		return importDataV1;
 	}
+	
+	/**
+	 * @return the service
+	 */
+	public SyncService getSyncService() {
+		return this.syncService;
+	}
+	/**
+	 * @param syncService the service to set
+	 */
+	public void setSyncService(final SyncService syncService) {
+		this.syncService = syncService;
+	}
+
 
 }
