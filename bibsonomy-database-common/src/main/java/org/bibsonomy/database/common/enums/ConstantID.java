@@ -134,6 +134,8 @@ public enum ConstantID {
 			return BibTex.class;
 		case 1:
 			return Bookmark.class;
+		case 0:
+			return Resource.class;
 		default:
 			throw new UnsupportedResourceTypeException();
 		}
