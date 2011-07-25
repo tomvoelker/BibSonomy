@@ -21,7 +21,6 @@
 			    				<value>ckey</value>
 			    				<value>syncService.service</value>
 			    				<value>syncService.serverUser[*]</value>
-			    				<value>action</value>
 			    			</list>
 			    		</property>
 			    	</bean>
@@ -71,6 +70,7 @@
 	<!-- Handles the update of synchronitzation settings -->
 	<bean id="updateSyncSettingsController" class="org.bibsonomy.webapp.controller.actions.SyncSettingsController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 	
 	<!-- Handles sync page -->	

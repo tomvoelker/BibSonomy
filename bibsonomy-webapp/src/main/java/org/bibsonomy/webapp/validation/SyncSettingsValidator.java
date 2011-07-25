@@ -17,11 +17,16 @@ public class SyncSettingsValidator implements Validator<SyncSettingsCommand> {
 		return SyncSettingsCommand.class.equals(clazz);
 	}
 
+	/**
+	 * FIXME: field errors are not shown on /settings since we don't use Spring's
+	 * form binding since the view is filled by another controller. :-(
+	 * 
+	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
+	 */
 	@Override
 	public void validate(final Object obj, final Errors errors) {
 
 		Assert.notNull(obj);
-
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.service", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.serverUser['userName']", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.serverUser['apiKey']", "error.field.required");

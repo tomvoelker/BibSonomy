@@ -10,7 +10,6 @@ import org.bibsonomy.webapp.command.BaseCommand;
 public class SyncSettingsCommand extends BaseCommand {
 	
 	private SyncService syncService = new SyncService();
-	private String action;
 
 	/**
 	 * @return the service
@@ -25,16 +24,4 @@ public class SyncSettingsCommand extends BaseCommand {
 		this.syncService = syncService;
 	}
 
-	/**
-	 * @param action the action to set
-	 */
-	public void setAction(String action) {
-		this.action = action;
-	}
-	/**
-	 * @return the action
-	 */
-	public String getAction() {
-		return action;
-	}
 }

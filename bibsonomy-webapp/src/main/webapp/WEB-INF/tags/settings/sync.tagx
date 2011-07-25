@@ -25,9 +25,10 @@
 	
 	<h2><fmt:message key="settings.synchronization.header"/></h2>
 	
+	<!-- UPDATE -->
 	<c:forEach var="syncService" items="${command.syncServer}">
 		<fieldset class="fsInner">
-			<form method="post" action="/updateSyncSettings?action=update">
+			<form method="post" action="/updateSyncSettings">
 				<div cssClass="fsRow">
 					<span class="fsLabel"><c:out value="${serviceName}: "/></span> <span class="fsInput serviceName"><c:out value="${syncService.service}" /></span>
 				</div>
@@ -41,19 +42,21 @@
 	          		<input class="fsInput" name="syncService.serverUser['apiKey']" value="${fn:escapeXml(syncService.serverUser.apiKey)}"/>
 <!--    	      		<div class="dissError"><form:errors path="service.apiKey" /></div>-->
         		</div>
-        		<div>
+        		<div class="fsRow">
 					<input type="submit" value="${save}" />
 					<input type="submit" class="deleteService" value="${removeService}"/>
 					<input type="hidden" name="ckey" value="${ckey}"/>
+					<input type="hidden" name="_method" value="PUT"/>
 					<input type="hidden" name="syncService.service" value="${fn:escapeXml(syncService.service)}" />
 				</div>
 			</form>
 		</fieldset>
 	</c:forEach>
 	
+	<!-- CREATE -->
 	<c:if test="${fn:length(command.availableSyncServers) != 0}">
 		<fieldset class="fsInner">
-			<form method="post" action="/updateSyncSettings?action=create"> 
+			<form method="post" action="/updateSyncSettings"> 
 	        
 	        	<div class="fsRow">
 					<label class="fsLabel" for="syncService.service"><fmt:message key="navi.syncservice" /></label>
@@ -78,6 +81,7 @@
 	        	</div>
 	        	<div>
 					<input type="hidden" name="ckey" value="${ckey}"/>
+					<input type="hidden" name="_method" value="POST"/>
 					<input type="submit" value="${save}" />
 				</div>
 			</form>
@@ -88,7 +92,7 @@
 		$(function(){
 			$(".deleteService").click(function(){
 				if (confirm("please confirm this action")) {
-					$(this).parents("form").attr("action", "/updateSyncSettings?action=delete");
+					$(this).parents("form").find("input[name='_method']").val("DELETE");
 				} else {
 					return false;	
 				}

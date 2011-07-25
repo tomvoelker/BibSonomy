@@ -11,9 +11,11 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.webapp.command.actions.SyncSettingsCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -30,8 +32,8 @@ import org.springframework.validation.Errors;
 public class SyncSettingsController implements MinimalisticController<SyncSettingsCommand>, ErrorAware, ValidationAwareController<SyncSettingsCommand>{
 	
 	private Errors errors;
-	
 	private SyncLogicInterface syncLogic;
+	private RequestLogic requestLogic; // to access HTTP method 
 	
 	@Override
 	public SyncSettingsCommand instantiateCommand() {
@@ -66,21 +68,26 @@ public class SyncSettingsController implements MinimalisticController<SyncSettin
 		}
 
 		
-		final String action = command.getAction();
-		
 		final String loginUserName = loginUser.getName();
 		final SyncService syncService = command.getSyncService();
 		final URI serviceUrl = syncService.getService();
+
+		final HttpMethod httpMethod = requestLogic.getHttpMethod();
 		
-		// FIXME: use _method param supported by Spring 
-		if ("create".equals(action)) {
+		
+		switch (httpMethod) {
+		case POST:
 			syncLogic.createSyncServer(loginUserName, serviceUrl, syncService.getServerUser());
-		} else if("delete".equals(action)) {
-			syncLogic.deleteSyncServer(loginUserName, serviceUrl);
-		} else if("update".equals(action)) {
+			break;
+		case PUT:
 			syncLogic.updateSyncServer(loginUserName, serviceUrl, syncService.getServerUser());
-		} else {
+			break;
+		case DELETE:
+			syncLogic.deleteSyncServer(loginUserName, serviceUrl);
+			break;
+		default:
 			errors.reject("error.general");
+			break;
 		}
 		
 		if (errors.hasErrors()) {
@@ -126,6 +133,15 @@ public class SyncSettingsController implements MinimalisticController<SyncSettin
 	@Override
 	public boolean isValidationRequired(SyncSettingsCommand command) {
 		return true;
+	}
+
+	/**
+	 * Sets the request logic which is used to identify the used HTTP method.
+	 * 
+	 * @param requestLogic
+	 */
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
 	}
 	
 	
