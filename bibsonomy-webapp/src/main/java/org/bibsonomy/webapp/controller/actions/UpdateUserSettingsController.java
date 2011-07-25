@@ -7,33 +7,22 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
-import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
-import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
-import org.bibsonomy.webapp.view.Views;
-import org.springframework.validation.Errors;
+import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
  * @author cvo
  * @version $Id$
  */
-public class UpdateUserSettingsController implements MinimalisticController<SettingsViewCommand>, ErrorAware, RequestAware {
+public class UpdateUserSettingsController extends SettingsPageController implements MinimalisticController<SettingsViewCommand>, RequestAware {
 	private static final Log log = LogFactory.getLog(DeletePostController.class);
-	
-	
-	private LogicInterface logic;
-	private RequestLogic requestLogic;
-	
-	private Errors errors;
-	
+		
 	@Override
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();
@@ -49,65 +38,51 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		 * user has to be logged in to delete himself
 		 */
 		if (!context.isUserLoggedIn()) {
-			errors.reject("error.general.login");
-			return Views.SETTINGSPAGE;
-		}
-		
-		final User user = context.getLoginUser(); 
-		
-		// check whether the user is a group		
-		if (UserUtils.userIsGroup(user)) {
-			command.setHasOwnGroup(true);
-			command.showGroupTab(true);
+			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
 		
 		/*
 		 * check the ckey
 		 */
-		if (context.isValidCkey() && !errors.hasErrors()){
-			log.debug("User is logged in, ckey is valid");
-			
-			//do set new settings here
-			final String action = command.getAction();
-			if ("logging".equals(action)) {
-				/*
-				 * change the log level
-				 */
-				actionLogging(command.getUser().getSettings(), user);
-			} else if ("api".equals(action)) {
-				/*
-				 * change the api key of a user
-				 */
-				actionAPI(user);
-			} else if ("layoutTagPost".equals(action)) {
-				/*
-				 * changes the layout of tag and post for a user
-				 */
-				actionLayoutTagPost(command, user);
-			} else {
-				errors.reject("error.invalid_parameter");
-			}
-		} else {
+		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 		}
 		
-		
-		/*
-		 * if there are errors, show them
-		 */
 		if (errors.hasErrors()){
-			//needed for the right values in the settings columns
-			command.setUser(context.getLoginUser());
-			
-			return Views.SETTINGSPAGE;
+			super.workOn(command);
 		}
 		
+		final User user = context.getLoginUser(); 
+
+		
+	
+		//do set new settings here
+		final String action = command.getAction();
+		if ("logging".equals(action)) {
+			/*
+			 * change the log level
+			 */
+			updateLogging(command.getUser().getSettings(), user);
+		} else if ("api".equals(action)) {
+			/*
+			 * change the api key of a user
+			 */
+			updateApiKey(user);
+		} else if ("layoutTagPost".equals(action)) {
+			/*
+			 * changes the layout of tag and post for a user
+			 */
+			updateLayoutTagPost(command, user);
+		} else {
+			errors.reject("error.invalid_parameter");
+		}
+	
 		// success: go back where you've come from
 		// TODO: inform the user about the success!
-		return new ExtendedRedirectView("/settings?selTab=1");
+		return super.workOn(command);
 	}
 	
-	private void actionLogging(final UserSettings commandSettings, final User user) {
+	private void updateLogging(final UserSettings commandSettings, final User user) {
 		final UserSettings userSettings = user.getSettings();
 		userSettings.setLogLevel(commandSettings.getLogLevel());
 		userSettings.setConfirmDelete(commandSettings.isConfirmDelete());
@@ -116,12 +91,12 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		log.debug("logging settings of user " + updatedUser + " has been changed successfully");
 	}
 	
-	private void actionAPI(final User user) {
+	private void updateApiKey(final User user) {
 		this.logic.updateUser(user, UserUpdateOperation.UPDATE_API);
 		log.debug("api key of " + user.getName() + " has been changed successfully");
 	}
 	
-	private void actionLayoutTagPost(final SettingsViewCommand command, final User user) {
+	private void updateLayoutTagPost(final SettingsViewCommand command, final User user) {
 		final UserSettings commandSettings = command.getUser().getSettings();
 		
 		if(!commandSettings.isShowBibtex() && !commandSettings.isShowBookmark()) {
@@ -163,25 +138,4 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		requestLogic.setSessionAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale(userSettings.getDefaultLanguage()));
 	}
 
-	@Override
-	public Errors getErrors() {
-		return this.errors;
-	}
-
-	@Override
-	public void setErrors(final Errors errors) {
-		this.errors = errors;		
-	}
-
-	/**
-	 * @param logic the logic to set
-	 */
-	public void setLogic(final LogicInterface logic) {
-		this.logic = logic;
-	}
-
-	@Override
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
 }
