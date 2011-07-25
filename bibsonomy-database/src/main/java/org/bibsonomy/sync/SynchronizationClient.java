@@ -29,7 +29,9 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 
 /**
- * This client is only for BibSonomy
+ * This client synchronizes PUMA with BibSonomy.
+ * PUMA is the server, BibSonomy is the client.
+ * 
  * 
  * @author wla
  * @version $Id$
@@ -161,7 +163,7 @@ public class SynchronizationClient {
 			 * Currently return only "running" status.
 			 */
 			final SynchronizationData data = new SynchronizationData();
-			data.setStatus(SynchronizationStatus.RUNNING); // FIXME: we had "running" here, in contrast to "done" elsewhere
+			data.setStatus(SynchronizationStatus.RUNNING);
 			return data;
 		} catch (final Exception e) {
 			info = "";
