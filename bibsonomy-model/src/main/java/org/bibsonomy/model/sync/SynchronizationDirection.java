@@ -36,4 +36,18 @@ public enum SynchronizationDirection {
 	public String getSynchronizationDirection() {
 		return direction;
 	}
+	
+	/**
+	 * @param direction
+	 * @return synchronization direction for given string.
+	 */
+	public static SynchronizationDirection getSynchronizationDirectionByString(String direction) {
+		if("stoc".equals(direction)) {
+			return SERVER_TO_CLIENT;
+		} else if("ctos".equals(direction)) {
+			return CLIENT_TO_SERVER;
+		} else {
+			return BOTH;
+		}
+	}
 }
