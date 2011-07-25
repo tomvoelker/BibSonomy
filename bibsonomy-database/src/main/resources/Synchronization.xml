@@ -16,7 +16,7 @@
 	</insert>
 
 	<select id="getSyncServersForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT s.user_name, s.credentials, ss.uri
+		SELECT s.user_name, s.credentials, ss.uri, s.content_type, s.direction
 		  FROM sync s
 		    JOIN sync_services ss USING (service_id)
 		  WHERE s.user_name = #userName#
@@ -24,7 +24,7 @@
 	</select>
 	
 	<select id="getSyncServerForUserByUri" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT s.user_name, s.credentials, ss.uri
+		SELECT s.user_name, s.credentials, ss.uri, s.content_type, s.direction
 		  FROM sync s
 		    JOIN sync_services ss USING (service_id)
 		  WHERE s.user_name = #userName#

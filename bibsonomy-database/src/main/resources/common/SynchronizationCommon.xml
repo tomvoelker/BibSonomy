@@ -23,6 +23,8 @@
 	<resultMap id="syncService" class="syncService">
 		<result property="service"		column="uri"			javaType="uri" />
 		<result property="serverUser"	column="credentials"	javaType="properties"/>
+		<result property="direction"	column="direction"		javaType="syncDirection" />
+		<result property="resourceType"	column="content_type"	javaType="resourceTypeClass" />
 	</resultMap>
 	
 	<sql id="syncDataColumns">
