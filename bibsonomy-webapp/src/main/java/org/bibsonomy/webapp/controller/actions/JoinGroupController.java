@@ -167,7 +167,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		List<String> params = new LinkedList<String>();
 		params.add(groupName);
 		command.setMessage("success.joinGroupRequest.sent", params);
-		return Views.JOIN_GROUP_REQUEST_SUCCESS;
+		return Views.SUCCESS;
 	}
 
 	@Override

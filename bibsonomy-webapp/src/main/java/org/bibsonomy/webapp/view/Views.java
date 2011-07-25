@@ -402,7 +402,7 @@ public enum Views implements View {
 	/**
 	 * join group view
 	 */
-	JOIN_GROUP_REQUEST_SUCCESS("actions/success"),
+	SUCCESS("actions/success"),
 	
 	/** 
 	 * import view 
