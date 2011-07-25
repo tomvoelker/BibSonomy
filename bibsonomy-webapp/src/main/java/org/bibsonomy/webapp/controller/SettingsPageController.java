@@ -200,7 +200,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			}
 		}
 		command.setAvailableSyncServers(allServers);
-		command.setUserSyncServers(userServers);
+		command.setSyncServer(userServers);
 	}
 
 	/**

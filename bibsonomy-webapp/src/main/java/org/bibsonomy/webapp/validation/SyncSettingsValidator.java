@@ -1,5 +1,8 @@
 package org.bibsonomy.webapp.validation;
 
+import java.util.List;
+
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
@@ -18,20 +21,28 @@ public class SyncSettingsValidator implements Validator<SettingsViewCommand> {
 	}
 
 	/**
-	 * FIXME: field errors are not shown on /settings since we don't use Spring's
-	 * form binding since the view is filled by another controller. :-(
-	 * 
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
 	 */
 	@Override
 	public void validate(final Object obj, final Errors errors) {
 
 		Assert.notNull(obj);
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.service", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.serverUser['userName']", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.serverUser['apiKey']", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.direction", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "syncService.resourceType", "error.field.required");
+		if (obj instanceof SettingsViewCommand) {
+			final SettingsViewCommand command = (SettingsViewCommand) obj;
+			final List<SyncService> syncServer = command.getSyncServer();
+			Assert.notNull(syncServer);
+			Assert.notEmpty(syncServer);
+			for (int i = 0; i < syncServer.size(); i++) {
+				errors.pushNestedPath("syncServer[" + i + "]");
+				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "service", "error.field.required");
+				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "serverUser['userName']", "error.field.required");
+				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "serverUser['apiKey']", "error.field.required");
+//				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "direction", "error.field.required");
+//				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "resourceType", "error.field.required");
+				errors.popNestedPath();
+			}
+			
+		}
 	}
 
 }

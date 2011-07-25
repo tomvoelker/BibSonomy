@@ -1,9 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.net.URI;
-import java.util.Properties;
+import java.util.LinkedList;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
@@ -27,17 +25,19 @@ import org.bibsonomy.webapp.validation.SyncSettingsValidator;
  */
 public class SyncSettingsController extends SettingsPageController implements MinimalisticController<SettingsViewCommand>, ValidationAwareController<SettingsViewCommand> {
 	
-	private SyncLogicInterface syncLogic;
-	
 	@Override
 	public SettingsViewCommand instantiateCommand() {
-		final SettingsViewCommand syncSettingsCommand = new SettingsViewCommand();
-		final SyncService syncService = new SyncService();
-		syncService.setServerUser(new Properties());
-		syncSettingsCommand.setSyncService(syncService);
-		return syncSettingsCommand;
+		final SettingsViewCommand command = new SettingsViewCommand();
+		command.setSyncServer(new LinkedList<SyncService>());
+		return command;
 	}
 
+	/**
+	 * FIXME remove casts to {@link SyncLogicInterface} after integration of 
+	 * {@link SyncLogicInterface} into {@link LogicInterface}
+	 * 
+	 * @see org.bibsonomy.webapp.controller.SettingsPageController#workOn(org.bibsonomy.webapp.command.SettingsViewCommand)
+	 */
 	@Override
 	public View workOn(final SettingsViewCommand command) {
 		
@@ -52,18 +52,13 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 			this.errors.reject("error.field.valid.ckey");
 		}
 
-		// TODO remove this check after integration
-		if (!present(syncLogic)){
-			this.errors.reject("error.general");
-		}
-
 		if (errors.hasErrors()) {
 			return super.workOn(command);
 		}
 
 		
 		final String loginUserName = loginUser.getName();
-		final SyncService syncService = command.getSyncService();
+		final SyncService syncService = command.getSyncServer().get(0);
 		final URI serviceUrl = syncService.getService();
 
 		final HttpMethod httpMethod = this.requestLogic.getHttpMethod();
@@ -71,13 +66,13 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 		
 		switch (httpMethod) {
 		case POST:
-			syncLogic.createSyncServer(loginUserName, serviceUrl, syncService.getServerUser());
+			((SyncLogicInterface) logic).createSyncServer(loginUserName, serviceUrl, syncService.getServerUser());
 			break;
 		case PUT:
-			syncLogic.updateSyncServer(loginUserName, serviceUrl, syncService.getServerUser());
+			((SyncLogicInterface) logic).updateSyncServer(loginUserName, serviceUrl, syncService.getServerUser());
 			break;
 		case DELETE:
-			syncLogic.deleteSyncServer(loginUserName, serviceUrl);
+			((SyncLogicInterface) logic).deleteSyncServer(loginUserName, serviceUrl);
 			break;
 		default:
 			errors.reject("error.general");
@@ -86,21 +81,6 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 
 		return super.workOn(command);
 	}
-
-
-	/**
-	 * FIXME remove method after integration of {@link SyncLogicInterface} into {@link LogicInterface}
-	 * 
-	 * @param logic the logic to set
-	 */
-	@Override
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-		if (logic instanceof SyncLogicInterface) {
-			syncLogic = (SyncLogicInterface) logic;
-		}
-	}
-
 
 	@Override
 	public Validator<SettingsViewCommand> getValidator() {
