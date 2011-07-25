@@ -57,9 +57,11 @@
 	        
 	        	<div class="fsRow">
 					<label class="fsLabel" for="syncService.service"><fmt:message key="navi.syncservice" /></label>
-					<select class="fsInput fsSmall" name="syncService.service">
+					<select class="fsInput" name="syncService.service">
 						<c:forEach var="syncService" items="${command.availableSyncServers}">
-    						<option value="${syncService.service}"/>
+    						<option value="${syncService.service}">
+    							<c:out value="${syncService.service}"/>
+    						</option>
       					</c:forEach>
       				</select>
 <!--      				<div class="dissError"><form:errors path="serviceName" /></div>-->
