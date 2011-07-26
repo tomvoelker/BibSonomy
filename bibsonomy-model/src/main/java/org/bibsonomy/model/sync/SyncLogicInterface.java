@@ -155,7 +155,8 @@ public interface SyncLogicInterface {
 	 * @param clientPosts
 	 * @param strategy 
 	 * @param service 
+	 * @param direction
 	 * @return list of posts with set synchronization state
 	 */
-	public List<SynchronizationPost> getSyncPlan(final String userName, Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service);
+	public List<SynchronizationPost> getSyncPlan(final String userName, Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service, SynchronizationDirection direction);
 }
