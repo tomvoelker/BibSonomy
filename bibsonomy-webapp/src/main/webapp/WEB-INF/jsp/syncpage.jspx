@@ -29,15 +29,7 @@
     		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script> 
 			
 			<script type="text/javascript">
-				function validateSyncForm(formData, form, options) {
-					if ($(form).find(":checked").length == 0) {
-						// FIXME: get localized message
-						alert("nothing to synchronize");
-						return false;
-					}
-					$(form).find(":submit").hide(); // FIXME: doesn't work
-					$(form).find(".progressGif").show();
-	 			}
+				
 				function successSyncForm(data, statusText, xhr, form) {
 					$(form).find(":submit").show();
 					$(form).find(".progressGif").hide();
@@ -48,7 +40,7 @@
 							continue;
 						}
 						var date = new Date(data[key].date);
-						var result = data[key].result;
+						var result = data[key].info;
 						var formattedDate = formatDate(date, "MMM dd, yyyy hh:mm a");
 
 						alert("[" + key + "] lastSyncDate = " + formattedDate + ", result = " + result);
@@ -65,6 +57,7 @@
 			 	    // return false to prevent normal browser submit and page navigation 
 			 	    return false; 
 	 			}
+				
 				function errorSyncForm(jqXHR, textStatus, errorThrown, form) {
 					alert("error: " + errorThrown);
 					$(form).find(":submit").show();
@@ -75,7 +68,6 @@
 					$("form").each(function(index, elem) {
 					 	$(this).ajaxForm({
 					 		dataType : "json",
-					 		beforeSubmit : validateSyncForm,
 					 		success : successSyncForm,
 					 		error : errorSyncForm
 						 });
@@ -100,7 +92,8 @@
 			<fmt:message var="synchronizationRunning" key="synchronization.synchronizationRunning"/>
 			
 			<div id="general_100">
-			
+				
+				<!-- iterate over all services -->
 				<c:forEach var="service" items="${command.syncServices}" varStatus="status">
 					<form:form action="/ajax/synchronize" method="post" id="sync_${status.index}">
 						<fieldset class="fsInner">
@@ -112,40 +105,44 @@
 							</div>
 			
 							<!-- bookmarks -->
-							<div class="fsRow">
-								<c:set var="LSDbook" value="${service.lastSyncData['Bookmark']}" />
-								<span class="fsLabel"><c:out value="${bookmarks}"/>: </span>
-								<span class="fsInput">
-									<c:choose>
-										<c:when test="${not empty LSDbook}">
-											<fmt:formatDate value="${LSDbook.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-											<fmt:message key="synchronization.result"/>
-											<c:out value="${LSDbook.status}"/> <c:out value="${LSDbook.info}"/>
-										</c:when>
-										<c:otherwise>
-											<fmt:message key="synchronization.noresult"/>
-										</c:otherwise>
-									</c:choose>
-								</span>
-							</div>
+							<c:if test="${not empty service.lastSyncData['Bookmark']}">
+								<div class="fsRow" id="bookmark">
+									<c:set var="LSDbook" value="${service.lastSyncData['Bookmark']}" />
+									<span class="fsLabel"><c:out value="${bookmarks}"/>: </span>
+									<span class="fsInput">
+										<c:choose>
+											<c:when test="${not empty LSDbook}">
+												<fmt:formatDate value="${LSDbook.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
+												<fmt:message key="synchronization.result"/>
+												<c:out value="${LSDbook.status} "/> <c:out value="${LSDbook.info}"/>
+											</c:when>
+											<c:otherwise>
+												<fmt:message key="synchronization.noresult"/>
+											</c:otherwise>
+										</c:choose>
+									</span>
+								</div>
+							</c:if>
 							
 							<!-- publications -->
-							<div class="fsRow">
-								<c:set var="LSDpub" value="${service.lastSyncData['BibTex']}"/>
-								<span class="fsLabel"><c:out value="${publications}"/>: </span>
-								<span class="fsInput">
-									<c:choose>
-										<c:when test="${not empty LSDpub}">
-											<fmt:formatDate value="${LSDpub.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-											<fmt:message key="synchronization.result"/>
-											<c:out value="${LSDpub.status}"/> <c:out value="${LSDpub.info}"/>
-										</c:when>
-										<c:otherwise>
-											<fmt:message key="synchronization.noresult"/>
-										</c:otherwise>
-									</c:choose>
-								</span>
-							</div>
+							<c:if test="${not empty service.lastSyncData['BibTex']}">
+								<div class="fsRow" id="bibtex">
+									<c:set var="LSDpub" value="${service.lastSyncData['BibTex']}"/>
+									<span class="fsLabel"><c:out value="${publications}"/>: </span>
+									<span class="fsInput">
+										<c:choose>
+											<c:when test="${not empty LSDpub}">
+												<fmt:formatDate value="${LSDpub.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
+												<fmt:message key="synchronization.result"/>
+												<c:out value="${LSDpub.status} "/> <c:out value="${LSDpub.info}"/>
+											</c:when>
+											<c:otherwise>
+												<fmt:message key="synchronization.noresult"/>
+											</c:otherwise>
+										</c:choose>
+									</span>
+								</div>
+							</c:if>
 							
 							<div class="fsRow">
 								<span id="resultMsg" style="display:none"><fmt:message key="synchronization.result"/></span>
