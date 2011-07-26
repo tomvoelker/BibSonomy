@@ -19,8 +19,6 @@ import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.util.IbatisSyncDBSessionFactory;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -32,6 +30,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.util.ResourceUtils;
 
 /**
  * This client synchronizes PUMA with BibSonomy.
@@ -163,13 +162,10 @@ public class SynchronizationClient {
 		 * sync each configured resource type
 		 */
 		final Map<Class<? extends Resource>, SynchronizationData> result = new HashMap<Class<? extends Resource>, SynchronizationData>();
-		if (Resource.class.equals(resourceType) || Bookmark.class.equals(resourceType)) {
-			result.put(Bookmark.class, synchronize(clientLogic, serverLogic, serverUserName, Bookmark.class, direction));
-		}
-		if (Resource.class.equals(resourceType) || BibTex.class.equals(resourceType)) {
-			result.put(BibTex.class, synchronize(clientLogic, serverLogic, serverUserName, BibTex.class, direction));
-		}
 		
+		for (Class<? extends Resource> resource : ResourceUtils.getResourceTypesByClass(resourceType)) {
+			result.put(resource, synchronize(clientLogic, serverLogic, serverUserName, resource, direction));
+		}
 		return result;
 	}
 
