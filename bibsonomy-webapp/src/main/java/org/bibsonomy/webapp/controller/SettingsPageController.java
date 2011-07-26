@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.layout.jabref.LayoutPart;
@@ -59,19 +58,17 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
 
-		//used to set the user specific value of maxCount/minFreq 
+		// used to set the user specific value of maxCount/minFreq 
 		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
 
-		//check whether the user is a group		
+		// check whether the user is a group		
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
 		}
 
-		//show sync tab for admins TODO change to "not visible for spammer" after tests
-		if (loginUser.getRole().equals(Role.ADMIN)) {
-			command.showSyncTab(true);
-		}
+		// show sync tab only for non-spammers
+		command.showSyncTab(!loginUser.isSpammer());
 
 		switch (command.getSelTab()) {
 		case 0:
