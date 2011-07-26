@@ -19,7 +19,7 @@
 	<layout:layout pageTitle="${adminPageTitle} :: Synchronization" loginUser="${command.context.loginUser}" requPath="${requPath}">
 		<jsp:attribute name="heading">
 		    <a href="/admin"><c:out value="${adminPageTitle}" /></a> ::
-			<a rel="path_menu" href="/admin/group">Group</a>
+			<a rel="path_menu" href="/admin/sync">Sync</a>
 		</jsp:attribute>
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
@@ -45,8 +45,8 @@
 							<legend><label><c:out value="Clients"/></label></legend>
 							<c:forEach var="service" items="${command.avlClients}">
 								<div class="fsRow">
-									<c:out value="${service.service} ("/>
-									<a href="/admin/sync?action=deleteService&amp;service=${service.service}&amp;server=false" method="POST">
+									<c:out value="${service} ("/>
+									<a href="/admin/sync?action=deleteService&amp;service=${fn:escapeXml(service)}&amp;server=false">
 										<c:out value="${delete}" />
 									</a>
 									<c:out value=")"/>
@@ -67,8 +67,8 @@
 							<legend><label><c:out value="Server"/></label></legend>
 							<c:forEach var="service" items="${command.avlServer}">
 								<div class="fsRow">
-									<span><c:out value="${service.service} ("/></span>
-									<a href="/admin/sync?action=deleteService&amp;service=${service.service}&amp;server=true" method="POST">
+									<span><c:out value="${service} ("/></span>
+									<a href="/admin/sync?action=deleteService&amp;service=${fn:escapeXml(service)}&amp;server=true">
 										<c:out value="${delete}" />
 									</a>
 									<c:out value=")"/>
