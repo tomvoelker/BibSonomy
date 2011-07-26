@@ -45,6 +45,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.DuplicateFilter;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
@@ -246,11 +247,15 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		log.debug("Querystring:  "+ query.toString() + " sorted by: "+ sort);
 
 		try {
-			/*
-			 * querying the index
-			 */
+			//----------------------------------------------------------------
+			// query the index
+			//----------------------------------------------------------------
+			// remove duplicate entries (with respect to the interhash)
+			DuplicateFilter df = new DuplicateFilter(FLD_INTERHASH, DuplicateFilter.KM_USE_LAST_OCCURRENCE, DuplicateFilter.PM_FAST_INVALIDATION);
+			
+			// perform index search
 			long starttimeQuery = System.currentTimeMillis();
-			final TopDocs topDocs = searcher.search(query, null, offset + limit, sort);
+			final TopDocs topDocs = searcher.search(query, df, offset + limit, sort);
 			
 			// determine number of posts to display
 			final int hitslimit = (((offset+limit) < topDocs.totalHits) ? (offset + limit) : topDocs.totalHits);
