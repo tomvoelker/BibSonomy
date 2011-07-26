@@ -99,7 +99,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		 */
 		final Class<? extends Resource> resourceType = BibTex.class;
 		final Date expected = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS").parse("2011-02-02 23:00:00");
-		assertEquals(expected, syncDBManager.getLastSynchronizationDate(syncUser1, bibsonomyURI, resourceType, dbSession));
+		assertEquals(expected, syncDBManager.getLastSynchronizationData(syncUser1, bibsonomyURI, resourceType, null, dbSession).getLastSyncDate());
 
 		/*
 		 * check that no synchronization is running 

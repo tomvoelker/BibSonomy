@@ -494,25 +494,6 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     
     /*
      * (non-Javadoc)
-     * @see org.bibsonomy.model.sync.SyncLogicInterface#getLastSyncDate(java.lang.String, int, int)
-     */
-    @Override
-    public Date getLastSyncDate(final String userName, final URI service, final Class<? extends Resource> resourceType) {
-    	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
-    	final DBSession session = this.openSession();
-    	try {
-    		final Date lastSyncDate = syncDBManager.getLastSynchronizationDate(userName, service, resourceType, session);
-    		if (present(lastSyncDate)) {
-    			return lastSyncDate;
-    		}
-    	} finally {
-    		session.close();
-    	}
-    	return new Date(0);
-    }
-    
-    /*
-     * (non-Javadoc)
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getPostsForSync(java.lang.Class, java.lang.String)
      */
     @Override

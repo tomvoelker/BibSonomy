@@ -163,25 +163,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
     public List<SyncService> getSyncServices(final DBSession session, final boolean server) {
     	return this.queryForList("getSyncServices", server, SyncService.class, session);
     }
-    
-    /**
-     * @param userName
-     * @param service
-     * @param contentType
-     * @param session
-     * @return last synchronization date for given user, content type and service 
-     */
-    public Date getLastSynchronizationDate(final String userName, final URI service, Class<? extends Resource> resourceType, final DBSession session) {
-    	final SyncParam param = new SyncParam();
-    	param.setUserName(userName);
-    	param.setService(service);
-    	param.setResourceType(resourceType);
-    	param.setServer(false);
-    	// FIXME: why don't we set the status?
-    	// FIXME: couldn't we just use 'getCurrentSyncData' instead?
-    	return this.queryForObject("getLastSyncDate", param , Date.class, session);
-    }
-    
+        
     /**
      * Inserts synchronization data with GIVEN status into db. 
      * @param userName
@@ -355,7 +337,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * handle post, which do not exist on client
 		 */
-		for (SynchronizationPost serverPost : serverPosts.values()) {
+		for (final SynchronizationPost serverPost : serverPosts.values()) {
 
 			/*
 			 * post is older than lastSyncDate
