@@ -49,19 +49,19 @@ public class DeliciousImportController extends SettingsPageController implements
 		 */
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
-			super.workOn(command);
+			return super.workOn(command);
 		}
 		
 		validate(command, errors);
 
 		if (errors.hasErrors()) {
-			super.workOn(command);
+			return super.workOn(command);
 		}
 		
 		final String redirectURI = createRedirect(command, context, errors);
 
 		if (errors.hasErrors()) {
-			super.workOn(command);
+			return super.workOn(command);
 		}
 		
 		return new ExtendedRedirectView(redirectURI);
