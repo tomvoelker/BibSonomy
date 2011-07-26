@@ -341,7 +341,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     		 * attach "real" posts to the synchronization posts, which will be updated (or created) on the client
     		 */
     		for (final SynchronizationPost post : posts) {
-    			switch (post.getState()) {
+    			switch (post.getAction()) {
     			case CREATE_CLIENT:
     			case UPDATE_CLIENT:
     				post.setPost(this.getPostDetails(post.getIntraHash(), userName));

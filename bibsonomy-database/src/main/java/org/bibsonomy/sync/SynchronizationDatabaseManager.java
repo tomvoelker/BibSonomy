@@ -17,7 +17,7 @@ import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
-import org.bibsonomy.model.sync.SynchronizationActions;
+import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
@@ -28,68 +28,68 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
  * @version $Id$
  */
 public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
-    private static final Log log = LogFactory.getLog(SynchronizationDatabaseManager.class);
+	private static final Log log = LogFactory.getLog(SynchronizationDatabaseManager.class);
 
 	private static final SynchronizationDatabaseManager singleton = new SynchronizationDatabaseManager();
-    
-    private final GeneralDatabaseManager generalDb;
-    
-    /**
-     * Singleton 
-     * @return SynchronizationDatabaseManager
-     */
-    public static SynchronizationDatabaseManager getInstance() {
-    	return singleton;
-    }
-    
-    private SynchronizationDatabaseManager() {
-    	this.generalDb = GeneralDatabaseManager.getInstance();
-    }
-    
-    /**
-     * Add a sync service. Callers should check, if a client/server with that
-     * URI already exists. Otherwise, a DUPLICATE KEY exception will be thrown.
-     * 
-     * @param session
-     * @param service - the URI of the service to be added
-     * @param server - <code>true</code> if the service may act as a server, <code>false</code> if it may act as a client
-     */
-    public void createSyncService(final DBSession session, final URI service, final boolean server) {
-    	session.beginTransaction();
-    	try {
-    		final SyncParam param = new SyncParam();
-    		param.setService(service);
-    		param.setServer(server);
-    		param.setServiceId(generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session));
-	    	session.insert("insertSyncService", param);
-	    	session.commitTransaction();
-    	} finally {
-    		session.endTransaction();
-    	}
-    }
 
-    /**
-     * Remove a sync service.
-     * 
-     * @param session
-     * @param service - the URI of the service to be removed
-     * @param server - <code>true</code> if the server part should be deleted, <code>false</code> if the client client part should be deleted
-     */
-    public void deleteSyncService(final DBSession session, final URI service, final boolean server) {
-    	final SyncParam param =  new SyncParam();
-    	param.setService(service);
-    	param.setServer(server);
-    	session.delete("deleteSyncService", param);
-    }
-    
-    /**
-     * Update the given synchronization data's status in the database.
-     * 
-     * @param session - the database session
-     * @param status - the status to set
-     * @param data SynchronizationData
-     */
-    public void updateSyncStatus(final DBSession session, final SynchronizationData data, final SynchronizationStatus status, final String info) {
+	private final GeneralDatabaseManager generalDb;
+
+	/**
+	 * Singleton 
+	 * @return SynchronizationDatabaseManager
+	 */
+	public static SynchronizationDatabaseManager getInstance() {
+		return singleton;
+	}
+
+	private SynchronizationDatabaseManager() {
+		this.generalDb = GeneralDatabaseManager.getInstance();
+	}
+
+	/**
+	 * Add a sync service. Callers should check, if a client/server with that
+	 * URI already exists. Otherwise, a DUPLICATE KEY exception will be thrown.
+	 * 
+	 * @param session
+	 * @param service - the URI of the service to be added
+	 * @param server - <code>true</code> if the service may act as a server, <code>false</code> if it may act as a client
+	 */
+	public void createSyncService(final DBSession session, final URI service, final boolean server) {
+		session.beginTransaction();
+		try {
+			final SyncParam param = new SyncParam();
+			param.setService(service);
+			param.setServer(server);
+			param.setServiceId(generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session));
+			session.insert("insertSyncService", param);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+
+	/**
+	 * Remove a sync service.
+	 * 
+	 * @param session
+	 * @param service - the URI of the service to be removed
+	 * @param server - <code>true</code> if the server part should be deleted, <code>false</code> if the client client part should be deleted
+	 */
+	public void deleteSyncService(final DBSession session, final URI service, final boolean server) {
+		final SyncParam param =  new SyncParam();
+		param.setService(service);
+		param.setServer(server);
+		session.delete("deleteSyncService", param);
+	}
+
+	/**
+	 * Update the given synchronization data's status in the database.
+	 * 
+	 * @param session - the database session
+	 * @param status - the status to set
+	 * @param data SynchronizationData
+	 */
+	public void updateSyncStatus(final DBSession session, final SynchronizationData data, final SynchronizationStatus status, final String info) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(data.getUserName());
 		param.setService(data.getService());
@@ -99,267 +99,311 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		param.setInfo(info);
 		param.setServer(false);
 		session.update("updateSyncStatus", param);
-    }
+	}
 
-    /**
-     * Insert new synchronization data for user.
-     * 
-     * @param session
-     * @param userName
-     * @param credentials
-     * @param serviceId
-     */
-    public void createSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
-    	final SyncParam param = new SyncParam();
-    	param.setUserName(userName);
-    	param.setCredentials(userCredentials);
-    	param.setDirection(direction);
-    	param.setResourceType(resourceType);
-    	param.setService(service);
-    	param.setServer(true);
+	/**
+	 * Insert new synchronization data for user.
+	 * 
+	 * @param session
+	 * @param userName
+	 * @param credentials
+	 * @param serviceId
+	 */
+	public void createSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
+		final SyncParam param = new SyncParam();
+		param.setUserName(userName);
+		param.setCredentials(userCredentials);
+		param.setDirection(direction);
+		param.setResourceType(resourceType);
+		param.setService(service);
+		param.setServer(true);
 		session.insert("insertSyncServiceForUser", param);
-    }
-    
-    /**
-     * Removes synchronization data for user.
-     * @param session
-     * @param userName
-     * @param service
-     */
-    public void deleteSyncServerForUser(final DBSession session, final String userName, final URI service) {
-    	final SyncParam param = new SyncParam();
-    	param.setUserName(userName);
-    	param.setService(service);
-    	param.setServer(true);
-    	session.delete("deleteSyncServerForUser", param);
-    }
-    
-    /**
-     * Updates the synchronization data for a user
-     * 
-     * @param session
-     * @param userName
-     * @param service
-     * @param credentials
-     * 
-     */
-    public void updateSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
-    	final SyncParam param = new SyncParam();
-    	param.setUserName(userName);
-    	param.setService(service);
-    	param.setDirection(direction);
-    	param.setResourceType(resourceType);
-    	param.setServer(true);
-    	param.setCredentials(userCredentials);
-    	session.update("updateSyncServerForUser", param);
-    }
-    
-    /**
-     * Returns all available synchronization services. 
-     * 
-     * @param session
-     * @return
-     */
-    public List<SyncService> getSyncServices(final DBSession session, final boolean server) {
-    	return this.queryForList("getSyncServices", server, SyncService.class, session);
-    }
-        
-    /**
-     * Inserts synchronization data with GIVEN status into db. 
-     * @param userName
-     * @param service
-     * @param contentType
-     * @param lastSyncDate
-     * @param status
-     * @param session
-     */
-    public void insertSynchronizationData (final String userName, final URI service, Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final DBSession session) {
-    	final SyncParam param = new SyncParam();
-    	param.setUserName(userName);
-    	param.setService(service);
-    	param.setResourceType(resourceType);
-    	param.setLastSyncDate(lastSyncDate);
-    	param.setStatus(status);
-    	param.setServer(false);
+	}
+
+	/**
+	 * Removes synchronization data for user.
+	 * @param session
+	 * @param userName
+	 * @param service
+	 */
+	public void deleteSyncServerForUser(final DBSession session, final String userName, final URI service) {
+		final SyncParam param = new SyncParam();
+		param.setUserName(userName);
+		param.setService(service);
+		param.setServer(true);
+		session.delete("deleteSyncServerForUser", param);
+	}
+
+	/**
+	 * Updates the synchronization data for a user
+	 * 
+	 * @param session
+	 * @param userName
+	 * @param service
+	 * @param credentials
+	 * 
+	 */
+	public void updateSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
+		final SyncParam param = new SyncParam();
+		param.setUserName(userName);
+		param.setService(service);
+		param.setDirection(direction);
+		param.setResourceType(resourceType);
+		param.setServer(true);
+		param.setCredentials(userCredentials);
+		session.update("updateSyncServerForUser", param);
+	}
+
+	/**
+	 * Returns all available synchronization services. 
+	 * 
+	 * @param session
+	 * @return
+	 */
+	public List<SyncService> getSyncServices(final DBSession session, final boolean server) {
+		return this.queryForList("getSyncServices", server, SyncService.class, session);
+	}
+
+	/**
+	 * Inserts synchronization data with GIVEN status into db. 
+	 * @param userName
+	 * @param service
+	 * @param contentType
+	 * @param lastSyncDate
+	 * @param status
+	 * @param session
+	 */
+	public void insertSynchronizationData (final String userName, final URI service, Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final DBSession session) {
+		final SyncParam param = new SyncParam();
+		param.setUserName(userName);
+		param.setService(service);
+		param.setResourceType(resourceType);
+		param.setLastSyncDate(lastSyncDate);
+		param.setStatus(status);
+		param.setServer(false);
 		session.insert("insertSync", param);
-    }
-    
-    /**
-     * 
-     * @param userName
-     * @param service
-     * @param contentType
-     * @param session
-     * @param status - optional. If provided, only data with that state is returned.
-     * @return returns last synchronization data for given user, service and content with {@link SynchronizationStatus#RUNNING}.
-     */
-    public SynchronizationData getLastSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final SynchronizationStatus status, final DBSession session) {
-    	final SyncParam param = new SyncParam();
-    	param.setUserName(userName);
-    	param.setResourceType(resourceType);
-    	param.setService(service);
-    	param.setStatus(status);
-    	param.setServer(false);
+	}
+
+	/**
+	 * 
+	 * @param userName
+	 * @param service
+	 * @param contentType
+	 * @param session
+	 * @param status - optional. If provided, only data with that state is returned.
+	 * @return returns last synchronization data for given user, service and content with {@link SynchronizationStatus#RUNNING}.
+	 */
+	public SynchronizationData getLastSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final SynchronizationStatus status, final DBSession session) {
+		final SyncParam param = new SyncParam();
+		param.setUserName(userName);
+		param.setResourceType(resourceType);
+		param.setService(service);
+		param.setStatus(status);
+		param.setServer(false);
 		return queryForObject("getLastSyncData", param, SynchronizationData.class, session);
-    }
-    
-    /**
-     * 
-     * @param userName
-     * @param session
-     * @return all synchronization server for user
-     */
-    public List<SyncService> getSyncServersForUser(final String userName, final DBSession session) {
+	}
+
+	/**
+	 * 
+	 * @param userName
+	 * @param session
+	 * @return all synchronization server for user
+	 */
+	public List<SyncService> getSyncServersForUser(final String userName, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		return queryForList("getSyncServersForUser", param, SyncService.class, session);
-    }
-    
-    /**
-     * Computes the synchronization plan.
-     * 
-     * @param serverPosts
-     * @param clientPosts
-     * @param lastSyncDate
-     * @param conflictResolutionStrategy
-     * @return
-     */
-    public List<SynchronizationPost> getSyncPlan(final Map<String, SynchronizationPost> serverPosts, final List<SynchronizationPost> clientPosts, final Date lastSyncDate, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
+	}
 
-		// is something to synchronize?
+	/**
+	 * Computes the synchronization plan.
+	 * 
+	 * @param serverPosts - Note: this map is modified by this method - posts are removed.
+	 * @param clientPosts - Note: this list is modified by this method - posts are added. It's the same list that is returned by this method.
+	 * @param lastSyncDate
+	 * @param conflictResolutionStrategy
+	 * @return The clientPosts with {@link SynchronizationAction}'s and posts from the server added.
+	 */
+	public List<SynchronizationPost> getSyncPlan(final Map<String, SynchronizationPost> serverPosts, final List<SynchronizationPost> clientPosts, final Date lastSyncDate, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
+
+		// is there something to synchronize?
 		if (!present(serverPosts) && !present(clientPosts)) {
-			return clientPosts;
+			throw new IllegalArgumentException("both serverPosts and clientPosts must be given");
 		}
 
-		for (SynchronizationPost clientPost : clientPosts) {
-			SynchronizationPost serverPost = serverPosts.get(clientPost.getIntraHash());
-			if (!present(lastSyncDate)) {
-				log.error("lastSyncDate not present");
-				return null;
+		if (!present(lastSyncDate)) {
+			throw new IllegalArgumentException("lastSyncDate not present");
+		}
+
+		/*
+		 * check all client posts
+		 */
+		for (final SynchronizationPost clientPost: clientPosts) {
+			final SynchronizationPost serverPost = serverPosts.get(clientPost.getIntraHash());
+
+			if (!present(serverPost)) {
+				/*  
+				 * no such post on server 
+				 */
+				if (clientPost.getCreateDate().before(lastSyncDate)) {
+					/*
+					 * client post was created before last synchronization 
+					 * -> post was deleted on server
+					 */
+					if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+						clientPost.setAction(SynchronizationAction.DELETE_CLIENT);
+					else
+						clientPost.setAction(SynchronizationAction.OK);
+				} else {
+					/*
+					 * post was created on client after last sync
+					 */
+					if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+						clientPost.setAction(SynchronizationAction.CREATE_SERVER);
+					else 
+						clientPost.setAction(SynchronizationAction.OK);
+				}
+				continue;
 			}
 
-			/* no such post on server */
-			if (!present(serverPost)) {
-				
-				
-				/*
-				 * client post is older than last synchronization -> post was
-				 * deleted on server
-				 */
-				if (clientPost.getCreateDate().compareTo(lastSyncDate) < 0) {
-					if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
-						clientPost.setState(SynchronizationActions.DELETE_CLIENT);
-					else
-						clientPost.setState(SynchronizationActions.OK);
-					continue;
-				} else {
-					if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
-						clientPost.setState(SynchronizationActions.CREATE_SERVER);
-					else 
-						clientPost.setState(SynchronizationActions.OK);
-					continue;
-				}
-			}
-			
 			if (!present(serverPost.getChangeDate())) {
 				log.error("post on server has no changedate");
 				//FIXME what is to do in this case?
 			}
-			/* changed on server since last sync */
-			if (serverPost.getChangeDate().compareTo(lastSyncDate) > 0) {
-				if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0) {
-					switch (conflictResolutionStrategy) {
-					case CLIENT_WINS:
-						if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
-							clientPost.setState(SynchronizationActions.UPDATE_SERVER);
-						else 
-							clientPost.setState(SynchronizationActions.OK);
-						break;
-					case SERVER_WINS:
-						if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
-							clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
-						else
-							clientPost.setState(SynchronizationActions.OK);
-						break;
-					case ASK_USER:
-						clientPost.setState(SynchronizationActions.ASK);
-						break;
-					case FIRST_WINS:
-						if (clientPost.getChangeDate().compareTo(serverPost.getChangeDate()) < 0) {
-							if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
-								clientPost.setState(SynchronizationActions.UPDATE_SERVER);
-							else 
-								clientPost.setState(SynchronizationActions.OK);
-						} else {
-							if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
-								clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
-							else
-								clientPost.setState(SynchronizationActions.OK);
-						}
-						break;
-					case LAST_WINS:
-						if (clientPost.getChangeDate().compareTo(serverPost.getChangeDate()) > 0) {
-							if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
-								clientPost.setState(SynchronizationActions.UPDATE_SERVER);
-							else 
-								clientPost.setState(SynchronizationActions.OK);
-							
-						} else {
-							if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
-								clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
-							else
-								clientPost.setState(SynchronizationActions.OK);
-						}
-						break;
-					default:
-						clientPost.setState(SynchronizationActions.UNDEFINED);
-						break;
-					}
 
+
+			if (serverPost.getChangeDate().after(lastSyncDate)) {
+				/*  
+				 * changed on server since last sync 
+				 */
+				if (clientPost.getChangeDate().after(lastSyncDate)) {
+					/*
+					 * changed on client, too -> conflict!
+					 */
+					resolveConflict(clientPost, serverPost, conflictResolutionStrategy, direction);
 				} else {
-					if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
-						clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
+					/*
+					 * must be updated on client
+					 */
+					if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+						clientPost.setAction(SynchronizationAction.UPDATE_CLIENT);
 					else
-						clientPost.setState(SynchronizationActions.OK);
+						clientPost.setAction(SynchronizationAction.OK);
 				}
 			} else {
-				if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0 && !SynchronizationDirection.SERVER_TO_CLIENT.equals(direction)) {
-					clientPost.setState(SynchronizationActions.UPDATE_SERVER);
+				/*
+				 * post is in sync on the server
+				 */
+				if (clientPost.getChangeDate().after(lastSyncDate) && !SynchronizationDirection.SERVER_TO_CLIENT.equals(direction)) {
+					/*
+					 * ... but not on the client -> update
+					 */
+					clientPost.setAction(SynchronizationAction.UPDATE_SERVER);
 				} else {
-					clientPost.setState(SynchronizationActions.OK);
+					clientPost.setAction(SynchronizationAction.OK);
 				}
 
 			}
-			serverPosts.remove(serverPost.getIntraHash());
-
-		}
-
-		/*
-		 * handle post, which do not exist on client
-		 */
-		for (final SynchronizationPost serverPost : serverPosts.values()) {
-
 			/*
-			 * post is older than lastSyncDate
+			 * In the next loop we go over all *remaining* server posts and
+			 * compare them. To not handle this post twice, we remove it from
+			 * the server posts list.
 			 */
-			if (serverPost.getCreateDate().compareTo(lastSyncDate) < 0) {
-				if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
-						serverPost.setState(SynchronizationActions.DELETE_SERVER);
-				else 
-					serverPost.setState(SynchronizationActions.OK);
-			} else {
-				if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
-					serverPost.setState(SynchronizationActions.CREATE_CLIENT);
-				else 
-					serverPost.setState(SynchronizationActions.OK);
-			}
-			clientPosts.add(serverPost);
+			serverPosts.remove(clientPost.getIntraHash());
 		}
+
 		
 		/*
-		 * FIXME posts with OK-state will be not required.
+		 * handle the remaining posts that do not exist on client
+		 */
+		for (final SynchronizationPost serverPost: serverPosts.values()) {
+			if (serverPost.getCreateDate().before(lastSyncDate)) {
+				/*
+				 * post is older than lastSyncDate but does not exist on client
+				 * -> was deleted on client and must now be deleted on server
+				 */
+				if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+					serverPost.setAction(SynchronizationAction.DELETE_SERVER);
+				else 
+					serverPost.setAction(SynchronizationAction.OK);
+			} else {
+				/*
+				 * post was created after last sync -> create on client
+				 */
+				if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+					serverPost.setAction(SynchronizationAction.CREATE_CLIENT);
+				else 
+					serverPost.setAction(SynchronizationAction.OK);
+			}
+			/*
+			 * add post to list of client posts
+			 */
+			clientPosts.add(serverPost);
+		}
+
+		/*
+		 * FIXME posts with OK-state could be omitted.
 		 */
 		return clientPosts;
+	}
+
+	/**
+	 * When a post was changed on both the server and the client /after/ 
+	 * synchronization, this method resolved the corresponding conflict.
+	 * 
+	 * @param clientPost
+	 * @param serverPost
+	 * @param conflictResolutionStrategy
+	 * @param direction
+	 */
+	private void resolveConflict(final SynchronizationPost clientPost, final SynchronizationPost serverPost, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
+		switch (conflictResolutionStrategy) {
+		case CLIENT_WINS:
+			if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+				clientPost.setAction(SynchronizationAction.UPDATE_SERVER);
+			else 
+				clientPost.setAction(SynchronizationAction.OK);
+			break;
+		case SERVER_WINS:
+			if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+				clientPost.setAction(SynchronizationAction.UPDATE_CLIENT);
+			else
+				clientPost.setAction(SynchronizationAction.OK);
+			break;
+		case ASK_USER:
+			clientPost.setAction(SynchronizationAction.ASK);
+			break;
+		case FIRST_WINS:
+			if (clientPost.getChangeDate().before(serverPost.getChangeDate())) {
+				if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+					clientPost.setAction(SynchronizationAction.UPDATE_SERVER);
+				else 
+					clientPost.setAction(SynchronizationAction.OK);
+			} else {
+				if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+					clientPost.setAction(SynchronizationAction.UPDATE_CLIENT);
+				else
+					clientPost.setAction(SynchronizationAction.OK);
+			}
+			break;
+		case LAST_WINS:
+			if (clientPost.getChangeDate().after(serverPost.getChangeDate())) {
+				if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+					clientPost.setAction(SynchronizationAction.UPDATE_SERVER);
+				else 
+					clientPost.setAction(SynchronizationAction.OK);
+
+			} else {
+				if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+					clientPost.setAction(SynchronizationAction.UPDATE_CLIENT);
+				else
+					clientPost.setAction(SynchronizationAction.OK);
+			}
+			break;
+		default:
+			clientPost.setAction(SynchronizationAction.UNDEFINED);
+			break;
+		}
 	}
 
 }

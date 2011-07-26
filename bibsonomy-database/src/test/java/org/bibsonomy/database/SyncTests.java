@@ -23,7 +23,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
-import org.bibsonomy.model.sync.SynchronizationActions;
+import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
@@ -211,49 +211,49 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		 */
 		hash = "6a486c3b5cf17466f984f8090077274c";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationActions.OK, map.get(hash).getState());
+		assertEquals(SynchronizationAction.OK, map.get(hash).getAction());
 
 		/*
 		 * test post 2 "post deleted on server"
 		 */
 		hash = "167b670252215232dc59829364e361a2";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationActions.DELETE_CLIENT, map.get(hash).getState());
+		assertEquals(SynchronizationAction.DELETE_CLIENT, map.get(hash).getAction());
 
 		/*
 		 * test post 3 "post deleted on client"
 		 */
 		hash = "b1629524db9c09f8b75af7ba83249980";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationActions.DELETE_SERVER, map.get(hash).getState());
+		assertEquals(SynchronizationAction.DELETE_SERVER, map.get(hash).getAction());
 
 		/*
 		 * test post 4 "post changed on server"
 		 */
 		hash = "11db3d75b9e07960658984f9b012d6d7";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationActions.UPDATE_CLIENT, map.get(hash).getState());
+		assertEquals(SynchronizationAction.UPDATE_CLIENT, map.get(hash).getAction());
 
 		/*
 		 * test post 5 "post changed on client"
 		 */
 		hash = "133de67269c9bfa71bde2b7615f0c1b3";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationActions.UPDATE_SERVER, map.get(hash).getState());
+		assertEquals(SynchronizationAction.UPDATE_SERVER, map.get(hash).getAction());
 
 		/*
 		 * test post 6 "post created on server"
 		 */
 		hash = "08cdf0d0dcce9d07fd8d41ac6267cadf";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationActions.CREATE_CLIENT, map.get(hash).getState());
+		assertEquals(SynchronizationAction.CREATE_CLIENT, map.get(hash).getAction());
 
 		/*
 		 * test post 7 "post created on client"
 		 */
 		hash = "418397b6f507faffe6f9b02569ffbc9e";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationActions.CREATE_SERVER, map.get(hash).getState());
+		assertEquals(SynchronizationAction.CREATE_SERVER, map.get(hash).getAction());
 	}
 
 }

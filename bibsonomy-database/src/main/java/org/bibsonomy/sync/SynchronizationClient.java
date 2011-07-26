@@ -289,7 +289,7 @@ public class SynchronizationClient {
 			final String postIntraHash = post.getIntraHash();
 			
 			final Post<? extends Resource> postToHandle;
-			switch (post.getState()) {
+			switch (post.getAction()) {
 			case CREATE_SERVER:
 				postToHandle = clientLogic.getPostDetails(postIntraHash, clientUser.getName());
 				postToHandle.setUser(serverUser);
