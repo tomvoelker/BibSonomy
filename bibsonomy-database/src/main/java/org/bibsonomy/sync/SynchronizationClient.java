@@ -177,7 +177,7 @@ public class SynchronizationClient {
 		 */
 		storeSyncResult(result, info, resourceType, serverLogic, serverUserName);
 		
-		//Get synchronization data from server. Can't construct here, because last_sync_date only known by server
+		// Get synchronization data from server. Can't construct here, because last_sync_date only known by server
 		return getLastSyncData(serverUserName, resourceType, serverLogic);
 	}
 	
