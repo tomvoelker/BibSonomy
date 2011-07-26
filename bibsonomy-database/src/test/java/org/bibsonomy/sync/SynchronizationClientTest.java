@@ -1,4 +1,4 @@
-package org.bibsonomy.database;
+package org.bibsonomy.sync;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.database.DBLogic;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.BibTex;
@@ -30,7 +32,6 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
-import org.bibsonomy.sync.SynchronizationClient;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,8 +93,8 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * create the logic interfaces
 		 */
-		clientLogic = new DBLogic(clientUser, new IbatisDBSessionFactory());
-		serverLogic = new DBLogic(serverUser, new IbatisDBSessionFactory());
+		clientLogic = new SyncDBLogic(clientUser, new IbatisDBSessionFactory());
+		serverLogic = new SyncDBLogic(serverUser, new IbatisDBSessionFactory());
 
 		/*
 		 * iterate over all resource types
@@ -321,6 +322,12 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 			Thread.sleep(1000 * seconds);
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
+		}
+	}
+	
+	private static class SyncDBLogic extends DBLogic {
+		public SyncDBLogic(final User user, final DBSessionFactory dbSessionFactory) {
+			super(user, dbSessionFactory);
 		}
 	}
 }

@@ -135,7 +135,8 @@ public class SynchronizationClient {
 	
 
 	/**
-	 * Synchronized the user's posts between the clientLogic and the syncServer.  
+	 * Synchronized the user's posts between the clientLogic and the syncServer
+	 * according to the configured sync direction and resource types.
 	 * 
 	 * @param clientLogic
 	 * @param syncServerUri
@@ -173,6 +174,10 @@ public class SynchronizationClient {
 	}
 
 	/**
+	 * Synchronizes the user's posts of the given resource type 
+	 * on the client and server according to the given direction. 
+	 * 
+	 * 
 	 * @param clientLogic
 	 * @param serverLogic
 	 * @param serverUserName
@@ -180,7 +185,7 @@ public class SynchronizationClient {
 	 * @param direction
 	 * @return
 	 */
-	public SynchronizationData synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction) {
+	protected SynchronizationData synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction) {
 		SynchronizationStatus result;
 		String info;
 		try {
