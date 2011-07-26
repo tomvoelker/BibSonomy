@@ -291,7 +291,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     	Date lastSuccessfulSyncDate = null;
 
     	final Map<String, SynchronizationPost> serverPosts;
-    	List<SynchronizationPost> posts = null;
+    	final List<SynchronizationPost> posts;
 
     	final DBSession session = this.openSession();
     	try {
@@ -338,13 +338,13 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     		posts = this.syncDBManager.getSyncPlan(serverPosts, clientPosts, lastSuccessfulSyncDate, strategy, direction);
     		
     		/*
-    		 * attach "real" posts to the synchronization posts, which will be updated (or created) on client
+    		 * attach "real" posts to the synchronization posts, which will be updated (or created) on the client
     		 */
-    		for (SynchronizationPost post : posts) {
+    		for (final SynchronizationPost post : posts) {
     			switch (post.getState()) {
     			case CREATE_CLIENT:
     			case UPDATE_CLIENT:
-    				post.setPost(getPostDetails(post.getIntraHash(), userName));
+    				post.setPost(this.getPostDetails(post.getIntraHash(), userName));
     				break;
     			default:
     				break;
