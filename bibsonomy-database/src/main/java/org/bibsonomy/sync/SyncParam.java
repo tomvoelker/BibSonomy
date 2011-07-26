@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Properties;
 
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 
 /**
@@ -18,6 +19,7 @@ public class SyncParam {
 	private int serviceId;
 	private Date lastSyncDate;
 	private SynchronizationStatus status;
+	private SynchronizationDirection direction;
 	private Class<? extends Resource> resourceType;
 	private String info;
 	private boolean server;
@@ -115,5 +117,13 @@ public class SyncParam {
 
 	public void setResourceType(Class<? extends Resource> resourceType) {
 		this.resourceType = resourceType;
+	}
+
+	public SynchronizationDirection getDirection() {
+		return this.direction;
+	}
+
+	public void setDirection(SynchronizationDirection direction) {
+		this.direction = direction;
 	}
 }

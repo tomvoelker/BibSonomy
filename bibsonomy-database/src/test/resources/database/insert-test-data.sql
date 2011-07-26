@@ -104,12 +104,12 @@ INSERT INTO `sync_services` (`uri`, `service_id`, server) VALUES
 -- synchronization data table
 INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`, `info`) VALUES 
 ('1', 'syncuser1', '2', '2011-02-02 23:00:00', 'done', ''),
-('0', 'syncserver', '2', '2011-02-02 23:00:00', 'unknown', ''),
-('0', 'syncserver', '1', '2011-02-02 23:10:00', 'unknown', '');
+('0', 'syncserver', '2', '2011-02-02 23:00:00', 'done', ''),
+('0', 'syncserver', '1', '2011-02-02 23:10:00', 'done', '');
 
-INSERT INTO `sync` (`user_name`, `service_id`, `credentials`) VALUES
-('syncuser1', '1', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785'),
-('sync2', '2', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785')
+INSERT INTO `sync` (`user_name`, `service_id`, `credentials`, `content_type`, `direction`) VALUES
+('syncuser1', '1', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785', 0, 'both'),
+('sync2', '2', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785', 0, 'both')
 ;
 
 
