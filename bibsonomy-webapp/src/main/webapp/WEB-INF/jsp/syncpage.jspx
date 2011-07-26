@@ -29,10 +29,14 @@
     		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script> 
 			
 			<script type="text/javascript">
-				
+				function validateSyncForm(formData, form, options) {
+					$(form).find(":submit").hide(); // FIXME: doesn't work
+					$(form).find(".progressGif").show();
+	 			}
 				function successSyncForm(data, statusText, xhr, form) {
 					$(form).find(":submit").show();
 					$(form).find(".progressGif").hide();
+					var syncResult = $(form).find(".syncResult");
 					for (key in data) {
 						var error = data[key].error;
 						if (error != "no") {
@@ -43,14 +47,9 @@
 						var result = data[key].info;
 						var formattedDate = formatDate(date, "MMM dd, yyyy hh:mm a");
 
-						alert("[" + key + "] lastSyncDate = " + formattedDate + ", result = " + result);
+						syncResult.append("[" + key + "] lastSyncDate = " + formattedDate + ", result = " + result + "<br/>");
+						syncResult.show();
 						
-						//var row = fieldset.find(".content" + key);
-
-						//var resultMsg = $("#resultMsg").html();
-						//row.find(".resultMessage").html(resultMsg);
-						//row.find(".lastSyncDate").html(formattedDate);
-						//row.find(".lastSyncResult").html(result);
 					}
 					// submit the form
 												 	     
@@ -68,6 +67,7 @@
 					$("form").each(function(index, elem) {
 					 	$(this).ajaxForm({
 					 		dataType : "json",
+					 		beforeSubmit : validateSyncForm,
 					 		success : successSyncForm,
 					 		error : errorSyncForm
 						 });
@@ -144,8 +144,8 @@
 								</div>
 							</c:if>
 							
-							<div class="fsRow">
-								<span id="resultMsg" style="display:none"><fmt:message key="synchronization.result"/></span>
+							<div class="fsRow syncResult" style="display:none">
+								<span class="fsLabel"><fmt:message key="synchronization.result"/></span>
 							</div>
 
 						<input type="submit" value="${synchronize}"/>
