@@ -8,7 +8,7 @@ public enum SynchronizationActions {
 	/**
 	 * server post must be updated
 	 */
-	UPDATE,
+	UPDATE_SERVER,
 	
 	/**
 	 * client post must be updated
@@ -18,7 +18,7 @@ public enum SynchronizationActions {
     /**
      * post must be created on server
      */
-    CREATE,
+    CREATE_SERVER,
     
     /**
      * post must be created on client
@@ -28,7 +28,7 @@ public enum SynchronizationActions {
     /**
      * post must be deleted on server
      */
-    DELETE,
+    DELETE_SERVER,
     
     /**
      * post must be deleted on client
