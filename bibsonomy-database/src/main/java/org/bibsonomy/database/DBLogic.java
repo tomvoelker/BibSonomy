@@ -287,13 +287,14 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      */
     @Override
     public List<SynchronizationPost> getSyncPlan(final String userName, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service, final SynchronizationDirection direction) {
-    	Date lastSuccessfulSyncDate;
+    	this.permissionDBManager.ensureWriteAccess(loginUser, userName);
+    	Date lastSuccessfulSyncDate = null;
 
-    	final Map<String, SynchronizationPost> posts;
+    	final Map<String, SynchronizationPost> serverPosts;
 
     	final DBSession session = this.openSession();
     	try {
-    		final SynchronizationData data = syncDBManager.getLastSynchronizationData(userName, service, resourceType, null, session);
+    		final SynchronizationData data = this.syncDBManager.getLastSynchronizationData(userName, service, resourceType, null, session);
     		/*
     		 * check for a running synchronization
     		 */
@@ -303,16 +304,26 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     			throw new SynchronizationRunningException();
     		}
     		/*
-    		 * 
+    		 * check for last successful synchronization 
     		 */
-    		lastSuccessfulSyncDate = syncDBManager.getLastDoneSynchronizationDate(userName, service, resourceType, session);
-
+    		final SynchronizationData lsd = this.syncDBManager.getLastSynchronizationData(userName, service, resourceType, SynchronizationStatus.DONE, session);
+    		if (present(lsd)) {
+    			lastSuccessfulSyncDate = lsd.getLastSyncDate();	
+    		}
     		/*
     		 * flag synchronization as running
     		 */
-    		syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.RUNNING, session);
-    		posts = this.getSyncPostsMapForUser(userName, resourceType);
-
+    		this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.RUNNING, session);
+    		/*
+    		 * get posts from server (=this machine)
+    		 */
+    		if (BibTex.class.equals(resourceType)) {
+    			serverPosts = publicationDBManager.getSyncPostsMapForUser(userName, session);
+    		} else if(Bookmark.class.equals(resourceType)){
+    			serverPosts = bookmarkDBManager.getSyncPostsMapForUser(userName, session);
+    		} else {
+    			throw new UnsupportedResourceTypeException();
+    		}
     	} finally {
     		session.close();
     	}
@@ -327,7 +338,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		 * calculate synchronization plan
 		 * FIXME get direction form db
 		 */
-    	return syncDBManager.getSyncPlan(posts, clientPosts, lastSuccessfulSyncDate, strategy, SynchronizationDirection.BOTH);
+    	return this.syncDBManager.getSyncPlan(serverPosts, clientPosts, lastSuccessfulSyncDate, strategy, direction);
     }
     
     /*
@@ -336,6 +347,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      */
     @Override
 	public void createSyncService(final URI service, final boolean server) {
+    	this.permissionDBManager.ensureAdminAccess(loginUser);
     	final DBSession session = this.openSession();
     	try {
     		syncDBManager.createSyncService(session, service, server);
@@ -350,6 +362,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      */
     @Override
 	public void deleteSyncService(final URI service, final boolean server) {
+    	this.permissionDBManager.ensureAdminAccess(loginUser);
     	final DBSession session = this.openSession();
     	try {
     		syncDBManager.deleteSyncService(session, service, server);
@@ -363,10 +376,11 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncServer(java.lang.String, int, java.util.Properties)
      */
     @Override
-    public void createSyncServer(final String userName, final URI service, final Properties userCredentials) {
+    public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
+    	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-		    syncDBManager.createSyncServerForUser(session, service, userName, userCredentials);
+		    syncDBManager.createSyncServerForUser(session, userName, service, resourceType, userCredentials, direction);
 		} finally {
 		    session.close();
 		}
@@ -377,10 +391,11 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#updateSyncServer(java.lang.String, java.net.URI, java.util.Properties)
      */
     @Override
-    public void updateSyncServer(final String userName, final URI service, final Properties userCredentials) {
+    public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
+    	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
     	final DBSession session = this.openSession();
     	try {
-    		syncDBManager.updateSyncServerForUser(session, userName, service, userCredentials);
+    		syncDBManager.updateSyncServerForUser(session, userName, service, resourceType, userCredentials, direction);
     	} finally {
     		session.close();
     	}
@@ -392,6 +407,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      */
     @Override
     public void deleteSyncServer(final String userName, final URI service) {
+    	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
     	final DBSession session = this.openSession();
     	try {
     		syncDBManager.deleteSyncServerForUser(session, userName, service);
@@ -406,16 +422,13 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	 */
     @Override
     public List<SyncService> getSyncServer(final String userName) {
-	final DBSession session = this.openSession();
-	List<SyncService> services;
-	
-	try {
-	    services = syncDBManager.getSyncServersForUser(userName, session);
-	} finally {
-	   session.close();
-	}
-	
-	return services;
+    	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
+    	final DBSession session = this.openSession();
+    	try {
+    		return syncDBManager.getSyncServersForUser(userName, session);
+    	} finally {
+    		session.close();
+    	}
     }
     
     /*
@@ -434,51 +447,31 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      
     /*
      * (non-Javadoc)
-     * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncPostsMampForUser(java.lang.String)
-     */
-    @Override
-    public Map<String, SynchronizationPost> getSyncPostsMapForUser(final String userName, final Class<? extends Resource> resourceType) {
-	final DBSession session = this.openSession();
-	Map<String, SynchronizationPost> posts = null;
-	try {
-		if (BibTex.class.equals(resourceType)) {
-			posts = publicationDBManager.getSyncPostsMapForUser(userName, session);
-		} else if(Bookmark.class.equals(resourceType)){
-			posts = bookmarkDBManager.getSyncPostsMapForUser(userName, session);
-		}
-	} finally {
-	    session.close();
-	}
-	return posts;
-    }
-    
-    
-    /*
-     * (non-Javadoc)
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getLastSynchronizationData(java.lang.String, int, int)
      */
      @Override
-    public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType) {
-	final DBSession session = this.openSession();
-	try {
-	    return syncDBManager.getLastSynchronizationData(userName, service, resourceType, null, session);
-	} finally {
-	    session.close();
-	}
-    }
-    
+     public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType) {
+    	 this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
+    	 final DBSession session = this.openSession();
+    	 try {
+    		 return syncDBManager.getLastSynchronizationData(userName, service, resourceType, null, session);
+    	 } finally {
+    		 session.close();
+    	 }
+     }
+
     /*
      * (non-Javadoc)
      * @see org.bibsonomy.model.sync.SyncLogicInterface#setCurrentSyncDone(org.bibsonomy.model.sync.SynchronizationData)
      */
     @Override
     public void updateSyncStatus(final SynchronizationData data, final SynchronizationStatus status, final String info) {
-	final DBSession session = this.openSession();
-	try {
-	    syncDBManager.updateSyncStatus(session, data, status, info);
-	} finally {
-	    session.close();
-	}
+    	final DBSession session = this.openSession();
+    	try {
+    		syncDBManager.updateSyncStatus(session, data, status, info);
+    	} finally {
+    		session.close();
+    	}
     }
     
     /*
@@ -487,16 +480,17 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      */
     @Override
     public Date getLastSyncDate(final String userName, final URI service, final Class<? extends Resource> resourceType) {
-	final DBSession session = this.openSession();
-	try {
-	    final Date lastSyncDate = syncDBManager.getLastSynchronizationDate(userName, service, resourceType, session);
-	    if (present(lastSyncDate)) {
-	    	return lastSyncDate;
-	    }
-	} finally {
-	    session.close();
-	}
-	return new Date(0);
+    	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
+    	final DBSession session = this.openSession();
+    	try {
+    		final Date lastSyncDate = syncDBManager.getLastSynchronizationDate(userName, service, resourceType, session);
+    		if (present(lastSyncDate)) {
+    			return lastSyncDate;
+    		}
+    	} finally {
+    		session.close();
+    	}
+    	return new Date(0);
     }
     
     /*
@@ -505,27 +499,26 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      */
     @Override
     public List<SynchronizationPost> getSyncPosts (final String userName, final Class<? extends Resource> resourceType) {
+    	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
         final DBSession session = this.openSession();
-        List<SynchronizationPost> postList = null;
         try {
-            
-    		if(resourceType == BibTex.class) {
-    		    postList = this.publicationDBManager.getSyncPostsListForUser(userName, session);
+    		if (resourceType == BibTex.class) {
+    		    return this.publicationDBManager.getSyncPostsListForUser(userName, session);
     		} else if(resourceType == Bookmark.class) {
-    		    postList = this.bookmarkDBManager.getSyncPostsListForUser(userName, session);
+    		    return this.bookmarkDBManager.getSyncPostsListForUser(userName, session);
+    		} else {
+    			throw new UnsupportedResourceTypeException();
     		}
-    		
         } finally {
             session.close();
         }
-        return postList;
     }
     
     /**
      * Method to handle privacy settings of posts for synchronization
      * @param post
      */
-    private void validateGroupsForSynchronization(Post<? extends Resource> post) {
+    private void validateGroupsForSynchronization(final Post<? extends Resource> post) {
     	/*
     	 * check if not public or private group 
     	 */
@@ -533,9 +526,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     		/*
     		 * post has group -> change to private
     		 */
-    		Set<Group> groups = new HashSet<Group>();
-    		groups.add(new Group(GroupID.PRIVATE));
-    		post.setGroups(groups);
+    		post.setGroups(Collections.singleton(GroupUtils.getPrivateGroup()));
     	}
     	/*
     	 * if public or private is nothing to do
