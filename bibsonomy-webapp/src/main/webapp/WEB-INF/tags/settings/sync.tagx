@@ -9,20 +9,20 @@
   xmlns:spring="http://www.springframework.org/tags"
   xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
   xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
   xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
   
 	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 
-	<fmt:message var="addService" key="settings.synchronization.add"/>
 	<fmt:message var="save" key="settings.synchronization.save"/>
 	<fmt:message var="cancel" key="settings.synchronization.cancel"/>
-	<fmt:message var="syncTimes" key="settings.synchronization.syncTimes" />
 	<fmt:message var="removeService" key="settings.synchronization.removeService" />
 	
-	<h2><fmt:message key="settings.synchronization.header"/></h2>
-	
 	<!-- UPDATE -->
+	<c:if test="${not empty command.syncServer}">
+		<h2><fmt:message key="synchronization.update"/></h2>
+	</c:if>
 	<c:forEach varStatus="status" var="syncService" items="${command.syncServer}">
 		<fieldset class="fsInner">
 			<form:form method="post" action="/updateSyncSettings" modelAttribute="command.syncServer[${status.index}]">
@@ -31,34 +31,9 @@
 					<form:input cssClass="fsInput" path="service" disabled="true"/>
 					<div class="dissError"><form:errors path="service" /></div>
 				</div>
-   				<div class="fsRow">
-	          		<form:label cssClass="fsLabel" path="serverUser['userName']" ><fmt:message key="navi.username"/></form:label>
-	          		<form:input cssClass="fsInput" path="serverUser['userName']"/>
-    	      		<div class="dissError"><form:errors path="serverUser['userName']" /></div>
-        		</div>
-   				<div class="fsRow">
-	          		<form:label cssClass="fsLabel" path="serverUser['apiKey']" ><fmt:message key="navi.apikey"/></form:label>
-	          		<form:input cssClass="fsInput" path="serverUser['apiKey']"/>
-    	      		<div class="dissError"><form:errors path="serverUser['apiKey']" /></div>
-        		</div>
-   				<div class="fsRow">
-	          		<form:label cssClass="fsLabel" path="direction" ><fmt:message key="synchronization.direction"/></form:label>
-	          		<form:select cssClass="fsInput fsSmall" path="direction">
-	          			<form:option value="BOTH">both</form:option><!-- I18N -->
-	          			<form:option value="CLIENT_TO_SERVER">BibSonomy to PUMA</form:option><!-- I18N -->
-	          			<form:option value="SERVER_TO_CLIENT">PUMA to BibSonomy</form:option><!-- I18N -->
-	          		</form:select>
-    	      		<div class="dissError"><form:errors path="direction" /></div>
-        		</div>
-   				<div class="fsRow">
-	          		<form:label cssClass="fsLabel" path="resourceType" ><fmt:message key="synchronization.resourceType"/></form:label>
-	          		<form:select cssClass="fsInput fsSmall" path="resourceType">
-	          			<form:option value="org.bibsonomy.model.Resource">both</form:option><!-- I18N -->
-	          			<form:option value="org.bibsonomy.model.BibTex"><fmt:message key="publications"/></form:option>
-	          			<form:option value="org.bibsonomy.model.Bookmark"><fmt:message key="bookmarks"/></form:option>
-	          		</form:select>
-    	      		<div class="dissError"><form:errors path="resourceType" /></div>
-        		</div>
+
+				<settings:syncFormFields/>
+
         		<div class="fsRow">
 					<form:hidden path="service"/>
 					<input type="submit" value="${save}" />
@@ -73,7 +48,9 @@
 	
 	<!-- CREATE -->
 	<c:if test="${not empty command.availableSyncServers}">
+		<h2><fmt:message key="synchronization.add"/></h2>
 		<fieldset class="fsInner">
+			<p><fmt:message key="synchronization.add.intro"/></p>
 			<form:form method="post" action="/updateSyncSettings" modelAttribute="command.syncServer[0]"> 
 	        
 	        	<div class="fsRow">
@@ -81,31 +58,16 @@
 					<form:select cssClass="fsInput" path="service" items="${command.availableSyncServers}"/>
       				<div class="dissError"><form:errors path="service" /></div>
       			</div>
-      			<div class="fsRow">
-	          		<form:label cssClass="fsLabel" path="serverUser['userName']" ><fmt:message key="navi.username"/></form:label>
-	          		<form:input cssClass="fsInput" path="serverUser['userName']"/>
-	          		<div class="dissError"><form:errors path="serverUser['userName']" /></div>
-	        	</div>
-      			<div class="fsRow">
-	          		<form:label cssClass="fsLabel" path="serverUser['apiKey']" ><fmt:message key="navi.apikey"/></form:label>
-	          		<form:input cssClass="fsInput" path="serverUser['apiKey']"/>
-	          		<div class="dissError"><form:errors path="serverUser['apiKey']" /></div>
-	        	</div>
-   				<div class="fsRow">
-	          		<form:label cssClass="fsLabel" path="direction" ><fmt:message key="synchronization.direction"/></form:label>
-	          		<form:select cssClass="fsInput fsSmall" path="direction">
-	          			<form:option value="${SynchronizationDirection.BOTH}">both</form:option>
-	          			<form:option value="${SynchronizationDirection.CLIENT_TO_SERVER}">BibSonomy to PUMA</form:option>
-	          			<form:option value="${SynchronizationDirection.SERVER_TO_CLIENT}">PUMA to BibSonomy</form:option>
-	          		</form:select>
-    	      		<div class="dissError"><form:errors path="direction" /></div>
-        		</div>	        	
+      			
+      			<settings:syncFormFields/>
+        	
 	        	<div class="fsRow">
+					<input type="submit" value="${save}" />
 					<input type="hidden" name="ckey" value="${ckey}"/>
 					<input type="hidden" name="_method" value="POST"/>
 					<input type="hidden" name="selTab" value="${command.selTab}"/>
-					<input type="submit" value="${save}" />
 				</div>
+	
 			</form:form>
 		</fieldset>
 	
