@@ -454,7 +454,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getAvlSyncServer()
      */
     @Override
-    public List<SyncService> getSyncServices(final boolean server) {
+    public List<URI> getSyncServices(final boolean server) {
     	final DBSession session = this.openSession();
     	try {
     		return syncDBManager.getSyncServices(session, server);

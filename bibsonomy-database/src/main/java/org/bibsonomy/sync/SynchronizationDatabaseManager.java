@@ -160,8 +160,8 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return
 	 */
-	public List<SyncService> getSyncServices(final DBSession session, final boolean server) {
-		return this.queryForList("getSyncServices", server, SyncService.class, session);
+	public List<URI> getSyncServices(final DBSession session, final boolean server) {
+		return this.queryForList("getSyncServices", server, URI.class, session);
 	}
 
 	/**

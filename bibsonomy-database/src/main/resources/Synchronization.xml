@@ -3,8 +3,8 @@
 
 <sqlMap namespace="Synchronization">
 
-	<select id="getSyncServices" resultMap="SynchronizationCommon.syncService" parameterClass="boolean">
-		SELECT ss.uri, NULL as user_name, NULL as credentials
+	<select id="getSyncServices" resultClass="uri" parameterClass="boolean">
+		SELECT ss.uri
 		  FROM sync_services ss
 		  WHERE ss.server = #server#
 	</select>
