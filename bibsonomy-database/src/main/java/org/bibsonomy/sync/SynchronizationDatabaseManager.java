@@ -343,13 +343,17 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		/*
-		 * TODO get full post from database and attach it to synchronization post to send to client.
-		 * Remove posts with OK-action.
+		 * FIXME posts with OK-state will be not required.
 		 */
 		return clientPosts;
 	}
     
-    
+    /**
+     * 
+     * @param post
+     * @param action
+     * @param direction
+     */
     private void setAction(SynchronizationPost post, SynchronizationActions action, SynchronizationDirection direction) {
     	boolean server = true;
     	if(direction.toString().endsWith("_CLIENT")){
