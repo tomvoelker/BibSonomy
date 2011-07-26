@@ -100,6 +100,7 @@ import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.GroupUtils;
@@ -285,7 +286,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getSynchronization(java.lang.String, java.lang.Class, java.util.List, org.bibsonomy.model.sync.ConflictResolutionStrategy, java.lang.String)
      */
     @Override
-    public List<SynchronizationPost> getSyncPlan(final String userName, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service) {
+    public List<SynchronizationPost> getSyncPlan(final String userName, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service, final SynchronizationDirection direction) {
     	Date lastSuccessfulSyncDate;
 
     	final Map<String, SynchronizationPost> posts;
@@ -324,8 +325,9 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		}
 		/*
 		 * calculate synchronization plan
+		 * FIXME get direction form db
 		 */
-    	return syncDBManager.getSyncPlan(posts, clientPosts, lastSuccessfulSyncDate, strategy);
+    	return syncDBManager.getSyncPlan(posts, clientPosts, lastSuccessfulSyncDate, strategy, SynchronizationDirection.BOTH);
     }
     
     /*

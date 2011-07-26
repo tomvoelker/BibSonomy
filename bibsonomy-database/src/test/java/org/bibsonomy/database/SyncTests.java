@@ -23,8 +23,9 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
-import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationActions;
+import org.bibsonomy.model.sync.SynchronizationDirection;
+import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -200,7 +201,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		}
 		assertEquals(5, clientPosts.size());
 
-		List<SynchronizationPost> synchronizedPosts = dbLogic.getSyncPlan(userName, resourceType, clientPosts, strategy, testURI);
+		List<SynchronizationPost> synchronizedPosts = dbLogic.getSyncPlan(userName, resourceType, clientPosts, strategy, testURI, SynchronizationDirection.BOTH);
 		assertNotNull("no synchronized posts returned", synchronizedPosts);
 
 		HashMap<String, SynchronizationPost> map = listToMap(synchronizedPosts);
@@ -224,7 +225,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		 */
 		hash = "b1629524db9c09f8b75af7ba83249980";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationActions.DELETE, map.get(hash).getState());
+		assertEquals(SynchronizationActions.DELETE_SERVER, map.get(hash).getState());
 
 		/*
 		 * test post 4 "post changed on server"
@@ -238,7 +239,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		 */
 		hash = "133de67269c9bfa71bde2b7615f0c1b3";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationActions.UPDATE, map.get(hash).getState());
+		assertEquals(SynchronizationActions.UPDATE_SERVER, map.get(hash).getState());
 
 		/*
 		 * test post 6 "post created on server"
@@ -252,7 +253,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		 */
 		hash = "418397b6f507faffe6f9b02569ffbc9e";
 		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationActions.CREATE, map.get(hash).getState());
+		assertEquals(SynchronizationActions.CREATE_SERVER, map.get(hash).getState());
 	}
 
 }

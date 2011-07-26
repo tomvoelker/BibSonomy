@@ -17,9 +17,10 @@ import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
-import org.bibsonomy.model.sync.SynchronizationData;
-import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationActions;
+import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationDirection;
+import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 
 /**
@@ -253,7 +254,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param conflictResolutionStrategy
      * @return
      */
-    public List<SynchronizationPost> getSyncPlan(final Map<String, SynchronizationPost> serverPosts, final List<SynchronizationPost> clientPosts, final Date lastSyncDate, final ConflictResolutionStrategy conflictResolutionStrategy) {
+    public List<SynchronizationPost> getSyncPlan(final Map<String, SynchronizationPost> serverPosts, final List<SynchronizationPost> clientPosts, final Date lastSyncDate, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
 
 		// is something to synchronize?
 		if (!present(serverPosts) && !present(clientPosts)) {
@@ -269,15 +270,17 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 
 			/* no such post on server */
 			if (!present(serverPost)) {
+				
+				
 				/*
-				 * clientpost is older than last synchronization -> post was
+				 * client post is older than last synchronization -> post was
 				 * deleted on server
 				 */
 				if (clientPost.getCreateDate().compareTo(lastSyncDate) < 0) {
-					clientPost.setState(SynchronizationActions.DELETE_CLIENT);
+					setAction(clientPost, SynchronizationActions.DELETE_CLIENT, direction);					
 					continue;
 				} else {
-					clientPost.setState(SynchronizationActions.CREATE);
+					setAction(clientPost, SynchronizationActions.CREATE_SERVER, direction);
 					continue;
 				}
 			}
@@ -291,25 +294,27 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 				if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0) {
 					switch (conflictResolutionStrategy) {
 					case CLIENT_WINS:
-						clientPost.setState(SynchronizationActions.UPDATE);
+						setAction(clientPost, SynchronizationActions.UPDATE_SERVER, direction);
 						break;
 					case SERVER_WINS:
-						clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
+						setAction(clientPost, SynchronizationActions.UPDATE_CLIENT, direction);
 						break;
 					case ASK_USER:
 						clientPost.setState(SynchronizationActions.ASK);
 						break;
 					case FIRST_WINS:
 						if (clientPost.getChangeDate().compareTo(serverPost.getChangeDate()) < 0) {
-							clientPost.setState(SynchronizationActions.UPDATE);
+							setAction(clientPost, SynchronizationActions.UPDATE_SERVER, direction);
 						} else {
-							clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
+							setAction(clientPost, SynchronizationActions.UPDATE_CLIENT, direction);
 						}
 						break;
 					case LAST_WINS:
 						if (clientPost.getChangeDate().compareTo(serverPost.getChangeDate()) > 0) {
-							clientPost.setState(SynchronizationActions.UPDATE);
+							setAction(clientPost, SynchronizationActions.UPDATE_SERVER, direction);
+							
 						} else {
+							setAction(clientPost, SynchronizationActions.UPDATE_CLIENT, direction);
 							clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
 						}
 						break;
@@ -323,7 +328,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 				}
 			} else {
 				if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0) {
-					clientPost.setState(SynchronizationActions.UPDATE);
+					setAction(clientPost, SynchronizationActions.UPDATE_SERVER, direction);
 				} else {
 					clientPost.setState(SynchronizationActions.OK);
 				}
@@ -342,14 +347,34 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			 * post is older than lastSyncDate
 			 */
 			if (serverPost.getCreateDate().compareTo(lastSyncDate) < 0) {
-				serverPost.setState(SynchronizationActions.DELETE);
+				setAction(serverPost, SynchronizationActions.DELETE_SERVER, direction);
 			} else {
-				serverPost.setState(SynchronizationActions.CREATE_CLIENT);
+				setAction(serverPost, SynchronizationActions.CREATE_CLIENT, direction);
 			}
 			clientPosts.add(serverPost);
 		}
-
-
+		
+		/*
+		 * TODO get full post from database and attach it to synchronization post to send to client.
+		 * Remove posts with OK-action.
+		 */
 		return clientPosts;
 	}
+    
+    
+    private void setAction(SynchronizationPost post, SynchronizationActions action, SynchronizationDirection direction) {
+    	boolean server = true;
+    	if(direction.toString().endsWith("_CLIENT")){
+    		server = false;
+    	}
+    	if(server && direction != SynchronizationDirection.SERVER_TO_CLIENT) {
+    		post.setState(action);
+    		return;
+    	}
+    	if(!server && direction != SynchronizationDirection.CLIENT_TO_SERVER) {
+    		post.setState(action);
+    		return;
+    	}
+    	post.setState(SynchronizationActions.OK);
+    }
 }

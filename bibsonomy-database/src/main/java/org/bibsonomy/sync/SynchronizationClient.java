@@ -25,6 +25,7 @@ import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 
@@ -64,22 +65,22 @@ public class SynchronizationClient {
 	}
 	
 	
+
+
 	/**
-	 * Looks up the credentials for the given syncServer and creates an 
-	 * instance of the a LogicInterface on the syncServer. If no credentials
+	 * Looks up the credentials for the given syncServer. If no credentials
 	 * could be found, <code>null</code> is returned.
 	 *  
-	 * 
-	 * @param userName
-	 * @param apiKey
-	 * @return Logic with access to database on server-service   
+	 * @param clientLogic
+	 * @param syncServer
+	 * @return syncService
 	 */
-	private LogicInterface getServerLogic(final LogicInterface clientLogic, final URI syncServer) {
+	private SyncService getServerByURI(final LogicInterface clientLogic, final URI syncServer) {
 		final List<SyncService> syncServers = ((SyncLogicInterface)clientLogic).getSyncServer(clientLogic.getAuthenticatedUser().getName());
 		
 		for (final SyncService syncService : syncServers) {
 			if (syncServer.equals(syncService.getService())) {
-				return getServerLogic(syncService);
+				return syncService;
 			}
 		}
 		return null;
@@ -137,10 +138,14 @@ public class SynchronizationClient {
 	 * @return
 	 */
 	public SynchronizationData synchronize(final LogicInterface clientLogic, final URI syncServer, final Class<? extends Resource> resourceType) {
+		
+		final SyncService serverService = getServerByURI(clientLogic, syncServer);
+		
 		/*
 		 * retrieve instance of server logic
 		 */
-		final LogicInterface serverLogic = getServerLogic(clientLogic, syncServer);
+		final LogicInterface serverLogic = getServerLogic(serverService);
+		
 		if (!present(serverLogic)) {
 			throw new IllegalArgumentException("Synchronization for " + syncServer + " not configured for user " + clientLogic.getAuthenticatedUser());
 		}
@@ -152,7 +157,7 @@ public class SynchronizationClient {
 			/*
 			 * try to synchronize
 			 */
-			info = synchronize(clientLogic, serverLogic, resourceType);
+			info = synchronize(clientLogic, serverLogic, resourceType, serverService.getDirection());
 			result = SynchronizationStatus.DONE;
 		} catch (final SynchronizationRunningException e) {
 			/*
@@ -174,7 +179,7 @@ public class SynchronizationClient {
 		
 		//Get synchronization data from server. Can't construct here, because last_sync_date only known by server
 		return getLastSyncData(serverUserName, resourceType, serverLogic);
-	}	
+	}
 	
 	/**
 	 * Stores result of synchronization on server
@@ -207,7 +212,7 @@ public class SynchronizationClient {
 	 * @param resourceType
 	 * @return synchronization result
 	 */
-	private String synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final Class<? extends Resource> resourceType) {
+	private String synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final Class<? extends Resource> resourceType, SynchronizationDirection direction) {
 		/*
 		 * add sync access to both users = allow users to modify the dates of
 		 * posts
@@ -227,7 +232,7 @@ public class SynchronizationClient {
 		/*
 		 * get synchronization actions and posts from server
 		 */
-		final List<SynchronizationPost> syncPlan = ((SyncLogicInterface)serverLogic).getSyncPlan(serverUser.getName(), resourceType, clientPosts, strategy, ownUri);
+		final List<SynchronizationPost> syncPlan = ((SyncLogicInterface)serverLogic).getSyncPlan(serverUser.getName(), resourceType, clientPosts, strategy, ownUri, direction);
 
 		/*
 		 * create target lists
@@ -247,7 +252,7 @@ public class SynchronizationClient {
 			
 			final Post<? extends Resource> postToHandle;
 			switch (post.getState()) {
-			case CREATE:
+			case CREATE_SERVER:
 				postToHandle = clientLogic.getPostDetails(postIntraHash, clientUser.getName());
 				postToHandle.setUser(serverUser);
 				createOnServer.add(postToHandle);
@@ -257,13 +262,13 @@ public class SynchronizationClient {
 				postToHandle.setUser(clientUser);
 				createOnClient.add(postToHandle);
 				break;
-			case DELETE:
+			case DELETE_SERVER:
 				deleteOnServer.add(postIntraHash);
 				break;
 			case DELETE_CLIENT:
 				deleteOnClient.add(postIntraHash);
 				break;
-			case UPDATE:
+			case UPDATE_SERVER:
 				postToHandle = clientLogic.getPostDetails(postIntraHash, clientUser.getName());
 				postToHandle.setUser(serverUser);
 				updateOnServer.add(postToHandle);
