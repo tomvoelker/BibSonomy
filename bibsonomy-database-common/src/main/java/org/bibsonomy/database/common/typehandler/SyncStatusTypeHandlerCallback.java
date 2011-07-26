@@ -14,7 +14,7 @@ public class SyncStatusTypeHandlerCallback extends AbstractTypeHandlerCallback {
 	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
-			setter.setString(SynchronizationStatus.UNKNOWN.getSynchronizationStatus());
+			throw new IllegalArgumentException("Synchronization status must not be NULL.");
 		} else {
 			setter.setString(((SynchronizationStatus) parameter).getSynchronizationStatus());
 		}
