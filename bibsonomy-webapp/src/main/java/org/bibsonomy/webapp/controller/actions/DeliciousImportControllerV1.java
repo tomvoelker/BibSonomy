@@ -33,9 +33,14 @@ public class DeliciousImportControllerV1 extends DeliciousImportController {
 	@Override
 	protected String createRedirect(SettingsViewCommand command, RequestWrapperContext context, Errors errors) {
 		
-		String redirectURI;
+		/*
+		 * FIXME: it is horrible security to put a password as GET parameter into the URL!
+		 * 
+		 * Please don't do this using redirects. Instead, directly process the import.
+		 * 
+		 */
 		try {
-			redirectURI = importBookmarksPath
+			return importBookmarksPath
 			+ "?" + "ckey=" + context.getCkey()
 			+ "&" + "overwrite=" + command.isOverwriteV1()
 			+ "&" + "importData=" + command.getImportDataV1()
@@ -44,8 +49,6 @@ public class DeliciousImportControllerV1 extends DeliciousImportController {
 		} catch (UnsupportedEncodingException ex) {
 			throw new InternServerException(ex.getMessage());
 		}
-		
-		return redirectURI;
 	}
 	
 	/**
@@ -53,7 +56,7 @@ public class DeliciousImportControllerV1 extends DeliciousImportController {
 	 * @param errors
 	 */
 	@Override
-	public void validate(SettingsViewCommand target, Errors errors) {
+	protected void validate(SettingsViewCommand target, Errors errors) {
 		if (!present(target.getUserName())) {
 			errors.rejectValue("userName", "error.field.required");
 		}
