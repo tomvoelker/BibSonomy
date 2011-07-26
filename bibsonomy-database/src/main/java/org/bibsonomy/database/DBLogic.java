@@ -313,8 +313,11 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     		}
     		/*
     		 * flag synchronization as running
+    		 * FIXME: if the client is not in the sync_services table, this 
+    		 * statements silently fails. :-(
     		 */
     		this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.RUNNING, session);
+    		
     		/*
     		 * get posts from server (=this machine)
     		 */
