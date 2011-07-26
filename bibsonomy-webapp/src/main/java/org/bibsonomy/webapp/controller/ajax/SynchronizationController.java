@@ -4,18 +4,17 @@ package org.bibsonomy.webapp.controller.ajax;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
-import org.apache.shiro.authz.UnauthorizedException;
-import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.sync.SynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -30,10 +29,10 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class SynchronizationController extends AjaxController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware {
-	
+
 	private Errors errors;
 	private SynchronizationClient client;
-	
+
 	@Override
 	public AjaxSynchronizationCommand instantiateCommand() {
 		AjaxSynchronizationCommand command =  new AjaxSynchronizationCommand();
@@ -42,65 +41,60 @@ public class SynchronizationController extends AjaxController implements Minimal
 
 	@Override
 	public View workOn(AjaxSynchronizationCommand command) {
-		/*
-		 * only admins can synchronize!
-		 */
 		final RequestWrapperContext context = command.getContext();
+
+		/*
+		 * some security checks
+		 */
+		if (!context.isUserLoggedIn()) {
+			throw new org.springframework.security.access.AccessDeniedException("please log in");
+		}
 		final User loginUser = context.getLoginUser();
-		if (!present(loginUser) || !Role.ADMIN.equals(loginUser.getRole())) {
-			throw new UnauthorizedException();
+		if (loginUser.isSpammer()) {
+			throw new AccessDeniedException("error.method_not_allowed");
+		}
+		if (!context.isValidCkey()) {
+			this.errors.reject("error.field.valid.ckey");
 		}
 
-		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-		}
-		
-		
+
 		/*
 		 * create server URI from service name
 		 */
-		final String serviceName = command.getServiceName();
-		URI uri = null;
-		if (present(serviceName)) {
-			try {
-				uri = new URI(serviceName);
-			} catch (URISyntaxException ex) {
-				// FIXME: add error
-				throw new IllegalStateException();
-			}
-		} else {
+		final URI serviceName = command.getServiceName();
+		if (!present(serviceName)) {
 			errors.rejectValue("serviceName", "error.field.required");
 		}
-		
+
 		if (errors.hasErrors()) {
 			return Views.AJAX_ERRORS;
 		}
-		
-		final JSONObject json = new JSONObject();
-		
 
-		if (command.getSyncBookmarks()) {
-			addData(json, Bookmark.class, client.synchronize(logic, uri, Bookmark.class));
-		}
-		if (command.getSyncPublications()) {
-			addData(json, BibTex.class, client.synchronize(logic, uri, BibTex.class));
-		}
+		final JSONObject json = getJson(client.synchronize(logic, serviceName));
 
 		command.setResponseString(json.toString());
+
 		return Views.AJAX_JSON;
 	}
-	
-	private void addData (final JSONObject json, Class<? extends Resource> resourceType, final SynchronizationData data) {
-		final HashMap<String, Object> values = new HashMap<String, Object>();
-		if ("running".equals(data.getStatus())) {
-			//TODO i18N
-			values.put("error", "old synchronization still running, please try later");
-		} else {
-			values.put("error", "no");
-			values.put("date", data.getLastSyncDate().getTime());
-			values.put("result", data.getStatus());
+
+	private JSONObject getJson(final Map<Class<? extends Resource>, SynchronizationData> data) {
+		final JSONObject json = new JSONObject();
+
+		for (final Entry<Class<? extends Resource>, SynchronizationData> entry : data.entrySet()) {
+			final SynchronizationData value = entry.getValue();
+			final HashMap<String, Object> values = new HashMap<String, Object>();
+			if (SynchronizationStatus.RUNNING.equals(value.getStatus())) {
+				// TODO i18N
+				values.put("error", "old synchronization still running, please try later");
+			} else {
+				values.put("error", "no");
+				values.put("date", value.getLastSyncDate().getTime());
+				values.put("status", value.getStatus());
+				values.put("info", value.getInfo());
+			}
+			json.put(entry.getKey().getSimpleName(), values);
 		}
-		json.put(resourceType.getSimpleName(), values);
+		return json;
 	}
 
 	@Override
@@ -126,5 +120,5 @@ public class SynchronizationController extends AjaxController implements Minimal
 	public SynchronizationClient getClient() {
 		return client;
 	}
-	
+
 }
