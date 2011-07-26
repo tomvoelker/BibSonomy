@@ -4,7 +4,7 @@ package org.bibsonomy.model.sync;
  * @author wla
  * @version $Id$
  */
-public enum SynchronizationActions {
+public enum SynchronizationAction {
 	/**
 	 * server post must be updated
 	 */
