@@ -95,7 +95,6 @@
 			<fmt:message var="synchronize" key="synchronization.synchronize" />
 			<fmt:message var="serviceName" key="synchronization.serviceName" />
 			<fmt:message var="syncTimes" key="synchronization.lastSyncTimes" />
-			<fmt:message var="syncThisContent" key="synchronization.syncThis"/>
 			<fmt:message var="bookmarks" key="bookmarks" />
 			<fmt:message var="publications" key="publications" />
 			<fmt:message var="synchronizationRunning" key="synchronization.synchronizationRunning"/>
@@ -127,8 +126,6 @@
 											<fmt:message key="synchronization.noresult"/>
 										</c:otherwise>
 									</c:choose>
-									<form:checkbox path="syncBookmarks" />
-									<c:out value="${syncThisContent}"/>
 								</span>
 							</div>
 							
@@ -147,8 +144,6 @@
 											<fmt:message key="synchronization.noresult"/>
 										</c:otherwise>
 									</c:choose>
-									<form:checkbox path="syncPublications"/>
-									<c:out value="${syncThisContent}"/>
 								</span>
 							</div>
 							
