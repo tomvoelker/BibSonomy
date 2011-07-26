@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -189,14 +190,15 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
 
 		final List<SyncService> userServers = syncLogic.getSyncServer(command.getUser().getName());
-		final List<SyncService> allServers = syncLogic.getSyncServices(true);
+		final List<URI> allServers = syncLogic.getSyncServices(true);
 
 		/*
 		 * Remove all servers the user already has.
 		 */
 		for (final SyncService service : userServers) {
-			if (allServers.contains(service)) { // FIXME: not efficient
-				allServers.remove(service);
+			final URI serviceUri = service.getService();
+			if (allServers.contains(serviceUri)) { // FIXME: not efficient
+				allServers.remove(serviceUri);
 			}
 		}
 		command.setAvailableSyncServers(allServers);

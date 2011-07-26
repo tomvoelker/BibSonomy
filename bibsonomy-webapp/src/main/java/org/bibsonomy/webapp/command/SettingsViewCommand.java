@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -134,7 +135,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private List<SyncService> syncServer;
 	
-	private List<SyncService> availableSyncServers;
+	private List<URI> availableSyncServers;
 	
 	/** for delicious v2 import only, import bookmarks or bundles? **/
 	private String importDataV2 = "posts";
@@ -587,14 +588,14 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @param availableSyncServers the avlSyncServer to set
 	 */
-	public void setAvailableSyncServers(List<SyncService> availableSyncServers) {
+	public void setAvailableSyncServers(List<URI> availableSyncServers) {
 		this.availableSyncServers = availableSyncServers;
 	}
 
 	/**
 	 * @return the avlSyncServer
 	 */
-	public List<SyncService> getAvailableSyncServers() {
+	public List<URI> getAvailableSyncServers() {
 		return availableSyncServers;
 	}
 	
