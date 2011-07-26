@@ -37,3 +37,7 @@ var tagRecoOptions = {
 	 handleRecommendedTags(responseText);
    } 
 }; 
+
+$(document).ready(function() {
+	addAutoCompleteSendTag($('#inpf'));
+});
