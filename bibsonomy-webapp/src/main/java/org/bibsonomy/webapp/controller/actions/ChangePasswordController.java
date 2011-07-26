@@ -7,12 +7,12 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.config.AuthConfig;
 import org.bibsonomy.webapp.config.AuthMethod;
+import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -22,7 +22,7 @@ import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.rememberMeServices.CookieBasedRememberMeServices;
 import org.bibsonomy.webapp.validation.ChangePasswordValidator;
-import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +32,7 @@ import org.springframework.validation.Errors;
  * @author cvo
  * @version $Id$
  */
-public class ChangePasswordController implements ValidationAwareController<SettingsViewCommand>, ErrorAware, CookieAware {
+public class ChangePasswordController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand>, ErrorAware, CookieAware {
 	private static final Log log = LogFactory.getLog(ChangePasswordController.class);
 
 	/**
@@ -85,20 +85,11 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 		 * user has to be logged in to change his password
 		 */
 		if (!context.isUserLoggedIn()) {
-			errors.reject("error.general.login");
-			return Views.SETTINGSPAGE;
+			throw new AccessDeniedException("please log in");
 		}
 		
 		final User loginUser = context.getLoginUser();
-		command.setUser(loginUser);
-		
-		/*
-		 * check whether the user is a group		
-		 */
-		if (UserUtils.userIsGroup(loginUser)) {
-			command.setHasOwnGroup(true);
-			command.showGroupTab(true);
-		}
+
 
 		/*
 		 * LDAP and OpenID users can't change their password.
@@ -122,7 +113,7 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 		 * validation
 		 */
 		if (errors.hasErrors()) {
-			return Views.SETTINGSPAGE;
+			return super.workOn(command);
 		}
 
 		/*
@@ -138,7 +129,7 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 			errors.reject("error.field.valid.ckey");
 		}
 
-		return Views.SETTINGSPAGE;
+		return super.workOn(command);
 	}
 
 	private void changePassword(final User loginUser, final String oldPassword, final String newPassword) {
