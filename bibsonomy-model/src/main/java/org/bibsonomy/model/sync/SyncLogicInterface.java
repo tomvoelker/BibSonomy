@@ -100,9 +100,9 @@ public interface SyncLogicInterface {
 	/**
 	 * 
 	 * @param server switch between server and clients
-	 * @return List of for this System allowed synchronization services
+	 * @return List of allowed synchronization services
 	 */
-	public List<SyncService> getSyncServices(final boolean server);
+	public List<URI> getSyncServices(final boolean server);
 
 	
 	
