@@ -5,10 +5,12 @@ import java.util.LinkedList;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
+import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
@@ -59,20 +61,20 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 		
 		final String loginUserName = loginUser.getName();
 		final SyncService syncService = command.getSyncServer().get(0);
-		final URI serviceUrl = syncService.getService();
-
+		final URI service = syncService.getService();
+		final SynchronizationDirection direction = syncService.getDirection();
+		final Class<? extends Resource> resourceType = syncService.getResourceType();
 		final HttpMethod httpMethod = this.requestLogic.getHttpMethod();
-		
 		
 		switch (httpMethod) {
 		case POST:
-			((SyncLogicInterface) logic).createSyncServer(loginUserName, serviceUrl, syncService.getServerUser());
+			((SyncLogicInterface) logic).createSyncServer(loginUserName, service, resourceType, syncService.getServerUser(), direction);
 			break;
 		case PUT:
-			((SyncLogicInterface) logic).updateSyncServer(loginUserName, serviceUrl, syncService.getServerUser());
+			((SyncLogicInterface) logic).updateSyncServer(loginUserName, service, resourceType, syncService.getServerUser(), direction);
 			break;
 		case DELETE:
-			((SyncLogicInterface) logic).deleteSyncServer(loginUserName, serviceUrl);
+			((SyncLogicInterface) logic).deleteSyncServer(loginUserName, service);
 			break;
 		default:
 			errors.reject("error.general");
