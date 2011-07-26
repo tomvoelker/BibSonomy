@@ -133,21 +133,22 @@ public class SynchronizationClient {
 	 * Synchronized the user's posts between the clientLogic and the syncServer.  
 	 * 
 	 * @param clientLogic
-	 * @param syncServer
+	 * @param syncServerUri
 	 * @param resourceType
 	 * @return
 	 */
-	public SynchronizationData synchronize(final LogicInterface clientLogic, final URI syncServer, final Class<? extends Resource> resourceType) {
+	public SynchronizationData synchronize(final LogicInterface clientLogic, final URI syncServerUri) {
 		
-		final SyncService serverService = getServerByURI(clientLogic, syncServer);
-		
+		final SyncService syncServer = getServerByURI(clientLogic, syncServerUri);
+		final Class<? extends Resource> resourceType = syncServer.getResourceType();
+
 		/*
 		 * retrieve instance of server logic
 		 */
-		final LogicInterface serverLogic = getServerLogic(serverService);
+		final LogicInterface serverLogic = getServerLogic(syncServer);
 		
 		if (!present(serverLogic)) {
-			throw new IllegalArgumentException("Synchronization for " + syncServer + " not configured for user " + clientLogic.getAuthenticatedUser());
+			throw new IllegalArgumentException("Synchronization for " + syncServerUri + " not configured for user " + clientLogic.getAuthenticatedUser());
 		}
 		final String serverUserName = serverLogic.getAuthenticatedUser().getName();
 		
@@ -157,7 +158,7 @@ public class SynchronizationClient {
 			/*
 			 * try to synchronize
 			 */
-			info = synchronize(clientLogic, serverLogic, resourceType, serverService.getDirection());
+			info = synchronize(clientLogic, serverLogic, resourceType, syncServer.getDirection());
 			result = SynchronizationStatus.DONE;
 		} catch (final SynchronizationRunningException e) {
 			/*
