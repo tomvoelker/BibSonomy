@@ -265,10 +265,16 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 				 * deleted on server
 				 */
 				if (clientPost.getCreateDate().compareTo(lastSyncDate) < 0) {
-					setAction(clientPost, SynchronizationActions.DELETE_CLIENT, direction);					
+					if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+						clientPost.setState(SynchronizationActions.DELETE_CLIENT);
+					else
+						clientPost.setState(SynchronizationActions.OK);
 					continue;
 				} else {
-					setAction(clientPost, SynchronizationActions.CREATE_SERVER, direction);
+					if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+						clientPost.setState(SynchronizationActions.CREATE_SERVER);
+					else 
+						clientPost.setState(SynchronizationActions.OK);
 					continue;
 				}
 			}
@@ -282,28 +288,45 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 				if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0) {
 					switch (conflictResolutionStrategy) {
 					case CLIENT_WINS:
-						setAction(clientPost, SynchronizationActions.UPDATE_SERVER, direction);
+						if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+							clientPost.setState(SynchronizationActions.UPDATE_SERVER);
+						else 
+							clientPost.setState(SynchronizationActions.OK);
 						break;
 					case SERVER_WINS:
-						setAction(clientPost, SynchronizationActions.UPDATE_CLIENT, direction);
+						if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+							clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
+						else
+							clientPost.setState(SynchronizationActions.OK);
 						break;
 					case ASK_USER:
 						clientPost.setState(SynchronizationActions.ASK);
 						break;
 					case FIRST_WINS:
 						if (clientPost.getChangeDate().compareTo(serverPost.getChangeDate()) < 0) {
-							setAction(clientPost, SynchronizationActions.UPDATE_SERVER, direction);
+							if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+								clientPost.setState(SynchronizationActions.UPDATE_SERVER);
+							else 
+								clientPost.setState(SynchronizationActions.OK);
 						} else {
-							setAction(clientPost, SynchronizationActions.UPDATE_CLIENT, direction);
+							if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+								clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
+							else
+								clientPost.setState(SynchronizationActions.OK);
 						}
 						break;
 					case LAST_WINS:
 						if (clientPost.getChangeDate().compareTo(serverPost.getChangeDate()) > 0) {
-							setAction(clientPost, SynchronizationActions.UPDATE_SERVER, direction);
+							if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+								clientPost.setState(SynchronizationActions.UPDATE_SERVER);
+							else 
+								clientPost.setState(SynchronizationActions.OK);
 							
 						} else {
-							setAction(clientPost, SynchronizationActions.UPDATE_CLIENT, direction);
-							clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
+							if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+								clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
+							else
+								clientPost.setState(SynchronizationActions.OK);
 						}
 						break;
 					default:
@@ -312,11 +335,14 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 					}
 
 				} else {
-					clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
+					if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+						clientPost.setState(SynchronizationActions.UPDATE_CLIENT);
+					else
+						clientPost.setState(SynchronizationActions.OK);
 				}
 			} else {
-				if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0) {
-					setAction(clientPost, SynchronizationActions.UPDATE_SERVER, direction);
+				if (clientPost.getChangeDate().compareTo(lastSyncDate) > 0 && !SynchronizationDirection.SERVER_TO_CLIENT.equals(direction)) {
+					clientPost.setState(SynchronizationActions.UPDATE_SERVER);
 				} else {
 					clientPost.setState(SynchronizationActions.OK);
 				}
@@ -335,9 +361,15 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			 * post is older than lastSyncDate
 			 */
 			if (serverPost.getCreateDate().compareTo(lastSyncDate) < 0) {
-				setAction(serverPost, SynchronizationActions.DELETE_SERVER, direction);
+				if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+						serverPost.setState(SynchronizationActions.DELETE_SERVER);
+				else 
+					serverPost.setState(SynchronizationActions.OK);
 			} else {
-				setAction(serverPost, SynchronizationActions.CREATE_CLIENT, direction);
+				if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+					serverPost.setState(SynchronizationActions.CREATE_CLIENT);
+				else 
+					serverPost.setState(SynchronizationActions.OK);
 			}
 			clientPosts.add(serverPost);
 		}
@@ -347,26 +379,5 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		 */
 		return clientPosts;
 	}
-    
-    /**
-     * 
-     * @param post
-     * @param action
-     * @param direction
-     */
-    private void setAction(SynchronizationPost post, SynchronizationActions action, SynchronizationDirection direction) {
-    	boolean server = true;
-    	if(direction.toString().endsWith("_CLIENT")){
-    		server = false;
-    	}
-    	if(server && direction != SynchronizationDirection.SERVER_TO_CLIENT) {
-    		post.setState(action);
-    		return;
-    	}
-    	if(!server && direction != SynchronizationDirection.CLIENT_TO_SERVER) {
-    		post.setState(action);
-    		return;
-    	}
-    	post.setState(SynchronizationActions.OK);
-    }
+
 }
