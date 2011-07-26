@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller.actions;
 import java.net.URI;
 import java.util.LinkedList;
 
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -44,12 +43,17 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 	public View workOn(final SettingsViewCommand command) {
 		
 		final RequestWrapperContext context = command.getContext();
-		final User loginUser = context.getLoginUser();
 		
-		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
+		/*
+		 * some security checks
+		 */
+		if (!context.isUserLoggedIn()) {
+			throw new org.springframework.security.access.AccessDeniedException("please log in");
+		}
+		final User loginUser = context.getLoginUser();
+		if (loginUser.isSpammer()) {
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
-
 		if (!context.isValidCkey()) {
 			this.errors.reject("error.field.valid.ckey");
 		}
