@@ -1,8 +1,8 @@
 package org.bibsonomy.webapp.command.admin;
 
+import java.net.URI;
 import java.util.List;
 
-import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
@@ -11,8 +11,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
  */
 public class AdminSyncCommand extends BaseCommand {
 	
-	private List<SyncService> avlServer;
-	private List<SyncService> avlClients;
+	private List<URI> avlServer;
+	private List<URI> avlClients;
 	private String action;
 	private String service;
 	private boolean server;
@@ -20,25 +20,25 @@ public class AdminSyncCommand extends BaseCommand {
 	/**
 	 * @param avlServer the avlServer to set
 	 */
-	public void setAvlServer(List<SyncService> avlServer) {
+	public void setAvlServer(List<URI> avlServer) {
 		this.avlServer = avlServer;
 	}
 	/**
 	 * @return the avlServer
 	 */
-	public List<SyncService> getAvlServer() {
+	public List<URI> getAvlServer() {
 		return avlServer;
 	}
 	/**
 	 * @param avlClients the avlClients to set
 	 */
-	public void setAvlClients(List<SyncService> avlClients) {
+	public void setAvlClients(List<URI> avlClients) {
 		this.avlClients = avlClients;
 	}
 	/**
 	 * @return the avlClients
 	 */
-	public List<SyncService> getAvlClients() {
+	public List<URI> getAvlClients() {
 		return avlClients;
 	}
 	/**
