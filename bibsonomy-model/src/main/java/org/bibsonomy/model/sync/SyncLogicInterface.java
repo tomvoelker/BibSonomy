@@ -24,7 +24,6 @@
 package org.bibsonomy.model.sync;
 
 import java.net.URI;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -110,16 +109,7 @@ public interface SyncLogicInterface {
 	/* ********************************************************************
 	 * create, read, update, delete sync services - user dependent
 	 */
-	
-	/**
-	 * 
-	 * @param userName
-	 * @param service
-	 * @param resourceType
-	 * @return returns date of current running Synchronization
-	 */
-	public Date getLastSyncDate(final String userName, final URI service, final Class<? extends Resource> resourceType);
-	
+
 	/**
 	 * 
 	 * @param data
