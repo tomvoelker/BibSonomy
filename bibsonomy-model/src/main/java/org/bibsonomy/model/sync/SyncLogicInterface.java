@@ -26,9 +26,10 @@ package org.bibsonomy.model.sync;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 
 
@@ -74,9 +75,11 @@ public interface SyncLogicInterface {
 	 * 
 	 * @param userName
 	 * @param service
+	 * @param resourceType - the type of resource that should be synchronized. {@link Resource} means booth {@link Bookmark} and {@link BibTex}.
 	 * @param userCredentials
+	 * @param direction 
 	 */
-	public void createSyncServer(final String userName, final URI service, final Properties userCredentials);
+	public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction);
 	
 	/**
 	 * 
@@ -89,9 +92,11 @@ public interface SyncLogicInterface {
 	 * 
 	 * @param userName
 	 * @param service
+	 * @param resourceType - the type of resource that should be synchronized. {@link Resource} means booth {@link Bookmark} and {@link BibTex}.
 	 * @param userCredentials 
+	 * @param direction 
 	 */
-	public void updateSyncServer(final String userName, final URI service, final Properties userCredentials);
+	public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction);
 	
 	/**
 	 * 
@@ -139,14 +144,6 @@ public interface SyncLogicInterface {
 	 * @return List of SnchronizationPosts for given user 
 	 */
 	public List<SynchronizationPost> getSyncPosts (final String userName, final Class<? extends Resource> resourceType);
-	
-	/**
-	 * 
-	 * @param userName
-	 * @param resourceType 
-	 * @return map with user posts used from server!
-	 */
-	public Map<String, SynchronizationPost> getSyncPostsMapForUser(final String userName, Class<? extends Resource> resourceType);
 	
 	/**
 	 * 
