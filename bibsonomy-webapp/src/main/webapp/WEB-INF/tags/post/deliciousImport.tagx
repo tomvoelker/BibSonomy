@@ -13,114 +13,106 @@
 	
 		
 		<h2><fmt:message key="settings.delicious.header" /></h2>
-   		<div id="fsform">
-   			
-   			<div class="fsInner" >
-   			
-   				<div class="fsContainerRight">
-   							
-					<form:form id="settingImportForm" action="/import/delicious/v2/post?ckey=${ckey}" method="post">
-			 
-						<fieldset class="fsRight">
-						<legend><fmt:message key="import.delicious.yahoo"/></legend>
+ 		
+ 		<fieldset class="fsOuter" >
+			<form:form action="/import/delicious/v2/post" method="post">
+	 
+				<fieldset class="fsInner">
+					<legend><fmt:message key="import.delicious.yahoo"/></legend>
 
-			  				<div class="fsRow">
-								<fmt:message key="settings.delicious.yahoo.explain"/>
-							</div>
-	
-			  				<div class="fsRow">
-			   					<label class="fsLabel" for="overwrite"><fmt:message key="settings.overwrite"/></label>
-			    			    <buttons:help message="settings.overwrite.help.delicious"/>
-			    				<form:checkbox path="overwriteV2"/>
-			    	    	</div>
-			    	    	
-			    	    	<div class="fsRow">
-								<label class="fsLabel" for="importData"><fmt:message key="import.kind"/></label>
-								<buttons:help message="import.kind.help">
-						        	<jsp:attribute name="helpText">
-						        		<ol>
-						        			<li> <fmt:message key="import.kind.help.bookmarks"/></li>
-						        			<li> <fmt:message key="import.kind.help.bundles"/></li>
-						        		</ol>
-					    	    	</jsp:attribute>
-								</buttons:help>
-								<div style="font-size:80%">
-			                        <form:radiobutton path="importDataV2" value="posts"/>
-			                        <fmt:message key="bookmarks"/>
-			  
-			                        <form:radiobutton path="importDataV2" value="bundles"/>
-			                        <fmt:message key="import.bundles"/>
-			                       </div>
-			                       <div class="dissError"><form:errors path="importDataV2" /></div>
-			    	    	</div>
-			    	    	
-				  			<div class="fsRow">
-			      				<input type="submit" value="${valueButton}"/>
-			    			 	<input id="importType" name="importType" type="hidden" value="delicious"/>
-			  				</div>
-			  			</fieldset>
-					</form:form>
-	   			</div>
-	   			<div class="fsContainerLeft">
-					<form:form id="settingImportForm" action="/import/delicious/v1/post?ckey=${ckey}" method="post">
-		 
-						<fieldset class="fsLeft">
-						<legend><fmt:message key="import.delicious.original"/></legend>
+	  				<div class="fsRow">
+						<fmt:message key="settings.delicious.yahoo.explain"/>
+					</div>
 
-			  				<div class="fsRow">
-								<fmt:message key="settings.delicious.original.explain"/>
-							</div>
-	
-			  				<div class="fsRow">
-		 						<label for="userName" class="fsLabel"><fmt:message key="navi.username"/></label>
-		 	    			    <buttons:help message="settings.username.help.delicious"/>
-		 						<form:input path="userName" cssClass="fsInput fsSmall" />
-			                       <div class="dissError"><form:errors path="userName" /></div>
-							</div>  		
+	  				<div class="fsRow">
+	   					<form:label cssClass="fsLabel" path="overwriteV2"><fmt:message key="settings.overwrite"/></form:label>
+	    			    <buttons:help message="settings.overwrite.help.delicious"/>
+	    				<form:checkbox path="overwriteV2"/>
+	    	    	</div>
+	    	    	
+	    	    	<div class="fsRow">
+						<form:label cssClass="fsLabel" path="importDataV2"><fmt:message key="import.kind"/></form:label>
+						<buttons:help message="import.kind.help">
+				        	<jsp:attribute name="helpText">
+				        		<ol>
+				        			<li> <fmt:message key="import.kind.help.bookmarks"/></li>
+				        			<li> <fmt:message key="import.kind.help.bundles"/></li>
+				        		</ol>
+			    	    	</jsp:attribute>
+						</buttons:help>
+						<div>
+	                        <form:radiobutton path="importDataV2" value="posts"/>
+	                        <fmt:message key="bookmarks"/>
+	  
+	                        <form:radiobutton path="importDataV2" value="bundles"/>
+	                        <fmt:message key="import.bundles"/>
+	                    </div>
+	                    <div class="dissError"><form:errors path="importDataV2" /></div>
+	    	    	</div>
+	    	    	
+		  			<div class="fsRow">
+	      				<input type="submit" value="${valueButton}"/>
+	      				<input type="hidden" name="ckey" value="${ckey}"/>
+	    			 	<input type="hidden" name="importType" value="delicious"/>
+	  				</div>
+	  			</fieldset>
+			</form:form>
+
+			<form:form action="/import/delicious/v1/post" method="post">
+  				<fieldset class="fsInner">
+					<legend><fmt:message key="import.delicious.original"/></legend>
+
+	  				<div class="fsRow">
+						<fmt:message key="settings.delicious.original.explain"/>
+					</div>
+
+	  				<div class="fsRow">
+ 						<form:label path="userName" cssClass="fsLabel"><fmt:message key="navi.username"/></form:label>
+ 	    			    <buttons:help message="settings.username.help.delicious"/>
+ 						<form:input path="userName" cssClass="fsInput fsSmall" />
+	                    <div class="dissError"><form:errors path="userName" /></div>
+					</div>  		
+
+	  				<div class="fsRow">
+						<form:label path="passWord" cssClass="fsLabel"><fmt:message key="navi.password"/></form:label>
+	    			    <buttons:help message="settings.password.help.delicious"/>
+	    				<form:password path="passWord" cssClass="fsInput fsSmall"/>
+	                    <div class="dissError"><form:errors path="passWord" /></div>
+					</div>
 		
-			  				<div class="fsRow">
-								<label for="passWord" class="fsLabel"><fmt:message key="navi.password"/></label>
-			    			    <buttons:help message="settings.password.help.delicious"/>
-			    				<input id="passWord" type="password" name="passWord" class="fsInput fsSmall"/>
-			                    <div class="dissError"><form:errors path="passWord" /></div>
-							</div>
-				
-			  				<div class="fsRow">
-			   					<label class="fsLabel" for="overwrite"><fmt:message key="settings.overwrite"/></label>
-			    			    <buttons:help message="settings.overwrite.help.delicious"/>
-			    				<form:checkbox path="overwriteV1"/>
-			    	    	</div>
-			    	    	
-			    	    	<div class="fsRow">
-								<label class="fsLabel" for="importData"><fmt:message key="import.kind"/></label>
-								<buttons:help message="import.kind.help">
-						        	<jsp:attribute name="helpText">
-						        		<ol>
-						        			<li> <fmt:message key="import.kind.help.bookmarks"/></li>
-						        			<li> <fmt:message key="import.kind.help.bundles"/></li>
-						        		</ol>
-					    	    	</jsp:attribute>
-								</buttons:help>
-								<div style="font-size:80%">
-			                        <form:radiobutton path="importDataV1" value="posts"/>
-			                        <fmt:message key="bookmarks"/>
-			  
-			                        <form:radiobutton path="importDataV1" value="bundles"/>
-			                        <fmt:message key="import.bundles"/>
-			                       <div class="dissError"><form:errors path="importDataV1" /></div>
-		                        </div>
-			    	    	</div>
-			    	    	
-				  			<div class="fsRow">
-			      				<input type="submit" value="${valueButton}"/>
-			    			 	<input id="importType" name="importType" type="hidden" value="delicious"/>
-			  				</div>
-			  			</fieldset>
-					</form:form>
-				</div>
-			</div>
-				
-  		</div>
-		
+	  				<div class="fsRow">
+	   					<form:label cssClass="fsLabel" path="overwriteV1"><fmt:message key="settings.overwrite"/></form:label>
+	    			    <buttons:help message="settings.overwrite.help.delicious"/>
+	    				<form:checkbox path="overwriteV1"/>
+	    	    	</div>
+	    	    	
+	    	    	<div class="fsRow">
+						<form:label cssClass="fsLabel" path="importDataV1"><fmt:message key="import.kind"/></form:label>
+						<buttons:help message="import.kind.help">
+				        	<jsp:attribute name="helpText">
+				        		<ol>
+				        			<li> <fmt:message key="import.kind.help.bookmarks"/></li>
+				        			<li> <fmt:message key="import.kind.help.bundles"/></li>
+				        		</ol>
+			    	    	</jsp:attribute>
+						</buttons:help>
+						<div>
+	                        <form:radiobutton path="importDataV1" value="posts"/>
+	                        <fmt:message key="bookmarks"/>
+	  
+	                        <form:radiobutton path="importDataV1" value="bundles"/>
+	                        <fmt:message key="import.bundles"/>
+	                       	<div class="dissError"><form:errors path="importDataV1" /></div>
+                        </div>
+	    	    	</div>
+	    	    	
+		  			<div class="fsRow">
+	      				<input type="submit" value="${valueButton}"/>
+	      				<input type="hidden" name="ckey" value="${ckey}"/>
+	    			 	<input type="hidden" name="importType" value="delicious"/>
+	  				</div>
+	  			</fieldset>
+			</form:form>
+			</fieldset>
 	
 </jsp:root>
