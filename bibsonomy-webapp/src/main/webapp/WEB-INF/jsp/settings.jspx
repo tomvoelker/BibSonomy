@@ -52,7 +52,7 @@
 	
 		
         <jsp:attribute name="heading">
-		  	<a rel="path_menu" href="/settings"><img src="/resources/image/box_arrow.png"/>&amp;nbsp;<c:out value="settingsPageTitle" /></a>
+		  	<a rel="path_menu" href="/settings"><img src="/resources/image/box_arrow.png"/>&amp;nbsp;<c:out value="${settingsPageTitle}" /></a>
         </jsp:attribute>
 	
 		
