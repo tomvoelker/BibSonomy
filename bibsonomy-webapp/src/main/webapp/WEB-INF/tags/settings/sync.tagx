@@ -11,7 +11,6 @@
   xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
   xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
-  <!--xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"-->
   
 	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 
@@ -45,11 +44,20 @@
    				<div class="fsRow">
 	          		<form:label cssClass="fsLabel" path="direction" ><fmt:message key="synchronization.direction"/></form:label>
 	          		<form:select cssClass="fsInput fsSmall" path="direction">
-	          			<form:option value="${SynchronizationDirection.BOTH}">both</form:option>
-	          			<form:option value="${SynchronizationDirection.CLIENT_TO_SERVER}">BibSonomy to PUMA</form:option>
-	          			<form:option value="${SynchronizationDirection.SERVER_TO_CLIENT}">PUMA to BibSonomy</form:option>
+	          			<form:option value="BOTH">both</form:option><!-- I18N -->
+	          			<form:option value="CLIENT_TO_SERVER">BibSonomy to PUMA</form:option><!-- I18N -->
+	          			<form:option value="SERVER_TO_CLIENT">PUMA to BibSonomy</form:option><!-- I18N -->
 	          		</form:select>
     	      		<div class="dissError"><form:errors path="direction" /></div>
+        		</div>
+   				<div class="fsRow">
+	          		<form:label cssClass="fsLabel" path="resourceType" ><fmt:message key="synchronization.resourceType"/></form:label>
+	          		<form:select cssClass="fsInput fsSmall" path="resourceType">
+	          			<form:option value="org.bibsonomy.model.Resource">both</form:option><!-- I18N -->
+	          			<form:option value="org.bibsonomy.model.BibTex"><fmt:message key="publications"/></form:option>
+	          			<form:option value="org.bibsonomy.model.Bookmark"><fmt:message key="bookmarks"/></form:option>
+	          		</form:select>
+    	      		<div class="dissError"><form:errors path="resourceType" /></div>
         		</div>
         		<div class="fsRow">
 					<form:hidden path="service"/>
@@ -64,7 +72,7 @@
 	</c:forEach>
 	
 	<!-- CREATE -->
-	<c:if test="${fn:length(command.availableSyncServers) != 0}">
+	<c:if test="${not empty command.availableSyncServers}">
 		<fieldset class="fsInner">
 			<form:form method="post" action="/updateSyncSettings" modelAttribute="command.syncServer[0]"> 
 	        
