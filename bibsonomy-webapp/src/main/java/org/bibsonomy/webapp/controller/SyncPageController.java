@@ -9,13 +9,13 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.sync.SynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -78,9 +78,11 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 		for (final SyncService syncService : userServices) {
 			final Map<String, SynchronizationData> syncData = new HashMap<String, SynchronizationData>();
 			try {
-				// FIXME: iterate over (to be created array) in ResourceUtils
-				syncData.put(Bookmark.class.getSimpleName(), syncClient.getLastSyncData(syncService, Bookmark.class));
-				syncData.put(BibTex.class.getSimpleName(), syncClient.getLastSyncData(syncService, BibTex.class));
+				
+				List<Class<? extends Resource>> requiredResourceTypes = ResourceUtils.getResourceTypesByClass(syncService.getResourceType());
+				for (Class<? extends Resource> resourceType : requiredResourceTypes) {
+					syncData.put(resourceType.getSimpleName(), syncClient.getLastSyncData(syncService, resourceType));
+				}
 			} catch (AccessDeniedException e) {
 				log.debug("access denied to remote service " + syncService.getService().toString());
 			}
