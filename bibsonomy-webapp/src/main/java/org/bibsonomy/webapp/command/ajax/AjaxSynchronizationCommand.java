@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command.ajax;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -7,12 +8,9 @@ import java.util.List;
  * @author wla
  * @version $Id$
  */
-public class AjaxSynchronizationCommand extends AjaxCommand{
+public class AjaxSynchronizationCommand extends AjaxCommand {
 
-	private String serviceName;
-	// FIXME: use Map<Class<? extends Resource>, Boolean> instead?
-	private boolean syncBookmarks;
-	private boolean syncPublications;
+	private URI serviceName;
 	private List<?> syncServices;
 
 	/**
@@ -31,43 +29,14 @@ public class AjaxSynchronizationCommand extends AjaxCommand{
 	/**
 	 * @param serviceName the serviceName to set
 	 */
-	public void setServiceName(String serviceName) {
+	public void setServiceName(URI serviceName) {
 		this.serviceName = serviceName;
 	}
 
 	/**
 	 * @return the serviceName
 	 */
-	public String getServiceName() {
+	public URI getServiceName() {
 		return serviceName;
 	}
-
-	/**
-	 * @return <code>true</code>, if bookmarks shall be synchronized.
-	 */
-	public boolean getSyncBookmarks() {
-		return this.syncBookmarks;
-	}
-
-	/**
-	 * @param syncBookmarks
-	 */
-	public void setSyncBookmarks(boolean syncBookmarks) {
-		this.syncBookmarks = syncBookmarks;
-	}
-
-	/**
-	 * @return <code>true</code>, if publications shall be synchronized.
-	 */
-	public boolean getSyncPublications() {
-		return this.syncPublications;
-	}
-
-	/**
-	 * @param syncPublications
-	 */
-	public void setSyncPublications(boolean syncPublications) {
-		this.syncPublications = syncPublications;
-	}
-	
 }
