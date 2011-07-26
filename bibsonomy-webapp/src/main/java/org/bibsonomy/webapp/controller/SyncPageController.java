@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
@@ -19,6 +20,7 @@ import org.bibsonomy.sync.SynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
@@ -27,7 +29,7 @@ import org.springframework.validation.Errors;
  * @author wla
  * @version $Id$
  */
-public class SyncPageController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware{
+public class SyncPageController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware {
 	
 	private static final Log log = LogFactory.getLog(SyncPageController.class);
 	
@@ -43,18 +45,34 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	@Override
 	public View workOn(AjaxSynchronizationCommand command) {
 		
-		if(!present(syncClient)) {
+		final RequestWrapperContext context = command.getContext();
+		
+		/*
+		 * some security checks
+		 */
+		if (!context.isUserLoggedIn()) {
+			throw new org.springframework.security.access.AccessDeniedException("please log in");
+		}
+		final User loginUser = context.getLoginUser();
+		if (loginUser.isSpammer()) {
+			throw new AccessDeniedException("error.method_not_allowed");
+		}
+		if (!context.isValidCkey()) {
+			this.errors.reject("error.field.valid.ckey");
+		}
+		
+		if (!command.getContext().getUserLoggedIn()) {
+			throw new AccessDeniedException();
+		}
+		
+		
+		if (!present(syncClient)) {
 			errors.reject("error.synchronization.noclient");
 			return Views.ERROR;
 		}
 		
-		List<SyncService> userServices;
-		if(!command.getContext().getUserLoggedIn()) {
-			throw new AccessDeniedException();
-		}
-		
 		log.debug("try to get sync services for user");
-		userServices = syncLogic.getSyncServer(command.getContext().getLoginUser().getName());
+		final List<SyncService> userServices = syncLogic.getSyncServer(command.getContext().getLoginUser().getName());
 		
 		log.debug("try to get synchronization data from remote service");
 		for (final SyncService syncService : userServices) {
@@ -89,7 +107,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	 */
 	public void setLogic(LogicInterface logic) {
 		//FIXME remove after integration
-		if(logic instanceof SyncLogicInterface) {
+		if (logic instanceof SyncLogicInterface) {
 			syncLogic = (SyncLogicInterface) logic;
 		}
 	}
