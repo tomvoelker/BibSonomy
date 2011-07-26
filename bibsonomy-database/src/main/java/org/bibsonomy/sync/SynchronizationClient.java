@@ -4,7 +4,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -17,6 +19,8 @@ import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.util.IbatisSyncDBSessionFactory;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -100,16 +104,17 @@ public class SynchronizationClient {
 
 	/**
 	 * Used in a synchronization process, in case that server logic already created 
-	 * @param userName
-	 * @param contentType
+	 * 
 	 * @param serverLogic
+	 * @param serverUserName
+	 * @param contentType
 	 * @return
 	 */
-	public SynchronizationData getLastSyncData(final String userName, Class<? extends Resource> resourceType, final LogicInterface serverLogic) {
+	private SynchronizationData getLastSyncData(final LogicInterface serverLogic, final String serverUserName, Class<? extends Resource> resourceType) {
 		/*
 		 * FIXME: errorhandling
 		 */
-		return ((SyncLogicInterface) serverLogic).getLastSyncData(userName, ownUri, resourceType);
+		return ((SyncLogicInterface) serverLogic).getLastSyncData(serverUserName, ownUri, resourceType);
 	}
 	
 	/**
@@ -125,7 +130,7 @@ public class SynchronizationClient {
 		
 		final LogicInterface serverLogic = getServerLogic(syncService);
 		
-		return getLastSyncData(serverLogic.getAuthenticatedUser().getName(), resourceType, serverLogic);
+		return getLastSyncData(serverLogic, serverLogic.getAuthenticatedUser().getName(), resourceType);
 	}
 	
 
@@ -137,10 +142,11 @@ public class SynchronizationClient {
 	 * @param resourceType
 	 * @return
 	 */
-	public SynchronizationData synchronize(final LogicInterface clientLogic, final URI syncServerUri) {
+	public Map<Class<? extends Resource>, SynchronizationData> synchronize(final LogicInterface clientLogic, final URI syncServerUri) {
 		
 		final SyncService syncServer = getServerByURI(clientLogic, syncServerUri);
 		final Class<? extends Resource> resourceType = syncServer.getResourceType();
+		final SynchronizationDirection direction = syncServer.getDirection();
 
 		/*
 		 * retrieve instance of server logic
@@ -152,13 +158,36 @@ public class SynchronizationClient {
 		}
 		final String serverUserName = serverLogic.getAuthenticatedUser().getName();
 		
+		/*
+		 * sync each configured resource type
+		 */
+		final Map<Class<? extends Resource>, SynchronizationData> result = new HashMap<Class<? extends Resource>, SynchronizationData>();
+		if (Resource.class.equals(resourceType) || Bookmark.class.equals(resourceType)) {
+			result.put(Bookmark.class, synchronize(clientLogic, serverLogic, serverUserName, Bookmark.class, direction));
+		}
+		if (Resource.class.equals(resourceType) || BibTex.class.equals(resourceType)) {
+			result.put(BibTex.class, synchronize(clientLogic, serverLogic, serverUserName, BibTex.class, direction));
+		}
+		
+		return result;
+	}
+
+	/**
+	 * @param clientLogic
+	 * @param serverLogic
+	 * @param serverUserName
+	 * @param resourceType
+	 * @param direction
+	 * @return
+	 */
+	public SynchronizationData synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction) {
 		SynchronizationStatus result;
 		String info;
 		try {
 			/*
 			 * try to synchronize
 			 */
-			info = synchronize(clientLogic, serverLogic, resourceType, syncServer.getDirection());
+			info = synchronize(clientLogic, serverLogic, resourceType, direction);
 			result = SynchronizationStatus.DONE;
 		} catch (final SynchronizationRunningException e) {
 			/*
@@ -176,20 +205,23 @@ public class SynchronizationClient {
 		/*
 		 * store sync result
 		 */
-		storeSyncResult(result, info, resourceType, serverLogic, serverUserName);
+		storeSyncResult(serverLogic, serverUserName, resourceType, result, info);
 		
-		// Get synchronization data from server. Can't construct here, because last_sync_date only known by server
-		return getLastSyncData(serverUserName, resourceType, serverLogic);
+		/*
+		 * Get synchronization data from server. Can not be constructed here 
+		 * because last_sync_date is only known by the server
+		 */
+		return getLastSyncData(serverLogic, serverUserName, resourceType);
 	}
 	
 	/**
 	 * Stores result of synchronization on server
-	 * @param result
-	 * @param resourceType
 	 * @param serverLogic
 	 * @param serverUserName
+	 * @param resourceType
+	 * @param result
 	 */
-	private void storeSyncResult(final SynchronizationStatus status, final String info, final Class<? extends Resource> resourceType, final LogicInterface serverLogic, final String serverUserName) {
+	private void storeSyncResult(final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationStatus status, final String info) {
 		final SyncLogicInterface syncLogicInterface = (SyncLogicInterface) serverLogic;
 		final SynchronizationData data = syncLogicInterface.getLastSyncData(serverUserName, ownUri, resourceType);
 		if (!present(data)) {

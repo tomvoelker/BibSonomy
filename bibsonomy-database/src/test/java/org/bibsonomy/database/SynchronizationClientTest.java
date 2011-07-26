@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
@@ -231,11 +230,12 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * sync
 		 */
-		final SynchronizationData syncData = sync.synchronize(clientLogic, syncServer);
+		final Map<Class<? extends Resource>, SynchronizationData> syncData = sync.synchronize(clientLogic, syncServer);
 		assertNotNull(syncData);
-		assertEquals(SynchronizationStatus.DONE, syncData.getStatus());
-		System.out.println(syncData.getInfo());
-		assertEquals("created on " + rightHost + ": 1, deleted on " + rightHost + ": 1", syncData.getInfo());
+		assertTrue(syncData.containsKey(Bookmark.class));
+		final SynchronizationData syncDataBookmark = syncData.get(Bookmark.class);
+		assertEquals(SynchronizationStatus.DONE, syncDataBookmark.getStatus());
+		assertEquals("created on " + rightHost + ": 1, deleted on " + rightHost + ": 1", syncDataBookmark.getInfo());
 		/*
 		 * check for posts on server
 		 */
@@ -264,16 +264,9 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 	 */
 	private void syncResources(final SynchronizationClient sync, final URI syncServer, final Class<? extends Resource> resourceType, final String[] keys) {
 		/*
-		 * prepare sync: Since we only want to sync posts with the given 
-		 * resource type, we must update the resource type in the database. The
-		 * sync client will otherwise update ALL resource types.
-		 */
-		final Properties props = clientLogic.getSyncServer(clientUser.getName()).get(0).getServerUser();
-		clientLogic.updateSyncServer(clientUser.getName(), syncServer, resourceType, props, SynchronizationDirection.BOTH);
-		/*
 		 * do sync
 		 */
-		final SynchronizationData data = sync.synchronize(clientLogic, syncServer);
+		final SynchronizationData data = sync.synchronize(clientLogic, serverLogic, serverUser.getName(), resourceType, SynchronizationDirection.BOTH);
 		assertNotNull("synchronization was not successful", data);
 		assertEquals(SynchronizationStatus.DONE, data.getStatus());
 		assertEquals(RESULT_STRING, data.getInfo());
