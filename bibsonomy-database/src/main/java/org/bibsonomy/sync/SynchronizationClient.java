@@ -259,7 +259,7 @@ public class SynchronizationClient {
 				createOnServer.add(postToHandle);
 				break;
 			case CREATE_CLIENT:
-				postToHandle = serverLogic.getPostDetails(postIntraHash, serverUser.getName());
+				postToHandle = post.getPost();
 				postToHandle.setUser(clientUser);
 				createOnClient.add(postToHandle);
 				break;
@@ -275,7 +275,7 @@ public class SynchronizationClient {
 				updateOnServer.add(postToHandle);
 				break;
 			case UPDATE_CLIENT:
-				postToHandle = serverLogic.getPostDetails(postIntraHash, serverUser.getName());
+				postToHandle = post.getPost();
 				postToHandle.setUser(clientUser);
 				updateOnClient.add(postToHandle);
 				break;
@@ -378,7 +378,7 @@ public class SynchronizationClient {
 
 		return result.toString();
 	}
-
+	
 	/**
 	 * @param ownUri the ownUri to set
 	 */

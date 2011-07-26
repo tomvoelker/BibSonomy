@@ -291,6 +291,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     	Date lastSuccessfulSyncDate = null;
 
     	final Map<String, SynchronizationPost> serverPosts;
+    	List<SynchronizationPost> posts = null;
 
     	final DBSession session = this.openSession();
     	try {
@@ -324,21 +325,38 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     		} else {
     			throw new UnsupportedResourceTypeException();
     		}
+    		
+    		/*
+    		 * if necessary, set the synchronization date to some distant old value  
+    		 */
+    		if (!present(lastSuccessfulSyncDate)) {
+    			lastSuccessfulSyncDate = new Date(0);
+    		}
+    		/*
+    		 * calculate synchronization plan
+    		 */
+    		posts = this.syncDBManager.getSyncPlan(serverPosts, clientPosts, lastSuccessfulSyncDate, strategy, direction);
+    		
+    		/*
+    		 * attach "real" posts to the synchronization posts, which will be updated (or created) on client
+    		 */
+    		for (SynchronizationPost post : posts) {
+    			switch (post.getState()) {
+    			case CREATE_CLIENT:
+    			case UPDATE_CLIENT:
+    				post.setPost(getPostDetails(post.getIntraHash(), userName));
+    				break;
+    			default:
+    				break;
+    			}
+    		}
+    		
     	} finally {
     		session.close();
     	}
 
-		/*
-		 * if necessary, set the synchronization date to some distant old value  
-		 */
-		if (!present(lastSuccessfulSyncDate)) {
-			lastSuccessfulSyncDate = new Date(0);
-		}
-		/*
-		 * calculate synchronization plan
-		 * FIXME get direction form db
-		 */
-    	return this.syncDBManager.getSyncPlan(serverPosts, clientPosts, lastSuccessfulSyncDate, strategy, direction);
+		
+		return posts;
     }
     
     /*
