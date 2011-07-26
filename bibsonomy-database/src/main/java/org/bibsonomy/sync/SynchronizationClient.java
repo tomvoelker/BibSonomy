@@ -196,7 +196,7 @@ public class SynchronizationClient {
 			/*
 			 * sync data seems not to have been stored --> error!
 			 */
-			throw new RuntimeException("No sync data found for " + serverUserName + " on " + ownUri);
+			throw new RuntimeException("No sync data found for " + serverUserName + " on " + ownUri + " and resource type " + resourceType.getSimpleName());
 		}
 		if (SynchronizationStatus.RUNNING.equals(data.getStatus())) {
 			syncLogicInterface.updateSyncStatus(data, status, info);
