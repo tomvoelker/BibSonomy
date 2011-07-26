@@ -11,18 +11,9 @@
 	<!--  TODO: remove this tagx It was meant to show errors and then allow to import again. errors should only be displayed on the import page directly -->
 	
 	<jsp:directive.attribute name="importType"  type="java.lang.String" required="false"/>
-	
-	<c:choose>
-		<c:when test="${empty importType}">
 
-			<post:firefoxImport/>
-
-		</c:when>
-		<c:otherwise>
-			<c:if test="${importType eq 'firefox'}">
-				<post:firefoxImport/>
-			</c:if>
-		</c:otherwise>
-	</c:choose>
-	
+	<c:if test="${empty importType or importType eq 'firefox'}">
+		<post:firefoxImport/>
+	</c:if>
+		
 </jsp:root>
