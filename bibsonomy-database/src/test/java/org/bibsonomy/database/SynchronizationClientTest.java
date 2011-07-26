@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
@@ -27,6 +28,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.sync.SynchronizationClient;
@@ -57,7 +59,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		"28d637eca8ef360612a238ac56900d54"  // no changes
 	};
 
-	final String[] PUBLICATION_KEYS = new String[]{
+	private static final String[] PUBLICATION_KEYS = new String[]{
 			"4841e7b5c7c23c613590fa4b79725498", // changed on client
 			"4549ac62ae226657cd17d93dabfd6075", // changed on server
 			"4533fe874079584ea4700da84b4d13ae", // created on client
@@ -229,7 +231,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * sync
 		 */
-		final SynchronizationData syncData = sync.synchronize(clientLogic, syncServer, Bookmark.class);
+		final SynchronizationData syncData = sync.synchronize(clientLogic, syncServer);
 		assertNotNull(syncData);
 		assertEquals(SynchronizationStatus.DONE, syncData.getStatus());
 		System.out.println(syncData.getInfo());
@@ -261,7 +263,17 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 	 * @param keys
 	 */
 	private void syncResources(final SynchronizationClient sync, final URI syncServer, final Class<? extends Resource> resourceType, final String[] keys) {
-		final SynchronizationData data = sync.synchronize(clientLogic, syncServer, resourceType);
+		/*
+		 * prepare sync: Since we only want to sync posts with the given 
+		 * resource type, we must update the resource type in the database. The
+		 * sync client will otherwise update ALL resource types.
+		 */
+		final Properties props = clientLogic.getSyncServer(clientUser.getName()).get(0).getServerUser();
+		clientLogic.updateSyncServer(clientUser.getName(), syncServer, resourceType, props, SynchronizationDirection.BOTH);
+		/*
+		 * do sync
+		 */
+		final SynchronizationData data = sync.synchronize(clientLogic, syncServer);
 		assertNotNull("synchronization was not successful", data);
 		assertEquals(SynchronizationStatus.DONE, data.getStatus());
 		assertEquals(RESULT_STRING, data.getInfo());
