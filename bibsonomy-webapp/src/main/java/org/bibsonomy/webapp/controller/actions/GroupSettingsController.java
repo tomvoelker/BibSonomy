@@ -12,6 +12,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SearchPageController;
+import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -21,6 +22,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
+ * FIXME: refactor as subclass of {@link SettingsPageController}.
+ * 
  * @author ema
  * @version $Id$
  */
