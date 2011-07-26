@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -200,11 +201,11 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		 */
 		changeLeftSyncAndCheck(sync, syncServer, "server", serverUser, serverLogic, "client", clientUser, clientLogic, "b89c5230f929a2c9af0c808b17fae120");
 		/*
-		 * since we have only a resolution of 1 second in MySQL, we must wait
+		 * FIXME: Since we have only a resolution of 1 second in MySQL, we must wait
 		 * at least one second - otherwise we get a duplicate key exception when 
 		 * inserting the sync data. 
 		 */
-		wait(2);
+		wait(1);
 		/*
 		 * change some posts on client
 		 */
@@ -236,10 +237,19 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * check for posts on server
 		 */
-		final Map<String, SynchronizationPost> map = rightLogic.getSyncPostsMapForUser(rightUser.getName(), Bookmark.class);
+		final Map<String, SynchronizationPost> map = mapFromList(rightLogic.getSyncPosts(rightUser.getName(), Bookmark.class));
 		assertTrue(map.containsKey(posts.get(0).getResource().getIntraHash()));
 		assertFalse(map.containsKey(deleteHash));
 	}
+	
+	private static Map<String, SynchronizationPost> mapFromList(final List<SynchronizationPost> syncPosts) {
+		final Map<String, SynchronizationPost> map = new HashMap<String, SynchronizationPost>();
+		for (final SynchronizationPost post : syncPosts) {
+			map.put(post.getIntraHash(), post);
+		}
+		return map;
+	}
+	
 
 
 	/**
@@ -259,8 +269,8 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * compare posts on client and server
 		 */
-		final Map<String, SynchronizationPost> serverPosts = serverLogic.getSyncPostsMapForUser(serverUser.getName(), resourceType);
-		final Map<String, SynchronizationPost> clientPosts = clientLogic.getSyncPostsMapForUser(clientUser.getName(), resourceType);
+		final Map<String, SynchronizationPost> serverPosts = mapFromList(serverLogic.getSyncPosts(serverUser.getName(), resourceType));
+		final Map<String, SynchronizationPost> clientPosts = mapFromList(clientLogic.getSyncPosts(clientUser.getName(), resourceType));
 
 		assertEquals(5, serverPosts.size());
 		assertEquals(serverPosts.size(), clientPosts.size());

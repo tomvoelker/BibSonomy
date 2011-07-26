@@ -15,9 +15,11 @@ import java.util.List;
 import java.util.Properties;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.junit.BeforeClass;
@@ -58,21 +60,27 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		credentialsSyncUser1.setProperty("apiKey", "1546545646565");
 		service.setServerUser(credentialsSyncUser1);
 
-		syncDBManager.createSyncServerForUser(dbSession, testURI, syncUser1, credentialsSyncUser1);
+		syncDBManager.createSyncServerForUser(dbSession, syncUser1, testURI, Bookmark.class, credentialsSyncUser1, SynchronizationDirection.BOTH);
 
 		List<SyncService> services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
 		assertTrue(services.contains(service));
 		assertEquals(1, services.size());
+		final SyncService syncService = services.get(0);
+		assertEquals(Bookmark.class, syncService.getResourceType());
+		assertEquals(SynchronizationDirection.BOTH, syncService.getDirection());		
 		
 		final Properties credentialsSyncUser2 = new Properties();
 		credentialsSyncUser2.setProperty("name", "syncUser2");
 		credentialsSyncUser2.setProperty("apiKey", "jjkhjhjkhk");
 		service.setServerUser(credentialsSyncUser2);
-		syncDBManager.updateSyncServerForUser(dbSession, syncUser1, testURI, credentialsSyncUser2);
+		syncDBManager.updateSyncServerForUser(dbSession, syncUser1, testURI, BibTex.class, credentialsSyncUser2, SynchronizationDirection.SERVER_TO_CLIENT);
 		
 		services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
 		assertTrue(services.contains(service));
 		assertEquals(1, services.size());
+		final SyncService syncService2 = services.get(0);
+		assertEquals(BibTex.class, syncService2.getResourceType());
+		assertEquals(SynchronizationDirection.SERVER_TO_CLIENT, syncService2.getDirection());
 		
 		syncDBManager.deleteSyncServerForUser(dbSession, syncUser1, testURI);
 		services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
