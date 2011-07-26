@@ -33,8 +33,8 @@
 	</select>
 	
 	<insert id="insertSyncServiceForUser" parameterClass="syncParam">
-		INSERT INTO sync (user_name, service_id, credentials)
-		  SELECT #userName#, service_id, #credentials# 
+		INSERT INTO sync (user_name, service_id, credentials, content_type, direction)
+		  SELECT #userName#, service_id, #credentials# , #resourceType#, #direction#
 		    FROM sync_services 
 		    WHERE uri = #service# 
 		      AND server = #server#
@@ -54,21 +54,6 @@
 		JOIN tas t USING (content_id)
 		WHERE b.user_name = #userName#
 		GROUP BY content_id
-	</select>
-	
-	<!-- FIXME: refactor sd.status! -->
-	<select id="getLastDoneSyncDateForUserForServiceForContent" resultClass="java.util.Date" parameterClass="syncParam">
-		SELECT last_sync_date
-		  FROM sync_data sd 
-		    JOIN sync_services ss USING (service_id)
-		  WHERE sd.user_name = #userName#
-			AND sd.content_type = #resourceType#
-			AND ss.uri = #service#
-			AND ss.server = #server#
-			AND sd.status != "running"
-			AND sd.status != "error"  
-		  ORDER BY last_sync_date DESC
-		  LIMIT 1
 	</select>
 	
 	<select id="getLastSyncDate" resultClass="java.util.Date" parameterClass="syncParam">
@@ -119,7 +104,9 @@
 	<update id="updateSyncServerForUser" parameterClass="syncParam">
 		UPDATE sync s
 		  JOIN sync_services ss USING (service_id)
-		  SET s.credentials = #credentials#
+		  SET s.credentials = #credentials#,
+		  	  s.direction = #direction#,
+		  	  s.content_type = #resourceType#
 		  WHERE s.user_name = #userName#
 			AND ss.uri = #service#
 			AND ss.server = #server#

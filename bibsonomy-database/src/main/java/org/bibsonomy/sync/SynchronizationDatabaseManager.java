@@ -109,10 +109,12 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param credentials
      * @param serviceId
      */
-    public void createSyncServerForUser(final DBSession session, final URI service, final String userName, final Properties credentials) {
+    public void createSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
     	final SyncParam param = new SyncParam();
     	param.setUserName(userName);
-    	param.setCredentials(credentials);
+    	param.setCredentials(userCredentials);
+    	param.setDirection(direction);
+    	param.setResourceType(resourceType);
     	param.setService(service);
     	param.setServer(true);
 		session.insert("insertSyncServiceForUser", param);
@@ -141,12 +143,14 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      * @param credentials
      * 
      */
-    public void updateSyncServerForUser(final DBSession session, final String userName, final URI service, final Properties credentials) {
+    public void updateSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
     	final SyncParam param = new SyncParam();
     	param.setUserName(userName);
     	param.setService(service);
+    	param.setDirection(direction);
+    	param.setResourceType(resourceType);
     	param.setServer(true);
-    	param.setCredentials(credentials);
+    	param.setCredentials(userCredentials);
     	session.update("updateSyncServerForUser", param);
     }
     
@@ -158,22 +162,6 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
      */
     public List<SyncService> getSyncServices(final DBSession session, final boolean server) {
     	return this.queryForList("getSyncServices", server, SyncService.class, session);
-    }
-    
-    /**
-     * @param userName
-     * @param service
-     * @param contentType
-     * @param session
-     * @return last synchronization date for given user, content type and service 
-     */
-    public Date getLastDoneSynchronizationDate(final String userName, final URI service, Class<? extends Resource> resourceType, final DBSession session) {
-    	final SyncParam param = new SyncParam();
-    	param.setUserName(userName);
-    	param.setService(service);
-    	param.setResourceType(resourceType);
-    	param.setServer(false);
-    	return this.queryForObject("getLastDoneSyncDateForUserForServiceForContent", param , Date.class, session);
     }
     
     /**
