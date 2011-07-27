@@ -17,17 +17,28 @@
 
 	<fmt:message var="save" key="settings.synchronization.save"/>
 	<fmt:message var="cancel" key="settings.synchronization.cancel"/>
-	<fmt:message var="removeService" key="settings.synchronization.removeService" />
+	<fmt:message var="removeService" key="synchronization.server.delete" />
+	<fmt:message var="confirmDelete" key="synchronization.server.delete.confirm" />
+
+	<script type="text/javascript">
+		function confirmDelete(t) {
+			confirm("${confirmDelete}") ? $(t).parents("form").find("input[name='_method']").val("DELETE") : return false;
+		}
+		function changeClient(t) {
+			$(t).attr("action", $(t).find("select[name='newSyncServer.service']").val() + "updateSyncSettings");
+		}
+	</script>
+
 	
-	<!-- UPDATE -->
+	<!-- UPDATE SERVER -->
 	<c:if test="${not empty command.syncServer}">
-		<h2><fmt:message key="synchronization.update"/></h2>
+		<h2><fmt:message key="synchronization.server.update"/></h2>
 	</c:if>
 	<c:forEach varStatus="status" var="syncService" items="${command.syncServer}">
 		<fieldset class="fsInner">
 			<form:form method="post" action="/updateSyncSettings" modelAttribute="command.syncServer[${status.index}]">
 				<div cssClass="fsRow">
-					<form:label cssClass="fsLabel" path="service"><fmt:message key="navi.syncservice" /></form:label>
+					<form:label cssClass="fsLabel" path="service"><fmt:message key="synchronization.server" /></form:label>
 					<form:input cssClass="fsInput" path="service" disabled="true"/>
 					<div class="dissError"><form:errors path="service" /></div>
 				</div>
@@ -37,7 +48,7 @@
         		<div class="fsRow">
 					<form:hidden path="service"/>
 					<input type="submit" value="${save}" />
-					<input type="submit" class="deleteService" value="${removeService}"/>
+					<input type="submit" value="${removeService}" onclick="return confirmDelete(this)"/>
 					<input type="hidden" name="ckey" value="${ckey}"/>
 					<input type="hidden" name="_method" value="PUT"/>
 					<input type="hidden" name="selTab" value="${command.selTab}"/>
@@ -46,15 +57,15 @@
 		</fieldset>
 	</c:forEach>
 	
-	<!-- CREATE -->
+	<!-- CREATE SERVER -->
 	<c:if test="${not empty command.availableSyncServers}">
-		<h2><fmt:message key="synchronization.add"/></h2>
+		<h2><fmt:message key="synchronization.server.add"/></h2>
 		<fieldset class="fsInner">
-			<p><fmt:message key="synchronization.add.intro"/></p>
-			<form:form method="post" action="/updateSyncSettings" modelAttribute="command.syncServer[0]"> 
+			<p><fmt:message key="synchronization.server.add.intro"/></p>
+			<form:form method="post" action="/updateSyncSettings" modelAttribute="command.newSyncServer"> 
 	        
 	        	<div class="fsRow">
-					<form:label cssClass="fsLabel" path="service"><fmt:message key="navi.syncservice" /></form:label>
+					<form:label cssClass="fsLabel" path="service"><fmt:message key="synchronization.server" /></form:label>
 					<form:select cssClass="fsInput" path="service" items="${command.availableSyncServers}"/>
       				<div class="dissError"><form:errors path="service" /></div>
       			</div>
@@ -70,19 +81,47 @@
 	
 			</form:form>
 		</fieldset>
-	
 	</c:if>
-	<script type="text/javascript">
-		$(function(){
-			$(".deleteService").click(function(){
-				if (confirm("please confirm this action")) {
-					$(this).parents("form").find("input[name='_method']").val("DELETE");
-				} else {
-					return false;	
-				}
-			});
-		});
-	</script>
 	
+	<!-- CREATE CLIENT -->
+	<c:if test="${not empty command.availableSyncClients}">
+		<h2><fmt:message key="synchronization.client.add"/></h2>
+		<fieldset class="fsInner">
+			<p><fmt:message key="synchronization.client.add.intro"/></p>
+			<form method="post" action="" onsubmit="changeClient(this)">			
+	        	<div class="fsRow">
+					<label class="fsLabel" for="newSyncServer.service"><fmt:message key="synchronization.client" /></label>
+					<select name="newSyncServer.service">
+						<c:forEach varStatus="status" var="syncService" items="${command.availableSyncClients}">
+							<option value="${fn:escapeXml(syncService)}"><c:out value="${syncService}"/></option>
+						</c:forEach>
+					</select>
+				</div>
+				<div class="fsRow">
+					<label class="fsLabel" for="newSyncServer.direction" ><fmt:message key="synchronization.direction"/></label>
+					<select class="fsInput fsSmall" name="newSyncServer.direction">
+						<option value="BOTH"><fmt:message key="synchronization.direction.both"/></option>
+						<option value="CLIENT_TO_SERVER"><fmt:message key="synchronization.direction.client_to_server"/></option>
+						<option value="SERVER_TO_CLIENT"><fmt:message key="synchronization.direction.server_to_client"/></option>
+					</select>
+				</div>
+				<div class="fsRow">
+					<label class="fsLabel" for="newSyncServer.resourceType" ><fmt:message key="synchronization.resourceType"/></label>
+					<select class="fsInput fsSmall" name="newSyncServer.resourceType">
+						<option value="org.bibsonomy.model.Resource"><fmt:message key="synchronization.resourceType.both"/></option>
+						<option value="org.bibsonomy.model.BibTex"><fmt:message key="publications"/></option>
+						<option value="org.bibsonomy.model.Bookmark"><fmt:message key="bookmarks"/></option>
+					</select>
+				</div>
+	        	<div class="fsRow">
+					<input type="submit" value="${save}" />
+					<input type="hidden" name="newSyncServer.serverUser['userName']" value="${command.context.loginUser.name}"/>
+					<input type="hidden" name="newSyncServer.serverUser['apiKey']" value="${command.context.loginUser.apiKey}"/>
+					<input type="hidden" name="_method" value="POST"/>
+					<input type="hidden" name="selTab" value="${command.selTab}"/>
+				</div>
+			</form>
+		</fieldset>
+	</c:if>	
  
  </jsp:root>
