@@ -8,11 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
@@ -317,8 +321,6 @@ public class SynchronizationClient {
 			}
 		}
 
-		boolean duplicates = false;
-		
 		/*
 		 *  Apply changes to both systems.
 		 */
@@ -327,6 +329,7 @@ public class SynchronizationClient {
 		/*
 		 * create posts on client 
 		 */
+		int duplicatesOnClient = 0;
 		if (!createOnClient.isEmpty()) {
 			assert !SynchronizationDirection.CLIENT_TO_SERVER.equals(direction); 
 			try {
@@ -334,32 +337,30 @@ public class SynchronizationClient {
 				result.append("created on client: " + createOnClient.size() + ", ");
 			} catch (final DatabaseException e) {
 				/*
-				 *  this can happen if some duplicate posts exists
-				 *  FIXME: check other possibilities to throw Database Exception
-				 *  
-				 *  
-				 *  FIXME: check for duplicate error messages
-				 *  
+				 *  This can happen if some duplicate posts exists.
+				 *  FIXME: currently, we only check for duplicate errors
+				 *  check other possibilities to throw Database Exception
 				 */
-				duplicates = true;
+				duplicatesOnClient = getDuplicateCount(e);
 			}
 		}
 
 		/*
 		 * create posts on server
 		 */
+		int duplicatesOnServer = 0;
 		if (!createOnServer.isEmpty()) {
 			assert !SynchronizationDirection.SERVER_TO_CLIENT.equals(direction);
 			try {
 				serverLogic.createPosts(createOnServer);
 				result.append("created on server: " + createOnServer.size() + ", ");
-			} catch (DatabaseException e) {
+			} catch (final DatabaseException e) {
 				/*
-				 *  this can happen if some duplicate posts exists
-				 *  FIXME: check oder possibilities to throw Database Exception
+				 *  This can happen if some duplicate posts exists.
+				 *  FIXME: currently, we only check for duplicate errors
+				 *  check other possibilities to throw Database Exception
 				 */
-				log.error("database exception catched during creation on server", e);
-				duplicates = true;
+				duplicatesOnServer = getDuplicateCount(e);
 			}
 		}
 
@@ -402,9 +403,10 @@ public class SynchronizationClient {
 		/*
 		 * generate result string
 		 */
-		if (duplicates) {
-			result.insert(0, "duplicates detected, ");
-		}
+		if (duplicatesOnClient > 0) 
+			result.insert(0, duplicatesOnClient + "duplicates on client detected, ");
+		if (duplicatesOnServer > 0) 
+			result.insert(0, duplicatesOnServer + "duplicates on server detected, ");
 		
 	
 		int length = result.length();
@@ -415,6 +417,29 @@ public class SynchronizationClient {
 		}
 
 		return result.toString();
+	}
+
+	/**
+	 * Counts duplicate error messages 
+	 * 
+	 * @param exception
+	 * @return
+	 */
+	private int getDuplicateCount(final DatabaseException exception) {
+		int duplicatesOnClient = 0;
+		final Set<Entry<String, List<ErrorMessage>>> entrySet = exception.getErrorMessages().entrySet();
+		for (final Entry<String, List<ErrorMessage>> entry : entrySet) {
+			final List<ErrorMessage> errorMessages = entry.getValue();
+			for (final ErrorMessage em: errorMessages) {
+				if (em instanceof DuplicatePostErrorMessage) {
+					em.getErrorCode();
+					em.getParameters();
+					em.getDefaultMessage();
+					duplicatesOnClient++;
+				}		
+			}
+		}
+		return duplicatesOnClient;
 	}
 	
 	/**
