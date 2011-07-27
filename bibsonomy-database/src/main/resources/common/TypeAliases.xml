@@ -33,6 +33,7 @@
 	<typeAlias alias="syncService"		  type="org.bibsonomy.model.sync.SyncService" />
 	<typeAlias alias="syncStatus"		  type="org.bibsonomy.model.sync.SynchronizationStatus" />
 	<typeAlias alias="syncDirection"	  type="org.bibsonomy.model.sync.SynchronizationDirection" />
+	<typeAlias alias="conflictStrategy"	  type="org.bibsonomy.model.sync.ConflictResolutionStrategy" />
 	
 	<!-- Extras -->
 	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />

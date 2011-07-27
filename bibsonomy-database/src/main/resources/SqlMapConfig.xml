@@ -22,6 +22,7 @@
   	<typeHandler javaType="Role"				callback="org.bibsonomy.database.common.typehandler.RoleTypeHandlerCallback" />
     <typeHandler javaType="syncStatus"			callback="org.bibsonomy.database.common.typehandler.SyncStatusTypeHandlerCallback" />
     <typeHandler javaType="syncDirection"		callback="org.bibsonomy.database.common.typehandler.SyncDirectionTypeHandlerCallback" />
+    <typeHandler javaType="conflictStrategy"	callback="org.bibsonomy.database.common.typehandler.ConflictResolutionStrategyTypeHandlerCallback" />
     
 
 	<transactionManager type="JDBC">

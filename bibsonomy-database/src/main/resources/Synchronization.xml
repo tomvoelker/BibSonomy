@@ -17,7 +17,7 @@
 	</insert>
 
 	<select id="getSyncServersForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT s.user_name, s.credentials, ss.uri, s.content_type, s.direction
+		SELECT s.user_name, s.credentials, ss.uri, s.content_type, s.direction, s.strategy
 		  FROM sync s
 		    JOIN sync_services ss USING (service_id)
 		  WHERE s.user_name = #userName#
@@ -26,7 +26,7 @@
 	</select>
 	
 	<select id="getSyncServerForUserByUri" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT s.user_name, s.credentials, ss.uri, s.content_type, s.direction
+		SELECT s.user_name, s.credentials, ss.uri, s.content_type, s.direction, s.strategy
 		  FROM sync s
 		    JOIN sync_services ss USING (service_id)
 		  WHERE s.user_name = #userName#
@@ -35,8 +35,8 @@
 	</select>
 	
 	<insert id="insertSyncServiceForUser" parameterClass="syncParam">
-		INSERT INTO sync (user_name, service_id, credentials, content_type, direction)
-		  SELECT #userName#, service_id, #credentials# , #resourceType#, #direction#
+		INSERT INTO sync (user_name, service_id, credentials, content_type, direction, strategy)
+		  SELECT #userName#, service_id, #credentials# , #resourceType#, #direction#, #strategy#
 		    FROM sync_services 
 		    WHERE uri = #service# 
 		      AND server = #server#
@@ -96,7 +96,8 @@
 		  JOIN sync_services ss USING (service_id)
 		  SET s.credentials = #credentials#,
 		  	  s.direction = #direction#,
-		  	  s.content_type = #resourceType#
+		  	  s.content_type = #resourceType#,
+		  	  s.strategy = #strategy#
 		  WHERE s.user_name = #userName#
 			AND ss.uri = #service#
 			AND ss.server = #server#

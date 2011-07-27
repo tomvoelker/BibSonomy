@@ -17,6 +17,7 @@ import java.util.Properties;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
@@ -60,20 +61,21 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		credentialsSyncUser1.setProperty("apiKey", "1546545646565");
 		service.setServerUser(credentialsSyncUser1);
 
-		syncDBManager.createSyncServerForUser(dbSession, syncUser1, testURI, Bookmark.class, credentialsSyncUser1, SynchronizationDirection.BOTH);
+		syncDBManager.createSyncServerForUser(dbSession, syncUser1, testURI, Bookmark.class, credentialsSyncUser1, SynchronizationDirection.SERVER_TO_CLIENT, ConflictResolutionStrategy.SERVER_WINS);
 
 		List<SyncService> services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
 		assertTrue(services.contains(service));
 		assertEquals(1, services.size());
 		final SyncService syncService = services.get(0);
 		assertEquals(Bookmark.class, syncService.getResourceType());
-		assertEquals(SynchronizationDirection.BOTH, syncService.getDirection());		
+		assertEquals(SynchronizationDirection.SERVER_TO_CLIENT, syncService.getDirection());
+		assertEquals(ConflictResolutionStrategy.SERVER_WINS, syncService.getStrategy());
 		
 		final Properties credentialsSyncUser2 = new Properties();
 		credentialsSyncUser2.setProperty("name", "syncUser2");
 		credentialsSyncUser2.setProperty("apiKey", "jjkhjhjkhk");
 		service.setServerUser(credentialsSyncUser2);
-		syncDBManager.updateSyncServerForUser(dbSession, syncUser1, testURI, BibTex.class, credentialsSyncUser2, SynchronizationDirection.SERVER_TO_CLIENT);
+		syncDBManager.updateSyncServerForUser(dbSession, syncUser1, testURI, BibTex.class, credentialsSyncUser2, SynchronizationDirection.SERVER_TO_CLIENT, ConflictResolutionStrategy.LAST_WINS);
 		
 		services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
 		assertTrue(services.contains(service));

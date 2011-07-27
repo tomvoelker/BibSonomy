@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,10 +52,6 @@ public class SynchronizationClient {
 	 */
 	private URI ownUri;
 	
-	/*
-	 * FIXME make ConflictResolutionStrategy configurable by user 
-	 */
-	private final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;
 	/*
 	 * FIXME: must be a different one for different servers 
 	 */
@@ -168,7 +164,7 @@ public class SynchronizationClient {
 		final Map<Class<? extends Resource>, SynchronizationData> result = new HashMap<Class<? extends Resource>, SynchronizationData>();
 		
 		for (Class<? extends Resource> resource : ResourceUtils.getResourceTypesByClass(resourceType)) {
-			result.put(resource, synchronize(clientLogic, serverLogic, serverUserName, resource, direction));
+			result.put(resource, synchronize(clientLogic, serverLogic, serverUserName, resource, direction, syncServer.getStrategy()));
 		}
 		return result;
 	}
@@ -185,14 +181,14 @@ public class SynchronizationClient {
 	 * @param direction
 	 * @return
 	 */
-	protected SynchronizationData synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction) {
+	protected SynchronizationData synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
 		SynchronizationStatus result;
 		String info;
 		try {
 			/*
 			 * try to synchronize
 			 */
-			info = synchronize(clientLogic, serverLogic, resourceType, direction);
+			info = synchronize(clientLogic, serverLogic, resourceType, direction, strategy);
 			result = SynchronizationStatus.DONE;
 		} catch (final SynchronizationRunningException e) {
 			/*
@@ -250,7 +246,7 @@ public class SynchronizationClient {
 	 * @param resourceType
 	 * @return synchronization result
 	 */
-	private String synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final Class<? extends Resource> resourceType, SynchronizationDirection direction) {
+	private String synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final Class<? extends Resource> resourceType, SynchronizationDirection direction, ConflictResolutionStrategy strategy) {
 		/*
 		 * add sync access to both users = allow users to modify the dates of
 		 * posts

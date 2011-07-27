@@ -28,6 +28,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
@@ -267,7 +268,7 @@ public class SynchronizationClientTest extends AbstractDatabaseManagerTest {
 		/*
 		 * do sync
 		 */
-		final SynchronizationData data = sync.synchronize(clientLogic, serverLogic, serverUser.getName(), resourceType, SynchronizationDirection.BOTH);
+		final SynchronizationData data = sync.synchronize(clientLogic, serverLogic, serverUser.getName(), resourceType, SynchronizationDirection.BOTH, ConflictResolutionStrategy.LAST_WINS);
 		assertNotNull("synchronization was not successful", data);
 		assertEquals(SynchronizationStatus.DONE, data.getStatus());
 		assertEquals(RESULT_STRING, data.getInfo());

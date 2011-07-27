@@ -397,11 +397,11 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncServer(java.lang.String, int, java.util.Properties)
      */
     @Override
-    public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
+    public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
     	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-		    syncDBManager.createSyncServerForUser(session, userName, service, resourceType, userCredentials, direction);
+		    syncDBManager.createSyncServerForUser(session, userName, service, resourceType, userCredentials, direction, strategy);
 		} finally {
 		    session.close();
 		}
@@ -412,11 +412,11 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#updateSyncServer(java.lang.String, java.net.URI, java.util.Properties)
      */
     @Override
-    public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
+    public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
     	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
     	final DBSession session = this.openSession();
     	try {
-    		syncDBManager.updateSyncServerForUser(session, userName, service, resourceType, userCredentials, direction);
+    		syncDBManager.updateSyncServerForUser(session, userName, service, resourceType, userCredentials, direction, strategy);
     	} finally {
     		session.close();
     	}

@@ -121,7 +121,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 	public void getSynchronizationBibTexTest() {
 
 		Class<? extends Resource> resourceType = BibTex.class;
-		ConflictResolutionStrategy strategy = ConflictResolutionStrategy.ASK_USER;
+		ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;
 
 		try {
 			testURI = new URI("http://www.bibsonomy.org/");

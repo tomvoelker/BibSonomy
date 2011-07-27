@@ -109,11 +109,12 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param credentials
 	 * @param serviceId
 	 */
-	public void createSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
+	public void createSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setCredentials(userCredentials);
 		param.setDirection(direction);
+		param.setStrategy(strategy);
 		param.setResourceType(resourceType);
 		param.setService(service);
 		param.setServer(true);
@@ -143,7 +144,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param credentials
 	 * 
 	 */
-	public void updateSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
+	public void updateSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setService(service);
@@ -151,6 +152,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		param.setResourceType(resourceType);
 		param.setServer(true);
 		param.setCredentials(userCredentials);
+		param.setStrategy(strategy);
 		session.update("updateSyncServerForUser", param);
 	}
 
@@ -370,9 +372,9 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			else
 				clientPost.setAction(SynchronizationAction.OK);
 			break;
-		case ASK_USER:
-			clientPost.setAction(SynchronizationAction.ASK);
-			break;
+//		case ASK_USER: temporary disabled
+//			clientPost.setAction(SynchronizationAction.ASK);
+//			break;
 		case FIRST_WINS:
 			if (clientPost.getChangeDate().before(serverPost.getChangeDate())) {
 				if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))

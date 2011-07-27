@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Properties;
 
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 
@@ -20,6 +21,7 @@ public class SyncParam {
 	private Date lastSyncDate;
 	private SynchronizationStatus status;
 	private SynchronizationDirection direction;
+	private ConflictResolutionStrategy strategy;
 	private Class<? extends Resource> resourceType;
 	private String info;
 	private boolean server;
@@ -125,5 +127,19 @@ public class SyncParam {
 
 	public void setDirection(SynchronizationDirection direction) {
 		this.direction = direction;
+	}
+
+	/**
+	 * @param strategy the strategy to set
+	 */
+	public void setStrategy(ConflictResolutionStrategy strategy) {
+		this.strategy = strategy;
+	}
+
+	/**
+	 * @return the strategy
+	 */
+	public ConflictResolutionStrategy getStrategy() {
+		return strategy;
 	}
 }
