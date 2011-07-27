@@ -36,8 +36,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 
 /**
@@ -46,8 +44,6 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
  * @version $Id$
  */
 public class StringUtils {
-	
-	private static final Log LOGGER = LogFactory.getLog(StringUtils.class);
 	
 	private static final String DEFAULT_CHARSET = "UTF-8";
 	
@@ -383,7 +379,6 @@ public class StringUtils {
 			// and reset parsing mode to KEY
 			if ( (c == pairDelimiter) && (bracketDiff == 0) ) {
 				addKeyValue(keyValPairs, currentKey, currentVal);
-				LOGGER.debug("done with " + currentKey.toString() + " -> " + currentVal.toString());
 				currentKey.delete(0, currentKey.length());
 				currentVal.delete(0, currentVal.length());				
 				mode = ParseMode.KEY;
