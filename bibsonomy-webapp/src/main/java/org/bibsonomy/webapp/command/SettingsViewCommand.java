@@ -135,6 +135,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private List<SyncService> syncServer;
 	
+	private List<URI> availableSyncClients;
 	private List<URI> availableSyncServers;
 	
 	/** for delicious v2 import only, import bookmarks or bundles? **/
@@ -653,5 +654,19 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public String getImportDataV1() {
 		return importDataV1;
+	}
+
+	/**
+	 * @return The available synchronization clients.
+	 */
+	public List<URI> getAvailableSyncClients() {
+		return this.availableSyncClients;
+	}
+
+	/**
+	 * @param availableSyncClients
+	 */
+	public void setAvailableSyncClients(List<URI> availableSyncClients) {
+		this.availableSyncClients = availableSyncClients;
 	}
 }
