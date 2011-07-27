@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model.sync;
 
+
 /**
  * @author wla
  * @version $Id$
@@ -31,25 +32,59 @@ public enum ConflictResolutionStrategy {
     /**
      * client changes will be applied to server account
      */
-	CLIENT_WINS,
+	CLIENT_WINS("cw"),
     
 	/**
 	 * server changes will be applied to client account
 	 */
-	SERVER_WINS,
+	SERVER_WINS("sw"),
 	
 	/**
 	 * latest changes will be applied to another account
 	 */
-    LAST_WINS,
+    LAST_WINS("lw"),
     
     /**
      * the first changes will be applied to another account
      */
-    FIRST_WINS,
+    FIRST_WINS("fw");
     
     /**
      * user can select, which changes will be applied
+     * temporary disabled  
      */
-    ASK_USER;
+//    ASK_USER("au");
+	
+	private String strategy;
+
+	private ConflictResolutionStrategy(String strategy) {
+		this.strategy = strategy;
+	}
+	/**
+	 * @return the strategy
+	 */
+	public String getConflictResolutionStrategy() {
+		return strategy;
+	}
+	
+	/**
+	 * 
+	 * @param strategy
+	 * @return conflict resolution strategy for given string
+	 */
+	public static ConflictResolutionStrategy getConflictResolutionStrategyByString(String strategy) {
+		if("lw".equals(strategy)) {
+			return LAST_WINS;
+		} else if("fw".equals(strategy)) {
+			return FIRST_WINS;
+		} else if("cw".equals(strategy)) {
+			return CLIENT_WINS;
+		} else if("sw".equals(strategy)) {
+			return SERVER_WINS;
+//		} else if ("au".equals(strategy)) {
+//			return ASK_USER;
+		}
+		throw new UnsupportedOperationException("ConflictReolutionStrategy: " + strategy + " is unsupported");
+	}
+	
 }
