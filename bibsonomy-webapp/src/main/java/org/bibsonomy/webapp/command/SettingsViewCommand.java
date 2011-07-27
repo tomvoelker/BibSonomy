@@ -134,6 +134,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private String importData;
 	
 	private List<SyncService> syncServer;
+	private SyncService newSyncServer;
 	
 	private List<URI> availableSyncClients;
 	private List<URI> availableSyncServers;
@@ -668,5 +669,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setAvailableSyncClients(List<URI> availableSyncClients) {
 		this.availableSyncClients = availableSyncClients;
+	}
+
+	public SyncService getNewSyncServer() {
+		return this.newSyncServer;
+	}
+
+	public void setNewSyncServer(SyncService newSyncServer) {
+		this.newSyncServer = newSyncServer;
 	}
 }
