@@ -8,6 +8,7 @@ import java.util.List;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -93,13 +94,17 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 		
 		final String loginUserName = loginUser.getName();
 
+		/*
+		 * FIXME make ConflictResolutionStrategy settable
+		 */
+		final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;
 		switch (httpMethod) {
 		case POST:
 			final SyncService newSyncServer = command.getNewSyncServer();
-			((SyncLogicInterface) logic).createSyncServer(loginUserName, newSyncServer.getService(), newSyncServer.getResourceType(), newSyncServer.getServerUser(), newSyncServer.getDirection());
+			((SyncLogicInterface) logic).createSyncServer(loginUserName, newSyncServer.getService(), newSyncServer.getResourceType(), newSyncServer.getServerUser(), newSyncServer.getDirection(), strategy);
 			break;
 		case PUT:
-			((SyncLogicInterface) logic).updateSyncServer(loginUserName, syncServer.getService(), syncServer.getResourceType(), syncServer.getServerUser(), syncServer.getDirection());
+			((SyncLogicInterface) logic).updateSyncServer(loginUserName, syncServer.getService(), syncServer.getResourceType(), syncServer.getServerUser(), syncServer.getDirection(), strategy);
 			break;
 		case DELETE:
 			((SyncLogicInterface) logic).deleteSyncServer(loginUserName, syncServer.getService());
