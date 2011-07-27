@@ -21,6 +21,7 @@
 			    				<value>ckey</value>
 			    				<value>selTab</value>
 			    				<value>syncServer[*].*</value>
+			    				<value>newSyncServer.*</value>
 			    			</list>
 			    		</property>
 			    	</bean>
