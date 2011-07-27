@@ -64,7 +64,7 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 			final String referer = requestLogic.getReferer();
 			final SyncService newSyncServer = command.getNewSyncServer();
 			if (present(referer) && present(newSyncServer) && present(newSyncServer.getService()) && referer.startsWith(newSyncServer.getService().toString())) { 
-				this.errors.rejectValue("newSyncServer.service", "synchronization.server.add.acknowledge", "please acknowledge the new synchronization server");
+				this.errors.rejectValue("newSyncServer.service", "synchronization.server.add.acknowledge", new Object[]{newSyncServer.getService()}, "please acknowledge the new synchronization server");
 			} else {
 				this.errors.reject("error.field.valid.ckey");
 			}

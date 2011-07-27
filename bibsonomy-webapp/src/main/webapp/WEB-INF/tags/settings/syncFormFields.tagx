@@ -26,8 +26,8 @@
 		<form:label cssClass="fsLabel" path="direction" ><fmt:message key="synchronization.direction"/></form:label>
 		<form:select cssClass="fsInput fsSmall" path="direction">
 			<form:option value="BOTH"><fmt:message key="synchronization.direction.both"/></form:option>
-			<form:option value="CLIENT_TO_SERVER"><fmt:message key="synchronization.direction.client_to_server"/></form:option>
-			<form:option value="SERVER_TO_CLIENT"><fmt:message key="synchronization.direction.server_to_client"/></form:option>
+			<form:option value="CLIENT_TO_SERVER"><fmt:message key="synchronization.direction.client_to_server.on_client"/></form:option>
+			<form:option value="SERVER_TO_CLIENT"><fmt:message key="synchronization.direction.server_to_client.on_client"/></form:option>
 		</form:select>
 		<div class="dissError"><form:errors path="direction" /></div>
 	</div>

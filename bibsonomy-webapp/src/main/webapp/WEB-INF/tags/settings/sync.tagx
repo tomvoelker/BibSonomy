@@ -22,13 +22,19 @@
 
 	<script type="text/javascript">
 		function confirmDelete(t) {
-			confirm("${confirmDelete}") ? $(t).parents("form").find("input[name='_method']").val("DELETE") : return false;
+			if(confirm("${confirmDelete}")) {
+				$(t).parents("form").find("input[name='_method']").val("DELETE");
+			} else {
+				 return false;
+			}
 		}
 		function changeClient(t) {
 			$(t).attr("action", $(t).find("select[name='newSyncServer.service']").val() + "updateSyncSettings");
 		}
 	</script>
 
+
+	<p><fmt:message key="synchronization.intro"/></p>
 	
 	<!-- UPDATE SERVER -->
 	<c:if test="${not empty command.syncServer}">
@@ -36,8 +42,9 @@
 	</c:if>
 	<c:forEach varStatus="status" var="syncService" items="${command.syncServer}">
 		<fieldset class="fsInner">
+			<p><fmt:message key="synchronization.server.update.intro"/></p>
 			<form:form method="post" action="/updateSyncSettings" modelAttribute="command.syncServer[${status.index}]">
-				<div cssClass="fsRow">
+				<div class="fsRow">
 					<form:label cssClass="fsLabel" path="service"><fmt:message key="synchronization.server" /></form:label>
 					<form:input cssClass="fsInput" path="service" disabled="true"/>
 					<div class="dissError"><form:errors path="service" /></div>
@@ -91,7 +98,7 @@
 			<form method="post" action="" onsubmit="changeClient(this)">			
 	        	<div class="fsRow">
 					<label class="fsLabel" for="newSyncServer.service"><fmt:message key="synchronization.client" /></label>
-					<select name="newSyncServer.service">
+					<select class="fsInput" name="newSyncServer.service">
 						<c:forEach varStatus="status" var="syncService" items="${command.availableSyncClients}">
 							<option value="${fn:escapeXml(syncService)}"><c:out value="${syncService}"/></option>
 						</c:forEach>
@@ -101,8 +108,8 @@
 					<label class="fsLabel" for="newSyncServer.direction" ><fmt:message key="synchronization.direction"/></label>
 					<select class="fsInput fsSmall" name="newSyncServer.direction">
 						<option value="BOTH"><fmt:message key="synchronization.direction.both"/></option>
-						<option value="CLIENT_TO_SERVER"><fmt:message key="synchronization.direction.client_to_server"/></option>
-						<option value="SERVER_TO_CLIENT"><fmt:message key="synchronization.direction.server_to_client"/></option>
+						<option value="CLIENT_TO_SERVER"><fmt:message key="synchronization.direction.client_to_server.on_server"/></option>
+						<option value="SERVER_TO_CLIENT"><fmt:message key="synchronization.direction.server_to_client.on_server"/></option>
 					</select>
 				</div>
 				<div class="fsRow">
