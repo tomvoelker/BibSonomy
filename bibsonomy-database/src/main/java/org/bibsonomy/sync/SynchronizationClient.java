@@ -328,6 +328,7 @@ public class SynchronizationClient {
 		 * create posts on client 
 		 */
 		if (!createOnClient.isEmpty()) {
+			assert !SynchronizationDirection.CLIENT_TO_SERVER.equals(direction); 
 			try {
 				clientLogic.createPosts(createOnClient);
 				result.append("created on client: " + createOnClient.size() + ", ");
@@ -342,13 +343,13 @@ public class SynchronizationClient {
 				 */
 				duplicates = true;
 			}
-			
 		}
 
 		/*
 		 * create posts on server
 		 */
 		if (!createOnServer.isEmpty()) {
+			assert !SynchronizationDirection.SERVER_TO_CLIENT.equals(direction);
 			try {
 				serverLogic.createPosts(createOnServer);
 				result.append("created on server: " + createOnServer.size() + ", ");
@@ -366,6 +367,7 @@ public class SynchronizationClient {
 		 * update posts on client 
 		 */
 		if (!updateOnClient.isEmpty()) {
+			assert !SynchronizationDirection.CLIENT_TO_SERVER.equals(direction); 
 			clientLogic.updatePosts(updateOnClient, PostUpdateOperation.UPDATE_ALL);
 			result.append("updated on client: " + updateOnClient.size() + ", ");
 		}
@@ -374,6 +376,7 @@ public class SynchronizationClient {
 		 * update posts on server
 		 */
 		if (!updateOnServer.isEmpty()) {
+			assert !SynchronizationDirection.SERVER_TO_CLIENT.equals(direction);
 			serverLogic.updatePosts(updateOnServer, PostUpdateOperation.UPDATE_ALL);
 			result.append("updated on server: " + updateOnServer.size() + ", ");
 		}
@@ -382,6 +385,7 @@ public class SynchronizationClient {
 		 * delete posts on client
 		 */
 		if (!deleteOnClient.isEmpty()) {
+			assert !SynchronizationDirection.CLIENT_TO_SERVER.equals(direction); 
 			clientLogic.deletePosts(clientUser.getName(), deleteOnClient);
 			result.append("deleted on client: " + deleteOnClient.size() + ", ");
 		}
@@ -390,6 +394,7 @@ public class SynchronizationClient {
 		 * delete posts no server
 		 */
 		if (!deleteOnServer.isEmpty()) {
+			assert !SynchronizationDirection.SERVER_TO_CLIENT.equals(direction);
 			serverLogic.deletePosts(serverUser.getName(), deleteOnServer);
 			result.append("deleted on server: " + deleteOnServer.size());
 		}
