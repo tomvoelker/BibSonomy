@@ -64,7 +64,6 @@
 				 	+-->
 				<!-- localized JavaScript messages -->
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/systemmessage.js">&amp;nbsp;</script>
 				<!--+ 
 				 	| merged jquery.js, functions.js, style.js, chrome.js
 				 	| and jQuery plugins jquery.textarearesizer.js, jquery.corner.js, jquery.sidebarresizer.js
@@ -73,7 +72,7 @@
 				 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
 				 	+-->
 				<script type="text/javascript" src="${resdir}/javascript/merged/global.js">&amp;nbsp;</script>
-
+				<script type="text/javascript" src="${resdir}/javascript/systemmessage.js">&amp;nbsp;</script>
 				<!-- include tooltip JavaScript only for users that have tooltips enabled -->
 				<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
 					<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&amp;nbsp;</script>
