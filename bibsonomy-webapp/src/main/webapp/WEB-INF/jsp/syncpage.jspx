@@ -26,55 +26,9 @@
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 			<script type="text/javascript" src="${resdir}/javascript/date.js">&amp;nbsp;</script>
-    		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script> 
-			
-			<script type="text/javascript">
-				function validateSyncForm(formData, form, options) {
-					$(form).find(":submit").hide(); // FIXME: doesn't work
-					$(form).find(".progressGif").show();
-	 			}
-				function successSyncForm(data, statusText, xhr, form) {
-					$(form).find(":submit").show();
-					$(form).find(".progressGif").hide();
-					var syncResult = $(form).find(".syncResult");
-					for (key in data) {
-						var error = data[key].error;
-						if (error != "no") {
-							alert(key + ": " + error);
-							continue;
-						}
-						var date = new Date(data[key].date);
-						var result = data[key].info;
-						var formattedDate = formatDate(date, "MMM dd, yyyy hh:mm a");
+    		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script>
+    		<script type="text/javascript" src="${resdir}/javascript/syncpage.js">&amp;nbsp;</script>
 
-						syncResult.append("[" + key + "] lastSyncDate = " + formattedDate + ", result = " + result + "<br/>");
-						syncResult.show();
-						
-					}
-					// submit the form
-												 	     
-			 	    // return false to prevent normal browser submit and page navigation 
-			 	    return false; 
-	 			}
-				
-				function errorSyncForm(jqXHR, textStatus, errorThrown, form) {
-					alert("error: " + errorThrown);
-					$(form).find(":submit").show();
-					$(form).find(".progressGif").hide();
-	 			}
-	 			
-			    $(document).ready(function() {
-					$("form").each(function(index, elem) {
-					 	$(this).ajaxForm({
-					 		dataType : "json",
-					 		beforeSubmit : validateSyncForm,
-					 		success : successSyncForm,
-					 		error : errorSyncForm
-						 });
-			    	});
-			    });
-			</script>
-	
 		</jsp:attribute>
 	
 		<!-- heading -->
@@ -103,46 +57,34 @@
 							<div class="fsRow">
 								<c:out value="${syncTimes}"/>
 							</div>
-			
-							<!-- bookmarks -->
-							<c:if test="${not empty service.lastSyncData['Bookmark']}">
-								<div class="fsRow" id="bookmark">
-									<c:set var="LSDbook" value="${service.lastSyncData['Bookmark']}" />
-									<span class="fsLabel"><c:out value="${bookmarks}"/>: </span>
-									<span class="fsInput">
-										<c:choose>
-											<c:when test="${not empty LSDbook}">
-												<fmt:formatDate value="${LSDbook.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-												<fmt:message key="synchronization.result"/>
-												<c:out value="${LSDbook.status} "/> <c:out value="${LSDbook.info}"/>
-											</c:when>
-											<c:otherwise>
-												<fmt:message key="synchronization.noresult"/>
-											</c:otherwise>
-										</c:choose>
-									</span>
-								</div>
-							</c:if>
 							
-							<!-- publications -->
-							<c:if test="${not empty service.lastSyncData['BibTex']}">
-								<div class="fsRow" id="bibtex">
-									<c:set var="LSDpub" value="${service.lastSyncData['BibTex']}"/>
-									<span class="fsLabel"><c:out value="${publications}"/>: </span>
+							<div class="syncData">
+								<c:forEach var="entry" items="${service.lastSyncData}">
+									<div class="fsRow">
+									<c:choose>
+										<c:when test="${entry.key=='BibTex'}">
+											<span class="fsLabel"><c:out value="${publications}"/>: </span>
+										</c:when>
+										<c:otherwise>
+											<span class="fsLabel"><c:out value="${bookmarks}"/>: </span>
+										</c:otherwise>
+									</c:choose>
+									<c:set var="LSDbook" value="${entry.value}" />
 									<span class="fsInput">
-										<c:choose>
-											<c:when test="${not empty LSDpub}">
-												<fmt:formatDate value="${LSDpub.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-												<fmt:message key="synchronization.result"/>
-												<c:out value="${LSDpub.status} "/> <c:out value="${LSDpub.info}"/>
-											</c:when>
-											<c:otherwise>
-												<fmt:message key="synchronization.noresult"/>
-											</c:otherwise>
-										</c:choose>
-									</span>
-								</div>
-							</c:if>
+											<c:choose>
+												<c:when test="${not empty LSDbook}">
+													<fmt:formatDate value="${LSDbook.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
+													<fmt:message key="synchronization.result"/>
+													<c:out value="${LSDbook.status} "/> <c:out value="${LSDbook.info}"/>
+												</c:when>
+												<c:otherwise>
+													<fmt:message key="synchronization.noresult"/>
+												</c:otherwise>
+											</c:choose>
+										</span>
+									</div>
+								</c:forEach>
+							</div>
 							
 							<div class="fsRow syncResult" style="display:none">
 								<span class="fsLabel"><fmt:message key="synchronization.result"/></span>
