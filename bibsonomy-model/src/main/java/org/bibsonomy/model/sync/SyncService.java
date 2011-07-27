@@ -40,6 +40,7 @@ public class SyncService {
 	private Map <String, SynchronizationData> lastSyncData;
 	private Class<? extends Resource> resourceType;
 	private SynchronizationDirection direction;
+	private ConflictResolutionStrategy strategy;
 	
 	/**
 	 * @return the clientUser
@@ -118,6 +119,18 @@ public class SyncService {
 	 */
 	public SynchronizationDirection getDirection() {
 		return direction;
+	}
+	/**
+	 * @param strategy the strategy to set
+	 */
+	public void setStrategy(ConflictResolutionStrategy strategy) {
+		this.strategy = strategy;
+	}
+	/**
+	 * @return the strategy
+	 */
+	public ConflictResolutionStrategy getStrategy() {
+		return strategy;
 	}
 	@Override
 	public String toString() {

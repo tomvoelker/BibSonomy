@@ -77,8 +77,9 @@ public interface SyncLogicInterface {
 	 * @param resourceType - the type of resource that should be synchronized. {@link Resource} means booth {@link Bookmark} and {@link BibTex}.
 	 * @param userCredentials
 	 * @param direction 
+	 * @param strategy
 	 */
-	public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction);
+	public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy);
 	
 	/**
 	 * 
@@ -93,9 +94,10 @@ public interface SyncLogicInterface {
 	 * @param service
 	 * @param resourceType - the type of resource that should be synchronized. {@link Resource} means booth {@link Bookmark} and {@link BibTex}.
 	 * @param userCredentials 
-	 * @param direction 
+	 * @param direction
+	 * @param strategy 
 	 */
-	public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction);
+	public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy);
 	
 	/**
 	 * 
