@@ -36,6 +36,10 @@
 
 	<p><fmt:message key="synchronization.intro"/></p>
 	
+	<c:if test="${empty command.syncServer and empty command.availableSyncServers empty command.availableSyncClients}">
+		<p><fmt:message key="synchronization.notConfigured"/></p>
+	</c:if>
+	
 	<!-- UPDATE SERVER -->
 	<c:if test="${not empty command.syncServer}">
 		<h2><fmt:message key="synchronization.server.update"/></h2>
