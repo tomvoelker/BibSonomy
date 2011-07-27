@@ -40,7 +40,7 @@
 			
 			<fmt:message var="synchronize" key="synchronization.synchronize" />
 			<fmt:message var="serviceName" key="synchronization.serviceName" />
-			<fmt:message var="syncTimes" key="synchronization.lastSyncTimes" />
+			<fmt:message var="syncResults" key="synchronization.lastSyncResults" />
 			<fmt:message var="bookmarks" key="bookmarks" />
 			<fmt:message var="publications" key="publications" />
 			<fmt:message var="synchronizationRunning" key="synchronization.synchronizationRunning"/>
@@ -55,7 +55,7 @@
 							<h2><c:out value="${serviceName}: "/> <c:out value="${service.service}" /></h2>	
 									
 							<div class="fsRow">
-								<c:out value="${syncTimes}"/>
+								<c:out value="${syncResults}"/>
 							</div>
 							
 							<div class="syncData">
@@ -86,10 +86,6 @@
 								</c:forEach>
 							</div>
 							
-							<div class="fsRow syncResult" style="display:none">
-								<span class="fsLabel"><fmt:message key="synchronization.result"/></span>
-							</div>
-
 						<input type="submit" value="${synchronize}"/>
 						<input type="hidden" name="serviceName" value="${service.service}" />
 						<input type="hidden" name="ckey" value="${ckey}" />
