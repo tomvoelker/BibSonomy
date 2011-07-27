@@ -121,6 +121,6 @@ public class SyncService {
 	}
 	@Override
 	public String toString() {
-		return service.toString();
+		return service != null ? service.toString() : null;
 	}
 }
