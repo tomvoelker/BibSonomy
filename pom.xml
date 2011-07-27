@@ -72,6 +72,16 @@
 			<url>http://www.kde.cs.uni-kassel.de/eisterlehner</url>
 		</developer>
 		<developer>
+			<name>Stephan Doerfel</name>
+			<id>sdo</id>
+			<email>doerfel@cs.uni-kassel.de</email>
+			<roles>
+				<role>Project leader</role>
+				<role>Developer</role>
+			</roles>
+			<url>http://www.kde.cs.uni-kassel.de/doerfel</url>
+		</developer>
+		<developer>
 			<name>Jens Illig</name>
 			<id>jillig</id>
 			<email>illig@innofinity.de</email>
