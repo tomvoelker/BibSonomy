@@ -3,7 +3,6 @@ package org.bibsonomy.database.common.typehandler;
 import java.sql.SQLException;
 
 import org.bibsonomy.model.sync.SynchronizationDirection;
-import org.bibsonomy.model.sync.SynchronizationStatus;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
