@@ -33,7 +33,7 @@ public enum Views implements View {
 	/**
 	 * synchronization page
 	 */
-	SYNCPAGE("syncpage"),
+	SYNC("actions/sync"),
 	
 	/**
 	 * user page displaying the resources of a single user

@@ -91,7 +91,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 		
 		command.setSyncServices(userServices);
 		
-		return Views.SYNCPAGE;
+		return Views.SYNC;
 	}
 
 	@Override

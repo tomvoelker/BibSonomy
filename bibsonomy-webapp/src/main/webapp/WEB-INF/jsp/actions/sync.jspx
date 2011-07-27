@@ -27,13 +27,13 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 			<script type="text/javascript" src="${resdir}/javascript/date.js">&amp;nbsp;</script>
     		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script>
-    		<script type="text/javascript" src="${resdir}/javascript/syncpage.js">&amp;nbsp;</script>
+    		<script type="text/javascript" src="${resdir}/javascript/sync.js">&amp;nbsp;</script>
 
 		</jsp:attribute>
 	
 		<!-- heading -->
 		<jsp:attribute name="heading">
-		   <a rel="path_menu" href="/syncpage"><img src="/resources/image/box_arrow.png"/>&amp;nbsp;<c:out value="${syncPageTitle}" /></a>
+		   <a rel="path_menu" href="/sync"><img src="/resources/image/box_arrow.png"/>&amp;nbsp;<c:out value="${syncPageTitle}" /></a>
     	</jsp:attribute>
 		
 		<jsp:attribute name="content">
