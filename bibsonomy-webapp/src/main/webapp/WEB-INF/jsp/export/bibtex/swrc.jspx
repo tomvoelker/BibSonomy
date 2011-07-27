@@ -42,8 +42,9 @@
 <!-- the following test is kind of a hack - but currently we are displaying related users 
      only on the tag page, which is based on the TagResourceViewCommand, which 
      has the necessary attributes we access here. dbe, 20080509 -->
-<c:if test="${command.commandName == 'TagResourceViewCommand'}">		 
-	<swrctags:relatedUsers cmd="${command.relatedUserCommand}" tags="${command['requestedTags']}"/>
-</c:if>	  
+<!-- This causes an Exception since there is no more property commandName -->
+<!--<c:if test="${command.commandName == 'TagResourceViewCommand'}">		 -->
+<!--	<swrctags:relatedUsers cmd="${command.relatedUserCommand}" tags="${command['requestedTags']}"/>-->
+<!--</c:if>	  -->
 </rdf:RDF>
 </jsp:root>
