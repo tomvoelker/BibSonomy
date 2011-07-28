@@ -10,6 +10,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
+import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -22,8 +23,6 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class FriendPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
 	private static final Log log = LogFactory.getLog(FriendPageController.class);
-	
-	private static final int THRESHOLD = 20000;
 
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
@@ -65,8 +64,8 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, requTags, null, 20000, null);
 
 			// log if a user has reached threshold
-			if (command.getTagcloud().getTags().size() >= THRESHOLD) {
-				log.error("User " + groupingName + " has reached threshold of " + THRESHOLD + " tags on friend page");
+			if (command.getTagcloud().getTags().size() >= Parameters.TAG_THRESHOLD) {
+				log.error("User " + groupingName + " has reached threshold of " + Parameters.TAG_THRESHOLD + " tags on friend page");
 			}
 			
 			/*

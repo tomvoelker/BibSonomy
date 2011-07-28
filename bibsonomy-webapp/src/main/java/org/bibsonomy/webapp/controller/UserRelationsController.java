@@ -12,6 +12,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.webapp.command.UserRelationCommand;
+import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -65,8 +66,8 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 20000, null);
 
 			// log if a user has reached threshold
-			if (command.getTagcloud().getTags().size() > 19999) {
-				LOGGER.error("User " + groupingName + " has reached threshold of 20000 tags on user page");
+			if (command.getTagcloud().getTags().size() >= Parameters.TAG_THRESHOLD) {
+				LOGGER.error("User " + groupingName + " has reached threshold of " + Parameters.TAG_THRESHOLD + " tags on user page");
 			}
 
 			/*
