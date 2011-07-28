@@ -20,6 +20,7 @@ import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
+import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -33,7 +34,6 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class UserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
-	private static final int THRESHOLD = 20000; // TODO: move constant to a more general class (other controller also need this value)
 	private static final Log LOGGER = LogFactory.getLog(UserPageController.class);
 	
 	@Override
@@ -137,8 +137,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			command.getConcepts().setNumConcepts(concepts.size());
 
 			// log if a user has reached threshold
-			if (command.getTagcloud().getTags().size() >= THRESHOLD) {
-				LOGGER.debug("User " + groupingName + " has reached threshold of " + THRESHOLD + " tags on user page");
+			if (command.getTagcloud().getTags().size() >= Parameters.TAG_THRESHOLD) {
+				LOGGER.debug("User " + groupingName + " has reached threshold of " + Parameters.TAG_THRESHOLD + " tags on user page");
 			}
 			
 			// retrieve similar users, by the given user similarity measure
