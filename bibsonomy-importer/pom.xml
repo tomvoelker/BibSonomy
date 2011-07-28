@@ -15,8 +15,6 @@
 		<groupId>org.bibsonomy</groupId>
 		<version>2.0.18-SNAPSHOT</version>
 	</parent>
-
-
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -39,14 +37,8 @@
 			<groupId>oauth.signpost</groupId>
 			<artifactId>signpost-core</artifactId>
 			<version>1.2.1.1</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
-
-	<properties>
-	</properties>
-
 	<build>
 		<extensions>
 			<extension>
@@ -69,7 +61,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<distributionManagement>
 		<site>
 			<!-- copy site documentation via scp to gromit -->
@@ -79,7 +70,6 @@
 			</url>
 		</site>
 	</distributionManagement>
-
 	<reporting>
 		<plugins>
 			<plugin>
