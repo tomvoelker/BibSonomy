@@ -23,8 +23,6 @@
 
 package org.bibsonomy.util;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -37,7 +35,6 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.User;
 import org.springframework.context.MessageSource;
 
@@ -129,23 +126,26 @@ public class MailUtils {
 	
 	/** 
 	 * Sends the registration mail to the user and to the group admins.
+	 * @param groupName the name of the group to join
+	 * @param groupMail the mail address of the group
+	 * @param loginUser the n
+	 * @param reason the reason to join the group
+	 * @param locale the locale of the mail
+	 * @return <code>true</code> iff mail was sent
 	 */
 	public boolean sendJoinGroupRequest(final String groupName, final String groupMail, final User loginUser, final String reason, final Locale locale) {
-		Object[] messagesParameters;
-		try {
-			messagesParameters = new Object[]{
-					groupName,
-					loginUser.getName(),
-					reason,
-					projectHome,
-					URLEncoder.encode(groupName, "UTF-8").toLowerCase(),
-					URLEncoder.encode(loginUser.getName(), "UTF-8").toLowerCase(),
-					projectName.toLowerCase(),
-					projectEmail
-			};
-		} catch (UnsupportedEncodingException e1) {
-			throw new InternServerException(e1.getMessage());
-		}
+		final Object[] messagesParameters = new Object[]{
+				groupName,
+				loginUser.getName(),
+				reason,
+				projectHome,
+				// TODO: why toLowerCase?
+				UrlUtils.safeURIEncode(groupName).toLowerCase(),
+				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
+				projectName.toLowerCase(),
+				projectEmail
+		};
+		
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
 		 */
@@ -166,19 +166,25 @@ public class MailUtils {
 	
 	/** 
 	 * Sends the registration mail to the user and to the group admins.
+	 * @param groupName 
+	 * @param deniedUserName 
+	 * @param deniedUserEMail 
+	 * @param reason 
+	 * @param locale 
+	 * @return <code>true</code> iff mail was sent
 	 */
 	public boolean sendJoinGroupDenied(final String groupName, final String deniedUserName, final String deniedUserEMail, final String reason, final Locale locale) {
-		Object[] messagesParameters;
-		messagesParameters = new Object[]{
-					groupName,
-					deniedUserName,
-					reason,
-					projectHome,
-					null,
-					null,
-					projectName.toLowerCase(),
-					projectEmail
-			};
+		final Object[] messagesParameters = new Object[]{
+			groupName, deniedUserName,
+			reason,
+			projectHome,
+			// TODO: remove null values
+			null,
+			null,
+			// TODO: why to lower case?
+			projectName.toLowerCase(),
+			projectEmail
+		};
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
 		 */
@@ -239,7 +245,7 @@ public class MailUtils {
 	 * @throws MessagingException
 	 */
 	private void sendMail(final String[] recipients, final String subject, final String message, final String from) throws MessagingException {
-		boolean debug = false;
+		final boolean debug = false;
 
 		// create some properties and get the default Session
 		final Session session = Session.getDefaultInstance(props, null);
@@ -273,7 +279,7 @@ public class MailUtils {
 	 * 
 	 * @param projectName
 	 */
-	public void setProjectName(String projectName) {
+	public void setProjectName(final String projectName) {
 		this.projectName = projectName;
 	}
 
@@ -282,7 +288,7 @@ public class MailUtils {
 	 * 
 	 * @param projectHome
 	 */
-	public void setProjectHome(String projectHome) {
+	public void setProjectHome(final String projectHome) {
 		this.projectHome = projectHome;
 	}
 
@@ -291,7 +297,7 @@ public class MailUtils {
 	 * 
 	 * @param projectBlog
 	 */
-	public void setProjectBlog(String projectBlog) {
+	public void setProjectBlog(final String projectBlog) {
 		this.projectBlog = projectBlog;
 	}
 
@@ -300,7 +306,7 @@ public class MailUtils {
 	 * 
 	 * @param projectEmail
 	 */
-	public void setProjectEmail(String projectEmail) {
+	public void setProjectEmail(final String projectEmail) {
 		this.projectEmail = projectEmail;
 	}
 
@@ -309,7 +315,7 @@ public class MailUtils {
 	 * 
 	 * @param projectRegistrationFromAddress
 	 */
-	public void setProjectRegistrationFromAddress(String projectRegistrationFromAddress) {
+	public void setProjectRegistrationFromAddress(final String projectRegistrationFromAddress) {
 		this.projectRegistrationFromAddress = projectRegistrationFromAddress;
 	}
 
@@ -318,7 +324,7 @@ public class MailUtils {
 	 * 
 	 * @param projectJoinGroupRequestFromAddress
 	 */
-	public void setProjectJoinGroupRequestFromAddress(String projectJoinGroupRequestFromAddress) {
+	public void setProjectJoinGroupRequestFromAddress(final String projectJoinGroupRequestFromAddress) {
 		this.projectJoinGroupRequestFromAddress = projectJoinGroupRequestFromAddress;
 	}
 
@@ -327,14 +333,14 @@ public class MailUtils {
 	 * 
 	 * @param mailHost
 	 */
-	public void setMailHost(String mailHost) {
+	public void setMailHost(final String mailHost) {
 		props.put("mail.smtp.host", mailHost);
 	}
 
 	/** A message source to format mail messages.
 	 * @param messageSource
 	 */
-	public void setMessageSource(MessageSource messageSource) {
+	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
