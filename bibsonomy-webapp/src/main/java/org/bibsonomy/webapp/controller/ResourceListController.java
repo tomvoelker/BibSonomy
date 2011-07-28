@@ -172,7 +172,7 @@ public abstract class ResourceListController {
 	 * @param end
 	 * @param search
 	 */
-	protected void handleTagsOnly(final ResourceViewCommand cmd, final GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, int max, String search) {
+	protected void handleTagsOnly(final ResourceViewCommand cmd, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search) {
 		final String tagsType = cmd.getTagstype();
 		if (tagsType != null) {
 
@@ -214,7 +214,7 @@ public abstract class ResourceListController {
 			cmd.setSortPageOrder(DEFAULT_SORTPAGEORDER_JABREF_LAYOUTS);
 		}
 		
-		if ("no".equals(cmd.getDuplicates())) {
+		if (!cmd.isDuplicates()) {
 			BibTexUtils.removeDuplicates(posts);
 			// re-sort list by date in descending order, if nothing else requested
 			if (ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage())) {
@@ -238,7 +238,7 @@ public abstract class ResourceListController {
 	 * @param groupingName the grouping name
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
-	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage) {
+	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final String search, final int itemsPerPage) {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
@@ -259,7 +259,7 @@ public abstract class ResourceListController {
 	 * @param itemsPerPage number of items to be displayed on each page
 	 * @param constraint
 	 */
-	protected <T extends Resource> void setTotalCount(final SimpleResourceViewCommand cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage, StatisticsConstraint constraint) {
+	protected <T extends Resource> void setTotalCount(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final String search, final int itemsPerPage, final StatisticsConstraint constraint) {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		log.debug("getPostStatistics " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
@@ -267,13 +267,13 @@ public abstract class ResourceListController {
 		listCommand.setTotalCount(totalCount);
 	}
 
-	protected void startTiming(Class<? extends ResourceListController> controller, String format) {
+	protected void startTiming(final Class<? extends ResourceListController> controller, final String format) {
 		log.info("Handling Controller: " + controller.getSimpleName() + ", format: " + format);
 		this.startTime = System.currentTimeMillis();
 	}
 
 	protected void endTiming() {
-		long elapsed = System.currentTimeMillis() - this.startTime;
+		final long elapsed = System.currentTimeMillis() - this.startTime;
 		log.info("Processing time: " + elapsed + " ms");
 	}
 
@@ -307,7 +307,7 @@ public abstract class ResourceListController {
 	 * @param startIndex - start index
 	 * @param endIndex - end index
 	 */
-	protected void restrictResourceList(SimpleResourceViewCommand cmd, Class<? extends Resource> resourceType, final int startIndex, final int endIndex) {			
+	protected void restrictResourceList(final SimpleResourceViewCommand cmd, final Class<? extends Resource> resourceType, final int startIndex, final int endIndex) {			
 		if (BibTex.class.equals(resourceType)) {
 			cmd.getBibtex().setList(cmd.getBibtex().getList().subList(startIndex, endIndex));
 		}
@@ -326,7 +326,7 @@ public abstract class ResourceListController {
 	/**
 	 * @param initializeNoResources the noResourcesToInitialize to set
 	 */
-	public void setInitializeNoResources(boolean initializeNoResources) {
+	public void setInitializeNoResources(final boolean initializeNoResources) {
 		this.initializeNoResources = initializeNoResources;
 	}
 
@@ -403,7 +403,7 @@ public abstract class ResourceListController {
 	 * @param userSettings the loginUsers userSettings
 	 */
 	@Required
-	public void setUserSettings(UserSettings userSettings) {
+	public void setUserSettings(final UserSettings userSettings) {
 		this.userSettings = userSettings;
 	}
 
@@ -411,14 +411,14 @@ public abstract class ResourceListController {
 	 * @param logic logic interface
 	 */
 	@Required
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 	
 	/**
 	 * @param forcedResources the forcedResources to set
 	 */
-	public void setForcedResources(Set<Class<? extends Resource>> forcedResources) {
+	public void setForcedResources(final Set<Class<? extends Resource>> forcedResources) {
 		this.forcedResources = forcedResources;
 	}
 }

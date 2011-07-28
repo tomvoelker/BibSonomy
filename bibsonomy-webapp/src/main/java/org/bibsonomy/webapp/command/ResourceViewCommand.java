@@ -13,6 +13,7 @@ import org.bibsonomy.model.Resource;
  * @see BaseCommand
  * @author Jens Illig
  * @author Dominik Benz
+ * @version $Id$
  */
 public class ResourceViewCommand extends BaseCommand {	
 	/** default value for sortPage */
@@ -23,13 +24,22 @@ public class ResourceViewCommand extends BaseCommand {
 	private TagCloudCommand tagcloud = new TagCloudCommand();
 	private String requestedUser;
 	private Set<Class<? extends Resource>> resourcetype;
+	
+	// TODO: could be of type TagsType
 	private String tagstype; // for queries for specific kinds of tags
+	
 	private String format = "html"; 
 	private String layout; // if format="layout", here the requested layout is stored
 	private boolean formatEmbedded; // 
+	
+	// TODO: could be a list of SortKeys
 	private String sortPage = DEFAULT_SORTPAGE;
+	// TODO: could be a list of SortOrders
 	private String sortPageOrder = DEFAULT_SORTPAGEORDER;
-	private String duplicates = "yes";
+	
+	/** show duplicates? */
+	private boolean duplicates = true;
+	
 	private boolean notags = false;
 
 	/**
@@ -56,14 +66,14 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @return the duplicates
 	 */
-	public String getDuplicates() {
+	public boolean isDuplicates() {
 		return this.duplicates;
 	}
 	
 	/**
 	 * @param duplicates the duplicates to set
 	 */
-	public void setDuplicates(String duplicates) {
+	public void setDuplicates(final boolean duplicates) {
 		this.duplicates = duplicates;
 	}
 	
@@ -76,7 +86,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param requestedUser name of the user whose resources are requested
 	 */
-	public void setRequestedUser(String requestedUser) {
+	public void setRequestedUser(final String requestedUser) {
 		this.requestedUser = requestedUser;
 	}
 
@@ -90,7 +100,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param tagcloud the tagcloud command
 	 */
-	public void setTagcloud(TagCloudCommand tagcloud) {
+	public void setTagcloud(final TagCloudCommand tagcloud) {
 		this.tagcloud = tagcloud;
 	}
 
@@ -126,7 +136,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param resourcetype the resourcetype to set
 	 */
-	public void setResourcetype(Set<Class<? extends Resource>> resourcetype) {
+	public void setResourcetype(final Set<Class<? extends Resource>> resourcetype) {
 		this.resourcetype = resourcetype;
 	}
 
@@ -140,7 +150,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param sortPage the sortPage to set
 	 */
-	public void setSortPage(String sortPage) {
+	public void setSortPage(final String sortPage) {
 		this.sortPage = sortPage;
 	}
 
@@ -154,7 +164,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param sortPageOrder the sortPageOrder to set
 	 */
-	public void setSortPageOrder(String sortPageOrder) {
+	public void setSortPageOrder(final String sortPageOrder) {
 		this.sortPageOrder = sortPageOrder;
 	}
 
@@ -168,7 +178,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param restrictToTags the restrictToTags to set
 	 */
-	public void setRestrictToTags(boolean restrictToTags) {
+	public void setRestrictToTags(final boolean restrictToTags) {
 		this.restrictToTags = restrictToTags;
 	}
 
@@ -182,7 +192,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param callback the callback to set
 	 */
-	public void setCallback(String callback) {
+	public void setCallback(final String callback) {
 		this.callback = callback;
 	}
 
@@ -196,7 +206,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param filter the filter to set
 	 */
-	public void setFilter(String filter) {
+	public void setFilter(final String filter) {
 		this.filter = filter;
 	}
 
@@ -210,7 +220,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param layout the layout to set
 	 */
-	public void setLayout(String layout) {
+	public void setLayout(final String layout) {
 		this.layout = layout;
 	}
 
@@ -224,7 +234,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param formatEmbedded the formatEmbedded to set
 	 */
-	public void setformatEmbedded(boolean formatEmbedded) {
+	public void setformatEmbedded(final boolean formatEmbedded) {
 		this.formatEmbedded = formatEmbedded;
 	}
 	
@@ -238,7 +248,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param tagstype the tagstype to set
 	 */
-	public void setTagstype(String tagstype) {
+	public void setTagstype(final String tagstype) {
 		this.tagstype = tagstype;
 	}
 
@@ -252,28 +262,21 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param notags the notags to set
 	 */
-	public void setNotags(boolean notags) {
+	public void setNotags(final boolean notags) {
 		this.notags = notags;
-	}
-	
-	/**
-	 * @return the personalized
-	 */
-	public Boolean getPersonalized() {
-		return this.personalized;
 	}
 
 	/**
 	 * @param personalized the personalized to set
 	 */
-	public void setPersonalized(Boolean personalized) {
+	public void setPersonalized(final boolean personalized) {
 		this.personalized = personalized;
 	}
 	
 	/**
-	 * @return @see {@link #getPersonalized()}
+	 * @return the personalized
 	 */
-	public Boolean isPersonalized() {
+	public boolean isPersonalized() {
 		return personalized;
 	}
 
@@ -287,7 +290,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @param referer the referer to set
 	 */
-	public void setReferer(String referer) {
+	public void setReferer(final String referer) {
 		this.referer = referer;
 	}
 
