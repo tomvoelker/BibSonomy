@@ -23,9 +23,7 @@
 
 package org.bibsonomy.model.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -98,14 +96,11 @@ public class ResourceUtils {
 	 * @param requiredType
 	 * @return list with required resource types.
 	 */
-	public static List<Class<? extends Resource>> getResourceTypesByClass(Class<? extends Resource> requiredType) {
-		List<Class<? extends Resource>> resourceTypes = new ArrayList<Class<? extends Resource>>(2);
-		if(Resource.class.equals(requiredType)) {
-			resourceTypes.add(Bookmark.class);
-			resourceTypes.add(BibTex.class);
-		} else {
-			resourceTypes.add(requiredType);
+	@SuppressWarnings("unchecked")
+	public static Class<? extends Resource>[] getResourceTypesByClass(Class<? extends Resource> requiredType) {
+		if (Resource.class.equals(requiredType)) {
+			return new Class[]{Bookmark.class, BibTex.class};
 		}
-		return resourceTypes;
+		return new Class[]{requiredType};
 	}
 }
