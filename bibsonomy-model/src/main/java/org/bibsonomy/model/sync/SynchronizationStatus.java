@@ -10,8 +10,21 @@ public enum SynchronizationStatus {
 	/*
 	 * NOTE: column is a varchar(8), so please use short names
 	 */
+	/**
+	 * A synchronization plan was requested. 
+	 */
+	PLANNED("planned"),
+	/**
+	 * A client is currently working on the plan = synchronizing.
+	 */
 	RUNNING("running"),
+	/**
+	 * Synchronization is complete. 
+	 */
 	DONE("done"),
+	/**
+	 * An error during sync occurred. 
+	 */
 	ERROR("error");
 	
 	
