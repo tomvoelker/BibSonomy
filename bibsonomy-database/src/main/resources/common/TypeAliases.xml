@@ -10,6 +10,7 @@
 	<typeAlias alias="bookmark"           type="org.bibsonomy.model.Bookmark" />
 	<typeAlias alias="bibtex"             type="org.bibsonomy.model.BibTex" />
 	<typeAlias alias="goldStandardPublication" type="org.bibsonomy.model.GoldStandardPublication" />
+	<typeAlias alias="goldStandardBookmark" type="org.bibsonomy.model.GoldStandardBookmark" />
 	<typeAlias alias="post"               type="org.bibsonomy.model.Post" />
 	<typeAlias alias="resource"           type="org.bibsonomy.model.Resource" />
 	<typeAlias alias="repository"         type="org.bibsonomy.model.Repository" />
