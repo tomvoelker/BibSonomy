@@ -11,9 +11,11 @@ import org.bibsonomy.model.util.TagUtils;
  * @author sdo
  * @version $Id$
  */
-public class TitleSystemTag extends AbstractSearchSystemTagImpl implements
-SearchSystemTag {
+public class TitleSystemTag extends AbstractSearchSystemTagImpl {
 
+	/**
+	 * the name of the title system tag
+	 */
 	public static final String NAME = "title";
 
 	@Override
@@ -27,7 +29,7 @@ SearchSystemTag {
 	}
 
 	@Override
-	public void handleParam(GenericParam param) {
+	public void handleParam(final GenericParam param) {
 		if(!present(param.getTitle()) ) {
 			param.setTitle(this.getArgument());
 		} else {
@@ -36,12 +38,10 @@ SearchSystemTag {
 		}
 		param.setGrouping(GroupingEntity.ALL);
 		log.debug("set title to " + param.getTitle() + " after matching for title system tag");
-
 	}
+	
 	@Override
-	public <T extends Resource> boolean allowsResource(Class<T> resourceType) {
+	public boolean allowsResource(final Class<? extends Resource> resourceType) {
 		return true;
 	}
-
-
 }

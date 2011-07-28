@@ -9,6 +9,7 @@ import org.bibsonomy.model.Resource;
  * System tag for representing a tagged user relation, e.g., sys:relation:football
  * 
  * @author fmi
+ * @version $Id$
  */
 public class UserRelationSystemTag extends AbstractSystemTagImpl implements SearchSystemTag {
 
@@ -38,13 +39,13 @@ public class UserRelationSystemTag extends AbstractSystemTagImpl implements Sear
 	}
 	
 	@Override
-	public <T extends Resource> boolean allowsResource(Class<T> resourceType) {
+	public boolean allowsResource(final Class<? extends Resource> resourceType) {
 		return true;
 	}
 
 	@Override
-	public void handleParam(GenericParam param) {
-		String tagName = SystemTagsUtil.buildSystemTagString(this.getName(), this.getArgument());
+	public void handleParam(final GenericParam param) {
+		final String tagName = SystemTagsUtil.buildSystemTagString(this.getName(), this.getArgument());
 		param.addRelationTag(tagName);
 	}
 

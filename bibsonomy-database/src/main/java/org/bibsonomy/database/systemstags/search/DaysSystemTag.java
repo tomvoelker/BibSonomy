@@ -7,8 +7,11 @@ import org.bibsonomy.model.Resource;
  * @author sdo
  * @version $Id$
  */
-public class DaysSystemTag extends AbstractSearchSystemTagImpl implements SearchSystemTag {
+public class DaysSystemTag extends AbstractSearchSystemTagImpl {
 
+	/**
+	 * the name of the days system tag
+	 */
 	public static final String NAME = "days";
 
 	@Override
@@ -22,7 +25,7 @@ public class DaysSystemTag extends AbstractSearchSystemTagImpl implements Search
 	}
 
 	@Override
-	public void handleParam(GenericParam param) {
+	public void handleParam(final GenericParam param) {
 		/*
 		 * FIXME: What do we clear the TagIndex for, What is the TagIndes
 		 */
@@ -35,9 +38,8 @@ public class DaysSystemTag extends AbstractSearchSystemTagImpl implements Search
 	}
 
 	@Override
-	public <T extends Resource> boolean allowsResource(Class<T> resourceType) {
+	public boolean allowsResource(final Class<? extends Resource> resourceType) {
 		return true;
 	}
-
 
 }

@@ -25,9 +25,8 @@ public interface SearchSystemTag extends SystemTag {
 
 	/**
 	 * Indicates whether resources of type resourceType can be fetched using this Systemtag
-	 * @param <T>
-	 * @param resourceType
-	 * @return
+	 * @param resourceClass
+	 * @return <code>true</code> iff the system tag allows the resource
 	 */
-	public <T extends Resource> boolean allowsResource(Class<T> resourceType);
+	public boolean allowsResource(Class<? extends Resource> resourceClass);
 }

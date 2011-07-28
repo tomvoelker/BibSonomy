@@ -8,8 +8,11 @@ import org.bibsonomy.model.Resource;
  * @author sdo
  * @version $Id$
  */
-public class UserSystemTag extends AbstractSearchSystemTagImpl implements SearchSystemTag {
+public class UserSystemTag extends AbstractSearchSystemTagImpl {
 
+	/**
+	 * the name of the user system tag
+	 */
 	public static final String NAME = "user";
 
 	@Override
@@ -23,14 +26,14 @@ public class UserSystemTag extends AbstractSearchSystemTagImpl implements Search
 	}
 
 	@Override
-	public void handleParam(GenericParam param) {
+	public void handleParam(final GenericParam param) {
 		param.setGrouping(GroupingEntity.USER);
 		param.setRequestedUserName(this.getArgument());
 		log.debug("set grouping to 'user' and requestedUserName to " + this.getArgument() + " after matching for user system tag");
 	}
 
 	@Override
-	public <T extends Resource> boolean allowsResource(Class<T> resourceType) {
+	public boolean allowsResource(final Class<? extends Resource> resourceType) {
 		return true;
 	}
 

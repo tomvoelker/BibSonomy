@@ -8,8 +8,11 @@ import org.bibsonomy.model.Resource;
  * @author sdo
  * @version $Id$
  */
-public class GroupSystemTag extends AbstractSearchSystemTagImpl implements SearchSystemTag {
+public class GroupSystemTag extends AbstractSearchSystemTagImpl {
 
+	/**
+	 * the name of the group system tag
+	 */
 	public static final String NAME = "group";
 
 	@Override
@@ -23,16 +26,15 @@ public class GroupSystemTag extends AbstractSearchSystemTagImpl implements Searc
 	}
 
 	@Override
-	public void handleParam(GenericParam param) {
+	public void handleParam(final GenericParam param) {
 		param.setGrouping(GroupingEntity.GROUP);
 		param.setRequestedGroupName(this.getArgument());
 		log.debug("set grouping to 'group' and requestedGroupName to " + this.getArgument() + " after matching for group system tag");
 	}
 
 	@Override
-	public <T extends Resource> boolean allowsResource(Class<T> resourceType) {
+	public boolean allowsResource(final Class<? extends Resource> resourceType) {
 		return true;
 	}
-
 
 }

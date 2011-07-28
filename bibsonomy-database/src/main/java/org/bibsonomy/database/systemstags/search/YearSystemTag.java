@@ -2,15 +2,17 @@ package org.bibsonomy.database.systemstags.search;
 
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 
 /**
  * @author dzo
  * @version $Id$
  */
-public class YearSystemTag extends AbstractSearchSystemTagImpl implements SearchSystemTag{
+public class YearSystemTag extends AbstractSearchSystemTagImpl {
 
+	/**
+	 * the name of the year system tag
+	 */
 	public static final String NAME = "year";
 
 	/**
@@ -40,7 +42,7 @@ public class YearSystemTag extends AbstractSearchSystemTagImpl implements Search
 	/**
 	 * @param firstYear the firstYear to set
 	 */
-	public void setFirstYear(String firstYear) {
+	public void setFirstYear(final String firstYear) {
 		this.firstYear = firstYear;
 	}
 
@@ -54,7 +56,7 @@ public class YearSystemTag extends AbstractSearchSystemTagImpl implements Search
 	/**
 	 * @param lastYear the lastYear to set
 	 */
-	public void setLastYear(String lastYear) {
+	public void setLastYear(final String lastYear) {
 		this.lastYear = lastYear;
 	}
 
@@ -68,10 +70,11 @@ public class YearSystemTag extends AbstractSearchSystemTagImpl implements Search
 	/**
 	 * @param year the year to set
 	 */
-	public void setYear(String year) {
+	public void setYear(final String year) {
 		this.year = year;
 	}
 
+	@Override
 	public YearSystemTag newInstance() {
 		return new YearSystemTag();
 	}
@@ -91,7 +94,7 @@ public class YearSystemTag extends AbstractSearchSystemTagImpl implements Search
 			} 
 			// 2nd case: range (e.g. 2001-2006)
 			else if (this.getArgument().matches("[12]{1}[0-9]{3}-[12]{1}[0-9]{3}")) {
-				String[] years = this.getArgument().split("-");
+				final String[] years = this.getArgument().split("-");
 				this.firstYear = years[0];
 				this.lastYear = years[1];
 				log.debug("Set firstyear/lastyear to " + years[0] + "/" + years[1] + "after matching year system tag");
@@ -112,11 +115,8 @@ public class YearSystemTag extends AbstractSearchSystemTagImpl implements Search
 	}
 
 	@Override
-	public <T extends Resource> boolean allowsResource(Class<T> resourceType) {
-		if (resourceType == Bookmark.class) {
-			return false;
-		}
-		return true;
+	public boolean allowsResource(final Class<? extends Resource> resourceType) {
+		return isPublicationClass(resourceType);
 	}
 
 }
