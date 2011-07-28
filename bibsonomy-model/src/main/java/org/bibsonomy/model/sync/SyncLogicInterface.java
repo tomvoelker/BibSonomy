@@ -123,6 +123,7 @@ public interface SyncLogicInterface {
 	
 	/**
 	 *  
+	 * 
 	 * @param userName - the name of the user whose sync status shall be updated
 	 * @param service  - the URI of the service for which the sync status shall be updated
 	 * @param resourceType - the resource type for which the sync status shall be updated
@@ -152,6 +153,10 @@ public interface SyncLogicInterface {
 	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType);
 	
 	/**
+	 * Calculates a new synchronization plan and inserts new synchronization data
+	 * with {@link SynchronizationStatus#PLANNED}. When clients are working on the
+	 * plan, they should update the status to {@link SynchronizationStatus#RUNNING}
+	 * using {@link #updateSyncData(String, URI, Class, Date, SynchronizationStatus, String)}. 
 	 * 
 	 * @param userName 
 	 * @param resourceType 
