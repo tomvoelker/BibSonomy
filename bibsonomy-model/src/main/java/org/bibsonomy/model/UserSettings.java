@@ -27,6 +27,8 @@ import java.io.Serializable;
 import java.util.TimeZone;
 
 import org.bibsonomy.common.enums.ProfilePrivlevel;
+import org.bibsonomy.common.enums.TagCloudSort;
+import org.bibsonomy.common.enums.TagCloudStyle;
 
 /**
  * Holds settings for a user.
@@ -42,11 +44,13 @@ public class UserSettings implements Serializable {
 	private ProfilePrivlevel profilePrivlevel = ProfilePrivlevel.PUBLIC;
 	
 	/**
+	 * TODO: use {@link TagCloudStyle} as type
 	 * tagbox style; 0 = cloud, 1 = list
 	 */
 	private int tagboxStyle = 0;
 
 	/**
+	 * TODO: use {@link TagCloudSort} as type
 	 * sorting of tag box; 0 = alph, 1 = freq
 	 */
 	private int tagboxSort = 0;
@@ -73,6 +77,7 @@ public class UserSettings implements Serializable {
 
 	private boolean showBookmark = true;
 	
+	// TODO: rename to showPublication
 	private boolean showBibtex = true;
 	
 	private boolean simpleInterface = true;
@@ -121,7 +126,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * @param tagboxStyle
 	 */
-	public void setTagboxStyle(int tagboxStyle) {
+	public void setTagboxStyle(final int tagboxStyle) {
 		this.tagboxStyle = tagboxStyle;
 	}
 
@@ -135,7 +140,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * @param tagboxSort
 	 */
-	public void setTagboxSort(int tagboxSort) {
+	public void setTagboxSort(final int tagboxSort) {
 		this.tagboxSort = tagboxSort;
 	}
 
@@ -149,14 +154,14 @@ public class UserSettings implements Serializable {
 	/**
 	 * @param tagboxMinfreq
 	 */
-	public void setTagboxMinfreq(int tagboxMinfreq) {
+	public void setTagboxMinfreq(final int tagboxMinfreq) {
 		this.tagboxMinfreq = tagboxMinfreq;
 	}
 
 	/**
 	 * @param tagboxMaxCount
 	 */
-	public void setTagboxMaxCount(int tagboxMaxCount) {
+	public void setTagboxMaxCount(final int tagboxMaxCount) {
 		this.tagboxMaxCount = tagboxMaxCount;
 	}
 	
@@ -177,7 +182,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * @param isMaxCount
 	 */
-	public void setIsMaxCount(boolean isMaxCount) {
+	public void setIsMaxCount(final boolean isMaxCount) {
 		this.isMaxCount = isMaxCount;
 	}
 
@@ -191,7 +196,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * @param tagboxTooltip
 	 */
-	public void setTagboxTooltip(int tagboxTooltip) {
+	public void setTagboxTooltip(final int tagboxTooltip) {
 		this.tagboxTooltip = tagboxTooltip;
 	}
 
@@ -205,7 +210,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * @param listItemcount
 	 */
-	public void setListItemcount(int listItemcount) {
+	public void setListItemcount(final int listItemcount) {
 		this.listItemcount = listItemcount;
 	}
 
@@ -219,14 +224,14 @@ public class UserSettings implements Serializable {
 	/**
 	 * @param defaultLanguage the default language
 	 */
-	public void setDefaultLanguage(String defaultLanguage) {
+	public void setDefaultLanguage(final String defaultLanguage) {
 		this.defaultLanguage = defaultLanguage;
 	}
 
 	/**
 	 * @param logLevel the logLevel to set
 	 */
-	public void setLogLevel(int logLevel) {
+	public void setLogLevel(final int logLevel) {
 		this.logLevel = logLevel;
 	}
 	
@@ -249,7 +254,7 @@ public class UserSettings implements Serializable {
 	 * sets the current confirmations status
 	 * @param confirmDelete
 	 */
-	public void setConfirmDelete(boolean confirmDelete) {
+	public void setConfirmDelete(final boolean confirmDelete) {
 		this.confirmDelete = confirmDelete;
 	}	
 	
@@ -284,7 +289,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * @param showBookmark the showBookmark to set
 	 */
-	public void setShowBookmark(boolean showBookmark) {
+	public void setShowBookmark(final boolean showBookmark) {
 		this.showBookmark = showBookmark;
 	}
 
@@ -298,7 +303,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * @param showPublication the showPublication to set
 	 */
-	public void setShowBibtex(boolean showPublication) {
+	public void setShowBibtex(final boolean showPublication) {
 		this.showBibtex = showPublication;
 	}
 
@@ -312,7 +317,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * @param simpleInterface the simpleInterface to set
 	 */
-	public void setSimpleInterface(boolean simpleInterface) {
+	public void setSimpleInterface(final boolean simpleInterface) {
 		this.simpleInterface = simpleInterface;
 	}
 
