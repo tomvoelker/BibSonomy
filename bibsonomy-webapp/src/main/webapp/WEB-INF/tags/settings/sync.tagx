@@ -29,7 +29,7 @@
 			}
 		}
 		function changeClient(t) {
-			$(t).attr("action", $(t).find("select[name='newSyncServer.service']").val() + "updateSyncSettings");
+			$(t).attr("action", $(t).find("select[name='newSyncClient']").val() + "updateSyncSettings");
 		}
 	</script>
 
@@ -101,8 +101,8 @@
 			<p><fmt:message key="synchronization.client.add.intro"/></p>
 			<form method="post" action="" onsubmit="changeClient(this)">			
 	        	<div class="fsRow">
-					<label class="fsLabel" for="newSyncServer.service"><fmt:message key="synchronization.client" /></label>
-					<select class="fsInput" name="newSyncServer.service">
+					<label class="fsLabel" for="newSyncClient"><fmt:message key="synchronization.client" /></label>
+					<select class="fsInput" name="newSyncClient">
 						<c:forEach varStatus="status" var="syncService" items="${command.availableSyncClients}">
 							<option value="${fn:escapeXml(syncService)}"><c:out value="${syncService}"/></option>
 						</c:forEach>
@@ -126,6 +126,7 @@
 				</div>
 	        	<div class="fsRow">
 					<input type="submit" value="${save}" />
+					<input type="hidden" name="newSyncServer.service" value="${projectHome}"/>
 					<input type="hidden" name="newSyncServer.serverUser['userName']" value="${command.context.loginUser.name}"/>
 					<input type="hidden" name="newSyncServer.serverUser['apiKey']" value="${command.context.loginUser.apiKey}"/>
 					<input type="hidden" name="_method" value="POST"/>
