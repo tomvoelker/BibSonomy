@@ -1,15 +1,18 @@
 package org.bibsonomy.database.systemstags.search;
 
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 
 /**
  * @author sdo
  * @version $Id$
  */
-public class AuthorSystemTag extends AbstractSearchSystemTagImpl implements SearchSystemTag {
+public class AuthorSystemTag extends AbstractSearchSystemTagImpl {
 
+	/**
+	 * the name of the author system tag
+	 */
 	public static final String NAME = "author";
 
 	@Override
@@ -23,18 +26,13 @@ public class AuthorSystemTag extends AbstractSearchSystemTagImpl implements Sear
 	}
 
 	@Override
-	public void handleParam(GenericParam param) {
+	public void handleParam(final GenericParam param) {
 		param.setAuthor(this.getArgument());
 		log.debug("set search to " + this.getArgument() + " after matching for author system tag");
 	}
 
 	@Override
-	public <T extends Resource> boolean allowsResource(Class<T> resourceType) {
-		if (resourceType == Bookmark.class) {
-			return false;
-		}
-		return true;
+	public boolean allowsResource(final Class<? extends Resource> resourceClass) {
+		return resourceClass != null && BibTex.class.isAssignableFrom(resourceClass);
 	}
-
-
 }
