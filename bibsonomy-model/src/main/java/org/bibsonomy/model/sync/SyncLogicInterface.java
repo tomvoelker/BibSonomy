@@ -159,12 +159,12 @@ public interface SyncLogicInterface {
 	 * using {@link #updateSyncData(String, URI, Class, Date, SynchronizationStatus, String)}. 
 	 * 
 	 * @param userName 
+	 * @param service 
 	 * @param resourceType 
 	 * @param clientPosts
 	 * @param strategy 
-	 * @param service 
 	 * @param direction
 	 * @return list of posts with set synchronization state
 	 */
-	public List<SynchronizationPost> getSyncPlan(final String userName, Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service, SynchronizationDirection direction);
+	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, SynchronizationDirection direction);
 }
