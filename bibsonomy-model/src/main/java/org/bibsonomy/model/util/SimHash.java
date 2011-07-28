@@ -23,6 +23,8 @@
 
 package org.bibsonomy.model.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Scanner;
 import java.util.Set;
 import java.util.SortedSet;
@@ -38,11 +40,11 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * Similarity hashes for publications are calculated here.
+ * @version $Id$
  */
 public class SimHash {
 	
 	/**
-	 * FIXME: refactor: remove instanceof checks
 	 * 
 	 * @param resource the object whose hash is to be calculated
 	 * @param simHash the type of hash to be calculated
@@ -51,13 +53,11 @@ public class SimHash {
 	 */
 	public static String getSimHash(final Resource resource, final HashID simHash) {
 		if (resource instanceof Bookmark) {
-			final Bookmark bookmark = (Bookmark) resource;
-			return SimHash.getSimHash(bookmark, simHash);
+			return SimHash.getSimHash((Bookmark) resource, simHash);
 		}
 		
 		if (resource instanceof BibTex) {
-			final BibTex bibTex = (BibTex) resource;
-			return SimHash.getSimHash(bibTex, simHash);
+			return SimHash.getSimHash((BibTex) resource, simHash);
 		}
 		
 		throw new UnsupportedResourceTypeException();
@@ -156,20 +156,20 @@ public class SimHash {
 	}
 
 	/**
-	 * @param bibtex the object whose hash is to be calculated
-	 * @return the calculated simHash0, which consideres: title, author/editor, year.
+	 * @param publication the object whose hash is to be calculated
+	 * @return the calculated simHash1, which consideres: title, author/editor, year.
 	 */
-	public static String getSimHash1(final BibTex bibtex) {	
-		if (StringUtils.removeNonNumbersOrLetters(bibtex.getAuthor()).equals("")) {
+	public static String getSimHash1(final BibTex publication) {	
+		if (!present(StringUtils.removeNonNumbersOrLetters(publication.getAuthor()))) {
 			// no author set --> take editor
-			return StringUtils.getMD5Hash(getNormalizedTitle(bibtex.getTitle()) + " " +
-					getNormalizedEditor(bibtex.getEditor())            + " " +
-					getNormalizedYear(bibtex.getYear()));				
+			return StringUtils.getMD5Hash(getNormalizedTitle(publication.getTitle()) + " " +
+					getNormalizedEditor(publication.getEditor())            + " " +
+					getNormalizedYear(publication.getYear()));				
 		}
 		// author set
-		return StringUtils.getMD5Hash(getNormalizedTitle(bibtex.getTitle()) + " " + 
-				getNormalizedAuthor(bibtex.getAuthor())            + " " + 
-				getNormalizedYear(bibtex.getYear()));
+		return StringUtils.getMD5Hash(getNormalizedTitle(publication.getTitle()) + " " + 
+				getNormalizedAuthor(publication.getAuthor())            + " " + 
+				getNormalizedYear(publication.getYear()));
 	}
 
 	/*
@@ -239,8 +239,8 @@ public class SimHash {
 	 * Output: a Set of normalized persons, divided by ", " and enclosed in
 	 * brackets "[ ]"
 	 */
-	private static Set<String> normalizePersonList (final String s) {
-		final Scanner t = new Scanner(s).useDelimiter(" and ");
+	private static Set<String> normalizePersonList(final String s) {
+		final Scanner t = new Scanner(s).useDelimiter(PersonNameUtils.PERSON_NAME_DELIMITER);
 		final SortedSet<String> persons = new TreeSet<String>(); 
 		while (t.hasNext()) {
 			persons.add(normalizePerson(t.next()));
@@ -259,7 +259,7 @@ public class SimHash {
 	 * Donald    Knuth --> d.knuth<br/>
 	 *           Knuth --> knuth
 	 */
-	private static String normalizePerson (final String s) {
+	private static String normalizePerson(final String s) {
 		final StringTokenizer t = new StringTokenizer(s);
 		String first = null;
 		String last  = null;
