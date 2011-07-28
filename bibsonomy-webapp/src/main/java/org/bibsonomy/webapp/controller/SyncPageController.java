@@ -79,8 +79,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 			final Map<String, SynchronizationData> syncData = new HashMap<String, SynchronizationData>();
 			try {
 				
-				List<Class<? extends Resource>> requiredResourceTypes = ResourceUtils.getResourceTypesByClass(syncService.getResourceType());
-				for (Class<? extends Resource> resourceType : requiredResourceTypes) {
+				for (final Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(syncService.getResourceType())) {
 					syncData.put(resourceType.getSimpleName(), syncClient.getLastSyncData(syncService, resourceType));
 				}
 			} catch (AccessDeniedException e) {
