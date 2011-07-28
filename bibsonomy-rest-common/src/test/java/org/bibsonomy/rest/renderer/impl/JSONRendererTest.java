@@ -25,13 +25,21 @@ package org.bibsonomy.rest.renderer.impl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.Collections;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
 
+import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.junit.BeforeClass;
+import org.bibsonomy.rest.renderer.xml.ObjectFactory;
+
+import com.sun.jersey.api.json.JSONConfiguration;
+import com.sun.jersey.api.json.JSONJAXBContext;
+import com.sun.jersey.api.json.JSONMarshaller;
 
 /**
  * @author dzo
@@ -39,130 +47,33 @@ import org.junit.BeforeClass;
  */
 public class JSONRendererTest extends JAXBRendererTest {
 	
-	@BeforeClass
-	public static void setRenderer() {
-		renderer = new JSONRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
-		pathToTestFiles = "src/test/resources/jsonrenderer/";
-		fileExt = ".json";
+	private static final JSONRenderer RENDERER = new JSONRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
+
+	@Override
+	public String getPathToTestFiles() {
+		return "src/test/resources/jsonrenderer/";
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testParseUser()
-	 */
 	@Override
-	public void testParseUser() throws Exception {
-		// TODO: implement test
+	public String getFileExt() {
+		return ".json";
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testParseGroup()
-	 */
 	@Override
-	public void testParseGroup() throws Exception {
-		// TODO: implement test
+	public Renderer getRenderer() {
+		return RENDERER;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testParsePost()
-	 */
 	@Override
-	public void testParsePost() throws Exception {
-		// TODO: implement test
+	protected void marshalToFile(final BibsonomyXML bibXML, final File tmpFile) throws JAXBException, PropertyException, FileNotFoundException {
+		final JSONJAXBContext jc = new JSONJAXBContext(JSONConfiguration.natural().build(), JAXBRenderer.JAXB_PACKAGE_DECLARATION, this.getClass().getClassLoader(), Collections.<String, Object>emptyMap());
+		final JAXBElement<BibsonomyXML> webserviceElement = new ObjectFactory().createBibsonomy(bibXML);
+		final JSONMarshaller marshaller = (JSONMarshaller) jc.createMarshaller();
+		marshaller.marshallToJSON(webserviceElement, new FileOutputStream(tmpFile));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testParseReferences()
-	 */
 	@Override
-	public void testParseReferences() throws Exception {
-		// TODO: implement test
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testParseStandardPost()
-	 */
-	@Override
-	public void testParseStandardPost() throws Exception {
-		// TODO: implement test
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#marshalToFile(org.bibsonomy.rest.renderer.xml.BibsonomyXML, java.io.File)
-	 */
-	@Override
-	protected void marshalToFile(BibsonomyXML bibXML, File tmpFile) throws JAXBException, PropertyException, FileNotFoundException {
-		// TODO: implement test
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testSerializeTags()
-	 */
-	@Override
-	public void testSerializeTags() throws Exception {
-		// TODO: implement test
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testSerializeUsers()
-	 */
-	@Override
-	public void testSerializeUsers() throws Exception {
-		// TODO: implement test
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testSerializeUser()
-	 */
-	@Override
-	public void testSerializeUser() throws Exception {
-		// TODO: implement test
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testSerializeGroups()
-	 */
-	@Override
-	public void testSerializeGroups() throws Exception {
-		// TODO: implement test
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testSerializeGroup()
-	 */
-	@Override
-	public void testSerializeGroup() throws Exception {
-		// TODO: implement test
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testSerializePosts()
-	 */
-	@Override
-	public void testSerializePosts() throws Exception {
-		// TODO: implement test
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testSerializePost()
-	 */
-	@Override
-	public void testSerializePost() {
-		// TODO: implement test
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testSerializeGoldStandardPost()
-	 */
-	@Override
-	public void testSerializeGoldStandardPost() {
-		// TODO: implement test
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.impl.JAXBRendererTest#testQuoting()
-	 */
-	@Override
-	public void testQuoting() {
-		// TODO: implement test
+	protected String getQuotingTestString() {
+		return "testen\"test\\";
 	}
 }

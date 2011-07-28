@@ -23,8 +23,20 @@
 
 package org.bibsonomy.rest.renderer.impl;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
+
+import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.junit.BeforeClass;
+import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
+import org.bibsonomy.rest.renderer.xml.ObjectFactory;
 
 /**
  * @author dzo
@@ -32,10 +44,34 @@ import org.junit.BeforeClass;
  */
 public class XMLRendererTest extends JAXBRendererTest {
 	
-	@BeforeClass
-	public static void setRenderer() {
-		renderer = new XMLRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
-		pathToTestFiles = "src/test/resources/xmlrenderer/";
-		fileExt = ".xml";
+	private final static Renderer RENDERER = new XMLRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
+
+	@Override
+	public String getPathToTestFiles() {
+		return "src/test/resources/xmlrenderer/";
+	}
+
+	@Override
+	public String getFileExt() {
+		return ".xml";
+	}
+
+	@Override
+	public Renderer getRenderer() {
+		return RENDERER;
+	}
+
+	@Override
+	protected void marshalToFile(final BibsonomyXML bibXML, final File tmpFile) throws JAXBException, PropertyException, FileNotFoundException {
+		final JAXBContext jc = JAXBContext.newInstance(JAXBRenderer.JAXB_PACKAGE_DECLARATION);
+		final JAXBElement<BibsonomyXML> webserviceElement = new ObjectFactory().createBibsonomy(bibXML);
+		final Marshaller marshaller = jc.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		marshaller.marshal(webserviceElement, new FileOutputStream(tmpFile));
+	}
+
+	@Override
+	protected String getQuotingTestString() {
+		return "http://foo.bar/posts?start=1&end=2&resourcetype=bookmark&tags=a+->b+<-c+<->d&hash=asd&&&kjalsjdf";
 	}
 }

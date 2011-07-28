@@ -30,7 +30,6 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -42,10 +41,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -66,7 +62,6 @@ import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
-import org.bibsonomy.rest.renderer.xml.ObjectFactory;
 import org.bibsonomy.rest.renderer.xml.PostType;
 import org.bibsonomy.rest.renderer.xml.ReferenceType;
 import org.bibsonomy.rest.renderer.xml.ReferencesType;
@@ -87,9 +82,20 @@ public abstract class JAXBRendererTest {
 	private static final String GOLD_STANDARD_PUBLICATION_YEAR = "2004";
 	private static final String GOLD_STANDARD_PUBLICATION_AUTHOR = "John Doe";
 	
-	protected static String pathToTestFiles;
-	protected static String fileExt;
-	protected static Renderer renderer;
+	/**
+	 * @return the pathToTestFiles
+	 */
+	public abstract String getPathToTestFiles();
+
+	/**
+	 * @return the fileExt
+	 */
+	public abstract String getFileExt();
+
+	/**
+	 * @return the renderer
+	 */
+	public abstract Renderer getRenderer();
 	
 	// TODO: move to a util class and replace writer with a string
 	private static void assertWithFile(final Writer sw, final String filename) {
@@ -113,7 +119,7 @@ public abstract class JAXBRendererTest {
 	public void testParseUser() throws Exception {
 		// check null behavior
 		try {
-			renderer.parseUser(null);
+			this.getRenderer().parseUser(null);
 			fail("exception should have been thrown.");
 		} catch (final BadRequestOrResponseException e) {
 		}
@@ -124,7 +130,7 @@ public abstract class JAXBRendererTest {
 		marshalToFile(bibXML, tmpFile);
 
 		try {
-			renderer.parseUser(new FileReader(tmpFile));
+			this.getRenderer().parseUser(new FileReader(tmpFile));
 			fail("exception should have been thrown.");
 		} catch (final BadRequestOrResponseException e) {
 			assertEquals("wrong exception thrown: " + e.getMessage(), "The body part of the received document is erroneous - no user defined.", e.getMessage());
@@ -137,7 +143,7 @@ public abstract class JAXBRendererTest {
 		bibXML.setUser(xmlUser);
 		tmpFile = File.createTempFile("bibsonomy", "junit");
 		marshalToFile(bibXML, tmpFile);
-		final User user = renderer.parseUser(new FileReader(tmpFile));
+		final User user = this.getRenderer().parseUser(new FileReader(tmpFile));
 		assertEquals("model not correctly initialized", "test", user.getName());
 	}
 
@@ -145,7 +151,7 @@ public abstract class JAXBRendererTest {
 	public void testParseGroup() throws Exception {
 		// check null behavior
 		try {
-			renderer.parseGroup(null);
+			this.getRenderer().parseGroup(null);
 			fail("exception should have been thrown.");
 		} catch (final BadRequestOrResponseException e) {
 		}
@@ -156,7 +162,7 @@ public abstract class JAXBRendererTest {
 		marshalToFile(bibXML, tmpFile);
 
 		try {
-			renderer.parseGroup(new FileReader(tmpFile));
+			this.getRenderer().parseGroup(new FileReader(tmpFile));
 			fail("exception should have been thrown.");
 		} catch (final BadRequestOrResponseException e) {
 			assertEquals("wrong exception thrown: " + e.getMessage(), "The body part of the received document is erroneous - no group defined.", e.getMessage());
@@ -171,7 +177,7 @@ public abstract class JAXBRendererTest {
 		bibXML.setGroup(xmlGroup);
 		tmpFile = File.createTempFile("bibsonomy", "junit");
 		marshalToFile(bibXML, tmpFile);
-		final Group group = renderer.parseGroup(new FileReader(tmpFile));
+		final Group group = this.getRenderer().parseGroup(new FileReader(tmpFile));
 		assertEquals("model not correctly initialized", "test", group.getName());
 		assertEquals("model not correctly initialized", "TestGroup", group.getRealname());
 		assertEquals("model not correctly initialized", "http://www.example.com/", group.getHomepage().toString());
@@ -187,7 +193,7 @@ public abstract class JAXBRendererTest {
 	public void testParsePost() throws Exception {
 		// check null behavior
 		try {
-			renderer.parsePost(null);
+			this.getRenderer().parsePost(null);
 			fail("exception should have been thrown.");
 		} catch (final BadRequestOrResponseException e) {
 		}
@@ -198,7 +204,7 @@ public abstract class JAXBRendererTest {
 		marshalToFile(bibXML, tmpFile);
 
 		try {
-			renderer.parsePost(new FileReader(tmpFile));
+			this.getRenderer().parsePost(new FileReader(tmpFile));
 			fail("exception should have been thrown.");
 		} catch (final BadRequestOrResponseException e) {
 			assertEquals("The body part of the received document is erroneous - no post defined.", e.getMessage());
@@ -221,9 +227,9 @@ public abstract class JAXBRendererTest {
 		xmlBookmark.setUrl("http://www.google.de");
 		xmlBookmark.setTitle("Google Search engine");
 		bibXML.setPost(xmlPost);
-		tmpFile = File.createTempFile("bibsonomy", fileExt);
+		tmpFile = File.createTempFile("bibsonomy", this.getFileExt());
 		marshalToFile(bibXML, tmpFile);
-		renderer.parsePost(new FileReader(tmpFile));
+		this.getRenderer().parsePost(new FileReader(tmpFile));
 	}
 	
 	@Test
@@ -248,11 +254,11 @@ public abstract class JAXBRendererTest {
 		}
 		
 		// save it to file
-		final File tmpFile = File.createTempFile("parseReferences", fileExt);
+		final File tmpFile = File.createTempFile("parseReferences", this.getFileExt());
 		marshalToFile(xml, tmpFile);
 		
 		// parse from file
-		final Set<String> actual = renderer.parseReferences(new FileReader(tmpFile));
+		final Set<String> actual = this.getRenderer().parseReferences(new FileReader(tmpFile));
 		
 		// check if the correct interhashes were parsed
 		assertEquals(refInterHash, actual);
@@ -279,10 +285,10 @@ public abstract class JAXBRendererTest {
 		postxml.setUser(userxml);
 		
 		// save it to file
-		final File tmpFile = File.createTempFile("parseStandardPost", fileExt);
+		final File tmpFile = File.createTempFile("parseStandardPost", this.getFileExt());
 		marshalToFile(xml, tmpFile);
 		
-		final Post<? extends Resource> standardPost = renderer.parseStandardPost(new FileReader(tmpFile));
+		final Post<? extends Resource> standardPost = this.getRenderer().parseStandardPost(new FileReader(tmpFile));
 		
 		assertTrue(standardPost.getResource() instanceof GoldStandardPublication);
 		
@@ -295,13 +301,7 @@ public abstract class JAXBRendererTest {
 		assertEquals(GOLD_STANDARD_PUBLICATION_YEAR, publication.getYear());
 	}
 
-	protected void marshalToFile(final BibsonomyXML bibXML, final File tmpFile) throws JAXBException, PropertyException, FileNotFoundException {
-		final JAXBContext jc = JAXBContext.newInstance("org.bibsonomy.rest.renderer.xml");
-		final JAXBElement<BibsonomyXML> webserviceElement = new ObjectFactory().createBibsonomy(bibXML);
-		final Marshaller marshaller = jc.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		marshaller.marshal(webserviceElement, new FileOutputStream(tmpFile));
-	}
+	protected abstract void marshalToFile(final BibsonomyXML bibXML, final File tmpFile) throws JAXBException, PropertyException, FileNotFoundException;
 
 	@Test
 	public void testSerializeTags() throws Exception {
@@ -310,7 +310,7 @@ public abstract class JAXBRendererTest {
 		// empty list without start-/end-values 
 		final List<Tag> tags = new LinkedList<Tag>();
 		try {
-			renderer.serializeTags(sw, tags, null);
+			this.getRenderer().serializeTags(sw, tags, null);
 			//fail("exception should have been thrown: no start-/end-values given");
 		} catch (final InternServerException e) {
 		}
@@ -323,22 +323,22 @@ public abstract class JAXBRendererTest {
 		vm.setEndValue(10);
 		vm.setUrlToNextResources("http://www.bibsonomy.org/foo/bar");
 		sw = new StringWriter(100);
-		renderer.serializeTags(sw, tags, vm);
-		assertWithFile(sw, pathToTestFiles + "ExampleResultTags1" + fileExt);
+		this.getRenderer().serializeTags(sw, tags, vm);
+		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTags1" + this.getFileExt());
 
 		// with tags
 		sw = new StringWriter(100);
 		final Tag tag1 = new Tag();
 		tags.add(tag1);
 		try {
-			renderer.serializeTags(sw, tags, vm);
+			this.getRenderer().serializeTags(sw, tags, vm);
 			fail("exception should have been thrown: no tagname specified");
 		} catch (final InvalidModelException e) {
 		}
 		tag1.setName("foo");
 		sw = new StringWriter(100);
-		renderer.serializeTags(sw, tags, vm);
-		assertWithFile(sw, pathToTestFiles + "ExampleResultTags2" + fileExt);
+		this.getRenderer().serializeTags(sw, tags, vm);
+		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTags2" + this.getFileExt());
 
 		// with multiple tags
 		final Tag tag2 = new Tag();
@@ -347,8 +347,8 @@ public abstract class JAXBRendererTest {
 		tag2.setGlobalcount(10);
 		tags.add(tag2);
 		sw = new StringWriter(100);
-		renderer.serializeTags(sw, tags, vm);
-		assertWithFile(sw, pathToTestFiles + "ExampleResultTags3" + fileExt);
+		this.getRenderer().serializeTags(sw, tags, vm);
+		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTags3" + this.getFileExt());
 	}
 
 	@Test
@@ -357,13 +357,13 @@ public abstract class JAXBRendererTest {
 		final Writer sw = new StringWriter(100);
 		final Tag tag = new Tag();
 		try {
-			renderer.serializeTag(sw, tag, null);
+			this.getRenderer().serializeTag(sw, tag, null);
 			fail("exception should have been thrown: no tagname specified");
 		} catch (final InvalidModelException e) {
 		}
 		tag.setName("foo");
-		renderer.serializeTag(sw, tag, null);
-		assertWithFile(sw, pathToTestFiles + "ExampleResultTag" + fileExt);
+		this.getRenderer().serializeTag(sw, tag, null);
+		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTag" + this.getFileExt());
 	}
 
 	@Test
@@ -373,7 +373,7 @@ public abstract class JAXBRendererTest {
 		// empty user
 		final List<User> users = new LinkedList<User>();
 		try {
-			renderer.serializeUsers(sw, users, null);
+			this.getRenderer().serializeUsers(sw, users, null);
 			// fail("exception should have been thrown: no start-/end values specified");
 		} catch (final InternServerException e) {
 		}
@@ -388,7 +388,7 @@ public abstract class JAXBRendererTest {
 		final User user1 = new User();
 		users.add(user1);
 		try {
-			renderer.serializeUsers(sw, users, null);
+			this.getRenderer().serializeUsers(sw, users, null);
 			fail("exception should have been thrown: no username specified");
 		} catch (final InvalidModelException e) {
 		}
@@ -403,8 +403,8 @@ public abstract class JAXBRendererTest {
 		user2.setName("fooBar");
 		user2.getGroups().add(new Group("kde"));
 		users.add(user2);
-		renderer.serializeUsers(sw, users, vm);
-		assertWithFile(sw, pathToTestFiles + "ExampleResultUsers1" + fileExt);
+		this.getRenderer().serializeUsers(sw, users, vm);
+		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultUsers1" + this.getFileExt());
 	}
 
 	@Test
@@ -413,13 +413,13 @@ public abstract class JAXBRendererTest {
 		final Writer sw = new StringWriter(100);
 		final User user = new User();
 		try {
-			renderer.serializeUser(sw, user, null);
+			this.getRenderer().serializeUser(sw, user, null);
 			fail("exception should have been thrown: no username specified");
 		} catch (final InvalidModelException e) {
 		}
 		user.setName("foo");
-		renderer.serializeUser(sw, user, null);
-		assertWithFile(sw, pathToTestFiles + "ExampleResultUser" + fileExt);
+		this.getRenderer().serializeUser(sw, user, null);
+		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultUser" + this.getFileExt());
 	}
 
 	@Test
@@ -429,8 +429,7 @@ public abstract class JAXBRendererTest {
 		// empty group
 		final List<Group> groups = new LinkedList<Group>();		
 		try {
-			renderer.serializeGroups(sw, groups, null);
-			//fail("exception should have been thrown: no start-/end values specified");
+			this.getRenderer().serializeGroups(sw, groups, null);
 		}
 		catch (final InternServerException ex) {			
 		}
@@ -445,7 +444,7 @@ public abstract class JAXBRendererTest {
 		final Group group1 = new Group();
 		groups.add(group1);
 		try {
-			renderer.serializeGroups(sw, groups, null);
+			this.getRenderer().serializeGroups(sw, groups, null);
 			fail("exception should have been thrown: no groupname specified");
 		} catch (final InvalidModelException e) {
 		}
@@ -456,8 +455,8 @@ public abstract class JAXBRendererTest {
 		final Group group2 = new Group();
 		group2.setName("testName2");
 		groups.add(group2);
-		renderer.serializeGroups(sw, groups, vm);
-		assertWithFile(sw, pathToTestFiles + "ExampleResultGroups1" + fileExt);
+		this.getRenderer().serializeGroups(sw, groups, vm);
+		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultGroups1" + this.getFileExt());
 	}
 
 	@Test
@@ -466,7 +465,7 @@ public abstract class JAXBRendererTest {
 		final Writer sw = new StringWriter(100);
 		final Group group = new Group();
 		try {
-			renderer.serializeGroup(sw, group, null);
+			this.getRenderer().serializeGroup(sw, group, null);
 			fail("exception should have been thrown: no groupname specified");
 		} catch (final InvalidModelException e) {
 		}
@@ -474,8 +473,8 @@ public abstract class JAXBRendererTest {
 		group.setDescription("foo bar :)");
 		group.setHomepage(new URL("http://www.example.com/"));
 		group.setRealname("TestGroup");
-		renderer.serializeGroup(sw, group, null);
-		assertWithFile(sw, pathToTestFiles + "ExampleResultGroup" + fileExt);
+		this.getRenderer().serializeGroup(sw, group, null);
+		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultGroup" + this.getFileExt());
 	}
 
 	@Test
@@ -483,7 +482,7 @@ public abstract class JAXBRendererTest {
 		Writer sw = new StringWriter(100);
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		try {
-			renderer.serializePosts(sw, posts, null);
+			this.getRenderer().serializePosts(sw, posts, null);
 			//fail ("Exception should have been trown: no start-/end-values specified");
 		}
 		catch (final InternServerException ex) {			
@@ -521,8 +520,8 @@ public abstract class JAXBRendererTest {
 		post2.getTags().add(tag);
 		post2.setDate(new Date(1303978514000l));
 		posts.add(post2);
-		renderer.serializePosts(sw, posts, vm);
-		assertWithFile(sw, pathToTestFiles + "ExampleResultPosts" + fileExt);
+		this.getRenderer().serializePosts(sw, posts, vm);
+		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultPosts" + this.getFileExt());
 	}
 
 	@Test
@@ -530,7 +529,7 @@ public abstract class JAXBRendererTest {
 		final Writer sw = new StringWriter(100);
 		final Post<Resource> post = new Post<Resource>();
 		try {
-			renderer.serializePost(sw, post, null);
+			this.getRenderer().serializePost(sw, post, null);
 			fail("exception should have been thrown: no user specified");
 		} catch (final InternServerException e) {
 		}
@@ -538,7 +537,7 @@ public abstract class JAXBRendererTest {
 		user.setName("foo");
 		post.setUser(user);
 		try {
-			renderer.serializePost(sw, post, null);
+			this.getRenderer().serializePost(sw, post, null);
 			fail("exception should have been thrown: no tags assigned");
 		} catch (final InternServerException e) {
 		}
@@ -546,14 +545,14 @@ public abstract class JAXBRendererTest {
 		tag.setName("bar");
 		post.getTags().add(tag);
 		try {
-			renderer.serializePost(sw, post, null);
+			this.getRenderer().serializePost(sw, post, null);
 			fail("exception should have been thrown: no ressource assigned");
 		} catch (final InternServerException e) {
 		}
 		final Bookmark bookmark = new Bookmark();
 		post.setResource(bookmark);
 		try {
-			renderer.serializePost(sw, post, null);
+			this.getRenderer().serializePost(sw, post, null);
 			fail("exception should have been thrown: bookmark has no url assigned");
 		} catch (final InvalidModelException e) {
 		}
@@ -563,8 +562,8 @@ public abstract class JAXBRendererTest {
 		bookmark.setInterHash("1324356789");
 		post.setDate(new Date(1303978514000l));
 		post.setChangeDate(new Date(1303998514000l));
-		renderer.serializePost(sw, post, null);
-		assertWithFile(sw, pathToTestFiles + "ExampleResultPost" + fileExt);
+		this.getRenderer().serializePost(sw, post, null);
+		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultPost" + this.getFileExt());
 	}
 	
 	@Test
@@ -583,9 +582,9 @@ public abstract class JAXBRendererTest {
 		post.setResource(publication);
 		final Writer sw = new StringWriter(100);
 		
-		renderer.serializePost(sw, post, null);
+		this.getRenderer().serializePost(sw, post, null);
 		
-		assertWithFile(sw, pathToTestFiles + "ExampleGoldStandardPublication" + fileExt);
+		assertWithFile(sw, this.getPathToTestFiles() + "ExampleGoldStandardPublication" + this.getFileExt());
 	}
 
 	@Test
@@ -608,10 +607,12 @@ public abstract class JAXBRendererTest {
 		final ViewModel vm = new ViewModel();
 		vm.setStartValue(0);
 		vm.setEndValue(1);
-		vm.setUrlToNextResources("http://foo.bar/posts?start=1&end=2&resourcetype=bookmark&tags=a+->b+<-c+<->d&hash=asd&&&kjalsjdf");
-		renderer.serializePosts(sw, posts, vm);
-		assertWithFile(sw, pathToTestFiles + "QuotingTest" + fileExt);
+		vm.setUrlToNextResources(this.getQuotingTestString());
+		this.getRenderer().serializePosts(sw, posts, vm);
+		assertWithFile(sw, this.getPathToTestFiles() + "QuotingTest" + this.getFileExt());
 	}
+
+	protected abstract String getQuotingTestString();
 	
 	private BibTex createPublication() {
 		final BibTex publication = new BibTex();
