@@ -7,11 +7,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.bibsonomy.util.ValidationUtils;
-
 /**
  * Workaround for passing BibSonomy's project.home configuration to Shindig:
  * write map certain properties to the system.properties 
+ * @author fmi
+ * @version $Id$
  */
 public class SystemPropertiesContextListener implements ServletContextListener {
 	
@@ -25,21 +25,22 @@ public class SystemPropertiesContextListener implements ServletContextListener {
 	
 	ServletContext context;
 
-	public void contextInitialized(ServletContextEvent event) {
+	public void contextInitialized(final ServletContextEvent event) {
 		this.context = event.getServletContext();
 		
-		String projectHome = context.getInitParameter(PROJECT_HOME);
+		// FIXME: projectHome will be removed as soon as possible from web.xml, context.xml, É!
+		final String projectHome = context.getInitParameter(PROJECT_HOME);
 		
 		String hostName = DEFAULT_HOST;
 		String hostPort = DEFAULT_PORT;
 		try {
-			URL url = new URL(projectHome);
+			final URL url = new URL(projectHome);
 			hostName = url.getHost();
 			
 			if (url.getPort()>0) {
 				hostPort = Integer.toString(url.getPort());
 			}
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 		}
 		
 		System.setProperty(SHINDIG_HOST, hostName);
@@ -47,7 +48,7 @@ public class SystemPropertiesContextListener implements ServletContextListener {
 	}
 	
 
-	public void contextDestroyed(ServletContextEvent event) {
+	public void contextDestroyed(final ServletContextEvent event) {
 	}
 
 }
