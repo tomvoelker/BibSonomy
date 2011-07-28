@@ -401,6 +401,22 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="listrefs2" public="false">
+		<displayName>HTML list</displayName>
+		<description xml:lang="en">
+			A more structured HTML output with each entry as an item in a
+			list and additional JavaScript search function. Adapted version for Manuel Franzmann.
+		</description>
+		<description xml:lang="de">
+			Erzeugt eine strukturierte HTML-Ausgabe, bei der jede Publikation als Eintrag 
+			in einer Liste dargestellt wird und bietet außerdem Suchfunktionen mittels JavaScript.
+			Angepasstte Version für Manuel Franzmann.
+		</description>
+		<directory>listrefs2</directory>
+		<baseFileName>listrefs</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
 	<layout name="harvardhtml">
 		<displayName>Harvard (HTML version)</displayName>
 		<description xml:lang="en">
