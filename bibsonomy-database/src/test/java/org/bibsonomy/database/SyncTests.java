@@ -201,7 +201,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		}
 		assertEquals(5, clientPosts.size());
 
-		List<SynchronizationPost> synchronizedPosts = dbLogic.getSyncPlan(userName, resourceType, clientPosts, strategy, testURI, SynchronizationDirection.BOTH);
+		List<SynchronizationPost> synchronizedPosts = dbLogic.getSyncPlan(userName, testURI, resourceType, clientPosts, strategy, SynchronizationDirection.BOTH);
 		assertNotNull("no synchronized posts returned", synchronizedPosts);
 
 		HashMap<String, SynchronizationPost> map = listToMap(synchronizedPosts);

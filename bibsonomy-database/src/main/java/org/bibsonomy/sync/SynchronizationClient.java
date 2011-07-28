@@ -168,6 +168,52 @@ public class SynchronizationClient {
 		}
 		return result;
 	}
+	
+	/**
+	 * Synchronized the user's posts between the clientLogic and the syncServer
+	 * according to the configured sync direction and resource types.
+	 * 
+	 * @param clientLogic
+	 * @param syncServerUri
+	 * @param resourceType
+	 * @return
+	 */
+	public Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final LogicInterface clientLogic, final URI syncServerUri) {
+		
+		final SyncService syncServer = getServerByURI(clientLogic, syncServerUri);
+		final Class<? extends Resource> resourceType = syncServer.getResourceType();
+		final SynchronizationDirection direction = syncServer.getDirection();
+		final ConflictResolutionStrategy strategy = syncServer.getStrategy();
+
+		/*
+		 * retrieve instance of server logic
+		 */
+		final LogicInterface serverLogic = getServerLogic(syncServer);
+		
+		if (!present(serverLogic)) {
+			throw new IllegalArgumentException("Synchronization for " + syncServerUri + " not configured for user " + clientLogic.getAuthenticatedUser());
+		}
+		final String serverUserName = serverLogic.getAuthenticatedUser().getName();
+		
+		/*
+		 * sync each configured resource type
+		 */
+		final Map<Class<? extends Resource>, List<SynchronizationPost>> result = new HashMap<Class<? extends Resource>, List<SynchronizationPost>>();
+		
+		for (final Class<? extends Resource> resource : ResourceUtils.getResourceTypesByClass(resourceType)) {
+			/*
+			 * get posts from client
+			 */
+			final List<SynchronizationPost> clientPosts = ((SyncLogicInterface)clientLogic).getSyncPosts(clientLogic.getAuthenticatedUser().getName(), resourceType);
+			/*
+			 * get sync plan
+			 */
+			final List<SynchronizationPost> syncPlan = ((SyncLogicInterface)serverLogic).getSyncPlan(serverUserName, ownUri, resourceType, clientPosts, strategy, direction);
+			
+			result.put(resource, syncPlan);
+		}
+		return result;
+	}
 
 	/**
 	 * Synchronizes the user's posts of the given resource type 
@@ -196,7 +242,7 @@ public class SynchronizationClient {
 			/*
 			 * get synchronization actions and posts from server
 			 */
-			final List<SynchronizationPost> syncPlan = ((SyncLogicInterface)serverLogic).getSyncPlan(serverLogic.getAuthenticatedUser().getName(), resourceType, clientPosts, strategy, ownUri, direction);
+			final List<SynchronizationPost> syncPlan = ((SyncLogicInterface)serverLogic).getSyncPlan(serverLogic.getAuthenticatedUser().getName(), ownUri, resourceType, clientPosts, strategy, direction);
 			info = synchronize(clientLogic, serverLogic, syncPlan, direction);
 			result = SynchronizationStatus.DONE;
 		} catch (final SynchronizationRunningException e) {

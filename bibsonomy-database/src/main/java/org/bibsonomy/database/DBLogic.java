@@ -286,7 +286,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#getSynchronization(java.lang.String, java.lang.Class, java.util.List, org.bibsonomy.model.sync.ConflictResolutionStrategy, java.lang.String)
      */
     @Override
-    public List<SynchronizationPost> getSyncPlan(final String userName, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final URI service, final SynchronizationDirection direction) {
+    public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
     	this.permissionDBManager.ensureWriteAccess(loginUser, userName);
     	Date lastSuccessfulSyncDate = null;
 
@@ -312,11 +312,11 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     			lastSuccessfulSyncDate = lsd.getLastSyncDate();	
     		}
     		/*
-    		 * flag synchronization as running
+    		 * flag synchronization as planned
     		 * FIXME: if the client is not in the sync_services table, this 
     		 * statements silently fails. :-(
     		 */
-    		this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.RUNNING, session);
+    		this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.PLANNED, session);
     		
     		/*
     		 * get posts from server (=this machine)
