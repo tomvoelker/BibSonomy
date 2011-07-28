@@ -163,7 +163,7 @@ public class SynchronizationClient {
 		 */
 		final Map<Class<? extends Resource>, SynchronizationData> result = new HashMap<Class<? extends Resource>, SynchronizationData>();
 		
-		for (Class<? extends Resource> resource : ResourceUtils.getResourceTypesByClass(resourceType)) {
+		for (final Class<? extends Resource> resource : ResourceUtils.getResourceTypesByClass(resourceType)) {
 			result.put(resource, synchronize(clientLogic, serverLogic, serverUserName, resource, direction, syncServer.getStrategy()));
 		}
 		return result;
@@ -188,7 +188,16 @@ public class SynchronizationClient {
 			/*
 			 * try to synchronize
 			 */
-			info = synchronize(clientLogic, serverLogic, resourceType, direction, strategy);
+			/*
+			 * get posts from client
+			 */
+			final List<SynchronizationPost> clientPosts = ((SyncLogicInterface)clientLogic).getSyncPosts(clientLogic.getAuthenticatedUser().getName(), resourceType);
+			
+			/*
+			 * get synchronization actions and posts from server
+			 */
+			final List<SynchronizationPost> syncPlan = ((SyncLogicInterface)serverLogic).getSyncPlan(serverLogic.getAuthenticatedUser().getName(), resourceType, clientPosts, strategy, ownUri, direction);
+			info = synchronize(clientLogic, serverLogic, syncPlan, direction);
 			result = SynchronizationStatus.DONE;
 		} catch (final SynchronizationRunningException e) {
 			/*
@@ -238,15 +247,7 @@ public class SynchronizationClient {
 		}
 	}
 
-	/**
-	 * Synchronizes clientLogic with serverLogic.
-	 * 
-	 * @param clientLogic
-	 * @param serverLogic
-	 * @param resourceType
-	 * @return synchronization result
-	 */
-	private String synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final Class<? extends Resource> resourceType, SynchronizationDirection direction, ConflictResolutionStrategy strategy) {
+	private String synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final List<SynchronizationPost> syncPlan, final SynchronizationDirection direction) {
 		/*
 		 * add sync access to both users = allow users to modify the dates of
 		 * posts
@@ -254,20 +255,8 @@ public class SynchronizationClient {
 		 */
 		final User serverUser = serverLogic.getAuthenticatedUser();
 		serverUser.setRole(Role.SYNC);
-		
 		final User clientUser = clientLogic.getAuthenticatedUser();
 		clientUser.setRole(Role.SYNC);
-	
-		/*
-		 * get posts from client
-		 */
-		final List<SynchronizationPost> clientPosts = ((SyncLogicInterface)clientLogic).getSyncPosts(clientUser.getName(), resourceType);
-		
-		/*
-		 * get synchronization actions and posts from server
-		 */
-		final List<SynchronizationPost> syncPlan = ((SyncLogicInterface)serverLogic).getSyncPlan(serverUser.getName(), resourceType, clientPosts, strategy, ownUri, direction);
-
 		/*
 		 * create target lists
 		 */
