@@ -36,10 +36,12 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
  */
 public class XMLRenderer extends JAXBRenderer {
 
+	/**
+	 * @param urlRenderer the url renderer to use
+	 */
 	public XMLRenderer(final UrlRenderer urlRenderer) {
 		super(urlRenderer);
 	}
-
 	
 	@Override
 	protected JAXBContext getJAXBContext() throws JAXBException {

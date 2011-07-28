@@ -47,6 +47,9 @@ import com.sun.jersey.api.json.JSONUnmarshaller;
  */
 public class JSONRenderer extends JAXBRenderer {
 	
+	/**
+	 * @param urlRenderer the url renderer to use
+	 */
 	public JSONRenderer(final UrlRenderer urlRenderer) {
 		super(urlRenderer);
 	}
@@ -57,13 +60,13 @@ public class JSONRenderer extends JAXBRenderer {
 	}
 	
 	@Override
-	protected void marshal(Marshaller marshaller, JAXBElement<BibsonomyXML> webserviceElement, Writer writer) throws JAXBException {
+	protected void marshal(final Marshaller marshaller, final JAXBElement<BibsonomyXML> webserviceElement, final Writer writer) throws JAXBException {
 		final JSONMarshaller jsonMarshaller = (JSONMarshaller) marshaller;
 		jsonMarshaller.marshallToJSON(webserviceElement, writer);
 	}
 	
 	@Override
-	protected JAXBElement<BibsonomyXML> unmarshal(Unmarshaller unmarshaller, Reader reader) throws JAXBException {
+	protected JAXBElement<BibsonomyXML> unmarshal(final Unmarshaller unmarshaller, final Reader reader) throws JAXBException {
 		final JSONUnmarshaller jsonUnmarshaller = (JSONUnmarshaller) unmarshaller;
 		return jsonUnmarshaller.unmarshalJAXBElementFromJSON(reader, BibsonomyXML.class);
 	}
