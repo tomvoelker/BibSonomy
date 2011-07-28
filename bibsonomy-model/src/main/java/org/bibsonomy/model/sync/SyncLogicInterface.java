@@ -24,6 +24,7 @@
 package org.bibsonomy.model.sync;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -59,12 +60,14 @@ public interface SyncLogicInterface {
 	
 	/**
 	 * 
-	 * @param userName
-	 * @return List of synchronization servers for given user 
+	 * @param server switch between server and clients
+	 * @return List of allowed synchronization services
 	 */
-	public List<SyncService> getSyncServer(final String userName);
+	public List<URI> getSyncServices(final boolean server);
+
 	
 	
+
 	
 	/* ********************************************************************
 	 * create, read, update, delete sync services - user dependent
@@ -98,37 +101,18 @@ public interface SyncLogicInterface {
 	 * @param strategy 
 	 */
 	public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy);
-	
+
 	/**
 	 * 
-	 * @param server switch between server and clients
-	 * @return List of allowed synchronization services
+	 * @param userName
+	 * @return List of synchronization servers for given user 
 	 */
-	public List<URI> getSyncServices(final boolean server);
-
+	public List<SyncService> getSyncServer(final String userName);
 	
 	
 	/* ********************************************************************
 	 * create, read, update, delete sync services - user dependent
 	 */
-
-	/**
-	 * 
-	 * @param data
-	 * @param status 
-	 * @param info
-	 */
-	public void updateSyncStatus(final SynchronizationData data, final SynchronizationStatus status, final String info);
-	
-	/**
-	 * 
-	 * @param userName
-	 * @param service
-	 * @param resourceType
-	 * @return Synchronization data of last successful synchronization: date and status
-	 */
-	public SynchronizationData getLastSyncData (final String userName, final URI service, final Class<? extends Resource> resourceType);
-	
 	/**
 	 * 
 	 * @param userName
@@ -136,6 +120,36 @@ public interface SyncLogicInterface {
 	 * @return List of SnchronizationPosts for given user 
 	 */
 	public List<SynchronizationPost> getSyncPosts (final String userName, final Class<? extends Resource> resourceType);
+	
+	/**
+	 *  
+	 * @param userName - the name of the user whose sync status shall be updated
+	 * @param service  - the URI of the service for which the sync status shall be updated
+	 * @param resourceType - the resource type for which the sync status shall be updated
+	 * @param syncDate - the sync date for which the sync status shall be updated
+	 * @param status - the new sync status 
+	 * @param info - some additional information, like how many posts were updated, etc.
+	 */
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info);
+
+	/**
+	 * Deletes the specified synchronization status.
+	 *   
+	 * @param userName - the name of the user whose sync status shall be updated
+	 * @param service  - the URI of the service for which the sync status shall be updated
+	 * @param resourceType - the resource type for which the sync status shall be updated
+	 * @param syncDate - the sync date for which the sync status shall be updated
+	 */
+	public void deleteSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate);
+
+	/**
+	 * 
+	 * @param userName
+	 * @param service
+	 * @param resourceType
+	 * @return Synchronization data of last successful synchronization: date and status
+	 */
+	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType);
 	
 	/**
 	 * 
