@@ -91,6 +91,17 @@
 			  AND ss.server = #server#
 	</update>
 	
+	<delete id="deleteSyncStatus" parameterClass="syncParam">
+		DELETE FROM sd 
+		  USING sync_data sd 
+		    JOIN sync_services ss USING (service_id)
+			WHERE sd.user_name = #userName#
+			  AND sd.content_type = #resourceType#
+			  AND sd.last_sync_date = #lastSyncDate#
+			  AND ss.uri = #service#
+			  AND ss.server = #server#
+	</delete>	
+	
 	<update id="updateSyncServerForUser" parameterClass="syncParam">
 		UPDATE sync s
 		  JOIN sync_services ss USING (service_id)

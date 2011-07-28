@@ -106,7 +106,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		} catch (ParseException ex) {
 			ex.printStackTrace();
 		}
-		final Date lastSyncDate = syncDb.getLastSynchronizationData(userName, testURI, BibTex.class, null, dbSession).getLastSyncDate();
+		final Date lastSyncDate = syncDb.getLastSyncData(userName, testURI, BibTex.class, null, dbSession).getLastSyncDate();
 		assertNotNull("no last sync date received from db", lastSyncDate);
 		assertEquals(date, lastSyncDate);
 

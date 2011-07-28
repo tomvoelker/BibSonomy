@@ -83,24 +83,45 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Update the given synchronization data's status in the database.
+	 * Update the synchronization status in the database.
+	 * 
+	 * @param session - the database session
+	 * @param userName - identifies 
+	 * @param service - identifies the status
+	 * @param resourceType - identifies the status
+	 * @param syncDate - identifies the status
+	 * @param status - the new status
+	 * @param info - some additional information to be stored
+	 */
+	public void updateSyncData(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
+		final SyncParam param = new SyncParam();
+		param.setUserName(userName);
+		param.setService(service);
+		param.setResourceType(resourceType);
+		param.setLastSyncDate(syncDate);
+		param.setStatus(status); // this is changed
+		param.setInfo(info); // and this is changed
+		param.setServer(false);
+		session.update("updateSyncStatus", param);
+	}
+
+	/**
+	 * Delete the given synchronization data's status in the database.
 	 * 
 	 * @param session - the database session
 	 * @param status - the status to set
 	 * @param data SynchronizationData
 	 */
-	public void updateSyncStatus(final DBSession session, final SynchronizationData data, final SynchronizationStatus status, final String info) {
+	public void deleteSyncData(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate) {
 		final SyncParam param = new SyncParam();
-		param.setUserName(data.getUserName());
-		param.setService(data.getService());
-		param.setResourceType(data.getResourceType());
-		param.setLastSyncDate(data.getLastSyncDate());
-		param.setStatus(status);
-		param.setInfo(info);
+		param.setUserName(userName);
+		param.setService(service);
+		param.setResourceType(resourceType);
+		param.setLastSyncDate(syncDate);
 		param.setServer(false);
-		session.update("updateSyncStatus", param);
+		session.update("deleteSyncStatus", param);
 	}
-
+	
 	/**
 	 * Insert new synchronization data for user.
 	 * 
@@ -195,7 +216,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param status - optional. If provided, only data with that state is returned.
 	 * @return returns last synchronization data for given user, service and content with {@link SynchronizationStatus#RUNNING}.
 	 */
-	public SynchronizationData getLastSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final SynchronizationStatus status, final DBSession session) {
+	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final SynchronizationStatus status, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setResourceType(resourceType);

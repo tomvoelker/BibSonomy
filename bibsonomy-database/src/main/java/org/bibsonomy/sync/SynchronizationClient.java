@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -232,7 +232,7 @@ public class SynchronizationClient {
 			throw new RuntimeException("No sync data found for " + serverUserName + " on " + ownUri + " and resource type " + resourceType.getSimpleName());
 		}
 		if (SynchronizationStatus.RUNNING.equals(data.getStatus())) {
-			syncLogicInterface.updateSyncStatus(data, status, info);
+			syncLogicInterface.updateSyncData(serverUserName, ownUri, resourceType, data.getLastSyncDate(), status, info);
 		} else {
 			throw new RuntimeException("no running synchronization found for " + serverUserName + " on " + ownUri + " to store result");
 		}

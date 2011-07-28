@@ -295,7 +295,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
     	final DBSession session = this.openSession();
     	try {
-    		final SynchronizationData data = this.syncDBManager.getLastSynchronizationData(userName, service, resourceType, null, session);
+    		final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
     		/*
     		 * check for a running synchronization
     		 */
@@ -307,7 +307,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     		/*
     		 * check for last successful synchronization 
     		 */
-    		final SynchronizationData lsd = this.syncDBManager.getLastSynchronizationData(userName, service, resourceType, SynchronizationStatus.DONE, session);
+    		final SynchronizationData lsd = this.syncDBManager.getLastSyncData(userName, service, resourceType, SynchronizationStatus.DONE, session);
     		if (present(lsd)) {
     			lastSuccessfulSyncDate = lsd.getLastSyncDate();	
     		}
@@ -475,7 +475,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     	 this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
     	 final DBSession session = this.openSession();
     	 try {
-    		 return syncDBManager.getLastSynchronizationData(userName, service, resourceType, null, session);
+    		 return syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
     	 } finally {
     		 session.close();
     	 }
@@ -486,10 +486,25 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      * @see org.bibsonomy.model.sync.SyncLogicInterface#setCurrentSyncDone(org.bibsonomy.model.sync.SynchronizationData)
      */
     @Override
-    public void updateSyncStatus(final SynchronizationData data, final SynchronizationStatus status, final String info) {
+    public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
+    	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
     	final DBSession session = this.openSession();
     	try {
-    		syncDBManager.updateSyncStatus(session, data, status, info);
+    		syncDBManager.updateSyncData(session, userName, service, resourceType, syncDate, status, info);
+    	} finally {
+    		session.close();
+    	}
+    }
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#setCurrentSyncDone(org.bibsonomy.model.sync.SynchronizationData)
+     */
+    @Override
+    public void deleteSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate) {
+    	this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
+    	final DBSession session = this.openSession();
+    	try {
+    		syncDBManager.deleteSyncData(session, userName, service, resourceType, syncDate);
     	} finally {
     		session.close();
     	}

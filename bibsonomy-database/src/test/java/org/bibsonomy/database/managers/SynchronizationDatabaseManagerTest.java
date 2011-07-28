@@ -101,12 +101,12 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		 */
 		final Class<? extends Resource> resourceType = BibTex.class;
 		final Date expected = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS").parse("2011-02-02 23:00:00");
-		assertEquals(expected, syncDBManager.getLastSynchronizationData(syncUser1, bibsonomyURI, resourceType, null, dbSession).getLastSyncDate());
+		assertEquals(expected, syncDBManager.getLastSyncData(syncUser1, bibsonomyURI, resourceType, null, dbSession).getLastSyncDate());
 
 		/*
 		 * check that no synchronization is running 
 		 */
-		assertNull(syncDBManager.getLastSynchronizationData(syncUser1, bibsonomyURI, resourceType, SynchronizationStatus.RUNNING, dbSession));
+		assertNull(syncDBManager.getLastSyncData(syncUser1, bibsonomyURI, resourceType, SynchronizationStatus.RUNNING, dbSession));
 
 		/*
 		 * insert new data in db
@@ -119,7 +119,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		/*
 		 * check added data
 		 */
-		final SynchronizationData data = syncDBManager.getLastSynchronizationData(syncUser1, bibsonomyURI, resourceType, null, dbSession);
+		final SynchronizationData data = syncDBManager.getLastSyncData(syncUser1, bibsonomyURI, resourceType, null, dbSession);
 		assertNotNull(data);
 		assertEquals(syncUser1, data.getUserName());
 		assertEquals(date, data.getLastSyncDate());
@@ -130,14 +130,14 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		/*
 		 * set status of added data to done (simulate successful synchronization)
 		 */
-		syncDBManager.updateSyncStatus(dbSession, data, SynchronizationStatus.DONE, "");
+		syncDBManager.updateSyncData(dbSession, syncUser1, bibsonomyURI, resourceType, data.getLastSyncDate(), SynchronizationStatus.DONE, "");
 
 		/*
 		 * check that no synchronization is running 
 		 */
-		assertNull(syncDBManager.getLastSynchronizationData(syncUser1, bibsonomyURI, resourceType, SynchronizationStatus.RUNNING, dbSession));
+		assertNull(syncDBManager.getLastSyncData(syncUser1, bibsonomyURI, resourceType, SynchronizationStatus.RUNNING, dbSession));
 
-		final SynchronizationData data2 = syncDBManager.getLastSynchronizationData(syncUser1, bibsonomyURI, resourceType, null, dbSession);
+		final SynchronizationData data2 = syncDBManager.getLastSyncData(syncUser1, bibsonomyURI, resourceType, null, dbSession);
 		assertEquals(SynchronizationStatus.DONE, data2.getStatus());
 
 	}
