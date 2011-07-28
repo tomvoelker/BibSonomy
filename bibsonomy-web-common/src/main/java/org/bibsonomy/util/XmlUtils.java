@@ -50,10 +50,10 @@ public class XmlUtils {
      * @param substitute 
      * @return a string with control characters removed
      */
-    public static String removeXmlControlCharacters(String string, final boolean substitute) {
+    public static String removeXmlControlCharacters(final String string, final boolean substitute) {
     	if (string == null) return string;
-    	char[] ch = string.toCharArray();
-    	StringBuilder sb = new StringBuilder(ch.length);    	
+    	final char[] ch = string.toCharArray();
+    	final StringBuilder sb = new StringBuilder(ch.length);    	
         for (int i = 0; i < ch.length; i++) {
             if (XmlUtils.illegalChars.contains(ch[i])) {
             	sb.append(substitute ? XmlUtils.ILLEGAL_CHAR_SUBSTITUTE : "");
@@ -66,12 +66,12 @@ public class XmlUtils {
     }
     
     /**
-     * wrapper method for {@link #removeXmlControlCharacters(String, Boolean)} 
+     * wrapper method for {@link #removeXmlControlCharacters(String, boolean)} 
      * 
      * @param string a string
      * @return a string with control characters removed
      */
-    public static String removeXmlControlCharacters(String string) {
+    public static String removeXmlControlCharacters(final String string) {
     	return XmlUtils.removeXmlControlCharacters(string, false);
     }
     
@@ -84,8 +84,8 @@ public class XmlUtils {
      * @param substitute 
      * @return a char array with control characters removed
      */
-    public static char[] removeXmlControlCharacters(char[] ch, final boolean substitute) {
-    	StringBuilder sb = new StringBuilder(ch.length);
+    public static char[] removeXmlControlCharacters(final char[] ch, final boolean substitute) {
+    	final StringBuilder sb = new StringBuilder(ch.length);
         for (int i = 0; i < ch.length; i++) {
             if (XmlUtils.illegalChars.contains(ch[i])) {
             	sb.append(substitute ? XmlUtils.ILLEGAL_CHAR_SUBSTITUTE : "");
@@ -98,12 +98,12 @@ public class XmlUtils {
     }
     
     /**
-     * wrapper method for {@link #removeXmlControlCharacters(char[] ch, Boolean substitute)}
+     * wrapper method for {@link #removeXmlControlCharacters(char[] ch, boolean substitute)}
      * 
      * @param ch a char array
      * @return a char array with control characters removed
      */
-    public static char[] removeXmlControlCharacters(char[] ch) {
+    public static char[] removeXmlControlCharacters(final char[] ch) {
     	return XmlUtils.removeXmlControlCharacters(ch, false);
     }
     
@@ -115,7 +115,7 @@ public class XmlUtils {
      * @param substitute 
      * @return a char with control characters removed
      */
-    public static char removeXmlControlCharacter(char c, final boolean substitute) {
+    public static char removeXmlControlCharacter(final char c, final boolean substitute) {
     	if (XmlUtils.illegalChars.contains(c)) {
     		return substitute ? XmlUtils.ILLEGAL_CHAR_SUBSTITUTE : ' ' ;
     	}
@@ -123,12 +123,12 @@ public class XmlUtils {
     }
     
     /**
-     * Wrapper for {@link #removeXmlControlCharacter(char, Boolean)}
+     * Wrapper for {@link #removeXmlControlCharacter(char, boolean)}
      * 
      * @param c a char
      * @return a char with control charaters removed
      */
-    public static char removeXmlControlCharacters(char c) {
+    public static char removeXmlControlCharacters(final char c) {
     	return XmlUtils.removeXmlControlCharacter(c, false);
     }
 
