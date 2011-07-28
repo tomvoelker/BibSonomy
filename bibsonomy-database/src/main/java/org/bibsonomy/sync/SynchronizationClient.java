@@ -75,14 +75,14 @@ public class SynchronizationClient {
 	 * could be found, <code>null</code> is returned.
 	 *  
 	 * @param clientLogic
-	 * @param syncServer
+	 * @param service
 	 * @return syncService
 	 */
-	private SyncService getServerByURI(final LogicInterface clientLogic, final URI syncServer) {
+	private SyncService getServerByURI(final LogicInterface clientLogic, final URI service) {
 		final List<SyncService> syncServers = ((SyncLogicInterface)clientLogic).getSyncServer(clientLogic.getAuthenticatedUser().getName());
 		
 		for (final SyncService syncService : syncServers) {
-			if (syncServer.equals(syncService.getService())) {
+			if (service.equals(syncService.getService())) {
 				return syncService;
 			}
 		}
@@ -92,11 +92,10 @@ public class SynchronizationClient {
 	/**
 	 * Creates an instance of the LogicInterface for the given syncService
 	 * 
-	 * @param syncService
+	 * @param serverUser
 	 * @return
 	 */
-	private LogicInterface getServerLogic(final SyncService syncService) {
-		final Properties serverUser = syncService.getServerUser();
+	private LogicInterface getServerLogic(final Properties serverUser) {
 		return serverLogicFactory.getLogicAccess(serverUser.getProperty("userName"), serverUser.getProperty("apiKey"));
 	}
 	
@@ -127,7 +126,7 @@ public class SynchronizationClient {
 		 * FIXME errorhandling
 		 */
 		
-		final LogicInterface serverLogic = getServerLogic(syncService);
+		final LogicInterface serverLogic = getServerLogic(syncService.getServerUser());
 		
 		return getLastSyncData(serverLogic, serverLogic.getAuthenticatedUser().getName(), resourceType);
 	}
@@ -142,6 +141,7 @@ public class SynchronizationClient {
 	 * @param resourceType
 	 * @return
 	 */
+	@Deprecated
 	public Map<Class<? extends Resource>, SynchronizationData> synchronize(final LogicInterface clientLogic, final URI syncServerUri) {
 		
 		final SyncService syncServer = getServerByURI(clientLogic, syncServerUri);
@@ -151,7 +151,7 @@ public class SynchronizationClient {
 		/*
 		 * retrieve instance of server logic
 		 */
-		final LogicInterface serverLogic = getServerLogic(syncServer);
+		final LogicInterface serverLogic = getServerLogic(syncServer.getServerUser());
 		
 		if (!present(serverLogic)) {
 			throw new IllegalArgumentException("Synchronization for " + syncServerUri + " not configured for user " + clientLogic.getAuthenticatedUser());
@@ -174,47 +174,135 @@ public class SynchronizationClient {
 	 * according to the configured sync direction and resource types.
 	 * 
 	 * @param clientLogic
-	 * @param syncServerUri
+	 * @param service
 	 * @param resourceType
 	 * @return
 	 */
-	public Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final LogicInterface clientLogic, final URI syncServerUri) {
+	public Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final LogicInterface clientLogic, final URI service) {
 		
-		final SyncService syncServer = getServerByURI(clientLogic, syncServerUri);
-		final Class<? extends Resource> resourceType = syncServer.getResourceType();
-		final SynchronizationDirection direction = syncServer.getDirection();
-		final ConflictResolutionStrategy strategy = syncServer.getStrategy();
+		final SyncService syncServer = getServerByURI(clientLogic, service);
 
 		/*
 		 * retrieve instance of server logic
 		 */
-		final LogicInterface serverLogic = getServerLogic(syncServer);
+		final LogicInterface serverLogic = getServerLogic(syncServer.getServerUser());
 		
 		if (!present(serverLogic)) {
-			throw new IllegalArgumentException("Synchronization for " + syncServerUri + " not configured for user " + clientLogic.getAuthenticatedUser());
+			throw new IllegalArgumentException("Synchronization for " + service + " not configured for user " + clientLogic.getAuthenticatedUser());
 		}
 		final String serverUserName = serverLogic.getAuthenticatedUser().getName();
+		
+		/*
+		 * get sync config
+		 */
+		final SynchronizationDirection direction = syncServer.getDirection();
+		final Class<? extends Resource>[] resourceTypes = ResourceUtils.getResourceTypesByClass(syncServer.getResourceType());
+		final ConflictResolutionStrategy strategy = syncServer.getStrategy();
+
 		
 		/*
 		 * sync each configured resource type
 		 */
 		final Map<Class<? extends Resource>, List<SynchronizationPost>> result = new HashMap<Class<? extends Resource>, List<SynchronizationPost>>();
 		
-		for (final Class<? extends Resource> resource : ResourceUtils.getResourceTypesByClass(resourceType)) {
+		for (final Class<? extends Resource> resourceType : resourceTypes) {
 			/*
 			 * get posts from client
 			 */
 			final List<SynchronizationPost> clientPosts = ((SyncLogicInterface)clientLogic).getSyncPosts(clientLogic.getAuthenticatedUser().getName(), resourceType);
 			/*
-			 * get sync plan
+			 * get sync plan from server
 			 */
 			final List<SynchronizationPost> syncPlan = ((SyncLogicInterface)serverLogic).getSyncPlan(serverUserName, ownUri, resourceType, clientPosts, strategy, direction);
 			
-			result.put(resource, syncPlan);
+			result.put(resourceType, syncPlan);
 		}
 		return result;
 	}
 
+
+	/**
+	 * Synchronized the user's posts between the clientLogic and the syncServer
+	 * according to the configured sync direction and resource types.
+	 * 
+	 * @param clientLogic
+	 * @param service
+	 * @param resourceType
+	 * @return
+	 */
+	public Map<Class<? extends Resource>, SynchronizationData> synchronize(final LogicInterface clientLogic, final URI service, final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan) {
+		
+		final SyncService syncServer = getServerByURI(clientLogic, service);
+		/*
+		 * retrieve instance of server logic
+		 */
+		final LogicInterface serverLogic = getServerLogic(syncServer.getServerUser());
+		
+		if (!present(serverLogic)) {
+			throw new IllegalArgumentException("Synchronization for " + service + " not configured for user " + clientLogic.getAuthenticatedUser());
+		}
+		final String serverUserName = serverLogic.getAuthenticatedUser().getName();
+
+		/*
+		 * get config
+		 */
+		final SynchronizationDirection direction = syncServer.getDirection();
+		final Class<? extends Resource>[] resourceTypes = ResourceUtils.getResourceTypesByClass(syncServer.getResourceType());
+
+		/*
+		 * sync each configured resource type
+		 */
+		final Map<Class<? extends Resource>, SynchronizationData> result = new HashMap<Class<? extends Resource>, SynchronizationData>();
+		
+		for (final Class<? extends Resource> resourceType : resourceTypes) {
+			/*
+			 * synchronize
+			 */
+			final SynchronizationData syncData = synchronize(clientLogic, serverLogic, serverUserName, resourceType, direction, syncPlan.get(resourceType));
+			
+			result.put(resourceType, syncData);
+		}
+		return result;
+	}
+	
+	protected SynchronizationData synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction, final List<SynchronizationPost> syncPlan) {
+		SynchronizationStatus newStatus;
+		String info;
+		try {
+			/*
+			 * flag sync as running
+			 */
+			updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.PLANNED, SynchronizationStatus.RUNNING, "");
+			/*
+			 * try to synchronize
+			 */
+			info = synchronize(clientLogic, serverLogic, syncPlan, direction);
+			newStatus = SynchronizationStatus.DONE;
+		} catch (final SynchronizationRunningException e) {
+			/*
+			 * FIXME handling of this exception type. I think we can break "running" synchronization after timeout.
+			 * Currently return only "running" status.
+			 */
+			final SynchronizationData data = new SynchronizationData();
+			data.setStatus(SynchronizationStatus.RUNNING);
+			return data;
+		} catch (final Exception e) {
+			info = "";
+			newStatus = SynchronizationStatus.ERROR;
+			log.error("Error in synchronization", e);
+		}
+		/*
+		 * store sync result
+		 */
+		updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.RUNNING, newStatus, info);
+		
+		/*
+		 * Get synchronization data from server. Can not be constructed here 
+		 * because last_sync_date is only known by the server
+		 */
+		return getLastSyncData(serverLogic, serverUserName, resourceType);
+	}
+	
 	/**
 	 * Synchronizes the user's posts of the given resource type 
 	 * on the client and server according to the given direction. 
@@ -227,8 +315,9 @@ public class SynchronizationClient {
 	 * @param direction
 	 * @return
 	 */
+	@Deprecated
 	protected SynchronizationData synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
-		SynchronizationStatus result;
+		SynchronizationStatus newStatus;
 		String info;
 		try {
 			/*
@@ -242,9 +331,16 @@ public class SynchronizationClient {
 			/*
 			 * get synchronization actions and posts from server
 			 */
-			final List<SynchronizationPost> syncPlan = ((SyncLogicInterface)serverLogic).getSyncPlan(serverLogic.getAuthenticatedUser().getName(), ownUri, resourceType, clientPosts, strategy, direction);
+			final List<SynchronizationPost> syncPlan = ((SyncLogicInterface)serverLogic).getSyncPlan(serverUserName, ownUri, resourceType, clientPosts, strategy, direction);
+			/*
+			 * flag sync as running
+			 */
+			updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.PLANNED, SynchronizationStatus.RUNNING, "");
+			/*
+			 * sync
+			 */
 			info = synchronize(clientLogic, serverLogic, syncPlan, direction);
-			result = SynchronizationStatus.DONE;
+			newStatus = SynchronizationStatus.DONE;
 		} catch (final SynchronizationRunningException e) {
 			/*
 			 * FIXME handling of this exception type. I think we can break "running" synchronization after timeout.
@@ -255,13 +351,13 @@ public class SynchronizationClient {
 			return data;
 		} catch (final Exception e) {
 			info = "";
-			result = SynchronizationStatus.ERROR;
+			newStatus = SynchronizationStatus.ERROR;
 			log.error("Error in synchronization", e);
 		}
 		/*
 		 * store sync result
 		 */
-		storeSyncResult(serverLogic, serverUserName, resourceType, result, info);
+		updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.RUNNING, newStatus, info);
 		
 		/*
 		 * Get synchronization data from server. Can not be constructed here 
@@ -271,25 +367,31 @@ public class SynchronizationClient {
 	}
 	
 	/**
-	 * Stores result of synchronization on server
+	 * Updates the status of the last synchronization to newStatus, but only if 
+	 * its status is oldStatus.
+	 * 
 	 * @param serverLogic
 	 * @param serverUserName
 	 * @param resourceType
-	 * @param result
+	 * @param oldStatus
+	 * @param newStatus
+	 * @param info
 	 */
-	private void storeSyncResult(final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationStatus status, final String info) {
-		final SyncLogicInterface syncLogicInterface = (SyncLogicInterface) serverLogic;
-		final SynchronizationData data = syncLogicInterface.getLastSyncData(serverUserName, ownUri, resourceType);
+	private void updateSyncData(final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationStatus oldStatus, final SynchronizationStatus newStatus, final String info) {
+		final SynchronizationData data = ((SyncLogicInterface) serverLogic).getLastSyncData(serverUserName, ownUri, resourceType);
 		if (!present(data)) {
 			/*
 			 * sync data seems not to have been stored --> error!
 			 */
 			throw new RuntimeException("No sync data found for " + serverUserName + " on " + ownUri + " and resource type " + resourceType.getSimpleName());
 		}
-		if (SynchronizationStatus.RUNNING.equals(data.getStatus())) {
-			syncLogicInterface.updateSyncData(serverUserName, ownUri, resourceType, data.getLastSyncDate(), status, info);
+		/*
+		 * check if oldStatus is correct
+		 */
+		if (oldStatus.equals(data.getStatus())) {
+			((SyncLogicInterface) serverLogic).updateSyncData(serverUserName, ownUri, resourceType, data.getLastSyncDate(), newStatus, info);
 		} else {
-			throw new RuntimeException("no running synchronization found for " + serverUserName + " on " + ownUri + " to store result");
+			throw new RuntimeException("no " + oldStatus + " synchronization found for " + serverUserName + " on " + ownUri + " to store result");
 		}
 	}
 
