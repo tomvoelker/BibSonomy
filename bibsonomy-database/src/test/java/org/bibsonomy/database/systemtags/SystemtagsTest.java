@@ -429,9 +429,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		/*
 		 * User1 now deletes his bookmarPost
 		 */
-		List<String> intraHashes =new ArrayList<String>();
-		intraHashes.add(bookmark.getResource().getHash());
-		user1Logic.deletePosts(testUser1.getName(), intraHashes);
+		user1Logic.deletePosts(testUser1.getName(), Collections.singletonList(bookmark.getResource().getIntraHash()));
 		// there should now still be only one bookmarkPost in the inbox
 		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
 		// the bookmarkPost from the inbox should look exactly like the original post
@@ -474,9 +472,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		/*
 		 * User1 now deletes his publicationPost
 		 */
-		intraHashes =new ArrayList<String>();
-		intraHashes.add(publication.getResource().getIntraHash());
-		user1Logic.deletePosts(testUser1.getName(), intraHashes);
+		user1Logic.deletePosts(testUser1.getName(), Collections.singletonList(publication.getResource().getIntraHash()));
 		// there should now still be only one publicationPost in the inbox
 		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
 		// the inboxPost should still have the same author as the original post
