@@ -244,7 +244,7 @@ public abstract class JAXBRenderer implements Renderer {
 		}
 	}
 
-	protected void marshal(Marshaller marshaller, JAXBElement<BibsonomyXML> webserviceElement, Writer writer) throws JAXBException {
+	protected void marshal(final Marshaller marshaller, final JAXBElement<BibsonomyXML> webserviceElement, final Writer writer) throws JAXBException {
 		marshaller.marshal(webserviceElement, writer);
 	}
 
@@ -464,7 +464,7 @@ public abstract class JAXBRenderer implements Renderer {
 			xmlUsers.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
 			if (viewModel.getUrlToNextResources() != null) xmlUsers.setNext(viewModel.getUrlToNextResources());
 			xmlUsers.setStart(BigInteger.valueOf(viewModel.getStartValue()));
-		} else if( users!=null ) {
+		} else if (users != null) {
 			xmlUsers.setStart(BigInteger.valueOf(0));
 			xmlUsers.setEnd(BigInteger.valueOf(users.size()));
 		} else {
