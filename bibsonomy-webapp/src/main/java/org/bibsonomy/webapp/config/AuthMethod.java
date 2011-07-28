@@ -13,22 +13,23 @@ import org.bibsonomy.util.StringUtils;
 public enum AuthMethod {
 	
 	/**
-	 * TODO
+	 * password in database
 	 */
 	INTERNAL,
 	
 	/**
-	 * TODO
+	 * Lightweight Directory Access Protocol
 	 */
 	LDAP,
 	
 	/**
-	 * TODO
+	 * Openid
 	 */
 	OPENID;
 	
 	/**
-	 * TODO implement x509
+	 * X509 authentication
+	 * TODO implement
 	 */
 //	X509;
 	
@@ -40,13 +41,13 @@ public enum AuthMethod {
      * @return the corresponding Order enum
      * @throws IllegalArgumentException 
      */
-	public static AuthMethod getAuthMethodByName(String name) throws IllegalArgumentException {
+	public static AuthMethod getAuthMethodByName(final String name) throws IllegalArgumentException {
 		if (!present(name)) {
 			throw new IllegalArgumentException("No authentication method!");
 		}
 		try {
 			return AuthMethod.valueOf(name.toUpperCase());
-		} catch (final IllegalArgumentException ia) {
+		} catch (final IllegalArgumentException e) {
 			throw new IllegalArgumentException("Requested order not supported. Possible values are " + StringUtils.implodeStringArray(AuthMethod.values(), ", "));
 		}
 	}
