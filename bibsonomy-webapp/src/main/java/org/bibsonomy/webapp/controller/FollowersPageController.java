@@ -62,7 +62,7 @@ public class FollowersPageController extends SingleResourceListController implem
 		command.setSortPage("ranking");
 		command.setSortPageOrder("desc");
 		command.setPersonalized(true);
-		command.setDuplicates("no");
+		command.setDuplicates(false);
 		
 		// fetch all tags of logged-in user
 		final String username = command.getContext().getLoginUser().getName();

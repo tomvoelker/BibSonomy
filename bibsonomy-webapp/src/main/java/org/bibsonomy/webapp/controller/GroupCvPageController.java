@@ -30,15 +30,15 @@ public class GroupCvPageController extends ResourceListController implements Min
 	private int entries;
 	
 	@Override
-	public View workOn(GroupResourceViewCommand command) {
-		
-		String requestedGroup = command.getRequestedGroup();
-		Group group = logic.getGroupDetails(requestedGroup);
+	public View workOn(final GroupResourceViewCommand command) {
+		final String requestedGroup = command.getRequestedGroup();
+		final Group group = this.logic.getGroupDetails(requestedGroup);
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
-		command.setDuplicates("no");
+		command.setDuplicates(false);
+		
 		command.setPageTitle("Curriculum vitae"); // TODO: i18n
 		
-		List<User> groupUsers = this.logic.getUsers(null, groupingEntity, requestedGroup, null, null, null, null, null, 0, 1000);
+		final List<User> groupUsers = this.logic.getUsers(null, groupingEntity, requestedGroup, null, null, null, null, null, 0, 1000);
 		if (!present(groupUsers)) {
 			throw new IllegalArgumentException("The requested group '"+requestedGroup+"' does not exist.");
 		}
@@ -81,7 +81,7 @@ public class GroupCvPageController extends ResourceListController implements Min
 	/**
 	 * @param entries the count of publications and bookmarks to show
 	 */
-	public void setEntries(int entries) {
+	public void setEntries(final int entries) {
 		this.entries = entries;
 	}
 
