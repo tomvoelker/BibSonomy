@@ -1,0 +1,1 @@
+{"stat":"ok","groups":{"next":"http://www.bibsonomy.org/api/foo/bar","end":30,"start":20,"group":[{"href":"http://www.bibsonomy.org/api/groups/testName","description":"foo bar ...","name":"testName"},{"href":"http://www.bibsonomy.org/api/groups/testName2","name":"testName2"}]}}
