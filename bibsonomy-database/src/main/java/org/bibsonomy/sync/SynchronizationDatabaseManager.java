@@ -109,12 +109,11 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param credentials
 	 * @param serviceId
 	 */
-	public void createSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+	public void createSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setCredentials(userCredentials);
 		param.setDirection(direction);
-		param.setStrategy(strategy);
 		param.setResourceType(resourceType);
 		param.setService(service);
 		param.setServer(true);
@@ -144,7 +143,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param credentials
 	 * 
 	 */
-	public void updateSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+	public void updateSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setService(service);
@@ -152,7 +151,6 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		param.setResourceType(resourceType);
 		param.setServer(true);
 		param.setCredentials(userCredentials);
-		param.setStrategy(strategy);
 		session.update("updateSyncServerForUser", param);
 	}
 
@@ -248,14 +246,38 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 				 * no such post on server 
 				 */
 				if (clientPost.getCreateDate().before(lastSyncDate)) {
-					/*
-					 * client post was created before last synchronization 
-					 * -> post was deleted on server
-					 */
-					if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
-						clientPost.setAction(SynchronizationAction.DELETE_CLIENT);
-					else
-						clientPost.setAction(SynchronizationAction.OK);
+				    /*
+				     * post was created before last sync, but when was it changed?
+				     */
+					if (clientPost.getChangeDate().before(lastSyncDate)) {
+						/*
+						 * client post was created and last changed before last synchronization 
+						 * -> post was deleted on server
+						 */
+						if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+							clientPost.setAction(SynchronizationAction.DELETE_CLIENT);
+						else
+							clientPost.setAction(SynchronizationAction.OK);
+					} else {
+						/*
+						 * CONFLICT! (we can't solve, currently :-(
+						 * 
+						 * Post was changed after last sync but does not exist on server
+						 * --> either it was deleted on server, or it's hash has changed
+						 * Since it is neither simple to find out if the post has been deleted
+						 * or its hash has changed, we create the post on the server.   
+						 * FIXME: This can result in 
+						 * a) a duplicate post (if the hash has changed on the client but the
+						 * post still exists on the server), or 
+						 * b) an unwanted post (if the post has been deleted on the server, but
+						 * according to the strategy this deletion should be carried out on
+						 * the client, too).
+						 */
+						if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+							clientPost.setAction(SynchronizationAction.CREATE_SERVER);
+						else 
+							clientPost.setAction(SynchronizationAction.OK);
+					}
 				} else {
 					/*
 					 * post was created on client after last sync
@@ -316,18 +338,32 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 
 		
 		/*
-		 * handle the remaining posts that do not exist on client
+		 * handle the remaining posts that do not exist on the client
 		 */
 		for (final SynchronizationPost serverPost: serverPosts.values()) {
 			if (serverPost.getCreateDate().before(lastSyncDate)) {
 				/*
 				 * post is older than lastSyncDate but does not exist on client
-				 * -> was deleted on client and must now be deleted on server
 				 */
-				if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
-					serverPost.setAction(SynchronizationAction.DELETE_SERVER);
-				else 
-					serverPost.setAction(SynchronizationAction.OK);
+				if (serverPost.getChangeDate().before(lastSyncDate)) {
+					/*
+					 * post was deleted on client and must now be deleted on server
+					 */
+					if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+						serverPost.setAction(SynchronizationAction.DELETE_SERVER);
+					else 
+						serverPost.setAction(SynchronizationAction.OK);
+				} else {
+					/*
+					 * CONFLICT (see above! FIXME: currently, we can't resolve this)
+					 * 
+					 * we create the post on the client
+					 */
+					if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+						serverPost.setAction(SynchronizationAction.CREATE_CLIENT);
+					else 
+						serverPost.setAction(SynchronizationAction.OK);
+				}
 			} else {
 				/*
 				 * post was created after last sync -> create on client
@@ -372,9 +408,9 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			else
 				clientPost.setAction(SynchronizationAction.OK);
 			break;
-//		case ASK_USER: temporary disabled
-//			clientPost.setAction(SynchronizationAction.ASK);
-//			break;
+		case ASK_USER:
+			clientPost.setAction(SynchronizationAction.ASK);
+			break;
 		case FIRST_WINS:
 			if (clientPost.getChangeDate().before(serverPost.getChangeDate())) {
 				if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
