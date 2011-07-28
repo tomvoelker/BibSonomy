@@ -32,6 +32,7 @@ import java.util.Set;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
 
@@ -52,18 +53,21 @@ public class ResourceFactory {
 		RESOURCE_CLASSES_BY_NAME.put("bookmark", Bookmark.class);
 		RESOURCE_CLASSES_BY_NAME.put("publication", BibTex.class);
 		RESOURCE_CLASSES_BY_NAME.put("goldStandardPublication", GoldStandardPublication.class);
+		RESOURCE_CLASSES_BY_NAME.put("goldStandardBookmark", GoldStandardBookmark.class);
 		
 		for (final Entry<String, Class<? extends Resource>> entry : RESOURCE_CLASSES_BY_NAME.entrySet()) {
 			RESOURCE_CLASS_NAMES.put(entry.getValue(), entry.getKey());
 		}
 		
 		// XXX: for backward compatibility; note: not added to RESOURCE_CLASS_NAMES
-		RESOURCE_CLASSES_BY_NAME.put("bibtex", BibTex.class); 
+		RESOURCE_CLASSES_BY_NAME.put("bibtex", BibTex.class);
+		RESOURCE_CLASSES_BY_NAME.put("all", Resource.class);
 	}
 	
 	/** 
 	 * @param resourceName
-	 * @return the class of the resource class by a name, e.g. "bookmark" returns
+	 * @return the class of the resource class by a name, e.g. "bookmark"
+	 * returns the {@link Bookmark} class
 	 */
 	public static final Class<? extends Resource> getResourceClass(final String resourceName) {
 		return RESOURCE_CLASSES_BY_NAME.get(resourceName);
@@ -87,12 +91,12 @@ public class ResourceFactory {
 	
 	/**
 	 * @param clazz
-	 * @return a new instance of the clazz
+	 * @return a new instance of the class
 	 */
 	@SuppressWarnings("unchecked")
 	public Resource createResource(final Class<? extends Resource> clazz) {
-		if (Bookmark.class.equals(clazz)) {
-			return this.createBookmark();
+		if (clazz != null && Bookmark.class.isAssignableFrom(clazz)) {
+			return this.createBookmark((Class<? extends Bookmark>) clazz);
 		}
 		
 		if (clazz != null && BibTex.class.isAssignableFrom(clazz)) {
@@ -103,7 +107,32 @@ public class ResourceFactory {
 	}
 	
 	/**
-	 * @return creates a new bookmark
+	 * 
+	 * @param clazz
+	 * @return a new instance of the class
+	 */
+	public Bookmark createBookmark(final Class<? extends Bookmark> clazz) {
+		if (Bookmark.class.equals(clazz)) {
+			return this.createBookmark();
+		}
+		
+		if (GoldStandardBookmark.class.equals(clazz)) {
+			return this.createGoldStandardBookmark();
+		}
+		
+		throw new UnsupportedResourceTypeException("resource " + clazz + " not supported");
+	}
+	
+	/**
+	 * 
+	 * @return a new {@link GoldStandardBookmark}
+	 */
+	public GoldStandardBookmark createGoldStandardBookmark() {
+		return new GoldStandardBookmark();
+	}
+
+	/**
+	 * @return creates a new {@link Bookmark}
 	 */
 	public Bookmark createBookmark() {
 		return new Bookmark();

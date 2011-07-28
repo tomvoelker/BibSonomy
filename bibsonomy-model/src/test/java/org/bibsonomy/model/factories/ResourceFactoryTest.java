@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
 import org.junit.BeforeClass;
@@ -74,6 +75,15 @@ public class ResourceFactoryTest {
 	public void createGoldStandardPublication() {
 		final Resource createResource = factory.createResource(GoldStandardPublication.class);
 		assertEquals(GoldStandardPublication.class, createResource.getClass());
+	}
+	
+	/**
+	 * tests {@link ResourceFactory#createGoldStandardBookmark()}
+	 */
+	@Test
+	public void createGoldStandardBookmark() {
+		final Resource createResource = factory.createResource(GoldStandardBookmark.class);
+		assertEquals(GoldStandardBookmark.class, createResource.getClass());
 	}
 	
 	/**
