@@ -51,28 +51,21 @@ public class Bookmark extends Resource {
 	/**
 	 * @param url
 	 */
-	public void setUrl(String url) {
+	public void setUrl(final String url) {
 		this.url = url;
 	}
 
 	/**
-	 * Bookmarks use the same hash value for both intrahash and interhash
+	 * bookmarks use the same hash value for both intrahash and interhash
 	 */
 	@Override
 	public String getInterHash() {
 		return super.getIntraHash();
 	}
 
-	/**
-	 * @return hash
-	 */
-	public String getHash() {
-		return StringUtils.getMD5Hash(this.url);
-	}
-
 	@Override
 	public void recalculateHashes() {
-		this.setIntraHash(getHash());
+		this.setIntraHash(StringUtils.getMD5Hash(this.url));
 	}
 	
 	@Override
