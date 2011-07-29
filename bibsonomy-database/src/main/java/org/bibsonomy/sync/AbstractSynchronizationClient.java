@@ -6,9 +6,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
@@ -163,8 +163,10 @@ public abstract class AbstractSynchronizationClient {
 		 * FIXME: must be secured using crypto
 		 */
 		final User serverUser = serverLogic.getAuthenticatedUser();
-		serverUser.setRole(Role.SYNC);
+		Role serverUserRole = serverUser.getRole();
+		serverUser.setRole(Role.SYNC); 
 		final User clientUser = clientLogic.getAuthenticatedUser();
+		Role clientUserRole = clientUser.getRole();
 		clientUser.setRole(Role.SYNC);
 		/*
 		 * create target lists
@@ -310,6 +312,8 @@ public abstract class AbstractSynchronizationClient {
 			result.delete(length - 2, length);
 		}
 
+		serverUser.setRole(serverUserRole);
+		clientUser.setRole(clientUserRole);
 		return result.toString();
 	}
 
