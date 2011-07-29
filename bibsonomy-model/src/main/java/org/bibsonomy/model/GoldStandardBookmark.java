@@ -46,19 +46,19 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	 * @see org.bibsonomy.model.GoldStandard#addToReferences(org.bibsonomy.model.GoldStandardPublication)
 	 */
 	@Override
-	public boolean addToReferences(final Bookmark publication) {
+	public boolean addToReferences(final Bookmark resources) {
 		this.lacyLoadReferences();
-		return this.references.add(publication);
+		return this.references.add(resources);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.GoldStandard#addAllToReferences(java.util.Set)
 	 */
 	@Override
-	public boolean addAllToReferences(final Set<? extends Bookmark> publications) {
+	public boolean addAllToReferences(final Set<? extends Bookmark> resources) {
 		this.lacyLoadReferences();
-		if (publications != null) {
-			return this.references.addAll(publications);
+		if (resources != null) {
+			return this.references.addAll(resources);
 		}
 		
 		return false;
@@ -68,8 +68,8 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	 * @see org.bibsonomy.model.GoldStandard#removeFromReferences(org.bibsonomy.model.GoldStandard)
 	 */
 	@Override
-	public boolean removeFromReferences(final Bookmark publication) {
-		return this.references == null ? false : this.references.remove(publication);
+	public boolean removeFromReferences(final Bookmark resource) {
+		return this.references == null ? false : this.references.remove(resource);
 	}
 
 	/*
@@ -77,8 +77,8 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	 * @see org.bibsonomy.model.GoldStandard#removeAllFromReferences(java.util.Set)
 	 */
 	@Override
-	public boolean removeAllFromReferences(final Set<? extends Bookmark> publications) {
-		return this.references == null ? false : this.references.removeAll(publications);
+	public boolean removeAllFromReferences(final Set<? extends Bookmark> resources) {
+		return this.references == null ? false : this.references.removeAll(resources);
 	}
 	
 	/*
