@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -53,8 +52,7 @@ public class SyncClientTestDirectionBOTH extends AbstractSynchronizationClientTe
 		setModifiedBookmarkKeys(MODIFIED_BOOKMARK_KEYS);
 		setModifiedPublicationKeys(MODIFIED_PUBLICATION_KEYS);
 		
-		Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan = sync.getSyncPlan(clientLogic, this.syncServer);
-		Map<Class<? extends Resource>, SynchronizationData> syncData = sync.synchronize(clientLogic, this.syncServer, syncPlan);
+		Map<Class<? extends Resource>, SynchronizationData> syncData = sync.synchronize(clientLogic, this.syncServer);
 		
 		for (Class<? extends Resource> resourceType : resourceTypes) {
 			assertTrue(syncData.containsKey(resourceType));
