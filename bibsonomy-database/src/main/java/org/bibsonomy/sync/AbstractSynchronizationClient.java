@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -117,6 +118,12 @@ public abstract class AbstractSynchronizationClient {
 		final LogicInterface serverLogic = getServerLogic(syncService.getServerUser());
 		
 		return getLastSyncData(serverLogic, serverLogic.getAuthenticatedUser().getName(), resourceType);
+	}
+	
+
+	public void deleteSyncData(final SyncService syncService, final Class<? extends Resource> resourceType, final Date syncDate) {
+		final LogicInterface serverLogic = getServerLogic(syncService.getServerUser());
+		((SyncLogicInterface) serverLogic).deleteSyncData(serverLogic.getAuthenticatedUser().getName(), ownUri, resourceType, syncDate);
 	}
 	
 	
