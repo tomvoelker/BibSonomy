@@ -11,13 +11,19 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.DBLogic;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 
@@ -48,18 +54,99 @@ public class ExtendedSyncClientTests extends AbstractSynchronizationClientTest {
 		/*
 		 * change some posts on server
 		 */
-		changeLeftSyncAndCheck(sync, syncServer, "server", serverUser, serverLogic, "client", clientUser, clientLogic, "b89c5230f929a2c9af0c808b17fae120");
+		changeLeftSyncAndCheck(syncServer, "server", serverUser, serverLogic, "client", clientUser, clientLogic, "b89c5230f929a2c9af0c808b17fae120");
 
 		wait(1);
 		/*
 		 * change some posts on client
 		 */
-		changeLeftSyncAndCheck(sync, syncServer, "client", clientUser, clientLogic, "server", serverUser, serverLogic, "9814aac6058e6db6c35ffe151f4c4c53");
+		changeLeftSyncAndCheck(syncServer, "client", clientUser, clientLogic, "server", serverUser, serverLogic, "9814aac6058e6db6c35ffe151f4c4c53");
 		
+		/*
+		 * test different strategies
+		 */
+		Map<Class<? extends Resource>, SynchronizationData> data;
+		updateServer(ConflictResolutionStrategy.FIRST_WINS);
+		makeConflict(clientLogic, serverLogic, 0);
+		data = sync.synchronize(clientLogic, this.syncServer);
+		assertEquals("updated on server: 1", data.get(BibTex.class).getInfo());
+		
+		updateServer(ConflictResolutionStrategy.SERVER_WINS);
+		makeConflict(clientLogic, serverLogic, 1);
+		data = sync.synchronize(clientLogic, this.syncServer);
+		assertEquals("updated on client: 1", data.get(BibTex.class).getInfo());
+		makeConflict(serverLogic, clientLogic, 2);
+		data = sync.synchronize(clientLogic, this.syncServer);
+		assertEquals("updated on client: 1", data.get(BibTex.class).getInfo());
+		
+		
+		updateServer(ConflictResolutionStrategy.CLIENT_WINS);
+		makeConflict(clientLogic, serverLogic, 3);
+		data = sync.synchronize(clientLogic, this.syncServer);
+		assertEquals("updated on server: 1", data.get(BibTex.class).getInfo());
+		makeConflict(serverLogic, clientLogic, 4);
+		data = sync.synchronize(clientLogic, this.syncServer);
+		assertEquals("updated on server: 1", data.get(BibTex.class).getInfo());
+		
+		
+		/*
+		 * Test post with changed hash
+		 */
+		String clientUserName = clientLogic.getAuthenticatedUser().getName();
+		Post<? extends Resource> post = clientLogic.getPostDetails(BOOKMARK_KEYS[1], clientUserName);
+		Bookmark book = (Bookmark)post.getResource();
+		book.setUrl("http://www.changed-hash.com");
+		book.setTitle("changed-hash");
+		wait(1);
+		post.setChangeDate(new Date());
+		clientLogic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
+		/*
+		 * new hash: 6ca4e7931a99a90d3157fdb7318507fd
+		 */
+		wait(1);
+		data = sync.synchronize(clientLogic, syncServer);
+		assertEquals("created on server: 1, deleted on server: 1", data.get(Bookmark.class).getInfo());
+		
+		/*
+		 * and counterpart
+		 */
+		wait(1);
+		post = serverLogic.getPostDetails("6ca4e7931a99a90d3157fdb7318507fd", SERVER_USER_NAME);
+		book = (Bookmark)post.getResource();
+		book.setTitle("changed-again");
+		book.setUrl("http://www.changed-again.com");
+		post.setChangeDate(new Date());
+		serverLogic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
+		/*
+		 * new hash: b33ad42e584f8bc3d73ad18332a62b26
+		 */
+		wait(1);
+		data = sync.synchronize(clientLogic, syncServer);
+		assertEquals("created on client: 1, deleted on client: 1", data.get(Bookmark.class).getInfo());
 		
 	}
+	
+	private void makeConflict (LogicInterface earlier, LogicInterface later, int pos) {
+		wait(1);
+		Date date = new Date();
+		Post<? extends Resource> post = earlier.getPostDetails(PUBLICATION_KEYS[pos], earlier.getAuthenticatedUser().getName());
+		post.setChangeDate(date);
+		earlier.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
+		wait(1);
+		date = new Date();
+		post = later.getPostDetails(PUBLICATION_KEYS[pos], later.getAuthenticatedUser().getName());
+		post.setChangeDate(date);
+		later.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
+	}
+	
+	private void updateServer(ConflictResolutionStrategy strategy) {
+		Properties userCredentials = new Properties();
+		userCredentials.setProperty("userName", SERVER_USER_NAME);
+		userCredentials.setProperty("apiKey", serverUser.getApiKey());
+		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), syncServer, Resource.class, userCredentials, SynchronizationDirection.BOTH, strategy);
+	}
 		
-	private void changeLeftSyncAndCheck(final SynchronizationClient sync, final URI syncServer, final String leftHost, final User leftUser, final DBLogic leftLogic, final String rightHost, final User rightUser, final DBLogic rightLogic, final String deleteHash) {
+	private void changeLeftSyncAndCheck(final URI syncServer, final String leftHost, final User leftUser, final DBLogic leftLogic, final String rightHost, final User rightUser, final DBLogic rightLogic, final String deleteHash) {
 		final Date now = new Date();
 		final List<Post<?>> posts = new ArrayList<Post<?>>();
 		/*

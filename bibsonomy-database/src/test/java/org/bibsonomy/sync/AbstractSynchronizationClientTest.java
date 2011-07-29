@@ -53,7 +53,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	protected
 	final Class[] resourceTypes = new Class[] {Bookmark.class, BibTex.class};
 	
-	private static final String[] BOOKMARK_KEYS = new String[]{
+	protected static final String[] BOOKMARK_KEYS = new String[]{
 		"9814aac6058e6db6c35ffe151f4c4c53", // changed on client
 		"d9f4bd052fe19c2da43a8602de15896d", // changed on server
 		"60f6867a5c81143fc66cf6fe7a919d1d", // created on client
@@ -61,7 +61,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		"28d637eca8ef360612a238ac56900d54"  // no changes
 	};
 
-	private static final String[] PUBLICATION_KEYS = new String[]{
+	protected static final String[] PUBLICATION_KEYS = new String[]{
 		"4841e7b5c7c23c613590fa4b79725498", // changed on client
 		"4549ac62ae226657cd17d93dabfd6075", // changed on server
 		"4533fe874079584ea4700da84b4d13ae", // created on client
