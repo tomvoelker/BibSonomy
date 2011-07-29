@@ -207,12 +207,13 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 			
 			assertEquals(7, resourceSyncPlan.size());
 
-			final SynchronizationData lastSyncData = serverLogic.getLastSyncData(serverUser.getName(), syncServer, resourceType);
-			assertEquals(SynchronizationStatus.PLANNED, lastSyncData.getStatus());
+			assertEquals(SynchronizationStatus.PLANNED, serverLogic.getLastSyncData(serverUser.getName(), syncServer, resourceType).getStatus());
 			
 			checkSyncPlan(resourceSyncPlan, resourceType);
 			
 			syncResources(sync, syncServer, resourceType, KEYS.get(resourceType), resourceSyncPlan);
+			
+			assertEquals(SynchronizationStatus.DONE, serverLogic.getLastSyncData(serverUser.getName(), syncServer, resourceType).getStatus());
 		}
 		
 
