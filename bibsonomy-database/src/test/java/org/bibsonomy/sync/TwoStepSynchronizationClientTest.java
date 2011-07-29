@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.DBLogic;
@@ -28,6 +29,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
@@ -67,6 +69,12 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 			"3d6ec7b6695976eeec379dcc55ae9cb1"  // no changes
 	};
 
+	private static final Map<Class<? extends Resource>, String[]> KEYS = new HashMap<Class<? extends Resource>, String[]>(2);
+	static {
+		KEYS.put(Bookmark.class, BOOKMARK_KEYS);
+		KEYS.put(BibTex.class, PUBLICATION_KEYS);
+	}
+	
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	private final String RESULT_STRING = "created on client: 1, created on server: 1, updated on client: 1, updated on server: 1, deleted on client: 1, deleted on server: 1";
@@ -190,8 +198,23 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 		 * sync + check publications and bookmarks
 		 */
 		final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan = sync.getSyncPlan(clientLogic, syncServer);
-		syncResources(sync, syncServer, BibTex.class, PUBLICATION_KEYS, syncPlan.get(BibTex.class));
-		syncResources(sync, syncServer, Bookmark.class, BOOKMARK_KEYS, syncPlan.get(Bookmark.class));
+
+		assertEquals(2, syncPlan.size());
+		
+		for (final Entry<Class<? extends Resource>, List<SynchronizationPost>> entry : syncPlan.entrySet()) {
+			final Class<? extends Resource> resourceType = entry.getKey();
+			final List<SynchronizationPost> resourceSyncPlan = entry.getValue();
+			
+			assertEquals(7, resourceSyncPlan.size());
+
+			final SynchronizationData lastSyncData = serverLogic.getLastSyncData(serverUser.getName(), syncServer, resourceType);
+			assertEquals(SynchronizationStatus.PLANNED, lastSyncData.getStatus());
+			
+			checkSyncPlan(resourceSyncPlan, resourceType);
+			
+			syncResources(sync, syncServer, resourceType, KEYS.get(resourceType), resourceSyncPlan);
+		}
+		
 
 		/* *********************************************************************
 		 * 
@@ -256,7 +279,35 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 		return map;
 	}
 	
+	/**
+	 * Helper method to check the sync plan
+	 * 
+	 * Basically checks that order of posts in list is not changed.
+	 * 
+	 */
+	private void checkSyncPlan(final List<SynchronizationPost> syncPlan, final Class<? extends Resource> resourceType) {
+		int index = 0;
+		assertEquals(SynchronizationAction.OK, syncPlan.get(index++).getAction());
+		assertEquals(SynchronizationAction.DELETE_CLIENT, syncPlan.get(index++).getAction());
+		assertEquals(SynchronizationAction.UPDATE_CLIENT, syncPlan.get(index++).getAction());
+		assertEquals(SynchronizationAction.UPDATE_SERVER, syncPlan.get(index++).getAction());
+		assertEquals(SynchronizationAction.CREATE_SERVER, syncPlan.get(index++).getAction());
 
+		/*
+		 * the remaining two posts were not in the client's list and thus come
+		 * from the server's list which is a hashmap - thus we can't expect to 
+		 * get them in a certain order
+		 */
+		final SynchronizationPost syncPost = syncPlan.get(index++);
+		if (syncPost.getIntraHash().equals(KEYS.get(resourceType)[3])) {
+			assertEquals(SynchronizationAction.CREATE_CLIENT, syncPost.getAction());
+			assertEquals(SynchronizationAction.DELETE_SERVER, syncPlan.get(index++).getAction());
+		} else {
+			assertEquals(SynchronizationAction.DELETE_SERVER, syncPost.getAction());
+			assertEquals(SynchronizationAction.CREATE_CLIENT, syncPlan.get(index++).getAction());
+		}
+		
+	}
 
 	/**
 	 * Helper method to check synchronicity of client and server.
