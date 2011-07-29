@@ -43,6 +43,7 @@ import org.bibsonomy.model.Resource;
 public class ResourceFactory {
 	
 	/**
+	 * TODO: config via spring?
 	 * all known resource classes
 	 */
 	private static final Map<String, Class<? extends Resource>> RESOURCE_CLASSES_BY_NAME = new HashMap<String, Class<? extends Resource>>();
@@ -94,13 +95,13 @@ public class ResourceFactory {
 	 * @return a new instance of the class
 	 */
 	@SuppressWarnings("unchecked")
-	public Resource createResource(final Class<? extends Resource> clazz) {
+	public <R extends Resource> R createResource(final Class<R> clazz) {
 		if (clazz != null && Bookmark.class.isAssignableFrom(clazz)) {
-			return this.createBookmark((Class<? extends Bookmark>) clazz);
+			return (R) this.createBookmark((Class<? extends Bookmark>) clazz);
 		}
 		
 		if (clazz != null && BibTex.class.isAssignableFrom(clazz)) {
-			return this.createPublication((Class<? extends BibTex>) clazz);
+			return (R) this.createPublication((Class<? extends BibTex>) clazz);
 		}
 		
 		throw new UnsupportedResourceTypeException("resource " + clazz + " not supported");
