@@ -1,4 +1,4 @@
-function validateSyncForm(formData, form, options) {
+function hideSubmitButtons(formData, form, options) {
 	$(form).find(":submit").hide();
 	$(form).find(".progressGif").show();
 }
@@ -6,6 +6,51 @@ function validateSyncForm(formData, form, options) {
 function successSyncForm(data, statusText, xhr, form) {
 	$(form).find(":submit").show();
 	$(form).find(".progressGif").hide();
+	
+	if (data.syncPlan) showSyncPlan(form, data.syncPlan);
+
+	if (data.syncData) showSyncData(form, data.syncData);
+
+	// return false to prevent normal browser submit and page navigation 
+    return false; 
+}
+
+function showSyncPlan(form, plan) {
+	var div = $(form).find(".syncPlan");
+	div.empty();
+
+	var serviceName = $(form).find("input[name='serviceName']").val();
+	var projectName = location.hostname;
+		
+	var dl = document.createElement("dl");
+
+	for (var resourceType in plan) {
+		var dt = document.createElement("dt");
+		dl.appendChild(dt);
+		dt.appendChild(document.createTextNode(getString("resourceType." + resourceType + ".plural")));
+		var dd = document.createElement("dd");
+		dl.appendChild(dd);
+		var ul = document.createElement("ul");
+		dd.appendChild(ul);
+		var actions = plan[resourceType];
+		
+		var liClient = document.createElement("li");
+		liClient.appendChild(document.createTextNode(actions["CLIENT"]));
+		ul.appendChild(liClient);
+		
+		var liServer = document.createElement("li");
+		liServer.appendChild(document.createTextNode(actions["SERVER"]));
+		ul.appendChild(liServer);
+		
+		var liOther  = document.createElement("li"); 
+		liOther.appendChild(document.createTextNode(actions["OTHER"]));
+		ul.appendChild(liOther);
+	
+	}
+	div.append(dl);
+}
+
+function showSyncData(form, data) {
 	var syncResult = $(form).find(".syncData");
 	var syncData = "";
 	syncResult.empty();
@@ -38,14 +83,17 @@ function successSyncForm(data, statusText, xhr, form) {
 		label.appendTo(contentDiv);
 		resultData.appendTo(contentDiv);
 		contentDiv.appendTo(syncResult);
-		
 	}
-	// submit the form
-								 	     
-    // return false to prevent normal browser submit and page navigation 
-    return false; 
 }
-				
+
+function getSyncPlan(t) {
+	$(t).parents("form").find("input[name='_method']").val("GET");
+}
+
+function doSync(t) {
+	$(t).parents("form").find("input[name='_method']").val("POST");
+}
+
 function errorSyncForm(jqXHR, textStatus, errorThrown, form) {
 	alert("error: " + errorThrown);
 	$(form).find(":submit").show();
@@ -56,7 +104,7 @@ $(document).ready(function() {
 	$("form").each(function(index, elem) {
 	 	$(this).ajaxForm({
 	 		dataType : "json",
-	 		beforeSubmit : validateSyncForm,
+	 		beforeSubmit : hideSubmitButtons,
 	 		success : successSyncForm,
 	 		error : errorSyncForm
 		 });
