@@ -15,12 +15,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.opensocial.OAuthCommand;
 import org.bibsonomy.webapp.command.opensocial.OAuthCommand.AuthorizeAction;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * This controller implements the OAuth endpoints described in RFC 5849, section 2:
@@ -36,53 +36,34 @@ import org.bibsonomy.webapp.view.Views;
 public class OAuthAuthorizeTokenController extends OAuthProtocolController {
 	private static final Log log = LogFactory.getLog(OAuthAuthorizeTokenController.class);
 	
-	//------------------------------------------------------------------------
-	// OAuthProtocolController interface
-	//------------------------------------------------------------------------
-	@Override
-	protected View doWorkOn(OAuthCommand command, User loginUser) throws IOException, OAuthException, URISyntaxException {
-		return authorizeRequestToken(command, loginUser);
-	}
-	
-	//------------------------------------------------------------------------
-	// OAuth protocol end point implementation
-	//------------------------------------------------------------------------
 	/**
 	 * authorize a given temporary credential ("request token")
-	 * 
-	 * @param command
-	 * @param loginUser
-	 * @return
-	 * 
-	 * @throws OAuthException
-	 * @throws IOException
 	 */
-	private View authorizeRequestToken(OAuthCommand command, User loginUser) throws OAuthProblemException, IOException {
+	@Override
+	protected View doWorkOn(final OAuthCommand command, final User loginUser) throws IOException, OAuthException, URISyntaxException {
 		// only logged in user may authorize tokens
 		if (!command.getContext().isUserLoggedIn()) {
-			return new ExtendedRedirectView("/login" 
-					+ "?referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL() )
-				);
+			throw new AccessDeniedException("please log in");
 		}
 		
 		// extract the OAuth parameters from the request
-		OAuthMessage requestMessage = this.requestLogic.getOAuthMessage(null);
+		final OAuthMessage requestMessage = this.requestLogic.getOAuthMessage(null);
 
 		// retrieve the previously generated temporary credentials corresponding to the given OAuth token
 		if (!present(requestMessage.getToken())) {
-			OAuthProblemException e = new OAuthProblemException(OAuth.Problems.OAUTH_PARAMETERS_ABSENT);
+			final OAuthProblemException e = new OAuthProblemException(OAuth.Problems.OAUTH_PARAMETERS_ABSENT);
 			e.setParameter(OAuth.Problems.OAUTH_PARAMETERS_ABSENT, OAuth.OAUTH_TOKEN);
 			throw e;
 		}
-		OAuthEntry entry = getDataStore().getEntry(requestMessage.getToken());
+		final OAuthEntry entry = getDataStore().getEntry(requestMessage.getToken());
 
 		if (!present(entry)) {
-			OAuthProblemException e = new OAuthProblemException(OAuth.Problems.PARAMETER_REJECTED);
+			final OAuthProblemException e = new OAuthProblemException(OAuth.Problems.PARAMETER_REJECTED);
 			e.setParameter(OAuth.Problems.OAUTH_PARAMETERS_REJECTED, OAuth.OAUTH_TOKEN);
 			throw e;
 		}
 
-		OAuthConsumer consumer = getDataStore().getConsumer(entry.getConsumerKey());
+		final OAuthConsumer consumer = getDataStore().getConsumer(entry.getConsumerKey());
 
 		// Extremely rare case where consumer dissappears
 		if (!present(consumer)) {
@@ -112,8 +93,8 @@ public class OAuthAuthorizeTokenController extends OAuthProtocolController {
 		}
 
 		// If user clicked on the Authorize button then we're good.
-		if ( AuthorizeAction.Authorize.toString().equals(command.getAuthorizeAction()) ) {
-			log.debug("Authorizing token '"+entry.getToken()+"' for user '"+loginUser.getName()+"'");
+		if (AuthorizeAction.Authorize.toString().equals(command.getAuthorizeAction())) {
+			log.debug("Authorizing token '" + entry.getToken() + "' for user '" + loginUser.getName() + "'");
 			
 			// If the user clicked the Authorize button we authorize the token and redirect back.
 			getDataStore().authorizeToken(entry, loginUser.getName());
@@ -123,16 +104,16 @@ public class OAuthAuthorizeTokenController extends OAuthProtocolController {
 			// redirect to callback
 			if (!present(callback) || OUT_OF_BAND.equals(callback)) {
 				return Views.OAUTH_AUTHORIZATION_SUCCESS;
-			} else {
-				callback = OAuth.addParameters(callback, OAuth.OAUTH_TOKEN, entry.getToken());
-				// Add user_id to the callback
-				callback = OAuth.addParameters(callback, OAUTH_HEADER_USER_ID, entry.getUserId());
-				if (present(entry.getCallbackToken())) {
-					callback = OAuth.addParameters(callback, OAuth.OAUTH_VERIFIER, entry.getCallbackToken());
-				}
-
-				return new ExtendedRedirectView(callback);
 			}
+			
+			callback = OAuth.addParameters(callback, OAuth.OAUTH_TOKEN, entry.getToken());
+			// Add user_id to the callback
+			callback = OAuth.addParameters(callback, OAUTH_HEADER_USER_ID, entry.getUserId());
+			
+			if (present(entry.getCallbackToken())) {
+				callback = OAuth.addParameters(callback, OAuth.OAUTH_VERIFIER, entry.getCallbackToken());
+			}
+			return new ExtendedRedirectView(callback);
 		} else if (AuthorizeAction.Deny.toString().equals(command.getAuthorizeAction())) {
 			getDataStore().removeToken(entry);
 			return Views.OAUTH_DENY;
