@@ -73,9 +73,8 @@ public class TwoStepSynchronizationClient extends AbstractSynchronizationClient 
 		final Class<? extends Resource>[] resourceTypes = ResourceUtils.getResourceTypesByClass(syncServer.getResourceType());
 		final ConflictResolutionStrategy strategy = syncServer.getStrategy();
 
-		
 		/*
-		 * sync each configured resource type
+		 * get sync plan for each configured resource type
 		 */
 		final Map<Class<? extends Resource>, List<SynchronizationPost>> result = new HashMap<Class<? extends Resource>, List<SynchronizationPost>>();
 		
@@ -157,9 +156,7 @@ public class TwoStepSynchronizationClient extends AbstractSynchronizationClient 
 			 * FIXME handling of this exception type. I think we can break "running" synchronization after timeout.
 			 * Currently return only "running" status.
 			 */
-			final SynchronizationData data = new SynchronizationData();
-			data.setStatus(SynchronizationStatus.RUNNING);
-			return data;
+			throw e;
 		} catch (final Exception e) {
 			info = "";
 			newStatus = SynchronizationStatus.ERROR;

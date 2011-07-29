@@ -119,9 +119,7 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 			 * FIXME handling of this exception type. I think we can break "running" synchronization after timeout.
 			 * Currently return only "running" status.
 			 */
-			final SynchronizationData data = new SynchronizationData();
-			data.setStatus(SynchronizationStatus.RUNNING);
-			return data;
+			throw e;
 		} catch (final Exception e) {
 			info = "";
 			newStatus = SynchronizationStatus.ERROR;
