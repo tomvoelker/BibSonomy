@@ -86,7 +86,7 @@
 	</bean>
 
 	<!-- client bean, handles synchronization -->
-	<bean id="realSynchronizationClient" class="org.bibsonomy.sync.SynchronizationClient" lazy-init="true">
+	<bean id="realSynchronizationClient" class="org.bibsonomy.sync.TwoStepSynchronizationClient" lazy-init="true">
 		<property name="ownUri" value="${project.home}"/>
 	</bean>
 	<bean id="mockSynchronizationClient" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>

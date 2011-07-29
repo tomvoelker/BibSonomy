@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -14,8 +15,9 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
-import org.bibsonomy.sync.SynchronizationClient;
+import org.bibsonomy.sync.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -31,7 +33,7 @@ import org.springframework.validation.Errors;
 public class SynchronizationController extends AjaxController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware {
 
 	private Errors errors;
-	private SynchronizationClient client;
+	private TwoStepSynchronizationClient client;
 
 	@Override
 	public AjaxSynchronizationCommand instantiateCommand() {
@@ -70,7 +72,11 @@ public class SynchronizationController extends AjaxController implements Minimal
 			return Views.AJAX_ERRORS;
 		}
 
-		final JSONObject json = getJson(client.synchronize(logic, serviceName));
+		final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan = client.getSyncPlan(logic, serviceName);
+		
+		final Map<Class<? extends Resource>, SynchronizationData> syncResult = client.synchronize(logic, serviceName, syncPlan);
+		
+		final JSONObject json = getJson(syncResult);
 
 		command.setResponseString(json.toString());
 
@@ -110,15 +116,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 	/**
 	 * @param client the client to set
 	 */
-	public void setClient(SynchronizationClient client) {
+	public void setClient(final TwoStepSynchronizationClient client) {
 		this.client = client;
 	}
-
-	/**
-	 * @return the client
-	 */
-	public SynchronizationClient getClient() {
-		return client;
-	}
-
 }
