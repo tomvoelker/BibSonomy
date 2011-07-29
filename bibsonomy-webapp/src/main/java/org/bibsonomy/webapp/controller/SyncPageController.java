@@ -16,7 +16,7 @@ import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.util.ResourceUtils;
-import org.bibsonomy.sync.SynchronizationClient;
+import org.bibsonomy.sync.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -35,7 +35,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	
 	private Errors errors;
 	private SyncLogicInterface syncLogic;
-	private SynchronizationClient syncClient;
+	private TwoStepSynchronizationClient syncClient;
 	
 	@Override
 	public AjaxSynchronizationCommand instantiateCommand() {
@@ -78,7 +78,6 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 		for (final SyncService syncService : userServices) {
 			final Map<String, SynchronizationData> syncData = new HashMap<String, SynchronizationData>();
 			try {
-				
 				for (final Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(syncService.getResourceType())) {
 					syncData.put(resourceType.getSimpleName(), syncClient.getLastSyncData(syncService, resourceType));
 				}
@@ -116,15 +115,9 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	/**
 	 * @param syncClient the syncClient to set
 	 */
-	public void setSyncClient(SynchronizationClient syncClient) {
+	public void setSyncClient(TwoStepSynchronizationClient syncClient) {
 		this.syncClient = syncClient;
 	}
 
-	/**
-	 * @return the syncClient
-	 */
-	public SynchronizationClient getSyncClient() {
-		return syncClient;
-	}
 
 }

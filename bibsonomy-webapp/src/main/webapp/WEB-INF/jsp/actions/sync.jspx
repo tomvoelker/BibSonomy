@@ -21,14 +21,14 @@
 
 	<fmt:message key="navi.sync" var="syncPageTitle"/>	
 
+
 	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}">
 	
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
-			<script type="text/javascript" src="${resdir}/javascript/date.js">&amp;nbsp;</script>
-    		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script>
-    		<script type="text/javascript" src="${resdir}/javascript/sync.js">&amp;nbsp;</script>
-
+			<script type="text/javascript" src="${resdir}/javascript/date.js"><!-- keep me! --></script>
+    		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!-- keep me! --></script>
+    		<script type="text/javascript" src="${resdir}/javascript/sync.js"><!-- keep me! --></script>
 		</jsp:attribute>
 	
 		<!-- heading -->
@@ -38,6 +38,8 @@
 		
 		<jsp:attribute name="content">
 			
+			<fmt:message var="getSyncPlan" key="synchronization.syncPlan.get" />
+			<fmt:message var="syncPlan" key="synchronization.syncPlan" />
 			<fmt:message var="synchronize" key="synchronization.synchronize" />
 			<fmt:message var="serviceName" key="synchronization.serviceName" />
 			<fmt:message var="syncResults" key="synchronization.lastSyncResults" />
@@ -50,32 +52,43 @@
 				<!-- iterate over all services -->
 				<c:forEach var="service" items="${command.syncServices}" varStatus="status">
 					<form:form action="/ajax/synchronize" method="post" id="sync_${status.index}">
-						<fieldset class="fsInner">
-					
-							<h2><c:out value="${serviceName}: "/> <c:out value="${service.service}" /></h2>	
+
+						<h2><c:out value="${serviceName}: "/> <c:out value="${service.service}" /></h2>	
 									
-							<div class="fsRow">
-								<c:out value="${syncResults}"/>
-							</div>
+						<fieldset class="fsOuter">
+
+							<!-- check if all resource types have a sync plan (and show "sync" button only then) -->
+							<c:set var="syncButtonDisplay" value="${empty service.lastSyncData ? 'none' : 'inline'}"/>
+
+							<!-- show last synchronization results -->
+							<fieldset class="fsInner">
+								<legend><c:out value="${syncResults}"/></legend>
 							
-							<div class="syncData">
+								<div class="syncData">
 								<c:forEach var="entry" items="${service.lastSyncData}">
+								
+									<!-- enable sync button, if the resource type has a sync plan -->
+									<c:if test="${entry.value.status ne 'PLANNED'}">
+										<c:set var="syncButtonDisplay" value="none"/>
+									</c:if>
+								
 									<div class="fsRow">
-									<c:choose>
-										<c:when test="${entry.key=='BibTex'}">
-											<span class="fsLabel"><c:out value="${publications}"/>: </span>
-										</c:when>
-										<c:otherwise>
-											<span class="fsLabel"><c:out value="${bookmarks}"/>: </span>
-										</c:otherwise>
-									</c:choose>
-									<c:set var="LSDbook" value="${entry.value}" />
-									<span class="fsInput">
+										<span class="fsLabel">
 											<c:choose>
-												<c:when test="${not empty LSDbook}">
-													<fmt:formatDate value="${LSDbook.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
+												<c:when test="${entry.key == 'BibTex'}">
+													<c:out value="${publications}"/>
+												</c:when>
+												<c:otherwise>
+													<c:out value="${bookmarks}"/>
+												</c:otherwise>
+											</c:choose>
+										: </span>
+										<span class="fsInput">
+											<c:choose>
+												<c:when test="${not empty entry.value}">
+													<fmt:formatDate value="${entry.value.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
 													<fmt:message key="synchronization.result"/>
-													<c:out value="${LSDbook.status} "/> <c:out value="${LSDbook.info}"/>
+													<c:out value="${entry.value.status} "/> <em>(<c:out value="${entry.value.info}"/>)</em>
 												</c:when>
 												<c:otherwise>
 													<fmt:message key="synchronization.noresult"/>
@@ -84,20 +97,32 @@
 										</span>
 									</div>
 								</c:forEach>
-							</div>
-							
-						<input type="submit" value="${synchronize}"/>
-						<input type="hidden" name="serviceName" value="${service.service}" />
-						<input type="hidden" name="ckey" value="${ckey}" />
-						<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
-					</fieldset>
-				</form:form>
-			</c:forEach>
-			
+								</div>
+							</fieldset>
 
+							<!-- FIXME: If all sync's are planned, we don't have the plan. It would be good, to show it here. -->
+							<fieldset class="fsInner">
+								
+								<div class="syncPlan"></div>
+							
+								<legend><c:out value="${syncPlan}"/></legend>
+								
+								<input type="submit" value="${getSyncPlan}" onclick="return getSyncPlan(this);"/>
+
+								<input type="submit" value="${synchronize}" style="display:${syncButtonDisplay}" onclick="return doSync(this);"/>
+
+								<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
+							</fieldset>
+	
+							<input type="hidden" name="serviceName" value="${service.service}" />
+							<input type="hidden" name="ckey" value="${ckey}" />
+							<input type="hidden" name="_method" value="GET" />
+						</fieldset>
+					</form:form>
+				</c:forEach>
 			</div>
+
 		</jsp:attribute>
-		
 	</layout:layout>
 	
 </jsp:root>

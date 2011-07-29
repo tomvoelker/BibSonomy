@@ -5,7 +5,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -25,6 +27,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
 /**
@@ -33,10 +36,12 @@ import org.springframework.validation.Errors;
  */
 public class SynchronizationController extends AjaxController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware {
 
-	private static final String SESSION_KEY = SynchronizationController.class.getName() + "SYNC_PLAN";
+	private static final String SESSION_KEY = "SYNC_PLAN_";
 	private Errors errors;
 	private TwoStepSynchronizationClient client;
-
+	private MessageSource messageSource;
+	private String projectHome;
+	
 	@Override
 	public View workOn(AjaxSynchronizationCommand command) {
 		final RequestWrapperContext context = command.getContext();
@@ -71,7 +76,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 		/*
 		 * 
 		 */
-		final JSONObject json; 
+		final JSONObject json = new JSONObject();
 		switch (requestLogic.getHttpMethod()) {
 		case GET:
 			/*
@@ -87,22 +92,21 @@ public class SynchronizationController extends AjaxController implements Minimal
 			/*
 			 * store it in session for later use
 			 */
-			requestLogic.setSessionAttribute(SESSION_KEY, syncPlan);
+			this.setSyncPlan(serviceName, syncPlan);
 			/*
 			 * serialize it to show user
 			 */
-			json = serializeSyncPlan(syncPlan);
+			json.put("syncPlan", serializeSyncPlan(syncPlan, serviceName));
 			break;
 		case POST:
 			/*
 			 * get sync plan from session
 			 */
-			final Object sessionAttribute = requestLogic.getSessionAttribute(SESSION_KEY);
-			if (!present(sessionAttribute) || !(sessionAttribute instanceof Map<?,?>)) {
+			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan2 = this.getSyncPlan(serviceName);
+			if (!present(syncPlan2)) {
 				errors.reject("error.synchronization.no_sync_plan_found");
 				return Views.AJAX_ERRORS;
 			}
-			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan2 = (Map<Class<? extends Resource>, List<SynchronizationPost>>) sessionAttribute;
 			/*
 			 * run sync plan
 			 */
@@ -117,11 +121,11 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 * remove sync plan from session
 			 * FIXME: do this before synchronize()?
 			 */
-			requestLogic.setSessionAttribute(SESSION_KEY, null);
+			this.setSyncPlan(serviceName, null);
 			/*
 			 * serialize result
 			 */
-			json = serializeSyncData(syncResult);
+			json.put("syncData", serializeSyncData(syncResult));
 			break;
 		case DELETE:
 			/*
@@ -132,13 +136,11 @@ public class SynchronizationController extends AjaxController implements Minimal
 //			for (final Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(syncService.getResourceType())) {
 //				client.deleteSyncData(serviceName, resourceType, syncDate);
 //			}
-			json = new JSONObject();
 			break;
 		default:
 			/*
 			 * FIXME: what to do here?
 			 */
-			json = new JSONObject();
 			break;
 		}
 		
@@ -146,6 +148,31 @@ public class SynchronizationController extends AjaxController implements Minimal
 
 		return Views.AJAX_JSON;
 	}
+	
+	/**
+	 * Retrieves the sync plan from the session. If no plan is found, <code>null</code> is returned.
+	 * @param serviceName
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final URI serviceName) {
+		final Object sessionAttribute = requestLogic.getSessionAttribute(SESSION_KEY + serviceName);
+		if (!present(sessionAttribute) || !(sessionAttribute instanceof Map<?,?>)) {
+			return null;
+		}
+		return (Map<Class<? extends Resource>, List<SynchronizationPost>>) sessionAttribute;
+	}
+	
+	/**
+	 * Stores the sync plan in the session.
+	 * 
+	 * @param serviceName
+	 * @param syncPlan
+	 */
+	private void setSyncPlan(final URI serviceName, final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan) {
+		requestLogic.setSessionAttribute(SESSION_KEY + serviceName, syncPlan);
+	}
+	
 
 	private JSONObject serializeSyncData(final Map<Class<? extends Resource>, SynchronizationData> data) {
 		final JSONObject json = new JSONObject();
@@ -161,27 +188,62 @@ public class SynchronizationController extends AjaxController implements Minimal
 		return json;
 	}
 
-	private JSONObject serializeSyncPlan(final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan) {
+	/**
+	 * Currently, the method counts all operations and then creates human-readable
+	 * messages that describe what will happen.
+	 * 
+	 * @param syncPlan
+	 * @return
+	 */
+	private JSONObject serializeSyncPlan(final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan, final URI serverName) {
 		final JSONObject json = new JSONObject();
+		final Locale locale = requestLogic.getLocale();
 		for (final Entry<Class<? extends Resource>, List<SynchronizationPost>> entry : syncPlan.entrySet()) {
-			final Map<SynchronizationAction, Integer> actions = getEmptyActions();
+			int createClient = 0;
+			int updateClient = 0;
+			int deleteClient = 0;
+			int createServer = 0;
+			int updateServer = 0;
+			int deleteServer = 0;
+			int ok = 0;
 			final Class<? extends Resource> resourceType = entry.getKey();
 			for (final SynchronizationPost synchronizationPost : entry.getValue()) {
 				final SynchronizationAction action = synchronizationPost.getAction();
-				actions.put(action, actions.get(action) + 1);
+				switch (action) {
+				case CREATE_CLIENT:
+					createClient++;
+					break;
+				case UPDATE_CLIENT:
+					updateClient++;
+					break;
+				case DELETE_CLIENT:
+					deleteClient++;
+					break;
+				case CREATE_SERVER:
+					createClient++;
+					break;
+				case UPDATE_SERVER:
+					updateClient++;
+					break;
+				case DELETE_SERVER:
+					deleteClient++;
+					break;
+				case OK:
+					ok++;
+					break;
+				default:
+					break;
+				}
 			}
-			json.put(resourceType, actions);
+			final Map<String, String> messages = new LinkedHashMap<String, String>();
+			messages.put("CLIENT", messageSource.getMessage("synchronization.syncPlan.message", new Object[]{projectHome, createClient, updateClient, deleteClient}, locale));
+			messages.put("SERVER", messageSource.getMessage("synchronization.syncPlan.message", new Object[]{serverName, createServer, updateServer, deleteServer}, locale));
+			messages.put("OTHER", messageSource.getMessage("synchronization.syncPlan.message.other", new Object[]{ok}, locale));
+			json.put(resourceType.getSimpleName(), messages);
 		}
 		return json;
 	}
-	
-	private Map<SynchronizationAction, Integer> getEmptyActions() {
-		final Map<SynchronizationAction, Integer> actions = new HashMap<SynchronizationAction, Integer>();
-		for (final SynchronizationAction action : SynchronizationAction.values()) {
-			actions.put(action, 0);
-		}
-		return actions;
-	}
+
 	
 	@Override
 	public AjaxSynchronizationCommand instantiateCommand() {
@@ -203,5 +265,22 @@ public class SynchronizationController extends AjaxController implements Minimal
 	 */
 	public void setClient(final TwoStepSynchronizationClient client) {
 		this.client = client;
+	}
+
+	/** 
+	 * The message source is necessary to render a human-readable synchronization plan. 
+	 * @param messageSource
+	 */
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	/**
+	 * To render a human-readable message for the sync plan
+	 * 
+	 * @param projectHome
+	 */
+	public void setProjectHome(String projectHome) {
+		this.projectHome = projectHome;
 	}
 }

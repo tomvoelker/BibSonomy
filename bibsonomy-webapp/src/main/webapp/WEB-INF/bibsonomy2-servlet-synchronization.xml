@@ -83,6 +83,8 @@
 	<!-- handles synchronization request -->
 	<bean id="syncController" class="org.bibsonomy.webapp.controller.ajax.SynchronizationController" scope="request" parent="ajaxController">
 		<property name="client" ref="synchronizationClient"/>
+		<property name="messageSource" ref="messageSource"/>
+		<property name="projectHome" value="${project.home}"/>
 	</bean>
 
 	<!-- client bean, handles synchronization -->
