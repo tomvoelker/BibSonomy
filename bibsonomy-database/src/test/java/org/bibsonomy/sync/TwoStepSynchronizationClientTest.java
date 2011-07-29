@@ -175,6 +175,7 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 	}
 
 
+	@SuppressWarnings("null")
 	@Test
 	public void testSynchronization() throws URISyntaxException {
 		final TwoStepSynchronizationClient sync = new TwoStepSynchronizationClient(new IbatisDBSessionFactory());
@@ -195,13 +196,46 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 		assertEquals(SYNC_SERVER_URI, clientLogic.getSyncServer(clientUser.getName()).get(0).getService().toString());
 
 		/*
-		 * sync + check publications and bookmarks
+		 * get and check sync plan
 		 */
 		final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan = sync.getSyncPlan(clientLogic, syncServer);
-
+		/*
+		 * one plan for each resource type
+		 */
 		assertEquals(2, syncPlan.size());
+		/*
+		 * status should be "PLANNED"
+		 */
+		Date plannedDate = null;
+		for (final Class<? extends Resource> resourceType : syncPlan.keySet()) {
+			final SynchronizationData syncData = serverLogic.getLastSyncData(serverUser.getName(), syncServer, resourceType);
+			plannedDate = syncData.getLastSyncDate();
+			assertEquals(SynchronizationStatus.PLANNED, syncData.getStatus());
+		}
+		assertNotNull(plannedDate);
 		
-		for (final Entry<Class<? extends Resource>, List<SynchronizationPost>> entry : syncPlan.entrySet()) {
+		/*
+		 * we ask for the plan again (stupid, but user's could do this)
+		 */
+		final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan2 = sync.getSyncPlan(clientLogic, syncServer);
+		/*
+		 * one plan for each resource type
+		 */
+		assertEquals(2, syncPlan2.size());
+		/*
+		 * status should still be "PLANNED"
+		 */
+		for (final Class<? extends Resource> resourceType : syncPlan2.keySet()) {
+			final SynchronizationData syncData = serverLogic.getLastSyncData(serverUser.getName(), syncServer, resourceType);
+			/*
+			 * should be a different date now
+			 */
+			assertTrue(plannedDate.before(syncData.getLastSyncDate()));
+			assertEquals(SynchronizationStatus.PLANNED, syncData.getStatus());
+		}
+		
+		
+		for (final Entry<Class<? extends Resource>, List<SynchronizationPost>> entry : syncPlan2.entrySet()) {
 			final Class<? extends Resource> resourceType = entry.getKey();
 			final List<SynchronizationPost> resourceSyncPlan = entry.getValue();
 			
