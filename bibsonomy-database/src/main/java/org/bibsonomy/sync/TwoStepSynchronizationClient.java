@@ -26,6 +26,8 @@ import org.bibsonomy.model.util.ResourceUtils;
  * This client synchronizes PUMA with BibSonomy.
  * PUMA is the server, BibSonomy is the client.
  * 
+ * It uses a two step approach, where one first requests a synchronization plan
+ * and later executes this plan.
  * 
  * @author wla
  * @version $Id$
