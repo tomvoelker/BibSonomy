@@ -380,6 +380,11 @@ public enum Views implements View {
 	EDIT_PUBLICATION("actions/post/editPublication"),
 	
 	/**
+	 * the dialog to EDIT a gold standard bookmark
+	 */
+	EDIT_GOLD_STANDARD_BOOKMARK("actions/post/editGoldStandardBookmark"),
+	
+	/**
 	 * The dialog to EDIT a gold standard publication (big dialog)
 	 */
 	EDIT_GOLD_STANDARD_PUBLICATION("actions/post/editGoldStandardPublication"), 
