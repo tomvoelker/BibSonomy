@@ -72,7 +72,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	private String[] modifiedBookmarkKeys;
 	private String[] modifiedPublicationKeys;
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Test
 	public abstract void test();
@@ -202,7 +202,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	 * @param resourceType
 	 * @return
 	 */
-	private <T extends Resource> Post<T> createPost(String title, String createDate, String changeDate, User user, Class<T> resourceType) {
+	protected <T extends Resource> Post<T> createPost(String title, String createDate, String changeDate, User user, Class<T> resourceType) {
 		final Post<T> post = ModelUtils.generatePost(resourceType);
 		post.setUser(user);
 		try {
@@ -259,6 +259,14 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			assertTrue("["+ resourceType.getSimpleName() + "] " + serviceType + " does not contain key: " + key, posts.containsKey(key));
 		}
 		
+	}
+	
+	protected static void wait(final int seconds) {
+		try {
+			Thread.sleep(1000 * seconds);
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	protected void setModifiedBookmarkKeys(String[] modifiedBookmarkKeys) {
