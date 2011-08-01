@@ -27,9 +27,9 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	private boolean onBookmarkInsert;
 	private boolean onBookmarkUpdate;
 	
-	private boolean onGoldStandardPublicationCreate;
-	private boolean onGoldStandardPublicationUpdate;
-	private boolean onGoldStandardPublicationDelete;
+	private boolean onGoldStandardCreate;
+	private boolean onGoldStandardUpdate;
+	private boolean onGoldStandardDelete;
 
 	private boolean onTagRelationDelete;
 
@@ -106,20 +106,20 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	}
 	
 	@Override
-	public Runnable onGoldStandardPublicationCreate(String interhash, DBSession session) {
-		this.onGoldStandardPublicationCreate = true;
+	public Runnable onGoldStandardCreate(String interhash, DBSession session) {
+		this.onGoldStandardCreate = true;
 		return null;
 	}
 	
 	@Override
-	public Runnable onGoldStandardPublicationUpdate(String newInterhash, String interhash, DBSession session) {
-		this.onGoldStandardPublicationUpdate = true;
+	public Runnable onGoldStandardUpdate(String newInterhash, String interhash, DBSession session) {
+		this.onGoldStandardUpdate = true;
 		return null;
 	}
 	
 	@Override
-	public Runnable onGoldStandardPublicationDelete(String interhash, DBSession session) {
-		this.onGoldStandardPublicationDelete = true;
+	public Runnable onGoldStandardDelete(String interhash, DBSession session) {
+		this.onGoldStandardDelete = true;
 		return null;
 	}
 
@@ -190,21 +190,21 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	/**
 	 * @return the onGoldStandardPublicationCreate
 	 */
-	public boolean isOnGoldStandardPublicationCreate() {
-		return this.onGoldStandardPublicationCreate;
+	public boolean isOnGoldStandardCreate() {
+		return this.onGoldStandardCreate;
 	}
 
 	/**
 	 * @return the onGoldStandardPublicationUpdate
 	 */
-	public boolean isOnGoldStandardPublicationUpdate() {
-		return this.onGoldStandardPublicationUpdate;
+	public boolean isOnGoldStandardUpdate() {
+		return this.onGoldStandardUpdate;
 	}
 
 	/**
 	 * @return the onGoldStandardPublicationDelete
 	 */
-	public boolean isOnGoldStandardPublicationDelete() {
-		return this.onGoldStandardPublicationDelete;
+	public boolean isOnGoldStandardDelete() {
+		return this.onGoldStandardDelete;
 	}
 }
