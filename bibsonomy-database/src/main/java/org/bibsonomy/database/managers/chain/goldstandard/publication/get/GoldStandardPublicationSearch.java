@@ -19,7 +19,7 @@ public class GoldStandardPublicationSearch extends ListChainElement<Post<GoldSta
     
     @Override
     protected List<Post<GoldStandardPublication>> handle(BibTexParam param, DBSession session) {
-	return manager.getSearcher().getPosts(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getGroupNames(), param.getSearch(), param.getTitle(), param.getAuthor(), null, null, null, null, param.getLimit(), param.getOffset());
+	return manager.getSearch().getPosts(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getGroupNames(), param.getSearch(), param.getTitle(), param.getAuthor(), null, null, null, null, param.getLimit(), param.getOffset());
     }
 
     @Override

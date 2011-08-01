@@ -55,6 +55,7 @@ import org.bibsonomy.database.managers.BibTexExtraDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
 import org.bibsonomy.database.managers.DocumentDatabaseManager;
+import org.bibsonomy.database.managers.GoldStandardBookmarkDatabaseManager;
 import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
@@ -85,6 +86,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Comment;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -136,6 +138,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     private final BookmarkDatabaseManager bookmarkDBManager;
     private final BibTexDatabaseManager publicationDBManager;
     private final GoldStandardPublicationDatabaseManager goldStandardPublicationDBManager;
+    private final GoldStandardBookmarkDatabaseManager goldStandardBookmarkDBManager;
     private final BibTexExtraDatabaseManager bibTexExtraDBManager;
     
     private final DiscussionDatabaseManager discussionDatabaseManager;
@@ -178,6 +181,9 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	// gold standard publication db manager
 	this.goldStandardPublicationDBManager = GoldStandardPublicationDatabaseManager.getInstance();
 	this.allDatabaseManagers.put(GoldStandardPublication.class, this.goldStandardPublicationDBManager);
+	
+	this.goldStandardBookmarkDBManager = GoldStandardBookmarkDatabaseManager.getInstance();
+	this.allDatabaseManagers.put(GoldStandardBookmark.class, this.goldStandardBookmarkDBManager);
 
 	// discussion and discussion item db manager
 	this.commentDBManager = CommentDatabaseManager.getInstance();
@@ -532,6 +538,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     }
     
     /**
+     * TODO: rename method doesn't validate anything
      * Method to handle privacy settings of posts for synchronization
      * @param post
      */
@@ -635,6 +642,11 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	    if (resourceType == GoldStandardPublication.class) {
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 		return (List) this.goldStandardPublicationDBManager.getPosts(param, session);
+	    }
+	    
+	    if (resourceType == GoldStandardBookmark.class) {
+	    	final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
+			return (List) this.goldStandardBookmarkDBManager.getPosts(param, session);
 	    }
 
 	    throw new UnsupportedResourceTypeException();
@@ -1151,7 +1163,7 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 	/*
 	 *check and set post visibility for synchronization 
 	 */
-	if (Role.SYNC.equals(loginUser.getRole())) {
+	if (Role.SYNC.equals(this.loginUser.getRole())) {
 		validateGroupsForSynchronization(post);
 	}
 	this.validateGroups(post.getUser(), post.getGroups(), session);
@@ -2579,34 +2591,43 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 			/*
 			 * first check if gold standard post exists
 			 */
-			@SuppressWarnings("unchecked") // should be a gold standard publication
-			final Post<GoldStandardPublication> goldStandardPostinDB = (Post<GoldStandardPublication>) this.getPostDetails(interHash, "");
+			final Post<?> goldStandardPostinDB = this.getPostDetails(interHash, "");
 			/*
 			 * if not create one
-			 * TODO: add a test
 			 */
 			if (!present(goldStandardPostinDB)) {
-				log.debug("no gold standard publication found for interHash " + interHash + ". Creating new gold standard publication");
+				log.debug("no gold standard found for interHash " + interHash + ". Creating new gold standard publication");
 				final String hash = HashID.INTER_HASH.getId() + interHash;
-				// TODO: bookmarks are missing
-				// final List<Post<Bookmark>> bookmarkPost = this.getPosts(Bookmark.class, GroupingEntity.USER, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
-				// FIXME: this list maybe also contains private posts of the logged in user!
+				// FIXME: these lists maybe also contain private posts of the logged in user!
+				final List<Post<Bookmark>> bookmarkPosts = this.getPosts(Bookmark.class, GroupingEntity.USER, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
 				final List<Post<BibTex>> publicationPosts = this.getPosts(BibTex.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
+				
+				/*
+				 * create gold standard
+				 */
+				Resource goldResource = null;
 				if (present(publicationPosts)) {
-					final Post<GoldStandardPublication> goldStandardPost = new Post<GoldStandardPublication>();
 					final GoldStandardPublication goldStandardPublication = new GoldStandardPublication();
 					ObjectUtils.copyPropertyValues(publicationPosts.get(0).getResource(), goldStandardPublication);
-					
 					/*
 					 * clear some private stuff
 					 */
 					goldStandardPublication.setPrivnote("");
+					goldResource = goldStandardPublication;
+				} else if (present(bookmarkPosts)) {
+					final GoldStandardBookmark goldStandardBookmark = new GoldStandardBookmark();
+					ObjectUtils.copyPropertyValues(bookmarkPosts.get(0).getResource(), goldStandardBookmark);
 					
-					goldStandardPost.setResource(goldStandardPublication);
-					
-					this.createPosts(Collections.<Post<?>>singletonList(goldStandardPost));
+					goldResource = goldStandardBookmark;
 				} else {
-					// TODO: log?
+					log.warn("neither publications nor bookmarks found for hash '" + interHash + "'");
+				}
+				
+				if (present(goldResource)) {
+					final Post<Resource> goldStandardPost = new Post<Resource>();
+					goldStandardPost.setResource(goldResource);
+					
+					this.createPost(goldStandardPost, session);	
 				}
 			}
 			

@@ -426,7 +426,7 @@
 	
     <insert id="insertBookmark" parameterClass="bookmarkParam">
 		INSERT INTO bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name)
-		VALUES (#requestedContentId#,#hash#,#resource.title#,#description#,#groupId#,#date#, #changeDate#,#userName#)
+		VALUES (#requestedContentId#, #hash#, #resource.title#, #description#, #groupId#, #date#, #changeDate#, #userName#)
 	</insert> 
 
     <insert id="insertBookmarkHash" parameterClass="bookmarkParam">
