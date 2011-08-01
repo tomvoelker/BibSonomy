@@ -10,31 +10,15 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post">
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:editBook="urn:jsptagdir:/WEB-INF/tags/actions/edit/bookmark">
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
  
 	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Bookmark" selectedNaviTab="nav_postBook">
 
 		<jsp:attribute name="generalInformation">
-            <div class="fsRow">
-			  <form:label cssClass="fsLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
-			  <form:input cssClass="fsInput reqinput" path="post.resource.url" tabindex="2"/>
-			  <div class="dissError"><form:errors path="post.resource.url" /></div>
-            </div>
-            
-            <div class="fsRow">
-			  <form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
-			  <form:input cssClass="fsInput reqinput" path="post.resource.title" tabindex="2"/>
-			  <div class="dissError"><form:errors path="post.resource.title" /></div>
-              <div class="fsSuggestion" id="suggestion.resource.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
-            </div>
-	                           
-            <div class="fsRow">     
-			  <form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
-			  <form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" />
-			  <div class="fsSuggestion" id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
-            </div>
+            <editBook:required post="${command.post}" />
 		</jsp:attribute>
 
         <jsp:attribute name="extraInformation">
@@ -60,6 +44,8 @@
             </div>
 
            <!-- 
+           	  | TODO: rewrite with jquery
+           	  | TODO: move to editBookmark.js
               | corresponding JavaScript ...
               -->
            <script type="text/javascript">

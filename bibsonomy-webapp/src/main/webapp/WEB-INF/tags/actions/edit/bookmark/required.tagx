@@ -1,0 +1,45 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
+  	
+  	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+
+	<div class="fsRow">
+		<form:label cssClass="fsLabel" path="post.resource.url">
+			<fmt:message key="post.resource.url" />*</form:label>
+		<form:input cssClass="fsInput reqinput" path="post.resource.url"
+			tabindex="2" />
+		<div class="dissError">
+			<form:errors path="post.resource.url" />
+		</div>
+	</div>
+
+	<div class="fsRow">
+		<form:label cssClass="fsLabel" path="post.resource.title">
+			<fmt:message key="post.resource.title" />*</form:label>
+		<form:input cssClass="fsInput reqinput" path="post.resource.title"
+			tabindex="2" />
+		<div class="dissError">
+			<form:errors path="post.resource.title" />
+		</div>
+		<div class="fsSuggestion" id="suggestion.resource.title">
+			<!-- This comment is needed, otherwise this will result in an self-closing element -->
+		</div>
+	</div>
+
+	<div class="fsRow">
+		<form:label cssClass="fsLabel" path="post.description">
+			<fmt:message key="post.resource.description" />, <fmt:message
+				key="post.resource.comment" />
+		</form:label>
+		<form:textarea cssClass="fsInput" path="post.description" tabindex="2"
+			rows="3" />
+		<div class="fsSuggestion" id="suggestion.description">
+			<!-- This comment is needed, otherwise this will result in an self-closing element -->
+		</div>
+	</div>
+</jsp:root>
