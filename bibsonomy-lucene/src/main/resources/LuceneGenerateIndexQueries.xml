@@ -130,6 +130,6 @@
 	</select>
 	
 	<select id="getGoldStandardPublicationForIndex" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, b.group, 'public' AS group_name, 1 AS count FROM gold_standard b WHERE b.content_type = 2 b.content_id &gt; #requestedContentId# ORDER BY b.content_id ASC LIMIT #limit#
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, b.group, 'public' AS group_name, 1 AS count FROM gold_standard b WHERE b.content_type = 2 AND b.content_id &gt; #requestedContentId# ORDER BY b.content_id ASC LIMIT #limit#
 	</select>
 </sqlMap>
