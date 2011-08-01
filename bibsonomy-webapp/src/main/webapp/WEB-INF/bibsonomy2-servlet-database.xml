@@ -28,7 +28,7 @@
 	
 	<bean id="tagDatabaseManager" class="org.bibsonomy.database.managers.TagDatabaseManager" factory-method="getInstance">
 		<property name="bookmarkSearch" ref="luceneBookmarkSearch" />
-		<property name="publicationSearch" ref="lucenePublicationSearch" />
+		<property name="publicationSearch" ref="luceneBibTexSearch" />
 	</bean>
 	
 	<bean id="goldStandardPublicationDatabaseManager" class="org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager" factory-method="getInstance">
