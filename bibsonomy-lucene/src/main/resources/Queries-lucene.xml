@@ -77,8 +77,9 @@
 	</select>
 	
 	<select id="getGoldStandardPublicationContentIdsToDelete" resultClass="integer" parameterClass="date">
-		SELECT content_id FROM
-		log_gold_standard_publications WHERE log_date &gt; #date# 
+		SELECT content_id
+			FROM log_gold_standard l
+		WHERE l.log_date &gt; #date# AND l.content_type = 2
 	</select>
 	
 	<!--+ 
@@ -115,10 +116,11 @@
 	
 	<select id="getGoldStandardPublicationPostsForTimeRange" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
 		SELECT
-		<include refid="allGoldStandardPublicationAttributesWithSimHashes" />,
-		b.group, 'public' AS group_name, 1 AS count FROM
-		gold_standard_publications b WHERE b.content_id &gt; #lastTasId# ORDER
-		BY b.date DESC, b.content_id DESC
+			<include refid="allGoldStandardPublicationAttributesWithSimHashes" />, b.group, 'public' AS group_name, 1 AS count
+			FROM gold_standard g
+		WHERE g.content_id &gt; #lastTasId#
+			AND g.content_type = 2
+		ORDER BY g.date DESC, g.content_id DESC
 	</select>
 	
 </sqlMap>
