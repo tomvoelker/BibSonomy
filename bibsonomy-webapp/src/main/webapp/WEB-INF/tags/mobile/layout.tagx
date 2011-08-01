@@ -73,7 +73,6 @@
 					<div style="width: 70%;">
 						<fmt:message key="system.offeredBy">
 							<fmt:param value="${projectName}"/>
-							<fmt:param value="${kdeHome}"/>
 						</fmt:message>
 						<br />
 						<fmt:message key="system.contact"/>
