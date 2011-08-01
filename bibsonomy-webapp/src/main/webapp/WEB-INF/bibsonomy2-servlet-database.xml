@@ -11,10 +11,28 @@
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 	
 	<!-- configures given properties in all relevant database managers -->
-	<bean id="resourceSearchInitializer" class="org.bibsonomy.database.util.DatabaseManagerInitializer">
-		<property name="bibTexSearcher" ref="luceneBibTexSearch" />
-		<property name="bookmarkSearcher" ref="luceneBookmarkSearch" />
-		<property name="goldStandardPublicationSearcher" ref="luceneGoldStandardPublicationSearch" />
+	<!-- TODO: add more config here -->	
+	<bean id="userDatabaseManager" class="org.bibsonomy.database.managers.UserDatabaseManager" factory-method="getInstance" />
+	
+	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
+		<property name="userDb" ref="userDatabaseManager" />
+	</bean>
+	
+	<bean id="bookmarkDatabaseManager" class="org.bibsonomy.database.managers.BookmarkDatabaseManager" factory-method="getInstance">
+		<property name="resourceSearch" ref="luceneBookmarkSearch" />
+	</bean>
+	
+	<bean id="publicationDatabaseManager" class="org.bibsonomy.database.managers.BibTexDatabaseManager" factory-method="getInstance">
+		<property name="resourceSearch" ref="luceneBibTexSearch" />
+	</bean>
+	
+	<bean id="tagDatabaseManager" class="org.bibsonomy.database.managers.TagDatabaseManager" factory-method="getInstance">
+		<property name="bookmarkSearch" ref="luceneBookmarkSearch" />
+		<property name="publicationSearch" ref="lucenePublicationSearch" />
+	</bean>
+	
+	<bean id="goldStandardPublicationDatabaseManager" class="org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager" factory-method="getInstance">
+		<property name="search" ref="luceneGoldStandardPublicationSearch" />
 	</bean>
 	
 	<!-- factory for creating system tags -->
