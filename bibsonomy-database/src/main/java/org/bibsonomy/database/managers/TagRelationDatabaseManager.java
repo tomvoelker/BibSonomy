@@ -64,7 +64,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of concepts
 	 */
-	public List<Tag> getConcepts(final TagRelationParam param, DBSession session) {
+	public List<Tag> getConcepts(final TagRelationParam param, final DBSession session) {
 		return chain.getFirstElement().perform(param, session);
 	}
 	
@@ -193,9 +193,8 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return picked concepts for the given user
 	 */
-	@SuppressWarnings("unchecked")
 	public List<Tag> getPickedConceptsForUser(final String userName, final DBSession session) {
-		return this.queryForList("getPickedConceptsForUser", userName, session);
+		return this.queryForList("getPickedConceptsForUser", userName, Tag.class, session);
 	}
 
 	/**
@@ -241,7 +240,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void pickConcept(final Tag concept, final String ownerUserName, final DBSession session){
-		TagRelationParam param = new TagRelationParam();
+		final TagRelationParam param = new TagRelationParam();
 		param.setUpperTagName(concept.getName());
 		param.setOwnerUserName(ownerUserName);
 		
@@ -255,7 +254,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void unpickConcept(final Tag concept, final String ownerUserName, final DBSession session){
-		TagRelationParam param = new TagRelationParam();
+		final TagRelationParam param = new TagRelationParam();
 		param.setUpperTagName(concept.getName());
 		param.setOwnerUserName(ownerUserName);
 		
@@ -296,7 +295,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 			throw new ValidationException("tried to replace tag without valid name");
 		}
 		
-		LoggingParam<String> param = new LoggingParam<String>();
+		final LoggingParam<String> param = new LoggingParam<String>();
 		param.setOldId(tagToReplace.getName());
 		param.setNewId(replacementTag.getName());
 		param.setUser(user);

@@ -1,8 +1,5 @@
 package org.bibsonomy.database.managers;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.FirstListChainElement;
 import org.bibsonomy.database.managers.chain.goldstandard.publication.GoldStandardPublicationChain;
@@ -31,43 +28,19 @@ public final class GoldStandardPublicationDatabaseManager extends GoldStandardDa
 	}
 	
 	private GoldStandardPublicationDatabaseManager() {}
-
 	
 	@Override
-	protected BibTexParam getInsertParam(final Post<GoldStandardPublication> post) {
-		final BibTexParam insert = new BibTexParam();
-		insert.setResource(post.getResource());
-		insert.setDescription(post.getDescription());
-		insert.setDate(post.getDate());
-		insert.setRequestedContentId(post.getContentId());
-		insert.setUserName((present(post.getUser()) ? post.getUser().getName() : ""));
-		insert.setGroupId(GroupID.PUBLIC); // gold standards are public
-		
-		return insert;
-	}
-	
-	@Override
-	protected void onGoldStandardCreate(String resourceHash, DBSession session) {
-		this.plugins.onGoldStandardPublicationCreate(resourceHash, session);
-	}
-	
-	@Override
-	protected void onGoldStandardUpdate(String oldHash, String newResourceHash, DBSession session) {
-		this.plugins.onGoldStandardPublicationUpdate(newResourceHash, oldHash, session);		
-	}
-	
-	@Override
-	protected void onGoldStandardDelete(String resourceHash, DBSession session) {
-		this.plugins.onGoldStandardPublicationDelete(resourceHash, session);
-	}
-	
-	@Override
-	protected void onGoldStandardReferenceDelete(String userName, String interHash, String interHashRef, DBSession session) {
+	protected void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef, final DBSession session) {
 		this.plugins.onGoldStandardPublicationReferenceDelete(userName, interHash, interHashRef, session);		
 	}
 
 	@Override
 	protected FirstListChainElement<Post<GoldStandardPublication>, BibTexParam> getChain() {
 	    return chain;
+	}
+
+	@Override
+	protected BibTexParam createNewParam() {
+		return new BibTexParam();
 	}
 }

@@ -36,7 +36,7 @@
 	<sqlMap resource="common/BookmarkCommon.xml" />
 	<sqlMap resource="common/BibTexCommon.xml" />
 	<sqlMap resource="common/BibTexExtraCommon.xml" />
-	<sqlMap resource="common/GoldStandardPublicationCommon.xml" />
+	<sqlMap resource="common/GoldStandardCommon.xml" />
 	<sqlMap resource="common/UserCommon.xml" />
 	<sqlMap resource="common/GroupCommon.xml" />
 	<sqlMap resource="common/TagCommon.xml" />
@@ -57,7 +57,7 @@
 	<sqlMap resource="Bookmark.xml" />
 	<sqlMap resource="BibTex.xml" />
 	<sqlMap resource="BibTexExtra.xml" />
-	<sqlMap resource="GoldStandardPublication.xml" />
+	<sqlMap resource="GoldStandard.xml" />
 	<sqlMap resource="User.xml" />
 	<sqlMap resource="Group.xml" />
 	<sqlMap resource="Document.xml" />

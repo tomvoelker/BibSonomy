@@ -541,7 +541,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a list of users, related by folkrank for a given list of tags
 	 */
-	public List<User> getRelatedUsersByFolkrankAndTags(final  List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
+	public List<User> getRelatedUsersByFolkrankAndTags(final List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
 		final UserParam param = new UserParam();
 		param.setTagIndex(tagIndex);
 		param.setLimit(limit);
@@ -608,7 +608,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				    // restrict to users labeled with the given tag, if present
 				    param.setTag(new Tag(tag));
 				} else {
-					String bibSonomyUserTag = NetworkRelationSystemTag.BibSonomyFriendSystemTag;
+					final String bibSonomyUserTag = NetworkRelationSystemTag.BibSonomyFriendSystemTag;
 					param.setTag(new Tag(bibSonomyUserTag));
 				}
 		    	// TODO: should we introduce network_user_ids???

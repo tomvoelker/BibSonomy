@@ -164,14 +164,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return a list of posts to synchronize
 	 */
-	@SuppressWarnings("unchecked")
 	public List<SynchronizationPost> getSyncPostsListForUser(final String userName, final DBSession session) {
-	    return this.queryForList("getSync" + this.resourceClassName, this.createParam(userName, userName), session);
+	    return this.queryForList("getSync" + this.resourceClassName, this.createParam(userName, userName), SynchronizationPost.class, session);
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected List<Post<R>> postList(final String query, final P param, final DBSession session) {
-		return this.queryForList(query, param, session);
+		return (List<Post<R>>) this.queryForList(query, param, session);
 	}
 
 	/**

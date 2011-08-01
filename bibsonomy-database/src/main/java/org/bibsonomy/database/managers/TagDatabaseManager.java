@@ -294,7 +294,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			param.addTagName(tag.getName());
 		}
 		param.setUserName(user.getName());
-		final List<Post<? extends Resource>> posts = this.queryForList("getTASByTagNames", param, session);
+		final List<Post<? extends Resource>> posts = (List<Post<? extends Resource>>) this.queryForList("getTASByTagNames", param, session);
 		log.debug("################################################################################");
 		log.debug(posts);
 		log.debug("################################################################################");
@@ -389,7 +389,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				paramNew.addTagName(tag.getName());
 			}
 			paramNew.setUserName(user.getName());
-			final List<Post<? extends Resource>> postsNew = this.queryForList("getTASByTagNames", paramNew, session);
+			final List<Post<? extends Resource>> postsNew = (List<Post<? extends Resource>>) this.queryForList("getTASByTagNames", paramNew, session);
 			log.debug("################################################################################");
 			log.debug(postsNew);
 			log.debug("################################################################################");

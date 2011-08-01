@@ -171,12 +171,21 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		this.delete("updateDocument", this.buildContentIdParam(contentId, newContentId), session);
 	}
 	
-	public void createExtendedField (final String userName, final String hash, final String key, final String value, final DBSession session) {
+	/**
+	 * creates an extended field for the given user
+	 * 
+	 * @param userName
+	 * @param hash
+	 * @param key
+	 * @param value
+	 * @param session
+	 */
+	public void createExtendedField(final String userName, final String hash, final String key, final String value, final DBSession session) {
 		final BibtexExtendedParam param = new BibtexExtendedParam();
 		param.setHash(hash);
 		param.setUserName(userName);
 		
-		ExtendedField exField = new ExtendedField();
+		final ExtendedField exField = new ExtendedField();
 		exField.setKey(key);
 		exField.setValue(value);
 		exField.setCreated(new Date());
@@ -211,14 +220,15 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	 * Returns the extended fields for a publication with the given hash.
 	 * @param username
 	 * @param hash
+	 * @param key 
 	 * @param session
 	 * 
 	 * @return list of ExtendedFields objects
 	 */
-	public Map<String, List<String>> getExtendedFieldsByKey(final String username, final String hash, String key, final DBSession session) {
+	public Map<String, List<String>> getExtendedFieldsByKey(final String username, final String hash, final String key, final DBSession session) {
 		final BibtexExtendedParam param = new BibtexExtendedParam();
 		
-		ExtendedField exField = new ExtendedField();
+		final ExtendedField exField = new ExtendedField();
 		exField.setKey(key);
 		param.setExtendedField(exField);
 		
@@ -250,21 +260,38 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		this.delete("deleteAllExtendedFieldsData", contentId, session);
 	}
 	
-	public void deleteExtendedFieldsByKey(final String userName,final String hash, final String key, final DBSession session) {
-	    BibtexExtendedParam param = buildExtendedParam(userName, hash, key, null);
+	/**
+	 * deletes an extended field by key
+	 * 
+	 * @param userName
+	 * @param hash
+	 * @param key
+	 * @param session
+	 */
+	public void deleteExtendedFieldsByKey(final String userName, final String hash, final String key, final DBSession session) {
+	    final BibtexExtendedParam param = buildExtendedParam(userName, hash, key, null);
 
 	    this.delete("deleteExtendedFieldByKey", param, session);
 	}
 
+	/**
+	 * deletes an extended field by key and value
+	 * 
+	 * @param userName
+	 * @param hash
+	 * @param key
+	 * @param value
+	 * @param session
+	 */
 	public void deleteExtendedFieldByKeyValue(final String userName, final String hash, final String key, final String value, final DBSession session) {
-	    BibtexExtendedParam param = buildExtendedParam(userName, hash, key, value);
+	    final BibtexExtendedParam param = buildExtendedParam(userName, hash, key, value);
 	    
 	    this.delete("deleteExtendedFieldByKeyValue", param, session);
 	}
 
 	private BibtexExtendedParam buildExtendedParam(final String userName, final String hash, final String key, final String value) {
-	    BibtexExtendedParam param = new BibtexExtendedParam();
-	    ExtendedField ex = new ExtendedField();
+	    final BibtexExtendedParam param = new BibtexExtendedParam();
+	    final ExtendedField ex = new ExtendedField();
 	    ex.setKey(key);
 	    ex.setValue(value);
 	    
