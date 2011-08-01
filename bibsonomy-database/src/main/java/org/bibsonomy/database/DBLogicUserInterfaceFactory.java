@@ -1,5 +1,7 @@
 package org.bibsonomy.database;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
@@ -55,7 +57,7 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		final DBSession session = openSession();
 		try {
 			final User loggedInUser = getLoggedInUserAccess(loginName, password, session);
-			if (loggedInUser.getName() != null) {
+			if (present(loggedInUser.getName())) {
 				UserUtils.setGroupsByGroupIDs(loggedInUser, this.groupDb.getGroupIdsForUser(loggedInUser.getName(), session));
 			}
 			return loggedInUser;
@@ -69,7 +71,7 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	 * @param loginName
 	 * @param password
 	 * @param session
-	 * @return
+	 * @return the logged in user (success) or an user with name NULL (failure)
 	 */
 	protected User getLoggedInUserAccess(final String loginName, final String password, final DBSession session) {
 		return this.userDBManager.validateUserAccessByPassword(loginName, password, session);
