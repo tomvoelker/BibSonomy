@@ -4,15 +4,19 @@ import static org.bibsonomy.lucene.util.LuceneBase.CFG_INDEX_ID_DELIMITER;
 import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_INDEX_PREFIX;
 import static org.bibsonomy.lucene.util.LuceneBase.SQL_BLOCKSIZE;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -205,18 +209,32 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 		int i    = 0;		// number of evaluated entries 
 		int is   = 0;		// number of spam entries 
 
-		log.info("Start writing data to lucene index");
+		log.info("Start writing data to lucene index (with duplicate detection)");
 		
+		//--------------------------------------------------------------------
 		// read block wise all posts
+		//--------------------------------------------------------------------
+		// track content_ids for duplicate detection
+		Map<Integer,Integer> dupMap = new HashMap<Integer, Integer>();
+		
 		List<LucenePost<R>> postList = null;
 		int skip = 0;
+		int lastContenId = -1;
+		
 		do {
-			postList = this.dbLogic.getPostEntries(skip, SQL_BLOCKSIZE);
+			postList = this.dbLogic.getPostEntries(lastContenId, SQL_BLOCKSIZE);
 			skip += postList.size(); // TODO: += SQL_BLOCKSIZE?!
 			log.info("Read " + skip + " entries.");
 
 			// cycle through all posts of currently read block
 			for (final LucenePost<R> postEntry : postList) {
+				// look for duplicates
+				if (dupMap.containsKey(postEntry.getContentId())) {
+					log.error("Found duplicate for content id '"+postEntry.getContentId()+"' at '"+skip+"' (was '"+dupMap.get(postEntry.getContentId())+"')");
+				} else {
+					dupMap.put(postEntry.getContentId(), skip);
+				}
+				
 				// update management fields
 				postEntry.setLastLogDate(lastLogDate);
 				postEntry.setLastTasId(lastTasId);
@@ -233,6 +251,10 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 					is++;
 				}			
 			}
+			if (postList.size()>0) {
+				lastContenId = postList.get(postList.size()-1).getContentId();
+			}
+			
 			progressPercentage = (int) Math.round(100 * ((double)skip/numberOfPosts));
 			log.info(progressPercentage + "% of index-generation done!");
 			

@@ -36,8 +36,8 @@
 	<!-- get number of public goldstandard posts -->
 	<select id="getGoldStandardPublicationCount" resultClass="integer">
 		SELECT count(*) 
-		FROM gold_standard b 
-		WHERE b.content_type = 2
+		FROM gold_standard_publications b 
+		WHERE b.group &gt;= 0
 	</select>
 	 
 	<!-- get last log_date from resource tables -->
@@ -52,9 +52,7 @@
 	</select>
 	
 	<select id="getLastLogGoldStandardPublication" resultClass="date">
-		SELECT MAX(log_date)
-			FROM log_gold_standard l
-			WHERE l.content_type = 2
+		SELECT MAX(log_date) FROM log_gold_standard_publications
 	</select>
 	
 	<!-- get users which where flagged as spammers/non-spammers since last index update --> 
@@ -78,8 +76,9 @@
 		  FROM bookmark b 
 	      JOIN urls u USING (book_url_hash)
 		  WHERE b.group &gt;= 0
-          <!-- ORDER BY b.content_id -->		  
-		  LIMIT #limit# OFFSET #offset#
+			AND b.content_id &gt; #requestedContentId#
+		  ORDER BY b.content_id ASC
+		  LIMIT #limit#
 		) AS bb
 		LEFT JOIN tas t USING (content_id)
 	    LEFT JOIN groupids g ON (bb.group = g.group)
@@ -108,8 +107,10 @@
 		  SELECT <include refid ="commonBibtexAttributes2"/>, b2.group, h.ctr AS count, b2.scraperid
 		  FROM bibtex b2 
 	      JOIN bibhash h ON (<include refid="bibtexSimHash4"/>)
-		  WHERE b2.group &gt;= 0
-		  LIMIT #limit# OFFSET #offset#
+		  WHERE b2.group &gt;= 0 
+		  	AND b2.content_id &gt; #requestedContentId#
+		  ORDER BY b2.content_id ASC
+		  LIMIT #limit#
 		) AS bb
 		LEFT JOIN tas t USING (content_id)
 	    LEFT JOIN groupids g ON (bb.group = g.group)
@@ -127,6 +128,6 @@
 	</select>
 	
 	<select id="getGoldStandardPublicationForIndex" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, b.group, 'public' AS group_name, 1 AS count FROM gold_standard b WHERE b.content_type = 2 LIMIT #limit# OFFSET #offset#
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, b.group, 'public' AS group_name, 1 AS count FROM gold_standard b WHERE b.content_type = 2 b.content_id &gt; #requestedContentId# ORDER BY b.content_id ASC LIMIT #limit#
 	</select>
 </sqlMap>

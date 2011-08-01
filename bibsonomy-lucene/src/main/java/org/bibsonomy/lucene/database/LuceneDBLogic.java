@@ -171,6 +171,7 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 	@Override
 	public List<LucenePost<R>> getPostEntries(Integer skip, Integer max) {
 		final ResourcesParam<R> param = this.getResourcesParam();
+		param.setRequestedContentId(skip);
 		param.setOffset(skip);
 		param.setLimit(max);
 		
