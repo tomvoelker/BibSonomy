@@ -101,7 +101,7 @@ function deleteReference() {
 	
 	if (confirm(getString('post.actions.edit.gold.references.delete.confirm'))) {
 		$.ajax({
-			url: GOLD_REFERENCE_URL + '?ckey=' + getCKey() + '&hash=' + getGoldInterHash() + '&references=' + referenceHash,
+			url: GOLD_REFERENCE_URL + '?ckey=' + ckey + '&hash=' + getGoldInterHash() + '&references=' + referenceHash,
 			type: 'DELETE',
 			success: function(response) {
 						referenceView.fadeOut(FADE_DURATION, function() {
@@ -118,7 +118,7 @@ function addReference(reference) {
 	var referenceHash = reference.value;
 	$.ajax({
 		url: GOLD_REFERENCE_URL,
-		data: {ckey: getCKey(), hash: getGoldInterHash(), references: referenceHash},
+		data: {ckey: ckey, hash: getGoldInterHash(), references: referenceHash},
 		type: 'POST',
 		success: function(data) {
 			// clone the template
@@ -186,13 +186,6 @@ function getPersonList(persons) {
 	}
 	
 	return result.join('');
-}
-
-/**
- * @returns the ckey
- */
-function getCKey() {
-	return $('#gold_menu').data('ckey');
 }
 
 /** 
