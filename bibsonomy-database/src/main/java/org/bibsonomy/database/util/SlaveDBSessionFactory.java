@@ -10,29 +10,25 @@ import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
  * TODO: replace with a more abstract db session factory when using mybatis
- * Factory for real database sessions via iBatis.
  * 
- * @author Jens Illig
+ * @author dzo
  * @version $Id$
  */
-public class IbatisSyncDBSessionFactory extends AbstractDBSessionFactory {
-
-	private static final String JNDI_DATASOURCE = "java:comp/env/jdbc/sync_puma";
+public class SlaveDBSessionFactory extends AbstractDBSessionFactory {
+	
+	private static final String JNDI_DATASOURCE = "java:comp/env/jdbc/bibsonomy_slave";
 	private final static Properties props = new Properties();
 
 	static {
 		props.setProperty("JNDIDataSource", JNDI_DATASOURCE);
 	}
-
+	
 	private static final SqlMapClient client = IbatisUtils.loadSqlMap("SqlMapConfig.xml", props);
-
+	
+	
 	@Override
 	protected SqlMapSession getSqlMap() {
 		return client.openSession();
 	}
-	
-	@Override
-	public String toString() {
-		return JNDI_DATASOURCE;
-	}
+
 }
