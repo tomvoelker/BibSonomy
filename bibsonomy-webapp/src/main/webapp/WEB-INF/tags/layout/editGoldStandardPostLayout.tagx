@@ -12,8 +12,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-  >
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
 
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
     <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
@@ -53,7 +52,12 @@
         <jsp:attribute name="heading">
           <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${editPageTitle}" /></a> 
         </jsp:attribute>
-      
+      	<!--
+   			  | 
+  			  | TODO:
+     		  |   - Einblendung des existierenden Eintrages (bzw. des geposteten - der
+   			  |     existierende wird editiert, der gepostete ist in "diffPost") 
+		      -->
 		<jsp:attribute name="content">
 		   <div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
 
@@ -129,9 +133,9 @@
 	                                <input type="hidden" name="postID" value="${command.postID}"/>
                                     <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
 	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-									<c:set var="save"><fmt:message key="save"/></c:set>
-							      	<c:set var="reset"><fmt:message key="resetbutton"/></c:set>
-									<form:hidden path="intraHashToUpdate"/>
+									<fmt:message key="save" var="save" />
+							      	<fmt:message key="resetbutton" var="reset" />
+									<form:hidden path="intraHashToUpdate" />
 									<input type="reset" value="${reset}" tabindex="2"/>
 									<input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
 								</div>
