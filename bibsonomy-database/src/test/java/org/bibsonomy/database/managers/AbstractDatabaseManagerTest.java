@@ -7,7 +7,6 @@ import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.testutil.JNDIBinder;
-import org.bibsonomy.database.util.DatabaseManagerInitializer;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.TestDatabaseLoader;
@@ -37,7 +36,6 @@ public abstract class AbstractDatabaseManagerTest {
 
 	protected static DBSessionFactory dbSessionFactory;
 	protected static DatabasePluginRegistry pluginRegistry;
-	protected static DatabaseManagerInitializer dbManagerInitializer;
 
 	protected DatabasePluginMock pluginMock;
 	protected DBSession dbSession;
@@ -61,8 +59,7 @@ public abstract class AbstractDatabaseManagerTest {
 		sysTagFactory.setDbSessionFactory(dbSessionFactory);
 
 		// init managers
-
-		dbManagerInitializer = new DatabaseManagerInitializer();
+		GroupDatabaseManager.getInstance().setUserDb(UserDatabaseManager.getInstance());
 	}
 
 	/**
