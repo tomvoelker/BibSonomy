@@ -22,17 +22,17 @@ public abstract class AbstractDatabaseManager {
 	 * Can be used to start a query that retrieves a list of objects of a certain type.
 	 * PLEASE NOTE: this methods never returns null, only an empty list if the queryForList returns null
 	 */
-	@SuppressWarnings("unchecked")
 	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final DBSession session) {
+		@SuppressWarnings("unchecked")
 		final List<T> list = (List<T>) session.queryForList(query, param);
 		return list != null ? list : new LinkedList<T>();
 	}
 	
 	/**
 	 * short form of queryForList without Type argument
+	 * PLEASE NOTE: this methods never returns null, only an empty list if the queryForList returns null
 	 */
-	@SuppressWarnings("unchecked")
-	protected List queryForList(final String query, final Object param, final DBSession session) {
+	protected List<?> queryForList(final String query, final Object param, final DBSession session) {
 		return queryForList(query, param, Object.class, session);
 	}
 
@@ -59,7 +59,7 @@ public abstract class AbstractDatabaseManager {
 	 * @param query
 	 * @param param
 	 * @param session
-	 * @return
+	 * @return the query result
 	 */
 	protected Object queryForObject(final String query, final Object param, final DBSession session) {
 		return this.queryForObject(query, param, Object.class, session);
@@ -72,17 +72,16 @@ public abstract class AbstractDatabaseManager {
 	 * @param param
 	 * @param store
 	 * @param session
-	 * @return
+	 * @return the query result
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> T queryForObject(final String query, final Object param, final T store, final DBSession session) {
 		return (T) session.queryForObject(query, param, store);
 	}
 	
-	
 	@SuppressWarnings("unchecked")
-	protected <K,V> Map<K,V> queryForMap(final String query, final Object param, final String key, final String value ,final DBSession session) {
-	    return (Map<K,V>) session.queryForMap(query, param, key, value);
+	protected <K, V> Map<K, V> queryForMap(final String query, final Object param, final String key, final String value, final DBSession session) {
+	    return (Map<K, V>) session.queryForMap(query, param, key, value);
 	}
 	
 	@SuppressWarnings("unchecked")
