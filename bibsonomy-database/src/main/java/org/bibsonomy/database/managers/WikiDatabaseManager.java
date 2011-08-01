@@ -9,6 +9,8 @@ import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.model.Wiki;
 
 /**
+ * TODO: tests are missing
+ * 
  * @author philipp
  * @version $Id$
  */
@@ -25,14 +27,32 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
     private WikiDatabaseManager() {
     }
 
+    /**
+     * 
+     * @param userName
+     * @param session
+     * @return the current wiki for the specified user
+     */
     public Wiki getActualWiki(final String userName, final DBSession session) {
 	return this.queryForObject("getActualWikiForUser", userName, Wiki.class, session);
     }
 
+    /**
+     * 
+     * @param userName
+     * @param session
+     * @return all wiki versions (dates) for the specified user
+     */
     public List<Date> getWikiVersions(final String userName, final DBSession session) {
 	return this.queryForList("getWikiVersionsForUser", userName, Date.class, session);
     }
 
+    /**
+     * updates the wiki for the specified user
+     * @param userName
+     * @param wiki
+     * @param session
+     */
     public void updateWiki(final String userName, final Wiki wiki, final DBSession session) {
 	final WikiParam param = new WikiParam();
 	param.setUserName(userName);
@@ -42,6 +62,12 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
 	this.update("updateWikiForUser", param, session);
     }
 
+    /**
+     * @param userName
+     * @param date
+     * @param session
+     * @return the wiki version specified by the date for the specified user
+     */
     public Wiki getPreviousWiki(final String userName, final Date date, final DBSession session) {
 	final WikiParam param = new WikiParam();
 
@@ -50,7 +76,13 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
 
 	return this.queryForObject("getLoggedWiki", param, Wiki.class, session);
     }
-
+    
+    /**
+     * creates a new wiki for the specified user
+     * @param userName
+     * @param wiki
+     * @param session
+     */
     public void createWiki(final String userName, final Wiki wiki, final DBSession session) {
 	session.beginTransaction();
 	
@@ -67,6 +99,14 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
 	}
     }
 
+    /**
+     * logs the wiki of the user
+     * TODO: move to logging plugin
+     * 
+     * @param userName
+     * @param wiki
+     * @param session
+     */
     public void logWiki(final String userName, final Wiki wiki, final DBSession session) {
 	session.beginTransaction();
 	

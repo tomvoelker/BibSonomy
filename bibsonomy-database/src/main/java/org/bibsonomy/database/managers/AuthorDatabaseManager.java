@@ -30,8 +30,7 @@ public class AuthorDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of authors
 	 */
-	@SuppressWarnings("unchecked")
 	public List<Author> getAuthors(final DBSession session) {
-		return queryForList("getAuthors", null, session);
+		return queryForList("getAuthors", null, Author.class, session);
 	}
 }
