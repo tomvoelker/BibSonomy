@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+    xmlns:editBook="urn:jsptagdir:/WEB-INF/tags/actions/edit/bookmark">
+  
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+ 
+	<layout:editGoldStandardPostLayout command="${command}" requPath="${requPath}" resourceType="GoldStandardBookmark">
+		
+		<jsp:attribute name="generalInformation">
+			<editBook:required post="${post}" />
+		</jsp:attribute>
+       
+		<jsp:attribute name="headerExtResource">
+			<script type="text/javascript" src="${resdir}/javascript/editBookmark.js">&amp;nbsp;</script>
+		</jsp:attribute>
+
+	</layout:editGoldStandardPostLayout>
+
+</jsp:root>
