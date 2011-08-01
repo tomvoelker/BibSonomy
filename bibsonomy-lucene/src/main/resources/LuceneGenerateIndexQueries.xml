@@ -36,8 +36,8 @@
 	<!-- get number of public goldstandard posts -->
 	<select id="getGoldStandardPublicationCount" resultClass="integer">
 		SELECT count(*) 
-		FROM gold_standard_publications b 
-		WHERE b.group &gt;= 0
+		FROM gold_standard b 
+		WHERE b.content_type = 2
 	</select>
 	 
 	<!-- get last log_date from resource tables -->
@@ -52,7 +52,9 @@
 	</select>
 	
 	<select id="getLastLogGoldStandardPublication" resultClass="date">
-		SELECT MAX(log_date) FROM log_gold_standard_publications
+		SELECT MAX(log_date)
+			FROM log_gold_standard l
+			WHERE l.content_type = 2
 	</select>
 	
 	<!-- get users which where flagged as spammers/non-spammers since last index update --> 
