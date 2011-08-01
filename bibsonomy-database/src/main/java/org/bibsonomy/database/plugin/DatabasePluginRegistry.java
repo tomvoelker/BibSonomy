@@ -120,27 +120,27 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 	
 	@Override
-	public Runnable onGoldStandardPublicationCreate(final String interhash, final DBSession session) {
+	public Runnable onGoldStandardCreate(final String interhash, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onGoldStandardPublicationCreate(interhash, session));
+			this.executeRunnable(plugin.onGoldStandardCreate(interhash, session));
 		}
 		
 		return null;
 	}
 
 	@Override
-	public Runnable onGoldStandardPublicationDelete(final String interhash, final DBSession session) {
+	public Runnable onGoldStandardDelete(final String interhash, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onGoldStandardPublicationDelete(interhash, session));
+			this.executeRunnable(plugin.onGoldStandardDelete(interhash, session));
 		}
 		
 		return null;
 	}
 
 	@Override
-	public Runnable onGoldStandardPublicationUpdate(final String newInterhash, final String interhash, final DBSession session) {
+	public Runnable onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onGoldStandardPublicationUpdate(newInterhash, interhash, session));
+			this.executeRunnable(plugin.onGoldStandardUpdate(newInterhash, interhash, session));
 		}
 		
 		return null;

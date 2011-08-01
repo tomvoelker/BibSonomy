@@ -132,12 +132,15 @@ INSERT INTO `bibtexurls` (`content_id`, `url`, `text`, `group`, `date`) VALUES
 
 
 -- 
--- Data for table `gold_standard_publications`
+-- Data for table `gold_standard`
 -- 
-
-INSERT INTO `gold_standard_publications` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`, `day`, `booktitle`, `howPublished`, `institution`, `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `group`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `entrytype`, `title`, `author`, `editor`, `year`, `privnote`, `scraperid`, `change_date`, `rating`) VALUES
-(1005, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'bibtexKey1', 0, '1815-12-10 00:00:00', 'testuser1',   'http://www.testurl.org',        '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'misc={test}', 'test bibtexAbstract', '9abf98937435f05aec3d58b214a2ac58', 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'b77ddd8087ad8856d77c740c8dc2864a', '', 'test entrytype', 'test title',         'test author',  'test editor', 'test year', 'test privnote', -1, '2008-03-20 16:24:55', 0),
-(1015, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'bibtexKey2', 0, '1815-12-10 00:00:00', 'testuser2',   'http://private.bibtex.url.com', '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'misc={test}', 'test bibtexAbstract', '8711751127efb070ee910a5d145a168b', 'ac6aa3ccb181e61801cefbc1401d409a', '1b298f199d487bc527a62326573892b8', '', 'test entrytype', 'test private title', 'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0);
+-- publications
+INSERT INTO `gold_standard` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`, `day`, `booktitle`, `howPublished`, `institution`, `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `group`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `entrytype`, `title`, `author`, `editor`, `year`, `privnote`, `scraperid`, `change_date`, `rating`, `content_type`) VALUES
+(1005, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'bibtexKey1', 0, '1815-12-10 00:00:00', 'testuser1',   'http://www.testurl.org',        '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'misc={test}', 'test bibtexAbstract', '9abf98937435f05aec3d58b214a2ac58', 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'b77ddd8087ad8856d77c740c8dc2864a', '', 'test entrytype', 'test title',         'test author',  'test editor', 'test year', 'test privnote', -1, '2008-03-20 16:24:55', 0, 2),
+(1015, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'bibtexKey2', 0, '1815-12-10 00:00:00', 'testuser2',   'http://private.bibtex.url.com', '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'misc={test}', 'test bibtexAbstract', '8711751127efb070ee910a5d145a168b', 'ac6aa3ccb181e61801cefbc1401d409a', '1b298f199d487bc527a62326573892b8', '', 'test entrytype', 'test private title', 'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0, 2);
+-- bookmarks
+INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`, `user_name`, `simhash1`, `content_type`) VALUES
+(1025, 'Universität Kassel', 'http://www.uni-kassel.de', 'Nordhessen', '2011-01-01 00:00:00', 'testuser1', '20592a292e53843965c1bb42bfd51876', 1);
 
 -- 
 -- Data for table `gold_standard_publication_references`
@@ -634,10 +637,10 @@ INSERT INTO `useruser_similarity` (`u1`, `u2`, `sim`, `measure_id`) VALUES
 INSERT INTO `discussion` (`discussion_id`, `type`, `interHash`,`text`,`user_name`,`date`,`rating`,`anonymous`,`group`) VALUES
 (1, 1, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'crap!', 'testuser1', '2011-04-08 14:34:36', 4.0, 1, 0),
 (2, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a test comment!', 'testuser1', '2011-04-08 14:34:37', NULL, 0, 1),
-(3, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'SPAM', 'testuser1', '2011-04-18 14:34:36', NULL, 0, 2),
-(4, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:36', NULL, 0, 3),
-(4, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:36', NULL, 0, 4),
-(4, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:36', NULL, 0, 5);
+(3, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'SPAM', 'testuser1', '2011-04-18 14:34:38', NULL, 0, 2),
+(4, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:39', NULL, 0, 3),
+(4, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:39', NULL, 0, 4),
+(4, 2, 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'This is a multiple group comment', 'testuser1', '2011-04-20 14:34:39', NULL, 0, 5);
 
 --
 -- Data for table `review_ratings_cache`

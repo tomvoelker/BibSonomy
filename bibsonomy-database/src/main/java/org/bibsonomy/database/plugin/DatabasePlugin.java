@@ -55,7 +55,7 @@ public interface DatabasePlugin {
 	 * @param session
 	 * @return runnable
 	 */
-	public Runnable onGoldStandardPublicationCreate(String interhash, DBSession session);
+	public Runnable onGoldStandardCreate(String interhash, DBSession session);
 
 	/**
 	 * Called when a gold standard publication will be updated.
@@ -65,7 +65,7 @@ public interface DatabasePlugin {
 	 * @param session
 	 * @return runnable
 	 */
-	public Runnable onGoldStandardPublicationUpdate(String newInterhash, String interhash, DBSession session);
+	public Runnable onGoldStandardUpdate(String newInterhash, String interhash, DBSession session);
 	
 	/**
 	 * Called when a reference of a gold standard publication will be created
@@ -94,7 +94,7 @@ public interface DatabasePlugin {
 	 * @param session
 	 * @return runnable
 	 */
-	public Runnable onGoldStandardPublicationDelete(String interhash, DBSession session);
+	public Runnable onGoldStandardDelete(String interhash, DBSession session);
 	
 	/**
 	 * Called when a Bookmark is inserted.

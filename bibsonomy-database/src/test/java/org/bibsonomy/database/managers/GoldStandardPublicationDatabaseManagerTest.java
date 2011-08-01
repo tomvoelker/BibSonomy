@@ -62,7 +62,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	 * @return
 	 */
 	private String createGoldStandardPublication() {
-		assertFalse(this.pluginMock.isOnGoldStandardPublicationCreate());
+		assertFalse(this.pluginMock.isOnGoldStandardCreate());
 		
 		// create post
 		final Post<GoldStandardPublication> post = this.generateGoldPublication();
@@ -71,7 +71,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		final String interhash = post.getResource().getInterHash();
 		assertNotNull(goldPubManager.getPostDetails("", interhash, "", VISIBLE_GROUPS, this.dbSession).getResource());
 		
-		assertTrue(this.pluginMock.isOnGoldStandardPublicationCreate());
+		assertTrue(this.pluginMock.isOnGoldStandardCreate());
 		return interhash;
 	}
 	
@@ -79,17 +79,17 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	 * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
 	 */
 	@Test
-	public void testUpdatePost() {
-		assertFalse(this.pluginMock.isOnGoldStandardPublicationUpdate());
-		assertFalse(this.pluginMock.isOnGoldStandardPublicationCreate());
+	public void updatePost() {
+		assertFalse(this.pluginMock.isOnGoldStandardUpdate());
+		assertFalse(this.pluginMock.isOnGoldStandardCreate());
 		
 		// create post
 		final Post<GoldStandardPublication> post = this.generateGoldPublication();
 		goldPubManager.createPost(post, this.dbSession);
 		
 		// test listeners
-		assertTrue(this.pluginMock.isOnGoldStandardPublicationCreate());
-		assertFalse(this.pluginMock.isOnGoldStandardPublicationUpdate());
+		assertTrue(this.pluginMock.isOnGoldStandardCreate());
+		assertFalse(this.pluginMock.isOnGoldStandardUpdate());
 		this.pluginMock.reset();
 		
 		// fetch post
@@ -105,8 +105,8 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		goldPubManager.updatePost(post, interhash, null, this.dbSession, loginUser);
 		
 		// test listeners
-		assertFalse(this.pluginMock.isOnGoldStandardPublicationCreate());
-		assertTrue(this.pluginMock.isOnGoldStandardPublicationUpdate());
+		assertFalse(this.pluginMock.isOnGoldStandardCreate());
+		assertTrue(this.pluginMock.isOnGoldStandardUpdate());
 		
 		interhash = goldStandard.getInterHash();
 		
@@ -122,17 +122,17 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	 * without changing the inter-/intraHash
 	 */
 	@Test
-	public void testUpdatePostWithoutChangingHash() {
-		assertFalse(this.pluginMock.isOnGoldStandardPublicationUpdate());
-		assertFalse(this.pluginMock.isOnGoldStandardPublicationCreate());
+	public void updatePostWithoutChangingHash() {
+		assertFalse(this.pluginMock.isOnGoldStandardUpdate());
+		assertFalse(this.pluginMock.isOnGoldStandardCreate());
 		
 		// create post
 		final Post<GoldStandardPublication> post = this.generateGoldPublication();
 		goldPubManager.createPost(post, this.dbSession);
 		
 		// test listeners
-		assertTrue(this.pluginMock.isOnGoldStandardPublicationCreate());
-		assertFalse(this.pluginMock.isOnGoldStandardPublicationUpdate());
+		assertTrue(this.pluginMock.isOnGoldStandardCreate());
+		assertFalse(this.pluginMock.isOnGoldStandardUpdate());
 		this.pluginMock.reset();
 		
 		// fetch post
@@ -148,8 +148,8 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		goldPubManager.updatePost(post, interhash, null, this.dbSession, loginUser);
 		
 		// test listeners
-		assertFalse(this.pluginMock.isOnGoldStandardPublicationCreate());
-		assertTrue(this.pluginMock.isOnGoldStandardPublicationUpdate());
+		assertFalse(this.pluginMock.isOnGoldStandardCreate());
+		assertTrue(this.pluginMock.isOnGoldStandardUpdate());
 		
 		interhash = goldStandard.getInterHash();
 		
@@ -234,7 +234,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		standard.recalculateHashes();
 		goldPubManager.updatePost(post, INTERHASH_GOLD_1, null, this.dbSession, loginUser);
 		
-		assertTrue(this.pluginMock.isOnGoldStandardPublicationUpdate());
+		assertTrue(this.pluginMock.isOnGoldStandardUpdate());
 		
 		final String newInterHash = standard.getInterHash();
 		final Post<GoldStandardPublication> afterUpdate = goldPubManager.getPostDetails("", newInterHash, "", VISIBLE_GROUPS, this.dbSession);
@@ -243,13 +243,13 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	
 	private void deletePost(final String interhash) {
 		this.pluginMock.reset();
-		assertFalse(this.pluginMock.isOnGoldStandardPublicationDelete());
+		assertFalse(this.pluginMock.isOnGoldStandardDelete());
 		
 		// delete post
 		goldPubManager.deletePost("", interhash, this.dbSession);
 		assertNull(goldPubManager.getPostDetails("", interhash, "", null, this.dbSession));
 		
-		assertTrue(this.pluginMock.isOnGoldStandardPublicationDelete());
+		assertTrue(this.pluginMock.isOnGoldStandardDelete());
 	}
 
 	private Post<GoldStandardPublication> generateGoldPublication() {

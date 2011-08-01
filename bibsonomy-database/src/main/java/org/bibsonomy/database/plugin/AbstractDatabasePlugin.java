@@ -35,17 +35,17 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public Runnable onGoldStandardPublicationCreate(final String interhash, final DBSession session) {
+	public Runnable onGoldStandardCreate(final String interhash, final DBSession session) {
 		return null;
 	}
 
 	@Override
-	public Runnable onGoldStandardPublicationDelete(final String interhash, final DBSession session) {
+	public Runnable onGoldStandardDelete(final String interhash, final DBSession session) {
 		return null;
 	}
 
 	@Override
-	public Runnable onGoldStandardPublicationUpdate(final String newInterhash, final String interhash, final DBSession session) {
+	public Runnable onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
 		return null;
 	}
 	

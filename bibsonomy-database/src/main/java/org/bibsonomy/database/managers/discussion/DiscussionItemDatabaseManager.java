@@ -63,7 +63,7 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 	
 	@SuppressWarnings("unchecked")
 	protected List<D> getDiscussionItemsByHashForResource(final DiscussionItemParam<D> param, final DBSession session) {
-		return this.queryForList("get" + this.discussionItemName + "sByHashForResource", param, session);
+		return (List<D>) this.queryForList("get" + this.discussionItemName + "sByHashForResource", param, session);
 	}
 	
 	/**
