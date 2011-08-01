@@ -19,7 +19,9 @@
 		</c:if>
    		<input name="ckey" value="${command.context.ckey}" type="hidden" />
    		<input name="hash" value="${resource.interHash}" type="hidden" />
-   		<input name="discussionItem.hash" value="${discussionItem.hash}" type="hidden" />
+   		<c:if test="${not empty discussionItem.hash}">
+   			<input name="discussionItem.hash" value="${discussionItem.hash}" type="hidden" />
+   		</c:if>
    		<div class="fsform">
 			<fieldset class="fsOuter" style="padding-top:5px">
 			
