@@ -12,7 +12,7 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlugin {
 	
 	@Override
-	public Runnable onGoldStandardPublicationDelete(final String interhash, final DBSession session) {
+	public Runnable onGoldStandardDelete(final String interhash, final DBSession session) {
 		// delete all references of the post
 		return new Runnable() {
 			
@@ -29,7 +29,7 @@ public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlug
 	}
 	
 	@Override
-	public Runnable onGoldStandardPublicationUpdate(final String newInterhash, final String interhash, final DBSession session) {
+	public Runnable onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
 		// update all references of the post
 		return new Runnable() {
 			@Override
@@ -40,6 +40,10 @@ public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlug
 				
 				update("updateGoldStandardPublicationReference", param, session);
 				update("updateReferenceGoldStandardPublication", param, session);
+				
+				/*
+				 * move discussion with the gold standard
+				 */
 				update("updateDiscussion", param, session);
 				update("updateReviewRatingCache", param, session);
 			}
