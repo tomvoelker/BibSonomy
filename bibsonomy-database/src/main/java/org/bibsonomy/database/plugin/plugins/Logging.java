@@ -32,12 +32,12 @@ public class Logging extends AbstractDatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onCommentUpdate(java.lang.String, org.bibsonomy.model.Comment, org.bibsonomy.model.Comment, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public Runnable onDiscussionUpdate(final String interHash, final DiscussionItem comment, final DiscussionItem oldComment, final DBSession session) {
+	public Runnable onDiscussionUpdate(final String interHash, final DiscussionItem item, final DiscussionItem oldItem, final DBSession session) {
 		return new Runnable() {
 			
 			@Override
 			public void run() {
-				insert("logDiscussionItem", oldComment.getId(), session);
+				insert("logDiscussionItem", oldItem.getId(), session);
 			}
 		};
 	}
@@ -46,12 +46,12 @@ public class Logging extends AbstractDatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onCommentDelete(java.lang.String, org.bibsonomy.model.Comment, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedComment, final DBSession session) {
+	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedItem, final DBSession session) {
 		return new Runnable() {
 			
 			@Override
 			public void run() {
-				insert("logDiscussionItem", deletedComment.getId(), session);
+				insert("logDiscussionItem", deletedItem.getId(), session);
 			}
 		};
 	}
@@ -85,7 +85,7 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 	
 	@Override
-	public Runnable onGoldStandardPublicationUpdate(final String newInterhash, final String interhash, final DBSession session) {
+	public Runnable onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
 		return new Runnable() {
 			
 			@Override
@@ -94,21 +94,21 @@ public class Logging extends AbstractDatabasePlugin {
 				logParam.setNewId(newInterhash);
 				logParam.setOldId(interhash);
 				
-				insert("logGoldStandardPublication", logParam, session);
-				update("logGoldStandardPublicationUpdate", logParam, session);
+				insert("logGoldStandard", logParam, session);
 			}
 		};
 	}
 	
 	@Override
-	public Runnable onGoldStandardPublicationDelete(final String interhash, final DBSession session) {
+	public Runnable onGoldStandardDelete(final String interhash, final DBSession session) {
 		return new Runnable() {
 			
 			@Override
 			public void run() {
 				final LoggingParam<String> logParam = new LoggingParam<String>();
 				logParam.setOldId(interhash);
-				insert("logGoldStandardPublication", logParam, session);
+				logParam.setNewId("");
+				insert("logGoldStandard", logParam, session);
 			}
 		};
 	}
