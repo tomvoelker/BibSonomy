@@ -39,7 +39,7 @@
 				<!-- 
 				   | toggle button for maximizing/minimizing this fieldset
 				   -->
-				<img src="${fsIconUrl}"  onClick="toggleFieldsetVisibility(this)"/>
+				<img src="${fsIconUrl}"  onClick="toggleFieldsetVisibility(this)" alt="toggle visibility"/>
 				<!-- 
 				   | legend text + extension
 				   -->

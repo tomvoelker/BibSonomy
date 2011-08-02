@@ -314,7 +314,7 @@
 	</c:set>
 	    
 	<!--  script for json templates -->
-	<script type="text/javascript" src="${resdir}/javascript/json-template.js">&amp;nbsp;</script>
+	<script type="text/javascript" src="${resdir}/javascript/json-template.js"><!-- keep me --></script>
 			
 	<script type="text/javascript">
 		/** a map of all bibsonomy json template sources */
@@ -438,6 +438,6 @@
 	    |                  custom java script functions                   |
 	    + =============================================================== +-->
 	<!--  script for handling cluster based navigateion -->
-	<script type="text/javascript" src="${resdir}/javascript/clusterTemplateLayout.js">&amp;nbsp;</script>
+	<script type="text/javascript" src="${resdir}/javascript/clusterTemplateLayout.js"><!-- keep me --></script>
 
 </jsp:root>

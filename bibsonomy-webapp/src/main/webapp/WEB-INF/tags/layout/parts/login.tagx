@@ -31,7 +31,7 @@
 	<!--+
 		| includes for image drop down list
 		+-->
-	<script type="text/javascript" src="${resdir}/jquery/plugins/msDropDown/jquery.dd.js">&amp;nbsp;</script>
+	<script type="text/javascript" src="${resdir}/jquery/plugins/msDropDown/jquery.dd.js"><!-- keep me --></script>
 	
 	<!--+
 	    | set message strings

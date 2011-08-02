@@ -26,7 +26,7 @@
 
 	<layout:editGoldStandardPostLayout generalInformation="${generalInformation}" requPath="${requPath}" resourceType="${resourceType}" command="${command}" detailedInformation="${detailedInformation}" extraInformation="${extraInformation}">
 		<jsp:attribute name="headerExtResource">
-			<script type="text/javascript" src="${resdir}/javascript/edit${resourceType}.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/edit${resourceType}.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="tagsAndGroups">
