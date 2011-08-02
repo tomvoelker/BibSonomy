@@ -16,14 +16,12 @@
 	<jsp:body>
 		<!-- The menu -->
 		<ul id="menu">
-			<c:url var="root" value="/"/>
-			<li><a id="nav_home" href="${root}">Home</a></li>
+			<li><a id="nav_home" href="/">Home</a></li>
 			
 			<c:choose>
 				<c:when test="${not empty username}">
 					<!-- sites for logged in users -->
-					<c:url var="userUrl" value="/user/${mtl:encodeURI(username)}"/>
-					<li><a href="${userUrl}" id="nav_my"><fmt:message key="navi.my"/></a></li>
+					<li><a href="/user/${mtl:encodeURI(username)}" id="nav_my"><fmt:message key="navi.my"/></a></li>
 					<li><a href="#" id="nav_search">&amp;nbsp;</a></li>
 					<li>
 						<a href="#" id="nav_more"><fmt:message key="more"/> &amp;raquo;</a>
@@ -57,7 +55,7 @@
 			<!-- toggle between authentication modes.  -->
 			<c:if test="${selected == 'nav_login'}">
 				<div id="login-bar">
-					<c:forEach var="authMethod" items="${authConfig.authOrder}">
+					<c:forEach var="authMethod" items="${authConfig}">
 						<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
 						<a style="font-size: 0.8em;" data-authMethod="${authMethodName}"><fmt:message key="login.method.${authMethodName}" /></a>
 					</c:forEach>
