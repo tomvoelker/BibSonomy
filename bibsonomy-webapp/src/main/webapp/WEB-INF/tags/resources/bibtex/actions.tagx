@@ -17,7 +17,7 @@
 			<c:set var="pickUnpick" value="unpick"/>
 		</c:if>
 		
-		<c:url var="pickUnpick_url" value="/ajax/pickUnpickPost" context="${projectContext}">
+		<c:url var="pickUnpick_url" value="/ajax/pickUnpickPost">
 			<c:param name="hash" value="${post.resource.intraHash}" />
 			<c:param name="user" value="${post.user.name}" />
 			<c:param name="ckey" value="${ckey}" />
@@ -66,7 +66,7 @@
 				<!-- DELETE -->					         
 				<fmt:message key="bibtex.actions.delete.title" var="deleteTitle"/>
                 
-                <c:url var="deleteUrl" value="/deletePost" context="${projectContext}">
+                <c:url var="deleteUrl" value="/deletePost">
                    <c:param name="resourceHash" value="${post.resource.intraHash}" />
                    <c:param name="ckey" value="${ckey}" />
                 </c:url>
@@ -106,7 +106,7 @@
 		
 		<!-- REMOVE Message from Inbox -->
 		<c:if test="${post.inboxPost}">
-			<c:url var="message_remove" value="/removeMessage" context="${projectContext}">
+			<c:url var="message_remove" value="/removeMessage">
 				<c:param name="hash" value="${post.resource.intraHash}" />
 				<c:param name="user" value="${post.user.name}" />
 				<c:param name="ckey" value="${ckey}" />
