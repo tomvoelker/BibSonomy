@@ -19,7 +19,7 @@
 		
             <!-- ********** FIRST ************** -->
 	        <c:if test="${listView.totalCount > 0}">
-	            <c:url var="firstUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,0)}" context="${projectContext}">
+	            <c:url var="firstUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,0)}">
 	              <!-- <c:param name="${listViewStartParamName}" value="0" /> -->
 	            </c:url>
 	            <fmt:message var="gotoFirst" key="goto.first"/>
@@ -111,7 +111,7 @@
 	<c:if test="${command.context.userLoggedIn and empty disableActions}">
 		<span class="actions">
 			<c:set var="editUrlTemplate">/bediturl/<c:out value='${requPathAndQuery}' escapeXml="true"/></c:set>
-			<c:url var="editUrl" value="${editUrlTemplate}" context="${projectContext}"/>
+			<c:url var="editUrl" value="${editUrlTemplate}" />
 			<fmt:message var="editPageTags" key="post.meta.edit.title"/>
 			<a href="${editUrl}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
 		</span>
