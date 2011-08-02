@@ -32,7 +32,7 @@
 			<!-- FIXME: implement -->
 			<!--<li>
 				<fmt:message key="post.actions.delete.gold.title" var="deleteTitle"/>
-				<c:url var="deleteUrl" value="/deletePost" context="${projectContext}">
+				<c:url var="deleteUrl" value="/deletePost">
 		           <c:param name="resourceHash" value="${goldstandard.interHash}" />
 		           <c:param name="ckey" value="${ckey}" />
 		        </c:url>
