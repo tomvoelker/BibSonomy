@@ -24,9 +24,9 @@
     
 		<jsp:attribute name="formatButtons">
 			<!-- Buttons to show content of page in different formats -->
-			<c:url var="rssPath" value="/rss/${requPath}${requQueryString}" context="${projectContext}"/><a href="${rssPath}">RSS</a>${mtl:ch('nbsp')}
-			<c:url var="bibPath" value="/bookbib/${requPath}${requQueryString}" context="${projectContext}"/><a href="${bibPath}">BibTeX</a>${mtl:ch('nbsp')}
-            <c:url var="xmlPath" value="/xml/${requPath}${requQueryString}" context="${projectContext}"/><a href="${xmlPath}">XML</a>
+			<c:url var="rssPath" value="/rss/${requPath}${requQueryString}" /><a href="${rssPath}">RSS</a>${mtl:ch('nbsp')}
+			<c:url var="bibPath" value="/bookbib/${requPath}${requQueryString}" /><a href="${bibPath}">BibTeX</a>${mtl:ch('nbsp')}
+            <c:url var="xmlPath" value="/xml/${requPath}${requQueryString}" /><a href="${xmlPath}">XML</a>
 		</jsp:attribute>
     
 		<jsp:attribute name="title">  <bm:title   post="${post}"/></jsp:attribute>
