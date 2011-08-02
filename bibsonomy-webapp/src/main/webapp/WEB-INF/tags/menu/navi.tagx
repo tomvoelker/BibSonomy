@@ -15,7 +15,7 @@
 	<div id="nice_tnav">
 	<ul>
 		<li>
-			<c:url var="root" value="/" context="${projectContext}"/><a id="nav_home" href="${root}">Home</a>
+			<a id="nav_home" href="/">Home</a>
 		</li>
 		<c:choose>
 			<c:when test="${not empty loginUserName}">
@@ -25,8 +25,7 @@
 					 	| dropdown menu for myBibSonomy
 					 	|
 					 	+-->
-					<c:url var="userUrl" value="/user/${mtl:encodeURI(loginUserName)}" context="${projectContext}"/>
-					<a id="nav_my" href="${userUrl}" rel="my_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.my"/>${projectName}</a>
+					<a id="nav_my" href="/user/${mtl:encodeURI(loginUserName)}" rel="my_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.my"/>${properties['project.name']}</a>
 
 					  <div id="my_menu" class="nicedropmenudiv">
 					    <a href="/friends">
@@ -76,18 +75,16 @@
 			</c:when>
 		</c:choose>	
 		<li>
-			<c:url var="tagsUrl" value="/tags" context="${projectContext}"/><a id="nav_tags" href="${tagsUrl}"><fmt:message key="navi.tags"/></a>
+			<a id="nav_tags" href="/tags"><fmt:message key="navi.tags"/></a>
 		</li>
 		<li>
-			<c:url var="authorsUrl" value="/authors" context="${projectContext}"/><a id="nav_authors" href="${authorsUrl}"><fmt:message key="navi.authors"/></a>
+			<a id="nav_authors" href="/authors"><fmt:message key="navi.authors"/></a>
 		</li>		
 		<li>
-			<c:url var="relationsUrl" value="/relations" context="${projectContext}"/>
-			<a id="nav_relations" href="${relationsUrl}"><fmt:message key="navi.relations"/></a>								
+			<a id="nav_relations" href="/relations"><fmt:message key="navi.relations"/></a>								
 		</li>
 		<li>
-			<c:url var="groupsUrl" value="/groups" context="${projectContext}"/>
-			<a id="nav_groups" href="${groupsUrl}" rel="grp_menu"><c:if test="${not empty loginUser.groups}"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> </c:if><fmt:message key="navi.groups"/></a>
+			<a id="nav_groups" href="/groups" rel="grp_menu"><c:if test="${not empty loginUser.groups}"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> </c:if><fmt:message key="navi.groups"/></a>
 		</li>
   
         <!-- dropdown menu for groups -->
@@ -104,8 +101,8 @@
                        <td>
                          <c:if test="${grp.sharedDocuments}">
                            <a href="/group/${fn:escapeXml(grp.name)}?filter=myGroupPDF">
-                             <fmt:message key="navi.groups"/>                   
-                             <fmt:message key="navi.pdfs"/>
+                             <fmt:message key="navi.groups" />                   
+                             <fmt:message key="navi.pdfs" />
                            </a>
                          </c:if>
                        </td>
@@ -117,8 +114,7 @@
         </c:if>
         
 		<li>
-			<c:url var="popularUrl" value="/popular" context="${projectContext}"/>
-			<a id="nav_popular" href="${popularUrl}"><fmt:message key="navi.popular"/></a>
+			<a id="nav_popular" href="/popular"><fmt:message key="navi.popular" /></a>
 		</li>
 	</ul>
 	</div>
