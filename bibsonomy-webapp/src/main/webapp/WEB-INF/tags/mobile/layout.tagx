@@ -35,11 +35,11 @@
 				</c:if>
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/mobile.css" />
 				<!-- The only JavaScript framework used on the mobile site is jQuery -->
-				<script type="text/javascript" src="${resdir}/jquery/jquery.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/functions.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/jquery/jquery.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/functions.js"><!-- keep me --></script>
 				<c:if test="${not empty additionalJS}">
-					<script type="text/javascript" src="${additionalJS}">&amp;nbsp;</script>
+					<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
 				</c:if>
 				<meta name="email" content="${projectEmail}"/>
 				<parts:meta fieldName="author"/>
