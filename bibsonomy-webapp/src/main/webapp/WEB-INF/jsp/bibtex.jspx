@@ -23,11 +23,11 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
 			
 			<c:if test="${not empty command.goldStandardPublication}">
-				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
 			
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
 			</c:if>
