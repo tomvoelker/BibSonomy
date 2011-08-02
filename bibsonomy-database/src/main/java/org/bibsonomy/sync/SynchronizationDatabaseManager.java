@@ -106,7 +106,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Delete the given synchronization data's status in the database.
+	 * Delete the given synchronization data's status in the database. If syncDate is null, delete all sync data, which matches other parameters
 	 * 
 	 * @param session - the database session
 	 * @param status - the status to set
