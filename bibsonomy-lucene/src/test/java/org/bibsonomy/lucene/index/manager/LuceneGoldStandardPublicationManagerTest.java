@@ -92,6 +92,7 @@ public class LuceneGoldStandardPublicationManagerTest extends AbstractDatabaseMa
     }
     
     @Test
+    @Ignore
     public void testInsert() {	
 		int docCountBefore = manager.getResourceIndeces().get(0).getStatistics().getNumDocs();
 		final Post<GoldStandardPublication> post = ModelUtils.generatePost(GoldStandardPublication.class);
