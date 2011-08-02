@@ -87,7 +87,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 			syncService.setLastSyncData(syncData);
 		}
 		
-		command.setSyncServices(userServices);
+		command.setSyncServer(userServices);
 		
 		return Views.SYNC;
 	}

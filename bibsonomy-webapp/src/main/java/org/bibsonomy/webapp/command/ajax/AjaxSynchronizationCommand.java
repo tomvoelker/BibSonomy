@@ -3,6 +3,8 @@ package org.bibsonomy.webapp.command.ajax;
 import java.net.URI;
 import java.util.List;
 
+import org.bibsonomy.model.sync.SyncService;
+
 
 /**
  * @author wla
@@ -11,21 +13,9 @@ import java.util.List;
 public class AjaxSynchronizationCommand extends AjaxCommand {
 
 	private URI serviceName;
-	private List<?> syncServices;
+	private List<SyncService> syncServer;
+	private Boolean resetSyncService;
 
-	/**
-	 * @param syncServices the syncServices to set
-	 */
-	public void setSyncServices(List<?> syncServices) {
-		this.syncServices = syncServices;
-	}
-
-	/**
-	 * @return the syncServices
-	 */
-	public List<?> getSyncServices() {
-		return syncServices;
-	}
 	/**
 	 * @param serviceName the serviceName to set
 	 */
@@ -38,5 +28,33 @@ public class AjaxSynchronizationCommand extends AjaxCommand {
 	 */
 	public URI getServiceName() {
 		return serviceName;
+	}
+
+	/**
+	 * @param resetSyncService the resetSyncService to set
+	 */
+	public void setResetSyncService(Boolean resetSyncService) {
+		this.resetSyncService = resetSyncService;
+	}
+
+	/**
+	 * @return the resetSyncService
+	 */
+	public Boolean getResetSyncService() {
+		return resetSyncService;
+	}
+
+	/**
+	 * @param syncServer the syncServer to set
+	 */
+	public void setSyncServer(List<SyncService> syncServer) {
+		this.syncServer = syncServer;
+	}
+
+	/**
+	 * @return the syncServer
+	 */
+	public List<SyncService> getSyncServer() {
+		return syncServer;
 	}
 }

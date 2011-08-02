@@ -15,8 +15,11 @@ import net.sf.json.JSONObject;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
@@ -136,6 +139,11 @@ public class SynchronizationController extends AjaxController implements Minimal
 //			for (final Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(syncService.getResourceType())) {
 //				client.deleteSyncData(serviceName, resourceType, syncDate);
 //			}
+			if (present(command.getResetSyncService())) {
+				SyncService service = getSyncServer(command.getSyncServer());
+				client.deleteSyncData(service, BibTex.class, null);
+				client.deleteSyncData(service, Bookmark.class, null);
+			}
 			break;
 		default:
 			/*
@@ -242,6 +250,19 @@ public class SynchronizationController extends AjaxController implements Minimal
 			json.put(resourceType.getSimpleName(), messages);
 		}
 		return json;
+	}
+	
+	/**
+	 * Finds the sync service in the list whose update/create form was send. 
+	 * 
+	 * @param syncServices
+	 * @return
+	 */
+	private SyncService getSyncServer(final List<SyncService> syncServices) {
+		for (final SyncService syncService : syncServices) {
+			if (present(syncService.getService())) return syncService;
+		}
+		return null;
 	}
 
 	

@@ -50,7 +50,7 @@
 			<div id="general_100">
 				
 				<!-- iterate over all services -->
-				<c:forEach var="service" items="${command.syncServices}" varStatus="status">
+				<c:forEach var="service" items="${command.syncServer}" varStatus="status">
 					<form:form action="/ajax/synchronize" method="post" id="sync_${status.index}">
 
 						<h2><c:out value="${serviceName}: "/> <c:out value="${service.service}" /></h2>	
