@@ -14,7 +14,7 @@
 				<!-- user's own post -->
 					
 				<!-- EDIT link -->
-				<c:url var="url_edit" value="/editBookmark" context="${projectContext}">
+				<c:url var="url_edit" value="/editBookmark">
 					<c:param name="intraHashToUpdate" value="${post.resource.intraHash}" />
 				</c:url>
 				<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
@@ -29,7 +29,7 @@
 	            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 	
 				<!-- DELETE link -->
-				<c:url var="url_delete" value="/deletePost" context="${projectContext}">
+				<c:url var="url_delete" value="/deletePost">
 					<c:param name="resourceHash" value="${post.resource.intraHash}" />
 					<c:param name="ckey" value="${ckey}" />
 				</c:url>
@@ -65,7 +65,7 @@
 								
 		<c:if test="${post.inboxPost}">
 			<!-- REMOVE Message from Inbox -->
-			<c:url var="message_remove" value="/removeMessage" context="${projectContext}">
+			<c:url var="message_remove" value="/removeMessage">
 				<c:param name="hash" value="${post.resource.intraHash}" />
 				<c:param name="user" value="${post.user.name}" />
 				<c:param name="ckey" value="${ckey}" />
@@ -91,9 +91,24 @@
 		    <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 		</c:if>
 		
+		<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
+			<!-- GOLDSTANDARD -->
+			<c:url var="editGoldStandardLink" value="/editGoldStandardBookmark">
+				<c:param name="hash" value="${post.resource.intraHash}" />
+				<c:param name="user" value="${post.user.name}" />
+				<c:param name="editBeforeSaving" value="true" />
+			</c:url>
+	
+			<fmt:message key="bibtex.actions.gold" var="goldTitle" />
+			<a href="${editGoldStandardLink}" title="${goldTitle}">
+				<c:out value="${goldTitle}" />
+			</a>
+			<c:out value=" " />${mtl:ch('post.actions.delim')}<c:out value=" " />
+		</c:if>
+		
 		<!-- DISCUSS link -->					
 		<fmt:message key="post.resource.discussion.title.bookmark" var="title"/>
 		<a href="/url/${post.resource.interHash}#discussion" title="${title}"><fmt:message key="post.resource.discussion" /></a>
-	</c:if>	
-	  
+	</c:if>
+
 </jsp:root>
