@@ -2,7 +2,7 @@
 
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: ISWC+ASWC 2007
+<h1><a href="/" rel="Start">BibSonomy</a> :: ISWC+ASWC 2007
 <form id="specialsearch" method="get" action="/redirect">
   <select name="scope" size="1" id="scope">
     <option value="tag">tag</option>
@@ -46,9 +46,9 @@
     </div>
 
     <div class="linkbox">
-        <a href="/help/basic">What is ${projectName}?</a>
+        <a href="/help/basic">What is BibSonomy?</a>
         <a href="/help/tutorials">Tutorial</a>
-        <a href="/register">Get a ${projectName} account!</a>
+        <a href="/register">Get a BibSonomy account!</a>
     </div>
 
 

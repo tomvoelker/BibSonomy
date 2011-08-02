@@ -71,7 +71,7 @@
     <meta name="description" lang="en" content="Hypertext 2009 conference proceedings on the BibSonomy bookmark/BibTeX tagging and sharing system">
     <link rel="alternate" type="application/atom+xml" title="BibSonomy Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default">
     <link rel="alternate" type="application/rss+xml"  title="BibSonomy Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss">
-    <title><c:out value="${projectName}" /> :: Hypertext 2009 </title>
+    <title>BibSonomy :: Hypertext 2009 </title>
   </head>
   
   <body>

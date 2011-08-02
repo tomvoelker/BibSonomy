@@ -44,11 +44,11 @@
     <meta name="description" lang="de" content="Webapplikation des Fachgebiets Wissensverarbeitung, Universität Kassel" />
     <meta name="description" lang="en" content="Webapplication of the Knowledge and Data Engineering Group, University of Kassel, Germany" />
     <c:if test="${isResourceSite eq 'yes'}">
-      <link rel="alternate" type="application/rss+xml" title="Bookmark RSS feed for <c:out value='/${requPath}' />" href="${projectHome}rss/<c:out value='${requPath}'/>" />
-      <link rel="alternate" type="application/rss+xml" title="Publication RSS feed for <c:out value='/${requPath}' />" href="${projectHome}publrss/<c:out value='${requPath}'/>" />
-      <link rel="alternate" type="application/rss+xml" title="BuRST RSS feed for <c:out value='/${requPath}' />" href="${projectHome}burst/<c:out value='${requPath}'/>" />
+      <link rel="alternate" type="application/rss+xml" title="Bookmark RSS feed for <c:out value='/${requPath}' />" href="http://www.bibsonomy.org/rss/<c:out value='${requPath}'/>" />
+      <link rel="alternate" type="application/rss+xml" title="Publication RSS feed for <c:out value='/${requPath}' />" href="http://www.bibsonomy.org/publrss/<c:out value='${requPath}'/>" />
+      <link rel="alternate" type="application/rss+xml" title="BuRST RSS feed for <c:out value='/${requPath}' />" href="http://www.bibsonomy.org/burst/<c:out value='${requPath}'/>" />
     </c:if>
     <link rel="alternate" type="application/atom+xml" title="BibSonomy Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default" />
     <link rel="alternate" type="application/rss+xml"  title="BibSonomy Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss" />
-    <title><c:out value="${projectName}" />::<c:out value="${param.title}" /></title>
+    <title>BibSonomy :: <c:out value="${param.title}" /></title>
   </head>

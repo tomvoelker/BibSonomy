@@ -2,7 +2,7 @@
 
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: ESWC 2008
+<h1><a href="/" rel="Start">BibSonomy</a> :: ESWC 2008
 <form id="specialsearch" method="get" action="/redirect">
   <select name="scope" size="1" id="scope">
     <option value="tag">tag</option>
@@ -35,27 +35,27 @@
 
     <div class="explanation">
     
-      This service is provided by <a href="${projectHome}">${projectName}</a>, a social bookmark and
+      This service is provided by <a href="http://www.bibsonomy.org">BibSonomy</a>, a social bookmark and
       publication sharing system. It contains all accepted papers of the <a href="http://www.eswc2008.org/">ESWC 2008 conference</a> and its
       workshops, together with the keywords (tags) that authors have
       associated with their papers or that show up in the paper titles.
 
-      <b>Want to organize your conference visit? Just <a href="/register">get a ${projectName} account</a> and
+      <b>Want to organize your conference visit? Just <a href="/register">get a BibSonomy account</a> and
       start copying and annoting the papers you are interested in!</b>
 
     </div>
 
     <div class="linkbox">
-        <a href="/help/basic">What is ${projectName}?</a>
+        <a href="/help/basic">What is BibSonomy?</a>
         <a href="/help/tutorial">Tutorials</a>
-        <a href="/register">Get a ${projectName} account!</a>
+        <a href="/register">Get a BibSonomy account!</a>
     </div>
 
 
     <div class="explanation">
       The color of each tag indicates the session (as shown at the bottom of
       this page) to which most abstracts annotated with that tag belong to.
-      Clicking on a tag (keyword) will retrieve from ${projectName} the abstracts
+      Clicking on a tag (keyword) will retrieve from BibSonomy the abstracts
       that have been tagged with it. 
 
       The publication metadata are <a href="/export/user/eswc2008">available in many formats</a>, including BibTeX and RDF.
