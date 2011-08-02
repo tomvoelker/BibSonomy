@@ -33,12 +33,10 @@
 		
 		function confirmReset(t) {
 			if(confirm("${confirmReset}")) {
-				//var action = $(t).parents("form").attr("action");
-				//action = action + "?resetSyncService=true";
 				var action = "/ajax/synchronize?resetSyncService=true&amp;serviceName=" + $(t).parents("form").find("input.serviceName").val();
-				$(t).parents("form").find("input[name='_method']").val("DELETE");
-				alert(action);
-				$(t).parents("form").attr("action", action);
+				var form = $(t).parents("form");
+				form.find("input[name='_method']").val("DELETE");
+				form.attr("action", action);
 			} else {
 				 return false;
 			}

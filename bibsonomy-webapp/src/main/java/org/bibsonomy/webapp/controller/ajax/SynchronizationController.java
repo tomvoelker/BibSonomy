@@ -29,6 +29,7 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
@@ -143,6 +144,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 				SyncService service = getSyncServer(command.getSyncServer());
 				client.deleteSyncData(service, BibTex.class, null);
 				client.deleteSyncData(service, Bookmark.class, null);
+				return new ExtendedRedirectView("/settings?selTab=4");
 			}
 			break;
 		default:
