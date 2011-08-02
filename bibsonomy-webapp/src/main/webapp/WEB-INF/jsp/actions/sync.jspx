@@ -103,7 +103,7 @@
 							<!-- FIXME: If all sync's are planned, we don't have the plan. It would be good, to show it here. -->
 							<fieldset class="fsInner">
 								
-								<div class="syncPlan"></div>
+								<div class="syncPlan"><!-- something to fill --></div>
 							
 								<legend><c:out value="${syncPlan}"/></legend>
 								
