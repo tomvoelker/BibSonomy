@@ -10,12 +10,12 @@
 	
 	<c:if test="${!empty post.resource.interHash and post.resource.count > 2}">
 		<c:set var="style"><mtl:xOtherPersonsStyle value="${post.resource.count}"/></c:set>
-		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" context="${projectContext}"/>
+		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" />
 		<c:out value= " "/><fmt:message key="and" /><c:out value= " "/>
 		<a style="${style}" href="${otherPeopleUrl}">${post.resource.count-1}<c:out value= " "/><fmt:message key="post.meta.otherPeople"/></a>
 	</c:if>
 	<c:if test="${!empty post.resource.interHash and post.resource.count == 2}">
-		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" context="${projectContext}"/>
+		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" />
 		<c:out value= " "/><fmt:message key="and" /><c:out value= " "/>
 		<a style="background-color:rgb(97%,97%,97%);" href="${otherPeopleUrl}">1<c:out value= " "/><c:out value= " "/><fmt:message key="post.meta.otherPerson"/></a>
 	</c:if>

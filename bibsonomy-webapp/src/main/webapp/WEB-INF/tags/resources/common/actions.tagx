@@ -16,7 +16,7 @@
 
           <!-- ****************************** BibTeX *************************** -->
           <c:when test="${resourceType eq 'bibtex'}">
-            <c:url var="editUrl"   value="/beditbib/${requPath}"          context="${projectContext}"/>
+            <c:url var="editUrl"   value="/beditbib/${requPath}" />
             <fmt:message var="editPageTags"       key="post.meta.edit.title"/>
             <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
 
@@ -35,7 +35,7 @@
 
 	      <!-- ****************************** Bookmarks *************************** -->
           <c:otherwise>
-			<c:url var="editUrl" value="/bediturl/${requPath}" context="${projectContext}"/>
+			<c:url var="editUrl" value="/bediturl/${requPath}"/>
             <fmt:message var="editPageTags" key="post.meta.edit.title"/>
             <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
 		  </c:otherwise>

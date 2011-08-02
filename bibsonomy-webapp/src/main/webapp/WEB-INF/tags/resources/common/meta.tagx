@@ -15,8 +15,7 @@
 		<c:out value=" "/>
 		<span class="bmtags">
 			<c:forEach var="tag" items="${post.visibleTags}">
-				<c:url var="tagUrl" value="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}" context="${projectContext}"/>
-				<a href="${tagUrl}"><c:out value="${tag.name}"/></a>
+				<a href="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a>
 				<c:out value=" "/>
 			</c:forEach>
 		<!-- TODO: add "for:" tags  -->
@@ -28,12 +27,11 @@
 		</span>
 	</c:if>
 	<c:if test="${!empty post.hiddenSystemTags}">
-		<c:url var="systagUrl" value="/user/${fn:escapeXml(post.user.name)}/" context="${projectContext}"/>
 		<c:set var="systagTitles" value=""/>
 		<c:forEach var="systag" items="${post.hiddenSystemTags}">
 			<c:set var="systagTitles" value="${systagTitles}${fn:escapeXml(systag.name)} " />
 		</c:forEach>		
-		<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="${systagUrl}" tags="${systagTitles}" title="System Tags"/>	
+		<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="/user/${fn:escapeXml(post.user.name)}/" tags="${systagTitles}" title="System Tags"/>	
 	</c:if>
 	
 	<!-- group of a post -->
@@ -42,28 +40,25 @@
 		<c:out value=" "/>
 			<c:choose>
 				<c:when test="${group.name eq 'friends'}">
-					<c:url var="groupUrl" value="/friend/${fn:escapeXml(post.user.name)}" context="${projectContext}"/>
 					<fmt:message key="post.meta.asGroup"/> 
 					<c:out value=" "/>
-					<a href="${groupUrl}"><fmt:message key="friends"/></a>
+					<a href="/friend/${fn:escapeXml(post.user.name)}"><fmt:message key="friends"/></a>
 				</c:when>
 				<c:otherwise>
-					<c:url var="groupUrl" value="/viewable/${fn:escapeXml(group.name)}" context="${projectContext}"/>
 					<fmt:message key="post.meta.asGroup"/> 
 					<c:out value=" "/>
-					<a href="${groupUrl}"><c:out value="${group.name}" /></a>
+					<a href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 				</c:otherwise>
 			</c:choose>
 		</c:if>	
 	</c:forEach>
 
 	<!-- user name of a resource -->
-	<c:if test="${!isUserPage}">	
-		<c:url var="taggedByUrl" value="/user/${post.user.name}" context="${projectContext}"/>
+	<c:if test="${!isUserPage}">
 		<c:out value=" "/>
 		<fmt:message key="post.meta.taggedBy" />
 		<c:out value=" "/>
-		<a name="${fn:escapeXml(post.user.name)}" href="${taggedByUrl}"><c:out value="${post.user.name}" escapeXml="true"/></a>
+		<a name="${fn:escapeXml(post.user.name)}" href="/user/${post.user.name}"><c:out value="${post.user.name}" escapeXml="true"/></a>
 	</c:if>
 	
 	<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
