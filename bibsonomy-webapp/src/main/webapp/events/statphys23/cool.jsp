@@ -3,7 +3,7 @@
 <body>
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: register</h1>
+<h1><a href="/" rel="Start">BibSonomy</a> :: register</h1>
 
 <%@include file="/boxes/navi.jsp" %>
 

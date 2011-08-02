@@ -6,7 +6,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/">${projectName}</a> :: <a rel="path_menu" href="/register"><img src="/resources/image/box_arrow.png">&nbsp;cool</a></h1> 
+<h1 id="path"><a href="/">BibSonomy</a> :: <a rel="path_menu" href="/register"><img src="/resources/image/box_arrow.png">&nbsp;cool</a></h1> 
 
 <%-------------------------- Path Navigation -----------------------%>
 <%@include file="/boxes/path_navi.jsp" %>
@@ -26,9 +26,6 @@
     Feel free to <a href="/register">join</a> the group, 
     such that your tags become a part of it. 
   </center>
-
-
-
 
     <sql:query var="rst" dataSource="${dataSource}">
     SELECT tag_name, tag_anzahl, round(log(if(tag_anzahl>100, 100, tag_anzahl)))*30+100 AS tag_size FROM (
