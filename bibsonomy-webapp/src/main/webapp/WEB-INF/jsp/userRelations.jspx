@@ -12,17 +12,15 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.relations" var="relationsPageTitle" />
 
-	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${relationsPageTitle} :: ${command.requestedUser}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
 
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt=""
-				src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message
-				key="navi.relations" /></a> :: 
-			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out
-				value='${command.requestedUser}' /></a> ::
-			<form action="/user/${fn:escapeXml(command.requestedUser)}"
-				method="get" class="smallform">
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${relationsPageTitle}" /></a> :: 
+			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}' /></a> ::
+			<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
 				<input type="text" size="20" name="tag" id="inpf" />
 			</form>		
 		</jsp:attribute>
