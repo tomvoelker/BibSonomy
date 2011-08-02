@@ -1,5 +1,4 @@
 <jsp:root version="2.0"
-	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
@@ -8,6 +7,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:spring="http://www.springframework.org/tags">
+
+<!--	xmlns="http://www.w3.org/1999/xhtml"-->
 	
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
@@ -38,10 +39,11 @@
     <!-- 
       document starts here
      -->
-	<jsp:output doctype-root-element="html"	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+	<jsp:output omit-xml-declaration="true" />
+	<jsp:output doctype-root-element="html"	doctype-system="about:legacy-compat" />
   
 	<jsp:element name="html">
-		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>
+<!--		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>-->
 		<jsp:body>
 			<head>
 				<!--+ 
@@ -50,7 +52,7 @@
 					|-->
 				<c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
 				
-				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
+				<meta charset="UTF-8" />
 				<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
 				<c:if test="${not empty personalized and personalized == true}">
 					<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
@@ -63,7 +65,7 @@
 					| 
 				 	+-->
 				<!-- localized JavaScript messages -->
-				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
 				<!--+ 
 				 	| merged jquery.js, functions.js, style.js, chrome.js
 				 	| and jQuery plugins jquery.textarearesizer.js, jquery.corner.js, jquery.sidebarresizer.js
@@ -71,15 +73,15 @@
 					| To add other files, add a line to ${resdir}/javascript/merged/global.js and 
 				 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
 				 	+-->
-				<script type="text/javascript" src="${resdir}/javascript/merged/global.js">&amp;nbsp;</script>
-				<script type="text/javascript" src="${resdir}/javascript/systemmessage.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/systemmessage.js"><!-- keep me --></script>
 				<!-- include tooltip JavaScript only for users that have tooltips enabled -->
 				<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
-					<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&amp;nbsp;</script>
+					<script type="text/javascript" src="${resdir}/javascript/tooltip.js"><!-- keep me --></script>
 				</c:if>
 				<!-- enable logging with user permission -->
 				<c:if test="${loginUser.settings.logLevel != 1}">
-				  <script type="text/javascript" src="${resdir}/javascript/logging.js">&amp;nbsp;</script>
+				  <script type="text/javascript" src="${resdir}/javascript/logging.js"><!-- keep me --></script>
 	              <script type="text/javascript">
 	              <![CDATA[
 						log_setUsername("${loginUser.name}");
@@ -88,17 +90,17 @@
 				</c:if>
 				<!-- enable on-site spammer killing when user is admin -->
 				<c:if test="${loginUser.role eq 'ADMIN'}">
-				  <script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
+				  <script type="text/javascript" src="${resdir}/javascript/spammer.js"><!-- keep me --></script>
 				</c:if>
 
 				<c:if test="${not empty additionalJS}">
-					<script type="text/javascript" src="${additionalJS}">&amp;nbsp;</script>
+					<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
 				</c:if>
 
 
-				<meta name="email" content="${projectEmail}"/>
+<!--				<meta name="email" content="${projectEmail}"/>-->
 				<parts:meta fieldName="author"/>
-				<parts:meta fieldName="copyright"/>
+<!--				<parts:meta fieldName="copyright"/>-->
 				<parts:meta fieldName="keywords"/>
 				<parts:meta fieldName="description"/>
 				<link rel="alternate" type="application/atom+xml" title="${systemName} Blog - Atom" href="http://blog.bibsonomy.org/feeds/posts/default" />
@@ -254,7 +256,7 @@
 				<!-- sidebar -->
 				<c:if test="${sidebar != null}">
 					<div id="sidebarroundcorner" >
-						<img id="sidebarGrip" border="0" src="/resources/image/grip.png"/>
+						<img id="sidebarGrip" border="0" src="/resources/image/grip.png" alt="a gripper"/>
 						<div class="sidebarBoxOuter" id="sidebox">
 							<div class="sidebarBoxInner" >
 								<jsp:invoke fragment="sidebar"/>
