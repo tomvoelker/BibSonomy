@@ -36,12 +36,12 @@
 				<span style="display: block; margin-top: 7px;">
 					<div id="userAndPw">
 						<c:set var="login">login </c:set>
-						<form method="POST" action="/login" style="display: inline">
+						<form method="POST" action="/login_internal" style="display: inline">
 							<label for="un">username:&nbsp;</label>
 							<input type="text" size="10" name="username" id="un" />&nbsp; 
 							<label for="pw">password:&nbsp;</label> 
 							<input type="password" size="10" name="password" id="pw" /> 
-							<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" /> 
+							<input type="image" src="/resources/image/grey.png" alt="${login}" /> 
 							<a href="javascript:switchLogin();">
 								<img style="width: 16px; height: 16px;" src="${resdir}/image/login_logo_OPENID.png" />
 							</a>
@@ -49,7 +49,7 @@
 					</div>
 
 					<div id="openID" style="display: none">
-						<form action="/login" method="POST">
+						<form action="/login_openid" method="POST">
 							<label path="openID">OpenID:</label>
 							<input type="text" id="openID" class="openid" size="30" value="" name="openID" /> <a href="javascript:switchLogin();">
 							<img style="width: 16px; height: 16px;" src="${resdir}/image/login_logo_INTERNAL.png" /></a>
