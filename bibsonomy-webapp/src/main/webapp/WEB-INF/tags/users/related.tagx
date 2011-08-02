@@ -50,7 +50,7 @@
 			<c:set var="personalized">
 				<c:if test="${not empty personalized}">/personalized</c:if>
 			</c:set>
-			<c:url var="userUrl" context="${projectContext}" value="${personalized}/user/${fn:escapeXml(user.name)}">
+			<c:url var="userUrl" value="${personalized}/user/${fn:escapeXml(user.name)}">
 				<c:param name="userSimilarityRef">${userSimilarityRef}</c:param>
 			</c:url>
 														

@@ -50,12 +50,10 @@
 			
 			<!-- construct url to single tag -->
 			<c:url var="tagUrl"
-			       context="${projectContext}" 
 				   value="/${mtl:getLowerPath(requPath)}/${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}"/>
 			
 			<!-- construct url to several tags -->	   
 			<c:url var="tagsUrl"
-				   context="${projectContext}" 
 				   value="/${mtl:getLowerPath(requPath)}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}"/>
 			
 			<!-- set titles -->	   

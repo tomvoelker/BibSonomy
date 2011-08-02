@@ -27,7 +27,6 @@
 								
 			<!-- construct url to tag -->
 			<c:url var="tagUrl"
-			       context="${projectContext}" 
 				   value="/${mtl:getLowerPath(requPath)}/${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}"/>
 						
 			<!-- set title -->	   
