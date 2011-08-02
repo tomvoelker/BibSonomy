@@ -1,3 +1,4 @@
+<!-- TODO: abstract view for actions @see bookmark/actions -->
 <jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
@@ -35,8 +36,13 @@
 		<c:choose>
 			<c:when test="${loginUserName ne post.user.name}">
 				<!-- different users - COPY -->
+				<c:url var="copyLink" value="/editPublication">
+					<c:param name="hash" value="${post.resource.intraHash}" />
+					<c:param name="user" value="${post.user.name}" />
+					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+				</c:url>
 				<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
-         		<a href="/editPublication?hash=${post.resource.intraHash}&amp;user=${mtl:encodeURI(post.user.name)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">
+         		<a href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
 					<fmt:message key="bibtex.actions.copy"/>
 				</a>
 
