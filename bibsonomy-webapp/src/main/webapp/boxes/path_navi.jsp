@@ -36,8 +36,7 @@
 				<span style="display: block; margin-top: 7px;">
 					<div id="userAndPw">
 						<c:set var="login">login </c:set>
-						<c:url var="loginUrl" value="/login" context="${projectContext}" />
-						<form method="POST" action="${loginUrl}" style="display: inline">
+						<form method="POST" action="/login" style="display: inline">
 							<label for="un">username:&nbsp;</label>
 							<input type="text" size="10" name="username" id="un" />&nbsp; 
 							<label for="pw">password:&nbsp;</label> 
