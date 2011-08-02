@@ -27,7 +27,6 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.bibsonomy.layout.feeds.SyndicationFeedWriter;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.services.URLGenerator;
@@ -67,7 +66,7 @@ public class SyndicationFeedWriterTest {
 				
 		  final SyndFeedOutput output = new SyndFeedOutput();
 		  try {
-			System.out.println(output.outputString(feed));
+			output.outputString(feed);
 		} catch (FeedException e) {
 			fail(e.getMessage());
 		}
