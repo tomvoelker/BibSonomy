@@ -13,9 +13,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:paneLayout pageTitle="${command.pageTitle}"
-		command="${command}" requestedUser="${command.requestedUser}"
-		requPath="${requPath}">
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
 
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt=""
@@ -57,31 +55,31 @@
 						</c:choose>
 					</div>
 				</span>
+				<fmt:message var="editPageTags" key="post.meta.edit.title"/>
+				
 	 			<div class="kiste">		
 					<rc:nextprev listView="${command.concepts}"
 						listViewStartParamName="concepts.start"
 						disableActions="${disableActions}"
 						disableListNavigation="${disableListNavigation}" />
 					<span class="actions">
-						<c:url var="editUrl"   value="/edit_tags"          context="${projectContext}"/>
-            		 	<fmt:message var="editPageTags"       key="post.meta.edit.title"/>
-          			 	<a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
+          			 	<a href="/edit_tags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
 					</span>
 					${mtl:ch('nbsp')}
 				</div>
 			
-				<tags:concepts cmd="${command.concepts}"	usersOwnRelations="${false}" requestedUserName="${command.requestedUser}"/>
+				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${false}" requestedUserName="${command.requestedUser}"/>
 			
 				<div class="kiste">		
-					<rc:nextprev listView="${command.concepts}"
+					<rc:nextprev listView="${command.concepts}" 
 						listViewStartParamName="concepts.start"
 						disableActions="${disableActions}"
 						disableListNavigation="${disableListNavigation}" />
+					
 					<span class="actions">
-						<c:url var="editUrl"   value="/edit_tags"          context="${projectContext}"/>
-            		 	<fmt:message var="editPageTags"       key="post.meta.edit.title"/>
-          			 	<a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
+          			 	<a href="/edit_tags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
 					</span>
+					
 					${mtl:ch('nbsp')}
 				</div>
 			</div>
