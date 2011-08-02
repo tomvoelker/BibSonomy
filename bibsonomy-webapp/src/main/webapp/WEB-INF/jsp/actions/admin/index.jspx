@@ -28,18 +28,19 @@
 			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
 			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />
 			
-	    	<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script> 
+	    	<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!-- keep me --></script> 
 			
 			<!--  scripts for ajax autocompletion -->
-			<script src="${resdir}/jquery/plugins/bgiframe/jquery.bgiframe.js" type="text/javascript"><!--  --></script>
-			<script src="${resdir}/jquery/plugins/ui/jquery-ui.js" type="text/javascript"><!--  --></script>
-			<script src="${resdir}/jquery/plugins/ui/jquery-ui-i18n.js" type="text/javascript"><!--  --></script>
+			<script src="${resdir}/jquery/plugins/bgiframe/jquery.bgiframe.js" type="text/javascript"><!-- keep me --></script>
+			<script src="${resdir}/jquery/plugins/ui/jquery-ui.js" type="text/javascript"><!-- keep me --></script>
+			<script src="${resdir}/jquery/plugins/ui/jquery-ui-i18n.js" type="text/javascript"><!-- keep me --></script>
 		 	
 			<!--  scripts for ajax requests -->
-			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/javascript/ajax-dynamic-content.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/javascript/ajax.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/javascript/ajax-tooltip.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/spammer.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/ajax-dynamic-content.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/ajax.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/ajax-tooltip.js"><!-- keep me --></script>
+
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
