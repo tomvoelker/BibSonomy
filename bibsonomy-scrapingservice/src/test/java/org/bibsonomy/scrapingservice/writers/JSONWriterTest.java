@@ -24,10 +24,11 @@
 
 package org.bibsonomy.scrapingservice.writers;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.KDEUrlCompositeScraper;
+import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlCompositeScraper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,21 +45,11 @@ public class JSONWriterTest {
 	@Test
 	public void testWrite() {
 		
-		final JSONWriter writer = new JSONWriter(System.out);
 		final UrlCompositeScraper scraper = new KDEUrlCompositeScraper();
 		
-		System.out.println("------------------------------------------------------");
-		try {
-			writer.write(0, "{\n");
-			writer.write(1, "\"patterns\" : ");
-			writer.write(1, scraper.getUrlPatterns());
-			writer.write(0, "}\n");
-		} catch (UnsupportedEncodingException e) {
-			Assert.fail(e.getMessage());
-		} catch (IOException e) {
-			Assert.fail(e.getMessage());
-		}
-		System.out.println("------------------------------------------------------");
+		final List<Tuple<Pattern, Pattern>> urlPatterns = scraper.getUrlPatterns();
+		Assert.assertNotNull(urlPatterns);
+		Assert.assertTrue(urlPatterns.size() > 10);
 	}
 	
 	
