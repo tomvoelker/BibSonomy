@@ -10,6 +10,6 @@
 	<form method="POST" action="/login" style="display:inline">
 		<label for="un"><fmt:message key="navi.username"/>:${mtl:ch('nbsp')}</label> <input type="text" size="10" name="username" id="un" />${mtl:ch('nbsp')}
 		<label for="pw"><fmt:message key="navi.password"/>:${mtl:ch('nbsp')}</label> <input type="password" size="10" name="password" id="pw" />
-		<input type="image" src="${projectContext}${resdir}/image/grey.png" alt="${login}" />
+		<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
 	</form>
 </jsp:root>
