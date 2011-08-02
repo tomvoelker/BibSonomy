@@ -51,19 +51,17 @@
 
 			<!--  coloring according to clustering -->
 			<link href="${command.communityBaseUrl}/resources/css/clusterViews.css" rel="stylesheet" type="text/css"/>
-			
 			<!--  script for slidebars -->
-			<script type="text/javascript" src="${command.communityBaseUrl}/resources/javascript/jquery-ui-1.8.1.custom.min.js">&amp;nbsp;</script>	
+			<script type="text/javascript" src="${command.communityBaseUrl}/resources/javascript/jquery-ui-1.8.1.custom.min.js"><!-- keep me --></script>	
 				
 			<!--  script for json templates -->
-			<script type="text/javascript" src="${resdir}/javascript/json-template.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/json-template.js"><!-- keep me --></script>
 
 			<!--  script for handling cluster based navigateion -->
-			<script type="text/javascript" src="${resdir}/javascript/topicsNavigation.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/topicsNavigation.js"><!-- keep me --></script>
 
 			<!--  script for parsing and comparing dates -->
-			<script type="text/javascript" src="${resdir}/javascript/date.js">&amp;nbsp;</script>
-			
+			<script type="text/javascript" src="${resdir}/javascript/date.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">

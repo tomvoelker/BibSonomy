@@ -19,7 +19,7 @@
 		<jsp:attribute name="heading">
     		<link rel="stylesheet" href="/resources/css/gadgets.css">&amp;nbsp;</link>
     		
-			<script type="text/javascript" src="/gadgets/js/shindig-container:rpc.js?c=1&amp;debug=1">&amp;nbsp;</script>
+			<script type="text/javascript" src="/gadgets/js/shindig-container:rpc.js?c=1&amp;debug=1"><!-- keep me --></script>
 			
 			<!--  autocomplete user info box -->
 			<script type="text/javascript">

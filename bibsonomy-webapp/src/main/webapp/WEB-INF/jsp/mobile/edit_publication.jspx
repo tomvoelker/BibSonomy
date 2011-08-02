@@ -12,7 +12,7 @@
 
 	<mobile:editpost command="${command}" selected="nav_more" resourceType="Publication">
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/editPost.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
 		</jsp:attribute>
 		<jsp:attribute name="general">
 					<p>
