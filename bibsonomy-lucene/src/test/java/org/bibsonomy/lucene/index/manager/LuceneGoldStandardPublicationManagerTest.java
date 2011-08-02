@@ -33,6 +33,7 @@ import org.junit.Test;
  * @author dzo
  * @version $Id$
  */
+@Ignore
 public class LuceneGoldStandardPublicationManagerTest extends AbstractDatabaseManagerTest {
     private static LuceneGoldStandardPublicationManager manager;
     private static GoldStandardPublicationDatabaseManager goldStandardManager;
