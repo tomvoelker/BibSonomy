@@ -19,6 +19,8 @@
 	<fmt:message var="cancel" key="settings.synchronization.cancel"/>
 	<fmt:message var="removeService" key="synchronization.server.delete" />
 	<fmt:message var="confirmDelete" key="synchronization.server.delete.confirm" />
+	<fmt:message var="resetService" key="synchronization.server.reset" />
+	<fmt:message var="confirmReset" key="synchronization.server.reset.confirm" />
 
 	<script type="text/javascript">
 		function confirmDelete(t) {
@@ -28,6 +30,20 @@
 				 return false;
 			}
 		}
+		
+		function confirmReset(t) {
+			if(confirm("${confirmReset}")) {
+				//var action = $(t).parents("form").attr("action");
+				//action = action + "?resetSyncService=true";
+				var action = "/ajax/synchronize?resetSyncService=true&amp;serviceName=" + $(t).parents("form").find("input.serviceName").val();
+				$(t).parents("form").find("input[name='_method']").val("DELETE");
+				alert(action);
+				$(t).parents("form").attr("action", action);
+			} else {
+				 return false;
+			}
+		}
+		
 		function changeClient(t) {
 			$(t).attr("action", $(t).find("select[name='newSyncClient']").val() + "updateSyncSettings");
 		}
@@ -50,7 +66,7 @@
 			<form:form method="post" action="/updateSyncSettings" modelAttribute="command.syncServer[${status.index}]">
 				<div class="fsRow">
 					<form:label cssClass="fsLabel" path="service"><fmt:message key="synchronization.server" /></form:label>
-					<form:input cssClass="fsInput" path="service" disabled="true"/>
+					<form:input cssClass="fsInput serviceName" path="service" disabled="true"/>
 					<div class="dissError"><form:errors path="service" /></div>
 				</div>
 
@@ -60,6 +76,7 @@
 					<form:hidden path="service"/>
 					<input type="submit" value="${save}" />
 					<input type="submit" value="${removeService}" onclick="return confirmDelete(this)"/>
+					<input type="submit" value="${resetService}" onclick="return confirmReset(this)" />
 					<input type="hidden" name="ckey" value="${ckey}"/>
 					<input type="hidden" name="_method" value="PUT"/>
 					<input type="hidden" name="selTab" value="${command.selTab}"/>
