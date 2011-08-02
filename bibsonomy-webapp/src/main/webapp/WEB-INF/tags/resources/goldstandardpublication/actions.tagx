@@ -29,7 +29,8 @@
 					<fmt:message key="post.actions.edit.gold.references"></fmt:message>
 				</a>
 			</li>
-			<li>
+			<!-- FIXME: implement -->
+			<!--<li>
 				<fmt:message key="post.actions.delete.gold.title" var="deleteTitle"/>
 				<c:url var="deleteUrl" value="/deletePost" context="${projectContext}">
 		           <c:param name="resourceHash" value="${goldstandard.interHash}" />
@@ -37,20 +38,20 @@
 		        </c:url>
 		                
 		        <c:choose>
-		          	<!-- SHOW A CONFIRM WINDOW -->
+					 SHOW A CONFIRM WINDOW 
 		           	<c:when test="${command.context.loginUser.settings.confirmDelete}">
 		              	 <a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" onclick="javascript: return confirmDelete(event);">
 		               		<fmt:message key="post.actions.delete"/>
 		                 </a>
 		           	</c:when>
-		          	<!-- JUST DELETE -->
+					 JUST DELETE 
 		          	<c:otherwise>
 		             	<a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}">
 		              		<fmt:message key="post.actions.delete"/>
 		               	</a>
 		           	</c:otherwise>
 		         </c:choose>
-		      </li>
+		      </li>-->
 		</c:if>
 	</c:if>
 </jsp:root>
