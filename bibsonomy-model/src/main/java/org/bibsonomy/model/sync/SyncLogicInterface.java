@@ -139,7 +139,7 @@ public interface SyncLogicInterface {
 	 * @param userName - the name of the user whose sync status shall be updated
 	 * @param service  - the URI of the service for which the sync status shall be updated
 	 * @param resourceType - the resource type for which the sync status shall be updated
-	 * @param syncDate - the sync date for which the sync status shall be updated
+	 * @param syncDate - the sync date for which the sync status shall be updated. If syncDate is null, all states will be deleted
 	 */
 	public void deleteSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate);
 
