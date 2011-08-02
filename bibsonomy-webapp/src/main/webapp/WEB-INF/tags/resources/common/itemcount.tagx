@@ -20,13 +20,19 @@
 	<span class="actions">
 		<fmt:message key="${titleKey}"/>${mtl:ch('nbsp')}<fmt:message key="list.entriesPerPage" />:${mtl:ch('nbsp')}
 		<c:forEach var="num" items="${fn:split(allEntryCounts, ',')}">
+		
+			<!-- build url --> 
+			<c:url var="numListUrl" value="/${mtl:setParam(requPathAndQuery,entryTypeEntriesPerPage,num)}">
+				<!-- <c:param name="${entryType}.entriesPerPage" value="${num}" /> -->
+			</c:url>
+	
 			<!-- display link or current number of entries per page -->
 			<c:choose>
 				<c:when test="${num == entriesPerPage}">
 					${num}${mtl:ch('nbsp')}
 				</c:when>
 				<c:otherwise>
-					<a href="/${mtl:setParam(requPathAndQuery,entryTypeEntriesPerPage,num)}">${num}</a>${mtl:ch('nbsp')}
+					<a href="${fn:escapeXml(numListUrl)}">${num}</a>${mtl:ch('nbsp')}
 				</c:otherwise>
 			</c:choose>
 		</c:forEach>
