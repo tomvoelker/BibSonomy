@@ -3,7 +3,7 @@
 BASE_DIR=/home/bibsonomy
 # these directories will be backuped
 DIRS="bibsonomy_docs bibsonomy_pics"
-ROPTIONS="--archive --quiet --rsh=ssh"
+ROPTIONS="--archive --quiet --rsh=ssh --no-owner --no-perms --no-group --omit-dir-times" 
 
 #### daffy
 RHOST=daffy.cs.uni-kassel.de
