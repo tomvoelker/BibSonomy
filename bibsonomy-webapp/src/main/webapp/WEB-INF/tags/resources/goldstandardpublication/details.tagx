@@ -20,14 +20,18 @@
 	<jsp:useBean id="mockReference" class="org.bibsonomy.model.BibTex" />
 	
 	<c:set var="goldstandard" value="${post.resource}" />
-	<div id="goldstandard">
+	<c:set var="itemType" value="http://schema.org/ScholarlyArticle"/>
+	<c:if test="${not empty goldstandard.entrytype and ('book' eq goldstandard.entrytype)}">
+		<c:set var="itemType" value="http://schema.org/Book"/>
+	</c:if>
+	<div id="goldstandard" itemscope="itemscope" itemtype="${itemType}">
 		<ul id="gold_menu" data-ckey="${ckey}">
 			<gpub:actions post="${post}" />
 		</ul>
 		
 		<!-- title of the publication -->
 		<h2 id="gold_title" data-interhash="${goldstandard.interHash}">
-			<a href="/bibtex/${goldstandard.interHash}">${mtl:cleanBibtex(goldstandard.title)}</a>
+			<a href="/bibtex/${goldstandard.interHash}" itemprop="url"><span itemprop="name">${mtl:cleanBibtex(goldstandard.title)}</span></a>
 		</h2>
 		<div id="gold_authorsEditors"><fmt:message key="by"/><c:out value=": "/><pub:author publication="${goldstandard}"/></div>
 		
@@ -56,10 +60,10 @@
 							<c:if test="${not empty goldstandard.miscFields['doi']}">
 								<fmt:message key="post_bibtex.doi_isbn.doi" var="urlTitle"/>
 								<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}"/>
-								<li><c:out value="${urlTitle}: " /><a href="http://dx.doi.org/${mtl:encodeURI(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a></li>
+								<li><c:out value="${urlTitle}: " /><a itemprop="url" href="http://dx.doi.org/${mtl:encodeURI(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a></li>
 							</c:if>
 							<c:if test="${not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)}">
-								<li><span class="gold_info"><a href="${fn:escapeXml(goldstandard.url)}">${fn:escapeXml(goldstandard.url)}</a></span></li>
+								<li><span class="gold_info"><a itemprop="url" href="${fn:escapeXml(goldstandard.url)}">${fn:escapeXml(goldstandard.url)}</a></span></li>
 							</c:if>
 						</ul>
 					</div>
@@ -72,9 +76,9 @@
 							<c:if test="${mtl:isLinkToDocument(goldstandard.url)}">
 								<li>
 									<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
-									<a href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
+									<a itemprop="url" href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
 						  				<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
-						  <c:out value="${ goldstandard.url }" />											
+						  				<c:out value="${ goldstandard.url }" />											
 									</a>
 								</li>
 							</c:if>
@@ -87,7 +91,7 @@
 <!--				<h3><fmt:message key="bibtex.abstract"/></h3>-->
 				<c:choose>
 					<c:when test="${not empty goldstandard.abstract}">
-						<div id="gold_abstract">${mtl:cleanBibtex(goldstandard.abstract)}</div>
+						<div id="gold_abstract" itemprop="about">${mtl:cleanBibtex(goldstandard.abstract)}</div>
 					</c:when>
 					<c:otherwise>
 						<fmt:message key="goldstandard.resource.info.noAbstract"/>
@@ -106,7 +110,7 @@
 				</c:choose>
 				
 				<!-- TODO: extract (bibtexdetails) -->
-				<form name="citation_format_form" action="" style="font-size:80%;">
+				<form name="citation_format_form" style="font-size:80%;">
 					
 					<fmt:message key="bibtex.citation_format"/><c:out value=": "/>
 					<!-- TODO: add support for this site -->
@@ -120,7 +124,7 @@
 						<form:option value="simplehtml">simple HTML</form:option>
 					</form:select>
 				    <c:out value=" "/>
-				    <input type="image"  src="/resources/image/nice_box_arrow_right.png"/>		    
+				    <input type="image"  src="/resources/image/nice_box_arrow_right.png" alt="right"/>		    
 				</form>
 			</div>
 			<div id="gold_exports_3">
@@ -145,7 +149,7 @@
 						<li data-interhash="${reference.interHash}" class="reference"><ref:pubReference publication="${reference}" /></li>
 					</c:forEach>
 					
-					<!-- for javascript rending -->
+					<!-- for javascript rending "THIS IS BAD, it creates an empty authorlist in the page, that is visible through markup-->
 					<li class="reference initiallyHidden" id="referenceTemplate"><ref:pubReference publication="${mockReference}" /></li>
 				</ol>
 			</div>
@@ -187,7 +191,6 @@
 		
 		<!-- discussion -->
 		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}" />
-		
 		
 	</div>
 </jsp:root>

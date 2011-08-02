@@ -21,7 +21,7 @@
 				</c:if>
 				
 				<c:choose>
-					<c:when test="${discussionItem.class.simpleName eq 'Review'}">
+					<c:when test="${'Review' eq discussionItem.class.simpleName}">
 						<c:choose>
 			    			<!-- check if user has reviewed this resource -->
 				    		<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
@@ -36,7 +36,7 @@
 			    			</c:otherwise>
 			    		</c:choose>	   
 					</c:when>
-					<c:when test="${discussionItem.class.simpleName eq 'Comment'}">
+					<c:when test="${'Comment' eq discussionItem.class.simpleName}">
 						<li class="${class}"><comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}"/></li>
 					</c:when>
 					<c:when test="${discussionItem.class.simpleName eq 'DiscussionItem'}">

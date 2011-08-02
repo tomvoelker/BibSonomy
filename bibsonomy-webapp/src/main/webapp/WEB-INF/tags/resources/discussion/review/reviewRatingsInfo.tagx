@@ -7,7 +7,8 @@
 
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />		
 	<!-- contains RDFa infos -->
-	<div id="review_info_rating" xmlns:v="http://rdf.data-vocabulary.org/#" typeof="v:Review-aggregate">
+<!--	<div id="review_info_rating" xmlns:v="http://rdf.data-vocabulary.org/#" typeof="v:Review-aggregate">-->
+	<div id="review_info_rating" itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
 		<c:if test="${empty resource.numberOfRatings or resource.numberOfRatings &lt; 1 }">
 			<!-- TODO: change message keys when renaming BibTex class to Publication -->
 			<div id="noReviewInfo"><fmt:message key="post.resource.review.${fn:toLowerCase(resource.class.simpleName)}.noReview" /></div>
@@ -34,17 +35,18 @@
 			<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="1" minFractionDigits="1" />
 
 			<div class="ratingAvgInfo">
-				(<span property="v:average"><c:out value="${roundedRating}" /></span>
+				(<span id="ratingAverage" itemprop="ratingValue"><c:out value="${roundedRating}" /></span>
 				<c:out value=" " />
 				<fmt:message key="post.resource.review.ratings.of" />
 				<c:out value=" " />
-				<span property="v:best">5.0</span><c:out value=" " /> <fmt:message key="post.resource.review.ratings.basedOn" />
-				<c:out value=" " /><span property="v:count"><c:out value="${resource.numberOfRatings}" /></span>
+				<span id="ratingBest" itemprop="bestRating">5.0</span><c:out value=" " /> <fmt:message key="post.resource.review.ratings.basedOn" />
+				<c:out value=" " /><span id="ratingCount" itemprop="ratingCount"><c:out value="${resource.numberOfRatings}" /></span>
 				<c:out value=" " />
 				<span>
 					<c:out value="${ratingTitle}" />
 				</span>)
-				<span class="initiallyHidden" property="v:worst">0</span>
+<!--				<span class="initiallyHidden" id="ratingWorst" itemprop="worstRating">0</span>-->
+				<meta itemprop="worstRating" content="0.0"/>
 			</div>
 		</div>
 	</div>

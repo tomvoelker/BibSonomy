@@ -17,14 +17,15 @@
     	<jsp:attribute name="content">
     		<div class="rating" data-rating="${review.rating}">
 				<review:reviewStars rating="${review.rating}"/>
+				<meta itemprop="reviewRating" content="${review.rating}"/>
 			</div>
 		
-			<div class="review text">
+			<div class="review text" itemprop="reviewBody">
 				<c:out value="${review.text}" />
 			</div>
 		
 			<c:if test="${ownReview}">
-				<review:reviewForm review="${review}" resource="${resource}" userName="${loginUser.name }"/>
+				<review:reviewForm review="${review}" resource="${resource}" userName="${loginUser.name}"/>
 			</c:if>
     	</jsp:attribute>
     </discussionItem:discussionItem>
