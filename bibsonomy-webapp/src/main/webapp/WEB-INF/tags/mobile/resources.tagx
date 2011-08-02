@@ -14,7 +14,7 @@
 	
 	<mobile:layout loginUser="${command.context.loginUser}" resources="true" selected="${selected}" requestedUser="${command.requestedUser}">
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js">&amp;nbsp;</script> 
+			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js"><!-- keep me --></script> 
 			<script type="text/javascript">
 			<![CDATA[
 				$(document).ready(function() {

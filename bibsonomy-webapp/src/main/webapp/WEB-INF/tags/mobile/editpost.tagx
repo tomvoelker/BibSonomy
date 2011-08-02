@@ -20,9 +20,9 @@
 	
 	<mobile:simple command="${command}" selected="${selected}">
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/editPost.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/javascript/edit${resourceType}.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/jquery/plugins/jquery.form.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/edit${resourceType}.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/jquery/plugins/jquery.form.js"><!-- keep me --></script>
 			<jsp:invoke fragment="headerExt" />
 		</jsp:attribute>
 		
