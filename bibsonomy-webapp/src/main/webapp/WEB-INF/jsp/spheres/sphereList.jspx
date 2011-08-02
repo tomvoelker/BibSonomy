@@ -18,8 +18,8 @@
 	
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">		
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/resourceList.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js">&amp;nbsp;</script> 
+			<script type="text/javascript" src="${resdir}/javascript/resourceList.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js"><!-- keep me --></script> 
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
 			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>

@@ -17,7 +17,7 @@
 	
 		<!-- include javascript -->
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/follower.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/follower.js"><!-- keep me --></script>
 		</jsp:attribute>
 	
 		<!-- create menu -->
