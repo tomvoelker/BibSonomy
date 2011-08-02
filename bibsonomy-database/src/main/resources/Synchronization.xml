@@ -97,7 +97,9 @@
 		    JOIN sync_services ss USING (service_id)
 			WHERE sd.user_name = #userName#
 			  AND sd.content_type = #resourceType#
-			  AND sd.last_sync_date = #lastSyncDate#
+			  <isNotNull property="lastSyncDate" prepend="AND">
+			  	sd.last_sync_date = #lastSyncDate#
+			  </isNotNull>
 			  AND ss.uri = #service#
 			  AND ss.server = #server#
 	</delete>	
