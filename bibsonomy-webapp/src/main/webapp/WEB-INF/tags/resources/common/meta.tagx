@@ -58,7 +58,7 @@
 		<c:out value=" "/>
 		<fmt:message key="post.meta.taggedBy" />
 		<c:out value=" "/>
-		<a name="${fn:escapeXml(post.user.name)}" href="/user/${post.user.name}"><c:out value="${post.user.name}" escapeXml="true"/></a>
+		<a name="${fn:escapeXml(post.user.name)}" href="/user/${fn:escapeXml(post.user.name)}"><c:out value="${post.user.name}" escapeXml="true"/></a>
 	</c:if>
 	
 	<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
