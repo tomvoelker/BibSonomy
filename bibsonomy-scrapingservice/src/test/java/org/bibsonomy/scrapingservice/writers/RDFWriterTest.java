@@ -24,8 +24,10 @@
 
 package org.bibsonomy.scrapingservice.writers;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -37,7 +39,13 @@ public class RDFWriterTest {
 
 	@Test
 	public void testWrite() {
-		final RDFWriter writer = new RDFWriter(System.out);
+		RDFWriter writer;
+		try {
+			writer = new RDFWriter(new FileOutputStream("/dev/null"));
+		} catch (FileNotFoundException e1) {
+			fail(e1.getMessage());
+			return;
+		}
 		final BibTex bibtex = new BibTex();
 		bibtex.setTitle("Reconsidering Physical Key Secrecy: Teledoplication via Optical Decoding");
 		bibtex.setAuthor("Benjamin Laxton and Kai Wand and Stefan Savage");
