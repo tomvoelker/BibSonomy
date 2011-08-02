@@ -28,7 +28,7 @@
 		</jsp:attribute>
 			
 		<jsp:attribute name="headerExt">
-            <script type="text/javascript" src="${resdir}/javascript/editPublication.js">&amp;nbsp;</script>
+            <script type="text/javascript" src="${resdir}/javascript/editPublication.js"><!-- keep me --></script>
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
 			<c:if test="${not empty additionalFsformCSS}">
