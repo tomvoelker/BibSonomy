@@ -68,7 +68,7 @@
 			| Does loginUser follow requestedUser?
 			|
 		 	-->
-		<script type="text/javascript" src="${resdir}/javascript/follower.js">&amp;nbsp;</script>
+		<script type="text/javascript" src="${resdir}/javascript/follower.js"><!-- keep me --></script>
 		<!-- we need to switch between the add/remove link if the user already follows this user or not -->
 		<span id="removeLink" style="${isFollowerOfUser ? '' : 'display:none'}">
 			<fmt:message key="follow.link.text.removeLong" var="removeFollower"/>
