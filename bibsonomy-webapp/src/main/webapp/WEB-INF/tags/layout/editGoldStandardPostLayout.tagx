@@ -40,12 +40,12 @@
 			</c:if>
 			
 			<!-- TODO: document why we need this jquery plugin -->
-	    	<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script>
+	    	<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!-- keep me --></script>
             <!--
                | one script just for the post page
                -->
             <jsp:invoke fragment="headerExtResource"/>
-            <script type="text/javascript" src="${resdir}/javascript/editPost.js">&amp;nbsp;</script>
+            <script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
 	    </jsp:attribute>
 	    
             
