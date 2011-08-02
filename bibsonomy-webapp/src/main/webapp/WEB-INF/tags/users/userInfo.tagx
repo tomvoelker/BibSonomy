@@ -12,7 +12,7 @@
 	<jsp:directive.attribute name="moveFromTabUncertain" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="selTab" type="java.lang.String" required="true" />
 		
-	<c:url var="adminUrl" value="/admin" context="${projectContext}"/>
+	<c:url var="adminUrl" value="/admin" />
 
 	<tr id="sl${rowNumber}"
 		class="${spamUser.prediction == 9 ? 'spamflag uncertainUser' : ((spamUser.spammer==true) ? 'spammer' : none)}">
