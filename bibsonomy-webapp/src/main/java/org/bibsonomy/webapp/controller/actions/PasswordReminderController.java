@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -11,6 +12,7 @@ import net.tanesha.recaptcha.ReCaptcha;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.AuthMethod;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -20,8 +22,6 @@ import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
-import org.bibsonomy.webapp.config.AuthConfig;
-import org.bibsonomy.webapp.config.AuthMethod;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -51,7 +51,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	private Captcha captcha;
 	private MailUtils mailUtils;
 	private String cryptKey;
-	private AuthConfig authConfig;
+	private List<AuthMethod> authConfig;
 	
 	@Override
 	public PasswordReminderCommand instantiateCommand() {
@@ -64,7 +64,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		/*
 		 * check if internal authentication is supported
 		 */
-		if (! authConfig.containsAuthMethod(AuthMethod.INTERNAL) )  {
+		if (!this.authConfig.contains(AuthMethod.INTERNAL))  {
 			errors.reject("error.method_not_allowed");
 			return Views.ERROR;			
 		}
@@ -336,7 +336,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	/**
 	 * @param authConfig the authConfig to set
 	 */
-	public void setAuthConfig(final AuthConfig authConfig) {
+	public void setAuthConfig(final List<AuthMethod> authConfig) {
 		this.authConfig = authConfig;
 	}
 	

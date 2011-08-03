@@ -2,20 +2,20 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.AuthMethod;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
-import org.bibsonomy.webapp.config.AuthConfig;
-import org.bibsonomy.webapp.config.AuthMethod;
 import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
-import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -26,19 +26,13 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.validation.Errors;
 
 /**
  * @author cvo
  * @version $Id$
  */
-public class ChangePasswordController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand>, ErrorAware, CookieAware {
+public class ChangePasswordController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand>, CookieAware {
 	private static final Log log = LogFactory.getLog(ChangePasswordController.class);
-
-	/**
-	 * hold current errors
-	 */
-	private Errors errors = null;
 
 	/**
 	 * logic interface
@@ -53,21 +47,9 @@ public class ChangePasswordController extends SettingsPageController implements 
 	/**
 	 * determines whether internal authentication (and thus password change) is enabled
 	 */
-	private AuthConfig authConfig;
-	
+	private List<AuthMethod> authConfig;
+
 	private CookieBasedRememberMeServices rememberMeServices;
-
-	/**
-	 * @param rememberMeServices the rememberMeServices to set
-	 */
-	public void setRememberMeServices(CookieBasedRememberMeServices rememberMeServices) {
-		this.rememberMeServices = rememberMeServices;
-	}
-
-	@Override
-	public SettingsViewCommand instantiateCommand() {
-		return new SettingsViewCommand();
-	}
 
 	@Override
 	public View workOn(final SettingsViewCommand command) {
@@ -75,7 +57,7 @@ public class ChangePasswordController extends SettingsPageController implements 
 		 * throw an exception if internal authentication is not available and 
 		 * someone tries to change his password 
 		 */
-		if (!(present(this.authConfig) && this.authConfig.containsAuthMethod(AuthMethod.INTERNAL.name())) ) {
+		if (!this.authConfig.contains(AuthMethod.INTERNAL)) {
 			throw new RuntimeException("Changing the password is not possible."); 
 		}
 		
@@ -89,7 +71,6 @@ public class ChangePasswordController extends SettingsPageController implements 
 		}
 		
 		final User loginUser = context.getLoginUser();
-
 
 		/*
 		 * LDAP and OpenID users can't change their password.
@@ -169,25 +150,6 @@ public class ChangePasswordController extends SettingsPageController implements 
 	}
 
 	@Override
-	public Errors getErrors() {
-		return this.errors;
-	}
-
-	@Override
-	public void setErrors(final Errors errors) {
-		this.errors = errors;
-	}
-
-	/**
-	 * sets the admin logic interface
-	 * 
-	 * @param adminLogic
-	 */
-	public void setAdminLogic(final LogicInterface adminLogic) {
-		this.adminLogic = adminLogic;
-	}
-
-	@Override
 	public Validator<SettingsViewCommand> getValidator() {
 		return new ChangePasswordValidator();
 	}
@@ -196,20 +158,35 @@ public class ChangePasswordController extends SettingsPageController implements 
 	public boolean isValidationRequired(final SettingsViewCommand command) {
 		return true;
 	}
+	
+	/**
+	 * sets the admin logic interface
+	 * 
+	 * @param adminLogic
+	 */
+	public void setAdminLogic(final LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
+	}
+	
+	/**
+	 * @param rememberMeServices the rememberMeServices to set
+	 */
+	public void setRememberMeServices(final CookieBasedRememberMeServices rememberMeServices) {
+		this.rememberMeServices = rememberMeServices;
+	}
+	
+	/**
+	 * @param authConfig the authConfig to set
+	 */
+	public void setAuthConfig(final List<AuthMethod> authConfig) {
+		this.authConfig = authConfig;
+	}
 
 	/**
 	 * @param cookieLogic the cookieLogic to set
 	 */
 	@Override
-	public void setCookieLogic(CookieLogic cookieLogic) {
+	public void setCookieLogic(final CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
 	}
-
-	/**
-	 * @param authConfig
-	 */
-	public void setAuthConfig(AuthConfig authConfig) {
-		this.authConfig = authConfig;
-	}
-
 }

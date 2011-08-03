@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.Filter;
 
+import org.bibsonomy.common.enums.AuthMethod;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.security.web.FilterChainProxy;
@@ -62,7 +63,7 @@ public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 	
 
 	/** dertermines which authentication methods are used */
-	private AuthConfig config;
+	private List<AuthMethod> config;
 
 	/**
 	 * all known filters
@@ -72,12 +73,12 @@ public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 	private Map<AuthMethod, Filter> authPreFilterMap = new HashMap<AuthMethod, Filter>();
 
 	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+	public Object postProcessBeforeInitialization(final Object bean, final String beanName) throws BeansException {
 		return bean;
 	}
 
 	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+	public Object postProcessAfterInitialization(final Object bean, final String beanName) throws BeansException {
 		if (bean instanceof FilterChainProxy && FILTERCHAIN_BEAN_NAME.equals(beanName)) {
 			final FilterChainProxy proxy = (FilterChainProxy) bean;
 			final Map<String, List<Filter>> filterChainMap = proxy.getFilterChainMap();
@@ -89,7 +90,7 @@ public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 					final List<Filter> filters = new LinkedList<Filter>();
 					final List<Filter> preFilters = new LinkedList<Filter>();
 					final List<Filter> rememberMeFilters = new LinkedList<Filter>();
-					for (final AuthMethod method : this.config.getAuthOrder()) {
+					for (final AuthMethod method : this.config) {
 						final Filter filter = this.authFilterMap.get(method);
 						if (present(filter)) {
 							filters.add(filter);
@@ -128,10 +129,17 @@ public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 	/**
 	 * @param config the config to set
 	 */
-	public void setConfig(AuthConfig config) {
+	public void setConfig(final List<AuthMethod> config) {
 		this.config = config;
 	}
 	
+	/**
+	 * @return the config
+	 */
+	public List<AuthMethod> getConfig() {
+		return this.config;
+	}
+
 	/**
 	 * @param authPreFilterMap the authPreFilterMap to set
 	 */

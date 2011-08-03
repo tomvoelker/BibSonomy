@@ -368,4 +368,9 @@
   	<function-signature>String getDate(java.lang.String, java.lang.String, java.lang.String, java.util.Locale)</function-signature>
   </function>
   
+  <function>
+  	<name>convertToEnum</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>Object convertToEnum(java.lang.String, java.lang.String)</function-signature>
+  </function>
 </taglib>

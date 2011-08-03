@@ -33,7 +33,8 @@
 		
 		<security:custom-filter position="LOGOUT_FILTER" ref="logoutFilter" />
 		
-		<!-- XXX: it is a little bit tricky to add another exeption translation filter after the other one
+		<!--
+			 XXX: it is a little bit tricky to add another exception translation filter after the other one
 			 but if we replace the configurated one we could not use the namespace config (http, intercept-url) and had to add
 			 all spring security filters to this config file by bean definitions :(
 		 -->
@@ -365,21 +366,20 @@
 		<property name="adminLogic" ref="adminLogic" />
 	</bean>
 	
-	<bean id="authConfig" class="org.bibsonomy.webapp.config.AuthConfig">
-		<property name="authOrderString" value="${auth.order}" />
-	</bean>
+	<!-- using property path to get a list of AuthMethods -->
+	<util:property-path id="authConfig" path="authFilterConfig.config"/>
 	
 	<bean id="authFilterConfig" class="org.bibsonomy.webapp.config.AuthenticationFilterConfigurator">
-		<property name="config" ref="authConfig" />
+		<property name="config" value="${auth.order}" />
 		<property name="authFilterMap">
-			<map key-type="org.bibsonomy.webapp.config.AuthMethod">
+			<map key-type="org.bibsonomy.common.enums.AuthMethod">
 				<entry key="INTERNAL" value-ref="internalUsernamePasswordFilter" />
 				<entry key="LDAP" value-ref="ldapUsernamePasswordFilter" />
 				<entry key="OPENID" value-ref="openidFilter" />
 			</map>
 		</property>
 		<property name="authRememberMeFilterMap">
-			<map key-type="org.bibsonomy.webapp.config.AuthMethod">
+			<map key-type="org.bibsonomy.common.enums.AuthMethod">
 				<entry key="INTERNAL" value-ref="internalRememberMeFilter" />
 				<entry key="LDAP" value-ref="ldapRememberMeFilter" />
 				<entry key="OPENID" value-ref="openidRememberMeFilter" />
