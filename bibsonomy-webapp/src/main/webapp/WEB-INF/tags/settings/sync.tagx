@@ -19,24 +19,11 @@
 	<fmt:message var="cancel" key="settings.synchronization.cancel"/>
 	<fmt:message var="removeService" key="synchronization.server.delete" />
 	<fmt:message var="confirmDelete" key="synchronization.server.delete.confirm" />
-	<fmt:message var="resetService" key="synchronization.server.reset" />
-	<fmt:message var="confirmReset" key="synchronization.server.reset.confirm" />
 
 	<script type="text/javascript">
 		function confirmDelete(t) {
 			if(confirm("${confirmDelete}")) {
 				$(t).parents("form").find("input[name='_method']").val("DELETE");
-			} else {
-				 return false;
-			}
-		}
-		
-		function confirmReset(t) {
-			if(confirm("${confirmReset}")) {
-				var action = "/ajax/synchronize?resetSyncService=true&amp;serviceName=" + $(t).parents("form").find("input.serviceName").val();
-				var form = $(t).parents("form");
-				form.find("input[name='_method']").val("DELETE");
-				form.attr("action", action);
 			} else {
 				 return false;
 			}
@@ -74,7 +61,6 @@
 					<form:hidden path="service"/>
 					<input type="submit" value="${save}" />
 					<input type="submit" value="${removeService}" onclick="return confirmDelete(this)"/>
-					<input type="submit" value="${resetService}" onclick="return confirmReset(this)" />
 					<input type="hidden" name="ckey" value="${ckey}"/>
 					<input type="hidden" name="_method" value="PUT"/>
 					<input type="hidden" name="selTab" value="${command.selTab}"/>
