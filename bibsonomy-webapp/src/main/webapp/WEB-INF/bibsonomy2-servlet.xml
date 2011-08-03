@@ -5,19 +5,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	                    http://www.springframework.org/schema/util 
-	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">	
-	<!-- TODO: extract general things like sessionFactory to a seperate file -->
-	<!-- 
-		extracts properties from the provided file and inserts them into bean 
-		properties using "${property.name}" notation  
-	-->
-	<bean id="propertyConfigurer" class="org.bibsonomy.webapp.util.ContextParamConfigurer">
-		<property name="location">
-			<value>/WEB-INF/project.properties</value>
-		</property>
-		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_CONTEXTPARAM"/>
-	</bean>
-	
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	                    
 	<!--
 		conversion service to convert:
 		- strings to enums (a generic converter)
@@ -31,6 +20,40 @@
 	            <bean class="org.bibsonomy.web.spring.converter.StringToURLConverter" />
 	        </list>
 	    </property>
+	</bean>
+	
+	<bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    	<property name="locations">
+    		<list>
+        		<value>/WEB-INF/project.properties</value>
+        		<value>file:§{config.location}</value>
+      		</list>
+    	</property>
+    	<property name="ignoreResourceNotFound" value="true" />
+	</bean>
+	
+	<!-- 
+		XXX: see class for comments
+		extracts properties from the provided file and inserts them into bean 
+		properties using "${property.name}" notation  
+	-->	
+	<bean id="configFilePropertyConfigurer" class="org.bibsonomy.webapp.util.OrderedPropertyPlaceholderConfigurer">
+		<property name="properties" ref="properties" />
+	</bean>
+	
+	<bean id="conversionSericeBeanFactoryPostProcessor" class="org.bibsonomy.webapp.util.ConversionServiceBeanFactoryPostProcessor">
+		<property name="conversionService" ref="conversionService" />
+	</bean>
+	
+	<bean id="servletContextPropertyConfigurer" class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
+		<property name="placeholderPrefix" value="§{" />
+		<property name="contextOverride" value="true" />
+	</bean>
+	
+	
+	<!-- TODO: remove after all jsp are ported to spring mvc -->
+	<bean id="oldPagesFix" class="servlets.utils.ProperiesAttributeSetter" init-method="init">
+		<property name="properties" ref="properties" />
 	</bean>
 	
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
@@ -164,6 +187,7 @@
 		<property name="exposedContextBeanNames">
 			<list>
 				<value>authConfig</value>
+				<value>properties</value>
 			</list>
 		</property>
 	</bean>
