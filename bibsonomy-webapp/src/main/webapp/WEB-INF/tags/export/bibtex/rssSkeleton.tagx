@@ -61,11 +61,11 @@
     	<c:set var="projectHome" value="${properties['project.home']}" />
     	<c:set var="projectName" value="${properties['project.name']}" />
       <!-- an RSS feed first defines a channel with general metadata and an overview of the described items -->
-      <channel rdf:about="${projectHome}${fn:escapeXml(requPath)}">
+      <channel rdf:about="${properties['project.home']}${fn:escapeXml(requPath)}">
         <!-- title, link, description -->
-        <title>${projectName} publications for /<c:out value="${requPath}"/></title>
-        <link>${projectName}<c:out value="${format}"/>/<c:out value='${requPath}'/></link>
-        <description>${projectName} RSS feed for /<c:out value='${requPath}'/></description>
+        <title>${properties['project.name']} publications for /<c:out value="${requPath}"/></title>
+        <link>${properties['project.name']}<c:out value="${format}"/>/<c:out value='${requPath}'/></link>
+        <description>${properties['project.name']} RSS feed for /<c:out value='${requPath}'/></description>
         <dc:date><mtl:formatDate value="${now}"/></dc:date>
          
         <!-- the items of the RSS feed -->
@@ -73,7 +73,7 @@
 	      <rdf:Seq>
 	        <c:forEach var="post" items="${command.bibtex.list}">
               <!-- one item ... is described in detail below and referenced by the URI defined here  -->
-	  	 	  <rdf:li rdf:resource="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
+	  	 	  <rdf:li rdf:resource="${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
 	 	    </c:forEach>
 	      </rdf:Seq>
 	    </items>
@@ -81,11 +81,11 @@
 
       <c:forEach var="post" items="${command.bibtex.list}">
         <!-- one item ... use the URI referenced above to further describe it -->
-	    <item rdf:about="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
+	    <item rdf:about="${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
           
           <!-- title, description, link, creator, date, subject -->
     	  <title>${mtl:cleanBibtex(mtl:removeXmlControlChars(post.resource.title))}</title>
-  		  <link>${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></link>
+  		  <link>${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></link>
   		  <dc:creator><c:out value="${post.user.name}"/></dc:creator>
   		  <dc:date><mtl:formatDate value="${post.date}"/></dc:date>
   		  <dc:subject><c:forEach var="tag" items="${post.tags}"><c:out value="${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/><c:out value=" "/></c:forEach></dc:subject>
@@ -97,7 +97,7 @@
   		  <taxo:topics>
 	        <rdf:Bag>
 	          <c:forEach var="tag" items="${post.tags}">
-	            <rdf:li rdf:resource="${projectHome}tag/${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/>
+	            <rdf:li rdf:resource="${properties['project.home']}tag/${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/>
 	          </c:forEach>  
 	        </rdf:Bag>
 	      </taxo:topics>

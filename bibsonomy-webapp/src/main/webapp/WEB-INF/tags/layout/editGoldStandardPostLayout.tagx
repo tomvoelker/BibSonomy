@@ -117,7 +117,7 @@
 													<fmt:message key="post.edit.spam_note">
 														<fmt:param value="user ${command.context.loginUser.name} was flagged as spammer"/>
 													</fmt:message>
-													<parts:email address="${projectNoSpamEmail}"/>
+													<parts:email address="${properties['project.noSpamEmail']}"/>
 												</p>
 											</c:if>
 											<span class="fsLabel"><fmt:message key="captcha"/></span>
