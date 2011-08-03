@@ -10,7 +10,6 @@
   xmlns:spring="http://www.springframework.org/tags"
   xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-  xmlns:atl="urn:jsptld:/WEB-INF/taglibs/authtaglib.tld"
   xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
   xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings">
   
