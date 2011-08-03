@@ -37,7 +37,7 @@
 	<spring:theme code="javascript.additional" var="additionalJS" text=""/>
 	
 	<!-- TODO: extract in seperate jsp file? -->
-	<c:url url="/resources" var="resdir" scope="application" value="/resources" />
+	<c:url var="resdir" scope="application" value="/resources" />
 	
     <!-- 
       document starts here
