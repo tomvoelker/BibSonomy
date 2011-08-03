@@ -3,16 +3,16 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.AuthMethod;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.actions.PasswordChangeOnRemindCommand;
-import org.bibsonomy.webapp.config.AuthConfig;
-import org.bibsonomy.webapp.config.AuthMethod;
 import org.bibsonomy.webapp.exceptions.InvalidPasswordReminderException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
@@ -44,7 +44,7 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 	private String cryptKey;
 	private Errors errors;
 		
-	private AuthConfig authConfig;
+	private List<AuthMethod> authConfig;
 	
 	private int maxMinutesPasswordReminderValid = 60;
 
@@ -55,7 +55,7 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		/*
 		 * check if internal authentication is supported
 		 */
-		if (!authConfig.containsAuthMethod(AuthMethod.INTERNAL) )  {
+		if (!authConfig.contains(AuthMethod.INTERNAL) )  {
 			errors.reject("error.method_not_allowed");
 			log.warn("authmethod " + AuthMethod.INTERNAL + " missing in config");
 			return Views.ERROR;			
@@ -250,13 +250,11 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		}
 	}
 
-
 	/**
 	 * @param authConfig the authConfig to set
 	 */
-	public void setAuthConfig(final AuthConfig authConfig) {
+	public void setAuthConfig(final List<AuthMethod> authConfig) {
 		this.authConfig = authConfig;
 	}
 	
 }
-
