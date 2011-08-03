@@ -75,7 +75,7 @@
 <script type="text/javascript">
    var url=encodeURIComponent(document.location.href);
    var title=encodeURIComponent(document.title);
-   document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");	
+   document.write("<a href=\"${properties['project.name']}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");	
 </script>
 ]]>
 					
@@ -88,7 +88,7 @@
 							<![CDATA[
 							         var url=encodeURIComponent(document.location.href);
 							         var title=encodeURIComponent(document.title);
-							         document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");
+							         document.write("<a href=\"${properties['project.name']}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");
 							]]>
 						</script>
 					</div>

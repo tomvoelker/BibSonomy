@@ -28,17 +28,12 @@
     <jsp:directive.attribute name="desc" fragment="true" required="true"/>
     <jsp:directive.attribute name="actions" fragment="true" required="true"/>
     <jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
-    
 
     <jsp:directive.variable name-given="post" scope="NESTED"/>
-
-	  
 
     <!-- page title -->
     <fmt:message key="post.meta.edit" var="pageTitle"/>
     
-    
-    <!-- TODO: i18n -->
     <layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" selectedNaviTab="nav_my">
 
       <jsp:attribute name="heading">

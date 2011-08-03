@@ -239,7 +239,9 @@
 	</form:form>
   
 	<!-- show password change dialog only if internal authentication is configured -->
-	<c:if test="${atl:containsAuthMethod(authConfig, 'INTERNAL')}">
+	
+	<c:set var="openIdOrLDAPUser" value="${not empty command.context.loginUser.openID or not empty command.context.loginUser.ldapId}" />
+	<c:if test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'internal')) and not openIdOrLDAPUser}">
 		<settings:passwordChange loginUser="${command.context.loginUser}"/>
 	</c:if>
 		
@@ -247,7 +249,7 @@
 	<h2><fmt:message key="settings.deletemyaccount"/></h2>		
 	<form:form id="postForm" method="post" action="/actions/goodBye">
        	<fieldset class="fsInner">
-		    	<div class="fsRow">
+		    <div class="fsRow">
 	      		<form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="settings.really"/></form:label>
 				<input cssClass="fsInput fsSmall" type="text" name="delete" value="no" size="30"/>
 	      		<div class="dissError"><form:errors path="delete" /></div>		      
