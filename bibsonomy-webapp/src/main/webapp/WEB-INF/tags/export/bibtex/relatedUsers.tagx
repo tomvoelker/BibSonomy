@@ -10,20 +10,20 @@
 	
 	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedUserCommand" required="true"/>
 	<jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>			
-	<foaf:Group rdf:about="${projectHome}tag/${fn:escapeXml(tags)}">
+	<foaf:Group rdf:about="${properties['project.home']}tag/${fn:escapeXml(tags)}">
 		<foaf:name><c:out value="${tags}"/></foaf:name>
 		<description>Community for tag(s) <c:out value="${tags}"/></description>
 	    <c:forEach var="user" items="${cmd.relatedUsers}">
-            <foaf:member rdf:resource="${projectHome}user/${fn:escapeXml(user.name)}"/>
+            <foaf:member rdf:resource="${properties['project.home']}user/${fn:escapeXml(user.name)}"/>
         </c:forEach>
 	</foaf:Group>
 
 	<c:forEach var="user" items="${cmd.relatedUsers}">	
-		<foaf:Person rdf:about="${projectHome}user/${fn:escapeXml(user.name)}">
+		<foaf:Person rdf:about="${properties['project.home']}user/${fn:escapeXml(user.name)}">
 			<foaf:name><c:out value="${user.name}"/></foaf:name>
 			<community:hasMembership>
                 <community:Membership>
-				  <community:relatedTo rdf:resource="${projectHome}tag/${fn:escapeXml(tags)}"/>
+				  <community:relatedTo rdf:resource="${properties['project.home']}tag/${fn:escapeXml(tags)}"/>
 				  <community:weight><c:out value="${user.prediction}"/></community:weight>
                 </community:Membership>
 			</community:hasMembership>

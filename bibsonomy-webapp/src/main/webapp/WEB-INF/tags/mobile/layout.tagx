@@ -41,20 +41,19 @@
 				<c:if test="${not empty additionalJS}">
 					<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
 				</c:if>
-				<meta name="email" content="${projectEmail}"/>
+				<meta name="email" content="${properties['project.email']}"/>
 				<parts:meta fieldName="author"/>
 				<parts:meta fieldName="copyright"/>
 				<parts:meta fieldName="keywords"/>
 				<parts:meta fieldName="description"/>
-				<title>${projectName}</title>
+				<title>${properties['project.name']}</title>
 				<jsp:invoke fragment="headerExt"/>
 			</head>
 			<body>
 				<!-- site header -->
 				<div id="head">
 					<h1>
-						<c:url var="root" value="/" context="${projectContext}"/>
-						<a href="${root}">${projectName}</a>
+						<a href="/">${properties['project.name']}</a>
 					</h1>
 					<!-- menu including toolbar -->
 					<mobile:menu selected="${selected}" loginUser="${loginUser}" resources="${resources}" />
@@ -72,12 +71,12 @@
 					<!-- legal notes -->
 					<div style="width: 70%;">
 						<fmt:message key="system.offeredBy">
-							<fmt:param value="${projectName}"/>
+							<fmt:param value="${properties['project.name']}"/>
 						</fmt:message>
 						<br />
 						<fmt:message key="system.contact"/>
 						<c:out value=" "/>
-						<parts:email address="${projectEmail}"/>
+						<parts:email address="${properties['project.email']}"/>
 						<br />
 						<fmt:message key="system.termsOfUse"/>
 					</div>
