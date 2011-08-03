@@ -6,7 +6,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/">${projectName}</a> :: <a href="/BibTeXHashExample.jsp">BibTeXHashExample.jsp</a></h1> 
+<h1 id="path"><a href="/">${properties['project.name']}</a> :: <a href="/BibTeXHashExample.jsp">BibTeXHashExample.jsp</a></h1> 
 
 <%-------------------------- Path Navigation -----------------------%>
 <%@include file="/boxes/path_navi.jsp" %>
@@ -16,9 +16,9 @@
 
 <div id="general"> 
 
-<h2>Calculate ${projectName} BibTeX hashes</h2>
+<h2>Calculate ${properties['project.name']} BibTeX hashes</h2>
 
-<p>Here you can enter some facts about a publication and ${projectName} 
+<p>Here you can enter some facts about a publication and ${properties['project.name']} 
 calculates the resulting hashes for you.</p>
 
 
