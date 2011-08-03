@@ -70,7 +70,7 @@
     <meta name="description" lang="en" content="ISWC 2007 conference proceedings on the BibSonomy bookmark/BibTeX tagging and sharing system">
     <link rel="alternate" type="application/atom+xml" title="BibSonomy Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default">
     <link rel="alternate" type="application/rss+xml"  title="BibSonomy Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss">
-    <title><c:out value="${projectName}" /> :: ISWC+ASWC 2007 </title>
+    <title>BibSonomy :: ISWC+ASWC 2007 </title>
   </head>
   
   <body>
