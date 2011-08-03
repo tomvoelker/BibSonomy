@@ -12,10 +12,9 @@ import org.springframework.validation.ValidationUtils;
  */
 public class BookmarkValidator implements Validator<Bookmark> {
 	
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(final Class clazz) {
-		return Bookmark.class.equals(clazz);
+	public boolean supports(final Class<?> clazz) {
+		return Bookmark.class.isAssignableFrom(clazz);
 	}
 	
 	@Override
