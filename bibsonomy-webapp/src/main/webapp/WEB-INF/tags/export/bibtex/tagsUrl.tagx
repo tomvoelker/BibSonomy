@@ -12,10 +12,10 @@
   
 	<!-- tags -->
 	<c:if test="${not empty post.tags and not command.notags}">
-	     [<a href="${projectHome}">${projectName}</a>:
+	     [<a href="${properties['project.home']}">${properties['project.name']}</a>:
             <!--  tags  -->
             <c:forEach var="tag" items="${post.tags}">
-               <c:out value=" "/><a href="${projectHome}user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}">${fn:escapeXml(tag.name)}</a>
+               <c:out value=" "/><a href="${properties['project.home']}user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}">${fn:escapeXml(tag.name)}</a>
             </c:forEach>]
 	</c:if>
   

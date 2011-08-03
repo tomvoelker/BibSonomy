@@ -14,8 +14,8 @@
 	
 	<c:set var="swrc" value="http://swrc.ontoware.org/ontology#"/>
 
-    <rdf:Description rdf:about="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
-      <owl:sameAs rdf:resource="${projectHome}uri/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
+    <rdf:Description rdf:about="${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
+      <owl:sameAs rdf:resource="${properties['project.home']}uri/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
       <rdf:type rdf:resource="${swrc}${mtl:getSWRCEntryType(post.resource.entrytype)}"/>
       <swrctags:swrcAttributes post="${post}"/>
     </rdf:Description>

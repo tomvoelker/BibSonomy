@@ -51,7 +51,7 @@
 						<form:checkbox path="overwrite"/>
                            <fmt:message key="import.overwrite">
                                <fmt:param><fmt:message key="import.firefox"/></fmt:param>
-                               <fmt:param>${projectName}</fmt:param>
+                               <fmt:param>${properties['project.name']}</fmt:param>
                            </fmt:message>
 					</td>
 				</tr>
