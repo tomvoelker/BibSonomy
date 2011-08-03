@@ -7,8 +7,8 @@
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
 	
 		<div class="sphere_image_container">
-				<a href="${projectHome}user/${user.name}" title="${user.realname}">
-					<img src="${projectHome}picture/user/${user.name}"/>
+				<a href="${properties['project.home']}user/${user.name}" title="${user.realname}">
+					<img src="${properties['project.home']}picture/user/${user.name}"/>
 					<c:choose>
 						<c:when test="${not empty user.realname}">
 							<span>${user.realname}</span>

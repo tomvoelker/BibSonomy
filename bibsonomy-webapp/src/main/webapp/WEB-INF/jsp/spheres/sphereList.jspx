@@ -29,7 +29,7 @@
             <c:set var="swrcUrl" value="/swrc/${requPath}"/>
             <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="${swrcUrl}" />
             <!-- UnAPI service -->
-            <link rel="unapi-server" type="application/xml" title="unAPI" href="${projectHome}unapi"/>
+            <link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
             	<c:if test="${command.context.loginUser.settings.showBookmark and command.context.loginUser.settings.showBibtex}">
             		<c:set var="optionShowBoth"><c:out value="hiddenElement"/></c:set>
             	</c:if>

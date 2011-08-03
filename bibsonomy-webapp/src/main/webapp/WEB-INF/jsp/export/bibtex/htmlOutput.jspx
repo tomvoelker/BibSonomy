@@ -23,7 +23,7 @@
 		|-->
 	<c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
 	  
-    <title><c:out value="${projectName}"/></title>
+    <title><c:out value="${properties['project.name']}"/></title>
     <link rel="stylesheet" type="text/css" href="/resources/css/prolearn.css" />
   </head>
   <body>
@@ -42,7 +42,8 @@
 				<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
 			</c:forEach>. 
         </span></c:if>
-        <!-- title  --><span class="entry_title"><a href="${projectHome}bibtex/${hash.intra.id}${bib.intraHash}/${fn:escapeXml(post.user.name)}">${mtl:cleanBibtex(bib.title)}</a>. </span>
+        <!-- title  -->
+        <span class="entry_title"><a href="${properties['project.home']}bibtex/${hash.intra.id}${bib.intraHash}/${fn:escapeXml(post.user.name)}">${mtl:cleanBibtex(bib.title)}</a>. </span>
         <!-- editor -->
         <c:if test="${not empty bib.editor}"><span class="entry_editor">In 
         	<c:forEach var="person" items="${bib.editorList}" varStatus="loopStatus">

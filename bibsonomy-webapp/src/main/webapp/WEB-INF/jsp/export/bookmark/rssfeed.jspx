@@ -21,10 +21,10 @@
 		 xmlns:content="http://purl.org/rss/1.0/modules/content/"
 		 > 
 
-<channel rdf:about="${projectHome}${fn:escapeXml(requPath)}">
-  <title>${projectName} bookmarks for /<c:out value='${requPath}'/></title>
-  <link>${projectHome}rss/<c:out value="${requPath}"/></link>
-  <description>${projectName} RSS Feed for /<c:out value='${requPath}'/></description>
+<channel rdf:about="${properties['project.home']}${fn:escapeXml(requPath)}">
+  <title>${properties['project.name']} bookmarks for /<c:out value='${requPath}'/></title>
+  <link>${properties['project.home']}rss/<c:out value="${requPath}"/></link>
+  <description>${properties['project.name']} RSS Feed for /<c:out value='${requPath}'/></description>
 
   <items>
     <rdf:Seq>
@@ -60,7 +60,7 @@
     <taxo:topics>
       <rdf:Bag>
         <c:forEach var="tag" items="${post.tags}">
-          <rdf:li rdf:resource="${projectHome}tag/${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/>
+          <rdf:li rdf:resource="${properties['project.home']}tag/${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/>
         </c:forEach>  
       </rdf:Bag>
     </taxo:topics>

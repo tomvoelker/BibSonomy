@@ -39,7 +39,7 @@
           		var dateFormat       = "yyyy-MM-dd HH:mm:ss";
 
            	  	var communityBaseUrl = "${command.communityBaseUrl}";
-          		var projectHome      = "${projectHome}";
+          		var projectHome      = "${properties['project.home']}";
           		var maxClusterCount  = "${command.maxClusterCount}";           	  
           </script>
 		  
