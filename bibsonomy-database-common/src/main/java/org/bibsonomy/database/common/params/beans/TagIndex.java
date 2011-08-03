@@ -1,6 +1,8 @@
 package org.bibsonomy.database.common.params.beans;
 
 /**
+ * TODO: could be remove when using mybatis
+ * 
  * This class holds the tagname and the corresponding index and join-index.
  * While the name of the class might be misleading, it can be used for tags as
  * well for concepts.
