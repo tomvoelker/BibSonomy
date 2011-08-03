@@ -133,7 +133,7 @@
 		<jsp:attribute name="contentHeading">
 			<div id="general">
 				<fmt:message key="followersPage.about">
-					<fmt:param>${projectHome}help/basic/groups_and_friends#followers</fmt:param>
+					<fmt:param>/help/basic/groups_and_friends#followers</fmt:param>
 				</fmt:message>
 				<c:out value=" "/>
 				<c:set var="ofUsers">
