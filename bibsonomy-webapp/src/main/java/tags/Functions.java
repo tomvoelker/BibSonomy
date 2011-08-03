@@ -35,6 +35,7 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.upload.FileUploadInterface;
+import org.bibsonomy.web.spring.converter.StringToEnumConverter;
 import org.springframework.format.datetime.DateFormatter;
 
 
@@ -367,7 +368,7 @@ public class Functions  {
 	 */
 	private static void escapeJSON(final String s, final StringBuffer sb) {
 		for (int i = 0; i < s.length(); i++) {
-			char ch=s.charAt(i);
+			final char ch=s.charAt(i);
 			switch(ch){
 			case '"':
 				sb.append("\\\"");
@@ -393,7 +394,7 @@ public class Functions  {
 			default:
 				// Reference: http://www.unicode.org/versions/Unicode5.1.0/
 				if ((ch >= '\u0000' && ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
-					String ss = Integer.toHexString(ch);
+					final String ss = Integer.toHexString(ch);
 					sb.append("\\u");
 					for (int k = 0; k < 4 - ss.length(); k++) {
 						sb.append('0');
@@ -633,7 +634,7 @@ public class Functions  {
 	 * @param object
 	 * @return <code>true</code>, iff object is contained in set.
 	 */
-	public static boolean contains(final Collection<?> collection, Object object) {
+	public static boolean contains(final Collection<?> collection, final Object object) {
 		return collection != null && collection.contains(object);
 	}
 
@@ -679,7 +680,19 @@ public class Functions  {
 	public static String removeXmlControlChars(final String s) {
 		return XmlUtils.removeXmlControlCharacters(s);
 	}
-
+	
+	/**
+	 * 
+	 * @param className
+	 * @param value
+	 * @return the enum representation
+	 * @throws ClassNotFoundException 
+	 */
+	public static <T extends Enum<T>> T convertToEnum(final String className, final String value) throws ClassNotFoundException {
+		@SuppressWarnings("unchecked")
+		final Class<T> enumClass = (Class<T>) Class.forName(className);
+		return new StringToEnumConverter<T>(enumClass).convert(value);
+	}
 	
 	/**
 	 * Checks if post has system tag myown 
