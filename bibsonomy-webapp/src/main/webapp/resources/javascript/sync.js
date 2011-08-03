@@ -60,18 +60,12 @@ function showSyncData(form, data) {
 	for (key in data) {
 		var error = data[key].error;
 		var status = "";
-		var info = "";
 		if (error != undefined) {
 			alert(key + ": " + error);
 			status = "ERROR";
-			info = "error";
 		} else {
-			status="DONE";
-			info = data[key].info;
+			status = data[key];
 		}
-		var date = new Date(data[key].date);
-		var formattedDate = formatDate(date, "MMM dd, yyyy hh:mm a");
-		var resourceType = "";
 		if(key == "BibTex") {
 			resourceType = getString("publications");
 		} else {
@@ -79,10 +73,8 @@ function showSyncData(form, data) {
 		}
 		
 		var contentDiv = $("<div class='fsRow'></div");
-		var label = $("<span class='fsLabel'>" + resourceType + "</span>");
-		var resultData = $("<span class='fsInput'>" + formattedDate + " " + getString("synchronization.result") + " " + status + " " + info + "</span>");
-		
-		label.appendTo(contentDiv);
+		var resultData = $("<dl><dt>" + resourceType +":</dt><dd>" + status + "</dd></dl>");
+
 		resultData.appendTo(contentDiv);
 		contentDiv.appendTo(syncResult);
 	}
@@ -94,6 +86,14 @@ function getSyncPlan(t) {
 
 function doSync(t) {
 	$(t).parents("form").find("input[name='_method']").val("POST");
+}
+
+function confirmReset(t) {
+	if(confirm(getString("synchronization.server.reset.confirm"))) {
+		$(t).parents("form").find("input[name='_method']").val("DELETE");
+	} else {
+		return false;
+	}
 }
 
 function errorSyncForm(jqXHR, textStatus, errorThrown, form) {

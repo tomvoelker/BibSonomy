@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import static org.bibsonomy.webapp.util.sync.SyncUtils.getPlanSummary;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -19,7 +18,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.TwoStepSynchronizationClient;
@@ -29,10 +27,11 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.sync.SyncUtils;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
+
+import com.ibm.icu.text.DateFormat;
 
 /**
  * @author wla
@@ -131,21 +130,17 @@ public class SynchronizationController extends AjaxController implements Minimal
 			break;
 		case DELETE:
 			/*
-			 * delete last synchronization data
+			 * delete synchronization data
 			 */
-			// FIXME: does a delete make sense? 
-			// Not so simple to get parameters
-//			for (final Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(syncService.getResourceType())) {
-//				client.deleteSyncData(serviceName, resourceType, syncDate);
-//			}
 			if (!present(command.getSyncDate())) {
 				/*
 				 * if no sync date given -> reset server(delete all syncData for all resourceTypes)
 				 */
-				SyncService service = getSyncServer(command.getSyncServer());
-				client.deleteSyncData(service, BibTex.class, null);
-				client.deleteSyncData(service, Bookmark.class, null);
-				return new ExtendedRedirectView("/settings?selTab=4");
+				client.resetServer(logic, serviceName);
+				JSONObject second = new JSONObject();
+				second.put(BibTex.class.getSimpleName(), messageSource.getMessage("synchronization.noresult", null, requestLogic.getLocale()));
+				second.put(Bookmark.class.getSimpleName(), messageSource.getMessage("synchronization.noresult", null, requestLogic.getLocale()));
+				json.put("syncData", second);
 			}
 			break;
 		default:
@@ -179,20 +174,35 @@ public class SynchronizationController extends AjaxController implements Minimal
 		requestLogic.setSessionAttribute(SyncUtils.SESSION_KEY + serviceName, syncPlan);
 	}
 	
-
 	private JSONObject serializeSyncData(final Map<Class<? extends Resource>, SynchronizationData> data) {
 		final JSONObject json = new JSONObject();
+		final Locale locale = requestLogic.getLocale();
+		final DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
 		for (final Entry<Class<? extends Resource>, SynchronizationData> entry : data.entrySet()) {
-			final SynchronizationData value = entry.getValue();
-			final HashMap<String, Object> values = new HashMap<String, Object>();
-			values.put("date", value.getLastSyncDate().getTime());
-			values.put("status", value.getStatus());
-			values.put("info", value.getInfo());
-			json.put(entry.getKey().getSimpleName(), values);
+			StringBuilder dataString = new StringBuilder();
+			SynchronizationData value = entry.getValue();
+			dataString.append(df.format(value.getLastSyncDate()) + " ");
+			dataString.append(messageSource.getMessage("synchronization.result", null, locale));
+			dataString.append(" " + messageSource.getMessage("synchronization.result." + value.getStatus().toString().toLowerCase(), null, locale) + " (" + value.getInfo() + ")");
+			json.put(entry.getKey().getSimpleName(), dataString.toString());
 		}
 		return json;
 	}
+
+//	private JSONObject serializeSyncData(final Map<Class<? extends Resource>, SynchronizationData> data) {
+//		final JSONObject json = new JSONObject();
+//
+//		for (final Entry<Class<? extends Resource>, SynchronizationData> entry : data.entrySet()) {
+//			final SynchronizationData value = entry.getValue();
+//			final HashMap<String, Object> values = new HashMap<String, Object>();
+//			values.put("date", value.getLastSyncDate().getTime());
+//			values.put("status", value.getStatus());
+//			values.put("info", value.getInfo());
+//			json.put(entry.getKey().getSimpleName(), values);
+//		}
+//		return json;
+//	}
 
 	/**
 	 * Currently, the method counts all operations and then creates human-readable
@@ -212,20 +222,6 @@ public class SynchronizationController extends AjaxController implements Minimal
 		}
 		return json;
 	}
-	
-	/**
-	 * Finds the sync service in the list whose update/create form was send. 
-	 * 
-	 * @param syncServices
-	 * @return
-	 */
-	private SyncService getSyncServer(final List<SyncService> syncServices) {
-		for (final SyncService syncService : syncServices) {
-			if (present(syncService.getService())) return syncService;
-		}
-		return null;
-	}
-
 	
 	@Override
 	public AjaxSynchronizationCommand instantiateCommand() {

@@ -21,7 +21,6 @@
 
 	<fmt:message key="navi.sync" var="syncPageTitle"/>	
 
-
 	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}">
 	
 		<jsp:attribute name="headerExt">
@@ -46,6 +45,7 @@
 			<fmt:message var="bookmarks" key="bookmarks" />
 			<fmt:message var="publications" key="publications" />
 			<fmt:message var="synchronizationRunning" key="synchronization.synchronizationRunning"/>
+			<fmt:message var="resetService" key="synchronization.server.reset" />
 			
 			<div id="general_100">
 				
@@ -73,7 +73,7 @@
 									</c:if>
 								
 									<div class="fsRow">
-										<span class="fsLabel">
+										<dl><dt>
 											<c:choose>
 												<c:when test="${entry.key == 'BibTex'}">
 													<c:out value="${publications}"/>
@@ -82,8 +82,8 @@
 													<c:out value="${bookmarks}"/>
 												</c:otherwise>
 											</c:choose>
-										: </span>
-										<span class="fsInput">
+										:</dt>
+										<dd>
 											<c:choose>
 												<c:when test="${not empty entry.value}">
 													<fmt:formatDate value="${entry.value.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
@@ -102,10 +102,12 @@
 													<fmt:message key="synchronization.noresult"/>
 												</c:otherwise>
 											</c:choose>
-										</span>
+										</dd>
+										</dl>
 									</div>
 								</c:forEach>
 								</div>
+								<input type="submit" value="${resetService}" onclick="return confirmReset(this)" />
 							</fieldset>
 
 							<fieldset class="fsInner">
