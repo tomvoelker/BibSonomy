@@ -36,8 +36,6 @@ function handleAjaxErrors(form, errors) {
 				div.html(message);
 				div.data(FIELD_DATA_KEY, field);
 				formElement.after(div);
-			} else {
-				// TODO: log?
 			}
 		});
 		
@@ -46,14 +44,12 @@ function handleAjaxErrors(form, errors) {
 	}
 }
 
-// FIXME: Does jQuery provide a escape function?!
-// FIXME: doesn't escape all special chars missing '[', ']', …
 function escapeSelector(selector) {
-	return selector.replace(/\./g,'\\.');
+	return selector.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/]%)/g,'\\$1');
 }
 
 function decodeHTML(string) {
-	return $('<div/>').html(string).text()
+	return $('<div />').html(string).text()
 }
 
 /**
@@ -61,24 +57,22 @@ function decodeHTML(string) {
  * @param className
  */
 function prepareAjaxErrorBoxes(className) {
-	$('.' + className).each(
-		function () {
-			var errorField = $(this);
-			if (parseInt(errorField.html().length) == 0) {
-				return true;
-			}
-					  
-			errorField.mouseover(function() {
-			   $(this).fadeOut('slow');
-			});
-			
-			// get the name of the input/textarea/…
-			var field = errorField.data(FIELD_DATA_KEY);
-			
-			// bind "change" and "keyup" event to all matched input/… field
-			errorField.siblings('[name=' + escapeSelector(field) + ']').bind("change keyup", function() {
-				errorField.fadeOut('slow');
-			});
+	$('.' + className).each(function() {
+		var errorField = $(this);
+		if (parseInt(errorField.html().length) == 0) {
+			return true;
 		}
-	);
+				  
+		errorField.mouseover(function() {
+		   $(this).fadeOut('slow');
+		});
+		
+		// get the name of the input/textarea/…
+		var field = errorField.data(FIELD_DATA_KEY);
+		
+		// bind "change" and "keyup" event to all matched input/… field
+		errorField.siblings('[name=' + escapeSelector(field) + ']').bind("change keyup", function() {
+			errorField.fadeOut('slow');
+		});
+	});
 }
