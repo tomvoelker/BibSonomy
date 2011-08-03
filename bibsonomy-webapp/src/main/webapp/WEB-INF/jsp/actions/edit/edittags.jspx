@@ -84,7 +84,7 @@
 						    		<hr />
 				        			
 									<div class="bmtitel">
-										<b><a href="${root}">${projectName}</a></b>
+										<b><a href="${root}">${properties['project.name']}</a></b>
 									</div>
 				     				<span class="bmmeta">
 				        				<fmt:message key="edittags.example.partTwo">
@@ -97,7 +97,7 @@
 									</span>
 							
 									<div class="bmtitel">
-										<b><a href="${root}">${projectName}</a></b>
+										<b><a href="${root}">${properties['project.name']}</a></b>
 									</div>
 				     
 									<span class="bmmeta">

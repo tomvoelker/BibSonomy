@@ -14,7 +14,7 @@
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" selectedNaviTab="nav_home">
 		<jsp:attribute name="heading">
-			<c:url var="specialSearchUrl" value="/redirect" context="${projectContext}"/>
+			<c:url var="specialSearchUrl" value="/redirect" />
 			<form id="specialsearch" method="get" action="${specialSearchUrl}">
 				<select name="scope" size="1" id="scope">
 					<option value="tag"><fmt:message key="navi.tag"/></option>
@@ -41,12 +41,12 @@
 			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
 				<p class="smalltext">
 					<fmt:message key="system.about">
-						<fmt:param value="${projectName}"/>
+						<fmt:param value="${properties['project.name']}"/>
 					</fmt:message>
 				</p>
 				<p class="smalltext">
 					<fmt:message key="system.introduction">
-						<fmt:param value="${projectName}"/>
+						<fmt:param value="${properties['project.name']}"/>
 					</fmt:message>									
 				</p>
 			</c:if>

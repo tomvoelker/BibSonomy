@@ -11,12 +11,13 @@
 	
 <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+<fmt:message key="navi.buttons" var="buttonsPageTitle"/>
+<layout:paneLayout pageTitle="${buttonsPageTitle}" command="${command}" requPath="${requPath}">
 		
 	<jsp:attribute name="headerExt"/>
 	
 	<jsp:attribute name="heading">
-		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.buttons" /></a>
+		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${buttonsPageTitle}" /></a>
 	</jsp:attribute>
 	
 	<jsp:attribute name="content">
@@ -24,7 +25,7 @@
 		<div id="general_fixed">
 			<c:set var="userName"><mtl:encode value='${command.context.loginUser.name}'/></c:set>
 			
-			<h2><fmt:message key="buttons.bookmarklet"><fmt:param value="${projectName}"></fmt:param></fmt:message></h2>
+			<h2><fmt:message key="buttons.bookmarklet"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message></h2>
 		
     
             <!-- 
@@ -32,7 +33,7 @@
                -->	
          	<c:if test="${command.context.userLoggedIn}">
 				<p>
-					<fmt:message key="buttons.mybibsonomy_part_one"/><buttons:myBibSonomy username="${userName}"/><fmt:message key="buttons.mybibsonomy_part_two"><fmt:param value="${projectName}"></fmt:param></fmt:message>
+					<fmt:message key="buttons.mybibsonomy_part_one"/><buttons:myBibSonomy username="${userName}"/><fmt:message key="buttons.mybibsonomy_part_two"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
 				</p>
 				<p>
 					<fmt:message key="buttons.mybibsonomy_part_three"/>
@@ -41,7 +42,7 @@
 					</a>
 					<fmt:message key="buttons.mybibsonomy_part_five"/>
 					<a href="/user/${userName}">
-						<fmt:message key="buttons.mybibsonomy"><fmt:param value="${projectName}"></fmt:param></fmt:message>
+						<fmt:message key="buttons.mybibsonomy"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
 					</a>
                     <c:out value=" "/>
 					<fmt:message key="buttons.mybibsonomy_part_six"/>
@@ -82,7 +83,7 @@
 					<fmt:message key="buttons.shortcut_one"/>
 					<buttons:postPublication/><fmt:message key="buttons.shortcut_two"/><buttons:postPublicationPopUp/>
 					<fmt:message key="buttons.shortcut_three"/>
-					<fmt:message key="buttons.shortcut_bibtex_end"><fmt:param value="${projectName}"></fmt:param></fmt:message>
+					<fmt:message key="buttons.shortcut_bibtex_end"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
 				</p>
 			</c:if>
 			      
@@ -90,7 +91,7 @@
                |              JavaScript code snippets 
                -->  
 			<h3><fmt:message key="buttons.javascript_snippets"/></h3>
-			<p><fmt:message key="buttons.javascript_snippets_text"><fmt:param value="${projectName}"></fmt:param></fmt:message></p>
+			<p><fmt:message key="buttons.javascript_snippets_text"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message></p>
 			<buttons:snippets/>
       
 		</div>

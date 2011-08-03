@@ -35,7 +35,10 @@
 	<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text=""/> 
 	<spring:theme code="image.head.logo" var="headerLogo" text=""/>
 	<spring:theme code="javascript.additional" var="additionalJS" text=""/>
-
+	
+	<!-- TODO: extract in seperate jsp file? -->
+	<c:url url="/resources" var="resdir" scope="application" value="/resources" />
+	
     <!-- 
       document starts here
      -->
@@ -50,7 +53,7 @@
 					| To have the locale available on all pages we set the scope to "request".
 					| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
 					|-->
-				<c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
+				<c:set var="locale" scope="request" value="${pageContext.response.locale}" />
 				
 				<meta charset="UTF-8" />
 				<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
@@ -98,14 +101,15 @@
 				</c:if>
 
 
-<!--				<meta name="email" content="${projectEmail}"/>-->
-				<parts:meta fieldName="author"/>
-<!--				<parts:meta fieldName="copyright"/>-->
-				<parts:meta fieldName="keywords"/>
-				<parts:meta fieldName="description"/>
-				<link rel="alternate" type="application/atom+xml" title="${systemName} Blog - Atom" href="http://blog.bibsonomy.org/feeds/posts/default" />
-				<link rel="alternate" type="application/rss+xml"  title="${systemName} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
-				<title>${projectName} <c:if test="${not empty pageTitle}"> :: </c:if><c:out value="${mtl:cleanBibtex(pageTitle)}"/></title><!-- TODO: localize page titles! -->
+<!--				<meta name="email" content="${properties['project.email']}"/> -->
+				<parts:meta fieldName="author" />
+<!--				<parts:meta fieldName="copyright" /> -->
+				<parts:meta fieldName="keywords" />
+				<parts:meta fieldName="description" />
+				<!-- TODO: use feed links for bibsonomy in puma? -->
+				<link rel="alternate" type="application/atom+xml" title="${properties['project.name']} Blog - Atom" href="http://blog.bibsonomy.org/feeds/posts/default" />
+				<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
+				<title>${properties['project.name']} <c:if test="${not empty pageTitle}"> :: </c:if><c:out value="${mtl:cleanBibtex(pageTitle)}"/></title>
 				<jsp:invoke fragment="headerExt"/>
 
 				<c:if test="${not empty additionalCSS}">
@@ -122,38 +126,30 @@
 				<c:choose>
 					<c:when test="${not empty loginUser.name}">
 						<fmt:message key="navi.loggedInAs"/>&amp;nbsp;
-						<c:url var="userUrl" value="/user/${mtl:encodeURI(loginUser.name)}" context="${projectContext}"/>
-						<a href="${userUrl}"><c:out value="${mtl:encodeURI(loginUser.name)}" /></a>
-						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
-						<c:url var="settingsUrl" value="/settings" context="${projectContext}"/>        
-						<a href="${settingsUrl}"><fmt:message key="navi.settings"/></a>
-						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
-						<c:url var="logoutUrl" value="/logout" context="${projectContext}"/>
-						<a href="${logoutUrl}"><fmt:message key="navi.logout"/>
-						<c:out value=" "/></a>${mtl:ch('menu.delim')}<c:out value=" "/>	
+						<a href="/user/${mtl:encodeURI(loginUser.name)}"><c:out value="${mtl:encodeURI(loginUser.name)}" /></a>
+						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>        
+						<a href="/settings"><fmt:message key="navi.settings" /></a>
+						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" " />
+						<a href="/logout"><fmt:message key="navi.logout"/>
+						<c:out value=" "/></a>${mtl:ch('menu.delim')}<c:out value=" " />	
 					</c:when>
 					<c:otherwise>
-						<c:url var="loginUrl" value="/login" context="${projectContext}"/>
-						<a href="${loginUrl}"><fmt:message key="navi.login"/></a>
+						<a href="/login"><fmt:message key="navi.login"/></a>
 						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 					</c:otherwise>
 				</c:choose>
 				
 				<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-				<c:url var="helpUrl" value="${helpLangUrl}" context="${projectContext}"/>
-				<a href="${helpUrl}"><fmt:message key="navi.help"/></a>
+				<a href="${helpLangUrl}"><fmt:message key="navi.help"/></a>
 				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>				
-				<a href="${projectBlog}"><fmt:message key="navi.news"/></a><!-- FIXME: How to use project.blog? -->
+				<a href="${properties['project.blog']}"><fmt:message key="navi.news"/></a>
 				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
-				<c:url var="aboutUrl" value="${helpLangUrl}/contact" context="${projectContext}"/>
-				<a href="${aboutUrl}"><fmt:message key="navi.about"/></a>	
+				<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>	
 				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 				<!-- requPath + query -->
 				<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
-				<c:url var="langUrlDe" value="/${mtl:setParam(requPathAndQuery, 'lang', 'de')}" context="${projectContext}"/>
-				<a href="${langUrlDe}"><img alt="de" src="${resdir}/image/lang_de.png"/></a>
-				<c:url var="langUrlEn" value="/${mtl:setParam(requPathAndQuery, 'lang', 'en')}" context="${projectContext}"/>					
-				<a href="${langUrlEn}"><img alt="en" src="${resdir}/image/lang_en.png"/></a>					
+				<a href="/${mtl:setParam(requPathAndQuery, 'lang', 'de')}"><img alt="de" src="${resdir}/image/lang_de.png"/></a>					
+				<a href="/${mtl:setParam(requPathAndQuery, 'lang', 'en')}"><img alt="en" src="${resdir}/image/lang_en.png"/></a>					
 			</div>
 			
 			
@@ -173,15 +169,13 @@
 					<div id="mainHeaderRightBox">
 						<c:choose>
 							<c:when test="${not empty loginUser.name}">
-								<c:url var="inboxUrl" value="/inbox" context="${projectContext}"/>
-								<a href="${inboxUrl}">
+								<a href="/inbox">
 									<span id="inboxctr">${loginUser.inbox.numPosts}</span><c:out value=" "/>
 									<fmt:message key="navi.inInbox"/><c:out value=" "/>
 									<fmt:message key="navi.inbox"/>
 								</a>
 								<br/>
-								<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
-								<a href="${basketUrl}">
+								<a href="/basket">
 									<span id="pickctr">${loginUser.basket.numPosts}</span><c:out value=" "/>
 									<fmt:message key="navi.pickedIn"/><c:out value=" "/>
 									<fmt:message key="navi.basket"/>
@@ -204,8 +198,7 @@
 						|
 						+-->
 					<h1 id="heading">
-							<c:url var="root" value="/" context="${projectContext}"/>
-							<a href="${root}">${projectName}</a> :: <jsp:invoke fragment="heading"/>
+						<a href="/">${properties['project.name']}</a> :: <jsp:invoke fragment="heading"/>
 					</h1>
 									
 					<!-- dropdown menu for BibSonomy Path -->  
@@ -275,12 +268,12 @@
 				<!-- page footer -->
 				<div id="footer">
 					<fmt:message key="system.offeredBy">
-						<fmt:param value="${projectName}"/><!-- FIXME: How to use project.name? -->
+						<fmt:param value="${properties['project.name']}"/>
 					</fmt:message>
 					<c:out value=" "/>
 					<fmt:message key="system.contact"/>
 					<c:out value=" "/>
-					<parts:email address="${projectEmail}"/> - <!-- FIXME: How to use project.email? --> 
+					<parts:email address="${properties['project.email']}"/> - 
 					<fmt:message key="system.termsOfUse"/>
 					
 					<c:if test="${cookie.mobile.value == 'false' or param.mobile == 'false'}">
@@ -295,7 +288,7 @@
 						    .corner("round bottom 15px")
 							.corner("round tl 15px")
 							.SideBarResizer('#sidebarGrip');
-			    			init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${projectName}");
+			    			init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${properties['project.name']}");
 					    });					    
 					  ]]>
 					</script>

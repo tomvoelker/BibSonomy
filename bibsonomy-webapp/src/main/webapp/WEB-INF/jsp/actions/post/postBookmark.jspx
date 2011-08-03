@@ -45,7 +45,7 @@
 			<div class="boxcontent">
 				<h3>
 					<fmt:message key="buttons.bookmarklet">
-						<fmt:param value="${projectName}"></fmt:param>
+						<fmt:param value="${properties['project.name']}"></fmt:param>
 					</fmt:message>
 				</h3>
 				<p>

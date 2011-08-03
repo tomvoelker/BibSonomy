@@ -39,7 +39,7 @@
           		<mtl:exists path="command.notice">
             		<c:if test="${not empty command.notice}">
               			<div style="border: 1px solid #006699; padding: 1em; margin-bottom: 1em;">
-                			<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="/">${projectName}</a>, <fmt:message key="login.notice.welcome_2" />
+                			<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="/">${properties['project.name']}</a>, <fmt:message key="login.notice.welcome_2" />
                 			<br />
                 			<br />
                 			<b><fmt:message key="${fn:escapeXml(command.notice)}" /></b>
@@ -68,13 +68,13 @@
  		     
  		    	<div id="logins">
           			<ul>
-						<c:forEach var="authMethod" items="${authConfig.authOrder}">
+						<c:forEach var="authMethod" items="${authConfig}">
 			  				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
               				<li><a href="#login_${authMethodName}"><fmt:message key="login.method.${authMethodName}" /></a></li>
             			</c:forEach>
           			</ul>
           
-		  			<c:forEach var="authMethod" items="${authConfig.authOrder}">
+		  			<c:forEach var="authMethod" items="${authConfig}">
             			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
             			<div id="login_${authMethodName}">           
            					<form:form action="/login_${authMethodName}" method="POST">
