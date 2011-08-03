@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,11 +19,11 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
-import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
+import org.bibsonomy.webapp.controller.SyncPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -222,48 +221,11 @@ public class SynchronizationController extends AjaxController implements Minimal
 	private JSONObject serializeSyncPlan(final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan, final URI serverName) {
 		final JSONObject json = new JSONObject();
 		final Locale locale = requestLogic.getLocale();
-		for (final Entry<Class<? extends Resource>, List<SynchronizationPost>> entry : syncPlan.entrySet()) {
-			int createClient = 0;
-			int updateClient = 0;
-			int deleteClient = 0;
-			int createServer = 0;
-			int updateServer = 0;
-			int deleteServer = 0;
-			int ok = 0;
-			final Class<? extends Resource> resourceType = entry.getKey();
-			for (final SynchronizationPost synchronizationPost : entry.getValue()) {
-				final SynchronizationAction action = synchronizationPost.getAction();
-				switch (action) {
-				case CREATE_CLIENT:
-					createClient++;
-					break;
-				case UPDATE_CLIENT:
-					updateClient++;
-					break;
-				case DELETE_CLIENT:
-					deleteClient++;
-					break;
-				case CREATE_SERVER:
-					createClient++;
-					break;
-				case UPDATE_SERVER:
-					updateClient++;
-					break;
-				case DELETE_SERVER:
-					deleteClient++;
-					break;
-				case OK:
-					ok++;
-					break;
-				default:
-					break;
-				}
-			}
-			final Map<String, String> messages = new LinkedHashMap<String, String>();
-			messages.put("CLIENT", messageSource.getMessage("synchronization.syncPlan.message", new Object[]{projectHome, createClient, updateClient, deleteClient}, locale));
-			messages.put("SERVER", messageSource.getMessage("synchronization.syncPlan.message", new Object[]{serverName, createServer, updateServer, deleteServer}, locale));
-			messages.put("OTHER", messageSource.getMessage("synchronization.syncPlan.message.other", new Object[]{ok}, locale));
-			json.put(resourceType.getSimpleName(), messages);
+		
+		Map<Class<? extends Resource>, Map<String, String>> planSummary = SyncPageController.getPlanSummary(syncPlan, serverName.toString(), locale, messageSource, projectHome);
+		
+		for (final Entry<Class<? extends Resource>, Map<String, String>> planEntry : planSummary.entrySet()) {
+			json.put(planEntry.getKey(), planEntry.getValue());
 		}
 		return json;
 	}

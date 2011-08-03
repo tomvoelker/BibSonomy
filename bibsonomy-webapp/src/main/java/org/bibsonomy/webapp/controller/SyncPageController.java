@@ -105,8 +105,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 								missedPlan = true;
 								syncClient.deleteSyncData(syncService, resourceType, lastSyncData.getLastSyncDate());
 							} else {
-								//TODO get plan from the session and show it
-								syncService.setPlan(getPlan(syncPlan, syncService.getService().toString()));
+								syncService.setPlan(getPlanSummary(syncPlan, syncService.getService().toString(), requestLogic.getLocale(), messageSource, projectHome));
 							}
 						}
 					} while (missedPlan);
@@ -127,10 +126,12 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	 * 
 	 * @param syncPlan
 	 * @param serverName
-	 * @return
+	 * @param locale 
+	 * @param messageSource 
+	 * @param projectHome 
+	 * @return plan summary as map of strings, readable for human
 	 */
-	private Map<Class<? extends Resource>, Map<String, String>> getPlan(Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan, String serverName) {
-		Locale locale = requestLogic.getLocale();
+	public static Map<Class<? extends Resource>, Map<String, String>> getPlanSummary(Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan, String serverName, final Locale locale, final MessageSource messageSource, final String projectHome) {
 		final Map<Class<? extends Resource>, Map<String, String>> result = new LinkedHashMap<Class<? extends Resource>, Map<String,String>>();
 		for (final Entry<Class<? extends Resource>, List<SynchronizationPost>> entry : syncPlan.entrySet()) {
 			int createClient = 0;
