@@ -1,5 +1,7 @@
 package org.bibsonomy.database.testutil;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -75,30 +77,36 @@ public final class JNDIBinder {
 	 * binds all database property files (ending with _database.properties and in the root class path) to the context before _
 	 * 
 	 * e.g. foobar_database.properties is bind to the context "foobar"
+	 * @param configLocations 
 	 */
-	public static void bind() {
+	public static void bind(final String ... configLocations) {
 		// get all propertyFile names
 		final Set<String> names = new HashSet<String>();
 		
-		try {
-			final Enumeration<URL> resources = JNDIBinder.class.getClassLoader().getResources("");
-			final URL nextElement = resources.nextElement();
-			
-			final File file = new File(nextElement.getPath());
-			final File[] listFiles = file.listFiles(new FileFilter() {
+		// if config location are defined use them
+		if (present(configLocations) && configLocations.length > 0) {
+			names.addAll(Arrays.asList(configLocations));
+		} else {
+			// ... else get all *_database.properties from root class path
+			try {
+				final Enumeration<URL> resources = JNDIBinder.class.getClassLoader().getResources("");
+				final URL nextElement = resources.nextElement();
 				
-				@Override
-				public boolean accept(File pathname) {
-					return pathname.getName().endsWith("_database.properties");
+				final File file = new File(nextElement.getPath());
+				final File[] listFiles = file.listFiles(new FileFilter() {
+					
+					@Override
+					public boolean accept(final File pathname) {
+						return pathname.getName().endsWith("_database.properties");
+					}
+				});
+				
+				for (final File props : listFiles) {
+					names.add(props.getName());
 				}
-			});
-			
-			for (final File props : listFiles) {
-				names.add(props.getName());
+			} catch (final IOException e) {
+				throw new RuntimeException(e);
 			}
-		
-		} catch (IOException e) {
-			throw new RuntimeException(e);
 		}
 		
 		names.removeAll(IGNORED_PROPERTY_FILES);
@@ -111,14 +119,14 @@ public final class JNDIBinder {
 			for (final String propFile : names) {
 				bindDataSource(propFile, ctx);
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			log.error("Error when trying to bind test database connection via JNDI");
 			log.error(ex.getMessage());
 			throw new RuntimeException(ex);
 		}
 	}
 	
-	private static void bindDataSource(String propFile, InitialContext ctx) throws IOException, NamingException {
+	private static void bindDataSource(final String propFile, final InitialContext ctx) throws IOException, NamingException {
 		log.debug("loading properties " + propFile);
 		final Properties properties = getPropertiesFromFile(propFile);
 		
@@ -139,7 +147,7 @@ public final class JNDIBinder {
 		ctx.bind("java:comp/env/jdbc/" + jdbcKey, dataSource);
 	}
 
-	private static Properties getPropertiesFromFile(String filename) throws IOException {
+	private static Properties getPropertiesFromFile(final String filename) throws IOException {
 		final Properties props = new Properties();		
 
 		// read database properties
