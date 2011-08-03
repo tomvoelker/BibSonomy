@@ -23,7 +23,7 @@
 				
 		<!--  sorting options -->
 		<c:out value=" "/>
-		<c:url context="${projectContext}" var="tagUrl" value="/tag/${mtl:encodeURI(command.requestedTags)}"/>
+		<c:url var="tagUrl" value="/tag/${mtl:encodeURI(command.requestedTags)}"/>
 		<span style="font-size: 65%">
 			<fmt:message key="sort.orderBy"/>
 			(

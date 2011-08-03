@@ -29,7 +29,7 @@
 			<ul id="sidebar">
 				<li>
             		<span class="sidebar_h">
-              			<c:url var="message_remove" value="/removeMessage" context="${projectContext}">
+              			<c:url var="message_remove" value="/removeMessage">
 							<c:param name="hash" value=""/>
 							<c:param name="user" value=""/>
 							<c:param name="ckey" value="${ckey}"/>

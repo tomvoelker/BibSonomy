@@ -99,7 +99,7 @@
     											
 		  <c:forEach var="mapEntry" items="${command.layoutMap}">
 		    <c:if test="${mapEntry.value.publicLayout}">			
-			  <c:url var="url" value="/layout/${mapEntry.value.name}/${requPath}" context="${projectContext}"/>
+			  <c:url var="url" value="/layout/${mapEntry.value.name}/${requPath}" />
 			    <dt>
                   <a href="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></a>&#160;<a href="#jabref">*</a>
                 </dt>
@@ -114,7 +114,7 @@
         <h3><a name="jabref">JabRef</a></h3>
  		<p>
   		  <fmt:message key="export.jabref.explain">
-  			<fmt:param>${projectName}</fmt:param>
+  			<fmt:param>${properties['project.name']}</fmt:param>
   		  </fmt:message>
  		</p>
 
