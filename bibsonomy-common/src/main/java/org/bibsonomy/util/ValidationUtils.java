@@ -65,6 +65,14 @@ public class ValidationUtils {
 	public static boolean present(final Object object) {
 		return (object != null);
 	}
+	
+	/**
+	 * @param objects array to check
+	 * @return false iff the argument is null or has zero length
+	 */
+	public static boolean present(final Object[] objects) {
+		return (objects != null) && objects.length > 0;
+	}
 
 	/**
 	 * @param gid argument to check
