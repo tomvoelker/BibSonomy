@@ -87,8 +87,16 @@
 											<c:choose>
 												<c:when test="${not empty entry.value}">
 													<fmt:formatDate value="${entry.value.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-													<fmt:message key="synchronization.result"/>
-													<c:out value="${entry.value.status} "/> <em>(<c:out value="${entry.value.info}"/>)</em>
+													<c:choose>
+														<c:when test="${entry.value.status ne 'PLANNED'}">
+															<fmt:message key="synchronization.result"/>
+															<c:out value="${entry.value.status} "/> <em>(<c:out value="${entry.value.info}"/>)</em>
+														</c:when>
+														<c:otherwise>
+															<fmt:message var="syncPlanned" key="synchronization.planned"/>
+															<c:out value=" ${syncPlanned}"/>
+														</c:otherwise>
+													</c:choose>
 												</c:when>
 												<c:otherwise>
 													<fmt:message key="synchronization.noresult"/>
@@ -100,16 +108,29 @@
 								</div>
 							</fieldset>
 
-							<!-- FIXME: If all sync's are planned, we don't have the plan. It would be good, to show it here. -->
 							<fieldset class="fsInner">
-								
-								<div class="syncPlan"><!-- something to fill --></div>
+								<div class="syncPlan">
+									<c:if test="${!empty service.plan }">
+										<dl>
+											<c:forEach var="resourceType" items="${service.plan}">								
+												<dt><fmt:message key="resourceType.${resourceType.key.simpleName}.plural"/></dt>
+												<dd><ul>
+													<c:forEach var="serv" items="${resourceType.value}">
+														<li>
+															<c:out value="${serv.value}"/>
+														</li>
+													</c:forEach>
+												</ul></dd>
+											</c:forEach>
+										</dl>
+									</c:if>
+								</div>
 							
 								<legend><c:out value="${syncPlan}"/></legend>
 								
-								<input type="submit" value="${getSyncPlan}" onclick="return getSyncPlan(this);"/>
+								<input type="submit" class="syncPlanBtn" value="${getSyncPlan}" onclick="return getSyncPlan(this);"/>
 
-								<input type="submit" value="${synchronize}" style="display:${syncButtonDisplay}" onclick="return doSync(this);"/>
+								<input type="submit" class="synchronizeBtn" value="${synchronize}" style="display:${syncButtonDisplay}" onclick="return doSync(this);"/>
 
 								<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
 							</fieldset>
