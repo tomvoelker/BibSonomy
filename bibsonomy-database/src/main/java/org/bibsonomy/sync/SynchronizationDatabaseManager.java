@@ -324,10 +324,16 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 				 * changed on server since last sync 
 				 */
 				if (clientPost.getChangeDate().after(lastSyncDate)) {
-					/*
-					 * changed on client, too -> conflict!
-					 */
-					resolveConflict(clientPost, serverPost, conflictResolutionStrategy, direction);
+					
+					if(clientPost.getChangeDate().equals(serverPost.getChangeDate())) {
+						//same change date -> same post
+						clientPost.setAction(SynchronizationAction.OK);
+					} else {
+						/*
+						 * changed on client, too -> conflict!
+						 */
+						resolveConflict(clientPost, serverPost, conflictResolutionStrategy, direction);
+					}
 				} else {
 					/*
 					 * must be updated on client
