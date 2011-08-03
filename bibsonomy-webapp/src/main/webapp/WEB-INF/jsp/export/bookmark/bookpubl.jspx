@@ -14,7 +14,7 @@
 
 <html>
   <head>
-    <title>${projectName}</title>
+    <title>${properties['project.name']}</title>
     <link rel="stylesheet" type="text/css" href="/resources/css/prolearn.css" />
   </head>
   <body>
