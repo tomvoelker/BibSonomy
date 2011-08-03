@@ -14,7 +14,6 @@ import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
 /**
  * Controller for the "group cv page":
  * - /cv/group/GROUPNAME
@@ -33,16 +32,15 @@ public class GroupCvPageController extends ResourceListController implements Min
 	public View workOn(final GroupResourceViewCommand command) {
 		final String requestedGroup = command.getRequestedGroup();
 		final Group group = this.logic.getGroupDetails(requestedGroup);
+		if (!present(group)) {
+			return Views.ERROR404;
+		}
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
 		command.setDuplicates(false);
 		
 		command.setPageTitle("Curriculum vitae"); // TODO: i18n
 		
 		final List<User> groupUsers = this.logic.getUsers(null, groupingEntity, requestedGroup, null, null, null, null, null, 0, 1000);
-		if (!present(groupUsers)) {
-			throw new IllegalArgumentException("The requested group '"+requestedGroup+"' does not exist.");
-		}
-		
 		group.setUsers(groupUsers);
 		command.setGroup(group);
 		
