@@ -58,11 +58,13 @@
     <jsp:attribute name="xmlns:owl">http://www.w3.org/2002/07/owl#</jsp:attribute>
 
     <jsp:body>
+    	<c:set var="projectHome" value="${properties['project.home']}" />
+    	<c:set var="projectName" value="${properties['project.name']}" />
       <!-- an RSS feed first defines a channel with general metadata and an overview of the described items -->
       <channel rdf:about="${projectHome}${fn:escapeXml(requPath)}">
         <!-- title, link, description -->
         <title>${projectName} publications for /<c:out value="${requPath}"/></title>
-        <link>${projectHome}<c:out value="${format}"/>/<c:out value='${requPath}'/></link>
+        <link>${projectName}<c:out value="${format}"/>/<c:out value='${requPath}'/></link>
         <description>${projectName} RSS feed for /<c:out value='${requPath}'/></description>
         <dc:date><mtl:formatDate value="${now}"/></dc:date>
          

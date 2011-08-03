@@ -13,10 +13,11 @@
 
 	<span id="image.button.postPublicationPopup">
 	</span>
+	<!-- TODO: BibSonomy ?! -->
     <script type="text/javascript">
     	var title = '${postPublicationPopup}';
    	 	var image = '${buttonImage}';
-        var projectHome ="${projectHome}";
+        var projectHome ="${properties['project.home']}";
         //<mtl:cdata>
 		<![CDATA[
 			var myurl = "javascript: var post=window.open('"+projectHome+"BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+";
@@ -37,9 +38,9 @@
 	<noscript>
 		(<fmt:message key="buttons.javascript"/>
 		<!-- Firefox & Opera document.getSelection() -->
-		Firefox/Opera: <a title="${postPublicationPopup}" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublicationPopup}" title="${postPublicationPopup}"/></a>,
+		Firefox/Opera: <a title="${postPublicationPopup}" href="javascript:location.href='${properties['project.home']}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublicationPopup}" title="${postPublicationPopup}"/></a>,
 		<!-- Internet Explorer document.selection.createRange().text -->    
-		InternetExplorer: <a title="${postPublicationPopup}" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublicationPopup}" title="${postPublicationPopup}"/></a>)
+		InternetExplorer: <a title="${postPublicationPopup}" href="javascript:location.href='${properties['project.home']}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublicationPopup}" title="${postPublicationPopup}"/></a>)
     </noscript>
 
 </jsp:root>

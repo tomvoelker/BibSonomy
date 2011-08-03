@@ -6,13 +6,10 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:spring="http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
-		
-    
-    
+	
     <fmt:message var="selectCode" key="buttons.select_code"/>
-   
     <spring:theme code="image.snippet.bookmarkit" var="imageBookmarkIt" />
-	<c:set var="imageBookmarkIt" value="${projectHome}${imageBookmarkIt}" />
+	<c:set var="imageBookmarkIt" value="${properties['project.home']}${imageBookmarkIt}" />
     
 	<form name="select_all">
 		<table width="100%" border="0" cellspacing="0" cellpadding="5">
@@ -33,11 +30,11 @@
 				<td width="70%" style="text-align:center">
 					<textarea name="text_area1" rows="10" style="width: 100%">
 						<![CDATA[
-<!-- post bookmark to ${projectName} link code -->
+<!-- post bookmark link code -->
 <script type="text/javascript">    	
    var url=encodeURIComponent(document.location.href);
    var title=encodeURIComponent(document.title);
-   document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${projectName}.\">Bookmark to ${projectName}!</a>");
+   document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");
 </script>
 ]]>
 					</textarea>
@@ -49,7 +46,7 @@
 							<![CDATA[
 							         var url=encodeURIComponent(document.location.href);
 							         var title=encodeURIComponent(document.title);
-							         document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${projectName}.\">Bookmark to ${projectName}!</a>");
+							         document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");
 							]]>
 						</script>
 					</div>
@@ -74,11 +71,11 @@
 				<td style="text-align:center">
 					<textarea name="text_area2" rows="10" style="width: 100%">
 <![CDATA[
-<!-- post bookmark to ${projectName} link code -->
+<!-- post bookmark link code -->
 <script type="text/javascript">
    var url=encodeURIComponent(document.location.href);
    var title=encodeURIComponent(document.title);
-   document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${projectName}.\"><img src=\"${imageBookmarkIt}\"></a>");	
+   document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");	
 </script>
 ]]>
 					
@@ -91,7 +88,7 @@
 							<![CDATA[
 							         var url=encodeURIComponent(document.location.href);
 							         var title=encodeURIComponent(document.title);
-							         document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${projectName}.\"><img src=\"${imageBookmarkIt}\"></a>");
+							         document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");
 							]]>
 						</script>
 					</div>

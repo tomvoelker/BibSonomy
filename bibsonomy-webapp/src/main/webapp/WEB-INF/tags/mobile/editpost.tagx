@@ -95,7 +95,7 @@
 						<c:if test="${resourceType eq 'Publication'}">
 							<p>
 								<fmt:message key="post.edit.spam_note"/>
-								<parts:email address="${projectNoSpamEmail}"/>
+								<parts:email address="${properties['project.noSpamEmail']}"/>
 							</p>
 						</c:if>
 						<span class="fsLabel"><fmt:message key="captcha"/></span>
