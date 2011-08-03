@@ -84,7 +84,7 @@ public final class JNDIBinder {
 		final Set<String> names = new HashSet<String>();
 		
 		// if config location are defined use them
-		if (present(configLocations) && configLocations.length > 0) {
+		if (present(configLocations)) {
 			names.addAll(Arrays.asList(configLocations));
 		} else {
 			// ... else get all *_database.properties from root class path
