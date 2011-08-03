@@ -13,7 +13,7 @@
 <jsp:directive.page contentType="application/xml; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" isELIgnored="false"/>	
 
 <rdf:RDF 
-		 xml:base="${projectHome}${fn:escapeXml(requPath)}"
+		 xml:base="${properties['project.home']}${fn:escapeXml(requPath)}"
 		 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 		 xmlns="http://purl.org/rss/1.0/"
 		 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
@@ -30,7 +30,7 @@
 		 xmlns:community="http://www.bibsonomy.org/ontologies/2008/05/community#"> 
 	 
 <owl:Ontology rdf:about="">
-  <rdfs:comment><c:out value="${projectName}"/> publications for /<c:out value='${requPath}'/></rdfs:comment>
+  <rdfs:comment><c:out value="${properties['project.name']}"/> publications for /<c:out value='${requPath}'/></rdfs:comment>
   <owl:imports rdf:resource="http://swrc.ontoware.org/ontology/portal"/>
 </owl:Ontology>
 
@@ -41,10 +41,10 @@
 
 <!-- the following test is kind of a hack - but currently we are displaying related users 
      only on the tag page, which is based on the TagResourceViewCommand, which 
-     has the necessary attributes we access here. dbe, 20080509 -->
-<!-- This causes an Exception since there is no more property commandName -->
-<!--<c:if test="${command.commandName == 'TagResourceViewCommand'}">		 -->
-<!--	<swrctags:relatedUsers cmd="${command.relatedUserCommand}" tags="${command['requestedTags']}"/>-->
-<!--</c:if>	  -->
+     has the necessary attributes we access here. dbe, 20080509
+     still a hack. dzo 20110727 -->
+	<c:if test="${command.class.simpleName == 'TagResourceViewCommand'}">
+		<swrctags:relatedUsers cmd="${command.relatedUserCommand}" tags="${command['requestedTags']}"/>
+	</c:if>
 </rdf:RDF>
 </jsp:root>
