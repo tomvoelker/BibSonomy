@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command.ajax;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.model.sync.SyncService;
@@ -14,7 +15,7 @@ public class AjaxSynchronizationCommand extends AjaxCommand {
 
 	private URI serviceName;
 	private List<SyncService> syncServer;
-	private Boolean resetSyncService;
+	private Date syncDate;
 
 	/**
 	 * @param serviceName the serviceName to set
@@ -31,20 +32,6 @@ public class AjaxSynchronizationCommand extends AjaxCommand {
 	}
 
 	/**
-	 * @param resetSyncService the resetSyncService to set
-	 */
-	public void setResetSyncService(Boolean resetSyncService) {
-		this.resetSyncService = resetSyncService;
-	}
-
-	/**
-	 * @return the resetSyncService
-	 */
-	public Boolean getResetSyncService() {
-		return resetSyncService;
-	}
-
-	/**
 	 * @param syncServer the syncServer to set
 	 */
 	public void setSyncServer(List<SyncService> syncServer) {
@@ -56,5 +43,19 @@ public class AjaxSynchronizationCommand extends AjaxCommand {
 	 */
 	public List<SyncService> getSyncServer() {
 		return syncServer;
+	}
+
+	/**
+	 * @param syncDate the syncDate to set
+	 */
+	public void setSyncDate(Date syncDate) {
+		this.syncDate = syncDate;
+	}
+
+	/**
+	 * @return the syncDate
+	 */
+	public Date getSyncDate() {
+		return syncDate;
 	}
 }

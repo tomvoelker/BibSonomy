@@ -27,6 +27,7 @@ import org.bibsonomy.sync.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -140,7 +141,10 @@ public class SynchronizationController extends AjaxController implements Minimal
 //			for (final Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(syncService.getResourceType())) {
 //				client.deleteSyncData(serviceName, resourceType, syncDate);
 //			}
-			if (present(command.getResetSyncService())) {
+			if (!present(command.getSyncDate())) {
+				/*
+				 * if no sync date given -> reset server(delete all syncData for all resourceTypes)
+				 */
 				SyncService service = getSyncServer(command.getSyncServer());
 				client.deleteSyncData(service, BibTex.class, null);
 				client.deleteSyncData(service, Bookmark.class, null);
@@ -164,8 +168,18 @@ public class SynchronizationController extends AjaxController implements Minimal
 	 * @param serviceName
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	private Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final URI serviceName) {
+		 return getSyncPlan(serviceName, requestLogic);
+	}
+	
+	/**
+	 * 
+	 * @param serviceName
+	 * @param requestLogic
+	 * @return The sync plan for the given user or <code>null</code> if no such plan could be found.
+	 */
+	@SuppressWarnings("unchecked")
+	public static  Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final URI serviceName, final RequestLogic requestLogic) {
 		final Object sessionAttribute = requestLogic.getSessionAttribute(SESSION_KEY + serviceName);
 		if (!present(sessionAttribute) || !(sessionAttribute instanceof Map<?,?>)) {
 			return null;

@@ -51,6 +51,8 @@ function showSyncPlan(form, plan) {
 }
 
 function showSyncData(form, data) {
+	$(form).find(".syncPlan").empty();
+	$(form).find(".synchronizeBtn").hide();
 	var syncResult = $(form).find(".syncData");
 	var syncData = "";
 	syncResult.empty();
@@ -59,7 +61,7 @@ function showSyncData(form, data) {
 		var error = data[key].error;
 		var status = "";
 		var info = "";
-		if (error != "no") {
+		if (error != undefined) {
 			alert(key + ": " + error);
 			status = "ERROR";
 			info = "error";

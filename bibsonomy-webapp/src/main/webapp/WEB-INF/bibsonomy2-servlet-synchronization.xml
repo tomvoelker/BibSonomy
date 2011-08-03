@@ -40,7 +40,6 @@
 							<value>serviceName</value>
 							<value>syncBookmarks</value>
 							<value>syncPublications</value>
-							<value>resetSyncService</value>
 							<value>syncServer[*].*</value>
 						</list>
 					</property> 
@@ -80,6 +79,9 @@
 	<bean id="syncPageController" class="org.bibsonomy.webapp.controller.SyncPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="syncClient" ref="synchronizationClient" />
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="messageSource" ref="messageSource"/>
+		<property name="projectHome" value="${project.home}"/>
 	</bean>
 		
 	<!-- handles synchronization request -->
