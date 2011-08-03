@@ -22,10 +22,10 @@
 		store some locale messages in variables to be
 	    able to access them inside element attributes
 	-->
-	<c:set var="bookmarkRssFeed"><fmt:message key="feeds.bookmark"/></c:set>
-	<c:set var="publicationRssFeed"><fmt:message key="feeds.publication"/></c:set>
-	<c:set var="burstRssFeed"><fmt:message key="feeds.burst"/></c:set>
-    <c:set var="swrcFeed"><fmt:message key="feeds.swrc"/></c:set>
+	<fmt:message key="feeds.bookmark" var="bookmarkRssFeed" />
+	<fmt:message key="feeds.publication" var="publicationRssFeed" />
+	<fmt:message key="feeds.burst" var="burstRssFeed" />
+    <fmt:message key="feeds.swrc" var="swrcFeed" />
 	
 	<!--  actions (list navigation, editing entries, ...) are enabled by default -->
 	<c:if test="${empty disableActions}">
