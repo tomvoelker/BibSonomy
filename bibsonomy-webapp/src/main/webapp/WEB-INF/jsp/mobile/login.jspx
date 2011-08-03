@@ -15,7 +15,7 @@
 			<div class="container">
 	            <errors:global errors="${errors}" /> 
 	            
-	            <c:forEach var="authMethod" items="${authConfig.authOrder}">
+	            <c:forEach var="authMethod" items="${authConfig}">
            			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
            			<div id="login_${authMethodName}" class="loginForm" style="display:none;">           
           				<form:form action="/login_${authMethodName}" method="POST">
