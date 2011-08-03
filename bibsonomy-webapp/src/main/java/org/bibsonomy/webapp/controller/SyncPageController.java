@@ -1,13 +1,11 @@
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.bibsonomy.webapp.util.sync.SyncUtils.getPlanSummary;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,19 +15,18 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
-import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.sync.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
-import org.bibsonomy.webapp.controller.ajax.SynchronizationController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.sync.SyncUtils;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
@@ -99,8 +96,8 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 						missedPlan = false;
 						lastSyncData = syncClient.getLastSyncData(syncService, resourceType);
 						
-						if(lastSyncData.getStatus().equals(SynchronizationStatus.PLANNED)) {
-							syncPlan = SynchronizationController.getSyncPlan(syncService.getService(), requestLogic);
+						if(present(lastSyncData) && lastSyncData.getStatus().equals(SynchronizationStatus.PLANNED)) {
+							syncPlan = SyncUtils.getSyncPlan(syncService.getService(), requestLogic);
 							if(!present(syncPlan)) {
 								missedPlan = true;
 								syncClient.deleteSyncData(syncService, resourceType, lastSyncData.getLastSyncDate());
@@ -120,63 +117,6 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 		command.setSyncServer(userServices);
 		
 		return Views.SYNC;
-	}
-	
-	/**
-	 * 
-	 * @param syncPlan
-	 * @param serverName
-	 * @param locale 
-	 * @param messageSource 
-	 * @param projectHome 
-	 * @return plan summary as map of strings, readable for human
-	 */
-	public static Map<Class<? extends Resource>, Map<String, String>> getPlanSummary(Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan, String serverName, final Locale locale, final MessageSource messageSource, final String projectHome) {
-		final Map<Class<? extends Resource>, Map<String, String>> result = new LinkedHashMap<Class<? extends Resource>, Map<String,String>>();
-		for (final Entry<Class<? extends Resource>, List<SynchronizationPost>> entry : syncPlan.entrySet()) {
-			int createClient = 0;
-			int updateClient = 0;
-			int deleteClient = 0;
-			int createServer = 0;
-			int updateServer = 0;
-			int deleteServer = 0;
-			int ok = 0;
-			final Class<? extends Resource> resourceType = entry.getKey();
-			for (final SynchronizationPost synchronizationPost : entry.getValue()) {
-				final SynchronizationAction action = synchronizationPost.getAction();
-				switch (action) {
-				case CREATE_CLIENT:
-					createClient++;
-					break;
-				case UPDATE_CLIENT:
-					updateClient++;
-					break;
-				case DELETE_CLIENT:
-					deleteClient++;
-					break;
-				case CREATE_SERVER:
-					createClient++;
-					break;
-				case UPDATE_SERVER:
-					updateClient++;
-					break;
-				case DELETE_SERVER:
-					deleteClient++;
-					break;
-				case OK:
-					ok++;
-					break;
-				default:
-					break;
-				}
-			}
-			final Map<String, String> messages = new LinkedHashMap<String, String>();
-			messages.put("CLIENT", messageSource.getMessage("synchronization.syncPlan.message", new Object[]{projectHome, createClient, updateClient, deleteClient}, locale));
-			messages.put("SERVER", messageSource.getMessage("synchronization.syncPlan.message", new Object[]{serverName, createServer, updateServer, deleteServer}, locale));
-			messages.put("OTHER", messageSource.getMessage("synchronization.syncPlan.message.other", new Object[]{ok}, locale));
-			result.put(resourceType, messages);
-		}
-		return result;
 	}
 
 	@Override

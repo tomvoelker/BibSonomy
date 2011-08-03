@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.ajax;
 
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.bibsonomy.webapp.util.sync.SyncUtils.getPlanSummary;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -23,12 +24,11 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
-import org.bibsonomy.webapp.controller.SyncPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.sync.SyncUtils;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.context.MessageSource;
@@ -39,8 +39,6 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class SynchronizationController extends AjaxController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware {
-
-	private static final String SESSION_KEY = "SYNC_PLAN_";
 	private Errors errors;
 	private TwoStepSynchronizationClient client;
 	private MessageSource messageSource;
@@ -168,22 +166,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 	 * @return
 	 */
 	private Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final URI serviceName) {
-		 return getSyncPlan(serviceName, requestLogic);
-	}
-	
-	/**
-	 * 
-	 * @param serviceName
-	 * @param requestLogic
-	 * @return The sync plan for the given user or <code>null</code> if no such plan could be found.
-	 */
-	@SuppressWarnings("unchecked")
-	public static  Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final URI serviceName, final RequestLogic requestLogic) {
-		final Object sessionAttribute = requestLogic.getSessionAttribute(SESSION_KEY + serviceName);
-		if (!present(sessionAttribute) || !(sessionAttribute instanceof Map<?,?>)) {
-			return null;
-		}
-		return (Map<Class<? extends Resource>, List<SynchronizationPost>>) sessionAttribute;
+		 return SyncUtils.getSyncPlan(serviceName, requestLogic);
 	}
 	
 	/**
@@ -193,7 +176,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 	 * @param syncPlan
 	 */
 	private void setSyncPlan(final URI serviceName, final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan) {
-		requestLogic.setSessionAttribute(SESSION_KEY + serviceName, syncPlan);
+		requestLogic.setSessionAttribute(SyncUtils.SESSION_KEY + serviceName, syncPlan);
 	}
 	
 
@@ -222,10 +205,10 @@ public class SynchronizationController extends AjaxController implements Minimal
 		final JSONObject json = new JSONObject();
 		final Locale locale = requestLogic.getLocale();
 		
-		Map<Class<? extends Resource>, Map<String, String>> planSummary = SyncPageController.getPlanSummary(syncPlan, serverName.toString(), locale, messageSource, projectHome);
+		Map<Class<? extends Resource>, Map<String, String>> planSummary = getPlanSummary(syncPlan, serverName.toString(), locale, messageSource, projectHome);
 		
 		for (final Entry<Class<? extends Resource>, Map<String, String>> planEntry : planSummary.entrySet()) {
-			json.put(planEntry.getKey(), planEntry.getValue());
+			json.put(planEntry.getKey().getSimpleName(), planEntry.getValue());
 		}
 		return json;
 	}

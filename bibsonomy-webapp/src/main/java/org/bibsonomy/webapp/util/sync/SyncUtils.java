@@ -1,0 +1,99 @@
+package org.bibsonomy.webapp.util.sync;
+
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.net.URI;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.sync.SynchronizationAction;
+import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.webapp.util.RequestLogic;
+import org.springframework.context.MessageSource;
+
+/**
+ * @author wla
+ * @version $Id$
+ */
+public class SyncUtils {
+	/**
+	 * begin of key to access the sync plan stored in session
+	 */
+	public static final String SESSION_KEY = "SYNC_PLAN_";
+	
+	/**
+	 * 
+	 * @param serviceName
+	 * @param requestLogic
+	 * @return The sync plan for the given user or <code>null</code> if no such plan could be found.
+	 */
+	@SuppressWarnings("unchecked")
+	public static  Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final URI serviceName, final RequestLogic requestLogic) {
+		final Object sessionAttribute = requestLogic.getSessionAttribute(SESSION_KEY + serviceName);
+		if (!present(sessionAttribute) || !(sessionAttribute instanceof Map<?,?>)) {
+			return null;
+		}
+		return (Map<Class<? extends Resource>, List<SynchronizationPost>>) sessionAttribute;
+	}
+	
+	/**
+	 * 
+	 * @param syncPlan
+	 * @param serverName
+	 * @param locale 
+	 * @param messageSource 
+	 * @param projectHome 
+	 * @return plan summary as map of strings, readable for human
+	 */
+	public static Map<Class<? extends Resource>, Map<String, String>> getPlanSummary(Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan, String serverName, final Locale locale, final MessageSource messageSource, final String projectHome) {
+		final Map<Class<? extends Resource>, Map<String, String>> result = new LinkedHashMap<Class<? extends Resource>, Map<String,String>>();
+		for (final Entry<Class<? extends Resource>, List<SynchronizationPost>> entry : syncPlan.entrySet()) {
+			int createClient = 0;
+			int updateClient = 0;
+			int deleteClient = 0;
+			int createServer = 0;
+			int updateServer = 0;
+			int deleteServer = 0;
+			int ok = 0;
+			final Class<? extends Resource> resourceType = entry.getKey();
+			for (final SynchronizationPost synchronizationPost : entry.getValue()) {
+				final SynchronizationAction action = synchronizationPost.getAction();
+				switch (action) {
+				case CREATE_CLIENT:
+					createClient++;
+					break;
+				case UPDATE_CLIENT:
+					updateClient++;
+					break;
+				case DELETE_CLIENT:
+					deleteClient++;
+					break;
+				case CREATE_SERVER:
+					createClient++;
+					break;
+				case UPDATE_SERVER:
+					updateClient++;
+					break;
+				case DELETE_SERVER:
+					deleteClient++;
+					break;
+				case OK:
+					ok++;
+					break;
+				default:
+					break;
+				}
+			}
+			final Map<String, String> messages = new LinkedHashMap<String, String>();
+			messages.put("CLIENT", messageSource.getMessage("synchronization.syncPlan.message", new Object[]{projectHome, createClient, updateClient, deleteClient}, locale));
+			messages.put("SERVER", messageSource.getMessage("synchronization.syncPlan.message", new Object[]{serverName, createServer, updateServer, deleteServer}, locale));
+			messages.put("OTHER", messageSource.getMessage("synchronization.syncPlan.message.other", new Object[]{ok}, locale));
+			result.put(resourceType, messages);
+		}
+		return result;
+	}
+}
