@@ -41,6 +41,7 @@ public class SyncService {
 	private Class<? extends Resource> resourceType;
 	private SynchronizationDirection direction;
 	private ConflictResolutionStrategy strategy;
+	private Map<Class<? extends Resource>, Map<String, String>> plan;
 	
 	/**
 	 * @return the clientUser
@@ -135,5 +136,17 @@ public class SyncService {
 	@Override
 	public String toString() {
 		return service != null ? service.toString() : null;
+	}
+	/**
+	 * @param plan the plan to set
+	 */
+	public void setPlan(Map<Class<? extends Resource>, Map<String, String>> plan) {
+		this.plan = plan;
+	}
+	/**
+	 * @return the plan
+	 */
+	public Map<Class<? extends Resource>, Map<String, String>> getPlan() {
+		return plan;
 	}
 }
