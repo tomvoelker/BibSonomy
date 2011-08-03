@@ -13,7 +13,7 @@
 
 
 	<script type="text/javascript">
-		var authMethodsCount = ${fn:length(authConfig.authOrder)};
+		var authMethodsCount = ${fn:length(authConfig)};
 		<![CDATA[
 			$(document).ready(function(e) {try {$("#loginSelect").msDropDown();} catch(e) {}});
 			function quickSelectAuthMethod(authIndex) {
@@ -42,7 +42,7 @@
 	    | create a specialized login form for each authentication method
 	    +-->
 	<div id="loginParts" class="login">
-		<c:forEach var="authMethod" items="${authConfig.authOrder}" varStatus="status">
+		<c:forEach var="authMethod" items="${authConfig}" varStatus="status">
 			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
 			
 			<c:set var="visibility" value="${status.first ? 'loginVisible' : 'loginInvisible'}" />
@@ -99,7 +99,7 @@
 	    | dropdown selection list for chosing authentication method
 	    +-->
 	<select name="loginSelect" id="loginSelect" onchange="quickSelectAuthMethod(this.value);">
-		<c:forEach var="authMethod" items="${authConfig.authOrder}" varStatus="status">
+		<c:forEach var="authMethod" items="${authConfig}" varStatus="status">
 			<fmt:message key="login.${authMethodName}.label" var="loginMessage"/>
 			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
 			<option value="${status.count}" title="${image_login_base}${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
