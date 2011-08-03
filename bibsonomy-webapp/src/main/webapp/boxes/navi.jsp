@@ -8,7 +8,7 @@
 	<c:choose>
 		<c:when test="${not empty user.name}">
 			<li>
-		        <a id="nav_my" href="/user/<mtl:encode value='${user.name}'/>" rel="my_menu"><img src="/resources/image/nice_box_arrow.png" alt="" />my${projectName}</a>
+		        <a id="nav_my" href="/user/<mtl:encode value='${user.name}'/>" rel="my_menu"><img src="/resources/image/nice_box_arrow.png" alt="" />my${properties['project.name']}</a>
  
 			      <!-- dropdown menu for myBibSonomy -->  
 				  <div id="my_menu" class="nicedropmenudiv">

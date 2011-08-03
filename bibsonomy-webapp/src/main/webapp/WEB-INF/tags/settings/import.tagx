@@ -71,7 +71,7 @@
 			<fieldset class="fsInner">
   				<div class="fsRow">
 					<fmt:message key="settings.jabRef.explain">
-						<fmt:param><a href="/layout/custom/user/${fn:escapeXml(userName)}"><c:out value="${projectName}"/></a></fmt:param>		
+						<fmt:param><a href="/layout/custom/user/${fn:escapeXml(userName)}"><c:out value="${properties['project.name']}"/></a></fmt:param>		
 					</fmt:message>
 				</div>
 

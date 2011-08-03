@@ -23,6 +23,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="/WEB-INF/taglibs/mytaglib.tld" prefix="mtl" %>
 
+<c:set var="projectName" value="${properties['project.name']}" />
 <%--
 	HTML starts here
 --%>

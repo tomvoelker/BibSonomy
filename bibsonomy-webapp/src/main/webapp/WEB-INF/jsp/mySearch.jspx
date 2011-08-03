@@ -24,7 +24,7 @@
         	
       <div id="searchbox">
 	    
-        <h2><fmt:message key="mysearch.header"><fmt:param value="${projectName}"></fmt:param></fmt:message></h2>
+        <h2><fmt:message key="mysearch.header"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message></h2>
 	
 	    <form name="searchform" onsubmit="checkInput()">
 	      <fieldset class="fsVisible">

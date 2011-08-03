@@ -141,7 +141,7 @@
 				</div>
 	        	<div class="fsRow">
 					<input type="submit" value="${save}" />
-					<input type="hidden" name="newSyncServer.service" value="${projectHome}"/>
+					<input type="hidden" name="newSyncServer.service" value="${properties['project.home']}"/>
 					<input type="hidden" name="newSyncServer.serverUser['userName']" value="${command.context.loginUser.name}"/>
 					<input type="hidden" name="newSyncServer.serverUser['apiKey']" value="${command.context.loginUser.apiKey}"/>
 					<input type="hidden" name="_method" value="POST"/>
