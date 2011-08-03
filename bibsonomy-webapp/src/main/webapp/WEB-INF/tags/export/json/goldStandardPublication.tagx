@@ -10,7 +10,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
       {
          "type" : "GoldStandardPublication",
-         "id"   : "${projectHome}bibtex/1${post.resource.intraHash}",
+         "id"   : "${properties['project.home']}bibtex/1${post.resource.intraHash}",
          <json:abstractPublication post="${post}" />
       }
 </jsp:root>
