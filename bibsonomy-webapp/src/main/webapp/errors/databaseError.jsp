@@ -6,7 +6,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: database error</h1> 
+<h1><a href="/" rel="Start">${properties['project.name']}</a> :: database error</h1> 
 <div id="welcomeTop">A blue social bookmark and publication sharing system.</div> 
 </div>
 </div>
