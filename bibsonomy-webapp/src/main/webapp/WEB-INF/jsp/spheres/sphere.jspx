@@ -10,11 +10,16 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
+		</jsp:attribute>
+	
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.friend"/></a> :: 
 			<a href="/taggedfriend/${fn:escapeXml(command.sphereName)}"><c:out value='${command.sphereName}'/></a> ::
@@ -32,7 +37,16 @@
 		<ul id="sidebar">	
 					
 			<!-- friendrelation members -->
-			<rc:members requPath="${requPath}" users="${command.relatedUsers}"/>
+    		<!--+
+    			| display buddies
+    			+-->
+    		<div class="sphere_users">
+   				<c:forEach items="${command.relatedUsers}" var="item" varStatus="loop">
+   					<spheres:userLink user="${item}"/>
+			    </c:forEach>
+		    </div>
+       		<div style="clear: both;"><!--  --></div>
+
 			
 			<!-- tags -->
 			<li>

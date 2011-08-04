@@ -1,0 +1,67 @@
+.sphere {
+	margin: 1%;
+}
+
+.sphere_header {
+	font-size: 120%;
+	font-weight: bold;
+	color: #006699;
+	width: 70%;
+	float: left;
+}
+
+.sphere_separator {
+	margin-top: 0.25em;
+	margin-bottom: 1em;
+	width: 70%;
+	float: left;
+}
+
+.sphere_users {
+	margin-left: 2em;
+	float: left;
+}
+
+.sphere_tag_cloud {
+	width: 25%;
+	float: left;
+}
+
+.sphere_control {
+	width: 65%;
+	text-align: right;
+	margin-left: 2em;
+	margin-bottom: 1em;
+	margin-top: 0em;
+}
+
+.sphere_resources {
+	display: none;
+}
+
+.sphere_user_list {
+	list-style: none outside none;
+	margin: 0;
+	padding: 0;
+}
+.left_sphere_list_entry {
+	width: 40%;
+}
+
+.sphere_user_list li {
+	display: inline;
+	line-height: 1.5em;
+	padding: 0 0.1em;
+}
+
+.sphere_image_container {
+	width: 55px;
+	float: left;
+	text-align: center;
+	margin-bottom: 2px;
+	margin-right: 5px;
+}
+
+.sphere_image_container * img {
+	height: 40px;
+}
