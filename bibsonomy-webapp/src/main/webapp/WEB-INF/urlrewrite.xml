@@ -591,50 +591,35 @@
 	 
 	<!-- ############## taggedfriend pages ############### -->
 	
-	<!-- /taggedfriend/RELATION/TAG -->
+	<!-- /sphere/RELATION/TAG -->
 	<rule>
-		<name>/taggedfriend/RELATION/TAG</name>
-		<from>^/taggedfriend/+([^/]+?)/(.+)$</from>
-		<set type="parameter" name="requestedUserRelation">$1</set>
+		<name>/sphere/RELATION/TAG</name>
+		<from>^/sphere/+([^/]+?)/(.+)$</from>
+		<set type="parameter" name="sphereName">$1</set>
 		<set type="parameter" name="requestedTags">$2</set>
-		<to last="true">/taggedfriend</to>
+		<to last="true">/spheres</to>
 	</rule>
 	
-	<!-- redirect for tag formular on /friend/USER/TAG page -->
+	<!-- /sphere/RELATION -->
 	<rule>
-		<name>redirect /taggedfriend/RELATION/TAG</name>
-		<condition type="parameter" name="tag">(.+)</condition>
-		<from>^/+taggedfriend/+([^/]+)$</from>
-		<to type="redirect" last="true">/taggedfriend/${escape:$1}/${escape:%1}</to>
+		<name>/sphere/RELATION</name>
+		<from>^/sphere/+([^/]+?)$</from>
+		<set type="parameter" name="sphereName">$1</set>
+		<to last="true">/spheres</to>
 	</rule>
 	
-	<!-- /taggedfriend/RELATION -->
+	<!-- redirect /sphere/RELATION/ -->
 	<rule>
-		<name>/taggedfriend/RELATION</name>
-		<from>^/taggedfriend/+([^/]+?)$</from>
-		<set type="parameter" name="requestedUserRelation">$1</set>
-		<to last="true">/taggedfriend</to>
+		<name>redirect /sphere/RELATION</name>
+		<from>^/+sphere/+([^/]+)/$</from>
+		<to type="redirect" last="true">/sphere/${escape:$1}</to>
 	</rule>
 	
-	<!-- redirect /taggedfriend/RELATION/ -->
+	<!-- redirect /sphere/ -->
 	<rule>
-		<name>redirect /taggedfriend/RELATION</name>
-		<from>^/+taggedfriend/+([^/]+)/$</from>
-		<to type="redirect" last="true">/taggedfriend/${escape:$1}</to>
-	</rule>
-	
-	<!-- redirect /taggedfriend/ -->
-	<rule>
-		<name>redirect /taggedfriend/</name>
-		<from>^/+taggedfriend*$</from>
-		<to type="redirect" last="true">/friends</to>
-	</rule>
-	
-	<!-- redirect /taggedfriend/ -->
-	<rule>
-		<name>redirect /taggedfriend/</name>
-		<from>^/+taggedfriend/*$</from>
-		<to type="redirect" last="true">/friends</to>
+		<name>redirect /sphere/</name>
+		<from>^/+sphere/*$</from>
+		<to type="redirect" last="true">/sphere</to>
 	</rule>
 	
 	
