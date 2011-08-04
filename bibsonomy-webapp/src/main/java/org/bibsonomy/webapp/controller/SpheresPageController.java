@@ -81,7 +81,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 	 */
 	private View handleDetailsView(final SphereResourceViewCommand command, final User loginUser) {
 		final String sphereName 				= command.getSphereName();
-		final String requestedTags				= command.getRequestedTags();
+		final List<String> requestedTags		= command.getRequestedTagsList();
 		final String format 					= command.getFormat();
 		final List<String> requestedUserTags 	= command.getRequestedTagsList();
 
@@ -106,7 +106,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		
 		//Add the Tags from the User
 		if (present(requestedTags)) {
-			queryTags.add(requestedTags);
+			queryTags.addAll(requestedTags);
 		}
 		
 		/**
