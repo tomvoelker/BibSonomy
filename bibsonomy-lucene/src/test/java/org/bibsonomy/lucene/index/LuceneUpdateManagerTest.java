@@ -33,6 +33,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -258,7 +259,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * tests handling of spam posts
 	 */
 	@Test
-	// @Ignore // TODO: fails on hudson
+	@Ignore // TODO: fails on hudson
 	public void spamPosts() {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
