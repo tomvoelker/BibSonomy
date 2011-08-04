@@ -72,7 +72,7 @@
 										<c:set var="syncButtonDisplay" value="none"/>
 									</c:if>
 								
-									<div class="fsRow">
+									<div class="fsRow resourceDiv">
 										<dl><dt>
 											<c:choose>
 												<c:when test="${entry.key == 'BibTex'}">
