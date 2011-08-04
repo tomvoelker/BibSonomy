@@ -8,6 +8,7 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
@@ -21,14 +22,9 @@ public class InboxPageController extends SingleResourceListController implements
 
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
-		/*
-		 * FIXME: implement filter=no parameter
-		 */
-
 		// user has to be logged in
 		if (!command.getContext().isUserLoggedIn()){
-			errors.reject("error.general.login");
-			return Views.ERROR; // TODO: redirect to login page
+			throw new AccessDeniedException("please log in");
 		}
 		
 		final String format = command.getFormat();
@@ -40,7 +36,8 @@ public class InboxPageController extends SingleResourceListController implements
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
 			this.setList(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, entriesPerPage);
 			postProcessAndSortList(command, resourceType);
-			/*
+			/* 
+			 * TODO: move to ibatis result mapping!
 			 * mark all posts to be inbox posts (such that the "remove" link appears 
 			 */
 			for (final Post<? extends Resource> post: command.getListCommand(resourceType).getList()){
@@ -53,7 +50,6 @@ public class InboxPageController extends SingleResourceListController implements
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			command.setPageTitle("inbox"); // TODO: i18n
 			return Views.INBOX;		
 		}
 
@@ -72,7 +68,7 @@ public class InboxPageController extends SingleResourceListController implements
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
