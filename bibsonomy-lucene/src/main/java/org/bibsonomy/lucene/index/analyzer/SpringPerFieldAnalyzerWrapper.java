@@ -1,5 +1,7 @@
 package org.bibsonomy.lucene.index.analyzer;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,8 +9,8 @@ import java.util.Map;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.TokenStream;
+import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.util.LuceneBase;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * this field wrapps lucene's PerFieldAnalyzerWrapper for making it
@@ -34,34 +36,28 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	private PerFieldAnalyzerWrapper analyzer;
 	
 	/**
-	 * default constructor
-	 */
-	public SpringPerFieldAnalyzerWrapper() {
-	}
-	
-	/**
 	 * initialize internal data structures
 	 */
 	private void init() {
 		// initialize tokenizer if all necessary properties are set
-		if( (this.defaultAnalyzer!=null) && (this.fieldMap!=null) ) {
+		if ((this.defaultAnalyzer != null) && (this.fieldMap != null)) {
 			this.analyzer = new PerFieldAnalyzerWrapper(getDefaultAnalyzer());
 			
-			for( String fieldName : fieldMap.keySet() ) {
+			for (final String fieldName : fieldMap.keySet()) {
 				analyzer.addAnalyzer(fieldName, (Analyzer)fieldMap.get(fieldName));
 			}
 		}
 	}
 
 	@Override
-	public TokenStream tokenStream(String fieldName, Reader reader) {
+	public TokenStream tokenStream(final String fieldName, final Reader reader) {
 		return this.analyzer.tokenStream(fieldName, reader);
 	}
 	
 	/**
 	 * @param fieldMap the fieldMap to set
 	 */
-	public void setFieldMap(Map<String, Object> fieldMap) {
+	public void setFieldMap(final Map<String, Object> fieldMap) {
 		this.fieldMap = fieldMap;
 		init();
 	}
@@ -76,7 +72,7 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	/**
 	 * @param defaultAnalyzer the defaultAnalyzer to set
 	 */
-	public void setDefaultAnalyzer(Analyzer defaultAnalyzer) {
+	public void setDefaultAnalyzer(final Analyzer defaultAnalyzer) {
 		this.defaultAnalyzer = defaultAnalyzer;
 		init();
 	}
@@ -91,23 +87,25 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	/**
 	 * @param propertyMap the propertyMap to set
 	 */
-	public void setPropertyMap(Map<String,Map<String,Object>> propertyMap) {
+	public void setPropertyMap(final Map<String,Map<String,Object>> propertyMap) {
 		this.propertyMap = propertyMap;
 		
 		// update the fieldmap
-		this.fieldMap = new HashMap<String,Object>();
+		this.fieldMap = new HashMap<String, Object>();
 		
 		// TODO: use value entrySet iterator
-		for( String propertyName : propertyMap.keySet() ) {
-			String fieldName       = (String)propertyMap.get(propertyName).get(LuceneBase.CFG_LUCENENAME);
-			Analyzer fieldAnalyzer = (Analyzer)propertyMap.get(propertyName).get(LuceneBase.CFG_ANALYZER);
-			if( ValidationUtils.present(fieldAnalyzer) )
+		for (final String propertyName : propertyMap.keySet()) {
+			final String fieldName = (String) propertyMap.get(propertyName).get(LuceneBase.CFG_LUCENENAME);
+			final Analyzer fieldAnalyzer = (Analyzer) propertyMap.get(propertyName).get(LuceneBase.CFG_ANALYZER);
+			if (present(fieldAnalyzer)) {
 				this.fieldMap.put(fieldName, fieldAnalyzer);
+			}
 		}
 		
 		// set full text search analyzer
-		if( this.fullTextSearchAnalyzer!=null )
-			fieldMap.put(LuceneBase.FLD_MERGEDFIELDS, this.fullTextSearchAnalyzer);
+		if (this.fullTextSearchAnalyzer != null) {
+			fieldMap.put(LuceneFieldNames.MERGED_FIELDS, this.fullTextSearchAnalyzer);
+		}
 	}
 
 	/**
@@ -120,11 +118,11 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	/**
 	 * @param fullTextSearchAnalyzer the fullTextSearchAnalyzer
 	 */
-	public void setFullTextSearchAnalyzer(Analyzer fullTextSearchAnalyzer) {
+	public void setFullTextSearchAnalyzer(final Analyzer fullTextSearchAnalyzer) {
 		this.fullTextSearchAnalyzer = fullTextSearchAnalyzer;
 		// update fieldmap
-		if( this.fieldMap!=null ) {
-			fieldMap.put(LuceneBase.FLD_MERGEDFIELDS, this.fullTextSearchAnalyzer);
+		if (this.fieldMap != null) {
+			fieldMap.put(LuceneFieldNames.MERGED_FIELDS, this.fullTextSearchAnalyzer);
 		}
 	}
 	

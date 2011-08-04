@@ -1,16 +1,9 @@
 package org.bibsonomy.lucene.index;
 
-import static org.bibsonomy.lucene.util.LuceneBase.CFG_INDEX_ID_DELIMITER;
-import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_INDEX_PREFIX;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_CONTENT_ID;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_LAST_LOG_DATE;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_LAST_TAS_ID;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_USER_NAME;
-import static org.bibsonomy.lucene.util.LuceneBase.getIndexBasePath;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -34,9 +27,9 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.apache.lucene.store.NoSuchDirectoryException;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
-import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.model.Resource;
 
 /**
@@ -47,9 +40,13 @@ import org.bibsonomy.model.Resource;
  *
  * @param <R> the resource of the index
  */
-public abstract class LuceneResourceIndex<R extends Resource> {
-	protected static final Log log = LogFactory.getLog(LuceneResourceIndex.class);
+public class LuceneResourceIndex<R extends Resource> {
+	private static final Log log = LogFactory.getLog(LuceneResourceIndex.class);
 
+	/** directory prefix and id delimiter for different resource indeces */
+	private static final String INDEX_PREFIX = "lucene_";
+	private static final String INDEX_ID_DELIMITER = "-";
+	
 	/** coding whether index is opened for writing or reading */
 	public static enum AccessMode {
 		/**
@@ -77,8 +74,11 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	/** gives write access to the lucene index */
 	protected IndexWriter indexWriter;
 	
+	/** the base path of the index*/
+	private String baseIndexPath;
+
 	/** path to the lucene index */
-	private String luceneIndexPath;
+	private String indexPath;
 
 	/** directory of the lucene index */
 	private Directory indexDirectory;
@@ -113,25 +113,21 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	
 	/** keeps track of the newest tas_id during last index update */
 	private Integer lastTasId;
+
+	private Class<R> resourceClass;
+	
+	/** the maximum field length */
+	private IndexWriter.MaxFieldLength maxFieldLength;
 	
 	/**
 	 * constructor disabled
 	 */
-	protected LuceneResourceIndex(final int indexId) {
+	public LuceneResourceIndex() {
 		// init data structures
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.postsToInsert = new TreeSet<Document>(new DocumentCacheComparator());
 		this.usersToFlag = new TreeSet<String>();
 		this.optimizeIndex = false;
-		
-		this.indexId = indexId;
-		
-
-		try {
-			init();
-		} catch (final Exception e) {
-			disableIndex();
-		}
 	}
 	
 	/**
@@ -139,24 +135,24 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @return LuceneIndexStatistics for this index
 	 */
 	public LuceneIndexStatistics getStatistics() {
-            final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
+        final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
 	    synchronized(this) {
     	    	this.ensureReadAccess();
                 
                 statistics.setNumDocs(this.indexReader.numDocs());
                 statistics.setNumDeletedDocs(this.indexReader.numDeletedDocs());
                 statistics.setCurrentVersion(indexReader.getVersion());
-                try {
+            try {
     		    statistics.setCurrent(indexReader.isCurrent());
-                    statistics.setLastModified(IndexReader.lastModified(indexReader.directory()));
-		} catch (final IOException e1) {
-		    log.error(e1);
-		}
+                statistics.setLastModified(new Date(IndexReader.lastModified(indexReader.directory())));
+            } catch (final IOException e1) {
+            	log.error(e1);
+            }
 	    }
 	    
-	    statistics.setNewestRecordDate(this.getLastLogDate());
+	    statistics.setNewestRecordDate(new Date(this.getLastLogDate()));
 	    
-            return statistics;
+	    return statistics;
 	}
 
 	/** 
@@ -165,45 +161,48 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException 
 	 */
 	public void close() throws CorruptIndexException, IOException{
-	    if (indexWriter != null) {
+	    if (this.indexWriter != null) {
 	    	this.indexWriter.close();
 	    }
-	    if (indexReader != null) {
+	    if (this.indexReader != null) {
 	    	this.indexReader.close();
 	    }
 	    
-	    disableIndex();
+	    this.disableIndex();
 	}
 	
 	/**
 	 * initialize internal data structures
-	 * @throws IOException 
 	 */
-	private void init() throws IOException {
-		LuceneBase.initRuntimeConfiguration();
-		this.luceneIndexPath = getIndexBasePath()+CFG_LUCENE_INDEX_PREFIX+getResourceName()+CFG_INDEX_ID_DELIMITER+getIndexId();
-
-		indexDirectory = FSDirectory.open(new File(luceneIndexPath));
+	protected void init() {
 		try {
-			if (IndexWriter.isLocked(indexDirectory)) {
-				log.error("WARNING: Index "+luceneIndexPath+" is locked - forcibly unlock the index.");
-				IndexWriter.unlock(indexDirectory);
-				log.error("OK. Index unlocked.");
+			this.indexPath = this.baseIndexPath + INDEX_PREFIX + this.resourceClass.getSimpleName() + LuceneResourceIndex.INDEX_ID_DELIMITER + this.indexId;
+			
+			this.indexDirectory = FSDirectory.open(new File(this.indexPath));
+			
+			try {
+				if (IndexWriter.isLocked(this.indexDirectory)) {
+					log.error("WARNING: Index " + indexPath + " is locked - forcibly unlock the index.");
+					IndexWriter.unlock(this.indexDirectory);
+					log.error("OK. Index unlocked.");
+				}
+			} catch (final IOException e) {
+				log.fatal("Failed to unlock the index - dying.");
+				throw e; 
 			}
-		} catch (final IOException e) {
-			log.fatal("Failed to unlock the index - dying.");
-			throw e; 
+			
+			try {
+				this.openIndexReader();
+			} catch (final IOException e) {
+				log.error("Error opening IndexReader (" + e.getMessage() + ") - This is ok while creating a new index.");
+				throw e;
+			}
+			
+			// everything went fine - enable the index
+			this.enableIndex();
+		} catch (final Exception e) {
+			this.disableIndex();
 		}
-		
-		try {
-			openIndexReader();
-		} catch (final IOException e) {
-			log.error("Error opening IndexReader (" + e.getMessage() + ") - This is ok while creating a new index.");
-			throw e;
-		}
-		
-		// everything went fine - enable the index
-		enableIndex();
 	}
 	
 	
@@ -226,15 +225,16 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			// get all documents
 			final Query matchAll = new MatchAllDocsQuery();
 			// sort by last_log_date of type LONG in reversed order 
-			final Sort sort = new Sort(new SortField(FLD_LAST_LOG_DATE, SortField.LONG, true));
+			final Sort sort = new Sort(new SortField(LuceneFieldNames.LAST_LOG_DATE, SortField.LONG, true));
 			
 			final Document doc = searchIndex(matchAll, 1, sort);
 			if (doc != null) {
+				final String lastLogDate = doc.get(LuceneFieldNames.LAST_LOG_DATE);
 				try {
 					// parse date
-					return Long.parseLong(doc.get(FLD_LAST_LOG_DATE));
+					return Long.parseLong(lastLogDate);
 				} catch (final NumberFormatException e) {
-					log.error("Error parsing last_log_date " + doc.get(FLD_LAST_LOG_DATE));
+					log.error("Error parsing last_log_date " + lastLogDate);
 				}
 			}
 
@@ -268,19 +268,19 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			// get all documents
 			final Query matchAll = new MatchAllDocsQuery();
 			// order by last_tas_id of type INT in reversed order
-			final Sort sort = new Sort(new SortField(FLD_LAST_TAS_ID, SortField.INT, true));
-	
-			Integer lastTasId = null;
+			final Sort sort = new Sort(new SortField(LuceneFieldNames.LAST_TAS_ID, SortField.INT, true));
+			
 			final Document doc = searchIndex(matchAll, 1, sort);
 			if (doc != null) {
+				final String lastTASId = doc.get(LuceneFieldNames.LAST_TAS_ID);
 				try {
-					lastTasId = Integer.parseInt(doc.get(FLD_LAST_TAS_ID));
+					return Integer.parseInt(lastTASId);
 				} catch (final NumberFormatException e) {
-					log.error("Error parsing last_tas_id " + doc.get(FLD_LAST_TAS_ID));
+					log.error("Error parsing last_tas_id " + lastTASId);
 				}
 			}
 			
-			return lastTasId != null ? lastTasId : Integer.MAX_VALUE;
+			return Integer.MAX_VALUE;
 		}
 	}
 	
@@ -512,7 +512,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	private void insertRecordIntoIndex(final Document post) throws CorruptIndexException, IOException {
-		if( !this.usersToFlag.contains(post.get(FLD_USER_NAME)) ) { 
+		if (!this.usersToFlag.contains(post.get(LuceneFieldNames.USER_NAME))) { 
 			// skip users which where flagged as spammers
 			indexWriter.addDocument(post);
 		}
@@ -551,12 +551,12 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 				return searcher.doc(topDocs.scoreDocs[0].doc);
 			}
 		} catch (final Exception e) {
-			log.error("Error performing index search in file " + this.luceneIndexPath, e);
+			log.error("Error performing index search in file " + this.indexPath, e);
 		} finally {
 			try {
 				searcher.close();
 			} catch (final IOException e) {
-				log.error("Error closing index "+this.luceneIndexPath+" for searching", e);
+				log.error("Error closing index "+this.indexPath+" for searching", e);
 			}
 		}
 		
@@ -575,7 +575,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	private int purgeDocumentForContentId(final Integer contentId) throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
-		final Term term = new Term(FLD_CONTENT_ID, contentId.toString());
+		final Term term = new Term(LuceneFieldNames.CONTENT_ID, contentId.toString());
 		return purgeDocuments(term);
 	}
 	
@@ -589,7 +589,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 */
 	private int purgeDocumentsForUser(final String username) throws CorruptIndexException, IOException {
 		// delete each post owned by given user
-		final Term term = new Term(FLD_USER_NAME, username);
+		final Term term = new Term(LuceneFieldNames.USER_NAME, username);
 		return purgeDocuments(term);
 	}
 
@@ -629,8 +629,8 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	}
 
 	protected void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
-		log.debug("Opening index " + luceneIndexPath + " for writing");
-		indexWriter = new IndexWriter(indexDirectory, getAnalyzer(), false, IndexWriter.MaxFieldLength.UNLIMITED);
+		log.debug("Opening index " + this.indexPath + " for writing");
+		indexWriter = new IndexWriter(indexDirectory, this.analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
 		accessMode = AccessMode.WriteOnly;
 	}
 
@@ -639,13 +639,13 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			return;
 		}
 		
-		log.debug("Closing index " + luceneIndexPath + " for writing");
+		log.debug("Closing index " + indexPath + " for writing");
 		indexWriter.commit();
 		// optimize index if requested
-		if( this.optimizeIndex ) {
-			log.debug("optimizing index " + luceneIndexPath);
+		if (this.optimizeIndex) {
+			log.debug("optimizing index " + indexPath);
 			indexWriter.optimize();
-			log.debug("optimizing index " + luceneIndexPath + " DONE");
+			log.debug("optimizing index " + indexPath + " DONE");
 			this.optimizeIndex = false;
 		}
 		// close index for writing
@@ -653,13 +653,13 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	}
 
 	protected void openIndexReader() throws CorruptIndexException, IOException {
-		log.debug("Opening index " + luceneIndexPath + " for reading");
+		log.debug("Opening index " + indexPath + " for reading");
 		this.indexReader = IndexReader.open(indexDirectory, false);
 		this.accessMode = AccessMode.ReadOnly;
 	}
 
 	protected void closeIndexReader() throws IOException {
-		log.debug("Closing index "+luceneIndexPath+" for reading");
+		log.debug("Closing index " + indexPath + " for reading");
 		indexReader.close();
 	}
 
@@ -685,6 +685,44 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			}
 		}
 	}
+
+	/**
+	 * deletes the index
+	 */
+	public void deleteIndex() {
+		try {
+			this.close();
+			final File directory = new File(this.indexPath);
+			final Directory indexDirectory = FSDirectory.open(directory);
+			
+			log.info("Deleting index " + directory.getAbsolutePath() + "...");
+			for (final String filename: indexDirectory.listAll()) {
+			    indexDirectory.deleteFile(filename);
+			    log.debug("Deleted " + filename);
+			}
+			log.info("Success.");
+		} catch (final NoSuchDirectoryException e) {
+			log.warn("Tried to delete the lucene-index-directory but it could not be found.", e);
+		} catch (final IOException e) {
+			log.error("Could not delete directory-content before index-generation or index-copy.", e);
+		}
+	}
+	
+	/**
+	 * 
+	 * @return a new index searcher for this index
+	 * @throws IOException
+	 */
+	public IndexSearcher createIndexSearcher() throws IOException {
+		return new IndexSearcher(FSDirectory.open(new File(this.getIndexPath())));
+	}
+	
+	/**
+	 * @return the luceneIndexPath
+	 */
+	public String getIndexPath() {
+		return this.indexPath;
+	}
 	
 	/**
 	 * disable this index when open fails
@@ -709,22 +747,19 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	}
 	
 	/**
-	 * get managed resource type
+	 * @return the resourceClass
 	 */
-	protected abstract Class<? extends Resource> getResourceType();
-	
-	/**
-	 * @return the managed resource name
-	 */
-	public String getResourceName() {
-		String name = getResourceType().getCanonicalName();
-		if (name.lastIndexOf('.') > 0) {
-	        name = name.substring(name.lastIndexOf('.')+1);
-	    }
-		
-		return name;
+	public Class<R> getResourceClass() {
+		return resourceClass;
 	}
-	
+
+	/**
+	 * @param resourceClass the resourceClass to set
+	 */
+	public void setResourceClass(final Class<R> resourceClass) {
+		this.resourceClass = resourceClass;
+	}
+
 	/**
 	 * @return the postsToInsert
 	 */
@@ -754,16 +789,35 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	}
 
 	/**
-	 * @return the indexId
-	 */
-	public int getIndexId() {
-		return indexId;
-	}
-
-	/**
 	 * @param indexId the indexId to set
 	 */
 	public void setIndexId(final int indexId) {
 		this.indexId = indexId;
+	}
+	
+	/**
+	 * @param baseIndexPath the baseIndexPath to set
+	 */
+	public void setBaseIndexPath(final String baseIndexPath) {
+		this.baseIndexPath = baseIndexPath;
+	}
+	
+	/**
+	 * @return the maxFieldLength
+	 */
+	public IndexWriter.MaxFieldLength getMaxFieldLength() {
+		return maxFieldLength;
+	}
+
+	/**
+	 * @param maxFieldLength the maxFieldLength to set
+	 */
+	public void setMaxFieldLength(final IndexWriter.MaxFieldLength maxFieldLength) {
+		this.maxFieldLength = maxFieldLength;
+	}
+
+	@Override
+	public String toString() {
+		return this.resourceClass.getSimpleName() + INDEX_ID_DELIMITER + this.indexId;
 	}
 }

@@ -41,10 +41,8 @@ public class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
 	 *      a {@link StopFilter}. 
 	 */
 	@Override
-	public TokenStream tokenStream(String fieldName, Reader reader) { 
-		TokenStream result = new WhitespaceTokenizer(reader); 
-		result = new LowerCaseFilter(result); 
-		return result; 
+	public TokenStream tokenStream(final String fieldName, final Reader reader) { 
+		return new LowerCaseFilter(new WhitespaceTokenizer(reader));
 	}
 
 	/**
@@ -57,7 +55,7 @@ public class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
 	/**
 	 * @param stopSet the stopSet to set
 	 */
-	public void setStopSet(Set<String> stopSet) {
+	public void setStopSet(final Set<String> stopSet) {
 		this.stopSet = stopSet;
 	}
 }

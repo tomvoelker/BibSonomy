@@ -1,17 +1,7 @@
 package org.bibsonomy.lucene.util.generator;
 
-import static org.bibsonomy.lucene.util.LuceneBase.CFG_INDEX_ID_DELIMITER;
-import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_INDEX_PREFIX;
-import static org.bibsonomy.lucene.util.LuceneBase.SQL_BLOCKSIZE;
-
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,25 +10,22 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
-import org.apache.lucene.store.NoSuchDirectoryException;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
+import org.bibsonomy.lucene.index.LuceneResourceIndex;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
-import org.bibsonomy.lucene.util.LuceneBase;
-import org.bibsonomy.lucene.util.LuceneResourceConverter;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
- * reads bibsonomy data from database and builds lucene index for all resource
- * entries
+ * reads data from database and builds lucene index for all resource entries
  * 
  * @author sst
  * @author fei
@@ -46,28 +33,24 @@ import org.bibsonomy.model.Resource;
  * 
  * @param <R> the resource of the index to generate
  */
-public abstract class LuceneGenerateResourceIndex<R extends Resource> implements Runnable {
+public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable {
 	protected static final Log log = LogFactory.getLog(LuceneGenerateResourceIndex.class);
 
+	/** TODO: improve documentation */
+	private static final int SQL_BLOCKSIZE = 25000;
+	
 	/** database logic */
-	protected LuceneDBInterface<R> dbLogic;
-
-	/** path to the bookmark index */
-	private String luceneResourceIndexPath;
-	
-	/** maximum length of fields in the lucene index */
-	private IndexWriter.MaxFieldLength mfl;
-	
-	/** writes the bookmark index */
-	protected IndexWriter indexWriter;
-
-	/** default analyzer */
-	private Analyzer analyzer = null;
+	private LuceneDBInterface<R> dbLogic;
+		
+	/** writes the resource index */
+	private IndexWriter indexWriter;
 	
 	/** converts post model objects to lucene documents */
 	private LuceneResourceConverter<R> resourceConverter;
 	
-	private GenerateIndexCallback callback = null;
+	private LuceneResourceIndex<R> resourceIndex;
+	
+	private GenerateIndexCallback<R> callback = null;
 	
 	/** the progress-percentage if index-generation is running */
 	private int progressPercentage;
@@ -76,33 +59,9 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 	private boolean isRunning;
 	
 	/**
-	 * constructor 
+	 * constructor
 	 */
 	public LuceneGenerateResourceIndex() {
-		// load configuration
-		init();
-	}
-
-	/** 
-	 * reads in parameters from the properties file and stores them in 
-	 * the corresponding attributes 
-	 */
-	private void init() {
-		// initialize run time configuration
-		LuceneBase.initRuntimeConfiguration();
-		
-		// load the db drivers
-		try {
-			Class.forName(LuceneBase.getDbDriverName());
-		} catch( final Exception e ) {
-			log.error("Error loading the mysql driver. Please check, that the mysql connector library is available. ["+e.getMessage()+"]");
-		}
-		
-		// 1) index files
-		this.luceneResourceIndexPath = LuceneBase.getIndexBasePath() + CFG_LUCENE_INDEX_PREFIX + getResourceName();//props.getProperty(LUCENE_INDEX_PATH_PREFIX + getResourceName());
-		
-		// 2) maximal field width in the index
-		this.mfl = LuceneBase.getMaximumFieldLength();
 	}
 
 	/**
@@ -111,11 +70,10 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 	 * @throws CorruptIndexException 
 	 */
 	public void shutdown() throws CorruptIndexException, IOException {
-		indexWriter.close();
+		this.indexWriter.close();
 		
-		if(callback != null) {
-		    callback.done();
-			callback = null;
+		if (this.callback != null) {
+		    this.callback.generatedIndex(this.resourceIndex);
 		}
 	}
 	
@@ -124,44 +82,30 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 	 * 
 	 * Database as well as index files are configured in the lucene.properties file.
 	 * 
-	 * @param copyRedundantIndices if set to true, the newly generated index will also be copied to the redunant indices
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void generateIndex(final boolean copyRedundantIndices) throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
+	public void generateIndex() throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
 		// Allow only one index-generation at a time.
-		if(isRunning) return;
-		isRunning = true;
+		if (this.isRunning) return;
 		
-		// Delete the old index, if exists
-    	deleteIndex(0);
+		this.isRunning = true;
+		
+		// delete the old index, if exists
+    	this.resourceIndex.deleteIndex();
     	
 		// open index
-		createEmptyIndex();
+		this.createEmptyIndex();
 
 		// generate index
-		createIndexFromDatabase();
+		this.createIndexFromDatabase();
 		
-		// create redundant indeces
-		if(copyRedundantIndices) {
-			log.info("Creating "+ LuceneBase.getRedundantCnt() + " redundant indeces.");
-			this.copyRedundantIndeces();
-		}
+		// activate the index
+		this.resourceIndex.reset();
 		
-		isRunning = false;
-	}
-	
-	/**
-	 * Generate Index including redundant indices
-	 * @throws CorruptIndexException 
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SQLException 
-	 */
-	public void generateIndex() throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
-		generateIndex(true);
+		this.isRunning = false;
 	}
 	
 	/**
@@ -171,31 +115,27 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 	 * @throws LockObtainFailedException
 	 * @throws IOException
 	 */
-	public void createEmptyIndex() throws CorruptIndexException, LockObtainFailedException, IOException {
+	protected void createEmptyIndex() throws CorruptIndexException, LockObtainFailedException, IOException {
 		// create index, possibly overwriting existing index files
 		log.info("Creating empty lucene index...");
-		final Directory indexDirectory = FSDirectory.open(new File(this.luceneResourceIndexPath + CFG_INDEX_ID_DELIMITER + "0"));
-		indexWriter  = new IndexWriter(indexDirectory, getAnalyzer(), true, mfl); 
+		final Directory indexDirectory = FSDirectory.open(new File(this.resourceIndex.getIndexPath()));
+		this.indexWriter = new IndexWriter(indexDirectory, this.resourceIndex.getAnalyzer(), true, this.resourceIndex.getMaxFieldLength()); 
 	}
 	
 	/**
-	 * creates index of bookmark entries
+	 * creates index of resource entries
 	 * 
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	public void createIndexFromDatabase() throws CorruptIndexException, IOException {
+	protected void createIndexFromDatabase() throws CorruptIndexException, IOException {
 		log.info("Filling index with database post entries.");
-
-		// set up resource specific data structures
-		setUp();
 		
 		// number of post entries to calculate progress
-		//FIXME: the number of posts is wrong
+		// FIXME: the number of posts is wrong
 		final int numberOfPosts = this.dbLogic.getNumberOfPosts();
-		progressPercentage = 0;
+		this.progressPercentage = 0;
 		log.info("Number of post entries: "+  this.dbLogic.getNumberOfPosts());
-		
 		
 		// initialize variables
 		final Integer lastTasId = this.dbLogic.getLastTasId();
@@ -205,36 +145,34 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 		    lastLogDate = new Date(System.currentTimeMillis() - 1000);
 		}
 		
-		// get all relevant bookmarks from bookmark table
-		int i    = 0;		// number of evaluated entries 
-		int is   = 0;		// number of spam entries 
+		// get all relevant resources from corresponding resource table
+		int i = 0;		// number of evaluated entries 
+		int is = 0;		// number of spam entries 
 
 		log.info("Start writing data to lucene index (with duplicate detection)");
 		
-		//--------------------------------------------------------------------
 		// read block wise all posts
-		//--------------------------------------------------------------------
-		// track content_ids for duplicate detection
-		Map<Integer,Integer> dupMap = new HashMap<Integer, Integer>();
-		
 		List<LucenePost<R>> postList = null;
 		int skip = 0;
+		// track content_ids for duplicate detection
+		final Map<Integer, Integer> dupMap = new HashMap<Integer, Integer>();
 		int lastContenId = -1;
-		
+		int postListSize = 0;
 		do {
 			postList = this.dbLogic.getPostEntries(lastContenId, SQL_BLOCKSIZE);
-			skip += postList.size(); // TODO: += SQL_BLOCKSIZE?!
+			postListSize = postList.size();
+			skip += postListSize;
 			log.info("Read " + skip + " entries.");
 
 			// cycle through all posts of currently read block
 			for (final LucenePost<R> postEntry : postList) {
 				// look for duplicates
-				if (dupMap.containsKey(postEntry.getContentId())) {
-					log.error("Found duplicate for content id '"+postEntry.getContentId()+"' at '"+skip+"' (was '"+dupMap.get(postEntry.getContentId())+"')");
+				final Integer contentId = postEntry.getContentId();
+				if (dupMap.containsKey(contentId)) {
+					log.error("Found duplicate for content id '" + contentId + "' at '" + skip + "' (was '" + dupMap.get(contentId) + "')");
 				} else {
-					dupMap.put(postEntry.getContentId(), skip);
+					dupMap.put(contentId, skip);
 				}
-				
 				// update management fields
 				postEntry.setLastLogDate(lastLogDate);
 				postEntry.setLastTasId(lastTasId);
@@ -249,23 +187,23 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 					i++;
 				} else {
 					is++;
-				}			
-			}
-			if (postList.size()>0) {
-				lastContenId = postList.get(postList.size()-1).getContentId();
+				}
+				
+				if (postListSize > 0) {
+					lastContenId = postList.get(postListSize - 1).getContentId();
+				}
 			}
 			
-			progressPercentage = (int) Math.round(100 * ((double)skip/numberOfPosts));
-			log.info(progressPercentage + "% of index-generation done!");
-			
-		} while (postList.size() == SQL_BLOCKSIZE);
+			this.progressPercentage = (int) Math.round(100 * ((double) skip / numberOfPosts));
+			log.info(this.progressPercentage + "% of index-generation done!");
+		} while (postListSize == SQL_BLOCKSIZE);
 
 		// optimize index
-		log.info("optimizing index " + luceneResourceIndexPath);
+		log.info("optimizing index " + this.resourceIndex);
 		indexWriter.optimize();
 		
-		// close bookmark-indexWriter
-		log.info("closing index " + luceneResourceIndexPath);
+		// close resource indexWriter
+		log.info("closing index " + this.resourceIndex);
 		indexWriter.close();
 
 		// all done
@@ -280,23 +218,21 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 		return progressPercentage;
 	}
 	
-	
 	/** Run the index-generation in a thread. */
 	@Override
 	public void run() {
         try {
-			generateIndex(false);
+			this.generateIndex();
 		} catch (final Exception e) {
-			log.error("Failed to generate " + getResourceName() + "-index!", e);
+			log.error("Failed to generate " + this.resourceIndex + "-index!", e);
 		} finally {
 			try {
-				shutdown();
+				this.shutdown();
 			} catch (final Exception e) {
 				log.error("Failed to close index-writer!", e);
 			}
 		}
 	}
-	
 
 	/**
 	 * test if given post is a spam post
@@ -316,139 +252,11 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 		return true;
 	}
 
-	//------------------------------------------------------------------------
-	// private helper
-	//------------------------------------------------------------------------
-	/**
-	 * copy created index to redundant indeces
-	 */
-	public void copyRedundantIndeces() {
-		final File inputFile = new File(this.luceneResourceIndexPath + CFG_INDEX_ID_DELIMITER + "0");
-		for(int i = 1; i < LuceneBase.getRedundantCnt(); i++ ) {
-			try {
-				deleteIndex(i);
-				final File outputFile = new File(this.luceneResourceIndexPath + CFG_INDEX_ID_DELIMITER + i);
-				log.info("Copying index "+i);
-				copyDirectory(inputFile, outputFile);
-				log.info("Done.");
-			} catch( final Exception e) {
-				log.error("Error copying index to index file " + i, e);
-			}
-		}
-	}
-	
-	/** 
-	 * Delete one index identified by its id
-	 * @param id the index-id
-	 * */
-	public void deleteIndex(final int id) {
-		try {
-			final File directory = new File(this.luceneResourceIndexPath + CFG_INDEX_ID_DELIMITER + id);
-			final Directory indexDirectory = FSDirectory.open(directory);
-			
-			log.info("Deleting index " + directory.getAbsolutePath() + "...");
-			for(final String filename: indexDirectory.listAll()) {
-			    indexDirectory.deleteFile(filename);
-			    log.debug("Deleted " + filename);
-			}
-			log.info("Success.");
-		} catch (final NoSuchDirectoryException e) {
-			log.warn("Tried to delete the lucene-index-directory but it could not be found.", e);
-		}
-		catch (final IOException e) {
-			log.error("Could not delete directory-content before index-generation or index-copy.", e);
-		}
-	}
-	
-	/**
-	 * Copies all files under srcDir to dstDir.
- 	 * If dstDir does not exist, it will be created.
-	 * @param srcDir
-	 * @param dstDir
-	 * @throws IOException
-	 */
-    public void copyDirectory(final File srcDir, final File dstDir) throws IOException {
-        if (srcDir.isDirectory()) {
-            if (!dstDir.exists()) {
-                dstDir.mkdir();
-            }
-    
-            final String[] children = srcDir.list();
-            for (final String child : children) {
-        	copyDirectory(new File(srcDir, child), new File(dstDir, child));
-	    }
-        } else {
-            copyFile(srcDir, dstDir);
-        }
-    }
-	
-	/**
-	 * Fast & simple file copy.
-	 * 
-	 * @param source 
-	 * @param dest 
-	 * @throws IOException 
-	 */
-	public static void copyFile(final File source, final File dest) throws IOException {
-	     FileChannel in = null, out = null;
-	     try {          
-	          in = new FileInputStream(source).getChannel();
-	          out = new FileOutputStream(dest).getChannel();
-	 
-	          final long size = in.size();
-	          final MappedByteBuffer buf = in.map(FileChannel.MapMode.READ_ONLY, 0, size);
-	 
-	          out.write(buf);
-	 
-	     } finally {
-	          if (in != null) in.close();
-	          if (out != null) out.close();
-	     }
-	}
-	
-	/**
-	 * @return get managed resource name
-	 */
-	protected abstract String getResourceName();
-	
-	/** set up resource specific data structures */
-	protected void setUp() {
-		// noop
-	}
-
-	/**
-	 * @return the dbLogic
-	 */
-	public LuceneDBInterface<R> getLogic() {
-		return dbLogic;
-	}
-
 	/**
 	 * @param dbLogic the dbLogic to set
 	 */
 	public void setLogic(final LuceneDBInterface<R> dbLogic) {
 		this.dbLogic = dbLogic;
-	}
-
-	/**
-	 * @return the analyzer
-	 */
-	public Analyzer getAnalyzer() {
-		return analyzer;
-	}
-
-	/**
-	 * @param analyzer the analyzer to set
-	 */
-	public void setAnalyzer(final Analyzer analyzer) {
-		this.analyzer = analyzer;
-	}
-
-	/**
-	 * @return the resourceConverter
-	 */
-	public LuceneResourceConverter<R> getResourceConverter() {
-		return resourceConverter;
 	}
 
 	/**
@@ -460,8 +268,15 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> implements
 
 	/**
 	 * @param callback the callback to set
-	 *  */
-	public void registerCallback(final GenerateIndexCallback callback) {
+	 */
+	public void setCallback(final GenerateIndexCallback<R> callback) {
 		this.callback = callback;
+	}
+	
+	/**
+	 * @param resourceIndex the resourceIndex to set
+	 */
+	public void setResourceIndex(final LuceneResourceIndex<R> resourceIndex) {
+		this.resourceIndex = resourceIndex;
 	}
 }
