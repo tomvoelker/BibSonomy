@@ -16,7 +16,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.web.filter.GenericFilterBean;
 
 /**
  * Bean for managing runtime configuration of the authorization process.
@@ -28,18 +27,16 @@ import org.springframework.web.filter.GenericFilterBean;
 public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 	
 	private static final String FILTERCHAIN_BEAN_NAME = "org.springframework.security.filterChainProxy";
-	
-	/**
-	 * additional filters are added into the filter chain AFTER the {@link LogoutFilter}
-	 * TODO: configure via spring 
-	 */
-	private static final Class<LogoutFilter> ENTRYPOINT_FILTER = LogoutFilter.class;
 
 	/**
-	 * RememberMe filters are added into the filter chain BEFORE the {@link AnonymousAuthenticationFilter} 
-	 * TODO: configure via spring 
+	 * remember me filters are added into the filter chain BEFORE the {@link AnonymousAuthenticationFilter} 
 	 */
-	private static final Class<AnonymousAuthenticationFilter> REMEMBERME_ENTRYPOINT_FILTER = AnonymousAuthenticationFilter.class;
+	private static final Class<?> REMEMBERME_ENTRYPOINT_FILTER = AnonymousAuthenticationFilter.class;
+	
+	/**
+	 * pre filters are added into the filter chain AFTER the {@link LogoutFilter}
+	 */
+	private static final Class<?> LOGOUT_FILTER = LogoutFilter.class;
 	
 	/**
 	 * look for given filter in given list of filters and return its position if found,
@@ -49,7 +46,7 @@ public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 	 * @param filterList list of filters
 	 * @return filter's position in filter list if found, null otherwise
 	 */
-	private static int findFilter(final Class<? extends GenericFilterBean> filterClass, final List<Filter> filterList) {
+	private static int findFilter(final Class<?> filterClass, final List<Filter> filterList) {
 		for (int i = 0; i < filterList.size(); i++ ) {
 			final Filter filter = filterList.get(i);
 			if (filterClass.isAssignableFrom(filter.getClass())) {
@@ -62,7 +59,7 @@ public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 	}
 	
 
-	/** dertermines which authentication methods are used */
+	/** determines which authentication methods are used */
 	private List<AuthMethod> config;
 
 	/**
@@ -107,11 +104,28 @@ public class AuthenticationFilterConfigurator implements BeanPostProcessor {
 						}
 					}
 					
-					// TODO: preFilters
+					/*
+					 * filter chain
+					 * 1. SecurityContextPersistenceFilter
+					 * 2. LogoutFilter
+					 * 3. all pre filters @see preFilters
+					 * 4. all filters @see filters
+					 * 5. RequestCacheAwareFilter
+					 * 6. SecurityContextHolderAwareRequestFilter
+					 * 7. all remember me filters @rememberMeEntryPoint
+					 * 8. SecurityContextHolderAwareRequestFilter 
+					 * 9. AnonymousAuthenticationFilter
+					 * 10. SessionManagementFilter
+					 * 11. ExceptionTranslationFilter
+					 * 11. a. our ExceptionTranslationFilter
+					 * 12. FilterSecurityInterceptor
+					 */
+					// to keep things simple add all filters after the preFilters
+					preFilters.addAll(filters);
 
 					// additional filters are added into the filter chain AFTER the {@link LogoutFilter}
-					final int filterEntryPoint = findFilter(ENTRYPOINT_FILTER, filterList) + 1;
-					filterList.addAll(filterEntryPoint, filters);
+					final int filterEntryPoint = findFilter(LOGOUT_FILTER, filterList) + 1;
+					filterList.addAll(filterEntryPoint, preFilters);
 					
 					// RememberMe filters are added into the filter chain BEFORE the {@link AnonymousAuthenticationFilter}
 					final int rememberMeEntryPoint = findFilter(REMEMBERME_ENTRYPOINT_FILTER, filterList);
