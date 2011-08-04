@@ -41,7 +41,7 @@
 		<property name="properties" ref="properties" />
 	</bean>
 	
-	<bean id="conversionSericeBeanFactoryPostProcessor" class="org.bibsonomy.webapp.util.ConversionServiceBeanFactoryPostProcessor">
+	<bean id="conversionServiceBeanFactoryPostProcessor" class="org.bibsonomy.webapp.util.ConversionServiceBeanFactoryPostProcessor">
 		<property name="conversionService" ref="conversionService" />
 	</bean>
 	
