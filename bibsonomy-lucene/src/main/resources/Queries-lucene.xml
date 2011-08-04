@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
- "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="Lucene">
 	
 	<!-- get given group's members -->
@@ -16,6 +15,7 @@
 		SELECT user_name
 		FROM friends
 		WHERE f_user_name = #userName#
+		<!-- TODO: adapt on tagged friendship -->
 	</select>
 
 	<!-- get date of most recent tas entry  -->
@@ -25,19 +25,12 @@
 	</select>
 
 	<!-- get list of all publications for given user -->
-	<select id="getBibTexForUser" resultMap="BibTexCommon.luceneLogBibtexPost" parameterClass="bibtexParam">
+	<select id="getBibTexForUser" resultMap="BibTexCommon.luceneLogBibtexPost" parameterClass="luceneParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, t.tas_id, b2.change_date AS log_date
-		FROM (SELECT t1.*, h.ctr AS count
-		      FROM bibtex t1, bibhash h
-		      WHERE <include refid="bibtexSimHash3"/>
-		            AND t1.user_name = #requestedUserName#
+		FROM (SELECT t1.*, 1 AS count
+		      FROM bibtex t1
+		      WHERE t1.user_name = #userName#
 		            AND t1.group &gt;= 0
-		            <!-- <include refid="restrictToGroups"/> -->
-		        	<dynamic prepend="AND">
-						<isNotNull property="entryType">		
-							entrytype = #entryType#
-						</isNotNull>
-		     		</dynamic>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
@@ -46,15 +39,14 @@
 	</select>
 	
 	<!-- get list of all bookmarks for given user -->
-	<select id="getBookmarkForUser" resultMap="BookmarkCommon.luceneLogBookmarkPost" parameterClass="bookmarkParam">
+	<select id="getBookmarkForUser" resultMap="BookmarkCommon.luceneLogBookmarkPost" parameterClass="luceneParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
 		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.tas_id, bb.change_date AS log_date
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
 		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
 		      FROM bookmark t1, urls u
 		      WHERE u.book_url_hash = t1.book_url_hash
-		            AND t1.user_name = #requestedUserName#
-		            <!-- <include refid="restrictToGroups"/> -->
+		            AND t1.user_name = #userName#
 		            AND t1.group &gt;= 0
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb
@@ -77,9 +69,8 @@
 	</select>
 	
 	<select id="getGoldStandardPublicationContentIdsToDelete" resultClass="integer" parameterClass="date">
-		SELECT content_id
-			FROM log_gold_standard l
-		WHERE l.log_date &gt; #date# AND l.content_type = 2
+		SELECT content_id FROM
+		log_gold_standard WHERE log_date &gt; #date# AND content_type = 2
 	</select>
 	
 	<!--+ 
@@ -87,11 +78,10 @@
 		| Parameter: 
 		|    lastTasId 
 		+-->
-	<select id="getBibTexPostsForTimeRange" parameterClass="bibtexParam" resultMap="BibTexCommon.luceneBibtexPost">
-		SELECT <include refid ="luceneBibtexAttributes2"/>, t.tag_name, g.*, h.ctr AS count
+	<select id="getBibTexPostsForTimeRange" parameterClass="luceneParam" resultMap="BibTexCommon.luceneBibtexPost">
+		SELECT <include refid ="luceneBibtexAttributes2"/>, t.tag_name, g.*, 1 AS count
 		FROM tas t
 	      JOIN bibtex b2 USING (content_id)
-	      JOIN bibhash h ON (<include refid="bibtexSimHash4"/>)
 	      JOIN groupids g ON (b2.group = g.group)
 		WHERE t.tas_id &gt; #lastTasId#
 		  AND b2.group &gt;= 0
@@ -103,7 +93,7 @@
 		| Parameter: 
 		|    lastTasId 
 		+-->
-	<select id="getBookmarkPostsForTimeRange" resultMap="BookmarkCommon.luceneBookmarkPost" parameterClass="bookmarkParam">
+	<select id="getBookmarkPostsForTimeRange" resultMap="BookmarkCommon.luceneBookmarkPost" parameterClass="luceneParam">
 	    SELECT <include refid ="luceneBookmarkAttributes"/>
 	    FROM tas t
 	      JOIN bookmark b USING (content_id)
@@ -115,12 +105,11 @@
 	</select>
 	
 	<select id="getGoldStandardPublicationPostsForTimeRange" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
-		SELECT
-			<include refid="allGoldStandardPublicationAttributesWithSimHashes" />, b.group, 'public' AS group_name, 1 AS count
-			FROM gold_standard g
-		WHERE g.content_id &gt; #lastTasId#
-			AND g.content_type = 2
-		ORDER BY g.date DESC, g.content_id DESC
+		SELECT <include refid="allGoldStandardPublicationAttributesWithSimHashes" />, b.group, 'public' AS group_name, 1 AS count
+		FROM gold_standard b
+		WHERE b.content_type = 2
+			AND b.content_id &gt; #lastTasId#
+		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
 </sqlMap>

@@ -9,8 +9,7 @@ import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-
-import static org.bibsonomy.lucene.util.LuceneBase.*;
+import org.bibsonomy.lucene.index.LuceneFieldNames;
 
 /**
  * class for finding duplicate entries in a lucene index (with respect to a given field)
@@ -18,14 +17,15 @@ import static org.bibsonomy.lucene.util.LuceneBase.*;
  * credits go to http://lucene.472066.n3.nabble.com/Index-Dedupe-td549923.html
  * 
  * @author fei
+ * @version $Id$
  */
 public class DuplicateFinder {
 	
 	/** list of fields to display for duplicates */
 	private static final String[] fieldList = {
-		FLD_CONTENT_ID,
-		FLD_INTERHASH,
-		FLD_TITLE
+		LuceneFieldNames.CONTENT_ID,
+		LuceneFieldNames.INTERHASH,
+		LuceneFieldNames.TITLE
 	};
 	
 	/** lucene index reader */
@@ -36,7 +36,7 @@ public class DuplicateFinder {
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		if( args.length != 2 ) {
 			System.out.println("Usage: \n\t DuplicateFinder <path to index directory> <field name>");
 			return;
@@ -44,7 +44,7 @@ public class DuplicateFinder {
 		
 		try {
 			findDuplicates(args[0], args[1], false);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.out.println("Error processing index at '"+args[0]+"':");
 			e.printStackTrace();
 		}
@@ -60,12 +60,12 @@ public class DuplicateFinder {
 	 * 
 	 * @throws Exception
 	 */
-	public static void findDuplicates(String indexPath, String fieldName, boolean doRemove) throws Exception {
-		Directory indexDirectory = FSDirectory.open(new File(indexPath));
+	public static void findDuplicates(final String indexPath, final String fieldName, final boolean doRemove) throws Exception {
+		final Directory indexDirectory = FSDirectory.open(new File(indexPath));
 
 		reader = IndexReader.open(indexDirectory);
 
-		TermEnum theTerms = reader.terms(new Term(fieldName));
+		final TermEnum theTerms = reader.terms(new Term(fieldName));
 
 		Term term = null;
 
@@ -91,16 +91,16 @@ public class DuplicateFinder {
 	 * @param term
 	 * @param docFreq number of duplicates
 	 */
-	private static void printDupsForTerm(Term term, int docFreq) throws Exception {
+	private static void printDupsForTerm(final Term term, final int docFreq) throws Exception {
 		System.out.print(docFreq+" duplicate entries for \n\t");
 		
-		TermDocs td = reader.termDocs(term);
+		final TermDocs td = reader.termDocs(term);
 
-		for ( int idx = 0; td.next(); ++idx) {
-			System.out.print(td.doc()+"\t");
-			Document document = reader.document(td.doc());
+		for (int idx = 0; td.next(); ++idx) {
+			System.out.print(td.doc() + "\t");
+			final Document document = reader.document(td.doc());
 			
-			for (String fieldName : fieldList) {
+			for (final String fieldName : fieldList) {
 				System.out.print(document.get(fieldName)+"\t");
 			}
 			System.out.print("\n\t");
@@ -115,8 +115,8 @@ public class DuplicateFinder {
 	 * @param term
 	 * @throws Exception
 	 */
-	private static void removeDupsForTerm(Term term) throws Exception {
-		TermDocs td = reader.termDocs(term);
+	private static void removeDupsForTerm(final Term term) throws Exception {
+		final TermDocs td = reader.termDocs(term);
 		for (int idx = 0; td.next(); ++idx) {
 			if (idx > 0) {
 				reader.deleteDocument(td.doc());

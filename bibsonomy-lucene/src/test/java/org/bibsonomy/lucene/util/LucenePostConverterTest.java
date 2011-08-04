@@ -1,19 +1,15 @@
 package org.bibsonomy.lucene.util;
 
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_ADDRESS;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_AUTHOR;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_GROUP;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_TAS;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_TITLE;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_YEAR;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.apache.lucene.document.Document;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.database.testutil.JNDIBinder;
+import org.bibsonomy.lucene.index.LuceneFieldNames;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -38,21 +34,10 @@ public class LucenePostConverterTest {
 	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUp() {
-		// bind datasource access via JNDI
-		JNDITestDatabaseBinder.bind();
-		LuceneBase.initRuntimeConfiguration();
-		
-		// initialize
-		Map<String,Map<String,Object>> postPropertyMap;
-
-		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bibTexPropertyMap");
-		bibTexConverter = new LuceneBibTexConverter();
-		bibTexConverter.setPostPropertyMap(postPropertyMap);
-		
-		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bookmarkPropertyMap");
-		bookmarkConverter = new LuceneBookmarkConverter();
-		bookmarkConverter.setPostPropertyMap(postPropertyMap);
-		
+		JNDIBinder.bind();
+		// use the configurated converters
+		bibTexConverter = (LuceneResourceConverter<BibTex>) LuceneSpringContextWrapper.getBeanFactory().getBean("lucenePublicationConverter");
+		bookmarkConverter = (LuceneResourceConverter<Bookmark>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneBookmarkConverter");
 	}
 	
 	@Test
@@ -129,22 +114,22 @@ public class LucenePostConverterTest {
 		// compare some elements
 		//--------------------------------------------------------------------
 		// title
-		assertEquals(testPost.getResource().getTitle(), postDoc.get(FLD_TITLE));
+		assertEquals(testPost.getResource().getTitle(), postDoc.get(LuceneFieldNames.TITLE));
 		// tags
 		for( final Tag tag : testPost.getTags() ) {
 			final String tagName = tag.getName();
-			assertEquals(true, postDoc.get(FLD_TAS).contains(tagName));
+			assertEquals(true, postDoc.get(LuceneFieldNames.TAS).contains(tagName));
 		}
 		// author
-		assertEquals(testPost.getResource().getAuthor(), postDoc.get(FLD_AUTHOR));
+		assertEquals(testPost.getResource().getAuthor(), postDoc.get(LuceneFieldNames.AUTHOR));
 		// year
-		assertEquals(testPost.getResource().getYear(), postDoc.get(FLD_YEAR));
+		assertEquals(testPost.getResource().getYear(), postDoc.get(LuceneFieldNames.YEAR));
 		// address
-		assertEquals(testPost.getResource().getAddress(), postDoc.get(FLD_ADDRESS));
+		assertEquals(testPost.getResource().getAddress(), postDoc.get(LuceneFieldNames.ADDRESS));
 		// groups
 		for( final Group group : testPost.getGroups() ) {
 			final String tagName = group.getName();
-			assertEquals(true, postDoc.get(FLD_GROUP).contains(tagName));
+			assertEquals(true, postDoc.get(LuceneFieldNames.GROUP).contains(tagName));
 		}
 	}
 	
@@ -183,7 +168,7 @@ public class LucenePostConverterTest {
 		return post;
 	}
 
-	private static <T extends Resource> LucenePost<T> createEmptyPost(@SuppressWarnings("unused") final Class<T> rClass, final String tagName, final GroupID groupID, Date postDate, String userName) {
+	private static <T extends Resource> LucenePost<T> createEmptyPost(@SuppressWarnings("unused") final Class<T> rClass, final String tagName, final GroupID groupID, final Date postDate, final String userName) {
 		final LucenePost<T> post = new LucenePost<T>();
 		post.setContentId((int)Math.floor(Math.random()*Integer.MAX_VALUE)); // TODO: random with seed
 

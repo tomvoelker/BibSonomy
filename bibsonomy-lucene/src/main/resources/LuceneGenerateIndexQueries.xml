@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
- "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="Lucene">
 	<!--+ 
 		| Queries.
@@ -15,8 +14,7 @@
 	<!-- TODO: rename query? -->
 	<select id="getLastContentId" resultClass="integer">
 		SELECT MAX(content_id)
-		FROM gold_standard g
-			WHERE g.content_type = 2
+		FROM gold_standard WHERE content_type = 2
 	</select>
 
 	<!-- get number of public bookmark posts -->
@@ -52,21 +50,19 @@
 	</select>
 	
 	<select id="getLastLogGoldStandardPublication" resultClass="date">
-		SELECT MAX(log_date)
-			FROM log_gold_standard l
-			WHERE l.content_type = 2
+		SELECT MAX(log_date) FROM log_gold_standard l WHERE l.content_type = 2 
 	</select>
 	
 	<!-- get users which where flagged as spammers/non-spammers since last index update --> 
 	<select id="getPredictionForTimeRange" parameterClass="date" resultMap="Common.spamPrediction">
-		SELECT user_name,prediction,updated_at 
-		FROM prediction 
-		WHERE updated_at &gt;= #date# 
-		ORDER BY updated_at DESC
+		SELECT user_name, prediction, updated_at 
+			FROM prediction 
+			WHERE updated_at &gt;= #date# 
+			ORDER BY updated_at DESC
 	</select>
 	
 	<!-- get list of all non-spam bookmarks -->
-	<select id="getBookmarkForIndex" parameterClass="bookmarkParam" resultMap="BookmarkCommon.bookmarkPost">
+	<select id="getBookmarkForIndex" parameterClass="luceneParam" resultMap="BookmarkCommon.bookmarkPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
@@ -78,7 +74,7 @@
 		  FROM bookmark b 
 	      JOIN urls u USING (book_url_hash)
 		  WHERE b.group &gt;= 0
-			AND b.content_id &gt; #requestedContentId#
+		  	AND b.content_id &gt; #lastContentId#
 		  ORDER BY b.content_id ASC
 		  LIMIT #limit#
 		) AS bb
@@ -99,18 +95,17 @@
 	</select>
 	
 	<!-- get list of all non-spam publication posts -->
-	<select id="getBibTexForIndex" parameterClass="bibtexParam" resultMap="BibTexCommon.bibtexPost">
+	<select id="getBibTexForIndex" parameterClass="luceneParam" resultMap="BibTexCommon.bibtexPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
 			g.*  
 		FROM 
 		( 
-		  SELECT <include refid ="commonBibtexAttributes2"/>, b2.group, h.ctr AS count, b2.scraperid
-		  FROM bibtex b2 
-	      JOIN bibhash h ON (<include refid="bibtexSimHash4"/>)
-		  WHERE b2.group &gt;= 0 
-		  	AND b2.content_id &gt; #requestedContentId#
+		  SELECT <include refid ="commonBibtexAttributes2"/>, b2.group, 1 AS count, b2.scraperid
+		  FROM bibtex b2
+		  WHERE b2.group &gt;= 0
+			  AND b2.content_id &gt; #lastContentId#
 		  ORDER BY b2.content_id ASC
 		  LIMIT #limit#
 		) AS bb
@@ -130,6 +125,11 @@
 	</select>
 	
 	<select id="getGoldStandardPublicationForIndex" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, b.group, 'public' AS group_name, 1 AS count FROM gold_standard b WHERE b.content_type = 2 AND b.content_id &gt; #requestedContentId# ORDER BY b.content_id ASC LIMIT #limit#
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, b.group, 'public' AS group_name, 1 AS count
+		FROM gold_standard b
+		WHERE b.content_id &gt; #lastContentId#
+			AND content_type = 2
+		ORDER BY b.content_id ASC
+		LIMIT #limit#
 	</select>
 </sqlMap>
