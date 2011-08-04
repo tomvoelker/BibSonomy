@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import static org.bibsonomy.webapp.util.sync.SyncUtils.getPlanSummary;
 
 import java.net.URI;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -14,12 +15,13 @@ import net.sf.json.JSONObject;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.sync.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -98,6 +100,20 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 * serialize it to show user
 			 */
 			json.put("syncPlan", serializeSyncPlan(syncPlan, serviceName));
+			
+			/*
+			 * get syncData of this plan
+			 */
+			final Map<Class<? extends Resource>, SynchronizationData> syncData = new LinkedHashMap<Class<? extends Resource>, SynchronizationData>();
+			SyncService server = client.getServerByURI(logic, serviceName);
+			for (Class<? extends Resource> resourceType : syncPlan.keySet()) {
+				SynchronizationData data = client.getLastSyncData(server, resourceType);
+				if(SynchronizationStatus.PLANNED.equals(data.getStatus())) {
+					syncData.put(resourceType, data);
+				}
+			}
+			json.put("syncData", serializeSyncData(syncData));
+
 			break;
 		case POST:
 			/*
@@ -138,8 +154,10 @@ public class SynchronizationController extends AjaxController implements Minimal
 				 */
 				client.resetServer(logic, serviceName);
 				JSONObject second = new JSONObject();
-				second.put(BibTex.class.getSimpleName(), messageSource.getMessage("synchronization.noresult", null, requestLogic.getLocale()));
-				second.put(Bookmark.class.getSimpleName(), messageSource.getMessage("synchronization.noresult", null, requestLogic.getLocale()));
+				Class<? extends Resource> requiredType = client.getServerByURI(logic, serviceName).getResourceType();
+				for (Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(requiredType)) {
+					second.put(resourceType.getSimpleName(), messageSource.getMessage("synchronization.noresult", null, requestLogic.getLocale()));
+				}
 				json.put("syncData", second);
 			}
 			break;
@@ -184,7 +202,10 @@ public class SynchronizationController extends AjaxController implements Minimal
 			SynchronizationData value = entry.getValue();
 			dataString.append(df.format(value.getLastSyncDate()) + " ");
 			dataString.append(messageSource.getMessage("synchronization.result", null, locale));
-			dataString.append(" " + messageSource.getMessage("synchronization.result." + value.getStatus().toString().toLowerCase(), null, locale) + " <em>(" + value.getInfo() + ")</em>");
+			dataString.append(" " + messageSource.getMessage("synchronization.result." + value.getStatus().toString().toLowerCase(), null, locale));
+			if(present(value.getInfo())) {
+				dataString.append(" <em>(" + value.getInfo() + ")</em>");
+			}
 			json.put(entry.getKey().getSimpleName(), dataString.toString());
 		}
 		return json;

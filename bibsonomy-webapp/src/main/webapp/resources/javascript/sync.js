@@ -6,10 +6,10 @@ function hideSubmitButtons(formData, form, options) {
 function successSyncForm(data, statusText, xhr, form) {
 	$(form).find(":submit").show();
 	$(form).find(".progressGif").hide();
-	
-	if (data.syncPlan) showSyncPlan(form, data.syncPlan);
 
 	if (data.syncData) showSyncData(form, data.syncData);
+	
+	if (data.syncPlan) showSyncPlan(form, data.syncPlan);
 
 	// return false to prevent normal browser submit and page navigation 
     return false; 
@@ -48,6 +48,7 @@ function showSyncPlan(form, plan) {
 	
 	}
 	div.append(dl);
+	$(form).find(".synchronizeBtn").show();
 }
 
 function showSyncData(form, data) {

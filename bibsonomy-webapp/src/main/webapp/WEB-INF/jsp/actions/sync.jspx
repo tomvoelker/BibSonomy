@@ -87,16 +87,11 @@
 											<c:choose>
 												<c:when test="${not empty entry.value}">
 													<fmt:formatDate value="${entry.value.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-													<c:choose>
-														<c:when test="${entry.value.status ne 'PLANNED'}">
-															<fmt:message key="synchronization.result"/>
-															<fmt:message key="synchronization.result.${fn:toLowerCase(entry.value.status)}"/> <em><c:out value=" (${entry.value.info})"/></em>
-														</c:when>
-														<c:otherwise>
-															<fmt:message var="syncPlanned" key="synchronization.planned"/>
-															<c:out value=" ${syncPlanned}"/>
-														</c:otherwise>
-													</c:choose>
+														<fmt:message key="synchronization.result"/>
+														<fmt:message key="synchronization.result.${fn:toLowerCase(entry.value.status)}"/>
+														<c:if test="${not empty entry.value.info}"> 
+															<em><c:out value=" (${entry.value.info})"/></em>
+														</c:if>
 												</c:when>
 												<c:otherwise>
 													<fmt:message key="synchronization.noresult"/>
