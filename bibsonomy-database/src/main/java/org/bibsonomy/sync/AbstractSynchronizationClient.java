@@ -69,7 +69,7 @@ public abstract class AbstractSynchronizationClient {
 	 * @param service
 	 * @return syncService
 	 */
-	protected SyncService getServerByURI(final LogicInterface clientLogic, final URI service) {
+	public SyncService getServerByURI(final LogicInterface clientLogic, final URI service) {
 		final List<SyncService> syncServers = ((SyncLogicInterface)clientLogic).getSyncServer(clientLogic.getAuthenticatedUser().getName());
 		
 		for (final SyncService syncService : syncServers) {
