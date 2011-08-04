@@ -1,39 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	                    http://www.springframework.org/schema/beans/spring-beans.xsd">
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
-	<!--+
-	    | lucene index updater
-	    +-->
-	<bean id="luceneBibTexManager" class="org.bibsonomy.lucene.index.manager.LuceneBibTexManager" factory-method="getInstance">
-	    <property name="generator" ref="luceneGenerateBibTexIndex" />
-	</bean>
-	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.manager.LuceneBookmarkManager" factory-method="getInstance">
-	    <property name="generator" ref="luceneGenerateBookmarkIndex" />
-	</bean>
-	<bean id="luceneGoldStandardPublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneGoldStandardPublicationManager" factory-method="getInstance">
-	    <property name="generator" ref="luceneGenerateGoldStandardPublicationIndex" />
-	</bean>
+	<!-- import the config from the lucene module -->
+	<import resource="classpath:LuceneContext.xml" />
 	
-	<bean id="luceneGenerateBibTexIndex" class="org.bibsonomy.lucene.util.generator.LuceneGenerateBibTexIndex" factory-method="getInstance"/>
-	<bean id="luceneGenerateBookmarkIndex" class="org.bibsonomy.lucene.util.generator.LuceneGenerateBookmarkIndex" factory-method="getInstance"/>
-	<bean id="luceneGenerateGoldStandardPublicationIndex" class="org.bibsonomy.lucene.util.generator.LuceneGenerateGoldStandardPublicationIndex" factory-method="getInstance"/>
-	
-	<!-- lucene publication searcher -->
-	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.search.LuceneSearchBibTex" factory-method="getInstance"/>
-	
-	<!-- lucene bookmark searcher -->
-	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneSearchBookmarks" factory-method="getInstance"/>
-	
-	<!-- lucene gold standard publication searcher -->
-	<bean id="luceneGoldStandardPublicationSearch" class="org.bibsonomy.lucene.search.LuceneSearchGoldStandardPublications" factory-method="getInstance"/>	
+	<!-- TODO: alias for lucene managers -->
+	<util:list id="luceneResourceManagers">
+		<ref bean="lucenePublicationManager" />
+		<ref bean="luceneBookmarkManager" />
+		<ref bean="luceneGoldStandardPublicationManager" />
+    </util:list>
 
 	<!--+ 
 	 	|
 	 	| lucene CRON jobs are defined in bibsonomy2-servlet-cronjobs.xml
 	 	|
 	 	+-->
-               
 </beans>

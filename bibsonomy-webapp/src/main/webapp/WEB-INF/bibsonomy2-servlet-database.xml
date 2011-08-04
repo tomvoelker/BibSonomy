@@ -23,12 +23,12 @@
 	</bean>
 	
 	<bean id="publicationDatabaseManager" class="org.bibsonomy.database.managers.BibTexDatabaseManager" factory-method="getInstance">
-		<property name="resourceSearch" ref="luceneBibTexSearch" />
+		<property name="resourceSearch" ref="lucenePublicationSearch" />
 	</bean>
 	
 	<bean id="tagDatabaseManager" class="org.bibsonomy.database.managers.TagDatabaseManager" factory-method="getInstance">
 		<property name="bookmarkSearch" ref="luceneBookmarkSearch" />
-		<property name="publicationSearch" ref="luceneBibTexSearch" />
+		<property name="publicationSearch" ref="lucenePublicationSearch" />
 	</bean>
 	
 	<bean id="goldStandardPublicationDatabaseManager" class="org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager" factory-method="getInstance">

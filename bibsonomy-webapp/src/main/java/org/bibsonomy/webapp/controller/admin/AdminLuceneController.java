@@ -9,7 +9,7 @@ import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
-import org.bibsonomy.webapp.command.admin.LuceneIndexSettingsCommand;
+import org.bibsonomy.webapp.command.admin.LuceneIndexInfo;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -57,38 +57,28 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		}
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
-		final List<LuceneIndexSettingsCommand> indices = command.getIndices();
+		final List<LuceneIndexInfo> indices = command.getIndices();
 		
 		for (final LuceneResourceManager<? extends Resource> manager: luceneResourceManagers) {
 			final boolean isIndexEnabled = manager.isIndexEnabled();
-			final LuceneIndexSettingsCommand indexCmd         = new LuceneIndexSettingsCommand();
-			final LuceneIndexSettingsCommand indexCmdInactive = new LuceneIndexSettingsCommand();
+			final LuceneIndexInfo indexInfo = new LuceneIndexInfo();
 			
-			/*
-			// If a new Index was generated, the index and searcher have to be reset
-			if(generatedIndex && !manager.isIndexEnabled()) {
-				manager.resetIndexReader();
-				manager.resetIndexSearcher();
-				isIndexEnabled = manager.isIndexEnabled();
-			}*/
+			indexInfo.setEnabled(isIndexEnabled);
+			indexInfo.setResourceName(manager.getResourceName());
 			
-			indexCmd.setEnabled(isIndexEnabled);
-			indexCmd.setResourceName(manager.getResourceName());
-			indexCmd.setName(manager.getResourceName() + " index");
-			indexCmd.setInactiveIndex(indexCmdInactive);
-				
 			//TODO: show index-ids
 			//indexCmd.setId(...);
 			if (manager.isGeneratingIndex()) {
-				indexCmd.setGeneratingIndex(true);
-				indexCmd.setIndexGenerationProgress(manager.getGenerator().getProgressPercentage());
-			}
-			if (isIndexEnabled) {
-				indexCmd.setIndexStatistics(manager.getStatistics());
-				indexCmdInactive.setIndexStatistics(manager.getInactiveIndexStatistics());
+				indexInfo.setGeneratingIndex(true);
+				indexInfo.setIndexGenerationProgress(manager.getGenerator().getProgressPercentage());
 			}
 			
-			indices.add(indexCmd);
+			if (isIndexEnabled) {
+				indexInfo.setIndexStatistics(manager.getStatistics());
+				indexInfo.setInactiveIndecesStatistics(manager.getInactiveIndecesStatistics());
+			}
+			
+			indices.add(indexInfo);
 		}
 		
 		

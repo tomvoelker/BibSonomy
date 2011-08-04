@@ -16,7 +16,7 @@
 	
 	<fmt:message key="navi.admin" var="pageTitle" />
 	
-	<layout:layout pageTitle="${pageTitle} :: Lucene" loginUser="${command.context.loginUser}" requPath="${requPath}">
+	<layout:layout pageTitle="${pageTitle} :: Lucene" loginUser="${command.context.loginUser}" requPath="${requPath}" fullscreen="true">
 		<jsp:attribute name="heading">
 		    <a href="/admin"><c:out value="${pageTitle}" /></a> ::
 			<a rel="path_menu" href="/admin/lucene">Lucene</a>
@@ -36,65 +36,96 @@
 		} 
 		</script>
 
-<div id="outerBox">
-	<h2>
-			Lucene Index Statistics 
-	</h2>
-	
-	  <c:if test="${not empty command.adminResponse}">
+	<div id="outerBox">
+	<h2>Lucene Index Statistics</h2>
+	<c:if test="${not empty command.adminResponse}">
 		<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
-	  </c:if>
+	</c:if>
 	  
     <c:forEach var="index" items="${command.indices}">
 	    <div class="indexProperties">
-			<fieldset>
-				<legend><label><c:out value="${index.name}" /></label></legend>
+		<h3><c:out value="${index.resourceName}" /> Index</h3>
+		<c:choose>
+			<c:when test="${!index.generatingIndex}">
+				<a onclick="javascript:generateIndex('${index.resourceName}')" href="#generateIndex">
+					<span style="width: 200px; height: 10px; border: 1px;">re-generate index</span>
+			  	</a>
 				<c:choose>
-				    <c:when test="${index.enabled}">
-					    <div class="ls-description">containing docs:</div><div class="ls-value">${index.numDocs}</div>
-					    <div class="ls-description">deleted docs:</div><div class="ls-value">${index.numDeletedDocs}</div>
-					    <div class="ls-description">newest date:</div><div class="ls-value">${index.newestDateString}</div>
-					    <div class="ls-description">last modified date:</div><div class="ls-value">${index.lastModifiedString}</div>
-					    <div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${index.currentVersion}</div>
-					    <div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${index.current}</div>
-				    </c:when>
-				    <c:otherwise>
-				        Seems to be properly configured but could not physically be found. <br />
-				        <a href="?action=generateIndex&amp;resource=${index.resourceName}">Generate a new <c:out value="${index.name}" /></a>
-				    </c:otherwise>
-				</c:choose>
-				<c:if test="${!index.generatingIndex}">
-				  <a style="cursor: pointer;">
-					<img src="${resdir}/image/button_reload.png" alt="generate new ${index.name}" title="generate new ${index.name}" onclick="javascript:generateIndex('${index.resourceName}')" />
-					<span style="width: 200px; height: 10px; border: 1px;  "></span>
-				  </a>
-				</c:if>
-			</fieldset>
-			<fieldset>
-				<legend><label><c:out value="${index.inactiveIndex.name}" /></label></legend>
-				    <c:if test="${index.enabled &amp;&amp; !index.generatingIndex}">
-						<div class="ls-description">containing docs:</div><div class="ls-value">${index.inactiveIndex.numDocs}</div>
-						<div class="ls-description">deleted docs:</div><div class="ls-value">${index.inactiveIndex.numDeletedDocs}</div>
-						<div class="ls-description">newest date:</div><div class="ls-value">${index.inactiveIndex.newestDateString}</div>
-						<div class="ls-description">last modified date:</div><div class="ls-value">${index.inactiveIndex.lastModifiedString}</div>
-						<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${index.inactiveIndex.currentVersion}</div>
-						<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${index.inactiveIndex.current}</div>
-					</c:if>
-					<c:if test="${index.generatingIndex}">
-					    Currently generating new index. <br />			    
-					<div style="width: 202px; height: 12px; border: 1px solid #999999; background-color: #CCCCCC">
-    					<div style="width: ${index.indexGenerationProgress*2}px; height:10px; border: 1px solid #CCCCCC; background-color: #002244" />
-					</div><br />
-					${index.indexGenerationProgress} % done.
-					</c:if>
-			</fieldset>
-	    </div>
-    </c:forEach>
+			    <c:when test="${index.enabled}">
+			    	<table>
+			    		<tr>
+			    			<th>Index</th>
+			    			<th>active</th>
+			    			<th>inactive</th>			    			
+			    		</tr>
+			    		<tr>
+			    			<td>containing docs</td>
+			    			<td>${index.statistics.numDocs}</td>
+			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
+			    				<td>${inactiveIndexStatistics.numDocs}</td>
+			    			</c:forEach>
+			    		</tr>
+			    		<tr>
+			    			<td>deleted docs</td>
+			    			<td>${index.statistics.numDeletedDocs}</td>
+			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
+			    				<td>${inactiveIndexStatistics.numDeletedDocs}</td>
+			    			</c:forEach>
+			    		</tr>
+			    		<tr>
+			    			<td>newest date</td>
+			    			<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${index.statistics.newestRecordDate}" /></td>
+			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
+			    				<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${inactiveIndexStatistics.newestRecordDate}" /></td>
+			    			</c:forEach>
+			    		</tr>
+			    		<tr>
+			    			<td>last modified date</td>
+			    			<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${index.statistics.lastModified}" /></td>
+			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
+			    				<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${inactiveIndexStatistics.lastModified}" /></td>
+			    			</c:forEach>
+			    		</tr>
+			    		<tr>
+			    			<td>current version</td>
+			    			<td>${index.statistics.currentVersion}</td>
+			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
+			    				<td>${inactiveIndexStatistics.numDocs}</td>
+			    			</c:forEach>
+			    		</tr>
+			    		<tr>
+			    			<td>isCurrent</td>
+			    			<td>${index.statistics.current}</td>
+			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
+			    				<td>${inactiveIndexStatistics.current}</td>
+			    			</c:forEach>
+			    		</tr>
+			    	</table>
+			    </c:when>
+		 		<c:otherwise>
+		       		Seems to be properly configured but could not physically be found. <br />
+		       		<a href="?action=generateIndex&amp;resource=${index.resourceName}">Generate a new <c:out value="${index.name}" /></a>
+			   	</c:otherwise>
+			</c:choose>
+		</c:when>				
+		<c:otherwise>
+			<div>
+				Currently generating new index.
+			</div>    
+			<div style="width: 202px; height: 12px; border: 1px solid #999999; background-color: #CCCCCC">
+  					<div style="width: ${index.indexGenerationProgress * 2}px; height:10px; border: 1px solid #CCCCCC; background-color: #002244">
+						<!-- placeholder -->
+					</div>
+			</div>
+			<div>
+				<span>${index.indexGenerationProgress} % done.</span>
+			</div>
+		</c:otherwise>
+   	</c:choose>
+	</div>
+   </c:forEach>
 </div>    
             
 		</jsp:attribute>				
 	</layout:layout>
-
-
-
 </jsp:root>
