@@ -16,28 +16,14 @@ import org.bibsonomy.model.User;
  */
 public class SphereResourceViewCommand extends FriendsResourceViewCommand {
 	
-	private String 			requestedUserRelation 	= "";
+	private String 			sphereName 	= "";
 	private List<User> 		relatedUsers;
-	List<Post<Bookmark>> 	bmPosts;
-	List<Post<BibTex>> 		bibPosts;
 	
 	private Map<String, Set<User>> spheres;
 	private Map<String, ListCommand<Post<Bookmark>>> spheresBMPosts;
 	private Map<String, ListCommand<Post<BibTex>>> spheresPBPosts;
 	private Map<String, TagCloudCommand> spheresTagClouds;
 
-	/**
-	 * @return the requestedUserRelation
-	 */
-	public String getRequestedUserRelation() {
-		return this.requestedUserRelation;
-	}
-	/**
-	 * @param requestedUserRelation the requestedUserRelation to set
-	 */
-	public void setRequestedUserRelation(String requestedUserRelation) {
-		this.requestedUserRelation = requestedUserRelation;
-	}
 	
 	/**
 	 * @return the relatedUsers
@@ -51,31 +37,6 @@ public class SphereResourceViewCommand extends FriendsResourceViewCommand {
 	public void setRelatedUsers(List<User> relatedUsers) {
 		this.relatedUsers = relatedUsers;
 	}
-	/**
-	 * @return the bmPosts
-	 */
-	public List<Post<Bookmark>> getBmPosts() {
-		return this.bmPosts;
-	}
-	/**
-	 * @param bmPosts the bmPosts to set
-	 */
-	public void setBmPosts(List<Post<Bookmark>> bmPosts) {
-		this.bmPosts = bmPosts;
-	}
-	/**
-	 * @return the bibPosts
-	 */
-	public List<Post<BibTex>> getBibPosts() {
-		return this.bibPosts;
-	}
-	/**
-	 * @param bibPosts the bibPosts to set
-	 */
-	public void setBibPosts(List<Post<BibTex>> bibPosts) {
-		this.bibPosts = bibPosts;
-	}	
-	
 	/**
 	 * @param spheres
 	 */
@@ -130,6 +91,18 @@ public class SphereResourceViewCommand extends FriendsResourceViewCommand {
 	 */
 	public Map<String, TagCloudCommand> getSpheresTagClouds() {
 		return spheresTagClouds;
+	}
+	/**
+	 * @return the sphereName
+	 */
+	public String getSphereName() {
+		return this.sphereName;
+	}
+	/**
+	 * @param sphereName the sphereName to set
+	 */
+	public void setSphereName(String sphereName) {
+		this.sphereName = sphereName;
 	}
 
 }

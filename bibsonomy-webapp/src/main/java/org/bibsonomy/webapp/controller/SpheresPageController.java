@@ -56,12 +56,15 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		if (!context.isUserLoggedIn()){
 			throw new AccessDeniedException("please log in");
 		}
+
+		command.setSphereName("Fussball");
+		command.setRequestedTags("google");
 		
-		if (present(command.getRequestedUserRelation())) {
+		if (present(command.getSphereName())) {
 			// handle 
 			//  - /spheres/RELATION
 			//  - /spheres/RELATION/TAG
-			log.debug("Displaying details for sphere '"+command.getRequestedUserRelation()+"'");
+			log.debug("Displaying details for sphere '"+command.getSphereName()+"'");
 			return handleDetailsView(command, context.getLoginUser());
 		}
 		// handle 
@@ -80,71 +83,61 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 	 * @return
 	 */
 	private View handleDetailsView(final SphereResourceViewCommand command, final User loginUser) {
-		final String requestedUserRelation 		= command.getRequestedUserRelation();
+		final String sphereName 				= command.getSphereName();
 		final String requestedTags				= command.getRequestedTags();
 		final String format 					= command.getFormat();
 		final List<String> requestedUserTags 	= command.getRequestedTagsList();
-		final GroupingEntity groupingEntity 	= GroupingEntity.USER;
-		final List<Post<Bookmark>> bookmarksPosts = new ArrayList<Post<Bookmark>>();
-		final List<Post<BibTex>> bibTexPosts = new ArrayList<Post<BibTex>>();
-
 
 		// if no Userrelation given -> error
-		if (!present(requestedUserRelation)) {
+		if (!present(sphereName)) {
 			throw new MalformedURLSchemeException("error.group_page_without_groupname");
 		}
 
-		// get tagged friends
-		final List<User> relatedUsers = this.logic.getUserRelationship(loginUser.getName(), UserRelation.OF_FRIEND, SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, requestedUserRelation));
-
+		// get all friends of the given Sphere
+		final List<User> relatedUsers = this.logic.getUserRelationship(loginUser.getName(), UserRelation.OF_FRIEND, SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, sphereName));
+		
 		// if no friends are in this relation -> error
 		if (!present(relatedUsers)) {
 			throw new MalformedURLSchemeException("error.no_friends_in_this_friendrelation");
 		}
 
 		// get all bookmarks and publication posts for the requested tag - if no tag given -> relationTags is an empty List
-		final List<String> relationTags = new ArrayList<String>();
+		final List<String> queryTags = new ArrayList<String>();
+		
+		// add the requested sphere name's system tag to the relation tags
+		queryTags.add(SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, sphereName));
+		
+		//Add the Tags from the User
 		if (present(requestedTags)) {
-			relationTags.add(requestedTags);
+			queryTags.add(requestedTags);
 		}
+		
+		/**
+		 * FIXME Post filtering with a given tag caused problems -> Database query failing
+		 */
+		
+		//Set all bookmarks and publications for the given sphere
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
+			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+			final int entriesPerPage = listCommand.getEntriesPerPage();
+			this.setList(command, resourceType, GroupingEntity.FRIEND, loginUser.getName(), queryTags, null, Order.ADDED, null, null, entriesPerPage);
+			this.postProcessAndSortList(command, resourceType);
+		}	
+		
+		//Set the Tags / Related Tags for the Sphere
+		this.setTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, null, 20, null);
 
-		// retrieve and set the requested resource lists and tags for every user
-		for (final User user : relatedUsers) {
-			final String userName = user.getName();
-			bookmarksPosts.addAll(this.logic.getPosts(Bookmark.class, groupingEntity, userName, relationTags, null, Order.ADDED, null, 0, 20, null));
-			bibTexPosts.addAll(this.logic.getPosts(BibTex.class, groupingEntity, userName, relationTags, null, Order.ADDED, null, 0, 20, null));
-			/*
-			 * FIXME: you are overriding each resource list and every tag list
-			 * in every iteration of this loop! this means that you only get
-			 * the posts and tags of the last user
-			 * hint: chain element GetResourcesByTaggedUserRelation must be called!
-			 */
-			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
-				final ListCommand<?> listCommand = command.getListCommand(resourceType);
-				final int entriesPerPage = listCommand.getEntriesPerPage();
-				this.setList(command, resourceType, groupingEntity, userName, relationTags, null, null, null, null, entriesPerPage);
-				this.postProcessAndSortList(command, resourceType);
-			}
-
-			this.setTags(command, Resource.class, groupingEntity, userName, null, requestedUserTags, null, 20, null);
-
-			if (present(requestedUserTags)) {
-				this.setRelatedTags(command, Resource.class, groupingEntity, userName, null, requestedUserTags, Order.ADDED, 0, 20, null);
-			}
+		if (present(requestedUserTags)) {
+			this.setRelatedTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, Order.ADDED, 0, 20, null);
 		}
-
-		// Set all parameters in the command.	 
+		
+		
+		// Set all parameters in the command Object.	 
 		// set page title TODO: i18n
-		command.setPageTitle("taggedfriend :: " + requestedUserRelation);
-
-		// set the related users
+		command.setPageTitle("taggedfriend :: " + sphereName);
+		
+		//Set the Users in the Sphere
 		command.setRelatedUsers(relatedUsers);
-
-		// set the related bookmarks
-		command.setBmPosts(bookmarksPosts);
-
-		// set the related publications
-		command.setBibPosts(bibTexPosts);
 
 		return Views.SPHEREDETAILS;
 	}

@@ -9,6 +9,7 @@
     xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -16,13 +17,18 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.friend"/></a> :: 
-			<a href="/taggedfriend/${fn:escapeXml(command.requestedUserRelation)}"><c:out value='${command.requestedUserRelation}'/></a> ::
-			<form action="/taggedfriend/${fn:escapeXml(command.requestedUserRelation)}" method="get" class="smallform">
+			<a href="/taggedfriend/${fn:escapeXml(command.sphereName)}"><c:out value='${command.sphereName}'/></a> ::
+			<form action="/taggedfriend/${fn:escapeXml(command.sphereName)}" method="get" class="smallform">
 			  <input type="text" size="20" id="inpf" name="tag" value="${fn:escapeXml(command.requestedTags)}"/>
 			</form>
 		</jsp:attribute>				
 		
 		<jsp:attribute name="sidebar">
+						<button:linkButton href="/SettingsHandler?ckey=${ckey}&amp;add_friend=${mtl:encodeURI(requestedUser)}" image="${resdir}/image/starblue_unselected.png" title="${addFriend}">
+					<jsp:attribute name="text">
+						<fmt:message key="navi.friend"/>
+					</jsp:attribute>
+				</button:linkButton>
 		<ul id="sidebar">	
 					
 			<!-- friendrelation members -->
