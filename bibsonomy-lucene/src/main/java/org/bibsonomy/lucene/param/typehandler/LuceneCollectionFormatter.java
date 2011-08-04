@@ -14,9 +14,9 @@ import java.util.Collection;
 public abstract class LuceneCollectionFormatter<T> extends AbstractTypeHandler<Collection<T>> {
 	
 	@Override
-	public String getValue(Collection<T> collection) {		
-		StringBuilder retVal = new StringBuilder("");
-		for (T item : collection) {
+	public String getValue(final Collection<T> collection) {		
+		final StringBuilder retVal = new StringBuilder("");
+		for (final T item : collection) {
 			retVal.append(CFG_LIST_DELIMITER).append(convertItem(item));
 		}
 			
@@ -24,14 +24,14 @@ public abstract class LuceneCollectionFormatter<T> extends AbstractTypeHandler<C
 	}
 	
 	@Override
-	public Collection<T> setValue(String str) {
-		Collection<T> retVal = this.createCollection();
+	public Collection<T> setValue(final String str) {
+		final Collection<T> retVal = this.createCollection();
 		
-		String[] tokens = str.split(CFG_LIST_DELIMITER);
+		final String[] tokens = str.split(CFG_LIST_DELIMITER);
 		
-		for( String token : tokens )
-			retVal.add(createItem(token));
-		
+		for (final String token : tokens) {
+			retVal.add(this.createItem(token));
+		}
 		return retVal;
 	}
 

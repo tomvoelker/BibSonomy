@@ -5,35 +5,23 @@
 	All aliases are collected here, because they must not exist twice (i.e. their names).
 -->
 <sqlMap namespace="TypeAliases">
+	<!-- base types -->
+	<typeAlias alias="date"               type="java.util.Date" />
+	
 	<!-- Model types -->
+	<typeAlias alias="post"               type="org.bibsonomy.model.Post" />
 	<typeAlias alias="tag"                type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
+	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
+	
+	<typeAlias alias="resource"           type="org.bibsonomy.model.Resource" />
 	<typeAlias alias="bookmark"           type="org.bibsonomy.model.Bookmark" />
 	<typeAlias alias="bibtex"             type="org.bibsonomy.model.BibTex" />
 	<typeAlias alias="goldStandardPublication" type="org.bibsonomy.model.GoldStandardPublication" />
-	<typeAlias alias="post"               type="org.bibsonomy.model.Post" />
-	<typeAlias alias="resource"           type="org.bibsonomy.model.Resource" />
-	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
-	<typeAlias alias="userSettings"       type="org.bibsonomy.model.UserSettings" />
-	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
-	<typeAlias alias="tagset"             type="org.bibsonomy.model.TagSet" />
-	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
-	<typeAlias alias="author"			  type="org.bibsonomy.model.Author" />
 	
 	<!-- lucene model types -->
 	<typeAlias alias="lucenePost"         type="org.bibsonomy.lucene.param.LucenePost" />
-
-	<!-- misc types -->
-	<typeAlias alias="date"               type="java.util.Date" />
 	
 	<!-- Parameters -->
-	<typeAlias alias="genericParam"       type="org.bibsonomy.lucene.database.params.GenericParam" />
-	<typeAlias alias="bookmarkParam"      type="org.bibsonomy.lucene.database.params.BookmarkParam" />
-	<typeAlias alias="bibtexParam"        type="org.bibsonomy.lucene.database.params.BibTexParam" />
-	<typeAlias alias="goldStandardPublicationParam"        type="org.bibsonomy.lucene.database.params.ResourcesParam" />
-	<typeAlias alias="groupParam" type="org.bibsonomy.lucene.database.params.GroupParam" />
- 	<typeAlias alias="listParam" type="org.bibsonomy.lucene.database.params.ListParam" />
-	
-	<!-- Results -->
-	<typeAlias alias="pair"               type="org.bibsonomy.database.common.params.Pair" />
-	
+	<typeAlias alias="luceneParam"      type="org.bibsonomy.lucene.database.params.LuceneParam" />
 </sqlMap>
