@@ -56,9 +56,6 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		if (!context.isUserLoggedIn()){
 			throw new AccessDeniedException("please log in");
 		}
-
-		command.setSphereName("Fussball");
-		command.setRequestedTags("google");
 		
 		if (present(command.getSphereName())) {
 			// handle 
