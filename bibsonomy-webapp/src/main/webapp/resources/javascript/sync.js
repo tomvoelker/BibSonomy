@@ -99,17 +99,35 @@ function confirmReset(t) {
 
 function errorSyncForm(jqXHR, textStatus, errorThrown, form) {
 	alert("error: " + errorThrown);
+	var method = form.find("input[name='_method']").val();
+	if("POST" == method) {
+		//error by synchronization -> set data to error and clear plan
+		$(form).find(".resourceDiv").each(function(index, element){
+			var dd = $(this).find("dd");
+			dd.empty();
+			$(dd).append(getString("error"));
+			$(form).find(".syncPlan").empty();
+		});
+	} else if("GET" == method) {
+		//error by get plan, do nothing special
+	} else {
+		alert("error on unknown method")
+	}
 	$(form).find(":submit").show();
+	$(form).find(".synchronizeBtn").hide();
 	$(form).find(".progressGif").hide();
 }
 
 $(document).ready(function() {
 	$("form").each(function(index, elem) {
+		var form = $(this);
 	 	$(this).ajaxForm({
 	 		dataType : "json",
 	 		beforeSubmit : hideSubmitButtons,
 	 		success : successSyncForm,
-	 		error : errorSyncForm
+	 		error : function (jqXHR, textStatus, errorThrown) {
+	 			errorSyncForm(jqXHR, textStatus, errorThrown, form);
+	 		}
 		 });
 	});
 });
