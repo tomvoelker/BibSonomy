@@ -1,26 +1,10 @@
 package org.bibsonomy.lucene.search;
 
 import static org.apache.lucene.util.Version.LUCENE_24;
-import static org.bibsonomy.lucene.util.LuceneBase.CFG_INDEX_ID_DELIMITER;
 import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_FIELD_SPECIFIER;
-import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_INDEX_PREFIX;
-import static org.bibsonomy.lucene.util.LuceneBase.CFG_TAG_CLOUD_LIMIT;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_DATE;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_GROUP;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_INTERHASH;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_MERGEDFIELDS;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_PRIVATEFIELDS;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_TAS;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_TITLE;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_USER;
-import static org.bibsonomy.lucene.util.LuceneBase.FLD_YEAR;
 import static org.bibsonomy.lucene.util.LuceneBase.PARAM_RELEVANCE;
-import static org.bibsonomy.lucene.util.LuceneBase.getEnableTagClouds;
-import static org.bibsonomy.lucene.util.LuceneBase.getIndexBasePath;
-import static org.bibsonomy.lucene.util.LuceneBase.getTagCloudLimit;
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
@@ -45,7 +29,6 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.DuplicateFilter;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
@@ -55,13 +38,13 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeFilter;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.FSDirectory;
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.lucene.database.LuceneDBInterface;
+import org.bibsonomy.lucene.database.LuceneInfoLogic;
+import org.bibsonomy.lucene.index.LuceneFieldNames;
+import org.bibsonomy.lucene.index.LuceneResourceIndex;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
-import org.bibsonomy.lucene.util.LuceneBase;
-import org.bibsonomy.lucene.util.LuceneResourceConverter;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
@@ -76,12 +59,12 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  *
  * @param <R> resource type
  */
-public abstract class LuceneResourceSearch<R extends Resource> implements ResourceSearch<R> {
+public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<R> {
 	private static final Log log = LogFactory.getLog(LuceneResourceSearch.class);
 	
 	/**
-	 *  read/write lock, allowing multiple searcher or exclusive an index update
-	 *	TODO: we should use an implementation, which prefers writers for obtaining the lock 
+	 * read/write lock, allowing multiple searcher or exclusive an index update
+	 * TODO: we should use an implementation, which prefers writers for obtaining the lock 
 	 */
 	private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 	
@@ -91,14 +74,11 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	/** read lock, used for blocking the index update */
 	private final Lock r = lock.readLock();
 	
-	/** logic interface for retrieving data from bibsonomy */
-	private LuceneDBInterface<R> dbLogic;
-
-	/** path to the managed resource index */
-	protected String luceneIndexPath;
+	/** logic interface for retrieving data from bibsonomy (friends, groups members) */
+	private LuceneInfoLogic dbLogic;
 	
 	/** global reference to the lucene searcher */
-	protected IndexSearcher searcher; 
+	private IndexSearcher searcher; 
 
 	/** default field analyzer */
 	private Analyzer analyzer; 
@@ -112,10 +92,15 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	/** post model converter */
 	private LuceneResourceConverter<R> resourceConverter;
 	
-	/** id for identifying redundant resource indices */
-	// TODO: please use an object representing the index
-	private int indexId;
+	/** the index the searcher is currently using */
+	private LuceneResourceIndex<R> index;
 	
+	/**
+	 * config values
+	 */
+	private boolean tagCloudEnabled;
+	private int tagCloudLimit;
+
 	/**
 	 * constructor
 	 */
@@ -132,7 +117,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		// build query
 		final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear);
 		// perform search query
-		return this.doSearch(query, limit, offset);
+		return this.searchLucene(query, limit, offset);
 	}
 	
 	/*
@@ -144,43 +129,23 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		// build query
 		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear);
 		// limit number of posts to consider for building the tag cloud
-		qf.setLimit(getTagCloudLimit());
+		qf.setLimit(this.tagCloudLimit);
 		// query index
 		return doTagSearch(qf);
-	}
-
-	/**
-	 * @return an empty collection of managed post objects
-	 */
-	protected ResultList<Post<R>> createEmptyResultList() {
-		return new ResultList<Post<R>>();
-	}	
-	
-	/**
-	 * initialize internal data structures
-	 */
-	private void init() {
-		LuceneBase.initRuntimeConfiguration();
-		this.luceneIndexPath = getIndexBasePath() + CFG_LUCENE_INDEX_PREFIX + getResourceName();
 	}
 	
 	/**
 	 * reload the index -- has to be called after each index change 
-	 * 
-	 * @param indexId
 	 */
-	public void reloadIndex(final int indexId) {
-		this.setIndexId(indexId);
+	public void reloadIndex() {
 		/*
 		 * open new index searcher
 		 */
 		IndexSearcher newSearcher = null;
-		init();
 		try {
 			// load and hold index on physical hard disk
-			log.debug("Opening index " + indexId);
-			final String indexPath = luceneIndexPath + CFG_INDEX_ID_DELIMITER + indexId;
-			newSearcher = new IndexSearcher(FSDirectory.open(new File(indexPath)));
+			log.debug("Opening index " + this.index);
+			newSearcher = this.index.createIndexSearcher();
 		} catch (final Exception e) {
 			log.error("Error reloading index, disabling searcher ("+e.getMessage()+") - this should be the case while building a new index");
 		}
@@ -211,58 +176,36 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		} catch (final IOException e) {
 			log.debug("Error closing searcher.", e);
 		}
-
-	}
-	
-	/**
-	 * perform given query, respecting read/write locks
-	 * 
-	 * @param limit
-	 * @param offset
-	 * @param query
-	 * @return
-	 */
-	private ResultList<Post<R>> doSearch(final QuerySortContainer query, final int limit, final int offset) {
-		if (!isEnabled()) {
-			return this.createEmptyResultList();
-		}
-		
-		r.lock();
-		try {
-			return this.searchLucene(query, limit, offset);
-		} finally {
-			r.unlock();
-		}
 	}
 
 	/**
 	 * query index for documents and create result list of post models 
 	 */
-	protected ResultList<Post<R>> searchLucene(final QuerySortContainer qf, final int limit, final int offset) {
-		// initialize data structures
-		final ResultList<Post<R>> postList = createEmptyResultList();
+	private ResultList<Post<R>> searchLucene(final QuerySortContainer qf, final int limit, final int offset) {
+		if (!isEnabled()) {
+			return new ResultList<Post<R>>();
+		}
 		
-		final Query query = qf.getQuery();
-		final Sort sort  = qf.getSort();
-		log.debug("Querystring:  "+ query.toString() + " sorted by: "+ sort);
-
+		r.lock();
+		
+		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
-			//----------------------------------------------------------------
-			// query the index
-			//----------------------------------------------------------------
-			// remove duplicate entries (with respect to the interhash)
-			DuplicateFilter df = new DuplicateFilter(FLD_INTERHASH, DuplicateFilter.KM_USE_LAST_OCCURRENCE, DuplicateFilter.PM_FAST_INVALIDATION);
-			
-			// perform index search
+			// initialize data 
+			final Query query = qf.getQuery();
+			final Sort sort  = qf.getSort();
+			log.debug("Querystring:  "+ query.toString() + " sorted by: "+ sort);
+			/*
+			 * querying the index
+			 */
 			long starttimeQuery = System.currentTimeMillis();
-			final TopDocs topDocs = searcher.search(query, df, offset + limit, sort);
+			final TopDocs topDocs = searcher.search(query, null, offset + limit, sort);
 			
 			// determine number of posts to display
-			final int hitslimit = (((offset+limit) < topDocs.totalHits) ? (offset + limit) : topDocs.totalHits);
+			final int hitslimit = (((offset + limit) < topDocs.totalHits) ? (offset + limit) : topDocs.totalHits);
 			log.debug("offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
 			log.debug("Query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 			
-
+			
 			postList.setTotalCount(topDocs.totalHits);
 
 			/*
@@ -271,14 +214,15 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 			for (int i = offset; i < hitslimit; i++) {
 				// get document from index
 				final Document doc  = searcher.doc(topDocs.scoreDocs[i].doc);
-				// convert document to bibsonomy post model
+				// convert document to bibsonomy model
 				final Post<R> post = this.resourceConverter.writePost(doc); 
 				
 				// set post frequency
 				starttimeQuery = System.currentTimeMillis();
 				int postFreq = 1;
-				if (doc.get(FLD_INTERHASH) != null) {
-					postFreq = this.searcher.docFreq(new Term(FLD_INTERHASH, doc.get(FLD_INTERHASH)));
+				final String interHash = doc.get(LuceneFieldNames.INTERHASH);
+				if (interHash != null) {
+					postFreq = this.searcher.docFreq(new Term(LuceneFieldNames.INTERHASH, interHash));
 				}
 				log.debug("PostFreq query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 				post.getResource().setCount(postFreq);
@@ -287,7 +231,9 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 			}
 
 		} catch (final IOException e) {
-			log.debug("LuceneBibTex: IOException: " + e.getMessage());
+			log.debug("LuceneResourceSearch: IOException: " + e.getMessage());
+		} finally {
+			r.unlock();
 		}
 		
 		return postList;
@@ -301,13 +247,11 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	 * @return
 	 */
 	private List<Tag> doTagSearch(final QuerySortContainer qf) {
-		if (!isEnabled() && !getEnableTagClouds()) {
+		if (!isEnabled() || !this.tagCloudEnabled) {
 		    return new LinkedList<Tag>();
 		}
 		
-		
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
-		
 		r.lock();
 		try {
 			// gather tags used by the author's posts
@@ -386,7 +330,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	 * @return the parsed query term
 	 */
 	protected Query buildFulltextSearchQuery(final String searchTerms) {
-		return this.parseSearchQuery(FLD_MERGEDFIELDS, searchTerms);
+		return this.parseSearchQuery(LuceneFieldNames.MERGED_FIELDS, searchTerms);
 	}
 
 	/**
@@ -396,7 +340,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	 * @return the parsed query term
 	 */
 	protected Query buildTitleSearchQuery(final String searchTerms) {
-		return this.parseSearchQuery(FLD_TITLE, searchTerms);
+		return this.parseSearchQuery(LuceneFieldNames.TITLE, searchTerms);
 	}
 	
 	/**
@@ -408,9 +352,9 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		final BooleanQuery privateSearchQuery = new BooleanQuery();
 		
 		if (present(userName)) {
-			final Query privateSearchTermQuery = parseSearchQuery(FLD_PRIVATEFIELDS, searchTerms);
+			final Query privateSearchTermQuery = parseSearchQuery(LuceneFieldNames.PRIVATE_FIELDS, searchTerms);
 			privateSearchQuery.add(privateSearchTermQuery, Occur.MUST);
-			privateSearchQuery.add(new TermQuery(new Term(FLD_USER, userName)), Occur.MUST);
+			privateSearchQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, userName)), Occur.MUST);
 		}
 		
 		return privateSearchQuery;
@@ -430,7 +374,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		if (present(tagIndex)) {
 			for (final String tag : tagIndex) {
 				try {
-					tags.add(parseToken(FLD_TAS, tag));
+					tags.add(parseToken(LuceneFieldNames.TAS, tag));
 				} catch (final IOException e) {
 					log.error("Error parsing input tag " + tag + " ("+e.getMessage()+")");
 					tags.add(tag);
@@ -445,7 +389,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		final BooleanQuery tagQuery = new BooleanQuery();
 		if (present(tags)) {
 			for (final String tagItem : tags) {
-				tagQuery.add(new TermQuery(new Term(FLD_TAS, tagItem)), Occur.MUST);
+				tagQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, tagItem)), Occur.MUST);
 			}
 		}
 		
@@ -469,7 +413,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		final BooleanQuery groupMemberQuery = new BooleanQuery();
 		if (present(requestedGroupName) && present(groupMembers)) {
 			for (final String member : groupMembers) {
-				final Query memberQuery = new TermQuery(new Term(FLD_USER, member));
+				final Query memberQuery = new TermQuery(new Term(LuceneFieldNames.USER, member));
 				groupMemberQuery.add(memberQuery, Occur.SHOULD);
 			}
 		}
@@ -494,7 +438,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 
 		if (present(year)) {
 			year = year.replaceAll("\\D", "");
-			mainQuery.add( new TermQuery(new Term(FLD_YEAR, year)), Occur.MUST );
+			mainQuery.add( new TermQuery(new Term(LuceneFieldNames.YEAR, year)), Occur.MUST );
 		} else {
 			/*
 			 * range query
@@ -513,7 +457,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		
 		if (includeLowerBound || includeUpperBound) {
 			// if upper or lower bound is given, then use filter
-			final Filter rangeFilter = new TermRangeFilter(FLD_YEAR , firstYear, lastYear, includeLowerBound, includeUpperBound);
+			final Filter rangeFilter = new TermRangeFilter(LuceneFieldNames.YEAR , firstYear, lastYear, includeLowerBound, includeUpperBound);
 			return new FilteredQuery(mainQuery, rangeFilter);
 		}
 		
@@ -540,7 +484,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		// allowed groups
 		//--------------------------------------------------------------------
 		for (final String groupName : allowedGroups) {
-			final Query groupQuery = new TermQuery(new Term(FLD_GROUP, groupName));
+			final Query groupQuery = new TermQuery(new Term(LuceneFieldNames.GROUP, groupName));
 			accessModeQuery.add(groupQuery, Occur.SHOULD);
 		}
 		
@@ -549,21 +493,21 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		//--------------------------------------------------------------------
 		if (present(userName)) {
 			final BooleanQuery privatePostGroups = new BooleanQuery();
-			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.SHOULD);
-			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.SHOULD);
+			privatePostGroups.add(new TermQuery(new Term(LuceneFieldNames.GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.SHOULD);
+			privatePostGroups.add(new TermQuery(new Term(LuceneFieldNames.GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.SHOULD);
 			privatePostQuery.add(privatePostGroups, Occur.MUST);
-			privatePostQuery.add(new TermQuery(new Term(FLD_USER, userName)), Occur.MUST);
+			privatePostQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, userName)), Occur.MUST);
 			accessModeQuery.add(privatePostQuery, Occur.SHOULD);
 		}
 
 		if (present(friends)) {
 			final BooleanQuery friendPostQuery= new BooleanQuery();
-			friendPostQuery.add(new TermQuery(new Term(FLD_GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.MUST);
+			friendPostQuery.add(new TermQuery(new Term(LuceneFieldNames.GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.MUST);
 
 			final BooleanQuery friendPostAllowanceQuery= new BooleanQuery();
 			// the post owner's friend may read the post
 			for( final String friend : friends ) {
-				friendPostAllowanceQuery.add(new TermQuery(new Term(FLD_USER, friend)), Occur.SHOULD);
+				friendPostAllowanceQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, friend)), Occur.SHOULD);
 			}
 
 			friendPostQuery.add(friendPostAllowanceQuery, Occur.MUST);
@@ -605,16 +549,8 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		// post owned by user
 		//--------------------------------------------------------------------
 		if (present(requestedUserName)) {
-			mainQuery.add(new TermQuery(new Term(FLD_USER, requestedUserName)), Occur.MUST);
+			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, requestedUserName)), Occur.MUST);
 		}
-
-		//--------------------------------------------------------------------
-		// post owned by group
-		//--------------------------------------------------------------------
-		// TODO: remove code below??!
-//		if ( false && present(requestedGroupName) ) {
-//			mainQuery.add(new TermQuery(new Term(FLD_GROUP, requestedGroupName)), Occur.MUST);
-//		}
 		
 		//--------------------------------------------------------------------
 		// build final query
@@ -625,7 +561,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		mainQuery.add(accessModeQuery, Occur.MUST);
 
 		// set ordering
-		final Sort sort = new Sort(new SortField(FLD_DATE,SortField.LONG,true));
+		final Sort sort = new Sort(new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
 		
 		// all done
 		log.debug("[Full text] Search query: " + mainQuery.toString());
@@ -633,16 +569,7 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		final QuerySortContainer qf = new QuerySortContainer();
 		qf.setQuery(makeTimeRangeQuery(mainQuery, year, firstYear, lastYear));
 		qf.setSort(sort);
-		
-		// set up collector
-		TagCountCollector collector;
-		try {
-			collector = new TagCountCollector(null, CFG_TAG_CLOUD_LIMIT, qf.getSort());
-		} catch (final IOException e) {
-			log.error("Error building tag cloud collector");
-			collector = null;
-		}
-		qf.setTagCountCollector(collector);
+		qf.setTagCountCollector(new TagCountCollector());
 		
 		return qf;
 	}
@@ -652,9 +579,9 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	 * @param userName
 	 * @param searchTerms
 	 * @param titleSearchTerms
-	 * @param authorSearchTerms TODO: unused
+	 * @param authorSearchTerms
 	 * @param tagIndex
-	 * @return a search query for the searh terms
+	 * @return a search query for the search terms
 	 */
 	protected BooleanQuery buildSearchQuery(final String userName, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex) {
 		final BooleanQuery searchQuery = new BooleanQuery();
@@ -708,26 +635,25 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	 * @return title query
 	 */
 	protected QuerySortContainer buildTitleQuery(final String group, final String searchTerms, final String requestedUserName, final String userName, final Set<String> allowedGroups) {
-		// FIXME: configure this
-		//	String orderBy = "relevance"; 
-		final String orderBy = FLD_DATE; 
+		// FIXME: configure this possible values: "relevance", ...
+		final String orderBy = LuceneFieldNames.DATE; 
 		
-		final BooleanQuery mainQuery       = new BooleanQuery();
-		final BooleanQuery searchQuery     = new BooleanQuery();
+		final BooleanQuery mainQuery = new BooleanQuery();
+		final BooleanQuery searchQuery = new BooleanQuery();
 		final BooleanQuery accessModeQuery = new BooleanQuery();
-		final BooleanQuery privatePostQuery= new BooleanQuery();
+		final BooleanQuery privatePostQuery = new BooleanQuery();
 		
 		//--------------------------------------------------------------------
 		// search terms
 		//--------------------------------------------------------------------
-		final Query searchTermQuery = parseSearchQuery(FLD_TITLE, searchTerms);
+		final Query searchTermQuery = parseSearchQuery(LuceneFieldNames.TITLE, searchTerms);
 		searchQuery.add(searchTermQuery, Occur.SHOULD);
 
 		//--------------------------------------------------------------------
 		// allowed groups
 		//--------------------------------------------------------------------
 		for (final String groupName : allowedGroups) {
-			final Query groupQuery = new TermQuery(new Term(FLD_GROUP, groupName));
+			final Query groupQuery = new TermQuery(new Term(LuceneFieldNames.GROUP, groupName));
 			accessModeQuery.add(groupQuery, Occur.SHOULD);
 		}
 		
@@ -736,10 +662,10 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		//--------------------------------------------------------------------
 		if (present(userName)) {
 			final BooleanQuery privatePostGroups = new BooleanQuery();
-			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.SHOULD);
-			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.SHOULD);
+			privatePostGroups.add(new TermQuery(new Term(LuceneFieldNames.GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.SHOULD);
+			privatePostGroups.add(new TermQuery(new Term(LuceneFieldNames.GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.SHOULD);
 			privatePostQuery.add(privatePostGroups, Occur.MUST);
-			privatePostQuery.add(new TermQuery(new Term(FLD_USER, userName)), Occur.MUST);
+			privatePostQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, userName)), Occur.MUST);
 			accessModeQuery.add(privatePostQuery, Occur.SHOULD);
 		}
 
@@ -747,14 +673,14 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		// post owned by user
 		//--------------------------------------------------------------------
 		if (present(requestedUserName)) {
-			mainQuery.add(new TermQuery(new Term(FLD_USER, requestedUserName)), Occur.MUST);
+			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, requestedUserName)), Occur.MUST);
 		}
 		
 		//--------------------------------------------------------------------
 		// post owned by group
 		//--------------------------------------------------------------------
-		if ( present(group) ) {
-			mainQuery.add( new TermQuery(new Term(FLD_GROUP, group)), Occur.MUST );
+		if (present(group)) {
+			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.GROUP, group)), Occur.MUST );
 		}
 		
 		//--------------------------------------------------------------------
@@ -772,12 +698,12 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 		//--------------------------------------------------------------------
 		Sort sort = null;
 		if (PARAM_RELEVANCE.equals(orderBy)) {
-			sort = new Sort(SortField.FIELD_SCORE,new SortField(FLD_DATE, SortField.LONG,true));
+			sort = new Sort(SortField.FIELD_SCORE, new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
 		} else { 
-			// orderBy=="date"
+			// orderBy == "date"
 			// FIXME: why does the default operator depend on the ordering
 			// myParser.setDefaultOperator(QueryParser.Operator.AND);
-			sort = new Sort(new SortField(FLD_DATE,SortField.LONG,true));
+			sort = new Sort(new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
 		}
 		
 		// at last build the container
@@ -825,37 +751,32 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	protected Query parseSearchQuery(final String fieldName, String searchTerms) {
 		// parse search terms for handling phrase search
 		final QueryParser searchTermParser = new QueryParser(LUCENE_24, fieldName, getAnalyzer());
-		// FIXME: configure default operator via spring
-		searchTermParser.setDefaultOperator(getDefaultSearchTermJunctor());
+		searchTermParser.setDefaultOperator(this.defaultSearchTermJunctor);
 		Query searchTermQuery = null;
 		try {
 			// disallow field specification in search query
-			searchTerms = searchTerms.replace(CFG_LUCENE_FIELD_SPECIFIER, "\\"+CFG_LUCENE_FIELD_SPECIFIER);
+			searchTerms = searchTerms.replace(CFG_LUCENE_FIELD_SPECIFIER, "\\" + CFG_LUCENE_FIELD_SPECIFIER);
 			searchTermQuery = searchTermParser.parse(searchTerms);
 		} catch (final ParseException e) {
 			searchTermQuery = new TermQuery(new Term(fieldName, searchTerms) );
 		}
 		
 		return searchTermQuery;
-	}	
-	
-	/**
-	 * @return get managed resource name
-	 */
-	protected abstract String getResourceName();
-
-	/**
-	 * @return the dbLogic
-	 */
-	public LuceneDBInterface<R> getDbLogic() {
-		return dbLogic;
 	}
 
 	/**
 	 * @param dbLogic the dbLogic to set
 	 */
-	public void setDbLogic(final LuceneDBInterface<R> dbLogic) {
+	public void setDbLogic(final LuceneInfoLogic dbLogic) {
 		this.dbLogic = dbLogic;
+	}
+	
+	/**
+	 * @param index the index to set
+	 */
+	public void setIndex(final LuceneResourceIndex<R> index) {
+		this.index = index;
+		this.reloadIndex();
 	}
 
 	/**
@@ -873,24 +794,10 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	}
 
 	/**
-	 * @return the defaultSearchTermJunctor
-	 */
-	public Operator getDefaultSearchTermJunctor() {
-		return defaultSearchTermJunctor;
-	}
-
-	/**
 	 * @param defaultSearchTermJunctor the defaultSearchTermJunctor to set
 	 */
 	public void setDefaultSearchTermJunctor(final Operator defaultSearchTermJunctor) {
 		this.defaultSearchTermJunctor = defaultSearchTermJunctor;
-	}
-
-	/**
-	 * @return the resourceConverter
-	 */
-	public LuceneResourceConverter<R> getResourceConverter() {
-		return resourceConverter;
 	}
 
 	/**
@@ -899,18 +806,18 @@ public abstract class LuceneResourceSearch<R extends Resource> implements Resour
 	public void setResourceConverter(final LuceneResourceConverter<R> resourceConverter) {
 		this.resourceConverter = resourceConverter;
 	}
-
+	
 	/**
-	 * @return the indexId
+	 * @param tagCloudEnabled the tagCloudEnabled to set
 	 */
-	public int getIndexId() {
-		return indexId;
+	public void setTagCloudEnabled(final boolean tagCloudEnabled) {
+		this.tagCloudEnabled = tagCloudEnabled;
 	}
 
 	/**
-	 * @param indexId the indexId to set
+	 * @param tagCloudLimit the tagCloudLimit to set
 	 */
-	public void setIndexId(final int indexId) {
-		this.indexId = indexId;
+	public void setTagCloudLimit(final int tagCloudLimit) {
+		this.tagCloudLimit = tagCloudLimit;
 	}
 }

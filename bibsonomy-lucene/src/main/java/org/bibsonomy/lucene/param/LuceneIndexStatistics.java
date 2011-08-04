@@ -1,5 +1,7 @@
 package org.bibsonomy.lucene.param;
 
+import java.util.Date;
+
 
 /**
  * lucene statistics like current version, number of docs
@@ -9,38 +11,38 @@ package org.bibsonomy.lucene.param;
  */
 public class LuceneIndexStatistics {
 
-	private long newestRecordDate = 0;
+	private Date newestRecordDate;
 	private int numDocs = 0;
 	private int numDeletedDocs = 0;
-	private long lastModified = 0;
-	private long CurrentVersion = 0;
+	private Date lastModified;
+	private long currentVersion = 0;
 	private boolean isCurrent = true;
 	
 	/**
 	 * @return the currentVersion
 	 */
 	public long getCurrentVersion() {
-		return this.CurrentVersion;
+		return this.currentVersion;
 	}
 
 	/**
 	 * @param currentVersion the currentVersion to set
 	 */
-	public void setCurrentVersion(long currentVersion) {
-		this.CurrentVersion = currentVersion;
+	public void setCurrentVersion(final long currentVersion) {
+		this.currentVersion = currentVersion;
 	}
 
 	/**
 	 * @return the newestRecordDate
 	 */
-	public long getNewestRecordDate() {
+	public Date getNewestRecordDate() {
 		return this.newestRecordDate;
 	}
 
 	/**
 	 * @param newestRecordDate the newestRecordDate to set
 	 */
-	public void setNewestRecordDate(long newestRecordDate) {
+	public void setNewestRecordDate(final Date newestRecordDate) {
 		this.newestRecordDate = newestRecordDate;
 	}
 
@@ -54,7 +56,7 @@ public class LuceneIndexStatistics {
 	/**
 	 * @param numDocs the numDocs to set
 	 */
-	public void setNumDocs(int numDocs) {
+	public void setNumDocs(final int numDocs) {
 		this.numDocs = numDocs;
 	}
 
@@ -68,21 +70,21 @@ public class LuceneIndexStatistics {
 	/**
 	 * @param numDeletedDocs the numDeletedDocs to set
 	 */
-	public void setNumDeletedDocs(int numDeletedDocs) {
+	public void setNumDeletedDocs(final int numDeletedDocs) {
 		this.numDeletedDocs = numDeletedDocs;
 	}
 	
 	/**
 	 * @return the lastModified
 	 */
-	public long getLastModified() {
+	public Date getLastModified() {
 		return this.lastModified;
 	}
 	
 	/**
 	 * @param lastModified the lastModified to set
 	 */
-	public void setLastModified(long lastModified) {
+	public void setLastModified(final Date lastModified) {
 		this.lastModified = lastModified;
 	}
 
@@ -96,7 +98,7 @@ public class LuceneIndexStatistics {
 	/**
 	 * @param isCurrent the isCurrent to set
 	 */
-	public void setCurrent(boolean isCurrent) {
+	public void setCurrent(final boolean isCurrent) {
 		this.isCurrent = isCurrent;
 	}	
 }

@@ -7,6 +7,8 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
+ * TODO: replace with a more abstract db session factory when using mybatis
+ * 
  * @author dzo
  * @version $Id$
  */

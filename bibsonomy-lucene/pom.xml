@@ -17,16 +17,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-5</version>
+				<version>2.2.1</version>
 				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<mainClass>org.bibsonomy.lucene.index.GenerateLuceneIndex</mainClass>
-						</manifest>
-					</archive>
+					<descriptors>
+						<descriptor>src/test/assembly/luceneGenerator.xml</descriptor>
+        			</descriptors>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -81,14 +76,10 @@
 			<version>${lucene.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>dbcp</artifactId>
-			<version>6.0.18</version>
-		</dependency>
-		<dependency>
 			<groupId>org.mockejb</groupId>
 			<artifactId>mockejb</artifactId>
 			<version>0.6-beta2</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -163,5 +154,11 @@
 	<properties>
 		<lucene.version>3.0.2</lucene.version>
 	</properties>
+	<pluginRepositories>
+        <pluginRepository>
+            <id>onejar-maven-plugin.googlecode.com</id>
+            <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>  
 

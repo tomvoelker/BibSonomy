@@ -1,23 +1,27 @@
 package org.bibsonomy.lucene.index.manager;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
-import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.HashID;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
-import org.bibsonomy.lucene.util.LuceneBase;
-import org.bibsonomy.lucene.util.LuceneResourceConverter;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Post;
@@ -34,7 +38,7 @@ import org.bibsonomy.model.User;
  * @version $Id$
  * @param <R> the resource to manage
  */
-public class LuceneResourceManager<R extends Resource> {
+public class LuceneResourceManager<R extends Resource> implements GenerateIndexCallback<R> {
 	private static final Log log = LogFactory.getLog(LuceneResourceManager.class);
 
 	/** constant for querying for all posts which have been deleted since the last index update */
@@ -46,57 +50,50 @@ public class LuceneResourceManager<R extends Resource> {
 	/** flag indicating that an index-generation is currently running */
 	private boolean generatingIndex = false;
 	
+	// TODO: doc the difference between this field and luceneUpdaterEnabled
+	// TODO: set in the init method to true and nowhere changed
 	private boolean useUpdater = false;
 	
 	protected int alreadyRunning = 0; // das geht bestimmt irgendwie besser
 	private final int maxAlreadyRunningTrys = 20;
 
-	/** the resource index */ 
-	protected LuceneResourceIndex<R> resourceIndex;
-
-	/** redundant resource indeces */ 
-	protected List<LuceneResourceIndex<R>> resourceIndices;
+	/** all known redundant resource indeces */ 
+	private List<LuceneResourceIndex<R>> resourceIndices;
 	
-	/** the database manager */
-	protected LuceneDBInterface<R> dbLogic;
+	/** the index current used by the searcher */
+	private LuceneResourceIndex<R> activeIndex;
+	
+	/** the index currently updated by this manager */
+	protected LuceneResourceIndex<R> updatingIndex;
+	
+	/** the queue containing the next indices to be updated */
+	private final Queue<LuceneResourceIndex<R>> updateQueue = new LinkedList<LuceneResourceIndex<R>>();
 	
 	/** the lucene index searcher */
 	private LuceneResourceSearch<R> searcher;
 	
+	/** the database manager */
+	protected LuceneDBInterface<R> dbLogic;
+	
 	/** converts post model objects to lucene documents */
 	protected LuceneResourceConverter<R> resourceConverter;
 	
-	/** the lucene index-generator */
-	protected LuceneGenerateResourceIndex<R> generator;
-	
-	/** selects current (redundant) index */
-	protected int idxSelect; // TODO use an object representation instead
-	
+	private LuceneGenerateResourceIndex<R> generator;
 
 	/**
 	 * constructor
 	 */
 	public LuceneResourceManager() {
-		init();
-		
-		this.idxSelect = 0;
-		this.resourceIndex = null;
-	}
-	
-	/**
-	 * initialize internal data structures
-	 */
-	private final void init() {
-		this.luceneUpdaterEnabled = LuceneBase.getEnableUpdater();
 		this.useUpdater = true;
 	}
-	
+
 	/**
 	 * triggers index optimization during next update
 	 */
 	public void optimizeIndex() {
-		if (this.resourceIndex != null) {
-			this.resourceIndex.optimizeIndex();
+		final LuceneResourceIndex<R> nextIndex = this.updateQueue.peek();
+		if (nextIndex != null) {
+			nextIndex.optimizeIndex();
 		}
 	}
 	
@@ -105,17 +102,25 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @return LuceneIndexStatistics for the active index 
 	 */
 	public LuceneIndexStatistics getStatistics() {
-		final LuceneResourceIndex<R> index = this.resourceIndices.get(idxSelect);
-		return index == null || !index.isIndexEnabled() ? null : index.getStatistics();
+		return this.activeIndex.isIndexEnabled() ? this.activeIndex.getStatistics() : null;
 	}
 
 	/**
 	 * Get statistics for the inactive index
 	 * @return LuceneIndexStatistics for the inactive index 
 	 */
-	public LuceneIndexStatistics getInactiveIndexStatistics() {
-		final LuceneResourceIndex<R> index = this.resourceIndices.get((idxSelect + 1) % this.resourceIndices.size());
-		return index == null || !index.isIndexEnabled() ? null : index.getStatistics();
+	public List<LuceneIndexStatistics> getInactiveIndecesStatistics() {
+		final List<LuceneIndexStatistics> inactiveIndecesStatistics = new LinkedList<LuceneIndexStatistics>();
+		
+		if (this.updatingIndex != null) {
+			inactiveIndecesStatistics.add(this.updatingIndex.getStatistics());
+		}
+		
+		for (final LuceneResourceIndex<R> index : this.updateQueue) {
+			inactiveIndecesStatistics.add(index.getStatistics());
+		}
+		
+		return inactiveIndecesStatistics;
 	}
 	
 	/**
@@ -138,10 +143,13 @@ public class LuceneResourceManager<R extends Resource> {
 	protected void updateIndexes()  {
 		synchronized(this) {
 			/*
-			 *  initialize variables  
+			 * get next index to update
 			 */
-			// set the active resource index
-			this.resourceIndex = this.resourceIndices.get(idxSelect);
+			this.updatingIndex = this.updateQueue.poll();
+			if (this.updatingIndex == null) {
+				// TODO: log no index in update queue
+				return;
+			}
 			
 			// current time stamp for storing as 'lastLogDate' in the index
 			// FIXME: get this date from the log_table via 'getContentIdsToDelete'
@@ -149,26 +157,27 @@ public class LuceneResourceManager<R extends Resource> {
 			
 			// FIXME: this should be done in the constructor
 			// keeps track of the newest tas_id during last index update 
-			Integer lastTasId = this.resourceIndex.getLastTasId();
+			Integer lastTasId = this.updatingIndex.getLastTasId();
 			log.debug("lastTasId: " + lastTasId);
 
 			// keeps track of the newest log_date during last index update
-			final long lastLogDate = this.resourceIndex.getLastLogDate();
+			final long lastLogDate = this.updatingIndex.getLastLogDate();
 			
 			lastTasId = updateIndex(currentLogDate, lastTasId, lastLogDate);
 
 			/*
 			 * commit changes 
 			 */
-			this.resourceIndex.flush();
+			this.updatingIndex.flush();
 			
 			/*
 			 * update variables
 			 */
-			this.resourceIndex.setLastLogDate(currentLogDate);
-			this.resourceIndex.setLastTasId(lastTasId);
+			this.updatingIndex.setLastLogDate(currentLogDate);
+			this.updatingIndex.setLastTasId(lastTasId);
 		}
-		alreadyRunning = 0;
+		
+		this.alreadyRunning = 0;
 	}
 
 	protected int updateIndex(final long currentLogDate, int lastTasId, final long lastLogDate) {
@@ -197,7 +206,7 @@ public class LuceneResourceManager<R extends Resource> {
 	    	lastTasId = Math.max(post.getLastTasId(), lastTasId);
 	    }
 	    
-	    this.resourceIndex.deleteDocumentsInIndex(contentIdsToDelete);
+	    this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
 
 	    /*
 	     * 5) add all posts from 1) to the index 
@@ -205,7 +214,7 @@ public class LuceneResourceManager<R extends Resource> {
 	    for (final LucenePost<R> post : newPosts) {
 	    	post.setLastLogDate(new Date(currentLogDate));
 	    	final Document postDoc = this.resourceConverter.readPost(post);
-	    	this.resourceIndex.insertDocument(postDoc);
+	    	this.updatingIndex.insertDocument(postDoc);
 	    }
 	    
 	    return lastTasId;
@@ -222,30 +231,33 @@ public class LuceneResourceManager<R extends Resource> {
 		}
 		
 		// don't run twice at the same time  - if something went wrong, delete alreadyRunning
-		if ((alreadyRunning > 0) && (alreadyRunning<maxAlreadyRunningTrys) ) {
+		if ((alreadyRunning > 0) && (alreadyRunning < maxAlreadyRunningTrys) ) {
 			alreadyRunning++;
-			log.warn("reloadIndex - alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
+			log.warn("reloadIndex - alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
 			return;	
 		}
 		alreadyRunning = 1;
-		log.debug("reloadIndex - run and reset alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
+		log.debug("reloadIndex - run and reset alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
 
-		init();
-
-		if (!useUpdater) {
+		if (!this.useUpdater) {
 			log.error("reloadIndex - LuceneUpdater deactivated!");
-			alreadyRunning = 0;
+			this.alreadyRunning = 0;
 			return;	
 		}
 
 		// do the actual work
-		final int oldIdxId = this.searcher.getIndexId();
-		final int newIdxId = this.resourceIndices.get(idxSelect).getIndexId();
-		log.debug("switching from index "+oldIdxId+" to index "+newIdxId);
-		searcher.reloadIndex(newIdxId);
-		log.debug("reload search index done");
-
-		alreadyRunning = 0;
+		if (this.updatingIndex != null) {
+			log.debug("switching from index " + this.activeIndex + " to index " + this.updatingIndex);
+			
+			this.setActiveIndex(this.updatingIndex);			
+			this.updatingIndex = null;
+			
+			log.debug("reload search index done");
+		} else {
+			log.debug("no index to switch");
+		}
+		
+		this.alreadyRunning = 0;
 	}
 
 	/**
@@ -262,14 +274,11 @@ public class LuceneResourceManager<R extends Resource> {
 		// don't run twice at the same time  - if something went wrong, delete alreadyRunning
 		if ((alreadyRunning > 0) && (alreadyRunning<maxAlreadyRunningTrys) ) {
 			alreadyRunning++;
-			log.warn("reloadIndex - alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
+			log.warn("reloadIndex - alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
 			return;	
 		}
 		alreadyRunning = 1;
-		log.debug("reloadIndex - run and reset alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
-
-		// initialize data structures
-		init();
+		log.debug("reloadIndex - run and reset alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
 
 		// check if the updater successfully initialized
 		if (!useUpdater) {
@@ -288,13 +297,10 @@ public class LuceneResourceManager<R extends Resource> {
 	 * switches the active index and updates and reloads the index
 	 */
 	public void updateAndReloadIndex() {
-	    // Do not update indexes during index-generation
+	    // do not update index during index-generation
 	    if (this.generatingIndex) {
 	    	return;
 	    }
-	    
-	    // switch active index
-	    this.idxSelect = (idxSelect + 1) % this.resourceIndices.size();
 	    
 	    // update passive index
 	    updateIndex();
@@ -303,65 +309,53 @@ public class LuceneResourceManager<R extends Resource> {
 	    reloadIndex();
 	}
 	
+	/**
+	 * 
+	 */
+	public void generateIndex() {
+		this.generateIndex(true);
+	}
 	
 	/**
 	 * Perform an index-generation with the searcher
 	 * still active on a redundant index.
-	 **/
-	public void generateIndex() {
-		// Allow only one index-generation at a time
+	 * @param assync 
+	 */
+	public void generateIndex(final boolean assync) {
+		// allow only one index-generation at a time
 		if (this.generatingIndex) {
 			return;
 		}
 		
-		// Prepare index generation
+		// prepare index generation
 		synchronized(this) {
 			this.generatingIndex = true;
-		    selectActiveIndex(1);
-		}
-		
-		// Register a callback for the finalization of the index-generation
-		generator.registerCallback(new GenerateIndexCallback() {
-			@Override
-			public void done() {
-				selectActiveIndex(0);
-				generator.copyRedundantIndeces();
-				generatingIndex = false;
-				resetIndexReader();
-				resetIndexSearcher();
-			}
-		});
-
-		// run in another thread (non blocking)
-		new Thread(generator).start();
-	}
-	
-	
-	/**
-	 * Select the active index for the searcher by its id and close the other indices,
-	 * so they can be overwritten during index-generation.
-	 * @param id the index-id
-	 * */
-	protected void selectActiveIndex(final int id) {
-		if(id >= 0  &&  id < resourceIndices.size() && generatingIndex) {
-			log.info("Switching active lucene-index for resource " + getResourceName() + " to id " + id +".");
 			
-			// load index
-			searcher.reloadIndex(id);
-		    idxSelect = id;
-			this.resourceIndex = this.resourceIndices.get(idxSelect);
-
-		    // Close the other indices
-		    for(final LuceneResourceIndex<? extends Resource> index: this.resourceIndices) {
-		    	if(index.getIndexId() != id) {
-		    		try {
-		    			index.close();
-			    		log.info("Successfully closed redundant index.");
-		    		} catch (final Throwable e) {
-		    	    	log.warn("Failed to close index.", e);
-		    	    }
-		    	}
-		    }
+			// TODO: stop updating of the index
+			
+			// get the next index to update for generating new index
+			final LuceneResourceIndex<R> resourceIndex = this.updateQueue.poll();
+			
+			if (resourceIndex == null) {
+				log.error("no index for re-generation found");
+				this.generatingIndex = false;
+				return;
+			}
+			
+			final LuceneGenerateResourceIndex<R> generator = new LuceneGenerateResourceIndex<R>();
+			generator.setResourceIndex(resourceIndex);
+			generator.setLogic(this.dbLogic);
+			generator.setResourceConverter(this.resourceConverter);
+			generator.setCallback(this);
+			
+			this.generator = generator;
+			
+			if (assync) {
+				// run in another thread (non blocking)
+				new Thread(generator).start();
+			} else {
+				generator.run();
+			}
 		}
 	}
 	
@@ -377,19 +371,10 @@ public class LuceneResourceManager<R extends Resource> {
 	 * reopen index reader - e.g. after the index has changed on the disc
 	 */
 	public void resetIndexReader() {
-	    if(!generatingIndex) {
+	    if (!this.generatingIndex) {
 			for (final LuceneResourceIndex<R> index : this.resourceIndices) {
 				index.reset();
 			}
-	    }
-	}
-
-	/**
-	 * reopen index searcher - e.g. after the index has changed on the disc
-	 */
-	public void resetIndexSearcher() {
-	    if(!generatingIndex) {
-	    	this.searcher.reloadIndex(this.idxSelect);
 	    }
 	}
 	
@@ -403,7 +388,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 */
 	private void updatePredictions() {
 	    // keeps track of the newest log_date during last index update
-	    final Long lastLogDate = this.resourceIndex.getLastLogDate() - QUERY_TIME_OFFSET_MS;
+	    final Long lastLogDate = this.updatingIndex.getLastLogDate() - QUERY_TIME_OFFSET_MS;
 
 	    // get date of last index update
 	    final Date fromDate = new Date(lastLogDate);
@@ -417,45 +402,33 @@ public class LuceneResourceManager<R extends Resource> {
 	    for (final User user : predictedUsers) {
 			if (!alreadyUpdated.contains(user.getName())) {
 			    alreadyUpdated.add(user.getName());
-			    flagSpammer(user);
+			    /*
+				 * flag/unflag spammer, depending on user.getPrediction()
+				 */
+			    log.debug("updating spammer status for user " + user.getName());
+			    switch (user.getPrediction()) {
+				case 0:
+					log.debug("unflag non-spammer");
+					final List<LucenePost<R>> userPosts = this.getDbLogic().getPostsForUser(user.getName(), Integer.MAX_VALUE, 0);
+					//  insert new records into index
+					if (present(userPosts)) {
+						for (final Post<R> post : userPosts) {
+							// cache possible pre existing duplicate for deletion 
+							this.updatingIndex.deleteDocumentForContentId(post.getContentId());
+							// cache document for writing 
+							this.updatingIndex.insertDocument(this.resourceConverter.readPost(post));
+						}
+					}
+					this.updatingIndex.unFlagUser(user.getName());
+					break;
+				case 1:
+					log.debug("flag spammer");
+					// remove all docs of the user from the index!
+					this.updatingIndex.flagUser(user.getName());
+					break;
+				}
 			}
 	    }
-	}
-	
-	/**
-	 * flag/unflag spammer, depending on user.getPrediction()
-	 */
-	private void flagSpammer(final User user) {
-		log.debug("flagSpammer called for user " + user.getName());
-		switch (user.getPrediction()) {
-		case 0:
-			log.debug("unflag non-spammer");
-			final List<LucenePost<R>> userPosts = this.getDbLogic().getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, GroupID.PUBLIC.getId(), new LinkedList<Integer>(),  Integer.MAX_VALUE, 0);
-			unflagEntryAsSpam(userPosts);
-			this.resourceIndex.unFlagUser(user.getName());
-			break;
-		case 1:
-			log.debug("flag spammer");
-			this.resourceIndex.flagUser(user.getName());
-			break;
-		}
-	}
-	
-	/** 
-	 * flags an entry as non-spammer
-	 *  
-	 * @param userPosts all of the user's posts - these will be inserted into the index
-	 */
-	private void unflagEntryAsSpam(final List<LucenePost<R>> userPosts) {
-		//  insert new records into index
-		if ((userPosts != null) && (userPosts.size() > 0)) {
-			for (final Post<R> post : userPosts) {
-				// cache possible pre existing duplicate for deletion 
-				this.resourceIndex.deleteDocumentForContentId(post.getContentId());
-				// cache document for writing 
-				this.resourceIndex.insertDocument(this.resourceConverter.readPost(post));
-			}
-		}
 	}
 
 	/**
@@ -474,12 +447,13 @@ public class LuceneResourceManager<R extends Resource> {
 	
 	/**
 	 * checks, whether the index is readily initialized
-	 * @return true, if index is ready - false, otherwise
+	 * @return <code>true</code>, if index is ready
+	 * <code>false</code>, otherwise
 	 * (e.g. if no lucene-index has been generated yet) 
 	 */
-	
 	public boolean isIndexEnabled() {
-	    return this.resourceIndices.get(idxSelect).isIndexEnabled();
+		// TODO: refactor
+	    return this.resourceIndices.get(0).isIndexEnabled();
 	}
 
 	/**
@@ -534,14 +508,97 @@ public class LuceneResourceManager<R extends Resource> {
 	/**
 	 * @param resourceIndeces the resourceIndeces to set
 	 */
-	public void setResourceIndeces(final List<LuceneResourceIndex<R>> resourceIndeces) {
+	public void setResourceIndices(final List<LuceneResourceIndex<R>> resourceIndeces) {
 		this.resourceIndices = resourceIndeces;
 	}
 	
 	/**
+	 * @param luceneUpdaterEnabled the luceneUpdaterEnabled to set
+	 */
+	public void setLuceneUpdaterEnabled(final boolean luceneUpdaterEnabled) {
+		this.luceneUpdaterEnabled = luceneUpdaterEnabled;
+	}
+	
+	/**
+	 * @param activeIndex the activeIndex to set
+	 */
+	public void setActiveIndex(final LuceneResourceIndex<R> activeIndex) {
+		final LuceneResourceIndex<R> oldIndex = this.activeIndex;
+		
+		this.activeIndex = activeIndex;
+		
+		this.searcher.setIndex(this.activeIndex);
+		
+		if (oldIndex != null) {
+			// add old active index to the update queue
+			this.updateQueue.add(oldIndex);
+		}
+	}
+
+	/**
 	 * @return the name of the managed resource
 	 */
 	public String getResourceName() {
-	    return resourceIndices.get(idxSelect).getResourceName();
+		 // all resource indices have the same resource name (they should!)
+	    return resourceIndices.get(0).getResourceClass().getSimpleName();
+	}
+	
+	/**
+	 * must be called after all properties are set
+	 * @throws Exception
+	 */
+	public void init() throws Exception {
+		/*
+		 * set the first index to the be the active one
+		 */
+		this.setActiveIndex(this.resourceIndices.get(0));
+		
+		/*
+		 * all others must be inserted into the update queue
+		 */
+		for (int i = 1; i < this.resourceIndices.size(); i++) {
+			this.updateQueue.add(this.resourceIndices.get(i));
+		}
+	}
+
+	@Override
+	public void generatedIndex(final LuceneResourceIndex<R> index) {
+		/*
+		 * finished index generation
+		 * use the new index for the searcher
+		 */
+		this.setActiveIndex(index);
+		
+		try {
+			final FSDirectory source = FSDirectory.open(new File(index.getIndexPath()));
+			/*
+			 * copy new index to all other indices
+			 */
+			for (final LuceneResourceIndex<R> redudantIndex : this.updateQueue) {
+				/*
+				 * delete old index
+				 */
+				redudantIndex.deleteIndex();
+				
+				/*
+				 * copy index to redudant index
+				 */
+				
+				Directory.copy(source, FSDirectory.open(new File(redudantIndex.getIndexPath())), true);
+				
+				/*
+				 * reinit index
+				 */
+				redudantIndex.reset();
+			}
+		} catch (final IOException exception) {
+			log.error("error while coping redudant indices", exception);
+		}
+		
+		/*
+		 * enable generating and updating
+		 */
+		this.generatingIndex = false;
+		this.generator = null;
 	}
 }
