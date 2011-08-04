@@ -343,6 +343,9 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final String relationName3 = "tv";
 		final String relationTag3 = SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, relationName3);
 		
+		String sharedTag1 = "sharedTag1";
+		String sharedTag2 = "sharedTag2";
+		
 		final LogicInterface admLogic  = this.getAdminDbLogic(admUser.getName());
 		final LogicInterface srcLogic  = this.getDbLogic(srcUser.getName());
 		final LogicInterface dstLogic  = this.getDbLogic(dstUser1.getName());
@@ -372,13 +375,13 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final List<Post<?>> btPosts = new LinkedList<Post<?>>();
 		final Post<BibTex> btPost1 = ModelUtils.generatePost(BibTex.class);
 		// add tags
-		ModelUtils.addToTagSet(btPost1.getTags(), "btPostTag1", "sharedTag1");
+		ModelUtils.addToTagSet(btPost1.getTags(), "btPostTag1", sharedTag1);
 		btPost1.getUser().setName(dstUser1.getName());
 		btPosts.add(btPost1);
 
 		// add tags
 		final Post<BibTex> btPost2 = ModelUtils.generatePost(BibTex.class);
-		ModelUtils.addToTagSet(btPost2.getTags(), "btPostTag2", "sharedTag1", "sharedTag2");
+		ModelUtils.addToTagSet(btPost2.getTags(), "btPostTag2", sharedTag1, sharedTag2);
 		btPost2.getUser().setName(dstUser1.getName());
 		btPost2.getResource().setTitle("Just another title");
 		btPost2.getResource().setAuthor("Just another author");
@@ -394,14 +397,14 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final List<Post<?>> bmPosts = new LinkedList<Post<?>>();
 		final Post<Bookmark> bmPost1 = ModelUtils.generatePost(Bookmark.class);
 		// add tags
-		ModelUtils.addToTagSet(bmPost1.getTags(), "bmPost1Tag", "sharedTag1");
+		ModelUtils.addToTagSet(bmPost1.getTags(), "bmPost1Tag", sharedTag1);
 		bmPost1.getUser().setName(dstUser2.getName());
 		bmPost1.getResource().setUrl("http://fuzzduzz");
 		bmPosts.add(bmPost1);
 
 		// add tags
 		final Post<Bookmark> bmPost2 = ModelUtils.generatePost(Bookmark.class);
-		ModelUtils.addToTagSet(bmPost2.getTags(), "bmPost2Tag", "sharedTag1", "sharedTag2");
+		ModelUtils.addToTagSet(bmPost2.getTags(), "bmPost2Tag", sharedTag1, sharedTag2);
 		bmPost2.getUser().setName(dstUser2.getName());
 		bmPost2.getResource().setTitle("Just another title");
 		bmPost2.getResource().setUrl("http://duzzfuzz");
@@ -449,13 +452,30 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
 		assertEquals(0, bibTexPostsList.size());
 		
+		// retrieve posts restricted by relation tag and 'normal' tag
+		tags2.clear();
+		tags2.add(relationTag2);
+		tags2.add(sharedTag2);
+		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
+		assertEquals(1, bookmarkPostsList.size());
+		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
+		assertEquals(1, bibTexPostsList.size());
+
+		tags2.clear();
+		tags2.add(relationTag2);
+		tags2.add(sharedTag1);
+		bookmarkPostsList = srcLogic.getPosts(Bookmark.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
+		assertEquals(2, bookmarkPostsList.size());
+		bibTexPostsList = srcLogic.getPosts(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags2, null, Order.ADDED, null, 0, 19, null);
+		assertEquals(2, bibTexPostsList.size());
+
 		// retrieve tag cloud
 		tags2.clear();
 		tags2.add(relationTag2);
 		List<Tag> aspectTagCloud= srcLogic.getTags(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), null, tags1, null, Order.FREQUENCY, 0, 25, null, null);
 		assertEquals(6, aspectTagCloud.size());
-		assertTrue(aspectTagCloud.contains(new Tag("sharedTag1")));
-		assertTrue(aspectTagCloud.contains(new Tag("sharedTag2")));
+		assertTrue(aspectTagCloud.contains(new Tag(sharedTag1)));
+		assertTrue(aspectTagCloud.contains(new Tag(sharedTag2)));
 		assertTrue(aspectTagCloud.contains(new Tag("btPostTag1")));
 		assertTrue(aspectTagCloud.contains(new Tag("btPostTag2")));
 	}

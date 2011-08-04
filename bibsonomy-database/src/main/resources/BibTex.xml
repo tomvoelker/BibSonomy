@@ -196,12 +196,20 @@
 	<select id="getBibTexByTaggedUserRelation" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, t.change_date, g.group_name, g.group, h.ctr AS count, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
-			(SELECT content_id, date              <!-- publications from users which are tagged accordingly -->
-			 FROM bibtex b, <include refid="relationTagFromQuery"/>
+			(SELECT b.content_id, b.date              <!-- publications from users which are tagged accordingly -->
+			 FROM bibtex b, 
+			 	<include refid="relationTagFromQuery"/>
+			 	<isNotEmpty property="tagIndex" prepend=",">
+				  	 <include refid="tagFromQuery"/>
+		  		</isNotEmpty>
 			 WHERE <include refid="relationTagTagWhereQuery"/>         <!-- to see users which are tagged accordingly by the currUser -->
 			   AND <include refid="relationTagUsernameWhereQuery"/>    <!--                            ++++                           -->
 			   AND <include refid="relationTagResourceWhereQuery"/>    <!-- take all rows, which are owned by a related user -->
 			   AND b.group = #groupId#
+			 	   <isNotEmpty property="tagIndex" prepend="AND">
+				  	 <include refid="tagWhereQuery"/> AND
+			  		 <include refid="tagResourceWhereQuery"/>
+		  		   </isNotEmpty>
 			 ORDER BY date DESC
 			 LIMIT #limit# OFFSET #offset# ) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->

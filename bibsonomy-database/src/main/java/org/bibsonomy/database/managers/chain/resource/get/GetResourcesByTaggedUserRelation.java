@@ -29,7 +29,7 @@ public class GetResourcesByTaggedUserRelation<R extends Resource, P extends Reso
 	
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.getDatabaseManagerForType(param.getClass()).getPostsByTaggedUserRelation(param.getRequestedUserName(), param.getTags(), param.getRelationTags(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.getDatabaseManagerForType(param.getClass()).getPostsByTaggedUserRelation(param.getRequestedUserName(), param.getTagIndex(), param.getRelationTags(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 	@Override
@@ -39,7 +39,6 @@ public class GetResourcesByTaggedUserRelation<R extends Resource, P extends Reso
 				// discriminate from the friendOf and ofFriend queries
 				present(param.getRelationTags()) &&
 				SystemTagsUtil.containsSystemTag(param.getRelationTags(), UserRelationSystemTag.NAME) &&
-				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
 				!present(param.getSearch()));		

@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -437,10 +436,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return a list of posts
 	 */
-	public List<Post<R>> getPostsByTaggedUserRelation(final String user, final Set<Tag> tags, final List<String> userRelationTags, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsByTaggedUserRelation(final String user, final List<TagIndex> tagIndex, final List<String> userRelationTags, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(user, null, limit, offset);
 		param.addAllToSystemTags(systemTags);
-		param.setTags(tags);
+		param.setTagIndex(tagIndex);
 		param.addRelationTags(userRelationTags);
 		
 		if (SystemTagsUtil.containsSystemTag(userRelationTags, NetworkRelationSystemTag.BibSonomyFriendSystemTag)) {

@@ -81,6 +81,15 @@
 		  </isEqual>
 		</iterate>
 	</sql>
+	
+	<!--
+	   Should be used in conjunction with tagFromQuery, relationTagFromQuery.
+	-->
+	<sql id="tagResourceWhereQuery">
+		<iterate property="tagIndex" conjunction="AND">
+		    b.content_id = t$tagIndex[].index$.content_id 
+		</iterate>
+	</sql>	
 
 	<!-- Should be used in conjunction with "conceptWhereQuery". -->
 	<sql id="conceptFromQuery">

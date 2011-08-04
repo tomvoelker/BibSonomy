@@ -177,12 +177,20 @@
 	<select id="getBookmarkByTaggedUserRelation" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, b.`group`, g.group_name AS group_name, <include refid="reviewRatingsRows" /> 
 	    FROM urls u, bookmark b <include refid="reviewRatingsJoinBookmark" />,
-			(SELECT content_id, date                                  <!-- bookmarks from users which are tagged accordingly -->
-			 FROM bookmark b, <include refid="relationTagFromQuery"/>
+			(SELECT b.content_id, b.date                                  <!-- bookmarks from users which are tagged accordingly -->
+			 FROM bookmark b, 
+			      <include refid="relationTagFromQuery"/>
+			      <isNotEmpty property="tagIndex" prepend=",">
+				  	 <include refid="tagFromQuery"/>
+		  		  </isNotEmpty>
 			 WHERE <include refid="relationTagTagWhereQuery"/>         <!-- to see users which are tagged accordingly by the currUser -->
 			   AND <include refid="relationTagUsernameWhereQuery"/>    <!--                            ++++                           -->
 			   AND <include refid="relationTagResourceWhereQuery"/>    <!-- take all rows, which are owned by a related user -->
 			   AND b.group = #groupId#
+		 	   <isNotEmpty property="tagIndex" prepend="AND">
+			  		<include refid="tagWhereQuery"/> AND
+			  		<include refid="tagResourceWhereQuery"/>
+	  		   </isNotEmpty>
 			 ORDER BY date DESC
 			 LIMIT #limit# OFFSET #offset#) AS bb
 	   	LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas -->
