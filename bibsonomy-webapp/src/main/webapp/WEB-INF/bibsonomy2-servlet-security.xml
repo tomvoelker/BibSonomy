@@ -137,7 +137,7 @@
 	<bean id="internalRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.TokenBasedRememberMeServices">
   		<property name="userDetailsService" ref="databaseUserService"/>
   		<property name="key" ref="cookieKey"/>
-  		<property name="parameter" value="rememberMe"/>
+  		<property name="parameter" ref="rememberMeParameter"/>
   		<property name="cookieName" value="db_user" />
   		<property name="tokenValiditySeconds" ref="cookieAge" /> <!-- found in main servlet xml -->
 	</bean>
@@ -248,11 +248,16 @@
 		<property name="rememberMeServices" ref="openidRememberMeServices" />
 		<property name="consumer" ref="openidConsumer" />
 		<property name="claimedIdentityFieldName" value="openID" />
-		<property name="returnToUrlParameters">
-			<set>
-				<ref bean="targetUrlParameter" />
-			</set>
-		</property>
+		<property name="returnToUrlParameters" ref="openIdReturnParameters" />
+	</bean>
+	
+	<util:set id="openIdReturnParameters">
+		<ref bean="targetUrlParameter" />
+		<ref bean="rememberMeParameter" />
+	</util:set>
+	
+	<bean id="rememberMeParameter" class="java.lang.String">
+		<constructor-arg value="rememberMe" />
 	</bean>
 	
 	<!-- open id remember me filter -->
@@ -264,12 +269,13 @@
 	<!-- open id remember me service -->
 	<bean id="openidRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.OpenIDRememberMeServices">
 		<property name="userDetailsService" ref="databaseUserService"/>
-  		<property name="key" ref="cookieKey"/>
-  		<property name="parameter" value="rememberMe"/>
+  		<property name="key" ref="cookieKey" />
+  		<property name="parameter" ref="rememberMeParameter" />
   		<property name="cookieName" value="openID_user" />
   		<property name="filterUrl" ref="openidLoginUrl" />
 		<property name="projectRoot" value="${project.home}" />
 		<property name="consumer" ref="openidConsumer" />
+		<property name="returnToUrlParameters" ref="openIdReturnParameters" />
 	</bean>
 	
 	<bean id="openidAuthenticationProvider" class="org.bibsonomy.webapp.util.spring.security.provider.OpenIDAuthenticationProvider">
@@ -313,7 +319,7 @@
 	<bean id="ldapRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.LDAPRememberMeServices">
 		<property name="userDetailsService" ref="databaseUserService"/>
   		<property name="key" ref="cookieKey"/>
-  		<property name="parameter" value="rememberMe"/>
+  		<property name="parameter" ref="rememberMeParameter" />
   		<property name="cookieName" value="ldap_user" />
   		<property name="encryptor" ref="encryptor"/>
 	</bean>
