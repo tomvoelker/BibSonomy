@@ -44,8 +44,10 @@ function handleAjaxErrors(form, errors) {
 	}
 }
 
+// FIXME: Does jQuery provide a escape function?!
+// FIXME: doesn't escape all special chars missing '[', ']', …
 function escapeSelector(selector) {
-	return selector.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/]%)/g,'\\$1');
+	return selector.replace(/\./g,'\\.');
 }
 
 function decodeHTML(string) {
