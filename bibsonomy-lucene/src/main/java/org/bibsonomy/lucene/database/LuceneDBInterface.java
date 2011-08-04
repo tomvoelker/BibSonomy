@@ -1,10 +1,8 @@
 package org.bibsonomy.lucene.database;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -21,15 +19,11 @@ public interface LuceneDBInterface<R extends Resource> {
 
 	/** 
 	 * @param userName
-	 * @param requestedUserName
-	 * @param simHash
-	 * @param groupId
-	 * @param visibleGroupIDs
 	 * @param limit
 	 * @param offset
 	 * @return all posts for given user
 	 */
-	public List<LucenePost<R>> getPostsForUser(final String userName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset);
+	public List<LucenePost<R>> getPostsForUser(final String userName, final int limit, final int offset);
 
 	/**
 	 * @return get most recent post's date
@@ -56,22 +50,6 @@ public interface LuceneDBInterface<R extends Resource> {
 	 */
 	public List<User> getPredictionForTimeRange(Date fromDate);
 	
-	/**
-	 * get list of all friends for a given user
-	 * 
-	 * @param userName the user name
-	 * @return all friends of given user 
-	 */
-	public Collection<String> getFriendsForUser(String userName);
-
-	/**
-	 * get given group's members
-	 * 
-	 * @param groupName
-	 * @return the members of the group
-	 */
-	public List<String> getGroupMembersByGroupName(String groupName);
-	
 	//------------------------------------------------------------------------
 	// methods for building the index
 	// TODO: maybe we should introduce a special class hierarchy
@@ -92,9 +70,9 @@ public interface LuceneDBInterface<R extends Resource> {
 	public int getNumberOfPosts();
 
 	/** 
-	 * @param skip offset
+	 * @param lastContentId the last content id (all post.contentid > lastContentId)
 	 * @param max size
 	 * @return get post entries for index creation
 	 */
-	public List<LucenePost<R>> getPostEntries(Integer skip, Integer max);
+	public List<LucenePost<R>> getPostEntries(int lastContentId, int max);
 }
