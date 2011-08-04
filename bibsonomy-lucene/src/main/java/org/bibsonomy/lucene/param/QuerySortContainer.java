@@ -14,10 +14,7 @@ import org.bibsonomy.model.enums.Order;
  * @version $Id$
  *
  */
-public class QuerySortContainer {
-	private static final long serialVersionUID = -5889003240930421319L;
-	
-	
+public class QuerySortContainer {	
 	/**
 	 * query
 	 */
@@ -58,7 +55,7 @@ public class QuerySortContainer {
 	/**
 	 * @param query the query to set
 	 */
-	public void setQuery(Query query) {
+	public void setQuery(final Query query) {
 		this.query = query;
 		
 	}
@@ -73,9 +70,8 @@ public class QuerySortContainer {
 	/**
 	 * @param sort the sort to set
 	 */
-	public void setSort(Sort sort) {
+	public void setSort(final Sort sort) {
 		this.sort = sort;
-		
 	}	
 
 	/**
@@ -88,7 +84,7 @@ public class QuerySortContainer {
 	/**
 	 * @param order the order to set
 	 */
-	public void setOrder(Order order) {
+	public void setOrder(final Order order) {
 		this.order = order;
 	}
 
@@ -102,7 +98,7 @@ public class QuerySortContainer {
 	/**
 	 * @param limit the limit to set
 	 */
-	public void setLimit(int limit) {
+	public void setLimit(final int limit) {
 		this.limit = limit;
 	}
 
@@ -116,14 +112,14 @@ public class QuerySortContainer {
 	/**
 	 * @param limitType the limitType to set
 	 */
-	public void setLimitType(Order limitType) {
+	public void setLimitType(final Order limitType) {
 		this.limitType = limitType;
 	}
 
 	/**
 	 * @param tagCountCollector the tagCountCollector to set
 	 */
-	public void setTagCountCollector(TagCountCollector tagCountCollector) {
+	public void setTagCountCollector(final TagCountCollector tagCountCollector) {
 		this.tagCountCollector = tagCountCollector;
 	}
 
