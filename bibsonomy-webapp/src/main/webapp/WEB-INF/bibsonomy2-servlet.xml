@@ -390,6 +390,12 @@
 				<entry key="/spheres">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="spheresPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>sphereName</value>
+								<value>requestedTags</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/bibtexkey">
