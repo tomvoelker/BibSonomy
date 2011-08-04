@@ -1,0 +1,15 @@
+<assembly>
+	<id>generator</id>
+	<formats>
+		<format>dir</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>/lib/</outputDirectory>
+			<unpack>false</unpack>
+			<useProjectArtifact>false</useProjectArtifact>
+			<scope>test</scope>
+		</dependencySet>
+	</dependencySets>
+</assembly>
