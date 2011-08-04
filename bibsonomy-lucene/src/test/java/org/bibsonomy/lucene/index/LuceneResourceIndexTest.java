@@ -3,16 +3,12 @@ package org.bibsonomy.lucene.index;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.apache.lucene.document.Document;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
-import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
-import org.bibsonomy.lucene.util.LuceneBibTexConverter;
-import org.bibsonomy.lucene.util.LuceneBookmarkConverter;
-import org.bibsonomy.lucene.util.LuceneResourceConverter;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -20,7 +16,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.CommonModelUtils;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,25 +30,10 @@ public class LuceneResourceIndexTest {
 	
 	@SuppressWarnings("unchecked")
 	@BeforeClass
-	public static void setUp() {
-		// bind datasource access via JNDI
-		JNDITestDatabaseBinder.bind();
-		
+	public static void setUp() {		
 		// initialize
-		Map<String,Map<String,Object>> postPropertyMap;
-
-		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bibTexPropertyMap");
-		bibTexConverter = new LuceneBibTexConverter();
-		bibTexConverter.setPostPropertyMap(postPropertyMap);
-		
-		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bookmarkPropertyMap");
-		bookmarkConverter = new LuceneBookmarkConverter();
-		bookmarkConverter.setPostPropertyMap(postPropertyMap);
-	}
-	
-	@AfterClass
-	public static void tearDown() {
-		JNDITestDatabaseBinder.unbind();
+		bibTexConverter = (LuceneResourceConverter<BibTex>) LuceneSpringContextWrapper.getBeanFactory().getBean("lucenePublicationConverter");
+		bookmarkConverter = (LuceneResourceConverter<Bookmark>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneBookmarkConverter");
 	}
 	
 	@Test
@@ -67,8 +47,12 @@ public class LuceneResourceIndexTest {
 		final Document bmDoc = bookmarkConverter.readPost(bmPost);
 		final Document bibDoc = bibTexConverter.readPost(bibPost);
 		
-		final LuceneResourceIndex<Bookmark> bmIndex = new LuceneBookmarkIndex(0);
-		final LuceneResourceIndex<BibTex> bibIndex  = new LuceneBibTexIndex(0);
+		final LuceneResourceIndex<Bookmark> bmIndex = new LuceneResourceIndex<Bookmark>();
+		bmIndex.setIndexId(0);
+		bmIndex.setResourceClass(Bookmark.class);
+		final LuceneResourceIndex<BibTex> bibIndex  = new LuceneResourceIndex<BibTex>();
+		bibIndex.setIndexId(0);
+		bibIndex.setResourceClass(BibTex.class);
 		
 		bmIndex.insertDocument(bmDoc);
 		bmIndex.insertDocument(bmDoc);
@@ -79,7 +63,7 @@ public class LuceneResourceIndexTest {
 		assertEquals(1, bibIndex.getPostsToInsert().size());
 		
 		final int postSize = 50;
-		for( int i=1; i<postSize; i++ ) {
+		for (int i = 1; i < postSize; i++) {
 			bmPost.setContentId(i);
 			bibPost.setContentId(i);
 
@@ -188,7 +172,7 @@ public class LuceneResourceIndexTest {
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setCount(0);
 		//bookmark.setIntraHash("e44a7a8fac3a70901329214fcc1525aa");
-		bookmark.setTitle("test"+(Math.round(Math.random()*Integer.MAX_VALUE)));
+		bookmark.setTitle("test" + (Math.round(Math.random() * Integer.MAX_VALUE)));
 		bookmark.setUrl("http://www.testurl.orgg");
 		bookmark.recalculateHashes();
 		resource = bookmark;

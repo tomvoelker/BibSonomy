@@ -121,28 +121,4 @@
 	<sql id="bibtexSimHashes2">
 		b2.simhash1 AS interHash, b2.simhash2 AS intraHash
 	</sql>
-
-	<sql id="bibtexSimHash">
-		b.simhash$simHash$ = h.hash AND h.type = $simHash$
-	</sql>
-
-	<sql id="bibtexSimHash2">
-		b2.simhash$simHash$ = h.hash AND h.type = $simHash$
-	</sql>
-	
-	<sql id="bibtexSimHash3">
-		t1.simhash$simHash$ = h.hash AND h.type = $simHash$
-	</sql>	
-
-	<sql id="bibtexSimHash4">
-		b2.simhash$simHash$ = h.hash AND h.type = $simHash$
-	</sql>	
-
-
-	<sql id="duplicatesCount">
-		SELECT b0.simhash1,count(b0.simhash1) AS ctr
-		FROM bibtex b0
-		WHERE b0.user_name = #requestedUserName#
-		GROUP BY b0.simhash1 HAVING ctr > 1
-	</sql>
 </sqlMap>

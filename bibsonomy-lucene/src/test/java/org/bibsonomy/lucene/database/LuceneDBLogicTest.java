@@ -2,6 +2,7 @@ package org.bibsonomy.lucene.database;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,14 +14,15 @@ import java.util.Map;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
-import org.bibsonomy.database.plugin.plugins.Logging;
+import org.bibsonomy.database.testutil.JNDIBinder;
+import org.bibsonomy.lucene.database.util.LuceneDatabaseSessionFactory;
 import org.bibsonomy.lucene.param.LucenePost;
-import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -31,7 +33,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -53,10 +54,10 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	private static BibTexDatabaseManager bibTexDb;
 
 	/** bookmark database interface */
-	private static LuceneDBInterface<Bookmark> luceneBookmarkLogic;
+	private static LuceneDBLogic<Bookmark> luceneBookmarkLogic;
 
 	/** bibtex database interface */
-	private static LuceneDBInterface<BibTex> luceneBibTexLogic;
+	private static LuceneDBLogic<BibTex> luceneBibTexLogic;
 
 	/**
 	 * Initializes the test database.
@@ -70,14 +71,20 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	@BeforeClass
 	public static void setUpLucene() {
 		// bind datasource access via JNDI
-		JNDITestDatabaseBinder.bind();
-		luceneBookmarkLogic = LuceneBookmarkLogic.getInstance();
-		luceneBibTexLogic   = LuceneBibTexLogic.getInstance();
+		JNDIBinder.bind();
+		final DBSessionFactory factory = new LuceneDatabaseSessionFactory();
+		luceneBookmarkLogic = new LuceneDBLogic<Bookmark>();
+		luceneBookmarkLogic.setResourceClass(Bookmark.class);
+		luceneBookmarkLogic.setSessionFactory(factory);
+		
+		luceneBibTexLogic = new LuceneDBLogic<BibTex>();
+		luceneBibTexLogic.setResourceClass(BibTex.class);
+		luceneBibTexLogic.setSessionFactory(factory);
 	}
 
 	@AfterClass
 	public static void unbindJNDI() {
-		JNDITestDatabaseBinder.unbind();
+		JNDIBinder.unbind();
 	}
 
 	/**
@@ -90,16 +97,16 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		final int groupId = -1;
 		final List<Integer> groups = new ArrayList<Integer>();
 
-		List<LucenePost<BibTex>> posts    = luceneBibTexLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
+		List<LucenePost<BibTex>> posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		List<Post<BibTex>> postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 
-		posts    = luceneBibTexLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
+		posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size()); 
 
 		requestedUserName = "testuser2";
-		posts    = luceneBibTexLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
+		posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 	}
@@ -129,10 +136,10 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		assertEquals(refPosts.size(), posts.size());
 
 		final Map<String,Boolean> testMap = new HashMap<String, Boolean>(); 
-		for( final Post<? extends Resource> post : posts ) {
+		for (final Post<? extends Resource> post : posts) {
 			testMap.put(post.getResource().getTitle(), true);
 		}
-		for( final Post<? extends Resource> post : refPosts ) {
+		for (final Post<? extends Resource> post : refPosts) {
 			assertNotNull(testMap.get(post.getResource().getTitle()));
 		}
 	}
@@ -141,11 +148,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	 * tests whether all posts whithin a given time range are retrieved
 	 */
 	@Test
-	@Ignore
 	public void getContentIdsToDelete() {
-		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new BibTexExtraPlugin());
-		DatabasePluginRegistry.getInstance().add(new Logging());
 		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 
 		//--------------------------------------------------------------------
@@ -166,18 +169,14 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		// retrieve posts
 		final List<Integer> posts = luceneBibTexLogic.getContentIdsToDelete(new Date(fromDate-QUERY_TIME_OFFSET_MS));
 
-		assertEquals(true, refPosts.size()<=posts.size());
+		assertTrue(refPosts.size() <= posts.size());
 	}
 
 	/**
 	 * test whether newest post's date is detected
 	 */
 	@Test
-	@Ignore // ignored test, as it inherently fails on slow machines
 	public void getNewestRecordDateFromTas() {
-		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new BibTexExtraPlugin());
-
 		//--------------------------------------------------------------------
 		// TEST 1: insert special post into test database and search for it
 		//--------------------------------------------------------------------
@@ -209,12 +208,12 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		List<LucenePost<Bookmark>> posts;    
 		List<Post<Bookmark>> postsRef;
 
-		posts    = luceneBookmarkLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
+		posts    = luceneBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
 		postsRef = bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 
 		requestedUserName = "testuser2";
-		posts    = luceneBookmarkLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
+		posts    = luceneBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
 		postsRef = bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);  
 		assertEquals(postsRef.size(), posts.size());
 	}
@@ -274,8 +273,8 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		CommonModelUtils.setBeanPropertiesOn(publication);
 		publication.setCount(0);		
 		publication.setEntrytype("inproceedings");
-		publication.setAuthor("MegaMan and Lucene GigaWoman "+LUCENE_MAGIC_AUTHOR);
-		publication.setEditor("Peter Silie "+LUCENE_MAGIC_EDITOR);
+		publication.setAuthor("MegaMan and Lucene GigaWoman " + LUCENE_MAGIC_AUTHOR);
+		publication.setEditor("Peter Silie " + LUCENE_MAGIC_EDITOR);
 		publication.setTitle("bibtex insertpost test");
 
 		String title, year, journal, booktitle, volume, number = null;
@@ -332,7 +331,6 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setCount(0);
-		//bookmark.setIntraHash("e44a7a8fac3a70901329214fcc1525aa");
 		bookmark.setTitle("test"+(Math.round(Math.random()*Integer.MAX_VALUE))+" "+LUCENE_MAGIC_TITLE);
 		bookmark.setUrl("http://www.testurl.orgg");
 		bookmark.recalculateHashes();

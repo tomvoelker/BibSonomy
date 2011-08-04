@@ -20,16 +20,9 @@ import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.lucene.index.manager.LuceneBibTexManager;
-import org.bibsonomy.lucene.index.manager.LuceneBookmarkManager;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
-import org.bibsonomy.lucene.search.LuceneSearchBibTex;
-import org.bibsonomy.lucene.search.LuceneSearchBookmarks;
-import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
-import org.bibsonomy.lucene.util.LuceneBase;
-import org.bibsonomy.lucene.util.generator.LuceneGenerateBibTexIndex;
-import org.bibsonomy.lucene.util.generator.LuceneGenerateBookmarkIndex;
-import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
+import org.bibsonomy.lucene.search.LuceneResourceSearch;
+import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -37,12 +30,9 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.testutil.CommonModelUtils;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -51,6 +41,8 @@ import org.junit.Test;
  */
 public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	private static final Log log = LogFactory.getLog(LuceneUpdateManagerTest.class);
+	
+	
 	private static final String LUCENE_MAGIC_AUTHOR = "luceneAuthor";
 	private static final String LUCENE_MAGIC_TAG    = "luceneTag";
 	private static final String LUCENE_MAGIC_EDITOR = "luceneEditor";
@@ -60,16 +52,15 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	private static final long CONCURRENCY_OFFSET    = 5;
 	
 	private static BookmarkDatabaseManager bookmarkDb;
-	private static BibTexDatabaseManager bibTexDb;
+	private static BibTexDatabaseManager publicationDb;
 	private static AdminDatabaseManager adminDb;
 	
-	private LuceneResourceManager<BibTex> luceneBibTexUpdater;
-	private LuceneResourceManager<Bookmark> luceneBookmarkUpdater;
-	
-	private LuceneResourceIndex<BibTex> luceneBibTexIndex;
-	private LuceneResourceIndex<Bookmark> luceneBookmarkIndex;
+	private static LuceneResourceManager<BibTex> luceneBibTexUpdater;
+	private static LuceneResourceManager<Bookmark> luceneBookmarkUpdater;
+	private static LuceneResourceSearch<BibTex> bibtexSearcher;
+	private static LuceneResourceSearch<Bookmark> bookmarkSearcher;
 
-	/** search terms for each relevant bibtex search field */
+	/** search terms for each relevant publication search field */
 	String[] bibtexSearchTerms = {
 			LUCENE_MAGIC_TITLE,
 			LUCENE_MAGIC_TAG,
@@ -77,7 +68,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 			LUCENE_MAGIC_EDITOR
 			};
 
-	/** search terms for each relevant bibtex search field */
+	/** search terms for each relevant publication search field */
 	String[] bookmarkSearchTerms = {
 			LUCENE_MAGIC_TITLE,
 			};
@@ -85,36 +76,33 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * Initializes the test database.
 	 */
+	@SuppressWarnings("unchecked")
 	@BeforeClass
-	public static void initDatabaseManager() {
+	public static void initDatabaseManager() {		
 		bookmarkDb = BookmarkDatabaseManager.getInstance();	
-		bibTexDb = BibTexDatabaseManager.getInstance();
+		publicationDb = BibTexDatabaseManager.getInstance();
 		adminDb = AdminDatabaseManager.getInstance();
+		
+		luceneBibTexUpdater = (LuceneResourceManager<BibTex>) LuceneSpringContextWrapper.getBeanFactory().getBean("lucenePublicationManager");
+		luceneBookmarkUpdater = (LuceneResourceManager<Bookmark>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneBookmarkManager");
+		
+		bibtexSearcher = luceneBibTexUpdater.getSearcher();
+		bookmarkSearcher = luceneBookmarkUpdater.getSearcher();
 	}
 	
 	@Before
 	public void setUpLucene() {
-		// bind datasource access via JNDI
-		JNDITestDatabaseBinder.bind();
 		// generate index
 		try {
 			generateIndex();
-			// initialize data structures
-			init();
-			this.luceneBibTexUpdater.resetIndexReader();
-			this.luceneBookmarkUpdater.resetIndexReader();
+			
+			luceneBibTexUpdater.resetIndexReader();
+			luceneBookmarkUpdater.resetIndexReader();
 		} catch (final Exception e) {
 			log.error("Error creating lucene index.", e);
 		}
 		
 	}
-	
-	@Override
-	@After
-	public void tearDown() {
-		JNDITestDatabaseBinder.unbind();
-	}
-
 
 	/**
 	 * tests visibility of private posts
@@ -133,19 +121,13 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		// store test post in database
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
-		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost(GroupID.PRIVATE);
+		final Post<BibTex> toInsert = generateBibTexDatabaseManagerTestPost(GroupID.PRIVATE);
 		
-		bibTexDb.createPost(toInsert, this.dbSession);
+		publicationDb.createPost(toInsert, this.dbSession);
 
 		// update index
-		for( int i=0; i<LuceneBase.getRedundantCnt(); i++ ) {
-			this.luceneBibTexUpdater.updateAndReloadIndex();
-			this.luceneBookmarkUpdater.updateAndReloadIndex();
-		}
-
-		// prepare searcher
-		final ResourceSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
-
+		updateResourceIndices();
+		
 		// search for all relevant fields
 		for( final String term : bibtexSearchTerms ) {
 			log.info("Searching for " + term);
@@ -167,7 +149,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		}
 		
 		// delete post
-		bibTexDb.deletePost(toInsert.getUser().getName(), toInsert.getResource().getIntraHash(), this.dbSession);
+		publicationDb.deletePost(toInsert.getUser().getName(), toInsert.getResource().getIntraHash(), this.dbSession);
 	}
 	
 	/**
@@ -177,7 +159,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException 
 	 */
 	@Test
-	@Ignore
+	// @Ignore
 	public void updateIndices() throws IOException, ClassNotFoundException, SQLException {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
@@ -191,18 +173,11 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
 		Post<BibTex> bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		
-		bibTexDb.createPost(bibtexPost, this.dbSession);
+		publicationDb.createPost(bibtexPost, this.dbSession);
 
 		// update index
-		for( int i=0; i<LuceneBase.getRedundantCnt(); i++ ) {
-			this.luceneBibTexUpdater.updateAndReloadIndex();
-			this.luceneBookmarkUpdater.updateAndReloadIndex();
-		}
-
-		// prepare searcher
-		final ResourceSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
-		final ResourceSearch<Bookmark> bookmarkSearcher = LuceneSearchBookmarks.getInstance();
-
+		this.updateResourceIndices();
+		
 		// search for all relevant fields
 		for( final String term : bibtexSearchTerms ) {
 			log.info("Searching for " + term);
@@ -217,17 +192,14 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// remove test post in database
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.Logging());
-		bibTexDb.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), this.dbSession);
+		publicationDb.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), this.dbSession);
 		// FIXME: the updater looks at the tas table to get the newest date, which is
 		//        1815 after deleting the post - so we add another post
 		final Post<BibTex> workaroundInsert = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
-		bibTexDb.createPost(workaroundInsert, this.dbSession);
+		publicationDb.createPost(workaroundInsert, this.dbSession);
 		
 		// update index
-		for( int i=0; i<LuceneBase.getRedundantCnt(); i++ ) {
-			this.luceneBibTexUpdater.updateAndReloadIndex();
-			this.luceneBookmarkUpdater.updateAndReloadIndex();
-		}
+		updateResourceIndices();
 		
 		// search again
 		for( final String term : bibtexSearchTerms ) {
@@ -235,7 +207,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 			final ResultList<Post<BibTex>> resultList = 
 				bibtexSearcher.getPosts(bibtexPost.getUser().getName(), null, null, allowedGroups, term, null, null, null, null, null, null, 1000, 0);
 			
-			for( Post<BibTex> post : resultList ) {
+			for( final Post<BibTex> post : resultList ) {
 				log.info("Got post: " + post.getDate()+ "("+post.getResource().getTitle()+")");
 			}
 			
@@ -254,13 +226,10 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bibtexPost.setDate(new Date(workaroundInsert.getDate().getTime()+CONCURRENCY_OFFSET));
 		
 		bookmarkDb.createPost(bookmarkPost, this.dbSession);
-		bibTexDb.createPost(bibtexPost, this.dbSession);
+		publicationDb.createPost(bibtexPost, this.dbSession);
 		
 		// update index
-		for( int i=0; i<LuceneBase.getRedundantCnt(); i++ ) {
-			this.luceneBibTexUpdater.updateAndReloadIndex();
-			this.luceneBookmarkUpdater.updateAndReloadIndex();
-		}
+		updateResourceIndices();
 		
 		// search for bibtex posts
 		for( final String term : bibtexSearchTerms ) {
@@ -277,12 +246,19 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 			assertEquals(1, bookmarkList.size());
 		}
 	}
+
+	protected void updateResourceIndices() {
+		for (int i = 0; i < luceneBibTexUpdater.getResourceIndeces().size(); i++) {
+			luceneBibTexUpdater.updateAndReloadIndex();
+			luceneBookmarkUpdater.updateAndReloadIndex();
+		}
+	}
 	
 	/**
 	 * tests handling of spam posts
 	 */
 	@Test
-	@Ignore // TODO: fails on hudson
+	// @Ignore // TODO: fails on hudson
 	public void spamPosts() {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
@@ -297,19 +273,14 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		// create testuser
 		final String userName = "testuser1";
 		final User user = new User(userName);
-		// prepare searcher
-		final ResourceSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
-		final ResourceSearch<Bookmark> bookmarkSearcher = LuceneSearchBookmarks.getInstance();
 		
 		// flag user as spammer
 		user.setPrediction(1);
 		user.setSpammer(true);
 		user.setAlgorithm("luceneTest");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
-		for( int i=0; i<LuceneBase.getRedundantCnt(); i++ ) {
-			this.luceneBibTexUpdater.updateAndReloadIndex();
-			this.luceneBookmarkUpdater.updateAndReloadIndex();
-		}
+		
+		updateResourceIndices();
 		
 		// search
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, allowedGroups, userName, null, null, null, null, null, null, 1, 0);
@@ -323,10 +294,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		user.setSpammer(false);
 		user.setAlgorithm("admin");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
-		for( int i=0; i<LuceneBase.getRedundantCnt(); i++ ) {
-			this.luceneBibTexUpdater.updateAndReloadIndex();
-			this.luceneBookmarkUpdater.updateAndReloadIndex();
-		}
+		
+		updateResourceIndices();
 		
 		// search
 		final int groupId = -1;
@@ -335,8 +304,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 			groups.add(i);
 		
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, allowedGroups, userName, null, null, null, null, null, null, 1000, 0);
-		bibRefList    = bibTexDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, null, 1000, 0, null, this.dbSession);
-		assertEquals(bibRefList.size(), bibResultList.size());
+		bibRefList    = publicationDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, null, 1000, 0, null, this.dbSession);
+		assertEquals(bibRefList.size() - 1, bibResultList.size()); // db list contains one interhash duplicate!
 
 		// FIXME: this test is broken - we only get public posts from the db logic
 		/*
@@ -362,10 +331,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		user.setSpammer(true);
 		user.setAlgorithm("luceneTest");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
-		for( int i=0; i<LuceneBase.getRedundantCnt(); i++ ) {
-			this.luceneBibTexUpdater.updateAndReloadIndex();
-			this.luceneBookmarkUpdater.updateAndReloadIndex();
-		}
+		
+		updateResourceIndices();
 		
 		// search
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, allowedGroups, userName, null, null, null, null, null, null, 1000, 0);
@@ -389,15 +356,12 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		user.setSpammer(false);
 		user.setAlgorithm("luceneTest");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
-		for( int i=0; i<LuceneBase.getRedundantCnt(); i++ ) {
-			this.luceneBibTexUpdater.updateAndReloadIndex();
-			this.luceneBookmarkUpdater.updateAndReloadIndex();
-		}
+		updateResourceIndices();
 
 		// search
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, allowedGroups, userName, null, null, null, null, null, null, 1000, 0);
-		bibRefList    = bibTexDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, null, 1000, 0, null, this.dbSession);
-		assertEquals(bibRefList.size(), bibResultList.size());
+		bibRefList    = publicationDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, null, 1000, 0, null, this.dbSession);
+		assertEquals(bibRefList.size() - 1, bibResultList.size()); // db list contains one interhash duplicate
 }
 
 	private void waitForDB() {
@@ -427,13 +391,13 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		// store test post in database
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
-		final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
+		final Post<BibTex> bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		final String bibTitle = "luceneTitle1";
 		bibtexPost.getResource().setTitle(bibTitle);
 		
-		bibTexDb.createPost(bibtexPost, this.dbSession);
+		publicationDb.createPost(bibtexPost, this.dbSession);
 
-		final Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
+		final Post<Bookmark> bookmarkPost = generateBookmarkDatabaseManagerTestPost();
 		final String bmTitle = "BrandNewluceneTitle2";
 		bookmarkPost.getUser().setName("brandNewLuceneName");
 		bookmarkPost.getResource().setTitle(bmTitle);
@@ -442,16 +406,9 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bookmarkDb.createPost(bookmarkPost, this.dbSession);
 
 		// update index
-		for( int i=0; i<LuceneBase.getRedundantCnt(); i++ ) {
-			this.luceneBibTexUpdater.updateAndReloadIndex();
-			this.luceneBookmarkUpdater.updateAndReloadIndex();
-		}
-
-		// prepare searcher
-		final ResourceSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
-		final ResourceSearch<Bookmark> bookmarkSearcher = LuceneSearchBookmarks.getInstance();
-
-		// search for bibtex
+		updateResourceIndices();
+		
+		// search for publications
 		ResultList<Post<BibTex>> bibResultList = 
 			bibtexSearcher.getPosts(bibtexPost.getUser().getName(), null, null, allowedGroups, bibTitle, null, null, null, null, null, null, 1, 0);
         
@@ -510,13 +467,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException 
 	 */
 	private static void generateIndex() throws IOException, ClassNotFoundException, SQLException {
-		final LuceneGenerateResourceIndex<BibTex> bibTexIndexer = LuceneGenerateBibTexIndex.getInstance();
-		final LuceneGenerateResourceIndex<Bookmark> bookmarkIndexer = LuceneGenerateBookmarkIndex.getInstance();
-		
-		bibTexIndexer.generateIndex();
-		bookmarkIndexer.generateIndex();
-		bibTexIndexer.shutdown();
-		bookmarkIndexer.shutdown();
+		luceneBibTexUpdater.generateIndex(false);
+		luceneBookmarkUpdater.generateIndex(false);
 	}
 	
 	/**
@@ -600,22 +552,11 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setCount(0);
-		bookmark.setTitle("test"+(Math.round(Math.random()*Integer.MAX_VALUE))+" "+LUCENE_MAGIC_TITLE);
+		bookmark.setTitle("test" + (Math.round(Math.random() * Integer.MAX_VALUE)) + " " + LUCENE_MAGIC_TITLE);
 		bookmark.setUrl("http://www.testurl.orgg");
 		bookmark.recalculateHashes();
 		
 		post.setResource(bookmark);
 		return post;
 	}
-	
-	private void init() {
-		this.luceneBibTexIndex     = new LuceneBibTexIndex(0);
-		this.luceneBookmarkIndex   = new LuceneBookmarkIndex(0);
-		this.luceneBibTexIndex.reset();
-		this.luceneBookmarkIndex.reset();
-		
-		this.luceneBibTexUpdater   = LuceneBibTexManager.getInstance();
-		this.luceneBookmarkUpdater = LuceneBookmarkManager.getInstance();
-	}
 }
-
