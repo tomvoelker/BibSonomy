@@ -90,7 +90,7 @@
 													<c:choose>
 														<c:when test="${entry.value.status ne 'PLANNED'}">
 															<fmt:message key="synchronization.result"/>
-															<c:out value="${entry.value.status} "/> <em>(<c:out value="${entry.value.info}"/>)</em>
+															<fmt:message key="synchronization.result.${fn:toLowerCase(entry.value.status)}"/> <em><c:out value=" (${entry.value.info})"/></em>
 														</c:when>
 														<c:otherwise>
 															<fmt:message var="syncPlanned" key="synchronization.planned"/>

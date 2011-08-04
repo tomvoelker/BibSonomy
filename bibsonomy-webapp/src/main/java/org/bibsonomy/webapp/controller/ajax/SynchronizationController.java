@@ -184,25 +184,11 @@ public class SynchronizationController extends AjaxController implements Minimal
 			SynchronizationData value = entry.getValue();
 			dataString.append(df.format(value.getLastSyncDate()) + " ");
 			dataString.append(messageSource.getMessage("synchronization.result", null, locale));
-			dataString.append(" " + messageSource.getMessage("synchronization.result." + value.getStatus().toString().toLowerCase(), null, locale) + " (" + value.getInfo() + ")");
+			dataString.append(" " + messageSource.getMessage("synchronization.result." + value.getStatus().toString().toLowerCase(), null, locale) + " <em>(" + value.getInfo() + ")</em>");
 			json.put(entry.getKey().getSimpleName(), dataString.toString());
 		}
 		return json;
 	}
-
-//	private JSONObject serializeSyncData(final Map<Class<? extends Resource>, SynchronizationData> data) {
-//		final JSONObject json = new JSONObject();
-//
-//		for (final Entry<Class<? extends Resource>, SynchronizationData> entry : data.entrySet()) {
-//			final SynchronizationData value = entry.getValue();
-//			final HashMap<String, Object> values = new HashMap<String, Object>();
-//			values.put("date", value.getLastSyncDate().getTime());
-//			values.put("status", value.getStatus());
-//			values.put("info", value.getInfo());
-//			json.put(entry.getKey().getSimpleName(), values);
-//		}
-//		return json;
-//	}
 
 	/**
 	 * Currently, the method counts all operations and then creates human-readable
