@@ -5,26 +5,30 @@
 	<name>BibSonomy-Util</name>
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-util</artifactId>
-	<version>2.0.7-SNAPSHOT</version>
+	<version>2.0.18-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<description>Utils to be used outside BibSonomy</description>
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>2.0.7-SNAPSHOT</version>
+		<version>2.0.18-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<!-- TODO: use tomcat 5 jars? -->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>catalina</artifactId>
+			<version>6.0.26</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
