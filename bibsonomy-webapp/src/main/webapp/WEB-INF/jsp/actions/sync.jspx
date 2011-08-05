@@ -56,6 +56,12 @@
 						<h2><c:out value="${serviceName}: "/> <c:out value="${service.service}" /></h2>	
 									
 						<fieldset class="fsOuter">
+							<p>
+								<fmt:message key="synchronization.explanation">
+									<fmt:param><fmt:message key="resourceType.${service.resourceType.simpleName}.plural"/></fmt:param>
+									<fmt:param><fmt:message key="synchronization.direction.${fn:toLowerCase(service.direction)}.on_client"/></fmt:param>
+								</fmt:message>
+							</p>
 
 							<!-- check if all resource types have a sync plan (and show "sync" button only then) -->
 							<c:set var="syncButtonDisplay" value="${empty service.lastSyncData ? 'none' : 'inline'}"/>
@@ -76,13 +82,13 @@
 										<dl><dt>
 											<c:choose>
 												<c:when test="${entry.key == 'BibTex'}">
-													<c:out value="${publications}"/>
+													<c:out value="${publications}"/>:
 												</c:when>
 												<c:otherwise>
-													<c:out value="${bookmarks}"/>
+													<c:out value="${bookmarks}"/>:
 												</c:otherwise>
 											</c:choose>
-										:</dt>
+										</dt>
 										<dd>
 											<c:choose>
 												<c:when test="${not empty entry.value}">
