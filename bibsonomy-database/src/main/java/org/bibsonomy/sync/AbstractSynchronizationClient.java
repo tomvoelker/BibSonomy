@@ -19,8 +19,6 @@ import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.util.IbatisSyncDBSessionFactory;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -120,12 +118,6 @@ public abstract class AbstractSynchronizationClient {
 		final LogicInterface serverLogic = getServerLogic(syncService.getServerUser());
 		
 		return getLastSyncData(serverLogic, serverLogic.getAuthenticatedUser().getName(), resourceType);
-	}
-	
-	public void resetServer(final LogicInterface clientLogic, final URI syncServer) {
-		SyncService syncService = this.getServerByURI(clientLogic, syncServer);
-		deleteSyncData(syncService, BibTex.class, null);
-		deleteSyncData(syncService, Bookmark.class, null);
 	}
 	
 	public void deleteSyncData(final SyncService syncService, final Class<? extends Resource> resourceType, final Date syncDate) {
