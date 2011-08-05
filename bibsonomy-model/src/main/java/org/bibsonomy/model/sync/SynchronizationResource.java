@@ -86,4 +86,8 @@ public abstract class SynchronizationResource {
 		return action;
 	}
 
+	@Override
+	public String toString() {
+		return action.toString();
+	}
 }
