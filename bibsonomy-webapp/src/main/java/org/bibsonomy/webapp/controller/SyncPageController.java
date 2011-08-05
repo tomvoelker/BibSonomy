@@ -36,9 +36,9 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class SyncPageController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware {
-	
+
 	private static final Log log = LogFactory.getLog(SyncPageController.class);
-	
+
 	private Errors errors;
 	private SyncLogicInterface syncLogic;
 	private TwoStepSynchronizationClient syncClient;
@@ -54,9 +54,9 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 
 	@Override
 	public View workOn(AjaxSynchronizationCommand command) {
-		
+
 		final RequestWrapperContext context = command.getContext();
-		
+
 		/*
 		 * some security checks
 		 */
@@ -70,53 +70,68 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 		if (!context.isValidCkey()) {
 			this.errors.reject("error.field.valid.ckey");
 		}
-		
+
 		if (!command.getContext().getUserLoggedIn()) {
 			throw new AccessDeniedException();
 		}
-		
-		
+
+
 		if (!present(syncClient)) {
 			errors.reject("error.synchronization.noclient");
 			return Views.ERROR;
 		}
-		
+
 		log.debug("try to get sync services for user");
 		final List<SyncService> userServices = syncLogic.getSyncServer(command.getContext().getLoginUser().getName());
-		
+
 		log.debug("try to get synchronization data from remote service");
 		for (final SyncService syncService : userServices) {
-			final Map<String, SynchronizationData> syncData = new HashMap<String, SynchronizationData>();
+			final Map<String, SynchronizationData> lastSyncData = new HashMap<String, SynchronizationData>();
 			try {
 				for (final Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(syncService.getResourceType())) {
-					SynchronizationData lastSyncData;
-					boolean missedPlan = false;
-					Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan;
-					do {
-						missedPlan = false;
-						lastSyncData = syncClient.getLastSyncData(syncService, resourceType);
-						
-						if(present(lastSyncData) && lastSyncData.getStatus().equals(SynchronizationStatus.PLANNED)) {
-							syncPlan = SyncUtils.getSyncPlan(syncService.getService(), requestLogic);
-							if(!present(syncPlan)) {
-								missedPlan = true;
-								syncClient.deleteSyncData(syncService, resourceType, lastSyncData.getLastSyncDate());
-							} else {
-								syncService.setPlan(getPlanSummary(syncPlan, syncService.getService().toString(), requestLogic.getLocale(), messageSource, projectHome));
-							}
-						}
-					} while (missedPlan);
-					syncData.put(resourceType.getSimpleName(), lastSyncData);
+					lastSyncData.put(resourceType.getSimpleName(), getLastSyncData(syncService, resourceType));
 				}
 			} catch (AccessDeniedException e) {
 				log.debug("access denied to remote service " + syncService.getService().toString());
 			}
-			syncService.setLastSyncData(syncData);
+			syncService.setLastSyncData(lastSyncData);
 		}
-		
+
 		command.setSyncServer(userServices);
-		
+
 		return Views.SYNC;
+	}
+
+	/**
+	 * Gets the last sync data from the database. If it's status is PLANNED but
+	 * not sync plan can be found, the sync data is deleted and the next one is
+	 * requested. This repeats until a non "PLANNED" status is found.
+	 * 
+	 * @param syncService
+	 * @param resourceType
+	 * @return
+	 */
+	private SynchronizationData getLastSyncData(final SyncService syncService, final Class<? extends Resource> resourceType) {
+		SynchronizationData lastSyncData = null;
+		while (present(lastSyncData = syncClient.getLastSyncData(syncService, resourceType))) {
+			if (!SynchronizationStatus.PLANNED.equals(lastSyncData.getStatus())) break;
+			/*
+			 * last status is "PLANNED" -> try to get plan from session 
+			 */
+			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan = SyncUtils.getSyncPlan(syncService.getService(), requestLogic);
+			if (present(syncPlan)) {
+				/*
+				 * plan found in session -> get summary and return last sync data
+				 */
+				syncService.setPlan(getPlanSummary(syncPlan, syncService.getService().toString(), requestLogic.getLocale(), messageSource, projectHome));
+				return lastSyncData;
+			}
+			/*
+			 * not found - remove sync date and try again
+			 */
+			syncClient.deleteSyncData(syncService, resourceType, lastSyncData.getLastSyncDate());
+		}
+		return lastSyncData;
 	}
 
 	@Override
@@ -145,7 +160,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	public void setSyncClient(TwoStepSynchronizationClient syncClient) {
 		this.syncClient = syncClient;
 	}
-	
+
 	/**
 	 * @param messageSource the messageSource to set
 	 */

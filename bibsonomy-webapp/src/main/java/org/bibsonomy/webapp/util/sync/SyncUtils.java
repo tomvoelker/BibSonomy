@@ -21,9 +21,9 @@ import org.springframework.context.MessageSource;
  */
 public class SyncUtils {
 	/**
-	 * begin of key to access the sync plan stored in session
+	 * prefix of key to access the sync plan stored in the session
 	 */
-	public static final String SESSION_KEY = "SYNC_PLAN_";
+	private static final String SESSION_KEY = "SYNC_PLAN_";
 	
 	/**
 	 * 
@@ -32,12 +32,23 @@ public class SyncUtils {
 	 * @return The sync plan for the given user or <code>null</code> if no such plan could be found.
 	 */
 	@SuppressWarnings("unchecked")
-	public static  Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final URI serviceName, final RequestLogic requestLogic) {
+	public static Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final URI serviceName, final RequestLogic requestLogic) {
 		final Object sessionAttribute = requestLogic.getSessionAttribute(SESSION_KEY + serviceName);
 		if (!present(sessionAttribute) || !(sessionAttribute instanceof Map<?,?>)) {
 			return null;
 		}
 		return (Map<Class<? extends Resource>, List<SynchronizationPost>>) sessionAttribute;
+	}
+	
+	/**
+	 * Stores the sync plan in the session.
+	 * 
+	 * @param serviceName
+	 * @param syncPlan
+	 * @param requestLogic 
+	 */
+	public static void setSyncPlan(final URI serviceName, final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan, final RequestLogic requestLogic) {
+		requestLogic.setSessionAttribute(SyncUtils.SESSION_KEY + serviceName, syncPlan);
 	}
 	
 	/**

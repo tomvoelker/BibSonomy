@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.controller.ajax;
 
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.bibsonomy.webapp.util.sync.SyncUtils.getPlanSummary;
 
 import java.net.URI;
 import java.util.LinkedHashMap;
@@ -77,7 +76,12 @@ public class SynchronizationController extends AjaxController implements Minimal
 		}
 
 		/*
-		 * 
+		 * get details for sync server
+		 */
+		final SyncService server = client.getServerByURI(logic, serviceName);
+		
+		/*
+		 * work on each HTTP method
 		 */
 		final JSONObject json = new JSONObject();
 		switch (requestLogic.getHttpMethod()) {
@@ -87,7 +91,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 */
 			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan;
 			try {
-				syncPlan = client.getSyncPlan(logic, serviceName);
+				syncPlan = client.getSyncPlan(logic, server);
 			} catch (final SynchronizationRunningException e) {
 				errors.reject("error.synchronization.running");
 				return Views.AJAX_ERRORS;
@@ -95,20 +99,19 @@ public class SynchronizationController extends AjaxController implements Minimal
 			/*
 			 * store it in session for later use
 			 */
-			this.setSyncPlan(serviceName, syncPlan);
+			SyncUtils.setSyncPlan(serviceName, syncPlan, requestLogic);
 			/*
 			 * serialize it to show user
 			 */
 			json.put("syncPlan", serializeSyncPlan(syncPlan, serviceName));
 			
 			/*
-			 * get syncData of this plan
+			 * get sync data of this plan
 			 */
 			final Map<Class<? extends Resource>, SynchronizationData> syncData = new LinkedHashMap<Class<? extends Resource>, SynchronizationData>();
-			SyncService server = client.getServerByURI(logic, serviceName);
 			for (Class<? extends Resource> resourceType : syncPlan.keySet()) {
-				SynchronizationData data = client.getLastSyncData(server, resourceType);
-				if(SynchronizationStatus.PLANNED.equals(data.getStatus())) {
+				final SynchronizationData data = client.getLastSyncData(server, resourceType);
+				if (SynchronizationStatus.PLANNED.equals(data.getStatus())) {
 					syncData.put(resourceType, data);
 				}
 			}
@@ -119,7 +122,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 			/*
 			 * get sync plan from session
 			 */
-			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan2 = this.getSyncPlan(serviceName);
+			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan2 = SyncUtils.getSyncPlan(serviceName, this.requestLogic);
 			if (!present(syncPlan2)) {
 				errors.reject("error.synchronization.no_sync_plan_found");
 				return Views.AJAX_ERRORS;
@@ -129,7 +132,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 */
 			final Map<Class<? extends Resource>, SynchronizationData> syncResult;
 			try {
-				syncResult = client.synchronize(logic, serviceName, syncPlan2);
+				syncResult = client.synchronize(logic, server, syncPlan2);
 			} catch (final SynchronizationRunningException e) {
 				errors.reject("error.synchronization.running");
 				return Views.AJAX_ERRORS;
@@ -138,7 +141,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 * remove sync plan from session
 			 * FIXME: do this before synchronize()?
 			 */
-			this.setSyncPlan(serviceName, null);
+			SyncUtils.setSyncPlan(serviceName, null, requestLogic);
 			/*
 			 * serialize result
 			 */
@@ -147,19 +150,18 @@ public class SynchronizationController extends AjaxController implements Minimal
 		case DELETE:
 			/*
 			 * delete synchronization data
+			 * 
+			 * if no sync date is given -> all syncData for all resourceTypes is removed
 			 */
-			if (!present(command.getSyncDate())) {
+			final JSONObject second = new JSONObject();
+			for (final Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(server.getResourceType())) {
+				client.deleteSyncData(server, resourceType, command.getSyncDate());
 				/*
-				 * if no sync date given -> reset server(delete all syncData for all resourceTypes)
+				 * add message for empty result
 				 */
-				client.resetServer(logic, serviceName);
-				JSONObject second = new JSONObject();
-				Class<? extends Resource> requiredType = client.getServerByURI(logic, serviceName).getResourceType();
-				for (Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(requiredType)) {
-					second.put(resourceType.getSimpleName(), messageSource.getMessage("synchronization.noresult", null, requestLogic.getLocale()));
-				}
-				json.put("syncData", second);
+				second.put(resourceType.getSimpleName(), messageSource.getMessage("synchronization.noresult", null, requestLogic.getLocale()));
 			}
+			json.put("syncData", second);
 			break;
 		default:
 			/*
@@ -173,40 +175,21 @@ public class SynchronizationController extends AjaxController implements Minimal
 		return Views.AJAX_JSON;
 	}
 	
-	/**
-	 * Retrieves the sync plan from the session. If no plan is found, <code>null</code> is returned.
-	 * @param serviceName
-	 * @return
-	 */
-	private Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final URI serviceName) {
-		 return SyncUtils.getSyncPlan(serviceName, requestLogic);
-	}
-	
-	/**
-	 * Stores the sync plan in the session.
-	 * 
-	 * @param serviceName
-	 * @param syncPlan
-	 */
-	private void setSyncPlan(final URI serviceName, final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan) {
-		requestLogic.setSessionAttribute(SyncUtils.SESSION_KEY + serviceName, syncPlan);
-	}
-	
 	private JSONObject serializeSyncData(final Map<Class<? extends Resource>, SynchronizationData> data) {
 		final JSONObject json = new JSONObject();
 		final Locale locale = requestLogic.getLocale();
-		final DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+		final DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
 		for (final Entry<Class<? extends Resource>, SynchronizationData> entry : data.entrySet()) {
-			StringBuilder dataString = new StringBuilder();
-			SynchronizationData value = entry.getValue();
-			dataString.append(df.format(value.getLastSyncDate()) + " ");
-			dataString.append(messageSource.getMessage("synchronization.result", null, locale));
-			dataString.append(" " + messageSource.getMessage("synchronization.result." + value.getStatus().toString().toLowerCase(), null, locale));
-			if(present(value.getInfo())) {
-				dataString.append(" <em>(" + value.getInfo() + ")</em>");
+			final StringBuilder buf = new StringBuilder();
+			final SynchronizationData value = entry.getValue();
+			buf.append(dateFormat.format(value.getLastSyncDate()) + " ");
+			buf.append(messageSource.getMessage("synchronization.result", null, locale));
+			buf.append(" " + messageSource.getMessage("synchronization.result." + value.getStatus().toString().toLowerCase(), null, locale));
+			if (present(value.getInfo())) {
+				buf.append(" <em>(" + value.getInfo() + ")</em>");
 			}
-			json.put(entry.getKey().getSimpleName(), dataString.toString());
+			json.put(entry.getKey().getSimpleName(), buf.toString());
 		}
 		return json;
 	}
@@ -222,7 +205,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 		final JSONObject json = new JSONObject();
 		final Locale locale = requestLogic.getLocale();
 		
-		Map<Class<? extends Resource>, Map<String, String>> planSummary = getPlanSummary(syncPlan, serverName.toString(), locale, messageSource, projectHome);
+		final Map<Class<? extends Resource>, Map<String, String>> planSummary = SyncUtils.getPlanSummary(syncPlan, serverName.toString(), locale, messageSource, projectHome);
 		
 		for (final Entry<Class<? extends Resource>, Map<String, String>> planEntry : planSummary.entrySet()) {
 			json.put(planEntry.getKey().getSimpleName(), planEntry.getValue());
