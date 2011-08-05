@@ -38,8 +38,7 @@
 					<property name="allowedFields">
 						<list>
 							<value>serviceName</value>
-							<value>syncBookmarks</value>
-							<value>syncPublications</value>
+							<value>syncDate</value>
 						</list>
 					</property> 
 					</bean>
