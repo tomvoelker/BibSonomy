@@ -128,7 +128,7 @@ public class SynchronizationPost extends SynchronizationResource {
 
 	@Override
 	public String toString() {
-		return intraHash;
+		return super.toString() + " " + intraHash;
 	}
 
 }
