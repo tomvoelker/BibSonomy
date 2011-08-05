@@ -34,9 +34,9 @@
 	<div class="fsRow">
 		<form:label cssClass="fsLabel" path="resourceType" ><fmt:message key="synchronization.resourceType"/></form:label>
 		<form:select cssClass="fsInput fsSmall" path="resourceType">
-			<form:option value="org.bibsonomy.model.Resource"><fmt:message key="synchronization.resourceType.both"/></form:option>
-			<form:option value="org.bibsonomy.model.BibTex"><fmt:message key="publications"/></form:option>
-			<form:option value="org.bibsonomy.model.Bookmark"><fmt:message key="bookmarks"/></form:option>
+			<form:option value="org.bibsonomy.model.Resource"><fmt:message key="resourceType.Resource.plural"/></form:option>
+			<form:option value="org.bibsonomy.model.BibTex"><fmt:message key="resourceType.BibTex.plural"/></form:option>
+			<form:option value="org.bibsonomy.model.Bookmark"><fmt:message key="resourceType.Bookmark.plural"/></form:option>
 			</form:select>
 		<div class="dissError"><form:errors path="resourceType" /></div>
 	</div>

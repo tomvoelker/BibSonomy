@@ -120,9 +120,9 @@
 				<div class="fsRow">
 					<label class="fsLabel" for="newSyncServer.resourceType" ><fmt:message key="synchronization.resourceType"/></label>
 					<select class="fsInput fsSmall" name="newSyncServer.resourceType">
-						<option value="org.bibsonomy.model.Resource"><fmt:message key="synchronization.resourceType.both"/></option>
-						<option value="org.bibsonomy.model.BibTex"><fmt:message key="publications"/></option>
-						<option value="org.bibsonomy.model.Bookmark"><fmt:message key="bookmarks"/></option>
+						<option value="org.bibsonomy.model.Resource"><fmt:message key="resourceType.Resource.plural"/></option>
+						<option value="org.bibsonomy.model.BibTex"><fmt:message key="resourceType.BibTex.plural"/></option>
+						<option value="org.bibsonomy.model.Bookmark"><fmt:message key="resourceType.Bookmark.plural"/></option>
 					</select>
 				</div>
 	        	<div class="fsRow">
