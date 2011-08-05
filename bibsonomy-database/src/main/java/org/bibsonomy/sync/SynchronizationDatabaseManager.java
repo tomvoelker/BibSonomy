@@ -325,8 +325,10 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 				 */
 				if (clientPost.getChangeDate().after(lastSyncDate)) {
 					
-					if(clientPost.getChangeDate().equals(serverPost.getChangeDate())) {
-						//same change date -> same post
+					if (clientPost.getChangeDate().equals(serverPost.getChangeDate())) {
+						/*
+						 * both have the same change date -> do nothing
+						 */
 						clientPost.setAction(SynchronizationAction.OK);
 					} else {
 						/*
