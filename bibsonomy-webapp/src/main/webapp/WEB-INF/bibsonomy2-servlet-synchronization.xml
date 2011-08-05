@@ -40,7 +40,6 @@
 							<value>serviceName</value>
 							<value>syncBookmarks</value>
 							<value>syncPublications</value>
-							<value>syncServer[*].*</value>
 						</list>
 					</property> 
 					</bean>
