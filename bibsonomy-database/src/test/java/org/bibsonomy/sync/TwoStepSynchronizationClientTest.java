@@ -215,6 +215,10 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 			assertEquals(SynchronizationStatus.PLANNED, syncData.getStatus());
 		}
 		assertNotNull(plannedDate);
+		/*
+		 * ... we'll have to wait a second (resolution of lastSyncDate column)
+		 */
+		wait(1);
 		
 		/*
 		 * we ask for the plan again (stupid, but user's could do this)
