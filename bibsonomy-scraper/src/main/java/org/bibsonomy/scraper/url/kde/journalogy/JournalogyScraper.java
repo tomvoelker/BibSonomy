@@ -56,8 +56,8 @@ public class JournalogyScraper extends AbstractUrlScraper {
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST2), AbstractUrlScraper.EMPTY_PATTERN));
 	}
-
-	private static final Pattern pattern_download = Pattern.compile("/BibTeX.bib?type=2&id=");
+	
+	private static final Pattern pattern_download = Pattern.compile(".bib?type=2&format=0&download=1");
 	private static final Pattern pattern_id = Pattern.compile("/(Paper|Publication)/([0-9]+)");
 	
 	public String getSupportedSiteName() {
@@ -85,7 +85,7 @@ public class JournalogyScraper extends AbstractUrlScraper {
 			final Matcher idMatcher = pattern_id.matcher(sc.getUrl().toString());
 			
 			if(idMatcher.find()) {
-				String downloadLink = "http://" + HOST2 + pattern_download + idMatcher.group(2);
+				String downloadLink = "http://" + HOST2 + "/" + idMatcher.group(2) + pattern_download;
 				String bibtex = WebUtils.getContentAsString(downloadLink);
 				if (bibtex != null) {
 					// add the missing ","  

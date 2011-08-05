@@ -51,7 +51,7 @@ import org.bibsonomy.util.WebUtils;
  */
 public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "SpringerLink";
-	private static final String SITE_URL = "http://springerlink.com/";
+	private static final String SITE_URL = "http://www.springerlink.com/";
 
 	private static final Pattern CONTENT_PATTERN = Pattern.compile("content/(.+?)(/|$)");
 	private static final Pattern ID_PATTERN = Pattern.compile("id=([^\\&]*)");
@@ -117,15 +117,14 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				 */
 				final String postContent = 
 					"__VIEWSTATE=" + UrlUtils.safeURIEncode(viewStateMatcher.group(1)) + 
-					"&ctl00%24ctl18%24cultureList=en-us" +
-					"&ctl00%24ctl18%24SearchControl%24BasicSearchForTextBox=" +
-					"&ctl00%24ctl18%24SearchControl%24BasicAuthorOrEditorTextBox=" +
-					"&ctl00%24ctl18%24SearchControl%24BasicPublicationTextBox=" +
-					"&ctl00%24ctl18%24SearchControl%24BasicVolumeTextBox=" +
-					"&ctl00%24ctl18%24SearchControl%24BasicIssueTextBox=" +
-					"&ctl00%24ctl18%24SearchControl%24BasicPageTextBox=" +
+					"&ctl00%24ctl19%24cultureList=en-us" +
+					"&ctl00%24ctl19%24SearchControl%24BasicSearchForTextBox=" +
+					"&ctl00%24ctl19%24SearchControl%24BasicAuthorOrEditorTextBox=" +
+					"&ctl00%24ctl19%24SearchControl%24BasicPublicationTextBox=" +
+					"&ctl00%24ctl19%24SearchControl%24BasicVolumeTextBox=" +
+					"&ctl00%24ctl19%24SearchControl%24BasicIssueTextBox=" +
+					"&ctl00%24ctl19%24SearchControl%24BasicPageTextBox=" +
 					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24Export=AbstractRadioButton" +
-					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24Format=TextRadioButton" +
 					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24CitationManagerDropDownList=BibTex" +
 					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24ExportCitationButton=Export+Citation" +
 					"&__EVENTVALIDATION=" + UrlUtils.safeURIEncode(eventValidationMatcher.group(1));
