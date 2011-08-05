@@ -29,6 +29,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
@@ -185,7 +186,7 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 		/*
 		 * setup server
 		 */
-		final URI syncServer = new URI(SYNC_SERVER_URI);
+		final URI syncServerUri = new URI(SYNC_SERVER_URI);
 
 		/*
 		 * setup synchronization client
@@ -195,7 +196,8 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 		/*
 		 * check that synchronization is enabled
 		 */
-		assertEquals(SYNC_SERVER_URI, clientLogic.getSyncServer(clientUser.getName()).get(0).getService().toString());
+		final SyncService syncServer = clientLogic.getSyncServer(clientUser.getName()).get(0);
+		assertEquals(SYNC_SERVER_URI, syncServer.getService().toString());
 
 		/*
 		 * get and check sync plan
@@ -210,7 +212,7 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 		 */
 		Date plannedDate = null;
 		for (final Class<? extends Resource> resourceType : syncPlan.keySet()) {
-			final SynchronizationData syncData = serverLogic.getLastSyncData(serverUser.getName(), syncServer, resourceType);
+			final SynchronizationData syncData = serverLogic.getLastSyncData(serverUser.getName(), syncServerUri, resourceType);
 			plannedDate = syncData.getLastSyncDate();
 			assertEquals(SynchronizationStatus.PLANNED, syncData.getStatus());
 		}
@@ -232,7 +234,7 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 		 * status should still be "PLANNED"
 		 */
 		for (final Class<? extends Resource> resourceType : syncPlan2.keySet()) {
-			final SynchronizationData syncData = serverLogic.getLastSyncData(serverUser.getName(), syncServer, resourceType);
+			final SynchronizationData syncData = serverLogic.getLastSyncData(serverUser.getName(), syncServerUri, resourceType);
 			/*
 			 * should be a different date now
 			 */
@@ -247,13 +249,13 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 			
 			assertEquals(7, resourceSyncPlan.size());
 
-			assertEquals(SynchronizationStatus.PLANNED, serverLogic.getLastSyncData(serverUser.getName(), syncServer, resourceType).getStatus());
+			assertEquals(SynchronizationStatus.PLANNED, serverLogic.getLastSyncData(serverUser.getName(), syncServerUri, resourceType).getStatus());
 			
 			checkSyncPlan(resourceSyncPlan, resourceType);
 			
-			syncResources(sync, syncServer, resourceType, KEYS.get(resourceType), resourceSyncPlan);
+			syncResources(sync, syncServerUri, resourceType, KEYS.get(resourceType), resourceSyncPlan);
 			
-			assertEquals(SynchronizationStatus.DONE, serverLogic.getLastSyncData(serverUser.getName(), syncServer, resourceType).getStatus());
+			assertEquals(SynchronizationStatus.DONE, serverLogic.getLastSyncData(serverUser.getName(), syncServerUri, resourceType).getStatus());
 		}
 		
 
@@ -281,7 +283,7 @@ public class TwoStepSynchronizationClientTest extends AbstractDatabaseManagerTes
 	
 
 
-	private void changeLeftSyncAndCheck(final TwoStepSynchronizationClient sync, final URI syncServer, final String leftHost, final User leftUser, final DBLogic leftLogic, final String rightHost, final User rightUser, final DBLogic rightLogic, final String deleteHash) {
+	private void changeLeftSyncAndCheck(final TwoStepSynchronizationClient sync, final SyncService syncServer, final String leftHost, final User leftUser, final DBLogic leftLogic, final String rightHost, final User rightUser, final DBLogic rightLogic, final String deleteHash) {
 		final Date now = new Date();
 		final List<Post<?>> posts = new ArrayList<Post<?>>();
 		/*

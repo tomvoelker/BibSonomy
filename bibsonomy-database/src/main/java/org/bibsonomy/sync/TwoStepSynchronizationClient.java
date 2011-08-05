@@ -2,7 +2,6 @@ package org.bibsonomy.sync;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,9 +51,7 @@ public class TwoStepSynchronizationClient extends AbstractSynchronizationClient 
 	 * @param resourceType
 	 * @return
 	 */
-	public Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final LogicInterface clientLogic, final URI service) {
-		
-		final SyncService syncServer = getServerByURI(clientLogic, service);
+	public Map<Class<? extends Resource>, List<SynchronizationPost>> getSyncPlan(final LogicInterface clientLogic, final SyncService syncServer) {
 
 		/*
 		 * retrieve instance of server logic
@@ -62,7 +59,7 @@ public class TwoStepSynchronizationClient extends AbstractSynchronizationClient 
 		final LogicInterface serverLogic = getServerLogic(syncServer.getServerUser());
 		
 		if (!present(serverLogic)) {
-			throw new IllegalArgumentException("Synchronization for " + service + " not configured for user " + clientLogic.getAuthenticatedUser());
+			throw new IllegalArgumentException("Synchronization for " + syncServer.getService() + " not configured for user " + clientLogic.getAuthenticatedUser());
 		}
 		final String serverUserName = serverLogic.getAuthenticatedUser().getName();
 		
@@ -103,16 +100,14 @@ public class TwoStepSynchronizationClient extends AbstractSynchronizationClient 
 	 * @param resourceType
 	 * @return
 	 */
-	public Map<Class<? extends Resource>, SynchronizationData> synchronize(final LogicInterface clientLogic, final URI service, final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan) {
-		
-		final SyncService syncServer = getServerByURI(clientLogic, service);
+	public Map<Class<? extends Resource>, SynchronizationData> synchronize(final LogicInterface clientLogic, final SyncService syncServer, final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan) {
 		/*
 		 * retrieve instance of server logic
 		 */
 		final LogicInterface serverLogic = getServerLogic(syncServer.getServerUser());
 		
 		if (!present(serverLogic)) {
-			throw new IllegalArgumentException("Synchronization for " + service + " not configured for user " + clientLogic.getAuthenticatedUser());
+			throw new IllegalArgumentException("Synchronization for " + syncServer.getService() + " not configured for user " + clientLogic.getAuthenticatedUser());
 		}
 		final String serverUserName = serverLogic.getAuthenticatedUser().getName();
 
