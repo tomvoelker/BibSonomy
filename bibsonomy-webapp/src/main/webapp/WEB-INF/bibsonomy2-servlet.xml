@@ -392,6 +392,7 @@
 						<property name="controllerBeanName" value="spheresPageController"/>
 						<property name="allowedFields">
 							<list>
+								<value>format</value>
 								<value>sphereName</value>
 								<value>requestedTags</value>
 							</list>
