@@ -84,13 +84,13 @@ public class SyncUtils {
 					deleteClient++;
 					break;
 				case CREATE_SERVER:
-					createClient++;
+					createServer++;
 					break;
 				case UPDATE_SERVER:
-					updateClient++;
+					updateServer++;
 					break;
 				case DELETE_SERVER:
-					deleteClient++;
+					deleteServer++;
 					break;
 				case OK:
 					ok++;
