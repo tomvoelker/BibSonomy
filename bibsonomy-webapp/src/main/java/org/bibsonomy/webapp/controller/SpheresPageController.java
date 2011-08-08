@@ -224,7 +224,11 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		command.setSpheresTagClouds(spheresTagClouds);
 		
 		// all done
-		return Views.SPHERELIST;
+		String format = command.getFormat();
+		if ("html".equals(format)) {
+			return Views.SPHERELIST;
+		}
+		return Views.getViewByFormat(format);
 	}	
 
 }
