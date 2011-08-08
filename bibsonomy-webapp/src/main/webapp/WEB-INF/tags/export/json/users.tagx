@@ -10,7 +10,7 @@
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	>
 
-	<jsp:directive.attribute name="users" type="java.util.List" required="true" />
+	<jsp:directive.attribute name="users" type="java.util.Collection" required="true" />
 
 	  <!-- users -->
 	  	<c:forEach var="user" varStatus="status" items="${users}" >
