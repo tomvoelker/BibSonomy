@@ -203,18 +203,19 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	@Override
 	protected void createOrUpdateSuccess(final COMMAND command, final User loginUser, final Post<BibTex> post) {
 		super.createOrUpdateSuccess(command, loginUser, post);
-		handleAddFiles(command, loginUser.getName());
+		this.handleAddFiles(command, loginUser.getName());
 	}
 	
 	/**
 	 * The temporary files will be stored on the file system and in the database 
 	 */
 	private void handleAddFiles(final EditPublicationCommand command, final String userName) {
-		//TODO check length of fileHash list and fileName list
+		// TODO: check length of fileHash list and fileName list
 		final List<String> fileNames = command.getFileName();
 		if (!present(fileNames)) {
 			return;
 		}
+		final String intraHash = command.getPost().getResource().getIntraHash();
 		for (final String compoundFileName: fileNames) {
 			/*
 			 * copy temporary file to documents directory
@@ -223,7 +224,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			/*
 			 * add document to the database
 			 */
-			logic.createDocument(document, command.getIntraHashToUpdate());
+			this.logic.createDocument(document, intraHash);
 		}
 	}
 
@@ -287,20 +288,20 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	/**
 	 * @param scraper the scraper to set
 	 */
-	public void setScraper(Scraper scraper) {
+	public void setScraper(final Scraper scraper) {
 		this.scraper = scraper;
 	}
 	/**
 	 * @param docPath the docPath to set
 	 */
-	public void setDocPath(String docPath) {
+	public void setDocPath(final String docPath) {
 		this.docPath = docPath;
 	}
 
 	/**
 	 * @param tempPath the tempPath to set
 	 */
-	public void setTempPath(String tempPath) {
+	public void setTempPath(final String tempPath) {
 		this.tempPath = tempPath;
 	}
 
