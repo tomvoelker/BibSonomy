@@ -25,19 +25,21 @@
 						<c:choose>
 			    			<!-- check if user has reviewed this resource -->
 				    		<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
-				    			<li id="ownReview" class="${class}">
+				    			<li id="ownReview" class="${class}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review">
 				    				<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
 				    			</li>
 				    		</c:when>
 			    			<c:otherwise>
-			    				<li class="${class}">
+			    				<li class="${class}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review">
 			    					<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
 			    				</li>
 			    			</c:otherwise>
 			    		</c:choose>	   
 					</c:when>
 					<c:when test="${'Comment' eq discussionItem.class.simpleName}">
-						<li class="${class}"><comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}"/></li>
+						<li class="${class}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review">
+							<comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}"/>
+						</li>
 					</c:when>
 					<c:when test="${discussionItem.class.simpleName eq 'DiscussionItem'}">
 						<li class="${class}">

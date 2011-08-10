@@ -16,7 +16,6 @@
 	
 	<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
 
-	<span itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review">
 	<c:choose>
 		<c:when test="${anonymous}">
 			<img src="${resdir}/image/anonymous.png" alt="anonymous" class="commentPicture" />
@@ -49,5 +48,4 @@
 	
 	<!-- sub items -->
 	<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" />
-	</span>
 </jsp:root>

@@ -62,22 +62,6 @@ li.ui-state-hover {
 	text-align: left !important;	
 }
 
-/* TODO: add bigger stars
-.stars-off-2, .stars-on-2 {
-    position: relative;
-    height: 32px;
-    background: url(../image/stars-big.png) repeat-x 0 0px;
-}
-
-.stars-off-2 {
-	width: 160px;
-}
-
-.stars-on-2 {
-    position: absolute;
-    background-position: 0 -32px;
-}*/
-
 .ratingAvgInfo {
 	color: #555;
 	clear:left;
@@ -133,8 +117,7 @@ ul.discussionitemMenu li:first-child {
 
 .review.text, .comment.text {
 	font-size: 90%;
-	margin-top: 0.25em;
-	white-space: pre;
+	white-space: pre-wrap;
 }
 
 .fsform {

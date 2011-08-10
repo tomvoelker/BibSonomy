@@ -6,8 +6,7 @@
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review">
 
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />		
-	<!-- contains RDFa infos -->
-<!--	<div id="review_info_rating" xmlns:v="http://rdf.data-vocabulary.org/#" typeof="v:Review-aggregate">-->
+	<!-- contains schemo.org markup -->
 	<div id="review_info_rating" itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
 		<c:if test="${empty resource.numberOfRatings or resource.numberOfRatings &lt; 1 }">
 			<!-- TODO: change message keys when renaming BibTex class to Publication -->
@@ -24,12 +23,11 @@
 			<!-- TODO: add bigger star images and change dimension to 2 -->
 			<div><review:reviewStars rating="${resource.rating}" /></div>
 
-			<fmt:message var="ratingTitle" key="post.resource.review.reviews" />
-			
 			<!-- plural -->
+			<fmt:message var="ratingTitle" key="post.resource.review.reviews" />
 			<c:if test="${resource.numberOfRatings == 1}">
-				<fmt:message var="ratingTitle" key="post.resource.review.review" />
 				<!-- singular -->
+				<fmt:message var="ratingTitle" key="post.resource.review.review" />
 			</c:if>
 
 			<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="1" minFractionDigits="1" />
@@ -45,7 +43,6 @@
 				<span>
 					<c:out value="${ratingTitle}" />
 				</span>)
-<!--				<span class="initiallyHidden" id="ratingWorst" itemprop="worstRating">0</span>-->
 				<meta itemprop="worstRating" content="0.0"/>
 			</div>
 		</div>
