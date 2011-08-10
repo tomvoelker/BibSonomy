@@ -2,6 +2,8 @@ package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -57,8 +59,8 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 
 	@Ignore
 	@Test
-	public void deleteURL() {
-		bibTexExtraDb.deleteURL(this.BIB_TEST_HASH, this.TEST_USER, "http://localhost/mywiki/literature/BG98.pdf", this.dbSession);
+	public void deleteURL() throws MalformedURLException {
+		bibTexExtraDb.deleteURL(this.BIB_TEST_HASH, this.TEST_USER, new URL("http://localhost/mywiki/literature/BG98.pdf"), this.dbSession);
 		final List<BibTexExtra> extras = bibTexExtraDb.getURL(this.BIB_TEST_HASH, this.TEST_USER, this.dbSession);
 		assertEquals(1, extras.size());
 		assertEquals("http://members.pingnet.ch/gamma/junit.htm", extras.get(0).getUrl().toString());
@@ -105,7 +107,7 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	    Map<String, List<String>> extendedFieldList = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
 	    assertEquals(1, extendedFieldList.size());
 	    
-	    List<String> keys = extendedFieldList.get(extendedFieldList.keySet().iterator().next());
+	    final List<String> keys = extendedFieldList.get(extendedFieldList.keySet().iterator().next());
 	    
 	    assertEquals(3, keys.size());
 	    
@@ -117,9 +119,9 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	
 	@Test
 	public void getExtendedFieldByKey() {
-	    Map<String, List<String>> exFields = bibTexExtraDb.getExtendedFieldsByKey("testuser2", "1b298f199d487bc527a62326573892b8", "JEL", this.dbSession);
+	    final Map<String, List<String>> exFields = bibTexExtraDb.getExtendedFieldsByKey("testuser2", "1b298f199d487bc527a62326573892b8", "JEL", this.dbSession);
 	    
-	    List<String> keys = exFields.get(exFields.keySet().iterator().next());
+	    final List<String> keys = exFields.get(exFields.keySet().iterator().next());
 	    
 	    assertEquals(3, keys.size());
 	
