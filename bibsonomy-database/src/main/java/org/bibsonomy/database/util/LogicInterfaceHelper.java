@@ -93,7 +93,7 @@ public class LogicInterfaceHelper {
 			}
 			
 			if (param instanceof BibTexParam || param instanceof TagParam || param instanceof StatisticsParam) {
-				((GenericParam) param).setSimHash(id);
+				param.setSimHash(id);
 			}
 			param.setHash(hash.substring(1));
 		} else {

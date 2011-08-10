@@ -544,17 +544,11 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
      */
     private void validateGroupsForSynchronization(final Post<? extends Resource> post) {
     	/*
-    	 * check if not public or private group 
+    	 * if post has group make it private
     	 */
     	if (!GroupUtils.containsExclusiveGroup(post.getGroups())) {
-    		/*
-    		 * post has group -> change to private
-    		 */
     		post.setGroups(Collections.singleton(GroupUtils.getPrivateGroup()));
     	}
-    	/*
-    	 * if public or private is nothing to do
-    	 */
     }
 
     /*
@@ -689,7 +683,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		if (present(post)) {
 			/*
 			 * XXX: can't be added to the postDatabaseManager; calls
-			 * getPostDetails with an emtpy list of visible groups
+			 * getPostDetails with an empty list of visible groups
 			 */
 			final Resource resource = post.getResource();
 			final List<DiscussionItem> discussionSpace = this.discussionDatabaseManager.getDiscussionSpace(this.loginUser, resource.getInterHash(), session);
@@ -1115,8 +1109,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	 * check permissions
 	 */
 	for (final Post<?> post : posts) {
-	    PostUtils.populatePostWithUser(post, this.loginUser);
-	    PostUtils.populatePostWithDate(post, this.loginUser);
+	    PostUtils.populatePost(post, this.loginUser);
 	    this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 	}
 
@@ -1195,16 +1188,16 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
      */
     @Override
     public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
-	// TODO: Which of these checks should result in a DatabaseException,
-	// which do we want to handle otherwise (=status quo)
-    // TODO: not everybody can update gold standard publication posts
-	this.ensureLoggedIn();
+	/*
+	 * TODO: Which of these checks should result in a DatabaseException,
+	 * which do we want to handle otherwise (=status quo)
+	 */
+    this.ensureLoggedIn();
 	/*
 	 * check permissions
 	 */
 	for (final Post<?> post : posts) {
-	    PostUtils.populatePostWithUser(post, this.loginUser);
-	    PostUtils.populatePostWithDate(post, this.loginUser);
+	    PostUtils.populatePost(post, this.loginUser);
 	    this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 	}
 	final List<String> hashes = new LinkedList<String>();
@@ -1254,31 +1247,27 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 	PostUtils.setGroupIds(post, this.loginUser);
 	
 	/*
-	 * XXX: this is a "hack" and will be replaced soon
+	 * XXX: this is a "hack" and will be replaced any time
 	 * If the operation is UPDATE_URLS then create/delete the url right here and
 	 * return the intra hash.
 	 */
 	
 	if (PostUpdateOperation.UPDATE_URLS_ADD.equals(operation)) {  
 	    log.debug("Adding URL in updatePost()/DBLogic.java");
-	    final BibTex resource = (BibTex) post.getResource();
-	    final BibTexExtra resourceExtra = resource.getExtraUrls().get(0);
-	    resourceExtra.setDate(new Date());
-	    bibTexExtraDBManager.createURL(post.getResource()
-		.getIntraHash(), this.loginUser.getName(),
-		resourceExtra.getUrl().toExternalForm(),
-		resourceExtra.getText(), session);
-
-	    return post.getResource().getIntraHash();
+	    final BibTexExtra resourceExtra = ((BibTex) post.getResource()).getExtraUrls().get(0);
+	    
+	    /*
+	     *  TODO: here we extract the bibtex extra attributes to build a new
+	     *  bibtexextra object in the manager/param
+	     */
+	    this.bibTexExtraDBManager.createURL(oldIntraHash, this.loginUser.getName(), resourceExtra.getUrl().toExternalForm(), resourceExtra.getText(), session);
+	    return oldIntraHash;
 	} else if (PostUpdateOperation.UPDATE_URLS_DELETE.equals(operation)) {
 	    log.debug("Deleting URL in updatePost()/DBLogic.java");
-	    final BibTex resource = (BibTex) post.getResource();
-	    final BibTexExtra resourceExtra = resource.getExtraUrls().get(0);
-	    bibTexExtraDBManager.deleteURL(post.getResource()
-		    .getIntraHash(), this.loginUser.getName(),
-		    resourceExtra.getUrl().toExternalForm(), session);
+	    final BibTexExtra resourceExtra = ((BibTex) post.getResource()).getExtraUrls().get(0);
+	    this.bibTexExtraDBManager.deleteURL(oldIntraHash, this.loginUser.getName(), resourceExtra.getUrl(), session);
 	    
-	    return post.getResource().getIntraHash();
+	    return oldIntraHash;
 	}
 
 	/* 
@@ -2596,10 +2585,10 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 			 * if not create one
 			 */
 			if (!present(goldStandardPostinDB)) {
-				log.debug("no gold standard found for interHash " + interHash + ". Creating new gold standard publication");
+				log.debug("no gold standard found for interHash " + interHash + ". Creating new gold standard");
 				final String hash = HashID.INTER_HASH.getId() + interHash;
 				// FIXME: these lists maybe also contain private posts of the logged in user!
-				final List<Post<Bookmark>> bookmarkPosts = this.getPosts(Bookmark.class, GroupingEntity.USER, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
+				final List<Post<Bookmark>> bookmarkPosts = this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
 				final List<Post<BibTex>> publicationPosts = this.getPosts(BibTex.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
 				
 				/*
@@ -2626,6 +2615,8 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 				if (present(goldResource)) {
 					final Post<Resource> goldStandardPost = new Post<Resource>();
 					goldStandardPost.setResource(goldResource);
+					
+					PostUtils.populatePost(goldStandardPost, this.loginUser);
 					
 					this.createPost(goldStandardPost, session);	
 				}

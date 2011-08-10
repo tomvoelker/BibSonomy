@@ -15,6 +15,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -72,8 +73,13 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
      * @param loginUser
      */
     public void ensureWriteAccess(final Post<? extends Resource> post, final User loginUser) {
-	// delegate write access check
-	this.ensureIsAdminOrSelf(loginUser, post.getUser().getName());
+    	// TODO: remove as soon as everybody can edit community posts
+    	if (post.getResource() instanceof GoldStandard<?>) {
+    		this.ensureAdminAccess(loginUser);
+    	} else {
+    		// delegate write access check
+    		this.ensureIsAdminOrSelf(loginUser, post.getUser().getName());
+    	}
     }
 
     /**

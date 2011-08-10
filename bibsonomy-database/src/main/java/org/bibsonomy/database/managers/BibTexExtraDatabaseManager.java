@@ -15,7 +15,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.extra.ExtendedField;
 
-/**
+/** 
  * @author Christian Schenk
  * @version $Id$
  */
@@ -71,7 +71,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	 * @param url
 	 * @param session
 	 */
-	public void deleteURL(final String hash, final String username, final String url, final DBSession session) {
+	public void deleteURL(final String hash, final String username, final URL url, final DBSession session) {
 		final BibTexExtraParam param = this.buildURLParam(hash, username, url, null, session);
 		this.delete("deleteBibTexExtraURL", param, session);
 	}
@@ -98,16 +98,23 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateBibTexURL", this.buildContentIdParam(contentId, newContentId), session);
 	}
 
-	private BibTexExtraParam buildURLParam(final String hash, final String username, final String url, final String text, final DBSession session) {
-		final int contentId = BibTexDatabaseManager.getInstance().getContentIdForPost(hash, username, session);
-		final BibTexExtraParam param = new BibTexExtraParam();
-		param.setRequestedContentId(contentId);
+	@Deprecated
+	private BibTexExtraParam buildURLParam(final String hash, final String username, final String urlString, final String text, final DBSession session) {
 		try {
-			param.getBibtexExtra().setUrl(new URL(url));
+			final URL url = new URL(urlString);
+			return this.buildURLParam(hash, username, url, text, session);
 		} catch (final MalformedURLException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+	
+	private BibTexExtraParam buildURLParam(final String hash, final String username, final URL url, final String text, final DBSession session) {
+		final int contentId = BibTexDatabaseManager.getInstance().getContentIdForPost(hash, username, session);
+		final BibTexExtraParam param = new BibTexExtraParam();
+		param.setRequestedContentId(contentId);
+		param.getBibtexExtra().setUrl(url);
 		param.getBibtexExtra().setText(text);
+		
 		return param;
 	}
 
