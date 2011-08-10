@@ -5,10 +5,10 @@ import java.io.IOException;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.database.TestDBLogicInterfaceFactory;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.junit.Ignore;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.resource.Resource;
 
 /**
@@ -28,7 +28,7 @@ public class TestServerBuilder {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {
 		final TestServerBuilder builder = new TestServerBuilder();
 		
 		final Server server = builder.buildServer();
@@ -53,6 +53,7 @@ public class TestServerBuilder {
 		servletContext.setBaseResource(resource);
 		
 		final RestServlet restServlet = new RestServlet();
+		restServlet.setUrlRenderer(new UrlRenderer(apiUrl));
 		
 		try {
 			restServlet.setLogicInterfaceFactory(logicInterfaceFactoryClass.newInstance());
@@ -69,14 +70,14 @@ public class TestServerBuilder {
 	/**
 	 * @param port the port to set
 	 */
-	public void setPort(int port) {
+	public void setPort(final int port) {
 		this.port = port;
 	}
 	
 	/**
 	 * @param logicInterfaceFactoryClass the logicInterfaceFactoryClass to set
 	 */
-	public void setLogicInterfaceFactoryClass(Class<? extends LogicInterfaceFactory> logicInterfaceFactoryClass) {
+	public void setLogicInterfaceFactoryClass(final Class<? extends LogicInterfaceFactory> logicInterfaceFactoryClass) {
 		this.logicInterfaceFactoryClass = logicInterfaceFactoryClass;
 	}
 }
