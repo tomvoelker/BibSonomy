@@ -43,6 +43,19 @@ import org.bibsonomy.model.User;
  * @version $Id$
  */
 public class PostUtils {
+	
+	/**
+	 * populates the post
+	 * {@link #populatePostWithDate(Post, User)}
+	 * {@link #populatePostWithUser(Post, User)}
+	 * 
+	 * @param post
+	 * @param user
+	 */
+	public static void populatePost(final Post<? extends Resource> post, final User user) {
+		populatePostWithUser(post, user);
+		populatePostWithDate(post, user);
+	}
 
 	/**
 	 * sets the owner of the post to the user if current owner is null or name of current owner isn't present
