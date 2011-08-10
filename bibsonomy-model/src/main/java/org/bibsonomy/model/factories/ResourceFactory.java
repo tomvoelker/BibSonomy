@@ -55,6 +55,7 @@ public class ResourceFactory {
 		RESOURCE_CLASSES_BY_NAME.put("publication", BibTex.class);
 		RESOURCE_CLASSES_BY_NAME.put("goldStandardPublication", GoldStandardPublication.class);
 		RESOURCE_CLASSES_BY_NAME.put("goldStandardBookmark", GoldStandardBookmark.class);
+		RESOURCE_CLASSES_BY_NAME.put("all", Resource.class);
 		
 		for (final Entry<String, Class<? extends Resource>> entry : RESOURCE_CLASSES_BY_NAME.entrySet()) {
 			RESOURCE_CLASS_NAMES.put(entry.getValue(), entry.getKey());
@@ -62,7 +63,6 @@ public class ResourceFactory {
 		
 		// XXX: for backward compatibility; note: not added to RESOURCE_CLASS_NAMES
 		RESOURCE_CLASSES_BY_NAME.put("bibtex", BibTex.class);
-		RESOURCE_CLASSES_BY_NAME.put("all", Resource.class);
 	}
 	
 	/** 
