@@ -1173,4 +1173,11 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
+	<URLTest id="url_196">
+		<TestDescription>test for InspireScraper</TestDescription>
+		<URL>http://inspirebeta.net/record/920296</URL>
+		<BibFile>InspireScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.inspire.InspireScraper</Scraper>
+		<Enabled>true</Enabled>
+	</URLTest>
 </test:Tests>

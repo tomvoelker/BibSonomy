@@ -57,6 +57,7 @@ import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper;
 import org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper;
 import org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper;
+import org.bibsonomy.scraper.url.kde.inspire.InspireScraper;
 import org.bibsonomy.scraper.url.kde.iop.IOPScraper;
 import org.bibsonomy.scraper.url.kde.isi.IsiScraper;
 import org.bibsonomy.scraper.url.kde.iucr.IucrScraper;
@@ -189,6 +190,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new ElsevierhealthScraper());
 		addScraper(new AandAScraper());
 		addScraper(new JournalogyScraper());
+		addScraper(new InspireScraper());
 	}
 
 }
