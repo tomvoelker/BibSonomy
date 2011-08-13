@@ -1,4 +1,4 @@
-package org.bibsonomy.wiki.tags;
+package org.bibsonomy.wiki.tags.old;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -11,6 +11,7 @@ import java.util.Set;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.wiki.tags.AbstractTag;
 
 /**
  * @author philipp
