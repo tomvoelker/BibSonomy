@@ -106,7 +106,7 @@
 
 		
 		<h2><fmt:message key="settings.aboutMe"/></h2>
-		
+		<script type="text/javascript" src="${resdir}/javascript/cvLayout.js"><!--  --></script>
 		<div id="fsform">
     	  <fieldset class="fsInner">
   	        <div class="fsRow">
@@ -131,6 +131,7 @@
 		      <form:label cssClass="fsLabel" path="wikiText"><fmt:message key="user.cvWiki"/></form:label>
 		      <form:textarea cssStyle="height: 5cm" cssClass="fsInput" path="wikiText" />
 		      <div class="dissError"><form:errors path="wikiText" /></div>
+		      <input type="button" onclick="changeCVLayout('default')" value="Reset CV Layout" />
 		    </div>
   		  </fieldset>
 		</div>

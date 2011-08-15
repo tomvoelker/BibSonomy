@@ -111,6 +111,14 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			wiki.setDate(new Date());
 			logic.createWiki(user.getName(), wiki);
 		}
+		
+		// if no wikitext avalible - insert the default wiki text
+		if(!present(wiki.getWikiText()) && present(requestLogic)) {
+			final Locale locale = requestLogic.getLocale();
+			final String wikiText = messageSource.getMessage("cv.default_wiki",null, locale);
+			
+			wiki.setWikiText(wikiText);
+		}
 
 		command.setWikiText(wiki.getWikiText());
 		// retrieve friend list of the user
