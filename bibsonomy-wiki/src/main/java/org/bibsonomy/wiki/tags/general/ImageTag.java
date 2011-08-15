@@ -4,6 +4,13 @@ import info.bliki.htmlcleaner.Utils;
 
 import org.bibsonomy.wiki.tags.AbstractTag;
 
+/**
+ * This is a simple image-tag
+ * Usage: <image />
+ * @author Bernd
+ *
+ */
+
 public class ImageTag extends AbstractTag{
 	public static final String TAG_NAME = "image";
 	public ImageTag() {

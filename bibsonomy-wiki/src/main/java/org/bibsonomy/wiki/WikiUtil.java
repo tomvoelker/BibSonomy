@@ -35,6 +35,7 @@ import org.bibsonomy.wiki.tags.old.TestTag;
 
 /**
  * @author philipp
+ * @author Bernd
  * @version $Id$
  */
 public class WikiUtil extends AbstractWikiModel {
@@ -87,7 +88,7 @@ public class WikiUtil extends AbstractWikiModel {
 		headTagNode.addChild(spanTagNode);
 		String tocHead = headTagNode.getBodyString();
 		String anchor = Encoder.encodeDotUrl(tocHead);
-		createTableOfContent(true);
+		createTableOfContent(false);
 		if (!noToC && (headCounter > 3)) {
 			fTableOfContentTag.setShowToC(true);
 		}

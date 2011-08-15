@@ -4,6 +4,12 @@ import info.bliki.htmlcleaner.Utils;
 import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.wiki.tags.AbstractTag;
 
+/**
+ * This is a simple email-tag.
+ * Usage: <email />
+ * @author Bernd
+ *
+ */
 public class EmailTag extends AbstractTag {
 	public static final String TAG_NAME = "email";
 

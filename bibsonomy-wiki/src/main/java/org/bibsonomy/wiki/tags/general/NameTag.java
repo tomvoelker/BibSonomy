@@ -4,6 +4,13 @@ import info.bliki.htmlcleaner.Utils;
 import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.wiki.tags.AbstractTag;
 
+/**
+ * This is a simple name-tag.
+ * Usage: <name />
+ * 
+ * @author Bernd
+ *
+ */
 public class NameTag extends AbstractTag {
 	public static final String TAG_NAME = "name";
 

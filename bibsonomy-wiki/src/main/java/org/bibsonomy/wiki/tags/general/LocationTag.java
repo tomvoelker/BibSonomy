@@ -4,6 +4,12 @@ import info.bliki.htmlcleaner.Utils;
 
 import org.bibsonomy.wiki.tags.AbstractTag;
 
+/**
+ * This is a simple location-tag.
+ * Usage: <location />
+ * @author Bernd
+ *
+ */
 public class LocationTag extends AbstractTag{
 	public static final String TAG_NAME = "location";
 	public LocationTag() {
