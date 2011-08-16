@@ -10,17 +10,19 @@ public class AjaxCvCommand extends AjaxCommand {
 	 */
 	private String layout;
 
+
 	/**
-	 * @return the design
+	 * @return the layout
 	 */
-	public String getDesign() {
+	public String getLayout() {
 		return layout;
 	}
 
 	/**
-	 * @param layout the design to set
+	 * @param layout the layout to set
 	 */
-	public void setDesign(String layout) {
+	public void setLayout(String layout) {
 		this.layout = layout;
 	}
+
 }

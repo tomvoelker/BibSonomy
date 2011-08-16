@@ -208,7 +208,9 @@
 	
 	<bean id="additionalURLController" class="org.bibsonomy.webapp.controller.ajax.AdditionalURLController" scope="request" parent="ajaxController" />
 	
-	<bean id="cvController" class="org.bibsonomy.webapp.controller.ajax.CvAjaxController" scope="request" parent="ajaxController" />
+	<bean id="cvController" class="org.bibsonomy.webapp.controller.ajax.CvAjaxController" scope="request" parent="ajaxController">
+		<property name="messageSource" ref="messageSource"/>
+	</bean>
 
 	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
 		<property name="docPath" value="${project.document.path}"/>
