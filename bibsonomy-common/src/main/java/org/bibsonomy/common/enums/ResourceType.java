@@ -27,6 +27,7 @@ package org.bibsonomy.common.enums;
  * @author Dominik Benz
  * @version $Id$
  */
+@Deprecated // TODO: remove as soon as rest client is adapted
 public enum ResourceType {
 	/** Bookmark */
 	BOOKMARK,
