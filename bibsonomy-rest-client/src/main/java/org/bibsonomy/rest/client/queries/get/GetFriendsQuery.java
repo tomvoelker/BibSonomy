@@ -64,7 +64,7 @@ public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 	 * @param end
 	 *            end of the list
 	 */
-	public GetFriendsQuery(int start, int end, String username, String relation) {
+	public GetFriendsQuery(int start, int end, final String username, final String relation) {
 		if (start < 0) start = 0;
 		if (end < start) end = start;
 		
@@ -82,7 +82,7 @@ public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 	@Override
 	public List<User> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return getRendererFactory().getRenderer(getRenderingFormat()).parseUserList(this.downloadedDocument);
+		return this.getRenderer().parseUserList(this.downloadedDocument);
 	}
 
 	@Override

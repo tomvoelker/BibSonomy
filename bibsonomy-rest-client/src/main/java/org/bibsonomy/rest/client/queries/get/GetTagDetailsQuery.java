@@ -37,6 +37,9 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 public final class GetTagDetailsQuery extends AbstractQuery<Tag> {
 	private final String tagName;
 
+	/**
+	 * @param tagName the name of the tag
+	 */
 	public GetTagDetailsQuery(final String tagName) {
 		this.tagName = tagName;
 		this.downloadedDocument = null;
@@ -46,12 +49,12 @@ public final class GetTagDetailsQuery extends AbstractQuery<Tag> {
 	@Override
 	public Tag getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return getRendererFactory().getRenderer(getRenderingFormat()).parseTag(this.downloadedDocument);
+		return this.getRenderer().parseTag(this.downloadedDocument);
 	}
 
 	@Override
 	protected Tag doExecute() throws ErrorPerformingRequestException {
-		String url = URL_TAGS + "/" + tagName;
+		final String url = URL_TAGS + "/" + tagName;
 		this.downloadedDocument = performGetRequest(url);
 		return null;
 	}

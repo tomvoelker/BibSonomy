@@ -40,6 +40,11 @@ public class CreatePostDocumentQuery extends AbstractQuery<String> {
 	private final String username;
 	private final String resourceHash;
 
+	/**
+	 * @param username
+	 * @param resourceHash
+	 * @param file
+	 */
 	public CreatePostDocumentQuery(final String username, final String resourceHash, final File file) {
 		if (!present(username)) throw new IllegalArgumentException("no username given");
 		if (!present(resourceHash)) throw new IllegalArgumentException("no resourceHash given");

@@ -63,7 +63,7 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 	@Override
 	public Post<? extends Resource> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return getRendererFactory().getRenderer(getRenderingFormat()).parsePost(this.downloadedDocument);
+		return this.getRenderer().parsePost(this.downloadedDocument);
 	}
 
 	@Override

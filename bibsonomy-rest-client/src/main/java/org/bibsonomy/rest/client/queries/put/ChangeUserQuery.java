@@ -66,7 +66,7 @@ public final class ChangeUserQuery extends AbstractQuery<String> {
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		getRendererFactory().getRenderer(getRenderingFormat()).serializeUser(sw, this.user, null);
+		this.getRenderer().serializeUser(sw, this.user, null);
 		this.downloadedDocument = performRequest(HttpMethod.PUT, URL_USERS + "/" + this.userName, sw.toString());
 		return null;
 	}
@@ -74,7 +74,7 @@ public final class ChangeUserQuery extends AbstractQuery<String> {
 	@Override
 	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess())
-			return getRendererFactory().getRenderer(getRenderingFormat()).parseUserId(this.downloadedDocument); 
+			return this.getRenderer().parseUserId(this.downloadedDocument); 
 		return this.getError();
 	}	
 }

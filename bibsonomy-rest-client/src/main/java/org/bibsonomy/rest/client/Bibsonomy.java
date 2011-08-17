@@ -45,16 +45,14 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
+@Deprecated
 public final class Bibsonomy {
 
 	private String username;
 	private String apiKey;
-	private String proxyHost;
-	private int proxyPort = 80;
-	// FIXME: the apiURL is here twice: also in the rendererFactory.urlRenderer
-	private String apiURL = RestProperties.getInstance().getDefaultApiUrl();
-	private final UrlRenderer urlRenderer = new UrlRenderer(RestProperties.getInstance().getDefaultApiUrl());
-	private RendererFactory rendererFactory = new RendererFactory(urlRenderer);
+	
+	private String apiURL;
+	private RendererFactory rendererFactory;
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
 
 	/**
@@ -63,6 +61,7 @@ public final class Bibsonomy {
 	 * accessor methods.
 	 */
 	public Bibsonomy() {
+		this.setApiURL(RestProperties.getInstance().getDefaultApiUrl());
 	}
 
 	/**
@@ -76,15 +75,9 @@ public final class Bibsonomy {
 	 *             if username or password is null or empty
 	 */
 	public Bibsonomy(final String username, final String apiKey) throws IllegalArgumentException {
+		this();
 		this.setUsername(username);
 		this.setApiKey(apiKey);
-
-		this.setProxyHost(System.getProperty("http.proxyHost"));
-		
-		final String poxyPort = System.getProperty("http.proxyPort");
-		if (present(poxyPort)) {
-			this.setProxyPort(Integer.parseInt(poxyPort));
-		}
 	}
 
 	/**
@@ -99,12 +92,11 @@ public final class Bibsonomy {
 	 */
 	public void executeQuery(final AbstractQuery<?> query) throws ErrorPerformingRequestException, IllegalStateException {
 		if (!present(this.username)) throw new IllegalStateException("The username has not yet been set.");
-		if (!present(this.apiKey)) throw new IllegalStateException("The password has not yet been set.");
-		query.setRenderingFormat(this.renderingFormat);
+		if (!present(this.apiKey)) throw new IllegalStateException("The api key has not yet been set.");
+		
 		query.setApiURL(this.apiURL);
+		query.setRenderingFormat(this.renderingFormat);
 		query.setRendererFactory(this.rendererFactory);
-		query.setProxyHost(this.proxyHost);
-		query.setProxyPort(this.proxyPort);
 		query.execute(this.username, this.apiKey);
 	}
 
@@ -124,7 +116,7 @@ public final class Bibsonomy {
 	 */
 	public void executeQuery(final AbstractQuery<?> query, final ProgressCallback callback) throws ErrorPerformingRequestException, IllegalStateException {
 		query.setProgressCallback(callback);
-		executeQuery(query);
+		this.executeQuery(query);
 	}
 
 	/**
@@ -182,25 +174,6 @@ public final class Bibsonomy {
 	 *             If renderingFormat isn't set to XML.
 	 */
 	public void setRenderingFormat(final RenderingFormat renderingFormat) {
-		if (!renderingFormat.equals(RenderingFormat.XML)) {
-			throw new UnsupportedOperationException("Currently only the xml rendering format is supported.");
-		}
 		this.renderingFormat = renderingFormat;
-	}
-
-	/**
-	 * 
-	 * @param proxyHost
-	 */
-	public void setProxyHost(String proxyHost) {
-		this.proxyHost = proxyHost;
-	}
-
-	/**
-	 * 
-	 * @param proxyPort
-	 */
-	public void setProxyPort(int proxyPort) {
-		this.proxyPort = proxyPort;
 	}
 }

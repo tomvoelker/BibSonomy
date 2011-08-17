@@ -105,10 +105,10 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 	@Override
 	public List<Tag> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return getRendererFactory().getRenderer(getRenderingFormat()).parseTagList(this.downloadedDocument);
+		return this.getRenderer().parseTagList(this.downloadedDocument);
 	}
 
-	public void setResourceType(Class<? extends Resource> resourceType) {
+	public void setResourceType(final Class<? extends Resource> resourceType) {
 		this.resourceType = resourceType;
 	}
 
@@ -122,15 +122,15 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 		this.grouping = GroupingEntity.GROUP;
 	}
 	
-	public void setStatus(ConceptStatus status) {
+	public void setStatus(final ConceptStatus status) {
 		this.status = status;
 	}
 
-	public void setRegex(String regex) {
+	public void setRegex(final String regex) {
 		this.regex = regex;
 	}	
 
-	public void setTags(List<String> tags) {
+	public void setTags(final List<String> tags) {
 		this.tags = tags;
 	}	
 }

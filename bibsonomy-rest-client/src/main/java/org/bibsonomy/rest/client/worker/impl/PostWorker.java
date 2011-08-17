@@ -37,23 +37,29 @@ import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
+ * TODO: remove deprecated method and class references
+ * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
 public final class PostWorker extends HttpWorker<PostMethod> {
 
+	/**
+	 * @param username
+	 * @param apiKey
+	 */
 	public PostWorker(final String username, final String apiKey) {
 		super(username, apiKey);
 	}
 	
+	/**
+	 * @param url
+	 * @param file
+	 * @return the reader
+	 * @throws ErrorPerformingRequestException
+	 */
 	public Reader perform(final String url, final File file) throws ErrorPerformingRequestException {
-		LOGGER.debug("POST Multipart: URL: " + url);
-
-		if (this.proxyHost != null) {
-			this.getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
-		}
-
-		// TODO: remove deprecated method
+		LOGGER.debug("POST Multipart: URL: " + url);		
 		final MultipartPostMethod post = new MultipartPostMethod(url);
 
 		post.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
@@ -79,7 +85,7 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 	}
 	
 	@Override
-	protected PostMethod getMethod(String url, String requestBody) {
+	protected PostMethod getMethod(final String url, final String requestBody) {
 		final PostMethod post = new PostMethod(url);
 		post.setFollowRedirects(false);
 
@@ -88,7 +94,7 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 	}
 
 	@Override
-	protected Reader readResponse(PostMethod method) throws IOException, ErrorPerformingRequestException {
+	protected Reader readResponse(final PostMethod method) throws IOException, ErrorPerformingRequestException {
 		return new StringReader(method.getResponseBodyAsString());
 	}
 }

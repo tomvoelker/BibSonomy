@@ -45,7 +45,12 @@ public class CreateConceptQuery extends AbstractQuery<String> {
 	private final GroupingEntity grouping;
 	private final String groupingName;
 	
-	
+	/**
+	 * @param concept
+	 * @param conceptName
+	 * @param grouping
+	 * @param groupingName
+	 */
 	public CreateConceptQuery(final Tag concept,final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		this.concept = concept;
 		this.conceptName = conceptName;
@@ -57,7 +62,7 @@ public class CreateConceptQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		String url;
 		final StringWriter sw = new StringWriter(100);
-		getRendererFactory().getRenderer(getRenderingFormat()).serializeTag(sw, concept, null);
+		this.getRenderer().serializeTag(sw, concept, null);
 		
 		switch (grouping) {
 		case USER:
@@ -78,7 +83,7 @@ public class CreateConceptQuery extends AbstractQuery<String> {
 	@Override
 	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess())
-			return getRendererFactory().getRenderer(getRenderingFormat()).parseResourceHash(this.downloadedDocument); 
+			return this.getRenderer().parseResourceHash(this.downloadedDocument); 
 		return this.getError();
 	}
 }

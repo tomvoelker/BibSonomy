@@ -29,6 +29,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -93,16 +94,21 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 		this.groupingValue = groupingValue;
 	}
 	
+	/**
+	 * @param order the order to set
+	 */
 	public void setOrder(final Order order) {
-		
 		this.order = order;
 	}
 	
 	/**
+	 * TODO: change to Class<? extends Resource> and reuse methods of the {@link ResourceFactory}
+	 * Be careful with 'bibtex' (ensure on rest server that {@link ResourceFactory} is used too)
+	 * 
 	 * Set the content type of this query, i.e. whether to retrieve only tags 
 	 * beloning to bookmarks or bibtexs
 	 * 
-	 * @param contentType
+	 * @param resourceType
 	 */
 	public void setResourceType(final ResourceType resourceType) {
 		this.resourceType = resourceType;
@@ -119,7 +125,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 	@Override
 	public List<Tag> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return getRendererFactory().getRenderer(getRenderingFormat()).parseTagList(this.downloadedDocument);
+		return this.getRenderer().parseTagList(this.downloadedDocument);
 	}
 
 	@Override

@@ -74,6 +74,9 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 		if (!present(post)) throw new IllegalArgumentException("no post specified");
 		if (!present(post.getResource())) throw new IllegalArgumentException("no resource specified");
 
+		/*
+		 * TODO: extract validation
+		 */
 		if (post.getResource() instanceof Bookmark) {
 			final Bookmark bookmark = (Bookmark) post.getResource();
 			if (!present(bookmark.getUrl())) throw new IllegalArgumentException("no url specified in bookmark");
@@ -99,7 +102,7 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		getRendererFactory().getRenderer(getRenderingFormat()).serializePost(sw, post, null);
+		this.getRenderer().serializePost(sw, post, null);
 		this.downloadedDocument = performRequest(HttpMethod.PUT, URL_USERS + "/" + this.username + "/" + URL_POSTS + "/" + resourceHash, sw.toString());
 		return null;
 	}
@@ -107,7 +110,7 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 	@Override
 	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess())
-			return getRendererFactory().getRenderer(getRenderingFormat()).parseResourceHash(this.downloadedDocument); 
+			return this.getRenderer().parseResourceHash(this.downloadedDocument); 
 		return this.getError();
 	}
 }

@@ -61,14 +61,14 @@ public final class GetWorker extends HttpWorker<GetMethod> {
 	}
 	
 	@Override
-	protected GetMethod getMethod(String url, String requestBody) {
+	protected GetMethod getMethod(final String url, final String requestBody) {
 		final GetMethod get = new GetMethod(url);
 		get.setFollowRedirects(true);
 		return get;
 	}
 	
 	@Override
-	protected Reader readResponse(GetMethod method) throws IOException, ErrorPerformingRequestException {
+	protected Reader readResponse(final GetMethod method) throws IOException, ErrorPerformingRequestException {
 		if (method.getResponseBodyAsStream() != null) {
 			return performDownload(method.getResponseBodyAsStream(), method.getResponseContentLength());
 		}
@@ -99,14 +99,8 @@ public final class GetWorker extends HttpWorker<GetMethod> {
 	 * @throws ErrorPerformingRequestException
 	 * @author Waldemar Biller
 	 */
-	public void performFileDownload(final String url, File file) throws ErrorPerformingRequestException {
-		
+	public void performFileDownload(final String url, final File file) throws ErrorPerformingRequestException {
 		LOGGER.debug("GET: URL: " + url);
-		
-		// dirty but working
-		if (this.proxyHost != null){
-			getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
-		}
 		
 		final GetMethod get = new GetMethod(url);
 		get.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));

@@ -72,7 +72,7 @@ public class GetConceptDetailsQuery extends AbstractQuery<Tag> {
 	@Override
 	public Tag getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return getRendererFactory().getRenderer(getRenderingFormat()).parseTag(this.downloadedDocument);
+		return this.getRenderer().parseTag(this.downloadedDocument);
 	}
 	
 	public void setUserName(final String userName) {

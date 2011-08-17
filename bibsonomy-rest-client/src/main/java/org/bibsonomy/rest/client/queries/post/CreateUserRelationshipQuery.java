@@ -34,7 +34,7 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.util.StringUtils;
 
 /**
- * Creatte a relationship among users.
+ * Create a relationship among users.
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
  * @version $Id$
@@ -47,13 +47,13 @@ public class CreateUserRelationshipQuery extends AbstractQuery<String> {
 	public final static String FOLLOWER_RELATIONSHIP = "follower";
 
 	/** source user */
-	private String username;
+	private final String username;
 	/** target user */
-	private String targetUserName;
+	private final String targetUserName;
 	/** type of relationship (friend/follower) */
-	private String relationType;
+	private final String relationType;
 	/** tag for tagged relationships */
-	private String tag;
+	private final String tag;
 
 	/**
 	 * Create new query.
@@ -85,56 +85,22 @@ public class CreateUserRelationshipQuery extends AbstractQuery<String> {
 		this.tag = tag;
 	}
 
-	public String getUsername() {
-		return this.username;
-	}
-
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
 		/*
 		 * create body of request
 		 */
 		final StringWriter sw = new StringWriter(100);
-		getRendererFactory().getRenderer(getRenderingFormat()).serializeUser(sw, new User(this.targetUserName), null);
+		this.getRenderer().serializeUser(sw, new User(this.targetUserName), null);
 		/*
 		 * friend/follower, tag
 		 */
-		final String friendOrFollower = ( FRIEND_RELATIONSHIP.equals(relationType) ? URL_FRIENDS : URL_FOLLOWERS );
-		final String queryTag = ( present(tag) ? "/"+tag : "" );
+		final String friendOrFollower = FRIEND_RELATIONSHIP.equals(relationType) ? URL_FRIENDS : URL_FOLLOWERS;
+		final String queryTag = present(this.tag) ? "/"+tag : "";
 		/*
 		 * perform request
 		 */
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + friendOrFollower + queryTag + "?format=" + getRenderingFormat().toString().toLowerCase(), StringUtils.toDefaultCharset(StringUtils.toDefaultCharset(sw.toString())));
+		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + friendOrFollower + queryTag, StringUtils.toDefaultCharset(StringUtils.toDefaultCharset(sw.toString())));
 		return null;
-
 	}
-	
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getTargetUserName() {
-		return this.targetUserName;
-	}
-
-	public void setTargetUserName(String targetUserName) {
-		this.targetUserName = targetUserName;
-	}
-
-	public String getRelationType() {
-		return this.relationType;
-	}
-
-	public void setRelationType(String relationType) {
-		this.relationType = relationType;
-	}
-
-	public String getTag() {
-		return this.tag;
-	}
-
-	public void setTag(String tag) {
-		this.tag = tag;
-	}	
-
 }

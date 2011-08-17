@@ -67,7 +67,7 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 	@Override
 	public List<Group> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return getRendererFactory().getRenderer(getRenderingFormat()).parseGroupList(this.downloadedDocument);
+		return this.getRenderer().parseGroupList(this.downloadedDocument);
 	}
 
 	@Override

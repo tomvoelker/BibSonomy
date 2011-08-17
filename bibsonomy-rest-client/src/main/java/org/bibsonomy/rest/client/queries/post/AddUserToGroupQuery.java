@@ -48,7 +48,7 @@ public final class AddUserToGroupQuery extends AbstractQuery<String> {
 	 * Adds an user to an already existing group. <p/>note that the user and the
 	 * group must exist before this query can be performed
 	 * 
-	 * @param groupname
+	 * @param groupName
 	 *            name of the group the user is to be added to. the group must
 	 *            exist, else a {@link IllegalArgumentException} is thrown
 	 * @param user
@@ -69,7 +69,7 @@ public final class AddUserToGroupQuery extends AbstractQuery<String> {
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		getRendererFactory().getRenderer(getRenderingFormat()).serializeUser(sw, user, null);
+		this.getRenderer().serializeUser(sw, user, null);
 		this.downloadedDocument = performRequest(HttpMethod.POST, URL_GROUPS + "/" + this.groupName + "/" + URL_USERS, sw.toString());
 		return null;
 	}

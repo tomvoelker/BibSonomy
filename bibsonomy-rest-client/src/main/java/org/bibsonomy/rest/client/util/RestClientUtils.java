@@ -23,12 +23,19 @@
 
 package org.bibsonomy.rest.client.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
  * @author dzo
@@ -36,6 +43,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public class RestClientUtils {
 	private static final Log log = LogFactory.getLog(RestClientUtils.class);
+	
+	private static final String USER_AGENT_VALUE = RestProperties.getInstance().getApiUserAgent();
 	
 	/**
 	 * the content charset used by the rest client
@@ -45,16 +54,20 @@ public class RestClientUtils {
 	private static final String PROPERTIES_FILE_NAME = "bibsonomy-rest-client.properties";
 	private static final String PROPERTIES_VERSION_KEY = "version";
 	
-	private static String REST_CLIENT_VERSION = "unknown";
+	private static final HttpClient CLIENT = new HttpClient();
 	
 	/**
-	 * @return the version of the client
+	 * @return the client
 	 */
-	public static String getRestClientVersion() {
-		return REST_CLIENT_VERSION;
+	public static HttpClient getDefaultClient() {
+		return CLIENT;
 	}
-	
-	static {		
+
+	static {
+		String clientVersion = "unknown";
+		/*
+		 * load version of client from properties file
+		 */
 		try {
 			final Properties properties = new Properties();
 			
@@ -62,11 +75,33 @@ public class RestClientUtils {
 			properties.load(stream);
 			stream.close();
 			
-			REST_CLIENT_VERSION = properties.getProperty(PROPERTIES_VERSION_KEY);
+			clientVersion = properties.getProperty(PROPERTIES_VERSION_KEY);
 		} catch (final IOException ex) {
 			log.error("could not load version", ex);
 		}
+		
+		/*
+		 * config http client for requests
+		 */
+		final HttpClientParams httpClientParams = new HttpClientParams();
+		final DefaultHttpMethodRetryHandler defaultHttpMethodRetryHandler = new DefaultHttpMethodRetryHandler(0, false);
+		httpClientParams.setParameter(HeaderUtils.HEADER_USER_AGENT, USER_AGENT_VALUE + "_" + clientVersion);
+		httpClientParams.setParameter(HttpClientParams.RETRY_HANDLER, defaultHttpMethodRetryHandler);
+		httpClientParams.setParameter(HttpClientParams.HTTP_CONTENT_CHARSET, RestClientUtils.CONTENT_CHARSET);
+		httpClientParams.setAuthenticationPreemptive(true);
+		
+		CLIENT.setParams(httpClientParams);
+		
+		// proxy
+		final String proxyHost = System.getProperty("http.proxyHost");
+		if (present(proxyHost)){
+			final String proxyPortString = System.getProperty("http.proxyPort");
+			int proxyPort = 80;
+			if (present(proxyPortString)) {
+				proxyPort = Integer.parseInt(proxyPortString);
+			}
+			
+			CLIENT.getHostConfiguration().setProxy(proxyHost, proxyPort);
+		}
 	}
-	
-	
 }

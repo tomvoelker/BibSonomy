@@ -66,7 +66,7 @@ public final class ChangeGroupQuery extends AbstractQuery<String> {
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		getRendererFactory().getRenderer(getRenderingFormat()).serializeGroup(sw, group, null);
+		this.getRenderer().serializeGroup(sw, group, null);
 		this.downloadedDocument = performRequest(HttpMethod.PUT, URL_GROUPS + "/" + this.groupName, sw.toString());
 		return null;
 	}
@@ -74,7 +74,7 @@ public final class ChangeGroupQuery extends AbstractQuery<String> {
 	@Override
 	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess())
-			return getRendererFactory().getRenderer(getRenderingFormat()).parseGroupId(this.downloadedDocument); 
+			return this.getRenderer().parseGroupId(this.downloadedDocument); 
 		return this.getError();
 	}		
 }

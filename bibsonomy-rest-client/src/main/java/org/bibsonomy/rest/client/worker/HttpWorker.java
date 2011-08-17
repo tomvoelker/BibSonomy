@@ -27,13 +27,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.util.RestClientUtils;
 import org.bibsonomy.rest.renderer.RenderingFormat;
@@ -47,8 +44,6 @@ import org.bibsonomy.rest.utils.HeaderUtils;
 public abstract class HttpWorker<M extends HttpMethod> {
 
 	protected static final Log LOGGER = LogFactory.getLog(HttpWorker.class.getName());
-
-	private static final String USER_AGENT_VALUE = RestProperties.getInstance().getApiUserAgent();
 	
 	
 	private final HttpClient httpClient;
@@ -56,9 +51,6 @@ public abstract class HttpWorker<M extends HttpMethod> {
 
 	protected final String username;
 	protected final String apiKey;
-	
-	protected String proxyHost;
-	protected int proxyPort;
 	
 	private RenderingFormat renderingFormat;
 
@@ -70,15 +62,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 		this.username = username;
 		this.apiKey = apiKey;
 		
-		this.httpClient = new HttpClient();
-		final HttpClientParams httpClientParams = new HttpClientParams();
-		final DefaultHttpMethodRetryHandler defaultHttpMethodRetryHandler = new DefaultHttpMethodRetryHandler(0, false);
-		httpClientParams.setParameter(HeaderUtils.HEADER_USER_AGENT, USER_AGENT_VALUE + "_" + RestClientUtils.getRestClientVersion());
-		httpClientParams.setParameter(HttpClientParams.RETRY_HANDLER, defaultHttpMethodRetryHandler);
-		httpClientParams.setParameter(HttpClientParams.HTTP_CONTENT_CHARSET, RestClientUtils.CONTENT_CHARSET);
-		httpClientParams.setAuthenticationPreemptive(true);
-		
-		this.httpClient.setParams(httpClientParams);
+		this.httpClient = RestClientUtils.getDefaultClient();
 	}
 
 	/**
@@ -101,19 +85,12 @@ public abstract class HttpWorker<M extends HttpMethod> {
 	 * @throws ErrorPerformingRequestException
 	 */
 	public Reader perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
-		
-		// dirty but working
-		if (this.proxyHost != null){
-			getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
-		}
-		
 		final M method = this.getMethod(url, requestBody);
 		
 		// add auth header
 		method.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
 		method.setDoAuthentication(true);
-		
-		// TODO: add accept and content type header
+		// add accept and content type header
 		method.addRequestHeader("Accept", this.renderingFormat.getMimeType());
 		method.addRequestHeader("Content-Type", this.renderingFormat.getMimeType());
 		
@@ -159,23 +136,9 @@ public abstract class HttpWorker<M extends HttpMethod> {
 	}
 	
 	/**
-	 * @param proxyHost
-	 */
-	public void setProxyHost(String proxyHost) {
-		this.proxyHost = proxyHost;
-	}
-
-	/**
-	 * @param proxyPort
-	 */
-	public void setProxyPort(int proxyPort) {
-		this.proxyPort = proxyPort;
-	}
-	
-	/**
 	 * @param renderingFormat the renderingFormat to set
 	 */
-	public void setRenderingFormat(RenderingFormat renderingFormat) {
+	public void setRenderingFormat(final RenderingFormat renderingFormat) {
 		this.renderingFormat = renderingFormat;
 	}
 }

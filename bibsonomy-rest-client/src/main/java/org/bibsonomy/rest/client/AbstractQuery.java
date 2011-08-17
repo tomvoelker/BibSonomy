@@ -37,6 +37,7 @@ import org.bibsonomy.rest.client.worker.impl.PostWorker;
 import org.bibsonomy.rest.client.worker.impl.PutWorker;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 
@@ -59,8 +60,6 @@ public abstract class AbstractQuery<T> {
 	private String apiKey;
 	private String username;
 	private String apiURL;
-	private String proxyHost;
-	private int proxyPort;
 	private int statusCode = -1;
 
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
@@ -82,7 +81,7 @@ public abstract class AbstractQuery<T> {
 	/**
 	 * @param executed the executed to set
 	 */
-	public void setExecuted(boolean executed) {
+	public void setExecuted(final boolean executed) {
 		this.executed = executed;
 	}
 
@@ -96,14 +95,12 @@ public abstract class AbstractQuery<T> {
 	/**
 	 * @param statusCode the statusCode to set
 	 */
-	public void setStatusCode(int statusCode) {
+	public void setStatusCode(final int statusCode) {
 		this.statusCode = statusCode;
 	}
 	
-	private void configHttpWorker(HttpWorker<?> worker) {
-		worker.setProxyHost(this.proxyHost);
+	private void configHttpWorker(final HttpWorker<?> worker) {
 		worker.setRenderingFormat(this.renderingFormat);
-		worker.setProxyPort(this.proxyPort);
 	}
 
 	protected final Reader performGetRequest(final String url) throws ErrorPerformingRequestException {
@@ -147,35 +144,29 @@ public abstract class AbstractQuery<T> {
 
 	protected final Reader performRequest(final HttpMethod method, final String url, final String requestBody) throws ErrorPerformingRequestException {
 		final HttpWorker<?> worker;
-		final Reader result;
 		final String absoluteUrl = this.apiURL + url;
 
 		switch (method) {
 		case POST:
 			worker = new PostWorker(this.username, this.apiKey);
-			this.configHttpWorker(worker);
-			result = ((PostWorker) worker).perform(absoluteUrl, requestBody);
 			break;
 		case DELETE:
 			worker = new DeleteWorker(this.username, this.apiKey);
-			this.configHttpWorker(worker);
-			result = ((DeleteWorker) worker).perform(absoluteUrl, null);
 			break;
 		case PUT:
 			worker = new PutWorker(this.username, this.apiKey);
-			this.configHttpWorker(worker);
-			result = ((PutWorker) worker).perform(absoluteUrl, requestBody);
 			break;
 		case HEAD:
 			worker = new HeadWorker(this.username, this.apiKey);
-			this.configHttpWorker(worker);
-			result = ((HeadWorker) worker).perform(absoluteUrl, null);
 			break;
 		case GET:
 			throw new UnsupportedOperationException("use AbstractQuery::performGetRequest( String url)");
 		default:
 			throw new UnsupportedOperationException("unsupported operation: " + method.toString());
 		}
+		
+		this.configHttpWorker(worker);
+		final Reader result = worker.perform(absoluteUrl, requestBody);
 
 		this.statusCode = worker.getHttpResult();
 		return result;
@@ -236,13 +227,6 @@ public abstract class AbstractQuery<T> {
 	void setApiURL(final String apiURL) {
 		this.apiURL = apiURL;
 	}
-
-	/**
-	 * @return the {@link RenderingFormat} to use.
-	 */
-	protected RenderingFormat getRenderingFormat() {
-		return this.renderingFormat;
-	}
 	
     /**
 	 * @param renderingFormat
@@ -272,28 +256,20 @@ public abstract class AbstractQuery<T> {
 	 */
 	public String getError() {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return rendererFactory.getRenderer(this.getRenderingFormat()).parseError(this.downloadedDocument);
+		return this.getRenderer().parseError(this.downloadedDocument);
+	}
+	
+	/**
+	 * @return the renderer for the renderingFormat
+	 */
+	public Renderer getRenderer() {
+		return this.rendererFactory.getRenderer(this.renderingFormat);
 	}
 
 	/**
-	 * @param proxyHost the proxyHost to set
+	 * @param rendererFactory the rendererFactory to set
 	 */
-	public void setProxyHost(String proxyHost) {
-		this.proxyHost = proxyHost;
-	}
-
-	/**
-	 * @param proxyPort the proxyPort to set
-	 */
-	public void setProxyPort(int proxyPort) {
-		this.proxyPort = proxyPort;
-	}
-
-	public RendererFactory getRendererFactory() {
-		return this.rendererFactory;
-	}
-
-	public void setRendererFactory(RendererFactory rendererFactory) {
+	public void setRendererFactory(final RendererFactory rendererFactory) {
 		this.rendererFactory = rendererFactory;
 	}
 }

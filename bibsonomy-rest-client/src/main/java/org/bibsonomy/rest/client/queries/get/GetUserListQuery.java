@@ -67,7 +67,7 @@ public final class GetUserListQuery extends AbstractQuery<List<User>> {
 	@Override
 	public List<User> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return getRendererFactory().getRenderer(getRenderingFormat()).parseUserList(this.downloadedDocument);
+		return this.getRenderer().parseUserList(this.downloadedDocument);
 	}
 
 	@Override

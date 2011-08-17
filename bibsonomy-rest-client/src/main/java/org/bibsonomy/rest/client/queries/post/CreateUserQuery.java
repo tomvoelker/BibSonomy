@@ -63,7 +63,7 @@ public final class CreateUserQuery extends AbstractQuery<String> {
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		getRendererFactory().getRenderer(getRenderingFormat()).serializeUser(sw, this.user, null);
+		this.getRenderer().serializeUser(sw, this.user, null);
 		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS, StringUtils.toDefaultCharset(sw.toString()));
 		return null;
 	}
@@ -71,7 +71,7 @@ public final class CreateUserQuery extends AbstractQuery<String> {
 	@Override
 	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess())
-			return getRendererFactory().getRenderer(getRenderingFormat()).parseUserId(this.downloadedDocument); 
+			return this.getRenderer().parseUserId(this.downloadedDocument); 
 		return this.getError();
 	}	
 }

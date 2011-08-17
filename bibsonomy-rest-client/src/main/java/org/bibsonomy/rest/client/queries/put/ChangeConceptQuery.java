@@ -56,7 +56,7 @@ public class ChangeConceptQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		String url;
 		final StringWriter sw = new StringWriter(100);
-		getRendererFactory().getRenderer(getRenderingFormat()).serializeTag(sw, concept, null);
+		this.getRenderer().serializeTag(sw, concept, null);
 		
 		switch (grouping) {
 		case USER:
@@ -78,7 +78,7 @@ public class ChangeConceptQuery extends AbstractQuery<String> {
 	@Override
 	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess())
-			return getRendererFactory().getRenderer(getRenderingFormat()).parseResourceHash(this.downloadedDocument); 
+			return this.getRenderer().parseResourceHash(this.downloadedDocument); 
 		return this.getError();
 	}
 }

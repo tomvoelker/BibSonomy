@@ -133,7 +133,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	 * @param order
 	 * 				the order to set
 	 */
-	public void setOrder(Order order) {
+	public void setOrder(final Order order) {
 		this.order = order;
 	}
 
@@ -141,7 +141,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	 * @param search
 	 * 				the search string to set
 	 */
-	public void setSearch(String search) {
+	public void setSearch(final String search) {
+		// TODO: use url encode!?
 		this.search = search.replace(" ", "+");
 	}
 
@@ -150,7 +151,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
 		try {
-			return getRendererFactory().getRenderer(getRenderingFormat()).parsePostList(this.downloadedDocument);
+			return this.getRenderer().parsePostList(this.downloadedDocument);
 		} catch (final InternServerException ex) {
 			throw new BadRequestOrResponseException(ex);
 		}

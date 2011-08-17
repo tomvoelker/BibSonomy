@@ -107,7 +107,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 	@Override
 	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return getRendererFactory().getRenderer(getRenderingFormat()).parsePostList(this.downloadedDocument);
+		return this.getRenderer().parsePostList(this.downloadedDocument);
 	}
 
 	@Override

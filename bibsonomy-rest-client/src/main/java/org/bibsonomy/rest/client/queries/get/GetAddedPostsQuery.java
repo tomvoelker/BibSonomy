@@ -106,7 +106,7 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 	@Override
 	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return getRendererFactory().getRenderer(getRenderingFormat()).parsePostList(this.downloadedDocument);
+		return getRenderer().parsePostList(this.downloadedDocument);
 	}
 
 	@Override

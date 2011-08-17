@@ -61,7 +61,7 @@ public final class CreateGroupQuery extends AbstractQuery<String> {
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		getRendererFactory().getRenderer(getRenderingFormat()).serializeGroup(sw, this.group, null);
+		this.getRenderer().serializeGroup(sw, this.group, null);
 		this.downloadedDocument = performRequest(HttpMethod.POST, URL_GROUPS, StringUtils.toDefaultCharset(sw.toString()));
 		return null;
 	}
@@ -69,7 +69,7 @@ public final class CreateGroupQuery extends AbstractQuery<String> {
 	@Override
 	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess())
-			return getRendererFactory().getRenderer(getRenderingFormat()).parseGroupId(this.downloadedDocument); 
+			return this.getRenderer().parseGroupId(this.downloadedDocument); 
 		return this.getError();
 	}		
 }
