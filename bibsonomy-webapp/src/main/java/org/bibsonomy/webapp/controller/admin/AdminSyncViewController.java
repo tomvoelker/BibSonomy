@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller.admin;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,10 +49,9 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 		}
 		
 		/*
-		 * FIXME: remove after integration
+		 * TODO: sync: remove after integration
 		 */
 		final SyncLogicInterface syncLogic = (SyncLogicInterface)logic;
-		
 		
 		final String action = command.getAction();
 		if (present(action)) {
@@ -70,19 +68,19 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 	}
 	
 	private View performAction (final AdminSyncCommand command) {
-		final URI service = uriFromString(command.getService());
+		final URI service = command.getService();
 		
 		/*
-		 * TODO remove after integration
+		 * TODO: sync: remove after integration
 		 */
 		final SyncLogicInterface syncLogic = (SyncLogicInterface)logic;
 		
 		final String action = command.getAction();
-		if(!present(service)){
-			//something wrong with uri
+		if (!present(service)) {
+			// something wrong with uri
 			return new ExtendedRedirectView("/admin/sync");
 		}
-		if(action.equals(CREATE_SERVICE)) {
+		if (CREATE_SERVICE.equals(action)) {
 			try {
 				syncLogic.createSyncService(service, command.isServer());
 			} catch (final RuntimeException ex) {
@@ -91,7 +89,7 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 				 */
 				log.error(ex.getMessage(), ex);
 			}
-		} else if (action.equals(DELETE_SERVICE)) {
+		} else if (DELETE_SERVICE.equals(action)) {
 			syncLogic.deleteSyncService(service, command.isServer());
 		} else {
 			/*
@@ -100,19 +98,6 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 		}
 		return new ExtendedRedirectView("/admin/sync");
 	}
-	
-	private URI uriFromString(final String uriString) {
-		if(present(uriString) && uriString.length() > 0) {
-			try {
-				return new URI(uriString);
-			} catch (final URISyntaxException ex) {
-				log.error("URI is malformed");
-				ex.printStackTrace();
-			}
-		}
-		log.error("URI is empty");
-		return null;
-	}
 
 	/**
 	 * @param logic the logic to set
@@ -120,12 +105,4 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
-
-	/**
-	 * @return the logic
-	 */
-	public LogicInterface getLogic() {
-		return logic;
-	}
-
 }

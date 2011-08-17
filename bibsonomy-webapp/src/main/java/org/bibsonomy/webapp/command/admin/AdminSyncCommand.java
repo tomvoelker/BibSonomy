@@ -14,7 +14,7 @@ public class AdminSyncCommand extends BaseCommand {
 	private List<URI> avlServer;
 	private List<URI> avlClients;
 	private String action;
-	private String service;
+	private URI service;
 	private boolean server;
 	
 	/**
@@ -56,13 +56,13 @@ public class AdminSyncCommand extends BaseCommand {
 	/**
 	 * @param service the service to set
 	 */
-	public void setService(String service) {
+	public void setService(URI service) {
 		this.service = service;
 	}
 	/**
 	 * @return the service
 	 */
-	public String getService() {
+	public URI getService() {
 		return service;
 	}
 	/**
