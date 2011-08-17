@@ -2583,7 +2583,7 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 		final DBSession session = this.openSession();
 		session.beginTransaction();
 		try {
-			/* TODO: add to transaction
+			/* 
 			 * first check if gold standard post exists
 			 */
 			final Post<?> goldStandardPostinDB = this.getPostDetails(interHash, "", session);
