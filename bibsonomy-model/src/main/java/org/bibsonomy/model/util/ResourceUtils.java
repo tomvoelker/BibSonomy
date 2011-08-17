@@ -38,7 +38,6 @@ import org.bibsonomy.model.Resource;
  * @version $Id$
  */
 public class ResourceUtils {
-
 	
 	private static final Map<String, Class<? extends Resource>> byStringMap = new HashMap<String, Class<? extends Resource>>();
 	private static final Map<Class<? extends Resource>, String> toStringMap = new HashMap<Class<? extends Resource>, String>();
@@ -55,10 +54,10 @@ public class ResourceUtils {
 	 * @param resourceType
 	 * @return resource
 	 */
-	@Deprecated // please use the ResourceFactory#createResource!!!
+	@Deprecated // please use the ResourceFactory#createResource!
 	public static Class<? extends Resource> getResource(final String resourceType) {
 		if (resourceType == null) throw new UnsupportedResourceTypeException("ResourceType is null");
-		Class<? extends Resource> rVal = byStringMap.get(resourceType.trim().toUpperCase());
+		final Class<? extends Resource> rVal = byStringMap.get(resourceType.trim().toUpperCase());
 		if (rVal == null) {
 			throw new UnsupportedResourceTypeException();
 		}
@@ -74,7 +73,7 @@ public class ResourceUtils {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	@Deprecated // please use the ResourceFactory!!!
+	@Deprecated // please use the ResourceFactory!
 	public static Resource getInstance(final String resourceType) throws InstantiationException, IllegalAccessException {
 		return getResource(resourceType).newInstance();
 	}
@@ -83,6 +82,7 @@ public class ResourceUtils {
 	 * @param clazz
 	 * @return string
 	 */
+	@Deprecated // please use the ResourceFactory#getResourceName!
 	public static String toString(final Class<? extends Resource> clazz) {
 		final String rVal = toStringMap.get(clazz);
 		if (rVal == null) {
@@ -97,7 +97,7 @@ public class ResourceUtils {
 	 * @return list with required resource types.
 	 */
 	@SuppressWarnings("unchecked")
-	public static Class<? extends Resource>[] getResourceTypesByClass(Class<? extends Resource> requiredType) {
+	public static Class<? extends Resource>[] getResourceTypesByClass(final Class<? extends Resource> requiredType) {
 		if (Resource.class.equals(requiredType)) {
 			return new Class[]{Bookmark.class, BibTex.class};
 		}
