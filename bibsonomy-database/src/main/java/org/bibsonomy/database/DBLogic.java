@@ -675,7 +675,14 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
     public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ResourceMovedException, ResourceNotFoundException {
 	final DBSession session = this.openSession();
 	try {
-	    for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : this.allDatabaseManagers.values()) {
+	    return this.getPostDetails(resourceHash, userName, session);
+	} finally {
+	    session.close();
+	}
+    }
+
+	private Post<? extends Resource> getPostDetails(final String resourceHash, final String userName, final DBSession session) {
+		for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : this.allDatabaseManagers.values()) {
 		final Post<? extends Resource> post = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 		/*
 		 * if a manager found a post, return it
@@ -694,11 +701,9 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		 * check next manager
 		 */
 	    }
-	} finally {
-	    session.close();
+		
+		return null;
 	}
-	return null;
-    }
 
     /*
      * (non-Javadoc)
@@ -2576,11 +2581,12 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, username);
 		
 		final DBSession session = this.openSession();
+		session.beginTransaction();
 		try {
-			/*
+			/* TODO: add to transaction
 			 * first check if gold standard post exists
 			 */
-			final Post<?> goldStandardPostinDB = this.getPostDetails(interHash, "");
+			final Post<?> goldStandardPostinDB = this.getPostDetails(interHash, "", session);
 			/*
 			 * if not create one
 			 */
@@ -2617,7 +2623,6 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 					goldStandardPost.setResource(goldResource);
 					
 					PostUtils.populatePost(goldStandardPost, this.loginUser);
-					
 					this.createPost(goldStandardPost, session);	
 				}
 			}
@@ -2629,7 +2634,9 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 			discussionItem.setUser(commentUser);
 			
 			this.createDiscussionItem(interHash, discussionItem, session);
+			session.commitTransaction();
 		} finally {
+			session.endTransaction();
 			session.close();
 		}
 	}
