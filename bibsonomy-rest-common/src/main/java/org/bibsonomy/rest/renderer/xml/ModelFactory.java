@@ -54,6 +54,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.ModelValidationUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.rest.validation.ModelValidator;
 
 /**
@@ -357,7 +358,7 @@ public class ModelFactory {
 	private void fillPublicationWithInformations(final BibtexType xmlPublication, final BibTex publication) {
 		publication.setAddress(xmlPublication.getAddress());
 		publication.setAnnote(xmlPublication.getAnnote());
-		publication.setAuthor(xmlPublication.getAuthor());
+		publication.setAuthor(PersonNameUtils.discoverPersonNames(xmlPublication.getAuthor()));
 		publication.setAbstract(xmlPublication.getBibtexAbstract());
 		publication.setBibtexKey(xmlPublication.getBibtexKey());
 		publication.setKey(xmlPublication.getBKey());
@@ -366,7 +367,7 @@ public class ModelFactory {
 		publication.setCrossref(xmlPublication.getCrossref());
 		publication.setDay(xmlPublication.getDay());
 		publication.setEdition(xmlPublication.getEdition());
-		publication.setEditor(xmlPublication.getEditor());
+		publication.setEditor(PersonNameUtils.discoverPersonNames(xmlPublication.getEditor()));
 		publication.setEntrytype(xmlPublication.getEntrytype());
 		publication.setHowpublished(xmlPublication.getHowpublished());
 		publication.setInstitution(xmlPublication.getInstitution());

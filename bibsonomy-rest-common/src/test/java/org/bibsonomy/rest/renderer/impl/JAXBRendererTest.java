@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -51,10 +52,12 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -80,7 +83,7 @@ public abstract class JAXBRendererTest {
 	private static final String GOLD_STANDARD_PUBLICATION_BIBTEX_KEY = "doe2004";
 	private static final String GOLD_STANDARD_PUBLICATION_TITLE = "The ten famoust";
 	private static final String GOLD_STANDARD_PUBLICATION_YEAR = "2004";
-	private static final String GOLD_STANDARD_PUBLICATION_AUTHOR = "John Doe";
+	private static final String GOLD_STANDARD_PUBLICATION_AUTHOR = "Doe, John";
 	
 	/**
 	 * @return the pathToTestFiles
@@ -294,7 +297,7 @@ public abstract class JAXBRendererTest {
 		
 		final GoldStandardPublication publication = (GoldStandardPublication) standardPost.getResource();
 		
-		assertEquals(GOLD_STANDARD_PUBLICATION_AUTHOR, publication.getAuthor());
+		assertEquals(GOLD_STANDARD_PUBLICATION_AUTHOR, publication.getAuthor().get(0).toString());
 		assertEquals(GOLD_STANDARD_PUBLICATION_BIBTEX_KEY, publication.getBibtexKey());
 		assertEquals(GOLD_STANDARD_PUBLICATION_ENTRYTYPE, publication.getEntrytype());
 		assertEquals(GOLD_STANDARD_PUBLICATION_TITLE, publication.getTitle());
@@ -572,7 +575,7 @@ public abstract class JAXBRendererTest {
 		post.setUser(new User("foo"));
 		
 		final GoldStandardPublication publication = new GoldStandardPublication();
-		publication.setAuthor(GOLD_STANDARD_PUBLICATION_AUTHOR);
+		publication.setAuthor(PersonNameUtils.discoverPersonNames(GOLD_STANDARD_PUBLICATION_AUTHOR));
 		publication.setYear(GOLD_STANDARD_PUBLICATION_YEAR);
 		publication.setTitle(GOLD_STANDARD_PUBLICATION_TITLE);
 		publication.setBibtexKey(GOLD_STANDARD_PUBLICATION_BIBTEX_KEY);
@@ -620,7 +623,7 @@ public abstract class JAXBRendererTest {
 		publication.setBibtexKey("knuth1998computer");
 		publication.setEntrytype("book");
 		publication.setTitle("The Art of Computer Programming");
-		publication.setAuthor("Donald E. Knuth");
+		publication.setAuthor(Arrays.asList(new PersonName("Donald E.", "Knuth")));
 		publication.setIntraHash("abc");
 		publication.setInterHash("abc");
 		return publication;

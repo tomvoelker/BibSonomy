@@ -71,6 +71,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -407,7 +408,7 @@ public abstract class JAXBRenderer implements Renderer {
 	protected void fillXmlPublicationDetails(final BibTex publication, final BibtexType xmlPublication) {
 		xmlPublication.setAddress(publication.getAddress());
 		xmlPublication.setAnnote(publication.getAnnote());
-		xmlPublication.setAuthor(publication.getAuthor());
+		xmlPublication.setAuthor(PersonNameUtils.serializePersonNames(publication.getAuthor()));
 		xmlPublication.setBibtexAbstract(publication.getAbstract());
 		xmlPublication.setBibtexKey(publication.getBibtexKey());
 		xmlPublication.setBKey(publication.getKey());
@@ -416,7 +417,7 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlPublication.setCrossref(publication.getCrossref());
 		xmlPublication.setDay(publication.getDay());
 		xmlPublication.setEdition(publication.getEdition());
-		xmlPublication.setEditor(publication.getEditor());
+		xmlPublication.setEditor(PersonNameUtils.serializePersonNames(publication.getEditor()));
 		xmlPublication.setEntrytype(publication.getEntrytype());
 		xmlPublication.setHowpublished(publication.getHowpublished());
 		xmlPublication.setInstitution(publication.getInstitution());
