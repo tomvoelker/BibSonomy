@@ -42,6 +42,7 @@ import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -384,7 +385,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		ModelUtils.addToTagSet(btPost2.getTags(), "btPostTag2", sharedTag1, sharedTag2);
 		btPost2.getUser().setName(dstUser1.getName());
 		btPost2.getResource().setTitle("Just another title");
-		btPost2.getResource().setAuthor("Just another author");
+		btPost2.getResource().setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Just another author")));
 		btPost2.getResource().recalculateHashes();
 		btPosts.add(btPost2);
 

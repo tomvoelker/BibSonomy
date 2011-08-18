@@ -42,6 +42,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
@@ -459,15 +460,15 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		/*
 		 * User1 now changes his publication post changing the hash
 		 */
-		publication.getResource().setAuthor("Famous Author");
+		publication.getResource().setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Famous Author")));
 		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 		// there should now still be only one publicationPost in the inbox
 		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
 		// the inboxPost should still have the same author as the original post
 		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
 		assertEquals(2, inboxPublications.get(0).getTags().size());
-		assertEquals(inboxPublications.get(0).getResource().getAuthor(), "Lonely Writer");
-		assertEquals(inboxPublications.get(0).getResource().getChapter(), null);
+		assertEquals(PersonNameUtils.discoverPersonName("Lonely Writer"), inboxPublications.get(0).getResource().getAuthor().get(0));
+		assertEquals(null, inboxPublications.get(0).getResource().getChapter());
 		
 		/*
 		 * User1 now deletes his publicationPost
@@ -478,8 +479,9 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		// the inboxPost should still have the same author as the original post
 		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
 		assertEquals(2, inboxPublications.get(0).getTags().size());
-		assertEquals(inboxPublications.get(0).getResource().getAuthor(), "Lonely Writer");
-		assertEquals(inboxPublications.get(0).getResource().getChapter(), null);
+		
+		assertEquals(PersonNameUtils.discoverPersonName("Lonely Writer"), inboxPublications.get(0).getResource().getAuthor().get(0));
+		assertEquals(null, inboxPublications.get(0).getResource().getChapter());
 		
 		/*
 		 * User2 now clears his Inbox
@@ -509,10 +511,10 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		final BibTex publication = new BibTex();
 		publication.setCount(0);
 		publication.setAbstract("The abstract of a testPost");
-		publication.setAuthor("Lonely Writer");
+		publication.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Lonely Writer")));
 		publication.setBibtexKey("test");
 		publication.setEntrytype("article");
-		publication.setEditor("Edith Editor");
+		publication.setEditor(Arrays.asList(PersonNameUtils.discoverPersonName("Edith Editor")));
 		publication.setTitle("test");
 		return createTestPost(publication, user, tags);
 	}
