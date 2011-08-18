@@ -29,7 +29,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -67,7 +69,8 @@ public class ElsevierhealthScraper extends AbstractUrlScraper {
     }
     
 
-    protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+    @Override
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		
 		BibTex bibtex = null;
@@ -103,7 +106,6 @@ public class ElsevierhealthScraper extends AbstractUrlScraper {
 
 			NodeList _nl = null;
 			Node _n		 = null;
-			String _tmp	 = "";
 			
 			/*
 			 * extracts the title
@@ -152,6 +154,7 @@ public class ElsevierhealthScraper extends AbstractUrlScraper {
 			 */
 			_nl = document.getElementsByTagName("a");
 			
+			final List<PersonName> author = new LinkedList<PersonName>();
 			for (int i = 0; i < _nl.getLength(); i++) {
 				_n = _nl.item(i);
 				if (_n.getAttributes().getNamedItem("name") != null
@@ -160,15 +163,11 @@ public class ElsevierhealthScraper extends AbstractUrlScraper {
 					
 					for (int j = 0; j < _n.getChildNodes().getLength(); j++) {
 						if (_n.getChildNodes().item(j).hasChildNodes()) {
-							if (_tmp.equals("")) {
-								_tmp = _n.getChildNodes().item(j).getFirstChild().getNodeValue();
-							} else {
-								_tmp += " and " + _n.getChildNodes().item(j).getFirstChild().getNodeValue();
-							}
+							author.add(PersonNameUtils.discoverPersonName(_n.getChildNodes().item(j).getFirstChild().getNodeValue()));
 						}
 					}
 					
-					bibtex.setAuthor(_tmp);
+					bibtex.setAuthor(author);
 				}
 				if (_n.getAttributes().getNamedItem("name") != null
 						&& _n.getAttributes().getNamedItem("name").getNodeValue().equals("description")) {
@@ -210,6 +209,7 @@ public class ElsevierhealthScraper extends AbstractUrlScraper {
 	}
 
 	
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns; 
 	}
