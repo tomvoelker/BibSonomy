@@ -35,6 +35,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.DBTestUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -75,7 +76,8 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 * tests getPostsByHash
 	 */
 	@Override
-	public void testGetPostsByHash() {		
+	public void testGetPostsByHash() {
+		printMethod("testGetPostsByHash");
 		final String hash0 = "9abf98937435f05aec3d58b214a2ac58";
 		final String hash1 = "d9eea4aa159d70ecfabafa0c91bbc9f0";
 		final String hash2 = "b77ddd8087ad8856d77c740c8dc2864a";
@@ -92,6 +94,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	
 	@Override
 	public void testGetPostsFromInbox() {
+		printMethod("testGetPostsFromInbox");
 		publicationDb.getPostsFromInbox("", 10, 0, this.dbSession);
 		// TODO: implement more checks
 	}
@@ -102,6 +105,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsByHashCount() {
+		printMethod("testGetPostsByHashCount");
 		String hash0 = "9abf98937435f05aec3d58b214a2ac58";
 		final int count = publicationDb.getPostsByHashCount(hash0, HashID.SIM_HASH0, this.dbSession);
 		assertEquals(1, count);
@@ -112,6 +116,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsByHashForUser() {
+		printMethod("testGetPostsByHashForUser");
 		// no hash => no post
 		List<Post<BibTex>> posts;
 		String loginUserName = "";
@@ -173,6 +178,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsByTagNames() {
+		printMethod("testGetPostsByTagNames");
 		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("testtag");
 		final List<Post<BibTex>> posts = publicationDb.getPostsByTagNames(PUBLIC_GROUP_ID, tagIndex, null, 10, 0, this.dbSession);
 		assertEquals(1, posts.size());
@@ -184,6 +190,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsByTagNamesCount() {
+		printMethod("testGetPostsByTagNamesCount");
 		final List<TagIndex> tags = DBTestUtils.getTagIndex("testtag");
 		final int count1 = publicationDb.getPostsByTagNamesCount(tags, PUBLIC_GROUP_ID, this.dbSession);
 		assertEquals(1, count1);
@@ -197,6 +204,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsByTagNamesForUser() {
+		printMethod("testGetPostsByTagNamesForUser");
 		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("testtag");
 		List<Post<BibTex>> posts = publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex, PUBLIC_GROUP_ID, new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertEquals(1, posts.size());
@@ -226,10 +234,21 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	}
 
 	/**
+	 * Prints the name of the called method. Used during debugging - to find, if
+	 * a test modifies posts another test needs.
+	 *  
+	 * @param method
+	 */
+	private void printMethod(final String method) {
+		//System.out.println(method + "()");
+	}
+	
+	/**
 	 * tests getPostsByConceptForUser
 	 */
 	@Override
 	public void testGetPostsByConceptForUser() {
+		printMethod("testGetPostsByConceptForUser");
 		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		visibleGroupIDs.add(PUBLIC_GROUP_ID);
 		List<TagIndex> tagIndex = DBTestUtils.getTagIndex("testbibtex");
@@ -270,6 +289,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsByUserFriends() {
+		printMethod("testGetPostsByUserFriends");
 		List<Post<BibTex>> post = publicationDb.getPostsByUserFriends("testuser1", HashID.INTER_HASH, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 	}
@@ -279,6 +299,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsFromBasketForUser() {
+		printMethod("testGetPostsFromBasketForUser");
 		List<Post<BibTex>> posts = publicationDb.getPostsFromBasketForUser("testuser1", Integer.MAX_VALUE, 0, this.dbSession);
 		assertEquals(2, posts.size());
 		
@@ -291,6 +312,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsForHomepage() {
+		printMethod("testGetPostsForHomepage");
 		List<Post<BibTex>> post = publicationDb.getPostsForHomepage(null, 10, 0, null, this.dbSession);
 		assertEquals(3, post.size());
 	}
@@ -300,6 +322,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsPopular() {
+		printMethod("testGetPostsPopular");
 		List<Post<BibTex>> l = publicationDb.getPostsPopular(0, 10, 0, HashID.INTER_HASH, this.dbSession);
 		assertEquals(1, l.size());
 	}
@@ -312,6 +335,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsViewable() {
+		printMethod("testGetPostsViewable");
 		String requestedGroupName = "public";
 		String loginUserName = "testuser1";
 		List<Post<BibTex>> post = publicationDb.getPostsViewable(requestedGroupName, loginUserName, PUBLIC_GROUP_ID, HashID.INTER_HASH, 10, 0, null, this.dbSession);
@@ -337,7 +361,8 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 * tests testGetPostsDuplicate
 	 */
 	@Test
-	public void testGetPostsDuplicate() {		
+	public void testGetPostsDuplicate() {
+		printMethod("testGetPostsDuplicate");
 		final List<Post<BibTex>> post = publicationDb.getPostsDuplicate("testuser1", Collections.singletonList(PUBLIC_GROUP_ID), HashID.INTER_HASH, this.dbSession, null);
 		assertEquals(1, post.size());
 	}
@@ -347,6 +372,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test
 	public void testGetPostsDuplicateCount() {
+		printMethod("testGetPostsDuplicateCount");
 		final int count = publicationDb.getPostsDuplicateCount("testuser1", this.dbSession);
 		assertEquals(1, count);
 	}
@@ -356,6 +382,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsForGroup() {
+		printMethod("testGetPostsForGroup");
 		List<Integer> groups = Collections.singletonList(PUBLIC_GROUP_ID);
 		
 		String loginUserName = "testuser1";
@@ -391,6 +418,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsForGroupCount() {
+		printMethod("testGetPostsForGroupCount");
 		final String requestedUserName = "";
 		final String loginUserName = "";
 		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
@@ -411,6 +439,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsForGroupByTag() {
+		printMethod("testGetPostsForGroupByTag");
 		final List<Integer> visibleGroupIDs = Collections.singletonList(PUBLIC_GROUP_ID);
 		List<TagIndex> tagIndex = DBTestUtils.getTagIndex("testbibtex");
 		
@@ -446,6 +475,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsForUser() {
+		printMethod("testGetPostsForUser");
 		String requestedUserName = "testuser1";
 		final List<Integer> groups = new ArrayList<Integer>();
 		
@@ -481,6 +511,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test
 	public void getPublicationForUserWithDocuments() {		
+		printMethod("getPublicationForUserWithDocuments");
 		final List<Post<BibTex>> posts = publicationDb.getPostsForUser("testuser1", "testuser1", HashID.INTER_HASH, PUBLIC_GROUP_ID, Collections.singletonList(PUBLIC_GROUP_ID), FilterEntity.POSTS_WITH_DOCUMENTS, 10, 0, null, this.dbSession);
 		
 		// testuser 1 has 1 public post
@@ -502,6 +533,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsForUserCount() {
+		printMethod("testGetPostsForUserCount");
 		final String loginUserName = "";
 		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		
@@ -517,6 +549,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test
 	public void getContentIdForBibTex() {
+		printMethod("getContentIdForBibTex");
 		for (final String hash : new String[] { "", " ", null }) {
 			for (final String username : new String[] { "", " ", null }) {
 				try {
@@ -540,6 +573,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test
 	public void testGetPosts() {
+		printMethod("testGetPosts");
 		final BibTexParam param = new BibTexParam();
 		param.setHash("");
 		
@@ -581,8 +615,8 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		CommonModelUtils.setBeanPropertiesOn(publication);
 		publication.setCount(0);		
 		publication.setEntrytype("inproceedings");
-		publication.setAuthor("Hans Testauthor and Liese Testauthorin");
-		publication.setEditor("Peter Silie");		
+		publication.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Testauthor, Hans"), PersonNameUtils.discoverPersonName("Testauthorin, Liese")));
+		publication.setEditor(Arrays.asList(PersonNameUtils.discoverPersonName("Silie, Peter")));		
 		publication.setTitle("test friend title");
 		publication.setYear("test year");
 		publication.setJournal("test journal");
@@ -603,6 +637,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Ignore // FIXME: Test läuft nur einzeln erfolgreich
 	@Test
 	public void storePostBibTexUpdatePlugin() {
+		printMethod("storePostBibTexUpdatePlugin");
 		final String hash = "b77ddd8087ad8856d77c740c8dc2864a";		
 		final String loginUserName = "testuser1";
 
@@ -627,12 +662,14 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testCreatePost() {
+		printMethod("testCreatePost");
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
 		toInsert.getResource().recalculateHashes();
+		
 		final String bibtexHashForUpdate = "14143c6508fe645ca312d0aa5d0e791b"; // INTRA-hash of toInsert
 
 		publicationDb.createPost(toInsert, this.dbSession);
-
+		
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
 		param.setSimHash(HashID.INTRA_HASH);
 		final List<Post<BibTex>> posts = publicationDb.getPosts(param, this.dbSession);
@@ -656,6 +693,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testDeletePost() {
+		printMethod("testDeletePost");
 		assertFalse(this.pluginMock.isOnBibTexDelete());
 		this.pluginMock.reset();
 
@@ -708,6 +746,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void storePostWrongUsage() {
+		printMethod("storePostWrongUsage");
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
 
 		publicationDb.updatePost(toInsert, null, null, this.dbSession, loginUser);
@@ -719,6 +758,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test
 	public void storePostDuplicate() {
+		printMethod("storePostDuplicate");
 		for (final String intraHash : new String[] {"b77ddd8087ad8856d77c740c8dc2864a"}) {
 
 			final Post<BibTex> originalPost = publicationDb.getPostsByHash(intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession).get(0);
@@ -742,7 +782,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	}
 
 	private void postDuplicate(final String hash) {
-		List<Post<BibTex>> someBibTexPost = publicationDb.getPostsByHash(hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
+		final List<Post<BibTex>> someBibTexPost = publicationDb.getPostsByHash(hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
 		assertEquals(1, someBibTexPost.size());
 		// someBibTexPost.getGroups().clear();
 		final Post<BibTex> publication = someBibTexPost.get(0);
@@ -762,6 +802,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Ignore // we don't want to wait 10 seconds each time we run the tests, not possible for new local db
 	@Test
 	public void testQueryTimeout() {
+		printMethod("testQueryTimeout");
 		final BibTexParam bibtexParam = ParamUtils.getDefaultBibTexParam();
 		bibtexParam.setUserName("dblp");
 		bibtexParam.setRequestedUserName("dblp");
@@ -781,6 +822,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsByConceptForGroup() {
+		printMethod("testGetPostsByConceptForGroup");
 		publicationDb.getPostsByConceptForGroup("", Collections.<Integer>emptyList(), "", Collections.singletonList(new TagIndex("google", 0)), 10, 0, Collections.<SystemTag>emptyList(), this.dbSession);
 		// TODO: add params to call add more asserts old test below
 //		final BibTexParam param = new BibTexParam();
@@ -802,6 +844,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test
 	public void testGetPostsByBibTeXKey() {
+		printMethod("testGetPostsByBibTeXKey");
 		final String bibtexKey = "test %";
 		final String requestedUserName = "testuser1";
 		
@@ -815,6 +858,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Override
 	public void testGetPostsByFollowedUsers() {
+		printMethod("testGetPostsByFollowedUsers");
 		/*
 		 * testuser 1 follows testuser 2, who has two posts.
 		 */
@@ -834,6 +878,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test
 	public void maxFieldLengthErrorCreatePost() {
+		printMethod("maxFieldLengthErrorCreatePost");
 		final String longField = "1234567890ß1234567890ß1234567890ß1234567890ß1234567890ß"; // > 46
 		/*
 		 * create post
@@ -841,7 +886,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		final Post<BibTex> testPost = this.generateBibTexDatabaseManagerTestPost();
 		final BibTex resource = testPost.getResource();
 		resource.setTitle("Max Field Length in DB");
-		resource.setAuthor("W: Walt");
+		resource.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("W. Walt")));
 		resource.setYear(longField);
 		resource.setMonth(longField);
 		
@@ -862,6 +907,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test
 	public void maxFieldLengthErrorUpdatePost() {
+		printMethod("maxFieldLengthErrorUpdatePost");
 		final String longField = "1234567890ß1234567890ß1234567890ß1234567890ß1234567890ß";
 		/*
 		 * update post
@@ -895,6 +941,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test
 	public void testLoggedPostsRedirect() {
+		printMethod("testLoggedPostsRedirect");
 		/*
 		 * Post history:
 		 * content_id 	intrahash
@@ -929,6 +976,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 
 	@Override
 	public void testGetPostsFromInboxByHash() {
+		printMethod("testGetPostsFromInboxByHash");
 		// TODO: dummy to execute sql statement; implement test
 		publicationDb.getPostsFromInboxByHash("", "", this.dbSession);
 	}
@@ -936,6 +984,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Override
 	@Ignore
 	public void testUpdatePost() {
+		printMethod("testUpdatePost");
 		// called by other methods
 	}
 }
