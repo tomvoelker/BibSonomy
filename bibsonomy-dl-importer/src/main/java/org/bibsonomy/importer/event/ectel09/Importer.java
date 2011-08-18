@@ -19,6 +19,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -270,7 +271,7 @@ public class Importer {
 		//bibtex.setUrl(getProperty("field.url"));
 		//bibtex.addMiscField("isbn", getProperty("field.isbn"));
 		//bibtex.setPages(getProperty("field.pages"));
-		bibtex.setEditor(getProperty("field.editor"));
+		bibtex.setEditor(PersonNameUtils.discoverPersonNames(getProperty("field.editor")));
 		bibtex.setSeries(getProperty("field.series"));
 		bibtex.setVolume(getProperty("field.volume"));
 		bibtex.setBooktitle(getProperty("field.booktitle"));

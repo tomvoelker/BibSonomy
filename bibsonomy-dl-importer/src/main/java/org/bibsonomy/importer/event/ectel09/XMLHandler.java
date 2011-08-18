@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -27,13 +28,16 @@ public class XMLHandler extends DefaultHandler {
 	private Post<BibTex> post;
 	private StringBuffer authors;
 
+	@Override
 	public void startDocument() {
 		list = new LinkedList<Post<BibTex>>();
 	}
 
+	@Override
 	public void endDocument() {
 	}
 
+	@Override
 	public void startElement (final String uri, final String name, final String qName, final Attributes atts) {
 		if ("paper".equals(qName)) {
 			post = new Post<BibTex>();
@@ -48,10 +52,12 @@ public class XMLHandler extends DefaultHandler {
 	 * 
 	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
 	 */
+	@Override
 	public void characters (final char ch[], final int start, final int length) {
 		buf.append(ch, start, length);
 	}
 
+	@Override
 	public void endElement (final String uri, final String name, final String qName) {
 		if ("paper".equals(qName)) {
 			list.add(post);
@@ -61,7 +67,7 @@ public class XMLHandler extends DefaultHandler {
 			 */
 			post.setContentId(Integer.parseInt(buf.toString()));
 		} else if ("authors".equals(qName)) {
-			post.getResource().setAuthor(authors.toString());
+			post.getResource().setAuthor(PersonNameUtils.discoverPersonNames(authors.toString()));
 		} else if ("author".equals(qName)) {
 			if (authors.toString().trim().equals("")) {
 				authors.append(buf);
