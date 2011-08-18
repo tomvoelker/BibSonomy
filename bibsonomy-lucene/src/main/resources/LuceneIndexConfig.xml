@@ -20,6 +20,7 @@
 	<bean id="dateMSConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneDateMSFormatter" />
 	<bean id="tagsConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneTagsFormatter" />
 	<bean id="groupsConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneGroupsFormatter" />
+	<bean id="personNamesConverter" class="org.bibsonomy.lucene.param.typehandler.LucenePersonNamesFormatter" />
 
 	<!--+
 	    | index field configurations 

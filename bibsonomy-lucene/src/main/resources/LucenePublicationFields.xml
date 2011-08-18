@@ -34,6 +34,7 @@
 					<map>
 						<entry key="luceneName" value="author" />
 						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
+						<entry key="typeHandler" value-ref="personNamesConverter" />
 						<entry key="fulltextSearch">
 							<value type="java.lang.Boolean">true</value>
 						</entry>
@@ -106,6 +107,7 @@
 					<map>
 						<entry key="luceneName" value="editor" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="typeHandler" value-ref="personNamesConverter" />
 						<entry key="fulltextSearch">
 							<value type="java.lang.Boolean">true</value>
 						</entry>
