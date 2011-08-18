@@ -25,8 +25,6 @@ package org.bibsonomy.model;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.model.util.PersonNameUtils;
-
 
 /**
  * The name of a person.
@@ -41,7 +39,6 @@ public class PersonName {
 	 */
 	public static final String LAST_FIRST_DELIMITER = ",";
 
-	private String name;
 	private String firstName;
 	private String lastName;
 
@@ -74,16 +71,6 @@ public class PersonName {
 	 */
 	public String getLastName() {
 		return this.lastName;
-	}
-
-	/**
-	 * @return the full name of the person
-	 */
-	public String getName() {
-		if (!present(this.name)) {
-			this.name = PersonNameUtils.serializePersonName(this);
-		}
-		return this.name;
 	}
 
 	/**
