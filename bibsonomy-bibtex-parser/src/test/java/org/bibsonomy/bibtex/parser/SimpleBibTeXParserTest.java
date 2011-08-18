@@ -29,10 +29,14 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
 
 import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.junit.Test;
 
 /**
@@ -51,13 +55,19 @@ public class SimpleBibTeXParserTest {
 	"keywords = {ISR_07}\n" +
 	"}";
 
+	/*
+	 * FIXME:
+	 * 
+	 * author = {{Boss and Friends, Inc.}}
+	 * currently fails, since PersonNameUtils uses "," as author delimiter ...
+	 */
 	private static final String entry2 = "@article{foo,\n" +
 	"title = {Foo Barness},\n" +
-	"author = {M. Mustermann}}";
+	"author = {M. Mustermann and Navarro Bullock, Beate and von der Schmidt, Alex and John Chris Smith and {Long Company Name, Inc.}}}";
 
 	private static final String entry3 = "@phdthesis{david2007domain,\n" + 
 	"address={Saarbrücken},\n" + 
-	"author={Sánchez, David and Universitat Polit{226}ecnica de Catalunya},\n" + 
+	"author={Sánchez, David and {Universitat Polit{226}ecnica de Catalunya}},\n" + 
 	"isbn={9783836470698 3836470691},\n" + 
 	"pages={--},\n" + 
 	"publisher={VDM Verlag Dr. Müller}, refid={426144281},\n" + 
@@ -72,7 +82,8 @@ public class SimpleBibTeXParserTest {
 		final BibTex bibtex = parser.parseBibTeX(entry1);
 
 		assertEquals("Web 2.0 ", bibtex.getTitle());
-		assertEquals("Jens Behrendt and Klaus Zeppenfeld", bibtex.getAuthor());
+		assertEquals("Behrendt, Jens", bibtex.getAuthor().get(0).toString());
+		assertEquals("Zeppenfeld, Klaus", bibtex.getAuthor().get(1).toString()); 
 		assertEquals("book", bibtex.getEntrytype());
 		assertEquals("behrendt2007", bibtex.getBibtexKey());
 		assertEquals("Springer", bibtex.getPublisher());
@@ -88,7 +99,13 @@ public class SimpleBibTeXParserTest {
 		final BibTex bibtex = parser.parseBibTeX(entry2);
 
 		assertEquals("Foo Barness", bibtex.getTitle());
-		assertEquals("M. Mustermann", bibtex.getAuthor());
+		assertEquals("Mustermann, M. and Navarro Bullock, Beate and von der Schmidt, Alex and Smith, John Chris and {Long Company Name, Inc.}", PersonNameUtils.serializePersonNames(bibtex.getAuthor()));
+		final List<PersonName> authors = bibtex.getAuthor();
+		assertEquals("Mustermann", authors.get(0).getLastName());
+		assertEquals("Navarro Bullock", authors.get(1).getLastName());
+		assertEquals("von der Schmidt", authors.get(2).getLastName());
+		assertEquals("Smith", authors.get(3).getLastName());
+		assertEquals("{Long Company Name, Inc.}", authors.get(4).getLastName());
 		assertEquals("article", bibtex.getEntrytype());
 		assertEquals("foo", bibtex.getBibtexKey());
 	}
@@ -116,10 +133,13 @@ public class SimpleBibTeXParserTest {
 		assertEquals("Domain ontology learning from the web an unsupervised, automatic and domain independent approach", bibtex.getTitle());
 		assertEquals("phdthesis", bibtex.getEntrytype());
 		assertEquals("david2007domain", bibtex.getBibtexKey());
-		assertEquals("David Sánchez and Universitat Polit{226}ecnica de Catalunya", bibtex.getAuthor());
+		assertEquals("Sánchez, David and {Universitat Polit{226}ecnica de Catalunya}", PersonNameUtils.serializePersonNames(bibtex.getAuthor()));
 	}
 
 	/**
+	 * 
+	 * Note: this has changed in July 2010!
+	 * 
 	 * Currently, we normalize author names, i.e., 
 	 * 
 	 * Knuth, D.E.
@@ -148,7 +168,7 @@ public class SimpleBibTeXParserTest {
 				"}"
 		);
 
-		assertEquals("D.E. Knuth", parsedBibTeX.getAuthor());
+		assertEquals("Knuth, D.E.", parsedBibTeX.getAuthor().get(0).toString());
 	}
 
 	/**
@@ -216,14 +236,14 @@ public class SimpleBibTeXParserTest {
 		 * 
 		 */
 
-		final String s = BibTexUtils.toBibtexString(parsedBibTeX, SerializeBibtexMode.PLAIN_MISCFIELDS);
+		final String s = BibTexUtils.toBibtexString(parsedBibTeX, SerializeBibtexMode.PLAIN_MISCFIELDS, true);
 		final BibTex sp = parser.parseBibTeX(s);
-		final String sp2 = BibTexUtils.toBibtexString(sp, SerializeBibtexMode.PLAIN_MISCFIELDS);
+		final String sp2 = BibTexUtils.toBibtexString(sp, SerializeBibtexMode.PLAIN_MISCFIELDS, true);
 		assertEquals(s, sp2);
 	}
 
 	private static String getTestFile(final String filename) throws IOException {
-		final BufferedReader stream = new BufferedReader(new InputStreamReader(SimpleBibTeXParser.class.getClassLoader().getResourceAsStream(filename), "UTF-8"));
+		final BufferedReader stream = new BufferedReader(new InputStreamReader(SimpleBibTeXParserTest.class.getClassLoader().getResourceAsStream(filename), "UTF-8"));
 		final StringBuilder buf = new StringBuilder();
 		String line;
 		while ((line = stream.readLine()) != null) {
@@ -237,8 +257,8 @@ public class SimpleBibTeXParserTest {
 		final BibTex bib = new BibTex();
 		bib.setEntrytype("inproceedings");
 		bib.setBibtexKey("KIE");
-		bib.setTitle("The most wonderfult title on earth");
-		bib.setAuthor("Hans Dampf and Peter Silie");
+		bib.setTitle("The most wonderful title on earth");
+		bib.setAuthor(Arrays.asList(new PersonName("Dampf", "Dampf"), new PersonName("Peter", "Silie")));
 		bib.setJournal("Journal of the most wonderful articles on earth");
 		bib.setYear("2525");
 		bib.setVolume("3");

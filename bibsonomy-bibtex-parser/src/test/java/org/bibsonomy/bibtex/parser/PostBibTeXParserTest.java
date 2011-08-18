@@ -26,14 +26,17 @@ package org.bibsonomy.bibtex.parser;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Test;
 
@@ -44,7 +47,7 @@ import org.junit.Test;
  * @author rja
  * @version $Id$
  */
-public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
+public class PostBibTeXParserTest {
 
 	/**
 	 * Parses a BibTeX string and checks the created post.
@@ -87,12 +90,12 @@ public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
 		final BibTex resource = post.getResource();
 
 		resource.recalculateHashes();
-		assertEquals("New York, NY, USA", resource.getAddress());
-		assertEquals("Dominik Benz and Folke Eisterlehner and Andreas Hotho and Robert Jäschke and Beate Krause and Gerd Stumme", resource.getAuthor());
-		assertEquals("HT '09: Proceedings of the 20th ACM Conference on Hypertext and Hypermedia", resource.getBooktitle());
-		assertEquals("Ciro Cattuto and Giancarlo Ruffo and Filippo Menczer", resource.getEditor());
 		assertEquals("aa341801cf9a31d963fccb8a331043dc", resource.getInterHash());
 		assertEquals("99cafad8ce2afb5879c6c85c14cc5259", resource.getIntraHash());
+		assertEquals("Benz, Dominik and Eisterlehner, Folke and Hotho, Andreas and Jäschke, Robert and Krause, Beate and Stumme, Gerd", PersonNameUtils.serializePersonNames(resource.getAuthor()));
+		assertEquals("Cattuto, Ciro and Ruffo, Giancarlo and Menczer, Filippo", PersonNameUtils.serializePersonNames(resource.getEditor()));
+		assertEquals("New York, NY, USA", resource.getAddress());
+		assertEquals("HT '09: Proceedings of the 20th ACM Conference on Hypertext and Hypermedia", resource.getBooktitle());
 		assertEquals("323--324", resource.getPages());
 		assertEquals("ACM", resource.getPublisher());
 		assertEquals("Managing publications and bookmarks with BibSonomy", resource.getTitle());
@@ -139,7 +142,7 @@ public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
 		 * second step: create BibTeX from the post, parse it and compare
 		 * the created post with the original post
 		 */
-		final Post<BibTex> secondParsedPost = parser.parseBibTeXPost(BibTexUtils.toBibtexString(post));
+		final Post<BibTex> secondParsedPost = parser.parseBibTeXPost(BibTexUtils.toBibtexString(post, true));
 		secondParsedPost.getResource().recalculateHashes();
 
 		ModelUtils.assertPropertyEquality(post, secondParsedPost, 5, null, new String[]{"date"});
@@ -156,7 +159,7 @@ public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
 		 */
 		parser.updateWithParsedBibTeX(post);
 
-		ModelUtils.assertPropertyEquality(bib, post.getResource(), 5, null, new String[]{});
+		ModelUtils.assertPropertyEquality(bib, post.getResource(), 5, null, "author", "authorList");
 	}
 
 
@@ -180,9 +183,9 @@ public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
 
 		final PostBibTeXParser parser = new PostBibTeXParser();
 
-		final Post<BibTex> parsedCopy = parser.getParsedCopy(post);
+		final Post<BibTex> parsedCopy = parser.getParsedCopy(post, true);
 
-		ModelUtils.assertPropertyEquality(post, parsedCopy, 5, null, new String[]{});
+		ModelUtils.assertPropertyEquality(post, parsedCopy, 5, null, "resource.author", "resource.authorList");
 
 		/*
 		 * The misc field is parsed and then serialized back again also in
@@ -213,4 +216,19 @@ public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
 		// TODO: asserts!!
 	}
 
+	protected BibTex getExampleBibtex() {
+		final BibTex bib = new BibTex();
+		bib.setEntrytype("inproceedings");
+		bib.setBibtexKey("KIE");
+		bib.setTitle("The most wonderful title on earth");
+		bib.setAuthor(Arrays.asList(new PersonName("Hans", "Dampf"), new PersonName("Peter","Silie")));
+		bib.setJournal("Journal of the most wonderful articles on earth");
+		bib.setYear("2525");
+		bib.setVolume("3");
+		bib.setAbstract("This is a nice abstract.");
+		bib.setPrivnote("This is private!");
+
+		bib.setMisc("  isbn = {999-12345-123-x},\n  vgwort = {12},\n  doi = {my doi}");
+		return bib;
+	}
 }
