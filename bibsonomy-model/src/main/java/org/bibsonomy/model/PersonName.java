@@ -54,11 +54,12 @@ public class PersonName {
 	
 	/**
 	 * Sets name and extracts first and last name.
-	 * 
-	 * @param name
+	 * @param firstName 
+	 * @param lastName 
 	 */
-	public PersonName(final String name) {
-		this.setName(name);
+	public PersonName(final String firstName, final String lastName) {
+		this.setFirstName(firstName);
+		this.setLastName(lastName);
 	}
 	
 	/**
@@ -79,16 +80,10 @@ public class PersonName {
 	 * @return the full name of the person
 	 */
 	public String getName() {
+		if (!present(this.name)) {
+			this.name = PersonNameUtils.serializePersonName(this);
+		}
 		return this.name;
-	}
-
-	/**
-	 * sets the full name and tries to set first- and lastname from extracted values also. 
-	 * @param name the full name of the person
-	 */
-	public void setName(String name) {
-		this.name = name;
-		PersonNameUtils.discoverFirstAndLastName(name, this);
 	}
 
 	/**
@@ -110,5 +105,34 @@ public class PersonName {
 		return this.lastName + LAST_FIRST_DELIMITER + (present(this.firstName)? " " + this.firstName : "");
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof PersonName) {
+			final PersonName other = (PersonName) obj;
+			return equal(this.firstName, other.firstName) && equal(this.lastName, other.lastName);
+		}
+		return super.equals(obj);
+	}
+	
+	private static boolean equal(final String a, final String b) {
+		if (present(a)) return a.equals(b);
+		if (present(b)) return b.equals(a);
+		// both are either null or whitespace - we assume them to be equal
+		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		if (present(this.firstName)) {
+			if (present(this.lastName)) {
+				return this.firstName.hashCode() ^ this.lastName.hashCode();
+			}
+			return this.firstName.hashCode();
+		}
+		if (present(this.lastName)) {
+			return this.lastName.hashCode();
+		}
+		return super.hashCode();
+	}
 
 }
