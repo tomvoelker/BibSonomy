@@ -1,5 +1,7 @@
 package org.bibsonomy.pingback;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.Collections;
 
@@ -74,7 +76,7 @@ public class ThreadedPingbackTest extends AbstractClientTest {
 		Collection<Post<? extends Resource>> queue = myPingback.getQueue();
 
 		while (!queue.isEmpty()) {
-			System.out.println("|queue| = " + queue.size());
+//			System.out.println("|queue| = " + queue.size());
 			Thread.sleep(100);
 			queue = myPingback.getQueue();
 		}
@@ -82,7 +84,7 @@ public class ThreadedPingbackTest extends AbstractClientTest {
 		 * wait a bit until the server has finished serving requests
 		 */
 		Thread.sleep(100);
-
+		assertTrue(queue.isEmpty());
 	}
 
 	private Post<Bookmark> getPost(final String url) {
