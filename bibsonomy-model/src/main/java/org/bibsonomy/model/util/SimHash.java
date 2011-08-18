@@ -273,6 +273,7 @@ public class SimHash {
 		if (present(first) && present(last)) {
 			return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(first.substring(0,1) + "." + last).toLowerCase();
 		}
-		return first;
+		if (present(last)) return last.toLowerCase();
+		return "";
 	}
 }
