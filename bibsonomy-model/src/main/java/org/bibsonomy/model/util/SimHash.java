@@ -25,16 +25,15 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Scanner;
+import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.StringUtils;
 
@@ -147,8 +146,8 @@ public class SimHash {
 	 */
 	public static String getSimHash0(final BibTex bibtex) {
 		return StringUtils.getMD5Hash(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getTitle()) + " " + 
-				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getAuthor())    + " " +
-				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getEditor())    + " " +
+				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(PersonNameUtils.serializePersonNames(bibtex.getAuthor(), false))    + " " +
+				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(PersonNameUtils.serializePersonNames(bibtex.getEditor(), false))    + " " +
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getYear())      + " " +
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getEntrytype()) + " " +
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getJournal())   + " " +
@@ -160,15 +159,15 @@ public class SimHash {
 	 * @return the calculated simHash1, which consideres: title, author/editor, year.
 	 */
 	public static String getSimHash1(final BibTex publication) {	
-		if (!present(StringUtils.removeNonNumbersOrLetters(publication.getAuthor()))) {
+		if (!present(StringUtils.removeNonNumbersOrLetters(PersonNameUtils.serializePersonNames(publication.getAuthor())))) {
 			// no author set --> take editor
 			return StringUtils.getMD5Hash(getNormalizedTitle(publication.getTitle()) + " " +
-					getNormalizedEditor(publication.getEditor())            + " " +
+					getNormalizedPersons(publication.getEditor())            + " " +
 					getNormalizedYear(publication.getYear()));				
 		}
 		// author set
 		return StringUtils.getMD5Hash(getNormalizedTitle(publication.getTitle()) + " " + 
-				getNormalizedAuthor(publication.getAuthor())            + " " + 
+				getNormalizedPersons(publication.getAuthor())            + " " + 
 				getNormalizedYear(publication.getYear()));
 	}
 
@@ -193,8 +192,8 @@ public class SimHash {
 	 */
 	public static String getSimHash2(final BibTex bibtex) {
 		return StringUtils.getMD5Hash(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getTitle())     + " " + 
-				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getAuthor())    + " " + 
-				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getEditor())    + " " + 
+				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(PersonNameUtils.serializePersonNames(bibtex.getAuthor(), false))    + " " + 
+				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(PersonNameUtils.serializePersonNames(bibtex.getEditor(), false))    + " " + 
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getYear())      + " " + 
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getEntrytype()) + " " + 
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getJournal())   + " " + 
@@ -213,14 +212,17 @@ public class SimHash {
 		return "";
 	}
 
-	private static String getNormalizedAuthor(final String str) {
-		if (str == null) return "";
-		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str.toLowerCase())));
-	}
-
-	private static String getNormalizedEditor(final String str) {
-		if (str == null) return "";
-		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str.toLowerCase())));
+	/**
+	 * July 2010: added "orComma" since we now support the "Last, First" name format 
+	 * where we need the comma in {@link #normalizePerson(String)} to extract the
+	 * first and the last name.
+	 * 
+	 * @param str
+	 * @return
+	 */
+	private static String getNormalizedPersons(final List<PersonName> persons) {
+		if (!present(persons)) return "";
+		return StringUtils.getStringFromList(normalizePersonList(persons));
 	}
 
 	private static String getNormalizedYear(final String str) {
@@ -239,13 +241,12 @@ public class SimHash {
 	 * Output: a Set of normalized persons, divided by ", " and enclosed in
 	 * brackets "[ ]"
 	 */
-	private static Set<String> normalizePersonList(final String s) {
-		final Scanner t = new Scanner(s).useDelimiter(PersonNameUtils.PERSON_NAME_DELIMITER);
-		final SortedSet<String> persons = new TreeSet<String>(); 
-		while (t.hasNext()) {
-			persons.add(normalizePerson(t.next()));
+	private static Set<String> normalizePersonList(final List<PersonName> persons) {
+		final Set<String> normalized = new TreeSet<String>();
+		for (final PersonName personName : persons) {
+			normalized.add(normalizePerson(personName));
 		}
-		return persons;
+		return normalized;
 	}
 
 	/**
@@ -257,27 +258,20 @@ public class SimHash {
 	 * Donald E. Knuth --> d.knuth<br/>
 	 * D.E.      Knuth --> d.knuth<br/>
 	 * Donald    Knuth --> d.knuth<br/>
-	 *           Knuth --> knuth
+	 *           Knuth --> knuth<br/>
+	 * Knuth, Donald   --> d.knuth<br/>
+	 * Knuth, Donald E.--> d.knuth<br/>
 	 */
-	private static String normalizePerson(final String s) {
-		final StringTokenizer t = new StringTokenizer(s);
-		String first = null;
-		String last  = null;
-		// get first and last name
-		while (t.hasMoreTokens()) {
-			if (first == null) {
-				first = t.nextToken().trim();
-			} else {
-				last = t.nextToken().trim();
-			}
-		}
+	private static String normalizePerson(final PersonName p) {
+		final String first = p.getFirstName();
+		final String last  = p.getLastName();
 		// only last name (=first) given
-		if (first != null && last == null) {
-			return first;
+		if (present(first) && !present(last)) {
+			return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(first).toLowerCase();
 		}
 		// first and last given
-		if (first != null && last != null) {
-			return (first.substring(0,1) + "." + last);
+		if (present(first) && present(last)) {
+			return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(first.substring(0,1) + "." + last).toLowerCase();
 		}
 		return first;
 	}
