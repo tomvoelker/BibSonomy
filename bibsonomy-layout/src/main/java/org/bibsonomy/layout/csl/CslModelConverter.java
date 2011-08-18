@@ -91,13 +91,13 @@ public class CslModelConverter  {
 	//type
 	rec.setType(mapToCslType(bib.getType()));
 	// authors, editors
-	for (PersonName author : bib.getAuthorList()) {
+	for (PersonName author : bib.getAuthor()) {
 	    Person a = new Person();
 	    a.setGiven(author.getFirstName());
 	    a.setFamily(author.getLastName());
 	    rec.getAuthor().add(a);
 	}	
-	for (PersonName author : bib.getEditorList()) {
+	for (PersonName author : bib.getEditor()) {
 	    Person a = new Person();
 	    a.setGiven(author.getFirstName());
 	    a.setFamily(author.getLastName());

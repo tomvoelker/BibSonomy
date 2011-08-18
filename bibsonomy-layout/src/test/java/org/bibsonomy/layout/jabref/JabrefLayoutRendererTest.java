@@ -36,6 +36,7 @@ import net.sf.jabref.bst.VM;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -77,7 +78,7 @@ public class JabrefLayoutRendererTest {
 
 	final BibTex bibtex = new BibTex();
 	bibtex.setTitle("The Art of Computer Programming");
-	bibtex.setAuthor("Donald E. Knuth");
+	bibtex.setAuthor(PersonNameUtils.discoverPersonNames("Donald E. Knuth"));
 	bibtex.setPublisher("Addison Wesley");
 	bibtex.setEntrytype("book");
 	bibtex.setBibtexKey("knuth");
@@ -98,9 +99,9 @@ public class JabrefLayoutRendererTest {
 	b2.setEntrytype("inproceedings");
 	b2.setBibtexKey("benz2009managing"); 
 	b2.setAddress("New York, NY, USA");
-	b2.setAuthor("Dominik Benz and Folke Eisterlehner and Andreas Hotho and Robert Jäschke and Beate Krause and Gerd Stumme");
+	b2.setAuthor(PersonNameUtils.discoverPersonNames("Dominik Benz and Folke Eisterlehner and Andreas Hotho and Robert Jäschke and Beate Krause and Gerd Stumme"));
 	b2.setBooktitle("HT '09: Proceedings of the 20th ACM Conference on Hypertext and Hypermedia");
-	b2.setEditor("Ciro Cattuto and Giancarlo Ruffo and Filippo Menczer");
+	b2.setEditor(PersonNameUtils.discoverPersonNames("Ciro Cattuto and Giancarlo Ruffo and Filippo Menczer"));
 	b2.setPages("323--324");
 	b2.setPublisher("ACM");
 	b2.setTitle("Managing publications and bookmarks with BibSonomy");
