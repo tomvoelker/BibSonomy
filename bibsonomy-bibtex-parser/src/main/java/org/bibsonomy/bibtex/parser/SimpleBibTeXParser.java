@@ -24,6 +24,8 @@
 
 package org.bibsonomy.bibtex.parser;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,7 +37,7 @@ import java.util.List;
 
 import org.bibsonomy.bibtex.util.StandardBibTeXFields;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.PersonName;
 
 import bibtex.dom.BibtexAbstractValue;
 import bibtex.dom.BibtexEntry;
@@ -401,72 +403,76 @@ public class SimpleBibTeXParser {
 	/** Extracts all persons from the given field value and concatenates their names
 	 * with {@value #AND}.
 	 * 
+	 * 
 	 * @param fieldValue
 	 * @return The persons names concatenated with " and ".
 	 */
-	private String createPersonString (final BibtexAbstractValue fieldValue) {
-		if (fieldValue != null && fieldValue instanceof BibtexPersonList) {
+	private List<PersonName> createPersonString (final BibtexAbstractValue fieldValue) {
+		if (present(fieldValue) && fieldValue instanceof BibtexPersonList) {
+			
 			/*
 			 * cast into a person list and extract the persons
 			 */
 			@SuppressWarnings("unchecked") // getList specified to return a list of BibtexPersons
 			final List<BibtexPerson> personList = ((BibtexPersonList) fieldValue).getList();
+
 			/*
-			 * result buffer
+			 * result list
 			 */
-			final StringBuilder personBuffer = new StringBuilder();
+			final List<PersonName> persons = new LinkedList<PersonName>();
 			/*
 			 * build person names
 			 */
 			for (final BibtexPerson person:personList) {
 				/*
-				 * build one person
-				 * 
-				 * FIXME: what is done here breaks author names whose last name
-				 * consists of several parts, e.g.,
-				 * Vander Wal, Thomas 
-				 * If written as
-				 * Thomas Vander Wal,
-				 * "Vander" is interpreted as second name and the name is 
-				 * treated in the wrong way at several occasions.
-				 * Thus, we must ensure to store all author names as
-				 * lastname, firstname
-				 * and only change the order in the JSPs.
-				 *  
-				 */
-				final StringBuilder personName = new StringBuilder();
-				/*
-				 * first name
-				 */
-				final String first = person.getFirst();
-				if (first != null) personName.append(first);
-				/*
-				 * between first and last name
-				 */
-				final String preLast = person.getPreLast();
-				if (preLast != null) personName.append(" " + preLast);
-				/*
-				 * last name
-				 */
-				final String last = person.getLast();
-				if (last != null) personName.append(" " + last);
-				/*
-				 * "others" has a special meaning in BibTeX (it's converted to "et al."),
-				 * so we must not ignore it! 
-				 */
-				if (person.isOthers()) personName.append("others");
-				/*
 				 * next name
 				 */
-				personBuffer.append(personName.toString().trim() + PersonNameUtils.PERSON_NAME_DELIMITER);
+				persons.add(createPersonName(person));
 			}
-			/* 
-			 * remove last " and " 
-			 */
-			if (personBuffer.length() > PersonNameUtils.PERSON_NAME_DELIMITER.length()) {
-				return personBuffer.substring(0, personBuffer.length() - PersonNameUtils.PERSON_NAME_DELIMITER.length());
-			} 
+			return persons;
 		}
 		return null;
+	}
+
+	/**
+	 * Creates a person name for the given name.
+	 *  
+	 * TODO: add {@link BibtexPerson#getLineage()}
+	 * 
+	 * @param person
+	 * @return
+	 */
+	private PersonName createPersonName(final BibtexPerson person) {
+		/*
+		 * "others" has a special meaning in BibTeX (it's converted to "et al."),
+		 * so we must not ignore it! 
+		 */		
+		if (person.isOthers()) return new PersonName(null, "others");
+		/*
+		 * build one person
+		 */
+		final PersonName personName = new PersonName();
+		/*
+		 * first name
+		 * 
+		 */
+		final String first = person.getFirst();
+		if (present(first)) personName.setFirstName(first);
+		/*
+		 * last name
+		 */
+		final String last = person.getLast();
+		if (present(last)) {
+			/*
+			 * between first and last name
+			 */
+			final String preLast = person.getPreLast();
+			if (present(preLast)) {
+				personName.setLastName(preLast + " " + last);
+			} else {
+				personName.setLastName(last);
+			}
+		}
+		return personName;
 	}
 }
