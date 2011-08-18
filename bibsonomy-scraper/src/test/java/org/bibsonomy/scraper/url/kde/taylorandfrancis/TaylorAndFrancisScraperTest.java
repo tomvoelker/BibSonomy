@@ -20,5 +20,14 @@ public class TaylorAndFrancisScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_197"));
 	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void url2TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_198"));
+	}
 	
 }
