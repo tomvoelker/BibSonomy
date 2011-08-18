@@ -30,7 +30,6 @@ import java.util.Map;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
 
 /**
@@ -66,14 +65,12 @@ public class BibTex extends Resource {
 	private String entrytype;
 	private String address;
 	private String annote;
-	private String author;
-	private List<PersonName> authorList;
+	private List<PersonName> author;
 	private String booktitle;
 	private String chapter;
 	private String crossref;
 	private String edition;
-	private String editor;
-	private List<PersonName> editorList;
+	private List<PersonName> editor;
 	private String howpublished;
 	private String institution;
 	private String organization;
@@ -167,30 +164,19 @@ public class BibTex extends Resource {
 	public void setAnnote(String annote) {
 		this.annote = annote;
 	}
-
+	
 	/**
 	 * @return author
 	 */
-	public String getAuthor() {
+	public List<PersonName> getAuthor() {
 		return this.author;
-	}
-
-	/**
-	 * @param author
-	 */
-	public void setAuthor(String author) {
-		this.author = author;
-		this.authorList = null;
 	}
 	
 	/**
-	 * @return authorList
+	 * @param author
 	 */
-	public List<PersonName> getAuthorList() {
-		if (this.authorList == null) {
-			this.authorList = PersonNameUtils.extractList(this.author);
-		}
-		return this.authorList;
+	public void setAuthor(final List<PersonName> author) {
+		this.author = author;
 	}
 
 	/**
@@ -308,28 +294,17 @@ public class BibTex extends Resource {
 	/**
 	 * @return editor
 	 */
-	public String getEditor() {
+	public List<PersonName> getEditor() {
 		return this.editor;
 	}
 
 	/**
 	 * @param editor
 	 */
-	public void setEditor(String editor) {
+	public void setEditor(final List<PersonName> editor) {
 		this.editor = editor;
-		this.editorList = null;
 	}
 	
-	/**
-	 * @return editorList
-	 */
-	public List<PersonName> getEditorList() {
-		if (this.editorList == null) {
-			this.editorList = PersonNameUtils.extractList(this.editor);
-		}
-		return this.editorList;
-	}
-
 	/**
 	 * @return entrytype
 	 */
