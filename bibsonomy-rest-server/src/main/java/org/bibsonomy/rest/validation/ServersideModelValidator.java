@@ -1,10 +1,15 @@
 package org.bibsonomy.rest.validation;
 
+import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.bibtex.util.BibtexParserUtils;
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.BibTexUtils;
+
+import bibtex.parser.ParseException;
 
 /**
  * Validates the given model.
@@ -15,7 +20,6 @@ import org.bibsonomy.model.util.BibTexUtils;
 public class ServersideModelValidator implements ModelValidator {
 	private static final Log log = LogFactory.getLog(ServersideModelValidator.class);
 
-	private static final boolean LAST_FIRST_NAMES = true;
 	private static final String BIBTEX_IS_INVALID_MSG = "The validation of the BibTeX entry failed: ";
 	
 	private static ServersideModelValidator modelValidator;
@@ -58,37 +62,26 @@ public class ServersideModelValidator implements ModelValidator {
 
 	 * 
 	 */
-//	@Override
-//	public void checkPublication(final BibTex publication) {
-//		/*
-//		 * parse BibTeX so see whether the entry is valid
-//		 */
-//		final BibTex parsedBibTeX;
-//		try {
-//			parsedBibTeX = new SimpleBibTeXParser().parseBibTeX(BibTexUtils.toBibtexString(publication));
-//		} catch (ParseException ex) {
-//			log.error(ex.getMessage());
-//			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "Error while parsing BibTeX.");
-//		} catch (final IOException ex) {
-//			log.error(ex.getMessage());
-//			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "I/O Error while parsing BibTeX.");
-//		}
-//		/*
-//		 * FIXME: validator is modifying the publication
-//		 */
-//		publication.setAuthor(PersonNameUtils.serializePersonNames(parsedBibTeX.getAuthorList(), LAST_FIRST_NAMES));
-//		publication.setEditor(PersonNameUtils.serializePersonNames(parsedBibTeX.getEditorList(), LAST_FIRST_NAMES));
-//	}
-	
 	@Override
 	public void checkPublication(final BibTex publication) {
-		// parse Bibtex so see whether the entry is valid
-		final BibtexParserUtils bibutil = new BibtexParserUtils( BibTexUtils.toBibtexString(publication) );	
-		
+		/*
+		 * parse BibTeX so see whether the entry is valid
+		 */
+		final BibTex parsedBibTeX;
+		try {
+			parsedBibTeX = new SimpleBibTeXParser().parseBibTeX(BibTexUtils.toBibtexString(publication));
+		} catch (ParseException ex) {
+			log.error(ex.getMessage());
+			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "Error while parsing BibTeX.");
+		} catch (final IOException ex) {
+			log.error(ex.getMessage());
+			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "I/O Error while parsing BibTeX.");
+		}
 		/*
 		 * FIXME: validator is modifying the publication
 		 */
-		publication.setAuthor( bibutil.getFormattedAuthorString() );
-		publication.setEditor( bibutil.getFormattedEditorString() );
+		publication.setAuthor(parsedBibTeX.getAuthor());
+		publication.setEditor(parsedBibTeX.getEditor());
 	}
+
 }
