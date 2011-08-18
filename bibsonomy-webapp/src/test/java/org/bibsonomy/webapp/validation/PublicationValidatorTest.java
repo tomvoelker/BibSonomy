@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.ListIterator;
 
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.actions.EditPublicationController;
@@ -60,7 +63,7 @@ public class PublicationValidatorTest {
 		 * set fields such that no errors occur
 		 */
 		bib.setTitle("Title");
-		bib.setAuthor("Firstname Lastname");
+		bib.setAuthor(Collections.singletonList(new PersonName("Firstname", "Lastname")));
 		bib.setEntrytype("proceedings");
 		bib.setBibtexKey("key");
 		bib.setYear("1999");
@@ -92,7 +95,7 @@ public class PublicationValidatorTest {
 		bibtex1.setYear("Foo");
 		bibtex1.setEntrytype("Foo");
 		bibtex1.setBibtexKey("Foo");
-		bibtex1.setAuthor("Foo");
+		bibtex1.setAuthor(Arrays.asList(new PersonName("", "Foo")));
 		post1.setResource(bibtex1);
 
 		final Post<BibTex> post2 = new Post<BibTex>();
