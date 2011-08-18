@@ -29,7 +29,7 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper {
 	
 	private static final List<Tuple<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + TANDF_HOST_NAME), AbstractUrlScraper.EMPTY_PATTERN));
 
-	private static final Pattern DOI_PATTERN = Pattern.compile("/\\d+\\.\\d+/\\d+(\\.\\d+)*$");
+	private static final Pattern DOI_PATTERN = Pattern.compile("/10\\.\\d+/\\d+(\\.\\d+)*$");
 	
 	private static final String TANDF_BIBTEX_DOWNLOAD_PATH = "action/downloadCitation";
 	private static final String DOWNLOADFILENAME = "tandf_rajp2080_124";
