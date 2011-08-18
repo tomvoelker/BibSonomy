@@ -7,8 +7,10 @@ import info.bliki.wiki.tags.util.INoBodyParsingTag;
 
 import java.io.IOException;
 
+import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.WikiUtil;
 
 
@@ -16,16 +18,18 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 	
 	protected LogicInterface logic;
 	protected User requestedUser;
+	protected LayoutRenderer<Layout> layoutRenderer;
 
-	public AbstractTag(String name) {
+	public AbstractTag(final String name) {
 		super(name);
 	}
 
 	@Override
-	public void renderHTML(ITextConverter converter, Appendable buf, IWikiModel model) throws IOException {
+	public void renderHTML(final ITextConverter converter, final Appendable buf, final IWikiModel model) throws IOException {
 		final WikiUtil wikiUtil = (WikiUtil) model;
 		this.logic = wikiUtil.getLogic();
 		this.requestedUser = wikiUtil.getUser();
+		this.layoutRenderer = wikiUtil.getLayoutRenderer();
 		buf.append(this.render());
 	}
 	

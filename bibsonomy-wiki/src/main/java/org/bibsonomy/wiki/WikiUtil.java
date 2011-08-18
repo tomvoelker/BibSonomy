@@ -15,9 +15,15 @@ import info.bliki.wiki.tags.util.TagStack;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.tags.AbstractTag;
+import org.bibsonomy.wiki.tags.BookmarkListTag;
+import org.bibsonomy.wiki.tags.HobbieTag;
+import org.bibsonomy.wiki.tags.InterestsTag;
+import org.bibsonomy.wiki.tags.PublicationListTag;
 import org.bibsonomy.wiki.tags.general.BirthdayTag;
 import org.bibsonomy.wiki.tags.general.EmailTag;
 import org.bibsonomy.wiki.tags.general.ImageTag;
@@ -26,12 +32,6 @@ import org.bibsonomy.wiki.tags.general.LocationTag;
 import org.bibsonomy.wiki.tags.general.NameTag;
 import org.bibsonomy.wiki.tags.general.ProfessionTag;
 import org.bibsonomy.wiki.tags.general.RegDateTag;
-import org.bibsonomy.wiki.tags.old.BookmarkListTag;
-import org.bibsonomy.wiki.tags.old.HeaderTag;
-import org.bibsonomy.wiki.tags.old.HobbieTag;
-import org.bibsonomy.wiki.tags.old.InterestsTag;
-import org.bibsonomy.wiki.tags.old.PublicationListTag;
-import org.bibsonomy.wiki.tags.old.TestTag;
 
 /**
  * @author philipp
@@ -41,7 +41,7 @@ import org.bibsonomy.wiki.tags.old.TestTag;
 public class WikiUtil extends AbstractWikiModel {
 
 	static {
-		/* New Tags */
+		/* About-Me Tags */
 		register(NameTag.TAG_NAME, new NameTag());
 		register(LocationTag.TAG_NAME, new LocationTag());
 		register(BirthdayTag.TAG_NAME, new BirthdayTag());
@@ -50,16 +50,15 @@ public class WikiUtil extends AbstractWikiModel {
 		register(ImageTag.TAG_NAME, new ImageTag());
 		register(EmailTag.TAG_NAME, new EmailTag());
 		register(RegDateTag.TAG_NAME, new RegDateTag());
-		/* Old Tags */
-		Configuration.DEFAULT_CONFIGURATION.addTokenTag(TestTag.TAG_NAME, new TestTag());
-		Configuration.DEFAULT_CONFIGURATION.addTokenTag(HeaderTag.TAG_NAME, new HeaderTag());
-		Configuration.DEFAULT_CONFIGURATION.addTokenTag(InterestsTag.TAG_NAME, new InterestsTag());
-		Configuration.DEFAULT_CONFIGURATION.addTokenTag(HobbieTag.TAG_NAME, new HobbieTag());
-		Configuration.DEFAULT_CONFIGURATION.addTokenTag(BookmarkListTag.TAG_NAME, new BookmarkListTag());
-		Configuration.DEFAULT_CONFIGURATION.addTokenTag(PublicationListTag.TAG_NAME, new PublicationListTag());
+		
+		/* Other Tags */
+		register(InterestsTag.TAG_NAME, new InterestsTag());
+		register(HobbieTag.TAG_NAME, new HobbieTag());
+		register(BookmarkListTag.TAG_NAME, new BookmarkListTag());
+		register(PublicationListTag.TAG_NAME, new PublicationListTag());
 	}
 	
-	private static void register(String tagName, AbstractTag tag) {
+	private static void register(final String tagName, final AbstractTag tag) {
 		Configuration.DEFAULT_CONFIGURATION.addTokenTag(tagName, tag);
 	}
 
@@ -67,54 +66,55 @@ public class WikiUtil extends AbstractWikiModel {
 
 	private LogicInterface logic;
 
+	private LayoutRenderer<Layout> layoutRenderer;
+	
 	/**
-	 * @param command
-	 * 
+	 * Default Constructor
 	 */
 	public WikiUtil() {
 		super(Configuration.DEFAULT_CONFIGURATION, null, null);
 	}
 
 	@Override
-	public ITableOfContent appendHead(String rawHead, int headLevel, boolean noToC, int headCounter, int startPosition, int endPosition) {
-		TagStack localStack = WikipediaParser.parseRecursive(rawHead.trim(), this, true, true);
+	public ITableOfContent appendHead(final String rawHead, final int headLevel, final boolean noToC, final int headCounter, final int startPosition, final int endPosition) {
+		final TagStack localStack = WikipediaParser.parseRecursive(rawHead.trim(), this, true, true);
 
-		WPTag headTagNode = new WPTag("h" + headLevel);
-		TagNode spanTagNode = new TagNode("span");
+		final WPTag headTagNode = new WPTag("h" + headLevel);
+		final TagNode spanTagNode = new TagNode("span");
 		// Example:
 		// <h2><span class="mw-headline" id="Header_level_2">Header level
 		// 2</span></h2>
 		spanTagNode.addChildren(localStack.getNodeList());
 		headTagNode.addChild(spanTagNode);
-		String tocHead = headTagNode.getBodyString();
+		final String tocHead = headTagNode.getBodyString();
 		String anchor = Encoder.encodeDotUrl(tocHead);
-		createTableOfContent(false);
-		if (!noToC && (headCounter > 3)) {
-			fTableOfContentTag.setShowToC(true);
+		this.createTableOfContent(false);
+		if (!noToC && headCounter > 3) {
+			this.fTableOfContentTag.setShowToC(true);
 		}
-		if (fToCSet.contains(anchor)) {
+		if (this.fToCSet.contains(anchor)) {
 			String newAnchor = anchor;
 			for (int i = 2; i < Integer.MAX_VALUE; i++) {
 				newAnchor = anchor + '_' + Integer.toString(i);
-				if (!fToCSet.contains(newAnchor)) {
+				if (!this.fToCSet.contains(newAnchor)) {
 					break;
 				}
 			}
 			anchor = newAnchor;
 		}
-		SectionHeader strPair = new SectionHeader(headLevel, startPosition, endPosition, tocHead, anchor);
-		addToTableOfContents(fTableOfContent, strPair, headLevel);
-		if (getRecursionLevel() == 1) {
-			buildEditLinkUrl(fSectionCounter++);
+		final SectionHeader strPair = new SectionHeader(headLevel, startPosition, endPosition, tocHead, anchor);
+		this.addToTableOfContents(this.fTableOfContent, strPair, headLevel);
+		if (this.getRecursionLevel() == 1) {
+			this.buildEditLinkUrl(this.fSectionCounter++);
 		}
 		spanTagNode.addAttribute("class", "mw-headline", true);
 		spanTagNode.addAttribute("id", anchor, true);
 
-		append(headTagNode);
-		return fTableOfContentTag;
+		this.append(headTagNode);
+		return this.fTableOfContentTag;
 	}
 
-	private void addToTableOfContents(List<Object> toc, SectionHeader strPair, int headLevel) {
+	private void addToTableOfContents(final List<Object> toc, final SectionHeader strPair, final int headLevel) {
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class WikiUtil extends AbstractWikiModel {
 	}
 
 	@Override
-	public void parseInternalImageLink(String imageNamespace, String rawImageLink) {
+	public void parseInternalImageLink(final String imageNamespace, final String rawImageLink) {
 		// TODO Auto-generated method stub
 
 	}
@@ -138,7 +138,7 @@ public class WikiUtil extends AbstractWikiModel {
 	/**
 	 * set the LogicInterface
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 
@@ -146,13 +146,13 @@ public class WikiUtil extends AbstractWikiModel {
 	 * @return the LogicInterface
 	 */
 	public LogicInterface getLogic() {
-		return logic;
+		return this.logic;
 	}
 
 	/**
 	 * set the user
 	 */
-	public void setUser(User user) {
+	public void setUser(final User user) {
 		this.user = user;
 	}
 
@@ -160,11 +160,25 @@ public class WikiUtil extends AbstractWikiModel {
 	 * @return the user
 	 */
 	public User getUser() {
-		return user;
+		return this.user;
 	}
 
-	public static String formatAndAppend(String string1, String string2) {
+	public static String formatAndAppend(final String string1, final String string2) {
 		return "<tr><td>" + string1 + ":</td><td>" + Utils.escapeXmlChars(string2) + "</td></tr>";
+	}
+
+	/**
+	 * @return the layoutRenderer
+	 */
+	public LayoutRenderer<Layout> getLayoutRenderer() {
+		return this.layoutRenderer;
+	}
+
+	/**
+	 * @param layoutRenderer the layoutRenderer to set
+	 */
+	public void setLayoutRenderer(final LayoutRenderer<Layout> layoutRenderer) {
+		this.layoutRenderer = layoutRenderer;
 	}
 
 }

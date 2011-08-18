@@ -1,8 +1,7 @@
-package org.bibsonomy.wiki.tags.old;
+package org.bibsonomy.wiki.tags;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.wiki.tags.AbstractTag;
 
 import info.bliki.htmlcleaner.Utils;
 

@@ -1,7 +1,5 @@
 package org.bibsonomy.wiki.tags.general;
 
-import java.text.SimpleDateFormat;
-
 import info.bliki.htmlcleaner.Utils;
 
 import org.bibsonomy.wiki.tags.AbstractTag;
