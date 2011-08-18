@@ -120,13 +120,13 @@ public class RDFWriter {
 		 * author, editor
 		 */
 		final Resource personClass = model.createResource(NS_SWRC + "Person");
-		final List<PersonName> authorList = bibtex.getAuthorList();
+		final List<PersonName> authorList = bibtex.getAuthor();
 		for (final PersonName name: authorList) {
 			final Resource author = model.createResource(personClass);
 			author.addProperty(model.createProperty(NS_SWRC + "name"), name.getFirstName() + " " + name.getLastName());
 			resource.addProperty(model.createProperty(NS_SWRC + "author"), author);
 		}
-		final List<PersonName> editorList = bibtex.getEditorList();
+		final List<PersonName> editorList = bibtex.getEditor();
 		for (final PersonName name: editorList) {
 			final Resource editor = model.createResource(personClass);
 			editor.addProperty(model.createProperty(NS_SWRC + "name"), name.getFirstName() + " " + name.getLastName());
