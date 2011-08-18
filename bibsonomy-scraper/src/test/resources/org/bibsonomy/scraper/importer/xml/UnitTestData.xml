@@ -1180,4 +1180,11 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.inspire.InspireScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
+	<URLTest id="url_197">
+		<TestDescription>test for TaylorAndFrancisScraper</TestDescription>
+		<URL>http://www.tandfonline.com/doi/abs/10.1080/713659338</URL>
+		<BibFile>TaylorAndFrancisScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper</Scraper>
+		<Enabled>true</Enabled>
+	</URLTest>
 </test:Tests>
