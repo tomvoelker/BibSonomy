@@ -30,6 +30,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -273,8 +274,8 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		CommonModelUtils.setBeanPropertiesOn(publication);
 		publication.setCount(0);		
 		publication.setEntrytype("inproceedings");
-		publication.setAuthor("MegaMan and Lucene GigaWoman " + LUCENE_MAGIC_AUTHOR);
-		publication.setEditor("Peter Silie " + LUCENE_MAGIC_EDITOR);
+		publication.setAuthor(PersonNameUtils.discoverPersonNames("MegaMan and Lucene GigaWoman " + LUCENE_MAGIC_AUTHOR));
+		publication.setEditor(PersonNameUtils.discoverPersonNames("Peter Silie " + LUCENE_MAGIC_EDITOR));
 		publication.setTitle("bibtex insertpost test");
 
 		String title, year, journal, booktitle, volume, number = null;

@@ -15,6 +15,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -112,8 +113,8 @@ public class LuceneResourceIndexTest {
 		CommonModelUtils.setBeanPropertiesOn(bibtex);
 		bibtex.setCount(0);		
 		bibtex.setEntrytype("inproceedings");
-		bibtex.setAuthor("MegaMan and Lucene GigaWoman");
-		bibtex.setEditor("Peter Silie");
+		bibtex.setAuthor(PersonNameUtils.discoverPersonNames("MegaMan and Lucene GigaWoman"));
+		bibtex.setEditor(PersonNameUtils.discoverPersonNames("Peter Silie"));
 		bibtex.setTitle("bibtex insertpost test");
 		resource = bibtex;
 		

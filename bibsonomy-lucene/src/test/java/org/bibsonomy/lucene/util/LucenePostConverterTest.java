@@ -18,6 +18,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;
@@ -121,7 +122,7 @@ public class LucenePostConverterTest {
 			assertEquals(true, postDoc.get(LuceneFieldNames.TAS).contains(tagName));
 		}
 		// author
-		assertEquals(testPost.getResource().getAuthor(), postDoc.get(LuceneFieldNames.AUTHOR));
+		assertEquals(PersonNameUtils.serializePersonNames(testPost.getResource().getAuthor()), postDoc.get(LuceneFieldNames.AUTHOR));
 		// year
 		assertEquals(testPost.getResource().getYear(), postDoc.get(LuceneFieldNames.YEAR));
 		// address
@@ -151,8 +152,8 @@ public class LucenePostConverterTest {
 		CommonModelUtils.setBeanPropertiesOn(resource);
 		resource.setCount(0);		
 		resource.setEntrytype("inproceedings");
-		resource.setAuthor("MegaMan and Lucene GigaWoman "+authorName);
-		resource.setEditor("Peter Silie "+authorName);
+		resource.setAuthor(PersonNameUtils.discoverPersonNames("MegaMan and Lucene GigaWoman "+authorName));
+		resource.setEditor(PersonNameUtils.discoverPersonNames("Peter Silie "+authorName));
 		resource.setTitle("bibtex insertpost test");
 		
 		resource.setTitle("title "+ (Math.round(Math.random()*Integer.MAX_VALUE))+" "+titleText); // TODO: random with seed

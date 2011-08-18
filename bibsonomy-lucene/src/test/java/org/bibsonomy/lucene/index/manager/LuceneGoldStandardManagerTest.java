@@ -18,6 +18,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -101,7 +102,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		final int docCountBefore = manager.getResourceIndeces().get(0).getStatistics().getNumDocs();
 	
 		final Post<GoldStandardPublication> post = goldStandardManager.getPostDetails("", INTER_HASH, "", allowedGroupIds, this.dbSession);
-		post.getResource().setAuthor("luceneTest"); // changes the interhash!!
+		post.getResource().setAuthor(PersonNameUtils.discoverPersonNames("luceneTest")); // changes the interhash!!
 	
 		goldStandardManager.updatePost(post, INTER_HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession, new User("testuser1"));
 	
