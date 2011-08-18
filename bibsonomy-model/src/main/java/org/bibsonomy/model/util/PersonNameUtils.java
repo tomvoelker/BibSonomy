@@ -46,26 +46,23 @@ public class PersonNameUtils {
 	public static final String PERSON_NAME_DELIMITER = " and ";
 	/**
 	 * By default, all author and editor names are in "Last, First" order
-	 * FIXME: change to "true" in September 2011! 
 	 */
-	public static final boolean DEFAULT_LAST_FIRST_NAMES = false;
+	public static final boolean DEFAULT_LAST_FIRST_NAMES = true;
 
 
 	/**
 	 * Analyses a string of names of the form "J. T. Kirk and M. Scott"
 	 * 
-	 * @param authorField the source string 
+	 * @param persons the source string 
 	 * @return the result
 	 */
-	public static List<PersonName> extractList(final String authorField) {
+	public static List<PersonName> discoverPersonNames(final String persons) {
 		final List<PersonName> authors = new LinkedList<PersonName>();
-		if (present(authorField)) {
-			final Scanner t = new Scanner(authorField);
+		if (present(persons)) {
+			final Scanner t = new Scanner(persons);
 			t.useDelimiter(PERSON_NAME_DELIMITER);
 			while (t.hasNext()) {
-				final PersonName a = new PersonName();
-				a.setName(t.next());
-				authors.add(a);
+				authors.add(discoverPersonName(t.next()));
 			}
 		}
 		return authors;
@@ -116,12 +113,13 @@ public class PersonNameUtils {
 	}
 
 	/**
-	 * Tries to detect the firstname and lastname of each author or editor.
+	 * Tries to detect the first name and last name of the given name.
 	 * 
-	 * @param name 
-	 * @param personName 
+	 * @param name
+	 * @return The extracted person's name
 	 */
-	public static void discoverFirstAndLastName(final String name, final PersonName personName) {
+	public static PersonName discoverPersonName(final String name) {
+		final PersonName personName = new PersonName();
 		if (present(name)) {
 			/*
 			 * DBLP author names sometimes contain numbers (when there are
@@ -146,7 +144,7 @@ public class PersonNameUtils {
 				 * We do not remove the braces and use the complete "name" as last name. 
 				 */
 				personName.setLastName(cleanedName);
-				return;
+				return personName;
 			}
 			/*
 			 * If the name contains a comma, we assume case 2).
@@ -160,7 +158,7 @@ public class PersonNameUtils {
 				 */
 				personName.setFirstName(cleanedName.substring(indexOfComma + 1).trim());
 				personName.setLastName(cleanedName.substring(0, indexOfComma).trim());
-				return;
+				return personName;
 			}
 			/*
 			 * 1) First Last ... its not so obvious, which part is what. 
@@ -205,63 +203,28 @@ public class PersonNameUtils {
 			personName.setFirstName(firstNameBuilder.toString().trim());
 			personName.setLastName(lastNameBuilder.toString().trim());
 		}
+		return personName;
 	}
 
 	/**
-	 * Tries to extract the last name of the first person. 
-	 * 
-	 * @param person some string representation of a list of persons with their first- and lastnames  
-	 * @return the last name of the first person
+	 * @param persons
+	 * @return The first person's last name.
 	 */
-	public static String getFirstPersonsLastName(final String person) {
-		if (present(person)) {
-			final String firstauthor;
-			/*
-			 * check, if there is more than one author
-			 */
-			final int firstand = person.indexOf(PERSON_NAME_DELIMITER);
-			if (firstand < 0) {
-				firstauthor = person;
-			} else {
-				firstauthor = person.substring(0, firstand);				
-			}
-			/*
-			 * first author extracted, get its last name
-			 */
-			final PersonName personName = new PersonName();
-			discoverFirstAndLastName(firstauthor, personName);
-			return personName.getLastName();
+	public static String getFirstPersonsLastName(final List<PersonName> persons) {
+		if (present(persons)) {
+			return persons.get(0).getLastName();
 		}
 		return null;
 	}
-	
+		
 	/**
-	 * Returns a normalized representation of the given personNames using the 
-	 * default value of {@link #DEFAULT_LAST_FIRST_NAMES}.
 	 * 
-	 * @param names
-	 * @return The normalized person names.
-	 */
-	public static String normalizePersonNames(final String names) {
-		return normalizePersonNames(names, DEFAULT_LAST_FIRST_NAMES);
-	}
-	
-	/**
-	 * Returns a normalized representation of the given personNames - either 
-	 * in "Last, First" order (of lastFirstNames is <code>true</code>) or in
-	 * "First Last" order.
 	 * 
-	 * @param names
-	 * @param lastFirstNames
-	 * @return The normalized person names.
+	 * @param personNames
+	 * @return The joined names or <code>null</code> if the list is empty.
 	 */
-	public static String normalizePersonNames(final String names, final boolean lastFirstNames) {
-		if (!present(names)) return names;
-		final List<PersonName> personNames = new LinkedList<PersonName>();
-		for (final String name : names.split(PERSON_NAME_DELIMITER)) {
-			personNames.add(new PersonName(name));
-		}
-		return serializePersonNames(personNames, lastFirstNames);
+	public static String serializePersonNames(final List<PersonName> personNames) {
+		return serializePersonNames(personNames, DEFAULT_LAST_FIRST_NAMES);
 	}
 	
 	/**
@@ -285,6 +248,14 @@ public class PersonNameUtils {
 			}
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * @param personName
+	 * @return The name or <code>null</code> if the name is empty.
+	 */
+	public static String serializePersonName(final PersonName personName) {
+		return serializePersonName(personName, DEFAULT_LAST_FIRST_NAMES);
 	}
 
 	/**
