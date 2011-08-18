@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -77,8 +78,8 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 				// author
 				if (SortKey.AUTHOR.equals(crit.sortKey)) {
 					// if author not present, take editor
-					final String personList1 = (present(post1.getResource().getAuthor()) ? post1.getResource().getAuthor() : post1.getResource().getEditor());
-					final String personList2 = (present(post2.getResource().getAuthor()) ? post2.getResource().getAuthor() : post2.getResource().getEditor());
+					final List<PersonName> personList1 = (present(post1.getResource().getAuthor()) ? post1.getResource().getAuthor() : post1.getResource().getEditor());
+					final List<PersonName> personList2 = (present(post2.getResource().getAuthor()) ? post2.getResource().getAuthor() : post2.getResource().getEditor());
 					return this.nomalizeAndCompare(PersonNameUtils.getFirstPersonsLastName(personList1), PersonNameUtils.getFirstPersonsLastName(personList2), crit.sortOrder);
 				}
 				// year
@@ -135,6 +136,7 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 		return 0;
 	}
 
+	
 	/**
 	 * Compare two day parts of a bibtex entry.
 	 * 
