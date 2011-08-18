@@ -48,7 +48,7 @@ public class BibTeXKeyGeneratorFilter implements PostFilterChainElement {
 	}
 	public void filterPost(final Post<BibTex> post) {
 		final String title = post.getResource().getTitle();
-		final String firstAuthorsLastName = post.getResource().getAuthorList().get(0).getLastName();
+		final String firstAuthorsLastName = post.getResource().getAuthor().get(0).getLastName();
 		final String year = post.getResource().getYear();
 		post.getResource().setBibtexKey(firstAuthorsLastName.toLowerCase() + year + getFirstRelevantWordFromTitle(title).toLowerCase());
 

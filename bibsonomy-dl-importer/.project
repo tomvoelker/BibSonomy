@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>bibsonomy-dl-importer</name>
-	<comment>Digital library importer for Bibsonomy.</comment>
+	<comment>Digital library importer for BibSonomy. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
 	<projects>
+		<project>bibsonomy-common</project>
+		<project>bibsonomy-model</project>
+		<project>bibsonomy-rest-client</project>
+		<project>bibsonomy-rest-common</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -27,8 +31,8 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.maven.ide.eclipse.maven2Nature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 		<nature>org.eclipse.wst.common.modulecore.ModuleCoreNature</nature>
 		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>

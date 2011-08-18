@@ -1,5 +1,7 @@
 package org.bibsonomy.importer.reader;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -112,26 +115,16 @@ public class CSVPostListReader implements PostListReader {
 	}
 	
 	private static void addAuthor(final BibTex bib, final String firstName, final String middleName, final String lastName) {
-		final StringBuffer buf = new StringBuffer();
-		if (present(bib.getAuthor())) {
-			/*
-			 * append "and"
-			 */
-			buf.append(bib.getAuthor() + " and ");
+		if (!present(bib.getAuthor())) {
+			// new list
+			bib.setAuthor(new LinkedList<PersonName>());
 		}
-		buf.append(getName(firstName) + " " + getName(middleName) + " " + getName(lastName));
-		bib.setAuthor(buf.toString());
+		bib.getAuthor().add(new PersonName(firstName, getName(middleName) + " " + getName(lastName)));
 	}
 	
 	private static String getName(final String name) {
 		if (name.length() == 1) return name + ".";
 		return name;
 	}
-	
-
-	private static boolean present (final String s) {
-		return s != null && !s.trim().equals("");
-	}
-
 
 }
