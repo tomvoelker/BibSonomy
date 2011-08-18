@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -576,8 +578,8 @@ public class TestDBLogic implements LogicInterface {
 
 		// publication resources & posts
 		final BibTex publicationDemo = new BibTex();
-		publicationDemo.setAuthor("Albert Einstein and Leonardo da Vinci");
-		publicationDemo.setEditor("Luke Skywalker and Yoda");
+		publicationDemo.setAuthor(Arrays.asList(new PersonName("Albert", "Einstein"), new PersonName("Leonardo", "da Vinci")));
+		publicationDemo.setEditor(Arrays.asList(new PersonName("Luke", "Skywalker"), new PersonName(null, "Yoda")));
 //		FIXME: change in Sept.
 //		publicationDemo.setAuthor("Einstein, Albert and da Vinci, Leonardo");
 //		publicationDemo.setEditor("Skywalker, Luke and Yoda");
@@ -590,8 +592,8 @@ public class TestDBLogic implements LogicInterface {
 		this.dbResources.put(publicationDemo.getIntraHash(), publicationDemo);
 
 		final BibTex publicationDemo1 = new BibTex();
-		publicationDemo1.setAuthor("R. Fielding and J. Gettys and J. Mogul and H. Frystyk and L. Masinter and P. Leach and T. Berners-Lee");
-		publicationDemo1.setEditor("");
+		publicationDemo1.setAuthor(Arrays.asList(new PersonName("R.", "Fielding"), new PersonName("J.", "Gettys"), new PersonName("J.", "Mogul"), new PersonName("H.", "Frystyk"), new PersonName("L.", "Masinter"), new PersonName("P.", "Leach"), new PersonName("T.", "Berners-Lee")));
+		publicationDemo1.setEditor(Arrays.asList(new PersonName("", "")));
 		publicationDemo1.setTitle("RFC 2616, Hypertext Transfer Protocol -- HTTP/1.1");
 		publicationDemo1.setType("Paper");
 		publicationDemo1.setYear("1999");
@@ -601,8 +603,8 @@ public class TestDBLogic implements LogicInterface {
 		this.dbResources.put(publicationDemo1.getIntraHash(), publicationDemo1);
 
 		final BibTex publicationDemo2 = new BibTex();
-		publicationDemo2.setAuthor("Roy T. Fielding");
-		publicationDemo2.setEditor("");
+		publicationDemo2.setAuthor(Arrays.asList(new PersonName("Roy T.", "Fielding")));
+		publicationDemo2.setEditor(Arrays.asList(new PersonName("", "")));
 		publicationDemo2.setTitle("Architectural Styles and the Design of Network-based Software Architectures");
 		publicationDemo2.setType("Paper");
 		publicationDemo2.setYear("2000");
@@ -612,8 +614,8 @@ public class TestDBLogic implements LogicInterface {
 		this.dbResources.put(publicationDemo2.getIntraHash(), publicationDemo2);
 
 		final BibTex publicationDemo3 = new BibTex();
-		publicationDemo3.setAuthor("Tim Berners-Lee and Mark Fischetti");
-		publicationDemo3.setEditor("");
+		publicationDemo3.setAuthor(Arrays.asList(new PersonName("Tim", "Berners-Lee"), new PersonName("Mark", "Fischetti")));
+		publicationDemo3.setEditor(Arrays.asList(new PersonName("", "")));
 		publicationDemo3.setTitle("Weaving the web");
 		publicationDemo3.setType("Paper");
 		publicationDemo3.setYear("1999");
