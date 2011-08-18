@@ -262,10 +262,8 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 * contained in the string are copied back into the new post.
 	 * 
 	 * Purpose: To ensure that we show only valid and normalized BibTeX entries
-	 * (e.g., on /bib/ pages; currently, we also need this for /layout/, since
-	 * there all posts are parsed through the JabRef parser) we send all posts
-	 * through the parser and thereby normalize them before we store them in the
-	 * DB.
+	 * (e.g., on /bibtex/ pages) we send all posts through the parser and 
+	 * thereby normalize them before we store them in the DB.
 	 * 
 	 * @see BibTexUtils#toBibtexString(Post) - all fields added there have to be
 	 * copied here, to!
@@ -277,7 +275,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		/*
 		 * parse the bibtex in the post
 		 */
-		final Post<BibTex> copyPost = this.getParsedCopy(post);
+		final Post<BibTex> copyPost = this.getParsedCopy(post, true);
 		/*
 		 * exchange the bibtex in the post by the parsed version
 		 */
@@ -298,16 +296,18 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 * string are not copied into the new post!
 	 * 
 	 * @param post
+	 * @param lastFirstNames - set to <code>true</code>, if you want "Last, First" 
+	 * author and editor names. Otherwise <code>false</code>.
 	 * @return TODO: improve documentation
 	 * @throws IOException 
 	 * @throws ParseException 
 	 */
-	public Post<BibTex> getParsedCopy(final Post<BibTex> post) throws ParseException, IOException {
+	public Post<BibTex> getParsedCopy(final Post<BibTex> post, final boolean lastFirstNames) throws ParseException, IOException {
 		/*
 		 * parseBibTeXPost must ensure to add all fields which 
 		 * BibTexUtils.toBibtexString(post) puts into the string. 
 		 */
-		return this.parseBibTeXPost(BibTexUtils.toBibtexString(post, SerializeBibtexMode.PLAIN_MISCFIELDS));
+		return this.parseBibTeXPost(BibTexUtils.toBibtexString(post, SerializeBibtexMode.PLAIN_MISCFIELDS, lastFirstNames));
 	}
 
 	@Override
