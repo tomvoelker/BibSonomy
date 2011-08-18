@@ -16,7 +16,6 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -192,15 +191,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	}
 
 	@Override
-	protected void preparePostForView(final Post<BibTex> post) {
-		/*
-		 * replace all " and "s by a new line in author and
-		 * editor field of the bibtex to separate multiple authors and editors
-		 */
-		BibTexUtils.prepareEditorAndAuthorFieldForView(post.getResource());
-	}
-
-	@Override
 	protected void createOrUpdateSuccess(final COMMAND command, final User loginUser, final Post<BibTex> post) {
 		super.createOrUpdateSuccess(command, loginUser, post);
 		this.handleAddFiles(command, loginUser.getName());
@@ -260,14 +250,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		if (present(scraperMetadata)) {
 			post.getResource().setScraperMetadata((ScraperMetadata) scraperMetadata);
 		}
-	}
-
-	@Override
-	protected void preparePostAfterView(final Post<BibTex> post) {
-		/*
-		 * replace all new lines with an " and " to undo the preparePostForView action
-		 */
-		BibTexUtils.prepareEditorAndAuthorFieldForDatabase(post.getResource());
 	}
 
 	@Override
