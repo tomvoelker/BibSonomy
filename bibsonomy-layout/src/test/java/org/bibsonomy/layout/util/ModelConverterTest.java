@@ -48,9 +48,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
-//import org.bibsonomy.testutil.ModelUtils;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 import bibtex.parser.ParseException;
 
@@ -63,7 +62,7 @@ public class ModelConverterTest {
     private static final String bibtexSource = "@book{Loudon2003,\r\n"
 	+ "  title = {C++. Kurz und gut.},\r\n"
 	+ "  publisher = {O'Reilly},\r\n" + "  year = {2003},\r\n"
-	+ "  author = {Kyle Loudon},\r\n" + "  month = {08},\r\n"
+	+ "  author = {Loudon, Kyle},\r\n" + "  month = {08},\r\n"
 	+ "  booktitle = {C++. Kurz und gut.},\r\n"
 	+ "  isbn = {3897212625},\r\n" + "  keywords = {boost c++},\r\n"
 	+ "  owner = {dasboogie},\r\n"

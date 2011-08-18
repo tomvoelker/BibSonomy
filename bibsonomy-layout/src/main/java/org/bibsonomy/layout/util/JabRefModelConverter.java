@@ -52,6 +52,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;
 
@@ -67,7 +68,9 @@ public class JabRefModelConverter {
 	private static final Log log = LogFactory.getLog(JabRefModelConverter.class);
 
 	private static final Set<String> EXCLUDE_FIELDS = new HashSet<String>(
-			Arrays.asList(new String[] { 
+			Arrays.asList(new String[] {
+					"author", 					// added separately
+					"editor",	 				// added separately
 					"abstract", 				// added separately
 					"bibtexAbstract", 			// added separately
 					"bibtexkey", "entrytype", 	// added at beginning of entry
@@ -166,8 +169,7 @@ public class JabRefModelConverter {
 			final BibtexEntryType entryType = BibtexEntryType.getType(bibtex.getEntrytype());
 			entry.setType(entryType == null ? BibtexEntryType.OTHER : entryType);
 
-			if (present(bibtex.getMisc())
-					|| present(bibtex.getMiscFields())) {
+			if (present(bibtex.getMisc()) || present(bibtex.getMiscFields())) {
 
 				// parse the misc fields and loop over them
 				bibtex.parseMiscField();
@@ -189,6 +191,12 @@ public class JabRefModelConverter {
 					}
 
 			}
+			
+			/*
+			 * handle author and editor
+			 */
+			entry.setField("author", PersonNameUtils.serializePersonNames(bibtex.getAuthor()));
+			entry.setField("editor", PersonNameUtils.serializePersonNames(bibtex.getEditor()));
 
 			final String month = bibtex.getMonth();
 			if (present(month)) {
@@ -349,7 +357,7 @@ public class JabRefModelConverter {
 			return post;
 
 		} catch (final Exception e) {
-			System.out.println(e.getStackTrace());
+			e.printStackTrace();
 			log.debug("Could not convert JabRef entry into BibSonomy post.", e);
 		}
 
