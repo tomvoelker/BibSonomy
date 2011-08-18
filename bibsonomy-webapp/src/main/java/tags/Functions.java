@@ -27,6 +27,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.EnumUtils;
@@ -538,8 +539,8 @@ public class Functions  {
 			final String title = resource.getTitle();
 			if (title != null) buf.append(shorten(title, 50));
 
-			final String author = resource.getAuthor();
-			if (author != null) buf.append(", " + shorten(author, 20));
+			final String author = PersonNameUtils.serializePersonNames(resource.getAuthor());
+			if (present(author)) buf.append(", " + shorten(author, 20));
 
 			final String year = resource.getYear();
 			if (year != null) buf.append(", " + shorten(year, 4));
