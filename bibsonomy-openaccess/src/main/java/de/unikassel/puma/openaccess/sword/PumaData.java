@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.util.PersonNameUtils;
 
 
 public class PumaData<T extends Resource> extends PumaPost<T> {
@@ -43,18 +43,12 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 	public void setPost(Post<T> post) {
 		this.post = post;
 		if (post.getResource() instanceof BibTex) {
-			BibTex resource = (BibTex) post.getResource(); 
+			final BibTex resource = (BibTex) post.getResource(); 
 			setAuthor(resource.getAuthor());		
 		}
 	}
-
-	private void setAuthor(final String author) {
-		for (final PersonName authorname : PersonNameUtils.extractList(author) ) {
-			this.author.add(authorname.getLastName().concat(", ").concat(authorname.getFirstName()));
-		}
-	}
 	
-	protected List<String> author = new ArrayList<String>();
+	protected List<PersonName> author = new LinkedList<PersonName>();
 
 
 	protected String examinstitution = null;
@@ -67,14 +61,14 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 	/**
 	 * @return the list of authors
 	 */
-	public List<String> getAuthor() {
+	public List<PersonName> getAuthor() {
 		return author;
 	}
 
 	/**
 	 * @param author list of authors to set
 	 */
-	public void setAuthor(List<String> authors) {
+	public void setAuthor(List<PersonName> authors) {
 		this.author = authors;
 	}	
 

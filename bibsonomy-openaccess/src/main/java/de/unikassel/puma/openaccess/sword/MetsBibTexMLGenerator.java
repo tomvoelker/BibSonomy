@@ -28,8 +28,10 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
@@ -229,9 +231,9 @@ public class MetsBibTexMLGenerator {
 				}
 
 
-				if (null != pumaData.getAuthor()) {
-					for (String item : pumaData.getAuthor()) {
-						myPost.getAuthor().add(item);
+				if (present(pumaData.getAuthor())) {
+					for (final PersonName personName : pumaData.getAuthor()) {
+						myPost.getAuthor().add(PersonNameUtils.serializePersonName(personName));
 					}
 				}
 
