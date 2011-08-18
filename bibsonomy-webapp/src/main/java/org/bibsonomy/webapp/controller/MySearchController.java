@@ -2,18 +2,16 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -94,19 +92,18 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		/**
 		 * read title, author and tag information form bibtex
 		 */
-		for (Post<BibTex> bibtexEntry : bibtex.getList()) {
+		for (final Post<BibTex> post : bibtex.getList()) {
 
-			String title = bibtexEntry.getResource().getTitle().replaceAll("\\n|\\r", "");
-			titles.add(title);
+			titles.add(post.getResource().getTitle().replaceAll("\\n|\\r", ""));
 
-			String author = buildAuthorsAndEditors(bibtexEntry.getResource().getAuthor(), bibtexEntry.getResource().getEditor());
-
-			List<String> authorsLastNames = extractAuthorsLastNames(author);
-			for (String lastName : authorsLastNames) {
-				authors.add(lastName);
+			for (final PersonName name: post.getResource().getAuthor()) {
+				authors.add(name.getLastName());
 			}
-
-			for (Tag tag : bibtexEntry.getTags()) {
+			for (final PersonName name: post.getResource().getEditor()) {
+				authors.add(name.getLastName());
+			}
+			
+			for (final Tag tag : post.getTags()) {
 				tags.add(tag.getName());
 			}
 		}
@@ -128,7 +125,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		return Views.MYSEARCH;
 	}
 
-	private void buildRelationTables(ListCommand<Post<BibTex>> bibtex, MySearchCommand command) {
+	private void buildRelationTables(final ListCommand<Post<BibTex>> bibtex, final MySearchCommand command) {
 
 		/**
 		 * containers for relation tables
@@ -140,30 +137,30 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		/**
 		 * sorted lists for several relations
 		 */
-		SortedSet<Integer>[] tagTitle = new TreeSet[tagList.size()];
-		SortedSet<Integer>[] authorTitle = new TreeSet[authorList.size()];
-		SortedSet<Integer>[] tagAuthor = new TreeSet[tagList.size()];
-		SortedSet<Integer>[] titleAuthor = new TreeSet[titleList.size()];
+		final SortedSet<Integer>[] tagTitle = new TreeSet[tagList.size()];
+		final SortedSet<Integer>[] authorTitle = new TreeSet[authorList.size()];
+		final SortedSet<Integer>[] tagAuthor = new TreeSet[tagList.size()];
+		final SortedSet<Integer>[] titleAuthor = new TreeSet[titleList.size()];
 
 		/**
 		 * string arrays for hash and url informations for the several bibtex
 		 */
-		String[] bibtexHashs = new String[titleList.size()];
-		String[] bibtexUrls = new String[titleList.size()];
+		final String[] bibtexHashs = new String[titleList.size()];
+		final String[] bibtexUrls = new String[titleList.size()];
 
 		/**
 		 * build the relations from the bibtex informations
 		 */
-		for (Post<BibTex> bibtexEntry : bibtex.getList()) {
+		for (final Post<BibTex> post : bibtex.getList()) {
 			// read values from resultset
-			String title = bibtexEntry.getResource().getTitle().replaceAll("\\n|\\r", "");
-			Set<Tag> tags = bibtexEntry.getTags();
-			String hash = bibtexEntry.getResource().getSimHash2();
-			String url = bibtexEntry.getResource().getUrl();
-			String author = buildAuthorsAndEditors(bibtexEntry.getResource().getAuthor(), bibtexEntry.getResource().getEditor());
+			final BibTex publication = post.getResource();
+			final String title = publication.getTitle().replaceAll("\\n|\\r", "");
+			final Set<Tag> tags = post.getTags();
+			final String hash = publication.getSimHash2();
+			final String url = publication.getUrl();
 
 			// tag --> title relation
-			for (Tag tag : tags) {
+			for (final Tag tag : tags) {
 				if (tagTitle[tagList.indexOf(tag.getName())] == null) {
 					SortedSet<Integer> v = new TreeSet<Integer>();
 					v.add(titleList.indexOf(title));
@@ -174,28 +171,31 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			}
 
 			// author --> title relation
-			List<String> authorsLastNames = extractAuthorsLastNames(author);
-			for (String name : authorsLastNames) {
-				if (authorTitle[authorList.indexOf(name)] == null) {
-					SortedSet<Integer> v = new TreeSet<Integer>();
+			final List<PersonName> author = publication.getAuthor();
+			final List<PersonName> persons = new LinkedList<PersonName>(author);
+			persons.addAll(publication.getEditor());
+			for (final PersonName name : persons) {
+				final int indexOfAuthor = authorList.indexOf(name.getLastName()); // FIXME: indexOf is inefficient!
+				if (authorTitle[indexOfAuthor] == null) { 
+					final SortedSet<Integer> v = new TreeSet<Integer>();
 					v.add(titleList.indexOf(title));
-					authorTitle[authorList.indexOf(name)] = v;
+					authorTitle[indexOfAuthor] = v;
 				} else {
-					authorTitle[authorList.indexOf(name)].add(titleList.indexOf(title));
+					authorTitle[indexOfAuthor].add(titleList.indexOf(title));
 				}
 			}
 
 			// tag --> author relation
-			for (Tag tag : tags) {
+			for (final Tag tag : tags) {
 				if (tagAuthor[tagList.indexOf(tag.getName())] == null) {
-					SortedSet<Integer> v = new TreeSet<Integer>();
-					for (String name : authorsLastNames) {
-						v.add(authorList.indexOf(name));
+					final SortedSet<Integer> v = new TreeSet<Integer>();
+					for (final PersonName name : persons) {
+						v.add(authorList.indexOf(name.getLastName()));
 					}
 					tagAuthor[tagList.indexOf(tag.getName())] = v;
 				} else {
-					for (String name : authorsLastNames) {
-						tagAuthor[tagList.indexOf(tag.getName())].add(authorList.indexOf(name));
+					for (final PersonName name : persons) {
+						tagAuthor[tagList.indexOf(tag.getName())].add(authorList.indexOf(name.getLastName()));
 					}
 				}
 			}
@@ -203,13 +203,13 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			// title --> author relation
 			if (titleAuthor[titleList.indexOf(title)] == null) {
 				SortedSet<Integer> v = new TreeSet<Integer>();
-				for (String name : authorsLastNames) {
-					v.add(authorList.indexOf(name));
+				for (final PersonName name : persons) {
+					v.add(authorList.indexOf(name.getLastName()));
 				}
 				titleAuthor[titleList.indexOf(title)] = v;
 			} else {
-				for (String name : authorsLastNames) {
-					titleAuthor[titleList.indexOf(title)].add(authorList.indexOf(name));
+				for (final PersonName name : persons) {
+					titleAuthor[titleList.indexOf(title)].add(authorList.indexOf(name.getLastName()));
 				}
 			}
 
@@ -242,82 +242,4 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 	public MySearchCommand instantiateCommand() {
 		return new MySearchCommand();
 	}
-
-	/**
-	 * 
-	 * @param author
-	 * @param editor
-	 * @return a string containing all authors and editors
-	 */
-	private String buildAuthorsAndEditors(String author, String editor) {
-		final StringBuilder authors = new StringBuilder();
-
-		if (author != null) authors.append(author);
-
-		if (editor != null) {
-			if (author != null) authors.append(" and ");
-			authors.append(editor);
-		}
-
-		return authors.toString();
-	}
-
-	/**
-	 * extract the last names of the authors
-	 * 
-	 * @param authors
-	 * @return string list of the last names of the authors
-	 */
-	private List<String> extractAuthorsLastNames(String authors) {
-		List<String> authorsList = new LinkedList<String>();
-		List<String> names = new LinkedList<String>();
-		Pattern pattern = Pattern.compile("[0-9]+"); // only numbers
-
-		Scanner s = new Scanner(authors);
-		s.useDelimiter(" and ");
-		while (s.hasNext())
-			names.add(s.next());
-
-		for (String person : names) {
-			/*
-			 * extract all parts of a name
-			 */
-			List<String> nameList = new LinkedList<String>();
-			StringTokenizer token = new StringTokenizer(person);
-			while (token.hasMoreTokens()) {
-				/*
-				 * ignore numbers (from DBLP author names)
-				 */
-				final String part = token.nextToken();
-				if (!pattern.matcher(part).matches()) {
-					nameList.add(part);
-				}
-			}
-
-			/*
-			 * detect lastname
-			 */
-			int i = 0;
-			while (i < nameList.size() - 1) { // iterate up to the last but one
-				// part
-				final String part = nameList.get(i++);
-				/*
-				 * stop, if this is the last abbreviated forename
-				 */
-				if (part.contains(".") && !nameList.get(i).contains(".")) {
-					break;
-				}
-			}
-
-			StringBuilder lastName = new StringBuilder();
-			while (i < nameList.size()) {
-				lastName.append(nameList.get(i++) + " ");
-			}
-
-			// add name to list
-			authorsList.add(lastName.toString().trim());
-		}
-		return authorsList;
-	}
-
 }
