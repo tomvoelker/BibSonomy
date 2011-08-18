@@ -26,6 +26,7 @@ package org.bibsonomy.testutil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -40,6 +41,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -85,6 +87,9 @@ public final class ModelUtils extends CommonModelUtils {
 	}
 
 	
+	/**
+	 * @return A list of bookmarks
+	 */
 	public static List<Post<Bookmark>> getBookmarks() {
 		final List<Post<Bookmark>> bookmarks = new LinkedList<Post<Bookmark>>();
 		bookmarks.add(generatePost(Bookmark.class));
@@ -181,8 +186,8 @@ public final class ModelUtils extends CommonModelUtils {
 		setBeanPropertiesOn(publication);
 		setResourceDefaults(publication);		
 		publication.setEntrytype("inproceedings");
-		publication.setAuthor("Hans Testauthor and Liese Testauthorin");
-		publication.setEditor("Peter Silie");
+		publication.setAuthor(Arrays.asList(new PersonName("Hans", "Testauthor"), new PersonName("Liese", "Testauthorin")));
+		publication.setEditor(Arrays.asList(new PersonName("Peter", "Silie")));
 		publication.recalculateHashes();
 	}
 	

@@ -89,30 +89,29 @@ public class SimHashTest {
 	@Test
 	public void testAuthorNormalization() {
 		BibTex bib = new BibTex();
-		bib.setAuthor("b and A");
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("b and A"));
 		final String interHash = SimHash.getSimHash(bib, HashID.getSimHash(1));
-		bib.setAuthor("B and A");
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("B and A"));
 		assertEquals(interHash, SimHash.getSimHash(bib, HashID.getSimHash(1)));
-		bib.setAuthor("a and b");
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("a and b"));
 		assertEquals(interHash, SimHash.getSimHash(bib, HashID.getSimHash(1)));
-		bib.setAuthor("a and a and b and b and a and B and A and B and a");
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("a and a and b and b and a and B and A and B and a"));
 		assertEquals(interHash, SimHash.getSimHash(bib, HashID.getSimHash(1)));
 		
-		bib.setAuthor("John Paul and Bridget Jones");
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("John Paul and Bridget Jones"));
 		final String interHash2 = SimHash.getSimHash(bib, HashID.getSimHash(1));
-		bib.setAuthor("JoHN pAUl and brIDgeT JOneS");
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("JoHN pAUl and brIDgeT JOneS"));
 		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
-		bib.setAuthor("J PAUL and b jones");
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("J PAUL and b jones"));
 		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
-		// FIXME: change and augment in Sept.
-//		bib.setAuthor("PAUL, J and jones, B");
-//		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
-//		bib.setAuthor("JoHN pAUl and JOneS, brIDgeT");
-//		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("PAUL, J and jones, B"));
+		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("JoHN pAUl and JOneS, brIDgeT"));
+		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
 		
-		bib.setAuthor("John and Paul John");
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("John and John, Paul"));
 		final String interHash3 = SimHash.getSimHash(bib, HashID.getSimHash(1));
-		bib.setAuthor("JoHN and PAUL jOhN");
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("JoHN and Paul jOhN"));
 		assertEquals(interHash3, SimHash.getSimHash(bib, HashID.getSimHash(1)));
 	}
 }

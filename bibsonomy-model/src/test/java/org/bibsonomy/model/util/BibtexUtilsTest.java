@@ -98,7 +98,7 @@ public class BibtexUtilsTest {
 		bib.setEntrytype("inproceedings");
 		bib.setBibtexKey("KIE");
 		bib.setTitle("The most wonderfult title on earth");
-		bib.setAuthor("Hans Dampf and Peter Silie");
+		bib.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf"), PersonNameUtils.discoverPersonName("Peter Silie")));
 		bib.setJournal("Journal of the most wonderful articles on earth");
 		bib.setYear("2525");
 		bib.setVolume("3");
@@ -113,7 +113,7 @@ public class BibtexUtilsTest {
 			"  year = 2525,\n" + 
 			"  abstract = {This is a nice abstract.}\n}";
 		
-		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib));
+		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib, false));
 
 		// add some misc fields
 		bib.addMiscField("extraKey", "extraVal");
@@ -130,7 +130,7 @@ public class BibtexUtilsTest {
 			"  extrakey = {extraVal},\n" + 
 			"  extrakey2 = {extraVal2}\n}";
 		
-		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib));		
+		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib, false));		
 	}
 
 	/**
@@ -158,17 +158,17 @@ public class BibtexUtilsTest {
 				"Preventive 2007). \n" + 
 		"For not.}");
 		bib.setEntrytype("book");
-		bib.setEditor("John Libbey Eurotext");
+		bib.setEditor(Arrays.asList(PersonNameUtils.discoverPersonName("John Libbey Eurotext")));
 		bib.setEdition("John Libbey Eurotext");
 		bib.setBibtexKey("Selmes2004");
 		bib.setAbstract("Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.");
-		bib.setAuthor("Jacques Selmès and Christian Derouesné");
+		bib.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Jacques Selmès"), PersonNameUtils.discoverPersonName("Christian Derouesné")));
 		
 		final String expected = 
 			"@book{Selmes2004,\n" + 
 			"  author = {Jacques Selmès and Christian Derouesné},\n" +
-			"  edition = {John Libbey Eurotext},\n" +
 			"  editor = {John Libbey Eurotext},\n" +
+			"  edition = {John Libbey Eurotext},\n" +
 			"  note = {Tome I},\n" +
 			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +
 			"  year = 2004,\n" +			
@@ -182,26 +182,75 @@ public class BibtexUtilsTest {
 			"For not.},\n" + 						
 			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.}\n" +
 			"}";
-		assertEquals(expected, BibTexUtils.toBibtexString(bib, SerializeBibtexMode.PLAIN_MISCFIELDS));
+		assertEquals(expected, BibTexUtils.toBibtexString(bib, SerializeBibtexMode.PLAIN_MISCFIELDS, false));
 	}
 
+	/**
+	 * same test as {@link #testToBibtexString()} but with "Last, First" name order 
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testToBibtexString2() throws Exception {
+		final BibTex bib = new BibTex();
+		bib.setYear("2004");
+		bib.setTitle("La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer");
+		bib.setPrivnote("");
+		bib.setNote("Tome I");
+		bib.setMisc(
+				"q6 = {It needs.\n" + 
+				"To trials.\n" + 
+				"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
+				"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
+				"Maintenance age. \n" + 
+				"Studies programs.}, q3a = {Reminder 2004). \n" + 
+				"Preventive 2007). \n" + 
+		"For not.}");
+		bib.setEntrytype("book");
+		bib.setEditor(Arrays.asList(PersonNameUtils.discoverPersonName("John Libbey Eurotext")));
+		bib.setEdition("John Libbey Eurotext");
+		bib.setBibtexKey("Selmes2004");
+		bib.setAbstract("Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.");
+		bib.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Jacques Selmès"), PersonNameUtils.discoverPersonName("Christian Derouesné")));
+		
+		final String expected = 
+			"@book{Selmes2004,\n" + 
+			"  author = {Selmès, Jacques and Derouesné, Christian},\n" +
+			"  editor = {Eurotext, John Libbey},\n" +
+			"  edition = {John Libbey Eurotext},\n" +
+			"  note = {Tome I},\n" +
+			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +
+			"  year = 2004,\n" +			
+			"  q6 = {It needs.\n" + 
+			"To trials.\n" + 
+			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
+			"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
+			"Maintenance age. \n" + 
+			"Studies programs.}, q3a = {Reminder 2004). \n" + 
+			"Preventive 2007). \n" + 
+			"For not.},\n" + 						
+			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.}\n" +
+			"}";
+		assertEquals(expected, BibTexUtils.toBibtexString(bib, SerializeBibtexMode.PLAIN_MISCFIELDS, true));
+	}
+	
 
 	/**
 	 * tests generateBibtexKey
 	 */
 	@Test
 	public void generateBibtexKey() {
-		assertEquals("dampf", BibTexUtils.generateBibtexKey("Hans Dampf", null, null, null));
-		assertEquals("dampf", BibTexUtils.generateBibtexKey("Hans Dampf and Reiner Zufall", null, null, null));
-		assertEquals("dampf", BibTexUtils.generateBibtexKey("Hans Dampf and Reiner Zufall", "Peter Silie", null, null));
-		assertEquals("dampf2005", BibTexUtils.generateBibtexKey("Hans Dampf and Reiner Zufall", "Peter Silie", "2005", null));
-		assertEquals("silie", BibTexUtils.generateBibtexKey(null, "Peter Silie", null, null));
-		assertEquals("silie", BibTexUtils.generateBibtexKey(null, "Peter Silie and Hans Dampf", null, null));
-		assertEquals("silie2005", BibTexUtils.generateBibtexKey(null, "Peter Silie and Hans Dampf", "2005", null));
-		assertEquals("knuth2005", BibTexUtils.generateBibtexKey(null, "Knuth, Donald E.", "2005", null));
-		assertEquals("navarrobullock2005", BibTexUtils.generateBibtexKey(null, "Navarro Bullock, Beate", "2005", null));
-		assertEquals("longcompanyname2005", BibTexUtils.generateBibtexKey(null, "{Long Company Name} and Hans Dampf", "2005", null));
-		assertEquals("knuth1998computer", BibTexUtils.generateBibtexKey(null, "Knuth, Donald E.", "1998", "The Art of Computer Programming"));
+		assertEquals("dampf", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf")), null, null, null));
+		assertEquals("dampf", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf"), PersonNameUtils.discoverPersonName("Reiner Zufall")), null, null, null));
+		assertEquals("dampf", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf"), PersonNameUtils.discoverPersonName("Reiner Zufall")), Arrays.asList(PersonNameUtils.discoverPersonName("Peter Silie")), null, null));
+		assertEquals("dampf2005", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf"), PersonNameUtils.discoverPersonName("Reiner Zufall")), Arrays.asList(PersonNameUtils.discoverPersonName("Peter Silie")), "2005", null));
+		assertEquals("silie", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Peter Silie")), null, null));
+		assertEquals("silie", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Peter Silie"), PersonNameUtils.discoverPersonName("Hans Dampf")), null, null));
+		assertEquals("silie2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Peter Silie"), PersonNameUtils.discoverPersonName("Hans Dampf")), "2005", null));
+		assertEquals("knuth2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Knuth, Donald E.")), "2005", null));
+		assertEquals("navarrobullock2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Navarro Bullock, Beate")), "2005", null));
+		assertEquals("longcompanyname2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("{Long Company Name}"), PersonNameUtils.discoverPersonName("Hans Dampf")), "2005", null));
+		assertEquals("knuth1998computer", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Knuth, Donald E.")), "1998", "The Art of Computer Programming"));
 	}
 
 
@@ -239,10 +288,10 @@ public class BibtexUtilsTest {
 		final Post<BibTex> post1 = new Post<BibTex>();
 		final Post<BibTex> post2 = new Post<BibTex>();
 		BibTex b1 = new BibTex();
-		b1.setAuthor("A. Test");
+		b1.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("A. Test")));
 		post1.setResource(b1);
 		BibTex b2 = new BibTex();
-		b2.setAuthor("B. Test");
+		b2.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("B. Test")));
 		post2.setResource(b2);
 		posts.add(post1);
 		posts.add(post2);
@@ -313,7 +362,7 @@ public class BibtexUtilsTest {
 		bib.setEntrytype("inproceedings");
 		bib.setBibtexKey("KIE");
 		bib.setTitle("The most wonderfult title on earth");
-		bib.setAuthor("Hans Dampf and Peter Silie");
+		bib.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf"), PersonNameUtils.discoverPersonName("Peter Silie")));
 		bib.setJournal("Journal of the most wonderful articles on earth");
 		bib.setYear("2525");
 		bib.setVolume("3");
@@ -345,7 +394,7 @@ public class BibtexUtilsTest {
 		 * misc fields! Nevertheless, we should have the same misc fields
 		 * afterwards. 
 		 */
-		BibTexUtils.toBibtexString(post);
+		BibTexUtils.toBibtexString(post, false);
 		/*
 		 * The fields are parsed and then serialized. Inbetween, some fields
 		 * have been added (keywords, description). We must ensure, that they're

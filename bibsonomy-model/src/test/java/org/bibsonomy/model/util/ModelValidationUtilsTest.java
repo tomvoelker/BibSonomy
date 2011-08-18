@@ -26,10 +26,13 @@ package org.bibsonomy.model.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.LinkedList;
+
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.junit.Test;
@@ -202,11 +205,13 @@ public class ModelValidationUtilsTest {
 		} catch (InvalidModelException ex) {
 		}
 		
-		publication.setAuthor("author");
+		publication.setAuthor(new LinkedList<PersonName>());
+		publication.getAuthor().add(PersonNameUtils.discoverPersonName("author"));
 		ModelValidationUtils.checkPublication(publication);
 	
-		publication.setAuthor("");
-		publication.setEditor("editor");
+		publication.getAuthor().add(PersonNameUtils.discoverPersonName(""));
+		publication.setEditor(new LinkedList<PersonName>());
+		publication.getEditor().add(PersonNameUtils.discoverPersonName("editor"));
 		ModelValidationUtils.checkPublication(publication);
 	
 	}
