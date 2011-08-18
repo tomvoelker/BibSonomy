@@ -25,6 +25,7 @@
 	<typeAlias alias="discussionItem"		type="org.bibsonomy.model.DiscussionItem" />
 	<typeAlias alias="comment"				type="org.bibsonomy.model.Comment" />
 	<typeAlias alias="review"				type="org.bibsonomy.model.Review" />
+	<typeAlias alias="personNameList"				type="java.util.List" />
 	
 	<!-- Synchronization -->
 	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />
