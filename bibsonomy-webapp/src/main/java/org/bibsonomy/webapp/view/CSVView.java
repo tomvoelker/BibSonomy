@@ -18,6 +18,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
@@ -127,7 +128,7 @@ public class CSVView extends AbstractView {
 				if (publicationList != null) {
 					for (final Post<BibTex> post : publicationList) {
 						final BibTex resource = post.getResource();
-						csvWriter.writeNext(getArray(post, resource.getAuthor(), resource.getEditor(), resource.getBibtexKey(), 
+						csvWriter.writeNext(getArray(post, PersonNameUtils.serializePersonNames(resource.getAuthor()), PersonNameUtils.serializePersonNames(resource.getEditor()), resource.getBibtexKey(), 
 								resource.getAnnote(), resource.getBooktitle(), resource.getCrossref(), resource.getAddress(), 
 								resource.getEntrytype(), resource.getChapter(), resource.getEdition(), resource.getDay(), 
 								resource.getHowpublished(), resource.getInstitution(), resource.getJournal(), resource.getMonth(), 
