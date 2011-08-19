@@ -174,20 +174,20 @@
 		</c:forEach>
 	</c:if>
 
-	<c:if test="${!empty post.resource.authorList}">
+	<c:if test="${!empty post.resource.author}">
 		<swrc:author>
 		  <rdf:Seq>
-		  <c:forEach var="person" varStatus="status" items="${post.resource.authorList}">
+		  <c:forEach var="person" varStatus="status" items="${post.resource.author}">
 		    <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.name)}"/></rdf:_${status.index + 1}>]]>
 		  </c:forEach>
 		  </rdf:Seq>
 		</swrc:author>
 	</c:if>
 
-	<c:if test="${!empty post.resource.editorList}">
+	<c:if test="${!empty post.resource.editor}">
 		<swrc:editor>
 		  <rdf:Seq>
-		  <c:forEach var="person" varStatus="status" items="${post.resource.editorList}">
+		  <c:forEach var="person" varStatus="status" items="${post.resource.editor}">
 		     <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.name)}"/></rdf:_${status.index + 1}>]]>
 		  </c:forEach>
 		  </rdf:Seq>

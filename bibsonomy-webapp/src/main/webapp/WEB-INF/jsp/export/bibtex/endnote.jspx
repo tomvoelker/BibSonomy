@@ -20,7 +20,7 @@
 %0 ${mtl:getRISEntryType(bib.entrytype)}
 </jsp:text>
     
-<c:if test="${not empty bib.authorList}"><c:forEach var="person" varStatus="status" items="${bib.authorList}">
+<c:if test="${not empty bib.author}"><c:forEach var="person" varStatus="status" items="${bib.author}">
 %A ${person.name}
 </c:forEach></c:if>    
     
@@ -36,7 +36,7 @@
 %D ${bib.year}
 </jsp:text></c:if>
 
-<c:if test="${not empty bib.editorList}"><c:forEach var="person" varStatus="status" items="${bib.editorList}">
+<c:if test="${not empty bib.editor}"><c:forEach var="person" varStatus="status" items="${bib.editor}">
 %E ${person.name}
 </c:forEach></c:if>    
 
