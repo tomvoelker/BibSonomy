@@ -21,7 +21,7 @@
 </jsp:text>
     
 <c:if test="${not empty bib.author}"><c:forEach var="person" varStatus="status" items="${bib.author}">
-%A ${person.name}
+%A ${person.last}, ${person.first}
 </c:forEach></c:if>    
     
 <c:if test="${not empty bib.booktitle}"><jsp:text>
@@ -37,7 +37,7 @@
 </jsp:text></c:if>
 
 <c:if test="${not empty bib.editor}"><c:forEach var="person" varStatus="status" items="${bib.editor}">
-%E ${person.name}
+%E ${person.last}, ${person.first}
 </c:forEach></c:if>    
 
 <c:if test="${not empty bib.publisher}"><jsp:text>
