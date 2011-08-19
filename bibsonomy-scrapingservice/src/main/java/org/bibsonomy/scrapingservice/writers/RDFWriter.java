@@ -24,6 +24,8 @@
 
 package org.bibsonomy.scrapingservice.writers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.HashMap;
@@ -56,10 +58,10 @@ public class RDFWriter {
 			entryTypeMap.put(bibtexEntryTypes[i], swrcEntryTypes[i]);
 		}
 	}
-	
+
 	private static final String NS_SWRC = "http://swrc.ontoware.org/ontology#";
 	private static final String NS_OWL  = "http://www.w3.org/2002/07/owl#";
-	
+
 	private final OutputStream outputStream;
 	private final Model model;
 
@@ -121,16 +123,20 @@ public class RDFWriter {
 		 */
 		final Resource personClass = model.createResource(NS_SWRC + "Person");
 		final List<PersonName> authorList = bibtex.getAuthor();
-		for (final PersonName name: authorList) {
-			final Resource author = model.createResource(personClass);
-			author.addProperty(model.createProperty(NS_SWRC + "name"), name.getFirstName() + " " + name.getLastName());
-			resource.addProperty(model.createProperty(NS_SWRC + "author"), author);
+		if (present(authorList)) {
+			for (final PersonName name: authorList) {
+				final Resource author = model.createResource(personClass);
+				author.addProperty(model.createProperty(NS_SWRC + "name"), name.getFirstName() + " " + name.getLastName());
+				resource.addProperty(model.createProperty(NS_SWRC + "author"), author);
+			}
 		}
 		final List<PersonName> editorList = bibtex.getEditor();
-		for (final PersonName name: editorList) {
-			final Resource editor = model.createResource(personClass);
-			editor.addProperty(model.createProperty(NS_SWRC + "name"), name.getFirstName() + " " + name.getLastName());
-			resource.addProperty(model.createProperty(NS_SWRC + "editor"), editor);
+		if (present(editorList)) {
+			for (final PersonName name: editorList) {
+				final Resource editor = model.createResource(personClass);
+				editor.addProperty(model.createProperty(NS_SWRC + "name"), name.getFirstName() + " " + name.getLastName());
+				resource.addProperty(model.createProperty(NS_SWRC + "editor"), editor);
+			}
 		}
 		/*
 		 * url
@@ -139,9 +145,9 @@ public class RDFWriter {
 			final Resource url2 = model.createResource(bibtex.getUrl());
 			resource.addProperty(model.createProperty(NS_OWL + "sameAs"), url2);
 		}
-		
-		
-		
+
+
+
 		/*
 		 * misc fields (ISBN, DOI, etc.)
 		 * NOTE: this is not clean, as they might not be part of SWRC
@@ -153,7 +159,7 @@ public class RDFWriter {
 			addProperty(resource, cleanedKey, miscFields.get(key));
 		}
 
-		
+
 		/*
 		 * simple properties
 		 */
@@ -195,13 +201,13 @@ public class RDFWriter {
 		}
 		return key;
 	}
-	
+
 	private void addProperty(final Resource resource, final String property, final String value) {
 		if (value != null) {
 			resource.addProperty(model.createProperty(NS_SWRC + property), value);
 		}
 	}
-	
+
 	/** Maps BibTeX entry types to SWRC entry types.
 	 * FIXME: copied from Functions.java tag lib.
 	 * @param bibtexEntryType
