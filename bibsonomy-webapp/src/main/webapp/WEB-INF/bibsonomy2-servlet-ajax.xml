@@ -50,6 +50,8 @@
 							<list>
 								<value>ckey</value>
 								<value>layout</value>
+								<value>isSave</value>
+								<value>wikiText</value>
 								<value>text</value>
 								<value>hash</value>
 								<value>action</value>
@@ -210,7 +212,9 @@
 	
 	<bean id="cvController" class="org.bibsonomy.webapp.controller.ajax.CvAjaxController" scope="request" parent="ajaxController">
 		<property name="messageSource" ref="messageSource"/>
+		<property name="wikiRenderer" ref="wikiRenderer"/>
 	</bean>
+
 
 	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
 		<property name="docPath" value="${project.document.path}"/>

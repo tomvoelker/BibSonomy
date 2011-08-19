@@ -1,7 +1,7 @@
 /**
  * @author Bernd
  */
-function changeCVLayout(name,ckey){
+function changeCVLayout(name, ckey){
     $.ajax({
         type: "GET",
         url: "/ajax/cv",
@@ -9,16 +9,55 @@ function changeCVLayout(name,ckey){
             layout: name,
             ckey: ckey
         },
-		 success: function(data){
-			 var status = $("status", data).text();
-	         if("ok" == status) {
-	        	 var wikiText = $("wikitext", data).text();
-	        	 var wikiTextArea = $('#wikiTextArea');
-				 wikiTextArea.val(wikiText);
-            } else {
-        	   alert(data.globalErrors[0].message);
+        success: function(data){
+            var status = $("status", data).text();
+            if ("ok" == status) {
+                var wikiText = $("wikitext", data).text();
+                var renderedWikiText = $("renderedwikitext", data).text();
+                var wikiTextArea = $('#wikiTextArea');
+                if ("" != renderedWikiText) {
+                    var wikiArea = $('#wikiArea');
+                    wikiTextArea.val(wikiText);
+                    wikiArea.empty();
+                    wikiArea.append(renderedWikiText);
+                }
+                else {
+                    wikiTextArea.val(wikiText);
+                }
             }
-		}
-        
+            else {
+                alert(data.globalErrors[0].message);
+            }
+        }
     });
 }
+
+function clearCVTextField(){
+    var wikiTextArea = $('#wikiTextArea');
+    wikiTextArea.val("");
+}
+
+function submitWiki(isSave, ckey){
+    $.ajax({
+        type: "GET",
+        url: "/ajax/cv",
+        data: {
+            ckey: ckey,
+            wikiText: $('#wikiTextArea').val(),
+            isSave: isSave
+        },
+        success: function(data){
+            var status = $("status", data).text();
+            if ("ok" == status) {
+				var wikiArea = $('#wikiArea');
+                var renderedWikiText = $("renderedwikitext", data).text();
+                wikiArea.empty();
+				wikiArea.append(renderedWikiText);
+            }
+            else {
+                alert(data.globalErrors[0].message);
+            }
+        }
+    });
+}
+

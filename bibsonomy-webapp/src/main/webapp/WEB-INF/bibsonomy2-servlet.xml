@@ -296,6 +296,8 @@
 							<list>
 								<value>requestedUser</value>
 								<value>layout</value>
+								<value>wikiText</value>
+								<value>renderedWikiText</value>
 							</list>
 						</property>
 					</bean>

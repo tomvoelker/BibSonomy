@@ -69,7 +69,8 @@ public class CvPageController extends ResourceListController implements Minimali
 		 * set the user to render
 		 */
 		this.wikiRenderer.setUser(requestedUser);
-		command.setWikiText(this.wikiRenderer.render(wiki.getWikiText()));
+		command.setRenderedWikiText(this.wikiRenderer.render(wiki.getWikiText()));
+		command.setWikiText(wiki.getWikiText());
 
 		return Views.CVPAGE;
 	}
