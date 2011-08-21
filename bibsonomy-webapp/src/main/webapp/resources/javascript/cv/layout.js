@@ -1,13 +1,13 @@
 /**
  * @author Bernd
  */
-function changeCVLayout(name, ckey){
+function changeCVLayout(name){
     $.ajax({
         type: "GET",
         url: "/ajax/cv",
         data: {
             layout: name,
-            ckey: ckey
+            ckey: $('#ckey').val()
         },
         success: function(data){
             var status = $("status", data).text();
@@ -32,17 +32,12 @@ function changeCVLayout(name, ckey){
     });
 }
 
-function clearCVTextField(){
-    var wikiTextArea = $('#wikiTextArea');
-    wikiTextArea.val("");
-}
-
-function submitWiki(isSave, ckey){
+function submitWiki(isSave){
     $.ajax({
         type: "GET",
         url: "/ajax/cv",
         data: {
-            ckey: ckey,
+            ckey: $('#ckey').val(),
             wikiText: $('#wikiTextArea').val(),
             isSave: isSave
         },
@@ -61,3 +56,8 @@ function submitWiki(isSave, ckey){
     });
 }
 
+
+function clearCVTextField(){
+    var wikiTextArea = $('#wikiTextArea');
+    wikiTextArea.val("");
+}

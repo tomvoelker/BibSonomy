@@ -55,8 +55,8 @@
 
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
-	    	<script type="text/javascript" src="${resdir}/javascript/cvpage.js"><!-- keep me --></script> 
-	    	<script type="text/javascript" src="${resdir}/javascript/cvLayout.js"><!--  --></script>
+	    	<script type="text/javascript" src="${resdir}/javascript/cv/layout.js"><!--  --></script>
+	    	<script type="text/javascript" src="${resdir}/javascript/cv/listeners.js"><!--  --></script>
 	    </jsp:attribute>
 
 		<!--+
@@ -92,7 +92,7 @@
 		    <p>temp wiki field</p>
 		      <form:label cssClass="fsLabel" path="wikiText"><fmt:message key="user.cvWiki"/></form:label>
 		      <form:textarea id="wikiTextArea" cssStyle="height: 5cm" cssClass="fsInput" path="wikiText" />
-		      <div class="dissError"><form:errors path="wikiText" /></div>
+		      <input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}"/>
 		      <div class='fsRow'>
 		      	<ul>
 		      	<!-- TODO: I18N -->
@@ -100,22 +100,14 @@
 		      		<li>
 		      			<a href="#">Designs</a>
 		      			<ul>		      		
-		      				<li><a href="#" onclick="changeCVLayout('default','${fn:escapeXml(command.context.ckey)}');return false">Default/Reset</a></li>
-		      				<li><a href="#" onclick="changeCVLayout('current','${fn:escapeXml(command.context.ckey)}');return false">Current</a></li>
+		      				<li><a href="#" onclick="changeCVLayout('default');return false">Default/Reset</a></li>
+		      				<li><a href="#" onclick="changeCVLayout('current');return false">Current</a></li>
 		      				<li><a href="#" onclick="clearCVTextField();return false">Clear</a></li>
 		      			</ul>
 		      		</li>
 		      	</ul>
-		      	<!-- Small JS to preview the rendered Wiki on CTRL+ENTER -->
-		      	<script type="text/javascript">
-		      	$('#wikiTextArea').keydown(function (e) {
-				  	if (e.ctrlKey &amp;&amp; e.keyCode == 13) {
- 			  			submitWiki('false','${fn:escapeXml(command.context.ckey)}');
-  					}
-				});
-		      	</script> 
-		      	<input type="button" href='#' onclick="submitWiki('false','${fn:escapeXml(command.context.ckey)}');return false" value="preview" />
-		      	<input type="button" href='#' onclick="submitWiki('true','${fn:escapeXml(command.context.ckey)}');return false" value="save" />
+		      	<input type="button" href='#' onclick="submitWiki('false');return false" value="preview" />
+		      	<input type="button" href='#' onclick="submitWiki('true');return false" value="save" />
 		      </div>
 		    </div>
   		  </fieldset>
@@ -128,8 +120,6 @@
 			</c:if>
 			</div>
 			
-
-
 </jsp:attribute>
 </layout:layout>
 	

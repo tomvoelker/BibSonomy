@@ -58,7 +58,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		final String layout = command.getLayout();
 		final String isSave = command.getIsSave();
 		final String wikiText = command.getWikiText();
-
+		
 		if (present(isSave) && present(wikiText)) {
 			if("true".equals(isSave)) {
 				return saveWiki(command, wikiText);
