@@ -21,6 +21,8 @@ public class BirthdayTag extends AbstractTag{
 	protected StringBuilder render() {
 		StringBuilder renderedHTML = new StringBuilder();
 		/*SimpleDateFormat simpleDate = new SimpleDateFormat(DATE_FORMAT);*/
+		//FIXME: requestedUser Birthday?!
+		//TODO: Date Format
 		renderedHTML.append(Utils.escapeXmlChars(/*simpleDate.format(*/requestedUser.getBirthday().toString()));
 		return renderedHTML;
 	}

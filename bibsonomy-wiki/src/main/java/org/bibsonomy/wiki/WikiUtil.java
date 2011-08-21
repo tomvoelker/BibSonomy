@@ -40,6 +40,8 @@ import org.bibsonomy.wiki.tags.general.RegDateTag;
  */
 public class WikiUtil extends AbstractWikiModel {
 
+	//TODO: Probably mixed up users (requestedUser and owner) in the tags.
+	
 	static {
 		/* About-Me Tags */
 		register(NameTag.TAG_NAME, new NameTag());
