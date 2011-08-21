@@ -1,8 +1,18 @@
 /**
  * @author Bernd
  */
-// "Listeners"
+// "Handler"
 $(function(){
+	
+	// Loading DIV handling
+
+	$('#loadingDiv').hide() 
+	.ajaxStart(function() {
+		$(this).show();
+	}).ajaxStop(function() {
+		$(this).hide();
+	});
+	
   	$('#wikiTextArea').keydown(function (e) {
 	  	if (e.ctrlKey) {
 	  		if(e.keyCode == 13) {
