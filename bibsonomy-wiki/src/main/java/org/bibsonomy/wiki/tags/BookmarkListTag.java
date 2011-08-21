@@ -21,7 +21,7 @@ import org.bibsonomy.model.Post;
  */
 public class BookmarkListTag extends AbstractTag {
 	private static final String NAME = "tags";
-	public static final String TAG_NAME = "bookmarklist";
+	public static final String TAG_NAME = "bookmarks";
 
 	final static public HashSet<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>();
 	final static public List<String> ALLOWED_ATTRIBUTES = Arrays.asList(NAME);
@@ -47,11 +47,14 @@ public class BookmarkListTag extends AbstractTag {
          Map<String, String> tagAtttributes = node.getAttributes();
          Set<String> keysSet = tagAtttributes.keySet();
          
-         if(!keysSet.contains("tags")){
-         	return renderedHTML;
-         }
-        
-         String tags = tagAtttributes.get("tags");
+ 		final String tags;
+ 		if (!keysSet.contains("tags")) {
+ 			tags = "myown"; // TODO: should be MyOwnSystemTag.NAME but adding
+ 							// dependency to database module only for accessing
+ 							// the constant?!
+ 		} else {
+ 			tags = tagAtttributes.get("tags");
+ 		}
          
         final List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, this.requestedUser.getName(), Collections.singletonList(tags), null, null, null, 0, Integer.MAX_VALUE, null);
         renderedHTML.append("<div class='align'>");

@@ -36,7 +36,7 @@ public class PublicationListTag extends AbstractTag {
 
 	public static final String TAG_NAME = "publications";
 
-	final static public HashSet<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(
+	public final static HashSet<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(
 			Arrays.asList(NAME, LAYOUT, KEYS, ORDER));
 
 	public PublicationListTag() {
