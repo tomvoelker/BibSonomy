@@ -570,11 +570,11 @@ public class Functions  {
 	 * @return
 	 * 		- a BibTeX string of this post
 	 */
-	public static String toBibtexString(final Post<BibTex> post, final String projectHome) {
+	public static String toBibtexString(final Post<BibTex> post, final String projectHome, final boolean lastFirstNames) {
 		if (urlGenerator == null) {
 			urlGenerator = new URLGenerator(projectHome);
 		}
-		return BibTexUtils.toBibtexString(post, urlGenerator) + "\n\n";
+		return BibTexUtils.toBibtexString(post, lastFirstNames, urlGenerator) + "\n\n";
 	}
 	
 	/**

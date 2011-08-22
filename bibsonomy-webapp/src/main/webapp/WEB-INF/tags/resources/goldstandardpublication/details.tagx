@@ -130,7 +130,7 @@
 			<div id="gold_exports_3">
 <!--				<h3><fmt:message key="export.bibtex.record"/></h3>-->
 		  		<form>	  	
-			  		<textarea name="bibtex_textarea" rows="20"><export:bibtex post="${post}" escapeXml="${true}" /></textarea>
+			  		<textarea name="bibtex_textarea" rows="20"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="true"/></textarea>
 			  	</form>	
 		  	</div>
 		  	<div id="gold_exports_4">

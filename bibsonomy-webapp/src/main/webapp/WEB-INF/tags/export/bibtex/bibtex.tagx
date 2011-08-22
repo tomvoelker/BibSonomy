@@ -6,9 +6,10 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
-	<jsp:directive.attribute name="escapeXml" type="java.lang.Boolean" required="true"/>	
+	<jsp:directive.attribute name="escapeXml" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="lastFirstNames" type="java.lang.Boolean" required="true"/>
 <c:choose>
-<c:when test="${escapeXml == true}">${fn:escapeXml(mtl:toBibtexString(post, properties['project.home']))}</c:when>
-<c:otherwise>${mtl:toBibtexString(post, properties['project.home'])}</c:otherwise>
+<c:when test="${escapeXml == true}">${fn:escapeXml(mtl:toBibtexString(post, properties['project.home'], mtl:toBibtexString))}</c:when>
+<c:otherwise>${mtl:toBibtexString(post, properties['project.home'], lastFirstNames)}</c:otherwise>
 </c:choose>
 </jsp:root>
