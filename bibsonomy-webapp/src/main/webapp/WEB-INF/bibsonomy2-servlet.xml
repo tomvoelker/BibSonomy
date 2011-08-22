@@ -18,6 +18,8 @@
 	            <bean class="org.bibsonomy.web.spring.converter.factories.StringToEnumConverterFactory"/>
 	            <bean class="org.bibsonomy.web.spring.converter.StringToClassConverter" />
 	            <bean class="org.bibsonomy.web.spring.converter.StringToURLConverter" />
+	            <bean class="org.bibsonomy.web.spring.converter.StringToPersonListConverter" />
+	            <bean class="org.bibsonomy.web.spring.converter.PersonListToStringConverter" />
 	        </list>
 	    </property>
 	</bean>
