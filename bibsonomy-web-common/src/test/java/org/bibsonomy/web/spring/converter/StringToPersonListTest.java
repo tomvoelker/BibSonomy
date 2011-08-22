@@ -20,8 +20,8 @@ import org.springframework.core.convert.converter.ConditionalGenericConverter;
 public class StringToPersonListTest {
 	
 	@Test
-	public void testUpperCase() throws SecurityException, NoSuchMethodException {
-		final ConditionalGenericConverter converter = new PersonListToStringConverter();
+	public void testMatches() throws SecurityException, NoSuchMethodException {
+		final ConditionalGenericConverter converter = new StringToPersonListConverter();
 		
 		/*
 		 * List<PersonName>
