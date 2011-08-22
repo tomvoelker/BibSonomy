@@ -9,7 +9,7 @@ import org.springframework.security.core.AuthenticationException;
  * in our database, we want to send him to a registration form where the fields
  * are filled with his OpenID data.
  * 
- * The only place to add this information is here, because where we find out
+ * The only place to add this information is here, because here we find out
  * that the user is not registered, yet, we don't have the OpenID authentication
  * to put it into the exception.
  * 

@@ -16,7 +16,7 @@ public class UserFactoryBean implements FactoryBean<User> {
 	private User instance;
 	
 	/**
-	 * The logic to acces the HTTP servlet request.
+	 * The logic to access the HTTP servlet request.
 	 * @param requestLogic
 	 */
 	public void setRequestLogic(final RequestLogic requestLogic) {
