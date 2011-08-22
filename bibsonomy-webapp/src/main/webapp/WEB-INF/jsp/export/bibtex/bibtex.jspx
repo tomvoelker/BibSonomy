@@ -12,7 +12,7 @@
 	
 <jsp:directive.page contentType="text/plain; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 <c:forEach var="post" items="${command.bibtex.list}">
-<export:bibtex post="${post}" escapeXml="${false}"/>
+<export:bibtex post="${post}" escapeXml="${false}" lastFirstNames="true"/>
 <jsp:text>
 
 </jsp:text>	
