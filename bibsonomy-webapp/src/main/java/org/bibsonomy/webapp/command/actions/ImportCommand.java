@@ -17,6 +17,7 @@ public class ImportCommand extends BaseCommand {
 	
 	/** the import-type describes which kind of import will be used 
 	 *  e.g. FireFox import, Delicious import etc.. **/
+	// TODO: introduce enum
 	private String importType;
 	
 	/**
@@ -47,6 +48,7 @@ public class ImportCommand extends BaseCommand {
 	private List<String> storedConcepts;
 	
 	/** for delicious import only, import bookmarks or bundles? **/
+	// TODO: introduce an enum class
 	private String importData;
 	
 	/**
@@ -59,7 +61,7 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @param overwrite
 	 */
-	public void setOverwrite(boolean overwrite) {
+	public void setOverwrite(final boolean overwrite) {
 		this.overwrite = overwrite;
 	}
 	
@@ -73,14 +75,14 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @param importType
 	 */
-	public void setImportType(String importType) {
+	public void setImportType(final String importType) {
 		this.importType = importType;
 	}
 	
 	/**
 	 * @param oauth_token
 	 */
-	public void setOauth_token(String oauth_token) {
+	public void setOauth_token(final String oauth_token) {
 		this.oauth_token = oauth_token;
 	}
 
@@ -94,7 +96,7 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @param oauth_verifier
 	 */
-	public void setOauth_verifier(String oauth_verifier) {
+	public void setOauth_verifier(final String oauth_verifier) {
 		this.oauth_verifier = oauth_verifier;
 	}
 
@@ -115,7 +117,7 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @param userName
 	 */
-	public void setUserName(String userName) {
+	public void setUserName(final String userName) {
 		this.userName = userName;
 	}
 	
@@ -129,7 +131,7 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @param passWord
 	 */
-	public void setPassWord(String passWord) {
+	public void setPassWord(final String passWord) {
 		this.passWord = passWord;
 	}
 	
@@ -145,7 +147,7 @@ public class ImportCommand extends BaseCommand {
 	 * 
 	 * @param newBookmarks
 	 */
-	public void setNewBookmarks(Map<String, String> newBookmarks) {
+	public void setNewBookmarks(final Map<String, String> newBookmarks) {
 		this.newBookmarks = newBookmarks;
 	}
 	
@@ -161,7 +163,7 @@ public class ImportCommand extends BaseCommand {
 	 * 
 	 * @param updatedBookmarks
 	 */
-	public void setUpdatedBookmarks(Map<String, String> updatedBookmarks) {
+	public void setUpdatedBookmarks(final Map<String, String> updatedBookmarks) {
 		this.updatedBookmarks = updatedBookmarks;
 	}
 	
@@ -177,7 +179,7 @@ public class ImportCommand extends BaseCommand {
 	 * 
 	 * @param nonCreatedBookmarkEntries
 	 */
-	public void setNonCreatedBookmarks(Map<String, String> nonCreatedBookmarkEntries) {
+	public void setNonCreatedBookmarks(final Map<String, String> nonCreatedBookmarkEntries) {
 		this.nonCreatedBookmarks = nonCreatedBookmarkEntries;
 	}
 	
@@ -191,7 +193,7 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @param group the group to set
 	 */
-	public void setGroup(String group) {
+	public void setGroup(final String group) {
 		this.group = group;
 	}
 	
@@ -205,7 +207,7 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @param file the file to set
 	 */
-	public void setFile(CommonsMultipartFile file) {
+	public void setFile(final CommonsMultipartFile file) {
 		this.file = file;
 	}
 	
@@ -219,7 +221,7 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @param totalCount the totalCount to set
 	 */
-	public void setTotalCount(int totalCount) {
+	public void setTotalCount(final int totalCount) {
 		this.totalCount = totalCount;
 	}
 	
@@ -233,7 +235,7 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @param storedConcepts the storedConcepts to set
 	 */
-	public void setStoredConcepts(List<String> storedConcepts) {
+	public void setStoredConcepts(final List<String> storedConcepts) {
 		this.storedConcepts = storedConcepts;
 	}
 
@@ -247,7 +249,7 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @param importData the importData to set
 	 */
-	public void setImportData(String importData) {
+	public void setImportData(final String importData) {
 		this.importData = importData;
 	}
 		
