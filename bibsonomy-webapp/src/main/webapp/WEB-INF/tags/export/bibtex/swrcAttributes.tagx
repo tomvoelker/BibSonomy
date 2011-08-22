@@ -178,7 +178,7 @@
 		<swrc:author>
 		  <rdf:Seq>
 		  <c:forEach var="person" varStatus="status" items="${post.resource.author}">
-		    <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.name)}"/></rdf:_${status.index + 1}>]]>
+		    <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.firstName)} ${fn:escapeXml(person.lastName)}"/></rdf:_${status.index + 1}>]]>
 		  </c:forEach>
 		  </rdf:Seq>
 		</swrc:author>
@@ -188,7 +188,7 @@
 		<swrc:editor>
 		  <rdf:Seq>
 		  <c:forEach var="person" varStatus="status" items="${post.resource.editor}">
-		     <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.name)}"/></rdf:_${status.index + 1}>]]>
+		     <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.firstName)} ${fn:escapeXml(person.lastName)}"/></rdf:_${status.index + 1}>]]>
 		  </c:forEach>
 		  </rdf:Seq>
 		</swrc:editor>	
