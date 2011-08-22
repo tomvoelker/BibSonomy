@@ -1,7 +1,10 @@
 package org.bibsonomy.wiki.tags.general;
 
-import info.bliki.htmlcleaner.Utils;
 import static org.bibsonomy.util.ValidationUtils.present;
+import info.bliki.htmlcleaner.Utils;
+
+import java.net.URL;
+
 import org.bibsonomy.wiki.tags.AbstractTag;
 
 /**
@@ -9,23 +12,30 @@ import org.bibsonomy.wiki.tags.AbstractTag;
  * Usage: <name />
  * 
  * @author Bernd
- *
+ * @version $Id$
  */
 public class NameTag extends AbstractTag {
-	public static final String TAG_NAME = "name";
+	private static final String TAG_NAME = "name";
 
+	/**
+	 * dafault construtor
+	 */
 	public NameTag() {
 		super(TAG_NAME);
 	}
 
 	@Override
 	protected StringBuilder render() {
-		StringBuilder renderedHTML = new StringBuilder();
+		final StringBuilder renderedHTML = new StringBuilder();
 		final String name = Utils.escapeXmlChars(this.requestedUser.getRealname());
 		if (present(name)) {
-			if (present(requestedUser.getHomepage())) {
-				final String homepage = Utils.escapeXmlChars(this.requestedUser.getHomepage().toExternalForm());
-				renderedHTML.append("<a href='"+homepage+"'>"+name+"</a>");
+			final URL homepage = requestedUser.getHomepage();
+			if (present(homepage)) {
+				renderedHTML.append("<a href=\"");
+				renderedHTML.append(Utils.escapeXmlChars(this.requestedUser.getHomepage().toExternalForm()));
+				renderedHTML.append("\">");
+				renderedHTML.append(name);
+				renderedHTML.append("</a>");
 			} else {
 				renderedHTML.append(name);
 			}

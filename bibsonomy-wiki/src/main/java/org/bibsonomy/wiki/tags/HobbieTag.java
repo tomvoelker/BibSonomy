@@ -2,8 +2,6 @@ package org.bibsonomy.wiki.tags;
 
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-
 import info.bliki.htmlcleaner.Utils;
 
 /**
@@ -11,28 +9,30 @@ import info.bliki.htmlcleaner.Utils;
  * @version $Id$
  */
 public class HobbieTag extends AbstractTag {
+	private static final String TAG_NAME = "hobbies";
 
-		public static final String TAG_NAME = "hobbies";
-	
-        public HobbieTag() {
-                super(TAG_NAME);
-        }
+	/**
+	 * set the tag name
+	 */
+	public HobbieTag() {
+		super(TAG_NAME);
+	}
 
-		@Override
-		protected StringBuilder render() {
-			final StringBuilder renderedHTML = new StringBuilder();
-        	final String hobbies = this.requestedUser.getHobbies();
-        	
-        	if (!present(hobbies))
-        		return renderedHTML;
-        	
-        	renderedHTML.append("<p class='align'>");
-        	renderedHTML.append(Utils.escapeXmlChars(hobbies));
-        	renderedHTML.append("</p>");
-        	
-        	return renderedHTML;
+	@Override
+	protected StringBuilder render() {
+		final StringBuilder renderedHTML = new StringBuilder();
+		final String hobbies = this.requestedUser.getHobbies();
+
+		if (!present(hobbies)) {
+			return renderedHTML;
 		}
 
+		renderedHTML.append("<p class='align'>");
+		renderedHTML.append(Utils.escapeXmlChars(hobbies));
+		renderedHTML.append("</p>");
+
+		return renderedHTML;
+	}
 
 }
 

@@ -13,13 +13,20 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.WikiUtil;
 
-
+/**
+ * @author philipp
+ * @version $Id$
+ */
 public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  {
 	
 	protected LogicInterface logic;
 	protected User requestedUser;
 	protected LayoutRenderer<Layout> layoutRenderer;
 
+	/**
+	 * 
+	 * @param name the name of the tag
+	 */
 	public AbstractTag(final String name) {
 		super(name);
 	}

@@ -1,9 +1,10 @@
 package org.bibsonomy.wiki.tags.general;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
+import static org.bibsonomy.util.ValidationUtils.present;
 import info.bliki.htmlcleaner.Utils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.bibsonomy.wiki.tags.AbstractTag;
 
@@ -14,19 +15,28 @@ import org.bibsonomy.wiki.tags.AbstractTag;
  *
  */
 public class BirthdayTag extends AbstractTag{
-	public static final String TAG_NAME = "birthday";
-	public static final String DATE_FORMAT = "dd-MM-yyyy";
+	private static final String TAG_NAME = "birthday";
+	private static final String DATE_FORMAT = "dd-MM-yyyy";
+	
+	
+	private static final SimpleDateFormat simpleDate = new SimpleDateFormat(DATE_FORMAT);
+	
+	/**
+	 * set tag name
+	 */
 	public BirthdayTag() {
 		super(TAG_NAME);
 	}
 	
 	@Override
 	protected StringBuilder render() {
-		StringBuilder renderedHTML = new StringBuilder();
-		SimpleDateFormat simpleDate = new SimpleDateFormat(DATE_FORMAT);
+		final StringBuilder renderedHTML = new StringBuilder();		
 		//FIXME: requestedUser Birthday?!
 
-			renderedHTML.append(Utils.escapeXmlChars(simpleDate.format(requestedUser.getBirthday())));
+		final Date birthday = requestedUser.getBirthday();
+		if (present(birthday)) {
+			renderedHTML.append(Utils.escapeXmlChars(simpleDate.format(birthday)));
+		}
 
 		return renderedHTML;
 	}

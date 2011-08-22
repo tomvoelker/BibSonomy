@@ -8,17 +8,21 @@ import org.bibsonomy.wiki.tags.AbstractTag;
  * This is a simple institution-tag.
  * Usage: <institution />
  * @author Bernd
- *
+ * @version $Id$
  */
 public class InstitutionTag extends AbstractTag{
-	public static final String TAG_NAME = "institution";
+	private static final String TAG_NAME = "institution";
+	
+	/**
+	 * set the name of the tag
+	 */
 	public InstitutionTag() {
 		super(TAG_NAME);
 	}
 	
 	@Override
 	protected StringBuilder render() {
-		StringBuilder renderedHTML = new StringBuilder();
+		final StringBuilder renderedHTML = new StringBuilder();
 		renderedHTML.append(Utils.escapeXmlChars(requestedUser.getInstitution()));
 		return renderedHTML;
 	}

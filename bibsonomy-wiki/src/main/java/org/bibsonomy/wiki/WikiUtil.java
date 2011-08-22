@@ -1,9 +1,7 @@
 package org.bibsonomy.wiki;
 
 import info.bliki.htmlcleaner.TagNode;
-import info.bliki.htmlcleaner.Utils;
 import info.bliki.wiki.filter.Encoder;
-import info.bliki.wiki.filter.SectionHeader;
 import info.bliki.wiki.filter.WikipediaParser;
 import info.bliki.wiki.model.AbstractWikiModel;
 import info.bliki.wiki.model.Configuration;
@@ -12,7 +10,7 @@ import info.bliki.wiki.namespaces.INamespace;
 import info.bliki.wiki.tags.WPTag;
 import info.bliki.wiki.tags.util.TagStack;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Set;
 
 import org.bibsonomy.model.Layout;
@@ -44,24 +42,24 @@ public class WikiUtil extends AbstractWikiModel {
 	
 	static {
 		/* About-Me Tags */
-		register(NameTag.TAG_NAME, new NameTag());
-		register(LocationTag.TAG_NAME, new LocationTag());
-		register(BirthdayTag.TAG_NAME, new BirthdayTag());
-		register(ProfessionTag.TAG_NAME, new ProfessionTag());
-		register(InstitutionTag.TAG_NAME, new InstitutionTag());
-		register(ImageTag.TAG_NAME, new ImageTag());
-		register(EmailTag.TAG_NAME, new EmailTag());
-		register(RegDateTag.TAG_NAME, new RegDateTag());
+		register(new NameTag());
+		register(new LocationTag());
+		register(new BirthdayTag());
+		register(new ProfessionTag());
+		register(new InstitutionTag());
+		register(new ImageTag());
+		register(new EmailTag());
+		register(new RegDateTag());
 		
 		/* Other Tags */
-		register(InterestsTag.TAG_NAME, new InterestsTag());
-		register(HobbieTag.TAG_NAME, new HobbieTag());
-		register(BookmarkListTag.TAG_NAME, new BookmarkListTag());
-		register(PublicationListTag.TAG_NAME, new PublicationListTag());
+		register(new InterestsTag());
+		register(new HobbieTag());
+		register(new BookmarkListTag());
+		register(new PublicationListTag());
 	}
 	
-	private static void register(final String tagName, final AbstractTag tag) {
-		Configuration.DEFAULT_CONFIGURATION.addTokenTag(tagName, tag);
+	private static void register(final AbstractTag tag) {
+		Configuration.DEFAULT_CONFIGURATION.addTokenTag(tag.getName(), tag);
 	}
 
 	private User user;
@@ -104,11 +102,11 @@ public class WikiUtil extends AbstractWikiModel {
 			}
 			anchor = newAnchor;
 		}
-		final SectionHeader strPair = new SectionHeader(headLevel, startPosition, endPosition, tocHead, anchor);
-		this.addToTableOfContents(this.fTableOfContent, strPair, headLevel);
+		
 		if (this.getRecursionLevel() == 1) {
 			this.buildEditLinkUrl(this.fSectionCounter++);
 		}
+		
 		spanTagNode.addAttribute("class", "mw-headline", true);
 		spanTagNode.addAttribute("id", anchor, true);
 
@@ -116,29 +114,24 @@ public class WikiUtil extends AbstractWikiModel {
 		return this.fTableOfContentTag;
 	}
 
-	private void addToTableOfContents(final List<Object> toc, final SectionHeader strPair, final int headLevel) {
-	}
-
 	@Override
 	public Set<String> getLinks() {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptySet();
 	}
 
 	@Override
 	public INamespace getNamespace() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void parseInternalImageLink(final String imageNamespace, final String rawImageLink) {
-		// TODO Auto-generated method stub
-
+		// nothing to do
 	}
 
 	/**
 	 * set the LogicInterface
+	 * @param logic the logic to set
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
@@ -153,6 +146,7 @@ public class WikiUtil extends AbstractWikiModel {
 
 	/**
 	 * set the user
+	 * @param user the user to add
 	 */
 	public void setUser(final User user) {
 		this.user = user;
@@ -163,10 +157,6 @@ public class WikiUtil extends AbstractWikiModel {
 	 */
 	public User getUser() {
 		return this.user;
-	}
-
-	public static String formatAndAppend(final String string1, final String string2) {
-		return "<tr><td>" + string1 + ":</td><td>" + Utils.escapeXmlChars(string2) + "</td></tr>";
 	}
 
 	/**

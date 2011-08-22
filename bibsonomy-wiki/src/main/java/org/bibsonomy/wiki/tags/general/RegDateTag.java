@@ -1,7 +1,8 @@
 package org.bibsonomy.wiki.tags.general;
 
-import info.bliki.htmlcleaner.Utils;
 import static org.bibsonomy.util.ValidationUtils.present;
+import info.bliki.htmlcleaner.Utils;
+
 import org.bibsonomy.wiki.tags.AbstractTag;
 
 /**
@@ -11,15 +12,18 @@ import org.bibsonomy.wiki.tags.AbstractTag;
  *
  */
 public class RegDateTag extends AbstractTag {
-	public static final String TAG_NAME = "regdate";
+	private static final String TAG_NAME = "regdate";
 
+	/**
+	 * set the tag name
+	 */
 	public RegDateTag() {
 		super(TAG_NAME);
 	}
 
 	@Override
 	protected StringBuilder render() {
-		StringBuilder renderedHTML = new StringBuilder();
+		final StringBuilder renderedHTML = new StringBuilder();
 		final String regDate = Utils.escapeXmlChars(this.requestedUser.getRegistrationDate().toString());
 		if (present(regDate)) {
 			renderedHTML.append(regDate);

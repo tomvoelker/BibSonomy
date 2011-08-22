@@ -1,8 +1,6 @@
 package org.bibsonomy.wiki.tags;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-
 import info.bliki.htmlcleaner.Utils;
 
 /**
@@ -11,7 +9,7 @@ import info.bliki.htmlcleaner.Utils;
  */
 public class InterestsTag extends AbstractTag {
 	
-	public static final String TAG_NAME = "interests";
+	private static final String TAG_NAME = "interests";
 	
 	/**
 	 * 
@@ -22,7 +20,7 @@ public class InterestsTag extends AbstractTag {
 
 	@Override
 	protected StringBuilder render() {
-		StringBuilder renderedHTML = new StringBuilder();
+		final StringBuilder renderedHTML = new StringBuilder();
      	final String interests = this.requestedUser.getInterests();
      	
      	if (!present(interests)) {

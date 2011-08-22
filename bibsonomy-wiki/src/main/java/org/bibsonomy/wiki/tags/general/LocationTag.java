@@ -11,13 +11,18 @@ import org.bibsonomy.wiki.tags.AbstractTag;
  *
  */
 public class LocationTag extends AbstractTag{
-	public static final String TAG_NAME = "location";
+	private static final String TAG_NAME = "location";
+	
+	/**
+	 * set name of the tag
+	 */
 	public LocationTag() {
 		super(TAG_NAME);
 	}
+	
 	@Override
 	protected StringBuilder render() {
-		StringBuilder renderedHTML = new StringBuilder();
+		final StringBuilder renderedHTML = new StringBuilder();
 		renderedHTML.append(Utils.escapeXmlChars(requestedUser.getPlace()));
 		return renderedHTML;
 	}
