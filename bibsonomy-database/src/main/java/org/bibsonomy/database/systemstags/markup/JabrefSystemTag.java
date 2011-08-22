@@ -35,7 +35,7 @@ public class JabrefSystemTag extends AbstractSystemTagImpl implements MarkUpSyst
 
 	@Override
 	public boolean isInstance(final String tagName) {
-		return SystemTagsUtil.hasPrefixAndType(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
+		return SystemTagsUtil.hasTypeAndArgument(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
 	}
 
 }
