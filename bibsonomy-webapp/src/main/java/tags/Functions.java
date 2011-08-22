@@ -569,7 +569,7 @@ public class Functions  {
 	 * @param lastFirstNames - should person names appear in "Last, First" form? 
 	 * @return A BibTeX string of this post
 	 */
-	public static String toBibtexString(final Post<BibTex> post, final String projectHome, final boolean lastFirstNames) {
+	public static String toBibtexString(final Post<BibTex> post, final String projectHome, final Boolean lastFirstNames) {
 		if (urlGenerator == null) {
 			urlGenerator = new URLGenerator(projectHome);
 		}
