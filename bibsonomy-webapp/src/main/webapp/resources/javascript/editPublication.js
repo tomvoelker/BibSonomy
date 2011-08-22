@@ -140,14 +140,20 @@ function getFirstPersonsLastName(person) {
         /*
          * first author extracted, get its last name
          */
-        var lastspace = firstauthor.search(/\s\S+$/);
+        var comma = firstauthor.search(/,/);
         var lastname;
-        if (lastspace < 0) {
-            lastname = firstauthor;
+        if (comma < 0) {
+        	// no comma found - find last space
+            var lastspace = firstauthor.search(/\s\S+$/);
+            if (lastspace < 0) {
+                lastname = firstauthor;
+            } else {
+            	lastname = firstauthor.substring(lastspace + 1, firstauthor.length);
+            }
         } else {
-            lastname = firstauthor.substring(lastspace + 1, firstauthor.length);
+            lastname = firstauthor.substring(0, comma);
         }
-        return lastname;
+        return lastname.trim().replace(/[^0-9A-Za-z]+/g, "");
     }
     return "";
 }
