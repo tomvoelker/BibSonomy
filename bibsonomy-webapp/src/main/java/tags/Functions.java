@@ -564,11 +564,10 @@ public class Functions  {
 	/**
 	 * Access the built-in utility function for BibTeX export
 	 * 
-	 * @param post
-	 * 		- a publication post
+	 * @param post - a publication post
 	 * @param projectHome 
-	 * @return
-	 * 		- a BibTeX string of this post
+	 * @param lastFirstNames - should person names appear in "Last, First" form? 
+	 * @return A BibTeX string of this post
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final String projectHome, final boolean lastFirstNames) {
 		if (urlGenerator == null) {
