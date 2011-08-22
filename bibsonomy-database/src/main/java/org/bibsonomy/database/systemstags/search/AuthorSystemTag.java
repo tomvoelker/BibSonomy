@@ -1,7 +1,6 @@
 package org.bibsonomy.database.systemstags.search;
 
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 
 /**
@@ -33,6 +32,6 @@ public class AuthorSystemTag extends AbstractSearchSystemTagImpl {
 
 	@Override
 	public boolean allowsResource(final Class<? extends Resource> resourceClass) {
-		return resourceClass != null && BibTex.class.isAssignableFrom(resourceClass);
+		return isPublicationClass(resourceClass);
 	}
 }
