@@ -14,7 +14,7 @@ import org.springframework.core.PriorityOrdered;
  * {@link AbstractApplicationContext#invokeBeanFactoryPostProcessors} method
  * doesn't care about the order of {@link PriorityOrdered} {@link BeanFactoryPostProcessor}s
  * while initializing them (also ignores the depends-on config). Thus the
- * §{configLocation} place holder isn't replaced because the responsible
+ * §{config.location} place holder isn't replaced because the responsible
  * {@link PropertyPlaceholderConfigurer} wasn't called afore. A workaround for
  * this problem is this class. Due to the fact that this class is only an
  * {@link Ordered} {@link BeanFactoryPostProcessor} it is initialized after
