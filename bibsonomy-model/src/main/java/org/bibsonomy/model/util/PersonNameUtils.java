@@ -218,13 +218,24 @@ public class PersonNameUtils {
 	}
 		
 	/**
-	 * 
+	 * @see PersonNameUtils#serializePersonNames(List, boolean, String)
 	 * 
 	 * @param personNames
 	 * @return The joined names or <code>null</code> if the list is empty.
 	 */
 	public static String serializePersonNames(final List<PersonName> personNames) {
 		return serializePersonNames(personNames, DEFAULT_LAST_FIRST_NAMES);
+	}
+
+	/**
+	 * @see PersonNameUtils#serializePersonNames(List, boolean, String)
+	 * 
+	 * @param personNames
+	 * @param delimiter 
+	 * @return The joined names or <code>null</code> if the list is empty.
+	 */
+	public static String serializePersonNames(final List<PersonName> personNames, final String delimiter) {
+		return serializePersonNames(personNames, DEFAULT_LAST_FIRST_NAMES, delimiter);
 	}
 	
 	/**
@@ -237,6 +248,20 @@ public class PersonNameUtils {
 	 * @return The joined names or <code>null</code> if the list is empty.
 	 */
 	public static String serializePersonNames(final List<PersonName> personNames, final boolean lastFirstNames) {
+		return serializePersonNames(personNames, lastFirstNames, PERSON_NAME_DELIMITER);
+	}
+	
+	/**
+	 * Joins the names of the persons in "Last, First" form (if lastFirstNames is
+	 * <code>true</code>) or "First Last" form (if lastFirstNames is
+	 * <code>false</code>) using the given delimiter
+	 * 
+	 * @param personNames
+	 * @param lastFirstNames
+	 * @param delimiter - a string used as delimiter between person names.
+	 * @return The joined names or <code>null</code> if the list is empty.
+	 */
+	public static String serializePersonNames(final List<PersonName> personNames, final boolean lastFirstNames, final String delimiter) {
 		if (!present(personNames)) return null;
 		final StringBuilder sb = new StringBuilder();
 		int i = personNames.size();
@@ -244,7 +269,7 @@ public class PersonNameUtils {
 			i--;
 			sb.append(serializePersonName(personName, lastFirstNames));
 			if (i > 0) {
-				sb.append(PERSON_NAME_DELIMITER);
+				sb.append(delimiter);
 			}
 		}
 		return sb.toString();
