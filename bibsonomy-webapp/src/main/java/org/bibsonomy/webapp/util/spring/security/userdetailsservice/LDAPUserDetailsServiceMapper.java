@@ -28,13 +28,15 @@ public class LDAPUserDetailsServiceMapper implements UserDetailsContextMapper {
 	 * @see org.springframework.security.ldap.userdetails.UserDetailsContextMapper#mapUserFromContext(org.springframework.ldap.core.DirContextOperations, java.lang.String, java.util.Collection)
 	 */
 	@Override
-	public UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<GrantedAuthority> authority) {
+	public UserDetails mapUserFromContext(final DirContextOperations ctx, final String username, final Collection<GrantedAuthority> authority) {
 		final String systemName = this.adminLogic.getUsernameByLdapUserId(username);
 		if (systemName == null) {
 			throw new LdapUsernameNotFoundException("LDAP id not found in database", ctx);
 		}
 		
 		final UserDetails loadedUser = this.userDetailsService.loadUserByUsername(systemName);
+		
+		// TODO: are we missing something else?
 		if (!loadedUser.isEnabled()) {
 			throw new DisabledException("user was deleted");
 		}
@@ -47,21 +49,21 @@ public class LDAPUserDetailsServiceMapper implements UserDetailsContextMapper {
 	 * @see org.springframework.security.ldap.userdetails.UserDetailsContextMapper#mapUserToContext(org.springframework.security.core.userdetails.UserDetails, org.springframework.ldap.core.DirContextAdapter)
 	 */
 	@Override
-	public void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
+	public void mapUserToContext(final UserDetails user, final DirContextAdapter ctx) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * @param adminLogic the adminLogic to set
 	 */
-	public void setAdminLogic(LogicInterface adminLogic) {
+	public void setAdminLogic(final LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
 	}
 
 	/**
 	 * @param userDetailsService the userDetailsService to set
 	 */
-	public void setUserDetailsService(UserDetailsService userDetailsService) {
+	public void setUserDetailsService(final UserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
 
