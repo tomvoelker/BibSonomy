@@ -15,7 +15,7 @@
 <c:if test="${not empty bib.bibtexKey}"><jsp:text>
 %1 ${bib.bibtexKey}</jsp:text></c:if>    
 <c:if test="${not empty bib.author}"><c:forEach var="person" varStatus="status" items="${bib.author}">
-%A ${person.last}, ${person.first}</c:forEach></c:if>        
+%A ${person.lastName}, ${person.firstName}</c:forEach></c:if>        
 <c:if test="${not empty bib.booktitle}"><jsp:text>
 %B ${bib.booktitle}</jsp:text></c:if>
 <c:if test="${not empty bib.miscFields['isbn']}"><jsp:text>
@@ -25,7 +25,7 @@
 <c:if test="${not empty bib.year}"><jsp:text>
 %D ${bib.year}</jsp:text></c:if>
 <c:if test="${not empty bib.editor}"><c:forEach var="person" varStatus="status" items="${bib.editor}">
-%E ${person.last}, ${person.first}</c:forEach></c:if>    
+%E ${person.lastName}, ${person.firstName}</c:forEach></c:if>    
 <c:if test="${not empty bib.publisher}"><jsp:text>
 %I ${bib.publisher}</jsp:text></c:if>
 <c:if test="${not empty bib.journal}"><jsp:text>
