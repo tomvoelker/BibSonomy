@@ -294,25 +294,11 @@ public class SimHash {
 			 * Only last name available - could be a "regular" name enclosed
 			 * in brackets.
 			 */
-			return getLast(trimBrackets(last));
+			return getLast(last);
 		}
 		return "";
 	}
-	
-	/**
-	 * A name enclosed in brackets {Like this One} is detected as a single 
-	 * last name. We here re-parse such names to extract the "real" name.
-	 * 
-	 * @param last
-	 * @return
-	 */
-	private static String trimBrackets(final String last) {
-		final String trimmedLast = last.trim();
-		if (trimmedLast.startsWith("{") && trimmedLast.endsWith("}")) {
-			return normalizePerson(PersonNameUtils.discoverPersonName(trimmedLast.substring(1, trimmedLast.length() - 1)));
-		}
-		return last;
-	}
+
 	
 	/**
 	 * Returns the first letter of the first name, or an empty string, if no
@@ -338,11 +324,26 @@ public class SimHash {
 	 * @return
 	 */
 	private static String getLast(final String last) {
-		final int pos = last.lastIndexOf(' ');
-		if (pos > 0) {
-			return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(last.substring(pos + 1)).toLowerCase();
+		/*
+		 * A name enclosed in brackets {Like this One} is detected as a single 
+		 * last name. We here re-parse such names to extract the "real" name.
+		 */
+		final String trimmedLast = last.trim();
+		final String trimmedBracketLast;
+		if (trimmedLast.startsWith("{") && trimmedLast.endsWith("}")) {
+			trimmedBracketLast = normalizePerson(PersonNameUtils.discoverPersonName(trimmedLast.substring(1, trimmedLast.length() - 1)));
+		} else {
+			trimmedBracketLast = trimmedLast;
 		}
-		return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(last).toLowerCase();
+		/*
+		 * If we find a space character, we take the last part of the name
+		 */
+		final int pos = trimmedBracketLast.lastIndexOf(' ');
+		final String lastPart = pos > 0 ? trimmedBracketLast.substring(pos + 1) : trimmedBracketLast;
+		/*
+		 * Now we remove all remaining characters
+		 */
+		return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(lastPart).toLowerCase();
 	}
 
 }
