@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.util.StringUtils;
 import org.junit.Test;
 
 /**
@@ -114,4 +115,31 @@ public class SimHashTest {
 		bib.setAuthor(PersonNameUtils.discoverPersonNames("JoHN and Paul jOhN"));
 		assertEquals(interHash3, SimHash.getSimHash(bib, HashID.getSimHash(1)));
 	}
+	
+	/**
+	 * tests person normalization for simhash 1
+	 */
+	@Test
+	public void testPersonNormalizationForSimhash1() {
+		/*
+		 * almost all examples from our database! :-(
+		 */
+		assertEquals("[a.bauer]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("{Axel} Bauer")));
+		assertEquals("[l.antiqueira,l.costa,m.nunes,o.jr.]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("L. Antiqueira and M.G.V. Nunes and O.N. Oliveira Jr. and L. da F. Costa")));
+		assertEquals("[b.informationstechnik]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames(" {Bundesamt für Sicherheit in der Informationstechnik}")));
+		assertEquals("[a.weiterbildung]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("{Arbeitsgruppe Hochschuldidaktische Weiterbildung}")));
+		assertEquals("[k.blom]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames(" {Katarina Blom}")));
+		assertEquals("[a.stolcke,c.wooters,d.jurafsky,e.fosler,g.tajchman,j.segal,n.morgan]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("D. Jurafsky and C. Wooters and J. Segal and A. Stolcke and E. Fosler and G. Tajchman andN. Morgan")));
+		assertEquals("[k.blom,others]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("Katarina Blom and others")));
+	}
+	
+
+	/**
+	 * tests person normalization for simhash 2
+	 */
+	@Test
+	public void testPersonNormalizationForSimhash2() {
+		assertEquals("Bundesamt für Sicherheit in der Informationstechnik", StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(" {Bundesamt für Sicherheit in der Informationstechnik}"))));
+	}
+	
 }

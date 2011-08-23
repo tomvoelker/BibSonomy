@@ -66,9 +66,10 @@ public class PersonNameUtilsTest {
 				PersonNameUtils.discoverPersonName("{Long Company Name}"),
 				PersonNameUtils.discoverPersonName("L. Balby Marinho"),
 				PersonNameUtils.discoverPersonName("Balby Marinho, Leandro"),
-				PersonNameUtils.discoverPersonName("Leandro Balby Marinho")
+				PersonNameUtils.discoverPersonName("Leandro Balby Marinho"),
+				PersonNameUtils.discoverPersonName("Hanand Foobar")
 		);
-		final List<PersonName> is = PersonNameUtils.discoverPersonNames("D.E. Knuth and Hans Dampf and Donald E. Knuth and Foo van Bar and Jäschke, R. and John Chris Smith and John von Neumann and von der Schmidt, Alex and {Long Company Name} and L. Balby Marinho and Balby Marinho, Leandro and Leandro Balby Marinho");
+		final List<PersonName> is = PersonNameUtils.discoverPersonNames("D.E. Knuth and Hans Dampf and Donald E. Knuth and Foo van Bar and Jäschke, R. and John Chris Smith and John von Neumann and von der Schmidt, Alex and {Long Company Name} and L. Balby Marinho and Balby Marinho, Leandro and Leandro Balby Marinho and Hanand Foobar");
 		for (int i = 0; i < should.size(); i++) {
 			assertEqualPersonNames(should.get(i), is.get(i));			
 		}
@@ -143,6 +144,17 @@ public class PersonNameUtilsTest {
 		final PersonName pn10 = PersonNameUtils.discoverPersonName("John Chris Smith");
 		assertEquals("John Chris", pn10.getFirstName());
 		assertEquals("Smith", pn10.getLastName());	
+	}
+	
+	/**
+	 * It's not so simple to extract names where we have (erroneously) several 
+	 * "and"'s between names
+	 */
+	@Test
+	public void testDiscoverPersonNames() {
+		final List<PersonName> pn = PersonNameUtils.discoverPersonNames("D.E. Knuth and and Foo Bar and   and");
+		assertEquals(Arrays.asList(new PersonName("D.E.", "Knuth"), new PersonName("Foo", "Bar")), pn);
+		
 	}
 	
 	/**

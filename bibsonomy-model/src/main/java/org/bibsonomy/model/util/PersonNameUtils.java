@@ -27,7 +27,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.util.StringUtils;
@@ -45,6 +44,12 @@ public class PersonNameUtils {
 	 */
 	public static final String PERSON_NAME_DELIMITER = " and ";
 	/**
+	 * this one is used to extract person names where is is allowed that there
+	 * are several "and" delimiters in a row, e.g., "D.E. Knuth and and Foo Bar". 
+	 */
+	private static final String PERSON_NAME_DELIMITER_EXTRACTOR = "\\s+" + PERSON_NAME_DELIMITER.trim() + "\\s*?";
+
+	/**
 	 * By default, all author and editor names are in "Last, First" order
 	 */
 	public static final boolean DEFAULT_LAST_FIRST_NAMES = true;
@@ -53,16 +58,17 @@ public class PersonNameUtils {
 	/**
 	 * Analyses a string of names of the form "J. T. Kirk and M. Scott"
 	 * 
+	 * Currently can't handle the case where the persons strings starts with an
+	 * "and "
+	 * 
 	 * @param persons the source string 
 	 * @return the result
 	 */
 	public static List<PersonName> discoverPersonNames(final String persons) {
 		final List<PersonName> authors = new LinkedList<PersonName>();
 		if (present(persons)) {
-			final Scanner t = new Scanner(persons);
-			t.useDelimiter(PERSON_NAME_DELIMITER);
-			while (t.hasNext()) {
-				authors.add(discoverPersonName(t.next()));
+			for (final String token : persons.split(PERSON_NAME_DELIMITER_EXTRACTOR)) {
+				if (present(token)) authors.add(discoverPersonName(token));
 			}
 		}
 		return authors;
@@ -85,7 +91,7 @@ public class PersonNameUtils {
 		}
 		return name;
 	}
-	
+
 	/**
 	 * Given a list of person names separated by {@link #PERSON_NAME_DELIMITER}, we check
 	 * if one of them is in "Last, First" format and use {@link #lastFirstToFirstLast(String)}
@@ -100,11 +106,14 @@ public class PersonNameUtils {
 		if (present(names)) {
 			if (names.contains(PersonName.LAST_FIRST_DELIMITER)) {
 				final StringBuilder namesNew = new StringBuilder();
-				
-				final String[] split = names.split(PERSON_NAME_DELIMITER);
+
+				final String[] split = names.split(PERSON_NAME_DELIMITER_EXTRACTOR);
 				for (int i = 0; i < split.length; i++) {
-					namesNew.append(lastFirstToFirstLast(split[i]));
-					if (i < split.length - 1) namesNew.append(PERSON_NAME_DELIMITER);
+					final String name = split[i].trim();
+					if (present(name)) {
+						namesNew.append(lastFirstToFirstLast(name));
+						if (i < split.length - 1) namesNew.append(PERSON_NAME_DELIMITER);
+					}
 				}
 				return namesNew.toString();
 			}
@@ -216,7 +225,7 @@ public class PersonNameUtils {
 		}
 		return null;
 	}
-		
+
 	/**
 	 * @see PersonNameUtils#serializePersonNames(List, boolean, String)
 	 * 
@@ -237,7 +246,7 @@ public class PersonNameUtils {
 	public static String serializePersonNames(final List<PersonName> personNames, final String delimiter) {
 		return serializePersonNames(personNames, DEFAULT_LAST_FIRST_NAMES, delimiter);
 	}
-	
+
 	/**
 	 * Joins the names of the persons in "Last, First" form (if lastFirstNames is
 	 * <code>true</code>) or "First Last" form (if lastFirstNames is
@@ -250,7 +259,7 @@ public class PersonNameUtils {
 	public static String serializePersonNames(final List<PersonName> personNames, final boolean lastFirstNames) {
 		return serializePersonNames(personNames, lastFirstNames, PERSON_NAME_DELIMITER);
 	}
-	
+
 	/**
 	 * Joins the names of the persons in "Last, First" form (if lastFirstNames is
 	 * <code>true</code>) or "First Last" form (if lastFirstNames is
@@ -274,7 +283,7 @@ public class PersonNameUtils {
 		}
 		return sb.toString();
 	}
-	
+
 	/**
 	 * @param personName
 	 * @return The name or <code>null</code> if the name is empty.
@@ -298,13 +307,13 @@ public class PersonNameUtils {
 		final String last;
 		final String delim;
 		if (lastFirstName) {
-			 first = personName.getLastName();
-			 last = personName.getFirstName();
-			 delim = PersonName.LAST_FIRST_DELIMITER + " ";
+			first = personName.getLastName();
+			last = personName.getFirstName();
+			delim = PersonName.LAST_FIRST_DELIMITER + " ";
 		} else {
-			 first = personName.getFirstName();
-			 last = personName.getLastName();
-			 delim = " ";
+			first = personName.getFirstName();
+			last = personName.getLastName();
+			delim = " ";
 		}
 		if (present(first)) {
 			if (present(last)) {
