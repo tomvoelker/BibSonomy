@@ -29,7 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.model.PersonName;
-import org.bibsonomy.util.StringUtils;
 
 /**
  * Nice place for static util methods regarding names of persons.
@@ -130,11 +129,7 @@ public class PersonNameUtils {
 	public static PersonName discoverPersonName(final String name) {
 		final PersonName personName = new PersonName();
 		if (present(name)) {
-			/*
-			 * DBLP author names sometimes contain numbers (when there are
-			 * several authors with the same name. Here we remove those numbers
-			 */
-			final String cleanedName = StringUtils.removeSingleNumbers(name).trim();
+			final String cleanedName = name.trim();
 			/*
 			 * Names can be in several formats:
 			 * 
