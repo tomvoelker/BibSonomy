@@ -2,7 +2,10 @@ package org.bibsonomy.batch.repair;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -32,18 +35,29 @@ public class SimHashCleaner {
 	/*
 	 * SQL queries to get/manipulate the data
 	 */
-	private static final String QUERY_GET = "SELECT * FROM bibtex";
+	private static final String QUERY_GET = "SELECT * FROM bibtex LIMIT 10000000";
+	/*
+	 * to check, if gold standard posts will change ...
+	 */
+//	private static final String QUERY_GET = "SELECT * FROM gold_standard_publications";
 	/*
 	 * update the hashes
 	 */
 	private static final String QUERY_UPDATE_BIBTEX = "UPDATE bibtex SET simhash0 = ?, simhash1 = ?, simhash2 = ? WHERE content_id = ?";
 	private static final String QUERY_UPDATE_BIBHASH = "INSERT INTO bibhash (hash,ctr,type) VALUES (?,1,?) ON DUPLICATE KEY UPDATE ctr=ctr+1;";
 	
+	private static final String CHANGED_PERSON_NAMES_FILE = "/tmp/changed_person_names";
+	private static final String LOG_FILE = "/tmp/" + SimHashCleaner.class.getSimpleName() + ".log";
+	
+	private final BufferedWriter changedPersonNameWriter;
+	private final BufferedWriter logWriter;
+	
 	private final Properties props;
 	
 	int changedHashesCtr = 0;
 	int printedHashesCtr = 0;
 	int updatedHashesCtr = 0;
+	int changedPersonCtr = 0; // how many person names would change in the DB, if we would update them as well?
 	int publCtr = 0;
 
 	public static void main(String[] args) throws IOException {
@@ -102,26 +116,27 @@ public class SimHashCleaner {
 						if (skip(oldBibtex.getEditor())) continue;						
 						
 						printedHashesCtr++;
-						System.out.print("o/db:" + oldEqualsDb + ", ");
-						System.out.print("n/db:" + newEqualsDb + ", ");
-						System.out.print("o/n:" + oldEqualsNew + ", ");
-						if (present(a)) System.out.print(a);
-						if (present(e)) System.out.print(e);
-						System.out.println();
+						print("o/db:" + oldEqualsDb + ", ");
+						print("n/db:" + newEqualsDb + ", ");
+						print("o/n:" + oldEqualsNew + ", ");
+						if (present(a)) print(a);
+						if (present(e)) print(e);
+						println();
 					}
 				}
-				if (publCtr % 100000 == 0) System.out.println("-- " + publCtr + " --");
-				if (updatedHashesCtr % 1000 == 0) conn.commit();
+				if (publCtr % 100000 == 0) println("-- " + publCtr + " --");
+				if (UPDATE && updatedHashesCtr % 1000 == 0) conn.commit();
 			}
-			conn.commit();
+			if (UPDATE) conn.commit();
 			
-			System.out.println("-----------------------------------");
-			System.out.println("observed posts: " + publCtr);
-			System.out.println("changed hashes: " + changedHashesCtr);
-			System.out.println("printed hashes: " + printedHashesCtr);
-			System.out.println("updated hashes: " + printedHashesCtr);
+			println("-----------------------------------");
+			println("observed posts: " + publCtr);
+			println("changed hashes: " + changedHashesCtr);
+			println("printed hashes: " + printedHashesCtr);
+			println("updated hashes: " + updatedHashesCtr);
+			println("changed person: " + changedPersonCtr);
 
-
+			changedPersonNameWriter.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -130,6 +145,18 @@ public class SimHashCleaner {
 		}
 	}
 
+	private void print(final CharSequence s) throws IOException {
+		System.out.print(s);
+		logWriter.write(s.toString());
+	}
+	
+	private void println(final CharSequence s) throws IOException {
+		print(s + "\n");
+	}
+	private void println() throws IOException {
+		print("\n");
+	}
+	
 	/**
 	 * 
 	 * 
@@ -219,7 +246,7 @@ public class SimHashCleaner {
 	 *        old = '[a.mccallum,l.baker]'
 	 */
 	
-	private StringBuffer getPerson(final String personType, final String oldPerson, final List<PersonName> newPerson, final String newEqualsDb) {
+	private StringBuffer getPerson(final String personType, final String oldPerson, final List<PersonName> newPerson, final String newEqualsDb) throws IOException {
 		if (present(oldPerson)) {
 			final StringBuffer buf = new StringBuffer();
 			final String newNorm1 = SimHash.getNormalizedPersons(newPerson);
@@ -250,10 +277,19 @@ public class SimHashCleaner {
 				buf.append(personType + "O = '" + oldNorm2 + "', ");
 				buf.append("] ");
 			}
-			final String n = PersonNameUtils.serializePersonNames(newPerson, false);
-			if (!oldPerson.trim().equals(n)) {
+			String newPersonString = PersonNameUtils.serializePersonNames(newPerson, false);
+			if (newPersonString == null) newPersonString = "";
+			/*
+			 * We check, if the plain author string changes - just to be sure, 
+			 * that don't do too much harm to people
+			 * 
+			 * (we ignore changes in whitespace)
+			 */
+			if (!oldPerson.replaceAll("\\s+", "").equals(newPersonString.replaceAll("\\s+", ""))) {
 				if (!present(buf)) buf.append(personType + " was " + oldPerson + " and now is");
-				buf.append(" !!!" + n + "!!! ");
+				buf.append(" !!!" + newPersonString + "!!! ");
+				changedPersonNameWriter.write("'" + oldPerson + "' --> '" + newPersonString + "'\n");
+				changedPersonCtr++;
 			}
 			return buf;
 		}
@@ -334,6 +370,8 @@ public class SimHashCleaner {
 	public SimHashCleaner() throws IOException {
 		this.props = new Properties();
 		this.props.load(this.getClass().getClassLoader().getResourceAsStream(this.getClass().getSimpleName() + ".properties"));
+		this.changedPersonNameWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(CHANGED_PERSON_NAMES_FILE), "UTF-8"));
+		this.logWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(LOG_FILE), "UTF-8"));
 	}
 
 	private Connection getConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
