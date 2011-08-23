@@ -25,12 +25,12 @@
          "url": "${mtl:quoteJSON(post.resource.url)}", 
          <c:if test="${! empty post.resource.author}">
          "author": [ 
-            <c:forEach var="author" varStatus="authorStatus" items="${post.resource.author}">"${mtl:quoteJSONcleanBibTeX(author.name)}"<c:if test="${not authorStatus.last}">,</c:if></c:forEach>
+            <c:forEach var="author" varStatus="authorStatus" items="${post.resource.author}">"${mtl:quoteJSONcleanBibTeX(author.firstName)}${' '}${mtl:quoteJSONcleanBibTeX(author.lastName)}"<c:if test="${not authorStatus.last}">,</c:if></c:forEach>
          ],
          </c:if>
          <c:if test="${! empty post.resource.editor}">
          "editor": [ 
-            <c:forEach var="editor" varStatus="editorStatus" items="${post.resource.editor}">"${mtl:quoteJSONcleanBibTeX(editor.name)}"<c:if test="${not editorStatus.last}">,</c:if></c:forEach>
+            <c:forEach var="editor" varStatus="editorStatus" items="${post.resource.editor}">"${mtl:quoteJSONcleanBibTeX(editor.firstName)}${' '}${mtl:quoteJSONcleanBibTeX(editor.lastName)}"<c:if test="${not editorStatus.last}">,</c:if></c:forEach>
          ],
          </c:if>
          <c:if test="${!empty post.resource.volume}">"volume": "${mtl:quoteJSONcleanBibTeX(post.resource.volume)}",</c:if>  
