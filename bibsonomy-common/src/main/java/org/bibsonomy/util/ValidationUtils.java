@@ -33,6 +33,14 @@ import org.bibsonomy.common.enums.GroupID;
  * @version $Id$
  */
 public class ValidationUtils {
+
+	/**
+	 * @param string argument to check
+	 * @return false iff the argument is null or has zero trimmed length
+	 */
+	public static boolean present(final String string) {
+		return ((string != null) && (string.trim().length() > 0));
+	}
 	
 	/**
 	 * @param charSequence argument to check
@@ -41,6 +49,7 @@ public class ValidationUtils {
 	public static boolean present(final CharSequence charSequence) {
 		return ((charSequence != null) && (charSequence.length() > 0));
 	}
+	
 
 	/**
 	 * @param collection argument to check
