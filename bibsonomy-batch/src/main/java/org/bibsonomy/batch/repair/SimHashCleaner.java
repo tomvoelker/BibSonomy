@@ -90,6 +90,7 @@ public class SimHashCleaner {
 			}
 			
 			System.out.println("-----------------------------------");
+			System.out.println("observed posts: " + publCtr);
 			System.out.println("changed hashes: " + changedHashesCtr);
 			System.out.println("printed hashes: " + printedHashesCtr);
 
@@ -189,6 +190,10 @@ public class SimHashCleaner {
 				buf.append(personType + "N = '" + newNorm2 + "', ");
 				buf.append(personType + "O = '" + oldNorm2 + "', ");
 				buf.append("] ");
+			}
+			final String n = PersonNameUtils.serializePersonNames(newPerson, false);
+			if (oldPerson.equals(n)) {
+				buf.append(" !!! + " + n + "!!! ");
 			}
 			return buf;
 		}
