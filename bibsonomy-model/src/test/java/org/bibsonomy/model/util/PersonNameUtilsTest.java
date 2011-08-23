@@ -144,8 +144,10 @@ public class PersonNameUtilsTest {
 		final PersonName pn10 = PersonNameUtils.discoverPersonName("John Chris Smith");
 		assertEquals("John Chris", pn10.getFirstName());
 		assertEquals("Smith", pn10.getLastName());	
-
-
+		
+		final PersonName pn13 = PersonNameUtils.discoverPersonName("Joseph John {Rocchio, Jr.}");
+		assertEquals("Joseph John", pn13.getFirstName());
+		assertEquals("{Rocchio, Jr.}", pn13.getLastName());	
 	}
 	
 	/**
@@ -260,9 +262,6 @@ public class PersonNameUtilsTest {
 		/*
 		 * FIXME: we don't support lineage ... :-( 
 		 */
-		final PersonName pn13 = PersonNameUtils.discoverPersonName("Joseph John {Rocchio, Jr.}");
-		assertEquals("Joseph John", pn13.getFirstName());
-		assertEquals("{Rocchio, Jr.}", pn13.getLastName());	
 
 		final PersonName pn12 = PersonNameUtils.discoverPersonName("Rocchio, Jr., Joseph John");
 		assertEquals("Joseph John", pn12.getFirstName());

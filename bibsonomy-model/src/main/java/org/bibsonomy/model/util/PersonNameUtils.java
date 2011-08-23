@@ -157,6 +157,15 @@ public class PersonNameUtils {
 			 */
 			final int indexOfComma = cleanedName.indexOf(PersonName.LAST_FIRST_DELIMITER);
 			if (indexOfComma >= 0) {
+				if (indexOfLbr < indexOfComma && indexOfRbr > indexOfComma) {
+					/*
+					 * something like case 4) - use everything inside the brace 
+					 * (including the brace) as last name
+					 */
+					personName.setFirstName(cleanedName.substring(0, indexOfLbr).trim());
+					personName.setLastName(cleanedName.substring(indexOfLbr).trim());
+					return personName;
+				}
 				/*
 				 * 2) We assume (preLast) Last, First.
 				 * Since our PersonName does not have an extra "preLast" attribute,
