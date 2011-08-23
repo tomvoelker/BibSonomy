@@ -455,12 +455,14 @@
 		<URL>http://www.informaworld.com/smpp/content~content=a779504357~db=all~order=page</URL>
 		<BibFile>InformaworldUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_78">
 		<TestDescription>Informaworld Url Test 2</TestDescription>
 		<URL>http://www.informaworld.com/smpp/content~db=all~content=a779504357~tab=citation</URL>
 		<BibFile>InformaworldUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_79">
 		<TestDescription>URL test for proceeding page from usenix.org with current layout</TestDescription>
@@ -791,6 +793,7 @@
 		<URL>http://www.informaworld.com/smpp/content~content=a905990187~db=all~jumptype=rss</URL>
 		<BibFile>InformaworldUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_136">
 		<TestDescription>eric Scraper url test</TestDescription>
@@ -1193,5 +1196,11 @@
 		<BibFile>TaylorAndFrancisScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper</Scraper>
 		<Enabled>true</Enabled>
+	</URLTest>
+	<URLTest id="url_199">
+		<TestDescription>acm test</TestDescription>
+		<URL>http://dl.acm.org/citation.cfm?id=1571977</URL>
+		<BibFile>ACMBasicScraperUnitURLTest7.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 	</URLTest>
 </test:Tests>

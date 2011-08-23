@@ -25,6 +25,7 @@ package org.bibsonomy.scraper.url.kde.acm;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -62,7 +63,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	private static final String info      = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(
-			Pattern.compile(".*" + "portal.acm.org"), 
+			Pattern.compile(".*" + "[(portal)(dl)].acm.org"), 
 			Pattern.compile("(/beta)?/citation.cfm.*")
 	));
 
