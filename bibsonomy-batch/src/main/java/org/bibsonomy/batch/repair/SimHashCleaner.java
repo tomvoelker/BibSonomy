@@ -56,6 +56,8 @@ public class SimHashCleaner {
 		try {
 			conn = this.getConnection();
 			
+			conn.setAutoCommit(false);
+			
 			/*
 			 * prepare statements
 			 */
@@ -109,7 +111,9 @@ public class SimHashCleaner {
 					}
 				}
 				if (publCtr % 100000 == 0) System.out.println("-- " + publCtr + " --");
+				if (updatedHashesCtr % 1000 == 0) conn.commit();
 			}
+			conn.commit();
 			
 			System.out.println("-----------------------------------");
 			System.out.println("observed posts: " + publCtr);
@@ -247,7 +251,7 @@ public class SimHashCleaner {
 				buf.append("] ");
 			}
 			final String n = PersonNameUtils.serializePersonNames(newPerson, false);
-			if (!oldPerson.equals(n)) {
+			if (!oldPerson.trim().equals(n)) {
 				if (!present(buf)) buf.append(personType + " was " + oldPerson + " and now is");
 				buf.append(" !!!" + n + "!!! ");
 			}
