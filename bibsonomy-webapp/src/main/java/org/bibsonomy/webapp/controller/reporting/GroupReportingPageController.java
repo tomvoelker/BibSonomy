@@ -3,16 +3,18 @@ package org.bibsonomy.webapp.controller.reporting;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.reporting.GroupReportingCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -33,7 +35,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 	private LogicInterface logic;
 	
 	@Override
-	public View workOn(GroupReportingCommand command) {
+	public View workOn(final GroupReportingCommand command) {
 		// allow only logged-in users FIXME: check errormsg
 		if (command.getContext().getLoginUser().getName() == null) {
 			throw new MalformedURLSchemeException("Not logged in!");
@@ -52,36 +54,36 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		/*
 		 * assemble taglist
 		 */
-		List<String> tags = new ArrayList<String>();
+		final List<String> tags = new ArrayList<String>();
 		tags.add(command.getRequestedTags());
 		
 		/*
 		 * fetch all bibtex & remove duplicates
 		 */
-		List<Post<BibTex>> groupBibtexEntries = logic.getPosts(BibTex.class, GroupingEntity.GROUP, command.getRequestedGroup(), tags, null, null, null, 0, 10000, null);
+		final List<Post<BibTex>> groupBibtexEntries = logic.getPosts(BibTex.class, GroupingEntity.GROUP, command.getRequestedGroup(), tags, null, null, null, 0, 10000, null);
 		BibTexUtils.removeDuplicates(groupBibtexEntries);
 		
 		
 		/*
 		 * sort entries in descending order by year
 		 */
-		BibTexUtils.sortBibTexList(groupBibtexEntries, SortUtils.parseSortKeys("year"), SortUtils.parseSortOrders("desc"));
+		BibTexUtils.sortBibTexList(groupBibtexEntries, Collections.singletonList(SortKey.YEAR), Collections.singletonList(SortOrder.DESC));
 		
 		
 		/*
 		 * init entrytypes 
 		 */
-		for (String type : BibTexUtils.ENTRYTYPES) { command.getPublicationCounts().getColumnHeaders().add(type); }
+		for (final String type : BibTexUtils.ENTRYTYPES) { command.getPublicationCounts().getColumnHeaders().add(type); }
 		/*
 		 * loop over entries, accumulate and fill command
 		 */
 		BibTex bib;
 		int lastYear = Integer.MIN_VALUE;
 		HashMap<String,Integer> row = null;
-		for (Post<BibTex> post : groupBibtexEntries) {
+		for (final Post<BibTex> post : groupBibtexEntries) {
 			bib = post.getResource();
 			try {
-				int curYear = Integer.valueOf(bib.getYear());
+				final int curYear = Integer.valueOf(bib.getYear());
 				if ( curYear != lastYear) {
 					if (lastYear != Integer.MIN_VALUE) {
 						// write last row into command, if there is one
@@ -90,7 +92,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 					}
 					// init a new row with zero values
 					row = new HashMap<String,Integer>();
-					for (String type : BibTexUtils.ENTRYTYPES) {
+					for (final String type : BibTexUtils.ENTRYTYPES) {
 						row.put(type, 0);
 					}
 				}
@@ -98,7 +100,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 				this.increment(row, bib.getEntrytype());
 				lastYear = curYear;
 				
-			} catch (NumberFormatException ex) {
+			} catch (final NumberFormatException ex) {
 				// ignore silently
 			}
 			
@@ -150,7 +152,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 	/**
 	 * @param logic the logic to set
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 
@@ -162,11 +164,11 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 	/*
 	 * increment map at position 'key'
 	 */
-	private void increment(Map<String, Integer> map, String key) {
+	private void increment(final Map<String, Integer> map, final String key) {
 		if (key == null || !map.containsKey(key.toLowerCase())) {
 			return;
 		}
-		int lastVal = map.get(key);
+		final int lastVal = map.get(key);
 		map.put(key, lastVal + 1);
 	}
 
