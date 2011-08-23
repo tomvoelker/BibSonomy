@@ -141,8 +141,8 @@ public class PersonNameUtils {
 			 * 1) First (preLast) Last
 			 * 2) (preLast) Last, First
 			 * 3) {Long name of a Company}
-			 * 4) First {Last, Jr.} (we can't handle this case)
-			 * 5) Last, Jr., First (we can't handle this case)
+			 * 4) First {Last, Jr.} (TODO: we can't handle this case)
+			 * 5) Last, Jr., First (TODO: we can't handle this case)
 			 * 
 			 * If the name starts with a brace and ends with a brace, we assume case 3).
 			 */
