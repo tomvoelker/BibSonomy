@@ -28,9 +28,23 @@ import org.bibsonomy.util.StringUtils;
  */
 public class SimHashCleaner {
 
-	private static final String QUERY = "SELECT * FROM bibtex"; 
-
+	private static final boolean UPDATE = false;
+	/*
+	 * SQL queries to get/manipulate the data
+	 */
+	private static final String QUERY_GET = "SELECT * FROM bibtex";
+	/*
+	 * update the hashes
+	 */
+	private static final String QUERY_UPDATE_BIBTEX = "UPDATE bibtex SET simhash0 = ?, simhash1 = ?, simhash2 = ? WHERE content_id = ?";
+	private static final String QUERY_UPDATE_BIBHASH = "INSERT INTO bibhash (hash,ctr,type) VALUES (?,1,?) ON DUPLICATE KEY UPDATE ctr=ctr+1;";
+	
 	private final Properties props;
+	
+	int changedHashesCtr = 0;
+	int printedHashesCtr = 0;
+	int updatedHashesCtr = 0;
+	int publCtr = 0;
 
 	public static void main(String[] args) throws IOException {
 		final SimHashCleaner simHashCleaner = new SimHashCleaner();
@@ -41,14 +55,18 @@ public class SimHashCleaner {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
+			
+			/*
+			 * prepare statements
+			 */
+			final PreparedStatement get = conn.prepareStatement(QUERY_GET);
+			final PreparedStatement updateBibtex = conn.prepareStatement(QUERY_UPDATE_BIBTEX);
+			final PreparedStatement updateBibhash = conn.prepareStatement(QUERY_UPDATE_BIBHASH);
 			/*
 			 * do query
 			 */
-			final PreparedStatement stmt = conn.prepareStatement(QUERY);
-			final ResultSet rst = stmt.executeQuery();
-			int changedHashesCtr = 0;
-			int printedHashesCtr = 0;
-			int publCtr = 0;
+			final ResultSet rst = get.executeQuery();
+			rst.setFetchSize(10000);
 			while (rst.next()) {
 				publCtr++;
 				final BibTex newBibtex = getBibTex(rst);
@@ -56,6 +74,7 @@ public class SimHashCleaner {
 				final String simhash0 = rst.getString("simhash0");
 				final String simhash1 = rst.getString("simhash1");
 				final String simhash2 = rst.getString("simhash2");
+				final int contentId = rst.getInt("content_id");
 
 				final String oldEqualsDb = oldEqualsDb(oldBibtex, simhash0, simhash1, simhash2);
 				final String newEqualsDb = newEqualsDb(newBibtex, simhash0, simhash1, simhash2);
@@ -68,6 +87,9 @@ public class SimHashCleaner {
 				 * 
 				 */
 				if (newEqualsDb.length() != 0 || (oldEqualsDb.length() != 0 && oldEqualsNew.length() == 0)) {
+					
+					update(updateBibtex, updateBibhash, newBibtex, contentId);
+					
 					changedHashesCtr++;
 					
 					final StringBuffer a = getPerson("author", oldBibtex.getAuthor(), newBibtex.getAuthor(), newEqualsDb);
@@ -86,13 +108,14 @@ public class SimHashCleaner {
 						System.out.println();
 					}
 				}
-				if (publCtr % 100000 == 0) System.out.println("--" + publCtr + "--");
+				if (publCtr % 100000 == 0) System.out.println("-- " + publCtr + " --");
 			}
 			
 			System.out.println("-----------------------------------");
 			System.out.println("observed posts: " + publCtr);
 			System.out.println("changed hashes: " + changedHashesCtr);
 			System.out.println("printed hashes: " + printedHashesCtr);
+			System.out.println("updated hashes: " + printedHashesCtr);
 
 
 		} catch (Exception e) {
@@ -103,6 +126,38 @@ public class SimHashCleaner {
 		}
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param updateBibtex	<pre>UPDATE bibtex SET simhash0 = ?, simhash1 = ?, simhash2 = ? WHERE content_id = ?</pre>
+	 * @param updateBibhash <pre>INSERT INTO bibhash (hash,ctr,type) VALUES (?,1,?) ON DUPLICATE KEY UPDATE ctr=ctr+1</pre>
+	 * @param newBibTex
+	 * @param contentId
+	 * @throws SQLException 
+	 */
+	private void update(final PreparedStatement updateBibtex, final PreparedStatement updateBibhash, final BibTex newBibTex, final int contentId) throws SQLException {
+		if (UPDATE) {
+			updateBibtex.setString(1, newBibTex.getSimHash0());
+			updateBibtex.setString(2, newBibTex.getSimHash1());
+			updateBibtex.setString(3, newBibTex.getSimHash2());
+			updateBibtex.setInt(4, contentId);
+			updateBibtex.executeUpdate();
+			
+			updateBibhash.setString(1, newBibTex.getSimHash0());
+			updateBibhash.setInt(2, 0);
+			updateBibhash.executeUpdate();
+			
+			updateBibhash.setString(1, newBibTex.getSimHash1());
+			updateBibhash.setInt(2, 1);
+			updateBibhash.executeUpdate();
+			
+			updateBibhash.setString(1, newBibTex.getSimHash2());
+			updateBibhash.setInt(2, 2);
+			updateBibhash.executeUpdate();
+			updatedHashesCtr++;
+		}
+	}
+	
 	/**
 	 * Skips person names that change because of a reason we have understood and
 	 * can not / don't want to avoid.
@@ -192,8 +247,9 @@ public class SimHashCleaner {
 				buf.append("] ");
 			}
 			final String n = PersonNameUtils.serializePersonNames(newPerson, false);
-			if (oldPerson.equals(n)) {
-				buf.append(" !!! + " + n + "!!! ");
+			if (!oldPerson.equals(n)) {
+				if (!present(buf)) buf.append(personType + " was " + oldPerson + " and now is");
+				buf.append(" !!!" + n + "!!! ");
 			}
 			return buf;
 		}
