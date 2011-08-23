@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.common.exceptions.InvalidModelException;
 
@@ -46,6 +47,13 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 public class StringUtils {
 	
 	private static final String DEFAULT_CHARSET = "UTF-8";
+	
+	private static final Pattern WHITE_SPACE = Pattern.compile("\\s+");
+	private static final Pattern SINGLE_NUMBER = Pattern.compile("\\b\\d+\\b");
+	private static final Pattern NON_NUMBERS                                      = Pattern.compile("[^0-9]+");
+	private static final Pattern NON_NUMBERS_OR_LETTERS                           = Pattern.compile("[^0-9\\p{L}]+");
+	private static final Pattern NON_NUMBERS_OR_LETTERS_OR_DOTS_OR_SPACE          = Pattern.compile("[^0-9\\p{L}\\. ]+");
+	private static final Pattern NON_NUMBERS_OR_LETTERS_OR_DOTS_OR_COMMA_OR_SPACE = Pattern.compile("[^0-9\\p{L}\\., ]+");
 	
 	/**
 	 * Encodes a string to UTF8
@@ -163,7 +171,7 @@ public class StringUtils {
 	 */
 	public static String removeNonNumbers(final String str) {
 		if (str != null) {
-			return str.replaceAll("[^0-9]+", "");
+			return NON_NUMBERS.matcher(str).replaceAll("");
 		}
 		return "";
 	}
@@ -177,7 +185,7 @@ public class StringUtils {
 	 */
 	public static String removeNonNumbersOrLetters(final String str) {
 		if (str != null) {
-			return str.replaceAll("[^0-9\\p{L}]+", "");
+			return NON_NUMBERS_OR_LETTERS.matcher(str).replaceAll("");
 		}
 		return "";
 	}
@@ -194,7 +202,7 @@ public class StringUtils {
 	 */
 	public static String removeNonNumbersOrLettersOrDotsOrSpace(final String str) {
 		if (str != null) {
-			return normalizeWhitespace(str).replaceAll("[^0-9\\p{L}\\. ]+", "");
+			return NON_NUMBERS_OR_LETTERS_OR_DOTS_OR_SPACE.matcher(normalizeWhitespace(str)).replaceAll("");
 		}
 		return "";
 	}
@@ -211,7 +219,7 @@ public class StringUtils {
 	 */
 	public static String removeNonNumbersOrLettersOrDotsOrCommaOrSpace(final String str) {
 		if (str != null) {
-			return normalizeWhitespace(str).replaceAll("[^0-9\\p{L}\\., ]+", "");
+			return NON_NUMBERS_OR_LETTERS_OR_DOTS_OR_COMMA_OR_SPACE.matcher(normalizeWhitespace(str)).replaceAll("");
 		}
 		return "";
 	}
@@ -225,7 +233,7 @@ public class StringUtils {
 	 */
 	public static String removeSingleNumbers(final String str) {
 		if (present(str)) {
-			return str.replaceAll("\\b\\d+\\b", "");
+			return SINGLE_NUMBER.matcher(str).replaceAll("");
 		}
 		return str;
 	}
@@ -239,7 +247,7 @@ public class StringUtils {
 	 */
 	public static String removeWhitespace(final String str) {
 		if (str != null) {
-			return str.replaceAll("\\s+", "");
+			return WHITE_SPACE.matcher(str).replaceAll("");
 		}
 		return "";
 	}
@@ -253,7 +261,7 @@ public class StringUtils {
 	 */
 	public static String normalizeWhitespace(final String str) {
 		if (str != null) {
-			return str.replaceAll("\\s+", " ");
+			return WHITE_SPACE.matcher(str).replaceAll(" ");
 		}
 		return "";
 	}
