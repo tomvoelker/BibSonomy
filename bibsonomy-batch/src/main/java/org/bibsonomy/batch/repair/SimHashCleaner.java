@@ -150,6 +150,7 @@ public class SimHashCleaner {
 			println("changed person: " + changedPersonCtr);
 
 			changedPersonNameWriter.close();
+			logWriter.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
