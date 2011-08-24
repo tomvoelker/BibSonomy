@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command.admin;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.webapp.command.BaseCommand;
@@ -17,12 +18,13 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	private String action;
 	
 	/** the resource class to handle */
+	// TODO: should be Class<? extends Resource>
 	private String resource;
 	
 	/** the string response for the admin */
 	private String adminResponse = "";
 	
-	private List<LuceneIndexInfo> indices;
+	private final List<LuceneIndexInfo> indices = new LinkedList<LuceneIndexInfo>();
 
 	/**
 	 * @return the action
@@ -36,13 +38,6 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	 */
 	public void setAction(final String action) {
 		this.action = action;
-	}
-
-	/**
-	 * @param indices the list of indices
-	 */
-	public void setIndices(final List<LuceneIndexInfo> indices) {
-		this.indices = indices;
 	}
 
 	/**

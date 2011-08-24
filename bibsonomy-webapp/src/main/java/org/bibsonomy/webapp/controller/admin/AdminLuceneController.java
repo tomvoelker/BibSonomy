@@ -101,6 +101,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	}
 	
 	/**
+	 * TODO: use the Map<ResourceClass, LuceneResourceManager>
 	 * @param luceneResourceManagers
 	 */
 	public void setLuceneResourceManagers(final List<LuceneResourceManager<? extends Resource>> luceneResourceManagers) {
