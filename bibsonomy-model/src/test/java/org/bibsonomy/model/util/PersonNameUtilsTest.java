@@ -193,6 +193,11 @@ public class PersonNameUtilsTest {
 		final List<PersonName> pn4 = PersonNameUtils.discoverPersonNames("Müller, {Arne} and Meier, {Beate}");
 		assertEquals(Arrays.asList(new PersonName("{Arne}", "Müller"), new PersonName("{Beate}", "Meier")), pn4);
 		
+		/*
+		 * why semicolon? why?
+		 */
+		final List<PersonName> pn5 = PersonNameUtils.discoverPersonNames("Jon Kleinberg and \\&\\#201;va Tardos");
+		assertEquals(Arrays.asList(new PersonName("Jon", "Kleinberg"), new PersonName("\\&\\#201;va", "Tardos")), pn5);
 	}
 	
 	private static void printPersonList(final List<PersonName> person) {
@@ -315,6 +320,11 @@ public class PersonNameUtilsTest {
 		printPersonList(pn4);
 		assertEquals(Arrays.asList(new PersonName("K.", "Wilson"), new PersonName("J.", "Brake"), new PersonName("A. F.", "Lee"), new PersonName("R.M.", "Lambert")), pn4);
 	
+		/*
+		 * ; as person delimiter ...
+		 */
+		final List<PersonName> pn6 = PersonNameUtils.discoverPersonNames("Kirsch KA; Schlemmer M");
+		assertEquals(Arrays.asList(new PersonName("KA", "Kirsch"), new PersonName("M", "Schlemmer")), pn6);
 	}
 
 	/**
