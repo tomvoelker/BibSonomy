@@ -155,7 +155,14 @@ public class PersonNameUtilsTest {
 
 		final PersonName pn15 = PersonNameUtils.discoverPersonName("Chappe d'Auteroche");
 		assertEquals("Chappe", pn15.getFirstName());
-		assertEquals("d'Auteroche", pn15.getLastName());	
+		assertEquals("d'Auteroche", pn15.getLastName());
+
+		
+		final PersonName pn16 = PersonNameUtils.discoverPersonName("{Frans\\,A.} Janssen");
+		assertEquals("{Frans\\,A.}", pn16.getFirstName());
+		assertEquals("Janssen", pn16.getLastName());
+
+		
 		
 	}
 	
@@ -173,6 +180,7 @@ public class PersonNameUtilsTest {
 		 */
 		final List<PersonName> pn2 = PersonNameUtils.discoverPersonNames("Wolfgang van Briel and Ebbo Hahlweg and andere");
 		assertEquals(Arrays.asList(new PersonName("Wolfgang", "van Briel"), new PersonName("Ebbo", "Hahlweg"), new PersonName("", "andere")), pn2);
+		
 	}
 	
 	/**

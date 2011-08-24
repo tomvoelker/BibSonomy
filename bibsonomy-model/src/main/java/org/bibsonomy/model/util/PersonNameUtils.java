@@ -138,7 +138,8 @@ public class PersonNameUtils {
 			 * 3) {Long name of a Company}
 			 * 4) First {Last, Jr.} 
 			 * 5) {Last, Jr.}, First
-			 * 6) Last, Jr., First (TODO: we can't handle this case)
+			 * 6) {Frans\,A.} Janssen
+			 * 7) Last, Jr., First (TODO: we can't handle this case)
 			 * 
 			 * If the name starts with a brace and ends with a brace, we assume case 3).
 			 */
@@ -154,7 +155,7 @@ public class PersonNameUtils {
 				return personName;
 			}
 			/*
-			 * If the name contains a comma, we assume case 2).
+			 * If the name contains a comma, we check the other cases.
 			 */
 			final int indexOfComma = cleanedName.indexOf(PersonName.LAST_FIRST_DELIMITER);
 			if (indexOfComma >= 0) {
@@ -164,12 +165,10 @@ public class PersonNameUtils {
 					 */
 					if (indexOfLbr < indexOfComma && indexOfRbr > indexOfComma) {
 						/*
-						 * At least one comma inside the brace - use this part as
-						 * last name. 
-						 */
-						personName.setLastName(cleanedName.substring(indexOfLbr, indexOfRbr + 1).trim());
-						/*
-						 * if there is another comma right to the right brace, we split there
+						 * At least one comma inside the brace. 
+						 * If there is another comma to the right of the right 
+						 * brace, we split there.
+						 * 
 						 */
 						final int indexOf2ndComma = cleanedName.indexOf(',', indexOfRbr);
 						if (indexOf2ndComma > 0) {
@@ -177,12 +176,21 @@ public class PersonNameUtils {
 							 * case 5) {Last, Jr.}, First - split at 2nd comma
 							 */
 							personName.setFirstName(cleanedName.substring(indexOf2ndComma + 1).trim());
+							personName.setLastName(cleanedName.substring(indexOfLbr, indexOfRbr + 1).trim());
 						} else {
 							/*
-							 * something like case 4) - use everything inside the brace 
-							 * (including the brace) as last name
+							 * no comma next to the brace
+							 * case 4) First {Last, Jr.} 
+							 * or
+							 * case 6) {Frans\\,A.} Janssen
+							 * 
+							 * If the first space is to the left of {, we split there.
 							 */
-							personName.setFirstName(cleanedName.substring(0, indexOfLbr).trim());
+							final int indexOfSpace = cleanedName.lastIndexOf(' ', indexOfLbr);
+							final int split = indexOfSpace > 0 ? indexOfSpace : indexOfRbr + 1;  
+							
+							personName.setFirstName(cleanedName.substring(0, split).trim());
+							personName.setLastName(cleanedName.substring(split + 1).trim());
 						}
 						return personName;
 					}
