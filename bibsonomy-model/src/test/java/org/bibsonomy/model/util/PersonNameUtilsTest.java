@@ -148,6 +148,10 @@ public class PersonNameUtilsTest {
 		final PersonName pn13 = PersonNameUtils.discoverPersonName("Joseph John {Rocchio, Jr.}");
 		assertEquals("Joseph John", pn13.getFirstName());
 		assertEquals("{Rocchio, Jr.}", pn13.getLastName());	
+		
+		final PersonName pn14 = PersonNameUtils.discoverPersonName("{Rocchio, Jr.}, Joseph John");
+		assertEquals("Joseph John", pn14.getFirstName());
+		assertEquals("{Rocchio, Jr.}", pn13.getLastName());	
 	}
 	
 	/**
@@ -260,7 +264,7 @@ public class PersonNameUtilsTest {
 		assertEquals("ECML/PKDD’03 workshop proceedings", pn11.getLastName());
 		
 		/*
-		 * FIXME: we don't support lineage ... :-( 
+		 * FIXME: we don't support this kind of lineage ... :-( 
 		 */
 
 		final PersonName pn12 = PersonNameUtils.discoverPersonName("Rocchio, Jr., Joseph John");

@@ -136,8 +136,9 @@ public class PersonNameUtils {
 			 * 1) First (preLast) Last
 			 * 2) (preLast) Last, First
 			 * 3) {Long name of a Company}
-			 * 4) First {Last, Jr.} (TODO: we can't handle this case)
-			 * 5) Last, Jr., First (TODO: we can't handle this case)
+			 * 4) First {Last, Jr.} 
+			 * 5) {Last, Jr.}, First
+			 * 6) Last, Jr., First (TODO: we can't handle this case)
 			 * 
 			 * If the name starts with a brace and ends with a brace, we assume case 3).
 			 */
@@ -157,14 +158,34 @@ public class PersonNameUtils {
 			 */
 			final int indexOfComma = cleanedName.indexOf(PersonName.LAST_FIRST_DELIMITER);
 			if (indexOfComma >= 0) {
-				if (indexOfLbr < indexOfComma && indexOfRbr > indexOfComma) {
+				if (indexOfLbr >= 0 && indexOfRbr >= 0) {
 					/*
-					 * something like case 4) - use everything inside the brace 
-					 * (including the brace) as last name
+					 * we have two braces
 					 */
-					personName.setFirstName(cleanedName.substring(0, indexOfLbr).trim());
-					personName.setLastName(cleanedName.substring(indexOfLbr).trim());
-					return personName;
+					if (indexOfLbr < indexOfComma && indexOfRbr > indexOfComma) {
+						/*
+						 * At least one comma inside the brace - use this part as
+						 * last name. 
+						 */
+						personName.setLastName(cleanedName.substring(indexOfLbr, indexOfRbr + 1).trim());
+						/*
+						 * if there is another comma right to the right brace, we split there
+						 */
+						final int indexOf2ndComma = cleanedName.indexOf(',', indexOfRbr);
+						if (indexOf2ndComma > 0) {
+							/*
+							 * case 5) {Last, Jr.}, First - split at 2nd comma
+							 */
+							personName.setFirstName(cleanedName.substring(indexOf2ndComma + 1).trim());
+						} else {
+							/*
+							 * something like case 4) - use everything inside the brace 
+							 * (including the brace) as last name
+							 */
+							personName.setFirstName(cleanedName.substring(0, indexOfLbr).trim());
+						}
+						return personName;
+					}
 				}
 				/*
 				 * 2) We assume (preLast) Last, First.
