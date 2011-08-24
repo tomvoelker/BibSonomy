@@ -151,8 +151,11 @@ public class PersonNameUtilsTest {
 		
 		final PersonName pn14 = PersonNameUtils.discoverPersonName("{Rocchio, Jr.}, Joseph John");
 		assertEquals("Joseph John", pn14.getFirstName());
-		assertEquals("{Rocchio, Jr.}", pn13.getLastName());	
-		
+		assertEquals("{Rocchio, Jr.}", pn14.getLastName());	
+
+		final PersonName pn15 = PersonNameUtils.discoverPersonName("Chappe d'Auteroche");
+		assertEquals("Chappe", pn15.getFirstName());
+		assertEquals("d'Auteroche", pn15.getLastName());	
 		
 	}
 	

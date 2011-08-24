@@ -218,11 +218,11 @@ public class SimHash {
 
 	/**
 	 * July 2010: added "orComma" since we now support the "Last, First" name format 
-	 * where we need the comma in {@link #normalizePerson(String)} to extract the
+	 * where we need the comma in {@link #normalizePerson(PersonName)} to extract the
 	 * first and the last name.
 	 * 
-	 * @param str
-	 * @return
+	 * @param persons 
+	 * @return The normalized persons.
 	 */
 	public static String getNormalizedPersons(final List<PersonName> persons) {
 		if (!present(persons)) return "";
@@ -329,21 +329,18 @@ public class SimHash {
 		 * last name. We here re-parse such names to extract the "real" name.
 		 */
 		final String trimmedLast = last.trim();
-		final String trimmedBracketLast;
 		if (trimmedLast.startsWith("{") && trimmedLast.endsWith("}")) {
-			trimmedBracketLast = normalizePerson(PersonNameUtils.discoverPersonName(trimmedLast.substring(1, trimmedLast.length() - 1)));
-		} else {
-			trimmedBracketLast = trimmedLast;
-		}
+			return normalizePerson(PersonNameUtils.discoverPersonName(trimmedLast.substring(1, trimmedLast.length() - 1)));
+		} 
+		/*
+		 * We remove all unusual characters.
+		 */
+		final String cleanedLast = StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(trimmedLast).toLowerCase().trim();
 		/*
 		 * If we find a space character, we take the last part of the name
 		 */
-		final int pos = trimmedBracketLast.lastIndexOf(' ');
-		final String lastPart = pos > 0 ? trimmedBracketLast.substring(pos + 1) : trimmedBracketLast;
-		/*
-		 * Now we remove all remaining characters
-		 */
-		return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(lastPart).toLowerCase();
+		final int pos = cleanedLast.lastIndexOf(' ');
+		return pos > 0 ? cleanedLast.substring(pos + 1) : cleanedLast;
 	}
 
 }
