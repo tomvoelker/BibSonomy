@@ -181,9 +181,18 @@ public class PersonNameUtilsTest {
 		final List<PersonName> pn2 = PersonNameUtils.discoverPersonNames("Wolfgang van Briel and Ebbo Hahlweg and andere");
 		assertEquals(Arrays.asList(new PersonName("Wolfgang", "van Briel"), new PersonName("Ebbo", "Hahlweg"), new PersonName("", "andere")), pn2);
 
-		
+		/*
+		 * many braces ...
+		 */
 		final List<PersonName> pn3 = PersonNameUtils.discoverPersonNames("Barab{\\'a}si, Albert-L{\\'a}szl{\\'o} and Albert, R{\\'e}ka");
 		assertEquals(Arrays.asList(new PersonName("Albert-L{\\'a}szl{\\'o}", "Barab{\\'a}si"), new PersonName("R{\\'e}ka", "Albert")), pn3);
+		
+}
+	
+	private static void printPersonList(final List<PersonName> person) {
+		for (final PersonName personName : person) {
+			System.out.println(personName);
+		}
 	}
 	
 	/**
@@ -292,6 +301,14 @@ public class PersonNameUtilsTest {
 		final PersonName pn12 = PersonNameUtils.discoverPersonName("Rocchio, Jr., Joseph John");
 		assertEquals("Joseph John", pn12.getFirstName());
 		assertEquals("Rocchio, Jr.", pn12.getLastName());	
+		
+		/*
+		 * too many commas ...
+		 */
+		final List<PersonName> pn4 = PersonNameUtils.discoverPersonNames("K. Wilson and J. Brake and A. F. Lee, and R.M. Lambert,");
+		printPersonList(pn4);
+		assertEquals(Arrays.asList(new PersonName("K.", "Wilson"), new PersonName("J.", "Brake"), new PersonName("A. F.", "Lee"), new PersonName("R.M.", "Lambert")), pn4);
+	
 	}
 
 	/**
