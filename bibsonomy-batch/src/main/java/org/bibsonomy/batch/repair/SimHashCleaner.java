@@ -49,7 +49,7 @@ public class SimHashCleaner {
 	/*
 	 * read using
 	 
-	 sort -u /tmp/changed_person_names| grep -v -P "[0-9]{4}" | grep -v " and'" | grep -v " and '" | grep -v " and and " | grep -v " and  and " | less
+	 sort -u /tmp/changed_person_names| grep -v " and'" | grep -v " and '" | grep -v " and and " | grep -v " and  and " | less
 
 	 */
 	private static final String CHANGED_PERSON_NAMES_FILE = "/tmp/changed_person_names";
