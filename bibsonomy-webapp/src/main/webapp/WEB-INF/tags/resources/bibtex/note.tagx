@@ -10,14 +10,15 @@
     <!-- show only short notes completely -->
     <!-- TODO: make max note length a configurable constant -->	
 	<c:if test="${not empty post.resource.note}">		
-		<em> 			
+		<em> 
+			<c:set var="cleanedNote" value="${mtl:cleanBibtex(post.resource.note)}" />
 		    <c:choose>
-		      <c:when test="${fn:length(post.resource.note) lt 155}">
-			    ${mtl:cleanBibtex(post.resource.note)}
+		      <c:when test="${fn:length(cleanedNote) lt 155}">
+			    ${cleanedNote}
 		      </c:when>
 		      <c:otherwise>
-		        <c:out value="${fn:substring(mtl:cleanBibtex(post.resource.note), 0, 155)}" />
-		        <span class="info">...<div>${mtl:cleanBibtex(post.resource.note)}</div></span>
+		        <c:out value="${fn:substring(cleanedNote, 0, 155)}" />
+		        <span class="info">...<div>${cleanedNote}</div></span>
 		      </c:otherwise>
 		    </c:choose>
 		    .
