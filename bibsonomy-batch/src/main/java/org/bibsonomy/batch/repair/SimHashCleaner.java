@@ -46,9 +46,22 @@ public class SimHashCleaner {
 	private static final String QUERY_UPDATE_BIBTEX = "UPDATE bibtex SET simhash0 = ?, simhash1 = ?, simhash2 = ? WHERE content_id = ?";
 	private static final String QUERY_UPDATE_BIBHASH = "INSERT INTO bibhash (hash,ctr,type) VALUES (?,1,?) ON DUPLICATE KEY UPDATE ctr=ctr+1;";
 	
+	/*
+	 * read using
+	 
+	 sort -u /tmp/changed_person_names| grep -v -P "[0-9]{4}" | grep -v " and'" | grep -v " and '" | grep -v " and and " | grep -v " and  and " | less
+
+	 */
 	private static final String CHANGED_PERSON_NAMES_FILE = "/tmp/changed_person_names";
+	/*
+	 * should never happen: old hash is different in database:
+	 
+	 grep "^o/db:[0-9]" /tmp/SimHashCleaner.log | less -S
+	 
+	 */
 	private static final String LOG_FILE = "/tmp/" + SimHashCleaner.class.getSimpleName() + ".log";
 	
+
 	private final BufferedWriter changedPersonNameWriter;
 	private final BufferedWriter logWriter;
 	
@@ -278,14 +291,17 @@ public class SimHashCleaner {
 				buf.append("] ");
 			}
 			String newPersonString = PersonNameUtils.serializePersonNames(newPerson, false);
+			String newPersonString2 = PersonNameUtils.serializePersonNames(newPerson, true);
 			if (newPersonString == null) newPersonString = "";
+			if (newPersonString2 == null) newPersonString2 = "";
+			final String oldPersonString = oldPerson.replaceAll("\\s+", ""); 
 			/*
 			 * We check, if the plain author string changes - just to be sure, 
 			 * that don't do too much harm to people
 			 * 
 			 * (we ignore changes in whitespace)
 			 */
-			if (!oldPerson.replaceAll("\\s+", "").equals(newPersonString.replaceAll("\\s+", ""))) {
+			if (!oldPersonString.equals(newPersonString.replaceAll("\\s+", "")) && !oldPersonString.equals(newPersonString2.replaceAll("\\s+", ""))) {
 				if (!present(buf)) buf.append(personType + " was " + oldPerson + " and now is");
 				buf.append(" !!!" + newPersonString + "!!! ");
 				changedPersonNameWriter.write("'" + oldPerson + "' --> '" + newPersonString + "'\n");
