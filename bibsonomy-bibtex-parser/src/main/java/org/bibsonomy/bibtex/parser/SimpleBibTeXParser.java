@@ -73,14 +73,14 @@ public class SimpleBibTeXParser {
 	 * If tryParseAll is true, it holds all exceptions caught during the last parse process.
 	 */
 	private ParseException[] caughtExceptions;
-	
+
 	/**
 	 * inits the warnings list
 	 */
 	public SimpleBibTeXParser() {
 		this.warnings = new LinkedList<String>();
 	}
-	
+
 	/**
 	 * @return the tryParseAll
 	 */
@@ -209,7 +209,7 @@ public class SimpleBibTeXParser {
 					 */
 					continue;
 				}
-				
+
 				continue;
 			}
 			/*
@@ -223,7 +223,7 @@ public class SimpleBibTeXParser {
 				return result;
 			}
 		}
-		
+
 		this.setCaughtExceptions(parser.getExceptions());
 		return result;
 	}
@@ -257,7 +257,7 @@ public class SimpleBibTeXParser {
 			warnings.add(ee.getMessage());
 		}
 	}
-	
+
 	/**
 	 * This method does the main BibTeX work - after parsing it gets all field 
 	 * values from the parsed entry and fills the BibTex object.
@@ -267,7 +267,7 @@ public class SimpleBibTeXParser {
 	 */
 	protected BibTex fillBibtexFromEntry(final BibtexEntry entry) {
 		final BibTex bibtex = this.createPublication();
-		
+
 		/* ************************************************
 		 * process non standard bibtex fields 
 		 * ************************************************/
@@ -368,7 +368,7 @@ public class SimpleBibTeXParser {
 		 */
 		field = getValue(entry.getFieldValue("privnote"));
 		if (field != null) bibtex.setPrivnote(field);
-		
+
 		return bibtex;
 	}
 
@@ -409,7 +409,7 @@ public class SimpleBibTeXParser {
 	 */
 	private List<PersonName> createPersonString (final BibtexAbstractValue fieldValue) {
 		if (present(fieldValue) && fieldValue instanceof BibtexPersonList) {
-			
+
 			/*
 			 * cast into a person list and extract the persons
 			 */
@@ -437,8 +437,6 @@ public class SimpleBibTeXParser {
 	/**
 	 * Creates a person name for the given name.
 	 *  
-	 * TODO: add {@link BibtexPerson#getLineage()}
-	 * 
 	 * @param person
 	 * @return
 	 */
@@ -466,11 +464,19 @@ public class SimpleBibTeXParser {
 			/*
 			 * between first and last name
 			 */
-			final String preLast = person.getPreLast();
-			if (present(preLast)) {
-				personName.setLastName(preLast + " " + last);
+			final String preLast = present(person.getPreLast()) ? person.getPreLast() + " " : "";
+			/*
+			 * lineage = Jr. / Sr. (junior, senior) 
+			 */
+			final String lineage = person.getLineage();
+			if (present(lineage)) {
+				/*
+				 * we add the lineage after a comma and enclose the last name in brackets
+				 * 
+				 */
+				personName.setLastName("{" + preLast + last + ", " + lineage + "}");
 			} else {
-				personName.setLastName(last);
+				personName.setLastName(preLast + last);
 			}
 		}
 		return personName;

@@ -162,13 +162,24 @@ public class SimpleBibTeXParserTest {
 	public void testAuthorNormalization() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
 
+		final String author = "Knuth, D.E. and Max {Well, Jr.} and {Foo, Sr.}, Bar and Balby Marinho, Leandro";
+		
 		final BibTex parsedBibTeX = parser.parseBibTeX(
 				"@article{foo,\n" +
-				"  author = {Knuth, D.E.}\n" + 
+				"  author = {" + author + "}\n" + 
 				"}"
 		);
 
 		assertEquals("Knuth, D.E.", parsedBibTeX.getAuthor().get(0).toString());
+		assertEquals("Max", parsedBibTeX.getAuthor().get(1).getFirstName());
+		assertEquals("{Well, Jr.}", parsedBibTeX.getAuthor().get(1).getLastName());
+		assertEquals("Bar", parsedBibTeX.getAuthor().get(2).getFirstName());
+		assertEquals("{Foo, Sr.}", parsedBibTeX.getAuthor().get(2).getLastName());
+		assertEquals("Leandro", parsedBibTeX.getAuthor().get(3).getFirstName());
+		assertEquals("Balby Marinho", parsedBibTeX.getAuthor().get(3).getLastName());
+
+//		System.out.println(BibTexUtils.toBibtexString(parsedBibTeX));
+//		System.out.println(PersonNameUtils.discoverPersonNames(author));
 	}
 
 	/**
