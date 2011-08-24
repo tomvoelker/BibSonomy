@@ -104,7 +104,7 @@
 			    </c:when>
 		 		<c:otherwise>
 		       		Seems to be properly configured but could not physically be found. <br />
-		       		<a href="?action=generateIndex&amp;resource=${index.resourceName}">Generate a new <c:out value="${index.name}" /></a>
+		       		<a href="?action=generateIndex&amp;resource=${index.resourceName}">Generate a new <c:out value="${index.resourceName}" /></a>
 			   	</c:otherwise>
 			</c:choose>
 		</c:when>				
