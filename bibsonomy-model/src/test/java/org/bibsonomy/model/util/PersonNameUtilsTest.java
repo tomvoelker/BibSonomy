@@ -186,8 +186,14 @@ public class PersonNameUtilsTest {
 		 */
 		final List<PersonName> pn3 = PersonNameUtils.discoverPersonNames("Barab{\\'a}si, Albert-L{\\'a}szl{\\'o} and Albert, R{\\'e}ka");
 		assertEquals(Arrays.asList(new PersonName("Albert-L{\\'a}szl{\\'o}", "Barab{\\'a}si"), new PersonName("R{\\'e}ka", "Albert")), pn3);
+	
+		/*
+		 * and again braces ...
+		 */
+		final List<PersonName> pn4 = PersonNameUtils.discoverPersonNames("Müller, {Arne} and Meier, {Beate}");
+		assertEquals(Arrays.asList(new PersonName("{Arne}", "Müller"), new PersonName("{Beate}", "Meier")), pn4);
 		
-}
+	}
 	
 	private static void printPersonList(final List<PersonName> person) {
 		for (final PersonName personName : person) {
