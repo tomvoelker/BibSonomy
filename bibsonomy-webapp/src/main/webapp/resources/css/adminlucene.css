@@ -1,58 +1,51 @@
-
-.ls-description {
-	clear:left; float: left; width: 11em; margin: 2px;
-}
-.ls-value {
-	float: left; margin: 2px;
-}
-.cgrey {
-	color: grey;
-}
-.csilver {
-	color: silver;
-}
 #outerBox {
-    margin: 8px;
+	padding: 1em;	
 }
+
 .indexProperties {
-	width: 100%;
-	margin: .5%;
-	clear: left;
-	margin-bottom: 30px;
+	margin-bottom: 1em;
 }
 
-legend label {
-   font-weight: bold;
+.indexProperties table {
+	border-spacing: 0px 0px;
 }
-fieldset div {
-	font-size: 85%;
-}
-fieldset {
-    width: 47%;
-    overflow: hidden;
-    display: inline;
-    float: left;
-    margin-bottom: 0.7%;
-}
-#generalProperties fieldset {
-	width: 100%;
-}
-#generalProperties {
-}
-#bookmarkIndexProperties {
 
+.indexProperties table th {
+	border-top: 1px solid black;
 }
-#publicationIndexProperties {
 
+.indexProperties table th:last-child {
+	border-right: 1px solid black;
 }
-.adminNavi {
-	font-weight: bold; 
-	background: #eee; 
-	border-bottom: 1px solid #ccc;
-	border-top: 1px solid #ccc;
-	margin: 10px 10px 10px 10px;
-	padding: 0px 10px 0px 10px;
+
+.indexProperties table td, th {
+	padding: 0.5em;
+	border: 1px solid black;
+	border-right: none;
+	border-top: none;
 }
+
+.indexProperties .inactiveIndex td {
+	color: rgb(127, 127, 127);
+}
+
+.indexProperties table tr td:first-child {
+	background: #ccc;
+}
+
+.indexProperties table tr td:last-child {
+	border-right: 1px solid black !important;
+}
+
+.incativeIndex {
+	color: #CCC;
+}
+
+.indexProperties tr:first-child {
+	background: #369;
+	color: #fff;
+}
+
 .bluebox{
 	border: 1px solid #006699;
 	padding: 15px;
