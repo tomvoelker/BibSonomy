@@ -144,7 +144,7 @@ public class PersonNameUtils {
 			 * If the name starts with a brace and ends with a brace, we assume case 3).
 			 */
 			final int indexOfLbr = cleanedName.indexOf("{");
-			final int indexOfRbr = cleanedName.lastIndexOf("}");
+			final int indexOfRbr = cleanedName.indexOf("}");
 			if (indexOfLbr == 0 && indexOfRbr == cleanedName.length() - 1) {
 				/*
 				 * 3) {Long name of Company}
@@ -187,8 +187,8 @@ public class PersonNameUtils {
 							 * If the first space is to the left of {, we split there.
 							 */
 							final int indexOfSpace = cleanedName.lastIndexOf(' ', indexOfLbr);
-							final int split = indexOfSpace > 0 ? indexOfSpace : indexOfRbr + 1;  
-							
+							final int split = indexOfSpace > 0 ? indexOfSpace : indexOfRbr + 1;
+
 							personName.setFirstName(cleanedName.substring(0, split).trim());
 							personName.setLastName(cleanedName.substring(split + 1).trim());
 						}

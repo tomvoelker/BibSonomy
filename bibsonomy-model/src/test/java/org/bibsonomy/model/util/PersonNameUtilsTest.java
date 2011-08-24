@@ -180,7 +180,10 @@ public class PersonNameUtilsTest {
 		 */
 		final List<PersonName> pn2 = PersonNameUtils.discoverPersonNames("Wolfgang van Briel and Ebbo Hahlweg and andere");
 		assertEquals(Arrays.asList(new PersonName("Wolfgang", "van Briel"), new PersonName("Ebbo", "Hahlweg"), new PersonName("", "andere")), pn2);
+
 		
+		final List<PersonName> pn3 = PersonNameUtils.discoverPersonNames("Barab{\\'a}si, Albert-L{\\'a}szl{\\'o} and Albert, R{\\'e}ka");
+		assertEquals(Arrays.asList(new PersonName("Albert-L{\\'a}szl{\\'o}", "Barab{\\'a}si"), new PersonName("R{\\'e}ka", "Albert")), pn3);
 	}
 	
 	/**
