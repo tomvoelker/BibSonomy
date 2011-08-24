@@ -23,7 +23,6 @@ import org.bibsonomy.wiki.tags.HobbieTag;
 import org.bibsonomy.wiki.tags.InterestsTag;
 import org.bibsonomy.wiki.tags.PublicationListTag;
 import org.bibsonomy.wiki.tags.general.BirthdayTag;
-import org.bibsonomy.wiki.tags.general.EmailTag;
 import org.bibsonomy.wiki.tags.general.ImageTag;
 import org.bibsonomy.wiki.tags.general.InstitutionTag;
 import org.bibsonomy.wiki.tags.general.LocationTag;
@@ -37,8 +36,6 @@ import org.bibsonomy.wiki.tags.general.RegDateTag;
  * @version $Id$
  */
 public class WikiUtil extends AbstractWikiModel {
-
-	//TODO: Probably mixed up users (requestedUser and owner) in the tags.
 	
 	static {
 		/* About-Me Tags */
@@ -48,7 +45,7 @@ public class WikiUtil extends AbstractWikiModel {
 		register(new ProfessionTag());
 		register(new InstitutionTag());
 		register(new ImageTag());
-		register(new EmailTag());
+		//register(new EmailTag()); TODO: Is the email-tag really useful/necessary?
 		register(new RegDateTag());
 		
 		/* Other Tags */
