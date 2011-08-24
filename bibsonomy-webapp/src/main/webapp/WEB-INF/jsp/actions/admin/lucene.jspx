@@ -47,11 +47,11 @@
 		<h3><c:out value="${index.resourceName}" /> Index</h3>
 		<c:choose>
 			<c:when test="${!index.generatingIndex}">
-				<a onclick="javascript:generateIndex('${index.resourceName}')" href="#generateIndex">
-					<span style="width: 200px; height: 10px; border: 1px;">re-generate index</span>
-			  	</a>
 				<c:choose>
 			    <c:when test="${index.enabled}">
+			    	<a onclick="javascript:generateIndex('${index.resourceName}')" href="#generateIndex">
+						<span style="width: 200px; height: 10px; border: 1px;">re-generate index</span>
+			  		</a>
 			    	<table>
 			    		<tr>
 			    			<th>Index</th>
@@ -104,7 +104,7 @@
 			    </c:when>
 		 		<c:otherwise>
 		       		Seems to be properly configured but could not physically be found. <br />
-		       		<a href="?action=generateIndex&amp;resource=${index.resourceName}">Generate a new <c:out value="${index.resourceName}" /></a>
+		       		<a href="?action=generateIndex&amp;resource=${index.resourceName}">Generate a new <c:out value="${index.resourceName}" /> Index</a>
 			   	</c:otherwise>
 			</c:choose>
 		</c:when>				
