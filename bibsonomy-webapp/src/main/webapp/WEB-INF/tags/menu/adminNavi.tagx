@@ -10,7 +10,7 @@
 	
 	<a href="/admin_spammertags.jsp"><fmt:message key="navi.spammertags"/></a><c:out value=" "/>
 	
-	<a class="spammerKillerButton" title="killSpammer" href="javascript:location.href='/admin/spam?action=flag_spammer&amp;aclUserInfo='+encodeURIComponent(location.href.replace(/.*\//, ''))" onclick="return false;">SpammerKillerButton</a>
+	<a class="spammerKillerButton" title="killSpammer" href="javascript:location.href='/admin/spam?action=flag_spammer&amp;aclUserInfo='+encodeURIComponent(location.href.replace(/.*\\//, ''))" onclick="return false;">SpammerKillerButton</a>
 	
 	</p>
 </jsp:root>
