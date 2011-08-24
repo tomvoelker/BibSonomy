@@ -129,7 +129,6 @@ public class SimHashTest {
 		assertEquals("[b.informationstechnik]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames(" {Bundesamt für Sicherheit in der Informationstechnik}")));
 		assertEquals("[a.weiterbildung]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("{Arbeitsgruppe Hochschuldidaktische Weiterbildung}")));
 		assertEquals("[k.blom]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames(" {Katarina Blom}")));
-		assertEquals("[a.stolcke,c.wooters,d.jurafsky,e.fosler,g.tajchman,j.segal,n.morgan]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("D. Jurafsky and C. Wooters and J. Segal and A. Stolcke and E. Fosler and G. Tajchman andN. Morgan")));
 		assertEquals("[k.blom,others]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("Katarina Blom and others")));
 	}
 	

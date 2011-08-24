@@ -152,6 +152,8 @@ public class PersonNameUtilsTest {
 		final PersonName pn14 = PersonNameUtils.discoverPersonName("{Rocchio, Jr.}, Joseph John");
 		assertEquals("Joseph John", pn14.getFirstName());
 		assertEquals("{Rocchio, Jr.}", pn13.getLastName());	
+		
+		
 	}
 	
 	/**
@@ -160,9 +162,14 @@ public class PersonNameUtilsTest {
 	 */
 	@Test
 	public void testDiscoverPersonNames() {
-		final List<PersonName> pn = PersonNameUtils.discoverPersonNames("D.E. Knuth and and Foo Bar and   and");
+		final List<PersonName> pn = PersonNameUtils.discoverPersonNames("and D.E. Knuth and and Foo Bar and   and");
 		assertEquals(Arrays.asList(new PersonName("D.E.", "Knuth"), new PersonName("Foo", "Bar")), pn);
 		
+		/*
+		 * ensure that "andere" is not used as "and" delimiter
+		 */
+		final List<PersonName> pn2 = PersonNameUtils.discoverPersonNames("Wolfgang van Briel and Ebbo Hahlweg and andere");
+		assertEquals(Arrays.asList(new PersonName("Wolfgang", "van Briel"), new PersonName("Ebbo", "Hahlweg"), new PersonName("", "andere")), pn2);
 	}
 	
 	/**
@@ -220,6 +227,7 @@ public class PersonNameUtilsTest {
 		
 		assertEquals("Leandro Balby Marinho and Donald E. Knuth", PersonNameUtils.serializePersonNames(Arrays.asList(personNames), false));
 		assertEquals("Balby Marinho, Leandro and Knuth, Donald E.", PersonNameUtils.serializePersonNames(Arrays.asList(personNames), true));
+		
 	}
 	
 	/**

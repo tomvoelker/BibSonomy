@@ -43,10 +43,10 @@ public class PersonNameUtils {
 	 */
 	public static final String PERSON_NAME_DELIMITER = " and ";
 	/**
-	 * this one is used to extract person names where is is allowed that there
+	 * This one is used to extract person names where is is allowed that there
 	 * are several "and" delimiters in a row, e.g., "D.E. Knuth and and Foo Bar". 
 	 */
-	private static final String PERSON_NAME_DELIMITER_EXTRACTOR = "\\s+" + PERSON_NAME_DELIMITER.trim() + "\\s*?";
+	private static final String PERSON_NAME_DELIMITER_EXTRACTOR = "\\b" + PERSON_NAME_DELIMITER.trim() + "\\b";
 
 	/**
 	 * By default, all author and editor names are in "Last, First" order
