@@ -48,6 +48,7 @@
 						<property name="controllerBeanName" value="cvController" />
 						<property name="allowedFields">
 							<list>
+								<value>pubFormat</value>
 								<value>ckey</value>
 								<value>layout</value>
 								<value>isSave</value>

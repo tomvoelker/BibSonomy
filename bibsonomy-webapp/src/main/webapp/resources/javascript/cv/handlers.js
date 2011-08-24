@@ -13,15 +13,28 @@ $(function(){
 		$(this).hide();
 	});
 	
+	/*
+	 * Shortcuts for the textarea
+	 */
   	$('#wikiTextArea').keydown(function (e) {
 	  	if (e.ctrlKey) {
 	  		if(e.keyCode == 13) {
 	  			submitWiki('false');
+	  			return false;
 	  		} else if (e.keyCode == 16) {
 	  			submitWiki('true');
+	  			return false;
 	  		}
 		}
 	});
+  	
+  	/*
+  	 * Change publication format
+  	 */
+  	$('#layout').change(function(){
+  		alert($('#layout').val());
+  		formatPublications();
+  	});
   	
   	/*
   	 * Switches options hide and show details

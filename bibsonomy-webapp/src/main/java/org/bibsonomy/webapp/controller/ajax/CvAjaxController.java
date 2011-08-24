@@ -20,6 +20,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
 /**
+ * 
+ * Ajax controller for the CV page.
+ * - /ajax/cv
+ * 
  * @author Bernd
  * @version $Id$
  */
@@ -40,6 +44,12 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		log.debug("workOn CvAjaxController");
 		final Locale locale = requestLogic.getLocale();
 		this.wikiRenderer.setUser(logic.getAuthenticatedUser());
+		final String pubFormat = command.getPubFormat();		
+		
+		if(present(pubFormat)) {
+			return formatPublications(pubFormat);
+		}
+		
 		// -- Validating the request --
 		/*
 		 * Check whether user is logged in
@@ -60,11 +70,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		final String wikiText = command.getWikiText();
 		
 		if (present(isSave) && present(wikiText)) {
-			if("true".equals(isSave)) {
-				return saveWiki(command, wikiText);
-			}else if("false".equals(isSave)) {
-				return previewWiki(command, wikiText);
-			}
+			return renderWiki(command,wikiText,isSave);
 		}
 
 		if (present(layout)) {
@@ -74,20 +80,20 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		}
 		return handleError("error.405");
 	}
-
-	private View previewWiki(AjaxCvCommand command, String wikiText) {
-		log.debug("ajax -> previewCV");
-		command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
+	
+	private View formatPublications(String pubFormat) {
+		//TODO: get requested user wiki, render wiki with publications as pubformat and return the wiki
 		return Views.AJAX_XML;
 	}
 
-	private View saveWiki(AjaxCvCommand command, String wikiText) {
-		log.debug("ajax -> saveCV");
-
+	private View renderWiki(AjaxCvCommand command, String wikiText, String isSave) {
+		log.debug("ajax -> renderWiki");
+		
 		Wiki wiki = new Wiki();
 		wiki.setWikiText(wikiText);
-
-		logic.updateWiki(logic.getAuthenticatedUser().getName(), wiki);
+		if("true".equals(isSave)) {
+			logic.updateWiki(logic.getAuthenticatedUser().getName(), wiki);
+		}
 		command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		return Views.AJAX_XML;
 	}
@@ -121,7 +127,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 */
 	private String getXmlSucceeded(final AjaxCvCommand command, String... wikiText) {
 		if (wikiText.length > 1) {
-			return "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey><wikitext> " + Utils.escapeXmlChars(wikiText[0]) + "</wikitext><renderedwikitext> " + Utils.escapeXmlChars(wikiText[1]) + " </renderedwikitext></root>";
+			return "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey><wikitext> " + Utils.escapeXmlChars(wikiText[0]) + "</wikitext><renderedwikitext><![CDATA[ " + wikiText[1] + "]]></renderedwikitext></root>";
 		} else if (wikiText.length == 1) {
 			return "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey><wikitext> " + Utils.escapeXmlChars(wikiText[0]) + "</wikitext></root>";
 		} else {
