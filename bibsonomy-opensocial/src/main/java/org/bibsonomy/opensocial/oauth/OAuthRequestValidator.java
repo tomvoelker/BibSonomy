@@ -122,21 +122,21 @@ public class OAuthRequestValidator {
 		} catch (final OAuthProblemException e) {
 			throw e;
 		} catch (final OAuthException e) {
-			final OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
-			ope.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, e.getMessage());
-			throw ope;
+			throw this.createOAuthProblemException(e);
 		} catch (final IOException e) {
-			final OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
-			ope.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, e.getMessage());
-			throw ope;
+			throw this.createOAuthProblemException(e);
 		} catch (final URISyntaxException e) {
-			final OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
-			ope.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, e.getMessage());
-			throw ope;
+			throw this.createOAuthProblemException(e);
 		}
 		return getTokenFromVerifiedRequest(message, entry, authConsumer);
 	}
 
+
+	private OAuthProblemException createOAuthProblemException(final Exception e) {
+		final OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
+		ope.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, e.getMessage());
+		return ope;
+	}
 
 	/**
 	 * Verify request's body (http://oauth.googlecode.com/svn/spec/ext/body_hash/1.0/drafts/4/spec.html)
