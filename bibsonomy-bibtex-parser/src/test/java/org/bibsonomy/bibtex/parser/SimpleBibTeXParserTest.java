@@ -182,6 +182,24 @@ public class SimpleBibTeXParserTest {
 //		System.out.println(PersonNameUtils.discoverPersonNames(author));
 	}
 
+	@Test
+	public void testAuthorNormalization2() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		final String author = "Foo, Bar,";
+		
+		final BibTex parsedBibTeX = parser.parseBibTeX(
+				"@article{foo,\n" +
+				"  author = {" + author + "}\n" + 
+				"}"
+		);
+		assertEquals("bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'", parser.getWarnings().get(0));
+		
+
+//		System.out.println(BibTexUtils.toBibtexString(parsedBibTeX));
+//		System.out.println(PersonNameUtils.discoverPersonNames(author));
+	}
+	
 	/**
 	 * We disabled month normalization, this is documented here.
 	 * 
