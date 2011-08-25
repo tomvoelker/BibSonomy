@@ -177,4 +177,99 @@ $(window).load(function() {
 
 $(document).ready(function() {
 	addAutoCompleteSendTag($('#inpf'));
+
+	var hash = window.location.href.match("[a-z0-9]{32,32}");
+	if(hash == -1)
+		return;
+	$.ajax({
+		url: 'http://www.biblicious.org/json/bibtex/2'+hash,
+		async: false,
+		dataType: "jsonp",
+		success: function (data) {
+			if(data.items != undefined)
+				$.ajax({
+					url: 'http://www.biblicious.org/json/bibtex/1'+data.items[0].interHash,
+					async: false,
+					dataType: "jsonp",
+					success: function (data) {
+						if(data.items != undefined) 
+							buildGoodPostSuggestion(data);
+					}
+				});
+		}
+	});
 });
+
+function buildGoodPostSuggestion(json) {
+	var sortIndices = function(j) {
+		var h = new Array();
+		while(j.length > h.length)
+			h.push(h.length);
+		for(i = 0; i < j.length-1; i++) {
+			for(k = i+1; k < j.length-1; k++) 
+				if(j[h[i]] < j[h[k]]) {
+	     			h[i] = h[i]+h[k];
+					h[k] = h[i]-h[k];
+					h[i] = h[i]-h[k];
+				}
+		}
+		return h;
+	};
+	var arrayOfTagNodes = $("textarea, #postForm > input");
+	var arrayOfPartialTags = new Array();
+	var arrayOfTagMappings = new Array();
+
+	arrayOfTagMappings["post.resource.title"] = "label";
+	arrayOfTagMappings["post.description"] = "description";
+	for(var x = 0; arrayOfTagNodes.length > x; x++) {
+		var fieldValue = new Array();
+		if(arrayOfTagNodes[x].name.substring(0, "post.resource".length) == "post.resource"
+		|| arrayOfTagMappings[arrayOfTagNodes[x].name] != undefined) {
+			var suggestions = new Array();
+			var occurrences = new Array();
+			var k = -1;
+			for(var z = 0; json.items.length > z; z++) {
+					if(((p = json.items[z][arrayOfTagNodes[x].name.substring("post.resource".length+1, arrayOfTagNodes[x].name.length)]) != undefined 
+					|| (p = json.items[z][arrayOfTagMappings[arrayOfTagNodes[x].name]])) && p.length > 0) {
+						var name = "";
+						if(typeof p == "object") {
+							var d = " "; 
+							if(arrayOfTagNodes[x].name == "post.resource.author" 
+							|| arrayOfTagNodes[x].name == "post.resource.editor") {
+									d = ", ";
+									for(var m = 0; m < p.length; m++) {
+										var t = -1;
+										var prepend = ((t = p[m].lastIndexOf(" ")) > -1)?p[m].substring(t):"";
+										var appendix = p[m].substring(0, p[m].length-prepend.length)
+										name += ((prepend.length > 0)?prepend+",":"")+appendix+((p.length-(m+1) > 0)?" ":"");
+									}
+							}
+							p = p.join(d);
+						}
+						if((k = $.inArray(p, suggestions)) == -1) {
+							suggestions.push(p);
+							occurrences.push(1);
+							if(name.length)
+								fieldValue.push(name);
+						} else if(k > -1) {
+							occurrences[k]++;
+							k = -1;
+						}
+					}
+			}
+			if(!suggestions.length) continue;
+			var indices = sortIndices(occurrences);
+			var labels = $.map(suggestions, function(item, index) {
+					return{label:suggestions[indices[index]]+" ("+occurrences[indices[index]]+")",value:((fieldValue.length == 0)?suggestions[indices[index]]:fieldValue[indices[index]])}
+			});
+
+			$(arrayOfTagNodes[x]).bind("focus", function(){$(this).autocomplete("search", "");}).autocomplete(
+				{
+					source:labels,
+					minLength:0,
+					delay:0
+				}
+			);
+		}
+	}
+}
