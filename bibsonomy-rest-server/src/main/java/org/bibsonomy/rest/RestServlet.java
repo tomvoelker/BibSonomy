@@ -26,10 +26,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory;
-import org.bibsonomy.database.common.DBSessionFactory;
-import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.opensocial.oauth.OAuthRequestValidator;
@@ -96,6 +93,13 @@ public final class RestServlet extends HttpServlet {
 	private ShindigDBLogicUserInterfaceFactory oauthLogicFactory;
 
 	/**
+	 * @param oauthLogicFactory the oauthLogicFactory to set
+	 */
+	public void setOauthLogicFactory(final ShindigDBLogicUserInterfaceFactory oauthLogicFactory) {
+		this.oauthLogicFactory = oauthLogicFactory;
+	}
+
+	/**
 	 * Sets the base URL of the project. Typically "project.home" in the 
 	 * file <tt>project.properties</tt>. 
 	 * @param projectHome
@@ -124,27 +128,11 @@ public final class RestServlet extends HttpServlet {
 		additionalInfos.put(DOCUMENTS_PATH_KEY, documentPath); 
 	}
 	
-	@Override
-	public void init() throws ServletException {
-		super.init();
-		// initialize oauth database layer
-		try {
-			// TODO: configure via spring
-			final DBSessionFactory dbSessionFactory = new IbatisDBSessionFactory();
-			this.oauthValidator = OAuthRequestValidator.getInstance();
-			this.oauthLogicFactory = new ShindigDBLogicUserInterfaceFactory();
-			this.oauthLogicFactory.setDbSessionFactory(dbSessionFactory);
-			
-			final DBLogicNoAuthInterfaceFactory noAuthFactory = new DBLogicNoAuthInterfaceFactory();
-			noAuthFactory.setDbSessionFactory(dbSessionFactory);
-			this.oauthLogicFactory.setNoAuthLogicFactory(noAuthFactory);
-			
-			log.debug("Sucessfully enabled oauth database layer");
-		} catch (final Error e) {
-			// FIXME: IbatisDBSessionFactory doesn't have a JNDI datasource during tests
-			//        we have to springify the rest server to cleanly handle this case
-			log.error("Error initializing the oauth database layer (disabling oauth for the rest api)");
-		}
+	/**
+	 * @param oauthValidator the oauthValidator to set
+	 */
+	public void setOauthValidator(final OAuthRequestValidator oauthValidator) {
+		this.oauthValidator = oauthValidator;
 	}
 
 	/**
@@ -275,8 +263,7 @@ public final class RestServlet extends HttpServlet {
 			log.error(e.getMessage());
 			/*
 			 * sending new location
-			 * TODO: add date using  
-			 * 
+			 * TODO: add date using
 			 */
 			response.setHeader("Location", urlRenderer.createHrefForResource(e.getUserName(), e.getNewIntraHash()));
 			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
