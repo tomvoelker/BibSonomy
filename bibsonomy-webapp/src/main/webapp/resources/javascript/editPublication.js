@@ -178,17 +178,17 @@ $(window).load(function() {
 $(document).ready(function() {
 	addAutoCompleteSendTag($('#inpf'));
 
-	var hash = window.location.href.match("[a-z0-9]{32,32}");
+	var hash = window.location.href.match("[a-z0-9]{32}");
 	if(hash == -1)
 		return;
 	$.ajax({
-		url: 'http://www.biblicious.org/json/bibtex/2'+hash,
+		url: '/json/bibtex/2'+hash,
 		async: false,
 		dataType: "jsonp",
 		success: function (data) {
 			if(data.items != undefined)
 				$.ajax({
-					url: 'http://www.biblicious.org/json/bibtex/1'+data.items[0].interHash,
+					url: '/json/bibtex/1'+data.items[0].interHash,
 					async: false,
 					dataType: "jsonp",
 					success: function (data) {
@@ -205,8 +205,8 @@ function buildGoodPostSuggestion(json) {
 		var h = new Array();
 		while(j.length > h.length)
 			h.push(h.length);
-		for(i = 0; i < j.length-1; i++) {
-			for(k = i+1; k < j.length-1; k++) 
+		for(i = 0; i < j.length; i++) {
+			for(k = i+1; k < j.length; k++) 
 				if(j[h[i]] < j[h[k]]) {
 	     			h[i] = h[i]+h[k];
 					h[k] = h[i]-h[k];
@@ -215,7 +215,7 @@ function buildGoodPostSuggestion(json) {
 		}
 		return h;
 	};
-	var arrayOfTagNodes = $("textarea, #postForm > input");
+	var arrayOfTagNodes = $("textarea, #postForm > textarea, input");
 	var arrayOfPartialTags = new Array();
 	var arrayOfTagMappings = new Array();
 
@@ -239,9 +239,9 @@ function buildGoodPostSuggestion(json) {
 									d = ", ";
 									for(var m = 0; m < p.length; m++) {
 										var t = -1;
-										var prepend = ((t = p[m].lastIndexOf(" ")) > -1)?p[m].substring(t):"";
+										var prepend = ((t = (p[m].lastIndexOf(" ")+1)) > -1)?p[m].substring(t):"";
 										var appendix = p[m].substring(0, p[m].length-prepend.length)
-										name += ((prepend.length > 0)?prepend+",":"")+appendix+((p.length-(m+1) > 0)?" ":"");
+										name += ((prepend.length > 0)?prepend+",":"")+appendix;
 									}
 							}
 							p = p.join(d);
