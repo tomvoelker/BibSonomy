@@ -25,32 +25,33 @@ import org.bibsonomy.util.SortUtils;
  * 
  * @author philipp
  * @author Bernd
- * @version $Id$
+ * @version $Id: PublicationListTag.java,v 1.9 2011-08-22 13:16:07 nosebrain Exp
+ *          $
  */
 public class PublicationListTag extends AbstractTag {
 
 	private static final String DEFAULT_LAYOUT = "plain";
 
 	private static final Log log = LogFactory.getLog(PublicationListTag.class);
-	
-	private static final String NAME = "tags";
+
+	private static final String TAGS = "tags";
 	private static final String LAYOUT = "layout";
 	private static final String KEYS = "keys";
 	private static final String ORDER = "order";
-	private static final Set<String> ALLOWED_SORTPAGE_JABREF_LAYOUTS = new HashSet<String>(Arrays.asList("year","author","title")) ;
-	private static final Set<String> ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS = new HashSet<String>(Arrays.asList("asc","desc")) ;
+	private static final Set<String> ALLOWED_SORTPAGE_JABREF_LAYOUTS = new HashSet<String>(Arrays.asList("year", "author", "title"));
+	private static final Set<String> ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS = new HashSet<String>(Arrays.asList("asc", "desc"));
 
 	private static final String TAG_NAME = "publications";
 
-	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(NAME, LAYOUT, KEYS, ORDER));
-	
+	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(TAGS, LAYOUT, KEYS, ORDER));
+
 	/**
 	 * sets the tag name
 	 */
 	public PublicationListTag() {
 		super(TAG_NAME);
 	}
-	
+
 	@Override
 	protected StringBuilder render() {
 		final TagNode node = this;
@@ -59,22 +60,22 @@ public class PublicationListTag extends AbstractTag {
 		final Set<String> keysSet = tagAtttributes.keySet();
 
 		final String tags;
-		if (!keysSet.contains("tags")) {
+		if (!keysSet.contains(TAGS)) {
 			tags = "myown"; // TODO: should be MyOwnSystemTag.NAME but adding
 							// dependency to database module only for accessing
 							// the constant?!
 		} else {
-			tags = tagAtttributes.get("tags");
+			tags = tagAtttributes.get(TAGS);
 		}
 
 		final String requestedUserName = this.requestedUser.getName();
 		// <!-- onchange='changeCitationFormat()' -->
-		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format (<a href='/export/user/"
-						+ requestedUserName
-						+ "/myown' title='show all export formats (including RSS, CVS, ...)'>all formats</a>): <select size='1' name='layout' id='layout'><option value='plain'>plain</option><option value='harvardhtml'>harvard</option><option value='din1505'>DIN1505</option><option value='simplehtml'>simpleHTML</option></select></form></span></div>");
+		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format (<a href='/export/user/" + requestedUserName + "/" +tags + "' title='show all export formats (including RSS, CVS, ...)''>all formats</a>): <select size='1' name='layout' class='layout'>");
+		renderedHTML.append("<option value='plain'>plain</option><option value='harvardhtml'>harvard</option><option value='din1505'>DIN1505</option><option value='simplehtml'>simpleHTML</option>");
+		renderedHTML.append("</select><input type='hidden' value='"+tags+"' /></form></span></div>");
 
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.USER, requestedUserName, Collections.singletonList(tags), null, null, null, 0, Integer.MAX_VALUE, null);
-		if (checkSort(tagAtttributes)) {
+		if (this.checkSort(tagAtttributes)) {
 			BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(tagAtttributes.get(KEYS)), SortUtils.parseSortOrders(tagAtttributes.get(ORDER)));
 		}
 
@@ -96,7 +97,7 @@ public class PublicationListTag extends AbstractTag {
 	}
 
 	private boolean checkSort(final Map<String, String> tagAtttributes) {
-		return ALLOWED_SORTPAGE_JABREF_LAYOUTS.contains(tagAtttributes.get(KEYS)) && ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS.contains(tagAtttributes.get(ORDER)) ? true: false;
+		return ALLOWED_SORTPAGE_JABREF_LAYOUTS.contains(tagAtttributes.get(KEYS)) && ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS.contains(tagAtttributes.get(ORDER)) ? true : false;
 	}
 
 	@Override
