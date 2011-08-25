@@ -49,41 +49,43 @@
 			</map>
 		</property>
 	</bean>
-
-
-	<!--  #################### controller #################### -->
+	
 	<!-- used for making shindig's beans available to the spring configuration -->
 	<bean id="guiceBeanImporter" class="org.bibsonomy.webapp.util.opensocial.GuiceBeanImporter" init-method="init"/>
 
 	<!-- database interface for accessing token information -->	
 	<bean id="oauthDataStore" factory-bean="guiceBeanImporter" factory-method="getGuiceBean">
-		<constructor-arg value="org.apache.shindig.social.opensocial.oauth.OAuthDataStore"/>
+		<constructor-arg value="org.apache.shindig.social.opensocial.oauth.OAuthDataStore" />
 	</bean>
+	
+	<!-- TODO: application-context.xml in opensocial also defines an oauthLogicFactory -->
+	
+	<bean id="oauthLogicFactory" class="org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory">
+		<property name="dbSessionFactory" ref="dbSessionFactory" />
+	</bean>
+	
+	<bean id="oauthRequestValidator" class="org.bibsonomy.opensocial.oauth.OAuthRequestValidator">
+		<property name="store" ref="oauthDataStore" />
+	</bean>	
+
+	<!--  #################### controller #################### -->
 	
 	<bean id="containerPageController" class="org.bibsonomy.webapp.controller.opensocial.ContainerPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
+		<property name="logic" ref="logic" />
+		<property name="userSettings" ref="userSettings" />
 	</bean>
 	
-	<bean id="oAuthAccessTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthAccessTokenController" scope="request">
+	<bean id="oAuthController" class="org.bibsonomy.webapp.controller.opensocial.OAuthProtocolController" abstract="true">
 		<property name="dataStore" ref="oauthDataStore"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="responseLogic" ref="responseLogic"/>
 		<property name="projectHome"><value>${project.home}</value></property>
 	</bean>
 	
-	<bean id="oAuthRequestTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthRequestTokenController" scope="request">
-		<property name="dataStore" ref="oauthDataStore"/>
-		<property name="requestLogic" ref="requestLogic"/>
-		<property name="responseLogic" ref="responseLogic"/>
-		<property name="projectHome"><value>${project.home}</value></property>
-	</bean>
+	<bean id="oAuthAccessTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthAccessTokenController" scope="request" parent="oAuthController" />
 	
-	<bean id="oAuthAuthorizeController" class="org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController" scope="request">
-		<property name="dataStore" ref="oauthDataStore"/>
-		<property name="requestLogic" ref="requestLogic"/>
-		<property name="responseLogic" ref="responseLogic"/>
-		<property name="projectHome"><value>${project.home}</value></property>
-	</bean>
+	<bean id="oAuthRequestTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthRequestTokenController" scope="request" parent="oAuthController" />
+	
+	<bean id="oAuthAuthorizeController" class="org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController" scope="request" parent="oAuthController" />
 	
 </beans>

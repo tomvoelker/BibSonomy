@@ -47,6 +47,10 @@
 		<property name="documentPath" value="${project.document.path}"/>
 		<property name="logicInterfaceFactory" ref="restLogicFactory"/>
 		<property name="urlRenderer" ref="restUrlRenderer"/>
+		
+		<!-- open social stuff -->
+		<property name="oauthValidator" ref="oauthRequestValidator" />
+		<property name="oauthLogicFactory" ref="oauthLogicFactory" />
 	</bean>
 	
 </beans>
