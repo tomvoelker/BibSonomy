@@ -19,11 +19,6 @@ public class AjaxCvCommand extends AjaxCommand {
 	 * 
 	 */
 	private String wikiText;
-	
-	/**
-	 * publication format
-	 */
-	private String pubFormat;
 
 	/**
 	 * @return the layout
@@ -65,20 +60,6 @@ public class AjaxCvCommand extends AjaxCommand {
 	 */
 	public void setWikiText(String wikiText) {
 		this.wikiText = wikiText;
-	}
-
-	/**
-	 * @return the pubFormat
-	 */
-	public String getPubFormat() {
-		return pubFormat;
-	}
-
-	/**
-	 * @param pubFormat the pubFormat to set
-	 */
-	public void setPubFormat(String pubFormat) {
-		this.pubFormat = pubFormat;
 	}
 
 }

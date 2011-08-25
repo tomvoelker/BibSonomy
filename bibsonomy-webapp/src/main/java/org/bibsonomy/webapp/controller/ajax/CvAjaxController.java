@@ -44,11 +44,6 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		log.debug("workOn CvAjaxController");
 		final Locale locale = requestLogic.getLocale();
 		this.wikiRenderer.setUser(logic.getAuthenticatedUser());
-		final String pubFormat = command.getPubFormat();		
-		
-		if(present(pubFormat)) {
-			return formatPublications(pubFormat);
-		}
 		
 		// -- Validating the request --
 		/*
@@ -79,11 +74,6 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 			} 
 		}
 		return handleError("error.405");
-	}
-	
-	private View formatPublications(String pubFormat) {
-		//TODO: get requested user wiki, render wiki with publications as pubformat and return the wiki
-		return Views.AJAX_XML;
 	}
 
 	private View renderWiki(AjaxCvCommand command, String wikiText, String isSave) {

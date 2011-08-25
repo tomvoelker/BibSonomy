@@ -31,10 +31,9 @@ $(function(){
   	/*
   	 * Change publication format
   	 */
-  	$('#layout').change(function(){
-  		alert($('#layout').val());
-  		formatPublications();
-  	});
+  	$('select.layout').change(function(){
+  		formatPublications(this);
+  	})
   	
   	/*
   	 * Switches options hide and show details

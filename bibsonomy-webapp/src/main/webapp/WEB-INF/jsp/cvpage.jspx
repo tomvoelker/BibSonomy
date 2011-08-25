@@ -68,6 +68,7 @@
 			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
 			<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
 		  		<input type="text" size="20" name="tag" id="inpf"/>
+		  		<input type="hidden" id="reqUser" value="${command.requestedUser}" />
 			</form>
     	</jsp:attribute>
 		
