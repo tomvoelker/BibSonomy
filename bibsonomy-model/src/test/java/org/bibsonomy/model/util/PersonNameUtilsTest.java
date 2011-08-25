@@ -251,6 +251,8 @@ public class PersonNameUtilsTest {
 	
 	/**
 	 * For these names we guarantee that our serialization does not change them.
+	 * <br/>
+	 * This assumption is stronger than the one in {@link #testDiscoverSerializeDiscoverSerialize()}.
 	 */
 	@Test
 	public void testDiscoverSerialize() {
@@ -263,14 +265,14 @@ public class PersonNameUtilsTest {
 		ds("{Rocchio, Jr.}, Joseph John");
 		ds("Barab{\\'a}si, Albert-L{\\'a}szl{\\'o} and Albert, R{\\'e}ka");
 		ds("Müller, {Arne} and Meier, {Beate}");
-		ds("de la Vall{'e}e Poussin, Charles Louis Xavier Joseph");		
+		ds("de la Vall{'e}e Poussin, Charles Louis Xavier Joseph");
+		ds("Foobar, Hanand");
 	}
 	
 	/**
 	 * Discovers the persons in p, serializes them and asserts that the result
 	 * is the same as p. 
-	 * <br/>
-	 * See also {@link #testDiscoverSerializeDiscoverSerialize()}.
+	 * 
 	 * 
 	 * @param p
 	 */
@@ -308,6 +310,7 @@ public class PersonNameUtilsTest {
 		dsds("Chappe d'Auteroche");
 		dsds("{Frans\\,A.} Janssen");
 		dsds("A. Foo and B. Bar and others");
+		dsds("Hanand Foobar");
 	}
 	
 	/**
@@ -317,9 +320,16 @@ public class PersonNameUtilsTest {
 	 * @param p
 	 */
 	private void dsds(final String p) {
-		final String s = PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(p));
-		System.out.println(p + " --> " + s);
-		assertEquals("Serialization of '" + p + "' failed.", s, PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(s)));
+		/*
+		 * We first check the "Last, First" format ... 
+		 */
+		final String lastFirst = PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(p), true);
+		assertEquals("Serialization of '" + p + "' failed.", lastFirst, PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(lastFirst), true));
+		/*
+		 * ... and then the "First Last" format. 
+		 */
+		final String firstLast = PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(p), false);
+		assertEquals("Serialization of '" + p + "' failed.", firstLast, PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(lastFirst), false));
 	}
 	
 	
