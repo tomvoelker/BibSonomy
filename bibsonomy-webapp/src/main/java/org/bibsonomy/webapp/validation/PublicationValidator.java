@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.validation;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.model.BibTex;
@@ -21,6 +22,9 @@ import bibtex.parser.ParseException;
  */
 public class PublicationValidator implements Validator<BibTex> {
 	
+	private static final String PARSE_ERROR_MESSAGE_KEY = "error.parse.bibtex.failed";
+	private static final String DEFAULT_PARSE_ERROR_MESSAGE = "Error parsing your post:\n\n{0}\n\nMessage was: {1}";
+
 	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean supports(final Class clazz) {
@@ -48,33 +52,7 @@ public class PublicationValidator implements Validator<BibTex> {
 //				errors.rejectValue("post.resource.url", "error.field.valid.url");
 //			}
 
-			/*
-			 * entrytype
-			 */
-			if (!present(bibtex.getEntrytype()) || containsWhiteSpace(bibtex.getEntrytype())) {
-				errors.rejectValue("entrytype", "error.field.valid.entrytype");
-			}
-			/*
-			 * key
-			 */
-			if (!present(bibtex.getBibtexKey()) || containsWhiteSpace(bibtex.getBibtexKey())) {
-				errors.rejectValue("bibtexKey", "error.field.valid.bibtexKey");
-			}
-			/*
-			 * year
-			 */
-			if (!present(bibtex.getYear())) {
-				errors.rejectValue("year", "error.field.valid.year");
-			}
-			/*
-			 * author/editor
-			 */
-			if (!present(bibtex.getAuthor()) && !present(bibtex.getEditor())) {
-				errors.rejectValue("author", "error.field.valid.authorOrEditor");
-				// one error is enough
-				//errors.rejectValue("post.resource.editor", "error.field.valid.authorOrEditor");
-			}
-
+	
 			/*
 			 * initialize parser
 			 * 
@@ -118,13 +96,57 @@ public class PublicationValidator implements Validator<BibTex> {
 				/*
 				 * parsing failed
 				 */
-				errors.reject("error.parse.bibtex.failed", new Object[]{bibTexAsString, ex.getMessage()}, "Error parsing your post:\n\n{0}\n\nMessage was: {1}");
+				errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, ex.getMessage()}, DEFAULT_PARSE_ERROR_MESSAGE);
 			} catch (IOException ex) {
 				/*
 				 * parsing failed
 				 */
-				errors.reject("error.parse.bibtex.failed", new Object[]{bibTexAsString, ex.getMessage()}, "Error parsing your post:\n\n{0}\n\nMessage was: {1}");
+				errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, ex.getMessage()}, DEFAULT_PARSE_ERROR_MESSAGE);
 			}
+			/*
+			 * add parser warnings to errors
+			 */
+			final List<String> warnings = parser.getWarnings();
+			if (present(warnings)) {
+				errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, warnings.toString()}, DEFAULT_PARSE_ERROR_MESSAGE);
+			}
+			
+			/*
+			 * We add the "simple" checks after replacing the publication with
+			 * the parsed one to ensure we catch empty fields.
+			 *  
+			 * (reason: the BibTeX parser does not recognize certain broken 
+			 * author names and then removes them, e.g., "Foo, Bar," resulting
+			 * in no errors but an empty author field.)  
+			 */
+			
+			/*
+			 * entrytype
+			 */
+			if (!present(bibtex.getEntrytype()) || containsWhiteSpace(bibtex.getEntrytype())) {
+				errors.rejectValue("entrytype", "error.field.valid.entrytype");
+			}
+			/*
+			 * key
+			 */
+			if (!present(bibtex.getBibtexKey()) || containsWhiteSpace(bibtex.getBibtexKey())) {
+				errors.rejectValue("bibtexKey", "error.field.valid.bibtexKey");
+			}
+			/*
+			 * year
+			 */
+			if (!present(bibtex.getYear())) {
+				errors.rejectValue("year", "error.field.valid.year");
+			}
+			/*
+			 * author/editor
+			 */
+			if (!present(bibtex.getAuthor()) && !present(bibtex.getEditor())) {
+				errors.rejectValue("author", "error.field.valid.authorOrEditor");
+				// one error is enough
+				//errors.rejectValue("post.resource.editor", "error.field.valid.authorOrEditor");
+			}
+
 		}
 	}
 	
