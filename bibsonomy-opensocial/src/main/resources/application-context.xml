@@ -8,16 +8,10 @@
 
 	<!-- factory beans -->
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory" />
-	
-	<!-- factory bean for anonymous login -->
-	<bean id="noAuthLogicFactory" class="org.bibsonomy.database.DBLogicNoAuthInterfaceFactory">
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-	</bean>
 
 	<!-- factory bean which takes the security token's viewer id as login user name -->
 	<bean id="shindigLogicFactory" class="org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory">
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-		<property name="noAuthLogicFactory" ref="noAuthLogicFactory"/>
 	</bean>
 
 	<!--+
@@ -30,11 +24,4 @@
 	<bean id="mockupPersonSpi" class="org.bibsonomy.opensocial.spi.MockPersonSpi"/>
 	
 	<bean id="oAuthDataStore" class="org.bibsonomy.opensocial.spi.MockOAuthDataStore"/>
-
-	<!--+
-		| imports
-		+-->
-	<!-- 
-	<import resource="security-context.xml"/>
-	 -->
 </beans>

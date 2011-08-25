@@ -31,7 +31,6 @@ import org.apache.shindig.social.core.oauth.OAuthSecurityToken;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.opensocial.oauth.database.BibSonomyOAuthDataStore;
 
 /**
  * Utility class for verifying OAuth signed requests
@@ -69,18 +68,6 @@ public class OAuthRequestValidator {
 
 	/** access BibSonomy's token store */
 	private OAuthDataStore store;
-	
-	/** singleton pattern */
-	private static OAuthRequestValidator instance;
-	
-	public static OAuthRequestValidator getInstance() {
-		if (!present(instance)) {
-			OAuthDataStore dataStore = BibSonomyOAuthDataStore.getInstance();
-			instance = new OAuthRequestValidator();
-			instance.setStore(dataStore);
-		}
-		return instance;
-	}
 
 	/**
 	 * Handle an incoming OAuth request:
@@ -90,8 +77,8 @@ public class OAuthRequestValidator {
 	 * @param request
 	 * @return
 	 */
-	public SecurityToken getSecurityTokenFromRequest(HttpServletRequest request) {
-		OAuthMessage message = OAuthServlet.getMessage(request, null);
+	public SecurityToken getSecurityTokenFromRequest(final HttpServletRequest request) {
+		final OAuthMessage message = OAuthServlet.getMessage(request, null);
 		if (!present(getParameter(message, OAuth.OAUTH_SIGNATURE))) {
 			// Is not an oauth request
 			return null;
@@ -99,13 +86,13 @@ public class OAuthRequestValidator {
 		
 		// verify the request's body
 		// FIXME: this is not implemented, as we would 'consume' the request's input stream
-		String bodyHash = getParameter(message, OAuthConstants.OAUTH_BODY_HASH);
+		final String bodyHash = getParameter(message, OAuthConstants.OAUTH_BODY_HASH);
 		if (present(bodyHash)) {
 			// verifyBodyHash(request, bodyHash);
 		}
 		try {
 			return verifyMessage(message);
-		} catch (OAuthProblemException oauthException) {
+		} catch (final OAuthProblemException oauthException) {
 			throw new RuntimeException("OAuth Authentication Failure", oauthException);
 		}
 	}
@@ -117,12 +104,12 @@ public class OAuthRequestValidator {
 	 * @return
 	 * @throws OAuthProblemException
 	 */
-	protected SecurityToken verifyMessage(OAuthMessage message) throws OAuthProblemException {
+	protected SecurityToken verifyMessage(final OAuthMessage message) throws OAuthProblemException {
 		// retrieve the corresponding token from the token database
-		OAuthEntry entry = getOAuthEntry(message);
-		OAuthConsumer authConsumer = getConsumer(message);
+		final OAuthEntry entry = getOAuthEntry(message);
+		final OAuthConsumer authConsumer = getConsumer(message);
 
-		OAuthAccessor accessor = new OAuthAccessor(authConsumer);
+		final OAuthAccessor accessor = new OAuthAccessor(authConsumer);
 
 		if (present(entry)) {
 			accessor.tokenSecret = entry.getTokenSecret();
@@ -130,20 +117,20 @@ public class OAuthRequestValidator {
 		}
 
 		try {
-			OAuthValidator validator = new SimpleOAuthValidator();
+			final OAuthValidator validator = new SimpleOAuthValidator();
 			validator.validateMessage(message, accessor);
-		} catch (OAuthProblemException e) {
+		} catch (final OAuthProblemException e) {
 			throw e;
-		} catch (OAuthException e) {
-			OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
+		} catch (final OAuthException e) {
+			final OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
 			ope.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, e.getMessage());
 			throw ope;
-		} catch (IOException e) {
-			OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
+		} catch (final IOException e) {
+			final OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
 			ope.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, e.getMessage());
 			throw ope;
-		} catch (URISyntaxException e) {
-			OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
+		} catch (final URISyntaxException e) {
+			final OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
 			ope.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, e.getMessage());
 			throw ope;
 		}
@@ -158,20 +145,20 @@ public class OAuthRequestValidator {
 	 * @param oauthBodyHash
 	 * @throws AccessDeniedException
 	 */
-	public static void verifyBodyHash(HttpServletRequest request, String oauthBodyHash) throws AccessDeniedException {
+	public static void verifyBodyHash(final HttpServletRequest request, final String oauthBodyHash) throws AccessDeniedException {
 		// we are doing body hash signing which is not permitted for form-encoded data
 		if (request.getContentType() != null && request.getContentType().contains(OAuth.FORM_ENCODED)) {
 			throw new AccessDeniedException("Cannot use oauth_body_hash with a Content-Type of application/x-www-form-urlencoded");
 
 		} else {
 			try {
-				byte[] rawBody = readBody(request);
-				byte[] received = Base64.decodeBase64(CharsetUtil.getUtf8Bytes(oauthBodyHash));
-				byte[] expected = DigestUtils.sha(rawBody);
+				final byte[] rawBody = readBody(request);
+				final byte[] received = Base64.decodeBase64(CharsetUtil.getUtf8Bytes(oauthBodyHash));
+				final byte[] expected = DigestUtils.sha(rawBody);
 				if (!Arrays.equals(received, expected)) {
 					throw new AccessDeniedException("oauth_body_hash failed verification");
 				}
-			} catch (IOException ioe) {
+			} catch (final IOException ioe) {
 				throw new AccessDeniedException("Unable to read content body for oauth_body_hash verification");
 			}
 		}
@@ -189,7 +176,7 @@ public class OAuthRequestValidator {
 	 * @return
 	 * @throws OAuthProblemException
 	 */
-	protected SecurityToken getTokenFromVerifiedRequest(OAuthMessage message, OAuthEntry entry, OAuthConsumer authConsumer) throws OAuthProblemException {
+	protected SecurityToken getTokenFromVerifiedRequest(final OAuthMessage message, final OAuthEntry entry, final OAuthConsumer authConsumer) throws OAuthProblemException {
 		if (entry != null) {
 			// sucessfully authenticated 3-legged request   
 			return new OAuthSecurityToken(entry.getUserId(), entry.getCallbackUrl(), entry.getAppId(),
@@ -197,7 +184,7 @@ public class OAuthRequestValidator {
 		} else {
 			// 2-legged request
 			// TODO: not implemented
-			String userId = getParameter(message, REQUESTOR_ID_PARAM);
+			final String userId = getParameter(message, REQUESTOR_ID_PARAM);
 			return store.getSecurityTokenForConsumerRequest(authConsumer.consumerKey, userId);
 		}
 	}
@@ -209,17 +196,17 @@ public class OAuthRequestValidator {
 	 * @return
 	 * @throws OAuthProblemException
 	 */
-	protected OAuthEntry getOAuthEntry(OAuthMessage message) throws OAuthProblemException {
+	protected OAuthEntry getOAuthEntry(final OAuthMessage message) throws OAuthProblemException {
 		OAuthEntry entry = null;
-		String token = getParameter(message, OAuth.OAUTH_TOKEN);
+		final String token = getParameter(message, OAuth.OAUTH_TOKEN);
 		if (present(token))  {
 			entry = store.getEntry(token);
 			if (entry == null) {
-				OAuthProblemException e = new OAuthProblemException(OAuth.Problems.TOKEN_REJECTED);
+				final OAuthProblemException e = new OAuthProblemException(OAuth.Problems.TOKEN_REJECTED);
 				e.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, "cannot find token");
 				throw e;
 			} else if (entry.getType() != OAuthEntry.Type.ACCESS) {
-				OAuthProblemException e = new OAuthProblemException(OAuth.Problems.TOKEN_REJECTED);
+				final OAuthProblemException e = new OAuthProblemException(OAuth.Problems.TOKEN_REJECTED);
 				e.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, "token is not an access token");
 				throw e;
 			} else if (entry.isExpired()) {
@@ -236,9 +223,9 @@ public class OAuthRequestValidator {
 	 * @return
 	 * @throws OAuthProblemException
 	 */
-	protected OAuthConsumer getConsumer(OAuthMessage message) throws OAuthProblemException {
-		String consumerKey = getParameter(message, OAuth.OAUTH_CONSUMER_KEY);
-		OAuthConsumer authConsumer = store.getConsumer(consumerKey);
+	protected OAuthConsumer getConsumer(final OAuthMessage message) throws OAuthProblemException {
+		final String consumerKey = getParameter(message, OAuth.OAUTH_CONSUMER_KEY);
+		final OAuthConsumer authConsumer = store.getConsumer(consumerKey);
 		if (!present(authConsumer)) {
 			throw new OAuthProblemException(OAuth.Problems.CONSUMER_KEY_UNKNOWN);
 		}
@@ -253,11 +240,11 @@ public class OAuthRequestValidator {
 	 * @param key
 	 * @return
 	 */
-	public static String getParameter(OAuthMessage requestMessage, String key) {
+	public static String getParameter(final OAuthMessage requestMessage, final String key) {
 		try {
-			String str = requestMessage.getParameter(key);
+			final String str = requestMessage.getParameter(key);
 			return str == null ? null : str.trim();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			return null;
 		}
 	}
@@ -268,11 +255,11 @@ public class OAuthRequestValidator {
 	 * servlet. After reading the body, we store the raw content byte array 
 	 * using request.setAttribute(STASHED_BODY, <body byte array>)
 	 */
-	public static byte[] readBody(HttpServletRequest request) throws IOException {
+	public static byte[] readBody(final HttpServletRequest request) throws IOException {
 		if (present(request.getAttribute(STASHED_BODY))) {
 			return (byte[])request.getAttribute(STASHED_BODY);
 		}
-		byte[] rawBody = IOUtils.toByteArray(request.getInputStream());
+		final byte[] rawBody = IOUtils.toByteArray(request.getInputStream());
 		request.setAttribute(STASHED_BODY, rawBody);
 		return rawBody;
 	}
@@ -282,27 +269,23 @@ public class OAuthRequestValidator {
 	 * FIXME: do we have already an utilty functio for this?
 	 * @return UTF-8 byte array for the input string.
 	 */
-	public byte[] getUtf8Bytes(String s) {
+	public byte[] getUtf8Bytes(final String s) {
 		byte[] bb = ArrayUtils.EMPTY_BYTE_ARRAY;
 		if (present(s)) {
 			try {
 				bb = s.getBytes("UTF-8");
-			} catch (UnsupportedEncodingException e) {
+			} catch (final UnsupportedEncodingException e) {
 				log.error("Unsupported encoding", e);
 			}
 		}
 
 		return bb;
 	}
-	
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
-	public OAuthDataStore getStore() {
-		return store;
-	}
 
-	public void setStore(OAuthDataStore store) {
+	/**
+	 * @param store the store to set
+	 */
+	public void setStore(final OAuthDataStore store) {
 		this.store = store;
 	}
 }
