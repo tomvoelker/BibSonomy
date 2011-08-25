@@ -250,6 +250,80 @@ public class PersonNameUtilsTest {
 	}
 	
 	/**
+	 * For these names we guarantee that our serialization does not change them.
+	 */
+	@Test
+	public void testDiscoverSerialize() {
+		ds("Jäschke, R.");
+		ds("Smith, John Chris");
+		ds("von der Schmidt, Alex");
+		ds("{Long Company Name}");
+		ds("Bar Mar, Leo");
+		ds("Bar Mar, L.");
+		ds("{Rocchio, Jr.}, Joseph John");
+		ds("Barab{\\'a}si, Albert-L{\\'a}szl{\\'o} and Albert, R{\\'e}ka");
+		ds("Müller, {Arne} and Meier, {Beate}");
+		ds("de la Vall{'e}e Poussin, Charles Louis Xavier Joseph");		
+	}
+	
+	/**
+	 * Discovers the persons in p, serializes them and asserts that the result
+	 * is the same as p. 
+	 * <br/>
+	 * See also {@link #testDiscoverSerializeDiscoverSerialize()}.
+	 * 
+	 * @param p
+	 */
+	private void ds(final String p) {
+		assertEquals(p, PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(p)));
+	}
+	
+	/**
+	 * For these names we can only guarantee that a second serialization does
+	 * not change them. 
+	 * Thus, this method checks if {@link PersonNameUtils#serializePersonNames(List)} 
+	 * is compatible with {@link PersonNameUtils#discoverPersonNames(String)}.
+	 * <br/>
+	 * See also {@link #testDiscoverSerialize()}.
+	 */
+	@Test
+	public void testDiscoverSerializeDiscoverSerialize() {
+		dsds("D.E. Knuth");
+		dsds("D.E. Knuth");
+		dsds("Donald E. Knuth");
+		dsds("Foo van Bar");
+		dsds("R. Jäschke");
+		dsds("John Chris Smith");
+		dsds("Alex von der Schmidt");
+		dsds("{Long Company Name}");
+		dsds("L. Balby Marinho");
+		dsds("Leandro Balby Marinho");
+		dsds("and D.E. Knuth and and Foo Bar and   and");
+		dsds("Wolfgang van Briel and Ebbo Hahlweg and andere");
+		dsds("Barab{\\'a}si, Albert-L{\\'a}szl{\\'o} and Albert, R{\\'e}ka");
+		dsds("Müller, {Arne} and Meier, {Beate}");
+		dsds("Jon Kleinberg and \\&\\#201;va Tardos");
+		dsds("de la Vall{'e}e Poussin, Charles Louis Xavier Joseph");
+		dsds("Joseph John {Rocchio, Jr.}");
+		dsds("Chappe d'Auteroche");
+		dsds("{Frans\\,A.} Janssen");
+		dsds("A. Foo and B. Bar and others");
+	}
+	
+	/**
+	 * Discovers the persons in p, serializes them into s, discovers the persons
+	 * in s and then asserts that this is the same as s.
+	 * 
+	 * @param p
+	 */
+	private void dsds(final String p) {
+		final String s = PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(p));
+		System.out.println(p + " --> " + s);
+		assertEquals("Serialization of '" + p + "' failed.", s, PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(s)));
+	}
+	
+	
+	/**
 	 * 
 	 */
 	@Test
@@ -336,6 +410,8 @@ public class PersonNameUtilsTest {
 		assertEquals("D.E. Knuth and D.E. Knuth", PersonNameUtils.lastFirstToFirstLastMany("Knuth, D.E. and D.E. Knuth"));
 		assertEquals("D.E. Knuth and D.E. Knuth and Leandro Balby Marinho and Leandro Balby Marinho", PersonNameUtils.lastFirstToFirstLastMany("Knuth, D.E. and D.E. Knuth and Leandro Balby Marinho and Balby Marinho, Leandro"));
 	}
+
+
 
 }
 
