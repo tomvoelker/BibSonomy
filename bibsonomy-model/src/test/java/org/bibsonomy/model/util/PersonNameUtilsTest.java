@@ -297,6 +297,9 @@ public class PersonNameUtilsTest {
 		dsds("R. Jäschke");
 		dsds("John Chris Smith");
 		dsds("Alex von der Schmidt");
+		dsds("Jäschke, R.");
+		dsds("Smith, John Chris");
+		dsds("von der Schmidt, Alex");		
 		dsds("{Long Company Name}");
 		dsds("L. Balby Marinho");
 		dsds("Leandro Balby Marinho");
