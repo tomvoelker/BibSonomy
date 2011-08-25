@@ -58,6 +58,9 @@ import bibtex.parser.ParseException;
 /**
  * Provides parsing of BibTeX entries represented by {@link String}s into {@link BibTex} objects.
  * 
+ * NOTE: this class is not thread-safe, since it stores the parse exceptions
+ * in a local field.
+ * 
  * @author rja
  * @version $Id$
  */
@@ -74,6 +77,10 @@ public class SimpleBibTeXParser {
 	 */
 	private ParseException[] caughtExceptions;
 
+	/**
+	 * Stores warnings occuring during parsing.
+	 */
+	private final List<String> warnings;
 	/**
 	 * inits the warnings list
 	 */
@@ -109,10 +116,6 @@ public class SimpleBibTeXParser {
 		this.caughtExceptions = caughtExceptions;
 	}
 
-	/**
-	 * Stores warnings occuring during parsing.
-	 */
-	private final List<String> warnings;
 
 	/**
 	 * @return The warnings created during parsing.
@@ -240,7 +243,7 @@ public class SimpleBibTeXParser {
 			 * otherwise we can't store months as "jun", since the parser
 			 * always expands them to "June".
 			 */
-			new MacroReferenceExpander(true, false, false, false).expand(bibtexFile);
+			new MacroReferenceExpander(true, false, false, true).expand(bibtexFile);
 		} catch (ExpansionException ee) {
 			warnings.add(ee.getMessage());
 		}
@@ -252,7 +255,7 @@ public class SimpleBibTeXParser {
 		}
 
 		try {
-			new PersonListExpander(true, true, false).expand(bibtexFile);
+			new PersonListExpander(true, true, true).expand(bibtexFile);
 		} catch (ExpansionException ee) {
 			warnings.add(ee.getMessage());
 		}
