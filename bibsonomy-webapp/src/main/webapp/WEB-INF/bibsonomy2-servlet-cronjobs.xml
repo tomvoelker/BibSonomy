@@ -6,7 +6,9 @@
 	
 
 	<!--+ 
-	 	|
+	 	| TODO: for more readability we should use the spring task namespace
+	 	| e.g. <task:scheduled ref="lucenePublicationManager" method="updateAndReloadIndex" cron="22 1/5 * * * ?"/>
+	 	| @see http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/scheduling.html
 	 	| Define CRON-like jobs in this file
 	 	|
 	 	+-->
