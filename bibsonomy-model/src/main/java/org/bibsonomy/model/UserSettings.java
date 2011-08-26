@@ -66,6 +66,7 @@ public class UserSettings implements Serializable {
 	private int tagboxMaxCount = 50;
 	
 	/**
+	 * TODO: change to boolean
 	 * Show the tooltips for tags in the tag cloud? 0 = don't show, 1 = show 
 	 */
 	private int tagboxTooltip = 0;
