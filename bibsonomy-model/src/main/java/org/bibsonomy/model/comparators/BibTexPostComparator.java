@@ -25,7 +25,6 @@ package org.bibsonomy.model.comparators;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -45,7 +44,7 @@ import org.bibsonomy.model.util.PersonNameUtils;
  * @author Dominik Benz
  * @version $Id$
  */
-public class BibTexPostComparator extends PostComparator implements Comparator<Post<BibTex>>, Serializable {
+public class BibTexPostComparator extends PostComparator implements Comparator<Post<BibTex>> {
 	private static final long serialVersionUID = 8550700973763853912L;
 
 	/**
@@ -128,7 +127,7 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 				} else {
 					return 0;
 				}
-			} catch (SortKeyIsEqualException ignore) {
+			} catch (final SortKeyIsEqualException ignore) {
 				// the for-loop will jump to the next sort criterium in this
 				// case
 			}
@@ -150,7 +149,7 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 	 *         arguments.
 	 * @throws SortKeyIsEqualException
 	 */
-	private int compareDay(final String day1, final String day2, SortOrder order) throws SortKeyIsEqualException {
+	private int compareDay(final String day1, final String day2, final SortOrder order) throws SortKeyIsEqualException {
 		/*
 		 * first try: successful if both arguments are integers (e.g. 21 and 13)
 		 */
@@ -160,15 +159,15 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 		/*
 		 * second try: exctract day part from arguments (e.g. "1st" and "2nd")
 		 */
-		catch (NumberFormatException nfe1) {
+		catch (final NumberFormatException nfe1) {
 			try {
-				Matcher m1 = dayPattern.matcher(day1);
-				Matcher m2 = dayPattern.matcher(day2);
+				final Matcher m1 = dayPattern.matcher(day1);
+				final Matcher m2 = dayPattern.matcher(day2);
 				if (m1.matches() && m2.matches()) {
 					return this.compare(Integer.valueOf(m1.group(1)), Integer.valueOf(m2.group(1)), order);
 				}
 			}
-			catch (Exception e) {
+			catch (final Exception e) {
 				// nop
 			}
 			/*
@@ -191,14 +190,14 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 	 *         arguments.
 	 * @throws SortKeyIsEqualException
 	 */
-	private int compareMonth(final String month1, final String month2, SortOrder order) throws SortKeyIsEqualException {
+	private int compareMonth(final String month1, final String month2, final SortOrder order) throws SortKeyIsEqualException {
 		final String month1number = BibTexUtils.getMonthAsNumber(month1);
 		final String month2number = BibTexUtils.getMonthAsNumber(month2);
 		try {
 			// if both monthes are Integers, compare them
 			// numerically
 			return this.compare(Integer.parseInt(month1number), Integer.parseInt(month2number), order);
-		} catch (NumberFormatException ex) {
+		} catch (final NumberFormatException ex) {
 			// otherwise compare them lexicographically
 			return this.nomalizeAndCompare(month1number, month2number, order);
 		}

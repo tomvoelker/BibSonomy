@@ -23,7 +23,6 @@
 
 package org.bibsonomy.model.comparators;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
@@ -39,7 +38,7 @@ import org.bibsonomy.model.Post;
  * @author Dominik Benz
  * @version $Id$
  */
-public class BookmarkPostComparator extends PostComparator implements Comparator<Post<Bookmark>>, Serializable {
+public class BookmarkPostComparator extends PostComparator implements Comparator<Post<Bookmark>> {
 	private static final long serialVersionUID = -2993829588313719046L;
 
 	/**
@@ -79,7 +78,7 @@ public class BookmarkPostComparator extends PostComparator implements Comparator
 					return 0;
 				}
 			}
-			catch (SortKeyIsEqualException ignore) {
+			catch (final SortKeyIsEqualException ignore) {
 				// the for-loop will jump to the next sort criterium in this case
 			}
 		}

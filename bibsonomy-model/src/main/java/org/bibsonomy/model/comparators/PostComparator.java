@@ -25,6 +25,7 @@ package org.bibsonomy.model.comparators;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,9 +42,10 @@ import org.bibsonomy.util.StringUtils;
  * @author dbenz
  * @version $Id$
  */
-public abstract class PostComparator {
-
-	private static final long serialVersionUID = 1L;
+public abstract class PostComparator implements Serializable {
+	private static final long serialVersionUID = -359261836667807271L;
+	
+	
 	protected List<SortCriterium> sortCriteria = new ArrayList<SortCriterium>();
 
 	/** Helper structure to bind a sort key to a sort order */
@@ -78,7 +80,7 @@ public abstract class PostComparator {
 		for (int i = 0; i <= sortKeys.size() - 1; i++) {
 			try {
 				this.sortCriteria.add(new SortCriterium(sortKeys.get(i), sortOrders.get(i)));
-			} catch (IndexOutOfBoundsException ignore) {
+			} catch (final IndexOutOfBoundsException ignore) {
 				// fill up with default ascending order
 				this.sortCriteria.add(new SortCriterium(sortKeys.get(i), SortOrder.ASC));
 			}
