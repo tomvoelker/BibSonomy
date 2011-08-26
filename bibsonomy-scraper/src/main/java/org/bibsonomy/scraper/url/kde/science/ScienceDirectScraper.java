@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.science;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -87,7 +89,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 		// This Scraper might handle the specified url
@@ -180,7 +182,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 				/*
 				 * Job done
 				 */
-				if (bibtex != null && ! bibtex.trim().equals("")) {
+				if (present(bibtex)) {
 					sc.setBibtexResult(bibtex);
 					return true;
 				} else
@@ -188,9 +190,9 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 			}else
 				throw new ScrapingFailureException("Needed ID is missing.");
 
-		} catch (MalformedURLException me) {
+		} catch (final MalformedURLException me) {
 			throw new InternalFailureException(me);
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 	}
@@ -213,7 +215,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 			/*
 			 * fix "pages" field
 			 */
-			Matcher matcher = patternBrokenPages.matcher(result);
+			final Matcher matcher = patternBrokenPages.matcher(result);
 			if (matcher.matches()) {
 				result = matcher.replaceFirst("$1--$2");
 			}
