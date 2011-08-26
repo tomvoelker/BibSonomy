@@ -14,7 +14,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.taglibs.standard.tag.common.core.OutSupport;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.jabref.JabrefLayout;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
@@ -32,12 +31,12 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @version $Id$
  */
 public class JabrefLayoutRendererTag extends TagSupport {
+	private static final String SUPPORTED_EXTENSION = ".html";
+
 	private static final long serialVersionUID = 8006189027834637063L;
 	
 	private static final Log log = LogFactory.getLog(JabrefLayoutRendererTag.class);
 	
-	
-	private static final String SUPPORTED_EXTENSION = ".html";
 	// TODO: move
 	private static final String SERVLET_CONTEXT_PATH = "org.springframework.web.servlet.FrameworkServlet.CONTEXT.bibsonomy2";
 
@@ -51,7 +50,7 @@ public class JabrefLayoutRendererTag extends TagSupport {
 	@Override
 	public int doStartTag() throws JspException {
 		try {
-			OutSupport.out(this.pageContext, true, this.renderPosts());	
+			pageContext.getOut().print(this.renderPosts());		
 		} catch (final IOException ex) {
 			throw new JspException("Error: IOException while writing to client" + ex.getMessage());
 		}
