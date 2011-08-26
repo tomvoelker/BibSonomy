@@ -23,7 +23,7 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class PublicationValidator implements Validator<BibTex> {
-	
+
 	private static final String PARSE_ERROR_MESSAGE_KEY = "error.parse.bibtex.failed";
 	private static final String DEFAULT_PARSE_ERROR_MESSAGE = "Error parsing your post:\n\n{0}\n\nMessage was: {1}";
 
@@ -36,25 +36,25 @@ public class PublicationValidator implements Validator<BibTex> {
 	@Override
 	public void validate(final Object obj, final Errors errors) {
 		Assert.notNull(obj);
-		
+
 		if (obj instanceof BibTex) {
 			final BibTex bibtex = (BibTex) obj;
-			
+
 			/*
 			 * clean url
 			 * FIXME: a validator MUST NOT modify objects!
 			 */
 			bibtex.setUrl(UrlUtils.cleanUrl(bibtex.getUrl()));
-			
+
 			/*
 			 * check url
 			 */
-//			final String url = resource.getUrl();
-//			if (url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL)) {
-//				errors.rejectValue("post.resource.url", "error.field.valid.url");
-//			}
+			//			final String url = resource.getUrl();
+			//			if (url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL)) {
+			//				errors.rejectValue("post.resource.url", "error.field.valid.url");
+			//			}
 
-	
+
 			/*
 			 * initialize parser
 			 * 
@@ -108,8 +108,8 @@ public class PublicationValidator implements Validator<BibTex> {
 			/*
 			 * add parser warnings to errors
 			 */
-			handleParserWarnings(errors, parser, bibTexAsString);
-			
+			handleParserWarnings(errors, parser, bibTexAsString, "author");
+
 			/*
 			 * We add the "simple" checks after replacing the publication with
 			 * the parsed one to ensure we catch empty fields.
@@ -118,7 +118,7 @@ public class PublicationValidator implements Validator<BibTex> {
 			 * author names and then removes them, e.g., "Foo, Bar," resulting
 			 * in no errors but an empty author field.)  
 			 */
-			
+
 			/*
 			 * entrytype
 			 */
@@ -159,28 +159,34 @@ public class PublicationValidator implements Validator<BibTex> {
 	 * @param errors
 	 * @param parser
 	 * @param bibTexAsString
+	 * @param authorPropertyFieldName - if given, person name parsing errors are 
+	 * added to this field. If several posts are parsed, we currently can't assign
+	 * the errors to the correct post. In this case, set this value to <code>null</code.>  
+	 * to this field
 	 */
-	public static void handleParserWarnings(final Errors errors, final SimpleBibTeXParser parser, final String bibTexAsString) {
+	public static void handleParserWarnings(final Errors errors, final SimpleBibTeXParser parser, final String bibTexAsString, final String authorPropertyFieldName) {
 		final List<String> warnings = parser.getWarnings();
 		if (present(warnings)) {
 			errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, warnings.toString()}, DEFAULT_PARSE_ERROR_MESSAGE);
-			for (final String warning : warnings) {
-				/*
-				 * special handling for name errors that look like 
-		         * "bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'"
-				 */
-				if (warning.startsWith(PersonListParserException.class.getName())) {
+			if (present(authorPropertyFieldName)) {
+				for (final String warning : warnings) {
 					/*
-					 * FIXME: we don't know whether to reject author or editor.
-					 * So we pick the author = best guess. Not a good idea but
-					 * my quick solution for today. :-( 
+					 * special handling for name errors that look like 
+					 * "bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'"
 					 */
-					errors.rejectValue("author", "error.field.valid.authorOrEditor.parseError", new Object[]{warning}, "The author or editor field caused the following parse error: {0}");
+					if (warning.startsWith(PersonListParserException.class.getName())) {
+						/*
+						 * FIXME: we don't know whether to reject author or editor.
+						 * So we pick the author = best guess. Not a good idea but
+						 * my quick solution for today. :-( 
+						 */
+						errors.rejectValue(authorPropertyFieldName, "error.field.valid.authorOrEditor.parseError", new Object[]{warning}, "The author or editor field caused the following parse error: {0}");
+					}
 				}
 			}
 		}
 	}
-	
+
 	private static boolean containsWhiteSpace(final String s) {
 		return s.matches("\\s");
 	}
