@@ -141,9 +141,9 @@ public class PublicationValidator implements Validator<BibTex> {
 			 * author/editor
 			 * (we don't add the error if there is already an error added - it 
 			 * might be a more detailed error message from the parser from
-			 * handleParserWarnings)
+			 * handleParserWarnings())
 			 */
-			if (!present(bibtex.getAuthor()) && !present(bibtex.getEditor()) && !errors.hasFieldErrors("author")) {
+			if (!present(bibtex.getAuthor()) && !present(bibtex.getEditor())) { 
 				errors.rejectValue("author", "error.field.valid.authorOrEditor");
 				// one error is enough
 				//errors.rejectValue("post.resource.editor", "error.field.valid.authorOrEditor");
@@ -159,16 +159,15 @@ public class PublicationValidator implements Validator<BibTex> {
 	 * @param errors
 	 * @param parser
 	 * @param bibTexAsString
-	 * @param authorPropertyFieldName - if given, person name parsing errors are 
+	 * @param authorFieldName - if given, person name parsing errors are 
 	 * added to this field. If several posts are parsed, we currently can't assign
 	 * the errors to the correct post. In this case, set this value to <code>null</code>.  
-	 * to this field
+	 * to this field. The errors are then added as global errors.
 	 */
-	public static void handleParserWarnings(final Errors errors, final SimpleBibTeXParser parser, final String bibTexAsString, final String authorPropertyFieldName) {
+	public static void handleParserWarnings(final Errors errors, final SimpleBibTeXParser parser, final String bibTexAsString, final String authorFieldName) {
 		final List<String> warnings = parser.getWarnings();
 		if (present(warnings)) {
-			errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, warnings.toString()}, DEFAULT_PARSE_ERROR_MESSAGE);
-			if (present(authorPropertyFieldName)) {
+			if (present(authorFieldName)) {
 				for (final String warning : warnings) {
 					/*
 					 * special handling for name errors that look like 
@@ -180,9 +179,11 @@ public class PublicationValidator implements Validator<BibTex> {
 						 * So we pick the author = best guess. Not a good idea but
 						 * my quick solution for today. :-( 
 						 */
-						errors.rejectValue(authorPropertyFieldName, "error.field.valid.authorOrEditor.parseError", new Object[]{warning}, "The author or editor field caused the following parse error: {0}");
+						errors.rejectValue(authorFieldName, "error.field.valid.authorOrEditor.parseError", new Object[]{warning}, "The author or editor field caused the following parse error: {0}");
 					}
 				}
+			} else {
+				errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, warnings.toString()}, DEFAULT_PARSE_ERROR_MESSAGE);
 			}
 		}
 	}
