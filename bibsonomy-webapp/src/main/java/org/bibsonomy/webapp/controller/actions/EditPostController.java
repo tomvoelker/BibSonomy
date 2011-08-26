@@ -177,12 +177,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			}
 			
 			command.setPost(post);
-		} else {			
-			/*
-			 * The post in the command is coming from the form: bring it into 
-			 * the format we're using internally. 
-			 */
-			this.preparePostAfterView(command.getPost());
 		}
 
 		/*
@@ -307,7 +301,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * prepare post from internal format into user's form format
 		 */
 		final Post<RESOURCE> post = command.getPost();
-		if (present(post)) this.preparePostForView(post);
 		if (loginUser.isSpammer()) {
 			/*
 			 * Generate HTML to show captcha.
@@ -320,23 +313,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		return getPostView();
 	}
 
-	/**
-	 * Before a post is sent to the view, this method is called.
-	 * 
-	 * @param post
-	 */
-	protected void preparePostForView(@SuppressWarnings("unused") final Post<RESOURCE> post) {
-		// do nothing	
-	}
 
-	/**
-	 * Immediately after a post is coming from the view, this method is called.
-	 * 
-	 * @param post
-	 */
-	protected void preparePostAfterView(@SuppressWarnings("unused") final Post<RESOURCE> post) {
-		// do nothing		
-	}
 
 	protected abstract View getPostView();
 

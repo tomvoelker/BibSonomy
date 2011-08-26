@@ -209,7 +209,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		} catch (final IOException ex) {
 			errors.reject("error.upload.failed.parse", ex.getMessage());
 		}
-		PublicationValidator.handleParserWarnings(errors, parser, snippet);
+		PublicationValidator.handleParserWarnings(errors, parser, snippet, null);
 
 		/*
 		 * The errors we have collected until now should be fixed before we proceed.
