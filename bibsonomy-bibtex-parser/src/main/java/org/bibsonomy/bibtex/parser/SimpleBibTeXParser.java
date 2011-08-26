@@ -47,6 +47,7 @@ import bibtex.dom.BibtexPerson;
 import bibtex.dom.BibtexPersonList;
 import bibtex.dom.BibtexString;
 import bibtex.dom.BibtexToplevelComment;
+import bibtex.expansions.AbstractExpander;
 import bibtex.expansions.CrossReferenceExpander;
 import bibtex.expansions.ExpansionException;
 import bibtex.expansions.MacroReferenceExpander;
@@ -243,21 +244,33 @@ public class SimpleBibTeXParser {
 			 * otherwise we can't store months as "jun", since the parser
 			 * always expands them to "June".
 			 */
-			new MacroReferenceExpander(true, false, false, true).expand(bibtexFile);
+			final MacroReferenceExpander macroReferenceExpander = new MacroReferenceExpander(true, false, false, false);
+			macroReferenceExpander.expand(bibtexFile);
+			addWarnings(macroReferenceExpander);
 		} catch (ExpansionException ee) {
 			warnings.add(ee.getMessage());
 		}
 
 		try {
-			new CrossReferenceExpander(true).expand(bibtexFile);
+			final CrossReferenceExpander crossReferenceExpander = new CrossReferenceExpander(false);
+			crossReferenceExpander.expand(bibtexFile);
+			addWarnings(crossReferenceExpander);
 		} catch (ExpansionException ee) {
 			warnings.add(ee.getMessage());
 		}
 
 		try {
-			new PersonListExpander(true, true, true).expand(bibtexFile);
+			final PersonListExpander personListExpander = new PersonListExpander(true, true, false);
+			personListExpander.expand(bibtexFile);
+			addWarnings(personListExpander);
 		} catch (ExpansionException ee) {
 			warnings.add(ee.getMessage());
+		}
+	}
+
+	private void addWarnings(final AbstractExpander abstractExpander) {
+		for (final ExpansionException expansionException : abstractExpander.getExceptions()) {
+			warnings.add(expansionException.getMessage());	
 		}
 	}
 
