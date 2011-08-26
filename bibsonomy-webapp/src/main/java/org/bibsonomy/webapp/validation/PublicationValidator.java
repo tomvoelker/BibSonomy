@@ -183,11 +183,19 @@ public class PublicationValidator implements Validator<BibTex> {
 					}
 				}
 			} else {
-				errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, warnings.toString()}, DEFAULT_PARSE_ERROR_MESSAGE);
+				errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, toString(warnings)}, DEFAULT_PARSE_ERROR_MESSAGE);
 			}
 		}
 	}
 
+	private static String toString(final List<String> list) {
+		final StringBuffer buf = new StringBuffer();
+		for (final String item : list) {
+			buf.append(item).append("\n");
+		}
+		return buf.toString();
+	}
+	
 	private static boolean containsWhiteSpace(final String s) {
 		return s.matches("\\s");
 	}
