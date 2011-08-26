@@ -86,7 +86,7 @@ public class PublicationListTag extends AbstractTag {
 			} else {
 				layout = this.layoutRenderer.getLayout(DEFAULT_LAYOUT, requestedUserName);
 			}
-			renderedHTML.append(this.layoutRenderer.renderLayout(layout, posts, false));
+			renderedHTML.append("<div>" +this.layoutRenderer.renderLayout(layout, posts, false) +"</div>");
 		} catch (final LayoutRenderingException e) {
 			log.error(e.getMessage());
 		} catch (final IOException e) {
