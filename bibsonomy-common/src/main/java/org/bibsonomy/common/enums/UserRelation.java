@@ -37,7 +37,7 @@ public enum UserRelation {
 	JACCARD(0),
 	/** users related based on computation of cosine similarity */
 	COSINE(1),
-	/** users related based on computation of jaccard similarity */
+	/** users related based on computation of tfidf similarity */
 	TFIDF(2),
 	/** users related based on folkrank computation */
 	FOLKRANK(3),	
@@ -116,15 +116,7 @@ public enum UserRelation {
 	 * @return true if the current user relation is an internal relation, false otherwise.
 	 */
 	public boolean isInternal() {
-		return UserRelation.FOLLOWER_OF.equals(this)   ||
-			   UserRelation.OF_FOLLOWER.equals(this)   ||
-			   UserRelation.FRIEND_OF.equals(this)	   ||
-			   UserRelation.OF_FRIEND.equals(this)     ||
-			   UserRelation.JACCARD.equals(this)       ||
-			   UserRelation.COSINE.equals(this)        ||
-			   UserRelation.TFIDF.equals(this)         ||
-			   UserRelation.FOLKRANK.equals(this)      ||
-			   UserRelation.CURIOUS_ABOUT.equals(this);
+		return !UserRelation.TAGGED.equals(this);
 	}
 	
 	
