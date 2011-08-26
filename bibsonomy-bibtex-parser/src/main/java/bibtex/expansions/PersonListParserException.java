@@ -33,7 +33,7 @@ package bibtex.expansions;
 /**
  * @author henkel
  */
-class PersonListParserException extends java.lang.Exception {
+public class PersonListParserException extends java.lang.Exception {
 	PersonListParserException(String message) {
 		super(message);
 	}
