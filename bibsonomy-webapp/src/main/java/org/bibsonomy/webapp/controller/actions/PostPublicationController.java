@@ -45,6 +45,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.PostPublicationCommandValidator;
+import org.bibsonomy.webapp.validation.PublicationValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -208,6 +209,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		} catch (final IOException ex) {
 			errors.reject("error.upload.failed.parse", ex.getMessage());
 		}
+		PublicationValidator.handleParserWarnings(errors, parser, snippet);
 
 		/*
 		 * The errors we have collected until now should be fixed before we proceed.
