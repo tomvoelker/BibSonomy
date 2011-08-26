@@ -16,6 +16,10 @@
 	cursor: pointer;	
 }
  
+p {
+	width: 100%;
+}
+ 
 h2 {
 	margin: 5px 0px 10px 5px;
 	border-bottom: solid #eee 2px;
@@ -35,10 +39,6 @@ h2 {
 .align {
 	margin-left: 25px;
 }	
-
-p {
-	width: 600px;	
-}
 
 .entry {
 font-size:14px;

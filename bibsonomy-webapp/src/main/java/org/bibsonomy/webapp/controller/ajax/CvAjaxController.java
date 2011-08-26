@@ -3,7 +3,9 @@ package org.bibsonomy.webapp.controller.ajax;
 import static org.bibsonomy.util.ValidationUtils.present;
 import info.bliki.htmlcleaner.Utils;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,10 +31,16 @@ import org.springframework.validation.Errors;
  */
 public class CvAjaxController extends AjaxController implements MinimalisticController<AjaxCvCommand>, ErrorAware, ValidationAwareController<AjaxCvCommand> {
 
+	private static final Map<String,String> layouts = new HashMap<String,String>();
 	private static final Log log = LogFactory.getLog(CvAjaxController.class);
 	private Errors errors;
 	private WikiUtil wikiRenderer;
 	private MessageSource messageSource;
+	
+	static {
+		layouts.put("table", "cv.layout.table");
+		layouts.put("robert", "cv.layout.robert");
+	}
 
 	@Override
 	public AjaxCvCommand instantiateCommand() {
@@ -64,14 +72,14 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		final String isSave = command.getIsSave();
 		final String wikiText = command.getWikiText();
 		
+		//FIXME: Handle empty wiki text
 		if (present(isSave) && present(wikiText)) {
 			return renderWiki(command,wikiText,isSave);
 		}
-
-		if (present(layout)) {
-			if ("default".equals(layout)) {
-				return defaultCV(command, locale);
-			} 
+		
+		//TODO: Current layout
+		if (layouts.containsKey(layout)) {
+			return getLayout(command, locale);
 		}
 		return handleError("error.405");
 	}
@@ -88,10 +96,9 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		return Views.AJAX_XML;
 	}
 
-	private View defaultCV(AjaxCvCommand command, Locale locale) {
-		log.debug("ajax -> defaultCV");
-
-		String wikiText = messageSource.getMessage("cv.default_wiki", null, locale);
+	private View getLayout(AjaxCvCommand command, Locale locale) {
+		log.debug("ajax -> getLayout");
+		String wikiText = messageSource.getMessage(layouts.get(command.getLayout()), null, locale);
 		command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 
 		return Views.AJAX_XML;

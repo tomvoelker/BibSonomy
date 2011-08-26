@@ -101,8 +101,9 @@
 		      		<li>
 		      			<a href="#">Designs</a>
 		      			<ul>		      		
-		      				<li><a href="#" onclick="changeCVLayout('default');return false">Default/Reset</a></li>
-		      				<li><a href="#" onclick="changeCVLayout('current');return false">Current</a></li>
+		      				<li><a href="#" onclick="changeCVLayout('table');return false">Layout|TABLE</a></li>
+		      				<li><a href="#" onclick="changeCVLayout('robert');return false">Layout|ROBERT</a></li>
+		      				<li><a href="#" onclick="changeCVLayout('current');return false">Layout|CURRENT</a></li>
 		      				<li><a href="#" onclick="clearCVTextField();return false">Clear</a></li>
 		      			</ul>
 		      		</li>
