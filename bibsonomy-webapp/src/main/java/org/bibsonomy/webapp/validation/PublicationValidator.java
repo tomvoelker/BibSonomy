@@ -13,6 +13,7 @@ import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
+import bibtex.expansions.PersonListParserException;
 import bibtex.parser.ParseException;
 
 /**
@@ -109,6 +110,20 @@ public class PublicationValidator implements Validator<BibTex> {
 			final List<String> warnings = parser.getWarnings();
 			if (present(warnings)) {
 				errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, warnings.toString()}, DEFAULT_PARSE_ERROR_MESSAGE);
+				for (final String warning : warnings) {
+					/*
+					 * special handling for name errors that look like 
+                     * "bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'"
+					 */
+					if (warning.startsWith(PersonListParserException.class.getName())) {
+						/*
+						 * FIXME: we don't know whether to reject author or editor.
+						 * So we pick the author = best guess. Not a good idea but
+						 * my quick solution for today. :-( 
+						 */
+						errors.rejectValue("author", "error.field.valid.authorOrEditor.parseError", new Object[]{warning}, "The author or editor field caused the following parse error: {0}");
+					}
+				}
 			}
 			
 			/*
