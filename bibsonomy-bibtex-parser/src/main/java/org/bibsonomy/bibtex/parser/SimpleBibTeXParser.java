@@ -252,9 +252,7 @@ public class SimpleBibTeXParser {
 		}
 
 		try {
-			final CrossReferenceExpander crossReferenceExpander = new CrossReferenceExpander(false);
-			crossReferenceExpander.expand(bibtexFile);
-			addWarnings(crossReferenceExpander);
+			new CrossReferenceExpander(true).expand(bibtexFile);
 		} catch (ExpansionException ee) {
 			warnings.add(ee.getMessage());
 		}
