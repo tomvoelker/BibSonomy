@@ -97,6 +97,7 @@ import org.bibsonomy.scraper.url.kde.spires.SpiresScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerScraper;
 import org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper;
+import org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper;
 import org.bibsonomy.scraper.url.kde.usenix.UsenixScraper;
 import org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
@@ -191,6 +192,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new AandAScraper());
 		addScraper(new JournalogyScraper());
 		addScraper(new InspireScraper());
+		addScraper(new TaylorAndFrancisScraper());
 	}
 
 }
