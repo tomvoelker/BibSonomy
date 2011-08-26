@@ -161,7 +161,7 @@ public class PublicationValidator implements Validator<BibTex> {
 	 * @param bibTexAsString
 	 * @param authorPropertyFieldName - if given, person name parsing errors are 
 	 * added to this field. If several posts are parsed, we currently can't assign
-	 * the errors to the correct post. In this case, set this value to <code>null</code.>  
+	 * the errors to the correct post. In this case, set this value to <code>null</code>.  
 	 * to this field
 	 */
 	public static void handleParserWarnings(final Errors errors, final SimpleBibTeXParser parser, final String bibTexAsString, final String authorPropertyFieldName) {
