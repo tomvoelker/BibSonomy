@@ -23,6 +23,7 @@ import org.bibsonomy.util.upload.DocumentUtils;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostValidator;
+import org.bibsonomy.webapp.validation.PublicationValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
@@ -113,7 +114,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 				try {
 					final SimpleBibTeXParser parser = new SimpleBibTeXParser();
 					final BibTex parsedBibTex = parser.parseBibTeX(scrapedBibtex);
-					log.debug(parser.getWarnings());
+					PublicationValidator.handleParserWarnings(errors, parser, scrapedBibtex);
 
 					/*
 					 * check if a bibtex was scraped

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -107,24 +108,7 @@ public class PublicationValidator implements Validator<BibTex> {
 			/*
 			 * add parser warnings to errors
 			 */
-			final List<String> warnings = parser.getWarnings();
-			if (present(warnings)) {
-				errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, warnings.toString()}, DEFAULT_PARSE_ERROR_MESSAGE);
-				for (final String warning : warnings) {
-					/*
-					 * special handling for name errors that look like 
-                     * "bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'"
-					 */
-					if (warning.startsWith(PersonListParserException.class.getName())) {
-						/*
-						 * FIXME: we don't know whether to reject author or editor.
-						 * So we pick the author = best guess. Not a good idea but
-						 * my quick solution for today. :-( 
-						 */
-						errors.rejectValue("author", "error.field.valid.authorOrEditor.parseError", new Object[]{warning}, "The author or editor field caused the following parse error: {0}");
-					}
-				}
-			}
+			handleParserWarnings(errors, parser, bibTexAsString);
 			
 			/*
 			 * We add the "simple" checks after replacing the publication with
@@ -155,13 +139,45 @@ public class PublicationValidator implements Validator<BibTex> {
 			}
 			/*
 			 * author/editor
+			 * (we don't add the error if there is already an error added - it 
+			 * might be a more detailed error message from the parser from
+			 * handleParserWarnings)
 			 */
-			if (!present(bibtex.getAuthor()) && !present(bibtex.getEditor())) {
+			if (!present(bibtex.getAuthor()) && !present(bibtex.getEditor()) && !errors.hasFieldErrors("author")) {
 				errors.rejectValue("author", "error.field.valid.authorOrEditor");
 				// one error is enough
 				//errors.rejectValue("post.resource.editor", "error.field.valid.authorOrEditor");
 			}
 
+		}
+	}
+
+	/**
+	 * Checks the parser's warnings for serious errors (e.g., wrong person names)
+	 * and adds them to the errors list.
+	 * 
+	 * @param errors
+	 * @param parser
+	 * @param bibTexAsString
+	 */
+	public static void handleParserWarnings(final Errors errors, final SimpleBibTeXParser parser, final String bibTexAsString) {
+		final List<String> warnings = parser.getWarnings();
+		if (present(warnings)) {
+			errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, warnings.toString()}, DEFAULT_PARSE_ERROR_MESSAGE);
+			for (final String warning : warnings) {
+				/*
+				 * special handling for name errors that look like 
+		         * "bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'"
+				 */
+				if (warning.startsWith(PersonListParserException.class.getName())) {
+					/*
+					 * FIXME: we don't know whether to reject author or editor.
+					 * So we pick the author = best guess. Not a good idea but
+					 * my quick solution for today. :-( 
+					 */
+					errors.rejectValue("author", "error.field.valid.authorOrEditor.parseError", new Object[]{warning}, "The author or editor field caused the following parse error: {0}");
+				}
+			}
 		}
 	}
 	
