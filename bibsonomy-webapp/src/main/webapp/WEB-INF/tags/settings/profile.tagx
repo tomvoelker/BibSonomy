@@ -127,24 +127,6 @@
 		      <form:textarea cssClass="fsInput" path="user.hobbies" />
 		      <div class="dissError"><form:errors path="user.hobbies" /></div>
 		    </div>
-		    <div class="fsRow">
-		      <form:label cssClass="fsLabel" path="wikiText"><fmt:message key="user.cvWiki"/></form:label>
-		      <form:textarea id="wikiTextArea" cssStyle="height: 5cm" cssClass="fsInput" path="wikiText" />
-		      <div class="dissError"><form:errors path="wikiText" /></div>
-		      <div class='fsRow'>
-		      	<ul>
-		      	<!-- TODO: I18N -->
-		      		<li><a href="#">CV Options</a></li>
-		      		<li>
-		      			<a href="#">Designs</a>
-		      			<ul>		      		
-		      				<li><a href="#" onclick="changeCVLayout('default','${fn:escapeXml(command.context.ckey)}');return false">Default/Reset</a></li>
-		      				<li><a href="#" onclick="changeCVLayout('clear','${fn:escapeXml(command.context.ckey)}');return false">Clear</a></li>
-		      			</ul>
-		      		</li>
-		      	</ul>
-		      </div>
-		    </div>
   		  </fieldset>
 		</div>
 

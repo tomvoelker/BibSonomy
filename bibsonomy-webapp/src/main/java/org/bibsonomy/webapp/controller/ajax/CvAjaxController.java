@@ -40,6 +40,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	static {
 		layouts.put("table", "cv.layout.table");
 		layouts.put("robert", "cv.layout.robert");
+		layouts.put("current", "");
 	}
 
 	@Override
@@ -72,12 +73,12 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		final String isSave = command.getIsSave();
 		final String wikiText = command.getWikiText();
 		
-		//FIXME: Handle empty wiki text
-		if (present(isSave) && present(wikiText)) {
+
+		if (present(isSave) && wikiText != null) {
 			return renderWiki(command,wikiText,isSave);
 		}
 		
-		//TODO: Current layout
+
 		if (layouts.containsKey(layout)) {
 			return getLayout(command, locale);
 		}
@@ -90,7 +91,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		Wiki wiki = new Wiki();
 		wiki.setWikiText(wikiText);
 		if("true".equals(isSave)) {
-			logic.updateWiki(logic.getAuthenticatedUser().getName(), wiki);
+			logic.updateWiki(wikiRenderer.getUser().getName(), wiki);
 		}
 		command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		return Views.AJAX_XML;
@@ -98,8 +99,14 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 
 	private View getLayout(AjaxCvCommand command, Locale locale) {
 		log.debug("ajax -> getLayout");
-		String wikiText = messageSource.getMessage(layouts.get(command.getLayout()), null, locale);
-		command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
+		final String layout = command.getLayout();
+		if(!"current".equals(layout)){
+			String wikiText = messageSource.getMessage(layouts.get(layout), null, locale);
+			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
+		} else {
+			String wikiText = logic.getWiki(wikiRenderer.getUser().getName(), null).getWikiText();
+			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
+		}
 
 		return Views.AJAX_XML;
 	}

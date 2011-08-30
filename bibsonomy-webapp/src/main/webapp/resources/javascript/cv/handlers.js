@@ -30,10 +30,10 @@ $(function(){
   	
   	/*
   	 * Change publication format
-  	 */
+  	 *
   	$('select.layout').change(function(){
   		formatPublications(this);
-  	})
+  	})/
   	
   	/*
   	 * Switches options hide and show details
