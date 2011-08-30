@@ -1,5 +1,5 @@
 /**
- * @author Bernd
+ * @author Bernd Terbrack
  */
 function changeCVLayout(name) {
 	$.ajax({
@@ -28,6 +28,7 @@ function changeCVLayout(name) {
 			}
 		}
 	});
+	return false;
 }
 
 function submitWiki(isSave) {
@@ -55,6 +56,7 @@ function submitWiki(isSave) {
 			}
 		}
 	});
+	return false;
 }
 
 function formatPublications(self) {
@@ -65,9 +67,17 @@ function formatPublications(self) {
 	$.get("/layout/"+layout+"/user/"+reqUser+"/"+tags, function(data){
 		$(self).parent().parent().parent().next().html(data);
 	});
+	return false;
 }
 
 function clearCVTextField() {
 	var wikiTextArea = $('#wikiTextArea');
 	wikiTextArea.val("");
+	return false;
+}
+
+function toggleDetails(element) {
+	var details = $(element).next();
+	details.toggle();
+	return false;
 }

@@ -1,53 +1,76 @@
 /**
- * @author Bernd
+ * @author Bernd Terbrack
  */
 // "Handler"
 $(function(){
-	
-	// Loading DIV handling
-
-	$('#loadingDiv').hide() 
-	.ajaxStart(function() {
-		$(this).show();
-	}).ajaxStop(function() {
-		$(this).hide();
-	});
-	
-	/*
-	 * Shortcuts for the textarea
-	 */
-  	$('#wikiTextArea').keydown(function (e) {
-	  	if (e.ctrlKey) {
-	  		if(e.keyCode == 13) {
-	  			submitWiki('false');
-	  			return false;
-	  		} else if (e.keyCode == 16) {
-	  			submitWiki('true');
-	  			return false;
-	  		}
-		}
-	});
-  	
-  	/*
-  	 * Change publication format
-  	 *
-  	$('select.layout').change(function(){
-  		formatPublications(this);
-  	})/
-  	
-  	/*
-  	 * Switches options hide and show details
-  	 * This is just a quick fix to have the messages in some js file
-  	 */
-	$("a.hand").each(function(index, link) {
-		$(link).click(function() {
-			var result = $(this).next(".details").toggle();
-			if ($(result).is(":visible")) {
-				$(this).html(" " + getString("cv.options.hide_details"));
-					
-			} else {
-				$(this).html(" " + getString("cv.options.show_details"));
-			}
-		});
-	});
+    /*
+     * Layout-Changer
+     */
+    $('a.changeLayout').click(function(e){
+        e.preventDefault();
+        $.ajax({
+            type: "GET",
+            url: "/ajax/cv",
+            data: {
+                layout: this.dataset.layout,
+                ckey: $('#ckey').val()
+            },
+            success: function(data){
+                var status = $("status", data).text();
+                if ("ok" == status) {
+                    var wikiText = $("wikitext", data).text();
+                    var renderedWikiText = $("renderedwikitext", data).text();
+                    var wikiTextArea = $('#wikiTextArea');
+                    if ("" != renderedWikiText) {
+                        var wikiArea = $('#wikiArea');
+                        wikiTextArea.val(wikiText);
+                        wikiArea.empty();
+                        wikiArea.append(renderedWikiText);
+                    }
+                    else {
+                        wikiTextArea.val(wikiText);
+                    }
+                }
+                else {
+                    alert(data.globalErrors[0].message);
+                }
+            }
+        });
+    });
+    
+    /*
+     * Loading-Div-Handler
+     */
+    $('#loadingDiv').hide().ajaxStart(function(){
+        $(this).show();
+    }).ajaxStop(function(){
+        $(this).hide();
+    });
+    
+    /*
+     * Shortcuts for the textarea
+     */
+    $('#wikiTextArea').keydown(function(e){
+        if (e.ctrlKey) {
+            if (e.keyCode == 13) { //ENTER
+                e.preventDefault();
+                submitWiki('false');
+            }
+            else 
+                if (e.keyCode == 80) { //"p"
+                    e.preventDefault();
+                    submitWiki('false');
+                }
+                else 
+                    if (e.keyCode == 83) { //"s"
+                        e.preventDefault();
+                        submitWiki('true');
+                    }
+                    else 
+                        if (e.keyCode == 46) { //DELETE
+                            e.preventDefault();
+                            clearCVTextField();
+                        }
+        }
+    });
 });
