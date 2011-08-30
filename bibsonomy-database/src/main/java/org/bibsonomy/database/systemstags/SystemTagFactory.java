@@ -6,21 +6,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Andreas Koch
  * @version $Id$
  */
 public class SystemTagFactory {
-
-	// the configuration file for search and executable systemTags
-	private static final String SYSTEM_TAG_CONFIG_FILE = "systemtags-context.xml";
-
+	
 	private static final SystemTagFactory singleton = new SystemTagFactory();
 
 	/**
@@ -32,35 +27,13 @@ public class SystemTagFactory {
 
 
 	/** The map that contains all executable systemTags */
-	private final Map<String, ExecutableSystemTag> executableSystemTagMap;
+	private Map<String, ExecutableSystemTag> executableSystemTagMap;
 
 	/** The set that contains all searchSystemTags */
-	private final Map<String, SearchSystemTag> searchSystemTagMap;
+	private Map<String, SearchSystemTag> searchSystemTagMap;
 
 	/** The set that contains all searchSystemTags */
-	private final Map<String, MarkUpSystemTag> markUpSystemTagMap;
-
-	/** The DBSessionFactory (we need it for the forGroup tag) */
-	private DBSessionFactory dbSessionFactory;
-	
-	private String docPath;
-
-	/**
-	 * Constructor
-	 */
-	@SuppressWarnings("unchecked")
-	private SystemTagFactory() {
-		/*
-		 * FIXME: shouldn't we configure this from the outside?
-		 */
-		final ClassPathXmlApplicationContext springBeanFactory = new ClassPathXmlApplicationContext(SYSTEM_TAG_CONFIG_FILE);
-		this.executableSystemTagMap = new HashMap<String, ExecutableSystemTag>();
-		this.fillExecutableSystemTagMap( (Set<ExecutableSystemTag>)springBeanFactory.getBean("executableSystemTagSet") );
-		this.searchSystemTagMap = new HashMap<String, SearchSystemTag>();
-		this.fillSearchSystemTagMap( (Set<SearchSystemTag>)springBeanFactory.getBean("searchSystemTagSet") );
-		this.markUpSystemTagMap = new HashMap<String, MarkUpSystemTag>();
-		this.fillMarkUpSystemTagMap( (Set<MarkUpSystemTag>)springBeanFactory.getBean("markUpSystemTagSet") );
-	}
+	private Map<String, MarkUpSystemTag> markUpSystemTagMap;
 
 
 	/**
@@ -68,7 +41,10 @@ public class SystemTagFactory {
 	 * SystemTagName -> instance of the corresponding SystemTag
 	 * @param executableSystemTags
 	 */
-	private void fillExecutableSystemTagMap(Set<ExecutableSystemTag> executableSystemTags) {
+	public void setExecutableSystemTagMap(Set<ExecutableSystemTag> executableSystemTags) {
+		if(!present(this.executableSystemTagMap)) {
+			this.executableSystemTagMap = new HashMap<String, ExecutableSystemTag>();
+		}
 		for (ExecutableSystemTag sysTag: executableSystemTags) {
 			this.executableSystemTagMap.put(sysTag.getName(), sysTag);
 		}
@@ -79,7 +55,10 @@ public class SystemTagFactory {
 	 * SystemTagName -> instance of the corresponding SystemTag
 	 * @param searchSystemTags
 	 */
-	private void fillSearchSystemTagMap (Set<SearchSystemTag> searchSystemTags) {
+	public void setSearchSystemTagMap (Set<SearchSystemTag> searchSystemTags) {
+		if(!present(this.searchSystemTagMap)) {
+			this.searchSystemTagMap = new HashMap<String, SearchSystemTag>();
+		}
 		for (SearchSystemTag sysTag: searchSystemTags) {
 			this.searchSystemTagMap.put(sysTag.getName(), sysTag);
 		}
@@ -90,12 +69,16 @@ public class SystemTagFactory {
 	 * SystemTagName -> instance of the corresponding SystemTag
 	 * @param searchSystemTags
 	 */
-	private void fillMarkUpSystemTagMap (Set<MarkUpSystemTag> markUpSystemTags) {
+	public void setMarkUpSystemTagMap (Set<MarkUpSystemTag> markUpSystemTags) {
+		if(!present(this.markUpSystemTagMap)) {
+			this.markUpSystemTagMap = new HashMap<String, MarkUpSystemTag>();
+		}
 		for (MarkUpSystemTag sysTag: markUpSystemTags) {
 			this.markUpSystemTagMap.put(sysTag.getName(), sysTag);
 		}
 	}
 
+	
 	/**
 	 * Returns a new instance of the required systemTag
 	 * 
@@ -110,7 +93,9 @@ public class SystemTagFactory {
 			final ExecutableSystemTag sysTag = this.executableSystemTagMap.get(tagType);
 			if (present(sysTag) && sysTag.isInstance(tagName)) {
 				// tagName was found and tagName has the correct structure
-				return sysTag.newInstance();
+				ExecutableSystemTag newTag =  sysTag.clone();
+				newTag.setArgument(SystemTagsUtil.extractArgument(tagName));
+				return newTag;
 			}
 		}
 		return null;
@@ -207,30 +192,4 @@ public class SystemTagFactory {
 		}
 		return false;
 	}
-
-	/**
-	 * @return The session factory of this system tag factory.
-	 */
-	public DBSessionFactory getDbSessionFactory() {
-		return this.dbSessionFactory;
-	}
-
-	/**  
-	 * @param sessionFactory
-	 */
-	public void setDbSessionFactory(final DBSessionFactory sessionFactory) {
-		this.dbSessionFactory = sessionFactory;
-	}
-
-
-	public String getDocPath() {
-		return docPath;
-	}
-
-
-	public void setDocPath(String docPath) {
-		this.docPath = docPath;
-	}
-
-
 }

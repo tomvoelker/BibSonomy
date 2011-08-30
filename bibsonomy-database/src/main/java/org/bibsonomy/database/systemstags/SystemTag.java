@@ -4,7 +4,7 @@ package org.bibsonomy.database.systemstags;
  * @author Andreas Koch
  * @version $Id$ 
  */
-public interface SystemTag {
+public interface SystemTag extends Cloneable{
 	
 	/**
 	 * @return the argument
@@ -33,4 +33,6 @@ public interface SystemTag {
 	 * @return
 	 */
 	public boolean isToHide();
+	
+	//public SystemTag clone();
 }
