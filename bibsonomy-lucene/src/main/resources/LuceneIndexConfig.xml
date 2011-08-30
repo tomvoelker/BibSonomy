@@ -7,10 +7,7 @@
 						http://www.springframework.org/schema/util
 						http://www.springframework.org/schema/util/spring-util.xsd">
 	
-	
-	<bean id="lucene24Compat" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
- 		<property name="staticField" value="org.apache.lucene.util.Version.LUCENE_24"/>
-	</bean>
+	<util:constant id="lucene24Compat" static-field="org.apache.lucene.util.Version.LUCENE_24" />
 	
 	<!--+
 	    | type handler 
@@ -25,25 +22,11 @@
 	<!--+
 	    | index field configurations 
 	    +-->
-	<bean id="fieldNotIndexed" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
- 		<property name="staticField" value="org.apache.lucene.document.Field$Index.NO" />
-	</bean>
-	
-	<bean id="fieldNotAnalyzed" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
- 		<property name="staticField" value="org.apache.lucene.document.Field$Index.NOT_ANALYZED" />
-	</bean>
-	
-	<bean id="fieldAnalyzed" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
- 		<property name="staticField" value="org.apache.lucene.document.Field$Index.ANALYZED" />
-	</bean>
-
-	<bean id="fieldStored" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
- 		<property name="staticField" value="org.apache.lucene.document.Field$Store.YES" />
-	</bean>
-	
-	<bean id="fieldNotStored" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
- 		<property name="staticField" value="org.apache.lucene.document.Field$Store.NO" />
-	</bean>
+	<util:constant id="fieldNotIndexed" static-field="org.apache.lucene.document.Field$Index.NO" />
+	<util:constant id="fieldNotAnalyzed" static-field="org.apache.lucene.document.Field$Index.NOT_ANALYZED" />
+	<util:constant id="fieldAnalyzed" static-field="org.apache.lucene.document.Field$Index.ANALYZED" />
+	<util:constant id="fieldStored" static-field="org.apache.lucene.document.Field$Store.YES" />
+	<util:constant id="fieldNotStored" static-field="org.apache.lucene.document.Field$Store.NO" />
 
 	<!--+
 	    | analyzer (==tokenizer/normalizer)
