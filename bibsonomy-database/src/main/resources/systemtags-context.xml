@@ -8,6 +8,13 @@
 	                    http://www.springframework.org/schema/beans/spring-beans.xsd
 	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
+	<!-- factory for creating system tags -->
+	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory" factory-method="getInstance">
+		<property name="executableSystemTagMap" ref="executableSystemTagSet"/>
+		<property name="searchSystemTagMap" ref="searchSystemTagSet"/>
+		<property name="markUpSystemTagMap" ref="markUpSystemTagSet"/>
+	</bean>
+
 <!--+
     | Every systemTag in BibSonomy is registered in one of the following sets/maps
     | A systemTag that is not registered here will not be identified as a systemTag. 
@@ -26,7 +33,10 @@
 	<!--+
 	    | beans for the executable systemTags
 	    +-->
-	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag"/>
+	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag">
+		<property name="docPath" value="${project.document.path}"/>
+		<property name="DBSessionFactory" ref="dbSessionFactory"/>
+	</bean>
 	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag"/>
 	
 	<!--+

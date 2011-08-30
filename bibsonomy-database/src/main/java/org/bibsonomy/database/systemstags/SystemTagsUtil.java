@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.systemstags.executable.ForFriendTag;
-import org.bibsonomy.database.systemstags.executable.ForGroupTag;
 import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 import org.bibsonomy.model.Tag;
@@ -181,26 +180,10 @@ public class SystemTagsUtil {
 		/*
 		 *  FIXME: this should be done inside the systemtagFactory!
 		 */
-		if (present(sysTag)) {
-			sysTag.setArgument(extractArgument(tag.getName()));
-			setIndividualFields(sysTag, tag);
-		}
-		return sysTag;
-	}
-
-	/**
-	 * Sets some fields, that are required by some ExecutableSystemTags but not all of them
-	 * @param sysTag
-	 */
-	private static void setIndividualFields(final ExecutableSystemTag sysTag, final Tag tag) {
-		if (ForGroupTag.class.isAssignableFrom(sysTag.getClass())) {
-			// The forGroupTag needs a DBSessionFactory to create a post for the group
-			((ForGroupTag)sysTag).setDBSessionFactory(getSystagfactory().getDbSessionFactory());
-			((ForGroupTag)sysTag).setDocPath(getSystagfactory().getDocPath());
-		} else if (ForFriendTag.class.isAssignableFrom(sysTag.getClass())) {
-			// The forFriendTag needs access to the regular Tag of its post
+		if (present(sysTag) && ForFriendTag.class.isAssignableFrom(sysTag.getClass())) {
 			((ForFriendTag)sysTag).setTag(tag);
 		}
+		return sysTag;
 	}
 
 	/**
