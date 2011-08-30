@@ -69,5 +69,11 @@ public interface ExecutableSystemTag extends SystemTag {
 	 * @param docPath
 	 */
 	public <T extends Resource> void performDocuments(String resourceHash, List<Document> documents, DBSession session);
+	
+	/**
+	 * 
+	 * @return clone of this tag
+	 */
+	public ExecutableSystemTag clone();
 
 }
