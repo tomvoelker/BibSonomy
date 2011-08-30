@@ -5,7 +5,6 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.testutil.JNDIBinder;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.testutil.DatabasePluginMock;
@@ -14,6 +13,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * This class provides a connection to the database. Every class that implements
@@ -55,8 +55,7 @@ public abstract class AbstractDatabaseManagerTest {
 		pluginRegistry = DatabasePluginRegistry.getInstance();
 
 		// init SystemTagFactory
-		final SystemTagFactory sysTagFactory = SystemTagFactory.getInstance();
-		sysTagFactory.setDbSessionFactory(dbSessionFactory);
+		new ClassPathXmlApplicationContext("test-systemTagContext.xml");
 
 		// init managers
 		GroupDatabaseManager.getInstance().setUserDb(UserDatabaseManager.getInstance());

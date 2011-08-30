@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+	                    
+	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory" factory-method="getInstance">
+		<property name="executableSystemTagMap" ref="executableSystemTagSet"/>
+		<property name="searchSystemTagMap" ref="searchSystemTagSet"/>
+		<property name="markUpSystemTagMap" ref="markUpSystemTagSet"/>
+	</bean>
+	
+	<bean id="propertyConfigurer"  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+<!--     	<property name="locations" value="classpath:systemTags.properties" /> -->
+    	<property name="ignoreUnresolvablePlaceholders" value ="true"/>
+	</bean>
+	
+	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
+	
+	<import resource="classpath:systemtags-context.xml"/>
+	                    
+</beans>

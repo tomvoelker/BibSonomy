@@ -153,6 +153,16 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	public <T extends Resource> void performDocuments(String resourceHash, List<Document> documents, DBSession session) {
 		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public ExecutableSystemTag clone() {
+		try {
+			return (ExecutableSystemTag) super.clone();
+		} catch (CloneNotSupportedException ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
 
 
 }

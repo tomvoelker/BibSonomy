@@ -43,7 +43,7 @@ import org.bibsonomy.model.util.GroupUtils;
  * @author fei
  * @version $Id$
  */
-public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
+public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSystemTag, Cloneable {
 
 	private static final String NAME = "for";
 	private static boolean toHide = true;
@@ -262,46 +262,58 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 
 	@Override
 	public <T extends Resource> void performDocuments(final String resourceHash, final List<Document> documents, final DBSession session) {
-		
-		final String groupName = this.getArgument();
-		Post<? extends Resource> groupPost = this.getGroupDbLogic().getPostDetails(resourceHash, groupName);
-		DocumentDatabaseManager docDbManager = DocumentDatabaseManager.getInstance();
-		for (Document doc : documents) {
-			//check if post already has document with same filename
-			final Document existingGroupDoc = docDbManager.getDocumentForPost(groupName, resourceHash, doc.getFileName(), session);
-			if(!present(existingGroupDoc)) {
-				/*
-				 * no existing files with this name -> create copy and append to post 
-				 */
-				Document document = DocumentUtils.copyDocument(doc, groupName, docPath);
-				docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
-			} else {
-				/*
-				 * check if md5 hash has been changed -> file has been changed
-				 */
-				if(!doc.getMd5hash().equals(existingGroupDoc.getMd5hash())) {
+		session.beginTransaction();
+		try {
+			final String groupName = this.getArgument();
+			Post<? extends Resource> groupPost = this.getGroupDbLogic().getPostDetails(resourceHash, groupName);
+			DocumentDatabaseManager docDbManager = DocumentDatabaseManager.getInstance();
+			for (Document doc : documents) {
+				//check if post already has document with same filename
+				final Document existingGroupDoc = docDbManager.getDocumentForPost(groupName, resourceHash, doc.getFileName(), session);
+				if(!present(existingGroupDoc)) {
+					/*
+					 * no existing files with this name -> create copy and append to post 
+					 */
 					Document document = DocumentUtils.copyDocument(doc, groupName, docPath);
-					
-					
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy_mm_dd_hh_mm_ss");
-					String oldFileName = document.getFileName();
-					
-					String date = sdf.format(new Date());
-					
-					
-					
-					String newFileName = oldFileName.replace(".", "_" + date + ".");
-					
-					docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), newFileName, document.getMd5hash(), session);
+					docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
+				} else {
+					/*
+					 * check if md5 hash has been changed -> file has been changed
+					 */
+					if(!doc.getMd5hash().equals(existingGroupDoc.getMd5hash())) {
+						Document document = DocumentUtils.copyDocument(doc, groupName, docPath);
+						
+						
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy_mm_dd_hh_mm_ss");
+						String oldFileName = document.getFileName();
+						
+						String date = sdf.format(new Date());
+						
+						
+						
+						String newFileName = oldFileName.replace(".", "_" + date + ".");
+						
+						docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), newFileName, document.getMd5hash(), session);
+					}
+					/*
+					 * if md5 hash not changed -> same file -> do nothing
+					 */
 				}
-				/*
-				 * if md5 hash not changed -> same file -> do nothing
-				 */
 			}
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
 		}
-		
-		
 	}
 
+	@Override
+	public ExecutableSystemTag clone() {
+		try {
+			return (ExecutableSystemTag) super.clone();
+		} catch (CloneNotSupportedException ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
 }
 
