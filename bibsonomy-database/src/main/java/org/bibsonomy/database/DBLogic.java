@@ -2495,7 +2495,8 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 	    /*
 	     * Check, if the wiki has changed (otherwise we don't update it).
 	     */
-	    final String actualWikiText = actual.getWikiText();
+	    String actualWikiText = actual.getWikiText();
+	    if(null == actualWikiText) actualWikiText = "";
 	    if (!actualWikiText.equals(wiki.getWikiText())) {
 		this.wikiDBManager.updateWiki(userName, wiki, session);
 		this.wikiDBManager.logWiki(userName, actual, session);
