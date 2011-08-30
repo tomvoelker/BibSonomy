@@ -46,8 +46,13 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 *         <code>false</code> otherwise
 	 */
 	public boolean checkForExistingDocuments(final String userName, final String resourceHash, final String fileName, final DBSession session) {
+
+		return this.getDocumentForPost(userName, resourceHash, fileName, session) != null;
+	}
+	
+	public Document getDocumentForPost(final String userName, final String resourceHash, final String fileName, final DBSession session) {
 		if (!present(resourceHash)) {
-			return false;
+			return null;
 		}
 
 		final DocumentParam docParam = new DocumentParam();
@@ -58,7 +63,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * if a post with that filename attached exists, we return true
 		 */
-		return this.queryForObject("getDocumentForPost", docParam, Document.class, session) != null;
+		return this.queryForObject("getDocumentForPost", docParam, Document.class, session);
 	}
 
 	/**

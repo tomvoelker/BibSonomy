@@ -196,6 +196,7 @@ public class SystemTagsUtil {
 		if (ForGroupTag.class.isAssignableFrom(sysTag.getClass())) {
 			// The forGroupTag needs a DBSessionFactory to create a post for the group
 			((ForGroupTag)sysTag).setDBSessionFactory(getSystagfactory().getDbSessionFactory());
+			((ForGroupTag)sysTag).setDocPath(getSystagfactory().getDocPath());
 		} else if (ForFriendTag.class.isAssignableFrom(sysTag.getClass())) {
 			// The forFriendTag needs access to the regular Tag of its post
 			((ForFriendTag)sysTag).setTag(tag);

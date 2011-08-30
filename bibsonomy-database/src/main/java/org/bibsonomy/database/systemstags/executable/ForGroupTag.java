@@ -2,9 +2,11 @@ package org.bibsonomy.database.systemstags.executable;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -13,10 +15,14 @@ import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
+import org.bibsonomy.database.managers.DocumentDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.util.DocumentUtils;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -43,6 +49,8 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	private static boolean toHide = true;
 
 	private DBSessionFactory dbSessionFactory = null;
+	
+	private String docPath;
 
 	@Override
 	public ForGroupTag newInstance() {
@@ -57,6 +65,11 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	@Override
 	public boolean isToHide() {
 		return toHide;
+	}
+	
+
+	public void setDocPath(String docPath) {
+		this.docPath = docPath;
 	}
 
 	/**
@@ -81,16 +94,27 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 
 	@Override
 	public <T extends Resource> void performBeforeUpdate(final Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session) {
+		String hash = null;
+		Resource resource = null;
 		if (operation == PostUpdateOperation.UPDATE_TAGS) {
 			/*
 			 *  in this case, newPost is not a valid post but contains the new tags, while oldPost is a valid post containing the old tags
 			 */
 			this.perform(oldPost, newPost.getTags(), session);
+			hash = newPost.getResource().getIntraHash();
+			resource = oldPost.getResource();
 		} else {
 			/*
 			 *  in this case, newPost is a valid post containing the new tags
 			 */
 			this.perform(newPost, newPost.getTags(), session);
+			hash = newPost.getResource().getIntraHash();
+			resource = newPost.getResource();
+		}
+		
+		if(resource instanceof BibTex) {
+			
+			performDocuments(hash, ((BibTex)resource).getDocuments(), session);
 		}
 	}
 
@@ -122,9 +146,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		/*
 		 * Make a DBLogic for the group
 		 */
-		final DBLogicNoAuthInterfaceFactory logicFactory = new DBLogicNoAuthInterfaceFactory();
-		logicFactory.setDbSessionFactory(this.dbSessionFactory);
-		final LogicInterface groupDBLogic = logicFactory.getLogicAccess(groupName, "");
+		LogicInterface groupDBLogic = this.getGroupDbLogic();
 		/*
 		 *  Check if the group exists and whether it owns the post already
 		 */
@@ -199,13 +221,18 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		log.debug("copied post was stored successfully");
 	}
 
+	private LogicInterface getGroupDbLogic() {
+		final DBLogicNoAuthInterfaceFactory logicFactory = new DBLogicNoAuthInterfaceFactory();
+		logicFactory.setDbSessionFactory(this.dbSessionFactory);
+		return logicFactory.getLogicAccess(this.getArgument(), "");
+	}
 
 	/**
 	 * Checks the preconditions to this tags usage, adds errorMessages
 	 * @param groupName
 	 * @param userName
 	 * @param session
-	 * @return true iff user is allowed to use the tag
+	 * @return true if user is allowed to use the tag
 	 */
 	private boolean hasPermissions(final String groupName, final String userName, final DBSession session) {
 		final PermissionDatabaseManager permissionDb = PermissionDatabaseManager.getInstance();
@@ -232,5 +259,49 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		// the send tag must have an argument, the prefix is not required
 		return SystemTagsUtil.hasTypeAndArgument(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
 	}
+
+	@Override
+	public <T extends Resource> void performDocuments(final String resourceHash, final List<Document> documents, final DBSession session) {
+		
+		final String groupName = this.getArgument();
+		Post<? extends Resource> groupPost = this.getGroupDbLogic().getPostDetails(resourceHash, groupName);
+		DocumentDatabaseManager docDbManager = DocumentDatabaseManager.getInstance();
+		for (Document doc : documents) {
+			//check if post already has document with same filename
+			final Document existingGroupDoc = docDbManager.getDocumentForPost(groupName, resourceHash, doc.getFileName(), session);
+			if(!present(existingGroupDoc)) {
+				/*
+				 * no existing files with this name -> create copy and append to post 
+				 */
+				Document document = DocumentUtils.copyDocument(doc, groupName, docPath);
+				docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
+			} else {
+				/*
+				 * check if md5 hash has been changed -> file has been changed
+				 */
+				if(!doc.getMd5hash().equals(existingGroupDoc.getMd5hash())) {
+					Document document = DocumentUtils.copyDocument(doc, groupName, docPath);
+					
+					
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy_mm_dd_hh_mm_ss");
+					String oldFileName = document.getFileName();
+					
+					String date = sdf.format(new Date());
+					
+					
+					
+					String newFileName = oldFileName.replace(".", "_" + date + ".");
+					
+					docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), newFileName, document.getMd5hash(), session);
+				}
+				/*
+				 * if md5 hash not changed -> same file -> do nothing
+				 */
+			}
+		}
+		
+		
+	}
+
 }
 

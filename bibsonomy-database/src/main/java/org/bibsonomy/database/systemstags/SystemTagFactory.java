@@ -42,6 +42,8 @@ public class SystemTagFactory {
 
 	/** The DBSessionFactory (we need it for the forGroup tag) */
 	private DBSessionFactory dbSessionFactory;
+	
+	private String docPath;
 
 	/**
 	 * Constructor
@@ -218,6 +220,16 @@ public class SystemTagFactory {
 	 */
 	public void setDbSessionFactory(final DBSessionFactory sessionFactory) {
 		this.dbSessionFactory = sessionFactory;
+	}
+
+
+	public String getDocPath() {
+		return docPath;
+	}
+
+
+	public void setDocPath(String docPath) {
+		this.docPath = docPath;
 	}
 
 

@@ -1,5 +1,7 @@
 package org.bibsonomy.database.systemstags.executable;
 
+import java.util.List;
+
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -11,6 +13,7 @@ import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.SentSystemTag;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -145,5 +148,11 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 		// the send tag must have an argument, the prefix is not required
 		return SystemTagsUtil.hasTypeAndArgument(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
 	}
+
+	@Override
+	public <T extends Resource> void performDocuments(String resourceHash, List<Document> documents, DBSession session) {
+		throw new UnsupportedOperationException();
+	}
+
 
 }
