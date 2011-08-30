@@ -38,6 +38,7 @@
 	<!-- factory for creating system tags -->
 	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory" factory-method="getInstance">
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+		<property name="docPath" value="${project.document.path}"/>
 	</bean>
 	
 	<!--+
