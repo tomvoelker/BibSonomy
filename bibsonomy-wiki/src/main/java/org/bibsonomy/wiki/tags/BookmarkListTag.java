@@ -18,6 +18,7 @@ import org.bibsonomy.model.Post;
  * TODO: abstract resource tag
  * 
  * @author philipp
+ * @author Bernd Terbrack
  * @version $Id$
  */
 public class BookmarkListTag extends AbstractTag {
@@ -63,7 +64,7 @@ public class BookmarkListTag extends AbstractTag {
         	final String description = post.getDescription();
 			if (present(description)) {
         		// TODO: i18n [show details]
-        		renderedHTML.append("<a class='hand'> [show details] </a>");
+        		renderedHTML.append("<a class='hand' onclick='return toggleDetails(this)' > [show details] </a>");
         		renderedHTML.append("<p class='details'>" +description +"</p>");
         	}
         	

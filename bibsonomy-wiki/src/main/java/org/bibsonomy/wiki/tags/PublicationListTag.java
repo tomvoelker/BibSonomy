@@ -24,7 +24,7 @@ import org.bibsonomy.util.SortUtils;
  * TODO: abstract resource tag
  * 
  * @author philipp
- * @author Bernd
+ * @author Bernd Terbrack
  * @version $Id: PublicationListTag.java,v 1.9 2011-08-22 13:16:07 nosebrain Exp
  *          $
  */
@@ -70,7 +70,7 @@ public class PublicationListTag extends AbstractTag {
 
 		final String requestedUserName = this.requestedUser.getName();
 		
-		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format (<a href='/export/user/" + requestedUserName + "/" +tags + "' title='show all export formats (including RSS, CVS, ...)''>all formats</a>): <select size='1' name='layout' class='layout' onchange='formatPublications(this)'>");
+		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format (<a href='/export/user/" + requestedUserName + "/" +tags + "' title='show all export formats (including RSS, CVS, ...)''>all formats</a>): <select size='1' name='layout' class='layout' onchange='return formatPublications(this)'>");
 		renderedHTML.append("<option value='plain'>plain</option><option value='harvardhtml'>harvard</option><option value='din1505'>DIN1505</option><option value='simplehtml'>simpleHTML</option>");
 		renderedHTML.append("</select><input type='hidden' value='"+tags+"' /></form></span></div>");
 
