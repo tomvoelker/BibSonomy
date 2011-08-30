@@ -42,10 +42,10 @@
 						<configuration>
 							<tasks>
 								<mkdir dir="${project.downloaded-resources.directory}" />
-								<get src="http://downloads.sourceforge.net/project/wurfl/WURFL/2.2/wurfl-2.2.zip?ts=1314707449&amp;use_mirror=switch"
-									dest="${project.build.directory}/classes/wurfl.zip" />
-								<get src="http://downloads.sourceforge.net/project/wurfl/WURFL/2.2/web_browsers_patch.xml?ts=1314707638&amp;use_mirror=switch"
-									dest="${project.build.directory}/classes/web_browsers_patch.xml" />
+								<get src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/wurfl-${wurfl.version}.zip"
+									dest="${project.downloaded-resources.directory}/wurfl.zip" />
+								<get src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/web_browsers_patch.xml"
+									dest="${project.downloaded-resources.directory}/web_browsers_patch.xml" />
 							</tasks>
 						</configuration>
 						<goals>
