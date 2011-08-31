@@ -52,7 +52,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	public View workOn(AjaxCvCommand command) {
 		log.debug("workOn CvAjaxController");
 		final Locale locale = requestLogic.getLocale();
-		this.wikiRenderer.setUser(logic.getAuthenticatedUser());
+		this.wikiRenderer.setRequestedUser(logic.getAuthenticatedUser());
 		
 		// -- Validating the request --
 		/*
@@ -91,7 +91,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		Wiki wiki = new Wiki();
 		wiki.setWikiText(wikiText);
 		if("true".equals(isSave)) {
-			logic.updateWiki(wikiRenderer.getUser().getName(), wiki);
+			logic.updateWiki(wikiRenderer.getRequestedUser().getName(), wiki);
 		}
 		command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		return Views.AJAX_XML;
@@ -104,7 +104,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 			String wikiText = messageSource.getMessage(layouts.get(layout), null, locale);
 			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		} else {
-			String wikiText = logic.getWiki(wikiRenderer.getUser().getName(), null).getWikiText();
+			String wikiText = logic.getWiki(wikiRenderer.getRequestedUser().getName(), null).getWikiText();
 			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		}
 
