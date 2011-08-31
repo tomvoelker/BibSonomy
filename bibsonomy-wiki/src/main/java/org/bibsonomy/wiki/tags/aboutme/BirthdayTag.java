@@ -14,8 +14,12 @@ import org.bibsonomy.wiki.tags.AbstractTag;
  * @author Bernd
  *
  */
-public class BirthdayTag extends AbstractTag{
+public class BirthdayTag extends AbstractTag {
+	
 	private static final String TAG_NAME = "birthday";
+	/*
+	 * TODO: allow other formats as tag parameter (e.g. display without year or the english order mm/dd/yyyy..."
+	 */
 	private static final String DATE_FORMAT = "dd-MM-yyyy";
 	
 	
@@ -33,7 +37,7 @@ public class BirthdayTag extends AbstractTag{
 		final StringBuilder renderedHTML = new StringBuilder();		
 		//FIXME: requestedUser Birthday?!
 
-		final Date birthday = requestedUser.getBirthday();
+		final Date birthday = this.requestedUser.getBirthday();
 		if (present(birthday)) {
 			renderedHTML.append(Utils.escapeXmlChars(simpleDate.format(birthday)));
 		}

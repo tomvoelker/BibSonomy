@@ -46,13 +46,13 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new InstitutionTag());
 		register(new ImageTag());
 		register(new RegDateTag());
+		register(new InterestsTag());
+		register(new HobbieTag());
 		/*
 		 * We have no eMail Tag since eMail addresses are never public in BibSonomy!
 		 */
 		
-		/* Other Tags */
-		register(new InterestsTag());
-		register(new HobbieTag());
+		/* Post Tags */
 		register(new BookmarkListTag());
 		register(new PublicationListTag());
 	}
@@ -61,7 +61,7 @@ public class CVWikiModel extends AbstractWikiModel {
 		Configuration.DEFAULT_CONFIGURATION.addTokenTag(tag.getName(), tag);
 	}
 
-	private User user;
+	private User requestedUser;
 
 	private LogicInterface logic;
 
@@ -75,6 +75,10 @@ public class CVWikiModel extends AbstractWikiModel {
 	}
 
 	@Override
+	/*
+	 * TODO: add Comment (non-Javadoc)
+	 * @see info.bliki.wiki.model.AbstractWikiModel#appendHead(java.lang.String, int, boolean, int, int, int)
+	 */
 	public ITableOfContent appendHead(final String rawHead, final int headLevel, final boolean noToC, final int headCounter, final int startPosition, final int endPosition) {
 		final TagStack localStack = WikipediaParser.parseRecursive(rawHead.trim(), this, true, true);
 
@@ -147,15 +151,15 @@ public class CVWikiModel extends AbstractWikiModel {
 	 * set the user
 	 * @param user the user to add
 	 */
-	public void setUser(final User user) {
-		this.user = user;
+	public void setRequestedUser(final User user) {
+		this.requestedUser = user;
 	}
 
 	/**
 	 * @return the user
 	 */
-	public User getUser() {
-		return this.user;
+	public User getRequestedUser() {
+		return this.requestedUser;
 	}
 
 	/**

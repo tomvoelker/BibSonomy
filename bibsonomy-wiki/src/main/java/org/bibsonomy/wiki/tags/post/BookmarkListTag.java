@@ -41,14 +41,14 @@ public class BookmarkListTag extends AbstractTag {
        
  		final StringBuilder renderedHTML = new StringBuilder();
  		
-         final Map<String, String> tagAtttributes = node.getAttributes();
-         final Set<String> keysSet = tagAtttributes.keySet();
+        final Map<String, String> tagAtttributes = node.getAttributes();
+        final Set<String> keysSet = tagAtttributes.keySet();
          
  		final String tags;
  		if (!keysSet.contains(NAME)) {
  			tags = "myown"; // TODO: should be MyOwnSystemTag.NAME but adding
  							// dependency to database module only for accessing
- 							// the constant?!
+ 							// the constant?! => Should definitely be MyOwnSystemTag.NAME and the systemTag should be moved to the model
  		} else {
  			tags = tagAtttributes.get(NAME);
  		}

@@ -26,14 +26,11 @@ public class HobbieTag extends AbstractTag {
 		final StringBuilder renderedHTML = new StringBuilder();
 		final String hobbies = this.requestedUser.getHobbies();
 
-		if (!present(hobbies)) {
-			return renderedHTML;
+		if (present(hobbies)) {
+			renderedHTML.append("<p class='align'>");
+			renderedHTML.append(Utils.escapeXmlChars(hobbies));
+			renderedHTML.append("</p>");
 		}
-
-		renderedHTML.append("<p class='align'>");
-		renderedHTML.append(Utils.escapeXmlChars(hobbies));
-		renderedHTML.append("</p>");
-
 		return renderedHTML;
 	}
 

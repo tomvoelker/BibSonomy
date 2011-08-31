@@ -12,6 +12,11 @@ import org.bibsonomy.wiki.tags.AbstractTag;
  *
  */
 public class RegDateTag extends AbstractTag {
+	
+	/*
+	 * TODO Unify date handling for this tag and for the BirthdayTag (same options)
+	 * probably useful would be an AbstractDate Tag
+	 */
 	private static final String TAG_NAME = "regdate";
 
 	/**

@@ -15,6 +15,11 @@ import org.bibsonomy.wiki.tags.AbstractTag;
  * @version $Id$
  */
 public class NameTag extends AbstractTag {
+	
+	/*
+	 * TODO: DISCUSS: should we use the homepage link for the real name?
+	 * would it not be better to have a homepage tag and have the name link to the bibsonomy-page of the user?
+	 */
 	private static final String TAG_NAME = "name";
 
 	/**

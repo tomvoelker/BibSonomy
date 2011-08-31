@@ -1,8 +1,5 @@
 package org.bibsonomy.wiki.tags.aboutme;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-import info.bliki.htmlcleaner.Utils;
-
 import org.bibsonomy.wiki.tags.AbstractTag;
 
 /**
@@ -23,13 +20,7 @@ public class ProfessionTag extends AbstractTag{
 	
 	@Override
 	protected StringBuilder render() {
-		final StringBuilder renderedHTML = new StringBuilder();
-		final String profession = this.requestedUser.getProfession();
-		if (present(profession)) {
-			renderedHTML.append(Utils.escapeXmlChars(requestedUser.getProfession()));
-		}
-		
-		return renderedHTML;
+		return this.renderString(this.requestedUser.getProfession());
 	}
 
 }
