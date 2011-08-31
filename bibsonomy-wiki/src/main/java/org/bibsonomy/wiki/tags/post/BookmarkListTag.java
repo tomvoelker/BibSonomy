@@ -1,4 +1,4 @@
-package org.bibsonomy.wiki.tags;
+package org.bibsonomy.wiki.tags.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 import info.bliki.htmlcleaner.TagNode;
@@ -13,6 +13,7 @@ import java.util.Set;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.wiki.tags.AbstractTag;
 
 /**
  * TODO: abstract resource tag

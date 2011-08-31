@@ -18,24 +18,24 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.tags.AbstractTag;
-import org.bibsonomy.wiki.tags.BookmarkListTag;
-import org.bibsonomy.wiki.tags.HobbieTag;
-import org.bibsonomy.wiki.tags.InterestsTag;
-import org.bibsonomy.wiki.tags.PublicationListTag;
-import org.bibsonomy.wiki.tags.general.BirthdayTag;
-import org.bibsonomy.wiki.tags.general.ImageTag;
-import org.bibsonomy.wiki.tags.general.InstitutionTag;
-import org.bibsonomy.wiki.tags.general.LocationTag;
-import org.bibsonomy.wiki.tags.general.NameTag;
-import org.bibsonomy.wiki.tags.general.ProfessionTag;
-import org.bibsonomy.wiki.tags.general.RegDateTag;
+import org.bibsonomy.wiki.tags.aboutme.BirthdayTag;
+import org.bibsonomy.wiki.tags.aboutme.HobbieTag;
+import org.bibsonomy.wiki.tags.aboutme.ImageTag;
+import org.bibsonomy.wiki.tags.aboutme.InstitutionTag;
+import org.bibsonomy.wiki.tags.aboutme.InterestsTag;
+import org.bibsonomy.wiki.tags.aboutme.LocationTag;
+import org.bibsonomy.wiki.tags.aboutme.NameTag;
+import org.bibsonomy.wiki.tags.aboutme.ProfessionTag;
+import org.bibsonomy.wiki.tags.aboutme.RegDateTag;
+import org.bibsonomy.wiki.tags.post.BookmarkListTag;
+import org.bibsonomy.wiki.tags.post.PublicationListTag;
 
 /**
  * @author philipp
  * @author Bernd
  * @version $Id$
  */
-public class WikiUtil extends AbstractWikiModel {
+public class CVWikiModel extends AbstractWikiModel {
 	
 	static {
 		/* About-Me Tags */
@@ -45,8 +45,10 @@ public class WikiUtil extends AbstractWikiModel {
 		register(new ProfessionTag());
 		register(new InstitutionTag());
 		register(new ImageTag());
-		//register(new EmailTag()); TODO: Is the email-tag really useful/necessary?
 		register(new RegDateTag());
+		/*
+		 * We have no eMail Tag since eMail addresses are never public in BibSonomy!
+		 */
 		
 		/* Other Tags */
 		register(new InterestsTag());
@@ -68,7 +70,7 @@ public class WikiUtil extends AbstractWikiModel {
 	/**
 	 * Default Constructor
 	 */
-	public WikiUtil() {
+	public CVWikiModel() {
 		super(Configuration.DEFAULT_CONFIGURATION, null, null);
 	}
 

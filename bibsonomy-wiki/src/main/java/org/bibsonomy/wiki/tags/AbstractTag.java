@@ -11,7 +11,7 @@ import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.renderer.LayoutRenderer;
-import org.bibsonomy.wiki.WikiUtil;
+import org.bibsonomy.wiki.CVWikiModel;
 
 /**
  * @author philipp
@@ -33,7 +33,7 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 
 	@Override
 	public void renderHTML(final ITextConverter converter, final Appendable buf, final IWikiModel model) throws IOException {
-		final WikiUtil wikiUtil = (WikiUtil) model;
+		final CVWikiModel wikiUtil = (CVWikiModel) model;
 		this.logic = wikiUtil.getLogic();
 		this.requestedUser = wikiUtil.getUser();
 		this.layoutRenderer = wikiUtil.getLayoutRenderer();

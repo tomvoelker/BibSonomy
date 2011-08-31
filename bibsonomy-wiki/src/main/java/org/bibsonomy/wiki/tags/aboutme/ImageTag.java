@@ -1,4 +1,4 @@
-package org.bibsonomy.wiki.tags.general;
+package org.bibsonomy.wiki.tags.aboutme;
 
 import java.util.Arrays;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package org.bibsonomy.wiki.tags;
+package org.bibsonomy.wiki.tags.post;
 
 import info.bliki.htmlcleaner.TagNode;
 
@@ -19,6 +19,7 @@ import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.SortUtils;
+import org.bibsonomy.wiki.tags.AbstractTag;
 
 /**
  * TODO: abstract resource tag
