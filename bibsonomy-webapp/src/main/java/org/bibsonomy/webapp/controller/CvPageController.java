@@ -15,7 +15,7 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.bibsonomy.wiki.WikiUtil;
+import org.bibsonomy.wiki.CVWikiModel;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class CvPageController extends ResourceListController implements MinimalisticController<CvPageViewCommand> {
 
-	private WikiUtil wikiRenderer;
+	private CVWikiModel wikiRenderer;
 
 	/**
 	 * implementation of {@link MinimalisticController} interface
@@ -88,7 +88,7 @@ public class CvPageController extends ResourceListController implements Minimali
 	 *            the wikiRenderer to set
 	 */
 	@Required
-	public void setWikiRenderer(WikiUtil wikiRenderer) {
+	public void setWikiRenderer(CVWikiModel wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
 	}
 }

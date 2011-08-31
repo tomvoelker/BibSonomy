@@ -17,7 +17,7 @@ import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.bibsonomy.wiki.WikiUtil;
+import org.bibsonomy.wiki.CVWikiModel;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
@@ -34,7 +34,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	private static final Map<String,String> layouts = new HashMap<String,String>();
 	private static final Log log = LogFactory.getLog(CvAjaxController.class);
 	private Errors errors;
-	private WikiUtil wikiRenderer;
+	private CVWikiModel wikiRenderer;
 	private MessageSource messageSource;
 	
 	static {
@@ -172,7 +172,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	/**
 	 * @return the wikiRenderer
 	 */
-	public WikiUtil getWikiRenderer() {
+	public CVWikiModel getWikiRenderer() {
 		return wikiRenderer;
 	}
 
@@ -180,7 +180,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 * @param wikiRenderer
 	 *            the wikiRenderer to set
 	 */
-	public void setWikiRenderer(WikiUtil wikiRenderer) {
+	public void setWikiRenderer(CVWikiModel wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
 	}
 
