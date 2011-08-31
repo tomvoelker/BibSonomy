@@ -23,6 +23,9 @@ public class ImageTag extends AbstractTag{
 	/*
 	 * TODO: imho it would make sense to have classes for these structures (enums?)
 	 * thus we could implement guaranteed testing with toLowerCase etc.
+	 * e.g. AbstractTag has a field of type Set<AllowedAttribute>
+	 * where AllowedAttribute is an object representing a parameter containing a name and an the possible values for the param
+	 * This set would be filled on creation of the tag.
 	 */
 	private static final Set<String> ALLOWED_FLOAT_ATTRIBUTES = new HashSet<String>(Arrays.asList("left","right","none"));
 	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(FLOAT));
