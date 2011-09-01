@@ -105,7 +105,7 @@
 	</bean>
 	
 	<!-- provides access to the wikiRenderer -->
-	<bean id="wikiRenderer" class="org.bibsonomy.wiki.WikiUtil" scope="request">
+	<bean id="wikiRenderer" class="org.bibsonomy.wiki.CVWikiModel" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer" />
 	</bean>
@@ -587,7 +587,7 @@
 		</property>
 	</bean>	
 	
-	<bean id="groupCvPageController" class="org.bibsonomy.webapp.controller.GroupCvPageController" scope="request" parent="resourceController">
+	<bean id="groupCvPageController" class="org.bibsonomy.webapp.controller.CvPageController" scope="request" parent="resourceController">
 		<property name="supportedResources" ref="allResources"/>
 		<property name="entries">
 			<value>3</value>
