@@ -1,12 +1,12 @@
 package org.bibsonomy.wiki.tags.aboutme;
 
+import info.bliki.htmlcleaner.TagNode;
+import info.bliki.htmlcleaner.Utils;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import info.bliki.htmlcleaner.TagNode;
-import info.bliki.htmlcleaner.Utils;
 
 import org.bibsonomy.wiki.tags.AbstractTag;
 
@@ -21,7 +21,7 @@ public class ImageTag extends AbstractTag{
 	private static final String FLOAT = "float";
 	
 	/*
-	 * TODO: imho it would make sense to have classes for these structures (enums?)
+	 * FIXME: imho it would make sense to have classes for these structures (enums?)
 	 * thus we could implement guaranteed testing with toLowerCase etc.
 	 * e.g. AbstractTag has a field of type Set<AllowedAttribute>
 	 * where AllowedAttribute is an object representing a parameter containing a name and an the possible values for the param
@@ -44,9 +44,10 @@ public class ImageTag extends AbstractTag{
 		final StringBuilder renderedHTML = new StringBuilder();
 		final String name = Utils.escapeXmlChars(this.requestedUser.getName());
 		/*
-		 * TODO: Kriegen wir die URLs aus dem JavaCode raus?
+		 * TODO: Kriegen wir die URLs aus dem JavaCode raus
+		 * FIXME: tolowercase impl.
 		 */
-		if(ALLOWED_FLOAT_ATTRIBUTES.contains(tagAtttributes.get(FLOAT).toLowerCase())){
+		if(ALLOWED_FLOAT_ATTRIBUTES.contains(tagAtttributes.get(FLOAT))){
 			renderedHTML.append("<img src='/picture/user/").append(name).append("' style='float:").append(tagAtttributes.get(FLOAT)).append(";'>");
 		} else {
 			renderedHTML.append("<img src='/picture/user/").append(name).append("' style='float:right;'>");
