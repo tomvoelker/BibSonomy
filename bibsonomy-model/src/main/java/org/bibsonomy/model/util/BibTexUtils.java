@@ -159,7 +159,7 @@ public class BibTexUtils {
 	/*
 	 * fields to be excluded when creating bibtex strings.
 	 */
-	private static final Set<String> EXCLUDE_FIELDS = new HashSet<String>(Arrays.asList(new String[] { 
+	private static final Set<String> EXCLUDE_FIELDS = new HashSet<String>(Arrays.asList(
 			"abstract",        // added separately
 			"bibtexAbstract",  // added separately
 			"bibtexKey",       // added at beginning of entry
@@ -173,7 +173,7 @@ public class BibTexUtils {
 			"simHash1", // not added
 			"simHash2", // not added
 			"simHash3"  // not added
-	}));
+	));
 
 	/**
 	 * Some BibTeX styles translate month abbreviations into (language specific) 
@@ -269,21 +269,22 @@ public class BibTexUtils {
 			appendOpenURL(openurl, "aufirst", firstName);
 			appendOpenURL(openurl, "auinit1", auinit1);
 			// genres == entrytypes
-			if (bib.getEntrytype().toLowerCase().equals("journal")) {
+			final String entryType = bib.getEntrytype().toLowerCase();
+			if (entryType.equals("journal")) {
 				appendOpenURL(openurl, "genre", "journal");
 				appendOpenURL(openurl, "title", bib.getTitle());
-			} else if (bib.getEntrytype().toLowerCase().equals("book")) {
+			} else if (entryType.equals("book")) {
 				appendOpenURL(openurl, "genre", "book");
 				appendOpenURL(openurl, "title", bib.getTitle());
-			} else if (bib.getEntrytype().toLowerCase().equals("article")) {
+			} else if (entryType.equals("article")) {
 				appendOpenURL(openurl, "genre", "article");
 				appendOpenURL(openurl, "title", bib.getJournal());
 				appendOpenURL(openurl, "atitle", bib.getTitle());
-			} else if (bib.getEntrytype().toLowerCase().equals("inbook")) {
+			} else if (entryType.equals("inbook")) {
 				appendOpenURL(openurl, "genre", "bookitem");
 				appendOpenURL(openurl, "title", bib.getBooktitle());
 				appendOpenURL(openurl, "atitle", bib.getTitle());
-			} else if (bib.getEntrytype().toLowerCase().equals("proceedings")) {
+			} else if (entryType.equals("proceedings")) {
 				appendOpenURL(openurl, "genre", "proceeding");
 				appendOpenURL(openurl, "title", bib.getBooktitle());
 				appendOpenURL(openurl, "atitle", bib.getTitle());
@@ -427,11 +428,11 @@ public class BibTexUtils {
 
 			return buffer.toString();
 
-		} catch (IntrospectionException ex) {
+		} catch (final IntrospectionException ex) {
 			ex.printStackTrace();
-		} catch (InvocationTargetException ex) {
+		} catch (final InvocationTargetException ex) {
 			ex.printStackTrace();
-		} catch (IllegalAccessException ex) {
+		} catch (final IllegalAccessException ex) {
 			ex.printStackTrace();
 		}		
 		return null;
@@ -652,7 +653,6 @@ public class BibTexUtils {
 		return buffer.toString().toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
 	}
 
-
 	/**
 	 * Relevant = longer than four characters (= 0-9a-z)
 	 * 
@@ -673,51 +673,19 @@ public class BibTexUtils {
 
 
 	/**
-	 * Cleans up a string containing LaTeX markup and converts special chars to HTML special chars.
+	 * Cleans up a string containing LaTeX markup
 	 * 
 	 * @param bibtex a bibtex string
 	 * @return the cleaned bibtex string
 	 */
 	public static String cleanBibTex(String bibtex) {
-
 		if (!present(bibtex)) return "";			
-
 
 		// replace markup
 		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}		
 
 		// decode Latex macros into unicode characters
-		bibtex = TexDecode.decode(bibtex).trim();
-
-		// convert non-ASCII into HTML entities
-		final StringBuilder buffer = new StringBuilder(bibtex.length());
-		char c;		
-		for (int i = 0; i < bibtex.length(); i++) {
-			c = bibtex.charAt(i);
-
-			// HTML Special Chars
-			if (c == '"')
-				buffer.append("&quot;");
-			else if (c == '&')
-				buffer.append("&amp;");
-			else if (c == '<')
-				buffer.append("&lt;");
-			else if (c == '>')
-				buffer.append("&gt;");
-			else {
-				int ci = 0xffff & c;
-				if (ci < 160 )
-					// nothing special only 7 Bit
-					buffer.append(c);
-				else {
-					// Not 7 Bit use the unicode system
-					buffer.append("&#");
-					buffer.append(new Integer(ci).toString());
-					buffer.append(';');
-				}
-			}
-		}
-		return buffer.toString();
+		return TexDecode.decode(bibtex).trim();
 	}
 
 	/**
@@ -857,7 +825,7 @@ public class BibTexUtils {
 	 * @param appendTrailingSeparator - whether to append a trailing separator at the end of the string
 	 * @return - a string representation of the given object.
 	 */
-	public static String serializeMiscFields(Map<String,String> miscFields, boolean appendTrailingSeparator) {
+	public static String serializeMiscFields(final Map<String,String> miscFields, final boolean appendTrailingSeparator) {
 		final StringBuilder miscFieldsSerialized = new StringBuilder();
 		// loop over misc fields, if any
 		if (present(miscFields)) {
@@ -880,7 +848,7 @@ public class BibTexUtils {
 	 * @param miscFieldString - the misc field string
 	 * @return a hashmap containg the parsed key/value pairs.
 	 */
-	public static Map<String,String> parseMiscFieldString(String miscFieldString) {
+	public static Map<String,String> parseMiscFieldString(final String miscFieldString) {
 		return StringUtils.parseBracketedKeyValuePairs(miscFieldString, ASSIGNMENT_OPERATOR, KEYVALUE_SEPARATOR, DEFAULT_OPENING_BRACKET, DEFAULT_CLOSING_BRACKET);		
 	}
 
