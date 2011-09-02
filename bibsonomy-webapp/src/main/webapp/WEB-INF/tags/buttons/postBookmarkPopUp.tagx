@@ -5,7 +5,6 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:spring="http://www.springframework.org/tags"
-	xmlns:menuparts="urn:jsptagdir:/WEB-INF/tags/menu/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
     <fmt:message key="navi.postBookmarkPopup" var="postBookmarkPopup"/>
