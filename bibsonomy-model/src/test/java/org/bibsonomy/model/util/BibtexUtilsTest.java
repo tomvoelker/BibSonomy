@@ -259,11 +259,11 @@ public class BibtexUtilsTest {
 	 */
 	@Test
 	public void cleanBibTex() {
-		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M{\\\"u}ller"));
-		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M\\\"{u}ller"));
-		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M\\\"uller"));
-		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M\"uller"));
-		assertEquals("Sant&#233;", BibTexUtils.cleanBibTex("Sant{\\'e}"));
+		assertEquals("Müller", BibTexUtils.cleanBibTex("M{\\\"u}ller"));
+		assertEquals("Müller", BibTexUtils.cleanBibTex("M\\\"{u}ller"));
+		assertEquals("Müller", BibTexUtils.cleanBibTex("M\\\"uller"));
+		assertEquals("Müller", BibTexUtils.cleanBibTex("M\"uller"));
+		assertEquals("Santé", BibTexUtils.cleanBibTex("Sant{\\'e}"));
 		assertEquals("http://bla.fasel", BibTexUtils.cleanBibTex("\\url{http://bla.fasel}"));
 	}
 
@@ -287,14 +287,15 @@ public class BibtexUtilsTest {
 		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 		final Post<BibTex> post1 = new Post<BibTex>();
 		final Post<BibTex> post2 = new Post<BibTex>();
-		BibTex b1 = new BibTex();
-		b1.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("A. Test")));
-		post1.setResource(b1);
-		BibTex b2 = new BibTex();
-		b2.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("B. Test")));
-		post2.setResource(b2);
+		final BibTex p1 = new BibTex();
+		p1.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("A. Test")));
+		post1.setResource(p1);
+		final BibTex p2 = new BibTex();
+		p2.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("B. Test")));
+		post2.setResource(p2);
 		posts.add(post1);
 		posts.add(post2);
+		// TODO: adapt to new author editor handling
 		assertEquals("A. Test", posts.get(0).getResource().getAuthor());
 		assertEquals("B. Test", posts.get(1).getResource().getAuthor());
 		BibTexUtils.sortBibTexList(posts, Arrays.asList(SortKey.AUTHOR), Arrays.asList(SortOrder.ASC));
