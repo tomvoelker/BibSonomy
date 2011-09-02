@@ -8,9 +8,9 @@
     <version>2.0.18-SNAPSHOT</version>
   </parent>
   <groupId>org.bibsonomy</groupId>
-  <artifactId>BibSonomy-Wiki</artifactId>
+  <artifactId>bibsonomy-wiki</artifactId>
   <version>2.0.18-SNAPSHOT</version>
-  <name>bibsonomy-wiki</name>
+  <name>BibSonomy CV Wiki</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
