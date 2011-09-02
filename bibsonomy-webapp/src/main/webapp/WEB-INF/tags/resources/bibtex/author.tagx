@@ -25,8 +25,8 @@
 		<c:forEach var="person" items="${personList}" varStatus="loopStatus">
 			<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
 			 <span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-			 	<a href="/author/${mtl:cleanBibtex(person.lastName)}" itemprop="url">
-			 		<span itemprop="name">${mtl:cleanBibtex(person.firstName)}<c:out value=" "/> ${mtl:cleanBibtex(person.lastName)}</span>
+			 	<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}" itemprop="url">
+			 		<span itemprop="name"><c:out value="${mtl:cleanBibtex(person.firstName)}" /><c:out value=" "/><c:out value="${mtl:cleanBibtex(person.lastName)}" /></span>
 			 	</a>
 			</span>
 			<!-- append separator "," -->
