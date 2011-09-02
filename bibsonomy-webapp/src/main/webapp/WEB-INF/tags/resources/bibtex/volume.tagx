@@ -8,11 +8,11 @@
 	<c:set var="space" value=" "/>
 	<c:choose>
 		<c:when test="${not empty post.resource.volume}">		
-			<em><fmt:message key="bibtex.volume"/><c:out value=" "/>${mtl:cleanBibtex(post.resource.volume)}.<c:out value=" "/></em>		
+			<em><fmt:message key="bibtex.volume"/><c:out value=" "/><c:out value="${mtl:cleanBibtex(post.resource.volume)}" /><c:out value=". "/></em>		
 		</c:when>
 		<c:otherwise>
 			<c:if test="${not empty post.resource.number}">		
-				<em>${mtl:cleanBibtex(post.resource.number)}.<c:out value=" "/></em>		
+				<em><c:out value="${mtl:cleanBibtex(post.resource.number)}" /><c:out value=". "/></em>		
 			</c:if>
 		</c:otherwise>
 	</c:choose>

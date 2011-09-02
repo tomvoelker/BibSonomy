@@ -7,6 +7,6 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
 	
 	<c:if test="${not empty post.resource.pages}">		
-		<em><fmt:message key="bibtex.pages"/><c:out value=" "/>${mtl:cleanBibtex(post.resource.pages)}.<c:out value=" "/></em>
+		<em><fmt:message key="bibtex.pages"/><c:out value=" "/><c:out value="${mtl:cleanBibtex(post.resource.pages)}" /><c:out value=". "/></em>
 	</c:if>
 </jsp:root>

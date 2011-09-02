@@ -7,6 +7,6 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
 	<c:if test="${not empty post.resource.howpublished}">
-		<em>${mtl:cleanBibtex(post.resource.howpublished)},<c:out value=" "/></em>
+		<em><c:out value="${mtl:cleanBibtex(post.resource.howpublished)}" /><c:out value=", "/></em>
 	</c:if>
 </jsp:root>
