@@ -37,7 +37,7 @@
         <c:if test="${not empty bib.author}"><span class="entry_author">
 			<c:forEach var="person" items="${bib.author}" varStatus="loopStatus">
 				<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
-				${mtl:cleanBibtex(person.firstName)}<c:out value=" "/>${mtl:cleanBibtex(person.lastName)}
+				<c:out value="${mtl:cleanBibtex(person.firstName)}" /><c:out value=" "/><c:out value="${mtl:cleanBibtex(person.lastName)}" />
 				<!-- append separator "," -->
 				<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
 			</c:forEach>. 
@@ -48,7 +48,7 @@
         <c:if test="${not empty bib.editor}"><span class="entry_editor">In 
         	<c:forEach var="person" items="${bib.editor}" varStatus="loopStatus">
 				<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
-				${mtl:cleanBibtex(person.firstName)}<c:out value=" "/>${mtl:cleanBibtex(person.lastName)}
+				<c:out value="${mtl:cleanBibtex(person.firstName)}" /><c:out value=" "/><c:out value="${mtl:cleanBibtex(person.lastName)}" />
 				<!-- append separator "," -->
 				<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
 			</c:forEach> (<fmt:message key="bibtex.editors.abbr"/>), 
@@ -56,21 +56,21 @@
         <!-- journal, booktitle, series  -->
         <c:choose>
           <c:when test="${!empty bib.journal}">
-            <span class="entry_journal">${mtl:cleanBibtex(bib.journal)}, </span>
+            <span class="entry_journal"><c:out value="${mtl:cleanBibtex(bib.journal)}" />, </span>
           </c:when>
           <c:when test="${!empty bib.booktitle}">
-            <span class="entry_booktitle">${mtl:cleanBibtex(bib.booktitle)}, </span>
+            <span class="entry_booktitle"><c:out value="${mtl:cleanBibtex(bib.booktitle)}" />, </span>
           </c:when>        
           <c:when test="${!empty bib.series}">
-            <span class="entry_series">${mtl:cleanBibtex(bib.series)}, </span>
+            <span class="entry_series"><c:out value="${mtl:cleanBibtex(bib.series)}" />, </span>
           </c:when>
         </c:choose>
         <!-- volume,number,pages -->
         <span class="entry_vonupa">
-         <c:if test="${!empty bib.volume}">(${mtl:cleanBibtex(bib.volume)})<c:if test="${!empty bib.pages and empty bib.number}">:</c:if></c:if><c:if test="${!empty bib.number}">${mtl:cleanBibtex(bib.number)}<c:if test="${!empty bib.pages}">:</c:if></c:if><c:if test="${!empty bib.pages}">${mtl:cleanBibtex(bib.pages)}, </c:if>
+         <c:if test="${!empty bib.volume}">(<c:out value="${mtl:cleanBibtex(bib.volume)}"/>)<c:if test="${!empty bib.pages and empty bib.number}">:</c:if></c:if><c:if test="${!empty bib.number}"><c:out value="${mtl:cleanBibtex(bib.number)}"/><c:if test="${!empty bib.pages}">:</c:if></c:if><c:if test="${!empty bib.pages}"><c:out value="${mtl:cleanBibtex(bib.pages)}"/>, </c:if>
         </span>
-        <!-- publisher --><c:if test="${not empty bib.publisher}"><span class="entry_publisher">${mtl:cleanBibtex(bib.publisher)}, </span></c:if>
-        <!-- address   --><c:if test="${not empty bib.address}"><span class="entry_address">${mtl:cleanBibtex(bib.address)}, </span></c:if>
+        <!-- publisher --><c:if test="${not empty bib.publisher}"><span class="entry_publisher"><c:out value="${mtl:cleanBibtex(bib.publisher)}"/>, </span></c:if>
+        <!-- address   --><c:if test="${not empty bib.address}"><span class="entry_address"><c:out value="${mtl:cleanBibtex(bib.address)}" />, </span></c:if>
         <!-- year      --><c:if test="${not empty bib.year}"><span class="entry_year"><c:out value="${mtl:getDate(bib.day, bib.month, bib.year, locale)}"/>. </span></c:if>
 
         <!-- tags & url -->
