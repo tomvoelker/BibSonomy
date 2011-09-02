@@ -90,7 +90,6 @@ public class ProlaScraper extends AbstractUrlScraper {
 		/*
 		 * check if selected page is a bibtex page
 		 */
-		System.out.println(sc.getUrl().getHost());
 		if(sc.getUrl().getQuery() != null && sc.getUrl().getQuery().contains(PROLA_APS_BIBTEX_PARAM)){
 			//remove comments bevor reference
 			final StringBuffer bibtex = new StringBuffer(cleanBibtexEntry(sc.getPageContent()));
