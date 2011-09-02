@@ -77,13 +77,13 @@ public class FunctionsTest {
 		/*
 		 * fallback: return plain strings if parsing fails
 		 */
-		assertEquals("22 M&#228;rz 2010", Functions.getDate(" 22 ", " März", "2010", locale)); 
+		assertEquals("22 März 2010", Functions.getDate(" 22 ", " März", "2010", locale)); 
 		assertEquals("Oktober 2010", Functions.getDate("", "Oktober", "2010", locale));
 		/*
 		 * test Bibtex cleansing
 		 */
-		assertEquals("22 M&#228;rz 2010", Functions.getDate(" 22 ", " \\emph{März}", "2010", locale)); 
-		assertEquals("22 M&#228;rz 2010", Functions.getDate(" 22 ", " \\emph{M\"arz}", "2010", locale));
+		assertEquals("22 März 2010", Functions.getDate(" 22 ", " \\emph{März}", "2010", locale)); 
+		assertEquals("22 März 2010", Functions.getDate(" 22 ", " \\emph{M\"arz}", "2010", locale));
 		/*
 		 * the same with another locale
 		 */
