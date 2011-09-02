@@ -29,7 +29,7 @@
 			(
 			<c:out value=" "/>
 			<c:choose>
-				<c:when test="${command.order eq 'ADDED'}">
+				<c:when test="${command.order eq 'added'}">
 					<fmt:message key="sort.date"/>
 				</c:when>
 				<c:otherwise>
@@ -38,7 +38,7 @@
 			</c:choose>
 			|
 			<c:choose>
-				<c:when test="${command.order eq 'FOLKRANK'}">
+				<c:when test="${command.order eq 'folkrank'}">
 					<fmt:message key="sort.folkrank"/>
 				</c:when>
 				<c:otherwise>
