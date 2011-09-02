@@ -21,7 +21,7 @@
 		<!-- TODO: add "for:" tags  -->
 		<!-- c:if test="${command.context.loginUser.name eq post.user.name}">
 			<c:forEach var="foruser" items="${resource.usersToPost}">
-				<a href='${basePath}user/<mtl:encode value="${resource.user}" />/for:<mtl:encode value="${foruser}" />'>for:<c:out value='${foruser}' /></a>
+				<a href="${basePath}user/${mtl:encodeURI(resource.user)}/for:${mtl:encodeURI(foruser)}">for:<c:out value='${foruser}' /></a>
 			</c:forEach>
 		</c:if -->
 		</span>
@@ -58,7 +58,7 @@
 		<c:out value=" "/>
 		<fmt:message key="post.meta.taggedBy" />
 		<c:out value=" "/>
-		<a name="${fn:escapeXml(post.user.name)}" href="/user/${fn:escapeXml(post.user.name)}"><c:out value="${post.user.name}" escapeXml="true"/></a>
+		<a name="${fn:escapeXml(post.user.name)}" href="/user/${fn:escapeXml(post.user.name)}"><c:out value="${post.user.name}" /></a>
 	</c:if>
 	
 	<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>

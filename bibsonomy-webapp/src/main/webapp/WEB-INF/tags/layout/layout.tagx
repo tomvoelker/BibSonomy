@@ -109,7 +109,7 @@
 				<!-- TODO: use feed links for bibsonomy in puma? -->
 				<link rel="alternate" type="application/atom+xml" title="${properties['project.name']} Blog - Atom" href="http://blog.bibsonomy.org/feeds/posts/default" />
 				<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
-				<title>${properties['project.name']} <c:if test="${not empty pageTitle}"> :: </c:if><c:out value="${mtl:cleanBibtex(pageTitle)}"/></title>
+				<title>${properties['project.name']} <c:if test="${not empty pageTitle}"> :: <c:out value="${pageTitle}"/></c:if></title>
 				<jsp:invoke fragment="headerExt"/>
 
 				<c:if test="${not empty additionalCSS}">

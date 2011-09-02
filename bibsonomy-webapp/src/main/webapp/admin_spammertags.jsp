@@ -128,11 +128,13 @@
 	<tbody id="spammertags">
 	<c:forEach var="rows" items="${rs.rows}" varStatus="status">		
 	<tr id="st<c:out value='${status.count}'/>">
-		<td><a href="/tag/<mtl:encode value='${rows.tag_name}'/>"><c:out value="${rows.tag_name}"/></a></td>
+		<c:url var="tagUrl" value="/tag/${rows.tag_name}" />
+		<td><a href="${tagUrl}"><c:out value="${rows.tag_name}"/></a></td>
 		<td><c:out value="${rows.anz_tags}"/></td>		
 		<td>
-			<a href="javascript:removeSpammertag('<mtl:encode value="${rows.tag_name}"/>','spammertags','st<c:out value='${status.count}'/>')" title="remove from list"><img src="/resources/image/minus.png"/></a>
-			<a onclick="javascript:ajax_showTooltip('admin_tag_suggest.jsp?type=3&tag=<mtl:encode value='${rows.tag_name}'/>',this);return false;" style="cursor:pointer" title="show related tags"><img src="/resources/image/rel.png"/></a>
+			<c:set var="encodedTagName" value="${mtl:encodeURI(rows.tag_name)}" />
+			<a href="javascript:removeSpammertag('${encodedTagName}','spammertags','st<c:out value='${status.count}'/>')" title="remove from list"><img src="/resources/image/minus.png"/></a>
+			<a onclick="javascript:ajax_showTooltip('admin_tag_suggest.jsp?type=3&tag=${encodedTagName}',this);return false;" style="cursor:pointer" title="show related tags"><img src="/resources/image/rel.png"/></a>
 		</td>
 	</tr>
 	</c:forEach>
@@ -173,11 +175,13 @@
 	<tbody id="busytaglist">
 	<c:forEach var="rows" items="${busytags.rows}" varStatus="status">		
 	<tr id="bt<c:out value='${status.count}'/>">
-		<td><a href="/tag/<mtl:encode value='${rows.tag_name}'/>"><c:out value="${rows.tag_name}"/></a></td>
+		<c:url var="tagUrl" value="/tag/${rows.tag_name}" />
+		<td><a href="${tagUrl}"><c:out value="${rows.tag_name}"/></a></td>
 		<td><c:out value="${rows.tag_anzahl}"/></td>
 		<td>
-			<a href="javascript:addSpammertag('<c:out value="${rows.tag_name}"/>','busytaglist','bt<c:out value='${status.count}'/>')" title="mark as spammertag"><img src="/resources/image/plus.png"/></a>
-			<a href="javascript:cleanTag('<c:out value="${rows.tag_name}"/>','busytaglist','bt<c:out value='${status.count}'/>')" title="remove tag from suggestion list"><img src="/resources/image/minus.png"/></a>
+			<c:set var="encodedTagName" value="${mtl:encodeURI(rows.tag_name)}" />
+			<a href="javascript:addSpammertag('${encodedTagName}','busytaglist','bt<c:out value='${status.count}'/>')" title="mark as spammertag"><img src="/resources/image/plus.png"/></a>
+			<a href="javascript:cleanTag('${encodedTagName}','busytaglist','bt<c:out value='${status.count}'/>')" title="remove tag from suggestion list"><img src="/resources/image/minus.png"/></a>
 		</td>
 	</tr>
 	</c:forEach>	
@@ -217,13 +221,15 @@
 	<tbody id="spammerlist">
 	<c:forEach var="rows" items="${spammers.rows}" varStatus="status">		
 		<tr id="sl<c:out value='${status.count}'/>">
-			<td><a href="/user/<mtl:encode value='${rows.user}'/>"><c:out value="${rows.user}"/></a></td>
+			<c:url var="userHome" value="/user/${rows.user}" />
+			<td><a href="${userName}"><c:out value="${rows.user}"/></a></td>
 			<td><c:out value="${rows.tag}"/></td>
 			<td>
-				<a href="javascript:addSpammer('<mtl:encode value="${rows.user}"/>','spammerlist','sl<c:out value="${status.count}"/>')" title="flag this user as spammer">
+				<c:set var="encodedUserName" value="${mtl:encodeURI(rows.user)}" />
+				<a href="javascript:addSpammer('${encodedUserName}','spammerlist','sl<c:out value="${status.count}"/>')" title="flag this user as spammer">
     	 			<img src="/resources/image/plus.png"/>
     	 		</a>    	 		
-    	 		<a href="javascript:removeUser('<mtl:encode value="${rows.user}"/>','spammerlist','sl<c:out value="${status.count}"/>')" title="remove user from suggestion list">
+    	 		<a href="javascript:removeUser('${encodedUserName}','spammerlist','sl<c:out value="${status.count}"/>')" title="remove user from suggestion list">
     	 			<img src="/resources/image/minus.png"/>
     			</a> 				
 			</td>

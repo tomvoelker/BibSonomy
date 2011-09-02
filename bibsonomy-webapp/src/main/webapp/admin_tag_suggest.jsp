@@ -81,11 +81,13 @@
 			<tbody id="pubrelatedlist">
 			<c:forEach var="row" items="${pubreltags.rows}" varStatus="status">
 				<tr id="rtpub<c:out value='${status.count}'/>">
-					<td><a href="/tag/<mtl:encode value='${row.tag}'/>"><c:out value="${row.tag}"/></a></td>
+					<c:url var="tagUrl" value="/tag/${row.tag}" />
+					<td><a href="${tagUrl}"><c:out value="${row.tag}"/></a></td>
 					<td align="center"><c:out value="${row.ctr}"/></td>					
 					<td>
-						<a href="javascript:addSpammertag('<c:out value="${row.tag}"/>','pubrelatedlist','rtpub<c:out value='${status.count}'/>')" title="mark as spammertag"><img src="/resources/image/plus.png"/></a>
-						<a href="javascript:cleanTag('<c:out value="${row.tag}"/>','pubrelatedlist','rtpub<c:out value='${status.count}'/>')" title="remove tag from suggestion list"><img src="/resources/image/minus.png"/></a>
+						<c:set var="encodedTag" value="${mtl:encodeURI(row.tag)}" />
+						<a href="javascript:addSpammertag('${encodedTag}','pubrelatedlist','rtpub<c:out value='${status.count}'/>')" title="mark as spammertag"><img src="/resources/image/plus.png"/></a>
+						<a href="javascript:cleanTag('${encodedTag}','pubrelatedlist','rtpub<c:out value='${status.count}'/>')" title="remove tag from suggestion list"><img src="/resources/image/minus.png"/></a>
 					</td>
 				</tr>
 			</c:forEach>
@@ -103,11 +105,13 @@
 			<tbody id="privrelatedlist">
 			<c:forEach var="row" items="${privreltags.rows}" varStatus="status">
 				<tr id="rtpriv<c:out value='${status.count}'/>">
-					<td><a href="/tag/<mtl:encode value='${row.tag}'/>"><c:out value="${row.tag}"/></a></td>
+					<c:url var="tagUrl" value="/tag/${row.tag}" />
+					<td><a href="${tagUrl}"><c:out value="${row.tag}"/></a></td>
 					<td align="center"><c:out value="${row.ctr}"/></td>					
 					<td>
-						<a href="javascript:addSpammertag('<c:out value="${row.tag}"/>','privrelatedlist','rtpriv<c:out value='${status.count}'/>')" title="mark as spammertag"><img src="/resources/image/plus.png"/></a>
-						<a href="javascript:cleanTag('<c:out value="${row.tag}"/>','privrelatedlist','rtpriv<c:out value='${status.count}'/>')" title="remove tag from suggestion list"><img src="/resources/image/minus.png"/></a>
+						<c:set var="encodedTag" value="${mtl:encodeURI(row.tag)}" />
+						<a href="javascript:addSpammertag('${encodedTag}','privrelatedlist','rtpriv<c:out value='${status.count}'/>')" title="mark as spammertag"><img src="/resources/image/plus.png"/></a>
+						<a href="javascript:cleanTag('${encodedTag}','privrelatedlist','rtpriv<c:out value='${status.count}'/>')" title="remove tag from suggestion list"><img src="/resources/image/minus.png"/></a>
 					</td>
 				</tr>
 			</c:forEach>

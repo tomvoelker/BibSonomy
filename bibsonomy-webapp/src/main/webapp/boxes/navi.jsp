@@ -1,5 +1,5 @@
-
 <%-- ######### myBibSonomy * post bookmark * post bibtex ######### --%>
+
 <div id="nice_tnav">
 <ul>
 	<li>
@@ -8,16 +8,27 @@
 	<c:choose>
 		<c:when test="${not empty user.name}">
 			<li>
-		        <a id="nav_my" href="/user/<mtl:encode value='${user.name}'/>" rel="my_menu"><img src="/resources/image/nice_box_arrow.png" alt="" />my${properties['project.name']}</a>
- 
+				<c:url var="userHome" value="/user/${user.name}" />
+				<c:url var="userRelations" value="/relations/${user.name}" />
+				<c:url var="userPDF" value="/user/${user.name}">
+					<c:param name="filter" value="myPDF" />
+				</c:url>
+				<c:url var="userDuplicates" value="/user/${user.name}">
+					<c:param name="filter" value="myDuplicates" />
+				</c:url>
+				<c:url var="userBibTeX" value="/bib/user/${user.name}">
+					<c:param name="items" value="1000" />
+				</c:url>
+				
+		        <a id="nav_my" href="${userHome}" rel="my_menu"><img src="/resources/image/nice_box_arrow.png" alt="" />my${properties['project.name']}</a>
 			      <!-- dropdown menu for myBibSonomy -->  
 				  <div id="my_menu" class="nicedropmenudiv">
 				    <a href="/friends">myFriends</a>
-					<a href="/relations/<mtl:encode value='${user.name}'/>">myRelations</a>
+					<a href="${userRelations}">myRelations</a>
 					<a href="/mySearch">mySearch</a>
-			        <a href="/user/<mtl:encode value='${user.name}'/>?filter=myPDF">myPDF</a>
-			        <a href="/user/<mtl:encode value='${user.name}'/>?filter=myDuplicates">myDuplicates</a>
-			        <a href="/bib/user/<mtl:encode value='${user.name}'/>?items=1000">myBibTeX</a>
+			        <a href="${userPDF}">myPDF</a>
+			        <a href="${userDuplicates}">myDuplicates</a>
+			        <a href="${userBibTeX}">myBibTeX</a>
 				  </div>
 			</li>
 			<li>
@@ -46,7 +57,9 @@
   	  <div id="grp_menu" class="nicedropmenudiv">
   	  	<c:if test="${not empty user.groups}">
 	    	<c:forEach var="grp" items="${user.groups}">
-		  	<a href="/group/<mtl:encode value='${grp.name}'/>"><c:out value='${grp.name}'/></a>
+	    		<c:set var="groupName" value="${grp.name}" />
+	    		<c:url value="/group/${groupName}" var="groupUrl" />
+		  		<a href="${groupUrl}"><c:out value="${groupName}" /></a>
 			</c:forEach>
 		</c:if>  	
 	  </div>										

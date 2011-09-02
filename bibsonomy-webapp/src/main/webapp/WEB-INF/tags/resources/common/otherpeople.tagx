@@ -9,10 +9,10 @@
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
 	
 	<c:if test="${!empty post.resource.interHash and post.resource.count > 2}">
-		<c:set var="style"><mtl:xOtherPersonsStyle value="${post.resource.count}"/></c:set>
+		<c:set var="color" value="${mtl:otherPeopleColor(post.resource.count)}" />
 		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" />
 		<c:out value= " "/><fmt:message key="and" /><c:out value= " "/>
-		<a style="${style}" href="${otherPeopleUrl}">${post.resource.count-1}<c:out value= " "/><fmt:message key="post.meta.otherPeople"/></a>
+		<a style="background-color: rgb(${color}%, ${color}%, ${color}%);" href="${otherPeopleUrl}">${post.resource.count-1}<c:out value= " "/><fmt:message key="post.meta.otherPeople"/></a>
 	</c:if>
 	<c:if test="${!empty post.resource.interHash and post.resource.count == 2}">
 		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" />

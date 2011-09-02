@@ -12,35 +12,11 @@
    <uri></uri>
    <info>Some helpers to shorten syntax</info>
 
-	<tag>
-		<name>cdata</name>
-		<tagclass>tags.CData</tagclass>
-		<bodycontent>tagdependent</bodycontent>
-		<info>Writes an XML CDATA section around the given content</info>
-	</tag> 
-
   <tag>
-    <name>encode</name>
-    <tagclass>tags.Encode</tagclass>
-    <bodycontent>empty</bodycontent>
-    <info>Encodes the given string with URLEncoder</info>
-    <attribute>
-       <name>value</name>
-       <required>true</required>
-       <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-  
-  <tag>
-    <name>entrytype</name>
-    <tagclass>tags.EntryType</tagclass>
-    <bodycontent>empty</bodycontent>
-    <info>Encodes the given string with URLEncoder</info>
-    <attribute>
-       <name>value</name>
-       <required>true</required>
-       <rtexprvalue>true</rtexprvalue>
-    </attribute>
+	<name>cdata</name>
+	<tagclass>tags.CData</tagclass>
+	<bodycontent>tagdependent</bodycontent>
+	<info>Writes an XML CDATA section around the given content</info>
   </tag>
            
   <tag>
@@ -51,47 +27,6 @@
     <attribute>
        <name>value</name>
        <required>true</required>
-       <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-    
-  <tag>
-    <name>bibcleancsv</name>
-    <tagclass>tags.BibcleanCSV</tagclass>
-    <bodycontent>empty</bodycontent>
-    <info>Removes {} and other symbols from the input String</info>
-    <attribute>
-       <name>value</name>
-       <required>true</required>
-       <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-  
-  <tag>
-    <name>xOtherPersonsStyle</name>
-    <tagclass>tags.XotherPersonsStyle</tagclass>
-    <bodycontent>empty</bodycontent>
-    <info>returns CSS for formating the "... and X other persons" link</info>
-    <attribute>
-       <name>value</name>
-       <required>true</required>
-       <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-  
-  <tag>
-    <name>formatDate</name>
-    <tagclass>tags.FormatDate</tagclass>
-    <bodycontent>empty</bodycontent>
-    <info>formats the date according to given format type</info>
-    <attribute>
-       <name>value</name>
-       <required>true</required>
-       <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-       <name>type</name>
-       <required>false</required>
        <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
@@ -366,6 +301,18 @@
   	<name>getDate</name>
   	<function-class>tags.Functions</function-class>
   	<function-signature>String getDate(java.lang.String, java.lang.String, java.lang.String, java.util.Locale)</function-signature>
+  </function>
+  
+  <function>
+  	<name>otherPeopleColor</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>int otherPeopleColor(int)</function-signature>
+  </function>
+  
+  <function>
+  	<name>formatDateISO8601</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String formatDateISO8601(java.util.Date)</function-signature>
   </function>
   
   <function>

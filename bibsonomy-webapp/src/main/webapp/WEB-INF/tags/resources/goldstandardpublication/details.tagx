@@ -25,37 +25,33 @@
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
 	<div id="goldstandard" itemscope="itemscope" itemtype="${itemType}">
-		<ul id="gold_menu" data-ckey="${ckey}">
+		<ul id="gold_menu">
 			<gpub:actions post="${post}" />
 		</ul>
 		
 		<!-- title of the publication -->
 		<h2 id="gold_title" data-interhash="${goldstandard.interHash}">
-			<a href="/bibtex/${goldstandard.interHash}" itemprop="url"><span itemprop="name">${mtl:cleanBibtex(goldstandard.title)}</span></a>
+			<a href="/bibtex/${goldstandard.interHash}" itemprop="url"><span itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" /></span></a>
 		</h2>
 		<div id="gold_authorsEditors"><fmt:message key="by"/><c:out value=": "/><pub:author publication="${goldstandard}"/></div>
 		
 		<!-- exports -->
 		<div id="gold_exports">
 			<ul>
-<!--			<c:if test="${(not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)) or (not empty goldstandard.miscFields['doi']) or not empty goldstandard.documents or mtl:isLinkToDocument(goldstandard.url)}">-->
-					<li><a href="#gold_exports_0"><fmt:message key="bibtex.links"/></a></li>
-<!--			</c:if>-->
-				<li><a href="#gold_exports_1"><fmt:message key="bibtex.abstract"/></a></li>
-				<li><a href="#gold_exports_2"><fmt:message key="export.layout"/></a></li>
-				<li><a href="#gold_exports_3"><fmt:message key="export.bibtex.record"/></a></li>
-				<li><a href="#gold_exports_4"><fmt:message key="export.endnote.record"/></a></li>
+				<li><a href="#gold_links"><fmt:message key="bibtex.links"/></a></li>
+				<li><a href="#gold_abstract_tab"><fmt:message key="bibtex.abstract"/></a></li>
+				<li><a href="#gold_exports_1"><fmt:message key="export.layout"/></a></li>
+				<li><a href="#gold_exports_2"><fmt:message key="export.bibtex.record"/></a></li>
+				<li><a href="#gold_exports_3"><fmt:message key="export.endnote.record"/></a></li>
 			</ul>
 
-			<div id="gold_exports_0">
-<!--		<div id="gold_resources">		-->
+			<div id="gold_links">
 				<c:if test="${not((not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)) or (not empty goldstandard.miscFields['doi']) or not empty goldstandard.documents or mtl:isLinkToDocument(goldstandard.url))}">
 						<!-- If there are neither links nor documents -->
 						<fmt:message key="goldstandard.resource.info.noLinks"/>
 				</c:if>			
 				<c:if test="${(not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)) or (not empty goldstandard.miscFields['doi'])}">
 					<div id="gold_resources_links">
-<!--						<h3><fmt:message key="goldStandard.resource.info.links" /></h3>-->
 						<ul>
 							<c:if test="${not empty goldstandard.miscFields['doi']}">
 								<fmt:message key="post_bibtex.doi_isbn.doi" var="urlTitle"/>
@@ -71,35 +67,31 @@
 			
 				<c:if test="${not empty goldstandard.documents or mtl:isLinkToDocument(goldstandard.url)}">
 					<div id="gold_resources_pdf">
-<!--						<h3><fmt:message key="goldStandard.resource.info.pdfps" /></h3>-->
 						<ul>
 							<c:if test="${mtl:isLinkToDocument(goldstandard.url)}">
 								<li>
 									<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
 									<a itemprop="url" href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
 						  				<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
-						  				<c:out value="${ goldstandard.url }" />											
+						  				<c:out value="${goldstandard.url}" />											
 									</a>
 								</li>
 							</c:if>
 						</ul>
 					</div>
 				</c:if>
-<!--		</div>-->
 			</div>
-			<div id="gold_exports_1">
-<!--				<h3><fmt:message key="bibtex.abstract"/></h3>-->
+			<div id="gold_abstract_tab">
 				<c:choose>
 					<c:when test="${not empty goldstandard.abstract}">
-						<div id="gold_abstract" itemprop="about">${mtl:cleanBibtex(goldstandard.abstract)}</div>
+						<div id="gold_abstract" itemprop="about"><c:out value="${mtl:cleanBibtex(goldstandard.abstract)}" /></div>
 					</c:when>
 					<c:otherwise>
 						<fmt:message key="goldstandard.resource.info.noAbstract"/>
 					</c:otherwise>
 				</c:choose>
 			</div>
-			<div id="gold_exports_2">
-<!--				<h3><fmt:message key="export.layout"/></h3>-->
+			<div id="gold_exports_1">
 				<c:choose>
 					<c:when test="${not empty command.layout and not (command.layout eq '') and not (command.layout eq 'plain')}">
 						<mtl:renderJabRefLayout layout="${command.layout}" post="${post}" />
@@ -127,14 +119,12 @@
 				    <input type="image"  src="/resources/image/nice_box_arrow_right.png" alt="right"/>		    
 				</form>
 			</div>
-			<div id="gold_exports_3">
-<!--				<h3><fmt:message key="export.bibtex.record"/></h3>-->
+			<div id="gold_exports_2">
 		  		<form>	  	
 			  		<textarea name="bibtex_textarea" rows="20"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="true"/></textarea>
 			  	</form>	
 		  	</div>
-		  	<div id="gold_exports_4">
-<!--		  		<h3><fmt:message key="export.endnote.record"/></h3>-->
+		  	<div id="gold_exports_3">
 	  			<form>
 	  				<c:set var="endnoteExport"><export:endnote bib="${goldstandard}"/></c:set>	  	
 		  			<textarea name="endnote_textarea" rows="20">${fn:escapeXml(endnoteExport)}</textarea>
@@ -164,30 +154,6 @@
 				</div>
 			</c:if>
 		</div>
-				
-<!--		<c:if test="${fn:length(otherPosts) != 0}">-->
-<!--			<div id="postUsers">-->
-<!--				<h3><fmt:message key="goldStandard.users"/></h3>-->
-<!--				 TODO: related users -->
-<!--				<ul>-->
-<!--				<c:forEach var="otherPost" items="${otherPosts}">-->
-<!--					  TODO: remove 2 -->
-<!--					<li><a href="2${otherPost.resource.intraHash}/${mtl:encodeURI(otherPost.user.name)}"><span class="user"><c:out value="${otherPost.user.name}" /></span></a></li>-->
-<!--				</c:forEach>-->
-<!--				-->
-<!--				<c:set var="remainingPosts" value="${otherPosts[0].resource.count - fn:length(otherPosts) }" />-->
-<!--				-->
-<!--				<c:if test="${remainingPosts == 1 }">-->
-<!--					<li>1<c:out value= " "/><c:out value= " "/><fmt:message key="post.meta.otherPerson"/></li>-->
-<!--				</c:if>-->
-<!--				-->
-<!--				<c:if test="${remainingPosts > 1 }">-->
-<!--					<li>${remainingPosts}<c:out value= " "/><fmt:message key="post.meta.otherPeople"/></li>-->
-<!--				</c:if>-->
-<!--							-->
-<!--				</ul>-->
-<!--			</div>-->
-<!--		</c:if>-->
 		
 		<!-- discussion -->
 		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}" />
