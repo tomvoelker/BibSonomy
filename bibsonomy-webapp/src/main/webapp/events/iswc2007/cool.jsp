@@ -27,9 +27,6 @@
     such that your tags become a part of it. 
   </center>
 
-
-
-
     <sql:query var="rst" dataSource="${dataSource}">
     SELECT tag_name, tag_anzahl, round(log(if(tag_anzahl>100, 100, tag_anzahl)))*30+100 AS tag_size FROM (
       SELECT tag_name, count(tag_name) AS tag_anzahl
@@ -45,17 +42,14 @@
       <sql:param value="${requGroup}"/>
     </sql:query>
     
-    
     <ul class="tagcloud">
     <c:forEach var="row" items="${rst.rows}">
       <li>
-        <a style="font-size: ${row.tag_size}%;" title="${row.tag_anzahl} posts" href="/group/<mtl:encode value='${requGroup}' />/<mtl:encode value='${row.tag_name}' />"><c:out value="${row.tag_name}" /></a>
+      	<c:url var="tagUrl" value="/group/${requGroup}/${row.tag_name}" />
+        <a style="font-size: ${row.tag_size}%;" title="${row.tag_anzahl} posts" href="${tagUrl}"><c:out value="${row.tag_name}" /></a>
       </li>
     </c:forEach>
     </ul>
-
-
-
 </div>
 
 <%@include file="/footer.jsp" %>
