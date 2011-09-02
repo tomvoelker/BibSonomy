@@ -49,7 +49,7 @@
     </description>
     <link><c:out value='${fn:escapeXml(mtl:removeXmlControlChars(bookmark.url))}'/></link>
     <dc:creator><c:out value="${post.user.name}" /></dc:creator>
-    <dc:date><mtl:formatDate value="${post.date}"/></dc:date>
+    <dc:date>${mtl:formatDateISO8601(post.date)}</dc:date>
     <dc:subject>
       <c:forEach var="tag" items="${post.tags}"><c:out value='${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}'/><c:out value=" "/></c:forEach>  
     </dc:subject>
