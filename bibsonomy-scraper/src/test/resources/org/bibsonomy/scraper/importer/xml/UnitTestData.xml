@@ -145,13 +145,13 @@
 	</URLTest>
 	<URLTest id="url_24">
 		<TestDescription>URL scraping test with a publication page from prola</TestDescription>
-		<URL>http://prola.aps.org/abstract/PRA/v1/i1/p1_1</URL>
+		<URL>http://pra.aps.org/abstract/PRA/v1/i1/p1_1</URL>
 		<BibFile>ProlaScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_25">
 		<TestDescription>URL scraping test with a bibtex page from prola</TestDescription>
-		<URL>http://prola.aps.org/export/PRA/v1/i1/p1_1?type=bibtex</URL>
+		<URL>http://pra.aps.org/export/PRA/v1/i1/p1_1?type=bibtex</URL>
 		<BibFile>ProlaScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
 		<Enabled>true</Enabled>
