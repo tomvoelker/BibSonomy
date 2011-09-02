@@ -3,16 +3,14 @@ package tags;
 import static org.bibsonomy.model.util.BibTexUtils.ENTRYTYPES;
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -31,6 +29,7 @@ import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.EnumUtils;
+import org.bibsonomy.util.JSONUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
@@ -39,8 +38,9 @@ import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
 import org.springframework.format.datetime.DateFormatter;
 
-
 /**
+ * TODO: move to org.bibsonomy.webapp.util.tags package
+ * 
  * Some taglib functions
  * 
  * @author Dominik Benz
@@ -50,25 +50,26 @@ public class Functions  {
 	
 	/**
 	 * Mapping of BibTeX entry types to SWRC entry types
-	 * FIXME: this duplicates the ones from EntryType.java!
 	 * @see BibTexUtils#ENTRYTYPES
 	 */
 	public static final String[] swrcEntryTypes   = {"Article",        "Book", "Booklet", "Misc",       "Misc",       "InBook",       "InCollection", "InProceedings",    "Manual",  "MasterThesis",  "Misc",    "Misc",    "Misc",       "PhDThesis", "Misc",     "Misc",         "Proceedings",            "Misc",     "TechnicalReport", "Unpublished"};
 	private static final String[] risEntryTypes    = {"Journal Article","Book", "Book",    "Generic",    "Generic",    "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis",        "Generic", "Generic", "Generic",    "Thesis",    "Generic",  "Generic",      "Conference Proceedings", "Generic",  "Report",          "Unpublished Work"};
 
 	// contains special characters, symbols, etc...
-	private static Properties chars = new Properties();
+	private static final Properties chars = new Properties();
 
 	// used to generate URLs
 	private static URLGenerator urlGenerator;
+	
+	private static final SimpleDateFormat ISO8601_FORMAT_HELPER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
-	private static DateFormatter myDateFormatter = new DateFormatter("MMMM yyyy");
-	private static DateFormatter dmyDateFormatter = new DateFormatter();
+	private static final DateFormatter myDateFormatter = new DateFormatter("MMMM yyyy");
+	private static final DateFormatter dmyDateFormatter = new DateFormatter();
 	static {
 		dmyDateFormatter.setStyle(DateFormat.MEDIUM);
 	}
-	private static DateFormat myDateFormat = new SimpleDateFormat("yyyy-MM");
-	private static DateFormat dmyDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static final DateFormat myDateFormat = new SimpleDateFormat("yyyy-MM");
+	private static final DateFormat dmyDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	// load special characters
 	static {
@@ -128,46 +129,31 @@ public class Functions  {
 	 * @return cleaned file name
 	 */
 	public static String makeCleanFileName (final String file) {
-		if (file == null || file.trim().equals("")) {
+		if (!present(file)) {
 			return "export";
-		} 
-		try {
-			return URLDecoder.decode(file, "UTF-8").replaceAll("[^a-zA-Z0-9-_]", "_");
-		} catch (final UnsupportedEncodingException e) {
-			return file.replaceAll("[^a-zA-Z0-9-_]", "_");
 		}
+		
+		return UrlUtils.safeURIDecode(file).replaceAll("[^a-zA-Z0-9-_]", "_");
 	}
 
 	/**
-	 * wrapper for URLDecoder.decode(URI, "UTF-8");
+	 * wrapper for {@link UrlUtils#safeURIDecode(String)}
 	 * 
-	 * @param URI a URI string
+	 * @param uri a URI string
 	 * @return the decoded URI string
 	 */
-	public static String decodeURI (final String URI) {
-		if (URI != null) {
-			try {
-				return URLDecoder.decode(URI, "UTF-8");
-			} catch (final UnsupportedEncodingException e) {
-			}
-		}
-		return null;
+	public static String decodeURI(final String uri) {
+		return UrlUtils.safeURIDecode(uri);
 	}
 
 	/**
-	 * wrapper for URLEncoder.encode(URI, "UTF-8");
+	 * wrapper for {@link UrlUtils#safeURIEncode(String)}
 	 * 
-	 * @param URI a URI string
+	 * @param uri a URI string
 	 * @return the encoded URI string
 	 */
-	public static String encodeURI (final String URI) {
-		if (URI != null) {
-			try {
-				return URLEncoder.encode(URI, "UTF-8");
-			} catch (final UnsupportedEncodingException e) {
-			}
-		}
-		return null;
+	public static String encodeURI(final String uri) {
+		return UrlUtils.safeURIEncode(uri);
 	}
 
 	/**
@@ -188,10 +174,9 @@ public class Functions  {
 	 */
 	public static String getPath(final String uriString) {
 		try {
-			final URI uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
-			return uri.getPath();
+			return new URI(UrlUtils.encodeURLExceptReservedChars(uriString)).getPath();
 		} catch (final Exception ex) {
-			throw new RuntimeException(ex.getMessage());
+			throw new RuntimeException(ex);
 		}		
 	}
 
@@ -226,12 +211,13 @@ public class Functions  {
 	public static String getQuery(final String uriString) {
 		try {
 			final URI uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
-			if (uri.getQuery() != null && ! uri.getQuery().equals("")) { 
-				return "?" + uri.getQuery();
+			final String query = uri.getQuery();
+			if (present(query)) { 
+				return "?" + query;
 			}
 			return "";
 		} catch (final Exception ex) {
-			throw new RuntimeException(ex.getMessage());
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -320,9 +306,9 @@ public class Functions  {
 	/**
 	 * wrapper for org.bibsonomy.model.util.BibTexUtils.cleanBibtex
 	 * 
-	 * @see org.bibsonomy.model.util.BibTexUtils
+	 * @see org.bibsonomy.model.util.BibTexUtils#cleanBibTex(String)
 	 * @param bibtex
-	 * @return TODO
+	 * @return the clean bibtex string
 	 */
 	public static String cleanBibtex(final String bibtex) {
 		return BibTexUtils.cleanBibTex(bibtex);
@@ -354,59 +340,7 @@ public class Functions  {
 	 * @return The quoted String.
 	 */
 	public static String quoteJSON(final String value) {
-		if(value == null)
-			return null;
-		final StringBuffer sb = new StringBuffer();
-		escapeJSON(value, sb);
-		return sb.toString();
-	}
-
-	/**
-	 * Taken from http://code.google.com/p/json-simple/
-	 * 
-	 * @param s - Must not be null.
-	 * @param sb
-	 */
-	private static void escapeJSON(final String s, final StringBuffer sb) {
-		for (int i = 0; i < s.length(); i++) {
-			final char ch=s.charAt(i);
-			switch(ch){
-			case '"':
-				sb.append("\\\"");
-				break;
-			case '\\':
-				sb.append("\\\\");
-				break;
-			case '\b':
-				sb.append("\\b");
-				break;
-			case '\f':
-				sb.append("\\f");
-				break;
-			case '\n':
-				sb.append("\\n");
-				break;
-			case '\r':
-				sb.append("\\r");
-				break;
-			case '\t':
-				sb.append("\\t");
-				break;
-			default:
-				// Reference: http://www.unicode.org/versions/Unicode5.1.0/
-				if ((ch >= '\u0000' && ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
-					final String ss = Integer.toHexString(ch);
-					sb.append("\\u");
-					for (int k = 0; k < 4 - ss.length(); k++) {
-						sb.append('0');
-					}
-					sb.append(ss.toUpperCase());
-				}
-				else{
-					sb.append(ch);
-				}
-			}
-		}
+		return JSONUtils.quoteJSON(value);
 	}
 
 	/** First, replaces certain BibTex characters, 
@@ -416,7 +350,7 @@ public class Functions  {
 	 * @return The cleaned String.
 	 */
 	public static String quoteJSONcleanBibTeX(final String value) {
-		return quoteJSON(BibcleanCSV.cleanBibtex(value));
+		return JSONUtils.quoteJSON(BibTexUtils.cleanBibTex(value));
 	}
 
 	/**
@@ -429,11 +363,10 @@ public class Functions  {
 	/**
 	 * Maps BibTeX entry types to SWRC entry types.
 	 * 
-	 * TODO: stolen from old code in {@link EntryType} ... 
-	 * very inefficient ... use a static map instead
+	 * TODO: very inefficient ... use a static map instead
 	 *  
 	 * @param bibtexEntryType
-	 * @return TODO
+	 * @return the SWRC entry type
 	 */
 	public static String getSWRCEntryType(final String bibtexEntryType) {
 		for (int i = 0; i < ENTRYTYPES.length; i++) {
@@ -446,10 +379,10 @@ public class Functions  {
 		return "Misc";
 	}
 
-	/** Maps BibTeX entry types to RIS entry types.
+	/**
+	 * Maps BibTeX entry types to RIS entry types.
 	 * 
-	 * TODO: stolen from old code in {@link EntryType} ... 
-	 * very inefficient ... use a static map instead
+	 * TODO: very inefficient ... use a static map instead
 	 *  
 	 * @param bibtexEntryType
 	 * @return The RIS entry type
@@ -511,6 +444,18 @@ public class Functions  {
 	 */
 	public static double authorFontSize(final Author author, final Integer maxCount) {		
 		return ((author.getCtr() * 100) / (maxCount / 2) ) + 50;
+	}
+	
+	/**
+	 * @param count
+	 * @return the % of r g and b
+	 */
+	public static int otherPeopleColor(int count) {
+		// set maximum
+		if (count > 1024) {
+			count = 1024;
+		}
+		return (int) (100.0 - Math.log(count / Math.log(2) * 2.0));
 	}
 
 	/** Returns the host name of a URL.
@@ -574,6 +519,20 @@ public class Functions  {
 			urlGenerator = new URLGenerator(projectHome);
 		}
 		return BibTexUtils.toBibtexString(post, lastFirstNames, urlGenerator) + "\n\n";
+	}
+	
+	/**
+	 * formats the date to ISO 8601 for rss feeds, e.g.
+	 * currently java's formatter doesn't support this standard therefore we can
+	 * not use the fmt:formatDate tag with a pattern
+	 * 
+	 * @param date 
+	 * @return the formatted date
+	 */
+	public static String formatDateISO8601(final Date date) {
+		final String dateStr = ISO8601_FORMAT_HELPER.format(date);
+		// convert format 2011-08-29'T'23:23:23+0200 to 2011-08-29'T'23:23:23+02:00
+		return dateStr.substring(0, dateStr.length() - 2) + ":" + dateStr.substring(dateStr.length() - 2, dateStr.length());
 	}
 	
 	/**
@@ -704,5 +663,4 @@ public class Functions  {
 	public static boolean hasTagMyown(final Post<? extends Resource> post) {
 		return SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME);
 	}
-	
 }

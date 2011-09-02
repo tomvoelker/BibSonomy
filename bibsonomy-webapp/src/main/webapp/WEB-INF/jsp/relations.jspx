@@ -64,7 +64,7 @@
 			<td>
 				<ul class="tagcloud">
 					<c:forEach var="relation" items="${upperTag.subTags}" >  
-						<c:set var="link"><mtl:encode value='${relation.name}'/></c:set>
+						<c:set var="link" value="${mtl:encodeURI(relation.name)}" />
 			            <li class="box_lowerconcept"> 
 			  	        	<!-- determine subTag title depending on its frequency -->
 			    	      	<fmt:message var="subTagUsers" key="users" /> <!-- plural -->		

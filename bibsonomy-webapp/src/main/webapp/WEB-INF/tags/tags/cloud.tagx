@@ -101,11 +101,4 @@
 			</c:if>			
 		</c:forEach>		
 	</ul>
-
-	<!-- this is just a hack to expose the maximum number of tags for "old" ajax components 
-	<script type="text/javascript">
-		var tagMaxFreq = ${cmd.maxFreq};
-	</script>
-	-->
-
 </jsp:root>

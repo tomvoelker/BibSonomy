@@ -23,7 +23,7 @@
 	<jsp:attribute name="content">
 		
 		<div id="general_fixed">
-			<c:set var="userName"><mtl:encode value='${command.context.loginUser.name}'/></c:set>
+			<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />
 			
 			<h2><fmt:message key="buttons.bookmarklet"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message></h2>
 		

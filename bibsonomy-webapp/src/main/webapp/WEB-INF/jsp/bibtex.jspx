@@ -13,12 +13,16 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:bibtexLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	<c:set var="title" value="${mtl:cleanBibtex(command.title)}" />
+	
+	<fmt:message key="navi.publication" var="pageTitle"/>
+	
+	<layout:bibtexLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.publication"/></a> :: 
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<c:out value="${pageTitle}"/></a> :: 
 			<form action="/search" method="get" class="smallform">
-			  <input type="text" size="20" name="search" value="${fn:escapeXml(command.title)}"/>
+			  <input type="text" size="20" name="search" value="${fn:escapeXml(title)}"/>
 			</form>
 		</jsp:attribute>
 		
@@ -32,7 +36,6 @@
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
 			</c:if>
 			
-			<!-- TODO: PUMA? -->
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/discussion.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
@@ -57,8 +60,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="contentHeading">
-			<c:set var="publication" value="${command.bibtex.list[0].resource}" />
-			<h2><c:out value="${publication.title}" /></h2>
+			<h2><c:out value="${title}" /></h2>
 		
 			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>
