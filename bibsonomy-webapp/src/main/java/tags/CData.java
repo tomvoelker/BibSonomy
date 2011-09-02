@@ -6,7 +6,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
+ * TODO: move to org.bibsonomy.webapp.util.tags package
  * Writes CData tags around the given content
+ * 
  * @author rja
  * @version $Id$
  */
@@ -24,7 +26,7 @@ public class CData extends TagSupport {
 	public int doStartTag() throws JspException {
 		try {
 			pageContext.getOut().print("<![CDATA[");
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new JspException(ex);
 		}
 		return EVAL_BODY_INCLUDE;
@@ -34,7 +36,7 @@ public class CData extends TagSupport {
 	public int doEndTag() throws JspException {
 		try {
 			pageContext.getOut().print("]]>");
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new JspException(ex);
 		}
 		return super.doEndTag();

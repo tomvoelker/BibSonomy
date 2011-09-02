@@ -19,7 +19,7 @@
 				<!-- display content -->
 				<c:forEach var="post" items="${command.bibtex.list}">
 					<h2 style="font-size: 120%; margin-bottom: 0.5em; margin-top: 0.5em;">
-						<a href="/bibtex/${post.resource.interHash}">${mtl:cleanBibtex(post.resource.title)}</a>
+						<a href="/bibtex/${post.resource.interHash}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a>
 					</h2>
 					<p>
 						<!-- authors / editors -->
@@ -28,7 +28,7 @@
 					<!-- ###############  ABSTRACT ################# -->
 					<c:if test="${not empty bibtex.abstract}">
 						<h3><fmt:message key="bibtex.abstract.cap"/></h3>
-						<p id="abstract">${mtl:cleanBibtex(bibtex.abstract)}</p>
+						<p id="abstract"><c:out value="${mtl:cleanBibtex(bibtex.abstract)}" /></p>
 					</c:if>
 					<!-- ############## DESCRIPTION ############## -->		
 					<c:if test="${not empty post.description}">

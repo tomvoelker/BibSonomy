@@ -8,5 +8,5 @@
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	<pub:author publication="${publication}" />:<br />
-	<a href="/bibtex/${publication.interHash}" class="publicationLink">${mtl:cleanBibtex(publication.title)}</a>. <span class="year"><c:out value="${publication.year}"/></span>
+	<a href="/bibtex/${publication.interHash}" class="publicationLink"><c:out value="${mtl:cleanBibtex(publication.title)}" /></a>. <span class="year"><c:out value="${mtl:cleanBibtex(publication.year)}"/></span>
 </jsp:root>

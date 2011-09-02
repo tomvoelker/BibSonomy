@@ -46,7 +46,8 @@
     <ul class="tagcloud"> 
     <c:forEach var="row" items="${rst.rows}">
       <li>
-        <a style="font-size: ${row.tag_size}%;" title="${row.tag_anzahl} posts" href="/group/<mtl:encode value='${requGroup}' />/<mtl:encode value='${row.tag_name}' />"><c:out value="${row.tag_name}" /></a>
+      	<c:url var="tagUrl" value="/group/${requGroup}/${row.tag_name}" />
+        <a style="font-size: ${row.tag_size}%;" title="${row.tag_anzahl} posts" href="${tagUrl}"><c:out value="${row.tag_name}" /></a>
       </li>
     </c:forEach>
     </ul>

@@ -8,6 +8,8 @@ import org.springframework.web.servlet.tags.RequestContextAwareTag;
 import org.springframework.web.util.ExpressionEvaluationUtils;
 
 /**
+ * TODO: move to org.bibsonomy.webapp.util.tags package
+ * 
  * The tag checks, if the given (command) path exists and only
  * then executes the content of its body.
  *  
@@ -20,9 +22,10 @@ public class Exists extends RequestContextAwareTag {
 	
 	private String path;
 	
+	@SuppressWarnings("unused")
 	@Override
 	protected int doStartTagInternal() throws Exception {
-		final String resolvedPath = ExpressionEvaluationUtils.evaluateString("path", getPath(), pageContext);
+		final String resolvedPath = ExpressionEvaluationUtils.evaluateString("path", this.path, pageContext);
 
 		try {
 			new BindStatus(getRequestContext(), resolvedPath, false);
@@ -34,9 +37,9 @@ public class Exists extends RequestContextAwareTag {
 			 */
 			return SKIP_BODY;
 		}
+		
 		return EVAL_BODY_INCLUDE;
 	}
-
 	
 	/**
 	 * Set the path that this tag should apply. Can be a bean (e.g. "person"),
@@ -45,15 +48,7 @@ public class Exists extends RequestContextAwareTag {
 	 * @param path 
 	 * 
 	 */
-	public void setPath(String path) {
+	public void setPath(final String path) {
 		this.path = path;
-	}
-
-	/**
-	 * Return the path that this tag applies to.
-	 * @return The path that this tag applies to.
-	 */
-	public String getPath() {
-		return this.path;
 	}
 }
