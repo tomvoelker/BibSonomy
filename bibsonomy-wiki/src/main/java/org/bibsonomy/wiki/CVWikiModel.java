@@ -13,22 +13,24 @@ import info.bliki.wiki.tags.util.TagStack;
 import java.util.Collections;
 import java.util.Set;
 
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.tags.AbstractTag;
-import org.bibsonomy.wiki.tags.aboutme.BirthdayTag;
-import org.bibsonomy.wiki.tags.aboutme.HobbieTag;
-import org.bibsonomy.wiki.tags.aboutme.ImageTag;
-import org.bibsonomy.wiki.tags.aboutme.InstitutionTag;
-import org.bibsonomy.wiki.tags.aboutme.InterestsTag;
-import org.bibsonomy.wiki.tags.aboutme.LocationTag;
-import org.bibsonomy.wiki.tags.aboutme.NameTag;
-import org.bibsonomy.wiki.tags.aboutme.ProfessionTag;
-import org.bibsonomy.wiki.tags.aboutme.RegDateTag;
+import org.bibsonomy.wiki.tags.group.MembersTag;
 import org.bibsonomy.wiki.tags.post.BookmarkListTag;
 import org.bibsonomy.wiki.tags.post.PublicationListTag;
+import org.bibsonomy.wiki.tags.user.BirthdayTag;
+import org.bibsonomy.wiki.tags.user.HobbieTag;
+import org.bibsonomy.wiki.tags.user.ImageTag;
+import org.bibsonomy.wiki.tags.user.InstitutionTag;
+import org.bibsonomy.wiki.tags.user.InterestsTag;
+import org.bibsonomy.wiki.tags.user.LocationTag;
+import org.bibsonomy.wiki.tags.user.NameTag;
+import org.bibsonomy.wiki.tags.user.ProfessionTag;
+import org.bibsonomy.wiki.tags.user.RegDateTag;
 
 /**
  * @author philipp
@@ -36,7 +38,7 @@ import org.bibsonomy.wiki.tags.post.PublicationListTag;
  * @version $Id$
  */
 public class CVWikiModel extends AbstractWikiModel {
-	
+
 	static {
 		/* About-Me Tags */
 		register(new NameTag());
@@ -48,25 +50,30 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new RegDateTag());
 		register(new InterestsTag());
 		register(new HobbieTag());
-		/*
-		 * We have no eMail Tag since eMail addresses are never public in BibSonomy!
-		 */
+		/* Group Tags */
+		register(new MembersTag());
 		
+		/*
+		 * We have no eMail Tag since eMail addresses are never public in
+		 * BibSonomy!
+		 */
+
 		/* Post Tags */
 		register(new BookmarkListTag());
 		register(new PublicationListTag());
 	}
-	
+
 	private static void register(final AbstractTag tag) {
 		Configuration.DEFAULT_CONFIGURATION.addTokenTag(tag.getName(), tag);
 	}
 
 	private User requestedUser;
+	private Group requestedGroup;
 
 	private LogicInterface logic;
 
 	private LayoutRenderer<Layout> layoutRenderer;
-	
+
 	/**
 	 * Default Constructor
 	 */
@@ -77,7 +84,9 @@ public class CVWikiModel extends AbstractWikiModel {
 	@Override
 	/*
 	 * TODO: add Comment (non-Javadoc)
-	 * @see info.bliki.wiki.model.AbstractWikiModel#appendHead(java.lang.String, int, boolean, int, int, int)
+	 * 
+	 * @see info.bliki.wiki.model.AbstractWikiModel#appendHead(java.lang.String,
+	 * int, boolean, int, int, int)
 	 */
 	public ITableOfContent appendHead(final String rawHead, final int headLevel, final boolean noToC, final int headCounter, final int startPosition, final int endPosition) {
 		final TagStack localStack = WikipediaParser.parseRecursive(rawHead.trim(), this, true, true);
@@ -105,11 +114,11 @@ public class CVWikiModel extends AbstractWikiModel {
 			}
 			anchor = newAnchor;
 		}
-		
+
 		if (this.getRecursionLevel() == 1) {
 			this.buildEditLinkUrl(this.fSectionCounter++);
 		}
-		
+
 		spanTagNode.addAttribute("class", "mw-headline", true);
 		spanTagNode.addAttribute("id", anchor, true);
 
@@ -134,7 +143,9 @@ public class CVWikiModel extends AbstractWikiModel {
 
 	/**
 	 * set the LogicInterface
-	 * @param logic the logic to set
+	 * 
+	 * @param logic
+	 *            the logic to set
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
@@ -149,7 +160,9 @@ public class CVWikiModel extends AbstractWikiModel {
 
 	/**
 	 * set the user
-	 * @param user the user to add
+	 * 
+	 * @param user
+	 *            the user to add
 	 */
 	public void setRequestedUser(final User user) {
 		this.requestedUser = user;
@@ -170,10 +183,26 @@ public class CVWikiModel extends AbstractWikiModel {
 	}
 
 	/**
-	 * @param layoutRenderer the layoutRenderer to set
+	 * @param layoutRenderer
+	 *            the layoutRenderer to set
 	 */
 	public void setLayoutRenderer(final LayoutRenderer<Layout> layoutRenderer) {
 		this.layoutRenderer = layoutRenderer;
+	}
+
+	/**
+	 * @return the requestedGroup
+	 */
+	public Group getRequestedGroup() {
+		return this.requestedGroup;
+	}
+
+	/**
+	 * @param requestedGroup
+	 *            the requestedGroup to set
+	 */
+	public void setRequestedGroup(final Group requestedGroup) {
+		this.requestedGroup = requestedGroup;
 	}
 
 }

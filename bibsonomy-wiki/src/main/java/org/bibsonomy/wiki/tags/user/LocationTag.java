@@ -1,4 +1,4 @@
-package org.bibsonomy.wiki.tags.aboutme;
+package org.bibsonomy.wiki.tags.user;
 
 import org.bibsonomy.wiki.tags.AbstractTag;
 /**

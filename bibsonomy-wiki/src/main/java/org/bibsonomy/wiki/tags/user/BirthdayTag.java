@@ -1,4 +1,4 @@
-package org.bibsonomy.wiki.tags.aboutme;
+package org.bibsonomy.wiki.tags.user;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 import info.bliki.htmlcleaner.Utils;

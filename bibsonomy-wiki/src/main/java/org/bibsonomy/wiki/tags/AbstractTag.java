@@ -1,5 +1,7 @@
 package org.bibsonomy.wiki.tags;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+import info.bliki.htmlcleaner.Utils;
 import info.bliki.wiki.filter.ITextConverter;
 import info.bliki.wiki.model.IWikiModel;
 import info.bliki.wiki.tags.HTMLTag;
@@ -7,14 +9,12 @@ import info.bliki.wiki.tags.util.INoBodyParsingTag;
 
 import java.io.IOException;
 
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.CVWikiModel;
-import info.bliki.htmlcleaner.Utils;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author philipp
@@ -24,6 +24,7 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 	
 	protected LogicInterface logic;
 	protected User requestedUser;
+	protected Group requestedGroup;
 	protected LayoutRenderer<Layout> layoutRenderer;
 
 	/**
@@ -39,6 +40,7 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 		final CVWikiModel wiki = (CVWikiModel) model;
 		this.logic = wiki.getLogic();
 		this.requestedUser = wiki.getRequestedUser();
+		this.requestedGroup = wiki.getRequestedGroup();
 		this.layoutRenderer = wiki.getLayoutRenderer();
 		buf.append(this.render());
 	}
