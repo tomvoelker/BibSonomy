@@ -23,20 +23,19 @@ import org.springframework.validation.Errors;
 
 /**
  * 
- * Ajax controller for the CV page.
- * - /ajax/cv
+ * Ajax controller for the CV page. - /ajax/cv
  * 
  * @author Bernd
  * @version $Id$
  */
 public class CvAjaxController extends AjaxController implements MinimalisticController<AjaxCvCommand>, ErrorAware, ValidationAwareController<AjaxCvCommand> {
 
-	private static final Map<String,String> layouts = new HashMap<String,String>();
+	private static final Map<String, String> layouts = new HashMap<String, String>();
 	private static final Log log = LogFactory.getLog(CvAjaxController.class);
 	private Errors errors;
 	private CVWikiModel wikiRenderer;
 	private MessageSource messageSource;
-	
+
 	static {
 		layouts.put("table", "cv.layout.table");
 		layouts.put("robert", "cv.layout.robert");
@@ -53,7 +52,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		log.debug("workOn CvAjaxController");
 		final Locale locale = requestLogic.getLocale();
 		this.wikiRenderer.setRequestedUser(logic.getAuthenticatedUser());
-		
+
 		// -- Validating the request --
 		/*
 		 * Check whether user is logged in
@@ -72,12 +71,10 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		final String layout = command.getLayout();
 		final String isSave = command.getIsSave();
 		final String wikiText = command.getWikiText();
-		
 
 		if (present(isSave) && wikiText != null) {
-			return renderWiki(command,wikiText,isSave);
+			return renderWiki(command, wikiText, isSave);
 		}
-		
 
 		if (layouts.containsKey(layout)) {
 			return getLayout(command, locale);
@@ -87,10 +84,10 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 
 	private View renderWiki(AjaxCvCommand command, String wikiText, String isSave) {
 		log.debug("ajax -> renderWiki");
-		
+
 		Wiki wiki = new Wiki();
 		wiki.setWikiText(wikiText);
-		if("true".equals(isSave)) {
+		if ("true".equals(isSave)) {
 			logic.updateWiki(wikiRenderer.getRequestedUser().getName(), wiki);
 		}
 		command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
@@ -100,7 +97,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	private View getLayout(AjaxCvCommand command, Locale locale) {
 		log.debug("ajax -> getLayout");
 		final String layout = command.getLayout();
-		if(!"current".equals(layout)){
+		if (!"current".equals(layout)) {
 			String wikiText = messageSource.getMessage(layouts.get(layout), null, locale);
 			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		} else {
@@ -130,13 +127,9 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 * @return XML success string.
 	 */
 	private String getXmlSucceeded(final AjaxCvCommand command, String... wikiText) {
-		if (wikiText.length > 1) {
-			return "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey><wikitext> " + Utils.escapeXmlChars(wikiText[0]) + "</wikitext><renderedwikitext><![CDATA[ " + wikiText[1] + "]]></renderedwikitext></root>";
-		} else if (wikiText.length == 1) {
-			return "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey><wikitext> " + Utils.escapeXmlChars(wikiText[0]) + "</wikitext></root>";
-		} else {
-			return "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey></root>";
-		}
+		return (wikiText.length > 1) ? "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey><wikitext>" + Utils.escapeXmlChars(wikiText[0]) + "</wikitext><renderedwikitext><![CDATA[" + wikiText[1] + "]]></renderedwikitext></root>"
+						: "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey></root>";
+
 	}
 
 	@Override

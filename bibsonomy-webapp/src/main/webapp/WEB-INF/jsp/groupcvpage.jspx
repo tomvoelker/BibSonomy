@@ -48,108 +48,59 @@
 		  		<input type="text" size="20" name="tag" id="inpf"/>
 			</form>
     	</jsp:attribute>
-		
+    	
 		<jsp:attribute name="content">
-			<h2>
-				<fmt:message key="group.cv.headline"></fmt:message>
-				${mtl:ch('nbsp')}
-				<c:out value="${fn:escapeXml(command.group.realname)}" />
-			</h2>
-
-			<div class="groupImage">
-				<img src="/picture/user/${command.group.name}"/>
-				<c:if test="${not empty command.group.homepage}">
-					<a href="${fn:escapeXml(command.group.homepage)}">
-						<div class="imageCapture">
-							${fn:escapeXml(command.group.homepage)}
-						</div>
-					</a>
-				</c:if>
+			<!--  Show a hint on how to fill the cv-page if the loginUser looks at his own cv-page -->
+			<!--<c:if test="${command.context.loginUser.name eq command.requestedGroup}">-->
+				<div id="general_100">
+					<span class="smalltext">
+						<fmt:message key = "cv.hint"/>
+						<ul class="helpList">
+							<li><fmt:message key = "cv.hint2">
+								<fmt:param><fmt:message key = "settings.public"/></fmt:param>
+								</fmt:message></li>
+							<li><fmt:message key = "cv.hint3"/></li>
+						</ul>
+						<fmt:message key = "cv.hint4"/>
+					</span>
+				</div>
+		<form:form><div id="fsform">
+    	  <fieldset class="fsInner">
+		    <div class="fsRow">
+		    <p>temp wiki field</p>
+		      <form:label cssClass="fsLabel" path="wikiText"><fmt:message key="user.cvWiki"/></form:label>
+		      <form:textarea id="wikiTextArea" cssStyle="height: 5cm" cssClass="fsInput" path="wikiText" />
+		      <input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}"/>
+		      <div class='fsRow'>
+		      	<ul>
+		      	<!-- TODO: I18N -->
+		      		<li><a href="#">CV Options</a></li>
+		      		<li>
+		      			<a href="#">Designs</a>
+		      			<ul>		      		
+		      				<li><a href='#' data-layout='table' class='changeLayout'>Layout|TABLE</a></li>
+		      				<li><a href='#' data-layout='robert' class='changeLayout'>Layout|ROBERT</a></li>
+		      				<li><a href='#' data-layout='current' class='changeLayout'>Layout|CURRENT</a></li>
+		      				<li><a href='#' onclick="clearCVTextField();">Clear</a></li>
+		      			</ul>
+		      		</li>
+		      	</ul>
+		      	<input type="button" href='#' onclick="return submitWiki('false');" value="preview" />
+		      	<input type="button" href='#' onclick="return submitWiki('true');" value="save" />
+		      </div>
+		      	<div id='loadingDiv'>
+				<img src="${resdir}/image/ajax_loader.gif" alt="wait" /><img src="${resdir}/image/ajax_loader.gif" alt="wait" /><img src="${resdir}/image/ajax_loader.gif" alt="wait" />
 			</div>
-			
-			<c:if test="${not empty command.group.users}">
-				<h2><fmt:message key="group.cv.members"/>${mtl:ch('nbsp')}</h2>
-				<div class="align">	
-					<c:forEach var="member" items="${command.group.users}">
-						<c:if test="${member.name != command.requestedGroup}">
-				   			<a href="/cv/user/${fn:escapeXml(member.name)}">
-				   				<div class="imageContainer">
-				   					<img src="/picture/user/${fn:escapeXml(member.name)}" height="100px"/>
-				   					<div class="imageCapture">
-				   						<c:choose>
-				   							<c:when test="${not empty member.realname}">${fn:escapeXml(member.realname)}</c:when>
-				   							<c:otherwise>${fn:escapeXml(member.name)}</c:otherwise>	
-				   						</c:choose>				
-				   					</div>
-				   				</div>
-				   			</a>
-						</c:if>
-					</c:forEach>
-				</div>
+		    </div>
+  		  </fieldset>
+		</div>
+		</form:form>
+			<!--</c:if> -->
+			<div id="wikiArea">
+			<c:if test="${not empty command.wikiText}">
+				<c:out value="${command.renderedWikiText}" escapeXml="false" />
 			</c:if>
-			
-			
-			<c:if test="${not empty command.bookmark.list}">
-				<h2><fmt:message key="group.cv.bookmarks"/></h2>
-				<div class="resources align">
-					<ul id="liste" class="bookmarkList">
-						<c:forEach var="post" items="${command.bookmark.list}">
-	    		    		<div style="margin:1.2em;" class="entry">
-								<li>
- 	    							<span class="entry_title">
- 	    								<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
-										<a href="${bookUrl}" rel="nofollow"><c:out value='${post.resource.title}'/></a>
-	     							</span>
-	     							<c:if test="${not empty post.description}">
-	     								<a class="hand"><c:out value=" "/><fmt:message key="cv.options.show_details"/></a>
-				    					<p class="details"> 
-	 		      							<c:out value="${post.description}" />
-	       								</p>
-	       							</c:if>
- 	    						</li>
-							</div>
- 	  					</c:forEach>
- 	  				</ul>
-				</div>
-			</c:if>
-						
-			
-				<c:if test="${not empty command.bibtex.list}">
-					<h2><fmt:message key="group.cv.publications"/></h2>
-					<div class="resources align">
-						<!-- selection of citation format for the publications -->
-						<div>
-							<span id="citation_formats"> 				
-								<form name="citation_format_form" action="" style="font-size:80%;">
-									<c:set var="allExportsTitle"><fmt:message key="bibtex.all_exports.title"/></c:set>
-									<fmt:message key="bibtex.citation_format"/><c:out value=" ("/>
-									<a href="/export/group/${fn:escapeXml(command.group.name)}/myown" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports"/></a><c:out value="): "/>
-									<form:select path="command.layout" onchange="citation_format_form.submit()" size="1">
-										<form:option value="plain"><fmt:message key="cv.options.plain"/></form:option>
-										<form:option value="harvardhtml"><fmt:message key="cv.options.harvard"/></form:option>
-										<form:option value="din1505"><fmt:message key="cv.options.DIN1505"/></form:option>
-										<form:option value="simplehtml"><fmt:message key="cv.options.simpleHTML"/></form:option>
-									</form:select>
-			    					<c:out value=" "/>
-			    					<input type="image"  src="/resources/image/nice_box_arrow_right.png"/>		    
-								</form>						
-							</span>
-						</div>
-
-					<!--Render the publications !!-->
-					<div class="entry">
-						<c:choose>
-         					<c:when test="${empty command.layout}">
-         						<mtl:renderJabRefLayout layout="plain" posts="${command.bibtex.list}" />
- 					        </c:when>
-							<c:otherwise>
-								<mtl:renderJabRefLayout layout="${command.layout}" posts="${command.bibtex.list}" />
-         					</c:otherwise>
-    					</c:choose>
-    				</div>
-				
-				</div>
-			</c:if>
+			</div>
 		</jsp:attribute>
 		
 	</layout:layout>

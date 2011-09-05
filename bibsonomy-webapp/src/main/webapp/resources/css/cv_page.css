@@ -57,5 +57,11 @@ font-style: italic;
 color:#478080;
 }
 
+.imageContainer {
+max-width: 200px;
+text-align: center;
+float: left;
+margin: 5px 5px 5px 5px;
+}
 
 
