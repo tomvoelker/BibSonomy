@@ -11,13 +11,13 @@ public class MembersTag extends AbstractTag {
 	}
 
 	@Override
-	protected StringBuilder render() {
+	protected String render() {
 		// render the member tag if requestedGroup exists, else screw it!
-		return this.requestedGroup != null ? this.renderMembersTag() : new StringBuilder("not available");
+		return this.requestedGroup instanceof org.bibsonomy.model.Group  ? this.renderMembersTag() : "not available";
 	}
 
-	private StringBuilder renderMembersTag() {
-		final StringBuilder renderedHTML = new StringBuilder();
+	private String renderMembersTag() {
+		final StringBuffer renderedHTML = new StringBuffer();
 		for (final User user : this.requestedGroup.getUsers()) {
 			if (!user.getName().equals(this.requestedGroup.getName())) {
 				renderedHTML.append("<div class='imageContainer'>");
@@ -26,7 +26,7 @@ public class MembersTag extends AbstractTag {
 				renderedHTML.append("</div>");
 			}
 		}
-		return renderedHTML;
+		return renderedHTML.toString();
 	}
 
 	private String renderImage(final String userName) {

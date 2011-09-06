@@ -18,7 +18,7 @@ public class LocationTag extends AbstractTag{
 	}
 	
 	@Override
-	protected StringBuilder render() {
-		return this.renderString(requestedUser.getPlace());
+	protected String render() {
+		return this.renderString(this.requestedUser.getPlace());
 	}
 }

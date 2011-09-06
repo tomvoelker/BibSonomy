@@ -2,10 +2,9 @@ package org.bibsonomy.wiki.tags.user;
 
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import info.bliki.htmlcleaner.Utils;
 
 import org.bibsonomy.wiki.tags.AbstractTag;
-
-import info.bliki.htmlcleaner.Utils;
 
 /**
  * @author philipp
@@ -22,8 +21,8 @@ public class HobbieTag extends AbstractTag {
 	}
 
 	@Override
-	protected StringBuilder render() {
-		final StringBuilder renderedHTML = new StringBuilder();
+	protected String render() {
+		final StringBuffer renderedHTML = new StringBuffer();
 		final String hobbies = this.requestedUser.getHobbies();
 
 		if (present(hobbies)) {
@@ -31,7 +30,7 @@ public class HobbieTag extends AbstractTag {
 			renderedHTML.append(Utils.escapeXmlChars(hobbies));
 			renderedHTML.append("</p>");
 		}
-		return renderedHTML;
+		return renderedHTML.toString();
 	}
 
 }

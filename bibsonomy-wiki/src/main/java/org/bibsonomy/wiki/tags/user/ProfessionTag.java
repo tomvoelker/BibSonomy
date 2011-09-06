@@ -19,7 +19,7 @@ public class ProfessionTag extends AbstractTag{
 	}
 	
 	@Override
-	protected StringBuilder render() {
+	protected String render() {
 		return this.renderString(this.requestedUser.getProfession());
 	}
 

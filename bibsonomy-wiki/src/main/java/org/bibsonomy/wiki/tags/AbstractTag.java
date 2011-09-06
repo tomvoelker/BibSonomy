@@ -46,27 +46,27 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 	}
 	
 	
-	protected StringBuilder renderString(final String toRender) {
-		final StringBuilder renderedHTML = new StringBuilder();
+	protected String renderString(final String toRender) {
+		final StringBuffer renderedHTML = new StringBuffer();
 		if (present(toRender)) {
 			renderedHTML.append(Utils.escapeXmlChars(toRender));
 		}
-		return renderedHTML;
+		return renderedHTML.toString();
 	}
 	
-	protected StringBuilder renderParagraph(final String toRender) {
-		final StringBuilder renderedHTML = new StringBuilder();
+	protected String renderParagraph(final String toRender) {
+		final StringBuffer renderedHTML = new StringBuffer();
 		if (present(toRender)) {
 			renderedHTML.append("<p class='align'>");
 			renderedHTML.append(Utils.escapeXmlChars(toRender));
 			renderedHTML.append("</p>");
 		}
-		return renderedHTML;
+		return renderedHTML.toString();
 	}
 
 	/*
 	 * TODO comment
 	 */
-	protected abstract StringBuilder render();
+	protected abstract String render();
 
 }

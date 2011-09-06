@@ -54,9 +54,9 @@ public class PublicationListTag extends AbstractTag {
 	}
 
 	@Override
-	protected StringBuilder render() {
+	protected String render() {
 		final TagNode node = this;
-		final StringBuilder renderedHTML = new StringBuilder();
+		final StringBuffer renderedHTML = new StringBuffer();
 		final Map<String, String> tagAtttributes = node.getAttributes();
 		final Set<String> keysSet = tagAtttributes.keySet();
 
@@ -94,7 +94,7 @@ public class PublicationListTag extends AbstractTag {
 			log.error(e.getMessage());
 		}
 
-		return renderedHTML;
+		return renderedHTML.toString();
 	}
 
 	private boolean checkSort(final Map<String, String> tagAtttributes) {

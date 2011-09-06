@@ -33,8 +33,8 @@ public class BirthdayTag extends AbstractTag {
 	}
 	
 	@Override
-	protected StringBuilder render() {
-		final StringBuilder renderedHTML = new StringBuilder();		
+	protected String render() {
+		final StringBuffer renderedHTML = new StringBuffer();		
 		//FIXME: requestedUser Birthday?!
 
 		final Date birthday = this.requestedUser.getBirthday();
@@ -42,7 +42,7 @@ public class BirthdayTag extends AbstractTag {
 			renderedHTML.append(Utils.escapeXmlChars(simpleDate.format(birthday)));
 		}
 
-		return renderedHTML;
+		return renderedHTML.toString();
 	}
 
 }

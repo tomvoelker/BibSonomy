@@ -38,10 +38,10 @@ public class ImageTag extends AbstractTag{
 	}
 	
 	@Override
-	protected StringBuilder render() {
+	protected String render() {
 		final TagNode node = this;
 		final Map<String, String> tagAtttributes = node.getAttributes();
-		final StringBuilder renderedHTML = new StringBuilder();
+		final StringBuffer renderedHTML = new StringBuffer();
 		final String name = Utils.escapeXmlChars(this.requestedUser.getName());
 		/*
 		 * TODO: Kriegen wir die URLs aus dem JavaCode raus
@@ -52,7 +52,7 @@ public class ImageTag extends AbstractTag{
 		} else {
 			renderedHTML.append("<img src='/picture/user/").append(name).append("' style='float:right;'>");
 		}
-		return renderedHTML;
+		return renderedHTML.toString();
 	}
 	
 	@Override

@@ -24,7 +24,7 @@ public class InterestsTag extends AbstractTag {
 	 * @see org.bibsonomy.wiki.tags.AbstractTag#render()
 	 */
 	@Override
-	protected StringBuilder render() {
+	protected String render() {
 		return this.requestedUser != null ? this.renderParagraph(this.requestedUser.getInterests()) : this.renderParagraph("");
 	}
 }

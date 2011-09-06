@@ -27,12 +27,12 @@ public class RegDateTag extends AbstractTag {
 	}
 
 	@Override
-	protected StringBuilder render() {
-		final StringBuilder renderedHTML = new StringBuilder();
+	protected String render() {
+		final StringBuffer renderedHTML = new StringBuffer();
 		final String regDate = Utils.escapeXmlChars(this.requestedUser.getRegistrationDate().toString());
 		if (present(regDate)) {
 			renderedHTML.append(regDate);
 		}
-		return renderedHTML;
+		return renderedHTML.toString();
 	}
 }

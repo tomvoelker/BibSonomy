@@ -30,11 +30,11 @@ public class NameTag extends AbstractTag {
 	}
 
 	@Override
-	protected StringBuilder render() {
-		final StringBuilder renderedHTML = new StringBuilder();
+	protected String render() {
+		final StringBuffer renderedHTML = new StringBuffer();
 		final String name = Utils.escapeXmlChars(this.requestedUser.getRealname());
 		if (present(name)) {
-			final URL homepage = requestedUser.getHomepage();
+			final URL homepage = this.requestedUser.getHomepage();
 			if (present(homepage)) {
 				renderedHTML.append("<a href=\"");
 				renderedHTML.append(Utils.escapeXmlChars(this.requestedUser.getHomepage().toExternalForm()));
@@ -45,7 +45,7 @@ public class NameTag extends AbstractTag {
 				renderedHTML.append(name);
 			}
 		}
-		return renderedHTML;
+		return renderedHTML.toString();
 	}
 
 }
