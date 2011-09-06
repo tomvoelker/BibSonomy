@@ -1,14 +1,14 @@
 package org.bibsonomy.wiki.tags.user;
 
-import org.bibsonomy.wiki.tags.AbstractTag;
+import org.bibsonomy.wiki.tags.UserTag;
 
 /**
  * This is a simple profession-tag.
  * Usage: <profession />
- * @author Bernd
+ * @author Bernd Terbrack
  *
  */
-public class ProfessionTag extends AbstractTag{
+public class ProfessionTag extends UserTag{
 	private static final String TAG_NAME = "profession";
 	
 	/**
@@ -19,7 +19,7 @@ public class ProfessionTag extends AbstractTag{
 	}
 	
 	@Override
-	protected String render() {
+	protected String renderUserTag() {
 		return this.renderString(this.requestedUser.getProfession());
 	}
 
