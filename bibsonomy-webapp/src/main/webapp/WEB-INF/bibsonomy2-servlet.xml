@@ -290,9 +290,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>
-				
-				<!--> cv <-->		
+				</entry>		
 				<entry key="/cvpage">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="cvPageController"/>
@@ -305,22 +303,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>
-				<entry key="/groupcvpage">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="cvPageController"/>
-						<property name="allowedFields">
-							<list>
-								<value>requestedGroup</value>
-								<value>layout</value>
-								<value>wikiText</value>
-								<value>renderedWikiText</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<!--> /cv <-->	
-				
+				</entry>	
 				<entry key="/relations">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userRelationsController"/>
@@ -591,21 +574,7 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</set>
 		</property>
-	</bean>	
-	
-	<!--> TODO: Delete this <-->
-	<!-- <bean id="groupCvPageController" class="org.bibsonomy.webapp.controller.CvPageController" scope="request" parent="resourceController">
-		<property name="supportedResources" ref="allResources"/>
-		<property name="entries">
-			<value>3</value>
-		</property>
-		<property name="forcedResources">
-			<set>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</set>
-		</property>
-	</bean>	-->
+	</bean>
 	
 	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>

@@ -381,10 +381,10 @@
 	
 	<!-- ############## Curriculum vitae pages ############### -->
 	
-	<!-- /cv/user/USER -->
+	<!-- /cv/NAME -->
 	<rule>
-		<name>/cv/user/USER</name>
-		<from>^/+cv/+user/(.+)$</from>
+		<name>/cv/USER</name>
+		<from>^/+cv/(.+)$</from>
 		<set type="parameter" name="requestedUser">$1</set>
 		<to last="true">/cvpage</to>
 	</rule>
@@ -397,13 +397,13 @@
 		<to last="true">/picture</to>
 	</rule>
 	
-		<!-- /cv/group/GROUPNAME -->
+		<!-- /cv/group/GROUPNAME
 	<rule>
 		<name>/cv/group/USER</name>
 		<from>^/+cv/+group/(.+)$</from>
 		<set type="parameter" name="requestedGroup">$1</set>
 		<to last="true">/groupcvpage</to>
-	</rule>
+	</rule>-->
 	
 	<!-- /bibtexkey/KEY/USER -->
 	<rule>

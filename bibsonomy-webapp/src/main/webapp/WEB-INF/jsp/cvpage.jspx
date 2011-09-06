@@ -75,7 +75,7 @@
 		<jsp:attribute name="content">
 		
 		
-			<!-- UserCV admin panel. Does show if you are the requested user -->
+			<!-- CV admin panel. Does show if you are the requested user -->
 			<c:if test="${command.context.loginUser.name eq command.requestedUser}">
 				<div id="general_100">
 					<span class="smalltext">
@@ -92,7 +92,7 @@
 		<form:form><div id="fsform">
     	  <fieldset class="fsInner">
 		    <div class="fsRow">
-		    <p>Welcome to the User-CV admin panel.</p>
+		    <p>Welcome to the CV admin panel.</p>
 		      <form:label cssClass="fsLabel" path="wikiText"><fmt:message key="user.cvWiki"/></form:label>
 		      <form:textarea id="wikiTextArea" cssStyle="height: 5cm" cssClass="fsInput" path="wikiText" />
 		      <input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}"/>
@@ -106,7 +106,7 @@
 		      				<li><a href='#' data-layout='table' class='changeLayout'>Layout|TABLE</a></li>
 		      				<li><a href='#' data-layout='robert' class='changeLayout'>Layout|ROBERT</a></li>
 		      				<li><a href='#' data-layout='current' class='changeLayout'>Layout|CURRENT</a></li>
-		      				<li><a href='#' onclick="clearCVTextField();">Clear</a></li>
+		      				<li><a href='#' onclick="clearCVTextField();return false;">Clear</a></li>
 		      			</ul>
 		      		</li>
 		      	</ul>
@@ -122,49 +122,6 @@
 		</form:form>
 	</c:if>
 	
-	<!-- GroupCV admin panel. Does show if you are the requested user -->
-			<c:if test="${command.context.loginUser.name eq command.requestedGroup}">
-				<div id="general_100">
-					<span class="smalltext">
-						<fmt:message key = "cv.hint"/>
-						<ul class="helpList">
-							<li><fmt:message key = "cv.hint2">
-								<fmt:param><fmt:message key = "settings.public"/></fmt:param>
-								</fmt:message></li>
-							<li><fmt:message key = "cv.hint3"/></li>
-						</ul>
-						<fmt:message key = "cv.hint4"/>
-					</span>
-				</div>
-		<form:form><div id="fsform">
-    	  <fieldset class="fsInner">
-		    <div class="fsRow">
-		    <p>Welcome to the Group-CV admin panel.</p>
-		      <form:label cssClass="fsLabel" path="wikiText"><fmt:message key="user.cvWiki"/></form:label>
-		      <form:textarea id="wikiTextArea" cssStyle="height: 5cm" cssClass="fsInput" path="wikiText" />
-		      <input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}"/>
-		      <div class='fsRow'>
-		      	<ul>
-		      	<!-- TODO: I18N -->
-		      		<li><a href="#">CV Options</a></li>
-		      		<li>
-		      			<a href="#">Designs</a>
-		      			<ul>		      		
-		      				<li><a href='#' onclick="clearCVTextField();">Clear</a></li>
-		      			</ul>
-		      		</li>
-		      	</ul>
-		      	<input type="button" href='#' onclick="return submitWiki('false');" value="preview" />
-		      	<input type="button" href='#' onclick="return submitWiki('true');" value="save" />
-		      </div>
-		      	<div id='loadingDiv'>
-				<img src="${resdir}/image/ajax_loader.gif" alt="wait" /><img src="${resdir}/image/ajax_loader.gif" alt="wait" /><img src="${resdir}/image/ajax_loader.gif" alt="wait" />
-			</div>
-		    </div>
-  		  </fieldset>
-		</div>
-		</form:form>
-	</c:if>
 			<div id="wikiArea">
 			<c:if test="${not empty command.wikiText}">
 				<c:out value="${command.renderedWikiText}" escapeXml="false" />

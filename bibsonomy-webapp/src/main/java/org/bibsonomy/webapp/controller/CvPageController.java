@@ -15,44 +15,42 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.CvPageViewCommand;
-import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.CVWikiModel;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.validation.Errors;
 
 /**
- * Controller for the cv page: - /cv/user/USERNAME
+ * Controller for the cv page: - /cv/name
  * 
- * @author Philipp Beau
  * @author Bernd Terbrack
  * @version $Id$
  */
-public class CvPageController extends ResourceListController implements ErrorAware, MinimalisticController<CvPageViewCommand> {
+public class CvPageController extends ResourceListController implements MinimalisticController<CvPageViewCommand> {
 
 	private static final Log log = LogFactory.getLog(CvPageController.class);
 	private CVWikiModel wikiRenderer;
-	private Errors errors;
 
 	/**
 	 * implementation of {@link MinimalisticController} interface
 	 */
 	@Override
 	public View workOn(final CvPageViewCommand command) {
-		final String reqUser = command.getRequestedUser();
-		final String reqGroup = command.getRequestedGroup();
+		log.debug("cvPageController accessed.");
 
-		/*
-		 * Since we want both (user/group) CV requests being handled within one controller, the controller is branched at this point
-		 */
-		if (present(reqUser)) {
-			return handleUserCV(reqUser, command);
-		} else if (present(reqGroup)) {
-			return handleGroupCV(reqGroup, command);
-		} else {
-			return handleError("error.cv.missing_user_group");
+		try {
+			final Group requestedGroup = this.logic.getGroupDetails(command.getRequestedUser());
+			/* Check if the group is present. If it should be a user. If its no
+			   user the we will catch the exception and return an error message
+			   to the user. */
+			return present(requestedGroup) ? handleGroupCV(this.logic.getGroupDetails(command.getRequestedUser()), command) : handleUserCV(this.logic.getUserDetails(command.getRequestedUser()), command);
+		} catch (RuntimeException e) {
+			//If the name does not fit to anything the dblogic throws a runtime exception while trying to get the requestedUser
+			throw new MalformedURLSchemeException("The requested user/group has not been found");
+		} catch (Exception e) {
+			throw new MalformedURLSchemeException("Something went wrong while working on your request. Please try again.");
 		}
 	}
 
@@ -63,24 +61,22 @@ public class CvPageController extends ResourceListController implements ErrorAwa
 	 * @param command
 	 * @return The group-cv-page view
 	 */
-	private View handleGroupCV(String reqGroup, CvPageViewCommand command) {
-		final Group requestedGroup = this.logic.getGroupDetails(reqGroup);
+	private View handleGroupCV(Group requestedGroup, CvPageViewCommand command) {
+		final String groupName = requestedGroup.getName();
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
-		
+
 		// TODO: add todo
-		final List<User> groupUsers = this.logic.getUsers(null, groupingEntity, requestedGroup.getName(), null, null, null, null, null, 0, 1000);
+		final List<User> groupUsers = this.logic.getUsers(null, groupingEntity, groupName, null, null, null, null, null, 0, 1000);
 		requestedGroup.setUsers(groupUsers);
-		
-		
-		
-		this.setTags(command, Resource.class, groupingEntity, reqGroup, null, command.getRequestedTagsList(), null, 1000, null);
-		
-		Wiki wiki = this.logic.getWiki(reqGroup, null);
+
+		this.setTags(command, Resource.class, groupingEntity, requestedGroup.getName(), null, command.getRequestedTagsList(), null, 1000, null);
+
+		Wiki wiki = this.logic.getWiki(groupName, null);
 
 		if (!present(wiki)) {
 			wiki = new Wiki();
 		}
-		
+
 		/*
 		 * set the group to render
 		 */
@@ -98,13 +94,12 @@ public class CvPageController extends ResourceListController implements ErrorAwa
 	 * @param command
 	 * @return The user-cv-page view
 	 */
-	private View handleUserCV(String reqUser, CvPageViewCommand command) {
-		final User requestedUser = this.logic.getUserDetails(reqUser);
+	private View handleUserCV(User requestedUser, CvPageViewCommand command) {
 		command.setUser(requestedUser);
-
+		final String userName = requestedUser.getName();
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 
-		this.setTags(command, Resource.class, groupingEntity, reqUser, null, command.getRequestedTagsList(), null, 1000, null);
+		this.setTags(command, Resource.class, groupingEntity, userName, null, command.getRequestedTagsList(), null, 1000, null);
 
 		/*
 		 * TODO: remove (lists are loaded by wiki tags) retrieve and set the
@@ -112,7 +107,7 @@ public class CvPageController extends ResourceListController implements ErrorAwa
 		 */
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
-			this.setList(command, resourceType, groupingEntity, reqUser, Collections.singletonList(MyOwnSystemTag.NAME), null, Order.ADDED, null, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, userName, Collections.singletonList(MyOwnSystemTag.NAME), null, Order.ADDED, null, null, entriesPerPage);
 		}
 
 		/*
@@ -144,33 +139,12 @@ public class CvPageController extends ResourceListController implements ErrorAwa
 	}
 
 	/**
-	 * Method to handle Errors based on urlError enum.
-	 * 
-	 * @return Error View
-	 */
-	private View handleError(final String messageKey) {
-		log.debug("An error occured: " + messageKey);
-		errors.reject(messageKey);
-		return Views.ERROR;
-	}
-
-	/**
 	 * @param wikiRenderer
 	 *            the wikiRenderer to set
 	 */
 	@Required
 	public void setWikiRenderer(CVWikiModel wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
-	}
-
-	@Override
-	public Errors getErrors() {
-		return errors;
-	}
-
-	@Override
-	public void setErrors(final Errors errors) {
-		this.errors = errors;
 	}
 
 }
