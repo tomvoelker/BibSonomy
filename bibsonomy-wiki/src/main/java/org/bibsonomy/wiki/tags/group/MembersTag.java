@@ -12,8 +12,8 @@ public class MembersTag extends AbstractTag {
 
 	@Override
 	protected String render() {
-		// render the member tag if requestedGroup exists, else screw it!
-		return this.requestedGroup instanceof org.bibsonomy.model.Group  ? this.renderMembersTag() : "not available";
+		// render the member tag if its a group request, else screw it!
+		return this.requestedGroup != null  ? this.renderMembersTag() : "not available";
 	}
 
 	private String renderMembersTag() {
