@@ -103,9 +103,9 @@
 		      		<li>
 		      			<a href="#">Designs</a>
 		      			<ul>		      		
-		      				<li><a href='#' data-layout='table' class='changeLayout'>Layout|TABLE</a></li>
-		      				<li><a href='#' data-layout='robert' class='changeLayout'>Layout|ROBERT</a></li>
-		      				<li><a href='#' data-layout='current' class='changeLayout'>Layout|CURRENT</a></li>
+		      				<li><a href='#' data-layout='LAYOUT_TABLE' class='changeLayout'>Layout|TABLE</a></li>
+		      				<li><a href='#' data-layout='LAYOUT_ROBERT' class='changeLayout'>Layout|ROBERT</a></li>
+		      				<li><a href='#' data-layout='LAYOUT_CURRENT' class='changeLayout'>Layout|CURRENT</a></li>
 		      				<li><a href='#' onclick="clearCVTextField();return false;">Clear</a></li>
 		      			</ul>
 		      		</li>

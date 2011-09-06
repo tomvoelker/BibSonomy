@@ -64,4 +64,11 @@ float: left;
 margin: 5px 5px 5px 5px;
 }
 
+.groupImage {
+max-width: auto;
+text-align: center;
+margin: 0 auto;
+text-align:center;
+}
+
 
