@@ -1,22 +1,21 @@
 package org.bibsonomy.wiki.tags.group;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.wiki.tags.AbstractTag;
+import org.bibsonomy.wiki.tags.GroupTag;
 
-public class MembersTag extends AbstractTag {
+public class MembersTag extends GroupTag {
 	private static final String TAG_NAME = "members";
 
 	public MembersTag() {
 		super(TAG_NAME);
 	}
 
-	@Override
-	protected String render() {
-		// render the member tag if its a group request, else screw it!
-		return this.requestedGroup != null  ? this.renderMembersTag() : "not available";
+	private String renderImage(final String userName) {
+		return "<img height='100px' src='/picture/user/" + userName + "' />";
 	}
 
-	private String renderMembersTag() {
+	@Override
+	protected String renderGroupTag() {
 		final StringBuffer renderedHTML = new StringBuffer();
 		for (final User user : this.requestedGroup.getUsers()) {
 			if (!user.getName().equals(this.requestedGroup.getName())) {
@@ -27,9 +26,5 @@ public class MembersTag extends AbstractTag {
 			}
 		}
 		return renderedHTML.toString();
-	}
-
-	private String renderImage(final String userName) {
-		return "<img height='100px' src='/picture/user/" + userName + "' />";
 	}
 }
