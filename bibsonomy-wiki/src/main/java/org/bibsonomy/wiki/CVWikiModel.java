@@ -19,48 +19,47 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.tags.AbstractTag;
+import org.bibsonomy.wiki.tags.group.GroupImageTag;
 import org.bibsonomy.wiki.tags.group.MembersTag;
-import org.bibsonomy.wiki.tags.post.BookmarkListTag;
-import org.bibsonomy.wiki.tags.post.PublicationListTag;
+import org.bibsonomy.wiki.tags.shared.ImageTag;
+import org.bibsonomy.wiki.tags.shared.NameTag;
+import org.bibsonomy.wiki.tags.shared.RegDateTag;
+import org.bibsonomy.wiki.tags.shared.post.BookmarkListTag;
+import org.bibsonomy.wiki.tags.shared.post.PublicationListTag;
 import org.bibsonomy.wiki.tags.user.BirthdayTag;
 import org.bibsonomy.wiki.tags.user.HobbieTag;
-import org.bibsonomy.wiki.tags.user.ImageTag;
 import org.bibsonomy.wiki.tags.user.InstitutionTag;
 import org.bibsonomy.wiki.tags.user.InterestsTag;
 import org.bibsonomy.wiki.tags.user.LocationTag;
-import org.bibsonomy.wiki.tags.user.NameTag;
 import org.bibsonomy.wiki.tags.user.ProfessionTag;
-import org.bibsonomy.wiki.tags.user.RegDateTag;
 
 /**
  * @author philipp
- * @author Bernd
+ * @author Bernd Terbrack
  * @version $Id$
  */
 public class CVWikiModel extends AbstractWikiModel {
 
 	static {
 		/* About-Me Tags */
-		register(new NameTag());
 		register(new LocationTag());
 		register(new BirthdayTag());
-		register(new ProfessionTag());
 		register(new InstitutionTag());
-		register(new ImageTag());
-		register(new RegDateTag());
 		register(new InterestsTag());
 		register(new HobbieTag());
+		register(new ProfessionTag());
+		
 		/* Group Tags */
 		register(new MembersTag());
+		register(new GroupImageTag());
 		
-		/*
-		 * We have no eMail Tag since eMail addresses are never public in
-		 * BibSonomy!
-		 */
-
-		/* Post Tags */
+		/* Shared Tags */
+		register(new NameTag());
+		register(new ImageTag());
+		register(new RegDateTag());
 		register(new BookmarkListTag());
 		register(new PublicationListTag());
+		
 	}
 
 	private static void register(final AbstractTag tag) {

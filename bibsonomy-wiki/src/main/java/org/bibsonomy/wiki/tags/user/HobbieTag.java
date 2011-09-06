@@ -4,13 +4,13 @@ package org.bibsonomy.wiki.tags.user;
 import static org.bibsonomy.util.ValidationUtils.present;
 import info.bliki.htmlcleaner.Utils;
 
-import org.bibsonomy.wiki.tags.AbstractTag;
+import org.bibsonomy.wiki.tags.UserTag;
 
 /**
  * @author philipp
  * @version $Id$
  */
-public class HobbieTag extends AbstractTag {
+public class HobbieTag extends UserTag {
 	private static final String TAG_NAME = "hobbies";
 
 	/**
@@ -21,7 +21,7 @@ public class HobbieTag extends AbstractTag {
 	}
 
 	@Override
-	protected String render() {
+	protected String renderUserTag() {
 		final StringBuffer renderedHTML = new StringBuffer();
 		final String hobbies = this.requestedUser.getHobbies();
 

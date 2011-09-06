@@ -1,13 +1,13 @@
 package org.bibsonomy.wiki.tags.user;
 
-import org.bibsonomy.wiki.tags.AbstractTag;
+import org.bibsonomy.wiki.tags.UserTag;
 
 /**
  * @author philipp
  * @author Bernd Terbrack
  * @version $Id$
  */
-public class InterestsTag extends AbstractTag {
+public class InterestsTag extends UserTag {
 	
 	private static final String TAG_NAME = "interests";
 	
@@ -24,7 +24,7 @@ public class InterestsTag extends AbstractTag {
 	 * @see org.bibsonomy.wiki.tags.AbstractTag#render()
 	 */
 	@Override
-	protected String render() {
+	protected String renderUserTag() {
 		return this.requestedUser != null ? this.renderParagraph(this.requestedUser.getInterests()) : this.renderParagraph("");
 	}
 }

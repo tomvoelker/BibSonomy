@@ -6,7 +6,7 @@ import info.bliki.htmlcleaner.Utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.bibsonomy.wiki.tags.AbstractTag;
+import org.bibsonomy.wiki.tags.UserTag;
 
 /**
  * This is a simple birthday-tag.
@@ -14,7 +14,7 @@ import org.bibsonomy.wiki.tags.AbstractTag;
  * @author Bernd
  *
  */
-public class BirthdayTag extends AbstractTag {
+public class BirthdayTag extends UserTag {
 	
 	private static final String TAG_NAME = "birthday";
 	/*
@@ -33,7 +33,7 @@ public class BirthdayTag extends AbstractTag {
 	}
 	
 	@Override
-	protected String render() {
+	protected String renderUserTag() {
 		final StringBuffer renderedHTML = new StringBuffer();		
 		//FIXME: requestedUser Birthday?!
 

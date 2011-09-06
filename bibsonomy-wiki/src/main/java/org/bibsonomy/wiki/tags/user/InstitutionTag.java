@@ -1,14 +1,14 @@
 package org.bibsonomy.wiki.tags.user;
 
 
-import org.bibsonomy.wiki.tags.AbstractTag;
+import org.bibsonomy.wiki.tags.UserTag;
 /**
  * This is a simple institution-tag.
  * Usage: <institution />
  * @author Bernd
  * @version $Id$
  */
-public class InstitutionTag extends AbstractTag {
+public class InstitutionTag extends UserTag {
 	private static final String TAG_NAME = "institution";
 	
 	/**
@@ -19,7 +19,7 @@ public class InstitutionTag extends AbstractTag {
 	}
 	
 	@Override
-	protected String render() {
+	protected String renderUserTag() {
 		return this.renderString(this.requestedUser.getInstitution());
 	}
 
