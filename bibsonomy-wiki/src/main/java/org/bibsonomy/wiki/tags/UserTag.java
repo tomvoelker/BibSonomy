@@ -7,7 +7,7 @@ public abstract class UserTag extends AbstractTag {
 	}
 
 	@Override
-	protected String render() {
+	protected String renderSafe() {
 		return this.requestedUser != null  ? this.renderUserTag() : "The tag \"" +this.getName() +"\" is only available for users.";
 	}
 

@@ -7,7 +7,7 @@ public abstract class GroupTag extends AbstractTag {
 	}
 
 	@Override
-	protected String render() {
+	protected String renderSafe() {
 		return this.requestedGroup != null  ? this.renderGroupTag() : "The tag \"" +this.getName() +"\" is only available for groups.";
 	}
 
