@@ -59,12 +59,12 @@ function submitWiki(renderOptions) {
 	return false;
 }
 
-function formatPublications(self) {
+function formatPublications(self,type) {
 	var layout = $(self).val();
 	var tags = $(self).next().val();
 	var reqUser = $('#reqUser').val();
 	$(self).parent().parent().parent().next().empty();
-	$.get("/layout/"+layout+"/user/"+reqUser+"/"+tags, function(data){
+	$.get("/layout/"+layout+"/"+type+"/"+reqUser+"/"+tags, function(data){
 		$(self).parent().parent().parent().next().html(data);
 	});
 	return false;
