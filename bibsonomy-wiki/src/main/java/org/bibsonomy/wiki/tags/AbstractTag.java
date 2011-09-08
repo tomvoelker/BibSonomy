@@ -23,8 +23,8 @@ import org.bibsonomy.wiki.CVWikiModel;
 public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  {
 	
 	protected LogicInterface logic;
-	protected User requestedUser;
-	protected Group requestedGroup;
+	public User requestedUser;
+	public Group requestedGroup;
 	protected LayoutRenderer<Layout> layoutRenderer;
 
 	/**

@@ -1,9 +1,9 @@
-package org.bibsonomy.wiki.tags.shared;
+package org.bibsonomy.wiki.tags.user;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 import info.bliki.htmlcleaner.Utils;
 
-import org.bibsonomy.wiki.tags.SharedTag;
+import org.bibsonomy.wiki.tags.UserTag;
 
 /**
  * This is a simple registered-date-tag
@@ -11,7 +11,7 @@ import org.bibsonomy.wiki.tags.SharedTag;
  * @author Bernd Terbrack
  *
  */
-public class RegDateTag extends SharedTag {
+public class RegDateTag extends UserTag {
 	
 	/*
 	 * TODO Unify date handling for this tag and for the BirthdayTag (same options)
@@ -34,11 +34,5 @@ public class RegDateTag extends SharedTag {
 			renderedHTML.append(regDate);
 		}
 		return renderedHTML.toString();
-	}
-
-	@Override
-	protected String renderGroupTag() {
-		// TODO Auto-generated method stub
-		return "Not implemented yet.";
 	}
 }

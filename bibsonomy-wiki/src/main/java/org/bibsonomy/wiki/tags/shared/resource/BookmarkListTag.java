@@ -1,7 +1,6 @@
-package org.bibsonomy.wiki.tags.shared.post;
+package org.bibsonomy.wiki.tags.shared.resource;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import info.bliki.htmlcleaner.TagNode;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,10 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.wiki.tags.SharedTag;
+import org.bibsonomy.wiki.tags.SharedResourceTag;
 
 /**
  * TODO: abstract resource tag
@@ -22,7 +20,7 @@ import org.bibsonomy.wiki.tags.SharedTag;
  * @author Bernd Terbrack
  * @version $Id$
  */
-public class BookmarkListTag extends SharedTag {
+public class BookmarkListTag extends SharedResourceTag {
 	private static final String NAME = "tags";
 	private static final String TAG_NAME = "bookmarks";
 
@@ -34,14 +32,17 @@ public class BookmarkListTag extends SharedTag {
 	public BookmarkListTag() {
 		super(TAG_NAME);
 	}
-	
-    @Override
-    protected String renderUserTag() {
- 	   final TagNode node = this;
-       
+
+	@Override
+	public boolean isAllowedAttribute(final String attName) {
+		return ALLOWED_ATTRIBUTES.contains(attName);
+	}
+
+	@Override
+	protected String renderSharedTag(final RequestType requestType) {
  		final StringBuilder renderedHTML = new StringBuilder();
  		
-        final Map<String, String> tagAtttributes = node.getAttributes();
+        final Map<String, String> tagAtttributes = this.getAttributes();
         final Set<String> keysSet = tagAtttributes.keySet();
          
  		final String tags;
@@ -52,8 +53,10 @@ public class BookmarkListTag extends SharedTag {
  		} else {
  			tags = tagAtttributes.get(NAME);
  		}
-         
-        final List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, this.requestedUser.getName(), Collections.singletonList(tags), null, null, null, 0, Integer.MAX_VALUE, null);
+ 		final List<Post<Bookmark>> posts;
+ 		posts = this.logic.getPosts(Bookmark.class, requestType.getGroupingEntity(), this.getRequestedName(requestType), Collections.singletonList(tags), null, null, null, 0, Integer.MAX_VALUE, null);
+		
+ 		
         renderedHTML.append("<div class='align'>");
         renderedHTML.append("<ul id='liste' class='bookmarkList'>");
         
@@ -76,16 +79,5 @@ public class BookmarkListTag extends SharedTag {
         renderedHTML.append("</div >");
         
     	return renderedHTML.toString();
-    }
-
-	@Override
-	public boolean isAllowedAttribute(final String attName) {
-		return ALLOWED_ATTRIBUTES.contains(attName);
-	}
-
-	@Override
-	protected String renderGroupTag() {
-		// TODO Auto-generated method stub
-		return "Not implemented yet.";
 	}
 }

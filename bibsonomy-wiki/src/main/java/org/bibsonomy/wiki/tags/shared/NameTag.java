@@ -1,9 +1,6 @@
 package org.bibsonomy.wiki.tags.shared;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import info.bliki.htmlcleaner.Utils;
-
-import java.net.URL;
 
 import org.bibsonomy.wiki.tags.SharedTag;
 
@@ -30,39 +27,19 @@ public class NameTag extends SharedTag {
 	}
 
 	@Override
-	protected String renderUserTag() {
+	protected String renderSharedTag(final RequestType requestType) {
 		final StringBuilder renderedHTML = new StringBuilder();
-		final String name = Utils.escapeXmlChars(this.requestedUser.getRealname());
+		final String name = this.getRequestedName(requestType);
 		if (present(name)) {
-			final URL homepage = this.requestedUser.getHomepage();
-			if (present(homepage)) {
+			/*if (present(homepage)) {
 				renderedHTML.append("<a href=\"");
 				renderedHTML.append(Utils.escapeXmlChars(this.requestedUser.getHomepage().toExternalForm()));
 				renderedHTML.append("\">");
 				renderedHTML.append(name);
 				renderedHTML.append("</a>");
-			} else {
+			} else {*/
 				renderedHTML.append(name);
-			}
-		}
-		return renderedHTML.toString();
-	}
-
-	@Override
-	protected String renderGroupTag() {
-		final StringBuilder renderedHTML = new StringBuilder();
-		final String name = Utils.escapeXmlChars(this.requestedGroup.getRealname());
-		if (present(name)) {
-			final URL homepage = this.requestedGroup.getHomepage();
-			if (present(homepage)) {
-				renderedHTML.append("<a href=\"");
-				renderedHTML.append(Utils.escapeXmlChars(this.requestedGroup.getHomepage().toExternalForm()));
-				renderedHTML.append("\">");
-				renderedHTML.append(name);
-				renderedHTML.append("</a>");
-			} else {
-				renderedHTML.append(name);
-			}
+			//}
 		}
 		return renderedHTML.toString();
 	}

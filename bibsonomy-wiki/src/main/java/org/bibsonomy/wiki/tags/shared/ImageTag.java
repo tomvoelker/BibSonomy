@@ -1,8 +1,5 @@
 package org.bibsonomy.wiki.tags.shared;
 
-import info.bliki.htmlcleaner.TagNode;
-import info.bliki.htmlcleaner.Utils;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,28 +27,20 @@ public class ImageTag extends SharedTag {
 	}
 
 	@Override
-	protected String renderUserTag() {
-		final TagNode node = this;
-		final Map<String, String> tagAtttributes = node.getAttributes();
-		final StringBuilder renderedHTML = new StringBuilder();
-		final String name = Utils.escapeXmlChars(this.requestedUser.getName());
-		/*
-		 * TODO: Kriegen wir die URLs aus dem JavaCode raus 
-		 * FIXME: tolowercase impl.
-		 */
-		renderedHTML.append("<img src='/picture/user/").append(name).append("' style='").append(tagAtttributes.get(FLOAT)).append("'>");
-		return renderedHTML.toString();
-	}
-
-	@Override
 	public boolean isAllowedAttribute(final String attName) {
 		return ALLOWED_ATTRIBUTES_SET.contains(attName);
 	}
 
 	@Override
-	protected String renderGroupTag() {
-		// TODO Auto-generated method stub
-		return "Not implemented yet.";
+	protected String renderSharedTag(final RequestType requestType) {
+		/*
+		 * TODO: Kriegen wir die URLs aus dem JavaCode raus FIXME: tolowercase impl.
+		 */
+		final Map<String, String> tagAtttributes = this.getAttributes();
+		final StringBuilder renderedHTML = new StringBuilder();
+		final String name = this.getRequestedName(requestType);
+		renderedHTML.append("<img src='/picture/user/").append(name).append("' style='").append(tagAtttributes.get(FLOAT)).append("'>");
+		return renderedHTML.toString();
 	}
 
 }

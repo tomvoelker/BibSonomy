@@ -1,6 +1,4 @@
-package org.bibsonomy.wiki.tags.shared.post;
-
-import info.bliki.htmlcleaner.TagNode;
+package org.bibsonomy.wiki.tags.shared.resource;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,14 +10,13 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.SortUtils;
-import org.bibsonomy.wiki.tags.SharedTag;
+import org.bibsonomy.wiki.tags.SharedResourceTag;
 
 /**
  * TODO: abstract resource tag
@@ -29,7 +26,7 @@ import org.bibsonomy.wiki.tags.SharedTag;
  * @version $Id: PublicationListTag.java,v 1.9 2011-08-22 13:16:07 nosebrain Exp
  *          $
  */
-public class PublicationListTag extends SharedTag {
+public class PublicationListTag extends SharedResourceTag {
 
 	private static final String DEFAULT_LAYOUT = "plain";
 
@@ -53,12 +50,20 @@ public class PublicationListTag extends SharedTag {
 		super(TAG_NAME);
 	}
 
-	@SuppressWarnings("deprecation") // Line 81
+	private boolean checkSort(final Map<String, String> tagAtttributes) {
+		return ALLOWED_SORTPAGE_JABREF_LAYOUTS.contains(tagAtttributes.get(KEYS)) && ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS.contains(tagAtttributes.get(ORDER)) ? true : false;
+	}
+
 	@Override
-	protected String renderUserTag() {
-		final TagNode node = this;
+	public boolean isAllowedAttribute(final String attName) {
+		return ALLOWED_ATTRIBUTES_SET.contains(attName);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	protected String renderSharedTag(final RequestType requestType) {
 		final StringBuilder renderedHTML = new StringBuilder();
-		final Map<String, String> tagAtttributes = node.getAttributes();
+		final Map<String, String> tagAtttributes = this.getAttributes();
 		final Set<String> keysSet = tagAtttributes.keySet();
 
 		final String tags;
@@ -70,13 +75,13 @@ public class PublicationListTag extends SharedTag {
 			tags = tagAtttributes.get(TAGS);
 		}
 
-		final String requestedUserName = this.requestedUser.getName();
+		final String requestedName = this.getRequestedName(requestType);
 		
-		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format (<a href='/export/user/" + requestedUserName + "/" +tags + "' title='show all export formats (including RSS, CVS, ...)''>all formats</a>): <select size='1' name='layout' class='layout' onchange='return formatPublications(this)'>");
+		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format (<a href='/export/").append(requestType.getType()).append("/").append(requestedName).append("/").append(tags).append("' title='show all export formats (including RSS, CVS, ...)''>all formats</a>): <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"").append(requestType.getType()).append("\")'>");
 		renderedHTML.append("<option value='plain'>plain</option><option value='harvardhtml'>harvard</option><option value='din1505'>DIN1505</option><option value='simplehtml'>simpleHTML</option>");
-		renderedHTML.append("</select><input type='hidden' value='"+tags+"' /></form></span></div>");
+		renderedHTML.append("</select><input type='hidden' value='").append(tags).append("' /></form></span></div>");
 
-		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.USER, requestedUserName, Collections.singletonList(tags), null, null, null, 0, Integer.MAX_VALUE, null);
+		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, requestType.getGroupingEntity(), requestedName, Collections.singletonList(tags), null, null, null, 0, Integer.MAX_VALUE, null);
 		if (this.checkSort(tagAtttributes)) {
 			BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(tagAtttributes.get(KEYS)), SortUtils.parseSortOrders(tagAtttributes.get(ORDER)));
 		}
@@ -84,9 +89,9 @@ public class PublicationListTag extends SharedTag {
 		try {
 			final Layout layout;
 			if (null != tagAtttributes.get(LAYOUT)) {
-				layout = this.layoutRenderer.getLayout(tagAtttributes.get(LAYOUT), requestedUserName);
+				layout = this.layoutRenderer.getLayout(tagAtttributes.get(LAYOUT), requestedName);
 			} else {
-				layout = this.layoutRenderer.getLayout(DEFAULT_LAYOUT, requestedUserName);
+				layout = this.layoutRenderer.getLayout(DEFAULT_LAYOUT, requestedName);
 			}
 			renderedHTML.append("<div>" +this.layoutRenderer.renderLayout(layout, posts, false) +"</div>");
 		} catch (final LayoutRenderingException e) {
@@ -96,20 +101,5 @@ public class PublicationListTag extends SharedTag {
 		}
 
 		return renderedHTML.toString();
-	}
-
-	private boolean checkSort(final Map<String, String> tagAtttributes) {
-		return ALLOWED_SORTPAGE_JABREF_LAYOUTS.contains(tagAtttributes.get(KEYS)) && ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS.contains(tagAtttributes.get(ORDER)) ? true : false;
-	}
-
-	@Override
-	public boolean isAllowedAttribute(final String attName) {
-		return ALLOWED_ATTRIBUTES_SET.contains(attName);
-	}
-
-	@Override
-	protected String renderGroupTag() {
-		// TODO Auto-generated method stub
-		return "Not implemented yet.";
 	}
 }

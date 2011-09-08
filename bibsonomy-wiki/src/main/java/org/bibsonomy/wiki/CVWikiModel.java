@@ -23,15 +23,15 @@ import org.bibsonomy.wiki.tags.group.GroupImageTag;
 import org.bibsonomy.wiki.tags.group.MembersTag;
 import org.bibsonomy.wiki.tags.shared.ImageTag;
 import org.bibsonomy.wiki.tags.shared.NameTag;
-import org.bibsonomy.wiki.tags.shared.RegDateTag;
-import org.bibsonomy.wiki.tags.shared.post.BookmarkListTag;
-import org.bibsonomy.wiki.tags.shared.post.PublicationListTag;
+import org.bibsonomy.wiki.tags.shared.resource.BookmarkListTag;
+import org.bibsonomy.wiki.tags.shared.resource.PublicationListTag;
 import org.bibsonomy.wiki.tags.user.BirthdayTag;
 import org.bibsonomy.wiki.tags.user.HobbieTag;
 import org.bibsonomy.wiki.tags.user.InstitutionTag;
 import org.bibsonomy.wiki.tags.user.InterestsTag;
 import org.bibsonomy.wiki.tags.user.LocationTag;
 import org.bibsonomy.wiki.tags.user.ProfessionTag;
+import org.bibsonomy.wiki.tags.user.RegDateTag;
 
 /**
  * @author philipp
