@@ -12,6 +12,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.ajax.AjaxCvCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -33,6 +34,7 @@ import org.springframework.validation.Errors;
 public class CvAjaxController extends AjaxController implements MinimalisticController<AjaxCvCommand>, ErrorAware, ValidationAwareController<AjaxCvCommand> {
 
 	private static final Log log = LogFactory.getLog(CvAjaxController.class);
+	private LogicInterface notLoggedInUserLogic;
 	private Errors errors;
 	private CVWikiModel wikiRenderer;
 	private MessageSource messageSource;
@@ -46,17 +48,6 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	public View workOn(AjaxCvCommand command) {
 		log.debug("workOn CvAjaxController");
 		final Locale locale = requestLogic.getLocale();
-		
-		final Group requestedGroup = logic.getGroupDetails(logic.getAuthenticatedUser().getName());
-
-		if(present(requestedGroup)) {
-			this.wikiRenderer.setRequestedGroup(requestedGroup);
-			final GroupingEntity groupingEntity = GroupingEntity.GROUP;
-			final List<User> groupUsers = this.logic.getUsers(null, groupingEntity, requestedGroup.getName(), null, null, null, null, null, 0, 1000);
-			requestedGroup.setUsers(groupUsers);
-		}else {
-			this.wikiRenderer.setRequestedUser(logic.getAuthenticatedUser());
-		}
 
 		// -- Validating the request --
 		/*
@@ -72,12 +63,27 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		if (!command.getContext().isValidCkey()) {
 			return handleError("error.field.valid.ckey");
 		}
-
-		final String isSave = command.getIsSave();
+		
+		this.wikiRenderer.setLogic(notLoggedInUserLogic);
+		final String renderOptions = command.getRenderOptions();
+		final String authUser = logic.getAuthenticatedUser().getName();
 		final String wikiText = command.getWikiText();
+		final Group requestedGroup;
+		
+		requestedGroup = this.notLoggedInUserLogic.getGroupDetails(authUser);
 
-		if (present(isSave) && wikiText != null) {
-			return renderWiki(command, wikiText, isSave);
+		if (present(requestedGroup)) {
+			final GroupingEntity groupingEntity = GroupingEntity.GROUP;
+			final List<User> groupUsers = this.logic.getUsers(null, groupingEntity, requestedGroup.getName(), null, null, null, null, null, 0, 1000);
+			requestedGroup.setUsers(groupUsers);
+
+			this.wikiRenderer.setRequestedGroup(requestedGroup);
+		} else {
+			this.wikiRenderer.setRequestedUser(this.notLoggedInUserLogic.getUserDetails(authUser));
+		}
+
+		if (present(renderOptions) && wikiText != null) {
+			return renderWiki(command, wikiText, renderOptions);
 		}
 		try {
 			return getLayout(command, locale);
@@ -86,13 +92,12 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		}
 	}
 
-	private View renderWiki(AjaxCvCommand command, String wikiText, String isSave) {
+	private View renderWiki(AjaxCvCommand command, String wikiText, String renderOption) {
 		log.debug("ajax -> renderWiki");
 
 		Wiki wiki = new Wiki();
 		wiki.setWikiText(wikiText);
-		if ("true".equals(isSave)) {
-			//Looks dirty! :D
+		if ("save".equals(renderOption)) {
 			logic.updateWiki((wikiRenderer.getRequestedGroup() != null ? wikiRenderer.getRequestedGroup().getName() : wikiRenderer.getRequestedUser().getName()), wiki);
 		}
 		command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
@@ -180,6 +185,21 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 */
 	public void setWikiRenderer(CVWikiModel wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
+	}
+
+	/**
+	 * @return the notLoggedInUserLogic
+	 */
+	public LogicInterface getNotLoggedInUserLogic() {
+		return notLoggedInUserLogic;
+	}
+
+	/**
+	 * @param notLoggedInUserLogic
+	 *            the notLoggedInUserLogic to set
+	 */
+	public void setNotLoggedInUserLogic(final LogicInterface notLoggedInUserLogic) {
+		this.notLoggedInUserLogic = notLoggedInUserLogic;
 	}
 
 }

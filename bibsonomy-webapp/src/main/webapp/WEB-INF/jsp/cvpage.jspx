@@ -110,8 +110,8 @@
 		      			</ul>
 		      		</li>
 		      	</ul>
-		      	<input type="button" href='#' onclick="return submitWiki('false');" value="preview" />
-		      	<input type="button" href='#' onclick="return submitWiki('true');" value="save" />
+		      	<input type="button" href='#' onclick="return submitWiki('preview');" value="preview" />
+		      	<input type="button" href='#' onclick="return submitWiki('save');" value="save" />
 		      </div>
 		      	<div id='loadingDiv'>
 				<img src="${resdir}/image/ajax_loader.gif" alt="wait" /><img src="${resdir}/image/ajax_loader.gif" alt="wait" /><img src="${resdir}/image/ajax_loader.gif" alt="wait" />

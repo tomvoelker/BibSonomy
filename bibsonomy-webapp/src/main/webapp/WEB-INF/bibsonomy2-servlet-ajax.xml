@@ -51,7 +51,7 @@
 								<value>pubFormat</value>
 								<value>ckey</value>
 								<value>layout</value>
-								<value>isSave</value>
+								<value>renderOptions</value>
 								<value>wikiText</value>
 								<value>text</value>
 								<value>hash</value>
@@ -214,6 +214,7 @@
 	<bean id="cvController" class="org.bibsonomy.webapp.controller.ajax.CvAjaxController" scope="request" parent="ajaxController">
 		<property name="messageSource" ref="messageSource"/>
 		<property name="wikiRenderer" ref="wikiRenderer"/>
+		<property name="notLoggedInUserLogic" ref="notLoggedInUserLogic"/>
 	</bean>
 
 

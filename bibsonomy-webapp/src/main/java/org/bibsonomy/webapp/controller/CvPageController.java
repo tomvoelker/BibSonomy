@@ -47,8 +47,8 @@ public class CvPageController extends ResourceListController implements Minimali
 			   to the user. */
 			return present(requestedGroup) ? handleGroupCV(this.logic.getGroupDetails(command.getRequestedUser()), command) : handleUserCV(this.logic.getUserDetails(command.getRequestedUser()), command);
 		} catch (RuntimeException e) {
-			//If the name does not fit to anything the dblogic throws a runtime exception while trying to get the requestedUser
-			throw new MalformedURLSchemeException("The requested user/group has not been found");
+			//If the name does not fit to anything a runtime exception is thrown while attempting to get the requestedUser
+			throw new MalformedURLSchemeException("Something went wrong! You are most likely looking for a non existant user/group.");
 		} catch (Exception e) {
 			throw new MalformedURLSchemeException("Something went wrong while working on your request. Please try again.");
 		}

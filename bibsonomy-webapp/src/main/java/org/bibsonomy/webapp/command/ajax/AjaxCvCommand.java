@@ -11,9 +11,9 @@ public class AjaxCvCommand extends AjaxCommand {
 	private String layout;
 	
 	/**
-	 * Does the user want to save right away?
+	 * renderOptions
 	 */
-	private String isSave;
+	private String renderOptions;
 	
 	/**
 	 * 
@@ -35,20 +35,6 @@ public class AjaxCvCommand extends AjaxCommand {
 	}
 
 	/**
-	 * @return the isSave
-	 */
-	public String getIsSave() {
-		return isSave;
-	}
-
-	/**
-	 * @param isSave the isSave to set
-	 */
-	public void setIsSave(String isSave) {
-		this.isSave = isSave;
-	}
-
-	/**
 	 * @return the wikiText
 	 */
 	public String getWikiText() {
@@ -60,6 +46,20 @@ public class AjaxCvCommand extends AjaxCommand {
 	 */
 	public void setWikiText(String wikiText) {
 		this.wikiText = wikiText;
+	}
+
+	/**
+	 * @return the renderOptions
+	 */
+	public String getRenderOptions() {
+		return renderOptions;
+	}
+
+	/**
+	 * @param renderOptions the renderOptions to set
+	 */
+	public void setRenderOptions(String renderOptions) {
+		this.renderOptions = renderOptions;
 	}
 
 }

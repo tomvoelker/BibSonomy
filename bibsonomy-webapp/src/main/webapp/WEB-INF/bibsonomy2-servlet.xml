@@ -125,7 +125,12 @@
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 	</bean>
-
+	<bean id="notLoggedInUserLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean">
+		<property name="user" ref="notLoggedInUser"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>
+    <bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
+	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
 		<property name="projectHome" value="${project.home}" />

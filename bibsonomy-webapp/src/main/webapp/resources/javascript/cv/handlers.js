@@ -54,17 +54,17 @@ $(function(){
         if (e.ctrlKey) {
             if (e.keyCode == 13) { //ENTER
                 e.preventDefault();
-                submitWiki('false');
+                submitWiki('preview');
             }
             else 
                 if (e.keyCode == 80) { //"p"
                     e.preventDefault();
-                    submitWiki('false');
+                    submitWiki('preview');
                 }
                 else 
                     if (e.keyCode == 83) { //"s"
                         e.preventDefault();
-                        submitWiki('true');
+                        submitWiki('save');
                     }
                     else 
                         if (e.keyCode == 46) { //DELETE

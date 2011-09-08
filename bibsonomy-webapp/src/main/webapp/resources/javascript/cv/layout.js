@@ -31,14 +31,14 @@ function changeCVLayout(name) {
 	return false;
 }
 
-function submitWiki(isSave) {
+function submitWiki(renderOptions) {
 	$.ajax({
 		type : "GET",
 		url : "/ajax/cv",
 		data : {
 			ckey : $('#ckey').val(),
 			wikiText : $('#wikiTextArea').val(),
-			isSave : isSave
+			renderOptions : renderOptions
 		},
 		beforeSend : function() {
 		},
