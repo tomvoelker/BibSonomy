@@ -7,7 +7,7 @@ public abstract class SharedTag extends AbstractTag {
 	}
 
 	@Override
-	protected String render() {
+	protected String renderSafe() {
 		// If the group is "null" then its a user (obviously)
 		return this.requestedGroup != null  ? this.renderGroupTag() : this.renderUserTag();
 	}

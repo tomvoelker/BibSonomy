@@ -34,7 +34,7 @@ public class BirthdayTag extends UserTag {
 	
 	@Override
 	protected String renderUserTag() {
-		final StringBuffer renderedHTML = new StringBuffer();		
+		final StringBuilder renderedHTML = new StringBuilder();		
 		//FIXME: requestedUser Birthday?!
 
 		final Date birthday = this.requestedUser.getBirthday();

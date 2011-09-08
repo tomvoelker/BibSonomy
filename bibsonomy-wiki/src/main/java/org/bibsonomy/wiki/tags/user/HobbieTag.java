@@ -22,7 +22,7 @@ public class HobbieTag extends UserTag {
 
 	@Override
 	protected String renderUserTag() {
-		final StringBuffer renderedHTML = new StringBuffer();
+		final StringBuilder renderedHTML = new StringBuilder();
 		final String hobbies = this.requestedUser.getHobbies();
 
 		if (present(hobbies)) {

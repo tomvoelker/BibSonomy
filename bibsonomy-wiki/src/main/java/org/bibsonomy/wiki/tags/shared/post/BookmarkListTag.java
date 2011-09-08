@@ -39,7 +39,7 @@ public class BookmarkListTag extends SharedTag {
     protected String renderUserTag() {
  	   final TagNode node = this;
        
- 		final StringBuffer renderedHTML = new StringBuffer();
+ 		final StringBuilder renderedHTML = new StringBuilder();
  		
         final Map<String, String> tagAtttributes = node.getAttributes();
         final Set<String> keysSet = tagAtttributes.keySet();
