@@ -28,7 +28,7 @@ public class RegDateTag extends SharedTag {
 
 	@Override
 	protected String renderUserTag() {
-		final StringBuffer renderedHTML = new StringBuffer();
+		final StringBuilder renderedHTML = new StringBuilder();
 		final String regDate = Utils.escapeXmlChars(this.requestedUser.getRegistrationDate().toString());
 		if (present(regDate)) {
 			renderedHTML.append(regDate);

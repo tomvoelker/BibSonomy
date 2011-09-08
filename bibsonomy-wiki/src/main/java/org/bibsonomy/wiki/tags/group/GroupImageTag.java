@@ -1,5 +1,6 @@
 package org.bibsonomy.wiki.tags.group;
 
+import org.bibsonomy.model.User;
 import org.bibsonomy.wiki.tags.GroupTag;
 
 public class GroupImageTag extends GroupTag {
@@ -9,19 +10,20 @@ public class GroupImageTag extends GroupTag {
 		super(TAG_NAME);
 	}
 
-
 	private String renderImage(final String userName) {
 		return "<img src='/picture/user/" + userName + "' />";
 	}
 
-
 	@Override
 	protected String renderGroupTag() {
-		final StringBuffer renderedHTML = new StringBuffer();
-		renderedHTML.append("<div class='groupImage'>");
-		renderedHTML.append(this.renderImage(this.requestedGroup.getUsers().get(0).getName()));
-		renderedHTML.append("<a href='/cv/"+this.requestedGroup.getUsers().get(0).getName()+"' style='text-align:center;'><div>" + this.requestedGroup.getUsers().get(0).getRealname() + "</div></a>");
-		renderedHTML.append("</div>");
+		final StringBuilder renderedHTML = new StringBuilder();
+		if (!this.requestedGroup.getUsers().isEmpty()) {
+			final User user = this.requestedGroup.getUsers().get(0);
+			renderedHTML.append("<div class='groupImage'>");
+			renderedHTML.append(this.renderImage(user.getName()));
+			renderedHTML.append("<a href='/cv/" + user.getName() + "' style='text-align:center;'><div>" + user.getRealname() + "</div></a>");
+			renderedHTML.append("</div>");
+		}
 
 		return renderedHTML.toString();
 	}

@@ -11,51 +11,38 @@ import java.util.Set;
 import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
- * This is a simple image-tag
- * Usage: <image />
+ * This is a simple image-tag Usage: <image />
+ * 
  * @author Bernd
  * @version $Id$
  */
-public class ImageTag extends SharedTag{
+public class ImageTag extends SharedTag {
 	private static final String TAG_NAME = "image";
-	private static final String FLOAT = "float";
-	
-	/*
-	 * FIXME: imho it would make sense to have classes for these structures (enums?)
-	 * thus we could implement guaranteed testing with toLowerCase etc.
-	 * e.g. AbstractTag has a field of type Set<AllowedAttribute>
-	 * where AllowedAttribute is an object representing a parameter containing a name and an the possible values for the param
-	 * This set would be filled on creation of the tag.
-	 * -> yap
-	 */
-	private static final Set<String> ALLOWED_FLOAT_ATTRIBUTES = new HashSet<String>(Arrays.asList("left","right","none"));
+	private static final String FLOAT = "style";
+
 	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(FLOAT));
-	
+
 	/**
 	 * set name of tag
 	 */
 	public ImageTag() {
 		super(TAG_NAME);
 	}
-	
+
 	@Override
 	protected String renderUserTag() {
 		final TagNode node = this;
 		final Map<String, String> tagAtttributes = node.getAttributes();
-		final StringBuffer renderedHTML = new StringBuffer();
+		final StringBuilder renderedHTML = new StringBuilder();
 		final String name = Utils.escapeXmlChars(this.requestedUser.getName());
 		/*
-		 * TODO: Kriegen wir die URLs aus dem JavaCode raus
+		 * TODO: Kriegen wir die URLs aus dem JavaCode raus 
 		 * FIXME: tolowercase impl.
 		 */
-		if(ALLOWED_FLOAT_ATTRIBUTES.contains(tagAtttributes.get(FLOAT))){
-			renderedHTML.append("<img src='/picture/user/").append(name).append("' style='float:").append(tagAtttributes.get(FLOAT)).append(";'>");
-		} else {
-			renderedHTML.append("<img src='/picture/user/").append(name).append("' style='float:right;'>");
-		}
+		renderedHTML.append("<img src='/picture/user/").append(name).append("' style='").append(tagAtttributes.get(FLOAT)).append("'>");
 		return renderedHTML.toString();
 	}
-	
+
 	@Override
 	public boolean isAllowedAttribute(final String attName) {
 		return ALLOWED_ATTRIBUTES_SET.contains(attName);

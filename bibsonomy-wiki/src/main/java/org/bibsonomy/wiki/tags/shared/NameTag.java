@@ -31,7 +31,7 @@ public class NameTag extends SharedTag {
 
 	@Override
 	protected String renderUserTag() {
-		final StringBuffer renderedHTML = new StringBuffer();
+		final StringBuilder renderedHTML = new StringBuilder();
 		final String name = Utils.escapeXmlChars(this.requestedUser.getRealname());
 		if (present(name)) {
 			final URL homepage = this.requestedUser.getHomepage();
@@ -50,8 +50,21 @@ public class NameTag extends SharedTag {
 
 	@Override
 	protected String renderGroupTag() {
-		// TODO Auto-generated method stub
-		return "Not implemented yet.";
+		final StringBuilder renderedHTML = new StringBuilder();
+		final String name = Utils.escapeXmlChars(this.requestedGroup.getRealname());
+		if (present(name)) {
+			final URL homepage = this.requestedGroup.getHomepage();
+			if (present(homepage)) {
+				renderedHTML.append("<a href=\"");
+				renderedHTML.append(Utils.escapeXmlChars(this.requestedGroup.getHomepage().toExternalForm()));
+				renderedHTML.append("\">");
+				renderedHTML.append(name);
+				renderedHTML.append("</a>");
+			} else {
+				renderedHTML.append(name);
+			}
+		}
+		return renderedHTML.toString();
 	}
 
 }

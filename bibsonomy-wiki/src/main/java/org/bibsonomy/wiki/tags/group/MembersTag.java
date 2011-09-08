@@ -16,7 +16,7 @@ public class MembersTag extends GroupTag {
 
 	@Override
 	protected String renderGroupTag() {
-		final StringBuffer renderedHTML = new StringBuffer();
+		final StringBuilder renderedHTML = new StringBuilder();
 		for (final User user : this.requestedGroup.getUsers()) {
 			if (!user.getName().equals(this.requestedGroup.getName())) {
 				renderedHTML.append("<div class='imageContainer'>");
