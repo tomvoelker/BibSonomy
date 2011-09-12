@@ -178,18 +178,16 @@ $(window).load(function() {
 $(document).ready(function() {
 	addAutoCompleteSendTag($('#inpf'));
 
-	var hash = window.location.href.match("[a-z0-9]{32}");
+	var hash = window.location.href.match("[a-f0-9]{32}");
 	if(hash == -1)
 		return;
 	$.ajax({
 		url: '/json/bibtex/2'+hash,
-		async: false,
 		dataType: "jsonp",
 		success: function (data) {
 			if(data.items != undefined)
 				$.ajax({
 					url: '/json/bibtex/1'+data.items[0].interHash,
-					async: false,
 					dataType: "jsonp",
 					success: function (data) {
 						if(data.items != undefined) 
@@ -236,12 +234,12 @@ function buildGoodPostSuggestion(json) {
 							var d = " "; 
 							if(arrayOfTagNodes[x].name == "post.resource.author" 
 							|| arrayOfTagNodes[x].name == "post.resource.editor") {
-									d = ", ";
+									d = '\n';
 									for(var m = 0; m < p.length; m++) {
 										var t = -1;
 										var prepend = ((t = (p[m].lastIndexOf(" ")+1)) > -1)?p[m].substring(t):"";
 										var appendix = p[m].substring(0, p[m].length-prepend.length)
-										name += ((prepend.length > 0)?prepend+",":"")+appendix;
+										name += ((prepend.length > 0)?prepend+",":"")+appendix+"\n";
 									}
 							}
 							p = p.join(d);
