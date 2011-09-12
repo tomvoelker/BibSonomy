@@ -17,7 +17,7 @@ public interface FileUploadInterface {
 	/**
 	 * pdf, ps, djv, djvu, txt extensions
 	 */
-	public static final String[] fileUploadExt = { "pdf", "ps", "djv", "djvu", "txt", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "ods", "odt", "odp" };
+	public static final String[] fileUploadExt = { "pdf", "ps", "djv", "djvu", "txt", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "ods", "odt", "odp", "tex" };
 	
 	/**
 	 * png, jpg extensions
