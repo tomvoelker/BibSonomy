@@ -90,7 +90,7 @@ public class FileUtil {
 			return "application/postscript";
 		} else if (StringUtils.matchExtension(filename, "pdf")) {
 			return "application/pdf";
-		} else if (StringUtils.matchExtension(filename, "txt")) {
+		} else if (StringUtils.matchExtension(filename, "txt", "tex")) {
 			return "text/plain";
 		} else if (StringUtils.matchExtension(filename, "djv", "djvu")) {
 			return "image/vnd.djvu";
