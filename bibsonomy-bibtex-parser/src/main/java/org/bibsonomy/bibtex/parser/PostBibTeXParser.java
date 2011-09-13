@@ -33,7 +33,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.RecognitionException;
-import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -307,7 +306,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 * parseBibTeXPost must ensure to add all fields which 
 		 * BibTexUtils.toBibtexString(post) puts into the string. 
 		 */
-		return this.parseBibTeXPost(BibTexUtils.toBibtexString(post, SerializeBibtexMode.PLAIN_MISCFIELDS, lastFirstNames));
+		return this.parseBibTeXPost(BibTexUtils.toBibtexString(post, BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD));
 	}
 
 	@Override

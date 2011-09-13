@@ -32,7 +32,6 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -265,9 +264,9 @@ public class SimpleBibTeXParserTest {
 		 * 
 		 */
 
-		final String s = BibTexUtils.toBibtexString(parsedBibTeX, SerializeBibtexMode.PLAIN_MISCFIELDS, true);
+		final String s = BibTexUtils.toBibtexString(parsedBibTeX, BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD);
 		final BibTex sp = parser.parseBibTeX(s);
-		final String sp2 = BibTexUtils.toBibtexString(sp, SerializeBibtexMode.PLAIN_MISCFIELDS, true);
+		final String sp2 = BibTexUtils.toBibtexString(sp, BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD);
 		assertEquals(s, sp2);
 	}
 
