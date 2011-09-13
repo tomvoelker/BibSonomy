@@ -234,12 +234,12 @@ function buildGoodPostSuggestion(json) {
 							var d = " "; 
 							if(arrayOfTagNodes[x].name == "post.resource.author" 
 							|| arrayOfTagNodes[x].name == "post.resource.editor") {
-									d = '\n';
+									d = ', ';
 									for(var m = 0; m < p.length; m++) {
 										var t = -1;
 										var prepend = ((t = (p[m].lastIndexOf(" ")+1)) > -1)?p[m].substring(t):"";
 										var appendix = p[m].substring(0, p[m].length-prepend.length)
-										name += ((prepend.length > 0)?prepend+",":"")+appendix+"\n";
+										name += ((prepend.length > 0)?prepend+", ":"")+appendix+"\n";
 									}
 							}
 							p = p.join(d);
