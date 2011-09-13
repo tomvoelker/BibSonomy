@@ -15,15 +15,17 @@ import javax.xml.bind.Unmarshaller;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SherpaRomeoTest {
 
     /*
-     * TODO: write an useful test ;)
+     * TODO: write a useful test ;)
      */
     @SuppressWarnings("unchecked")
     @Test
+    @Ignore
     public void marshalling() {
         try {
             JAXBContext jc = JAXBContext.newInstance("de.unikassel.puma.openaccess.sherparomeo.model");
