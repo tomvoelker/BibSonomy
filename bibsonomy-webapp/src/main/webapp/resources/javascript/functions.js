@@ -2043,6 +2043,70 @@ function getNextByClass(match_el, className) {
 }
 
 /**
+ * Adds an "export options" box to the "BibTeX" export link. 
+ */
+$(document).ready(function() {
+	$(".exportbibtex").each(function(index, elm) {
+
+		var form = document.createElement("form");
+		form.setAttribute("class", "exportoptions");
+		form.setAttribute("action", elm.getAttribute("href"));
+		form.setAttribute("method", "get");
+		form.style.display = "none";
+
+		var generatedBibtexKeys = document.createElement("input");
+		generatedBibtexKeys.setAttribute("type", "checkbox");
+		generatedBibtexKeys.setAttribute("name", "generatedBibtexKeys");
+		form.appendChild(generatedBibtexKeys);
+		form.appendChild(document.createTextNode("generated BibTeX keys"));
+		form.appendChild(document.createElement("br"));
+
+		var firstLastNames = document.createElement("input");
+		firstLastNames.setAttribute("type", "checkbox");
+		firstLastNames.setAttribute("name", "firstLastNames");
+		form.appendChild(firstLastNames);
+		form.appendChild(document.createTextNode("person names in \"First Last\" order"));
+		form.appendChild(document.createElement("br"));
+
+		// different number of posts
+		form.appendChild(document.createTextNode("items: "));
+		var items = new Array(5, 10, 20, 50, 100, 1000);
+		for (var i = 0; i < items.length; i++) {
+			var item = document.createElement("input");
+			item.setAttribute("type", "radio");
+			item.setAttribute("name", "items");
+			item.setAttribute("value", items[i]);
+			form.appendChild(item);
+			form.appendChild(document.createTextNode(items[i] + " "));
+		}
+
+		form.appendChild(document.createElement("br"));
+
+		var submit = document.createElement("input");
+		submit.setAttribute("type", "submit");
+		submit.setAttribute("value", "export to BibTeX");
+		form.appendChild(submit);
+
+		// insert form after export link
+		$(elm).after(form);
+
+		// close export box by leaving it
+		$(form).mouseleave(function() {
+			$(this).hide("fade", {}, 1000);
+		});
+
+		// and show it when hovering over the link
+		$(elm).mouseover(function() {
+			$(this).next().show("fade", {}, 500);
+		});
+
+	});
+});
+
+
+
+
+/**
  * 	removes the light-grey label - if present - after focussing the input
  * 	(before allowing a form to submit we also check if the value equals the hint
  * 	or an empty string on every input field with a 'label') 
