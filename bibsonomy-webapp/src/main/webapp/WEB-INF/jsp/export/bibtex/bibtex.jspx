@@ -9,10 +9,16 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
-	
+
+<!--+
+	| 
+    |FIXME: use command instead of implicit "param" object 
+    |
+    +-->
+
 <jsp:directive.page contentType="text/plain; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 <c:forEach var="post" items="${command.bibtex.list}">
-<export:bibtex post="${post}" escapeXml="${false}" lastFirstNames="${empty param.lastFirstNames or param.lastFirstNames}" generatedBibtexKeys="${param.generatedBibtexKeys}"/>
+<export:bibtex post="${post}" escapeXml="${false}" lastFirstNames="${param.firstLastNames ne 'on'}" generatedBibtexKeys="${param.generatedBibtexKeys eq 'on'}"/>
 <jsp:text>
 
 </jsp:text>	
