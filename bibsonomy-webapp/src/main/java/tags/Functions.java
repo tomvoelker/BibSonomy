@@ -512,13 +512,17 @@ public class Functions  {
 	 * @param post - a publication post
 	 * @param projectHome 
 	 * @param lastFirstNames - should person names appear in "Last, First" form? 
+	 * @param generatedBibtexKeys - should the BibTeX keys be generated or the one from the database?
 	 * @return A BibTeX string of this post
 	 */
-	public static String toBibtexString(final Post<BibTex> post, final String projectHome, final Boolean lastFirstNames) {
+	public static String toBibtexString(final Post<BibTex> post, final String projectHome, final Boolean lastFirstNames, final Boolean generatedBibtexKeys) {
+		int flags = 0;
+		if (!lastFirstNames) flags |= BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST;
+		if (generatedBibtexKeys) flags |= BibTexUtils.SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS;
 		if (urlGenerator == null) {
 			urlGenerator = new URLGenerator(projectHome);
 		}
-		return BibTexUtils.toBibtexString(post, lastFirstNames, urlGenerator) + "\n\n";
+		return BibTexUtils.toBibtexString(post, flags, urlGenerator) + "\n\n";
 	}
 	
 	/**

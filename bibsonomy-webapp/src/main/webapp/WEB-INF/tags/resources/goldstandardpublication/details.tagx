@@ -121,7 +121,7 @@
 			</div>
 			<div id="gold_exports_2">
 		  		<form>	  	
-			  		<textarea name="bibtex_textarea" rows="20"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="true"/></textarea>
+			  		<textarea name="bibtex_textarea" rows="20"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
 			  	</form>	
 		  	</div>
 		  	<div id="gold_exports_3">
