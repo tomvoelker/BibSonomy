@@ -2058,18 +2058,18 @@ $(document).ready(function() {
 		generatedBibtexKeys.setAttribute("type", "checkbox");
 		generatedBibtexKeys.setAttribute("name", "generatedBibtexKeys");
 		form.appendChild(generatedBibtexKeys);
-		form.appendChild(document.createTextNode("generated BibTeX keys"));
+		form.appendChild(document.createTextNode(getString("post.resource.generateBibtexKey.export")));
 		form.appendChild(document.createElement("br"));
 
 		var firstLastNames = document.createElement("input");
 		firstLastNames.setAttribute("type", "checkbox");
 		firstLastNames.setAttribute("name", "firstLastNames");
 		form.appendChild(firstLastNames);
-		form.appendChild(document.createTextNode("person names in \"First Last\" order"));
+		form.appendChild(document.createTextNode(getString("post.resource.personnames.export")));
 		form.appendChild(document.createElement("br"));
 
 		// different number of posts
-		form.appendChild(document.createTextNode("items: "));
+		form.appendChild(document.createTextNode(getString("posts") + ": "));
 		var items = new Array(5, 10, 20, 50, 100, 1000);
 		for (var i = 0; i < items.length; i++) {
 			var item = document.createElement("input");
@@ -2084,7 +2084,7 @@ $(document).ready(function() {
 
 		var submit = document.createElement("input");
 		submit.setAttribute("type", "submit");
-		submit.setAttribute("value", "export to BibTeX");
+		submit.setAttribute("value", getString("export.bibtex.title"));
 		form.appendChild(submit);
 
 		// insert form after export link
