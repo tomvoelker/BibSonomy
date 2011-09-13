@@ -142,7 +142,7 @@ public class PostBibTeXParserTest {
 		 * second step: create BibTeX from the post, parse it and compare
 		 * the created post with the original post
 		 */
-		final Post<BibTex> secondParsedPost = parser.parseBibTeXPost(BibTexUtils.toBibtexString(post, true));
+		final Post<BibTex> secondParsedPost = parser.parseBibTeXPost(BibTexUtils.toBibtexString(post, 0));
 		secondParsedPost.getResource().recalculateHashes();
 
 		ModelUtils.assertPropertyEquality(post, secondParsedPost, 5, null, new String[]{"date"});
