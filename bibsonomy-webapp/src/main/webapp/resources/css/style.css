@@ -1345,6 +1345,15 @@ div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
 	color: #069;
 }
 
+.exportoptions {
+  border: 1px solid #6f6f6f;
+  background: #eee;
+  position: absolute;
+  margin-top: .5em;
+  font-size: 80%;
+  padding: .5em;
+}
+
 /*
  * hack for webkit
  */
