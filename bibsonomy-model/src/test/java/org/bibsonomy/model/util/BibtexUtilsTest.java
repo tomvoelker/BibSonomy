@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -113,7 +112,7 @@ public class BibtexUtilsTest {
 			"  year = 2525,\n" + 
 			"  abstract = {This is a nice abstract.}\n}";
 		
-		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib, false));
+		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST));
 
 		// add some misc fields
 		bib.addMiscField("extraKey", "extraVal");
@@ -130,7 +129,7 @@ public class BibtexUtilsTest {
 			"  extrakey = {extraVal},\n" + 
 			"  extrakey2 = {extraVal2}\n}";
 		
-		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib, false));		
+		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST));		
 	}
 
 	/**
@@ -182,7 +181,7 @@ public class BibtexUtilsTest {
 			"For not.},\n" + 						
 			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.}\n" +
 			"}";
-		assertEquals(expected, BibTexUtils.toBibtexString(bib, SerializeBibtexMode.PLAIN_MISCFIELDS, false));
+		assertEquals(expected, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST | BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD));
 	}
 
 	/**
@@ -231,7 +230,7 @@ public class BibtexUtilsTest {
 			"For not.},\n" + 						
 			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.}\n" +
 			"}";
-		assertEquals(expected, BibTexUtils.toBibtexString(bib, SerializeBibtexMode.PLAIN_MISCFIELDS, true));
+		assertEquals(expected, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD));
 	}
 	
 
@@ -395,7 +394,7 @@ public class BibtexUtilsTest {
 		 * misc fields! Nevertheless, we should have the same misc fields
 		 * afterwards. 
 		 */
-		BibTexUtils.toBibtexString(post, false);
+		BibTexUtils.toBibtexString(post, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST);
 		/*
 		 * The fields are parsed and then serialized. Inbetween, some fields
 		 * have been added (keywords, description). We must ensure, that they're

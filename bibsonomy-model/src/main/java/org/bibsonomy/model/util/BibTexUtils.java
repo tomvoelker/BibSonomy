@@ -49,7 +49,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -68,12 +67,23 @@ import org.bibsonomy.util.tex.TexDecode;
  * @version $Id$
  */
 public class BibTexUtils {
+	
 	/**
-	 * By default, all misc fields are parsed. 
+	 * Enable the output of the plain misc field when serializing 
+	 * publications into BibTeX entries.
 	 */
-	private static final SerializeBibtexMode DEFAULT_SERIALIZE_BIBTEX_MODE = SerializeBibtexMode.PARSED_MISCFIELDS;
-
-
+	public static final int SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD = 0x01;
+	/**
+	 * Enable the output of person names in "First Last" form instead
+	 * of "Last, First" form.
+	 */
+	public static final int SERIALIZE_BIBTEX_OPTION_FIRST_LAST = 0x02;
+	/**
+	 * Enable the output of generated BibTeX keys instead of the 
+	 * keys from the database.
+	 */
+	public static final int SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS = 0x04;
+	
 	private static final Log log = LogFactory.getLog(BibTexUtils.class);
 
 	/**
@@ -310,26 +320,16 @@ public class BibTexUtils {
 
 	/**
  	 * Returns a BibTeX string representation of the given publication. By default, 
-	 * the contained misc fields are parsed before the BibTeX string is generated
-	 * and the authors and editors are in "Last, First" form.
+	 * the contained misc fields are parsed before the BibTeX string is generated,
+	 * the authors and editors are in "Last, First" form, and the BibTeX key is 
+	 * untouched. 
+	 * 
 	 * @param bib
 	 * @return The BibTeX-serialized publication with the default person name 
 	 * order ({@link PersonNameUtils#DEFAULT_LAST_FIRST_NAMES}.
 	 */
 	public static String toBibtexString(final BibTex bib) {
-		return toBibtexString(bib, PersonNameUtils.DEFAULT_LAST_FIRST_NAMES);
-	}
-	
-	/**
-	 * Returns a BibTeX string representation of the given publication. By default, 
-	 * the contained misc fields are parsed before the BibTeX string is generated.
-	 * 
-	 * @param bib - the bibtex object
-	 * @param lastFirstNames - Use "Last, First" form for author/editor names or "First Last".
-	 * @return - a string representation of the given bibtex object
-	 */
-	public static String toBibtexString(final BibTex bib, final boolean lastFirstNames) {
-		return toBibtexString(bib, DEFAULT_SERIALIZE_BIBTEX_MODE, lastFirstNames);
+		return toBibtexString(bib, 0);
 	}
 
 
@@ -337,24 +337,25 @@ public class BibTexUtils {
 	 * return a bibtex string representation of the given bibtex object
 	 * 
 	 * @param bib - a bibtex object
-	 * @param mode - the serializing mode (parse misc fields or include misc fields as they are)
-	 * @param lastFirstNames - if <code>true</code>, author and editor names
-	 * are serializes in the form "Last, First"; else "First Last". Please note
-	 * that the latter format is ambiguous.
+	 * @param flags - flags to change the serialization behavior. A bit mask 
+	 * that may include {@link #SERIALIZE_BIBTEX_OPTION_FIRST_LAST}, {@link #SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS}, {@link #SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD}.
 	 * @return String bibtexString
 	 * 
 	 * TODO use BibTex.DEFAULT_OPENBRACKET etc.
 	 * 
 	 */
-	public static String toBibtexString(final BibTex bib, final SerializeBibtexMode mode, final boolean lastFirstNames) {
+	public static String toBibtexString(final BibTex bib, final int flags) {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
 
 			/*
 			 * start with entrytype and key
 			 */
-			final StringBuilder buffer = new StringBuilder("@" + bib.getEntrytype() + "{" + bib.getBibtexKey() + ",\n");
+			final String bibtexKey = hasFlag(flags, SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS) ? generateBibtexKey(bib): bib.getBibtexKey();
+			
+			final StringBuilder buffer = new StringBuilder("@" + bib.getEntrytype() + "{" + bibtexKey + ",\n");
 
+			final boolean lastFirstNames = !hasFlag(flags, SERIALIZE_BIBTEX_OPTION_FIRST_LAST);
 			/*
 			 * append author and editor
 			 */
@@ -392,7 +393,7 @@ public class BibTexUtils {
 			 * process miscFields map, if present
 			 */
 			if (present(bib.getMiscFields())) {
-				if ( mode.equals(DEFAULT_SERIALIZE_BIBTEX_MODE) && !bib.isMiscFieldParsed()) {
+				if (!hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && !bib.isMiscFieldParsed()) {
 					// parse misc field, if not yet done
 					bib.parseMiscField();
 				}
@@ -402,7 +403,7 @@ public class BibTexUtils {
 			/*
 			 * include plain misc fields if desired
 			 */
-			if (mode.equals(SerializeBibtexMode.PLAIN_MISCFIELDS) && present(bib.getMisc())) {
+			if (hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && present(bib.getMisc())) {
 				buffer.append(DEFAULT_INTENDATION + bib.getMisc() + ",\n");
 			}
 			/*
@@ -485,7 +486,7 @@ public class BibTexUtils {
 
 	/**
 	 * Creates a bibtex string with some bibsonomy-specific information using 
-	 * {@link #toBibtexString(Post, boolean)}.
+	 * {@link #toBibtexString(Post, int)}.
 	 * 
 	 * <ul>
 	 * 		<li>tags in <code>keywords</code> field</li>
@@ -493,53 +494,44 @@ public class BibTexUtils {
 	 * 		<li>description in the <code>description</code> field</li>
 	 * </ul>
 	 * 
-	 * @see #toBibtexString(BibTex, boolean)
+	 * @see #toBibtexString(BibTex, int)
 	 * 
 	 * @param post - a publication post
-	 * @param lastFirstNames - Use "Last, First" form for author/editor names or "First Last".
+	 * @param flags - flags to change the serialization behavior. A bit mask 
+	 * that may include {@link #SERIALIZE_BIBTEX_OPTION_FIRST_LAST}, {@link #SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS}, {@link #SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD}.
 	 * @param urlGenerator - to generate a proper URL pointing to the post. 
 	 * 
 	 * @return A string representation of the posts in BibTeX format.
 	 */
-	public static String toBibtexString(final Post<BibTex> post, final boolean lastFirstNames, final URLGenerator urlGenerator) {
+	public static String toBibtexString(final Post<BibTex> post, final int flags, final URLGenerator urlGenerator) {
 		post.getResource().addMiscField(ADDITIONAL_MISC_FIELD_BIBURL, urlGenerator.getPublicationUrl(post.getResource(), post.getUser()).toString());
-		return toBibtexString(post, lastFirstNames);
+		return toBibtexString(post, flags);
 	}
 	
 	/**
-	 * Same as {@link #toBibtexString(Post, boolean, URLGenerator)} but with 
-	 * default {@link PersonNameUtils#DEFAULT_LAST_FIRST_NAMES}
+	 * Same as {@link #toBibtexString(Post, int, URLGenerator)} but with the 
+	 * default flags (=0)
 	 * 
 	 * @param post
 	 * @param urlGenerator
 	 * @return A string representation of the posts in BibTeX format.
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final URLGenerator urlGenerator) {
-		return toBibtexString(post, PersonNameUtils.DEFAULT_LAST_FIRST_NAMES, urlGenerator);
+		return toBibtexString(post, 0, urlGenerator);
 	}
 
 
 	/**
-	 * Return a BibTeX representation of the given post. Defaults to 
-	 * serialize mode PARSED_MISCFIELDS.
-	 * 
-	 * @param post - a post
-	 * @param lastFirstNames - Use "Last, First" form for author/editor names or "First Last".
-	 * @return - a bibtex string representation of this post.
-	 */
-	public static String toBibtexString(final Post<BibTex> post, final boolean lastFirstNames) {
-		return toBibtexString(post, DEFAULT_SERIALIZE_BIBTEX_MODE, lastFirstNames);
-	}
-	
-	/**
-	 * Return a BibTeX representation of the given post. Defaults to 
-	 * serialize mode PARSED_MISCFIELDS and {@link PersonNameUtils#DEFAULT_LAST_FIRST_NAMES};
+	 * Return a BibTeX representation of the given post. By default, 
+	 * the contained misc fields are parsed before the BibTeX string is generated,
+	 * the authors and editors are in "Last, First" form, and the BibTeX key is 
+	 * untouched. 
 	 * 
 	 * @param post - a post
 	 * @return - a bibtex string representation of this post.
 	 */
 	public static String toBibtexString(final Post<BibTex> post) {
-		return toBibtexString(post, DEFAULT_SERIALIZE_BIBTEX_MODE, PersonNameUtils.DEFAULT_LAST_FIRST_NAMES);
+		return toBibtexString(post, 0);
 	}
 
 	/**
@@ -552,12 +544,12 @@ public class BibTexUtils {
 	 * </ul>
 	 * 
 	 * @param post - a BibTeX post.
-	 * @param mode - the serialize mode
-	 * @param lastFirstNames - Use "Last, First" form for author/editor names or "First Last".
+	 * @param flags - flags to change the serialization behavior. A bit mask 
+	 * that may include {@link #SERIALIZE_BIBTEX_OPTION_FIRST_LAST}, {@link #SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS}, {@link #SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD}.
 	 * 
 	 * @return A string representation of the post in BibTeX format.
 	 */
-	public static String toBibtexString(final Post<BibTex> post, final SerializeBibtexMode mode, final boolean lastFirstNames) {
+	public static String toBibtexString(final Post<BibTex> post, final int flags) {
 		final BibTex bib = post.getResource();	
 		/*
 		 * add additional fields.
@@ -577,7 +569,7 @@ public class BibTexUtils {
 		if (present(post.getChangeDate())) {
 			bib.addMiscField(ADDITIONAL_MISC_FIELD_TIMESTAMP, DATE_FORMAT.format(post.getDate()));
 		}
-		return toBibtexString(bib, mode, lastFirstNames);
+		return toBibtexString(bib, flags);
 	}
 
 	/**
@@ -852,4 +844,12 @@ public class BibTexUtils {
 		return StringUtils.parseBracketedKeyValuePairs(miscFieldString, ASSIGNMENT_OPERATOR, KEYVALUE_SEPARATOR, DEFAULT_OPENING_BRACKET, DEFAULT_CLOSING_BRACKET);		
 	}
 
+    /**
+     * Indicates whether a particular flag is set or not.
+     * @param flags - the flags where we look if testFlag is set
+     * @param testFlag - the flag we want to find in flags
+     */
+    private static boolean hasFlag(final int flags, final int testFlag) {
+        return (flags & testFlag) != 0;
+    }
 }

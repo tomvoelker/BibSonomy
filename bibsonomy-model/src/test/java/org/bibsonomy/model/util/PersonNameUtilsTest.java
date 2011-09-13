@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -198,6 +199,10 @@ public class PersonNameUtilsTest {
 		 */
 		final List<PersonName> pn5 = PersonNameUtils.discoverPersonNames("Jon Kleinberg and \\&\\#201;va Tardos");
 		assertEquals(Arrays.asList(new PersonName("Jon", "Kleinberg"), new PersonName("\\&\\#201;va", "Tardos")), pn5);
+		
+		
+//		final List<PersonName> pn6 = PersonNameUtils.discoverPersonNames("Foo, Bar, Blubb, Baba");
+//		assertFalse(present(pn6));
 	}
 	
 	private static void printPersonList(final List<PersonName> person) {
