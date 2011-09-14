@@ -1352,6 +1352,7 @@ div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
   margin-top: .5em;
   font-size: 80%;
   padding: .5em;
+  z-index: 10;
 }
 
 /*
