@@ -19,7 +19,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
-import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
@@ -453,7 +452,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					 */
 					for (final ErrorMessage errorMessage : postErrorMessages) { 
 						log.debug("found error " + errorMessage);
-						final String errorItem;
 						if (errorMessage instanceof DuplicatePostErrorMessage) {
 							hasDuplicate = true;
 							if (overwrite) {
@@ -462,11 +460,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								 */
 								continue;
 							} 
-							errorItem = "resource";
-						} else if (errorMessage instanceof SystemTagErrorMessage) {
-							errorItem = "tags";
-						} else {
-							errorItem = "resource";
 						}
 						/*
 						 * add post to list of erroneous posts
@@ -476,7 +469,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							postsWithErrors.add(post);
 						}
 						hasErrors = true;
-						errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+						errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
 					if (!hasErrors && hasDuplicate) {
 						/*
@@ -535,12 +528,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				boolean hasErrors = false;
 				for (final ErrorMessage errorMessage: postErrorMessages) { 
 					log.debug("found error " + errorMessage);
-					final String errorItem;
-					if (errorMessage instanceof SystemTagErrorMessage) {
-						errorItem = "tags";
-					} else {
-						errorItem = "resource";
-					}
 					/*
 					 * add post to list of erroneous posts to show them the user
 					 */
@@ -585,7 +572,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 						postsWithErrors.add(post);
 					}
 					hasErrors = true;
-					errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+					errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 				}
 			}
 		}
