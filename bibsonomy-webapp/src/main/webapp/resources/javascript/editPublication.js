@@ -216,13 +216,14 @@ function buildGoodPostSuggestion(json) {
 	var arrayOfTagNodes = $("textarea, #postForm > textarea, input");
 	var arrayOfPartialTags = new Array();
 	var arrayOfTagMappings = new Array();
-
+	var u = /(\s+|,)/g;
 	arrayOfTagMappings["post.resource.title"] = "label";
 	arrayOfTagMappings["post.description"] = "description";
 	for(var x = 0; arrayOfTagNodes.length > x; x++) {
 		var fieldValue = new Array();
 		if(arrayOfTagNodes[x].name.substring(0, "post.resource".length) == "post.resource"
 		|| arrayOfTagMappings[arrayOfTagNodes[x].name] != undefined) {
+			var g = arrayOfTagNodes[x].value.replace(u, "");
 			var suggestions = new Array();
 			var occurrences = new Array();
 			var k = -1;
@@ -239,12 +240,13 @@ function buildGoodPostSuggestion(json) {
 										var t = -1;
 										var prepend = ((t = (p[m].lastIndexOf(" ")+1)) > -1)?p[m].substring(t):"";
 										var appendix = p[m].substring(0, p[m].length-prepend.length)
-										name += ((prepend.length > 0)?prepend+", ":"")+appendix+"\n";
+										name += ((prepend.length > 0)?prepend+((appendix.length > 0)?", ":""):"")+appendix+"\n";
 									}
 							}
 							p = p.join(d);
 						}
-						if((k = $.inArray(p, suggestions)) == -1) {
+						if((k = $.inArray(p, suggestions)) == -1 
+								&& g != ((name.length)?name.replace(u, ""):p.replace(u, ""))) {
 							suggestions.push(p);
 							occurrences.push(1);
 							if(name.length)
