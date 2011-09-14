@@ -18,7 +18,6 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
-import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
@@ -300,7 +299,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * prepare post from internal format into user's form format
 		 */
-		final Post<RESOURCE> post = command.getPost();
 		if (loginUser.isSpammer()) {
 			/*
 			 * Generate HTML to show captcha.
@@ -431,16 +429,9 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	private View handleDatabaseException(final EditPostCommand<RESOURCE> command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex, final String process) {
 		final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
 		for (final ErrorMessage em: errorMessages) {
-			if (em instanceof SystemTagErrorMessage) {
-				errors.rejectValue("tags", em.getErrorCode(), em.getParameters(), em.getDefaultMessage());
-			} else {
-				/*
-				 * show error page
-				 */
-				errors.reject("error.post.update", "Could not " + process + " this post.");
-				log.warn("could not " + process + " post because " + em.getDefaultMessage());
-				return Views.ERROR;
-			}		
+			errors.reject("error.post.update", "Could not " + process + " this post.");
+			log.warn("could not " + process + " post because " + em.getDefaultMessage());
+			return Views.ERROR;
 		}
 		return getEditPostView(command, loginUser);
 	}

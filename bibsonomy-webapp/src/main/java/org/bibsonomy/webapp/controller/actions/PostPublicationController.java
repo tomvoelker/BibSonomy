@@ -23,7 +23,6 @@ import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
-import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.model.BibTex;
@@ -564,7 +563,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 					 */
 					for (final ErrorMessage errorMessage : postErrorMessages) {
 						log.debug("found error " + errorMessage);
-						final String errorItem;
 						if (errorMessage instanceof DuplicatePostErrorMessage) {
 							hasDuplicate = true;
 							if (overwrite) {
@@ -573,17 +571,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 								 */
 								continue;
 							} 
-							errorItem = "resource";
-						} else if (errorMessage instanceof SystemTagErrorMessage) {
-							errorItem = "tags";
-						} else {
-							errorItem = "resource";
 						}
 						/*
 						 * add error to error list
 						 */
 						hasErrors = true;
-						errors.rejectValue("bibtex.list[" + i + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+						errors.rejectValue("bibtex.list[" + i + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
 					/*
 					 * If the post has no errors, but is a duplicate, we add it to
@@ -606,6 +599,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 					logic.updatePosts(postsForUpdate, PostUpdateOperation.UPDATE_ALL);
 				}
 			} catch (final DatabaseException ex) {
+				/*
+				 * FIXME: The catch is only for logging. Do we need that much?
+				 */
 				final Map<String, List<ErrorMessage>> allErrorMessages = ex.getErrorMessages();
 				log.debug("caught database exception, found " + allErrorMessages.size() + " errors");
 				/*
@@ -625,15 +621,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 					final List<ErrorMessage> postErrorMessages = allErrorMessages.get(intraHash);
 					if (present(postErrorMessages)) {
 						log.debug("found " + postErrorMessages.size() + "error(s) on post no. " + i);
-						for (final ErrorMessage msg : postErrorMessages) {
-							/*
-							 * handle system tag error messages
-							 */
-							if (msg instanceof SystemTagErrorMessage) {
-								log.debug("found system tag error");
-								errors.rejectValue("bibtex.list[" + i + "].tags", msg.getErrorCode(), msg.getParameters(), msg.getDefaultMessage());
-							}
-						}
 					}
 				}
 				log.debug("all field errors: " + errors.getFieldError("bibtex.*"));
