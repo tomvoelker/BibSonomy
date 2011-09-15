@@ -279,7 +279,7 @@ function buildGoodPostSuggestion(json) {
 						if((k = $.inArray(fieldVal, suggestions)) == -1 && g != ((name.length)?name.replace(u, ""):fieldVal.replace(u, ""))) {
 							suggestions.push(fieldVal); // add suggestion
 							occurrences.push(1); // count suggestion
-							inputField.addClass("fsInputReco"); // show the user that suggestions are available
+							$(inputField).addClass("fsInputReco"); // show the user that suggestions are available
 							// FIXME: what happens here?
 							if(name.length)
 								fieldValue.push(name);
