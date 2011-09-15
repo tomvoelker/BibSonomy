@@ -23,7 +23,6 @@
 
 package org.bibsonomy.model.util;
 
-import static org.bibsonomy.util.ValidationUtils.present;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -31,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -39,36 +39,27 @@ import org.junit.Test;
  * @version $Id$
  */
 public class PersonNameUtilsTest {
-
-	/**
-	 * 
-	 */
-	@Test
-	public void testExtractList() {
-		final List<PersonName> should = Arrays.asList(PersonNameUtils.discoverPersonName("D.E. Knuth"));
-		final List<PersonName> is = PersonNameUtils.discoverPersonNames("D.E. Knuth");
-		assertEqualPersonNames(should.get(0), is.get(0));
-	}
 	
 	/**
-	 * 
+	 * Check if extracting a name in a list of other names gives the same result as only extracting the name.
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void testExtractList2() {
+	public void testExtractList2() throws PersonListParserException {
 		final List<PersonName> should = Arrays.asList(
-				PersonNameUtils.discoverPersonName("D.E. Knuth"), 
-				PersonNameUtils.discoverPersonName("Hans Dampf"),
-				PersonNameUtils.discoverPersonName("Donald E. Knuth"),
-				PersonNameUtils.discoverPersonName("Foo van Bar"),
-				PersonNameUtils.discoverPersonName("R. Jäschke"),
-				PersonNameUtils.discoverPersonName("John Chris Smith"),
-				PersonNameUtils.discoverPersonName("John von Neumann"),
-				PersonNameUtils.discoverPersonName("von der Schmidt, Alex"),
-				PersonNameUtils.discoverPersonName("{Long Company Name}"),
-				PersonNameUtils.discoverPersonName("L. Balby Marinho"),
-				PersonNameUtils.discoverPersonName("Balby Marinho, Leandro"),
-				PersonNameUtils.discoverPersonName("Leandro Balby Marinho"),
-				PersonNameUtils.discoverPersonName("Hanand Foobar")
+				PersonNameUtils.discoverPersonNames("D.E. Knuth").get(0), 
+				PersonNameUtils.discoverPersonNames("Hans Dampf").get(0),
+				PersonNameUtils.discoverPersonNames("Donald E. Knuth").get(0),
+				PersonNameUtils.discoverPersonNames("Foo van Bar").get(0),
+				PersonNameUtils.discoverPersonNames("R. Jäschke").get(0),
+				PersonNameUtils.discoverPersonNames("John Chris Smith").get(0),
+				PersonNameUtils.discoverPersonNames("John von Neumann").get(0),
+				PersonNameUtils.discoverPersonNames("von der Schmidt, Alex").get(0),
+				PersonNameUtils.discoverPersonNames("{Long Company Name}").get(0),
+				PersonNameUtils.discoverPersonNames("L. Balby Marinho").get(0),
+				PersonNameUtils.discoverPersonNames("Balby Marinho, Leandro").get(0),
+				PersonNameUtils.discoverPersonNames("Leandro Balby Marinho").get(0),
+				PersonNameUtils.discoverPersonNames("Hanand Foobar").get(0)
 		);
 		final List<PersonName> is = PersonNameUtils.discoverPersonNames("D.E. Knuth and Hans Dampf and Donald E. Knuth and Foo van Bar and Jäschke, R. and John Chris Smith and John von Neumann and von der Schmidt, Alex and {Long Company Name} and L. Balby Marinho and Balby Marinho, Leandro and Leandro Balby Marinho and Hanand Foobar");
 		for (int i = 0; i < should.size(); i++) {
@@ -79,10 +70,11 @@ public class PersonNameUtilsTest {
 	/**
 	 * This test must fail, because we can't discover names of the form "Foo Bar, Blubb" 
 	 * in the "First Last" format. 
+	 * @throws PersonListParserException 
 	 */
-	public void testFails() {
-		final PersonName is = PersonNameUtils.discoverPersonName("Blubb Foo Bar");
-		final PersonName should = PersonNameUtils.discoverPersonName("Foo Bar, Blubb");
+	public void testFails() throws PersonListParserException {
+		final PersonName is = PersonNameUtils.discoverPersonNames("Blubb Foo Bar").get(0);
+		final PersonName should = PersonNameUtils.discoverPersonNames("Foo Bar, Blubb").get(0);
 		
 		//assertEqualPersonNames(should, is);
 		assertFalse(is.getFirstName().equals(should.getFirstName()));
@@ -110,70 +102,108 @@ public class PersonNameUtilsTest {
 	 */
 	@Test
 	public void testDiscover() throws Exception {
-		final PersonName pn1 = PersonNameUtils.discoverPersonName("de la Vall{'e}e Poussin, Charles Louis Xavier Joseph");
+		final PersonName pn1 = PersonNameUtils.discoverPersonNames("de la Vall{'e}e Poussin, Charles Louis Xavier Joseph").get(0);
 		assertEquals("Charles Louis Xavier Joseph", pn1.getFirstName());
 		assertEquals("de la Vall{'e}e Poussin", pn1.getLastName());
 		
-		final PersonName pn2 = PersonNameUtils.discoverPersonName("{Long Company Name}");
+		final PersonName pn2 = PersonNameUtils.discoverPersonNames("{Long Company Name}").get(0);
 		assertEquals("{Long Company Name}", pn2.getLastName());
 		
-		final PersonName pn3 = PersonNameUtils.discoverPersonName("Donald E. Knuth");
+		final PersonName pn3 = PersonNameUtils.discoverPersonNames("Donald E. Knuth").get(0);
 		assertEquals("Donald E.", pn3.getFirstName());
 		assertEquals("Knuth", pn3.getLastName());
 
-		final PersonName pn4 = PersonNameUtils.discoverPersonName("Foo van Bar");
+		final PersonName pn4 = PersonNameUtils.discoverPersonNames("Foo van Bar").get(0);
 		assertEquals("Foo", pn4.getFirstName());
 		assertEquals("van Bar", pn4.getLastName());
 		
-		final PersonName pn5 = PersonNameUtils.discoverPersonName("von der Schmidt, Alex");
+		final PersonName pn5 = PersonNameUtils.discoverPersonNames("von der Schmidt, Alex").get(0);
 		assertEquals("Alex", pn5.getFirstName());
 		assertEquals("von der Schmidt", pn5.getLastName());
 
 		// this works, since we split after the last "."
-		final PersonName pn6 = PersonNameUtils.discoverPersonName("L. Bar Mar");
-		assertEquals("L.", pn6.getFirstName());
-		assertEquals("Bar Mar", pn6.getLastName());
+		final PersonName pn6 = PersonNameUtils.discoverPersonNames("L. Bar Mar").get(0);
+		assertEquals("L. Bar", pn6.getFirstName());
+		assertEquals("Mar", pn6.getLastName());
 		
-		final PersonName pn7 = PersonNameUtils.discoverPersonName("Bar Mar, Leo");
+		final PersonName pn7 = PersonNameUtils.discoverPersonNames("Bar Mar, Leo").get(0);
 		assertEquals("Leo", pn7.getFirstName());
 		assertEquals("Bar Mar", pn7.getLastName());
 		
-		final PersonName pn9 = PersonNameUtils.discoverPersonName("Bar Mar, L.");
+		final PersonName pn9 = PersonNameUtils.discoverPersonNames("Bar Mar, L.").get(0);
 		assertEquals("L.", pn9.getFirstName());
 		assertEquals("Bar Mar", pn9.getLastName());
 
-		final PersonName pn10 = PersonNameUtils.discoverPersonName("John Chris Smith");
+		final PersonName pn10 = PersonNameUtils.discoverPersonNames("John Chris Smith").get(0);
 		assertEquals("John Chris", pn10.getFirstName());
 		assertEquals("Smith", pn10.getLastName());	
 		
-		final PersonName pn13 = PersonNameUtils.discoverPersonName("Joseph John {Rocchio, Jr.}");
+		final PersonName pn13 = PersonNameUtils.discoverPersonNames("Joseph John {Rocchio, Jr.}").get(0);
 		assertEquals("Joseph John", pn13.getFirstName());
 		assertEquals("{Rocchio, Jr.}", pn13.getLastName());	
 		
-		final PersonName pn14 = PersonNameUtils.discoverPersonName("{Rocchio, Jr.}, Joseph John");
+		final PersonName pn14 = PersonNameUtils.discoverPersonNames("{Rocchio, Jr.}, Joseph John").get(0);
 		assertEquals("Joseph John", pn14.getFirstName());
 		assertEquals("{Rocchio, Jr.}", pn14.getLastName());	
 
-		final PersonName pn15 = PersonNameUtils.discoverPersonName("Chappe d'Auteroche");
+		final PersonName pn15 = PersonNameUtils.discoverPersonNames("Chappe d'Auteroche").get(0);
 		assertEquals("Chappe", pn15.getFirstName());
 		assertEquals("d'Auteroche", pn15.getLastName());
 
 		
-		final PersonName pn16 = PersonNameUtils.discoverPersonName("{Frans\\,A.} Janssen");
+		final PersonName pn16 = PersonNameUtils.discoverPersonNames("{Frans\\,A.} Janssen").get(0);
 		assertEquals("{Frans\\,A.}", pn16.getFirstName());
 		assertEquals("Janssen", pn16.getLastName());
 
+//		final String in = "{Noble, Inc.}, {Barnes and }";
+//		final PersonName pn17 = PersonNameUtils.discoverPersonName(in);
+//		System.out.println(in);
+//		System.out.println(pn17.getFirstName());
+//		System.out.println(pn17.getLastName());
+////		assertEquals("{Frans\\,A.}", pn17.getFirstName());
+////		assertEquals("Janssen", pn17.getLastName());
+//		
+//		System.out.println(PersonNameUtils.serializePersonName(pn17));
+//		System.out.println(PersonNameUtils.serializePersonName(pn17, false));
+//		
+//		
+//		final List<PersonName> pns = PersonNameUtils.discoverPersonNames(in);
+//		printPersonList(pns);
+//		System.out.println(PersonNameUtils.serializePersonNames(pns));
+//		System.out.println(PersonNameUtils.serializePersonNames(pns, false));
+	}
+	
+	@Test
+	@Ignore
+	public void testSpeed() throws PersonListParserException {
+		final int count = 500000;
+		final String persons = "Wolfgang van Briel and {Barnes and Noble, Inc.} and Ebbo Hahlweg and {Frans\\,A.} Janssen and Joseph John {Rocchio, Jr.} and Barab{\\'a}si, Albert-L{\\'a}szl{\\'o} and {Rocchio, Jr.}, Joseph John and Albert, R{\\'e}ka and Müller, {Arne} and Meier, {Beate} and Jon Kleinberg and \\&\\#201;va Tardos";
+
+		long now = System.currentTimeMillis();
+		for (int i = 0; i < count; i++) {
+			PersonNameUtils.discoverPersonNames(persons);
+		}
+		long diff = System.currentTimeMillis() - now;
+		System.out.println("unser: " + diff);
 		
+		
+		now = System.currentTimeMillis();
+		for (int i = 0; i < count; i++) {
+			PersonNameParser.parse(persons);
+		}
+		diff = System.currentTimeMillis() - now;
+		System.out.println("bibtx: " + diff);
 		
 	}
 	
 	/**
 	 * It's not so simple to extract names where we have (erroneously) several 
 	 * "and"'s between names
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void testDiscoverPersonNames() {
-		final List<PersonName> pn = PersonNameUtils.discoverPersonNames("and D.E. Knuth and and Foo Bar and   and");
+	public void testDiscoverPersonNames() throws PersonListParserException {
+		final List<PersonName> pn = PersonNameUtils.discoverPersonNames("D.E. Knuth and Foo Bar and ");
 		assertEquals(Arrays.asList(new PersonName("D.E.", "Knuth"), new PersonName("Foo", "Bar")), pn);
 		
 		/*
@@ -197,12 +227,9 @@ public class PersonNameUtilsTest {
 		/*
 		 * why semicolon? why?
 		 */
-		final List<PersonName> pn5 = PersonNameUtils.discoverPersonNames("Jon Kleinberg and \\&\\#201;va Tardos");
-		assertEquals(Arrays.asList(new PersonName("Jon", "Kleinberg"), new PersonName("\\&\\#201;va", "Tardos")), pn5);
+		final List<PersonName> pn5 = PersonNameUtils.discoverPersonNames("Jon Kleinberg and T\\&\\#201;va Tardos");
+		assertEquals(Arrays.asList(new PersonName("Jon", "Kleinberg"), new PersonName("T\\&\\#201;va", "Tardos")), pn5);
 		
-		
-//		final List<PersonName> pn6 = PersonNameUtils.discoverPersonNames("Foo, Bar, Blubb, Baba");
-//		assertFalse(present(pn6));
 	}
 	
 	private static void printPersonList(final List<PersonName> person) {
@@ -212,55 +239,58 @@ public class PersonNameUtilsTest {
 	}
 	
 	/**
+	 * @throws PersonListParserException 
 	 * 
 	 */
 	@Test
-	public void testSerializePersonName() {
+	public void testSerializePersonName() throws PersonListParserException {
 		/*
 		 * lastFirstName = true
 		 */
-		assertEquals("Knuth, D.E.", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("D.E. Knuth"), true));
-		assertEquals("Dampf, Hans", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("Hans Dampf"), true));
-		assertEquals("Knuth, Donald E.", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("Donald E. Knuth"), true));
-		assertEquals("van Bar, Foo", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("Foo van Bar"), true));
-		assertEquals("Jäschke, R.", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("R. Jäschke"), true));
-		assertEquals("Smith, John Chris", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("John Chris Smith"), true));
-		assertEquals("von Neumann, John", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("John von Neumann"), true));
-		assertEquals("von der Schmidt, Alex", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("von der Schmidt, Alex"), true));
-		assertEquals("{Long Company Name}", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("{Long Company Name}"), true));
-		assertEquals("Balby Marinho, L.", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("L. Balby Marinho"), true));
-		assertEquals("Balby Marinho, Leandro", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("Balby Marinho, Leandro"), true));
+		assertEquals("de la Vall{'e}e Poussin, Charles Louis Xavier Joseph", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("de la Vall{'e}e Poussin, Charles Louis Xavier Joseph"), true));
+		assertEquals("Knuth, D.E.", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("D.E. Knuth"), true));
+		assertEquals("Dampf, Hans", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("Hans Dampf"), true));
+		assertEquals("Knuth, Donald E.", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("Donald E. Knuth"), true));
+		assertEquals("van Bar, Foo", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("Foo van Bar"), true));
+		assertEquals("Jäschke, R.", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("R. Jäschke"), true));
+		assertEquals("Smith, John Chris", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("John Chris Smith"), true));
+		assertEquals("von Neumann, John", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("John von Neumann"), true));
+		assertEquals("von der Schmidt, Alex", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("von der Schmidt, Alex"), true));
+		assertEquals("{Long Company Name}", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("{Long Company Name}"), true));
+		assertEquals("Marinho, L. Balby", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("L. Balby Marinho"), true));
+		assertEquals("Balby Marinho, Leandro", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("Balby Marinho, Leandro"), true));
 
 		/*
 		 * lastFirstName = false
 		 */
-		assertEquals("D.E. Knuth", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("D.E. Knuth"), false));
-		assertEquals("Hans Dampf", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("Hans Dampf"), false));
-		assertEquals("Donald E. Knuth", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("Donald E. Knuth"), false));
-		assertEquals("Foo van Bar", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("Foo van Bar"), false));
-		assertEquals("R. Jäschke", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("R. Jäschke"), false));
-		assertEquals("John Chris Smith", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("John Chris Smith"), false));
-		assertEquals("John von Neumann", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("John von Neumann"), false));
-		assertEquals("Alex von der Schmidt", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("von der Schmidt, Alex"), false));
-		assertEquals("{Long Company Name}", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("{Long Company Name}"), false));
-		assertEquals("L. Balby Marinho", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("L. Balby Marinho"), false));
-		assertEquals("Leandro Balby Marinho", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("Balby Marinho, Leandro"), false));
-		assertEquals("Leandro Balby Marinho", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("Leandro Balby Marinho"), false));
+		assertEquals("D.E. Knuth", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("D.E. Knuth"), false));
+		assertEquals("Hans Dampf", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("Hans Dampf"), false));
+		assertEquals("Donald E. Knuth", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("Donald E. Knuth"), false));
+		assertEquals("Foo van Bar", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("Foo van Bar"), false));
+		assertEquals("R. Jäschke", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("R. Jäschke"), false));
+		assertEquals("John Chris Smith", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("John Chris Smith"), false));
+		assertEquals("John von Neumann", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("John von Neumann"), false));
+		assertEquals("Alex von der Schmidt", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("von der Schmidt, Alex"), false));
+		assertEquals("{Long Company Name}", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("{Long Company Name}"), false));
+		assertEquals("L. Balby Marinho", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("L. Balby Marinho"), false));
+		assertEquals("Leandro Balby Marinho", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("Balby Marinho, Leandro"), false));
+		assertEquals("Leandro Balby Marinho", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("Leandro Balby Marinho"), false));
 
 		/*
 		 * special case: "others"
 		 */
-		assertEquals("others", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("others"), true));
-		assertEquals("others", PersonNameUtils.serializePersonName(PersonNameUtils.discoverPersonName("others"), false));
+		assertEquals("others", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("others"), true));
+		assertEquals("others", PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames("others"), false));
 	}
 	
 	/**
 	 * For these names we guarantee that our serialization does not change them.
 	 * <br/>
 	 * This assumption is stronger than the one in {@link #testDiscoverSerializeDiscoverSerialize()}.
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void testDiscoverSerialize() {
+	public void testDiscoverSerialize() throws PersonListParserException {
 		ds("Jäschke, R.");
 		ds("Smith, John Chris");
 		ds("von der Schmidt, Alex");
@@ -280,8 +310,9 @@ public class PersonNameUtilsTest {
 	 * 
 	 * 
 	 * @param p
+	 * @throws PersonListParserException 
 	 */
-	private void ds(final String p) {
+	private void ds(final String p) throws PersonListParserException {
 		assertEquals(p, PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(p)));
 	}
 	
@@ -292,9 +323,10 @@ public class PersonNameUtilsTest {
 	 * is compatible with {@link PersonNameUtils#discoverPersonNames(String)}.
 	 * <br/>
 	 * See also {@link #testDiscoverSerialize()}.
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void testDiscoverSerializeDiscoverSerialize() {
+	public void testDiscoverSerializeDiscoverSerialize() throws PersonListParserException {
 		dsds("D.E. Knuth");
 		dsds("D.E. Knuth");
 		dsds("Donald E. Knuth");
@@ -319,6 +351,7 @@ public class PersonNameUtilsTest {
 		dsds("{Frans\\,A.} Janssen");
 		dsds("A. Foo and B. Bar and others");
 		dsds("Hanand Foobar");
+		dsds("Rocchio, Jr., Joseph John");
 	}
 	
 	/**
@@ -326,8 +359,9 @@ public class PersonNameUtilsTest {
 	 * in s and then asserts that this is the same as s.
 	 * 
 	 * @param p
+	 * @throws PersonListParserException 
 	 */
-	private void dsds(final String p) {
+	private void dsds(final String p) throws PersonListParserException {
 		/*
 		 * We first check the "Last, First" format ... 
 		 */
@@ -342,13 +376,14 @@ public class PersonNameUtilsTest {
 	
 	
 	/**
+	 * @throws PersonListParserException 
 	 * 
 	 */
 	@Test
-	public void serializePersonNames1() {
+	public void serializePersonNames1() throws PersonListParserException {
 		final PersonName[] personNames = new PersonName[]{
-				PersonNameUtils.discoverPersonName("Balby Marinho, Leandro"),
-				PersonNameUtils.discoverPersonName("Donald E. Knuth")
+				PersonNameUtils.discoverPersonNames("Balby Marinho, Leandro").get(0),
+				PersonNameUtils.discoverPersonNames("Donald E. Knuth").get(0)
 		};
 		
 		assertEquals("Leandro Balby Marinho and Donald E. Knuth", PersonNameUtils.serializePersonNames(Arrays.asList(personNames), false));
@@ -357,13 +392,14 @@ public class PersonNameUtilsTest {
 	}
 	
 	/**
+	 * @throws PersonListParserException 
 	 * 
 	 */
 	@Test
-	public void serializePersonNames2() {
+	public void serializePersonNames2() throws PersonListParserException {
 		final PersonName[] personNames = new PersonName[]{
-				PersonNameUtils.discoverPersonName("Hans von und zu Kottenbröder"),
-				PersonNameUtils.discoverPersonName("Nachname, Vorname")
+				PersonNameUtils.discoverPersonNames("Hans von und zu Kottenbröder").get(0),
+				PersonNameUtils.discoverPersonNames("Nachname, Vorname").get(0)
 		};
 		
 		assertEquals("Hans von und zu Kottenbröder and Vorname Nachname", PersonNameUtils.serializePersonNames(Arrays.asList(personNames), false));
@@ -372,64 +408,61 @@ public class PersonNameUtilsTest {
 
 	
 	/**
-	 * Not working namesFIX
 	 * @throws Exception
 	 */
-	@Test
-	@Ignore
 	public void testDiscoverNotWorking() throws Exception {
 		/*
 		 * this "First Last" name form is ambigue - we can't discover the correct name 
 		 */
-		final PersonName pn8 = PersonNameUtils.discoverPersonName("Leo Bar Mar");
-		assertEquals("Leo", pn8.getFirstName());
-		assertEquals("Bar Mar", pn8.getLastName());
-		/*
-		 * does not work, since we split at the last "."
-		 */
-		final PersonName pn9 = PersonNameUtils.discoverPersonName("M. Joe Fox");
-		assertEquals("M. Joe", pn9.getFirstName());
-		assertEquals("Fox", pn9.getLastName());
-		
-		/*
-		 * we remove numbers and split this into parts .... well, it's just broken
-		 */
-		final PersonName pn11 = PersonNameUtils.discoverPersonName("ECML/PKDD’03 workshop proceedings");
-		assertEquals("ECML/PKDD’03 workshop proceedings", pn11.getLastName());
-		
-		/*
-		 * FIXME: we don't support this kind of lineage ... :-( 
-		 */
+		final PersonName pn8 = PersonNameUtils.discoverPersonNames("Leo Bar Mar").get(0);
+		assertEquals("Leo Bar", pn8.getFirstName());
+		assertEquals("Mar", pn8.getLastName());
 
-		final PersonName pn12 = PersonNameUtils.discoverPersonName("Rocchio, Jr., Joseph John");
-		assertEquals("Joseph John", pn12.getFirstName());
-		assertEquals("Rocchio, Jr.", pn12.getLastName());	
-		
+		/*
+		 * well, it's just broken - use brackets for things like that
+		 */
+		final PersonName pn11 = PersonNameUtils.discoverPersonNames("ECML/PKDD’03 workshop proceedings").get(0);
+		assertEquals("ECML/PKDD’03 workshop proceedings", pn11.getLastName());
 		/*
 		 * too many commas ...
 		 */
 		final List<PersonName> pn4 = PersonNameUtils.discoverPersonNames("K. Wilson and J. Brake and A. F. Lee, and R.M. Lambert,");
 		printPersonList(pn4);
 		assertEquals(Arrays.asList(new PersonName("K.", "Wilson"), new PersonName("J.", "Brake"), new PersonName("A. F.", "Lee"), new PersonName("R.M.", "Lambert")), pn4);
-	
 		/*
 		 * ; as person delimiter ...
 		 */
 		final List<PersonName> pn6 = PersonNameUtils.discoverPersonNames("Kirsch KA; Schlemmer M");
 		assertEquals(Arrays.asList(new PersonName("KA", "Kirsch"), new PersonName("M", "Schlemmer")), pn6);
 	}
-
+	
 	/**
+	 * Should be also working now because of new parser.
+	 * @throws PersonListParserException 
+	 * 
 	 * @throws Exception
 	 */
 	@Test
-	public void testLastFirstToFirstLastMany() throws Exception {
-		assertEquals("D.E. Knuth", PersonNameUtils.lastFirstToFirstLastMany("Knuth, D.E."));
-		assertEquals("D.E. Knuth and D.E. Knuth", PersonNameUtils.lastFirstToFirstLastMany("Knuth, D.E. and D.E. Knuth"));
-		assertEquals("D.E. Knuth and D.E. Knuth and Leandro Balby Marinho and Leandro Balby Marinho", PersonNameUtils.lastFirstToFirstLastMany("Knuth, D.E. and D.E. Knuth and Leandro Balby Marinho and Balby Marinho, Leandro"));
+	public void testShouldWorkNow() throws PersonListParserException {
+		/*
+		 * does not work, since we split at the last "."
+		 */
+		final PersonName pn9 = PersonNameUtils.discoverPersonNames("M. Joe Fox").get(0);
+		assertEquals("M. Joe", pn9.getFirstName());
+		assertEquals("Fox", pn9.getLastName());
+		
+		
+		/*
+		 * we now support this kind of lineage ... :-( 
+		 */
+
+		final PersonName pn12 = PersonNameUtils.discoverPersonNames("Rocchio, Jr., Joseph John").get(0);
+		assertEquals("Joseph John", pn12.getFirstName());
+		assertEquals("{Rocchio, Jr.}", pn12.getLastName());	
+		
+
+
 	}
-
-
 
 }
 

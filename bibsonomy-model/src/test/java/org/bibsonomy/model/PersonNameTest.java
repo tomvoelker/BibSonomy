@@ -56,7 +56,7 @@ public class PersonNameTest {
 	
 	@Test
 	public void testStrangeBehaviour1() throws Exception {
-		final PersonName p1 = PersonNameUtils.discoverPersonName("Lonely Writer");
+		final PersonName p1 = PersonNameUtils.discoverPersonNames("Lonely Writer").get(0);
 	}
 
 }

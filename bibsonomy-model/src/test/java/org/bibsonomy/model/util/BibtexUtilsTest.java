@@ -34,6 +34,7 @@ import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -90,14 +91,15 @@ public class BibtexUtilsTest {
 
 	/**
 	 * tests generation of bibtex string
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void toBibtexString() {
+	public void toBibtexString() throws PersonListParserException {
 		final BibTex bib = new BibTex();
 		bib.setEntrytype("inproceedings");
 		bib.setBibtexKey("KIE");
 		bib.setTitle("The most wonderfult title on earth");
-		bib.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf"), PersonNameUtils.discoverPersonName("Peter Silie")));
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("Hans Dampf and Peter Silie"));
 		bib.setJournal("Journal of the most wonderful articles on earth");
 		bib.setYear("2525");
 		bib.setVolume("3");
@@ -157,11 +159,11 @@ public class BibtexUtilsTest {
 				"Preventive 2007). \n" + 
 		"For not.}");
 		bib.setEntrytype("book");
-		bib.setEditor(Arrays.asList(PersonNameUtils.discoverPersonName("John Libbey Eurotext")));
+		bib.setEditor(PersonNameUtils.discoverPersonNames("John Libbey Eurotext"));
 		bib.setEdition("John Libbey Eurotext");
 		bib.setBibtexKey("Selmes2004");
 		bib.setAbstract("Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.");
-		bib.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Jacques Selmès"), PersonNameUtils.discoverPersonName("Christian Derouesné")));
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("Jacques Selmès and Christian Derouesné"));
 		
 		final String expected = 
 			"@book{Selmes2004,\n" + 
@@ -206,11 +208,11 @@ public class BibtexUtilsTest {
 				"Preventive 2007). \n" + 
 		"For not.}");
 		bib.setEntrytype("book");
-		bib.setEditor(Arrays.asList(PersonNameUtils.discoverPersonName("John Libbey Eurotext")));
+		bib.setEditor(PersonNameUtils.discoverPersonNames("John Libbey Eurotext"));
 		bib.setEdition("John Libbey Eurotext");
 		bib.setBibtexKey("Selmes2004");
 		bib.setAbstract("Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.");
-		bib.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Jacques Selmès"), PersonNameUtils.discoverPersonName("Christian Derouesné")));
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("Jacques Selmès and Christian Derouesné"));
 		
 		final String expected = 
 			"@book{Selmes2004,\n" + 
@@ -236,20 +238,21 @@ public class BibtexUtilsTest {
 
 	/**
 	 * tests generateBibtexKey
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void generateBibtexKey() {
-		assertEquals("dampf", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf")), null, null, null));
-		assertEquals("dampf", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf"), PersonNameUtils.discoverPersonName("Reiner Zufall")), null, null, null));
-		assertEquals("dampf", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf"), PersonNameUtils.discoverPersonName("Reiner Zufall")), Arrays.asList(PersonNameUtils.discoverPersonName("Peter Silie")), null, null));
-		assertEquals("dampf2005", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf"), PersonNameUtils.discoverPersonName("Reiner Zufall")), Arrays.asList(PersonNameUtils.discoverPersonName("Peter Silie")), "2005", null));
-		assertEquals("silie", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Peter Silie")), null, null));
-		assertEquals("silie", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Peter Silie"), PersonNameUtils.discoverPersonName("Hans Dampf")), null, null));
-		assertEquals("silie2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Peter Silie"), PersonNameUtils.discoverPersonName("Hans Dampf")), "2005", null));
-		assertEquals("knuth2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Knuth, Donald E.")), "2005", null));
-		assertEquals("navarrobullock2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Navarro Bullock, Beate")), "2005", null));
-		assertEquals("longcompanyname2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("{Long Company Name}"), PersonNameUtils.discoverPersonName("Hans Dampf")), "2005", null));
-		assertEquals("knuth1998computer", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonName("Knuth, Donald E.")), "1998", "The Art of Computer Programming"));
+	public void generateBibtexKey() throws PersonListParserException {
+		assertEquals("dampf", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonNames("Hans Dampf").get(0)), null, null, null));
+		assertEquals("dampf", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonNames("Hans Dampf").get(0), PersonNameUtils.discoverPersonNames("Reiner Zufall").get(0)), null, null, null));
+		assertEquals("dampf", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonNames("Hans Dampf").get(0), PersonNameUtils.discoverPersonNames("Reiner Zufall").get(0)), Arrays.asList(PersonNameUtils.discoverPersonNames("Peter Silie").get(0)), null, null));
+		assertEquals("dampf2005", BibTexUtils.generateBibtexKey(Arrays.asList(PersonNameUtils.discoverPersonNames("Hans Dampf").get(0), PersonNameUtils.discoverPersonNames("Reiner Zufall").get(0)), Arrays.asList(PersonNameUtils.discoverPersonNames("Peter Silie").get(0)), "2005", null));
+		assertEquals("silie", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonNames("Peter Silie").get(0)), null, null));
+		assertEquals("silie", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonNames("Peter Silie").get(0), PersonNameUtils.discoverPersonNames("Hans Dampf").get(0)), null, null));
+		assertEquals("silie2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonNames("Peter Silie").get(0), PersonNameUtils.discoverPersonNames("Hans Dampf").get(0)), "2005", null));
+		assertEquals("knuth2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonNames("Knuth, Donald E.").get(0)), "2005", null));
+		assertEquals("navarrobullock2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonNames("Navarro Bullock, Beate").get(0)), "2005", null));
+		assertEquals("longcompanyname2005", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonNames("{Long Company Name}").get(0), PersonNameUtils.discoverPersonNames("Hans Dampf").get(0)), "2005", null));
+		assertEquals("knuth1998computer", BibTexUtils.generateBibtexKey(null, Arrays.asList(PersonNameUtils.discoverPersonNames("Knuth, Donald E.").get(0)), "1998", "The Art of Computer Programming"));
 	}
 
 
@@ -279,18 +282,19 @@ public class BibtexUtilsTest {
 
 	/**
 	 * tests sortBibTexList
+	 * @throws PersonListParserException 
 	 */
 	@Ignore// FIXME: implement me...
 	@Test
-	public void sortBibTexList() {
+	public void sortBibTexList() throws PersonListParserException {
 		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 		final Post<BibTex> post1 = new Post<BibTex>();
 		final Post<BibTex> post2 = new Post<BibTex>();
 		final BibTex p1 = new BibTex();
-		p1.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("A. Test")));
+		p1.setAuthor(PersonNameUtils.discoverPersonNames("A. Test"));
 		post1.setResource(p1);
 		final BibTex p2 = new BibTex();
-		p2.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("B. Test")));
+		p2.setAuthor(PersonNameUtils.discoverPersonNames("B. Test"));
 		post2.setResource(p2);
 		posts.add(post1);
 		posts.add(post2);
@@ -355,14 +359,15 @@ public class BibtexUtilsTest {
 
 	/**
 	 * Tests that toBibtexString() does not add misc fields to the post.
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void toBibtexString2() {
+	public void toBibtexString2() throws PersonListParserException {
 		final BibTex bib = new BibTex();
 		bib.setEntrytype("inproceedings");
 		bib.setBibtexKey("KIE");
 		bib.setTitle("The most wonderfult title on earth");
-		bib.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Hans Dampf"), PersonNameUtils.discoverPersonName("Peter Silie")));
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("Hans Dampf and Peter Silie"));
 		bib.setJournal("Journal of the most wonderful articles on earth");
 		bib.setYear("2525");
 		bib.setVolume("3");

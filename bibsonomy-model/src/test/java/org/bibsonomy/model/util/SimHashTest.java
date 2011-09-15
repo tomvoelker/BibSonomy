@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.util.StringUtils;
 import org.junit.Test;
 
@@ -86,9 +87,10 @@ public class SimHashTest {
 	 * 
 	 * it only makes sense to test this with simHash1 (interhash), because normalization
 	 * is not applied for intra-hash computation
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void testAuthorNormalization() {
+	public void testAuthorNormalization() throws PersonListParserException {
 		BibTex bib = new BibTex();
 		bib.setAuthor(PersonNameUtils.discoverPersonNames("b and A"));
 		final String interHash = SimHash.getSimHash(bib, HashID.getSimHash(1));
@@ -101,9 +103,9 @@ public class SimHashTest {
 		
 		bib.setAuthor(PersonNameUtils.discoverPersonNames("John Paul and Bridget Jones"));
 		final String interHash2 = SimHash.getSimHash(bib, HashID.getSimHash(1));
-		bib.setAuthor(PersonNameUtils.discoverPersonNames("JoHN pAUl and brIDgeT JOneS"));
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("JoHN pAUl and BrIDgeT JOneS"));
 		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
-		bib.setAuthor(PersonNameUtils.discoverPersonNames("J PAUL and b jones"));
+		bib.setAuthor(PersonNameUtils.discoverPersonNames("J PAUL and B Jones"));
 		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
 		bib.setAuthor(PersonNameUtils.discoverPersonNames("PAUL, J and jones, B"));
 		assertEquals(interHash2, SimHash.getSimHash(bib, HashID.getSimHash(1)));
@@ -118,9 +120,10 @@ public class SimHashTest {
 	
 	/**
 	 * tests person normalization for simhash 1
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void testPersonNormalizationForSimhash1() {
+	public void testPersonNormalizationForSimhash1() throws PersonListParserException {
 		/*
 		 * almost all examples from our database! :-(
 		 */
@@ -136,9 +139,10 @@ public class SimHashTest {
 
 	/**
 	 * tests person normalization for simhash 2
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void testPersonNormalizationForSimhash2() {
+	public void testPersonNormalizationForSimhash2() throws PersonListParserException {
 		assertEquals("Bundesamt für Sicherheit in der Informationstechnik", StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(PersonNameUtils.serializePersonNames(PersonNameUtils.discoverPersonNames(" {Bundesamt für Sicherheit in der Informationstechnik}"))));
 	}
 	
