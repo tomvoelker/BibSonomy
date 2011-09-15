@@ -97,8 +97,8 @@ public class IEScraper implements Scraper {
 				/*
 				 * save map data as XML in scraping context 
 				 */
-				ByteArrayOutputStream bout = new ByteArrayOutputStream();
-				XMLEncoder encoder = new XMLEncoder(bout);
+				final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+				final XMLEncoder encoder = new XMLEncoder(bout);
 				encoder.writeObject(map);
 				encoder.close();
 				sc.setMetaResult(bout.toString("UTF-8"));
