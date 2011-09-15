@@ -21,6 +21,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -256,8 +257,9 @@ public class Importer {
 	 * Fills the remaining bibtex fields with defaults. 
 	 * 
 	 * @param bibtex
+	 * @throws PersonListParserException 
 	 */
-	private void addDefaultFields(final BibTex bibtex) {
+	private void addDefaultFields(final BibTex bibtex) throws PersonListParserException {
 		/*
 		 * TODO missing fields:
 		 * - url

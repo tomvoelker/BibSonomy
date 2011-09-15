@@ -6,6 +6,7 @@ import java.util.List;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -69,7 +70,11 @@ public class XMLHandler extends DefaultHandler {
 		if ("submission".equals(qName)) {
 			list.add(post);
 		} else if ("authors".equals(qName)) {
-			post.getResource().setAuthor(PersonNameUtils.discoverPersonNames(authors.toString()));
+			try {
+				post.getResource().setAuthor(PersonNameUtils.discoverPersonNames(authors.toString()));
+			} catch (PersonListParserException ex) {
+				throw new RuntimeException(ex);
+			}
 		} else if ("author".equals(qName)) {
 			if (authors.toString().trim().equals("")) {
 				authors.append(authorFirstName + " " + authorLastName);
