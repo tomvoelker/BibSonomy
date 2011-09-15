@@ -187,7 +187,7 @@ $(document).ready(function() {
 		success: function (data) {
 		if(data.items != undefined)
 			$.ajax({
-				url: '/json/bibtex/1'+data.items[0].interHash + "?items=1000",
+				url: '/json/bibtex/1'+data.items[0].interHash + "?items=100",
 				dataType: "jsonp",
 				success: function (data) {
 				if(data.items != undefined) 
