@@ -155,7 +155,19 @@ public class PersonNameUtilsTest {
 		assertEquals("{Frans\\,A.}", pn16.getFirstName());
 		assertEquals("Janssen", pn16.getLastName());
 
-		
+		/*
+		 * an earlier version of the parser removed "-"
+		 */
+		final PersonName pn17 = PersonNameUtils.discoverPersonNames("Bai-lin Hao").get(0);
+		assertEquals("Bai-lin", pn17.getFirstName());
+		assertEquals("Hao", pn17.getLastName());
+
+		/*
+		 * an earlier version of the parser removed "~"
+		 */
+		final PersonName pn18 = PersonNameUtils.discoverPersonNames("Y.~F. Chen").get(0);
+		assertEquals("Y.~F.", pn18.getFirstName());
+		assertEquals("Chen", pn18.getLastName());
 	}
 	
 	@Test
@@ -420,12 +432,7 @@ public class PersonNameUtilsTest {
 		final List<PersonName> pn6 = PersonNameUtils.discoverPersonNames("Kirsch KA; Schlemmer M");
 		assertEquals(Arrays.asList(new PersonName("KA", "Kirsch"), new PersonName("M", "Schlemmer")), pn6);
 
-		/*
-		 * the parser removes "-"
-		 */
-		final PersonName pn17 = PersonNameUtils.discoverPersonNames("Bai-lin Hao").get(0);
-		assertEquals("Bai-lin", pn17.getFirstName());
-		assertEquals("Hao", pn17.getLastName());
+
 
 	}
 	

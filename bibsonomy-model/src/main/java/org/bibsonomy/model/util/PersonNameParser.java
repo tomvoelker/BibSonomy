@@ -135,13 +135,13 @@ public class PersonNameParser {
 				}
 			default:
 				final char currentChar = stringContent.charAt(currentPos);
-				if (Character.isWhitespace(currentChar) || (currentChar == '~') || (currentChar == '-')) {
+				if (Character.isWhitespace(currentChar)) {// || (currentChar == '~') || (currentChar == '-')) {
 					if (numberOfOpenBraces == 0 && tokenBegin <= currentPos) {
 						final String potentialToken = stringContent.substring(tokenBegin, currentPos).trim();
 						if (!potentialToken.equals("")) {
 							tokens.add(potentialToken);
-							if (currentChar == '-')
-								tokens.add(MINUS);
+//							if (currentChar == '-')
+//								tokens.add(MINUS);
 						}
 						tokenBegin = currentPos + 1;
 					}
