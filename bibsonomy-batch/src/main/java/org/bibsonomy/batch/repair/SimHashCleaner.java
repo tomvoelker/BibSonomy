@@ -359,8 +359,8 @@ public class SimHashCleaner {
 	private BibTex getBibTex(final ResultSet rst) throws SQLException, PersonListParserException {
 		final BibTex bibtex = new BibTex();
 		bibtex.setTitle(rst.getString("title"));
-		bibtex.setAuthor(PersonNameUtils.discoverPersonNames(rst.getString("author")));
-		bibtex.setEditor(PersonNameUtils.discoverPersonNames(rst.getString("editor")));
+		bibtex.setAuthor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(rst.getString("author")));
+		bibtex.setEditor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(rst.getString("editor")));
 		bibtex.setYear(rst.getString("year"));
 		bibtex.setEntrytype(rst.getString("entrytype"));
 		bibtex.setJournal(rst.getString("journal"));
