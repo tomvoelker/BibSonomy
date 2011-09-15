@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -71,6 +72,7 @@ public class SimHashCleaner {
 	int changedHashesCtr = 0;
 	int printedHashesCtr = 0;
 	int updatedHashesCtr = 0;
+	int exceptionCtr = 0;
 	int changedPersonCtr = 0; // how many person names would change in the DB, if we would update them as well?
 	int publCtr = 0;
 
@@ -149,6 +151,7 @@ public class SimHashCleaner {
 			println("printed hashes: " + printedHashesCtr);
 			println("updated hashes: " + updatedHashesCtr);
 			println("changed person: " + changedPersonCtr);
+			println("pnp exceptions: " + exceptionCtr);
 
 			changedPersonNameWriter.close();
 			logWriter.close();
@@ -359,8 +362,8 @@ public class SimHashCleaner {
 	private BibTex getBibTex(final ResultSet rst) throws SQLException, PersonListParserException {
 		final BibTex bibtex = new BibTex();
 		bibtex.setTitle(rst.getString("title"));
-		bibtex.setAuthor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(rst.getString("author")));
-		bibtex.setEditor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(rst.getString("editor")));
+		bibtex.setAuthor(getPersonNames(rst.getString("author")));
+		bibtex.setEditor(getPersonNames(rst.getString("editor")));
 		bibtex.setYear(rst.getString("year"));
 		bibtex.setEntrytype(rst.getString("entrytype"));
 		bibtex.setJournal(rst.getString("journal"));
@@ -369,6 +372,17 @@ public class SimHashCleaner {
 		bibtex.setNumber(rst.getString("number"));
 		return bibtex;
 	}
+
+	private List<PersonName> getPersonNames(final String t) {
+		try {
+			return PersonNameUtils.discoverPersonNames(t);
+		} catch (PersonListParserException e) {
+			exceptionCtr++;
+		}
+		return Collections.emptyList();
+	}
+	
+	
 
 	private OldBibTex getOldBibTex(final ResultSet rst) throws SQLException {
 		final OldBibTex bibtex = new OldBibTex();
