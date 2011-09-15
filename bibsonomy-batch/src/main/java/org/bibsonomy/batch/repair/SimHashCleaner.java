@@ -20,6 +20,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.util.StringUtils;
 
 /**
@@ -355,7 +356,7 @@ public class SimHashCleaner {
 		}
 	}
 
-	private BibTex getBibTex(final ResultSet rst) throws SQLException {
+	private BibTex getBibTex(final ResultSet rst) throws SQLException, PersonListParserException {
 		final BibTex bibtex = new BibTex();
 		bibtex.setTitle(rst.getString("title"));
 		bibtex.setAuthor(PersonNameUtils.discoverPersonNames(rst.getString("author")));
