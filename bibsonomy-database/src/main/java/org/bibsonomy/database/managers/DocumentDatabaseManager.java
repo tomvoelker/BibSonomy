@@ -46,8 +46,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 *         <code>false</code> otherwise
 	 */
 	public boolean checkForExistingDocuments(final String userName, final String resourceHash, final String fileName, final DBSession session) {
-
-		return this.getDocumentForPost(userName, resourceHash, fileName, session) != null;
+		return present(this.getDocumentForPost(userName, resourceHash, fileName, session));
 	}
 	
 	public Document getDocumentForPost(final String userName, final String resourceHash, final String fileName, final DBSession session) {
