@@ -25,6 +25,11 @@ public class PersonNameTypeHandlerCallback extends AbstractTypeHandlerCallback {
 		}
 	}
 
+	/**
+	 * FIXME: improve error handling - how to do it?
+	 * 
+	 * @see com.ibatis.sqlmap.client.extensions.TypeHandlerCallback#valueOf(java.lang.String)
+	 */
 	@Override
 	public Object valueOf(final String str) {
 		try {
