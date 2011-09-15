@@ -25,10 +25,10 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 
 /**
  * Nice place for static util methods regarding names of persons.
@@ -42,11 +42,6 @@ public class PersonNameUtils {
 	 * the delimiter used for separating person names
 	 */
 	public static final String PERSON_NAME_DELIMITER = " and ";
-	/**
-	 * This one is used to extract person names where is is allowed that there
-	 * are several "and" delimiters in a row, e.g., "D.E. Knuth and and Foo Bar". 
-	 */
-	private static final String PERSON_NAME_DELIMITER_EXTRACTOR = "\\b" + PERSON_NAME_DELIMITER.trim() + "\\b";
 
 	/**
 	 * By default, all author and editor names are in "Last, First" order
@@ -55,22 +50,29 @@ public class PersonNameUtils {
 
 
 	/**
-	 * Analyses a string of names of the form "J. T. Kirk and M. Scott"
-	 * 
-	 * Currently can't handle the case where the persons strings starts with an
-	 * "and "
+	 * Analyses a string of names of the form "J. T. Kirk and M. Scott".
 	 * 
 	 * @param persons the source string 
 	 * @return the result
+	 * @throws PersonListParserException 
 	 */
-	public static List<PersonName> discoverPersonNames(final String persons) {
-		final List<PersonName> authors = new LinkedList<PersonName>();
-		if (present(persons)) {
-			for (final String token : persons.split(PERSON_NAME_DELIMITER_EXTRACTOR)) {
-				if (present(token)) authors.add(discoverPersonName(token));
-			}
+	public static List<PersonName> discoverPersonNames(final String persons) throws PersonListParserException {
+		return PersonNameParser.parse(persons);
+	}
+	
+	/**
+	 * Like {@link #discoverPersonNames(String)} but ignores exceptions and 
+	 * instead returns null.
+	 * 
+	 * @param persons
+	 * @return the parsed person name list or null
+	 */
+	public static List<PersonName> discoverPersonNamesIgnoreExceptions(final String persons) {
+		try {
+			return PersonNameParser.parse(persons);
+		} catch (PersonListParserException ex) {
+			return null;
 		}
-		return authors;
 	}
 
 	/**
@@ -89,165 +91,6 @@ public class PersonNameUtils {
 			}
 		}
 		return name;
-	}
-
-	/**
-	 * Given a list of person names separated by {@link #PERSON_NAME_DELIMITER}, we check
-	 * if one of them is in "Last, First" format and use {@link #lastFirstToFirstLast(String)}
-	 * to transform them to "First Last.
-	 * 
-	 * The string is only changed if it contains at least one comma.
-	 * 
-	 * @param names
-	 * @return a list of person names, where each name is in the "First Last" format. 
-	 */
-	public static String lastFirstToFirstLastMany(final String names) {
-		if (present(names)) {
-			if (names.contains(PersonName.LAST_FIRST_DELIMITER)) {
-				final StringBuilder namesNew = new StringBuilder();
-
-				final String[] split = names.split(PERSON_NAME_DELIMITER_EXTRACTOR);
-				for (int i = 0; i < split.length; i++) {
-					final String name = split[i].trim();
-					if (present(name)) {
-						namesNew.append(lastFirstToFirstLast(name));
-						if (i < split.length - 1) namesNew.append(PERSON_NAME_DELIMITER);
-					}
-				}
-				return namesNew.toString();
-			}
-		}
-		return names;
-	}
-
-	/**
-	 * Tries to detect the first name and last name of the given name.
-	 * 
-	 * @param name
-	 * @return The extracted person's name
-	 */
-	public static PersonName discoverPersonName(final String name) {
-		final PersonName personName = new PersonName();
-		if (present(name)) {
-			final String cleanedName = name.trim();
-			/*
-			 * Names can be in several formats:
-			 * 
-			 * 1) First (preLast) Last
-			 * 2) (preLast) Last, First
-			 * 3) {Long name of a Company}
-			 * 4) First {Last, Jr.} 
-			 * 5) {Last, Jr.}, First
-			 * 6) {Frans\,A.} Janssen
-			 * 7) Last, Jr., First (TODO: we can't handle this case)
-			 * 
-			 * If the name starts with a brace and ends with a brace, we assume case 3).
-			 */
-			final int indexOfLbr = cleanedName.indexOf("{");
-			final int indexOfRbr = cleanedName.indexOf("}");
-			if (indexOfLbr == 0 && indexOfRbr == cleanedName.length() - 1) {
-				/*
-				 * 3) {Long name of Company}
-				 * 
-				 * We do not remove the braces and use the complete "name" as last name. 
-				 */
-				personName.setLastName(cleanedName);
-				return personName;
-			}
-			/*
-			 * If the name contains a comma, we check the other cases.
-			 */
-			final int indexOfComma = cleanedName.indexOf(PersonName.LAST_FIRST_DELIMITER);
-			if (indexOfComma >= 0) {
-				if (indexOfLbr >= 0 && indexOfRbr >= 0) {
-					/*
-					 * we have two braces
-					 */
-					if (indexOfLbr < indexOfComma && indexOfRbr > indexOfComma) {
-						/*
-						 * At least one comma inside the brace. 
-						 * If there is another comma to the right of the right 
-						 * brace, we split there.
-						 * 
-						 */
-						final int indexOf2ndComma = cleanedName.indexOf(',', indexOfRbr);
-						if (indexOf2ndComma > 0) {
-							/*
-							 * case 5) {Last, Jr.}, First - split at 2nd comma
-							 */
-							personName.setFirstName(cleanedName.substring(indexOf2ndComma + 1).trim());
-							personName.setLastName(cleanedName.substring(indexOfLbr, indexOfRbr + 1).trim());
-						} else {
-							/*
-							 * no comma next to the brace
-							 * case 4) First {Last, Jr.} 
-							 * or
-							 * case 6) {Frans\\,A.} Janssen
-							 * 
-							 * If the first space is to the left of {, we split there.
-							 */
-							final int indexOfSpace = cleanedName.lastIndexOf(' ', indexOfLbr);
-							final int split = indexOfSpace > 0 ? indexOfSpace : indexOfRbr + 1;
-
-							personName.setFirstName(cleanedName.substring(0, split).trim());
-							personName.setLastName(cleanedName.substring(split + 1).trim());
-						}
-						return personName;
-					}
-				}
-				/*
-				 * 2) We assume (preLast) Last, First.
-				 * Since our PersonName does not have an extra "preLast" attribute,
-				 * we store it together with "Last".
-				 */
-				personName.setFirstName(cleanedName.substring(indexOfComma + 1).trim());
-				personName.setLastName(cleanedName.substring(0, indexOfComma).trim());
-				return personName;
-			}
-			/*
-			 * 1) First Last ... its not so obvious, which part is what. 
-			 * 
-			 * We assume that a name has either only one (abbreviated or not) 
-			 * first name, or several - while all except the first must be 
-			 * abbreviated. The last name then begins at the first word that 
-			 * does not contain a ".".
-			 * Or, the last name begins at the first word with a lower case 
-			 * letter.
-			 * 
-			 */
-
-			/*
-			 * first: split at whitespace
-			 */
-			final String[] nameList = cleanedName.split("\\s+");
-			/*
-			 * detect first name and last name
-			 */
-			final StringBuilder firstNameBuilder = new StringBuilder();
-			int i = 0;
-			while (i < nameList.length - 1) { // iterate up to the last but one part
-				final String part = nameList[i++];
-				firstNameBuilder.append(part + " ");
-				/*
-				 * stop, if this is the last abbreviated first name
-				 * or 
-				 * the next part begins with a lowercase letter
-				 */
-				final String nextPart = nameList[i];
-				if ((part.contains(".") && !nextPart.endsWith(".")) || nextPart.matches("^[a-z].*")) {
-					break;
-				}
-			}
-
-			final StringBuilder lastNameBuilder = new StringBuilder();
-			while (i < nameList.length) {
-				lastNameBuilder.append(nameList[i++] + " ");
-			}
-
-			personName.setFirstName(firstNameBuilder.toString().trim());
-			personName.setLastName(lastNameBuilder.toString().trim());
-		}
-		return personName;
 	}
 
 	/**
