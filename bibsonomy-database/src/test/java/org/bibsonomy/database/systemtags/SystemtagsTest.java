@@ -43,6 +43,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
@@ -355,7 +356,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	
 	
 	@Test
-	public void testForFriendTag(){
+	public void testForFriendTag() throws PersonListParserException{
 		/*
 		 * Create 2 users
 		 */
@@ -460,14 +461,14 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		/*
 		 * User1 now changes his publication post changing the hash
 		 */
-		publication.getResource().setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Famous Author")));
+		publication.getResource().setAuthor(PersonNameUtils.discoverPersonNames("Famous Author"));
 		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 		// there should now still be only one publicationPost in the inbox
 		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
 		// the inboxPost should still have the same author as the original post
 		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
 		assertEquals(2, inboxPublications.get(0).getTags().size());
-		assertEquals(PersonNameUtils.discoverPersonName("Lonely Writer"), inboxPublications.get(0).getResource().getAuthor().get(0));
+		assertEquals(PersonNameUtils.discoverPersonNames("Lonely Writer"), inboxPublications.get(0).getResource().getAuthor());
 		assertEquals(null, inboxPublications.get(0).getResource().getChapter());
 		
 		/*
@@ -480,7 +481,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
 		assertEquals(2, inboxPublications.get(0).getTags().size());
 		
-		assertEquals(PersonNameUtils.discoverPersonName("Lonely Writer"), inboxPublications.get(0).getResource().getAuthor().get(0));
+		assertEquals(PersonNameUtils.discoverPersonNames("Lonely Writer"), inboxPublications.get(0).getResource().getAuthor());
 		assertEquals(null, inboxPublications.get(0).getResource().getChapter());
 		
 		/*
@@ -507,14 +508,14 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	/*
 	 * create a testPublication for a given user and with given Tags
 	 */
-	private Post<BibTex> createTestPublicationPost(final User user, final Set<Tag> tags) {
+	private Post<BibTex> createTestPublicationPost(final User user, final Set<Tag> tags) throws PersonListParserException {
 		final BibTex publication = new BibTex();
 		publication.setCount(0);
 		publication.setAbstract("The abstract of a testPost");
-		publication.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Lonely Writer")));
+		publication.setAuthor(PersonNameUtils.discoverPersonNames("Lonely Writer"));
 		publication.setBibtexKey("test");
 		publication.setEntrytype("article");
-		publication.setEditor(Arrays.asList(PersonNameUtils.discoverPersonName("Edith Editor")));
+		publication.setEditor(PersonNameUtils.discoverPersonNames("Edith Editor"));
 		publication.setTitle("test");
 		return createTestPost(publication, user, tags);
 	}

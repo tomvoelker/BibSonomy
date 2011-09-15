@@ -45,7 +45,7 @@ public class PostStatisticChainTest extends AbstractChainTest {
 	@Test
 	public void getResourcesForHashCount() {
 		this.statisticsParam.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
-		this.statisticsParam.setHash("d9eea4aa159d70ecfabafa0c91bbc9f0");
+		this.statisticsParam.setHash("097248439469d8f5a1e7fad6b02cbfcd");
 		this.statisticsParam.setGrouping(GroupingEntity.ALL);
 		this.statisticsParam.setRequestedUserName(null);
 		this.statisticsParam.setTagIndex(null);

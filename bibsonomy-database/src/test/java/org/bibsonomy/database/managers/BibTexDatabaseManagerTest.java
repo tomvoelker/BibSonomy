@@ -36,6 +36,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.DBTestUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -79,7 +80,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	public void testGetPostsByHash() {
 		printMethod("testGetPostsByHash");
 		final String hash0 = "9abf98937435f05aec3d58b214a2ac58";
-		final String hash1 = "d9eea4aa159d70ecfabafa0c91bbc9f0";
+		final String hash1 = "097248439469d8f5a1e7fad6b02cbfcd";
 		final String hash2 = "b77ddd8087ad8856d77c740c8dc2864a";
 		// get post with SIM_HASH0 = hash0
 		final List<Post<BibTex>> posts = publicationDb.getPostsByHash(hash0, HashID.SIM_HASH0, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
@@ -130,7 +131,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		intraHash = "b77ddd8087ad8856d77c740c8dc2864a";
 		posts = publicationDb.getPostsByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, this.dbSession);
 		assertEquals(1, posts.size());
-		assertEquals("d9eea4aa159d70ecfabafa0c91bbc9f0", posts.get(0).getResource().getInterHash());
+		assertEquals("097248439469d8f5a1e7fad6b02cbfcd", posts.get(0).getResource().getInterHash());
 		assertEquals("9abf98937435f05aec3d58b214a2ac58", posts.get(0).getResource().getSimHash0());
 
 		// user == friend, existing hash and no spammer
@@ -140,7 +141,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		posts = publicationDb.getPostsByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
-		assertEquals("d9eea4aa159d70ecfabafa0c91bbc9f0", posts.get(0).getResource().getInterHash());
+		assertEquals("097248439469d8f5a1e7fad6b02cbfcd", posts.get(0).getResource().getInterHash());
 		assertEquals("9abf98937435f05aec3d58b214a2ac58", posts.get(0).getResource().getSimHash0());
 		
 		// testuser1 and testuser2 are member of group 3
@@ -150,7 +151,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		intraHash = "522833042311cc30b8775772335424a7";
 		posts = publicationDb.getPostsByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, this.dbSession);
 		assertNotNull(posts);
-		assertEquals("d9eea4aa159d70ecfabafa0c91bbc9f0", posts.get(0).getResource().getInterHash());
+		assertEquals("097248439469d8f5a1e7fad6b02cbfcd", posts.get(0).getResource().getInterHash());
 		assertEquals("92e8d9c7588eced69419b911b31580ee", posts.get(0).getResource().getSimHash0());
 		
 		// no hash => no post
@@ -589,8 +590,9 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	
 	/**
 	 * generate a BibTex Post
+	 * @throws PersonListParserException 
 	 */
-	private Post <BibTex> generateBibTexDatabaseManagerTestPost() {
+	private Post <BibTex> generateBibTexDatabaseManagerTestPost() throws PersonListParserException {
 		final Post<BibTex> post = new Post<BibTex>();
 
 		final Group group = new Group();
@@ -615,8 +617,8 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		CommonModelUtils.setBeanPropertiesOn(publication);
 		publication.setCount(0);		
 		publication.setEntrytype("inproceedings");
-		publication.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("Testauthor, Hans"), PersonNameUtils.discoverPersonName("Testauthorin, Liese")));
-		publication.setEditor(Arrays.asList(PersonNameUtils.discoverPersonName("Silie, Peter")));		
+		publication.setAuthor(PersonNameUtils.discoverPersonNames("Testauthor, Hans and Testauthorin, Liese"));
+		publication.setEditor(PersonNameUtils.discoverPersonNames("Silie, Peter"));		
 		publication.setTitle("test friend title");
 		publication.setYear("test year");
 		publication.setJournal("test journal");
@@ -659,11 +661,17 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	
 	/**
 	 * tests storePost
+	 * @throws PersonListParserException 
 	 */
 	@Override
-	public void testCreatePost() {
+	public void testCreatePost()  {
 		printMethod("testCreatePost");
-		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
+		Post<BibTex> toInsert = null;
+		try {
+			toInsert = this.generateBibTexDatabaseManagerTestPost();
+		} catch (PersonListParserException ex) {
+			fail("got exception: " + ex.getMessage());
+		}
 		toInsert.getResource().recalculateHashes();
 		
 		final String bibtexHashForUpdate = "14143c6508fe645ca312d0aa5d0e791b"; // INTRA-hash of toInsert
@@ -690,6 +698,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	
 	/**
 	 * tests assertDeleteBibTex
+	 * @throws PersonListParserException 
 	 */
 	@Override
 	public void testDeletePost() {
@@ -699,7 +708,12 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 
 		// first: insert post such that we can delete it later
 		
-		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
+		Post<BibTex> toInsert = null;
+		try {
+			toInsert = this.generateBibTexDatabaseManagerTestPost();
+		} catch (PersonListParserException ex) {
+			fail("got exception: " + ex.getMessage());
+		}
 		publicationDb.createPost(toInsert, this.dbSession);
 		
 		// delete public post		
@@ -743,9 +757,10 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 
 	/**
 	 * tests storePostWrongUsage
+	 * @throws PersonListParserException 
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void storePostWrongUsage() {
+	public void storePostWrongUsage() throws PersonListParserException {
 		printMethod("storePostWrongUsage");
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
 
@@ -875,9 +890,10 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	/**
 	 * tests if {@link BibTexDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
 	 * respects the max field length of table columns
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void maxFieldLengthErrorCreatePost() {
+	public void maxFieldLengthErrorCreatePost() throws PersonListParserException {
 		printMethod("maxFieldLengthErrorCreatePost");
 		final String longField = "1234567890ß1234567890ß1234567890ß1234567890ß1234567890ß"; // > 46
 		/*
@@ -886,7 +902,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		final Post<BibTex> testPost = this.generateBibTexDatabaseManagerTestPost();
 		final BibTex resource = testPost.getResource();
 		resource.setTitle("Max Field Length in DB");
-		resource.setAuthor(Arrays.asList(PersonNameUtils.discoverPersonName("W. Walt")));
+		resource.setAuthor(PersonNameUtils.discoverPersonNames("W. Walt"));
 		resource.setYear(longField);
 		resource.setMonth(longField);
 		
