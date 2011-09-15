@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.junit.Test;
 
 /**
@@ -14,9 +15,10 @@ public class ServersideModelValidatorTest {
 
 	/**
 	 * Tests whether author/editor names are normalizes
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void testCheckPublication() {
+	public void testCheckPublication() throws PersonListParserException {
 		
 		final BibTex pub = new BibTex();
 		pub.setTitle("Some author names that might cause problems");
