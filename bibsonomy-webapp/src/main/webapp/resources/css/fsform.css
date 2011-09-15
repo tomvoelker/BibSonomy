@@ -68,6 +68,11 @@
     margin-bottom: 2px;
 }
 
+.fsInputReco {
+    background: white url(/resources/image/reco.png) right no-repeat;
+    padding-right: 17px;
+}
+
 .fsRow {
    position: relative; 
    clear: both;
