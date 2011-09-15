@@ -16,6 +16,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class LuceneResourceIndexTest {
 	}
 	
 	@Test
-	public void testCache() {
+	public void testCache() throws PersonListParserException {
 		final LucenePost<Bookmark> bmPost = generateBookmarkDatabaseManagerTestPost();
 		final LucenePost<BibTex> bibPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		
@@ -79,8 +80,9 @@ public class LuceneResourceIndexTest {
 	/**
 	 * generate a BibTex Post, can't call setBeanPropertiesOn() because private
 	 * so copy & paste the setBeanPropertiesOn() into this method
+	 * @throws PersonListParserException 
 	 */
-	private LucenePost <BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID) {
+	private LucenePost <BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID) throws PersonListParserException {
 		
 		final LucenePost<BibTex> LucenePost = new LucenePost<BibTex>();
 
