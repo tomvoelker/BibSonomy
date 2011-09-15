@@ -8,9 +8,10 @@ import java.util.List;
 import org.bibsonomy.model.PersonName;
 
 /**
- * Code modified from bibtex.BibtexPersonListParser
+ * Code modified from bibtex.BibtexPersonListParser from 
+ * http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
  * 
- * @author rja
+ * @author henkel
  * @version $Id$
  */
 public class PersonNameParser {
@@ -20,17 +21,17 @@ public class PersonNameParser {
 	private static final String MINUS = "-".intern();
 
 	/**
-	 * @param personString
+	 * @param persons
 	 * @param bibtexKey
 	 * @return A list of person names.
 	 * 
 	 * @throws PersonListParserException
 	 */
-	public static List<PersonName> parse(final String personString, final String bibtexKey) throws PersonListParserException {
+	public static List<PersonName> parse(final String persons, final String bibtexKey) throws PersonListParserException {
 
 		final LinkedList<PersonName> result = new LinkedList<PersonName>();
 
-		final String[] tokens = tokenize(personString);
+		final String[] tokens = tokenize(persons);
 		
 		if (tokens.length == 0) {
 			return result;
@@ -38,12 +39,12 @@ public class PersonNameParser {
 		int begin = 0;
 		for (int i = 0; i < tokens.length; i++) {
 			if (tokens[i].toLowerCase().equals(AND) && begin < i) {
-				result.add(makePerson(tokens, begin, i, bibtexKey, personString));
+				result.add(makePerson(tokens, begin, i, bibtexKey, persons));
 				begin = i + 1;
 			}
 		}
 		if (begin < tokens.length)
-			result.add(makePerson(tokens, begin, tokens.length, bibtexKey, personString));
+			result.add(makePerson(tokens, begin, tokens.length, bibtexKey, persons));
 		return result;
 	}
 
@@ -59,6 +60,7 @@ public class PersonNameParser {
 	 * @return
 	 */
 	private static PersonName getPersonName(final String first, final String preLast, final String last, final String lineage, final boolean others) {
+//		System.out.println("f=" + first + ",pL=" + preLast + ",l=" + last + ",lin=" + lineage + ",o=" + others);
 		if (others) return new PersonName("", "others");
 		final PersonName personName = new PersonName();
 		/*
@@ -97,6 +99,7 @@ public class PersonNameParser {
 	 * @return String[]
 	 */
 	private static String[] tokenize(String stringContent) {
+		if (stringContent == null) return new String[]{};
 		int numberOfOpenBraces = 0;
 		int tokenBegin = 0;
 		stringContent = stringContent + " ";
@@ -112,7 +115,7 @@ public class PersonNameParser {
 					numberOfOpenBraces--;
 				} else{
 					if (tokenBegin <= currentPos - 1) {
-						String potentialToken = stringContent.substring(tokenBegin, currentPos).trim();
+						final String potentialToken = stringContent.substring(tokenBegin, currentPos).trim();
 						if (!potentialToken.equals("")) {
 							tokens.add(potentialToken);
 						}
@@ -123,7 +126,7 @@ public class PersonNameParser {
 			case ',':
 				if (numberOfOpenBraces == 0) {
 					if (tokenBegin <= currentPos - 1) {
-						String potentialToken = stringContent.substring(tokenBegin, currentPos).trim();
+						final String potentialToken = stringContent.substring(tokenBegin, currentPos).trim();
 						if (!potentialToken.equals("")) {
 							tokens.add(potentialToken);
 						}
@@ -132,10 +135,10 @@ public class PersonNameParser {
 					tokenBegin = currentPos + 1;
 				}
 			default:
-				char currentChar = stringContent.charAt(currentPos);
+				final char currentChar = stringContent.charAt(currentPos);
 				if (Character.isWhitespace(currentChar) || (currentChar == '~') || (currentChar == '-')) {
 					if (numberOfOpenBraces == 0 && tokenBegin <= currentPos) {
-						String potentialToken = stringContent.substring(tokenBegin, currentPos).trim();
+						final String potentialToken = stringContent.substring(tokenBegin, currentPos).trim();
 						if (!potentialToken.equals("")) {
 							tokens.add(potentialToken);
 							if (currentChar == '-')
@@ -146,7 +149,7 @@ public class PersonNameParser {
 				}
 			}
 		}
-		String[] result = new String[tokens.size()];
+		final String[] result = new String[tokens.size()];
 		tokens.toArray(result);
 		return result;
 	}
