@@ -198,6 +198,13 @@ $(document).ready(function() {
 	});
 });
 
+
+/**
+ * FIXME: please comment!
+ * 
+ * @param json
+ * @return
+ */
 function buildGoodPostSuggestion(json) {
 	var sortIndices = function(j) {
 		var h = new Array();
@@ -213,42 +220,67 @@ function buildGoodPostSuggestion(json) {
 		}
 		return h;
 	};
-	var arrayOfTagNodes = $("textarea, #postForm > textarea, input");
+	/*
+	 * constants
+	 */
+	var inputFields = $("textarea, #postForm > textarea, input");
+	var postResource = "post.resource";
+	var inputFieldMap = new Object();
+	inputFieldMap["post.resource.title"] = "label";
+	inputFieldMap["post.description"] = "description";
+	var u = /(\s+|,)/g; // regex to remove whitespace and commas
+	
 	var arrayOfPartialTags = new Array();
-	var arrayOfTagMappings = new Array();
-	var u = /(\s+|,)/g;
-	arrayOfTagMappings["post.resource.title"] = "label";
-	arrayOfTagMappings["post.description"] = "description";
-	for(var x = 0; arrayOfTagNodes.length > x; x++) {
+
+	/*
+	 * loop over all input fields
+	 */
+	for(var x = 0; inputFields.length > x; x++) {
 		var fieldValue = new Array();
-		if(arrayOfTagNodes[x].name.substring(0, "post.resource".length) == "post.resource"
-		|| arrayOfTagMappings[arrayOfTagNodes[x].name] != undefined) {
-			var g = arrayOfTagNodes[x].value.replace(u, "");
+		var inputField = inputFields[x];
+		var inputFieldName = inputField.name;
+		
+		/*
+		 * field name starts with "post.resource" or it appears in the inputFieldMap
+		 */
+		if (inputFieldName.substring(0, postResource.length) == postResource || inputFieldMap[inputFieldName] != undefined) {
+			var g = inputField.value.replace(u, "");
 			var suggestions = new Array();
 			var occurrences = new Array();
 			var k = -1;
+			/*
+			 * loop over posts
+			 */
 			for(var z = 0; json.items.length > z; z++) {
-					if(((p = json.items[z][arrayOfTagNodes[x].name.substring("post.resource".length+1, arrayOfTagNodes[x].name.length)]) != undefined 
-					|| (p = json.items[z][arrayOfTagMappings[arrayOfTagNodes[x].name]])) && p.length > 0) {
+					var post = json.items[z];
+					var fieldVal;
+					if(((fieldVal = post[inputFieldName.substring(postResource.length+1, inputFieldName.length)]) != undefined 
+					|| (fieldVal = post[inputFieldMap[inputFieldName]])) && fieldVal.length > 0) {
 						var name = "";
-						if(typeof p == "object") {
-							var d = " "; 
-							if(arrayOfTagNodes[x].name == "post.resource.author" 
-							|| arrayOfTagNodes[x].name == "post.resource.editor") {
-									d = ', ';
-									for(var m = 0; m < p.length; m++) {
+						if(typeof fieldVal == "object") {
+							var delimiter = " "; 
+							/*
+							 * special handling for person names: 
+							 * - join them using ", "
+							 * - FIXME: what else is done?
+							 */
+							if(inputFieldName == postResource + ".author" || inputFieldName == postResource + ".editor") {
+									delimiter = ', ';
+									for(var m = 0; m < fieldVal.length; m++) {
 										var t = -1;
-										var prepend = ((t = (p[m].lastIndexOf(" ")+1)) > -1)?p[m].substring(t):"";
-										var appendix = p[m].substring(0, p[m].length-prepend.length)
-										name += ((prepend.length > 0)?prepend+((appendix.length > 0)?", ":""):"")+appendix+"\n";
+										var personName = fieldVal[m];
+										var prepend = ((t = (personName.lastIndexOf(" ")+1)) > -1)?personName.substring(t):"";
+										var postfix = personName.substring(0, personName.length-prepend.length);
+										name += ((prepend.length > 0)?prepend+((postfix.length > 0)?", ":""):"")+postfix+"\n";
 									}
 							}
-							p = p.join(d);
+							fieldVal = fieldVal.join(delimiter);
 						}
-						if((k = $.inArray(p, suggestions)) == -1 
-								&& g != ((name.length)?name.replace(u, ""):p.replace(u, ""))) {
-							suggestions.push(p);
-							occurrences.push(1);
+						if((k = $.inArray(fieldVal, suggestions)) == -1 && g != ((name.length)?name.replace(u, ""):fieldVal.replace(u, ""))) {
+							suggestions.push(fieldVal); // add suggestion
+							occurrences.push(1); // count suggestion
+							inputField.addClass("fsInputReco"); // show the user that suggestions are available
+							// FIXME: what happens here?
 							if(name.length)
 								fieldValue.push(name);
 						} else if(k > -1) {
@@ -260,10 +292,10 @@ function buildGoodPostSuggestion(json) {
 			if(!suggestions.length) continue;
 			var indices = sortIndices(occurrences);
 			var labels = $.map(suggestions, function(item, index) {
-					return{label:suggestions[indices[index]]+" ("+occurrences[indices[index]]+")",value:((fieldValue.length == 0)?suggestions[indices[index]]:fieldValue[indices[index]])}
+					return{label:suggestions[indices[index]]+" ("+occurrences[indices[index]]+")",value:((fieldValue.length == 0)?suggestions[indices[index]]:fieldValue[indices[index]])};
 			});
 
-			$(arrayOfTagNodes[x]).bind("focus", function(){$(this).autocomplete("search", "");}).autocomplete(
+			$(inputField).bind("focus", function(){$(this).autocomplete("search", "");}).autocomplete(
 				{
 					source:labels,
 					minLength:0,
