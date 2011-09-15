@@ -37,6 +37,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.services.URLGenerator;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -73,7 +74,7 @@ public class JabrefLayoutRendererTest {
     }
 
 
-    private List<Post<BibTex>> getPosts() {
+    private List<Post<BibTex>> getPosts() throws PersonListParserException {
 	final List<Post<BibTex>> posts = new LinkedList<Post<BibTex>>();
 
 	final BibTex bibtex = new BibTex();
