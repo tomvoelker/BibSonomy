@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
 
@@ -34,7 +35,12 @@ public class StringToPersonListConverter implements ConditionalGenericConverter 
 		 * Thus, we substitute it with the default delimiter (" and ").
 		 */
 		
-		return PersonNameUtils.discoverPersonNames(((String)source).replaceAll("[\n\r]+", PersonNameUtils.PERSON_NAME_DELIMITER));
+		try {
+			return PersonNameUtils.discoverPersonNames(((String)source).replaceAll("[\n\r]+", PersonNameUtils.PERSON_NAME_DELIMITER));
+		} catch (PersonListParserException e) {
+			// FIXME: is this the best solution?
+			return Collections.emptyList();
+		}
 	}
 
 	@Override
