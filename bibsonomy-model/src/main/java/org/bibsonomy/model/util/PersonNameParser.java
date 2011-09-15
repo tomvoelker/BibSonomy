@@ -153,7 +153,12 @@ public class PersonNameParser {
 		return result;
 	}
 
-	static class PersonListParserException extends java.lang.Exception {
+	/**
+	 * Is thrown when person parsing fails. 
+	 * @author henkel
+	 *
+	 */
+	public static class PersonListParserException extends java.lang.Exception {
 		/**
 		 * 
 		 */
