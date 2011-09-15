@@ -23,7 +23,7 @@ public class DiscussionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	private static DiscussionDatabaseManager discusssionDb;
 	
-	public static final String HASH_WITH_RATING = "d9eea4aa159d70ecfabafa0c91bbc9f0";
+	public static final String HASH_WITH_RATING = "097248439469d8f5a1e7fad6b02cbfcd";
 	
 	public static final List<Integer> USER_NOT_LOGGED_IN_VISIBLE_GROUPS = new LinkedList<Integer>(Arrays.asList(GroupID.PUBLIC.getId()));
 	public static final List<Integer> USERNAME_1_VISIBLE_GROUPS = new LinkedList<Integer>(Arrays.asList(GroupID.PUBLIC.getId(), TESTGROUP1_ID, TESTGROUP2_ID, TESTGROUP3_ID));

@@ -32,7 +32,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	
 	private static final List<Integer> VISIBLE_GROUPS = Arrays.asList(GroupID.PUBLIC.getId());
 	private static final String WRONG_INTERHASH = "interhashorintrahashorhashor";
-	private static final String INTERHASH_GOLD_1 = "d9eea4aa159d70ecfabafa0c91bbc9f0";
+	private static final String INTERHASH_GOLD_1 = "097248439469d8f5a1e7fad6b02cbfcd";
 	private static final String INTERHASH_GOLD_2 = "ac6aa3ccb181e61801cefbc1401d409a";
 	
 	private static GoldStandardPublicationDatabaseManager goldPubManager;
@@ -197,6 +197,8 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	@Test(expected = DatabaseException.class)
 	public void testUpdatePostToPostInDB() {
 		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
+		post.getResource().recalculateHashes();
+		System.out.println(post.getResource().getInterHash());
 		goldPubManager.updatePost(post, INTERHASH_GOLD_2, null, this.dbSession, loginUser);
 	}	
 	
