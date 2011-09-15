@@ -69,8 +69,9 @@
 }
 
 .fsInputReco {
-    background: white url(/resources/image/reco.png) right no-repeat;
-    padding-right: 17px;
+    background-image: url(/resources/image/reco.png);
+    background-position: right;
+    background-repeat: no-repeat;
 }
 
 .fsRow {
