@@ -290,8 +290,10 @@ function buildGoodPostSuggestion(json) {
 				/*
 				 * Remove a suggestion if it is the only one and the same as the 
 				 * one the user has already entered.
+				 * FIXME: does not work for person names :-(
 				 */
 				if (suggestions.length == 1 && inputField.value.replace(u, "") == suggestions[0].replace(u, "")) {
+					suggestions.pop();
 					$(inputField).removeClass("fsInputReco");
 				}
 			}
