@@ -1,9 +1,11 @@
 package org.bibsonomy.lucene.param.typehandler;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 
 
 /**
@@ -19,8 +21,17 @@ public class LucenePersonNamesFormatter extends AbstractTypeHandler<List<PersonN
 		return PersonNameUtils.serializePersonNames(obj);
 	}
 
+	/** 
+	 * FIXME: improve error handling;
+	 * 
+	 * @see org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler#setValue(java.lang.String)
+	 */
 	@Override
 	public List<PersonName> setValue(String str) {
-		return PersonNameUtils.discoverPersonNames(str);
+		try {
+			return PersonNameUtils.discoverPersonNames(str);
+		} catch (PersonListParserException e) {
+			return Collections.emptyList();
+		}
 	}
 }

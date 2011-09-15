@@ -19,6 +19,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -100,10 +101,11 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 
     /**
      *  FIXME: fails too often, please fix!
+     * @throws PersonListParserException 
      */
     @Test
     @Ignore
-    public void testUpdate() {
+    public void testUpdate() throws PersonListParserException {
 		final int docCountBefore = manager.getResourceIndeces().get(0).getStatistics().getNumDocs();
 	
 		final Post<GoldStandardPublication> post = goldStandardManager.getPostDetails("", INTER_HASH, "", allowedGroupIds, this.dbSession);

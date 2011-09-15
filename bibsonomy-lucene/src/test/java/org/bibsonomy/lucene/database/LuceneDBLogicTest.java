@@ -31,6 +31,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -115,9 +116,10 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests whether all newly added posts are retrieved
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void retrieveRecordsFromDatabase() {
+	public void retrieveRecordsFromDatabase() throws PersonListParserException {
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new BibTexExtraPlugin());
 		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
@@ -150,10 +152,11 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	 * tests whether all posts whithin a given time range are retrieved
 	 * 
 	 * FIXME: fails too often - please fix! 
+	 * @throws PersonListParserException 
 	 */
 	@Test
 	@Ignore
-	public void getContentIdsToDelete() {
+	public void getContentIdsToDelete() throws PersonListParserException {
 		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 
 		//--------------------------------------------------------------------
@@ -179,9 +182,10 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * test whether newest post's date is detected
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void getNewestRecordDateFromTas() {
+	public void getNewestRecordDateFromTas() throws PersonListParserException {
 		//--------------------------------------------------------------------
 		// TEST 1: insert special post into test database and search for it
 		//--------------------------------------------------------------------
@@ -245,8 +249,9 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	/**
 	 * generate a BibTex Post, can't call setBeanPropertiesOn() because private
 	 * so copy & paste the setBeanPropertiesOn() into this method
+	 * @throws PersonListParserException 
 	 */
-	private Post <BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID) {
+	private Post <BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID) throws PersonListParserException {
 
 		final Post<BibTex> post = new Post<BibTex>();
 

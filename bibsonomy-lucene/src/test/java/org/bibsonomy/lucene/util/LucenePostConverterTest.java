@@ -19,6 +19,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;
@@ -73,7 +74,7 @@ public class LucenePostConverterTest {
 	}
 	
 	@Test
-	public void writeBibTexPost() {
+	public void writeBibTexPost() throws PersonListParserException {
 		final LucenePost<BibTex> refPost = generateBibTexTestPost( "testTitle", "testTag", "testAuthor", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		final Document doc = bibTexConverter.readPost(refPost);
 		
@@ -106,7 +107,7 @@ public class LucenePostConverterTest {
 	}
 	
 	@Test
-	public void bibTexPost() {
+	public void bibTexPost() throws PersonListParserException {
 		final LucenePost<BibTex> testPost = generateBibTexTestPost("testTitle", "testTag", "testAuthor", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		
 		final Document postDoc = bibTexConverter.readPost(testPost);
@@ -139,8 +140,9 @@ public class LucenePostConverterTest {
 	 * so copy & paste the setBeanPropertiesOn() into this method
 	 * 
 	 * GroupID.PUBLIC
+	 * @throws PersonListParserException 
 	 */
-	private static LucenePost<BibTex> generateBibTexTestPost(final String titleText, final String tagName, final String authorName, final String userName, final Date postDate, final GroupID groupID) {
+	private static LucenePost<BibTex> generateBibTexTestPost(final String titleText, final String tagName, final String authorName, final String userName, final Date postDate, final GroupID groupID) throws PersonListParserException {
 		final LucenePost<BibTex> post = createEmptyPost(BibTex.class, tagName, groupID, postDate, userName);
 		
 		final User user = new User();
