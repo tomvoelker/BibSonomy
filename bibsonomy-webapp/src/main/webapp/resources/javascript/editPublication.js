@@ -200,12 +200,13 @@ $(document).ready(function() {
 
 
 /**
- * FIXME: please comment!
+ * provide each input field with suggestions from multiple post values passed as json data 
  * 
- * @param json
+ * @param json - posts as json data
  * @return
  */
 function buildGoodPostSuggestion(json) {
+	/* array of indices to sort */
 	var sortIndices = function(j) {
 		var h = new Array();
 		while(j.length > h.length)
@@ -229,6 +230,7 @@ function buildGoodPostSuggestion(json) {
 	inputFieldMap["post.resource.title"] = "label";
 	inputFieldMap["post.description"] = "description";
 	var u = /(\s+|,)/g; // regex to remove whitespace and commas
+	var v = /\s+$/; // regex to remove trailing whitespace
 
 	var arrayOfPartialTags = new Array();
 
@@ -244,6 +246,7 @@ function buildGoodPostSuggestion(json) {
 		 * field name starts with "post.resource" or it appears in the inputFieldMap
 		 */
 		if (inputFieldName.substring(0, postResource.length) == postResource || inputFieldMap[inputFieldName] != undefined) {
+			var g = inputField.value.replace(u, "");
 			var suggestions = new Array();
 			var occurrences = new Array();
 			var k = -1;
@@ -261,7 +264,8 @@ function buildGoodPostSuggestion(json) {
 						/*
 						 * special handling for person names: 
 						 * - join them using ", "
-						 * - FIXME: what else is done?
+						 * - prepend the prefix (last name) to our first name chain if present
+						 * - remove whitespace trailing whitespaces
 						 */
 						if(inputFieldName == postResource + ".author" || inputFieldName == postResource + ".editor") {
 							delimiter = ', ';
@@ -269,37 +273,39 @@ function buildGoodPostSuggestion(json) {
 								var t = -1;
 								var personName = fieldVal[m];
 								var prepend = ((t = (personName.lastIndexOf(" ")+1)) > -1)?personName.substring(t):"";
-								var postfix = personName.substring(0, personName.length-prepend.length);
-								name += ((prepend.length > 0)?prepend+((postfix.length > 0)?", ":""):"")+postfix+"\n";
+								var postfix = personName.substring(0, personName.length-prepend.length).replace(v, "");
+								name += ((prepend.length)?prepend+((postfix.length)?", ":""):"")+postfix+"\n";
 							}
 						}
 						fieldVal = fieldVal.join(delimiter);
 					}
+					/* if a term has not been acquired yet,
+					add a occurrence of 1 to our occurrence array and add the term to our suggestion array */
 					if ((k = $.inArray(fieldVal, suggestions)) == -1) {
-						suggestions.push(fieldVal); // add suggestion
-						occurrences.push(1); // count suggestion
-						$(inputField).addClass("fsInputReco"); // show the user that suggestions are available 
-						// FIXME: what happens here?
-						if(name.length)
+						suggestions.push(fieldVal); // add term to suggestions
+						occurrences.push(1); // add initial occurrence count of 1
+						/* if we encounter author or editor suggestions,
+						 * label and field value are not the same, so we have to differentiate between
+						 * field value and label by providing two different sets of values 							*/
+						if(name.length) // if name has a length of > 0 the current input field is an author or editor field
 							fieldValue.push(name);
-					} else if(k > -1) {
+					} else if(k > -1) { // if true we already have this term as a suggestion, so we just have to increment the occurrence of the term
 						occurrences[k]++;
 						k = -1;
 					}
 				}
 			}
 			/*
-			 * Remove a suggestion if it is the only one and the same as the 
-			 * one the user has already entered.
-			 * FIXME: does not work for person names :-(
+			 * no suggestions or the suggestion count is 1 AND field value is the same as the suggestion value 
+			 * - skip in both cases 
 			 */
-			if (suggestions.length == 1 && inputField.value.replace(u, "") == suggestions[0].replace(u, "")) {
-				suggestions.pop();
-				$(inputField).removeClass("fsInputReco");
-			}			
-			if (!suggestions.length) continue;
-			
+			if (!suggestions.length || (suggestions.length == 1 
+			&& g == ((name.length)?name.replace(u, ""):fieldVal.replace(u, "")))) continue;
+			$(inputField).addClass("fsInputReco"); // show the user that suggestions are available
+			/* we have a bijective mapping therefore (f:suggestion->occurrence) we sort our indices by descending order */
 			var indices = sortIndices(occurrences);
+			/* occurrences are sorted and aligned to the corresponding suggestions */
+			/* if fieldvalue contains values, it is a different set of values we apply to the value label - this is true for the author and editor fields */
 			var labels = $.map(suggestions, function(item, index) {
 				var suggestion = suggestions[indices[index]];
 				return {
