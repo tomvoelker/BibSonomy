@@ -34,12 +34,13 @@ import java.net.URL;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.junit.Test;
 
 public class RDFWriterTest {
 
 	@Test
-	public void testWrite() {
+	public void testWrite() throws PersonListParserException {
 		RDFWriter writer;
 		try {
 			writer = new RDFWriter(new FileOutputStream("/dev/null"));
