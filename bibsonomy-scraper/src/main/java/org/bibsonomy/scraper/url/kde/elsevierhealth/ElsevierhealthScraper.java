@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.elsevierhealth;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -163,7 +165,9 @@ public class ElsevierhealthScraper extends AbstractUrlScraper {
 					
 					for (int j = 0; j < _n.getChildNodes().getLength(); j++) {
 						if (_n.getChildNodes().item(j).hasChildNodes()) {
-							author.add(PersonNameUtils.discoverPersonName(_n.getChildNodes().item(j).getFirstChild().getNodeValue()));
+							final List<PersonName> p = PersonNameUtils.discoverPersonNames(_n.getChildNodes().item(j).getFirstChild().getNodeValue());
+							if (present(p))
+								author.add(p.get(0));
 						}
 					}
 					
