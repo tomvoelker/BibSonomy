@@ -55,6 +55,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.ModelValidationUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.rest.validation.ModelValidator;
 
 /**
@@ -224,8 +225,9 @@ public class ModelFactory {
 	 * 
 	 * @param xmlPost
 	 * @return the converted post
+	 * @throws PersonListParserException 
 	 */
-	public Post<Resource> createStandardPost(final PostType xmlPost) {
+	public Post<Resource> createStandardPost(final PostType xmlPost) throws PersonListParserException {
 		checkStandardPost(xmlPost);
 		
 		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
@@ -248,12 +250,13 @@ public class ModelFactory {
 	}
 
 	/**
-	 * converts a xml post to the model post
+	 * converts an xml post to the model post
 	 * 
 	 * @param xmlPost
 	 * @return the converted post
+	 * @throws PersonListParserException 
 	 */
-	public Post<Resource> createPost(final PostType xmlPost) {
+	public Post<Resource> createPost(final PostType xmlPost) throws PersonListParserException {
 		checkPost(xmlPost);
 
 		// create post, user and date
@@ -354,8 +357,9 @@ public class ModelFactory {
 	/**
 	 * @param xmlPublication
 	 * @param publication
+	 * @throws PersonListParserException 
 	 */
-	private void fillPublicationWithInformations(final BibtexType xmlPublication, final BibTex publication) {
+	private void fillPublicationWithInformations(final BibtexType xmlPublication, final BibTex publication) throws PersonListParserException {
 		publication.setAddress(xmlPublication.getAddress());
 		publication.setAnnote(xmlPublication.getAnnote());
 		publication.setAuthor(PersonNameUtils.discoverPersonNames(xmlPublication.getAuthor()));

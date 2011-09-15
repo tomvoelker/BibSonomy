@@ -40,6 +40,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -120,7 +121,7 @@ public class ModelFactoryTest {
 	}
 
 	@Test
-	public void testCreatePost() throws DatatypeConfigurationException {
+	public void testCreatePost() throws DatatypeConfigurationException, PersonListParserException {
 		// check invalid posts
 		final PostType xmlPost = new PostType();
 		final DatatypeFactory dataFact = DatatypeFactory.newInstance();		
@@ -170,7 +171,7 @@ public class ModelFactoryTest {
 		assertEquals("model not correctly initialized", "testtag", post.getTags().iterator().next().getName());
 	}
 
-	private void checkInvalidPost(final PostType xmlPost, final String exceptionMessage) {
+	private void checkInvalidPost(final PostType xmlPost, final String exceptionMessage) throws PersonListParserException {
 		try {
 			modelFactory.createPost(xmlPost);
 			fail("exception should have been thrown.");

@@ -58,6 +58,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -570,7 +571,7 @@ public abstract class JAXBRendererTest {
 	}
 	
 	@Test
-	public void testSerializeGoldStandardPost() {
+	public void testSerializeGoldStandardPost() throws PersonListParserException {
 		final Post<Resource> post = new Post<Resource>();
 		post.setUser(new User("foo"));
 		

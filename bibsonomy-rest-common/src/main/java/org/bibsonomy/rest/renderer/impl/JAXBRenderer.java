@@ -72,6 +72,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -106,17 +107,17 @@ import org.xml.sax.SAXParseException;
  */
 public abstract class JAXBRenderer implements Renderer {
 	private static final Log log = LogFactory.getLog(JAXBRenderer.class);
-	
+
 	protected static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.rest.renderer.xml";
-	
+
 	protected static Schema schema;
-	
-	
+
+
 	protected final DatatypeFactory datatypeFactory;
 	protected final UrlRenderer urlRenderer;
 	protected final boolean validateXMLInput;
 	protected final boolean validateXMLOutput;
-	
+
 	protected JAXBRenderer(final UrlRenderer urlRenderer) {
 		final RestProperties properties = RestProperties.getInstance();
 		this.urlRenderer = urlRenderer;
@@ -143,7 +144,7 @@ public abstract class JAXBRenderer implements Renderer {
 			schema = null;
 		}
 	}
-	
+
 	/**
 	 * Unmarshalls the document from the reader to the generated java
 	 * model.
@@ -197,11 +198,11 @@ public abstract class JAXBRenderer implements Renderer {
 	protected JAXBElement<BibsonomyXML> unmarshal(final Unmarshaller u, final Reader reader) throws JAXBException {
 		return (JAXBElement<BibsonomyXML>) u.unmarshal(reader);
 	}
-	
+
 	private void checkReader(final Reader reader) throws BadRequestOrResponseException {
 		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
 	}
-	
+
 	/**
 	 * Initializes java xml bindings, builds the document and then marshalls
 	 * it to the writer.
@@ -265,14 +266,14 @@ public abstract class JAXBRenderer implements Renderer {
 			xmlPosts.setStart(BigInteger.valueOf(0));
 			xmlPosts.setEnd(BigInteger.valueOf(0));
 		}
-		
+
 		if (present(posts)) {
 			for (final Post<? extends Resource> post : posts) {
 				final PostType xmlPost = createXmlPost(post);
 				xmlPosts.getPost().add(xmlPost);
 			}
 		}
-		
+
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setPosts(xmlPosts);
@@ -292,7 +293,7 @@ public abstract class JAXBRenderer implements Renderer {
 		fillXmlPost(xmlPost, post);
 		return xmlPost;
 	}
-	
+
 	protected void fillXmlPost(final PostType xmlPost, final Post<? extends Resource> post) {
 		checkPost(post);
 
@@ -306,7 +307,7 @@ public abstract class JAXBRenderer implements Renderer {
 			xmlPost.setPostingdate(createXmlCalendar(post.getDate()));
 		if (post.getChangeDate() != null)
 			xmlPost.setChangedate(createXmlCalendar(post.getChangeDate()));
-		
+
 		// add tags
 		if (post.getTags() != null) {
 			for (final Tag t : post.getTags()) {
@@ -328,7 +329,7 @@ public abstract class JAXBRenderer implements Renderer {
 		}
 
 		xmlPost.setDescription(post.getDescription());
-		
+
 		// check if the resource is a publication
 		final Resource resource = post.getResource();
 		if (resource instanceof BibTex && !(resource instanceof GoldStandardPublication)) {
@@ -338,15 +339,15 @@ public abstract class JAXBRenderer implements Renderer {
 			final BibtexType xmlBibtex = new BibtexType();
 
 			xmlBibtex.setHref(urlRenderer.createHrefForResource(userName, publication.getIntraHash()));
-			
+
 			fillXmlPublicationDetails(publication, xmlBibtex);
-			
+
 			xmlPost.setBibtex(xmlBibtex);
-			
+
 			// if the publication has documents …
 			final List<Document> documents = publication.getDocuments();
 			if (documents != null) {
-			
+
 				checkPublication(publication);
 				// … put them into the xml output
 				final DocumentsType xmlDocuments = new DocumentsType();
@@ -372,18 +373,18 @@ public abstract class JAXBRenderer implements Renderer {
 			xmlBookmark.setUrl(bookmark.getUrl());
 			xmlPost.setBookmark(xmlBookmark);
 		}
-		
+
 		if (resource instanceof GoldStandardPublication) {
 			/*
 			 * first clear tags; gold standard publications have (currently) no tags
 			 */
 			xmlPost.getTag().clear();
-			
+
 			final GoldStandardPublication publication = (GoldStandardPublication) post.getResource();
-			
+
 			final GoldStandardPublicationType xmlPublication = new GoldStandardPublicationType();
 			this.fillXmlPublicationDetails(publication, xmlPublication);
-			
+
 			/*
 			 * add references
 			 */
@@ -391,17 +392,17 @@ public abstract class JAXBRenderer implements Renderer {
 			xmlPublication.setReferences(xmlReferences);
 
 			final List<ReferenceType> referenceList = xmlReferences.getReference();
-			
+
 			for (final BibTex reference : publication.getReferences()) {
 				final ReferenceType xmlReference = new ReferenceType();
 				xmlReference.setInterhash(reference.getInterHash());
-				
+
 				referenceList.add(xmlReference);
 			}
-			
+
 			xmlPost.setGoldStandardPublication(xmlPublication);
 		}
-		
+
 
 	}
 
@@ -472,13 +473,13 @@ public abstract class JAXBRenderer implements Renderer {
 			xmlUsers.setStart(BigInteger.valueOf(0));
 			xmlUsers.setEnd(BigInteger.valueOf(0));
 		}
-		
+
 		if (present(users)) {
 			for (final User user : users) {
 				xmlUsers.getUser().add(createXmlUser(user));
 			}
 		}
-		
+
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUsers(xmlUsers);
@@ -544,13 +545,13 @@ public abstract class JAXBRenderer implements Renderer {
 			xmlTags.setStart(BigInteger.valueOf(0));
 			xmlTags.setEnd(BigInteger.valueOf(0));
 		}
-		
+
 		if (present(tags)) {
 			for (final Tag tag : tags) {
 				xmlTags.getTag().add(createXmlTag(tag));
 			}
 		}
-		
+
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setTags(xmlTags);
@@ -634,13 +635,13 @@ public abstract class JAXBRenderer implements Renderer {
 			xmlGroups.setStart(BigInteger.valueOf(0));
 			xmlGroups.setEnd(BigInteger.valueOf(0));
 		}
-		
+
 		if (present(groups)) {
 			for (final Group group : groups) {
 				xmlGroups.getGroup().add(createXmlGroup(group));
 			}
 		}
-		
+
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setGroups(xmlGroups);
@@ -751,11 +752,16 @@ public abstract class JAXBRenderer implements Renderer {
 	@Override
 	public Post<? extends Resource> parsePost(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
-		
-		if (xmlDoc.getPost() != null) {
-			return ModelFactory.getInstance().createPost(xmlDoc.getPost());
+
+		final PostType post = xmlDoc.getPost();
+		if (post != null) {
+			try {
+				return ModelFactory.getInstance().createPost(post);
+			} catch (PersonListParserException ex) {
+				xmlDoc.setError("Error parsing the person names for entry with BibteyKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+			}
 		}
-		
+
 		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no post defined.");
 	}
@@ -763,11 +769,16 @@ public abstract class JAXBRenderer implements Renderer {
 	@Override
 	public Post<? extends Resource> parseStandardPost(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
-		
-		if (xmlDoc.getPost() != null) {
-			return ModelFactory.getInstance().createStandardPost(xmlDoc.getPost());
+
+		final PostType post = xmlDoc.getPost();
+		if (post != null) {
+			try {
+				return ModelFactory.getInstance().createStandardPost(post);
+			} catch (PersonListParserException ex) {
+				xmlDoc.setError("Error parsing the person names for entry with BibteyKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+			}
 		}
-		
+
 		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no post defined.");
 	}
@@ -803,9 +814,13 @@ public abstract class JAXBRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getPosts() != null) {
 			final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
-			for (final PostType pt : xmlDoc.getPosts().getPost()) {
-				final Post<? extends Resource> p = ModelFactory.getInstance().createPost(pt);
-				posts.add(p);
+			for (final PostType post : xmlDoc.getPosts().getPost()) {
+				try {
+					final Post<? extends Resource> p = ModelFactory.getInstance().createPost(post);
+					posts.add(p);
+				} catch (PersonListParserException ex) {
+					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibteyKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+				}
 			}
 			return posts;
 		}
@@ -847,24 +862,24 @@ public abstract class JAXBRenderer implements Renderer {
 	public Set<String> parseReferences(final Reader reader) {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		final ReferencesType referencesType = xmlDoc.getReferences();
-		
+
 		if (present(referencesType)) {
 			final Set<String> references = new HashSet<String>();
 			final List<ReferenceType> referenceList = referencesType.getReference();
-			
+
 			if (present(referenceList)) {
 				for (final ReferenceType referenceType : referenceList) {
 					references.add(referenceType.getInterhash());
 				}
 			}
-			
+
 			return references;
 		}		
-		
+
 		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of references defined.");
 	}
-	
+
 	@Override
 	public Tag parseTag(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
@@ -947,7 +962,7 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlDoc.setTag(this.createXmlRecommendedTag(tag));
 		serialize(writer, xmlDoc);		
 	}
-	
+
 	@Override
 	public void serializeRecommendedTags(final Writer writer, final Collection<RecommendedTag> tags) {		
 		final TagsType xmlTags = new TagsType();
