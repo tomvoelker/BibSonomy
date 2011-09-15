@@ -155,22 +155,7 @@ public class PersonNameUtilsTest {
 		assertEquals("{Frans\\,A.}", pn16.getFirstName());
 		assertEquals("Janssen", pn16.getLastName());
 
-//		final String in = "{Noble, Inc.}, {Barnes and }";
-//		final PersonName pn17 = PersonNameUtils.discoverPersonName(in);
-//		System.out.println(in);
-//		System.out.println(pn17.getFirstName());
-//		System.out.println(pn17.getLastName());
-////		assertEquals("{Frans\\,A.}", pn17.getFirstName());
-////		assertEquals("Janssen", pn17.getLastName());
-//		
-//		System.out.println(PersonNameUtils.serializePersonName(pn17));
-//		System.out.println(PersonNameUtils.serializePersonName(pn17, false));
-//		
-//		
-//		final List<PersonName> pns = PersonNameUtils.discoverPersonNames(in);
-//		printPersonList(pns);
-//		System.out.println(PersonNameUtils.serializePersonNames(pns));
-//		System.out.println(PersonNameUtils.serializePersonNames(pns, false));
+		
 	}
 	
 	@Test
@@ -434,6 +419,14 @@ public class PersonNameUtilsTest {
 		 */
 		final List<PersonName> pn6 = PersonNameUtils.discoverPersonNames("Kirsch KA; Schlemmer M");
 		assertEquals(Arrays.asList(new PersonName("KA", "Kirsch"), new PersonName("M", "Schlemmer")), pn6);
+
+		/*
+		 * the parser removes "-"
+		 */
+		final PersonName pn17 = PersonNameUtils.discoverPersonNames("Bai-lin Hao").get(0);
+		assertEquals("Bai-lin", pn17.getFirstName());
+		assertEquals("Hao", pn17.getLastName());
+
 	}
 	
 	/**
