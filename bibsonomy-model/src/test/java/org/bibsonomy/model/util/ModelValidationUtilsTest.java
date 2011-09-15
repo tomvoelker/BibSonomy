@@ -35,6 +35,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.junit.Test;
 
 /**
@@ -178,9 +179,10 @@ public class ModelValidationUtilsTest {
 	
 	/**
 	 * tests if a publication with title = null is invalid
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void testPublication() {
+	public void testPublication() throws PersonListParserException {
 		final BibTex publication = new BibTex();
 		try {
 			ModelValidationUtils.checkPublication(publication);
@@ -206,12 +208,12 @@ public class ModelValidationUtilsTest {
 		}
 		
 		publication.setAuthor(new LinkedList<PersonName>());
-		publication.getAuthor().add(PersonNameUtils.discoverPersonName("author"));
+		publication.getAuthor().add(PersonNameUtils.discoverPersonNames("author").get(0));
 		ModelValidationUtils.checkPublication(publication);
 	
-		publication.getAuthor().add(PersonNameUtils.discoverPersonName(""));
+		publication.getAuthor().add(new PersonName());
 		publication.setEditor(new LinkedList<PersonName>());
-		publication.getEditor().add(PersonNameUtils.discoverPersonName("editor"));
+		publication.getEditor().add(PersonNameUtils.discoverPersonNames("editor").get(0));
 		ModelValidationUtils.checkPublication(publication);
 	
 	}
