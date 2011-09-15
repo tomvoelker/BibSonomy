@@ -22,12 +22,11 @@ public class PersonNameParser {
 
 	/**
 	 * @param persons
-	 * @param bibtexKey
 	 * @return A list of person names.
 	 * 
 	 * @throws PersonListParserException
 	 */
-	public static List<PersonName> parse(final String persons, final String bibtexKey) throws PersonListParserException {
+	public static List<PersonName> parse(final String persons) throws PersonListParserException {
 
 		final LinkedList<PersonName> result = new LinkedList<PersonName>();
 
@@ -39,12 +38,12 @@ public class PersonNameParser {
 		int begin = 0;
 		for (int i = 0; i < tokens.length; i++) {
 			if (tokens[i].toLowerCase().equals(AND) && begin < i) {
-				result.add(makePerson(tokens, begin, i, bibtexKey, persons));
+				result.add(makePerson(tokens, begin, i, persons));
 				begin = i + 1;
 			}
 		}
 		if (begin < tokens.length)
-			result.add(makePerson(tokens, begin, tokens.length, bibtexKey, persons));
+			result.add(makePerson(tokens, begin, tokens.length, persons));
 		return result;
 	}
 
@@ -198,11 +197,11 @@ public class PersonNameParser {
 		}
 	}
 
-	private static PersonName makePerson(final String[] tokens, final int begin, final int end, final String personString, final String entryKey) throws PersonListParserException {
+	private static PersonName makePerson(final String[] tokens, final int begin, final int end, final String personString) throws PersonListParserException {
 		if (tokens[begin].equals("others")) {
 			return getPersonName(null, null, null, null, true);
 		} else if (tokens[end - 1] == COMMA)
-			throw new PersonListParserException("Name ends with comma: '" + personString + "' - in '"+entryKey+"'");
+			throw new PersonListParserException("Name ends with comma: '" + personString + "'.");
 		else {
 			int numberOfCommas = 0;
 			for (int i = begin; i < end; i++) {
@@ -248,7 +247,7 @@ public class PersonNameParser {
 					preLast = getString(tokens, firstLowerCase, lastNameBegin);
 				}
 				if (last == null)
-					throw new PersonListParserException("Found an empty last name in '" + personString + "' in '"+entryKey+"'.");
+					throw new PersonListParserException("Found an empty last name in '" + personString + "'.");
 				return getPersonName(first, preLast, last, lineage, false);
 			} else if (numberOfCommas == 1 || numberOfCommas == 2) {
 
@@ -276,7 +275,7 @@ public class PersonNameParser {
 					final String last = getString(tokens, preLastEnd, commaIndex);
 					final String first = getString(tokens, commaIndex + 1, end);
 					if (last == null)
-						throw new PersonListParserException("Found an empty last name in '" + personString + "' in '"+entryKey+"'.");
+						throw new PersonListParserException("Found an empty last name in '" + personString + "'.");
 					return getPersonName(first, preLast, last, null, false);
 				} // 2 commas ...
 				int firstComma = -1;
@@ -313,11 +312,11 @@ public class PersonNameParser {
 					first = tmp;
 				}
 				if (last == null)
-					throw new PersonListParserException("Found an empty last name in '" + personString + "' in '"+entryKey+"'.");
+					throw new PersonListParserException("Found an empty last name in '" + personString + "'.");
 				return getPersonName(first, preLast, last, lineage, false);
 
 			} else {
-				throw new PersonListParserException("Too many commas in '" + personString + "' in '"+entryKey+"'.");
+				throw new PersonListParserException("Too many commas in '" + personString + "'.");
 			}
 		}
 	}
