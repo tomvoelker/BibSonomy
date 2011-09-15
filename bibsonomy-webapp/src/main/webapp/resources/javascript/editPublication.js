@@ -1,52 +1,52 @@
-// methods for editPublication page
-// setup jQuery to update recommender with form data
+//methods for editPublication page
+//setup jQuery to update recommender with form data
 var tagRecoOptions = { 
-   dataType: "xml",
-   url:  '/ajax/getPublicationRecommendedTags',
-   success: function showResponse(responseText, statusText) { 
-	 handleRecommendedTags(responseText);
-   } 
+		dataType: "xml",
+		url:  '/ajax/getPublicationRecommendedTags',
+		success: function showResponse(responseText, statusText) { 
+	handleRecommendedTags(responseText);
+} 
 }; 
 
 var hide = true;
 var getFriends = null;
 var fields = new Array(	"booktitle","journal","volume","number","pages",
-						"publisher","address","month","day","edition",
-						"chapter","key","type","annote","note",
-						"howpublished","institution","organization",
-						"school","series","crossref","misc");
+		"publisher","address","month","day","edition",
+		"chapter","key","type","annote","note",
+		"howpublished","institution","organization",
+		"school","series","crossref","misc");
 
 /* returns required and optional fields for given publication type*/ 
 function getRequiredFieldsForType(type) {
 	switch(type) {
-		case "article":	
-			return new Array("journal","volume","number","pages","month","note"); break;
-		case "book": 
-			return new Array("publisher","volume","number","series","address","edition","month","note"); break;
-		case "booklet": 
-			return new Array("howpublished","address","month","note"); break;
-		case "inbook": 
-			return new Array("chapter","pages","publisher","volume","number","series","type","address","edition","month","note"); break;
-		case "incollection": 
-			return new Array("publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","note"); break;
-		case "inproceedings": 
-			return new Array("publisher","booktitle","volume","number","series","pages","address","month","organization","note"); break;
-		case "manual": 
-			return new Array("organization","address","edition","month","note"); break;
-		case "mastersthesis": 
-			return new Array("school","type","address","month","note"); break;
-		case "misc": 
-			return new Array("howpublished","month","note"); break;
-		case "phdthesis": 
-			return new Array("school","address","type","month","note"); break;
-		case "proceedings": 
-			return new Array("publisher","volume","number","series","address","month","organization","note"); break;
-		case "techreport": 
-			return new Array("institution","number","type","address","month","note"); break;
-		case "unpublished": 
-			return new Array("month","note"); break;
-		default:		
-			return fields; break;
+	case "article":	
+		return new Array("journal","volume","number","pages","month","note"); break;
+	case "book": 
+		return new Array("publisher","volume","number","series","address","edition","month","note"); break;
+	case "booklet": 
+		return new Array("howpublished","address","month","note"); break;
+	case "inbook": 
+		return new Array("chapter","pages","publisher","volume","number","series","type","address","edition","month","note"); break;
+	case "incollection": 
+		return new Array("publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","note"); break;
+	case "inproceedings": 
+		return new Array("publisher","booktitle","volume","number","series","pages","address","month","organization","note"); break;
+	case "manual": 
+		return new Array("organization","address","edition","month","note"); break;
+	case "mastersthesis": 
+		return new Array("school","type","address","month","note"); break;
+	case "misc": 
+		return new Array("howpublished","month","note"); break;
+	case "phdthesis": 
+		return new Array("school","address","type","month","note"); break;
+	case "proceedings": 
+		return new Array("publisher","volume","number","series","address","month","organization","note"); break;
+	case "techreport": 
+		return new Array("institution","number","type","address","month","note"); break;
+	case "unpublished": 
+		return new Array("month","note"); break;
+	default:		
+		return fields; break;
 	}
 }	
 
@@ -56,10 +56,10 @@ function changeView() {
 		return;
 
 	var requiredFields = getRequiredFieldsForType(document.getElementById('post.resource.entrytype').value);
-	
-    for (var i=0; i<fields.length; i++) {
-        showHideElement(fields[i], in_array(requiredFields,fields[i]) ? '' : 'none');
-    }
+
+	for (var i=0; i<fields.length; i++) {
+		showHideElement(fields[i], in_array(requiredFields,fields[i]) ? '' : 'none');
+	}
 }	
 
 /* toggle to show elements */
@@ -81,9 +81,9 @@ function hideElements() {
 }	
 
 function showHideElement(id, display) {
-    // get input field			
+	// get input field			
 	var field = document.getElementById("post.resource." + id);			
-	
+
 	if (field.value == '') {
 		// must find closest parent node with class 'fsRow'
 		$(field).closest(".fsRow").css('display', display);
@@ -92,32 +92,32 @@ function showHideElement(id, display) {
 
 /* checks if element is member of given array */
 function in_array(array, element) {    	
- 	for(var j = 0; j < array.length; j++) {
-   		if(array[j] == element) {
-     		return true;
-   		}
- 	}
- 	return false;
+	for(var j = 0; j < array.length; j++) {
+		if(array[j] == element) {
+			return true;
+		}
+	}
+	return false;
 }  
 
 function generateBibTexKey(obj) {
-    var buffer  = "";
+	var buffer  = "";
 
-    /* get author */
-    buffer += getFirstPersonsLastName(document.getElementById("post.resource.author").value);
+	/* get author */
+	buffer += getFirstPersonsLastName(document.getElementById("post.resource.author").value);
 
-    /* the year */ 
-    var year = document.getElementById("post.resource.year").value;
-    if (year != null) {
-        buffer += year.trim();
-    }
+	/* the year */ 
+	var year = document.getElementById("post.resource.year").value;
+	if (year != null) {
+		buffer += year.trim();
+	}
 
-    /* first relevant word of the title */
-    var title = document.getElementById("post.resource.title").value;
+	/* first relevant word of the title */
+	var title = document.getElementById("post.resource.title").value;
 	if (title != null) {
 		buffer += getFirstRelevantWord(title).toLowerCase();
 	}
-    
+
 	if (buffer.length == 0) {
 		window.alert(getString("error.field.valid.bibtexKey.generation"));
 	} else {
@@ -126,36 +126,36 @@ function generateBibTexKey(obj) {
 }
 
 function getFirstPersonsLastName(person) {
-    if (person != null) {
-        var firstauthor;
-        /*
+	if (person != null) {
+		var firstauthor;
+		/*
 		 * check, if there is more than one author
 		 */
-        var firstand = person.indexOf("\n");
-        if (firstand < 0) {
-            firstauthor = person;
-        } else {
-            firstauthor = person.substring(0, firstand);				
-        }
-        /*
-         * first author extracted, get its last name
-         */
-        var comma = firstauthor.search(/,/);
-        var lastname;
-        if (comma < 0) {
-        	// no comma found - find last space
-            var lastspace = firstauthor.search(/\s\S+$/);
-            if (lastspace < 0) {
-                lastname = firstauthor;
-            } else {
-            	lastname = firstauthor.substring(lastspace + 1, firstauthor.length);
-            }
-        } else {
-            lastname = firstauthor.substring(0, comma);
-        }
-        return lastname.trim().replace(/[^0-9A-Za-z]+/g, "");
-    }
-    return "";
+		var firstand = person.indexOf("\n");
+		if (firstand < 0) {
+			firstauthor = person;
+		} else {
+			firstauthor = person.substring(0, firstand);				
+		}
+		/*
+		 * first author extracted, get its last name
+		 */
+		var comma = firstauthor.search(/,/);
+		var lastname;
+		if (comma < 0) {
+			// no comma found - find last space
+			var lastspace = firstauthor.search(/\s\S+$/);
+			if (lastspace < 0) {
+				lastname = firstauthor;
+			} else {
+				lastname = firstauthor.substring(lastspace + 1, firstauthor.length);
+			}
+		} else {
+			lastname = firstauthor.substring(0, comma);
+		}
+		return lastname.trim().replace(/[^0-9A-Za-z]+/g, "");
+	}
+	return "";
 }
 
 function getFirstRelevantWord(title) {
@@ -172,7 +172,7 @@ function getFirstRelevantWord(title) {
 
 $(window).load(function() {
 	// load only, when extended fields are available                                                                                              
-    if (document.getElementById("post.resource.publisher")) changeView();
+	if (document.getElementById("post.resource.publisher")) changeView();
 });
 
 $(document).ready(function() {
@@ -185,16 +185,16 @@ $(document).ready(function() {
 		url: '/json/bibtex/2'+hash,
 		dataType: "jsonp",
 		success: function (data) {
-			if(data.items != undefined)
-				$.ajax({
-					url: '/json/bibtex/1'+data.items[0].interHash,
-					dataType: "jsonp",
-					success: function (data) {
-						if(data.items != undefined) 
-							buildGoodPostSuggestion(data);
-					}
-				});
-		}
+		if(data.items != undefined)
+			$.ajax({
+				url: '/json/bibtex/1'+data.items[0].interHash,
+				dataType: "jsonp",
+				success: function (data) {
+				if(data.items != undefined) 
+					buildGoodPostSuggestion(data);
+			}
+			});
+	}
 	});
 });
 
@@ -213,7 +213,7 @@ function buildGoodPostSuggestion(json) {
 		for(i = 0; i < j.length; i++) {
 			for(k = i+1; k < j.length; k++) 
 				if(j[h[i]] < j[h[k]]) {
-	     			h[i] = h[i]+h[k];
+					h[i] = h[i]+h[k];
 					h[k] = h[i]-h[k];
 					h[i] = h[i]-h[k];
 				}
@@ -229,7 +229,7 @@ function buildGoodPostSuggestion(json) {
 	inputFieldMap["post.resource.title"] = "label";
 	inputFieldMap["post.description"] = "description";
 	var u = /(\s+|,)/g; // regex to remove whitespace and commas
-	
+
 	var arrayOfPartialTags = new Array();
 
 	/*
@@ -239,12 +239,11 @@ function buildGoodPostSuggestion(json) {
 		var fieldValue = new Array();
 		var inputField = inputFields[x];
 		var inputFieldName = inputField.name;
-		
+
 		/*
 		 * field name starts with "post.resource" or it appears in the inputFieldMap
 		 */
 		if (inputFieldName.substring(0, postResource.length) == postResource || inputFieldMap[inputFieldName] != undefined) {
-			var g = inputField.value.replace(u, "");
 			var suggestions = new Array();
 			var occurrences = new Array();
 			var k = -1;
@@ -252,55 +251,67 @@ function buildGoodPostSuggestion(json) {
 			 * loop over posts
 			 */
 			for(var z = 0; json.items.length > z; z++) {
-					var post = json.items[z];
-					var fieldVal;
-					if(((fieldVal = post[inputFieldName.substring(postResource.length+1, inputFieldName.length)]) != undefined 
-					|| (fieldVal = post[inputFieldMap[inputFieldName]])) && fieldVal.length > 0) {
-						var name = "";
-						if(typeof fieldVal == "object") {
-							var delimiter = " "; 
-							/*
-							 * special handling for person names: 
-							 * - join them using ", "
-							 * - FIXME: what else is done?
-							 */
-							if(inputFieldName == postResource + ".author" || inputFieldName == postResource + ".editor") {
-									delimiter = ', ';
-									for(var m = 0; m < fieldVal.length; m++) {
-										var t = -1;
-										var personName = fieldVal[m];
-										var prepend = ((t = (personName.lastIndexOf(" ")+1)) > -1)?personName.substring(t):"";
-										var postfix = personName.substring(0, personName.length-prepend.length);
-										name += ((prepend.length > 0)?prepend+((postfix.length > 0)?", ":""):"")+postfix+"\n";
-									}
+				var post = json.items[z];
+				var fieldVal;
+				if(((fieldVal = post[inputFieldName.substring(postResource.length+1, inputFieldName.length)]) != undefined 
+						|| (fieldVal = post[inputFieldMap[inputFieldName]])) && fieldVal.length > 0) {
+					var name = "";
+					if(typeof fieldVal == "object") {
+						var delimiter = " "; 
+						/*
+						 * special handling for person names: 
+						 * - join them using ", "
+						 * - FIXME: what else is done?
+						 */
+						if(inputFieldName == postResource + ".author" || inputFieldName == postResource + ".editor") {
+							delimiter = ', ';
+							for(var m = 0; m < fieldVal.length; m++) {
+								var t = -1;
+								var personName = fieldVal[m];
+								var prepend = ((t = (personName.lastIndexOf(" ")+1)) > -1)?personName.substring(t):"";
+								var postfix = personName.substring(0, personName.length-prepend.length);
+								name += ((prepend.length > 0)?prepend+((postfix.length > 0)?", ":""):"")+postfix+"\n";
 							}
-							fieldVal = fieldVal.join(delimiter);
 						}
-						if((k = $.inArray(fieldVal, suggestions)) == -1 && g != ((name.length)?name.replace(u, ""):fieldVal.replace(u, ""))) {
-							suggestions.push(fieldVal); // add suggestion
-							occurrences.push(1); // count suggestion
-							$(inputField).addClass("fsInputReco"); // show the user that suggestions are available
-							// FIXME: what happens here?
-							if(name.length)
-								fieldValue.push(name);
-						} else if(k > -1) {
-							occurrences[k]++;
-							k = -1;
-						}
+						fieldVal = fieldVal.join(delimiter);
 					}
+					if ((k = $.inArray(fieldVal, suggestions)) == -1) {
+						suggestions.push(fieldVal); // add suggestion
+						occurrences.push(1); // count suggestion
+						$(inputField).addClass("fsInputReco"); // show the user that suggestions are available 
+						// FIXME: what happens here?
+						if(name.length)
+							fieldValue.push(name);
+					} else if(k > -1) {
+						occurrences[k]++;
+						k = -1;
+					}
+				}
+				/*
+				 * Remove a suggestion if it is the only one and the same as the 
+				 * one the user has already entered.
+				 */
+				if (suggestions.length == 1 && inputField.value.replace(u, "") == suggestions[0].replace(u, "")) {
+					$(inputField).removeClass("fsInputReco");
+				}
 			}
-			if(!suggestions.length) continue;
+			if (!suggestions.length) continue;
+			
 			var indices = sortIndices(occurrences);
 			var labels = $.map(suggestions, function(item, index) {
-					return{label:suggestions[indices[index]]+" ("+occurrences[indices[index]]+")",value:((fieldValue.length == 0)?suggestions[indices[index]]:fieldValue[indices[index]])};
+				var suggestion = suggestions[indices[index]];
+				return {
+					label: suggestion + " (" + occurrences[indices[index]] + ")",
+					value: ((fieldValue.length == 0) ? suggestion : fieldValue[indices[index]])
+				};
 			});
 
 			$(inputField).bind("focus", function(){$(this).autocomplete("search", "");}).autocomplete(
-				{
-					source:labels,
-					minLength:0,
-					delay:0
-				}
+					{
+						source : labels,
+						minLength : 0,
+						delay : 0
+					}
 			);
 		}
 	}
