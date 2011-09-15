@@ -31,6 +31,7 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -108,9 +109,10 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests visibility of private posts
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void privatePosts() {
+	public void privatePosts() throws PersonListParserException {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
 		allowedGroups.add(GroupID.PUBLIC.name());
@@ -161,10 +163,11 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException
 	 * 
 	 *  FIXME: fails too often, please fix.
+	 * @throws PersonListParserException 
 	 */
 	@Test
 	@Ignore
-	public void updateIndices() throws IOException, ClassNotFoundException, SQLException {
+	public void updateIndices() throws IOException, ClassNotFoundException, SQLException, PersonListParserException {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
 		allowedGroups.add("public");
@@ -379,9 +382,10 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests some internel index functions
+	 * @throws PersonListParserException 
 	 */
 	@Test
-	public void searchTest() {
+	public void searchTest() throws PersonListParserException {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
 		allowedGroups.add("public");
@@ -478,8 +482,9 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * generate a BibTex Post, can't call setBeanPropertiesOn() because private
 	 * so copy & paste the setBeanPropertiesOn() into this method
+	 * @throws PersonListParserException 
 	 */
-	private static Post<BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID) {
+	private static Post<BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID) throws PersonListParserException {
 		final Post<BibTex> post = new Post<BibTex>();
 		post.setContentId(null);
 		post.setDescription("luceneTestPost");
