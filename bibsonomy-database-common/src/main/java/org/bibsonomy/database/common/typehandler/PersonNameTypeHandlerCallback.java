@@ -1,10 +1,12 @@
 package org.bibsonomy.database.common.typehandler;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
@@ -25,6 +27,10 @@ public class PersonNameTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
 	@Override
 	public Object valueOf(final String str) {
-		return PersonNameUtils.discoverPersonNames(str);
+		try {
+			return PersonNameUtils.discoverPersonNames(str);
+		} catch (PersonListParserException e) {
+			return Collections.emptyList();
+		}
 	}
 }
