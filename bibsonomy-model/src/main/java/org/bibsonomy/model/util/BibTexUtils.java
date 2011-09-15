@@ -594,7 +594,7 @@ public class BibTexUtils {
 	 * @return The generated BibTeX key.
 	 */
 	public static String generateBibtexKey(final String authors, final String editors, final String year, final String title) {
-		return generateBibtexKey(PersonNameUtils.discoverPersonNames(authors), PersonNameUtils.discoverPersonNames(editors), year, title);
+		return generateBibtexKey(PersonNameUtils.discoverPersonNamesIgnoreExceptions(authors), PersonNameUtils.discoverPersonNamesIgnoreExceptions(editors), year, title);
 	}
 	
 	/**

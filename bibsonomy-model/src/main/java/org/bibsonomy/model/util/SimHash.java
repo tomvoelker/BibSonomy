@@ -330,7 +330,8 @@ public class SimHash {
 		 */
 		final String trimmedLast = last.trim();
 		if (trimmedLast.startsWith("{") && trimmedLast.endsWith("}")) {
-			return normalizePerson(PersonNameUtils.discoverPersonName(trimmedLast.substring(1, trimmedLast.length() - 1)));
+			final List<PersonName> name = PersonNameUtils.discoverPersonNamesIgnoreExceptions(trimmedLast.substring(1, trimmedLast.length() - 1));
+			if (present(name)) return normalizePerson(name.get(0));
 		} 
 		/*
 		 * We remove all unusual characters.
