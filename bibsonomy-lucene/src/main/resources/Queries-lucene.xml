@@ -15,7 +15,8 @@
 		SELECT user_name
 		FROM friends
 		WHERE f_user_name = #userName#
-		<!-- TODO: adapt on tagged friendship -->
+		  AND tag_name  = "sys:network:bibsonomy-friend"
+		  <!-- TODO: find a place for globally define this as a property -->
 	</select>
 
 	<!-- get date of most recent tas entry  -->
