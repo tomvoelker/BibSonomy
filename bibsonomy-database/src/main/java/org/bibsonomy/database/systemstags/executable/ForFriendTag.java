@@ -28,6 +28,10 @@ import org.bibsonomy.model.Tag;
  */
 public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 
+	/*
+	 * TODO: Rename after release: The tag is not only for friends
+	 * better: SendInboxTag oder SendTag
+	 */
 	private static final String NAME = "send";
 	private static boolean toHide = true;
 
@@ -151,7 +155,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 
 	@Override
 	public <T extends Resource> void performDocuments(String resourceHash, List<Document> documents, DBSession session) {
-		throw new UnsupportedOperationException();
+		// nop
 	}
 	
 	@Override
