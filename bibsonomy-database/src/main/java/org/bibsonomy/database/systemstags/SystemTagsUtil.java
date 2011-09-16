@@ -178,7 +178,7 @@ public class SystemTagsUtil {
 	public static ExecutableSystemTag createExecutableTag(final Tag tag) {
 		final ExecutableSystemTag sysTag = getSystagfactory().getExecutableSystemTag(tag.getName());
 		/*
-		 *  FIXME: this should be done inside the systemtagFactory!
+		 *  FIXME: this should be done inside the systemtagFactory! => getInstance sollte mit tagName als Argument ausgeführt werdne.
 		 */
 		if (present(sysTag) && ForFriendTag.class.isAssignableFrom(sysTag.getClass())) {
 			((ForFriendTag)sysTag).setTag(tag);
