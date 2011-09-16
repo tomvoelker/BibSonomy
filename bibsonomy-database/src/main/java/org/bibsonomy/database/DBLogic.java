@@ -603,7 +603,6 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
 
 		if (!allowedToAccessUsersOrGroupDocuments) {
-		    // FilterEntity.POSTS_WITH_DISCUSSIONS are without discussions and should
 		    if (!FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter())) {
 			param.setFilter(FilterEntity.JUST_POSTS);
 		    }
