@@ -38,6 +38,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	private Errors errors;
 	private CVWikiModel wikiRenderer;
 	private MessageSource messageSource;
+	private static final String PUBLIC_PREVIEW = "publicPreview";
 
 	@Override
 	public AjaxCvCommand instantiateCommand() {
@@ -63,23 +64,40 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		if (!command.getContext().isValidCkey()) {
 			return handleError("error.field.valid.ckey");
 		}
-		
-		this.wikiRenderer.setLogic(notLoggedInUserLogic);
+
 		final String renderOptions = command.getRenderOptions();
 		final String authUser = logic.getAuthenticatedUser().getName();
 		final String wikiText = command.getWikiText();
 		final Group requestedGroup;
-		
-		requestedGroup = this.notLoggedInUserLogic.getGroupDetails(authUser);
+
+		requestedGroup = this.logic.getGroupDetails(authUser);
 
 		if (present(requestedGroup)) {
 			final GroupingEntity groupingEntity = GroupingEntity.GROUP;
-			final List<User> groupUsers = this.logic.getUsers(null, groupingEntity, requestedGroup.getName(), null, null, null, null, null, 0, 1000);
+
+			/*
+			 * Check if its a public preview. If so, use the public preview
+			 * logic.
+			 */
+			final List<User> groupUsers;
+			if (PUBLIC_PREVIEW.equals(renderOptions)) {
+				groupUsers = this.notLoggedInUserLogic.getUsers(null, groupingEntity, requestedGroup.getName(), null, null, null, null, null, 0, 1000);
+			} else {
+				groupUsers = this.logic.getUsers(null, groupingEntity, requestedGroup.getName(), null, null, null, null, null, 0, 1000);
+			}
 			requestedGroup.setUsers(groupUsers);
 
 			this.wikiRenderer.setRequestedGroup(requestedGroup);
 		} else {
-			this.wikiRenderer.setRequestedUser(this.notLoggedInUserLogic.getUserDetails(authUser));
+			/*
+			 * Check if its a public preview. If so, use the public preview
+			 * logic.
+			 */
+			if (PUBLIC_PREVIEW.equals(renderOptions)) {
+				this.wikiRenderer.setRequestedUser(this.notLoggedInUserLogic.getUserDetails(authUser));
+			} else {
+				this.wikiRenderer.setRequestedUser(this.logic.getUserDetails(authUser));
+			}
 		}
 
 		if (present(renderOptions) && wikiText != null) {
@@ -92,18 +110,34 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		}
 	}
 
+	/**
+	 * Method which 
+	 * @param command
+	 * @param wikiText
+	 * @param renderOption
+	 * @return the rendered wiki view
+	 */
 	private View renderWiki(AjaxCvCommand command, String wikiText, String renderOption) {
 		log.debug("ajax -> renderWiki");
 
 		Wiki wiki = new Wiki();
 		wiki.setWikiText(wikiText);
-		if ("save".equals(renderOption)) {
+		if ("publicPreview".equals(renderOption)) {
+			wikiRenderer.setLogic(notLoggedInUserLogic);
+		} else if ("save".equals(renderOption)) {
 			logic.updateWiki((wikiRenderer.getRequestedGroup() != null ? wikiRenderer.getRequestedGroup().getName() : wikiRenderer.getRequestedUser().getName()), wiki);
 		}
 		command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		return Views.AJAX_XML;
 	}
 
+	/**
+	 * 
+	 * @param command
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
 	private View getLayout(AjaxCvCommand command, Locale locale) throws Exception {
 		log.debug("ajax -> getLayout");
 		final String layoutName = command.getLayout();
@@ -112,7 +146,12 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 			String wikiText = messageSource.getMessage(layoutRef, null, locale);
 			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		} else {
-			String wikiText = logic.getWiki(wikiRenderer.getRequestedUser().getName(), null).getWikiText();
+			String wikiText;
+			if (present(wikiRenderer.getRequestedUser())) {
+				wikiText = logic.getWiki(wikiRenderer.getRequestedUser().getName(), null).getWikiText();
+			} else {
+				wikiText = logic.getWiki(wikiRenderer.getRequestedGroup().getName(), null).getWikiText();
+			}
 			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		}
 

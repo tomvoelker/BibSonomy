@@ -77,7 +77,7 @@
 		
 			<!-- CV admin panel. Does show if you are the requested user -->
 			<c:if test="${command.context.loginUser.name eq command.requestedUser}">
-				<div id="general_100">
+				<!-- <div id="general_100">
 					<span class="smalltext">
 						<fmt:message key = "cv.hint"/>
 						<ul class="helpList">
@@ -87,13 +87,14 @@
 							<li><fmt:message key = "cv.hint3"/></li>
 						</ul>
 						<fmt:message key = "cv.hint4"/>
+						<input id='startEdit' style='float:right;margin-right:7em' type='button' value='Lets start..!'/>
 					</span>
-				</div>
+				</div>-->
 		<form:form><div id="fsform">
     	  <fieldset class="fsInner">
 		    <div class="fsRow">
-		    <p>Welcome to the CV admin panel.</p>
-		      <form:label cssClass="fsLabel" path="wikiText"><fmt:message key="user.cvWiki"/></form:label>
+		    <p><fmt:message key = "cv.admin.topic"/></p>
+		      <form:label cssClass="fsLabel" path="wikiText"><fmt:message key="cv.admin.menu"/></form:label>
 		      <form:textarea id="wikiTextArea" cssStyle="height: 5cm" cssClass="fsInput" path="wikiText" />
 		      <input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}"/>
 		      <div class='fsRow'>
@@ -106,18 +107,18 @@
 		      				<li><a href='#' data-layout='LAYOUT_TABLE' class='changeLayout'>Layout|TABLE</a></li>
 		      				<li><a href='#' data-layout='LAYOUT_ROBERT' class='changeLayout'>Layout|ROBERT</a></li>
 		      				<li><a href='#' data-layout='LAYOUT_CURRENT' class='changeLayout'>Layout|CURRENT</a></li>
-		      				<li><a href='#' onclick="clearCVTextField();return false;">Clear</a></li>
+		      				<li><a href='#' onclick="return clearCVTextField();">Clear</a></li>
 		      			</ul>
 		      		</li>
 		      	</ul>
 		      	<input type="button" href='#' onclick="return submitWiki('preview');" value="preview" />
 		      	<input type="button" href='#' onclick="return submitWiki('save');" value="save" />
+		      	<input type="button" href='#' onclick="return submitWiki('publicPreview');" value="Public Preview" />
 		      </div>
-		      	<div id='loadingDiv'>
-				<img src="${resdir}/image/ajax_loader.gif" alt="wait" /><img src="${resdir}/image/ajax_loader.gif" alt="wait" /><img src="${resdir}/image/ajax_loader.gif" alt="wait" />
-			</div>
 		    </div>
   		  </fieldset>
+  		  <div id='errorField' style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'><p id="errorText"></p></div>
+		<div id='loadingDiv' style='width: 100%'><img src="${resdir}/image/ajax_loader.gif" alt="wait" /></div>
 		</div>
 		</form:form>
 	</c:if>

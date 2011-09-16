@@ -1,10 +1,12 @@
 /**
  * @author Bernd Terbrack
  */
-// "Handler"
+/*
+ * Handlers
+ */
 $(function(){
-    /*
-     * Layout-Changer
+    /**
+     * Handler for the layout-links
      */
     $('a.changeLayout').click(function(e){
         e.preventDefault();
@@ -32,23 +34,37 @@ $(function(){
                     }
                 }
                 else {
-                    alert(data.globalErrors[0].message);
+                    handleError(data.globalErrors[0].message);
                 }
             }
         });
     });
     
-    /*
-     * Loading-Div-Handler
+    /**
+     * Handler for the ajax loading gif's
      */
     $('#loadingDiv').hide().ajaxStart(function(){
         $(this).show();
+        $('#errorField').hide();
     }).ajaxStop(function(){
         $(this).hide();
     });
     
-    /*
-     * Shortcuts for the textarea
+    /**
+     * Handler for the
+     */
+    $('#startEdit').click(function(){
+        $(this).parent().hide('clip', function(){
+            $(this).parent().next().next().show('clip', function(){
+                $(this).prev().show('clip');
+            });
+        });
+        return false;
+    });
+    
+    /**
+     * Handler for the textfield shortcuts
+     * @param {Object} e
      */
     $('#wikiTextArea').keydown(function(e){
         if (e.ctrlKey) {
