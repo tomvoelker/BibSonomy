@@ -17,12 +17,16 @@
 	
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.discussedPosts"/></a> :: 
-			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
+			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> 
+			<!-- 
+			::
 			<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
 			  <input type="text" size="20" name="tag" id="inpf"/>
 			</form>
 			<user:name user="${command.user}"/>
 			<user:cv user="${command.user}"/>
+			 -->
+			
 		</jsp:attribute>
 
     	<!--+
@@ -87,12 +91,7 @@
 				<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 			</li>
 			      
-            <c:if test="${command.context.loginUser.role == 'ADMIN' and not empty command.user}">
-              <li>
-                <span class="sidebar_h">user details</span>
-                <user:details user="${command.user}"/>
-              </li>
-            </c:if>
+  
 		</ul>	
 		</jsp:attribute>
 		
