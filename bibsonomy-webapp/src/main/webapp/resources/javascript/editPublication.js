@@ -182,7 +182,7 @@ $(document).ready(function() {
 	if(hash == -1)
 		return;
 	$.ajax({
-		url: '/json/bibtex/2'+hash,
+		url: '/json/bibtex/2'+hash + "?items=100",
 		dataType: "jsonp",
 		success: function (data) {
 		if(data.items != undefined)
@@ -294,7 +294,7 @@ function buildGoodPostSuggestion(json) {
 						k = -1;
 					}
 				}
-			}
+			} // loop over posts
 			/*
 			 * no suggestions or the suggestion count is 1 AND field value is the same as the suggestion value 
 			 * - skip in both cases 
@@ -322,5 +322,5 @@ function buildGoodPostSuggestion(json) {
 					}
 			);
 		}
-	}
+	} // loop over input fields
 }
