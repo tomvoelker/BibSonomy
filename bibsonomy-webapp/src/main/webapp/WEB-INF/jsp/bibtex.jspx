@@ -61,6 +61,7 @@
 		
 		<jsp:attribute name="contentHeading">
 			<h2><c:out value="${title}" /></h2>
+			<c:set var="publication" value="${command.bibtex.list[0].resource}" />
 		
 			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>
