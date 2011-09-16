@@ -286,6 +286,11 @@
 						<property name="controllerBeanName" value="userPageController"/>
 					</bean>
 				</entry>
+				<entry key="/discussed">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="discussionsPageController"/>
+					</bean>
+				</entry>
 				<entry key="/foaf">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="fOAFController"/>
@@ -566,6 +571,10 @@
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
+	<bean id="discussionsPageController" class="org.bibsonomy.webapp.controller.DiscussionsPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+
 	<bean id="fOAFController" class="org.bibsonomy.webapp.controller.FOAFController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>

@@ -31,6 +31,10 @@
 					    	<fmt:message key="navi.my.plural"/>
 					    	<fmt:message key="navi.friends.cap"/>
 					    </a>
+						<a href="/discussed/user/${fn:escapeXml(user.name)}">
+							<fmt:message key="navi.my.plural"/>
+							<fmt:message key="navi.discussedPosts.Cap"/>
+						</a>
 						<a href="/relations/${fn:escapeXml(user.name)}">
 							<fmt:message key="navi.my.plural"/>
 							<fmt:message key="navi.relations.cap"/>
@@ -115,6 +119,11 @@
 		<li>
 			<a id="nav_popular" href="/popular"><fmt:message key="navi.popular" /></a>
 		</li>
+
+		<li>
+			<a id="nav_discussedPosts" href="/discussed"><fmt:message key="navi.recentlyDiscussedPosts" /></a>
+		</li>
+
 	</ul>
 	</div>
 

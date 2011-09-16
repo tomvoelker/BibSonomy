@@ -633,8 +633,13 @@ public enum Views implements View {
 	/**
 	 * PUMA, author agreement page, form filled in with publication data for printing 
 	 */
-	AUTHORAGREEMENTPAGE("authoragreement");
+	AUTHORAGREEMENTPAGE("authoragreement"),
 	
+	
+	/**
+	 * Discussions-Page. Posts with Discussions  
+	 */
+	DISCUSSIONSPAGE("discussions");
 
 	/*
 	 * both bookmarks and publications

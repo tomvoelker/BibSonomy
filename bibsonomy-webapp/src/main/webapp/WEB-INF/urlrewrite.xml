@@ -364,7 +364,6 @@
 		<to type="redirect" last="true">/user/${escape:$1}</to>
 	</rule>
 
-	
 	<!-- redirect for FOAF Output of user profile on /foaf/user/USER page -->
 	<rule>
 		<name>redirect /foaf/user/USER</name>
@@ -379,6 +378,25 @@
 		<to last="true">/foaf</to>
 	</rule>
 	
+	<!-- ############## /discussed pages ############### -->
+
+	<!-- /discussed/user/USER/TAG -->
+	<rule>
+		<name>/discussed/user/USER/TAG</name>
+		<from>^/+discussed/user/+([^/]+?)/(.+)$</from>
+		<set type="parameter" name="requestedUser">$1</set>
+		<set type="parameter" name="requestedTags">$2</set>		
+		<to last="true">/discussed</to>
+	</rule>
+
+	<!-- /discussed/user/USER -->
+	<rule>
+		<name>/discussed/user/USER</name>
+		<from>^/+discussed/user/+([^/]+)$</from>
+		<set type="parameter" name="requestedUser">$1</set>
+		<to last="true">/discussed</to>
+	</rule>
+
 	<!-- ############## Curriculum vitae pages ############### -->
 	
 	<!-- /cv/NAME -->
