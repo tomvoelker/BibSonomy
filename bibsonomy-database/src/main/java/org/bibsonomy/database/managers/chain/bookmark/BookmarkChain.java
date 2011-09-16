@@ -22,6 +22,7 @@ import org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsB
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesViewable;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesWithDiscussions;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -52,11 +53,13 @@ public class BookmarkChain implements FirstListChainElement<Post<Bookmark>, Book
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByFollowedUsers;
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksFromInbox;
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByTaggedUserRelation;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksWithDiscussions;
 	
 	/**
 	 * Constructs the chain
 	 */
 	public BookmarkChain() {
+	    	this.getBookmarksWithDiscussions = new GetResourcesWithDiscussions<Bookmark, BookmarkParam>();
 		this.getBookmarksForUser = new GetResourcesForUser<Bookmark, BookmarkParam>();
 		this.getBookmarksByHash = new GetResourcesByHash<Bookmark, BookmarkParam>();
 		this.getBookmarksByHashForUser = new GetResourcesByHashForUser<Bookmark, BookmarkParam>();
@@ -78,6 +81,7 @@ public class BookmarkChain implements FirstListChainElement<Post<Bookmark>, Book
 		this.getBookmarksFromInbox = new GetResourcesFromInbox<Bookmark, BookmarkParam>();
 		this.getBookmarksByTaggedUserRelation = new GetResourcesByTaggedUserRelation<Bookmark, BookmarkParam>();
 		
+		this.getBookmarksWithDiscussions.setNext(this.getBookmarksForHomePage);
 		this.getBookmarksForHomePage.setNext(this.getBookmarksForPopular);
 		this.getBookmarksForPopular.setNext(this.getBookmarksForUser);
 		this.getBookmarksForUser.setNext(this.getBookmarksByTagNames);
@@ -101,6 +105,6 @@ public class BookmarkChain implements FirstListChainElement<Post<Bookmark>, Book
 
 	@Override
 	public ListChainElement<Post<Bookmark>, BookmarkParam> getFirstElement() {
-		return this.getBookmarksForHomePage;
+		return this.getBookmarksWithDiscussions;
 	}
 }

@@ -239,6 +239,24 @@
 		</isGreaterThan>	
 	</sql>
 	
+	<sql id="restrictDiscussionsToGroups">
+		<isEqual property="groupId" compareValue="-1">
+		  <!-- no user logged in -> only public posts -->
+		  <isEmpty property="userName" prepend="AND">
+		  	d.group = 0 
+		  </isEmpty>
+		  <!-- user logged in -> check his groups -->
+		  <isNotEmpty property="userName">
+		  	<include refid="inGroupsDiscussion"/>
+		  </isNotEmpty>
+		</isEqual>
+		<isGreaterThan property="groupId" compareValue="-1" prepend="AND">
+		  d.group = #groupId#
+		</isGreaterThan>	
+	</sql>
+	
+	
+	
 	<!-- restrict visibility of retrieved items to the groups a user may see -->	
 	<sql id="inGroups">
 	    <!-- no user logged in - only public posts -->
@@ -270,6 +288,23 @@
 		</isNotEmpty>
 	</sql>
 	
+	<!-- restrict visibility of retrieved items to the groups a user may see -->	
+	<sql id="inGroupsDiscussion">
+	    <!-- no user logged in - only public posts -->
+		<isEmpty property="userName" prepend="AND">
+		  	d.group = 0 
+		</isEmpty>
+		<!-- a user is logged in - check groups -->
+		<isNotEmpty property="userName">
+		  <isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
+			  <include refid="inGroupsUncheckedDiscussion"/>
+		  </isNotEqual>
+		</isNotEmpty>
+	</sql>
+	
+	
+	
+	
 	<!-- restrict visibility directly, i.e. without checking for user's own items -->
 	<sql id="inGroupsUnchecked">
 		t1.group IN (
@@ -291,6 +326,7 @@
 		    $groups[]$
 		</iterate>)	
 	</sql>
+
 		
 	<!-- 
 		 this only needed for getBibTexDuplicate, as refactoring that query to

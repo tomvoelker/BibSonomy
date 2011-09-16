@@ -882,6 +882,29 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
+	 * Returns the number of posts with discussions for a given user.
+	 * 
+	 * @param requestedUserName 
+	 * @param loginUserName 
+	 * @param groupId 
+	 * @param visibleGroupIDs 
+	 * @param session
+	 * @return the number of posts with discussions of the requested User which the logged in user is allowed to see
+	 * 
+	 * groupId or
+	 * visibleGroupIDs && userName && (userName != requestedUserName)
+	 */
+	public int getPostsWithDiscussionsCount(final String requestedUserName, final String loginUserName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+		final P param = this.createParam(loginUserName, requestedUserName);
+		param.setGroupId(groupId);
+		param.setGroups(visibleGroupIDs);
+
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
+		final Integer result = this.queryForObject("get" + this.resourceClassName + "WithDiscussionsCount", param, Integer.class, session);
+		return present(result) ? result : 0;
+	}
+
+	/**
 	 * Get posts of users which the logged-in users is following.
 	 * 
 	 * @param loginUserName - 
@@ -1532,4 +1555,46 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	protected abstract P getInsertParam(final Post<? extends R> post, final DBSession session);
 
+
+	
+	protected List<Post<R>> getPostsWithDiscussions(final P param, final DBSession session) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.postList("get" + this.resourceClassName + "WithDiscussions", param, session);
+	}
+
+	/** 
+	 * <em>/discussions/MaxMustermann</em><br/><br/>
+	 * 
+	 * This method prepares queries which retrieve all posts with discussions by user with
+	 * user name (requestedUserName). Additionally the group to be shown can be
+	 * restricted. The queries are built in a way, that not only public posts
+	 * are retrieved, but also friends or private or other groups, depending
+	 * upon if userName is allowed to see them.
+	 * 
+	 * ATTENTION! in case of a given groupId it is NOT checked if the user
+	 * actually belongs to this group.
+	 * 
+	 * @param loginUserName
+	 * @param requestedUserName
+	 * @param simHash
+	 * @param groupId
+	 * @param visibleGroupIDs 
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param systemTags
+	 * @param session
+	 * @return list of posts
+	 */
+	public List<Post<R>> getPostsWithDiscussions(final String loginUserName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
+		param.setGroupId(groupId);
+		param.setGroups(visibleGroupIDs);
+		param.setSimHash(simHash);
+		param.setFilter(filter);
+		param.addAllToSystemTags(systemTags);
+
+		return this.getPostsWithDiscussions(param, session);
+	}
+	
 }

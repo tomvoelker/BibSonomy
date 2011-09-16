@@ -601,8 +601,12 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		// check permissions for displaying links to documents
 		final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session);
 
+
 		if (!allowedToAccessUsersOrGroupDocuments) {
-		    param.setFilter(FilterEntity.JUST_POSTS);
+		    // FilterEntity.POSTS_WITH_DISCUSSIONS are without discussions and should
+		    if (!FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter())) {
+			param.setFilter(FilterEntity.JUST_POSTS);
+		    }
 		} else if (!present(filter)) {
 		    param.setFilter(FilterEntity.POSTS_WITH_DOCUMENTS);
 		}

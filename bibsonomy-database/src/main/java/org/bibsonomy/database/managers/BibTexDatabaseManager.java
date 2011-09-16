@@ -124,6 +124,9 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				case POSTS_WITH_DOCUMENTS:
 					// posts including documents
 					return this.postList("getBibTexForUserWithPDF", param, session);
+				case POSTS_WITH_DISCUSSIONS:
+					// posts with discussions
+					return this.postList("getBibTexWithDiscussions", param, session);
 				case JUST_POSTS:
 					return super.getPostsForUser(param, session);
 				default:

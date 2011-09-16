@@ -25,6 +25,7 @@ import org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsB
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesViewable;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesWithDiscussions;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -35,6 +36,7 @@ import org.bibsonomy.model.Post;
  */
 public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexParam> {
 
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsWithDiscussions;
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByHash;
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByHashForUser;
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByKey;
@@ -63,6 +65,7 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 	 * Constructs the chain
 	 */
 	public BibTexChain() {
+		this.getPublicationsWithDiscussions = new GetResourcesWithDiscussions<BibTex, BibTexParam>();
 		this.getPublicationsByHash = new GetResourcesByHash<BibTex, BibTexParam>();
 		this.getPublicationsByHashForUser = new GetResourcesByHashForUser<BibTex, BibTexParam>();
 		this.getPublicationsByTagNames = new GetResourcesByTagNames<BibTex, BibTexParam>();
@@ -87,6 +90,7 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 		this.getPublicationsWithRepository = new GetBibtexWithRepository();
 		this.getPublicationsByTaggedUserRelation = new GetResourcesByTaggedUserRelation<BibTex, BibTexParam>();
 
+		this.getPublicationsWithDiscussions.setNext(this.getPublicationsWithRepository);
 		this.getPublicationsWithRepository.setNext(this.getPublicationsByKey);
 		this.getPublicationsByKey.setNext(this.getPublicationsForHomepage);
 		this.getPublicationsForHomepage.setNext(this.getPublicationsForPopular);
@@ -113,6 +117,6 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 
 	@Override
 	public ListChainElement<Post<BibTex>, BibTexParam> getFirstElement() {
-		return this.getPublicationsWithRepository;
+		return this.getPublicationsWithDiscussions;
 	}
 }

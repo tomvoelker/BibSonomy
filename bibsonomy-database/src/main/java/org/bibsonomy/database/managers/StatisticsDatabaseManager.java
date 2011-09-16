@@ -96,6 +96,21 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		return this.getDatabaseManagerForResourceType(resourceType).getPostsForUserCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
 	}
 
+
+	/**
+	 * @param resourceType
+	 * @param requestedUserName
+	 * @param userName 
+	 * @param groupId 
+	 * @param visibleGroupIDs 
+	 * @param session
+	 * @return a statistical number (int)
+	 */
+	public int getNumberOfResourcesWithDiscussions(final Class<? extends Resource> resourceType, final String requestedUserName, final String userName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+		return this.getDatabaseManagerForResourceType(resourceType).getPostsWithDiscussionsCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
+	}
+
+
 	/**
 	 * @param resourceType
 	 * @param requHash 

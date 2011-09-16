@@ -12,6 +12,7 @@ import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForH
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserInboxCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDaysCount;
+import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesWithDiscussionsCount;
 import org.bibsonomy.database.params.StatisticsParam;
 
 /**
@@ -24,6 +25,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 
 	private final GetResourcesForGroupCount getResourcesForGroupCount;
 	private final GetResourcesForUserCount getResourcesForUserCount;
+	private final GetResourcesWithDiscussionsCount getResourcesWithDiscussionsCount;
 	private final GetResourcesByTagNamesAndUserCount getResourcesByTagNamesAndUserCount;
 	private final GetResourcesByTagNamesCount getResourcesByTagNamesCount;
 	private final GetResourcesDuplicateCount getResourcesDuplicateCount;
@@ -38,6 +40,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 	 */
 	public PostStatisticChain() {
 		getResourcesForGroupCount 	= new GetResourcesForGroupCount();
+		getResourcesWithDiscussionsCount = new GetResourcesWithDiscussionsCount();
 		getResourcesForUserCount	= new GetResourcesForUserCount();
 		getResourcesByTagNamesAndUserCount = new GetResourcesByTagNamesAndUserCount();
 		getResourcesByTagNamesCount = new GetResourcesByTagNamesCount();
@@ -48,7 +51,8 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		getResourcesForUserInboxCount = new GetResourcesForUserInboxCount();
 		defaultCatchAllCount = new DefaultCatchAllCount();
 		
-		getResourcesForGroupCount.setNext(getResourcesForUserCount);
+		getResourcesForGroupCount.setNext(getResourcesWithDiscussionsCount);
+		getResourcesWithDiscussionsCount.setNext(getResourcesForUserCount);
 		getResourcesForUserCount.setNext(getResourcesByTagNamesAndUserCount);
 		getResourcesByTagNamesAndUserCount.setNext(getResourcesByTagNamesCount);
 		getResourcesByTagNamesCount.setNext(getResourcesDuplicateCount);
