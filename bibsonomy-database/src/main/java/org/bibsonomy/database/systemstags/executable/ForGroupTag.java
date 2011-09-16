@@ -2,7 +2,6 @@ package org.bibsonomy.database.systemstags.executable;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -15,13 +14,10 @@ import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
-import org.bibsonomy.database.managers.DocumentDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
-import org.bibsonomy.database.util.DocumentUtils;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -94,28 +90,28 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 
 	@Override
 	public <T extends Resource> void performBeforeUpdate(final Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session) {
-		String hash = null;
-		Resource resource = null;
+//		String hash = null;
+//		Resource resource = null;
 		if (operation == PostUpdateOperation.UPDATE_TAGS) {
 			/*
 			 *  in this case, newPost is not a valid post but contains the new tags, while oldPost is a valid post containing the old tags
 			 */
 			this.perform(oldPost, newPost.getTags(), session);
-			hash = newPost.getResource().getIntraHash();
-			resource = oldPost.getResource();
+//			hash = newPost.getResource().getIntraHash();
+//			resource = oldPost.getResource();
 		} else {
 			/*
 			 *  in this case, newPost is a valid post containing the new tags
 			 */
 			this.perform(newPost, newPost.getTags(), session);
-			hash = newPost.getResource().getIntraHash();
-			resource = newPost.getResource();
+//			hash = newPost.getResource().getIntraHash();
+//			resource = newPost.getResource();
 		}
 		
-		if(resource instanceof BibTex) {
-			
-			performDocuments(hash, ((BibTex)resource).getDocuments(), session);
-		}
+//		if(resource instanceof BibTex) {
+//			
+//			performDocuments(hash, ((BibTex)resource).getDocuments(), session);
+//		}
 	}
 
 	@Override
@@ -262,48 +258,48 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 
 	@Override
 	public <T extends Resource> void performDocuments(final String resourceHash, final List<Document> documents, final DBSession session) {
-		session.beginTransaction();
-		try {
-			final String groupName = this.getArgument();
-			Post<? extends Resource> groupPost = this.getGroupDbLogic().getPostDetails(resourceHash, groupName);
-			DocumentDatabaseManager docDbManager = DocumentDatabaseManager.getInstance();
-			for (Document doc : documents) {
-				//check if post already has document with same filename
-				final Document existingGroupDoc = docDbManager.getDocumentForPost(groupName, resourceHash, doc.getFileName(), session);
-				if(!present(existingGroupDoc)) {
-					/*
-					 * no existing files with this name -> create copy and append to post 
-					 */
-					Document document = DocumentUtils.copyDocument(doc, groupName, docPath);
-					docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
-				} else {
-					/*
-					 * check if md5 hash has been changed -> file has been changed
-					 */
-					if(!doc.getMd5hash().equals(existingGroupDoc.getMd5hash())) {
-						Document document = DocumentUtils.copyDocument(doc, groupName, docPath);
-						
-						
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy_mm_dd_hh_mm_ss");
-						String oldFileName = document.getFileName();
-						
-						String date = sdf.format(new Date());
-						
-						
-						
-						String newFileName = oldFileName.replace(".", "_" + date + ".");
-						
-						docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), newFileName, document.getMd5hash(), session);
-					}
-					/*
-					 * if md5 hash not changed -> same file -> do nothing
-					 */
-				}
-			}
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
+//		session.beginTransaction();
+//		try {
+//			final String groupName = this.getArgument();
+//			Post<? extends Resource> groupPost = this.getGroupDbLogic().getPostDetails(resourceHash, groupName);
+//			DocumentDatabaseManager docDbManager = DocumentDatabaseManager.getInstance();
+//			for (Document doc : documents) {
+//				//check if post already has document with same filename
+//				final Document existingGroupDoc = docDbManager.getDocumentForPost(groupName, resourceHash, doc.getFileName(), session);
+//				if(!present(existingGroupDoc)) {
+//					/*
+//					 * no existing files with this name -> create copy and append to post 
+//					 */
+//					Document document = DocumentUtils.copyDocument(doc, groupName, docPath);
+//					docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
+//				} else {
+//					/*
+//					 * check if md5 hash has been changed -> file has been changed
+//					 */
+//					if(!doc.getMd5hash().equals(existingGroupDoc.getMd5hash())) {
+//						Document document = DocumentUtils.copyDocument(doc, groupName, docPath);
+//						
+//						
+//						SimpleDateFormat sdf = new SimpleDateFormat("yyyy_mm_dd_hh_mm_ss");
+//						String oldFileName = document.getFileName();
+//						
+//						String date = sdf.format(new Date());
+//						
+//						
+//						
+//						String newFileName = oldFileName.replace(".", "_" + date + ".");
+//						
+//						docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), newFileName, document.getMd5hash(), session);
+//					}
+//					/*
+//					 * if md5 hash not changed -> same file -> do nothing
+//					 */
+//				}
+//			}
+//			session.commitTransaction();
+//		} finally {
+//			session.endTransaction();
+//		}
 	}
 
 	@Override
