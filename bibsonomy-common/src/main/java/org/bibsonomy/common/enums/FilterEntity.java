@@ -74,6 +74,12 @@ public enum FilterEntity {
 	/**
 	 * Return only posts which have been send to a repository (PUMA specific)
 	 */
-	POSTS_WITH_REPOSITORY;
+	POSTS_WITH_REPOSITORY,
 	
+	/**
+	 * Return only posts which are discussed by users, use this if user is allowed to access documents
+	 */
+	POSTS_WITH_DISCUSSIONS,
+
+
 }
