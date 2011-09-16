@@ -15,8 +15,8 @@ public abstract class SharedTag extends AbstractTag {
 		GROUP("group",GroupingEntity.GROUP);
 		
 		private RequestType(final String type,final GroupingEntity groupingEntity) {
-			this.setType(type);
-			this.setGroupingEntity(groupingEntity);
+			this.type = type;
+			this.groupingEntity = groupingEntity;
 		}
 		
 		/**
@@ -25,13 +25,7 @@ public abstract class SharedTag extends AbstractTag {
 		public String getType() {
 			return this.type;
 		}
-		/**
-		 * @param type the type to set
-		 */
-		public void setType(final String type) {
-			this.type = type;
-		}
-
+		
 		/**
 		 * @return the groupingEntity
 		 */
@@ -39,15 +33,8 @@ public abstract class SharedTag extends AbstractTag {
 			return this.groupingEntity;
 		}
 
-		/**
-		 * @param groupingEntity the groupingEntity to set
-		 */
-		public void setGroupingEntity(final GroupingEntity groupingEntity) {
-			this.groupingEntity = groupingEntity;
-		}
-
-		private String type;
-		private GroupingEntity groupingEntity;
+		private final String type;
+		private final GroupingEntity groupingEntity;
 		
 	}
 

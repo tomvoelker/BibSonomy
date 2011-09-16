@@ -9,6 +9,8 @@ import info.bliki.wiki.tags.util.INoBodyParsingTag;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.User;
@@ -18,10 +20,11 @@ import org.bibsonomy.wiki.CVWikiModel;
 
 /**
  * @author philipp
+ * @author Bernd Terbrack
  * @version $Id$
  */
 public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  {
-	
+	private static final Log log = LogFactory.getLog(AbstractTag.class);
 	protected LogicInterface logic;
 	public User requestedUser;
 	public Group requestedGroup;
@@ -72,6 +75,7 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 			final String tagData = this.renderSafe();
 			return present(tagData) ? tagData : this.getName() +" is/are not visible to you.";
 		}catch (final Exception e) {
+			log.fatal("Error while rendering the tag: " + this.name, e);
 			return this.getName() + " has caused an error.";
 		}
 	}

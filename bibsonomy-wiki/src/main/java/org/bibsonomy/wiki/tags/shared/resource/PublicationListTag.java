@@ -23,8 +23,7 @@ import org.bibsonomy.wiki.tags.SharedResourceTag;
  * 
  * @author philipp
  * @author Bernd Terbrack
- * @version $Id: PublicationListTag.java,v 1.9 2011-08-22 13:16:07 nosebrain Exp
- *          $
+ * @version $Id$
  */
 public class PublicationListTag extends SharedResourceTag {
 
@@ -36,12 +35,13 @@ public class PublicationListTag extends SharedResourceTag {
 	private static final String LAYOUT = "layout";
 	private static final String KEYS = "keys";
 	private static final String ORDER = "order";
+	private static final String QUANTITY = "qty";
 	private static final Set<String> ALLOWED_SORTPAGE_JABREF_LAYOUTS = new HashSet<String>(Arrays.asList("year", "author", "title"));
 	private static final Set<String> ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS = new HashSet<String>(Arrays.asList("asc", "desc"));
 
 	private static final String TAG_NAME = "publications";
 
-	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(TAGS, LAYOUT, KEYS, ORDER));
+	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(TAGS, LAYOUT, KEYS, ORDER, QUANTITY));
 
 	/**
 	 * sets the tag name
@@ -65,7 +65,6 @@ public class PublicationListTag extends SharedResourceTag {
 		final StringBuilder renderedHTML = new StringBuilder();
 		final Map<String, String> tagAtttributes = this.getAttributes();
 		final Set<String> keysSet = tagAtttributes.keySet();
-
 		final String tags;
 		if (!keysSet.contains(TAGS)) {
 			tags = "myown"; // TODO: should be MyOwnSystemTag.NAME but adding
@@ -76,16 +75,40 @@ public class PublicationListTag extends SharedResourceTag {
 		}
 
 		final String requestedName = this.getRequestedName(requestType);
-		
+
 		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format (<a href='/export/").append(requestType.getType()).append("/").append(requestedName).append("/").append(tags).append("' title='show all export formats (including RSS, CVS, ...)''>all formats</a>): <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"").append(requestType.getType()).append("\")'>");
 		renderedHTML.append("<option value='plain'>plain</option><option value='harvardhtml'>harvard</option><option value='din1505'>DIN1505</option><option value='simplehtml'>simpleHTML</option>");
 		renderedHTML.append("</select><input type='hidden' value='").append(tags).append("' /></form></span></div>");
 
-		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, requestType.getGroupingEntity(), requestedName, Collections.singletonList(tags), null, null, null, 0, Integer.MAX_VALUE, null);
+		/*
+		 * get the publications
+		 */
+		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, requestType.getGroupingEntity(), requestedName, Collections.singletonList(tags), null, null, null, 0, Integer.MAX_VALUE, null);
+		BibTexUtils.removeDuplicates(posts);
+
+		/*
+		 * if the user wants to sort them, do so
+		 */
 		if (this.checkSort(tagAtttributes)) {
 			BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(tagAtttributes.get(KEYS)), SortUtils.parseSortOrders(tagAtttributes.get(ORDER)));
 		}
+		
+		/*
+		 * after the publications being sorted, cut the quantity if the user wants to
+		 */
+		if (tagAtttributes.get(QUANTITY) != null) {
+			try {
+				posts = posts.subList(0, Integer.parseInt(tagAtttributes.get(QUANTITY)));
+			} catch (final IndexOutOfBoundsException e) {
+				log.debug(e);
+			} catch (final Exception e) {
+				log.error(e);
+			}
+		}
 
+		/*
+		 * and finally use the chosen layout (plain by def.)
+		 */
 		try {
 			final Layout layout;
 			if (null != tagAtttributes.get(LAYOUT)) {
@@ -93,7 +116,7 @@ public class PublicationListTag extends SharedResourceTag {
 			} else {
 				layout = this.layoutRenderer.getLayout(DEFAULT_LAYOUT, requestedName);
 			}
-			renderedHTML.append("<div>" +this.layoutRenderer.renderLayout(layout, posts, false) +"</div>");
+			renderedHTML.append("<div class='entry bibtex'>" + this.layoutRenderer.renderLayout(layout, posts, false) + "</div>");
 		} catch (final LayoutRenderingException e) {
 			log.error(e.getMessage());
 		} catch (final IOException e) {
