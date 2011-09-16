@@ -1,6 +1,5 @@
 package org.bibsonomy.database.managers.chain.resource.get;
 
-import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class GetResourcesWithDiscussions<R extends Resource, P extends ResourceP
 	protected boolean canHandle(final P param) {
 	    
 		return (	present(param.getFilter()) &&
-				nullOrEqual(param.getFilter(), FilterEntity.POSTS_WITH_DISCUSSIONS));
+				FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter()));
 	}
 
 	@Override
