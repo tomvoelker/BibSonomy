@@ -680,22 +680,14 @@
 
 	<select id="getBibTexWithDiscussionsCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT count(DISTINCT simhash1)
-		FROM (SELECT t1.*, h.ctr AS count
-		      FROM (
-		      			SELECT DISTINCT(interHash) FROM discussion d
-						WHERE 1=1
-		      				<include refid="restrictDiscussionsToGroups"/>
-		      			    <include refid="restrictResourceWithDiscussions"/>
-		      			GROUP BY interHash
-		      ) as d1
-		      LEFT JOIN bibtex t1 ON d1.interHash = t1.simhash1 
-		      LEFT JOIN bibhash h ON <include refid="bibtexSimHash3"/>
-		      <dynamic prepend="WHERE">
-		            <include refid="restrictToGroups"/>
-		      </dynamic>    
-		      LIMIT #limit# OFFSET #offset#) AS b2
-		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
-		WHERE b2.group = g.group
+		FROM (
+				SELECT interHash, MAX(date) FROM discussion d  
+				WHERE content_type = 2
+   				<include refid="restrictDiscussionsToGroups"/>
+   				<include refid="restrictResourceWithDiscussions"/>
+   				GROUP BY interHash
+		) as d2
+		LEFT JOIN gold_standard b ON d2.interHash = b.simhash1, <include refid="reviewRatingsJoinPublication" />
 	</select>
 
 
