@@ -2440,19 +2440,19 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 
     @Override
     public void createWiki(final String userName, final Wiki wiki) {
-	this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+    	this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 
-	final DBSession session = openSession();
-	try {
-	    this.wikiDBManager.createWiki(userName, wiki, session);
-	} finally {
-	    session.close();
-	}
+    	final DBSession session = openSession();
+    	try {
+    		this.wikiDBManager.createWiki(userName, wiki, session);
+    	} finally {
+    		session.close();
+    	}
     }
 
     @Override
     public void deleteWiki(final String userName) {
-	throw new UnsupportedOperationException();
+    	throw new UnsupportedOperationException();
     }
 
     /**
@@ -2476,7 +2476,7 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 		}
 		
 	    if (date == null) {
-		return this.wikiDBManager.getActualWiki(userName, session);
+	    	return this.wikiDBManager.getActualWiki(userName, session);
 	    }
 
 	    return this.wikiDBManager.getPreviousWiki(userName, date, session);
@@ -2511,8 +2511,8 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 	    String actualWikiText = actual.getWikiText();
 	    if(null == actualWikiText) actualWikiText = "";
 	    if (!actualWikiText.equals(wiki.getWikiText())) {
-		this.wikiDBManager.updateWiki(userName, wiki, session);
-		this.wikiDBManager.logWiki(userName, actual, session);
+	    	this.wikiDBManager.updateWiki(userName, wiki, session);
+	    	this.wikiDBManager.logWiki(userName, actual, session);
 	    }
 	} finally {
 	    session.close();
