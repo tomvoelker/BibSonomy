@@ -2,20 +2,14 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
@@ -37,13 +31,11 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 		final String groupingName = command.getRequestedUser();
 		GroupingEntity groupingEntity = null;
 		
-		// no user given -> error
-		// TODO  ... -> show recently discussed posts
 		if (present(groupingName)) {
-			//throw new MalformedURLSchemeException("error.user_page_without_username");
-			// set grouping entity, grouping name, tags, userSimilarity
+			// show posts discussed by the requested User
 			groupingEntity = GroupingEntity.USER;
 		} else {
+			// show posts discussed by anyone
 			groupingEntity = GroupingEntity.ALL;
 		}
 		
@@ -55,19 +47,19 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 		final FilterEntity filter = FilterEntity.POSTS_WITH_DISCUSSIONS;
 		
 
-		/*
-		 * if user is logged in, check if the logged in user follows the requested user
-		 */
-		final RequestWrapperContext context = command.getContext();
-		if (context.isUserLoggedIn()) {
-			final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
-			for (final User u : followersOfUser){
-				if (u.getName().equals(groupingName)) {
-					command.setFollowerOfUser(true);
-					break;
-				}
-			}
-		}
+//		/*
+//		 * if user is logged in, check if the logged in user follows the requested user
+//		 */
+//		final RequestWrapperContext context = command.getContext();
+//		if (context.isUserLoggedIn()) {
+//			final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
+//			for (final User u : followersOfUser){
+//				if (u.getName().equals(groupingName)) {
+//					command.setFollowerOfUser(true);
+//					break;
+//				}
+//			}
+//		}
 		
 		
 		// retrieve and set the requested resource lists, along with total counts
@@ -87,32 +79,32 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// set page title
-			command.setPageTitle("user :: " + groupingName); // TODO: i18n
+//			command.setPageTitle("user :: " + groupingName); // TODO: i18n
 			
 
 			/*
 			 * For logged in users we check, if he is in a friends or group relation
 			 * with the requested user. 
-			 */
-			final String loginUserName = context.getLoginUser().getName();
-			if (context.isUserLoggedIn()) {
-				/*
-				 * Put the user into command to be able to show some details.
-				 * 
-				 * The DBLogic checks, if the login user may see the user's 
-				 * details. 
-				 */
-				final User requestedUser = logic.getUserDetails(groupingName);
-				command.setUser(requestedUser);
-				/*
-				 * Has loginUser this user set as friend?
-				 */
-				command.setOfFriendUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
-				command.setFriendOfUser(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
-				/*
-				 * TODO: we need an adminLogic to access the requested user's groups ...
-				 */
-			}
+//			 */
+//			final String loginUserName = context.getLoginUser().getName();
+//			if (context.isUserLoggedIn()) {
+//				/*
+//				 * Put the user into command to be able to show some details.
+//				 * 
+//				 * The DBLogic checks, if the login user may see the user's 
+//				 * details. 
+//				 */
+//				final User requestedUser = logic.getUserDetails(groupingName);
+//				command.setUser(requestedUser);
+//				/*
+//				 * Has loginUser this user set as friend?
+//				 */
+//				command.setOfFriendUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
+//				command.setFriendOfUser(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
+//				/*
+//				 * TODO: we need an adminLogic to access the requested user's groups ...
+//				 */
+//			}
 			
 			this.endTiming();
 
