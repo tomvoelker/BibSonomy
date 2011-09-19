@@ -239,14 +239,14 @@ function buildGoodPostSuggestion(json) {
 	 */
 	for(var x = 0; inputFields.length > x; x++) {
 		var fieldValue = new Array();
-		var inputField = inputFields[x];
-		var inputFieldName = inputField.name;
+		var inputField = $(inputFields[x]);
+		var inputFieldName = inputField[0].name;
 
 		/*
 		 * field name starts with "post.resource" or it appears in the inputFieldMap
 		 */
 		if (inputFieldName.substring(0, postResource.length) == postResource || inputFieldMap[inputFieldName] != undefined) {
-			var g = inputField.value.replace(u, "");
+			var g = inputField[0].value.replace(u, "");
 			var suggestions = new Array();
 			var occurrences = new Array();
 			var k = -1;
@@ -301,7 +301,7 @@ function buildGoodPostSuggestion(json) {
 			 */
 			if (!suggestions.length || (suggestions.length == 1 
 			&& g == ((name.length)?name.replace(u, ""):fieldVal.replace(u, "")))) continue;
-			$(inputField).addClass("fsInputReco"); // show the user that suggestions are available
+			inputField.addClass("fsInputReco"); // show the user that suggestions are available
 			/* we have a bijective mapping therefore (f:suggestion->occurrence) we sort our indices by descending order */
 			var indices = sortIndices(occurrences);
 			/* occurrences are sorted and aligned to the corresponding suggestions */
@@ -309,18 +309,40 @@ function buildGoodPostSuggestion(json) {
 			var labels = $.map(suggestions, function(item, index) {
 				var suggestion = suggestions[indices[index]];
 				return {
-					label: suggestion + " (" + occurrences[indices[index]] + ")",
-					value: ((fieldValue.length == 0) ? suggestion : fieldValue[indices[index]])
+					label : suggestion + " (" + occurrences[indices[index]] + ")",
+					value : ((fieldValue.length == 0) ? suggestion : fieldValue[indices[index]])
 				};
 			});
-
-			$(inputField).bind("focus", function(){$(this).autocomplete("search", "");}).autocomplete(
+			inputField.autocomplete(
 					{
 						source : labels,
 						minLength : 0,
 						delay : 0
 					}
+			).bind("focus", 
+				function(){
+					$(this).autocomplete("search", "");
+				}
 			);
+			applyKeyDownHandler(inputField);
 		}
 	} // loop over input fields
+}
+/* ugly hack to keep the up and down key working if no suggestions are shown */
+function applyKeyDownHandler(element) {
+	var widget = element.autocomplete("widget");
+	var keyHandler = function (e) {
+		var p = widget.hasClass("ui-autocomplete-disabled");
+		if((e.keyCode == 38 || e.keyCode == 40)
+		&& !p
+		&& widget[0].style.display == 'none') {
+			element.autocomplete( "disable" );
+		} else if(p)
+			element.autocomplete( "enable" );
+	};
+	element
+	.bind( "autocompleteopen", function(event, ui) {
+		widget.prepend("<div>Element</div>"); // TODO: replace with something meaningful
+	})
+	.bind("keydown",function(e) {keyHandler(e);});
 }
