@@ -17,6 +17,10 @@
 		LEFT JOIN review_ratings_cache c ON (c.interHash = b.book_url_hash)
 	</sql>
 	
+	<sql id="reviewRatingsJoinCommunityBookmark">
+		LEFT JOIN review_ratings_cache c ON (c.interHash = b.simhash1)
+	</sql>
+
 	<sql id="reviewRatingsJoinBookmark2">
 		LEFT JOIN review_ratings_cache c ON (c.interHash = bb.book_url_hash)
 	</sql>
