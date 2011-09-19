@@ -660,20 +660,21 @@
 
 	<select id="getBibTexWithDiscussions" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT 
-		
-		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
-		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
-		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
-		b.bibtexAbstract, null as user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.scraperid,
-		b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, null as tag_name, null as `group`, 
-		null as group_name, 0 as count, <include refid="reviewRatingsRows" /> 
-		FROM discussion d, gold_standard b <include refid="reviewRatingsJoinPublication" />
-		WHERE 
-				content_type = 2
-				AND d.interHash = b.simhash1
+			b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+			b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+			b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+			b.bibtexAbstract, null as user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.scraperid,
+			b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, null as tag_name, null as `group`, 
+			null as group_name, 0 as count, <include refid="reviewRatingsRows" /> 
+		FROM (
+				SELECT interHash, MAX(date) FROM discussion d  
+				WHERE content_type = 2
    				<include refid="restrictDiscussionsToGroups"/>
    				<include refid="restrictResourceWithDiscussions"/>
-		ORDER BY d.date DESC
+   				GROUP BY interHash
+		) as d2
+		LEFT JOIN gold_standard b ON d2.interHash = b.simhash1, <include refid="reviewRatingsJoinPublication" />
+		ORDER BY d2.date DESC
 		LIMIT #limit# OFFSET #offset#
 	</select>
 
