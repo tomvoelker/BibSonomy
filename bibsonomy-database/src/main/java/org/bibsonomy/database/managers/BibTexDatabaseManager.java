@@ -273,7 +273,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		
 		if (posts != null) {
 			for (final Post<BibTex> post : posts) {
-				if (post.getUser().getName().equals(param.getUserName())) {
+				if (present(post.getUser()) && post.getUser().getName().equals(param.getUserName())) {
 					post.getResource().setPrivnote(extraDb.getBibTexPrivnoteForUser(post.getResource().getIntraHash(), param.getUserName(), session));
 				}
 			}
