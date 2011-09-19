@@ -663,9 +663,9 @@
 		FROM (SELECT t1.*, h.ctr AS count
 		      FROM (
 		      			SELECT DISTINCT(interHash) FROM discussion d
-		      			WHERE 
-		      				<include refid="restrictResourceWithDiscussions"/>
+		      			WHERE 1=1
 		      				<include refid="restrictDiscussionsToGroups"/>
+		      				<include refid="restrictResourceWithDiscussions"/>
 		      ) as d1
 		      LEFT JOIN bibtex t1 ON d1.interHash = t1.simhash1 
 		      LEFT JOIN bibhash h ON <include refid="bibtexSimHash3"/>
@@ -684,9 +684,9 @@
 		FROM (SELECT t1.*, h.ctr AS count
 		      FROM (
 		      			SELECT DISTINCT(interHash) FROM discussion d
-		      			WHERE 
-		      			    <include refid="restrictResourceWithDiscussions"/>
+						WHERE 1=1
 		      				<include refid="restrictDiscussionsToGroups"/>
+		      			    <include refid="restrictResourceWithDiscussions"/>
 		      			GROUP BY interHash
 		      ) as d1
 		      LEFT JOIN bibtex t1 ON d1.interHash = t1.simhash1 

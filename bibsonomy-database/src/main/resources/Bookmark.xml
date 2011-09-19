@@ -440,9 +440,9 @@
 		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
 		      FROM ( 
 						SELECT DISTINCT(interHash) FROM discussion d
-						WHERE 
-		      		 		<include refid="restrictResourceWithDiscussions"/> 
+						WHERE 1=1
 		            		<include refid="restrictDiscussionsToGroups"/>
+		      		 		<include refid="restrictResourceWithDiscussions"/> 
 		      ) AS d1
 		      LEFT JOIN bookmark t1 ON d1.interHash = t1.book_url_hash
 		      LEFT JOIN urls u ON u.book_url_hash = t1.book_url_hash
@@ -462,9 +462,9 @@
 		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
 		      FROM ( 
 						SELECT DISTINCT(interHash) FROM discussion d
-						WHERE 
-		      		 		<include refid="restrictResourceWithDiscussions"/>
+						WHERE 1=1
 				            <include refid="restrictDiscussionsToGroups"/>
+		      		 		<include refid="restrictResourceWithDiscussions"/>
 		      ) AS d1
 		      LEFT JOIN bookmark t1 ON d1.interHash = t1.book_url_hash
 		      LEFT JOIN urls u ON u.book_url_hash = t1.book_url_hash

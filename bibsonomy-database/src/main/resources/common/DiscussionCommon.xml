@@ -59,7 +59,7 @@
 	
 	
 	<sql id="restrictResourceWithDiscussions">
-		<isNotNull property="requestedUserName"> (( #requestedUserName# = #userName#  AND d.user_name = #requestedUserName# ) OR ( d.user_name = #requestedUserName# AND d.anonymous = 0 ))</isNotNull>
+		<isNotNull prepend="AND" property="requestedUserName"> (( #requestedUserName# = #userName#  AND d.user_name = #requestedUserName# ) OR ( d.user_name = #requestedUserName# AND d.anonymous = 0 ))</isNotNull>
 	</sql>
 
 </sqlMap>
