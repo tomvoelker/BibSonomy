@@ -38,7 +38,7 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 		GroupingEntity groupingEntity = null;
 		
 		// no user given -> error
-		// TODO  ... -> show recently duscussed posts
+		// TODO  ... -> show recently discussed posts
 		if (present(groupingName)) {
 			//throw new MalformedURLSchemeException("error.user_page_without_username");
 			// set grouping entity, grouping name, tags, userSimilarity
@@ -70,7 +70,6 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 		}
 		
 		
-		int totalNumPosts = 1;
 		// retrieve and set the requested resource lists, along with total counts
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
@@ -83,7 +82,6 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 			 * set the post counts
 			 */
 			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, null, null, filter, null, entriesPerPage, null);
-			totalNumPosts += listCommand.getTotalCount();
 		}
 
 		// html format - retrieve tags and return HTML view
@@ -125,27 +123,6 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
-	}
-
-	/**
-	 * Maps a filter string to the corresponding filter enum.
-	 * 
-	 * @param filterString
-	 * @return
-	 */
-	private FilterEntity getFilter(final String filterString) {
-		if ("myPDF".equals(filterString)) {
-			/*
-			 * display only posts which have a document attached
-			 */
-			return FilterEntity.JUST_PDF;
- 		} else if ("myDuplicates".equals(filterString)) {
-			/*
-			 * display duplicate entries
-			 */
-			return FilterEntity.DUPLICATES;
-		}
-		return null;
 	}
 
 	@Override
