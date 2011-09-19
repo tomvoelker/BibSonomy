@@ -270,25 +270,53 @@
 		</isNotEmpty>
 	</sql>
 	
-	<!-- restrict visibility of retrieved items to the groups a user may see -->	
-	<sql id="inGroupsDiscussion">
-	    <!-- no user logged in - only public posts -->
-		<isEmpty property="userName" prepend="AND">
-		  	d.group = 0 
-		</isEmpty>
-		<!-- a user is logged in - check groups -->
-		<isNotEmpty property="userName">
-		  <isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
-			  <include refid="inGroupsUncheckedDiscussion"/>
-		  </isNotEqual>
-		</isNotEmpty>
-	</sql>
-	
 	<sql id="inGroupsUncheckedDiscussion">
 		d.group IN (
 		<iterate property="groups" conjunction=",">
 		    $groups[]$
 		</iterate>)	
+	</sql>
+
+	<!-- restrict visibility of retrieved items to the groups a user may see -->	
+	<sql id="discussionVisible">
+		<!-- no user logged in - only public posts, dont care for anonymous-->
+		<isEmpty property="userName">
+		  	d.group = 0
+		  	<isNotEmpty property="requestedUserName" prepend="AND">
+		  		d.user_name = #requestedUserName#
+		  		AND d.anonymous = 0
+		  	</isNotEmpty> 
+		</isEmpty>
+		
+		<!-- a user is logged in => if user is not requUser: groups and anonymous checking -->
+		<isNotEmpty property="userName">
+		  	<isEmpty property="requestedUserName">
+		  		<include refid="inGroupsDiscussion"/>
+			</isEmpty>	
+		  	<isNotEmpty property="requestedUserName">
+		  		d.user_name = #requestedUserName#		  		
+		  		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
+		  			<include refid="inGroupsDiscussion"/>
+		  		  	AND d.anonymous = 0
+		  		</isNotEqual>
+		  	</isNotEmpty> 
+		</isNotEmpty>
+	</sql>
+
+	<sql id="inGroupsDiscussion">
+		d.group IN (
+		<iterate property="groups" conjunction=",">
+	    	$groups[]$
+		</iterate>)	
+	</sql>
+	
+	<sql id="restrictResourceWithDiscussions">
+		<isNotNull property="requestedUserName">
+			d.user_name = #requestedUserName#
+	    	<isNotEqual property="requestedUserName" compareProperty="userName" prepend="AND">
+	     		d.anonymous = 0
+	    	</isNotEqual>
+	    </isNotNull>
 	</sql>
 	
 	<!-- restrict visibility directly, i.e. without checking for user's own items -->

@@ -50,14 +50,4 @@
 		dg.discussion_id, dg.`group`, dg.user_name, dg.date, dg.change_date
 	</sql>
 	
-	
-	<sql id="restrictResourceWithDiscussions">
-		<isNotNull prepend="AND" property="requestedUserName">
-			d.user_name = #requestedUserName#
-	    	<isNotEqual prepend="AND" property="requestedUserName" compareProperty="userName">
-	     		d.anonymous = 0
-	    	</isNotEqual>
-	    </isNotNull>
-	</sql>
-
 </sqlMap>

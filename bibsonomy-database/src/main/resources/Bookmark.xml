@@ -434,46 +434,35 @@
 	
 	
 	<select id="getBookmarkWithDiscussions" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
-		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.change_date, <include refid="reviewRatingsRows" />
-		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
-		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
-		      FROM ( 
-						SELECT DISTINCT(interHash) FROM discussion d
-						WHERE 1=1
-		            		<include refid="restrictDiscussionsToGroups"/>
-		      		 		<include refid="restrictResourceWithDiscussions"/> 
-		      ) AS d1
-		      LEFT JOIN bookmark t1 ON d1.interHash = t1.book_url_hash
-		      LEFT JOIN urls u ON u.book_url_hash = t1.book_url_hash
-		      <dynamic prepend="WHERE">
-		      		<include refid="restrictToGroups"/>
-		      </dynamic>
-		      LIMIT #limit# OFFSET #offset#) AS bb
-		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g
-		WHERE bb.group = g.group
-		GROUP BY intraHash
-		ORDER BY bb.date DESC, bb.content_id DESC
+		SELECT b.content_id, d2.interHash, d2.interHash AS intraHash, b.title, description, b.date,
+		       b.url AS book_url, 0 AS count, null as tag_name, null as user_name, b.change_date, null as `group`, 
+			null as group_name, <include refid="reviewRatingsRows" />
+		FROM (
+				SELECT interHash, MAX(date)  AS date
+				FROM discussion d  
+  				WHERE
+  				<include refid="discussionVisible"/>
+   				GROUP BY interHash
+		) as d2
+ 		JOIN gold_standard b ON d2.interHash = b.simhash1 <include refid="reviewRatingsJoinCommunityBookmark" />
+		WHERE b.content_type = 1
+		ORDER BY d2.date DESC
+		LIMIT #limit# OFFSET #offset#
 	</select>
 		
 	<select id="getBookmarkWithDiscussionsCount" resultClass="int" parameterClass="bookmarkParam">
-		SELECT count(DISTINCT bb.book_url_hash)
-		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
-		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
-		      FROM ( 
-						SELECT DISTINCT(interHash) FROM discussion d
-						WHERE 1=1
-				            <include refid="restrictDiscussionsToGroups"/>
-		      		 		<include refid="restrictResourceWithDiscussions"/>
-		      ) AS d1
-		      LEFT JOIN bookmark t1 ON d1.interHash = t1.book_url_hash
-		      LEFT JOIN urls u ON u.book_url_hash = t1.book_url_hash
-		      <dynamic prepend="WHERE">
-		      		<include refid="restrictToGroups"/>
-		      </dynamic>
-		      LIMIT #limit# OFFSET #offset#) AS bb
-		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g
-		WHERE bb.group = g.group
+		SELECT COUNT(*)
+		FROM (
+				SELECT interHash, MAX(date) AS date 
+				FROM discussion d  
+  				WHERE
+  				<include refid="discussionVisible"/>
+   				GROUP BY interHash
+		) as d2
+ 		JOIN gold_standard b ON d2.interHash = b.simhash1
+		WHERE b.content_type = 1
+		ORDER BY d2.date DESC
+		LIMIT #limit# OFFSET #offset#
 	</select>
 
     <insert id="insertBookmark" parameterClass="bookmarkParam">
