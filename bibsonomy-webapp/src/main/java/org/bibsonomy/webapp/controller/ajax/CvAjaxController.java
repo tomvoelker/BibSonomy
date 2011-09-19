@@ -111,7 +111,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	}
 
 	/**
-	 * Method which 
+	 * Method which renders the wikiText
 	 * @param command
 	 * @param wikiText
 	 * @param renderOption

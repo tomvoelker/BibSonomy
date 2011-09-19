@@ -8,7 +8,7 @@ $(function(){
     /**
      * Handler for the layout-links
      */
-    $('a.changeLayout').click(function(e){
+    $('.changeLayout').click(function(e){
         e.preventDefault();
         $.ajax({
             type: "GET",
@@ -51,16 +51,30 @@ $(function(){
     });
     
     /**
-     * Handler for the
+     * Handler to toggle the admin panel
      */
-    $('#startEdit').click(function(){
-        $(this).parent().hide('clip', function(){
-            $(this).parent().next().next().show('clip', function(){
-                $(this).prev().show('clip');
-            });
-        });
-        return false;
+    $('#hideAdmin').click(function(){
+        $('#fsform').hide('blind',function() {
+			$('#showAdminField').show('blind');
+		});
     });
+	
+	/**
+	 * Handler to toggle the admin panel
+	 */
+	$('#showAdmin').click(function() {
+		$('#fsform').show('blind',function() {
+			$('#showAdminField').hide('blind');
+		});
+	});
+	
+	/**
+	 * Handler for the layout form 
+	 * @param {Object} e
+	 */
+	$('#layoutButton').click(function() {
+		$('#layouts').toggle("blind");
+	});
     
     /**
      * Handler for the textfield shortcuts

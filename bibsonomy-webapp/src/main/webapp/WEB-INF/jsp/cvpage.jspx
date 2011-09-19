@@ -73,8 +73,8 @@
     	</jsp:attribute>
 		
 		<jsp:attribute name="content">
-		
-		
+		<div>
+		<div id="general_100">
 			<!-- CV admin panel. Does show if you are the requested user -->
 			<c:if test="${command.context.loginUser.name eq command.requestedUser}">
 				<!-- <div id="general_100">
@@ -91,35 +91,48 @@
 					</span>
 				</div>-->
 		<form:form><div id="fsform">
-    	  <fieldset class="fsInner">
+		<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}"/>
+    	  <fieldset class="fsOuter">
 		    <div class="fsRow">
-		    <p><fmt:message key = "cv.admin.topic"/></p>
-		      <form:label cssClass="fsLabel" path="wikiText"><fmt:message key="cv.admin.menu"/></form:label>
-		      <form:textarea id="wikiTextArea" cssStyle="height: 5cm" cssClass="fsInput" path="wikiText" />
-		      <input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}"/>
-		      <div class='fsRow'>
-		      	<ul>
-		      	<!-- TODO: I18N -->
-		      		<li><a href="#">CV Options</a></li>
-		      		<li>
-		      			<a href="#">Designs</a>
-		      			<ul>		      		
-		      				<li><a href='#' data-layout='LAYOUT_TABLE' class='changeLayout'>Layout|TABLE</a></li>
-		      				<li><a href='#' data-layout='LAYOUT_ROBERT' class='changeLayout'>Layout|ROBERT</a></li>
-		      				<li><a href='#' data-layout='LAYOUT_CURRENT' class='changeLayout'>Layout|CURRENT</a></li>
-		      				<li><a href='#' onclick="return clearCVTextField();">Clear</a></li>
-		      			</ul>
-		      		</li>
-		      	</ul>
-		      	<input type="button" href='#' onclick="return submitWiki('preview');" value="preview" />
-		      	<input type="button" href='#' onclick="return submitWiki('save');" value="save" />
-		      	<input type="button" href='#' onclick="return submitWiki('publicPreview');" value="Public Preview" />
-		      </div>
+		    	<div class="fsLabel"><fmt:message key = "cv.admin.topic"/></div>
+		      	<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
 		    </div>
+			<div class="fsRow" style="clear:both;">
+			<fmt:message key="cv.admin.layout" var="layout"/>
+		   	<fmt:message key="cv.admin.preview" var="preview"/>
+		   	<fmt:message key="cv.admin.preview_pub" var="pPrev"/>
+		   	<fmt:message key="cv.admin.save" var="save"/>
+		   	<fmt:message key="cv.admin.hide" var="hide"/>
+		   	<fmt:message key="cv.admin.show" var="show"/>
+			 	<input class="fsFormSubmit" type="button" value="${layout}" id="layoutButton" />
+			 	<span style="float:right;">
+		     	<input type="button" href='#' onclick="return submitWiki('preview');" value="${preview}" />
+		     	<input type="button" href='#' onclick="return submitWiki('publicPreview');" value="${pPrev}" />
+		     	<input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
+		      	<input type="button" href='#' value="${hide}" id="hideAdmin" />
+		      	</span>
+		    </div>
+		   	<fieldset id="layouts" class="fsInner" style="display:none;">
+		   	<fmt:message key="cv.layout.name.def1en" var="def1en"/>
+		   	<fmt:message key="cv.layout.name.def1ger" var="def1ger"/>
+		   	<fmt:message key="cv.layout.name.def2en" var="def2en"/>
+		   	<fmt:message key="cv.layout.name.def1ger" var="def2ger"/>
+		   	<fmt:message key="cv.layout.name.curr" var="curr"/>
+		   	<fmt:message key="cv.layout.name.clear" var="clear"/>
+		      	<div>     		
+		      		<input type="button" data-layout='LAYOUT_DEFAULT_I_EN' class='changeLayout' value="${def1en}" />
+		      		<input type="button" data-layout='LAYOUT_DEFAULT_I_GER' class='changeLayout' value="${def1ger}" />
+		      		<input type="button" data-layout='LAYOUT_DEFAULT_II_EN' class='changeLayout' value="${def2en}" />
+		      		<input type="button" data-layout='LAYOUT_DEFAULT_II_GER' class='changeLayout' value="${def2ger}" />
+		      		<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" />
+		      		<input type="button" onclick="return clearCVTextField();" value="${clear}" />
+		      </div>
+		     </fieldset>
   		  </fieldset>
   		  <div id='errorField' style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'><p id="errorText"></p></div>
-		<div id='loadingDiv' style='width: 100%'><img src="${resdir}/image/ajax_loader.gif" alt="wait" /></div>
+		<div id='loadingDiv' style='width: 100%;display:none'><img src="${resdir}/image/ajax_loader.gif" alt="wait" /></div>
 		</div>
+		<div id="showAdminField" style="display:none;"><input type="button" value="${show}" id="showAdmin"/></div>
 		</form:form>
 	</c:if>
 	
@@ -128,7 +141,8 @@
 				<c:out value="${command.renderedWikiText}" escapeXml="false" />
 			</c:if>
 			</div>
-			
+			</div>
+			</div>
 </jsp:attribute>
 </layout:layout>
 	
