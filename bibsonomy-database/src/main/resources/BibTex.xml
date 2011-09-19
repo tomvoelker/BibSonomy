@@ -205,7 +205,6 @@
 			 WHERE <include refid="relationTagTagWhereQuery"/>         <!-- to see users which are tagged accordingly by the currUser -->
 			   AND <include refid="relationTagUsernameWhereQuery"/>    <!--                            ++++                           -->
 			   AND <include refid="relationTagResourceWhereQuery"/>    <!-- take all rows, which are owned by a related user -->
-			   AND b.group = #groupId#
 			 	   <isNotEmpty property="tagIndex" prepend="AND">
 				  	 <include refid="tagWhereQuery"/> AND
 			  		 <include refid="tagResourceWhereQuery"/>
@@ -663,15 +662,15 @@
 		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.*, h.ctr AS count
 		      FROM (
-		      			SELECT * FROM discussion d
-		      			WHERE <include refid="restrictResourceWithDiscussions"/>
-		      			GROUP BY interHash
+		      			SELECT DISTINCT(interHash) FROM discussion d
+		      			WHERE 
+		      				<include refid="restrictResourceWithDiscussions"/>
+		      				<include refid="restrictDiscussionsToGroups"/>
 		      ) as d1
 		      LEFT JOIN bibtex t1 ON d1.interHash = t1.simhash1 
 		      LEFT JOIN bibhash h ON <include refid="bibtexSimHash3"/>
 		      <dynamic prepend="WHERE">
 		            <include refid="restrictToGroups"/>
-		            <include refid="restrictDiscussionsToGroups"/>
 		      </dynamic>    
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
@@ -684,15 +683,16 @@
 		SELECT count(DISTINCT simhash1)
 		FROM (SELECT t1.*, h.ctr AS count
 		      FROM (
-		      			SELECT * FROM discussion d
-		      			WHERE <include refid="restrictResourceWithDiscussions"/>
+		      			SELECT DISTINCT(interHash) FROM discussion d
+		      			WHERE 
+		      			    <include refid="restrictResourceWithDiscussions"/>
+		      				<include refid="restrictDiscussionsToGroups"/>
 		      			GROUP BY interHash
 		      ) as d1
 		      LEFT JOIN bibtex t1 ON d1.interHash = t1.simhash1 
 		      LEFT JOIN bibhash h ON <include refid="bibtexSimHash3"/>
 		      <dynamic prepend="WHERE">
 		            <include refid="restrictToGroups"/>
-		            <include refid="restrictDiscussionsToGroups"/>
 		      </dynamic>    
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
