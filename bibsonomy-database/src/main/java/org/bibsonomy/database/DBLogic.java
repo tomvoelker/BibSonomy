@@ -78,7 +78,6 @@ import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
-import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Author;
@@ -1549,12 +1548,14 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 		    } else {
 		    	// add document
 		    	this.docDBManager.addDocument(userName, post.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
-		    	
-		    	// execute system tags
-		    	final List<ExecutableSystemTag> systemTags = SystemTagsExtractor.extractExecutableSystemTags(post.getTags(), new HashSet<Tag>());
-				for (final ExecutableSystemTag systemTag: systemTags) {
-					systemTag.performDocuments(resourceHash, Collections.singletonList(document), session);
-				}
+		    	/*
+		    	 * TODO: refactor document handling during post creation
+		    	 */
+//		    	// execute system tags
+//		    	final List<ExecutableSystemTag> systemTags = SystemTagsExtractor.extractExecutableSystemTags(post.getTags(), new HashSet<Tag>());
+//				for (final ExecutableSystemTag systemTag: systemTags) {
+//					systemTag.performDocuments(resourceHash, Collections.singletonList(document), session);
+//				}
 		    	
 		    }
 
