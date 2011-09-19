@@ -438,13 +438,16 @@
 		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.change_date, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
 		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
-		      FROM bookmark t1, urls u, discussion d
-		      WHERE u.book_url_hash = t1.book_url_hash
-		      		AND d.interHash = t1.book_url_hash
-		      		<include refid="ANDrestrictResourceWithDiscussions"/>
+		      FROM ( SELECT * FROM discussion as d
+		      		 WHERE <include refid="restrictResourceWithDiscussions"/> 
+					 GROUP BY d.interHash
+		      ) AS d1
+		      LEFT JOIN bookmark t1 ON d1.interHash = t1.book_url_hash
+		      LEFT JOIN urls u ON u.book_url_hash = t1.book_url_hash
+		      <dynamic prepend="WHERE">
 		      		<include refid="restrictToGroups"/>
 		            <include refid="restrictDiscussionsToGroups"/>
-		      ORDER BY date DESC
+		      </dynamic>
 		      LIMIT #limit# OFFSET #offset#) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g
 		WHERE bb.group = g.group
@@ -454,14 +457,19 @@
 		
 	<select id="getBookmarkWithDiscussionsCount" resultClass="int" parameterClass="bookmarkParam">
 		SELECT count(DISTINCT bb.book_url_hash)
-		FROM (SELECT t1.content_id, t1.book_url_hash, t1.group
-		      FROM bookmark t1, urls u, discussion d
-		      WHERE u.book_url_hash = t1.book_url_hash
-		      		AND d.interHash = t1.book_url_hash
-		      		<include refid="ANDrestrictResourceWithDiscussions"/>
-		            <include refid="restrictToGroups"/>
+		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
+		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
+		      FROM ( SELECT * FROM discussion as d
+		      		 WHERE <include refid="restrictResourceWithDiscussions"/> 
+					 GROUP BY interHash
+		      ) AS d1
+		      LEFT JOIN bookmark t1 ON d1.interHash = t1.book_url_hash
+		      LEFT JOIN urls u ON u.book_url_hash = t1.book_url_hash
+		      <dynamic prepend="WHERE">
+		      		<include refid="restrictToGroups"/>
 		            <include refid="restrictDiscussionsToGroups"/>
-		      ) AS bb
+		      </dynamic>
+		      LIMIT #limit# OFFSET #offset#) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g
 		WHERE bb.group = g.group
 	</select>
