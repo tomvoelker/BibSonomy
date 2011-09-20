@@ -140,9 +140,7 @@
 	            <ref bean="luceneUpdateBookmarkCronTriggerWithIndexOptimization" />
 	            <ref bean="luceneUpdateGoldStandardPublicationCronTriggerWithIndexOptimization" />
 	            <!--
-	            	cron-triggered generation of indexes is disabled for now; please decide for
-	            	next release (2.0.13) if it shall be used (e.g. in monthly cycles) or not
-	            	sdo/dbe 20110221 
+	            	cron-triggered generation of indexes is disabled for Biblicious
 	            <ref bean="luceneGenerateBibTexCronTrigger" />
 	            <ref bean="luceneGenerateBookmarkCronTrigger" />
 	             -->
