@@ -433,10 +433,9 @@
 	</select>
 	
 	
-	<select id="getBookmarkWithDiscussions" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+	<select id="getBookmarkWithDiscussions" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, d2.interHash, d2.interHash AS intraHash, b.title, description, b.date,
-		       b.url AS book_url, 0 AS count, null as tag_name, null as user_name, b.change_date, null as `group`, 
-			null as group_name, <include refid="reviewRatingsRows" />
+		       b.url, null as user_name, b.content_type, 0 as count, <include refid="reviewRatingsRows" />
 		FROM (
 				SELECT interHash, MAX(date)  AS date
 				FROM discussion d  

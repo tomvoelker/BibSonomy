@@ -658,16 +658,11 @@
 	</select>
 
 
-	<select id="getBibTexWithDiscussions" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+	<select id="getBibTexWithDiscussions" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
 		SELECT 
-			b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
-			b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
-			b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
-			b.bibtexAbstract, null as user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.scraperid,
-			b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, null as tag_name, null as `group`, 
-			null as group_name, 0 as count, <include refid="reviewRatingsRows" /> 
+			<include refid="allGoldStandardPublicationAttributes" />, b.simhash2 as intraHash, b.simhash1 as interHash, 0 as count, <include refid="reviewRatingsRows" /> 
 		FROM (
-				SELECT interHash, MAX(date)  AS date
+				SELECT interHash, MAX(date) AS date
 				FROM discussion d  
   				WHERE
   				<include refid="discussionVisible"/>
