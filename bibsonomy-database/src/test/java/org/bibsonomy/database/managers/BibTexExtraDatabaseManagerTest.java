@@ -83,21 +83,6 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 
 	@Ignore
 	@Test
-	public void getBibTexPrivnoteForUser() {
-		final String note = bibTexExtraDb.getBibTexPrivnoteForUser("6e955a315951954a8030b79cece1e314", "siko", this.dbSession);
-		assertEquals("test", note);
-	}
-
-	@Ignore
-	@Test
-	public void updateBibTexPrivnoteForUser() {
-		bibTexExtraDb.updateBibTexPrivnoteForUser(this.BIB_TEST_HASH, this.TEST_USER, this.TEST_TXT, this.dbSession);
-		final String note = bibTexExtraDb.getBibTexPrivnoteForUser(this.BIB_TEST_HASH, this.TEST_USER, this.dbSession);
-		assertEquals(this.TEST_TXT, note);
-	}
-
-	@Ignore
-	@Test
 	public void updateDocument() {
 		bibTexExtraDb.updateDocument(813954, 12345678, this.dbSession);
 	}
