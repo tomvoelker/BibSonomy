@@ -270,7 +270,9 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	@Override
 	public List<Post<BibTex>> getPosts(final BibTexParam param, final DBSession session) {
 		final List<Post<BibTex>> posts = super.getPosts(param, session);
-		
+		/*
+		 * FIXME: The private Note should be attaced to the post directly in the sql query => one query for all
+		 */
 		if (posts != null) {
 			for (final Post<BibTex> post : posts) {
 				if (present(post.getUser()) && post.getUser().getName().equals(param.getUserName())) {
