@@ -342,7 +342,7 @@ function applyKeyDownHandler(element) {
 	};
 	element
 	.bind( "autocompleteopen", function(event, ui) {
-		widget.prepend("<div>Element</div>"); // TODO: replace with something meaningful
+		widget.prepend("<li class='fsInputRecoHelp'>" + getString("post.resource.suggestion.help") + "</li>");
 	})
 	.bind("keydown",function(e) {keyHandler(e);});
 }
