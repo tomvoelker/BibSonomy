@@ -4,7 +4,7 @@
 <sqlMap namespace="BibTex">
 	<select id="getBibTexPopular" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, <include refid="bibtexSimHashes"/>, t.change_date, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
-		FROM (SELECT *, date AS change_date FROM temp_bibtex b2 WHERE b2.popular_days = (SELECT popular_days FROM temp_bibtex GROUP BY popular_days ORDER by popular_days LIMIT 1 OFFSET #days#)
+		FROM (SELECT *, date AS change_date, NULL AS privnote FROM temp_bibtex b2 WHERE b2.popular_days = (SELECT popular_days FROM temp_bibtex GROUP BY popular_days ORDER by popular_days LIMIT 1 OFFSET #days#)
 		ORDER BY b2.rank LIMIT #limit# OFFSET #offset#) b
 		LEFT OUTER JOIN tas t ON b.content_id = t.content_id <include refid="reviewRatingsJoinPublication" />, bibhash h
 		WHERE <include refid="bibtexSimHash"/>

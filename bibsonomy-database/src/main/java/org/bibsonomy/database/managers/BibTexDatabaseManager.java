@@ -262,28 +262,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	public List<Post<BibTex>> getPostsWithRepository(final BibTexParam param, final DBSession session) {
 		return this.postList("selectBibtexWithRepositorys", param, session);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getPosts(org.bibsonomy.database.params.ResourcesParam, org.bibsonomy.database.util.DBSession)
-	 */
-	@Override
-	public List<Post<BibTex>> getPosts(final BibTexParam param, final DBSession session) {
-		final List<Post<BibTex>> posts = super.getPosts(param, session);
-		/*
-		 * FIXME: The private Note should be attaced to the post directly in the sql query => one query for all
-		 */
-		if (posts != null) {
-			for (final Post<BibTex> post : posts) {
-				if (present(post.getUser()) && post.getUser().getName().equals(param.getUserName())) {
-					post.getResource().setPrivnote(extraDb.getBibTexPrivnoteForUser(post.getResource().getIntraHash(), param.getUserName(), session));
-				}
-			}
-		}
 		
-		return posts;
-	}
-	
 	/**
 	 * Gets the details of a post, including all extra data like documents, extra urls and private notes
 	 * given the INTRA-HASH of the post and the user name.
@@ -305,12 +284,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			if (this.permissionDb.isAllowedToAccessPostsDocuments(authUser, post, session)) {
 				publication.setDocuments(this.docDb.getDocumentsForPost(userName, resourceHash, session));
 			}
-			
-			// add private notes
-			if (authUser != null && authUser.equalsIgnoreCase(userName)) {
-				publication.setPrivnote(extraDb.getBibTexPrivnoteForUser(resourceHash, userName, session));
-			}
-			
+
 			// add extra URLs
 			publication.setExtraUrls(extraDb.getURL(resourceHash, userName, session));
 			

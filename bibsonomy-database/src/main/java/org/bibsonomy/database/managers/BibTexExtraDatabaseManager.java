@@ -119,19 +119,6 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Returns the private note for a publication with the given hash.
-	 * 
-	 * @param hash
-	 * @param username
-	 * @param session
-	 * @return private note
-	 */
-	public String getBibTexPrivnoteForUser(final String hash, final String username, final DBSession session) {
-		final BibTexExtraParam param = this.buildPrivnoteParam(hash, username, null);
-		return this.queryForObject("getBibTexPrivnoteForUser", param, String.class, session);
-	}
-
-	/**
 	 * Updates the private note for a publication with the given hash.
 	 * 
 	 * @param hash
