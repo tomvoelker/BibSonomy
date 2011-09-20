@@ -9,6 +9,7 @@ import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,6 +27,9 @@ public class LuceneGenerateResourceIndexTest {
     public static void initLucene() throws Exception {
     	JNDIBinder.bind();
 		manager = (LuceneGoldStandardManager<GoldStandardPublication>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneGoldStandardPublicationManager");
+
+		// initialize test database
+		TestDatabaseLoader.getInstance().load();
 		
 		// delete old indices
 		final List<LuceneResourceIndex<GoldStandardPublication>> resourceIndices = manager.getResourceIndeces();
