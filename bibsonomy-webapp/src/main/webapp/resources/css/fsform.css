@@ -74,6 +74,11 @@
     background-repeat: no-repeat;
 }
 
+.fsInputRecoHelp {
+	font-size: 11px;
+	font-weight: bold; 
+}
+
 .fsRow {
    position: relative; 
    clear: both;
