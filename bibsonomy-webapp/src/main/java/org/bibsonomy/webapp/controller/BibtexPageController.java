@@ -32,7 +32,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 	private static final String GOLD_STANDARD_USER_NAME = "";
 	private static final int TAG_LIMIT = 1000;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "null" })
 	@Override
 	public View workOn(final BibtexResourceViewCommand command) {
 		final String format = command.getFormat();
@@ -160,22 +160,26 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			// ignore
 		}
 		
-
+		BibTex firstPublication = null;
 		/*
 		 * If list is empty, send a 404 error.
 		 */
-		if (!present(command.getBibtex().getList())) {
-			/*
-			 * We throw a ResourceNotFoundException such that we don't get empty
-			 * resource pages.
-			 */
-			throw new ResourceNotFoundException(shortHash);
+		if (present(goldStandard)) {
+			firstPublication = goldStandard.getResource();
+		} else {
+			if (!present(command.getBibtex().getList())) {
+				/*
+				 * We throw a ResourceNotFoundException such that we don't get empty
+				 * resource pages.
+				 */
+				throw new ResourceNotFoundException(shortHash);
+			} 
+			firstPublication = command.getBibtex().getList().get(0).getResource();			
 		}
 		
 		/*
 		 * extract first publication
 		 */
-		final BibTex firstPublication = command.getBibtex().getList().get(0).getResource();			
 		command.setDocuments(firstPublication.getDocuments());
 		
 		/*
