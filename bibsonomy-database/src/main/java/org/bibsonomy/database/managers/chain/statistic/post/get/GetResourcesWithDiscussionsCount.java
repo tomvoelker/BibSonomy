@@ -1,18 +1,12 @@
 package org.bibsonomy.database.managers.chain.statistic.post.get;
 
-import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
-import static org.bibsonomy.util.ValidationUtils.present;
-import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
-
 import org.bibsonomy.common.enums.FilterEntity;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Gets count of resources of a special user
@@ -37,14 +31,6 @@ public class GetResourcesWithDiscussionsCount extends StatisticChainElement {
 
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return (        (    param.getGrouping() == GroupingEntity.USER && present(param.getRequestedUserName()) 
-			 	  || param.getGrouping() == GroupingEntity.ALL && !present(param.getRequestedUserName())
-				) &&
-				!presentValidGroupId(param.getGroupId()) && 
-				!present(param.getTagIndex()) && 
-				!present(param.getHash()) && 
-				nullOrEqual(param.getOrder(), Order.ADDED) &&
-				present(param.getFilter()) &&
-				nullOrEqual(param.getFilter(), FilterEntity.POSTS_WITH_DISCUSSIONS));
+		return (FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter()));
 	}
 }
