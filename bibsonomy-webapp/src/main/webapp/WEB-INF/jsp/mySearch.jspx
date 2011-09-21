@@ -89,7 +89,7 @@
 						</c:forEach>);
 	
 	var titles = new Array(<c:forEach var='title' items='${command.titles}' varStatus="loopStatus">
-								"${mtl:quoteJSONcleanBibTeX(title)}"<c:if test="${not loopStatus.last}">,</c:if>
+								"<c:out value="${mtl:quoteJSONcleanBibTeX(title)}"/>"<c:if test="${not loopStatus.last}">,</c:if>
 							</c:forEach>);
 							
 	/**

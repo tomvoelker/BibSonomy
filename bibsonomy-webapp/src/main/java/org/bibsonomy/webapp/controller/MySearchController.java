@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -93,14 +95,20 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		 * read title, author and tag information form bibtex
 		 */
 		for (final Post<BibTex> post : bibtex.getList()) {
+			final List<PersonName> postAuthors = post.getResource().getAuthor();
+			final List<PersonName> postEditors = post.getResource().getEditor();
 
 			titles.add(post.getResource().getTitle().replaceAll("\\n|\\r", ""));
 
-			for (final PersonName name: post.getResource().getAuthor()) {
-				authors.add(name.getLastName());
+			if (present(postAuthors)) {
+				for (final PersonName name: postAuthors) {
+					authors.add(name.getLastName());
+				}
 			}
-			for (final PersonName name: post.getResource().getEditor()) {
-				authors.add(name.getLastName());
+			if (present(postEditors)) {
+				for (final PersonName name: postEditors) {
+					authors.add(name.getLastName());
+				}
 			}
 			
 			for (final Tag tag : post.getTags()) {
@@ -172,8 +180,13 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 
 			// author --> title relation
 			final List<PersonName> author = publication.getAuthor();
-			final List<PersonName> persons = new LinkedList<PersonName>(author);
-			persons.addAll(publication.getEditor());
+			final List<PersonName> persons = new LinkedList<PersonName>();
+			if (present(author)) {
+				persons.addAll(author);
+			}
+			if (present(publication.getEditor())) {
+				persons.addAll(publication.getEditor());
+			}
 			for (final PersonName name : persons) {
 				final int indexOfAuthor = authorList.indexOf(name.getLastName()); // FIXME: indexOf is inefficient!
 				if (authorTitle[indexOfAuthor] == null) { 
