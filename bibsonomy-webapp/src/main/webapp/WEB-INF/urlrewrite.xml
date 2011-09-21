@@ -401,8 +401,8 @@
 	
 	<!-- /cv/NAME -->
 	<rule>
-		<name>/cv/USER</name>
-		<from>^/+cv/(.+)$</from>
+		<name>/cv/user/USER</name>
+		<from>^/+cv/+user/(.+)$</from>
 		<set type="parameter" name="requestedUser">$1</set>
 		<to last="true">/cvpage</to>
 	</rule>
@@ -415,13 +415,12 @@
 		<to last="true">/picture</to>
 	</rule>
 	
-		<!-- /cv/group/GROUPNAME
 	<rule>
 		<name>/cv/group/USER</name>
 		<from>^/+cv/+group/(.+)$</from>
-		<set type="parameter" name="requestedGroup">$1</set>
-		<to last="true">/groupcvpage</to>
-	</rule>-->
+		<set type="parameter" name="requestedUser">$1</set>
+		<to last="true">/cvpage</to>
+	</rule>
 	
 	<!-- /bibtexkey/KEY/USER -->
 	<rule>

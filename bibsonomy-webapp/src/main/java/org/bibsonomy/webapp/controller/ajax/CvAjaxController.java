@@ -21,6 +21,7 @@ import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.CVWikiModel;
+import org.bibsonomy.wiki.enums.GroupLayout;
 import org.bibsonomy.wiki.enums.UserLayout;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
@@ -71,8 +72,8 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		final Group requestedGroup;
 
 		requestedGroup = this.logic.getGroupDetails(authUser);
-
-		if (present(requestedGroup)) {
+		boolean isGroup = present(requestedGroup);
+		if (isGroup) {
 			final GroupingEntity groupingEntity = GroupingEntity.GROUP;
 
 			/*
@@ -104,7 +105,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 			return renderWiki(command, wikiText, renderOptions);
 		}
 		try {
-			return getLayout(command, locale);
+			return getLayout(command, locale, isGroup);
 		} catch (Exception e) {
 			return handleError("error.405");
 		}
@@ -138,11 +139,11 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 * @return
 	 * @throws Exception
 	 */
-	private View getLayout(AjaxCvCommand command, Locale locale) throws Exception {
+	private View getLayout(AjaxCvCommand command, Locale locale, boolean isGroup) throws Exception {
 		log.debug("ajax -> getLayout");
 		final String layoutName = command.getLayout();
 		if (!UserLayout.LAYOUT_CURRENT.name().equals(layoutName)) {
-			String layoutRef = UserLayout.valueOf(layoutName).getRef();
+			String layoutRef = isGroup ?  GroupLayout.valueOf(layoutName).getRef() : UserLayout.valueOf(layoutName).getRef();
 			String wikiText = messageSource.getMessage(layoutRef, null, locale);
 			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		} else {

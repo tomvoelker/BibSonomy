@@ -64,7 +64,7 @@ public class CvPageController extends ResourceListController implements Minimali
 	private View handleGroupCV(Group requestedGroup, CvPageViewCommand command) {
 		final String groupName = requestedGroup.getName();
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
-
+		command.setIsGroup(true);
 		// TODO: add todo
 		final List<User> groupUsers = this.logic.getUsers(null, groupingEntity, groupName, null, null, null, null, null, 0, 1000);
 		requestedGroup.setUsers(groupUsers);

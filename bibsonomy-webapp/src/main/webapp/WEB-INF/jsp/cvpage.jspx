@@ -116,14 +116,22 @@
 		   	<fmt:message key="cv.layout.name.def1en" var="def1en"/>
 		   	<fmt:message key="cv.layout.name.def1ger" var="def1ger"/>
 		   	<fmt:message key="cv.layout.name.def2en" var="def2en"/>
-		   	<fmt:message key="cv.layout.name.def1ger" var="def2ger"/>
+		   	<fmt:message key="cv.layout.name.def2ger" var="def2ger"/>
 		   	<fmt:message key="cv.layout.name.curr" var="curr"/>
 		   	<fmt:message key="cv.layout.name.clear" var="clear"/>
-		      	<div>     		
-		      		<input type="button" data-layout='LAYOUT_DEFAULT_I_EN' class='changeLayout' value="${def1en}" />
+		      	<div>   
+		      	<c:choose>	
+		      	<c:when test="${command.isGroup}">
+		      		<input type="button" data-layout='LAYOUT_G_DEFAULT_I_EN' class='changeLayout' value="${def1en}" />
+		      		<input type="button" data-layout='LAYOUT_G_DEFAULT_I_GER' class='changeLayout' value="${def1ger}" />
+				</c:when>
+				<c:otherwise>
+					<input type="button" data-layout='LAYOUT_DEFAULT_I_EN' class='changeLayout' value="${def1en}" />
 		      		<input type="button" data-layout='LAYOUT_DEFAULT_I_GER' class='changeLayout' value="${def1ger}" />
 		      		<input type="button" data-layout='LAYOUT_DEFAULT_II_EN' class='changeLayout' value="${def2en}" />
 		      		<input type="button" data-layout='LAYOUT_DEFAULT_II_GER' class='changeLayout' value="${def2ger}" />
+				</c:otherwise>
+		      	</c:choose>  	
 		      		<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" />
 		      		<input type="button" onclick="return clearCVTextField();" value="${clear}" />
 		      </div>
