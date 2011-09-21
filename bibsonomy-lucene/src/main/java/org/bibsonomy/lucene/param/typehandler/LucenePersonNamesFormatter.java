@@ -18,7 +18,12 @@ public class LucenePersonNamesFormatter extends AbstractTypeHandler<List<PersonN
 
 	@Override
 	public String getValue(List<PersonName> obj) {
-		return PersonNameUtils.serializePersonNames(obj);
+		final String personString = PersonNameUtils.serializePersonNames(obj);
+		if (personString == null) {
+			return "";
+		}
+		
+		return personString;
 	}
 
 	/** 
