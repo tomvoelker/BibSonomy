@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.FriendsResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -71,13 +72,13 @@ public class FriendsPageController extends SingleResourceListController implemen
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		if ( (!present(userRelation)) && ("html".equals(command.getFormat())) ) {
 			// this is the default case for the FriendsPageController
-			command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, null));
-			command.setFriendsOfUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, null));
+			command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
+			command.setFriendsOfUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 		} else if (present(userRelation)) {
 			if( UserRelation.OF_FRIEND.name().equalsIgnoreCase(userRelation) ) {
-				command.setFriendsOfUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, null));
+				command.setFriendsOfUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 			} else if( UserRelation.FRIEND_OF.name().equalsIgnoreCase(userRelation) ) {
-				command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, null));
+				command.setUserFriends(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 			}
 		
 			// when users only are requested, we don't need resources
