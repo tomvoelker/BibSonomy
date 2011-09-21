@@ -6,7 +6,7 @@ package org.bibsonomy.webapp.command;
  * @version $Id$
  */
 public class CvPageViewCommand extends UserResourceViewCommand {
-
+	private boolean isGroup = false;
 	private String wikiText;
 	private String renderedWikiText;
 
@@ -36,6 +36,20 @@ public class CvPageViewCommand extends UserResourceViewCommand {
 	 */
 	public void setRenderedWikiText(String renderedWikiText) {
 		this.renderedWikiText = renderedWikiText;
+	}
+
+	/**
+	 * @return the isGroup
+	 */
+	public boolean getIsGroup() {
+		return isGroup;
+	}
+
+	/**
+	 * @param isGroup the isGroup to set
+	 */
+	public void setIsGroup(boolean isGroup) {
+		this.isGroup = isGroup;
 	}
 	
 }

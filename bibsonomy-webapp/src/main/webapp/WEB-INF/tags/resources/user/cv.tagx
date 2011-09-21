@@ -19,7 +19,7 @@
     	<fmt:message key="cv.title" var="cvtitle">
     		<fmt:param value="${user.name}"/>
     	</fmt:message>
-		<button:linkButton title="${cvtitle}" href="/cv/${fn:escapeXml(user.name)}" image="${resdir}/image/cv.png">
+		<button:linkButton title="${cvtitle}" href="/cv/user/${fn:escapeXml(user.name)}" image="${resdir}/image/cv.png">
 			<jsp:attribute name="text">
 				<fmt:message key="navi.cv.abbrev"/>
 			</jsp:attribute>
