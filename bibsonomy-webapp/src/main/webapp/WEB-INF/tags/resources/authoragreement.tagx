@@ -47,8 +47,17 @@
 			<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.email"/>:</div>
 			<div class="lfval"><c:out value="${command.context.loginUser.email}"></c:out></div>
 
+
+			<c:set var="post_resource_openaccess_additionalfields_institution" value="" />
+			<c:if test="${not empty command.additonalMetadata['post.resource.openaccess.additionalfields.institution'][0]}">
+				<c:if test="${'undefined' != command.additonalMetadata['post.resource.openaccess.additionalfields.institution'][0]}">
+					<c:set var="post_resource_openaccess_additionalfields_institution" value="${command.additonalMetadata['post.resource.openaccess.additionalfields.institution'][0]}"/>
+				</c:if>
+			</c:if>
+
+			
 			<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.institution"/>:</div>
-			<div class="lfval"><input type="text" value="${command.additonalMetadata['post.resource.openaccess.additionalfields.institution'][0]}"></input></div>
+			<div class="lfval"><input type="text" value="${post_resource_openaccess_additionalfields_institution}" ></input></div>
 
 			<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.title"/>:</div>
 			<div class="lfval"><c:out value="${publication.title}" escapeXml="false"></c:out></div>
