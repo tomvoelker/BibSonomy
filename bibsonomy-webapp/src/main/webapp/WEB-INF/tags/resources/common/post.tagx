@@ -41,9 +41,12 @@
 		<div class="bmdesc">
 			<jsp:invoke fragment="desc"/>
 		</div>
-		<span class="bmmeta">
-			<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
-		</span>
+		<!-- show only meta if user_name for post given / no user_name should be present if thera are gold_standard posts -->
+		<c:if test="${!empty post.user.name}">
+			<span class="bmmeta">
+				<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+			</span>
+		</c:if>
 		<div class="bmfoot">
 			<span class="bmaction">
 				<jsp:invoke fragment="actions"/>
