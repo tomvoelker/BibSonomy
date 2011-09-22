@@ -33,7 +33,7 @@ import org.bibsonomy.util.StringUtils;
  */
 public class SimHashCleaner {
 
-	private static final boolean UPDATE = false;
+	private static final boolean UPDATE = true;
 	/*
 	 * SQL queries to get/manipulate the data
 	 */
@@ -41,34 +41,40 @@ public class SimHashCleaner {
 	/*
 	 * to check, if gold standard posts will change ...
 	 */
-//	private static final String QUERY_GET = "SELECT * FROM gold_standard_publications";
+	//	private static final String QUERY_GET = "SELECT * FROM gold_standard_publications";
 	/*
 	 * update the hashes
 	 */
 	private static final String QUERY_UPDATE_BIBTEX = "UPDATE bibtex SET simhash0 = ?, simhash1 = ?, simhash2 = ? WHERE content_id = ?";
 	private static final String QUERY_UPDATE_BIBHASH = "INSERT INTO bibhash (hash,ctr,type) VALUES (?,1,?) ON DUPLICATE KEY UPDATE ctr=ctr+1;";
+	private static final String QUERY_UPDATE_BIBHASH_DEC = "UPDATE bibhash SET ctr=ctr+1 WHERE hash = ? AND type = ?";
+
+	private static final int LEVEL_ERROR = 4;
+	private static final int LEVEL_WARN = 3;
+	private static final int LEVEL_DEBUG = 2;
+	private static final int LEVEL_INFO = 1;
 	
 	/*
 	 * read using
-	 
+
 	 sort -u /tmp/changed_person_names| grep -v " and'" | grep -v " and '" | grep -v " and and " | grep -v " and  and " | less
 
 	 */
 	private static final String CHANGED_PERSON_NAMES_FILE = "/tmp/changed_person_names";
 	/*
 	 * should never happen: old hash is different in database:
-	 
+
 	 grep "^o/db:[0-9]" /tmp/SimHashCleaner.log | less -S
-	 
+
 	 */
 	private static final String LOG_FILE = "/tmp/" + SimHashCleaner.class.getSimpleName() + ".log";
-	
+
 
 	private final BufferedWriter changedPersonNameWriter;
 	private final BufferedWriter logWriter;
-	
+
 	private final Properties props;
-	
+
 	int changedHashesCtr = 0;
 	int printedHashesCtr = 0;
 	int updatedHashesCtr = 0;
@@ -85,20 +91,22 @@ public class SimHashCleaner {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			
+
 			conn.setAutoCommit(false);
-			
+
 			/*
 			 * prepare statements
 			 */
 			final PreparedStatement get = conn.prepareStatement(QUERY_GET);
 			final PreparedStatement updateBibtex = conn.prepareStatement(QUERY_UPDATE_BIBTEX);
 			final PreparedStatement updateBibhash = conn.prepareStatement(QUERY_UPDATE_BIBHASH);
+			final PreparedStatement updateBibhashDec = conn.prepareStatement(QUERY_UPDATE_BIBHASH_DEC);
 			/*
 			 * do query
 			 */
 			final ResultSet rst = get.executeQuery();
 			rst.setFetchSize(10000);
+			long now = System.currentTimeMillis();
 			while (rst.next()) {
 				publCtr++;
 				final BibTex newBibtex = getBibTex(rst);
@@ -114,44 +122,46 @@ public class SimHashCleaner {
 
 				/*
 				 * either the new hash is different from the database or
-				 * e have a post that was updated recently and already has the
+				 * we have a post that was updated recently and already has the
 				 * new hashes in the database 
 				 * 
 				 */
-				if (newEqualsDb.length() != 0 || (oldEqualsDb.length() != 0 && oldEqualsNew.length() == 0)) {
-					
-					update(updateBibtex, updateBibhash, newBibtex, contentId);
-					
+				if (newEqualsDb.length() != 0) { // || (oldEqualsDb.length() != 0 && oldEqualsNew.length() == 0)) {
+
 					changedHashesCtr++;
+
+					update(updateBibtex, updateBibhash, updateBibhashDec, newBibtex, oldBibtex, contentId);
 					
 					final StringBuffer a = getPerson("author", oldBibtex.getAuthor(), newBibtex.getAuthor(), newEqualsDb);
 					final StringBuffer e = getPerson("editor", oldBibtex.getEditor(), newBibtex.getEditor(), newEqualsDb);
 					if (present(a) || present(e)) {
-						
+
 						if (skip(oldBibtex.getAuthor())) continue;
 						if (skip(oldBibtex.getEditor())) continue;						
-						
+
 						printedHashesCtr++;
-						print("o/db:" + oldEqualsDb + ", ");
-						print("n/db:" + newEqualsDb + ", ");
-						print("o/n:" + oldEqualsNew + ", ");
-						if (present(a)) print(a);
-						if (present(e)) print(e);
-						println();
+						print("o/db:" + oldEqualsDb + ", ", LEVEL_INFO);
+						print("n/db:" + newEqualsDb + ", ", LEVEL_INFO);
+						print("o/n:" + oldEqualsNew + ", ", LEVEL_INFO);
+						if (present(a)) print(a, LEVEL_INFO);
+						if (present(e)) print(e, LEVEL_INFO);
+						println(LEVEL_INFO);
 					}
+
 				}
-				if (publCtr % 100000 == 0) println("-- " + publCtr + " --");
-				if (UPDATE && updatedHashesCtr % 1000 == 0) conn.commit();
+				if (publCtr % 100000 == 0) println("-- " + publCtr + " --", LEVEL_DEBUG);
+				//				if (UPDATE && updatedHashesCtr % 1000 == 0) conn.commit();
 			}
 			if (UPDATE) conn.commit();
-			
-			println("-----------------------------------");
-			println("observed posts: " + publCtr);
-			println("changed hashes: " + changedHashesCtr);
-			println("printed hashes: " + printedHashesCtr);
-			println("updated hashes: " + updatedHashesCtr);
-			println("changed person: " + changedPersonCtr);
-			println("pnp exceptions: " + exceptionCtr);
+
+			println("-----------------------------------", LEVEL_DEBUG);
+			println("observed posts: " + publCtr, LEVEL_DEBUG);
+			println("changed hashes: " + changedHashesCtr, LEVEL_DEBUG);
+			println("printed hashes: " + printedHashesCtr, LEVEL_DEBUG);
+			println("updated hashes: " + updatedHashesCtr, LEVEL_DEBUG);
+			println("changed person: " + changedPersonCtr, LEVEL_DEBUG);
+			println("pnp exceptions: " + exceptionCtr, LEVEL_DEBUG);
+			println("loop-time in s: " + ((System.currentTimeMillis() - now) / 1000.0), LEVEL_DEBUG);
 
 			changedPersonNameWriter.close();
 			logWriter.close();
@@ -163,50 +173,74 @@ public class SimHashCleaner {
 		}
 	}
 
-	private void print(final CharSequence s) throws IOException {
-		System.out.print(s);
+	private void print(final CharSequence s, final int level) throws IOException {
+		if (level >= LEVEL_ERROR) {
+			System.out.print("ERROR: " + s);
+		} else if (level >= LEVEL_DEBUG) {
+			System.out.print(s);
+		}
 		logWriter.write(s.toString());
 	}
-	
-	private void println(final CharSequence s) throws IOException {
-		print(s + "\n");
+
+	private void println(final CharSequence s, final int level) throws IOException {
+		print(s + "\n", level);
 	}
-	private void println() throws IOException {
-		print("\n");
+	private void println(final int level) throws IOException {
+		print("\n", level);
 	}
-	
+
 	/**
 	 * 
 	 * 
 	 * @param updateBibtex	<pre>UPDATE bibtex SET simhash0 = ?, simhash1 = ?, simhash2 = ? WHERE content_id = ?</pre>
-	 * @param updateBibhash <pre>INSERT INTO bibhash (hash,ctr,type) VALUES (?,1,?) ON DUPLICATE KEY UPDATE ctr=ctr+1</pre>
+	 * @param updateBibhashInc <pre>INSERT INTO bibhash (hash,ctr,type) VALUES (?,1,?) ON DUPLICATE KEY UPDATE ctr=ctr+1</pre>
+	 * @param updateBibhashDec <pre>UPDATE bibhash SET ctr=ctr+1; WHERE hash = ? AND type = ?</pre>
 	 * @param newBibTex
 	 * @param contentId
-	 * @throws SQLException 
+	 * @throws IOException 
 	 */
-	private void update(final PreparedStatement updateBibtex, final PreparedStatement updateBibhash, final BibTex newBibTex, final int contentId) throws SQLException {
+	private void update(final PreparedStatement updateBibtex, final PreparedStatement updateBibhashInc, final PreparedStatement updateBibhashDec, final BibTex newBibTex, final OldBibTex oldBibTex, final int contentId) throws IOException {
 		if (UPDATE) {
-			updateBibtex.setString(1, newBibTex.getSimHash0());
-			updateBibtex.setString(2, newBibTex.getSimHash1());
-			updateBibtex.setString(3, newBibTex.getSimHash2());
-			updateBibtex.setInt(4, contentId);
-			updateBibtex.executeUpdate();
-			
-			updateBibhash.setString(1, newBibTex.getSimHash0());
-			updateBibhash.setInt(2, 0);
-			updateBibhash.executeUpdate();
-			
-			updateBibhash.setString(1, newBibTex.getSimHash1());
-			updateBibhash.setInt(2, 1);
-			updateBibhash.executeUpdate();
-			
-			updateBibhash.setString(1, newBibTex.getSimHash2());
-			updateBibhash.setInt(2, 2);
-			updateBibhash.executeUpdate();
-			updatedHashesCtr++;
+			try {
+				updateBibtex.setString(1, newBibTex.getSimHash0());
+				updateBibtex.setString(2, newBibTex.getSimHash1());
+				updateBibtex.setString(3, newBibTex.getSimHash2());
+				updateBibtex.setInt(4, contentId);
+				updateBibtex.executeUpdate();
+
+				// ++
+				updateBibhashInc.setString(1, newBibTex.getSimHash0());
+				updateBibhashInc.setInt(2, 0);
+				updateBibhashInc.executeUpdate();
+
+				updateBibhashInc.setString(1, newBibTex.getSimHash1());
+				updateBibhashInc.setInt(2, 1);
+				updateBibhashInc.executeUpdate();
+
+				updateBibhashInc.setString(1, newBibTex.getSimHash2());
+				updateBibhashInc.setInt(2, 2);
+				updateBibhashInc.executeUpdate();
+
+				// --
+				updateBibhashDec.setString(1, oldBibTex.getSimHash0());
+				updateBibhashDec.setInt(2, 0);
+				updateBibhashDec.executeUpdate();
+
+				updateBibhashDec.setString(1, oldBibTex.getSimHash1());
+				updateBibhashDec.setInt(2, 1);
+				updateBibhashDec.executeUpdate();
+
+				updateBibhashDec.setString(1, oldBibTex.getSimHash2());
+				updateBibhashDec.setInt(2, 2);
+				updateBibhashDec.executeUpdate();
+
+				updatedHashesCtr++;
+			} catch (final SQLException e) {
+				println("updating post with content_id " + contentId + " caused exception " + e.getMessage(), LEVEL_ERROR);
+			}
 		}
 	}
-	
+
 	/**
 	 * Skips person names that change because of a reason we have understood and
 	 * can not / don't want to avoid.
@@ -247,7 +281,7 @@ public class SimHashCleaner {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * Examples, where hashes change:
 	 * 
@@ -263,7 +297,7 @@ public class SimHashCleaner {
 	 *    --> new = '[a.mccallum,l.douglas baker]'
 	 *        old = '[a.mccallum,l.baker]'
 	 */
-	
+
 	private StringBuffer getPerson(final String personType, final String oldPerson, final List<PersonName> newPerson, final String newEqualsDb) throws IOException {
 		if (present(oldPerson)) {
 			final StringBuffer buf = new StringBuffer();
@@ -381,8 +415,8 @@ public class SimHashCleaner {
 		}
 		return Collections.emptyList();
 	}
-	
-	
+
+
 
 	private OldBibTex getOldBibTex(final ResultSet rst) throws SQLException {
 		final OldBibTex bibtex = new OldBibTex();
