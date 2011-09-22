@@ -31,11 +31,11 @@
 					    	<fmt:message key="navi.my.plural"/>
 					    	<fmt:message key="navi.friends.cap"/>
 					    </a>
-						<a href="/discussed/user/${fn:escapeXml(user.name)}">
+						<a href="/discussed/user/${mtl:encodeURI(loginUserName)}">
 							<fmt:message key="navi.my.plural"/>
 							<fmt:message key="navi.discussedPosts.Cap"/>
 						</a>
-						<a href="/relations/${fn:escapeXml(user.name)}">
+						<a href="/relations/${mtl:encodeURI(loginUserName)}">
 							<fmt:message key="navi.my.plural"/>
 							<fmt:message key="navi.relations.cap"/>
 						</a>
@@ -43,15 +43,15 @@
 				        	<fmt:message key="navi.my.plural"/>
 				        	<fmt:message key="navi.search.cap"/>						
 						</a>
-				        <a href="/user/${fn:escapeXml(user.name)}?filter=myPDF">
+				        <a href="/user/${mtl:encodeURI(loginUserName)}?filter=myPDF">
 				        	<fmt:message key="navi.my.plural"/>
 				        	<fmt:message key="navi.pdfs"/>
 				        </a>
-				        <a href="/user/${fn:escapeXml(user.name)}?filter=myDuplicates">
+				        <a href="/user/${mtl:encodeURI(loginUserName)}?filter=myDuplicates">
 				        	<fmt:message key="navi.my.plural"/>
 				        	<fmt:message key="navi.duplicates.cap"/>
 				        </a>
-				        <a href="/bib/user/${fn:escapeXml(user.name)}?items=1000">
+				        <a href="/bib/user/${mtl:encodeURI(loginUserName)}?items=1000">
 				        	<fmt:message key="navi.my"/>
 				        	<fmt:message key="navi.bibtex.cap"/>
 				        </a>
@@ -59,7 +59,7 @@
 				        	<fmt:message key="navi.my.plural"/>
 				        	<fmt:message key="navi.followedUsers.my"/>
 				        </a>
-				        <a href="/cv/user/${fn:escapeXml(user.name)}">
+				        <a href="/cv/user/${mtl:encodeURI(loginUserName)}">
 				        	<fmt:message key="navi.my"/>
 				        	<fmt:message key="navi.cv"/>						
 						</a>
