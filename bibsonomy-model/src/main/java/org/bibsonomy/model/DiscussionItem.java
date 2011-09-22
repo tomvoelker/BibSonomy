@@ -81,6 +81,11 @@ public class DiscussionItem {
 	private boolean anonymous;
 
 	/**
+	 * resource type the comment belongs to
+	 */
+	private int contentType;
+
+	/**
 	 * @return the comments
 	 */
 	public List<DiscussionItem> getSubDiscussionItems() {
@@ -213,5 +218,19 @@ public class DiscussionItem {
 	 */
 	public void setAnonymous(final boolean anonymous) {
 		this.anonymous = anonymous;
+	}
+
+	/**
+	 * @param contentType the contentType to set
+	 */
+	public void setContentType(int contentType) {
+		this.contentType = contentType;
+	}
+
+	/**
+	 * @return the contentType
+	 */
+	public int getContentType() {
+		return contentType;
 	}
 }
