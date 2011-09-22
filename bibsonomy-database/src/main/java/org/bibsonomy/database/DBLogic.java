@@ -47,6 +47,7 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.AuthorDatabaseManager;
 import org.bibsonomy.database.managers.BasketDatabaseManager;
@@ -2601,6 +2602,7 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 			 * first check if gold standard post exists
 			 */
 			final Post<?> goldStandardPostinDB = this.getPostDetails(interHash, "", session);
+
 			/*
 			 * if not create one
 			 */
@@ -2623,11 +2625,13 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 					 */
 					goldStandardPublication.setPrivnote("");
 					goldResource = goldStandardPublication;
+					discussionItem.setContentType(ConstantID.BIBTEX_CONTENT_TYPE.getId());
 				} else if (present(bookmarkPosts)) {
 					final GoldStandardBookmark goldStandardBookmark = new GoldStandardBookmark();
 					ObjectUtils.copyPropertyValues(bookmarkPosts.get(0).getResource(), goldStandardBookmark);
 					
 					goldResource = goldStandardBookmark;
+					discussionItem.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE.getId());
 				} else {
 					log.warn("neither publications nor bookmarks found for hash '" + interHash + "'");
 				}
@@ -2639,6 +2643,10 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 					PostUtils.populatePost(goldStandardPost, this.loginUser);
 					this.createPost(goldStandardPost, session);	
 				}
+			} else {
+			    // if present (goldStandardPostinDB) 
+			    // set content type of discussionItem
+			    discussionItem.setContentType(ConstantID.getContentTypeByClass(goldStandardPostinDB.getResource().getClass()).getId());
 			}
 			
 			/*

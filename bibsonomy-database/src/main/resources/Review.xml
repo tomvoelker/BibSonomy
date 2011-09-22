@@ -21,7 +21,7 @@
 	</select>
 		
 	<insert id="insertReview" parameterClass="reviewParam">
-		INSERT INTO discussion (discussion_id, interHash, hash, type, user_name, text, rating, anonymous, `group`, date, change_date) VALUES (#review.id#, #interHash#, #review.hash#, #discussionItemType.id#, #userName#, #review.text#, #review.rating#, #review.anonymous#, #groupId#, #review.date#, #review.changeDate#)
+		INSERT INTO discussion (discussion_id, interHash, hash, type, user_name, text, rating, anonymous, `group`, date, change_date, content_type) VALUES (#review.id#, #interHash#, #review.hash#, #discussionItemType.id#, #userName#, #review.text#, #review.rating#, #review.anonymous#, #groupId#, #review.date#, #review.changeDate#, #review.contentType#)
 	</insert>
 	
 	<!--

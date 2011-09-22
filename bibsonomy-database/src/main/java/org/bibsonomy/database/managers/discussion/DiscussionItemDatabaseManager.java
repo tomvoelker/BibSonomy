@@ -97,6 +97,7 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 			discussionItem.setDate(new Date());
 			discussionItem.setHash(DiscussionItemUtils.recalculateHash(discussionItem));
 			
+			
 			/*
 			 * create the discussion item
 			 * for each group an own entry! for performance!

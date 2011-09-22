@@ -18,20 +18,21 @@
 		<result property="anonymous"	column="anonymous"		javaType="boolean" />
 		<result property="date" 		column="date"			javaType="date" />
 		<result property="changeDate"	column="change_date"	javaType="date" />
+		<result property="contentType"	column="content_type"	javaType="int" />
 		<result property="user"			resultMap="Common.user"  />
 		<result property="groups"     	resultMap="Common.group" />
 	</resultMap>
 	
 	<sql id="discussionColumns">
-		discussion_id, interHash, user_name, text, rating, date, change_date, anonymous, parent_hash, hash, type, `group`
+		discussion_id, interHash, user_name, text, rating, date, change_date, anonymous, parent_hash, hash, type, `group`, content_type
 	</sql>
 	
 	<sql id="commonDiscussionLogsAttributes">
-		d.discussion_id, d.interHash, d.user_name, d.text, d.rating, d.date, d.change_date, d.anonymous, d.parent_hash, d.hash, d.type, d.group
+		d.discussion_id, d.interHash, d.user_name, d.text, d.rating, d.date, d.change_date, d.anonymous, d.parent_hash, d.hash, d.type, d.group, d.content_type
 	</sql>
 	
 	<sql id="commonDiscussionAttributes">
-		d.discussion_id, d.interHash, CASE WHEN d.anonymous = 1 AND (#userName# IS NULL OR d.user_name != #userName#) THEN "" ELSE d.user_name END AS user_name, d.text, d.rating, d.date, d.change_date, d.anonymous, d.type, d.parent_hash, d.hash
+		d.discussion_id, d.interHash, CASE WHEN d.anonymous = 1 AND (#userName# IS NULL OR d.user_name != #userName#) THEN "" ELSE d.user_name END AS user_name, d.text, d.rating, d.date, d.change_date, d.anonymous, d.type, d.parent_hash, d.hash, d.content_type
 	</sql>
 	
 	<sql id="allDiscussionColumns">

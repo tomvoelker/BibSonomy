@@ -13,6 +13,6 @@
 	</select>
 	
 	<insert id="insertComment" parameterClass="commentParam">
-		INSERT INTO discussion (discussion_id, interHash, hash, type, user_name, text, parent_hash, anonymous, `group`, date, change_date) VALUES (#comment.id#, #interHash#, #comment.hash#, #discussionItemType.id#, #userName#, #comment.text#, #comment.parentHash#, #comment.anonymous#, #groupId#, #comment.date#, #comment.changeDate#)
+		INSERT INTO discussion (discussion_id, interHash, hash, type, user_name, text, parent_hash, anonymous, `group`, date, change_date, content_type) VALUES (#comment.id#, #interHash#, #comment.hash#, #discussionItemType.id#, #userName#, #comment.text#, #comment.parentHash#, #comment.anonymous#, #groupId#, #comment.date#, #comment.changeDate#)
 	</insert>
 </sqlMap>

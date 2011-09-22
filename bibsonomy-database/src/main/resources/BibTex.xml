@@ -660,7 +660,7 @@
 
 	<select id="getBibTexWithDiscussions" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
 		SELECT 
-			<include refid="allGoldStandardPublicationAttributes" />, b.simhash2 as intraHash, b.simhash1 as interHash, 0 as count, <include refid="reviewRatingsRows" /> 
+			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, 0 as count, <include refid="reviewRatingsRows" /> 
 		FROM (
 				SELECT interHash, MAX(date) AS date
 				FROM discussion d  
