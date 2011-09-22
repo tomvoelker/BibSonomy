@@ -25,6 +25,8 @@ package org.bibsonomy.model;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.Serializable;
+
 
 /**
  * The name of a person.
@@ -32,7 +34,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
  * @author Jens Illig
  * @version $Id$
  */
-public class PersonName {
+public class PersonName implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4365762117878931642L;
+
 	/**
 	 * delimiter between the parts of a person's name in the "Last, First" format.
 	 * 
