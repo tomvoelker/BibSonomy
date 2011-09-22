@@ -116,7 +116,7 @@ public class SettingsHandler extends HttpServlet{
 				}
 				if (friend != null) {
 					// logging
-					stmtP = conn.prepareStatement("INSERT INTO log_friends (friends_id, user_name, f_user_name, tag_name, f_network_user_id, friendship_date) SELECT * FROM friends WHERE user_name = ? AND f_user_name = ? AND tag_name = ?");
+					stmtP = conn.prepareStatement("INSERT INTO log_friends (friends_id, user_name, f_user_name, tag_name, f_network_user_id, friendship_date) SELECT friends_id, user_name, f_user_name, tag_name, f_network_user_id, friendship_date FROM friends WHERE user_name = ? AND f_user_name = ? AND tag_name = ?");
 					stmtP.setString(1, currUser);
 					stmtP.setString(2, friend);
 					stmtP.setString(3, relationTag);
