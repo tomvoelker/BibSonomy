@@ -103,10 +103,10 @@ public class PersonNameParser {
 			 */
 			if (present(lineage)) {
 				/*
-				 * we add the lineage after a comma and enclose the last name in brackets
+				 * we add the lineage after a comma
 				 * 
 				 */
-				personName.setLastName("{" + preLastSpace + last + ", " + lineage + "}");
+				personName.setLastName(preLastSpace + last + ", " + lineage);
 			} else {
 				personName.setLastName(preLastSpace + last);
 			}
