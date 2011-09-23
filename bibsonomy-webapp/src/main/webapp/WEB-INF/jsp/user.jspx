@@ -45,6 +45,13 @@
 			
 			<li id="sidebarfilter"></li>
 			
+			<!-- link to discussed user page -->
+			<li>				
+				<span class="sidebar_h"><fmt:message key="post.resource.discussion.headline"/></span>
+				<div class="discussionSidebarContent"><a href="/discussed/user/${fn:escapeXml(command.requestedUser)}"><fmt:message key="navi.discussedPosts"/><c:out value=" "/><fmt:message key="by"/><c:out value=" "/><c:out value="${fn:escapeXml(command.requestedUser)}"/></a></div>
+			</li>
+
+
 			<!-- display user's tag relations -->			
 			<li>
 				<fmt:message key="tagrelations.title" var="tagRelationsTitle" />
@@ -66,12 +73,7 @@
 				</span>
 				<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
 			</li>
-
-			<!-- link to discussed user page -->
-			<li>				
-				<span class="sidebar_h"><fmt:message key="Show"/><c:out value=" "/><a href="/discussed/user/${fn:escapeXml(command.requestedUser)}"><fmt:message key="navi.discussedPosts"/></a></span>
-			</li>
-			
+	
 			<!-- display tags -->
 			<li>
 				<span class="sidebar_h"><fmt:message key="tags"/></span>

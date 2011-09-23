@@ -1792,3 +1792,8 @@ li.bm span.reviewInfo {
 	vertical-align: middle;
 	color: #5F5F5F;
 }
+
+.discussionSidebarContent {
+	margin-left: 1.5em;
+	margin-bottom:1ex;
+}
