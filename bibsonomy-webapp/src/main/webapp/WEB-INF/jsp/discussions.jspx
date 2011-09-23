@@ -55,10 +55,21 @@
 			<li id="sidebarfilter"></li>
 	
 			<!-- link to user page -->
-			<li>				
-				<span class="sidebar_h"><a href="/user/${fn:escapeXml(command.requestedUser)}"><fmt:message key="posts"/><c:out value=" "/><fmt:message key="by"/><c:out value=" "/><c:out value="${fn:escapeXml(command.requestedUser)}"/></a></span>
-			</li>
-			      
+			<c:choose>
+				<c:when test="${not empty command.requestedUser}">
+					<li>				
+						<span class="sidebar_h"><a href="/user/${fn:escapeXml(command.requestedUser)}"><fmt:message key="posts"/><c:out value=" "/><fmt:message key="by"/><c:out value=" "/><c:out value="${fn:escapeXml(command.requestedUser)}"/></a></span>
+					</li>
+			      </c:when>
+			      <c:otherwise>
+			      	<c:set var="loginUserName" value="${command.context.loginUser.name}"/>
+			      	<c:if test="${not empty loginUserName}">
+					<li>				
+						<span class="sidebar_h"><a href="/user/${fn:escapeXml(loginUserName)}"><fmt:message key="posts"/><c:out value=" "/><fmt:message key="by"/><c:out value=" "/><c:out value="${fn:escapeXml(loginUserName)}"/></a></span>
+					</li>
+					</c:if>
+			      </c:otherwise>
+			      </c:choose>
 		</ul>	
 		</jsp:attribute>
 		
