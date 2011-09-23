@@ -4,6 +4,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
@@ -32,7 +33,12 @@
 			<c:url var="exportPath" value="/export/${requPath}${requQueryString}" /><a href="${exportPath}"><fmt:message key="bibtex.more"/></a>
 		</jsp:attribute>
 		<jsp:attribute name="title">
-			<bib:title post="${post}"/>
+			<c:if test="${!empty post.user.name}">
+				<bib:title post="${post}"/>
+			</c:if>
+			<c:if test="${empty post.user.name}">
+				<bibgs:title post="${post}"/>
+			</c:if>
 		</jsp:attribute>
 		
 		<jsp:attribute name="bmicon">
