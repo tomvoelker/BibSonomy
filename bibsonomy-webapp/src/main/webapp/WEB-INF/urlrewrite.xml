@@ -235,6 +235,8 @@
 		<from>^/+(.*)$</from>
 		<set type="parameter" name="bookmark.entriesPerPage">%1</set>
 		<set type="parameter" name="bibtex.entriesPerPage">%1</set>
+		<set type="parameter" name="goldstandardpublication.entriesPerPage">%1</set>
+		<set type="parameter" name="goldstandardbookmark.entriesPerPage">%1</set>
 		<to>/$1</to>
 	</rule>
 	<rule>
