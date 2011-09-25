@@ -3,7 +3,6 @@ package org.bibsonomy.database.managers.chain.resource.get;
 import java.util.List;
 
 import org.bibsonomy.common.enums.FilterEntity;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
@@ -28,7 +27,7 @@ public class GetResourcesWithDiscussions<R extends Resource, P extends ResourceP
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.getDatabaseManagerForType(param.getClass()).getPostsWithDiscussions(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.getDatabaseManagerForType(param.getClass()).getPostsWithDiscussions(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 }

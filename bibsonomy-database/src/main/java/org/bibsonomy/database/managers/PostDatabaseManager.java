@@ -894,9 +894,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * groupId or
 	 * visibleGroupIDs && userName && (userName != requestedUserName)
 	 */
-	public int getPostsWithDiscussionsCount(final String requestedUserName, final String loginUserName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public int getPostsWithDiscussionsCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		final P param = this.createParam(loginUserName, requestedUserName);
-		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
 
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
@@ -1586,11 +1585,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsWithDiscussions(final String loginUserName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsWithDiscussions(final String loginUserName, final String requestedUserName, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
-		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
-		param.setSimHash(simHash);
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
 

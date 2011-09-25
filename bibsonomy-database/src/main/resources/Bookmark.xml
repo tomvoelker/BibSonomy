@@ -441,27 +441,20 @@
 				FROM discussion d  
   				WHERE
   				<include refid="discussionVisible"/>
+  				  AND content_type = 1
    				GROUP BY interHash
+				ORDER BY date DESC
+				LIMIT #limit# OFFSET #offset#
 		) as d2
  		JOIN gold_standard b ON d2.interHash = b.simhash1 <include refid="reviewRatingsJoinCommunityBookmark" />
-		WHERE b.content_type = 1
 		ORDER BY d2.date DESC
-		LIMIT #limit# OFFSET #offset#
 	</select>
 		
 	<select id="getBookmarkWithDiscussionsCount" resultClass="int" parameterClass="bookmarkParam">
-		SELECT COUNT(*)
-		FROM (
-				SELECT interHash, MAX(date) AS date 
-				FROM discussion d  
-  				WHERE
-  				<include refid="discussionVisible"/>
-   				GROUP BY interHash
-		) as d2
- 		JOIN gold_standard b ON d2.interHash = b.simhash1
-		WHERE b.content_type = 1
-		ORDER BY d2.date DESC
-		LIMIT #limit# OFFSET #offset#
+		SELECT COUNT(DISTINCT interHash) 
+		FROM discussion d  
+  		WHERE <include refid="discussionVisible"/>
+   		  AND content_type = 1
 	</select>
 
     <insert id="insertBookmark" parameterClass="bookmarkParam">
