@@ -3,6 +3,8 @@ package org.bibsonomy.webapp.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
@@ -222,10 +224,16 @@ public class ListCommand<T> {
 	public String getResourcetype() {
 		try {
 			if (list.get(0) != null) {
-				T item = list.get(0);
+				final T item = list.get(0);
 				if (item instanceof Post<?>) {
-					Post<?> postItem = (Post<?>) item;
-					return postItem.getResource().getClass().getSimpleName().toLowerCase();
+					final Post<?> postItem = (Post<?>) item;
+					final Object resource = postItem.getResource();
+					if (BibTex.class.isAssignableFrom(resource.getClass())) {
+						return BibTex.class.getSimpleName().toLowerCase();
+					}
+					if (Bookmark.class.isAssignableFrom(resource.getClass())) {
+						return Bookmark.class.getSimpleName().toLowerCase();
+					}
 				}
 			}
 		} catch (Exception ex) {
