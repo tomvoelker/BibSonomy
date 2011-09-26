@@ -228,6 +228,12 @@ public class ListCommand<T> {
 				if (item instanceof Post<?>) {
 					final Post<?> postItem = (Post<?>) item;
 					final Object resource = postItem.getResource();
+					/*
+					 * We use isAssignable here instead of the more generic resource.getSimpleClassName
+					 * This is to guarantee, that GoldstandardPublications are recognized as BibTex and 
+					 * GoldstandardBookmarks are recognized as Bookmarks.
+					 * Changing this behaviour has consequences on the behaviour of each page that displays Goldstandards
+					 */
 					if (BibTex.class.isAssignableFrom(resource.getClass())) {
 						return BibTex.class.getSimpleName().toLowerCase();
 					}
