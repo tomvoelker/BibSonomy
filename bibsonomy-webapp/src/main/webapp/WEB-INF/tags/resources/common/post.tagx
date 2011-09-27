@@ -19,20 +19,23 @@
 	<jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
    
 	<li class="bm">
-		<!-- only display icon when user is logged in and does NOT visit his own userpage  -->
+		<!-- only display icon when user is logged in and does NOT visit his own user page  -->
         <c:if test="${command.context.userLoggedIn and command.requestedUser ne loginUserName}">
-  		  <c:choose>
-			<c:when test="${loginUserName eq post.user.name}">
-				<div class="bmicon_selected" title="${alreadyOwn}">
-					<jsp:invoke fragment="bmicon"/>
-				</div>
-			</c:when>
-			<c:otherwise>
-				<div class="bmicon_unselected" title="${copyThisPost}">
-					<jsp:invoke fragment="bmicon"/>
-				</div>
-			</c:otherwise>
-		  </c:choose>
+        	<!-- FIXME: user name for community posts not given - copying currently not possible -->
+        	<c:if test="${not empty post.user.name}">
+		  		  <c:choose>
+					<c:when test="${loginUserName eq post.user.name}">
+						<div class="bmicon_selected" title="${alreadyOwn}">
+							<jsp:invoke fragment="bmicon"/>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="bmicon_unselected" title="${copyThisPost}">
+							<jsp:invoke fragment="bmicon"/>
+						</div>
+					</c:otherwise>
+			  </c:choose>
+			</c:if>
         </c:if>
 		
 		<div class="bmtitle">
@@ -41,24 +44,33 @@
 		<div class="bmdesc">
 			<jsp:invoke fragment="desc"/>
 		</div>
-		<!-- show only meta if user_name for post given / no user_name should be present if thera are gold_standard posts -->
-		<c:if test="${!empty post.user.name}">
+		
+		<!-- meta (tags, user, posting date) -->
+		<!--+ 
+		 	| FIXME: user name, tags, etc. for community posts not given -
+		 	| therefore display of metadata disabled. We could/should show here
+		 	| meta information about the community post, e.g., last change date,
+		 	| revision number, etc.
+		 	+-->
+		<c:if test="${not empty post.user.name}">
 			<span class="bmmeta">
 				<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 			</span>
 		</c:if>
+		
 		<div class="bmfoot">
-			<span class="bmaction">
-				<jsp:invoke fragment="actions"/>
-			</span>
-			<!-- ugly hack to circumvent IEs clearfix bug -->
-			<c:set var="act">
-				<jsp:invoke fragment="actions"/>
-			</c:set>
-			<c:if test="${not (fn:trim(act) eq '')}">
-				<jsp:text>${mtl:ch('nbsp')}</jsp:text>
+			<!-- actions like copy, edit, delete, pick, etc. -->
+			<!-- FIXME: user name for community posts not given - copying currently not possible -->
+			<c:if test="${not empty post.user.name}">
+				<c:set var="act_fragment"><jsp:invoke fragment="actions"/></c:set>
+				<span class="bmaction">${act_fragment}</span>
+				
+				<!-- ugly hack to circumvent IEs clearfix bug -->
+				<c:if test="${not (fn:trim(act_fragment) eq '')}">
+					<jsp:text>${mtl:ch('nbsp')}</jsp:text>
+				</c:if>
+				<!-- end ugly hack (dbe) -->
 			</c:if>
-			<!-- end ugly hack (dbe) -->
 			
 			<!-- TODO: remove as soon lucene supports rating -->
 			<!-- ratings -->
