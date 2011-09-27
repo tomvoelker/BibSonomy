@@ -35,8 +35,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.DBTestUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -107,7 +107,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Override
 	public void testGetPostsByHashCount() {
 		printMethod("testGetPostsByHashCount");
-		String hash0 = "9abf98937435f05aec3d58b214a2ac58";
+		final String hash0 = "9abf98937435f05aec3d58b214a2ac58";
 		final int count = publicationDb.getPostsByHashCount(hash0, HashID.SIM_HASH0, this.dbSession);
 		assertEquals(1, count);
 	}
@@ -252,7 +252,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		printMethod("testGetPostsByConceptForUser");
 		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		visibleGroupIDs.add(PUBLIC_GROUP_ID);
-		List<TagIndex> tagIndex = DBTestUtils.getTagIndex("testbibtex");
+		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("testbibtex");
 		String requestedUserName = "testuser1";
 		boolean caseSensitive = false;
 		
@@ -291,7 +291,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Override
 	public void testGetPostsByUserFriends() {
 		printMethod("testGetPostsByUserFriends");
-		List<Post<BibTex>> post = publicationDb.getPostsByUserFriends("testuser1", HashID.INTER_HASH, 10, 0, null, this.dbSession);
+		final List<Post<BibTex>> post = publicationDb.getPostsByUserFriends("testuser1", HashID.INTER_HASH, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 	}
 
@@ -314,7 +314,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Override
 	public void testGetPostsForHomepage() {
 		printMethod("testGetPostsForHomepage");
-		List<Post<BibTex>> post = publicationDb.getPostsForHomepage(null, 10, 0, null, this.dbSession);
+		final List<Post<BibTex>> post = publicationDb.getPostsForHomepage(null, 10, 0, null, this.dbSession);
 		assertEquals(3, post.size());
 	}
 
@@ -324,7 +324,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Override
 	public void testGetPostsPopular() {
 		printMethod("testGetPostsPopular");
-		List<Post<BibTex>> l = publicationDb.getPostsPopular(0, 10, 0, HashID.INTER_HASH, this.dbSession);
+		final List<Post<BibTex>> l = publicationDb.getPostsPopular(0, 10, 0, HashID.INTER_HASH, this.dbSession);
 		assertEquals(1, l.size());
 	}
 
@@ -669,7 +669,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		Post<BibTex> toInsert = null;
 		try {
 			toInsert = this.generateBibTexDatabaseManagerTestPost();
-		} catch (PersonListParserException ex) {
+		} catch (final PersonListParserException ex) {
 			fail("got exception: " + ex.getMessage());
 		}
 		toInsert.getResource().recalculateHashes();
@@ -682,9 +682,9 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		param.setSimHash(HashID.INTRA_HASH);
 		final List<Post<BibTex>> posts = publicationDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
-		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate"});
+		CommonModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate"});
 		toInsert.getResource().setCount(1);
-		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL", "numberOfRatings", "rating"});
+		CommonModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL", "numberOfRatings", "rating"});
 
 		// post a duplicate and check whether plugins are called		
 		assertFalse(this.pluginMock.isOnBibTexUpdate());
@@ -711,7 +711,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		Post<BibTex> toInsert = null;
 		try {
 			toInsert = this.generateBibTexDatabaseManagerTestPost();
-		} catch (PersonListParserException ex) {
+		} catch (final PersonListParserException ex) {
 			fail("got exception: " + ex.getMessage());
 		}
 		publicationDb.createPost(toInsert, this.dbSession);
@@ -805,7 +805,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		publicationDb.updatePost(publication, hash, PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
 		
 		// check if resource counter is updated correctly
-		List<Post<BibTex>> afterUpdate = publicationDb.getPostsByHash(hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
+		final List<Post<BibTex>> afterUpdate = publicationDb.getPostsByHash(hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
 		assertEquals(count, afterUpdate.get(0).getResource().getCount());
 	}
 
@@ -827,7 +827,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		try {
 			publicationDb.getPostsForUser(bibtexParam, this.dbSession);
 			fail();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// timeout
 		}
 	}
@@ -909,7 +909,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		try {
 			publicationDb.createPost(testPost, this.dbSession);
 			fail("expected a DatabaseException");
-		} catch (DatabaseException ex) {
+		} catch (final DatabaseException ex) {
 			final List<ErrorMessage> messages = ex.getErrorMessages(resource.getIntraHash());
 			assertEquals(1, messages.size());
 			
