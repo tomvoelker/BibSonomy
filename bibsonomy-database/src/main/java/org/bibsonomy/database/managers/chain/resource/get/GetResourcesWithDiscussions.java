@@ -21,7 +21,11 @@ public class GetResourcesWithDiscussions<R extends Resource, P extends ResourceP
 
 	@Override
 	protected boolean canHandle(final P param) {
-		return FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter());
+	    
+		return ( FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter())
+			|| FilterEntity.POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER.equals(param.getFilter())
+			
+		);
 	}
 
 	@Override

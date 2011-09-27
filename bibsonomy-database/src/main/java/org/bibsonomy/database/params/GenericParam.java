@@ -205,7 +205,7 @@ public abstract class GenericParam {
 	/*
 	 * used in goldstandard post retrieval If 1, we show posts of users that are not classified yet
 	 */
-	private final int showUnclassifiedUserItems;
+	private int showUnclassifiedUserItems;
 
 	/**
 	 * sets default values
@@ -1065,5 +1065,12 @@ public abstract class GenericParam {
 
 	public int getShowUnclassifiedUserItems() {
 		return showUnclassifiedUserItems;
+	}
+
+	/**
+	 * @param showUnclassifiedUserItems the showUnclassifiedUserItems to set
+	 */
+	public void setShowUnclassifiedUserItems(int showUnclassifiedUserItems) {
+	    this.showUnclassifiedUserItems = showUnclassifiedUserItems==1?1:0;
 	}
 }
