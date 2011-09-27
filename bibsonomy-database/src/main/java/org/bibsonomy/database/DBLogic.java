@@ -603,7 +603,7 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 
 
 		if (!allowedToAccessUsersOrGroupDocuments) {
-		    if (!FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter())) {
+		    if (!FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter()) && !FilterEntity.POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER.equals(param.getFilter()) ) {
 			param.setFilter(FilterEntity.JUST_POSTS);
 		    }
 		} else if (!present(filter)) {
