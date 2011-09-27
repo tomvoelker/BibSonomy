@@ -159,13 +159,34 @@ alternate('table6');
 
 var ajaxServlet = "/AdminHandler";
 
-var autofill = document.getElementsByTagName("span");
-
-for (var i=0; i < autofill.length; i++) {
-  if (autofill[i].className == "autofill") {
-    fillSpan(autofill[i].id);
-  }
+// collect all ids of elements that should be filled
+var spans = document.getElementsByTagName("span");
+var autofill = new Array();
+for (var i=0; i < spans.length; i++) {
+	  if (spans[i].className == "autofill") {
+		  autofill.push(spans[i].id);
+	  }
 }
+
+
+/*
+ * does a query every 20 seconds 
+ */
+function doAutofill() {
+	if (autofill.length > 0) {
+		// do the next query
+		fillSpan(autofill.pop());
+		// do the next query in 20 seconds
+		setTimeout("doAutofill()", 20 * 1000);
+	}
+}
+/*
+ * We have two options to do the queries: 
+ * a) one each 20 seconds - then use doAutofill() and comment "fillSpan(autofill.pop());" in "fillSpanHandler()"
+ * b) after each successful request the next - then use fillSpan(autofill.pop());
+ */
+fillSpan(autofill.pop());
+// doAutofill();
 
 function getRequest(){
   var req;
@@ -205,12 +226,14 @@ function fillSpanHandler(request,id) {
         document.getElementById(id).appendChild(document.createTextNode(request.responseText));
       }
     }
+    // do the next query
+    if (autofill.length > 0) {
+        fillSpan(autofill.pop());
+    }
   }
 }    
 
 
 </script>
-
-
 
 <%@ include file="footer.jsp"%>
