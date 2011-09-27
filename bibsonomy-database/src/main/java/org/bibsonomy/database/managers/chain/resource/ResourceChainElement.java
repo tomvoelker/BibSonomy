@@ -8,9 +8,9 @@ import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.PostDatabaseManager;
 import org.bibsonomy.database.managers.chain.ListChainElement;
-import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.ResourceParam;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -24,14 +24,14 @@ import org.bibsonomy.model.Resource;
  */
 public abstract class ResourceChainElement<R extends Resource, P extends ResourceParam<R>> extends ListChainElement<Post<R>, P> {
 
-	// TODO: extract to an external class?!
+	// TODO: config via spring
 	private static final Map<Class<?>, PostDatabaseManager<?, ?>> dbs;
 	
 	static {
 		dbs = new HashMap<Class<?>, PostDatabaseManager<?, ?>>();
 		
-		dbs.put(BookmarkParam.class, BookmarkDatabaseManager.getInstance());
-		dbs.put(BibTexParam.class, BibTexDatabaseManager.getInstance());
+		dbs.put(Bookmark.class, BookmarkDatabaseManager.getInstance());
+		dbs.put(BibTex.class, BibTexDatabaseManager.getInstance());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -40,6 +40,6 @@ public abstract class ResourceChainElement<R extends Resource, P extends Resourc
 			return (PostDatabaseManager<R, P>) dbs.get(clazz);
 		}
 		
-		throw new UnsupportedResourceTypeException("param " + clazz.getName() + " not supported");
+		throw new UnsupportedResourceTypeException("resource " + clazz.getName() + " not supported");
 	}
 }

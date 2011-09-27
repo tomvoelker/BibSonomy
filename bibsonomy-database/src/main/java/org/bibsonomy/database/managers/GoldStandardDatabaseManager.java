@@ -51,6 +51,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	
 	private ResourceSearch<R> search;
 
+	private FirstListChainElement<Post<R>, P> chain;
+
 	protected GoldStandardDatabaseManager() {
 		this.resourceClassName = this.getResourceClassName();
 		this.plugins = DatabasePluginRegistry.getInstance();
@@ -133,9 +135,18 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 
 	/**
+	 * @param chain the chain to set
+	 */
+	public void setChain(final FirstListChainElement<Post<R>, P> chain) {
+		this.chain = chain;
+	}
+
+	/**
 	 * @return the chain
 	 */
-	protected abstract FirstListChainElement<Post<R>, P> getChain();
+	protected FirstListChainElement<Post<R>, P> getChain() {
+		return this.chain;
+	}
 
 	@Override
 	public boolean createPost(final Post<R> post, final DBSession session) {

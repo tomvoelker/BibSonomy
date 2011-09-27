@@ -25,7 +25,7 @@ public class GetResourcesFromInbox<R extends Resource, P extends ResourceParam<R
 	
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		final PostDatabaseManager<R, P> db = this.getDatabaseManagerForType(param.getClass());
+		final PostDatabaseManager<R, P> db = this.getDatabaseManagerForType(param.getResourceClass());
 		
 		if (present(param.getHash())) {
 			/*

@@ -21,13 +21,12 @@ public class GetResourcesWithDiscussions<R extends Resource, P extends ResourceP
 
 	@Override
 	protected boolean canHandle(final P param) {
-	    
-		return ( FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter()) );
+		return FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter());
 	}
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.getDatabaseManagerForType(param.getClass()).getPostsWithDiscussions(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.getDatabaseManagerForType(param.getResourceClass()).getPostsWithDiscussions(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 }

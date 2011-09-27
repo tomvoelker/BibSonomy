@@ -21,7 +21,7 @@ import org.bibsonomy.model.Resource;
 public abstract class GetResourcesByResourceSearch<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
+	protected List<Post<R>> handle(final P param, final DBSession session) {
 		// convert tag index to tag list
 		List<String> tagIndex = null;
 		if (present(param.getTagIndex())) {
@@ -43,7 +43,7 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		}
 		
 		// query the resource searcher
-		return this.getDatabaseManagerForType(param.getClass()).getPostsByResourceSearch(
+		return this.getDatabaseManagerForType(param.getResourceClass()).getPostsByResourceSearch(
 				param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), 
 				param.getGroupNames(), param.getRawSearch(), param.getTitle(), param.getAuthor(), tagIndex, 
 				year, firstYear, lastYear, 

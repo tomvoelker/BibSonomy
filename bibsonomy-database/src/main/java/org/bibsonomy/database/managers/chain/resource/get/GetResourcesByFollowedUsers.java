@@ -22,15 +22,15 @@ import org.bibsonomy.model.Resource;
 public class GetResourcesByFollowedUsers<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected boolean canHandle(P param) {
+	protected boolean canHandle(final P param) {
 		return (present(param.getUserName()) &&
 				present(param.getGroups()) &&
 				param.getGrouping() == GroupingEntity.FOLLOWER);
 	}
 
 	@Override
-	protected List<Post<R>> handle(P param, DBSession session) {
-		return this.getDatabaseManagerForType(param.getClass()).getPostsByFollowedUsers(param.getUserName(), param.getGroups(), param.getLimit(), param.getOffset(), session);
+	protected List<Post<R>> handle(final P param, final DBSession session) {
+		return this.getDatabaseManagerForType(param.getResourceClass()).getPostsByFollowedUsers(param.getUserName(), param.getGroups(), param.getLimit(), param.getOffset(), session);
 	}
 
 }
