@@ -47,7 +47,7 @@
 				<value>sortPageOrder</value>
 				<value>duplicates</value>
 				<value>restrictToTags</value>
-				<value>callback</value><!-- JSON?! -->
+				<value>callback</value><!-- for JSONP -->
 				<value>format</value><!-- html, bib, publ, etc. -->
 				<value>layout</value>
 				<value>referer</value>
