@@ -48,22 +48,22 @@ public class ModelUtilsTest {
 	public void assertPropertyEquality() {
 		final Post<BibTex> postA = ModelUtils.generatePost(BibTex.class);
 		final Post<BibTex> postB = ModelUtils.generatePost(BibTex.class);
-		ModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null, "date");
+		CommonModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null, "date");
 		postB.getTags().clear();
 		try {
-			ModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null);
+			CommonModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null);
 			fail();
-		} catch (Throwable ignored) {
+		} catch (final Throwable ignored) {
 		}
 		try {
-			ModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, Pattern.compile(".ate"));
+			CommonModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, Pattern.compile(".ate"));
 			fail();
-		} catch (Throwable ignored) {
+		} catch (final Throwable ignored) {
 		}
 		postB.setDate(postA.getDate());
-		ModelUtils.assertPropertyEquality(postA, postB, 1, null);
-		ModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null, "tags");
-		ModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, Pattern.compile("t[ga]{2}s"));
+		CommonModelUtils.assertPropertyEquality(postA, postB, 1, null);
+		CommonModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null, "tags");
+		CommonModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, Pattern.compile("t[ga]{2}s"));
 	}
 	
 	/**

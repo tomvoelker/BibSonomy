@@ -55,7 +55,7 @@ import org.bibsonomy.model.User;
  * @author Christian Schenk
  * @version $Id$
  */
-public final class ModelUtils extends CommonModelUtils {
+public final class ModelUtils {
 	private static final Log log = LogFactory.getLog(ModelUtils.class);
 	
 	/**
@@ -101,7 +101,7 @@ public final class ModelUtils extends CommonModelUtils {
 	private static Date parseDate(final String date) {
 		try {
 			return df.parse(date);
-		} catch (ParseException ex) {
+		} catch (final ParseException ex) {
 			return new Date();
 		}
 	}
@@ -116,7 +116,7 @@ public final class ModelUtils extends CommonModelUtils {
 		final Set<Tag> tags = new HashSet<Tag>();
 		
 		if (tagsString != null) {
-			for (String tagString : tagsString) {
+			for (final String tagString : tagsString) {
 				tags.add(new Tag(tagString));
 			}
 		}
@@ -183,7 +183,7 @@ public final class ModelUtils extends CommonModelUtils {
 	}
 	
 	private static void fillPublication(final BibTex publication) {
-		setBeanPropertiesOn(publication);
+		CommonModelUtils.setBeanPropertiesOn(publication);
 		setResourceDefaults(publication);		
 		publication.setEntrytype("inproceedings");
 		publication.setAuthor(Arrays.asList(new PersonName("Hans", "Testauthor"), new PersonName("Liese", "Testauthorin")));
@@ -206,7 +206,7 @@ public final class ModelUtils extends CommonModelUtils {
 	 */
 	public static User getUser() {
 		final User user = new User();
-		setBeanPropertiesOn(user);
+		CommonModelUtils.setBeanPropertiesOn(user);
 		user.setName("jaeschke");
 		user.setRole(Role.NOBODY);
 		return user;
@@ -217,7 +217,7 @@ public final class ModelUtils extends CommonModelUtils {
 	 */
 	public static Group getGroup() {
 		final Group group = new Group();
-		setBeanPropertiesOn(group);
+		CommonModelUtils.setBeanPropertiesOn(group);
 		return group;
 	}
 
@@ -226,7 +226,7 @@ public final class ModelUtils extends CommonModelUtils {
 	 */
 	public static Tag getTag() {
 		final Tag tag = new Tag();
-		setBeanPropertiesOn(tag);
+		CommonModelUtils.setBeanPropertiesOn(tag);
 		tag.setSubTags(buildTagList(3, "subtag", 0));
 		tag.setSuperTags(buildTagList(3, "supertag", 0));
 		return tag;
@@ -327,7 +327,7 @@ public final class ModelUtils extends CommonModelUtils {
 		final List<Tag> tags = new ArrayList<Tag>(count);
 		for (int i = 1; i <= count; ++i) {
 			final Tag tag = new Tag();
-			setBeanPropertiesOn(tag);
+			CommonModelUtils.setBeanPropertiesOn(tag);
 			tag.setName(namePrefix + i);
 			tags.add(tag);
 			if (detailDepth > 0) {
