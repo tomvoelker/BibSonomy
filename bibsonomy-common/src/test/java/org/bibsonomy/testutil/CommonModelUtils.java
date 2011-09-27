@@ -52,14 +52,14 @@ import org.bibsonomy.util.ExceptionUtils;
  * @author Christian Schenk
  * @version $Id$
  */
-public class CommonModelUtils {
+public final class CommonModelUtils {
 
 	private static final Log log = LogFactory.getLog(CommonModelUtils.class);
 
 	/**
 	 * Don't create instances of this class - use the static methods instead.
 	 */
-	protected CommonModelUtils() {
+	private CommonModelUtils() {
 	}
 
 	/**
