@@ -32,6 +32,7 @@ public class LdapUsernameNotFoundExceptionMapper extends UsernameNotFoundExcepti
 			user.getSettings().setDefaultLanguage(ctx.getStringAttribute("preferredlanguage"));
 			user.setPlace(ctx.getStringAttribute("l")); // location
 			user.setLdapId(ctx.getStringAttribute("uid"));
+			user.setToClassify(0);
 
 			/*
 			 * After successful registration the user is logged in using the
