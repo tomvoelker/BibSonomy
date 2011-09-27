@@ -77,9 +77,13 @@ public enum FilterEntity {
 	POSTS_WITH_REPOSITORY,
 	
 	/**
-	 * Return only posts which are discussed by users, use this if user is allowed to access documents
+	 * Return only posts which are discussed by users - only classified non spammer users are shown
 	 */
-	POSTS_WITH_DISCUSSIONS;
+	POSTS_WITH_DISCUSSIONS,
 
+	/**
+	 * Return only posts which are discussed by users - all non spammer users are shown
+	 */
+	POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER;
 
 }
