@@ -10,5 +10,17 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 <jsp:directive.page contentType="text/plain; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<c:out value="${command.responseString}"/>	
+	<!--+
+		| FIXME: Dirty hack to allow JSONP calls by specifying the "callback"
+		|        parameter. Dirty because command is not used.
+		|
+		+-->
+	<c:choose>
+		<c:when test="${not empty param.callback}">
+			<c:out value="${param.callback}"/>("<c:out value="${command.responseString}"/>");	
+		</c:when>
+		<c:otherwise>
+			<c:out value="${command.responseString}"/>	
+		</c:otherwise>
+	</c:choose>
 </jsp:root>
