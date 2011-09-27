@@ -26,7 +26,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
-import org.bibsonomy.testutil.ModelUtils;
+import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.testutil.TestDatabaseManager;
 import org.junit.BeforeClass;
@@ -175,7 +175,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final User user = userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
 		newUser.setActivationCode(null);
-		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "institution", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt" });
+		CommonModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "institution", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt" });
 	}
 
 	@Test(expected = Exception.class)
