@@ -6,6 +6,7 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -24,9 +25,15 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>(this);
 	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>(this);
 	private ListCommand<Post<GoldStandardPublication>> goldStandardPublications = new ListCommand<Post<GoldStandardPublication>>(this);
+	
 	// TODO: move to listcommand or use the listCommand
+	@Deprecated
 	private Post<GoldStandardPublication> goldStandardPublication;
 	
+	@Deprecated
+	private Post<Bookmark> goldStandardBookmark;
+	
+	@Deprecated
 	private List<DiscussionItem> discussionItems;
 	
 	/**
@@ -46,6 +53,11 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 		
 		if (resourceType == GoldStandardPublication.class) {
 			return (ListCommand) getGoldStandardPublications();
+		}
+		
+		if (resourceType == GoldStandardBookmark.class) {
+			// TODO
+			return null;
 		}
 		
 		throw new UnsupportedResourceTypeException(resourceType.getName());
@@ -82,7 +94,7 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	/**
 	 * @param goldStandardPublication the goldStandardPublication to set
 	 */
-	public void setGoldStandardPublication(Post<GoldStandardPublication> goldStandardPublication) {
+	public void setGoldStandardPublication(final Post<GoldStandardPublication> goldStandardPublication) {
 		this.goldStandardPublication = goldStandardPublication;
 	}
 
@@ -92,11 +104,26 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	public Post<GoldStandardPublication> getGoldStandardPublication() {
 		return goldStandardPublication;
 	}
+	
+	/**
+	 * @return the goldStandardBookmark
+	 */
+	public Post<Bookmark> getGoldStandardBookmark() {
+		return this.goldStandardBookmark;
+	}
+
+	/**
+	 * @param goldStandardBookmark the goldStandardBookmark to set
+	 */
+	public void setGoldStandardBookmark(final Post<Bookmark> goldStandardBookmark) {
+		this.goldStandardBookmark = goldStandardBookmark;
+	}
+
 
 	/**
 	 * @param goldStandardPublications the goldStandardPublications to set
 	 */
-	public void setGoldStandardPublications(ListCommand<Post<GoldStandardPublication>> goldStandardPublications) {
+	public void setGoldStandardPublications(final ListCommand<Post<GoldStandardPublication>> goldStandardPublications) {
 		this.goldStandardPublications = goldStandardPublications;
 	}
 
@@ -108,7 +135,7 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	}
 
 	/**
-	 * @return the discussionItems
+	 * @return the goldStandardBookmarks
 	 */
 	public List<DiscussionItem> getDiscussionItems() {
 		return this.discussionItems;
@@ -117,7 +144,7 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	/**
 	 * @param discussionItems the discussionItems to set
 	 */
-	public void setDiscussionItems(List<DiscussionItem> discussionItems) {
+	public void setDiscussionItems(final List<DiscussionItem> discussionItems) {
 		this.discussionItems = discussionItems;
 	}
 	

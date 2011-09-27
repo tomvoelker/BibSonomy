@@ -11,6 +11,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -41,6 +42,7 @@ import org.bibsonomy.webapp.view.Views;
 public class UrlPageController extends SingleResourceListController implements MinimalisticController<UrlCommand> {
 	private static final Log log = LogFactory.getLog(UrlPageController.class);
 
+	
 	@Override
 	public View workOn(final UrlCommand command) {
 		log.debug(this.getClass().getSimpleName());
@@ -90,7 +92,17 @@ public class UrlPageController extends SingleResourceListController implements M
 			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, requHash, null, null, null, entriesPerPage, null);
 		}
 		
-		if (!present(command.getBookmark().getList())) {	
+		final Post<Bookmark> firstBookmark;
+		@SuppressWarnings("unchecked")
+		final Post<Bookmark> goldStandard = (Post<Bookmark>) this.logic.getPostDetails(requHash, "");
+		
+		final List<Post<Bookmark>> bookmarkList = command.getBookmark().getList();
+		if (present(goldStandard)) {
+			firstBookmark = goldStandard;
+			command.setGoldStandardBookmark(goldStandard);
+		} else if (present(bookmarkList)) {
+			firstBookmark = bookmarkList.get(0);
+		} else {
 			/*
 			 * We throw a ResourceNotFoundException such that we don't get empty
 			 * resource pages.
@@ -101,7 +113,7 @@ public class UrlPageController extends SingleResourceListController implements M
 		/*
 		 * build page title
 		 */
-		command.setPageTitle("url :: " + command.getBookmark().getList().get(0).getResource().getUrl());
+		command.setPageTitle("url :: " + firstBookmark.getResource().getTitle());
 		this.endTiming();
 
 		// html format - retrieve tags and return HTML view

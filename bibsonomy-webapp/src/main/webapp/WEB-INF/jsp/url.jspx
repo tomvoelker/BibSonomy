@@ -46,7 +46,11 @@
 		
 		<jsp:attribute name="contentHeading">
 			<c:set var="bookmark" value="${command.bookmark.list[0].resource}" />
-		
+
+			<c:if test="${not empty command.goldStandardBookmark}">
+				<c:set var="bookmark" value="${command.goldStandardBookmark.resource}" />				
+			</c:if>
+			
 			<h2><a href="${bookmark.url}"><c:out value="${bookmark.title}" /></a></h2>
 		
 			<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" />
