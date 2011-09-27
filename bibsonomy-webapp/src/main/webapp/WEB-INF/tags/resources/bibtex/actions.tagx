@@ -13,24 +13,12 @@
 	<c:if test="${command.context.userLoggedIn}">
 	
 		<!-- PICK / UNPICK -->
-		<c:set var="pickUnpick" value="pick"/>
-		<c:if test="${post.picked}">
-			<c:set var="pickUnpick" value="unpick"/>
+		<c:if test="${not empty post.user.name}">
+			<c:set var="pickUnpick" value="pick"/>
+			<c:if test="${post.picked}">
+				<c:set var="pickUnpick" value="unpick"/>
+			</c:if>
 		</c:if>
-		
-		<c:url var="pickUnpick_url" value="/ajax/pickUnpickPost">
-			<c:param name="hash" value="${post.resource.intraHash}" />
-			<c:param name="user" value="${post.user.name}" />
-			<c:param name="ckey" value="${ckey}" />
-			<c:param name="action" value="${pickUnpick}"/>
-		</c:url>
-		
-		<fmt:message key="bibtex.actions.${pickUnpick}.title" var="pickUnpickTitle"/>
-		<a onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
-			<fmt:message key="bibtex.actions.${pickUnpick}"/>
-		</a>
-		
-		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 
 		<!-- COPY -->
 		<c:choose>
@@ -167,11 +155,13 @@
 		</c:if>
 		
 		<!-- BIBTEX -->
-	    <fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-	    <a href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}">
-			<fmt:message key="bibtex.actions.bibtex"/>
-		</a>
-	
+		<c:if test="${not empty post.user.name}">
+		    <fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
+		    <a href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}">
+				<fmt:message key="bibtex.actions.bibtex"/>
+			</a>
+		</c:if>				
+		
 		<!-- OPENURL -->
 		<c:if test="${not empty command.context.loginUser.openURL}">
 	    	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
@@ -179,7 +169,7 @@
 	    	<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}">
 	    		<fmt:message key="bibtex.actions.openurl"/>
 	    	</a>
-		</c:if>			
+		</c:if>
 	</c:if>
 	
 	<!-- UnAPI -->
