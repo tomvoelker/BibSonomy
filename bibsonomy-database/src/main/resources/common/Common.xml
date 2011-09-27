@@ -303,6 +303,20 @@
 		</isNotEmpty>
 	</sql>
 
+
+	<sql id="spammerClassifiedJoin">
+		<isNotEqual property="filter" compareValue="posts_with_discussions_unclassified_user">
+				JOIN user u USING(user_name)
+		</isNotEqual>  
+	</sql>
+
+	<sql id="spammerClassified">
+		<isNotEqual property="filter" compareValue="posts_with_discussions_unclassified_user" prepend="AND">
+			u.to_classify = 1
+			AND u.user_name = d.user_name
+		</isNotEqual>
+	</sql>
+
 	<sql id="inGroupsDiscussion">
 		d.group IN (
 		<iterate property="groups" conjunction=",">

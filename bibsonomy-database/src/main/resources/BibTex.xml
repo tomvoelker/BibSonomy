@@ -663,9 +663,11 @@
 			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, 0 as count, <include refid="reviewRatingsRows" /> 
 		FROM (
 				SELECT interHash, MAX(date) AS date
-				FROM discussion d  
-  				WHERE <include refid="discussionVisible"/>
-  				AND content_type = 2
+				FROM discussion d <include refid="spammerClassifiedJoin"/>
+ 				WHERE <include refid="discussionVisible"/>
+  				  AND content_type = 2
+  				  AND `group` >=0
+  				  <include refid="spammerClassified"/>
   				GROUP BY interHash
 				ORDER BY date DESC
 				LIMIT #limit# OFFSET #offset#
@@ -673,12 +675,15 @@
  		JOIN gold_standard b ON d2.interHash = b.simhash1 <include refid="reviewRatingsJoinPublication" />
 		ORDER BY d2.date DESC
 	</select>
+	
 
 	<select id="getBibTexWithDiscussionsCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(DISTINCT interHash)
-		FROM discussion d
+		FROM discussion d <include refid="spammerClassifiedJoin"/>
   		WHERE <include refid="discussionVisible"/>
 		  AND content_type = 2
+		  AND `group` >= 0
+  		  <include refid="spammerClassified"/>	  
   	</select>
 
 

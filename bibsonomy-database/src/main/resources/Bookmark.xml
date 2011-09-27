@@ -438,10 +438,12 @@
 		       b.url, null as user_name, b.content_type, 0 as count, <include refid="reviewRatingsRows" />
 		FROM (
 				SELECT interHash, MAX(date)  AS date
-				FROM discussion d  
+				FROM discussion d <include refid="spammerClassifiedJoin"/>
   				WHERE
-  				<include refid="discussionVisible"/>
+  				  <include refid="discussionVisible"/>
   				  AND content_type = 1
+    			  AND `group` >=0
+  				  <include refid="spammerClassified"/>
    				GROUP BY interHash
 				ORDER BY date DESC
 				LIMIT #limit# OFFSET #offset#
@@ -452,9 +454,11 @@
 		
 	<select id="getBookmarkWithDiscussionsCount" resultClass="int" parameterClass="bookmarkParam">
 		SELECT COUNT(DISTINCT interHash) 
-		FROM discussion d  
+		FROM discussion d <include refid="spammerClassifiedJoin"/>
   		WHERE <include refid="discussionVisible"/>
    		  AND content_type = 1
+  		  AND `group` >=0
+  		  <include refid="spammerClassified"/>
 	</select>
 
     <insert id="insertBookmark" parameterClass="bookmarkParam">
