@@ -31,12 +31,37 @@
 		<property name="publicationSearch" ref="lucenePublicationSearch" />
 	</bean>
 	
-	<bean id="goldStandardPublicationDatabaseManager" class="org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager" factory-method="getInstance">
-		<property name="search" ref="luceneGoldStandardPublicationSearch" />
+	<bean id="goldStandardBookmarkDatabaseMananger" class="org.bibsonomy.database.managers.GoldStandardBookmarkDatabaseManager" factory-method="getInstance">
+		<property name="chain" ref="goldStandardChain" />
 	</bean>
 	
+	<bean id="goldStandardPublicationDatabaseManager" class="org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager" factory-method="getInstance">
+		<property name="search" ref="luceneGoldStandardPublicationSearch" />
+		<property name="chain" ref="goldStandardChain" />
+	</bean>	
+
+	<bean id="goldStandardChain" class="org.bibsonomy.database.managers.chain.ListChain">
+		<property name="firstElement" ref="goldStandardSearch" />
+	</bean>
 	
-	<import resource="classpath:systemtags-context.xml"/>
+	<bean id="abstractGoldStandardChainElement" class="org.bibsonomy.database.managers.chain.goldstandard.get.GoldStandardChainElement" abstract="true">
+		<property name="dbs" ref="goldStandardDatabaseManagerMap" />
+	</bean>
+	
+	<util:map key-type="java.lang.Class" id="goldStandardDatabaseManagerMap">
+		<entry key-ref="bookmarkClass" value-ref="goldStandardBookmarkDatabaseMananger" />
+		<entry key-ref="publicationClass" value-ref="goldStandardPublicationDatabaseManager" />
+	</util:map>
+	
+	<bean id="bookmarkClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="org.bibsonomy.model.Bookmark" />
+	</bean>
+	
+	<bean id="publicationClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="org.bibsonomy.model.BibTex" />
+	</bean>
+	
+	<bean id="goldStandardSearch" class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardChainElement" />
 	
 	<!--+
 	    | As soon as we have migrated to myBatis, we should retrieve the 
@@ -59,4 +84,6 @@
 	<bean id="dbSchemaInformation" class="org.bibsonomy.database.util.DatabaseSchemaInformation" factory-method="getInstance" />
 	
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
+	
+	<import resource="classpath:systemtags-context.xml"/>
 </beans>
