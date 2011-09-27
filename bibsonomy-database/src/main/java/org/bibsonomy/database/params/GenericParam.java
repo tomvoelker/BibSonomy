@@ -201,6 +201,11 @@ public abstract class GenericParam {
 	private String bibtexKey;
 	
 	private final Map<String, SystemTag> systemTags;
+	
+	/*
+	 * used in goldstandard post retrieval If 1, we show posts of users that are not classified yet
+	 */
+	private final int showUnclassifiedUserItems;
 
 	/**
 	 * sets default values
@@ -235,6 +240,7 @@ public abstract class GenericParam {
 		
 		this.relationTags = new ArrayList<String>();
 		this.relationTagIndex = new ArrayList<TagIndex>();
+		this.showUnclassifiedUserItems=1;
 	}
 	
 	/**
@@ -1055,5 +1061,9 @@ public abstract class GenericParam {
 	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
+
+	public int getShowUnclassifiedUserItems() {
+		return showUnclassifiedUserItems;
 	}
 }
