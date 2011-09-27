@@ -47,6 +47,7 @@ import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.client.RestLogicFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
@@ -202,7 +203,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		@Override
 		public boolean matches(final Object b) {
 			try {
-				ModelUtils.assertPropertyEquality(this.a, b, 5, null, excludeProperties);
+				CommonModelUtils.assertPropertyEquality(this.a, b, 5, null, excludeProperties);
 			} catch (final Throwable t) {
 				log.error(t,t);
 				return false;
@@ -411,7 +412,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.replay(serverLogic);
 		final Group returnedGroup = clientLogic.getGroupDetails(groupName);
 		log.debug(returnedGroup.getUser().getIPAddress());
-		ModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(" + COMMON_USER_PROPERTIES + ")|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*"));
+		CommonModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(" + COMMON_USER_PROPERTIES + ")|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedGroup;
@@ -448,7 +449,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.getGroups(start, end)).andReturn(expectedList);
 		EasyMock.replay(serverLogic);
 		final List<Group> returnedGroups = clientLogic.getGroups(start,end);
-		ModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId"));
+		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedGroups;
@@ -492,7 +493,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		} catch (final ResourceMovedException ex) {
 			// ignore
 		}
-		ModelUtils.assertPropertyEquality(expectedPublicationPost, returnedPublicationPost, 5, null, IGNORE3);
+		CommonModelUtils.assertPropertyEquality(expectedPublicationPost, returnedPublicationPost, 5, null, IGNORE3);
 		Post<? extends org.bibsonomy.model.Resource> returnedBookmarkPost = null;
 		try {
 			returnedBookmarkPost = clientLogic.getPostDetails(resourceHash,userName);
@@ -501,7 +502,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		} catch (final ResourceMovedException ex) {
 			// ignore
 		}
-		ModelUtils.assertPropertyEquality(expectedBookmarkPost, returnedBookmarkPost, 5, null, IGNORE3);
+		CommonModelUtils.assertPropertyEquality(expectedBookmarkPost, returnedBookmarkPost, 5, null, IGNORE3);
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedPublicationPost;
@@ -548,7 +549,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.replay(serverLogic);
 
 		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, filter, start, end, search);
-		ModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
+		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedPosts;
@@ -570,7 +571,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.replay(serverLogic);
 		
 		final Tag returned = clientLogic.getTagDetails(tagName);
-		ModelUtils.assertPropertyEquality(expected, returned, 3, Pattern.compile("(.*\\.)?(id|stem)"));
+		CommonModelUtils.assertPropertyEquality(expected, returned, 3, Pattern.compile("(.*\\.)?(id|stem)"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returned;
@@ -592,7 +593,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.replay(serverLogic);
 		
 		final List<Tag> returned = clientLogic.getTags(resourceType, grouping, groupingName, regex, tags, null, order, start, end, null, null);
-		ModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile("(.*\\.)?(id|stem)"));
+		CommonModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile("(.*\\.)?(id|stem)"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returned;
@@ -613,7 +614,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.replay(serverLogic);
 		
 		final User returned = clientLogic.getUserDetails(userName);
-		ModelUtils.assertPropertyEquality(expected, returned, 3, null, IGNORE2);
+		CommonModelUtils.assertPropertyEquality(expected, returned, 3, null, IGNORE2);
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returned;
@@ -819,7 +820,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.getUsers(resourceType, grouping, groupingName, tags, hash, order, relation, search, start, end)).andReturn(expected);
 		EasyMock.replay(serverLogic);		
 		final List<User> returned = clientLogic.getUsers(resourceType, grouping, groupingName, tags, hash, order, relation, search, start, end);
-		ModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile(       ".*\\.(" + COMMON_USER_PROPERTIES + "|activationCode|reminderPassword|openID|ldapId)"));
+		CommonModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile(       ".*\\.(" + COMMON_USER_PROPERTIES + "|activationCode|reminderPassword|openID|ldapId)"));
 		EasyMock.verify(serverLogic);
 		assertLogin();			
 		return returned;
