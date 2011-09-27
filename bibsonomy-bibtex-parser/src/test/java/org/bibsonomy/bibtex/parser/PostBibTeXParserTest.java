@@ -37,7 +37,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.testutil.ModelUtils;
+import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.Test;
 
 /**
@@ -145,7 +145,7 @@ public class PostBibTeXParserTest {
 		final Post<BibTex> secondParsedPost = parser.parseBibTeXPost(BibTexUtils.toBibtexString(post, 0));
 		secondParsedPost.getResource().recalculateHashes();
 
-		ModelUtils.assertPropertyEquality(post, secondParsedPost, 5, null, new String[]{"date"});
+		CommonModelUtils.assertPropertyEquality(post, secondParsedPost, 5, null, new String[]{"date"});
 	}
 
 	@Test
@@ -159,10 +159,8 @@ public class PostBibTeXParserTest {
 		 */
 		parser.updateWithParsedBibTeX(post);
 
-		ModelUtils.assertPropertyEquality(bib, post.getResource(), 5, null, "author", "authorList");
+		CommonModelUtils.assertPropertyEquality(bib, post.getResource(), 5, null, "author", "authorList");
 	}
-
-
 
 	private Post<BibTex> getExamplePost(final BibTex bib) {
 		final Post<BibTex> post = new Post<BibTex>();
@@ -175,8 +173,6 @@ public class PostBibTeXParserTest {
 		return post;
 	}
 
-
-
 	@Test
 	public void testGetParsedCopy() throws Exception {
 		final Post<BibTex> post = getExamplePost(getExampleBibtex());
@@ -185,7 +181,7 @@ public class PostBibTeXParserTest {
 
 		final Post<BibTex> parsedCopy = parser.getParsedCopy(post, true);
 
-		ModelUtils.assertPropertyEquality(post, parsedCopy, 5, null, "resource.author", "resource.authorList");
+		CommonModelUtils.assertPropertyEquality(post, parsedCopy, 5, null, "resource.author", "resource.authorList");
 
 		/*
 		 * The misc field is parsed and then serialized back again also in
