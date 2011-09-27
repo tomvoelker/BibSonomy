@@ -44,9 +44,8 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 		/*
 		 * set filter to get only posts with discussions 
 		 */
-		final FilterEntity filter = FilterEntity.POSTS_WITH_DISCUSSIONS;
+		final FilterEntity filter = command.getShowUnclassifiedUserItems()==0?FilterEntity.POSTS_WITH_DISCUSSIONS:FilterEntity.POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER;
 		
-
 //		/*
 //		 * if user is logged in, check if the logged in user follows the requested user
 //		 */
