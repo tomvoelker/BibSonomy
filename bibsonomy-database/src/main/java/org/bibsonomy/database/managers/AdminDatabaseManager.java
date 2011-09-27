@@ -213,13 +213,15 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	private void flagSpammer(final DBSession session, final AdminParam param) {
 		// flag spammer
 		this.update("flagSpammer", param, session);
+		
+		// update cache
+		this.update("updateReviewRatingsCache", param, session);
+		
 		// update the group ids in all essential tables
 		for (final String table : TABLE_NAMES) {
 			param.setGroupIdTable(table);
 			this.update("updateGroupIds", param, session);
 		}
-		// update cache
-		this.update("updateReviewRatingsCache", param, session);
 	}
 
 	/**
