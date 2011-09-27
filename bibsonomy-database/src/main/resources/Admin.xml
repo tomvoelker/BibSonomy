@@ -160,6 +160,12 @@
 		</isEqual>
 		WHERE d.interHash IN (SELECT di.interHash FROM discussion di WHERE di.user_name = #userName#
 			AND di.rating IS NOT NULL) AND d.user_name = #userName#
+		<isEqual property="spammer" compareValue="false" prepend="AND">
+			d.`group` &lt;= 0
+		</isEqual>
+		<isEqual property="spammer" compareValue="true" prepend="AND">
+			d.`group` >= 0
+		</isEqual>
 	</update>
 	
 </sqlMap>
