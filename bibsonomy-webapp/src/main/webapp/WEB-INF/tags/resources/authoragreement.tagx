@@ -53,7 +53,7 @@
 			<div class="lfval"><input type="text" value="${post_resource_openaccess_additionalfields_institution}" ></input></div>
 
 			<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.title"/>:</div>
-			<div class="lfval"><c:out value="${mtl:cleanBibtex(publication.title)}" escapeXml="false"></c:out></div>
+			<div class="lfval"><c:out value="${mtl:cleanBibtex(publication.title)}" /></div>
 
 			<c:if test="${post.resource.entrytype eq 'phdthesis'}" >
 
