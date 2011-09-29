@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.validation;
 
-
-
 import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
@@ -14,14 +12,13 @@ import org.springframework.validation.ValidationUtils;
  */
 public class PasswordReminderValidator implements Validator<PasswordReminderCommand>{
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(final Class arg0) {
-		return PasswordReminderCommand.class.equals(arg0);
+	public boolean supports(final Class<?> clazz) {
+		return PasswordReminderCommand.class.equals(clazz);
 	}
 
 	@Override
-	public void validate(Object obj, Errors errors) {
+	public void validate(final Object obj, final Errors errors) {
 		Assert.notNull(obj);
 		
 		/*
