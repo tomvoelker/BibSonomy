@@ -125,7 +125,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		
 	}
 	
-	@SuppressWarnings("unused") // TODO: Discuss evaluator interface 
+	// TODO: Discuss evaluator interface 
 	private void flagSpammerEvaluator(final AdminAjaxCommand cmd, final boolean spammer) {
 		if (cmd.getUserName() != null) {
 
@@ -155,7 +155,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			user.setToClassify(0);
 			user.setAlgorithm("admin");
 			user.setSpammer(spammer);
-			this.logic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
+			this.logic.updateUser(user, UserUpdateOperation.UPDATE_SPAMMER_STATUS);
 		}
 	}
 
@@ -171,7 +171,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			user.setAlgorithm("admin");
 			user.setSpammer(spammer);
 			user.setPrediction(SpamStatus.UNKNOWN.getId());
-			this.logic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
+			this.logic.updateUser(user, UserUpdateOperation.UPDATE_SPAMMER_STATUS);
 		}
 	}
 
