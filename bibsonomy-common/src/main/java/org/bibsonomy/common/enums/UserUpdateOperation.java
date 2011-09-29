@@ -35,31 +35,30 @@ public enum UserUpdateOperation {
 	/**
 	 * Update all parts of the entity.
 	 */
-	UPDATE_ALL(0),
+	UPDATE_ALL,
+	
 	/**
 	 * Update only the password of a user.
 	 */
-	UPDATE_PASSWORD(1),
+	UPDATE_PASSWORD,
+	
 	/**
 	 * Update only the settings of a user.
 	 */
-	UPDATE_SETTINGS(2),
+	UPDATE_SETTINGS,
+	
 	/**
 	 * Update only the core settings of a user (personal data, like homepage etc.)
 	 */
-	UPDATE_CORE(3),
+	UPDATE_CORE,
+	
 	/**
 	 * Update only the API key of a user
 	 */
-	UPDATE_API(4),
+	UPDATE_API,
+	
 	/**
 	 * Activates the user
 	 */
-	ACTIVATE(5);
-	
-	private int id;
-	
-	private UserUpdateOperation(final int userUpdateOperation) {
-		this.id = userUpdateOperation;
-	}
+	ACTIVATE;
 }
