@@ -17,6 +17,7 @@ import org.bibsonomy.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.command.actions.UserActivationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -37,10 +38,12 @@ import org.springframework.validation.Errors;
  * @author Clemens Baier
  * @version $Id$
  */
-public class UserActivationController implements MinimalisticController<UserActivationCommand>, ErrorAware {
+public class UserActivationController implements MinimalisticController<UserActivationCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(UserActivationController.class);
 
 	private RequestLogic requestLogic;
+	
+	// TODO: use admin logic
 	private LogicInterface logic;
 	private Errors errors;
 	private MailUtils mailUtils;
@@ -54,7 +57,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 	}
 
 	@Override
-	public View workOn(UserActivationCommand command) {
+	public View workOn(final UserActivationCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		command.setPageTitle("activation");
 		
@@ -167,6 +170,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 	/**
 	 * @param requestLogic
 	 */
+	@Override
 	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
@@ -174,7 +178,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 	/** After successful activation, the user is redirected to this page.
 	 * @param successRedirect
 	 */
-	public void setSuccessRedirect(String successRedirect) {
+	public void setSuccessRedirect(final String successRedirect) {
 		this.successRedirect = successRedirect;
 	}
 
@@ -182,7 +186,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 	 * @param mailUtils
 	 */
 	@Required
-	public void setMailUtils(MailUtils mailUtils) {
+	public void setMailUtils(final MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
 	}
 
@@ -192,7 +196,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 	 * 
 	 * @param authenticationManager
 	 */
-	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+	public void setAuthenticationManager(final AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
 	}
 }
