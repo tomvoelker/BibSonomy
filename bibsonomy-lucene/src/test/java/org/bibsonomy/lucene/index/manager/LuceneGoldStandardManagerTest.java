@@ -18,13 +18,12 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -36,7 +35,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
     private static LuceneResourceSearch<GoldStandardPublication> searcher;
     private static GoldStandardPublicationDatabaseManager goldStandardManager;
 
-    private static final String INTER_HASH = "d9eea4aa159d70ecfabafa0c91bbc9f0";
+    private static final String INTER_HASH = "097248439469d8f5a1e7fad6b02cbfcd";
 
     private static final Set<String> allowedGroups = Collections.singleton(GroupID.PUBLIC.name().toLowerCase());
     private static final List<Integer> allowedGroupIds = Collections.singletonList(GroupID.PUBLIC.getId());
@@ -101,7 +100,6 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 
     /**
      *  FIXME: fails too often, please fix!
-     * @throws PersonListParserException 
      */
     @Test
     @Ignore
