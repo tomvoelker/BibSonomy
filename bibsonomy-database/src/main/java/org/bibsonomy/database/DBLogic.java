@@ -1390,14 +1390,8 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 	    case ACTIVATE:
 		return this.userDBManager.activateUser(user, session);
 
-	    case UPDATE_ALL:
-		/*
-		 * update only (!) spammer settings
-		 * 
-		 * FIXME: use a separate operation for that!
-		 */
-		if (user.getPrediction() != null || user.getSpammer() != null) {
-		    /*
+	    case UPDATE_SPAMMER_STATUS:
+	    	 /*
 		     * only admins are allowed to change spammer settings
 		     */
 		    log.debug("Start update this framework");
@@ -1408,10 +1402,11 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 		     */
 		    final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
 		    log.debug("User prediction: " + user.getPrediction());
-		    return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
-		}
-
-		return this.storeUser(user, true);
+		    return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);	
+	    case UPDATE_ALL:
+			return this.storeUser(user, true);
+	    default:
+	    	throw new UnsupportedOperationException(operation + " not supported.");
 	    }
 
 
