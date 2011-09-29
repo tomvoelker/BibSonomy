@@ -18,7 +18,8 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 import de.unikassel.puma.openaccess.sherparomeo.SherpaRomeoImpl;
-import de.unikassel.puma.webapp.command.OpenAccessCommand;
+import de.unikassel.puma.openaccess.sherparomeo.SherpaRomeoInterface;
+import de.unikassel.puma.webapp.command.ajax.OpenAccessCommand;
 
 /**
  * @author clemens
@@ -28,7 +29,7 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 
 	private static final String GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";
 
-	SherpaRomeoImpl sherpaLogic;
+	private SherpaRomeoInterface sherpaLogic;
 	
 	@Override
 	public OpenAccessCommand instantiateCommand() {
@@ -36,26 +37,18 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 	}
 
 	@Override
-	public View workOn(OpenAccessCommand command) {
-
+	public View workOn(final OpenAccessCommand command) {
 		final JSONObject json = new JSONObject();
 
 		// check if user is logged in
-		if(!command.getContext().isUserLoggedIn()) {
+		if (!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
 		
 		final String action = command.getAction();
 		if (present(action)) {
-		
 			if (GET_SENT_REPOSITORIES.equals(action)) {
-		
 				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null, FilterEntity.POSTS_WITH_REPOSITORY, 0, Integer.MAX_VALUE, null);
-				
-/*
- * 				Post<BibTex> b = posts.get(0);
-				assertEquals(b.getRepositorys().size() , 2);
- */
 
 				// TODO: implement this
 				/*
@@ -75,23 +68,25 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 					jsonObject.put("intrahash", p.getResource().getIntraHash());
 					jsonpost.put(p.getResource().getIntraHash(), jsonObject);
 				}
+				
 				json.put("posts", jsonpost);
 				command.setResponseString(json.toString());
 				return Views.AJAX_JSON;
-				
-			} else {
-				this.sherpaLogic = new SherpaRomeoImpl();
-		
-				if(command.getPublisher() != null) {
-					command.setResponseString(sherpaLogic.getPolicyForPublisher(command.getPublisher(), command.getqType()));
-				}
-				if (command.getjTitle() != null) {
-					command.setResponseString(sherpaLogic.getPolicyForJournal(command.getjTitle(), command.getqType()));			
-				}
-		
-				return Views.AJAX_JSON;
 			}
+			
+			// TODO: config via spring + singleton
+			this.sherpaLogic = new SherpaRomeoImpl();
+	
+			if (command.getPublisher() != null) {
+				command.setResponseString(this.sherpaLogic.getPolicyForPublisher(command.getPublisher(), command.getqType()));
+			}
+			if (command.getjTitle() != null) {
+				command.setResponseString(this.sherpaLogic.getPolicyForJournal(command.getjTitle(), command.getqType()));			
+			}
+	
+			return Views.AJAX_JSON;
 		}
+		
 		return Views.AJAX_JSON;
 	}
 
