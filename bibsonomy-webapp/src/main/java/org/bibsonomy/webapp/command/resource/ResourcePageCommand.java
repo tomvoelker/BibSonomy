@@ -14,6 +14,8 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
  */
 public class ResourcePageCommand<R extends Resource> extends TagResourceViewCommand {
 	private String requestedHash;
+	
+	// TODO: remove!?
 	private String title;
 	
 	private List<DiscussionItem> discussionItems;

@@ -1,6 +1,13 @@
 package org.bibsonomy.webapp.controller.resource;
 
+import java.util.List;
+import java.util.Map;
+
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.webapp.command.resource.PublicationPageCommand;
+import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
@@ -10,6 +17,25 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class PublicationPageController extends AbstractResourcePageController<BibTex> {
 
+	@Override
+	public ResourcePageCommand<BibTex> instantiateCommand() {
+		return new PublicationPageCommand();
+	}
+	
+	@Override
+	protected View handleFormat(final ResourcePageCommand<BibTex> command, final String format, final String longHash, final String requUser, final GroupingEntity groupingEntity, final String goldHash, final Post<BibTex> goldStandard, final BibTex firstResource) {
+		// TODO: maybe we should move this format handling to a seperate controller
+		if ("authoragreement".equals(format)) {
+			// get additional metadata fields
+			final Map<String, List<String>> additionalMetadataMap = this.logic.getExtendedFields(BibTex.class, command.getContext().getLoginUser().getName(), this.shortHash(longHash), null);
+			((PublicationPageCommand)command).setAdditonalMetadata(additionalMetadataMap);
+			
+			return Views.AUTHORAGREEMENTPAGE;
+		}
+		
+		return super.handleFormat(command, format, longHash, requUser, groupingEntity, goldHash, goldStandard, firstResource);
+	}
+	
 	@Override
 	protected View getResourcePage() {
 		return Views.BIBTEXPAGE;

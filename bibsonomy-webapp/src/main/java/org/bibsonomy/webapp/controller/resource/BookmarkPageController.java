@@ -9,7 +9,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class BookmarkPageController extends AbstractResourcePageController<Bookmark> {
-
+	
 	@Override
 	protected View getResourcePage() {
 		return Views.URLPAGE;
@@ -17,8 +17,7 @@ public class BookmarkPageController extends AbstractResourcePageController<Bookm
 
 	@Override
 	protected View getDetailsView() {
-		// TODO redirect to url?!
-		return null;
+		return this.getResourcePage();
 	}
 
 	@Override

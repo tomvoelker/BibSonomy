@@ -31,9 +31,9 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 	public ResourcePageCommand<R> instantiateCommand() {
 		return new ResourcePageCommand<R>();
 	}
-
+	
 	@Override
-	public View workOn(final ResourcePageCommand<R> command) {
+	public final View workOn(final ResourcePageCommand<R> command) {
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
 		
@@ -56,6 +56,18 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 		final String requUser = command.getRequestedUser();
 		final GroupingEntity groupingEntity = present(requUser) ? GroupingEntity.USER : GroupingEntity.ALL;
 		
+		return this.workOnResource(command, format, longHash, requUser, groupingEntity);
+	}
+	
+	protected String shortHash(final String longHash) {
+		if (!present(longHash) || longHash.length() != 33) {
+			return longHash;
+		}
+		
+		return longHash.substring(1);
+	}
+
+	protected View workOnResource(final ResourcePageCommand<R> command, final String format, final String longHash, final String requUser, final GroupingEntity groupingEntity) {
 		/* 
 		 * handle case when only tags are requested
 		 * retrieve only TAG_LIMIT tags for this resource
@@ -67,7 +79,7 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 		 * The hash without the type of hash identifier at the first position.
 		 * 32 characters long.
 		 */
-		final String shortHash = longHash.substring(1);
+		final String shortHash = this.shortHash(longHash);
 
 		/*
 		 * To later retrieve the corresponding gold standard post. The intra hash
@@ -120,7 +132,6 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 				 */
 				intraHash = shortHash;
 			}
-			@SuppressWarnings("unchecked")
 			final Post<R> post = (Post<R>) this.logic.getPostDetails(intraHash, requUser);
 			/*
 			 * if we did not find a post -> throw an exception
@@ -177,38 +188,27 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 				 * resource pages.
 				 */
 				throw new ResourceNotFoundException(shortHash);
-			} 
+			}
 			firstResource = resourceList.getList().get(0).getResource();			
 		}
 		
 		/*
-		 * TODO: why set documents in command; why not using the firstPublication for it ?
-		 * extract first publication
-		 */
-		// command.setDocuments(firstPublication.getDocuments());
-		
-		/*
+		 * TODO: move to view
 		 * Set page title to title of first publication 
 		 */
 		command.setTitle(firstResource.getTitle());
 		
-		/*
-		 * Add additional data for HTML view, e.g., tags, other user's posts, ...
-		 */
-		this.endTiming();
-		
-		// TODO: own controller for authoragreement?!
-		/* if ("authoragreement".equals(format)) {
-			// get additional metadata fields
-			final Map<String, List<String>> additionalMetadataMap = logic.getExtendedFields(BibTex.class, command.getContext().getLoginUser().getName() , shortHash, null);
-			command.setAdditonalMetadata(additionalMetadataMap);
-			
-			return Views.AUTHORAGREEMENTPAGE;
-		} */
-		
+		this.endTiming();		
+		return this.handleFormat(command, format, longHash, requUser, groupingEntity, goldHash, goldStandard, firstResource);
+	}
+
+	protected View handleFormat(final ResourcePageCommand<R> command, final String format, final String longHash, final String requUser, final GroupingEntity groupingEntity, final String goldHash, final Post<R> goldStandard, final R firstResource) {
 		if ("html".equals(format)) {
-			// TODO: i18n in view
-			// command.setPageTitle("publication :: " + command.getTitle()); // TODO: i18n
+			/*
+			 * Add additional data for HTML view, e.g., tags, other user's posts, ...
+			 */
+			// TODO: move i18n to view
+			// command.setPageTitle("publication :: " + command.getTitle());
 			
 			if (GroupingEntity.USER.equals(groupingEntity) || present(goldStandard)) {
 				/*
@@ -222,13 +222,14 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 			}
 			
 			/*
-			 * the gold standard contains the discussion
+			 * the gold standard contains the discussion by default
 			 * if not present we have to retrieve the items here
 			 */
 			if (!present(goldStandard)) {
 				command.setDiscussionItems(this.logic.getDiscussionSpace(goldHash));
 			} else {
 				// TODO: call in logic?!
+				// TODO: adapt
 				// goldStandard.getResource().parseMiscField();
 			}
 
