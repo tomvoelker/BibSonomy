@@ -21,6 +21,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	private List<String> requestedTagsList = null;
 	
 	/** the specified order */
+	// TODO: use Order enum as type
 	private String order = "added";
 		
 	/** bean for related tags */
@@ -133,7 +134,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	/**
 	 * @param postCount
 	 */
-	public void setPostCountForTagsForLoginUser(int postCount) {
+	public void setPostCountForTagsForLoginUser(final int postCount) {
 		this.postCountForTagsForLoginUser = postCount;
 	}
 
@@ -147,7 +148,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	/**
 	 * @param postCount
 	 */
-	public void setPostCountForTagsForRequestedUser(int postCount) {
+	public void setPostCountForTagsForRequestedUser(final int postCount) {
 		this.postCountForTagsForRequestedUser = postCount;
 	}
 
@@ -161,7 +162,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	/**
 	 * @param postCount
 	 */
-	public void setPostCountForTagsForGroup(int postCount) {
+	public void setPostCountForTagsForGroup(final int postCount) {
 		this.postCountForTagsForGroup = postCount;
 	}
 
@@ -175,7 +176,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	/**
 	 * @param postCount
 	 */
-	public void setPostCountForTagsForAll(int postCount) {
+	public void setPostCountForTagsForAll(final int postCount) {
 		this.postCountForTagsForAll = postCount;
 	}
 
@@ -189,7 +190,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	/**
 	 * @param conceptsOfLoginUser
 	 */
-	public void setConceptsOfLoginUser(List<Tag> conceptsOfLoginUser) {
+	public void setConceptsOfLoginUser(final List<Tag> conceptsOfLoginUser) {
 		this.conceptsOfLoginUser = conceptsOfLoginUser;
 	}
 
@@ -203,7 +204,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	/**
 	 * @param conceptsOfRequestedUser
 	 */
-	public void setConceptsOfRequestedUser(List<Tag> conceptsOfRequestedUser) {
+	public void setConceptsOfRequestedUser(final List<Tag> conceptsOfRequestedUser) {
 		this.conceptsOfRequestedUser = conceptsOfRequestedUser;
 	}
 
@@ -217,7 +218,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	/**
 	 * @param conceptsOfGroup
 	 */
-	public void setConceptsOfGroup(List<Tag> conceptsOfGroup) {
+	public void setConceptsOfGroup(final List<Tag> conceptsOfGroup) {
 		this.conceptsOfGroup = conceptsOfGroup;
 	}
 
@@ -231,7 +232,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	/**
 	 * @param conceptsOfAll
 	 */
-	public void setConceptsOfAll(List<Tag> conceptsOfAll) {
+	public void setConceptsOfAll(final List<Tag> conceptsOfAll) {
 		this.conceptsOfAll = conceptsOfAll;
 	}
 
