@@ -17,19 +17,13 @@
 	<jsp:directive.attribute name="referer" type="java.lang.String" required="true" description="The referer to the scraped site"/>
 	
 	<c:set var="publication" value="${post.resource}"/>
-	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
 	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
-
 	<c:if test="${not empty jsOpenAccess}">
 		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
 	</c:if>
-  	
 
-	
-	
 	<div id="license">
-
 		<div id="license_header">
 			<fmt:message var="logopath" key="post.resource.openaccess.license.logo"/>
 			<img id="license_logo" src="${logopath}"/>
@@ -37,7 +31,6 @@
 		</div>	
 
  		<hr/>
-
 
 		<div id="license_data">
 			<div class="license_headline"><fmt:message key="post.resource.openaccess.license.headline1"/></div>		
@@ -60,7 +53,7 @@
 			<div class="lfval"><input type="text" value="${post_resource_openaccess_additionalfields_institution}" ></input></div>
 
 			<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.title"/>:</div>
-			<div class="lfval"><c:out value="${publication.title}" escapeXml="false"></c:out></div>
+			<div class="lfval"><c:out value="${mtl:cleanBibtex(publication.title)}" escapeXml="false"></c:out></div>
 
 			<c:if test="${post.resource.entrytype eq 'phdthesis'}" >
 
