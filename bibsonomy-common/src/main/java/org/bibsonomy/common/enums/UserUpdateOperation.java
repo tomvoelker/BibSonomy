@@ -53,6 +53,11 @@ public enum UserUpdateOperation {
 	UPDATE_CORE,
 	
 	/**
+	 * flag / unflag a user as a spammer
+	 */
+	UPDATE_SPAMMER_STATUS,
+	
+	/**
 	 * Update only the API key of a user
 	 */
 	UPDATE_API,
