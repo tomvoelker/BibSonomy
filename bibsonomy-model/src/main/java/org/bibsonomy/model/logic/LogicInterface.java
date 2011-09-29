@@ -496,13 +496,26 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public List<User> getClassifierComparison(int interval, int limit);
 	
 	/**
+	 * TODO: replace with a more generic method {@link #getUsernameByLdapUserId(String)}
+	 * 
 	 * Returns a username corresponding to a given openid
 	 * 
 	 * @param openID
 	 * @return username
 	 */
 	public String getOpenIDUser(final String openID);
+	
+	/**
+	 * TODO: replace with a more generic method {@link #getOpenIDUser(String)}
+	 * 
+	 * Retrieves bibsonomy username for given ldap user id
+	 * 
+	 * @param userId User ID 
+	 * @return username
+	 */
+	public String getUsernameByLdapUserId(String userId);
 
+	
 	/**
 	 * Create an extended field for a publication
 	 * 
@@ -629,10 +642,5 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);	
 	
-	/**
-	 * Retrieves bibsonomy username for given ldap user id
-	 * @param userId User ID 
-	 * @return username
-	 */
-	public String getUsernameByLdapUserId(String userId);	
+		
 }
