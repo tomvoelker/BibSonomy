@@ -72,7 +72,7 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 					user.setToClassify(0);
 					user.setAlgorithm("admin");
 					user.setSpammer(true);
-					this.logic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
+					this.logic.updateUser(user, UserUpdateOperation.UPDATE_SPAMMER_STATUS);
 				} else {
 					command.addInfo("The user was already flagged as a spammer.");
 				}
