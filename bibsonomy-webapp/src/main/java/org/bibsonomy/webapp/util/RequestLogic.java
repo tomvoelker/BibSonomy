@@ -1,14 +1,9 @@
 package org.bibsonomy.webapp.util;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Enumeration;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import net.oauth.OAuthMessage;
 import net.oauth.server.OAuthServlet;
@@ -57,7 +52,7 @@ public class RequestLogic {
 	 * Constructor to give the request.
 	 * @param request
 	 */
-	public RequestLogic(HttpServletRequest request) {
+	public RequestLogic(final HttpServletRequest request) {
 		this.request = request;
 	}
 
@@ -91,7 +86,7 @@ public class RequestLogic {
 	 * @see #getInetAddress()
 	 * @return The extracted address of the host.
 	 */
-	public String getHostInetAddress () {
+	public String getHostInetAddress() {
 		final String inetAddress = getInetAddress();
 		if (inetAddress != null) {
 			final int proxyStartPos = inetAddress.indexOf(",");
@@ -123,7 +118,7 @@ public class RequestLogic {
 	 * @return The locale associated with the current request.
 	 */
 	public Locale getLocale() {
-		return new RequestContext(request).getLocale();
+		return new RequestContext(this.request).getLocale();
 	}
 
 	/**
@@ -157,71 +152,7 @@ public class RequestLogic {
 	public Object getSessionAttribute(final String key) {
 		return request.getSession(true).getAttribute(key);
 	}
-
-	/**
-	 * Gets the HTTP session
-	 * @return HTTPSession
-	 */
-	public HttpSession getSession() {
-		return request.getSession();
-	}
-
-	/**
-	 * Gets a paramter from the HTTPRequest
-	 * @param parameter name of the parameter
-	 * @return value of parameter
-	 */
-	public String getParameter(final String parameter) {
-		return request.getParameter(parameter);
-	}
-
-	/**
-	 * @return Parameter map
-	 */
-	@SuppressWarnings("rawtypes")
-	public Map getParameterMap() {
-		return request.getParameterMap();
-	}
-
-	/**
-	 * @return request URL
-	 */
-	public StringBuffer getRequestURL() {
-		return request.getRequestURL();
-	}
-
-	/**
-	 * @return query string
-	 */
-	public String getQueryString() {
-		return request.getQueryString();
-	}
-
-	/**
-	 * Strips the context path from the request URL and appends the query string. 
-	 * 
-	 * @return The URL of the request as it has been issued by the user, i.e.,
-	 * without any context path and containing the complete query string.
-	 */
-	public String getCompleteRequestURL() {
-		try {
-			final String queryString = request.getQueryString();
-			final String contextPath = request.getContextPath();
-			final URL url = new URL(request.getRequestURL().toString());
-			final String path = url.getPath();
-			final URL result;
-			if (path.startsWith(contextPath)) {
-				result = new URL(url.getProtocol(), url.getHost(), url.getPort(), path.replaceFirst(contextPath, "") + "?" + queryString);
-			} else {
-				result = new URL(url.toString() + "?" + queryString);
-			}
-			return result.toString();
-		} catch (final MalformedURLException e) {
-			// ignore silently - should never happen
-		}
-		return "";
-	}
-
+	
 	/**
 	 * @return The User object associated with the logged in user.
 	 */
@@ -229,7 +160,7 @@ public class RequestLogic {
 		// TODO: instead of using the RequestWrapperContext we could use the authentication provided in the request
 		// but then we must set the user of the context in the minimalistic controller spring wrapper
 		// FIXME: IoC break: use user object instead of accessing request
-		// FIXME: use bibsonomy2 user object and check password again
+		// FIXME: check password again
 		return ((RequestWrapperContext) this.request.getAttribute(RequestWrapperContext.class.getName())).getLoginUser();
 	}
 
@@ -239,7 +170,7 @@ public class RequestLogic {
 	 * 
 	 * @param request
 	 */
-	public void setRequest(HttpServletRequest request) {
+	public void setRequest(final HttpServletRequest request) {
 		this.request = request;
 	}
 	
@@ -248,39 +179,6 @@ public class RequestLogic {
 	 */
 	public HttpMethod getHttpMethod() {
 		return HttpMethod.getHttpMethod(this.request.getMethod());
-	}
-
-	/**
-	 * Builds query string from parameter map
-	 * TODO unused; remove?
-	 * @return querystring
-	 */
-	public String getParametersAsQueryString() {
-		final StringBuilder buf = new StringBuilder("?");
-		try {
-			final Enumeration<?> paramNames = request.getParameterNames();
-			while (paramNames.hasMoreElements()) {
-				final String param = (String) paramNames.nextElement();
-				buf.append(param + "=");
-				final String paramValues[] = request.getParameterValues(param);
-				if (paramValues.length == 1) {
-					String paramValue = paramValues[0];
-					if (paramValue.length() == 0) {
-						buf.append("");
-					} else {
-						buf.append(paramValue);
-					}
-				} else {
-					for (int i = 0; i < paramValues.length; i++ ) {
-						buf.append(paramValues[i] + "%20" );
-					}
-				}
-				buf.append("&");
-			}
-		} catch (final Exception ex) {
-			log.warn("Could not build query string.", ex);
-		}
-		return buf.toString();
 	}
 
 	/**
@@ -295,12 +193,13 @@ public class RequestLogic {
 	}
 
 	/**
-	 *  Extract the parts of the given request that are relevant to OAuth.
+	 * Extract the parts of the given request that are relevant to OAuth.
+	 * @param URL 
 	 *  
-	 * @return
+	 * @return the OAuth message
 	 */
-	public OAuthMessage getOAuthMessage(String URL) {
-		return OAuthServlet.getMessage(getRequest(), URL);
+	public OAuthMessage getOAuthMessage(final String URL) {
+		return OAuthServlet.getMessage(this.request, URL);
 	}
 
 }
