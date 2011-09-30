@@ -26,8 +26,8 @@ import org.bibsonomy.wiki.CVWikiModel;
 public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  {
 	private static final Log log = LogFactory.getLog(AbstractTag.class);
 	protected LogicInterface logic;
-	public User requestedUser;
-	public Group requestedGroup;
+	protected User requestedUser;
+	protected Group requestedGroup;
 	protected LayoutRenderer<Layout> layoutRenderer;
 
 	/**
