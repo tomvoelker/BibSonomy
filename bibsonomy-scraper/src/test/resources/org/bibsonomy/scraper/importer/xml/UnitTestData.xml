@@ -946,6 +946,8 @@
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6VRG-4P2J0DY-2&amp;_user=4861060&amp;_rdoc=1&amp;_fmt=&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=79ade29e7ed69e54fd25657532c9f419</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
+		<!-- URL is incorrect -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_160">
 		<TestDescription>Amazon.de scraping test</TestDescription>
@@ -966,6 +968,8 @@
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6VRG-45H0GV7-5&amp;_user=4861060&amp;_rdoc=1&amp;_fmt=&amp;_orig=search&amp;_sort=d&amp;view=c&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=8a685c3a81d7902fff82b21d6596a82b</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
+		<!-- URL is incorrect -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_163">
 		<TestDescription>Test for worldcat publication page</TestDescription>
