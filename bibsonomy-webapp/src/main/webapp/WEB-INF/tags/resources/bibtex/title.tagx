@@ -12,7 +12,7 @@
 			<c:set var="bibUrlTemplate">/bibtex/${hash.inter.id}${post.resource.interHash}</c:set>
 		</c:when>
 		<c:otherwise>
-			<c:set var="bibUrlTemplate">/bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></c:set>
+			<c:set var="bibUrlTemplate">/bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encodeURI value='${post.user.name}'/></c:set>
 
 			<!-- include link to private document(s) -->	
 			<bib:documents post="${post}" includeFilename="${false}"/>
