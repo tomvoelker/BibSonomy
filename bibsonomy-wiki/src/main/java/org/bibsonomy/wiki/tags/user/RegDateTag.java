@@ -2,6 +2,7 @@ package org.bibsonomy.wiki.tags.user;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.bibsonomy.wiki.tags.UserTag;
@@ -12,11 +13,12 @@ import org.bibsonomy.wiki.tags.UserTag;
  * @author Bernd Terbrack
  */
 public class RegDateTag extends UserTag {
+	private static final String TAG_NAME = "regdate";
 
 	/*
 	 * TODO Unify date handling for this tag and for the BirthdayTag (same options) probably useful would be an AbstractDate Tag
 	 */
-	private static final String TAG_NAME = "regdate";
+	private static final SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
 
 	/**
 	 * set the tag name
@@ -27,11 +29,10 @@ public class RegDateTag extends UserTag {
 
 	@Override
 	protected String renderUserTag() {
-		final StringBuilder renderedHTML = new StringBuilder();
 		final Date regDate = this.requestedUser.getRegistrationDate();
 		if (present(regDate)) {
-			renderedHTML.append(regDate);
+			return this.renderString(simpleDate.format(regDate));
 		}
-		return renderedHTML.toString();
+		return "";
 	}
 }

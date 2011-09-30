@@ -1,7 +1,6 @@
 package org.bibsonomy.wiki.tags.user;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import info.bliki.htmlcleaner.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,10 +19,7 @@ public class BirthdayTag extends UserTag {
 	/*
 	 * TODO: allow other formats as tag parameter (e.g. display without year or the english order mm/dd/yyyy..."
 	 */
-	private static final String DATE_FORMAT = "dd-MM-yyyy";
-	
-	
-	private static final SimpleDateFormat simpleDate = new SimpleDateFormat(DATE_FORMAT);
+	private static final SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
 	
 	/**
 	 * set tag name
@@ -34,15 +30,11 @@ public class BirthdayTag extends UserTag {
 	
 	@Override
 	protected String renderUserTag() {
-		final StringBuilder renderedHTML = new StringBuilder();		
-		//FIXME: requestedUser Birthday?!
-
 		final Date birthday = this.requestedUser.getBirthday();
 		if (present(birthday)) {
-			renderedHTML.append(Utils.escapeXmlChars(simpleDate.format(birthday)));
+			return this.renderString(simpleDate.format(birthday));
 		}
-
-		return renderedHTML.toString();
+		return "";
 	}
 
 }

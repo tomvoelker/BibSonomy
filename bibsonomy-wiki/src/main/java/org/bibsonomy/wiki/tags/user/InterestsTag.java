@@ -18,13 +18,8 @@ public class InterestsTag extends UserTag {
         super(TAG_NAME);
 	}
 
-	/*
-	 * TODO: add some fancy attributes! ie intersection of interests of users etc etc
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.wiki.tags.AbstractTag#render()
-	 */
 	@Override
 	protected String renderUserTag() {
-		return this.requestedUser != null ? this.renderParagraph(this.requestedUser.getInterests()) : this.renderParagraph("");
+		return this.renderString(this.requestedUser.getInterests());
 	}
 }

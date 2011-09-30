@@ -11,7 +11,7 @@ public class MembersTag extends GroupTag {
 	}
 
 	private String renderImage(final String userName) {
-		return "<img height='100px' src='/picture/user/" + userName + "' />";
+		return "<img height='100px' src='/picture/user/" + this.renderString(userName) + "' />";
 	}
 
 	@Override
@@ -21,7 +21,7 @@ public class MembersTag extends GroupTag {
 			if (!user.getName().equals(this.requestedGroup.getName())) {
 				renderedHTML.append("<div class='imageContainer'>");
 				renderedHTML.append(this.renderImage(user.getName()));
-				renderedHTML.append("<p style='text-align:center;'>" + user.getRealname() + "</p>");
+				renderedHTML.append("<p style='text-align:center;'>" + this.renderString(user.getRealname()) + "</p>");
 				renderedHTML.append("</div>");
 			}
 		}
