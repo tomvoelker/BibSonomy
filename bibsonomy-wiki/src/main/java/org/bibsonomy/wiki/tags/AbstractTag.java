@@ -72,7 +72,7 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 	protected String render() {
 		try{
 			final String tagData = this.renderSafe();
-			return present(tagData) ? tagData : this.getName() +" is/are not visible to you.";
+			return present(tagData) ? tagData : this.getName() +" is not visible to you.";
 		}catch (final Exception e) {
 			log.fatal("Error while rendering the tag: " + this.name, e);
 			return this.getName() + " has caused an error.";
