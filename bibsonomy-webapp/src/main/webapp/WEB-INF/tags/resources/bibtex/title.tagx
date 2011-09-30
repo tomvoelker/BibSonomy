@@ -7,20 +7,10 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
 
-	<c:choose>
-		<c:when test="${empty post.user.name}">
-			<c:set var="bibUrlTemplate">/bibtex/${hash.inter.id}${post.resource.interHash}</c:set>
-		</c:when>
-		<c:otherwise>
-			<c:set var="bibUrlTemplate">/bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encodeURI value='${post.user.name}'/></c:set>
-
-			<!-- include link to private document(s) -->	
-			<bib:documents post="${post}" includeFilename="${false}"/>
-		</c:otherwise>
-	</c:choose>
-
+	<!-- include link to private document(s) -->	
+	<bib:documents post="${post}" includeFilename="${false}"/>
 
 	<!--  display title -->
-	<a href="${bibUrlTemplate}"><c:out value="${mtl:cleanBibtex(post.resource.title)}"/></a><c:out value=" "/>
-	
+	<c:set var="bibUrlTemplate">/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}</c:set>
+	<a href="${bibUrlTemplate}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a><c:out value=" "/>
 </jsp:root>
