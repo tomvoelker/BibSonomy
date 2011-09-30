@@ -1203,4 +1203,46 @@
 		<BibFile>ACMBasicScraperUnitURLTest7.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_200">
+		<TestDescription>scraping test for plos biology (url encoded)</TestDescription>
+		<URL>http://www.plosbiology.org/article/info%3Adoi%2F10.1371%2Fjournal.pbio.1001148</URL>
+		<BibFile>PlosScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_201">
+		<TestDescription>scraping test for plos medicine (url encoded)</TestDescription>
+		<URL>http://www.plosmedicine.org/article/info%3Adoi%2F10.1371%2Fjournal.pmed.1001094</URL>
+		<BibFile>PlosScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_202">
+		<TestDescription>scraping test for plos computational biology (url encoded)</TestDescription>
+		<URL>http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1002146</URL>
+		<BibFile>PlosScraperUnitURLTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_203">
+		<TestDescription>scraping test for plos genetics (url encoded)</TestDescription>
+		<URL>http://www.plosgenetics.org/article/info%3Adoi%2F10.1371%2Fjournal.pgen.1002285</URL>
+		<BibFile>PlosScraperUnitURLTest6.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_204">
+		<TestDescription>scraping test for plos pathogens (url encoded)</TestDescription>
+		<URL>http://www.plospathogens.org/article/info%3Adoi%2F10.1371%2Fjournal.ppat.1002253</URL>
+		<BibFile>PlosScraperUnitURLTest7.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_205">
+		<TestDescription>scraping test for plos ones (url encoded)</TestDescription>
+		<URL>http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0025007</URL>
+		<BibFile>PlosScraperUnitURLTest8.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_206">
+		<TestDescription>scraping test for plos neglected tropical diseases (url encoded)</TestDescription>
+		<URL>http://www.plosntds.org/article/info%3Adoi%2F10.1371%2Fjournal.pntd.0001305</URL>
+		<BibFile>PlosScraperUnitURLTest9.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
 </test:Tests>

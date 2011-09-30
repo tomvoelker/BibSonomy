@@ -39,6 +39,7 @@ import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -56,6 +57,11 @@ public class PlosScraper extends AbstractUrlScraper {
 	 */
 	private static final String PLOS_BIOLOGY_HOST_ENDING = "plosbiology.org";
 	private static final String PLOS_MEDICINE_HOST_ENDING = "plosmedicine.org";
+	private static final String PLOS_COMPUTATIONAL_BIOLOGY_ENDING = "ploscompbiol.org";
+	private static final String PLOS_GENETICS_ENDING = "plosgenetics.org";
+	private static final String PLOS_PATHOGENS_ENDING = "plospathogens.org";
+	private static final String PLOS_ONE_ENDING = "plosone.org";
+	private static final String PLOS_NEGLECTED_TROPICAL_DISEASES_ENDING = "plosntds.org";
 	
 	private static final String HTTP = "http://";
 	
@@ -78,16 +84,24 @@ public class PlosScraper extends AbstractUrlScraper {
 	static {
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_BIOLOGY_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_MEDICINE_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_COMPUTATIONAL_BIOLOGY_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_GENETICS_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_PATHOGENS_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_ONE_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_NEGLECTED_TROPICAL_DISEASES_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	
 	/**
 	 * Scrapes journals from plos.org 
 	 */
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 		try {
-			final Matcher _m = PLOS_INFO_PATTERN.matcher(sc.getUrl().toString());
+			String decodedUrl = UrlUtils.safeURIDecode(sc.getUrl().toString());
+
+			final Matcher _m = PLOS_INFO_PATTERN.matcher(decodedUrl);
 			String info = null;
 			String url  = null;
 			
@@ -95,10 +109,20 @@ public class PlosScraper extends AbstractUrlScraper {
 				info = _m.group(1);
 			}
 			
-			if (info != null && sc.getUrl().toString().contains(PLOS_BIOLOGY_HOST_ENDING)) {
+			if (info != null && decodedUrl.contains(PLOS_BIOLOGY_HOST_ENDING)) {
 				url = HTTP + PLOS_BIOLOGY_HOST_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
-			} else if (info != null && sc.getUrl().toString().contains(PLOS_MEDICINE_HOST_ENDING)) {
+			} else if (info != null && decodedUrl.contains(PLOS_MEDICINE_HOST_ENDING)) {
 				url = HTTP + PLOS_MEDICINE_HOST_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
+			} else if (info != null && decodedUrl.contains(PLOS_COMPUTATIONAL_BIOLOGY_ENDING)) {
+				url = HTTP + PLOS_COMPUTATIONAL_BIOLOGY_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
+			} else if (info != null && decodedUrl.contains(PLOS_GENETICS_ENDING)) {
+				url = HTTP + PLOS_GENETICS_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
+			} else if (info != null && decodedUrl.contains(PLOS_PATHOGENS_ENDING)) {
+				url = HTTP + PLOS_PATHOGENS_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
+			} else if (info != null && decodedUrl.contains(PLOS_ONE_ENDING)) {
+				url = HTTP + PLOS_ONE_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
+			} else if (info != null && decodedUrl.contains(PLOS_NEGLECTED_TROPICAL_DISEASES_ENDING)) {
+				url = HTTP + PLOS_NEGLECTED_TROPICAL_DISEASES_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
 			}
 			
 			String bibtexResult = WebUtils.getContentAsString(url);
