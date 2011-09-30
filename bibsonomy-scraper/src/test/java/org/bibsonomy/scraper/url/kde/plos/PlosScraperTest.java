@@ -81,5 +81,75 @@ public class PlosScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_173"));
 	}
+	
+	/**
+	 * starts URL test with id url_200
+	 */
+	@Test
+	@Ignore
+	public void urlTest5Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_200"));
+	}
+	
+	/**
+	 * starts URL test with id url_201
+	 */
+	@Test
+	@Ignore
+	public void urlTest6Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_201"));
+	}
+	
+	/**
+	 * starts URL test with id url_202
+	 */
+	@Test
+	@Ignore
+	public void urlTest7Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_202"));
+	}
+	
+	/**
+	 * starts URL test with id url_203
+	 */
+	@Test
+	@Ignore
+	public void urlTest8Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_203"));
+	}
+	
+	/**
+	 * starts URL test with id url_204
+	 */
+	@Test
+	@Ignore
+	public void urlTest9Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_204"));
+	}
+	
+	/**
+	 * starts URL test with id url_205
+	 */
+	@Test
+	@Ignore
+	public void urlTest10Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_205"));
+	}
+	
+	/**
+	 * starts URL test with id url_206
+	 */
+	@Test
+	@Ignore
+	public void urlTest11Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_206"));
+	}
 
 }
