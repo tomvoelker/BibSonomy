@@ -313,7 +313,6 @@
 	<sql id="spammerClassified">
 		<isNotEqual property="filter" compareValue="posts_with_discussions_unclassified_user" prepend="AND">
 			u.to_classify = 1
-			AND u.user_name = d.user_name
 		</isNotEqual>
 	</sql>
 
