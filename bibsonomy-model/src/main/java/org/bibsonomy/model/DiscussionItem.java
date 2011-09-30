@@ -33,10 +33,15 @@ import java.util.Set;
  * @author dzo
  * @version $Id$
  */
+/**
+ * @author rja
+ *
+ */
 public class DiscussionItem {
 
 	/**
 	 * the internal id; only use in database module!
+	 * We need this here if we want to use groupBy in iBatis
 	 */
 	private Integer id;
 	
@@ -83,7 +88,7 @@ public class DiscussionItem {
 	/**
 	 * resource type the comment belongs to
 	 */
-	private int contentType;
+	private Class<? extends Resource> resourceType;
 
 	/**
 	 * @return the comments
@@ -221,16 +226,18 @@ public class DiscussionItem {
 	}
 
 	/**
-	 * @param contentType the contentType to set
+	 * @return - the resource type of the posts belonging to this discussion.
 	 */
-	public void setContentType(int contentType) {
-		this.contentType = contentType;
+	public Class<? extends Resource> getResourceType() {
+		return this.resourceType;
 	}
 
 	/**
-	 * @return the contentType
+	 * @param resourceType
 	 */
-	public int getContentType() {
-		return contentType;
+	public void setResourceType(Class<? extends Resource> resourceType) {
+		this.resourceType = resourceType;
 	}
+
+
 }
