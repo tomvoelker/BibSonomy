@@ -18,7 +18,7 @@
 		<result property="anonymous"	column="anonymous"		javaType="boolean" />
 		<result property="date" 		column="date"			javaType="date" />
 		<result property="changeDate"	column="change_date"	javaType="date" />
-		<result property="contentType"	column="content_type"	javaType="int" />
+		<result property="resourceType"	column="content_type"	javaType="resourceTypeClass" />
 		<result property="user"			resultMap="Common.user"  />
 		<result property="groups"     	resultMap="Common.group" />
 	</resultMap>
