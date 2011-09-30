@@ -21,7 +21,7 @@ public class GroupImageTag extends GroupTag {
 			final User user = this.requestedGroup.getUsers().get(0);
 			renderedHTML.append("<div class='groupImage'>");
 			renderedHTML.append(this.renderImage(user.getName()));
-			renderedHTML.append("<a href='/cv/" + user.getName() + "' style='text-align:center;'><div>" + user.getRealname() + "</div></a>");
+			renderedHTML.append("<a href='/cv/" + this.renderString(user.getName()) + "' style='text-align:center;'><div>" + this.renderString(user.getRealname()) + "</div></a>");
 			renderedHTML.append("</div>");
 		}
 

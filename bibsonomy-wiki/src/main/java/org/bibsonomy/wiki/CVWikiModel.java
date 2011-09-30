@@ -26,7 +26,7 @@ import org.bibsonomy.wiki.tags.shared.NameTag;
 import org.bibsonomy.wiki.tags.shared.resource.BookmarkListTag;
 import org.bibsonomy.wiki.tags.shared.resource.PublicationListTag;
 import org.bibsonomy.wiki.tags.user.BirthdayTag;
-import org.bibsonomy.wiki.tags.user.HobbieTag;
+import org.bibsonomy.wiki.tags.user.HobbyTag;
 import org.bibsonomy.wiki.tags.user.InstitutionTag;
 import org.bibsonomy.wiki.tags.user.InterestsTag;
 import org.bibsonomy.wiki.tags.user.LocationTag;
@@ -46,7 +46,7 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new BirthdayTag());
 		register(new InstitutionTag());
 		register(new InterestsTag());
-		register(new HobbieTag());
+		register(new HobbyTag());
 		register(new ProfessionTag());
 		
 		/* Group Tags */

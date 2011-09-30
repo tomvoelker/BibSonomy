@@ -16,6 +16,8 @@ import org.bibsonomy.wiki.tags.SharedResourceTag;
 /**
  * TODO: abstract resource tag
  * 
+ * FIXME: escape all data coming from the database!
+ * 
  * @author philipp
  * @author Bernd Terbrack
  * @version $Id$

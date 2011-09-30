@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
@@ -31,15 +32,17 @@ public class ImageTag extends SharedTag {
 		return ALLOWED_ATTRIBUTES_SET.contains(attName);
 	}
 
+	/**
+	 * TODO: Kriegen wir die URLs aus dem JavaCode raus? - Ja mittels des {@link URLGenerator} 
+	 * 
+	 * @see org.bibsonomy.wiki.tags.SharedTag#renderSharedTag(org.bibsonomy.wiki.tags.SharedTag.RequestType)
+	 */
 	@Override
 	protected String renderSharedTag(final RequestType requestType) {
-		/*
-		 * TODO: Kriegen wir die URLs aus dem JavaCode raus FIXME: tolowercase impl.
-		 */
 		final Map<String, String> tagAtttributes = this.getAttributes();
 		final StringBuilder renderedHTML = new StringBuilder();
 		final String name = this.getRequestedName(requestType);
-		renderedHTML.append("<img src='/picture/user/").append(name).append("' style='").append(tagAtttributes.get(FLOAT)).append("'>");
+		renderedHTML.append("<img src='/picture/user/").append(this.renderString(name)).append("' style='").append(tagAtttributes.get(FLOAT)).append("'>");
 		return renderedHTML.toString();
 	}
 

@@ -28,20 +28,11 @@ public class NameTag extends SharedTag {
 
 	@Override
 	protected String renderSharedTag(final RequestType requestType) {
-		final StringBuilder renderedHTML = new StringBuilder();
 		final String name = this.getRequestedName(requestType);
 		if (present(name)) {
-			/*if (present(homepage)) {
-				renderedHTML.append("<a href=\"");
-				renderedHTML.append(Utils.escapeXmlChars(this.requestedUser.getHomepage().toExternalForm()));
-				renderedHTML.append("\">");
-				renderedHTML.append(name);
-				renderedHTML.append("</a>");
-			} else {*/
-				renderedHTML.append(name);
-			//}
+			return this.renderString(name);
 		}
-		return renderedHTML.toString();
+		return "";
 	}
 
 }
