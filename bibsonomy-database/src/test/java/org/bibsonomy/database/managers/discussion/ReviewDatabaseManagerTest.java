@@ -14,8 +14,10 @@ import java.util.Set;
 
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Review;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
@@ -59,7 +61,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testInsertReview() {
 		final double rating = 5.0;
-		this.insertReview(USERNAME_2, HASH, rating, null, null);
+		this.insertReview(USERNAME_2, BibTex.class, HASH, rating, null, null);
 		final Review review = reviewManager.getReviewForPostAndUser(HASH, USERNAME_2, this.dbSession);
 
 		assertNotNull(review);
@@ -69,12 +71,12 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// try to insert a new review for the same resource
 		try {
-			this.insertReview(USERNAME_2, HASH, rating, null, null);
+			this.insertReview(USERNAME_2, BibTex.class, HASH, rating, null, null);
 		} catch (final ValidationException ex) {
 			// ok
 		}
 
-		this.deleteReview(USERNAME_2, HASH, review.getHash());
+		this.deleteReview(USERNAME_2, BibTex.class, HASH, review.getHash());
 		
 		// try to update a deleted review
 		assertFalse(reviewManager.updateDiscussionItemForResource(HASH, USERNAME_2, review, this.dbSession));
@@ -105,13 +107,13 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String interHash = HASH;
 		final String username = SPAMMER_1;
 		final double currentRating = testManager.getReviewRatingsArithmeticMean(interHash);
-		final String reviewHash = this.insertReview(SPAMMER_1, true, interHash, 1.0, null, null);
+		final String reviewHash = this.insertReview(SPAMMER_1, true, BibTex.class, interHash, 1.0, null, null);
 		assertNotNull(reviewHash);
 		final double afterInsert = testManager.getReviewRatingsArithmeticMean(interHash);
 		
 		assertEquals(currentRating, afterInsert);
 		
-		this.deleteReview(username, interHash, reviewHash, true);
+		this.deleteReview(username, BibTex.class, interHash, reviewHash, true);
 	}
 	
 	@Test
@@ -122,7 +124,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		final int discussionItemsSize = discussionDatabaseManager.getDiscussionSpaceForResource(HASH, null, DiscussionDatabaseManagerTest.USER_NOT_LOGGED_IN_VISIBLE_GROUPS, this.dbSession).size();
 		
-		assertNotNull(this.insertReview(userName, interHash, rating, null, new HashSet<Group>(Arrays.<Group>asList(TESTGROUP_1, TESTGROUP_2)))); // successful?
+		assertNotNull(this.insertReview(userName, BibTex.class, interHash, rating, null, new HashSet<Group>(Arrays.<Group>asList(TESTGROUP_1, TESTGROUP_2)))); // successful?
 		
 		final Review review = reviewManager.getReviewForPostAndUser(interHash, userName, this.dbSession);
 
@@ -136,13 +138,13 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(discussionItemsSize + 1, ownSize);
 		assertEquals(discussionItemsSize + 1, groupMemeberSize);
 		
-		this.deleteReview(userName, interHash, review.getHash());
+		this.deleteReview(userName, BibTex.class, interHash, review.getHash());
 	}
 
 	@Test
 	public void testUpdateReviewForPost() {
 		final List<DiscussionItem> beforeInsert = discussionDatabaseManager.getDiscussionSpaceForResource(HASH, null, DiscussionDatabaseManagerTest.USER_NOT_LOGGED_IN_VISIBLE_GROUPS, this.dbSession);
-		final String oldHash = this.insertReview(USERNAME_2, HASH, 4.0, "Great job!", null);
+		final String oldHash = this.insertReview(USERNAME_2, BibTex.class, HASH, 4.0, "Great job!", null);
 
 		final Review newReview = new Review();
 		newReview.setRating(1.5);
@@ -173,7 +175,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final List<DiscussionItem> items = discussionDatabaseManager.getDiscussionSpaceForResource(HASH, null, DiscussionDatabaseManagerTest.USER_NOT_LOGGED_IN_VISIBLE_GROUPS, this.dbSession);
 		assertEquals(beforeInsert.size(), items.size());
 		
-		this.deleteReview(USERNAME_2, HASH, review.getHash());
+		this.deleteReview(USERNAME_2, BibTex.class, HASH, review.getHash());
 	}
 
 	@Test
@@ -181,13 +183,13 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final double average = testManager.getReviewRatingsArithmeticMean(HASH);
 		int numberOfReviews = testManager.getReviewCount(HASH);
 		final double rating1 = 4.5;
-		final String reviewHashUser2 = this.insertReview(USERNAME_2, HASH, rating1, "Great job!", null);
+		final String reviewHashUser2 = this.insertReview(USERNAME_2, BibTex.class, HASH, rating1, "Great job!", null);
 		final double average2 = calcNewAvarage(average, rating1, numberOfReviews);
 		numberOfReviews++;
 		assertEquals(average2, testManager.getReviewRatingsArithmeticMean(HASH), 0.000000001);
 
 		final int rating2 = 4;
-		final String reviewHashUser3 = this.insertReview(USERNAME_3, HASH, rating2, "Great job! You're awesome!", null);
+		final String reviewHashUser3 = this.insertReview(USERNAME_3, BibTex.class, HASH, rating2, "Great job! You're awesome!", null);
 
 		final double average3 = calcNewAvarage(average2, rating2, numberOfReviews);
 		numberOfReviews++;
@@ -196,21 +198,21 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// TODO: do a update
 
-		this.deleteReview(USERNAME_3, HASH, reviewHashUser3);
+		this.deleteReview(USERNAME_3, BibTex.class, HASH, reviewHashUser3);
 		assertEquals(average2, testManager.getReviewRatingsArithmeticMean(HASH), 0.000000001);
 
-		this.deleteReview(USERNAME_2, HASH, reviewHashUser2);
+		this.deleteReview(USERNAME_2, BibTex.class, HASH, reviewHashUser2);
 	}
 
 	private double calcNewAvarage(final double old, final double newValue, final int count) {
 		return (old * count + newValue) / (count + 1);
 	}
 	
-	private void deleteReview(final String username, final String interHash, final String hash) {
-		deleteReview(username, interHash, hash, false);
+	private void deleteReview(final String username, final Class<? extends Resource> resourceType, final String interHash, final String hash) {
+		deleteReview(username, BibTex.class, interHash, hash, false);
 	}
 
-	private void deleteReview(final String username, final String interHash, final String hash, final boolean spammer) {
+	private void deleteReview(final String username, final Class<? extends Resource> resourceType, final String interHash, final String hash, final boolean spammer) {
 		final int countReviewLog = testManager.countReviewLogs();
 
 		/*
@@ -232,14 +234,15 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(countReviewLog < testManager.countReviewLogs());
 	}
 	
-	private String insertReview(final String username, final String interHash, final double rating, final String text, final Set<Group> groups) {
-		return insertReview(username, false, interHash, rating, text, groups);
+	private String insertReview(final String username, final Class<? extends Resource> resourceType, final String interHash, final double rating, final String text, final Set<Group> groups) {
+		return insertReview(username, false, resourceType, interHash, rating, text, groups);
 	}
 	
-	private String insertReview(final String username, final boolean spammer, final String interHash, final double rating, final String text, final Set<Group> groups) {
+	private String insertReview(final String username, final boolean spammer, final Class<? extends Resource> resourceType, final String interHash, final double rating, final String text, final Set<Group> groups) {
 		final Review review = new Review();
 		review.setRating(rating);
 		review.setText(text);
+		review.setResourceType(resourceType);
 		CommentDatabaseManagerTest.fillDiscussionItem(review, username, spammer);
 		if (groups != null) {
 			review.setGroups(groups);
@@ -250,16 +253,16 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test(expected = ValidationException.class)
 	public void invalidReviewMaxRating() {
-		this.insertReview(USERNAME_2, "a", 5.0000000000001, "Great job!", null);
+		this.insertReview(USERNAME_2, BibTex.class, "a", 5.0000000000001, "Great job!", null);
 	}
 
 	@Test(expected = ValidationException.class)
 	public void invalidReviewMinRating() {
-		this.insertReview(USERNAME_2, "a", -1.0, "Great job!", null);
+		this.insertReview(USERNAME_2, BibTex.class, "a", -1.0, "Great job!", null);
 	}
 
 	@Test(expected = ValidationException.class)
 	public void invalidReviewNotHalfRating() {
-		this.insertReview(USERNAME_2, "a", 2.7, "Great job!", null);
+		this.insertReview(USERNAME_2, BibTex.class, "a", 2.7, "Great job!", null);
 	}
 }

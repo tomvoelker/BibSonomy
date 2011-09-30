@@ -189,7 +189,7 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 			discussionItem.setId(oldDiscussionItem.getId());
 			// parent hash shouldn't change (don't update thread structure)
 			discussionItem.setParentHash(oldDiscussionItem.getParentHash());
-			discussionItem.setContentType(oldDiscussionItem.getContentType());
+			discussionItem.setResourceType(oldDiscussionItem.getResourceType());
 			
 			/*
 			 * first check discussion item to update
