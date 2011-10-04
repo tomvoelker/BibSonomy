@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -13,10 +14,11 @@ import org.bibsonomy.importer.reader.PostListReader;
 import org.bibsonomy.importer.reader.XMLPostListReader;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.client.Bibsonomy;
-import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.client.RestLogicFactory;
 
 /** 
  * Imports an EasyChair XML file into BibSonomy using the API.
@@ -29,7 +31,7 @@ public class Importer {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {
 
 		/*
 		 * Loads the configuration 
@@ -50,12 +52,11 @@ public class Importer {
 		/*
 		 * An instance of the BiBSonomy API.
 		 */
-		final Bibsonomy bibsonomy = new Bibsonomy();
 		final String className = Importer.class.getName();
-		bibsonomy.setApiURL(prop.getProperty(className + ".apiUrl"));
+		final RestLogicFactory restLogicFactory = new RestLogicFactory(prop.getProperty(className + ".apiUrl"));
+		
 		final String userName = prop.getProperty(className + ".apiUser");
-		bibsonomy.setUsername(userName);
-		bibsonomy.setApiKey(prop.getProperty(className + ".apiKey"));
+		final LogicInterface logic = restLogicFactory.getLogicAccess(userName, prop.getProperty(className + ".apiKey"));
 		
 		/*
 		 * Get list of BibTex posts.
@@ -66,7 +67,7 @@ public class Importer {
 		 * filter posts and post them to BibSonomy
 		 */
 		
-		for (final Post<BibTex> post:bibTeXListFromXML) {
+		for (final Post<BibTex> post : bibTeXListFromXML) {
 			filter.filterPost(post);
 
 			/*
@@ -75,11 +76,8 @@ public class Importer {
 			post.setUser(new User(userName));
 			post.setDate(new Date());
 			
-			bibsonomy.executeQuery(new CreatePostQuery(userName, post));
-			
+			logic.createPosts(Collections.<Post<? extends Resource>>singletonList(post));	
 		}
-		
-
 	}
 
 	
