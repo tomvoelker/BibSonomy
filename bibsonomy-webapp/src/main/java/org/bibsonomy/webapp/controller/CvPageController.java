@@ -2,18 +2,15 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.CvPageViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -41,11 +38,15 @@ public class CvPageController extends ResourceListController implements Minimali
 		log.debug("cvPageController accessed.");
 
 		try {
-			final Group requestedGroup = this.logic.getGroupDetails(command.getRequestedUser());
+			final String requestedUser = command.getRequestedUser();
+			final Group requestedGroup = this.logic.getGroupDetails(requestedUser);
 			/* Check if the group is present. If it should be a user. If its no
 			   user the we will catch the exception and return an error message
 			   to the user. */
-			return present(requestedGroup) ? handleGroupCV(this.logic.getGroupDetails(command.getRequestedUser()), command) : handleUserCV(this.logic.getUserDetails(command.getRequestedUser()), command);
+			if (present(requestedGroup)) {
+				return handleGroupCV(this.logic.getGroupDetails(requestedUser), command);
+			} 
+			return handleUserCV(this.logic.getUserDetails(requestedUser), command);
 		} catch (RuntimeException e) {
 			//If the name does not fit to anything a runtime exception is thrown while attempting to get the requestedUser
 			throw new MalformedURLSchemeException("Something went wrong! You are most likely looking for a non existant user/group.");
@@ -61,28 +62,30 @@ public class CvPageController extends ResourceListController implements Minimali
 	 * @param command
 	 * @return The group-cv-page view
 	 */
-	private View handleGroupCV(Group requestedGroup, CvPageViewCommand command) {
+	private View handleGroupCV(final Group requestedGroup, final CvPageViewCommand command) {
 		final String groupName = requestedGroup.getName();
-		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
 		command.setIsGroup(true);
 		// TODO: add todo
-		final List<User> groupUsers = this.logic.getUsers(null, groupingEntity, groupName, null, null, null, null, null, 0, 1000);
+		final List<User> groupUsers = this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000);
 		requestedGroup.setUsers(groupUsers);
 
-		this.setTags(command, Resource.class, groupingEntity, requestedGroup.getName(), null, command.getRequestedTagsList(), null, 1000, null);
+		this.setTags(command, Resource.class, GroupingEntity.GROUP, requestedGroup.getName(), null, command.getRequestedTagsList(), null, 1000, null);
 
-		Wiki wiki = this.logic.getWiki(groupName, null);
+		final Wiki wiki = this.logic.getWiki(groupName, null);
+		final String wikiText;
 
-		if (!present(wiki)) {
-			wiki = new Wiki();
+		if (present(wiki)) {
+			wikiText = wiki.getWikiText();
+		} else {
+			wikiText = "";
 		}
 
 		/*
 		 * set the group to render
 		 */
-		this.wikiRenderer.setRequestedGroup(requestedGroup);
-		command.setRenderedWikiText(this.wikiRenderer.render(wiki.getWikiText()));
-		command.setWikiText(wiki.getWikiText());
+		this.wikiRenderer.setRequestedGroup(requestedGroup); //FIXME: not thread-safe!
+		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
+		command.setWikiText(wikiText);
 
 		return Views.CVPAGE;
 	}
@@ -94,37 +97,29 @@ public class CvPageController extends ResourceListController implements Minimali
 	 * @param command
 	 * @return The user-cv-page view
 	 */
-	private View handleUserCV(User requestedUser, CvPageViewCommand command) {
+	private View handleUserCV(final User requestedUser, final CvPageViewCommand command) {
 		command.setUser(requestedUser);
 		final String userName = requestedUser.getName();
-		final GroupingEntity groupingEntity = GroupingEntity.USER;
-
-		this.setTags(command, Resource.class, groupingEntity, userName, null, command.getRequestedTagsList(), null, 1000, null);
-
-		/*
-		 * TODO: remove (lists are loaded by wiki tags) retrieve and set the
-		 * requested publication(s) / bookmark(s) with the "myown" tag
-		 */
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
-			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
-			this.setList(command, resourceType, groupingEntity, userName, Collections.singletonList(MyOwnSystemTag.NAME), null, Order.ADDED, null, null, entriesPerPage);
-		}
+		this.setTags(command, Resource.class, GroupingEntity.USER, userName, null, command.getRequestedTagsList(), null, 1000, null);
 
 		/*
 		 * convert the wiki syntax
 		 */
-		Wiki wiki = this.logic.getWiki(requestedUser.getName(), null);
+		final Wiki wiki = this.logic.getWiki(userName, null);
+		final String wikiText;
 
-		if (!present(wiki)) {
-			wiki = new Wiki();
+		if (present(wiki)) {
+			wikiText = wiki.getWikiText();
+		} else {
+			wikiText = "";
 		}
 
 		/*
 		 * set the user to render
 		 */
-		this.wikiRenderer.setRequestedUser(requestedUser);
-		command.setRenderedWikiText(this.wikiRenderer.render(wiki.getWikiText()));
-		command.setWikiText(wiki.getWikiText());
+		this.wikiRenderer.setRequestedUser(requestedUser); // FIXME: not thread-safe!
+		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
+		command.setWikiText(wikiText);
 
 		return Views.CVPAGE;
 
