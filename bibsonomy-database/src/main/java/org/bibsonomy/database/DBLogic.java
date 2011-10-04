@@ -2470,7 +2470,7 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 		    return new Wiki();
 		}
 		
-	    if (date == null) {
+	    if (!present(date)) {
 	    	return this.wikiDBManager.getActualWiki(userName, session);
 	    }
 
