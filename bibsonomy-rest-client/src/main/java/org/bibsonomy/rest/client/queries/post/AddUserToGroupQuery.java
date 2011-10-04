@@ -69,7 +69,7 @@ public final class AddUserToGroupQuery extends AbstractQuery<String> {
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		this.getRenderer().serializeUser(sw, user, null);
+		this.getRenderer().serializeUser(sw, this.user, null);
 		this.downloadedDocument = performRequest(HttpMethod.POST, URL_GROUPS + "/" + this.groupName + "/" + URL_USERS, sw.toString());
 		return null;
 	}

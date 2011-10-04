@@ -45,6 +45,12 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 	private final String resourceHash;
 	private boolean fileExists;
 
+	/**
+	 * @param username the user name
+	 * @param resourceHash the resource hash
+	 * @param fileName the filename
+	 * @param directory the dir
+	 */
 	public GetPostDocumentQuery(final String username, final String resourceHash, final String fileName, final String directory) {
 		this(username, resourceHash, fileName, directory, directory, directory);
 	}

@@ -35,8 +35,8 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.bibsonomy.rest.client.ProgressCallback;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.utils.HeaderUtils;
 
