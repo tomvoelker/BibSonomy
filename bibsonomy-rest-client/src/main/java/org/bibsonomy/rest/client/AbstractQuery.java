@@ -29,6 +29,7 @@ import java.io.Reader;
 import org.apache.commons.httpclient.HttpStatus;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.client.worker.impl.DeleteWorker;
 import org.bibsonomy.rest.client.worker.impl.GetWorker;

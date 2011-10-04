@@ -80,30 +80,60 @@ import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
+import org.bibsonomy.rest.client.util.ProgressCallback;
+import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
+import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.rest.renderer.RenderingFormat;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.ExceptionUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class RestLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(RestLogic.class);
-	private final Bibsonomy bibsonomy;
+	
+	
 	private final User authUser;
+	
+	private final String apiURL;
+	private final RendererFactory rendererFactory;
+	private final RenderingFormat renderingFormat;
+	private final ProgressCallbackFactory progressCallbackFactory;
 
-	public RestLogic(final String username, final String apiKey, final String apiURL) {
-		this(username, apiKey);
-		this.bibsonomy.setApiURL(apiURL);
-	}
-
-	public RestLogic(final String username, final String apiKey) {
-		this.bibsonomy = new Bibsonomy(username, apiKey);
+	/**
+	 * @param username the username
+	 * @param apiKey the API key
+	 * @param apiURL the API url
+	 * @param renderingFormat 
+	 * @param progressCallbackFactory 
+	 */
+	RestLogic(final String username, final String apiKey, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory) {
+		this.apiURL = apiURL;
+		this.rendererFactory = new RendererFactory(new UrlRenderer(this.apiURL));
+		this.renderingFormat = renderingFormat;
+		this.progressCallbackFactory = progressCallbackFactory;
+		
 		this.authUser = new User(username);
+		this.authUser.setApiKey(apiKey);
 	}
 
 	private <T> T execute(final AbstractQuery<T> query) {
 		try {
-			bibsonomy.executeQuery(query);
+			query.setApiURL(this.apiURL);
+			query.setRenderingFormat(this.renderingFormat);
+			query.setRendererFactory(this.rendererFactory);
+			query.execute(this.authUser.getName(), this.authUser.getApiKey());
 		} catch (final Exception ex) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "unable to execute " + query.toString());
 		}
 		return query.getResult();
+	}
+	
+	private <T> T executeWithCallback(final AbstractQuery<T> query, final ProgressCallback callback) {
+		query.setProgressCallback(callback);
+		return this.execute(query);
 	}
 
 	@Override
@@ -261,25 +291,22 @@ public class RestLogic implements LogicInterface {
 		 * FIXME: files are stored in /tmp and thus publicly readable! Make
 		 * directory configurable!
 		 */
-		return execute(new GetPostDocumentQuery(userName, resourceHash, fileName, "/tmp/"));
+		return executeWithCallback(new GetPostDocumentQuery(userName, resourceHash, fileName, "/tmp/"), this.progressCallbackFactory.createDocumentDownloadProgressCallback());
 	}
 
 	@Override
 	public void deleteDocument(final Document document, final String resourceHash) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void deleteInetAdressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -315,7 +342,6 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
