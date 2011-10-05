@@ -180,14 +180,15 @@ $(document).ready(function() {
 
 	var hash = $("#post.resource.interHash");
 	if(hash == -1)
-		return;
-	$.ajax({
-		url: '/json/bibtex/1' + hash + "?items=100",
+		retur		url: '/json/bibtex/1' + hash + "?items=100",
+?items=100",
 		dataType: "jsonp",
-		success: function (data) {
-		if(data.items != undefined) 
+		success: functio		if(data.items != undefined) 
 			buildGoodPostSuggestion(data);
 		}
+
+			});
+	}
 	});
 });
 
@@ -325,12 +326,6 @@ function buildGoodPostSuggestion(json) {
 function applyKeyDownHandler(element) {
 	var widget = element.autocomplete("widget");
 	var keyHandler = function (e) {
-	    var isOpen = $( this ).autocomplete( "widget" ).is( ":visible" );
-            var keyCode = $.ui.keyCode;
-            if ( !isOpen && ( e.keyCode == keyCode.UP || e.keyCode == keyCode.DOWN ) ) {
-                e.stopImmediatePropagation();
-            }
-/*
 		var p = widget.hasClass("ui-autocomplete-disabled");
 		if((e.keyCode == 38 || e.keyCode == 40)
 		&& !p
@@ -338,7 +333,6 @@ function applyKeyDownHandler(element) {
 			element.autocomplete( "disable" );
 		} else if(p)
 			element.autocomplete( "enable" );
-*/
 	};
 	element
 	.bind( "autocompleteopen", function(event, ui) {
