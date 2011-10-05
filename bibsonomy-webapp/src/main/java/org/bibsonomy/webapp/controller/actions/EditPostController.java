@@ -640,13 +640,13 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 */
 		try {
 			log.debug("finally: creating a new post in the DB");
-			final String createPosts = logic.createPosts(Collections.<Post<?>>singletonList(post)).get(0);
+			final String createdPost = logic.createPosts(Collections.<Post<?>>singletonList(post)).get(0);
 			
 			/*
 			 * store intraHash for some later changes (file upload)
 			 */
-			command.setIntraHashToUpdate(createPosts);
-			log.debug("created post: " + createPosts);
+			command.setIntraHashToUpdate(createdPost);
+			log.debug("created post: " + createdPost);
 		} catch (final DatabaseException de) {
 			return handleDatabaseException(command, loginUser, post, de, "create");
 		}

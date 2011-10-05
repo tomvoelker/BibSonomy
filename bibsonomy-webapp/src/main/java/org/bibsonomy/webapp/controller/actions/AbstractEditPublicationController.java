@@ -7,8 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.database.util.DocumentUtils;
@@ -47,8 +45,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 
 	private static final String SESSION_ATTRIBUTE_SCRAPER_METADATA = "scraperMetaData";
 
-	private static final Log log = LogFactory.getLog(AbstractEditPublicationController.class);
-
 	private Scraper scraper;
 	
 	private String docPath;
@@ -75,12 +71,12 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		final String selection = command.getSelection();
 
 		if ((present(url) || present(selection))) {
-			handleScraper(command, loginUser, url, selection);
+			handleScraper(command, url, selection);
 		}
 		
 	}
 
-	private void handleScraper(final COMMAND command, final User loginUser, final String url, String selection) {
+	private void handleScraper(final COMMAND command, final String url, String selection) {
 		/*
 		 * We have a URL set which means we shall scrape!
 		 * 
@@ -117,7 +113,11 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 					/*
 					 * check if a bibtex was scraped
 					 */
-					if (present(parsedBibTex)) {						
+					if (present(parsedBibTex)) {
+						/*
+						 * calculate hashes for resource
+						 */
+						parsedBibTex.recalculateHashes();
 						/*
 						 * save result
 						 */
