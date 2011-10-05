@@ -180,15 +180,14 @@ $(document).ready(function() {
 
 	var hash = $("#post.resource.interHash");
 	if(hash == -1)
-		retur		url: '/json/bibtex/1' + hash + "?items=100",
-?items=100",
+		return;
+	$.ajax({
+		url: '/json/bibtex/1' + hash + "?items=100",
 		dataType: "jsonp",
-		success: functio		if(data.items != undefined) 
+		success: function (data) {
+		if(data.items != undefined) 
 			buildGoodPostSuggestion(data);
 		}
-
-			});
-	}
 	});
 });
 
