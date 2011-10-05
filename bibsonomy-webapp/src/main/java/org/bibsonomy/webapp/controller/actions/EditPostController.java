@@ -519,7 +519,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 
 	/**
 	 * After validation, the controller can clean the post, i.e., normalize tags 
-	 * or so. 
+	 * or so. This method recalculates the hashes for the post and should therefore
+	 * be called <em>after</em> cleansing operations affecting the hashes have happened.
 	 * 
 	 * @param post
 	 */
