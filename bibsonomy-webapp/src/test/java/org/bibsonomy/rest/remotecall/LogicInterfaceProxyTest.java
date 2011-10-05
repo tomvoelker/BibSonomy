@@ -98,7 +98,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 
 	private static final Log log = LogFactory.getLog(LogicInterfaceProxyTest.class);
 	
-	private static final String LOGIN_USER_NAME = LogicInterfaceProxyTest.class.getSimpleName();
+	private static final String LOGIN_USER_NAME = LogicInterfaceProxyTest.class.getSimpleName().toLowerCase();
 	private static final String API_KEY = "A P I äöü K e y";
 	private static Server server;
 	private static String apiUrl;
@@ -239,7 +239,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		serverLogic.addUserToGroup(groupName, userName.toLowerCase());
 		EasyMock.replay(serverLogic);
 		clientLogic.addUserToGroup(groupName, userName);
-		//EasyMock.verify(serverLogic);
+		EasyMock.verify(serverLogic);
 		assertLogin();
 	}
 
