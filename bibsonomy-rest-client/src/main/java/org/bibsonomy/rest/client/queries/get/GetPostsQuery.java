@@ -177,6 +177,9 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 			break;
 		case ALL:
 			break;
+		case FRIEND:
+			url += "&friend=" + this.groupingValue;
+			break;
 		default:
 			throw new UnsupportedOperationException("The grouping " + this.grouping + " is currently not supported by this query.");
 		}
