@@ -115,10 +115,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 					 */
 					if (present(parsedBibTex)) {
 						/*
-						 * calculate hashes for resource
-						 */
-						parsedBibTex.recalculateHashes();
-						/*
 						 * save result
 						 */
 						command.getPost().setResource(parsedBibTex);
@@ -225,7 +221,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	 */
 	@Override
 	protected void cleanPost(final Post<BibTex> post) {
-		super.cleanPost(post);
 		/*
 		 * exchange post with a parsed version
 		 */
@@ -249,6 +244,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		if (present(scraperMetadata)) {
 			post.getResource().setScraperMetadata((ScraperMetadata) scraperMetadata);
 		}
+		super.cleanPost(post);
 	}
 
 	@Override

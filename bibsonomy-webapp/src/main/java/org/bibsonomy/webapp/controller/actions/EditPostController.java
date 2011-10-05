@@ -362,7 +362,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * check, if the post has changed
 		 */
-		post.getResource().recalculateHashes();
 		if (!intraHashToUpdate.equals(post.getResource().getIntraHash())) {
 			/*
 			 * post has changed -> check, if new post has already been posted
@@ -524,8 +523,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * 
 	 * @param post
 	 */
-	protected void cleanPost(@SuppressWarnings("unused") final Post<RESOURCE> post) {
-		// noop
+	protected void cleanPost(final Post<RESOURCE> post) {
+		post.getResource().recalculateHashes();
 	}
 
 
