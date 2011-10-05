@@ -130,6 +130,7 @@
                                    | buttons 
                                    -->
 								<div>
+									<input type="hidden" name="interHash" value="${post.resource.interHash}"/>
 	                                <input type="hidden" name="postID" value="${command.postID}"/>
                                     <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
 	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
