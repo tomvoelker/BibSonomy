@@ -178,7 +178,7 @@ $(window).load(function() {
 $(document).ready(function() {
 	addAutoCompleteSendTag($('#inpf'));
 
-	var hash = $("#interHash");
+	var hash = $("#post.resource.interHash");
 	if(hash == -1)
 		return;
 	$.ajax({
