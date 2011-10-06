@@ -27,7 +27,7 @@ public class GetResourcesWithDiscussionsCount extends StatisticChainElement {
 			return new Statistics(this.db.getNumberOfResourcesWithDiscussions(Bookmark.class, param.getRequestedUserName(), param.getUserName(), param.getGroups(), session));
 		}
 		
-		return null;
+		return new Statistics(0);
 	}
 
 	@Override

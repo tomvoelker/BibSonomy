@@ -26,7 +26,7 @@ public class GetResourcesForGroupCount extends StatisticChainElement {
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
 		if (group == null || group.getGroupId() == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(group.getGroupId())) {
 			log.debug("group " + param.getRequestedGroupName() + " not found or special group");
-			return null;			
+			return new Statistics(0);			
 		}
 		
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
@@ -36,7 +36,7 @@ public class GetResourcesForGroupCount extends StatisticChainElement {
 		if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
 			return new Statistics(this.db.getNumberOfResourcesForGroup(Bookmark.class, param.getRequestedUserName(), param.getUserName(), group.getGroupId(), param.getGroups(), session));
 		}
-		return null;
+		return new Statistics(0);
 	}
 
 	@Override

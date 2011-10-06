@@ -28,7 +28,7 @@ public class GetResourcesForHashAndUserCount extends StatisticChainElement {
 			return new Statistics(this.db.getNumberOfResourcesForHashAndUser(Bookmark.class, param.getHash(), HashID.getSimHash(param.getSimHash()), param.getRequestedUserName(), session));
 		}
 		
-		return null;
+		return new Statistics(0);
 	}
 	
 	@Override
