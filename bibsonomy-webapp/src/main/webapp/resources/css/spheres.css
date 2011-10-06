@@ -6,14 +6,14 @@
 	font-size: 120%;
 	font-weight: bold;
 	color: #006699;
-	width: 70%;
+	width: 100%;
 	float: left;
 }
 
 .sphere_separator {
 	margin-top: 0.25em;
 	margin-bottom: 1em;
-	width: 70%;
+	width: 100%;
 	float: left;
 }
 
@@ -45,7 +45,7 @@
 	padding: 0;
 }
 .left_sphere_list_entry {
-	width: 40%;
+	width: 70%;
 }
 
 .sphere_user_list li {

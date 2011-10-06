@@ -8,16 +8,15 @@
 	
 		<div class="sphere_image_container">
 				<a href="${properties['project.home']}user/${user.name}" title="${user.realname}">
-					<img src="${properties['project.home']}picture/user/${user.name}"/>
-					<c:choose>
-						<c:when test="${not empty user.realname}">
-							<span>${user.realname}</span>
-						</c:when>
-						<c:otherwise>
-							<span>${user.name}</span>
-						</c:otherwise>
-					</c:choose>
+					<div class="imageContainer">
+						<img src="${properties['project.home']}picture/user/${user.name}"/>
+				   		<div class="imageCapture">
+				   			<c:choose>
+				   				<c:when test="${not empty user.realname}">${fn:escapeXml(user.realname)}</c:when>
+				   				<c:otherwise>${fn:escapeXml(user.name)}</c:otherwise>	
+				   			</c:choose>				
+				   		</div>
+					</div>
    				</a>
 		</div>
-
-</jsp:root>
+ </jsp:root>

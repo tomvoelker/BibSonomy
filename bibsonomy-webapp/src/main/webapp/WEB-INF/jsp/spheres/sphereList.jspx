@@ -78,49 +78,53 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-		
-		<div class="sphere">
-			<c:forEach items="${command.spheres}" var="entry">
-	    		<span class="sphere_header"><c:out value="${entry.key}"/></span>
-	    		<hr class="sphere_separator"/>
-	    		
-	    		<!--+
-	    			| display buddies
-	    			+-->
-	    		<div class="sphere_users left_sphere_list_entry">
-    				<c:forEach items="${entry.value}" var="item" varStatus="loop">
-    					<spheres:userLink user="${item}"/>
-				    </c:forEach>
-			    </div>
-			    
-			    <div class="sphere_tag_cloud">
-			    	<tags:cloud requPath="${requPath}" cmd="${command.spheresTagClouds[entry.key]}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-			    </div>
 
-			    <div class="sphere_control">
-			    	<button:linkButton href="#" title="show publication">
-						<jsp:attribute name="text">
-							Show Posts
-							<!--<fmt:message key="navi.friend"/>-->
-						</jsp:attribute>
-					</button:linkButton>
-			    	<button:linkButton href="#" title="manage this sphere">
-						<jsp:attribute name="text">
-							Manage Sphere
-							<!--<fmt:message key="navi.friend"/>-->
-						</jsp:attribute>
-					</button:linkButton>
-			    </div>
-			    
-			    <div class="sphere_resources">
-        			<resources:bookmarks listView="${command.spheresBMPosts[entry.key]}" loginUserName="${command.context.loginUser}" disableActions="${true}" disableListNavigation="${true}" requPath="${requPath}"/>
-        			<resources:bibtexs listView="${command.spheresPBPosts[entry.key]}" loginUserName="${command.context.loginUser}" disableActions="${true}" disableListNavigation="${true}" requPath="${requPath}"/>
-        		</div>
-        		
-        		<div style="clear: both;"><!--  --></div>
-        		
-			</c:forEach>
-		</div>
+			<div id="general_100">
+  				<p id="groupIntro">
+					<fmt:message key="spheres.intro"/>
+				</p>
+		
+			<div class="sphere">
+				<c:forEach items="${command.spheres}" var="entry">
+		    		<span class="sphere_header"><c:out value="${entry.key}"/></span>
+		    		<hr class="sphere_separator"/>
+		    		
+		    		<!--+
+		    			| display buddies
+		    			+-->
+		    		<div class="sphere_users left_sphere_list_entry">
+	    				<c:forEach items="${entry.value}" var="item" varStatus="loop">
+	    					<spheres:userLink user="${item}"/>
+					    </c:forEach>
+				    </div>
+				    
+				    <div class="sphere_tag_cloud">
+				    	<tags:cloud requPath="${requPath}" cmd="${command.spheresTagClouds[entry.key]}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+				    </div>
+				<!-- 
+				    <div class="sphere_control">
+				    	<button:linkButton href="#" title="show publication">
+							<jsp:attribute name="text">
+								Show Posts
+							</jsp:attribute>
+						</button:linkButton>
+				    	<button:linkButton href="#" title="manage this sphere">
+							<jsp:attribute name="text">
+								Manage Sphere
+							</jsp:attribute>
+						</button:linkButton>
+				    </div>
+				-->
+				    <div class="sphere_resources">
+	        			<resources:bookmarks listView="${command.spheresBMPosts[entry.key]}" loginUserName="${command.context.loginUser}" disableActions="${true}" disableListNavigation="${true}" requPath="${requPath}"/>
+	        			<resources:bibtexs listView="${command.spheresPBPosts[entry.key]}" loginUserName="${command.context.loginUser}" disableActions="${true}" disableListNavigation="${true}" requPath="${requPath}"/>
+	        		</div>
+	        		
+	        		<div style="clear: both;"><!--  --></div>
+	        		
+				</c:forEach>
+			</div>
+			</div>
 		</jsp:attribute>
 	</layout:layout>
 	
