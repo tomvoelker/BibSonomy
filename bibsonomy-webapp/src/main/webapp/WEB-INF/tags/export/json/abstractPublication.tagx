@@ -27,10 +27,22 @@
          "author": [ 
             <c:forEach var="author" varStatus="authorStatus" items="${post.resource.author}">"${mtl:quoteJSONcleanBibTeX(author.firstName)}${' '}${mtl:quoteJSONcleanBibTeX(author.lastName)}"<c:if test="${not authorStatus.last}">,</c:if></c:forEach>
          ],
+         "authors": [
+         	<!-- {"first" : "Beate","last" : "Navarro Bullock"},  --> 
+            <c:forEach var="author" varStatus="authorStatus" items="${post.resource.author}">
+            	{"first" : "${mtl:quoteJSONcleanBibTeX(author.firstName)}",	"last" : "${mtl:quoteJSONcleanBibTeX(author.lastName)}"}<c:if test="${not authorStatus.last}">,</c:if>
+            </c:forEach>
+         ],
          </c:if>
          <c:if test="${! empty post.resource.editor}">
          "editor": [ 
             <c:forEach var="editor" varStatus="editorStatus" items="${post.resource.editor}">"${mtl:quoteJSONcleanBibTeX(editor.firstName)}${' '}${mtl:quoteJSONcleanBibTeX(editor.lastName)}"<c:if test="${not editorStatus.last}">,</c:if></c:forEach>
+         ],
+         "editors": [
+         	<!-- {"first" : "Beate","last" : "Navarro Bullock"},  --> 
+            <c:forEach var="editor" varStatus="editorStatus" items="${post.resource.editor}">
+            	{"first" : "${mtl:quoteJSONcleanBibTeX(editor.firstName)}",	"last" : "${mtl:quoteJSONcleanBibTeX(editor.lastName)}"}<c:if test="${not editorStatus.last}">,</c:if>
+            </c:forEach>
          ],
          </c:if>
          <c:if test="${!empty post.resource.volume}">"volume": "${mtl:quoteJSONcleanBibTeX(post.resource.volume)}",</c:if>  
