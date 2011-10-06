@@ -16,9 +16,6 @@ import org.bibsonomy.webapp.command.BaseCommand;
  */
 public class AdminCommand extends BaseCommand{
 
-	/** Automatic actions (linked) for this page */
-	private final Map<String,String> actionTitles;
-	
 	/** Privacy options for the group */
 	private final Map<String, Privlevel> privlevel;
 	
@@ -44,14 +41,6 @@ public class AdminCommand extends BaseCommand{
 	 * inits titles
 	 */
 	public AdminCommand(){
-		// set actions 
-		actionTitles = new HashMap<String, String>();
-		actionTitles.put("spam", "Flag / unflag spammers");
-		actionTitles.put("group", "Manage groups");
-		actionTitles.put("lucene", "Manage lucene");
-		actionTitles.put("recommender", "Manage recommenders");
-		actionTitles.put("oauth", "Manage OAuth Consumers");
-		actionTitles.put("sync", "Manage synchronization settings");
 		
 		// set privacy options
 		privlevel = new HashMap<String, Privlevel>();
@@ -60,12 +49,6 @@ public class AdminCommand extends BaseCommand{
 		privlevel.put("Members can list members", Privlevel.MEMBERS);
 	}
 
-	/**
-	 * @return the actionTitles
-	 */
-	public Map<String, String> getActionTitles() {
-		return this.actionTitles;
-	}
 
 	/**
 	 * @return the action
