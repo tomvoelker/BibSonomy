@@ -80,6 +80,8 @@ function add_filter() {
   
   if (document.getElementById("sidebarfilter")) {
 	  sidebar.replaceChild(l, document.getElementById("sidebarfilter")); // first child
+  } else if (document.getElementById("nosidebarfilter")) {
+	  // first step in getting rid of the filter
   } else {
 	  sidebar.insertBefore(l, sidebar.childNodes[0]); // first child
   }

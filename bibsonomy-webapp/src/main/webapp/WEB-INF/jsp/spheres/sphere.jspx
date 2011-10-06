@@ -29,11 +29,7 @@
 		</jsp:attribute>				
 		
 		<jsp:attribute name="sidebar">
-						<button:linkButton href="/SettingsHandler?ckey=${ckey}&amp;add_friend=${mtl:encodeURI(requestedUser)}" image="${resdir}/image/starblue_unselected.png" title="${addFriend}">
-					<jsp:attribute name="text">
-						<fmt:message key="navi.friend"/>
-					</jsp:attribute>
-				</button:linkButton>
+		<span id="nosidebarfilter"><!-- keep me --></span>
 		<ul id="sidebar">	
 					
 			<!-- friendrelation members -->
