@@ -391,23 +391,6 @@ INSERT INTO `prediction` VALUES
 -- 
 
 
-
--- 
--- Data for table `search_bibtex`
--- 
-
-INSERT INTO `search_bibtex` (`content_id`, `content`, `author`, `group`, `date`, `user_name`) VALUES
-(10, 'test bibtext search string', 'test author', 0, '1815-12-10 00:00:00', 'testuser1');
-
--- 
--- Data for table `search_bookmark`
--- 
-
-INSERT INTO `search_bookmark` (`content_id`, `content`, `group`, `date`, `user_name`) VALUES
-(2, 'google suchmaschine gmail earth sketchup maps news images bot adwords', 0, '1815-12-10 00:00:00', 'testuser1');
-
-
-
 -- 
 -- Data for table `spammer_tags`
 -- 
