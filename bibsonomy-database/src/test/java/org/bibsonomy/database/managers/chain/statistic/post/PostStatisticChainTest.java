@@ -53,7 +53,7 @@ public class PostStatisticChainTest extends AbstractChainTest {
 		this.statisticsParam.setOrder(null);
 		this.statisticsParam.setSearch(null);
 		
-		Statistics stats = (Statistics) postStatisticsChain.getFirstElement().perform(this.statisticsParam, this.dbSession, chainStatus);
+		final Statistics stats = postStatisticsChain.getFirstElement().perform(this.statisticsParam, this.dbSession, chainStatus);
 		assertEquals(2, stats.getCount());
 		assertEquals(GetResourcesForHashCount.class, chainStatus.getChainElement().getClass());
 	}
