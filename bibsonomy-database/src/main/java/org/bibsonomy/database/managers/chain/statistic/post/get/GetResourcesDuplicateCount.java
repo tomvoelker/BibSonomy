@@ -8,6 +8,7 @@ import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * @author Stefan Stützer
@@ -16,9 +17,9 @@ import org.bibsonomy.model.BibTex;
 public class GetResourcesDuplicateCount extends StatisticChainElement {
 
 	@Override
-	protected Integer handle(StatisticsParam param, DBSession session) {
+	protected Statistics handle(StatisticsParam param, DBSession session) {
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			return this.db.getNumberOfDuplicates(BibTex.class, param.getRequestedUserName(), session);
+			return new Statistics(this.db.getNumberOfDuplicates(BibTex.class, param.getRequestedUserName(), session));
 		}
 		
 		throw new UnsupportedResourceTypeException("Resource type not supported for this query.");
