@@ -12,10 +12,8 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
@@ -176,39 +174,6 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		tagParam.setUserName("some_other_user");
 		tagParam.setGroups(Arrays.asList(0));
 		tags = tagDb.getTags(tagParam, this.dbSession);
-		assertEquals(0, tags.size());
-	}
-
-	/**
-	 * tests getTagsByAuthor
-	 * 
-	 * we have only a single entry in the
-	 */
-	@Test
-	public void getTagsByAuthor() {
-		/*
-		 * we have only a single entry in the bibtex search table (authored by
-		 * "author", points to entry with content id 10; has 2 tags assigned
-		 */
-		final TagParam param = new TagParam();
-		param.setSearch("author");
-		param.setSearchEntity(SearchEntity.AUTHOR);
-		param.setBibtexKey(null);
-		param.setLimit(1000);
-		param.setOffset(0);
-		param.setContentTypeByClass(BibTex.class);
-		List<Tag> tags = tagDb.getTagsByAuthor(param, this.dbSession);
-		
-		assertEquals(2, tags.size());
-		assertEquals(1, tags.get(0).getGlobalcount());
-		assertEquals(1, tags.get(1).getGlobalcount());
-		assertTrue(tags.contains(new Tag("testbibtex")));
-		assertTrue(tags.contains(new Tag("testtag")));
-		/*
-		 * search for non-existing author -> no results
-		 */
-		param.setSearch("nonexistingauthor");
-		tags = tagDb.getTagsByAuthor(param, this.dbSession);
 		assertEquals(0, tags.size());
 	}
 

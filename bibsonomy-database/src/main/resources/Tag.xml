@@ -161,17 +161,6 @@
 		SET tag_ctr = tag_ctr - 1 
 		WHERE tag_name = #tagName#
 	</update>
-
-	<select id="getTagsByAuthor" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT tag_name, count(tag_name) AS tag_ctr 
-		FROM tas t1, search_bibtex s 
-		WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE)
-			<include refid="getTagsByResourceType"/>
-			AND t1.content_id = s.content_id
-			<include refid="restrictToGroups"/> 
-		GROUP BY t1.tag_name ORDER BY tag_name COLLATE utf8_unicode_ci
-		LIMIT #limit# OFFSET #offset#
-	</select>
 	
 	<select id="getRelatedTagsForGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT t1.tag_name, COUNT(t1.tag_name) AS tag_ctr
@@ -422,21 +411,6 @@
 		WHERE b.content_id = t1.content_id
 		<include refid="restrictToGroups"/>
 		GROUP BY t1.tag_name
-		LIMIT #limit# OFFSET #offset#
-	</select>	
-	
-	<select id="getRelatedTagsByAuthorAndTag" resultMap="Common.tag" parameterClass="tagParam">
-		SELECT tt.tag_name
-		FROM (SELECT t1.content_id
-       			FROM tas t1, search_bibtex s 
-        		WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE) 			 
-        		AND t1.content_type = #contentType#
-        		AND t1.content_id = s.content_id
-        		AND (<iterate property="tagIndex" conjunction=" OR ">t1.tag_name = #tagIndex[].tagName#</iterate>)
-        		<include refid="restrictToGroups"/>
-        		GROUP BY t1.tag_name ORDER BY tag_name COLLATE utf8_unicode_ci
-        ) AS t
-		LEFT JOIN tas tt ON (t.content_id = tt.content_id)
 		LIMIT #limit# OFFSET #offset#
 	</select>
 	

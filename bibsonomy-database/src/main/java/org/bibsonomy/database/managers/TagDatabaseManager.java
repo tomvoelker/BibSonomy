@@ -587,24 +587,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Get all tags of a an author, which assigned to the authors
-	 * entries/currently, the cloud is ordered alphabetically.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of tags
-	 */
-	public List<Tag> getTagsByAuthor(final TagParam param, final DBSession session) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-
-		final long starttimeQuery = System.currentTimeMillis();
-		final List<Tag> retVal = this.queryForList("getTagsByAuthor", param, Tag.class, session);
-		log.debug("DB author tag cloud query time: " + (System.currentTimeMillis() - starttimeQuery) + " ms");
-
-		return retVal;
-	}
-
-	/**
 	 * returns all tags assigned to posts which are matching the given query
 	 * 
 	 * @param userName
