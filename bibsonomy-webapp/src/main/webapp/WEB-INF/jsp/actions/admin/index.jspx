@@ -67,15 +67,18 @@
 	
 		<div>
 			<h2><fmt:message key="admin.actions.general"/></h2>
-			<table>
-				<!--  <ul class="adminList">-->
-				
-				<c:forEach var="entry" items="${command.actionTitles}">
-		 			<tr><td width="180px"><a href="/admin/${mtl:encodeURI(entry.key)}"><c:out value="${entry.value}"/></a></td></tr>		
-				</c:forEach>
-			</table>
-			</div>	
-			<hr/>
+			
+			<ul>
+				<li><a href="/admin/spam">Spam</a></li>
+				<li><a href="/admin/group">Groups</a></li>
+				<li><a href="/admin/lucene">Lucene</a></li>
+				<li><a href="/admin/recommender">Recommender</a></li>
+				<li><a href="/admin/oauth">OAuth Consumer</a></li>
+				<li><a href="/admin/sync">Synchronization</a></li>
+			</ul>
+		</div>	
+		
+		<hr/>
 		
 			<!--  autocomplete user info box -->
 			<script type="text/javascript">
