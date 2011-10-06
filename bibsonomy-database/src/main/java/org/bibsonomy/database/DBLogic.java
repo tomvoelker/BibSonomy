@@ -1798,6 +1798,10 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 		return this.statisticsDBManager.getPostStatistics(param, session);
 	    }
 
+	    /*
+	     * FIXME: warum "== null" und dann BIBTEX_CONTENT_TYPE? 
+	     * Bitte auch setContentTypeByClass verwenden!
+	     */
 	    if (null == resourceType && FilterEntity.STATISTICS_DISCUSSIONS.equals(filter)) {
 		param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
 		return this.statisticsDBManager.getPostStatistics(param, session);
