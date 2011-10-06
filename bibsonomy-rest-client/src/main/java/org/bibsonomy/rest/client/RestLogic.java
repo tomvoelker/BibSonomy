@@ -103,12 +103,9 @@ public class RestLogic implements LogicInterface {
 	private final ProgressCallbackFactory progressCallbackFactory;
 
 	/**
-	 * @param username
-	 *            the username
-	 * @param apiKey
-	 *            the API key
-	 * @param apiURL
-	 *            the API url
+	 * @param username the username
+	 * @param apiKey the API key
+	 * @param apiURL the API url
 	 * @param renderingFormat
 	 * @param progressCallbackFactory
 	 */
