@@ -64,7 +64,7 @@ public class PopularPageController extends MultiResourceListController implement
 				// build day systemtag
 				final List<String> tags = Collections.singletonList(SystemTagsUtil.buildSystemTagString(DaysSystemTag.NAME, begin));
 				// determine the value of popular days, e.g. the last 10 days
-				days = this.logic.getPostStatistics(resourceType, groupingEntity, null, tags, null, order, null, 0, this.getEntriesPerPage(), null, null);
+				days = this.logic.getPostStatistics(resourceType, groupingEntity, null, tags, null, order, null, 0, this.getEntriesPerPage(), null, null).getCount();
 				
 				// only retrieve and set the requested resource lists if days > 0
 				// because otherwise the lists will be empty

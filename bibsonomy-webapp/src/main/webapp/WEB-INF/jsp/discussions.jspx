@@ -71,6 +71,27 @@
 					</span>
 				</li>
 			</c:if>
+
+			<c:if test="${not empty command.discussionsStatistic}">
+				<c:set var="stats" value="${command.discussionsStatistic}"/>
+				<li>				
+					<div>Statistik</div>
+					<div>
+						maxCount: ${stats.count} <br />
+						avgRating: <fmt:formatNumber value="${stats.average}" maxFractionDigits="2" /><br />
+						minRating: ${stats.min} <br />
+						maxRating: ${stats.max} <br />
+					
+						<c:forEach var="ratings" items="${stats.ratings}">
+					
+						Rating ${ratings.rating}: ${ratings.count}x (<fmt:formatNumber value="${ratings.percent}" maxFractionDigits="2" />%) <br />
+						     
+						</c:forEach>							
+					
+					</div>
+				</li>
+			</c:if>
+
 		</ul>	
 		</jsp:attribute>
 		

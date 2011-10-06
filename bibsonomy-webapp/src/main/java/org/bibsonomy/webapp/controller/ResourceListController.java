@@ -263,7 +263,7 @@ public abstract class ResourceListController {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		log.debug("getPostStatistics " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
-		final int totalCount = this.logic.getPostStatistics(resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search, constraint);
+		final int totalCount = this.logic.getPostStatistics(resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search, constraint).getCount();
 		listCommand.setTotalCount(totalCount);
 	}
 

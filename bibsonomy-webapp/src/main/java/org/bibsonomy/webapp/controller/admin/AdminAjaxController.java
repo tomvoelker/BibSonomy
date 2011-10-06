@@ -195,10 +195,10 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, Order.ADDED, filter, 0, 5, null);
 			command.setBookmarks(bookmarks);
 
-			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, 0, 100, null, null);
+			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, 0, 100, null, null).getCount();
 			command.setBookmarkCount(totalBookmarks);
 
-			final int totalBibtex = this.logic.getPostStatistics(BibTex.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, 0, 10000, null, null);
+			final int totalBibtex = this.logic.getPostStatistics(BibTex.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, 0, 10000, null, null).getCount();
 			command.setBibtexCount(totalBibtex);
 		}
 	}

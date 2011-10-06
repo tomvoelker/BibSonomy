@@ -292,6 +292,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>showUnclassifiedUserItems</value>
+								<value>requestedUser</value>
 							</list>
 						</property>
 					</bean>

@@ -75,6 +75,10 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, null, null, filter, null, entriesPerPage, null);
 		}
 
+		// get discussion statistics
+		command.setDiscussionsStatistic(this.logic.getPostStatistics(null, groupingEntity, groupingName, null, null, null, FilterEntity.STATISTICS_DISCUSSIONS, 0, 0, null, null));
+		
+		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// set page title

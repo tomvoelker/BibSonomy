@@ -10,6 +10,8 @@ import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.model.statistics.UserDiscussionsRatingStatistic;
 
 /**
  * command with fields for the resource lists (one list for each resource).
@@ -25,6 +27,8 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>(this);
 	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>(this);
 	private ListCommand<Post<GoldStandardPublication>> goldStandardPublications = new ListCommand<Post<GoldStandardPublication>>(this);
+
+	private UserDiscussionsRatingStatistic discussionsStatistic;
 	
 	// TODO: move to listcommand or use the listCommand
 	@Deprecated
@@ -146,6 +150,22 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	 */
 	public void setDiscussionItems(final List<DiscussionItem> discussionItems) {
 		this.discussionItems = discussionItems;
+	}
+
+	/**
+	 * @param statistics the discussionsStatistic to set
+	 */
+	public void setDiscussionsStatistic(Statistics statistics) {
+		if (statistics instanceof UserDiscussionsRatingStatistic) {
+			this.discussionsStatistic = (UserDiscussionsRatingStatistic) statistics;
+		} 
+	}
+
+	/**
+	 * @return the discussionsStatistic
+	 */
+	public UserDiscussionsRatingStatistic getDiscussionsStatistic() {
+		return discussionsStatistic;
 	}
 	
 }
