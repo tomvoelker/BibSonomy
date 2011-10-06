@@ -47,6 +47,7 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.AuthorDatabaseManager;
 import org.bibsonomy.database.managers.BasketDatabaseManager;
@@ -98,6 +99,7 @@ import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
@@ -1781,7 +1783,7 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
      * org.bibsonomy.common.enums.StatisticsConstraint)
      */
     @Override
-    public int getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
+    public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
 	final DBSession session = openSession();
 
 	try {
@@ -1796,11 +1798,18 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 		return this.statisticsDBManager.getPostStatistics(param, session);
 	    }
 
+	    if (null == resourceType && FilterEntity.STATISTICS_DISCUSSIONS.equals(filter)) {
+		param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
+		return this.statisticsDBManager.getPostStatistics(param, session);
+	    }
+
 	    throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 	} catch (final QueryTimeoutException ex) {
-	    // if a query times out, we return 0 (cause we also retun empty list when a query timeout exception is thrown)
-	    return 0;
-	} finally {
+//	    // if a query times out, we return 0 (cause we also retun empty list when a query timeout exception is thrown)
+//	    return 0;
+	    // TODO: check if this is ok 
+	    return null;
+	    } finally {
 	    session.close();
 	}
     }

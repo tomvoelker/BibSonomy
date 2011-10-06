@@ -13,4 +13,32 @@
             ) as b
 	</select>
 
+	<resultMap id="userDiscussionsRatingStatistic" class="userDiscussionsRatingStatistic" groupBy="count">
+    	<result property="count"		column="maxcnt"		javaType="int" />
+    	<result property="average"	column="avgrating"		javaType="float" />
+    	<result property="max"	column="maxrating"		javaType="float" />
+    	<result property="min"	column="minrating"		javaType="float" />
+    	<result property="ratings" resultMap="Statistics.userDiscussionsRatingStatisticList"/>
+	</resultMap>
+
+	<resultMap id="userDiscussionsRatingStatisticList" class="ratingStatValues">
+		<result property="rating"      	column="rating"			javaType="float" />
+    	<result property="count"     	column="cnt"			javaType="int" />
+    	<result property="percent"		column="percent"		javaType="float" />
+	</resultMap>
+
+
+	<select id="userRatingStatistic" resultMap="Statistics.userDiscussionsRatingStatistic" parameterClass="StatisticsParam" >
+		SELECT rating, COUNT(rating) cnt, (COUNT(rating) / maxcnt * 100) percent, maxcnt, avgrating, maxrating, minrating 
+		FROM discussion AS d, 
+			(SELECT COUNT(*) maxcnt, AVG(rating) avgrating, MAX(rating) maxrating, MIN(rating) minrating 
+				FROM discussion AS d
+				WHERE
+					<include refid="discussionVisible"/>
+			) AS m 
+		WHERE 
+			<include refid="discussionVisible"/>
+		GROUP BY rating
+	</select>
+
 </sqlMap>

@@ -4,6 +4,7 @@ import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.statistic.tag.get.GetRelationCountByUser;
 import org.bibsonomy.database.params.StatisticsParam;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * Chain of Responsibility for counts regarding tags
@@ -11,7 +12,7 @@ import org.bibsonomy.database.params.StatisticsParam;
  * @author Stefan Stützer
  * @version $Id$
  */
-public class TagStatisticChain implements FirstChainElement<Integer, StatisticsParam> {
+public class TagStatisticChain implements FirstChainElement<Statistics, StatisticsParam> {
 
 	private final GetRelationCountByUser getRelationCountByUser;
 	
@@ -23,7 +24,7 @@ public class TagStatisticChain implements FirstChainElement<Integer, StatisticsP
 	}
 	
 	@Override
-	public ChainElement<Integer, StatisticsParam> getFirstElement() {
+	public ChainElement<Statistics, StatisticsParam> getFirstElement() {
 		return this.getRelationCountByUser;
 	}
 }

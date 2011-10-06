@@ -388,8 +388,8 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		user1Logic.createPosts(posts);
 		// user 2 should now have 2 posts in his inbox, 1 bookmark and 1 bibtex
 		assertEquals(2, inboxDb.getNumInboxMessages(testUser2.getName(), dbSession));
-		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
-		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null).getCount());
+		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null).getCount());
 		// get posts from inbox and count
 		assertEquals(1, user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null).size());
 		assertEquals(1, user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null).size());
@@ -408,7 +408,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		bookmark.addTag("fooBookmark");
 		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_TAGS);
 		// there should now still be only one bookmarkPost in the inbox
-		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null).getCount());
 		// the bookmarkPost from the inbox should look exactly like the original post
 		List<Post<Bookmark>> inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
 		assertEquals(inboxBookmarks.get(0).getResource().getTitle(), "test");
@@ -421,7 +421,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		bookmark.getResource().setUrl("http://testurl2.orgg");
 		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 		// there should now still be only one bookmarkPost in the inbox
-		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null).getCount());
 		// the bookmarkPost from the inbox should look exactly like the original post
 		inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
 		assertEquals(inboxBookmarks.get(0).getResource().getTitle(), "test");
@@ -433,7 +433,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		 */
 		user1Logic.deletePosts(testUser1.getName(), Collections.singletonList(bookmark.getResource().getIntraHash()));
 		// there should now still be only one bookmarkPost in the inbox
-		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null).getCount());
 		// the bookmarkPost from the inbox should look exactly like the original post
 		inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
 		assertEquals(inboxBookmarks.get(0).getResource().getTitle(), "test");
@@ -451,7 +451,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		// change only a tag
 		publication.addTag("barBibTex");
 		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_TAGS);
-		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null).getCount());
 		// the inboxPost should still have no chapter, just as the original testPost
 		List<Post<BibTex>> inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
 		assertEquals(inboxPublications.get(0).getResource().getChapter(), null);
@@ -464,7 +464,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		publication.getResource().setAuthor(PersonNameUtils.discoverPersonNames("Famous Author"));
 		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 		// there should now still be only one publicationPost in the inbox
-		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null).getCount());
 		// the inboxPost should still have the same author as the original post
 		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
 		assertEquals(2, inboxPublications.get(0).getTags().size());
@@ -476,7 +476,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		 */
 		user1Logic.deletePosts(testUser1.getName(), Collections.singletonList(publication.getResource().getIntraHash()));
 		// there should now still be only one publicationPost in the inbox
-		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null).getCount());
 		// the inboxPost should still have the same author as the original post
 		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
 		assertEquals(2, inboxPublications.get(0).getTags().size());

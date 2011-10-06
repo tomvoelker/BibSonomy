@@ -13,7 +13,9 @@ import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForU
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserInboxCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDaysCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesWithDiscussionsCount;
+import org.bibsonomy.database.managers.chain.statistic.post.get.getUserDiscussionsStatistics;
 import org.bibsonomy.database.params.StatisticsParam;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * Chain of Responsibility for counts regarding posts
@@ -21,8 +23,9 @@ import org.bibsonomy.database.params.StatisticsParam;
  * @author Stefan Stützer
  * @version $Id$
  */
-public class PostStatisticChain implements FirstChainElement<Integer, StatisticsParam> {
+public class PostStatisticChain implements FirstChainElement<Statistics, StatisticsParam> {
 
+	private final getUserDiscussionsStatistics getUserDiscussionsStatistics;
 	private final GetResourcesForGroupCount getResourcesForGroupCount;
 	private final GetResourcesForUserCount getResourcesForUserCount;
 	private final GetResourcesWithDiscussionsCount getResourcesWithDiscussionsCount;
@@ -39,6 +42,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 	 * Default Constructor
 	 */
 	public PostStatisticChain() {
+		getUserDiscussionsStatistics = new getUserDiscussionsStatistics(); 
 		getResourcesForGroupCount 	= new GetResourcesForGroupCount();
 		getResourcesWithDiscussionsCount = new GetResourcesWithDiscussionsCount();
 		getResourcesForUserCount	= new GetResourcesForUserCount();
@@ -51,6 +55,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		getResourcesForUserInboxCount = new GetResourcesForUserInboxCount();
 		defaultCatchAllCount = new DefaultCatchAllCount();
 		
+		getUserDiscussionsStatistics.setNext(getResourcesForGroupCount);
 		getResourcesForGroupCount.setNext(getResourcesWithDiscussionsCount);
 		getResourcesWithDiscussionsCount.setNext(getResourcesForUserCount);
 		getResourcesForUserCount.setNext(getResourcesByTagNamesAndUserCount);
@@ -64,7 +69,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 	}
 
 	@Override
-	public ChainElement<Integer, StatisticsParam> getFirstElement() {
-	    return this.getResourcesForGroupCount;
+	public ChainElement<Statistics, StatisticsParam> getFirstElement() {
+	    return this.getUserDiscussionsStatistics;
 	}
 }
