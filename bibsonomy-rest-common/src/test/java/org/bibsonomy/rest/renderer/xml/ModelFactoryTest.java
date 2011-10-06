@@ -125,8 +125,9 @@ public class ModelFactoryTest {
 		// check invalid posts
 		final PostType xmlPost = new PostType();
 		final DatatypeFactory dataFact = DatatypeFactory.newInstance();		
-		xmlPost.setPostingdate(dataFact.newXMLGregorianCalendar("2008-12-04T10:42:06.000+01:00"));		
-		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "no tags specified");
+		xmlPost.setPostingdate(dataFact.newXMLGregorianCalendar("2008-12-04T10:42:06.000+01:00"));
+		// 2011/10/6, fei: deactivated test, as system tags are hidden and thus posts without tags are valid
+		// checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "no tags specified");
 		final TagType xmlTag = new TagType();
 		xmlPost.getTag().add(xmlTag);
 		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "user is missing");
