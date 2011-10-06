@@ -10,7 +10,7 @@ import org.bibsonomy.model.statistics.Statistics;
  * Gets count of resources in the inbox of a user
  *  
  */
-public class getUserDiscussionsStatistics extends StatisticChainElement {
+public class GetUserDiscussionsStatistics extends StatisticChainElement {
 
 	@Override
 	protected Statistics handle(StatisticsParam param, DBSession session) {

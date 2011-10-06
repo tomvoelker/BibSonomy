@@ -13,7 +13,7 @@ import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForU
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserInboxCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDaysCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesWithDiscussionsCount;
-import org.bibsonomy.database.managers.chain.statistic.post.get.getUserDiscussionsStatistics;
+import org.bibsonomy.database.managers.chain.statistic.post.get.GetUserDiscussionsStatistics;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.statistics.Statistics;
 
@@ -25,7 +25,7 @@ import org.bibsonomy.model.statistics.Statistics;
  */
 public class PostStatisticChain implements FirstChainElement<Statistics, StatisticsParam> {
 
-	private final getUserDiscussionsStatistics getUserDiscussionsStatistics;
+	private final GetUserDiscussionsStatistics getUserDiscussionsStatistics;
 	private final GetResourcesForGroupCount getResourcesForGroupCount;
 	private final GetResourcesForUserCount getResourcesForUserCount;
 	private final GetResourcesWithDiscussionsCount getResourcesWithDiscussionsCount;
@@ -42,7 +42,7 @@ public class PostStatisticChain implements FirstChainElement<Statistics, Statist
 	 * Default Constructor
 	 */
 	public PostStatisticChain() {
-		getUserDiscussionsStatistics = new getUserDiscussionsStatistics(); 
+		getUserDiscussionsStatistics = new GetUserDiscussionsStatistics(); 
 		getResourcesForGroupCount 	= new GetResourcesForGroupCount();
 		getResourcesWithDiscussionsCount = new GetResourcesWithDiscussionsCount();
 		getResourcesForUserCount	= new GetResourcesForUserCount();
