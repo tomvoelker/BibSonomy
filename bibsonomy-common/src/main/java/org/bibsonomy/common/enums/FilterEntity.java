@@ -84,6 +84,11 @@ public enum FilterEntity {
 	/**
 	 * Return only posts which are discussed by users - all non spammer users are shown
 	 */
-	POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER;
+	POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER,
+
+	/**
+	 * use correct chain element for retrieving statistics for discussed posts
+	 */
+	STATISTICS_DISCUSSIONS;
 
 }
