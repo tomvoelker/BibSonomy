@@ -32,7 +32,7 @@ public class GetResourcesForUserCount extends StatisticChainElement {
 			return new Statistics(this.db.getNumberOfResourcesForUser(Bookmark.class, param.getRequestedUserName(), param.getUserName(), param.getGroupId(), param.getGroups(), session));
 		}
 		
-		return null;
+		return new Statistics(0);
 	}
 
 	@Override

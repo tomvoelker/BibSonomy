@@ -30,7 +30,7 @@ public class GetResourcesForHashCount extends StatisticChainElement {
 			return new Statistics(this.db.getNumberOfResourcesForHash(Bookmark.class, param.getHash(), HashID.getSimHash(param.getSimHash()), session));
 		}
 		
-		return null;
+		return new Statistics(0);
 	}
 	
 	@Override

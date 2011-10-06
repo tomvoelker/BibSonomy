@@ -28,7 +28,7 @@ public class GetResourcesByTagNamesAndUserCount extends StatisticChainElement {
 		if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
 			return new Statistics(this.db.getNumberOfResourcesForUserAndTags(Bookmark.class, param.getTagIndex(), param.getRequestedUserName(), param.getUserName(), param.getGroups(), session));
 		}
-		return null;
+		return new Statistics(0);
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class GetResourcesPopularDaysCount extends StatisticChainElement {
 			return new Statistics(this.db.getPopularDays(BibTex.class, param.getDays(), session));
 		}
 		
-		return null;
+		return new Statistics(0);
 	}
 	
 	@Override
