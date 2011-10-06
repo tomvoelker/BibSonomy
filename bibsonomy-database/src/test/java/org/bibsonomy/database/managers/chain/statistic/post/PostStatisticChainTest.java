@@ -7,6 +7,7 @@ import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount;
 import org.bibsonomy.database.params.StatisticsParam;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -52,8 +53,8 @@ public class PostStatisticChainTest extends AbstractChainTest {
 		this.statisticsParam.setOrder(null);
 		this.statisticsParam.setSearch(null);
 		
-		Integer count = postStatisticsChain.getFirstElement().perform(this.statisticsParam, this.dbSession, chainStatus);
-		assertEquals(2, count);
+		Statistics stats = (Statistics) postStatisticsChain.getFirstElement().perform(this.statisticsParam, this.dbSession, chainStatus);
+		assertEquals(2, stats.getCount());
 		assertEquals(GetResourcesForHashCount.class, chainStatus.getChainElement().getClass());
 	}
 
