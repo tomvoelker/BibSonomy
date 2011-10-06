@@ -8,10 +8,19 @@ package org.bibsonomy.model.statistics;
  */
 public class Statistics {
 
-	private int count;
-	private int min;
-	private int max;
-	private double average;
+	private int count = 0;
+	private int min = 0;
+	private int max = 0;
+	private double average = 0.0;
+
+	public Statistics() {
+	}
+
+	public Statistics(int count) {
+		super();
+		this.count = count;
+	}
+
 	
 
 	public int getCount() {

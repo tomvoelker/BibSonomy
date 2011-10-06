@@ -34,6 +34,7 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * Access interface from applications (client and server) to the core
@@ -141,5 +142,5 @@ public interface PostLogicInterface {
 	 * @param constraint - a possible constraint on the statistics
 	 * @return a filtered list of posts. may be empty but not null
 	 */
-	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint);
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint);
 }
