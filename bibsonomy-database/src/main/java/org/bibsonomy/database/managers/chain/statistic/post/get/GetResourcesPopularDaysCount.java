@@ -10,6 +10,7 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * @author mwa
@@ -18,16 +19,16 @@ import org.bibsonomy.model.enums.Order;
 public class GetResourcesPopularDaysCount extends StatisticChainElement {
 
 	@Override
-	protected Integer handle(StatisticsParam param, DBSession session) {
+	protected Statistics handle(StatisticsParam param, DBSession session) {
 		if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			return this.db.getPopularDays(Bookmark.class, param.getDays(), session);
+			return new Statistics(this.db.getPopularDays(Bookmark.class, param.getDays(), session));
 		}
 		
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			return this.db.getPopularDays(BibTex.class, param.getDays(), session);
+			return new Statistics(this.db.getPopularDays(BibTex.class, param.getDays(), session));
 		}
 		
-		return Integer.valueOf(0);
+		return null;
 	}
 	
 	@Override

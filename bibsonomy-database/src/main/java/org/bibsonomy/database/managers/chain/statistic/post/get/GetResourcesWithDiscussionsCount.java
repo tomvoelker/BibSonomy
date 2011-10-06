@@ -7,6 +7,7 @@ import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * Gets count of resources of a special user
@@ -17,16 +18,16 @@ import org.bibsonomy.model.Bookmark;
 public class GetResourcesWithDiscussionsCount extends StatisticChainElement {
 
 	@Override
-	protected Integer handle(StatisticsParam param, DBSession session) {
+	protected Statistics handle(StatisticsParam param, DBSession session) {
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			return this.db.getNumberOfResourcesWithDiscussions(BibTex.class, param.getRequestedUserName(), param.getUserName(), param.getGroups(), session);
+			return new Statistics(this.db.getNumberOfResourcesWithDiscussions(BibTex.class, param.getRequestedUserName(), param.getUserName(), param.getGroups(), session));
 		}
 		
 		if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			return this.db.getNumberOfResourcesWithDiscussions(Bookmark.class, param.getRequestedUserName(), param.getUserName(), param.getGroups(), session);
+			return new Statistics(this.db.getNumberOfResourcesWithDiscussions(Bookmark.class, param.getRequestedUserName(), param.getUserName(), param.getGroups(), session));
 		}
 		
-		return Integer.valueOf(0);
+		return null;
 	}
 
 	@Override

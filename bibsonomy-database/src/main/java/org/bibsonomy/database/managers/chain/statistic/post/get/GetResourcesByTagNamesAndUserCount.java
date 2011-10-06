@@ -11,6 +11,7 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * @author Stefan Stützer
@@ -19,15 +20,15 @@ import org.bibsonomy.model.enums.Order;
 public class GetResourcesByTagNamesAndUserCount extends StatisticChainElement {
 
 	@Override
-	protected Integer handle(StatisticsParam param, DBSession session) {
+	protected Statistics handle(StatisticsParam param, DBSession session) {
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			return this.db.getNumberOfResourcesForUserAndTags(BibTex.class, param.getTagIndex(), param.getRequestedUserName(), param.getUserName(), param.getGroups(), session);
+			return new Statistics(this.db.getNumberOfResourcesForUserAndTags(BibTex.class, param.getTagIndex(), param.getRequestedUserName(), param.getUserName(), param.getGroups(), session));
 		}
 		
 		if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			return this.db.getNumberOfResourcesForUserAndTags(Bookmark.class, param.getTagIndex(), param.getRequestedUserName(), param.getUserName(), param.getGroups(), session);
+			return new Statistics(this.db.getNumberOfResourcesForUserAndTags(Bookmark.class, param.getTagIndex(), param.getRequestedUserName(), param.getUserName(), param.getGroups(), session));
 		}
-		return Integer.valueOf(0);
+		return null;
 	}
 
 	@Override

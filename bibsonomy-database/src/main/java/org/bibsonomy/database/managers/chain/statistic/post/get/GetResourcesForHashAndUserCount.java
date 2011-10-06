@@ -10,6 +10,7 @@ import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * @author mwa
@@ -18,16 +19,16 @@ import org.bibsonomy.model.Bookmark;
 public class GetResourcesForHashAndUserCount extends StatisticChainElement {
 
 	@Override
-	protected Integer handle(StatisticsParam param, DBSession session) {
+	protected Statistics handle(StatisticsParam param, DBSession session) {
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			return this.db.getNumberOfResourcesForHashAndUser(BibTex.class, param.getHash(), HashID.getSimHash(param.getSimHash()), param.getRequestedUserName(), session); 
+			return new Statistics(this.db.getNumberOfResourcesForHashAndUser(BibTex.class, param.getHash(), HashID.getSimHash(param.getSimHash()), param.getRequestedUserName(), session)); 
 		}
 		
 		if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			return this.db.getNumberOfResourcesForHashAndUser(Bookmark.class, param.getHash(), HashID.getSimHash(param.getSimHash()), param.getRequestedUserName(), session);
+			return new Statistics(this.db.getNumberOfResourcesForHashAndUser(Bookmark.class, param.getHash(), HashID.getSimHash(param.getSimHash()), param.getRequestedUserName(), session));
 		}
 		
-		return Integer.valueOf(0);
+		return null;
 	}
 	
 	@Override

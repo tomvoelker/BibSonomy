@@ -12,6 +12,7 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * Gets count of resources of a special user
@@ -22,16 +23,16 @@ import org.bibsonomy.model.enums.Order;
 public class GetResourcesForUserCount extends StatisticChainElement {
 
 	@Override
-	protected Integer handle(StatisticsParam param, DBSession session) {
+	protected Statistics handle(StatisticsParam param, DBSession session) {
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			return this.db.getNumberOfResourcesForUser(BibTex.class, param.getRequestedUserName(), param.getUserName(), param.getGroupId(), param.getGroups(), session);
+			return new Statistics(this.db.getNumberOfResourcesForUser(BibTex.class, param.getRequestedUserName(), param.getUserName(), param.getGroupId(), param.getGroups(), session));
 		}
 		
 		if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			return this.db.getNumberOfResourcesForUser(Bookmark.class, param.getRequestedUserName(), param.getUserName(), param.getGroupId(), param.getGroups(), session);
+			return new Statistics(this.db.getNumberOfResourcesForUser(Bookmark.class, param.getRequestedUserName(), param.getUserName(), param.getGroupId(), param.getGroups(), session));
 		}
 		
-		return Integer.valueOf(0);
+		return null;
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * Counts of resources within a group
@@ -21,21 +22,21 @@ import org.bibsonomy.model.Group;
 public class GetResourcesForGroupCount extends StatisticChainElement {
 
 	@Override
-	protected Integer handle(StatisticsParam param, DBSession session) {
+	protected Statistics handle(StatisticsParam param, DBSession session) {
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
 		if (group == null || group.getGroupId() == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(group.getGroupId())) {
 			log.debug("group " + param.getRequestedGroupName() + " not found or special group");
-			return Integer.valueOf(0);			
+			return null;			
 		}
 		
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			return this.db.getNumberOfResourcesForGroup(BibTex.class, param.getRequestedUserName(), param.getUserName(), group.getGroupId(), param.getGroups(), session);
+			return new Statistics(this.db.getNumberOfResourcesForGroup(BibTex.class, param.getRequestedUserName(), param.getUserName(), group.getGroupId(), param.getGroups(), session));
 		} 
 		
 		if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			return this.db.getNumberOfResourcesForGroup(Bookmark.class, param.getRequestedUserName(), param.getUserName(), group.getGroupId(), param.getGroups(), session);
+			return new Statistics(this.db.getNumberOfResourcesForGroup(Bookmark.class, param.getRequestedUserName(), param.getUserName(), group.getGroupId(), param.getGroups(), session));
 		}
-		return Integer.valueOf(0);
+		return null;
 	}
 
 	@Override
