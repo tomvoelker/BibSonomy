@@ -33,7 +33,7 @@ import org.bibsonomy.util.StringUtils;
  */
 public class SimHashCleaner {
 
-	private static final boolean UPDATE = true;
+	private static final boolean UPDATE = false;
 	/*
 	 * SQL queries to get/manipulate the data
 	 */
@@ -79,13 +79,75 @@ public class SimHashCleaner {
 	int printedHashesCtr = 0;
 	int updatedHashesCtr = 0;
 	int exceptionCtr = 0;
+	int duplicateCtr = 0;
 	int changedPersonCtr = 0; // how many person names would change in the DB, if we would update them as well?
 	int publCtr = 0;
 
 	public static void main(String[] args) throws IOException {
 		final SimHashCleaner simHashCleaner = new SimHashCleaner();
 		simHashCleaner.compareHashes();
+		
+//		final OldBibTex oldBibtex = simHashCleaner.getExample1old();
+//		final OldBibTex oldBibtex = simHashCleaner.getExample2old();
+//		final BibTex newBibtex = simHashCleaner.convert(oldBibtex);
+//		simHashCleaner.compareHashes(newBibtex, oldBibtex);
 	}
+	
+	private OldBibTex getExample1old() {
+		final OldBibTex bibtex = new OldBibTex();
+		
+		bibtex.setTitle("{C}onvergence of {V}ortex {M}ethods");
+		bibtex.setAuthor("Hald, O. H.");
+		bibtex.setEditor("K. E. Gustafson and J. A. Sethian");
+		bibtex.setYear("1991");
+		bibtex.setEntrytype("incollection");
+		bibtex.setJournal(null);
+		bibtex.setBooktitle("Vortex Methods and Vortex Motion");
+		bibtex.setVolume(null);
+		bibtex.setNumber(null);
+		return bibtex;
+	}
+	private OldBibTex getExample2old() {
+		final OldBibTex bibtex = new OldBibTex();
+		
+		bibtex.setTitle("The role of software measures and metrics in studies of program comprehension");
+		bibtex.setAuthor("Mathias, Karl S. and Cross,II, James H. and Hendrix, T. Dean and Barowski, Larry A.");
+		bibtex.setEditor(null);
+		bibtex.setYear("1999");
+		bibtex.setEntrytype("inproceedings");
+		bibtex.setJournal(null);
+		bibtex.setBooktitle("Proc of the 37th annual Southeast regional conference");
+		bibtex.setVolume(null);
+		bibtex.setNumber(null);
+		return bibtex;
+	}
+
+	private BibTex convert(final OldBibTex oldBibtex) {
+		final BibTex bibtex = new BibTex();
+		
+		bibtex.setTitle(oldBibtex.getTitle());
+		bibtex.setAuthor(getPersonNames(oldBibtex.getAuthor()));
+		bibtex.setEditor(getPersonNames(oldBibtex.getEditor()));
+		bibtex.setYear(oldBibtex.getYear());
+		bibtex.setEntrytype(oldBibtex.getEntrytype());
+		bibtex.setJournal(oldBibtex.getJournal());
+		bibtex.setBooktitle(oldBibtex.getBooktitle());
+		bibtex.setVolume(oldBibtex.getVolume());
+		bibtex.setNumber(oldBibtex.getNumber());
+		return bibtex;
+	}
+
+	private void compareHashes(final BibTex newBibtex, final OldBibTex oldBibtex) {
+		System.out.println("-- old --");
+		System.out.println("simhash0: " + oldBibtex.getSimHash0());
+		System.out.println("simhash1: " + oldBibtex.getSimHash1());
+		System.out.println("simhash2: " + oldBibtex.getSimHash2());
+		System.out.println("-- new --");
+		System.out.println("simhash0: " + newBibtex.getSimHash0());
+		System.out.println("simhash1: " + newBibtex.getSimHash1());
+		System.out.println("simhash2: " + newBibtex.getSimHash2());
+	}
+	
 
 	private void compareHashes() {
 		Connection conn = null;
@@ -161,6 +223,7 @@ public class SimHashCleaner {
 			println("updated hashes: " + updatedHashesCtr, LEVEL_DEBUG);
 			println("changed person: " + changedPersonCtr, LEVEL_DEBUG);
 			println("pnp exceptions: " + exceptionCtr, LEVEL_DEBUG);
+			println("duplicate post: " + duplicateCtr, LEVEL_DEBUG);
 			println("loop-time in s: " + ((System.currentTimeMillis() - now) / 1000.0), LEVEL_DEBUG);
 
 			changedPersonNameWriter.close();
@@ -202,6 +265,8 @@ public class SimHashCleaner {
 	private void update(final PreparedStatement updateBibtex, final PreparedStatement updateBibhashInc, final PreparedStatement updateBibhashDec, final BibTex newBibTex, final OldBibTex oldBibTex, final int contentId) throws IOException {
 		if (UPDATE) {
 			try {
+				println("trying to update post with content_id " + contentId, LEVEL_INFO);
+				
 				updateBibtex.setString(1, newBibTex.getSimHash0());
 				updateBibtex.setString(2, newBibTex.getSimHash1());
 				updateBibtex.setString(3, newBibTex.getSimHash2());
@@ -236,6 +301,7 @@ public class SimHashCleaner {
 
 				updatedHashesCtr++;
 			} catch (final SQLException e) {
+				duplicateCtr++;
 				println("updating post with content_id " + contentId + " caused exception " + e.getMessage(), LEVEL_ERROR);
 			}
 		}
