@@ -110,16 +110,25 @@ function plotRatingDistribution() {
 	var ratings = [];
 	var rating_ticks = [];
 	var d1 = [];
-	
-	// get all ratings
-	$('.subdiscussionItems li').not('#newReview').find('.rating').each(function() {
-		var key = $(this).data("rating");
-		if (ratings[key]) {
-			ratings[key] += 1;
-		} else {
-			ratings[key] = 1;
-		}
-	});
+
+	if ($(".ratingDistributionData").length > 0) {
+		// get all ratings from hidden statistik tags
+		$('#ratingDistribution').find('.ratingDistributionData').each(function() {
+			var key = $(this).data("rating");
+			var value = $(this).data("count");
+			ratings[key] = value;
+		});
+	} else {
+		// get all ratings from all reviews
+		$('.subdiscussionItems li').not('#newReview').find('.rating').each(function() {
+			var key = $(this).data("rating");
+			if (ratings[key]) {
+				ratings[key] += 1;
+			} else {
+				ratings[key] = 1;
+			}
+		});
+	}
 	
 	for (var i = 0; i < RATING_STEPS; i++) {
 		var key = i / STEP_RATING;

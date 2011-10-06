@@ -9,7 +9,9 @@
     xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
     xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld" 
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -35,7 +37,17 @@
 			
 		</jsp:attribute>
 
-    	<!--+
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
+			
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/discussion.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
+	    </jsp:attribute>
+	    
+	        	<!--+
     	 	| content
     	 	-->
 		<jsp:attribute name="contentHeading">
@@ -87,8 +99,57 @@
 						Rating ${ratings.rating}: ${ratings.count}x (<fmt:formatNumber value="${ratings.percent}" maxFractionDigits="2" />%) <br />
 						     
 						</c:forEach>							
-					
+
 					</div>
+					
+					
+					<div class="sidebarcontainer">
+					
+						<!-- contains schema.org markup -->
+						<div id="review_info_rating" itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
+
+							<div id="ratingDistribution">
+							
+								<c:forEach var="ratings" items="${stats.ratings}">
+									<div class="ratingDistributionData" style="display:none;" data-rating="${ratings.rating}" data-count="${ratings.count}"> <!-- nothing here --></div>  
+								</c:forEach>							
+
+								<fmt:message key="post.resource.review.info.ratingDistribution" />
+								<div id="ratingDistributionGraph" style="width: 100%; height: 60px;">
+									<!-- ploted by javascript -->
+								</div>
+							</div>
+							<div id="ratingAvg">
+								<span><fmt:message key="post.resource.review.info.ratingAvg" /> <buttons:help cssStyle="float:none" iconTextStyle="float:none" message="post.resource.review.ratings.basedOn.help"/></span>
+								<!-- TODO: add bigger star images and change dimension to 2 -->
+								<div><review:reviewStars rating="${stats.average}" /></div>
+					
+								<!-- plural -->
+								<fmt:message var="ratingTitle" key="post.resource.review.reviews" />
+								<c:if test="${stats.count == 1}">
+									<!-- singular -->
+									<fmt:message var="ratingTitle" key="post.resource.review.review" />
+								</c:if>
+					
+								<fmt:formatNumber var="roundedRating" value="${stats.average}" maxFractionDigits="1" minFractionDigits="1" />
+					
+								<div class="ratingAvgInfo">
+									(<span id="ratingAverage" itemprop="ratingValue"><c:out value="${roundedRating}" /></span>
+									<c:out value=" " />
+									<fmt:message key="post.resource.review.ratings.of" />
+									<c:out value=" " />
+									<span id="ratingBest" itemprop="bestRating">5.0</span><c:out value=" " /> <fmt:message key="post.resource.review.ratings.basedOn" />
+									<c:out value=" " /><span id="ratingCount" itemprop="ratingCount"><c:out value="${stats.count}" /></span>
+									<c:out value=" " />
+									<span>
+										<c:out value="${ratingTitle}" />
+									</span>)
+									<meta itemprop="worstRating" content="0.0"/>
+								</div>
+							</div>
+						</div>					
+					</div>
+								
 				</li>
 			</c:if>
 

@@ -15,6 +15,14 @@ li.ui-state-hover {
 	width: 630px;
 }
 
+.sidebarcontainer #review_info_rating {
+	width: 90%;
+	margin: 5%;
+}
+.sidebarcontainer #ratingDistribution, .sidebarcontainer #ratingAvg {
+	display: inline ;
+}
+
 #postReview, #review_info_rating {
 	margin-bottom: 1.0em;
 }
