@@ -57,6 +57,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
@@ -93,28 +94,30 @@ import org.bibsonomy.util.ExceptionUtils;
  */
 public class RestLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(RestLogic.class);
-	
-	
+
 	private final User authUser;
-	
+
 	private final String apiURL;
 	private final RendererFactory rendererFactory;
 	private final RenderingFormat renderingFormat;
 	private final ProgressCallbackFactory progressCallbackFactory;
 
 	/**
-	 * @param username the username
-	 * @param apiKey the API key
-	 * @param apiURL the API url
-	 * @param renderingFormat 
-	 * @param progressCallbackFactory 
+	 * @param username
+	 *            the username
+	 * @param apiKey
+	 *            the API key
+	 * @param apiURL
+	 *            the API url
+	 * @param renderingFormat
+	 * @param progressCallbackFactory
 	 */
 	RestLogic(final String username, final String apiKey, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory) {
 		this.apiURL = apiURL;
 		this.rendererFactory = new RendererFactory(new UrlRenderer(this.apiURL));
 		this.renderingFormat = renderingFormat;
 		this.progressCallbackFactory = progressCallbackFactory;
-		
+
 		this.authUser = new User(username);
 		this.authUser.setApiKey(apiKey);
 	}
@@ -130,7 +133,7 @@ public class RestLogic implements LogicInterface {
 		}
 		return query.getResult();
 	}
-	
+
 	private <T> T executeWithCallback(final AbstractQuery<T> query, final ProgressCallback callback) {
 		query.setProgressCallback(callback);
 		return this.execute(query);
@@ -399,9 +402,9 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	@Override
@@ -436,8 +439,8 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, final String tag) {
 		/*
-		 * Transform UserRelation into String.
-		 * FIXME: shouldn't we do this in a nicer way?
+		 * Transform UserRelation into String. FIXME: shouldn't we do this in a
+		 * nicer way?
 		 */
 		final String relationType;
 		switch (relation) {
@@ -448,7 +451,7 @@ public class RestLogic implements LogicInterface {
 			relationType = CreateUserRelationshipQuery.FOLLOWER_RELATIONSHIP;
 			break;
 		default:
-			throw new IllegalArgumentException("Only OF_FRIEND (for friend relations) and FOLLOWER_OF (for followers) are allowed values for the relation param." );
+			throw new IllegalArgumentException("Only OF_FRIEND (for friend relations) and FOLLOWER_OF (for followers) are allowed values for the relation param.");
 		}
 		execute(new CreateUserRelationshipQuery(sourceUser, targetUser, relationType, tag));
 	}
@@ -545,19 +548,19 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public void createDiscussionItem(final String interHash, final String username, final DiscussionItem comment) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void updateDiscussionItem(final String username, final String interHash, final DiscussionItem discussionItem) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void deleteDiscussionItem(final String username, final String interHash, final String commentHash) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
