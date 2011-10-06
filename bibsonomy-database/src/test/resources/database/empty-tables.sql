@@ -64,8 +64,6 @@ DELETE FROM `pendingUser`;
 DELETE FROM `ranking_queue`;
 DELETE FROM `rankings`;
 DELETE FROM `scraperMetaData`;
-DELETE FROM `search_bibtex`;
-DELETE FROM `search_bookmark`;
 DELETE FROM `spammer_tags`;
 DELETE FROM `tags`;
 DELETE FROM `tagtag`;
