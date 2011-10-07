@@ -92,14 +92,15 @@
 						<property name="allowedFields" ref="publicationRequestParameters" />
 					</bean>
 				</entry>
-				<entry key="/ajax/handleFollower">
+				<entry key="/ajax/handleUserRelation">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="followerAjaxController" />
+						<property name="controllerBeanName"	value="userRelationAjaxController" />
 						<property name="allowedFields" >
 							<list>
 								<value>requestedUserName</value>
 								<value>action</value>
 								<value>forward</value>
+								<value>relationTags</value>
 								<value>ckey</value>
 							</list>
 						</property>
@@ -236,7 +237,7 @@
 	<bean id="userSearchController" class="org.bibsonomy.webapp.controller.ajax.UserSearchController" scope="request" parent="ajaxController" />
 	<bean id="ajaxGetBookmarkRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetBookmarkRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
 	<bean id="ajaxGetPublicationRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetPublicationRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
-	<bean id="followerAjaxController" class="org.bibsonomy.webapp.controller.ajax.FollowerAjaxController" scope="request" parent="ajaxController" />
+	<bean id="userRelationAjaxController" class="org.bibsonomy.webapp.controller.ajax.UserRelationAjaxController" scope="request" parent="ajaxController" />
 	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request" parent="ajaxController" />
 	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
 </beans>

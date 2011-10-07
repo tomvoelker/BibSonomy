@@ -1,8 +1,15 @@
-function addFollower(name, ckey){
+function addUserRelation(name, relationName, ckey) {
+	var actionString;
+	if ('sys:network:bibsonomy-follower' == relationName) {
+		// FIXME: move follower-table to friends table
+		actionString = "&action=addFollower";
+	} else {
+		actionString = "&action=addRelation&relationTags="+encodeURIComponent(relationName);
+	}
 	$.ajax({  
 		type: "POST",  
-		url: "/ajax/handleFollower",  
-		data: "requestedUserName="+ name +"&action=addFollower&ckey=" + ckey,
+		url: "/ajax/handleUserRelation",  
+		data: "requestedUserName="+ encodeURIComponent(name) + actionString + "&ckey=" + ckey,
 		complete: function changeText(){
 			document.getElementById("followLink").style.visibility='hidden';
 			document.getElementById("followLink").style.display="none";
@@ -12,11 +19,18 @@ function addFollower(name, ckey){
 	});
 }
 
-function removeFollower(name, ckey){
+function removeUserRelation(name, relationName, ckey){
+	var actionString;
+	if ('sys:network:bibsonomy-follower' == relationName) {
+		// FIXME: move follower-table to friends table
+		actionString = "&action=removeFollower";
+	} else {
+		actionString = "&action=removeRelation&relationTags="+encodeURIComponent(relationName);
+	}
 	$.ajax({  
 		type: "POST",  
-		url: "/ajax/handleFollower",  
-		data: "requestedUserName="+ name +"&action=removeFollower&ckey=" + ckey,
+		url: "/ajax/handleUserRelation",  
+		data: "requestedUserName="+ encodeURIComponent(name) + actionString + "&ckey=" + ckey,
 		complete: function changeText(){
 			document.getElementById("removeLink").style.visibility='hidden';
 			document.getElementById("removeLink").style.display="none";
@@ -30,8 +44,8 @@ function removeFollowerFollowerPage(name, element, ckey){
 	
 	$.ajax({  
 		type: "POST",  
-		url: "/ajax/handleFollower",  
-		data: "requestedUserName="+ name +"&action=removeFollower&ckey=" + ckey,
+		url: "/ajax/handleUserRelation",  
+		data: "requestedUserName="+ encodeURIComponent(name) +"&action=removeFollower&ckey=" + ckey,
 		complete: function changeText(){
 		if (document.getElementById("posts.refresh")) {
 			document.getElementById("posts.refresh").style.visibility='visible';
@@ -48,8 +62,8 @@ function addFollowerFollowerPage(name, element, ckey){
 	
 	$.ajax({  
 		type: "POST",  
-		url: "/ajax/handleFollower",  
-		data: "requestedUserName="+ name +"&action=addFollower&ckey=" + ckey,
+		url: "/ajax/handleUserRelation",  
+		data: "requestedUserName="+ encodeURIComponent(name) +"&action=addFollower&ckey=" + ckey,
 		complete: function changeText(){
 		if (document.getElementById("posts.refresh")) {
 			document.getElementById("posts.refresh").style.visibility='visible';

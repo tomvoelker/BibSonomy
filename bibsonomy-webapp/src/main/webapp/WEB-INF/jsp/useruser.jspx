@@ -17,7 +17,7 @@
 	
 		<!-- include javascript -->
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/follower.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
 		</jsp:attribute>
 	
 		<!-- create menu -->
@@ -116,29 +116,29 @@
 					<c:when test="${command.followerOfUser eq true}">
 						<span id="removeLink">
 							<a style="cursor: pointer;" 
-							   onclick="javascript:removeFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
+							   onclick="javascript:removeUserRelation('${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
+							   href="/ajax/handleUserRelation?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
 							   <fmt:message key="follow.link.text.removeLong"/></a>
 						</span>
 						<span id="followLink" style="visibility:hidden; display:none">
 							<fmt:message key="follow.info.text1"/>
 							<a style="cursor: pointer;" 
-							   onclick="javascript:addFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
+							   onclick="javascript:addUserRelation('${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
+							   href="/ajax/handleUserRelation?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
 							   <fmt:message key="follow.link.text.followLong"/></a>
 						</span>
 					</c:when>
 					<c:otherwise>
 						<span id="removeLink" style="visibility:hidden; display:none">
 							<a style="cursor: pointer;" 
-							   onclick="javascript:removeFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
+							   onclick="javascript:removeUserRelation('${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
+							   href="/ajax/handleUserRelation?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
 							   <fmt:message key="follow.link.text.removeLong"/></a>							
 						</span>
 						<span id="followLink">
 							<a style="cursor: pointer;" 
-							   onclick="javascript:addFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
+							   onclick="javascript:addUserRelation('${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
+							   href="/ajax/handleUserRelation?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
 							   <fmt:message key="follow.link.text.followLong"/></a>
 						</span>
 					</c:otherwise>
