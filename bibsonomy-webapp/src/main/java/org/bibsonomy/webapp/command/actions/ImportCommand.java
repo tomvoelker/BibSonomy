@@ -20,12 +20,6 @@ public class ImportCommand extends BaseCommand {
 	// TODO: introduce enum
 	private String importType;
 	
-	/**
-	 * Appended to the Delicious (Yahoo! accounts) import callback url.
-	 */
-	private String oauth_token;
-	private String oauth_verifier;
-	
 	/** in case of an import from a remote service 
 	 *  userName and passWord are required **/
 	private String userName;
@@ -77,34 +71,6 @@ public class ImportCommand extends BaseCommand {
 	 */
 	public void setImportType(final String importType) {
 		this.importType = importType;
-	}
-	
-	/**
-	 * @param oauth_token
-	 */
-	public void setOauth_token(final String oauth_token) {
-		this.oauth_token = oauth_token;
-	}
-
-	/**
-	 * @return oAuth token for Delicious (Yahoo!) import
-	 */
-	public String getOauth_token() {
-		return oauth_token;
-	}
-
-	/**
-	 * @param oauth_verifier
-	 */
-	public void setOauth_verifier(final String oauth_verifier) {
-		this.oauth_verifier = oauth_verifier;
-	}
-
-	/**
-	 * @return oAuth verifier for Delicious (Yahoo!) import
-	 */
-	public String getOauth_verifier() {
-		return oauth_verifier;
 	}
 
 	/**

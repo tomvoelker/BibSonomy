@@ -68,8 +68,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private String importType;
 	
 	private boolean overwrite;
-	private boolean overwriteV1;
-	private boolean overwriteV2;
 	
 	private CommonsMultipartFile file;
 	
@@ -138,12 +136,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private List<URI> availableSyncClients;
 	private List<URI> availableSyncServers;
-	
-	/** for delicious v2 import only, import bookmarks or bundles? **/
-	private String importDataV2 = "posts";
-	
-	/** for delicious v1 import only, import bookmarks or bundles? **/
-	private String importDataV1 = "posts";
 	
 	/** in case of an import from a remote service 
 	 *  userName and passWord are required **/
@@ -220,34 +212,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
-	}
-	
-	/**
-	 * @return overwrite
-	 */
-	public boolean isOverwriteV1() {
-		return this.overwriteV1;
-	}
-
-	/**
-	 * @param overwrite the overwrite to set
-	 */
-	public void setOverwriteV1(boolean overwrite) {
-		this.overwriteV1 = overwrite;
-	}
-	
-	/**
-	 * @return overwrite
-	 */
-	public boolean isOverwriteV2() {
-		return this.overwriteV2;
-	}
-
-	/**
-	 * @param overwrite the overwrite to set
-	 */
-	public void setOverwriteV2(boolean overwrite) {
-		this.overwriteV2 = overwrite;
 	}
 
 	/**
@@ -600,20 +564,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public List<URI> getAvailableSyncServers() {
 		return availableSyncServers;
 	}
-	
-	/**
-	 * @return the importData
-	 */
-	public String getImportDataV2() {
-		return this.importDataV2;
-	}
-
-	/**
-	 * @param importData the importData to set
-	 */
-	public void setImportDataV2(String importData) {
-		this.importDataV2 = importData;
-	}
 
 	/**
 	 * @return the userName, required for importing resources form a remote service
@@ -641,20 +591,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setPassWord(String passWord) {
 		this.passWord = passWord;
-	}
-
-	/**
-	 * @param importDataV1
-	 */
-	public void setImportDataV1(String importDataV1) {
-		this.importDataV1 = importDataV1;
-	}
-
-	/**
-	 * @return importData for v1 form
-	 */
-	public String getImportDataV1() {
-		return importDataV1;
 	}
 
 	/**
