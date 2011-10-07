@@ -5,10 +5,12 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.importer.bookmark.service.DeliciousSignPost;
-import org.bibsonomy.importer.bookmark.service.DeliciousSignPostManager;
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -18,8 +20,6 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 
 /**
@@ -28,11 +28,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  */
 public class DeliciousImportController extends SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
 	
+	@SuppressWarnings("unused")
 	private static final Log log = LogFactory.getLog(DeliciousImportController.class);
 
 	private Errors errors = null;
 	
-	private DeliciousSignPostManager signPostManager;
+	private String importBookmarksPath;
 
 	@Override
 	public View workOn(SettingsViewCommand command) {
@@ -69,29 +70,35 @@ public class DeliciousImportController extends SettingsPageController implements
 	}
 	
 	protected String createRefererQuery(SettingsViewCommand command) {
-		return 
-		"&" + "overwriteV2=" + command.isOverwriteV2()
-		+ "&" + "importDataV2=" + command.getImportDataV2();
+		try {
+			return 
+			"&" + "overwriteV1=" + command.isOverwriteV1()
+			+ "&" + "importDataV1=" + command.getImportDataV1()
+			+ "&" + "userName=" + URLEncoder.encode(command.getUserName(), "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			throw new InternServerException(ex);
+		}
 	}
 	
+	@SuppressWarnings("unused")
 	protected String createRedirect(SettingsViewCommand command, RequestWrapperContext context, Errors errors) {
 		
-		final DeliciousSignPost oAuth = signPostManager.createDeliciousSignPost();
-		final ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		attr.setAttribute(signPostManager.getoAuthKey(), oAuth, ServletRequestAttributes.SCOPE_SESSION);
-		
-	    try {
-	    	return oAuth.getRequestToken(signPostManager.getCallbackBaseUrl()
-	    				+ "?" + "ckey=" + context.getCkey()
-						+ "&" + "overwrite=" + command.isOverwriteV2()
-						+ "&" + "importData=" + command.getImportDataV2());
-		} catch (Exception ex) {
-			attr.removeAttribute(signPostManager.getoAuthKey(), ServletRequestAttributes.SCOPE_SESSION);
-			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
-			log.warn("Delicious-Import failed: " + ex.getMessage());
+		/*
+		 * FIXME: it is horrible security to put a password as GET parameter into the URL!
+		 * 
+		 * Please don't do this using redirects. Instead, directly process the import.
+		 * 
+		 */
+		try {
+			return importBookmarksPath
+			+ "?" + "ckey=" + context.getCkey()
+			+ "&" + "overwrite=" + command.isOverwriteV1()
+			+ "&" + "importData=" + command.getImportDataV1()
+			+ "&" + "passWord=" + URLEncoder.encode(command.getPassWord(), "UTF-8")
+			+ "&" + "userName=" + URLEncoder.encode(command.getUserName(), "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			throw new InternServerException(ex.getMessage());
 		}
-		
-		return null;
 	}
 
 	@Override
@@ -103,29 +110,29 @@ public class DeliciousImportController extends SettingsPageController implements
 	public void setErrors(Errors errors) {
 		this.errors = errors;
 	}
-
-	/**
-	 * @param signPostFactory
-	 */
-	public void setSignPostManager(DeliciousSignPostManager signPostFactory) {
-		this.signPostManager = signPostFactory;
-	}
-
-	/**
-	 * @return the DeliciousSignPostFactory
-	 */
-	public DeliciousSignPostManager getSignPostManager() {
-		return signPostManager;
-	}
 	
 	/**
 	 * @param target
 	 * @param errors
 	 */
 	protected void validate(SettingsViewCommand target, Errors errors) {
-		if (!present(target.getImportDataV2()) || ( !"posts".equals(target.getImportDataV2()) && !"bundles".equals(target.getImportDataV2()) )) {
-			errors.rejectValue("importDataV2", "error.field.required");
+		if (!present(target.getUserName())) {
+			errors.rejectValue("userName", "error.field.required");
 		}
+		if (!present(target.getPassWord())) {
+			errors.rejectValue("passWord", "error.field.required");
+		}
+		
+		if (!present(target.getImportDataV1()) || ( !"posts".equals(target.getImportDataV1()) && !"bundles".equals(target.getImportDataV1()) )) {
+			errors.rejectValue("importDataV1", "error.field.required");
+		}
+	}
+
+	/**
+	 * @param importBookmarksPath
+	 */
+	public void setImportBookmarksPath(String importBookmarksPath) {
+		this.importBookmarksPath = importBookmarksPath;
 	}
 
 }

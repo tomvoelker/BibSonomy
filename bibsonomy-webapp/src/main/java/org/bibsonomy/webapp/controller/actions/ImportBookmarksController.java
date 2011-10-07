@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,9 +18,6 @@ import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.importer.bookmark.file.FirefoxImporter;
 import org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory;
-import org.bibsonomy.importer.bookmark.service.DeliciousSignPost;
-import org.bibsonomy.importer.bookmark.service.DeliciousSignPostManager;
-import org.bibsonomy.importer.bookmark.service.DeliciousV2Importer;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
@@ -44,8 +40,6 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author mwa
@@ -69,8 +63,6 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	 * the factory used to get an instance of a FileUploadHandler.
 	 */
 	private FileUploadFactory uploadFactory;
-	
-	private DeliciousSignPostManager signPostManager;
 
 	private Errors errors = null;
 
@@ -129,24 +121,6 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 					relations = relationImporter.getRelations();
 				} 
 
-			} else if("delicious.yahoo".equals(importType)) {
-				/*
-				 * TODO: we want to have checkboxes, not radio buttons!
-				 */
-				final String importData = command.getImportData();
-				final ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-				final DeliciousSignPost oAuth = (DeliciousSignPost) attr.getAttribute(signPostManager.getoAuthKey(), ServletRequestAttributes.SCOPE_SESSION);
-				attr.removeAttribute(signPostManager.getoAuthKey(), ServletRequestAttributes.SCOPE_SESSION);
-				oAuth.getAccessToken(command.getOauth_verifier());
-				/*
-				 * import posts/bundles from Delicious
-				 */
-				if ("posts".equals(importData)) {
-					posts = DeliciousV2Importer.getPosts(oAuth.sign(new URL(signPostManager.getBookmarksUrl())));
-				} 
-				if ("bundles".equals(importData)) {
-					relations = DeliciousV2Importer.getRelations(oAuth.sign(new URL(signPostManager.getBundlesUrl())));
-				} 
 			} else if ("firefox".equals(importType)) {
 				/*
 				 * import posts/relations from Firefox
@@ -343,12 +317,5 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	 */
 	public void setUploadFactory(final FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
-	}
-
-	/**
-	 * @param signPostManager
-	 */
-	public void setSignPostManager(final DeliciousSignPostManager signPostManager) {
-		this.signPostManager = signPostManager;
 	}
 }
