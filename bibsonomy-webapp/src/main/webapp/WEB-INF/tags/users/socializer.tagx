@@ -68,13 +68,13 @@
 			| Does loginUser follow requestedUser?
 			|
 		 	-->
-		<script type="text/javascript" src="${resdir}/javascript/follower.js"><!-- keep me --></script>
+		<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
 		<!-- we need to switch between the add/remove link if the user already follows this user or not -->
 		<span id="removeLink" style="${isFollowerOfUser ? '' : 'display:none'}">
 			<fmt:message key="follow.link.text.removeLong" var="removeFollower"/>
-			<button:linkButton onclick="javascript:removeFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
+			<button:linkButton onclick="javascript:removeUserRelation('${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-follower', '${ckey}');return false;"
 			   title="${removeFollower}"
-			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
+			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
 			   image="${resdir}/image/starblue_selected.png"
 			   >
 				<jsp:attribute name="text">
@@ -84,9 +84,9 @@
 		</span>
 		<span id="followLink" style="${isFollowerOfUser ? 'display:none' : ''}">
 			<fmt:message key="follow.link.text.followLong" var="addFollower"/>
-			<button:linkButton onclick="javascript:addFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
+			<button:linkButton onclick="javascript:addUserRelation('${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-follower', '${ckey}');return false;"
 			   title="${addFollower}"
-			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
+			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
 			   image="${resdir}/image/starblue_unselected.png"
 			   >
 				<jsp:attribute name="text">
