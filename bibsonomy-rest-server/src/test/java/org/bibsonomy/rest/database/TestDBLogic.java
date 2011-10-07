@@ -43,6 +43,7 @@ import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.statistics.Statistics;
 import org.junit.Ignore;
 
 /**
@@ -860,9 +861,9 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	@Override
