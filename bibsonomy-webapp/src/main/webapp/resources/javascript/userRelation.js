@@ -11,10 +11,10 @@ function addUserRelation(name, relationName, ckey) {
 		url: "/ajax/handleUserRelation",  
 		data: "requestedUserName="+ encodeURIComponent(name) + actionString + "&ckey=" + ckey,
 		complete: function changeText(){
-			document.getElementById("followLink").style.visibility='hidden';
-			document.getElementById("followLink").style.display="none";
-			document.getElementById("removeLink").style.visibility='visible';
-			document.getElementById("removeLink").style.display='';
+			document.getElementById(relationName+"_followLink").style.visibility='hidden';
+			document.getElementById(relationName+"_followLink").style.display="none";
+			document.getElementById(relationName+"_removeLink").style.visibility='visible';
+			document.getElementById(relationName+"_removeLink").style.display='';
 		}
 	});
 }
@@ -32,10 +32,10 @@ function removeUserRelation(name, relationName, ckey){
 		url: "/ajax/handleUserRelation",  
 		data: "requestedUserName="+ encodeURIComponent(name) + actionString + "&ckey=" + ckey,
 		complete: function changeText(){
-			document.getElementById("removeLink").style.visibility='hidden';
-			document.getElementById("removeLink").style.display="none";
-			document.getElementById("followLink").style.visibility='visible';
-			document.getElementById("followLink").style.display='';
+			document.getElementById(relationName+"_removeLink").style.visibility='hidden';
+			document.getElementById(relationName+"_removeLink").style.display="none";
+			document.getElementById(relationName+"_followLink").style.visibility='visible';
+			document.getElementById(relationName+"_followLink").style.display='';
 	}
 	});	
 }

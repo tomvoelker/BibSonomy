@@ -29,48 +29,51 @@
 	<jsp:directive.attribute name="commonGroups" type="java.util.List" required="false"/>
 
 	<div class="socializer">
-			
 		<!--+ 
 		 	|
 		 	| friendship with icons ...
 		 	|
-		 	| FIXME: implement this using AJAX or at least some "return false;" magic.
-		 	|
 		 	+-->
-   		<c:choose>
-			<c:when test="${isOfFriendUser}">
-				<!-- remove user from login user's friend list -->
-				<fmt:message key="friends.actions.delete.title" var="delFriend">
-					<fmt:param value="${command.user.name}"/>
-				</fmt:message>
-				<button:linkButton href="/SettingsHandler?ckey=${ckey}&amp;del_friend=${mtl:encodeURI(requestedUser)}" title="${delFriend}" image="${resdir}/image/starblue_selected.png">
-					<jsp:attribute name="text">
-						<fmt:message key="navi.friend"/>
-					</jsp:attribute>
-				</button:linkButton>
-			</c:when>
-			<c:otherwise>
-				<!-- add user from login user's friend list -->
-				<fmt:message key="friends.actions.add.title" var="addFriend">
-					<fmt:param value="${command.user.name}"/>
-				</fmt:message>
-				<button:linkButton href="/SettingsHandler?ckey=${ckey}&amp;add_friend=${mtl:encodeURI(requestedUser)}" image="${resdir}/image/starblue_unselected.png" title="${addFriend}">
-					<jsp:attribute name="text">
-						<fmt:message key="navi.friend"/>
-					</jsp:attribute>
-				</button:linkButton>
-				
-			</c:otherwise>
-		</c:choose>
+		<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
+		
+		<!-- remove user from login user's friend list -->
+		<span id="sys:network:bibsonomy-friend_removeLink" style="${isOfFriendUser ? '' : 'display:none'}">
+			<fmt:message key="friends.actions.delete.title" var="removeFriend">
+				<fmt:param value="${command.user.name}"/>
+			</fmt:message>
+			<button:linkButton onclick="javascript:removeUserRelation('${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
+			   title="${removeFriend}"
+			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
+			   image="${resdir}/image/starblue_selected.png"
+			   >
+				<jsp:attribute name="text">
+					<fmt:message key="navi.friend"/>
+				</jsp:attribute>
+			</button:linkButton>
+		</span>
+		<!-- add user from login user's friend list -->
+		<span id="sys:network:bibsonomy-friend_followLink" style="${isOfFriendUser ? 'display:none' : ''}">
+			<fmt:message key="friends.actions.add.title" var="addFriend">
+				<fmt:param value="${command.user.name}"/>
+			</fmt:message>
+			<button:linkButton onclick="javascript:addUserRelation('${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
+			   title="${addFriend}"
+			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
+			   image="${resdir}/image/starblue_unselected.png"
+			   >
+				<jsp:attribute name="text">
+					<fmt:message key="navi.friend"/>
+				</jsp:attribute>
+			</button:linkButton>
+		</span>
 		
 		<!--+
 			|
 			| Does loginUser follow requestedUser?
 			|
-		 	-->
-		<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
+		 	+-->
 		<!-- we need to switch between the add/remove link if the user already follows this user or not -->
-		<span id="removeLink" style="${isFollowerOfUser ? '' : 'display:none'}">
+		<span id="sys:network:bibsonomy-follower_removeLink" style="${isFollowerOfUser ? '' : 'display:none'}">
 			<fmt:message key="follow.link.text.removeLong" var="removeFollower"/>
 			<button:linkButton onclick="javascript:removeUserRelation('${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-follower', '${ckey}');return false;"
 			   title="${removeFollower}"
@@ -82,7 +85,7 @@
 				</jsp:attribute>
 			</button:linkButton>
 		</span>
-		<span id="followLink" style="${isFollowerOfUser ? 'display:none' : ''}">
+		<span id="sys:network:bibsonomy-follower_followLink" style="${isFollowerOfUser ? 'display:none' : ''}">
 			<fmt:message key="follow.link.text.followLong" var="addFollower"/>
 			<button:linkButton onclick="javascript:addUserRelation('${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-follower', '${ckey}');return false;"
 			   title="${addFollower}"
