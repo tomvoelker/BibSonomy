@@ -863,7 +863,7 @@ public class TestDBLogic implements LogicInterface {
 	@Override
 	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statistics(0);
 	}
 
 	@Override
