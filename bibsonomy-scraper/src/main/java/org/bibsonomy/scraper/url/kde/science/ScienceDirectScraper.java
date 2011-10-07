@@ -65,7 +65,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	private static final String PATTERN_ACCT               = "<input type=hidden name=_acct value=([^>]*)>";
 	private static final String PATTERN_ARTICLE_LIST_ID    = "<input type=hidden name=_ArticleListID value=(.+?)>";
 	private static final String PATTERN_USER_ID            = "<input type=hidden name=_userid value=(.+?)>"; // "&_userid=([^&]*)";
-	private static final String PATTERN_UIOKEY             = "<input type=hidden name=_uoikey value=(.+?)>"; //"&_uoikey=([^&]*)";
+	private static final String PATTERN_EIDKEY             = "<input type=hidden name=_eidkey value=(.+?)>"; //"&_eidkey=([^&]*)";
 	private static final String PATTERN_MD5                = "<input type=hidden name=md5 value=(.+?)>";
 	private static final String PATTERN_KEYWORDS		   = "keywords = \"(.+)\"";
 	private static final String PATTERN_QUOTE_START		   = "\\s*=\\s*\"";
@@ -75,7 +75,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	private static final Pattern patternAcct		= Pattern.compile(PATTERN_ACCT);
 	private static final Pattern patternArList		= Pattern.compile(PATTERN_ARTICLE_LIST_ID);
 	private static final Pattern patternUserId		= Pattern.compile(PATTERN_USER_ID);
-	private static final Pattern patternUiokey		= Pattern.compile(PATTERN_UIOKEY);
+	private static final Pattern patternEidkey		= Pattern.compile(PATTERN_EIDKEY);
 	private static final Pattern patternMD5			= Pattern.compile(PATTERN_MD5);
 	private static final Pattern patternKeywords	= Pattern.compile(PATTERN_KEYWORDS);
 	private static final Pattern patternQuoteStart	= Pattern.compile(PATTERN_QUOTE_START, Pattern.MULTILINE);
@@ -132,18 +132,18 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 			if(matcherUserId.find())
 				userId = matcherUserId.group(1);
 
-			String uiokey = null;
-			final Matcher matcherUiokey = patternUiokey.matcher(downloadPageContent);
-			if(matcherUiokey.find())
-				uiokey = matcherUiokey.group(1);
+			String eidkey = null;
+			final Matcher matcherEidkey = patternEidkey.matcher(downloadPageContent);
+			if(matcherEidkey.find())
+				eidkey = matcherEidkey.group(1);
 
 			String md5 = null;
 			final Matcher matcherMD5 = patternMD5.matcher(downloadPageContent);
 			if(matcherMD5.find())
 				md5 = matcherMD5.group(1);
 
-			if (acct != null && userId != null && uiokey != null && md5 != null) {
-				final String postContent = "_ob=DownloadURL&_method=finish&_acct=" + acct + "&_userid=" + userId + "&_docType=FLA&_ArticleListID=" + arList + "&_uoikey=" + uiokey + "&count=1&md5=" + md5 + "&JAVASCRIPT_ON=Y&format=cite-abs&citation-type=BIBTEX&Export=Export&RETURN_URL=http%3A%2F%2Fwww.sciencedirect.com%2Fscience%2Fhome";
+			if (acct != null && userId != null && eidkey != null && md5 != null) {
+				final String postContent = "_ob=DownloadURL&_method=finish&_acct=" + acct + "&_userid=" + userId + "&_docType=FLA&_ArticleListID=" + arList + "&_eidkey=" + eidkey + "&count=1&md5=" + md5 + "&JAVASCRIPT_ON=Y&format=cite-abs&citation-type=BIBTEX&Export=Export&RETURN_URL=http%3A%2F%2Fwww.sciencedirect.com%2Fscience%2Fhome";
 				
 				// merge multiple keyword fields
 				String _bibtex = WebUtils.getPostContentAsString(new URL(SCIENCE_CITATION_URL), postContent, "latin1");
