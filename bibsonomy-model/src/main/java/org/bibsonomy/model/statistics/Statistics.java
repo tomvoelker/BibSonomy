@@ -9,13 +9,21 @@ package org.bibsonomy.model.statistics;
 public class Statistics {
 
 	private int count = 0;
-	private int min = 0;
-	private int max = 0;
+	private double min = 0;
+	private double max = 0;
 	private double average = 0.0;
 
+	/**
+	 * constructor
+	 */
 	public Statistics() {
 	}
 
+	
+	/**
+	 * constructor. set count value while constructing object
+	 * @param count
+	 */
 	public Statistics(int count) {
 		super();
 		this.count = count;
@@ -23,34 +31,67 @@ public class Statistics {
 
 	
 
+	/**
+	 * get count value
+	 * @return count value
+	 */
 	public int getCount() {
 		return this.count;
 	}
 
+	/**
+	 * set count value
+	 * @param count
+	 */
 	public void setCount(int count) {
 		this.count = count;
 	}
 
-	public int getMin() {
+	/**
+	 * get minimum value
+	 * @return minimum value
+	 */
+	public double getMin() {
 		return this.min;
 	}
 
-	public void setMin(int min) {
+	/**
+	 * set minimum value
+	 * @param min
+	 */
+	public void setMin(double min) {
 		this.min = min;
 	}
 
-	public int getMax() {
+	/**
+	 * get maximum value
+	 * @return maximum value
+	 */
+	public double getMax() {
 		return this.max;
 	}
 
-	public void setMax(int max) {
+	/**
+	 * set maximum value
+	 * @param max
+	 */
+	public void setMax(double max) {
 		this.max = max;
 	}
 
+	/**
+	 * get average value
+	 * @return average value
+	 */
 	public double getAverage() {
 		return this.average;
 	}
 
+	
+	/**
+	 * set average value
+	 * @param average
+	 */
 	public void setAverage(double average) {
 		this.average = average;
 	}
