@@ -40,7 +40,7 @@
 	                <fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
                   <a
     	             class="action" 
-    	             href="/SettingsHandler?ckey=${ckey}&amp;del_friend=${mtl:encodeURI(user.name)}" 
+    	             href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=friends"
     	             title="${deleteFriendTitle}">
     		        <fmt:message key="friends.actions.delete"/>
                   </a>
