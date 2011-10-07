@@ -218,7 +218,7 @@ function buildGoodPostSuggestion(json) {
 	 * constants
 	 */
 	var inputFields = $("textarea, #postForm > textarea, input");
-	var postResource = "post.resource";
+	var postResource = "post.resource.";
 	var inputFieldMap = new Object();
 	inputFieldMap["post.resource.title"] = "label";
 	inputFieldMap["post.description"] = "description";
@@ -249,7 +249,7 @@ function buildGoodPostSuggestion(json) {
 			for(var z = 0; json.items.length > z; z++) {
 				var post = json.items[z];
 				var fieldVal;
-				if(((fieldVal = post[inputFieldName.substring(postResource.length+1, inputFieldName.length)]) != undefined 
+				if(((fieldVal = post[inputFieldName.substring(postResource.length, inputFieldName.length)]) != undefined 
 						|| (fieldVal = post[inputFieldMap[inputFieldName]])) && fieldVal.length > 0) {
 					var name = "";
 					if(typeof fieldVal == "object") {
@@ -258,16 +258,12 @@ function buildGoodPostSuggestion(json) {
 						 * special handling for person names: 
 						 * - join them using ", "
 						 * - prepend the prefix (last name) to our first name chain if present
-						 * - remove whitespace trailing whitespaces
 						 */
-						if(inputFieldName == postResource + ".author" || inputFieldName == postResource + ".editor") {
+						if(inputFieldName == postResource + "author" || inputFieldName == postResource + "editor") {
 							delimiter = ', ';
-							for(var m = 0; m < fieldVal.length; m++) {
-								var t = -1;
-								var personName = fieldVal[m];
-								var prepend = ((t = (personName.lastIndexOf(" ")+1)) > -1)?personName.substring(t):"";
-								var postfix = personName.substring(0, personName.length-prepend.length).replace(v, "");
-								name += ((prepend.length)?prepend+((postfix.length)?", ":""):"")+postfix+"\n";
+							var namePair = post[inputFieldName.replace(postResource, '')+"s"];
+							for(var m = 0; m < namePair.length; m++) {
+								name += ((namePair[m].last.length > 0)?namePair[m].last+((namePair[m].first.length > 0)?", ":""):"")+namePair[m].first+"\n";
 							}
 						}
 						fieldVal = fieldVal.join(delimiter);
