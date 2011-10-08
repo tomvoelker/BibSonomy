@@ -7,6 +7,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -146,7 +147,19 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	public List<Tag> getRelations() throws IOException {
 		final List<Tag> relations = new LinkedList<Tag>();
 		//open a connection to delicious and retrieve a document
-		final Document document = getDocument();
+		Document document = null;
+		try {
+			document = getDocument();
+		} catch (IOException e) {
+			//at the moment, accept the broken delcicious api for 3 weeks from now
+			Calendar calendar = Calendar.getInstance();
+			Calendar deadlineForDelicious = Calendar.getInstance();
+			deadlineForDelicious.set(2011, 10, 30, 0, 0);
+			if (calendar.before(deadlineForDelicious)) {
+				return relations;
+			}
+			throw e;
+		}
 		final NodeList bundles = document.getElementsByTagName("bundle");
 		for(int i = 0; i < bundles.getLength(); i++){
 			final Element resource = (Element)bundles.item(i);
