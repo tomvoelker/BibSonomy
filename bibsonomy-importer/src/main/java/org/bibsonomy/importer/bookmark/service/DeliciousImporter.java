@@ -186,12 +186,16 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	 * @throws IOException
 	 */
 	private Document getDocument() throws IOException{
-				
-		final URLConnection connection = apiURL.openConnection();
-		connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
-		connection.setRequestProperty(HEADER_AUTHORIZATION, encodeForAuthorization());
-		final InputStream inputStream = connection.getInputStream();
-		
+		InputStream inputStream;
+		try {		
+			final URLConnection connection = apiURL.openConnection();
+			connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
+			connection.setRequestProperty(HEADER_AUTHORIZATION, encodeForAuthorization());
+			inputStream = connection.getInputStream();
+		} catch (IOException e) {
+			log.debug("Connection to Delicicous API", e);
+			throw e;
+		}
 		// Get a JAXP parser factory object
 		final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		// Tell the factory what kind of parser we want 
