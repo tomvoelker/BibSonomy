@@ -19,7 +19,7 @@ public class GetUserDiscussionsStatistics extends StatisticChainElement {
 
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return 	( FilterEntity.STATISTICS_DISCUSSIONS.equals(param.getFilter()) );
+		return 	( FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter()) );
 	}
 	
 
