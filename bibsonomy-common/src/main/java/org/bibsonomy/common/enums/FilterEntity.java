@@ -86,9 +86,4 @@ public enum FilterEntity {
 	 */
 	POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER,
 
-	/**
-	 * use correct chain element for retrieving statistics for discussed posts
-	 */
-	STATISTICS_DISCUSSIONS;
-
 }
