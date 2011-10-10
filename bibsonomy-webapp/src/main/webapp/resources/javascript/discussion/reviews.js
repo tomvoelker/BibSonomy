@@ -110,6 +110,7 @@ function plotRatingDistribution() {
 	var ratings = [];
 	var rating_ticks = [];
 	var d1 = [];
+	var maxValue = 0;
 
 	if ($(".ratingDistributionData").length > 0) {
 		// get all ratings from hidden statistik tags
@@ -117,6 +118,9 @@ function plotRatingDistribution() {
 			var key = $(this).data("rating");
 			var value = $(this).data("count");
 			ratings[key] = value;
+			if (value > maxValue) { 
+				maxValue = value; 
+			}
 		});
 	} else {
 		// get all ratings from all reviews
@@ -126,6 +130,9 @@ function plotRatingDistribution() {
 				ratings[key] += 1;
 			} else {
 				ratings[key] = 1;
+			}
+			if (ratings[key] > maxValue) {
+				maxValue = ratings[key]; 
 			}
 		});
 	}
@@ -139,7 +146,7 @@ function plotRatingDistribution() {
 		
 		var count = getReviewCount();
 		if (value > 0) {
-			value = value / count * 100;
+			value = value / maxValue * 100;
 		} else {
 			// 0 values are producing a thin line
 			value = Number.NaN;
