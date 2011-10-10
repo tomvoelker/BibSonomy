@@ -157,8 +157,8 @@ function plotRatingDistribution() {
 	
 	// set bars default styles 
 	var barsStyleLineWidth	= 1;
-	var barsStyleBarWidth	= 0.3;
-	var barsStyleFillColor	= "E7CE61";
+	var barsStyleBarWidth	= 0.2;
+	var barsStyleFillColor	= null;
 
 	// set bars values, if set as tag attribute
 	if ($("#ratingDistributionGraph").data("barStyleLineWidth")) {
@@ -177,8 +177,8 @@ function plotRatingDistribution() {
 			align: "center",
 			lineWidth: barsStyleLineWidth,
 			barWidth: barsStyleBarWidth,
-			fill: 0.7,
-			fillColor: "#"+barsStyleFillColor
+			fill: 0.6,
+			fillColor: barsStyleFillColor
 		},
 		xaxis: {
 			ticks: rating_ticks,
