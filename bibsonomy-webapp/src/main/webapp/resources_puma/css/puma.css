@@ -742,6 +742,9 @@ input#authorcontractconfirm {
 }
 
 
-ul.newMenu li a {
+ul.newMenu li a, ul#gold_menu li a{
 	background-color: #DF430D;
+}
+
+ul.newMenu li a:hover, , ul#gold_menu li a:hover {
 }

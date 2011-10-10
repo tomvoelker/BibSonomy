@@ -155,23 +155,41 @@ function plotRatingDistribution() {
 		rating_ticks.push(key);
 	}
 	
+	// set bars default styles 
+	var barsStyleLineWidth	= 1;
+	var barsStyleBarWidth	= 0.3;
+	var barsStyleFillColor	= "E7CE61";
+
+	// set bars values, if set as tag attribute
+	if ($("#ratingDistributionGraph").data("barStyleLineWidth")) {
+		barsStyleLineWidth = $("#ratingDistributionGraph").data("barsStyleLineWidth");
+	}
+	if ($("#ratingDistributionGraph").data("barsStyleBarWidth")) {
+		barsStyleBarWidth = $("#ratingDistributionGraph").data("barsStyleBarWidth");
+	}
+	if ($("#ratingDistributionGraph").data("barsStyleFillColor")) {
+		barsStyleFillColor = $("#ratingDistributionGraph").data("barsStyleFillColor");
+	}
+	
 	$.plot($("#ratingDistributionGraph"), [ d1 ], {
 		bars: {
 			show: true,
 			align: "center",
-			barWidth: 0.2,
+			lineWidth: barsStyleLineWidth,
+			barWidth: barsStyleBarWidth,
 			fill: 0.7,
+			fillColor: "#"+barsStyleFillColor
 		},
 		xaxis: {
 			ticks: rating_ticks,
 			tickDecimals: 1,
 			tickColor: 'transparent',
-			autoscaleMargin: 0.02,
+			autoscaleMargin: 0.02
 		},
 		yaxis: {
 			show: false,
 			min: 0,
-		    max: 110,
+		    max: 110
 		},
 		grid: {
 			markings: [ { xaxis: { from: getAvg(), to: getAvg() }, yaxis: { from: 0, to: 110 }, color: "#bb0000" }]

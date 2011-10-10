@@ -87,21 +87,6 @@
 			<c:if test="${not empty command.discussionsStatistic}">
 				<c:set var="stats" value="${command.discussionsStatistic}"/>
 				<li>				
-					<div>Statistik</div>
-					<div>
-						maxCount: ${stats.count} <br />
-						avgRating: <fmt:formatNumber value="${stats.average}" maxFractionDigits="2" /><br />
-						minRating: <fmt:formatNumber value="${stats.min}" maxFractionDigits="2" /><br />
-						maxRating: <fmt:formatNumber value="${stats.max}" maxFractionDigits="2" /><br />
-					
-						<c:forEach var="ratings" items="${stats.ratings}">
-					
-						Rating ${ratings.rating}: ${ratings.count}x (<fmt:formatNumber value="${ratings.percent}" maxFractionDigits="2" />%) <br />
-						     
-						</c:forEach>							
-
-					</div>
-					
 					
 					<div class="sidebarcontainer">
 					
@@ -115,12 +100,12 @@
 								</c:forEach>							
 
 								<fmt:message key="post.resource.review.info.ratingDistribution" />
-								<div id="ratingDistributionGraph" style="width: 100%; height: 60px;">
+								<div id="ratingDistributionGraph" style="width: 100%; height: 60px;" data-barsStyleLineWidth="0" data-barsStyleBarWidth = "0.4" data-barsStyleFillColor = "444444">
 									<!-- ploted by javascript -->
 								</div>
 							</div>
 							<div id="ratingAvg">
-								<span><fmt:message key="post.resource.review.info.ratingAvg" /> <buttons:help cssStyle="float:none" iconTextStyle="float:none" message="post.resource.review.ratings.basedOn.help"/></span>
+								<span><fmt:message key="post.resource.review.info.ratingAvg" /></span>
 								<!-- TODO: add bigger star images and change dimension to 2 -->
 								<div><review:reviewStars rating="${stats.average}" /></div>
 					
