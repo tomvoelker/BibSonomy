@@ -155,3 +155,12 @@ ul.newMenu li a:hover {
 	background-color: rgb(233, 233, 233);
 	color: rgb(96, 96, 96) !important;
 }
+
+#ratingDistributionGraph {
+	/* this border-left-color is used for bars color in graph if style is set to dashed */	
+/*
+	border-left-style: dashed; 
+	border-left-color: #EDC240;
+	border-left-width: 0;
+*/	
+}

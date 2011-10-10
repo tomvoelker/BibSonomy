@@ -748,3 +748,11 @@ ul.newMenu li a, ul#gold_menu li a{
 
 ul.newMenu li a:hover, , ul#gold_menu li a:hover {
 }
+
+
+#ratingDistributionGraph {
+	/* this border-left-color is used for bars color in graph if style is set to dashed */	
+	border-left-style: dashed; 
+	border-left-color:  #DF430D;
+	border-left-width: 0;
+}
