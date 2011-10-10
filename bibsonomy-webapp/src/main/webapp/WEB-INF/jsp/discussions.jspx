@@ -100,7 +100,7 @@
 								</c:forEach>							
 
 								<fmt:message key="post.resource.review.info.ratingDistribution" />
-								<div id="ratingDistributionGraph" style="width: 100%; height: 60px;" data-barsStyleLineWidth="0" data-barsStyleBarWidth = "0.4" data-barsStyleFillColor = "444444">
+								<div id="ratingDistributionGraph" style="width: 100%; height: 60px;">
 									<!-- ploted by javascript -->
 								</div>
 							</div>
