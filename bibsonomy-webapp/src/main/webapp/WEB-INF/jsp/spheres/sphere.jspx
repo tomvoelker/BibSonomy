@@ -27,32 +27,48 @@
 			  <input type="text" size="20" id="inpf" name="tag" value="${fn:escapeXml(command.requestedTags)}"/>
 			</form>
 		</jsp:attribute>				
+				
+		<jsp:attribute name="contentHeading">
+			<fmt:message key="spheres.sphere.intro">
+				<fmt:param value="${command.sphereName}"/>
+			</fmt:message>
+		</jsp:attribute>	
 		
 		<jsp:attribute name="sidebar">
-		<span id="nosidebarfilter"><!-- keep me --></span>
-		<ul id="sidebar">	
-					
-			<!-- friendrelation members -->
-    		<!--+
-    			| display buddies
-    			+-->
-    		<div class="sphere_users">
-   				<c:forEach items="${command.relatedUsers}" var="item" varStatus="loop">
-   					<spheres:userLink user="${item}"/>
-			    </c:forEach>
-		    </div>
-       		<div style="clear: both;"><!--  --></div>
-
+			<span id="nosidebarfilter"><!-- keep me --></span>
 			
-			<!-- tags -->
-			<li>
-		    <span class="sidebar_h"><fmt:message key="tags" /></span>
-		      <c:if test="${not empty command.requestedTags}">
-			    <c:set var="requPath" value="${mtl:getLowerPath(requPath)}" />
-		      </c:if>
-		    <tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-	      </li> 
-		</ul>
+			<ul id="sidebar">	
+				<!-- friendrelation members -->
+    			<!--+
+    				| display buddies
+    				+-->
+				<p class="sphere_sidebar_heading">
+	    			<fmt:message key="spheres.sphere.members">
+						<fmt:param value="${command.sphereName}"/>
+					</fmt:message>
+				</p>
+				
+	    		<div class="sphere_users">
+	   				<c:forEach items="${command.relatedUsers}" var="item" varStatus="loop">
+	   					<spheres:userLink user="${item}"/>
+				    </c:forEach>
+			    </div>
+	       		<div style="clear: both;"><!--  --></div>
+	
+				<!-- list other spheres -->				
+				<p class="sphere_sidebar_heading">
+	    			<fmt:message key="spheres.sphere.list.title"/>
+				</p>
+
+				<!-- tags -->
+				<li>
+			    <span class="sidebar_h"><fmt:message key="tags" /></span>
+			      <c:if test="${not empty command.requestedTags}">
+				    <c:set var="requPath" value="${mtl:getLowerPath(requPath)}" />
+			      </c:if>
+			    <tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+		      </li> 
+			</ul>
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

@@ -65,3 +65,8 @@
 .sphere_image_container * img {
 	height: 40px;
 }
+
+.sphere_sidebar_heading {
+	font-size: 110%;
+	font-weight: bold;
+}
