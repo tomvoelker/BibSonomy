@@ -17,7 +17,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.statistics.Statistics;
-import org.bibsonomy.model.statistics.UserDiscussionsRatingStatistic;
+import org.bibsonomy.model.statistics.StatisticsValues;
 
 /**
  * @author Dominik Benz
@@ -255,8 +255,8 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	
-	public UserDiscussionsRatingStatistic getUserDiscussionsStatistics(final StatisticsParam param, final DBSession session){
-		final UserDiscussionsRatingStatistic stat = this.queryForObject("userRatingStatistic", param, UserDiscussionsRatingStatistic.class, session);
+	public StatisticsValues getUserDiscussionsStatistics(final StatisticsParam param, final DBSession session){
+		final StatisticsValues stat = this.queryForObject("userRatingStatistic", param, StatisticsValues.class, session);
 		return stat;
 	}
 	

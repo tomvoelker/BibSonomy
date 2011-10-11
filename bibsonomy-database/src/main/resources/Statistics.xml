@@ -13,18 +13,18 @@
             ) as b
 	</select>
 
-	<resultMap id="userDiscussionsRatingStatistic" class="userDiscussionsRatingStatistic" groupBy="count">
+	<resultMap id="userDiscussionsRatingStatistic" class="statisticsValues" groupBy="count">
     	<result property="count"	column="maxcnt"			javaType="int" />
     	<result property="average"	column="avgrating"		javaType="float" />
     	<result property="max"		column="maxrating"		javaType="float" />
     	<result property="min"		column="minrating"		javaType="float" />
-    	<result property="ratings" resultMap="Statistics.userDiscussionsRatingStatisticList"/>
+    	<result property="values" resultMap="Statistics.userDiscussionsRatingStatisticList"/>
 	</resultMap>
 
-	<resultMap id="userDiscussionsRatingStatisticList" class="ratingStatValues">
+	<resultMap id="userDiscussionsRatingStatisticList" class="statistics">
 		<result property="rating"      	column="rating"			javaType="float" />
     	<result property="count"     	column="cnt"			javaType="int" />
-    	<result property="percent"		column="percent"		javaType="float" />
+    	<result property="percentage"		column="percent"		javaType="float" />
 	</resultMap>
 
 
