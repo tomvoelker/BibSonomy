@@ -16,7 +16,7 @@ public class OpenIDDatabaseUserDetailsService extends DatabaseUserDetailsService
 	
 	@Override
 	public UserDetails loadUserByUsername(final String openID) throws UsernameNotFoundException, DataAccessException {
-		final String username = this.adminLogic.getOpenIDUser(openID);
+		final String username = this.adminLogic.getOpenIDUser(openID == null ? null : openID.trim());
 		
 		if (username == null) {
 			throw new OpenIdUsernameNotFoundException("OpenID not found in database"); 
