@@ -9,8 +9,10 @@ package org.bibsonomy.model.statistics;
 public class Statistics {
 
 	private int count = 0;
-	private double min = 0;
-	private double max = 0;
+	private double min = 0.0;
+	private double max = 0.0;
+	private double rating = 0.0;
+	private double percentage = 0.0;
 	private double average = 0.0;
 
 	/**
@@ -78,6 +80,38 @@ public class Statistics {
 	public void setMax(double max) {
 		this.max = max;
 	}
+
+	/**
+	 * @param rating the rating to set
+	 */
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+
+
+	/**
+	 * @return the rating
+	 */
+	public double getRating() {
+		return rating;
+	}
+
+
+	/**
+	 * @param percentage the rating to set
+	 */
+	public void setPercentage(double percentage) {
+		this.percentage = percentage;
+	}
+
+	
+	/**
+	 * @return the percentage
+	 */
+	public double getPercentage() {
+		return percentage;
+	}
+
 
 	/**
 	 * get average value
