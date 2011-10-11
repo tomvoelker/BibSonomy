@@ -95,7 +95,7 @@
 
 							<div id="ratingDistribution">
 							
-								<c:forEach var="ratings" items="${stats.ratings}">
+								<c:forEach var="ratings" items="${stats.values}">
 									<div class="ratingDistributionData" style="display:none;" data-rating="${ratings.rating}" data-count="${ratings.count}"> <!-- nothing here --></div>  
 								</c:forEach>							
 
