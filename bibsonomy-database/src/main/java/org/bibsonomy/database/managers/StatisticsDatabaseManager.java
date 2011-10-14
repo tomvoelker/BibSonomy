@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,13 +61,12 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 */
 	public Statistics getPostStatistics(final StatisticsParam param, final DBSession session) {
-	    	Statistics statisticData = null;
-		statisticData = postchain.getFirstElement().perform(param, session);  
+	    final Statistics statisticData = postchain.getFirstElement().perform(param, session);  
 		// to not get NPEs later
-		if (null == statisticData) {
-		    statisticData = new Statistics();
+		if (present(statisticData)) {
+			return statisticData ;    
 		}
-		return statisticData ;
+		return new Statistics();
 	}
 
 	/**
@@ -256,8 +257,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	
 	
 	public StatisticsValues getUserDiscussionsStatistics(final StatisticsParam param, final DBSession session){
-		final StatisticsValues stat = this.queryForObject("userRatingStatistic", param, StatisticsValues.class, session);
-		return stat;
+		return this.queryForObject("userRatingStatistic", param, StatisticsValues.class, session);
 	}
 	
 }
