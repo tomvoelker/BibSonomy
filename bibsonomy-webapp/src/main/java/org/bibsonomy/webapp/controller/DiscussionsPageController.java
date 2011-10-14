@@ -76,7 +76,7 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 		}
 
 		// get discussion statistics
-		command.setDiscussionsStatistic(this.logic.getPostStatistics(null, groupingEntity, groupingName, null, null, null, FilterEntity.POSTS_WITH_DISCUSSIONS, 0, 0, null, null));
+		command.setDiscussionsStatistic(this.logic.getPostStatistics(Resource.class, groupingEntity, groupingName, null, null, null, FilterEntity.POSTS_WITH_DISCUSSIONS, 0, 0, null, null));
 		
 		
 		// html format - retrieve tags and return HTML view
