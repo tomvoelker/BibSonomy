@@ -9,6 +9,7 @@
     xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
     xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -41,6 +42,38 @@
 						isFriendOfUser="${command.friendOfUser}" 
 						isFollowerOfUser="${command.followerOfUser}" />
 				</li>
+						
+				<!-- The Spheres List by Mouseover of the Friend Button -->		
+				<div class="addContainer" style="position: relative; top: -5px">
+				<div class="addCircles" style="height: 0; width: 255px; position: absolute; overflow: hidden;">
+	           			<ul id="unsortedList" style="	
+	           						padding-left: 10px; 
+	           						padding-right: 10px; 
+	           						padding-top: 5px; 
+	           						padding-bottom: 5px; 
+	           						margin-left: 15px; 
+	           						border-width: thin; 
+	           						list-style-type: circle; 
+	           						list-style-position: inside; 
+	           						background-color: #EEEEEE; 
+	           						border-style: solid; 
+	           						border-color: #006699;
+	           						font-size: 95%;" >
+			               <li>
+			               		<input type="text" name="sphereName" id="newSphere" size="17" autocomplete="off"/>
+			               		<input type="button" id="addNewSphere" value="add" style="position: relative; left: 5px; right: 5px;"/>
+			               </li>
+	           			</ul>
+	       			</div>
+	   			</div>
+				
+				<!-- Javascript for the Spheres List -->
+			   <script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
+			   <script type="text/javascript" src="${resdir}/javascript/addToSpheres.js"><!-- keep me --></script>
+			   <script>
+			     var ckey = "${ckey}";
+			     var requestedUser = "${command.requestedUser}";
+			   </script>
 			</c:if>
 			
 			<li id="sidebarfilter"></li>
