@@ -47,7 +47,6 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
-import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.AuthorDatabaseManager;
 import org.bibsonomy.database.managers.BasketDatabaseManager;
@@ -1793,17 +1792,8 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 
 	    final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 
-	    if (resourceType == GoldStandardPublication.class || resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
+	    if (resourceType == GoldStandardPublication.class || resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class || resourceType == Resource.class ) {
 		param.setContentTypeByClass(resourceType);
-		return this.statisticsDBManager.getPostStatistics(param, session);
-	    }
-
-	    /*
-	     * FIXME: warum "== null" und dann BIBTEX_CONTENT_TYPE? 
-	     * Bitte auch setContentTypeByClass verwenden!
-	     */
-	    if (null == resourceType && FilterEntity.POSTS_WITH_DISCUSSIONS.equals(filter)) {
-		param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
 		return this.statisticsDBManager.getPostStatistics(param, session);
 	    }
 
