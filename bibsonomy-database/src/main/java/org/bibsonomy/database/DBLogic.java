@@ -1792,7 +1792,7 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 
 	    final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 
-	    if (resourceType == GoldStandardPublication.class || resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class || resourceType == Resource.class ) {
+	    if (resourceType == GoldStandardPublication.class || resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class ) {
 		param.setContentTypeByClass(resourceType);
 		return this.statisticsDBManager.getPostStatistics(param, session);
 	    }
