@@ -41,7 +41,7 @@
 			<fmt:message key="friends.actions.delete.title" var="removeFriend">
 				<fmt:param value="${command.user.name}"/>
 			</fmt:message>
-			<button:linkButton onclick="javascript:removeUserRelation('${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
+			<button:linkButton onclick="javascript:updateUserRelation('remove','${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
 			   title="${removeFriend}"
 			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
 			   image="${resdir}/image/starblue_selected.png"
@@ -56,7 +56,7 @@
 			<fmt:message key="friends.actions.add.title" var="addFriend">
 				<fmt:param value="${command.user.name}"/>
 			</fmt:message>
-			<button:linkButton onclick="javascript:addUserRelation('${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
+			<button:linkButton onclick="javascript:updateUserRelation('add','${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
 			   title="${addFriend}"
 			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
 			   image="${resdir}/image/starblue_unselected.png"
@@ -75,7 +75,7 @@
 		<!-- we need to switch between the add/remove link if the user already follows this user or not -->
 		<span id="sys:network:bibsonomy-follower_removeLink" style="${isFollowerOfUser ? '' : 'display:none'}">
 			<fmt:message key="follow.link.text.removeLong" var="removeFollower"/>
-			<button:linkButton onclick="javascript:removeUserRelation('${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-follower', '${ckey}');return false;"
+			<button:linkButton onclick="javascript:updateUserRelation('remove','${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-follower', '${ckey}');return false;"
 			   title="${removeFollower}"
 			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
 			   image="${resdir}/image/starblue_selected.png"
@@ -87,7 +87,7 @@
 		</span>
 		<span id="sys:network:bibsonomy-follower_followLink" style="${isFollowerOfUser ? 'display:none' : ''}">
 			<fmt:message key="follow.link.text.followLong" var="addFollower"/>
-			<button:linkButton onclick="javascript:addUserRelation('${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-follower', '${ckey}');return false;"
+			<button:linkButton onclick="javascript:updateUserRelation('add','${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-follower', '${ckey}');return false;"
 			   title="${addFollower}"
 			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
 			   image="${resdir}/image/starblue_unselected.png"

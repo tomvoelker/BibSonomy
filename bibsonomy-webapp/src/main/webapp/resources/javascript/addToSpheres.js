@@ -7,9 +7,9 @@ $(document).ready(function() {
 	//Database Command for adding/removing the User of the Sphere
 	var callbackCheckbox = function(el, sphereName) {
 		if(el.checked) {
-			addUserRelation(requestedUser, "sys:relation:" + sphereName, ckey);   
+			updateUserRelation("add", requestedUser, "sys:relation:" + sphereName, ckey);   
 		} else {
-			removeUserRelation(requestedUser, "sys:relation:" + sphereName, ckey); 
+			updateUserRelation("remove", requestedUser, "sys:relation:" + sphereName, ckey); 
 		}
 	};
 	
@@ -52,7 +52,7 @@ $(document).ready(function() {
 		   var child = $("<li></li>").data("sphereName", name).text(name).append(createChkBox(name).attr("checked","checked"));
 		   list.children().last().before(child);
 		   newSphere.val("");
-		   addUserRelation(requestedUser, "sys:relation:" + name, ckey); 
+		   updateUserRelation('add', requestedUser, "sys:relation:" + name, ckey); 
 	   } else {
 		   alert("Keine Sphere angegeben.");
 	   }

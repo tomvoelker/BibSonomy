@@ -68,7 +68,7 @@
 						<fmt:param value="${fn:escapeXml(user.name)}" />
 					</fmt:message>
                   <a class="action"
-						onclick="javascript:removeFollowerFollowerPage('${user.name}', this, '${command.context.ckey}');return false;"
+						onclick="javascript:updateFollowerFollowerPage('remove','${user.name}', this, '${command.context.ckey}');return false;"
 						style="cursor: pointer;" title="${deleteFriendTitle}"
 						href="/ajax/handleUserRelation?requestedUserName=${user.name}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=followers">
     		        <fmt:message key="follow.link.text.remove" />

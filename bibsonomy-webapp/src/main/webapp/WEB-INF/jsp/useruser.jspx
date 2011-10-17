@@ -116,14 +116,14 @@
 					<c:when test="${command.followerOfUser eq true}">
 						<span id="removeLink">
 							<a style="cursor: pointer;" 
-							   onclick="javascript:removeUserRelation('${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
+							   onclick="javascript:updateUserRelation('remove','${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
 							   href="/ajax/handleUserRelation?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
 							   <fmt:message key="follow.link.text.removeLong"/></a>
 						</span>
 						<span id="followLink" style="visibility:hidden; display:none">
 							<fmt:message key="follow.info.text1"/>
 							<a style="cursor: pointer;" 
-							   onclick="javascript:addUserRelation('${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
+							   onclick="javascript:updateUserRelation('add','${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
 							   href="/ajax/handleUserRelation?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
 							   <fmt:message key="follow.link.text.followLong"/></a>
 						</span>
@@ -131,13 +131,13 @@
 					<c:otherwise>
 						<span id="removeLink" style="visibility:hidden; display:none">
 							<a style="cursor: pointer;" 
-							   onclick="javascript:removeUserRelation('${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
+							   onclick="javascript:updateUserRelation('remove','${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
 							   href="/ajax/handleUserRelation?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
 							   <fmt:message key="follow.link.text.removeLong"/></a>							
 						</span>
 						<span id="followLink">
 							<a style="cursor: pointer;" 
-							   onclick="javascript:addUserRelation('${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
+							   onclick="javascript:updateUserRelation('add','${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
 							   href="/ajax/handleUserRelation?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
 							   <fmt:message key="follow.link.text.followLong"/></a>
 						</span>
