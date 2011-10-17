@@ -16,7 +16,99 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">		
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">		
+			<jsp:attribute name="sidebar">
+
+				<div class="newsfeedContainer" style="margin: 2ex 1em">
+					<div class="title">
+					Bibsonomy aktuell
+					</div>
+					<div class="content">
+					
+						<div class="entry">
+							<div class="image">
+								<a href=""><img src="http://www.svenstefani.de/publ/Sven_2009-02-27_140x185_noBg.png"/></a>						
+							</div>
+							
+							<div class="headline">
+								<div class="date">13.10., 14:51</div>
+								<div class="title"><a href="">Sven Stefani</a></div>
+							</div>
+							<div class="infoicon"><img src="/resources/image/DroplineNeu/22x22/actions/document-new.png" /></div>
+							<div class="action">fügte eine neue Publikation hinzu.</div>
+							<div class="description">Das Leben als einzelner Eintrag unter vielen.</div>
+							<div class="footer"><!-- no data here --></div>
+						</div>
+						<div class="entry notFirst">
+							<div class="image">
+								<a href=""><img src="http://www.bibsonomy.org/picture/user/dbenz"/></a>		
+							</div>
+							
+							<div class="headline">
+								<div class="date">13.10., 15:20</div>
+								<div class="title"><a href="">Dominik Benz</a></div>
+							</div>
+							<div class="infoicon"><img src="/resources/image/DroplineNeu/22x22/categories/applications-games.png" /></div>
+							<div class="action">hat <a href="">Sven Stefani</a> als Freund hinzugefügt.</div>
+							<div class="description"><!-- no data here --></div>
+							<div class="footer"><!-- no data here --></div>
+						</div>
+						<div class="entry notFirst">
+							<div class="image">
+								<a href=""><img src="https://www.kde.cs.uni-kassel.de/mediawiki/kde-images/kdelogo.gif"/></a>						
+							</div>
+							
+							<div class="headline">
+								<div class="date">13.10., 16:24</div>
+								<div class="title"><a href="">Neuer Blogeintrag</a></div>
+							</div>
+							
+							<div class="infoicon"><img src="/resources/image/DroplineNeu/22x22/status/info.png" /></div>
+							<div class="action posttitle"><a href="">Bibsonomy aktuell - was gerade passiert</a></div>
+							<div class="description">
+							 	Sie finden den neuen Infoblock auf allen Seiten in der Sidebar. Er zeigt personalisierte Informationen. Ihre Tätigkeiten, die Ihrer Freunde und der Mitglieder Ihrer Gruppen. <a href="">Lesen sie mehr...</a>
+							</div>
+							<div class="footer"><!-- no data here --></div>
+						</div>
+						<div class="entry notFirst">
+							<div class="image">
+								<a href=""><img src="http://www.bibsonomy.org/picture/user/hotho"/></a>						
+							</div>
+							
+							<div class="headline">
+								<div class="date">13.10., 14:51</div>
+								<div class="title"><a href="">Andreas Hotho</a></div>
+							</div>
+							
+							<div class="infoicon"><img src="/resources/image/DroplineNeu/22x22/actions/gtk-find-and-replace.png" /></div>
+							<div class="action">rezensierte eine Publikation mit <div class="rating"><a href=""><span class="stars-off-0.75"><span class="stars-on-0.75" style="width:42.0px"></span></span></a></div></div>
+							<div class="description">
+							 	<span class="posttitle"><a href="">Das Leben als einzelner Eintrag unter vielen Einträgen</a></span>
+								Schön geschrieben, ein solch sinnfreies Buch lässt sich schnell in ein paar Minuten durchblättern.
+							</div>
+							<div class="description"><!-- no data here --></div>
+							<div class="footer"><!-- no data here --></div>
+						</div>
+						<div class="entry notFirst">
+							<div class="image">
+								<a href=""><img src="http://www.bibsonomy.org/picture/user/beate"/></a>						
+							</div>
+							
+							<div class="headline">
+								<div class="date">13.10., 22:11</div>
+								<div class="title"><a href="">Beate</a></div>
+							</div>
+							
+							<div class="infoicon"><img src="/resources/image/DroplineNeu/22x22/apps/config-users.png" /></div>
+							<div class="action">ist der Gruppe <span class="posttitle"><a href="">unsinnige Publikationen und Bookmarks</a></span> beigetreten.</div>
+							<div class="description"><!-- no data here --></div>
+							<div class="footer"><!-- no data here --></div>
+						</div>
+					</div>							
+				</div>							
+
+		</jsp:attribute>
+	
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/resourceList.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js"><!-- keep me --></script> 
@@ -86,8 +178,7 @@
 		
 			<div class="sphere">
 				<c:forEach items="${command.spheres}" var="entry">
-		    		<span class="sphere_header"><c:out value="${entry.key}"/></span>
-		    		<hr class="sphere_separator"/>
+		    		<div class="sphere_header"><c:out value="${entry.key}"/></div>
 		    		
 		    		<!--+
 		    			| display buddies
@@ -120,12 +211,15 @@
 	        			<resources:bibtexs listView="${command.spheresPBPosts[entry.key]}" loginUserName="${command.context.loginUser}" disableActions="${true}" disableListNavigation="${true}" requPath="${requPath}"/>
 	        		</div>
 	        		
-	        		<div style="clear: both;"><!--  --></div>
+	        		<div class="sphere_footer"><!--  --></div>
 	        		
 				</c:forEach>
 			</div>
 			</div>
 		</jsp:attribute>
+		
+		
+		
 	</layout:layout>
 	
 </jsp:root>
