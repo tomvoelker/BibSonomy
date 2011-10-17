@@ -6,10 +6,11 @@ import org.bibsonomy.model.User;
  * @author dzo
  * @version $Id$
  */
-public class FOAFCommand extends BaseCommand {
+public class UserInfoCommand extends BaseCommand {
 	
 	private String requestedUser;
-	
+	private String format;
+
 	private User user;
 
 	/**
@@ -24,6 +25,20 @@ public class FOAFCommand extends BaseCommand {
 	 */
 	public String getRequestedUser() {
 		return requestedUser;
+	}
+	
+	/**
+	 * @return the format
+	 */
+	public String getFormat() {
+		return this.format;
+	}
+
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(final String format) {
+		this.format = format;
 	}
 
 	/**

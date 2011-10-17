@@ -297,12 +297,13 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/foaf">
+				<entry key="/userinfo">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="fOAFController"/>
+						<property name="controllerBeanName" value="userInfoController"/>
 						<property name="allowedFields">
 							<list>
 								<value>requestedUser</value>
+								<value>format</value>
 							</list>
 						</property>
 					</bean>
@@ -581,7 +582,7 @@
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
 
-	<bean id="fOAFController" class="org.bibsonomy.webapp.controller.FOAFController" scope="request">
+	<bean id="userInfoController" class="org.bibsonomy.webapp.controller.UserInfoController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
 	

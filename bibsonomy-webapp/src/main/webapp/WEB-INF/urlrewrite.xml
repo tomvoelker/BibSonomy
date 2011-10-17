@@ -375,7 +375,15 @@
 		<name>/foaf/user/USER</name>
 		<from>^/+foaf/+user/+([^/]+?)$</from>
 		<set type="parameter" name="requestedUser">$1</set>
-		<to last="true">/foaf</to>
+		<set type="parameter" name="format">foaf</set>
+		<to last="true">/userinfo</to>
+	</rule>
+	
+	<rule>
+		<name>/devicesupport</name>
+		<from>^/+devicesupport$</from>
+		<set type="parameter" name="format">devicesupport</set>
+		<to last="true">/userinfo</to>
 	</rule>
 	
 	<!-- ############## /discussed pages ############### -->
@@ -858,8 +866,7 @@
 		<set type="parameter" name="requestedGroup">$1</set>
 		<to last="true">/actions/admin/group</to>
 	</rule>
-
-
+	
 	<!-- ############## old pages - can be removed when never accessed ############### -->
 	<rule><!-- /faq to /help/faq -->
 		<name>/faq</name>
@@ -879,7 +886,4 @@
 		<from>^/BibtexHandler$</from>
 		<to last="true">/editPublication</to>
 	</rule>
-	
-
-
 </urlrewrite>

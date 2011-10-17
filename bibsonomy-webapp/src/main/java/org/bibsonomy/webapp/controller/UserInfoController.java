@@ -7,10 +7,12 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.webapp.command.FOAFCommand;
+import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.webapp.command.UserInfoCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -24,20 +26,36 @@ import org.bibsonomy.webapp.view.Views;
  * @author dzo
  * @version $Id$
  */
-public class FOAFController implements MinimalisticController<FOAFCommand> {
+public class UserInfoController implements MinimalisticController<UserInfoCommand> {
 	private LogicInterface logic;
 	
 	@Override
-	public FOAFCommand instantiateCommand() {
-		return new FOAFCommand();
+	public UserInfoCommand instantiateCommand() {
+		return new UserInfoCommand();
 	}
 
 	@Override
-	public View workOn(final FOAFCommand command) {		
+	public View workOn(final UserInfoCommand command) {		
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new org.springframework.security.access.AccessDeniedException("please log in");
 		}
 		
+		/*
+		 * handle requests form iOS and Android apps
+		 * they get a redirect to their custom url scheme
+		 * the url contains the name of the logged-in user and his/her api key
+		 */
+		if ("devicesupport".equals(command.getFormat())) {
+			final User loginUser = command.getContext().getLoginUser();
+			// TODO: config scheme via project.properties?
+			String url = UrlUtils.setParam("bibsonomy://settings", "username",  UrlUtils.safeURIEncode(loginUser.getName()));
+			url = UrlUtils.setParam(url, "apiKey", loginUser.getApiKey());
+			return new ExtendedRedirectView(url);
+		}
+		
+		/*
+		 * handle FOAF; currently the only other format
+		 */
 		final String requestedUser = command.getRequestedUser();
 		
 		if (!present(requestedUser)) {
