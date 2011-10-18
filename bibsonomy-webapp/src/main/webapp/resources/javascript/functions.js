@@ -2,7 +2,6 @@ var activeField = null;
 var sidebar     = null;
 var tagbox      = null;
 var tags_toggle = 0;
-var tags_filter = null;
 var ckey        = null;
 var currUser    = null;
 var requUser	= null;
@@ -46,7 +45,6 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
   //FIXME: use some other condition, that does not depend on a location's name
   if (!location.pathname.startsWith("/postPublication") && !location.pathname.startsWith("/postBookmark")){
 	  if (sidebar) {  
-	    add_filter();
 	    init_sidebar();
 	  }
   }
@@ -55,38 +53,6 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 
 function stopEvt () {
 	return false;
-}
-
-function add_filter() {
-  var f = document.createElement("form");
-  f.onsubmit=stopEvt;
-  f.title="filter sidebar";
-  f.style.padding='5px';
-  f.style.display = "inline";
-  f.appendChild(document.createTextNode(getString("filter.label") + "\u00A0"));
-    
-  tags_filter = document.createElement("input");
-  tags_filter.autocomplete="off";
-  tags_filter.type="text";
-  tags_filter.style.size="10ex";
-  tags_filter.onkeyup = filter_tags;
-
-  f.appendChild(tags_filter);
-  
-  var l = document.createElement("li");
-  l.style.paddingBottom='.5em';
-  l.style.fontSize='80%';
-  l.appendChild(f);
-  
-  if (document.getElementById("sidebarfilter")) {
-	  sidebar.replaceChild(l, document.getElementById("sidebarfilter")); // first child
-  } else if (document.getElementById("nosidebarfilter")) {
-	  // first step in getting rid of the filter
-  } else {
-	  sidebar.insertBefore(l, sidebar.childNodes[0]); // first child
-  }
-  
-  f.parentNode.style.marginBottom='5px';
 }
 
 function init_sidebar() {
@@ -291,51 +257,6 @@ function toggle_required_author_editor () {
       document.post_bibtex.editor.style.backgroundColor = document.post_bibtex.title.style.backgroundColor;      
     }
   }
-}
-
-
-function filter_tags(e) {
-  var key;
-
-  if (!e) e = window.event;
-  if (e.which) {
-    key = e.which;
-  } else {
-    key = e.keyCode;
-  }
-  var search = tags_filter.value.toLowerCase();
-  returnPressed = key == 13;
-
-    var merkeziel=0;
-    var uls = sidebar.getElementsByTagName("ul");
-    for (i=0; i<uls.length; i++) {
-    	if (uls[i] != style_list) {
-	        var links = uls[i].getElementsByTagName("li");
-    	    for (x=0; x<links.length; x++) {
-        		var taglinks = links[x].getElementsByTagName("a");
-	        	for (xx = 0; xx < taglinks.length ; xx++) {
-    	           var tagName = taglinks[xx].childNodes[0].nodeValue;
-    	           if (taglinks[xx].className != "bmaction") {
-        	       		if (tagName.toLowerCase().search(search) == -1) {
-            	      		links[x].style.display="none";
-	               		} else {
-    	              		links[x].style.display='';
-        	          		if (links[x].getElementsByTagName("a")[0].getAttribute("href")) {
-	        	         		if (returnPressed && merkeziel==0) {
-	            	      			merkeziel=links[x].getElementsByTagName("a")[0].getAttribute("href");
-	                	 		}
-		              		} else {
-		                 		if (returnPressed && merkeziel==0) {
-  	    	                		merkeziel=links[x].getElementsByTagName("a")[0].getAttribute("text");
-	        	         		}
-		           	   		}
-    	           		}
-    	        	}
-        	    }
-			}
-        }
-    }
-    if (merkeziel != 0) {window.location.href=merkeziel;}
 }
 
 /*
