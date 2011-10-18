@@ -24,14 +24,14 @@
 			<c:set var="tabURL" value=""/>
 		</c:if>
 
-		<ul id="tab">
+		<ul class="tab">
 			<c:forEach var="tab" items="${tabView.tabs}">
 				<fmt:message key="${tab.title}" var="tabTitle"/>
 				<c:if test="${not empty tabTitle}">
 					<c:choose>
 						<!-- this tab is selected/active -->
 						<c:when test="${tabView.selTab eq tab.id}">
-							<li id="selected"><a href="${tabURL}?selTab=${tab.id}"><c:out value="${tabTitle}"/></a></li>			
+							<li class="selected"><a href="${tabURL}?selTab=${tab.id}"><c:out value="${tabTitle}"/></a></li>			
 						</c:when>
 						<c:otherwise>
 							<li><a href="${tabURL}?selTab=${tab.id}"><c:out value="${tabTitle}"/></a></li>							
