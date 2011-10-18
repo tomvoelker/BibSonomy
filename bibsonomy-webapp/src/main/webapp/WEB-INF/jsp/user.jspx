@@ -53,7 +53,7 @@
 				<div class="addSpheres initiallyHidden">
 	           			<ul id="sphereList">
 			               <li>
-			               		<input type="text" name="sphereName" id="newSphere" size="20" autocomplete="off"/>
+			               		<input type="text" name="sphereName" id="newSphere" size="27%" autocomplete="off" value="Sphere"/>
 			               		<input type="button" id="addNewSphere" value="add"/>
 			               </li>
 	           			</ul>
@@ -61,11 +61,9 @@
 	   			</div>
 				
 				<!-- Javascript for the Spheres List -->
-				<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
-				<script type="text/javascript" src="${resdir}/javascript/addToSpheres.js"><!-- keep me --></script>
 				<script>
 					$(document).ready(function() {
-						initSpheres("${command.requestedUser}","${ckey}");
+						initSpheres("${fn:escapeXml(command.requestedUser)}","${ckey}");
 					});
 				</script>
 			</c:if>

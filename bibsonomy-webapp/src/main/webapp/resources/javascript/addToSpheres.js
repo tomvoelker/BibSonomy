@@ -62,7 +62,7 @@ function initSpheres(requestedUser, ckey) {
    
    //Function to add a new Sphere by the name of the Input Field
    var addNewSphere = function() {
-	   if(newSphere.val() != "" || newSphere.val().get(0) != " " ){
+	   if(newSphere.val() != ""){
 		   var name = newSphere.val();
 		   var child = $("<li></li>").data("sphereName", name);
 		   child.append(createText(name));
@@ -72,7 +72,7 @@ function initSpheres(requestedUser, ckey) {
 		   newSphere.val("");
 		   updateUserRelation('add', requestedUser, "sys:relation:" + name, ckey); 
 	   } else {
-		   alert("Keine gültige Sphere angegeben.");
+		   alert(getString("error.field.valid.spheres"));
 	   }
    };
 
