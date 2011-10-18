@@ -41,8 +41,6 @@
 					</li>
 				</c:if>
 			
-			<li id="sidebarfilter"></li>
-		 	
     	 		<!-- display tags -->
 				<li>
 					<span class="sidebar_h">

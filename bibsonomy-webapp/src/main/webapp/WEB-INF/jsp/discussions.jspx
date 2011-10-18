@@ -69,8 +69,7 @@
 		
 		<jsp:attribute name="sidebar">
 		<ul id="sidebar">
-			<li id="sidebarfilter"></li>
-	
+
 			<!-- link to user page -->
 			<c:if test="${not empty command.requestedUser}">
 				<li>				

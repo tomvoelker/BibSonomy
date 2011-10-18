@@ -69,9 +69,7 @@
 					});
 				</script>
 			</c:if>
-			
-			<li id="sidebarfilter"></li>
-			
+						
 			<!-- link to discussed user page -->
 			<c:if test="${not command.context.userLoggedIn or command.context.loginUser.name ne command.requestedUser}">
 			<li>				
