@@ -54,7 +54,7 @@
           </div>
 
           <div class="fsRow hiddenElement">
-			<label class="fsLabel"><fmt:message key="post.resource.myown"/>*</label><buttons:help message="post.resource.myown.help"/>
+			<label class="fsLabel"><fmt:message key="post.resource.myown"/></label><buttons:help message="post.resource.myown.help"/>
 			<input type="checkbox" id="myownChkBox" tabindex="2"/>
           </div>
           
