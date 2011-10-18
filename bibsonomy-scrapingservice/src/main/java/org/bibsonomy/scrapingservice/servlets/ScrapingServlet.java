@@ -24,7 +24,9 @@
 
 package org.bibsonomy.scrapingservice.servlets;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -38,8 +40,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
+import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.KDEUrlCompositeScraper;
 import org.bibsonomy.scraper.Scraper;
@@ -64,14 +72,13 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class ScrapingServlet extends HttpServlet {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5145534846771334947L;
 
 	private static final Log log = LogFactory.getLog(ScrapingServlet.class);
 
+	private static final User XML_DUMMY_USER = new User("scrapingService");
+	private static final XMLRenderer XML_RENDERER = new XMLRenderer(new UrlRenderer(""));
+	
 	/**
 	 * Scrapers used in this servlet.
 	 */
@@ -81,7 +88,7 @@ public class ScrapingServlet extends HttpServlet {
 
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		final String urlString = request.getParameter("url");
 		final String selection = request.getParameter("selection");
 		final String format    = request.getParameter("format");
@@ -144,6 +151,21 @@ public class ScrapingServlet extends HttpServlet {
 						final RDFWriter writer = new RDFWriter(response.getOutputStream());
 						writer.write(url.toURI(), bibtex);
 						return;
+					} else if ("xml".equals(format)) {
+						response.setContentType("application/xml");
+						/*
+						 * parse post
+						 */
+						final Post<? extends Resource> post = new PostBibTeXParser().parseBibTeXPost(bibtexString);
+						post.getResource().recalculateHashes();
+						post.setUser(XML_DUMMY_USER);
+						
+						/*
+						 * serialize to xml
+						 */
+						XML_RENDERER.serializePost(new BufferedWriter(new OutputStreamWriter(response.getOutputStream())), post, null);
+						
+						return;
 					}
 					
 				} else {
@@ -174,10 +196,10 @@ public class ScrapingServlet extends HttpServlet {
 				// something else
 				log.error("General Error: " + e.getMessage());
 				bean.setErrorMessage(e.getMessage());
-			} catch (URISyntaxException e) {
+			} catch (final URISyntaxException e) {
 				log.info("URL is not a URI: " + e.getMessage());
 				bean.setErrorMessage("URL is no URI.");
-			} catch (ParseException e) {
+			} catch (final ParseException e) {
 				log.info("Could not parse BibTeX: " + e.getMessage());
 				bean.setErrorMessage("Could not parse BibTeX.");
 			}
