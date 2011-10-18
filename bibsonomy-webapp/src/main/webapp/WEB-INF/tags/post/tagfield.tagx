@@ -11,10 +11,10 @@
     <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
     <jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
 
-	<parts:fieldset maximized="true" legendKey="post.resource.tags">
+	<parts:fieldset maximized="true" legendKey="post.resource.tags.describe">
 		<jsp:attribute name="content">
 
-	        <span class="fsLabel" style="font-weight:normal;"> (<fmt:message key="post.resource.spaceseparated"/>)</span>
+	        <span class="fsLabel"> (<fmt:message key="post.resource.spaceseparated"/>) *</span>
     	    <form:input cssClass="tagInput reqinput" id="inpf" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
         
         	<!-- name="tags"  -->
