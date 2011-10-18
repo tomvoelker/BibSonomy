@@ -20,6 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -104,8 +105,15 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 								
 			final Post<Bookmark> post = new Post<Bookmark>();
 			final Bookmark bookmark = new Bookmark();
-			bookmark.setTitle(resource.getAttribute("description"));
-			bookmark.setUrl(resource.getAttribute("href"));
+			
+			//setting the url and the titel. if the titel is "", use the url as title.
+			{
+				String description = resource.getAttribute("description");
+				String href = resource.getAttribute("href");
+				if (description.equals("")) description = href;
+				bookmark.setTitle(description);
+				bookmark.setUrl(href);
+			}
 			try {
 				post.getTags().addAll(TagUtils.parse(resource.getAttribute("tag")));
 			} catch (Exception e) {
@@ -151,14 +159,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		try {
 			document = getDocument();
 		} catch (IOException e) {
-			//at the moment, accept the broken delcicious api for 3 weeks from now
-			Calendar calendar = Calendar.getInstance();
-			Calendar deadlineForDelicious = Calendar.getInstance();
-			deadlineForDelicious.set(2011, 10, 30, 0, 0);
-			if (calendar.before(deadlineForDelicious)) {
-				return relations;
-			}
-			throw e;
+			throw new IOException("Relations are not available at the moment. For more information see http://www.avos.com/the-first-20-hours/");
 		}
 		final NodeList bundles = document.getElementsByTagName("bundle");
 		for(int i = 0; i < bundles.getLength(); i++){
@@ -193,7 +194,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			connection.setRequestProperty(HEADER_AUTHORIZATION, encodeForAuthorization());
 			inputStream = connection.getInputStream();
 		} catch (IOException e) {
-			log.debug("Connection to Delicicous API", e);
+			log.warn(e);
 			throw e;
 		}
 		// Get a JAXP parser factory object
