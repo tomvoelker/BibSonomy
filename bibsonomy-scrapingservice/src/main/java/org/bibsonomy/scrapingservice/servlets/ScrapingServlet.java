@@ -46,6 +46,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 import org.bibsonomy.scraper.KDEScraperFactory;
@@ -159,6 +160,9 @@ public class ScrapingServlet extends HttpServlet {
 						final Post<? extends Resource> post = new PostBibTeXParser().parseBibTeXPost(bibtexString);
 						post.getResource().recalculateHashes();
 						post.setUser(XML_DUMMY_USER);
+						if (post.getTags().size() == 0) {
+							post.getTags().add(TagUtils.getEmptyTag());
+						}
 						
 						/*
 						 * serialize to xml
