@@ -45,7 +45,12 @@ public enum AuthMethod {
 	/**
 	 * Openid
 	 */
-	OPENID;
+	OPENID,
+	
+	/**
+	 * HTTP Basic Authentication
+	 */
+	HTTPBASIC;
 	
 	/**
 	 * X509 authentication
