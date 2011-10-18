@@ -39,13 +39,8 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 			groupingEntity = GroupingEntity.ALL;
 		}
 		
-		
-		
-		/*
-		 * set filter to get only posts with discussions 
-		 */
-		final FilterEntity filter = command.getShowUnclassifiedUserItems()==0?FilterEntity.POSTS_WITH_DISCUSSIONS:FilterEntity.POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER;
-		
+	
+
 //		/*
 //		 * if user is logged in, check if the logged in user follows the requested user
 //		 */
@@ -64,6 +59,7 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 		// retrieve and set the requested resource lists, along with total counts
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+			final FilterEntity filter = command.getFilter();
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
 			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, filter, null, entriesPerPage);

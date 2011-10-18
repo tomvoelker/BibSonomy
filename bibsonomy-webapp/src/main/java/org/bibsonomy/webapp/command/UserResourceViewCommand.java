@@ -20,7 +20,6 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	private int bookmarkCount = 0;
 	private int bibtexCount = 0;
 	private boolean isFollowerOfUser = false;
-	private boolean showUnclassifiedUserItems = ;
 	
 	/**
 	 * Has the requested user added the logged in user to her friend list? 
@@ -151,20 +150,6 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setOfFriendUser(boolean ofFriendUser) {
 		this.ofFriendUser = ofFriendUser;
-	}
-
-	/**
-	 * @param showUnclassifiedUserItems the showUnclassifiedUserItems to set
-	 */
-	public void setShowUnclassifiedUserItems(int showUnclassifiedUserItems) {
-		this.showUnclassifiedUserItems = showUnclassifiedUserItems==1?1:0;
-	}
-
-	/**
-	 * @return the showUnclassifiedUserItems
-	 */
-	public int getShowUnclassifiedUserItems() {
-		return showUnclassifiedUserItems;
 	}
 
 }
