@@ -28,19 +28,19 @@ public class PublicationPageCommand extends ResourcePageCommand<BibTex> {
 	 *  }
 	 *  </code>
 	 */
-	private Map<String, List<String>> additonalMetadata;
+	private Map<String, List<String>> additionalMetadata;
 
 	/**
-	 * @return the additonalMetadata
+	 * @return the additionalMetadata
 	 */
-	public Map<String, List<String>> getAdditonalMetadata() {
-		return this.additonalMetadata;
+	public Map<String, List<String>> getAdditionalMetadata() {
+		return this.additionalMetadata;
 	}
 
 	/**
-	 * @param additonalMetadata the additonalMetadata to set
+	 * @param additionalMetadata the additionalMetadata to set
 	 */
-	public void setAdditonalMetadata(final Map<String, List<String>> additonalMetadata) {
-		this.additonalMetadata = additonalMetadata;
+	public void setAdditionalMetadata(final Map<String, List<String>> additionalMetadata) {
+		this.additionalMetadata = additionalMetadata;
 	}
 }
