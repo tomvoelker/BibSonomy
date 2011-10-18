@@ -871,52 +871,54 @@ li.faq dd {
 }
 
 /* tabs */
-#tab ul {
+.tab ul {
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
-#tab li {
+.tab li {
 	float: left;
-	border: 1px solid #BBB;
+	border: 1px solid #bbb;
 	border-bottom-width: 0;
 	margin: 0;
 }
 
-#tab a {
+.tab a {
 	text-decoration: none;
 	display: block;
-	background: #EEE;
+	background: #eee;
 	padding: 3px;
-	width: 7em;
+	padding-left: 1em;
+	padding-right: 1em;
 	text-align: center;
-	font-size: 80%;
+	font-weight: bold;
+	font-size: 100%;
 }
 
-#tab a:hover {
+.tab a:hover {
 	background-color: white;
 }
 
-#tab #selected {
+.tab .selected {
 	border-color: #069;
 }
 
-#tab #selected a {
+.tab .selected a {
 	position: relative;
 	top: 1px;
 	background: white;
 	color: #069;
 }
 
-#tab_content {
+.tab_content {
 	border: 1px solid #069;
 	clear: both;
 	padding: 0.5em 1em;
 	min-width: 725px;
 }
 
-#tab_content hr {
+.tab_content hr {
 	border: 0px;
 	border-top: 1px solid #AAA;
 }
