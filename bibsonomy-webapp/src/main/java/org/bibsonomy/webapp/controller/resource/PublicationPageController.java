@@ -28,7 +28,7 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 		if ("authoragreement".equals(format)) {
 			// get additional metadata fields
 			final Map<String, List<String>> additionalMetadataMap = this.logic.getExtendedFields(BibTex.class, command.getContext().getLoginUser().getName(), this.shortHash(longHash), null);
-			((PublicationPageCommand)command).setAdditonalMetadata(additionalMetadataMap);
+			((PublicationPageCommand)command).setAdditionalMetadata(additionalMetadataMap);
 			
 			return Views.AUTHORAGREEMENTPAGE;
 		}

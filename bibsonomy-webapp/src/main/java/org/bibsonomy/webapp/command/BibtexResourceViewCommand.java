@@ -39,7 +39,7 @@ public class BibtexResourceViewCommand extends TagResourceViewCommand {
 	 *  	post.resource.openaccess.additionalfields.institution=[Uni KS tEST ]
 	 *  }
 	 */
-	private Map<String, List<String>> additonalMetadata;
+	private Map<String, List<String>> additionalMetadata;
 
 	/**
 	 * @return the hash of a bibtex
@@ -98,16 +98,16 @@ public class BibtexResourceViewCommand extends TagResourceViewCommand {
 	}
 
 	/**
-	 * @return the map of additonalMetadata
+	 * @return the map of additionalMetadata
 	 */
-	public Map<String, List<String>> getAdditonalMetadata() {
-		return this.additonalMetadata;
+	public Map<String, List<String>> getAdditionalMetadata() {
+		return this.additionalMetadata;
 	}
 
 	/**
-	 * @param additonalMetadata the map of additonalMetadata to set
+	 * @param additionalMetadata the map of additionalMetadata to set
 	 */
-	public void setAdditonalMetadata(Map<String, List<String>> additonalMetadata) {
-		this.additonalMetadata = additonalMetadata;
+	public void setAdditionalMetadata(Map<String, List<String>> additionalMetadata) {
+		this.additionalMetadata = additionalMetadata;
 	}
 }
