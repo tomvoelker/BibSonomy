@@ -31,7 +31,7 @@
 		
 		<jsp:attribute name="contentHeading">		
 			<c:choose>
-		      <c:when test="${command.filter eq 'myDuplicates'}">
+		      <c:when test="${command.filter eq 'DUPLICATES'}">
 		      	<fmt:message key="post.meta.duplicates"/> 
 		      </c:when>
 		      <c:otherwise>

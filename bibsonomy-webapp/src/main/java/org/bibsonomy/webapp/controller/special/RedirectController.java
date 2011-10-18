@@ -184,9 +184,9 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			} else if ("myRelations".equals(myPage)) {
 				return "/relations/" + URLEncoder.encode(loginUserName, "UTF-8");
 			} else if ("myPDF".equals(myPage)) {
-				return "/user/" + URLEncoder.encode(loginUserName, "UTF-8") + "?filter=myPDF";
+				return "/user/" + URLEncoder.encode(loginUserName, "UTF-8") + "?filter=JUST_PDF";
 			} else if ("myDuplicates".equals(myPage)) {
-				return "/user/" + URLEncoder.encode(loginUserName, "UTF-8") + "?filter=myDuplicates";
+				return "/user/" + URLEncoder.encode(loginUserName, "UTF-8") + "?filter=DUPLICATES";
 			} else {
 				log.error("Unknown /my* page called: " + myPage);
 			}

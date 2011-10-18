@@ -59,11 +59,11 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		// special group given - return empty page
 		if (GroupID.isSpecialGroup(groupingName)) return Views.GROUPPAGE;
 		
-		FilterEntity filter = null;
+		// this controller only supports "JUST_PDF"
+		final FilterEntity filter = command.getFilter() == FilterEntity.JUST_PDF ? FilterEntity.JUST_PDF : null;
 
 		// display only posts, which have a document attached
-		if ("myGroupPDF".equals(command.getFilter())) {
-			filter = FilterEntity.JUST_PDF;
+		if (FilterEntity.JUST_PDF.equals(filter)) {
 			this.supportedResources.remove(Bookmark.class);
 		}
 		
@@ -109,7 +109,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			this.endTiming();
 
 			// forward to bibtex page if PDF filter is set
-			if (filter == FilterEntity.JUST_PDF) {
+			if (FilterEntity.JUST_PDF.equals(filter)) {
 				return Views.GROUPDOCUMENTPAGE;
 			} else if (requTags.size() > 0) {
 				/*

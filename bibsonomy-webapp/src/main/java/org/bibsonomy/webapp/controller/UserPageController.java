@@ -82,8 +82,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		/*
 		 * extract filter
 		 */
-		final FilterEntity filter = getFilter(command.getFilter());
-		if (FilterEntity.JUST_PDF.equals(filter) || FilterEntity.DUPLICATES.equals(filter)) {
+		final boolean publicationFilter = isPublicationFilter(command.getFilter());
+		if (publicationFilter) {
 			this.supportedResources.remove(Bookmark.class);
 		}
 		
@@ -105,14 +105,14 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getFilter(), null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 
 			/*
 			 * set the post counts
 			 */
-			if (filter != FilterEntity.JUST_PDF && filter != FilterEntity.DUPLICATES) {
-				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, entriesPerPage, null);
+			if (!publicationFilter) {
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, entriesPerPage, null);
 				totalNumPosts += listCommand.getTotalCount();
 			}
 		}
@@ -151,7 +151,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				this.endTiming();
 
 				// forward to publication page if filter is set
-				if (FilterEntity.JUST_PDF.equals(filter) || FilterEntity.DUPLICATES.equals(filter)) {
+				if (publicationFilter) {
 					return Views.USERDOCUMENTPAGE;
 				}
 				
@@ -190,7 +190,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			this.endTiming();
 
 			// forward to bibtex page if filter is set
-			if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
+			if (publicationFilter) {
 				return Views.USERDOCUMENTPAGE;
 			} 
 			
@@ -202,25 +202,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		return Views.getViewByFormat(format);
 	}
 
-	/**
-	 * Maps a filter string to the corresponding filter enum.
-	 * 
-	 * @param filterString
-	 * @return
-	 */
-	private FilterEntity getFilter(final String filterString) {
-		if ("myPDF".equals(filterString)) {
-			/*
-			 * display only posts which have a document attached
-			 */
-			return FilterEntity.JUST_PDF;
- 		} else if ("myDuplicates".equals(filterString)) {
-			/*
-			 * display duplicate entries
-			 */
-			return FilterEntity.DUPLICATES;
-		}
-		return null;
+	private boolean isPublicationFilter(final FilterEntity filter) {
+		return FilterEntity.JUST_PDF.equals(filter) || FilterEntity.DUPLICATES.equals(filter);
 	}
 
 	@Override

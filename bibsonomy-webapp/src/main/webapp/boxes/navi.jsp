@@ -11,10 +11,10 @@
 				<c:url var="userHome" value="/user/${user.name}" />
 				<c:url var="userRelations" value="/relations/${user.name}" />
 				<c:url var="userPDF" value="/user/${user.name}">
-					<c:param name="filter" value="myPDF" />
+					<c:param name="filter" value="JUST_PDF" />
 				</c:url>
 				<c:url var="userDuplicates" value="/user/${user.name}">
-					<c:param name="filter" value="myDuplicates" />
+					<c:param name="filter" value="DUPLICATES" />
 				</c:url>
 				<c:url var="userBibTeX" value="/bib/user/${user.name}">
 					<c:param name="items" value="1000" />

@@ -43,11 +43,11 @@
 				        	<fmt:message key="navi.my.plural"/>
 				        	<fmt:message key="navi.search.cap"/>						
 						</a>
-				        <a href="/user/${mtl:encodeURI(loginUserName)}?filter=myPDF">
+				        <a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF">
 				        	<fmt:message key="navi.my.plural"/>
 				        	<fmt:message key="navi.pdfs"/>
 				        </a>
-				        <a href="/user/${mtl:encodeURI(loginUserName)}?filter=myDuplicates">
+				        <a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES">
 				        	<fmt:message key="navi.my.plural"/>
 				        	<fmt:message key="navi.duplicates.cap"/>
 				        </a>
@@ -103,7 +103,7 @@
                        <td><a href="/viewable/${fn:escapeXml(grp.name)}"><fmt:message key="navi.viewable"/></a></td>
                        <td>
                          <c:if test="${grp.sharedDocuments}">
-                           <a href="/group/${fn:escapeXml(grp.name)}?filter=myGroupPDF">
+                           <a href="/group/${fn:escapeXml(grp.name)}?filter=JUST_PDF">
                              <fmt:message key="navi.groups" />                   
                              <fmt:message key="navi.pdfs" />
                            </a>

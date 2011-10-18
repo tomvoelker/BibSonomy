@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.command;
 
 import java.util.Set;
 
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.model.Resource;
 
 /**
@@ -61,7 +62,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private String callback = "";	
 	
 	/** filter group resources  */
-	private String filter = "";
+	private FilterEntity filter;
 
 	/**
 	 * @return the duplicates
@@ -199,14 +200,14 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @return the filter
 	 */
-	public String getFilter() {
+	public FilterEntity getFilter() {
 		return this.filter;
 	}
 
 	/**
 	 * @param filter the filter to set
 	 */
-	public void setFilter(final String filter) {
+	public void setFilter(final FilterEntity filter) {
 		this.filter = filter;
 	}
 

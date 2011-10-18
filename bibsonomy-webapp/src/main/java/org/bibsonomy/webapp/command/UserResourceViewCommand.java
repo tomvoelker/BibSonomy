@@ -20,7 +20,7 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	private int bookmarkCount = 0;
 	private int bibtexCount = 0;
 	private boolean isFollowerOfUser = false;
-	private int showUnclassifiedUserItems = 0;
+	private boolean showUnclassifiedUserItems = ;
 	
 	/**
 	 * Has the requested user added the logged in user to her friend list? 
