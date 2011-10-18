@@ -16,6 +16,11 @@
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${(command.requestedUser eq command.context.loginUser.name) ? 'nav_my' : ''}">
 	
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
+		</jsp:attribute>
+		
+	
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
 			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
@@ -44,36 +49,25 @@
 				</li>
 						
 				<!-- The Spheres List by Mouseover of the Friend Button -->		
-				<div class="addContainer" style="position: relative; top: -5px">
-				<div class="addCircles" style="height: 0; width: 255px; position: absolute; overflow: hidden;">
-	           			<ul id="unsortedList" style="	
-	           						padding-left: 10px; 
-	           						padding-right: 10px; 
-	           						padding-top: 5px; 
-	           						padding-bottom: 5px; 
-	           						margin-left: 15px; 
-	           						border-width: thin; 
-	           						list-style-type: circle; 
-	           						list-style-position: inside; 
-	           						background-color: #EEEEEE; 
-	           						border-style: solid; 
-	           						border-color: #006699;
-	           						font-size: 95%;" >
+				<div class="addContainer">
+				<div class="addSpheres initiallyHidden">
+	           			<ul id="sphereList">
 			               <li>
-			               		<input type="text" name="sphereName" id="newSphere" size="17" autocomplete="off"/>
-			               		<input type="button" id="addNewSphere" value="add" style="position: relative; left: 5px; right: 5px;"/>
+			               		<input type="text" name="sphereName" id="newSphere" size="20" autocomplete="off"/>
+			               		<input type="button" id="addNewSphere" value="add"/>
 			               </li>
 	           			</ul>
 	       			</div>
 	   			</div>
 				
 				<!-- Javascript for the Spheres List -->
-			   <script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
-			   <script type="text/javascript" src="${resdir}/javascript/addToSpheres.js"><!-- keep me --></script>
-			   <script>
-			     var ckey = "${ckey}";
-			     var requestedUser = "${command.requestedUser}";
-			   </script>
+				<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/addToSpheres.js"><!-- keep me --></script>
+				<script>
+					$(document).ready(function() {
+						initSpheres("${command.requestedUser}","${ckey}");
+					});
+				</script>
 			</c:if>
 			
 			<li id="sidebarfilter"></li>

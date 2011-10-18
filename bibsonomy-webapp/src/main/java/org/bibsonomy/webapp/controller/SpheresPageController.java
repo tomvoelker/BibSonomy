@@ -222,7 +222,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		command.setSpheresBMPosts(spheresBMPosts);
 		command.setSpheresPBPosts(spheresPBPosts);
 		command.setSpheresTagClouds(spheresTagClouds);
-		
+		log.debug("return sphere list "+command.getFormat());
 		// all done
 		String format = command.getFormat();
 		if ("html".equals(format)) {

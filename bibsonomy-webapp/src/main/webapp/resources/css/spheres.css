@@ -72,3 +72,41 @@
 .sphere_image_container .imageCapture {
 	font-size: 80%;
 }
+
+.addContainer {
+	position: relative; 
+	top: -5px;	
+}
+
+.addSpheres {
+	width: 285px; 
+	position: absolute; 
+	overflow: hidden;
+}
+
+#sidebar ul {
+}
+
+#sphereList {
+	margin: 0!important; 
+	padding:0!important;
+	padding-left: 10px!important; 
+	padding-right: 10px!important; 
+	padding-top: 5px!important; 
+	padding-bottom: 5px!important; 
+	margin-left: 15px!important; 
+	border-width: thin; 
+	list-style-type: circle!important; 
+	list-style-position: inside!important; 
+	background-color: #EEEEEE; 
+	border-style: solid; 
+	border-color: #006699;
+	font-size: 95%;
+}
+
+#addNewSphere {
+	position: absolute; 
+	right: 0px; 
+	margin-right: 8px; 
+	vertical-align: bottom;
+}

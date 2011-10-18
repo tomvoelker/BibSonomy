@@ -1,9 +1,9 @@
-$(document).ready(function() {
+function initSpheres(requestedUser, ckey) {
 	var timeout = null;
 	var userSpheres = new Array();
 	var newSphere = $("#newSphere");
-	var list = $("#unsortedList");	
-
+	var list = $("#sphereList");	
+	
 	//Database Command for adding/removing the User of the Sphere
 	var callbackCheckbox = function(el, sphereName) {
 		if(el.checked) {
@@ -17,10 +17,25 @@ $(document).ready(function() {
 	var createChkBox = function(sphereName) {
 		return $("<input></input>")
 					.attr("type","checkbox")
-					.attr("style","position: absolute; right: 17px")
+					.attr("style","position: absolute; right: 12px")
 					.change(function(){callbackCheckbox(this, sphereName);});
 	};
-
+	
+	//Creates the Text for Sphere Names
+	var createText = function(sphereName) {
+		var shortSphereName = sphereName;
+		if(sphereName.length > 20) {
+			shortSphereName = sphereName.slice(0,20);
+			shortSphereName = shortSphereName + " ...";
+		}
+		return $("<a></a>").attr("href","/sphere/" + sphereName).text(shortSphereName);
+	};
+	
+	//Creates the user Count of Spheres
+	var createUserCount = function(sphereUsers) {
+		return $("<strong></strong>").text(sphereUsers + " User").css("right", 45).css("position","absolute").attr("data-userCount",sphereUsers);
+	};
+	
 	//Getter for the Timeout
 	var getTo = function() {
 		return timeout;
@@ -34,27 +49,30 @@ $(document).ready(function() {
 	//Function to hide the Spheres List
 	var callbackHide = function() {
 	    tO = getTo();
-		setTo(setTimeout(function(){$(".addCircles").animate({height : 0});}, 500));
+		setTo(setTimeout(function(){$(".addSpheres").slideUp('slow');}, 500));
 	};
 
 	//Function to show the Spheres List
 	var callbackShow = function() {
-		if($(".addCircles").height() == 0) {
-			$(".addCircles").animate({height : 250});
-		}
+		//jQuery.fx.off = false;
+		if(!$(".addSpheres").is(":visible"))
+			$(".addSpheres").each(function() {$(this).slideDown('slow');});
 		window.clearTimeout(getTo());
    };
    
    //Function to add a new Sphere by the name of the Input Field
    var addNewSphere = function() {
-	   if(newSphere.val() != ""){
+	   if(newSphere.val() != "" || newSphere.val().get(0) != " " ){
 		   var name = newSphere.val();
-		   var child = $("<li></li>").data("sphereName", name).text(name).append(createChkBox(name).attr("checked","checked"));
+		   var child = $("<li></li>").data("sphereName", name);
+		   child.append(createText(name));
+		   child.append(createUserCount(1));
+		   child.append(createChkBox(name).attr("checked","checked"));
 		   list.children().last().before(child);
 		   newSphere.val("");
 		   updateUserRelation('add', requestedUser, "sys:relation:" + name, ckey); 
 	   } else {
-		   alert("Keine Sphere angegeben.");
+		   alert("Keine gültige Sphere angegeben.");
 	   }
    };
 
@@ -77,13 +95,13 @@ $(document).ready(function() {
 						contains = true;
 					}
 				});
-
 	
-				if(contains == true) {
+				if(contains) {
 					temp.push("checked");
 				} else {
 					temp.push("unchecked");
 				}		
+				temp.push(item.members.length);
 				userSpheres.push(temp);
 			});
 
@@ -99,10 +117,14 @@ $(document).ready(function() {
 
 			//Put the Sphere Elements in HTML
 			for (var i = 0; i < userSpheres.length; i++){
+				var child = $("<li></li>").data("sphereName", userSpheres[i][0]);
+				child.append(createText(userSpheres[i][0]));
+				child.append(createUserCount(userSpheres[i][2]));
+
 				if(userSpheres[i][1] == "checked") {
-					var child = $("<li></li>").data("sphereName", userSpheres[i][0]).text(userSpheres[i][0]).append(createChkBox(userSpheres[i][0]).attr("checked","checked"));
+					child.append(createChkBox(userSpheres[i][0]).attr("checked","checked"));
 				} else {
-					var child = $("<li></li>").data("sphereName", userSpheres[i][0]).text(userSpheres[i][0]).append(createChkBox(userSpheres[i][0]));
+					child.append(createChkBox(userSpheres[i][0]));
 				}
 				list.prepend(child);
 			}
@@ -114,17 +136,17 @@ $(document).ready(function() {
    $("#sys\\:network\\:bibsonomy-friend_removeLink").mouseenter(function() {callbackShow();}).mouseleave(function() {callbackHide();});
    
    //Mouseenter and Mouseleave Handler for the Unsorted list of Spheres
-   $( ".addCircles").mouseleave(function() {callbackHide();}).mouseenter(function() {callbackShow();});
+   $( ".addSpheres").mouseleave(function() {callbackHide();}).mouseenter(function() {callbackShow();});
 
    //Handler for the Input Field to add a new Sphere by Mouseclick on the Button
-   $(".addCircles input[type=button]").click(function(e){
+   $(".addSpheres input[type=button]").click(function(e){
 		addNewSphere();
    });	
    
    //Handler for the Input Field to add a new Sphere by Keypress (13 == Return Key) 
-   $(".addCircles input[type=text]").keypress(function(event) {
+   $(".addSpheres input[type=text]").keypress(function(event) {
 	   if( event.which == 13 ) {
 		   addNewSphere();
 	   }
    });
-});
+}

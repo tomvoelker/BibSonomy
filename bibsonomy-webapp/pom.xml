@@ -88,7 +88,7 @@
                 				<include>${project.build.webapp.resourcedir}/javascript/chrome.js</include>
                 				<include>${project.build.webapp.resourcedir}/jquery/plugins/textarearesizer/jquery.textarearesizer.js</include>
                 				<include>${project.build.webapp.resourcedir}/jquery/plugins/corner/jquery.corner.js</include>
-                				<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui-1.8.16.effects-fade.min.js</include>
+                				<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui-1.8.16.custom.min.js</include>
                 				<include>${project.build.webapp.resourcedir}/javascript/jquery.sidebarresizer.js</include>
               					<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
               				</includes>
