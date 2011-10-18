@@ -209,7 +209,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			 *  }
 			*/
 
-			command.setAdditonalMetadata(additionalMetadataMap);
+			command.setAdditionalMetadata(additionalMetadataMap);
 			
 			return Views.AUTHORAGREEMENTPAGE;
 		}

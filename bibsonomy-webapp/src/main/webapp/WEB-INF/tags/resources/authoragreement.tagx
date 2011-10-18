@@ -42,9 +42,9 @@
 
 
 			<c:set var="post_resource_openaccess_additionalfields_institution" value="" />
-			<c:if test="${not empty command.additonalMetadata['post.resource.openaccess.additionalfields.institution'][0]}">
-				<c:if test="${'undefined' != command.additonalMetadata['post.resource.openaccess.additionalfields.institution'][0]}">
-					<c:set var="post_resource_openaccess_additionalfields_institution" value="${command.additonalMetadata['post.resource.openaccess.additionalfields.institution'][0]}"/>
+			<c:if test="${not empty command.additionalMetadata['post.resource.openaccess.additionalfields.institution'][0]}">
+				<c:if test="${'undefined' != command.additionalMetadata['post.resource.openaccess.additionalfields.institution'][0]}">
+					<c:set var="post_resource_openaccess_additionalfields_institution" value="${command.additionalMetadata['post.resource.openaccess.additionalfields.institution'][0]}"/>
 				</c:if>
 			</c:if>
 
@@ -58,13 +58,13 @@
 			<c:if test="${post.resource.entrytype eq 'phdthesis'}" >
 
 				<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.date.examination"/>:</div>
-				<div class="lfval"><c:out value="${command.additonalMetadata['post.resource.openaccess.additionalfields.phdoralexam'][0]}"></c:out></div>
+				<div class="lfval"><c:out value="${command.additionalMetadata['post.resource.openaccess.additionalfields.phdoralexam'][0]}"></c:out></div>
 			
 				<div class="lfdesc"><c:out value="1. "></c:out><fmt:message key="post.resource.openaccess.license.referee"/>:</div>
-				<div class="lfval"><c:out value="${command.additonalMetadata['post.resource.openaccess.additionalfields.phdreferee'][0]}"></c:out></div>
+				<div class="lfval"><c:out value="${command.additionalMetadata['post.resource.openaccess.additionalfields.phdreferee'][0]}"></c:out></div>
 	
 				<div class="lfdesc"><c:out value="2. "></c:out><fmt:message key="post.resource.openaccess.license.referee"/>:</div>
-				<div class="lfval"><c:out value="${command.additonalMetadata['post.resource.openaccess.additionalfields.phdreferee2'][0]}"></c:out></div>
+				<div class="lfval"><c:out value="${command.additionalMetadata['post.resource.openaccess.additionalfields.phdreferee2'][0]}"></c:out></div>
 	
 			</c:if>
 
