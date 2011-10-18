@@ -37,7 +37,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	private final static String[] tabTitles = {
 		"post_bibtex.manual.title", 
 		"post_bibtex.pub_snippet.title", 
-		"post_bibtex.bibtex_endnote.title", 
+		"post_bibtex.upload.title", 
 		"post_bibtex.doi_isbn.title"
 	};
 	
