@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Templates xmlns:bs="http://www.opensocial.org">
+  <Namespace prefix="os" url="http://opensocial.com/#template"/>
+
+  <!--+
+      | render a single person
+      +-->
+  <TemplateDef tag="bs:User">
+    <Template>
+      <span class="person">
+        <span class="personimg">
+	  <a href="http://www.bibsonomy.org/cv/user/${My.user.name}" title="${My.user.name}'s profile page" target="_blank">
+            <img width="64" src="http://www.bibsonomy.org/picture/user/${My.user.name}"/>
+	  </a>
+        </span>
+      </span>
+    </Template>
+    <Style>
+      .personimg {
+        padding-left: 6px;
+        float: right;
+      }
+    </Style>
+  </TemplateDef>
+
+
+  <!--+
+      | render a single publication or bookmark
+      +-->
+
+  <TemplateDef tag="bs:Post">
+    <Template>
+      <bs:User user="${My.post.user}" />
+      <span class="titleDate" title="changed on ${My.post.postingdate}">${My.post.postingdate}</span>
+
+      <!-- Copy Button -->
+      <div class="bmicon" title="Copy this post.">
+        <!-- Publication -->
+	<a if="${My.post.bibtex}" href="http://www.bibsonomy.org/editPublication?hash=${My.post.bibtex.intrahash}&amp;user=${My.post.user.name}&amp;copytag=${My.post.copytags}" title="" target="_blank">&#160;</a>
+        <!-- Bookmark -->
+	<a if="${My.post.bookmark}" href="http://www.bibsonomy.org/editBookmark?hash=${My.post.bookmark.intrahash}&amp;user=${My.post.user.name}&amp;copytag=${My.post.copytags}" title="" target="_blank">&#160;</a>
+      </div>
+      
+      <!-- Title -->
+      <div class="bmtitle">
+        <!-- Publication -->
+	<a href="http://www.bibsonomy.org/bibtex/2${My.post.bibtex.intrahash}/${My.post.user.name}" target="_blank">${My.post.bibtex.title}</a>
+        <!-- Bookmark -->
+	<a href="${My.post.bookmark.url}" target="_blank">${My.post.bookmark.title}</a>
+      </div>
+
+      <!-- Author -->
+      <div class="bmdesc" if="${My.post.bibtex}">
+	<span class="authorEditorList">${My.post.bibtex.author}</span>
+      </div>
+
+      <!-- Tags -->
+      <span class="bmmeta">
+	<bs:Tags tags="${My.post.tag}" user="${My.post.user}"/> by <a name="${My.post.user.name" href="http://www.bibsonomy.org/user/${My.post.user.name}" target="_blank">${My.post.user.name}</a> 
+	<div style="clear: both;"/>
+      </span>
+    </Template>
+
+    <Style>
+      .titleDate {
+         font-size: 0.8em;
+         color: #555555;
+         font-style: italic;
+      }
+      .bmtitle a {
+         font-size: 1em;
+      }
+    </Style>
+  </TemplateDef>
+
+
+  <!--+
+      | render a list of tags
+      +-->
+  <TemplateDef tag="bs:Tags">
+    <Template>
+      <span class="bmtags">
+	  <a repeat="${My.tags}">${Cur.name} </a>
+	</span> 
+    </Template>
+  </TemplateDef>
+
+</Templates>
