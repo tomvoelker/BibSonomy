@@ -182,6 +182,24 @@
 		<property name="key" ref="cookieKey" />
 	</bean>
 	
+	
+	<!--+
+		|
+		| HTTP Basic Authentication
+		| 
+		| is blocked by the front proxy except for HTTPS requests
+		|
+		+-->
+	<bean id="httpBasicAuthenticationFilter" class="org.springframework.security.web.authentication.www.BasicAuthenticationFilter">
+  		<property name="authenticationManager" ref="internalAuthenticationManager"/>
+  		<property name="authenticationEntryPoint" ref="authenticationEntryPoint"/>
+	</bean>
+
+	<bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+  		<property name="realmName" value="${project.name}"/>
+	</bean>
+          
+	
 	<!-- Open ID login -->
 	<bean id="openidLoginUrl" class="java.lang.String">
 		<constructor-arg value="/login_openid" />
@@ -382,6 +400,7 @@
 				<entry key="INTERNAL" value-ref="internalUsernamePasswordFilter" />
 				<entry key="LDAP" value-ref="ldapUsernamePasswordFilter" />
 				<entry key="OPENID" value-ref="openidFilter" />
+				<entry key="HTTPBASIC" value-ref="httpBasicAuthenticationFilter" />
 			</map>
 		</property>
 		<property name="authRememberMeFilterMap">
@@ -389,6 +408,7 @@
 				<entry key="INTERNAL" value-ref="internalRememberMeFilter" />
 				<entry key="LDAP" value-ref="ldapRememberMeFilter" />
 				<entry key="OPENID" value-ref="openidRememberMeFilter" />
+				<entry key="HTTPBASIC" value-ref="internalRememberMeFilter" /><!-- FIXME: does it make sense to use this filter for HTTP Basic Auth? -->
 			</map>
 		</property>
 	</bean>
