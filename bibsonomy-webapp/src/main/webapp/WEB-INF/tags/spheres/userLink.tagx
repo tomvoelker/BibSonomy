@@ -7,9 +7,9 @@
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
 	
 		<div class="sphere_image_container">
-				<a href="${properties['project.home']}user/${user.name}" title="${user.realname}">
+				<a href="${properties['project.home']}user/${fn:escapeXml(user.name)}" title="${fn:escapeXml(user.realname)}">
 					<div class="imageContainer">
-						<img src="${properties['project.home']}picture/user/${user.name}"/>
+						<img src="${properties['project.home']}picture/user/${fn:escapeXml(user.name)}"/>
 				   		<div class="imageCapture">
 				   			<c:choose>
 				   				<c:when test="${not empty user.realname}">${fn:escapeXml(user.realname)}</c:when>
