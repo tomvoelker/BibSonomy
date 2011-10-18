@@ -8,6 +8,7 @@
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
   xmlns:form="http://www.springframework.org/tags/form"
   xmlns:spring="http://www.springframework.org/tags"
+  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
   xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
   
@@ -38,72 +39,73 @@
 
 				<fieldset class="fsOuter">
 				
-					<fieldset class="fsInner">
-						<legend><fmt:message key="register.personal"/></legend>
-						
-						<div class="fsRow">
-			  				<form:label cssClass="fsLabel" path="registerUser.name" ><fmt:message key="navi.username"/>*</form:label>
-			  				<form:input maxlength="15" cssClass="fsInput reqinput" path="registerUser.name" tabindex="2"/>
-			  				<div class="dissError"><form:errors path="registerUser.name" /></div>
-            			</div>
-            			
-            			<div class="fsRow">
-			  				<form:label cssClass="fsLabel" path="registerUser.password" ><fmt:message key="navi.password"/>*</form:label>
-			  				<form:password cssClass="fsInput reqinput" path="registerUser.password" tabindex="2"/>
-			  				<div class="dissError"><form:errors path="registerUser.password" /></div>
-            			</div>
-            	
-            			<div class="fsRow">
-			  				<form:label cssClass="fsLabel" path="passwordCheck" ><fmt:message key="user.settings.passwordCheck"/>*</form:label>
-			  				<form:password cssClass="fsInput reqinput" path="passwordCheck" tabindex="2"/>
-			  				<div class="dissError"><form:errors path="passwordCheck" /></div>
-            			</div>
+					<parts:fieldset maximized="${true}" legendKey="register.personal">
+						<jsp:attribute name="content">
+							<div class="fsRow">
+				  				<form:label cssClass="fsLabel" path="registerUser.name" ><fmt:message key="navi.username"/>*</form:label>
+				  				<form:input maxlength="15" cssClass="fsInput reqinput" path="registerUser.name" tabindex="2"/>
+				  				<div class="dissError"><form:errors path="registerUser.name" /></div>
+	            			</div>
+	            			
+	            			<div class="fsRow">
+				  				<form:label cssClass="fsLabel" path="registerUser.password" ><fmt:message key="navi.password"/>*</form:label>
+				  				<form:password cssClass="fsInput reqinput" path="registerUser.password" tabindex="2"/>
+				  				<div class="dissError"><form:errors path="registerUser.password" /></div>
+	            			</div>
+	            	
+	            			<div class="fsRow">
+				  				<form:label cssClass="fsLabel" path="passwordCheck" ><fmt:message key="user.settings.passwordCheck"/>*</form:label>
+				  				<form:password cssClass="fsInput reqinput" path="passwordCheck" tabindex="2"/>
+				  				<div class="dissError"><form:errors path="passwordCheck" /></div>
+	            			</div>
+	            		
+	            			<div class="fsRow">
+				  				<form:label cssClass="fsLabel" path="registerUser.email" ><fmt:message key="user.settings.email"/>*</form:label>
+				  				<form:input cssClass="fsInput reqinput" path="registerUser.email" tabindex="2"/>
+				  				<div class="dissError"><form:errors path="registerUser.email" /></div>
+	            			</div>
+            			</jsp:attribute>
+            		</parts:fieldset>
             		
-            			<div class="fsRow">
-			  				<form:label cssClass="fsLabel" path="registerUser.email" ><fmt:message key="user.settings.email"/>*</form:label>
-			  				<form:input cssClass="fsInput reqinput" path="registerUser.email" tabindex="2"/>
-			  				<div class="dissError"><form:errors path="registerUser.email" /></div>
-            			</div>
-            		</fieldset>
             		
+            		<parts:fieldset maximized="${false}" legendKey="register.additional">
+              			<jsp:attribute name="content">  
+	              			<div class="fsRow">
+				  				<form:label cssClass="fsLabel" path="registerUser.homepage" ><fmt:message key="user.settings.homepage"/></form:label>
+				  				<form:input cssClass="fsInput" path="registerUser.homepage" tabindex="2"/>
+				  				<div class="dissError"><form:errors path="registerUser.homepage" /></div>
+	            			</div>
+	            			
+	            			<div class="fsRow">
+				  				<form:label cssClass="fsLabel" path="registerUser.realname" ><fmt:message key="user.settings.realname"/></form:label>
+				  				<form:input cssClass="fsInput" path="registerUser.realname" tabindex="2"/>
+				  				<div class="dissError"><form:errors path="registerUser.realname" /></div>
+	            			</div>
+	            		</jsp:attribute>
+            		</parts:fieldset>
             		
-            		<fieldset class="fsInner">
-						<legend><fmt:message key="register.additional"/></legend>
-              	
-              			<div class="fsRow">
-			  				<form:label cssClass="fsLabel" path="registerUser.homepage" ><fmt:message key="user.settings.homepage"/></form:label>
-			  				<form:input cssClass="fsInput" path="registerUser.homepage" tabindex="2"/>
-			  				<div class="dissError"><form:errors path="registerUser.homepage" /></div>
-            			</div>
-            			
-            			<div class="fsRow">
-			  				<form:label cssClass="fsLabel" path="registerUser.realname" ><fmt:message key="user.settings.realname"/></form:label>
-			  				<form:input cssClass="fsInput" path="registerUser.realname" tabindex="2"/>
-			  				<div class="dissError"><form:errors path="registerUser.realname" /></div>
-            			</div>
-            		</fieldset>
-            		
-            		<fieldset class="fsInner">
-						<legend><fmt:message key="register.captchaAndPrivacy"/></legend>
+            		<parts:fieldset maximized="${true}" legendKey="register.captchaAndPrivacy">
+						<jsp:attribute name="content">
               
-						<div class="fsRow">
-			  				<form:label cssClass="fsLabel" path="recaptcha_response_field" ><fmt:message key="captcha"/>*</form:label>
-			  				${command.captchaHTML} 
-			  				<div class="dissError"><form:errors path="recaptcha_response_field" /></div>
-            			</div>
-             		
-             			<div class="fsRow">
-			  				<form:label cssClass="fsLabel" path="acceptPrivacy" ><fmt:message key="register.acceptPrivacy"/>*</form:label>
-			  				<form:checkbox path="acceptPrivacy" value="yes"/>
-			  				<div class="dissError"><form:errors path="acceptPrivacy" /></div>
-            			</div>
+							<div class="fsRow">
+				  				<form:label cssClass="fsLabel" path="recaptcha_response_field" ><fmt:message key="captcha"/>*</form:label>
+				  				${command.captchaHTML} 
+				  				<div class="dissError"><form:errors path="recaptcha_response_field" /></div>
+	            			</div>
+	             		
+	             			<div class="fsRow">
+				  				<form:label cssClass="fsLabel" path="acceptPrivacy" ><fmt:message key="register.acceptPrivacy"/>*</form:label>
+				  				<form:checkbox path="acceptPrivacy" value="yes"/>
+				  				<div class="dissError"><form:errors path="acceptPrivacy" /></div>
+	            			</div>
+	            		</jsp:attribute>
+	            	</parts:fieldset>
              
-             			<div class="clearfloat p">
-             				<input type="hidden" name="ckey" value="${command.context.ckey}"/>	
-		                    <fmt:message key="register.send" var="submit"/>
-        		            <input type="submit" value="${submit}" />
-	             		</div>
-	             	</fieldset>
+             		<div class="clearfloat p">
+             			<input type="hidden" name="ckey" value="${command.context.ckey}"/>	
+		                <fmt:message key="register.send" var="submit"/>
+        	            <input type="submit" value="${submit}" />
+	           		</div>
 	             </fieldset>	
             </form:form>
             
