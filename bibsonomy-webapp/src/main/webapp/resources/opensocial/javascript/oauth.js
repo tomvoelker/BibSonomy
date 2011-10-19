@@ -68,8 +68,8 @@ function preparePosts(posts) {
 
 function fetchData(url) {
     clearView('main');
-    os.Loader.loadUrl('http://www.biblicious.org/resources/opensocial/templates/opensociallib.xml, function(){});
-    os.Loader.loadUrl('http://www.biblicious.org/resources/opensocial/templates/bibsonomypostlib.xml, function(){});
+    os.Loader.loadUrl('http://www.biblicious.org/resources/opensocial/templates/opensociallib.xml', function(){});
+    os.Loader.loadUrl('http://www.biblicious.org/resources/opensocial/templates/bibsonomypostlib.xml', function(){});
 
     var params = {};
     params[gadgets.io.RequestParameters.CONTENT_TYPE]       = gadgets.io.ContentType.JSON;
