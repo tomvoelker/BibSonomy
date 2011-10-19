@@ -28,7 +28,7 @@ function initSpheres(requestedUser, ckey) {
 			shortSphereName = sphereName.slice(0,20);
 			shortSphereName = shortSphereName + " ...";
 		}
-		return $("<a></a>").attr("href","/sphere/" + sphereName).text(shortSphereName);
+		return $("<a></a>").attr("href","/sphere/" + encodeURIComponent(sphereName)).text(shortSphereName);
 	};
 	
 	//Creates the user Count of Spheres
@@ -150,3 +150,102 @@ function initSpheres(requestedUser, ckey) {
 	   }
    });
 }
+
+/**
+ * class for rendering spheres
+ */
+function SphereControl(projectHome) {
+	this.projectHome = projectHome;
+};
+
+
+/**
+ * Retrieves JSONized user recommendations from the recommendation service
+ *  
+ * @param callBack function(json) to call on success with recommendations data given in json
+ * @param callError
+ * 
+ * @return JSONized user recommendations 
+ */
+SphereControl.prototype.renderSpheres = function() {
+	var backref = this;
+	
+	$.getScript(this.projectHome + '/resources/javascript/jsrender.js', function(data, textStatus) {
+		$("#spheresTemplates").load(backref.projectHome + '/resources/templates/spherestemplates.xml', function(data, textStatus) {
+			backref.getSpheres(function(data){backref["cb_handleSpheres"](data)});
+		});
+	});
+	
+};
+
+/**
+ * Retrieves JSONized list of spheres
+ *  
+ * @param callBack function(json) to call on success with recommendations data given in json
+ * @param callError
+ * 
+ * @return JSONized user recommendations 
+ */
+SphereControl.prototype.getSpheres = function(callBack, callError) {
+	this.fetchData(this.projectHome + '/json/spheres', null, callBack, callError);
+};
+
+/**
+ * ajax request handler 
+ * 
+ * @param url the REST-Url to query 
+ * @param queryParam string containing the query parameters
+ * @param callBack function(json) to call on success with talk data given in json
+ * @param callError
+ * @return
+ */
+SphereControl.prototype.fetchData = function(url, queryParam, callBack, callError) {
+	$.ajax( {
+		type : "GET",
+		url : url,
+		data : queryParam,
+		dataType : "jsonp",
+		jsonp : "callback",
+		success : callBack,
+		error : callError
+	});	
+};
+
+/**
+ * render spheres
+ */
+SphereControl.prototype.cb_handleSpheres = function(data) {
+    var response = new Object();
+    data.projectHome = this.projectHome;
+    
+    //
+    // preprocess data
+    //
+    // 1) determine sizes (FIXME: this is a very simple approach)
+    var sizes = new Array();
+    for (var i=0; i<data.items.length; i++) {
+    	sizes[i] = data.items[i].members.length;
+    }
+    sizes.sort();
+    var first  = sizes[Math.floor(1*data.items.length/4)];
+    var second = sizes[Math.floor(2*data.items.length/4)];
+    var third  = sizes[Math.floor(3*data.items.length/4)];
+    
+    for (var i=0; i<data.items.length; i++) {
+    	var sphere = data.items[i]; 
+    	if (sphere.members.length >= third) {
+    		sphere.tagClass = "taghuge";
+    	} else if (sphere.members.length > second) {
+    		sphere.tagClass = "taglarge";
+    	} else if (sphere.members.length > first) {
+    		sphere.tagClass = "tagnormal";
+    	} else {
+    		sphere.tagClass = "tagtiny";
+    	};
+    }
+    
+    
+    $("#spheresCloudElement").html(
+			$("#tplSpheresCloud").render(data)
+	);
+};

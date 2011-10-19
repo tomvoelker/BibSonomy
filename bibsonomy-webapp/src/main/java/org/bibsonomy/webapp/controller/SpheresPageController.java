@@ -136,7 +136,10 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		//Set the Users in the Sphere
 		command.setRelatedUsers(relatedUsers);
 
-		return Views.SPHEREDETAILS;
+		if ("html".equals(format)) {
+			return Views.SPHEREDETAILS;
+		}
+		return Views.getViewByFormat(format);
 	}
 
 

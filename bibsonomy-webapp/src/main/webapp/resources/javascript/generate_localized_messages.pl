@@ -23,9 +23,11 @@ use File::Find;
 # Collect all occurrences of calls to the "getString()" method that we
 # use for localization in JavaScript files - from BibSonomy and Puma
 
-my @directories_to_search = ('.', '../../resources_puma/javascript');
+my @directories_to_search = ('.', '../../resources_puma/javascript', '../templates');
 my @jsFiles = ();
+my @templateFiles = ();
 find(sub { push(@jsFiles, $File::Find::name) if /\.js$/ }, @directories_to_search);
+find(sub { push(@templateFiles, $File::Find::name) if /\.xml$/ }, @directories_to_search);
 
 # patterns of the message keys found in JavaScript files
 my %keyPatterns = ();
@@ -59,6 +61,24 @@ foreach my $file (@jsFiles) {
     }
     close (JS);
 }
+
+print STDERR "\nINFO: extracting message keys from template files " . join (", ", @templateFiles) . "\n\n";
+
+foreach my $file (@templateFiles) {
+    open (TPL, "<$file") or die "could not open $file\n";
+    while (<TPL>) {
+	# extract all calls to the "getString" method
+	if (/{{getString\s+\"(.+?)\"}}/) {
+
+	    print STDERR ">>> $1\n";
+	    # method arguments
+	    # only string literals supported
+	    $keyPatterns{quotemeta($1)} = 1;
+	}
+    }
+    close (TPL);
+}
+
 # print keys
 print STDERR "\nINFO: key patterns found: " . join(", ", sort keys %keyPatterns) . "\n\n";
 
