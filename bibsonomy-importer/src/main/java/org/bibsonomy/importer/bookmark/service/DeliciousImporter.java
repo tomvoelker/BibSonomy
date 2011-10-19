@@ -1,5 +1,7 @@
 package org.bibsonomy.importer.bookmark.service;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -7,7 +9,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -20,7 +21,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -106,21 +106,22 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			final Post<Bookmark> post = new Post<Bookmark>();
 			final Bookmark bookmark = new Bookmark();
 			
-			//setting the url and the titel. if the titel is "", use the url as title.
-			{
-				String description = resource.getAttribute("description");
-				String href = resource.getAttribute("href");
-				if (description.equals("")) description = href;
+			// setting the url and the title. if the title is "", use the url as title.
+			final String description = resource.getAttribute("description");
+			final String href = resource.getAttribute("href");
+			if (present(description)) { 
 				bookmark.setTitle(description);
-				bookmark.setUrl(href);
+			} else {
+				bookmark.setTitle(href);
 			}
+			bookmark.setUrl(href);
 			try {
 				post.getTags().addAll(TagUtils.parse(resource.getAttribute("tag")));
 			} catch (Exception e) {
 				throw new IOException("Could not parse tags. ", e);
 			}
 			
-			//no tags available? -> add one tag to the resource and mark it as "imported"
+			// no tags available? -> add one tag to the resource and mark it as "imported"
 			if (post.getTags().isEmpty()) {
 				post.setTags(Collections.singleton(TagUtils.getEmptyTag()));
 			}
@@ -133,13 +134,11 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 				post.setDate(new Date());
 			}
 			
-			//set the visibility of the imported resource
-			if (resource.hasAttribute("shared")) {
-				if ("no".equals(resource.getAttribute("shared"))) {
-					post.getGroups().add(GroupUtils.getPrivateGroup());
-				} else {
-					post.getGroups().add(GroupUtils.getPublicGroup());
-				}
+			// set the visibility of the imported resource
+			if (resource.hasAttribute("shared") && "no".equals(resource.getAttribute("shared"))) {
+				post.getGroups().add(GroupUtils.getPrivateGroup());
+			} else {
+				post.getGroups().add(GroupUtils.getPublicGroup());
 			}
 			post.setResource(bookmark);
 			posts.add(post);
@@ -155,7 +154,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	public List<Tag> getRelations() throws IOException {
 		final List<Tag> relations = new LinkedList<Tag>();
 		//open a connection to delicious and retrieve a document
-		Document document = null;
+		final Document document;
 		try {
 			document = getDocument();
 		} catch (IOException e) {
@@ -165,7 +164,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		for(int i = 0; i < bundles.getLength(); i++){
 			final Element resource = (Element)bundles.item(i);
 			try {
-				Tag tag = new Tag(resource.getAttribute("name"));
+				final Tag tag = new Tag(resource.getAttribute("name"));
 				tag.getSubTags().addAll(TagUtils.parse(resource.getAttribute("tags")));
 				relations.add(tag);
 			} catch (Exception e) {
