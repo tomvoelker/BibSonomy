@@ -10,8 +10,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common">
 
-	<jsp:directive.page contentType="text/html; charset=UTF-8"
-		language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.relations" var="relationsPageTitle" />
 
@@ -54,12 +53,8 @@
 					</div>
 				</span>
 				<fmt:message var="editPageTags" key="post.meta.edit.title"/>
-				
 	 			<div class="kiste">		
-					<rc:nextprev listView="${command.concepts}"
-						listViewStartParamName="concepts.start"
-						disableActions="${disableActions}"
-						disableListNavigation="${disableListNavigation}" />
+					<rc:nextprev listView="${command.concepts}"	listViewStartParamName="concepts.start"/>
 					<span class="actions">
           			 	<a href="/edit_tags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
 					</span>
@@ -69,15 +64,11 @@
 				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${false}" requestedUserName="${command.requestedUser}"/>
 			
 				<div class="kiste">		
-					<rc:nextprev listView="${command.concepts}" 
-						listViewStartParamName="concepts.start"
-						disableActions="${disableActions}"
-						disableListNavigation="${disableListNavigation}" />
+					<rc:nextprev listView="${command.concepts}"	listViewStartParamName="concepts.start"/>
 					
 					<span class="actions">
           			 	<a href="/edit_tags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
 					</span>
-					
 					${mtl:ch('nbsp')}
 				</div>
 			</div>

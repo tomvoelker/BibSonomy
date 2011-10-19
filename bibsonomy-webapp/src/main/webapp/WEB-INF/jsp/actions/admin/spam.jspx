@@ -18,10 +18,7 @@
 	<c:set var="settingsCommand" value="${command.settingsCommand}" />
 	<c:set var="statisticsCommand" value="${command.statisticsCommand}" />
 
-	<layout:tabLayout pageTitle="${command.pageTitle}" command="${command}"
-		requPath="${requPath}">
-
-	
+	<layout:tabLayout pageTitle="${command.pageTitle}" command="${command}"	requPath="${requPath}">
 
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css"

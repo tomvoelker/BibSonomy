@@ -36,10 +36,6 @@
 			</form>
     	</jsp:attribute>
     	<!--+
-    	 	| sidebar: disabled
-    	 	-->
-    	<!--<jsp:attribute name="sidebar"></jsp:attribute>-->
-    	<!--+
     	 	| content
     	 	-->
 		<jsp:attribute name="content">
