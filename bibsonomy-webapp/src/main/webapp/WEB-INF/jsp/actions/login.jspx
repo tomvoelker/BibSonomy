@@ -23,9 +23,7 @@
 			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
   			<script type="text/javascript">
 				<![CDATA[
-						$(function() {
-							$('#logins').tabs();
-						});
+						$(function() {$('#logins').tabs();});
 		  		]]>
 		  	</script>	
   		</jsp:attribute>
@@ -67,10 +65,15 @@
  		    
  		     
  		    	<div id="logins">
+ 		    		<!-- tab header -->
           			<ul>
 						<c:forEach var="authMethod" items="${authConfig}">
 			  				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-              				<li><a href="#login_${authMethodName}"><fmt:message key="login.method.${authMethodName}" /></a></li>
+			  				<fmt:message var="tabTitle" key="login.method.${authMethodName}" />
+			  				<!-- we can disable showing certain login methods by storing an empty string for login.method.AUTHMETHODNAME -->
+			  				<c:if test="${not empty tabTitle}">
+              					<li><a href="#login_${authMethodName}"><c:out value="${tabTitle}"/></a></li>
+              				</c:if>
             			</c:forEach>
           			</ul>
           
