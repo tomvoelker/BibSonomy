@@ -12,19 +12,20 @@ public class FriendsResourceViewCommand extends TagResourceViewCommand {
 	private List<User> userFriends;
 	private List<User> friendsOfUser;
 	/** for queries for specific kinds of users (e.g., friends) */
+	// TODO: use UserRelation as type
 	private String userRelation;
 
 	/**
 	 * @param userFriends
 	 */
-	public void setUserFriends(List<User> userFriends) {
+	public void setUserFriends(final List<User> userFriends) {
 		this.userFriends = userFriends;
 	}
 
 	/**
 	 * @param friendsOfUser
 	 */
-	public void setFriendsOfUser(List<User> friendsOfUser) {
+	public void setFriendsOfUser(final List<User> friendsOfUser) {
 		this.friendsOfUser = friendsOfUser;
 		
 	}
@@ -53,7 +54,7 @@ public class FriendsResourceViewCommand extends TagResourceViewCommand {
 	/**
 	 * @param userRelation
 	 */
-	public void setUserRelation(String userRelation) {
+	public void setUserRelation(final String userRelation) {
 		this.userRelation = userRelation;
 	}
 
