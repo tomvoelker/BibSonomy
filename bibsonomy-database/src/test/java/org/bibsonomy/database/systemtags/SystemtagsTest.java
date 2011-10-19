@@ -209,16 +209,17 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		
 		/*
 		 * tests the GetBibtexForHomePage query
+		 * FIXME: the posts on the homepage are fix and can't be chosen
 		 */
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:Book"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(0, posts.size());
-		
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(2, posts.size());
+//		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:Book"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+//		posts = bibTexDb.getPosts(param, this.dbSession);
+//		
+//		assertEquals(0, posts.size());
+//		
+//		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+//		posts = bibTexDb.getPosts(param, this.dbSession);
+//		
+//		assertEquals(2, posts.size());
 	}
 	
 	@Test
