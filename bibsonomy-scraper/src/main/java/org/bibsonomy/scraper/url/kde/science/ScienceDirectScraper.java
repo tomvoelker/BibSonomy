@@ -104,9 +104,10 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 
 					// search link to download page (there is only one download link on page)
 					final Matcher matcherDownload = patternDownload.matcher(pageContent);
-					if(matcherDownload.find())
+					if (matcherDownload.find()) {
 						downloadQuery = matcherDownload.group(1);
-
+					}
+					// TODO: handle download link not found
 					// download page
 				} else if(url.getQuery().contains("_ob=DownloadURL")) 
 					downloadQuery = url.toString();
