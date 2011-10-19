@@ -88,8 +88,8 @@ public class UrlPageController extends SingleResourceListController implements M
 
 			this.setList(command, resourceType, groupingEntity, groupingName, null, requHash, null, null, null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
-
-			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, requHash, null, null, null, entriesPerPage, null);
+			// we always want to have the counts for ALL posts with the given hash (a user has only one post)
+			this.setTotalCount(command, resourceType, GroupingEntity.ALL, groupingName, null, requHash, null, null, null, entriesPerPage, null);
 		}
 		
 		final Post<Bookmark> firstBookmark;
