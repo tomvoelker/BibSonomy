@@ -4,7 +4,7 @@
 \begin{author}<br/>\format[AuthorFirstFirstCommas,Replace(" and , und "),HTMLChars]{\author}.\end{author}
 <br/>
 \begin{url}<a href="\format[Replace(\n,),HTMLChars]{\url}">[doi]</a>&nbsp;\end{url}\begin{pdf}<a
-href="\format[Replace(\n,),HTMLChars]{\pdf}">[PDF]</a>&nbsp;\end{pdf}
+href="\format[Replace(\n,),HTMLChars]{\pdf}">[pdf]</a>&nbsp;\end{pdf}\begin{slides}<a href="\format[Replace(\n,),HTMLChars]{\slides}">[Folien]</a>&nbsp;\end{slides}
 \begin{abstract}<a onclick="toggleAbstract('\username', '\intrahash'); return false;" href="\biburl?format=bibtex">[Kurzfassung]</a>&nbsp;\end{abstract}
 <a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
 <div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
