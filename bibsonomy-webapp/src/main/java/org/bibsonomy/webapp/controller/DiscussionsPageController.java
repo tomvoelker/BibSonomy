@@ -55,11 +55,11 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 //			}
 //		}
 		
+		final FilterEntity filter = present(command.getFilter()) ? command.getFilter() : FilterEntity.POSTS_WITH_DISCUSSIONS; 
 		
 		// retrieve and set the requested resource lists, along with total counts
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			final FilterEntity filter = command.getFilter();
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
 			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, filter, null, entriesPerPage);
