@@ -9,7 +9,6 @@ import org.bibsonomy.model.User;
  * 
  * @author Christian Kramer
  * @version $Id$
- *
  */
 public class FollowersViewCommand extends TagResourceViewCommand {
 	private List<User> followersOfUser;
@@ -20,6 +19,7 @@ public class FollowersViewCommand extends TagResourceViewCommand {
 	/**
 	 * defines the similarity measure by which the related users are computed  
 	 * (default is folkrank)
+	 * TODO: change type to UserRelation
 	 */
 	private String userSimilarity = UserRelation.FOLKRANK.name();	
 	
@@ -36,7 +36,7 @@ public class FollowersViewCommand extends TagResourceViewCommand {
 	 * 
 	 * @param followersOfUser
 	 */
-	public void setFollowersOfUser(List<User> followersOfUser) {
+	public void setFollowersOfUser(final List<User> followersOfUser) {
 		this.followersOfUser = followersOfUser;
 	}
 	
@@ -52,7 +52,7 @@ public class FollowersViewCommand extends TagResourceViewCommand {
 	 * 
 	 * @param userIsFollowing
 	 */
-	public void setUserIsFollowing(List<User> userIsFollowing) {
+	public void setUserIsFollowing(final List<User> userIsFollowing) {
 		this.userIsFollowing = userIsFollowing;
 	}
 
@@ -66,7 +66,7 @@ public class FollowersViewCommand extends TagResourceViewCommand {
 	/**
 	 * @param ranking the ranking to set
 	 */
-	public void setRanking(RankingCommand ranking) {
+	public void setRanking(final RankingCommand ranking) {
 		this.ranking = ranking;
 	}
 
@@ -80,7 +80,7 @@ public class FollowersViewCommand extends TagResourceViewCommand {
 	/**
 	 * @param userSimilarity the userSimilarity to set
 	 */
-	public void setUserSimilarity(String userSimilarity) {
+	public void setUserSimilarity(final String userSimilarity) {
 		this.userSimilarity = userSimilarity;
 	}
 }
