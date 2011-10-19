@@ -9,6 +9,7 @@
     xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -29,16 +30,21 @@
 		<ul id="sidebar">
 		<!-- link to join group -->
 			<c:if test="${command.context.userLoggedIn}">
-				<li style="margin-bottom: 1ex; margin-top: 1ex;">
-					<span class="sidebar_h">
-						<a href="/join_group?group=${fn:escapeXml(command.requestedGroup)}">
-							<fmt:message key="navi.join">
-								<fmt:param>${fn:escapeXml(command.requestedGroup)}</fmt:param>
-							</fmt:message>
-						</a>
-					</span>
+				<li style="padding: 5px;">
+					<fmt:message var="joinGroup" key="navi.join">
+						<fmt:param>${fn:escapeXml(command.requestedGroup)}</fmt:param>
+					</fmt:message>
+					<button:linkButton
+			   			title="${joinGroup}"
+			   			href="/join_group?group=${fn:escapeXml(command.requestedGroup)}"
+			   			image="${resdir}/image/starblue_unselected.png"
+			   		>
+						<jsp:attribute name="text">
+							<fmt:message key="joinGroup"/>
+						</jsp:attribute>
+					</button:linkButton>
 				</li>
-			</c:if>		
+			</c:if>
 					
 			<!-- group members -->
 			<rc:members requPath="${requPath}" users="${command.group.users}"/>
