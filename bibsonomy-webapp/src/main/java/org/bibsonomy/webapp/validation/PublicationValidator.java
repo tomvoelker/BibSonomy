@@ -27,9 +27,8 @@ public class PublicationValidator implements Validator<BibTex> {
 	private static final String PARSE_ERROR_MESSAGE_KEY = "error.parse.bibtex.failed";
 	private static final String DEFAULT_PARSE_ERROR_MESSAGE = "Error parsing your post:\n\n{0}\n\nMessage was: {1}";
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(final Class clazz) {
+	public boolean supports(final Class<?> clazz) {
 		return BibTex.class.isAssignableFrom(clazz);
 	}
 
@@ -54,7 +53,17 @@ public class PublicationValidator implements Validator<BibTex> {
 			//				errors.rejectValue("post.resource.url", "error.field.valid.url");
 			//			}
 
-
+			/*
+			 * if no BibTeX key is available, we generate one
+			 * FIXME: a validator MUST NOT modify objects!
+			 */
+			if (!present(bibtex.getBibtexKey())) {
+				bibtex.setBibtexKey(BibTexUtils.generateBibtexKey(bibtex));
+			}
+			if (!present(bibtex.getBibtexKey()) || containsWhiteSpace(bibtex.getBibtexKey())) {
+				errors.rejectValue("bibtexKey", "error.field.valid.bibtexKey");
+			}
+			
 			/*
 			 * initialize parser
 			 * 
@@ -125,12 +134,7 @@ public class PublicationValidator implements Validator<BibTex> {
 			if (!present(bibtex.getEntrytype()) || containsWhiteSpace(bibtex.getEntrytype())) {
 				errors.rejectValue("entrytype", "error.field.valid.entrytype");
 			}
-			/*
-			 * key
-			 */
-			if (!present(bibtex.getBibtexKey()) || containsWhiteSpace(bibtex.getBibtexKey())) {
-				errors.rejectValue("bibtexKey", "error.field.valid.bibtexKey");
-			}
+
 			/*
 			 * year
 			 */
