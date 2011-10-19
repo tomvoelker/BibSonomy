@@ -370,7 +370,7 @@ public class Group implements Serializable{
 
 	@Override
 	public int hashCode() {
-		if (this.name != null && this.groupId != GroupID.INVALID.getId()) return this.name.toLowerCase().hashCode();
+		if (this.name != null) return this.name.toLowerCase().hashCode();
 		return groupId;
 	}
 }
