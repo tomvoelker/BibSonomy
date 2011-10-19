@@ -8,7 +8,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.webapp.command.UserRelationCommand;
@@ -68,13 +67,6 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 			// log if a user has reached threshold
 			if (command.getTagcloud().getTags().size() >= Parameters.TAG_THRESHOLD) {
 				LOGGER.error("User " + groupingName + " has reached threshold of " + Parameters.TAG_THRESHOLD + " tags on user page");
-			}
-
-			/*
-			 * add user details to command, if loginUser is admin
-			 */
-			if (Role.ADMIN.equals(logic.getAuthenticatedUser().getRole())) {
-				command.setUser(logic.getUserDetails(command.getRequestedUser()));
 			}
 		}
 
