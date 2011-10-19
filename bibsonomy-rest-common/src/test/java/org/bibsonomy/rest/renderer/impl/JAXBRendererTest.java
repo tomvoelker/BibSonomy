@@ -57,8 +57,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -292,11 +292,11 @@ public abstract class JAXBRendererTest {
 		final File tmpFile = File.createTempFile("parseStandardPost", this.getFileExt());
 		marshalToFile(xml, tmpFile);
 		
-		final Post<? extends Resource> standardPost = this.getRenderer().parseStandardPost(new FileReader(tmpFile));
+		final Post<? extends Resource> communityPost = this.getRenderer().parseCommunityPost(new FileReader(tmpFile));
 		
-		assertTrue(standardPost.getResource() instanceof GoldStandardPublication);
+		assertTrue(communityPost.getResource() instanceof GoldStandardPublication);
 		
-		final GoldStandardPublication publication = (GoldStandardPublication) standardPost.getResource();
+		final GoldStandardPublication publication = (GoldStandardPublication) communityPost.getResource();
 		
 		assertEquals(GOLD_STANDARD_PUBLICATION_AUTHOR, publication.getAuthor().get(0).toString());
 		assertEquals(GOLD_STANDARD_PUBLICATION_BIBTEX_KEY, publication.getBibtexKey());

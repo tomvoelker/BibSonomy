@@ -342,7 +342,7 @@ public interface Renderer {
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
 	 */
-	public Post<? extends Resource> parseStandardPost(Reader reader) throws BadRequestOrResponseException;
+	public Post<? extends Resource> parseCommunityPost(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads a List of {@link Group}s from a {@link Reader}.

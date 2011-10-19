@@ -71,8 +71,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -757,7 +757,7 @@ public abstract class JAXBRenderer implements Renderer {
 		if (post != null) {
 			try {
 				return ModelFactory.getInstance().createPost(post);
-			} catch (PersonListParserException ex) {
+			} catch (final PersonListParserException ex) {
 				xmlDoc.setError("Error parsing the person names for entry with BibteyKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}
 		}
@@ -767,14 +767,14 @@ public abstract class JAXBRenderer implements Renderer {
 	}
 
 	@Override
-	public Post<? extends Resource> parseStandardPost(final Reader reader) throws BadRequestOrResponseException {
+	public Post<? extends Resource> parseCommunityPost(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 
 		final PostType post = xmlDoc.getPost();
 		if (post != null) {
 			try {
-				return ModelFactory.getInstance().createStandardPost(post);
-			} catch (PersonListParserException ex) {
+				return ModelFactory.getInstance().createCommunityPost(post);
+			} catch (final PersonListParserException ex) {
 				xmlDoc.setError("Error parsing the person names for entry with BibteyKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}
 		}
@@ -818,7 +818,7 @@ public abstract class JAXBRenderer implements Renderer {
 				try {
 					final Post<? extends Resource> p = ModelFactory.getInstance().createPost(post);
 					posts.add(p);
-				} catch (PersonListParserException ex) {
+				} catch (final PersonListParserException ex) {
 					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibteyKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 				}
 			}

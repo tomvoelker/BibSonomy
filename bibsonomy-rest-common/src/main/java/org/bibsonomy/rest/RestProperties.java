@@ -119,9 +119,9 @@ public class RestProperties {
 	private final Properties properties;
 	private final Context jndiCtx;
 
+	@Deprecated // use string constants instead
 	public static enum Property {
 		CONFIGFILE("RestConfig.cfg"),
-		DEFAULT_API_URL("http://www.bibsonomy.org/api/"),
 		SYSTEM_NAME("BibSonomy"),
 		API_USER_AGENT("BibSonomyWebServiceClient"),
 		BASIC_REALM("BibSonomyWebService"),
@@ -134,7 +134,7 @@ public class RestProperties {
 		URL_POSTS("posts"),
 		URL_ADDED_POSTS("added"),
 		URL_POPULAR_POSTS("popular"),
-		URL_STANDARD_POSTS("standard"),
+		URL_COMMUNITY_POSTS("community"),
 		URL_REFERENCES("references"),
 		URL_DOCUMENTS("documents"),
 		URL_DATE_FORMAT("yyyy-MM-dd'T'HH:mm:ss.SSS"),
@@ -154,13 +154,6 @@ public class RestProperties {
 
 	public String get(final Property prop) {
 		return get(prop, this.properties, this.jndiCtx);
-	}
-	
-	/**
-	 * @return the api url
-	 */
-	public String getDefaultApiUrl() {
-		return this.get(Property.DEFAULT_API_URL);
 	}
 
 	public String getApiUserAgent() {
@@ -208,7 +201,7 @@ public class RestProperties {
 	}
 
 	public String getStandardPostsUrl() {
-		return this.get(Property.URL_STANDARD_POSTS);
+		return this.get(Property.URL_COMMUNITY_POSTS);
 	}
 
 	public String getReferencesUrl() {

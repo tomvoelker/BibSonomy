@@ -227,7 +227,7 @@ public class ModelFactory {
 	 * @return the converted post
 	 * @throws PersonListParserException 
 	 */
-	public Post<Resource> createStandardPost(final PostType xmlPost) throws PersonListParserException {
+	public Post<Resource> createCommunityPost(final PostType xmlPost) throws PersonListParserException {
 		checkStandardPost(xmlPost);
 		
 		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
