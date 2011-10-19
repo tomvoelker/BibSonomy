@@ -17,8 +17,8 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="nav_groups">
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.group"/></a> :: 
-			<a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a> ::
-			<form action="/group/${fn:escapeXml(command.requestedGroup)}" method="get" class="smallform">
+			<a href="/group/${fn:escapeXml(command.group.name)}"><c:out value='${command.group.name}'/></a> ::
+			<form action="/group/${fn:escapeXml(command.group.name)}" method="get" class="smallform">
 			  <input type="text" size="20" name="tag" id="inpf"/>
 			</form>
             <group:name group="${command.group}"/>
@@ -28,22 +28,29 @@
 		
 		<jsp:attribute name="sidebar">
 		<ul id="sidebar">
-		<!-- link to join group -->
+			<!-- link to join group -->
 			<c:if test="${command.context.userLoggedIn}">
-				<li style="padding: 5px;">
-					<fmt:message var="joinGroup" key="navi.join">
-						<fmt:param>${fn:escapeXml(command.requestedGroup)}</fmt:param>
-					</fmt:message>
-					<button:linkButton
-			   			title="${joinGroup}"
-			   			href="/join_group?group=${fn:escapeXml(command.requestedGroup)}"
-			   			image="${resdir}/image/starblue_unselected.png"
-			   		>
-						<jsp:attribute name="text">
-							<fmt:message key="joinGroup"/>
-						</jsp:attribute>
-					</button:linkButton>
-				</li>
+				<c:choose>
+					<c:when test="${mtl:contains(command.context.loginUser.groups, command.group)}">
+						<!-- FIXME: add link to leave group, if user is already member -->
+					</c:when>
+					<c:otherwise>
+						<li style="padding: 5px;">
+							<fmt:message var="joinGroup" key="navi.join">
+								<fmt:param>${fn:escapeXml(command.group.name)}</fmt:param>
+							</fmt:message>
+							<button:linkButton
+					   			title="${joinGroup}"
+					   			href="/join_group?group=${fn:escapeXml(command.group.name)}"
+					   			image="${resdir}/image/starblue_unselected.png"
+					   		>
+								<jsp:attribute name="text">
+									<fmt:message key="joinGroup"/>
+								</jsp:attribute>
+							</button:linkButton>
+						</li>
+					</c:otherwise>
+				</c:choose>
 			</c:if>
 					
 			<!-- group members -->
