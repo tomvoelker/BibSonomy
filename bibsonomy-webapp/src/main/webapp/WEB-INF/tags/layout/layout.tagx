@@ -21,7 +21,8 @@
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
     <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />
-	<jsp:directive.attribute name="sidebar" fragment="true" />
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
@@ -246,8 +247,19 @@
 					<jsp:invoke fragment="content"/>
 				</div>
 				
+				<!-- news bar -->
+				<c:if test="${not empty newsbar}">
+					<div id="newsbarroundcorner">
+						<div class="sidebarBoxOuter" id="newsbox">
+							<div class="sidebarBoxInner" >
+								<jsp:invoke fragment="newsbar"/>
+							</div>
+						</div>
+					</div>
+				</c:if>
+				
 				<!-- sidebar -->
-				<c:if test="${sidebar != null}">
+				<c:if test="${not empty sidebar}">
 					<div id="sidebarroundcorner" >
 						<img id="sidebarGrip" border="0" src="/resources/image/grip.png" alt="a gripper"/>
 						<div class="sidebarBoxOuter" id="sidebox">
@@ -284,10 +296,8 @@
 		              <![CDATA[
 					    $(function() {
 			    			$('textarea').TextAreaResizer();
-						    $("#sidebarroundcorner")
-						    .corner("round bottom 15px")
-							.corner("round tl 15px")
-							.SideBarResizer('#sidebarGrip');
+						    $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px").SideBarResizer('#sidebarGrip')
+						    $("#newsbarroundcorner").corner("round bottom 15px").corner("round tl 15px");
 			    			init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${properties['project.name']}");
 					    });					    
 					  ]]>

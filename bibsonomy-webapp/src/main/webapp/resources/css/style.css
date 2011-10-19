@@ -1137,12 +1137,17 @@ fieldset #tagField,fieldset #suggested,fieldset #copytags {
 	margin-top: 7px;
 }
 
-#sidebarroundcorner {
+#sidebarroundcorner, #newsbarroundcorner {
 	float: right;
 	width: 23%;
 	padding: 3px;
 	position: relative;
+}
+#sidebarroundcorner {
 	background-color: #D8EBAE;
+}
+#newsbarroundcorner {
+	background-color: #fff69b;
 }
 
 #sidebarroundcorner a:hover {
