@@ -405,6 +405,7 @@
 								<value>format</value>
 								<value>sphereName</value>
 								<value>requestedTags</value>
+								<value>callback</value>
 							</list>
 						</property>
 					</bean>
