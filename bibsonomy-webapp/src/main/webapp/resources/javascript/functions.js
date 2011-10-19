@@ -140,7 +140,7 @@ function maximizeById(id) {
 function getFormTextCopy(el) {
 	return $('#'+el.id+pwd_id_postfix).
 	css('color','#aaa').
-	width( $(el).width() ).
+	width( $(el).css('margin-left','8px').width() ).
 	click(function(){hideFormTextCopy({elementCopy:'#'+el.id+pwd_id_postfix, element:el});})[0];
 }
 
