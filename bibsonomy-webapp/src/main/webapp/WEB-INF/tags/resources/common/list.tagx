@@ -10,8 +10,8 @@
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
-	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false" description="Should actions for all posts in the list be shown? Defaults to true if not set."/>
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false" description="Should navigation links (next/pref) be shown? Defaults to true if not set."/>
     <jsp:directive.attribute name="listID"  type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
 
@@ -24,9 +24,16 @@
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>
 
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
+
+	
+	<c:if test="${empty disableListNavigation}">
+		<c:set var="disableListNavigation" value="${false}"/>
+	</c:if>	
+	<c:if test="${empty disableActions}">
+		<c:set var="disableActions" value="${false}"/>
+	</c:if>
 	
 	<c:set var="className" value="bookbox" />
-	
 	<c:if test="${fullscreen}">
 		<c:set var="className" value="full_${className}" />
 	</c:if>
@@ -57,9 +64,13 @@
 		
 		<c:if test="${!empty listView.list}">
 				<!-- show available actions -->
-				<div class="kiste">		
-					<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
-					<rc:actions resourceType="${listView.resourcetype}"/>				
+				<div class="kiste">
+					<c:if test="${not disableListNavigation}">
+						<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>
+					</c:if>
+					<c:if test="${not disableActions}">
+						<rc:actions resourceType="${listView.resourcetype}"/>
+					</c:if>				
 					${mtl:ch('nbsp')}
 				</div>
 	   
@@ -83,8 +94,8 @@
 		</c:if>
 			
 		<div class="kiste">		
-			<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
-			<c:if test="${disableListNavigation == false}">
+			<c:if test="${not disableListNavigation}">
+				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>
 				<rc:itemcount entriesPerPage="${listView.entriesPerPage}" entryType="${listView.resourcetype}" titleKey="${titleKey}"/>
 			</c:if>
 			${mtl:ch('nbsp')}

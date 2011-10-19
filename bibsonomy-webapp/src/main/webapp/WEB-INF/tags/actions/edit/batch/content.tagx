@@ -103,7 +103,7 @@
                <tr>
                  <td style="text-align:center;" colspan="2">
                    <div class="kiste">
-                     <rc:nextprev disableListNavigation="" disableActions="true" listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>   
+                     <rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>   
                      ${mtl:ch('nbsp')}
                    </div>
                  </td>
@@ -220,7 +220,7 @@
                <tr>
                  <td style="text-align:center;" colspan="2">
                    <div class="kiste">
-                     <rc:nextprev disableListNavigation="" disableActions="true" listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>   
+                     <rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>   
                      ${mtl:ch('nbsp')}
                    </div>
                  </td>

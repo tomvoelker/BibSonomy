@@ -26,15 +26,8 @@
 	<c:set var="bookmarkRssFeed"><fmt:message key="feeds.bookmark"/></c:set>
 	<c:set var="publicationRssFeed"><fmt:message key="feeds.publication"/></c:set>
 	<c:set var="burstRssFeed"><fmt:message key="feeds.burst"/></c:set>
-    <c:set var="swrcFeed"><fmt:message key="feeds.swrc"/></c:set>
-	
-	<!--  actions (list navigation, editing entries, ...) are enabled by default -->
-	<c:if test="${empty disableActions}">
-		<c:set var="disableActions" value="${false}"/>
-	</c:if>
-	<c:if test="${empty disableListNavigation}">
-		<c:set var="disableListNavigation" value="${false}"/>
-	</c:if>	
+    <c:set var="swrcFeed"><fmt:message key="feeds.swrc"/></c:set>	
+
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">		
 		<jsp:attribute name="headerExt">
