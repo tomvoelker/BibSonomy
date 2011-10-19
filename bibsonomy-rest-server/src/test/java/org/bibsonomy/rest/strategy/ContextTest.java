@@ -23,9 +23,9 @@ import org.bibsonomy.rest.strategy.groups.UpdateGroupDetailsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetListOfPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
-import org.bibsonomy.rest.strategy.posts.standard.PutStandardPostStrategy;
-import org.bibsonomy.rest.strategy.posts.standard.references.DeleteReferencesStrategy;
-import org.bibsonomy.rest.strategy.posts.standard.references.PostReferencesStrategy;
+import org.bibsonomy.rest.strategy.posts.community.PutCommunityPostStrategy;
+import org.bibsonomy.rest.strategy.posts.community.references.DeleteReferencesStrategy;
+import org.bibsonomy.rest.strategy.posts.community.references.PostReferencesStrategy;
 import org.bibsonomy.rest.strategy.tags.GetListOfTagsStrategy;
 import org.bibsonomy.rest.strategy.tags.GetTagDetailsStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
@@ -222,32 +222,32 @@ public class ContextTest extends AbstractContextTest {
 	}
 	
 	@Test
-	public void testGetStandardPostStrategy() throws Exception {
-		final Context c = new Context(HttpMethod.GET, "/posts/standard/hashhashhash", RenderingFormat.XML, this.urlRenderer, this.is, null, db, new HashMap<Object, Object>(), null);
+	public void testGetCommunityPostStrategy() throws Exception {
+		final Context c = new Context(HttpMethod.GET, "/posts/community/hashhashhash", RenderingFormat.XML, this.urlRenderer, this.is, null, db, new HashMap<Object, Object>(), null);
 		assertTrue("failure initializing GetPostDetailsStrategy for standard post", c.getStrategy() instanceof GetPostDetailsStrategy);
 	}
 	
 	@Test
-	public void testUpdateStandardPostStrategy() throws Exception {
-		final Context c = new Context(HttpMethod.PUT, "/posts/standard/hashhashhash", RenderingFormat.XML, this.urlRenderer, this.is, null, db, new HashMap<Object, Object>(), null);
-		assertTrue("failure initializing PutStandardPostStrategy", c.getStrategy() instanceof PutStandardPostStrategy);
+	public void testUpdateCommunityPostStrategy() throws Exception {
+		final Context c = new Context(HttpMethod.PUT, "/posts/community/hashhashhash", RenderingFormat.XML, this.urlRenderer, this.is, null, db, new HashMap<Object, Object>(), null);
+		assertTrue("failure initializing PutStandardPostStrategy", c.getStrategy() instanceof PutCommunityPostStrategy);
 	}
 	
 	@Test
-	public void testDeleteStandardPostStrategy() throws Exception {
-		final Context c = new Context(HttpMethod.DELETE, "/posts/standard/hashhashhash", RenderingFormat.XML, this.urlRenderer, this.is, null, db, new HashMap<Object, Object>(), null);
+	public void testDeleteCommunityPostStrategy() throws Exception {
+		final Context c = new Context(HttpMethod.DELETE, "/posts/community/hashhashhash", RenderingFormat.XML, this.urlRenderer, this.is, null, db, new HashMap<Object, Object>(), null);
 		assertTrue("failure initializing DeleteStandardPostStrategy", c.getStrategy() instanceof DeletePostStrategy);
 	}
 	
 	@Test
 	public void testAddReferenecesStrategy() throws Exception {
-		final Context c = new Context(HttpMethod.POST, "/posts/standard/hashhashhash/references", RenderingFormat.XML, this.urlRenderer, this.is, null, db, new HashMap<Object, Object>(), null);
+		final Context c = new Context(HttpMethod.POST, "/posts/community/hashhashhash/references", RenderingFormat.XML, this.urlRenderer, this.is, null, db, new HashMap<Object, Object>(), null);
 		assertTrue("failure initializing PostReferencesStrategy", c.getStrategy() instanceof PostReferencesStrategy);
 	}
 	
 	@Test
 	public void testDeleteReferenecesStrategy() throws Exception {
-		final Context c = new Context(HttpMethod.DELETE, "/posts/standard/hashhashhash/references", RenderingFormat.XML, this.urlRenderer, this.is, null, db, new HashMap<Object, Object>(), null);
+		final Context c = new Context(HttpMethod.DELETE, "/posts/community/hashhashhash/references", RenderingFormat.XML, this.urlRenderer, this.is, null, db, new HashMap<Object, Object>(), null);
 		assertTrue("failure initializing DeleteReferenceStrategy", c.getStrategy() instanceof DeleteReferencesStrategy);
 	}
 

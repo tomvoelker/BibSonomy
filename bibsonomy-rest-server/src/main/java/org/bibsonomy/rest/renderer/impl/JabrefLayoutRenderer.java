@@ -45,131 +45,131 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
-	public String parseError(Reader reader) throws BadRequestOrResponseException {
+	public String parseError(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public Group parseGroup(Reader reader) throws BadRequestOrResponseException {
+	public Group parseGroup(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public String parseGroupId(Reader reader) throws BadRequestOrResponseException {
+	public String parseGroupId(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public List<Group> parseGroupList(Reader reader) throws BadRequestOrResponseException {
+	public List<Group> parseGroupList(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public Post<? extends Resource> parsePost(Reader reader) throws BadRequestOrResponseException {
+	public Post<? extends Resource> parsePost(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public List<Post<? extends Resource>> parsePostList(Reader reader) throws BadRequestOrResponseException {
+	public List<Post<? extends Resource>> parsePostList(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public RecommendedTag parseRecommendedTag(Reader reader) throws BadRequestOrResponseException {
+	public RecommendedTag parseRecommendedTag(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public SortedSet<RecommendedTag> parseRecommendedTagList(Reader reader) throws BadRequestOrResponseException {
+	public SortedSet<RecommendedTag> parseRecommendedTagList(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public Set<String> parseReferences(Reader reader) {
+	public Set<String> parseReferences(final Reader reader) {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public String parseResourceHash(Reader reader) throws BadRequestOrResponseException {
+	public String parseResourceHash(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public Post<? extends Resource> parseStandardPost(Reader reader) throws BadRequestOrResponseException {
+	public Post<? extends Resource> parseCommunityPost(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public String parseStat(Reader reader) throws BadRequestOrResponseException {
+	public String parseStat(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public Tag parseTag(Reader reader) throws BadRequestOrResponseException {
+	public Tag parseTag(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public List<Tag> parseTagList(Reader reader) throws BadRequestOrResponseException {
+	public List<Tag> parseTagList(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public User parseUser(Reader reader) throws BadRequestOrResponseException {
+	public User parseUser(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public String parseUserId(Reader reader) throws BadRequestOrResponseException {
+	public String parseUserId(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public List<User> parseUserList(Reader reader) throws BadRequestOrResponseException {
+	public List<User> parseUserList(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public void serializeError(Writer writer, String errorMessage) {
+	public void serializeError(final Writer writer, final String errorMessage) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void serializeFail(Writer writer) {
+	public void serializeFail(final Writer writer) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void serializeGroup(Writer writer, Group group, ViewModel viewModel) {
+	public void serializeGroup(final Writer writer, final Group group, final ViewModel viewModel) {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public void serializeGroupId(Writer writer, String groupId) {
+	public void serializeGroupId(final Writer writer, final String groupId) {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public void serializeGroups(Writer writer, List<Group> groups, ViewModel viewModel) {
+	public void serializeGroups(final Writer writer, final List<Group> groups, final ViewModel viewModel) {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public void serializeOK(Writer writer) {
+	public void serializeOK(final Writer writer) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void serializePost(Writer writer, Post<? extends Resource> post, ViewModel model) {
+	public void serializePost(final Writer writer, final Post<? extends Resource> post, final ViewModel model) {
 		serializePosts(writer, Collections.singletonList(post), model);
 		
 	}
 
 	@Override
-	public void serializePosts(Writer writer, List<? extends Post<? extends Resource>> posts, ViewModel viewModel) throws InternServerException {
+	public void serializePosts(final Writer writer, final List<? extends Post<? extends Resource>> posts, final ViewModel viewModel) throws InternServerException {
 		/*
 		 * FIXME: proper layout selection
 		 */
@@ -177,55 +177,55 @@ public class JabrefLayoutRenderer implements Renderer {
 		try {
 			final JabrefLayout layout = renderer.getLayout("simplehtml", null);
 			writer.append(renderer.renderLayout(layout, posts, embeddedLayout));
-		} catch (LayoutRenderingException ex) {
+		} catch (final LayoutRenderingException ex) {
 			throw new InternServerException(ex);
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new InternServerException(ex);
 		}
 	}
 
 	@Override
-	public void serializeRecommendedTag(Writer writer, RecommendedTag tag) {
+	public void serializeRecommendedTag(final Writer writer, final RecommendedTag tag) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void serializeRecommendedTags(Writer writer, Collection<RecommendedTag> tags) {
+	public void serializeRecommendedTags(final Writer writer, final Collection<RecommendedTag> tags) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void serializeResourceHash(Writer writer, String hash) {
+	public void serializeResourceHash(final Writer writer, final String hash) {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public void serializeTag(Writer writer, Tag tag, ViewModel viewModel) {
+	public void serializeTag(final Writer writer, final Tag tag, final ViewModel viewModel) {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public void serializeTags(Writer writer, List<Tag> tags, ViewModel viewModel) {
+	public void serializeTags(final Writer writer, final List<Tag> tags, final ViewModel viewModel) {
 		throw new UnsupportedOperationException();	
 	}
 
 	@Override
-	public void serializeURI(Writer writer, String uri) {
+	public void serializeURI(final Writer writer, final String uri) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void serializeUser(Writer writer, User user, ViewModel viewModel) {
+	public void serializeUser(final Writer writer, final User user, final ViewModel viewModel) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void serializeUserId(Writer writer, String userId) {
+	public void serializeUserId(final Writer writer, final String userId) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void serializeUsers(Writer writer, List<User> users, ViewModel viewModel) {
+	public void serializeUsers(final Writer writer, final List<User> users, final ViewModel viewModel) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -8,10 +8,10 @@ import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.posts.GetListOfPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
-import org.bibsonomy.rest.strategy.posts.standard.PostStandardPostStrategy;
-import org.bibsonomy.rest.strategy.posts.standard.PutStandardPostStrategy;
-import org.bibsonomy.rest.strategy.posts.standard.references.DeleteReferencesStrategy;
-import org.bibsonomy.rest.strategy.posts.standard.references.PostReferencesStrategy;
+import org.bibsonomy.rest.strategy.posts.community.PostCommunityPostStrategy;
+import org.bibsonomy.rest.strategy.posts.community.PutCommunityPostStrategy;
+import org.bibsonomy.rest.strategy.posts.community.references.DeleteReferencesStrategy;
+import org.bibsonomy.rest.strategy.posts.community.references.PostReferencesStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 
@@ -45,7 +45,7 @@ public class PostsHandler implements ContextHandler {
 				case POST:
 					// /posts/standard
 					if (RestProperties.getInstance().getStandardPostsUrl().equalsIgnoreCase(path)) {
-						return new PostStandardPostStrategy(context, context.getLogic().getAuthenticatedUser().getName());
+						return new PostCommunityPostStrategy(context, context.getLogic().getAuthenticatedUser().getName());
 					}
 					break;
 				default:
@@ -68,7 +68,7 @@ public class PostsHandler implements ContextHandler {
 					case GET:
 						return new GetPostDetailsStrategy(context, "", resourceHash); // gold standards have no owners
 					case PUT:
-						return new PutStandardPostStrategy(context, loggedInUserName, resourceHash);
+						return new PutCommunityPostStrategy(context, loggedInUserName, resourceHash);
 					case DELETE:
 						return new DeletePostStrategy(context, loggedInUserName, resourceHash);
 					default:
