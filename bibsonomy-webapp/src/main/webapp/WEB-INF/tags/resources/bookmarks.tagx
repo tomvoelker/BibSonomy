@@ -8,8 +8,8 @@
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
-	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 
 	<rc:list
@@ -17,8 +17,8 @@
 		loginUserName="${loginUserName}"
 		listViewStartParamName="bookmark.start"
 		otherPostsUrlPrefix="/url/"
-		disableActions="${disableActions}"
 		disableListNavigation="${disableListNavigation}"
+		disableActions="${disableActions}"
 		listID="bookmarkList"
 		listView="${listView}">
     
