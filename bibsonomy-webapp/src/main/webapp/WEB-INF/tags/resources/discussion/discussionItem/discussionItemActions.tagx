@@ -12,7 +12,7 @@
 	<ul class="discussionitemMenu">
 	
 	<!-- reply links  -->
-	<c:if test="${command.context.userLoggedIn and !disableReply}">
+	<c:if test="${command.context.userLoggedIn and not disableReply}">
 		<li>
 			<fmt:message key="post.resource.comment.actions.reply.title" var="title"/>
 			<a href="#reply" class="reply" title="${title}">
