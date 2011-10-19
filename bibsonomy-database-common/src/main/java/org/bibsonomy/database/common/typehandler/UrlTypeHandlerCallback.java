@@ -5,9 +5,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
 /**
@@ -24,7 +21,6 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  * @version $Id$
  */
 public class UrlTypeHandlerCallback extends AbstractTypeHandlerCallback {
-	private static final Log log = LogFactory.getLog(UrlTypeHandlerCallback.class);
 
 	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
@@ -42,7 +38,6 @@ public class UrlTypeHandlerCallback extends AbstractTypeHandlerCallback {
 		try {
 			return new URL(str);
 		} catch (final MalformedURLException ex) {
-			log.warn("'" + str + "' is not a valid URL");
 			return null;
 		}
 	}
