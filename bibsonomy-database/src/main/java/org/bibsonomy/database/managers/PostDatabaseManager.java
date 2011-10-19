@@ -70,7 +70,6 @@ import org.bibsonomy.util.ReflectionUtils;
  *  - get<RESOURCE>ForHomepage
  *  - get<RESOURCE>ByHash
  *  - get<RESOURCE>ByHashCount
- *  - get<RESOURCE>ByHashAndUserCount
  *  - get<RESOURCE>ByHashForUser
  *  - get<RESOURCE>Viewable
  *  - get<RESOURCE>ViewableByTag
@@ -551,23 +550,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setSimHash(simHash);
 
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByHashCount", param, Integer.class, session);
-		return present(result) ? result : 0;
-	}
-
-	/**
-	 * @param requHash 
-	 * @param simHash 
-	 * @param userName
-	 * @param session
-	 * @return number of resources for the given hash and a user
-	 */
-	public int getPostsByHashAndUserCount(final String requHash, final HashID simHash, final String userName, final DBSession session) {
-		final P param = this.getNewParam();
-		param.setUserName(userName);
-		param.setHash(requHash);
-		param.setSimHash(simHash);
-
-		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByHashAndUserCount", param, Integer.class, session);
 		return present(result) ? result : 0;
 	}
 

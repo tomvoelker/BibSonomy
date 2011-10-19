@@ -130,18 +130,6 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * @param resourceType
-	 * @param requHash 
-	 * @param simHash 
-	 * @param userName
-	 * @param session
-	 * @return a statistical number (int)
-	 */
-	public int getNumberOfResourcesForHashAndUser(final Class<? extends Resource> resourceType, final String requHash, final HashID simHash, final String userName, final DBSession session) {
-		return this.getDatabaseManagerForResourceType(resourceType).getPostsByHashAndUserCount(requHash, simHash, userName, session);
-	}
-
-	/**
 	 * Returns the number of resources of the given group
 	 * 
 	 * @param resourceType

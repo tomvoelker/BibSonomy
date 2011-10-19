@@ -7,7 +7,6 @@ import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTa
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTagNamesCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesDuplicateCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForGroupCount;
-import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashAndUserCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserInboxCount;
@@ -34,7 +33,6 @@ public class PostStatisticChain implements FirstChainElement<Statistics, Statist
 	private final GetResourcesDuplicateCount getResourcesDuplicateCount;
 	private final GetResourcesPopularDaysCount getResourcesPopularDays;
 	private final GetResourcesForHashCount getResourcesForHashCount;
-	private final GetResourcesForHashAndUserCount getResourcesForHashAndUserCount;
 	private final GetResourcesForUserInboxCount getResourcesForUserInboxCount;
 	private final DefaultCatchAllCount defaultCatchAllCount;
 	
@@ -51,7 +49,6 @@ public class PostStatisticChain implements FirstChainElement<Statistics, Statist
 		getResourcesDuplicateCount 	= new GetResourcesDuplicateCount();
 		getResourcesPopularDays = new GetResourcesPopularDaysCount();
 		getResourcesForHashCount = new GetResourcesForHashCount();
-		getResourcesForHashAndUserCount = new GetResourcesForHashAndUserCount();
 		getResourcesForUserInboxCount = new GetResourcesForUserInboxCount();
 		defaultCatchAllCount = new DefaultCatchAllCount();
 		
@@ -63,8 +60,7 @@ public class PostStatisticChain implements FirstChainElement<Statistics, Statist
 		getResourcesByTagNamesCount.setNext(getResourcesDuplicateCount);
 		getResourcesDuplicateCount.setNext(getResourcesPopularDays);
 		getResourcesPopularDays.setNext(getResourcesForHashCount);
-		getResourcesForHashCount.setNext(getResourcesForHashAndUserCount);
-		getResourcesForHashAndUserCount.setNext(getResourcesForUserInboxCount);
+		getResourcesForHashCount.setNext(getResourcesForUserInboxCount);
 		getResourcesForUserInboxCount.setNext(defaultCatchAllCount);
 	}
 
