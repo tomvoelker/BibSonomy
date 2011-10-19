@@ -1,9 +1,12 @@
 package de.uni.kassel.kde.qr2pdf.main;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -27,6 +30,8 @@ public class Main {
 	
 	public static void main(String[] args) throws IOException, COSVisitorException, WriterException
 	{
+		Logger.getLogger("org.apache.pdfbox").setLevel(Level.OFF);
+
 		PDDocument doc = null;
 		long loadAndConvertTime = 0;
 		long bestPointTime = 0;
@@ -37,11 +42,11 @@ public class Main {
 		try
 		{			
 			
-			InputStream in = new FileInputStream(new File("/home/philipp/Downloads/strafrecht.pdf"));
+			InputStream in = new BufferedInputStream(new FileInputStream(new File("/home/philipp/Downloads/adobe.pdf")), 1024);
 			
 			loadAndConvertTime = System.currentTimeMillis();
 			
-			doc = PDDocument.load(in);
+			doc = PDDocument.load(in, true);
 			
 			PDPage page = (PDPage)doc.getDocumentCatalog().getAllPages().get( 0 );
 			
