@@ -2,7 +2,6 @@ package org.bibsonomy.database.managers;
 
 import java.util.Collections;
 
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -124,16 +123,6 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	 */
 	@Test
 	public abstract void testGetPostsByHashCount();
-
-	/**
-	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsByHashAndUserCount(java.lang.String, org.bibsonomy.common.enums.HashID, java.lang.String, org.bibsonomy.database.common.DBSession)}.
-	 */
-	@Test
-	@Ignore // TODO: test if statement is unused
-	public void testGetPostsByHashAndUserCount() {
-		// TODO: placeholder to execute the sql statement please add a test to all post resource dm's
-		resourceDB.getPostsByHashAndUserCount("aa", HashID.SIM_HASH1, "bb", this.dbSession);
-	}
 
 	/**
 	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsByHashForUser(java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.common.enums.HashID, org.bibsonomy.database.common.DBSession)}.

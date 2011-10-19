@@ -35,8 +35,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.DBTestUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -315,7 +315,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	public void testGetPostsForHomepage() {
 		printMethod("testGetPostsForHomepage");
 		final List<Post<BibTex>> post = publicationDb.getPostsForHomepage(null, 10, 0, null, this.dbSession);
-		assertEquals(3, post.size());
+		assertEquals(2, post.size());
 	}
 
 	/**
@@ -579,12 +579,12 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		param.setHash("");
 		
 		List<Post<BibTex>> posts = publicationDb.getPosts(param, this.dbSession);
-		assertEquals(3, posts.size());
+		assertEquals(2, posts.size());
 		
 		// setting group id to public shouldn't change anything
 		param.setGroupId(PUBLIC_GROUP_ID);
 		posts = publicationDb.getPosts(param, this.dbSession);
-		assertEquals(3, posts.size());
+		assertEquals(2, posts.size());
 	}
 
 	
