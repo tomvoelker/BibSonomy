@@ -50,7 +50,7 @@
 				
 				<!-- project name -->
 				<span class="systemName">
-					<c:out value="${properties['project.name']}"/>
+					<a href=""><c:out value="${properties['project.name']}"/></a>
 				</span>
 				<div style="clear: left;"><!-- keep me --></div>
 				
@@ -63,11 +63,11 @@
 				
 				<!-- registration -->
 				<div class="systemRegister">	
-					<h2><fmt:message key="navi.login"/></h2>
+					<h2><a href="/login"><fmt:message key="navi.login"/></a></h2>
 					<fmt:message key="system.register"/>
 				</div>
 				
-				<h4 style="clear: left; padding-top: 1em;"><fmt:message key="system.recent"/></h4>
+				<div style="clear: left; padding-top: 1.5em; font-size: 80%; margin-bottom: -2%;"><fmt:message key="system.recent"/></div>
 			</c:if>
 		</jsp:attribute>
 
