@@ -58,8 +58,9 @@
 				</li>
 				
 				<li>
-					<!-- list all spheres -->				
-					<spheres:spheresCloud><!-- keep me! --></spheres:spheresCloud>
+					<!-- list all spheres -->
+					<fmt:message key="spheres.sphere.list.title" var="spheresCloudTitle" />
+					<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
 				</li>
 
 				<!-- tags -->

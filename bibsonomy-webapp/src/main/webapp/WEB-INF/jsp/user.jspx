@@ -10,6 +10,7 @@
     xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -92,6 +93,14 @@
 				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 			</li>
 			
+			<c:if test="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
+				<fmt:message key="spheres.sidebar.title" var="spheresCloudTitle" />
+				<li>
+					<!-- list all spheres -->				
+					<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
+				</li>
+			</c:if>
+				
 			<!-- display similar users -->
 			<li>				
 				<span class="sidebar_h">					 
