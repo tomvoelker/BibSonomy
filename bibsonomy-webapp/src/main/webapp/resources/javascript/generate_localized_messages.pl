@@ -69,8 +69,6 @@ foreach my $file (@templateFiles) {
     while (<TPL>) {
 	# extract all calls to the "getString" method
 	if (/{{getString\s+\"(.+?)\"}}/) {
-
-	    print STDERR ">>> $1\n";
 	    # method arguments
 	    # only string literals supported
 	    $keyPatterns{quotemeta($1)} = 1;
@@ -117,7 +115,7 @@ foreach my $file (@files) {
 	    $line = encode("utf-8", decode("iso-8859-1", $line));
 	}
 	
-	my ($key, $value) = split("=", $line);
+	my ($key, $value) = split("=", $line, 2);
 	# remove leading/trailing whitespace
 	$key = trim($key);
 	$value = trim($value);
