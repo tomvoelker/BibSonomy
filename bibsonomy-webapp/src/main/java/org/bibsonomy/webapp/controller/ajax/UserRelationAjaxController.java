@@ -2,13 +2,15 @@ package org.bibsonomy.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.regex.Pattern;
+
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.ajax.UserRelationAjaxCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -35,10 +37,15 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 
 	private static final String REMOVE_FOLLOWER = "removeFollower";
 
-	private static final Log log = LogFactory.getLog(UserRelationAjaxController.class);
-	
 	private Errors errors;
-
+	
+	private static final int SPHERENAME_MAX_LENGTH = 64;
+	
+	/**
+	 * We allow only a..z A..Z 0..9 - . _ 
+	 */
+	private static final Pattern SPHERENAME_DISALLOWED_CHARACTERS_PATTERN = Pattern.compile("[^a-zA-Z0-9:\\.\\-_]");
+	
 	@Override
 	public UserRelationAjaxCommand instantiateCommand() {
 		return new UserRelationAjaxCommand();
@@ -46,19 +53,16 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 
 	@Override
 	public View workOn(UserRelationAjaxCommand command) {
-		log.debug(this.getClass().getSimpleName());
+		final RequestWrapperContext context = command.getContext();
 		
-		if (!command.getContext().getUserLoggedIn()){
-			log.debug("someone tried to access this ajax controller manually and isn't logged in");
-			return new ExtendedRedirectView("/");
+		if (!context.isUserLoggedIn()) {
+			throw new AccessDeniedException();
 		}
-		
-		log.debug("AJAX controller; userName: " + command.getRequestedUserName() + ", action: " + command.getAction() + ", ckey: " + command.getContext().getCkey() + ", forward: " + command.getForward());
-		
+
 		// check if ckey is valid
 		if (!command.getContext().isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
-			return Views.ERROR;
+			returnErrorView();
 		}
 		
 		//
@@ -78,17 +82,18 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 			this.removeRelation(command);
 		}
 		
+		// return error messages in case of errors
+		if (errors.hasErrors()) {
+			returnErrorView();
+		}
+		
 		// forward to a certain page, if requested 
 		if (present(command.getForward())) {
-			// TODO: remove?!?
-//			if (EnumUtils.searchEnumByName(Views.values(), command.getForward()) == null) {
-//				errors.reject("error.invalid_forward_page");
-//				return Views.ERROR;
-//			}
 			return new ExtendedRedirectView("/" + command.getForward());
 		}
 		
-		return Views.AJAX_TEXT;
+		// all done
+		return Views.AJAX_JSON;
 	}
 	
 
@@ -119,12 +124,22 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	 */
 	private void addRelation(UserRelationAjaxCommand command) {
 		if (!present(command.getRelationTags()) || command.getRelationTags().size()>1) {
-			throw new IllegalArgumentException("Invalid number of relation names given ("+command.getRelationTags().size()+")");
+			errors.reject("error.field.valid.sphere.name");
+			return;
 		}
+		
 		User user = new User(command.getRequestedUserName());
 		String requestedRelation = command.getRelationTags().get(0);
 		
-		logic.createUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, requestedRelation);
+		// TODO: create a validator for sphere name validation
+		if ( !present(requestedRelation) ||
+				requestedRelation.length() > SPHERENAME_MAX_LENGTH ||
+				SPHERENAME_DISALLOWED_CHARACTERS_PATTERN.matcher(requestedRelation).find())
+		{
+			errors.rejectValue("relationTags","error.field.valid.sphere.name");
+		} else {
+			logic.createUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, requestedRelation);
+		}
 	}
 	
 	/**
