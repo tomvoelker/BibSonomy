@@ -23,6 +23,8 @@
 
 package org.bibsonomy.importer.bookmark.file;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -194,26 +196,25 @@ public class FirefoxImporter implements FileBookmarkImporter, RelationImporter {
 				// need to check if the <a>-Tag has a name (ChildNodes) i.e. <a
 				// href="http://www.foo.bar"></a> causes a failure
 				if (currentNode.getFirstChild().hasChildNodes() == true) {
-					Post<Bookmark> bookmarkPost = new Post<Bookmark>();
-					bookmarkPost.setResource(new Bookmark());
-					bookmarkPost.getResource().setTitle(currentNode.getFirstChild().getFirstChild().getNodeValue());
-					bookmarkPost.getResource().setUrl(currentNode.getFirstChild().getAttributes().getNamedItem("href").getNodeValue());
+					final Post<Bookmark> post = new Post<Bookmark>();
+					post.setResource(new Bookmark());
+					post.getResource().setTitle(currentNode.getFirstChild().getFirstChild().getNodeValue());
+					post.getResource().setUrl(currentNode.getFirstChild().getAttributes().getNamedItem("href").getNodeValue());
 					// add tags/relations to bookmark
 					if (upperTags != null) {
 						// only 1 tag found -> add a tag
 						if (upperTags.size() == 1) {
 
 							// bookmark.setTags(upperTags.elementAt(0));
-							bookmarkPost.addTag(upperTags.elementAt(0));
+							post.addTag(upperTags.elementAt(0));
 						} else {
 							// more tags found -> add relations
 							for (int tagCount = 0; tagCount < upperTags.size() - 1; tagCount++) {
 								String upper = upperTags.elementAt(tagCount);
 								String lower = upperTags.elementAt(tagCount + 1);
 								// bookmark.addTagRelation(lower, upper);
-								bookmarkPost.addTag(upper);
-								bookmarkPost.addTag(lower);
-
+								post.addTag(upper);
+								post.addTag(lower);
 							}
 						}
 					} else {
@@ -231,24 +232,29 @@ public class FirefoxImporter implements FileBookmarkImporter, RelationImporter {
 							 */
 							final StringTokenizer token = new StringTokenizer(tagNode.getNodeValue(), ",");
 							while (token.hasMoreTokens()) {
-								bookmarkPost.addTag(token.nextToken());
+								post.addTag(token.nextToken());
 							}
 						} else {
 							// really no tags found -> set imported tag
-							bookmarkPost.setTags(Collections.singleton(TagUtils.getEmptyTag()));
+							post.setTags(Collections.singleton(TagUtils.getEmptyTag()));
 						}
 					}
-					bookmarkPost.setDate(today);
-					bookmarkPost.setUser(user);
-					bookmarkPost.addGroup(groupName);
+					post.setDate(today);
+					post.setUser(user);
+					post.addGroup(groupName);
+					
+					// no tags available? -> add one tag to the resource and mark it as "imported"
+					if (!present(post.getTags())) {
+						post.setTags(Collections.singleton(TagUtils.getEmptyTag()));
+					}
 
 					// descriptions are saved in a sibling of of a node
 					// containing a link
 					if (currentNode.getNextSibling() != null && "dd".equals(currentNode.getNextSibling().getNodeName())) {
 						// bookmark.setExtended(currentNode.getNextSibling().getFirstChild().getNodeValue());
-						bookmarkPost.setDescription(currentNode.getNextSibling().getFirstChild().getNodeValue());
+						post.setDescription(currentNode.getNextSibling().getFirstChild().getNodeValue());
 					}
-					posts.add(bookmarkPost);
+					posts.add(post);
 				}
 			}
 		}
