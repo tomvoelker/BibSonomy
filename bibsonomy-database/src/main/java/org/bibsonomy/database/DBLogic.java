@@ -1787,25 +1787,23 @@ private <T extends Resource> String createPost(final Post<T> post, final DBSessi
 
 	try {
 	    if (this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)) {
-		loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
+	    	loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 	    }
 
 	    final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 
 	    if (resourceType == GoldStandardPublication.class || resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class ) {
-		param.setContentTypeByClass(resourceType);
-		return this.statisticsDBManager.getPostStatistics(param, session);
+	    	param.setContentTypeByClass(resourceType);
+	    	return this.statisticsDBManager.getPostStatistics(param, session);
 	    }
 
 	    throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 	} catch (final QueryTimeoutException ex) {
-//	    // if a query times out, we return 0 (cause we also retun empty list when a query timeout exception is thrown)
-//	    return 0;
-	    // TODO: check if this is ok 
-	    return null;
+	    // if a query times out, we return 0 (cause we also return empty list when a query timeout exception is thrown)
+	    	return new Statistics(0);
 	    } finally {
-	    session.close();
-	}
+	    	session.close();
+	    }
     }
 
     /*
