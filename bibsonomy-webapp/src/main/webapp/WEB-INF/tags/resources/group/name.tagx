@@ -7,18 +7,16 @@
 	
 	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true" />
     <jsp:directive.attribute name="prefix" type="java.lang.String" required="false" />
-
-      <!-- show real name of group + homepage (if exists) -->
-      <c:if test="${not empty group.realname}">
-        <c:choose>
-          <c:when test="${not empty group.homepage}">
-             (<a href="${fn:escapeXml(group.homepage)}"><c:out value="${group.realname}"/></a>)
+    
+	<!-- show real name of group + homepage (if exists) -->
+	<c:if test="${not empty group.realname}">
+		<c:choose>
+			<c:when test="${not empty group.homepage}">
+             (<a href="${fn:escapeXml(group.homepage)}"><c:out value="${group.realname}" /></a>)
           </c:when>
-          <c:otherwise>
-             (<c:out value="${group.realname}"/>)          
+			<c:otherwise>
+             (<c:out value="${group.realname}" />)          
           </c:otherwise>
-        </c:choose>
-     </c:if>
-      
-	
+		</c:choose>
+	</c:if>
 </jsp:root>
