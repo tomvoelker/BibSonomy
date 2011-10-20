@@ -356,6 +356,35 @@ div.bibentry {
 	float: left;
 	width: 700px;
 }
+.systemName {
+	font-size: 70px; 
+	font-weight: bold; 
+	color: #069; 
+	float: left; 
+	margin-top: 50px;
+}
+.systemAbout, .systemRegister {
+	font-size: 90%; 
+	width: 48%; 
+	float: left; 
+	padding: 0;
+}
+.systemAbout {
+	margin-right: 1%; 
+	text-align: right; 
+}
+.systemAbout a {
+	font-weight: bold;
+}
+.systemRegister {
+	margin-left: 1%; 
+	font-weight: bold;
+}
+.systemRegister h2 {
+	font-weight: bold; 
+	font-size: 20px;
+}
+
 
 #itembox {
 	margin: 5px 10px 5px 10px;
