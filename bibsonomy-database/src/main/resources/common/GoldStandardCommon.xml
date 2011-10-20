@@ -8,7 +8,7 @@
 	
 	<resultMap id="goldStandardBookmark" class="goldStandardBookmark" extends="Common.resource">
 		<!-- to get a gold standard -->
-		<result property="url"      column="url"  javaType="string" />
+		<result property="url"      	column="url"  		javaType="string" />     
 	</resultMap> 
 	
 	<resultMap id="posts" class="post" groupBy="contentId">
@@ -60,11 +60,11 @@
     </sql>
 		
 	<sql id="allGoldStandardBookmarkColumns">
-		title, url, description, date, user_name, simhash1, content_type
+		title, url, description, date, user_name, simhash1, simhash2, content_type
 	</sql>
 		
 	<sql id="allGoldStandardBookmarkValues">
-		#resource.title#, #resource.url#, #description#, #date#, #userName#, #resource.intraHash#, #contentType#
+		#resource.title#, #resource.url#, #description#, #date#, #userName#, #resource.intraHash#, #resource.intraHash#, #contentType#
 	</sql>
 	
 	<sql id="allGoldStandardPublicationAttributes">
