@@ -5,9 +5,11 @@ import java.util.Arrays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.HomepageCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -19,6 +21,8 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class HomepageController extends SingleResourceListController implements MinimalisticController<HomepageCommand> {
+	private static final int POSTS_PER_RESOURCETYPE = 5;
+
 	private static final Log log = LogFactory.getLog(HomepageController.class);
 
 	/*
@@ -35,11 +39,24 @@ public class HomepageController extends SingleResourceListController implements 
 		// handle the case when only tags are requested
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
 		
+
+		
+		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			// disable manual setting of start value for homepage
-			command.getListCommand(resourceType).setStart(0);
-			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, null, 20);
+			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+			listCommand.setStart(0);
+			/*
+			 * admins see as many posts as they like 
+			 */
+			final int entriesPerPage;
+			if (command.getContext().isUserLoggedIn() && Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
+				entriesPerPage = listCommand.getEntriesPerPage(); 
+			} else {
+				entriesPerPage = POSTS_PER_RESOURCETYPE;
+			}			
+			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, null, entriesPerPage);
 			postProcessAndSortList(command, resourceType);
 		}
 												
