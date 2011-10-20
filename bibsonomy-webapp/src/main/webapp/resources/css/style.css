@@ -996,7 +996,7 @@ li.faq dd {
 
 #main_header {
 	background-color: #069;
-	height: 70px;
+	min-height: 70px;
 }
 
 #headerlogo {
@@ -1005,6 +1005,7 @@ li.faq dd {
 
 #heading,#heading a {
 	color: #fff;
+	max-width: 85%;
 }
 
 #mainHeaderRightBox {
