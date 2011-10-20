@@ -13,7 +13,7 @@
 	<!--  counter for the ranking position of similar users -->
 	<c:set var="userRank" value="${0}"/>
 
-	<ul class="taglist">
+	<ul class="tagcloud">
 		<c:forEach var="user" items="${cmd.relatedUsers}">
 		
 			<!-- increment ranking counter -->
