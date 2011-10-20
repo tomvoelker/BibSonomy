@@ -145,7 +145,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			}
 			
 			// no tags available? -> add one tag to the resource and mark it as "imported"
-			if (post.getTags().isEmpty()) {
+			if (!present(post.getTags())) {
 				post.setTags(Collections.singleton(TagUtils.getEmptyTag()));
 			}
 			
