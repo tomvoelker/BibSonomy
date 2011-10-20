@@ -292,6 +292,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedUser</value>
+								<value>filter</value>
 							</list>
 						</property>
 					</bean>
