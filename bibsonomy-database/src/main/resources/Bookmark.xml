@@ -99,38 +99,9 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
-
-
-    <!--+
-    	|
-    	| Queries for the homepage. We have three of them, two are actually in use:
-    	| * getBookmarkForHomepage - default; posts from users that are surely classified as non-spammers
-    	| * getBookmarkForHomepageCleanTags - old default, unused; non-spam posts that have none of the blacklisted tags 
-    	| * getBoommarkForHomepageUnfiltered - non-spam posts
-    	| 
-    	+-->
-	<select id="getBookmarkForHomepage" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>,
-		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
-		  FROM (
-		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash, b.change_date
-	      	  FROM bookmark b
-	      	  	JOIN user u USING (user_name)
-	      	  WHERE b.group = #groupId#
-	      	  	AND u.to_classify = FALSE
-	      	  	AND u.spammer = FALSE
-  		      ORDER BY date DESC
-		      LIMIT #limit# OFFSET #offset#) as b
-		    LEFT JOIN tas AS t USING (content_id)
-		    JOIN urls u USING (book_url_hash)
-		    <include refid="reviewRatingsJoinBookmark" />
-		  ORDER BY b.date DESC, b.content_id DESC
-	</select>
-    	
-    <!-- 
-    	This query has to respect spammer tags, i.e. it does not show posts, which contain
+    <!-- This query has to respect spammer tags, i.e. it does not show posts, which contain
          a tag from the spammer_tags table	 -->
-	<select id="getBookmarkForHomepageCleanTags" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+	<select id="getBookmarkForHomepage" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>,
 		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.change_date, b.book_url_hash
@@ -157,7 +128,7 @@
 		SELECT <include refid="bookmarkAttributes"/>,
 		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		  FROM (
-		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash, b.change_date
+		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash, t.change_date
 	      	  FROM bookmark b
 	      	  WHERE b.group = #groupId#
   		      ORDER BY date DESC
@@ -268,6 +239,11 @@
 	<!-- since for bookmarks intrahash = interhash, we ignore the param #simHash# -->
 	<select id="getBookmarkByHashCount" resultClass="int" parameterClass="bookmarkParam">
 		SELECT book_url_ctr FROM urls WHERE book_url_hash = #hash#
+	</select>
+
+	<select id="getBookmarkByHashAndUserCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT u.book_url_ctr FROM urls u LEFT JOIN bookmark b ON (b.book_url_hash = u.book_url_hash)
+		WHERE b.book_url_hash = #hash# AND b.user_name = #userName#
 	</select>
 
 	<select id="getBookmarkByHashForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
@@ -465,7 +441,7 @@
 				FROM discussion d <include refid="spammerClassifiedJoin"/>
   				WHERE
   				  <include refid="discussionVisible"/>
-  				  AND content_type = 1
+  				  AND content_type = 1 AND (type=0 OR type=1)
     			  AND `group` >=0
   				  <include refid="spammerClassified"/>
    				GROUP BY interHash
@@ -480,7 +456,7 @@
 		SELECT COUNT(DISTINCT interHash) 
 		FROM discussion d <include refid="spammerClassifiedJoin"/>
   		WHERE <include refid="discussionVisible"/>
-   		  AND content_type = 1
+   		  AND content_type = 1 AND (type=0 OR type=1)
   		  AND `group` >=0
   		  <include refid="spammerClassified"/>
 	</select>
