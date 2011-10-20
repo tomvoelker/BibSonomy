@@ -73,12 +73,14 @@
 			<c:if test="${not command.context.userLoggedIn or command.context.loginUser.name ne command.requestedUser}">
 			<li>				
 				<span class="sidebar_h"><fmt:message key="post.resource.discussion.headline"/></span>
-				<div class="discussionSidebarContent">
-					<fmt:message key="discussion.byUser.help" var="title"><fmt:param value="${fn:escapeXml(command.requestedUser)}"/></fmt:message>
-					<a href="/discussed/user/${fn:escapeXml(command.requestedUser)}" title="${title}">
-						<fmt:message key="discussion.byUser"><fmt:param value="${fn:escapeXml(command.requestedUser)}"/></fmt:message>
-					</a>
-				</div>
+				<ul class="discussionSidebarContent">
+					<li>
+						<fmt:message key="discussion.byUser.help" var="title"><fmt:param value="${fn:escapeXml(command.requestedUser)}"/></fmt:message>
+						<a href="/discussed/user/${fn:escapeXml(command.requestedUser)}" title="${title}">
+							<fmt:message key="discussion.byUser"><fmt:param value="${fn:escapeXml(command.requestedUser)}"/></fmt:message>
+						</a>
+					</li>
+				</ul>
 			</li>
 			</c:if>
 
