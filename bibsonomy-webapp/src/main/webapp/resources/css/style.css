@@ -357,11 +357,12 @@ div.bibentry {
 	width: 700px;
 }
 .systemName {
+	font-family: Verdana, Arial, sans-serif;
 	font-size: 70px; 
 	font-weight: bold; 
 	color: #069; 
 	float: left; 
-	margin-top: 50px;
+	margin-top: 40px;
 }
 .systemAbout, .systemRegister {
 	font-size: 90%; 
