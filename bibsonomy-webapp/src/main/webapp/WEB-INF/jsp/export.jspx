@@ -16,13 +16,9 @@
     <layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" requPath="${requPath}">
       	
     <jsp:attribute name="heading">
-      <a rel="path_menu" href="#"><img alt=""
-				src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message
-				key="navi.export" /></a>
-			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out
-				value='${command.requestedUser}' /></a> ::
-			<form action="/user/${fn:escapeXml(command.requestedUser)}"
-				method="get" class="smallform">
+      <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message				key="navi.export" /></a>
+			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}' /></a> ::
+			<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
 				<input type="text" size="20" name="tag" id="inpf" />
 			</form>		
     </jsp:attribute>
@@ -46,7 +42,7 @@
 
         <div>
           <fmt:message key="export.format"/>:${mtl:ch('nbsp')}
-          <select id="selectlink" onchange="self.location=this.value" size="1">
+            <select id="selectlink" onchange="self.location=this.value" size="1">
             <option value=""><fmt:message key="form.input.select"/></option>
 		    <option value="${fn:escapeXml(bibtex)}">BibTeX</option>
 			<option value="${fn:escapeXml(publ)}">HTML</option>
