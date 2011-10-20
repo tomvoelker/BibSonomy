@@ -701,7 +701,8 @@
 				SELECT interHash, MAX(date) AS date
 				FROM discussion d <include refid="spammerClassifiedJoin"/>
  				WHERE <include refid="discussionVisible"/>
-  				  AND content_type = 2 AND (type=0 OR type=1)
+  				  AND content_type = 2 
+  				  AND (type=0 OR type=1)
   				  AND `group` >=0
   				  <include refid="spammerClassified"/>
   				GROUP BY interHash
@@ -717,7 +718,8 @@
 		SELECT COUNT(DISTINCT interHash)
 		FROM discussion d <include refid="spammerClassifiedJoin"/>
   		WHERE <include refid="discussionVisible"/>
-		  AND content_type = 2 AND (type=0 OR type=1)
+		  AND content_type = 2 
+		  AND (type=0 OR type=1)
 		  AND `group` >= 0
   		  <include refid="spammerClassified"/>	  
   	</select>
