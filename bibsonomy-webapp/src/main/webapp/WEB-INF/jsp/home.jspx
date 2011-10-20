@@ -38,6 +38,8 @@
 
 		<!-- show info text if user not logged in -->
 		<jsp:attribute name="contentHeading">
+			<!-- needed for layout reasons -->
+			&amp;nbsp;
 			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
 
 				<!-- FIXME: add theme! -->
@@ -65,12 +67,8 @@
 					<fmt:message key="system.register"/>
 				</div>
 				
-				<div style="clear: left;"><!-- keep me --></div>
-
-				<h4><fmt:message key="system.recent"/></h4>
+				<h4 style="clear: left; padding-top: 1em;"><fmt:message key="system.recent"/></h4>
 			</c:if>
-			<!-- needed for layout reasons -->
-			&amp;nbsp;
 		</jsp:attribute>
 
 		<jsp:attribute name="newsbar">
