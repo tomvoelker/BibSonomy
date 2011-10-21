@@ -282,7 +282,7 @@ a img {
 }
 
 .bmicon a {
-        background-image: url("http://bibsonomy.org/resources/image/starblue_unselected.png");
+        background-image: url("http://www.bibsonomy.org/resources/image/starblue_unselected.png");
     	background-repeat: no-repeat;
     	float: right;
     	height: 16px;
@@ -291,7 +291,7 @@ a img {
     	width: 16px;
 }
 .bmicon a:hover {
-        background-image: url("http://bibsonomy.org/resources/image/starblue_hover.png");
+        background-image: url("http://www.bibsonomy.org/resources/image/starblue_hover.png");
 }
 
 #bookmark, #bibtex {
