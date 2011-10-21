@@ -1,32 +1,14 @@
-.bmicon_unselected a {
-	background-image: url(/resources/image/starblue_unselected.png);
+.bmicon_unselected a, .bmicon_unselected a:hover, .bmicon_selected a {
+	background: url(/resources/image/starblue.png) no-repeat top left;
 	margin: 0px;
 	padding: 0px;
-	background-repeat: no-repeat;
-	float: right;
 	width: 16px;
 	height: 16px;
-}
-
-.bmicon_unselected a:hover {
-	background-image: url(/resources/image/starblue_hover.png);
-	margin: 0px;
-	padding: 0px;
-	background-repeat: no-repeat;
 	float: right;
-	width: 16px;
-	height: 16px;
 }
-
-.bmicon_selected a {
-	background-image: url(/resources/image/starblue_selected.png);
-	margin: 0px;
-	padding: 0px;
-	background-repeat: no-repeat;
-	float: right;
-	width: 16px;
-	height: 16px;
-}
+.bmicon_unselected a {background-position: 0 -34px;}
+.bmicon_unselected a:hover {background-position: 0 0;}
+.bmicon_selected a {background-position: 0 -17px;}
 
 #topNavBar {
 	width: 95%;
