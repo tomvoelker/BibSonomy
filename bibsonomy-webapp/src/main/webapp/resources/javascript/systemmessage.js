@@ -1,6 +1,8 @@
-var message = "On Wednesday, January 19th, we will release a new version of BibSonomy. You will have to re-login. <a href='http://bibsonomy.blogspot.com/2010/12/what-happened-with-next-release.html'>read more</a>."; 
-var cookieName = "bibSystemMessage";
-var cookieDays = 3; // cookie expires in
+var message = "NEW: Discussion and Ratings! See our <a href='<a href='<a href='http://blog.bibsonomy.org/2011/07/feature-of-week-revies-and-discussion.html'>blog</a>, click on the discussion button or on the 5-Stars icon below each post.<br /> In September we will change the format of author names. <a href='http://blog.bibsonomy.org/2011/07/structure-of-authoreditor-names-in.html'>read more</a>.";
+//var cookieName = "bibSystemMessageAuthorNames";
+var cookieName = "bibSystemMessageDiscussion";
+
+var cookieDays = 100;
 var width = 400; // px
 
 $(window).load(function() {
