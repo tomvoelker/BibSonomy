@@ -24,7 +24,7 @@
 		<jsp:attribute name="content">
 			<c:if test="${not empty command.authorList}">
 				<fmt:message var="posts" key="posts"/>
-				<div style="text-align:justify;" class="tags_first" itemscope="itemscop" itemtype="http://schema.org/ItemList">
+				<div style="text-align:justify;" class="tags_first" itemscope="itemscope" itemtype="http://schema.org/ItemList">
 				<c:forEach var="author" items="${command.authorList}">
 						<span itemprop="itemListElement" itemscope="itemscope" itemtype="http://schema.org/Person">
 							<a	class="${mtl:getTagSize(author.ctr, command.maxCount)}" 
