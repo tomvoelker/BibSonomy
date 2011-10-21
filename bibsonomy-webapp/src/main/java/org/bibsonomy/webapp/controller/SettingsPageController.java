@@ -121,7 +121,12 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 
 		command.setWikiText(wiki.getWikiText());
-		// retrieve friend list of the user
+		/*
+		 *  retrieve friend list of the user
+		 *  FIXME: why is the complete user retrieved, not only his friends?
+		 *  FIXME: and what are the following two statements doing? 
+		 *  Don't they retrieve the friends?!  
+		 */
 		command.setUser(logic.getUserDetails(command.getUser().getName()));
 
 		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF, null));
