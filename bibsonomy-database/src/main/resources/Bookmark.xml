@@ -482,7 +482,7 @@
 		FROM discussion d <include refid="spammerClassifiedJoin"/>
   		WHERE <include refid="discussionVisible"/>
    		  AND content_type = 1
-   		  AND (type=0 OR type=1)
+   		  AND (type=1 OR type=2)
   		  AND `group` >=0
   		  <include refid="spammerClassified"/>
 	</select>
