@@ -78,7 +78,7 @@
 				 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
 				 	+-->
 				<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
-				<script type="text/javascript" src="${resdir}/javascript/systemmessage.js"><!-- keep me --></script>
+<!--				<script type="text/javascript" src="${resdir}/javascript/systemmessage.js"> keep me </script>-->
 				<!-- include tooltip JavaScript only for users that have tooltips enabled -->
 				<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
 					<script type="text/javascript" src="${resdir}/javascript/tooltip.js"><!-- keep me --></script>
