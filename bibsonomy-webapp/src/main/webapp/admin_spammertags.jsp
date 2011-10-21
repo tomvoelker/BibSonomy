@@ -133,8 +133,8 @@
 		<td><c:out value="${rows.anz_tags}"/></td>		
 		<td>
 			<c:set var="encodedTagName" value="${mtl:encodeURI(rows.tag_name)}" />
-			<a href="javascript:removeSpammertag('${encodedTagName}','spammertags','st<c:out value='${status.count}'/>')" title="remove from list"><img src="/resources/image/minus.png"/></a>
-			<a onclick="javascript:ajax_showTooltip('admin_tag_suggest.jsp?type=3&tag=${encodedTagName}',this);return false;" style="cursor:pointer" title="show related tags"><img src="/resources/image/rel.png"/></a>
+			<a href="javascript:removeSpammertag('${encodedTagName}','spammertags','st<c:out value='${status.count}'/>')" title="remove from list">[-]</a>
+			<a onclick="javascript:ajax_showTooltip('admin_tag_suggest.jsp?type=3&tag=${encodedTagName}',this);return false;" style="cursor:pointer" title="show related tags">-&gt;</a>
 		</td>
 	</tr>
 	</c:forEach>
@@ -180,8 +180,8 @@
 		<td><c:out value="${rows.tag_anzahl}"/></td>
 		<td>
 			<c:set var="encodedTagName" value="${mtl:encodeURI(rows.tag_name)}" />
-			<a href="javascript:addSpammertag('${encodedTagName}','busytaglist','bt<c:out value='${status.count}'/>')" title="mark as spammertag"><img src="/resources/image/plus.png"/></a>
-			<a href="javascript:cleanTag('${encodedTagName}','busytaglist','bt<c:out value='${status.count}'/>')" title="remove tag from suggestion list"><img src="/resources/image/minus.png"/></a>
+			<a href="javascript:addSpammertag('${encodedTagName}','busytaglist','bt<c:out value='${status.count}'/>')" title="mark as spammertag">[+]</a>
+			<a href="javascript:cleanTag('${encodedTagName}','busytaglist','bt<c:out value='${status.count}'/>')" title="remove tag from suggestion list">[-]</a>
 		</td>
 	</tr>
 	</c:forEach>	
@@ -227,10 +227,10 @@
 			<td>
 				<c:set var="encodedUserName" value="${mtl:encodeURI(rows.user)}" />
 				<a href="javascript:addSpammer('${encodedUserName}','spammerlist','sl<c:out value="${status.count}"/>')" title="flag this user as spammer">
-    	 			<img src="/resources/image/plus.png"/>
+    	 			[+]
     	 		</a>    	 		
     	 		<a href="javascript:removeUser('${encodedUserName}','spammerlist','sl<c:out value="${status.count}"/>')" title="remove user from suggestion list">
-    	 			<img src="/resources/image/minus.png"/>
+    	 			[-]
     			</a> 				
 			</td>
 		</tr>
@@ -290,12 +290,12 @@
 		var linkTD = document.createElement("TD");
 		var remLink = document.createElement("A");
 		remLink.href = "javascript:removeSpammertag('" + name + "','spammertags','" + name + "')";
-		remLink.innerHTML = "<img src='/resources/image/minus.png'/>";
+		remLink.innerHTML = "[-]";
 		
 		var relLink = document.createElement("A");
 		relLink.onclick = function() {ajax_showTooltip('admin_tag_suggest.jsp?type=3&tag=' + name ,this); return false;}		
 		relLink.style.cursor = "pointer";
-		relLink.innerHTML = "<img src='/resources/image/rel.png'/>";
+		relLink.innerHTML = "-&gt;";
 		
 		/* append new node */
 		nameTD.appendChild(linkName);
