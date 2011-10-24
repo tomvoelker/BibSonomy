@@ -15,16 +15,20 @@
 	> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.sphere" var="pageTitle">
+		<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
+	</fmt:message>
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
+	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
 		</jsp:attribute>
 	
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.friend"/></a> :: 
-			<a href="/taggedfriend/${fn:escapeXml(command.sphereName)}"><c:out value='${command.sphereName}'/></a> ::
-			<form action="/taggedfriend/${fn:escapeXml(command.sphereName)}" method="get" class="smallform">
+			<a href="/sphere/${fn:escapeXml(command.sphereName)}"><c:out value='${command.sphereName}'/></a> ::
+			<form action="/sphere/${fn:escapeXml(command.sphereName)}" method="get" class="smallform">
 			  <input type="text" size="20" id="inpf" name="tag" value="${fn:escapeXml(command.requestedTags)}"/>
 			</form>
 		</jsp:attribute>				
@@ -43,11 +47,11 @@
     				| display buddies
     				+-->
 				<li>
-	    			<span class="sidebar_h">
+	    			<div class="sidebar_h">
 	    				<fmt:message key="spheres.sphere.members">
 							<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
 						</fmt:message>
-					</span>
+					</div>
 	    			<ul class="sphere_users">
 	   					<c:forEach items="${command.relatedUsers}" var="item" varStatus="loop">
 	   						<spheres:userLink user="${item}"/>

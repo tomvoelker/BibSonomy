@@ -1822,3 +1822,7 @@ li.bm span.reviewInfo {
 	margin-left: 1.5em;
 	margin-bottom:1ex;
 }
+
+#sidebar .sidebarContainer {
+	padding: 0px;
+}

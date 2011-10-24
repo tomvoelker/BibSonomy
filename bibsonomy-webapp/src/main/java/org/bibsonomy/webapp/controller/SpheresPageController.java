@@ -128,11 +128,6 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 			this.setRelatedTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, Order.ADDED, 0, 20, null);
 		}
 		
-		
-		// Set all parameters in the command Object.	 
-		// set page title TODO: i18n
-		command.setPageTitle("taggedfriend :: " + sphereName);
-		
 		//Set the Users in the Sphere
 		command.setRelatedUsers(relatedUsers);
 
