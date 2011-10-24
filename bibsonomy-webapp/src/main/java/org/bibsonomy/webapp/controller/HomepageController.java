@@ -5,7 +5,6 @@ import java.util.Arrays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.HomepageCommand;
@@ -21,6 +20,8 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class HomepageController extends SingleResourceListController implements MinimalisticController<HomepageCommand> {
+	private static final int POSTS_PER_RESOURCETYPE_LOGGED_IN = 20;
+
 	private static final int POSTS_PER_RESOURCETYPE = 5;
 
 	private static final Log log = LogFactory.getLog(HomepageController.class);
@@ -48,11 +49,11 @@ public class HomepageController extends SingleResourceListController implements 
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			listCommand.setStart(0);
 			/*
-			 * admins see as many posts as they like 
+			 * logged in users see as many posts as they like (at most 50) 
 			 */
 			final int entriesPerPage;
-			if (command.getContext().isUserLoggedIn() && Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
-				entriesPerPage = listCommand.getEntriesPerPage(); 
+			if (command.getContext().isUserLoggedIn()) {
+				entriesPerPage = POSTS_PER_RESOURCETYPE_LOGGED_IN; 
 			} else {
 				entriesPerPage = POSTS_PER_RESOURCETYPE;
 			}			
