@@ -305,15 +305,19 @@
 
 
 	<sql id="spammerClassifiedJoin">
-		<isNotEqual property="filter" compareValue="POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER">
-				JOIN user u USING(user_name)
-		</isNotEqual>  
-	</sql>
+	  	<isEmpty property="requestedUserName">
+			<isNotEqual property="filter" compareValue="POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER">
+					JOIN user u USING(user_name)
+			</isNotEqual>  
+	  	</isEmpty> 
+		</sql>
 
 	<sql id="spammerClassified">
-		<isNotEqual property="filter" compareValue="POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER" prepend="AND">
-			u.to_classify = 0
-		</isNotEqual>
+	  	<isEmpty property="requestedUserName">
+			<isNotEqual property="filter" compareValue="POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER" prepend="AND">
+				u.to_classify = 0
+			</isNotEqual>
+	  	</isEmpty> 
 	</sql>
 
 	<sql id="inGroupsDiscussion">
