@@ -30,16 +30,18 @@
 
 	<select id="userRatingStatistic" resultMap="Statistics.userDiscussionsRatingStatistic" parameterClass="StatisticsParam" >
 		SELECT rating, COUNT(rating) cnt, (COUNT(rating) / maxcnt * 100) percent, maxcnt, avgrating, maxrating, minrating 
-		FROM discussion AS d, 
+		FROM discussion AS d <include refid="spammerClassifiedJoin"/>, 
 			(SELECT COUNT(*) maxcnt, AVG(rating) avgrating, MAX(rating) maxrating, MIN(rating) minrating 
-				FROM discussion AS d
+				FROM discussion AS d <include refid="spammerClassifiedJoin"/>
 				WHERE
 					<include refid="discussionVisible"/>
 					AND type = 1 AND rating IS NOT NULL
+  					<include refid="spammerClassified"/>
 			) AS m 
 		WHERE 
 			<include refid="discussionVisible"/>
 			AND type = 1 AND rating IS NOT NULL
+  			<include refid="spammerClassified"/>
 		GROUP BY rating
 	</select>
 
