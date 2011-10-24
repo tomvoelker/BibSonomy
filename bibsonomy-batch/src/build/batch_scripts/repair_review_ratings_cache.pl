@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+###############
+# 
+# Environment variables: 
+#   see Common.pm
+#
+# Changes:
+#   2011-10-24 (dzo)
+#   - initial version
+#
+use DBI();
+use strict;
+use English;
+use Common qw(debug set_debug get_slave get_master check_running);
+
+# don't run twice ...
+check_running();
+
+my $master = get_master();
+# lock both tables
+$master->prepare("LOCK TABLES review_ratings_cache WRITE");
+$master->prepare("LOCK TABLES discussion WRITE");
+
+# delete old data
+$master->prepare("DELETE FROM review_ratings_cache");
+
+# recalc the avg 
+$master->prepare("INSERT INTO review_ratings_cache SELECT interHash, avg(rating) as rating_arithmetic_mean, count(DISTINCT(user_name)) as number_of_ratings, CURRENT_TIMESTAMP as last_updated FROM discussion where type=1 GROUP BY interHash");
+
+# unlock tables
+$master->prepare("UNLOCK TABLES");
+$master->commit;
+$master->disconnect();
