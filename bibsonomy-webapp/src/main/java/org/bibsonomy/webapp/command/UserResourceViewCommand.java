@@ -17,8 +17,6 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
      * used to show infos about the user in the sidebar (only for admins, currently)
      */
 	private User user;
-	private int bookmarkCount = 0;
-	private int bibtexCount = 0;
 	private boolean isFollowerOfUser = false;
 	
 	/**
@@ -63,34 +61,6 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	public void setUser(User user) {
 		this.user = user;
 	}	
-
-	/**
-	 * @return the bookmarkCount
-	 */
-	public int getBookmarkCount() {
-		return this.bookmarkCount;
-	}
-
-	/**
-	 * @param bookmarkCount the bookmarkCount to set
-	 */
-	public void setBookmarkCount(final int bookmarkCount) {
-		this.bookmarkCount = bookmarkCount;
-	}
-
-	/**
-	 * @return the bibtexCount
-	 */
-	public int getBibtexCount() {
-		return this.bibtexCount;
-	}
-
-	/**
-	 * @param bibtexCount the bibtexCount to set
-	 */
-	public void setBibtexCount(final int bibtexCount) {
-		this.bibtexCount = bibtexCount;
-	}
 
 	/**
 	 * Set user similarity 
