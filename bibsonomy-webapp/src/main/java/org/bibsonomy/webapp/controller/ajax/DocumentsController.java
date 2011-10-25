@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.ajax;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.File;
 import java.util.Locale;
 
@@ -120,7 +122,10 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		final String intraHash = command.getIntraHash();
 		final String fileName  = command.getFileName();
 		final Document document = logic.getDocument(userName, intraHash, fileName);
-		
+
+		if (!present(document)) {
+			return getXmlError("error.document_not_found", null, command.getFileID(), null, locale);
+		}
 		/*
 		 * check whether logged-in user is the document owner
 		 */
