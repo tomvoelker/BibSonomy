@@ -289,12 +289,6 @@
 				<entry key="/discussed">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="discussionsPageController"/>
-						<property name="allowedFields">
-							<list>
-								<value>requestedUser</value>
-								<value>filter</value>
-							</list>
-						</property>
 					</bean>
 				</entry>
 				<entry key="/userinfo">
