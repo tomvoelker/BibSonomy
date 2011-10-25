@@ -48,8 +48,8 @@ import org.w3c.dom.NodeList;
  * @version $Id$
  */
 public class InspireScraper extends AbstractUrlScraper {
-	private static final String SITE_NAME = "INSPIREbeta";
-	private static final String SITE_URL = "http://inspirebeta.net/";
+	private static final String SITE_NAME = "INSPIRE";
+	private static final String SITE_URL = "http://inspirehep.net/";
 	
 	private static final Pattern pattern_id = Pattern.compile("/record/([0-9]+)");
 	private static final Pattern pattern_download = Pattern.compile("/export/hx");
@@ -58,7 +58,7 @@ public class InspireScraper extends AbstractUrlScraper {
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
 	static {
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "inspirebeta.net"), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "inspirehep.net"), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
 	@Override
