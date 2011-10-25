@@ -80,7 +80,7 @@
   <TemplateDef tag="bs:Tags">
     <Template>
       <span class="bmtags">
-	  <a repeat="${My.tags}">${Cur.name} </a>
+	  <a repeat="${My.tags}" href="http://www.bibsonomy.org/tag/${Cur.name}" target="_blank">${Cur.name} </a>
 	</span> 
     </Template>
   </TemplateDef>
