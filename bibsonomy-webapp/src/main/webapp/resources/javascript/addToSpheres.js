@@ -17,15 +17,16 @@ function initSpheres(requestedUser, ckey) {
 	var createChkBox = function(sphereName) {
 		return $("<input></input>")
 					.attr("type","checkbox")
-					.attr("style","position: absolute; right: 12px")
+					.attr("style","position: absolute; right: 13px;")
 					.change(function(){callbackCheckbox(this, sphereName);});
 	};
 	
 	//Creates the Text for Sphere Names
 	var createText = function(sphereName) {
 		var shortSphereName = sphereName;
-		if(sphereName.length > 20) {
-			shortSphereName = sphereName.slice(0,20);
+		//Cut the Sphere-names, if the names are to long
+		if(sphereName.length > 15) {
+			shortSphereName = sphereName.slice(0,15);
 			shortSphereName = shortSphereName + " ...";
 		}
 		return $("<a></a>").attr("href","/sphere/" + encodeURIComponent(sphereName)).text(shortSphereName);
@@ -33,7 +34,7 @@ function initSpheres(requestedUser, ckey) {
 	
 	//Creates the user Count of Spheres
 	var createUserCount = function(sphereUsers) {
-		return $("<strong></strong>").text(sphereUsers + " User").css("right", 45).css("position","absolute").attr("data-userCount",sphereUsers);
+		return $("<strong></strong>").text(sphereUsers + " User").css("padding-left", 5).css("right", 35).css("position","absolute").attr("data-userCount",sphereUsers);
 	};
 	
 	//Getter for the Timeout
@@ -62,8 +63,10 @@ function initSpheres(requestedUser, ckey) {
    
    //Function to add a new Sphere by the name of the Input Field
    var addNewSphere = function() {
-	   if(newSphere.val() != ""){
-		   var name = newSphere.val();
+	   var name = newSphere.val();
+	   var re = new RegExp("^[a-zA-Z0-9_-]+$");
+	   
+	   if(re.test(name)){
 		   var child = $("<li></li>").data("sphereName", name);
 		   child.append(createText(name));
 		   child.append(createUserCount(1));

@@ -74,15 +74,16 @@
 }
 
 .addContainer {
-	position: relative; 
-	top: -5px;	
+	position: absolute; 	
+	top: +40px;	
+	margin-right: 2px;
 }
 
 .addSpheres {
-	width: 285px; 
-	position: absolute; 
+	position: relative; 
 	overflow: hidden;
 }
+
 
 #sphereList {
 	margin: 0!important; 
@@ -91,7 +92,7 @@
 	padding-right: 10px!important; 
 	padding-top: 5px!important; 
 	padding-bottom: 5px!important; 
-	margin-left: 15px!important; 
+	margin-left: 7px!important; 
 	border-width: thin; 
 	list-style-type: circle!important; 
 	list-style-position: inside!important; 
@@ -102,8 +103,6 @@
 }
 
 #addNewSphere {
-	position: absolute; 
-	right: 0px; 
-	margin-right: 8px; 
-	vertical-align: bottom;
+	margin-left: 5px; 
+	vertical-align: middle;
 }
