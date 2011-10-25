@@ -51,7 +51,7 @@
 						
 				<!-- The Spheres List by Mouseover of the Friend Button -->		
 				<div class="addContainer">
-				<div class="addSpheres initiallyHidden">
+					<div class="addSpheres initiallyHidden">
 	           			<ul id="sphereList">
 			               <li>
 			               		<input type="text" name="sphereName" id="newSphere" size="27%" autocomplete="off" value="Sphere"/>
