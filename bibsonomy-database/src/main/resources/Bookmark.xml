@@ -114,8 +114,8 @@
 		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		  FROM (
 		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash, b.change_date
-	      	  FROM bookmark b
-	      	  	JOIN user u USING (user_name)
+	      	  FROM bookmark b FORCE INDEX(`group_date_content_id_idx`) 
+	      	  	JOIN user u FORCE INDEX (`spammer_to_classify_user_name_idx`) USING (user_name)
 	      	  WHERE b.group = #groupId#
 	      	  	AND u.to_classify = FALSE
 	      	  	AND u.spammer = FALSE
