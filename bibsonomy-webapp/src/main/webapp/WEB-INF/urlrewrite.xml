@@ -616,6 +616,13 @@
 	 
 	<!-- ############## taggedfriend pages ############### -->
 	
+	<!-- redirect for tag formular on /sphere/RELATION/TAG page -->
+	<rule>
+		<name>redirect /sphere/RELATION/TAG</name>
+		<condition type="parameter" name="tag">(.+)</condition>
+		<from>^/+sphere/+([^/]+)$</from>
+		<to type="redirect" last="true">/sphere/${escape:$1}/${escape:%1}</to>
+	</rule>
 	<!-- /sphere/RELATION/TAG -->
 	<rule>
 		<name>/sphere/RELATION/TAG</name>
@@ -651,7 +658,7 @@
 	<!-- ############## tag pages ############### -->
 	<!-- redirect for tag formular on /tag page -->
 	<rule>
-		<name>redirect /tag/TAG</name>
+		<name>redirect /tag/TAG</name> 
 		<condition type="parameter" name="tag">(.+)</condition>
 		<from>^/+tag/*$</from>
 		<to type="redirect" last="true">/tag/${escape:%1}</to>
