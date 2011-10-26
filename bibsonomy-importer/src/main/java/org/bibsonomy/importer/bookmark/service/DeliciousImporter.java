@@ -119,7 +119,14 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		final List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
 				
 		//open a connection to delicious and retrieve a document
-		final Document document = getDocument();
+		Document document;
+		try {
+			document = getDocument();
+		} catch (SAXException e1) {
+			throw new IOException(e1);
+		} catch (ParserConfigurationException e1) {
+			throw new IOException(e1);
+		}
 		
 		// traverse document and put everything into Post<Bookmark> Objects
 		final NodeList postList = document.getElementsByTagName("post");
@@ -180,8 +187,10 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		final Document document;
 		try {
 			document = getDocument();
-		} catch (IOException e) {
-			throw new IOException("Relations are not available at the moment. For more information see http://www.avos.com/the-first-20-hours/");
+		} catch (SAXException e) {
+			return relations;
+		} catch (ParserConfigurationException e) {
+			throw new IOException(e);
 		}
 		final NodeList bundles = document.getElementsByTagName("bundle");
 		for(int i = 0; i < bundles.getLength(); i++){
@@ -207,60 +216,52 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	 * Method opens a connection and parses the retrieved InputStream with a JAXP parser.
 	 * @return The from the parse call returned Document Object
 	 * @throws IOException
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
 	 */
-	private Document getDocument() throws IOException{
-		InputStream inputStream;
+	private Document getDocument() throws IOException, SAXException, ParserConfigurationException {
+		InputStream inputStream = null;
 		try {		
 			final URLConnection connection = apiURL.openConnection();
 			connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
 			connection.setRequestProperty(HEADER_AUTHORIZATION, encodeForAuthorization());
 			inputStream = connection.getInputStream();
-		} catch (IOException e) {
-			log.warn(e);
-			throw e;
-		}
-		// Get a JAXP parser factory object
-		final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		// Tell the factory what kind of parser we want 
-		dbf.setValidating(false);
-		// Use the factory to get a JAXP parser object
-		
-		final DocumentBuilder parser;
-		try {
-			parser = dbf.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			throw new IOException(e);
-		}
-		
-		// Tell the parser how to handle errors.  Note that in the JAXP API,
-		// DOM parsers rely on the SAX API for error handling
-		parser.setErrorHandler(new ErrorHandler() {
-			public void warning(SAXParseException e) {
-				log.warn(e);
+			// Get a JAXP parser factory object
+			final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			// Tell the factory what kind of parser we want 
+			dbf.setValidating(false);
+			// Use the factory to get a JAXP parser object
+			
+			final DocumentBuilder parser = dbf.newDocumentBuilder();
+			
+			// Tell the parser how to handle errors.  Note that in the JAXP API,
+			// DOM parsers rely on the SAX API for error handling
+			parser.setErrorHandler(new ErrorHandler() {
+				public void warning(SAXParseException e) {
+					log.warn(e);
+				}
+				public void error(SAXParseException e) {
+					log.error(e);
+				}
+				public void fatalError(SAXParseException e)
+				throws SAXException {
+					log.fatal(e);
+					throw e;   // re-throw the error
+				}
+			});
+			
+			// Finally, use the JAXP parser to parse the file.  
+			// This call returns a Document object. 
+			
+			final Document document = parser.parse(inputStream);
+			
+			return document;
+			
+		} finally {
+			if (inputStream != null) {
+				inputStream.close();
 			}
-			public void error(SAXParseException e) {
-				log.error(e);
-			}
-			public void fatalError(SAXParseException e)
-			throws SAXException {
-				log.fatal(e);
-				throw e;   // re-throw the error
-			}
-		});
-		
-		// Finally, use the JAXP parser to parse the file.  
-		// This call returns a Document object. 
-		
-		final Document document;
-		try {
-			document = parser.parse(inputStream);
-		} catch (SAXException e) {
-			throw new IOException(e);
 		}
-		
-		inputStream.close();
-		
-		return document;
 			
 	}	
 	
