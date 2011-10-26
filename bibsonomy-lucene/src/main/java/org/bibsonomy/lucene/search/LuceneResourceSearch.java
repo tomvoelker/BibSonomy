@@ -7,6 +7,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -475,11 +476,17 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		//--------------------------------------------------------------------
 		// get missing information from bibsonomy's database
 		//--------------------------------------------------------------------
-		final Collection<String> friends = this.dbLogic.getFriendsForUser(userName);
-		
 		final BooleanQuery accessModeQuery  = new BooleanQuery();
 		final BooleanQuery privatePostQuery = new BooleanQuery();
 
+		final Collection<String> friends;
+		
+		if (present(userName)) { 
+			friends = this.dbLogic.getFriendsForUser(userName);
+		} else {
+			friends = new ArrayList<String>();
+		}
+		
 		//--------------------------------------------------------------------
 		// allowed groups
 		//--------------------------------------------------------------------
