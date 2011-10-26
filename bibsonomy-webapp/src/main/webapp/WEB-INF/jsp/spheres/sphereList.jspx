@@ -16,7 +16,13 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">
+	<fmt:message key="navi.spheres" var="pageTitle"/>
+	
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}">
+		<jsp:attribute name="heading">
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.spheres"/></a>
+		</jsp:attribute>
+	
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/resourceList.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js"><!-- keep me --></script> 

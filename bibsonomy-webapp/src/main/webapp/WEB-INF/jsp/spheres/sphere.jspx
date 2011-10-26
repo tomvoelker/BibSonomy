@@ -16,7 +16,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<fmt:message key="navi.sphere" var="pageTitle">
+	<fmt:message key="navi.sphere.title" var="pageTitle">
 		<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
 	</fmt:message>
 
@@ -26,7 +26,7 @@
 		</jsp:attribute>
 	
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.friend"/></a> :: 
+			<a rel="path_menu" href="/spheres"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.sphere"/></a> :: 
 			<a href="/sphere/${fn:escapeXml(command.sphereName)}"><c:out value='${command.sphereName}'/></a> ::
 			<form action="/sphere/${fn:escapeXml(command.sphereName)}" method="get" class="smallform">
 			  <input type="text" size="20" id="inpf" name="tag" value="${fn:escapeXml(command.requestedTags)}"/>
