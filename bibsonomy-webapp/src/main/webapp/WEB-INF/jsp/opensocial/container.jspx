@@ -29,9 +29,13 @@
 
 			    	my.cnt = 0;
 
-			    	my.gadgetSpecUrls = [ 'http://www.google.com/ig/modules/horoscope.xml',
-			    			'https://opensocialdeju.googlecode.com/svn/Twitter/TwitterDemo.xml',
-			    			'http://www.labpixies.com/campaigns/todo/todo.xml' ];
+			    	my.gadgetSpecUrls = [ 
+			 			    	 		'http://www.google.com/ig/modules/horoscope.xml',
+						    	 		'http://www.google.com/ig/modules/horoscope.xml',
+						    	 		'http://www.google.com/ig/modules/horoscope.xml'
+			    			//'https://opensocialdeju.googlecode.com/svn/Twitter/TwitterDemo.xml',
+			    			//'http://www.labpixies.com/campaigns/todo/todo.xml' 
+			  			    			];
 
 			    	// This container lays out and renders gadgets itself.
 
@@ -48,25 +52,55 @@
 
 			    	my.init = function() {
 			    		shindig.container.layoutManager = new my.LayoutManager();
+			    		
 			    		for (i=0; i<this.gadgetSpecUrls.length; i++) {
 				    		this.renderGadget(this.gadgetSpecUrls[i]);
 			    		}
 			    	};
 
+					my.createPortlet = function(id) {
+						var portlet = document.createElement('div');
+						$(portlet).addClass('portlet ui-widget ui-widget-content ui-helper-clearfix ui-corner-all');
+						
+						var header  = document.createElement('div');
+						header.innerHTML = 'Gadget';
+						$(header).addClass('portlet-header ui-widget-header ui-corner-all' )
+							.prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
+							.end();
+						
+						var content = document.createElement('div');
+						$(content).addClass('portlet-content gadgets-gadget-chrome');
+						content.id = 'gadget-chrome-'+id;
+
+						portlet.appendChild(header);
+						portlet.appendChild(content);
+
+						return portlet;
+					}
+			    	
 			    	my.renderGadget = function(specUrl) {
 			    		// create gadget container
-			    		var containerElement =  document.getElementById('gadgets');
-
-			    		var newContainer       = document.createElement('div');
-			    		newContainer.id        = 'gadget-chrome-'+my.cnt;		
-			    		newContainer.className ='gadgets-gadget-chrome';
-			    		containerElement.appendChild(newContainer);
 			    		
+			    		// var containerElement =  document.getElementById('targetPortlet');
+
+			    		// var newContainer       = document.createElement('div');
+			    		
+			    		// newContainer.id        = 'gadget-chrome-'+my.cnt;		
+			    		// newContainer.className ='gadgets-gadget-chrome';
+						//	containerElement.appendChild(newContainer);
+						var containerElement =  document.getElementById('targetColumn'+(my.cnt%3));
+						var containerPortlet = this.createPortlet(my.cnt); 
+						containerElement.appendChild(containerPortlet);
+						
 			    		// render gadget
 			    		var gadget = shindig.container.createGadget( {specUrl : specUrl, secureToken: securityToken} );
+			    		gadget.getTitleBarContent = function(continuation) {
+				    			continuation('');
+				    		};
 			    		shindig.container.addGadget(gadget);
 			    		shindig.container.renderGadget(gadget);
-
+			    		setTimeout("shindig.container.refreshGadgets()", 500);
+						
 			    		my.cnt++;
 			    	};
 						
@@ -76,6 +110,77 @@
   			]]>
 			</script>
 		    
+    	<!--+
+    		| sortable demo
+    		+-->
+    	<link rel="stylesheet" href="${resdir}/jquery/themes/base/jquery.ui.all.css"><!-- keep me --></link>
+    	
+		<script type="text/javascript" src="${resdir}/jquery/plugins/sortable/jquery.ui.core.js"><!-- keep me --></script>
+		<script type="text/javascript" src="${resdir}/jquery/plugins/sortable/jquery.ui.widget.js"><!-- keep me --></script>
+
+		<script type="text/javascript" src="${resdir}/jquery/plugins/sortable/jquery.ui.mouse.js"><!-- keep me --></script>
+		<script type="text/javascript" src="${resdir}/jquery/plugins/sortable/jquery.ui.sortable.js"><!-- keep me --></script>
+		
+		<style>
+.column {
+	width: auto;
+	float: left;
+	padding-bottom: 100px;
+}
+
+.portlet {
+	margin: 0 1em 1em 0;
+}
+
+.portlet-header {
+	margin: 0.3em;
+	padding-bottom: 4px;
+	padding-left: 0.2em;
+}
+
+.portlet-header .ui-icon {
+	float: right;
+}
+
+.portlet-content {
+/*	padding: 0.4em;*/
+}
+
+.ui-sortable-placeholder {
+	border: 1px dotted black;
+	visibility: visible !important;
+	height: 50px !important;
+}
+
+.ui-sortable-placeholder * {
+	visibility: hidden;
+}
+</style>
+
+	<script>
+	<![CDATA[
+	$(function() {
+		$( ".column" ).sortable({
+			connectWith: ".column"
+		});
+
+		/*
+		$( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
+			.find( ".portlet-header" )
+				.addClass( "ui-widget-header ui-corner-all" )
+				.prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
+				.end()
+			.find( ".portlet-content" );
+		*/
+		$( ".portlet-header .ui-icon" ).click(function() {
+			$( this ).toggleClass( "ui-icon-minusthick" ).toggleClass( "ui-icon-plusthick" );
+			$( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
+		});
+
+		$( ".column" ).disableSelection();
+	});
+		]]>
+	</script>
 	</jsp:attribute>
 
 	<jsp:attribute name="content">
@@ -87,9 +192,27 @@
 			</span>
 		</form>
 		<br />
-		<div id="gadgets">
+		
+		<div id="gadgets">&amp;nbsp;
 		</div>
     
+    	<!--+
+    		| sortable demo
+    		+-->
+    
+		<div class="demo">
+
+			<div id="targetColumn0" class="column">&amp;nbsp;
+			</div>
+
+			<div id="targetColumn1" class="column">&amp;nbsp;
+			</div>
+
+			<div id="targetColumn2" class="column">&amp;nbsp;
+			</div>
+
+		</div>
+    	
 	</jsp:attribute>
        
   </layout:layout>
