@@ -107,7 +107,7 @@
 	<!-- spam framework logs -->
 	
 	<insert id="logPrediction" parameterClass="adminParam">
-		INSERT INTO log_prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` ,`mode`, `confidence`)
+		INSERT IGNORE INTO log_prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` ,`mode`, `confidence`)
 		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#, #confidence#)
 	</insert>
 
