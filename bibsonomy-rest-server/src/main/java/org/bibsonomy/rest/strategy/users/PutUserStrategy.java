@@ -40,6 +40,16 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 		final User user = this.getRenderer().parseUser(this.doc);
 		// ensure to use the right user name
 		user.setName(this.userName);
-		return this.getLogic().updateUser(user, UserUpdateOperation.UPDATE_ALL);
+		/*
+		 * FIXME: better heuristic! e.g., ensure that
+		 * - calling user is admin (?)
+		 */
+		final UserUpdateOperation userUpdateOperation;
+		if (user.getPrediction() != null || user.getSpammer() != null) {
+			userUpdateOperation = UserUpdateOperation.UPDATE_SPAMMER_STATUS;
+		} else {
+			userUpdateOperation = UserUpdateOperation.UPDATE_ALL;
+		}
+		return this.getLogic().updateUser(user, userUpdateOperation);
 	}
 }
