@@ -18,7 +18,7 @@
 		+-->
 	<script id="tplSphere" type="text/x-jquery-tmpl">
 		<li class="{{=tagClass}}">
-			<a href="{{=$view.parent.parent.data.projectHome!}}sphere/{{encodeURI name}}" title='{{=members.length}} {{getString "members"}}'>{{=name}}</a>
+			<a href="{{=$ctx.projectHome!}}sphere/{{encodeURI name}}" title='{{=members.length}} {{getString "members"}}'>{{=name}}</a>
 		</li>
     </script>
     
