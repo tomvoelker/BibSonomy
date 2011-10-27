@@ -4,9 +4,19 @@ import net.oauth.OAuthServiceProvider;
 
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.GadgetException.Code;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
+import org.apache.shindig.gadgets.oauth.OAuthRequestException;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
 
+/**
+ * Class for managing OAuth information for accessing external providers where
+ * BibSonomy acts as a consumer.
+ * 
+ * @see OAuthStore
+ * 
+ * @author fei
+ */
 public class BibSonomyOAuthStore implements OAuthStore {
 	
 	// FIXME: configure via spring
@@ -27,7 +37,11 @@ public class BibSonomyOAuthStore implements OAuthStore {
 	private BasicOAuthStoreConsumerKeyAndSecret defaultKey;
 	
 	public ConsumerInfo getConsumerKeyAndSecret(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider)throws GadgetException {
-		return this.authLogic.readAuthentication(securityToken, serviceName, provider);
+		try {
+			return this.authLogic.readAuthentication(securityToken, serviceName, provider);
+		} catch (OAuthRequestException e) {
+			throw new GadgetException(Code.INVALID_PARAMETER, e.getMessage());
+		}
 	}
 
 	public TokenInfo getTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName) throws GadgetException {

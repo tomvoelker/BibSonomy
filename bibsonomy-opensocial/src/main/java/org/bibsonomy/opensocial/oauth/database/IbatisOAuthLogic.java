@@ -14,6 +14,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
+import org.apache.shindig.gadgets.oauth.OAuthError;
+import org.apache.shindig.gadgets.oauth.OAuthRequestException;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
@@ -71,7 +73,7 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 		throw new RuntimeException("METHOD NOT IMPLEMENTED");
 	}
 
-	public ConsumerInfo readAuthentication(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider) {
+	public ConsumerInfo readAuthentication(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider) throws OAuthRequestException {
 		OAuthConsumerInfo consumerParam = makeConsumerInfo(securityToken, serviceName);
 		OAuthConsumerInfo consumerInfo = null;
 		try {
@@ -80,7 +82,7 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 			log.error("No consumer information found for '"+securityToken.getActiveUrl()+"' on '"+serviceName+"'");
 		}
 	    if (!present(consumerInfo)) {
-	        throw new RuntimeException("No key for gadget " + securityToken.getAppUrl() + " and service " + serviceName);
+	    	throw new OAuthRequestException(OAuthError.INVALID_PARAMETER, "No key for gadget " + securityToken.getAppUrl() + " and service " + serviceName);
 	    }
 		//String key, String secret, KeyType type, String name,String callbackUrl
 		BasicOAuthStoreConsumerKeyAndSecret cks = 

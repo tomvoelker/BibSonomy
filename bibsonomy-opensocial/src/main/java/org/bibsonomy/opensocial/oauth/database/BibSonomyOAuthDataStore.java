@@ -21,10 +21,16 @@ import com.google.inject.name.Named;
 
 
 /**
- * {@link OAuthDataStore} implementation that is used during both 2 and 3-legged OAuth authorizations from Shindig.
+ * {@link OAuthDataStore} implementation that is used during both 2 and 3-legged OAuth authorizations.
  * 
- * FIXME: we should consider using the database for accessing consumer info only - 
- *        managing OAuth tokens in a map
+ * This class is used when BibSonomy acts as a OAuth provider - i.e. for accessing information
+ * about consumers which try to access BibSonomy's data. 
+ * 
+ * This Data Store stores three things:
+ * (1) information about consumer keys and secrets that consumers have
+ *      negotiated with BibSonomy. 
+ * (2) request (i.e. temporary) tokens
+ * (3) access tokens 
  */
 public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	// This needs to be long enough that an attacker can't guess it.  If the attacker can guess this
@@ -123,6 +129,9 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	    return accessEntry;
 	}
 
+	/** 
+	 * disable a given request/access token 
+	 */
 	public void disableToken(OAuthEntry entry) {
 		if (!present(entry)) {
 			throw new IllegalArgumentException("no OAuth entry given");

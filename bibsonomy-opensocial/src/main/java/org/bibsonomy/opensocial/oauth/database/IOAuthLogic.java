@@ -5,6 +5,7 @@ import java.util.List;
 import net.oauth.OAuthServiceProvider;
 
 import org.apache.shindig.auth.SecurityToken;
+import org.apache.shindig.gadgets.oauth.OAuthRequestException;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
@@ -39,7 +40,7 @@ public interface IOAuthLogic {
 	 * @param provider
 	 * @return
 	 */
-	public ConsumerInfo readAuthentication(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider);
+	public ConsumerInfo readAuthentication(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider) throws OAuthRequestException;
 
 	//------------------------------------------------------------------------
 	// OAuth token interface
