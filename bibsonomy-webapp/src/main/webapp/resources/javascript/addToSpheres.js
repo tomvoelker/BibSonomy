@@ -222,6 +222,6 @@ SphereControl.prototype.cb_handleSpheres = function(data) {
     this.preprocessSpheres(data);
     
     $("#spheresCloudElement").html(
-			$("#tplSpheresCloud").render(data)
+			$("#tplSpheresCloud").render(data, data)
 	);
 };
