@@ -26,7 +26,7 @@ public class GetResourcesByHashForUser<R extends Resource, P extends ResourcePar
 	protected boolean canHandle(final P param) {
 		return (present(param.getHash()) &&
 				param.getGrouping() == GroupingEntity.USER &&
-				present(param.getRequestedGroupName()) &&
+				present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getOrder()) &&
 				!present(param.getSearch()));
