@@ -184,16 +184,16 @@
 				http://www.biblicious.org:8088/artifactory/plugins-releases
 			</url>
 		</pluginRepository>
-    		<pluginRepository>
-		      <name>oss.sonatype.org</name>
-		      <id>oss.sonatype.org</id>
-		      <url>http://oss.sonatype.org/content/groups/public</url>
+			<pluginRepository>
+				<name>oss.sonatype.org</name>
+				<id>oss.sonatype.org</id>
+				<url>http://oss.sonatype.org/content/groups/public</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.version>3.0.5.RELEASE</spring.version>
-		<spring-security.version>3.0.5.RELEASE</spring-security.version>
+		<spring.version>3.0.6.RELEASE</spring.version>
+		<spring-security.version>3.0.7.RELEASE</spring-security.version>
 	</properties>
 	<modules>
 		<module>bibsonomy-batch</module>
@@ -219,7 +219,7 @@
 		<module>bibsonomy-web-common</module>
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>
-  </modules>
+	</modules>
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -227,6 +227,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
 					<version>2.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.jvnet.jaxb2.maven2</groupId>
+					<artifactId>maven-jaxb2-plugin</artifactId>
+					<version>0.7.3</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -238,9 +243,6 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-					<compilerArguments>
-						<encoding>UTF-8</encoding>
-					</compilerArguments>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -297,7 +299,7 @@
 						<exclude>target/**</exclude>
 					</excludes>
 					<properties>
-						<year>${project.inceptionYear} - 2010</year>
+						<year>${project.inceptionYear} - 2011</year>
 						<description>
 							${project.name} - ${project.description}
 						</description>
@@ -337,6 +339,7 @@
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>2.4.1</version>
 				<configuration>
+					<!-- clean lib and classes dir of a webapp project -->
 					<filesets>
 						<fileset>
 							<directory>src/main/webapp/WEB-INF/lib</directory>
@@ -380,7 +383,7 @@
 					using the Sysdeo Eclipse plugin - when a module class is modified, it is 
 					(after mvn compile) directly available in the running webapp via hot code 
 					replacement (assuming the webapp root is set to /src/main/webapp in the 
-					bibsononomy-webapp project). -->					
+					bibsononomy-webapp project). -->
 		<activation>
 			<property>
 				<name>mode</name>
@@ -415,8 +418,7 @@
 				</executions>
 			</plugin>
 		</plugins>
-		</build>			
-			
+		</build>
 		</profile>
 	</profiles>
 	<dependencies>
@@ -733,6 +735,5 @@
 				<version>1.4</version>
 			</dependency>
 		</dependencies>
-
 	</dependencyManagement>
 </project>
