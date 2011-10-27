@@ -54,7 +54,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		 * Set hash, username, grouping entity
 		 */
 		final String requUser = command.getRequestedUser();
-		final GroupingEntity groupingEntity = requUser != null ? GroupingEntity.USER : GroupingEntity.ALL;
+		final GroupingEntity groupingEntity = present(requUser) ? GroupingEntity.USER : GroupingEntity.ALL;
 
 		/* 
 		 * handle case when only tags are requested
