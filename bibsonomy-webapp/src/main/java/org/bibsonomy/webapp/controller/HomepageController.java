@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.HomepageCommand;
@@ -39,25 +40,27 @@ public class HomepageController extends SingleResourceListController implements 
 		
 		// handle the case when only tags are requested
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
-		
-
-		
-		
+				
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			// disable manual setting of start value for homepage
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			listCommand.setStart(0);
 			/*
-			 * logged in users see as many posts as they like (at most 50) 
+			 * logged in users see 20 posts, other users 5
+			 * admins may see as many posts as they like 
 			 */
 			final int entriesPerPage;
 			if (command.getContext().isUserLoggedIn()) {
-				entriesPerPage = POSTS_PER_RESOURCETYPE_LOGGED_IN; 
+				if (Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
+					entriesPerPage = listCommand.getEntriesPerPage();
+				} else {
+					entriesPerPage = POSTS_PER_RESOURCETYPE_LOGGED_IN;	
+				}
 			} else {
 				entriesPerPage = POSTS_PER_RESOURCETYPE;
 			}			
-			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, null, entriesPerPage);
+			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, command.getFilter(), null, entriesPerPage);
 			postProcessAndSortList(command, resourceType);
 		}
 												
