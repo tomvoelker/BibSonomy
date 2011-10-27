@@ -33,7 +33,6 @@ a {
 }
 
 #menu li a {
-	
 	background: #EEEEEE;
 	padding: 5px 10px;
 	display: block;
@@ -50,20 +49,19 @@ a {
 }
 
 #menu li a.active {
-	
 	background: #336699;
 	color: #FFFFFF;
 }
 
 #menu #nav_search {
-	
 	width: 20px;
-	background: #EEEEEE url('../image/mobile/search_inactive.png') center center no-repeat;
+	background: #EEEEEE url('../image/mobile/search_inactive.png') center
+		center no-repeat;
 }
 
 #menu #nav_search.active {
-
-	background: #336699 url('../image/mobile/search_active.png') center center no-repeat;
+	background: #336699 url('../image/mobile/search_active.png') center
+		center no-repeat;
 }
 
 #toolbar {
@@ -77,8 +75,7 @@ a {
 	min-height: 500px;
 }
 
-#resources-toggle a,  #login-bar a, #post-toggle a{
-	
+#resources-toggle a,#login-bar a,#post-toggle a {
 	display: block;
 	float: left;
 	background: #FFFFFF;
@@ -93,10 +90,10 @@ a {
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-} 
+}
 
-#resources-toggle a.active, #resources-toggle #bookmark-add, #login-bar a.active, #post-toggle a.active  {
-	
+#resources-toggle a.active,#resources-toggle #bookmark-add,#login-bar a.active,#post-toggle a.active
+	{
 	background: #142B4B;
 	color: #FFFFFF;
 }
@@ -107,14 +104,16 @@ a {
 	font-size: 1.5em;
 }
 
-#resources-toggle #toggle-bookmarks, #login-bar #login-method-db, #post-toggle #post-method-isbn {
+#resources-toggle #toggle-bookmarks,#login-bar #login-method-db,#post-toggle #post-method-isbn
+	{
 	border-radius: 5px 0 0 5px;
 	-moz-border-radius: 5px 0 0 5px;
 	-webkit-border-top-left-radius: 5px;
 	-webkit-border-bottom-left-radius: 5px;
 }
 
-#resources-toggle #toggle-publications, #login-bar #login-method-openid,  #post-toggle #post-method-manual {
+#resources-toggle #toggle-publications,#login-bar #login-method-openid,#post-toggle #post-method-manual
+	{
 	border-radius: 0 5px 5px 0;
 	-moz-border-radius: 0 5px 5px 0;
 	-webkit-border-top-right-radius: 5px;
@@ -130,14 +129,13 @@ a {
 	display: block;
 }
 
-#login input[type="text"], #login input[type="password"] {
+#login input[type="text"],#login input[type="password"] {
 	width: 100%;
 	font-size: 1.4em;
 	padding: 5px;
 }
 
 #search-bar input[type="text"] {
-	
 	font-size: 0.8em;
 	padding: 3px;
 	width: 65%;
@@ -148,7 +146,6 @@ a {
 }
 
 #search-bar input[type="submit"] {
-	
 	font-size: 0.8em;
 	padding: 3px;
 	width: 25%;
@@ -160,13 +157,12 @@ a {
 	-webkit-border-radius: 5px;
 }
 
-.errmsg, .dissError {
+.errmsg,.dissError {
 	font-size: 0.8em;
 	color: #AA0000;
 }
 
-input[type="text"],  input[type="password"], textarea {
-	
+input[type="text"],input[type="password"],textarea {
 	border: 2px solid #AAAAAA;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -192,23 +188,24 @@ label {
 }
 
 #post-tags-input label {
-	background: url('../image/mobile/arrow_collapsed.png') no-repeat 5px center;
+	background: url('../image/mobile/arrow_collapsed.png') no-repeat 5px
+		center;
 	padding-left: 20px;
-	-webkit-transition: all 1s ease-in-out; 
-	-moz-transition: all 1s ease-in-out; 
-	-o-transition: all 1s ease-in-out; 
+	-webkit-transition: all 1s ease-in-out;
+	-moz-transition: all 1s ease-in-out;
+	-o-transition: all 1s ease-in-out;
 }
 
 #post-tags-input label.uncollapsed {
-	background: url('../image/mobile/arrow_uncollapsed.png') no-repeat left center;
+	background: url('../image/mobile/arrow_uncollapsed.png') no-repeat left
+		center;
 }
 
 #fsReloadLink {
 	float: right;
 }
 
-#post-tags-recommends, #post-groups {
-	
+#post-tags-recommends,#post-groups {
 	border: 2px solid #6d91a4;
 	background: #f6fcff;
 	padding: 10px;
@@ -224,7 +221,6 @@ label {
 }
 
 #tagField a {
-	
 	text-decoration: none;
 	color: #999999;
 	font-size: 0.8em;
@@ -235,7 +231,6 @@ a img {
 }
 
 #more-bar ul {
-	
 	list-style: square;
 	margin: 0 0 0 10px;
 	padding: 5px;
@@ -247,7 +242,6 @@ a img {
 }
 
 #more-bar ul li a {
-	
 	color: #FFFFFF;
 	text-decoration: none;
 	padding-bottom: 5px;
@@ -258,43 +252,51 @@ a img {
 	font-size: 0.9em;
 }
 
-.bboxheader, .kiste, .bmaction {
+.bboxheader,.kiste,.bmaction {
 	display: none;
 }
 
-.bmicon_selected, .bmicon_unselected {
+.bmicon_selected,.bmicon_unselected {
 	float: right;
 	height: 25px;
 	width: 25px;
 }
 
-.bmicon_selected a, .bmicon_unselected a {
+.bmicon_selected a,.bmicon_unselected a {
 	display: block;
 	text-decoration: none;
 }
 
 .bmicon_selected {
-	background: url('http://www.bibsonomy.org/resources/image/mobile/star_selected.png') no-repeat center center;
+	background:
+		url('http://www.bibsonomy.org/resources/image/mobile/star_selected.png')
+		no-repeat center center;
 }
 
 .bmicon_unselected {
-	background: url('http://www.bibsonomy.org/resources/image/mobile/star_unselected.png') no-repeat center center;
+	background:
+		url('http://www.bibsonomy.org/resources/image/mobile/star_unselected.png')
+		no-repeat center center;
 }
 
 .bmicon a {
-        background-image: url("http://www.bibsonomy.org/resources/image/starblue_unselected.png");
-    	background-repeat: no-repeat;
-    	float: right;
-    	height: 16px;
-    	margin: 0;
-    	padding: 0;
-    	width: 16px;
-}
-.bmicon a:hover {
-        background-image: url("http://www.bibsonomy.org/resources/image/starblue_hover.png");
+	background-image:
+		url("http://www.bibsonomy.org/resources/image/starblue_unselected.png")
+		;
+	background-repeat: no-repeat;
+	float: right;
+	height: 16px;
+	margin: 0;
+	padding: 0;
+	width: 16px;
 }
 
-#bookmark, #bibtex {
+.bmicon a:hover {
+	background-image:
+		url("http://www.bibsonomy.org/resources/image/starblue_hover.png");
+}
+
+#bookmark,#bibtex {
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -305,13 +307,15 @@ a img {
 	border-bottom: 2px solid #DDDDDD;
 }
 
-#bookmark li:nth-of-type(2n-1), #bibtex li:nth-of-type(2n-1) {
+#bookmark li:nth-of-type (2n-1),#bibtex li:nth-of-type (2n-1) {
 	background: #EEEEEE;
 }
 
 .bmtags a {
 	padding-left: 20px;
-	background: url('http://www.bibsonomy.org/resources/image/mobile/tag.png') center left no-repeat;
+	background:
+		url('http://www.bibsonomy.org/resources/image/mobile/tag.png') center
+		left no-repeat;
 	text-decoration: none;
 	color: #336699;
 }
@@ -322,11 +326,11 @@ a img {
 }
 
 .bmtitle {
-
-	width: 70%;	
+	width: 70%;
 }
+
 .bmtitle  a {
-	font-size: 100%em;
+	font-size: 100% em;
 	font-weight: bold;
 	text-decoration: none;
 	color: #336699;
@@ -337,11 +341,10 @@ a img {
 }
 
 .bmdesc .info {
-	display: none;	
+	display: none;
 }
 
 #footer {
-	
 	background: #336699;
 	color: #FFFFFF;
 	padding: 5px;
@@ -353,12 +356,11 @@ a img {
 	text-decoration: underline;
 }
 
-#desc p, #abstract p {
+#desc p,#abstract p {
 	font-size: 0.9em;
 }
 
 #abstract p {
-	
 	font-style: italic;
 }
 
@@ -369,4 +371,19 @@ a img {
 	padding-left: 2px;
 	padding-right: 2px;
 	margin: 0;
+}
+
+.personimg {
+	padding-left: 6px;
+	float: right;
+}
+
+.titleDate {
+	font-size: 0.8em;
+	color: #555555;
+	font-style: italic;
+}
+
+.bmtitle a {
+	font-size: 1em;
 }

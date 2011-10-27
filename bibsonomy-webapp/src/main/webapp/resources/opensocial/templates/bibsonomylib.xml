@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<templates>
+
+	<!--+
+        | render a list of posts
+        +-->
+	<script id="tpl_postList" type="text/x-jquery-tmpl">
+		<div id="bibtexList" class="bookbox">
+			<ul id="bibtex">
+				{{each posts.post content="#tpl_Post"}}
+			</ul>
+		</div>
+	</script>
+	 
+	<!--+
+		| render a single person
+		+-->
+	<script id="tpl_User" type="text/x-jquery-tmpl">
+		<span class="person">
+			<span class="personimg">
+				<a href="{{=$ctx.projectHome!}}cv/user/{{=name}}" title="{{=name}}'s {{getString 'opensocial.user.profile.title'}}" target="_blank">
+					<img width="64" src="{{=$ctx.projectHome!}}picture/user/{{=name}}" />
+				</a>
+			</span>
+		</span>
+	</script>
+
+	<!--+
+        | render a single publication or bookmark
+        +-->
+	<script id="tpl_Post" type="text/x-jquery-tmpl">
+		<li class="bm">
+			{{each user content="#tpl_User"}}
+		
+			<span class="titleDate" title="{{getString 'post.meta.changedOn'}} {{parseDate postingdate}}">{{parseDate postingdate}}</span>
+		
+			<!-- Copy Button -->
+			<div class="bmicon" title="{{getString 'post.actions.copy.title'}}">
+				{{#if bibtex}}
+					<!-- Publication -->
+					<a href="{{=$ctx.projectHome!}}editPublication?hash={{encodeURI bibtex.intrahash}}&amp;user={{encodeURI user.name}}&amp;copytag={{concatTags tag}}" title="" target="_blank">&#160;</a>
+				{{else bookmark}}			
+					<!-- Bookmark -->
+					<a href="{{=$ctx.projectHome!}}editBookmark?hash={{encodeURI bookmark.intrahash}}&amp;user={{encodeURI user.name}}&amp;copytag={{concatTags tag}}" title="" target="_blank">&#160;</a>
+				{{/if}}
+			</div>
+		
+			<!-- Title -->
+			<div class="bmtitle">
+				{{#if bibtex}}
+					<!-- Publication -->
+					<a href="{{=$ctx.projectHome}}bibtex/2{{encodeURI bibtex.intrahash}}/{{encodeURI user.name}}" target="_blank">{{=bibtex.title}}</a>
+				{{else bookmark}}
+					<!-- Bookmark -->
+					<a href="{{=bookmark.url!}}" target="_blank">{{=bookmark.title}}</a>
+				{{/if}}
+			</div>
+		
+			<!-- Author -->
+			{{#if bibtex}}
+				<div class="bmdesc">
+					<span class="authorEditorList">{{=bibtex.author}}</span>
+				</div>
+			{{/if}}
+		
+			<!-- Tags -->
+			<span class="bmmeta">
+				{{each tag content="#tpl_Tags"}} {{getString "post.meta.taggedBy"}} <a name="{{=user.name}}" href="{{=$ctx.projectHome}}user/{{encodeURI user.name}}" target="_blank">{{=user.name}}</a>
+			</span>
+					
+		</li>
+	</script>
+	
+	<!--+
+		| render a list of tags
+		+-->
+	<script id="tpl_Tags" type="text/x-jquery-tmpl">
+		<span class="bmtags">
+			<a href="{{=$ctx.projectHome}}tag/{{encodeURI name}}" target="_blank">{{=name}}</a>
+		</span>
+	</script>
+	
+	<!--+
+		| render an oauth error message
+		+-->
+	<script id="tpl_Error_OAuth" type="text/x-jquery-tmpl">
+		Whoops, something went wrong! You can try to reload this gadget or if this doesn't help, maybe there is a problem with your settings.
+		<br/>
+		<a href="#" onclick="onLoad();">Reload this gadget.</a>		
+	</script>
+	    
+    <!--+
+    	| custom tags
+    	+-->
+    <script type="text/javascript">
+        //<![CDATA[
+		$.views.registerTags({
+			/**
+			 * get localized strings
+			 */
+		    getString: function(value, hash, content){
+		        return getString(value);
+		    },
+		    /**
+		     * encode URIs
+		     */
+		    encodeURI: function(value, hash, content){
+		        return encodeURIComponent(value);
+		    },
+		    /**
+		     * parse date objects
+		     */
+		    parseDate: function(dateString) {
+    			if (!dateString) {
+    				dateString = "0";
+    			}
+    
+			    // parseDate doesn't know milliseconds
+    			dateString = dateString.substring(0,19);
+    			var testDate = new Date(getDateFromFormat(dateString, getString("opensocial.date.rest.format")));
+    			return formatDate(testDate, getString("opensocial.date.output.format"));
+    		},
+    		/**
+    		 * marshalling
+    		 */
+    		concatTags: function (tags) {
+    			if (!tags) {
+    				return "";
+    			}
+			    var copyTags = "";
+			    for(i=0; i<tags.length; i++) {
+			        copyTags += encodeURIComponent(tags[i].name);
+			        if (i != tags.length -1) {
+			           copyTags += "+";
+			        }
+			    }
+			    return copyTags;
+			}
+		});
+		//]]>
+	</script>
+	
+    <!--+
+    	| helper functions
+    	+-->
+    <script type="text/javascript">
+    //<![CDATA[
+	//]]>
+	</script>
+</templates>

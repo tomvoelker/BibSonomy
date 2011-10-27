@@ -1,69 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module> 
-  <ModulePrefs title="BibSonomy REST Client" height="200" scrolling="true" author="Folke Mitzlaff" author_email="mitzlaff@cs.uni-kassel.de" description="This gadget demonstrates how to query BibSonomy&apos;s REST-Api in an OpenSocial Gadget via OAuth"> 
- 
-    <Require feature="dynamic-height"></Require> 
-    <OAuth> 
-      <Service name="BibSonomy"> 
-        <Request url="http://www.bibsonomy.org/oauth/requestToken"></Request> 
-        <Authorization url="http://www.bibsonomy.org/oauth/authorize?oauth_callback=http://opensocial.bibsonomy.org/gadgets/oauthcallback"></Authorization> 
-        <Access url="http://www.bibsonomy.org/oauth/accessToken"></Access> 
-      </Service> 
-    </OAuth> 
-    <Require feature="oauthpopup"></Require>   
-    <Require feature="opensocial-0.8"></Require>
-    <Optional feature="content-rewrite"> 
-      <Param name="include-tags"></Param> 
-    </Optional> 
+<Module>
+	<ModulePrefs title="BibSonomy REST Client" height="200"
+		scrolling="true" author="Folke Mitzlaff" author_email="mitzlaff@cs.uni-kassel.de"
+		description="This gadget demonstrates how to query BibSonomy&apos;s REST-Api in an OpenSocial Gadget via OAuth">
 
-  </ModulePrefs> 
-  <UserPref name="query" display_name="Bibsonomy API Query" datatype="string" default_value="/posts?resourcetype=bibtex&amp;format=json&amp;start=0&amp;end=4" required="true" />
-  <Content type="html" xmlns:bs="http://www.bibsonomy.org/"> 
+		<Require feature="dynamic-height"></Require>
+		<OAuth>
+			<Service name="BibSonomy">
+				<Request url="http://folke.biblicious.org/oauth/requestToken"></Request>
+				<Authorization url="http://folke.biblicious.org/oauth/authorize?oauth_callback=http://opensocial.bibsonomy.org/gadgets/oauthcallback"></Authorization>
+				<Access url="http://folke.biblicious.org/oauth/accessToken"></Access>
+			</Service>
+		</OAuth>
+		<Require feature="oauthpopup"></Require>
+		<Require feature="opensocial-0.8"></Require>
+		<Optional feature="content-rewrite">
+			<Param name="include-tags"></Param>
+		</Optional>
+
+	</ModulePrefs>
+	<UserPref name="query" display_name="Bibsonomy API Query"
+		datatype="string"
+		default_value="/posts?resourcetype=bibtex&amp;format=json&amp;start=0&amp;end=4"
+		required="true" />
+	<Content type="html" xmlns:bs="http://www.bibsonomy.org/"> 
     <![CDATA[
        <!-- gadget styling --> 
-       <link rel="stylesheet" type="text/css" href="http://www.bibsonomy.org/resources/opensocial/css/osstyle.css"/> 
  
        <!-- bibsonomy styling --> 
-       <link rel="stylesheet" type="text/css" href="http://www.bibsonomy.org/resources/opensocial/css/opensocial.css"/> 
+       <link rel="stylesheet" type="text/css" href="http://folke.biblicious.org/resources/opensocial/css/opensocial.css"/> 
 	 
-       <!-- Load the bundled code for OpenSocial Templates --> 
-       <script type="text/javascript" src="http://ostemplates-demo.appspot.com/ostemplates.js"></script> 
- 
        <!-- Load the OAuth sample code --> 
-       <script type="text/javascript" src="http://www.bibsonomy.org/resources/opensocial/javascript/oauth.js"></script>
- 
+       <script type="text/javascript" src="http://folke.biblicious.org/resources/opensocial/javascript/oauth.js"></script>
+       
+	   <script type="text/javascript" src="http://folke.biblicious.org/resources/jquery/jquery.js"><!-- keep me --></script>
+	   
+	   <!-- json templating -->
+       <script type="text/javascript" src="http://folke.biblicious.org/resources/javascript/jsrender.js"></script>
+       
        <!-- Date handling --> 
        <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/date.js"></script> 
  
+ 	   <!-- localization -->
+	   <script type="text/javascript" src="http://folke.biblicious.org/resources/javascript/localized_strings_en.js"><!-- keep me --></script>
+	   <script type="text/javascript" src="http://folke.biblicious.org/resources/javascript/functions.js"><!-- keep me --></script>
+	   
+	   <!-- template library will dynamically be placed here -->
+	   <div id="templates"><!-- keep me! --></div>
+
+	   <!-- main content will be rendered here --> 
        <div id="gadgetContent"></div> 
- 
-       <script type="text/os-template" name="postList"> 
-	 <div id="bibtexList" class="bookbox">
-	 <ul id="bibtex">
-	   <li class="bm" repeat="posts.post"><bs:Post post="${Cur}"/></li>
-	 </ul>
-	 </div>
-       </script> 
- 
+ 		
        <!-- authorization links will be displayed here --> 
        <div id="main" style="display: none"> 
        </div> 
  
-       <div id="approval" style="display: none"> 
-	 <img src="http://folke.mitzlaff.org/os/key.png" /> 
-	   <a href="#" id="personalize">Personalize this gadget</a> 
-	 </div> 
+       <div id="approval" style="display: none">
+			<img src="http://folke.mitzlaff.org/os/key.png" /> 
+	   		<a href="#" id="personalize">Personalize this gadget</a> 
+	   </div> 
  
-	 <div id="waiting" style="display: none"> 
-	   Please click <a href="#" id="approvaldone">I've approved access</a> once you've approved access to your data.
-	 </div> 
+	   <div id="waiting" style="display: none"> 
+	   		Please click <a href="#" id="approvaldone">I've approved access</a> once you've approved access to your data.
+	   </div> 
  
  
-	 <!-- main --> 
-	 <script type="text/javascript"> 
-	   os.createNamespace('bs', 'http://www.bibsonomy.org');
-	   gadgets.util.registerOnLoadHandler(onLoad);
-	 </script> 
+	   <!-- main --> 
+	   <script type="text/javascript"> 
+	   		var gadgetControl = new GadgetControl("http://folke.biblicious.org/", "#gadgetContent", new _IG_Prefs());
+	   		gadgets.util.registerOnLoadHandler(function(data){gadgetControl["onLoad"]()});
+	   </script> 
 	 ]]>
-  </Content>   
+	</Content>
 </Module>
