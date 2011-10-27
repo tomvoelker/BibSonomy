@@ -23,7 +23,7 @@ use File::Find;
 # Collect all occurrences of calls to the "getString()" method that we
 # use for localization in JavaScript files - from BibSonomy and Puma
 
-my @directories_to_search = ('.', '../../resources_puma/javascript', '../templates');
+my @directories_to_search = ('.', '../../resources_puma/javascript', '../templates', '../opensocial/templates');
 my @jsFiles = ();
 my @templateFiles = ();
 find(sub { push(@jsFiles, $File::Find::name) if /\.js$/ }, @directories_to_search);
@@ -68,7 +68,8 @@ foreach my $file (@templateFiles) {
     open (TPL, "<$file") or die "could not open $file\n";
     while (<TPL>) {
 	# extract all calls to the "getString" method
-	if (/{{getString\s+\"(.+?)\"}}/) {
+	if (/getString\s*\(?[\"'](.+?)[\"']/) {
+	    print STDERR ">>> $1\n";
 	    # method arguments
 	    # only string literals supported
 	    $keyPatterns{quotemeta($1)} = 1;
