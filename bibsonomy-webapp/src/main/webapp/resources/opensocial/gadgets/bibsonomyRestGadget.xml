@@ -50,22 +50,8 @@
 
 	   <!-- main content will be rendered here --> 
        <div id="gadgetContent"></div> 
- 		
-       <!-- authorization links will be displayed here --> 
-       <div id="main" style="display: none"> 
-       </div> 
  
-       <div id="approval" style="display: none">
-			<img src="http://folke.mitzlaff.org/os/key.png" /> 
-	   		<a href="#" id="personalize">Personalize this gadget</a> 
-	   </div> 
- 
-	   <div id="waiting" style="display: none"> 
-	   		Please click <a href="#" id="approvaldone">I've approved access</a> once you've approved access to your data.
-	   </div> 
- 
- 
-	   <!-- main --> 
+	   <!-- start javascript --> 
 	   <script type="text/javascript"> 
 	   		var gadgetControl = new GadgetControl("http://folke.biblicious.org/", "#gadgetContent", new _IG_Prefs());
 	   		gadgets.util.registerOnLoadHandler(function(data){gadgetControl["onLoad"]()});

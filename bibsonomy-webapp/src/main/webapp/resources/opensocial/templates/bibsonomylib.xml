@@ -80,13 +80,40 @@
 		</span>
 	</script>
 	
+	<!-- ============================================================================================ -->
+	<!-- OAuth administrative templates -->
+	<!-- ============================================================================================ -->
+	<!--+
+		| render approval message
+		+-->
+	<script id="tpl_OAuth_Approval" type="text/x-jquery-tmpl">
+		<img src="http://oauth.net/images/oauth-logo.png" /> <br/>
+	   	{{getString "opensocial.oauth.personalize"}}
+	</script>
+	
+	<!--+
+		| render waiting message
+		+-->
+	<script id="tpl_OAuth_Waiting" type="text/x-jquery-tmpl">
+		{{getString "opensocial.oauth.waiting"}}
+	</script>
+	
 	<!--+
 		| render an oauth error message
 		+-->
 	<script id="tpl_Error_OAuth" type="text/x-jquery-tmpl">
-		Whoops, something went wrong! You can try to reload this gadget or if this doesn't help, maybe there is a problem with your settings.
+		<img src="{{=$ctx.projectHome}}resources/opensocial/image/status_error.png" style="float: right;"/>
+		{{getString "opensocial.gadget.error"}}
+		
+		<a href="#" onclick="gadgetControl.onLoad();">{{getString "opensocial.gadget.reload"}}</a>		
 		<br/>
-		<a href="#" onclick="onLoad();">Reload this gadget.</a>		
+			{{#if oauthErrorText}}
+			<hr/>
+			{{getString "opensocial.gadget.servertext"}}
+			<ul>
+				<li><em>{{=oauthErrorText}}</em></li>
+			</ul>
+		{{/if}}		
 	</script>
 	    
     <!--+

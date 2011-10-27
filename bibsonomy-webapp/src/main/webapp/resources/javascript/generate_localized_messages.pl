@@ -69,7 +69,6 @@ foreach my $file (@templateFiles) {
     while (<TPL>) {
 	# extract all calls to the "getString" method
 	if (/getString\s*\(?[\"'](.+?)[\"']/) {
-	    print STDERR ">>> $1\n";
 	    # method arguments
 	    # only string literals supported
 	    $keyPatterns{quotemeta($1)} = 1;
@@ -107,7 +106,7 @@ foreach my $file (@files) {
 	chomp($line);
 
 	# skip comments
-	next LINE if ($line =~ m/\s*#/);
+	next LINE if ($line =~ m/^\s*#/);
 	#
 	# messages_de.properties is in latin1 (because of a strange Java/JSTL bug)
 	# but we want UTF-8 for the JavaScript file ... so we convert
