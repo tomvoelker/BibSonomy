@@ -14,13 +14,13 @@ function GadgetControl(projectHome, templateDomElement, prefs) {
     
     // set to true, when templates are loaded
     this.isReady = false;
-    
 };
 
 /**
  * onload handler
  */
 GadgetControl.prototype.onLoad = function() {
+	// ensure that the template library is loaded exactly once
 	if (!this.isReady) {
 	    var backref = this;
 		$("#templates").load(this.projectHome+'resources/opensocial/templates/bibsonomylib.xml', function(data, textStatus) {
@@ -53,13 +53,20 @@ GadgetControl.prototype.fetchData = function(url) {
 	    	//
 		    // Approval needed
 	    	//
-	    	var onOpen  = function() { backref.showOneSection('waiting'); };
+	    	var onOpen  = function() {
+	    		$("#gadgetContent").html(
+					$("#tpl_OAuth_Waiting").render(response, {projectHome: backref.projectHome})
+				);
+				document.getElementById('approvaldone').onclick = backref.popup.createApprovedOnClick();
+	    	};
 			var onClose = function() { backref.onLoad(); };
-			var popup   = new gadgets.oauth.Popup(response.oauthApprovalUrl, null, onOpen, onClose);
+			backref.popup   = new gadgets.oauth.Popup(response.oauthApprovalUrl, null, onOpen, onClose);
 	            				
-			document.getElementById('personalize').onclick = popup.createOpenerOnClick();
-			document.getElementById('approvaldone').onclick = popup.createApprovedOnClick();
-			backref.showOneSection('approval');
+			$("#gadgetContent").html(
+				$("#tpl_OAuth_Approval").render(response, {projectHome: backref.projectHome})
+			);
+			document.getElementById('personalize').onclick = backref.popup.createOpenerOnClick();
+			
 	    } else if (response.data) {
 			//
 		    // Show Data
@@ -68,18 +75,24 @@ GadgetControl.prototype.fetchData = function(url) {
 				$("#tpl_postList").render(response.data, {projectHome: backref.projectHome})
 			);
 			
-			backref.showOneSection('main');
 			gadgets.window.adjustHeight();
 	    } else {
 		   	//
 			// Error-Handling
 		    //
+	    	
+	    	// shorten error messages
+	    	if (response.oauthErrorText && response.oauthErrorText.indexOf("===")>0) {
+	    		response.oauthErrorText = response.oauthErrorText.substring(0, response.oauthErrorText.indexOf("==="));
+	    	} else if (!response.oauthErrorText) {
+	    		response.oauthErrorText = JSON.stringify(response);
+	    	}
 
 		    // render error message
 			$("#gadgetContent").html(
 				$("#tpl_Error_OAuth").render(response, {projectHome: backref.projectHome})
 			);
-			backref.showOneSection('main');
+			gadgets.window.adjustHeight();
 	    }
 	}, params);
 };
@@ -87,26 +100,6 @@ GadgetControl.prototype.fetchData = function(url) {
 //------------------------------------------------------------------------------------------------
 // helper methods
 //------------------------------------------------------------------------------------------------
-/**
- * switches between the different views 'main', 'approval' and 'waiting'
- * which are used to model the oauth authorization process
- * 
- * @param toshow
- * @return
- */
-GadgetControl.prototype.showOneSection = function(toshow) {
-    var sections = [ 'main', 'approval', 'waiting' ];
-    for (var i=0; i < sections.length; ++i) {
-		var s = sections[i];
-		var el = document.getElementById(s);
-		if (s === toshow) {
-		    el.style.display = "block";
-		} else {
-		    el.style.display = "none";
-		}
-    }
-};
-
 /**
  * Delete old dom tree if exists
  */
