@@ -57,6 +57,7 @@ public abstract class AbstractQuery<T> {
 	protected static final String URL_POSTS_ADDED = RestProperties.getInstance().getAddedPostsUrl();
 	protected static final String URL_POSTS_POPULAR = RestProperties.getInstance().getPopularPostsUrl();
 	protected static final String URL_CONCEPTS = RestProperties.getInstance().getConceptUrl();
+	protected static final String URL_SYNC = RestProperties.getInstance().getSyncUrl();
 
 	private String apiKey;
 	private String username;

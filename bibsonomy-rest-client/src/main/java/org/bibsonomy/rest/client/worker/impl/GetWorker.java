@@ -79,7 +79,12 @@ public final class GetWorker extends HttpWorker<GetMethod> {
 	private Reader performDownload(final InputStream responseBodyAsStream, final long responseContentLength) throws ErrorPerformingRequestException, IOException {
 		if (responseContentLength > Integer.MAX_VALUE) throw new ErrorPerformingRequestException("The response is to long: " + responseContentLength);
 
-		final StringBuilder sb = new StringBuilder((int) responseContentLength);
+		StringBuilder sb = null;
+		if(responseContentLength < 0) {
+			sb = new StringBuilder();
+		} else {
+			sb = new StringBuilder((int) responseContentLength);
+		}
 		final BufferedReader br = new BufferedReader(new InputStreamReader(responseBodyAsStream, "UTF-8"));
 		int bytesRead = 0;
 		String line = null;

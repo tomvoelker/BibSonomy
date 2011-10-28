@@ -41,7 +41,7 @@ public final class DeleteWorker extends HttpWorker<DeleteMethod> {
 	}
 	
 	@Override
-	protected DeleteMethod getMethod(final String url, String requestBody) {
+	protected DeleteMethod getMethod(final String url, final String requestBody) {
 		final DeleteMethod delete = new DeleteMethod(url);
 		delete.setFollowRedirects(true);
 		return delete;

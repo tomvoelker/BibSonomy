@@ -24,10 +24,12 @@
 package org.bibsonomy.rest.client;
 
 import java.net.InetAddress;
+import java.net.URI;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -58,13 +60,21 @@ import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.model.sync.ConflictResolutionStrategy;
+import org.bibsonomy.model.sync.SyncService;
+import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationDirection;
+import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
+import org.bibsonomy.rest.client.queries.delete.DeleteSyncDataQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
 import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
 import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
+import org.bibsonomy.rest.client.queries.get.GetLastSyncDataQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
@@ -78,9 +88,11 @@ import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
+import org.bibsonomy.rest.client.queries.post.GetSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
+import org.bibsonomy.rest.client.queries.put.UpdateSyncStatusQuery;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
 import org.bibsonomy.rest.renderer.RendererFactory;
@@ -101,6 +113,7 @@ public class RestLogic implements LogicInterface {
 	private final RendererFactory rendererFactory;
 	private final RenderingFormat renderingFormat;
 	private final ProgressCallbackFactory progressCallbackFactory;
+	
 
 	/**
 	 * @param username the username
@@ -229,7 +242,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<String> createPosts(final List<Post<?>> posts) {
+	public List<String> createPosts(final List<Post<?>> posts) {		
 		/*
 		 * FIXME: this iteration should be done on the server, i.e.,
 		 * CreatePostQuery should support several posts ... although it's
@@ -276,8 +289,7 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public String createDocument(final Document doc, final String resourceHash) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -296,58 +308,53 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public void deleteDocument(final Document document, final String resourceHash) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void deleteInetAdressStatus(final InetAddress address) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 
 	}
 
 	@Override
 	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -365,71 +372,63 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public String getClassifierSettings(final ClassifierSettings key) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<User> getClassifierHistory(final String userName) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<User> getClassifierComparison(final int interval, final int limit) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String getOpenIDUser(final String openID) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
-		return 0;
+		//TODO maybe return 0;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, final String tag) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 
 	}
 
@@ -467,102 +466,160 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public int createBasketItems(final List<Post<? extends Resource>> posts) {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox) {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String getUsernameByLdapUserId(final String userId) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void createReferences(final String postHash, final Set<String> references) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void deleteReferences(final String postHash, final Set<String> references) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Date> getWikiVersions(final String userName) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Wiki getWiki(final String userName, final Date date) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void createWiki(final String userName, final Wiki wiki) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void updateWiki(final String userName, final Wiki wiki) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void deleteWiki(final String userName) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void createExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void deleteExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Map<String, List<String>> getExtendedFields(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void createDiscussionItem(final String interHash, final String username, final DiscussionItem comment) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 
 	}
 
 	@Override
 	public void updateDiscussionItem(final String username, final String interHash, final DiscussionItem discussionItem) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 
 	}
 
 	@Override
 	public void deleteDiscussionItem(final String username, final String interHash, final String commentHash) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 
 	}
 
 	@Override
 	public List<DiscussionItem> getDiscussionSpace(final String interHash) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void createSyncService(final URI service, final boolean server, final String ssl_dn) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void deleteSyncService(final URI service, final boolean server) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<URI> getSyncServices(final boolean server) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+		throw new UnsupportedOperationException();
+		
+	}
+
+	@Override
+	public void deleteSyncServer(final String userName, final URI service) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<SyncService> getSyncServer(final String userName) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<SynchronizationPost> getSyncPosts(final String userName, final Class<? extends Resource> resourceType) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
+		
+		final Boolean result = this.execute(new UpdateSyncStatusQuery(service.toString(), resourceType, null, null, status, info));
+		if(!result){
+			log.error("can't update sync status");
+		}
+	}
+
+	@Override
+	public void deleteSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate) {
+		this.execute(new DeleteSyncDataQuery(service.toString(), resourceType, syncDate, null, null));
+	}
+
+	@Override
+	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType) {
+		final SynchronizationData synchronizationData = this.execute(new GetLastSyncDataQuery(service.toString(), resourceType, null, null)).get(resourceType);
+		return synchronizationData;
+	}
+
+	@Override
+	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
+		return this.execute(new GetSyncPlanQuery(service.toString(), clientPosts, resourceType, strategy, direction));
 	}
 }
