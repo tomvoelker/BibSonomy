@@ -7,11 +7,9 @@
  */
 function GadgetControl(projectHome, templateDomElement, prefs) {
 	this.projectHome = projectHome;
-
     this.prefs = prefs; 
     this.apiUrl = projectHome+"api";
     this.apiquery = prefs.getString("query");
-    
     // set to true, when templates are loaded
     this.isReady = false;
 };
@@ -20,9 +18,10 @@ function GadgetControl(projectHome, templateDomElement, prefs) {
  * onload handler
  */
 GadgetControl.prototype.onLoad = function() {
+    var backref = this;
+    
 	// ensure that the template library is loaded exactly once
 	if (!this.isReady) {
-	    var backref = this;
 	    
 	    var params = {};
 	    params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
@@ -35,7 +34,15 @@ GadgetControl.prototype.onLoad = function() {
 	    }, params);
 
 	}
-    this.fetchData(this.apiUrl + this.apiquery);
+	
+	// ensure that user preferences are set
+	if (!this.apiquery) {
+		$("#gadgetContent").html(
+			$("#tpl_Error_Config").render(null, {projectHome: backref.projectHome})
+		);
+	} else {
+		this.fetchData(this.apiUrl + this.apiquery);
+	}
 };
 
 /**
