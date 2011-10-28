@@ -66,8 +66,10 @@
 			var sphere	= prefs.getString("sphere");
 			var resource	= prefs.getString("resourcetype");
 
-			var query = "/posts?start=0&end=5&format=json&resourcetype=" + resource + "&friend=" + user + "&tags=sys:relation:" + sphere;
-			prefs.set("query", query);
+			if (user && sphere && resource) {
+				var query = "/posts?start=0&end=5&format=json&resourcetype=" + resource + "&friend=" + user + "&tags=sys:relation:" + sphere;
+				prefs.set("query", query);
+			}
 
 	   		var gadgetControl = new GadgetControl("http://www.bibsonomy.org/", "#gadgetContent", prefs);
 	   		gadgets.util.registerOnLoadHandler(function(data){gadgetControl["onLoad"]()});

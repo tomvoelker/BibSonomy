@@ -107,7 +107,7 @@
 		
 		<a href="#" onclick="gadgetControl.onLoad();">{{getString "opensocial.gadget.reload"}}</a>		
 		<br/>
-			{{#if oauthErrorText}}
+		{{#if oauthErrorText}}
 			<hr/>
 			{{getString "opensocial.gadget.servertext"}}
 			<ul>
@@ -115,7 +115,17 @@
 			</ul>
 		{{/if}}		
 	</script>
-	    
+	
+	<!--+
+		| render an oauth error message
+		+-->
+	<script id="tpl_Error_Config" type="text/x-jquery-tmpl">
+		<img src="{{=$ctx.projectHome}}resources/opensocial/image/status_error.png" style="float: right;"/>
+		{{getString "opensocial.gadget.config.missing"}}
+		
+		<a href="#" onclick="gadgetControl.onLoad();">{{getString "opensocial.gadget.reload"}}</a>		
+	</script>
+	
     <!--+
     	| custom tags
     	+-->
