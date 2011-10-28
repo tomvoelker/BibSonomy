@@ -22,10 +22,12 @@
 	
 	<resultMap id="syncService" class="syncService">
 		<result property="service"		column="uri"			javaType="uri" />
-		<result property="serverUser"	column="credentials"	javaType="properties"/>
+		<result property="secureAPI"	column="secure_api"     javaType="uri" />
+		<result property="user"			column="credentials"	javaType="properties"/>
 		<result property="direction"	column="direction"		javaType="syncDirection" />
 		<result property="resourceType"	column="content_type"	javaType="resourceTypeClass" />
 		<result property="strategy"		column="strategy"		javaType="conflictStrategy" />
+		<result property="ssl_dn"		column="ssl_dn"			javaType="string" />
 	</resultMap>
 	
 	<sql id="syncDataColumns">
