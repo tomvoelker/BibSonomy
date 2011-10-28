@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+	<ModulePrefs title="BibSonomy Spheres" height="200"
+		scrolling="true" author="Folke Mitzlaff" author_email="mitzlaff@cs.uni-kassel.de"
+		description="This gadget demonstrates how to query BibSonomy&apos;s REST-Api in an OpenSocial Gadget via OAuth">
+
+		<Require feature="dynamic-height"></Require>
+		<Require feature="setprefs"></Require>
+		<OAuth>
+			<Service name="BibSonomy">
+				<Request url="http://www.bibsonomy.org/oauth/requestToken"></Request>
+				<Authorization url="http://www.bibsonomy.org/oauth/authorize?oauth_callback=http://opensocial.bibsonomy.org/gadgets/oauthcallback"></Authorization>
+
+				<Access url="http://www.bibsonomy.org/oauth/accessToken"></Access>
+			</Service>
+		</OAuth>
+		<Require feature="oauthpopup"></Require>
+		<Require feature="opensocial-0.8"></Require>
+
+		<Optional feature="content-rewrite">
+			<Param name="include-tags"></Param>
+		</Optional>
+
+	</ModulePrefs>
+
+	<UserPref name="user" display_name="Bibsonomy user-name" datatype="string" required="true" />
+	<UserPref name="resourcetype" display_name="Resource" datatype="enum" required="true">
+		<EnumValue value="bookmark" display_value="Bookmarks"/>
+		<EnumValue value="bibtex" display_value="Publications"/>
+	</UserPref>
+	<UserPref name="sphere" display_name="Sphere-name" datatype="string" required="true" />
+	<UserPref name="query" datatype="hidden" />
+
+	<Content type="html" xmlns:bs="http://www.bibsonomy.org/"> 
+    <![CDATA[
+       <!-- gadget styling --> 
+ 
+       <!-- bibsonomy styling --> 
+       <link rel="stylesheet" type="text/css" href="http://www.bibsonomy.org/resources/opensocial/css/opensocial.css"/> 
+	 
+       <!-- Load the OAuth sample code --> 
+       <script type="text/javascript" src="http://www.bibsonomy.org/resources/opensocial/javascript/oauth.js"></script>
+       
+	   <script type="text/javascript" src="http://www.bibsonomy.org/resources/jquery/jquery.js"><!-- keep me --></script>
+	   
+	   <!-- json templating -->
+       <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/jsrender.js"></script>
+       
+       <!-- Date handling --> 
+       <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/date.js"></script> 
+ 
+ 	   <!-- localization -->
+	   <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/localized_strings_en.js"><!-- keep me --></script>
+	   <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/functions.js"><!-- keep me --></script>
+	   
+	   <!-- template library will dynamically be placed here -->
+	   <div id="templates"><!-- keep me! --></div>
+
+	   <!-- main content will be rendered here --> 
+       <div id="gadgetContent"></div> 
+ 
+	   <!-- start javascript --> 
+	   <script type="text/javascript">
+			var prefs	= new _IG_Prefs();
+			var user	= prefs.getString("user");
+			var sphere	= prefs.getString("sphere");
+			var resource	= prefs.getString("resourcetype");
+
+			var query = "/posts?start=0&end=5&format=json&resourcetype=" + resource + "&friend=" + user + "&tags=sys:relation:" + sphere;
+			prefs.set("query", query);
+
+	   		var gadgetControl = new GadgetControl("http://www.bibsonomy.org/", "#gadgetContent", prefs);
+	   		gadgets.util.registerOnLoadHandler(function(data){gadgetControl["onLoad"]()});
+	   </script> 
+	 ]]>
+	</Content>
+</Module>
