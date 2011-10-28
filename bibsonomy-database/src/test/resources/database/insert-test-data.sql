@@ -97,10 +97,11 @@ INSERT INTO `bibtex` (`content_id`, `user_name`, `simhash1`, `simhash2`, `change
 -- post 7 "created on client" is not in the server database
 
 
-INSERT INTO `sync_services` (`uri`, `service_id`, server) VALUES
-('http://www.bibsonomy.org/', 1, FALSE),
-('http://www.test.de/', 2, TRUE),
-('http://www.test.de/', 0, FALSE);
+INSERT INTO `sync_services` (`uri`, `service_id`, server, ssl_dn) VALUES
+('http://www.bibsonomy.org/', 1, FALSE, 'bibsonomy test ssl dn'),
+('http://www.test.de/', 2, TRUE, 'test.de ssl dn'),
+('http://www.test.de/', 0, FALSE, 'test.de ssl dn'),
+('http://localhost:8080/', 10, TRUE, 'localhost ssl dn');
 
 -- synchronization data table
 INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`, `info`) VALUES 
@@ -110,7 +111,7 @@ INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_d
 
 INSERT INTO `sync` (`user_name`, `service_id`, `credentials`, `content_type`, `direction`) VALUES
 ('syncuser1', '1', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785', 0, 'both'),
-('sync2', '2', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785', 0, 'both')
+('sync2', '10', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785', 0, 'both')
 ;
 
 
