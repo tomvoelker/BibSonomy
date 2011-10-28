@@ -7,9 +7,9 @@
 		<Require feature="dynamic-height"></Require>
 		<OAuth>
 			<Service name="BibSonomy">
-				<Request url="http://folke.biblicious.org/oauth/requestToken"></Request>
-				<Authorization url="http://folke.biblicious.org/oauth/authorize?oauth_callback=http://opensocial.bibsonomy.org/gadgets/oauthcallback"></Authorization>
-				<Access url="http://folke.biblicious.org/oauth/accessToken"></Access>
+				<Request url="http://www.bibsonomy.org/oauth/requestToken"></Request>
+				<Authorization url="http://www.bibsonomy.org/oauth/authorize?oauth_callback=http://opensocial.bibsonomy.org/gadgets/oauthcallback"></Authorization>
+				<Access url="http://www.bibsonomy.org/oauth/accessToken"></Access>
 			</Service>
 		</OAuth>
 		<Require feature="oauthpopup"></Require>
@@ -28,22 +28,22 @@
        <!-- gadget styling --> 
  
        <!-- bibsonomy styling --> 
-       <link rel="stylesheet" type="text/css" href="http://folke.biblicious.org/resources/opensocial/css/opensocial.css"/> 
+       <link rel="stylesheet" type="text/css" href="http://www.bibsonomy.org/resources/opensocial/css/opensocial.css"/> 
 	 
        <!-- Load the OAuth sample code --> 
-       <script type="text/javascript" src="http://folke.biblicious.org/resources/opensocial/javascript/oauth.js"></script>
+       <script type="text/javascript" src="http://www.bibsonomy.org/resources/opensocial/javascript/oauth.js"></script>
        
-	   <script type="text/javascript" src="http://folke.biblicious.org/resources/jquery/jquery.js"><!-- keep me --></script>
+	   <script type="text/javascript" src="http://www.bibsonomy.org/resources/jquery/jquery.js"><!-- keep me --></script>
 	   
 	   <!-- json templating -->
-       <script type="text/javascript" src="http://folke.biblicious.org/resources/javascript/jsrender.js"></script>
+       <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/jsrender.js"></script>
        
        <!-- Date handling --> 
        <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/date.js"></script> 
  
  	   <!-- localization -->
-	   <script type="text/javascript" src="http://folke.biblicious.org/resources/javascript/localized_strings_en.js"><!-- keep me --></script>
-	   <script type="text/javascript" src="http://folke.biblicious.org/resources/javascript/functions.js"><!-- keep me --></script>
+	   <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/localized_strings_en.js"><!-- keep me --></script>
+	   <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/functions.js"><!-- keep me --></script>
 	   
 	   <!-- template library will dynamically be placed here -->
 	   <div id="templates"><!-- keep me! --></div>
@@ -53,7 +53,7 @@
  
 	   <!-- start javascript --> 
 	   <script type="text/javascript"> 
-	   		var gadgetControl = new GadgetControl("http://folke.biblicious.org/", "#gadgetContent", new _IG_Prefs());
+	   		var gadgetControl = new GadgetControl("http://www.bibsonomy.org/", "#gadgetContent", new _IG_Prefs());
 	   		gadgets.util.registerOnLoadHandler(function(data){gadgetControl["onLoad"]()});
 	   </script> 
 	 ]]>
