@@ -100,7 +100,6 @@ import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
-import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
@@ -123,7 +122,7 @@ import org.bibsonomy.util.ObjectUtils;
  * 
  * @version $Id$
  */
-public class DBLogic implements LogicInterface, SyncLogicInterface {
+public class DBLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(DBLogic.class);
 
 	/*
@@ -300,71 +299,71 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 		final Map<String, SynchronizationPost> serverPosts;
 		final List<SynchronizationPost> posts;
 
-		final DBSession session = this.openSession();
-		try {
-			final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
-			/*
-			 * check for a running synchronization
-			 */
-			if (present(data) && SynchronizationStatus.RUNNING.equals(data.getStatus())) {
-				// running synchronization
-				// FIXME: if synchronization fails, we can't recover 
-				throw new SynchronizationRunningException();
-			}
-			/*
-			 * check for last successful synchronization 
-			 */
-			final SynchronizationData lsd = this.syncDBManager.getLastSyncData(userName, service, resourceType, SynchronizationStatus.DONE, session);
-			if (present(lsd)) {
-				lastSuccessfulSyncDate = lsd.getLastSyncDate();	
-			}
-			/*
-			 * flag synchronization as planned
-			 * FIXME: if the client is not in the sync_services table, this 
-			 * statements silently fails. :-(
-			 */
-			this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.PLANNED, session);
-
-			/*
-			 * get posts from server (=this machine)
-			 */
-			if (BibTex.class.equals(resourceType)) {
-				serverPosts = publicationDBManager.getSyncPostsMapForUser(userName, session);
-			} else if(Bookmark.class.equals(resourceType)){
-				serverPosts = bookmarkDBManager.getSyncPostsMapForUser(userName, session);
-			} else {
-				throw new UnsupportedResourceTypeException();
-			}
-
-			/*
-			 * if necessary, set the synchronization date to some distant old value  
-			 */
-			if (!present(lastSuccessfulSyncDate)) {
-				lastSuccessfulSyncDate = new Date(0);
-			}
-			/*
-			 * calculate synchronization plan
-			 */
-			posts = this.syncDBManager.getSyncPlan(serverPosts, clientPosts, lastSuccessfulSyncDate, strategy, direction);
-
-			/*
-			 * attach "real" posts to the synchronization posts, which will be updated (or created) on the client
-			 */
-			for (final SynchronizationPost post : posts) {
-				switch (post.getAction()) {
-				case CREATE_CLIENT:
-				case UPDATE_CLIENT:
-					post.setPost(this.getPostDetails(post.getIntraHash(), userName));
-					break;
-				default:
-					break;
-				}
-			}
-
-		} finally {
-			session.close();
-		}
-
+    	final DBSession session = this.openSession();
+    	try {
+    		final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
+    		/*
+    		 * check for a running synchronization
+    		 */
+    		if (present(data) && SynchronizationStatus.RUNNING.equals(data.getStatus())) {
+    			// running synchronization
+    			// FIXME: if synchronization fails, we can't recover 
+    			throw new SynchronizationRunningException();
+    		}
+    		/*
+    		 * check for last successful synchronization 
+    		 */
+    		final SynchronizationData lsd = this.syncDBManager.getLastSyncData(userName, service, resourceType, SynchronizationStatus.DONE, session);
+    		if (present(lsd)) {
+    			lastSuccessfulSyncDate = lsd.getLastSyncDate();	
+    		}
+    		/*
+    		 * flag synchronization as planned
+    		 * FIXME: if the client is not in the sync_services table, this 
+    		 * statements silently fails. :-(
+    		 */
+    		log.info("try to set syncdata as planned");
+    		this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.PLANNED, session);
+    		
+    		/*
+    		 * get posts from server (=this machine)
+    		 */
+    		if (BibTex.class.equals(resourceType)) {
+    			serverPosts = publicationDBManager.getSyncPostsMapForUser(userName, session);
+    		} else if(Bookmark.class.equals(resourceType)){
+    			serverPosts = bookmarkDBManager.getSyncPostsMapForUser(userName, session);
+    		} else {
+    			throw new UnsupportedResourceTypeException();
+    		}
+    		
+    		/*
+    		 * if necessary, set the synchronization date to some distant old value  
+    		 */
+    		if (!present(lastSuccessfulSyncDate)) {
+    			lastSuccessfulSyncDate = new Date(0);
+    		}
+    		/*
+    		 * calculate synchronization plan
+    		 */
+    		posts = this.syncDBManager.getSyncPlan(serverPosts, clientPosts, lastSuccessfulSyncDate, strategy, direction);
+    		
+    		/*
+    		 * attach "real" posts to the synchronization posts, which will be updated (or created) on the client
+    		 */
+    		for (final SynchronizationPost post : posts) {
+    			switch (post.getAction()) {
+    			case CREATE_CLIENT:
+    			case UPDATE_CLIENT:
+    				post.setPost(this.getPostDetails(post.getIntraHash(), userName));
+    				break;
+    			default:
+    				break;
+    			}
+    		}
+    		
+    	} finally {
+    		session.close();
+    	}
 
 		return posts;
 	}
@@ -374,21 +373,22 @@ public class DBLogic implements LogicInterface, SyncLogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncService()
 	 */
 	@Override
-	public void createSyncService(final URI service, final boolean server) {
-		this.permissionDBManager.ensureAdminAccess(loginUser);
-		final DBSession session = this.openSession();
-		try {
-			syncDBManager.createSyncService(session, service, server);
-		} finally {
-			session.close();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#deleteSyncService(java.net.URI, boolean)
-	 */
-	@Override
+	public void createSyncService(final URI service, final boolean server, final String ssl_dn) {
+    	
+    	this.permissionDBManager.ensureAdminAccess(loginUser);
+    	final DBSession session = this.openSession();
+    	try {
+    		syncDBManager.createSyncService(session, service, server, ssl_dn);
+    	} finally {
+    		session.close();
+    	}
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.bibsonomy.model.sync.SyncLogicInterface#deleteSyncService(java.net.URI, boolean)
+     */
+    @Override
 	public void deleteSyncService(final URI service, final boolean server) {
 		this.permissionDBManager.ensureAdminAccess(loginUser);
 		final DBSession session = this.openSession();

@@ -54,12 +54,15 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param service - the URI of the service to be added
 	 * @param server - <code>true</code> if the service may act as a server, <code>false</code> if it may act as a client
 	 */
-	public void createSyncService(final DBSession session, final URI service, final boolean server) {
+	public void createSyncService(final DBSession session, final URI service, final boolean server, final String ssl_dn) {
 		session.beginTransaction();
 		try {
 			final SyncParam param = new SyncParam();
 			param.setService(service);
 			param.setServer(server);
+			if(present(ssl_dn)) {
+				param.setSsl_dn(ssl_dn);
+			}
 			param.setServiceId(generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session));
 			session.insert("insertSyncService", param);
 			session.commitTransaction();
@@ -198,6 +201,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void insertSynchronizationData (final String userName, final URI service, Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final DBSession session) {
 		final SyncParam param = new SyncParam();
+		log.info("\nuser name: " + userName + "\n service: " + service.toString() + "\nresType: " + resourceType.getSimpleName() + "\ndate: " + lastSyncDate + "\nstatus" + status);
 		param.setUserName(userName);
 		param.setService(service);
 		param.setResourceType(resourceType);
@@ -249,9 +253,9 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<SynchronizationPost> getSyncPlan(final Map<String, SynchronizationPost> serverPosts, final List<SynchronizationPost> clientPosts, final Date lastSyncDate, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
 
-		// is there something to synchronize?
-		if (!present(serverPosts) && !present(clientPosts)) {
-			throw new IllegalArgumentException("both serverPosts and clientPosts must be given");
+		// is there something to synchronize? (we can't use present() on this place, because it's possible to have empty list or map)
+		if (serverPosts == null && clientPosts == null) {
+			throw new IllegalArgumentException("client posts and server posts can't be null!");
 		}
 
 		if (!present(lastSyncDate)) {

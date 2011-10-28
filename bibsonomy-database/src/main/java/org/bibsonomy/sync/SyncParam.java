@@ -26,6 +26,7 @@ public class SyncParam {
 	private String info;
 	private boolean server;
 	private Properties credentials;
+	private String ssl_dn;
 	
 	public SyncParam() {
 		
@@ -141,5 +142,19 @@ public class SyncParam {
 	 */
 	public ConflictResolutionStrategy getStrategy() {
 		return strategy;
+	}
+
+	/**
+	 * @return the ssl_dn
+	 */
+	public String getSsl_dn() {
+		return ssl_dn;
+	}
+
+	/**
+	 * @param ssl_dn the ssl_dn to set
+	 */
+	public void setSsl_dn(String ssl_dn) {
+		this.ssl_dn = ssl_dn;
 	}
 }
