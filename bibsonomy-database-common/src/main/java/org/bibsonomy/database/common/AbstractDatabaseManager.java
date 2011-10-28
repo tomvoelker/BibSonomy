@@ -1,5 +1,6 @@
 package org.bibsonomy.database.common;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +87,8 @@ public abstract class AbstractDatabaseManager {
 	
 	@SuppressWarnings("unchecked")
 	protected <K,V> Map<K,V> queryForMap(final String query, final Object param, final String key, final DBSession session) {
-	    return (Map<K,V>) session.queryForMap(query, param, key);
+	    final Map<K,V> map = (Map<K,V>) session.queryForMap(query, param, key);
+		return map != null ? map : new HashMap<K, V>();
 	}
 	
 	/**
