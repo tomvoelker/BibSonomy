@@ -32,12 +32,16 @@ import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -53,9 +57,15 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.model.sync.SynchronizationAction;
+import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.ModelValidationUtils;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.validation.ModelValidator;
 
 /**
@@ -353,7 +363,103 @@ public class ModelFactory {
 		
 		return user;
 	}
+	
+	/**
+	 * Creates a {@link SynchronizationPost} from its xml representation
+	 * @param xmlSyncPost
+	 * @return synchronization post
+	 */
+	public SynchronizationPost createSynchronizationPost(final SyncPostType xmlSyncPost) {
+		final SynchronizationPost post = new SynchronizationPost();
+		if(present(xmlSyncPost.getAction())) {
+			final SynchronizationAction action = Enum.valueOf(SynchronizationAction.class, xmlSyncPost.getAction().toUpperCase());
+			post.setAction(action);
+		}
+		if(present(xmlSyncPost.getChangeDate())) {
+			post.setChangeDate(createDate(xmlSyncPost.getChangeDate()));
+		}
+		if(present(xmlSyncPost.getPost())) {
+			try {
+				post.setPost(createPost(xmlSyncPost.getPost()));
+			} catch (final PersonListParserException ex) {
+				// TODO Auto-generated catch block
+				throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTexKey '" + xmlSyncPost.getPost().getBibtex().getBibtexKey() + "': " + ex.getMessage());
+			}
+		}
+		if(present(xmlSyncPost.getCreateDate())) {
+			post.setCreateDate(createDate(xmlSyncPost.getCreateDate()));
+			
+		} else {
+			throw new InvalidModelException("create date not present"); 
+		}
+		if(present(xmlSyncPost.getHash())) {
+			post.setIntraHash(xmlSyncPost.getHash());
+		} else {
+			throw new InvalidModelException("hash not present");
+		}
+		return post;
+	}
+	
+	/**
+	 * Creates a {@link SynchronizationData} from xml representation
+	 * @param xmlSyncData
+	 * @return synchronization data
+	 */
+	public Map<Class<? extends Resource>, SynchronizationData> createSynchronizationData(final SyncDataMapType xmlSyncDataMap) {
+		String errors = "";
+		final LinkedHashMap<Class<? extends Resource>, SynchronizationData> map = new LinkedHashMap<Class<? extends Resource>, SynchronizationData>();
+		for (final EntryType xmlEntry : xmlSyncDataMap.getEntry()) {
+			final SynchronizationData syncData = new SynchronizationData();
+			errors = errors +  fillSyncData(xmlEntry.getValue(), syncData);
+			map.put(ResourceFactory.getResourceClass(xmlEntry.getKey()), syncData);
+		}
+		if (!present(errors)) {
+			return map;
+		}
+		
+		throw new InvalidModelException(errors.trim());
+		
+	}
 
+	private String fillSyncData(final SyncDataType xmlSyncData, final SynchronizationData syncData) {
+		String errors = "";
+		syncData.setInfo(xmlSyncData.getInfo());
+		if (present(xmlSyncData.getLastSyncDate())) {
+			syncData.setLastSyncDate(createDate(xmlSyncData.getLastSyncDate()));
+		} else {
+			errors += "\nlast sync date is not present";
+		}
+		if(present(xmlSyncData.getResourceType())) {
+			syncData.setResourceType(ResourceFactory.getResourceClass(xmlSyncData.getResourceType().toLowerCase()));
+		} else {
+			errors += "\nresource type is not present";
+		}
+		if(present(xmlSyncData.getService())) {
+			try {
+				final URI service = new URI(xmlSyncData.getService());
+				syncData.setService(service);
+			} catch (final URISyntaxException ex) {
+				errors += "\nservice uri is malformed: " + ex.getMessage();
+			}
+			
+		}
+		
+		if(present(xmlSyncData.getSynchronizationStatus())) {
+			final SynchronizationStatus status = Enum.valueOf(SynchronizationStatus.class, xmlSyncData.getSynchronizationStatus().toUpperCase());
+			syncData.setStatus(status);
+		} else {
+			errors += "\nsynchronization status not present";
+		}
+		
+		//FIXME do we need check of user name or can it be null?
+		syncData.setUserName(xmlSyncData.getUserName());
+		
+		if (!present(errors)) {
+			return "";
+		}
+		return errors;
+	}
+	
 	/**
 	 * @param xmlPublication
 	 * @param publication
@@ -445,7 +551,8 @@ public class ModelFactory {
 	/**
 	 * @param modelValidator the modelValidator to set
 	 */
-	public void setModelValidator(ModelValidator modelValidator) {
+	public void setModelValidator(final ModelValidator modelValidator) {
 		this.modelValidator = modelValidator;
 	}
+
 }

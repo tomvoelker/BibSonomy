@@ -138,6 +138,7 @@ public class RestProperties {
 		URL_REFERENCES("references"),
 		URL_DOCUMENTS("documents"),
 		URL_DATE_FORMAT("yyyy-MM-dd'T'HH:mm:ss.SSS"),
+		URL_SYNC("sync"),
 		VALIDATE_XML_INPUT("false"),
 		VALIDATE_XML_OUTPUT("false");
 
@@ -207,6 +208,10 @@ public class RestProperties {
 	public String getReferencesUrl() {
 		return this.get(Property.URL_REFERENCES);
 	}
+	
+	public String getSyncUrl() {
+		return this.get(Property.URL_SYNC);
+	}
 
 	public String getSystemName() {
 		return this.get(Property.SYSTEM_NAME);
@@ -223,4 +228,5 @@ public class RestProperties {
 	public void setValidator(final ModelValidator validator) {
 		this.validator = validator;
 	}
+
 }

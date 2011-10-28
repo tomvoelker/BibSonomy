@@ -27,6 +27,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -37,6 +38,8 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 
@@ -233,7 +236,36 @@ public interface Renderer {
 	 *            the groupId to send.
 	 */
 	public void serializeGroupId(Writer writer, String groupId);	
-
+	
+	/**
+	 * Serializes a list of synchronization posts
+	 * @param writer
+	 * @param posts
+	 */
+	public void serializeSynchronizationPosts(Writer writer, List<? extends SynchronizationPost> posts);
+	
+	/**
+	 * Serializes Map of synchronization data
+	 * @param writer
+	 * @param syncDataMap
+	 */
+	public void serializeSynchronizationDataMap(Writer writer, Map<Class<? extends Resource>, SynchronizationData> syncDataMap);
+	
+	/**
+	 * @param reader
+	 * @return
+	 * @throws BadRequestOrResponseException
+	 */
+	public Map<Class<? extends Resource>, SynchronizationData> parseSynchronizationDataMap(Reader reader) throws BadRequestOrResponseException;
+	
+	/**
+	 * Reads list of synchronization posts
+	 * @param reader
+	 * @return
+	 * @throws BadRequestOrResponseException TODO
+	 */
+	public List<SynchronizationPost> parseSynchronizationPostList(Reader reader) throws BadRequestOrResponseException;
+	
 	/**
 	 * Reads an errormessage from a {@link Reader}
 	 * 

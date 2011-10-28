@@ -41,6 +41,8 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -71,6 +73,9 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.rest.RestProperties;
@@ -83,6 +88,7 @@ import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.DocumentType;
 import org.bibsonomy.rest.renderer.xml.DocumentsType;
+import org.bibsonomy.rest.renderer.xml.EntryType;
 import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.GroupsType;
@@ -93,6 +99,10 @@ import org.bibsonomy.rest.renderer.xml.PostsType;
 import org.bibsonomy.rest.renderer.xml.ReferenceType;
 import org.bibsonomy.rest.renderer.xml.ReferencesType;
 import org.bibsonomy.rest.renderer.xml.StatType;
+import org.bibsonomy.rest.renderer.xml.SyncDataMapType;
+import org.bibsonomy.rest.renderer.xml.SyncDataType;
+import org.bibsonomy.rest.renderer.xml.SyncPostType;
+import org.bibsonomy.rest.renderer.xml.SyncPostsType;
 import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.TagsType;
 import org.bibsonomy.rest.renderer.xml.UserType;
@@ -728,6 +738,103 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlDoc.setUri(uri);
 		serialize(writer, xmlDoc);		
 	}	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializeSynchronizationPosts(java.io.Writer, java.util.List)
+	 */
+	@Override
+	public void serializeSynchronizationPosts(final Writer writer, final List<? extends SynchronizationPost> posts) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		final SyncPostsType xmlSyncPosts = new SyncPostsType();
+		for (final SynchronizationPost post : posts) {
+			final SyncPostType xmlSyncPost = createXmlSyncPost(post);
+			xmlSyncPosts.getSyncPosts().add(xmlSyncPost);
+		}
+		xmlDoc.setSyncPosts(xmlSyncPosts);
+		serialize(writer, xmlDoc);
+	}
+	
+	/**
+	 * @param post
+	 * @return SyncPostType representation of given post
+	 */
+	private SyncPostType createXmlSyncPost(final SynchronizationPost post) {
+		final SyncPostType xmlSyncpost = new SyncPostType();
+		if(present(post.getAction())) {
+			xmlSyncpost.setAction(post.getAction().toString());
+		} if (present(post.getChangeDate())) {
+			xmlSyncpost.setChangeDate(createXmlCalendar(post.getChangeDate()));
+		}
+		if (present(post.getCreateDate())) {
+			xmlSyncpost.setCreateDate(createXmlCalendar(post.getCreateDate()));
+		}
+		xmlSyncpost.setHash(post.getIntraHash());
+		if(present(post.getPost())) {
+			xmlSyncpost.setPost(createXmlPost(post.getPost()));
+		}
+		return xmlSyncpost;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializeSynchrionizationData(java.io.Writer, org.bibsonomy.model.sync.SynchronizationData)
+	 */
+	@Override
+	public void serializeSynchronizationDataMap(final Writer writer, final Map<Class<? extends Resource>, SynchronizationData> syncDataMap) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		final SyncDataMapType xmlSyncDataMap = new SyncDataMapType();
+		
+		for (final Entry<Class<? extends Resource>, SynchronizationData> entry : syncDataMap.entrySet()) {
+			final SynchronizationData data = entry.getValue();
+			final SyncDataType xmlSyncData = new SyncDataType();
+			
+			xmlSyncData.setLastSyncDate(createXmlCalendar(data.getLastSyncDate()));
+			xmlSyncData.setResourceType(ResourceFactory.getResourceName(data.getResourceType()));
+			xmlSyncData.setService(data.getService().toString());
+			xmlSyncData.setSynchronizationStatus(data.getStatus().toString());
+			xmlSyncData.setUserName(data.getUserName());
+			xmlSyncData.setInfo(data.getInfo());
+			final EntryType xmlEntry = new EntryType();
+			xmlEntry.setKey(ResourceFactory.getResourceName(entry.getKey()));
+			xmlEntry.setValue(xmlSyncData);
+			xmlSyncDataMap.getEntry().add(xmlEntry);
+		}
+		
+		xmlDoc.setSyncData(xmlSyncDataMap);
+		serialize(writer, xmlDoc);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#parseSynchronizationPosts(java.io.Reader)
+	 */
+	@Override
+	public List<SynchronizationPost> parseSynchronizationPostList(final Reader reader) throws BadRequestOrResponseException {
+		final BibsonomyXML xmlDoc = this.parse(reader);
+		if(xmlDoc.getSyncPosts() != null) {
+			final List<SynchronizationPost> syncPosts = new LinkedList<SynchronizationPost>();
+			for (final SyncPostType spt : xmlDoc.getSyncPosts().getSyncPosts()) {
+				final SynchronizationPost sp = ModelFactory.getInstance().createSynchronizationPost(spt);
+				syncPosts.add(sp);
+			}
+			return syncPosts;
+		}
+		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no synchronization posts defined.");
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#parseSynchronizatoionDate(java.io.Reader)
+	 */
+	@Override
+	public Map<Class<? extends Resource>, SynchronizationData> parseSynchronizationDataMap(final Reader reader) throws BadRequestOrResponseException {
+		final BibsonomyXML xmlDoc = this.parse(reader);
+		if(xmlDoc.getSyncData() != null) {
+			final Map<Class<? extends Resource>, SynchronizationData> syncDataMap = ModelFactory.getInstance().createSynchronizationData(xmlDoc.getSyncData());
+			return syncDataMap;
+		}
+		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no  defined.");
+	}
 
 	@Override
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {
@@ -758,7 +865,7 @@ public abstract class JAXBRenderer implements Renderer {
 			try {
 				return ModelFactory.getInstance().createPost(post);
 			} catch (final PersonListParserException ex) {
-				xmlDoc.setError("Error parsing the person names for entry with BibteyKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+				xmlDoc.setError("Error parsing the person names for entry with BibTexKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}
 		}
 
@@ -775,7 +882,7 @@ public abstract class JAXBRenderer implements Renderer {
 			try {
 				return ModelFactory.getInstance().createCommunityPost(post);
 			} catch (final PersonListParserException ex) {
-				xmlDoc.setError("Error parsing the person names for entry with BibteyKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+				xmlDoc.setError("Error parsing the person names for entry with BibTexKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}
 		}
 
@@ -819,7 +926,7 @@ public abstract class JAXBRenderer implements Renderer {
 					final Post<? extends Resource> p = ModelFactory.getInstance().createPost(post);
 					posts.add(p);
 				} catch (final PersonListParserException ex) {
-					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibteyKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTexKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 				}
 			}
 			return posts;
