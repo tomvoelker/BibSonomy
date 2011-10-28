@@ -15,6 +15,7 @@ public class AdminSyncCommand extends BaseCommand {
 	private List<URI> avlClients;
 	private String action;
 	private URI service;
+	private String ssl_dn;
 	private boolean server;
 	
 	/**
@@ -64,6 +65,18 @@ public class AdminSyncCommand extends BaseCommand {
 	 */
 	public URI getService() {
 		return service;
+	}
+	/**
+	 * @return the ssl_dn
+	 */
+	public String getSsl_dn() {
+		return ssl_dn;
+	}
+	/**
+	 * @param ssl_dn the ssl_dn to set
+	 */
+	public void setSsl_dn(String ssl_dn) {
+		this.ssl_dn = ssl_dn;
 	}
 	/**
 	 * @param server the server to set

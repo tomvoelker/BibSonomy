@@ -21,7 +21,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.ResourceUtils;
-import org.bibsonomy.sync.TwoStepSynchronizationClient;
+import org.bibsonomy.synchronization.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -171,7 +171,6 @@ public class SynchronizationController extends AjaxController implements Minimal
 		}
 		
 		command.setResponseString(json.toString());
-
 		return Views.AJAX_JSON;
 	}
 	

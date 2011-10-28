@@ -13,13 +13,12 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.ResourceUtils;
-import org.bibsonomy.sync.TwoStepSynchronizationClient;
+import org.bibsonomy.synchronization.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -40,7 +39,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	private static final Log log = LogFactory.getLog(SyncPageController.class);
 
 	private Errors errors;
-	private SyncLogicInterface syncLogic;
+	private LogicInterface logic;
 	private TwoStepSynchronizationClient syncClient;
 
 	private RequestLogic requestLogic;
@@ -67,9 +66,9 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 		if (loginUser.isSpammer()) {
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
-		if (!context.isValidCkey()) {
-			this.errors.reject("error.field.valid.ckey");
-		}
+//		if (!context.isValidCkey()) {
+//			this.errors.reject("error.field.valid.ckey");
+//		}
 
 		if (!command.getContext().getUserLoggedIn()) {
 			throw new AccessDeniedException();
@@ -82,7 +81,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 		}
 
 		log.debug("try to get sync services for user");
-		final List<SyncService> userServices = syncLogic.getSyncServer(command.getContext().getLoginUser().getName());
+		final List<SyncService> userServices = logic.getSyncServer(command.getContext().getLoginUser().getName());
 
 		log.debug("try to get synchronization data from remote service");
 		for (final SyncService syncService : userServices) {
@@ -148,10 +147,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	 * @param logic the logic to set
 	 */
 	public void setLogic(LogicInterface logic) {
-		//FIXME remove after integration
-		if (logic instanceof SyncLogicInterface) {
-			syncLogic = (SyncLogicInterface) logic;
-		}
+		this.logic = logic;
 	}
 
 	/**

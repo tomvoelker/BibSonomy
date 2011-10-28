@@ -53,8 +53,10 @@
 								</div>
 							</c:forEach>
 							<div class="fsRow">
-								<c:out value="${addService}: "/>
+								<c:out value="${addService}  URI: "/>
 								<form:input path="service" />
+								<c:out value="  ssl_dn: " />
+								<form:input path="ssl_dn" />
 								<input type="hidden" value="false" name="server"/>
 								<input type="submit" value="${addService}"/>
 							</div>

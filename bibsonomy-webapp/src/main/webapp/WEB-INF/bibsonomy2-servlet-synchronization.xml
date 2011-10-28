@@ -52,6 +52,7 @@
 							<value>action</value>
 							<value>service</value>
 							<value>server</value>
+							<value>ssl_dn</value>
 						</list>
 						</property>
 					</bean>
@@ -90,7 +91,7 @@
 	</bean>
 
 	<!-- client bean, handles synchronization -->
-	<bean id="realSynchronizationClient" class="org.bibsonomy.sync.TwoStepSynchronizationClient" lazy-init="true">
+	<bean id="realSynchronizationClient" class="org.bibsonomy.synchronization.TwoStepSynchronizationClient" lazy-init="true">
 		<property name="ownUri" value="${project.home}"/>
 	</bean>
 	<bean id="mockSynchronizationClient" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>
