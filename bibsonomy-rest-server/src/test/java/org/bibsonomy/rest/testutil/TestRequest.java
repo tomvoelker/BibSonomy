@@ -26,7 +26,7 @@ public class TestRequest implements HttpServletRequest {
 
 	private final Map<String, String> headers;
 	private final Map<Object, Object> parameterMap;
-	private String pathInfo;
+	private String requestURI;
 	private String contentType;
 
 	/**
@@ -37,18 +37,16 @@ public class TestRequest implements HttpServletRequest {
 		this.parameterMap = new HashMap<Object, Object>();
 	}
 
-	@Override
-	public String getPathInfo() {
-		return pathInfo;
-	}
+
 
 	/**
-	 * 
-	 * @param pathInfo the pathInfo to set
+	 * @param requestURI the requestURI to set
 	 */
-	public void setPathInfo(String pathInfo) {
-		this.pathInfo = pathInfo;
+	public void setRequestURI(String requestURI) {
+		this.requestURI = requestURI;
 	}
+
+
 
 	@Override
 	public String getHeader(String arg0) {
@@ -127,7 +125,7 @@ public class TestRequest implements HttpServletRequest {
 
 	@Override
 	public String getRequestURI() {
-		return null;
+		return this.requestURI;
 	}
 
 	@Override
@@ -350,5 +348,13 @@ public class TestRequest implements HttpServletRequest {
 	 */
 	public void putIntoParamaters(final Object key, final Object value) {
 		this.parameterMap.put(key, value);
+	}
+
+
+
+	@Override
+	public String getPathInfo() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
