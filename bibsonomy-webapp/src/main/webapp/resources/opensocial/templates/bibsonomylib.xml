@@ -35,7 +35,7 @@
 			<span class="titleDate" title="{{getString 'post.meta.changedOn'}} {{parseDate postingdate}}">{{parseDate postingdate}}</span>
 		
 			<!-- Copy Button -->
-			<div class="bmicon" title="{{getString 'post.actions.copy.title'}}">
+			<span class="bmicon" title="{{getString 'post.actions.copy.title'}}">
 				{{#if bibtex}}
 					<!-- Publication -->
 					<a href="{{=$ctx.projectHome!}}editPublication?hash={{encodeURI bibtex.intrahash}}&amp;user={{encodeURI user.name}}&amp;copytag={{concatTags tag}}" title="" target="_blank">&#160;</a>
@@ -43,7 +43,7 @@
 					<!-- Bookmark -->
 					<a href="{{=$ctx.projectHome!}}editBookmark?hash={{encodeURI bookmark.intrahash}}&amp;user={{encodeURI user.name}}&amp;copytag={{concatTags tag}}" title="" target="_blank">&#160;</a>
 				{{/if}}
-			</div>
+			</span>
 		
 			<!-- Title -->
 			<div class="bmtitle">
