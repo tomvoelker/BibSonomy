@@ -10,6 +10,7 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -21,6 +22,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.auth.SecurityToken;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
@@ -29,6 +31,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.opensocial.oauth.OAuthRequestValidator;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
@@ -77,6 +80,22 @@ public final class RestServlet extends HttpServlet {
 	 * the request default encoding
 	 */
 	public static final String REQUEST_ENCODING = "UTF-8";
+	
+	/**
+	 * Name of header, that shows successful ssl verification
+	 */
+	public static final String SSL_VERIFY_HEADER = "SSL_CLIENT_VERIFY";
+	
+	/**
+	 * String to show successful ssl key check 
+	 */
+	public static final String SUCCESS = "SUCCESS";
+	
+	/**
+	 * Distinguish name of the client
+	 */
+	public static final String SSL_CLIENT_S_DN = "SSL_CLIENT_S_DN";
+	
 
 	private LogicInterfaceFactory logicFactory;
 	
@@ -208,7 +227,7 @@ public final class RestServlet extends HttpServlet {
 			
 			// create Context
 			final Reader reader = RESTUtils.getInputReaderForStream(request.getInputStream(), REQUEST_ENCODING);
-			final Context context = new Context(method, getPathInfo(request), renderingFormat, this.urlRenderer, reader, parser.getList(), logic, request.getParameterMap(), additionalInfos);
+			final Context context = new Context(method, request.getRequestURI(), renderingFormat, this.urlRenderer, reader, parser.getList(), logic, request.getParameterMap(), additionalInfos);
 
 			// validate request
 			context.canAccess();
@@ -283,19 +302,6 @@ public final class RestServlet extends HttpServlet {
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		}
 	}
-
-	/**
-	 * Strips the API URL part from the beginning of the complete URL.
-	 * 
-	 * @param request
-	 * @return
-	 */
-	private String getPathInfo(final HttpServletRequest request) {
-		final String pathInfo = request.getPathInfo();
-		if (present(pathInfo)) return pathInfo;
-		final StringBuffer url = request.getRequestURL();
-		return url.substring(urlRenderer.getApiUrl().length()).toString();
-	}
 	
 	/**
 	 * Sends an error to the client.
@@ -334,12 +340,48 @@ public final class RestServlet extends HttpServlet {
 		final String authenticationHeader = request.getHeader(HeaderUtils.HEADER_AUTHORIZATION);
 		if (HeaderUtils.isHttpBasicAuthorization(authenticationHeader)) {
 			// try http basic authorization
-			return validateHttpBasicAuthorization(authenticationHeader);
+			final LogicInterface logic = validateHttpBasicAuthorization(authenticationHeader);
+			checkSync(request, logic);
+			return logic;
 		} else if (present(this.oauthValidator) && present(this.oauthLogicFactory)) {
 			// try oauth authorization
 			return validateOAuthAuthorization(request);
 		}
 		throw new AuthenticationException(NO_AUTH_ERROR);
+	}
+	
+	private void checkSync(final HttpServletRequest request, final LogicInterface logic) {
+		log.info("start ssl header check for synxhronization");
+		final String verifyHeader = request.getHeader(SSL_VERIFY_HEADER);
+		if(!present(verifyHeader)) {
+			log.error("no ssl_verify header found");
+			//TODO merge both header checks
+		}
+		if(!SUCCESS.equals(verifyHeader)) {
+			//ssl_client_verify header is not set or unsuccessful
+			log.error("ssl_verify_header is unsuccessful");
+			return;
+		}
+		final String ssl_client_s_dn = request.getHeader(SSL_CLIENT_S_DN);
+		log.info("required ssl_s_dn: " + ssl_client_s_dn);
+		if(!present(ssl_client_s_dn)) {
+			log.error("ssl_client_verify was set, but no ssl_client_s_dn");
+			return;
+		}
+		//get user services
+		final List<SyncService> syncServerList = logic.getSyncServer(logic.getAuthenticatedUser().getName());
+		for (final SyncService syncService : syncServerList) {
+			log.info("user service:" + syncService.getService() + " | service ssl_s_dn:" + syncService.getSsl_dn());
+			if(ssl_client_s_dn.equals(syncService.getSsl_dn())) {
+				//FIXME: check, that request uri contains service uri
+				//service with requested ssl_client_s_dn found in user client list -> give user the sync-role 
+				log.info("set user role to SYNC");
+				logic.getAuthenticatedUser().setRole(Role.SYNC);
+				return;
+			}
+		}
+
+		
 	}
 
 	/**

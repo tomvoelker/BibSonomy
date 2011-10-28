@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -18,6 +19,8 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -226,6 +229,26 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public void serializeUsers(final Writer writer, final List<User> users, final ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeSynchronizationPosts(final Writer writer, final List<? extends SynchronizationPost> posts) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<SynchronizationPost> parseSynchronizationPostList(final Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeSynchronizationDataMap(final Writer writer, final Map<Class<? extends Resource>, SynchronizationData> syncDataMap) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Map<Class<? extends Resource>, SynchronizationData> parseSynchronizationDataMap(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 

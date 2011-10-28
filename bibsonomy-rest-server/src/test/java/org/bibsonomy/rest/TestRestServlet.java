@@ -68,7 +68,7 @@ public class TestRestServlet {
 	@Test
 	public void testSimpleStuff() throws Exception {
 		this.request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
-		this.request.setPathInfo("/");
+		this.request.setRequestURI("/");
 		// try to get '/'
 		this.servlet.doGet(this.request, this.response);
 		compareWithFile(this.response.getContent(), "failAccess.txt");
@@ -79,8 +79,8 @@ public class TestRestServlet {
 	public void testGetComplexStuff() throws Exception {
 		this.request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
 		this.request.getHeaders().put("User-Agent", RestProperties.getInstance().getApiUserAgent());
-		this.request.setPathInfo("/users");
-
+		this.request.setRequestURI("/api/users");
+		
 		this.servlet.doGet(this.request, this.response);
 		compareWithFile(this.response.getContent(), "exampleComplexResult1.txt");
 		assertEquals(this.response.getContentLength(), this.response.getContent().length());
