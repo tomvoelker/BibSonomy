@@ -5,6 +5,7 @@
 		description="This gadget demonstrates how to query BibSonomy&apos;s REST-Api in an OpenSocial Gadget via OAuth">
 
 		<Require feature="dynamic-height"></Require>
+		<Require feature="setprefs"></Require>
 		<OAuth>
 			<Service name="BibSonomy">
 				<Request url="http://www.bibsonomy.org/oauth/requestToken"></Request>

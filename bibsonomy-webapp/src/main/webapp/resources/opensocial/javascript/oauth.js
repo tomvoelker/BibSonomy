@@ -23,10 +23,17 @@ GadgetControl.prototype.onLoad = function() {
 	// ensure that the template library is loaded exactly once
 	if (!this.isReady) {
 	    var backref = this;
-		$("#templates").load(this.projectHome+'resources/opensocial/templates/bibsonomylib.xml', function(data, textStatus) {
+	    
+	    var params = {};
+	    params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
+	    params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
+	    params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
+	    gadgets.io.makeRequest(this.projectHome+'resources/opensocial/templates/bibsonomylib.xml', function(response) {
+	    	$("#templates").append(response.text);
 			backref.isReady = true;
 		    backref.onLoad();
-		});
+	    }, params);
+
 	}
     this.fetchData(this.apiUrl + this.apiquery);
 };
