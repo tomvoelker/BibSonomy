@@ -49,6 +49,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.sync.SyncLogicInterface;
 
 /**
  * This interface is an adapter to BibSonomy's core functionality. <br/>
@@ -71,7 +72,7 @@ import org.bibsonomy.model.enums.Order;
  * @author Christian Kramer
  * @version $Id$
  */
-public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface {
+public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface {
 
 	/**
 	 * @return the name of the authenticated user

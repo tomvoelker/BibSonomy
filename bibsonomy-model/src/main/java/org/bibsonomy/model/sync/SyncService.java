@@ -35,25 +35,27 @@ import org.bibsonomy.model.Resource;
  */
 public class SyncService {
 	
-	private Properties serverUser; // FIXME: rename to "userCredentials" or "user" or "credententials"
+	private Properties user;
 	private URI service; // FIXME: rename to "uri" or "serviceUri"
+	private URI secureAPI;
 	private Map <String, SynchronizationData> lastSyncData;
 	private Class<? extends Resource> resourceType;
 	private SynchronizationDirection direction;
 	private ConflictResolutionStrategy strategy;
 	private Map<Class<? extends Resource>, Map<String, String>> plan;
+	private String ssl_dn;
 	
 	/**
 	 * @return the clientUser
 	 */
 	public Properties getServerUser() {
-		return this.serverUser;
+		return this.user;
 	}
 	/**
 	 * @param serverUser the clientUser to set
 	 */
 	public void setServerUser(Properties serverUser) {
-		this.serverUser = serverUser;
+		this.user = serverUser;
 	}
 
 	/* (non-Javadoc)
@@ -81,7 +83,18 @@ public class SyncService {
 	public void setService(URI service) {
 		this.service = service;
 	}
-	
+	/**
+	 * @return the secureAPI
+	 */
+	public URI getSecureAPI() {
+		return secureAPI;
+	}
+	/**
+	 * @param secureAPI the secureAPI to set
+	 */
+	public void setSecureAPI(URI secureAPI) {
+		this.secureAPI = secureAPI;
+	}
 	/**
 	 * @return the lastSyncData
 	 */
@@ -148,5 +161,17 @@ public class SyncService {
 	 */
 	public Map<Class<? extends Resource>, Map<String, String>> getPlan() {
 		return plan;
+	}
+	/**
+	 * @return the ssl_dn
+	 */
+	public String getSsl_dn() {
+		return ssl_dn;
+	}
+	/**
+	 * @param ssl_dn the ssl_dn to set
+	 */
+	public void setSsl_dn(String ssl_dn) {
+		this.ssl_dn = ssl_dn;
 	}
 }

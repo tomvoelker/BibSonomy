@@ -47,8 +47,9 @@ public interface SyncLogicInterface {
 	 * Add service to the database
 	 * @param service service to add 
 	 * @param server server/client switch
+	 * @param sslDn 
 	 */
-	public void createSyncService(final URI service, final boolean server);
+	public void createSyncService(final URI service, final boolean server, final String sslDn);
 	
 	
 	/**
