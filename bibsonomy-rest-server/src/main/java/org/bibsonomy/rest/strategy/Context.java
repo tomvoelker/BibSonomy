@@ -23,6 +23,7 @@ import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.rest.util.URLDecodingStringTokenizer;
 import org.bibsonomy.rest.validation.ServersideModelValidator;
 
 /**
@@ -39,6 +40,7 @@ public final class Context {
 		Context.urlHandlers.put(RestProperties.getInstance().getGroupsUrl(), new GroupsHandler());
 		Context.urlHandlers.put(RestProperties.getInstance().getPostsUrl(), new PostsHandler());
 		Context.urlHandlers.put(RestProperties.getInstance().getConceptUrl(), new ConceptsHandler());
+		Context.urlHandlers.put(RestProperties.getInstance().getSyncUrl(), new SynchronizationHandler());
 		/*
 		 * configure validation
 		 */
@@ -126,7 +128,9 @@ public final class Context {
 	}
 
 	private Strategy chooseStrategy(final HttpMethod httpMethod, final String url) {
-		final StringTokenizer urlTokens = new StringTokenizer(url, "/");
+		final StringTokenizer urlTokens = new URLDecodingStringTokenizer(url, "/");
+		//go over "/api" token
+		urlTokens.nextToken();
 		if (urlTokens.countTokens() > 0) {
 			final String nextElement = (String) urlTokens.nextElement();
 			final ContextHandler contextHandler = Context.urlHandlers.get(nextElement);

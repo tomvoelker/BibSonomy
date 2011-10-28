@@ -23,7 +23,7 @@ public class GetListOfTagsStrategyTest extends AbstractContextTest {
 	 */
 	@Test
 	public void testGetListOfTagsStrategy() throws Exception {
-		final Context ctx = new Context(HttpMethod.GET, "/tags", RenderingFormat.XML, this.urlRenderer, this.is, null, this.db, new HashMap<String, String>(), null);
+		final Context ctx = new Context(HttpMethod.GET, "/api/tags", RenderingFormat.XML, this.urlRenderer, this.is, null, this.db, new HashMap<String, String>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ctx.perform(baos);
 

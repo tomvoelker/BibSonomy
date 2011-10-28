@@ -24,7 +24,7 @@ public class GetPostDetailsStrategyTest extends AbstractContextTest {
 	 */
 	@Test
 	public void testGetPostDetailsStrategy() throws Exception {
-		final Context ctx = new Context(HttpMethod.GET, "/users/mbork/posts/56c650d32e6f50d7f49f2613b4303ffc", RenderingFormat.XML, this.urlRenderer, this.is, null, this.db, new HashMap<String, String>(), null);
+		final Context ctx = new Context(HttpMethod.GET, "/api/users/mbork/posts/56c650d32e6f50d7f49f2613b4303ffc", RenderingFormat.XML, this.urlRenderer, this.is, null, this.db, new HashMap<String, String>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ctx.perform(baos);
 

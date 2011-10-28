@@ -2,6 +2,7 @@ package org.bibsonomy.rest.database;
 
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.Classifier;
@@ -44,6 +46,12 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.model.sync.ConflictResolutionStrategy;
+import org.bibsonomy.model.sync.SyncService;
+import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationDirection;
+import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.junit.Ignore;
 
 /**
@@ -1000,5 +1008,89 @@ public class TestDBLogic implements LogicInterface {
 	@Override
 	public void updateDiscussionItem(final String username, final String interHash, final DiscussionItem discussionItem) {
 		// TODO Auto-generated method stub		
+	}
+
+
+	@Override
+	public void createSyncService(final URI service, final boolean server, final String ssl_dn) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void deleteSyncService(final URI service, final boolean server) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public List<URI> getSyncServices(final boolean server) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void deleteSyncServer(final String userName, final URI service) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public List<SyncService> getSyncServer(final String userName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<SynchronizationPost> getSyncPosts(final String userName, final Class<? extends Resource> resourceType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void deleteSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
