@@ -373,12 +373,12 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncService()
 	 */
 	@Override
-	public void createSyncService(final URI service, final boolean server, final String ssl_dn) {
+	public void createSyncService(final URI service, final boolean server, final String sslDn, final URI secureAPI) {
     	
     	this.permissionDBManager.ensureAdminAccess(loginUser);
     	final DBSession session = this.openSession();
     	try {
-    		syncDBManager.createSyncService(session, service, server, ssl_dn);
+    		syncDBManager.createSyncService(session, service, server, sslDn, secureAPI);
     	} finally {
     		session.close();
     	}
@@ -454,6 +454,21 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			return syncDBManager.getSyncServersForUser(userName, session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAllSyncServices()
+	 */
+	@Override
+	public List<SyncService> getAllSyncServices(boolean server) {
+		this.permissionDBManager.ensureAdminAccess(getAuthenticatedUser());
+		final DBSession session = this.openSession();
+		try {
+			return syncDBManager.getAllSyncServices(session, server);
 		} finally {
 			session.close();
 		}

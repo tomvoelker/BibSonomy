@@ -54,15 +54,14 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param service - the URI of the service to be added
 	 * @param server - <code>true</code> if the service may act as a server, <code>false</code> if it may act as a client
 	 */
-	public void createSyncService(final DBSession session, final URI service, final boolean server, final String ssl_dn) {
+	public void createSyncService(final DBSession session, final URI service, final boolean server, final String sslDn, final URI secureAPI) {
 		session.beginTransaction();
 		try {
 			final SyncParam param = new SyncParam();
 			param.setService(service);
 			param.setServer(server);
-			if(present(ssl_dn)) {
-				param.setSsl_dn(ssl_dn);
-			}
+			param.setSslDn(sslDn);
+			param.setSecureAPI(secureAPI);
 			param.setServiceId(generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session));
 			session.insert("insertSyncService", param);
 			session.commitTransaction();
@@ -188,6 +187,12 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<URI> getSyncServices(final DBSession session, final boolean server) {
 		return this.queryForList("getSyncServices", server, URI.class, session);
+	}
+	
+	public List<SyncService> getAllSyncServices(final DBSession session, boolean server) {
+		SyncParam param = new SyncParam();
+		param.setServer(server);
+		return this.queryForList("getAllSyncServices", param, SyncService.class, session);
 	}
 
 	/**

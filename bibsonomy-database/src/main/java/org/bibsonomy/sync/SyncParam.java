@@ -26,7 +26,8 @@ public class SyncParam {
 	private String info;
 	private boolean server;
 	private Properties credentials;
-	private String ssl_dn;
+	private String sslDn;
+	private URI secureAPI;
 	
 	public SyncParam() {
 		
@@ -147,14 +148,28 @@ public class SyncParam {
 	/**
 	 * @return the ssl_dn
 	 */
-	public String getSsl_dn() {
-		return ssl_dn;
+	public String getSslDn() {
+		return sslDn;
 	}
 
 	/**
 	 * @param ssl_dn the ssl_dn to set
 	 */
-	public void setSsl_dn(String ssl_dn) {
-		this.ssl_dn = ssl_dn;
+	public void setSslDn(String sslDn) {
+		this.sslDn = sslDn;
+	}
+
+	/**
+	 * @return the secureApi
+	 */
+	public URI getSecureAPI() {
+		return secureAPI;
+	}
+
+	/**
+	 * @param secureAPI the secureApi to set
+	 */
+	public void setSecureAPI(URI secureAPI) {
+		this.secureAPI = secureAPI;
 	}
 }

@@ -12,9 +12,14 @@
 	
 	
 	<insert id="insertSyncService" parameterClass="syncParam">
-		INSERT INTO sync_services (uri, service_id, server, ssl_dn)
-		  VALUES (#service#, #serviceId#, #server#, #ssl_dn#)
+		INSERT INTO sync_services (uri, service_id, server, ssl_dn, secure_api)
+		  VALUES (#service#, #serviceId#, #server#, #sslDn#, #secureAPI#)
 	</insert>
+
+	<select id="getAllSyncServices" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
+		SELECT ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy FROM sync_services ss
+		WHERE server = #server#
+	</select>
 
 	<select id="getSyncServersForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
 		SELECT s.user_name, s.credentials, ss.uri, ss.secure_api, ss.ssl_dn, s.content_type, s.direction, s.strategy

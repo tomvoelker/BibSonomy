@@ -27,7 +27,7 @@
 		<result property="direction"	column="direction"		javaType="syncDirection" />
 		<result property="resourceType"	column="content_type"	javaType="resourceTypeClass" />
 		<result property="strategy"		column="strategy"		javaType="conflictStrategy" />
-		<result property="ssl_dn"		column="ssl_dn"			javaType="string" />
+		<result property="sslDn"		column="ssl_dn"			javaType="string" />
 	</resultMap>
 	
 	<sql id="syncDataColumns">
