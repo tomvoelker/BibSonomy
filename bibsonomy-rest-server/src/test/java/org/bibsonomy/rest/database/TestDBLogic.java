@@ -1012,7 +1012,7 @@ public class TestDBLogic implements LogicInterface {
 
 
 	@Override
-	public void createSyncService(final URI service, final boolean server, final String ssl_dn) {
+	public void createSyncService(final URI service, final boolean server, final String sslDn, final URI secureAPI) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1090,6 +1090,12 @@ public class TestDBLogic implements LogicInterface {
 
 	@Override
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public List<SyncService> getAllSyncServices(final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}

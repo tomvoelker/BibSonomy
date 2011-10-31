@@ -371,8 +371,8 @@ public final class RestServlet extends HttpServlet {
 		//get user services
 		final List<SyncService> syncServerList = logic.getSyncServer(logic.getAuthenticatedUser().getName());
 		for (final SyncService syncService : syncServerList) {
-			log.info("user service:" + syncService.getService() + " | service ssl_s_dn:" + syncService.getSsl_dn());
-			if(ssl_client_s_dn.equals(syncService.getSsl_dn())) {
+			log.info("user service:" + syncService.getService() + " | service ssl_s_dn:" + syncService.getSslDn());
+			if(ssl_client_s_dn.equals(syncService.getSslDn())) {
 				//FIXME: check, that request uri contains service uri
 				//service with requested ssl_client_s_dn found in user client list -> give user the sync-role 
 				log.info("set user role to SYNC");
