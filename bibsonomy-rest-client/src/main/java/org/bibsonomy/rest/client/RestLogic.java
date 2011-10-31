@@ -558,7 +558,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void createSyncService(final URI service, final boolean server, final String ssl_dn) {
+	public void createSyncService(final URI service, final boolean server, final String sslDn, final URI secureAPI) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -621,5 +621,10 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		return this.execute(new GetSyncPlanQuery(service.toString(), clientPosts, resourceType, strategy, direction));
+	}
+	
+	@Override
+	public List<SyncService> getAllSyncServices(final boolean server) {
+		throw new UnsupportedOperationException();
 	}
 }
