@@ -49,7 +49,7 @@ public interface SyncLogicInterface {
 	 * @param server server/client switch
 	 * @param sslDn 
 	 */
-	public void createSyncService(final URI service, final boolean server, final String sslDn);
+	public void createSyncService(final URI service, final boolean server, final String sslDn, final URI secureAPI);
 	
 	
 	/**
@@ -109,6 +109,13 @@ public interface SyncLogicInterface {
 	 * @return List of synchronization servers for given user 
 	 */
 	public List<SyncService> getSyncServer(final String userName);
+	
+	/**
+	 * returns all on this system available server (or clients) on 
+	 * @param server
+	 * @return
+	 */
+	public List<SyncService> getAllSyncServices(final boolean server);
 	
 	
 	/* ********************************************************************

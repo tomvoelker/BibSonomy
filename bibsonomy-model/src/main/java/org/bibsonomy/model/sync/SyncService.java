@@ -43,7 +43,7 @@ public class SyncService {
 	private SynchronizationDirection direction;
 	private ConflictResolutionStrategy strategy;
 	private Map<Class<? extends Resource>, Map<String, String>> plan;
-	private String ssl_dn;
+	private String sslDn;
 	
 	/**
 	 * @return the clientUser
@@ -163,15 +163,15 @@ public class SyncService {
 		return plan;
 	}
 	/**
-	 * @return the ssl_dn
+	 * @return the sslDn
 	 */
-	public String getSsl_dn() {
-		return ssl_dn;
+	public String getSslDn() {
+		return sslDn;
 	}
 	/**
-	 * @param ssl_dn the ssl_dn to set
+	 * @param sslDn the sslDn to set
 	 */
-	public void setSsl_dn(String ssl_dn) {
-		this.ssl_dn = ssl_dn;
+	public void setSslDn(String sslDn) {
+		this.sslDn = sslDn;
 	}
 }
