@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.command.admin;
 import java.net.URI;
 import java.util.List;
 
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
@@ -11,35 +12,36 @@ import org.bibsonomy.webapp.command.BaseCommand;
  */
 public class AdminSyncCommand extends BaseCommand {
 	
-	private List<URI> avlServer;
-	private List<URI> avlClients;
+	private List<SyncService> avlServer;
+	private List<SyncService> avlClients;
 	private String action;
 	private URI service;
-	private String ssl_dn;
+	private String sslDn;
+	private URI secureAPI;
 	private boolean server;
 	
 	/**
 	 * @param avlServer the avlServer to set
 	 */
-	public void setAvlServer(List<URI> avlServer) {
+	public void setAvlServer(List<SyncService> avlServer) {
 		this.avlServer = avlServer;
 	}
 	/**
 	 * @return the avlServer
 	 */
-	public List<URI> getAvlServer() {
+	public List<SyncService> getAvlServer() {
 		return avlServer;
 	}
 	/**
 	 * @param avlClients the avlClients to set
 	 */
-	public void setAvlClients(List<URI> avlClients) {
+	public void setAvlClients(List<SyncService> avlClients) {
 		this.avlClients = avlClients;
 	}
 	/**
 	 * @return the avlClients
 	 */
-	public List<URI> getAvlClients() {
+	public List<SyncService> getAvlClients() {
 		return avlClients;
 	}
 	/**
@@ -67,16 +69,28 @@ public class AdminSyncCommand extends BaseCommand {
 		return service;
 	}
 	/**
-	 * @return the ssl_dn
+	 * @return the sslDn
 	 */
-	public String getSsl_dn() {
-		return ssl_dn;
+	public String getSslDn() {
+		return this.sslDn;
 	}
 	/**
-	 * @param ssl_dn the ssl_dn to set
+	 * @param sslDn the sslDn to set
 	 */
-	public void setSsl_dn(String ssl_dn) {
-		this.ssl_dn = ssl_dn;
+	public void setSslDn(String sslDn) {
+		this.sslDn = sslDn;
+	}
+	/**
+	 * @return the secureAPI
+	 */
+	public URI getSecureAPI() {
+		return this.secureAPI;
+	}
+	/**
+	 * @param secureAPI the secureAPI to set
+	 */
+	public void setSecureAPI(URI secureAPI) {
+		this.secureAPI = secureAPI;
 	}
 	/**
 	 * @param server the server to set

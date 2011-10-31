@@ -45,7 +45,7 @@
 							<legend><label><c:out value="Clients"/></label></legend>
 							<c:forEach var="service" items="${command.avlClients}">
 								<div class="fsRow">
-									<c:out value="${service} ("/>
+									<span><c:out value="URI: ${service} SSL DN: ${service.sslDn} ("/></span>
 									<a href="/admin/sync?action=deleteService&amp;service=${fn:escapeXml(service)}&amp;server=false">
 										<c:out value="${delete}" />
 									</a>
@@ -53,10 +53,11 @@
 								</div>
 							</c:forEach>
 							<div class="fsRow">
-								<c:out value="${addService}  URI: "/>
+								<div class="fsRow"><c:out value="${addService}: "/></div>
+								<c:out value="URI:" />
 								<form:input path="service" />
-								<c:out value="  ssl_dn: " />
-								<form:input path="ssl_dn" />
+								<c:out value="  ssl dn:" />
+								<form:input path="sslDn" />
 								<input type="hidden" value="false" name="server"/>
 								<input type="submit" value="${addService}"/>
 							</div>
@@ -69,7 +70,7 @@
 							<legend><label><c:out value="Server"/></label></legend>
 							<c:forEach var="service" items="${command.avlServer}">
 								<div class="fsRow">
-									<span><c:out value="${service} ("/></span>
+									<span><c:out value="URI: ${service} SECURE API URL:: ${service.secureAPI}("/></span>
 									<a href="/admin/sync?action=deleteService&amp;service=${fn:escapeXml(service)}&amp;server=true">
 										<c:out value="${delete}" />
 									</a>
@@ -79,6 +80,8 @@
 							<div class="fsRow">
 								<c:out value="${addService}: "/>
 								<form:input path="service" />
+								<c:out value="  secure API:" />
+								<form:input path="secureAPI" />
 								<input type="hidden" value="true" name="server"/>
 								<input type="submit" value="${addService}"/>
 							</div>

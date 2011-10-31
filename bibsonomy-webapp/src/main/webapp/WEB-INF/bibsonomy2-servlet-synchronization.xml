@@ -52,7 +52,8 @@
 							<value>action</value>
 							<value>service</value>
 							<value>server</value>
-							<value>ssl_dn</value>
+							<value>sslDn</value>
+							<value>secureAPI</value>
 						</list>
 						</property>
 					</bean>

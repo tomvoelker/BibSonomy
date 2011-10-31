@@ -1016,7 +1016,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public void createSyncService(URI service, boolean server, final String ssl_dn) {
+	public void createSyncService(URI service, boolean server, final String sslDn, final URI secureAPI) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1083,6 +1083,12 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 
 	@Override
 	public List<SynchronizationPost> getSyncPlan(String userName, URI service, Class<? extends Resource> resourceType, List<SynchronizationPost> clientPosts, ConflictResolutionStrategy strategy, SynchronizationDirection direction) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public List<SyncService> getAllSyncServices(final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -55,8 +55,8 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 		/*
 		 * get services and clients from db
 		 */
-		command.setAvlClients(logic.getSyncServices(false));
-		command.setAvlServer(logic.getSyncServices(true));
+		command.setAvlClients(logic.getAllSyncServices(false));
+		command.setAvlServer(logic.getAllSyncServices(true));
 		
 		return Views.ADMIN_SYNC;
 	}
@@ -72,7 +72,7 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 		}
 		if (CREATE_SERVICE.equals(action)) {
 			try {
-				logic.createSyncService(service, command.isServer(), command.getSsl_dn());
+				logic.createSyncService(service, command.isServer(), command.getSslDn(), command.getSecureAPI());
 			} catch (final RuntimeException ex) {
 				/*
 				 * catch duplicates
