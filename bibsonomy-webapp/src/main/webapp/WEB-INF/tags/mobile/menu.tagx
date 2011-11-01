@@ -57,7 +57,10 @@
 				<div id="login-bar">
 					<c:forEach var="authMethod" items="${authConfig}">
 						<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-						<a style="font-size: 0.8em;" data-authMethod="${authMethodName}"><fmt:message key="login.method.${authMethodName}" /></a>
+						<fmt:message key="login.method.${authMethodName}" var="loginMessage"/>
+						<c:if test="${not empty loginMessage }">
+							<a style="font-size: 0.8em;" data-authMethod="${authMethodName}"><c:out value="${loginMessage}" /></a>
+						</c:if>
 					</c:forEach>
 				</div>
 				<div style="clear: both; height: 0;">&amp;nbsp;</div>
