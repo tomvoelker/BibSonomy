@@ -1,9 +1,5 @@
 package org.bibsonomy.synchronization;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
@@ -14,27 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.database.DBLogic;
-import org.bibsonomy.database.DBLogicApiInterfaceFactory;
-import org.bibsonomy.database.common.DBSessionFactory;
-import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
-import org.bibsonomy.database.util.IbatisDBSessionFactory;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.sync.SynchronizationPost;
-import org.bibsonomy.rest.testutil.TestServerBuilder;
-import org.bibsonomy.testutil.ModelUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mortbay.jetty.Server;
+import javax.management.relation.Role;
+
+import com.sun.corba.se.spi.activation.Server;
 
 /**
  * @author wla
@@ -42,7 +20,7 @@ import org.mortbay.jetty.Server;
  */
 public abstract class AbstractSynchronizationClientTest extends AbstractDatabaseManagerTest {
 
-	protected static final String SYNC_SERVER_URI = "http://localhost:8080/"; //default rest api test server url
+	protected static final String SYNC_SERVER_URI = "http://localhost:8090/"; //default rest api test server url
 	protected static final String SYNC_CLIENT_URI = "http://www.test.de/";
 	protected static final String SERVER_USER_NAME = "syncServer";
 	protected static final String SERVER_USER_APIKEY = "15cb586b630cc343cd60684807bf4785";
