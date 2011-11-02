@@ -351,31 +351,31 @@ public final class RestServlet extends HttpServlet {
 	}
 	
 	private void checkSync(final HttpServletRequest request, final LogicInterface logic) {
-		log.info("start ssl header check for synxhronization");
+		log.debug("start ssl header check for synxhronization");
 		final String verifyHeader = request.getHeader(SSL_VERIFY_HEADER);
 		if(!present(verifyHeader)) {
-			log.error("no ssl_verify header found");
+			log.debug("no ssl_verify header found");
 			//TODO merge both header checks
 		}
 		if(!SUCCESS.equals(verifyHeader)) {
 			//ssl_client_verify header is not set or unsuccessful
-			log.error("ssl_verify_header is unsuccessful");
+			log.debug("ssl_verify_header is unsuccessful");
 			return;
 		}
 		final String ssl_client_s_dn = request.getHeader(SSL_CLIENT_S_DN);
-		log.info("required ssl_s_dn: " + ssl_client_s_dn);
+		log.debug("required ssl_s_dn: " + ssl_client_s_dn);
 		if(!present(ssl_client_s_dn)) {
-			log.error("ssl_client_verify was set, but no ssl_client_s_dn");
+			log.debug("ssl_client_verify was set, but no ssl_client_s_dn");
 			return;
 		}
 		//get user services
 		final List<SyncService> syncServerList = logic.getSyncServer(logic.getAuthenticatedUser().getName());
 		for (final SyncService syncService : syncServerList) {
-			log.info("user service:" + syncService.getService() + " | service ssl_s_dn:" + syncService.getSslDn());
+			log.debug("user service:" + syncService.getService() + " | service ssl_s_dn:" + syncService.getSslDn());
 			if(ssl_client_s_dn.equals(syncService.getSslDn())) {
 				//FIXME: check, that request uri contains service uri
 				//service with requested ssl_client_s_dn found in user client list -> give user the sync-role 
-				log.info("set user role to SYNC");
+				log.debug("set user role to SYNC");
 				logic.getAuthenticatedUser().setRole(Role.SYNC);
 				return;
 			}

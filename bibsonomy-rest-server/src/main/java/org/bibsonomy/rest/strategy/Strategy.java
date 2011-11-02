@@ -21,7 +21,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
  * @version $Id$
  */
 public abstract class Strategy {
-	protected final Context context;
+	private final Context context;
 	
 	protected Writer writer;
 

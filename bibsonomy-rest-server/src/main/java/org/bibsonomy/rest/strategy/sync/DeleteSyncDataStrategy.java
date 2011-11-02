@@ -3,15 +3,12 @@ package org.bibsonomy.rest.strategy.sync;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
-import java.util.Date;
+import java.text.ParseException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.utils.RestSyncUtils;
@@ -21,11 +18,11 @@ import org.bibsonomy.rest.utils.RestSyncUtils;
  * @version $Id$
  */
 public class DeleteSyncDataStrategy extends AbstractDeleteStrategy {
-	
-	private static final Log log = LogFactory.getLog(DeleteSyncDataStrategy.class);
-	
+
 	private final URI serviceURI;
-	
+	private final Class<? extends Resource> resourceType;
+	private final String date;
+
 	/**
 	 * 
 	 * @param context
@@ -34,35 +31,22 @@ public class DeleteSyncDataStrategy extends AbstractDeleteStrategy {
 	public DeleteSyncDataStrategy(final Context context, final URI serviceURI) {
 		super(context);
 		this.serviceURI = serviceURI;
+		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute("resourceType", "all"));
+		this.date = context.getStringAttribute("date", null);
 	}
-	
+
 	@Override
 	protected boolean delete() {
-		final Class<? extends Resource> resourceType = ResourceFactory.getResourceClass(context.getStringAttribute("resourceType", "all"));
-		final LogicInterface logic = this.getLogic();		
-		
-		final String dateString = context.getStringAttribute("date", null);
-		
-		Date date = null;
-		if(present(dateString)) {
-			date = RestSyncUtils.parseDate(dateString);
-			if (!present(date)) {
-				log.error("can't parse date string");
-				return false;
-			}
+		if (!present(date)) {
+			throw new BadRequestOrResponseException("no date given");
 		}
-		final String userName = logic.getAuthenticatedUser().getName();
-		if (BibTex.class.equals(resourceType) || Resource.class.equals(resourceType)) {
-			logic.deleteSyncData(userName, serviceURI, BibTex.class, date);
+
+		try {
+			final LogicInterface logic = this.getLogic();
+			logic.deleteSyncData(logic.getAuthenticatedUser().getName(), this.serviceURI, this.resourceType, RestSyncUtils.parseDate(date));
+			return true;
+		} catch (ParseException ex) {
+			throw new BadRequestOrResponseException("the given date '" + date + "' could not be parsed.");
 		}
-		if(Bookmark.class.equals(resourceType) || Resource.class.equals(resourceType)) {
-			logic.deleteSyncData(userName, serviceURI, Bookmark.class, date);
-		}
-		
-		logic.deleteSyncData(userName, serviceURI, resourceType, date);
-		return true;
 	}
-
-
-
 }

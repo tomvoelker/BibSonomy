@@ -12,9 +12,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.Vector;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,6 +43,7 @@ public class RESTUtils {
 		formats.add(RenderingFormat.XML);
 		formats.add(RenderingFormat.APP_XML);
 		formats.add(RenderingFormat.JSON);
+		formats.add(RenderingFormat.LAYOUT);
 		
 		SUPPORTED_RENDERING_FORMAT = Collections.unmodifiableList(formats);
 	}

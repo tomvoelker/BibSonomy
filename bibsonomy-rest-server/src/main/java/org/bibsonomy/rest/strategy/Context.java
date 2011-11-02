@@ -129,7 +129,9 @@ public final class Context {
 
 	private Strategy chooseStrategy(final HttpMethod httpMethod, final String url) {
 		final StringTokenizer urlTokens = new URLDecodingStringTokenizer(url, "/");
-		//go over "/api" token
+		/*
+		 * skip "/api" token FIXME: is this OK?
+		 */
 		urlTokens.nextToken();
 		if (urlTokens.countTokens() > 0) {
 			final String nextElement = (String) urlTokens.nextElement();

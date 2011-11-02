@@ -6,14 +6,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URI;
+import java.util.Date;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -24,8 +23,9 @@ import org.bibsonomy.rest.strategy.Context;
 public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 
 	private final URI serviceURI;
+	private final Class<? extends Resource> resourceType;
+	private final String synchronizationStatus;
 	
-	private static final Log log = LogFactory.getLog(PutSyncStatusStrategy.class);
 	/**
 	 * 
 	 * @param context
@@ -34,6 +34,8 @@ public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 	public PutSyncStatusStrategy(final Context context, final URI serviceURI) {
 		super(context);
 		this.serviceURI = serviceURI;
+		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute("resourceType", "all"));
+		this.synchronizationStatus = context.getStringAttribute("status", "");
 	}
 
 	@Override
@@ -45,28 +47,25 @@ public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 	@Override
 	protected String update() {
 		final LogicInterface logic = this.getLogic();
-		final String statusStr = context.getStringAttribute("status", "");
-		if(!present(statusStr)) {
-			log.error("no status received");
-			throw new IllegalArgumentException();
+		if (!present(synchronizationStatus)) {
+			throw new BadRequestOrResponseException("No status given.");
 		}
-		final SynchronizationStatus status = SynchronizationStatus.valueOf(statusStr);
+		final SynchronizationStatus status = SynchronizationStatus.valueOf(this.synchronizationStatus);
 		
 		String info = null;
-		final BufferedReader reader = new BufferedReader(doc);
 		try {
-			info = reader.readLine();
+			/*
+			 * FIXME: why do we directly use a reader and not the XML parser?
+			 */
+			info = new BufferedReader(this.doc).readLine();
 		} catch (final IOException ex) {
-			log.error("can't parse sync data info");
-			ex.printStackTrace();
+			throw new BadRequestOrResponseException("Could not read body of request.");
 		}
 		
-		final Class<? extends Resource> resourceType = ResourceFactory.getResourceClass(context.getStringAttribute("resourceType", null));
-		
 		final String userName = logic.getAuthenticatedUser().getName();
-		final SynchronizationData lastSyncData = logic.getLastSyncData(userName, serviceURI, resourceType);
-		
-		logic.updateSyncData(userName, serviceURI, resourceType, lastSyncData.getLastSyncDate(), status, info);
+
+		final Date lastSyncDate = logic.getLastSyncData(userName, this.serviceURI, this.resourceType).getLastSyncDate();
+		logic.updateSyncData(userName, this.serviceURI, this.resourceType, lastSyncDate, status, info);
 		return null;
 	}
 
