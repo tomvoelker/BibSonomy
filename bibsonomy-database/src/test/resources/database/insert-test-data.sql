@@ -101,7 +101,7 @@ INSERT INTO `sync_services` (`uri`, `service_id`, server, ssl_dn) VALUES
 ('http://www.bibsonomy.org/', 1, FALSE, 'bibsonomy test ssl dn'),
 ('http://www.test.de/', 2, TRUE, 'test.de ssl dn'),
 ('http://www.test.de/', 0, FALSE, 'test.de ssl dn'),
-('http://localhost:8080/', 10, TRUE, 'localhost ssl dn');
+('http://localhost:41253/', 10, TRUE, 'localhost ssl dn');
 
 -- synchronization data table
 INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`, `info`) VALUES 
