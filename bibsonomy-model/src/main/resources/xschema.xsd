@@ -62,7 +62,7 @@
 				<!-- gold standard references -->
 				<xsd:element name="references" type="ReferencesType" />
 				<xsd:element name="syncPosts" type="SyncPostsType"></xsd:element>
-				<xsd:element name="syncData" type="SyncDataMapType"></xsd:element>
+				<xsd:element name="syncData" type="SyncDataType"></xsd:element>
 			</xsd:choice>
 
 		</xsd:sequence>
@@ -376,17 +376,5 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="SyncDataMapType">
-		<xsd:sequence>
-			<xsd:element name="entry" type="entryType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
-		</xsd:sequence>
-		
-	</xsd:complexType>
 
-	<xsd:complexType name="entryType">
-		<xsd:sequence>
-			<xsd:element name="value" type="SyncDataType"></xsd:element>
-		</xsd:sequence>
-		<xsd:attribute name="key" type="xsd:string"></xsd:attribute>
-	</xsd:complexType>
 </xsd:schema>
