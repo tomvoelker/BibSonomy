@@ -38,10 +38,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -88,7 +86,7 @@ public class ModelFactory {
 		}
 		return ModelFactory.modelFactory;
 	}
-	
+
 	private ModelValidator modelValidator = null; 
 
 	private ModelFactory() {
@@ -202,7 +200,7 @@ public class ModelFactory {
 		}
 		return tag;
 	}
-	
+
 	private List<Tag> createTags(final List<TagsType> xmlTags, final int depth) {
 		final List<Tag> rVal = new ArrayList<Tag>();
 		for (final TagsType xmlSubTags : xmlTags) {
@@ -213,7 +211,7 @@ public class ModelFactory {
 		}
 		return rVal;
 	}
-	
+
 	/**
 	 * creates a {@link RecommendedTag} based on the xml tag
 	 * 
@@ -229,7 +227,7 @@ public class ModelFactory {
 		if (xmlTag.getScore() != null ) tag.setScore(xmlTag.getScore().doubleValue());
 		return tag;
 	}
-	
+
 	/**
 	 * creates a {@link GoldStandard} post based on the xml post
 	 * 
@@ -239,23 +237,23 @@ public class ModelFactory {
 	 */
 	public Post<Resource> createCommunityPost(final PostType xmlPost) throws PersonListParserException {
 		checkStandardPost(xmlPost);
-		
+
 		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
-		
+
 		final GoldStandardPublicationType xmlPublication = xmlPost.getGoldStandardPublication();
 		if (present(xmlPublication)) {
 			ModelValidationUtils.checkPublication(xmlPublication);
 			final GoldStandardPublication publication = new GoldStandardPublication();
 			this.fillPublicationWithInformations(xmlPublication, publication);
-			
+
 			checkPublication(publication);
-			
+
 			post.setResource(publication);
 		} else {
 			// TODO: implement a gold standard for bookmarks?!?
 			throw new InvalidModelException("resource is not supported");
 		}
-		
+
 		return post;
 	}
 
@@ -285,10 +283,10 @@ public class ModelFactory {
 		final BibtexType xmlPublication = xmlPost.getBibtex();
 		if (xmlPublication != null) {
 			ModelValidationUtils.checkPublication(xmlPublication);
-			
+
 			final BibTex publication = new BibTex();
 			this.fillPublicationWithInformations(xmlPublication, publication);
-			
+
 			/*
 			 * check, of the post contains documents
 			 */
@@ -308,7 +306,7 @@ public class ModelFactory {
 
 			post.setResource(publication);
 		}
-		
+
 		final BookmarkType xmlBookmark = xmlPost.getBookmark();
 		if (xmlBookmark != null) {
 			checkBookmark(xmlBookmark);
@@ -320,7 +318,7 @@ public class ModelFactory {
 
 			post.setResource(bookmark);
 		}
-		
+
 		if (xmlPost.getGroup() != null) {
 			post.setGroups(new HashSet<Group>());
 			for (final GroupType xmlGroup : xmlPost.getGroup()) {
@@ -360,10 +358,10 @@ public class ModelFactory {
 		final UserType xmlUser = xmlPost.getUser();
 		checkUser(xmlUser);
 		user.setName(xmlUser.getName());
-		
+
 		return user;
 	}
-	
+
 	/**
 	 * Creates a {@link SynchronizationPost} from its xml representation
 	 * @param xmlSyncPost
@@ -388,7 +386,7 @@ public class ModelFactory {
 		}
 		if(present(xmlSyncPost.getCreateDate())) {
 			post.setCreateDate(createDate(xmlSyncPost.getCreateDate()));
-			
+
 		} else {
 			throw new InvalidModelException("create date not present"); 
 		}
@@ -399,67 +397,69 @@ public class ModelFactory {
 		}
 		return post;
 	}
-	
+
 	/**
 	 * Creates a {@link SynchronizationData} from xml representation
 	 * @param xmlSyncData
 	 * @return synchronization data
 	 */
-	public Map<Class<? extends Resource>, SynchronizationData> createSynchronizationData(final SyncDataMapType xmlSyncDataMap) {
-		String errors = "";
-		final LinkedHashMap<Class<? extends Resource>, SynchronizationData> map = new LinkedHashMap<Class<? extends Resource>, SynchronizationData>();
-		for (final EntryType xmlEntry : xmlSyncDataMap.getEntry()) {
-			final SynchronizationData syncData = new SynchronizationData();
-			errors = errors +  fillSyncData(xmlEntry.getValue(), syncData);
-			map.put(ResourceFactory.getResourceClass(xmlEntry.getKey()), syncData);
-		}
+	public SynchronizationData createSynchronizationData(final SyncDataType xmlSyncData) {
+		final SynchronizationData syncData = new SynchronizationData();
+		final String errors = fillSyncData(xmlSyncData, syncData);
 		if (!present(errors)) {
-			return map;
+			return syncData;
 		}
-		
+
 		throw new InvalidModelException(errors.trim());
-		
+
 	}
 
 	private String fillSyncData(final SyncDataType xmlSyncData, final SynchronizationData syncData) {
-		String errors = "";
+		final StringBuilder errors = new StringBuilder();
+		
 		syncData.setInfo(xmlSyncData.getInfo());
-		if (present(xmlSyncData.getLastSyncDate())) {
-			syncData.setLastSyncDate(createDate(xmlSyncData.getLastSyncDate()));
+		
+		final XMLGregorianCalendar lastSyncDate = xmlSyncData.getLastSyncDate();
+		if (present(lastSyncDate)) {
+			syncData.setLastSyncDate(createDate(lastSyncDate));
 		} else {
-			errors += "\nlast sync date is not present";
+			errors.append("last sync date is not present\n");
 		}
-		if(present(xmlSyncData.getResourceType())) {
-			syncData.setResourceType(ResourceFactory.getResourceClass(xmlSyncData.getResourceType().toLowerCase()));
+		
+		final String resourceType = xmlSyncData.getResourceType();
+		if(present(resourceType)) {
+			syncData.setResourceType(ResourceFactory.getResourceClass(resourceType.toLowerCase()));
 		} else {
-			errors += "\nresource type is not present";
+			errors.append("resource type is not present\n");
 		}
-		if(present(xmlSyncData.getService())) {
+		
+		final String service = xmlSyncData.getService();
+		if (present(service)) {
 			try {
-				final URI service = new URI(xmlSyncData.getService());
-				syncData.setService(service);
+				syncData.setService(new URI(service));
 			} catch (final URISyntaxException ex) {
-				errors += "\nservice uri is malformed: " + ex.getMessage();
+				errors.append("service uri is malformed: " + ex.getMessage() + "\n");
 			}
-			
-		}
-		
-		if(present(xmlSyncData.getSynchronizationStatus())) {
-			final SynchronizationStatus status = Enum.valueOf(SynchronizationStatus.class, xmlSyncData.getSynchronizationStatus().toUpperCase());
-			syncData.setStatus(status);
 		} else {
-			errors += "\nsynchronization status not present";
+			errors.append("service URI is not present\n");
 		}
-		
-		//FIXME do we need check of user name or can it be null?
+
+		final String synchronizationStatus = xmlSyncData.getSynchronizationStatus();
+		if (present(synchronizationStatus)) {
+			syncData.setStatus(Enum.valueOf(SynchronizationStatus.class, synchronizationStatus.toUpperCase()));
+		} else {
+			errors.append("synchronization status not present\n");
+		}
+
+		// FIXME do we need check of user name or can it be null?
 		syncData.setUserName(xmlSyncData.getUserName());
-		
+
 		if (!present(errors)) {
 			return "";
 		}
-		return errors;
+		return errors.toString();
 	}
-	
+
 	/**
 	 * @param xmlPublication
 	 * @param publication

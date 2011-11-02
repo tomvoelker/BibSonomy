@@ -41,11 +41,9 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -88,7 +86,6 @@ import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.DocumentType;
 import org.bibsonomy.rest.renderer.xml.DocumentsType;
-import org.bibsonomy.rest.renderer.xml.EntryType;
 import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.GroupsType;
@@ -99,7 +96,6 @@ import org.bibsonomy.rest.renderer.xml.PostsType;
 import org.bibsonomy.rest.renderer.xml.ReferenceType;
 import org.bibsonomy.rest.renderer.xml.ReferencesType;
 import org.bibsonomy.rest.renderer.xml.StatType;
-import org.bibsonomy.rest.renderer.xml.SyncDataMapType;
 import org.bibsonomy.rest.renderer.xml.SyncDataType;
 import org.bibsonomy.rest.renderer.xml.SyncPostType;
 import org.bibsonomy.rest.renderer.xml.SyncPostsType;
@@ -753,7 +749,7 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlDoc.setSyncPosts(xmlSyncPosts);
 		serialize(writer, xmlDoc);
 	}
-	
+
 	/**
 	 * @param post
 	 * @return SyncPostType representation of given post
@@ -779,28 +775,19 @@ public abstract class JAXBRenderer implements Renderer {
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializeSynchrionizationData(java.io.Writer, org.bibsonomy.model.sync.SynchronizationData)
 	 */
 	@Override
-	public void serializeSynchronizationDataMap(final Writer writer, final Map<Class<? extends Resource>, SynchronizationData> syncDataMap) {
+	public void serializeSynchronizationData(final Writer writer, final SynchronizationData syncData) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
-		final SyncDataMapType xmlSyncDataMap = new SyncDataMapType();
 		
-		for (final Entry<Class<? extends Resource>, SynchronizationData> entry : syncDataMap.entrySet()) {
-			final SynchronizationData data = entry.getValue();
-			final SyncDataType xmlSyncData = new SyncDataType();
-			
-			xmlSyncData.setLastSyncDate(createXmlCalendar(data.getLastSyncDate()));
-			xmlSyncData.setResourceType(ResourceFactory.getResourceName(data.getResourceType()));
-			xmlSyncData.setService(data.getService().toString());
-			xmlSyncData.setSynchronizationStatus(data.getStatus().toString());
-			xmlSyncData.setUserName(data.getUserName());
-			xmlSyncData.setInfo(data.getInfo());
-			final EntryType xmlEntry = new EntryType();
-			xmlEntry.setKey(ResourceFactory.getResourceName(entry.getKey()));
-			xmlEntry.setValue(xmlSyncData);
-			xmlSyncDataMap.getEntry().add(xmlEntry);
-		}
+		final SyncDataType xmlSyncData = new SyncDataType();
+		xmlSyncData.setLastSyncDate(createXmlCalendar(syncData.getLastSyncDate()));
+		xmlSyncData.setResourceType(ResourceFactory.getResourceName(syncData.getResourceType()));
+		xmlSyncData.setService(syncData.getService().toString());
+		xmlSyncData.setSynchronizationStatus(syncData.getStatus().toString());
+		xmlSyncData.setUserName(syncData.getUserName());
+		xmlSyncData.setInfo(syncData.getInfo());
 		
-		xmlDoc.setSyncData(xmlSyncDataMap);
+		xmlDoc.setSyncData(xmlSyncData);
 		serialize(writer, xmlDoc);
 	}
 
@@ -826,11 +813,10 @@ public abstract class JAXBRenderer implements Renderer {
 	 * @see org.bibsonomy.rest.renderer.Renderer#parseSynchronizatoionDate(java.io.Reader)
 	 */
 	@Override
-	public Map<Class<? extends Resource>, SynchronizationData> parseSynchronizationDataMap(final Reader reader) throws BadRequestOrResponseException {
+	public SynchronizationData parseSynchronizationData(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
-		if(xmlDoc.getSyncData() != null) {
-			final Map<Class<? extends Resource>, SynchronizationData> syncDataMap = ModelFactory.getInstance().createSynchronizationData(xmlDoc.getSyncData());
-			return syncDataMap;
+		if (xmlDoc.getSyncData() != null) {
+			return ModelFactory.getInstance().createSynchronizationData(xmlDoc.getSyncData());
 		}
 		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no  defined.");
