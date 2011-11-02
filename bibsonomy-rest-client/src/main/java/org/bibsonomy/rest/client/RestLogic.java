@@ -86,13 +86,13 @@ import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
 import org.bibsonomy.rest.client.queries.post.AddUserToGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
+import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
-import org.bibsonomy.rest.client.queries.post.GetSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
+import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
-import org.bibsonomy.rest.client.queries.put.UpdateSyncStatusQuery;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
 import org.bibsonomy.rest.renderer.RendererFactory;
@@ -600,11 +600,7 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
-		
-		final Boolean result = this.execute(new UpdateSyncStatusQuery(service.toString(), resourceType, null, null, status, info));
-		if(!result){
-			log.error("can't update sync status");
-		}
+		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info));
 	}
 
 	@Override
@@ -614,13 +610,12 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType) {
-		final SynchronizationData synchronizationData = this.execute(new GetLastSyncDataQuery(service.toString(), resourceType, null, null)).get(resourceType);
-		return synchronizationData;
+		return this.execute(new GetLastSyncDataQuery(service.toString(), resourceType, null, null));
 	}
 
 	@Override
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
-		return this.execute(new GetSyncPlanQuery(service.toString(), clientPosts, resourceType, strategy, direction));
+		return this.execute(new CreateSyncPlanQuery(service.toString(), clientPosts, resourceType, strategy, direction));
 	}
 	
 	@Override

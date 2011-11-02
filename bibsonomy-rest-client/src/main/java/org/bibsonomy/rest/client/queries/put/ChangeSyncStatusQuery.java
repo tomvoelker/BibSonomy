@@ -13,12 +13,12 @@ import org.bibsonomy.util.UrlUtils;
  * @author wla
  * @version $Id$
  */
-public class UpdateSyncStatusQuery extends AbstractSyncQuery<Boolean> {
+public class ChangeSyncStatusQuery extends AbstractSyncQuery<Boolean> {
 
 	private final SynchronizationStatus status;
 	private final String info;
 	
-	public UpdateSyncStatusQuery(final String serviceURI, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction, final SynchronizationStatus status, final String info) {
+	public ChangeSyncStatusQuery(final String serviceURI, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction, final SynchronizationStatus status, final String info) {
 		super(serviceURI, resourceType, strategy, direction);
 		this.status = status;
 		this.info = info;
@@ -26,8 +26,7 @@ public class UpdateSyncStatusQuery extends AbstractSyncQuery<Boolean> {
 
 	@Override
 	protected Boolean doExecute() throws ErrorPerformingRequestException {
-		String url = generateURL("status");
-		url = UrlUtils.setParam(url, "status", status.toString());
+		final String url = UrlUtils.setParam(getSyncURL(), "status", status.toString());
 		performRequest(HttpMethod.PUT, url, info);
 		return true;
 	}

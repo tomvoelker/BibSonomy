@@ -18,11 +18,11 @@ import org.bibsonomy.util.StringUtils;
  * @author wla
  * @version $Id$
  */
-public class GetSyncPlanQuery extends AbstractSyncQuery<List<SynchronizationPost>> {
+public class CreateSyncPlanQuery extends AbstractSyncQuery<List<SynchronizationPost>> {
 
 	private final List<SynchronizationPost> posts;
 	
-	public GetSyncPlanQuery(final String serviceURI, final List<SynchronizationPost> posts, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
+	public CreateSyncPlanQuery(final String serviceURI, final List<SynchronizationPost> posts, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		super(serviceURI, resourceType, strategy, direction);
 		this.posts = posts;
 	}
@@ -33,8 +33,9 @@ public class GetSyncPlanQuery extends AbstractSyncQuery<List<SynchronizationPost
 		final Renderer renderer = this.getRenderer();
 		renderer.serializeSynchronizationPosts(sw, posts);
 		
-		final String url = generateURL("plan");
-		final Reader reader = performRequest(HttpMethod.POST, url, StringUtils.toDefaultCharset(sw.toString()));
+		final String syncURL = getSyncURL();
+		System.out.println("createSyncPlanQuery() calling URL " + syncURL);
+		final Reader reader = performRequest(HttpMethod.POST, syncURL, StringUtils.toDefaultCharset(sw.toString()));
 		return renderer.parseSynchronizationPostList(reader);
 	}
 

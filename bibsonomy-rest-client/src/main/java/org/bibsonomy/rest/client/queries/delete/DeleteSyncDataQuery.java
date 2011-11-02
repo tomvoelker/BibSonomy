@@ -54,7 +54,7 @@ public class DeleteSyncDataQuery extends AbstractSyncQuery<String> {
 
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		String url = generateURL("data");
+		String url = getSyncURL();
 		
 		if (present(syncDate)) {
 			url = UrlUtils.setParam(url, "date", UrlUtils.safeURIEncode(RestSyncUtils.serializeDate(syncDate)));

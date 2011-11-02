@@ -32,16 +32,19 @@ public abstract class AbstractSyncQuery<T> extends AbstractQuery<T> {
 	 * @param action
 	 * @return
 	 */
-	protected String generateURL(final String action) {
-		String result = URL_SYNC + "/" + UrlUtils.safeURIEncode(serviceURI) + "/" + action; 
-		if(!Resource.class.equals(resourceType) && present(resourceType)) {
-			result = UrlUtils.setParam(result, "resourceType", ResourceFactory.getResourceName(resourceType));
+	protected String getSyncURL() {
+		final String result = URL_SYNC + "/" + UrlUtils.safeURIEncode(serviceURI);
+		/*
+		 * FIXME: resourceType=all not supported - where to block?
+		 */
+		if(present(resourceType)) {
+			return UrlUtils.setParam(result, "resourceType", ResourceFactory.getResourceName(resourceType));
 		}
 		if(present(strategy)) {
-			result = UrlUtils.setParam(result, "strategy", strategy.getConflictResolutionStrategy());
+			return UrlUtils.setParam(result, "strategy", strategy.getConflictResolutionStrategy());
 		}
 		if (present(direction)) {
-			result = UrlUtils.setParam(result, "direction", direction.getSynchronizationDirection());
+			return UrlUtils.setParam(result, "direction", direction.getSynchronizationDirection());
 		}
 		return result;
 	}
