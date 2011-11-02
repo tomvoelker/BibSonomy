@@ -6,7 +6,6 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -243,12 +242,12 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
-	public void serializeSynchronizationDataMap(final Writer writer, final Map<Class<? extends Resource>, SynchronizationData> syncDataMap) {
+	public void serializeSynchronizationData(final Writer writer, final SynchronizationData syncData) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Map<Class<? extends Resource>, SynchronizationData> parseSynchronizationDataMap(final Reader reader) throws BadRequestOrResponseException {
+	public SynchronizationData parseSynchronizationData(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
