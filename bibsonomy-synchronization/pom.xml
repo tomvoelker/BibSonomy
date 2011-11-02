@@ -22,31 +22,18 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-common</artifactId>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-client</artifactId>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database</artifactId>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-database</artifactId>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -81,15 +68,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-database-common</artifactId>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-server</artifactId>
-			<type>jar</type>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -100,13 +79,12 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-opensocial</artifactId>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>

@@ -15,7 +15,6 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -36,29 +35,12 @@ import org.bibsonomy.rest.client.RestLogicFactory;
  * @version $Id$
  */
 public abstract class AbstractSynchronizationClient {
+	protected static final String APISTRING = "api";
+	
 	/*
 	 * own URI
 	 */
 	protected URI ownUri;
-	
-	protected final String APISTRING ="api";
-	
-	protected final DBSessionFactory dbSessionFactory;
-	
-	/**
-	 * default constructor
-	 */
-	public AbstractSynchronizationClient() {
-		this.dbSessionFactory = null;
-	}
-	
-	/**
-	 * this constructor is required for tests
-	 * @param dbSessionFactory
-	 */
-	public AbstractSynchronizationClient(DBSessionFactory dbSessionFactory) {
-		this.dbSessionFactory = dbSessionFactory;
-	}
 
 	/**
 	 * Looks up the credentials for the given syncServer. If no credentials
@@ -86,15 +68,14 @@ public abstract class AbstractSynchronizationClient {
 	 * @return
 	 */
 	protected LogicInterface getServerLogic(final SyncService syncServer) {
-		Properties serverUser = syncServer.getServerUser();
+		final Properties serverUser = syncServer.getServerUser();
 		URI api = syncServer.getSecureAPI();
 		if(!present(api)) {
 			api = syncServer.getService();
 		}
 		
-		RestLogicFactory factory = new RestLogicFactory(api + APISTRING);
+		final RestLogicFactory factory = new RestLogicFactory(api + APISTRING);
 		return factory.getLogicAccess(serverUser.getProperty("userName"), serverUser.getProperty("apiKey"));
-//		return new RestLogic(serverUser.getProperty("userName"), serverUser.getProperty("apiKey"), syncServer.getService() + APISTRING);
 	}
 	
 
@@ -171,7 +152,7 @@ public abstract class AbstractSynchronizationClient {
 		 */
 		final User serverUser = serverLogic.getAuthenticatedUser();
 //		final Role serverUserRole = serverUser.getRole();
-		//FIXME: cleanup serverUser.setRole(Role.SYNC); 
+		// FIXME: cleanup serverUser.setRole(Role.SYNC); 
 		final User clientUser = clientLogic.getAuthenticatedUser();
 		final Role clientUserRole = clientUser.getRole();
 		clientUser.setRole(Role.SYNC);
@@ -338,9 +319,6 @@ public abstract class AbstractSynchronizationClient {
 			final List<ErrorMessage> errorMessages = entry.getValue();
 			for (final ErrorMessage em: errorMessages) {
 				if (em instanceof DuplicatePostErrorMessage) {
-					em.getErrorCode();
-					em.getParameters();
-					em.getDefaultMessage();
 					duplicatesOnClient++;
 				}		
 			}

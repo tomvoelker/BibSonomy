@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -63,7 +62,7 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 
 	@Override
 	public void test() {
-		final TwoStepSynchronizationClient sync = new TwoStepSynchronizationClient(new IbatisDBSessionFactory());
+		final TwoStepSynchronizationClient sync = new TwoStepSynchronizationClient();
 		
 		try {
 			sync.setOwnUri(new URI(SYNC_CLIENT_URI));

@@ -1,5 +1,9 @@
 package org.bibsonomy.synchronization;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
@@ -10,9 +14,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.relation.Role;
-
-import com.sun.corba.se.spi.activation.Server;
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.database.DBLogic;
+import org.bibsonomy.database.DBLogicApiInterfaceFactory;
+import org.bibsonomy.database.common.DBSessionFactory;
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.util.IbatisDBSessionFactory;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.rest.testutil.TestServerBuilder;
+import org.bibsonomy.testutil.ModelUtils;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mortbay.jetty.Server;
 
 /**
  * @author wla
@@ -20,24 +42,17 @@ import com.sun.corba.se.spi.activation.Server;
  */
 public abstract class AbstractSynchronizationClientTest extends AbstractDatabaseManagerTest {
 
-	protected static final String SYNC_SERVER_URI = "http://localhost:8090/"; //default rest api test server url
+	private static final int PORT = 41253;
+	protected static final String SYNC_SERVER_URI = "http://localhost:" + PORT + "/"; //default rest api test server url
 	protected static final String SYNC_CLIENT_URI = "http://www.test.de/";
 	protected static final String SERVER_USER_NAME = "syncServer";
 	protected static final String SERVER_USER_APIKEY = "15cb586b630cc343cd60684807bf4785";
 	protected static final String CLIENT_USER_NAME = "sync2";
 
-	protected User serverUser;
-	protected User clientUser;
+	protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	protected LogicInterface clientLogic;
-	protected LogicInterface serverLogic;
-	
-	protected URI syncServer;
-	protected SynchronizationClient sync;
-	
 	@SuppressWarnings("rawtypes")
-	protected
-	final Class[] resourceTypes = new Class[] {Bookmark.class, BibTex.class};
+	protected static final Class[] resourceTypes = new Class[] {Bookmark.class, BibTex.class};
 	
 	protected static final String[] BOOKMARK_KEYS = new String[]{
 		"9814aac6058e6db6c35ffe151f4c4c53", // changed on client
@@ -55,12 +70,38 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		"3d6ec7b6695976eeec379dcc55ae9cb1"  // no changes
 	};
 	
+	private static Server restServer;
+
+	@SuppressWarnings("javadoc")
+	@BeforeClass
+	public static void initRestServer() throws Exception {
+		DBLogicApiInterfaceFactory dbLogicFactory = new DBLogicApiInterfaceFactory();
+		dbLogicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
+		TestServerBuilder buildServer = new TestServerBuilder(dbLogicFactory, PORT);
+		restServer = buildServer.buildServer();
+		restServer.start();
+	}
+	
+	@SuppressWarnings("javadoc")
+	@AfterClass
+	public static void stop() throws Exception {
+		if (present(restServer)) {
+			restServer.stop();
+		}
+	}
+	
+	protected User serverUser;
+	protected User clientUser;
+
+	protected LogicInterface clientLogic;
+	protected LogicInterface serverLogic;
+	
+	protected URI syncServer;
+	protected SynchronizationClient sync;
+	
 	private String[] modifiedBookmarkKeys;
 	private String[] modifiedPublicationKeys;
 	
-	private static Server restServer;
-
-	protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@SuppressWarnings("javadoc")
 	@Test
@@ -176,37 +217,9 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			 * check that synchronization is enabled
 			 */
 			assertEquals(SYNC_SERVER_URI, clientLogic.getSyncServer(clientUser.getName()).get(0).getService().toString());
-
 		}
 	}
 	
-	@SuppressWarnings("javadoc")
-	@BeforeClass
-	public static void initRestServer() {
-		DBLogicApiInterfaceFactory dbLogicFactory = new DBLogicApiInterfaceFactory();
-		dbLogicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
-		TestServerBuilder buildServer = new TestServerBuilder(dbLogicFactory, 8080);
-		try {
-			restServer = buildServer.buildServer();
-			restServer.start();
-		} catch (Exception ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-	}
-
-	@SuppressWarnings("javadoc")
-	@AfterClass
-	public static void stop() {
-		try {
-			if(present(restServer)) {
-				restServer.stop();
-			}
-		} catch (Exception ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-	}
 
 	/**
 	 * helper method to create posts of the given type
@@ -266,7 +279,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	
 	protected void checkModifiedKeys(Class<? extends Resource> resourceType, Map<String, SynchronizationPost> posts, String serviceType) {
 		final String[] clientKeys;
-		if(Bookmark.class.equals(resourceType)) {
+		if (Bookmark.class.equals(resourceType)) {
 			clientKeys = modifiedBookmarkKeys;
 		} else {
 			clientKeys = modifiedPublicationKeys;
@@ -282,7 +295,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		try {
 			Thread.sleep(1000 * seconds);
 		} catch (InterruptedException ex) {
-			ex.printStackTrace();
+			// ignore
 		}
 	}
 
