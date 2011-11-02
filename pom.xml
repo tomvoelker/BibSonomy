@@ -739,6 +739,8 @@
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-synchronization</artifactId>
 				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
