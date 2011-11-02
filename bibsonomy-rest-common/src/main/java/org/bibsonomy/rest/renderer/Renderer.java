@@ -27,7 +27,6 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -247,16 +246,16 @@ public interface Renderer {
 	/**
 	 * Serializes Map of synchronization data
 	 * @param writer
-	 * @param syncDataMap
+	 * @param syncData
 	 */
-	public void serializeSynchronizationDataMap(Writer writer, Map<Class<? extends Resource>, SynchronizationData> syncDataMap);
+	public void serializeSynchronizationData(Writer writer, SynchronizationData syncData);
 	
 	/**
 	 * @param reader
 	 * @return
 	 * @throws BadRequestOrResponseException
 	 */
-	public Map<Class<? extends Resource>, SynchronizationData> parseSynchronizationDataMap(Reader reader) throws BadRequestOrResponseException;
+	public SynchronizationData parseSynchronizationData(Reader reader) throws BadRequestOrResponseException;
 	
 	/**
 	 * Reads list of synchronization posts
