@@ -60,54 +60,54 @@ public final class RestServlet extends HttpServlet {
 	 * Used in {@link #validateAuthorization(String)} to identify HTTP basic authentication.
 	 */
 	private static final String HTTP_AUTH_BASIC_IDENTIFIER = "Basic ";
-	
+
 	/**
 	 * the key for the documents path
 	 */
 	public static final String DOCUMENTS_PATH_KEY = "docPath";
-	
+
 	/**
 	 * the key for the project home
 	 */
 	public static final String PROJECT_HOME_KEY = "projectHome";
-	
+
 	/**
 	 * the response encoding used to encode HTTP responses.
 	 */
 	public static final String RESPONSE_ENCODING = "UTF-8";
-	
+
 	/**
 	 * the request default encoding
 	 */
 	public static final String REQUEST_ENCODING = "UTF-8";
-	
+
 	/**
 	 * Name of header, that shows successful ssl verification
 	 */
 	public static final String SSL_VERIFY_HEADER = "SSL_CLIENT_VERIFY";
-	
+
 	/**
 	 * String to show successful ssl key check 
 	 */
 	public static final String SUCCESS = "SUCCESS";
-	
+
 	/**
 	 * Distinguish name of the client
 	 */
 	public static final String SSL_CLIENT_S_DN = "SSL_CLIENT_S_DN";
-	
+
 
 	private LogicInterfaceFactory logicFactory;
-	
+
 	private UrlRenderer urlRenderer;
 	private RendererFactory rendererFactory;
-	
+
 	// store some infos about the specific request or the webservice (i.e. document path)
 	private final Map<String, String> additionalInfos = new HashMap<String, String>();
-	
+
 	/** handles OAuth requests */
 	private OAuthRequestValidator oauthValidator;
-	
+
 	/** logic interface factory for handling oauth requests */
 	private ShindigDBLogicUserInterfaceFactory oauthLogicFactory;
 
@@ -127,7 +127,7 @@ public final class RestServlet extends HttpServlet {
 	public void setProjectHome(final String projectHome) {
 		additionalInfos.put(PROJECT_HOME_KEY, projectHome);
 	}
-	
+
 	/**
 	 * Renders the URLs returned by the servlet, e.g., in the XML.
 	 * @param urlRenderer
@@ -137,7 +137,7 @@ public final class RestServlet extends HttpServlet {
 		this.urlRenderer = urlRenderer;
 		this.rendererFactory = new RendererFactory(urlRenderer);
 	}
-	
+
 	/**
 	 * Sets the base path to the documents. 
 	 * @param documentPath
@@ -146,7 +146,7 @@ public final class RestServlet extends HttpServlet {
 	public void setDocumentPath(final String documentPath) {
 		additionalInfos.put(DOCUMENTS_PATH_KEY, documentPath); 
 	}
-	
+
 	/**
 	 * @param oauthValidator the oauthValidator to set
 	 */
@@ -218,13 +218,13 @@ public final class RestServlet extends HttpServlet {
 		try {
 			// validate the requesting user's authorization
 			final LogicInterface logic = validateAuthorization(request);
-			
+
 			// parse the request object to retrieve a list with all items of the http request
 			final MultiPartRequestParser parser = new MultiPartRequestParser(request);
-			
+
 			// choose rendering format (defaults to xml)
 			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), request.getContentType());
-			
+
 			// create Context
 			final Reader reader = RESTUtils.getInputReaderForStream(request.getInputStream(), REQUEST_ENCODING);
 			final Context context = new Context(method, request.getRequestURI(), renderingFormat, this.urlRenderer, reader, parser.getList(), logic, request.getParameterMap(), additionalInfos);
@@ -245,17 +245,17 @@ public final class RestServlet extends HttpServlet {
 			} else {
 				response.setStatus(HttpServletResponse.SC_OK);
 			}
-			
+
 			// just define an ByteArrayOutputStream to store all outgoing data
 			final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
 			context.perform(cachingStream);
-			
+
 			/*
 			 * XXX: note: cachingStream.size() != cachingStream.toString().length() !!
 			 * the correct value is the first one!
 			 */
 			response.setContentLength(cachingStream.size());
-			
+
 			// some more logging
 			log.debug("Size of output sent:" + cachingStream.size());
 			final long elapsed = System.currentTimeMillis() - start;
@@ -295,14 +295,14 @@ public final class RestServlet extends HttpServlet {
 				}
 			}
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, returnMessage.toString());
-			
+
 		} catch (final Exception e) {
 			log.error(e,e);
 			// well, lets fetch each and every error...
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Sends an error to the client.
 	 * 
@@ -349,39 +349,42 @@ public final class RestServlet extends HttpServlet {
 		}
 		throw new AuthenticationException(NO_AUTH_ERROR);
 	}
-	
+
 	private void checkSync(final HttpServletRequest request, final LogicInterface logic) {
 		log.debug("start ssl header check for synxhronization");
+
 		final String verifyHeader = request.getHeader(SSL_VERIFY_HEADER);
-		if(!present(verifyHeader)) {
-			log.debug("no ssl_verify header found");
-			//TODO merge both header checks
-		}
-		if(!SUCCESS.equals(verifyHeader)) {
-			//ssl_client_verify header is not set or unsuccessful
-			log.debug("ssl_verify_header is unsuccessful");
+
+		if (!SUCCESS.equals(verifyHeader)) {
+			log.debug("ssl_verify_header not found or not '" + SUCCESS + "'");
 			return;
 		}
-		final String ssl_client_s_dn = request.getHeader(SSL_CLIENT_S_DN);
-		log.debug("required ssl_s_dn: " + ssl_client_s_dn);
-		if(!present(ssl_client_s_dn)) {
-			log.debug("ssl_client_verify was set, but no ssl_client_s_dn");
+
+		final String sslClientSDn = request.getHeader(SSL_CLIENT_S_DN);
+		if (!present(sslClientSDn)) {
+			log.debug("ssl_client_verify was set, but ssl_client_s_dn not found");
 			return;
 		}
-		//get user services
+
+		/*
+		 * get user's sync services
+		 */
 		final List<SyncService> syncServerList = logic.getSyncServer(logic.getAuthenticatedUser().getName());
 		for (final SyncService syncService : syncServerList) {
-			log.debug("user service:" + syncService.getService() + " | service ssl_s_dn:" + syncService.getSslDn());
-			if(ssl_client_s_dn.equals(syncService.getSslDn())) {
-				//FIXME: check, that request uri contains service uri
-				//service with requested ssl_client_s_dn found in user client list -> give user the sync-role 
+			if (log.isDebugEnabled()) {
+				log.debug("user service:" + syncService.getService() + " | service ssl_s_dn:" + syncService.getSslDn());
+			}
+			if (sslClientSDn.equals(syncService.getSslDn())) {
+				/*
+				 * FIXME: check, that request uri contains service uri
+				 * 
+				 * service with requested ssl_client_s_dn found in user client list -> give user the sync-role
+				 */
 				log.debug("set user role to SYNC");
 				logic.getAuthenticatedUser().setRole(Role.SYNC);
 				return;
 			}
 		}
-
-		
 	}
 
 	/**
