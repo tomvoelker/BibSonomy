@@ -88,6 +88,7 @@ import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.DocumentType;
 import org.bibsonomy.rest.renderer.xml.DocumentsType;
+import org.bibsonomy.rest.renderer.xml.EntryType;
 import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.GroupsType;
@@ -98,6 +99,10 @@ import org.bibsonomy.rest.renderer.xml.PostsType;
 import org.bibsonomy.rest.renderer.xml.ReferenceType;
 import org.bibsonomy.rest.renderer.xml.ReferencesType;
 import org.bibsonomy.rest.renderer.xml.StatType;
+import org.bibsonomy.rest.renderer.xml.SyncDataMapType;
+import org.bibsonomy.rest.renderer.xml.SyncDataType;
+import org.bibsonomy.rest.renderer.xml.SyncPostType;
+import org.bibsonomy.rest.renderer.xml.SyncPostsType;
 import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.TagsType;
 import org.bibsonomy.rest.renderer.xml.UserType;
@@ -805,11 +810,11 @@ public abstract class JAXBRenderer implements Renderer {
 	@Override
 	public List<SynchronizationPost> parseSynchronizationPostList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
-		if(xmlDoc.getSyncPosts() != null) {
+		if (xmlDoc.getSyncPosts() != null) {
+			final ModelFactory modelFactory = ModelFactory.getInstance();
 			final List<SynchronizationPost> syncPosts = new LinkedList<SynchronizationPost>();
 			for (final SyncPostType spt : xmlDoc.getSyncPosts().getSyncPosts()) {
-				final SynchronizationPost sp = ModelFactory.getInstance().createSynchronizationPost(spt);
-				syncPosts.add(sp);
+				syncPosts.add(modelFactory.createSynchronizationPost(spt));
 			}
 			return syncPosts;
 		}
@@ -877,7 +882,7 @@ public abstract class JAXBRenderer implements Renderer {
 			try {
 				return ModelFactory.getInstance().createCommunityPost(post);
 			} catch (final PersonListParserException ex) {
-				xmlDoc.setError("Error parsing the person names for entry with BibTexKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+				xmlDoc.setError("Error parsing the person names for entry with BibTeX key '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}
 		}
 
@@ -921,7 +926,7 @@ public abstract class JAXBRenderer implements Renderer {
 					final Post<? extends Resource> p = ModelFactory.getInstance().createPost(post);
 					posts.add(p);
 				} catch (final PersonListParserException ex) {
-					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTexKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 				}
 			}
 			return posts;

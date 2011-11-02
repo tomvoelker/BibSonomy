@@ -13,21 +13,11 @@ public class RestSyncUtils {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
 	
-	static {
-	}
-	public static Date parseDate(final String dateString) {
-		Date date = null;
-		try {
-			date = sdf.parse(dateString);
-		} catch (final ParseException ex) {
-			ex.printStackTrace();
-		}
-		return date;
+	public static Date parseDate(final String dateString) throws ParseException {
+		return sdf.parse(dateString);
 	}
 	
 	public static String serializeDate(final Date date) {
-		
-		final String formattedDate = sdf.format(date);
-		return formattedDate;
+		return sdf.format(date);
 	}
 }

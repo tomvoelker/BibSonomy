@@ -63,8 +63,8 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.ModelValidationUtils;
-import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.validation.ModelValidator;
 
@@ -383,7 +383,7 @@ public class ModelFactory {
 				post.setPost(createPost(xmlSyncPost.getPost()));
 			} catch (final PersonListParserException ex) {
 				// TODO Auto-generated catch block
-				throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTexKey '" + xmlSyncPost.getPost().getBibtex().getBibtexKey() + "': " + ex.getMessage());
+				throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" + xmlSyncPost.getPost().getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}
 		}
 		if(present(xmlSyncPost.getCreateDate())) {
