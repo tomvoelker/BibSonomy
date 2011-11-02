@@ -4,6 +4,11 @@ function initSpheres(requestedUser, ckey) {
 	var newSphere = $("#newSphere");
 	var list = $("#sphereList");	
 	
+	//function, to pulsate the loading text
+	for(var i = 0; i < 10; i++) {
+		$("#loader_Value").animate({opacity: 0.3}, 1000, 'linear').animate({opacity: 1}, 1000, 'linear');
+	}
+	
 	//Database Command for adding/removing the User of the Sphere
 	var callbackCheckbox = function(el, sphereName) {
 		if(el.checked) {
@@ -117,7 +122,10 @@ function initSpheres(requestedUser, ckey) {
 				return 0;
 			});
 			userSpheres = userSpheres.reverse();
-
+			
+			//remove the pulsating "loading spheres" 
+			$("#loader").remove();
+			
 			//Put the Sphere Elements in HTML
 			for (var i = 0; i < userSpheres.length; i++){
 				var child = $("<li></li>").data("sphereName", userSpheres[i][0]);

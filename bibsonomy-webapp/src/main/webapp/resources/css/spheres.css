@@ -76,11 +76,14 @@
 .addContainer {
 	position: absolute; 	
 	margin-right: 2px;
+	left: -174px!important; 
+	top: 37px;
+	
 }
 
 .addSpheres {
 	position: relative; 
-	overflow: hidden;
+	overflow: visible;
 }
 
 
@@ -91,7 +94,6 @@
 	padding-right: 10px!important; 
 	padding-top: 5px!important; 
 	padding-bottom: 5px!important; 
-	margin-left: 7px!important; 
 	border-width: thin; 
 	list-style-type: circle!important; 
 	list-style-position: inside!important; 
@@ -99,6 +101,27 @@
 	border-style: solid; 
 	border-color: #006699;
 	font-size: 95%;
+	
+	-webkit-border-top-left-radius: 10px;
+	-webkit-border-top-right-radius: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    
+    -khtml-border-top-left-radius: 10px;
+    -khtml-border-top-right-radius: 10px;
+    -khtml-border-bottom-right-radius: 10px;
+    -khtml-border-bottom-left-radius: 10px;
+    
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+	
 }
 
 #addNewSphere {

@@ -48,13 +48,16 @@
 						isFriendOfUser="${command.friendOfUser}" 
 						isFollowerOfUser="${command.followerOfUser}" />
 				</li>
-						
-				<!-- The Spheres List by Mouseover of the Friend Button -->		
+								
+				<!-- The Spheres List by Mouseover of the Friend Button -->	
 				<div class="addContainer">
 					<div class="addSpheres initiallyHidden">
 	           			<ul id="sphereList">
+						   <li id="loader">
+						   		<span id="loader_Value"><fmt:message key="spheres.sphere.user.load"/></span>
+						   </li>	
 			               <li>
-			               		<input type="text" name="sphereName" id="newSphere" size="27%" autocomplete="off" value="Sphere"/>
+			               		<input type="text" name="sphereName" id="newSphere" size="27%" autocomplete="off" placeholder="Sphere"/>
 			               		<input type="button" id="addNewSphere" value="add"/>
 			               </li>
 	           			</ul>
