@@ -526,7 +526,12 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			syncDBManager.deleteSyncData(session, userName, service, resourceType, syncDate);
+			if (Resource.class.equals(resourceType)) {
+				syncDBManager.deleteSyncData(session, userName, service, Bookmark.class, syncDate);
+				syncDBManager.deleteSyncData(session, userName, service, BibTex.class, syncDate);
+			} else {
+				syncDBManager.deleteSyncData(session, userName, service, resourceType, syncDate);
+			}			
 		} finally {
 			session.close();
 		}
