@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
-import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -33,23 +32,6 @@ import org.bibsonomy.model.util.ResourceUtils;
 public class TwoStepSynchronizationClient extends AbstractSynchronizationClient {
 	private static final Log log = LogFactory.getLog(TwoStepSynchronizationClient.class);
 	
-	
-	/**
-	 * the default constructor
-	 */
-	public TwoStepSynchronizationClient() {
-		super();
-	}
-	
-	/**
-	 * This constructor is required for tests
-	 * @param ibatisDBSessionFactory
-	 */
-	public TwoStepSynchronizationClient(IbatisDBSessionFactory ibatisDBSessionFactory) {
-		super(ibatisDBSessionFactory);
-	}
-
-
 	/**
 	 * Synchronized the user's posts between the clientLogic and the syncServer
 	 * according to the configured sync direction and resource types.

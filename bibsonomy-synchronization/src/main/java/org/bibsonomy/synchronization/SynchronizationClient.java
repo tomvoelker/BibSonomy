@@ -10,7 +10,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -31,21 +30,6 @@ import org.bibsonomy.model.util.ResourceUtils;
  */
 public class SynchronizationClient extends AbstractSynchronizationClient {
 	private static final Log log = LogFactory.getLog(SynchronizationClient.class);
-	
-	/**
-	 * default constructor
-	 */
-	public SynchronizationClient() {
-		super();
-	}
-	
-	/**
-	 * this constructro is required for tests
-	 * @param dbSessionFactory
-	 */
-	public SynchronizationClient(final DBSessionFactory dbSessionFactory) {
-		super(dbSessionFactory);
-	}
 
 	/**
 	 * Synchronized the user's posts between the clientLogic and the syncServer
