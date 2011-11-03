@@ -1,0 +1,131 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.import.facebook" var="importTitle" />
+	
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${importTitle}" requPath="${requPath}">
+
+		<jsp:attribute name="headerExt">
+  		</jsp:attribute>
+
+		<jsp:attribute name="heading">
+       		<c:out value="${loginTitle}" />
+    	</jsp:attribute>
+		
+		
+		<jsp:attribute name="content">
+			<style type="text/css">
+				.friendsList table {
+					border-spacing: 0px 0px;
+				}
+				
+				.friendsList table th {
+					border-top: 1px solid black;
+				}
+				
+				.friendsList table th:last-child {
+					border-right: 1px solid black;
+				}
+				
+				.friendsList table td, th {
+					padding: 0.5em;
+					border: 1px solid black;
+					border-right: none;
+					border-top: none;
+				}
+				
+				.friendsList .inactiveIndex td {
+					color: rgb(127, 127, 127);
+				}
+				
+				.friendsList table tr td:first-child {
+					background: #ccc;
+				}
+				
+				.friendsList table tr td:last-child {
+					border-right: 1px solid black !important;
+				}
+				
+				.incativeIndex {
+					color: #CCC;
+				}
+				
+				.friendsList tr:first-child {
+					background: #369;
+					color: #fff;
+				}
+			</style>
+		
+			<div id="general">
+				<h1>Facebook Friends Importer</h1>
+				<br/><br/>
+				
+				<!--+
+					| on error show error message
+					+-->
+				<c:choose>
+      				<c:when test="${command.error != null}">
+						<img src="${properties['project.home']}/resources/opensocial/image/status_error.png"/> <br/>
+						<c:out value="${command.error_description}" />
+					</c:when>
+
+      				<c:when test="${command.errorMessage != null}">
+						<img src="${properties['project.home']}/resources/opensocial/image/status_error.png"/> <br/>
+						<c:out value="${command.errorMessage}" />
+					</c:when>
+					
+					<c:otherwise>
+						<div class="friendsList" style="margin: 10px;">
+							<h2>Successfully imported data from facebook</h2>
+							<table>
+								<tbody>
+									<tr>
+										<th>Name</th>
+										<th>Gender</th>
+										<th>Birthday</th>
+										<th>Hometown</th>
+										<th>BibSonomy User</th>
+										<th style="width: 5em;"><!-- keep me --></th>
+									</tr>
+									<c:forEach var="user" items="${command.friends}">
+										<fmt:formatDate type="date" dateStyle="medium" value="${user.birthday}" var="birthday" />
+										<tr>
+											<td><c:out value="${user.realname}"/></td>
+											<td><c:out value="${user.gender}"/></td>
+											<td><c:out value="${birthday}"/></td>
+											<td><c:out value="${user.place}"/></td>
+											<td></td>
+											<td>
+												<button:linkButton onclick="alert('Not implemented yet')" href="#" image="${resdir}/image/starblue_selected.png">
+													<jsp:attribute name="text">
+														Friend
+													</jsp:attribute>
+												</button:linkButton>
+											</td>
+										</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+						</div>
+					</c:otherwise>
+				</c:choose>
+				
+			</div>
+      	</jsp:attribute>
+      	
+      	
+	</layout:layout>
+</jsp:root>

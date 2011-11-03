@@ -414,6 +414,11 @@ public enum Views implements View {
 	 */
 	IMPORT("actions/post/import"),
 	
+	/** 
+	 * facebook friends import view 
+	 */
+	FACEBOOK_IMPORT("actions/user/import/facebook"),
+	
 	/**
      * Show a form to request a password reminder.
      */ 
