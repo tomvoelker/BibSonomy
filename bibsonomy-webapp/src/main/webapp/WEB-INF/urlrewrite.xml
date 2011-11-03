@@ -855,6 +855,13 @@
 		<set type="parameter" name="importType">firefox</set>
 		<to last="true">/import/bookmarks</to>
 	</rule>
+	<!-- redirect /import/facebook/STATE -->
+	<rule>
+		<name>redirect /import/facebook/STATE</name>
+		<from>^/import/facebook/+([^/]+)$</from>
+		<set type="parameter" name="state">$1</set>
+		<to last="true">/import/facebook</to>
+	</rule>
 	
 
 	<!-- /activate/ACTIVATIONCODE -->
