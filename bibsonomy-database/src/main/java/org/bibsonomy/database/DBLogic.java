@@ -2613,6 +2613,8 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		session.beginTransaction();
 		try {
+			Boolean createDiscussionItem = false;
+
 			/* 
 			 * first check if gold standard post exists
 			 */
@@ -2657,21 +2659,29 @@ public class DBLogic implements LogicInterface {
 
 					PostUtils.populatePost(goldStandardPost, this.loginUser);
 					this.createPost(goldStandardPost, session);	
+					createDiscussionItem = true;
 				}
 			} else {
 				// if present (goldStandardPostinDB) 
 				// set content type of discussionItem
 				discussionItem.setResourceType(goldStandardPostinDB.getResource().getClass());
+				createDiscussionItem = true;
 			}
 
-			/*
-			 * create the discussion item
-			 */
-			final User commentUser = this.userDBManager.getUserDetails(username, session);
-			discussionItem.setUser(commentUser);
 
-			this.createDiscussionItem(interHash, discussionItem, session);
-			session.commitTransaction();
+			/*
+			 * only if previous conditions allow creation of discussion item do it
+			 */
+			if (createDiscussionItem) {
+				/*
+				 * create the discussion item
+				 */
+				final User commentUser = this.userDBManager.getUserDetails(username, session);
+				discussionItem.setUser(commentUser);
+	
+				this.createDiscussionItem(interHash, discussionItem, session);
+				session.commitTransaction();
+			}
 		} finally {
 			session.endTransaction();
 			session.close();
