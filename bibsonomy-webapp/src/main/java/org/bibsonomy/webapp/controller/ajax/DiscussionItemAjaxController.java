@@ -111,6 +111,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		 * add hash as response
 		 */
 		final JSONObject result = new JSONObject();
+		// TODO: send some error, if hash is null and show it to user
 		result.put("hash", discussionItem.getHash());
 		command.setResponseString(result.toString());		
 		return Views.AJAX_JSON;
