@@ -22,6 +22,14 @@ public class CreateSyncPlanQuery extends AbstractSyncQuery<List<SynchronizationP
 
 	private final List<SynchronizationPost> posts;
 	
+	/**
+	 * creates a new sync plan query
+	 * @param serviceURI the uri of the service
+	 * @param posts the posts
+	 * @param resourceType the resource to use
+	 * @param strategy the sync strategy to use
+	 * @param direction the syn direction to use
+	 */
 	public CreateSyncPlanQuery(final String serviceURI, final List<SynchronizationPost> posts, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		super(serviceURI, resourceType, strategy, direction);
 		this.posts = posts;
@@ -34,11 +42,7 @@ public class CreateSyncPlanQuery extends AbstractSyncQuery<List<SynchronizationP
 		renderer.serializeSynchronizationPosts(sw, posts);
 		
 		final String syncURL = getSyncURL();
-		System.out.println("createSyncPlanQuery() calling URL " + syncURL);
 		final Reader reader = performRequest(HttpMethod.POST, syncURL, StringUtils.toDefaultCharset(sw.toString()));
 		return renderer.parseSynchronizationPostList(reader);
 	}
-
-
-
 }
