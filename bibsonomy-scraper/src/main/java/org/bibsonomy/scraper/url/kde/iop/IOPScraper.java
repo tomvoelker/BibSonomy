@@ -70,7 +70,7 @@ public class IOPScraper extends AbstractUrlScraper {
 	private static final Pattern linkPattern = Pattern.compile("<a\\b[^<]*</a>");
 	private static final Pattern linkValuePattern = Pattern.compile(">(.*)<");
 	private static final Pattern hrefPattern = Pattern.compile("href=\"[^\"]*\"");
-	private static final Pattern formPublicationIdPattern = Pattern.compile("<input.*type=\"hidden\".*name=\"articleId\".*value=\"(.*)\".*/>");
+	private static final Pattern formPublicationIdPattern = Pattern.compile("<input.*type=\"hidden\".*name=\"articleId\".*value=\"(.*)\".*>");
 	
 	
 	
