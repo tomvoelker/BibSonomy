@@ -28,6 +28,12 @@ public final class RESTConfig {
 	public static final String START_PARAM = "start";
 	
 	public static final String END_PARAM = "end";
+	
+	public static final String SYNC_STRATEGY_PARAM = "strategy";
+
+	public static final String SYNC_DIRECTION_PARAM = "direction";
+	
+	public static final String SYNC_DATE_PARAM = "date";
 
 	/**
 	 * Request Attribute ?relation="incoming/outgoing"
@@ -42,4 +48,7 @@ public final class RESTConfig {
 
 	/** default value */
 	public static final String DEFAULT_ATTRIBUTE_VALUE_RELATION = INCOMING_ATTRIBUTE_VALUE_RELATION;
+
+	public static final String SYNC_STATUS = "status";
+	
 }
