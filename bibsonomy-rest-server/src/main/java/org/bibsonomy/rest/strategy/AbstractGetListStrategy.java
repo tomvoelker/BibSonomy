@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.List;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 
@@ -22,9 +23,9 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 	public AbstractGetListStrategy(final Context context) {
 		super(context);
 		this.view = new ViewModel();
-		this.view.setStartValue(context.getIntAttribute("start", 0));
-		this.view.setEndValue(context.getIntAttribute("end", 20));
-		this.view.setOrder(context.getStringAttribute("order", null));
+		this.view.setStartValue(context.getIntAttribute(RESTConfig.START_PARAM, 0));
+		this.view.setEndValue(context.getIntAttribute(RESTConfig.END_PARAM, 20));
+		this.view.setOrder(context.getStringAttribute(RESTConfig.ORDER_PARAM, null));
 		if (view.getStartValue() > view.getEndValue()) {
 			throw new BadRequestOrResponseException("start must be less than or equal end");
 		}
@@ -48,7 +49,7 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 
 	private final String buildNextLink() {
 		final StringBuilder sb = getLinkPrefix();
-		sb.append("?start=").append(getView().getEndValue()).append("&end=").append(getView().getEndValue() + getView().getEndValue() - getView().getStartValue());
+		sb.append("?").append(RESTConfig.START_PARAM).append("=").append(getView().getEndValue()).append("&").append(RESTConfig.END_PARAM).append("=").append(getView().getEndValue() + getView().getEndValue() - getView().getStartValue());
 		appendLinkPostFix(sb);
 		return sb.toString();
 	}

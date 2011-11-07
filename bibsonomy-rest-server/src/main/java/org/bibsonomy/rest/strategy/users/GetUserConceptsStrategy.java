@@ -8,7 +8,8 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
@@ -34,10 +35,10 @@ public class GetUserConceptsStrategy extends Strategy {
 	public GetUserConceptsStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;
-		this.resourceType = ResourceUtils.getResource(context.getStringAttribute("resourcetype", "all"));				
-		this.status = ConceptStatus.getConceptStatus(context.getStringAttribute("status", "all"));
-		this.regex = context.getStringAttribute("filter", null);
-		this.tags = context.getTags("tags");
+		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));		
+		this.status = ConceptStatus.getConceptStatus(context.getStringAttribute(RESTConfig.CONCEPT_STATUS_PARAM, "all"));
+		this.regex = context.getStringAttribute(RESTConfig.FILTER_PARAM, null);
+		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package org.bibsonomy.rest.strategy.users;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -25,7 +26,7 @@ public class DeleteUserConceptStrategy extends AbstractDeleteStrategy {
 		this.conceptName = conceptName;
 		this.userName = userName;
 		
-		this.lowerTag = context.getStringAttribute("subtag", null);		
+		this.lowerTag = context.getStringAttribute(RESTConfig.SUB_TAG_PARAM, null);		
 	}
 
 	@Override
