@@ -8,6 +8,7 @@ import java.text.ParseException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -31,7 +32,7 @@ public class DeleteSyncDataStrategy extends AbstractDeleteStrategy {
 	public DeleteSyncDataStrategy(final Context context, final URI serviceURI) {
 		super(context);
 		this.serviceURI = serviceURI;
-		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute("resourceType", "all"));
+		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
 		this.date = context.getStringAttribute("date", null);
 	}
 

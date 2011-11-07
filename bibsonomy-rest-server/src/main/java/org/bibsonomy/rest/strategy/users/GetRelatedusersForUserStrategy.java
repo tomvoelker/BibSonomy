@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
@@ -15,26 +16,14 @@ import org.bibsonomy.rest.strategy.Context;
  * Gets related users for a given user (e.g. friends, followers).
  * 
  * @author ema, dbe
- * @version $Id: GetFriendsForUserStrategy.java,v 1.5 2010-09-06 08:30:22 rja
- *          Exp $
+ * @version $Id$
  */
 public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List<User>> {
 
-	/**
-	 * Request Attribute ?relation="incoming/outgoing"
-	 */
-	public static final String ATTRIBUTE_KEY_RELATION = "relation";
-	/** value for "incoming" */
-	public static final String INCOMING_ATTRIBUTE_VALUE_RELATION = "incoming";
-	/** value for "outgoing" */
-	public static final String OUTGOING_ATTRIBUTE_VALUE_RELATION = "outgoing";
-	/** default value */
-	public static final String DEFAULT_ATTRIBUTE_VALUE_RELATION = INCOMING_ATTRIBUTE_VALUE_RELATION;
-
-	String userName = null;
-	String relation = null;
-	UserRelation relationship = null;
-	String tag = null;
+	private String userName = null;
+	private String relation = null;
+	private UserRelation relationship = null;
+	private String tag = null;
 
 	/**
 	 * Constructor
@@ -92,12 +81,12 @@ public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List
 	 */
 	public static UserRelation chooseRelationship(final String relationship, final String relation) {
 		if (RestProperties.getInstance().getFriendsUrl().equals(relationship)) {
-			if (OUTGOING_ATTRIBUTE_VALUE_RELATION.equals(relation)) {
+			if (RESTConfig.OUTGOING_ATTRIBUTE_VALUE_RELATION.equals(relation)) {
 				return UserRelation.FRIEND_OF;
 			}
 			return UserRelation.OF_FRIEND;
 		} else if (RestProperties.getInstance().getFollowersUrl().equals(relationship)) {
-			if (OUTGOING_ATTRIBUTE_VALUE_RELATION.equals(relation)) {
+			if (RESTConfig.OUTGOING_ATTRIBUTE_VALUE_RELATION.equals(relation)) {
 				return UserRelation.FOLLOWER_OF;
 			}
 			return UserRelation.OF_FOLLOWER;
@@ -113,9 +102,9 @@ public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List
 	 * @return - the appropriate relation.
 	 */
 	public static String chooseRelation(Context context) {
-		String rel = context.getStringAttribute(ATTRIBUTE_KEY_RELATION, DEFAULT_ATTRIBUTE_VALUE_RELATION);
-		if (rel == null || !(rel.equals(INCOMING_ATTRIBUTE_VALUE_RELATION) || rel.equals(OUTGOING_ATTRIBUTE_VALUE_RELATION))) {
-			return DEFAULT_ATTRIBUTE_VALUE_RELATION;
+		String rel = context.getStringAttribute(RESTConfig.ATTRIBUTE_KEY_RELATION, RESTConfig.DEFAULT_ATTRIBUTE_VALUE_RELATION);
+		if (!(RESTConfig.INCOMING_ATTRIBUTE_VALUE_RELATION.equals(rel) || RESTConfig.OUTGOING_ATTRIBUTE_VALUE_RELATION.equals(rel))) {
+			return RESTConfig.DEFAULT_ATTRIBUTE_VALUE_RELATION;
 		}
 		return rel;
 	}
