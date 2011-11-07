@@ -34,7 +34,6 @@ public class ExtendedSyncClientTests extends AbstractSynchronizationClientTest {
 
 	@Override
 	public void test() {
-		
 		/*
 		 * normal synchronization, tested by other tests 
 		 */
@@ -78,7 +77,6 @@ public class ExtendedSyncClientTests extends AbstractSynchronizationClientTest {
 		data = sync.synchronize(clientLogic, this.syncServer);
 		assertEquals("updated on client: 1", data.get(BibTex.class).getInfo());
 		
-		
 		updateServer(ConflictResolutionStrategy.CLIENT_WINS);
 		makeConflict(clientLogic, serverLogic, 3);
 		data = sync.synchronize(clientLogic, this.syncServer);
@@ -86,7 +84,6 @@ public class ExtendedSyncClientTests extends AbstractSynchronizationClientTest {
 		makeConflict(serverLogic, clientLogic, 4);
 		data = sync.synchronize(clientLogic, this.syncServer);
 		assertEquals("updated on server: 1", data.get(BibTex.class).getInfo());
-		
 		
 		/*
 		 * Test post with changed hash
@@ -122,7 +119,6 @@ public class ExtendedSyncClientTests extends AbstractSynchronizationClientTest {
 		wait(1);
 		data = sync.synchronize(clientLogic, syncServer);
 		assertEquals("created on client: 1, deleted on client: 1", data.get(Bookmark.class).getInfo());
-		
 	}
 	
 	private void makeConflict (LogicInterface earlier, LogicInterface later, int pos) {
@@ -172,6 +168,6 @@ public class ExtendedSyncClientTests extends AbstractSynchronizationClientTest {
 		final Map<String, SynchronizationPost> map = mapFromList(rightLogic.getSyncPosts(rightUser.getName(), Bookmark.class));
 		assertTrue(map.containsKey(posts.get(0).getResource().getIntraHash()));
 		assertFalse(map.containsKey(deleteHash));
-		}
+	}
 
 }

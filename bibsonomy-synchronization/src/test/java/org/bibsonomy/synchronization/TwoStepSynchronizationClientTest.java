@@ -44,11 +44,11 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 	};
 
 	private static final String[] MODIFIED_PUBLICATION_KEYS = new String[]{
-			"4841e7b5c7c23c613590fa4b79725498", // changed on client
-			"4549ac62ae226657cd17d93dabfd6075", // changed on server
-			"4533fe874079584ea4700da84b4d13ae", // created on client
-			"2ad021608b51b6f9e4a45933ca63ed9e", // created on server
-			"3d6ec7b6695976eeec379dcc55ae9cb1"  // no changes
+		"4841e7b5c7c23c613590fa4b79725498", // changed on client
+		"4549ac62ae226657cd17d93dabfd6075", // changed on server
+		"4533fe874079584ea4700da84b4d13ae", // created on client
+		"2ad021608b51b6f9e4a45933ca63ed9e", // created on server
+		"3d6ec7b6695976eeec379dcc55ae9cb1"  // no changes
 	};
 
 	private static final Map<Class<? extends Resource>, String[]> KEYS = new HashMap<Class<? extends Resource>, String[]>(2);
@@ -125,7 +125,7 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 			final Class<? extends Resource> resourceType = entry.getKey();
 			final List<SynchronizationPost> resourceSyncPlan = entry.getValue();
 			
-			assertEquals(7, resourceSyncPlan.size());
+			assertEquals(6, resourceSyncPlan.size());
 
 			assertEquals(SynchronizationStatus.PLANNED, sync.getLastSyncData(syncServer, resourceType).getStatus());
 			
@@ -200,7 +200,6 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 	 */
 	private void checkSyncPlan(final List<SynchronizationPost> syncPlan, final Class<? extends Resource> resourceType) {
 		int index = 0;
-		assertEquals(SynchronizationAction.OK, syncPlan.get(index++).getAction());
 		assertEquals(SynchronizationAction.DELETE_CLIENT, syncPlan.get(index++).getAction());
 		assertEquals(SynchronizationAction.UPDATE_CLIENT, syncPlan.get(index++).getAction());
 		assertEquals(SynchronizationAction.UPDATE_SERVER, syncPlan.get(index++).getAction());
@@ -219,7 +218,6 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 			assertEquals(SynchronizationAction.DELETE_SERVER, syncPost.getAction());
 			assertEquals(SynchronizationAction.CREATE_CLIENT, syncPlan.get(index++).getAction());
 		}
-		
 	}
 
 	/**

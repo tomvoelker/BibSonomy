@@ -90,6 +90,15 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		}
 	}
 	
+	protected static URI createURI(final String uri) {
+		try {
+			return new URI(uri);
+		} catch (URISyntaxException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+	
+	
 	protected User serverUser;
 	protected User clientUser;
 
@@ -206,12 +215,8 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			/*
 			 * setup server and client
 			 */
-			try {
-				syncServer = new URI(SYNC_SERVER_URI);
-				sync.setOwnUri(new URI(SYNC_CLIENT_URI));
-			} catch (URISyntaxException ex) {
-				ex.printStackTrace();
-			}			
+			syncServer = createURI(SYNC_SERVER_URI);
+			sync.setOwnUri(createURI(SYNC_CLIENT_URI));
 
 			/*
 			 * check that synchronization is enabled
@@ -266,7 +271,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	
 	protected void checkKeys(Class<? extends Resource> resourceType, Map<String, SynchronizationPost> posts, String serviceType) {
 		final String[] keys;
-		if(Bookmark.class.equals(resourceType)) {
+		if (Bookmark.class.equals(resourceType)) {
 			keys = BOOKMARK_KEYS;
 		} else {
 			keys = PUBLICATION_KEYS;
@@ -288,7 +293,6 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		for (final String key : clientKeys) {
 			assertTrue("["+ resourceType.getSimpleName() + "] " + serviceType + " does not contain key: " + key, posts.containsKey(key));
 		}
-		
 	}
 	
 	protected static void wait(final int seconds) {
