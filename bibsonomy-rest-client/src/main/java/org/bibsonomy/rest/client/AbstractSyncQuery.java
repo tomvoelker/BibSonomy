@@ -6,6 +6,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.util.UrlUtils;
 
 
@@ -37,14 +38,14 @@ public abstract class AbstractSyncQuery<T> extends AbstractQuery<T> {
 		/*
 		 * FIXME: resourceType=all not supported - where to block?
 		 */
-		if(present(resourceType)) {
-			return UrlUtils.setParam(result, "resourceType", ResourceFactory.getResourceName(resourceType));
+		if (present(resourceType)) {
+			return UrlUtils.setParam(result, RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(resourceType));
 		}
-		if(present(strategy)) {
-			return UrlUtils.setParam(result, "strategy", strategy.getConflictResolutionStrategy());
+		if (present(strategy)) {
+			return UrlUtils.setParam(result, RESTConfig.SYNC_STRATEGY_PARAM, strategy.getConflictResolutionStrategy());
 		}
 		if (present(direction)) {
-			return UrlUtils.setParam(result, "direction", direction.getSynchronizationDirection());
+			return UrlUtils.setParam(result, RESTConfig.SYNC_DIRECTION_PARAM, direction.getSynchronizationDirection());
 		}
 		return result;
 	}

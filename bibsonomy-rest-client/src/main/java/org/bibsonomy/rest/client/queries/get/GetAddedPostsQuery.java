@@ -28,6 +28,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -111,10 +112,10 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 
 	@Override
 	protected List<Post<? extends Resource>> doExecute() throws ErrorPerformingRequestException {
-		String url = URL_POSTS + "/" + URL_POSTS_ADDED + "?start=" + this.start + "&end=" + this.end;
+		String url = URL_POSTS + "/" + URL_POSTS_ADDED + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
 
 		if (this.resourceType != Resource.class) {
-			url += "&resourcetype=" + this.resourceType.toString().toLowerCase();
+			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + this.resourceType.toString().toLowerCase();
 		}
 
 		switch (this.grouping) {

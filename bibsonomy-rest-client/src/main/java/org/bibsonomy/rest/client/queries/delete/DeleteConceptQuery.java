@@ -25,6 +25,7 @@ package org.bibsonomy.rest.client.queries.delete;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Status;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -70,7 +71,7 @@ public class DeleteConceptQuery extends AbstractQuery<String> {
 		url += "/" + this.groupingName + "/" + URL_CONCEPTS + "/" + this.conceptName;
 		
 		if (subTag != null) {
-			url += "?subtag=" + this.subTag;
+			url += "?" + RESTConfig.SUB_TAG_PARAM + "=" + this.subTag;
 		}
 		
 		this.downloadedDocument = performRequest(HttpMethod.DELETE, url, null);

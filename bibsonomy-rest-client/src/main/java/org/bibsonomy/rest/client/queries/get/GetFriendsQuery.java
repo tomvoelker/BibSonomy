@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -43,14 +44,6 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 @Deprecated
 public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 
-	/**
-	 * Request Attribute ?relation="incoming/outgoing"
-	 */
-	public static final String ATTRIBUTE_KEY_RELATION = "relation";
-	public static final String INCOMING_ATTRIBUTE_VALUE_RELATION = "incoming";
-	public static final String OUTGOING_ATTRIBUTE_VALUE_RELATION = "outgoing";
-	public static final String DEFAULT_ATTRIBUTE_VALUE_RELATION = INCOMING_ATTRIBUTE_VALUE_RELATION;
-
 	private final int start;
 	private final int end;
 	private final String relation;
@@ -64,17 +57,17 @@ public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 	 * @param end
 	 *            end of the list
 	 */
-	public GetFriendsQuery(int start, int end, final String username, final String relation) {
+	public GetFriendsQuery(int start, int end, final String username, String relation) {
 		if (start < 0) start = 0;
 		if (end < start) end = start;
 		
 		this.username = username;
 
-		if (relation == null)
-			this.relation = DEFAULT_ATTRIBUTE_VALUE_RELATION;
-		else
-			this.relation = relation;
-
+		if (relation == null) {
+			relation = RESTConfig.DEFAULT_ATTRIBUTE_VALUE_RELATION;
+		}
+		
+		this.relation = relation;
 		this.start = start;
 		this.end = end;
 	}
@@ -87,7 +80,7 @@ public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 
 	@Override
 	protected List<User> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(URL_USERS + "/" + this.username + "/" + URL_FRIENDS + "?" + ATTRIBUTE_KEY_RELATION + "=" + relation + "&start=" + this.start + "&end=" + this.end);
+		this.downloadedDocument = performGetRequest(URL_USERS + "/" + this.username + "/" + URL_FRIENDS + "?" + RESTConfig.ATTRIBUTE_KEY_RELATION + "=" + relation + "&start=" + this.start + "&end=" + this.end);
 		return null;
 	}
 }

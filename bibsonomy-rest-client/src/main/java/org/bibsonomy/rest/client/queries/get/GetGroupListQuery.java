@@ -26,6 +26,7 @@ package org.bibsonomy.rest.client.queries.get;
 import java.util.List;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -72,7 +73,7 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 
 	@Override
 	protected List<Group> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(URL_GROUPS + "?start=" + this.start + "&end=" + this.end);
+		this.downloadedDocument = performGetRequest(URL_GROUPS + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end);
 		return null;
 	}
 }

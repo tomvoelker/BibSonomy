@@ -26,6 +26,7 @@ package org.bibsonomy.rest.client.queries.get;
 import java.util.List;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -72,7 +73,7 @@ public final class GetUserListQuery extends AbstractQuery<List<User>> {
 
 	@Override
 	protected List<User> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(URL_USERS + "?start=" + this.start + "&end=" + this.end);
+		this.downloadedDocument = performGetRequest(URL_USERS + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end);
 		return null;
 	}
 }

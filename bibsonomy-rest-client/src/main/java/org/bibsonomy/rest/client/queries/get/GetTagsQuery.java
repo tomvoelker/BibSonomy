@@ -23,13 +23,17 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.ResourceType;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -48,7 +52,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 	private Order order = null;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
-	private ResourceType resourceType = ResourceType.ALL;
+	private Class<? extends Resource> resourceType = Resource.class;
 
 	/**
 	 * Gets bibsonomy's tags list
@@ -110,7 +114,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 	 * 
 	 * @param resourceType
 	 */
-	public void setResourceType(final ResourceType resourceType) {
+	public void setResourceType(final Class<? extends Resource> resourceType) {
 		this.resourceType = resourceType;
 	}
 
@@ -130,11 +134,11 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 
 	@Override
 	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
-		String url = URL_TAGS + "?start=" + this.start + "&end=" + this.end;
+		String url = URL_TAGS + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
 
-		if(order != null)
-			url += "&order=" + this.order;
-			
+		if (order != null) {
+			url += "&" + RESTConfig.ORDER_PARAM + "=" + this.order;
+		}
 		switch (this.grouping) {
 		case USER:
 			url += "&user=" + this.groupingValue;
@@ -147,13 +151,13 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 			break;
 		}
 
-		if (this.filter != null && this.filter.length() > 0) {
-			url += "&filter=" + this.filter;
+		if (present(this.filter)) {
+			url += "&" + RESTConfig.FILTER_PARAM + "=" + this.filter;
 		}
 		
-		if (! (this.resourceType == null && this.resourceType.equals(ResourceType.ALL)) ) {
-			url += "&resourcetype=" + this.resourceType.getLabel();
-		}		
+		if (this.resourceType != null && !Resource.class.equals(this.resourceType)) {
+			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceUtils.toString(this.resourceType);
+		}	
 		this.downloadedDocument = performGetRequest(url);
 		return null;
 	}

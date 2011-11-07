@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -30,6 +32,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -57,6 +60,7 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 	
 	@Override
 	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
+		// TODO: use string builder
 		String url;
 		
 		switch (this.grouping) {
@@ -75,22 +79,22 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 		}
 				
 		if (this.status != null) {
-			url += "?status=" + this.status.toString().toLowerCase();
+			url += "?" + RESTConfig.CONCEPT_STATUS_PARAM + "=" + this.status.toString().toLowerCase();
 		}
 
 		if (this.resourceType != null) {
-			url += "&resourcetype=" + ResourceUtils.toString(this.resourceType).toLowerCase();
+			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceUtils.toString(this.resourceType).toLowerCase();
 		}
 		
 		if (this.regex != null) {
-			url += "?filter=" + this.regex;
-		}		
+			url += "?" + RESTConfig.REGEX_PARAM + "=" + this.regex;
+		}	
 		
-		if (this.tags != null && this.tags.size() > 0) {
+		if (present(this.tags)) {
 			boolean first = true;
 			for (final String tag : tags) {
 				if (first) {
-					url += "&tags=" + tag;
+					url += "&" + RESTConfig.TAGS_PARAM + "=" + tag;
 					first = false;
 				} else {
 					url += "+" + tag;

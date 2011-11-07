@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -33,6 +35,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -45,6 +48,7 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
  * @version $Id$
  */
 public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resource>>> {
+	private static final Log log = LogFactory.getLog(GetPostsQuery.class);
 
 	private final int start;
 	private final int end;
@@ -55,7 +59,6 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
 	private String resourceHash;
-	private static final Log log = LogFactory.getLog(GetPostsQuery.class);
 	/**
 	 * Gets bibsonomy's posts list.
 	 */
@@ -159,10 +162,10 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 	@Override
 	protected List<Post<? extends Resource>> doExecute() throws ErrorPerformingRequestException {
-		String url = URL_POSTS + "?start=" + this.start + "&end=" + this.end;
+		String url = URL_POSTS + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
 
 		if (this.resourceType != Resource.class) {
-			url += "&resourcetype=" + ResourceUtils.toString(this.resourceType).toLowerCase();
+			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceUtils.toString(this.resourceType).toLowerCase();
 		}
 
 		switch (this.grouping) {
@@ -184,11 +187,11 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 			throw new UnsupportedOperationException("The grouping " + this.grouping + " is currently not supported by this query.");
 		}
 
-		if (this.tags != null && this.tags.size() > 0) {
+		if (present(this.tags)) {
 			boolean first = true;
 			for (final String tag : tags) {
 				if (first) {
-					url += "&tags=" + tag;
+					url += "&" + RESTConfig.TAGS_PARAM + "=" + tag;
 					first = false;
 				} else {
 					url += "+" + tag;
@@ -197,15 +200,15 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		}
 
 		if (this.resourceHash != null && this.resourceHash.length() > 0) {
-			url += "&resource=" + this.resourceHash;
+			url += "&" + RESTConfig.RESOURCE_PARAM + "=" + this.resourceHash;
 		}
 
 		if(this.order != null){
-			url += "&order=" +this.order;
+			url += "&" + RESTConfig.ORDER_PARAM + "=" + this.order;
 		}
 
 		if(this.search != null && this.search.length() > 0){
-			url += "&search=" +this.search;
+			url += "&" + RESTConfig.SEARCH_PARAM + "=" + this.search;
 		}
 		log.debug("GetPostsQuery doExecute() called - URL: "+url);
 		this.downloadedDocument = performGetRequest(url);

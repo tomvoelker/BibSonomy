@@ -4,6 +4,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractSyncQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -26,7 +27,7 @@ public class ChangeSyncStatusQuery extends AbstractSyncQuery<Boolean> {
 
 	@Override
 	protected Boolean doExecute() throws ErrorPerformingRequestException {
-		final String url = UrlUtils.setParam(getSyncURL(), "status", status.toString());
+		final String url = UrlUtils.setParam(getSyncURL(), RESTConfig.SYNC_STATUS, status.toString());
 		performRequest(HttpMethod.PUT, url, info);
 		return true;
 	}
