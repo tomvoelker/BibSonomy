@@ -63,7 +63,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		credentialsSyncUser1.setProperty("apiKey", "1546545646565");
 		service.setServerUser(credentialsSyncUser1);
 
-		syncDBManager.createSyncServerForUser(dbSession, syncUser1, testURI, Bookmark.class, credentialsSyncUser1, SynchronizationDirection.SERVER_TO_CLIENT, ConflictResolutionStrategy.SERVER_WINS);
+		syncDBManager.createSyncServerForUser(syncUser1, testURI, Bookmark.class, credentialsSyncUser1, SynchronizationDirection.SERVER_TO_CLIENT, ConflictResolutionStrategy.SERVER_WINS, dbSession);
 
 		List<SyncService> services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
 		assertTrue(services.contains(service));
@@ -77,7 +77,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		credentialsSyncUser2.setProperty("name", "syncUser2");
 		credentialsSyncUser2.setProperty("apiKey", "jjkhjhjkhk");
 		service.setServerUser(credentialsSyncUser2);
-		syncDBManager.updateSyncServerForUser(dbSession, syncUser1, testURI, BibTex.class, credentialsSyncUser2, SynchronizationDirection.SERVER_TO_CLIENT, ConflictResolutionStrategy.LAST_WINS);
+		syncDBManager.updateSyncServerForUser(syncUser1, testURI, BibTex.class, credentialsSyncUser2, SynchronizationDirection.SERVER_TO_CLIENT, ConflictResolutionStrategy.LAST_WINS, dbSession);
 		
 		services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
 		assertTrue(services.contains(service));
@@ -86,7 +86,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		assertEquals(BibTex.class, syncService2.getResourceType());
 		assertEquals(SynchronizationDirection.SERVER_TO_CLIENT, syncService2.getDirection());
 		
-		syncDBManager.deleteSyncServerForUser(dbSession, syncUser1, testURI);
+		syncDBManager.deleteSyncServerForUser(syncUser1, testURI, dbSession);
 		services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
 		assertFalse(services.contains(service));
 		assertEquals(0, services.size());
@@ -132,7 +132,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		/*
 		 * set status of added data to done (simulate successful synchronization)
 		 */
-		syncDBManager.updateSyncData(dbSession, syncUser1, bibsonomyURI, resourceType, data.getLastSyncDate(), SynchronizationStatus.DONE, "");
+		syncDBManager.updateSyncData(syncUser1, bibsonomyURI, resourceType, data.getLastSyncDate(), SynchronizationStatus.DONE, "", dbSession);
 
 		/*
 		 * check that no synchronization is running 

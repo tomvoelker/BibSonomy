@@ -1,6 +1,7 @@
 package org.bibsonomy.database;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -58,14 +59,14 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 
 		format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-		User loginUser = new User();
+		final User loginUser = new User();
 		loginUser.setName(userName);
 		dbLogic = new DBLogic(loginUser, getDbSessionFactory());
 	}
 
-	private HashMap<String, SynchronizationPost> listToMap(List<SynchronizationPost> posts) {
-		HashMap<String, SynchronizationPost> map = new HashMap<String, SynchronizationPost>();
-		for (SynchronizationPost post : posts) {
+	private HashMap<String, SynchronizationPost> listToMap(final List<SynchronizationPost> posts) {
+		final HashMap<String, SynchronizationPost> map = new HashMap<String, SynchronizationPost>();
+		for (final SynchronizationPost post : posts) {
 			map.put(post.getIntraHash(), post);
 		}
 		return map;
@@ -95,7 +96,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 
 		try {
 			testURI = new URI("http://www.bibsonomy.org/");
-		} catch (URISyntaxException ex) {
+		} catch (final URISyntaxException ex) {
 			ex.printStackTrace();
 		}
 
@@ -103,7 +104,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		Date date = null;
 		try {
 			date = format.parse("2011-02-02 23:00:00");
-		} catch (ParseException ex) {
+		} catch (final ParseException ex) {
 			ex.printStackTrace();
 		}
 		final Date lastSyncDate = syncDb.getLastSyncData(userName, testURI, BibTex.class, null, dbSession).getLastSyncDate();
@@ -120,16 +121,16 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 	@Test
 	public void getSynchronizationBibTexTest() {
 
-		Class<? extends Resource> resourceType = BibTex.class;
-		ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;
+		final Class<? extends Resource> resourceType = BibTex.class;
+		final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;
 
 		try {
 			testURI = new URI("http://www.bibsonomy.org/");
-		} catch (URISyntaxException ex) {
+		} catch (final URISyntaxException ex) {
 			ex.printStackTrace();
 		}
 
-		List<SynchronizationPost> clientPosts = new LinkedList<SynchronizationPost>();
+		final List<SynchronizationPost> clientPosts = new LinkedList<SynchronizationPost>();
 
 		SynchronizationPost post;
 
@@ -196,22 +197,21 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 			post.setChangeDate(format.parse("2011-03-18 14:13:00"));
 			post.setCreateDate(format.parse("2011-03-18 14:13:00"));
 			clientPosts.add(post);
-		} catch (ParseException ex) {
+		} catch (final ParseException ex) {
 			ex.printStackTrace();
 		}
 		assertEquals(5, clientPosts.size());
 
-		List<SynchronizationPost> synchronizedPosts = dbLogic.getSyncPlan(userName, testURI, resourceType, clientPosts, strategy, SynchronizationDirection.BOTH);
+		final List<SynchronizationPost> synchronizedPosts = dbLogic.getSyncPlan(userName, testURI, resourceType, clientPosts, strategy, SynchronizationDirection.BOTH);
 		assertNotNull("no synchronized posts returned", synchronizedPosts);
 
-		HashMap<String, SynchronizationPost> map = listToMap(synchronizedPosts);
+		final HashMap<String, SynchronizationPost> map = listToMap(synchronizedPosts);
 		String hash;
 		/*
 		 * test post 1 "post without changes"
 		 */
 		hash = "6a486c3b5cf17466f984f8090077274c";
-		assertTrue(map.containsKey(hash));
-		assertEquals(SynchronizationAction.OK, map.get(hash).getAction());
+		assertFalse(map.containsKey(hash));
 
 		/*
 		 * test post 2 "post deleted on server"

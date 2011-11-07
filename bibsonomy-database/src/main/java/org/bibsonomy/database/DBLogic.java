@@ -330,7 +330,7 @@ public class DBLogic implements LogicInterface {
     		 */
     		if (BibTex.class.equals(resourceType)) {
     			serverPosts = publicationDBManager.getSyncPostsMapForUser(userName, session);
-    		} else if(Bookmark.class.equals(resourceType)){
+    		} else if (Bookmark.class.equals(resourceType)) {
     			serverPosts = bookmarkDBManager.getSyncPostsMapForUser(userName, session);
     		} else {
     			throw new UnsupportedResourceTypeException();
@@ -353,6 +353,7 @@ public class DBLogic implements LogicInterface {
     		for (final SynchronizationPost post : posts) {
     			switch (post.getAction()) {
     			case CREATE_CLIENT:
+    				// $FALL-THROUGH$
     			case UPDATE_CLIENT:
     				post.setPost(this.getPostDetails(post.getIntraHash(), userName));
     				break;
@@ -374,11 +375,10 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void createSyncService(final URI service, final boolean server, final String sslDn, final URI secureAPI) {
-    	
     	this.permissionDBManager.ensureAdminAccess(loginUser);
     	final DBSession session = this.openSession();
     	try {
-    		syncDBManager.createSyncService(session, service, server, sslDn, secureAPI);
+    		syncDBManager.createSyncService(service, server, sslDn, secureAPI, session);
     	} finally {
     		session.close();
     	}
@@ -393,7 +393,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureAdminAccess(loginUser);
 		final DBSession session = this.openSession();
 		try {
-			syncDBManager.deleteSyncService(session, service, server);
+			this.syncDBManager.deleteSyncService(service, server, session);
 		} finally {
 			session.close();
 		}
@@ -408,7 +408,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			syncDBManager.createSyncServerForUser(session, userName, service, resourceType, userCredentials, direction, strategy);
+			this.syncDBManager.createSyncServerForUser(userName, service, resourceType, userCredentials, direction, strategy, session);
 		} finally {
 			session.close();
 		}
@@ -423,7 +423,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			syncDBManager.updateSyncServerForUser(session, userName, service, resourceType, userCredentials, direction, strategy);
+			this.syncDBManager.updateSyncServerForUser(userName, service, resourceType, userCredentials, direction, strategy, session);
 		} finally {
 			session.close();
 		}
@@ -438,7 +438,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			syncDBManager.deleteSyncServerForUser(session, userName, service);
+			syncDBManager.deleteSyncServerForUser(userName, service, session);
 		} finally {
 			session.close();
 		}
@@ -464,11 +464,11 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAllSyncServices()
 	 */
 	@Override
-	public List<SyncService> getAllSyncServices(boolean server) {
+	public List<SyncService> getAllSyncServices(final boolean server) {
 		this.permissionDBManager.ensureAdminAccess(getAuthenticatedUser());
 		final DBSession session = this.openSession();
 		try {
-			return syncDBManager.getAllSyncServices(session, server);
+			return syncDBManager.getAllSyncServices(server, session);
 		} finally {
 			session.close();
 		}
@@ -482,7 +482,7 @@ public class DBLogic implements LogicInterface {
 	public List<URI> getSyncServices(final boolean server) {
 		final DBSession session = this.openSession();
 		try {
-			return syncDBManager.getSyncServices(session, server);
+			return syncDBManager.getSyncServices(server, session);
 		} finally {
 			session.close();
 		}
@@ -512,7 +512,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			syncDBManager.updateSyncData(session, userName, service, resourceType, syncDate, status, info);
+			syncDBManager.updateSyncData(userName, service, resourceType, syncDate, status, info, session);
 		} finally {
 			session.close();
 		}
@@ -527,10 +527,10 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			if (Resource.class.equals(resourceType)) {
-				syncDBManager.deleteSyncData(session, userName, service, Bookmark.class, syncDate);
-				syncDBManager.deleteSyncData(session, userName, service, BibTex.class, syncDate);
+				syncDBManager.deleteSyncData(userName, service, Bookmark.class, syncDate, session);
+				syncDBManager.deleteSyncData(userName, service, BibTex.class, syncDate, session);
 			} else {
-				syncDBManager.deleteSyncData(session, userName, service, resourceType, syncDate);
+				syncDBManager.deleteSyncData(userName, service, resourceType, syncDate, session);
 			}			
 		} finally {
 			session.close();
@@ -2144,8 +2144,22 @@ public class DBLogic implements LogicInterface {
 	public String getOpenIDUser(final String openID) {
 		final DBSession session = openSession();
 		try {
-			final String username = this.userDBManager.getOpenIDUser(openID, session);
-			return username;
+			return this.userDBManager.getOpenIDUser(openID, session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	/*
+	 * FIXME: implement this method as chain element of getUsers()
+	 * 
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUsernameByLdapUserId()
+	 */
+	@Override	
+	public String getUsernameByLdapUserId(final String userId) {
+		final DBSession session = openSession();
+		try {
+			return this.userDBManager.getUsernameByLdapUser(userId, session);
 		} finally {
 			session.close();
 		}
@@ -2162,18 +2176,13 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
-		Integer result;
-
 		final DBSession session = openSession();
 		try {
 			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, null, null, start, end, null, null, this.loginUser);
-
-			result = this.statisticsDBManager.getTagStatistics(param, session);
+			return this.statisticsDBManager.getTagStatistics(param, session);
 		} finally {
 			session.close();
 		}
-
-		return result;
 	}
 
 	/*
@@ -2408,21 +2417,6 @@ public class DBLogic implements LogicInterface {
 	}
 
 	/*
-	 * FIXME: implement this method as chain element of getUsers()
-	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#getUsernameByLdapUserId()
-	 */
-	@Override	
-	public String getUsernameByLdapUserId(final String userId) {
-		final DBSession session = openSession();
-		try {
-			return this.userDBManager.getUsernameByLdapUser(userId, session);
-		} finally {
-			session.close();
-		}
-	}
-
-	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createReferences(java.lang.String, java.util.Set)
 	 */
@@ -2525,7 +2519,7 @@ public class DBLogic implements LogicInterface {
 			 * Check, if the wiki has changed (otherwise we don't update it).
 			 */
 			String actualWikiText = actual.getWikiText();
-			if(null == actualWikiText) actualWikiText = "";
+			if (actualWikiText == null) actualWikiText = "";
 			if (!actualWikiText.equals(wiki.getWikiText())) {
 				this.wikiDBManager.updateWiki(userName, wiki, session);
 				this.wikiDBManager.logWiki(userName, actual, session);
@@ -2613,17 +2607,15 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		session.beginTransaction();
 		try {
-			Boolean createDiscussionItem = false;
-
 			/* 
-			 * first check if gold standard post exists
+			 * first check if gold standard post exists in db
 			 */
-			final Post<?> goldStandardPostinDB = this.getPostDetails(interHash, "", session);
+			Post<?> goldStandardPost = this.getPostDetails(interHash, "", session);
 
 			/*
 			 * if not create one
 			 */
-			if (!present(goldStandardPostinDB)) {
+			if (!present(goldStandardPost)) {
 				log.debug("no gold standard found for interHash " + interHash + ". Creating new gold standard");
 				final String hash = HashID.INTER_HASH.getId() + interHash;
 				// FIXME: these lists maybe also contain private posts of the logged in user!
@@ -2642,40 +2634,34 @@ public class DBLogic implements LogicInterface {
 					 */
 					goldStandardPublication.setPrivnote("");
 					goldResource = goldStandardPublication;
-					discussionItem.setResourceType(BibTex.class);
 				} else if (present(bookmarkPosts)) {
 					final GoldStandardBookmark goldStandardBookmark = new GoldStandardBookmark();
 					ObjectUtils.copyPropertyValues(bookmarkPosts.get(0).getResource(), goldStandardBookmark);
 
 					goldResource = goldStandardBookmark;
-					discussionItem.setResourceType(Bookmark.class);
 				} else {
 					log.warn("neither publications nor bookmarks found for hash '" + interHash + "'");
 				}
 
 				if (present(goldResource)) {
-					final Post<Resource> goldStandardPost = new Post<Resource>();
-					goldStandardPost.setResource(goldResource);
+					final Post<Resource> createPost = new Post<Resource>();
+					createPost.setResource(goldResource);
 
-					PostUtils.populatePost(goldStandardPost, this.loginUser);
-					this.createPost(goldStandardPost, session);	
-					createDiscussionItem = true;
+					PostUtils.populatePost(createPost, this.loginUser);
+					this.createPost(createPost, session);
+					goldStandardPost = createPost;
 				}
-			} else {
-				// if present (goldStandardPostinDB) 
-				// set content type of discussionItem
-				discussionItem.setResourceType(goldStandardPostinDB.getResource().getClass());
-				createDiscussionItem = true;
 			}
 
-
 			/*
-			 * only if previous conditions allow creation of discussion item do it
+			 * only if we found or created a community post create the discussion
+			 * item
 			 */
-			if (createDiscussionItem) {
+			if (present(goldStandardPost)) {
 				/*
 				 * create the discussion item
 				 */
+				discussionItem.setResourceType(goldStandardPost.getResource().getClass());
 				final User commentUser = this.userDBManager.getUserDetails(username, session);
 				discussionItem.setUser(commentUser);
 	
@@ -2740,7 +2726,6 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			final User user = this.userDBManager.getUserDetails(username, session);
-
 			for (final DiscussionItemDatabaseManager<? extends DiscussionItem> discussionItemManager : this.allDiscussionManagers.values()) {
 				if (discussionItemManager.deleteDiscussionItemForResource(interHash, user, commentHash, session)) {
 					return;

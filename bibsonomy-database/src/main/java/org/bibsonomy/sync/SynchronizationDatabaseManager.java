@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -49,12 +50,13 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Add a sync service. Callers should check, if a client/server with that
 	 * URI already exists. Otherwise, a DUPLICATE KEY exception will be thrown.
-	 * 
-	 * @param session
 	 * @param service - the URI of the service to be added
 	 * @param server - <code>true</code> if the service may act as a server, <code>false</code> if it may act as a client
+	 * @param sslDn 
+	 * @param secureAPI 
+	 * @param session
 	 */
-	public void createSyncService(final DBSession session, final URI service, final boolean server, final String sslDn, final URI secureAPI) {
+	public void createSyncService(final URI service, final boolean server, final String sslDn, final URI secureAPI, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final SyncParam param = new SyncParam();
@@ -72,12 +74,11 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Remove a sync service.
-	 * 
-	 * @param session
 	 * @param service - the URI of the service to be removed
 	 * @param server - <code>true</code> if the server part should be deleted, <code>false</code> if the client client part should be deleted
+	 * @param session
 	 */
-	public void deleteSyncService(final DBSession session, final URI service, final boolean server) {
+	public void deleteSyncService(final URI service, final boolean server, final DBSession session) {
 		final SyncParam param =  new SyncParam();
 		param.setService(service);
 		param.setServer(server);
@@ -86,16 +87,15 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Update the synchronization status in the database.
-	 * 
-	 * @param session - the database session
 	 * @param userName - identifies 
 	 * @param service - identifies the status
 	 * @param resourceType - identifies the status
 	 * @param syncDate - identifies the status
 	 * @param status - the new status
 	 * @param info - some additional information to be stored
+	 * @param session - the database session
 	 */
-	public void updateSyncData(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setService(service);
@@ -109,12 +109,13 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Delete the given synchronization data's status in the database. If syncDate is null, delete all sync data, which matches other parameters
-	 * 
+	 * @param userName 
+	 * @param service 
+	 * @param resourceType 
+	 * @param syncDate 
 	 * @param session - the database session
-	 * @param status - the status to set
-	 * @param data SynchronizationData
 	 */
-	public void deleteSyncData(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate) {
+	public void deleteSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setService(service);
@@ -126,13 +127,15 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Insert new synchronization data for user.
-	 * 
-	 * @param session
 	 * @param userName
-	 * @param credentials
-	 * @param serviceId
+	 * @param service 
+	 * @param resourceType 
+	 * @param userCredentials 
+	 * @param direction 
+	 * @param strategy 
+	 * @param session
 	 */
-	public void createSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+	public void createSyncServerForUser(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setCredentials(userCredentials);
@@ -146,11 +149,11 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Removes synchronization data for user.
-	 * @param session
 	 * @param userName
 	 * @param service
+	 * @param session
 	 */
-	public void deleteSyncServerForUser(final DBSession session, final String userName, final URI service) {
+	public void deleteSyncServerForUser(final String userName, final URI service, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setService(service);
@@ -160,14 +163,16 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Updates the synchronization data for a user
-	 * 
-	 * @param session
 	 * @param userName
 	 * @param service
-	 * @param credentials
+	 * @param resourceType 
+	 * @param userCredentials 
+	 * @param direction 
+	 * @param strategy 
+	 * @param session
 	 * 
 	 */
-	public void updateSyncServerForUser(final DBSession session, final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+	public void updateSyncServerForUser(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setService(service);
@@ -180,17 +185,24 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Returns all available synchronization services. 
 	 * 
+	 * @param server 
 	 * @param session
-	 * @return
+	 * @return all available synchronization services. if server <true> sync server
+	 * otherwise sync clients
 	 */
-	public List<URI> getSyncServices(final DBSession session, final boolean server) {
+	public List<URI> getSyncServices(final boolean server, final DBSession session) {
 		return this.queryForList("getSyncServices", server, URI.class, session);
 	}
 	
-	public List<SyncService> getAllSyncServices(final DBSession session, boolean server) {
-		SyncParam param = new SyncParam();
+	/**
+	 * 
+	 * @param server
+	 * @param session
+	 * @return
+	 */
+	public List<SyncService> getAllSyncServices(final boolean server, final DBSession session) {
+		final SyncParam param = new SyncParam();
 		param.setServer(server);
 		return this.queryForList("getAllSyncServices", param, SyncService.class, session);
 	}
@@ -199,12 +211,12 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * Inserts synchronization data with GIVEN status into db. 
 	 * @param userName
 	 * @param service
-	 * @param contentType
+	 * @param resourceType
 	 * @param lastSyncDate
 	 * @param status
 	 * @param session
 	 */
-	public void insertSynchronizationData (final String userName, final URI service, Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final DBSession session) {
+	public void insertSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		log.info("\nuser name: " + userName + "\n service: " + service.toString() + "\nresType: " + resourceType.getSimpleName() + "\ndate: " + lastSyncDate + "\nstatus" + status);
 		param.setUserName(userName);
@@ -220,7 +232,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param userName
 	 * @param service
-	 * @param contentType
+	 * @param resourceType
 	 * @param session
 	 * @param status - optional. If provided, only data with that state is returned.
 	 * @return returns last synchronization data for given user, service and content with {@link SynchronizationStatus#RUNNING}.
@@ -254,6 +266,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param clientPosts - Note: this list is modified by this method - posts are added. It's the same list that is returned by this method.
 	 * @param lastSyncDate
 	 * @param conflictResolutionStrategy
+	 * @param direction 
 	 * @return The clientPosts with {@link SynchronizationAction}'s and posts from the server added.
 	 */
 	public List<SynchronizationPost> getSyncPlan(final Map<String, SynchronizationPost> serverPosts, final List<SynchronizationPost> clientPosts, final Date lastSyncDate, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
@@ -270,7 +283,10 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * check all client posts
 		 */
-		for (final SynchronizationPost clientPost: clientPosts) {
+		final Iterator<SynchronizationPost> iterator = clientPosts.iterator();
+		
+		while (iterator.hasNext()) {
+			final SynchronizationPost clientPost = iterator.next();
 			final SynchronizationPost serverPost = serverPosts.get(clientPost.getIntraHash());
 
 			if (!present(serverPost)) {
@@ -305,28 +321,29 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 						 * according to the strategy this deletion should be carried out on
 						 * the client, too).
 						 */
-						if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+						if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction)) {
 							clientPost.setAction(SynchronizationAction.CREATE_SERVER);
-						else 
+						} else { 
 							clientPost.setAction(SynchronizationAction.OK);
+						}
 					}
 				} else {
 					/*
 					 * post was created on client after last sync
 					 */
-					if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+					if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction)) {
 						clientPost.setAction(SynchronizationAction.CREATE_SERVER);
-					else 
+					} else { 
 						clientPost.setAction(SynchronizationAction.OK);
+					}
 				}
 				continue;
 			}
 
 			if (!present(serverPost.getChangeDate())) {
 				log.error("post on server has no changedate");
-				//FIXME what is to do in this case?
+				// FIXME what can we do in this case?
 			}
-
 
 			if (serverPost.getChangeDate().after(lastSyncDate)) {
 				/*  
@@ -349,10 +366,11 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 					/*
 					 * must be updated on client
 					 */
-					if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+					if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction)) {
 						clientPost.setAction(SynchronizationAction.UPDATE_CLIENT);
-					else
+					} else {
 						clientPost.setAction(SynchronizationAction.OK);
+					}
 				}
 			} else {
 				/*
@@ -369,18 +387,25 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 
 			}
 			/*
+			 * to reduce data and loop count on the client side we remove
+			 * the client post is the action is ok
+			 */
+			if (SynchronizationAction.OK.equals(clientPost.getAction())) {
+				iterator.remove();
+			}
+			
+			/*
 			 * In the next loop we go over all *remaining* server posts and
 			 * compare them. To not handle this post twice, we remove it from
 			 * the server posts list.
 			 */
 			serverPosts.remove(clientPost.getIntraHash());
 		}
-
 		
 		/*
 		 * handle the remaining posts that do not exist on the client
 		 */
-		for (final SynchronizationPost serverPost: serverPosts.values()) {
+		for (final SynchronizationPost serverPost : serverPosts.values()) {
 			if (serverPost.getCreateDate().before(lastSyncDate)) {
 				/*
 				 * post is older than lastSyncDate but does not exist on client
@@ -389,41 +414,45 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 					/*
 					 * post was deleted on client and must now be deleted on server
 					 */
-					if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+					if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction)) {
 						serverPost.setAction(SynchronizationAction.DELETE_SERVER);
-					else 
+					} else { 
 						serverPost.setAction(SynchronizationAction.OK);
+					}
 				} else {
 					/*
 					 * CONFLICT (see above! FIXME: currently, we can't resolve this)
 					 * 
 					 * we create the post on the client
 					 */
-					if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+					if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction)) {
 						serverPost.setAction(SynchronizationAction.CREATE_CLIENT);
-					else 
+					} else { 
 						serverPost.setAction(SynchronizationAction.OK);
+					}
 				}
 			} else {
 				/*
 				 * post was created after last sync -> create on client
 				 */
-				if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+				if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction)) {
 					serverPost.setAction(SynchronizationAction.CREATE_CLIENT);
-				else 
+				} else { 
 					serverPost.setAction(SynchronizationAction.OK);
+				}
 			}
+			
 			/*
-			 * add post to list of client posts
+			 * add post to list of client posts if not OK
 			 */
-			clientPosts.add(serverPost);
+			if (!SynchronizationAction.OK.equals(serverPost.getAction())) {
+				clientPosts.add(serverPost);
+			}
 		}
-
-		/*
-		 * FIXME posts with OK-state could be omitted.
-		 */
+		
 		return clientPosts;
 	}
+	
 
 	/**
 	 * When a post was changed on both the server and the client /after/ 
@@ -437,18 +466,24 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	private void resolveConflict(final SynchronizationPost clientPost, final SynchronizationPost serverPost, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
 		switch (conflictResolutionStrategy) {
 		case CLIENT_WINS:
-			if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+			if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction)) {
 				clientPost.setAction(SynchronizationAction.UPDATE_SERVER);
-			else 
+			} else {
 				clientPost.setAction(SynchronizationAction.OK);
+			}
 			break;
 		case SERVER_WINS:
-			if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+			if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction)) {
 				clientPost.setAction(SynchronizationAction.UPDATE_CLIENT);
-			else
+			} else {
 				clientPost.setAction(SynchronizationAction.OK);
+			}
 			break;
-//		case ASK_USER: temporary disabled
+			/*
+			 * TODO: document why this was disabled!
+			 * temporary disabled
+			 */
+//		case ASK_USER:
 //			clientPost.setAction(SynchronizationAction.ASK);
 //			break;
 		case FIRST_WINS:
@@ -466,16 +501,17 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			break;
 		case LAST_WINS:
 			if (clientPost.getChangeDate().after(serverPost.getChangeDate())) {
-				if(!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction))
+				if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction)) {
 					clientPost.setAction(SynchronizationAction.UPDATE_SERVER);
-				else 
+				} else { 
 					clientPost.setAction(SynchronizationAction.OK);
-
+				}
 			} else {
-				if(!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction))
+				if (!SynchronizationDirection.CLIENT_TO_SERVER.equals(direction)) {
 					clientPost.setAction(SynchronizationAction.UPDATE_CLIENT);
-				else
+				} else {
 					clientPost.setAction(SynchronizationAction.OK);
+				}
 			}
 			break;
 		default:

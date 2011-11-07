@@ -28,10 +28,6 @@ public class SyncParam {
 	private Properties credentials;
 	private String sslDn;
 	private URI secureAPI;
-	
-	public SyncParam() {
-		
-	}
 
 	/**
 	 * @return the userName
@@ -75,27 +71,27 @@ public class SyncParam {
 		return credentials;
 	}
 
-	public void setUserName(String userName) {
+	public void setUserName(final String userName) {
 		this.userName = userName;
 	}
 
-	public void setService(URI service) {
+	public void setService(final URI service) {
 		this.service = service;
 	}
 
-	public void setServiceId(int serviceId) {
+	public void setServiceId(final int serviceId) {
 		this.serviceId = serviceId;
 	}
 
-	public void setLastSyncDate(Date lastSyncDate) {
+	public void setLastSyncDate(final Date lastSyncDate) {
 		this.lastSyncDate = lastSyncDate;
 	}
 
-	public void setStatus(SynchronizationStatus status) {
+	public void setStatus(final SynchronizationStatus status) {
 		this.status = status;
 	}
 
-	public void setCredentials(Properties credentials) {
+	public void setCredentials(final Properties credentials) {
 		this.credentials = credentials;
 	}
 
@@ -103,7 +99,7 @@ public class SyncParam {
 		return this.server;
 	}
 
-	public void setServer(boolean server) {
+	public void setServer(final boolean server) {
 		this.server = server;
 	}
 
@@ -111,7 +107,7 @@ public class SyncParam {
 		return this.info;
 	}
 
-	public void setInfo(String info) {
+	public void setInfo(final String info) {
 		this.info = info;
 	}
 
@@ -119,7 +115,7 @@ public class SyncParam {
 		return this.resourceType;
 	}
 
-	public void setResourceType(Class<? extends Resource> resourceType) {
+	public void setResourceType(final Class<? extends Resource> resourceType) {
 		this.resourceType = resourceType;
 	}
 
@@ -127,14 +123,14 @@ public class SyncParam {
 		return this.direction;
 	}
 
-	public void setDirection(SynchronizationDirection direction) {
+	public void setDirection(final SynchronizationDirection direction) {
 		this.direction = direction;
 	}
 
 	/**
 	 * @param strategy the strategy to set
 	 */
-	public void setStrategy(ConflictResolutionStrategy strategy) {
+	public void setStrategy(final ConflictResolutionStrategy strategy) {
 		this.strategy = strategy;
 	}
 
@@ -153,9 +149,9 @@ public class SyncParam {
 	}
 
 	/**
-	 * @param ssl_dn the ssl_dn to set
+	 * @param sslDn the ssl_dn to set
 	 */
-	public void setSslDn(String sslDn) {
+	public void setSslDn(final String sslDn) {
 		this.sslDn = sslDn;
 	}
 
@@ -169,7 +165,7 @@ public class SyncParam {
 	/**
 	 * @param secureAPI the secureApi to set
 	 */
-	public void setSecureAPI(URI secureAPI) {
+	public void setSecureAPI(final URI secureAPI) {
 		this.secureAPI = secureAPI;
 	}
 }
