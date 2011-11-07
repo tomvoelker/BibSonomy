@@ -9,6 +9,7 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
@@ -29,7 +30,7 @@ public class GetSyncDataStrategy extends Strategy {
 	public GetSyncDataStrategy(final Context context, final URI serviceURI) {
 		super(context);
 		this.serviceURI = serviceURI;
-		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute("resourceType", "all"));
+		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
 	}
 
 	@Override

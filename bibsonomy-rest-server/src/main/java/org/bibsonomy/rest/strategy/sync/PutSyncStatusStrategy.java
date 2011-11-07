@@ -12,6 +12,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -34,13 +35,12 @@ public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 	public PutSyncStatusStrategy(final Context context, final URI serviceURI) {
 		super(context);
 		this.serviceURI = serviceURI;
-		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute("resourceType", "all"));
-		this.synchronizationStatus = context.getStringAttribute("status", "");
+		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
+		this.synchronizationStatus = context.getStringAttribute(RESTConfig.SYNC_STATUS, "");
 	}
 
 	@Override
 	protected void render(final Writer writer, final String resourceID) {
-		// TODO Auto-generated method stub
 		return;
 	}
 

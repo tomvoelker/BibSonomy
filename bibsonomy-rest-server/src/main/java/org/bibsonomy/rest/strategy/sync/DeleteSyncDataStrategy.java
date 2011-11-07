@@ -33,7 +33,7 @@ public class DeleteSyncDataStrategy extends AbstractDeleteStrategy {
 		super(context);
 		this.serviceURI = serviceURI;
 		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
-		this.date = context.getStringAttribute("date", null);
+		this.date = context.getStringAttribute(RESTConfig.SYNC_DATE_PARAM, null);
 	}
 
 	@Override
