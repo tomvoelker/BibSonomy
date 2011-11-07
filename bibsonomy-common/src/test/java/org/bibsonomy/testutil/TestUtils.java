@@ -3,10 +3,13 @@ package org.bibsonomy.testutil;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.junit.Ignore;
+
 /**
  * @author dzo
  * @version $Id$
  */
+@Ignore
 public final class TestUtils {
 	private TestUtils() {}
 
