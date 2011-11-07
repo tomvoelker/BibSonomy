@@ -42,9 +42,11 @@ public class SyncClientTestDirectionBOTH extends AbstractSynchronizationClientTe
 
 	private final String RESULT_STRING = "created on client: 1, created on server: 1, updated on client: 1, updated on server: 1, deleted on client: 1, deleted on server: 1";
 
+	/**
+	 * test direction both
+	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	@Override
 	public void test() {
 		Properties userCredentials = new Properties();
 		userCredentials.setProperty("userName", SERVER_USER_NAME);

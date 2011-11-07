@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,10 +29,10 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.rest.testutil.TestServerBuilder;
 import org.bibsonomy.testutil.ModelUtils;
+import org.bibsonomy.testutil.TestUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.mortbay.jetty.Server;
 
 /**
@@ -42,7 +41,7 @@ import org.mortbay.jetty.Server;
  */
 public abstract class AbstractSynchronizationClientTest extends AbstractDatabaseManagerTest {
 
-	private static final int PORT = 41253;
+	private static final int PORT = 41253; // if you change the port here you must change it in the test sql script (database module) too
 	protected static final String SYNC_SERVER_URI = "http://localhost:" + PORT + "/"; //default rest api test server url
 	protected static final String SYNC_CLIENT_URI = "http://www.test.de/";
 	protected static final String SERVER_USER_NAME = "syncServer";
@@ -70,6 +69,14 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		"3d6ec7b6695976eeec379dcc55ae9cb1"  // no changes
 	};
 	
+	protected static void wait(final int seconds) {
+		try {
+			Thread.sleep(1000 * seconds);
+		} catch (InterruptedException ex) {
+			// ignore
+		}
+	}
+	
 	private static Server restServer;
 
 	@SuppressWarnings("javadoc")
@@ -90,15 +97,6 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		}
 	}
 	
-	protected static URI createURI(final String uri) {
-		try {
-			return new URI(uri);
-		} catch (URISyntaxException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-	
-	
 	protected User serverUser;
 	protected User clientUser;
 
@@ -110,11 +108,6 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	
 	private String[] modifiedBookmarkKeys;
 	private String[] modifiedPublicationKeys;
-	
-
-	@SuppressWarnings("javadoc")
-	@Test
-	public abstract void test();
 	
 	@SuppressWarnings({ "unchecked", "javadoc" })
 	@Before
@@ -215,8 +208,8 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			/*
 			 * setup server and client
 			 */
-			syncServer = createURI(SYNC_SERVER_URI);
-			sync.setOwnUri(createURI(SYNC_CLIENT_URI));
+			syncServer = TestUtils.createURI(SYNC_SERVER_URI);
+			sync.setOwnUri(TestUtils.createURI(SYNC_CLIENT_URI));
 
 			/*
 			 * check that synchronization is enabled
@@ -292,14 +285,6 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		
 		for (final String key : clientKeys) {
 			assertTrue("["+ resourceType.getSimpleName() + "] " + serviceType + " does not contain key: " + key, posts.containsKey(key));
-		}
-	}
-	
-	protected static void wait(final int seconds) {
-		try {
-			Thread.sleep(1000 * seconds);
-		} catch (InterruptedException ex) {
-			// ignore
 		}
 	}
 

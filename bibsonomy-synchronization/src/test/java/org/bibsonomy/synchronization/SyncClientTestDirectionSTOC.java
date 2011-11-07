@@ -12,6 +12,7 @@ import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
+import org.junit.Test;
 
 /**
  * @author wla
@@ -40,8 +41,11 @@ public class SyncClientTestDirectionSTOC extends AbstractSynchronizationClientTe
 	private final static ConflictResolutionStrategy STRATEGY = ConflictResolutionStrategy.LAST_WINS;
 	private final static SynchronizationDirection DIRECTION = SynchronizationDirection.SERVER_TO_CLIENT;
 
+	/**
+	 * tests server to client direction
+	 */
 	@SuppressWarnings("unchecked")
-	@Override
+	@Test
 	public void test() {
 		Properties userCredentials = new Properties();
 		userCredentials.setProperty("userName", SERVER_USER_NAME);

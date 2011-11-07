@@ -41,8 +41,10 @@ public class SyncClientTestDirectionCTOS extends AbstractSynchronizationClientTe
 	private static final SynchronizationDirection DIRECTION = SynchronizationDirection.CLIENT_TO_SERVER;
 	
 
+	/**
+	 * tests sync client with client to server
+	 */
 	@SuppressWarnings("unchecked")
-	@Override
 	@Test
 	public void test() {
 		Properties userCredentials = new Properties();

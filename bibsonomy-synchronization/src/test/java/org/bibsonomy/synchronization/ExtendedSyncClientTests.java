@@ -25,6 +25,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.junit.Test;
 
 /**
  * @author wla
@@ -32,7 +33,10 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
  */
 public class ExtendedSyncClientTests extends AbstractSynchronizationClientTest {
 
-	@Override
+	/**
+	 * test the sync client
+	 */
+	@Test
 	public void test() {
 		/*
 		 * normal synchronization, tested by other tests 

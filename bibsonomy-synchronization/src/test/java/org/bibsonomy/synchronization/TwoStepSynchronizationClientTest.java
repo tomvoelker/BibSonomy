@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -27,6 +26,8 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.testutil.TestUtils;
+import org.junit.Test;
 
 /**
  * @author wla
@@ -60,15 +61,10 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 
 	private final String RESULT_STRING = "created on client: 1, created on server: 1, updated on client: 1, updated on server: 1, deleted on client: 1, deleted on server: 1";
 
-	@Override
+	@Test
 	public void test() {
 		final TwoStepSynchronizationClient sync = new TwoStepSynchronizationClient();
-		
-		try {
-			sync.setOwnUri(new URI(SYNC_CLIENT_URI));
-		} catch (URISyntaxException ex) {
-			ex.printStackTrace();
-		}
+		sync.setOwnUri(TestUtils.createURI(SYNC_CLIENT_URI));
 
 		/*
 		 * check that synchronization is enabled
