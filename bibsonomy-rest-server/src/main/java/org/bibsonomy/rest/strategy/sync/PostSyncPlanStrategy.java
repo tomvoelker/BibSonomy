@@ -11,6 +11,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -33,9 +34,9 @@ public class PostSyncPlanStrategy extends AbstractCreateStrategy {
 	public PostSyncPlanStrategy(final Context context, final URI serviceURI) {
 		super(context);
 		this.serviceURI = serviceURI;
-		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute("resourceType", "all"));
-		this.strategy = ConflictResolutionStrategy.getConflictResolutionStrategyByString(context.getStringAttribute("strategy", "lw"));
-		this.direction = SynchronizationDirection.getSynchronizationDirectionByString(context.getStringAttribute("direction", "both"));
+		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
+		this.strategy = ConflictResolutionStrategy.getConflictResolutionStrategyByString(context.getStringAttribute(RESTConfig.SYNC_STRATEGY_PARAM, ConflictResolutionStrategy.LAST_WINS.getConflictResolutionStrategy()));
+		this.direction = SynchronizationDirection.getSynchronizationDirectionByString(context.getStringAttribute(RESTConfig.SYNC_DIRECTION_PARAM, SynchronizationDirection.BOTH.getSynchronizationDirection()));
 	}
 
 	
