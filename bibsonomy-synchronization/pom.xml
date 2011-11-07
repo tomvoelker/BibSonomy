@@ -21,11 +21,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-model</artifactId>
+			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-common</artifactId>
+			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -38,7 +38,17 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-database</artifactId>
+			<artifactId>bibsonomy-rest-server</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-opensocial</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
@@ -50,7 +60,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-common</artifactId>
+			<artifactId>bibsonomy-database</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database-common</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
@@ -62,23 +78,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-database-common</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-rest-server</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-server</artifactId>
 			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-opensocial</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -96,7 +97,7 @@
 	<distributionManagement>
 		<!-- deploy site documentation via scp to gromit -->
 		<site>
-			<id>bibsonomy-common-website-documentation</id>
+			<id>bibsonomy-synchronization-website-documentation</id>
 			<name>Internal site documentation for this module</name>
 			<url>
 				scpexe://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
