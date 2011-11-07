@@ -45,6 +45,11 @@ import org.bibsonomy.model.Resource;
 public class ResourceFactory {
 	
 	/**
+	 * the string identifying the {@link Resource} class
+	 */
+	public static final String RESOURCE_CLASS_NAME = "all";
+
+	/**
 	 * TODO: config via spring?
 	 * all known resource classes
 	 */
@@ -57,7 +62,7 @@ public class ResourceFactory {
 		RESOURCE_CLASSES_BY_NAME.put("publication", BibTex.class);
 		RESOURCE_CLASSES_BY_NAME.put("goldstandardpublication", GoldStandardPublication.class);
 		RESOURCE_CLASSES_BY_NAME.put("goldstandardbookmark", GoldStandardBookmark.class);
-		RESOURCE_CLASSES_BY_NAME.put("all", Resource.class);
+		RESOURCE_CLASSES_BY_NAME.put(RESOURCE_CLASS_NAME, Resource.class);
 		
 		for (final Entry<String, Class<? extends Resource>> entry : RESOURCE_CLASSES_BY_NAME.entrySet()) {
 			RESOURCE_CLASS_NAMES.put(entry.getValue(), entry.getKey());
