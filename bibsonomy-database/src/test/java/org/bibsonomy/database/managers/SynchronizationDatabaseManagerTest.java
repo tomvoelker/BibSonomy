@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,31 +22,31 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
+import org.bibsonomy.testutil.TestUtils;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * @author wla
  * @version $Id$
  */
-@Ignore
+@Ignore // TODO: document why we ignore this test
 public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private static SynchronizationDatabaseManager syncDBManager;
+	private static URI testURI;
+	private static URI bibsonomyURI;
 
 	private final String syncUser1 = "syncuser1";
-	private final URI testURI;
-	private final URI bibsonomyURI;
+	
 	
 	@BeforeClass
 	public static void setupManager() {
 		syncDBManager = SynchronizationDatabaseManager.getInstance();
-	}
-	
-	public SynchronizationDatabaseManagerTest() throws URISyntaxException {
-		this.testURI = new URI("http://www.test.de/");
-		this.bibsonomyURI = new URI("http://www.bibsonomy.org/");
+		
+		testURI = TestUtils.createURI("http://www.test.de/");
+		bibsonomyURI = TestUtils.createURI("http://www.bibsonomy.org/");
 	}
 
 	/**
