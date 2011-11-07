@@ -1,6 +1,8 @@
 package org.bibsonomy.rest;
 
 /**
+ * DO NOT CHANGE any constant values after a release
+ * 
  * @author dzo
  * @version $Id$
  */
@@ -34,6 +36,8 @@ public final class RESTConfig {
 	public static final String SYNC_DIRECTION_PARAM = "direction";
 	
 	public static final String SYNC_DATE_PARAM = "date";
+	
+	public static final String SYNC_STATUS = "status";
 
 	/**
 	 * Request Attribute ?relation="incoming/outgoing"
@@ -48,7 +52,4 @@ public final class RESTConfig {
 
 	/** default value */
 	public static final String DEFAULT_ATTRIBUTE_VALUE_RELATION = INCOMING_ATTRIBUTE_VALUE_RELATION;
-
-	public static final String SYNC_STATUS = "status";
-	
 }
