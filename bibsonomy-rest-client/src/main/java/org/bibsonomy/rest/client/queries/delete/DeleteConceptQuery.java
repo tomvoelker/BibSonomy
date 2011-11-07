@@ -85,7 +85,10 @@ public class DeleteConceptQuery extends AbstractQuery<String> {
 		return this.getError();
 	}
 
-	public void setSubTag(String subTag) {
+	/**
+	 * @param subTag the subTag to set
+	 */
+	public void setSubTag(final String subTag) {
 		this.subTag = subTag;
 	}	
 }
