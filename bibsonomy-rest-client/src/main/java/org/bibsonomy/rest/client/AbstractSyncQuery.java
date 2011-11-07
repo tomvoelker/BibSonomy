@@ -13,6 +13,7 @@ import org.bibsonomy.util.UrlUtils;
 /**
  * @author wla
  * @version $Id$
+ * @param <T> 
  */
 public abstract class AbstractSyncQuery<T> extends AbstractQuery<T> {
 
@@ -21,6 +22,13 @@ public abstract class AbstractSyncQuery<T> extends AbstractQuery<T> {
 	private final SynchronizationDirection direction;
 	private final Class<? extends Resource> resourceType;
 	
+	/**
+	 * 
+	 * @param serviceURI
+	 * @param resourceType
+	 * @param strategy
+	 * @param direction
+	 */
 	public AbstractSyncQuery(final String serviceURI, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		this.serviceURI = serviceURI;
 		this.resourceType = resourceType;
@@ -29,9 +37,7 @@ public abstract class AbstractSyncQuery<T> extends AbstractQuery<T> {
 	}
 	
 	/**
-	 * 
-	 * @param action
-	 * @return
+	 * @return the sync url
 	 */
 	protected String getSyncURL() {
 		final String result = URL_SYNC + "/" + UrlUtils.safeURIEncode(serviceURI);
