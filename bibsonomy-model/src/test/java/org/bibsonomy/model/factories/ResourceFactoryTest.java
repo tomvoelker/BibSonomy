@@ -51,6 +51,30 @@ public class ResourceFactoryTest {
 	}
 	
 	/**
+	 * tests getResourceClass
+	 */
+	@Test
+	public void getResourceClass() {
+		assertEquals(Resource.class, ResourceFactory.getResourceClass("all"));
+		assertEquals(Resource.class, ResourceFactory.getResourceClass("ALL"));
+		
+		assertEquals(Bookmark.class, ResourceFactory.getResourceClass("bookmark"));
+		assertEquals(Bookmark.class, ResourceFactory.getResourceClass("BOOKMARK"));
+		
+		assertEquals(BibTex.class, ResourceFactory.getResourceClass("bibtex"));
+		assertEquals(BibTex.class, ResourceFactory.getResourceClass("BIBTEX"));
+		
+		assertEquals(BibTex.class, ResourceFactory.getResourceClass("publication"));
+		assertEquals(BibTex.class, ResourceFactory.getResourceClass("PUBLICATION"));
+		
+		assertEquals(GoldStandardPublication.class, ResourceFactory.getResourceClass("goldStandardPublication"));
+		assertEquals(GoldStandardPublication.class, ResourceFactory.getResourceClass("GOLDSTANDARDPUBLICATION"));
+		
+		assertEquals(GoldStandardBookmark.class, ResourceFactory.getResourceClass("goldStandardBookmark"));
+		assertEquals(GoldStandardBookmark.class, ResourceFactory.getResourceClass("GOLDSTANDARDBOOKMARK"));
+	}
+	
+	/**
 	 * creates a new bookmark
 	 */
 	@Test
