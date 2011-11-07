@@ -23,6 +23,8 @@
 
 package org.bibsonomy.model.factories;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,8 +55,8 @@ public class ResourceFactory {
 	static {
 		RESOURCE_CLASSES_BY_NAME.put("bookmark", Bookmark.class);
 		RESOURCE_CLASSES_BY_NAME.put("publication", BibTex.class);
-		RESOURCE_CLASSES_BY_NAME.put("goldStandardPublication", GoldStandardPublication.class);
-		RESOURCE_CLASSES_BY_NAME.put("goldStandardBookmark", GoldStandardBookmark.class);
+		RESOURCE_CLASSES_BY_NAME.put("goldstandardpublication", GoldStandardPublication.class);
+		RESOURCE_CLASSES_BY_NAME.put("goldstandardbookmark", GoldStandardBookmark.class);
 		RESOURCE_CLASSES_BY_NAME.put("all", Resource.class);
 		
 		for (final Entry<String, Class<? extends Resource>> entry : RESOURCE_CLASSES_BY_NAME.entrySet()) {
@@ -70,7 +72,9 @@ public class ResourceFactory {
 	 * @return the class of the resource class by a name, e.g. "bookmark"
 	 * returns the {@link Bookmark} class
 	 */
-	public static final Class<? extends Resource> getResourceClass(final String resourceName) {
+	public static final Class<? extends Resource> getResourceClass(String resourceName) {
+		if (!present(resourceName)) throw new UnsupportedResourceTypeException("ResourceType is null");
+		resourceName = resourceName.toLowerCase();
 		return RESOURCE_CLASSES_BY_NAME.get(resourceName);
 	}
 	
