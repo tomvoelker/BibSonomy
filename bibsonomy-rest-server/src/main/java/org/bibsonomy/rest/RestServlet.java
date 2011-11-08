@@ -341,7 +341,7 @@ public final class RestServlet extends HttpServlet {
 		if (HeaderUtils.isHttpBasicAuthorization(authenticationHeader)) {
 			// try http basic authorization
 			final LogicInterface logic = validateHttpBasicAuthorization(authenticationHeader);
-			checkSync(request, logic);
+			validateSyncAuthorization(request, logic);
 			return logic;
 		} else if (present(this.oauthValidator) && present(this.oauthLogicFactory)) {
 			// try oauth authorization
@@ -350,8 +350,8 @@ public final class RestServlet extends HttpServlet {
 		throw new AuthenticationException(NO_AUTH_ERROR);
 	}
 
-	private void checkSync(final HttpServletRequest request, final LogicInterface logic) {
-		log.debug("start ssl header check for synxhronization");
+	private void validateSyncAuthorization(final HttpServletRequest request, final LogicInterface logic) {
+		log.debug("start ssl header check for synchronization");
 
 		final String verifyHeader = request.getHeader(SSL_VERIFY_HEADER);
 
