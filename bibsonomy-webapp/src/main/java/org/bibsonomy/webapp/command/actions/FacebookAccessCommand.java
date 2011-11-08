@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command.actions;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.bibsonomy.model.User;
 
@@ -34,6 +35,17 @@ public class FacebookAccessCommand extends OAuthAccessCommand {
 		user_denied
 	}
 
+	/**
+	 * admin actions for the facebook importer
+	 * @author fei
+	 */
+	public enum FacebookAdminAction {
+		/**
+		 * build the index for resolving user names 
+		 */
+		BUILD_INDEX
+	}
+
 	/** facebook's error code */
 	private FacebookError error;
 	/** facebook's error reason */
@@ -42,9 +54,15 @@ public class FacebookAccessCommand extends OAuthAccessCommand {
 	private String error_description;
 	/** temporary request token */
 	private String code;
+	/** administrative actions like building the resolver index */
+	private FacebookAdminAction adminAction;
+	
 	
 	/** list of imported friends */
 	private Collection<User> friends;
+	
+	/** maps facebook user ids to possible BibSonomy users */
+	private Map<String, Collection<User>> userMapping;
 	
 	
 	/**
@@ -117,5 +135,33 @@ public class FacebookAccessCommand extends OAuthAccessCommand {
 	 */
 	public Collection<User> getFriends() {
 		return friends;
+	}
+
+	/**
+	 * @param userMapping
+	 */
+	public void setUserMapping(Map<String, Collection<User>> userMapping) {
+		this.userMapping = userMapping;
+	}
+
+	/**
+	 * @return mapping from facebook user ids to possibly matching BibSonomy users
+	 */
+	public Map<String, Collection<User>> getUserMapping() {
+		return userMapping;
+	}
+
+	/**
+	 * @param adminAction
+	 */
+	public void setAdminAction(FacebookAdminAction adminAction) {
+		this.adminAction = adminAction;
+	}
+
+	/**
+	 * @return admin action
+	 */
+	public FacebookAdminAction getAdminAction() {
+		return adminAction;
 	}
 }

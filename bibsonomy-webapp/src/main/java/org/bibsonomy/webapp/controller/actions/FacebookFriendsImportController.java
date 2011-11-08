@@ -18,7 +18,9 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.entity.UserRealnameResolver;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.FacebookAccessCommand;
@@ -67,6 +69,9 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 
 	/** project for call back requests */
 	private String projectHome;
+	
+	/** resolves imported facebook user to BibSonomy users */
+	private UserRealnameResolver friendsResolver;
 
 	@Override
 	public FacebookAccessCommand instantiateCommand() {
@@ -83,7 +88,17 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 		//if (!context.isValidCkey()) {
 		//errors.reject("error.field.valid.ckey");
 		//}
+		
+		//
+		// perform administrative tasks (if requested)
+		//
+		if (present(command.getAdminAction())) {
+			return this.performAdminAction(command, context);
+		}
 
+		//
+		// import friends 
+		//
 		switch (command.getState()) {
 		case ACCESS:
 			return this.oAuthAccessToken(command, context.getLoginUser());
@@ -140,7 +155,9 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 		
 		if (present(accessToken)) {
 			Collection<User> facebookFriends = this.importFacebookFriends(command, user);
+			Map<String, Collection<User>> userMapping = this.friendsResolver.resolveUsers(facebookFriends);
 			command.setFriends(facebookFriends);
+			command.setUserMapping(userMapping);
 		}
 
 		return Views.FACEBOOK_IMPORT;
@@ -224,7 +241,33 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 		
 		return accessToken;
     }
-	
+
+    /**
+     * perform administrative tasks like building the user index
+     * 
+     * @param command
+     * @param context
+     * @return
+     */
+	private View performAdminAction(FacebookAccessCommand command, RequestWrapperContext context) {
+		final User loginUser = context.getLoginUser();
+
+		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
+			throw new AccessDeniedException("please log in as admin");
+		}
+		
+		switch (command.getAdminAction()) {
+		case BUILD_INDEX:
+			if (!present(this.friendsResolver)) {
+				throw new RuntimeException("No user index configured");
+			}
+			this.friendsResolver.buildIndex();
+			return Views.FACEBOOK_IMPORT;
+		default:
+			throw new RuntimeException("Unsupported admin action: '"+command.getAdminAction()+"'");
+		}
+	}
+
 	/**
 	 * parse the error response string and set the corresponding properties 
 	 * in the given command
@@ -343,6 +386,20 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	 */
 	public String getProjectHome() {
 		return projectHome;
+	}
+
+	/**
+	 * @param friendsResolver
+	 */
+	public void setFriendsResolver(UserRealnameResolver friendsResolver) {
+		this.friendsResolver = friendsResolver;
+	}
+
+	/**
+	 * @return the applied imported friends resolver
+	 */
+	public UserRealnameResolver getFriendsResolver() {
+		return friendsResolver;
 	}	
 
 }

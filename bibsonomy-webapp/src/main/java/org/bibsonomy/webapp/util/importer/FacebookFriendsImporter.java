@@ -44,6 +44,7 @@ public class FacebookFriendsImporter extends AbstractFriendsImporter<User> {
 			importUser.setEmail(user.getEmail());
 			importUser.setBirthday(user.getBirthdayAsDate());
 			importUser.setGender(user.getGender());
+			importUser.setApiKey(user.getId());
 			if (present(user.getInterestedIn())) {
 				String hobbies;
 				StringBuilder out = new StringBuilder();

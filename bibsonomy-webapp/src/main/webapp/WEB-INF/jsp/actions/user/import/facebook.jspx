@@ -68,6 +68,10 @@
 					color: #fff;
 				}
 			</style>
+			
+			<script type="text/javascript">
+				var userSelect = new Object();
+			</script>
 		
 			<div id="general">
 				<h1>Facebook Friends Importer</h1>
@@ -100,16 +104,24 @@
 										<th>BibSonomy User</th>
 										<th style="width: 5em;"><!-- keep me --></th>
 									</tr>
-									<c:forEach var="user" items="${command.friends}">
+									<c:forEach var="user" items="${command.friends}" varStatus="rowCounter">
 										<fmt:formatDate type="date" dateStyle="medium" value="${user.birthday}" var="birthday" />
 										<tr>
 											<td><c:out value="${user.realname}"/></td>
 											<td><c:out value="${user.gender}"/></td>
 											<td><c:out value="${birthday}"/></td>
 											<td><c:out value="${user.place}"/></td>
-											<td></td>
 											<td>
-												<button:linkButton onclick="alert('Not implemented yet')" href="#" image="${resdir}/image/starblue_selected.png">
+												<select id="fbUserSelect${rowCounter.count}" onchange="alert(this[this.selectedIndex].value)" name="BibSonomy User" size="1" style="width: 15em;">
+													<c:forEach var="bibUser" items="${command.userMapping[user.realname]}">
+														<c:if test="${not empty bibUser.name}">
+															<option value="${fn:escapeXml(bibUser.name)}"><c:out value="${bibUser.realname}"/></option>
+														</c:if>
+													</c:forEach>
+												</select>
+											</td>
+											<td>
+												<button:linkButton onclick="alert(document.getElementById('fbUserSelect${rowCounter.count}')[document.getElementById('fbUserSelect${rowCounter.count}').selectedIndex].value)" href="#" image="${resdir}/image/starblue_selected.png">
 													<jsp:attribute name="text">
 														Friend
 													</jsp:attribute>
@@ -122,7 +134,7 @@
 						</div>
 					</c:otherwise>
 				</c:choose>
-				
+
 			</div>
       	</jsp:attribute>
       	

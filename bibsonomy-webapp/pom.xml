@@ -257,6 +257,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-entityresolver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-bibtex-parser</artifactId>
 		</dependency>
 		<dependency>
