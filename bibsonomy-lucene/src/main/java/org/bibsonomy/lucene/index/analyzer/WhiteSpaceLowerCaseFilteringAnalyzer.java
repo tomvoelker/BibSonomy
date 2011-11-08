@@ -11,6 +11,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.WhitespaceTokenizer;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.util.Version;
 
 /**
  * analyzer for normalizing diacritics (e.g. &auml; to a)
@@ -22,7 +23,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
  * @version $Id$
  *
  */
-public class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
+public final class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
 	/** set of stop words to filter out of queries */
 	private Set<String> stopSet;
 	
@@ -42,7 +43,7 @@ public class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
 	 */
 	@Override
 	public TokenStream tokenStream(final String fieldName, final Reader reader) { 
-		return new LowerCaseFilter(new WhitespaceTokenizer(reader));
+		return new LowerCaseFilter(Version.LUCENE_30, new WhitespaceTokenizer(Version.LUCENE_30, reader));
 	}
 
 	/**

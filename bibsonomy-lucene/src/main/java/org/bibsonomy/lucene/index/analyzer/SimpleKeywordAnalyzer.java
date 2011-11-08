@@ -10,7 +10,7 @@ import org.apache.lucene.analysis.TokenStream;
  * @author fei
  * @version $Id$
  */
-public class SimpleKeywordAnalyzer extends Analyzer {
+public final class SimpleKeywordAnalyzer extends Analyzer {
 
 	@Override
 	public TokenStream tokenStream (String fieldName, Reader reader) {

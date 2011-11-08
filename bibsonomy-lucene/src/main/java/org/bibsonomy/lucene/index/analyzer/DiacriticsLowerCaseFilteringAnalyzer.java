@@ -22,7 +22,7 @@ import org.apache.lucene.util.Version;
  * @author fei
  * @version $Id$
  */
-public class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
+public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
 	/** set of stop words to filter out of queries */
 	private Set<String> stopSet;
 	

@@ -19,7 +19,7 @@ import org.bibsonomy.lucene.util.LuceneBase;
  * @author fei
  * @version $Id$
  */
-public class SpringPerFieldAnalyzerWrapper extends Analyzer {	
+public final class SpringPerFieldAnalyzerWrapper extends Analyzer {	
 	/** map configuring the index */
 	private Map<String,Map<String,Object>> propertyMap;
 
