@@ -40,6 +40,11 @@ public class ContextPathFilter implements Filter {
      *
      */
     protected static final class ContextPathFreeRequest extends HttpServletRequestWrapper {
+    	
+    	// these tree variables can be removed when getHeader has been removed (dbe)
+		private static final String AUTH_HEADER = "authorization";
+		private static final String USER_AGENT_HEADER = "user-agent";
+		private static final Pattern TYPO3_USER_AGENT_REGEX = Pattern.compile("HTTP_Request2\\/0\\.5\\.1");
 
 		public ContextPathFreeRequest(HttpServletRequest request) {
 			super(request);
@@ -97,16 +102,9 @@ public class ContextPathFilter implements Filter {
 		@Override
 		public String getHeader(final String name) {
 			/*
-			 * define constants 
-			 */
-			final String authHeader 		  = "authorization";
-			final String userAgentHeader	  = "user-agent";
-			final Pattern typo3UserAgentRegex = Pattern.compile("HTTP_Request2\\/0\\.5\\.1");
-			
-			/*
 			 * when asking for another header than authHeader, use the original request
 			 */
-			if (! (authHeader.equalsIgnoreCase(name)) ) {
+			if (! (AUTH_HEADER.equalsIgnoreCase(name)) ) {
 				return super.getHeader(name);
 			}
 			
@@ -117,8 +115,8 @@ public class ContextPathFilter implements Filter {
 			 * header by returning null
 			 */
 			try {
-				final String userAgent = super.getHeader(userAgentHeader);
-				final Matcher m = typo3UserAgentRegex.matcher(userAgent);
+				final String userAgent = super.getHeader(USER_AGENT_HEADER);
+				final Matcher m = TYPO3_USER_AGENT_REGEX.matcher(userAgent);
 				if (m.find()) {
 					return null;
 				}
@@ -126,7 +124,7 @@ public class ContextPathFilter implements Filter {
 			catch (NullPointerException npe) {
 				// ignore silently; could happen if e.g. no user-agent header is present
 			}			
-			return super.getHeader(authHeader);
+			return super.getHeader(AUTH_HEADER);
 		}
 				
     }
