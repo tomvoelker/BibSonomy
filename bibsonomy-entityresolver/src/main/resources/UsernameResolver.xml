@@ -1,0 +1,48 @@
+<duke>
+	<schema>
+		<threshold>0.82</threshold>
+		<maybe-threshold>0.80</maybe-threshold>
+
+		<property type="id">
+			<name>user_name</name>
+		</property>
+		
+		<property>
+			<name>user_realname</name>
+			<!-- 
+			<comparator>no.priv.garshol.duke.comparators.JaroWinklerTokenized</comparator>
+			 -->
+			<comparator>no.priv.garshol.duke.comparators.PersonNameComparator</comparator>
+			<low>0.1</low>
+			<high>1</high>
+		</property>
+		
+		<property> 
+			<name>place</name>
+			<comparator>no.priv.garshol.duke.comparators.Levenshtein</comparator>
+			<low>0.05</low> 
+			<high>0.5</high>
+		</property>
+		<property> 
+			<name>user_homepage</name>
+			<comparator>no.priv.garshol.duke.comparators.ExactComparator</comparator>
+			<low>0.6</low>
+			<high>0.99</high>
+		</property>
+	</schema>
+
+	<jndi>
+		<param name="jndi-path" value="java:comp/env/jdbc/bibsonomy_entities" />
+		<param name="query" value="SELECT u.user_name, u.user_realname, u.place, u.user_homepage FROM user u WHERE u.spammer=0 AND u.user_name != 'dblp'" />
+		<!-- 
+		<param name="query" value="SELECT u.user_name, u.user_realname, u.place, u.user_homepage FROM user u JOIN tas t USING(user_name) WHERE u.spammer=0 AND t.group = 0 AND u.user_name != 'dblp' GROUP BY u.user_name" />
+		-->
+
+		<column name="user_name" property="user_name" />
+		<column name="user_realname" property="user_realname" />
+		<column name="user_homepage" property="user_homepage" />
+		<column name="place" property="place" />
+	</jndi>
+
+</duke>
+
