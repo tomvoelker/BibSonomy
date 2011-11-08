@@ -220,7 +220,6 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-client</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
