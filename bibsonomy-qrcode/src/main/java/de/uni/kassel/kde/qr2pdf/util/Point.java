@@ -37,4 +37,9 @@ public class Point {
 		this.size = size;
 	}
 	
+	public String toString()
+	{
+		return "This point: " + this.getX() + "/" + this.getY() + "\tSize: " + this.getSize();
+	}
+	
 }
