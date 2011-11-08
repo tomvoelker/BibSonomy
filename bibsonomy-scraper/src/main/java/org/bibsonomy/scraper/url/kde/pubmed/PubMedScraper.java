@@ -65,9 +65,6 @@ public class PubMedScraper extends AbstractUrlScraper {
 			throws ScrapingException {
 		String bibtexresult = null;
 		sc.setScraper(this);
-
-		Pattern pa = Pattern.compile("meta name=\"citation_pmid\" content=\"(\\d+)\"");
-		Matcher ma = pa.matcher(sc.getPageContent());
 	
 		// save the original URL
 		String _origUrl = sc.getUrl().toString();
@@ -75,8 +72,8 @@ public class PubMedScraper extends AbstractUrlScraper {
 		try {
 			if (_origUrl.matches("(?im)^.+db=PubMed.+$")) {
 				// try to get the PMID out of the parameters
-				pa = Pattern.compile("\\d+");
-				ma = pa.matcher(sc.getUrl().getQuery());
+				Pattern pa = Pattern.compile("\\d+");
+				Matcher ma = pa.matcher(sc.getUrl().getQuery());
 
 				// if the PMID is existent then get the bibtex from hubmed
 				if (ma.find()) {
@@ -89,8 +86,8 @@ public class PubMedScraper extends AbstractUrlScraper {
 				// avoid crashes
 			} else if (sc.getPageContent().matches("(?ims)^.+PMID: (\\d*) .+$")) {
 				// try to get the PMID out of the parameters
-				pa = Pattern.compile("(?ms)^.+PMID: (\\d*) .+$");
-				ma = pa.matcher(sc.getPageContent());
+				Pattern pa = Pattern.compile("(?ms)^.+PMID: (\\d*) .+$");
+				Matcher ma = pa.matcher(sc.getPageContent());
 
 				// if the PMID is existent then get the bibtex from hubmed
 				if (ma.find()) {
@@ -98,15 +95,21 @@ public class PubMedScraper extends AbstractUrlScraper {
 							+ ma.group(1);
 					bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
 				}
-			} else if (ma.find()) {
-				String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group(1);
-				bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
+			} else {
+
+				Pattern pa = Pattern.compile("meta name=\"citation_pmid\" content=\"(\\d+)\"");
+				Matcher ma = pa.matcher(sc.getPageContent());
+
+				if (ma.find()) {
+					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group(1);
+					bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
+				}
 			}
 			
 
 			// replace the humbed url through the original URL
-			pa = Pattern.compile("url = \".*\"");
-			ma = pa.matcher(bibtexresult);
+			Pattern pa = Pattern.compile("url = \".*\"");
+			Matcher ma = pa.matcher(bibtexresult);
 
 			if (ma.find()) {
 				// escape dollar signs 
