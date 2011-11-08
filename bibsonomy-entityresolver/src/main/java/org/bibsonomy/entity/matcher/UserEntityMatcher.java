@@ -20,12 +20,12 @@ public class UserEntityMatcher extends AbstractMatchListener {
 	 */
 	public class UserMatch implements Comparable<UserMatch> {
 		private String id;
-		private String name;
+		private Record obj;
 		private double confidence;
 		
-		public UserMatch(String id, String name, double confidence) {
+		public UserMatch(String id, Record obj, double confidence) {
 			this.id = id;
-			this.setName(name);
+			this.obj = obj;
 			this.confidence = confidence;
 		}
 
@@ -45,6 +45,20 @@ public class UserEntityMatcher extends AbstractMatchListener {
 			return this.id.compareToIgnoreCase(o.id);
 		}
 		
+		/**
+		 * gets property from stored object
+		 *  
+		 * @param key name of the property
+		 * @return the property value, if exists - null otherwise
+		 */
+		public String getProperty(String key) {
+			if (obj!=null) {
+				return obj.getValue(key);
+			} else {
+				return null;
+			}
+		}
+		
 		public void setId(String id) {
 			this.id = id;
 		}
@@ -58,12 +72,12 @@ public class UserEntityMatcher extends AbstractMatchListener {
 			return confidence;
 		}
 
-		public void setName(String name) {
-			this.name = name;
+		public void setObj(Record obj) {
+			this.obj = obj;
 		}
 
-		public String getName() {
-			return name;
+		public Record getObj() {
+			return obj;
 		}
 
 	}
@@ -111,7 +125,7 @@ public class UserEntityMatcher extends AbstractMatchListener {
 		}
 		
 		// store back matching
-		matching.add(new UserMatch(bibID, r2.getValue("user_name"), confidence));
+		matching.add(new UserMatch(bibID, r2, confidence));
 	}
 
 	public void setMatching(Map<String, SortedSet<UserMatch>> backend) {
