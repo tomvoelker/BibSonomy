@@ -1,6 +1,8 @@
 package org.bibsonomy.webapp.filters;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -83,6 +85,50 @@ public class ContextPathFilter implements Filter {
 			final int indexOf = url.indexOf(contextPath);
 			return url.substring(0, indexOf) + url.substring(indexOf + contextPath.length());
 		}
+		
+		/**
+		 * This is a TEMPORARY fix to disable HTTP basic authorization from requests which stem
+		 * from the Typo3-plugin (which uses PEARs HTTP client, see 
+		 * http://pear.php.net/package/HTTP_Request2/docs/latest/HTTP_Request2/HTTP_Request2.html).
+		 * 
+		 * Please REMOVE as soon as the Typo3 plugin has been updated.
+		 *   dbe, 2011-11-08
+		 */
+		@Override
+		public String getHeader(final String name) {
+			/*
+			 * define constants 
+			 */
+			final String authHeader 		  = "authorization";
+			final String userAgentHeader	  = "user-agent";
+			final Pattern typo3UserAgentRegex = Pattern.compile("HTTP_Request2\\/0\\.5\\.1");
+			
+			/*
+			 * when asking for another header than authHeader, use the original request
+			 */
+			if (! (authHeader.equalsIgnoreCase(name)) ) {
+				return super.getHeader(name);
+			}
+			
+			/*
+			 * this means we have getHeader("authorization").
+			 * 
+			 * check if the request comes from the typo3 plugin. if yes, "remove" the authorization
+			 * header by returning null
+			 */
+			try {
+				final String userAgent = super.getHeader(userAgentHeader);
+				final Matcher m = typo3UserAgentRegex.matcher(userAgent);
+				if (m.find()) {
+					return null;
+				}
+			}
+			catch (NullPointerException npe) {
+				// ignore silently; could happen if e.g. no user-agent header is present
+			}			
+			return super.getHeader(authHeader);
+		}
+				
     }
 	
     /**
