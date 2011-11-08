@@ -84,9 +84,9 @@ public class PubMedScraper extends AbstractUrlScraper {
 
 				// try to scrape with new URL-Pattern
 				// avoid crashes
-			} else if (sc.getPageContent().matches("(?ims)^.+PMID: (\\d*) .+$")) {
+			} else {
 				// try to get the PMID out of the parameters
-				Pattern pa = Pattern.compile("(?ms)^.+PMID: (\\d*) .+$");
+				Pattern pa = Pattern.compile("(?ims)^.+PMID: (\\d*) .+$");
 				Matcher ma = pa.matcher(sc.getPageContent());
 
 				// if the PMID is existent then get the bibtex from hubmed
@@ -94,15 +94,15 @@ public class PubMedScraper extends AbstractUrlScraper {
 					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids="
 							+ ma.group(1);
 					bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
-				}
-			} else {
-
-				Pattern pa = Pattern.compile("meta name=\"citation_pmid\" content=\"(\\d+)\"");
-				Matcher ma = pa.matcher(sc.getPageContent());
-
-				if (ma.find()) {
-					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group(1);
-					bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
+				} else {
+	
+					Pattern pa1 = Pattern.compile("meta name=\"citation_pmid\" content=\"(\\d+)\"");
+					Matcher ma1 = pa1.matcher(sc.getPageContent());
+	
+					if (ma1.find()) {
+						String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma1.group(1);
+						bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
+					}
 				}
 			}
 			
