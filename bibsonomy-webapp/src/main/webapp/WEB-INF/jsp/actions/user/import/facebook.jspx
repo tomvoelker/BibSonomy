@@ -70,7 +70,10 @@
 			</style>
 			
 			<script type="text/javascript">
-				var userSelect = new Object();
+				function getUserSelection(id) {
+					var selector = document.getElementById('fbUserSelect'+id);
+					return (selector[selector.selectedIndex].value);
+				}
 			</script>
 		
 			<div id="general">
@@ -121,7 +124,8 @@
 												</select>
 											</td>
 											<td>
-												<button:linkButton onclick="alert(document.getElementById('fbUserSelect${rowCounter.count}')[document.getElementById('fbUserSelect${rowCounter.count}').selectedIndex].value)" href="#" image="${resdir}/image/starblue_selected.png">
+												<!-- document.getElementById('fbUserSelect${rowCounter.count}')[document.getElementById('fbUserSelect${rowCounter.count}').selectedIndex].value)) -->
+												<button:linkButton onclick="alert(getUserSelection('${rowCounter.count}'))" href="#" image="${resdir}/image/starblue_selected.png">
 													<jsp:attribute name="text">
 														Friend
 													</jsp:attribute>
