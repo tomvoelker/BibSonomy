@@ -17,7 +17,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class ITextParser {
 
-	public static void manipulatePDF(String fileName) throws IOException, DocumentException, WriterException
+	public static void manipulatePDF(String fileName, int number, MyLogger logger) throws IOException, DocumentException, WriterException
 	{//587/25
 		
 		long currentMillis = System.currentTimeMillis();
@@ -27,7 +27,7 @@ public class ITextParser {
 		
 		Document doc = new Document(PageSize.A4);
 		
-		PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("/home/philipp/Dokumente/pdftest/out/itext.pdf"));
+		PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("/home/philipp/Dokumente/pdftest/out/itext" + String.valueOf(number) + ".pdf"));
 		
 		doc.open();
 		
@@ -58,7 +58,9 @@ public class ITextParser {
 		
 		currentMillis = System.currentTimeMillis() - currentMillis;
 		
-		System.out.println("Zeit ITextPDF: " + currentMillis/1000.0 + "s");
+		logger.getOut().println("Zeit ITextPDF: " + currentMillis/1000.0 + "s");
+		logger.getOut().println();
+		logger.getOut().println();
 		
 	}
 }

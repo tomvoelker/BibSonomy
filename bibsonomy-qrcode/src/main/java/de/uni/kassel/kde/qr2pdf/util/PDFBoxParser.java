@@ -23,7 +23,7 @@ public class PDFBoxParser {
 	long qrcodetime = 0;
 	long pdfmaniptime = 0;
 	
-	public PDDocument parse(String fileName) throws IOException									 
+	public PDDocument parse(String fileName, MyLogger logger) throws IOException									 
 	{
 		PDDocument doc = null;
 		
@@ -35,12 +35,12 @@ public class PDFBoxParser {
 			
 		loadTime = System.currentTimeMillis() - loadTime;
 			
-		System.out.println("Load time: " + loadTime/1000.0 + "s");
+		logger.getOut().println("Load time: " + loadTime/1000.0 + "s");
 		
 		return doc;
 	}
 	
-	public void manipulatePDF(PDDocument doc) throws IOException, WriterException, COSVisitorException
+	public void manipulatePDF(PDDocument doc, int number, MyLogger logger) throws IOException, WriterException, COSVisitorException
 	{
 		try
 		{
@@ -52,15 +52,15 @@ public class PDFBoxParser {
 			
 			convertTime = System.currentTimeMillis() - convertTime;
 			
-			System.out.println("Convert time: " + convertTime/1000.0 + "s");
+			logger.getOut().println("Convert time: " + convertTime/1000.0 + "s");
 			
 			bestPointTime = System.currentTimeMillis();
 			
 			Point bestPoint = SquareFinder.getFreeSquare(convertToImage, SquareFinder.WHITE, 50, 100);
 			
 			bestPointTime = System.currentTimeMillis() - bestPointTime;
-			System.out.println(bestPoint.toString());
-			System.out.println("Find best Point time: " + bestPointTime/1000.0 + "s");
+			logger.getOut().println(bestPoint.toString());
+			logger.getOut().println("Find best Point time: " + bestPointTime/1000.0 + "s");
 			
 			int size = bestPoint.getSize()/2;
 			
@@ -73,7 +73,7 @@ public class PDFBoxParser {
 		    
 		    qrcodetime = System.currentTimeMillis() - qrcodetime;
 			
-		    System.out.println("QR-Code write time: " + qrcodetime/1000.0 + "s");
+		    logger.getOut().println("QR-Code write time: " + qrcodetime/1000.0 + "s");
 		    
 		    pdfmaniptime = System.currentTimeMillis();
 		    
@@ -87,11 +87,11 @@ public class PDFBoxParser {
 			contentStream.drawImage( ximage, (float)posx, (float)posy);
 					 				 	
 		 	contentStream.close();
-		 	doc.save( "/home/philipp/Dokumente/pdftest/out/pdfbox.pdf" );
+		 	doc.save( "/home/philipp/Dokumente/pdftest/out/pdfbox" + String.valueOf(number) + ".pdf" );
 		 	
 		 	pdfmaniptime = System.currentTimeMillis() - pdfmaniptime;
 		
-		 	System.out.println("PDF manipulate and save time: " + pdfmaniptime/1000.0 + "s");
+		 	logger.getOut().println("PDF manipulate and save time: " + pdfmaniptime/1000.0 + "s");
 		}
 		
 		finally
@@ -99,9 +99,11 @@ public class PDFBoxParser {
 			if(doc != null)
 			{
 				doc.close();
-				System.out.println("Total Time: " + loadTime/1000.0 + "s + " + convertTime/1000.0 + "s + " + bestPointTime/1000.0 + "s + "
+				logger.getOut().println("Total Time: " + loadTime/1000.0 + "s + " + convertTime/1000.0 + "s + " + bestPointTime/1000.0 + "s + "
 						+ qrcodetime/1000.0 + "s + " + pdfmaniptime/1000.0 + "s = "
 						+ (loadTime + convertTime + bestPointTime + qrcodetime + pdfmaniptime)/1000.0 + "s" );
+				logger.getOut().println();
+				logger.getOut().println();
 			}
 		}
 	}
