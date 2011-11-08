@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -154,8 +152,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		// read block wise all posts
 		List<LucenePost<R>> postList = null;
 		int skip = 0;
-		// track content_ids for duplicate detection
-		final Map<Integer, Integer> dupMap = new HashMap<Integer, Integer>();
 		int lastContenId = -1;
 		int postListSize = 0;
 		do {
@@ -166,13 +162,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 
 			// cycle through all posts of currently read block
 			for (final LucenePost<R> postEntry : postList) {
-				// look for duplicates
-				final Integer contentId = postEntry.getContentId();
-				if (dupMap.containsKey(contentId)) {
-					log.error("Found duplicate for content id '" + contentId + "' at '" + skip + "' (was '" + dupMap.get(contentId) + "')");
-				} else {
-					dupMap.put(contentId, skip);
-				}
 				// update management fields
 				postEntry.setLastLogDate(lastLogDate);
 				postEntry.setLastTasId(lastTasId);
