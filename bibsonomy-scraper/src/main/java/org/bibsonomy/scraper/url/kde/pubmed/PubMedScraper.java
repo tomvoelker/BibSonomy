@@ -86,7 +86,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 				// avoid crashes
 			} else {
 				// try to get the PMID out of the parameters
-				Pattern pa = Pattern.compile("PMID\\:\\D*?(\\d+)");
+				Pattern pa = Pattern.compile("PMID\\:\\D*(\\d+)");
 				Matcher ma = pa.matcher(sc.getPageContent());
 
 				// if the PMID is existent then get the bibtex from hubmed
