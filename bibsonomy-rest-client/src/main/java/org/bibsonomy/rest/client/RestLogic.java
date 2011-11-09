@@ -590,7 +590,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<SyncService> getSyncServer(final String userName) {
+	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -623,4 +623,5 @@ public class RestLogic implements LogicInterface {
 	public List<SyncService> getAllSyncServices(final boolean server) {
 		throw new UnsupportedOperationException();
 	}
+
 }
