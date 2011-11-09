@@ -22,6 +22,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
+import org.bibsonomy.testutil.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
