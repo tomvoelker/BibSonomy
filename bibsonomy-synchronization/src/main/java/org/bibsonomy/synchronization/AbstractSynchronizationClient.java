@@ -6,9 +6,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
@@ -51,12 +51,11 @@ public abstract class AbstractSynchronizationClient {
 	 * @return syncService
 	 */
 	public SyncService getServerByURI(final LogicInterface clientLogic, final URI service) {
-		final List<SyncService> syncServers = clientLogic.getSyncServer(clientLogic.getAuthenticatedUser().getName());
-		
-		for (final SyncService syncService : syncServers) {
-			if (service.equals(syncService.getService())) {
-				return syncService;
-			}
+		final List<SyncService> syncServers = clientLogic.getSyncService(clientLogic.getAuthenticatedUser().getName(), service, true);
+
+		// return the first found service (there should be at most one with the given URI! 
+		if (syncServers.size() >= 1) {
+			return syncServers.get(0);
 		}
 		return null;
 	}
