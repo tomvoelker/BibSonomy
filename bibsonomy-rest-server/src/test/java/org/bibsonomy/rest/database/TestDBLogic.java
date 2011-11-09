@@ -1054,7 +1054,7 @@ public class TestDBLogic implements LogicInterface {
 
 
 	@Override
-	public List<SyncService> getSyncServer(final String userName) {
+	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}
