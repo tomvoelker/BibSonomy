@@ -93,6 +93,15 @@
 						<img src="${properties['project.home']}/resources/opensocial/image/status_error.png"/> <br/>
 						<c:out value="${command.errorMessage}" />
 					</c:when>
+
+      				<c:when test="${command.adminAction != null}">
+      					Successfully performed administrative action '<c:out value="${command.adminAction}"/>'.
+					</c:when>
+
+      				<c:when test="${command.socialAction != null}">
+      					Successfully performed social action '<c:out value="${command.socialAction}"/>'.<br/>
+      					See your message at <a href="http://www.facebook.com/profile.php?id=${command.requestedUser}">facebook</a>.
+					</c:when>
 					
 					<c:otherwise>
 						<div class="friendsList" style="margin: 10px;">
@@ -105,6 +114,7 @@
 										<th>Birthday</th>
 										<th>Hometown</th>
 										<th>BibSonomy User</th>
+										<th><!-- keep me --></th>
 										<th style="width: 5em;"><!-- keep me --></th>
 									</tr>
 									<c:forEach var="user" items="${command.friends}" varStatus="rowCounter">
@@ -123,6 +133,7 @@
 													</c:forEach>
 												</select>
 											</td>
+											<td><a href="${properties['project.home']}import/facebook?socialAction=SEND_INVITATION&amp;accessToken=${command.accessToken}&amp;requestedUser=${user.apiKey}" title="send invitation"><img src="${properties['project.home']}resources/image/fb_invite.png"><!-- keep me --></img></a></td>
 											<td>
 												<!-- document.getElementById('fbUserSelect${rowCounter.count}')[document.getElementById('fbUserSelect${rowCounter.count}').selectedIndex].value)) -->
 												<button:linkButton onclick="alert(getUserSelection('${rowCounter.count}'))" href="#" image="${resdir}/image/starblue_selected.png">
