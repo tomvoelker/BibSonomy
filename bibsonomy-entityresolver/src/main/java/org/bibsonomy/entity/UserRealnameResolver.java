@@ -67,7 +67,7 @@ public class UserRealnameResolver {
 		try {
 			final Processor proc = new Processor(config, this.userIndex);
 			proc.close();
-			proc.buildIndex(config.getDataSources(), INDEX_BLOCK_SIZE);
+			proc.index(config.getDataSources(), INDEX_BLOCK_SIZE);
 		} catch (CorruptIndexException e) {
 			log.error("Corrupt duke index.", e);
 		} catch (IOException e) {
@@ -102,7 +102,7 @@ public class UserRealnameResolver {
 			UserDataSource newEntries = new UserDataSource(others);
 			Collection<DataSource> linkGroup = new ArrayList<DataSource>();
 			linkGroup.add(newEntries);
-			proc.linkRecords(linkGroup, false);
+			proc.linkRecords(linkGroup);
 		} catch (CorruptIndexException e) {
 			log.error("Corrupt duke index.", e);
 		} catch (IOException e) {
