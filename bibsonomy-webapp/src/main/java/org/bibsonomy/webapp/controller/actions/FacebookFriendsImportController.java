@@ -56,7 +56,7 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	private final static String CALL_BACK = "import/facebook";
 	private final static String FB_OAUTH_REQUEST_URL = "https://www.facebook.com/dialog/oauth";
 	private final static String FB_OAUTH_ACCESSS_URL = "https://graph.facebook.com/oauth/access_token";
-	private final static String FB_OAUTH_SCOPE= "user_about_me,user_birthday,user_website,user_hometown,user_interests,email,friends_interests,friends_about_me,friends_interests,friends_website,friends_birthday,friends_hometown";
+	private final static String FB_OAUTH_SCOPE= "publish_stream,user_about_me,user_birthday,user_website,user_hometown,user_interests,email,friends_interests,friends_about_me,friends_interests,friends_website,friends_birthday,friends_hometown";
 	private static final String OAUTH_ACCESS_TOKEN = "access_token";
 	private static final String OAUTH_ERROR_TYPE = "type";
 	private static final String OAUTH_ERROR_MESSAGE = "message";
@@ -94,6 +94,8 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 		//
 		if (present(command.getAdminAction())) {
 			return this.performAdminAction(command, context);
+		} else if (present(command.getSocialAction())) {
+			return this.performSocialAction(command, context);
 		}
 
 		//
@@ -171,7 +173,6 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	 * @return
 	 */
 	private Collection<User> importFacebookFriends(FacebookAccessCommand command, User loginUser) {
-		
 		FacebookFriendsImporter friendsImporter = new FacebookFriendsImporter();
 		UserAdapter<com.restfb.types.User> userAdapter = friendsImporter.getUserAdapter();
 		
@@ -241,6 +242,21 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 		
 		return accessToken;
     }
+
+    /**
+     * performs social interaction with the facebook api
+     * 
+     * @param command
+     * @param context
+     * @return
+     */
+	private View performSocialAction(FacebookAccessCommand command, RequestWrapperContext context) {
+		FacebookFriendsImporter friendsImporter = new FacebookFriendsImporter();
+		String bibUser = (present(context.getLoginUser().getRealname()))?context.getLoginUser().getRealname():context.getLoginUser().getName();
+		String postId = friendsImporter.sendFacebookMessage(command.getRequestedUser(), context.getLoginUser(), bibUser + " invides you to join the blue social bookmark and publication sharing system BibSonomy.", command.getAccessToken());
+		command.setMessageKey(postId);
+		return Views.FACEBOOK_IMPORT;
+	}
 
     /**
      * perform administrative tasks like building the user index
