@@ -449,15 +449,16 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServerForUser(java.lang.String)
 	 */
 	@Override
-	public List<SyncService> getSyncServer(final String userName) {
+	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			return syncDBManager.getSyncServersForUser(userName, session);
+			return syncDBManager.getSyncServersForUser(userName, service, server, session);
 		} finally {
 			session.close();
 		}
 	}
+	
 	
 	/*
 	 * (non-Javadoc)
