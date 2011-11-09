@@ -22,7 +22,6 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
-import org.bibsonomy.testutil.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -64,7 +63,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 
 		syncDBManager.createSyncServerForUser(syncUser1, testURI, Bookmark.class, credentialsSyncUser1, SynchronizationDirection.SERVER_TO_CLIENT, ConflictResolutionStrategy.SERVER_WINS, dbSession);
 
-		List<SyncService> services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
+		List<SyncService> services = syncDBManager.getSyncServersForUser(syncUser1, null, true, dbSession);
 		assertTrue(services.contains(service));
 		assertEquals(1, services.size());
 		final SyncService syncService = services.get(0);
@@ -78,7 +77,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		service.setServerUser(credentialsSyncUser2);
 		syncDBManager.updateSyncServerForUser(syncUser1, testURI, BibTex.class, credentialsSyncUser2, SynchronizationDirection.SERVER_TO_CLIENT, ConflictResolutionStrategy.LAST_WINS, dbSession);
 		
-		services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
+		services = syncDBManager.getSyncServersForUser(syncUser1, null, true, dbSession);
 		assertTrue(services.contains(service));
 		assertEquals(1, services.size());
 		final SyncService syncService2 = services.get(0);
@@ -86,7 +85,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		assertEquals(SynchronizationDirection.SERVER_TO_CLIENT, syncService2.getDirection());
 		
 		syncDBManager.deleteSyncServerForUser(syncUser1, testURI, dbSession);
-		services = syncDBManager.getSyncServersForUser(syncUser1, dbSession);
+		services = syncDBManager.getSyncServersForUser(syncUser1, null, true, dbSession);
 		assertFalse(services.contains(service));
 		assertEquals(0, services.size());
 	}
