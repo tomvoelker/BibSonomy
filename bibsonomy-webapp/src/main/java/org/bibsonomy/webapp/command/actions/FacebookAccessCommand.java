@@ -46,6 +46,17 @@ public class FacebookAccessCommand extends OAuthAccessCommand {
 		BUILD_INDEX
 	}
 
+	/**
+	 * social actions for the facebook importer
+	 * @author fei
+	 */
+	public enum FacebookSocialAction {
+		/**
+		 * send invitation to the requested user 
+		 */
+		SEND_INVITATION
+	}
+	
 	/** facebook's error code */
 	private FacebookError error;
 	/** facebook's error reason */
@@ -56,7 +67,8 @@ public class FacebookAccessCommand extends OAuthAccessCommand {
 	private String code;
 	/** administrative actions like building the resolver index */
 	private FacebookAdminAction adminAction;
-	
+	/** social interaction, e.g. send invitation */
+	private FacebookSocialAction socialAction;
 	
 	/** list of imported friends */
 	private Collection<User> friends;
@@ -163,5 +175,19 @@ public class FacebookAccessCommand extends OAuthAccessCommand {
 	 */
 	public FacebookAdminAction getAdminAction() {
 		return adminAction;
+	}
+
+	/**
+	 * @param socialAction
+	 */
+	public void setSocialAction(FacebookSocialAction socialAction) {
+		this.socialAction = socialAction;
+	}
+
+	/**
+	 * @return requested social interaction command 
+	 */
+	public FacebookSocialAction getSocialAction() {
+		return socialAction;
 	}
 }

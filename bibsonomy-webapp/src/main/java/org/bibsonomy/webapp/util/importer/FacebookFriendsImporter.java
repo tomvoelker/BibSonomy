@@ -16,7 +16,9 @@ import com.restfb.DefaultFacebookClient;
 import com.restfb.DefaultJsonMapper;
 import com.restfb.FacebookClient;
 import com.restfb.JsonMapper;
+import com.restfb.Parameter;
 import com.restfb.json.JsonObject;
+import com.restfb.types.FacebookType;
 import com.restfb.types.User;
 
 /**
@@ -118,4 +120,18 @@ public class FacebookFriendsImporter extends AbstractFriendsImporter<User> {
 		return fbFriends;
 	}
 
+	/**
+	 * send a message to the requested user's feed
+	 * 
+	 * @param facbookUser the requested user's facebook id
+	 * @param message message string
+	 * @param oauthToken OAuth access token
+	 * @return published message's id
+	 */
+	public String sendFacebookMessage(String facbookUser, org.bibsonomy.model.User bibUser, String message, String oauthToken) {
+		// initialize facebook client
+		FacebookClient facebookClient = new DefaultFacebookClient(oauthToken);
+		FacebookType publishMessageResponse = facebookClient.publish(facbookUser+"/feed", FacebookType.class, Parameter.with("message", message), Parameter.with("link", "http://www.bibsonomy.org/user/"+bibUser.getName()));
+		return (publishMessageResponse.getId());
+	}
 }
