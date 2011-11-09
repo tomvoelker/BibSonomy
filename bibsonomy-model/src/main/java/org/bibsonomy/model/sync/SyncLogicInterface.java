@@ -106,20 +106,23 @@ public interface SyncLogicInterface {
 	/**
 	 * 
 	 * @param userName
+	 * @param service - if provided, the specified service only is returned. 
+	 * Otherwise, all services configured for the given user.
+	 * @param server - if <code>true</code>, sync servers are returned. Otherwise clients.
 	 * @return List of synchronization servers for given user 
 	 */
-	public List<SyncService> getSyncServer(final String userName);
+	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server);
+	
 	
 	/**
 	 * returns all on this system available server (or clients) on 
 	 * @param server
-	 * @return
+	 * @return A list of all available sync services.
 	 */
 	public List<SyncService> getAllSyncServices(final boolean server);
 	
-	
 	/* ********************************************************************
-	 * create, read, update, delete sync services - user dependent
+	 * get sync posts/plans, update delete, get sync data
 	 */
 	/**
 	 * 
