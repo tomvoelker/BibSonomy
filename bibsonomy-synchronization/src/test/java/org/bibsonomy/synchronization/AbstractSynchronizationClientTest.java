@@ -214,7 +214,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			/*
 			 * check that synchronization is enabled
 			 */
-			assertEquals(SYNC_SERVER_URI, clientLogic.getSyncServer(clientUser.getName()).get(0).getService().toString());
+			assertEquals(SYNC_SERVER_URI, clientLogic.getSyncService(clientUser.getName(), null, true).get(0).getService().toString());
 		}
 	}
 	
