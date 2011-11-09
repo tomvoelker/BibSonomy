@@ -52,6 +52,7 @@ import org.bibsonomy.scraper.url.kde.dlib.DLibScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
 import org.bibsonomy.scraper.url.kde.eric.EricScraper;
+import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
 import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper;
@@ -193,6 +194,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new JournalogyScraper());
 		addScraper(new InspireScraper());
 		addScraper(new TaylorAndFrancisScraper());
+		addScraper(new GoogleBooksScraper());
 	}
 
 }

@@ -1249,4 +1249,16 @@
 		<BibFile>PlosScraperUnitURLTest9.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_207">
+		<TestDescription>scraping test for Google Books</TestDescription>
+		<URL>http://books.google.com/books?id=OhstAAAAYAAJ&amp;source=gbs_slider_gbs_user_shelves_1040_homepage</URL>
+		<BibFile>GoogleBooksScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_208">
+		<TestDescription>scraping test for Google Books</TestDescription>
+		<URL>http://books.google.com/books?id=zZ3CAAAACAAJ&amp;dq=deutscher+dokumentartag+1991&amp;hl=en&amp;ei=g1m6Tr71KObY4QT4v_SWCA&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;resnum=1&amp;ved=0CCwQ6AEwAA</URL>
+		<BibFile>GoogleBooksScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper</Scraper>
+	</URLTest>
 </test:Tests>
