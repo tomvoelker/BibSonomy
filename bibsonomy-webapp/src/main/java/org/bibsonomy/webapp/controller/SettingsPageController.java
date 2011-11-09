@@ -16,7 +16,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
@@ -196,14 +195,12 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	private void workOnSyncSettingsTab(final SettingsViewCommand command) {
 
-		// TODO remove cast and use logic after adding SyncLogicInterface to LogicInterface
-		final SyncLogicInterface syncLogic = (SyncLogicInterface) logic;
 
-		final List<SyncService> userServers = syncLogic.getSyncServer(command.getUser().getName());
-		final List<URI> allServers = syncLogic.getSyncServices(true);
+		final List<SyncService> userServers = logic.getSyncService(command.getUser().getName(), null, true);
+		final List<URI> allServers = logic.getSyncServices(true);
 
 		/*
-		 * Remove all servers the user already has.
+		 * Remove all servers the user already has configured.
 		 */
 		for (final SyncService service : userServers) {
 			final URI serviceUri = service.getService();
@@ -213,7 +210,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 		command.setAvailableSyncServers(allServers);
 		command.setSyncServer(userServers);
-		command.setAvailableSyncClients(syncLogic.getSyncServices(false));
+		command.setAvailableSyncClients(logic.getSyncServices(false));
 	}
 
 	/**

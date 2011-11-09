@@ -81,7 +81,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 		}
 
 		log.debug("try to get sync services for user");
-		final List<SyncService> userServices = logic.getSyncServer(command.getContext().getLoginUser().getName());
+		final List<SyncService> userServices = logic.getSyncService(command.getContext().getLoginUser().getName(), null, true);
 
 		log.debug("try to get synchronization data from remote service");
 		for (final SyncService syncService : userServices) {
