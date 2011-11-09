@@ -1052,7 +1052,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public List<SyncService> getSyncServer(String userName) {
+	public List<SyncService> getSyncService(String userName, final URI service, final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}
