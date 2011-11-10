@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.pubmed;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
@@ -117,7 +119,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 			}
 
 			// -- bibtex string may not be empty
-			if (bibtexresult != null && !"".equals(bibtexresult)) {
+			if (present(bibtexresult)) {
 				sc.setBibtexResult(bibtexresult);
 				return true;
 			} else
