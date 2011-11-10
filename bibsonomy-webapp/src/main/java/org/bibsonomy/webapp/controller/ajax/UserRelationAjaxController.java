@@ -4,6 +4,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
@@ -25,6 +27,8 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class UserRelationAjaxController extends AjaxController implements MinimalisticController<UserRelationAjaxCommand>, ErrorAware {
+	private static final Log log = LogFactory.getLog(UserRelationAjaxController.class);
+	
 	private static final String ADD_FOLLOWER = "addFollower";
 
 	private static final String REMOVE_RELATION = "removeRelation";
@@ -68,18 +72,23 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 		//
 		// switch between add or remove and call the right method
 		//
-		if (ADD_FOLLOWER.equals(command.getAction()) && command.getRequestedUserName() != null) {
-			this.addFollower(command);
-		} else if (REMOVE_FOLLOWER.equals(command.getAction()) && command.getRequestedUserName() != null) {
-			this.removeFollower(command);
-		} else if (ADD_FRIEND.equals(command.getAction()) && command.getRequestedUserName() != null) {
-			this.addFriend(command);
-		} else if (REMOVE_FRIEND.equals(command.getAction()) && command.getRequestedUserName() != null) {
-			this.removeFriend(command);
-		} else if (ADD_RELATION.equals(command.getAction()) && command.getRequestedUserName() != null) {
-			this.addRelation(command);
-		} else if (REMOVE_RELATION.equals(command.getAction()) && command.getRequestedUserName() != null) {
-			this.removeRelation(command);
+		try {
+			if (ADD_FOLLOWER.equals(command.getAction()) && command.getRequestedUserName() != null) {
+				this.addFollower(command);
+			} else if (REMOVE_FOLLOWER.equals(command.getAction()) && command.getRequestedUserName() != null) {
+				this.removeFollower(command);
+			} else if (ADD_FRIEND.equals(command.getAction()) && command.getRequestedUserName() != null) {
+				this.addFriend(command);
+			} else if (REMOVE_FRIEND.equals(command.getAction()) && command.getRequestedUserName() != null) {
+				this.removeFriend(command);
+			} else if (ADD_RELATION.equals(command.getAction()) && command.getRequestedUserName() != null) {
+				this.addRelation(command);
+			} else if (REMOVE_RELATION.equals(command.getAction()) && command.getRequestedUserName() != null) {
+				this.removeRelation(command);
+			}
+		} catch (org.bibsonomy.common.exceptions.ValidationException e) {
+			log.error("Error establishing a connection for '"+command.getContext().getLoginUser().getName()+"' to user '"+command.getRequestedUserName()+"': " + e.getMessage());
+			this.errors.reject("error.user.relation.update");
 		}
 		
 		// return error messages in case of errors
