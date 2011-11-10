@@ -10,7 +10,6 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -176,12 +175,12 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 		
 		R firstResource = null;
 		/*
-		 * If list is empty, send a 404 error.
+		 * if gold standard not present and list is empty, send a 404 error.
 		 */
 		if (present(goldStandard)) {
 			firstResource = goldStandard.getResource();
 		} else {
-			final ListCommand<Post<R>> resourceList = command.getListCommand(this.getResourceClass());
+			final List<Post<R>> resourceList = command.getListCommand(this.getResourceClass()).getList();
 			if (!present(resourceList)) {
 				/*
 				 * We throw a ResourceNotFoundException such that we don't get empty
@@ -189,14 +188,8 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 				 */
 				throw new ResourceNotFoundException(shortHash);
 			}
-			firstResource = resourceList.getList().get(0).getResource();			
+			firstResource = resourceList.get(0).getResource();			
 		}
-		
-		/*
-		 * TODO: move to view
-		 * Set page title to title of first publication 
-		 */
-		command.setTitle(firstResource.getTitle());
 		
 		this.endTiming();		
 		return this.handleFormat(command, format, longHash, requUser, groupingEntity, goldHash, goldStandard, firstResource);
@@ -207,9 +200,6 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 			/*
 			 * Add additional data for HTML view, e.g., tags, other user's posts, ...
 			 */
-			// TODO: move i18n to view
-			// command.setPageTitle("publication :: " + command.getTitle());
-			
 			if (GroupingEntity.USER.equals(groupingEntity) || present(goldStandard)) {
 				/*
 				 * fetch posts of all users with the given hash, add users to related
@@ -227,10 +217,6 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 			 */
 			if (!present(goldStandard)) {
 				command.setDiscussionItems(this.logic.getDiscussionSpace(goldHash));
-			} else {
-				// TODO: call in logic?!
-				// TODO: adapt
-				// goldStandard.getResource().parseMiscField();
 			}
 
 			if (GroupingEntity.USER.equals(groupingEntity)) {
