@@ -28,7 +28,7 @@ public class GoogleBooksScraper extends AbstractUrlScraper {
 	private static final String HOST = "books.google.";
 	private static final String PATH = "/books";
 	
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a class=\"gb-button \" href=\\\"([^\\\"]*)\\\" dir=ltr>BiBTeX</a>");
+	private static final Pattern ID_PATTERN = Pattern.compile("id=(.*)&");
 	
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH + ".*")));
 	
@@ -36,16 +36,16 @@ public class GoogleBooksScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(final ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
 		try {
-			final String content = WebUtils.getContentAsString(sc.getUrl());
-			
-			// get download link
-			final Matcher downloadLinkMatcher = DOWNLOAD_LINK_PATTERN.matcher(content);
 			final String downloadLink;
-			if(downloadLinkMatcher.find())
-				downloadLink = downloadLinkMatcher.group(1);
-			else
-				throw new ScrapingFailureException("Download link is not available");
-
+			
+			// extract id from url
+			final Matcher idMatcher = ID_PATTERN.matcher(sc.getUrl().toString());
+			
+			if(idMatcher.find()) {
+				downloadLink = "http://" + sc.getUrl().getHost() + PATH + "/download/?id=" + idMatcher.group(1) + "&output=bibtex";
+			} else {
+				throw new ScrapingFailureException("id is not available");
+			}
 			// download bibtex
 			final String bibtex = WebUtils.getContentAsString(new URL(downloadLink));
 			if (bibtex != null) {
