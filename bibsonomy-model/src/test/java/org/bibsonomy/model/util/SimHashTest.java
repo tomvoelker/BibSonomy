@@ -119,6 +119,68 @@ public class SimHashTest {
 	}
 	
 	/**
+	 * We had a lot of posts with empty author AND editor fields. They caused
+	 * problems on several occasions (e.g., model checking in the API). Thus, we
+	 * wanted to enter author names that made (somehow) sense such that the fields
+	 * were not empty AND most importantly, the hashes did not change.
+	 * 
+	 * We decided to set the author field in the database to "?", since this does 
+	 * not change the hashes, as documented here.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testEmptyAuthor() throws Exception {
+		final BibTex pub = new BibTex();
+		pub.setTitle("A paper without author name");
+		pub.setYear("2011");
+		pub.setEntrytype("inbook");
+		pub.setBooktitle("Anonymous Publications");
+		pub.setJournal("");
+		pub.setVolume("42");
+		pub.setBibtexKey("key");
+		
+		pub.setNumber("3");
+		/*
+		 * old - really "empty" name in the database
+		 */
+		pub.setAuthor(PersonNameUtils.discoverPersonNames(""));
+		
+		final String simHash0Empty = SimHash.getSimHash0(pub);
+		final String simHash1Empty = SimHash.getSimHash1(pub);
+		final String simHash2Empty = SimHash.getSimHash2(pub);
+		
+		/*
+		 * "new" - not so empty name in the database
+		 */
+		final String emptyPersonName = "?";
+		pub.setAuthor(PersonNameUtils.discoverPersonNames(emptyPersonName));
+		
+		final String simHash0QM = SimHash.getSimHash0(pub);
+		final String simHash1QM = SimHash.getSimHash1(pub);
+		final String simHash2QM = SimHash.getSimHash2(pub);
+
+		/*
+		 * assert that hashes do not change
+		 */
+		assertEquals(simHash0Empty, simHash0QM);
+		assertEquals(simHash1Empty, simHash1QM);
+		assertEquals(simHash2Empty, simHash2QM);
+		/*
+		 * additionally ensure, that the name is correctly serialized back into
+		 * the database
+		 */
+		assertEquals(emptyPersonName, PersonNameUtils.serializePersonNames(pub.getAuthor()));
+		
+		/*
+		 * and last but not least: the ModelValidation utils must accept the name
+		 */
+		
+		ModelValidationUtils.checkPublication(pub);
+		
+	}
+	
+	/**
 	 * tests person normalization for simhash 1
 	 * @throws PersonListParserException 
 	 */
