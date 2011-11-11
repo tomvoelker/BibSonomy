@@ -55,7 +55,7 @@
 			<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.title"/>:</div>
 			<div class="lfval"><c:out value="${mtl:cleanBibtex(publication.title)}" /></div>
 
-			<c:if test="${post.resource.entrytype eq 'phdthesis'}" >
+			<c:if test="${post.resource.entrytype eq 'phdthesis' || post.resource.entrytype eq 'mastersthesis'}" >
 
 				<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.date.examination"/>:</div>
 				<div class="lfval"><c:out value="${command.additionalMetadata['post.resource.openaccess.additionalfields.phdoralexam'][0]}"></c:out></div>
@@ -81,8 +81,12 @@
 			<div class="signatureline">
 				<fmt:message key="post.resource.openaccess.license.signature"/>		
 			</div>
+<!--			<c:if test="${post.resource.entrytype eq 'phdthesis' || post.resource.entrytype eq 'mastersthesis'}" >-->
+<!--				<div class="signatureline">-->
+<!--					<fmt:message key="post.resource.openaccess.license.signaturephdreferee"/>		-->
+<!--				</div>-->
+<!--			</c:if>-->
 		</div>
-
 
 		<div id="license_print">
 			<button title="Drucken" onclick="javascript:window.print();"><fmt:message key="post.resource.openaccess.license.print"/></button>
