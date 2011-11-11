@@ -45,7 +45,7 @@
 				<div class="oadescription"><fmt:message key="post.resource.openaccess.additionalfields.description"/></div>
 				
 				<!-- if entrytype == phdthesis -->
-				<c:if test="${bibtex.entrytype=='phdthesis'}">
+				<c:if test="${bibtex.entrytype=='phdthesis' || bibtex.entrytype=='mastersthesis'}">
 					<div class="fsRow">
 						<label class="fsLabel" for="post.resource.openaccess.additionalfields.institution"><fmt:message key="post.resource.openaccess.additionalfields.institution"/>*</label>
 						<div class="help" style="">
@@ -161,7 +161,7 @@
 
 <!-- a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a> -->
 
-				
+				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
 				<c:if test="${((bibtex.entrytype=='article') and (!empty bibtex.journal)) or ((bibtex.entrytype!='article') and (!empty bibtex.publisher))}"> 
 				<div id="oasherparomeocontainer">
 					<h4><fmt:message key="post.resource.openaccess.sherparomeo.headline"/></h4>
@@ -193,6 +193,7 @@
 					</ul>
 					</div>
 				</div>
+				</c:if>
 				</c:if>
 			
 			<div id="authorcontract">
