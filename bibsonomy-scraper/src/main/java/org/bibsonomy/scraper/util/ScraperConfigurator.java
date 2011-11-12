@@ -23,7 +23,6 @@
 
 package org.bibsonomy.scraper.util;
 
-import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 
 /**
  * Configures (static) attributes of scrapers
@@ -42,16 +41,14 @@ import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 public class ScraperConfigurator {
 
 	public String getAmazonAccessKey() {
-		return AmazonScraper.getAmazonAccessKey();
+		return null;
 	}
 	public void setAmazonAccessKey(String amazonAccessKey) {
-		AmazonScraper.setAmazonAccessKey(amazonAccessKey);
 	}
 	public String getAmazonSecretKey() {
-		return AmazonScraper.getAmazonSecretKey();
+		return null;
 	}
 	public void setAmazonSecretKey(String amazonSecretKey) {
-		AmazonScraper.setAmazonSecretKey(amazonSecretKey);
 	}
 	
 }
