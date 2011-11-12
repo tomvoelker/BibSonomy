@@ -69,10 +69,6 @@ public class ISBNScraper implements Scraper {
 				try {
 					String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
 					
-					if (!present(bibtex)) {
-						bibtex = AmazonScraper.getBibtexByISBN(isbn);
-					}
-					
 					if (present(bibtex)) {
 						sc.setBibtexResult(bibtex);
 						sc.setScraper(this);
