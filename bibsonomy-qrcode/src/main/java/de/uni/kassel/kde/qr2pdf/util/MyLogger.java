@@ -10,7 +10,7 @@ public class MyLogger {
 	
 	public MyLogger() throws IOException
 	{
-		 this.out = new PrintWriter(new FileWriter("/home/philipp/Dokumente/pdftest/out/log"));
+		 this.out = new PrintWriter(new FileWriter("src/main/resources/log"));
 	}
 
 	public PrintWriter getOut() {

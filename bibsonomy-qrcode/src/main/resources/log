@@ -1,0 +1,328 @@
+----------------PDFBox----------------
+
+Load time: 0.155s
+Convert time: 0.863s
+This point: 862/49	Size: 50
+Find best Point time: 0.062s
+QR-Code write time: 0.039s
+PDF manipulate and save time: 0.134s
+Total Time: 0.155s + 0.863s + 0.062s + 0.039s + 0.134s = 1.253s
+
+----------------PDFBox----------------
+
+
+----------------IText----------------
+
+-----------------------------------------
+java.lang.IllegalArgumentException: PdfReader not opened with owner password
+	at com.itextpdf.text.pdf.PdfReaderInstance.getImportedPage(PdfReaderInstance.java:80)
+	at com.itextpdf.text.pdf.PdfWriter.getImportedPage(PdfWriter.java:2295)
+	at de.uni.kassel.kde.qr2pdf.util.ITextParser.manipulatePDF(ITextParser.java:43)
+	at de.uni.kassel.kde.qr2pdf.main.Main.main(Main.java:60)
+-----------------------------------------
+
+----------------IText----------------
+
+
+----------------PDFRenderer----------------
+
+PDF Read Time: 0.058s
+Convert Time: 5.656s
+Find Point Time: 0.043s
+Total Time: 0.058s + 5.656s + 0.043s = 5.757s
+
+----------------PDFRenderer----------------
+
+
+----------------PDFBox----------------
+
+Load time: 0.049s
+Convert time: 0.657s
+This point: 1140/49	Size: 50
+Find best Point time: 0.007s
+QR-Code write time: 0.007s
+PDF manipulate and save time: 0.127s
+Total Time: 0.049s + 0.657s + 0.007s + 0.007s + 0.127s = 0.847s
+
+----------------PDFBox----------------
+
+
+----------------IText----------------
+
+Zeit ITextPDF: 0.039s
+
+----------------IText----------------
+
+
+----------------PDFRenderer----------------
+
+-----------------------------------------
+com.sun.pdfview.PDFParseException: Expected 'xref' at start of table
+	at com.sun.pdfview.PDFFile.readTrailer(PDFFile.java:974)
+	at com.sun.pdfview.PDFFile.parseFile(PDFFile.java:1175)
+	at com.sun.pdfview.PDFFile.<init>(PDFFile.java:126)
+	at com.sun.pdfview.PDFFile.<init>(PDFFile.java:102)
+	at de.uni.kassel.kde.qr2pdf.util.PDFRendererParser.parse(PDFRendererParser.java:30)
+	at de.uni.kassel.kde.qr2pdf.main.Main.main(Main.java:82)
+-----------------------------------------
+
+----------------PDFRenderer----------------
+
+
+----------------PDFBox----------------
+
+Load time: 0.044s
+Convert time: 1.895s
+This point: 922/49	Size: 50
+Find best Point time: 0.005s
+QR-Code write time: 0.004s
+PDF manipulate and save time: 0.074s
+Total Time: 0.044s + 1.895s + 0.005s + 0.004s + 0.074s = 2.022s
+
+----------------PDFBox----------------
+
+
+----------------IText----------------
+
+Zeit ITextPDF: 0.025s
+
+----------------IText----------------
+
+
+----------------PDFRenderer----------------
+
+PDF Read Time: 0.001s
+Convert Time: 5.843s
+Find Point Time: 0.027s
+Total Time: 0.001s + 5.843s + 0.027s = 5.871s
+
+----------------PDFRenderer----------------
+
+
+----------------PDFBox----------------
+
+Load time: 0.037s
+Convert time: 1.326s
+This point: 1174/49	Size: 50
+Find best Point time: 0.007s
+QR-Code write time: 0.004s
+PDF manipulate and save time: 0.164s
+Total Time: 0.037s + 1.326s + 0.007s + 0.004s + 0.164s = 1.538s
+
+----------------PDFBox----------------
+
+
+----------------IText----------------
+
+Zeit ITextPDF: 0.026s
+
+----------------IText----------------
+
+
+----------------PDFRenderer----------------
+
+PDF Read Time: 0.001s
+Convert Time: 2.346s
+Find Point Time: 0.007s
+Total Time: 0.001s + 2.346s + 0.007s = 2.354s
+
+This point: 35/141	Size: 100
+
+----------------PDFRenderer----------------
+
+
+----------------PDFBox----------------
+
+Load time: 0.124s
+Convert time: 0.305s
+This point: 1140/49	Size: 50
+Find best Point time: 0.007s
+QR-Code write time: 0.003s
+PDF manipulate and save time: 0.208s
+Total Time: 0.124s + 0.305s + 0.007s + 0.003s + 0.208s = 0.647s
+
+----------------PDFBox----------------
+
+
+----------------IText----------------
+
+Zeit ITextPDF: 0.077s
+
+----------------IText----------------
+
+
+----------------PDFRenderer----------------
+
+-----------------------------------------
+com.sun.pdfview.PDFParseException: Expected 'xref' at start of table
+	at com.sun.pdfview.PDFFile.readTrailer(PDFFile.java:974)
+	at com.sun.pdfview.PDFFile.parseFile(PDFFile.java:1175)
+	at com.sun.pdfview.PDFFile.<init>(PDFFile.java:126)
+	at com.sun.pdfview.PDFFile.<init>(PDFFile.java:102)
+	at de.uni.kassel.kde.qr2pdf.util.PDFRendererParser.parse(PDFRendererParser.java:30)
+	at de.uni.kassel.kde.qr2pdf.main.Main.main(Main.java:82)
+-----------------------------------------
+
+----------------PDFRenderer----------------
+
+
+----------------PDFBox----------------
+
+Load time: 0.014s
+Convert time: 0.689s
+This point: 949/49	Size: 50
+Find best Point time: 0.006s
+QR-Code write time: 0.003s
+PDF manipulate and save time: 0.053s
+Total Time: 0.014s + 0.689s + 0.006s + 0.003s + 0.053s = 0.765s
+
+----------------PDFBox----------------
+
+
+----------------IText----------------
+
+Zeit ITextPDF: 0.014s
+
+----------------IText----------------
+
+
+----------------PDFRenderer----------------
+
+PDF Read Time: 0.001s
+Convert Time: 1.552s
+Find Point Time: 0.004s
+Total Time: 0.001s + 1.552s + 0.004s = 1.557s
+
+This point: 399/99	Size: 100
+
+----------------PDFRenderer----------------
+
+
+----------------PDFBox----------------
+
+Load time: 0.037s
+Convert time: 1.608s
+Total Time: 0.037s + 1.608s + 0.114s + 0.0s + 0.0s = 1.759s
+-----------------------------------------
+java.lang.NullPointerException
+	at de.uni.kassel.kde.qr2pdf.util.PDFBoxParser.manipulatePDF(PDFBoxParser.java:62)
+	at de.uni.kassel.kde.qr2pdf.main.Main.main(Main.java:38)
+-----------------------------------------
+
+----------------PDFBox----------------
+
+
+----------------IText----------------
+
+Zeit ITextPDF: 0.03s
+
+----------------IText----------------
+
+
+----------------PDFRenderer----------------
+
+PDF Read Time: 0.001s
+Convert Time: 2.107s
+Find Point Time: 0.039s
+Total Time: 0.001s + 2.107s + 0.039s = 2.147s
+
+----------------PDFRenderer----------------
+
+
+----------------PDFBox----------------
+
+Load time: 0.023s
+Convert time: 0.26s
+This point: 1140/49	Size: 50
+Find best Point time: 0.007s
+QR-Code write time: 0.012s
+PDF manipulate and save time: 0.081s
+Total Time: 0.023s + 0.26s + 0.007s + 0.012s + 0.081s = 0.383s
+
+----------------PDFBox----------------
+
+
+----------------IText----------------
+
+Zeit ITextPDF: 0.012s
+
+----------------IText----------------
+
+
+----------------PDFRenderer----------------
+
+-----------------------------------------
+com.sun.pdfview.PDFParseException: Expected 'xref' at start of table
+	at com.sun.pdfview.PDFFile.readTrailer(PDFFile.java:974)
+	at com.sun.pdfview.PDFFile.parseFile(PDFFile.java:1175)
+	at com.sun.pdfview.PDFFile.<init>(PDFFile.java:126)
+	at com.sun.pdfview.PDFFile.<init>(PDFFile.java:102)
+	at de.uni.kassel.kde.qr2pdf.util.PDFRendererParser.parse(PDFRendererParser.java:30)
+	at de.uni.kassel.kde.qr2pdf.main.Main.main(Main.java:82)
+-----------------------------------------
+
+----------------PDFRenderer----------------
+
+
+----------------PDFBox----------------
+
+Load time: 0.058s
+Convert time: 1.161s
+This point: 1174/49	Size: 50
+Find best Point time: 0.007s
+QR-Code write time: 0.002s
+PDF manipulate and save time: 0.472s
+Total Time: 0.058s + 1.161s + 0.007s + 0.002s + 0.472s = 1.7s
+
+----------------PDFBox----------------
+
+
+----------------IText----------------
+
+Zeit ITextPDF: 0.026s
+
+----------------IText----------------
+
+
+----------------PDFRenderer----------------
+
+PDF Read Time: 0.002s
+Convert Time: 0.456s
+Find Point Time: 0.037s
+Total Time: 0.002s + 0.456s + 0.037s = 0.495s
+
+----------------PDFRenderer----------------
+
+
+----------------PDFBox----------------
+
+Load time: 0.006s
+Convert time: 1.221s
+This point: 1174/49	Size: 50
+Find best Point time: 0.008s
+QR-Code write time: 0.002s
+PDF manipulate and save time: 0.069s
+Total Time: 0.006s + 1.221s + 0.008s + 0.002s + 0.069s = 1.306s
+
+----------------PDFBox----------------
+
+
+----------------IText----------------
+
+Zeit ITextPDF: 0.008s
+
+----------------IText----------------
+
+
+----------------PDFRenderer----------------
+
+PDF Read Time: 0.001s
+Convert Time: 0.355s
+Find Point Time: 0.005s
+Total Time: 0.001s + 0.355s + 0.005s = 0.361s
+
+This point: 512/99	Size: 100
+
+----------------PDFRenderer----------------
+
+

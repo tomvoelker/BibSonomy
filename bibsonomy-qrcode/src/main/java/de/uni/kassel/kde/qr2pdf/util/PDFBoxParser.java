@@ -87,7 +87,7 @@ public class PDFBoxParser {
 			contentStream.drawImage( ximage, (float)posx, (float)posy);
 					 				 	
 		 	contentStream.close();
-		 	doc.save( "/home/philipp/Dokumente/pdftest/out/pdfbox" + String.valueOf(number) + ".pdf" );
+		 	doc.save( "src/main/resources/out/pdfbox" + String.valueOf(number) + ".pdf" );
 		 	
 		 	pdfmaniptime = System.currentTimeMillis() - pdfmaniptime;
 		
@@ -102,8 +102,6 @@ public class PDFBoxParser {
 				logger.getOut().println("Total Time: " + loadTime/1000.0 + "s + " + convertTime/1000.0 + "s + " + bestPointTime/1000.0 + "s + "
 						+ qrcodetime/1000.0 + "s + " + pdfmaniptime/1000.0 + "s = "
 						+ (loadTime + convertTime + bestPointTime + qrcodetime + pdfmaniptime)/1000.0 + "s" );
-				logger.getOut().println();
-				logger.getOut().println();
 			}
 		}
 	}
