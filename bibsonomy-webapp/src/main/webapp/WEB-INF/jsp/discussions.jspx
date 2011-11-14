@@ -90,7 +90,7 @@
 					<div class="sidebarcontainer">
 					
 						<!-- contains schema.org markup -->
-						<div id="review_info_rating" itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
+						<div id="review_info_rating">
 
 							<div id="ratingDistribution">
 							
@@ -118,17 +118,16 @@
 								<fmt:formatNumber var="roundedRating" value="${stats.average}" maxFractionDigits="1" minFractionDigits="1" />
 					
 								<div class="ratingAvgInfo">
-									(<span id="ratingAverage" itemprop="ratingValue"><c:out value="${roundedRating}" /></span>
+									(<span property="v:average"><c:out value="${roundedRating}" /></span>
 									<c:out value=" " />
 									<fmt:message key="post.resource.review.ratings.of" />
 									<c:out value=" " />
-									<span id="ratingBest" itemprop="bestRating">5.0</span><c:out value=" " /> <fmt:message key="post.resource.review.ratings.basedOn" />
-									<c:out value=" " /><span id="ratingCount" itemprop="ratingCount"><c:out value="${stats.count}" /></span>
+									<span id="ratingBest">5.0</span><c:out value=" " /> <fmt:message key="post.resource.review.ratings.basedOn" />
+									<c:out value=" " /><span property="v:count"><c:out value="${stats.count}" /></span>
 									<c:out value=" " />
 									<span>
 										<c:out value="${ratingTitle}" />
 									</span>)
-									<meta itemprop="worstRating" content="0.0"/>
 								</div>
 							</div>
 						</div>					
