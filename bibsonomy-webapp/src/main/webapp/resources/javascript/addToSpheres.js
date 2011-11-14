@@ -39,7 +39,15 @@ function initSpheres(requestedUser, ckey) {
 	
 	//Creates the user Count of Spheres
 	var createUserCount = function(sphereUsers) {
-		return $("<strong></strong>").text(sphereUsers + " User").css("padding-left", 5).css("right", 35).css("position","absolute").attr("data-userCount",sphereUsers);
+		var user;
+		
+		if(sphereUsers > 1) {
+			user = " users";
+		} else {
+			user = " user";
+		}
+		
+		return $("<strong></strong>").text(sphereUsers + user).css("padding-left", 5).css("right", 35).css("position","absolute").attr("data-userCount",sphereUsers);
 	};
 	
 	//Getter for the Timeout
