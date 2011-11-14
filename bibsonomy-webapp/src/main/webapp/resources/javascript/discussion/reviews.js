@@ -4,7 +4,7 @@ var RATING_STEPS = 11;
 var STEP_RATING = 2;
 
 var RATING_AVG_DIV_SELECTOR = '#ratingAvg';
-var RATING_AVG_SELECTOR = RATING_AVG_DIV_SELECTOR + ' span[id=ratingAverage]';
+var RATING_AVG_SELECTOR = RATING_AVG_DIV_SELECTOR + ' span[property=v\\:average]';
 
 var REVIEW_EDIT_LINK_SELECTOR = 'a.reviewEditLink';
 var REVIEW_DELETE_LINK_SELECTOR = 'a.reviewDeleteLink';
@@ -53,7 +53,7 @@ function initStars() {
 }
 
 function getReviewCount() {
-	return parseInt($('#review_info_rating span[id=ratingCount]').text());
+	return parseInt($('#review_info_rating span[property=v\\:count]').text());
 }
 
 function getAvg() {
@@ -83,8 +83,8 @@ function setReviewCount(value) {
 		title = getString("post.resource.review.reviews");
 	}
 	
-	$('#review_info_rating span[id=ratingCount]').text(value);
-	$('#review_info_rating span[id=ratingCount]').next('span').text(title);
+	$('#review_info_rating span[property=v\\:count]').text(value);
+	$('#review_info_rating span[property=v\\:count]').next('span').text(title);
 }
 
 function getOwnReviewRating() {
