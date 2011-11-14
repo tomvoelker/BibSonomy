@@ -17,10 +17,9 @@
     	<jsp:attribute name="content">
     		<div class="rating" data-rating="${review.rating}">
 				<review:reviewStars rating="${review.rating}"/>
-				<meta itemprop="reviewRating" content="${review.rating}"/>
 			</div>
 		
-			<div class="review text" itemprop="reviewBody">
+			<div class="review text">
 				<c:out value="${review.text}" />
 			</div>
 		

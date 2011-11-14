@@ -6,8 +6,8 @@
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review">
 
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />		
-	<!-- contains schemo.org markup -->
-	<div id="review_info_rating" itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
+	<!-- contains RDFa infos -->
+	<div id="review_info_rating" xmlns:v="http://rdf.data-vocabulary.org/#" typeof="v:Review-aggregate">
 		<c:if test="${empty resource.numberOfRatings or resource.numberOfRatings &lt; 1 }">
 			<!-- TODO: change message keys when renaming BibTex class to Publication -->
 			<div id="noReviewInfo"><fmt:message key="post.resource.review.${fn:toLowerCase(resource.class.simpleName)}.noReview" /></div>
@@ -23,27 +23,28 @@
 			<!-- TODO: add bigger star images and change dimension to 2 -->
 			<div><review:reviewStars rating="${resource.rating}" /></div>
 
-			<!-- plural -->
 			<fmt:message var="ratingTitle" key="post.resource.review.reviews" />
+			
+			<!-- plural -->
 			<c:if test="${resource.numberOfRatings == 1}">
-				<!-- singular -->
 				<fmt:message var="ratingTitle" key="post.resource.review.review" />
+				<!-- singular -->
 			</c:if>
 
 			<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="1" minFractionDigits="1" />
 
 			<div class="ratingAvgInfo">
-				(<span id="ratingAverage" itemprop="ratingValue"><c:out value="${roundedRating}" /></span>
+				(<span property="v:average"><c:out value="${roundedRating}" /></span>
 				<c:out value=" " />
 				<fmt:message key="post.resource.review.ratings.of" />
 				<c:out value=" " />
-				<span id="ratingBest" itemprop="bestRating">5.0</span><c:out value=" " /> <fmt:message key="post.resource.review.ratings.basedOn" />
-				<c:out value=" " /><span id="ratingCount" itemprop="ratingCount"><c:out value="${resource.numberOfRatings}" /></span>
+				<span property="v:best">5.0</span><c:out value=" " /> <fmt:message key="post.resource.review.ratings.basedOn" />
+				<c:out value=" " /><span property="v:count"><c:out value="${resource.numberOfRatings}" /></span>
 				<c:out value=" " />
 				<span>
 					<c:out value="${ratingTitle}" />
 				</span>)
-				<meta itemprop="worstRating" content="0.0"/>
+				<span class="initiallyHidden" property="v:worst">0</span>
 			</div>
 		</div>
 	</div>

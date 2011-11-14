@@ -4,9 +4,8 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
     
    	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="true" />
- 	
 	
-	<span class="date" itemprop="datePublished">
+	<span class="date">
 		<fmt:message key="post.resource.comment.on"/><c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${discussionItem.date}"/>
 	</span>
 	<c:if test="${not empty discussionItem.changeDate}">

@@ -15,7 +15,7 @@
 	<c:set var="anonymous" value="${discussionItem.anonymous and not ownDiscussionItem}" />
 	
 	<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
-
+    
 	<c:choose>
 		<c:when test="${anonymous}">
 			<img src="${resdir}/image/anonymous.png" alt="anonymous" class="commentPicture" />
@@ -27,17 +27,17 @@
 	
 	<div class="${class} details">
 		<div class="${class} info" data-username="${discussionItemUserName}" data-discussionItemHash="${discussionItem.hash}">
-			<span class="${class}er"  itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">				
+			<span class="${class}er">				
 				<c:choose>
 					<c:when test="${anonymous}">
-						<span itemprop="name"><fmt:message key="post.resource.discussionItem.anonymous" /></span>
+						<fmt:message key="post.resource.discussionItem.anonymous" />
 					</c:when>
 					<c:otherwise>
-						<a href="/user/${fn:escapeXml(discussionItemUserName)}" itemprop="url"><span itemprop="name"><c:out value="${discussionItemUserName}" /></span></a>
+						<a href="/user/${fn:escapeXml(discussionItemUserName)}"><c:out value="${discussionItemUserName}" /></a>
 					</c:otherwise>
 				</c:choose>
 			</span>
-			<discussionItem:discussionItemMeta discussionItem="${discussionItem}"/>
+			<discussionItem:discussionItemMeta discussionItem="${discussionItem}" />
 		</div>
 		
 		<jsp:invoke fragment="content"/>
