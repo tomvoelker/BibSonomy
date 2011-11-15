@@ -44,6 +44,7 @@
 	
 	<bean id="restServletInstance" class="org.bibsonomy.rest.RestServlet">
 		<property name="projectHome" value="${project.home}"/>
+		<property name="projectName" value="${project.name}" />
 		<property name="documentPath" value="${project.document.path}"/>
 		<property name="logicInterfaceFactory" ref="restLogicFactory"/>
 		<property name="urlRenderer" ref="restUrlRenderer"/>
