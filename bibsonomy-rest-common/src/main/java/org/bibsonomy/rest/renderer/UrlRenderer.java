@@ -23,18 +23,7 @@
 
 package org.bibsonomy.rest.renderer;
 
-import static org.bibsonomy.rest.RestProperties.Property.URL_DATE_FORMAT;
-import static org.bibsonomy.rest.RestProperties.Property.URL_DOCUMENTS;
-import static org.bibsonomy.rest.RestProperties.Property.URL_GROUPS;
-import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
-import static org.bibsonomy.rest.RestProperties.Property.URL_TAGS;
-import static org.bibsonomy.rest.RestProperties.Property.URL_USERS;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.RESTConfig;
 
 /** 
  * This renderer creates URLs according to BibSonomys REST URL scheme.
@@ -52,19 +41,19 @@ public class UrlRenderer {
 	private final String postsUrlDelimiter;
 	private final String documentsUrlDelimiter;
 	
-	private final DateFormat dateFormat;
-	
 	private final String apiUrl;
 	
+	/**
+	 * creates a new url renderer
+	 * @param apiUrl
+	 */
 	public UrlRenderer(final String apiUrl) {
 		this.apiUrl = apiUrl;
-		final RestProperties properties = RestProperties.getInstance();
-		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + PARTS_DELIMITER;
-		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + PARTS_DELIMITER;
-		this.tagUrlPrefix = apiUrl + properties.get(URL_TAGS) + PARTS_DELIMITER;
-		this.postsUrlDelimiter = PARTS_DELIMITER + properties.get(URL_POSTS) + PARTS_DELIMITER;
-		this.documentsUrlDelimiter = PARTS_DELIMITER + properties.get(URL_DOCUMENTS) + PARTS_DELIMITER;
-		this.dateFormat = new SimpleDateFormat(properties.get(URL_DATE_FORMAT));
+		this.userUrlPrefix = apiUrl + RESTConfig.USERS_URL + PARTS_DELIMITER;
+		this.groupUrlPrefix = apiUrl + RESTConfig.GROUPS_URL + PARTS_DELIMITER;
+		this.tagUrlPrefix = apiUrl + RESTConfig.TAGS_URL + PARTS_DELIMITER;
+		this.postsUrlDelimiter = PARTS_DELIMITER + RESTConfig.POSTS_URL + PARTS_DELIMITER;
+		this.documentsUrlDelimiter = PARTS_DELIMITER + RESTConfig.DOCUMENTS_SUB_PATH + PARTS_DELIMITER;
 	}	
 
 	/** Creates a URL which points to the given user. 
@@ -102,19 +91,6 @@ public class UrlRenderer {
 	 */
 	public String createHrefForResource(final String userName, final String intraHash) {
 		return this.userUrlPrefix + userName + this.postsUrlDelimiter + intraHash;
-	}
-	
-	/**
-	 * TODO: remove?
-	 * Creates a URL which points to the given resource.
-	 * 
-	 * @param userName - the name of the user which owns the resource.
-	 * @param intraHash - the intra hash of the resource.
-	 * @param date - the date at which the resource has been posted.
-	 * @return A URL which points to the given resource.
-	 */
-	public String createHrefForResource(final String userName, final String intraHash, final Date date) {
-		return this.userUrlPrefix + userName + this.postsUrlDelimiter + intraHash + PARTS_DELIMITER + dateFormat.format(date);
 	}
 	
 	/** Creates a URL which points to the given document attached to the given resource.
