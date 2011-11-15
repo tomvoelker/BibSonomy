@@ -24,24 +24,23 @@ public class SynchronizationHandler implements ContextHandler {
 		if (numTokensLeft != 1) {
 			throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
 		}
-		URI serviceURI = null;
 		try {
-			serviceURI = new URI(urlTokens.nextToken());
+			final URI serviceURI = new URI(urlTokens.nextToken());
+			
+			switch (httpMethod) {
+			case GET:
+				return new GetSyncDataStrategy(context, serviceURI);
+			case DELETE:
+				return new DeleteSyncDataStrategy(context, serviceURI);
+			case PUT:
+				return new PutSyncStatusStrategy(context, serviceURI);
+			case POST:
+				return new PostSyncPlanStrategy(context, serviceURI);
+			default:
+				throw new UnsupportedHttpMethodException(httpMethod, "SynchronizationStatus");
+			}
 		} catch (final URISyntaxException ex) {
 			throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
-		}
-		
-		switch (httpMethod) {
-		case GET:
-			return new GetSyncDataStrategy(context, serviceURI);
-		case DELETE:
-			return new DeleteSyncDataStrategy(context, serviceURI);
-		case PUT:
-			return new PutSyncStatusStrategy(context, serviceURI);
-		case POST:
-			return new PostSyncPlanStrategy(context, serviceURI);
-		default:
-			throw new UnsupportedHttpMethodException(httpMethod, "SynchronizationStatus");
 		}
 	}
 

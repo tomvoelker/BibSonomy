@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -25,12 +25,12 @@ public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
 	}
 	
 	@Override
-	protected void appendLinkPostFix(StringBuilder sb) {
+	protected void appendLinkPostFix(final StringBuilder sb) {
 	}
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getUsersUrl() );
+		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.USERS_URL);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
 	}
 
 	@Override
-	protected void render(Writer writer, List<User> resultList) {
+	protected void render(final Writer writer, final List<User> resultList) {
 		this.getRenderer().serializeUsers(writer, resultList, getView());
 	}
 

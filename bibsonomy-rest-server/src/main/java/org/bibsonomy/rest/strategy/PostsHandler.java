@@ -2,7 +2,7 @@ package org.bibsonomy.rest.strategy;
 
 import java.util.StringTokenizer;
 
-import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.posts.GetListOfPostsStrategy;
@@ -36,15 +36,15 @@ public class PostsHandler implements ContextHandler {
 				switch(httpMethod) {
 				case GET:
 						// /posts/added or popular
-						if (RestProperties.getInstance().getAddedPostsUrl().equalsIgnoreCase(path)) {
+						if (RESTConfig.POSTS_ADDED_SUB_PATH.equalsIgnoreCase(path)) {
 							return new GetNewPostsStrategy(context);
-						} else if (RestProperties.getInstance().getPopularPostsUrl().equalsIgnoreCase(path)) {
+						} else if (RESTConfig.POSTS_POPULAR_SUB_PATH.equalsIgnoreCase(path)) {
 							return new GetPopularPostsStrategy(context);
 						}
 						break;
 				case POST:
-					// /posts/standard
-					if (RestProperties.getInstance().getStandardPostsUrl().equalsIgnoreCase(path)) {
+					// /posts/community
+					if (RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path)) {
 						return new PostCommunityPostStrategy(context, context.getLogic().getAuthenticatedUser().getName());
 					}
 					break;
@@ -58,8 +58,8 @@ public class PostsHandler implements ContextHandler {
 				final String path = urlTokens.nextToken();
 				final String loggedInUserName = context.getLogic().getAuthenticatedUser().getName();
 			
-				// /posts/standard/[hash]
-				if (!RestProperties.getInstance().getStandardPostsUrl().equalsIgnoreCase(path)) {
+				// /posts/community/[hash]
+				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path)) {
 					break;
 				}
 				
@@ -79,10 +79,10 @@ public class PostsHandler implements ContextHandler {
 		case 3: {
 				final String path = urlTokens.nextToken();
 		
-				// /posts/standard/[hash]/references/
+				// /posts/community/[hash]/references/
 				final String hash = urlTokens.nextToken();
 				final String references = urlTokens.nextToken();
-				if (!RestProperties.getInstance().getStandardPostsUrl().equalsIgnoreCase(path) || !RestProperties.getInstance().getReferencesUrl().equalsIgnoreCase(references)) {
+				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path) || !RESTConfig.REFERENCES_SUB_PATH.equalsIgnoreCase(references)) {
 					break;
 				}			
 			

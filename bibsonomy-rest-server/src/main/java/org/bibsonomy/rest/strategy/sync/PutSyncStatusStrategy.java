@@ -47,9 +47,10 @@ public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 	@Override
 	protected String update() {
 		final LogicInterface logic = this.getLogic();
-		if (!present(synchronizationStatus)) {
+		if (!present(this.synchronizationStatus)) {
 			throw new BadRequestOrResponseException("No status given.");
 		}
+		
 		final SynchronizationStatus status = SynchronizationStatus.valueOf(this.synchronizationStatus);
 		
 		String info = null;

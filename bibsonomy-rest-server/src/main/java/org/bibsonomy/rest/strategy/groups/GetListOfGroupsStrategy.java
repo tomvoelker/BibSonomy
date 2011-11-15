@@ -4,7 +4,7 @@ import java.io.Writer;
 import java.util.List;
 
 import org.bibsonomy.model.Group;
-import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -27,12 +27,12 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 	}
 
 	@Override
-	protected void appendLinkPostFix(StringBuilder sb) {
+	protected void appendLinkPostFix(final StringBuilder sb) {
 	}
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getGroupsUrl());
+		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.GROUPS_URL);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 	}
 
 	@Override
-	protected void render(Writer writer, List<Group> resultList) {
+	protected void render(final Writer writer, final List<Group> resultList) {
 		this.getRenderer().serializeGroups(writer, resultList, getView());
 	}
 }

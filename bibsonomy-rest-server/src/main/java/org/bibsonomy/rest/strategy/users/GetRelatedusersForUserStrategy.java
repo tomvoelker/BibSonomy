@@ -6,7 +6,6 @@ import java.util.List;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -36,7 +35,7 @@ public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List
 	 *            - the kind of relationship to be queried
 	 * @param tag TODO
 	 */
-	public GetRelatedusersForUserStrategy(Context context, String userName, String relationship, String tag) {
+	public GetRelatedusersForUserStrategy(final Context context, final String userName, final String relationship, final String tag) {
 		super(context);
 		this.userName = userName;
 		this.tag = tag;
@@ -45,7 +44,7 @@ public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List
 	}
 
 	@Override
-	protected void render(Writer writer, List<User> resultList) {
+	protected void render(final Writer writer, final List<User> resultList) {
 		this.getRenderer().serializeUsers(writer, resultList, getView());
 
 	}
@@ -57,11 +56,11 @@ public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getFriendsUrl());
+		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.FRIENDS_SUB_PATH);
 	}
 
 	@Override
-	protected void appendLinkPostFix(StringBuilder sb) {
+	protected void appendLinkPostFix(final StringBuilder sb) {
 	}
 
 	@Override
@@ -80,12 +79,12 @@ public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List
 	 * @return the appropriate UserRelatkion enum
 	 */
 	public static UserRelation chooseRelationship(final String relationship, final String relation) {
-		if (RestProperties.getInstance().getFriendsUrl().equals(relationship)) {
+		if (RESTConfig.FRIENDS_SUB_PATH.equals(relationship)) {
 			if (RESTConfig.OUTGOING_ATTRIBUTE_VALUE_RELATION.equals(relation)) {
 				return UserRelation.FRIEND_OF;
 			}
 			return UserRelation.OF_FRIEND;
-		} else if (RestProperties.getInstance().getFollowersUrl().equals(relationship)) {
+		} else if (RESTConfig.FOLLOWERS_SUB_PATH.equals(relationship)) {
 			if (RESTConfig.OUTGOING_ATTRIBUTE_VALUE_RELATION.equals(relation)) {
 				return UserRelation.FOLLOWER_OF;
 			}

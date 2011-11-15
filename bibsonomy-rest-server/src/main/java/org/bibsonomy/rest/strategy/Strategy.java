@@ -9,7 +9,6 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RESTUtils;
-import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -66,8 +65,8 @@ public abstract class Strategy {
 		if (contentType != null && this.context.apiIsUserAgent(userAgent)) {
 			// Use special content type if request comes from BibSonomy REST client
 			// (like bibsonomy/post+XML )
-			// TODO: check if the client has ever used this content type
-			return RestProperties.getInstance().getSystemName().toLowerCase() + "/" + contentType + "+" + getRenderingFormat().toString();
+			// FIXME: check if the client has ever used this content type
+			return "bibsonomy/" + contentType + "+" + getRenderingFormat().toString();
 		}
 		
 		return this.getRenderingFormat().getMimeType();

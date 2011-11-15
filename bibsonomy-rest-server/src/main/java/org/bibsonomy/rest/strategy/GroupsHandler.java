@@ -2,7 +2,7 @@ package org.bibsonomy.rest.strategy;
 
 import java.util.StringTokenizer;
 
-import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
@@ -35,7 +35,7 @@ public class GroupsHandler implements ContextHandler {
 			return createGroupStrategy(context, httpMethod, urlTokens.nextToken());
 		case 2:
 			groupName = urlTokens.nextToken();
-			if (RestProperties.getInstance().getUsersUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+			if (RESTConfig.USERS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
 				// /groups/[groupname]/users
 				return createUserPostsStrategy(context, httpMethod, groupName);
 			}
@@ -43,7 +43,7 @@ public class GroupsHandler implements ContextHandler {
 		case 3:
 			// /groups/[groupname]/users/[username]
 			groupName = urlTokens.nextToken();
-			if (RestProperties.getInstance().getUsersUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+			if (RESTConfig.USERS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
 				if (HttpMethod.DELETE == httpMethod) {
 					return new RemoveUserFromGroupStrategy(context, groupName, urlTokens.nextToken());
 				}
