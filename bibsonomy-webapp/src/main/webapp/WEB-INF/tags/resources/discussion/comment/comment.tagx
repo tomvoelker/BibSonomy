@@ -8,12 +8,22 @@
    	<jsp:directive.attribute name="comment" type="org.bibsonomy.model.Comment" required="true" />
    	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
    	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
-   	
-   	<discussionItem:discussionItem discussionItem="${comment}" loginUser="${loginUser}" resource="${resource}">
+    <jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="true" />
+  	
+   	<discussionItem:discussionItem discussionItem="${comment}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="${schemaOrgMarkUp}">
    		<jsp:attribute name="content">
-   			<div class="comment text">
-				<c:out value="${comment.text}" />
-			</div>
+   			<c:choose>
+   				<c:when test="${schemaOrgMarkUp}">
+   					<div class="comment text" itemprop="commentText">
+						<c:out value="${comment.text}" />
+					</div>
+				</c:when>
+				<c:otherwise>
+   					<div class="comment text">
+						<c:out value="${comment.text}" />
+					</div>
+				</c:otherwise>
+			</c:choose>			
    		</jsp:attribute>
    	</discussionItem:discussionItem>
 </jsp:root>

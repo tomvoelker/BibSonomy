@@ -6,24 +6,41 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
+	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="false"/>
 
 	<!-- initialize with empty list -->
-	<c:set var="personList" value=""/>	
+	<c:set var="personList" value=""/>
+	<!-- determine personType for schema.org markup -->
+	<c:set var="authorEditor" value=""/>
 	<c:choose>
 		<c:when test="${not empty publication.author}">
 			<c:set var="personList" value="${publication.author}"/>
+			<c:set var="authorEditor" value="author"/>
 		</c:when>
 		<c:when test="${not empty publication.editor}">
 			<c:set var="personList" value="${publication.editor}"/>
+			<c:set var="authorEditor" value="editor"/>
 		</c:when>
 	</c:choose>
 
 	<span class="authorEditorList"> 
 		<c:forEach var="person" items="${personList}" varStatus="loopStatus">
 			<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
-			 	<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}">
+			 <c:choose>
+			 	<c:when test="${schemaOrgMarkUp}">
+			 		<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
+			 			<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}" itemprop="name">
+			 				<c:out value="${mtl:cleanBibtex(person.firstName)}" /><c:out value=" "/><c:out value="${mtl:cleanBibtex(person.lastName)}" />
+			 			</a>
+					</span>
+				</c:when>
+				<c:otherwise>
+				 	<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}">
 			 		<c:out value="${mtl:cleanBibtex(person.firstName)}" /><c:out value=" "/><c:out value="${mtl:cleanBibtex(person.lastName)}" />
 			 	</a>
+				
+				</c:otherwise>
+			</c:choose>
 			<!-- append separator "," -->
 			<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
 		</c:forEach>
