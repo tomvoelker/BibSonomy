@@ -204,7 +204,7 @@
 		</xsd:sequence>
 		<xsd:attribute name="description" type="xsd:string" />
 		<xsd:attribute name="postingdate" type="xsd:dateTime" />
-		<xsd:attribute name="changedate" type="xsd:dateTime"></xsd:attribute>
+		<xsd:attribute name="changedate" type="xsd:dateTime" />
 	</xsd:complexType>
 
 	<!--
@@ -272,7 +272,6 @@
 		<xsd:attribute name="month" type="xsd:string" />
 		<xsd:attribute name="year" type="xsd:string" />
 		<xsd:attribute name="type" type="xsd:string" />
-		<!-- <xsd:attribute name="scraperId" type="xsd:positiveInteger"/>  -->
 		<xsd:attribute name="url" type="xsd:string" />
 		<xsd:attribute name="privnote" type="xsd:string" />
 
@@ -349,12 +348,14 @@
 
 	<xsd:complexType name="SyncPostType">
 		<xsd:sequence>
-			<xsd:element name="createDate" type="xsd:dateTime"></xsd:element>
-			<xsd:element name="changeDate" type="xsd:dateTime"></xsd:element>
+			
 			<xsd:element name="post" type="PostType"></xsd:element>
 		</xsd:sequence>
-		<xsd:attribute name="hash" type="xsd:string"></xsd:attribute>
-		<xsd:attribute name="action" type="xsd:string"></xsd:attribute>
+		
+		<xsd:attribute name="createDate" type="xsd:dateTime" />
+		<xsd:attribute name="changeDate" type="xsd:dateTime" />
+		<xsd:attribute name="hash" type="xsd:string" />
+		<xsd:attribute name="action" type="xsd:string" />
 	</xsd:complexType>
 
 	<xsd:complexType name="SyncDataType">
@@ -372,7 +373,7 @@
 
 	<xsd:complexType name="SyncPostsType">
 		<xsd:sequence>
-			<xsd:element name="syncPosts" type="SyncPostType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+			<xsd:element name="syncPost" type="SyncPostType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
