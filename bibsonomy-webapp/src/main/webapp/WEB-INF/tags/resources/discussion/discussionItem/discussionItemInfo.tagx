@@ -1,0 +1,55 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
+	
+	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="true" />
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>
+	<jsp:directive.attribute name="anonymous" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="true"/>
+
+	<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
+
+	<!-- schema.org Markup: Reviews have authors, but Comments have creators -->
+
+
+	<div class="${class} info" data-username="${discussionItem.user.name}" data-discussionItemHash="${discussionItem.hash}">
+
+	<!-- WARNING: Due to the schema.org markup switch code is doubled in this switch -->
+		<c:choose>
+			<c:when test="${schemaOrgMarkUp}">
+				<c:set var="authorCreator" value="author"/>
+				<c:if test="${class eq 'comment'}">
+					<c:set var="authorCreator" value="creator"/>
+				</c:if>
+				<span class="${class}er"  itemprop="${authorCreator}" itemscope="itemscope" itemtype="http://schema.org/Person">				
+					<c:choose>
+						<c:when test="${anonymous}">
+							<span itemprop="name"><fmt:message key="post.resource.discussionItem.anonymous" /></span>
+						</c:when>
+						<c:otherwise>
+							<a href="/user/${fn:escapeXml(discussionItem.user.name)}" itemprop="name"><c:out value="${discussionItem.user.name}" /></a>
+						</c:otherwise>
+					</c:choose>
+				</span>
+			</c:when>
+			<c:otherwise>
+				<span class="${class}er">				
+					<c:choose>
+						<c:when test="${anonymous}">
+							<span><fmt:message key="post.resource.discussionItem.anonymous" /></span>
+						</c:when>
+						<c:otherwise>
+							<a href="/user/${fn:escapeXml(discussionItem.user.name)}"><c:out value="${discussionItem.user.name}" /></a>
+						</c:otherwise>
+					</c:choose>
+				</span>
+			</c:otherwise>
+		</c:choose>
+		<discussionItem:discussionItemMeta discussionItem="${discussionItem}"/>
+	</div>
+	
+	<jsp:invoke fragment="content"/>
+		
+</jsp:root>

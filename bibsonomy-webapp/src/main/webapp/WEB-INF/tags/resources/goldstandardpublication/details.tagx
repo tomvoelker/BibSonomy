@@ -20,16 +20,21 @@
 	<jsp:useBean id="mockReference" class="org.bibsonomy.model.BibTex" />
 	
 	<c:set var="goldstandard" value="${post.resource}" />
-	<div id="goldstandard">
+	<!-- determine the publication type for schema.org markup -->
+	<c:set var="itemType" value="http://schema.org/ScholarlyArticle"/>
+	<c:if test="${not empty goldstandard.entrytype and ('book' eq goldstandard.entrytype)}">
+		<c:set var="itemType" value="http://schema.org/Book"/>
+	</c:if>
+	<div id="goldstandard" itemscope="itemscope" itemtype="${itemType}">
 		<ul id="gold_menu">
 			<gpub:actions post="${post}" />
 		</ul>
 		
 		<!-- title of the publication -->
 		<h2 id="gold_title" data-interhash="${goldstandard.interHash}">
-			<a href="/bibtex/${goldstandard.interHash}"><c:out value="${mtl:cleanBibtex(goldstandard.title)}"/></a>
+			<a href="/bibtex/${goldstandard.interHash}" itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}"/></a>
 		</h2>
-		<div id="gold_authorsEditors"><fmt:message key="by"/><c:out value=": "/><pub:author publication="${goldstandard}"/></div>
+		<div id="gold_authorsEditors"><fmt:message key="by"/><c:out value=": "/><pub:author publication="${goldstandard}" schemaOrgMarkUp="true"/></div>
 		
 		<!-- exports -->
 		<div id="gold_exports">
@@ -80,7 +85,7 @@
 			<div id="gold_abstract_tab">
 				<c:choose>
 					<c:when test="${not empty goldstandard.abstract}">
-						<div id="gold_abstract"><c:out value="${mtl:cleanBibtex(goldstandard.abstract)}" /></div>
+						<div id="gold_abstract" itemprop="about"><c:out value="${mtl:cleanBibtex(goldstandard.abstract)}" /></div>
 					</c:when>
 					<c:otherwise>
 						<fmt:message key="goldstandard.resource.info.noAbstract"/>

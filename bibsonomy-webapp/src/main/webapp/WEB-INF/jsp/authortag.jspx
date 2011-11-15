@@ -15,7 +15,9 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.author"/></a> :: 
-			<a href="/author/${fn:escapeXml(command.requestedAuthor)}"><c:out value='${command.requestedAuthor}'/></a> ::
+			<span itemscope="itemscope" itemtype="http://schema.org/Person">
+				<a href="/author/${fn:escapeXml(command.requestedAuthor)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
+			</span> ::
 			<form action="/author/${fn:escapeXml(command.requestedAuthor)}" method="get" class="smallform">
 			  <input type="text" size="20" name="tag" id="inpf"/>
 			</form>										

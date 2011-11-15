@@ -73,13 +73,13 @@
 			<div id="discussionTemplates" class="initiallyHidden">
 				<!-- create comment div structure -->
 				<div id="commentTemplate">
-				   	<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" />
+				   	<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="false"/>
 				</div>
 			    
 				<ul>
 					<!-- create li, div structure for new review -->
 					<li id="newReview">
-						<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
+						<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="false"/>
 					</li>
 		    	</ul>
 			</div>

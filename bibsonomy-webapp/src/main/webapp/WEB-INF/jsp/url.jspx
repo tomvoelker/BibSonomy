@@ -51,7 +51,7 @@
 				<c:set var="bookmark" value="${command.goldStandardBookmark.resource}" />				
 			</c:if>
 			
-			<h2><a href="${bookmark.url}"><c:out value="${bookmark.title}" /></a></h2>
+			<h2 itemprop="name"><a href="${bookmark.url}" itemprop="url"><c:out value="${bookmark.title}" /></a></h2>
 		
 			<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>

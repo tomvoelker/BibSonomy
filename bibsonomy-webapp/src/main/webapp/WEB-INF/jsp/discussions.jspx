@@ -118,12 +118,12 @@
 								<fmt:formatNumber var="roundedRating" value="${stats.average}" maxFractionDigits="1" minFractionDigits="1" />
 					
 								<div class="ratingAvgInfo">
-									(<span property="v:average"><c:out value="${roundedRating}" /></span>
+									(<span property="ratingAverage"><c:out value="${roundedRating}" /></span>
 									<c:out value=" " />
 									<fmt:message key="post.resource.review.ratings.of" />
 									<c:out value=" " />
 									<span id="ratingBest">5.0</span><c:out value=" " /> <fmt:message key="post.resource.review.ratings.basedOn" />
-									<c:out value=" " /><span property="v:count"><c:out value="${stats.count}" /></span>
+									<c:out value=" " /><span property="ratingCount"><c:out value="${stats.count}" /></span>
 									<c:out value=" " />
 									<span>
 										<c:out value="${ratingTitle}" />

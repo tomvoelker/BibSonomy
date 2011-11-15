@@ -10,19 +10,32 @@
     <jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="true" />
     <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
     <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+    <jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="true" />
     
     <c:set var="ownReview" value="${loginUser.name eq review.user.name }" />
     
-    <discussionItem:discussionItem resource="${resource}" discussionItem="${review}" loginUser="${loginUser}">
+    <discussionItem:discussionItem resource="${resource}" discussionItem="${review}" loginUser="${loginUser}" schemaOrgMarkUp="${schemaOrgMarkUp}">
     	<jsp:attribute name="content">
     		<div class="rating" data-rating="${review.rating}">
 				<review:reviewStars rating="${review.rating}"/>
+				<c:if test="${schemaOrgMarkUp}">
+					<meta itemprop="reviewRating" content="${review.rating}"/>
+				</c:if>
 			</div>
-		
-			<div class="review text">
-				<c:out value="${review.text}" />
-			</div>
-		
+			<!-- use schema.org markup or not -->
+  			<c:choose>
+   				<c:when test="${schemaOrgMarkUp}">
+					<div class="review text" itemprop="reviewBody">
+						<c:out value="${review.text}" />
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="review text">
+						<c:out value="${review.text}" />
+					</div>
+				</c:otherwise>
+			</c:choose>			
+
 			<c:if test="${ownReview}">
 				<review:reviewForm review="${review}" resource="${resource}" userName="${loginUser.name}"/>
 			</c:if>
