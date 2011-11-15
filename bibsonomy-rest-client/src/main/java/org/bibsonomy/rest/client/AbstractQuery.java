@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.Reader;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
@@ -48,16 +48,24 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
  * @param <T> 
  */
 public abstract class AbstractQuery<T> {
-	protected static final String URL_TAGS = RestProperties.getInstance().getTagsUrl();
-	protected static final String URL_USERS = RestProperties.getInstance().getUsersUrl();
-	protected static final String URL_FRIENDS = RestProperties.getInstance().getFriendsUrl();
-	protected static final String URL_FOLLOWERS = RestProperties.getInstance().getFollowersUrl();
-	protected static final String URL_GROUPS = RestProperties.getInstance().getGroupsUrl();
-	protected static final String URL_POSTS = RestProperties.getInstance().getPostsUrl();
-	protected static final String URL_POSTS_ADDED = RestProperties.getInstance().getAddedPostsUrl();
-	protected static final String URL_POSTS_POPULAR = RestProperties.getInstance().getPopularPostsUrl();
-	protected static final String URL_CONCEPTS = RestProperties.getInstance().getConceptUrl();
-	protected static final String URL_SYNC = RestProperties.getInstance().getSyncUrl();
+	
+	// TODO: use RESTConfig..+ directly
+	@Deprecated
+	protected static final String URL_TAGS = RESTConfig.TAGS_URL;
+	@Deprecated
+	protected static final String URL_USERS = RESTConfig.USERS_URL;
+	@Deprecated
+	protected static final String URL_FRIENDS = RESTConfig.FRIENDS_SUB_PATH;
+	@Deprecated
+	protected static final String URL_FOLLOWERS = RESTConfig.FOLLOWERS_SUB_PATH;
+	@Deprecated
+	protected static final String URL_GROUPS = RESTConfig.GROUPS_URL;
+	@Deprecated
+	protected static final String URL_POSTS = RESTConfig.POSTS_URL;
+	@Deprecated
+	protected static final String URL_CONCEPTS = RESTConfig.CONCEPTS_URL;
+	@Deprecated
+	protected static final String URL_SYNC = RESTConfig.SYNC_URL;
 
 	private String apiKey;
 	private String username;
@@ -114,15 +122,12 @@ public abstract class AbstractQuery<T> {
 		return downloadedDocument;
 	}
 
-	protected final Reader performMultipartPostRequest(final String url, final File file) throws ErrorPerformingRequestException {
-		final PostWorker worker;
-		final Reader result;
-		final String absoluteUrl;
-		absoluteUrl = this.apiURL + url;
+	protected final Reader performMultipartPostRequest(final String url, final File file) throws ErrorPerformingRequestException {	
+		final String absoluteUrl = this.apiURL + url;
 
-		worker = new PostWorker(this.username, this.apiKey);
+		final PostWorker worker = new PostWorker(this.username, this.apiKey);
 		this.configHttpWorker(worker);
-		result = worker.perform(absoluteUrl, file);
+		final Reader result = worker.perform(absoluteUrl, file);
 		this.statusCode = worker.getHttpResult();
 
 		return result;
@@ -215,7 +220,6 @@ public abstract class AbstractQuery<T> {
 	 *             if the received data is not valid.
 	 * @throws IllegalStateException
 	 *             if @see #getResult() gets called before 
-	 *             @see Bibsonomy#executeQuery(AbstractQuery)
 	 */
 	public T getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (!this.executed) throw new IllegalStateException("Execute the query first.");

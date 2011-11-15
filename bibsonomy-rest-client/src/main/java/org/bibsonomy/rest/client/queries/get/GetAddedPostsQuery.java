@@ -112,7 +112,7 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 
 	@Override
 	protected List<Post<? extends Resource>> doExecute() throws ErrorPerformingRequestException {
-		String url = URL_POSTS + "/" + URL_POSTS_ADDED + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
+		String url = RESTConfig.POSTS_ADDED_URL + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
 
 		if (this.resourceType != Resource.class) {
 			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + this.resourceType.toString().toLowerCase();

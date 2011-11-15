@@ -34,7 +34,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
@@ -44,7 +44,6 @@ import org.bibsonomy.rest.utils.HeaderUtils;
 public class RestClientUtils {
 	private static final Log log = LogFactory.getLog(RestClientUtils.class);
 	
-	private static final String USER_AGENT_VALUE = RestProperties.getInstance().getApiUserAgent();
 	
 	/**
 	 * the content charset used by the rest client
@@ -85,7 +84,7 @@ public class RestClientUtils {
 		 */
 		final HttpClientParams httpClientParams = new HttpClientParams();
 		final DefaultHttpMethodRetryHandler defaultHttpMethodRetryHandler = new DefaultHttpMethodRetryHandler(0, false);
-		httpClientParams.setParameter(HeaderUtils.HEADER_USER_AGENT, USER_AGENT_VALUE + "_" + clientVersion);
+		httpClientParams.setParameter(HeaderUtils.HEADER_USER_AGENT, RESTConfig.API_USER_AGENT + "_" + clientVersion);
 		httpClientParams.setParameter(HttpClientParams.RETRY_HANDLER, defaultHttpMethodRetryHandler);
 		httpClientParams.setParameter(HttpClientParams.HTTP_CONTENT_CHARSET, RestClientUtils.CONTENT_CHARSET);
 		httpClientParams.setAuthenticationPreemptive(true);

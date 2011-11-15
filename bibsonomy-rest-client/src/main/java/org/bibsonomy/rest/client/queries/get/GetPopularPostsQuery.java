@@ -113,7 +113,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 
 	@Override
 	protected List<Post<? extends Resource>> doExecute() throws ErrorPerformingRequestException {
-		String url = URL_POSTS + "/" + URL_POSTS_POPULAR + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
+		String url = RESTConfig.POSTS_POPULAR_URL + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
 
 		if (this.resourceType != Resource.class) {
 			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceUtils.toString(this.resourceType).toLowerCase();
