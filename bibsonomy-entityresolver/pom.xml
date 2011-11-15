@@ -4,11 +4,9 @@
 	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.bibsonomy</groupId>
   <artifactId>bibsonomy-entityresolver</artifactId>
   <packaging>jar</packaging>
   <name>BibSonomy Entity Resolver</name>
-  <version>2.0.20-SNAPSHOT</version>
   <description>Username/author identiy resolving for BibSonomy.</description>
   <parent>
     <artifactId>bibsonomy</artifactId>
@@ -29,7 +27,6 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.0.8</version>
       <scope>provided</scope>
     </dependency>
 
