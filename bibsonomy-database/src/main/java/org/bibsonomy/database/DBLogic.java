@@ -293,6 +293,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
+		// TODO: resourceType = null
 		this.permissionDBManager.ensureWriteAccess(loginUser, userName);
 		Date lastSuccessfulSyncDate = null;
 
