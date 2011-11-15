@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.activation.MimetypesFileTypeMap;
+
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.RestServlet;
@@ -24,9 +26,10 @@ import org.bibsonomy.util.upload.impl.HandleFileDownload;
  * @author Christian Kramer
  */
 public class GetPostDocumentStrategy extends Strategy {
+	private static final MimetypesFileTypeMap MIME_TYPES_FILE_TYPE_MAP = new MimetypesFileTypeMap();
+	
 	private final String userName;
-	private final String resourceHash;
-	private final String fileName;
+	private final Document document;
 	private final Map<String, String> additionalInfos;
 
 	/**
@@ -38,15 +41,20 @@ public class GetPostDocumentStrategy extends Strategy {
 	public GetPostDocumentStrategy(final Context context, final String userName, final String resourceHash, final String fileName) {
 		super(context);
 		this.userName = userName;
-		this.resourceHash = resourceHash;
-		this.fileName = fileName;
+		// request the document from the db
+		this.document = this.getLogic().getDocument(userName, resourceHash, fileName);
+		
+		if (this.document == null) {
+			throw new NoSuchResourceException("can't find document!");
+		}
+		
 		this.additionalInfos = context.getAdditionalInfos();
 	}
 	
 	@Override
 	protected RenderingFormat getRenderingFormat() {
-		// FIXME: we support more than pdfs!
-		return RenderingFormat.PDF;
+		final String contentType = MIME_TYPES_FILE_TYPE_MAP.getContentType(this.document.getFileName());
+		return RenderingFormat.getMediaType(contentType);
 	}
 	
 	@Override
@@ -56,16 +64,9 @@ public class GetPostDocumentStrategy extends Strategy {
 	
 	@Override
 	public void perform(final ByteArrayOutputStream outStream){
-		// request the document from the db
-		final Document doc = this.getLogic().getDocument(userName, resourceHash, fileName);
-		
-		if (doc == null) {
-			throw new NoSuchResourceException("can't find document!");
-		}
-		
 		try {
 			// get the bufferedstream of the file
-			final FileDownloadInterface download = new HandleFileDownload(additionalInfos.get(RestServlet.DOCUMENTS_PATH_KEY), doc.getFileHash());
+			final FileDownloadInterface download = new HandleFileDownload(this.additionalInfos.get(RestServlet.DOCUMENTS_PATH_KEY), this.document.getFileHash());
 			final BufferedInputStream buf = download.getBuf();
 			
 			// write the bytes of the file to the writer

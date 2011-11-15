@@ -15,8 +15,8 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
-import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -35,16 +35,14 @@ public final class Context {
 	private static final Map<String, ContextHandler> urlHandlers = new HashMap<String, ContextHandler>();
 
 	static {
-		Context.urlHandlers.put(RestProperties.getInstance().getTagsUrl(), new TagsHandler());
-		Context.urlHandlers.put(RestProperties.getInstance().getUsersUrl(), new UsersHandler());
-		Context.urlHandlers.put(RestProperties.getInstance().getGroupsUrl(), new GroupsHandler());
-		Context.urlHandlers.put(RestProperties.getInstance().getPostsUrl(), new PostsHandler());
-		Context.urlHandlers.put(RestProperties.getInstance().getConceptUrl(), new ConceptsHandler());
-		Context.urlHandlers.put(RestProperties.getInstance().getSyncUrl(), new SynchronizationHandler());
-		/*
-		 * configure validation
-		 */
-		RestProperties.getInstance().setValidator(ServersideModelValidator.getInstance());
+		Context.urlHandlers.put(RESTConfig.TAGS_URL, new TagsHandler());
+		Context.urlHandlers.put(RESTConfig.USERS_URL, new UsersHandler());
+		Context.urlHandlers.put(RESTConfig.GROUPS_URL, new GroupsHandler());
+		Context.urlHandlers.put(RESTConfig.POSTS_URL, new PostsHandler());
+		Context.urlHandlers.put(RESTConfig.CONCEPTS_URL, new ConceptsHandler());
+		Context.urlHandlers.put(RESTConfig.SYNC_URL, new SynchronizationHandler());
+		
+		RESTConfig.MODEL_VALIDATOR = ServersideModelValidator.getInstance();
 	}
 
 	private final Reader doc;
@@ -178,7 +176,7 @@ public final class Context {
 	 *         browser for example
 	 */
 	public boolean apiIsUserAgent(final String userAgent) {
-		return userAgent != null && userAgent.startsWith(RestProperties.getInstance().getApiUserAgent());
+		return userAgent != null && userAgent.startsWith(RESTConfig.API_USER_AGENT);
 	}
 
 	/**

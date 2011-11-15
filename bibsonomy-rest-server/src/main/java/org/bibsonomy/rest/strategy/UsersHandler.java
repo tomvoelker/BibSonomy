@@ -2,7 +2,7 @@ package org.bibsonomy.rest.strategy;
 
 import java.util.StringTokenizer;
 
-import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
@@ -39,7 +39,6 @@ public class UsersHandler implements ContextHandler {
 		final int numTokensLeft = urlTokens.countTokens();
 		final String userName;
 		final String req;
-		final RestProperties restProperties = RestProperties.getInstance();
 		
 		switch (numTokensLeft) {
 		case 0:
@@ -53,18 +52,17 @@ public class UsersHandler implements ContextHandler {
 			req = urlTokens.nextToken();
 
 			// /users/[username]/posts
-			if (restProperties.getPostsUrl().equalsIgnoreCase(req)) {
+			if (RESTConfig.POSTS_URL.equalsIgnoreCase(req)) {
 				return createUserPostsStrategy(context, httpMethod, userName);
 			}
 
 			// /users/[username]/concepts
-			if (restProperties.getConceptUrl().equalsIgnoreCase(req)) {
+			if (RESTConfig.CONCEPTS_URL.equalsIgnoreCase(req)) {
 				return createUserConceptsStrategy(context, httpMethod, userName);
 			}
 
 			// /users/[username]/friends , /users/[username]/followers 
-			if (restProperties.getFriendsUrl().equalsIgnoreCase(req) ||
-				restProperties.getFollowersUrl().equalsIgnoreCase(req) ) {
+			if (RESTConfig.FRIENDS_SUB_PATH.equalsIgnoreCase(req) || RESTConfig.FOLLOWERS_SUB_PATH.equalsIgnoreCase(req) ) {
 				return createRelatedusersForUserStrategy(context, httpMethod, userName, req, null);
 			}
 			break;
@@ -73,18 +71,18 @@ public class UsersHandler implements ContextHandler {
 			req = urlTokens.nextToken();
 
 			// /users/[username]/posts/[resourceHash]
-			if (restProperties.getPostsUrl().equalsIgnoreCase(req)) {
+			if (RESTConfig.POSTS_URL.equalsIgnoreCase(req)) {
 				final String resourceHash = urlTokens.nextToken();
 				return createUserPostStrategy(context, httpMethod, userName, resourceHash);
 			}
 
 			// /users/[username]/concepts/[conceptName]
-			if (restProperties.getConceptUrl().equalsIgnoreCase(req)) {
+			if (RESTConfig.CONCEPTS_URL.equalsIgnoreCase(req)) {
 				final String conceptName = urlTokens.nextToken();
 				return createUserConceptsStrategy(context, httpMethod, userName, conceptName);
 			}
 			// /users/[username]/friends/[tag]
-			if (restProperties.getFriendsUrl().equalsIgnoreCase(req)) {
+			if (RESTConfig.FRIENDS_SUB_PATH.equalsIgnoreCase(req)) {
 				final String tag = urlTokens.nextToken();
 				return createRelatedusersForUserStrategy(context, httpMethod, userName, req, tag);
 			}
@@ -92,10 +90,10 @@ public class UsersHandler implements ContextHandler {
 		case 4:
 			// /users/[username]/posts/[resourcehash]/documents
 			userName = urlTokens.nextToken();
-			if (restProperties.getPostsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
 				final String resourceHash = urlTokens.nextToken();
 
-				if (restProperties.getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+				if (RESTConfig.DOCUMENTS_SUB_PATH.equalsIgnoreCase(urlTokens.nextToken())) {
 					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash);
 				}
 			}
@@ -103,10 +101,10 @@ public class UsersHandler implements ContextHandler {
 		case 5:
 			// /users/[username]/posts/[resourcehash]/documents/[filename]
 			userName = urlTokens.nextToken();
-			if (restProperties.getPostsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
 				final String resourceHash = urlTokens.nextToken();
 
-				if (restProperties.getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+				if (RESTConfig.DOCUMENTS_SUB_PATH.equalsIgnoreCase(urlTokens.nextToken())) {
 					final String filename = urlTokens.nextToken();
 					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash, filename);
 				}
@@ -194,7 +192,7 @@ public class UsersHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createRelatedusersForUserStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String relationship, String tag) {
+	private Strategy createRelatedusersForUserStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String relationship, final String tag) {
 		switch (httpMethod) {
 		case GET:
 			return new GetRelatedusersForUserStrategy(context, userName, relationship, tag);

@@ -5,7 +5,7 @@ import java.util.List;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.Context;
 
 /**
@@ -20,7 +20,7 @@ public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 	 */
 	public GetPopularPostsStrategy(final Context context) {
 		super(context);
-		this.nextLinkPrefix = this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getPostsUrl() + "/" + RestProperties.getInstance().getPopularPostsUrl();
+		this.nextLinkPrefix = this.getUrlRenderer().getApiUrl() + RESTConfig.POSTS_POPULAR_URL;
 	}
 
 	@Override

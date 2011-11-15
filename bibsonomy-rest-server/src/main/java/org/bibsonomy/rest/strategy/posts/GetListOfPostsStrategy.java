@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.Context;
 
 /**
@@ -19,7 +19,7 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 	 */
 	public GetListOfPostsStrategy(final Context context) {
 		super(context);
-		this.nextLinkPrefix = this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getPostsUrl();
+		this.nextLinkPrefix = this.getUrlRenderer().getApiUrl() + RESTConfig.POSTS_URL;
 	}
 
 	@Override

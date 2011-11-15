@@ -8,7 +8,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -49,8 +48,8 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		final StringBuilder sb = new StringBuilder(this.getUrlRenderer().getApiUrl() );
-		sb.append( RestProperties.getInstance().getUsersUrl() ).append("/").append(this.userName).append("/").append(RestProperties.getInstance().getPostsUrl()); 
+		final StringBuilder sb = new StringBuilder(this.getUrlRenderer().getApiUrl());
+		sb.append(RESTConfig.USERS_URL).append("/").append(this.userName).append("/").append(RESTConfig.POSTS_URL); 
 		return sb;
 	}
 
@@ -60,7 +59,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 	}
 
 	@Override
-	protected void render(Writer writer, List<? extends Post<? extends Resource>> resultList) {
+	protected void render(final Writer writer, final List<? extends Post<? extends Resource>> resultList) {
 		this.getRenderer().serializePosts(writer, resultList, this.getView());
 	}
 
