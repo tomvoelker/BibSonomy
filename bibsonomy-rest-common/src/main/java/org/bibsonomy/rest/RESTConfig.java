@@ -1,5 +1,7 @@
 package org.bibsonomy.rest;
 
+import org.bibsonomy.rest.validation.ModelValidator;
+
 /**
  * DO NOT CHANGE any constant values after a release
  * 
@@ -8,6 +10,41 @@ package org.bibsonomy.rest;
  */
 public final class RESTConfig {
 	private RESTConfig() {}
+	
+	@Deprecated // TODO: inject via spring beans
+	public static ModelValidator MODEL_VALIDATOR = null;
+	
+	public static final String POSTS_URL = "posts";
+
+	public static final String POSTS_ADDED_SUB_PATH = "added";
+
+	public static final String POSTS_ADDED_URL = POSTS_URL + "/" + POSTS_ADDED_SUB_PATH;
+
+	public static final String POSTS_POPULAR_SUB_PATH = "popular";
+
+	public static final String POSTS_POPULAR_URL = POSTS_URL + "/" + POSTS_POPULAR_SUB_PATH;
+
+	public static final String COMMUNITY_SUB_PATH = "community";
+
+	public static final String API_USER_AGENT = "BibSonomyWebServiceClient";
+
+	public static final String SYNC_URL = "sync";
+
+	public static final String CONCEPTS_URL = "concepts";
+
+	public static final String TAGS_URL = "tags";
+
+	public static final String REFERENCES_SUB_PATH = "references";
+
+	public static final String USERS_URL = "users";
+
+	public static final String DOCUMENTS_SUB_PATH = "documents";
+
+	public static final String FRIENDS_SUB_PATH = "friends";
+
+	public static final String FOLLOWERS_SUB_PATH = "followers";
+
+	public static final String GROUPS_URL = "groups";
 	
 	public static final String RESOURCE_TYPE_PARAM = "resourcetype";
 	

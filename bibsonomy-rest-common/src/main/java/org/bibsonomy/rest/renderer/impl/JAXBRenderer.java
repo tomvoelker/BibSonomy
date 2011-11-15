@@ -28,8 +28,6 @@ import static org.bibsonomy.model.util.ModelValidationUtils.checkGroup;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkPublication;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkTag;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
-import static org.bibsonomy.rest.RestProperties.Property.VALIDATE_XML_INPUT;
-import static org.bibsonomy.rest.RestProperties.Property.VALIDATE_XML_OUTPUT;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Reader;
@@ -74,9 +72,9 @@ import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
-import org.bibsonomy.rest.RestProperties;
+import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -121,11 +119,10 @@ public abstract class JAXBRenderer implements Renderer {
 
 	protected final DatatypeFactory datatypeFactory;
 	protected final UrlRenderer urlRenderer;
-	protected final boolean validateXMLInput;
-	protected final boolean validateXMLOutput;
+	protected boolean validateXMLInput;
+	protected boolean validateXMLOutput;
 
 	protected JAXBRenderer(final UrlRenderer urlRenderer) {
-		final RestProperties properties = RestProperties.getInstance();
 		this.urlRenderer = urlRenderer;
 
 		try {
@@ -134,9 +131,8 @@ public abstract class JAXBRenderer implements Renderer {
 			throw new RuntimeException("Could not instantiate data type factory.", ex);
 		}
 
-		this.validateXMLInput = "true".equals( properties.get(VALIDATE_XML_INPUT) );
-		this.validateXMLOutput = "true".equals( properties.get(VALIDATE_XML_OUTPUT) );
-		ModelFactory.getInstance().setModelValidator(properties.getModelValidator());
+		
+		ModelFactory.getInstance().setModelValidator(RESTConfig.MODEL_VALIDATOR);
 
 		// we only need to load the XML schema if we validate input or output
 		if (this.validateXMLInput || this.validateXMLOutput) {
@@ -744,7 +740,7 @@ public abstract class JAXBRenderer implements Renderer {
 		final SyncPostsType xmlSyncPosts = new SyncPostsType();
 		for (final SynchronizationPost post : posts) {
 			final SyncPostType xmlSyncPost = createXmlSyncPost(post);
-			xmlSyncPosts.getSyncPosts().add(xmlSyncPost);
+			xmlSyncPosts.getSyncPost().add(xmlSyncPost);
 		}
 		xmlDoc.setSyncPosts(xmlSyncPosts);
 		serialize(writer, xmlDoc);
@@ -800,7 +796,7 @@ public abstract class JAXBRenderer implements Renderer {
 		if (xmlDoc.getSyncPosts() != null) {
 			final ModelFactory modelFactory = ModelFactory.getInstance();
 			final List<SynchronizationPost> syncPosts = new LinkedList<SynchronizationPost>();
-			for (final SyncPostType spt : xmlDoc.getSyncPosts().getSyncPosts()) {
+			for (final SyncPostType spt : xmlDoc.getSyncPosts().getSyncPost()) {
 				syncPosts.add(modelFactory.createSynchronizationPost(spt));
 			}
 			return syncPosts;
@@ -1070,5 +1066,19 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setTags(xmlTags);
 		serialize(writer, xmlDoc);	
+	}
+
+	/**
+	 * @param validateXMLInput the validateXMLInput to set
+	 */
+	public void setValidateXMLInput(final boolean validateXMLInput) {
+		this.validateXMLInput = validateXMLInput;
+	}
+
+	/**
+	 * @param validateXMLOutput the validateXMLOutput to set
+	 */
+	public void setValidateXMLOutput(final boolean validateXMLOutput) {
+		this.validateXMLOutput = validateXMLOutput;
 	}
 }
