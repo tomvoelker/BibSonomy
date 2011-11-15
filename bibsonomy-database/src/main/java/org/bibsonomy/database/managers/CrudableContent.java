@@ -71,13 +71,13 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 
 	/**
 	 * update
-	 * new version contains synchronization handling 
+	 * 
 	 * @param post
 	 * @param oldHash
 	 * @param operation
 	 * @param session
 	 * @param loginUser
-	 * @return
+	 * @return <code>true</code> iff update was successful
 	 */
 	public boolean updatePost(Post<T> post, String oldHash, PostUpdateOperation operation, DBSession session, User loginUser);
 }
