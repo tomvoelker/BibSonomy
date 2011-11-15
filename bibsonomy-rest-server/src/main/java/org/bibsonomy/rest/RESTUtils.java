@@ -37,7 +37,7 @@ public class RESTUtils {
 	 * all supported rendering formats by the rest server
 	 * ordered by preference
 	 */
-	private static List<RenderingFormat> SUPPORTED_RENDERING_FORMAT = Collections.unmodifiableList(Arrays.asList(
+	private static final List<RenderingFormat> SUPPORTED_RENDERING_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			RenderingFormat.XML,
 			RenderingFormat.APP_XML,
 			RenderingFormat.JSON));
