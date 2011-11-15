@@ -152,6 +152,7 @@ function createComment() {
 						// bind click listener
 						commentTemplate.find('a.reply').click(reply);
 						commentTemplate.find('a.editLink').click(showEditCommentForm);
+						commentTemplate.find('a.deleteLink').click(deleteComment);
 						
 						// TODO: show reply counter
 						
