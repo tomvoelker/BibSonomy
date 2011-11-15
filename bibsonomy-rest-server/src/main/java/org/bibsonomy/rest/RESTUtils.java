@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,16 +37,10 @@ public class RESTUtils {
 	 * all supported rendering formats by the rest server
 	 * ordered by preference
 	 */
-	private static List<RenderingFormat> SUPPORTED_RENDERING_FORMAT;
-	
-	static {
-		final List<RenderingFormat> formats = new LinkedList<RenderingFormat>();
-		formats.add(RenderingFormat.XML);
-		formats.add(RenderingFormat.APP_XML);
-		formats.add(RenderingFormat.JSON);
-		
-		SUPPORTED_RENDERING_FORMAT = Collections.unmodifiableList(formats);
-	}
+	private static List<RenderingFormat> SUPPORTED_RENDERING_FORMAT = Collections.unmodifiableList(Arrays.asList(
+			RenderingFormat.XML,
+			RenderingFormat.APP_XML,
+			RenderingFormat.JSON));
 	
 	/**
 	 * param name for the format of the request and response
@@ -153,7 +148,7 @@ public class RESTUtils {
 		try {
 			// returns InputStream with correct encoding
 			return new InputStreamReader(stream, encoding);
-		} catch (UnsupportedEncodingException ex) {
+		} catch (final UnsupportedEncodingException ex) {
 			// returns InputStream with default encoding if a exception
 			// is thrown with utf-8 support
 			log.fatal(ex.getStackTrace());
@@ -174,7 +169,7 @@ public class RESTUtils {
   		try {
   			// returns InputStream with correct encoding
   			return new EscapingPrintWriter(stream, encoding);
-  		} catch (UnsupportedEncodingException ex) {
+  		} catch (final UnsupportedEncodingException ex) {
   			// returns InputStream with default encoding if a exception
   			// is thrown with utf-8 support
   			log.fatal("Could not get output writer for stream with encoding " + encoding, ex);
