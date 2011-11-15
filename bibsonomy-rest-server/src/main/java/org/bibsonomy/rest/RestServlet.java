@@ -70,6 +70,8 @@ public final class RestServlet extends HttpServlet {
 	 * the key for the project home
 	 */
 	public static final String PROJECT_HOME_KEY = "projectHome";
+	
+	private static final String PROJECT_NAME_KEY = "projectName";
 
 	/**
 	 * the response encoding used to encode HTTP responses.
@@ -95,6 +97,7 @@ public final class RestServlet extends HttpServlet {
 	 * Distinguish name of the client
 	 */
 	public static final String SSL_CLIENT_S_DN = "SSL_CLIENT_S_DN";
+	
 
 
 	private LogicInterfaceFactory logicFactory;
@@ -126,6 +129,13 @@ public final class RestServlet extends HttpServlet {
 	@Required
 	public void setProjectHome(final String projectHome) {
 		additionalInfos.put(PROJECT_HOME_KEY, projectHome);
+	}
+	
+	/**
+	 * @param projectName the name of the project
+	 */
+	public void setProjectName(final String projectName) {
+		this.additionalInfos.put(PROJECT_NAME_KEY, projectName);
 	}
 
 	/**
@@ -264,7 +274,7 @@ public final class RestServlet extends HttpServlet {
 			cachingStream.writeTo(response.getOutputStream());
 		} catch (final AuthenticationException e) {
 			log.warn(e.getMessage());
-			response.setHeader("WWW-Authenticate", "Basic realm=\"" + RestProperties.getInstance().getBasicRealm() + "\"");
+			response.setHeader("WWW-Authenticate", "Basic realm=\"" + this.additionalInfos.get(PROJECT_NAME_KEY) + "WebService\"");
 			sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
 		} catch (final InternServerException e) {
 			log.error(e.getMessage());

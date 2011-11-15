@@ -78,7 +78,7 @@ public class TestRestServlet {
 	@Test
 	public void testGetComplexStuff() throws Exception {
 		this.request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
-		this.request.getHeaders().put("User-Agent", RestProperties.getInstance().getApiUserAgent());
+		this.request.getHeaders().put("User-Agent", RESTConfig.API_USER_AGENT);
 		this.request.setRequestURI("/api/users");
 		
 		this.servlet.doGet(this.request, this.response);

@@ -10,7 +10,6 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -45,7 +44,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 	}
 
 	@Override
-	protected void appendLinkPostFix(StringBuilder sb) {
+	protected void appendLinkPostFix(final StringBuilder sb) {
 		if (grouping != GroupingEntity.ALL && groupingValue != null) {
 			sb.append("&").append(grouping.toString().toLowerCase()).append("=").append(groupingValue);
 		}
@@ -59,13 +58,13 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 			sb.append("&").append(RESTConfig.RESOURCE_TYPE_PARAM).append("=").append(ResourceUtils.toString(this.resourceType).toLowerCase());
 		}
 		if (hash != null) {
-			sb.append("&").append(RESTConfig.RESOURCE_PARAM).append(hash);
+			sb.append("&").append(RESTConfig.RESOURCE_PARAM).append("=").append(hash);
 		}		
 	}
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RestProperties.getInstance().getTagsUrl() );
+		return new StringBuilder(this.getUrlRenderer().getApiUrl()).append(RESTConfig.TAGS_URL);
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 	}
 
 	@Override
-	protected void render(Writer writer, List<Tag> resultList) {
+	protected void render(final Writer writer, final List<Tag> resultList) {
 		this.getRenderer().serializeTags(writer, resultList, this.getView());
 	}
 
