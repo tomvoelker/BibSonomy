@@ -111,11 +111,11 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		try {
 			this.insert("insertTagRelationIfNotPresent", trp, session);
 			this.generalDb.updateIds(ConstantID.IDS_TAGREL_ID, session);
+			session.commitTransaction();
 		} catch (final Exception ex) {
 			// TODO: improve me...
 			log.warn(ex.getMessage(), ex);
 		} finally {
-			session.commitTransaction();
 			session.endTransaction();
 		}
 	}
