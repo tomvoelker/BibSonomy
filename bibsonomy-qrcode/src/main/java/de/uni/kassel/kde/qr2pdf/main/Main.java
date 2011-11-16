@@ -1,104 +1,97 @@
 package de.uni.kassel.kde.qr2pdf.main;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-
-import com.sun.pdfview.PDFFile;
-
-import de.uni.kassel.kde.qr2pdf.util.ITextParser;
+import de.uni.kassel.kde.qr2pdf.util.ConverterBenchmark;
 import de.uni.kassel.kde.qr2pdf.util.MyLogger;
-import de.uni.kassel.kde.qr2pdf.util.PDFBoxParser;
-import de.uni.kassel.kde.qr2pdf.util.PDFRendererParser;
+import de.uni.kassel.kde.qr2pdf.util.ParserBenchmark;
+import de.uni.kassel.kde.qr2pdf.util.converter.Converter;
+import de.uni.kassel.kde.qr2pdf.util.converter.GhostScriptConverter;
+import de.uni.kassel.kde.qr2pdf.util.converter.IcePDFConverter;
+import de.uni.kassel.kde.qr2pdf.util.converter.PDFBoxConverter;
+import de.uni.kassel.kde.qr2pdf.util.converter.PDFRendererConverter;
+import de.uni.kassel.kde.qr2pdf.util.parser.ITextParser;
+import de.uni.kassel.kde.qr2pdf.util.parser.JPodParser;
+import de.uni.kassel.kde.qr2pdf.util.parser.PDFBoxParser;
+import de.uni.kassel.kde.qr2pdf.util.parser.PDFClownParser;
+import de.uni.kassel.kde.qr2pdf.util.parser.Parser;
 
 public class Main {
 
-	
-
+	public static final String LOG_PROP = "src/main/resources/log.properties";
+	public static final String DIR_IN = "src/main/resources/in/";
+	public static final String DIR_OUT = "src/main/resources/out/";
 	
 	public static void main(String[] args) throws IOException
 	{
+		long totalRunTime = System.currentTimeMillis();
 		
-		MyLogger logger = null;
+		System.setProperty("java.util.logging.config.file", LOG_PROP);
 		
+		converterBenchmark();
+		parserBenchmark();				
+		
+		totalRunTime = System.currentTimeMillis() - totalRunTime;
+		
+		System.out.println();
+		System.out.println("Gesamte Benchmark Zeit: " + totalRunTime/1000.0 + "s");
+	}
+	
+	private static void converterBenchmark() throws IOException
+	{
+		MyLogger gsconvLogger = new MyLogger("src/main/resources/log/converter/ghostscript");
+		MyLogger iceconvLogger = new MyLogger("src/main/resources/log/converter/icepdf");
+		MyLogger boxconvLogger = new MyLogger("src/main/resources/log/converter/pdfbox");
+		MyLogger rendererconvLogger = new MyLogger("src/main/resources/log/converter/pdfrenderer");
+		
+		Converter gsConverter = new GhostScriptConverter();
+		Converter iceConverter = new IcePDFConverter();
+		Converter boxConverter = new PDFBoxConverter();
+		Converter rendererConverter = new PDFRendererConverter();
+		
+		ConverterBenchmark gsconvBench = new ConverterBenchmark(gsConverter, DIR_IN, gsconvLogger);
+		ConverterBenchmark iceconvBench = new ConverterBenchmark(iceConverter, DIR_IN, iceconvLogger);
+		ConverterBenchmark boxconvBench = new ConverterBenchmark(boxConverter, DIR_IN, boxconvLogger);
+		ConverterBenchmark rendererconvBench = new ConverterBenchmark(rendererConverter, DIR_IN, rendererconvLogger);
+		
+		gsconvBench.benchmark();
+		iceconvBench.benchmark();
+		boxconvBench.benchmark();
+		rendererconvBench.benchmark();
+		
+		gsconvLogger.close();
+		iceconvLogger.close();
+		boxconvLogger.close();
+		rendererconvLogger.close();
+	}
+	
+	private static void parserBenchmark() throws IOException
+	{
 
-		logger = new MyLogger();
+		MyLogger jpodparseLogger = new MyLogger("src/main/resources/log/parser/jpod");
+		MyLogger itextparseLogger = new MyLogger("src/main/resources/log/parser/itext");
+		MyLogger boxparseLogger = new MyLogger("src/main/resources/log/parser/pdfbox");
+		MyLogger pdfclownparseLogger = new MyLogger("src/main/resources/log/parser/pdfclown");
 		
-		Logger.getLogger("org.apache.pdfbox").setLevel(Level.OFF);
+		Parser jpodParser = new JPodParser();
+		Parser itextParser = new ITextParser();
+		Parser boxParser = new PDFBoxParser();
+		Parser pdfclownParser = new PDFClownParser();
 		
-		for(int i = 1; i <= 10; i++)
-		{
-			try
-			{
-				logger.getOut().println("----------------PDFBox----------------");
-				logger.getOut().println();
-				PDFBoxParser parser = new PDFBoxParser();
-				PDDocument doc = parser.parse("src/main/resources/in/" + String.valueOf(i) + ".pdf", logger);
-				parser.manipulatePDF(doc, i, logger);
-				logger.getOut().println();
-				logger.getOut().println("----------------PDFBox----------------");
-				logger.getOut().println();
-				logger.getOut().println();
-			}	
-			catch(Exception e)
-			{
-				logger.getOut().println("-----------------------------------------");
-				e.printStackTrace(logger.getOut());
-				logger.getOut().println("-----------------------------------------");
-				logger.getOut().println();
-				logger.getOut().println("----------------PDFBox----------------");
-				logger.getOut().println();
-				logger.getOut().println();
-			}
-			
-			try
-			{
-				logger.getOut().println("----------------IText----------------");
-				logger.getOut().println();
-				ITextParser parser2 = new ITextParser();
-				parser2.manipulatePDF("src/main/resources/in/" + String.valueOf(i) + ".pdf", i, logger);
-				logger.getOut().println();
-				logger.getOut().println("----------------IText----------------");
-				logger.getOut().println();
-				logger.getOut().println();
-			}	
-			catch(Exception e)
-			{
-				logger.getOut().println("-----------------------------------------");
-				e.printStackTrace(logger.getOut());
-				logger.getOut().println("-----------------------------------------");
-				logger.getOut().println();
-				logger.getOut().println("----------------IText----------------");
-				logger.getOut().println();
-				logger.getOut().println();
-			}
-			
-			try
-			{
-				logger.getOut().println("----------------PDFRenderer----------------");
-				logger.getOut().println();
-				PDFRendererParser parser3 = new PDFRendererParser();
-				PDFFile file = parser3.parse("src/main/resources/in/" + String.valueOf(i) + ".pdf", logger);
-				parser3.manipulatePDF(file, i, logger);
-				logger.getOut().println();
-				logger.getOut().println("----------------PDFRenderer----------------");
-				logger.getOut().println();
-				logger.getOut().println();
-			}	
-			catch(Exception e)
-			{
-				logger.getOut().println("-----------------------------------------");
-				e.printStackTrace(logger.getOut());
-				logger.getOut().println("-----------------------------------------");
-				logger.getOut().println();
-				logger.getOut().println("----------------PDFRenderer----------------");
-				logger.getOut().println();
-				logger.getOut().println();
-			}
-		}
+		ParserBenchmark jpodparseBench = new ParserBenchmark(jpodParser, DIR_IN, DIR_OUT+"jpod/", jpodparseLogger);
+		ParserBenchmark itextparseBench = new ParserBenchmark(itextParser, DIR_IN, DIR_OUT+"itext/", itextparseLogger);
+		ParserBenchmark boxparseBench = new ParserBenchmark(boxParser, DIR_IN, DIR_OUT+"pdfbox/", boxparseLogger);
+		ParserBenchmark pdfclownparseBench = new ParserBenchmark(pdfclownParser, DIR_IN, DIR_OUT+"pdfclown/", pdfclownparseLogger);
 		
-		logger.getOut().close();		
+		jpodparseBench.benchmark();
+		itextparseBench.benchmark();
+		boxparseBench.benchmark();
+		pdfclownparseBench.benchmark();
 		
+		
+		
+		jpodparseLogger.close();
+		itextparseLogger.close();
+		boxparseLogger.close();
+		pdfclownparseLogger.close();
 	}
 }

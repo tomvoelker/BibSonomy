@@ -8,11 +8,16 @@ public class MyLogger {
 
 	private PrintWriter out;
 	
-	public MyLogger() throws IOException
+	public MyLogger(String fileName) throws IOException
 	{
-		 this.out = new PrintWriter(new FileWriter("src/main/resources/log"));
+		 this.out = new PrintWriter(new FileWriter(fileName));
 	}
 
+	public void close()
+	{
+		this.out.close();
+	}
+	
 	public PrintWriter getOut() {
 		return out;
 	}

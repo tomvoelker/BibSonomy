@@ -10,7 +10,12 @@
             <id>mvn-adamgent</id>
             <url>http://mvn-adamgent.googlecode.com/svn/maven/release</url>
             <name>Adam Gent Maven Repository</name>
-        </repository>
+    </repository>
+    <repository>
+    		<id>mvn-icepdf</id>
+    		<url>http://anonsvn.icefaces.org/repo/maven2/releases/</url>
+    		<name>IcePDF Maven Repository</name>
+    </repository>
   </repositories>
   <dependencies>
   	<dependency>
@@ -57,6 +62,42 @@
   		<groupId>org.bouncycastle</groupId>
   		<artifactId>bctsp-jdk16</artifactId>
   		<version>1.46</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.icepdf</groupId>
+  		<artifactId>icepdf-core</artifactId>
+  		<version>4.2.2</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.pdfclown</groupId>
+  		<artifactId>pdfclown</artifactId>
+  		<version>0.1.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.intarsys.jpod</groupId>
+  		<artifactId>jpod</artifactId>
+  		<version>5.3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.intarsys.jpod</groupId>
+  		<artifactId>isrt</artifactId>
+  		<version>5.3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.intarsys.jpod</groupId>
+  		<artifactId>jbig2</artifactId>
+  		<version>5.3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.intarsys.jpod</groupId>
+  		<artifactId>jpodrenderer</artifactId>
+  		<version>5.3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>javax.media</groupId>
+  		<artifactId>jai-core</artifactId>
+  		<version>1.1.3</version>
+  		<type>pom</type>
   	</dependency>
   </dependencies>
 </project>
