@@ -3,7 +3,7 @@ function initSpheres(requestedUser, ckey) {
 	var userSpheres = new Array();
 	var newSphere = $("#newSphere");
 	var list = $("#sphereList");	
-	
+
 	//function, to pulsate the loading text
 	for(var i = 0; i < 10; i++) {
 		$("#loader_Value").animate({opacity: 0.3}, 1000, 'linear').animate({opacity: 1}, 1000, 'linear');
@@ -42,12 +42,12 @@ function initSpheres(requestedUser, ckey) {
 		var user;
 		
 		if(sphereUsers > 1) {
-			user = " users";
+			user = getString("spheres.sphere.menu.user");
 		} else {
-			user = " user";
+			user = getString("spheres.sphere.menu.users");
 		}
 		
-		return $("<strong></strong>").text(sphereUsers + user).css("padding-left", 5).css("right", 35).css("position","absolute").attr("data-userCount",sphereUsers);
+		return $("<strong></strong>").text(sphereUsers + " " + user).css("padding-left", 5).css("right", 35).css("position","absolute").attr("data-userCount",sphereUsers);
 	};
 	
 	//Getter for the Timeout

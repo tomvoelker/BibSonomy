@@ -54,7 +54,7 @@
 					<div class="addSpheres initiallyHidden">
 	           			<ul id="sphereList">
 						   <li id="loader">
-						   		<span id="loader_Value"><fmt:message key="spheres.sphere.user.load"/></span>
+						   		<span id="loader_Value"><fmt:message key="spheres.sphere.menu.load"/></span>
 						   </li>	
 			               <li>
 			               		<input type="text" name="sphereName" id="newSphere" size="27%" autocomplete="off" placeholder="Sphere"/>
