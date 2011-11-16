@@ -38,10 +38,10 @@ public class Main {
 	
 	private static void converterBenchmark() throws IOException
 	{
-		MyLogger gsconvLogger = new MyLogger("src/main/resources/log/converter/ghostscript");
-		MyLogger iceconvLogger = new MyLogger("src/main/resources/log/converter/icepdf");
-		MyLogger boxconvLogger = new MyLogger("src/main/resources/log/converter/pdfbox");
-		MyLogger rendererconvLogger = new MyLogger("src/main/resources/log/converter/pdfrenderer");
+		MyLogger gsconvLogger = new MyLogger("src/main/resources/logFiles/converter/ghostscript");
+		MyLogger iceconvLogger = new MyLogger("src/main/resources/logFiles/converter/icepdf");
+		MyLogger boxconvLogger = new MyLogger("src/main/resources/logFiles/converter/pdfbox");
+		MyLogger rendererconvLogger = new MyLogger("src/main/resources/logFiles/converter/pdfrenderer");
 		
 		Converter gsConverter = new GhostScriptConverter();
 		Converter iceConverter = new IcePDFConverter();
@@ -67,10 +67,10 @@ public class Main {
 	private static void parserBenchmark() throws IOException
 	{
 
-		MyLogger jpodparseLogger = new MyLogger("src/main/resources/log/parser/jpod");
-		MyLogger itextparseLogger = new MyLogger("src/main/resources/log/parser/itext");
-		MyLogger boxparseLogger = new MyLogger("src/main/resources/log/parser/pdfbox");
-		MyLogger pdfclownparseLogger = new MyLogger("src/main/resources/log/parser/pdfclown");
+		MyLogger jpodparseLogger = new MyLogger("src/main/resources/logFiles/parser/jpod");
+		MyLogger itextparseLogger = new MyLogger("src/main/resources/logFiles/parser/itext");
+		MyLogger boxparseLogger = new MyLogger("src/main/resources/logFiles/parser/pdfbox");
+		MyLogger pdfclownparseLogger = new MyLogger("src/main/resources/logFiles/parser/pdfclown");
 		
 		Parser jpodParser = new JPodParser();
 		Parser itextParser = new ITextParser();
