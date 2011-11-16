@@ -23,7 +23,7 @@
 
 	</ModulePrefs>
 
-	<UserPref name="user" display_name="Bibsonomy user-name" datatype="string" required="true" />
+	<UserPref name="user" display_name="BibSonomy user name" datatype="string" required="true" />
 	<UserPref name="resourcetype" display_name="Resource" datatype="enum" required="true">
 		<EnumValue value="bookmark" display_value="Bookmarks"/>
 		<EnumValue value="bibtex" display_value="Publications"/>

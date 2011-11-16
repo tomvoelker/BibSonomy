@@ -20,7 +20,7 @@
 		</Optional>
 
 	</ModulePrefs>
-	<UserPref name="query" display_name="Bibsonomy API Query"
+	<UserPref name="query" display_name="BibSonomy API query"
 		datatype="string"
 		default_value="/posts?resourcetype=bibtex&amp;format=json&amp;start=0&amp;end=4"
 		required="true" />
