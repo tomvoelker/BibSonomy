@@ -172,8 +172,8 @@ public class RisToBibtexConverter {
 					bibtexMap.put("booktitle", value);
 				} else if (key.equals("A1") || key.equals("AU")) {
 					// take care of trailing ","
-					if(value.endsWith(",")) {
-						value = value.substring(0, value.length() - 2);
+					if (value.endsWith(",")) {
+						value = value.substring(0, value.length() - 1);
 					}
 					if (author.equals("")) // don't add " and " for the first author
 						author = value;
