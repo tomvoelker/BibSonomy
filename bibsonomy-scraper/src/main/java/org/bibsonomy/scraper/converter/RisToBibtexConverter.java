@@ -240,8 +240,8 @@ public class RisToBibtexConverter {
 					bibtexMap.put("number", value);
 				else if (key.equals("N2") || key.equals("AB"))
 					bibtexMap.put("abstract", value);
-				else if (key.equals("UR"))
-					bibtexMap.put("url", value);
+//				else if (key.equals("UR"))
+//					bibtexMap.put("url", value);
 				else if (key.equals("AD"))
 					bibtexMap.put("address", value);
 				else if ((key.equals("Y1") || key.equals("PY"))
