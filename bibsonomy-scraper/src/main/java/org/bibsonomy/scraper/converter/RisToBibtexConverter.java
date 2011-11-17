@@ -300,7 +300,7 @@ public class RisToBibtexConverter {
 		bibtexMap.put("comment", comment);
 		//	        }
 
-		bibtexMap.put("pages", startPage + "--" + endPage);
+		if (!(startPage == "" || endPage == "")) bibtexMap.put("pages", startPage + "--" + endPage);
 		//	        BibtexEntry b = new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID, Globals
 		//	                        .getEntryType(Type)); // id assumes an existing database so don't
 
