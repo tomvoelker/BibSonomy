@@ -151,7 +151,7 @@ public class RisToBibtexConverter {
 				if (key.equals("TY")) {
 					if (value.equals("BOOK"))
 						type = "book";
-					else if (value.equals("JOUR") || value.equals("MGZN"))
+					else if (value.equals("JOUR") || value.equals("INPR") || value.equals("MGZN") || value.equals("NEWS"))
 						type = "article";
 					else if (value.equals("THES"))
 						type = "phdthesis";
@@ -161,11 +161,32 @@ public class RisToBibtexConverter {
 						type = "techreport";
 					else if (value.equals("CONF"))
 						type = "inproceedings";
+//					else if (value.equals("CHAP"))
+//						type = "incollection";//"inbook";
+					else if (value.equals("CTLG"))
+						type = "booklet";
+					else if (value.equals("CPAPER"))
+						type = "conference";
+					else if (value.equals("EJOUR") || value.equals("BLOG") || value.equals("ELEC"))
+						type = "electronic";
 					else if (value.equals("CHAP"))
-						type = "incollection";//"inbook";
-
+						type = "inbook";
+//					else if (value.equals("XXXX"))
+//						type = "manual";
+//					else if (value.equals("THESIS"))
+//						type = "mastersthesis";
+					else if (value.equals("PAT"))
+						type = "patent";
+					else if (value.equals("SER") || value.equals("MGZN"))
+						type = "periodical";
+					else if (value.equals("SLIDE"))
+						type = "presentation";
+//					else if (value.equals("CONF"))
+//						type = "proceedings";
+					else if (value.equals("STAND"))
+						type = "standard";
 					else
-						type = "other";
+						type = "misc";
 				} else if (key.equals("T1") || key.equals("TI"))
 					bibtexMap.put("title", value); 
 				else if (key.equals("T2") || key.equals("T3") || key.equals("BT")) {
