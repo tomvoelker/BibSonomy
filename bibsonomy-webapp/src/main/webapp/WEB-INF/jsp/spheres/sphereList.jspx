@@ -104,7 +104,7 @@
 				    </div>
 				    
 				    <div class="sphere_tag_cloud">
-				    	<tags:cloud requPath="${requPath}" cmd="${command.spheresTagClouds[entry.key]}" showTooltips="0"/>
+				    	<tags:cloud requPath="sphere/${fn:escapeXml(entry.key)}" cmd="${command.spheresTagClouds[entry.key]}" showTooltips="0"/>
 				    </div>
 				<!-- 
 				    <div class="sphere_control">

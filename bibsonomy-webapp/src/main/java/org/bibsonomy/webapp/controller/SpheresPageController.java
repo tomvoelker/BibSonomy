@@ -4,10 +4,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
@@ -157,7 +158,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		
 		// XXX: we collect all information by hand - this should be done already
 		//      in an appropriate database query and result mapping
-		Map<String, Set<User>> spheres = new HashMap<String, Set<User>>();
+		Map<String, Set<User>> spheres = new TreeMap<String, Set<User>>();
 		
 		// loop over each related user and add to each sphere he/she 
 		// belongs to (as given by the relation system tags)
@@ -169,7 +170,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 				}
 				if (present(relationName)) {
 					if (!spheres.containsKey(relationName)) {
-						spheres.put(relationName, new HashSet<User>());
+						spheres.put(relationName, new TreeSet<User>());
 					}
 					// add user to the sphere given by the relation name
 					Set<User> sphereUsers = spheres.get(relationName);
