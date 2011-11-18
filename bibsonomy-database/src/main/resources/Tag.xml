@@ -398,6 +398,9 @@
 		<isEqual property="order" compareValue="FREQUENCY">
 			ORDER BY tag_ctr DESC
 		</isEqual>
+		<isNull property="order">
+			ORDER BY tag_ctr DESC
+		</isNull>
 		LIMIT #limit# OFFSET #offset#
 	</select>
 	
