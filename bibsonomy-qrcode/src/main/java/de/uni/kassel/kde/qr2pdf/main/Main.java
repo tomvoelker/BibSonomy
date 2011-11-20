@@ -87,8 +87,6 @@ public class Main {
 		boxparseBench.benchmark();
 		pdfclownparseBench.benchmark();
 		
-		
-		
 		jpodparseLogger.close();
 		itextparseLogger.close();
 		boxparseLogger.close();

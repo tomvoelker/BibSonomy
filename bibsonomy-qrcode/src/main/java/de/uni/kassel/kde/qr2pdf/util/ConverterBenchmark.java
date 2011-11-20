@@ -63,11 +63,14 @@ public class ConverterBenchmark {
 				}
 			}
 			
-			this.logger.getOut().println();
-			this.logger.getOut().println("Erfolgreich konvertiert: " + this.succesfullConversions + "/" + this.numberOfData);
-			
-			this.logger.getOut().println("Durchschnittliche Laufzeit: " + this.totalTime/this.succesfullConversions/1000.0 + "s");		
-			this.logger.getOut().println("Gesamtlaufzeit: " + this.totalTime/1000.0 + "s");
+			if(this.succesfullConversions > 0)
+			{
+				this.logger.getOut().println();
+				this.logger.getOut().println("Erfolgreich konvertiert: " + this.succesfullConversions + "/" + this.numberOfData);
+				
+				this.logger.getOut().println("Durchschnittliche Laufzeit: " + this.totalTime/this.succesfullConversions/1000.0 + "s");		
+				this.logger.getOut().println("Gesamtlaufzeit: " + this.totalTime/1000.0 + "s");
+			}
 		}
 	}
 	

@@ -67,12 +67,15 @@ public class ParserBenchmark {
 				}
 			}
 			
-			this.logger.getOut().println();
-			this.logger.getOut().println("Erfolgreich geparsed: " + this.succesfullParses + "/" + this.numberOfData);
+			if(this.succesfullParses > 0)
+			{
+				this.logger.getOut().println();
+				this.logger.getOut().println("Erfolgreich geparsed: " + this.succesfullParses + "/" + this.numberOfData);
 			
-			this.logger.getOut().println();
-			this.logger.getOut().println("Durchschnittliche Laufzeit: " + this.totalTime/this.succesfullParses/1000.0 + "s");		
-			this.logger.getOut().println("Gesamtlaufzeit: " + this.totalTime/1000.0 + "s");
+				this.logger.getOut().println();
+				this.logger.getOut().println("Durchschnittliche Laufzeit: " + this.totalTime/this.succesfullParses/1000.0 + "s");		
+				this.logger.getOut().println("Gesamtlaufzeit: " + this.totalTime/1000.0 + "s");
+			}
 		}
 	}
 
