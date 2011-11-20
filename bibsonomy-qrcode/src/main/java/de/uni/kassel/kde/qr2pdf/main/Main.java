@@ -7,6 +7,7 @@ import de.uni.kassel.kde.qr2pdf.util.ParserBenchmark;
 import de.uni.kassel.kde.qr2pdf.util.converter.Converter;
 import de.uni.kassel.kde.qr2pdf.util.converter.GhostScriptConverter;
 import de.uni.kassel.kde.qr2pdf.util.converter.IcePDFConverter;
+import de.uni.kassel.kde.qr2pdf.util.converter.JPodConverter;
 import de.uni.kassel.kde.qr2pdf.util.converter.PDFBoxConverter;
 import de.uni.kassel.kde.qr2pdf.util.converter.PDFRendererConverter;
 import de.uni.kassel.kde.qr2pdf.util.parser.ITextParser;
@@ -40,26 +41,31 @@ public class Main {
 	{
 		MyLogger gsconvLogger = new MyLogger("src/main/resources/logFiles/converter/ghostscript");
 		MyLogger iceconvLogger = new MyLogger("src/main/resources/logFiles/converter/icepdf");
+		MyLogger jpodconvLogger = new MyLogger("src/main/resources/logFiles/converter/jpod");
 		MyLogger boxconvLogger = new MyLogger("src/main/resources/logFiles/converter/pdfbox");
 		MyLogger rendererconvLogger = new MyLogger("src/main/resources/logFiles/converter/pdfrenderer");
 		
 		Converter gsConverter = new GhostScriptConverter();
 		Converter iceConverter = new IcePDFConverter();
+		Converter jpodConverter = new JPodConverter();
 		Converter boxConverter = new PDFBoxConverter();
 		Converter rendererConverter = new PDFRendererConverter();
 		
 		ConverterBenchmark gsconvBench = new ConverterBenchmark(gsConverter, DIR_IN, gsconvLogger);
 		ConverterBenchmark iceconvBench = new ConverterBenchmark(iceConverter, DIR_IN, iceconvLogger);
+		ConverterBenchmark jpodconvBench = new ConverterBenchmark(jpodConverter, DIR_IN, jpodconvLogger);
 		ConverterBenchmark boxconvBench = new ConverterBenchmark(boxConverter, DIR_IN, boxconvLogger);
 		ConverterBenchmark rendererconvBench = new ConverterBenchmark(rendererConverter, DIR_IN, rendererconvLogger);
 		
 		gsconvBench.benchmark();
 		iceconvBench.benchmark();
+		jpodconvBench.benchmark();
 		boxconvBench.benchmark();
 		rendererconvBench.benchmark();
 		
 		gsconvLogger.close();
 		iceconvLogger.close();
+		jpodconvLogger.close();
 		boxconvLogger.close();
 		rendererconvLogger.close();
 	}
