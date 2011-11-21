@@ -151,7 +151,7 @@ public class RisToBibtexConverter {
 				if (key.equals("TY")) {
 					if (value.equals("BOOK"))
 						type = "book";
-					else if (value.equals("JOUR") || value.equals("INPR") || value.equals("MGZN") || value.equals("NEWS"))
+					else if (value.equals("JOUR") || value.equals("MGZN"))
 						type = "article";
 					else if (value.equals("THES"))
 						type = "phdthesis";
