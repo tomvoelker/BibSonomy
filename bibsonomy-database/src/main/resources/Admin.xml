@@ -29,10 +29,6 @@
 		WHERE user_name = #userName#
 	</update>
 	
-	<update id="flagSpammerEvaluation" parameterClass="adminParam">
-		UPDATE evaluation SET $evaluator$ = #prediction# WHERE user_name = #userName#
-	</update>
-
 	<select id="getAdminClassifiedUsers" resultMap="AdminCommon.userProperties" parameterClass="adminParam">
 		SELECT *
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name)
