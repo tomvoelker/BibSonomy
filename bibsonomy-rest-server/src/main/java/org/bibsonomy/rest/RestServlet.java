@@ -366,6 +366,11 @@ public final class RestServlet extends HttpServlet {
 		final String verifyHeader = request.getHeader(SSL_VERIFY_HEADER);
 
 		if (!SUCCESS.equals(verifyHeader)) {
+			if (null != verifyHeader) {
+				log.debug("ssl_verify_header: " + verifyHeader );
+			} else {
+				log.debug("ssl_verify_header: NULL" );
+			}
 			log.debug("ssl_verify_header not found or not '" + SUCCESS + "'");
 			return;
 		}
