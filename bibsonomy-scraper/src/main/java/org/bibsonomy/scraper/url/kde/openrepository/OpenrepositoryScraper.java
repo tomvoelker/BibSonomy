@@ -23,6 +23,21 @@
 
 package org.bibsonomy.scraper.url.kde.openrepository;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
+import org.bibsonomy.util.id.ISBNUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
@@ -101,7 +116,8 @@ public class OpenrepositoryScraper extends AbstractUrlScraper {
 				RisToBibtexConverter converter = new RisToBibtexConverter();
 				String bibtex = converter.RisToBibtex(ris);
 
-				if(bibtex != null){
+				if(present(bibtex)){
+					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
 					sc.setBibtexResult(bibtex);
 					return true;
 				}else

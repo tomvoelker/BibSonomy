@@ -41,6 +41,16 @@ import org.bibsonomy.util.id.ISBNUtils;
  *
  */
 public class RisToBibtexConverter {
+	
+	private final boolean skipURL;
+	
+	public RisToBibtexConverter(boolean skipURL) {
+		this.skipURL = skipURL;
+	}
+	
+	public RisToBibtexConverter() {
+		this(false);
+	}
 
 	/**
 	 * @param args
@@ -263,7 +273,7 @@ public class RisToBibtexConverter {
 					bibtexMap.put("number", value);
 				else if (key.equals("N2") || key.equals("AB"))
 					bibtexMap.put("abstract", value);
-				else if (key.equals("UR"))
+				else if (key.equals("UR") && !skipURL)
 					bibtexMap.put("url", value);
 				else if (key.equals("AD"))
 					bibtexMap.put("address", value);

@@ -60,7 +60,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 
 	private static final Pattern PATTERN_GET_FIRST_SEARCH_RESULT = Pattern.compile("<a href=\"([^\\\"]*brief_results)\">");
 	
-	private static final RisToBibtexConverter converter = new RisToBibtexConverter();
+	private static final RisToBibtexConverter converter = new RisToBibtexConverter(true);
 
 	
 	public String getInfo() {

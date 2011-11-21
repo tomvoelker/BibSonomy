@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.agu;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -99,14 +102,15 @@ public class AGUScraper extends AbstractUrlScraper {
 					throw new InternalFailureException(ex);
 				}
 				
-				if(ris != null){
+				if(present(ris)){
 					// convert ris to bibtex
 					String bibtex = null;
 					RisToBibtexConverter converter = new RisToBibtexConverter();
 					bibtex = converter.RisToBibtex(ris);
 					
-					if(bibtex != null){
+					if(present(bibtex)){
 						// finish
+						bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", scrapingContext.getUrl().toString());
 						scrapingContext.setBibtexResult(bibtex);
 						return true;
 					}else
