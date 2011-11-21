@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -97,6 +98,7 @@ public class CellScraper extends AbstractUrlScraper {
 						bibtex = converter.RisToBibtex(ris);
 						
 						if(bibtex != null){
+							bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
 							sc.setBibtexResult(bibtex);
 							return true;
 						}else
