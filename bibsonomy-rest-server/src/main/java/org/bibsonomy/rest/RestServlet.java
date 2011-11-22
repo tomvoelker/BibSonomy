@@ -360,6 +360,12 @@ public final class RestServlet extends HttpServlet {
 		throw new AuthenticationException(NO_AUTH_ERROR);
 	}
 
+	/**
+	 * Checks the SSL headers for configured sync clients.
+	 * 
+	 * @param request
+	 * @param logic
+	 */
 	private void validateSyncAuthorization(final HttpServletRequest request, final LogicInterface logic) {
 		log.debug("start ssl header check for synchronization");
 
@@ -377,19 +383,19 @@ public final class RestServlet extends HttpServlet {
 		}
 
 		/*
-		 * get user's sync services
+		 * get all available sync clients
 		 */
-		log.debug("checking list of user's sync clients against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
-		final List<SyncService> syncClients = logic.getSyncService(logic.getAuthenticatedUser().getName(), null, false);
+		log.debug("checking list of available sync clients against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
+		final List<SyncService> syncClients = logic.getAllSyncServices(false);
 		for (final SyncService syncClient : syncClients) {
 			if (log.isDebugEnabled()) {
-				log.debug("user service:" + syncClient.getService() + " | service ssl_s_dn:" + syncClient.getSslDn());
+				log.debug("sync client:" + syncClient.getService() + " | service ssl_s_dn:" + syncClient.getSslDn());
 			}
 			if (sslClientSDn.equals(syncClient.getSslDn())) {
 				/*
-				 * FIXME: check, that request uri contains service uri
+				 * FIXME: check, that request URI contains service URI
 				 * 
-				 * service with requested ssl_client_s_dn found in user client list -> give user the sync-role
+				 * service with requested ssl_client_s_dn found in available client list -> give user the sync-role
 				 */
 				log.debug("setting user role to SYNC");
 				logic.getAuthenticatedUser().setRole(Role.SYNC);
