@@ -63,6 +63,8 @@ public interface SyncLogicInterface {
 	 * 
 	 * @param server switch between server and clients
 	 * @return List of allowed synchronization services
+	 * 
+	 * FIXME: FIXME: duplicate of {@link #getAllSyncServices(boolean)}
 	 */
 	public List<URI> getSyncServices(final boolean server);
 
@@ -118,6 +120,9 @@ public interface SyncLogicInterface {
 	 * returns all on this system available server (or clients) on 
 	 * @param server
 	 * @return A list of all available sync services.
+	 * 
+	 * FIXME: duplicate of {@link #getSyncServices(boolean)}
+	 * 
 	 */
 	public List<SyncService> getAllSyncServices(final boolean server);
 	
