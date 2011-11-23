@@ -499,7 +499,20 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			return syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
+			final SynchronizationData lastSyncData = syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
+			if (present(lastSyncData)) return lastSyncData;
+			/*
+			 * no sync found -> return very "old" date to bypass NPE later on
+			 * FIXME: is this correct or does it break something? 
+			 */
+			final SynchronizationData synchronizationData = new SynchronizationData();
+			// fill: ss.uri, sd.user_name, sd.content_type, sd.last_sync_date, sd.status, sd.info
+			synchronizationData.setUserName(userName);
+			synchronizationData.setService(service);
+			synchronizationData.setResourceType(resourceType);
+			synchronizationData.setLastSyncDate(new Date(0));
+			synchronizationData.setStatus(SynchronizationStatus.UNDONE);
+			return synchronizationData;
 		} finally {
 			session.close();
 		}
