@@ -351,13 +351,14 @@ public class DBLogic implements LogicInterface {
     		/*
     		 * attach "real" posts to the synchronization posts, which will be updated (or created) on the client
     		 */
+			final CrudableContent<? extends Resource, ? extends GenericParam> resourceTypeDatabaseManager = this.allDatabaseManagers.get(resourceType);
     		for (final SynchronizationPost post : posts) {
     			switch (post.getAction()) {
     			case CREATE_CLIENT:
     				// $FALL-THROUGH$
     			case UPDATE_CLIENT:
     				// FIXME: this is horribly expensive!
-    				post.setPost(this.getPostDetails(post.getIntraHash(), userName));
+					post.setPost(resourceTypeDatabaseManager.getPostDetails(this.loginUser.getName(), post.getIntraHash(), userName, UserUtils.getListOfGroupIDs(this.loginUser), session));
     				break;
     			default:
     				break;
