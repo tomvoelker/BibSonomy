@@ -233,8 +233,8 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param userName
 	 * @param service
 	 * @param resourceType
-	 * @param session
 	 * @param status - optional. If provided, only data with that state is returned.
+	 * @param session
 	 * @return returns last synchronization data for given user, service and content with {@link SynchronizationStatus#RUNNING}.
 	 */
 	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final SynchronizationStatus status, final DBSession session) {
