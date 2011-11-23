@@ -349,7 +349,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			}
 
 			if (!present(serverPost.getChangeDate())) {
-				log.error("post on server has no changedate");
+				log.error("post " + serverPost.getIntraHash() + " on server has no changedate");
 				// FIXME what can we do in this case?
 			}
 
