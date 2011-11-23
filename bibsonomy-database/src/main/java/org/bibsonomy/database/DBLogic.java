@@ -297,7 +297,6 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureWriteAccess(loginUser, userName);
 		Date lastSuccessfulSyncDate = null;
 
-		final Map<String, SynchronizationPost> serverPosts;
 		final List<SynchronizationPost> posts;
 
     	final DBSession session = this.openSession();
@@ -329,6 +328,7 @@ public class DBLogic implements LogicInterface {
     		/*
     		 * get posts from server (=this machine)
     		 */
+    		final Map<String, SynchronizationPost> serverPosts;
     		if (BibTex.class.equals(resourceType)) {
     			serverPosts = publicationDBManager.getSyncPostsMapForUser(userName, session);
     		} else if (Bookmark.class.equals(resourceType)) {
@@ -356,6 +356,7 @@ public class DBLogic implements LogicInterface {
     			case CREATE_CLIENT:
     				// $FALL-THROUGH$
     			case UPDATE_CLIENT:
+    				// FIXME: this is horribly expensive!
     				post.setPost(this.getPostDetails(post.getIntraHash(), userName));
     				break;
     			default:
