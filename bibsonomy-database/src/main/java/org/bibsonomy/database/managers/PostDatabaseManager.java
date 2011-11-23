@@ -997,7 +997,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final List<Post<R>> list = this.getPostsByHashForUser(loginUserName, resourceHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, session);
 
 		if (list.isEmpty()) {
-			log.debug(this.resourceClassName + "-posts from user '" + requestedUserName + "' with hash '" + resourceHash + "' for user '" + loginUserName + "' not found");
+			log.debug(this.resourceClassName + "-post from user '" + requestedUserName + "' with hash '" + resourceHash + "' for user '" + loginUserName + "' not found");
 			return null;
 		}
 
