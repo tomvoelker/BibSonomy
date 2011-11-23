@@ -218,7 +218,11 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void insertSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final DBSession session) {
 		final SyncParam param = new SyncParam();
-		log.info("\nuser name: " + userName + "\n service: " + service.toString() + "\nresType: " + resourceType.getSimpleName() + "\ndate: " + lastSyncDate + "\nstatus" + status);
+		log.debug("user name: " + userName + 
+				", service: " + service.toString() + 
+				", resource type: " + resourceType.getSimpleName() + 
+				", date: " + lastSyncDate +
+				", status: " + status);
 		param.setUserName(userName);
 		param.setService(service);
 		param.setResourceType(resourceType);
