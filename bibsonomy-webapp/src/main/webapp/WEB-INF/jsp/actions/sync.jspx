@@ -91,7 +91,7 @@
 										</dt>
 										<dd>
 											<c:choose>
-												<c:when test="${not empty entry.value}">
+												<c:when test="${not empty entry.value and entry.value.status ne 'UNDONE'}">
 													<fmt:formatDate value="${entry.value.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
 														<fmt:message key="synchronization.result"/>
 														<fmt:message key="synchronization.result.${fn:toLowerCase(entry.value.status)}"/>
