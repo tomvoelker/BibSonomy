@@ -103,8 +103,8 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 
 	/**
 	 * Gets the last sync data from the database. If it's status is PLANNED but
-	 * not sync plan can be found, the sync data is deleted and the next one is
-	 * requested. This repeats until a non "PLANNED" status is found.
+	 * no sync plan can be found, the sync data is deleted and the next one is
+	 * requested. This repeats until one without status "PLANNED" is found.
 	 * 
 	 * @param syncService
 	 * @param resourceType
