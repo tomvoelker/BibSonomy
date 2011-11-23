@@ -29,9 +29,6 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Framework to encode TeX Macros to unicode.
  * 
@@ -40,8 +37,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class TexDecode {
 
-	/** logger */
-	private static final Log LOGGER = LogFactory.getLog(TexDecode.class);
 	/**
 	 * file holding the mapping between latex macros and unicode codes
 	 */
@@ -135,7 +130,6 @@ public class TexDecode {
 			parts = line.split(LATEXMACRO_UNICODECHAR_MAP_DELIM);
 			// convert hex representation into unicode string
 			texMap.put(parts[1].trim(), String.valueOf(Character.toChars(Integer.parseInt(parts[0].trim(), 16))));
-			LOGGER.debug("added new mapping " + parts[1].trim() + " -> " + texMap.get(parts[1].trim()));
 		}
 
 	}
