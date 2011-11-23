@@ -45,7 +45,7 @@ public class GetSyncDataStrategy extends Strategy {
 		
 		final SynchronizationData lastSyncData = logic.getLastSyncData(userName, serviceURI, this.resourceType);
 		if (log.isDebugEnabled()) {
-			log.debug("got last sync data '" + lastSyncData + " for user " + userName + " and sync service " + serviceURI);
+			log.debug("got last sync data '" + lastSyncData + "' for user " + userName + " and sync service " + serviceURI);
 		}
 		this.getRenderer().serializeSynchronizationData(writer, lastSyncData);
 	}
