@@ -48,7 +48,11 @@ public enum SynchronizationStatus {
 	/**
 	 * An error during sync occurred. 
 	 */
-	ERROR("error");
+	ERROR("error"),
+	/**
+	 * Synchronization was never performed before. 
+	 */
+	UNDONE("undone");
 	
 	
 	private String status;
