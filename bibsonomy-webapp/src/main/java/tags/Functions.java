@@ -250,8 +250,10 @@ public class Functions  {
 			Double t = (tagFrequency > 100 ? 100.0 : tagFrequency.doubleValue() + 6);
 			t /= 5;
 			t = Math.log(t) * 100 + 30;
-
-			return (t.intValue()<100) ? 100 : t.intValue();
+			
+			// minium size of tags is 100, maximum size is 200
+			int size = (t.intValue() < 100) ? 100 : t.intValue();			
+			return (size > 200) ? 200 : size;
 		}
 		if ("popular".equals(tagSizeMode)) {
 			/*
