@@ -23,7 +23,7 @@ DOCS=$1
 TASK=$2
 
 for doc in $(find $1 -type f -name "[0-9a-f]*[0-9a-f]"); do
-    type=$(file -ib $doc)
+    type=$(file --brief --mime-type $doc)
     case "$type" in 
 	"application/postscript" | "application/pdf")
 	    # when no small preview there, generate a new one
