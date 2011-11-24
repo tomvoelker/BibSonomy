@@ -57,9 +57,9 @@ public class ReviewDatabaseManager extends DiscussionItemDatabaseManager<Review>
 	}
 	
 	@Override
-	protected void handleDiscussionItemDelete(final String interHash, final User user, final Review oldComment, final DBSession session) {
+	protected void handleDiscussionItemDelete(final String interHash, final User user, final Review oldReview, final DBSession session) {
 		final ReviewParam reviewParam = this.createReviewParam(interHash, user.getName());
-		reviewParam.setDiscussionItem(oldComment);
+		reviewParam.setDiscussionItem(oldReview);
 		
 		/*
 		 * update rating cache
