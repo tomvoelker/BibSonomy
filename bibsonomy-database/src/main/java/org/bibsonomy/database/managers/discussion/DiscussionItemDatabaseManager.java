@@ -102,9 +102,9 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 			 * create the discussion item
 			 * for each group an own entry! for performance!
 			 */
+			final DiscussionItemParam<D> param = this.createDiscussionItemParam(interHash, discussionItem.getUser().getName());
+			param.setDiscussionItem(discussionItem);
 			for (final Group group : discussionItem.getGroups()) {
-				final DiscussionItemParam<D> param = this.createDiscussionItemParam(interHash, discussionItem.getUser().getName());
-				param.setDiscussionItem(discussionItem);
 				param.setGroupId(group.getGroupId());
 				this.insert("insert" + this.discussionItemName, param, session);
 			}
