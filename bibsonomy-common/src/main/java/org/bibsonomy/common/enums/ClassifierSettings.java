@@ -65,6 +65,7 @@ public enum ClassifierSettings {
 	 *            name of the setting enum to retrieve
 	 * @return the corresponding enum object
 	 */
+	@Deprecated // TODO: use enum binding
 	public static ClassifierSettings getClassifierSettings(final String setting) {
 		final ClassifierSettings cs = EnumUtils.searchEnumByName(ClassifierSettings.values(), setting);
 		if (cs == null) throw new UnsupportedOperationException();
