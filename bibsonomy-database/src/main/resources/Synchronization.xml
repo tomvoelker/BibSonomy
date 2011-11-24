@@ -50,7 +50,7 @@
 	</select>
 
 	<select id="getSyncBookmark" resultMap="SynchronizationCommon.syncPost" parameterClass="bookmarkParam">
-		SELECT b.book_url_hash AS intrahash, NULL AS interhash, b.date, b.change_date
+		SELECT b.book_url_hash AS intrahash, NULL AS interhash, b.date, t.change_date
 		FROM bookmark b
 		JOIN tas t USING (content_id)
 		WHERE b.user_name = #userName#
