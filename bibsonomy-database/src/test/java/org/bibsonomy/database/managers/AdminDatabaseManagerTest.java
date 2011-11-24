@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -13,10 +14,14 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager;
 import org.bibsonomy.database.managers.discussion.DiscussionDatabaseManagerTest;
+import org.bibsonomy.database.managers.discussion.ReviewDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Review;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.TestDatabaseManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,6 +38,8 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static BibTexDatabaseManager publicationDb;
 	private static DiscussionDatabaseManager discussionDatabaseManager;
 	private static TestDatabaseManager testDatabaseManager;
+	private static ReviewDatabaseManager reviewDatabaseManager;
+	private static UserDatabaseManager userDatabaseManager;
 	
 	/**
 	 * sets up required managers
@@ -44,6 +51,8 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		publicationDb = BibTexDatabaseManager.getInstance();
 		discussionDatabaseManager = DiscussionDatabaseManager.getInstance();
 		testDatabaseManager = new TestDatabaseManager();
+		reviewDatabaseManager = ReviewDatabaseManager.getInstance();
+		userDatabaseManager = UserDatabaseManager.getInstance();
 	}
 
 	/**
@@ -204,6 +213,28 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		 * check if the review ratings cache was updated
 		 */
 		assertEquals(4.0, testDatabaseManager.getReviewRatingsArithmeticMean(DiscussionDatabaseManagerTest.HASH_WITH_RATING), 0);
+		
+		final float rating = 3.5f;
+		final String newHash = "thisisastrangehash";
+		final Review review = new Review();
+		final User spammer = userDatabaseManager.getUserDetails("testspammer", this.dbSession);
+		review.setUser(spammer);
+		review.setRating(rating);
+		review.setResourceType(GoldStandardPublication.class);
+		review.setGroups(Collections.singleton(GroupUtils.getPublicSpamGroup()));
+		assertTrue(reviewDatabaseManager.createDiscussionItemForResource(newHash, review, this.dbSession));
+		assertEquals(0.0, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
+		
+		spammer.setSpammer(false);
+		spammer.setAlgorithm("admin");
+		adminDb.flagSpammer(spammer, "admin", this.dbSession);
+		
+		assertEquals(rating, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
+		
+		spammer.setSpammer(true);
+		adminDb.flagSpammer(spammer, "admin", this.dbSession);
+		
+		assertEquals(0.0, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
 	}
 	
 	/**
