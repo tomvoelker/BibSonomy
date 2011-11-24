@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
+import org.bibsonomy.common.enums.PreviewSize;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
@@ -41,6 +42,8 @@ public class DownloadFileCommand extends BaseCommand implements Serializable, Do
 	 * download / delete
 	 */
 	private String action = null;
+	
+	private PreviewSize preview = null;
 	
 	/**
 	 * 
@@ -138,5 +141,13 @@ public class DownloadFileCommand extends BaseCommand implements Serializable, Do
 	 */
 	public void setIntrahash(String intrahash) {
 		this.intrahash = intrahash;
+	}
+
+	public PreviewSize getPreview() {
+		return this.preview;
+	}
+
+	public void setPreview(PreviewSize preview) {
+		this.preview = preview;
 	}	
 }
