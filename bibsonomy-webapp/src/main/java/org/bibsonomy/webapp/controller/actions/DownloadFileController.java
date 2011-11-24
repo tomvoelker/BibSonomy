@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.File;
 
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PreviewSize;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.UrlUtils;
@@ -92,8 +93,17 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 		/*
 		 * default: handle document download
 		 */
-		command.setPathToFile(FileUtil.getFilePath(this.docpath, document.getFileHash()));
-		command.setContentType(FileUtil.getContentType(document.getFileName()));
+		final PreviewSize preview = command.getPreview();
+		if (present(preview)) {
+			/*
+			 * FIXME: should we really do this here? (adopting file name and content type)
+			 */
+			command.setPathToFile(FileUtil.getFilePath(this.docpath, document.getFileHash() + "_" + preview.name()));
+			command.setContentType(FileUtil.CONTENT_TYPE_IMAGE_JPEG);
+		} else {
+			command.setPathToFile(FileUtil.getFilePath(this.docpath, document.getFileHash()));
+			command.setContentType(FileUtil.getContentType(document.getFileName()));
+		}
 		/*
 		 * stream document to user
 		 */
