@@ -36,6 +36,13 @@ import org.bibsonomy.util.StringUtils;
  * @version $Id$
  */
 public class FileUtil {
+	public static final String CONTENT_TYPE_IMAGE_PNG = "image/png";
+	public static final String CONTENT_TYPE_APPLICATION_POSTSCRIPT = "application/postscript";
+	public static final String CONTENT_TYPE_APPLICATION_PDF = "application/pdf";
+	public static final String CONTENT_TYPE_TEXT_PLAIN = "text/plain";
+	public static final String CONTENT_TYPE_IMAGE_DJVU = "image/vnd.djvu";
+	public static final String CONTENT_TYPE_IMAGE_JPEG = "image/jpeg";
+
 	/**
 	 * The pattern extracts the extension of a file.
 	 */
@@ -87,17 +94,17 @@ public class FileUtil {
 	 */
 	public static String getContentType(final String filename) {
 		if (StringUtils.matchExtension(filename, "ps")) {
-			return "application/postscript";
+			return CONTENT_TYPE_APPLICATION_POSTSCRIPT;
 		} else if (StringUtils.matchExtension(filename, "pdf")) {
-			return "application/pdf";
+			return CONTENT_TYPE_APPLICATION_PDF;
 		} else if (StringUtils.matchExtension(filename, "txt", "tex")) {
-			return "text/plain";
+			return CONTENT_TYPE_TEXT_PLAIN;
 		} else if (StringUtils.matchExtension(filename, "djv", "djvu")) {
-			return "image/vnd.djvu";
+			return CONTENT_TYPE_IMAGE_DJVU;
 		} else if (StringUtils.matchExtension(filename, "jpg", "jpeg")) {
-			return "image/jpeg";
+			return CONTENT_TYPE_IMAGE_JPEG;
 		} else if (StringUtils.matchExtension(filename, "png")) {
-			return "image/png";			
+			return CONTENT_TYPE_IMAGE_PNG;			
 		} else {
 			return "application/octet-stream";
 		}
