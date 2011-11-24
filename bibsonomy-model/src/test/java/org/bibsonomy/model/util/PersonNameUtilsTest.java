@@ -482,6 +482,24 @@ public class PersonNameUtilsTest {
 		assertEquals("Rocchio, Jr.", pn12.getLastName());	
 
 	}
+	
+	/**
+	 * tests person normalization for simhash 1
+	 * @throws PersonListParserException 
+	 */
+	@Test
+	public void testPersonNormalizationForSimhash1() throws PersonListParserException {
+		/*
+		 * almost all examples from our database! :-(
+		 */
+		assertEquals("[a.bauer]", PersonNameUtils.getNormalizedPersons(PersonNameUtils.discoverPersonNames("{Axel} Bauer")));
+		assertEquals("[l.antiqueira,l.costa,m.nunes,o.jr.]", PersonNameUtils.getNormalizedPersons(PersonNameUtils.discoverPersonNames("L. Antiqueira and M.G.V. Nunes and O.N. Oliveira Jr. and L. da F. Costa")));
+		assertEquals("[b.informationstechnik]", PersonNameUtils.getNormalizedPersons(PersonNameUtils.discoverPersonNames(" {Bundesamt für Sicherheit in der Informationstechnik}")));
+		assertEquals("[a.weiterbildung]", PersonNameUtils.getNormalizedPersons(PersonNameUtils.discoverPersonNames("{Arbeitsgruppe Hochschuldidaktische Weiterbildung}")));
+		assertEquals("[k.blom]", PersonNameUtils.getNormalizedPersons(PersonNameUtils.discoverPersonNames(" {Katarina Blom}")));
+		assertEquals("[k.blom,others]", PersonNameUtils.getNormalizedPersons(PersonNameUtils.discoverPersonNames("Katarina Blom and others")));
+		assertEquals("[c.dauteroche]", PersonNameUtils.getNormalizedPersons(PersonNameUtils.discoverPersonNames("Chappe d'Auteroche ???")));
+	}
 
 }
 

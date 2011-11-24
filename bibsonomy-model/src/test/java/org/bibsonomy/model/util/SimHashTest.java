@@ -181,25 +181,6 @@ public class SimHashTest {
 	}
 	
 	/**
-	 * tests person normalization for simhash 1
-	 * @throws PersonListParserException 
-	 */
-	@Test
-	public void testPersonNormalizationForSimhash1() throws PersonListParserException {
-		/*
-		 * almost all examples from our database! :-(
-		 */
-		assertEquals("[a.bauer]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("{Axel} Bauer")));
-		assertEquals("[l.antiqueira,l.costa,m.nunes,o.jr.]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("L. Antiqueira and M.G.V. Nunes and O.N. Oliveira Jr. and L. da F. Costa")));
-		assertEquals("[b.informationstechnik]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames(" {Bundesamt für Sicherheit in der Informationstechnik}")));
-		assertEquals("[a.weiterbildung]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("{Arbeitsgruppe Hochschuldidaktische Weiterbildung}")));
-		assertEquals("[k.blom]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames(" {Katarina Blom}")));
-		assertEquals("[k.blom,others]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("Katarina Blom and others")));
-		assertEquals("[c.dauteroche]", SimHash.getNormalizedPersons(PersonNameUtils.discoverPersonNames("Chappe d'Auteroche ???")));
-	}
-	
-
-	/**
 	 * tests person normalization for simhash 2
 	 * @throws PersonListParserException 
 	 */
