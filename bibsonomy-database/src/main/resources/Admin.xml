@@ -145,22 +145,26 @@
 	
 	<!-- FIXME: double check this statement!!! -->
 	<update id="updateReviewRatingsCache" parameterClass="adminParam" timeout="0">
-		UPDATE review_ratings_cache c JOIN discussion d USING (interHash) SET 
+		INSERT INTO review_ratings_cache (interHash, number_of_ratings, rating_arithmetic_mean) SELECT d.interHash, 1, d.rating FROM discussion d	WHERE d.rating IS NOT NULL
+			AND d.user_name = #userName#
+			<isEqual property="spammer" compareValue="false" prepend="AND">
+				d.`group` &lt; 0
+			</isEqual>
+			<isEqual property="spammer" compareValue="true" prepend="AND">
+				d.`group` >= 0
+			</isEqual>
+		ON DUPLICATE KEY UPDATE
 		<isEqual property="spammer" compareValue="true">
-			c.rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings - d.rating)/(number_of_ratings - 1), 0),
-			c.number_of_ratings = c.number_of_ratings - 1
+			rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings - d.rating)/(number_of_ratings - 1), 0),
+			number_of_ratings = number_of_ratings - 1
 		</isEqual>
 		<isEqual property="spammer" compareValue="false">
-			c.rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings + d.rating)/(number_of_ratings + 1), 0),
-			c.number_of_ratings = c.number_of_ratings + 1
+			rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings + d.rating)/(number_of_ratings + 1), 0),
+			number_of_ratings = number_of_ratings + 1
 		</isEqual>
-		WHERE d.interHash IN (SELECT di.interHash FROM discussion di WHERE di.user_name = #userName#
-			AND di.rating IS NOT NULL) AND d.user_name = #userName#
-		<isEqual property="spammer" compareValue="false" prepend="AND">
-			d.`group` &lt; 0
-		</isEqual>
-		<isEqual property="spammer" compareValue="true" prepend="AND">
-			d.`group` >= 0
+		
+		<isEqual property="spammer" compareValue="true">
+			
 		</isEqual>
 	</update>
 	
