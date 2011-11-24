@@ -1,11 +1,8 @@
 package org.bibsonomy.webapp.command;
 
-import java.util.List;
-
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
@@ -29,16 +26,6 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	private ListCommand<Post<GoldStandardPublication>> goldStandardPublications = new ListCommand<Post<GoldStandardPublication>>(this);
 
 	private StatisticsValues discussionsStatistic;
-	
-	// TODO: move to listcommand or use the listCommand
-	@Deprecated
-	private Post<GoldStandardPublication> goldStandardPublication;
-	
-	@Deprecated
-	private Post<Bookmark> goldStandardBookmark;
-	
-	@Deprecated
-	private List<DiscussionItem> discussionItems;
 	
 	/**
 	 * @param <T> type of the entities in the list
@@ -96,35 +83,6 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	}
 
 	/**
-	 * @param goldStandardPublication the goldStandardPublication to set
-	 */
-	public void setGoldStandardPublication(final Post<GoldStandardPublication> goldStandardPublication) {
-		this.goldStandardPublication = goldStandardPublication;
-	}
-
-	/**
-	 * @return the goldStandardPublication
-	 */
-	public Post<GoldStandardPublication> getGoldStandardPublication() {
-		return goldStandardPublication;
-	}
-	
-	/**
-	 * @return the goldStandardBookmark
-	 */
-	public Post<Bookmark> getGoldStandardBookmark() {
-		return this.goldStandardBookmark;
-	}
-
-	/**
-	 * @param goldStandardBookmark the goldStandardBookmark to set
-	 */
-	public void setGoldStandardBookmark(final Post<Bookmark> goldStandardBookmark) {
-		this.goldStandardBookmark = goldStandardBookmark;
-	}
-
-
-	/**
 	 * @param goldStandardPublications the goldStandardPublications to set
 	 */
 	public void setGoldStandardPublications(final ListCommand<Post<GoldStandardPublication>> goldStandardPublications) {
@@ -139,23 +97,9 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	}
 
 	/**
-	 * @return the goldStandardBookmarks
-	 */
-	public List<DiscussionItem> getDiscussionItems() {
-		return this.discussionItems;
-	}
-
-	/**
-	 * @param discussionItems the discussionItems to set
-	 */
-	public void setDiscussionItems(final List<DiscussionItem> discussionItems) {
-		this.discussionItems = discussionItems;
-	}
-
-	/**
 	 * @param statistics the discussionsStatistic to set
 	 */
-	public void setDiscussionsStatistic(Statistics statistics) {
+	public void setDiscussionsStatistic(final Statistics statistics) {
 		if (statistics instanceof StatisticsValues) {
 			this.discussionsStatistic = (StatisticsValues) statistics;
 		} 

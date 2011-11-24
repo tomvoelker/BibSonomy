@@ -12,7 +12,14 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:bookmarkLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	<c:set var="goldstandardPresent" value="${not empty command.goldStandard}" />
+	<c:set var="bookmark" value="${command.bookmark.list[0].resource}" />
+
+	<c:if test="${goldstandardPresent}">
+		<c:set var="bookmark" value="${command.goldStandard.resource}" />				
+	</c:if>
+	
+	<layout:bookmarkLayout pageTitle="url :: ${bookmark.title}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="heading">
 			<!-- disabled: PIA web service 
 				<tags:similarresources url="${fn:escapeXml(command.bookmark.list[0].resource.url)}" method="findSimilarUrls"/>
@@ -45,12 +52,6 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="contentHeading">
-			<c:set var="bookmark" value="${command.bookmark.list[0].resource}" />
-
-			<c:if test="${not empty command.goldStandardBookmark}">
-				<c:set var="bookmark" value="${command.goldStandardBookmark.resource}" />				
-			</c:if>
-			
 			<h2 itemprop="name"><a href="${bookmark.url}" itemprop="url"><c:out value="${bookmark.title}" /></a></h2>
 		
 			<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" />

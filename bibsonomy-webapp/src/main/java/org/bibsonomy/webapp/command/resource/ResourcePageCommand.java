@@ -15,9 +15,6 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
 public class ResourcePageCommand<R extends Resource> extends TagResourceViewCommand {
 	private String requestedHash;
 	
-	// TODO: remove!?
-	private String title;
-	
 	private List<DiscussionItem> discussionItems;
 	private Post<R> goldStandard;
 
@@ -33,20 +30,6 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	 */
 	public void setRequestedHash(final String requestedHash) {
 		this.requestedHash = requestedHash;
-	}
-
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return this.title;
-	}
-
-	/**
-	 * @param title the title to set
-	 */
-	public void setTitle(final String title) {
-		this.title = title;
 	}
 
 	/**
@@ -66,7 +49,6 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	/**
 	 * @return the discussionItems
 	 */
-	@Override
 	public List<DiscussionItem> getDiscussionItems() {
 		return this.discussionItems;
 	}
@@ -74,7 +56,6 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	/**
 	 * @param discussionItems the discussionItems to set
 	 */
-	@Override
 	public void setDiscussionItems(final List<DiscussionItem> discussionItems) {
 		this.discussionItems = discussionItems;
 	}

@@ -15,7 +15,10 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.publication" var="pageTitle" />
-	<c:set var="title" value="${mtl:cleanBibtex(command.title)}" />
+	<c:set var="post" value="${command.bibtex.list[0]}" />
+	<c:set var="publication" value="${post.resource}" />
+	
+	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
 		<jsp:attribute name="headerExt">
@@ -34,8 +37,6 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<c:set var="post" value="${command.bibtex.list[0]}" />
-			<c:set var="publication" value="${post.resource}" />
 			<ul id="sidebar">
 				<c:set var="owner" value="${post.user.name}" />
 				<c:set var="tagsString" value="${mtl:toTagString(post.tags)}" />

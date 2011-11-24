@@ -13,7 +13,13 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<c:set var="title" value="${mtl:cleanBibtex(command.title)}" />
+	<c:set var="goldstandardPresent" value="${not empty command.goldStandard}" />
+	<c:set var="publication" value="${command.bibtex.list[0].resource}" />
+			
+	<c:if test="${goldstandardPresent}">
+		<c:set var="publication" value="${command.goldStandard.resource}" />
+	</c:if>
+	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	
 	<fmt:message key="navi.publication" var="pageTitle"/>
 	
@@ -30,7 +36,7 @@
 			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
 			
-			<c:if test="${not empty command.goldStandardPublication}">
+			<c:if test="${goldstandardPresent}">
 				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
 			
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
@@ -60,9 +66,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="contentHeading">
-			<h2><c:out value="${title}" /></h2>
-			<c:set var="publication" value="${command.bibtex.list[0].resource}" />
-		
+			<h2><c:out value="${title}" /></h2>		
 			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>
 	</layout:bibtexLayout>
