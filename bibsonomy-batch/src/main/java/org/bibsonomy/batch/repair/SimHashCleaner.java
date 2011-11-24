@@ -20,7 +20,6 @@ import org.bibsonomy.batch.repair.old.OldSimHash;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.util.StringUtils;
 
@@ -367,7 +366,7 @@ public class SimHashCleaner {
 	private StringBuffer getPerson(final String personType, final String oldPerson, final List<PersonName> newPerson, final String newEqualsDb) throws IOException {
 		if (present(oldPerson)) {
 			final StringBuffer buf = new StringBuffer();
-			final String newNorm1 = SimHash.getNormalizedPersons(newPerson);
+			final String newNorm1 = PersonNameUtils.getNormalizedPersons(newPerson);
 			final String oldNorm1 = OldSimHash.getNormalizedAuthor(oldPerson);
 
 
