@@ -25,17 +25,10 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.StringUtils;
 
@@ -44,8 +37,6 @@ import org.bibsonomy.util.StringUtils;
  * @version $Id$
  */
 public class SimHash {
-	
-	private static final Pattern SINGLE_LETTER = Pattern.compile("(\\p{L})");
 	
 	/**
 	 * 
@@ -166,12 +157,12 @@ public class SimHash {
 		if (!present(StringUtils.removeNonNumbersOrLetters(PersonNameUtils.serializePersonNames(publication.getAuthor())))) {
 			// no author set --> take editor
 			return StringUtils.getMD5Hash(getNormalizedTitle(publication.getTitle()) + " " +
-					getNormalizedPersons(publication.getEditor())            + " " +
+					PersonNameUtils.getNormalizedPersons(publication.getEditor())            + " " +
 					getNormalizedYear(publication.getYear()));				
 		}
 		// author set
 		return StringUtils.getMD5Hash(getNormalizedTitle(publication.getTitle()) + " " + 
-				getNormalizedPersons(publication.getAuthor())            + " " + 
+				PersonNameUtils.getNormalizedPersons(publication.getAuthor())            + " " + 
 				getNormalizedYear(publication.getYear()));
 	}
 
@@ -216,19 +207,6 @@ public class SimHash {
 		return "";
 	}
 
-	/**
-	 * July 2010: added "orComma" since we now support the "Last, First" name format 
-	 * where we need the comma in {@link #normalizePerson(PersonName)} to extract the
-	 * first and the last name.
-	 * 
-	 * @param persons 
-	 * @return The normalized persons.
-	 */
-	public static String getNormalizedPersons(final List<PersonName> persons) {
-		if (!present(persons)) return "";
-		return StringUtils.getStringFromList(normalizePersonList(persons));
-	}
-
 	private static String getNormalizedYear(final String str) {
 		if (str == null) return "";
 		return StringUtils.removeNonNumbers(str);
@@ -238,110 +216,7 @@ public class SimHash {
 		if (str == null) return "";
 		return StringUtils.removeNonNumbersOrLetters(str).toLowerCase();
 	}
-
-	/**
-	 * Input: a String of persons, separated by " and "<br/>
-	 * 
-	 * Output: a Set of normalized persons, divided by ", " and enclosed in
-	 * brackets "[ ]"
-	 */
-	private static Set<String> normalizePersonList(final List<PersonName> persons) {
-		final Set<String> normalized = new TreeSet<String>();
-		for (final PersonName personName : persons) {
-			normalized.add(normalizePerson(personName));
-		}
-		return normalized;
-	}
-
-	/**
-	 * Used for "sloppy" hashes, i.e., the inter hash
-	 * 
-	 * Input: a String of a person name<br/>
-	 *  
-	 * Output: normalized String of person name<br/>
-	 * 
-	 * Example:<br/>
-	 * Donald E. Knuth --> d.knuth<br/>
-	 * D.E.      Knuth --> d.knuth<br/>
-	 * Donald    Knuth --> d.knuth<br/>
-	 *           Knuth --> knuth<br/>
-	 * Knuth, Donald   --> d.knuth<br/>
-	 * Knuth, Donald E.--> d.knuth<br/>
-	 * Maarten de Rijke--> m.rijke<br/>
-	 * Balby Marinho, Leandro--> l.marinho<br/>
-	 */
-	private static String normalizePerson(final PersonName p) {
-		final String first = p.getFirstName();
-		final String last  = p.getLastName();
-		if (present(first) && !present(last)) {
-			/*
-			 * Only the first name is given. This should practically never happen,
-			 * since we put such names into the last name field.
-			 * 
-			 */
-			return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(first).toLowerCase();
-		}
-		if (present(first) && present(last)) {
-			/*
-			 * First and last given - default.
-			 * Take the first letter of the first name and append the last part
-			 * of the last name.
-			 */
-			return getFirst(first) + "." + getLast(last);
-		}
-		if (present(last)) {
-			/*
-			 * Only last name available - could be a "regular" name enclosed
-			 * in brackets.
-			 */
-			return getLast(last);
-		}
-		return "";
-	}
-
 	
-	/**
-	 * Returns the first letter of the first name, or an empty string, if no
-	 * such letter exists.
-	 * 
-	 * @param first
-	 * @return
-	 */
-	private static String getFirst(final String first) {
-		final Matcher matcher = SINGLE_LETTER.matcher(first);
-		if (matcher.find()) {
-			return matcher.group(1).toLowerCase();
-		}
-		return "";
-	}
-	
-	
-	/**
-	 * Extracts from the last name the last part and cleans it. I.e., from 
-	 * "van de Gruyter" we get "gruyter"
-	 * 
-	 * @param last
-	 * @return
-	 */
-	private static String getLast(final String last) {
-		/*
-		 * A name enclosed in brackets {Like this One} is detected as a single 
-		 * last name. We here re-parse such names to extract the "real" name.
-		 */
-		final String trimmedLast = last.trim();
-		if (trimmedLast.startsWith("{") && trimmedLast.endsWith("}")) {
-			final List<PersonName> name = PersonNameUtils.discoverPersonNamesIgnoreExceptions(trimmedLast.substring(1, trimmedLast.length() - 1));
-			if (present(name)) return normalizePerson(name.get(0));
-		} 
-		/*
-		 * We remove all unusual characters.
-		 */
-		final String cleanedLast = StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(trimmedLast).toLowerCase().trim();
-		/*
-		 * If we find a space character, we take the last part of the name
-		 */
-		final int pos = cleanedLast.lastIndexOf(' ');
-		return pos > 0 ? cleanedLast.substring(pos + 1) : cleanedLast;
-	}
+
 
 }

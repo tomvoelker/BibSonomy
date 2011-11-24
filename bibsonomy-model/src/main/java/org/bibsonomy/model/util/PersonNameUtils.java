@@ -25,10 +25,16 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * Nice place for static util methods regarding names of persons.
@@ -47,8 +53,9 @@ public class PersonNameUtils {
 	 * By default, all author and editor names are in "Last, First" order
 	 */
 	public static final boolean DEFAULT_LAST_FIRST_NAMES = true;
-
-
+	
+	private static final Pattern SINGLE_LETTER = Pattern.compile("(\\p{L})");
+	
 	/**
 	 * Analyses a string of names of the form "J. T. Kirk and M. Scott".
 	 * 
@@ -205,4 +212,131 @@ public class PersonNameUtils {
 		return null;
 	}
 
+	
+	/**
+	 * July 2010: added "orComma" since we now support the "Last, First" name format 
+	 * where we need the comma in {@link #normalizePerson(PersonName)} to extract the
+	 * first and the last name.
+	 * 
+	 * @param persons 
+	 * @return The normalized persons - divided by ", " and enclosed in
+	 * brackets "[ ]"l
+	 */
+	public static String getNormalizedPersons(final Collection<PersonName> persons) {
+		if (!present(persons)) return "";
+		return StringUtils.getStringFromList(normalizePersonList(persons));
+	}
+	
+
+	/**
+	 * Normalizes a collection of persons by normalizing their names 
+	 * ({@link #normalizePerson(PersonName)}) and sorting them.
+	 *  
+	 * @param persons - a list of persons. 
+	 * @return A sorted set of normalized persons.
+	 */
+	private static SortedSet<String> normalizePersonList(final Collection<PersonName> persons) {
+		final SortedSet<String> normalized = new TreeSet<String>();
+		for (final PersonName personName : persons) {
+			normalized.add(normalizePerson(personName));
+		}
+		return normalized;
+	}
+
+	/**
+	 * Used for "sloppy" hashes, i.e., the inter hash.
+	 * <p>
+	 * The person name is normalized according to the following scheme:
+	 * <tt>x.last</tt>, where <tt>x</tt> is the first letter of the first name
+	 * and <tt>last</tt> is the last name.
+	 * </p>
+	 * 
+	 * Example:
+	 * <pre>
+	 * Donald E. Knuth       --&gt; d.knuth
+	 * D.E.      Knuth       --&gt; d.knuth
+	 * Donald    Knuth       --&gt; d.knuth
+	 *           Knuth       --&gt; knuth
+	 * Knuth, Donald         --&gt; d.knuth
+	 * Knuth, Donald E.      --&gt; d.knuth
+	 * Maarten de Rijke      --&gt; m.rijke
+	 * Balby Marinho, Leandro--&gt; l.marinho
+	 * </pre>
+	 * 
+	 * @param personName 
+	 * @return The normalized person name as string. 
+	 */
+	public static String normalizePerson(final PersonName personName) {
+		final String first = personName.getFirstName();
+		final String last  = personName.getLastName();
+		if (present(first) && !present(last)) {
+			/*
+			 * Only the first name is given. This should practically never happen,
+			 * since we put such names into the last name field.
+			 * 
+			 */
+			return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(first).toLowerCase();
+		}
+		if (present(first) && present(last)) {
+			/*
+			 * First and last given - default.
+			 * Take the first letter of the first name and append the last part
+			 * of the last name.
+			 */
+			return getFirst(first) + "." + getLast(last);
+		}
+		if (present(last)) {
+			/*
+			 * Only last name available - could be a "regular" name enclosed
+			 * in brackets.
+			 */
+			return getLast(last);
+		}
+		return "";
+	}
+
+	/**
+	 * Returns the first letter of the first name, or an empty string, if no
+	 * such letter exists.
+	 * 
+	 * @param first
+	 * @return
+	 */
+	private static String getFirst(final String first) {
+		final Matcher matcher = SINGLE_LETTER.matcher(first);
+		if (matcher.find()) {
+			return matcher.group(1).toLowerCase();
+		}
+		return "";
+	}
+	
+	
+	/**
+	 * Extracts from the last name the last part and cleans it. I.e., from 
+	 * "van de Gruyter" we get "gruyter"
+	 * 
+	 * @param last
+	 * @return
+	 */
+	private static String getLast(final String last) {
+		/*
+		 * A name enclosed in brackets {Like this One} is detected as a single 
+		 * last name. We here re-parse such names to extract the "real" name.
+		 */
+		final String trimmedLast = last.trim();
+		if (trimmedLast.startsWith("{") && trimmedLast.endsWith("}")) {
+			final List<PersonName> name = PersonNameUtils.discoverPersonNamesIgnoreExceptions(trimmedLast.substring(1, trimmedLast.length() - 1));
+			if (present(name)) return normalizePerson(name.get(0));
+		} 
+		/*
+		 * We remove all unusual characters.
+		 */
+		final String cleanedLast = StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(trimmedLast).toLowerCase().trim();
+		/*
+		 * If we find a space character, we take the last part of the name
+		 */
+		final int pos = cleanedLast.lastIndexOf(' ');
+		return pos > 0 ? cleanedLast.substring(pos + 1) : cleanedLast;
+	}
+	
 }
