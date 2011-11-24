@@ -217,9 +217,6 @@ public class User implements Serializable {
 	 * Constructor
 	 */
 	public User() {
-		this.basket = new Basket();
-		this.inbox = new Inbox();
-		this.settings = new UserSettings();
 		this.role = Role.NOBODY; // TODO: check, if this has any bad implications!
 	}
 
@@ -243,7 +240,7 @@ public class User implements Serializable {
 	/**
 	 * @param email
 	 */
-	public void setEmail(String email) {
+	public void setEmail(final String email) {
 		this.email = email;
 	}
 
@@ -257,7 +254,7 @@ public class User implements Serializable {
 	/**
 	 * @param homepage
 	 */
-	public void setHomepage(URL homepage) {
+	public void setHomepage(final URL homepage) {
 		this.homepage = homepage;
 	}
 
@@ -271,7 +268,7 @@ public class User implements Serializable {
 	/**
 	 * @param name
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name == null ? null : name.toLowerCase();
 	}
 
@@ -285,7 +282,7 @@ public class User implements Serializable {
 	/**
 	 * @param realname
 	 */
-	public void setRealname(String realname) {
+	public void setRealname(final String realname) {
 		this.realname = realname;
 	}
 
@@ -299,7 +296,7 @@ public class User implements Serializable {
 	/**
 	 * @param registrationDate
 	 */
-	public void setRegistrationDate(Date registrationDate) {
+	public void setRegistrationDate(final Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
 
@@ -316,7 +313,7 @@ public class User implements Serializable {
 	/**
 	 * @param groups
 	 */
-	public void setGroups(List<Group> groups) {
+	public void setGroups(final List<Group> groups) {
 		this.groups = groups;
 	}
 
@@ -341,7 +338,7 @@ public class User implements Serializable {
 	/**
 	 * @param password
 	 */
-	public void setPassword(String password) {
+	public void setPassword(final String password) {
 		this.password = password;
 	}
 
@@ -355,7 +352,7 @@ public class User implements Serializable {
 	/**
 	 * @param apiKey
 	 */
-	public void setApiKey(String apiKey) {
+	public void setApiKey(final String apiKey) {
 		this.apiKey = apiKey;
 	}
 
@@ -363,13 +360,16 @@ public class User implements Serializable {
 	 * @return settings
 	 */
 	public UserSettings getSettings() {
+		if (this.settings == null) {
+			this.settings = new UserSettings();
+		}
 		return this.settings;
 	}
 
 	/**
 	 * @param settings
 	 */
-	public void setSettings(UserSettings settings) {
+	public void setSettings(final UserSettings settings) {
 		this.settings = settings;
 	}
 
@@ -383,7 +383,7 @@ public class User implements Serializable {
 	/**
 	 * @param IPAddress
 	 */
-	public void setIPAddress(String IPAddress) {
+	public void setIPAddress(final String IPAddress) {
 		this.IPAddress = IPAddress;
 	}
 
@@ -397,7 +397,7 @@ public class User implements Serializable {
 	/**
 	 * @param birthday
 	 */
-	public void setBirthday(Date birthday) {
+	public void setBirthday(final Date birthday) {
 		this.birthday = birthday;
 	}
 
@@ -411,7 +411,7 @@ public class User implements Serializable {
 	/**
 	 * @param gender
 	 */
-	public void setGender(String gender) {
+	public void setGender(final String gender) {
 		this.gender = gender;
 	}
 
@@ -425,7 +425,7 @@ public class User implements Serializable {
 	/**
 	 * @param profession
 	 */
-	public void setProfession(String profession) {
+	public void setProfession(final String profession) {
 		this.profession = profession;
 	}
 
@@ -439,7 +439,7 @@ public class User implements Serializable {
 	/**
 	 * @param interests
 	 */
-	public void setInterests(String interests) {
+	public void setInterests(final String interests) {
 		this.interests = interests;
 	}
 
@@ -453,7 +453,7 @@ public class User implements Serializable {
 	/**
 	 * @param hobbies
 	 */
-	public void setHobbies(String hobbies) {
+	public void setHobbies(final String hobbies) {
 		this.hobbies = hobbies;
 	}
 
@@ -467,7 +467,7 @@ public class User implements Serializable {
 	/**
 	 * @param place
 	 */
-	public void setPlace(String place) {
+	public void setPlace(final String place) {
 		this.place = place;
 	}
 
@@ -505,7 +505,7 @@ public class User implements Serializable {
 	/**
 	 * @param spammer
 	 */
-	public void setSpammer(Boolean spammer) {
+	public void setSpammer(final Boolean spammer) {
 		this.spammer = spammer;
 	}
 
@@ -519,7 +519,7 @@ public class User implements Serializable {
 	/**
 	 * @param openURL
 	 */
-	public void setOpenURL(String openURL) {
+	public void setOpenURL(final String openURL) {
 		this.openURL = openURL;
 	}
 	
@@ -533,14 +533,14 @@ public class User implements Serializable {
 	/**
 	 * @param openID
 	 */
-	public void setOpenID(String openID) {
+	public void setOpenID(final String openID) {
 		this.openID = UrlUtils.normalizeURL(openID);
 	}
 
 	/**
 	 * @param ldapId
 	 */
-	public void setLdapId(String ldapId) {
+	public void setLdapId(final String ldapId) {
 		this.ldapId = ldapId;
 	}
 
@@ -555,13 +555,16 @@ public class User implements Serializable {
 	 * @return basket
 	 */
 	public Basket getBasket() {
+		if (this.basket == null) {
+			this.basket = new Basket();
+		}
 		return this.basket;
 	}
 
 	/**
 	 * @param basket
 	 */
-	public void setBasket(Basket basket) {
+	public void setBasket(final Basket basket) {
 		this.basket = basket;
 	}
 	
@@ -569,13 +572,16 @@ public class User implements Serializable {
 	 * @return inbox
 	 */
 	public Inbox getInbox() {
+		if (this.inbox == null) {
+			this.inbox = new Inbox();
+		}
 		return this.inbox;
 	}
 
 	/**
 	 * @param inbox
 	 */
-	public void setInbox(Inbox inbox) {
+	public void setInbox(final Inbox inbox) {
 		this.inbox = inbox;
 	}
 	
@@ -589,7 +595,7 @@ public class User implements Serializable {
 	/**
 	 * @param activationCode
 	 */
-	public void setActivationCode(String activationCode) {
+	public void setActivationCode(final String activationCode) {
 		this.activationCode = activationCode;
 	}
 	
@@ -648,7 +654,7 @@ public class User implements Serializable {
 	/**
 	 * @param role
 	 */
-	public void setRole(Role role) {
+	public void setRole(final Role role) {
 		this.role = role;
 	}
 
@@ -662,7 +668,7 @@ public class User implements Serializable {
 	/**
 	 * @param algorithm classification algorithm
 	 */
-	public void setAlgorithm(String algorithm) {
+	public void setAlgorithm(final String algorithm) {
 		this.algorithm = algorithm;
 	}
 
@@ -676,7 +682,7 @@ public class User implements Serializable {
 	/**
 	 * @param prediction Prediction
 	 */
-	public void setPrediction(Integer prediction) {
+	public void setPrediction(final Integer prediction) {
 		this.prediction = prediction;
 	}
 	
@@ -690,7 +696,7 @@ public class User implements Serializable {
 	/**
 	 * @param confidence Confidence
 	 */
-	public void setConfidence(Double confidence) {
+	public void setConfidence(final Double confidence) {
 		this.confidence = confidence;
 	}
 
@@ -704,7 +710,7 @@ public class User implements Serializable {
 	/**
 	 * @param toClassify if user should be classified
 	 */
-	public void setToClassify(Integer toClassify) {
+	public void setToClassify(final Integer toClassify) {
 		this.toClassify = toClassify;
 	}
 
@@ -718,7 +724,7 @@ public class User implements Serializable {
 	/**
 	 * @param updatedBy person who updates user dataset
 	 */
-	public void setUpdatedBy(String updatedBy) {
+	public void setUpdatedBy(final String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
@@ -732,7 +738,7 @@ public class User implements Serializable {
 	/**
 	 * @param updatetAt date of update
 	 */
-	public void setUpdatedAt(Date updatetAt) {
+	public void setUpdatedAt(final Date updatetAt) {
 		this.updatedAt = updatetAt;
 	}
 
@@ -746,7 +752,7 @@ public class User implements Serializable {
 	/**
 	 * @param mode
 	 */
-	public void setMode(String mode) {
+	public void setMode(final String mode) {
 		this.mode = mode;
 	}
 
@@ -762,7 +768,7 @@ public class User implements Serializable {
 	 * @param reminderPassword
 	 * @see #getReminderPasswordRequestDate()
 	 */
-	public void setReminderPassword(String reminderPassword) {
+	public void setReminderPassword(final String reminderPassword) {
 		this.reminderPassword = reminderPassword;
 	}
 
@@ -778,7 +784,7 @@ public class User implements Serializable {
 	 * @param reminderPasswordRequestDate
 	 * @see #setReminderPassword(String)
 	 */
-	public void setReminderPasswordRequestDate(Date reminderPasswordRequestDate) {
+	public void setReminderPasswordRequestDate(final Date reminderPasswordRequestDate) {
 		this.reminderPasswordRequestDate = reminderPasswordRequestDate;
 	}
 	
@@ -809,7 +815,7 @@ public class User implements Serializable {
 	/**
 	 * @param institution
 	 */
-	public void setInstitution(String institution) {
+	public void setInstitution(final String institution) {
 		this.institution = institution;
 	}
 
@@ -826,14 +832,14 @@ public class User implements Serializable {
 	/**
 	 * @param posts
 	 */
-	public void setPosts(List<Post<? extends Resource>> posts) {
+	public void setPosts(final List<Post<? extends Resource>> posts) {
 		this.posts = posts;
 	}
 
 	/**
 	 * @param tags List of tags which were assigned to this user via a tagged relationship
 	 */
-	public void setTags(List<Tag> tags) {
+	public void setTags(final List<Tag> tags) {
 		this.tags = tags;
 	}
 
