@@ -38,6 +38,8 @@ for doc in $(find $1 -type f -name "[0-9a-f]*[0-9a-f]"); do
 		convert -thumbnail '100x100>' $temp ${doc}_SMALL
 		convert -thumbnail '200x200>' $temp ${doc}_MEDIUM
 		convert -thumbnail '400x400>' $temp ${doc}_LARGE
+		# remove temporary file
+		rm $temp
 	    fi
 	    ;;
 	*)
