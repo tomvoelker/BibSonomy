@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.controller;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.webapp.command.BibtexResourceViewCommand;
+import org.bibsonomy.webapp.command.resource.PublicationPageCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -16,12 +16,12 @@ import org.springframework.validation.Errors;
  * @author Dominik Benz, benz@cs.uni-kassel.de
  * @version $Id$
  */
-public class BasketPageController extends SingleResourceListController implements MinimalisticController<BibtexResourceViewCommand>, ErrorAware {
+public class BasketPageController extends SingleResourceListController implements MinimalisticController<PublicationPageCommand>, ErrorAware {
 
 	private Errors errors;
 
 	@Override
-	public View workOn(BibtexResourceViewCommand command) {
+	public View workOn(final PublicationPageCommand command) {
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
 
@@ -56,7 +56,6 @@ public class BasketPageController extends SingleResourceListController implement
 
 		this.endTiming();			
 		if ("html".equals(format)) {
-			command.setPageTitle(" :: basket" );
 			return Views.BASKETPAGE;	
 		}
 
@@ -66,8 +65,8 @@ public class BasketPageController extends SingleResourceListController implement
 	}
 
 	@Override
-	public BibtexResourceViewCommand instantiateCommand() {
-		return new BibtexResourceViewCommand();
+	public PublicationPageCommand instantiateCommand() {
+		return new PublicationPageCommand();
 	}
 
 	@Override
@@ -76,7 +75,7 @@ public class BasketPageController extends SingleResourceListController implement
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 

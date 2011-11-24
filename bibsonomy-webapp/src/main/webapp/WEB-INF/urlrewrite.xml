@@ -724,14 +724,14 @@
 	</rule>
 	<rule>
 		<name>/url/HASH</name>
-		<from>^/+url/+([0-9a-fA-F]+)$</from>
-		<set type="parameter" name="requUrlHash">$1</set>
+		<from>^/+url/+([0-9a-fA-F]{32})$</from>
+		<set type="parameter" name="requestedHash">$1</set>
 		<to last="true">/url</to>
 	</rule>
 	<rule>
 		<name>/url/HASH/USER</name>
-		<from>^/+url/+([0-9a-fA-F]+)/+(.+)$</from>
-		<set type="parameter" name="requUrlHash">$1</set>
+		<from>^/+url/+([0-9a-fA-F]{32})/+(.+)$</from>
+		<set type="parameter" name="requestedHash">$1</set>
 		<set type="parameter" name="requestedUser">$2</set>
 		<to last="true">/url</to>
 	</rule>
@@ -743,14 +743,14 @@
 	<rule><!-- /[32]/USERNAME -->
 		<name>/bibtex/HASH/USER</name>
 		<from>^/+bibtex/+([0-9a-fA-F]{32})/+(.+)$</from>
-		<set type="parameter" name="requBibtex">1$1</set>
+		<set type="parameter" name="requestedHash">1$1</set>
 		<set type="parameter" name="requestedUser">$2</set>
 		<to last="true">/bibtex</to>
 	</rule>
 	<rule><!-- /[0-3][32]/USERNAME -->
 		<name>/bibtex/SHASH/USER</name>
 		<from>^/+bibtex/+([0-3])([0-9a-fA-F]{32})/+(.+)$</from>
-		<set type="parameter" name="requBibtex">$1$2</set>
+		<set type="parameter" name="requestedHash">$1$2</set>
 		<set type="parameter" name="requestedUser">$3</set>
 		<to last="true">/bibtex</to>
 	</rule>	
@@ -758,13 +758,13 @@
 	<rule><!-- /[0-3][32] -->
 		<name>/bibtex/SHASH</name>
 		<from>^/+bibtex/+([0-3])([0-9a-fA-F]{32})$</from>
-		<set type="parameter" name="requBibtex">$1$2</set>
+		<set type="parameter" name="requestedHash">$1$2</set>
 		<to last="true">/bibtex</to>
 	</rule>
 	<rule><!-- /[32] (arbitrary hash) defaults to simhash1 -->
 		<name>/bibtex/HASH</name>
 		<from>^/+bibtex/+([0-9a-fA-F]{32})$</from>
-		<set type="parameter" name="requBibtex">1$1</set>
+		<set type="parameter" name="requestedHash">1$1</set>
 		<to last="true">/bibtex</to>
 	</rule>
 

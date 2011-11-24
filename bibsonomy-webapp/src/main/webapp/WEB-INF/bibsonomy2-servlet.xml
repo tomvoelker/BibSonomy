@@ -402,7 +402,7 @@
 				</entry>		
 				<entry key="/url">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="urlPageController"/>
+						<property name="controllerBeanName" value="bookmarkPageController"/>
 					</bean>
 				</entry>	
 				<entry key="/bibtex">
@@ -648,7 +648,7 @@
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
-	<bean id="publicationPageController" class="org.bibsonomy.webapp.controller.BibtexPageController" scope="request" parent="multiResourceListControllerWithTags">
+	<bean id="publicationPageController" class="org.bibsonomy.webapp.controller.resource.PublicationPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources">
 			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
@@ -698,7 +698,7 @@
 		</property>
 	</bean>
 	 
-	<bean id="urlPageController" class="org.bibsonomy.webapp.controller.UrlPageController" scope="request" parent="multiResourceListController">
+	<bean id="bookmarkPageController" class="org.bibsonomy.webapp.controller.resource.BookmarkPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources">
 			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
