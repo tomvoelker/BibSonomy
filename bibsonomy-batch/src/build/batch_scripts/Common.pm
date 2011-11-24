@@ -94,7 +94,6 @@ sub am_i_running {
     }
     close (FILE);
     chomp($PIDD);
-
     if (kill(0,$PIDD)) {
       return 1;
     }

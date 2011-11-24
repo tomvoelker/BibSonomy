@@ -31,7 +31,8 @@ done
 
 #### melkor (Würzburg)
 #melkor.informatik.uni-wuerzburg.de
-RHOST=132.187.15.90
+#RHOST=132.187.15.90
+RHOST=192.168.112.130
 RUSER=bibbackup
 RDIR=backup
 
