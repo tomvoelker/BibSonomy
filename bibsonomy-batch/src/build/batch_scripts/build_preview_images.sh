@@ -42,6 +42,17 @@ for doc in $(find $1 -type f -name "[0-9a-f]*[0-9a-f]"); do
 		rm $temp
 	    fi
 	    ;;
+	"image/jpeg" | "image/png" | "image/tiff" )
+	    # when no small preview there, generate a new one
+	    small=${doc}_SMALL
+	    if [ ! -f $small -o $TASK == "force" ]; then
+		echo "converting $doc ($type)"
+		# make small JPEG previews
+		convert -thumbnail '100x100>' $doc ${doc}_SMALL
+		convert -thumbnail '200x200>' $doc ${doc}_MEDIUM
+		convert -thumbnail '400x400>' $doc ${doc}_LARGE
+	    fi
+	    ;;
 	*)
 	    echo "$type can not be handled"
 	    ;;
