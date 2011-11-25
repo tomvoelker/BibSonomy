@@ -38,8 +38,14 @@ import org.bibsonomy.util.StringUtils;
  * @version $Id$
  */
 public class FileUtil {
-	private static final String EXTENSION_JPG = "jpg";
+	/**
+	 * default file extension for JPEG images
+	 */
+	public static final String EXTENSION_JPG = "jpg";
 
+	/**
+	 * content type for JPEG images
+	 */
 	public static final String CONTENT_TYPE_IMAGE_JPEG = "image/jpeg";
 
 	/**
