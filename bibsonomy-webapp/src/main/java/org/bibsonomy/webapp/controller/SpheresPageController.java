@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -194,8 +194,8 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 			sphereTags.add(SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, sphere.getKey()));
 			
 			// get bookmarks and publications for current sphere 
-			final List<Post<Bookmark>> bmPosts = logic.getPosts(Bookmark.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, Order.ADDED, null, 0, 5, null);
-			final List<Post<BibTex>> pbPosts = logic.getPosts(BibTex.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, Order.ADDED, null, 0, 5, null);
+			final List<Post<Bookmark>> bmPosts = new ArrayList<Post<Bookmark>>();// logic.getPosts(Bookmark.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, Order.ADDED, null, 0, 5, null);
+			final List<Post<BibTex>> pbPosts = new ArrayList<Post<BibTex>>(); // logic.getPosts(BibTex.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, Order.ADDED, null, 0, 5, null);
 			
 			// pack resource lists into resource list commands (for according jsps)
 			final ListCommand<Post<Bookmark>> bmListCommand = new ListCommand<Post<Bookmark>>(command);
