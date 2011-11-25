@@ -2,19 +2,14 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.File;
-
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PreviewSize;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
@@ -27,9 +22,6 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class DownloadFileController implements MinimalisticController<DownloadFileCommand>, ErrorAware {
-
-	private final static String ACTION_DELETE = "delete";
-
 	/**
 	 * logical interface to BibSonomy's core functionality
 	 */
@@ -65,30 +57,6 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 			this.errors.reject("error.document_not_found");
 			return Views.ERROR;
 		}
-
-		// TODO: is this controller responsible for this action anymore?
-		if (ACTION_DELETE.equals(command.getAction())) {
-			/*
-			 * handle document deletion
-			 */
-			if (!command.getContext().isValidCkey()) {
-				this.errors.reject("error.field.valid.ckey");
-				return Views.ERROR;
-			}
-			/*
-			 * delete entry in database
-			 */
-			this.logic.deleteDocument(document, intrahash);
-			/*
-			 * delete file on disk
-			 */
-			new File(FileUtil.getFilePath(this.docpath, document.getFileHash())).delete();
-			/*
-			 * return to bibtex details page
-			 * TODO: use url generator!
-			 */
-			return new ExtendedRedirectView(("/bibtex/" + HashID.INTRA_HASH.getId() + intrahash + "/" + UrlUtils.safeURIEncode(requestedUser)));
-		} 
 
 		/*
 		 * default: handle document download
