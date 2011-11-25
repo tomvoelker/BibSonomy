@@ -141,7 +141,9 @@ public class FileUtil {
 		} else if (StringUtils.matchExtension(filename, EXTENSION_JPG, "jpeg")) {
 			return CONTENT_TYPE_IMAGE_JPEG;
 		} else if (StringUtils.matchExtension(filename, "png")) {
-			return "image/png";			
+			return "image/png";	
+		} else if (StringUtils.matchExtension(filename, "tif", "tiff")) {
+			return "image/tiff";
 		} else {
 			return "application/octet-stream";
 		}
