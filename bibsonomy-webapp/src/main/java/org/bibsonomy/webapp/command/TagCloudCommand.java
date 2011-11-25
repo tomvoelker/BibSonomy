@@ -22,8 +22,10 @@ public class TagCloudCommand extends BaseCommand {
 	private int maxCount = 0; // used for set the value via URL
 	private TagCloudStyle style = TagCloudStyle.CLOUD;
 	private TagCloudSort sort = TagCloudSort.ALPHA;
-	private int maxTagCount;
-	private int maxUserTagCount;
+	private int maxTagCount = Integer.MIN_VALUE;
+	private int minTagCount = Integer.MAX_VALUE;
+	private int maxUserTagCount = Integer.MIN_VALUE;
+	private int minUserTagCount = Integer.MAX_VALUE;
 	
 	/**
 	 * @return the maxUserTagCount
@@ -35,7 +37,7 @@ public class TagCloudCommand extends BaseCommand {
 	/**
 	 * find the max Tag Count
 	 */
-	private void calculateMaxTagCount() {
+	private void calculateMinMaxTagCount() {
 		maxTagCount = Integer.MIN_VALUE;
 		maxUserTagCount = Integer.MIN_VALUE;
 		for (final Tag tag : tags) {
@@ -45,6 +47,12 @@ public class TagCloudCommand extends BaseCommand {
 			if (tag.getUsercount() > maxUserTagCount) {
 				maxUserTagCount = tag.getUsercount();
 			}
+			if (tag.getGlobalcount() < minTagCount) {
+				minTagCount = tag.getGlobalcount();
+			}
+			if (tag.getUsercount() < minUserTagCount) {
+				minUserTagCount = tag.getUsercount();
+			}			
 		}
 	}
 
@@ -62,12 +70,20 @@ public class TagCloudCommand extends BaseCommand {
 		return this.tags;
 	}
 
+	public int getMinTagCount() {
+		return this.minTagCount;
+	}
+
+	public int getMinUserTagCount() {
+		return this.minUserTagCount;
+	}
+
 	/**
 	 * @param tags a list of tags
 	 */
 	public void setTags(final List<Tag> tags) {
 		this.tags = tags;
-		calculateMaxTagCount();
+		calculateMinMaxTagCount();
 	}
 
 	/**
