@@ -65,7 +65,7 @@
 				<c:when test="${tagSizeMode eq 'user'}">
 					<c:set var="maxTagFrequency" value="${cmd.maxUserTagCount}" />
 					<c:set var="minTagFrequency" value="${cmd.minUserTagCount}" />	
-				</c:when>
+				</c:when>		
 				<c:otherwise>
 					<c:set var="maxTagFrequency" value="${cmd.maxTagCount}" />
 					<c:set var="minTagFrequency" value="${cmd.minTagCount}" />
@@ -86,13 +86,9 @@
 							</c:choose>
 						</jspx:attribute>
 						<jspx:attribute name="title"><c:if test="${empty suppressTitle or suppressTitle == false }">${tag.usercount}<c:out value=" "/>${posts}</c:if></jspx:attribute>
-						<!-- 
-						<c:if test="${tagSizeMode eq 'home'}">
-						 -->				
-							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, minTagFrequency, maxTagFrequency, tagSizeMode)}%</jspx:attribute>
-						<!-- 
+						<c:if test="${not (tagSizeMode eq 'detail')}">
+							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, minTagFrequency, maxTagFrequency, tagSizeMode)}%</jspx:attribute> 
 						</c:if>
-						 -->
 						<c:set var="tagNameWithSpaces" value="${' '}${tag.name}${' '}"/>
 						<c:if test="${not empty highlightTags and fn:contains(highlightTags,tagNameWithSpaces)}">				
 							<jspx:attribute name="style">border-bottom:1px dotted black;</jspx:attribute>
