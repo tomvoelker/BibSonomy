@@ -68,6 +68,7 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 			 * preview images are always JPEGs!
 			 */
 			command.setContentType(FileUtil.CONTENT_TYPE_IMAGE_JPEG);
+			command.setFilename(command.getFilename() + "." + FileUtil.CONTENT_TYPE_IMAGE_JPEG);
 		} else {
 			command.setPathToFile(FileUtil.getFilePath(this.docpath, document.getFileHash()));
 			command.setContentType(FileUtil.getContentType(document.getFileName()));
