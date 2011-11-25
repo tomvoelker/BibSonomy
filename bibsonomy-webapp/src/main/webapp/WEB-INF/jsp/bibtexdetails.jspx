@@ -67,7 +67,7 @@
 							<fmt:message key="tags.highlighted.by_user"/>)
 						</span>
 					</span>
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
+					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
 				</li>
 		
 				<!-- related users -->
