@@ -23,11 +23,13 @@
 
 package org.bibsonomy.util.file;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.enums.PreviewSize;
 import org.bibsonomy.util.StringUtils;
 
 
@@ -36,13 +38,15 @@ import org.bibsonomy.util.StringUtils;
  * @version $Id$
  */
 public class FileUtil {
-	public static final String CONTENT_TYPE_IMAGE_PNG = "image/png";
-	public static final String CONTENT_TYPE_APPLICATION_POSTSCRIPT = "application/postscript";
-	public static final String CONTENT_TYPE_APPLICATION_PDF = "application/pdf";
-	public static final String CONTENT_TYPE_TEXT_PLAIN = "text/plain";
-	public static final String CONTENT_TYPE_IMAGE_DJVU = "image/vnd.djvu";
+	private static final String EXTENSION_JPG = "jpg";
+
 	public static final String CONTENT_TYPE_IMAGE_JPEG = "image/jpeg";
 
+	/**
+	 * a directory below the document directory, with the default preview images
+	 */
+	private static final String PREVIEW_DIR = "previews";
+	
 	/**
 	 * The pattern extracts the extension of a file.
 	 */
@@ -60,6 +64,29 @@ public class FileUtil {
 	 */
 	public static String getFilePath(final String filePath, final String fileName) {
 		return getFileDir(filePath, fileName) + fileName;
+	}
+	
+	/**
+	 * @param filePath - the document path
+	 * @param fileName - the documents name on disk
+	 * @param documentFileName - the original name of the document - used to guess the MIME type
+	 * @param preview - the type of preview that is requested
+	 * @return The path to the preview image or to a default preview image.
+	 */
+	public static String getPreviewPath(final String filePath, final String fileName, final String documentFileName, final PreviewSize preview) {
+		/*
+		 * first check, if real preview exists
+		 */
+		final String previewFilePath = getFilePath(filePath, fileName + "_" + preview.name());
+		if (new File(previewFilePath).isFile()) return previewFilePath;
+		/*
+		 * guess content type
+		 */
+		final String contentType = getContentType(documentFileName);
+		/*
+		 * build file path
+		 */
+		return filePath + PREVIEW_DIR + "/" + contentType.replaceAll("[\\./]", "_") + preview.name() + "." + EXTENSION_JPG;
 	}
 
 	/**
@@ -88,23 +115,27 @@ public class FileUtil {
 	 * type. NOTE: the method looks only at the name of the file not at the
 	 * content!
 	 * 
+	 * NOTE: {@link #getPreviewPath(String, String, String, PreviewSize)} depends
+	 * on the content types returned by this method. If you add a new content type,
+	 * you must also add the corresponding preview image!
+	 * 
 	 * @param filename
 	 *            - name of the file.
 	 * @return - the MIME content type of the file.
 	 */
 	public static String getContentType(final String filename) {
 		if (StringUtils.matchExtension(filename, "ps")) {
-			return CONTENT_TYPE_APPLICATION_POSTSCRIPT;
+			return "application/postscript";
 		} else if (StringUtils.matchExtension(filename, "pdf")) {
-			return CONTENT_TYPE_APPLICATION_PDF;
+			return "application/pdf";
 		} else if (StringUtils.matchExtension(filename, "txt", "tex")) {
-			return CONTENT_TYPE_TEXT_PLAIN;
+			return "text/plain";
 		} else if (StringUtils.matchExtension(filename, "djv", "djvu")) {
-			return CONTENT_TYPE_IMAGE_DJVU;
-		} else if (StringUtils.matchExtension(filename, "jpg", "jpeg")) {
+			return "image/vnd.djvu";
+		} else if (StringUtils.matchExtension(filename, EXTENSION_JPG, "jpeg")) {
 			return CONTENT_TYPE_IMAGE_JPEG;
 		} else if (StringUtils.matchExtension(filename, "png")) {
-			return CONTENT_TYPE_IMAGE_PNG;			
+			return "image/png";			
 		} else {
 			return "application/octet-stream";
 		}
