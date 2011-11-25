@@ -561,13 +561,13 @@ html>body #sidebar li {
 .tagcloud {
 	overflow: hidden;
 	text-align: center;
-	font-size: 70%;
 }
 
 .tagcloud li {
 	display: inline;
 	padding: 0em .1em 0em .1em;
 	line-height: 1.5em;
+	font-size: 90%;
 }
 
 .tagcloud a,.taglist a {
