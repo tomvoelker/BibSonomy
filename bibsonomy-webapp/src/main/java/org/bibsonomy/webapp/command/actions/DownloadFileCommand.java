@@ -38,28 +38,8 @@ public class DownloadFileCommand extends BaseCommand implements Serializable, Do
 	 */
 	private String contentType = null;
 	
-	/**
-	 * download / delete
-	 */
-	private String action = null;
-	
 	private PreviewSize preview = null;
 	
-	/**
-	 * 
-	 * @return action
-	 */
-	public String getAction() {
-		return this.action;
-	}
-
-	/**
-	 * 
-	 * @param action
-	 */
-	public void setAction(String action) {
-		this.action = action;
-	}
 
 	/**
 	 * 
