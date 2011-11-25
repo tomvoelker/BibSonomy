@@ -382,12 +382,17 @@
 				<entry key="/spheres">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="spheresPageController"/>
+						<!-- TODO: maybe we should add sphereName to the global allowed list
+							 XXX: a bug in Spring prevents us from using list merging (will be fixed in 3.1)
+						 -->
 						<property name="allowedFields">
 							<list>
-								<value>format</value>
 								<value>sphereName</value>
+								<value>format</value>
 								<value>requestedTags</value>
 								<value>callback</value>
+								<value>*.entriesPerPage</value>
+								<value>*.start</value>
 							</list>
 						</property>
 					</bean>
