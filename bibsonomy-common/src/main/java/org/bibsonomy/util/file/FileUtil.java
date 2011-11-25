@@ -83,7 +83,7 @@ public class FileUtil {
 		/*
 		 * first check, if real preview exists
 		 */
-		final String previewFilePath = getFilePath(filePath, fileName + "_" + preview.name());
+		final String previewFilePath = getFilePath(filePath, fileName + "_" + preview.name() + "." + EXTENSION_JPG);
 		if (new File(previewFilePath).isFile()) return previewFilePath;
 		/*
 		 * guess content type
