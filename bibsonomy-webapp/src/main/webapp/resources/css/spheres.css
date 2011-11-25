@@ -17,7 +17,7 @@
 }
 
 .sphere_tag_cloud {
-	width: 25%;
+	width: 34%;
 	float: left;
 }
 
@@ -38,8 +38,9 @@
 	margin: 0;
 	padding: 0;
 }
+
 .left_sphere_list_entry {
-	width: 70%;
+	width: 64%;
 }
 
 .sphere_user_list li {
