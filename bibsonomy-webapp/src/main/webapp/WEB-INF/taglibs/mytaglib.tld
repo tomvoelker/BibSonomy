@@ -213,12 +213,6 @@
 
   
   <function>
-  	<name>tagFontSize</name>
-  	<function-class>tags.Functions</function-class>
-  	<function-signature>Double getTagFontSize(org.bibsonomy.model.Tag)</function-signature>
-  </function>
-  
-  <function>
   	<name>getTagSize</name>
   	<function-class>tags.Functions</function-class>
   	<function-signature>String getTagSize(java.lang.Integer, java.lang.Integer)</function-signature>
