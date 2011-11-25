@@ -15,9 +15,17 @@ public interface FileUploadInterface {
 	public static final String[] firefoxImportExt = { "html", "htm" };
 	
 	/**
+	 * all extensions allowed for document upload
 	 * pdf, ps, djv, djvu, txt extensions
 	 */
-	public static final String[] fileUploadExt = { "pdf", "ps", "djv", "djvu", "txt", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "ods", "odt", "odp", "tex" };
+	public static final String[] fileUploadExt = { 
+		"pdf", "ps", 
+		"djv", "djvu", 
+		"txt", "tex",
+		"doc", "docx", "ppt", "pptx", "xls", "xlsx", 
+		"ods", "odt", "odp",
+		"jpg", "jpeg", "tif", "tiff", "png"
+		};
 	
 	/**
 	 * png, jpg extensions
