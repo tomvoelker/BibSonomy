@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,18 +59,23 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 			throw new AccessDeniedException("please log in");
 		}
 		
-		if (present(command.getSphereName())) {
-			// handle 
-			//  - /spheres/RELATION
-			//  - /spheres/RELATION/TAG
-			log.debug("Displaying details for sphere '"+command.getSphereName()+"'");
+		final String sphereName = command.getSphereName();
+		if (present(sphereName)) {
+			/*
+			 * handle 
+			 * - /spheres/RELATION
+			 * - /spheres/RELATION/TAG
+			 */
+			log.debug("Displaying details for sphere '" + sphereName + "'");
 			return handleDetailsView(command, context.getLoginUser());
 		}
-		// handle 
-		//  - /spheres
+		
+		/*
+		 *  handle
+		 *  - /spheres
+		 */
 		log.debug("Displaying list of all spheres");
 		return handleListView(command, context.getLoginUser());
-		
 	}
 
 
@@ -92,7 +97,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 			throw new MalformedURLSchemeException("error.group_page_without_groupname");
 		}
 
-		// get all friends of the given Sphere
+		// get all friends of the given sphere
 		final List<User> relatedUsers = this.logic.getUserRelationship(loginUser.getName(), UserRelation.OF_FRIEND, SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, sphereName));
 		
 		// if no friends are in this relation -> error
@@ -106,16 +111,12 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		// add the requested sphere name's system tag to the relation tags
 		queryTags.add(SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, sphereName));
 		
-		//Add the Tags from the User
+		// add the tags from the user
 		if (present(requestedTags)) {
 			queryTags.addAll(requestedTags);
 		}
 		
-		/**
-		 * FIXME Post filtering with a given tag caused problems -> Database query failing
-		 */
-		
-		//Set all bookmarks and publications for the given sphere
+		// set all resourcetypes for the given sphere
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
@@ -123,8 +124,8 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 			this.postProcessAndSortList(command, resourceType);
 		}	
 		
-		//Set the Tags / Related Tags for the Sphere
-		this.setTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, null, 20, null);
+		// set the tags / related tags for the sphere
+		this.setTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, null, Integer.MAX_VALUE, null);
 
 		if (present(requestedUserTags)) {
 			this.setRelatedTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, Order.ADDED, 0, 20, null);
@@ -154,17 +155,17 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 	 * @param loginUser login user
 	 * @return
 	 */
-	private View handleListView(SphereResourceViewCommand command, User loginUser) {
-		List<User> relatedUsers = this.logic.getUserRelationship(loginUser.getName(), UserRelation.OF_FRIEND, null);
+	private View handleListView(final SphereResourceViewCommand command, final User loginUser) {
+		final List<User> relatedUsers = this.logic.getUserRelationship(loginUser.getName(), UserRelation.OF_FRIEND, null);
 		
 		// XXX: we collect all information by hand - this should be done already
 		//      in an appropriate database query and result mapping
-		Map<String, Set<User>> spheres = new TreeMap<String, Set<User>>();
+		final Map<String, Set<User>> spheres = new TreeMap<String, Set<User>>();
 		
 		// loop over each related user and add to each sphere he/she 
 		// belongs to (as given by the relation system tags)
-		for (User relatedUser : relatedUsers) {
-			for (Tag tag : relatedUser.getTags() ) {
+		for (final User relatedUser : relatedUsers) {
+			for (final Tag tag : relatedUser.getTags() ) {
 				String relationName = null;
 				if (SystemTagsUtil.isSystemTag(tag.getName(), UserRelationSystemTag.NAME)) {
 					relationName = SystemTagsUtil.extractArgument(tag.getName());
@@ -174,7 +175,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 						spheres.put(relationName, new TreeSet<User>(new UserComparator()));
 					}
 					// add user to the sphere given by the relation name
-					Set<User> sphereUsers = spheres.get(relationName);
+					final Set<User> sphereUsers = spheres.get(relationName);
 					sphereUsers.add(relatedUser);
 				}
 			}
@@ -183,22 +184,22 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		
 		// XXX: we collect all information by hand - this should be done already
 		//      in an appropriate database query and result mapping
-		Map<String, ListCommand<Post<Bookmark>>> spheresBMPosts = new HashMap<String, ListCommand<Post<Bookmark>>>();
-		Map<String, ListCommand<Post<BibTex>>> spheresPBPosts = new HashMap<String, ListCommand<Post<BibTex>>>();
-		Map<String, TagCloudCommand> spheresTagClouds = new HashMap<String, TagCloudCommand>();
+		final Map<String, ListCommand<Post<Bookmark>>> spheresBMPosts = new HashMap<String, ListCommand<Post<Bookmark>>>();
+		final Map<String, ListCommand<Post<BibTex>>> spheresPBPosts = new HashMap<String, ListCommand<Post<BibTex>>>();
+		final Map<String, TagCloudCommand> spheresTagClouds = new HashMap<String, TagCloudCommand>();
 		
-		for (Entry<String,Set<User>> sphere : spheres.entrySet() ) {
+		for (final Entry<String,Set<User>> sphere : spheres.entrySet() ) {
 			// get tag cloud for current sphere
-			List<String> sphereTags = new ArrayList<String>();
+			final List<String> sphereTags = new ArrayList<String>();
 			sphereTags.add(SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, sphere.getKey()));
 			
 			// get bookmarks and publications for current sphere 
-			List<Post<Bookmark>> bmPosts = logic.getPosts(Bookmark.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, Order.ADDED, null, 0, 5, null);
-			List<Post<BibTex>> pbPosts = logic.getPosts(BibTex.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, Order.ADDED, null, 0, 5, null);
+			final List<Post<Bookmark>> bmPosts = logic.getPosts(Bookmark.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, Order.ADDED, null, 0, 5, null);
+			final List<Post<BibTex>> pbPosts = logic.getPosts(BibTex.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, Order.ADDED, null, 0, 5, null);
 			
 			// pack resource lists into resource list commands (for according jsps)
-			ListCommand<Post<Bookmark>> bmListCommand = new ListCommand<Post<Bookmark>>(command);
-			ListCommand<Post<BibTex>> pbListCommand = new ListCommand<Post<BibTex>>(command);
+			final ListCommand<Post<Bookmark>> bmListCommand = new ListCommand<Post<Bookmark>>(command);
+			final ListCommand<Post<BibTex>> pbListCommand = new ListCommand<Post<BibTex>>(command);
 			
 			bmListCommand.setList(bmPosts);
 			pbListCommand.setList(pbPosts);
@@ -208,7 +209,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 			spheresPBPosts.put(sphere.getKey(), pbListCommand);
 
 			// set tag cloud
-			List<Tag> aspectTagCloud= logic.getTags(Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, sphereTags, null, Order.FREQUENCY, 0, 25, null, null);
+			final List<Tag> aspectTagCloud= logic.getTags(Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, sphereTags, null, Order.FREQUENCY, 0, 25, null, null);
 			final TagCloudCommand tagCloudCommand = new TagCloudCommand();
 			tagCloudCommand.setMaxCount(TAG_CLOUD_SIZE);
 			tagCloudCommand.setMinFreq(TAG_CLOUD_MINFREQ);
@@ -222,9 +223,9 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		command.setSpheresBMPosts(spheresBMPosts);
 		command.setSpheresPBPosts(spheresPBPosts);
 		command.setSpheresTagClouds(spheresTagClouds);
-		log.debug("return sphere list "+command.getFormat());
+		log.debug("return sphere list "+ command.getFormat());
 		// all done
-		String format = command.getFormat();
+		final String format = command.getFormat();
 		if ("html".equals(format)) {
 			return Views.SPHERELIST;
 		}
