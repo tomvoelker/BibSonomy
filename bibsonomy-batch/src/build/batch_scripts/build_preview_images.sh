@@ -12,8 +12,9 @@
 # - initial version
 # 2011-11-25 (rja)
 # - added conversion of image/png, image/tiff, image/jpeg
-# - added .jpg extentions to really create JPEGs :-(
-#
+# - added .jpg file extension to really create JPEGs :-(
+# - added renicing of script
+# 
 # TODO: merge thumbnail generation into one method
 #
 
@@ -26,6 +27,11 @@ fi
 
 DOCS=$1
 TASK=$2
+
+# renice script to the lowest level
+PID=$$
+renice -n 20 -p $PID
+ionice -c 3 -p $PID
 
 # TODO: improve pattern (five times [0-9a-f] at the end ensures that
 # no preview images match - currently)
