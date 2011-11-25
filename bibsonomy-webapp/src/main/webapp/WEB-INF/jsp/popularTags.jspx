@@ -22,7 +22,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">			
-			<div style="text-align:center;padding-left:5em;padding-right:5em;" class="tags_first">
+			<div style="text-align:center;padding:2em 5em 2em 5em;" class="tags_first">
  			  <fmt:message var="posts" key="posts"/>
  			  <c:forEach var="tag" items="${command.tags}">
 		         <a class="${mtl:getTagSize(tag.globalcount, command.maxTagCount)}" 
