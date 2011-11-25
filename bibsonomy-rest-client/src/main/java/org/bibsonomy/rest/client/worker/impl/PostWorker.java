@@ -27,22 +27,27 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.httpclient.methods.MultipartPostMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
- * TODO: remove deprecated method and class references
+ * TODO: merge duplicate code with PostWorker
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
 public final class PostWorker extends HttpWorker<PostMethod> {
+
+	private static final String CONTENT_TYPE = "multipart/form-data";
 
 	/**
 	 * @param username
@@ -59,15 +64,18 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 	 * @throws ErrorPerformingRequestException
 	 */
 	public Reader perform(final String url, final File file) throws ErrorPerformingRequestException {
-		LOGGER.debug("POST Multipart: URL: " + url);		
-		final MultipartPostMethod post = new MultipartPostMethod(url);
+		LOGGER.debug("POST Multipart: URL: " + url);
+		final PostMethod post = new PostMethod(url);
 
-		post.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
 		post.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
-		post.addRequestHeader("Content-Type", "multipart/form-data");
+		post.addRequestHeader("Content-Type", CONTENT_TYPE);
 
 		try {
-			post.addParameter("file", file);
+			final HttpMethodParams params = new HttpMethodParams();
+			params.setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
+			final Part[] parts = new Part[]{new FilePart("file", file)};
+			final MultipartRequestEntity entity = new MultipartRequestEntity(parts, params);
+			post.setRequestEntity(entity);
 
 			this.getHttpClient().getHttpConnectionManager().getParams().setConnectionTimeout(5000);
 
@@ -89,7 +97,13 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 		final PostMethod post = new PostMethod(url);
 		post.setFollowRedirects(false);
 
-		post.setRequestEntity(new StringRequestEntity(requestBody));
+		try {
+			post.setRequestEntity(new StringRequestEntity(requestBody, CONTENT_TYPE, "UTF-8"));
+		} catch (final UnsupportedEncodingException ex) {
+			LOGGER.fatal("Could not encode request entity to UTF-8", ex);
+			throw new RuntimeException(ex);
+		}
+		
 		return post;
 	}
 

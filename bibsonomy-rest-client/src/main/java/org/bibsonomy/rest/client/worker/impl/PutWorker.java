@@ -23,16 +23,22 @@
 
 package org.bibsonomy.rest.client.worker.impl;
 
+import java.io.UnsupportedEncodingException;
+
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 
 /**
+ * TODO: merge duplicate code with PostWorker
+ * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
 public final class PutWorker extends HttpWorker<PutMethod> {
 
+	private static final String CONTENT_TYPE = "multipart/form-data";
+	
 	/**
 	 * 
 	 * @param username
@@ -47,8 +53,12 @@ public final class PutWorker extends HttpWorker<PutMethod> {
 		final PutMethod put = new PutMethod(url);
 		put.setFollowRedirects(false);
 
-		// TODO: remove deprecated method
-		put.setRequestEntity(new StringRequestEntity(requestBody));
+		try {
+			put.setRequestEntity(new StringRequestEntity(requestBody, CONTENT_TYPE, "UTF-8"));
+		} catch (final UnsupportedEncodingException ex) {
+			LOGGER.fatal("Could not encode request entity to UTF-8", ex);
+			throw new RuntimeException(ex);
+		}
 		return put;
 	}
 }
