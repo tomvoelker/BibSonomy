@@ -1,6 +1,7 @@
 package org.bibsonomy.entity;
 
 import java.io.IOException;
+import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,7 +53,9 @@ public class UserRealnameResolver {
 			config = ConfigLoader.load(CONFIG_PATH);
 			config.setPath(this.indexPath);
 			this.userIndex = config.createDatabase(false);
-			this.userIndex.openSearchers();
+			this.userIndex.openSearchers(); 
+		} catch (OverlappingFileLockException e) {
+			log.error("Error opening user name index for the Facebook importer: " + e.getMessage());
 		} catch (IOException e) {
 			log.error("Error accessing config file '+CONFIG_PATH+'", e);
 		} catch (SAXException e) {
