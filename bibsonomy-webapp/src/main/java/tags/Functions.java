@@ -250,11 +250,11 @@ public class Functions  {
 			 */
 			int scalingFactor = 45; // controls difference between smallest and largest tag 
 									// (size of largest: 90 -> 200% font size; 40 -> ~170%; 20 -> ~150%; all for offset = 10)
-			int offset = 8;		    // controls size of smallest tag ( 10 -> 100%)
+			int offset = 10;		    // controls size of smallest tag ( 10 -> 100%)
 			if ("popular".equals(tagSizeMode)) {
 				scalingFactor *= 10;
 			}
-			Double size = ( ( (tagFrequency.doubleValue() - tagMinFrequency ) / (tagMaxFrequency - tagMinFrequency) ) * scalingFactor ) + offset; 
+			Double size = ( ( (tagFrequency.doubleValue() - tagMinFrequency ) / (tagMaxFrequency - tagMinFrequency) ) * scalingFactor ) + offset;
 			size = Math.log10(size); 
 			size *= 100;
 			return size.intValue();
