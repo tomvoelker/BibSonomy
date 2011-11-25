@@ -86,13 +86,12 @@
 					<c:forEach var="subtag" items="${concept.subTags}">
 						<li class="box_lowerconcept">
 							<!-- show style attribute for fontsize only when neccessary -->
-							<c:set var="fontsize" value="${mtl:computeTagFontsize(subtag.usercount, maxCount, 'home')}"/>
 							<c:choose>
 								<c:when test="${fontsize == 100}">
 									<a href="/${tagPath}/${fn:escapeXml(subtag.name)}"><c:out value="${subtag.name}"/></a>
 								</c:when>
 								<c:otherwise>
-									<a href="/${tagPath}/${fn:escapeXml(subtag.name)}" style="font-size:${fontsize}%"><c:out value="${subtag.name}"/></a>
+									<a href="/${tagPath}/${fn:escapeXml(subtag.name)}"><c:out value="${subtag.name}"/></a>
 								</c:otherwise>
 							</c:choose>
 	          			</li>

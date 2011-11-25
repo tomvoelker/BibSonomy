@@ -63,10 +63,12 @@
 			
 			<c:choose>	
 				<c:when test="${tagSizeMode eq 'user'}">
-					<c:set var="maxTagFrequency" value="${cmd.maxUserTagCount}" />	
+					<c:set var="maxTagFrequency" value="${cmd.maxUserTagCount}" />
+					<c:set var="minTagFrequency" value="${cmd.minUserTagCount}" />	
 				</c:when>
 				<c:otherwise>
 					<c:set var="maxTagFrequency" value="${cmd.maxTagCount}" />
+					<c:set var="minTagFrequency" value="${cmd.minTagCount}" />
 				</c:otherwise>
 			</c:choose>
 			<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, maxTagFrequency)}" />
@@ -87,7 +89,7 @@
 						<!-- 
 						<c:if test="${tagSizeMode eq 'home'}">
 						 -->				
-							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, maxTagFrequency, tagSizeMode)}%</jspx:attribute>
+							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, minTagFrequency, maxTagFrequency, tagSizeMode)}%</jspx:attribute>
 						<!-- 
 						</c:if>
 						 -->

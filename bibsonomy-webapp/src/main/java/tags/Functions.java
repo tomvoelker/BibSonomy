@@ -238,22 +238,25 @@ public class Functions  {
 	 * assumed to be between 0 and 100) as Integer?
 	 * 
 	 * @param tagFrequency
+	 * @param tagMinFrequency TODO
 	 * @param tagMaxFrequency
 	 * @param tagSizeMode 
 	 * @return font size for the tag cloud with the given parameters
 	 */
-	public static Integer computeTagFontsize(final Integer tagFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
+	public static Integer computeTagFontsize(final Integer tagFrequency, Integer tagMinFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
 			/*
 			 * we expect 0 < tagFrequency < tagMaxFrequency.
 			 * we return a value between 200 and 300 if tagsizemode=popular, and between 100 and 200 otherwise.  
 			 */
-			Double size = tagFrequency.doubleValue() / tagMaxFrequency * 100;
-			size = Math.max(10.0, size);
-			size = Math.log10(size);
-			size *= 100;
+			int scalingFactor = 45; // controls difference between smallest and largest tag 
+									// (size of largest: 90 -> 200% font size; 40 -> ~170%; 20 -> ~150%; all for offset = 10)
+			int offset = 8;		    // controls size of smallest tag ( 10 -> 100%)
 			if ("popular".equals(tagSizeMode)) {
-				return size.intValue() + 100;
+				scalingFactor *= 10;
 			}
+			Double size = ( ( (tagFrequency.doubleValue() - tagMinFrequency ) / (tagMaxFrequency - tagMinFrequency) ) * scalingFactor ) + offset; 
+			size = Math.log10(size); 
+			size *= 100;
 			return size.intValue();
 	}
 
