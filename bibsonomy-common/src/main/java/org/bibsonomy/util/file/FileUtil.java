@@ -90,9 +90,10 @@ public class FileUtil {
 		 */
 		final String contentType = getContentType(documentFileName);
 		/*
-		 * build file path
+		 * build file path and name, something like
+		 * filePath/previews/image_jpeg_SMALL.jpg
 		 */
-		return filePath + PREVIEW_DIR + "/" + contentType.replaceAll("[\\./]", "_") + preview.name() + "." + EXTENSION_JPG;
+		return filePath + PREVIEW_DIR + "/" + contentType.replaceAll("[\\./]", "_") + "_" + preview.name() + "." + EXTENSION_JPG;
 	}
 
 	/**
