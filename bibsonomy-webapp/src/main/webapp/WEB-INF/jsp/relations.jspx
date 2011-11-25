@@ -45,10 +45,9 @@
      	<table>
 		<!-- iterate over given concepts to calculate the highest usercount (needed to compute fontsize)-->
      	  	<c:set var="maxUpperCount" value="0" />
-     	  	<c:set var="minUpperCount" value="9999999" />
+     	  	<c:set var="minUpperCount" value="0" />
      	  	<c:forEach var="upperTag" items="${command.tagRelations}">
      	  		<c:if test="${upperTag.usercount>=maxUpperCount}"> <c:set var="maxUpperCount" value="${upperTag.usercount}" /></c:if>
-     	  		<c:if test="${upperTag.usercount<minUpperCount}"> <c:set var="minUpperCount" value="${upperTag.usercount}" /></c:if>
      	  	</c:forEach>
      		<!-- iterate over given concepts -->
 		<c:forEach var="upperTag" items="${command.tagRelations}">
@@ -64,7 +63,7 @@
 			</td>
 			<td>&#8592;</td>
 			<td>
-				<ul class="tagcloud">
+				<ul class="tagcloud" style="text-align:left;">
 					<c:forEach var="relation" items="${upperTag.subTags}" >  
 						<c:set var="link" value="${mtl:encodeURI(relation.name)}" />
 			            <li class="box_lowerconcept"> 
