@@ -131,7 +131,7 @@
 			AND g.group = b.group
 			<include refid="sysTagsEntryType"/>
 			<include refid="sysTagsYear"/>
-		ORDER BY b.date DESC, b.content_id DESC
+		ORDER BY b.date DESC, b.content_id DESC, d.date
 	</select>
 
 	<select id="getJustBibTexByTagNamesForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
@@ -553,7 +553,7 @@
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		      <include refid="sysTagsEntryType"/>
 		      <include refid="sysTagsYear"/>
-		ORDER BY bb.date DESC, bb.content_id DESC
+		ORDER BY bb.date DESC, bb.content_id DESC, d.date
 	</select>
 	
 	<select id="getJustBibTexForGroupWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
