@@ -28,6 +28,7 @@
 		  FROM document d JOIN bibtex b USING (content_id)
 	      WHERE b.simhash$requestedSimHash$ = #resourceHash#
 			AND d.user_name = #userName# 
+		  ORDER BY date DESC 
 	</select>
 	
 	<select id="getDocumentForLayout" resultMap="DocumentCommon.document" parameterClass="documentParam">
