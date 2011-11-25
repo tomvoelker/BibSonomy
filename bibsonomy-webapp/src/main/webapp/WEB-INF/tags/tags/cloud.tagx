@@ -55,20 +55,21 @@
 		<c:forEach var="tag" items="${cmd.tags}">
 		    
 
-			<fmt:message var="posts" key="posts" /> <!-- plural -->		
+			<fmt:message var="posts" key="posts" /> <!-- plural -->
 			<!-- determine tag css depending on its frequency -->
 			<c:if test="${tag.usercount == 1}">
 				<fmt:message var="posts" key="post" /> <!-- singular -->
 			</c:if>	
 			
 			<c:choose>	
-				<c:when test="${tagSizeMode eq 'user'}">	
-					<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, cmd.maxUserTagCount)}" />
+				<c:when test="${tagSizeMode eq 'user'}">
+					<c:set var="maxTagFrequency" value="${cmd.maxUserTagCount}" />	
 				</c:when>
 				<c:otherwise>
-					<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, cmd.maxTagCount)}" />
+					<c:set var="maxTagFrequency" value="${cmd.maxTagCount}" />
 				</c:otherwise>
 			</c:choose>
+			<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, maxTagFrequency)}" />
 			
 			<!-- display the tag -->						
 			<c:if test="${tag.usercount >= cmd.minFreq or tagboxMinfreqStyle == 'none'}">
@@ -83,9 +84,13 @@
 							</c:choose>
 						</jspx:attribute>
 						<jspx:attribute name="title"><c:if test="${empty suppressTitle or suppressTitle == false }">${tag.usercount}<c:out value=" "/>${posts}</c:if></jspx:attribute>
-						<c:if test="${tagSizeMode eq 'home'}">				
-							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%</jspx:attribute>
+						<!-- 
+						<c:if test="${tagSizeMode eq 'home'}">
+						 -->				
+							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, maxTagFrequency, tagSizeMode)}%</jspx:attribute>
+						<!-- 
 						</c:if>
+						 -->
 						<c:set var="tagNameWithSpaces" value="${' '}${tag.name}${' '}"/>
 						<c:if test="${not empty highlightTags and fn:contains(highlightTags,tagNameWithSpaces)}">				
 							<jspx:attribute name="style">border-bottom:1px dotted black;</jspx:attribute>
