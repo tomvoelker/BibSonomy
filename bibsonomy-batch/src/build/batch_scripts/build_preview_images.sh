@@ -10,6 +10,11 @@
 # Changes:
 # 2011-11-24 (rja)
 # - initial version
+# 2011-11-25 (rja)
+# - added conversion of image/png, image/tiff, image/jpeg
+# - added .jpg extentions to really create JPEGs :-(
+#
+# TODO: merge thumbnail generation into one method
 #
 
 if [ $# -lt 2 ]; then
@@ -23,6 +28,7 @@ DOCS=$1
 TASK=$2
 
 for doc in $(find $1 -type f -name "[0-9a-f]*[0-9a-f]"); do
+    # find out file's MIME type
     type=$(file --brief --mime-type $doc)
     case "$type" in 
 	"application/postscript" | "application/pdf")
@@ -33,11 +39,11 @@ for doc in $(find $1 -type f -name "[0-9a-f]*[0-9a-f]"); do
 		# get a temporary file
 		temp=$(tempfile)
 		# convert to PNG
-		gs -q -dSAFER -sDEVICE=png16m -dLastPage=1 -r300 -o$temp $doc
+		gs -q -dSAFER -sDEVICE=png16m -dLastPage=1 -r150 -o$temp $doc
 		# make small JPEG previews
-		convert -thumbnail '100x100>' $temp ${doc}_SMALL
-		convert -thumbnail '200x200>' $temp ${doc}_MEDIUM
-		convert -thumbnail '400x400>' $temp ${doc}_LARGE
+		convert -thumbnail '100x100>' $temp ${doc}_SMALL.jpg
+		convert -thumbnail '200x200>' $temp ${doc}_MEDIUM.jpg
+		convert -thumbnail '400x400>' $temp ${doc}_LARGE.jpg
 		# remove temporary file
 		rm $temp
 	    fi
@@ -48,9 +54,9 @@ for doc in $(find $1 -type f -name "[0-9a-f]*[0-9a-f]"); do
 	    if [ ! -f $small -o $TASK == "force" ]; then
 		echo "converting $doc ($type)"
 		# make small JPEG previews
-		convert -thumbnail '100x100>' $doc ${doc}_SMALL
-		convert -thumbnail '200x200>' $doc ${doc}_MEDIUM
-		convert -thumbnail '400x400>' $doc ${doc}_LARGE
+		convert -thumbnail '100x100>' $doc ${doc}_SMALL.jpg
+		convert -thumbnail '200x200>' $doc ${doc}_MEDIUM.jpg
+		convert -thumbnail '400x400>' $doc ${doc}_LARGE.jpg
 	    fi
 	    ;;
 	*)
