@@ -74,7 +74,7 @@ public class Functions  {
 	// load special characters
 	static {
 		try {
-			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));			
+			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
 		} catch (final Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}	    	    		
@@ -243,30 +243,18 @@ public class Functions  {
 	 * @return font size for the tag cloud with the given parameters
 	 */
 	public static Integer computeTagFontsize(final Integer tagFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
-		if ("home".equals(tagSizeMode)) {
 			/*
-			 * here, 0 < tagFrequency < 100 is assumed
+			 * we expect 0 < tagFrequency < tagMaxFrequency.
+			 * we return a value between 200 and 300 if tagsizemode=popular, and between 100 and 200 otherwise.  
 			 */
-			Double t = (tagFrequency > 100 ? 100.0 : tagFrequency.doubleValue() + 6);
-			t /= 5;
-			t = Math.log(t) * 100 + 30;
-			
-			// minium size of tags is 100, maximum size is 200
-			int size = (t.intValue() < 100) ? 100 : t.intValue();			
-			return (size > 200) ? 200 : size;
-		}
-		if ("popular".equals(tagSizeMode)) {
-			/*
-			 * we expect 0 < tagFrequency < tagMaxFrequency 
-			 * and normalize f to 0 < f 100 as percentage of tagMaxFrequency
-			 */
-			final Double f = tagFrequency.doubleValue() / tagMaxFrequency * 100;
-			Double t = f > 100 ? 100 : f;
-			t /= 5;
-			t = Math.log(t) * 100 + 30;
-			return (t.intValue()<100) ? 100 : t.intValue();
-		}
-		return new Double(100 + (tagFrequency.doubleValue() / tagMaxFrequency * 200)).intValue();
+			Double size = tagFrequency.doubleValue() / tagMaxFrequency * 100;
+			size = Math.max(10.0, size);
+			size = Math.log10(size);
+			size *= 100;
+			if ("popular".equals(tagSizeMode)) {
+				return size.intValue() + 100;
+			}
+			return size.intValue();
 	}
 
 	/**
@@ -400,15 +388,6 @@ public class Functions  {
 		return "Generic";
 	}
 
-	/**
-	 * Calculates the percentage of font size for tag clouds
-	 * 
-	 * @param tag the Tag 
-	 * @return value between 0 and 100 %
-	 */
-	public static double getTagFontSize(final Tag tag) {
-		return Math.round(Math.log(tag.getGlobalcount()/40))*25;		
-	}
 
 	/**
 	 * returns the css Class for a given tag
