@@ -27,7 +27,9 @@ fi
 DOCS=$1
 TASK=$2
 
-for doc in $(find $1 -type f -name "[0-9a-f]*[0-9a-f]"); do
+# TODO: improve pattern (five times [0-9a-f] at the end ensures that
+# no preview images match - currently)
+for doc in $(find $1 -type f -name "[0-9a-f]*[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]"); do
     # find out file's MIME type
     type=$(file --brief --mime-type $doc)
     case "$type" in 
