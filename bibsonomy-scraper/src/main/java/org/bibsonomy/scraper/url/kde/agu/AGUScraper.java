@@ -110,7 +110,6 @@ public class AGUScraper extends AbstractUrlScraper {
 					
 					if(present(bibtex)){
 						// finish
-						bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", scrapingContext.getUrl().toString());
 						scrapingContext.setBibtexResult(bibtex);
 						return true;
 					}else

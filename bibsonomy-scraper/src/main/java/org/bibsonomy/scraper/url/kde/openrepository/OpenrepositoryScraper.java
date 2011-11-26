@@ -117,7 +117,6 @@ public class OpenrepositoryScraper extends AbstractUrlScraper {
 				String bibtex = converter.RisToBibtex(ris);
 
 				if(present(bibtex)){
-					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
 					sc.setBibtexResult(bibtex);
 					return true;
 				}else
