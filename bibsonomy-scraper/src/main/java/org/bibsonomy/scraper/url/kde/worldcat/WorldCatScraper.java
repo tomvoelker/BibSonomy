@@ -147,14 +147,6 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		}
 		
 		/*
-		 * clean RIS from URL, since the URL most often does not point to the publication
-		 */
-		Matcher m = Pattern.compile("(UR\\s\\s-\\s(.*\\n)+?)\\p{Upper}\\p{Alnum}\\s{2}-\\s").matcher(ris); 
-		if (m.find()) {
-			ris = ris.replace(m.group(1), "");
-		}
-		
-		/*
 		 * convert RIS to BibTeX
 		 */
 		final String bibtex = converter.RisToBibtex(ris);
