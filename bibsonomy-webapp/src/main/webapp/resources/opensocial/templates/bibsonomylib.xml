@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <templates>
 
 	<!--+
@@ -19,7 +19,7 @@
 		<span class="person">
 			<span class="personimg">
 				<a href="{{=$ctx.projectHome!}}cv/user/{{=name}}" title="{{=name}}'s {{getString 'opensocial.user.profile.title'}}" target="_blank">
-					<img width="64" src="{{=$ctx.projectHome!}}picture/user/{{=name}}"></img>
+					<img width="64" src="{{=$ctx.projectHome!}}picture/user/{{=name}}" />
 				</a>
 			</span>
 		</span>
@@ -38,10 +38,10 @@
 			<span class="bmicon" title="{{getString 'post.actions.copy.title'}}">
 				{{#if bibtex}}
 					<!-- Publication -->
-					<a href="{{=$ctx.projectHome!}}editPublication?hash={{encodeURI bibtex.intrahash}}&amp;user={{encodeURI user.name}}&amp;copytag={{concatTags tag}}&amp;referer={{=$ctx.projectHome!}}bibtex/2{{encodeURI bibtex.intrahash}}" title="" target="_blank"> </a>
+					<a href="{{=$ctx.projectHome!}}editPublication?hash={{encodeURI bibtex.intrahash}}&amp;user={{encodeURI user.name}}&amp;copytag={{concatTags tag}}&amp;referer={{=$ctx.projectHome!}}bibtex/2{{encodeURI bibtex.intrahash}}" title="" target="_blank">&#160;</a>
 				{{else bookmark}}			
 					<!-- Bookmark -->
-					<a href="{{=$ctx.projectHome!}}editBookmark?hash={{encodeURI bookmark.intrahash}}&amp;user={{encodeURI user.name}}&amp;copytag={{concatTags tag}}&amp;referer={{=$ctx.projectHome!}}url/{{encodeURI bookmark.intrahash}}" title="" target="_blank"> </a>
+					<a href="{{=$ctx.projectHome!}}editBookmark?hash={{encodeURI bookmark.intrahash}}&amp;user={{encodeURI user.name}}&amp;copytag={{concatTags tag}}&amp;referer={{=$ctx.projectHome!}}url/{{encodeURI bookmark.intrahash}}" title="" target="_blank">&#160;</a>
 				{{/if}}
 			</span>
 		
@@ -87,7 +87,7 @@
 		| render approval message
 		+-->
 	<script id="tpl_OAuth_Approval" type="text/x-jquery-tmpl">
-		<img src="http://oauth.net/images/oauth-logo.png"></img> <br></br>
+		<img src="http://oauth.net/images/oauth-logo.png" /> <br/>
 	   	{{getString "opensocial.oauth.personalize"}}
 	</script>
 	
@@ -102,13 +102,13 @@
 		| render an oauth error message
 		+-->
 	<script id="tpl_Error_OAuth" type="text/x-jquery-tmpl">
-		<img src="{{=$ctx.projectHome}}resources/opensocial/image/status_error.png" style="float: right;"></img>
+		<img src="{{=$ctx.projectHome}}resources/opensocial/image/status_error.png" style="float: right;"/>
 		{{getString "opensocial.gadget.error"}}
 		
 		<a href="#" onclick="gadgetControl.onLoad();">{{getString "opensocial.gadget.reload"}}</a>		
-		<br></br>
+		<br/>
 		{{#if oauthErrorText}}
-			<hr></hr>
+			<hr/>
 			{{getString "opensocial.gadget.servertext"}}
 			<ul>
 				<li><em>{{=oauthErrorText}}</em></li>
@@ -120,7 +120,7 @@
 		| render an oauth error message
 		+-->
 	<script id="tpl_Error_Config" type="text/x-jquery-tmpl">
-		<img src="{{=$ctx.projectHome}}resources/opensocial/image/status_error.png" style="float: right;"></img>
+		<img src="{{=$ctx.projectHome}}resources/opensocial/image/status_error.png" style="float: right;"/>
 		{{getString "opensocial.gadget.config.missing"}}
 		
 		<a href="#" onclick="gadgetControl.onLoad();">{{getString "opensocial.gadget.reload"}}</a>		
