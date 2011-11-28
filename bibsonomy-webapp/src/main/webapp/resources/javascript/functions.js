@@ -2169,7 +2169,7 @@ this.imagePreview = function(){
 	var yOff = 0;
 	$("a.preview").hover(function(e){
 		this.t = this.title;
-		this.alt = "";	
+		this.title = "";	
 		var c = (this.t != "") ? "<br/>" + this.t : "";
 		$("body").append("<p id='preview'><img src='"+ this.href +"?preview=LARGE'/>"+ c +"</p>");         
 		$("#preview").css("top",(e.pageY - yOff) + "px").css("left",(e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px").fadeIn("fast");      
