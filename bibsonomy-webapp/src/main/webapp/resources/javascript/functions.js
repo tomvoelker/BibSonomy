@@ -2163,3 +2163,27 @@ function createParameters(title) {
 
 	return title;
 }
+
+this.imagePreview = function(){	
+	var xOff = 400;
+	var yOff = 0;
+	$("a.preview").hover(function(e){
+		this.t = this.title;
+		this.alt = "";	
+		var c = (this.t != "") ? "<br/>" + this.t : "";
+		$("body").append("<p id='preview'><img src='"+ this.href +"?preview=LARGE'/>"+ c +"</p>");         
+		$("#preview").css("top",(e.pageY - yOff) + "px").css("left",(e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px").fadeIn("fast");      
+	}, function(){
+		this.title = this.t;	
+		$("#preview").remove();
+	});		   
+	$("a.preview").mousemove(function(e){
+		$("#preview").css("top",(e.pageY - yOff) + "px").css("left",(e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px");
+	});		     	      
+};
+/**
+  * starts the preview rendering function
+  */
+$(document).ready(
+	function(){imagePreview();}
+);
