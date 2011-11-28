@@ -140,10 +140,18 @@ public class WorldCatScraper extends AbstractUrlScraper {
 			exportUrl += "&" + publUrl.getQuery();  
 
 		
-		final String ris = WebUtils.getContentAsString(new URL(exportUrl));
+		String ris = WebUtils.getContentAsString(new URL(exportUrl));
 
 		if (!ris.startsWith("TY")) {
 			return null;
+		}
+		
+		/*
+		 * clean RIS from URL, since the URL most often does not point to the publication
+		 */
+		Matcher m = Pattern.compile("(UR\\s\\s-\\s.*\\n)\\p{Upper}\\p{Alnum}\\s{2}-\\s").matcher(ris); 
+		if (m.find()) {
+			ris = ris.replace(m.group(1), "");
 		}
 		
 		/*
