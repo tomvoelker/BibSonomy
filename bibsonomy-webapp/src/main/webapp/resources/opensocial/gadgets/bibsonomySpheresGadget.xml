@@ -15,7 +15,6 @@
 			</Service>
 		</OAuth>
 		<Require feature="oauthpopup"></Require>
-		<Require feature="opensocial-0.8"></Require>
 
 		<Optional feature="content-rewrite">
 			<Param name="include-tags"></Param>
