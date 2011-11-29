@@ -24,6 +24,8 @@
 
 package org.bibsonomy.scrapingservice.servlets;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -38,6 +40,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
@@ -47,6 +50,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 import org.bibsonomy.scraper.KDEScraperFactory;
@@ -74,9 +78,16 @@ import bibtex.parser.ParseException;
  */
 public class ScrapingServlet extends HttpServlet {
 	private static final long serialVersionUID = -5145534846771334947L;
-
 	private static final Log log = LogFactory.getLog(ScrapingServlet.class);
 
+	private static final String RESPONSE_ENCODING = "UTF-8";
+	
+	private static final String FORMAT_RDF = "rdf+xml";
+	private static final String FORMAT_BIBTEX = "bibtex";
+	private static final String FORMAT_XML = "xml";
+	private static final String APPLICATION_XML_MIME_TYPE = RenderingFormat.APP_XML.getMimeType();
+
+	
 	private static final User XML_DUMMY_USER = new User("scrapingService");
 	private static final XMLRenderer XML_RENDERER = new XMLRenderer(new UrlRenderer(""));
 	
@@ -86,7 +97,6 @@ public class ScrapingServlet extends HttpServlet {
 	private static final Scraper compositeScraper = new KDEScraperFactory().getScraperWithoutIE();
 	private static final Scraper ieScraper = new IEScraper();
 	private static final UrlCompositeScraper urlCompositeScraper = new KDEUrlCompositeScraper();
-
 
 	@Override
 	public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
@@ -101,11 +111,11 @@ public class ScrapingServlet extends HttpServlet {
 
 		log.info("Scraping service called with url " + urlString);
 
-		if (urlString != null && !urlString.trim().equals("")) {
+		if (present(urlString)) {
 			/*
 			 * url given -> try to scrape
 			 */
-
+		
 			try {
 				final URL url = new URL(urlString);
 				bean.setUrl(url);
@@ -127,16 +137,15 @@ public class ScrapingServlet extends HttpServlet {
 					 * handle special output formats
 					 */
 					final String bibtexString = bean.getBibtex();
-					//System.out.println(bibtexString);
-					if ("bibtex".equals(format)) {
+					if (FORMAT_BIBTEX.equals(format)) {
 						/* *******************************************
 						 * text/x-bibtex
 						 * *******************************************/
 						// should be: text/x-bibtex (according to /etc/mime.types)
 						response.setContentType("text/plain");
-						response.getOutputStream().write(bibtexString.getBytes("UTF-8"));
+						response.getOutputStream().write(bibtexString.getBytes(RESPONSE_ENCODING));
 						return;
-					} else if ("rdf+xml".equals(format)) {
+					} else if (FORMAT_RDF.equals(format)) {
 						/* *******************************************
 						 * application/rdf+xml
 						 * *******************************************/
@@ -152,26 +161,27 @@ public class ScrapingServlet extends HttpServlet {
 						final RDFWriter writer = new RDFWriter(response.getOutputStream());
 						writer.write(url.toURI(), bibtex);
 						return;
-					} else if ("xml".equals(format)) {
-						response.setContentType("application/xml");
+					} else if (FORMAT_XML.equals(format)) {
+						response.setContentType(APPLICATION_XML_MIME_TYPE);
+						response.setCharacterEncoding(RESPONSE_ENCODING);
+						
 						/*
 						 * parse post
 						 */
 						final Post<? extends Resource> post = new PostBibTeXParser().parseBibTeXPost(bibtexString);
 						post.getResource().recalculateHashes();
 						post.setUser(XML_DUMMY_USER);
-						if (post.getTags().size() == 0) {
+						if (!present(post.getTags())) {
 							post.getTags().add(TagUtils.getEmptyTag());
 						}
 						
 						/*
 						 * serialize to xml
+						 * TODO: use EscapingPrintWriter?
 						 */
-						XML_RENDERER.serializePost(new BufferedWriter(new OutputStreamWriter(response.getOutputStream())), post, null);
-						
+						XML_RENDERER.serializePost(new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), RESPONSE_ENCODING)), post, null);
 						return;
 					}
-					
 				} else {
 					bean.setBibtex(null);
 					bean.setErrorMessage("Given host is not supported by scraping service.");
@@ -215,9 +225,16 @@ public class ScrapingServlet extends HttpServlet {
 			 * To sum up: for format=bibtex the empty string means, we could get the 
 			 * bibtex (for whatever reason) 
 			 */
-			if ("bibtex".equals(format)) {
+			if (FORMAT_BIBTEX.equals(format)) {
 				response.setContentType("text/plain");
-				response.getOutputStream().write("".getBytes("UTF-8"));
+				response.getOutputStream().write("".getBytes(RESPONSE_ENCODING));
+				return;
+			}
+			
+			if (FORMAT_XML.equals(format)) {
+				response.setContentType(APPLICATION_XML_MIME_TYPE);
+				response.getOutputStream().write("".getBytes(RESPONSE_ENCODING));
+				response.setStatus(HttpStatus.SC_NOT_FOUND);
 				return;
 			}
 		} else if ("info".equals(action)) {
