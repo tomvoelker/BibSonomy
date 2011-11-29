@@ -749,7 +749,7 @@
 	</rule>
 	<rule><!-- /[0-3][32]/USERNAME -->
 		<name>/(bibtex|publication)/SHASH/USER</name>
-		<from>^/+bibtex/+([0-3])([0-9a-fA-F]{32})/+(.+)$</from>
+		<from>^/+(bibtex|publication)/+([0-3])([0-9a-fA-F]{32})/+(.+)$</from>
 		<set type="parameter" name="requestedHash">$2$3</set>
 		<set type="parameter" name="requestedUser">$4</set>
 		<to last="true">/bibtex</to>
