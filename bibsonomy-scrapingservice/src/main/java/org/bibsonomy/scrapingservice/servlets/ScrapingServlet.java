@@ -220,7 +220,7 @@ public class ScrapingServlet extends HttpServlet {
 				response.getOutputStream().write("".getBytes("UTF-8"));
 				return;
 			}
-		} else if (action != null && "info".equals(action)) {
+		} else if ("info".equals(action)) {
 			log.info("action = info");
 			/*
 			 * print information about the available scrapers
@@ -240,10 +240,9 @@ public class ScrapingServlet extends HttpServlet {
 				writer.write(1, urlPatterns);
 				writer.write(0, "}\n");
 				return;
-			} else {
-				bean.setErrorMessage("Requested format '" + format + "' not supported.");
 			}
 			
+			bean.setErrorMessage("Requested format '" + format + "' not supported.");
 		}
 
 
