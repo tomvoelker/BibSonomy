@@ -14,6 +14,10 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
+	<c:set var="publication" value="${command.bibtex.list[0].resource}" />
+	
+	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
+	
 	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
@@ -27,7 +31,7 @@
 		<jsp:attribute name="heading">
 		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.publication"/></a> :: 
 		<form action="/search" method="get" class="smallform">
-		  <input type="text" size="20" name="search" value="${fn:escapeXml(mtl:cleanBibtex(command.title))}"/>
+		  <input type="text" size="20" name="search" value="${fn:escapeXml(title)}"/>
 		</form>
 		</jsp:attribute>
 		
