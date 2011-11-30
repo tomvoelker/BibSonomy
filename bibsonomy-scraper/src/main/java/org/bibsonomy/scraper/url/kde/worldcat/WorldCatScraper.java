@@ -122,7 +122,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		return null;
 	}
 	
-	private static String getBibtex(final URL publPageURL, final boolean search) throws IOException, ScrapingException {
+	private static String getRIS(final URL publPageURL, final boolean search) throws IOException {
 		final Matcher matcherFirstSearchResult = PATTERN_GET_FIRST_SEARCH_RESULT.matcher(WebUtils.getContentAsString(publPageURL));
 		
 		final URL publUrl;
@@ -145,6 +145,12 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		if (!ris.startsWith("TY")) {
 			return null;
 		}
+
+		return ris;
+	}
+	
+	private static String getBibtex(final URL publPageURL, final boolean search) throws IOException, ScrapingException {
+		String ris = getRIS(publPageURL, search);
 		
 		/*
 		 * convert RIS to BibTeX
