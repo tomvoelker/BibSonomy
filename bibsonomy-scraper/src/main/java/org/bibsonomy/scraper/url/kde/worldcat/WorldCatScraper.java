@@ -121,6 +121,28 @@ public class WorldCatScraper extends AbstractUrlScraper {
 			return new URL(WORLDCAT_URL + checkISBN);
 		return null;
 	}
+
+	/**
+	 * search publication on worldcat.org with a given isbn and returns it as bibtex.
+	 * before converting RIS to bibtex RIS gets equipped with specified replacementURL.
+	 * @param isbn
+	 * @param replacementURL
+	 * @return
+	 * @throws IOException
+	 * @throws ScrapingException
+	 */
+	public static String getBibtexByISBNAndReplaceURL(final String isbn, final String replacementURL) throws IOException, ScrapingException{
+		URL publPageURL = new URL(WORLDCAT_URL + ISBNUtils.cleanISBN(isbn));
+		String ris = getRIS(publPageURL, true);
+		if (ris == null) return null;
+		Matcher m = Pattern.compile("UR\\s{2}-\\s(.*\\n)+?\\p{Upper}\\p{Alnum}\\s{2}-\\s").matcher(ris);
+		if (m.find()) {
+			ris = ris.replace(m.group(1), replacementURL + "\n");
+		} else {
+			ris = ris.replaceFirst("ER\\s{2}-\\s[\\n.]*\\z", "UR  - " + replacementURL + "\nER  - ");
+		}
+		return converter.RisToBibtex(ris);
+	}
 	
 	private static String getRIS(final URL publPageURL, final boolean search) throws IOException {
 		final Matcher matcherFirstSearchResult = PATTERN_GET_FIRST_SEARCH_RESULT.matcher(WebUtils.getContentAsString(publPageURL));
