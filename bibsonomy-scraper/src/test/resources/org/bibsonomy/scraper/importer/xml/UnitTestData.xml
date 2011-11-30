@@ -1262,13 +1262,13 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_209">
-		<TestDescription>URL test for bibsonomy.org/bibtex</TestDescription>
+		<TestDescription>URL test for bibsonomy.org/publication</TestDescription>
 		<URL>http://www.bibsonomy.org/publication/2101efca8c9368b56d680ce92329784e5/jaeschke</URL>
 		<BibFile>BibSonomyScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_210">
-		<TestDescription>URL test for bibsonomy.org/bib/bibtex</TestDescription>
+		<TestDescription>URL test for bibsonomy.org/bib/publication</TestDescription>
 		<URL>http://www.bibsonomy.org/bib/publication/2101efca8c9368b56d680ce92329784e5/jaeschke</URL>
 		<BibFile>BibSonomyScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper</Scraper>
