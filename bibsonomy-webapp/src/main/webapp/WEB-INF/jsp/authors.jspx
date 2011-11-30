@@ -24,7 +24,7 @@
 		<jsp:attribute name="content">
 			<c:if test="${not empty command.authorList}">
 				<fmt:message var="posts" key="posts"/>
-				<div style="text-align:justify;" class="tags_first">
+				<div style="text-align:center;padding:2em 5em 2em 5em;" class="tags_first">
 				<c:forEach var="author" items="${command.authorList}">
 					<a	class="${mtl:getTagSize(author.ctr, command.maxCount)}" 
 						style="font-size:${mtl:authorFontSize(author, command.maxCount)}%; padding-left:0.3em; padding-right:0.3em;"
