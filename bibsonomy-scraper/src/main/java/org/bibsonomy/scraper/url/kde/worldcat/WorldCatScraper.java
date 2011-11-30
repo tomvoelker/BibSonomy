@@ -173,6 +173,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	
 	private static String getBibtex(final URL publPageURL, final boolean search) throws IOException, ScrapingException {
 		String ris = getRIS(publPageURL, search);
+		if (ris == null) return null;
 		
 		/*
 		 * convert RIS to BibTeX
