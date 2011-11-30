@@ -100,9 +100,12 @@
 	    +-->
 	<select name="loginSelect" id="loginSelect" onchange="quickSelectAuthMethod(this.value);">
 		<c:forEach var="authMethod" items="${authConfig}" varStatus="status">
-			<fmt:message key="login.${authMethodName}.label" var="loginMessage"/>
 			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-			<option value="${status.count}" title="${image_login_base}${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
+			<fmt:message key="login.method.${authMethodName}" var="loginMessage" />
+			<c:if test="${not empty loginMessage}">
+				
+				<option value="${status.count}" title="${image_login_base}${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
+			</c:if>
 		</c:forEach>
 	</select>
 
