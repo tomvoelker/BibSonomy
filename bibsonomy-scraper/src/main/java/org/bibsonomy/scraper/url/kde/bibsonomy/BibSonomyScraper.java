@@ -23,9 +23,10 @@
 
 package org.bibsonomy.scraper.url.kde.bibsonomy;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
-import java.net.URL;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -39,55 +40,49 @@ import org.bibsonomy.util.WebUtils;
 
 
 /**
+ * TODO: add support for all PUMA instances
+ * 
  * Scraper for single publications from bibsonomy.org.
  * 
  * @author tst
- *
+ * @version $Id$
  */
 public class BibSonomyScraper extends AbstractUrlScraper {
-
 	private static final String SITE_NAME = "BibSonomy";
 	private static final String SITE_URL = "http://www.bibsonomy.org";
 	private static final String INFO = "If you don't like the copy button from " + href(SITE_URL, SITE_NAME) + ", use your postPublication button.";
 
 	private static final String BIBSONOMY_HOST = "bibsonomy.org";
-	private static final String BIBSONOMY_BIB_PATH = "/bib/bibtex";
-	private static final String BIBSONOMY_BIBTEX_PATH = "/bibtex";
-
-	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	private static final String BIBTEX_PUBLICATION_PATH_PATTERN = "/[bib/]?[bibtex|publication].*";
 	
-	static {
-		final Pattern hostPattern = Pattern.compile(".*" + BIBSONOMY_HOST);
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(BIBSONOMY_BIB_PATH + ".*")));
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(BIBSONOMY_BIBTEX_PATH + ".*")));
-	}
+	private static final String BIBTEX_FORMAT_PATH_PREFIX = "/bib";
+
+	private static final List<Tuple<Pattern,Pattern>> patterns = Collections.singletonList(
+		new Tuple<Pattern, Pattern>(Pattern.compile(".*" + BIBSONOMY_HOST), Pattern.compile(BIBTEX_PUBLICATION_PATH_PATTERN))
+	);
+	
 	/**
-	 * Scrapes only single publications from bibsonomy.org/bibtex and bibsonomy.org/bib/bibtex 
+	 * Scrapes only single publications from bibsonomy.org/[bibtex|publication] and bibsonomy.org/bib/[bibtex|publication]
 	 */
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+	@Override
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		try {
-
-			String bibResult = null;
-
-			// if /bibtex page then change path from /bibtex to /bib/bibtex and download
-			if(sc.getUrl().getPath().startsWith(BIBSONOMY_BIBTEX_PATH)){
-				String url = sc.getUrl().toString();
-				url = url.replace(BIBSONOMY_BIBTEX_PATH, BIBSONOMY_BIB_PATH);
-				bibResult = WebUtils.getContentAsString(url);
-
-				// if /bib/bibtex page then download directly
-			}else if(sc.getUrl().getPath().startsWith(BIBSONOMY_BIB_PATH)){
-				bibResult = sc.getPageContent();
+			final String path = sc.getUrl().getPath();
+			String url = sc.getUrl().toString();
+			// if /bibtex page or /publication page then change path to add /bib as prefix and download
+			if (!path.startsWith(BIBTEX_FORMAT_PATH_PREFIX + "/")) {
+				url = SITE_URL + BIBTEX_FORMAT_PATH_PREFIX + path;
 			}
-
-			if(bibResult != null){
+			
+			final String bibResult = WebUtils.getContentAsString(url);
+			if (present(bibResult)) {
 				sc.setBibtexResult(bibResult);
 				return true;
-			}else
-				throw new ScrapingFailureException("getting bibtex failed");
-
-		} catch (IOException ex) {
+			}
+			
+			throw new ScrapingFailureException("getting bibtex failed");
+		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 	}
@@ -96,6 +91,7 @@ public class BibSonomyScraper extends AbstractUrlScraper {
 		return INFO;
 	}
 
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}

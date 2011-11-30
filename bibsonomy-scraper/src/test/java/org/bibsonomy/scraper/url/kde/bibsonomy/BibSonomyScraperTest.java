@@ -23,16 +23,16 @@
 
 package org.bibsonomy.scraper.url.kde.bibsonomy;
 
+import static org.junit.Assert.assertTrue;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-
 /**
- * Scraper URL tests #38 #39 for BibSonomyScraper
+ * Scraper URL tests for BibSonomyScraper
  * @author tst
- *
+ * @version $Id$
  */
 @Ignore
 public class BibSonomyScraperTest {
@@ -42,7 +42,7 @@ public class BibSonomyScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_38"));
 	}
 	
@@ -51,9 +51,27 @@ public class BibSonomyScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_39"));
 	}
-
 	
+	/**
+	 * starts URL test with id url_209
+	 */
+	@Test
+	@Ignore // TODO: remove as soon as bibsonomy supports /publication
+	public void url3TestRun(){
+		final UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_209"));
+	}
+
+	/**
+	 * starts URL test with id url_210
+	 */
+	@Test
+	@Ignore // TODO: remove as soon as bibsonomy supports /publication
+	public void url4TestRun(){
+		final UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_210"));
+	}
 }
