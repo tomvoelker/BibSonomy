@@ -594,25 +594,21 @@ html>body #sidebar li {
 
 .tagtiny a,.tagtiny {
 	color: #8D9964 ! important;
-	font-size: 65%;
 	padding-right:10px;
 }
 
 .tagnormal a,.tagnormal {
 	color: #8C9963 ! important;
-	font-size: 95%;
 	padding-right:10px;
 }
 
 .taglarge a,.taglarge {
 	color: #383d27 ! important;
-	font-size: 105%;
 	padding-right:10px;
 }
 
 .taghuge a,.taghuge {
 	color: #2F3321 ! important;
-	font-size: 115%;
 	padding-right:10px;
 }
 
