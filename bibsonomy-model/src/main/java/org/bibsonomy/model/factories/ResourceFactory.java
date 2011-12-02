@@ -50,7 +50,26 @@ public class ResourceFactory {
 	public static final String RESOURCE_CLASS_NAME = "all";
 
 	/**
-	 * TODO: config via spring?
+	 * the string identifying the {@link BibTex} class
+	 */
+	public static final String PUBLICATION_CLASS_NAME = "publication";
+
+	/**
+	 * the string identifying the {@link Bookmark} class
+	 */
+	public static final String BOOKMARK_CLASS_NAME = "bookmark";
+	
+	/**
+	 * the string identifying the {@link GoldStandardBookmark}
+	 */
+	public static final String GOLDSTANDARD_BOOKMARK_CLASS_NAME = "goldstandardbookmark";
+
+	/**
+	 * the string identifying the {@link GoldStandardPublication}
+	 */
+	public static final String GOLDSTANDARD_PUBLICATION_CLASS_NAME = "goldstandardpublication";
+
+	/**
 	 * all known resource classes
 	 */
 	private static final Map<String, Class<? extends Resource>> RESOURCE_CLASSES_BY_NAME = new HashMap<String, Class<? extends Resource>>();
@@ -58,10 +77,10 @@ public class ResourceFactory {
 	private static final Map<Class<? extends Resource>, String> RESOURCE_CLASS_NAMES = new HashMap<Class<? extends Resource>, String>();
 	
 	static {
-		RESOURCE_CLASSES_BY_NAME.put("bookmark", Bookmark.class);
-		RESOURCE_CLASSES_BY_NAME.put("publication", BibTex.class);
-		RESOURCE_CLASSES_BY_NAME.put("goldstandardpublication", GoldStandardPublication.class);
-		RESOURCE_CLASSES_BY_NAME.put("goldstandardbookmark", GoldStandardBookmark.class);
+		RESOURCE_CLASSES_BY_NAME.put(BOOKMARK_CLASS_NAME, Bookmark.class);
+		RESOURCE_CLASSES_BY_NAME.put(PUBLICATION_CLASS_NAME, BibTex.class);
+		RESOURCE_CLASSES_BY_NAME.put(GOLDSTANDARD_PUBLICATION_CLASS_NAME, GoldStandardPublication.class);
+		RESOURCE_CLASSES_BY_NAME.put(GOLDSTANDARD_BOOKMARK_CLASS_NAME, GoldStandardBookmark.class);
 		RESOURCE_CLASSES_BY_NAME.put(RESOURCE_CLASS_NAME, Resource.class);
 		
 		for (final Entry<String, Class<? extends Resource>> entry : RESOURCE_CLASSES_BY_NAME.entrySet()) {
