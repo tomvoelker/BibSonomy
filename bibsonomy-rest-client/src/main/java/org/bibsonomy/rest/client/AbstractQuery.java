@@ -64,8 +64,6 @@ public abstract class AbstractQuery<T> {
 	protected static final String URL_POSTS = RESTConfig.POSTS_URL;
 	@Deprecated
 	protected static final String URL_CONCEPTS = RESTConfig.CONCEPTS_URL;
-	@Deprecated
-	protected static final String URL_SYNC = RESTConfig.SYNC_URL;
 
 	private String apiKey;
 	private String username;

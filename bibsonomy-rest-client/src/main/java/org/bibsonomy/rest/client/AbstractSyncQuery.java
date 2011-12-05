@@ -41,7 +41,7 @@ public abstract class AbstractSyncQuery<T> extends AbstractQuery<T> {
 	 * @return the sync url
 	 */
 	protected String getSyncURL() {
-		final UrlBuilder urlBuilder = new UrlBuilder(URL_SYNC + "/" + UrlUtils.safeURIEncode(serviceURI));
+		final UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.SYNC_URL + "/" + UrlUtils.safeURIEncode(serviceURI));
 		/*
 		 * FIXME: resourceType=all not supported - where to block?
 		 */
