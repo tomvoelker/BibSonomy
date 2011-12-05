@@ -7,6 +7,7 @@ import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
 
 
@@ -40,19 +41,20 @@ public abstract class AbstractSyncQuery<T> extends AbstractQuery<T> {
 	 * @return the sync url
 	 */
 	protected String getSyncURL() {
-		final String result = URL_SYNC + "/" + UrlUtils.safeURIEncode(serviceURI);
+		final UrlBuilder urlBuilder = new UrlBuilder(URL_SYNC + "/" + UrlUtils.safeURIEncode(serviceURI));
 		/*
 		 * FIXME: resourceType=all not supported - where to block?
 		 */
 		if (present(resourceType)) {
-			return UrlUtils.setParam(result, RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(resourceType));
+			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(resourceType));
 		}
 		if (present(strategy)) {
-			return UrlUtils.setParam(result, RESTConfig.SYNC_STRATEGY_PARAM, strategy.getConflictResolutionStrategy());
+			urlBuilder.addParameter(RESTConfig.SYNC_STRATEGY_PARAM, strategy.getConflictResolutionStrategy());
 		}
 		if (present(direction)) {
-			return UrlUtils.setParam(result, RESTConfig.SYNC_DIRECTION_PARAM, direction.getSynchronizationDirection());
+			urlBuilder.addParameter(RESTConfig.SYNC_DIRECTION_PARAM, direction.getSynchronizationDirection());
 		}
-		return result;
+		
+		return urlBuilder.asString();
 	}
 }
