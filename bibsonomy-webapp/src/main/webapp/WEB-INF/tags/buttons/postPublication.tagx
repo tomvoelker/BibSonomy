@@ -16,7 +16,7 @@
         var projectHome ="${properties['project.home']}";
       		//<mtl:cdata>
 		<![CDATA[
-	      var myurl = "javascript:location.href='"+projectHome+"BibtexHandler?requTask=upload&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+";
+	      var myurl = "javascript:location.href='"+projectHome+"BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+";
 	      if (window.getSelection) {
 	        myurl  += "encodeURIComponent(window.getSelection())";
 	      } else if (document.getSelection) {
@@ -33,11 +33,11 @@
 	<noscript>
         (<fmt:message key="buttons.javascript"/> Firefox/Opera: 
         <!-- Firefox & Opera document.getSelection() -->
-	      <a title="${postPublication}" href="javascript:location.href='${properties['project.home']}BibtexHandler?requTask=upload&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublication}" title="${postPublication}"/></a>,
+	      <a title="${postPublication}" href="javascript:location.href='${properties['project.home']}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublication}" title="${postPublication}"/></a>,
 	  
 	      <!-- Internet Explorer document.selection.createRange().text -->    
 	      Internet Explorer: 
-	      <a title="${postPublication}" href="javascript:location.href='${properties['project.home']}BibtexHandler?requTask=upload&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublication}" title="${postPublication}"/></a>)
+	      <a title="${postPublication}" href="javascript:location.href='${properties['project.home']}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublication}" title="${postPublication}"/></a>)
     </noscript>
   
 
