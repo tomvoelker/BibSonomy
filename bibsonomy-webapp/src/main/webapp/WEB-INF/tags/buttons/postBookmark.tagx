@@ -16,7 +16,7 @@
       var projectHome ="${properties['project.home']}";
   	  //<mtl:cdata>
 	  <![CDATA[
-      var myurl = "javascript:location.href='"+projectHome+"ShowBookmarkEntry?c=b&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+";
+      var myurl = "javascript:location.href='"+projectHome+"ShowBookmarkEntry?url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+";
       if (window.getSelection) {
         myurl  += "encodeURIComponent(window.getSelection())";
       } else if (document.getSelection) {
@@ -33,11 +33,11 @@
    <noscript>
      <!-- Firefox & Opera document.getSelection() -->
      (<fmt:message key="buttons.javascript"/> Firefox/Opera: 
-     <a title="${postBookmark}" href="javascript:location.href='${properties['project.home']}ShowBookmarkEntry?c=b&amp;jump=yes&amp;user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postBookmark}" title="${postBookmark}"/></a>,
+     <a title="${postBookmark}" href="javascript:location.href='${properties['project.home']}ShowBookmarkEntry?user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postBookmark}" title="${postBookmark}"/></a>,
       
      <!-- Internet Explorer document.selection.createRange().text -->    
      Internet Explorer: 
-     <a title="${postBookmark}" href="javascript:location.href='${properties['project.home']}ShowBookmarkEntry?c=b&amp;jump=yes&amp;user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postBookmark}" title="${postBookmark}"/></a>)
+     <a title="${postBookmark}" href="javascript:location.href='${properties['project.home']}ShowBookmarkEntry?user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postBookmark}" title="${postBookmark}"/></a>)
    </noscript>
 
 </jsp:root>
