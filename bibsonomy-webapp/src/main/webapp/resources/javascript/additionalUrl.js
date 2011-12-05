@@ -49,7 +49,6 @@ $(function(){
                 var hash = $("hash", data).text();
 
                 if("ok" == status) {
-                	alert(this.innerHTML);
                 	$('#urlList').prepend(function(){
                 		var urlLnk = $('<a href="' + url + '">' + urlText + '</a>');
                 		var element = $("<div></div>").append(urlLnk).append(' (').append($('<a href="">' + getString("post.bibtex.delete") + '</a>').click(function(){
