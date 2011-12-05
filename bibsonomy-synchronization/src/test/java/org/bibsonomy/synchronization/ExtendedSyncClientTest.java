@@ -31,7 +31,7 @@ import org.junit.Test;
  * @author wla
  * @version $Id$
  */
-public class ExtendedSyncClientTests extends AbstractSynchronizationClientTest {
+public class ExtendedSyncClientTest extends AbstractSynchronizationClientTest {
 
 	/**
 	 * test the sync client
