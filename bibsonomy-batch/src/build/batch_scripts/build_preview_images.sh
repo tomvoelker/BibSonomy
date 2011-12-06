@@ -8,15 +8,21 @@
 # 2) task \in {"force", "delete"}
 #
 # Changes:
-# 2011-11-24 (rja)
-# - initial version
+# 2011-12-06 (rja)
+# - added "-cnewer" option to find and corresponding file touching
 # 2011-11-25 (rja)
 # - added conversion of image/png, image/tiff, image/jpeg
 # - added .jpg file extension to really create JPEGs :-(
 # - added renicing of script
+# 2011-11-24 (rja)
+# - initial version
 # 
 # TODO: merge thumbnail generation into one method
+# 
+# TODO: improve file name pattern for "find" (five times [0-9a-f] at
+# the end ensures that no preview images match - currently)
 #
+# TODO: refactor "find" operation into one line
 
 if [ $# -lt 2 ]; then
     echo "usage:"
@@ -25,17 +31,32 @@ if [ $# -lt 2 ]; then
     exit 1;
 fi
 
-DOCS=$1
+DOCUMENT_DIRECTORY=$1
 TASK=$2
+# this file's create date is used as reference to find only newly
+# documents
+TIMESTAMPFILE=$DOCUMENT_DIRECTORY/timestamp_preview
 
 # renice script to the lowest level
 PID=$$
 renice -n 20 -p $PID
 ionice -c 3 -p $PID
 
-# TODO: improve pattern (five times [0-9a-f] at the end ensures that
-# no preview images match - currently)
-for doc in $(find $1 -type f -name "[0-9a-f]*[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]"); do
+# remember current time (before searching for files)
+NOW=$(date --rfc-2822)
+
+# check for timestamp file
+if [ -f $TIMESTAMPFILE ]; then
+    # found -> find only files created after the timestamp file
+    DOCUMENTS=$(find $DOCUMENT_DIRECTORY -type f -cnewer $TIMESTAMPFILE -name "[0-9a-f]*[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]")
+else 
+    # no timestamp file available -> find all documents
+    DOCUMENTS=$(find $DOCUMENT_DIRECTORY -type f -name "[0-9a-f]*[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]")
+fi
+# touch timestamp file
+touch -t "$NOW"
+
+for doc in $DOCUMENTS; do
     # find out file's MIME type
     type=$(file --brief --mime-type $doc)
     case "$type" in 
@@ -71,5 +92,4 @@ for doc in $(find $1 -type f -name "[0-9a-f]*[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-
 	    echo "$type can not be handled"
 	    ;;
     esac
-	
 done
