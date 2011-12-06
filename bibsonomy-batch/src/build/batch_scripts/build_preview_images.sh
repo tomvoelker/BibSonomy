@@ -57,7 +57,7 @@ else
     DOCUMENTS=$(find $DOCUMENT_DIRECTORY -type f -name "[0-9a-f]*[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]")
 fi
 # touch timestamp file
-touch -t "$NOW" $TIMESTAMPFILE
+touch --date "$NOW" $TIMESTAMPFILE
 echo found $(echo $DOCUMENTS | wc -l ) new documents
 
 for doc in $DOCUMENTS; do
