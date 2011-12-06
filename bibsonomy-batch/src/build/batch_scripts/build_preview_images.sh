@@ -55,6 +55,7 @@ else
 fi
 # touch timestamp file
 touch -t "$NOW"
+echo found $(echo $DOCUMENTS | wc -l ) new documents
 
 for doc in $DOCUMENTS; do
     # find out file's MIME type
