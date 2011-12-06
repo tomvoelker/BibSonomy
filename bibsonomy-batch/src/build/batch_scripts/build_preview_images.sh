@@ -7,9 +7,12 @@
 # 1) folder with the documents
 # 2) task \in {"force", "delete"}
 #
+# Version: $Id$
+#
 # Changes:
 # 2011-12-06 (rja)
-# - added "-cnewer" option to find and corresponding file touching
+# - added "-cnewer" option to "find" and corresponding file touching
+# - for PDF/PS convert is now only called successful ghostscript conversion
 # 2011-11-25 (rja)
 # - added conversion of image/png, image/tiff, image/jpeg
 # - added .jpg file extension to really create JPEGs :-(
@@ -70,10 +73,12 @@ for doc in $DOCUMENTS; do
 		temp=$(tempfile)
 		# convert to PNG
 		gs -q -dSAFER -sDEVICE=png16m -dLastPage=1 -r150 -o$temp $doc
-		# make small JPEG previews
-		convert -thumbnail '100x100>' $temp ${doc}_SMALL.jpg
-		convert -thumbnail '200x200>' $temp ${doc}_MEDIUM.jpg
-		convert -thumbnail '400x400>' $temp ${doc}_LARGE.jpg
+		if [ $? ]; then
+		    # make small JPEG previews
+		    convert -thumbnail '100x100>' $temp ${doc}_SMALL.jpg
+		    convert -thumbnail '200x200>' $temp ${doc}_MEDIUM.jpg
+		    convert -thumbnail '400x400>' $temp ${doc}_LARGE.jpg
+		fi
 		# remove temporary file
 		rm $temp
 	    fi
