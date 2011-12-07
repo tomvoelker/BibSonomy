@@ -68,7 +68,6 @@ public class CVWikiModel extends AbstractWikiModel {
 
 	private User requestedUser;
 	private Group requestedGroup;
-
 	private LogicInterface logic;
 
 	private LayoutRenderer<Layout> layoutRenderer;
