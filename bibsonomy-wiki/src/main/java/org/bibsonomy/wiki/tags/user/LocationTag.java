@@ -15,6 +15,7 @@ public class LocationTag extends UserTag{
 	 */
 	public LocationTag() {
 		super(TAG_NAME);
+		System.out.println("constructor location test");
 	}
 	
 	@Override

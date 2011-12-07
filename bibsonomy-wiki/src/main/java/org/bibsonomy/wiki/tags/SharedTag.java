@@ -51,7 +51,7 @@ public abstract class SharedTag extends AbstractTag {
 	protected String getRequestedName(final RequestType requestType) {
 		switch (requestType) {
 		case USER:
-			return Utils.escapeXmlChars(this.requestedUser.getName());
+			return Utils.escapeXmlChars(this.requestedUser.getRealname());
 		case GROUP:
 			return Utils.escapeXmlChars(this.requestedGroup.getName());
 		default: 
