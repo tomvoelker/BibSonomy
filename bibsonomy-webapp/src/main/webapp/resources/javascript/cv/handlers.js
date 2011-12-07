@@ -58,6 +58,10 @@ $(function(){
 			$('#showAdminField').show('blind');
 		});
     });
+    
+    $('.toggleImage').click(function(e){
+    	alert($(e).html);
+    });
 	
 	/**
 	 * Handler to toggle the admin panel
