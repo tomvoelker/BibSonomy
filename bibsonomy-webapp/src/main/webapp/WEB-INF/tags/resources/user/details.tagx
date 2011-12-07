@@ -24,7 +24,7 @@
         <th>groups</th>
         <td>
           <c:forEach items="${user.groups}" var="group">
-            <c:out value="${group.name}"/>(<c:out value="${group.groupId}"/>), 
+            <a href="/group/${fn:escapeXml(group.name)}"><c:out value="${group.name}"/></a>(<c:out value="${group.groupId}"/>), 
           </c:forEach>
         </td>
       </tr>
