@@ -75,22 +75,15 @@
 		<div id="general_100">
 			<!-- CV admin panel. Does show if you are the requested user -->
 			<c:if test="${command.context.loginUser.name eq command.requestedUser}">
-				<!-- <div id="general_100">
-					<span class="smalltext">
-						<fmt:message key = "cv.hint"/>
-						<ul class="helpList">
-							<li><fmt:message key = "cv.hint2">
-								<fmt:param><fmt:message key = "settings.public"/></fmt:param>
-								</fmt:message></li>
-							<li><fmt:message key = "cv.hint3"/></li>
-						</ul>
-						<fmt:message key = "cv.hint4"/>
-						<input id='startEdit' style='float:right;margin-right:7em' type='button' value='Lets start..!'/>
-					</span>
-				</div>-->
 		<form:form><div id="fsform">
 		<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}"/>
-    	  <fieldset class="fsOuter">
+    	  <fieldset class="fsInner">
+    	  <fieldset class="fsVisible">
+    	  <legend>
+			<img src="/resources/image/icon_collapse.png" onclick="toggleFieldsetVisibility(this)" alt="toggle visibility" class="" />
+			<fmt:message key = "cv.legend.admin.main"/>
+		   </legend>
+		   <div>
 		    <div class="fsRow">
 		    	<div class="fsLabel"><fmt:message key = "cv.admin.topic"/></div>
 		      	<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
@@ -102,15 +95,19 @@
 		   	<fmt:message key="cv.admin.save" var="save"/>
 		   	<fmt:message key="cv.admin.hide" var="hide"/>
 		   	<fmt:message key="cv.admin.show" var="show"/>
-			 	<input class="fsFormSubmit" type="button" value="${layout}" id="layoutButton" />
 			 	<span style="float:right;">
 		     	<input type="button" href='#' onclick="return submitWiki('preview');" value="${preview}" />
 		     	<input type="button" href='#' onclick="return submitWiki('publicPreview');" value="${pPrev}" />
 		     	<input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
-		      	<input type="button" href='#' value="${hide}" id="hideAdmin" />
 		      	</span>
 		    </div>
-		   	<fieldset id="layouts" class="fsInner" style="display:none;">
+		     </div>
+		     </fieldset>
+		     <fieldset class="fsVisible">
+    	 		<legend>
+					<img src="/resources/image/icon_collapse.png" onclick="toggleFieldsetVisibility(this)" alt="toggle visibility" />
+					<fmt:message key = "cv.legend.admin.layouts"/>
+		   		</legend>
 		   	<fmt:message key="cv.layout.name.def1en" var="def1en"/>
 		   	<fmt:message key="cv.layout.name.def1ger" var="def1ger"/>
 		   	<fmt:message key="cv.layout.name.def2en" var="def2en"/>
@@ -133,7 +130,7 @@
 		      		<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" />
 		      		<input type="button" onclick="return clearCVTextField();" value="${clear}" />
 		      </div>
-		     </fieldset>
+		      </fieldset>
   		  </fieldset>
   		  <div id='errorField' style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'><p id="errorText"></p></div>
 		<div id='loadingDiv' style='width: 100%;display:none'><img src="${resdir}/image/ajax_loader.gif" alt="wait" /></div>
