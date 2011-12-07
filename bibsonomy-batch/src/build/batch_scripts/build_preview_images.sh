@@ -70,7 +70,7 @@ for doc in $DOCUMENTS; do
 	    # when no small preview there, generate a new one
 	    small=${doc}_SMALL.jpg
 	    if [ ! -f $small -o $TASK == "force" ]; then
-		echo "converting $doc ($type)"
+		# echo "converting $doc ($type)"
 		# get a temporary file
 		temp=$(tempfile)
 		# convert to PNG
@@ -89,7 +89,7 @@ for doc in $DOCUMENTS; do
 	    # when no small preview there, generate a new one
 	    small=${doc}_SMALL
 	    if [ ! -f $small -o $TASK == "force" ]; then
-		echo "converting $doc ($type)"
+		# echo "converting $doc ($type)"
 		# make small JPEG previews
 		convert -quiet -thumbnail '100x100>' $doc ${doc}_SMALL.jpg
 		convert -quiet -thumbnail '200x200>' $doc ${doc}_MEDIUM.jpg
