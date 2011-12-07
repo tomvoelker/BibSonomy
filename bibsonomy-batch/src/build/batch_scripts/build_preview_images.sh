@@ -11,6 +11,8 @@
 #
 # Changes:
 # 2011-12-06 (rja)
+# - made script quiet
+# 2011-12-06 (rja)
 # - added "-cnewer" option to "find" and corresponding file touching
 # - for PDF/PS convert is now only called successful ghostscript conversion
 # 2011-11-25 (rja)
@@ -42,8 +44,8 @@ TIMESTAMPFILE=$DOCUMENT_DIRECTORY/timestamp_preview
 
 # renice script to the lowest level
 PID=$$
-renice -n 20 -p $PID
-ionice -c 3 -p $PID
+renice -n 20 -p $PID >/dev/null
+ionice -c 3 -p $PID >/dev/null
 
 # remember current time (before searching for files)
 NOW=$(date --rfc-2822)
@@ -58,7 +60,7 @@ else
 fi
 # touch timestamp file
 touch --date "$NOW" $TIMESTAMPFILE
-echo found $(echo $DOCUMENTS | wc -l ) new documents
+# echo found $(echo $DOCUMENTS | wc -l ) new documents
 
 for doc in $DOCUMENTS; do
     # find out file's MIME type
@@ -75,9 +77,9 @@ for doc in $DOCUMENTS; do
 		gs -q -dSAFER -sDEVICE=png16m -dLastPage=1 -r150 -o$temp $doc
 		if [ $? ]; then
 		    # make small JPEG previews
-		    convert -thumbnail '100x100>' $temp ${doc}_SMALL.jpg
-		    convert -thumbnail '200x200>' $temp ${doc}_MEDIUM.jpg
-		    convert -thumbnail '400x400>' $temp ${doc}_LARGE.jpg
+		    convert -quiet -thumbnail '100x100>' $temp ${doc}_SMALL.jpg
+		    convert -quiet -thumbnail '200x200>' $temp ${doc}_MEDIUM.jpg
+		    convert -quiet -thumbnail '400x400>' $temp ${doc}_LARGE.jpg
 		fi
 		# remove temporary file
 		rm $temp
@@ -89,9 +91,9 @@ for doc in $DOCUMENTS; do
 	    if [ ! -f $small -o $TASK == "force" ]; then
 		echo "converting $doc ($type)"
 		# make small JPEG previews
-		convert -thumbnail '100x100>' $doc ${doc}_SMALL.jpg
-		convert -thumbnail '200x200>' $doc ${doc}_MEDIUM.jpg
-		convert -thumbnail '400x400>' $doc ${doc}_LARGE.jpg
+		convert -quiet -thumbnail '100x100>' $doc ${doc}_SMALL.jpg
+		convert -quiet -thumbnail '200x200>' $doc ${doc}_MEDIUM.jpg
+		convert -quiet -thumbnail '400x400>' $doc ${doc}_LARGE.jpg
 	    fi
 	    ;;
 	*)
