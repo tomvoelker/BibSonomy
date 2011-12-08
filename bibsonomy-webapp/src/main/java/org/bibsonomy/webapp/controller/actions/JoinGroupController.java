@@ -26,16 +26,14 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 
-
-/**
- * @author schwass
- * @version $Id$
- */
 /**
  * Handles 
  * * a user's request to join a group
  * * a group's response to deny the user membership
  * TODO: should also handle accept user and probably delete user too 
+ * 
+ * @author schwass
+ * @version $Id$
  */
 public class JoinGroupController implements ErrorAware, ValidationAwareController<JoinGroupCommand>, RequestAware, Validator<JoinGroupCommand> {
 	
@@ -75,16 +73,16 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		}
 		
 		// get Group-Details and check if present
-		String groupName = command.getGroup();
-		Group group = logic.getGroupDetails(command.getGroup());
+		final String groupName = command.getGroup();
+		final Group group = logic.getGroupDetails(command.getGroup());
 		if (!present(group)) {
 			// no group given => user did not click join on the group page
 			errors.reject("error.field.valid.groupName");
 			return Views.ERROR;
 		}
 
-		String reason = command.getReason();
-		String deniedUserName = command.getDeniedUser();
+		final String reason = command.getReason();
+		final String deniedUserName = command.getDeniedUser();
 		
 		if (!present(reason) && ! present(deniedUserName)) {
 			// no deniedUser, no reason => probably wants to see the join_group page
@@ -109,7 +107,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			if (!groupName.equals( command.getContext().getLoginUser().getName() )) {
 				throw new AccessDeniedException("This action is only possible for a group. Please log in as a group!");
 			}
-			User deniedUser = adminLogic.getUserDetails(deniedUserName);
+			final User deniedUser = adminLogic.getUserDetails(deniedUserName);
 			if (!present(deniedUser)) {
 				errors.reject("joinGroup.deny.noUser");
 				return Views.ERROR;
@@ -164,7 +162,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		// we need the user details (eMail) of the user that is the group
 		final User groupUser = adminLogic.getUserDetails(groupName);
 		mailUtils.sendJoinGroupRequest(group.getName(), groupUser.getEmail(), loginUser, command.getReason(), requestLogic.getLocale());
-		List<String> params = new LinkedList<String>();
+		final List<String> params = new LinkedList<String>();
 		params.add(groupName);
 		command.setMessage("success.joinGroupRequest.sent", params);
 		return Views.SUCCESS;
@@ -195,9 +193,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			errors.rejectValue("reason", "error.field.valid.limit_exceeded", new Object[] {reasonMaxLen}, "Message is too long");
 			command.setReason(command.getReason().substring(0, reasonMaxLen));
 		}
-		
 	}
-
 
 	@Override
 	public Errors getErrors() {
@@ -262,6 +258,4 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 	public void setReasonMaxLen(final int reasonMaxLen) {
 		this.reasonMaxLen = reasonMaxLen;
 	}
-	
-	
 }
