@@ -20,7 +20,7 @@ import org.springframework.validation.Errors;
 
 /**
  * With this Controller we delete Messages from a user's inbox
- * TODO: implement it ;-)
+ * 
  * @author sdo
  * @version $Id$
  */
@@ -35,7 +35,7 @@ public class RemoveMessageController implements MinimalisticController<RemoveMes
 	}
 	
 	@Override
-	public View workOn(RemoveMessageCommand command){
+	public View workOn(final RemoveMessageCommand command){
 		final RequestWrapperContext context = command.getContext();
 		/*
 		 * user has to be logged in to delete
@@ -77,9 +77,8 @@ public class RemoveMessageController implements MinimalisticController<RemoveMes
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
-		this.errors=errors;
-
+	public void setErrors(final Errors errors) {
+		this.errors = errors;
 	}
 	
 	/**
