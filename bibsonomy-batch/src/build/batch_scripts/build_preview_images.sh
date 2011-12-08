@@ -10,6 +10,8 @@
 # Version: $Id$
 #
 # Changes:
+# 2011-12-08 (rja)
+# - added file name for documents that could not be handled
 # 2011-12-06 (rja)
 # - made script quiet
 # 2011-12-06 (rja)
@@ -97,7 +99,7 @@ for doc in $DOCUMENTS; do
 	    fi
 	    ;;
 	*)
-	    echo "$type can not be handled"
+	    echo "$doc: $type can not be handled "
 	    ;;
     esac
 done
