@@ -1,6 +1,7 @@
 package org.bibsonomy.wiki.tags.user;
 
 import org.bibsonomy.wiki.tags.UserTag;
+
 /**
  * This is a simple location-tag.
  * Usage: <location />
@@ -15,7 +16,6 @@ public class LocationTag extends UserTag{
 	 */
 	public LocationTag() {
 		super(TAG_NAME);
-		System.out.println("constructor location test");
 	}
 	
 	@Override
