@@ -1,4 +1,4 @@
-	package org.bibsonomy.webapp.controller.actions;
+package org.bibsonomy.webapp.controller.actions;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -31,7 +31,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	private static final Log log = LogFactory.getLog(UpdateUserController.class);
 
 	@Override
-	public View workOn(SettingsViewCommand command) {
+	public View workOn(final SettingsViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 
 		if (!context.isUserLoggedIn()) {
@@ -106,11 +106,11 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	private void updateUser(final User user, final Errors errors) {
 		try {
 			logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
-		} catch(DatabaseException e) {
+		} catch (final DatabaseException e) {
 			final List<ErrorMessage> messages = e.getErrorMessages().get(user.getName());
 
-			for(final ErrorMessage eMsg : messages) {
-				if(eMsg instanceof FieldLengthErrorMessage) {
+			for (final ErrorMessage eMsg : messages) {
+				if (eMsg instanceof FieldLengthErrorMessage) {
 					final FieldLengthErrorMessage fError = (FieldLengthErrorMessage) eMsg;
 					final Iterator<String> it = fError.iteratorFields();
 					while(it.hasNext()) {
@@ -129,7 +129,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	}
 
 	@Override
-	public boolean isValidationRequired(SettingsViewCommand command) {
+	public boolean isValidationRequired(final SettingsViewCommand command) {
 		return true;
 	}
 
