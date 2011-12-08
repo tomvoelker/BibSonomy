@@ -27,19 +27,25 @@ import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
 /**
+ * TODO: use json as reponse format
+ * TODO: add validation? if not remove {@link ValidationAwareController} interface
+ * 
  * Ajax controller for the CV page. - /ajax/cv
  * 
  * @author Bernd Terbrack
  * @version $Id$
  */
 public class CvAjaxController extends AjaxController implements MinimalisticController<AjaxCvCommand>, ErrorAware, ValidationAwareController<AjaxCvCommand> {
-
 	private static final Log log = LogFactory.getLog(CvAjaxController.class);
+
+	private static final String SAVE_OPTION = "save";
+	private static final String PUBLIC_PREVIEW = "publicPreview";
+	
+	
 	private LogicInterface notLoggedInUserLogic;
 	private Errors errors;
 	private CVWikiModel wikiRenderer;
 	private MessageSource messageSource;
-	private static final String PUBLIC_PREVIEW = "publicPreview";
 
 	@Override
 	public AjaxCvCommand instantiateCommand() {
@@ -47,7 +53,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	}
 
 	@Override
-	public View workOn(AjaxCvCommand command) {
+	public View workOn(final AjaxCvCommand command) {
 		log.debug("workOn CvAjaxController");
 		final Locale locale = requestLogic.getLocale();
 
@@ -67,67 +73,69 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		}
 
 		final String renderOptions = command.getRenderOptions();
-		final String authUser = logic.getAuthenticatedUser().getName();
+		final String authUser = this.logic.getAuthenticatedUser().getName();
 		final String wikiText = command.getWikiText();
-		final Group requestedGroup;
-
-		requestedGroup = this.logic.getGroupDetails(authUser);
-		boolean isGroup = present(requestedGroup);
-		if (isGroup) {
-			final GroupingEntity groupingEntity = GroupingEntity.GROUP;
-
+		final Group requestedGroup = this.logic.getGroupDetails(authUser);
+		
+		final boolean isGroup = present(requestedGroup);
+		
+		final LogicInterface interfaceToUse;
+		if (PUBLIC_PREVIEW.equals(renderOptions)) {
+			interfaceToUse = this.notLoggedInUserLogic;
+		} else {
+			interfaceToUse = this.logic;
+		}
+		
+		/*
+		 * handle save action
+		 * first update 
+		 */
+		if (SAVE_OPTION.equals(renderOptions)) {
+			final Wiki wiki = new Wiki();
+			wiki.setWikiText(wikiText);
 			/*
-			 * Check if its a public preview. If so, use the public preview
-			 * logic.
+			 * TODO: add support for group members to edit group cv page
 			 */
-			final List<User> groupUsers;
-			if (PUBLIC_PREVIEW.equals(renderOptions)) {
-				groupUsers = this.notLoggedInUserLogic.getUsers(null, groupingEntity, requestedGroup.getName(), null, null, null, null, null, 0, 1000);
-			} else {
-				groupUsers = this.logic.getUsers(null, groupingEntity, requestedGroup.getName(), null, null, null, null, null, 0, 1000);
-			}
+			this.logic.updateWiki(authUser, wiki);
+			/*
+			 * go on and return the preview
+			 */
+		}
+		
+		if (isGroup) {
+			/*
+			 * get all members of the group
+			 */
+			final List<User> groupUsers = interfaceToUse.getUsers(null, GroupingEntity.GROUP, requestedGroup.getName(), null, null, null, null, null, 0, 1000);
 			requestedGroup.setUsers(groupUsers);
 
 			this.wikiRenderer.setRequestedGroup(requestedGroup);
 		} else {
-			/*
-			 * Check if its a public preview. If so, use the public preview
-			 * logic.
-			 */
-			if (PUBLIC_PREVIEW.equals(renderOptions)) {
-				this.wikiRenderer.setRequestedUser(this.notLoggedInUserLogic.getUserDetails(authUser));
-			} else {
-				this.wikiRenderer.setRequestedUser(this.logic.getUserDetails(authUser));
-			}
+			this.wikiRenderer.setRequestedUser(interfaceToUse.getUserDetails(authUser));
 		}
 
+		/*
+		 * if a renderOption was specified and the wikitext is not null
+		 * render a preview
+		 */
 		if (present(renderOptions) && wikiText != null) {
-			return renderWiki(command, wikiText, renderOptions);
+			return renderWiki(command, wikiText, interfaceToUse);
 		}
+		
+		/*
+		 * if no renderOption is given try to set a layout
+		 */
 		try {
 			return getLayout(command, locale, isGroup);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return handleError("error.405");
 		}
 	}
-
-	/**
-	 * Method which renders the wikiText
-	 * @param command
-	 * @param wikiText
-	 * @param renderOption
-	 * @return the rendered wiki view
-	 */
-	private View renderWiki(AjaxCvCommand command, String wikiText, String renderOption) {
+	
+	private View renderWiki(final AjaxCvCommand command, final String wikiText, final LogicInterface interfaceToUse) {
 		log.debug("ajax -> renderWiki");
-
-		Wiki wiki = new Wiki();
-		wiki.setWikiText(wikiText);
-		if ("publicPreview".equals(renderOption)) {
-			wikiRenderer.setLogic(notLoggedInUserLogic);
-		} else if ("save".equals(renderOption)) {
-			logic.updateWiki((wikiRenderer.getRequestedGroup() != null ? wikiRenderer.getRequestedGroup().getName() : wikiRenderer.getRequestedUser().getName()), wiki);
-		}
+		
+		this.wikiRenderer.setLogic(interfaceToUse);
 		command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		return Views.AJAX_XML;
 	}
@@ -139,12 +147,12 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 * @return
 	 * @throws Exception
 	 */
-	private View getLayout(AjaxCvCommand command, Locale locale, boolean isGroup) throws Exception {
+	private View getLayout(final AjaxCvCommand command, final Locale locale, final boolean isGroup) throws Exception {
 		log.debug("ajax -> getLayout");
 		final String layoutName = command.getLayout();
 		if (!UserLayout.LAYOUT_CURRENT.name().equals(layoutName)) {
-			String layoutRef = isGroup ?  GroupLayout.valueOf(layoutName).getRef() : UserLayout.valueOf(layoutName).getRef();
-			String wikiText = messageSource.getMessage(layoutRef, null, locale);
+			final String layoutRef = isGroup ?  GroupLayout.valueOf(layoutName).getRef() : UserLayout.valueOf(layoutName).getRef();
+			final String wikiText = messageSource.getMessage(layoutRef, null, locale);
 			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
 		} else {
 			String wikiText;
@@ -177,7 +185,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 * 
 	 * @return XML success string.
 	 */
-	private String getXmlSucceeded(final AjaxCvCommand command, String... wikiText) {
+	private String getXmlSucceeded(final AjaxCvCommand command, final String... wikiText) {
 		return (wikiText.length > 1) ? "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey><wikitext>" + Utils.escapeXmlChars(wikiText[0]) + "</wikitext><renderedwikitext><![CDATA[" + wikiText[1] + "]]></renderedwikitext></root>" : "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey></root>";
 
 	}
@@ -196,44 +204,28 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 * @param messageSource
 	 *            the messageSource to set
 	 */
-	public void setMessageSource(MessageSource messageSource) {
+	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
 	@Override
-	public boolean isValidationRequired(AjaxCvCommand command) {
-		// TODO Auto-generated method stub
+	public boolean isValidationRequired(final AjaxCvCommand command) {
 		return false;
 	}
 
 	@Override
 	public Validator<AjaxCvCommand> getValidator() {
-		// TODO Auto-generated method stub
 		return null;
-	}
-
-	/**
-	 * @return the wikiRenderer
-	 */
-	public CVWikiModel getWikiRenderer() {
-		return wikiRenderer;
 	}
 
 	/**
 	 * @param wikiRenderer
 	 *            the wikiRenderer to set
 	 */
-	public void setWikiRenderer(CVWikiModel wikiRenderer) {
+	public void setWikiRenderer(final CVWikiModel wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
 	}
-
-	/**
-	 * @return the notLoggedInUserLogic
-	 */
-	public LogicInterface getNotLoggedInUserLogic() {
-		return notLoggedInUserLogic;
-	}
-
+	
 	/**
 	 * @param notLoggedInUserLogic
 	 *            the notLoggedInUserLogic to set

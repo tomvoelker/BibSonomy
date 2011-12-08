@@ -5,7 +5,9 @@ package org.bibsonomy.webapp.command.ajax;
  * @version $Id$
  */
 public class AjaxCvCommand extends AjaxCommand {
+	
 	/**
+	 * TODO: change type to UserLayout after it is merged with GroupLayout
 	 * Name of the design
 	 */
 	private String layout;
@@ -30,7 +32,7 @@ public class AjaxCvCommand extends AjaxCommand {
 	/**
 	 * @param layout the layout to set
 	 */
-	public void setLayout(String layout) {
+	public void setLayout(final String layout) {
 		this.layout = layout;
 	}
 
@@ -44,7 +46,7 @@ public class AjaxCvCommand extends AjaxCommand {
 	/**
 	 * @param wikiText the wikiText to set
 	 */
-	public void setWikiText(String wikiText) {
+	public void setWikiText(final String wikiText) {
 		this.wikiText = wikiText;
 	}
 
@@ -58,7 +60,7 @@ public class AjaxCvCommand extends AjaxCommand {
 	/**
 	 * @param renderOptions the renderOptions to set
 	 */
-	public void setRenderOptions(String renderOptions) {
+	public void setRenderOptions(final String renderOptions) {
 		this.renderOptions = renderOptions;
 	}
 
