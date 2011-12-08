@@ -642,7 +642,7 @@ public class BibTexUtils {
 			buffer.append(getFirstRelevantWord(title).toLowerCase());
 		}
 
-		return buffer.toString().toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
+		return StringUtils.foldToASCII(buffer.toString().toLowerCase()).replaceAll("[^a-z0-9]", "");
 	}
 
 	/**
