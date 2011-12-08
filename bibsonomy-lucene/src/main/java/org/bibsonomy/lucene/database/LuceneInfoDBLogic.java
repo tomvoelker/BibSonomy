@@ -1,6 +1,9 @@
 package org.bibsonomy.lucene.database;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -25,6 +28,10 @@ public class LuceneInfoDBLogic extends AbstractDatabaseManager implements Lucene
 	 */
 	@Override
 	public Collection<String> getFriendsForUser(final String userName) {
+		if (!present(userName)) {
+			return Collections.emptySet();
+		}
+		
 		final DBSession session = this.openSession();
 		try {
 			return this.queryForList("getFriendsForUser", userName, String.class, session);
