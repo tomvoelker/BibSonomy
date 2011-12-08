@@ -4,12 +4,21 @@ import info.bliki.htmlcleaner.Utils;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 
+/**
+ * 
+ * @author Bernd
+ * @version $Id$
+ */
 public abstract class SharedTag extends AbstractTag {
 
+	/**
+	 * @param name the name of the tag
+	 */
 	public SharedTag(final String name) {
 		super(name);
 	}
 	
+	@Deprecated // TODO: introduce supertype for user and group 
 	protected enum RequestType {
 		USER("user",GroupingEntity.USER),
 		GROUP("group",GroupingEntity.GROUP);
@@ -44,6 +53,21 @@ public abstract class SharedTag extends AbstractTag {
 		return this.requestedGroup != null  ? this.renderSharedTag(RequestType.GROUP) : this.renderSharedTag(RequestType.USER);
 	}
 	
+	/*
+	 * TODO: if current user isn't allowed to see the real name of the requested
+	 * user realname is null, return the name instead?
+	 */
+	protected String getRequestedRealName(final RequestType requestType) {
+		switch (requestType) {
+		case USER:
+			return Utils.escapeXmlChars(this.requestedUser.getRealname());
+		case GROUP:
+			return Utils.escapeXmlChars(this.requestedGroup.getRealname());
+		default: 
+			return this.name = "";	
+		}
+	}
+	
 	/**
 	 * @param requestType
 	 * @return The name of the User/Group based on the requestType
@@ -51,7 +75,7 @@ public abstract class SharedTag extends AbstractTag {
 	protected String getRequestedName(final RequestType requestType) {
 		switch (requestType) {
 		case USER:
-			return Utils.escapeXmlChars(this.requestedUser.getRealname());
+			return Utils.escapeXmlChars(this.requestedUser.getName());
 		case GROUP:
 			return Utils.escapeXmlChars(this.requestedGroup.getName());
 		default: 
