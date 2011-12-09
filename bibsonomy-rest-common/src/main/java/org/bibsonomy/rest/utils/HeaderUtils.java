@@ -119,7 +119,10 @@ public class HeaderUtils {
 				 */
 				try {
 					qValue = Double.parseDouble(types[1].split("=")[1]);
-				} catch (NumberFormatException e) {
+				} catch (NumberFormatException nfe) {
+					qValue = 0;
+					log.error("Couldn't parse accept header '"+acceptHeader+"'");
+				} catch (ArrayIndexOutOfBoundsException aie) {
 					qValue = 0;
 					log.error("Couldn't parse accept header '"+acceptHeader+"'");
 				}
