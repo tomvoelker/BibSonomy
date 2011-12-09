@@ -71,6 +71,18 @@ public class Functions  {
 	private static final DateFormat myDateFormat = new SimpleDateFormat("yyyy-MM");
 	private static final DateFormat dmyDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
+	/*
+	 * used by computeTagFontSize. 
+	 * 
+	 * - scalingFactor: Controls difference between smallest and largest tag
+	 *   (size of largest: 90 -> 200% font size; 40 -> ~170%; 20 -> ~150%; all for offset = 10)
+	 * - offset: controls size of smallest tag ( 10 -> 100%)
+	 * - default: default tag size returned in case of an error during computation
+	 */
+	private static final int TAGCLOUD_SIZE_SCALING_FACTOR = 45; 
+	private static final int TAGCLOUD_SIZE_OFFSET= 10;	
+	private static final int TAGCLOUD_SIZE_DEFAULT = 100;
+	
 	// load special characters
 	static {
 		try {
@@ -230,34 +242,32 @@ public class Functions  {
 	}
 
 	/**
-	 * Computes font size for given tag frequency and maximum tag frequency inside tag cloud
+	 * Computes font size for given tag frequency and maximum tag frequency inside tag cloud.
 	 * 
-	 * this is used as attribute font-size=X%, hence values between 100 and 300 are returned
+	 * This is used as attribute font-size=X%.
+	 * We expect 0 < tagMinFrequency <= tagFrequency <= tagMaxFrequency.
+	 * We return a value between 200 and 300 if tagsizemode=popular, and between 100 and 200 otherwise.
 	 * 
-	 * FIXME: how much sense does it make to give a /frequency/ (which is 
-	 * assumed to be between 0 and 100) as Integer?
-	 * 
-	 * @param tagFrequency
-	 * @param tagMinFrequency TODO
-	 * @param tagMaxFrequency
-	 * @param tagSizeMode 
+	 * @param tagFrequency - the frequency of the tag
+	 * @param tagMinFrequency - the minimum frequency within the tag cloud
+	 * @param tagMaxFrequency - the maximum frequency within the tag cloud
+	 * @param tagSizeMode  - which kind of tag cloud is to be done (the one for the popular tags page vs. standard)
 	 * @return font size for the tag cloud with the given parameters
 	 */
 	public static Integer computeTagFontsize(final Integer tagFrequency, Integer tagMinFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
-			/*
-			 * we expect 0 < tagFrequency < tagMaxFrequency.
-			 * we return a value between 200 and 300 if tagsizemode=popular, and between 100 and 200 otherwise.  
-			 */
-			int scalingFactor = 45; // controls difference between smallest and largest tag 
-									// (size of largest: 90 -> 200% font size; 40 -> ~170%; 20 -> ~150%; all for offset = 10)
-			int offset = 10;		    // controls size of smallest tag ( 10 -> 100%)
-			if ("popular".equals(tagSizeMode)) {
-				scalingFactor *= 10;
+			try {
+				Double size = ( (tagFrequency.doubleValue() - tagMinFrequency ) / (tagMaxFrequency - tagMinFrequency) ) * TAGCLOUD_SIZE_SCALING_FACTOR;
+				if ("popular".equals(tagSizeMode)) {
+					size *= 10;
+				}				
+				size += TAGCLOUD_SIZE_OFFSET;
+				size = Math.log10(size); 
+				size *= 100;
+				return size.intValue() == 0 ? TAGCLOUD_SIZE_DEFAULT : size.intValue();
 			}
-			Double size = ( ( (tagFrequency.doubleValue() - tagMinFrequency ) / (tagMaxFrequency - tagMinFrequency) ) * scalingFactor ) + offset;
-			size = Math.log10(size); 
-			size *= 100;
-			return size.intValue();
+			catch (Exception ex) {
+				return TAGCLOUD_SIZE_DEFAULT;
+			}
 	}
 
 	/**
