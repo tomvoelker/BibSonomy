@@ -67,12 +67,68 @@
 					background: #369;
 					color: #fff;
 				}
+				
+				.addContainer {
+					position: absolute; 	
+				}
+				
+				.addSpheres {
+					position: relative; 
+					overflow: visible;
+				}
+				
+				
+				#sphereList {
+					margin: 0!important; 
+					padding:0!important;
+					padding-left: 10px!important; 
+					padding-right: 10px!important; 
+					padding-top: 5px!important; 
+					padding-bottom: 5px!important; 
+					border-width: thin; 
+					list-style-type: circle!important; 
+					list-style-position: inside!important; 
+					background-color: #EEEEEE; 
+					border-style: solid; 
+					border-color: #006699;
+					font-size: 95%;
+					
+					-webkit-border-top-left-radius: 10px;
+					-webkit-border-top-right-radius: 10px;
+				    -webkit-border-bottom-right-radius: 10px;
+				    -webkit-border-bottom-left-radius: 10px;
+				    
+				    -khtml-border-top-left-radius: 10px;
+				    -khtml-border-top-right-radius: 10px;
+				    -khtml-border-bottom-right-radius: 10px;
+				    -khtml-border-bottom-left-radius: 10px;
+				    
+				    -moz-border-radius-topleft: 10px;
+				    -moz-border-radius-topright: 10px;
+				    -moz-border-radius-bottomright: 10px;
+				    -moz-border-radius-bottomleft: 10px;
+				    
+				    border-top-left-radius: 10px;
+				    border-top-right-radius: 10px;
+				    border-bottom-right-radius: 10px;
+				    border-bottom-left-radius: 10px;
+					
+				}
+				
+				#addNewSphere {
+					margin-left: 5px; 
+					vertical-align: middle;
+				}	
 			</style>
 			
-			<script type="text/javascript">
+			<script type="text/javascript">				
 				function getUserSelection(id) {
 					var selector = document.getElementById('fbUserSelect'+id);
-					return (selector[selector.selectedIndex].value);
+					try {
+						return (selector[selector.selectedIndex].value);
+					} catch(e) {
+					    console.log(e);
+					}
 				}
 			</script>
 		
@@ -136,11 +192,18 @@
 											<td><a href="${properties['project.home']}import/facebook?socialAction=SEND_INVITATION&amp;accessToken=${command.accessToken}&amp;requestedUser=${user.apiKey}" title="send invitation"><img src="${properties['project.home']}resources/image/fb_invite.png"><!-- keep me --></img></a></td>
 											<td>
 												<!-- document.getElementById('fbUserSelect${rowCounter.count}')[document.getElementById('fbUserSelect${rowCounter.count}').selectedIndex].value)) -->
-												<button:linkButton onclick="alert(getUserSelection('${rowCounter.count}'))" href="#" image="${resdir}/image/starblue_selected.png">
+												<button:linkButton name="friendButton${rowCounter.count}" onclick="alert(getUserSelection('${rowCounter.count}'))" href="#" image="${resdir}/image/starblue_selected.png">
 													<jsp:attribute name="text">
 														Friend
 													</jsp:attribute>
 												</button:linkButton>
+																								
+												<!-- The Spheres List by Mouseover of the Friend Button -->	
+												<script>	
+													$(document).ready(function() {
+														generateSphereDialog(getUserSelection('${rowCounter.count}'),'${ckey}', 'friendButton${rowCounter.count}', false, ${rowCounter.count}, "position1");
+													});
+												</script>
 											</td>
 										</tr>
 									</c:forEach>
@@ -149,10 +212,7 @@
 						</div>
 					</c:otherwise>
 				</c:choose>
-
 			</div>
       	</jsp:attribute>
-      	
-      	
 	</layout:layout>
 </jsp:root>

@@ -41,7 +41,7 @@
 			<fmt:message key="friends.actions.delete.title" var="removeFriend">
 				<fmt:param value="${command.user.name}"/>
 			</fmt:message>
-			<button:linkButton onclick="javascript:updateUserRelation('remove','${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
+			<button:linkButton name="linkButton" onclick="javascript:updateUserRelation('remove','${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
 			   title="${removeFriend}"
 			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
 			   image="${resdir}/image/starblue_selected.png"
@@ -56,7 +56,7 @@
 			<fmt:message key="friends.actions.add.title" var="addFriend">
 				<fmt:param value="${command.user.name}"/>
 			</fmt:message>
-			<button:linkButton onclick="javascript:updateUserRelation('add','${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
+			<button:linkButton name="linkButton" onclick="javascript:updateUserRelation('add','${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
 			   title="${addFriend}"
 			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
 			   image="${resdir}/image/starblue_unselected.png"

@@ -34,7 +34,6 @@
 		
 		<jsp:attribute name="sidebar">
 		<ul id="sidebar">
-		
 			<!--+
 				| only for logged in users: followers, friends, groups, etc.
 			 	-->
@@ -48,26 +47,12 @@
 						isFriendOfUser="${command.friendOfUser}" 
 						isFollowerOfUser="${command.followerOfUser}" />
 				</li>
-								
-				<!-- The Spheres List by Mouseover of the Friend Button -->	
-				<div class="addContainer">
-					<div class="addSpheres initiallyHidden">
-	           			<ul id="sphereList">
-						   <li id="loader">
-						   		<span id="loader_Value"><fmt:message key="spheres.sphere.menu.load"/></span>
-						   </li>	
-			               <li>
-			               		<input type="text" name="sphereName" id="newSphere" size="27%" autocomplete="off" placeholder="Sphere"/>
-			               		<input type="button" id="addNewSphere" value="add"/>
-			               </li>
-	           			</ul>
-	       			</div>
-	   			</div>
-				
+												
 				<!-- Javascript for the Spheres List -->
 				<script>
 					$(document).ready(function() {
-						initSpheres("${fn:escapeXml(command.requestedUser)}","${ckey}");
+						generateSphereDialog("${fn:escapeXml(command.requestedUser)}", "${ckey}", "linkButton", true, 0, "position2");
+
 					});
 				</script>
 			</c:if>
