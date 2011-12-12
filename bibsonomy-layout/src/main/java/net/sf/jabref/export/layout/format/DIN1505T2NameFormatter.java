@@ -16,7 +16,7 @@ public class DIN1505T2NameFormatter implements LayoutFormatter {
 		arg0 = arg0.trim();
 		Matcher m = Pattern.compile("(\\A|;\\s)(\\w+?)(,|\\z)").matcher(arg0);
 		while (m.find()) {
-			arg0 = arg0.replace(m.group(2), "<span style=\"font-variant: small-caps\">" + m.group(2) + "</span>");
+			arg0 = arg0.replaceFirst(m.group(), m.group(1) + "<span style=\"font-variant: small-caps\">" + m.group(2) + "</span>" + m.group(3));
 		}
 		return arg0;
 	}
