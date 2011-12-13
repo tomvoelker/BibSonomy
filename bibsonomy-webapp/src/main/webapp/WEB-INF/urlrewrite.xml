@@ -414,6 +414,13 @@
 		<set type="parameter" name="requestedUser">$1</set>
 		<to last="true">/cvpage</to>
 	</rule>
+	<!-- Wiki Config 
+	<rule>
+		<name>/cv/group/USER</name>
+		<from>^/+cv/+group/(.+)$</from>
+		<set type="parameter" name="requestedUser">$1</set>
+		<to last="true">/cvpage</to>
+	</rule> -->
 	
 	<!-- /picture/user/USER -->
 	<rule>
@@ -423,12 +430,14 @@
 		<to last="true">/picture</to>
 	</rule>
 	
+	<!-- JSP Config TODO: Delete me --> 
 	<rule>
 		<name>/cv/group/USER</name>
 		<from>^/+cv/+group/(.+)$</from>
-		<set type="parameter" name="requestedUser">$1</set>
-		<to last="true">/cvpage</to>
+		<set type="parameter" name="requestedGroup">$1</set>
+		<to last="true">/groupcvpage</to>
 	</rule>
+	<!-- End JSP Config -->
 	
 	<!-- /bibtexkey/KEY/USER -->
 	<rule>
