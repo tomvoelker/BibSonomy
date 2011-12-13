@@ -14,7 +14,7 @@ public class DIN1505T2PersonNamesFormatter implements LayoutFormatter {
 	@Override
 	public String format(String arg0) {
 		arg0 = arg0.trim();
-		Matcher m = Pattern.compile("(\\A|;\\s)(\\w+)(,|\\z)").matcher(arg0);
+		Matcher m = Pattern.compile("(\\A|;\\s)([\\w-]+)(,|\\z)").matcher(arg0);
 		while (m.find()) {
 			arg0 = arg0.replaceFirst(m.group(), m.group(1) + "<span style=\"font-variant: small-caps\">" + m.group(2) + "</span>" + m.group(3));
 		}
