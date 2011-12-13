@@ -53,6 +53,8 @@ public abstract class SharedTag extends AbstractTag {
 		return this.requestedGroup != null  ? this.renderSharedTag(RequestType.GROUP) : this.renderSharedTag(RequestType.USER);
 	}
 	
+	
+	
 	/*
 	 * TODO: if current user isn't allowed to see the real name of the requested
 	 * user realname is null, return the name instead?
