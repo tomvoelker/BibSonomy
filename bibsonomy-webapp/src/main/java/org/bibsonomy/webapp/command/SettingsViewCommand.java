@@ -41,8 +41,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private User user;
 	
-	private String wikiText;
-	
 	private boolean hasOwnGroup;
 	
 	/**
@@ -521,20 +519,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setGroup(Group group) {
 		this.group = group;
-	}
-
-	/**
-	 * @param wikiText the wikiText to set
-	 */
-	public void setWikiText(String wikiText) {
-		this.wikiText = wikiText;
-	}
-
-	/**
-	 * @return the wikiText
-	 */
-	public String getWikiText() {
-		return wikiText;
 	}
 
 	/**

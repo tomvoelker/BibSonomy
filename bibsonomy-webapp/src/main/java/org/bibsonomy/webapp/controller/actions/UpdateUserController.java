@@ -31,7 +31,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	private static final Log log = LogFactory.getLog(UpdateUserController.class);
 
 	@Override
-	public View workOn(final SettingsViewCommand command) {
+	public View workOn(SettingsViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 
 		if (!context.isUserLoggedIn()) {
@@ -55,7 +55,6 @@ public class UpdateUserController extends SettingsPageController implements Vali
 			log.debug("User is logged in, ckey is valid");
 			// update user informations here
 			updateUserProfile(loginUser, command.getUser(), command.getProfilePrivlevel());
-			updateCvWiki(loginUser, command.getWikiText());
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}
@@ -63,13 +62,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		return super.workOn(command);
 	}
 
-	private void updateCvWiki(final User user, final String wikiText) {
-		final Wiki wiki = new Wiki();
-		wiki.setWikiText(wikiText);
-		wiki.setDate(new Date());
-		
-		logic.updateWiki(user.getName(), wiki);
-	}
+
 
 	/**
 	 * updates the the profile settings of a user
@@ -106,11 +99,11 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	private void updateUser(final User user, final Errors errors) {
 		try {
 			logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
-		} catch (final DatabaseException e) {
+		} catch(DatabaseException e) {
 			final List<ErrorMessage> messages = e.getErrorMessages().get(user.getName());
 
-			for (final ErrorMessage eMsg : messages) {
-				if (eMsg instanceof FieldLengthErrorMessage) {
+			for(final ErrorMessage eMsg : messages) {
+				if(eMsg instanceof FieldLengthErrorMessage) {
 					final FieldLengthErrorMessage fError = (FieldLengthErrorMessage) eMsg;
 					final Iterator<String> it = fError.iteratorFields();
 					while(it.hasNext()) {
@@ -129,7 +122,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	}
 
 	@Override
-	public boolean isValidationRequired(final SettingsViewCommand command) {
+	public boolean isValidationRequired(SettingsViewCommand command) {
 		return true;
 	}
 

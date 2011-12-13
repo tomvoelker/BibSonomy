@@ -25,9 +25,9 @@ import org.springframework.beans.factory.annotation.Required;
  * @author Bernd Terbrack
  * @version $Id$
  */
-public class CvPageController extends ResourceListController implements MinimalisticController<CvPageViewCommand> {
+public class WikiCvPageController extends ResourceListController implements MinimalisticController<CvPageViewCommand> {
 
-	private static final Log log = LogFactory.getLog(CvPageController.class);
+	private static final Log log = LogFactory.getLog(WikiCvPageController.class);
 	private CVWikiModel wikiRenderer;
 
 	/**

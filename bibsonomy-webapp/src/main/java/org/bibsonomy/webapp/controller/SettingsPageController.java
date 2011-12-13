@@ -3,9 +3,7 @@ package org.bibsonomy.webapp.controller;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -14,7 +12,6 @@ import org.bibsonomy.layout.jabref.LayoutPart;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
@@ -96,30 +93,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 	private void workOnMyProfileTab(final SettingsViewCommand command) {
 		final User user = command.getUser();
-
-		Wiki wiki = logic.getWiki(user.getName(), null);
-
-		// if no cvwiki available create default cvwiki
-		if (!present(wiki)) {
-
-			final Locale locale = requestLogic.getLocale();
-			final String wikiText = messageSource.getMessage("cv.default_wiki", null, locale);
-
-			wiki = new Wiki();
-			wiki.setWikiText(wikiText);
-			wiki.setDate(new Date());
-			logic.createWiki(user.getName(), wiki);
-		}
 		
-		// if no wikitext avalible - insert the default wiki text
-		if(!present(wiki.getWikiText()) && present(requestLogic)) {
-			final Locale locale = requestLogic.getLocale();
-			final String wikiText = messageSource.getMessage("cv.default_wiki",null, locale);
-			
-			wiki.setWikiText(wikiText);
-		}
 
-		command.setWikiText(wiki.getWikiText());
 		/*
 		 *  retrieve friend list of the user
 		 *  FIXME: why is the complete user retrieved, not only his friends?
