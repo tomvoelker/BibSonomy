@@ -9,12 +9,13 @@ public class DIN1505T2NameFormatter implements LayoutFormatter {
 	
 	public static void main(String[] args) {
 		System.out.println(new DIN1505T2NameFormatter().format("Barendregt, Wolmet ; Bekker, Mathilde M. ; Speerstra, Mathilde"));
+		System.out.println(new DIN1505T2NameFormatter().format("Amnesty International ; Bekker, Mathilde M. ; Speerstra, Mathilde"));
 	}
 
 	@Override
 	public String format(String arg0) {
 		arg0 = arg0.trim();
-		Matcher m = Pattern.compile("(\\A|;\\s)(\\w+)(,|\\z)").matcher(arg0);
+		Matcher m = Pattern.compile("(\\A|;\\s)([\\w\\s]+)(,|\\z|\\s)").matcher(arg0);
 		while (m.find()) {
 			arg0 = arg0.replaceFirst(m.group(), m.group(1) + "<span style=\"font-variant: small-caps\">" + m.group(2) + "</span>" + m.group(3));
 		}
