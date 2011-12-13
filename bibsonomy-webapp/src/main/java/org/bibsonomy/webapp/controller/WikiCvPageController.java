@@ -87,7 +87,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
 
-		return Views.CVPAGE;
+		return Views.WIKICVPAGE;
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
 
-		return Views.CVPAGE;
+		return Views.WIKICVPAGE;
 
 	}
 
