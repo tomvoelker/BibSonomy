@@ -56,6 +56,11 @@ public enum Views implements View {
 	 * the user specific curriculum vitae page / Wiki-Based!
 	 */
 	WIKICVPAGE("wikicvpage"),
+	
+	/**
+	 * the user specific curriculum vitae page / Wiki-Based!
+	 */
+	GROUPCVPAGE("groupcvpage"),
 
 	/**
 	 * user-user page to highlight the relevant posts / tags of user 2 to user 1
