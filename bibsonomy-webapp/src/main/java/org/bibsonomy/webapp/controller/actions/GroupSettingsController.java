@@ -2,6 +2,8 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.LinkedList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
@@ -95,9 +97,15 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		groupToUpdate.setSharedDocuments(sharedDocs);
 		
 		try {
-			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS);
+			// since now only one user can be added to a group at once
+			LinkedList<User> usersToAdd = new LinkedList<User>();
+			User userToAdd = new User(command.getUserName());
+			usersToAdd.add(userToAdd);
+			groupToUpdate.setUsers(usersToAdd);
+			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER);
 		} catch (final Exception ex) {
-			// TODO: what exceptions can be thrown?!
+			// if a user can't be added to a group, this exception is thrown
+		 this.errors.reject("settings.group.error.addUserToGroupFailed");
 		}
 		return Views.SETTINGSPAGE;
 	}
