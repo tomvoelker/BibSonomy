@@ -267,6 +267,12 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			} catch (final RuntimeException ignored) {
 			}
 		}
+		
+		try {
+			groupDb.addUserToGroup("testgroup1", "testspammer", this.dbSession);
+			fail("Should throw an exception");
+		} catch (final RuntimeException ignored) {
+		}
 	}
 
 	/**

@@ -1057,13 +1057,12 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void addUserToGroup(final String groupName, final String userName) {
 		// TODO: take care of toLowerCase()!
-		throw new UnsupportedOperationException("not yet available");
-		// final DBSession session = openSession();
-		// try {
-		// groupDBManager.addUserToGroup(groupName, userName, session);
-		// } finally {
-		// session.close();
-		// }
+		final DBSession session = openSession();
+		try {
+			groupDBManager.addUserToGroup(groupName, userName, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -1129,7 +1128,11 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.updateGroupSettings(group, session);
 				break;
 			case ADD_NEW_USER:
-				throw new UnsupportedOperationException("The method " + GroupUpdateOperation.ADD_NEW_USER + " is not yet implemented.");
+				// until now only one user can be added to a group at once, so this loop is currently not necessary
+				for (User user: group.getUsers()) {
+					this.addUserToGroup(groupName, user.getName());
+				}
+				break;
 			default:
 				throw new UnsupportedOperationException("The given method is not yet implemented.");
 			}

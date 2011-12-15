@@ -489,7 +489,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
      */
     public void addUserToGroup(final String groupname, final String username, final DBSession session) {
 	// check if a user exists with that name
-	if (this.getUserDb().getUserDetails(username, session).getName() == null) {
+    final User user = this.getUserDb().getUserDetails(username, session);
+	if (user.isSpammer()) {
+	    ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The user '" + username + "' is a spammer");
+	}
+	if (user.getName() == null) {
 	    ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name ('" + username + "')");
 	}
 	// make sure that the group exists
