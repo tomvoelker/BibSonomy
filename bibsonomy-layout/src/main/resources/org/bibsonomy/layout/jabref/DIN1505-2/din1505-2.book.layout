@@ -1,41 +1,11 @@
-\begin{author}
-	\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author} ;
-\end{author}
-
-\begin{editor}
-	\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\editor} (Mitarb.) ;
-\end{editor}
-
-<span style="font-variant: small-caps">\format[HTMLChars]{\publisher}</span> (Hrsg.):
-
-<i>\title</i>
-
-\begin{volume}
-	. \volume
-\end{volume}
-
-\begin{number}
-	. \number
-\end{number}
-
-\begin{series}
-	: \series
-\end{series}
-
-\begin{edition}
-	. \edition
-\end{edition}
-
-\begin{address}
-	. \address
-\end{address}
-
-, \year
-
-\begin{note}
-	. - \note
-\end{note}
-
-\begin{isbn}
-	. - ISBN \isbn
-\end{isbn}
+\begin{author}\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\end{author}\begin{editor} ; \format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\editor} (Mitarb.)\end{editor}:
+<i>\title</i>\begin{volume}.
+\volume\end{volume}\begin{number}.
+\number\end{number}\begin{edition}.
+\edition\end{edition}\begin{address}.
+\address\end{address}
+: \publisher,
+\year\begin{series}
+(\series)\end{series}\begin{note}. -
+\note\end{note}\begin{isbn}. - ISBN
+\isbn\end{isbn}
