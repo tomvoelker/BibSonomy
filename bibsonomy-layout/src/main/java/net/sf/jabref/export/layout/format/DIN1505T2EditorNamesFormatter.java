@@ -21,7 +21,6 @@ public class DIN1505T2EditorNamesFormatter implements LayoutFormatter {
 	public String format(String arg0) {
 		Matcher m = Pattern.compile("((\\A|\\s)<span style=\"font-variant: small-caps\">[\\w-]+</span>.*?)(\\s;|\\z)").matcher(arg0);
 		while (m.find()) {
-			System.out.println(m.group(1));
 			arg0 = arg0.replace(m.group(), m.group(1) + " (Bearb.)" + m.group(3));
 		}
 		return arg0;
