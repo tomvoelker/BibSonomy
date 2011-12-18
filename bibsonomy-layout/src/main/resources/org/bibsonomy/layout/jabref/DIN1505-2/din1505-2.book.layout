@@ -4,7 +4,7 @@
 \number\end{number}\begin{edition}.
 \edition\end{edition}\begin{address}.
 \address\end{address}
-: \publisher,
+: <span style="font-variant: small-caps">\publisher</span>,
 \year\begin{series}
 (\series)\end{series}\begin{note}. -
 \note\end{note}\begin{isbn}. - ISBN
