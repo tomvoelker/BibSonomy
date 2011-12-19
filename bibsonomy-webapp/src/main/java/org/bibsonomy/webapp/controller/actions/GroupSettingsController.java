@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.LinkedList;
+import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -98,14 +98,11 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		
 		try {
 			// since now only one user can be added to a group at once
-			LinkedList<User> usersToAdd = new LinkedList<User>();
-			User userToAdd = new User(command.getUserName());
-			usersToAdd.add(userToAdd);
-			groupToUpdate.setUsers(usersToAdd);
+			groupToUpdate.setUsers(Collections.singletonList(new User(command.getUserName())));
 			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER);
 		} catch (final Exception ex) {
 			// if a user can't be added to a group, this exception is thrown
-		 this.errors.reject("settings.group.error.addUserToGroupFailed");
+			this.errors.reject("settings.group.error.addUserToGroupFailed");
 		}
 		return Views.SETTINGSPAGE;
 	}
