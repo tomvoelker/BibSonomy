@@ -1,7 +1,9 @@
 package org.bibsonomy.testutil;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.junit.Ignore;
 
@@ -22,6 +24,18 @@ public final class TestUtils {
 		try {
 			return new URI(uri);
 		} catch (URISyntaxException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+	
+	/**
+	 * @param url
+	 * @return the URL
+	 */
+	public static URL createURL(final String url) {
+		try {
+			return new URL(url);
+		} catch (MalformedURLException ex) {
 			throw new RuntimeException(ex);
 		}
 	}
