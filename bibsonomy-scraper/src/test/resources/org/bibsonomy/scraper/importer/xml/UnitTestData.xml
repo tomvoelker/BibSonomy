@@ -1273,4 +1273,10 @@
 		<BibFile>BibSonomyScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_211">
+		<TestDescription>URL test for http://jap.physiology.org/</TestDescription>
+		<URL>http://jap.physiology.org/content/110/4/1003.short</URL>
+		<BibFile>JAPScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.jap.JAPScraper</Scraper>
+	</URLTest>
 </test:Tests>
