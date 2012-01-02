@@ -194,7 +194,7 @@ public class PicaParser{
 			}
 		} 
 			
-		if(pica.getRow("021A").isExisting("$d")){
+		if(pica.isExisting("021A") && pica.getRow("021A").isExisting("$d")){
 			if (pica.getRow("021A").getSubField("$d").getContent().trim().matches("^.*proceedings.*$")){
 				return "@proceedings{";
 			}

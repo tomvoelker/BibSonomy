@@ -23,14 +23,16 @@
 
 package org.bibsonomy.scraper.converter.picatobibtex;
 
+import java.util.regex.Pattern;
+
 /**
  * @author daill
  * @version $Id$
  */
 public class PicaUtils {
-	private PicaRecord pica;
-	// String array with all regex pieces to be replaced
-	private String[] cleaning = {"@", "&lt;.+?&gt;", "\\{", "\\}"};
+	private final PicaRecord pica;
+	
+	private static final Pattern PATTERN_CLEANSING = Pattern.compile("(@|&lt;.+?&gt;|\\{|\\})");
 	
 	/**
 	 * @param pica
@@ -66,14 +68,7 @@ public class PicaUtils {
 	 * @return String
 	 */
 	public String cleanString(String toClean){
-		String res = toClean;
-		
-		for (String s : cleaning){
-			res = res.replaceAll(s, "");
-		}
-		
-		
-		return res;
+		return PATTERN_CLEANSING.matcher(toClean).replaceAll("");
 	}
 	
 	/**
@@ -82,11 +77,7 @@ public class PicaUtils {
 	 * @param url
 	 * @return formatted url
 	 */
-	public String prepareUrl(String url){
-		String new_url = "";
-		
-		new_url = url.replaceFirst("XML=1.0/CHARSET=UTF-8/PRS=PP/", "");
-		
-		return new_url;
+	public String prepareUrl(final String url){
+		return url.replaceFirst("XML=1.0/CHARSET=UTF-8/PRS=PP/", "");
 	}
 }

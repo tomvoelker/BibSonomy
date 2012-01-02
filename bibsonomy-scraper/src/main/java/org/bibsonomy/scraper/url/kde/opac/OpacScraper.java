@@ -27,9 +27,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.PicaToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -48,8 +48,9 @@ public class OpacScraper extends AbstractUrlScraper {
 	/**
 	 * TODO: This Scraper match only on URL's with es specific query value in path and queries. The current patterns don't work.
 	 */
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(HOST_NAME + ".*"), Pattern.compile(".*/PPN.*")));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(HOST_NAME + ".*"), Pattern.compile(".*(/PPN.|TRM=[0-9]+)*")));
 	
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		//log.fatal("Opac");
 		//log.fatal(sc.getUrl().toString());
@@ -78,6 +79,7 @@ public class OpacScraper extends AbstractUrlScraper {
 		return info;
 	}
 
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}

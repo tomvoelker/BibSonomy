@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
@@ -44,11 +46,11 @@ public class TitleRule implements Rules {
 	}
 	
 	public String getContent() {
-		String res = "";
-		
-		res = utils.getData("021A", "$a");
-		
-		return utils.cleanString(res);
+		final String cat021A = utils.getData("021A", "$a");
+		if (present(cat021A)) {
+			return utils.cleanString(cat021A);
+		}
+		return utils.cleanString(utils.getData("036C", "$a"));
 	}
 
 	public boolean isAvailable() {
