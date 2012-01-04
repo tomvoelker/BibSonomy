@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RESULT>
+<SESSION>
+<SESSIONVAR name="LNG">DU</SESSIONVAR>
+<SESSIONVAR name="DB">1</SESSIONVAR>
+<SESSIONVAR name="SID">e443b45c-4</SESSIONVAR>
+<SESSIONVAR name="SET">5</SESSIONVAR>
+
+</SESSION>
+<SET nr="5" hits="0"/>
+<LONGTITLE id="231779038" set="5" format="text">
+<br />
+001@$03-5,11,13-14,19-20,23,27-28,31-32
+
+<br />
+001A$00034:23-02-11
+<br />
+001B$06000:01-12-11$t19:59:52.000
+<br />
+001C$00017:31-05-11$t10:12:10.000
+<br />
+001D$00034:31-03-11
+<br />
+001F$00
+<br />
+001X$00
+<br />
+002@$0Aau
+<br />
+003@$0231779038
+<br />
+
+003O$aOCoLC$0719429119
+<br />
+004A$A978-1-60750-707-9
+<br />
+004A$A978-3-89838-332-5
+<br />
+004A$01-60750-707-2
+<br />
+004A$03-89838-332-6
+<br />
+006G$01010227467
+<br />
+006H$2DNB$0TOCIMA1148
+<br />
+006H$2DNB$0TOCIMA1110
+<br />
+006L$2BVB$0BV037238391
+
+<br />
+006U$011,A15$f20110223
+<br />
+007A$aBSZ$0337671699
+<br />
+007G$0DE00471932C7135C4ABD6C12578A5003F951C
+<br />
+009P$mB:DE-101$qapplication/pdf$uhttp://d-nb.info/1010227467/04$3Inhaltsverzeichnis$A2
+<br />
+010@$aeng
+<br />
+011@$a2011$n2011
+<br />
+013H$0u
+<br />
+021A$aFormal concept analysis and tag recommendations in collaborative tagging systems$hRobert Jäschke
+<br />
+
+028A$9211590312$8Jäschke, Robert 
+<br />
+033A$pHeidelberg$nAkad. Verl.-Ges. AKA {[u.a.]
+<br />
+034D$aXXXII, 201 S.
+<br />
+034I$a210 mm x 148 mm
+<br />
+034M$agraph. Darst.
+<br />
+036E$aDissertations in artificial intelligence$l332
+<br />
+036F$x3332$9020863284$8Dissertationen zur künstlichen Intelligenz$l332
+<br />
+037C$aZugl.: $bKassel$cUniv., Diss. 2010
+<br />
+041A$9205715222$8Social Tagging
+
+<br />
+041A/01$9088223191$8Formale Begriffsanalyse
+<br />
+041A/02$9089458168$8Wissensextraktion
+<br />
+041A/03$9088701859$8Data Mining
+<br />
+041A/04$9135410088$8Kollaborative Filterung
+<br />
+041A/05$9085403814$8Benutzerverhalten
+<br />
+041A/06$913541007X$8Empfehlungssystem
+<br />
+041A/07$9182367878$8World Wide Web 2.0
+<br />
+041A/08$9105210854$8Semantic Web
+<br />
+
+044N$aDissertation, Algorithm, Evaluation, Recommendation, Conceptualization, learning, Topic, Data bank, Bookmark, Application program interface, Calculus, Baseline, Implementation, Foundation, Application 
+<br />
+045E$c004$c020
+<br />
+045F$eDDC22ger$a006.332
+<br />
+045F/01$a006.332
+<br />
+045G$eDDC22ger$a006.312
+<br />
+045G/01$a006.312
+<br />
+045Z$aST 273
+<br />
+045Z$aAN 95500</LONGTITLE>
+</RESULT>

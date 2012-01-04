@@ -24,38 +24,18 @@
 package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
-import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
 /**
  * @author daill
  * @version $Id$
  */
-public class AbstractRule implements Rules {
-	private PicaRecord pica = null;
-	private PicaUtils utils = null;
+public class AbstractRule extends Rules {
 	
 	/**
 	 * @param pica
-	 * @param utils
 	 */
-	public AbstractRule(PicaRecord pica, PicaUtils utils){
-		this.pica = pica;
-		this.utils = utils;
-	}
-
-	public String getContent() {
-		String abstr = "";
-		abstr = utils.getData("046M", "$a");
-		
-		return utils.cleanString(abstr);
-	}
-
-	public boolean isAvailable() {
-		if(pica.isExisting("046M")){
-			return true;
-		}
-		
-		return false;
+	public AbstractRule(final PicaRecord pica) {
+		super(pica, "046M");
 	}
 
 }

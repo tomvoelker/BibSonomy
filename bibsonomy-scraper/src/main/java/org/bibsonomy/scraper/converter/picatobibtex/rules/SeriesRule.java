@@ -24,39 +24,16 @@
 package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
-import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
 /**
  * @author daill
  * @version $Id$
  */
-public class SeriesRule implements Rules {
-	private PicaRecord pica = null;
-	private PicaUtils utils = null;
-	
+public class SeriesRule extends Rules {
 	/**
 	 * @param pica
-	 * @param utils
 	 */
-	public SeriesRule(PicaRecord pica, PicaUtils utils){
-		this.pica = pica;
-		this.utils = utils;
+	public SeriesRule(final PicaRecord pica){
+		super(pica, "036E");
 	}
-
-	public String getContent() {
-		String res = "";
-		
-		res = utils.getData("036E", "$a");
-		
-		return utils.cleanString(res);
-	}
-
-	public boolean isAvailable() {
-		if(pica.isExisting("036E")){
-			return true;
-		}
-		
-		return false;
-	}
-
 }

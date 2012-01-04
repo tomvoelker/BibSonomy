@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RESULT>
+<SESSION>
+<SESSIONVAR name="LNG">DU</SESSIONVAR>
+<SESSIONVAR name="DB">1</SESSIONVAR>
+<SESSIONVAR name="SID">e443b45c-4</SESSIONVAR>
+<SESSIONVAR name="SET">5</SESSIONVAR>
+
+</SESSION>
+<SET nr="5" hits="0"/>
+<LONGTITLE id="185335748" set="5" format="text">
+<br />
+001@$03-4,7,11-12,15-16
+
+<br />
+001A$00034:29-03-07
+<br />
+001B$01999:23-07-11$t03:06:23.000
+<br />
+001C$00034:02-04-07$t08:17:03.000
+<br />
+001D$00034:02-04-07
+<br />
+001F$00
+<br />
+001X$00
+<br />
+002@$0Aau
+<br />
+003@$0185335748
+<br />
+
+003O$aOCoLC$0180153046
+<br />
+004A$00-9745140-5-5$fUSD 44.95 Paper bound book
+<br />
+006B$0GBA463977
+<br />
+006H$0R8485619
+<br />
+007A$aHEB$0185335748
+<br />
+009P$mV:DE-576;X:oreilly$qapplication/pdf$uhttp://scans.hebis.de/HEBCGI/show.pl?18533574_cov.pdf$3Umschlagbild$A2
+<br />
+010@$aeng
+<br />
+011@$a2006
+<br />
+013H$0z
+
+<br />
+021A$aProgramming Ruby$dthe pragmatic programmers' guide ; [includes Ruby 1.8]$hDave Thomas ; Chad Fowler ; Andy Hunt
+<br />
+028A$9146396057$8Thomas, Dave 
+<br />
+028B/01$9171416147$8Fowler, Chad 
+<br />
+028B/02$9180169785$8Hunt, Andy 
+<br />
+032@$a2. ed., 10. print.
+<br />
+033A$pRaleigh, NC$nThe Pragmatic Bookshelf
+<br />
+034D$aXXXII, 830 S.
+<br />
+036G$aThe @pragmatic programmers
+<br />
+
+041K$061305045$aSpecific programming languages
+<br />
+041K/01$097601017$aQA 75-76 Computer science
+<br />
+044K$9100465897$8Ruby &amp;lt;Programmiersprache&amp;gt;
+<br />
+045A$aQA
+<br />
+045Z$aST
+<br />
+045Z$aST 250
+<br />
+045Z$aST 250 R89</LONGTITLE>
+</RESULT>

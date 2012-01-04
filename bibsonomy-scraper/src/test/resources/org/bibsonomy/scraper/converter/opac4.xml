@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RESULT>
+<SESSION>
+<SESSIONVAR name="LNG">DU</SESSIONVAR>
+<SESSIONVAR name="DB">1</SESSIONVAR>
+<SESSIONVAR name="SID">e443b45c-4</SESSIONVAR>
+<SESSIONVAR name="SET">5</SESSIONVAR>
+
+</SESSION>
+<SET nr="5" hits="0"/>
+<LONGTITLE id="098898043" set="5" format="text">
+<br />
+001@$03-4,7-8,11,13-14,19-20,24,27-28,32,35,37-38,40,43-44,48,51-52,55,59,61-62,67-68,71,75-76,79-80,83,85-86,91-92,95,99-100,102,104
+
+<br />
+001A$06000:13-06-01
+<br />
+001B$01999:28-05-10$t22:11:36.000
+<br />
+001C$00077:22-11-05$t10:49:55.000
+<br />
+001D$00077:18-10-01
+<br />
+001F$00
+<br />
+001X$00
+<br />
+002@$0Aau
+<br />
+003@$0098898043
+<br />
+
+003O$aOCoLC$076222459
+<br />
+004A$03-932588-93-2$fkart. : DM 89.00, EUR 47.00, sfr 78.00, S 650.00
+<br />
+006G$0961667656
+<br />
+006T$001,N26,0172
+<br />
+006U$001,A37,0752
+<br />
+007A$aDNB$0961667656
+<br />
+010@$ager
+<br />
+011@$a2001$n2001
+<br />
+015@$00
+
+<br />
+021A$aZOPE$dContent-Management- &amp;amp; Web-Application-Server$hbeehive GmbH (Hrsg.)
+<br />
+029F$9098691481$8Beehive Elektronische Medien GmbH &amp;lt;Berlin&amp;gt;
+<br />
+032@$a1. Aufl.
+<br />
+033A$pHeidelberg$ndpunkt-Verl.
+<br />
+034D$aXVII, 404 S.
+<br />
+034I$a24 cm
+<br />
+034M$agraph. Darst.
+
+<br />
+041A$9099813092$8Zope &amp;lt;Programm&amp;gt;
+<br />
+041A/80$i30m
+<br />
+045E$a28
+<br />
+045Z$aST 201
+<br />
+045Z$aST 240
+<br />
+046M$aLiteraturverz. S. 395</LONGTITLE>
+</RESULT>

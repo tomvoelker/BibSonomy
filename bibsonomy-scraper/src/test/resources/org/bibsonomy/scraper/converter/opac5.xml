@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RESULT>
+<SESSION>
+<SESSIONVAR name="LNG">DU</SESSIONVAR>
+<SESSIONVAR name="DB">1</SESSIONVAR>
+<SESSIONVAR name="SID">e443b45c-4</SESSIONVAR>
+<SESSIONVAR name="SET">5</SESSIONVAR>
+
+</SESSION>
+<SET nr="5" hits="0"/>
+<LONGTITLE id="178208876" set="5" format="text">
+<br />
+001@$03-4,7-8,11,13-14,19-20,23,27-28,31-32,35,37-38,43-44,47,51-52,54,56
+
+<br />
+001A$06053:21-05-06
+<br />
+001B$01999:20-08-10$t18:05:26.000
+<br />
+001C$00034:25-10-06$t12:00:03.000
+<br />
+001D$00034:25-10-06
+<br />
+001F$00
+<br />
+001X$00
+<br />
+002@$0Aau
+<br />
+003@$0178208876
+<br />
+
+003O$aOCoLC$062308152
+<br />
+004A$00-691-11357-2$A978-0-691-11357-9$f   EUR 52,00
+<br />
+004A$00-691-11356-4$A978-0-691-11356-2
+<br />
+006A$02005921569
+<br />
+006B$0GBA597497
+<br />
+006H$0R4577719
+<br />
+007A$aHEB$0178208876
+<br />
+009P$mV:DE-604$qapplication/pdf$uhttp://scans.hebis.de/HEBCGI/show.pl?17820887_toc.pdf$3Inhaltsverzeichnis$A2
+<br />
+010@$aeng
+
+<br />
+011@$a2006
+<br />
+013H$0z
+<br />
+021A$aThe @structure and dynamics of networks$hMark Newman ... eds.
+<br />
+028C$9187444889$8Newman, Mark E. J. $BHrsg.
+<br />
+033A$pPrinceton {[u.a.]$nPrinceton Univ. Press
+<br />
+034D$aX, 582 S.
+<br />
+034M$aIll., graph. Darst.
+<br />
+036G$aPrinceton studies in complexity
+<br />
+
+041K$063303000$aSelf-organizing systems
+<br />
+041K/01$097600530$aQ 295 System theory
+<br />
+044K$9085789844$8Netzwerk
+<br />
+044K$9085029416$8Dynamisches System
+<br />
+044K$9085163538$8Systemtheorie
+<br />
+044K$908830051X$8World Wide Web
+<br />
+044K$af Aufsatzsammlung
+<br />
+045A$aQ
+<br />
+045B$eDDC22oclc$a004.6$ALoC
+
+<br />
+045B$eDDC22oclc$a003
+<br />
+045Z$aST 200
+<br />
+046M$aLiteraturangaben</LONGTITLE>
+</RESULT>

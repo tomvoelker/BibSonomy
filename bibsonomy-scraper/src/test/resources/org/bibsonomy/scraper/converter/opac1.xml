@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RESULT>
+<SESSION>
+<SESSIONVAR name="LNG">DU</SESSIONVAR>
+<SESSIONVAR name="DB">1</SESSIONVAR>
+<SESSIONVAR name="SID">e443b45c-4</SESSIONVAR>
+<SESSIONVAR name="SET">4</SESSIONVAR>
+
+</SESSION>
+<SET nr="4" hits="0"/>
+<LONGTITLE id="273285416" set="4" format="text">
+<br />
+001@$03-5,11,13-14,19-20,23,27-28,32,35,37-38,43-44,47,51-52,55-56,59,61-62,67-68,71,75-76,78,80,83,85-86,91-92,95,99-100,107-108,110
+
+<br />
+001A$06000:18-08-11
+<br />
+001B$00034:24-10-11$t10:51:53.000
+<br />
+001C$00026:21-10-11$t08:15:20.000
+<br />
+001D$00017:28-09-11
+<br />
+001F$00
+<br />
+001X$00
+<br />
+002@$0Afu
+<br />
+003@$0273285416
+<br />
+
+004A$03-89838-651-1
+<br />
+004A$A978-3-89838-651-7
+<br />
+004K$09783898386517
+<br />
+006G$01010547348
+<br />
+006T$011,N12
+<br />
+006U$011,A33$f20110315
+<br />
+007A$aDNB$01010547348
+<br />
+007G$0CH001A5AD2C296BBDB4DCC12578E7003E47B6
+<br />
+009P$mB:DE-101$qapplication/pdf$uhttp://d-nb.info/1010547348/04$3Inhaltsverzeichnis$A2
+
+<br />
+010@$ager
+<br />
+011@$a2011
+<br />
+013H$0z
+<br />
+017A$asf
+<br />
+021A$aNeue Entwicklungen in der Web-Suche
+<br />
+028C$916069423X$8Lewandowski, Dirk $BHrsg.
+<br />
+033A$pHeidelberg$nAka
+<br />
+034D$aVIII, 382 S.
+<br />
+
+034M$aIll., graph. Darst.
+<br />
+036C$x12$aHandbuch Internet-Suchmaschinen$hHrsg. Dirk Lewandowski$l2
+<br />
+036D$x12$9273283618$8Handbuch Internet-Suchmaschinen 
+<br />
+044K$9086690205$8Internet
+<br />
+044K$9088669203$8Suchmaschine
+<br />
+044K$9085348864$8Online-Recherche
+<br />
+044K$9182705307$8Soziale Software
+<br />
+044K$9085200107$8Evaluation
+<br />
+044K$909252074X$8Web Site
+
+<br />
+044K$9085403059$8Analyse
+<br />
+044N$aSuchmaschine, Internet, Schneider, Intensivüberwachung
+<br />
+045E$c020$c004$c650
+<br />
+045Z$aAN 95000
+<br />
+045Z$aST 205
+<br />
+046M$aLiteraturangaben</LONGTITLE>
+</RESULT>
