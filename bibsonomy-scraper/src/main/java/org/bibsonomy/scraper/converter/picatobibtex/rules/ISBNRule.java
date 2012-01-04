@@ -30,36 +30,23 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
  * @author daill
  * @version $Id$
  */
-public class ISBNRule implements Rules {
-	private PicaRecord pica = null;
-	private PicaUtils utils = null;
+public class ISBNRule extends Rules {
 	
 	/**
 	 * @param pica
-	 * @param utils
 	 */
-	public ISBNRule(PicaRecord pica, PicaUtils utils){
-		this.pica = pica;
-		this.utils = utils;
+	public ISBNRule(final PicaRecord pica){
+		super(pica, "004A");
 	}
 
+	@Override
 	public String getContent() {
-		String res = "";
-		
-		res = utils.getData("004A", "$0");
+		String res = PicaUtils.getData(this.pica, this.category, "$0");
 		if (res.length() == 0){
-			res = utils.getData("004A", "$A");
+			res = PicaUtils.getData(this.pica, this.category, "$A");
 		}
 		
-		return utils.cleanString(res);
-	}
-
-	public boolean isAvailable() {
-		if(pica.isExisting("004A")){
-			return true;
-		}
-		
-		return false;
+		return PicaUtils.cleanString(res);
 	}
 
 }

@@ -24,116 +24,108 @@
 package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
 
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Vector;
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 import org.bibsonomy.scraper.converter.picatobibtex.Row;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * @author daill
  * @version $Id$
  */
-public class AuthorRule implements Rules {
-	private PicaRecord pica = null;
-	private PicaUtils utils = null;
-	private HashMap<String, String> authorCat = new HashMap<String, String>();
-	
+public class AuthorRule extends Rules {
+	private static final String SECOND_SUB_CATEGORY = "$8";
+	private static final String[] AUTHOR_CATEGORIES = new String[]{"028A", "028B", "028C", "028D"};
+
 	/**
 	 * @param pica
-	 * @param utils
 	 */
-	public AuthorRule(PicaRecord pica, PicaUtils utils){
-		this.pica = pica;
-		this.utils = utils;
+	public AuthorRule(final PicaRecord pica){
+		super(pica, null);
 	}
-	
+
+	@Override
 	public String getContent() {
-		Vector<String> authors = new Vector<String>();
-		String authorResult = "";
-		
-		// fill
-		authorCat.put("028C", "028C");
-		authorCat.put("028A", "028B");
-		authorCat.put("028D", "028D");
-		
-		Set<String> set = authorCat.keySet();
-		
-		for(String s : set){
+		final List<String> authors = new LinkedList<String>();
+
+		/*
+		 * FIXME: use PersonNames to build author list and then serialize using
+		 * PersonNameUtils.serializePersonNames().
+		 */
+		for (final String authorCategory : AUTHOR_CATEGORIES){
 			// get the main category
-			if(pica.isExisting(s)){
-				String _tempAuthor = null;
-				_tempAuthor = new String();
-				if (pica.getRow(s).isExisting("$a")){
-					_tempAuthor = utils.getData(s, "$a");
-					_tempAuthor +="," + utils.getData(s, "$d");
-				} else if(pica.getRow(s).isExisting("$8")){
-					_tempAuthor = utils.getData(s, "$8");
-					_tempAuthor = _tempAuthor.replaceAll("\\*.*\\*", "");
+			if (this.pica.isExisting(authorCategory)) {
+				final Row row = this.pica.getRow(authorCategory);
+
+				final String author = getAuthor(authorCategory, row); 
+				if (present(author)) {
+					authors.add(author);
 				}
-				
-				_tempAuthor += getSubAuthors(authorCat.get(s));
-				
-				authors.add(_tempAuthor);
 			} 
-		}
-		
-		for(String _temp : authors){
-			if (authorResult.length() < 1){
-				authorResult = _temp;
-			} else {
-				authorResult += "and " + _temp;
+
+			final List<String> subAuthors = getSubAuthors(authorCategory);
+			if (present(subAuthors)) {
+				authors.addAll(subAuthors);
 			}
+
 		}
 
-		return utils.cleanString(authorResult);
+		return PicaUtils.cleanString(StringUtils.implodeStringCollection(authors, " and "));
 	}
 
+	private String getAuthor(final String authorCategory, final Row row) {
+		if (row.isExisting(DEFAULT_SUB_CATEGORY)) {
+			return PicaUtils.getData(this.pica, authorCategory, DEFAULT_SUB_CATEGORY) + ", " + PicaUtils.getData(this.pica, authorCategory, "$d").trim();
+		} else if (row.isExisting(SECOND_SUB_CATEGORY)) {
+			return PicaUtils.getData(this.pica, authorCategory, SECOND_SUB_CATEGORY).replaceAll("\\*.*\\*", "").trim();
+		}
+		return null;
+	}
+
+	@Override
 	public boolean isAvailable() {
-		Set<String> set = authorCat.keySet();
-		
-		for(String s : set){
-			if(pica.isExisting(s)){
+		for (final String authorCategory : AUTHOR_CATEGORIES) {
+			if (this.pica.isExisting(authorCategory)){
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
-	private String getSubAuthors(final String cat){
-		String author = "";
-		Row row = null;
-		
+
+	private List<String> getSubAuthors(final String cat) {
+		final List<String> authors = new LinkedList<String>();
+
+
 		// get all other author by specific category
-		if (cat != null){
-			int ctr = 1;
-			
-			row = pica.getRow(cat + "/0" + Integer.toString(ctr));
-			
-			while(row != null){
-				String newCat = cat + "/0" + Integer.toString(ctr);
-				
-				if(row.isExisting("$8")){
-					author += " and " + utils.getData(newCat, "$8");
-				} else {
-					author += " and " + utils.getData(newCat, "$a");
-					author += "," + utils.getData(newCat, "$d");
-				}
-				
-				ctr++;
-	
-				if (ctr < 10){
-					row = pica.getRow(cat + "/0" + Integer.toString(ctr));
-				} else {
-					row = pica.getRow(cat + "/" + Integer.toString(ctr));
-				}
-			}
-		}
+		int ctr = 1;
+
+		Row row;
 		
-		return utils.cleanString(author);
+		String authorCategory = cat + getString(ctr);
+		while ((row = this.pica.getRow(authorCategory)) != null) {
+			
+			final String author = getAuthor(authorCategory, row); 
+			if (present(author)) {
+				authors.add(author);
+			}
+
+			authorCategory = cat + getString(++ctr);
+		}
+
+		return authors;
+	}
+	
+	private static String getString(final Integer i) {
+		if (i < 10) {
+			return "/0" + i;
+		}
+		return "/" + i;
 	}
 
 }

@@ -30,34 +30,19 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
  * @author daill
  * @version $Id$
  */
-public class PublisherRule implements Rules {
-	private PicaRecord pica = null;
-	private PicaUtils utils = null;
+public class PublisherRule extends Rules {
 	
 	/**
 	 * @param pica
-	 * @param utils
 	 */
-	public PublisherRule(PicaRecord pica, PicaUtils utils){
-		this.pica = pica;
-		this.utils = utils;
+	public PublisherRule(final PicaRecord pica){
+		super(pica, "033A");
 	}
 
+	@Override
 	public String getContent() {
-		String res = "";
-
-		res = utils.getData("033A", "$n");
-		res += " " + utils.getData("033A", "$p");
+		final String res = PicaUtils.getData(this.pica, this.category, "$n");
 		
-		return utils.cleanString(res);
+		return PicaUtils.cleanString(res);
 	}
-
-	public boolean isAvailable() {
-		if(pica.isExisting("033A")){
-			return true;
-		}
-		
-		return false;
-	}
-
 }

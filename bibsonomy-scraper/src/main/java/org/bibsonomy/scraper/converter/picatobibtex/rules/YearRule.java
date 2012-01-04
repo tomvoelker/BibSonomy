@@ -30,37 +30,23 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
  * @author daill
  * @version $Id$
  */
-public class YearRule implements Rules {
-	private PicaRecord pica = null;
-	private PicaUtils utils = null;
-	
+public class YearRule extends Rules {
 	/**
 	 * @param pica
-	 * @param utils
 	 */
-	public YearRule(PicaRecord pica, PicaUtils utils){
-		this.pica = pica;
-		this.utils = utils;
+	public YearRule(final PicaRecord pica){
+		super(pica, "011@");
 	}
 
+	@Override
 	public String getContent() {
-		String year = "";
-		
-		year = utils.getData("011@", "$a");
+		String year = PicaUtils.getData(this.pica, this.category, DEFAULT_SUB_CATEGORY);
 
 		if (year.length() == 0){
-			year = utils.getData("011@", "$n");
+			year = PicaUtils.getData(this.pica, this.category, "$n");
 		}
 		
-		return utils.cleanString(year);
-	}
-
-	public boolean isAvailable() {
-		if(pica.isExisting("011@")){
-			return true;
-		}
-		
-		return false;
+		return PicaUtils.cleanString(year);
 	}
 
 }

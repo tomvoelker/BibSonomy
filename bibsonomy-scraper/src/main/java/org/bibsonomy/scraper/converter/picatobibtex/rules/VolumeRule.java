@@ -23,42 +23,25 @@
 
 package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
-
 
 /**
  * @author daill
  * @version $Id$
  */
-public class URNRule extends Rules {
-	/*
-	 * to validate the URN
-	 */
-	private static final Pattern PATTERN_URN = Pattern.compile("^.*(urn:.*:.*)$");
-
+public class VolumeRule extends Rules {
 	/**
 	 * @param pica
 	 */
-	public URNRule(final PicaRecord pica) {
-		super(pica, "004U");
+	public VolumeRule(final PicaRecord pica){
+		super(pica, "036E");
 	}
-
+	
 	@Override
 	public String getContent() {
-		String res = PicaUtils.getData(this.pica, this.category, "$0");
-		
-		// need to validate the urn
-		final Matcher matcher = PATTERN_URN.matcher(res);
-		
-		if (matcher.find()) {
-			res = matcher.group(1);
-		}
+		final String res = PicaUtils.getData(this.pica, this.category, "$l");
 		
 		return PicaUtils.cleanString(res);
 	}
-
 }

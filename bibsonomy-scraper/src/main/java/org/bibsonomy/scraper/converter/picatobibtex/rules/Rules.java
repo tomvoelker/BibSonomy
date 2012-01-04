@@ -23,22 +23,42 @@
 
 package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
+import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
+import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
+
 /**
  * @author daill
  * @version $Id$
  */
-public interface Rules {
+public abstract class Rules {
+	
+	protected static final String DEFAULT_SUB_CATEGORY = "$a";
+	protected final PicaRecord pica;
+	protected final String category;
+	
+	protected Rules(final PicaRecord pica, final String category) {
+		this.pica = pica;
+		this.category = category;
+	}
+	
+	
 	/**
 	 * Checks if the requested field is available
 	 * 
 	 * @return boolean
 	 */
-	public boolean isAvailable();
+	public boolean isAvailable() {
+		return this.pica.isExisting(this.category);
+	}
 	
 	/**
 	 * Gets the bibtex string part
 	 * 
 	 * @return string
 	 */
-	public String getContent();
+	public String getContent() {
+		final String abstr = PicaUtils.getData(this.pica, this.category, DEFAULT_SUB_CATEGORY);
+		
+		return PicaUtils.cleanString(abstr);
+	}
 }

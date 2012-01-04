@@ -24,6 +24,8 @@
 package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.LinkedList;
 
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
@@ -34,62 +36,60 @@ import org.bibsonomy.scraper.converter.picatobibtex.Row;
  * @author daill
  * @version $Id$
  */
-public class TagsRule implements Rules {
-	private PicaRecord pica = null;
-	private PicaUtils utils = null;
+public class TagsRule extends Rules {
 	
+	private static final String CAT_1 = "044K";
+	private static final String CAT_2 = "041A";
+
 	/**
 	 * @param pica
-	 * @param utils
 	 */
-	public TagsRule(PicaRecord pica, PicaUtils utils){
-		this.pica = pica;
-		this.utils = utils;
+	public TagsRule(final PicaRecord pica){
+		super(pica, null);
 	}
 
+	@Override
 	public String getContent() {
 		String tags = "";
 		
-		LinkedList<Row> list = null;
-		Row row = null;
+		final LinkedList<Row> list = this.pica.getRows(CAT_1);
 		
-		if((list = pica.getRows("044K")) != null){
-			for(Row r : list){
-				if(r.isExisting("$8")){
-					tags += r.getSubField("$8").getContent() + " ";
+		if (present(list)) {
+			for (final Row row : list){
+				if (row.isExisting("$8")){
+					tags += row.getSubField("$8").getContent() + " ";
 				}
 			}
-		} else if(pica.isExisting("041A")){
-			String cat = "041A";
-			tags += utils.getData(cat, "$8") + " ";
+		} else if (this.pica.isExisting(CAT_2)) {
+			tags += PicaUtils.getData(this.pica, CAT_2, "$8") + " ";
 			
 			int ctr = 1;
 			
-			row = pica.getRow(cat + "/0" + Integer.toString(ctr));
+			Row row = this.pica.getRow(CAT_2 + "/0" + Integer.toString(ctr));
 			
-			while(row != null){
-				String newCat = cat + "/0" + Integer.toString(ctr);
+			while (row != null) {
+				String newCat = CAT_2 + "/0" + Integer.toString(ctr);
 				
-				if(row.isExisting("$8")){
-					tags += utils.getData(newCat, "$8") + " ";
+				if (row.isExisting("$8")) {
+					tags += PicaUtils.getData(this.pica, newCat, "$8") + " ";
 				}
 				
 				ctr++;
 	
 				if (ctr < 10){
-					row = pica.getRow(cat + "/0" + Integer.toString(ctr));
+					row = this.pica.getRow(CAT_2 + "/0" + Integer.toString(ctr));
 				} else {
-					row = pica.getRow(cat + "/" + Integer.toString(ctr));
+					row = this.pica.getRow(CAT_2 + "/" + Integer.toString(ctr));
 				}
 			}
 		}
 
-		return utils.cleanString(tags);
+		return PicaUtils.cleanString(tags);
 	}
 
+	@Override
 	public boolean isAvailable() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.pica.isExisting(CAT_1) || this.pica.isExisting(CAT_2);
 	}
 
 }

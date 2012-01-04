@@ -32,33 +32,30 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
  * @author daill
  * @version $Id$
  */
-public class TitleRule implements Rules {
-	private PicaRecord pica = null;
-	private PicaUtils utils = null;
+public class TitleRule extends Rules {
 	
+	private static final String CAT_2 = "036C";
+	private static final String CAT_1 = "021A";
+
 	/**
 	 * @param pica
-	 * @param utils
 	 */
-	public TitleRule(PicaRecord pica, PicaUtils utils){
-		this.pica = pica;
-		this.utils = utils;
+	public TitleRule(final PicaRecord pica){
+		super(pica, null);
 	}
 	
+	@Override
 	public String getContent() {
-		final String cat021A = utils.getData("021A", "$a");
-		if (present(cat021A)) {
-			return utils.cleanString(cat021A);
+		final String cat1 = PicaUtils.getData(this.pica, CAT_1, DEFAULT_SUB_CATEGORY);
+		if (present(cat1)) {
+			return PicaUtils.cleanString(cat1);
 		}
-		return utils.cleanString(utils.getData("036C", "$a"));
+		return PicaUtils.cleanString(PicaUtils.getData(this.pica, CAT_2, DEFAULT_SUB_CATEGORY));
 	}
 
+	@Override
 	public boolean isAvailable() {
-		if(pica.isExisting("021A")){
-			return true;
-		}
-		
-		return false;
+		return this.pica.isExisting(CAT_1) || this.pica.isExisting(CAT_2);
 	}
 
 }

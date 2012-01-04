@@ -30,36 +30,22 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
  * @author daill
  * @version $Id$
  */
-public class ISSNRule implements Rules {
-	private PicaRecord pica = null;
-	private PicaUtils utils = null;
+public class ISSNRule extends Rules {
 	
 	/**
 	 * @param pica
-	 * @param utils
 	 */
-	public ISSNRule(PicaRecord pica, PicaUtils utils){
-		this.pica = pica;
-		this.utils = utils;
+	public ISSNRule(final PicaRecord pica){
+		super(pica, "005A");
 	}
 
+	@Override
 	public String getContent() {
-		String res = "";
-		
-		res = utils.getData("005A", "$0");
-		if(res.length() == 0){
-			 res = utils.getData("005A", "$A"); 
+		String res = PicaUtils.getData(this.pica, this.category, "$0");
+		if (res.length() == 0){
+			 res = PicaUtils.getData(this.pica, this.category, "$A"); 
 		}
 		
-		return utils.cleanString(res);
+		return PicaUtils.cleanString(res);
 	}
-
-	public boolean isAvailable() {
-		if(pica.isExisting("005A")){
-			return true;
-		}
-		
-		return false;
-	}
-
 }
