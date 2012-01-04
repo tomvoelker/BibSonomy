@@ -24,9 +24,7 @@
 package org.bibsonomy.scraper.converter.picatobibtex;
 
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.AbstractRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.AuthorRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.ISBNRule;
@@ -110,10 +108,10 @@ public class PicaParser{
 		
 		
 			
-		String bibkey = createBibkey(author,year);
+		final String bibtexKey = BibTexUtils.generateBibtexKey(author, null, year, title);
 			
 			
-		bibres.append(type + bibkey + ",\n");
+		bibres.append(type + bibtexKey + ",\n");
 		bibres.append("author = {" + author + "},\n");
 		bibres.append("title = {" + title + "},\n");
 		bibres.append("year = {" + year + "},\n");
@@ -130,32 +128,6 @@ public class PicaParser{
 		return bibres.toString();
 	}
 	
-	/**
-	 * This helpmethod should create the bibtexkey be author and year
-	 * 
-	 * @param author
-	 * @param year
-	 * @return BibtexKey
-	 */
-	private String createBibkey(final String author, final String year){
-		String key = "";
-		
-		if ("".equals(author) && "".equals(year)){
-			return "imported";
-		}
-		
-		if (author.matches("^(.+?),.*$")){
-			Pattern p = Pattern.compile("^(.+?),.*$");
-			Matcher m = p.matcher(author);
-			if(m.find()){
-				key += m.group(1);
-			}
-		}
-		
-		key += ":" + year;
-		
-		return key;
-	}
 	
 	private String getBibType(){
 		Row r = null;
