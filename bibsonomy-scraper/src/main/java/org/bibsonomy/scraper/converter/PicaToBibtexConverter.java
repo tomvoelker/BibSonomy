@@ -132,10 +132,9 @@ public class PicaToBibtexConverter {
 	}
 	
 	/**
-	 * @return Bibtex String
-	 * @throws Exception 
+	 * @return BibTeX string
 	 */
-	public String getBibResult() throws Exception{
-		return new PicaParser(pica, url).getBibRes();
+	public String getBibResult() {
+		return PicaParser.getBibRes(pica, url);
 	}
 }

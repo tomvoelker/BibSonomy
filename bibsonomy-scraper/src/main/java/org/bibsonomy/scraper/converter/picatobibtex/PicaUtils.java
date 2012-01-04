@@ -30,31 +30,22 @@ import java.util.regex.Pattern;
  * @version $Id$
  */
 public class PicaUtils {
-	private final PicaRecord pica;
-	
 	private static final Pattern PATTERN_CLEANSING = Pattern.compile("(@|&lt;.+?&gt;|\\{|\\})");
 	
 	/**
-	 * @param pica
-	 */
-	public PicaUtils(final PicaRecord pica){
-		this.pica = pica;
-	}
-	
-	/**
 	 * use this method to get the data out of a specific row and subfield
-	 * 
+	 * @param pica 
 	 * @param cat
 	 * @param sub
 	 * @return string
 	 */
-	public String getData(final String cat, final String sub){
-		Row r = null;
-		SubField f = null;
+	public static String getData(final PicaRecord pica, final String cat, final String sub){
+		final Row row;
+		final SubField subField;
 		
-		if ((r = pica.getRow(cat)) != null){
-			if ((f = r.getSubField(sub)) != null){
-				return f.getContent();
+		if ((row = pica.getRow(cat)) != null) {
+			if ((subField = row.getSubField(sub)) != null) {
+				return subField.getContent();
 			}
 		}
 		
@@ -67,7 +58,7 @@ public class PicaUtils {
 	 * @param toClean
 	 * @return String
 	 */
-	public String cleanString(String toClean){
+	public static String cleanString(final String toClean){
 		return PATTERN_CLEANSING.matcher(toClean).replaceAll("");
 	}
 	
@@ -77,7 +68,7 @@ public class PicaUtils {
 	 * @param url
 	 * @return formatted url
 	 */
-	public String prepareUrl(final String url){
+	public static String prepareUrl(final String url){
 		return url.replaceFirst("XML=1.0/CHARSET=UTF-8/PRS=PP/", "");
 	}
 }

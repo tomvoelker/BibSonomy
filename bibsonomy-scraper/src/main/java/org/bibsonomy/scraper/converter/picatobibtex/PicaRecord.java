@@ -32,24 +32,19 @@ import java.util.Map;
  * @version $Id$
  */
 public class PicaRecord {
-	private Map<String, LinkedList<Row>> rows = new HashMap<String, LinkedList<Row>>();
+	private final Map<String, LinkedList<Row>> rows = new HashMap<String, LinkedList<Row>>();
 	
 	/**
 	 * Adds a row to this object
 	 * 
 	 * @param row
 	 */
-	public void addRow(Row row){
-		LinkedList<Row> list = null;
-		
-		if(rows.containsKey(row.getCat())){
-			list = rows.get(row.getCat());
-			list.add(row);
-		} else {
-			list = new LinkedList<Row>();
-			list.add(row);
-			this.rows.put(row.getCat(), list);
+	public void addRow(final Row row){
+		final String category = row.getCat();
+		if (!isExisting(category)){
+			this.rows.put(category, new LinkedList<Row>());
 		}
+		this.rows.get(category).add(row);
 	}
 
 	/**
@@ -58,8 +53,8 @@ public class PicaRecord {
 	 * @param cat
 	 * @return boolean
 	 */
-	public boolean isExisting(String cat){
-		return rows.containsKey(cat);
+	public boolean isExisting(final String cat) {
+		return this.rows.containsKey(cat);
 	}
 	
 	/**
@@ -68,17 +63,14 @@ public class PicaRecord {
 	 * @param cat
 	 * @return Row
 	 */
-	public Row getRow(String cat){
+	public Row getRow(final String cat){
 		if (isExisting(cat)){
-			LinkedList<Row> list = rows.get(cat);
+			final LinkedList<Row> list = rows.get(cat);
 		
-			if(list.size() > 0){
+			if (list.size() > 0) {
 				return list.get(0);
-			} else {
-				return null;
-			}
+			} 
 		}
-		
 		return null;
 	}
 	
@@ -86,8 +78,8 @@ public class PicaRecord {
 	 * @param cat
 	 * @return The row for the given category.
 	 */
-	public LinkedList<Row> getRows(String cat){
-		return rows.get(cat);
+	public LinkedList<Row> getRows(final String cat){
+		return this.rows.get(cat);
 	}
 	
 }

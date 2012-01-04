@@ -26,6 +26,7 @@ package org.bibsonomy.scraper.converter.picatobibtex;
 
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.AbstractRule;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.AddressRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.AuthorRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.ISBNRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.ISSNRule;
@@ -35,6 +36,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.rules.SeriesRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.TagsRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.TitleRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.URNRule;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.VolumeRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.YearRule;
 
 /**
@@ -50,86 +52,64 @@ import org.bibsonomy.scraper.converter.picatobibtex.rules.YearRule;
  * @version $Id$
  */
 public class PicaParser{
-	private PicaRecord pica = null;
-	private String  url = null;
-	
 
-	
 	/**
-	 * @param pica
+	 * Parses a PICA record and returns a BibTeX string
+	 * 
+	 * @param pica 
 	 * @param url 
-	 */
-	public PicaParser(final PicaRecord pica, final String url){
-		this.url = url;
-		this.pica = pica;
-	}
-	
-	/**
-	 * start parsing
-	 * 
-	 * @return String
-	 * @throws Exception 
-	 */
-	public String getBibRes() throws Exception{		
-		return parse();
-	}
-	
-	/**
-	 * method to activate the parsing methods and form the complete bibtex string
 	 * 
 	 * @return String
 	 */
-	private String parse() throws Exception{
-		PicaUtils utils = new PicaUtils(pica);
-		StringBuffer bibres = new StringBuffer();
+	public static String getBibRes(final PicaRecord pica, final String url) {
+		final StringBuffer bibtex = new StringBuffer();
 		
-		String type = getBibType();
-		String author = new AuthorRule(pica, utils).getContent();
-		String title = new TitleRule(pica, utils).getContent();
-		String year = new YearRule(pica, utils).getContent();
-		String isbn = new ISBNRule(pica, utils).getContent();
-		String issn = new ISSNRule(pica, utils).getContent();
-		String series = new SeriesRule(pica, utils).getContent();
-		String abstr = new AbstractRule(pica, utils).getContent();
-		String tags = new TagsRule(pica, utils).getContent();
-		String publisher = new PublisherRule(pica, utils).getContent();
+		final String type = getBibType(pica);
+		final String author = new AuthorRule(pica).getContent();
+		final String title = new TitleRule(pica).getContent();
+		final String year = new YearRule(pica).getContent();
+		final String isbn = new ISBNRule(pica).getContent();
+		final String issn = new ISSNRule(pica).getContent();
+		final String series = new SeriesRule(pica).getContent();
+		final String abstr = new AbstractRule(pica).getContent();
+		final String tags = new TagsRule(pica).getContent();
+		final String publisher = new PublisherRule(pica).getContent();
+		final String address = new AddressRule(pica).getContent();
+		final String volume = new VolumeRule(pica).getContent();
 		
-		String opac = "";
 		
-		Rules urn = new URNRule(pica, utils);
 		
-		if(urn.isAvailable()){
-			url = "http://nbn-resolving.org/urn/resolver.pl?urn=" + urn.getContent();
-			opac = this.url;
+		final Rules urn = new URNRule(pica);
+		
+		final String opac;
+		if (urn.isAvailable()){
+			opac = "http://nbn-resolving.org/urn/resolver.pl?urn=" + urn.getContent();
 		} else {
-			url = utils.prepareUrl(this.url);
-			opac = this.url;
+			opac = PicaUtils.prepareUrl(url);
 		}
 		
-		
-			
 		final String bibtexKey = BibTexUtils.generateBibtexKey(author, null, year, title);
 			
-			
-		bibres.append(type + bibtexKey + ",\n");
-		bibres.append("author = {" + author + "},\n");
-		bibres.append("title = {" + title + "},\n");
-		bibres.append("year = {" + year + "},\n");
-		bibres.append("abstract = {" + abstr + "}, \n");
-		bibres.append("keywords = {" + tags + "}, \n");
-		bibres.append("url = {" + url + "}, \n");
-		bibres.append("opac = {" + opac + "}, \n");
-		bibres.append("series = {" + series + "}, \n");
-		bibres.append("isbn = {" + isbn + "}, \n");
-		bibres.append("issn = {" + issn + "}, \n");
-		bibres.append("publisher = {" + publisher + "}, \n");
-		bibres.append("}");
+		bibtex.append(type + bibtexKey + ",\n");
+		bibtex.append("  author = {" + author + "},\n");
+		bibtex.append("  title = {" + title + "},\n");
+		bibtex.append("  year = {" + year + "},\n");
+		bibtex.append("  abstract = {" + abstr + "}, \n");
+		bibtex.append("  keywords = {" + tags + "}, \n");
+		bibtex.append("  url = {" + opac + "}, \n");
+		bibtex.append("  series = {" + series + "}, \n");
+		bibtex.append("  isbn = {" + isbn + "}, \n");
+		bibtex.append("  issn = {" + issn + "}, \n");
+		bibtex.append("  publisher = {" + publisher + "}, \n");
+		bibtex.append("  address = {" + address + "}, \n");
+		bibtex.append("  volume = {" + volume + "}, \n");
+		bibtex.append("}");
 		
-		return bibres.toString();
+		return bibtex.toString();
 	}
 	
 	
-	private String getBibType(){
+	private static String getBibType(final PicaRecord pica){
 		Row r = null;
 		SubField s = null;
 		
