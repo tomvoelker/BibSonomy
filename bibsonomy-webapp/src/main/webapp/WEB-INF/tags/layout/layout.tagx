@@ -148,7 +148,7 @@
 				<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>	
 				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 				<!-- requPath + query -->
-				<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
+				<c:set var="requPathAndQuery" value="${requPath}${requQueryString}" scope="request" />
 				<a href="/${mtl:setParam(requPathAndQuery, 'lang', 'de')}"><img alt="de" src="${resdir}/image/lang_de.png"/></a>					
 				<a href="/${mtl:setParam(requPathAndQuery, 'lang', 'en')}"><img alt="en" src="${resdir}/image/lang_en.png"/></a>					
 			</div>
