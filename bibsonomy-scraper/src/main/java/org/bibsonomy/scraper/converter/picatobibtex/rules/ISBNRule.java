@@ -31,22 +31,38 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
  * @version $Id$
  */
 public class ISBNRule extends Rules {
-	
+
+	private static final String CAT_D = "004D";
+	private static final String CAT_A = "004A";
+
 	/**
 	 * @param pica
 	 */
 	public ISBNRule(final PicaRecord pica){
-		super(pica, "004A");
+		super(pica, null);
 	}
 
 	@Override
 	public String getContent() {
-		String res = PicaUtils.getData(this.pica, this.category, "$0");
-		if (res.length() == 0){
-			res = PicaUtils.getData(this.pica, this.category, "$A");
+		String res = null;
+		if (this.pica.isExisting(CAT_A)) {
+			res = PicaUtils.getData(this.pica, CAT_A, "$0");
+			if (res.length() == 0){
+				res = PicaUtils.getData(this.pica, CAT_A, "$A");
+			}
+		} else if (this.pica.isExisting(CAT_D)) {
+			res = PicaUtils.getData(this.pica, CAT_D, "$0");
+			if (res.length() == 0){
+				res = PicaUtils.getData(this.pica, CAT_D, "$A");
+			}
 		}
-		
+
 		return PicaUtils.cleanString(res);
+	}
+
+	@Override
+	public boolean isAvailable() {
+		return this.pica.isExisting(CAT_A) || this.pica.isExisting(CAT_D);
 	}
 
 }
