@@ -108,10 +108,10 @@ public class BibtexUtilsTest {
 		final String expectedBibtex = 
 			"@inproceedings{KIE,\n" +			
 			"  author = {Hans Dampf and Peter Silie},\n" +
-			"  journal = {Journal of the most wonderful articles on earth},\n" +
-			"  title = {The most wonderfult title on earth},\n" +
-			"  volume = 3,\n" +
 			"  year = 2525,\n" + 
+			"  journal = {Journal of the most wonderful articles on earth},\n" +
+			"  volume = 3,\n" +
+			"  title = {The most wonderfult title on earth},\n" +			
 			"  abstract = {This is a nice abstract.}\n}";
 		
 		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST));
@@ -124,10 +124,10 @@ public class BibtexUtilsTest {
 		final String expectedBibtex2 = 
 			"@inproceedings{KIE,\n" +
 			"  author = {Hans Dampf and Peter Silie},\n" +
-			"  journal = {Journal of the most wonderful articles on earth},\n" +
-			"  title = {The most wonderfult title on earth},\n" +
-			"  volume = 3,\n" +
 			"  year = 2525,\n" + 
+			"  journal = {Journal of the most wonderful articles on earth},\n" +
+			"  volume = 3,\n" +
+			"  title = {The most wonderfult title on earth},\n" +
 			"  extrakey = {extraVal},\n" + 
 			"  extrakey2 = {extraVal2}\n}";
 		
@@ -169,10 +169,10 @@ public class BibtexUtilsTest {
 			"@book{Selmes2004,\n" + 
 			"  author = {Jacques Selmès and Christian Derouesné},\n" +
 			"  editor = {John Libbey Eurotext},\n" +
+			"  year = 2004,\n" +	
 			"  edition = {John Libbey Eurotext},\n" +
 			"  note = {Tome I},\n" +
-			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +
-			"  year = 2004,\n" +			
+			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +	
 			"  q6 = {It needs.\n" + 
 			"To trials.\n" + 
 			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
@@ -218,10 +218,10 @@ public class BibtexUtilsTest {
 			"@book{Selmes2004,\n" + 
 			"  author = {Selmès, Jacques and Derouesné, Christian},\n" +
 			"  editor = {Eurotext, John Libbey},\n" +
+			"  year = 2004,\n" +
 			"  edition = {John Libbey Eurotext},\n" +
 			"  note = {Tome I},\n" +
-			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +
-			"  year = 2004,\n" +			
+			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +	
 			"  q6 = {It needs.\n" + 
 			"To trials.\n" + 
 			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 

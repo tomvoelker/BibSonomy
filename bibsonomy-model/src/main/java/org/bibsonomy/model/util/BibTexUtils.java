@@ -25,12 +25,7 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -163,7 +158,7 @@ public class BibTexUtils {
 	 */
 	private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
-	private static final Pattern LAST_COMMA_PATTERN = Pattern.compile(".+}?\\s*,\\s*}\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
+	private static final Pattern LAST_COMMA_PATTERN = Pattern.compile(".+\\}?\\s*,\\s*\\}\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
 	private static final Pattern NUMERIC_PATTERN = Pattern.compile("^\\d+$");
 
 	/*
@@ -171,18 +166,15 @@ public class BibTexUtils {
 	 */
 	private static final Set<String> EXCLUDE_FIELDS = new HashSet<String>(Arrays.asList(
 			"abstract",        // added separately
-			"bibtexAbstract",  // added separately
-			"bibtexKey",       // added at beginning of entry
+			"bibtexkey",       // added at beginning of entry
 			"entrytype",       // added at beginning of entry
 			"misc",            // contains several fields; handled separately
-			"author",          // handled separately
-			"editor",          // handled separately
 			"month",           // handled separately
-			"openURL", 
-			"simHash0", // not added
-			"simHash1", // not added
-			"simHash2", // not added
-			"simHash3"  // not added
+			"openurl", 
+			"simhash0", // not added
+			"simhash1", // not added
+			"simhash2", // not added
+			"simhash3"  // not added
 	));
 
 	/**
@@ -312,7 +304,7 @@ public class BibTexUtils {
 	}
 
 	private static void appendOpenURL(final StringBuilder buffer, final String name, final String value) throws UnsupportedEncodingException {
-		if (value != null && !value.trim().equals("")) {
+		if (present(value)) {
 			buffer.append("&" + name + "=" + URLEncoder.encode(value.trim(), "UTF-8"));
 		}
 	}
@@ -334,6 +326,8 @@ public class BibTexUtils {
 
 
 	/**
+	 * XXX: we don't use java.beans because the package is missing in Android SDK
+	 * 
 	 * return a bibtex string representation of the given bibtex object
 	 * 
 	 * @param bib - a bibtex object
@@ -345,98 +339,86 @@ public class BibTexUtils {
 	 * 
 	 */
 	public static String toBibtexString(final BibTex bib, final int flags) {
-		try {
-			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
+		/*
+		 * start with entrytype and key
+		 */
+		final String bibtexKey = hasFlag(flags, SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS) ? generateBibtexKey(bib): bib.getBibtexKey();
+		
+		final StringBuilder buffer = new StringBuilder("@" + bib.getEntrytype() + DEFAULT_OPENING_BRACKET + bibtexKey + ",\n");
 
-			/*
-			 * start with entrytype and key
-			 */
-			final String bibtexKey = hasFlag(flags, SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS) ? generateBibtexKey(bib): bib.getBibtexKey();
-			
-			final StringBuilder buffer = new StringBuilder("@" + bib.getEntrytype() + "{" + bibtexKey + ",\n");
-
-			final boolean lastFirstNames = !hasFlag(flags, SERIALIZE_BIBTEX_OPTION_FIRST_LAST);
-			/*
-			 * append author and editor
-			 */
-			if (present(bib.getAuthor())) {
-				buffer.append(DEFAULT_INTENDATION + "author = " + DEFAULT_OPENING_BRACKET + PersonNameUtils.serializePersonNames(bib.getAuthor(), lastFirstNames) + DEFAULT_CLOSING_BRACKET + ",\n");
-			}
-			if (present(bib.getEditor())) {
-				buffer.append(DEFAULT_INTENDATION + "editor = " + DEFAULT_OPENING_BRACKET + PersonNameUtils.serializePersonNames(bib.getEditor(), lastFirstNames) + DEFAULT_CLOSING_BRACKET + ",\n");
-			}
-			
-			/*
-			 * append all other fields
-			 */
-			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
-				final Method getter = d.getReadMethod();
-				// loop over all String attributes
-				final Object o = getter.invoke(bib, (Object[]) null);
-				if (String.class.equals(d.getPropertyType()) 
-						&& o != null 
-						&& ! EXCLUDE_FIELDS.contains(d.getName()) ) {
-
-					/*
-					 * Strings containing whitespace give empty fields ... we ignore them 
-					 */
-					String value = ((String) o);
-					if (present(value)) {
-						if (! NUMERIC_PATTERN.matcher(value).matches()) {
-							value = DEFAULT_OPENING_BRACKET + value + DEFAULT_CLOSING_BRACKET;
+		final boolean lastFirstNames = !hasFlag(flags, SERIALIZE_BIBTEX_OPTION_FIRST_LAST);
+		/*
+		 * append author and editor
+		 */
+		if (present(bib.getAuthor())) {
+			buffer.append(DEFAULT_INTENDATION + "author = " + DEFAULT_OPENING_BRACKET + PersonNameUtils.serializePersonNames(bib.getAuthor(), lastFirstNames) + DEFAULT_CLOSING_BRACKET + ",\n");
+		}
+		if (present(bib.getEditor())) {
+			buffer.append(DEFAULT_INTENDATION + "editor = " + DEFAULT_OPENING_BRACKET + PersonNameUtils.serializePersonNames(bib.getEditor(), lastFirstNames) + DEFAULT_CLOSING_BRACKET + ",\n");
+		}
+		
+		final Method[] methods = BibTex.class.getMethods();
+		for (final Method method : methods) {
+			if (method.getParameterTypes().length == 0 && String.class.equals(method.getReturnType()) && method.getName().startsWith("get")) {
+				try {
+					final String key = method.getName().replaceFirst("get", "").toLowerCase();
+					
+					if (!EXCLUDE_FIELDS.contains(key)) {
+						String value = (String) method.invoke(bib, (Object[]) null);
+					
+						if (present(value)) {
+							if (! NUMERIC_PATTERN.matcher(value).matches()) {
+								value = DEFAULT_OPENING_BRACKET + value + DEFAULT_CLOSING_BRACKET;
+							}
+							
+							buffer.append(DEFAULT_INTENDATION + key + " = " + value + ",\n");
 						}
-						buffer.append(DEFAULT_INTENDATION + d.getName().toLowerCase() + " = " + value + ",\n");
 					}
+				} catch (final Exception ex) {
+					log.error("exception while converting publication to BibTeX", ex);
 				}
 			}
-			/*
-			 * process miscFields map, if present
-			 */
-			if (present(bib.getMiscFields())) {
-				if (!hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && !bib.isMiscFieldParsed()) {
-					// parse misc field, if not yet done
-					bib.parseMiscField();
-				}
-				buffer.append(serializeMiscFields(bib.getMiscFields(), true));
+		}
+		
+		/*
+		 * process miscFields map, if present
+		 */
+		if (present(bib.getMiscFields())) {
+			if (!hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && !bib.isMiscFieldParsed()) {
+				// parse misc field, if not yet done
+				bib.parseMiscField();
 			}
+			buffer.append(serializeMiscFields(bib.getMiscFields(), true));
+		}
 
-			/*
-			 * include plain misc fields if desired
-			 */
-			if (hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && present(bib.getMisc())) {
-				buffer.append(DEFAULT_INTENDATION + bib.getMisc() + ",\n");
-			}
-			/*
-			 * add month
-			 */
-			final String month = bib.getMonth();
-			if (present(month)) {
-				// we don't add {}, this is done by getMonth(), if necessary
-				buffer.append(DEFAULT_INTENDATION + "month = " + getMonth(month) + ",\n");
-			}
-			/*
-			 * add abstract
-			 */
-			final String bibAbstract = bib.getAbstract();
-			if (present(bibAbstract)) {
-				buffer.append(DEFAULT_INTENDATION + "abstract = {" + bibAbstract + "},\n");
-			}
-			/*
-			 * remove last comma
-			 */
-			buffer.delete(buffer.lastIndexOf(","), buffer.length());
-			buffer.append("\n}");	
+		/*
+		 * include plain misc fields if desired
+		 */
+		if (hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && present(bib.getMisc())) {
+			buffer.append(DEFAULT_INTENDATION + bib.getMisc() + ",\n");
+		}
+		/*
+		 * add month
+		 */
+		final String month = bib.getMonth();
+		if (present(month)) {
+			// we don't add {}, this is done by getMonth(), if necessary
+			buffer.append(DEFAULT_INTENDATION + "month = " + getMonth(month) + ",\n");
+		}
+		/*
+		 * add abstract
+		 */
+		final String bibAbstract = bib.getAbstract();
+		if (present(bibAbstract)) {
+			buffer.append(DEFAULT_INTENDATION + "abstract = {" + bibAbstract + "},\n");
+		}
+		/*
+		 * remove last comma
+		 */
+		buffer.delete(buffer.lastIndexOf(","), buffer.length());
+		buffer.append("\n" + DEFAULT_CLOSING_BRACKET);	
 
-			return buffer.toString();
-
-		} catch (final IntrospectionException ex) {
-			ex.printStackTrace();
-		} catch (final InvocationTargetException ex) {
-			ex.printStackTrace();
-		} catch (final IllegalAccessException ex) {
-			ex.printStackTrace();
-		}		
-		return null;
+		return buffer.toString();
 	}
 
 
