@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RESULT>
+<SESSION>
+<SESSIONVAR name="LNG">DU</SESSIONVAR>
+<SESSIONVAR name="DB">1</SESSIONVAR>
+<SESSIONVAR name="SID">e443b45c-4</SESSIONVAR>
+<SESSIONVAR name="SET">8</SESSIONVAR>
+
+</SESSION>
+<SET nr="8" hits="0"/>
+<LONGTITLE id="118339710" set="8" format="text">
+<br />
+001@$03-4,7,11-12,15-16
+
+<br />
+001A$06053:18-01-04
+<br />
+001B$01999:23-04-11$t10:54:31.000
+<br />
+001D$00034:23-12-04
+<br />
+001F$00
+<br />
+001X$00
+<br />
+002@$0Aau
+<br />
+003@$0118339710
+<br />
+003O$aOCoLC$053330807
+<br />
+
+004D$01-4020-7647-9$fUSD 91.00 Hardbound book
+<br />
+006A$02003064032
+<br />
+006B$0bA3U0860
+<br />
+006H$0R2412366
+<br />
+010@$aeng
+<br />
+011@$a2004$n2004
+<br />
+013H$0z
+<br />
+021A$aMachine learning$ddiscriminative and generative$hby Tony Jebara
+<br />
+028A$9170505383$8Jebara, Tony 
+
+<br />
+033A$pBoston, Mass. {[u.a.]$nKluwer Academic Publ.
+<br />
+034D$aXIV, 197 S.
+<br />
+034M$agraph. Darst.
+<br />
+036E$aKluwer international series in engineering and computer science$l[755]
+<br />
+036F$x3755$9003782069$8Kluwer international series in engineering and computer science$l[755]
+<br />
+041K$061302550$aHuman/computer interaction
+<br />
+041K/01$063304000$aArtificial intelligence
+<br />
+041K/02$097600540$aQ 300-342 Cybernetics
+<br />
+
+044K$9085967890$8Maschinelles Lernen
+<br />
+045A$aQ325.5
+<br />
+045B$eDDC22oclc$a006.31$ALoC
+<br />
+045Z$aST 304
+<br />
+046M$aLiteraturverz. S. 185 - 197</LONGTITLE>
+</RESULT>
