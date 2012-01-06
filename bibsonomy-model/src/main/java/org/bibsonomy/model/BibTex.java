@@ -119,7 +119,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param openURL
 	 */
-	public void setOpenURL(String openURL) {
+	public void setOpenURL(final String openURL) {
 		this.openURL = openURL;
 	}
 
@@ -133,7 +133,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param privnote
 	 */
-	public void setPrivnote(String privnote) {
+	public void setPrivnote(final String privnote) {
 		this.privnote = privnote;
 	}
 
@@ -147,7 +147,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param address
 	 */
-	public void setAddress(String address) {
+	public void setAddress(final String address) {
 		this.address = address;
 	}
 
@@ -161,7 +161,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param annote
 	 */
-	public void setAnnote(String annote) {
+	public void setAnnote(final String annote) {
 		this.annote = annote;
 	}
 	
@@ -189,7 +189,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param bibtexAbstract
 	 */
-	public void setAbstract(String bibtexAbstract) {
+	public void setAbstract(final String bibtexAbstract) {
 		this.bibtexAbstract = bibtexAbstract;
 	}
 
@@ -203,7 +203,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param bibtexKey
 	 */
-	public void setBibtexKey(String bibtexKey) {
+	public void setBibtexKey(final String bibtexKey) {
 		this.bibtexKey = bibtexKey;
 	}
 
@@ -217,7 +217,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param key
 	 */
-	public void setKey(String key) {
+	public void setKey(final String key) {
 		this.key = key;
 	}
 
@@ -231,7 +231,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param booktitle
 	 */
-	public void setBooktitle(String booktitle) {
+	public void setBooktitle(final String booktitle) {
 		this.booktitle = booktitle;
 	}
 
@@ -245,7 +245,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param chapter
 	 */
-	public void setChapter(String chapter) {
+	public void setChapter(final String chapter) {
 		this.chapter = chapter;
 	}
 
@@ -259,7 +259,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param crossref
 	 */
-	public void setCrossref(String crossref) {
+	public void setCrossref(final String crossref) {
 		this.crossref = crossref;
 	}
 
@@ -273,7 +273,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param day
 	 */
-	public void setDay(String day) {
+	public void setDay(final String day) {
 		this.day = day;
 	}
 
@@ -287,7 +287,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param edition
 	 */
-	public void setEdition(String edition) {
+	public void setEdition(final String edition) {
 		this.edition = edition;
 	}
 
@@ -315,7 +315,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param entrytype
 	 */
-	public void setEntrytype(String entrytype) {
+	public void setEntrytype(final String entrytype) {
 		this.entrytype = entrytype;
 	}
 
@@ -329,7 +329,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param howpublished
 	 */
-	public void setHowpublished(String howpublished) {
+	public void setHowpublished(final String howpublished) {
 		this.howpublished = howpublished;
 	}
 
@@ -343,7 +343,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param institution
 	 */
-	public void setInstitution(String institution) {
+	public void setInstitution(final String institution) {
 		this.institution = institution;
 	}
 
@@ -357,7 +357,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param journal
 	 */
-	public void setJournal(String journal) {
+	public void setJournal(final String journal) {
 		this.journal = journal;
 	}
 
@@ -371,7 +371,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param misc
 	 */
-	public void setMisc(String misc) {
+	public void setMisc(final String misc) {
 		this.misc = misc;
 		this.miscFieldParsed = false;
 	}
@@ -386,7 +386,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param month
 	 */
-	public void setMonth(String month) {
+	public void setMonth(final String month) {
 		this.month = month;
 	}
 
@@ -400,7 +400,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param note
 	 */
-	public void setNote(String note) {
+	public void setNote(final String note) {
 		this.note = note;
 	}
 
@@ -414,7 +414,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param number
 	 */
-	public void setNumber(String number) {
+	public void setNumber(final String number) {
 		this.number = number;
 	}
 
@@ -428,7 +428,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param organization
 	 */
-	public void setOrganization(String organization) {
+	public void setOrganization(final String organization) {
 		this.organization = organization;
 	}
 
@@ -442,7 +442,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param pages
 	 */
-	public void setPages(String pages) {
+	public void setPages(final String pages) {
 		this.pages = pages;
 	}
 
@@ -456,7 +456,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param publisher
 	 */
-	public void setPublisher(String publisher) {
+	public void setPublisher(final String publisher) {
 		this.publisher = publisher;
 	}
 
@@ -470,7 +470,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param school
 	 */
-	public void setSchool(String school) {
+	public void setSchool(final String school) {
 		this.school = school;
 	}
 
@@ -484,7 +484,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param series
 	 */
-	public void setSeries(String series) {
+	public void setSeries(final String series) {
 		this.series = series;
 	}
 
@@ -498,7 +498,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param volume
 	 */
-	public void setVolume(String volume) {
+	public void setVolume(final String volume) {
 		this.volume = volume;
 	}
 
@@ -512,7 +512,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param year
 	 */
-	public void setYear(String year) {
+	public void setYear(final String year) {
 		this.year = year;
 	}
 
@@ -526,7 +526,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param type
 	 */
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
@@ -568,7 +568,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param url
 	 */
-	public void setUrl(String url) {
+	public void setUrl(final String url) {
 		this.url = url;
 	}
 
@@ -582,7 +582,7 @@ public class BibTex extends Resource {
 	 * @param key
 	 * @return String
 	 */
-	public String getMiscField(String key) {
+	public String getMiscField(final String key) {
 		if (this.miscFields == null || this.miscFields.containsKey(key) == false) return null;
 		return this.miscFields.get(key);
 	}
@@ -591,7 +591,7 @@ public class BibTex extends Resource {
 	 * @param key
 	 * @param value
 	 */
-	public void addMiscField(String key, String value) {
+	public void addMiscField(final String key, final String value) {
 		if (this.miscFields == null) {
 			this.miscFields = new HashMap<String, String>();
 		}
@@ -620,7 +620,7 @@ public class BibTex extends Resource {
 	/**
 	 * @param documents
 	 */
-	public void setDocuments(List<Document> documents) {
+	public void setDocuments(final List<Document> documents) {
 		this.documents = documents;
 	}
 
@@ -638,7 +638,7 @@ public class BibTex extends Resource {
 	 * 
 	 * @param scraperMetadata
 	 */
-	public void setScraperMetadata(ScraperMetadata scraperMetadata) {
+	public void setScraperMetadata(final ScraperMetadata scraperMetadata) {
 		this.scraperMetadata = scraperMetadata;
 	}
 	/**
@@ -651,14 +651,14 @@ public class BibTex extends Resource {
 	/**
 	 * @param scraperId
 	 */
-	public void setScraperId(int scraperId) {
+	public void setScraperId(final int scraperId) {
 		this.scraperId = scraperId;
 	}
 	
 	/**
 	 * @param extraUrls the extraUrls to set
 	 */
-	public void setExtraUrls(List<BibTexExtra> extraUrls) {
+	public void setExtraUrls(final List<BibTexExtra> extraUrls) {
 		this.extraUrls = extraUrls;
 	}
 
@@ -681,7 +681,7 @@ public class BibTex extends Resource {
 	 * 
 	 * @param miscFields
 	 */
-	public void setMiscFields(Map<String,String> miscFields) {
+	public void setMiscFields(final Map<String,String> miscFields) {
 		this.miscFields = miscFields;
 		this.miscFieldParsed = false;
 	}
@@ -700,7 +700,7 @@ public class BibTex extends Resource {
 	 * representation and stores it in the 'misc'-field.
 	 */
 	public void serializeMiscFields() {
-		this.misc = BibTexUtils.serializeMiscFields(this.miscFields, false);
+		this.misc = BibTexUtils.serializeMapToBibTeX(this.miscFields);
 		this.miscFieldParsed = true;
 	}
 	
@@ -735,7 +735,7 @@ public class BibTex extends Resource {
 	 * @param key - the requested key
 	 * @return - the previous value for key
 	 */
-	public String removeMiscField(String key) {
+	public String removeMiscField(final String key) {
 		if (this.miscFields != null && this.miscFields.containsKey(key)) {
 			this.miscFieldParsed = false;
 			return this.miscFields.remove(key);			

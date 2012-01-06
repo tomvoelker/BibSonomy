@@ -37,7 +37,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,6 +65,9 @@ import org.bibsonomy.util.tex.TexDecode;
  * @version $Id$
  */
 public class BibTexUtils {
+	private static final Log log = LogFactory.getLog(BibTexUtils.class);
+	
+	private static final String GET_METHOD_PREFIX = "get";
 	
 	/**
 	 * Enable the output of the plain misc field when serializing 
@@ -79,7 +85,6 @@ public class BibTexUtils {
 	 */
 	public static final int SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS = 0x04;
 	
-	private static final Log log = LogFactory.getLog(BibTexUtils.class);
 
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
@@ -140,6 +145,31 @@ public class BibTexUtils {
 		ADDITIONAL_MISC_FIELD_ADDED_AT,
 		ADDITIONAL_MISC_FIELD_TIMESTAMP
 	};
+	
+	/** default opening bracket */
+	public static final char DEFAULT_OPENING_BRACKET = '{';
+	
+	/** default closing bracket */
+	public static final char DEFAULT_CLOSING_BRACKET = '}';
+	
+	/** value separator used to separate key/value pairs; i.e. key=val SEP key2=val2*/
+	public static final char KEYVALUE_SEPARATOR = ',';
+	
+	private static final String KEYVALUE_SEPARATOR_STRING = String.valueOf(KEYVALUE_SEPARATOR);
+	
+	/** assignment operator to assign keys to values; i.e. key OP val, ...*/
+	public static final char ASSIGNMENT_OPERATOR = '=';
+	
+	/**
+	 * Indentation used for key/value pairs when converted to a BibTeX string. 
+	 */
+	private static final String DEFAULT_INTENDATION = "  ";
+	
+	private static final String BIBTEX_MONTH_FIELD = "month";
+
+	private static final String BIBTEX_EDITOR_FIELD = "editor";
+
+	private static final String BIBTEX_AUTHOR_FIELD = "author";
 
 	/**
 	 * the supported entrytypes of a bibtex
@@ -165,7 +195,6 @@ public class BibTexUtils {
 	 * fields to be excluded when creating bibtex strings.
 	 */
 	private static final Set<String> EXCLUDE_FIELDS = new HashSet<String>(Arrays.asList(
-			"abstract",        // added separately
 			"bibtexkey",       // added at beginning of entry
 			"entrytype",       // added at beginning of entry
 			"misc",            // contains several fields; handled separately
@@ -191,20 +220,7 @@ public class BibTexUtils {
 			BIBTEX_MONTHS.put(months[i], i + 1);
 		}
 	}
-
-
-	/** default opening bracket */
-	public static final char DEFAULT_OPENING_BRACKET = '{';
-	/** default closing bracket */
-	public static final char DEFAULT_CLOSING_BRACKET = '}';
-	/** value separator used to separate key/value pairs; i.e. key=val SEP key2=val2*/
-	public static final char KEYVALUE_SEPARATOR = ',';
-	/** assignment operator to assign keys to values; i.e. key OP val, ...*/
-	public static final char ASSIGNMENT_OPERATOR = '=';
-	/**
-	 * Indentation used for key/value pairs when converted to a BibTeX string. 
-	 */
-	private static final String DEFAULT_INTENDATION = "  ";
+	
 	
 	/**
 	 * Builds a string from a given bibtex object which can be used to build an OpenURL
@@ -333,51 +349,46 @@ public class BibTexUtils {
 	 * @param bib - a bibtex object
 	 * @param flags - flags to change the serialization behavior. A bit mask 
 	 * that may include {@link #SERIALIZE_BIBTEX_OPTION_FIRST_LAST}, {@link #SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS}, {@link #SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD}.
-	 * @return String bibtexString
-	 * 
-	 * TODO use BibTex.DEFAULT_OPENBRACKET etc.
-	 * 
+	 * @return String bibtexString 
 	 */
 	public static String toBibtexString(final BibTex bib, final int flags) {
 		/*
-		 * start with entrytype and key
+		 * get all values to generate the BibTeX first to sort all entries
+		 * alphabetically
 		 */
-		final String bibtexKey = hasFlag(flags, SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS) ? generateBibtexKey(bib): bib.getBibtexKey();
-		
-		final StringBuilder buffer = new StringBuilder("@" + bib.getEntrytype() + DEFAULT_OPENING_BRACKET + bibtexKey + ",\n");
-
+		final SortedMap<String, String> values = new TreeMap<String, String>();
 		final boolean lastFirstNames = !hasFlag(flags, SERIALIZE_BIBTEX_OPTION_FIRST_LAST);
-		/*
-		 * append author and editor
-		 */
-		if (present(bib.getAuthor())) {
-			buffer.append(DEFAULT_INTENDATION + "author = " + DEFAULT_OPENING_BRACKET + PersonNameUtils.serializePersonNames(bib.getAuthor(), lastFirstNames) + DEFAULT_CLOSING_BRACKET + ",\n");
-		}
-		if (present(bib.getEditor())) {
-			buffer.append(DEFAULT_INTENDATION + "editor = " + DEFAULT_OPENING_BRACKET + PersonNameUtils.serializePersonNames(bib.getEditor(), lastFirstNames) + DEFAULT_CLOSING_BRACKET + ",\n");
-		}
 		
 		final Method[] methods = BibTex.class.getMethods();
 		for (final Method method : methods) {
-			if (method.getParameterTypes().length == 0 && String.class.equals(method.getReturnType()) && method.getName().startsWith("get")) {
+			if (method.getParameterTypes().length == 0 && String.class.equals(method.getReturnType()) && method.getName().startsWith(GET_METHOD_PREFIX)) {
 				try {
-					final String key = method.getName().replaceFirst("get", "").toLowerCase();
-					
+					final String key = method.getName().replaceFirst(GET_METHOD_PREFIX, "").toLowerCase();
 					if (!EXCLUDE_FIELDS.contains(key)) {
 						String value = (String) method.invoke(bib, (Object[]) null);
 					
 						if (present(value)) {
-							if (! NUMERIC_PATTERN.matcher(value).matches()) {
-								value = DEFAULT_OPENING_BRACKET + value + DEFAULT_CLOSING_BRACKET;
+							if (!NUMERIC_PATTERN.matcher(value).matches()) {
+								value = addBibTeXBrackets(value);
 							}
-							
-							buffer.append(DEFAULT_INTENDATION + key + " = " + value + ",\n");
+							values.put(key, value);
 						}
 					}
 				} catch (final Exception ex) {
 					log.error("exception while converting publication to BibTeX", ex);
 				}
 			}
+		}
+		
+		/*
+		 * append author and editor
+		 */
+		if (present(bib.getAuthor())) {
+			values.put(BIBTEX_AUTHOR_FIELD, addBibTeXBrackets(PersonNameUtils.serializePersonNames(bib.getAuthor(), lastFirstNames)));
+		}
+		
+		if (present(bib.getEditor())) {
+			values.put(BIBTEX_EDITOR_FIELD, addBibTeXBrackets(PersonNameUtils.serializePersonNames(bib.getEditor(), lastFirstNames)));
 		}
 		
 		/*
@@ -388,37 +399,56 @@ public class BibTexUtils {
 				// parse misc field, if not yet done
 				bib.parseMiscField();
 			}
-			buffer.append(serializeMiscFields(bib.getMiscFields(), true));
+			
+			for (final Entry<String, String> miscField : bib.getMiscFields().entrySet()) {
+				values.put(miscField.getKey().toLowerCase(), addBibTeXBrackets(miscField.getValue()));
+			}
 		}
 
-		/*
-		 * include plain misc fields if desired
-		 */
-		if (hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && present(bib.getMisc())) {
-			buffer.append(DEFAULT_INTENDATION + bib.getMisc() + ",\n");
-		}
 		/*
 		 * add month
 		 */
 		final String month = bib.getMonth();
 		if (present(month)) {
 			// we don't add {}, this is done by getMonth(), if necessary
-			buffer.append(DEFAULT_INTENDATION + "month = " + getMonth(month) + ",\n");
+			values.put(BIBTEX_MONTH_FIELD, getMonth(month));
 		}
+		
 		/*
-		 * add abstract
+		 * start with entrytype and key
 		 */
-		final String bibAbstract = bib.getAbstract();
-		if (present(bibAbstract)) {
-			buffer.append(DEFAULT_INTENDATION + "abstract = {" + bibAbstract + "},\n");
+		final String bibtexKey = hasFlag(flags, SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS) ? generateBibtexKey(bib): bib.getBibtexKey();
+		
+		final StringBuilder buffer = new StringBuilder("@").append(bib.getEntrytype()).append(DEFAULT_OPENING_BRACKET).append(bibtexKey).append(KEYVALUE_SEPARATOR).append("\n");
+
+		for (final Entry<String, String> entry : values.entrySet()) {
+			buffer.append(DEFAULT_INTENDATION).append(entry.getKey().toLowerCase())
+			.append(" ").append(ASSIGNMENT_OPERATOR).append(" ")
+			.append(entry.getValue()).append(KEYVALUE_SEPARATOR).append("\n");
 		}
+		
+		/*
+		 * include plain misc fields if desired
+		 */
+		if (hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && present(bib.getMisc())) {
+			buffer.append(DEFAULT_INTENDATION).append(bib.getMisc()).append(KEYVALUE_SEPARATOR).append("\n");
+		}
+		
 		/*
 		 * remove last comma
 		 */
-		buffer.delete(buffer.lastIndexOf(","), buffer.length());
-		buffer.append("\n" + DEFAULT_CLOSING_BRACKET);	
+		buffer.delete(buffer.lastIndexOf(KEYVALUE_SEPARATOR_STRING), buffer.length());
+		buffer.append("\n").append(DEFAULT_CLOSING_BRACKET);	
 
 		return buffer.toString();
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	private static String addBibTeXBrackets(final String value) {
+		return DEFAULT_OPENING_BRACKET + value + DEFAULT_CLOSING_BRACKET;
 	}
 
 
@@ -433,7 +463,7 @@ public class BibTexUtils {
 	 */
 	public static String getMonth(final String month) {
 		if (month != null && BIBTEX_MONTHS.containsKey(month.toLowerCase().trim())) return month;
-		return "{" + month + "}";
+		return addBibTeXBrackets(month);
 	}
 
 
@@ -788,26 +818,27 @@ public class BibTexUtils {
 
 	/**
 	 * Converts the key = value pairs contained in the 
-	 * miscFields map of a bibtex object into a serialized representation in the 
-	 * misc-Field. It appends 
+	 * miscFields map of a {@link BibTex} object into a serialized representation
+	 * in the misc-Field. It appends 
 	 * 
 	 *  key1 = {value1}, key2 = {value2}, ...
 	 *  
 	 * for all defined miscFields to the return string.
 	 * 
-	 * @param miscFields - a map containing key/value pairs
-	 * @param appendTrailingSeparator - whether to append a trailing separator at the end of the string
+	 * @param valueMap - a map containing key/value pairs
 	 * @return - a string representation of the given object.
 	 */
-	public static String serializeMiscFields(final Map<String,String> miscFields, final boolean appendTrailingSeparator) {
+	public static String serializeMapToBibTeX(final Map<String, String> valueMap) {
 		final StringBuilder miscFieldsSerialized = new StringBuilder();
 		// loop over misc fields, if any
-		if (present(miscFields)) {
-			final Iterator<String> it = miscFields.keySet().iterator();
+		if (present(valueMap)) {
+			final Iterator<String> it = valueMap.keySet().iterator();
 			while (it.hasNext()) {				
 				final String currKey = it.next();
-				miscFieldsSerialized.append(DEFAULT_INTENDATION + currKey.toLowerCase() + " " + ASSIGNMENT_OPERATOR + " " + DEFAULT_OPENING_BRACKET + miscFields.get(currKey) + DEFAULT_CLOSING_BRACKET);
-				if (it.hasNext() || appendTrailingSeparator) {	miscFieldsSerialized.append(KEYVALUE_SEPARATOR + "\n");	}
+				miscFieldsSerialized.append(DEFAULT_INTENDATION + currKey.toLowerCase() + " " + ASSIGNMENT_OPERATOR + " " + DEFAULT_OPENING_BRACKET + valueMap.get(currKey) + DEFAULT_CLOSING_BRACKET);
+				if (it.hasNext()) {
+					miscFieldsSerialized.append(KEYVALUE_SEPARATOR + "\n");
+				}
 			}
 
 		}

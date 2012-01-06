@@ -28,6 +28,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.enums.SortKey;
@@ -107,12 +109,13 @@ public class BibtexUtilsTest {
 
 		final String expectedBibtex = 
 			"@inproceedings{KIE,\n" +			
+			"  abstract = {This is a nice abstract.},\n" +
 			"  author = {Hans Dampf and Peter Silie},\n" +
-			"  year = 2525,\n" + 
 			"  journal = {Journal of the most wonderful articles on earth},\n" +
-			"  volume = 3,\n" +
 			"  title = {The most wonderfult title on earth},\n" +			
-			"  abstract = {This is a nice abstract.}\n}";
+			"  volume = 3,\n" +
+			"  year = 2525\n" + 
+			"}";
 		
 		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST));
 
@@ -124,12 +127,13 @@ public class BibtexUtilsTest {
 		final String expectedBibtex2 = 
 			"@inproceedings{KIE,\n" +
 			"  author = {Hans Dampf and Peter Silie},\n" +
-			"  year = 2525,\n" + 
-			"  journal = {Journal of the most wonderful articles on earth},\n" +
-			"  volume = 3,\n" +
-			"  title = {The most wonderfult title on earth},\n" +
 			"  extrakey = {extraVal},\n" + 
-			"  extrakey2 = {extraVal2}\n}";
+			"  extrakey2 = {extraVal2},\n" +
+			"  journal = {Journal of the most wonderful articles on earth},\n" +
+			"  title = {The most wonderfult title on earth},\n" +
+			"  volume = 3,\n" +
+			"  year = 2525\n" + 
+			"}";
 		
 		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST));		
 	}
@@ -167,12 +171,13 @@ public class BibtexUtilsTest {
 		
 		final String expected = 
 			"@book{Selmes2004,\n" + 
+			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.},\n" +
 			"  author = {Jacques Selmès and Christian Derouesné},\n" +
-			"  editor = {John Libbey Eurotext},\n" +
-			"  year = 2004,\n" +	
 			"  edition = {John Libbey Eurotext},\n" +
+			"  editor = {John Libbey Eurotext},\n" +
 			"  note = {Tome I},\n" +
 			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +	
+			"  year = 2004,\n" +	
 			"  q6 = {It needs.\n" + 
 			"To trials.\n" + 
 			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
@@ -180,8 +185,7 @@ public class BibtexUtilsTest {
 			"Maintenance age. \n" + 
 			"Studies programs.}, q3a = {Reminder 2004). \n" + 
 			"Preventive 2007). \n" + 
-			"For not.},\n" + 						
-			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.}\n" +
+			"For not.}\n" + 						
 			"}";
 		assertEquals(expected, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST | BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD));
 	}
@@ -216,12 +220,13 @@ public class BibtexUtilsTest {
 		
 		final String expected = 
 			"@book{Selmes2004,\n" + 
+			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.},\n" +
 			"  author = {Selmès, Jacques and Derouesné, Christian},\n" +
-			"  editor = {Eurotext, John Libbey},\n" +
-			"  year = 2004,\n" +
 			"  edition = {John Libbey Eurotext},\n" +
+			"  editor = {Eurotext, John Libbey},\n" +
 			"  note = {Tome I},\n" +
 			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +	
+			"  year = 2004,\n" +
 			"  q6 = {It needs.\n" + 
 			"To trials.\n" + 
 			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
@@ -229,8 +234,7 @@ public class BibtexUtilsTest {
 			"Maintenance age. \n" + 
 			"Studies programs.}, q3a = {Reminder 2004). \n" + 
 			"Preventive 2007). \n" + 
-			"For not.},\n" + 						
-			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.}\n" +
+			"For not.}\n" + 						
 			"}";
 		assertEquals(expected, BibTexUtils.toBibtexString(bib, BibTexUtils.SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD));
 	}
@@ -284,8 +288,8 @@ public class BibtexUtilsTest {
 	 * tests sortBibTexList
 	 * @throws PersonListParserException 
 	 */
-	@Ignore// FIXME: implement me...
 	@Test
+	@Ignore // TODO: sort authors with first name if last name is equal
 	public void sortBibTexList() throws PersonListParserException {
 		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 		final Post<BibTex> post1 = new Post<BibTex>();
@@ -298,15 +302,14 @@ public class BibtexUtilsTest {
 		post2.setResource(p2);
 		posts.add(post1);
 		posts.add(post2);
-		// TODO: adapt to new author editor handling
-		assertEquals("A. Test", posts.get(0).getResource().getAuthor());
-		assertEquals("B. Test", posts.get(1).getResource().getAuthor());
+		assertEquals(PersonNameUtils.discoverPersonNames("A. Test"), posts.get(0).getResource().getAuthor());
+		assertEquals(PersonNameUtils.discoverPersonNames("B. Test"), posts.get(1).getResource().getAuthor());
 		BibTexUtils.sortBibTexList(posts, Arrays.asList(SortKey.AUTHOR), Arrays.asList(SortOrder.ASC));
-		assertEquals("A. Test", posts.get(0).getResource().getAuthor());
-		assertEquals("B. Test", posts.get(1).getResource().getAuthor());
+		assertEquals(PersonNameUtils.discoverPersonNames("A. Test"), posts.get(0).getResource().getAuthor());
+		assertEquals(PersonNameUtils.discoverPersonNames("B. Test"), posts.get(1).getResource().getAuthor());
 		BibTexUtils.sortBibTexList(posts, Arrays.asList(SortKey.AUTHOR), Arrays.asList(SortOrder.DESC));
-		assertEquals("A. Test", posts.get(0).getResource().getAuthor());
-		assertEquals("B. Test", posts.get(1).getResource().getAuthor());
+		assertEquals(PersonNameUtils.discoverPersonNames("B. Test"), posts.get(0).getResource().getAuthor());
+		assertEquals(PersonNameUtils.discoverPersonNames("A. Test"), posts.get(1).getResource().getAuthor());
 	}
 
 	/**
@@ -408,6 +411,10 @@ public class BibtexUtilsTest {
 		assertEquals(cleanedMisc, bib.getMisc());
 	}
 	
+	/**
+	 * tests {@link BibTexUtils#getMonthAsNumber(String)}
+	 * @throws Exception
+	 */
 	@Test
 	public void testGetMonthAsNumber() throws Exception {
 		assertEquals("1", BibTexUtils.getMonthAsNumber("1"));
@@ -433,5 +440,18 @@ public class BibtexUtilsTest {
 		assertEquals("11", BibTexUtils.getMonthAsNumber("november"));
 		assertEquals("12", BibTexUtils.getMonthAsNumber("DeCeMbeR"));
 		
+	}
+
+	/**
+	 * tests {@link BibTexUtils#serializeMapToBibTeX(java.util.Map)}
+	 */
+	@Test
+	public void testSerializeMapToBibTeX() {
+		final SortedMap<String, String> testMap = new TreeMap<String, String>();
+		testMap.put("testKey1", "test value 2324234");
+		testMap.put("testKey2", "test 2");
+		
+		assertEquals(	"  testkey1 = {test value 2324234},\n" +
+						"  testkey2 = {test 2}", BibTexUtils.serializeMapToBibTeX(testMap));
 	}
 }
