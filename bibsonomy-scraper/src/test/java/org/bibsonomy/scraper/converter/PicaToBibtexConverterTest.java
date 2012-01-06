@@ -40,6 +40,17 @@ public class PicaToBibtexConverterTest {
 	public void testGetBibResult5() throws IOException {
 		testFile("opac5", "http://opac.bibliothek.uni-kassel.de/DB=1/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=178208876");
 	}
+	
+	/**
+	 * Has ISBN in another field
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testGetBibResult6() throws IOException {
+		testFile("opac6", "http://opac.bibliothek.uni-kassel.de/DB=1/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=118339710");
+	}
+
 
 	
 	private void testFile(final String fileName, final String url) throws IOException {

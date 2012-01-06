@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * @version $Id$
  */
 public class PicaUtils {
-	private static final Pattern PATTERN_CLEANSING = Pattern.compile("(@|&lt;.+?&gt;|\\{|\\})");
+	private static final Pattern PATTERN_CLEANSING = Pattern.compile("(@|&lt;.+?&gt;|\\{|\\}|\\[|\\])");
 	
 	/**
 	 * use this method to get the data out of a specific row and subfield
@@ -59,7 +59,7 @@ public class PicaUtils {
 	 * @return String
 	 */
 	public static String cleanString(final String toClean){
-		return PATTERN_CLEANSING.matcher(toClean).replaceAll("");
+		return PATTERN_CLEANSING.matcher(toClean).replaceAll("").trim();
 	}
 	
 	/**

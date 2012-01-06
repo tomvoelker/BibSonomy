@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
+import java.util.regex.Pattern;
+
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
@@ -31,6 +33,8 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
  * @version $Id$
  */
 public class PublisherRule extends Rules {
+	
+	private static final Pattern PATTERN_UA = Pattern.compile(Pattern.quote("[u.a.]"));
 	
 	/**
 	 * @param pica
@@ -41,7 +45,7 @@ public class PublisherRule extends Rules {
 
 	@Override
 	public String getContent() {
-		final String res = PicaUtils.getData(this.pica, this.category, "$n");
+		final String res = PATTERN_UA.matcher(PicaUtils.getData(this.pica, this.category, "$n")).replaceAll("");
 		
 		return PicaUtils.cleanString(res);
 	}
