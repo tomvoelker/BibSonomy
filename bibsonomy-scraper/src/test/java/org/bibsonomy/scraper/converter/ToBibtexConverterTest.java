@@ -62,6 +62,26 @@ public class ToBibtexConverterTest {
 		}
 
 	}
+	
+	@Test
+	public void testRisToBibtex2() {
+		try {
+			String ris = this.readEntryFromFile("WorldCat_53972111.ris");
+
+			// test the canHandle heuristic
+			assertTrue(RisToBibtexConverter.canHandle(ris));
+
+			// test the conversion
+			final String expectedBibTeX = this.readEntryFromFile("WorldCat_53972111.bib");
+			final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
+			final String bibTeX = ris2bConverter.RisToBibtex(ris);
+			assertEquals (expectedBibTeX, bibTeX);
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+
+	}
+	
 
 	/**
 	 * Test Endnote to BibTeX Conversion

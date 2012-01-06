@@ -110,7 +110,7 @@ public class RisToBibtexConverter {
 
 		String type = "", author = "", editor = "", startPage = "", endPage = "", comment = "";
 		final SortedMap<String,String> bibtexMap = new TreeMap<String,String>();
-		
+
 		// split the Strint into different entries
 		final String[] fields = Ris.split("\n");
 
@@ -118,7 +118,7 @@ public class RisToBibtexConverter {
 		for (int j = 0; j < fields.length; j++) {
 			final StringBuffer current = new StringBuffer(fields[j]);
 			boolean done = false;
-			
+
 			/*
 			 * Fieldentries that are longer than one line (e.g. the abstract) are put together
 			 * e.g. 
@@ -137,7 +137,7 @@ public class RisToBibtexConverter {
 							&& !Character.isWhitespace(current.charAt(current.length() - 1))
 							&& fields[j + 1].length() > 0
 							&& !Character.isWhitespace(fields[j + 1].charAt(0))) {
-							current.append(' ');
+						current.append(' ');
 					}
 					current.append(fields[j + 1].trim());
 					j++;
@@ -163,8 +163,8 @@ public class RisToBibtexConverter {
 						type = "techreport";
 					else if (value.equals("CONF"))
 						type = "inproceedings";
-//					else if (value.equals("CHAP"))
-//						type = "incollection";//"inbook";
+					//					else if (value.equals("CHAP"))
+					//						type = "incollection";//"inbook";
 					else if (value.equals("CTLG"))
 						type = "booklet";
 					else if (value.equals("CPAPER"))
@@ -173,29 +173,32 @@ public class RisToBibtexConverter {
 						type = "electronic";
 					else if (value.equals("CHAP"))
 						type = "inbook";
-//					else if (value.equals("XXXX"))
-//						type = "manual";
-//					else if (value.equals("THESIS"))
-//						type = "mastersthesis";
+					//					else if (value.equals("XXXX"))
+					//						type = "manual";
+					//					else if (value.equals("THESIS"))
+					//						type = "mastersthesis";
 					else if (value.equals("PAT"))
 						type = "patent";
 					else if (value.equals("SER") || value.equals("MGZN"))
 						type = "periodical";
 					else if (value.equals("SLIDE"))
 						type = "presentation";
-//					else if (value.equals("CONF"))
-//						type = "proceedings";
+					//					else if (value.equals("CONF"))
+					//						type = "proceedings";
 					else if (value.equals("STAND"))
 						type = "standard";
 					else
 						type = "misc";
-				} else if (key.equals("T1") || key.equals("TI"))
+				} else if (key.equals("T1") || key.equals("TI")) {
+					if (value.endsWith(",") || value.endsWith(".")) {
+						value = value.substring(0, value.length() - 1);
+					}
 					bibtexMap.put("title", value); 
-				else if (key.equals("T2") || key.equals("T3") || key.equals("BT")) {
+				} else if (key.equals("T2") || key.equals("T3") || key.equals("BT")) {
 					bibtexMap.put("booktitle", value);
 				} else if (key.equals("A1") || key.equals("AU")) {
-					// take care of trailing ","
-					if (value.endsWith(",")) {
+					// take care of trailing "," and "."
+					if (value.endsWith(",") || value.endsWith(".")) {
 						value = value.substring(0, value.length() - 1);
 					}
 					if (author.equals("")) // don't add " and " for the first author
@@ -242,7 +245,7 @@ public class RisToBibtexConverter {
 					String[] _s = value.split(" "); 
 					String _isbn = "";
 					String _issn = "";
-					
+
 					for (int i = 0; i < _s.length; ++i) {
 						_s[i] = _s[i].trim();
 						if (ISBNUtils.extractISBN(_s[i]) != null) {
@@ -251,7 +254,7 @@ public class RisToBibtexConverter {
 							_issn += ISBNUtils.extractISSN(_s[i]) + " ";
 						}
 					}
-					
+
 					if (_isbn.length() > 0)
 						bibtexMap.put("isbn", _isbn.trim());
 					if (_issn.length() > 0)
@@ -276,7 +279,7 @@ public class RisToBibtexConverter {
 							&& value.indexOf(" ") != -1) {
 						delim = " ";
 					}
-					
+
 					String[] parts = value.split(delim);
 					bibtexMap.put("year", parts[0]);
 					if ((parts.length > 1) && (parts[1].length() > 0)) {
@@ -335,9 +338,9 @@ public class RisToBibtexConverter {
 		final Set<String> keySet = bibtexMap.keySet();
 		for (final String key: keySet) {
 			final String content = bibtexMap.get(key).trim();
-			if ((content != null) && (content.trim().length() != 0)) {
+			if (present(content)) {
 				if (first) {
-					first=false;
+					first = false;
 				} else {
 					bibtexString.append(",\n");
 				}
@@ -357,7 +360,7 @@ public class RisToBibtexConverter {
 	 * @return true if snippet is ris
 	 */
 	public static boolean canHandle(final String snippet) {
-	
+
 		// remove leading whitespace and retrieve first line
 		String firstLine = snippet.trim().split("\n", 2)[0];
 		// patter: 1 capital letter + 1 other character (non whitespace) + 2 space + "-"
