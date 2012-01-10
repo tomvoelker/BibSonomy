@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RESULT>
+<SESSION>
+<SESSIONVAR name="LNG">DU</SESSIONVAR>
+<SESSIONVAR name="DB">1</SESSIONVAR>
+<SESSIONVAR name="SID">e443b45c-4</SESSIONVAR>
+<SESSIONVAR name="SET">2</SESSIONVAR>
+
+</SESSION>
+<SET nr="2" hits="0"/>
+<LONGTITLE id="184916631" set="2" format="text">
+<br />
+001@$03-4,7,11-12,15-16
+
+<br />
+001A$00034:05-03-07
+<br />
+001B$01999:23-04-11$t17:06:53.000
+<br />
+001C$00034:26-11-07$t11:25:58.000
+<br />
+001D$00034:26-11-07
+<br />
+001F$00
+<br />
+001X$00
+<br />
+002@$0Aau
+<br />
+003@$0184916631
+<br />
+
+003O$aOCoLC$0148679805
+<br />
+004A$fGb. : ca. EUR 74.85 (freier Pr.)
+<br />
+004A$00-387-48530-9$fGb. : ca. EUR 74.85 (freier Pr.)
+<br />
+004A$A978-0-387-48530-0
+<br />
+007A$aHEB$0184916631
+<br />
+009P$uhttp://deposit.d-nb.de/cgi-bin/dokserv?id=2859648&amp;amp;prov=M&amp;amp;dok_var=1&amp;amp;dok_ext=htm
+<br />
+009P$mV:DE-576$qapplication/pdf$uhttp://scans.hebis.de/HEBCGI/show.pl?18491663_toc.pdf$3Inhaltsverzeichnis$A2
+<br />
+
+009P$mV:DE-576$qapplication/pdf$uhttp://scans.hebis.de/HEBCGI/show.pl?18491663_kap-2.pdf$3Kapitel 2$A2
+<br />
+009P$mV:DE-576$qapplication/pdf$uhttp://scans.hebis.de/HEBCGI/show.pl?18491663_ein-1.pdf$3Vorwort 1$A2
+<br />
+010@$aeng
+<br />
+011@$a2008
+<br />
+021A$aThe @semantic web$dreal-world applications from industry$hed. by Jorge Cardoso ...
+<br />
+028C$9136258824$8Cardoso, Jorge $BHrsg.
+<br />
+033A$pNew York$nSpringer
+<br />
+034D$aXX, 308 S.
+<br />
+034M$agraph. Darst.
+
+<br />
+036E$aSemantic web and beyond$l[6]
+<br />
+036F$x16$9182133508$8Semantic web and beyond$l[6]
+<br />
+045Z$aST 205
+<br />
+045Z$aST 304
+<br />
+046M$aLiteraturangaben</LONGTITLE>
+</RESULT>
