@@ -80,9 +80,9 @@ public class AuthorRule extends Rules {
 
 	private String getAuthor(final String authorCategory, final Row row) {
 		if (row.isExisting(DEFAULT_SUB_CATEGORY)) {
-			return PicaUtils.getData(this.pica, authorCategory, DEFAULT_SUB_CATEGORY) + ", " + PicaUtils.getData(this.pica, authorCategory, "$d").trim();
+			return PicaUtils.getSubCategory(this.pica, authorCategory, DEFAULT_SUB_CATEGORY) + ", " + PicaUtils.getSubCategory(this.pica, authorCategory, "$d").trim();
 		} else if (row.isExisting(SECOND_SUB_CATEGORY)) {
-			return PicaUtils.getData(this.pica, authorCategory, SECOND_SUB_CATEGORY).replaceAll("\\*.*\\*", "").trim();
+			return PicaUtils.getSubCategory(this.pica, authorCategory, SECOND_SUB_CATEGORY).replaceAll("\\*.*\\*", "").trim();
 		}
 		return null;
 	}

@@ -33,7 +33,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaParser;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 import org.bibsonomy.scraper.converter.picatobibtex.Row;
-import org.bibsonomy.scraper.converter.picatobibtex.SubField;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -44,7 +43,7 @@ public class PicaToBibtexConverter {
 	private static final Log log = LogFactory.getLog(PicaToBibtexConverter.class);
 	
 	private final static Pattern PATTERN_LONGTITLE = Pattern.compile("(?s)<LONGTITLE.*?>(.*)</LONGTITLE>");
-	private final static Pattern PATTERN_PICA_CATEGORY = Pattern.compile("^(\\d{3}[A-Z@]{1}/\\d{2}|\\d{3}[A-Z@]{1}).*$");
+	private final static Pattern PATTERN_PICA_CATEGORY = Pattern.compile("^(\\d{3}[A-Z@]{1}/\\d{2}|\\d{3}[A-Z@]{1})(.+)$");
 	private final static Pattern PATTERN_PICA_CATEGORY_SUBFIELD = Pattern.compile("(\\$[0-9a-zA-Z]{1})([^\\$]+)");
 
 	private final PicaRecord pica;
@@ -101,26 +100,29 @@ public class PicaToBibtexConverter {
 	 * This method should extract the necessary content with regex and put the information
 	 * to the PicaRecord object
 	 * 
-	 * @param cont
+	 * @param content
 	 */
-	private void processRow(String cont){
+	private void processRow(final String content) {
 		// pattern to extract the pica category
-		final Matcher matcher = PATTERN_PICA_CATEGORY.matcher(cont);
+		final Matcher matcher = PATTERN_PICA_CATEGORY.matcher(content);
 		
-		if (matcher.matches()){
-			final Row _tmpRow = new Row(matcher.group(1));
-			final String _cont = cont.replaceFirst(matcher.group(1), "");
+		if (matcher.matches()) {
+			final String category = matcher.group(1);
+			final Row row = new Row(category);
+			final String _cont = matcher.group(2);
 			
-			// etract the subfield of each category
+			// extract the subfield of each category
 			final Matcher matcherSub = PATTERN_PICA_CATEGORY_SUBFIELD.matcher(_cont);
 			
 			// put it to the row object
-			while (matcherSub.find()){
-				_tmpRow.addSubField(new SubField(matcherSub.group(1),matcherSub.group(2)));
+			while (matcherSub.find()) {
+				final String subCategory = matcherSub.group(1);
+				final String subContent = matcherSub.group(2);
+				row.addSubField(subCategory, subContent);
 			}
-			
+
 			// and finally put the row to the picarecord
-			pica.addRow(_tmpRow);
+			this.pica.addRow(row);
 		}
 	}
 	
@@ -128,13 +130,13 @@ public class PicaToBibtexConverter {
 	 * @return PicaRecord
 	 */
 	public PicaRecord getActualPicaRecord(){
-		return pica;
+		return this.pica;
 	}
 	
 	/**
 	 * @return BibTeX string
 	 */
 	public String getBibResult() {
-		return PicaParser.getBibRes(pica, url);
+		return PicaParser.getBibRes(this.pica, this.url);
 	}
 }

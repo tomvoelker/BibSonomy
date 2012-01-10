@@ -45,7 +45,7 @@ public class PublisherRule extends Rules {
 
 	@Override
 	public String getContent() {
-		final String res = PATTERN_UA.matcher(PicaUtils.getData(this.pica, this.category, "$n")).replaceAll("");
+		final String res = PATTERN_UA.matcher(PicaUtils.getSubCategory(this.pica, this.category, "$n")).replaceAll("");
 		
 		return PicaUtils.cleanString(res);
 	}

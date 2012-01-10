@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
@@ -32,8 +34,8 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
  */
 public class ISBNRule extends Rules {
 
-	private static final String CAT_D = "004D";
 	private static final String CAT_A = "004A";
+	private static final String CAT_D = "004D";
 
 	/**
 	 * @param pica
@@ -46,14 +48,14 @@ public class ISBNRule extends Rules {
 	public String getContent() {
 		String res = null;
 		if (this.pica.isExisting(CAT_A)) {
-			res = PicaUtils.getData(this.pica, CAT_A, "$0");
-			if (res.length() == 0){
-				res = PicaUtils.getData(this.pica, CAT_A, "$A");
+			res = PicaUtils.getSubCategory(this.pica, CAT_A, "$0"); // often ISBN-10
+			if (!present(res)) {
+				res = PicaUtils.getSubCategory(this.pica, CAT_A, "$A"); // often ISBN-13
 			}
 		} else if (this.pica.isExisting(CAT_D)) {
-			res = PicaUtils.getData(this.pica, CAT_D, "$0");
-			if (res.length() == 0){
-				res = PicaUtils.getData(this.pica, CAT_D, "$A");
+			res = PicaUtils.getSubCategory(this.pica, CAT_D, "$0");
+			if (!present(res)) {
+				res = PicaUtils.getSubCategory(this.pica, CAT_D, "$A");
 			}
 		}
 

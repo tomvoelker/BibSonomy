@@ -41,9 +41,9 @@ public class ISSNRule extends Rules {
 
 	@Override
 	public String getContent() {
-		String res = PicaUtils.getData(this.pica, this.category, "$0");
+		String res = PicaUtils.getSubCategory(this.pica, this.category, "$0");
 		if (res.length() == 0){
-			 res = PicaUtils.getData(this.pica, this.category, "$A"); 
+			 res = PicaUtils.getSubCategory(this.pica, this.category, "$A"); 
 		}
 		
 		return PicaUtils.cleanString(res);

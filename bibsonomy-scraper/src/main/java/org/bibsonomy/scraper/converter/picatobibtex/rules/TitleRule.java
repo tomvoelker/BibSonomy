@@ -46,11 +46,11 @@ public class TitleRule extends Rules {
 	
 	@Override
 	public String getContent() {
-		final String cat1 = PicaUtils.getData(this.pica, CAT_1, DEFAULT_SUB_CATEGORY);
+		final String cat1 = PicaUtils.getSubCategory(this.pica, CAT_1, DEFAULT_SUB_CATEGORY);
 		if (present(cat1)) {
 			return PicaUtils.cleanString(cat1);
 		}
-		return PicaUtils.cleanString(PicaUtils.getData(this.pica, CAT_2, DEFAULT_SUB_CATEGORY));
+		return PicaUtils.cleanString(PicaUtils.getSubCategory(this.pica, CAT_2, DEFAULT_SUB_CATEGORY));
 	}
 
 	@Override

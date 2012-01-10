@@ -40,10 +40,10 @@ public class YearRule extends Rules {
 
 	@Override
 	public String getContent() {
-		String year = PicaUtils.getData(this.pica, this.category, DEFAULT_SUB_CATEGORY);
+		String year = PicaUtils.getSubCategory(this.pica, this.category, DEFAULT_SUB_CATEGORY);
 
 		if (year.length() == 0){
-			year = PicaUtils.getData(this.pica, this.category, "$n");
+			year = PicaUtils.getSubCategory(this.pica, this.category, "$n");
 		}
 		
 		return PicaUtils.cleanString(year);

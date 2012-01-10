@@ -24,31 +24,55 @@
 package org.bibsonomy.scraper.converter.picatobibtex;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 /**
  * @author C. Kramer
  * @version $Id$
  */
 public class Row {
-	private String cat = null;
-	private Map<String, SubField> subfields = new HashMap<String, SubField>();
+	private final String category;
+	private final Map<String, List<String>> subfields = new HashMap<String, List<String>>();
 	
 	
 	/**
-	 * @param cat
+	 * @param category
 	 */
-	public Row(final String cat){
-		this.cat = cat;
+	public Row(final String category){
+		this.category = category;
 	}
 
 	/**
 	 * Adds a subfield to the row object
 	 * 
-	 * @param sub
+	 * @param subCategory
+	 * @param content
 	 */
-	public void addSubField(final SubField sub){
-		this.subfields.put(sub.getSubTag(), sub);
+	public void addSubField(final String subCategory, final String content) {
+		if (!this.subfields.containsKey(subCategory)) {
+			this.subfields.put(subCategory, new LinkedList<String>());
+		}
+		this.subfields.get(subCategory).add(content);
+	}
+	
+	/**
+	 * @param subfields
+	 */
+	public void addSubFields(final Map<String, List<String>> subfields) {
+		final Set<Entry<String, List<String>>> entrySet = subfields.entrySet();
+		for (final Entry<String, List<String>> entry : entrySet) {
+			final String key = entry.getKey();
+			final List<String> values = entry.getValue();
+			if (this.subfields.containsKey(key)) {
+				this.subfields.get(key).addAll(values);
+			} else {
+				this.subfields.put(key, values);
+			}
+		}
 	}
 
 	/**
@@ -56,8 +80,8 @@ public class Row {
 	 * 
 	 * @return String
 	 */
-	public String getCat() {
-		return this.cat;
+	public String getCategory() {
+		return this.category;
 	}
 
 	/**
@@ -66,26 +90,30 @@ public class Row {
 	 * @param sub
 	 * @return boolean
 	 */
-	public boolean isExisting(final String sub){
-		return subfields.containsKey(sub);
+	public boolean isExisting(final String sub) {
+		return this.subfields.containsKey(sub);
 	}
 	
 	/**
 	 * Returns the requested SubField
 	 * 
-	 * @param sub
-	 * @return SubField
+	 * @param subCategory
+	 * @return The content of this subCategory
 	 */
-	public SubField getSubField(final String sub){
-		return subfields.get(sub);
+	public List<String> getSubField(final String subCategory){
+		return this.subfields.get(subCategory);
 	}
 	
+	
+	@Override
+	public String toString() {
+		return this.category + ": " + this.subfields;
+	}
+
 	/**
-	 * Return the complete SubField map of this row
-	 * 
-	 * @return Map<String, SubField>
+	 * @return The subfields
 	 */
-	public Map<String, SubField> getSubFields(){
+	public Map<String, List<String>> getSubfields() {
 		return this.subfields;
 	}
 }

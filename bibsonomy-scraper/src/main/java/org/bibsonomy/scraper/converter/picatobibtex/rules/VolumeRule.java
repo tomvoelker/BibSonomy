@@ -40,7 +40,7 @@ public class VolumeRule extends Rules {
 	
 	@Override
 	public String getContent() {
-		final String res = PicaUtils.getData(this.pica, this.category, "$l");
+		final String res = PicaUtils.getSubCategory(this.pica, this.category, "$l");
 		
 		return PicaUtils.cleanString(res);
 	}

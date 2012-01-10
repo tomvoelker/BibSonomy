@@ -23,40 +23,40 @@
 
 package org.bibsonomy.scraper.converter.picatobibtex;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author C. Kramer
  * @version $Id$
  */
 public class PicaRecord {
-	private final Map<String, LinkedList<Row>> rows = new HashMap<String, LinkedList<Row>>();
-	
+	private final Map<String, Row> rows = new TreeMap<String, Row>();
+
 	/**
 	 * Adds a row to this object
 	 * 
 	 * @param row
 	 */
-	public void addRow(final Row row){
-		final String category = row.getCat();
-		if (!isExisting(category)){
-			this.rows.put(category, new LinkedList<Row>());
+	public void addRow(final Row row) {
+		final String category = row.getCategory();
+		if (!isExisting(category)) {
+			this.rows.put(category, row);
+		} else {
+			this.rows.get(category).addSubFields(row.getSubfields());
 		}
-		this.rows.get(category).add(row);
 	}
 
 	/**
 	 * tests if the given pica category is existing
 	 * 
-	 * @param cat
+	 * @param category
 	 * @return boolean
 	 */
-	public boolean isExisting(final String cat) {
-		return this.rows.containsKey(cat);
+	public boolean isExisting(final String category) {
+		return this.rows.containsKey(category);
 	}
-	
+
 	/**
 	 * get a specific row by category
 	 * 
@@ -64,22 +64,12 @@ public class PicaRecord {
 	 * @return Row
 	 */
 	public Row getRow(final String cat){
-		if (isExisting(cat)){
-			final LinkedList<Row> list = rows.get(cat);
-		
-			if (list.size() > 0) {
-				return list.get(0);
-			} 
-		}
-		return null;
-	}
-	
-	/**
-	 * @param cat
-	 * @return The row for the given category.
-	 */
-	public LinkedList<Row> getRows(final String cat){
 		return this.rows.get(cat);
 	}
-	
+
+	@Override
+	public String toString() {
+		return this.rows.toString();
+	}
+
 }

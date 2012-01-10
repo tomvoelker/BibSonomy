@@ -24,6 +24,8 @@
 package org.bibsonomy.scraper.converter.picatobibtex;
 
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.AbstractRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.AddressRule;
@@ -63,7 +65,7 @@ public class PicaParser{
 	 */
 	public static String getBibRes(final PicaRecord pica, final String url) {
 		final StringBuffer bibtex = new StringBuffer();
-		
+
 		final String type = getBibType(pica);
 		final String author = new AuthorRule(pica).getContent();
 		final String title = new TitleRule(pica).getContent();
@@ -76,20 +78,20 @@ public class PicaParser{
 		final String publisher = new PublisherRule(pica).getContent();
 		final String address = new AddressRule(pica).getContent();
 		final String volume = new VolumeRule(pica).getContent();
-		
-		
-		
+
+
+
 		final Rules urn = new URNRule(pica);
-		
+
 		final String opac;
 		if (urn.isAvailable()){
 			opac = "http://nbn-resolving.org/urn/resolver.pl?urn=" + urn.getContent();
 		} else {
 			opac = PicaUtils.prepareUrl(url);
 		}
-		
+
 		final String bibtexKey = BibTexUtils.generateBibtexKey(author, null, year, title);
-			
+
 		bibtex.append(type + bibtexKey + ",\n");
 		bibtex.append("  author = {" + author + "},\n");
 		bibtex.append("  title = {" + title + "},\n");
@@ -104,15 +106,12 @@ public class PicaParser{
 		bibtex.append("  address = {" + address + "}, \n");
 		bibtex.append("  volume = {" + volume + "}, \n");
 		bibtex.append("}");
-		
+
 		return bibtex.toString();
 	}
-	
-	
+
+
 	private static String getBibType(final PicaRecord pica){
-		Row r = null;
-		SubField s = null;
-		
 		/*
 		 * tests if the category 013H is existing and test for some values, 
 		 * if not check if the title category 021A has a $d subfield and if "proceedings" matches
@@ -123,47 +122,40 @@ public class PicaParser{
 		 * If the 013H category is set and the $0 subfield provides the value u then
 		 * it will be decided between phdthesis, masterthesis and techreport
 		 */
-		if ((r = pica.getRow("013H")) != null){
-			if ((s = r.getSubField("$0")) != null){
-				
-				if ("u".equals(s.getContent())){
-					Row _tempRow = null;
-					SubField _tempSub = null;
-					
-					if ((_tempRow = pica.getRow("037C")) != null){
-						if ((_tempSub = _tempRow.getSubField("$c")) != null){
-							final String _tempCont = _tempSub.getContent();
-							if (_tempCont.matches("^.*Diss.*$")){
-								return "@phdthesis{";
-							} else if (_tempCont.matches("^.*Master.*$")){
-								return "@mastersthesis{";
-							} else {
-								return "@techreport{";
-							}
-						}
-					}
+
+		final String cat013H0 = PicaUtils.getSubCategory(pica, "013H", "$0");
+
+		if (present(cat013H0) && "u".equals(cat013H0)) {
+			final String _tempSub = PicaUtils.getSubCategory(pica, "037C", "$c");
+
+			if (present(_tempSub)) {
+				if (_tempSub.matches("^.*Diss.*$")){
+					return "@phdthesis{";
+				} else if (_tempSub.matches("^.*Master.*$")){
+					return "@mastersthesis{";
+				} else {
+					return "@techreport{";
 				}
 			}
 		} 
-			
-		if(pica.isExisting("021A") && pica.getRow("021A").isExisting("$d")){
-			if (pica.getRow("021A").getSubField("$d").getContent().trim().matches("^.*proceedings.*$")){
+
+		final String cat021Ad = PicaUtils.getSubCategory(pica, "021A", "$d");
+		if (present(cat021Ad) && cat021Ad.trim().matches("^.*proceedings.*$")){
 				return "@proceedings{";
-			}
 		} 
-		
-		if((pica.isExisting("004A") || pica.isExisting("004D")) && !pica.isExisting("005A") && !pica.isExisting("005D")) {
+
+		if ((pica.isExisting("004A") || pica.isExisting("004D")) && !pica.isExisting("005A") && !pica.isExisting("005D")) {
 			return "@book{";
 		}
-		
-		if(((pica.isExisting("005A")) || pica.isExisting("005D")) && !pica.isExisting("004A") && !pica.isExisting("004D")){
+
+		if (((pica.isExisting("005A")) || pica.isExisting("005D")) && !pica.isExisting("004A") && !pica.isExisting("004D")){
 			return "@article{";
 		}
-		
-		if(((pica.isExisting("004A")) || pica.isExisting("004D")) && (pica.isExisting("005A") || pica.isExisting("005D"))){
+
+		if (((pica.isExisting("004A")) || pica.isExisting("004D")) && (pica.isExisting("005A") || pica.isExisting("005D"))){
 			return "@proceedings{";
 		}
-		
+
 		return "@misc{";
 	}
 }

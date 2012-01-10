@@ -49,7 +49,7 @@ public class URNRule extends Rules {
 
 	@Override
 	public String getContent() {
-		String res = PicaUtils.getData(this.pica, this.category, "$0");
+		String res = PicaUtils.getSubCategory(this.pica, this.category, "$0");
 		
 		// need to validate the urn
 		final Matcher matcher = PATTERN_URN.matcher(res);

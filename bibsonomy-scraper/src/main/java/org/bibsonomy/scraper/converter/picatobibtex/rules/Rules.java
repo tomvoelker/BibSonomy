@@ -57,7 +57,7 @@ public abstract class Rules {
 	 * @return string
 	 */
 	public String getContent() {
-		final String abstr = PicaUtils.getData(this.pica, this.category, DEFAULT_SUB_CATEGORY);
+		final String abstr = PicaUtils.getSubCategory(this.pica, this.category, DEFAULT_SUB_CATEGORY);
 		
 		return PicaUtils.cleanString(abstr);
 	}
