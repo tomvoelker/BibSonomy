@@ -24,8 +24,6 @@
 package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
 
-import java.util.List;
-
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 import org.bibsonomy.scraper.converter.picatobibtex.Row;
@@ -50,15 +48,11 @@ public class TagsRule extends Rules {
 	public String getContent() {
 		final StringBuilder tags = new StringBuilder();
 
-		final List<String> c1 = PicaUtils.getSubCategoryAll(pica, CAT_1, "$8");
-		System.out.println("adding from " +  CAT_1 + ": " + c1);
-		for (final String tag : c1) {
+		for (final String tag : PicaUtils.getSubCategoryAll(pica, CAT_1, "$8")) {
 			tags.append(tag).append(" ");
 		}
 		
-		final List<String> c2 = PicaUtils.getSubCategoryAll(pica, CAT_2, "$8");
-		System.out.println("adding from " +  CAT_2 + ": " + c2);
-		for (final String tag : c2) {
+		for (final String tag : PicaUtils.getSubCategoryAll(pica, CAT_2, "$8")) {
 			tags.append(tag).append(" ");
 		}
 
