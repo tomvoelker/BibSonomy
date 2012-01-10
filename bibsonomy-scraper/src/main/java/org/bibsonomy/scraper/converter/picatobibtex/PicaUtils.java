@@ -23,6 +23,10 @@
 
 package org.bibsonomy.scraper.converter.picatobibtex;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -33,24 +37,43 @@ public class PicaUtils {
 	private static final Pattern PATTERN_CLEANSING = Pattern.compile("(@|&lt;.+?&gt;|\\{|\\}|\\[|\\])");
 	
 	/**
-	 * use this method to get the data out of a specific row and subfield
+	 * Returns the first data entry for the given category and sub-category.
+	 * 
 	 * @param pica 
-	 * @param cat
-	 * @param sub
-	 * @return string
+	 * @param category
+	 * @param subCategory
+	 * @return The first data entry for the given category and sub-category.
 	 */
-	public static String getData(final PicaRecord pica, final String cat, final String sub){
-		final Row row;
-		final SubField subField;
+	public static String getSubCategory(final PicaRecord pica, final String category, final String subCategory) {
+		final Row row = pica.getRow(category);
 		
-		if ((row = pica.getRow(cat)) != null) {
-			if ((subField = row.getSubField(sub)) != null) {
-				return subField.getContent();
+		if (present(row)) {
+			final List<String> subField = row.getSubField(subCategory);
+			if (present(subField)) {
+				return subField.get(0);
 			}
 		}
-		
 		return "";
 	}
+	
+	/**
+	 * Returns all data entries for the given category and sub-category.
+	 * 
+	 * @param pica 
+	 * @param category
+	 * @param subCategory
+	 * @return The data entries for the given category and sub-category.
+	 */
+	public static List<String> getSubCategoryAll(final PicaRecord pica, final String category, final String subCategory) {
+		final Row row = pica.getRow(category);
+		
+		if (present(row) && row.isExisting(subCategory)) {
+			return row.getSubField(subCategory);
+		}
+		return Collections.emptyList();
+	}
+	
+	
 	
 	/**
 	 * Tries to clean the given String from i.e. internal references like @

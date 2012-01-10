@@ -24,9 +24,7 @@
 package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.LinkedList;
+import java.util.List;
 
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
@@ -37,7 +35,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.Row;
  * @version $Id$
  */
 public class TagsRule extends Rules {
-	
+
 	private static final String CAT_1 = "044K";
 	private static final String CAT_2 = "041A";
 
@@ -50,32 +48,35 @@ public class TagsRule extends Rules {
 
 	@Override
 	public String getContent() {
-		String tags = "";
+		final StringBuilder tags = new StringBuilder();
+
+		final List<String> c1 = PicaUtils.getSubCategoryAll(pica, CAT_1, "$8");
+		System.out.println("adding from " +  CAT_1 + ": " + c1);
+		for (final String tag : c1) {
+			tags.append(tag).append(" ");
+		}
 		
-		final LinkedList<Row> list = this.pica.getRows(CAT_1);
-		
-		if (present(list)) {
-			for (final Row row : list){
-				if (row.isExisting("$8")){
-					tags += row.getSubField("$8").getContent() + " ";
-				}
-			}
-		} else if (this.pica.isExisting(CAT_2)) {
-			tags += PicaUtils.getData(this.pica, CAT_2, "$8") + " ";
-			
+		final List<String> c2 = PicaUtils.getSubCategoryAll(pica, CAT_2, "$8");
+		System.out.println("adding from " +  CAT_2 + ": " + c2);
+		for (final String tag : c2) {
+			tags.append(tag).append(" ");
+		}
+
+		if (this.pica.isExisting(CAT_2)) {
+
 			int ctr = 1;
-			
+
 			Row row = this.pica.getRow(CAT_2 + "/0" + Integer.toString(ctr));
-			
+
 			while (row != null) {
 				String newCat = CAT_2 + "/0" + Integer.toString(ctr);
-				
+
 				if (row.isExisting("$8")) {
-					tags += PicaUtils.getData(this.pica, newCat, "$8") + " ";
+					tags.append(PicaUtils.getSubCategory(this.pica, newCat, "$8")).append(" ");
 				}
-				
+
 				ctr++;
-	
+
 				if (ctr < 10){
 					row = this.pica.getRow(CAT_2 + "/0" + Integer.toString(ctr));
 				} else {
@@ -84,7 +85,7 @@ public class TagsRule extends Rules {
 			}
 		}
 
-		return PicaUtils.cleanString(tags);
+		return PicaUtils.cleanString(tags.toString());
 	}
 
 	@Override

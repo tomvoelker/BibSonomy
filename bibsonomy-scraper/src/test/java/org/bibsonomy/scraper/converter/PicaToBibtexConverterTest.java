@@ -51,6 +51,10 @@ public class PicaToBibtexConverterTest {
 		testFile("opac6", "http://opac.bibliothek.uni-kassel.de/DB=1/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=118339710");
 	}
 
+	@Test
+	public void testGetBibResult7() throws IOException {
+		testFile("opac7", "http://opac.bibliothek.uni-kassel.de/DB=1/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=184916631");
+	}
 
 	
 	private void testFile(final String fileName, final String url) throws IOException {
