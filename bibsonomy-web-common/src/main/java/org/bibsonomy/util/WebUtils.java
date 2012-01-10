@@ -549,10 +549,11 @@ public class WebUtils {
 		/*
 		 * set charset
 		 */
-		if (charset == null || charset.trim().equals(""))
+		if (!present(charset)) {
 			in = new InputStreamReader(inputStream);
-		else 
+		} else { 
 			in = new InputStreamReader(inputStream, charset);
+		}
 		/*
 		 * use buffered reader (we always assume to have text)
 		 */
