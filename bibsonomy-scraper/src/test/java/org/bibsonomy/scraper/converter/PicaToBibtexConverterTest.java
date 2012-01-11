@@ -57,6 +57,11 @@ public class PicaToBibtexConverterTest {
 	}
 
 	
+	@Test
+	public void testGetBibResult8() throws IOException {
+		testFile("opac8", "http://opac.bibliothek.uni-kassel.de/DB=1/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=00078091X");
+	}
+	
 	private void testFile(final String fileName, final String url) throws IOException {
 		final String xml = this.readEntryFromFile(fileName + ".xml");
 		final String bib = this.readEntryFromFile(fileName + ".bib");
