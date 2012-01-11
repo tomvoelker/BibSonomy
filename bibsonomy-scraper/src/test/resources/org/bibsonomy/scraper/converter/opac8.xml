@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RESULT>
+<SESSION>
+<SESSIONVAR name="LNG">DU</SESSIONVAR>
+<SESSIONVAR name="DB">1</SESSIONVAR>
+<SESSIONVAR name="SID">e443b45c-4</SESSIONVAR>
+<SESSIONVAR name="SET">3</SESSIONVAR>
+
+</SESSION>
+<SET nr="3" hits="0"/>
+<LONGTITLE id="00078091X" set="3" format="text">
+<br />
+001@$03-4,7,11-12,15-16
+
+<br />
+001A$00030:28-11-88
+<br />
+001B$01999:21-04-11$t18:33:21.000
+<br />
+001C$06002:01-03-06$t15:05:13.000
+<br />
+001D$09999:99-99-99
+<br />
+001F$00
+<br />
+001X$00
+<br />
+002@$0Aauc
+<br />
+003@$000078091X
+<br />
+
+003O$aOCoLC$0258247607
+<br />
+010@$aeng
+<br />
+011@$a1971$n1971
+<br />
+013H$0z
+<br />
+015@$0Z
+<br />
+021A$a@Graph theory
+<br />
+028A$9151456011$8Harary, Frank 
+<br />
+032@$a2. printing
+<br />
+033A$pReading, Mass. {[u.a.]$nAddison-Wesley
+
+<br />
+034D$aIX, 274 S.
+<br />
+034M$agraph. Darst.
+<br />
+036G$aAddison-Wesley series in mathematics
+<br />
+044K$9085337803$8Graphentheorie
+<br />
+045Z$aSK 890
+<br />
+045Z$aSK 170
+<br />
+046M$aLiteraturverz. S. 237 - 262</LONGTITLE>
+</RESULT>
