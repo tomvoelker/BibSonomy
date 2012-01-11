@@ -81,8 +81,11 @@ public class PicaUtils {
 	 * @param toClean
 	 * @return String
 	 */
-	public static String cleanString(final String toClean){
-		return PATTERN_CLEANSING.matcher(toClean).replaceAll("").trim();
+	public static String cleanString(final String toClean) {
+		if (toClean != null) {
+			return PATTERN_CLEANSING.matcher(toClean).replaceAll("").trim();
+		}
+		return "";
 	}
 	
 	/**
