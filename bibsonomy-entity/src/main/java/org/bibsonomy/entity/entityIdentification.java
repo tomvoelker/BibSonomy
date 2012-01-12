@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -24,13 +27,15 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 
-public class Test {
+public class entityIdentification {
 
 	public static void main(String[] args) throws PersonListParserException {
 		
 		float timeAtstart = System.nanoTime();
+		
 		String resource = "config.xml";
 		Reader reader;
+				
 		List<String> authorList = null;
 		try {
 			reader = Resources.getResourceAsReader(resource);
@@ -42,7 +47,6 @@ public class Test {
 			//author = (String)session.selectOne(
 			//"org.mybatis.example.BlogMapper.selectBibtex");
 			//System.out.println(authorList.get(3));
-			session.insert("org.mybatis.example.Entity-Identification.selectBibtex", "parameter");
 			} finally {
 			session.close();
 			}
@@ -51,6 +55,19 @@ public class Test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		String resourceRkr = "configRkr.xml";
+		Reader readerRkr;
+		
+		try {
+			readerRkr = Resources.getResourceAsReader(resourceRkr);
+			SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(readerRkr);
+			
+			SqlSession sessionRkr = sqlMapper.openSession();
+
+		    List<String> test = null;
+		    test = sessionRkr.selectList("org.mybatis.example.Entity-Identification.countAuthorsByName");
+		    //System.out.println(authorCount.get(0));
 
 		List<List<PersonName>> coAuthorList = new ArrayList<List<PersonName>>(0);
 		
@@ -60,10 +77,16 @@ public class Test {
 		for (String authors: authorList) { //authorList for each publication
 			final List<PersonName> personNames = PersonNameUtils.discoverPersonNames(authors); //.replaceAll("[_[^\\w\\däüöÄÜÖ\\+\\- ]]", ""));
 			coAuthorList.add(personNames);
-			
+						
 			for (PersonName person: personNames) { //each author in the list of authors
+			     HashMap<String, String> authorName = new HashMap<String, String>();
+			     authorName.put("firstName", person.getFirstName());
+			     authorName.put("lastName", person.getLastName());
+
+			     sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
 				//check if person already exists in database
-				if (person.getFirst)
+				
+				if (true) {} //select >= 1
 				for (String personA: allPersons) { //compare each author in the list with each author already computed
 					if (personA.equals(person.toString())) { //this person name already exists
 						n++;
@@ -86,17 +109,27 @@ public class Test {
 		System.out.println("First Name: " + personNames.get(1).getFirstName() + " Last Name: " + personNames.get(1).getLastName());
 		System.out.println("Soundex Code Last Name: " + soundex.encode(personNames.get(0).getLastName()));
 		System.out.println("Soundex Code First Name: " + soundex.encode(personNames.get(0).getFirstName()));
-		*/	
+		*/
+
+		sessionRkr.commit();
+		sessionRkr.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public static void normalizePersonName(PersonName personName) {
+	public static String normalizePersonName(PersonName personName) {
 		//reduce the
 		String newFirstName = personName.getFirstName().substring(0,1);
-		personName.setFirstName(newFirstName);
-		
+			
 		//check if firstName is shortened
-		if (personName.getFirstName().length() == 2 && personName.getFirstName().substring(1,2).equals(".")){
+		if (personName.getFirstName().length() == 2 && personName.getFirstName().substring(1,2).equals(".")) {
+		
 		}
+		
+		return newFirstName + personName.getLastName();
+		
 	}
 	
 }

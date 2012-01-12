@@ -4,6 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.mybatis.example.Entity-Identification">
 
+<!-- database bibsonomy_strudel -->
 <select id="selectBibtex" parameterType="String" resultType="String">
 SELECT author FROM bibtex WHERE `group` = 0 LIMIT 1000
 </select>
@@ -11,8 +12,13 @@ SELECT author FROM bibtex WHERE `group` = 0 LIMIT 1000
 SELECT author FROM author WHERE `group` = 0 LIMIT 1000
 </select>
  
+ <!-- database projekt_autoren_id -->
+ <select id="countAuthorsByName" parameterType="String" resultType="int">
+SELECT first_name from author LIMIT 3
+</select>
+				
 <insert id="insertAuthor" parameterType="String">
-INSERT INTO projekt_autoren_id(author_name) VALUES (#{authorName});
+INSERT INTO author(first_name, last_name) VALUES (#{firstName}, #{lastName});
 </insert>
 <insert id="insertCoAuthor" parameterType="String">
 INSERT INTO projekt_autoren_id(coauthor_name) VALUES (#{coAuthorName});
