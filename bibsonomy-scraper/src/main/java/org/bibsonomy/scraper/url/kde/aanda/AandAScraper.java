@@ -96,7 +96,7 @@ public class AandAScraper extends AbstractUrlScraper{
 	 *  <tr>
 	 *	   <td class="gen">DOI</td>
 	 *	   <td></td>
-	 *	   <td>10.1051/0004-6361:20053694</td>
+	 *	   <td><a href="...">http://dx.doi.org/10.1051/0004-6361/201014294</a></td>
 	 *	</tr>
 	 * 
 	 * @param document
@@ -112,7 +112,9 @@ public class AandAScraper extends AbstractUrlScraper{
 				if("DOI".equals(node.getFirstChild().getNodeValue())){
 					Node parent = node.getParentNode();
 					Node doiNode = parent.getLastChild();
-					doi = doiNode.getFirstChild().getNodeValue();
+					doi = doiNode.getFirstChild().getFirstChild().getNodeValue();
+					// remove http://dx.doi.org/ part
+					doi = doi.replaceFirst("http:\\/\\/dx\\.doi\\.org\\/", "");
 				}
 			}
 		}
