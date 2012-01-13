@@ -298,6 +298,8 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 				log.fatal("Could not validate captcha response.", e);
 				throw new InternServerException("error.captcha");
 			}
+		} else {
+			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
 		}
 	}
 
