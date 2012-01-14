@@ -1,5 +1,4 @@
-\begin{author}\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\end{author}\format[PrintIfxoxo]{\begin{author}xo\end{author}\begin{editor}xo\end{editor}
-; }\begin{editor}\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,DIN1505T2EditorNamesFormatter]{\editor}\end{editor}:
+\begin{author}\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\end{author}\begin{editor}\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,DIN1505T2EditorNamesFormatter]{\editor}\end{editor}:
 <i>\title</i>\begin{volume}.
 \volume\end{volume}\begin{number}.
 \number\end{number}\begin{edition}.
