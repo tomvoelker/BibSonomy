@@ -24,6 +24,7 @@
 package org.bibsonomy.model.sync;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -35,16 +36,31 @@ import org.bibsonomy.model.Resource;
  */
 public class SyncService {
 	
+	private String name;
 	private Properties user;
 	private URI service; // FIXME: rename to "uri" or "serviceUri"
 	private URI secureAPI;
-	private Map <String, SynchronizationData> lastSyncData;
+	private List<SynchronizationData> lastSyncData;
 	private Class<? extends Resource> resourceType;
 	private SynchronizationDirection direction;
 	private ConflictResolutionStrategy strategy;
 	private Map<Class<? extends Resource>, Map<String, String>> plan;
 	private String sslDn;
-	
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(final String name) {
+		this.name = name;
+	}
+
 	/**
 	 * @return the clientUser
 	 */
@@ -90,7 +106,7 @@ public class SyncService {
 	/**
 	 * @return the lastSyncData
 	 */
-	public Map <String, SynchronizationData> getLastSyncData() {
+	public List<SynchronizationData> getLastSyncData() {
 		return lastSyncData;
 	}
 	
@@ -98,7 +114,7 @@ public class SyncService {
 	 * 
 	 * @param lastSyncData the lastSyncData to set
 	 */
-	public void setLastSyncData(final Map<String, SynchronizationData> lastSyncData) {
+	public void setLastSyncData(final List<SynchronizationData> lastSyncData) {
 		this.lastSyncData = lastSyncData;
 	}
 	

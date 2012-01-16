@@ -26,10 +26,7 @@ package org.bibsonomy.model.sync;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 
 
@@ -47,9 +44,8 @@ public interface SyncLogicInterface {
 	 * Add service to the database
 	 * @param service service to add 
 	 * @param server server/client switch
-	 * @param sslDn 
 	 */
-	public void createSyncService(final URI service, final boolean server, final String sslDn, final URI secureAPI);
+	public void createSyncService(final SyncService service, final boolean server);
 	
 	
 	/**
@@ -64,13 +60,9 @@ public interface SyncLogicInterface {
 	 * @param server switch between server and clients
 	 * @return List of allowed synchronization services
 	 * 
-	 * FIXME: FIXME: duplicate of {@link #getAllSyncServices(boolean)}
+	 * FIXME: duplicate of {@link #getAllSyncServices(boolean)}
 	 */
 	public List<URI> getSyncServices(final boolean server);
-
-	
-	
-
 	
 	/* ********************************************************************
 	 * create, read, update, delete sync services - user dependent
@@ -79,13 +71,16 @@ public interface SyncLogicInterface {
 	/**
 	 * 
 	 * @param userName
-	 * @param service
-	 * @param resourceType - the type of resource that should be synchronized. {@link Resource} means booth {@link Bookmark} and {@link BibTex}.
-	 * @param userCredentials
-	 * @param direction 
-	 * @param strategy
+	 * @param server
 	 */
-	public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy);
+	public void createSyncServer(final String userName, final SyncService server);
+	
+	/**
+	 * 
+	 * @param userName
+	 * @param server
+	 */
+	public void updateSyncServer(final String userName, final SyncService server);
 	
 	/**
 	 * 
@@ -94,16 +89,6 @@ public interface SyncLogicInterface {
 	 */
 	public void deleteSyncServer(final String userName, final URI service);
 	
-	/**
-	 * 
-	 * @param userName
-	 * @param service
-	 * @param resourceType - the type of resource that should be synchronized. {@link Resource} means booth {@link Bookmark} and {@link BibTex}.
-	 * @param userCredentials 
-	 * @param direction
-	 * @param strategy 
-	 */
-	public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy);
 
 	/**
 	 * 
