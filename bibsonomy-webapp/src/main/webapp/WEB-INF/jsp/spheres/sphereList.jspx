@@ -17,6 +17,9 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.spheres" var="pageTitle"/>
+	<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
+	</jsp:attribute>
 	
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}">
 		<jsp:attribute name="heading">
@@ -89,10 +92,93 @@
   				<p id="groupIntro">
 					<fmt:message key="spheres.intro"/>
 				</p>
-		
+
+				<style type="text/css">
+					#spheresGraph { 
+						background-color: #EEEEEE;
+						position: relative;
+						border-radius: 15px;
+						height: 300px;
+					}
+					
+					.node circle {
+					  cursor: pointer;
+					  stroke: #333;
+					  stroke-width: 0px;
+					}
+			
+					circle {
+					  fill: #ccc;
+					  stroke: #333;
+					  stroke-width: 1.5px;
+					}
+			
+					text {
+					  font: 14px sans-serif;
+					}
+			
+					text.shadow {
+					  stroke: #fff;
+					  stroke-width: 3px;
+					  stroke-opacity: .8;
+					}
+					circle.node {
+					  cursor: pointer;
+					  stroke: #000;
+					  stroke-width: 1px;
+					}
+			
+					line.link {
+					  fill: none;
+					  stroke: #9ecae1;
+					  stroke-width: 1.5px;
+					}
+					
+					circle.node {
+  						stroke: #fff;
+  						stroke-width: 1.5px;
+					}
+					
+					line.link {
+					  stroke: #999;
+					  stroke-opacity: .6;
+					}	
+					
+					#Big { 
+						margin: 10px;
+						position: absolute;
+					}	
+					
+					#Small { 
+						left: 30px;
+						margin: 10px;
+						position: absolute;
+					}	
+				</style>
+				
+				<div id="spheresGraph" style="width: 100%;">
+					<input type="button" id="Big" value="+" 	onclick="$('#spheresGraph').animate({height:'520px'}, 2700); externUpdate();"></input>
+    				<input type="button" id="Small" value=" - " onclick="$('#spheresGraph').animate({height:'300px'}, 2700); externUpdate();"></input>
+					<![CDATA[
+						<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.js"></script>
+						<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.geom.js"></script>
+						<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.layout.js"></script>			
+						<script type="text/javascript" src="${resdir}/javascript/spheresGraph.js"></script>
+					    
+					    <script type="text/javascript">
+					    		SphereDisplay = new SphereDisplay();
+	   					</script>
+	  				]]>
+				</div>
+								
 			<div class="sphere">
 				<c:forEach items="${command.spheres}" var="entry">
-		    		<div class="sphere_header"><a href="/sphere/${fn:escapeXml(entry.key)}"><c:out value="${entry.key}"/></a></div>
+		    		<div class="sphere_header" id="sphere_${fn:escapeXml(entry.key)}">
+		    			<a href="/sphere/${fn:escapeXml(entry.key)}">
+		    				<c:out value="${entry.key}"/>
+		    			</a>
+		    			<input type="button" value="Top" onclick="$('html, body').animate({scrollTop:0}, 'slow');" onmouseover="this.style.cursor='pointer';" style="float: right; position: relative"></input>
+		    		</div>
 		    		
 		    		<!--+
 		    			| display buddies
@@ -130,11 +216,6 @@
 				</c:forEach>
 			</div>
 			</div>
-
 		</jsp:attribute>
-		
-		
-		
 	</layout:layout>
-	
 </jsp:root>
