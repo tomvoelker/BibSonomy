@@ -11,7 +11,6 @@
     <bean id="synchronizationUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
-			    
 			    <!-- update synchronization settings -->
 			    <entry key="/updateSyncSettings">
 			    	<bean parent="controllerBase">
@@ -31,7 +30,6 @@
 						<property name="controllerBeanName" value="syncPageController"/>						
 					</bean>
 				</entry>
-				
 				<entry key="/ajax/synchronize">
 					<bean parent="controllerBase">
 					<property name="controllerBeanName" value ="syncController"/>
@@ -41,21 +39,6 @@
 							<value>syncDate</value>
 						</list>
 					</property> 
-					</bean>
-				</entry>
-				
-				<entry key="/admin/sync">
-					<bean parent ="controllerBase">
-						<property name="controllerBeanName" value = "adminSyncController"/>
-						<property name="allowedFields">
-						<list>
-							<value>action</value>
-							<value>service</value>
-							<value>server</value>
-							<value>sslDn</value>
-							<value>secureAPI</value>
-						</list>
-						</property>
 					</bean>
 				</entry>
             </map>

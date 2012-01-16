@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,8 +65,9 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 			 */
 			final String referer = requestLogic.getReferer();
 			final SyncService newSyncServer = command.getNewSyncServer();
-			if (present(referer) && present(newSyncServer) && present(newSyncServer.getService()) && referer.startsWith(newSyncServer.getService().toString())) { 
-				this.errors.rejectValue("newSyncServer.service", "synchronization.server.add.acknowledge", new Object[]{newSyncServer.getService()}, "please acknowledge the new synchronization server");
+			final URI service = newSyncServer.getService();
+			if (present(referer) && present(newSyncServer) && present(service) && referer.startsWith(service.toString())) { 
+				this.errors.rejectValue("newSyncServer.service", "synchronization.server.add.acknowledge", new Object[]{service}, "please acknowledge the new synchronization server");
 			} else {
 				this.errors.reject("error.field.valid.ckey");
 			}
@@ -101,13 +103,15 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 		switch (httpMethod) {
 		case POST:
 			final SyncService newSyncServer = command.getNewSyncServer();
-			((SyncLogicInterface) logic).createSyncServer(loginUserName, newSyncServer.getService(), newSyncServer.getResourceType(), newSyncServer.getServerUser(), newSyncServer.getDirection(), strategy);
+			newSyncServer.setStrategy(strategy);
+			this.logic.createSyncServer(loginUserName, newSyncServer);
 			break;
 		case PUT:
-			((SyncLogicInterface) logic).updateSyncServer(loginUserName, syncServer.getService(), syncServer.getResourceType(), syncServer.getServerUser(), syncServer.getDirection(), strategy);
+			syncServer.setStrategy(strategy);
+			this.logic.updateSyncServer(loginUserName, syncServer);
 			break;
 		case DELETE:
-			((SyncLogicInterface) logic).deleteSyncServer(loginUserName, syncServer.getService());
+			this.logic.deleteSyncServer(loginUserName, syncServer.getService());
 			break;
 		default:
 			errors.reject("error.general");
@@ -150,7 +154,7 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 	}
 
 	@Override
-	public boolean isValidationRequired(SettingsViewCommand command) {
+	public boolean isValidationRequired(final SettingsViewCommand command) {
 		return true;
 	}
 	

@@ -113,6 +113,21 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/admin/sync">
+					<bean parent ="controllerBase">
+						<property name="controllerBeanName" value = "adminSyncController"/>
+						<property name="allowedFields">
+						<list>
+							<value>action</value>
+							<value>service.service</value>
+							<value>service.sslDn</value>
+							<value>service.secureAPI</value>
+							<value>service.name</value>
+							<value>server</value>
+						</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/admin/oauth">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="adminOAuthController" />

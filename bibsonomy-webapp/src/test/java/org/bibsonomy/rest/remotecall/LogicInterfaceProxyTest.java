@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -1016,73 +1015,66 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public void createSyncService(URI service, boolean server, final String sslDn, final URI secureAPI) {
+	public void createSyncService(final SyncService service, final boolean server) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public void deleteSyncService(URI service, boolean server) {
+	public void deleteSyncService(final URI service, final boolean server) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public List<URI> getSyncServices(boolean server) {
+	public List<URI> getSyncServices(final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void createSyncServer(String userName, URI service, Class<? extends Resource> resourceType, Properties userCredentials, SynchronizationDirection direction, ConflictResolutionStrategy strategy) {
+	public void createSyncServer(final String userName, final SyncService server) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public void deleteSyncServer(String userName, URI service) {
-		// TODO Auto-generated method stub
-		
+	public void deleteSyncServer(final String userName, final URI service) {
+		// TODO Auto-generated method stub	
 	}
 
 	@Override
-	public void updateSyncServer(String userName, URI service, Class<? extends Resource> resourceType, Properties userCredentials, SynchronizationDirection direction, ConflictResolutionStrategy strategy) {
+	public void updateSyncServer(final String userName, final SyncService server) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public List<SyncService> getSyncService(String userName, final URI service, final boolean server) {
+	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<SynchronizationPost> getSyncPosts(String userName, Class<? extends Resource> resourceType) {
+	public List<SynchronizationPost> getSyncPosts(final String userName, final Class<? extends Resource> resourceType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void updateSyncData(String userName, URI service, Class<? extends Resource> resourceType, Date syncDate, SynchronizationStatus status, String info) {
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public void deleteSyncData(String userName, URI service, Class<? extends Resource> resourceType, Date syncDate) {
+	public void deleteSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public SynchronizationData getLastSyncData(String userName, URI service, Class<? extends Resource> resourceType) {
+	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<SynchronizationPost> getSyncPlan(String userName, URI service, Class<? extends Resource> resourceType, List<SynchronizationPost> clientPosts, ConflictResolutionStrategy strategy, SynchronizationDirection direction) {
+	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -90,7 +90,7 @@ function doSync(t) {
 }
 
 function confirmReset(t) {
-	if(confirm(getString("synchronization.server.reset.confirm"))) {
+	if (confirm(getString("synchronization.server.reset.confirm"))) {
 		$(t).parents("form").find("input[name='_method']").val("DELETE");
 	} else {
 		return false;
@@ -119,9 +119,36 @@ function errorSyncForm(jqXHR, textStatus, errorThrown, form) {
 }
 
 $(document).ready(function() {
+	// TODO: convert to a jquery plugin?
+	$('ul.foldList').each(function(list) {
+		var maxItems = 2;
+		var list = $(this);
+		var items = list.children('li');
+		var itemsCount = items.length;
+		console.debug(itemsCount);
+		
+		var moreText = getString('list.more');
+		var lessText = getString('list.less');
+		
+		if (itemsCount > maxItems + 1) {
+			var control = $('<a></a>').text(moreText).attr('href', '#show');
+			var itemsToShowHide = items.slice(maxItems, itemsCount + 1);
+			control.click(function() {
+				itemsToShowHide.toggle();
+				if (itemsToShowHide.is(':visible')) {
+					control.text(lessText);
+				} else {
+					control.text(moreText);
+				}
+			});
+			itemsToShowHide.hide();
+			list.append($('<li></li>').append(control));
+		}
+	});
+	
 	$("form").each(function(index, elem) {
 		var form = $(this);
-	 	$(this).ajaxForm({
+		form.ajaxForm({
 	 		dataType : "json",
 	 		beforeSubmit : hideSubmitButtons,
 	 		success : successSyncForm,

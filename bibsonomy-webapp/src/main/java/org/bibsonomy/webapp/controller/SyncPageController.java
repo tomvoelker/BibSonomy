@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.controller;
 import static org.bibsonomy.util.ValidationUtils.present;
 import static org.bibsonomy.webapp.util.sync.SyncUtils.getPlanSummary;
 
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,8 +52,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	}
 
 	@Override
-	public View workOn(AjaxSynchronizationCommand command) {
-
+	public View workOn(final AjaxSynchronizationCommand command) {
 		final RequestWrapperContext context = command.getContext();
 
 		/*
@@ -62,18 +61,16 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 		if (!context.isUserLoggedIn()) {
 			throw new org.springframework.security.access.AccessDeniedException("please log in");
 		}
+		
 		final User loginUser = context.getLoginUser();
 		if (loginUser.isSpammer()) {
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
+		
+		// TODO: remove?
 //		if (!context.isValidCkey()) {
 //			this.errors.reject("error.field.valid.ckey");
 //		}
-
-		if (!command.getContext().getUserLoggedIn()) {
-			throw new AccessDeniedException();
-		}
-
 
 		if (!present(syncClient)) {
 			errors.reject("error.synchronization.noclient");
@@ -81,22 +78,33 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 		}
 
 		log.debug("try to get sync services for user");
-		final List<SyncService> userServices = logic.getSyncService(command.getContext().getLoginUser().getName(), null, true);
-
+		final String loggedinUserName = loginUser.getName();
+		final List<SyncService> userServices = logic.getSyncService(loggedinUserName, null, true);
+		
+		/*
+		 * get all sync data from remote sync service
+		 */
 		log.debug("try to get synchronization data from remote service");
 		for (final SyncService syncService : userServices) {
-			final Map<String, SynchronizationData> lastSyncData = new HashMap<String, SynchronizationData>();
+			final List<SynchronizationData> lastSyncData = new LinkedList<SynchronizationData>();
 			try {
 				for (final Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(syncService.getResourceType())) {
-					lastSyncData.put(resourceType.getSimpleName(), getLastSyncData(syncService, resourceType));
+					lastSyncData.add(getLastSyncData(syncService, resourceType));
 				}
-			} catch (AccessDeniedException e) {
+			} catch (final AccessDeniedException e) {
 				log.debug("access denied to remote service " + syncService.getService().toString());
+			} catch (final Exception e) {
+				log.warn("error while getting last sync data", e);
+				// TODO: add error message
 			}
 			syncService.setLastSyncData(lastSyncData);
 		}
-
 		command.setSyncServer(userServices);
+		
+		/*
+		 * get all sync clients with the lastest sync data
+		 */
+		command.setSyncClients(this.logic.getSyncService(loggedinUserName, null, false));
 
 		return Views.SYNC;
 	}
@@ -139,28 +147,28 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
 	/**
 	 * @param logic the logic to set
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 
 	/**
 	 * @param syncClient the syncClient to set
 	 */
-	public void setSyncClient(TwoStepSynchronizationClient syncClient) {
+	public void setSyncClient(final TwoStepSynchronizationClient syncClient) {
 		this.syncClient = syncClient;
 	}
 
 	/**
 	 * @param messageSource the messageSource to set
 	 */
-	public void setMessageSource(MessageSource messageSource) {
+	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
@@ -174,14 +182,14 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	/**
 	 * @param requestLogic the requestLogic to set
 	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
 	/**
 	 * @param projectHome the projectHome to set
 	 */
-	public void setProjectHome(String projectHome) {
+	public void setProjectHome(final String projectHome) {
 		this.projectHome = projectHome;
 	}
 
