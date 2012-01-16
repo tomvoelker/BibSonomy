@@ -476,6 +476,7 @@
 	</rule>
 	
 	<!-- delete document -->
+	<!-- TODO: remove? old code? -->
 	<!--<rule>
 		<name>/documents/FILEHASH/INTRAHASH</name>
 		<from>^/+documents/+([0-9a-fA-F]+)/+([0-9a-fA-F]+)</from>
