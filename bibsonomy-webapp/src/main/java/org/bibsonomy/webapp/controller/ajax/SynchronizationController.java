@@ -20,6 +20,7 @@ import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.sync.util.SynchronizationUtils;
 import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.synchronization.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
@@ -45,7 +46,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 	private String projectHome;
 	
 	@Override
-	public View workOn(AjaxSynchronizationCommand command) {
+	public View workOn(final AjaxSynchronizationCommand command) {
 		final RequestWrapperContext context = command.getContext();
 
 		/*
@@ -62,23 +63,26 @@ public class SynchronizationController extends AjaxController implements Minimal
 			this.errors.reject("error.field.valid.ckey");
 		}
 
-
 		/*
 		 * check server URI from service name
 		 */
-		final URI serviceName = command.getServiceName();
-		if (!present(serviceName)) {
+		final URI serviceURI = command.getServiceName();
+		if (!present(serviceURI)) {
 			errors.rejectValue("serviceName", "error.field.required");
 		}
 
 		if (errors.hasErrors()) {
 			return Views.AJAX_ERRORS;
 		}
+		
+		if (SynchronizationUtils.isClientURI(serviceURI)) {
+			return handleClientReset(command.getContext().getLoginUser(), serviceURI);
+		}
 
 		/*
 		 * get details for sync server
 		 */
-		final SyncService server = client.getServerByURI(logic, serviceName);
+		final SyncService server = client.getServerByURI(logic, serviceURI);
 		
 		/*
 		 * work on each HTTP method
@@ -99,17 +103,17 @@ public class SynchronizationController extends AjaxController implements Minimal
 			/*
 			 * store it in session for later use
 			 */
-			SyncUtils.setSyncPlan(serviceName, syncPlan, requestLogic);
+			SyncUtils.setSyncPlan(serviceURI, syncPlan, requestLogic);
 			/*
 			 * serialize it to show user
 			 */
-			json.put("syncPlan", serializeSyncPlan(syncPlan, serviceName));
+			json.put("syncPlan", serializeSyncPlan(syncPlan, serviceURI));
 			
 			/*
 			 * get sync data of this plan
 			 */
 			final Map<Class<? extends Resource>, SynchronizationData> syncData = new LinkedHashMap<Class<? extends Resource>, SynchronizationData>();
-			for (Class<? extends Resource> resourceType : syncPlan.keySet()) {
+			for (final Class<? extends Resource> resourceType : syncPlan.keySet()) {
 				final SynchronizationData data = client.getLastSyncData(server, resourceType);
 				if (SynchronizationStatus.PLANNED.equals(data.getStatus())) {
 					syncData.put(resourceType, data);
@@ -122,7 +126,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 			/*
 			 * get sync plan from session
 			 */
-			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan2 = SyncUtils.getSyncPlan(serviceName, this.requestLogic);
+			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan2 = SyncUtils.getSyncPlan(serviceURI, this.requestLogic);
 			if (!present(syncPlan2)) {
 				errors.reject("error.synchronization.no_sync_plan_found");
 				return Views.AJAX_ERRORS;
@@ -141,7 +145,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 * remove sync plan from session
 			 * FIXME: do this before synchronize()?
 			 */
-			SyncUtils.setSyncPlan(serviceName, null, requestLogic);
+			SyncUtils.setSyncPlan(serviceURI, null, requestLogic);
 			/*
 			 * serialize result
 			 */
@@ -174,6 +178,13 @@ public class SynchronizationController extends AjaxController implements Minimal
 		return Views.AJAX_JSON;
 	}
 	
+	private View handleClientReset(final User loggedinUser, final URI serviceURI) {
+		for (final Class<? extends Resource> resourceType : ResourceUtils.getResourceTypesByClass(Resource.class)) {
+			this.logic.deleteSyncData(loggedinUser.getName(), serviceURI, resourceType, null);
+		}
+		return Views.AJAX_JSON;
+	}
+
 	private JSONObject serializeSyncData(final Map<Class<? extends Resource>, SynchronizationData> data) {
 		final JSONObject json = new JSONObject();
 		final Locale locale = requestLogic.getLocale();
@@ -223,7 +234,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
@@ -238,7 +249,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 	 * The message source is necessary to render a human-readable synchronization plan. 
 	 * @param messageSource
 	 */
-	public void setMessageSource(MessageSource messageSource) {
+	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
@@ -247,7 +258,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 	 * 
 	 * @param projectHome
 	 */
-	public void setProjectHome(String projectHome) {
+	public void setProjectHome(final String projectHome) {
 		this.projectHome = projectHome;
 	}
 }

@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.webapp.command.admin.AdminSyncCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -31,7 +32,9 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 	
 	@Override
 	public AdminSyncCommand instantiateCommand() {
-		return new AdminSyncCommand();
+		final AdminSyncCommand command = new AdminSyncCommand();
+		command.setService(new SyncService());
+		return command;
 	}
 
 	@Override
@@ -55,24 +58,24 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 		/*
 		 * get services and clients from db
 		 */
-		command.setAvlClients(logic.getAllSyncServices(false));
-		command.setAvlServer(logic.getAllSyncServices(true));
+		command.setAvlClients(this.logic.getAllSyncServices(false));
+		command.setAvlServer(this.logic.getAllSyncServices(true));
 		
 		return Views.ADMIN_SYNC;
 	}
 	
 	private View performAction (final AdminSyncCommand command) {
-		final URI service = command.getService();
-		
+		final SyncService service = command.getService();
 		
 		final String action = command.getAction();
-		if (!present(service)) {
+		final URI serviceUri = service.getService();
+		if (!present(serviceUri)) {
 			// something wrong with uri
 			return new ExtendedRedirectView("/admin/sync");
 		}
 		if (CREATE_SERVICE.equals(action)) {
 			try {
-				logic.createSyncService(service, command.isServer(), command.getSslDn(), command.getSecureAPI());
+				logic.createSyncService(service, command.isServer());
 			} catch (final RuntimeException ex) {
 				/*
 				 * catch duplicates
@@ -80,7 +83,7 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 				log.error(ex.getMessage(), ex);
 			}
 		} else if (DELETE_SERVICE.equals(action)) {
-			logic.deleteSyncService(service, command.isServer());
+			logic.deleteSyncService(serviceUri, command.isServer());
 		} else {
 			/*
 			 * unknown action, do nothing
