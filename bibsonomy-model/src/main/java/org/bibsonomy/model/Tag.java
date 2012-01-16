@@ -158,7 +158,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	/**
 	 * @param posts
 	 */
-	public void setPosts(List<Post<? extends Resource>> posts) {
+	public void setPosts(final List<Post<? extends Resource>> posts) {
 		this.posts = posts;
 	}
 
@@ -176,7 +176,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 * adds a subTag to the current tag
 	 * @param subTag
 	 */
-	public void addSubTag(Tag subTag) {
+	public void addSubTag(final Tag subTag) {
 		if (this.subTags == null) {
 			this.subTags = new LinkedList<Tag>();
 		}
@@ -187,7 +187,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	/**
 	 * @param subTags
 	 */
-	public void setSubTags(List<Tag> subTags) {
+	public void setSubTags(final List<Tag> subTags) {
 		this.subTags = subTags;
 	}
 
@@ -195,7 +195,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 * adds a superTag to the current tag
 	 * @param superTag
 	 */
-	public void addSuperTag(Tag superTag) {
+	public void addSuperTag(final Tag superTag) {
 		if (this.superTags == null) {
 			this.superTags = new LinkedList<Tag>();
 		}
@@ -216,7 +216,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	/**
 	 * @param superTags
 	 */
-	public void setSuperTags(List<Tag> superTags) {
+	public void setSuperTags(final List<Tag> superTags) {
 		this.superTags = superTags;
 	}
 
@@ -230,7 +230,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	/**
 	 * @param usercount
 	 */
-	public void setUsercount(int usercount) {
+	public void setUsercount(final int usercount) {
 		this.usercount = usercount;
 	}
 
@@ -244,7 +244,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	/**
 	 * @param id
 	 */
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -258,7 +258,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	/**
 	 * @param count
 	 */
-	public void setGlobalcount(int count) {
+	public void setGlobalcount(final int count) {
 		this.globalcount = count;
 	}
 
@@ -272,7 +272,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	/**
 	 * @param name
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -286,7 +286,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	/**
 	 * @param stem
 	 */
-	public void setStem(String stem) {
+	public void setStem(final String stem) {
 		this.stem = stem;
 	}
 
@@ -295,22 +295,46 @@ public class Tag implements Comparable<Tag>, Serializable {
 		return this.id + " '" + this.name + "' '" + this.stem + "' " + this.globalcount;
 	}
 
-	
+	/* 
+	 * FIXME: what about upper vs. lower case?
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
-	public boolean equals(Object tag) {
-		// FIXME: check for null pointers
-		// FIXME: check if tag is instance of Tag
-		// FIXME: what about upper vs. lower case?
-		return this.getName().equals(((Tag) tag).getName());
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Tag)) {
+			return false;
+		}
+		final Tag other = (Tag) obj;
+		if (this.name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!this.name.equals(other.name)) {
+			return false;
+		}
+		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
-		return this.getName().hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+		return result;
 	}
 
 	@Override
-	public int compareTo(Tag tag) {
+	public int compareTo(final Tag tag) {
 		// FIXME: what about upper vs. lower case?
 		return this.getName().compareTo(tag.getName());
 	}
