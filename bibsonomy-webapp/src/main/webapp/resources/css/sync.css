@@ -1,0 +1,22 @@
+.syncDataInfo {
+	font-size: 75%;
+}
+
+.clientReset {
+	display: inline;
+	padding-left: 1em;
+}
+
+p.description {
+	margin: 0px;
+}
+
+/* FIXME: remove ul { list-style: none; }Êfrom global style.css */
+ul.foldList {
+	list-style: disc;
+	margin-left: 1.5em;
+}
+
+h3 {
+	padding: 0px;
+}
