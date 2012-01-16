@@ -13,15 +13,20 @@
 	
 	<resultMap id="syncData" class="syncData">
 		<result property="service"		column="uri"			javaType="uri" />
-		<result property="userName"		column="user_name"		javaType="string" />
 		<result property="resourceType"	column="content_type"	javaType="resourceTypeClass" />
 		<result property="lastSyncDate"	column="last_sync_date"	javaType="date" />
 		<result property="status"		column="status"			javaType="syncStatus" />
 		<result property="info"			column="info"			javaType="string" />
+		<result property="deviceId"		column="device_id"		javaType="string" />
+		<result property="deviceInfo"	column="device_info"	javaType="string" />
 	</resultMap>
 	
-	<resultMap id="syncService" class="syncService">
+	<resultMap id="syncClient" class="syncService">
+		<result property="name"			column="name"			javaType="string" />
 		<result property="service"		column="uri"			javaType="uri" />
+	</resultMap>
+	
+	<resultMap id="syncService" class="syncService" extends="syncClient">
 		<result property="secureAPI"	column="secure_api"     javaType="uri" />
 		<result property="user"			column="credentials"	javaType="properties"/>
 		<result property="direction"	column="direction"		javaType="syncDirection" />
@@ -30,7 +35,11 @@
 		<result property="sslDn"		column="ssl_dn"			javaType="string" />
 	</resultMap>
 	
+	<resultMap id="syncServiceDetails" class="syncService" extends="syncClient" groupBy="service">
+		<result property="lastSyncData" resultMap="SynchronizationCommon.syncData"/>
+	</resultMap>
+	
 	<sql id="syncDataColumns">
-		ss.uri, sd.user_name, sd.content_type, sd.last_sync_date, sd.status, sd.info
+		ss.uri, sd.content_type, sd.last_sync_date, sd.status, sd.info, sd.device_id, sd.device_info
 	</sql>
 </sqlMap>

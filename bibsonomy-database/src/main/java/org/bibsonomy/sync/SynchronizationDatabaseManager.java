@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,6 +22,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.sync.util.SynchronizationUtils;
 
 /**
  * @author wla
@@ -33,8 +33,6 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 
 	private static final SynchronizationDatabaseManager singleton = new SynchronizationDatabaseManager();
 
-	private final GeneralDatabaseManager generalDb;
-
 	/**
 	 * Singleton 
 	 * @return SynchronizationDatabaseManager
@@ -42,6 +40,9 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	public static SynchronizationDatabaseManager getInstance() {
 		return singleton;
 	}
+	
+	
+	private final GeneralDatabaseManager generalDb;
 
 	private SynchronizationDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
@@ -52,18 +53,14 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * URI already exists. Otherwise, a DUPLICATE KEY exception will be thrown.
 	 * @param service - the URI of the service to be added
 	 * @param server - <code>true</code> if the service may act as a server, <code>false</code> if it may act as a client
-	 * @param sslDn 
-	 * @param secureAPI 
 	 * @param session
 	 */
-	public void createSyncService(final URI service, final boolean server, final String sslDn, final URI secureAPI, final DBSession session) {
+	public void createSyncService(final SyncService service, final boolean server, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final SyncParam param = new SyncParam();
-			param.setService(service);
+			param.setSyncService(service);
 			param.setServer(server);
-			param.setSslDn(sslDn);
-			param.setSecureAPI(secureAPI);
 			param.setServiceId(generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session));
 			session.insert("insertSyncService", param);
 			session.commitTransaction();
@@ -96,14 +93,8 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param session - the database session
 	 */
 	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, final DBSession session) {
-		final SyncParam param = new SyncParam();
-		param.setUserName(userName);
-		param.setService(service);
-		param.setResourceType(resourceType);
-		param.setLastSyncDate(syncDate);
-		param.setStatus(status); // this is changed
-		param.setInfo(info); // and this is changed
-		param.setServer(false);
+		final SyncParam param = this.createParam(userName, service, resourceType, syncDate, status, info);
+		
 		session.update("updateSyncStatus", param);
 	}
 
@@ -116,39 +107,26 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param session - the database session
 	 */
 	public void deleteSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final DBSession session) {
-		final SyncParam param = new SyncParam();
-		param.setUserName(userName);
-		param.setService(service);
-		param.setResourceType(resourceType);
-		param.setLastSyncDate(syncDate);
-		param.setServer(false);
+		final SyncParam param = this.createParam(userName, service, resourceType, syncDate, null, null);
 		session.update("deleteSyncStatus", param);
 	}
 	
 	/**
 	 * Insert new synchronization data for user.
 	 * @param userName
-	 * @param service 
-	 * @param resourceType 
-	 * @param userCredentials 
-	 * @param direction 
-	 * @param strategy 
+	 * @param server
 	 * @param session
 	 */
-	public void createSyncServerForUser(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy, final DBSession session) {
+	public void createSyncServerForUser(final String userName, final SyncService server, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
-		param.setCredentials(userCredentials);
-		param.setDirection(direction);
-		param.setStrategy(strategy);
-		param.setResourceType(resourceType);
-		param.setService(service);
-		param.setServer(true);
+		param.setSyncService(server);
 		session.insert("insertSyncServiceForUser", param);
 	}
 
 	/**
-	 * Removes synchronization data for user.
+	 * removes synchronization data for user.
+	 * 
 	 * @param userName
 	 * @param service
 	 * @param session
@@ -165,22 +143,13 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * Updates the synchronization data for a user
 	 * @param userName
 	 * @param service
-	 * @param resourceType 
-	 * @param userCredentials 
-	 * @param direction 
-	 * @param strategy 
 	 * @param session
 	 * 
 	 */
-	public void updateSyncServerForUser(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy, final DBSession session) {
+	public void updateSyncServerForUser(final String userName, final SyncService service, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
-		param.setService(service);
-		param.setDirection(direction);
-		param.setResourceType(resourceType);
-		param.setServer(true);
-		param.setCredentials(userCredentials);
-		param.setStrategy(strategy);
+		param.setSyncService(service);
 		session.update("updateSyncServerForUser", param);
 	}
 
@@ -196,7 +165,6 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * 
 	 * @param server
 	 * @param session
 	 * @return
@@ -217,19 +185,51 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void insertSynchronizationData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final DBSession session) {
-		final SyncParam param = new SyncParam();
 		log.debug("user name: " + userName + 
 				", service: " + service.toString() + 
 				", resource type: " + resourceType.getSimpleName() + 
 				", date: " + lastSyncDate +
 				", status: " + status);
+		
+		final SyncParam param = this.createParam(userName, service, resourceType, lastSyncDate, status, null);
+		session.insert("insertSyncData", param);
+	}
+
+	/**
+	 * @param userName
+	 * @param service
+	 * @param resourceType
+	 * @param lastSyncDate
+	 * @param status
+	 * @param info 
+	 * @return
+	 */
+	protected SyncParam createParam(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final String info) {
+		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
-		param.setService(service);
-		param.setResourceType(resourceType);
-		param.setLastSyncDate(lastSyncDate);
-		param.setStatus(status);
-		param.setServer(false);
-		session.insert("insertSync", param);
+		param.setData(this.createSynchronizationData(service, resourceType, lastSyncDate, status, info));
+		return param;
+	}
+
+	/**
+	 * @param service
+	 * @param resourceType
+	 * @param lastSyncDate
+	 * @param status
+	 * @param info 
+	 * @return the sync data
+	 */
+	protected SynchronizationData createSynchronizationData(final URI service, final Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final String info) {
+		/*
+		 * build the sync data (including special client sync data)
+		 */
+		final SynchronizationData data = SynchronizationUtils.buildSynchronizationDataforService(service);
+		
+		data.setLastSyncDate(lastSyncDate);
+		data.setResourceType(resourceType);
+		data.setStatus(status);
+		data.setInfo(info);
+		return data;
 	}
 
 	/**
@@ -242,12 +242,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @return returns last synchronization data for given user, service and content with {@link SynchronizationStatus#RUNNING}.
 	 */
 	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final SynchronizationStatus status, final DBSession session) {
-		final SyncParam param = new SyncParam();
-		param.setUserName(userName);
-		param.setResourceType(resourceType);
-		param.setService(service);
-		param.setStatus(status);
-		param.setServer(false);
+		final SyncParam param =  this.createParam(userName, service, resourceType, null, status, null);
 		return queryForObject("getLastSyncData", param, SynchronizationData.class, session);
 	}
 
@@ -264,6 +259,11 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		param.setUserName(userName);
 		param.setServer(server);
 		param.setService(service);
+		
+		if (!server) {
+			return queryForList("getSyncClientsForUser", param, SyncService.class, session);
+		}
+		
 		return queryForList("getSyncServersForUser", param, SyncService.class, session);
 	}
 
@@ -278,7 +278,6 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @return The clientPosts with {@link SynchronizationAction}'s and posts from the server added.
 	 */
 	public List<SynchronizationPost> getSyncPlan(final Map<String, SynchronizationPost> serverPosts, final List<SynchronizationPost> clientPosts, final Date lastSyncDate, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
-
 		// is there something to synchronize? (we can't use present() on this place, because it's possible to have empty list or map)
 		if (serverPosts == null && clientPosts == null) {
 			throw new IllegalArgumentException("client posts and server posts can't be null!");

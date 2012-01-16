@@ -24,19 +24,18 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author wla
  * @version $Id$
  */
-@Ignore // TODO: document why we ignore this test
 public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private static SynchronizationDatabaseManager syncDBManager;
 	private static URI testURI;
 	private static URI bibsonomyURI;
+	private static URI deviceURI;
 
 	private final String syncUser1 = "syncuser1";
 	
@@ -47,43 +46,82 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		
 		testURI = TestUtils.createURI("http://www.test.de/");
 		bibsonomyURI = TestUtils.createURI("http://www.bibsonomy.org/");
+		deviceURI = TestUtils.createURI("client://android/123456789012?device=NexusOne");
+	}
+	
+	@Test
+	public void testDevice() {
+		final SynchronizationStatus status = SynchronizationStatus.DONE;
+		final Date date = new Date();
+		syncDBManager.insertSynchronizationData(syncUser1, deviceURI, Resource.class, date, status, this.dbSession);
+		
+		final SynchronizationData lastSyncData = syncDBManager.getLastSyncData(syncUser1, deviceURI, Resource.class, status, this.dbSession);
+		
+		assertNotNull(lastSyncData);
+		assertEquals(status, lastSyncData.getStatus());
+		assertEquals("NexusOne", lastSyncData.getDeviceInfo());
+		
+		final SynchronizationStatus running = SynchronizationStatus.RUNNING;
+		syncDBManager.updateSyncData(syncUser1, deviceURI, Resource.class, lastSyncData.getLastSyncDate(), running, "", this.dbSession);
+		
+		final SynchronizationData lastSyncDataAfterUpdate = syncDBManager.getLastSyncData(syncUser1, deviceURI, Resource.class, null, this.dbSession);
+		assertEquals(running, lastSyncDataAfterUpdate.getStatus());
+	}
+	
+	@Test
+	public void testGetSyncClients() {
+		final List<SyncService> syncClients = syncDBManager.getSyncServersForUser(syncUser1, null, false, this.dbSession);
+		syncClients.size();
 	}
 
 	/**
 	 * test for all access to the table `sync`
 	 */
 	@Test
-	public void testSyncService() {
-		final SyncService service = new SyncService();
-		service.setService(testURI);
-		
+	public void testSyncService() {		
 		final Properties credentialsSyncUser1 = new Properties();
 		credentialsSyncUser1.setProperty("name", syncUser1);
 		credentialsSyncUser1.setProperty("apiKey", "1546545646565");
+		final Class<Bookmark> resourceType = Bookmark.class;
+		final SynchronizationDirection direction = SynchronizationDirection.SERVER_TO_CLIENT;
+		final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.SERVER_WINS;
+		
+		final SyncService service = new SyncService();
+		service.setService(testURI);
 		service.setServerUser(credentialsSyncUser1);
+		service.setResourceType(resourceType);
+		service.setDirection(direction);
+		service.setStrategy(strategy);
 
-		syncDBManager.createSyncServerForUser(syncUser1, testURI, Bookmark.class, credentialsSyncUser1, SynchronizationDirection.SERVER_TO_CLIENT, ConflictResolutionStrategy.SERVER_WINS, dbSession);
+		syncDBManager.createSyncServerForUser(syncUser1, service, dbSession);
 
 		List<SyncService> services = syncDBManager.getSyncServersForUser(syncUser1, null, true, dbSession);
-		assertTrue(services.contains(service));
 		assertEquals(1, services.size());
+		assertTrue(services.contains(service));
 		final SyncService syncService = services.get(0);
-		assertEquals(Bookmark.class, syncService.getResourceType());
-		assertEquals(SynchronizationDirection.SERVER_TO_CLIENT, syncService.getDirection());
-		assertEquals(ConflictResolutionStrategy.SERVER_WINS, syncService.getStrategy());
+		assertEquals(resourceType, syncService.getResourceType());
+		assertEquals(direction, syncService.getDirection());
+		assertEquals(strategy, syncService.getStrategy());
 		
+		final ConflictResolutionStrategy strategy2 = ConflictResolutionStrategy.LAST_WINS;
+		final Class<BibTex> resourceType2 = BibTex.class;
 		final Properties credentialsSyncUser2 = new Properties();
 		credentialsSyncUser2.setProperty("name", "syncUser2");
 		credentialsSyncUser2.setProperty("apiKey", "jjkhjhjkhk");
+		
 		service.setServerUser(credentialsSyncUser2);
-		syncDBManager.updateSyncServerForUser(syncUser1, testURI, BibTex.class, credentialsSyncUser2, SynchronizationDirection.SERVER_TO_CLIENT, ConflictResolutionStrategy.LAST_WINS, dbSession);
+		service.setStrategy(strategy2);
+		service.setResourceType(resourceType2);
+		syncDBManager.updateSyncServerForUser(syncUser1, service, dbSession);
 		
 		services = syncDBManager.getSyncServersForUser(syncUser1, null, true, dbSession);
 		assertTrue(services.contains(service));
 		assertEquals(1, services.size());
 		final SyncService syncService2 = services.get(0);
-		assertEquals(BibTex.class, syncService2.getResourceType());
-		assertEquals(SynchronizationDirection.SERVER_TO_CLIENT, syncService2.getDirection());
+		assertEquals(resourceType2, syncService2.getResourceType());
+		assertEquals(direction, syncService2.getDirection());
+		assertEquals(strategy2, syncService2.getStrategy());
+		assertEquals(credentialsSyncUser2, syncService2.getServerUser());
 		
 		syncDBManager.deleteSyncServerForUser(syncUser1, testURI, dbSession);
 		services = syncDBManager.getSyncServersForUser(syncUser1, null, true, dbSession);
@@ -122,7 +160,6 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		 */
 		final SynchronizationData data = syncDBManager.getLastSyncData(syncUser1, bibsonomyURI, resourceType, null, dbSession);
 		assertNotNull(data);
-		assertEquals(syncUser1, data.getUserName());
 		assertEquals(date, data.getLastSyncDate());
 		assertEquals(SynchronizationStatus.RUNNING, data.getStatus());
 		assertEquals(resourceType, data.getResourceType());

@@ -76,7 +76,7 @@ INSERT INTO `repository` (`inter_hash`, `intra_hash`, `user_name`, `repository_n
 --
 -- Data for synchronization tests
 --
-
+-- FIXME: testuser4 missing
 
 INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_max_count`,`is_max_count`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`,`birthday`,`gender`,`profession`,`institution`, `interests`,`hobbies`,`place`,`profilegroup`,`api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`) VALUES 
 ('syncServer',   'testuser1@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1, NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1, '15cb586b630cc343cd60684807bf4785', 'wla','1815-12-10 00:00:00', 4,  'en', 0, 1);
@@ -101,13 +101,16 @@ INSERT INTO `sync_services` (`uri`, `service_id`, server, ssl_dn) VALUES
 ('http://www.bibsonomy.org/', 1, FALSE, 'bibsonomy test ssl dn'),
 ('http://www.test.de/', 2, TRUE, 'test.de ssl dn'),
 ('http://www.test.de/', 0, FALSE, 'test.de ssl dn'),
+('client://android', 4, FALSE, 'test.de ssl dn'),
 ('http://localhost:41253/', 10, TRUE, 'localhost ssl dn');
 
 -- synchronization data table
-INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`, `info`) VALUES 
-('1', 'syncuser1', '2', '2011-02-02 23:00:00', 'done', ''),
-('0', 'syncserver', '2', '2011-02-02 23:00:00', 'done', ''),
-('0', 'syncserver', '1', '2011-02-02 23:10:00', 'done', '');
+INSERT INTO `sync_data` (`service_id`, `user_name`, `content_type`, `last_sync_date`, `status`, `device_id`, `device_info`, `info`) VALUES 
+(1, 'syncuser1', 2, '2011-02-02 23:00:00', 'done', '', NULL, ''),
+(0, 'syncserver', 2, '2011-02-02 23:00:00', 'done',  '', NULL,''),
+(4, 'syncuser1', 0, '2011-12-20 17:22:46', 'done', '123456789012', 'NexusOne', ''),
+(4, 'syncuser1', 0, '2011-12-20 17:22:46', 'done', '123456789013', 'Nexus Galaxy', ''),
+(0, 'syncserver', 1, '2011-02-02 23:10:00', 'done', '', NULL, '');
 
 INSERT INTO `sync` (`user_name`, `service_id`, `credentials`, `content_type`, `direction`) VALUES
 ('syncuser1', '1', '#Tue May 10 13:27:07 CEST 2011\nuserName=syncServer\napiKey=15cb586b630cc343cd60684807bf4785', 0, 'both'),

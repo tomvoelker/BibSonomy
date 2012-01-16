@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -293,7 +292,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
-		// TODO: resourceType = null
+		// TODO: handle resourceType = null
 		this.permissionDBManager.ensureWriteAccess(loginUser, userName);
 		Date lastSuccessfulSyncDate = null;
 
@@ -352,13 +351,15 @@ public class DBLogic implements LogicInterface {
     		 * attach "real" posts to the synchronization posts, which will be updated (or created) on the client
     		 */
 			final CrudableContent<? extends Resource, ? extends GenericParam> resourceTypeDatabaseManager = this.allDatabaseManagers.get(resourceType);
+			final List<Integer> listOfGroupIDs = UserUtils.getListOfGroupIDs(this.loginUser);
+			final String loginUserName = this.loginUser.getName();
     		for (final SynchronizationPost post : posts) {
     			switch (post.getAction()) {
     			case CREATE_CLIENT:
     				// $FALL-THROUGH$
     			case UPDATE_CLIENT:
     				// FIXME: this is horribly expensive!
-					post.setPost(resourceTypeDatabaseManager.getPostDetails(this.loginUser.getName(), post.getIntraHash(), userName, UserUtils.getListOfGroupIDs(this.loginUser), session));
+					post.setPost(resourceTypeDatabaseManager.getPostDetails(loginUserName, post.getIntraHash(), userName, listOfGroupIDs, session));
     				break;
     			default:
     				break;
@@ -377,11 +378,11 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncService()
 	 */
 	@Override
-	public void createSyncService(final URI service, final boolean server, final String sslDn, final URI secureAPI) {
+	public void createSyncService(final SyncService service, final boolean server) {
     	this.permissionDBManager.ensureAdminAccess(loginUser);
     	final DBSession session = this.openSession();
     	try {
-    		syncDBManager.createSyncService(service, server, sslDn, secureAPI, session);
+    		syncDBManager.createSyncService(service, server, session);
     	} finally {
     		session.close();
     	}
@@ -404,14 +405,14 @@ public class DBLogic implements LogicInterface {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncServer(java.lang.String, int, java.util.Properties)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncServer(java.lang.String, org.bibsonomy.model.sync.SyncService)
 	 */
 	@Override
-	public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+	public void createSyncServer(final String userName, final SyncService server) {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			this.syncDBManager.createSyncServerForUser(userName, service, resourceType, userCredentials, direction, strategy, session);
+			this.syncDBManager.createSyncServerForUser(userName, server, session);
 		} finally {
 			session.close();
 		}
@@ -422,11 +423,11 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#updateSyncServer(java.lang.String, java.net.URI, java.util.Properties)
 	 */
 	@Override
-	public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+	public void updateSyncServer(final String userName, final SyncService service) {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			this.syncDBManager.updateSyncServerForUser(userName, service, resourceType, userCredentials, direction, strategy, session);
+			this.syncDBManager.updateSyncServerForUser(userName, service, session);
 		} finally {
 			session.close();
 		}
@@ -509,7 +510,6 @@ public class DBLogic implements LogicInterface {
 			 */
 			final SynchronizationData synchronizationData = new SynchronizationData();
 			// fill: ss.uri, sd.user_name, sd.content_type, sd.last_sync_date, sd.status, sd.info
-			synchronizationData.setUserName(userName);
 			synchronizationData.setService(service);
 			synchronizationData.setResourceType(resourceType);
 			synchronizationData.setLastSyncDate(new Date(0));
@@ -1129,7 +1129,7 @@ public class DBLogic implements LogicInterface {
 				break;
 			case ADD_NEW_USER:
 				// until now only one user can be added to a group at once, so this loop is currently not necessary
-				for (User user: group.getUsers()) {
+				for (final User user: group.getUsers()) {
 					this.addUserToGroup(groupName, user.getName());
 				}
 				break;
@@ -2239,19 +2239,14 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/*
-	 * 
-	 * TODO: the "tag" parameter is currently ignored by this function. As soon
-	 * as tagged relationships are needed, please implement the handling of 
-	 * the "tag" parameter from here on (mainly in the UserDBManager)
-	 * 
+	/* 
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserRelationship(java.lang.String, org.bibsonomy.common.enums.UserRelation)
 	 */
 	@Override
 	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, final String tag) {
 		this.ensureLoggedIn();
-		// ask Robert about this method
+		// TODO: ask Robert about this method
 		// this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, sourceUser);
 
@@ -2260,7 +2255,7 @@ public class DBLogic implements LogicInterface {
 			// get all users that are in relation with sourceUser
 			return this.userDBManager.getUserRelation(sourceUser, relation, tag, session);
 		} finally {
-			// unsupported Relations will cause an UnsupportedRelationException
+			// unsupported relations will cause an UnsupportedRelationException
 			session.close();
 		}
 	}

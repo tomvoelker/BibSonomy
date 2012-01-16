@@ -10,19 +10,26 @@
 		  ORDER BY ss.uri
 	</select>
 	
-	
 	<insert id="insertSyncService" parameterClass="syncParam">
-		INSERT INTO sync_services (uri, service_id, server, ssl_dn, secure_api)
-		  VALUES (#service#, #serviceId#, #server#, #sslDn#, #secureAPI#)
+		INSERT INTO sync_services (service_id, uri, name , server, ssl_dn, secure_api)
+		  VALUES (#serviceId#, #syncService.service#, #syncService.name#, #server#, #syncService.sslDn#, #syncService.secureAPI#)
 	</insert>
 
 	<select id="getAllSyncServices" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy FROM sync_services ss
+		SELECT ss.name, ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy FROM sync_services ss
 		WHERE server = #server#
+	</select>
+	
+	<select id="getSyncClientsForUser" resultMap="SynchronizationCommon.syncServiceDetails" parameterClass="syncParam">
+		SELECT ss.service_id, ss.name, <include refid="syncDataColumns"/>
+		FROM sync_services ss JOIN sync_data sd USING(service_id)
+			WHERE ss.server = FALSE
+			AND sd.user_name = #userName#
+		ORDER BY ss.`service_id`, device_id, last_sync_date DESC
 	</select>
 
 	<select id="getSyncServersForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT s.user_name, s.credentials, ss.uri, ss.secure_api, ss.ssl_dn, s.content_type, s.direction, s.strategy
+		SELECT s.user_name, s.credentials, ss.name, ss.uri, ss.secure_api, ss.ssl_dn, s.content_type, s.direction, s.strategy
 		  FROM sync s
 		    JOIN sync_services ss USING (service_id)
 		  WHERE s.user_name = #userName#
@@ -35,10 +42,10 @@
 	
 	<insert id="insertSyncServiceForUser" parameterClass="syncParam">
 		INSERT INTO sync (user_name, service_id, credentials, content_type, direction, strategy)
-		  SELECT #userName#, service_id, #credentials# , #resourceType#, #direction#, #strategy#
+		  SELECT #userName#, service_id, #syncService.serverUser# , #syncService.resourceType#, #syncService.direction#, #syncService.strategy#
 		    FROM sync_services 
-		    WHERE uri = #service# 
-		      AND server = #server#
+		    WHERE uri = #syncService.service# 
+		      AND server = TRUE
 	</insert> 
 
 	<select id="getSyncBibTex" resultMap="SynchronizationCommon.syncPost" parameterClass="bibtexParam">
@@ -62,32 +69,36 @@
 		  FROM sync_data sd
 		    JOIN sync_services ss USING (service_id)
 		  WHERE sd.user_name = #userName#
-			AND sd.content_type = #resourceType#
-			AND ss.uri = #service#
-			<isNotEmpty property="status" prepend="AND">
-		  		sd.status = #status# 
+			AND sd.content_type = #data.resourceType#
+			AND ss.uri = #data.service#
+			<isNotEmpty property="data.status" prepend="AND">
+		  		sd.status = #data.status# 
 		  	</isNotEmpty>
-			AND ss.server = #server#
+		  	<isNotEmpty property="data.deviceId" prepend="AND">
+		  		sd.device_id = #data.deviceId# 
+		  	</isNotEmpty>
+			AND ss.server = FALSE
 		  ORDER BY sd.last_sync_date DESC
 		  LIMIT 1
 	</select> 
 	
-	<insert id="insertSync" parameterClass="syncParam">
-		INSERT INTO sync_data (service_id, user_name, content_type, last_sync_date, status)
-		  SELECT service_id, #userName#, #resourceType#, #lastSyncDate#, #status# 
+	<insert id="insertSyncData" parameterClass="syncParam">
+		INSERT INTO sync_data (service_id, user_name, content_type, last_sync_date, status, device_id, device_info)
+		  SELECT service_id, #userName#, #data.resourceType#, #data.lastSyncDate#, #data.status#, #data.deviceId#, #data.deviceInfo#
 		    FROM sync_services 
-		    WHERE uri = #service#
-		      AND server = #server#
+		    WHERE uri = #data.service#
+		      AND server = FALSE
 	</insert>
 	
 	<update id="updateSyncStatus" parameterClass="syncParam">
 		UPDATE sync_data sd JOIN sync_services ss USING (service_id)
-			SET sd.status = #status#, sd.info = #info#
+			SET sd.status = #data.status#, sd.info = #data.info#
 			WHERE sd.user_name = #userName#
-			  AND sd.content_type = #resourceType#
-			  AND sd.last_sync_date = #lastSyncDate#
-			  AND ss.uri = #service#
-			  AND ss.server = #server#
+			  AND sd.content_type = #data.resourceType#
+			  AND sd.last_sync_date = #data.lastSyncDate#
+			  AND sd.device_id = #data.deviceId#
+			  AND ss.uri = #data.service#
+			  AND ss.server = FALSE
 	</update>
 	
 	<delete id="deleteSyncStatus" parameterClass="syncParam">
@@ -95,24 +106,25 @@
 		  USING sync_data sd 
 		    JOIN sync_services ss USING (service_id)
 			WHERE sd.user_name = #userName#
-			  AND sd.content_type = #resourceType#
-			  <isNotNull property="lastSyncDate" prepend="AND">
-			  	sd.last_sync_date = #lastSyncDate#
+			  AND sd.content_type = #data.resourceType#
+			  <isNotNull property="data.lastSyncDate" prepend="AND">
+			  	sd.last_sync_date = #data.lastSyncDate#
 			  </isNotNull>
-			  AND ss.uri = #service#
-			  AND ss.server = #server#
+			  AND sd.device_id = #data.deviceId#
+			  AND ss.uri = #data.service#
+			  AND ss.server = FALSE
 	</delete>	
 	
 	<update id="updateSyncServerForUser" parameterClass="syncParam">
 		UPDATE sync s
 		  JOIN sync_services ss USING (service_id)
-		  SET s.credentials = #credentials#,
-		  	  s.direction = #direction#,
-		  	  s.content_type = #resourceType#,
-		  	  s.strategy = #strategy#
+		  SET s.credentials = #syncService.serverUser#,
+		  	  s.direction = #syncService.direction#,
+		  	  s.content_type = #syncService.resourceType#,
+		  	  s.strategy = #syncService.strategy#
 		  WHERE s.user_name = #userName#
-			AND ss.uri = #service#
-			AND ss.server = #server#
+			AND ss.uri = #syncService.service#
+			AND ss.server = TRUE
  	</update>
 	
 	<delete id="deleteSyncServerForUser" parameterClass="syncParam">
@@ -121,7 +133,7 @@
 		    JOIN sync_services ss USING (service_id) 
 		  WHERE s.user_name = #userName#
 			AND ss.uri = #service#
-			AND ss.server = #server#
+			AND ss.server = TRUE
 	</delete>
 	
 	<delete id="deleteSyncService" parameterClass="SyncParam">
