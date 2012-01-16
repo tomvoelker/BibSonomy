@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -559,7 +558,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void createSyncService(final URI service, final boolean server, final String sslDn, final URI secureAPI) {
+	public void createSyncService(final SyncService service, final boolean server) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -574,18 +573,17 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+	public void createSyncServer(final String userName, final SyncService server) {
 		throw new UnsupportedOperationException();
-		
+	}
+	
+	@Override
+	public void updateSyncServer(final String userName, final SyncService server) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void deleteSyncServer(final String userName, final URI service) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
 		throw new UnsupportedOperationException();
 	}
 
