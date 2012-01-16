@@ -11,7 +11,7 @@ p.description {
 	margin: 0px;
 }
 
-/* FIXME: remove ul { list-style: none; }Êfrom global style.css */
+/* FIXME: remove ul { list-style: none; } from global style.css */
 ul.foldList {
 	list-style: disc;
 	margin-left: 1.5em;
