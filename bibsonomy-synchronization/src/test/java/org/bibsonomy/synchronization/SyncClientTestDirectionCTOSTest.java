@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
@@ -46,20 +47,22 @@ public class SyncClientTestDirectionCTOSTest extends AbstractSynchronizationClie
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void test() {
-		Properties userCredentials = new Properties();
+	public void testSync() {
+		final Properties userCredentials = new Properties();
 		userCredentials.setProperty("userName", SERVER_USER_NAME);
 		userCredentials.setProperty("apiKey", serverUser.getApiKey());
-		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), syncServer, Resource.class, userCredentials, DIRECTION, STRATEGY);
+		final SyncService service = createServerService(STRATEGY, userCredentials, DIRECTION);
+		
+		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service);
 		setModifiedBookmarkKeys(MODIFIED_BOOKMARK_KEYS);
 		setModifiedPublicationKeys(MODIFIED_PUBLICATION_KEYS);
 		
-		Map<Class<? extends Resource>, SynchronizationData> syncData = sync.synchronize(clientLogic, this.syncServer);
+		final Map<Class<? extends Resource>, SynchronizationData> syncData = sync.synchronize(clientLogic, this.syncServer);
 		
-		for (Class<? extends Resource> resourceType : resourceTypes) {
+		for (final Class<? extends Resource> resourceType : resourceTypes) {
 			assertTrue(syncData.containsKey(resourceType));
 			
-			SynchronizationData data = syncData.get(resourceType);
+			final SynchronizationData data = syncData.get(resourceType);
 			assertNotNull(data);
 			
 			assertEquals(RESULT_STRING, data.getInfo());		

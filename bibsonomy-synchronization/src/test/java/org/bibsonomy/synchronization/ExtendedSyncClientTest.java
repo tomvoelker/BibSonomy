@@ -21,6 +21,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
@@ -92,7 +93,7 @@ public class ExtendedSyncClientTest extends AbstractSynchronizationClientTest {
 		/*
 		 * Test post with changed hash
 		 */
-		String clientUserName = clientLogic.getAuthenticatedUser().getName();
+		final String clientUserName = clientLogic.getAuthenticatedUser().getName();
 		Post<? extends Resource> post = clientLogic.getPostDetails(BOOKMARK_KEYS[1], clientUserName);
 		Bookmark book = (Bookmark)post.getResource();
 		book.setUrl("http://www.changed-hash.com");
@@ -125,7 +126,7 @@ public class ExtendedSyncClientTest extends AbstractSynchronizationClientTest {
 		assertEquals("created on client: 1, deleted on client: 1", data.get(Bookmark.class).getInfo());
 	}
 	
-	private void makeConflict (LogicInterface earlier, LogicInterface later, int pos) {
+	private void makeConflict (final LogicInterface earlier, final LogicInterface later, final int pos) {
 		wait(1);
 		Date date = new Date();
 		Post<? extends Resource> post = earlier.getPostDetails(PUBLICATION_KEYS[pos], earlier.getAuthenticatedUser().getName());
@@ -138,13 +139,16 @@ public class ExtendedSyncClientTest extends AbstractSynchronizationClientTest {
 		later.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
 	}
 	
-	private void updateServer(ConflictResolutionStrategy strategy) {
-		Properties userCredentials = new Properties();
+	private void updateServer(final ConflictResolutionStrategy strategy) {
+		final Properties userCredentials = new Properties();
 		userCredentials.setProperty("userName", SERVER_USER_NAME);
 		userCredentials.setProperty("apiKey", serverUser.getApiKey());
-		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), syncServer, Resource.class, userCredentials, SynchronizationDirection.BOTH, strategy);
-	}
 		
+		final SyncService service = createServerService(strategy, userCredentials, SynchronizationDirection.BOTH);
+		
+		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service);
+	}
+
 	private void changeLeftSyncAndCheck(final URI syncServer, final String leftHost, final User leftUser, final LogicInterface leftLogic, final String rightHost, final User rightUser, final LogicInterface rightLogic, final String deleteHash) {
 		final Date now = new Date();
 		final List<Post<?>> posts = new ArrayList<Post<?>>();

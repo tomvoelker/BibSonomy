@@ -59,7 +59,7 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 	}
 
 
-	private final String RESULT_STRING = "created on client: 1, created on server: 1, updated on client: 1, updated on server: 1, deleted on client: 1, deleted on server: 1";
+	private static final String RESULT_STRING = "created on client: 1, created on server: 1, updated on client: 1, updated on server: 1, deleted on client: 1, deleted on server: 1";
 
 	@Test
 	public void test() {
@@ -70,7 +70,7 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 		 * check that synchronization is enabled
 		 */
 		final SyncService syncServer = clientLogic.getSyncService(clientUser.getName(), null, true).get(0);
-		URI syncServerUri = syncServer.getService();
+		final URI syncServerUri = syncServer.getService();
 		assertEquals(SYNC_SERVER_URI, syncServerUri.toString());
 
 		/*
