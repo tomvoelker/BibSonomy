@@ -6,9 +6,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
@@ -54,7 +54,7 @@ public abstract class AbstractSynchronizationClient {
 		final List<SyncService> syncServers = clientLogic.getSyncService(clientLogic.getAuthenticatedUser().getName(), service, true);
 
 		// return the first found service (there should be at most one with the given URI! 
-		if (syncServers.size() >= 1) {
+		if (present(syncServers)) {
 			return syncServers.get(0);
 		}
 		return null;
@@ -69,6 +69,8 @@ public abstract class AbstractSynchronizationClient {
 	protected LogicInterface getServerLogic(final SyncService syncServer) {
 		final Properties serverUser = syncServer.getServerUser();
 		URI api = syncServer.getSecureAPI();
+		
+		// FIXME: logic returns empty not null uri as secure api
 		if(!present(api)) {
 			api = syncServer.getService();
 		}
@@ -86,7 +88,7 @@ public abstract class AbstractSynchronizationClient {
 	 * @param contentType
 	 * @return
 	 */
-	protected SynchronizationData getLastSyncData(final LogicInterface serverLogic, final String serverUserName, Class<? extends Resource> resourceType) {
+	protected SynchronizationData getLastSyncData(final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType) {
 		return serverLogic.getLastSyncData(serverUserName, ownUri, resourceType);
 	}
 	
@@ -292,7 +294,7 @@ public abstract class AbstractSynchronizationClient {
 			result.insert(0, duplicatesOnServer + "duplicates on server detected, ");
 		
 	
-		int length = result.length();
+		final int length = result.length();
 		if (length == 0) {
 			result.append("no changes");
 		} else if (result.lastIndexOf(", ") == length - 2) {
