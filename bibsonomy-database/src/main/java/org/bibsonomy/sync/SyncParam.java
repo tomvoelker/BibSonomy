@@ -1,13 +1,9 @@
 package org.bibsonomy.sync;
 
 import java.net.URI;
-import java.util.Date;
-import java.util.Properties;
 
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.sync.ConflictResolutionStrategy;
-import org.bibsonomy.model.sync.SynchronizationDirection;
-import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.sync.SyncService;
+import org.bibsonomy.model.sync.SynchronizationData;
 
 /**
  * @author wla
@@ -15,25 +11,26 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
  */
 public class SyncParam {
 
+	private SynchronizationData data;
+	private SyncService syncService;
+
 	private String userName;
 	private URI service;
 	private int serviceId;
-	private Date lastSyncDate;
-	private SynchronizationStatus status;
-	private SynchronizationDirection direction;
-	private ConflictResolutionStrategy strategy;
-	private Class<? extends Resource> resourceType;
-	private String info;
 	private boolean server;
-	private Properties credentials;
-	private String sslDn;
-	private URI secureAPI;
 
 	/**
 	 * @return the userName
 	 */
 	public String getUserName() {
 		return userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(final String userName) {
+		this.userName = userName;
 	}
 
 	/**
@@ -49,123 +46,60 @@ public class SyncParam {
 	public int getServiceId() {
 		return serviceId;
 	}
-
+	
 	/**
-	 * @return the lastSyncDate
+	 * @param service the service to set
 	 */
-	public Date getLastSyncDate() {
-		return lastSyncDate;
-	}
-
-	/**
-	 * @return the status
-	 */
-	public SynchronizationStatus getStatus() {
-		return status;
-	}
-
-	/**
-	 * @return the credentials
-	 */
-	public Properties getCredentials() {
-		return credentials;
-	}
-
-	public void setUserName(final String userName) {
-		this.userName = userName;
-	}
-
 	public void setService(final URI service) {
 		this.service = service;
 	}
 
+	/**
+	 * @param serviceId the serviceId to set
+	 */
 	public void setServiceId(final int serviceId) {
 		this.serviceId = serviceId;
 	}
 
-	public void setLastSyncDate(final Date lastSyncDate) {
-		this.lastSyncDate = lastSyncDate;
-	}
-
-	public void setStatus(final SynchronizationStatus status) {
-		this.status = status;
-	}
-
-	public void setCredentials(final Properties credentials) {
-		this.credentials = credentials;
-	}
-
-	public boolean getServer() {
+	/**
+	 * @return the server
+	 */
+	public boolean isServer() {
 		return this.server;
 	}
 
+	/**
+	 * @param server the server to set
+	 */
 	public void setServer(final boolean server) {
 		this.server = server;
 	}
 
-	public String getInfo() {
-		return this.info;
-	}
-
-	public void setInfo(final String info) {
-		this.info = info;
-	}
-
-	public Class<? extends Resource> getResourceType() {
-		return this.resourceType;
-	}
-
-	public void setResourceType(final Class<? extends Resource> resourceType) {
-		this.resourceType = resourceType;
-	}
-
-	public SynchronizationDirection getDirection() {
-		return this.direction;
-	}
-
-	public void setDirection(final SynchronizationDirection direction) {
-		this.direction = direction;
+	/**
+	 * @return the data
+	 */
+	public SynchronizationData getData() {
+		return this.data;
 	}
 
 	/**
-	 * @param strategy the strategy to set
+	 * @param data the data to set
 	 */
-	public void setStrategy(final ConflictResolutionStrategy strategy) {
-		this.strategy = strategy;
+	public void setData(final SynchronizationData data) {
+		this.data = data;
+	}
+	
+	/**
+	 * @return the syncService
+	 */
+	public SyncService getSyncService() {
+		return this.syncService;
 	}
 
 	/**
-	 * @return the strategy
+	 * @param syncService the syncService to set
 	 */
-	public ConflictResolutionStrategy getStrategy() {
-		return strategy;
-	}
-
-	/**
-	 * @return the ssl_dn
-	 */
-	public String getSslDn() {
-		return sslDn;
-	}
-
-	/**
-	 * @param sslDn the ssl_dn to set
-	 */
-	public void setSslDn(final String sslDn) {
-		this.sslDn = sslDn;
-	}
-
-	/**
-	 * @return the secureApi
-	 */
-	public URI getSecureAPI() {
-		return secureAPI;
-	}
-
-	/**
-	 * @param secureAPI the secureApi to set
-	 */
-	public void setSecureAPI(final URI secureAPI) {
-		this.secureAPI = secureAPI;
+	public void setSyncService(final SyncService syncService) {
+		this.syncService = syncService;
 	}
 }
