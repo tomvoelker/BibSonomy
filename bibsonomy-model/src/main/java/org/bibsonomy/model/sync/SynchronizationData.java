@@ -35,49 +35,41 @@ import org.bibsonomy.model.Resource;
 public class SynchronizationData {
 
 	private URI service;
-	private String userName;
 	private Class<? extends Resource> resourceType;
 	private Date lastSyncDate;
 	private SynchronizationStatus status;
+	private String deviceInfo;
+	private String deviceId;
 	private String info;
 	
-		
-	/**
-	 * @return the userName
-	 */
-	public String getUserName() {
-		return this.userName;
-	}
-	/**
-	 * @param userName the userName to set
-	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
 	/**
 	 * @return the lastSyncDate
 	 */
 	public Date getLastSyncDate() {
 		return this.lastSyncDate;
 	}
+	
 	/**
 	 * @param lastSyncDate the lastSyncDate to set
 	 */
-	public void setLastSyncDate(Date lastSyncDate) {
+	public void setLastSyncDate(final Date lastSyncDate) {
 		this.lastSyncDate = lastSyncDate;
 	}
+	
 	/**
 	 * @return the status
 	 */
 	public SynchronizationStatus getStatus() {
 		return this.status;
 	}
+	
 	/**
 	 * @param status the status to set
 	 */
-	public void setStatus(SynchronizationStatus status) {
+	public void setStatus(final SynchronizationStatus status) {
 		this.status = status;
 	}
+	
 	/**
 	 * 
 	 * @return URI
@@ -85,13 +77,15 @@ public class SynchronizationData {
 	public URI getService() {
 		return this.service;
 	}
+	
 	/**
 	 * 
 	 * @param service
 	 */
-	public void setService(URI service) {
+	public void setService(final URI service) {
 		this.service = service;
 	}
+	
 	/**
 	 * 
 	 * @return class of the resource
@@ -99,22 +93,59 @@ public class SynchronizationData {
 	public Class<? extends Resource> getResourceType() {
 		return this.resourceType;
 	}
+	
 	/**
 	 * 
 	 * @param resourceType
 	 */
-	public void setResourceType(Class<? extends Resource> resourceType) {
+	public void setResourceType(final Class<? extends Resource> resourceType) {
 		this.resourceType = resourceType;
+	}
+	
+	/**
+	 * @return the info
+	 */
+	public String getInfo() {
+		return this.info;
+	}
+	
+	/**
+	 * @param info the info to set
+	 */
+	public void setInfo(final String info) {
+		this.info = info;
+	}
+	
+	/**
+	 * @return the deviceInfo
+	 */
+	public String getDeviceInfo() {
+		return this.deviceInfo;
+	}
+	
+	/**
+	 * @param deviceInfo the deviceInfo to set
+	 */
+	public void setDeviceInfo(final String deviceInfo) {
+		this.deviceInfo = deviceInfo;
+	}
+	
+	/**
+	 * @return the deviceId
+	 */
+	public String getDeviceId() {
+		return this.deviceId;
+	}
+	
+	/**
+	 * @param deviceId the deviceId to set
+	 */
+	public void setDeviceId(final String deviceId) {
+		this.deviceId = deviceId;
 	}
 	
 	@Override
 	public String toString() {
-		return userName + "@" + service + " for " + resourceType.getSimpleName() + " in status '" + status + "' (lastSyncDate=" + lastSyncDate + ")"; 
-	}
-	public String getInfo() {
-		return this.info;
-	}
-	public void setInfo(String info) {
-		this.info = info;
+		return "@" + service + " for " + resourceType.getSimpleName() + " in status '" + status + "' (lastSyncDate=" + lastSyncDate + ")"; 
 	}
 }
