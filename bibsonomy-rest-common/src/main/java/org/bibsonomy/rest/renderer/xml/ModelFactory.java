@@ -61,8 +61,8 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.ModelValidationUtils;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.validation.ModelValidator;
 
@@ -450,10 +450,7 @@ public class ModelFactory {
 		} else {
 			errors.append("synchronization status not present\n");
 		}
-
-		// FIXME do we need check of user name or can it be null?
-		syncData.setUserName(xmlSyncData.getUserName());
-
+		
 		if (!present(errors)) {
 			return "";
 		}

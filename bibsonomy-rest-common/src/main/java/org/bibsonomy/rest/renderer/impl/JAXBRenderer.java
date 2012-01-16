@@ -780,7 +780,6 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlSyncData.setResourceType(ResourceFactory.getResourceName(syncData.getResourceType()));
 		xmlSyncData.setService(syncData.getService().toString());
 		xmlSyncData.setSynchronizationStatus(syncData.getStatus().toString());
-		xmlSyncData.setUserName(syncData.getUserName());
 		xmlSyncData.setInfo(syncData.getInfo());
 		
 		xmlDoc.setSyncData(xmlSyncData);
