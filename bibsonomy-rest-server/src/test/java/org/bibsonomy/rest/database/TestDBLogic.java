@@ -13,7 +13,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.Classifier;
@@ -1012,46 +1011,35 @@ public class TestDBLogic implements LogicInterface {
 
 
 	@Override
-	public void createSyncService(final URI service, final boolean server, final String sslDn, final URI secureAPI) {
+	public void createSyncService(final SyncService service, final boolean server) {
 		// TODO Auto-generated method stub
-		
 	}
-
 
 	@Override
 	public void deleteSyncService(final URI service, final boolean server) {
 		// TODO Auto-generated method stub
-		
 	}
-
 
 	@Override
 	public List<URI> getSyncServices(final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
+	
 	@Override
-	public void createSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
-		// TODO Auto-generated method stub
-		
+	public void createSyncServer(final String userName, final SyncService server) {
+		// TODO Auto-generated method stub	
 	}
-
+	
+	@Override
+	public void updateSyncServer(final String userName, final SyncService server) {
+		// TODO Auto-generated method stub
+	}
 
 	@Override
 	public void deleteSyncServer(final String userName, final URI service) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
-
-
-	@Override
-	public void updateSyncServer(final String userName, final URI service, final Class<? extends Resource> resourceType, final Properties userCredentials, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	@Override
 	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
@@ -1059,34 +1047,27 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
-
 	@Override
 	public List<SynchronizationPost> getSyncPosts(final String userName, final Class<? extends Resource> resourceType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-
 	@Override
 	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
-
 
 	@Override
 	public void deleteSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
-
 
 	@Override
 	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 	@Override
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
