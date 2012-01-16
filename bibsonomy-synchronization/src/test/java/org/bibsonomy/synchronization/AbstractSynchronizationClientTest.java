@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.DBLogic;
@@ -26,6 +27,9 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.sync.ConflictResolutionStrategy;
+import org.bibsonomy.model.sync.SyncService;
+import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.rest.testutil.TestServerBuilder;
 import org.bibsonomy.testutil.ModelUtils;
@@ -294,6 +298,22 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	
 	protected void setModifiedPublicationKeys(String[] modifiedPublicationKeys) {
 		this.modifiedPublicationKeys = modifiedPublicationKeys;
+	}
+
+	/**
+	 * @param strategy
+	 * @param userCredentials
+	 * @param direction 
+	 * @return
+	 */
+	protected SyncService createServerService(final ConflictResolutionStrategy strategy, final Properties userCredentials, final SynchronizationDirection direction) {
+		final SyncService service = new SyncService();
+		service.setService(syncServer);
+		service.setResourceType(Resource.class);
+		service.setDirection(direction);
+		service.setStrategy(strategy);
+		service.setServerUser(userCredentials);
+		return service;
 	}
 	
 }
