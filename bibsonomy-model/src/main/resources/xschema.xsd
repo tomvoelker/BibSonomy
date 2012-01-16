@@ -348,8 +348,7 @@
 
 	<xsd:complexType name="SyncPostType">
 		<xsd:sequence>
-			
-			<xsd:element name="post" type="PostType"></xsd:element>
+			<xsd:element name="post" type="PostType" />
 		</xsd:sequence>
 		
 		<xsd:attribute name="createDate" type="xsd:dateTime" />
@@ -360,20 +359,17 @@
 
 	<xsd:complexType name="SyncDataType">
 		<xsd:sequence>
-			<xsd:element name="resourceType" type="xsd:string"></xsd:element>
-			<xsd:element name="lastSyncDate" type="xsd:dateTime"></xsd:element>
-			<xsd:element name="synchronizationStatus"
-				type="xsd:string">
-			</xsd:element>
-			<xsd:element name="info" type="xsd:string"></xsd:element>
+			<xsd:element name="resourceType" type="xsd:string" />
+			<xsd:element name="lastSyncDate" type="xsd:dateTime" />
+			<xsd:element name="synchronizationStatus" type="xsd:string" />
+			<xsd:element name="info" type="xsd:string" />
 		</xsd:sequence>
-		<xsd:attribute name="service" type="xsd:anyURI"></xsd:attribute>
-		<xsd:attribute name="userName" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="service" type="xsd:anyURI" />
 	</xsd:complexType>
 
 	<xsd:complexType name="SyncPostsType">
 		<xsd:sequence>
-			<xsd:element name="syncPost" type="SyncPostType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+			<xsd:element name="syncPost" type="SyncPostType" maxOccurs="unbounded" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 
