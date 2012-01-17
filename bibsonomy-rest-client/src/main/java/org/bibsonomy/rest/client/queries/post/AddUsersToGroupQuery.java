@@ -26,9 +26,11 @@ package org.bibsonomy.rest.client.queries.post;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.StringWriter;
+import java.util.List;
 
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -40,8 +42,8 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class AddUserToGroupQuery extends AbstractQuery<String> {
-	private final User user;
+public final class AddUsersToGroupQuery extends AbstractQuery<String> {
+	private final List<User> users;
 	private final String groupName;
 
 	/**
@@ -51,26 +53,25 @@ public final class AddUserToGroupQuery extends AbstractQuery<String> {
 	 * @param groupName
 	 *            name of the group the user is to be added to. the group must
 	 *            exist, else a {@link IllegalArgumentException} is thrown
-	 * @param user
-	 *            the user to be added
+	 * @param users
+	 *            the users to be added
 	 * @throws IllegalArgumentException
-	 *             if the groupname is null or empty, or if the user is null or
+	 *             if the group name is null or empty, or if the user is null or
 	 *             has no name defined
 	 */
-	public AddUserToGroupQuery(final String groupName, final User user) throws IllegalArgumentException {
+	public AddUsersToGroupQuery(final String groupName, final List<User> users) throws IllegalArgumentException {
 		if (!present(groupName)) throw new IllegalArgumentException("no groupName given");
-		if (!present(user)) throw new IllegalArgumentException("no user specified");
-		if (!present(user.getName())) throw new IllegalArgumentException("no username specified");
+		if (!present(users)) throw new IllegalArgumentException("no users specified");
 	
 		this.groupName = groupName;
-		this.user = user;
+		this.users = users;
 	}
 	
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		this.getRenderer().serializeUser(sw, this.user, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_GROUPS + "/" + this.groupName + "/" + URL_USERS, sw.toString());
+		this.getRenderer().serializeUsers(sw, this.users, null);
+		this.downloadedDocument = performRequest(HttpMethod.POST, RESTConfig.GROUPS_URL + "/" + this.groupName + "/" + RESTConfig.USERS_URL, sw.toString());
 		return null;
 	}
 	

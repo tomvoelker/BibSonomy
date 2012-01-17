@@ -83,7 +83,7 @@ import org.bibsonomy.rest.client.queries.get.GetTagsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListOfGroupQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
-import org.bibsonomy.rest.client.queries.post.AddUserToGroupQuery;
+import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
 import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
@@ -113,7 +113,7 @@ public class RestLogic implements LogicInterface {
 	private final RendererFactory rendererFactory;
 	private final RenderingFormat renderingFormat;
 	private final ProgressCallbackFactory progressCallbackFactory;
-	
+
 
 	/**
 	 * @param username the username
@@ -147,16 +147,6 @@ public class RestLogic implements LogicInterface {
 	private <T> T executeWithCallback(final AbstractQuery<T> query, final ProgressCallback callback) {
 		query.setProgressCallback(callback);
 		return this.execute(query);
-	}
-
-	@Override
-	public void addUserToGroup(final String groupName, final String userName) {
-		// TODO: only the username is used, but a whole user object is
-		// transmitted, so a dummy with only username is used here.
-		// -> This could lead to future problems
-		final User dummyUserObject = new User();
-		dummyUserObject.setName(userName);
-		execute(new AddUserToGroupQuery(groupName, dummyUserObject));
 	}
 
 	@Override
@@ -262,8 +252,13 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
-		// groups cannot be renamed
-		return execute(new ChangeGroupQuery(group.getName(), group));
+		switch (operation) {
+		case ADD_NEW_USER:
+			return execute(new AddUsersToGroupQuery(group.getName(), group.getUsers()));
+		default:
+			// groups cannot be renamed
+			return execute(new ChangeGroupQuery(group.getName(), group));
+		}
 	}
 
 	@Override
@@ -576,7 +571,7 @@ public class RestLogic implements LogicInterface {
 	public void createSyncServer(final String userName, final SyncService server) {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public void updateSyncServer(final String userName, final SyncService server) {
 		throw new UnsupportedOperationException();
@@ -616,7 +611,7 @@ public class RestLogic implements LogicInterface {
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		return this.execute(new CreateSyncPlanQuery(service.toString(), clientPosts, resourceType, strategy, direction));
 	}
-	
+
 	@Override
 	public List<SyncService> getAllSyncServices(final boolean server) {
 		throw new UnsupportedOperationException();
