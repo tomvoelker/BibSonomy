@@ -40,11 +40,12 @@ public class DeleteSyncDataStrategy extends AbstractDeleteStrategy {
 
 		try {
 			final LogicInterface logic = this.getLogic();
-			final Date parsedDate = (date == null ? null : RestSyncUtils.parseDate(date));
+			// we allow null dates; they are used to delete ALL entries
+			final Date parsedDate = (this.date == null ? null : RestSyncUtils.parseDate(this.date));
 			logic.deleteSyncData(logic.getAuthenticatedUser().getName(), this.serviceURI, this.resourceType, parsedDate);
 			return true;
 		} catch (ParseException ex) {
-			throw new BadRequestOrResponseException("the given date '" + date + "' could not be parsed.");
+			throw new BadRequestOrResponseException("the given date '" + this.date + "' could not be parsed.");
 		}
 	}
 }
