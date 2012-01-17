@@ -49,7 +49,7 @@ public final class SynchronizationUtils {
 			final String[] split = query.split("=");
 			deviceInfo = split[1];
 		} else {
-			deviceInfo = "unkown";
+			deviceInfo = "unknown";
 		}
 		
 		data.setDeviceInfo(deviceInfo);
