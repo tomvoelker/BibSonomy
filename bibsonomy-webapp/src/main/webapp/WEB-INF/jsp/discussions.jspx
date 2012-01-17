@@ -54,13 +54,18 @@
           <div id="general_100">
   			<p id="groupIntro">
   			  <c:choose>
-  				<c:when test="${empty command.requestedUser }">
-               		<fmt:message key="system.recentlyDiscussed.intro.noUser"/>
-               	</c:when>
-				<c:otherwise>
+  				<c:when test="${not empty command.requestedUser }">
 					<fmt:message key="system.recentlyDiscussed.intro.requUser">
 						<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
 					</fmt:message>
+               	</c:when>
+               	<c:when test ="${not empty command.requestedGroup }">
+               		<fmt:message key="system.recentlyDiscussed.intro.requGroup">
+						<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
+					</fmt:message>
+               	</c:when>
+				<c:otherwise>
+               		<fmt:message key="system.recentlyDiscussed.intro.noUser"/>
 				</c:otherwise>
 			  </c:choose>
 			</p> 

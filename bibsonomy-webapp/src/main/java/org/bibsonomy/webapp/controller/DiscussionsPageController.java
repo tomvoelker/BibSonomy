@@ -7,8 +7,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.webapp.command.DiscussedViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
-import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -19,24 +19,29 @@ import org.bibsonomy.webapp.view.Views;
  * @author Sven Stefani
  * @version $Id$
  */
-public class DiscussionsPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
+public class DiscussionsPageController extends SingleResourceListControllerWithTags implements MinimalisticController<DiscussedViewCommand> {
 	private static final Log LOGGER = LogFactory.getLog(DiscussionsPageController.class);
 	
 	@Override
-	public View workOn(final UserResourceViewCommand command) {
+	public View workOn(final DiscussedViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
 
-		final String groupingName = command.getRequestedUser();
-		GroupingEntity groupingEntity = null;
+		final String groupingName; 
+		final GroupingEntity groupingEntity;
 		
-		if (present(groupingName)) {
+		if (present(command.getRequestedUser())) {
 			// show posts discussed by the requested User
 			groupingEntity = GroupingEntity.USER;
+			groupingName = command.getRequestedUser();
+		} else if (present(command.getRequestedGroup())){
+			groupingEntity = GroupingEntity.GROUP;
+			groupingName = command.getRequestedGroup();
 		} else {
 			// show posts discussed by anyone
 			groupingEntity = GroupingEntity.ALL;
+			groupingName = null;
 		}
 		
 	
@@ -120,7 +125,7 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 	}
 
 	@Override
-	public UserResourceViewCommand instantiateCommand() {
-		return new UserResourceViewCommand();
+	public DiscussedViewCommand instantiateCommand() {
+		return new DiscussedViewCommand();
 	}
 }
