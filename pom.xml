@@ -217,7 +217,7 @@
 		<module>bibsonomy-scraper</module>
 		<module>bibsonomy-scrapingservice</module>
 		<module>bibsonomy-synchronization</module>
-		<module>bibsonomy-entity</module>
+		<module>bibsonomy-entityresolver</module>
 		<module>bibsonomy-web-common</module>
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>
@@ -631,7 +631,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-entity</artifactId>
+				<artifactId>bibsonomy-entityresolver</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
