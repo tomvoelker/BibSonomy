@@ -486,6 +486,39 @@
   		  AND `group` >=0
   		  <include refid="spammerClassified"/>
 	</select>
+			
+	<select id="getBookmarkWithDiscussionsForGroup" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bookmarkParam">
+		SELECT b.content_id, d2.interHash, d2.interHash AS intraHash, b.title, description, b.date,
+		       b.url, null as user_name, b.content_type, 0 as count, <include refid="reviewRatingsRows" />
+		FROM (
+				SELECT interHash, MAX(date)  AS date
+				FROM groups g, discussion d
+  				WHERE <include refid="discussionVisibleForGroup"/>
+ 				  AND g.group = #groupId#
+ 				  AND g.user_name = d.user_name
+  				  AND content_type = 1
+  				  AND (type=1 OR type=2)
+    			  AND d.group >=0
+   				GROUP BY interHash
+				ORDER BY date DESC
+				LIMIT #limit# OFFSET #offset#
+		) as d2
+ 		JOIN gold_standard b ON d2.interHash = b.simhash1 <include refid="reviewRatingsJoinCommunityBookmark" />
+		ORDER BY d2.date DESC
+	</select>
+		
+
+ 	<select id="getBookmarkWithDiscussionsCountForGroup" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(DISTINCT interHash) 
+		FROM groups g, discussion d
+  		WHERE <include refid="discussionVisibleForGroup"/>
+ 		  AND g.group = #groupId#
+ 		  AND g.user_name = d.user_name
+  		  AND content_type = 1
+  		  AND (type=1 OR type=2)
+    	  AND d.group >=0
+	</select>
+		
 
     <insert id="insertBookmark" parameterClass="bookmarkParam">
 		INSERT INTO bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name)

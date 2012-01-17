@@ -713,7 +713,6 @@
 		ORDER BY d2.date DESC
 	</select>
 	
-
 	<select id="getBibTexWithDiscussionsCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(DISTINCT interHash)
 		FROM discussion d <include refid="spammerClassifiedJoin"/>
@@ -723,7 +722,37 @@
 		  AND `group` >= 0
   		  <include refid="spammerClassified"/>	  
   	</select>
-
+ 	
+	<select id="getBibTexWithDiscussionsForGroup" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
+		SELECT 
+			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, 0 as count, <include refid="reviewRatingsRows" /> 
+		FROM (
+				SELECT interHash, MAX(date) AS date
+				FROM groups g, discussion d
+ 				WHERE <include refid="discussionVisibleForGroup"/>
+ 				  AND g.group = #groupId#
+ 				  AND g.user_name = d.user_name
+  				  AND content_type = 2 
+  				  AND (type=1 OR type=2)
+  				  AND d.group >=0
+  				GROUP BY interHash
+				ORDER BY date DESC
+				LIMIT #limit# OFFSET #offset#
+		) as d2
+ 		JOIN gold_standard b ON d2.interHash = b.simhash1 <include refid="reviewRatingsJoinPublication" />
+		ORDER BY d2.date DESC
+	</select>
+	
+	<select id="getBibTexWithDiscussionsCountForGroup" resultClass="int" parameterClass="bibtexParam">
+		SELECT COUNT(DISTINCT interHash)
+		FROM groups g, discussion d
+		WHERE <include refid="discussionVisibleForGroup"/>
+		  AND g.group = #groupId#
+		  AND g.user_name = d.user_name
+		  AND content_type = 2 
+		  AND (type=1 OR type=2)
+		  AND d.group >=0
+  	</select> 
 
 	<select id="getBibTexForUserCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
 		SELECT count(*)
