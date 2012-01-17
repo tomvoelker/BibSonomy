@@ -470,7 +470,6 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<SyncService> getAllSyncServices(final boolean server) {
-		this.permissionDBManager.ensureAdminAccess(getAuthenticatedUser());
 		final DBSession session = this.openSession();
 		try {
 			return syncDBManager.getAllSyncServices(server, session);
