@@ -405,6 +405,14 @@
 		<to last="true">/discussed</to>
 	</rule>
 
+	<!-- /discussed/group/GROUP -->
+	<rule>
+		<name>/discussed/group/GROUP</name>
+		<from>^/+discussed/group/+([^/]+)$</from>
+		<set type="parameter" name="requestedGroup">$1</set>
+		<to last="true">/discussed</to>
+	</rule>
+
 	<!-- ############## Curriculum vitae pages ############### -->
 	
 	<!-- /cv/NAME -->
