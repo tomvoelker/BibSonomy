@@ -165,9 +165,9 @@
 				<div id="oasherparomeocontainer">
 					<h4><fmt:message key="post.resource.openaccess.sherparomeo.headline"/></h4>
 
-					<c:set var="oaRequestPublisherUrlParameter" value="?publisher=${bibtex.publisher}"/>
+					<c:set var="oaRequestPublisherUrlParameter" value="?action=SHERPAROMEO&amp;publisher=${bibtex.publisher}"/>
 					<c:if test="${bibtex.entrytype=='article'}">
-						<c:set var="oaRequestPublisherUrlParameter" value="?jTitle=${bibtex.journal}"/>
+						<c:set var="oaRequestPublisherUrlParameter" value="?action=SHERPAROMEO&amp;jTitle=${bibtex.journal}"/>
 					</c:if>
 					<input type="hidden" id="oaRequestPublisherUrlParameter" value="${oaRequestPublisherUrlParameter}"/>
 					
