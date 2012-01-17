@@ -1,9 +1,8 @@
 package org.bibsonomy.rest.strategy.sync;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.net.URI;
 import java.text.ParseException;
+import java.util.Date;
 
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -38,13 +37,11 @@ public class DeleteSyncDataStrategy extends AbstractDeleteStrategy {
 
 	@Override
 	protected boolean delete() {
-		if (!present(date)) {
-			throw new BadRequestOrResponseException("no date given");
-		}
 
 		try {
 			final LogicInterface logic = this.getLogic();
-			logic.deleteSyncData(logic.getAuthenticatedUser().getName(), this.serviceURI, this.resourceType, RestSyncUtils.parseDate(date));
+			final Date parsedDate = (date == null ? null : RestSyncUtils.parseDate(date));
+			logic.deleteSyncData(logic.getAuthenticatedUser().getName(), this.serviceURI, this.resourceType, parsedDate);
 			return true;
 		} catch (ParseException ex) {
 			throw new BadRequestOrResponseException("the given date '" + date + "' could not be parsed.");
