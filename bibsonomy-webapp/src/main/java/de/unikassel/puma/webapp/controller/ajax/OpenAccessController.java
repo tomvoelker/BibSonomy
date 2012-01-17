@@ -28,6 +28,7 @@ import de.unikassel.puma.webapp.command.ajax.OpenAccessCommand;
 public class OpenAccessController extends AjaxController implements MinimalisticController<OpenAccessCommand> {
 
 	private static final String GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";
+	private static final String SHERPAROMEO = "SHERPAROMEO";
 
 	private SherpaRomeoInterface sherpaLogic;
 	
@@ -74,17 +75,19 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 				return Views.AJAX_JSON;
 			}
 			
-			// TODO: config via spring + singleton
-			this.sherpaLogic = new SherpaRomeoImpl();
-	
-			if (command.getPublisher() != null) {
-				command.setResponseString(this.sherpaLogic.getPolicyForPublisher(command.getPublisher(), command.getqType()));
+			if (SHERPAROMEO.equals(action)) {
+				// TODO: config via spring + singleton
+				this.sherpaLogic = new SherpaRomeoImpl();
+		
+				if (command.getPublisher() != null) {
+					command.setResponseString(this.sherpaLogic.getPolicyForPublisher(command.getPublisher(), command.getqType()));
+				}
+				if (command.getjTitle() != null) {
+					command.setResponseString(this.sherpaLogic.getPolicyForJournal(command.getjTitle(), command.getqType()));			
+				}
+		
+				return Views.AJAX_JSON;
 			}
-			if (command.getjTitle() != null) {
-				command.setResponseString(this.sherpaLogic.getPolicyForJournal(command.getjTitle(), command.getqType()));			
-			}
-	
-			return Views.AJAX_JSON;
 		}
 		
 		return Views.AJAX_JSON;
