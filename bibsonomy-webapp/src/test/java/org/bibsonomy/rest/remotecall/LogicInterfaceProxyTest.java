@@ -232,25 +232,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			return a;
 		}
 	}
-	
-	/**
-	 * runs the test defined by {@link #addUserToGroup(String, String)} with certain arguments
-	 */
-	@Test
-	public void addUserToGroupTest() {
-		this.addUserToGroup("groupName", "userName");
-	}
-	
-	@Override
-	public void addUserToGroup(final String groupName, final String userName) {
-		// lowercasing the username is necessary here, as this is done
-		// by default when calling user.setName(userName)
-		serverLogic.addUserToGroup(groupName, userName.toLowerCase());
-		EasyMock.replay(serverLogic);
-		clientLogic.addUserToGroup(groupName, userName);
-		EasyMock.verify(serverLogic);
-		assertLogin();
-	}
+
 
 	/**
 	 * runs the test defined by {@link #createGroup(Group)} with certain arguments
@@ -654,19 +636,44 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		updateGroup(ModelUtils.getGroup(), GroupUpdateOperation.UPDATE_ALL);
 	}
 	
+	/**
+	 * runs the test to add a user to a group 
+	 */
+	@Test
+	public void addUserToGroupTest() {
+		final Group group = new Group("groupName");
+		group.setUsers(Collections.singletonList(new User("testUser1")));
+		this.updateGroup(group, GroupUpdateOperation.ADD_NEW_USER);
+	}
+	
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
-		/*
-		 * FIXME: remove this line. It is here only, because privlevel is not included 
-		 * in the XML and hence not transported to the serverLogic.
-		 */
-		group.setPrivlevel(null); 
 		
-		EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(group.getName() + "-new");
-		EasyMock.replay(serverLogic);
-		assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation));
-		EasyMock.verify(serverLogic);
-		assertLogin();
+		switch (operation) {
+		case ADD_NEW_USER:
+
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn("OK");
+			EasyMock.replay(serverLogic);
+			assertEquals("OK", clientLogic.updateGroup(group, operation));
+			EasyMock.verify(serverLogic);
+			assertLogin();
+			break;
+
+		default:
+			/*
+			 * FIXME: remove this line. It is here only, because privlevel is not included 
+			 * in the XML and hence not transported to the serverLogic.
+			 */
+			group.setPrivlevel(null); 
+			
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(group.getName() + "-new");
+			EasyMock.replay(serverLogic);
+			assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation));
+			EasyMock.verify(serverLogic);
+			assertLogin();
+			break;
+		}
+		
 		return null;
 	}
 
