@@ -203,7 +203,6 @@
 		<module>bibsonomy-database-common</module>
 		<module>bibsonomy-dl-importer</module>
 		<module>bibsonomy-importer</module>
-		<module>bibsonomy-entityresolver</module>
 		<module>bibsonomy-layout</module>
 		<module>bibsonomy-logging</module>
 		<module>bibsonomy-lucene</module>
@@ -626,12 +625,12 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-importer</artifactId>
+				<artifactId>bibsonomy-synchronization</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-entityresolver</artifactId>
+				<artifactId>bibsonomy-importer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -740,13 +739,6 @@
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>1.4</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-synchronization</artifactId>
-				<version>${project.version}</version>
-				<type>jar</type>
-				<scope>compile</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
