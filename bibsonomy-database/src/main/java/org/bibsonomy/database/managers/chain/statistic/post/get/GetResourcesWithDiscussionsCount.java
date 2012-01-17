@@ -29,15 +29,11 @@ public class GetResourcesWithDiscussionsCount extends StatisticChainElement {
 				return new Statistics(0);			
 			}
 			if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-				System.out.println("Bibtex discussion group count");
-				Statistics stat = new Statistics(this.db.getNumberOfResourcesWithDiscussionsForGroup(BibTex.class, group.getGroupId(), param.getUserName(), param.getGroups(), session));
-				return stat;
+				return new Statistics(this.db.getNumberOfResourcesWithDiscussionsForGroup(BibTex.class, group.getGroupId(), param.getUserName(), param.getGroups(), session));
 			}
 			
 			if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-				System.out.println("Bookmark discussion group count");
-				Statistics stat = new Statistics(this.db.getNumberOfResourcesWithDiscussionsForGroup(Bookmark.class, group.getGroupId(), param.getUserName(), param.getGroups(), session));
-				return stat;
+				return new Statistics(this.db.getNumberOfResourcesWithDiscussionsForGroup(Bookmark.class, group.getGroupId(), param.getUserName(), param.getGroups(), session));
 			}
 		}
 
