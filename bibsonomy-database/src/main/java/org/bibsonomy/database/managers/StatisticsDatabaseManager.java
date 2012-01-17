@@ -120,6 +120,19 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * @param resourceType
+	 * @param groupId (of the requested group)
+	 * @param userName 
+	 * @param groupId 
+	 * @param visibleGroupIDs 
+	 * @param session
+	 * @return a statistical number (int)
+	 */
+	public int getNumberOfResourcesWithDiscussionsForGroup(final Class<? extends Resource> resourceType, final int groupId, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
+		return this.getDatabaseManagerForResourceType(resourceType).getPostsWithDiscussionsCountForGroup(groupId, userName, visibleGroupIDs, session);
+	}
+
+	/**
+	 * @param resourceType
 	 * @param requHash 
 	 * @param simHash 
 	 * @param session
@@ -246,6 +259,10 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	
 	public StatisticsValues getUserDiscussionsStatistics(final StatisticsParam param, final DBSession session){
 		return this.queryForObject("userRatingStatistic", param, StatisticsValues.class, session);
+	}
+
+	public StatisticsValues getUserDiscussionsStatisticsForGroup(final StatisticsParam param, final DBSession session){
+		return this.queryForObject("userRatingStatisticForGroup", param, StatisticsValues.class, session);
 	}
 	
 }

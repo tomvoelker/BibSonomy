@@ -886,6 +886,29 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
+	 * Returns the number of posts with discussions for a given group (posts discussed by group members).
+	 * 
+	 * @param groupId 
+	 * @param loginUserName 
+	 * @param groupId 
+	 * @param visibleGroupIDs 
+	 * @param session
+	 * @return the number of posts with discussions of the requested User which the logged in user is allowed to see
+	 * 
+	 * groupId or
+	 * visibleGroupIDs && userName && (userName != requestedUserName)
+	 */
+	public int getPostsWithDiscussionsCountForGroup(final int groupId, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
+		final P param = this.getNewParam();
+		param.setUserName(loginUserName);
+		param.setGroups(visibleGroupIDs);
+		param.setGroupId(groupId);
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
+		final Integer result = this.queryForObject("get" + this.resourceClassName + "WithDiscussionsCountForGroup", param, Integer.class, session);
+		return present(result) ? result : 0;
+	}
+
+	/**
 	 * Get posts of users which the logged-in users is following.
 	 * 
 	 * @param loginUserName - 
@@ -1543,6 +1566,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.postList("get" + this.resourceClassName + "WithDiscussions", param, session);
 	}
 
+	protected List<Post<R>> getPostsWithDiscussionsForGroup(final P param, final DBSession session) {
+		return this.postList("get" + this.resourceClassName + "WithDiscussionsForGroup", param, session);
+	}
+	
 	/** 
 	 * <em>/discussions/MaxMustermann</em><br/><br/>
 	 * 
@@ -1556,24 +1583,66 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * actually belongs to this group.
 	 * 
 	 * @param loginUserName
+	 * @param groupingEntity TODO
 	 * @param requestedUserName
-	 * @param simHash
-	 * @param groupId
+	 * @param requestedGroupName TODO
 	 * @param visibleGroupIDs 
 	 * @param filter
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
+	 * @param simHash
+	 * @param groupId
 	 * @return list of posts
 	 */
 	public List<Post<R>> getPostsWithDiscussions(final String loginUserName, final String requestedUserName, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
+		final P param;
+		// user param or general param
+		param = this.createParam(loginUserName, requestedUserName, limit, offset);
 		param.setGroups(visibleGroupIDs);
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
-
 		return this.getPostsWithDiscussions(param, session);
+	}
+	
+	
+	/** 
+	 * <em>/discussions/MaxMustermann</em><br/><br/>
+	 * 
+	 * This method prepares queries which retrieve all posts with discussions by user with
+	 * user name (requestedUserName). Additionally the group to be shown can be
+	 * restricted. The queries are built in a way, that not only public posts
+	 * are retrieved, but also friends or private or other groups, depending
+	 * upon if userName is allowed to see them.
+	 * 
+	 * ATTENTION! in case of a given groupId it is NOT checked if the user
+	 * actually belongs to this group.
+	 * 
+	 * @param loginUserName
+	 * @param groupingEntity TODO
+	 * @param requestedUserName
+	 * @param requestedGroupName TODO
+	 * @param visibleGroupIDs 
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param systemTags
+	 * @param session
+	 * @param simHash
+	 * @param groupId
+	 * @return list of posts
+	 */
+	public List<Post<R>> getPostsWithDiscussionsForGroup(final String loginUserName, final int requestedGroupId, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		final P param;
+		//group param
+		param = this.createParam(limit, offset);
+		param.setUserName(loginUserName);
+		param.setGroupId(requestedGroupId);
+		param.setGroups(visibleGroupIDs);
+		param.setFilter(filter);
+		param.addAllToSystemTags(systemTags);
+		return this.getPostsWithDiscussionsForGroup(param, session);
 	}
 	
 }
