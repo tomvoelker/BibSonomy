@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.statistic.post.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
@@ -42,6 +43,7 @@ public class GetResourcesForGroupCount extends StatisticChainElement {
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
 		return 	param.getGrouping() == GroupingEntity.GROUP && 
-				present(param.getRequestedGroupName());
+				present(param.getRequestedGroupName()) &&
+				!FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter());
 	}
 }
