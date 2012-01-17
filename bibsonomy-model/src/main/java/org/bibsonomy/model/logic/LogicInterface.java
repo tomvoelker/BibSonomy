@@ -297,19 +297,19 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	/**
 	 * Updates a group in the database.
 	 * 
+	 * Depending on the {@link GroupUpdateOperation}, different actions are done:
+	 * <dl>
+	 * <dt>{@link GroupUpdateOperation#ADD_NEW_USER}</dt><dd>Adds an existing user to an existing group.</dd>
+	 * <dt>{@link GroupUpdateOperation#UPDATE_SETTINGS}</dt><dd>Updates the settings of the group.</dd>
+	 * <dt>{@link GroupUpdateOperation#UPDATE_ALL}</dt><dd>Updates the complete group.</dd>
+	 * </dl>
+	 * 
+	 * 
 	 * @param group  the group to update
 	 * @param operation the operation which should be performed
 	 * @return groupID the group id of the updated group
 	 */
 	public String updateGroup(Group group, final GroupUpdateOperation operation);
-
-	/**
-	 * Adds an existing user to an existing group.
-	 * 
-	 * @param groupName  name of the existing group
-	 * @param userName  user to add
-	 */
-	public void addUserToGroup(String groupName, String userName);
 
 	/**
 	 * Adds a document. If the resourceHash is given, the document is connected
