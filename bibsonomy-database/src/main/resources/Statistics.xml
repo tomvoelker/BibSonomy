@@ -28,6 +28,11 @@
 	</resultMap>
 
 
+
+	<!-- The inner select counts some global values, while the outer select actually determines the distribution.
+		There should be an easier way, to do this in Java. Simply put out the ratings and create the distribution and all values in Java.
+		Needs new ResultMap etc. 
+		WHY IS THE group>=0 condition not used? It should remove spammers!  -->
 	<select id="userRatingStatistic" resultMap="Statistics.userDiscussionsRatingStatistic" parameterClass="StatisticsParam" >
 		SELECT rating, COUNT(rating) cnt, (COUNT(rating) / maxcnt * 100) percent, maxcnt, avgrating, maxrating, minrating 
 		FROM discussion AS d <include refid="spammerClassifiedJoin"/>, 
@@ -37,12 +42,35 @@
 					<include refid="discussionVisible"/>
 					AND type = 1 AND rating IS NOT NULL
   					<include refid="spammerClassified"/>
+  				    <!-- AND d.group >=0 -->
 			) AS m 
 		WHERE 
 			<include refid="discussionVisible"/>
 			AND type = 1 AND rating IS NOT NULL
   			<include refid="spammerClassified"/>
+		    <!-- AND d.group >=0 -->
 		GROUP BY rating
 	</select>
-
+ 
+	<select id="userRatingStatisticForGroup" resultMap="Statistics.userDiscussionsRatingStatistic" parameterClass="StatisticsParam" >
+		SELECT rating, COUNT(rating) cnt, (COUNT(rating) / maxcnt * 100) percent, maxcnt, avgrating, maxrating, minrating 
+		FROM groups g, discussion AS d, 
+			(SELECT COUNT(*) maxcnt, AVG(rating) avgrating, MAX(rating) maxrating, MIN(rating) minrating 
+				FROM groups g, discussion AS d
+				WHERE
+					<include refid="discussionVisibleForGroup"/>
+					AND type = 1 AND rating IS NOT NULL
+   				    AND g.group = #groupId#
+ 				    AND g.user_name = d.user_name
+  				    <!-- AND d.group >=0 -->
+ 			) AS m 
+		WHERE 
+			<include refid="discussionVisibleForGroup"/>
+			AND type = 1 AND rating IS NOT NULL
+		    AND g.group = #groupId#
+		    AND g.user_name = d.user_name
+		    <!-- AND d.group >=0 -->
+ 		GROUP BY rating
+	</select>
+ 
 </sqlMap>
