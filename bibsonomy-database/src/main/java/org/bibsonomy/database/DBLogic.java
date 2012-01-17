@@ -321,7 +321,7 @@ public class DBLogic implements LogicInterface {
     		 * FIXME: if the client is not in the sync_services table, this 
     		 * statements silently fails. :-(
     		 */
-    		log.info("try to set syncdata as planned");
+    		log.debug("try to set syncdata as planned");
     		this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.PLANNED, session);
     		
     		/*
@@ -1047,23 +1047,6 @@ public class DBLogic implements LogicInterface {
 		return ((CrudableContent) man);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#addUserToGroup(java.lang.String,
-	 * java.lang.String)
-	 */
-	@Override
-	public void addUserToGroup(final String groupName, final String userName) {
-		// TODO: take care of toLowerCase()!
-		final DBSession session = openSession();
-		try {
-			groupDBManager.addUserToGroup(groupName, userName, session);
-		} finally {
-			session.close();
-		}
-	}
 
 	/**
 	 * helper method to check if a user is currently logged in
@@ -1099,12 +1082,13 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
+	/** 
+	 *
+	 * New users can be added to a group by using 
+	 * {@link GroupUpdateOperation#ADD_NEW_USER} and putting the new users only (!) 
+	 * into {@link Group#setUsers(List)}.
 	 * 
-	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#updateGroup(org.bibsonomy.model
-	 * .Group)
+	 * @see org.bibsonomy.model.logic.LogicInterface#updateGroup(org.bibsonomy.model.Group)
 	 */
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
@@ -1128,9 +1112,8 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.updateGroupSettings(group, session);
 				break;
 			case ADD_NEW_USER:
-				// until now only one user can be added to a group at once, so this loop is currently not necessary
 				for (final User user: group.getUsers()) {
-					this.addUserToGroup(groupName, user.getName());
+					this.groupDBManager.addUserToGroup(groupName, user.getName(), session);
 				}
 				break;
 			default:
