@@ -113,6 +113,7 @@
                            </a>
                          </c:if>
                        </td>
+                       <td><a href="/discussed/group/${fn:escapeXml(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></td>
                     </tr>
 				  </c:forEach>
                 </table>  	

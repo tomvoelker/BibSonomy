@@ -88,6 +88,19 @@
 				</li>
 			</c:if>
 
+			<!-- link to user page -->
+			<c:if test="${not empty command.requestedGroup}">
+				<li>				
+					<span class="sidebar_h">
+						<a href="/group/${fn:escapeXml(command.requestedGroup)}">
+							<fmt:message key="discussion.showGroup">
+								<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
+							</fmt:message>
+						</a>
+					</span>
+				</li>
+			</c:if>
+
 			<c:if test="${not empty command.discussionsStatistic}">
 				<c:set var="stats" value="${command.discussionsStatistic}"/>
 				<li>				
