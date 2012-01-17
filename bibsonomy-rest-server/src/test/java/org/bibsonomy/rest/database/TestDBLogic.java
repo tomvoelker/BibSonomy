@@ -683,9 +683,6 @@ public class TestDBLogic implements LogicInterface {
 		wwwTag.getPosts().add(post_16);
 	}
 
-	@Override
-	public void addUserToGroup(final String groupName, final String userName) {
-	}
 
 	@Override
 	public void deleteGroup(final String groupName) {
