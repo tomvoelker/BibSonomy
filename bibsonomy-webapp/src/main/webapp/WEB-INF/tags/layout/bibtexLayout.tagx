@@ -65,7 +65,9 @@
 					<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 
 					<c:if test="${not empty contentExt}">
-						<jsp:invoke fragment="contentExt" />
+						<div class="bookbox">
+							<jsp:invoke fragment="contentExt" />
+						</div>
 					</c:if>			
 					
 				</c:otherwise>
