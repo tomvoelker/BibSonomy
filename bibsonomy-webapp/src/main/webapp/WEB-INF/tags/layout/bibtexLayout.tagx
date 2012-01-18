@@ -20,7 +20,8 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
-	<jsp:directive.attribute name="headerExt" fragment="true" required="false" />		
+	<jsp:directive.attribute name="headerExt" fragment="true" required="false" />
+	<jsp:directive.attribute name="contentExt" fragment="true" required="false" />
 	
 	<!-- 
 		store some locale messages in variables to be
@@ -56,12 +57,17 @@
 				</c:when>
 				<c:otherwise>
 					<div id="general_100">
-					<c:if test="${not empty contentHeading}">
-						<jsp:invoke fragment="contentHeading" />
-					</c:if>
+						<c:if test="${not empty contentHeading}">
+							<jsp:invoke fragment="contentHeading" />
+						</c:if>
 					</div>
 
 					<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+
+					<c:if test="${not empty contentExt}">
+						<jsp:invoke fragment="contentExt" />
+					</c:if>			
+					
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>
