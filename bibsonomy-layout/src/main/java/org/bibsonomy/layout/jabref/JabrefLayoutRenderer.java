@@ -23,6 +23,8 @@
 
 package org.bibsonomy.layout.jabref;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -254,7 +256,10 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	private BibtexDatabase bibtex2JabrefDB(final List<? extends Post<? extends Resource>> bibtexList) {
 		final BibtexDatabase db = new BibtexDatabase();
 		for (final Post<? extends Resource> post : bibtexList) {
-			db.insertEntry(JabRefModelConverter.convertPost(post, urlGenerator));
+			final BibtexEntry convertedPost = JabRefModelConverter.convertPost(post, this.urlGenerator);
+			if (present(convertedPost)) {
+				db.insertEntry(convertedPost);
+			}
 		}
 		return db;
 	}
