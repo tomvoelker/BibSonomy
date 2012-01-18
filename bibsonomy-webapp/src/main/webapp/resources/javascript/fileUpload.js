@@ -30,7 +30,7 @@ $(function(){
 			return false;
 		}
 		var intraHash=$(".intraHash").val();
-		var input="<form class='upform' action='/ajax/documents?ckey=" + fuCkey +
+		var input="<form class='upform' action='/ajax/documents?ckey=" + ckey +
 		"&temp=false&intraHash=" + intraHash + 
 		"' method='POST' enctype='multipart/form-data'>" + 
 		"<input class='fu' type='file' name='file'/></form>";
@@ -102,7 +102,7 @@ function uploadRequestSuccessful(data) {
 
 		var resdir = $(".resdir").val();
 		var deleteMsg=getString("bibtex.actions.private_document.delete");
-		var div = "<div class='fsRow'><a class='documentFileName' href='/documents/" + fuIntraHash + "/" + fuUserName + "/" + fileName + "'><img alt='" + getString("bibtex.actions.private_document.download") + "' src='"+ resdir + "/image/document-txt-blue.png' style='float: left;'/>" +
+		var div = "<div class='fsRow'><a class='documentFileName' href='/documents/" + fuIntraHash + "/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(fileName) + "'><img alt='" + getString("bibtex.actions.private_document.download") + "' src='"+ resdir + "/image/document-txt-blue.png' style='float: left;'/>" +
 		fileName + "</a> (<a class='deleteDocument' href='/ajax/documents?intraHash=" + fuIntraHash + "&fileName="+ fileName + 	"&ckey=" + ckey + "&temp=false&action=delete'>" + deleteMsg + "</a>)</div>";
 		$("#files").append(div);
 		$(".deleteDocument").click(deleteLinkClicked);
