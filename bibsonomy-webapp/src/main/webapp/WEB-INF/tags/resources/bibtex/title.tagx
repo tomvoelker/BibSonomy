@@ -8,7 +8,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
 
 	<!-- include link to private document(s) -->	
-	<bib:documents post="${post}" includeFilename="${false}"/>
+	<bib:documents post="${post}"/>
 
 	<!--  display title -->
 	<c:set var="bibUrlTemplate">/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}</c:set>
