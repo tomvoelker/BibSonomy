@@ -4,9 +4,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.Vector;
 import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
@@ -177,15 +177,15 @@ public class ContentNegotiationFilter implements Filter {
 		/*
 		 * extract ordered list of preferred types
 		 */
-		final SortedMap<Double, Vector<String>> preferredTypes = org.bibsonomy.rest.utils.HeaderUtils.getPreferredTypes(acceptHeader);
+		final SortedMap<Double, List<String>> preferredTypes = org.bibsonomy.rest.utils.HeaderUtils.getPreferredTypes(acceptHeader);
 		/*
 		 * extract highest ranked formats
 		 */
-		final Vector<String> firstFormats = preferredTypes.get(preferredTypes.firstKey());
+		final List<String> firstFormats = preferredTypes.get(preferredTypes.firstKey());
 		/*
 		 * return best match
 		 */
-		return FORMAT_MAPPING.get(firstFormats.firstElement());
+		return FORMAT_MAPPING.get(firstFormats.get(0));
 	}
 
 
