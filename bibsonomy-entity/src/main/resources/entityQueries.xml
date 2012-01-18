@@ -5,26 +5,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="org.mybatis.example.Entity-Identification">
 
 <!-- database bibsonomy_strudel -->
-<select id="selectBibtex" parameterType="String" resultType="String">
-SELECT author FROM bibtex WHERE `group` = 0 LIMIT 1000
+<select id="selectBibtex" parameterType="int" resultType="String">
+SELECT author FROM bibtex WHERE `group` = #{groupId} LIMIT 10000
 </select>
 <select id="selectAuthor" parameterType="String" resultType="String">
-SELECT author FROM author WHERE `group` = 0 LIMIT 1000
+SELECT author FROM author WHERE `group` = 0
 </select>
  
  <!-- database projekt_autoren_id -->
  <select id="countAuthorsByName" parameterType="String" resultType="int">
-SELECT first_name from author LIMIT 3
+SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 10000
 </select>
 				
+ <!-- database projekt_autoren_id
+ <select id="countAuthorsByName" parameterType="String" resultType="int">
+SELECT count(*) FROM author WHERE first_name = #{firstName} AND last_name = #{lastName}
+</select>
+-->
+
 <insert id="insertAuthor" parameterType="String">
-INSERT INTO author(first_name, last_name) VALUES (#{firstName}, #{lastName});
+INSERT INTO author(first_name, last_name, normalized_name) VALUES (#{firstName}, #{lastName}, #{normalizedName});
 </insert>
-<insert id="insertCoAuthor" parameterType="String">
-INSERT INTO projekt_autoren_id(coauthor_name) VALUES (#{coAuthorName});
+<insert id="insertCoAuthors" parameterType="String">
+INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (#{normalizedName});
 </insert>
-<insert id="insertAuthorCoAuthorRelation" parameterType="String">
-INSERT INTO projekt_autoren_id(author_id, coauthor_name) VALUES (#{authorID}, #{coAuthorName});
-</insert>
+
 
 </mapper>
