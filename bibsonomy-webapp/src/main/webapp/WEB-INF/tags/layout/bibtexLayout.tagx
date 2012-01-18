@@ -50,9 +50,18 @@
 			</script>
 		</jsp:attribute>
 		<jsp:attribute name="content">
+			<!--+ 
+			 	| FIXME: if the command does not contain the property goldStandard 
+			 	| (e.g., the UserResourceViewCommand), we set this variable to skip
+			 	| the "not empty command.goldStandard" test later (which throws
+			 	| an exception otherwise). 
+			 	|
+			 	+-->
+			<mtl:exists path="command.goldStandard"><c:set var="goldStandardPresent" value="${true}"/></mtl:exists>
+
 			<c:choose>
-				<!-- if a goldstandard is present show the goldstandard not the list of posts -->
-				<c:when test="${not empty command.goldStandard}">
+				<!-- if a community post is present show the community post, not the list of posts -->
+				<c:when test="${not empty goldStandardPresent and not empty command.goldStandard}">
 					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandard}" loginUser="${command.context.loginUser}"/>
 				</c:when>
 				<c:otherwise>
