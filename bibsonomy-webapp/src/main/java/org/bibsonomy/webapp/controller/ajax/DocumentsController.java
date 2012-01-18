@@ -216,7 +216,6 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		"<fileid>" + fileID + "</fileid>" +
 		"<filehash>" + md5Hash + fileHash + "</filehash>" +
 		"<filename>" + fileItem.getName() + "</filename>" +
-		"<filename>" + fileItem.getName() + "</filename>" +
 		"<intrahash>" + intraHash + "</intrahash>" +
 		"</root>";
 	}

@@ -6,11 +6,14 @@
 	<c:choose>
 		<c:when test="${not empty post.resource.documents}">
 			<a class="preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(post.resource.documents[0].fileName)}" title="${fn:escapeXml(post.resource.documents[0].fileName)}"> 
-				<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left;" />
+				<img src="${resdir}/image/document-txt-blue.png" style="float: left;" />
 			</a>
 		</c:when>
 		<c:otherwise>
-<!--			<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-light.png" style="float: left;" />-->
+			<!-- FIXME: "alt" attribute of img tag? I18N for title attribute of a tag -->
+			<a class="addDocument" title="upload a document" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+				<img src="${resdir}/image/document-txt-light.png" style="float: left;" />
+			</a>
 		</c:otherwise>
 	</c:choose>
 

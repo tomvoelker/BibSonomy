@@ -1,13 +1,27 @@
-//file upload on /bibtex/HASH/USER
-$(function(){
-	$(".deleteDocument").click(deleteLinkClicked);
-});	
+var documentUploadSuccessIcon = "/resources/image/document-txt-blue.png";
 
+/*
+ * file upload for publication references
+ * 
+ */
+
+
+/*
+ * add handler to delete documents
+ */
+$(function() {$(".deleteDocument").click(deleteLinkClicked);});
+$(function() {$(".addDocument").click(addDocument);});
+
+/**
+ * deletes a document
+ * 
+ * @return
+ */
 function deleteLinkClicked () {
 	var button = $(this);
 	$.get($(button).attr("href"), {}, function(data) {
 		var status=$("status", data).text();
-		if(status=="error"){
+		if (status=="error") {
 			alert($("reason", data).text());
 		} else {
 			var test = $(button).next(".documentFileName").text();
@@ -18,96 +32,140 @@ function deleteLinkClicked () {
 	return false;
 }
 
-$(function(){
-	$(".addDocument").click(function(){
-		var emptyInput = false;
-		$(".fu").each(function(){
-			if($(this).val()=="") {
-				emptyInput = true;
-			}
-		});
-		if(emptyInput){
-			return false;
-		}
-		var intraHash=$(".intraHash").val();
-		var input="<form class='upform' action='/ajax/documents?ckey=" + ckey +
-		"&temp=false&intraHash=" + intraHash + 
-		"' method='POST' enctype='multipart/form-data'>" + 
-		"<input class='fu' type='file' name='file'/></form>";
+/**
+ * @return
+ */
+function addDocument() {
 
-		$("#inputDiv").append($(input));
-		$(".fu").change(fileSelected);
+	/*
+	 * load jQuery form plugin which is needed for ajaxSubmit()
+	 * 
+	 * FIXME: ensure that script is loaded before user can do something
+	 */
+	$.getScript('/resources/jquery/plugins/form/jquery.form.js');  
+	
+	/*
+	 * when upload form already exists, remove it 
+	 */
+	if ($("#upForm").length) $("#upForm").remove();
 
-		return false;
-	});
-});
+	/*
+	 * build upload form
+	 */
+	var upForm = "<form id='upForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data'>" + 
+	"<input id='upFile' type='file' name='file'/></form>";
 
-function fileSelected(obj){
-	var fileName = $(obj.currentTarget).val();
-	var form = $(obj.currentTarget).parent(".upform");
-	fileName = fileName.replace("C:\\fakepath\\", ""); //remove fakepath for Opera, Chrome, IE
+	/*
+	 * append form
+	 */
+	var inputDiv = $("#inputDiv");
+	if (inputDiv.length) {
+		/*
+		 * on /bibtex/... pages
+		 */
+		inputDiv.append($(upForm));
+	} else {
+		/*
+		 * on other pages 
+		 * 
+		 * this = a
+		 * parent = headline DIV
+		 */
+		$(this).parent().append($(upForm));
+	}
+
+	/*
+	 * attach handler that is called when the user selected a file
+	 */
+	$("#upFile").change(fileSelected);
+
+	return false;
+}
+
+/**
+ * is called when the user has selected a file
+ * 
+ * @param obj
+ * @return
+ */
+function fileSelected(obj) {
+	var upForm = $("#upForm");
+	var fileName = $(obj.currentTarget).val().replace("C:\\fakepath\\", ""); // remove fakepath for Opera, Chrome, IE
 	var fileExist = false;
-	$(".documentFileName").each(function(){
-		var name = jQuery.trim($(this).text());
+	
+	$(".documentFileName").each(function() {
+		var name = $.trim($(this).text());
 		if (name == fileName) {
 			fileExist = true;
 		}
 	});
 
-	if(fileExist){
+	if (fileExist) {
 		alert(getString("post.bibtex.fileExists"));
-		$(form).remove();
+		$(upForm).remove();
 		return;
 	}
-	$(form).ajaxSubmit({
+	$(upForm).ajaxSubmit({
 		dataType: "xml",
-		success: uploadRequestSuccessful		
+		success: uploadRequestSuccessful	
 	});
-	$(form).hide();
-	var id = replaceInvalidChrs(fileName);
-	var resdir = $(".resdir");
-	var div = "<div class='fsRow' id='" + id +"' >" + fileName  + 
-	"<img alt='uploading...' src='"+resdir.val()+"/image/ajax_loader.gif' /></div>";
-	$("#files").append($(div));
+	
+	/*
+	 * add progress icon and hide form (XXX: don't yet remove form, otherwise upload fails!)
+	 */
+	$(upForm).after($(
+			"<div id='upProgress' >" + fileName  + 
+			"<img alt='uploading...' src='/resources/image/ajax_loader.gif' /></div>"		
+	)).hide();
+
 } 
 
-function replaceInvalidChrs (input){
-	var iChars = "!@#$%^&*()+=-[]\\\';,./{}|\":><?~_"; 
-	var output = "";
-	for (var i = 0; i < input.length; i++) {
-		if (iChars.indexOf(input.charAt(i)) != -1) {
-			output += input.charCodeAt(i);
-		} else {
-			output += input.charAt(i);
-		}
-	}
-	return output;
-}
-
 function uploadRequestSuccessful(data) {
-	var status=$("status", data).text();
-	if (status=="error"){
+	var status = $("status", data).text();
 
+	/*
+	 * remove progress icon and upload form
+	 */
+	var upParent = $("#upProgress").parent(); // used below to reach document icon
+	$("#upProgress").remove();
+	$("#upForm").remove();
+
+	if (status == "error") {
 		alert($("reason", data).text());
-		var fileName=$("filename", data).text();
-		var id = replaceInvalidChrs(fileName);
-		$("#"+id).remove();
-
 		return;
 	}
-	if (status=="ok") {
-		var fileID=$("fileid", data).text();
-		var fileHash=$("filehash", data).text();
-		var fileName=$("filename", data).text();
+	if (status == "ok") {
+		var fileHash  = $("filehash", data).text();
+		var intrahash = $("intrahash", data).text();
+		var fileName  = $("filename", data).text();
 
-		var resdir = $(".resdir").val();
-		var deleteMsg=getString("bibtex.actions.private_document.delete");
-		var div = "<div class='fsRow'><a class='documentFileName' href='/documents/" + fuIntraHash + "/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(fileName) + "'><img alt='" + getString("bibtex.actions.private_document.download") + "' src='"+ resdir + "/image/document-txt-blue.png' style='float: left;'/>" +
-		fileName + "</a> (<a class='deleteDocument' href='/ajax/documents?intraHash=" + fuIntraHash + "&fileName="+ fileName + 	"&ckey=" + ckey + "&temp=false&action=delete'>" + deleteMsg + "</a>)</div>";
-		$("#files").append(div);
-		$(".deleteDocument").click(deleteLinkClicked);
-		var id = replaceInvalidChrs(fileName);
-		$("#"+id).remove();	
+		var documentUri = "/documents/" + intrahash + "/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(fileName);
+		var documentHelp = getString("bibtex.actions.private_document.download");
+		var documentImg = "<img src='" + documentUploadSuccessIcon +"' style='float: left;'/>";
+		
+		/*
+		 * on /bibtex pages we have a DIV where we add links to the files
+		 */
+		var filesDiv = $("#files");
+
+		if (filesDiv.length) {
+			var div = "<div class='fsRow'>" + 
+			"<a class='documentFileName preview' href='" + documentUri + " title='" + documentHelp + "''>" + documentImg + fileName + "</a> " + 
+			"(<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)</div>";
+			filesDiv.append(div);
+			$(".deleteDocument").click(deleteLinkClicked);
+		} else {
+			/*
+			 * change document link
+			 */
+			var upA = upParent.children(".addDocument").first();
+			upA.attr("href", documentUri);
+			upA.attr("class", "preview");
+			upA.attr("title", documentHelp);
+			upA.unbind('click');
+			upA.children().first().replaceWith($(documentImg));
+		}
+		
 		return;
 	}
 }

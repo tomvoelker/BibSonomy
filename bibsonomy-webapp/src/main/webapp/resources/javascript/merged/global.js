@@ -16,6 +16,7 @@ function includeJavaScript(jsFile) {
 includeJavaScript("/resources/jquery/jquery.js");
 includeJavaScript("/resources/javascript/functions.js");
 includeJavaScript("/resources/javascript/ajaxUtils.js");
+includeJavaScript("/resources/javascript/fileUpload.js");
 includeJavaScript("/resources/javascript/style.js");
 includeJavaScript("/resources/javascript/chrome.js");
 includeJavaScript("/resources/jquery/plugins/textarearesizer/jquery.textarearesizer.js");
