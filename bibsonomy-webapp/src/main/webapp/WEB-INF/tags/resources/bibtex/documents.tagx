@@ -10,9 +10,11 @@
 			</a>
 		</c:when>
 		<c:otherwise>
-			<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
-				<img src="${resdir}/image/document-txt-light.png" style="float: left;" />
-			</a>
+			<c:if test="${post.user.name eq command.context.loginUser.name}">
+				<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+					<img src="${resdir}/image/document-txt-light.png" style="float: left;" />
+				</a>
+			</c:if>
 		</c:otherwise>
 	</c:choose>
 
