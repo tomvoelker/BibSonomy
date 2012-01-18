@@ -29,9 +29,9 @@ import org.bibsonomy.rest.utils.HeaderUtils;
  */
 public class RESTUtils {
 	private static final Log log = LogFactory.getLog(RESTUtils.class);
-	
+
 	private static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
-	
+
 	/**
 	 * all supported rendering formats by the rest server
 	 * ordered by preference
@@ -39,9 +39,10 @@ public class RESTUtils {
 	private static final List<RenderingFormat> SUPPORTED_RENDERING_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			RenderingFormat.XML,
 			RenderingFormat.APP_XML,
-			RenderingFormat.JSON,
-			RenderingFormat.LAYOUT));
-	
+			RenderingFormat.JSON
+//			,RenderingFormat.LAYOUT
+	));
+
 	/**
 	 * param name for the format of the request and response
 	 */
@@ -65,7 +66,7 @@ public class RESTUtils {
 		}
 		return defaultValue;
 	}
-	
+
 	private static List<RenderingFormat> getSupportedAcceptHeaderMediaTypes(final String acceptHeader) {
 		final List<RenderingFormat> formats = new LinkedList<RenderingFormat>();
 		// parse the accept header
@@ -87,7 +88,7 @@ public class RESTUtils {
 				}
 			}
 		}
-		
+
 		return formats;
 	}
 
@@ -114,28 +115,28 @@ public class RESTUtils {
 			 */
 			return urlRenderingFormat != null && !urlRenderingFormat.isWildcardSubtype() ? urlRenderingFormat : DEFAULT_RENDERING_FORMAT;
 		}
-		
+
 		// 2. check the accept header of the request
 		final List<RenderingFormat> acceptMediaTypes = getSupportedAcceptHeaderMediaTypes(acceptHeader);
-		
+
 		// 3. check the content type of the request 
 		if (present(contentType)) {
 			final RenderingFormat contentTypeMediaType = RenderingFormat.getMediaType(contentType);
-			
+
 			// check if accept header was sent by the client
 			if (present(acceptMediaTypes)) {
 				if (!acceptMediaTypes.contains(contentTypeMediaType)) {
 					throw new BadRequestOrResponseException("Only Chuck Norris can send content of another media type than he accepts.");
 				}
 			}
-			
+
 			return contentTypeMediaType != null ? contentTypeMediaType : DEFAULT_RENDERING_FORMAT;
 		}
-		
+
 		if (present(acceptMediaTypes)) {
 			return acceptMediaTypes.get(0);
 		}
-		
+
 		return DEFAULT_RENDERING_FORMAT;
 	}
 
@@ -169,15 +170,15 @@ public class RESTUtils {
 	 * @return the writer for the stream
 	 */
 	public static Writer getOutputWriterForStream(final OutputStream stream, final String encoding) {
-    	if (!present(stream)) return null;
-  		try {
-  			// returns InputStream with correct encoding
-  			return new EscapingPrintWriter(stream, encoding);
-  		} catch (final UnsupportedEncodingException ex) {
-  			// returns InputStream with default encoding if a exception
-  			// is thrown with utf-8 support
-  			log.fatal("Could not get output writer for stream with encoding " + encoding, ex);
-  			return new EscapingPrintWriter(stream);
-  		}
+		if (!present(stream)) return null;
+		try {
+			// returns InputStream with correct encoding
+			return new EscapingPrintWriter(stream, encoding);
+		} catch (final UnsupportedEncodingException ex) {
+			// returns InputStream with default encoding if a exception
+			// is thrown with utf-8 support
+			log.fatal("Could not get output writer for stream with encoding " + encoding, ex);
+			return new EscapingPrintWriter(stream);
+		}
 	}
 }
