@@ -13,9 +13,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.SortedMap;
-import java.util.Vector;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,7 +39,8 @@ public class RESTUtils {
 	private static final List<RenderingFormat> SUPPORTED_RENDERING_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			RenderingFormat.XML,
 			RenderingFormat.APP_XML,
-			RenderingFormat.JSON));
+			RenderingFormat.JSON,
+			RenderingFormat.LAYOUT));
 	
 	/**
 	 * param name for the format of the request and response
@@ -69,8 +69,8 @@ public class RESTUtils {
 	private static List<RenderingFormat> getSupportedAcceptHeaderMediaTypes(final String acceptHeader) {
 		final List<RenderingFormat> formats = new LinkedList<RenderingFormat>();
 		// parse the accept header
-		final SortedMap<Double, Vector<String>> preferredTypes = HeaderUtils.getPreferredTypes(acceptHeader);
-		for (final Entry<Double, Vector<String>> preferredType : preferredTypes.entrySet()) {
+		final SortedMap<Double, List<String>> preferredTypes = HeaderUtils.getPreferredTypes(acceptHeader);
+		for (final Entry<Double, List<String>> preferredType : preferredTypes.entrySet()) {
 			/*
 			 * which media type do we accept?
 			 */
@@ -108,6 +108,10 @@ public class RESTUtils {
 		final String urlParam = getStringAttribute(parameterMap, FORMAT_PARAM, null);
 		if (present(urlParam)) {
 			final RenderingFormat urlRenderingFormat = RenderingFormat.getMediaTypeByFormat(urlParam);
+			/* 
+			 * FIXME: because of the "!urlRenderingFormat.isWildcardSubtype()" 
+			 * condition we can't use "layout/simplehtml" as url param?   
+			 */
 			return urlRenderingFormat != null && !urlRenderingFormat.isWildcardSubtype() ? urlRenderingFormat : DEFAULT_RENDERING_FORMAT;
 		}
 		
