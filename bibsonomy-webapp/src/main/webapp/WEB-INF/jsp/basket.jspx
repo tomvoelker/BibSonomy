@@ -20,11 +20,6 @@
 		  <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<c:out value="${pageTitle}" /></a>
 		</jsp:attribute>
 		
-        <jsp:attribute name="contentHeading">
-        	<!-- short info, what the basket is -->
-            <fmt:message key="basket.info"/>                 
-        </jsp:attribute>
-    
 		<jsp:attribute name="sidebar">
 			<ul id="sidebar">			
 	          <li>
@@ -35,6 +30,22 @@
 	          </li>
 			</ul>
  		</jsp:attribute>
+    
+    	<jsp:attribute name="contentExt">
+    		
+        	<!-- short info, what the basket is -->
+            <p><fmt:message key="basket.info"/></p>                 
+
+			<!-- quick links on what you can do -->
+			
+			<p>Beispielsweise können Sie schnell und einfach</p>
+			<ul class="news">
+				<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="basket.edit.tags"/></a></li>
+				<li><a href="/export/${fn:escapeXml(requPath)}${requQueryString}"><fmt:message key="basket.export"/></a></li>
+				<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="basket.delete"/></a></li>
+			</ul>
+
+    	</jsp:attribute>
     
 	</layout:bibtexLayout>
 
