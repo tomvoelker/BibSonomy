@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
-import java.util.Vector;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,10 +68,10 @@ public class HeaderUtils {
 		// if no acceptHeader is set, return default (= 0);
 		if (!present(acceptHeader)) return FORMAT_URLS[0][contentType];
 
-		final SortedMap<Double, Vector<String>> preferredTypes = org.bibsonomy.rest.utils.HeaderUtils.getPreferredTypes(acceptHeader);
+		final SortedMap<Double, List<String>> preferredTypes = org.bibsonomy.rest.utils.HeaderUtils.getPreferredTypes(acceptHeader);
 
 		final List<String> formatOrder = new ArrayList<String>();			
-		for (final Entry<Double, Vector<String>> entry: preferredTypes.entrySet()) {								
+		for (final Entry<Double, List<String>> entry: preferredTypes.entrySet()) {								
 			for (final String type: entry.getValue()) {					
 				formatOrder.add(type);					
 			}
