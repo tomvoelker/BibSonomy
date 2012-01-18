@@ -27,10 +27,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
@@ -81,9 +82,9 @@ public class HeaderUtils {
 	 * 			) 	
 	 * @return a sorted map with the precedences
 	 */
-	public static SortedMap<Double, Vector<String>> getPreferredTypes(final String acceptHeader) {
+	public static SortedMap<Double, List<String>> getPreferredTypes(final String acceptHeader) {
 		// maps the q-value to output format (reverse order)
-		final SortedMap<Double,Vector<String>> preferredTypes = new TreeMap<Double,Vector<String>>(new Comparator<Double>() {
+		final SortedMap<Double,List<String>> preferredTypes = new TreeMap<Double,List<String>>(new Comparator<Double>() {
 			@Override
 			public int compare(Double o1, Double o2) {
 				if (o1.doubleValue() > o2.doubleValue())
@@ -108,7 +109,7 @@ public class HeaderUtils {
 			final String type = types[0];
 			double qValue = 1;
 	
-			if (types.length != 1) {
+			if (types.length != 1 && types[1].indexOf('=') > 0) {
 				/*
 				 * FIXME: we get 
 				 *   java.lang.NumberFormatException: For input string: "screen"
@@ -119,21 +120,21 @@ public class HeaderUtils {
 				 */
 				try {
 					qValue = Double.parseDouble(types[1].split("=")[1]);
-				} catch (NumberFormatException nfe) {
+				} catch (final NumberFormatException nfe) {
 					qValue = 0;
-					log.error("Couldn't parse accept header '"+acceptHeader+"'");
-				} catch (ArrayIndexOutOfBoundsException aie) {
+					log.error("NFCouldn't parse accept header '"+acceptHeader+"'");
+				} catch (final ArrayIndexOutOfBoundsException aie) {
 					qValue = 0;
-					log.error("Couldn't parse accept header '"+acceptHeader+"'");
+					log.error("AICouldn't parse accept header '"+acceptHeader+"'", aie);
 				}
 			}
 			
-			Vector<String> v = preferredTypes.get(qValue);
+			
 			if (!preferredTypes.containsKey(qValue)) {
-				v = new Vector<String>();			
-				preferredTypes.put(qValue, v);			
+				preferredTypes.put(qValue, new LinkedList<String>());			
 			}
-			v.add(type);
+			preferredTypes.get(qValue).add(type);
+			
 		}
 		return preferredTypes;
 	}
