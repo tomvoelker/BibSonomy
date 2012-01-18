@@ -279,7 +279,7 @@
 
 	<!-- restrict visibility of retrieved items to the groups a user may see -->	
 	<sql id="discussionVisible">
-		<!-- no user logged in - only public posts, dont care for anonymous-->
+		<!-- no user logged in - only public posts-->
 		<isEmpty property="userName">
 		  	d.group = 0
 		  	<isNotEmpty property="requestedUserName" prepend="AND">
@@ -303,6 +303,21 @@
 		</isNotEmpty>
 	</sql>
 
+	<!-- restrict visibility of retrieved items to the groups a user may see -->	
+	<sql id="discussionVisibleForGroup">
+		<!-- no user logged in - only public posts that are not anonymous-->
+		<isEmpty property="userName">
+		  	d.group = 0
+		  	AND d.anonymous = 0
+		</isEmpty>
+		
+		<!-- a user is logged in => if user is not requUser: groups and anonymous checking -->
+		<isNotEmpty property="userName">
+  			(d.user_name = #userName# 
+  				OR 
+  			(d.anonymous = 0 AND <include refid="inGroupsDiscussion"/>))
+		</isNotEmpty>
+	</sql>
 
 	<sql id="spammerClassifiedJoin">
 	  	<isEmpty property="requestedUserName">
