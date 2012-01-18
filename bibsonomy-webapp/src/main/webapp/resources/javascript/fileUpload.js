@@ -1,5 +1,4 @@
 var documentUploadSuccessIcon = "/resources/image/document-txt-blue.png";
-
 /*
  * file upload for publication references
  * 
@@ -9,8 +8,12 @@ var documentUploadSuccessIcon = "/resources/image/document-txt-blue.png";
 /*
  * add handler to delete documents
  */
-$(function() {$(".deleteDocument").click(deleteLinkClicked);});
-$(function() {$(".addDocument").click(addDocument);});
+$(function() {
+	var documentUploadTitle = getString("bibtex.actions.private_document.upload.title");
+	$(".deleteDocument").click(deleteLinkClicked);
+	$(".addDocument").click(addDocument).attr("title", documentUploadTitle);
+});
+
 
 /**
  * deletes a document

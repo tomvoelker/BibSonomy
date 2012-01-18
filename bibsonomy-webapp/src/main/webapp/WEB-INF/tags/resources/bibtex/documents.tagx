@@ -10,8 +10,7 @@
 			</a>
 		</c:when>
 		<c:otherwise>
-			<!-- FIXME: "alt" attribute of img tag? I18N for title attribute of a tag -->
-			<a class="addDocument" title="upload a document" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+			<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
 				<img src="${resdir}/image/document-txt-light.png" style="float: left;" />
 			</a>
 		</c:otherwise>
