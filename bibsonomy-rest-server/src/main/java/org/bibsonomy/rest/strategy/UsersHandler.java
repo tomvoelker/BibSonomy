@@ -48,7 +48,7 @@ public class UsersHandler implements ContextHandler {
 			// /users/[username]
 			return createUserStrategy(context, httpMethod, urlTokens.nextToken());
 		case 2:
-			userName = urlTokens.nextToken();
+			userName = normalizeUser(urlTokens.nextToken(), context);
 			req = urlTokens.nextToken();
 
 			// /users/[username]/posts
@@ -67,7 +67,7 @@ public class UsersHandler implements ContextHandler {
 			}
 			break;
 		case 3:
-			userName = urlTokens.nextToken();
+			userName = normalizeUser(urlTokens.nextToken(), context);
 			req = urlTokens.nextToken();
 
 			// /users/[username]/posts/[resourceHash]
@@ -89,7 +89,7 @@ public class UsersHandler implements ContextHandler {
 			break;
 		case 4:
 			// /users/[username]/posts/[resourcehash]/documents
-			userName = urlTokens.nextToken();
+			userName = normalizeUser(urlTokens.nextToken(), context);
 			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
 				final String resourceHash = urlTokens.nextToken();
 
@@ -100,7 +100,7 @@ public class UsersHandler implements ContextHandler {
 			break;
 		case 5:
 			// /users/[username]/posts/[resourcehash]/documents/[filename]
-			userName = urlTokens.nextToken();
+			userName = normalizeUser(urlTokens.nextToken(), context);
 			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
 				final String resourceHash = urlTokens.nextToken();
 
@@ -112,6 +112,22 @@ public class UsersHandler implements ContextHandler {
 			break;
 		}
 		throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
+	}
+
+	/**
+	 * maps special user tokens to corresponding user entities - currently @me is mapped to the login user name
+	 * 
+	 * @param userName user name token from url
+	 * @param context context object
+	 * @return
+	 */
+	private String normalizeUser(String userName, Context context) {
+		if (RESTConfig.USER_ME.equals(userName)) {
+			// map @me to login user name
+			return context.getLogic().getAuthenticatedUser().getName();
+		}
+		
+		return userName;
 	}
 
 	private Strategy createUserListStrategy(final Context context, final HttpMethod httpMethod) {
