@@ -1461,27 +1461,16 @@ function unicodeCollation(ersterWert, zweiterWert){
     }
 
     function pickUnpickAll(evt, pickUnpick) {
-    	// get user names/hashes to pick
-    	var bibtex = document.getElementById("bibtex");
-    	var lis    = bibtex.getElementsByTagName("li");
     	var param  = "";
-    	   	
-    	for(x=0; x<lis.length; x++) {
-    	    var divs = lis[x].getElementsByTagName("div");
-    	    for (y=0; y<divs.length; y++) {
-    	       if (divs[y].className == "bmtitle") {
-    	          var spans = divs[y].getElementsByTagName("a");
-    	          for (z=0; z<spans.length; z++) {
-    	        	if (spans[z].getAttribute("href").match(/^.*\/documents\/.*/) == null){
-    					var post = spans[z].getAttribute("href").replace(/^.*bibtex./, "");
-    					param += post + " ";
-    	        	}
-    	          }
-    	       }
-    	    }
+    	$("#bibtex li div.bmtitle a").each(function(index) {
+    		var href = $(this).attr("href");
+    		if (!href.match(/^.*\/documents[\/?].*/)){
+    			param += href.replace(/^.*bibtex./, "") + " ";
+    		}
     	}
+    	);
     	updateCollector("action=" + pickUnpick + "&hash=" + encodeURIComponent(param));
-    	
+
     	breakEvent(evt);    	
     }    
 
