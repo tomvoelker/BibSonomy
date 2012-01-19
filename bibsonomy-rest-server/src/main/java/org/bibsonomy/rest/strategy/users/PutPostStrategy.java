@@ -20,6 +20,7 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;

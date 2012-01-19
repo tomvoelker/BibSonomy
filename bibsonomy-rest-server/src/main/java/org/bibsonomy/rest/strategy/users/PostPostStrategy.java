@@ -19,7 +19,6 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
@@ -43,10 +42,6 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 
 	@Override
 	public void canAccess() {
-		if (RESTConfig.OAUTH_USER.equals(this.userName)) {
-			// for OAuth api access the login user is not known to the client
-			return;
-		}
 		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
 	}
 
