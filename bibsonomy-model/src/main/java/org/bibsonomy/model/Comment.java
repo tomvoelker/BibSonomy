@@ -31,9 +31,9 @@ package org.bibsonomy.model;
 public class Comment extends DiscussionItem {
 	
 	/**
-	 * the max text length for a comment
+	 * the max text length for a comment (approx. 10 pages lorem ipsum)
 	 */
-	public static int MAX_TEXT_LENGTH = 140;
+	public static int MAX_TEXT_LENGTH = 50000;
 	
 	private String text;
 	

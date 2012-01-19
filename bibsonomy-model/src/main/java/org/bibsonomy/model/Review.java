@@ -40,9 +40,9 @@ public class Review extends DiscussionItem {
 	public static double MIN_REVIEW_RATING = 0;
 	
 	/**
-	 * the max text length of a review
+	 * the max text length of a review  (approx. 10 pages lorem ipsum)
 	 */
-	public static int MAX_TEXT_LENGTH = 15000;
+	public static int MAX_TEXT_LENGTH = 50000;
 	
 	/**
 	 * rating from MIN to MAX_REVIEW_RATING (x.0 and x.5)
