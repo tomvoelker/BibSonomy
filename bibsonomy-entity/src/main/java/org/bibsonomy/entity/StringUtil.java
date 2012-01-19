@@ -73,6 +73,7 @@ public class StringUtil {
 	 * 'a'.
 	 */
 	public static String foldToASCII(final String inputString) {
+		if (inputString == null) return inputString;
 		final char[] inputBuf = inputString.toCharArray();
 		final int inputBufLength = inputBuf.length;
 
