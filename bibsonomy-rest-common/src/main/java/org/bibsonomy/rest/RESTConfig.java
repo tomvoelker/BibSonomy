@@ -90,6 +90,6 @@ public final class RESTConfig {
 	/** default value */
 	public static final String DEFAULT_ATTRIBUTE_VALUE_RELATION = INCOMING_ATTRIBUTE_VALUE_RELATION;
 	
-	/** place holder for user strings in OAuth post requests */
-	public static final String OAUTH_USER = "::oauth::";
+	/** place holder for the login user - used e.g. for OAuth requests */
+	public static final String USER_ME = "@me";
 }
