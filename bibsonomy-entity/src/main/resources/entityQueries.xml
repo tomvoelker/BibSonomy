@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <!-- database bibsonomy_strudel -->
 <select id="selectBibtex" parameterType="int" resultType="String">
-SELECT author FROM bibtex WHERE `group` = #{groupId} LIMIT 10000
+SELECT author FROM bibtex WHERE `group` = #{groupId} LIMIT 1000
 </select>
 <select id="selectAuthor" parameterType="String" resultType="String">
 SELECT author FROM author WHERE `group` = 0
@@ -14,7 +14,7 @@ SELECT author FROM author WHERE `group` = 0
  
  <!-- database projekt_autoren_id -->
  <select id="countAuthorsByName" parameterType="String" resultType="int">
-SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 10000
+SELECT author_id FROM author WHERE normalized_name = #{normalizedName} ORDER BY author_id DESC
 </select>
 				
  <!-- database projekt_autoren_id
@@ -27,7 +27,7 @@ SELECT count(*) FROM author WHERE first_name = #{firstName} AND last_name = #{la
 INSERT INTO author(first_name, last_name, normalized_name) VALUES (#{firstName}, #{lastName}, #{normalizedName});
 </insert>
 <insert id="insertCoAuthors" parameterType="String">
-INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (#{normalizedName});
+INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (#{authorID},#{normalizedName});
 </insert>
 
 

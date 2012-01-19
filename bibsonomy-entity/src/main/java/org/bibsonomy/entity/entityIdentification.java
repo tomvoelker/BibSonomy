@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
+import javax.swing.plaf.metal.MetalIconFactory.FolderIcon16;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.language.Soundex;
@@ -83,20 +84,22 @@ public class entityIdentification {
 						
 			for (PersonName author: allAuthorNamesOfOnePublication) { //each author in the list of authors
 			     HashMap<String, String> authorName = new HashMap<String, String>();
-			     authorName.put("firstName", author.getFirstName());
-			     authorName.put("lastName", author.getLastName());
-			     authorName.put("normalizedName", author.getFirstName() + author.getLastName());
+			     authorName.put("firstName", StringUtil.foldToASCII(author.getFirstName()));
+			     authorName.put("lastName", StringUtil.foldToASCII(author.getLastName()));
+			     authorName.put("normalizedName", normalizePerson(author));
 
-				 List<Integer> authorWithThisNameCount = null;
-				 authorWithThisNameCount = sessionRkr.selectList("org.mybatis.example.Entity-Identification.countAuthorsByName", authorName);
-				 
-				 if (authorWithThisNameCount.get(0) < 2) {
-					 sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
-				 }
+			     sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
+			     
+				 List<Integer> lastAuthorWithThisNameInsertedAuthorId = null;
+				 lastAuthorWithThisNameInsertedAuthorId = sessionRkr.selectList("org.mybatis.example.Entity-Identification.countAuthorsByName", authorName);	 
 				 
 				 for (PersonName coAuthor: allAuthorNamesOfOnePublication) { //add the coauthors to a table
 					 if (!coAuthor.equals(author)) {
-						 sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthors", normalizePersonName(coAuthor));
+						 HashMap<String,String> coAuthorParameter = new HashMap<String,String>();
+						 coAuthorParameter.put("normalizedName", normalizePerson(coAuthor));
+						 coAuthorParameter.put("authorID", lastAuthorWithThisNameInsertedAuthorId.get(0) + "");
+						 
+						 sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthors", coAuthorParameter);
 					 }
 				 }
 			}
@@ -120,20 +123,6 @@ public class entityIdentification {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public static String normalizePersonName(PersonName personName) {
-		//reduce the
-		String newFirstName = personName.getFirstName().substring(0,1);
-			
-		/*check if firstName is shortened
-		if (personName.getFirstName().length() == 2 && personName.getFirstName().substring(1,2).equals(".")) {
-		
-		}
-		*/
-		
-		String normalizedName = newFirstName + personName.getLastName();
-		return normalizedName.toLowerCase();		
 	}
 	
 	/**
@@ -163,6 +152,49 @@ public class entityIdentification {
 		 */
 		final int pos = cleanedLast.lastIndexOf(' ');
 		return pos > 0 ? cleanedLast.substring(pos + 1) : cleanedLast;
+	}
+	
+	public static String normalizePerson(final PersonName personName) {
+		final String first = personName.getFirstName();
+		final String last  = personName.getLastName();
+		if (present(first) && !present(last)) {
+			/*
+			 * Only the first name is given. This should practically never happen,
+			 * since we put such names into the last name field.
+			 * 
+			 */
+			return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(first).toLowerCase();
+		}
+		if (present(first) && present(last)) {
+			/*
+			 * First and last given - default.
+			 * Take the first letter of the first name and append the last part
+			 * of the last name.
+			 */
+			return getFirst(first) + "." + getLast(last);
+		}
+		if (present(last)) {
+			/*
+			 * Only last name available - could be a "regular" name enclosed
+			 * in brackets.
+			 */
+			return getLast(last);
+		}
+		return "";
+	}	
+	
+	private static final Pattern SINGLE_LETTER = Pattern.compile("(\\p{L})");
+	
+	private static String getFirst(final String first) {
+		final Matcher matcher = SINGLE_LETTER.matcher(first);
+		if (matcher.find()) {
+			return matcher.group(1).toLowerCase();
+		}
+		return "";
+	}
+	
+	public static boolean present(final String string) {
+		return ((string != null) && (string.trim().length() > 0));
 	}
 	
 }
