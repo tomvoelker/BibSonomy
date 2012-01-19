@@ -657,7 +657,7 @@ public enum Views implements View {
 	/**
 	 * Discussions-Page. Posts with Discussions
 	 */
-	DISCUSSIONSPAGE("discussions");
+	DISCUSSEDPAGE("discussions");
 
 	/*
 	 * both bookmarks and publications

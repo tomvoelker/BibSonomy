@@ -14,13 +14,13 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * Controller for user pages /user/USERNAME
+ * Controller for pages /discussed, /discussed/user/USERNAME and /discussed/group/GROUPNAME
  * 
  * @author Sven Stefani
  * @version $Id$
  */
-public class DiscussionsPageController extends SingleResourceListControllerWithTags implements MinimalisticController<DiscussedViewCommand> {
-	private static final Log LOGGER = LogFactory.getLog(DiscussionsPageController.class);
+public class DiscussedPageController extends SingleResourceListControllerWithTags implements MinimalisticController<DiscussedViewCommand> {
+	private static final Log LOGGER = LogFactory.getLog(DiscussedPageController.class);
 	
 	@Override
 	public View workOn(final DiscussedViewCommand command) {
@@ -116,7 +116,7 @@ public class DiscussionsPageController extends SingleResourceListControllerWithT
 			this.endTiming();
 
 	
-			return Views.DISCUSSIONSPAGE;
+			return Views.DISCUSSEDPAGE;
 		}
 		
 		this.endTiming();
