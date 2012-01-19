@@ -1273,184 +1273,159 @@ function unicodeCollation(ersterWert, zweiterWert){
     
     // updates the relations in AJAX style TODO: simplify using jQuery
 	function updateRelations (evt, action, concept) {
-		// do AJAX stuff	    	
-    	var request = ajaxInit();
-    	if(request){
-	    	// build URL for AJAX request
-			var url = "/ajax/pickUnpickConcept?action=" + action + "&tag=" + encodeURIComponent(concept) + "&ckey=" + ckey;
-			request.open('GET', url, true);
-			request.setRequestHeader("Content-Type", "text/xml");
-			request.setRequestHeader('If-Modified-Since', 'Sat, 1 Jan 2000 00:00:00 GMT');
-			// attach function which handles the request
-			var handler = ajax_updateRelations(request);
-			request.onreadystatechange = handler;
-			request.send(null);
+		$.ajax({
+			url : "/ajax/pickUnpickConcept?action=" + action + "&tag=" + encodeURIComponent(concept) + "&ckey=" + ckey,
+			success : ajax_updateRelations,
+			dataType : "xml"
+		});
+		breakEvent(evt);
+    } 
 
-			// break link
-			if (evt.stopPropagation) {
-			    evt.stopPropagation();
-			    evt.preventDefault();
-			} else if (window.event){
-			    window.event.cancelBubble = true;
-			    window.event.returnValue = false;
+
+	//	updates the relations list 
+	function ajax_updateRelations(data) {
+
+		// get surrounding <ul>
+		var relations_list = document.getElementById("relations");
+		var relations  = new Array();
+
+		// remove relations from list
+		for(x=0; x<relations_list.childNodes.length; x++){
+			if(relations_list.childNodes[x].nodeName == "LI")
+				relations.push(relations_list.childNodes[x]);
+		}
+		for(x=0; x<relations.length; x++){
+			relations_list.removeChild(relations[x]);
+		}
+
+		// parse XML input
+		var xml = data.documentElement; // FIXME: doesn't work that way with jQuery
+		var conceptnames = new Array();					
+
+		if(xml) {
+			var currUser = xml.getAttribute("user");
+
+			// get all relations
+			var requestrelations = xml.getElementsByTagName("relation");
+
+
+			// iterate over the relations
+			for(x=0; x<requestrelations.length; x++){       		    
+				// one relation
+				var rel = requestrelations[x];		    
+				// the upper tag of the relation
+				var upper = rel.getElementsByTagName("upper")[0].firstChild.nodeValue;
+				// new list item for this supertag
+				var rel_item = document.createElement("li");
+				rel_item.className = "box_upperconcept";
+				// store upper tag in array
+				conceptnames.push(upper);
+
+				// add the symbol to hide the relation
+				var linkupperx = document.createElement("a");
+				var linkupperxhref = document.createAttribute("href");
+				linkupperxhref.nodeValue = "/ajax/pickUnpickConcept?action=hide&tag=" + upper + "&ckey=" + ckey;
+				linkupperx.setAttributeNode(linkupperxhref);
+				// changed from 215 (&times;) to 8595 (&darr;)
+				var linkupperxtext = document.createTextNode(String.fromCharCode(8595));
+				linkupperx.appendChild(linkupperxtext);
+				rel_item.appendChild(linkupperx);
+				rel_item.appendChild(document.createTextNode(" "));
+
+				// attach function to onlick event
+				if (linkupperx.attachEvent) {
+					linkupperx.attachEvent("onclick", hideConcept);
+				} else if (linkupperx.addEventListener) {
+					linkupperx.addEventListener("click", hideConcept , true);
+				} else {
+					linkupperx.onclick = hideConcept;
+				}
+
+
+				// add link for upper tag
+				var linkupper = document.createElement("a");
+				var linkupperhref = document.createAttribute("href");
+				linkupperhref.nodeValue = "/concept/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(upper);
+				linkupper.setAttributeNode(linkupperhref);
+				var linkuppertext = document.createTextNode(upper);
+				linkupper.appendChild(linkuppertext);
+				rel_item.appendChild(linkupper);
+
+				// add arrow
+				rel_item.appendChild(document.createTextNode(" " + String.fromCharCode(8592) + " "));
+
+
+				// add lower tags
+				var lowers = rel.getElementsByTagName("lower");
+				var lowerul = document.createElement("ul");
+				lowerul.className = "box_lowerconcept_elements";
+				var lowerulid = document.createAttribute("id");
+				lowerulid.nodeValue = upper;
+				lowerul.setAttributeNode(lowerulid);
+
+				// iterate over lower tags
+				for(y=0; y<lowers.length; y++) {
+					var lower = lowers[y].firstChild.nodeValue;
+
+					// create new list item for lower tag
+					var lowerli = document.createElement("li");
+					lowerli.className = "box_lowerconcept";
+
+					// add link
+					var lowerlink = document.createElement("a");
+					var lowerlinkhref = document.createAttribute("href");
+					lowerlinkhref.nodeValue = "/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(lower);
+					lowerlink.setAttributeNode(lowerlinkhref);
+					var lowerlinktext = document.createTextNode(lower + " ");
+					lowerlink.appendChild(lowerlinktext);
+					lowerli.appendChild(lowerlink);
+
+					// add item
+					lowerul.appendChild(lowerli);
+				}
+
+				// append list of lower tags to supertag item
+				rel_item.appendChild(lowerul);
+
+				// insert relations_list for this supertag
+				relations_list.appendChild(rel_item);
+
+
 			}
 		}
-    } 
-    
- 
-    
-        
 
-                        
-	// updates the relations list 
-    function ajax_updateRelations(request) {
-    	return function(){
-	   	  	if( 4 == request.readyState ) {
-	          	if( 200 == request.status ) {
-					
-					// get surrounding <ul>
-	           		var relations_list = document.getElementById("relations");
-					var relations  = new Array();
-	           		
-					// remove relations from list
-	           		for(x=0; x<relations_list.childNodes.length; x++){
-	           			if(relations_list.childNodes[x].nodeName == "LI")
-		           			relations.push(relations_list.childNodes[x]);
-	           		}
-	           		for(x=0; x<relations.length; x++){
-	           			relations_list.removeChild(relations[x]);
-	           		}
-					
-	           		// parse XML input
-	       		    var xml = request.responseXML.documentElement;
-	         		var conceptnames = new Array();					
-					
-					if(xml) {
-						var currUser = xml.getAttribute("user");
-								
-						// get all relations
-						var requestrelations = xml.getElementsByTagName("relation");
+		// set arrows of supertags in tag cloud depending on if supertag is shown or not
+		var ultag = document.getElementById("tagbox");
+		var taglis = ultag.getElementsByTagName("li");
 
+		for(x=0; x<taglis.length; x++){
+			var links = taglis[x].getElementsByTagName("a");
 
-	         		    // iterate over the relations
-		       		    for(x=0; x<requestrelations.length; x++){       		    
-		       		    	// one relation
-							var rel = requestrelations[x];		    
-							// the upper tag of the relation
-		         		    var upper = rel.getElementsByTagName("upper")[0].firstChild.nodeValue;
-		         		    // new list item for this supertag
-		         		    var rel_item = document.createElement("li");
-		         		    rel_item.className = "box_upperconcept";
-		         		    // store upper tag in array
-		         		    conceptnames.push(upper);
-								         		    	         		    
-		         		    // add the symbol to hide the relation
-		         		    var linkupperx = document.createElement("a");
-		         		    var linkupperxhref = document.createAttribute("href");
-		         		    linkupperxhref.nodeValue = "/ajax/pickUnpickConcept?action=hide&tag=" + upper + "&ckey=" + ckey;
-		         		    linkupperx.setAttributeNode(linkupperxhref);
-		         		    // changed from 215 (&times;) to 8595 (&darr;)
-		         		    var linkupperxtext = document.createTextNode(String.fromCharCode(8595));
-		         		    linkupperx.appendChild(linkupperxtext);
-		         		    rel_item.appendChild(linkupperx);
-		         		    rel_item.appendChild(document.createTextNode(" "));
-		         		    
-		         		    // attach function to onlick event
-	       		    		if (linkupperx.attachEvent) {
-							    linkupperx.attachEvent("onclick", hideConcept);
-							} else if (linkupperx.addEventListener) {
-							    linkupperx.addEventListener("click", hideConcept , true);
-							} else {
-							    linkupperx.onclick = hideConcept;
-							}
-							
-		         		    
-		         		    // add link for upper tag
-		         		    var linkupper = document.createElement("a");
-		         		    var linkupperhref = document.createAttribute("href");
-		         		    linkupperhref.nodeValue = "/concept/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(upper);
-		         		    linkupper.setAttributeNode(linkupperhref);
-		         		    var linkuppertext = document.createTextNode(upper);
-		         		    linkupper.appendChild(linkuppertext);
-		         		    rel_item.appendChild(linkupper);
+			if(links.length == 3){
+				var tagname = links[2].firstChild.nodeValue;
+				var addArrow = true;
 
-		         		    // add arrow
-		         		    rel_item.appendChild(document.createTextNode(" " + String.fromCharCode(8592) + " "));
-		         		    
-		         		    
-		         		    // add lower tags
-		         		    var lowers = rel.getElementsByTagName("lower");
-		         		    var lowerul = document.createElement("ul");
-		         		    lowerul.className = "box_lowerconcept_elements";
-		         		    var lowerulid = document.createAttribute("id");
-		         		    lowerulid.nodeValue = upper;
-		         		    lowerul.setAttributeNode(lowerulid);
-		         		
-							// iterate over lower tags
-		         		    for(y=0; y<lowers.length; y++) {
-		         		    	var lower = lowers[y].firstChild.nodeValue;
-		         		    	
-		         		    	// create new list item for lower tag
-		         		    	var lowerli = document.createElement("li");
-		         		    	lowerli.className = "box_lowerconcept";
-
-								// add link
-		         		    	var lowerlink = document.createElement("a");
-		         		    	var lowerlinkhref = document.createAttribute("href");
-		         		    	lowerlinkhref.nodeValue = "/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(lower);
-		         		    	lowerlink.setAttributeNode(lowerlinkhref);
-		         		    	var lowerlinktext = document.createTextNode(lower + " ");
-		         		    	lowerlink.appendChild(lowerlinktext);
-		         		    	lowerli.appendChild(lowerlink);
-		         		    	
-		         		    	// add item
-		         		    	lowerul.appendChild(lowerli);
-		         		    }
-		         		    
-		         		    // append list of lower tags to supertag item
-	   	         		    rel_item.appendChild(lowerul);
-
-			         		// insert relations_list for this supertag
-			         		relations_list.appendChild(rel_item);
-							
-
-		         		}
+				for(y=0; y<conceptnames.length; y++){
+					if(tagname == conceptnames[y]){
+						addArrow=false;
 					}
+				}
+				if(addArrow){
+					links[0].style.display = "none";
+					links[1].style.display = "inline";
+				}else{
+					links[0].style.display = "inline";
+					links[1].style.display = "none";
+				}
+				if(x == 0){alert("done");}
+			}
+		}
 
-					// set arrows of supertags in tag cloud depending on if supertag is shown or not
-	         		var ultag = document.getElementById("tagbox");
-	         		var taglis = ultag.getElementsByTagName("li");
+		delete conceptnames;
 
-	         		for(x=0; x<taglis.length; x++){
-	         		  	var links = taglis[x].getElementsByTagName("a");
+	} 
 
-	         		   	if(links.length == 3){
-	         		   		var tagname = links[2].firstChild.nodeValue;
-	         		   		var addArrow = true;
-							
-	         		   		for(y=0; y<conceptnames.length; y++){
-	         		   			if(tagname == conceptnames[y]){
-	         		   				addArrow=false;
-	         		   			}
-	         		   		}
-	         		  		if(addArrow){
-	         		   			links[0].style.display = "none";
-	         		   			links[1].style.display = "inline";
-	         		   		}else{
-	         		   			links[0].style.display = "inline";
-	         		   			links[1].style.display = "none";
-	         		   		}
-							if(x == 0){alert("done");}
-	         		   	}
-	         		}
-					
-	         		delete conceptnames;
-	         	}
-	        }
-	    };
-    } 
-    
-    
+
     
     function pickAll(evt) {
        pickUnpickAll(evt, "pickAll");
@@ -1498,7 +1473,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 		 * -> on the /basket page we have to remove the listitems
 		 * -> on other we have to change the pick <-> unpick link (not yet implemented)
 		 */
-		if (location.pathname.startsWith("/basket")){
+		if (location.pathname.startsWith("/basket")) {
 			var li = evt.currentTarget.parentNode.parentNode.parentNode;
 			var parent = li.parentNode;
 			parent.removeChild(li);
@@ -1512,36 +1487,26 @@ function unicodeCollation(ersterWert, zweiterWert){
 
 	   
     // picks/unpicks publications in AJAX style
-	function updateCollector (param) {
-		// do AJAX stuff
-    	var request = ajaxInit();
-    	if(request){
-	    	// build URL for AJAX request
-			var url = "/ajax/pickUnpickPost?ckey=" + ckey;
-			request.open('POST', url, true);
-			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			request.setRequestHeader("Content-length", param.length);
-      		request.setRequestHeader("Connection", "close");
-			request.onreadystatechange = ajax_updateCollector(request);
-			request.send(param);
-		}
+    function updateCollector (param) {
+    	$.ajax({
+    		type: 'POST',
+    		url: "/ajax/pickUnpickPost?ckey=" + ckey,
+    		data : param,
+    		dataType : "text",
+    		success: function(data) {
+    		/*
+    		 * update the number of basket items
+    		 */
+    		if (location.pathname.startsWith("/basket")) {
+        		// special case for the /basket page
+    			window.location.reload();
+    		} else {
+    			document.getElementById("pickctr").childNodes[0].nodeValue = data; 
+    		}
+
+    	}
+    	});
     } 
-    
-    // updates the number of basket items
-    function ajax_updateCollector(request) {
-    	return function(){
-	   	  	if( 4 == request.readyState ) {
-	          	if( 200 == request.status ) {
- 	           		// special case for the /basket page
-   	           		if (location.pathname.startsWith("/basket")){
-   	           			window.location.reload();
-   	           		} else {
-   	           			document.getElementById("pickctr").childNodes[0].nodeValue = request.responseText; 
-   	           		}
-	         	}
-	        }
-	    };
-    }
     
 /*
  * 
