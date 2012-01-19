@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.oauth.OAuthAccessor;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
@@ -108,6 +110,7 @@ public class RestLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(RestLogic.class);
 
 	private final User authUser;
+	private final OAuthAccessor accessor;
 
 	private final String apiURL;
 	private final RendererFactory rendererFactory;
@@ -130,6 +133,17 @@ public class RestLogic implements LogicInterface {
 
 		this.authUser = new User(username);
 		this.authUser.setApiKey(apiKey);
+		this.accessor = null;
+	}
+
+	public RestLogic(OAuthAccessor accessor, String apiUrl, RenderingFormat renderingFormat, ProgressCallbackFactory progressCallbackFactory) {
+		this.apiURL = apiUrl;
+		this.rendererFactory = new RendererFactory(new UrlRenderer(this.apiURL));
+		this.renderingFormat = renderingFormat;
+		this.progressCallbackFactory = progressCallbackFactory;
+
+		this.authUser = new User(RESTConfig.USER_ME);
+		this.accessor = accessor;
 	}
 
 	private <T> T execute(final AbstractQuery<T> query) {
@@ -137,7 +151,7 @@ public class RestLogic implements LogicInterface {
 			query.setApiURL(this.apiURL);
 			query.setRenderingFormat(this.renderingFormat);
 			query.setRendererFactory(this.rendererFactory);
-			query.execute(this.authUser.getName(), this.authUser.getApiKey());
+			query.execute(this.authUser.getName(), this.authUser.getApiKey(), this.accessor);
 		} catch (final Exception ex) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "unable to execute " + query.toString());
 		}

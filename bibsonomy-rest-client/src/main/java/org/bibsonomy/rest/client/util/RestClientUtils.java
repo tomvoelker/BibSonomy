@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import net.oauth.client.OAuthClient;
+
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.params.HttpClientParams;
@@ -54,12 +56,20 @@ public class RestClientUtils {
 	private static final String PROPERTIES_VERSION_KEY = "version";
 	
 	private static final HttpClient CLIENT = new HttpClient();
+	private static final OAuthClient OAUTH_CLIENT = new OAuthClient(new net.oauth.client.httpclient3.HttpClient3());
 	
 	/**
 	 * @return the client
 	 */
 	public static HttpClient getDefaultClient() {
 		return CLIENT;
+	}
+
+	/**
+	 * @return the OAuth client
+	 */
+	public static OAuthClient getDefaultOAuthClient() {
+		return OAUTH_CLIENT;
 	}
 
 	static {

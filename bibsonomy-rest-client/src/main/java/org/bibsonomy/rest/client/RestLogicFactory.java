@@ -25,6 +25,8 @@ package org.bibsonomy.rest.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import net.oauth.OAuthAccessor;
+
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
@@ -98,5 +100,18 @@ public class RestLogicFactory implements LogicInterfaceFactory {
 		if (!present(apiKey)) throw new IllegalArgumentException("The given apiKey is not valid.");
 		
 		return new RestLogic(loginName, apiKey, this.apiUrl, this.renderingFormat, this.progressCallbackFactory);
+	}
+
+	/**
+	 * create logic access for OAuth api access
+	 * @param accessor
+	 * @return
+	 */
+	public LogicInterface getLogicAccess(OAuthAccessor accessor) {
+		// check login name and api key
+		if (!present(accessor)) throw new IllegalArgumentException("The given OAuth accessor is not valid.");
+		if (!present(accessor.accessToken)) throw new IllegalArgumentException("The given OAuth accessor contains no access token.");
+		
+		return new RestLogic(accessor, this.apiUrl, this.renderingFormat, this.progressCallbackFactory);
 	}
 }

@@ -22,6 +22,21 @@
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>net.oauth.core</groupId>
+			<artifactId>oauth</artifactId>
+			<version>20100527</version>
+		</dependency>
+		<dependency>
+			<groupId>net.oauth.core</groupId>
+			<artifactId>oauth-consumer</artifactId>
+			<version>20100527</version>
+		</dependency>
+		<dependency>
+			<groupId>net.oauth.core</groupId>
+			<artifactId>oauth-httpclient3</artifactId>
+			<version>20090617</version>
+		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<site>
@@ -32,6 +47,14 @@
 			</url>
 		</site>
 	</distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>oauth.googlecode.com</id>
+      <url>http://oauth.googlecode.com/svn/code/maven</url>
+    </repository>
+  </repositories>
+
 	<build>
 		<resources>
 			<resource>

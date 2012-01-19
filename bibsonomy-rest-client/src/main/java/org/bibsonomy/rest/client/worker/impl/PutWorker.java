@@ -25,6 +25,8 @@ package org.bibsonomy.rest.client.worker.impl;
 
 import java.io.UnsupportedEncodingException;
 
+import net.oauth.OAuthAccessor;
+
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.bibsonomy.rest.client.worker.HttpWorker;
@@ -44,8 +46,8 @@ public final class PutWorker extends HttpWorker<PutMethod> {
 	 * @param username
 	 * @param apiKey
 	 */
-	public PutWorker(final String username, final String apiKey) {
-		super(username, apiKey);
+	public PutWorker(final String username, final String apiKey, OAuthAccessor accessor) {
+		super(username, apiKey, accessor);
 	}
 
 	@Override

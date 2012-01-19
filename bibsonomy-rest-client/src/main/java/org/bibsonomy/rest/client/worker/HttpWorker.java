@@ -23,9 +23,22 @@
 
 package org.bibsonomy.rest.client.worker;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import net.oauth.OAuth;
+import net.oauth.OAuthAccessor;
+import net.oauth.OAuthConsumer;
+import net.oauth.OAuthMessage;
+import net.oauth.ParameterStyle;
+import net.oauth.http.HttpMessage;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -51,6 +64,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 
 	protected final String username;
 	protected final String apiKey;
+	protected final OAuthAccessor accessor;
 	
 	private RenderingFormat renderingFormat;
 
@@ -58,12 +72,14 @@ public abstract class HttpWorker<M extends HttpMethod> {
 	 * @param username the username
 	 * @param apiKey the apikey
 	 */
-	public HttpWorker(final String username, final String apiKey) {
+	public HttpWorker(final String username, final String apiKey, final OAuthAccessor accessor) {
 		this.username = username;
 		this.apiKey = apiKey;
+		this.accessor = accessor;
 		
 		this.httpClient = RestClientUtils.getDefaultClient();
 	}
+
 
 	/**
 	 * @see #perform(String, String)
@@ -86,6 +102,39 @@ public abstract class HttpWorker<M extends HttpMethod> {
 	 */
 	public Reader perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
 		final M method = this.getMethod(url, requestBody);
+		
+		//
+		// handle OAuth requests
+		// 
+		if (this.accessor!=null) {
+			List<Map.Entry<?,?>> params = new ArrayList<Map.Entry<?,?>>();
+			params.add(new OAuth.Parameter("oauth_token", this.accessor.accessToken));
+			try {
+				OAuthMessage request;
+				if (present(requestBody)) {
+					request = this.accessor.newRequestMessage(method.getName(), url, params, new ByteArrayInputStream(requestBody.getBytes("UTF-8")));
+				} else {
+					request = this.accessor.newRequestMessage(method.getName(), url, params);
+				}
+				Object accepted = accessor.consumer.getProperty(OAuthConsumer.ACCEPT_ENCODING);
+		        if (accepted != null) {
+		            request.getHeaders().add(new OAuth.Parameter(HttpMessage.ACCEPT_ENCODING, accepted.toString()));
+		        }
+		        request.getHeaders().add(new OAuth.Parameter("Accept", this.renderingFormat.getMimeType()));
+		        request.getHeaders().add(new OAuth.Parameter("Content-Type", this.renderingFormat.getMimeType()));
+
+		        Object ps = accessor.consumer.getProperty("parameterStyle");
+		        ParameterStyle style = (ps == null) ? ParameterStyle.BODY : Enum.valueOf(ParameterStyle.class, ps.toString());
+		        
+		        return new StringReader(RestClientUtils.getDefaultOAuthClient().invoke(request, style).readBodyAsString());
+			} catch (Exception e) {
+				throw new ErrorPerformingRequestException(e);
+			}
+		}
+		
+		//
+		// handle http basic requests
+		// 
 		
 		// add auth header
 		method.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));

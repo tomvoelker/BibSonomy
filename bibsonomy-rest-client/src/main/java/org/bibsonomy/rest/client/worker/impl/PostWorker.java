@@ -29,6 +29,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 
+import net.oauth.OAuthAccessor;
+
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
@@ -53,8 +55,8 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 	 * @param username
 	 * @param apiKey
 	 */
-	public PostWorker(final String username, final String apiKey) {
-		super(username, apiKey);
+	public PostWorker(final String username, final String apiKey, OAuthAccessor accessor) {
+		super(username, apiKey, accessor);
 	}
 	
 	/**

@@ -26,6 +26,8 @@ package org.bibsonomy.rest.client;
 import java.io.File;
 import java.io.Reader;
 
+import net.oauth.OAuthAccessor;
+
 import org.apache.commons.httpclient.HttpStatus;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -67,6 +69,7 @@ public abstract class AbstractQuery<T> {
 
 	private String apiKey;
 	private String username;
+	private OAuthAccessor accessor;
 	private String apiURL;
 	private int statusCode = -1;
 
@@ -112,7 +115,7 @@ public abstract class AbstractQuery<T> {
 	}
 
 	protected final Reader performGetRequest(final String url) throws ErrorPerformingRequestException {
-		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.callback);
+		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.accessor, this.callback);
 		this.configHttpWorker(worker);
 		
 		final Reader downloadedDocument = worker.perform(this.apiURL + url, null);
@@ -123,7 +126,7 @@ public abstract class AbstractQuery<T> {
 	protected final Reader performMultipartPostRequest(final String url, final File file) throws ErrorPerformingRequestException {	
 		final String absoluteUrl = this.apiURL + url;
 
-		final PostWorker worker = new PostWorker(this.username, this.apiKey);
+		final PostWorker worker = new PostWorker(this.username, this.apiKey, this.accessor);
 		this.configHttpWorker(worker);
 		final Reader result = worker.perform(absoluteUrl, file);
 		this.statusCode = worker.getHttpResult();
@@ -139,7 +142,7 @@ public abstract class AbstractQuery<T> {
 	 * @author Waldemar Biller
 	 */
 	protected final void performFileDownload(final String url, final File file) throws ErrorPerformingRequestException {
-		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.callback);
+		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.accessor, this.callback);
 		this.configHttpWorker(worker);
 		
 		final String absoluteUrl = this.apiURL + url;
@@ -153,16 +156,16 @@ public abstract class AbstractQuery<T> {
 
 		switch (method) {
 		case POST:
-			worker = new PostWorker(this.username, this.apiKey);
+			worker = new PostWorker(this.username, this.apiKey, this.accessor);
 			break;
 		case DELETE:
-			worker = new DeleteWorker(this.username, this.apiKey);
+			worker = new DeleteWorker(this.username, this.apiKey, this.accessor);
 			break;
 		case PUT:
-			worker = new PutWorker(this.username, this.apiKey);
+			worker = new PutWorker(this.username, this.apiKey, this.accessor);
 			break;
 		case HEAD:
-			worker = new HeadWorker(this.username, this.apiKey);
+			worker = new HeadWorker(this.username, this.apiKey, this.accessor);
 			break;
 		case GET:
 			throw new UnsupportedOperationException("use AbstractQuery::performGetRequest( String url)");
@@ -185,12 +188,15 @@ public abstract class AbstractQuery<T> {
 	 *            username at bibsonomy.org
 	 * @param apiKey
 	 *            the user's password
+	 * @param accessor
+	 * 			  OAuth accessor
 	 * @throws ErrorPerformingRequestException
 	 *             if something fails, eg an ioexception occurs (see the cause)
 	 */
-	final void execute(final String username, final String apiKey) throws ErrorPerformingRequestException {
+	final void execute(final String username, final String apiKey, OAuthAccessor accessor) throws ErrorPerformingRequestException {
 		this.username = username;
 		this.apiKey = apiKey;
+		this.accessor = accessor;
 		this.executed = true;
 		this.result = this.doExecute();
 	}
@@ -276,4 +282,5 @@ public abstract class AbstractQuery<T> {
 	public void setRendererFactory(final RendererFactory rendererFactory) {
 		this.rendererFactory = rendererFactory;
 	}
+
 }
