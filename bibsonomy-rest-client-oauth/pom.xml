@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <name>BibSonomy-Rest-Client-OAuth</name>
+  <groupId>org.bibsonomy</groupId>
+  <artifactId>bibsonomy-rest-client-oauth</artifactId>
+  <packaging>jar</packaging>
+  <description>The REST-client.</description>
+  <parent>
+    <groupId>org.bibsonomy</groupId>
+    <artifactId>bibsonomy</artifactId>
+    <version>2.0.21-SNAPSHOT</version>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>org.bibsonomy</groupId>
+      <artifactId>bibsonomy-rest-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.oauth.core</groupId>
+      <artifactId>oauth</artifactId>
+      <version>20100527</version>
+    </dependency>
+    <dependency>
+      <groupId>net.oauth.core</groupId>
+      <artifactId>oauth-consumer</artifactId>
+      <version>20100527</version>
+    </dependency>
+    <dependency>
+      <groupId>net.oauth.core</groupId>
+      <artifactId>oauth-httpclient3</artifactId>
+      <version>20090617</version>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>oauth.googlecode.com</id>
+      <url>http://oauth.googlecode.com/svn/code/maven</url>
+    </repository>
+  </repositories>
+
+</project>
