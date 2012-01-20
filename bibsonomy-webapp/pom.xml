@@ -75,7 +75,6 @@
 					<!-- TODO: css files disabled because plugin stops with exception -->
 					<excludes>
 						<exclude>**/*.css</exclude>
-						<exclude>**/d3-library/**</exclude>
 					</excludes>
 					<aggregations>
 						<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->

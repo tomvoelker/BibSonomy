@@ -125,3 +125,68 @@
 	margin-left: 5px; 
 	vertical-align: middle;
 }
+
+/****************************************************************************/
+/* spheres graph styling                                                    */
+/****************************************************************************/
+#spheresGraph {
+	background-color: #FFFFFF;
+	position: relative;
+	border-radius: 15px;
+	height: 300px;
+}
+
+.node circle {
+	cursor: pointer;
+	stroke: #333;
+	stroke-width: 0px;
+}
+
+circle {
+	fill: #ccc;
+	stroke: #333;
+	stroke-width: 1.5px;
+}
+
+text {
+	font: 14px sans-serif;
+}
+
+text.shadow {
+	stroke: #fff;
+	stroke-width: 3px;
+	stroke-opacity: .8;
+}
+
+circle.node {
+	cursor: pointer;
+	stroke: #000;
+	stroke-width: 1px;
+}
+
+line.link {
+	fill: none;
+	stroke: #9ecae1;
+	stroke-width: 1.5px;
+}
+
+circle.node {
+	stroke: #fff;
+	stroke-width: 1.5px;
+}
+
+line.link {
+	stroke: #999;
+	stroke-opacity: .6;
+}
+
+#Big {
+	margin: 10px;
+	position: absolute;
+}
+
+#Small {
+	left: 30px;
+	margin: 10px;
+	position: absolute;
+}
