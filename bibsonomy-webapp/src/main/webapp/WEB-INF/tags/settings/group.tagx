@@ -32,13 +32,12 @@
 		    					<label for="laddgu" class="fsLabel"><fmt:message key="user.name"/></label>
 		    					<buttons:help message="settings.group.addUser.help"/>
 		    					<c:set var="userEmpty" value="${empty param.user}"/>
-		    					<input type="text" class="fsInput fsSmall" name="userName" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
+		    					<input type="text" class="fsInput fsSmall" name="addUserToGroup" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
 							</div>
 						
 							<div class="fsRow">
 		    					<input type="hidden" name="ckey" value="${ckey}"/>
-		    					<input type="hidden" name="addUser" value="1"/>
-  								<fmt:message var="adduser" key="settings.group.addUser.button"/>
+		    					<fmt:message var="adduser" key="settings.group.addUser.button"/>
 		   						<input type="submit" value="${adduser}" />
 		   					</div>
 		
