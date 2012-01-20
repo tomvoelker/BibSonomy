@@ -27,9 +27,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.rest.client.AbstractQuery;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * Use this Class to delete a specified post.

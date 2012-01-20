@@ -27,11 +27,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import net.oauth.OAuthAccessor;
-
 import org.apache.commons.httpclient.methods.HeadMethod;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.worker.HttpWorker;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -44,7 +43,7 @@ public class HeadWorker extends HttpWorker<HeadMethod> {
 	 * @param username
 	 * @param apiKey
 	 */
-	public HeadWorker(final String username, final String apiKey, OAuthAccessor accessor) {
+	public HeadWorker(final String username, final String apiKey, final AuthenticationAccessor accessor) {
 		super(username, apiKey, accessor);
 	}
 

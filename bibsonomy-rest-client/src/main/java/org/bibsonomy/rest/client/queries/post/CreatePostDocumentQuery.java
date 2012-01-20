@@ -28,7 +28,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.File;
 
 import org.bibsonomy.rest.client.AbstractQuery;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * @author wbi

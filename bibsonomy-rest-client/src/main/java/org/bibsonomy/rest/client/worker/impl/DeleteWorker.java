@@ -23,9 +23,8 @@
 
 package org.bibsonomy.rest.client.worker.impl;
 
-import net.oauth.OAuthAccessor;
-
 import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 
 /**
@@ -38,7 +37,7 @@ public final class DeleteWorker extends HttpWorker<DeleteMethod> {
 	 * @param username the user name
 	 * @param apiKey the api key of the user
 	 */
-	public DeleteWorker(final String username, final String apiKey, OAuthAccessor accessor) {
+	public DeleteWorker(final String username, final String apiKey, AuthenticationAccessor accessor) {
 		super(username, apiKey, accessor);
 	}
 	

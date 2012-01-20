@@ -31,8 +31,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * Use this Class to receive an ordered list of all posts.

@@ -24,8 +24,8 @@
 package org.bibsonomy.rest.client.queries;
 
 import org.bibsonomy.rest.client.AbstractQuery;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>

@@ -25,8 +25,8 @@ package org.bibsonomy.rest.client.queries.get;
 
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.client.AbstractQuery;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * Use this Class to receive information about a specific tag

@@ -29,8 +29,8 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * Returns a list of users which either the requested user has in his friend list,

@@ -27,8 +27,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * Use this Class to receive details about an user of bibsonomy.

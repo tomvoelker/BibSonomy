@@ -29,8 +29,8 @@ import java.io.StringWriter;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.StringUtils;
 
 /**

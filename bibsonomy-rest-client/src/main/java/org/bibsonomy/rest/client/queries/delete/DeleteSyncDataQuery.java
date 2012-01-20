@@ -30,8 +30,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.rest.client.AbstractSyncQuery;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.utils.RestSyncUtils;
 import org.bibsonomy.util.UrlUtils;
 

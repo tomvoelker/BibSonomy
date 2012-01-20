@@ -30,7 +30,7 @@ import java.io.IOException;
 
 import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.client.AbstractQuery;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.file.FileUtil;
 
 /**
