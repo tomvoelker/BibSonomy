@@ -135,10 +135,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<URI> availableSyncClients;
 	private List<URI> availableSyncServers;
 	
-	/** in case of an import from a remote service 
-	 *  userName and passWord are required **/
-	private String userName;
-	private String passWord;
+	/** 
+	 * this field contains the username of the user, who should be added to the group.
+	 */
+	private String addUserToGroup;
+
 	/**
 	 * Constructor.
 	 */
@@ -550,31 +551,17 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 
 	/**
-	 * @return the userName, required for importing resources form a remote service
+	 * @return the addUserToGroup
 	 */
-	public String getUserName() {
-		return this.userName;
+	public String getAddUserToGroup() {
+		return this.addUserToGroup;
 	}
 	
 	/**
-	 * @param userName
+	 * @param addUserToGroup
 	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	
-	/**
-	 * @return the user's password
-	 */
-	public String getPassWord() {
-		return this.passWord;
-	}
-	
-	/**
-	 * @param passWord
-	 */
-	public void setPassWord(String passWord) {
-		this.passWord = passWord;
+	public void setAddUserToGroup(String addUserToGroup) {
+		this.addUserToGroup = addUserToGroup;
 	}
 
 	/**

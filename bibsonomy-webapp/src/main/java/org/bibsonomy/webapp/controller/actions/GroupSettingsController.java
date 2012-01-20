@@ -96,13 +96,22 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		groupToUpdate.setPrivlevel(priv);
 		groupToUpdate.setSharedDocuments(sharedDocs);
 		
-		try {
-			// since now only one user can be added to a group at once
-			groupToUpdate.setUsers(Collections.singletonList(new User(command.getUserName())));
-			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER);
-		} catch (final Exception ex) {
-			// if a user can't be added to a group, this exception is thrown
-			this.errors.reject("settings.group.error.addUserToGroupFailed");
+		// do ADD_NEW_USER on addUserToGroup != null
+		if(present(command.getAddUserToGroup())) {
+			try {
+				// since now only one user can be added to a group at once
+				groupToUpdate.setUsers(Collections.singletonList(new User(command.getAddUserToGroup())));
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER);
+			} catch (final Exception ex) {
+				// if a user can't be added to a group, this exception is thrown
+				this.errors.reject("settings.group.error.addUserToGroupFailed");
+			}
+		} else {			
+			try {
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS);
+			} catch (final Exception ex) {
+				// TODO: what exceptions can be thrown?!
+			}
 		}
 		return Views.SETTINGSPAGE;
 	}
