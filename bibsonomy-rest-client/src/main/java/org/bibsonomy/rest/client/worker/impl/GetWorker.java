@@ -34,12 +34,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
-import net.oauth.OAuthAccessor;
-
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
@@ -56,7 +55,7 @@ public final class GetWorker extends HttpWorker<GetMethod> {
 	 * @param password	the password (apiKey)
 	 * @param callback	the callback
 	 */
-	public GetWorker(final String username, final String password, final OAuthAccessor accessor, final ProgressCallback callback) {
+	public GetWorker(final String username, final String password, final AuthenticationAccessor accessor, final ProgressCallback callback) {
 		super(username, password, accessor);
 		
 		this.callback = callback;
