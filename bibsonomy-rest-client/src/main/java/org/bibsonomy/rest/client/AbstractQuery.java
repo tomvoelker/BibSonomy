@@ -26,11 +26,9 @@ package org.bibsonomy.rest.client;
 import java.io.File;
 import java.io.Reader;
 
-import net.oauth.OAuthAccessor;
-
 import org.apache.commons.httpclient.HttpStatus;
 import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.client.worker.impl.DeleteWorker;
@@ -40,6 +38,7 @@ import org.bibsonomy.rest.client.worker.impl.PostWorker;
 import org.bibsonomy.rest.client.worker.impl.PutWorker;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
@@ -69,7 +68,7 @@ public abstract class AbstractQuery<T> {
 
 	private String apiKey;
 	private String username;
-	private OAuthAccessor accessor;
+	private AuthenticationAccessor accessor;
 	private String apiURL;
 	private int statusCode = -1;
 
@@ -193,7 +192,7 @@ public abstract class AbstractQuery<T> {
 	 * @throws ErrorPerformingRequestException
 	 *             if something fails, eg an ioexception occurs (see the cause)
 	 */
-	final void execute(final String username, final String apiKey, OAuthAccessor accessor) throws ErrorPerformingRequestException {
+	final void execute(final String username, final String apiKey, final AuthenticationAccessor accessor) throws ErrorPerformingRequestException {
 		this.username = username;
 		this.apiKey = apiKey;
 		this.accessor = accessor;

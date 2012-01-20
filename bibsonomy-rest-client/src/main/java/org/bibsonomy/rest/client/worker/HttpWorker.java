@@ -23,29 +23,17 @@
 
 package org.bibsonomy.rest.client.worker;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import net.oauth.OAuth;
-import net.oauth.OAuthAccessor;
-import net.oauth.OAuthConsumer;
-import net.oauth.OAuthMessage;
-import net.oauth.ParameterStyle;
-import net.oauth.http.HttpMessage;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.RestClientUtils;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.utils.HeaderUtils;
 
@@ -64,7 +52,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 
 	protected final String username;
 	protected final String apiKey;
-	protected final OAuthAccessor accessor;
+	protected final AuthenticationAccessor accessor;
 	
 	private RenderingFormat renderingFormat;
 
@@ -72,7 +60,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 	 * @param username the username
 	 * @param apiKey the apikey
 	 */
-	public HttpWorker(final String username, final String apiKey, final OAuthAccessor accessor) {
+	public HttpWorker(final String username, final String apiKey, final AuthenticationAccessor accessor) {
 		this.username = username;
 		this.apiKey = apiKey;
 		this.accessor = accessor;
@@ -107,29 +95,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 		// handle OAuth requests
 		// 
 		if (this.accessor!=null) {
-			List<Map.Entry<?,?>> params = new ArrayList<Map.Entry<?,?>>();
-			params.add(new OAuth.Parameter("oauth_token", this.accessor.accessToken));
-			try {
-				OAuthMessage request;
-				if (present(requestBody)) {
-					request = this.accessor.newRequestMessage(method.getName(), url, params, new ByteArrayInputStream(requestBody.getBytes("UTF-8")));
-				} else {
-					request = this.accessor.newRequestMessage(method.getName(), url, params);
-				}
-				Object accepted = accessor.consumer.getProperty(OAuthConsumer.ACCEPT_ENCODING);
-		        if (accepted != null) {
-		            request.getHeaders().add(new OAuth.Parameter(HttpMessage.ACCEPT_ENCODING, accepted.toString()));
-		        }
-		        request.getHeaders().add(new OAuth.Parameter("Accept", this.renderingFormat.getMimeType()));
-		        request.getHeaders().add(new OAuth.Parameter("Content-Type", this.renderingFormat.getMimeType()));
-
-		        Object ps = accessor.consumer.getProperty("parameterStyle");
-		        ParameterStyle style = (ps == null) ? ParameterStyle.BODY : Enum.valueOf(ParameterStyle.class, ps.toString());
-		        
-		        return new StringReader(RestClientUtils.getDefaultOAuthClient().invoke(request, style).readBodyAsString());
-			} catch (Exception e) {
-				throw new ErrorPerformingRequestException(e);
-			}
+			return accessor.perform(url, requestBody, method, this.renderingFormat);
 		}
 		
 		//
@@ -156,7 +122,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 			method.releaseConnection();
 		}
 	}
-	
+
 	protected abstract M getMethod(final String url, final String requestBody);
 	
 	/**
