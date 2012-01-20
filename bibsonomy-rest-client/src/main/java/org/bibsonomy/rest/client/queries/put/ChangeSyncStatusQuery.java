@@ -6,8 +6,8 @@ import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractSyncQuery;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.UrlUtils;
 
 /**

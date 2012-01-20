@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.oauth.OAuthAccessor;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
@@ -68,6 +66,7 @@ import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteSyncDataQuery;
@@ -110,7 +109,7 @@ public class RestLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(RestLogic.class);
 
 	private final User authUser;
-	private final OAuthAccessor accessor;
+	private final AuthenticationAccessor accessor;
 
 	private final String apiURL;
 	private final RendererFactory rendererFactory;
@@ -136,7 +135,7 @@ public class RestLogic implements LogicInterface {
 		this.accessor = null;
 	}
 
-	public RestLogic(OAuthAccessor accessor, String apiUrl, RenderingFormat renderingFormat, ProgressCallbackFactory progressCallbackFactory) {
+	public RestLogic(final AuthenticationAccessor accessor, String apiUrl, RenderingFormat renderingFormat, ProgressCallbackFactory progressCallbackFactory) {
 		this.apiURL = apiUrl;
 		this.rendererFactory = new RendererFactory(new UrlRenderer(this.apiURL));
 		this.renderingFormat = renderingFormat;
