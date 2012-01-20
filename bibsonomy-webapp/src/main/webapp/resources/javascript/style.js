@@ -1,3 +1,7 @@
+/*
+ * XXX: almost all methods depend on the DOM tree of the layout !NEW_LAYOUT!
+ */
+
 var request = null;
 var style_list = null;
 var style_sort = new Array("alph", "freq");
@@ -41,12 +45,10 @@ function init_tagbox(show, sort, minfreq, requUser) {
 function attachChangeTagBox(mode) { return(function() {	changeTagBox(mode);	});}
 
 function changeTagBox(mode) {
-	var request = ajaxInit();
-
-	if(mode == "list" || mode == "cloud"){
+	if (mode == "list" || mode == "cloud"){
 		tagbox.className = "tag" + mode;
 		style_list.replaceChild(getStyleItem(mode, style_show), style_list.childNodes[1]);
-	}else if(mode == "alph" || mode == "freq") {
+	} else if(mode == "alph" || mode == "freq") {
 		style_list.replaceChild(getStyleItem(mode, style_sort), style_list.childNodes[0]);
 		mode == "alph" ? setTagBoxAlph() : setTagBoxFreq();
 	}
@@ -294,56 +296,38 @@ function setTagBoxFreq(){
 	delete collection_numberofposts;
 }
 
+// FIXME: check, if method still works
+// FIXME: removed ckey from request, should not be necessary any longer - check!
 function sendMinfreqRequ(minfreq, currUser) {
-	var request = ajaxInit();
-	if(request) {
-		if(minfreq == null)	minfreq = 1;
+	if (minfreq == null) minfreq = 1;
+	userMinFreq = minfreq;
 
-		request.open('GET', "?tagcloud.minFreq=" + minfreq + "&ckey=" + ckey + "&tagstype=default&format=tagcloud", true);
-		userMinFreq = minfreq;
-		request.onreadystatechange = handleMinfreqResponse(request);
-		request.send(null);
-	}
-}
-
-function handleMinfreqResponse(request) {
-	return function(){
-		//window.alert(request.responseText);
-		//alert(request.readyState);
-		if(request.readyState == 4) {
-			// dirty workaround for failed innerHTML-ajax functionality in ie6+7
-
-			if(window.navigator.userAgent.indexOf("MSIE ") > -1) {
-				window.location.reload();
-			} else {
-				replaceTags(request);
-			}
-		}
-	};
-}
-
-function replaceTags (request) {
-
-	//ensure that we look in the correct list (the tagCloud / list)
-	var pListStartTag = "<li class=\"tag";
-	var pListEndTag = "</ul>";
-
-	var text = request.responseText;
-	var start = text.indexOf(pListStartTag);
-	var end = text.indexOf(pListEndTag,start);
-
-	tagbox.innerHTML = text.slice(start, end);
-	var sListStartTag = "<span>";
-	var sListEndTag = "</span>";
-	start = text.indexOf(sListStartTag) + (sListEndTag.length - 1);
-	end = text.indexOf(sListEndTag);
-
-	// re-order tags per js
-	if (text.slice(start, end) == "ALPHA") {
-		setTagBoxAlph();
-	} else{
-		setTagBoxFreq();
-	}
+	$.ajax({
+			url : "?tagcloud.minFreq=" + minfreq + "&tagstype=default&format=tagcloud",
+			success : function (data) {
+				/*
+				 * replace the tags
+				 * XXX: depends on DOM tree !NEW_LAYOUT!
+				 */
+				// ensure that we look in the correct list (the tagCloud / list)
+				var start = data.indexOf("<li class=\"tag");
+				var end = data.indexOf("</ul>", start);
+		
+				tagbox.innerHTML = data.slice(start, end); // FIXME: use jQuery to insert
+				
+				var sListStartTag = "<span>";
+				start = data.indexOf(sListStartTag) + sListStartTag.length;
+				end = data.indexOf("</span>", start);
+		
+				// re-order tags
+				if (data.slice(start, end) == "ALPHA") {
+					setTagBoxAlph();
+				} else{
+					setTagBoxFreq();
+				}
+			},
+			dataType : "text"
+		});
 }
 
 function minUsertags(minfreq) {
