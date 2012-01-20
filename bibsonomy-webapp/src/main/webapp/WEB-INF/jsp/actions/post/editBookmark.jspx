@@ -44,46 +44,30 @@
             </div>
 
            <!-- 
-           	  | TODO: rewrite with jquery
            	  | TODO: move to editBookmark.js
               | corresponding JavaScript ...
               -->
-           <script type="text/javascript">
+			<script type="text/javascript">
               //<mtl:cdata>
               <![CDATA[   
-              function scraping(){
-                var url = document.getElementById("post.resource.url").value;
-                if(url.length > 'http://'.length){
-                  var req = ajaxInit();
-                  if(req){
-                    req.open("GET", '/scrapingservice?url='+encodeURIComponent(url)+'&format=bibtex&doIE=false&selection='+encodeURIComponent(document.getElementById("post.description").value), true); // Request starten
-                    req.onreadystatechange = function() {
-                        if ( req.readyState == 4 ) {
-                            if ( req.status == 200 ) {
-                              handle(req);
-                            }
-                        }
-                    };
-                    req.send(null);
-                  }
-                }
-              }
-        
-              function handle(request){
-                var textfield = document.getElementById("bib");
-                if(request.responseText != ''){
-                  textfield.value = request.responseText;
-                  showHide("scrapable");
-                }
-              }
+				function scraping(){
+              		var url = $("#post.resource.url").val();
+                	if (url.length > 'http://'.length) {
+                		$.ajax({
+            				url : '/scrapingservice?url='+encodeURIComponent(url)+'&format=bibtex&doIE=false&selection='+encodeURIComponent($("#post.description").val()),
+            				success : function(data) {
+                            	if (data != '') {
+                    				$("#bib").val(data);
+                              		showHide("scrapable");
+                            	}
+            				},
+            				dataType : "text"
+						});
+                	}
         
               function showHide(id){
-                var bibtexBox = document.getElementById(id);
-                if(bibtexBox.value != ''){
-                  bibtexBox.style.display = '';
-                }else{
-                  bibtexBox.style.display = 'hidden';
-                }
+                var b = document.getElementById(id);
+                b.style.display = (b.value != '' ? '' : 'hidden');
               }
               
               scraping();
